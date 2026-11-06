@@ -16,7 +16,7 @@ test("active workspace count ignores archived workspaces", () => {
   assert.equal(activeWorkspaceCount([]), 0);
   assert.equal(activeWorkspaceCount([repo([])]), 0);
   assert.equal(activeWorkspaceCount([repo([ws("archived")])]), 0);
-  assert.equal(activeWorkspaceCount([repo([ws("idle"), ws("archived")]), repo([ws("working"), ws("needs-review")])]), 3);
+  assert.equal(activeWorkspaceCount([repo([ws("idle"), ws("archived")]), repo([{ ...ws("idle"), id: "busy", sessionStatus: "working" }, ws("needs-review")])]), 3);
 });
 
 test("removedWorkspaceIds lists workspaces archived or gone with their repository", () => {

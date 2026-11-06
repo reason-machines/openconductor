@@ -3,7 +3,7 @@
   "status": "captured",
   "steps": 1,
   "file": "oc/all-workspaces.png",
-  "png_sha256": "a6694de945a13f6c701c2b5c8e2a8742fe54a8fa9b8617f72a00bf5305ee341f",
+  "png_sha256": "76f21f350d33850f56e17f2f0093ba022be810db5088db511dbb687ec43ee534",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -21,7 +21,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -37,7 +37,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Seattle",
+    "Warsaw",
     "tide-web"
    ],
    "roles": [
@@ -55,7 +55,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -70,8 +70,8 @@
     "Today",
     "1",
     "T",
-    "Seattle",
-    "now"
+    "Warsaw",
+    "1m"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -79,13 +79,13 @@
     820
    ]
   },
-  "ms": 4073
+  "ms": 10769
  },
  "create": {
   "status": "captured",
   "steps": 1,
   "file": "oc/create.png",
-  "png_sha256": "641f97bf215386124131ab8d52b3d14d198c2e1774eafac29e1a43d1cc379da2",
+  "png_sha256": "8fee1a06e2a321e50bff13e684fc2a525abba68ca5965ac880fd59a0ff8282af",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -103,7 +103,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -124,7 +124,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -179,7 +179,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -190,21 +190,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -257,13 +257,13 @@
     820
    ]
   },
-  "ms": 4645
+  "ms": 8833
  },
  "create-repo-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/create-repo-picker.png",
-  "png_sha256": "407e096cc96017460a91a2b7b3f8f776226eae7be154bd72d48d02809fc74610",
+  "png_sha256": "4602160027b136c2f1a1e15d676c3f5609b483786ac34c8ed7acdc23b02dbbca",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -281,7 +281,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -302,7 +302,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -358,7 +358,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -369,21 +369,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -438,13 +438,13 @@
     820
    ]
   },
-  "ms": 4505
+  "ms": 10443
  },
  "dialog-clone-github": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-clone-github.png",
-  "png_sha256": "64276dfd78de75e8d269d396a5a69590cab144035321d530f18455c36e96df82",
+  "png_sha256": "31ebe4dc451f1c6705736a3eed0fed256d44001719d1483cdccc62967725d752",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -462,7 +462,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -483,7 +483,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -529,7 +529,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -540,21 +540,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -608,13 +608,13 @@
     820
    ]
   },
-  "ms": 6201
+  "ms": 7297
  },
  "dialog-create-project": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-create-project.png",
-  "png_sha256": "18b7708d3fd07927517cfa59b2320e26e13aeaf3bd74382c595a902cbe777998",
+  "png_sha256": "5721547a92dcbfa86434ec9492598f8bf1a6eeee983a109bb47ea22d058fdc79",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -632,7 +632,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -653,7 +653,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -700,7 +700,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -711,21 +711,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -786,13 +786,13 @@
     820
    ]
   },
-  "ms": 5677
+  "ms": 7499
  },
  "dialog-keyboard-shortcuts": {
   "status": "captured",
   "steps": 1,
   "file": "oc/dialog-keyboard-shortcuts.png",
-  "png_sha256": "9aa5f2fed86efc69e27eb848ac7532c965dba88775c839087679c564662f55c6",
+  "png_sha256": "f2d12161b7130508cfa06ec1e1ef6e3cda2a8a022887fb4bdcb2e0244f60f700",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -810,7 +810,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -831,7 +831,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -879,7 +879,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -890,21 +890,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "Opus 4.8",
     "High",
     "Opus 4.8",
@@ -959,13 +959,13 @@
     820
    ]
   },
-  "ms": 4116
+  "ms": 6643
  },
  "dialog-rename-workspace": {
   "status": "captured",
   "steps": 2,
   "file": "oc/dialog-rename-workspace.png",
-  "png_sha256": "03250e41e11ef6e1650eba1f223736ddb8ae07411c136a73a00c4ecb851d9874",
+  "png_sha256": "3e7d77d7ed537d9234c257f41b3f94fd2541747bfcf6137eb5e101f4051e3927",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -983,7 +983,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1004,7 +1004,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -1029,10 +1029,12 @@
     "Hide terminal panel",
     "New terminal",
     "New terminal",
-    "Run"
+    "Run",
+    "Workspace actions"
    ],
    "roles": [
-    "dialog"
+    "dialog",
+    "menu"
    ],
    "texts": [
     "My Mac",
@@ -1046,7 +1048,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1062,21 +1064,21 @@
     "OK",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -1115,7 +1117,18 @@
     "Setup",
     "Run",
     "Run tests or a development server to test changes in this workspace",
-    "Add run script"
+    "Add run script",
+    "Mark as unread",
+    "R",
+    "Pin",
+    "P",
+    "Set status",
+    "Move to section",
+    "Rename",
+    "Copy link",
+    "⌘⇧C",
+    "Archive",
+    "⌘⇧A"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1123,13 +1136,13 @@
     820
    ]
   },
-  "ms": 4172
+  "ms": 7229
  },
  "diff-entire-file": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-entire-file.png",
-  "png_sha256": "b5f6e1196a66d45e7ea26377bc870f8253d95f38515dcbf95122a4521d7d1013",
+  "png_sha256": "2050988261ef3486a8951e1153c1dcf705c872808882b045d04c7328fac4695c",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1147,7 +1160,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1170,7 +1183,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1225,7 +1238,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1236,13 +1249,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
     "All changes",
     "×",
-    "seattle",
+    "warsaw",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1297,13 +1310,13 @@
     820
    ]
   },
-  "ms": 6807
+  "ms": 9570
  },
  "diff-split": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-split.png",
-  "png_sha256": "aa44ae19873a3a90ca0a08fddc2f51245b3f0da27de353f979fa56bb1ff11581",
+  "png_sha256": "baa9fa36bb9bfc673bfdc3ad74ed5719d3b0edd1d4b8fd4c94f269eb9484a3a7",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1321,7 +1334,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1344,7 +1357,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1399,7 +1412,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1410,13 +1423,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
     "All changes",
     "×",
-    "seattle",
+    "warsaw",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1471,13 +1484,13 @@
     820
    ]
   },
-  "ms": 6840
+  "ms": 11855
  },
  "diff-unified": {
   "status": "captured",
   "steps": 2,
   "file": "oc/diff-unified.png",
-  "png_sha256": "a83c704c07f0461eabbe4ec224c8c88b2a82eb5abb5f6f914c44cbca95c495fb",
+  "png_sha256": "9f75807083dccd3ebb6030b3a389a6cd199badeadbd73da7289fe47a8314c78a",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1495,7 +1508,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1518,7 +1531,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1573,7 +1586,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1584,13 +1597,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
     "All changes",
     "×",
-    "seattle",
+    "warsaw",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1645,13 +1658,13 @@
     820
    ]
   },
-  "ms": 6420
+  "ms": 9944
  },
  "first-run-onboarding": {
   "status": "captured",
   "steps": 0,
   "file": "oc/first-run-onboarding.png",
-  "png_sha256": "454896b99dd915a2efa4a50507cc92d1bb8c0f6d9deec307f875d5b0adc8a6ef",
+  "png_sha256": "8ca0a564c57dad3340669d6f8a7c0517ee716ddb8e31a195dd70733967722307",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1674,13 +1687,13 @@
     820
    ]
   },
-  "ms": 3893
+  "ms": 6157
  },
  "home": {
   "status": "captured",
   "steps": 1,
   "file": "oc/home.png",
-  "png_sha256": "a6694de945a13f6c701c2b5c8e2a8742fe54a8fa9b8617f72a00bf5305ee341f",
+  "png_sha256": "c4275f4ffbebd8629c79b323552d616c0155b2db7b53769452f7b1e2cfa1125e",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1698,7 +1711,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1714,7 +1727,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Seattle",
+    "Warsaw",
     "tide-web"
    ],
    "roles": [
@@ -1732,7 +1745,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1747,7 +1760,7 @@
     "Today",
     "1",
     "T",
-    "Seattle",
+    "Warsaw",
     "now"
    ],
    "url": "tauri://localhost",
@@ -1756,13 +1769,13 @@
     820
    ]
   },
-  "ms": 4105
+  "ms": 7186
  },
  "home-empty": {
   "status": "captured",
   "steps": 1,
   "file": "oc/home-empty.png",
-  "png_sha256": "d9bfd640e0a1fbaef03a770df205cd74fcd76c908b60449ae5c5a51fc5bf7b57",
+  "png_sha256": "8480ae9bae460d310aa1f26f0a5bdaa6ade275c828c4ed5cbde9e99bff135a29",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1802,13 +1815,13 @@
     820
    ]
   },
-  "ms": 5225
+  "ms": 7387
  },
  "login": {
   "status": "captured",
   "steps": 0,
   "file": "oc/login.png",
-  "png_sha256": "454896b99dd915a2efa4a50507cc92d1bb8c0f6d9deec307f875d5b0adc8a6ef",
+  "png_sha256": "06b73183f588660c8f9aa86a272eb550a54eaa783b011477fa683be99668fb7d",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1831,13 +1844,13 @@
     820
    ]
   },
-  "ms": 3818
+  "ms": 5324
  },
  "menu-account": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-account.png",
-  "png_sha256": "b5827d06c97b5fa33f47bbc1d5e082748421f7688efffc38a41638971e42755f",
+  "png_sha256": "9ab404b5d65e2aab1695a8d8cc88884aa503a6dd2febde81a9a4345e82451556",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1856,7 +1869,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1877,7 +1890,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -1920,7 +1933,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1931,21 +1944,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -1992,13 +2005,13 @@
     820
    ]
   },
-  "ms": 3704
+  "ms": 5717
  },
  "menu-help": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-help.png",
-  "png_sha256": "38901a2c17358de71bf8687b9e11e46811e07e0dec5f4b1217947d229bc84dd3",
+  "png_sha256": "1b636c795ebe33cfc390017c99c7c2c9690f59540693853b0cd350febc7fc7c8",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2016,7 +2029,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2038,7 +2051,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2080,7 +2093,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2099,21 +2112,21 @@
     "OpenConductor v0.1.0",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2160,7 +2173,7 @@
     820
    ]
   },
-  "ms": 3731
+  "ms": 8271
  },
  "menu-model-picker": {
   "status": "step-failed",
@@ -2168,7 +2181,7 @@
   "failed_step": 1,
   "error": "timed out waiting for .composer button \"Opus 5\"",
   "file": "oc/menu-model-picker.png",
-  "png_sha256": "0fea1ff5822d38eb1873e1305e6c03723d2eb68e821d1cf89e9a33756f82e238",
+  "png_sha256": "b675861099466a686ff37f5ca297eaa7d48d80d94012763209dcf9d89a866bda",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2186,7 +2199,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -2208,7 +2221,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2248,7 +2261,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2259,21 +2272,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2320,13 +2333,13 @@
     820
    ]
   },
-  "ms": 12981
+  "ms": 14806
  },
  "menu-repo-actions": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-repo-actions.png",
-  "png_sha256": "ab55fe0c37f1bc5cd64d07baea144ca12724c358cb7fb1ebae2e2e125ef605af",
+  "png_sha256": "d4bed10f85ba1cbf7907e84a37fee9287f9a42d09709aafe4e35518bacaefbfb",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2344,7 +2357,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2365,7 +2378,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2406,10 +2419,12 @@
     "My workspaces",
     "tide-web",
     "Create workspace",
-    "Change icon…",
+    "Create from...",
+    "Configuration",
     "Hide repository",
+    "Remove repository",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2420,21 +2435,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2481,13 +2496,13 @@
     820
    ]
   },
-  "ms": 3713
+  "ms": 6603
  },
  "menu-workspace-context": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-workspace-context.png",
-  "png_sha256": "ef14351372ca820e5494bbe3f39a17cb9c003c0576ea2a8c15c07a0798a5c036",
+  "png_sha256": "195696f797f5581ba01603272dade6bf978fbd3ee158431e3cf7466bae14aa50",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2505,17 +2520,15 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
-    "Archive workspace",
     "Create workspace in tide-api",
     "Create workspace",
     "tide-api actions",
     "Create workspace in dotfiles",
     "Create workspace",
     "dotfiles actions",
-    "Workspace actions",
     "Help",
     "Settings",
     "Target branch main",
@@ -2528,7 +2541,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2553,7 +2566,8 @@
     "Hide terminal panel",
     "New terminal",
     "New terminal",
-    "Run"
+    "Run",
+    "Workspace actions"
    ],
    "roles": [
     "menu"
@@ -2570,7 +2584,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2579,6 +2593,62 @@
     "D",
     "dotfiles",
     "No workspaces",
+    "tide-web",
+    "/",
+    "warsaw",
+    "warsaw",
+    "→",
+    "main",
+    "warsaw",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "warsaw",
+    "Branched",
+    "warsaw",
+    "from",
+    "main",
+    "Created",
+    "warsaw",
+    "⌘L",
+    "to focus",
+    "Opus 4.8",
+    "High",
+    "All files",
+    "Changes",
+    "2",
+    "Checks",
+    "Review",
+    "All changes",
+    "Uncommitted",
+    "0",
+    "/",
+    "2",
+    "viewed",
+    "Refresh",
+    "2",
+    "files",
+    "changed",
+    "+",
+    "5",
+    "-",
+    "0",
+    "README.md",
+    "M",
+    "+",
+    "2",
+    "-",
+    "0",
+    "src/lib/auth.ts",
+    "U",
+    "+",
+    "3",
+    "-",
+    "0",
+    "Setup",
+    "Run",
+    "Run tests or a development server to test changes in this workspace",
+    "Add run script",
     "Mark as unread",
     "R",
     "Pin",
@@ -2589,63 +2659,7 @@
     "Copy link",
     "⌘⇧C",
     "Archive",
-    "⌘⇧A",
-    "tide-web",
-    "/",
-    "seattle",
-    "seattle",
-    "→",
-    "main",
-    "seattle",
-    "You’re in a new copy of",
-    "tide-web",
-    "called",
-    "seattle",
-    "Branched",
-    "seattle",
-    "from",
-    "main",
-    "Created",
-    "seattle",
-    "⌘L",
-    "to focus",
-    "Opus 4.8",
-    "High",
-    "All files",
-    "Changes",
-    "2",
-    "Checks",
-    "Review",
-    "All changes",
-    "Uncommitted",
-    "0",
-    "/",
-    "2",
-    "viewed",
-    "Refresh",
-    "2",
-    "files",
-    "changed",
-    "+",
-    "5",
-    "-",
-    "0",
-    "README.md",
-    "M",
-    "+",
-    "2",
-    "-",
-    "0",
-    "src/lib/auth.ts",
-    "U",
-    "+",
-    "3",
-    "-",
-    "0",
-    "Setup",
-    "Run",
-    "Run tests or a development server to test changes in this workspace",
-    "Add run script"
+    "⌘⇧A"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2653,13 +2667,13 @@
     820
    ]
   },
-  "ms": 3698
+  "ms": 5724
  },
  "menu-workspace-status": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-workspace-status.png",
-  "png_sha256": "794a07bd6afe691401f49b1cacda691cb790198c1c4672850e2c96031df8655a",
+  "png_sha256": "d6745267d94c1e9f53305b258c20f795a4cd3359f9d457533dcc4b9ec8a30672",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2677,7 +2691,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2686,8 +2700,6 @@
     "Create workspace in dotfiles",
     "Create workspace",
     "dotfiles actions",
-    "Workspace actions",
-    "Set status",
     "Help",
     "Settings",
     "Target branch main",
@@ -2700,7 +2712,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2725,7 +2737,9 @@
     "Hide terminal panel",
     "New terminal",
     "New terminal",
-    "Run"
+    "Run",
+    "Workspace actions",
+    "Set status"
    ],
    "roles": [
     "menu",
@@ -2743,7 +2757,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2752,40 +2766,23 @@
     "D",
     "dotfiles",
     "No workspaces",
-    "Mark as unread",
-    "R",
-    "Pin",
-    "P",
-    "Set status",
-    "Backlog",
-    "In progress",
-    "✓",
-    "In review",
-    "Done",
-    "Canceled",
-    "Move to section",
-    "Rename",
-    "Copy link",
-    "⌘⇧C",
-    "Archive",
-    "⌘⇧A",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2824,7 +2821,23 @@
     "Setup",
     "Run",
     "Run tests or a development server to test changes in this workspace",
-    "Add run script"
+    "Add run script",
+    "Mark as unread",
+    "R",
+    "Pin",
+    "P",
+    "Set status",
+    "Move to section",
+    "Rename",
+    "Copy link",
+    "⌘⇧C",
+    "Archive",
+    "⌘⇧A",
+    "Backlog",
+    "In progress",
+    "In review",
+    "Done",
+    "Canceled"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2832,7 +2845,7 @@
     820
    ]
   },
-  "ms": 4109
+  "ms": 6565
  },
  "needs-permission": {
   "status": "no-equivalent",
@@ -2842,7 +2855,7 @@
   "status": "captured",
   "steps": 0,
   "file": "oc/onboarding-signed-out.png",
-  "png_sha256": "0a9079ccd9bcc331279d32ffcf2bd8e93581fd639e4d48ce9a410373937e65b7",
+  "png_sha256": "8706f002859b622c25e1291b3f768c91fe82913b844d292630d9a32bdfb88230",
   "dom": {
    "labels": [
     "Slide progress"
@@ -2865,13 +2878,13 @@
     820
    ]
   },
-  "ms": 4010
+  "ms": 6360
  },
  "palette-all": {
   "status": "captured",
   "steps": 1,
   "file": "oc/palette-all.png",
-  "png_sha256": "130cd18c5761c7c924ceab64e1f1774e54e57845daafe9f6fbc1f123b3f594f7",
+  "png_sha256": "e602a67df7aee7bf1ad4ff26084e7fd38f211296e99bdc760f42e12345d5674e",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2889,7 +2902,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2910,7 +2923,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2959,7 +2972,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2970,21 +2983,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3030,8 +3043,8 @@
     "Actions",
     "Settings",
     "Recent workspaces",
-    "seattle",
-    "tide-web · seattle",
+    "warsaw",
+    "tide-web · warsaw",
     "Workspace actions",
     "Archive workspace",
     "⌘⇧A",
@@ -3056,13 +3069,13 @@
     820
    ]
   },
-  "ms": 4735
+  "ms": 6168
  },
  "palette-search": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-search.png",
-  "png_sha256": "70ade5a28dd659d961237d434466057ac142ed649bb908b327b9fbf9f79525a4",
+  "png_sha256": "8e6e1322380e1f7820018d1b4668e75eb46543b5f5cfdc076b87bfd4dcb4e6dc",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3080,7 +3093,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3101,7 +3114,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -3146,7 +3159,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -3157,21 +3170,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3224,13 +3237,13 @@
     820
    ]
   },
-  "ms": 5097
+  "ms": 6338
  },
  "palette-workspaces": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-workspaces.png",
-  "png_sha256": "4814789a202537523ae3eb9b89bd00cc9514bc0029f72bfe492c276fa97a58d1",
+  "png_sha256": "de78f885d0f877796571a6a6b8f804ebd13c73ffa0ec265448a268dd5412cadd",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3248,7 +3261,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3269,7 +3282,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -3316,7 +3329,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -3327,21 +3340,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3387,8 +3400,8 @@
     "Actions",
     "Settings",
     "Workspaces",
-    "seattle",
-    "tide-web · seattle"
+    "warsaw",
+    "tide-web · warsaw"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -3396,7 +3409,7 @@
     820
    ]
   },
-  "ms": 4548
+  "ms": 6005
  },
  "route-cloud-collab-onboarding": {
   "status": "no-equivalent",
@@ -3430,7 +3443,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-account.png",
-  "png_sha256": "8f41b5c1b86986ef3b6f9fa9b8b2858e94ca8a7e10e801af8c19e8e9f62a44cb",
+  "png_sha256": "de0d4b9ac2d570a4ec0396478f914bcdaadc426b9dcc5f1ddc6e44936c3799d1",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3485,13 +3498,13 @@
     820
    ]
   },
-  "ms": 5120
+  "ms": 9721
  },
  "settings-advanced": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-advanced.png",
-  "png_sha256": "cd82c76482d1895d8ea89554ae55016e89227f9e2bc7de37cc72e90b0fda1572",
+  "png_sha256": "3179a7e5249e32f15b904cb7c2430f0f2af78159db3f8723d505104e4786b108",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3577,13 +3590,13 @@
     820
    ]
   },
-  "ms": 5291
+  "ms": 7509
  },
  "settings-appearance": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-appearance.png",
-  "png_sha256": "754bbd28cadfba6d02e6bac5537354fa659383de1c48ec4de294924ba178c892",
+  "png_sha256": "46d0ff38441b2586c839bff025c16bf7b15a3575d16ffa8086dca2f19cb6cf30",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3592,6 +3605,7 @@
     "tide-api",
     "dotfiles",
     "Theme",
+    "Color palette",
     "Low-contrast dark mode",
     "App zoom",
     "Colored sidebar diffs",
@@ -3632,6 +3646,8 @@
     "Theme",
     "Toggle with",
     "⌘⌥T",
+    "Color palette",
+    "Surfaces, text and the accent color. Status and diff colors keep their meaning.",
     "Low-contrast dark mode",
     "App zoom",
     "Adjust with",
@@ -3672,7 +3688,7 @@
     820
    ]
   },
-  "ms": 5597
+  "ms": 10962
  },
  "settings-cloud-setup": {
   "status": "no-equivalent",
@@ -3682,7 +3698,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-environment.png",
-  "png_sha256": "3668435af0ae695e74f47ff46b7b8b76fca353e152b65201f5b90d596826fb6d",
+  "png_sha256": "bfecd1db2e44b762abca265735486aa32a37bce3a772f661eb59281bf6b1b347",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3733,13 +3749,13 @@
     820
    ]
   },
-  "ms": 5173
+  "ms": 6773
  },
  "settings-experimental": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-experimental.png",
-  "png_sha256": "6fe9e8f691f151a492c59b4b660e42fcea134f465f556cebc0cc6acca1ef7df2",
+  "png_sha256": "c03034a6b31c4c43152005f6dbde132066ea1b2df8531a04760a77d88d596941",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3841,13 +3857,13 @@
     820
    ]
   },
-  "ms": 5749
+  "ms": 8892
  },
  "settings-general": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-general.png",
-  "png_sha256": "1ed4c0fb9a115ea3cf7e9afd652b79635f0461781549bdb38d782ce502d80f53",
+  "png_sha256": "77169ab6ed1c36b682f8654320540034d5ac3fbd5e2123aa62f9a079a45018b0",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3937,13 +3953,13 @@
     820
    ]
   },
-  "ms": 4944
+  "ms": 7402
  },
  "settings-git": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-git.png",
-  "png_sha256": "8cf5f8e4451323663af64f79ae88c6ff2af11bba188e3230d4e7331d263cbdb0",
+  "png_sha256": "882455fbb06a52c1692c1241320b0beac0910fbbe205aa75af4eb9163a29dd6a",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4019,7 +4035,7 @@
     820
    ]
   },
-  "ms": 5596
+  "ms": 7183
  },
  "settings-internal": {
   "status": "no-equivalent",
@@ -4029,7 +4045,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-key-bindings.png",
-  "png_sha256": "888aed77375cbd83918e89985386cd51cadc1336e96840da6baf36f6891191f8",
+  "png_sha256": "e56128ca6990522429938cfd1afa9d5dad2eb63930f3f340977e03e3cddf67ed",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4856,13 +4872,13 @@
     820
    ]
   },
-  "ms": 5654
+  "ms": 8576
  },
  "settings-models": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-models.png",
-  "png_sha256": "2dbd48e1666eb205d2bc29f054a09605ca9cd8d101784c6581f194de730b7849",
+  "png_sha256": "43b4f2e403c892e564148477c99c1ffba17420a2f1301891f6aaf4735bf38814",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4870,18 +4886,52 @@
     "tide-web",
     "tide-api",
     "dotfiles",
-    "Default model",
-    "Default effort",
-    "Fast mode",
-    "Codex personality for new chats",
-    "Concise, task-focused, and direct",
+    "Loadout",
+    "Sign in to share a loadout",
+    "Opus 4.8, High",
+    "Change agent",
+    "Claude Code",
+    "Add Fable 5.1 to loadout",
+    "Fable 5.1",
+    "Add Fable 5 to loadout",
+    "Fable 5",
+    "Add Opus 5.5 to loadout",
+    "Opus 5.5",
+    "Add Opus 5 to loadout",
+    "Opus 5",
+    "Add Opus 4.8 1M to loadout",
+    "Opus 4.8 1M",
+    "Add Opus 4.7 1M to loadout",
+    "Opus 4.7 1M",
+    "Add Opus 4.6 1M to loadout",
+    "Opus 4.6 1M",
+    "Add Sonnet 5.5 to loadout",
+    "Sonnet 5.5",
+    "Add Sonnet 5 1M to loadout",
+    "Sonnet 5 1M",
+    "Add Sonnet 4.6 1M to loadout",
+    "Sonnet 4.6 1M",
+    "Add Sonnet 4.6 to loadout",
+    "Sonnet 4.6",
+    "Add Haiku 4.5 to loadout",
+    "Haiku 4.5",
+    "Codex",
+    "Add GPT-5.6 Sol to loadout",
+    "GPT-5.6 Sol",
+    "Add GPT-5.6 Terra to loadout",
+    "GPT-5.6 Terra",
+    "Add GPT-5.6 Luna to loadout",
+    "GPT-5.6 Luna",
+    "Add GPT-5.5 to loadout",
+    "GPT-5.5",
+    "Add GPT-5.4 to loadout",
+    "GPT-5.4",
+    "Cursor",
+    "OpenCode",
+    "Codex personality",
     "Claude output style",
-    "Review model",
-    "Review effort",
-    "Review fast mode",
-    "Default to plan mode in new chats",
-    "OpenCode models",
-    "anthropic/claude-sonnet-4-5"
+    "Review model: Opus 5",
+    "Default to plan mode in new chats"
    ],
    "roles": [],
    "texts": [
@@ -4907,18 +4957,55 @@
     "Experimental",
     "Advanced",
     "Default models",
-    "Default model",
-    "Model for new chats",
-    "Fast",
-    "Codex personality for new chats",
-    "Style to use when a new chat starts with a Codex model",
+    "Loadout",
+    "Choose which models you want to use",
+    "Share",
+    "Opus 4.8",
+    "High",
+    "1",
+    "DEFAULT",
+    "DROP MODEL HERE",
+    "2",
+    "EMPTY",
+    "3",
+    "EMPTY",
+    "4",
+    "EMPTY",
+    "5",
+    "Claude Code",
+    "Fable 5.1",
+    "Fable 5",
+    "Opus 5.5",
+    "Opus 5",
+    "Opus 4.8 1M",
+    "Opus 4.7 1M",
+    "Opus 4.6 1M",
+    "Sonnet 5.5",
+    "Sonnet 5 1M",
+    "Sonnet 4.6 1M",
+    "Sonnet 4.6",
+    "Haiku 4.5",
+    "Codex",
+    "GPT-5.6 Sol",
+    "GPT-5.6 Terra",
+    "GPT-5.6 Luna",
+    "GPT-5.5",
+    "GPT-5.4",
+    "Cursor",
+    "Configure",
+    "Cursor",
+    "OpenCode",
+    "Configure",
+    "OpenCode",
+    "Codex personality",
     "Claude output style",
-    "Choose which output style to apply to new chats. Existing chats do not change.",
+    "Choose which",
+    "output style",
+    "to apply to new chats. Existing chats do not change.",
     "Review model",
-    "Fast",
-    "Default to plan mode in new chats",
-    "OpenCode models",
-    "Models from your OpenCode providers to show in model pickers, as provider/model, comma-separated."
+    "Opus 5",
+    "High",
+    "Default to plan mode in new chats"
    ],
    "url": "tauri://localhost/settings/user/models",
    "viewport": [
@@ -4926,7 +5013,7 @@
     820
    ]
   },
-  "ms": 5280
+  "ms": 9411
  },
  "settings-org-computer": {
   "status": "no-equivalent",
@@ -4964,7 +5051,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-providers.png",
-  "png_sha256": "0a8eaf38ab717f4d7dfaa98709b74e63c09f6cbe10c3251dc2b13b3d0c9216a2",
+  "png_sha256": "0619ed4c7adfb0ed54993be8e584a7473aa73b78cf94f02dca8b0a4a7565ebfe",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4972,28 +5059,14 @@
     "tide-web",
     "tide-api",
     "dotfiles",
+    "Agents",
     "Claude Code",
-    "Claude Code provider",
     "Use Claude Code with Chrome",
     "Claude Code executable path",
     "/usr/local/bin/claude",
     "Browse for executable",
     "Browse for executable",
-    "Claude settings",
-    "Codex",
-    "Codex provider",
-    "Codex personality for new chats",
-    "Codex executable path",
-    "/usr/local/bin/codex",
-    "Browse for executable",
-    "Browse for executable",
-    "Codex config",
-    "Cursor",
-    "Cursor provider",
-    "Cursor API key",
-    "Not set",
-    "OpenCode",
-    "OpenCode provider"
+    "Claude settings"
    ],
    "roles": [],
    "texts": [
@@ -5020,9 +5093,16 @@
     "Advanced",
     "Agents",
     "Claude Code",
-    "Using Claude Code login",
-    "Provider",
-    "Save",
+    "Codex",
+    "Cursor",
+    "OpenCode",
+    "Authentication",
+    "CLI",
+    "API key",
+    "CLI not authenticated",
+    "Refresh",
+    "Run",
+    "claude /login",
     "Use Claude Code with Chrome",
     "Allow Claude Code to control your Chrome browser. To use this feature, first install the",
     "Claude Code Chrome extension",
@@ -5033,28 +5113,7 @@
     "Override the bundled Claude Code executable with a custom one. Leave empty to use the bundled version (recommended).",
     "Claude settings",
     "~/.claude/settings.json",
-    "Open in",
-    "Codex",
-    "Using ChatGPT (Codex login)",
-    "Provider",
-    "Save",
-    "Codex personality for new chats",
-    "Style to use when a new chat starts with a Codex model",
-    "Codex executable path",
-    "Override the bundled Codex executable with a custom one. Leave empty to use the bundled version (recommended).",
-    "Codex config",
-    "~/.codex/config.toml",
-    "Open in",
-    "Cursor",
-    "Cursor API key: cursor_api_key is not set",
-    "Provider",
-    "Cursor API key",
-    "Save",
-    "OpenCode",
-    "Using OpenCode login",
-    "Provider",
-    "Save",
-    "Advanced"
+    "Open in"
    ],
    "url": "tauri://localhost/settings/user/providers",
    "viewport": [
@@ -5062,13 +5121,13 @@
     820
    ]
   },
-  "ms": 5675
+  "ms": 9029
  },
  "settings-repo-actions": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-actions.png",
-  "png_sha256": "4e634dddbc736d089fe9155a780d6cc2cf018315af11c985f39e5f8f2ee296e9",
+  "png_sha256": "d90304cb6b30cb0feea60cf80c25b8fb513fc3be7a02e9caccac20d81146238a",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5130,13 +5189,13 @@
     820
    ]
   },
-  "ms": 6047
+  "ms": 8251
  },
  "settings-repo-environment": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-environment.png",
-  "png_sha256": "2909a3771b73dc1867f2fd09ea767cde62085f663385394a3e60951f7964f09d",
+  "png_sha256": "c49946e1cbce5ec34bde981178cf8a0f89f756619b7b44aadfbf26d348155d97",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5192,13 +5251,13 @@
     820
    ]
   },
-  "ms": 6194
+  "ms": 7020
  },
  "settings-repo-git": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-git.png",
-  "png_sha256": "0234cd5b9f1b0fc86aba6daca753fa9e1cb538853d965d70dc23b6e0707bc927",
+  "png_sha256": "b19a994623a9a3fdef30f40c4ff79feb280af56349723e223529fdc54380b6cc",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5267,13 +5326,13 @@
     820
    ]
   },
-  "ms": 6137
+  "ms": 7353
  },
  "settings-repo-misc": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-misc.png",
-  "png_sha256": "dac14fb9766af001750d35d400d3b4ab4e4a867dfd8861f2756a518e4bf2e539",
+  "png_sha256": "af35e410b811da41ab4f80a52cd7adee6dc0d8e63dbb4e9433f70cfad6256b42",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5354,13 +5413,13 @@
     820
    ]
   },
-  "ms": 6120
+  "ms": 8500
  },
  "settings-repo-misc-lower": {
   "status": "captured",
   "steps": 5,
   "file": "oc/settings-repo-misc-lower.png",
-  "png_sha256": "0c7d5b86b34bbdfcaf05cd1a0af52ed76c20aa58f7c0be021439ee7ffeb5344e",
+  "png_sha256": "38d5c59ea767ab2548bbe5102df6eefa8042cfed4bd2416574bb43f82be0297e",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5441,13 +5500,13 @@
     820
    ]
   },
-  "ms": 6625
+  "ms": 8113
  },
  "settings-repo-scripts": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-scripts.png",
-  "png_sha256": "736061c891726ec8e594e70c956ca3d6ddadf3874b491080abb4b47f9341daca",
+  "png_sha256": "e3087e111e8edb1d2d5e5bb81bbb09dcaacaa9b9de559db617d7076922df19c6",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5502,7 +5561,7 @@
     820
    ]
   },
-  "ms": 6132
+  "ms": 7433
  },
  "settings-search": {
   "status": "step-failed",
@@ -5510,7 +5569,7 @@
   "failed_step": 2,
   "error": "timed out waiting for .settings input[type=search], .settings input[placeholder]",
   "file": "oc/settings-search.png",
-  "png_sha256": "067a678339382d8c21376b8c656e0c68e80e03ef2af6c3c2e1e116f02ae34118",
+  "png_sha256": "b7ddf0279deffc366ad0fdb9b6c43b54d0c24a74e153246ab1dee5c294da7946",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5600,7 +5659,7 @@
     820
    ]
   },
-  "ms": 13468
+  "ms": 15292
  },
  "settings-terminal": {
   "status": "step-failed",
@@ -5608,7 +5667,7 @@
   "failed_step": 2,
   "error": "timed out waiting for .settings-nav .nav-item \"Big terminal\"",
   "file": "oc/settings-terminal.png",
-  "png_sha256": "067a678339382d8c21376b8c656e0c68e80e03ef2af6c3c2e1e116f02ae34118",
+  "png_sha256": "b7ddf0279deffc366ad0fdb9b6c43b54d0c24a74e153246ab1dee5c294da7946",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5698,13 +5757,13 @@
     820
    ]
   },
-  "ms": 13335
+  "ms": 14332
  },
  "sidebar-after-archive": {
   "status": "captured",
   "steps": 2,
   "file": "oc/sidebar-after-archive.png",
-  "png_sha256": "fa9a8e0fc6d07eebd8d21d95006bd3f10525b5e4b8177840a67025d4e372aa34",
+  "png_sha256": "b7a85c880d439789bcbacb73a673908af8e0d82d876ed162bd1c4414e465304c",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5761,13 +5820,13 @@
     820
    ]
   },
-  "ms": 4732
+  "ms": 8043
  },
  "toast-copied-link": {
   "status": "captured",
   "steps": 2,
   "file": "oc/toast-copied-link.png",
-  "png_sha256": "e59d658a9358255d7de21de449cb852bb81bf3e2aa9ed053ea230e8b604aebcf",
+  "png_sha256": "b5c5284b40cf5810cb177cd4ec90088f45fb87929119f78beff89acae0533adc",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5785,7 +5844,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -5806,7 +5865,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -5849,7 +5908,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -5860,21 +5919,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -5922,13 +5981,13 @@
     820
    ]
   },
-  "ms": 4513
+  "ms": 6729
  },
  "workspace-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-chat.png",
-  "png_sha256": "a2fd53d367015998e66ecafd46128e3d1419d61abbc7f26069b436c548c4ee95",
+  "png_sha256": "9b0458d18bd8dc09ce0f1c70bcbac233e28cca8762b7cc5f91d5d2ec1f95e011",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5946,7 +6005,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -5968,7 +6027,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6008,7 +6067,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -6019,21 +6078,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6080,13 +6139,13 @@
     820
    ]
   },
-  "ms": 4812
+  "ms": 13307
  },
  "workspace-new-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-new-chat.png",
-  "png_sha256": "0fea1ff5822d38eb1873e1305e6c03723d2eb68e821d1cf89e9a33756f82e238",
+  "png_sha256": "9b0458d18bd8dc09ce0f1c70bcbac233e28cca8762b7cc5f91d5d2ec1f95e011",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6104,7 +6163,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6126,7 +6185,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6166,7 +6225,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -6177,21 +6236,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6238,13 +6297,13 @@
     820
    ]
   },
-  "ms": 4772
+  "ms": 8895
  },
  "workspace-tool-calls": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-tool-calls.png",
-  "png_sha256": "4aec66fd821feac246584cd013887e9007d62040b16479f8db006d3033a85a51",
+  "png_sha256": "9b0458d18bd8dc09ce0f1c70bcbac233e28cca8762b7cc5f91d5d2ec1f95e011",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6262,7 +6321,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Seattle · seattle · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6284,7 +6343,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "seattle",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6324,7 +6383,7 @@
     "T",
     "tide-web",
     "1",
-    "Seattle",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -6335,21 +6394,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "seattle",
-    "seattle",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "seattle",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "seattle",
+    "warsaw",
     "Branched",
-    "seattle",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "seattle",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6396,6 +6455,6 @@
     820
    ]
   },
-  "ms": 4796
+  "ms": 10923
  }
 }
