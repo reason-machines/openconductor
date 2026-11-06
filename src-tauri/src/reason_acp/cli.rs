@@ -142,7 +142,7 @@ impl LaunchConfig {
         &self.cli
     }
 
-    fn workspace_args(&self) -> Vec<String> {
+    pub(super) fn workspace_args(&self) -> Vec<String> {
         match &self.workspace {
             Some(slug) => vec!["--workspace".into(), slug.clone()],
             None => Vec::new(),
@@ -176,7 +176,7 @@ impl LaunchConfig {
         cmd
     }
 
-    fn base_command(&self, dir: &Path) -> Command {
+    pub(super) fn base_command(&self, dir: &Path) -> Command {
         let mut cmd = Command::new(&self.cli);
         for key in refused_env(env::vars_os()) {
             cmd.env_remove(key);

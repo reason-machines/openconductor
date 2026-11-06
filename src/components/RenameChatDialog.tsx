@@ -1,26 +1,22 @@
-// parity:chat.tabs:rename
-// Conductor's "Rename chat" dialog (REA-read renderApp-D_fmY7hW.js, `Iya`/`Rya`
-// @11,059,961, opened from the chat tab menu `u8i`): a `max-w-sm` dialog whose
-// title is the message-square-text icon (size-5) and "Rename chat", a screen
-// reader description "Enter a new name for this chat", one text field holding
-// the current title that selects itself on focus, then Cancel (ghost) and OK
-// (primary; "Renaming..." while it saves). Enter submits; an empty or unchanged
-// title just closes. A failed save shows Conductor's error toast and keeps the
-// dialog open. Styled like the Rename workspace dialog it sits beside.
-
 import { useState, type KeyboardEvent } from "react";
-import { useDialogMotion } from "../../components/motion/dialogMotion";
-import { MessageSquareTextIcon } from "../../components/menu/menuIcons";
-import { renamedChatTitle } from "./chatTabMenu.ts";
+import { MessageSquareTextIcon } from "./menu/menuIcons";
+import { useDialogMotion } from "./motion/dialogMotion";
 
 interface Props {
   currentTitle: string;
-  /** Saves the new title; a rejection keeps the dialog open. */
-  onRename: (title: string) => Promise<void>;
+  /** Stores the new title; a rejection keeps the dialog open with the error toast. */
+  onRename: (title: string) => Promise<void> | void;
   onClose: () => void;
   onError: (message: string) => void;
 }
 
+/**
+ * "Rename chat" (Conductor's `Rya` in the `wxe` dialog, renderApp-D_fmY7hW.js @11,059,961,
+ * read with REA as data): the same `max-w-sm` dialog as Rename workspace with a
+ * message-square-text icon, an sr-only "Enter a new name for this chat", one field that
+ * starts as the chat's title and selects itself on focus, Cancel and OK ("Renaming..."
+ * while it saves). Enter submits; an empty or unchanged name just closes.
+ */
 export function RenameChatDialog({ currentTitle, onRename, onClose, onError }: Props) {
   const [value, setValue] = useState(currentTitle);
   const [pending, setPending] = useState(false);
@@ -28,15 +24,15 @@ export function RenameChatDialog({ currentTitle, onRename, onClose, onError }: P
 
   async function submit() {
     if (pending) return;
-    const title = renamedChatTitle(currentTitle, value);
-    if (title === null) return onClose();
+    const title = value.trim();
+    if (!title || title === currentTitle) return onClose();
     setPending(true);
     try {
       await onRename(title);
       onClose();
     } catch (e) {
-      setPending(false);
       onError(e instanceof Error ? e.message : String(e));
+      setPending(false);
     }
   }
 
@@ -49,14 +45,7 @@ export function RenameChatDialog({ currentTitle, onRename, onClose, onError }: P
 
   return (
     <div className="modal-backdrop" ref={motionRef} data-dialog-motion="dialog" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div
-        className="modal rename-ws-dialog rename-chat-dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="rename-chat-title"
-        aria-describedby="rename-chat-desc"
-        onKeyDown={(e) => e.key === "Escape" && onClose()}
-      >
+      <div className="modal rename-ws-dialog" role="dialog" aria-modal="true" aria-labelledby="rename-chat-title" aria-describedby="rename-chat-desc" onKeyDown={(e) => e.key === "Escape" && onClose()}>
         <h2 id="rename-chat-title" className="rename-ws-title">
           <MessageSquareTextIcon className="rename-chat-icon" />
           Rename chat

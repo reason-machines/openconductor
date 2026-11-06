@@ -31,7 +31,9 @@ def send_prompt(text):
 
 # screens and routes
 st("onboarding-signed-out","Onboarding, signed out", ref("/", "signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
-st("first-run-onboarding","First-run onboarding", ref("/first-run-onboarding","signed-in"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/first-run-onboarding"}])
+# Conductor renders /first-run-onboarding only through its auth guard: signed in with
+# projects the harness redirects it to "/", so the reference is the signed-out first run.
+st("first-run-onboarding","First-run onboarding", ref("/first-run-onboarding","signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/first-run-onboarding"}])
 st("home-empty","Home, no projects", ref("/","signed-in"), oc=[{"click":".onb-continue","after_ms":1000}], oc_fresh=True)
 st("home","Home with projects", ref("/"), oc=HOME, covers=[{"kind":"route","name":"/"}])
 st("all-workspaces","All workspaces list", ref("/all-workspaces"), oc=HOME, covers=[{"kind":"route","name":"/all-workspaces"}])
@@ -55,7 +57,8 @@ for path,title in [("/dashboard","Dashboard"),("/routines","Routines"),("/routin
         st(sid, title, ref(path, wait=False), oc=[{"click":".sb-footer-btn","text":"Help"},{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800}], covers=[{"kind":"route","name":path}])
         continue
     st(sid, title, ref(path, wait=path not in ("/diagnostics","/new-member-onboarding","/cloud-collab-onboarding")), oc_reason="OpenConductor has no route or view for "+path, covers=[{"kind":"route","name":path}])
-st("login","Login", ref("/login","signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
+# The gate reads the path once at startup, so the lane loads /login rather than pushing it.
+st("login","Login", ref("/login","signed-out"), oc=[{"exec":"location.assign('/login');"},{"wait":".onb-login","after_ms":800}], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
 
 # settings
 USER=[("general","General"),("account","Account"),("models","Default models"),("providers","Agents"),("environment","Environment"),("git","Git"),("ports",None),("appearance","Appearance"),("key-bindings","Keyboard shortcuts"),("experimental","Experimental"),("advanced","Advanced"),("terminal","Big terminal"),("internal",None)]
@@ -86,7 +89,11 @@ st("settings-repo-misc-lower", "Settings > tide-web > Misc, scrolled to Remove r
 for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
     path="/settings/organization/"+sec
     st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path), oc_reason="OpenConductor has no organization settings", covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
-st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"), oc_reason="OpenConductor has no cloud settings", covers=[{"kind":"route","name":"/settings/cloud/setup"}])
+# The lane's throwaway HOME has no Reason login, so Settings lists no Cloud group to click: open the page
+# the way create's "Set up cloud" does (the app's open-settings event). Its steps then read signed out.
+st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"),
+   oc=oc_settings(None,[{"exec":"window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'setup-cloud'}}))","after_ms":2500}]),
+   covers=[{"kind":"route","name":"/settings/cloud/setup"},{"kind":"settings-page","name":"setup"}])
 st("settings-search","Settings search", ref("/settings/user/general", actions=[{"fill":["input[placeholder='Search settings']","branch"]}]), oc=oc_settings(None,[{"type":"branch","css":".settings input[type=search], .settings input[placeholder]"}]))
 
 # palette
@@ -112,13 +119,13 @@ HELP_OC={"click":".sb-footer-btn","text":"Help"}
 st("dialog-submit-prompt","Help > Submit a prompt dialog", ref(actions=[HELP_REF,{"click":"[role=menuitem] >> text=Submit a prompt"}]), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Submit a prompt","after_ms":800}], covers=[{"kind":"dialog","name":"Submit a prompt"}])
 st("diagnostics-run","Diagnostics after a run", ref("/diagnostics", wait=False, actions=[{"click":"text=Run environment diagnostics"}], final_settle_ms=4000), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800},{"click":".diag-btn-primary","after_ms":4000}])
 st("toast-copied-link","Toast: copied link", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Copy link"}], final_settle_ms=300), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Copy link","after_ms":200}])
+# Right-click menus inside a workspace (side-by-side records: tools/side-by-side/shell-menus.mjs).
+st("menu-chat-tab","Chat tab context menu", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"rclick":"[role=tab][aria-label^='Close chat']"}]), oc=OPEN_WS+[{"rclick":".main-tabs [role=tab]"}])
+st("menu-changes-file","Changes file context menu", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"rclick":".cursor-pointer.mx-2:has-text('auth.test.ts')"}]), oc=OPEN_WS+[{"rclick":".oc-change-row"}])
 st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Archive"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Archive","after_ms":1000}])
-# chat tabs and the Review button's right-click menu (chat builder 1)
+# Rename chat dialog and the Review button's right-click menu (chat builder 1)
 LISBON=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]
-REF_CHAT_TAB={"rclick":"[aria-label='Close chat Fix login redirect loop']"}
-OC_CHAT_TAB={"rclick":".main-tabs [role=tab]","after_ms":600}
-st("menu-chat-tab","Chat tab context menu", ref(actions=LISBON+[REF_CHAT_TAB]), oc=OPEN_WS+[OC_CHAT_TAB], covers=[{"kind":"menu","name":"u8i"}])
-st("dialog-rename-chat","Rename chat dialog", ref(actions=LISBON+[REF_CHAT_TAB,{"click":"[role=menuitem] >> text=Rename chat"}]), oc=OPEN_WS+[OC_CHAT_TAB,{"click":"[role=menu] [role=menuitem]","text":"Rename chat","after_ms":800}])
+st("dialog-rename-chat","Rename chat dialog", ref(actions=LISBON+[{"rclick":"[role=tab][aria-label^='Close chat']"},{"click":"[role=menuitem] >> text=Rename chat"}]), oc=OPEN_WS+[{"rclick":".main-tabs [role=tab]","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Rename chat","after_ms":800}])
 st("menu-review-edit","Review button menu (Edit before sending)", ref(actions=LISBON+[{"rclick":"button:has-text('Review') >> nth=0"}]), oc=OPEN_WS+[{"rclick":".review-button","after_ms":600}], covers=[{"kind":"menu","name":"u6s"}])
 
 # Conductor's reference opens on "/" (Home: wordmark and the Open project / Open GitHub

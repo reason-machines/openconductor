@@ -243,8 +243,8 @@ pub struct WorkspaceRow {
     /// The workspace's open chat tabs besides its main chat, oldest first:
     /// they come back after a restart with their unread, as Conductor's do.
     pub chat_tabs: Vec<ChatTabRow>,
-    /// The workspace's own chat's title once renamed ("Rename chat"); null
-    /// while it has none, and the tab shows the workspace name.
+    /// The main chat's own title once the user renamed it (`sessions::main_chat_titles`);
+    /// absent, its tab shows the workspace name.
     pub chat_title: Option<String>,
     /// The PR's title and body as last stored (`pr_title`, `pr_description`):
     /// the sidebar label and Create PR's title / description.
@@ -310,7 +310,6 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
         .map(|w| {
             let w = w.workspace;
             WorkspaceRow {
-                chat_title: titles.remove(&w.local_id),
                 directory_name: w.directory_name.unwrap_or_default(),
                 workspace_name: w.workspace_name,
                 user_set_workspace_name: w.user_set_workspace_name,
@@ -325,6 +324,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 unread: w.unread,
                 unread_chats: unread.remove(&w.local_id).unwrap_or_default(),
                 chat_tabs: tabs.remove(&w.local_id).unwrap_or_default(),
+                chat_title: titles.remove(&w.local_id),
                 pr_title: w.pr_title,
                 pr_description: w.pr_description,
                 number: w.number,

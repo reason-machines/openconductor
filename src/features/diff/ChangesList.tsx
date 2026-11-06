@@ -8,6 +8,7 @@ import { useCallback, useState, type ReactNode } from "react";
 import "./diff.css";
 import { RevertIcon } from "./DiscardDialog";
 import { FileContextMenu } from "./FileContextMenu";
+import { copyText, openInApp } from "../openIn/apps";
 import { STATUS_LETTER } from "./FileDiffView";
 import { SearchIcon, XIcon } from "../files/panelIcons";
 import { filterActive, filterChangedFiles } from "./changesFilter";
@@ -36,6 +37,8 @@ export interface ChangesListProps {
   emptyAction?: ReactNode;
   /** The "Filter files" state, shared with its toggle in the panel's tab row. */
   filter?: ChangesFilterState;
+  /** Toasts for the file menu's copy and Open in actions. */
+  notify?: Notify;
 }
 
 export interface ChangesFilterState {
@@ -84,12 +87,18 @@ function ChangesFilterRow({ filter, matchCount, totalCount }: { filter: ChangesF
   );
 }
 
-function copy(text: string) {
-  void navigator.clipboard?.writeText(text).catch(() => undefined);
+type Notify = (kind: "info" | "error", message: string) => void;
+
+/** Conductor's `n5`: "Copied <label> to clipboard", or "Failed to copy to clipboard". */
+function copy(text: string, label: string, notify?: Notify) {
+  copyText(text).then(
+    () => notify?.("info", `Copied ${label} to clipboard`),
+    () => notify?.("error", "Failed to copy to clipboard"),
+  );
 }
 
 /** Right panel: scope option, "N files changed" and one row per file. */
-export function ChangesList({ diff, actions, worktree, emptyAction, filter }: ChangesListProps) {
+export function ChangesList({ diff, actions, worktree, emptyAction, filter, notify }: ChangesListProps) {
   const { opts, update, load, files, totals, current } = diff;
   const filtering = filter ? filterActive(filter.open, filter.query) : false;
   const shown = filter ? filterChangedFiles(files, filter.query) : files;
@@ -178,8 +187,12 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter }: Ch
           onClose={closeMenu}
           actions={{
             view: () => diff.open(menu.index),
-            copyPath: worktree ? () => copy(`${worktree.replace(/\/+$/, "")}/${menuFile.path}`) : undefined,
-            copyRelativePath: () => copy(menuFile.path),
+            copyPath: worktree ? () => copy(`${worktree.replace(/\/+$/, "")}/${menuFile.path}`, "path", notify) : undefined,
+            copyRelativePath: () => copy(menuFile.path, "relative path", notify),
+            // Conductor's `uD` toast on failure: "Failed to open in <app>: <error>".
+            openIn: worktree
+              ? (app) => openInApp(app.id, `${worktree.replace(/\/+$/, "")}/${menuFile.path}`).catch((e) => notify?.("error", `Failed to open in ${app.name}: ${e instanceof Error ? e.message : String(e)}`))
+              : undefined,
             // Always against the "All changes" base, also in the Uncommitted and turn views (target.ts).
             discard: () => diff.askDiscard(menuFile, "menu"),
           }}

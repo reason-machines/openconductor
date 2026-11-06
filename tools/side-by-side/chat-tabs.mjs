@@ -1,6 +1,6 @@
-// Side-by-side evidence for the chat tab menu, the Rename chat dialog and the
-// Review button's "Edit before sending" menu (UI map states menu-chat-tab,
-// dialog-rename-chat, menu-review-edit): Conductor 0.87.6's extracted frontend
+// Side-by-side evidence for the Rename chat dialog and the Review button's
+// "Edit before sending" menu (UI map states dialog-rename-chat and
+// menu-review-edit; the chat tab menu itself is tools/side-by-side/shell-menus.mjs): Conductor 0.87.6's extracted frontend
 // (tools/screens harness, Tauri IPC mocked, the "lisbon" workspace) and
 // OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs's
 // fake backend with the same repos, workspaces and lisbon turn), both driven
@@ -64,17 +64,16 @@ function extras({ messages, chatTitle }) {
   window.__TAURI_INTERNALS__.invoke = async (cmd, args) => {
     if (cmd === "chat_messages_load") return { messages: args.chatId === "w1" ? messages : [], agentSessionId: null };
     if (cmd === "db_list_workspaces") return (await inner(cmd, args)).map((w) => (w.id === "w1" ? { ...w, chatTitle } : w));
-    if (["local_storage_get_entry", "db_set_chat_unread", "db_rename_chat", "checkpoint_exists", "session_statuses"].includes(cmd)) return cmd === "local_storage_get_entry" ? null : cmd === "session_statuses" ? [] : cmd === "checkpoint_exists" ? false : undefined;
+    if (["local_storage_get_entry", "db_set_chat_unread", "db_open_chat_tab", "checkpoint_exists", "session_statuses"].includes(cmd)) return cmd === "local_storage_get_entry" ? null : cmd === "session_statuses" ? [] : cmd === "checkpoint_exists" ? false : undefined;
     if (cmd === "local_storage_set_entry") return { success: true };
     return inner(cmd, args);
   };
 }
 
 const LISBON_REF = [css("text=tide-web"), css("text=Ada/fix login redirect")];
-const REF_TAB = right("[aria-label='Close chat Fix login redirect loop']");
+const REF_TAB = right("[role=tab][aria-label^='Close chat']");
 const OC_TAB = right(".main-tabs [role=tab]");
 const STATES = {
-  "menu-chat-tab": { ref: [...LISBON_REF, REF_TAB], oc: [OC_TAB] },
   "dialog-rename-chat": { ref: [...LISBON_REF, REF_TAB, css("[role=menuitem] >> text=Rename chat")], oc: [OC_TAB, css("[role=menuitem] >> text=Rename chat")] },
   "menu-review-edit": { ref: [...LISBON_REF, right("button:has-text('Review') >> nth=0")], oc: [right(".review-button")] },
 };

@@ -133,27 +133,6 @@ pub async fn db_open_chat_tab(
         .map_err(|e| e.to_string())
 }
 
-/// JS: `invoke("db_rename_chat", { chatId, workspaceId, title })`: "Rename chat"
-/// on a chat tab (the reference's Rename chat dialog, renderApp `Rya` ->
-/// `updateSessionTitle`). The chat's `sessions` row gets the title; the tab
-/// keeps its place and visibility (see `sessions::rename`).
-#[tauri::command]
-pub async fn db_rename_chat(
-    db: State<'_, Db>,
-    chat_id: String,
-    workspace_id: String,
-    title: String,
-) -> Result<(), String> {
-    let title = title.trim();
-    if title.is_empty() {
-        return Err("Chat title cannot be empty".into());
-    }
-    let now = iso_time::from_millis(now_millis());
-    sessions::rename(&db.0, &chat_id, &workspace_id, title, &now)
-        .await
-        .map_err(|e| e.to_string())
-}
-
 /// JS: `invoke("db_close_chat_tab", { chatId })`: the tab closed, so its row is
 /// hidden (Conductor's `hideSession`, `nie` at 710:2534) and no longer counts
 /// toward the workspace's unread. A chat with no row has nothing to hide.

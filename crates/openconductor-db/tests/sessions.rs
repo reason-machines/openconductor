@@ -439,65 +439,6 @@ async fn open_tabs_survive_a_restart_with_their_unread() {
 }
 
 #[tokio::test]
-async fn rename_titles_a_chat_without_reopening_or_moving_it() {
-    const T1: &str = "2026-11-05T10:00:00.000Z";
-    const T2: &str = "2026-11-05T10:00:00.001Z";
-    const T9: &str = "2026-11-05T11:00:00.000Z";
-    let pool = pool().await;
-    sessions::open_tab(&pool, "app/oslo:review:1", "app/oslo", "Review", T1)
-        .await
-        .unwrap();
-    sessions::open_tab(&pool, "app/oslo:chat:2", "app/oslo", UNTITLED, T2)
-        .await
-        .unwrap();
-    // A tab keeps its place in the strip.
-    sessions::rename(&pool, "app/oslo:review:1", "app/oslo", "Auth review", T9)
-        .await
-        .unwrap();
-    let tabs: Vec<_> = sessions::open_tabs(&pool)
-        .await
-        .unwrap()
-        .into_iter()
-        .map(|t| (t.id, t.title))
-        .collect();
-    assert_eq!(
-        tabs,
-        [
-            ("app/oslo:review:1".into(), "Auth review".into()),
-            ("app/oslo:chat:2".into(), UNTITLED.to_string())
-        ]
-    );
-    // A closed tab stays closed.
-    sessions::hide(&pool, "app/oslo:chat:2").await.unwrap();
-    sessions::rename(&pool, "app/oslo:chat:2", "app/oslo", "Later", T9)
-        .await
-        .unwrap();
-    assert_eq!(sessions::open_tabs(&pool).await.unwrap().len(), 1);
-
-    // The workspace's own chat: its row is made on first rename, then updated.
-    assert!(sessions::main_chat_titles(&pool).await.unwrap().is_empty());
-    sessions::rename(&pool, "app/oslo", "app/oslo", "Fix login loop", T9)
-        .await
-        .unwrap();
-    sessions::rename(&pool, "app/oslo", "app/oslo", "Fix login redirect loop", T9)
-        .await
-        .unwrap();
-    // A main chat row with no title (chat_messages::save made it) is not listed.
-    sessions::upsert_unread(&pool, "app/lima", "app/lima", true)
-        .await
-        .unwrap();
-    assert_eq!(
-        sessions::main_chat_titles(&pool).await.unwrap(),
-        [(
-            "app/oslo".to_string(),
-            "Fix login redirect loop".to_string()
-        )]
-    );
-    // Not a tab: the main chat never shows up among open tabs.
-    assert_eq!(sessions::open_tabs(&pool).await.unwrap().len(), 1);
-}
-
-#[tokio::test]
 async fn unread_chats_lists_visible_unread_chats_by_workspace() {
     let pool = pool().await;
     create(&pool, "b", "w1", "2026-11-05T10:00:00Z").await;

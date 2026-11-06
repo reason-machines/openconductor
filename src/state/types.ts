@@ -37,6 +37,11 @@ export interface Workspace {
   /** `user_set_workspace_name` / `user_set_branch_name`: block the auto-rename. */
   userSetWorkspaceName?: boolean;
   userSetBranchName?: boolean;
+  /**
+   * The main chat's own title, once renamed with its tab's "Rename chat" (Conductor's
+   * session title). Absent, the tab shows the workspace's name.
+   */
+  chatTitle?: string;
   /** Title of the workspace's pull request; the sidebar row shows it in place of the branch. */
   prTitle?: string | null;
   /** Body of the workspace's pull request (`pr_description`); Create PR uses it verbatim. */
@@ -59,8 +64,6 @@ export interface Workspace {
   state?: string;
   /** The workspace's pull request as last read from GitHub; drives the row's status icon. */
   pr?: RowPr | null;
-  /** The workspace's own chat's title once renamed ("Rename chat" on its tab); its tab shows the workspace name until then. */
-  chatTitle?: string;
 }
 
 /** An unread chat; `at` (ms) is when its row last changed, the "Go to next unread" order. */

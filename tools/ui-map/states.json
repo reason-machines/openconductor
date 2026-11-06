@@ -28,7 +28,7 @@
    "title": "First-run onboarding",
    "ref": {
     "path": "/first-run-onboarding",
-    "scenario": "signed-in",
+    "scenario": "signed-out",
     "actions": []
    },
    "oc": [],
@@ -585,7 +585,15 @@
     "scenario": "signed-out",
     "actions": []
    },
-   "oc": [],
+   "oc": [
+    {
+     "exec": "location.assign('/login');"
+    },
+    {
+     "wait": ".onb-login",
+     "after_ms": 800
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -1495,11 +1503,28 @@
      }
     ]
    },
-   "oc_reason": "OpenConductor has no cloud settings",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'setup-cloud'}}))",
+     "after_ms": 2500
+    }
+   ],
    "covers": [
     {
      "kind": "route",
      "name": "/settings/cloud/setup"
+    },
+    {
+     "kind": "settings-page",
+     "name": "setup"
     }
    ]
   },
@@ -2052,6 +2077,68 @@
    ]
   },
   {
+   "id": "menu-chat-tab",
+   "title": "Chat tab context menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": "[role=tab][aria-label^='Close chat']"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".main-tabs [role=tab]"
+    }
+   ]
+  },
+  {
+   "id": "menu-changes-file",
+   "title": "Changes file context menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": ".cursor-pointer.mx-2:has-text('auth.test.ts')"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".oc-change-row"
+    }
+   ]
+  },
+  {
    "id": "sidebar-after-archive",
    "title": "Sidebar after archiving a workspace",
    "ref": {
@@ -2089,44 +2176,6 @@
    ]
   },
   {
-   "id": "menu-chat-tab",
-   "title": "Chat tab context menu",
-   "ref": {
-    "path": "/",
-    "scenario": "populated",
-    "actions": [
-     {
-      "wait": "text=tide-web"
-     },
-     {
-      "click": "text=tide-web"
-     },
-     {
-      "click": "text=Ada/fix login redirect"
-     },
-     {
-      "rclick": "[aria-label='Close chat Fix login redirect loop']"
-     }
-    ]
-   },
-   "oc": [
-    {
-     "click": ".sb-ws-name",
-     "after_ms": 1500
-    },
-    {
-     "rclick": ".main-tabs [role=tab]",
-     "after_ms": 600
-    }
-   ],
-   "covers": [
-    {
-     "kind": "menu",
-     "name": "u8i"
-    }
-   ]
-  },
-  {
    "id": "dialog-rename-chat",
    "title": "Rename chat dialog",
    "ref": {
@@ -2143,7 +2192,7 @@
       "click": "text=Ada/fix login redirect"
      },
      {
-      "rclick": "[aria-label='Close chat Fix login redirect loop']"
+      "rclick": "[role=tab][aria-label^='Close chat']"
      },
      {
       "click": "[role=menuitem] >> text=Rename chat"

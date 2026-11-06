@@ -119,13 +119,6 @@ export const MessageSquarePlusIcon = lucide([
   ["path", "M12 8v6"],
   ["path", "M9 11h6"],
 ]);
-/** `message-square-text` (`eMt`): the Rename chat dialog's title. */
-export const MessageSquareTextIcon = lucide([
-  ["path", "M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"],
-  ["path", "M7 11h10"],
-  ["path", "M7 15h6"],
-  ["path", "M7 7h8"],
-]);
 /** `split` (`Bfi`): Fork to new workspace. */
 export const SplitIcon = lucide([
   ["path", "M16 3h5v5"],
@@ -207,3 +200,33 @@ export function WorkspaceStatusGlyph({ status }: { status: "backlog" | "in-progr
       );
   }
 }
+
+/** `copy` (`Zh`): Copy path, Copy relative path, Copy link. */
+export const CopyIcon = lucide([
+  ["rect", 8, 8, 14, 14, 2],
+  ["path", "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"],
+]);
+/** `arrow-up-right` (`co`): Open in (a file's apps, the PR's sites). */
+export const ArrowUpRightIcon = lucide([
+  ["path", "M7 7h10v10"],
+  ["path", "M7 17 17 7"],
+]);
+/** `hash` (`YLt`): the PR menu's Copy number. */
+export const HashIcon = lucide([
+  ["line", 4, 9, 20, 9],
+  ["line", 4, 15, 20, 15],
+  ["line", 10, 3, 8, 21],
+  ["line", 16, 3, 14, 21],
+]);
+/** `message-square-text` (`eMt`): the Rename chat dialog's title. */
+export const MessageSquareTextIcon = lucide([
+  ["path", "M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"],
+  ["path", "M7 11h10"],
+  ["path", "M7 15h6"],
+  ["path", "M7 7h8"],
+]);
+/** `corner-down-left` (`BLt`, drawn by `gf` at 12px as "Enter"): the ⌘⌥↵ shortcut hint. */
+export const CornerDownLeftIcon = lucide([
+  ["path", "M20 4v7a4 4 0 0 1-4 4H4"],
+  ["path", "m9 10-5 5 5 5"],
+]);
