@@ -340,6 +340,7 @@
 }
 .oc-model-row { padding: 6px 8px; }
 .oc-model-item:hover,
+.oc-model-item[data-selected],
 .oc-model-item:focus-visible,
 .oc-model-row:hover,
 .oc-model-row:focus-visible,
@@ -459,6 +460,13 @@
   color: var(--oc-c-muted-fg);
 }
 .oc-dim { opacity: 0.5; }
+
+.oc-file-mention-row { display: flex; align-items: center; gap: 4px; min-width: 0; padding: 4px; font-size: 12px; line-height: 20px; }
+.oc-file-mention-row[data-focused] { background: var(--oc-c-sidebar-accent); }
+.oc-file-mention-row > .oc-file-icon { margin-right: 4px; }
+.oc-file-mention-name { flex-shrink: 0; }
+.oc-file-mention-directory { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; line-height: 12px; color: var(--oc-c-muted-fg); }
+.oc-file-mention-directory.has-query { color: inherit; }
 
 /* Attachment chips sit at the top of the box. */
 .oc-composer .composer-attachments { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: -4px 0 10px; }

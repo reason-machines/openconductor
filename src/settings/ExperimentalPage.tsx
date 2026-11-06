@@ -26,6 +26,7 @@ export function ExperimentalPage({ settings, save }: Props) {
   );
   return (
     <div className="settings-rows">
+      {row("experimental_cloud_ui", "Cloud UI (experimental)", "Show Routines and organization/cloud settings. Off by default. Reason chats can still work across your Mac and a cloud computer.")}
       {row(
         "experimental_auto_permission_mode",
         "Auto permission mode",

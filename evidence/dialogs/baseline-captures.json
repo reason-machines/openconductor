@@ -1,0 +1,26 @@
+{
+  "rename": {
+    "ref": {
+      "evidence_id": "ev_91eaf113b122b146785d55d2c8e1475486304c03b125403ac87ff6c6ccb189ed",
+      "png_sha256": "bdc821adedc54b9268678209440d0b5631609b93f04e8834b7bbbe07e80219d8",
+      "input": "ref-rename.input.json"
+    },
+    "oc": {
+      "evidence_id": "ev_cc7855671aed7fa19875c8cd4e68c8cea2d735b36581ad3e6a5e280b0cf36bea",
+      "png_sha256": "074ed573600d0ec6aa18a9eca535172e721dcadacb68791a401616a8b78ac3bd",
+      "input": "oc-rename.input.json"
+    }
+  },
+  "remove": {
+    "ref": {
+      "evidence_id": "ev_a1588cbc1dd0c731957fcfabafea181f5c1b8e73b89568aeee9b55746cc4777d",
+      "png_sha256": "524bd3d63e65f5dcb7f274c586e435319708d9b7cf1fb49fc6f92614a7470fcb",
+      "input": "ref-remove.input.json"
+    },
+    "oc": {
+      "evidence_id": "ev_5fcaa8f6f0d32a8ca381dcc5cbf621e61211c199502eb38128253186126e6977",
+      "png_sha256": "4aed0f1bcd5d45a16d590318928be229197cb18de1300ad3d28356758f9c3623",
+      "input": "oc-remove.input.json"
+    }
+  }
+}

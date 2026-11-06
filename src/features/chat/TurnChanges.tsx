@@ -9,7 +9,7 @@ import { useState } from "react";
 import { chipLayout, type TurnRef } from "../diff/turnChangesCache.ts";
 import type { FileChange } from "../diff/types.ts";
 import { useTurnChanges } from "../diff/useTurnChanges.ts";
-import { FileBadge } from "./ToolRows.tsx";
+import { FileBadge, FileGlyph } from "./ToolRows.tsx";
 
 /** Conductor's `ID` (showZero, no border): "+N -N" in text-3xs mono. */
 function Counts({ additions, deletions }: { additions: number; deletions: number }) {
@@ -37,15 +37,17 @@ export function TurnChanges({ turn, worktree, onOpenFile }: { turn: TurnRef; wor
   // line of their own once anything is revealed.
   return (
     <>
-      <span className="chat-turn-changes" role="group" aria-label="Files changed in this turn">
+      <span className={expanded > 0 ? "chat-turn-changes revealed" : "chat-turn-changes"} role="group" aria-label="Files changed in this turn">
         {first.map(chip)}
       </span>
-      {revealed.length > 0 || more ? (
+      {revealed.length > 0 || more || expanded === 0 ? (
         <span className={revealed.length > 0 ? "chat-turn-changes-more revealed" : "chat-turn-changes-more"}>
           {revealed.map(chip)}
-          {more ? (
-            <button type="button" className="oc-file-badge chat-turn-chip more" title={more} aria-label={more} onClick={() => setExpanded((n) => n + 1)}>
-              <span className="oc-file-badge-name">+{hidden.length} more</span>
+          {more || expanded === 0 ? (
+            <button type="button" className={`oc-file-badge chat-turn-chip more${more ? "" : " compact-only"}`} title={more ?? "Show changed files"} aria-label={more ?? "Show changed files"} onClick={() => setExpanded((n) => n + 1)}>
+              <span className="chat-turn-more-icon"><FileGlyph path="" /></span>
+              <span className="chat-turn-more-compact">{expanded > 0 ? hidden.length : files.length}</span>
+              <span className="chat-turn-more-wide">+{hidden.length} more</span>
               <Counts {...hiddenTotals} />
             </button>
           ) : null}

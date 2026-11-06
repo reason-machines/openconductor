@@ -1,0 +1,189 @@
+(node:11441) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:11448) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rename: top edge, reference width, no close X, trapped focus
+not ok 1 - rename: top edge, reference width, no close X, trapped focus
+  ---
+  duration_ms: 3788.224748
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:21:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    305.5 !== 160
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 160
+  actual: 305.5
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:25:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: clone: top edge, reference width, no close X, trapped focus
+not ok 2 - clone: top edge, reference width, no close X, trapped focus
+  ---
+  duration_ms: 1077.410357
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:21:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    239 !== 160
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 160
+  actual: 239
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:25:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: create: top edge, reference width, no close X, trapped focus
+not ok 3 - create: top edge, reference width, no close X, trapped focus
+  ---
+  duration_ms: 948.644428
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:21:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    148 !== 160
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 160
+  actual: 148
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:25:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: archive: centered alert, Cancel focused, outside click is inert
+not ok 4 - archive: centered alert, Cancel focused, outside click is inert
+  ---
+  duration_ms: 2454.211067
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:39:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    locator.waitFor: Timeout 1500ms exceeded.
+    Call log:
+      - waiting for getByRole('alertdialog') to be visible
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'TimeoutError'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:42:18)
+  ...
+# Subtest: remove: centered alert, Cancel focused, outside click is inert
+not ok 5 - remove: centered alert, Cancel focused, outside click is inert
+  ---
+  duration_ms: 2228.673789
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:39:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    locator.waitFor: Timeout 1500ms exceeded.
+    Call log:
+      - waiting for getByRole('alertdialog') to be visible
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'TimeoutError'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:42:18)
+  ...
+# Subtest: restore: centered alert, Cancel focused, outside click is inert
+not ok 6 - restore: centered alert, Cancel focused, outside click is inert
+  ---
+  duration_ms: 2132.196413
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:39:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    locator.waitFor: Timeout 1500ms exceeded.
+    Call log:
+      - waiting for getByRole('alertdialog') to be visible
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'TimeoutError'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:42:18)
+  ...
+# Subtest: archive: primary shortcut confirms exactly once
+not ok 7 - archive: primary shortcut confirms exactly once
+  ---
+  duration_ms: 682.936312
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:57:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + '[]'
+    - '["archive"]'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '["archive"]'
+  actual: '[]'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:61:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: restore: shortcut dispatches new-branch restore and disables buttons
+ok 8 - restore: shortcut dispatches new-branch restore and disables buttons
+  ---
+  duration_ms: 708.08065
+  type: 'test'
+  ...
+# Subtest: rename: remembers branch choice, Enter submits, primary shortcut accepts unchanged
+ok 9 - rename: remembers branch choice, Enter submits, primary shortcut accepts unchanged
+  ---
+  duration_ms: 711.161238
+  type: 'test'
+  ...
+# Subtest: dialogs remain within a short viewport and restore trigger focus
+not ok 10 - dialogs remain within a short viewport and restore trigger focus
+  ---
+  duration_ms: 697.342002
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:93:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    95.5 !== 32
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 32
+  actual: 95.5
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialogs.e2e.mjs:96:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 2
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16504.265584

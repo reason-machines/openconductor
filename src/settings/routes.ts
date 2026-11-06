@@ -55,6 +55,7 @@ export interface RouteContext {
   userPages: readonly SettingsPage[];
   /** A Reason workspace is the active organization (Conductor's cloud organization). */
   organization?: boolean;
+  experimentalCloudUI?: boolean;
 }
 
 const GENERAL: SettingsLocation = { scope: "user", page: "general" };
@@ -139,6 +140,10 @@ function match(pattern: string, segments: string[]): Params | null {
   return params;
 }
 
+export function cloudSettingsLocation(location: SettingsLocation, enabled: boolean): SettingsLocation {
+  return !enabled && (location.scope === "org" || (location.scope === "user" && location.page === "setup-cloud")) ? GENERAL : location;
+}
+
 function userPage(tab: string, ctx: RouteContext): SettingsLocation {
   if ((GATED_USER_TABS as readonly string[]).includes(tab)) return GENERAL;
   return (ctx.userPages as readonly string[]).includes(tab) ? { scope: "user", page: tab as SettingsPage } : GENERAL;
@@ -208,7 +213,8 @@ function resolvePath(pathname: string, search: URLSearchParams, ctx: RouteContex
  * when the URL is not under /settings.
  */
 export function resolveSettingsUrl(pathname: string, search: string, ctx: RouteContext): SettingsLocation | null {
-  return resolvePath(pathname, new URLSearchParams(search), ctx);
+  const location = resolvePath(pathname, new URLSearchParams(search), ctx);
+  return location ? cloudSettingsLocation(location, ctx.experimentalCloudUI === true) : null;
 }
 
 /** Search parameters the /settings routes read; dropped once the URL shows the resolved page. */

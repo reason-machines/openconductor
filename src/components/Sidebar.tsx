@@ -35,6 +35,7 @@ import { EyeIcon, EyeOffIcon, Link2Icon, PencilIcon, PlusIcon as MenuPlusIcon, S
 import type { WorkspaceRef as UsageWorkspace } from "./resourceUsage";
 import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { endingProps, SidebarPresence, SidebarRowMotion, SidebarSectionMotion, useMenuPresence } from "./sidebarMotion";
+import { SidebarActionsMenu, type SidebarMenuAction } from "./SidebarActionsMenu";
 
 /** Window event that opens the sidebar's add-project popover (the palette's "Add project"). */
 export const OPEN_ADD_PROJECT_MENU = "openconductor:open-add-project-menu";
@@ -93,12 +94,7 @@ function NavRow({ icon, label, shortcut, title, active, onClick }: { icon: JSX.E
   );
 }
 
-/**
- * A menu entry. `icon` and `contextShortcut` show only in the right-click menu: Conductor's
- * header menus (`uBi`, `oBi`) take `menuType` "context" or "menu" and add the shortcut hints
- * only for "context"; the hover "..." dropdown here keeps its own plain rows.
- */
-interface MenuItem { label: string; onSelect: () => void; shortcut?: string; contextShortcut?: string; icon?: ReactNode; destructive?: boolean; disabled?: boolean }
+interface MenuItem extends SidebarMenuAction { contextShortcut?: string }
 /** A custom entry, such as a submenu, rendered with the menu's close function. */
 interface MenuNode { key: string; render: (close: () => void) => ReactNode }
 /** A menu entry, a custom node, or "-" for a separator line. */
@@ -152,7 +148,13 @@ function useDismiss(open: boolean, ref: RefObject<HTMLElement>, close: () => voi
  * `contextOpen` keeps the trigger shown while the header's right-click menu is open
  * (`group-has-[[data-popup-open]]/section-header:opacity-100`).
  */
-function HeaderMenu({ label, items, className, contextOpen }: { label: string; items: MenuEntry[]; className: string; contextOpen?: boolean }) {
+function HeaderMenu(props: { label: string; items: MenuEntry[]; className: string; contextOpen?: boolean }) {
+  if (props.items.some((item) => item !== "-" && "render" in item)) return <CustomHeaderMenu {...props} />;
+  const items = props.items.filter((item): item is MenuItem | "-" => item === "-" || !("render" in item));
+  return <SidebarActionsMenu {...props} items={items} />;
+}
+
+function CustomHeaderMenu({ label, items, className, contextOpen }: { label: string; items: MenuEntry[]; className: string; contextOpen?: boolean }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const close = useCallback(() => setOpen(false), []);

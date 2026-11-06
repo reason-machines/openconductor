@@ -1,0 +1,20 @@
+{
+  "viewport": {
+    "width": 1000,
+    "height": 820
+  },
+  "footer": {
+    "x": 285,
+    "y": 398.96875,
+    "width": 421.328125,
+    "height": 20
+  },
+  "captures": {
+    "openconductor-compact": {
+      "evidence_id": "ev_08deffc36800c41b451941864940f56ad48d07e73c0a510a089318de9be0fa66"
+    },
+    "openconductor-revealed": {
+      "evidence_id": "ev_0df54980f569e2c428e8f5d44025ef0648c67a0140f7f915bb842bc27abb26cb"
+    }
+  }
+}
