@@ -149,6 +149,7 @@ const DEMO_FILES = [
   "src/components/Sidebar.tsx", "src/components/WorkspaceView.tsx", "src/components/QuickOpenDialog.tsx",
   "src/spotlight/quickOpen.ts", "src/spotlight/rank.ts", "src/state/store.ts", "src-tauri/src/lib.rs",
   "src-tauri/src/quick_open/mod.rs", "src-tauri/Cargo.toml",
+  ".gitignore", "tsconfig.json", "scripts/setup.sh", "tools/gen_ledger.py", "docs/NOTES.md", "src/lib/format.js",
 ];
 
 function demoMatch(query: string, root: string): FileMatch[] {
