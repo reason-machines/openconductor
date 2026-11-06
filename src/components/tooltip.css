@@ -1,0 +1,73 @@
+/* Conductor's TooltipContent (`ni`, renderApp-D_fmY7hW.js, REA-extracted,
+   read as data): "overflow-hidden flex items-center rounded-sm ring-1
+   ring-popover-ring bg-popover/50 backdrop-blur-md pl-2 py-1 text-xs
+   tracking-wide text-popover-foreground shadow-md outline-none
+   data-[starting-style]:opacity-0 data-[starting-style]:scale-95
+   data-[ending-style]:opacity-0 data-[ending-style]:scale-95
+   transition-[opacity,scale] duration-100", pr-1 when a child is a <kbd>,
+   else pr-2. Token values from renderApp-BYEcFwvt.css (:root / .dark). */
+:root {
+  --tooltip-popover: #fff;
+  --tooltip-popover-foreground: #211e1c;
+  --tooltip-popover-ring: #211e1c0d;
+  --tooltip-muted-foreground: #8e8885;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --tooltip-popover: #2c2826;
+    --tooltip-popover-foreground: #eae8e6;
+    --tooltip-popover-ring: #ffffff1a;
+    --tooltip-muted-foreground: #a5a09c;
+  }
+}
+:root[data-theme="dark"] {
+  --tooltip-popover: #2c2826;
+  --tooltip-popover-foreground: #eae8e6;
+  --tooltip-popover-ring: #ffffff1a;
+  --tooltip-muted-foreground: #a5a09c;
+}
+
+.oc-tooltip {
+  position: fixed;
+  z-index: 50;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  /* rounded-sm = calc(var(--radius) - 4px), Conductor's --radius is .5rem. */
+  border-radius: 4px;
+  padding: 4px 8px;
+  /* text-xs (12px / 16px) with tracking-wide (Conductor's --tracking-wide is .025px). */
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.025px;
+  white-space: nowrap;
+  color: var(--tooltip-popover-foreground);
+  background-color: color-mix(in oklab, var(--tooltip-popover) 50%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  /* ring-1 ring-popover-ring + shadow-md */
+  box-shadow:
+    0 0 0 1px var(--tooltip-popover-ring),
+    0 4px 6px -1px #0000001a,
+    0 2px 4px -2px #0000001a;
+  transition-property: opacity, scale;
+  transition-duration: 100ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+  scale: 1;
+}
+.oc-tooltip[data-starting-style],
+.oc-tooltip[data-ending-style] {
+  opacity: 0;
+  scale: 0.95;
+}
+/* Conductor's shortcut hint (`Ss`): "inline-flex items-center ml-auto pl-1",
+   each key a span inside "inline-flex items-center text-xs text-muted-foreground". */
+.oc-tooltip-shortcut {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: top;
+  padding-left: 4px;
+  color: var(--tooltip-muted-foreground);
+}
