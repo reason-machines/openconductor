@@ -74,3 +74,44 @@ export function visibleRows(root: TreeDir, expanded: ReadonlySet<string>): TreeR
 export function absolutePath(worktree: string, rel: string): string {
   return `${worktree.replace(/\/+$/, "")}/${rel}`;
 }
+
+/** Every folder of the tree, for showing a filtered tree fully expanded. */
+export function allDirs(root: TreeDir): Set<string> {
+  const out = new Set<string>();
+  const walk = (d: TreeDir) => d.dirs.forEach((sub) => (out.add(sub.path), walk(sub)));
+  walk(root);
+  return out;
+}
+
+/** The files whose path contains every word of `query` (case-insensitive); an empty query keeps them all. */
+export function filterPaths(paths: readonly string[], query: string): string[] {
+  const words = query.toLowerCase().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return [...paths];
+  return paths.filter((p) => {
+    const l = p.toLowerCase();
+    return words.every((w) => l.includes(w));
+  });
+}
+
+/** The folders above a worktree-relative path ("a/b/c.ts" -> ["a", "a/b"]). */
+export function ancestors(path: string): string[] {
+  const parts = path.split("/").filter(Boolean);
+  return parts.slice(0, -1).map((_, i) => parts.slice(0, i + 1).join("/"));
+}
+
+/**
+ * The worktree-relative path for a new file typed as `name` in `folder`
+ * ("" is the root), or an error for the name field. Only plain relative
+ * paths inside the worktree, and never an existing file.
+ */
+export function newFilePath(folder: string, name: string, existing: readonly string[]): { path: string } | { error: string } {
+  const typed = name.trim();
+  if (!typed) return { error: "Enter a file name" };
+  const parts = typed.split("/");
+  if (typed.startsWith("/") || typed.endsWith("/") || parts.some((p) => p === "" || p === "." || p === "..")) {
+    return { error: "Use a file name inside this workspace" };
+  }
+  const path = folder ? `${folder}/${typed}` : typed;
+  if (existing.includes(path)) return { error: `${path} already exists` };
+  return { path };
+}
