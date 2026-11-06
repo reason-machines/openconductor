@@ -92,13 +92,12 @@ function apply(c: Chat, step: Step) {
   const prevConsents = c.state.consents;
   c.state = step.state;
   // An open approval is Conductor's tool approval: needs_user_permission until answered (`qV`).
-  if (approvalsChanged) setQueue(c, c.state.approvals.length > 0 ? Q.permissionRequested(c.view.queue) : Q.permissionAnswered(c.view.queue));
   // An open MCP elicitation or permission request is needs_user_input until answered
   // (Conductor's codexMcpElicitation / codexPermissionApproval); a tool approval outranks it.
   const consentsChanged = step.state.consents !== prevConsents;
   if (approvalsChanged || consentsChanged) {
     const status = statusWithOpenRequests(c.view.queue.status, c.state.approvals.length, c.state.consents.length);
-    if (status !== c.view.queue.status) setQueue(c, { ...c.view.queue, status });
+    setQueue(c, Q.waitingOn(c.view.queue, status === "working" ? null : status));
   }
   // A new approval or consent is a wait on the user (Conductor's `_p`, attention.ts).
   if (codexAsks(before, { approvals: c.state.approvals, consents: c.state.consents, status: c.view.queue.status })) chatWantsAttention(c.state.chatId);

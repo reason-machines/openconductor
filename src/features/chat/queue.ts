@@ -17,17 +17,16 @@
 //   runtime makes the second one a hard stop).
 // - Queued messages can be deleted, edited, reordered, or steered into the
 //   running turn.
-// - While Reason waits for a permission answer the session is
-//   "needs_user_permission"; it still counts as running (Conductor's set of
-//   running statuses, index chunk `Rit`), so follow-ups queue and Stop
-//   cancels. An answer puts it back to "working" (Conductor's `qV`).
+// - While the agent waits on the user the session is "needs_user_permission",
+//   "needs_plan_response" or "needs_user_input"; it still counts as running
+//   (Conductor's set of running statuses, index chunk `Rit`), so follow-ups
+//   queue and Stop cancels. An answer puts it back to "working" (Conductor's
+//   `qV`).
 
 /**
- * `sessions.status` (Conductor's decoder `JZe` accepts exactly these). Reason
- * chats reach idle, working, cancelling, error, needs_user_permission and
- * needs_user_input (a request asked as a question, chatRuntime.ts
- * `isQuestion`); the others come from `conductor.db` (reasonChat.ts
- * `syncStatuses`).
+ * `sessions.status` (Conductor's decoder `JZe` accepts exactly these). Chats
+ * reach idle, working, cancelling, error and the three needs_* statuses
+ * (chatRuntime.ts); "waiting" comes from `conductor.db`.
  */
 export type SessionStatus =
   | "idle"
@@ -96,25 +95,14 @@ export const NEEDS_USER: ReadonlySet<SessionStatus> = new Set(["needs_plan_respo
 export const turnRunning = (s: SessionStatus) => s === "working" || s === "cancelling" || NEEDS_USER.has(s);
 const busy = turnRunning;
 
-/** Reason asked for permission mid-turn. */
-export function permissionRequested(q: ChatQueue): ChatQueue {
-  return q.status === "working" ? { ...q, status: "needs_user_permission" } : q;
-}
-
-/** Every open permission request was answered: the turn carries on. */
-export function permissionAnswered(q: ChatQueue): ChatQueue {
-  return q.status === "needs_user_permission" ? { ...q, status: "working" } : q;
-}
-
 /**
- * Reason's open requests changed mid-turn: a tool approval waits as
- * needs_user_permission, a question as needs_user_input (permission outranks
- * input, as Conductor's `tTr`), and none left goes back to working. Only a
- * running turn moves: idle, error and cancelling stay.
+ * The agent now waits on the user for `needs` (a permission, a plan or
+ * questions), or, with null, no longer waits: the turn carries on. Only a
+ * running turn asks, and a pending Stop stays cancelling.
  */
-export function requestsOpen(q: ChatQueue, approvals: number, questions: number): ChatQueue {
-  if (q.status !== "working" && q.status !== "needs_user_permission" && q.status !== "needs_user_input") return q;
-  const status: SessionStatus = approvals > 0 ? "needs_user_permission" : questions > 0 ? "needs_user_input" : "working";
+export function waitingOn(q: ChatQueue, needs: SessionStatus | null): ChatQueue {
+  if (q.status !== "working" && !NEEDS_USER.has(q.status)) return q;
+  const status = needs ?? "working";
   return status === q.status ? q : { ...q, status };
 }
 

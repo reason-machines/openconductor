@@ -16,7 +16,7 @@
 //   7. "Reset chat" on turn 5   "Reset chat?" says 2 changed; Reset deletes
 //                        turn 6 and restores turn 5's files
 //   8. "permission"      Reason asks session/request_permission: the chat shows
-//                        "Approve tool use", the session is needs_user_permission
+//                        "Do you want to run this command?", the session is needs_user_permission
 //                        in conductor.db, the sidebar row and the Home list show
 //                        "Needs permission"; Allow resumes the turn and the
 //                        status goes back to idle
@@ -370,14 +370,17 @@ try {
     throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await sidebarStatus())}`);
   });
   const card = await waitFor("the permission card", () => run(`const c = document.querySelector('[data-testid="chat-permission-request"]'); return c ? c.innerText : null;`));
-  assert.match(card, /Approve tool use/);
+  // Conductor's tool card (`Jpo`): the question for an `execute` tool, the call's title, Reason's options.
+  assert.match(card, /Do you want to run this command\?/);
   assert.match(card, /bash: rm -rf build/);
+  assert.match(card, /Allow/);
+  assert.match(card, /Reject/);
   const storedRows = await waitFor("needs_user_permission in conductor.db", async () => {
     const rows = await storedStatuses();
     return Array.isArray(rows) && rows.some((r) => r.chatId === workspace.id && r.status === "needs_user_permission") && rows;
   });
   await screenshot("status-needs-permission-chat");
-  pass(`Reason's permission request shows "Approve tool use", the sidebar row says Needs permission, conductor.db holds ${JSON.stringify(storedRows)}`);
+  pass(`Reason's permission request shows "Do you want to run this command?", the sidebar row says Needs permission, conductor.db holds ${JSON.stringify(storedRows)}`);
 
   await run(`const b = [...document.querySelectorAll(".sb-row")].find((e) => e.querySelector(".sb-row-label")?.textContent.trim() === "Home"); b.click(); return true;`);
   await waitFor("Needs permission on the Home row", async () => needsPermission(await homeStatus()));
@@ -385,7 +388,7 @@ try {
   pass("the Home list shows the workspace's Needs permission status in place of its time");
 
   await run(`document.querySelector('[data-testid="workspace-status-icon"][data-status="needs-user-permission"]').closest("button").click(); return true;`);
-  await wd("POST", `/element/${await waitFor("the Allow button", () => find('.chat-permission button[data-kind="allow_once"]'))}/click`, {});
+  await wd("POST", `/element/${await waitFor("the Allow button", () => find('[data-testid="chat-permission-request"] button[data-kind="allow_once"]'))}/click`, {});
   await waitFor('"permission: allow"', () => chatText().then((t) => t.includes("permission: allow")));
   await turnDone(8);
   await waitFor("the sidebar row to leave Needs permission", async () => !needsPermission(await sidebarStatus()));

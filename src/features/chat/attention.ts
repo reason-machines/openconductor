@@ -54,7 +54,7 @@ const STATUS_WAITS: ReadonlySet<SessionStatus> = new Set(["needs_plan_response",
 /**
  * The chat's status moved from `prev` into plan review or user input: a new
  * wait on the user. A tool approval that gives way to user input is not: a
- * permission outranks input (queue.ts `requestsOpen`, codexConsent.ts
+ * permission outranks input (chatRuntime.ts `promptsStatus`, codexConsent.ts
  * `statusWithOpenRequests`), so the chat is going back to a question or
  * consent that opened under the approval and was signalled as it came.
  */
