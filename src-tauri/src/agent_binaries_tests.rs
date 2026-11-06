@@ -605,6 +605,7 @@ impl Fixture {
             url: format!("file://{}", path.display()),
             sha256: sha(data),
             size: Some(data.len() as u64),
+            tar_gz_entry: None,
         }
     }
 }
@@ -758,6 +759,7 @@ fn manager_reports_missing_release_and_unknown_url() {
                 url: "ftp://nowhere/codex".into(),
                 sha256: "00".repeat(32),
                 size: None,
+                tar_gz_entry: None,
             }],
         },
     )]);
@@ -830,6 +832,7 @@ fn manager_cancels_an_inflight_download() {
                 url: "gated://claude".into(),
                 sha256: sha(&data),
                 size: Some(data.len() as u64),
+                tar_gz_entry: None,
             }],
         },
     )]);
@@ -910,4 +913,154 @@ fn agents() {
     assert_eq!(Agent::parse("claude"), Ok(Agent::Claude));
     assert_eq!(Agent::parse("codex"), Ok(Agent::Codex));
     assert!(Agent::parse("opencode").is_err());
+}
+
+// ---------------------------------------------------------------------------
+// Pinned releases, tar.gz members, ensure_ready
+
+/// Conductor 0.87.6's build-time manifest, as REA read it out of the binary.
+const CONDUCTOR_MANIFEST: &str =
+    include_str!("../../evidence/persistence/agent-binaries/conductor-agent-binary-manifest.json");
+
+#[test]
+fn pins_match_conductors_versions_and_hashes() {
+    let conductor: serde_json::Value = serde_json::from_str(CONDUCTOR_MANIFEST).unwrap();
+    for triple in ["aarch64-apple-darwin", "x86_64-apple-darwin"] {
+        let pins = StaticReleases::pinned(PINNED_MANIFEST, triple).unwrap();
+        for agent in Agent::ALL {
+            let release = pins.current(agent).unwrap();
+            let theirs = &conductor[agent.as_str()];
+            assert_eq!(release.version, theirs["version"].as_str().unwrap());
+            let exes: Vec<&str> = release.files.iter().map(|f| f.exe.as_str()).collect();
+            assert_eq!(exes, agent.executables());
+            let mut want = vec![theirs["perArch"][triple]["sha256"].as_str().unwrap()];
+            if agent == Agent::Codex {
+                want.push(
+                    theirs["codeModeHost"]["perArch"][triple]["sha256"]
+                        .as_str()
+                        .unwrap(),
+                );
+            }
+            let ours: Vec<&str> = release.files.iter().map(|f| f.sha256.as_str()).collect();
+            assert_eq!(ours, want, "{agent} {triple}");
+            assert!(release
+                .files
+                .iter()
+                .all(|f| f.url.starts_with("https://") && f.size.is_some()));
+        }
+    }
+}
+
+#[test]
+fn pins_skip_triples_without_a_build() {
+    let pins = StaticReleases::pinned(PINNED_MANIFEST, "x86_64-unknown-linux-gnu").unwrap();
+    assert!(pins.0.is_empty());
+    let err = StaticReleases::pinned(br#"{"schemaVersion":2,"claude":{"version":"1","perArch":{}},"codex":{"version":"1","perArch":{}}}"#, "x").err();
+    assert!(err.unwrap().contains("schemaVersion 2"));
+}
+
+fn tar_gz(members: &[(&str, &[u8])]) -> Vec<u8> {
+    let gz = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::fast());
+    let mut tar = tar::Builder::new(gz);
+    for (name, data) in members {
+        let mut header = tar::Header::new_gnu();
+        header.set_size(data.len() as u64);
+        header.set_mode(0o755);
+        header.set_cksum();
+        tar.append_data(&mut header, name, *data).unwrap();
+    }
+    tar.into_inner().unwrap().finish().unwrap()
+}
+
+impl Fixture {
+    fn tar_gz_file(&self, exe: &str, entry: &str, data: &[u8]) -> ReleaseFile {
+        let path = self.mirror.join(format!("{exe}.tar.gz"));
+        fs::write(&path, tar_gz(&[("README", b"x"), (entry, data)])).unwrap();
+        ReleaseFile {
+            tar_gz_entry: Some(entry.into()),
+            url: format!("file://{}", path.display()),
+            ..self.file(exe, data)
+        }
+    }
+}
+
+#[test]
+fn installs_the_executable_from_a_tar_gz_member() {
+    let fx = Fixture::new();
+    let (codex, host) = (b"codex binary".repeat(1000), b"host binary".to_vec());
+    let mut manifest = Manifest::new();
+    manifest.insert(
+        Agent::Codex,
+        Release {
+            version: "0.156.1".into(),
+            files: vec![
+                fx.tar_gz_file("codex", "codex-aarch64-apple-darwin", &codex),
+                fx.tar_gz_file(
+                    "codex-code-mode-host",
+                    "codex-code-mode-host-aarch64-apple-darwin",
+                    &host,
+                ),
+            ],
+        },
+    );
+    let (m, _) = manager(&fx, manifest, Arc::new(LocalFetch));
+    let status = m.run_download(Agent::Codex, &CancelToken::new());
+    assert_eq!(status.state, BinaryState::Ready, "{:?}", status.error);
+    let path = m.ready_path(Agent::Codex).unwrap();
+    assert!(path.ends_with("codex/0.156.1/codex"));
+    assert_eq!(fs::read(path).unwrap(), codex);
+}
+
+#[test]
+fn a_missing_tar_gz_member_fails_the_download() {
+    let fx = Fixture::new();
+    let mut file = fx.tar_gz_file("claude", "claude", b"bin");
+    file.tar_gz_entry = Some("not-there".into());
+    let mut manifest = Manifest::new();
+    manifest.insert(
+        Agent::Claude,
+        Release {
+            version: "1.0.0".into(),
+            files: vec![file],
+        },
+    );
+    let (m, _) = manager(&fx, manifest, Arc::new(LocalFetch));
+    let status = m.run_download(Agent::Claude, &CancelToken::new());
+    assert_eq!(status.state, BinaryState::Failed);
+    assert!(status
+        .error
+        .unwrap()
+        .contains("not-there is not in the archive"));
+}
+
+#[test]
+fn ensure_ready_downloads_then_returns_the_installed_path() {
+    let fx = Fixture::new();
+    let data = b"claude binary".to_vec();
+    let mut manifest = Manifest::new();
+    manifest.insert(
+        Agent::Claude,
+        Release {
+            version: "2.1.284".into(),
+            files: vec![fx.file("claude", &data)],
+        },
+    );
+    let (m, events) = manager(&fx, manifest, Arc::new(LocalFetch));
+    let path = m.ensure_ready(Agent::Claude).unwrap();
+    assert!(path.ends_with("claude/2.1.284/claude"));
+    assert_eq!(states(&events).last(), Some(&BinaryState::Ready));
+    // Installed: no second download.
+    let before = events.lock().unwrap().len();
+    assert_eq!(m.ensure_ready(Agent::Claude).unwrap(), path);
+    assert_eq!(events.lock().unwrap().len(), before);
+}
+
+#[test]
+fn ensure_ready_waits_for_a_running_download_and_reports_its_error() {
+    let fx = Fixture::new();
+    let (m, _) = manager(&fx, Manifest::new(), Arc::new(LocalFetch));
+    let running = m.request_download(Agent::Codex).unwrap();
+    let err = m.ensure_ready(Agent::Codex).unwrap_err();
+    assert!(err.contains("No codex release"), "{err}");
+    assert_eq!(running.join().unwrap().state, BinaryState::Failed);
 }

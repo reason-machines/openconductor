@@ -49,7 +49,7 @@ review = "gpt-5.5"
 default_fast_mode = true
 review_fast_mode = false
 default_plan_mode = true
-visible_provider_models = '{"opencode":["opencode:anthropic/claude-x"," openrouter/y ","opencode:anthropic/claude-x"],"nope":["z"],"codex":[1]}'
+visible_provider_models = '{"pi":["pi:anthropic/claude-x"," openrouter/y ","pi:anthropic/claude-x"],"opencode":["z"],"nope":["z"],"codex":[1]}'
 
 [models.claude_code]
 default_effort_level = "high"
@@ -68,8 +68,15 @@ fn conductor_keys_parse_under_their_dotted_paths_and_round_trip() {
     let s = parse(CONDUCTOR_FILE);
     assert_eq!(s.claude_provider.as_deref(), Some("custom"));
     assert_eq!(s.codex_provider.as_deref(), Some("chatgpt_sign_in"));
-    assert_eq!(s.bedrock_region.as_deref(), Some("eu-west-1"));
-    assert_eq!(s.vertex_project_id.as_deref(), Some("my-proj"));
+    // Keys of the removed Bedrock, Vertex and OpenCode settings still load,
+    // kept as unknown keys with no effect.
+    for key in [
+        "bedrock_region",
+        "vertex_project_id",
+        "opencode_executable_path",
+    ] {
+        assert!(s.extra.contains_key(key), "{key}");
+    }
     assert_eq!(s.ssh_key(), Some("~/.ssh/id_conductor".into()));
     assert!(s.tool_approvals_enabled);
     let m = &s.models;
@@ -122,7 +129,6 @@ fn defaults_match_conductor() {
     assert_eq!(s.models.codex.personality, None);
     assert_eq!(s.executable(AgentKind::Claude), Path::new("claude"));
     assert_eq!(s.executable(AgentKind::Codex), Path::new("codex"));
-    assert_eq!(s.executable(AgentKind::Opencode), Path::new("opencode"));
     // Unset keys are not written.
     let text = toml::to_string_pretty(&s).unwrap();
     for key in [
@@ -139,7 +145,6 @@ fn defaults_match_conductor() {
 fn bad_values_are_rejected() {
     for bad in [
         "claude_code_executable_path = \"/a\\nb\"",
-        "bedrock_region = \"eu west\"",
         "[models.claude_code]\npersonality = \"chatty\"",
         "[models.codex]\ntool_approval_policy = \"never\"",
         "[models.codex]\npersonality = \"grumpy\"",
@@ -157,8 +162,9 @@ fn bad_values_are_rejected() {
 fn visible_provider_models_are_read_like_conductor() {
     let s = parse(CONDUCTOR_FILE);
     let v = s.models.visible_models();
-    assert_eq!(v["opencode"], ["anthropic/claude-x", "openrouter/y"]);
+    assert_eq!(v["pi"], ["anthropic/claude-x", "openrouter/y"]);
     assert!(v["codex"].is_empty() && !v.contains_key("nope"));
+    assert!(!v.contains_key("opencode") && !v.contains_key("cursor"));
     let mut s = Settings::default();
     s.models.visible_provider_models = Some("not json".into());
     assert!(s.models.visible_models().values().all(Vec::is_empty));
@@ -175,24 +181,17 @@ fn provider_precedence() {
         ("default", "claude_login"),
         ("openai", "claude_login"),
         ("custom", "anthropic_api"),
-        ("bedrock", "bedrock"),
-        ("vertex", "vertex"),
+        // Removed backends fall back to the login.
+        ("bedrock", "claude_login"),
+        ("vertex", "claude_login"),
     ] {
         s.claude_provider = Some(value.into());
-        s.bedrock_region = Some("eu-west-1".into());
-        s.vertex_project_id = Some("p".into());
         assert_eq!(
             s.provider_for(AgentKind::Claude).provider().kind(),
             kind,
             "{value}"
         );
     }
-    s.claude_provider = Some("bedrock".into());
-    s.bedrock_region = Some(" ".into());
-    assert_eq!(
-        s.provider_for(AgentKind::Claude).provider().kind(),
-        "claude_login"
-    );
     for (value, kind) in [
         ("custom", "openai_api"),
         ("chatgpt_sign_in", "codex_login"),
@@ -229,7 +228,7 @@ fn repository_layers_set_only_workspace_configurable_keys() {
     );
     let shared = layer(
         Layer::RepoShared,
-        "codex_executable_path = \"/shared/codex\"\nclaude_provider = \"default\"\ntool_approvals_enabled = false\n[models]\ndefault = \"haiku\"\nvisible_provider_models = '{\"opencode\":[\"a\"]}'\n[scripts]\nsetup = \"x\"\n",
+        "codex_executable_path = \"/shared/codex\"\nclaude_provider = \"default\"\ntool_approvals_enabled = false\n[models]\ndefault = \"haiku\"\nvisible_provider_models = '{\"pi\":[\"a\"]}'\n[scripts]\nsetup = \"x\"\n",
     );
     let local = layer(
         Layer::RepoLocal,
@@ -240,7 +239,7 @@ fn repository_layers_set_only_workspace_configurable_keys() {
     // User-only keys ignore the repository.
     assert!(s.tool_approvals_enabled);
     assert_eq!(s.models.default, "sonnet");
-    assert_eq!(s.models.visible_models()["opencode"], ["a"]);
+    assert_eq!(s.models.visible_models()["pi"], ["a"]);
     // The repository's claude_provider replaces the user's [providers.claude].
     assert_eq!(
         s.provider_for(AgentKind::Claude).provider().kind(),
@@ -381,11 +380,6 @@ fn codex_launch_uses_the_settings() {
     assert!(chat.args().contains(&"service_tier=\"fast\"".to_string()));
     assert_eq!(s.codex_auto_approval(), Some(ApprovalDecision::Accept));
     assert_eq!(Settings::default().codex_auto_approval(), None);
-    let (exe, args) = launch::opencode_acp_command(&s);
-    assert_eq!(
-        (exe.as_path(), args),
-        (Path::new("/opt/opencode"), vec!["acp".to_string()])
-    );
 }
 
 #[test]
@@ -411,7 +405,16 @@ fn codex_personality_reaches_every_launch_and_none_is_passed() {
 #[test]
 fn model_ids_map_to_agents_and_claude_cli_names() {
     assert_eq!(model_agent("gpt-5.6-sol"), AgentKind::Codex);
-    assert_eq!(model_agent("composer-2.5"), AgentKind::Cursor);
+    assert_eq!(model_agent("composer-2.5"), AgentKind::Claude);
+    for removed in ["auto", "composer-2.5", "grok-4"] {
+        assert!(launch::is_removed_model(removed), "{removed}");
+        let mut s = Settings::default();
+        s.models.default = removed.into();
+        s.models.review = Some(removed.into());
+        assert_eq!(s.model_for(Purpose::Chat), crate::settings::DEFAULT_MODEL);
+        assert_eq!(s.model_for(Purpose::Review), crate::settings::DEFAULT_MODEL);
+    }
+    assert!(!launch::is_removed_model("opus"));
     assert_eq!(model_agent("opus"), AgentKind::Claude);
     assert_eq!(claude_cli_model("opus-4-8"), "claude-opus-4-8");
     assert_eq!(claude_cli_model("sonnet-5-1m"), "claude-sonnet-5[1m]");

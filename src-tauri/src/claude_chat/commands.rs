@@ -10,13 +10,13 @@ use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::agent::{AgentKind, ClaudeLaunch, PermissionMode};
+use crate::agent_binaries::Agent;
 use crate::reason_acp::provider::{ProviderEvent, Sink};
 use crate::reason_acp::wire;
 use crate::reason_chat::TurnArg;
 use crate::settings::service::SettingsService;
 use crate::turn_checkpoint::{around_turn, TurnTarget};
 
-use super::find_claude_cli;
 use super::interact::Answer;
 use super::runner::{ClaudeRunner, Launcher};
 
@@ -29,20 +29,15 @@ pub struct ClaudeChats {
     cwds: Mutex<HashMap<String, PathBuf>>,
 }
 
-pub(crate) fn cli_path() -> Option<PathBuf> {
-    let home = std::env::var_os("HOME").map(PathBuf::from);
-    find_claude_cli(std::env::var_os("PATH").as_deref(), home.as_deref())
-}
-
 impl ClaudeChats {
     fn runner(&self, app: &AppHandle) -> Arc<ClaudeRunner> {
         self.runner
             .get_or_init(|| {
                 let settings_app = app.clone();
                 let launcher: Launcher = Arc::new(move |cwd, resume| {
-                    let exe = cli_path().ok_or(
-                        "Claude Code was not found. Install it, then sign in by running `claude` once in a terminal.",
-                    )?;
+                    // Settings path, else the bundled copy (waits for its
+                    // download), else the CLI on PATH (agent_launch.rs).
+                    let exe = crate::agent_launch::launch(&settings_app, Agent::Claude)?;
                     let settings = settings_app.state::<SettingsService>();
                     let env = settings.launch_env(AgentKind::Claude)?;
                     let mut launch = ClaudeLaunch::new(cwd, env);
@@ -82,10 +77,10 @@ impl ClaudeChats {
     }
 }
 
-/// Absolute path of the `claude` CLI chats would run, or null.
+/// Absolute path of the `claude` CLI chats would run now, or null.
 #[tauri::command]
-pub fn claude_cli_path() -> Option<String> {
-    cli_path().map(|p| p.display().to_string())
+pub fn claude_cli_path(app: AppHandle) -> Option<String> {
+    crate::agent_launch::current(&app, Agent::Claude).map(|r| r.path.display().to_string())
 }
 
 #[tauri::command]

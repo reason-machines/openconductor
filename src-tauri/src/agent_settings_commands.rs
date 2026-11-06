@@ -170,19 +170,11 @@ fn status_for(agent: &str) -> Result<CliLoginStatus, String> {
             }
             Ok(status)
         }
-        "opencode" => {
-            let Some(exe) = find_cli("opencode", path.as_deref(), home.as_deref()) else {
-                return Ok(CliLoginStatus::default());
-            };
-            let version = run(&exe, &["--version"], timeout).and_then(|(_, out)| parse_version(&out));
-            Ok(CliLoginStatus { installed: true, version, ..Default::default() })
-        }
         other => Err(format!("{other} has no CLI login")),
     }
 }
 
-/// JS: `invoke("cli_login_status", { agent: "claude" | "codex" | "opencode" })`;
-/// OpenCode reports only whether it is installed and its version.
+/// JS: `invoke("cli_login_status", { agent: "claude" | "codex" })`.
 #[tauri::command]
 pub async fn cli_login_status(agent: String) -> Result<CliLoginStatus, String> {
     tauri::async_runtime::spawn_blocking(move || status_for(&agent))

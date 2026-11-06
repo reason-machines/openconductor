@@ -126,6 +126,12 @@
 .oc-turn-time:hover { color: var(--oc-fg); }
 .chat-turn-actions { display: flex; flex: none; align-items: center; gap: 4px; }
 .chat-turn-error { color: var(--oc-destructive); }
+/* Not signed in (Conductor's auth block: destructive badge, text-sm copy, outline sm button). */
+.chat-sign-in { flex-basis: 100%; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 4px; font-size: 14px; line-height: 20px; color: var(--oc-fg); }
+.chat-sign-in p { margin: 0; }
+.chat-sign-in-badge { padding: 1px 8px; border-radius: 6px; background: var(--oc-destructive); color: var(--oc-bg); font-size: 12px; font-weight: 500; }
+.chat-sign-in-open { height: 28px; padding: 0 10px; border: 1px solid var(--oc-border); border-radius: 6px; background: var(--oc-bg); color: var(--oc-fg); font: inherit; font-size: 12px; font-weight: 500; cursor: default; }
+.chat-sign-in-open:hover { background: var(--oc-accent); color: var(--oc-accent-fg); }
 .oc-icon-action { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--oc-muted-fg); cursor: pointer; }
 .oc-icon-action:hover, .oc-icon-action[aria-expanded="true"] { background: var(--oc-accent); color: var(--oc-accent-fg); }
 .oc-icon-action-svg { width: 14px; height: 14px; }
@@ -196,7 +202,7 @@
 .hljs-strong { font-weight: 700; }
 .hljs-link { text-decoration: underline; }
 .chat-turn-menu { position: relative; display: inline-flex; }
-.chat-menu { position: absolute; right: 0; bottom: calc(100% + 4px); z-index: 20; min-width: 140px; padding: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 6px 20px var(--shadow-18); }
+.chat-menu { position: absolute; right: 0; bottom: calc(100% + 4px); transform-origin: bottom right; z-index: 20; min-width: 140px; padding: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 6px 20px var(--shadow-18); }
 .chat-menu-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 5px 8px; border-radius: 5px; font-size: 12.5px; text-align: left; white-space: nowrap; }
 .chat-menu-item:hover:not(:disabled) { background: var(--hover); }
 .chat-menu-item:disabled { opacity: 0.5; cursor: default; }

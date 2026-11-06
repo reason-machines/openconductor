@@ -53,6 +53,7 @@ export const CONDUCTOR_ICONS = {
   "bot-message-square": [["path",{"d":"M12 6V2H8"}],["path",{"d":"M15 11v2"}],["path",{"d":"M2 12h2"}],["path",{"d":"M20 12h2"}],["path",{"d":"M20 16a2 2 0 0 1-2 2H8.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 4 20.286V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"}],["path",{"d":"M9 11v2"}]],
   "circle-alert": [["circle",{"cx":"12","cy":"12","r":"10"}],["line",{"x1":"12","x2":"12","y1":"8","y2":"12"}],["line",{"x1":"12","x2":"12.01","y1":"16","y2":"16"}]],
   "arrow-up-right": [["path",{"d":"M7 7h10v10"}],["path",{"d":"M7 17 17 7"}]],
+  "arrow-down": [["path",{"d":"M12 5v14"}],["path",{"d":"m19 12-7 7-7-7"}]],
 } as const satisfies Record<string, IconNode>;
 
 export type ConductorIconName = keyof typeof CONDUCTOR_ICONS;

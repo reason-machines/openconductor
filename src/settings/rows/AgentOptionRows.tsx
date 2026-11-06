@@ -1,20 +1,16 @@
 import { invoke } from "@tauri-apps/api/core";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { inTauri, openUrl } from "../../backend";
 import { Row } from "../GeneralPage";
 import { setAppPref, useAppPrefs } from "../appPrefs";
 import { CODEX_PERSONALITIES, withAgentModel } from "../agentSettings";
 import {
-  advancedAlert,
   CHROME_ROW,
   CONFIG_FILES,
   codexPersonality,
   executableCopy,
-  OPENCODE,
-  statusBadge,
   storedExecutable,
   withExecutable,
-  type AcpAgentStatus,
   type OptionAgent,
 } from "../agentOptions";
 import type { CodexPersonality, Settings } from "../types";
@@ -33,10 +29,7 @@ interface Props {
  *     executable path, Claude settings card.
  *   Codex (`Fpa`): Codex personality for new chats, Codex executable path,
  *     Codex config card.
- *   OpenCode (`ypa`): a collapsed "Advanced" section with the install
- *     status line and the OpenCode executable path.
- * The Agents page shell (tabs, authentication, keys, OpenCode providers and
- * models) is the other agent-settings builder's AgentsPage.tsx.
+ * The Agents page shell (tabs, authentication, keys) is the other agent-settings builder's AgentsPage.tsx.
  */
 
 export function ClaudeAgentOptions({ settings, save }: Props) {
@@ -72,33 +65,8 @@ export function CodexAgentOptions({ settings, save }: Props) {
   );
 }
 
-/** OpenCode's "Advanced" section; the tab's header, Providers and Models come first. */
-export function AcpAgentOptions({ agent, settings, save }: Props & { agent: "opencode" }) {
-  const { status, checking, refresh } = useAcpAgentStatus(agent, storedExecutable(settings, agent));
-  const alert = advancedAlert(status);
-  const [open, setOpen] = useState(alert !== null);
-  useEffect(() => {
-    if (alert !== null) setOpen(true);
-  }, [alert]);
-  return (
-    <section className="oc-agent-advanced">
-      <button type="button" className="oc-agent-advanced-toggle" aria-expanded={open} onClick={() => setOpen(!open)}>
-        <Chevron open={open} />
-        Advanced
-        {alert && <Badge tone="problem">{alert}</Badge>}
-      </button>
-      {open && (
-        <div className="oc-agent-advanced-body">
-          <AcpStatusLine status={status} checking={checking} onRefresh={refresh} />
-          <ExecutablePathRow agent={agent} settings={settings} save={save} />
-        </div>
-      )}
-    </section>
-  );
-}
-
 /** "Use Claude Code with Chrome" (`chrome_mode_enabled`, conductor.db's settings table). */
-function ChromeModeRow() {
+export function ChromeModeRow() {
   const checked = useAppPrefs().chrome_mode_enabled;
   const [error, setError] = useState<string | null>(null);
   return (
@@ -238,7 +206,7 @@ export function ExecutablePathRow({ agent, settings, save }: Props & { agent: Op
 
 /** `Nzi`: the agent's own settings file, opened in the default app (or its folder before it exists). */
 function ConfigFileCard({ agent }: { agent: "claude" | "codex" }) {
-  const card = CONFIG_FILES[agent]!;
+  const card = CONFIG_FILES[agent];
   const [error, setError] = useState<string | null>(null);
   const openIt = () => {
     if (!inTauri()) return;
@@ -263,64 +231,6 @@ function ConfigFileCard({ agent }: { agent: "claude" | "codex" }) {
       </button>
     </section>
   );
-}
-
-/** OpenCode's install state from `acp_agent_status`, rechecked when the executable override changes. */
-export function useAcpAgentStatus(agent: "opencode", executable: string) {
-  const [status, setStatus] = useState<AcpAgentStatus | null>(null);
-  const [checking, setChecking] = useState(false);
-  const refresh = useCallback(() => {
-    if (!inTauri()) return;
-    setChecking(true);
-    invoke<AcpAgentStatus>("acp_agent_status", { agent })
-      .then(setStatus, (e) => setStatus({ isInstalled: false, version: null, isOutdated: false, error: String(e), executable: null }))
-      .finally(() => setChecking(false));
-  }, [agent]);
-  useEffect(() => {
-    refresh();
-  }, [refresh, executable]);
-  return { status, checking, refresh };
-}
-
-/** `gpa`: badge, Open in Finder, Docs on the left; Refresh on the right. */
-function AcpStatusLine({ status, checking, onRefresh }: { status: AcpAgentStatus | null; checking: boolean; onRefresh: () => void }) {
-  const badge = statusBadge(status, checking);
-  const reveal = () => {
-    if (!inTauri() || !status?.executable) return;
-    invoke("plugin:opener|reveal_item_in_dir", { paths: [status.executable] }).catch(() => undefined);
-  };
-  return (
-    <div className="oc-agent-status">
-      <div className="oc-agent-status-row">
-        <div className="oc-agent-status-left">
-          {badge.kind === "installed" ? (
-            <Badge tone="ok">
-              Installed{badge.version && <span className="oc-agent-badge-version">{badge.version}</span>}
-            </Badge>
-          ) : (
-            <Badge tone={badge.kind === "checking" ? "muted" : "problem"}>{badge.label}</Badge>
-          )}
-          <button type="button" className="oc-agent-link" onClick={reveal} disabled={!status?.executable}>
-            Open in Finder
-            <ExternalIcon />
-          </button>
-          <button type="button" className="oc-agent-link" onClick={() => openUrl(OPENCODE.docsUrl).catch(() => undefined)}>
-            Docs
-            <ExternalIcon />
-          </button>
-        </div>
-        <button type="button" className="oc-agent-ghost" onClick={onRefresh} disabled={checking}>
-          <RefreshIcon spinning={checking} />
-          Refresh
-        </button>
-      </div>
-      {status?.isOutdated && <p className="oc-agent-outdated">This version can return empty ACP turns in OpenConductor.</p>}
-    </div>
-  );
-}
-
-function Badge({ tone, children }: { tone: "ok" | "problem" | "muted"; children: ReactNode }) {
-  return <span className={`oc-agent-badge ${tone}`}>{children}</span>;
 }
 
 const svg = { width: 12, height: 12, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" } as const;
@@ -350,20 +260,6 @@ function WarningIcon() {
   return (
     <svg {...svg} width={14} height={14} aria-hidden="true">
       <path d="m10.3 3.9-8.2 14A2 2 0 0 0 3.8 21h16.4a2 2 0 0 0 1.7-3.1l-8.2-14a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01" />
-    </svg>
-  );
-}
-function RefreshIcon({ spinning }: { spinning: boolean }) {
-  return (
-    <svg {...svg} className={spinning ? "oc-agent-spin" : undefined} aria-hidden="true">
-      <path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5" />
-    </svg>
-  );
-}
-function Chevron({ open }: { open: boolean }) {
-  return (
-    <svg {...svg} width={16} height={16} className={open ? "oc-agent-chevron open" : "oc-agent-chevron"} aria-hidden="true">
-      <path d="m9 6 6 6-6 6" />
     </svg>
   );
 }

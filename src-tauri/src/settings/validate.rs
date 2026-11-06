@@ -80,7 +80,7 @@ pub fn validate(s: &Settings) -> Result<(), SettingsError> {
             &s.claude_code_executable_path,
         ),
         ("codex_executable_path", &s.codex_executable_path),
-        ("opencode_executable_path", &s.opencode_executable_path),
+        ("reason_executable_path", &s.reason_executable_path),
         ("ssh_key_path", &s.ssh_key_path),
     ] {
         if let Some(v) = value.as_deref().filter(|v| !v.trim().is_empty()) {
@@ -90,10 +90,21 @@ pub fn validate(s: &Settings) -> Result<(), SettingsError> {
         }
     }
     for (key, value) in [
+        ("reason.workspace", &s.reason.workspace),
+        ("reason.model", &s.reason.model),
+        ("reason.reasoning_effort", &s.reason.reasoning_effort),
+    ] {
+        if let Some(v) = value.as_deref() {
+            if !reason_value(v) {
+                return invalid(format!(
+                    "{key} {v:?} is not a Reason slug, model id or effort level"
+                ));
+            }
+        }
+    }
+    for (key, value) in [
         ("claude_provider", &s.claude_provider),
         ("codex_provider", &s.codex_provider),
-        ("bedrock_region", &s.bedrock_region),
-        ("vertex_project_id", &s.vertex_project_id),
     ] {
         if let Some(v) = value.as_deref().map(str::trim).filter(|v| !v.is_empty()) {
             if v.chars().any(|c| c.is_whitespace() || c.is_control()) {
@@ -143,4 +154,13 @@ fn valid_branch_prefix(p: &str) -> bool {
         && !p.contains("//")
         && !p.contains("@{")
         && !p.chars().any(|c| c.is_control() || " ~^:?*[\\".contains(c))
+}
+
+/// A value `reason` takes as `--workspace`, `--model` or
+/// `--reasoning-effort` (`reason_acp::cli` passes nothing else).
+fn reason_value(v: &str) -> bool {
+    !v.is_empty()
+        && !v.starts_with('-')
+        && v.chars()
+            .all(|c| c.is_ascii_alphanumeric() || "._-:/".contains(c))
 }

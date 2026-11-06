@@ -88,6 +88,8 @@ pub struct LaunchConfig {
     workspace: Option<String>,
     model: Option<String>,
     reasoning_effort: Option<String>,
+    /// The provider's variables (`REASON_API_KEY`), for every `reason` run.
+    env: CliEnv,
 }
 
 impl LaunchConfig {
@@ -101,7 +103,14 @@ impl LaunchConfig {
             workspace: None,
             model: None,
             reasoning_effort: None,
+            env: CliEnv::default(),
         })
+    }
+
+    /// The environment from Settings › Agents › Reason's provider.
+    pub fn env(mut self, env: CliEnv) -> Self {
+        self.env = env;
+        self
     }
 
     /// The signed-in Workspace to use (`reason whoami` names it).
@@ -174,12 +183,24 @@ impl LaunchConfig {
         }
         cmd.current_dir(dir)
             .env("PATH", self.path_env(env::var_os("PATH")));
+        self.env.apply(&mut cmd);
         cmd
     }
 
     /// Runs `reason [--workspace SLUG] ARGS` in `dir` with no input; `None`
     /// when it cannot start or takes longer than [`SUBCOMMAND_TIMEOUT`].
-    fn run(&self, dir: &Path, args: &[&str], stdout: bool) -> Option<Output> {
+    pub(crate) fn run(&self, dir: &Path, args: &[&str], stdout: bool) -> Option<Output> {
+        self.run_for(dir, args, stdout, SUBCOMMAND_TIMEOUT)
+    }
+
+    /// [`Self::run`] with its own time limit.
+    pub(crate) fn run_for(
+        &self,
+        dir: &Path,
+        args: &[&str],
+        stdout: bool,
+        timeout: Duration,
+    ) -> Option<Output> {
         let mut cmd = self.base_command(dir);
         cmd.args(self.workspace_args())
             .args(args)
@@ -194,7 +215,7 @@ impl LaunchConfig {
         thread::spawn(move || {
             let _ = tx.send(cmd.output());
         });
-        rx.recv_timeout(SUBCOMMAND_TIMEOUT).ok()?.ok()
+        rx.recv_timeout(timeout).ok()?.ok()
     }
 
     /// The signed-in workspaces as `reason whoami` lists them; `None` when
@@ -252,6 +273,46 @@ impl LaunchConfig {
             }
         }
         env::join_paths(dirs).unwrap_or_default()
+    }
+}
+
+/// Variables to set and to remove for every `reason` run. `Debug` names
+/// them without their values, which may be an API key.
+#[derive(Clone, Default, PartialEq, Eq)]
+pub struct CliEnv {
+    set: Vec<(String, String)>,
+    remove: Vec<String>,
+}
+
+impl CliEnv {
+    pub fn set(&mut self, name: &str, value: &str) {
+        self.remove.retain(|n| n != name);
+        self.set.retain(|(n, _)| n != name);
+        self.set.push((name.into(), value.into()));
+    }
+
+    pub fn remove(&mut self, name: &str) {
+        self.set.retain(|(n, _)| n != name);
+        if !self.remove.iter().any(|n| n == name) {
+            self.remove.push(name.into());
+        }
+    }
+
+    fn apply(&self, cmd: &mut Command) {
+        for name in &self.remove {
+            cmd.env_remove(name);
+        }
+        for (name, value) in &self.set {
+            cmd.env(name, value);
+        }
+    }
+}
+
+impl fmt::Debug for CliEnv {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let set = self.set.iter().map(|(n, _)| format!("{n}=<hidden>"));
+        let removed = self.remove.iter().map(|n| format!("-{n}"));
+        f.debug_list().entries(set.chain(removed)).finish()
     }
 }
 

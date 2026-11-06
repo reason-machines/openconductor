@@ -16,22 +16,17 @@ export type CodexPersonality = "none" | "friendly" | "pragmatic";
 export type CodexToolApprovalPolicy = "default" | "always_approve";
 
 /** `agent::AgentKind`. */
-export type AgentKind = "claude" | "codex" | "cursor" | "opencode" | "reason";
-export const AGENTS: AgentKind[] = ["claude", "codex", "cursor", "opencode", "reason"];
+export type AgentKind = "claude" | "codex" | "reason";
+export const AGENTS: AgentKind[] = ["claude", "codex", "reason"];
 
 /** `agent::ProviderConfig`, tagged by `kind`. Options are per kind. */
 export type ProviderKind =
   | "claude_login"
   | "anthropic_api"
-  | "bedrock"
-  | "vertex"
-  | "foundry"
   | "codex_login"
   | "openai_api"
-  | "codex_gateway"
-  | "cursor_api"
-  | "opencode_login"
-  | "reason_login";
+  | "reason_login"
+  | "reason_api";
 export interface ProviderConfig {
   kind: ProviderKind;
   [option: string]: unknown;
@@ -41,8 +36,6 @@ export interface ProviderConfig {
 export const DEFAULT_PROVIDER: Record<AgentKind, ProviderKind> = {
   claude: "claude_login",
   codex: "codex_login",
-  cursor: "cursor_api",
-  opencode: "opencode_login",
   reason: "reason_login",
 };
 
@@ -51,12 +44,11 @@ export interface Settings {
   /** Conductor's top-level provider keys: `custom` (API key) or `default` (CLI login); Codex also `chatgpt_sign_in`. */
   claude_provider?: string | null;
   codex_provider?: string | null;
-  bedrock_region?: string | null;
-  vertex_project_id?: string | null;
   /** Advanced › executable paths; blank means the agent on PATH. */
   claude_code_executable_path?: string | null;
   codex_executable_path?: string | null;
-  opencode_executable_path?: string | null;
+  /** Agents › Reason › "Reason executable path"; blank uses the installed `reason`. */
+  reason_executable_path?: string | null;
   /** Advanced › "SSH private key path". */
   ssh_key_path?: string | null;
   /** Account › "Claude Code tool approvals"; off by default. */
@@ -133,6 +125,8 @@ export interface Settings {
   environment_variable_files?: string[];
   /** Custom instructions per action (Conductor's `[prompts]`); repository files override each. */
   prompts?: Partial<Record<PromptKind, string | null>> & { [extra: string]: unknown };
+  /** `[reason]`: the workspace, model and effort new Reason chats start with. */
+  reason?: { workspace?: string | null; model?: string | null; reasoning_effort?: string | null; [extra: string]: unknown };
   /** Conductor's "Big terminal" settings tab (id `terminal`). */
   terminal?: {
     /** A built-in preset or `custom:<id>`; absent or unknown means Claude. */
@@ -163,7 +157,8 @@ export interface SecretInput {
 export interface ProviderStatus {
   kind: ProviderKind;
   agent: AgentKind;
-  secrets: { key: string; present: boolean }[];
+  /** `hint`: the stored value's last four characters, when it is long enough to have one. */
+  secrets: { key: string; present: boolean; hint?: string }[];
   /** Options and keys are present and well formed; not that the backend accepts them. */
   ready: boolean;
   /** Why it is not ready, safe to display. */

@@ -17,7 +17,6 @@ interface Props {
 const EXECUTABLES = [
   { key: "claude_code_executable_path", label: "Claude Code" },
   { key: "codex_executable_path", label: "Codex" },
-  { key: "opencode_executable_path", label: "OpenCode" },
 ] as const;
 
 /**

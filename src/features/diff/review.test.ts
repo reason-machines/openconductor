@@ -30,6 +30,7 @@ test("an unset review model falls back to Conductor's built-in review default, n
   assert.equal(reviewModelSetting(withModels({ default: "gpt-5.6-sol", review: null })), "opus-5-1m");
   assert.equal(reviewModelSetting(withModels({ review: "  " })), "opus-5-1m");
   assert.equal(reviewModelSetting(withModels({ review: "sonnet-4-6" })), "sonnet-4-6");
+  assert.equal(reviewModelSetting(withModels({ review: "composer-2.5" })), "opus", "a removed Cursor id reads as the default model");
 });
 
 test("Conductor model ids map to Reason model ids", () => {
@@ -41,7 +42,6 @@ test("Conductor model ids map to Reason model ids", () => {
   assert.equal(reasonModelId("byok:anthropic:claude-opus-5-5"), "byok:anthropic:claude-opus-5-5", "a Reason id is kept");
   assert.equal(reasonModelId("openai/gpt-6.1-sol"), "openai/gpt-6.1-sol");
   assert.equal(reasonModelId("opus"), null, "an alias has no fixed Reason id");
-  assert.equal(reasonModelId("composer-2.5"), null, "Cursor models do not run on Reason");
   assert.equal(reasonModelId("something-else"), null);
 });
 

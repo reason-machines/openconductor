@@ -213,12 +213,18 @@ export default function App() {
   // The composer's model picker ("Add models", "Edit") opens Settings › Default models.
   useEffect(() => {
     const open = (e: Event) => {
-      const detail = (e as CustomEvent<{ page?: string; repoId?: string; section?: string }>).detail;
+      const detail = (e as CustomEvent<{ page?: string; repoId?: string; section?: string; providerTab?: string }>).detail;
       // The right panel's "Add run script" opens the repository's Scripts settings.
       const section = REPO_SECTIONS.find((s) => s === detail?.section);
       if (detail?.repoId && section) return navigateSettings({ scope: "repo", repoId: detail.repoId, section });
       const known = USER_PAGES.find((p) => p === detail?.page);
       if (known) navigateSettings({ scope: "user", page: known });
+      // A chat's "Open <agent> settings": the Agents page opens on that agent's tab.
+      if (known === "providers" && detail?.providerTab) {
+        const q = new URLSearchParams(window.location.search);
+        q.set("providerTab", detail.providerTab);
+        window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}`);
+      }
     };
     window.addEventListener(OPEN_SETTINGS_EVENT, open);
     return () => window.removeEventListener(OPEN_SETTINGS_EVENT, open);
@@ -372,18 +378,25 @@ export default function App() {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
+  // The Toaster sits at the same place (second child of this fragment) in both views, so
+  // opening or closing Settings keeps the toasts mounted: their timers keep running and
+  // they do not replay their 400ms slide-in over the page that just opened.
+  const toaster = <Toaster toasts={toasts} dismiss={dismiss} />;
   if (diagnosticsOpen)
     return (
       <>
-        <DiagnosticsPage onClose={() => setDiagnosticsOpen(false)} notify={show} />
-        {quitDialog}
-        <Toaster toasts={toasts} dismiss={dismiss} />
+        <>
+          <DiagnosticsPage onClose={() => setDiagnosticsOpen(false)} notify={show} />
+          {quitDialog}
+        </>
+        {toaster}
       </>
     );
 
   if (settingsLocation)
     return (
       <>
+        <>
         <SettingsView
           location={settingsLocation}
           repos={state.repos}
@@ -400,11 +413,13 @@ export default function App() {
           }}
         />
         {quitDialog}
-        <Toaster toasts={toasts} dismiss={dismiss} />
+        </>
+        {toaster}
       </>
     );
 
   return (
+    <>
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
@@ -527,7 +542,8 @@ export default function App() {
       )}
       {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       {quitDialog}
-      <Toaster toasts={toasts} dismiss={dismiss} />
     </div>
+    {toaster}
+    </>
   );
 }

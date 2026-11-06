@@ -1,4 +1,4 @@
-// The 11 local-storage subsystems Conductor keeps as
+// The local-storage subsystems Conductor keeps (all 11 but its OpenCode model discovery) as
 // `local-storage.subsystem.<name>.json` next to conductor.db, with the size
 // limits, entry ids and persist names its frontend uses
 // (evidence/persistence/local-storage/NOTES.md). All are unencrypted
@@ -19,8 +19,6 @@ export const COMPOSER_DRAFTS: Subsystem = { name: "composer-drafts", sizeLimit: 
 export const DISPATCHER_STATE: Subsystem = { name: "dispatcher-state", sizeLimit: 1 * MiB };
 /** `{ effortLevel?, fastMode }` per model id; lastUpdatedAt is when it was last used. */
 export const MODEL_PICKER_CONFIGS: Subsystem = { name: "model-picker-configs-v1", sizeLimit: 64 * KiB };
-/** OpenCode models found per repository and executable. */
-export const OPENCODE_MODEL_DISCOVERY: Subsystem = { name: "opencode-model-discovery-v1", sizeLimit: 4_194_304 };
 /** Composer completions (files, slash commands, skills) before a workspace exists. */
 export const PRE_WORKSPACE_COMPLETIONS: Subsystem = { name: "pre-workspace-completions-v1", sizeLimit: 5 * MiB };
 /** Per-route UI state, one persisted entry. */
@@ -38,7 +36,6 @@ export const SUBSYSTEMS: readonly Subsystem[] = [
   COMPOSER_DRAFTS,
   DISPATCHER_STATE,
   MODEL_PICKER_CONFIGS,
-  OPENCODE_MODEL_DISCOVERY,
   PRE_WORKSPACE_COMPLETIONS,
   ROUTE_USER_STATE,
   RUN_SCRIPT_HISTORY,
@@ -62,19 +59,6 @@ export const PRE_WORKSPACE_COMPLETIONS_TTL_MS = 5 * 60_000;
 /** `turn-changes-cache` entry id. */
 export function turnChangesId({ sessionId, turnId }: { sessionId: string; turnId: string }): string {
   return JSON.stringify([sessionId, turnId]);
-}
-
-/** `opencode-model-discovery-v1` entry id. */
-export function opencodeModelDiscoveryId({
-  repoId,
-  mainWorktreePath,
-  executablePath,
-}: {
-  repoId?: string;
-  mainWorktreePath?: string;
-  executablePath?: string;
-}): string {
-  return JSON.stringify([repoId, mainWorktreePath, executablePath]);
 }
 
 /** `pre-workspace-completions-v1` entry id for a completion target key. */

@@ -31,24 +31,6 @@ export const CodexMark = ({ size = 14 }: { size?: number }) =>
       <path d="M12 7.5v9M8.1 9.75l7.8 4.5M8.1 14.25l7.8-4.5" />
     </>,
   );
-/** Cursor: an isometric cube. */
-export const CursorMark = ({ size = 14 }: { size?: number }) =>
-  svg(
-    size,
-    <>
-      <path d="M12 3 20 7.5v9L12 21l-8-4.5v-9z" />
-      <path d="M12 12 20 7.5M12 12v9M12 12 4 7.5" />
-    </>,
-  );
-/** OpenCode: a framed block. */
-export const OpenCodeMark = ({ size = 14 }: { size?: number }) =>
-  svg(
-    size,
-    <>
-      <rect x="5" y="3" width="14" height="18" rx="1" />
-      <rect x="8" y="7" width="8" height="10" />
-    </>,
-  );
 
 export const TerminalIcon = ({ size = 24 }: { size?: number }) => svg(size, <path d="m5 7 5 5-5 5M12 19h7" />);
 export const KeyIcon = ({ size = 24 }: { size?: number }) =>
@@ -97,7 +79,17 @@ export const GearIcon = ({ size = 16 }: { size?: number }) =>
     </>,
   );
 
-export type AgentTabId = "claude" | "codex" | "cursor" | "opencode";
+/** Reason: a ringed dot. */
+export const ReasonMark = ({ size = 14 }: { size?: number }) =>
+  svg(
+    size,
+    <>
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none" />
+    </>,
+  );
+
+export type AgentTabId = "claude" | "codex";
 
 /** The tab icon of each agent (Conductor's `axe`). */
 export function AgentMark({ agent, size = 14 }: { agent: AgentTabId; size?: number }) {
@@ -106,9 +98,5 @@ export function AgentMark({ agent, size = 14 }: { agent: AgentTabId; size?: numb
       return <ClaudeMark size={size} />;
     case "codex":
       return <CodexMark size={size} />;
-    case "cursor":
-      return <CursorMark size={size} />;
-    case "opencode":
-      return <OpenCodeMark size={size} />;
   }
 }

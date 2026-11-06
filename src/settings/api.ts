@@ -44,5 +44,16 @@ export async function disconnectProvider(agent: AgentKind): Promise<ProviderStat
   throw new Error(PREVIEW_NO_KEYS);
 }
 
+/** The whole stored value of one of the agent's current provider secrets, for an explicit "show". */
+export async function revealProviderSecret(agent: AgentKind, key: string): Promise<string> {
+  if (inTauri()) return invoke<string>("reveal_provider_secret", { agent, key });
+  throw new Error(PREVIEW_NO_KEYS);
+}
+
+/** Absolute path of settings.toml; null outside the desktop app. */
+export async function settingsFilePath(): Promise<string | null> {
+  return inTauri() ? invoke<string>("settings_file_path") : null;
+}
+
 /** Tauri rejects with the command's error string; keep messages readable. */
 export const errorText = (e: unknown): string => (e instanceof Error ? e.message : String(e));

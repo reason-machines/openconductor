@@ -38,12 +38,12 @@ export const CODEX_TOOL_APPROVALS: readonly { value: CodexToolApprovalPolicy; la
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 export const levelLabel = (l: string): string => (l === "xhigh" ? "Extra high" : cap(l));
 
-/** Providers `visible_provider_models` keeps lists for, in Conductor's order (`RN`). */
-export const VISIBLE_MODEL_PROVIDERS = ["claude", "codex", "cursor", "opencode", "pi"] as const;
+/** Providers `visible_provider_models` keeps lists for, in Conductor's order (`RN`), without its Cursor and OpenCode. */
+export const VISIBLE_MODEL_PROVIDERS = ["claude", "codex", "pi"] as const;
 export type VisibleModelProvider = (typeof VISIBLE_MODEL_PROVIDERS)[number];
 export type VisibleModels = Record<VisibleModelProvider, string[]>;
 
-const emptyVisible = (): VisibleModels => ({ claude: [], codex: [], cursor: [], opencode: [], pi: [] });
+const emptyVisible = (): VisibleModels => ({ claude: [], codex: [], pi: [] });
 
 /**
  * `models.visible_provider_models` as provider -> model ids, read the way
@@ -86,14 +86,13 @@ export function executablePaths(s: Settings): ExecutablePaths {
   return {
     claude: s.claude_code_executable_path ?? undefined,
     codex: s.codex_executable_path ?? undefined,
-    opencode: s.opencode_executable_path ?? undefined,
   };
 }
 
 /** A copy of `s` with a top-level text key set; blank means unset. */
 export function withTopLevel(
   s: Settings,
-  key: "claude_code_executable_path" | "codex_executable_path" | "opencode_executable_path" | "ssh_key_path",
+  key: "claude_code_executable_path" | "codex_executable_path" | "ssh_key_path",
   value: string,
 ): Settings {
   const v = value.trim();

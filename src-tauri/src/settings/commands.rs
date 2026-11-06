@@ -1,8 +1,10 @@
 //! Tauri commands for the settings pages. Thin wrappers over
 //! [`SettingsService`]; errors are its `Display` text, which never contains
-//! a secret value. Provider secrets are write-only from the UI: they go in
-//! through [`connect_provider`] and come back only as present / missing in
-//! [`ProviderStatus`].
+//! a secret value. Provider secrets go in through [`connect_provider`] and
+//! come back as present / missing with their last four characters in
+//! [`ProviderStatus`]; the whole value is returned only by
+//! [`reveal_provider_secret`], which the UI calls when the user presses
+//! "show" on that key.
 
 use tauri::State;
 
@@ -49,6 +51,26 @@ pub fn disconnect_provider(
     agent: AgentKind,
 ) -> Result<ProviderStatus, String> {
     service.disconnect(agent).map_err(|e| e.to_string())
+}
+
+/// The stored value of one of `agent`'s current provider secrets, for the
+/// eye button on Settings › Agents. Other keys are refused.
+#[tauri::command]
+pub fn reveal_provider_secret(
+    service: State<'_, SettingsService>,
+    agent: AgentKind,
+    key: String,
+) -> Result<String, String> {
+    service
+        .reveal_secret(agent, &key)
+        .map(|v| v.expose().to_owned())
+        .map_err(|e| e.to_string())
+}
+
+/// Absolute path of the user's settings.toml ("Open settings.toml").
+#[tauri::command]
+pub fn settings_file_path(service: State<'_, SettingsService>) -> String {
+    service.path().display().to_string()
 }
 
 /// Effective settings for one repository: the user file with its
