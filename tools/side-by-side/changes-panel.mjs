@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import http from "node:http";
@@ -43,10 +43,14 @@ const specs = {
   tree: { ref: [click('[aria-label="Show folder hierarchy"]')], oc: [click('[aria-label="Show folder hierarchy"]')] },
   collapsed: { ref: [click('[aria-label="Show folder hierarchy"]'), settle, click('button:has-text("src / lib")')], oc: [click('[aria-label="Show folder hierarchy"]'), settle, click('button:has-text("src / lib")')] },
   options: { ref: [click('button:has(svg.lucide-ellipsis-vertical)')], oc: [click('[aria-label="Changes options"]')] },
+  "diff-unified": { ref: [click('text=auth.ts >> nth=-1')], oc: [click("button.oc-change[title='Open src/lib/auth.ts']")] },
+  "diff-split": { ref: [click('text=auth.ts >> nth=-1'), settle, click("role=button[name='Split view']")], oc: [click("button.oc-change[title='Open src/lib/auth.ts']"), settle, click("role=button[name='Split view']")] },
+  "diff-entire-file": { ref: [click('text=auth.ts >> nth=-1'), settle, click("role=button[name='Entire file']")], oc: [click("button.oc-change[title='Open src/lib/auth.ts']"), settle, click("role=button[name='Entire file']")] },
 };
 
 async function capture(side, state, steps) {
-  const actions = [{ action: "wait_for_timeout", duration_ms: 5000 }, ...(side === "ref" ? refStart : []), ...steps, settle].map((a, i) => ({ step_id: `s${i}`, ...a }));
+  const ready = { action: "wait_for", locator: { kind: "css", selector: "text=2 files changed" }, state: "visible", timeout_ms: 10000 };
+  const actions = [{ action: "wait_for_timeout", duration_ms: 5000 }, ...(side === "ref" ? refStart : []), ready, ...steps, settle].map((a, i) => ({ step_id: `s${i}`, ...a }));
   const input = {
     browser: { mode: "launch", executable_path: "/usr/bin/chromium", headless: true },
     start_url: { url: side === "ref" ? reference : `http://localhost:${port}/?oc_scenario=populated&oc_theme=dark` },
@@ -65,13 +69,15 @@ async function capture(side, state, steps) {
   const screenshot = artifacts.screenshot.value;
   fs.writeFileSync(path.join(out, `${side}-${state}.png`), Buffer.from(screenshot.data_base64, "base64"));
   const dom = artifacts.dom?.value?.text ?? artifacts.dom?.value ?? "";
-  fs.writeFileSync(path.join(out, `${side}-${state}.dom.txt`), typeof dom === "string" ? dom : JSON.stringify(dom));
+  const domText = typeof dom === "string" ? dom : JSON.stringify(dom);
+  if (!domText.includes("files changed") || !domText.includes("auth.test.ts")) throw new Error(`${side}-${state}: not the populated Changes screen`);
+  fs.writeFileSync(path.join(out, `${side}-${state}.dom.txt`), domText);
   const artifactPath = path.join(out, `${side}-${state}-artifact.json`);
   fs.writeFileSync(artifactPath, JSON.stringify(screenshot));
   return { evidence_id: ev.evidence_id, png_sha256: createHash("sha256").update(Buffer.from(screenshot.data_base64, "base64")).digest("hex"), artifactPath };
 }
 async function prove() {
-  const report = {};
+  const report = { source_commit: spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).stdout.trim(), build_index_sha256: createHash("sha256").update(fs.readFileSync("dist/index.html")).digest("hex") };
   for (const [state, spec] of Object.entries(specs)) {
     if (process.env.STATES && !process.env.STATES.split(",").includes(state)) continue;
     try {

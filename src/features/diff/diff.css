@@ -68,7 +68,7 @@
 .oc-diff-list .oc-changes-header { flex: none; height: 32px; padding: 0 26px 0 20px; border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); font-size: 14px; font-weight: 500; line-height: 1; }
 .oc-diff-list .oc-change-row { position: relative; margin: 0 8px; border-radius: 6px; }
 .oc-diff-list .oc-change { min-height: 32px; padding: 4px 12px; border-radius: 6px; font-size: 14px; gap: 6px; }
-.oc-diff-list .oc-change.viewed { opacity: .5; }
+.oc-diff-list .oc-change-row:has(.oc-change.viewed) { opacity: .5; }
 .oc-diff-list .oc-change .name { align-items: center; }
 .oc-diff-list .oc-count { display: inline-flex; gap: 4px; font-size: 10px; font-weight: 500; line-height: 15px; white-space: nowrap; }
 .oc-diff-list .oc-count .d { margin-left: 0; }
@@ -77,7 +77,7 @@
 .oc-change-meta { display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 0 6px; min-width: 40px; flex: none; }
 .oc-change-uncommitted { font-size: 12px; font-weight: 500; color: var(--text); }
 .oc-change-actions { position: absolute; right: 0; top: 0; height: 100%; display: inline-flex; align-items: center; visibility: hidden; }
-.oc-change-row:hover .oc-change-meta, .oc-change-row:focus-within .oc-change-meta { visibility: hidden; }
+.oc-change-row:has(.oc-change-actions button):hover .oc-change-meta, .oc-change-row:has(.oc-change-actions button):focus-within .oc-change-meta { visibility: hidden; }
 .oc-change-row:hover .oc-change-actions, .oc-change-row:focus-within .oc-change-actions { visibility: visible; }
 .oc-change-row:has(.oc-change-actions button:hover) .oc-change { background: transparent; }
 .oc-change-row .oc-change-actions .oc-discard { opacity: 1; margin: 0; }
