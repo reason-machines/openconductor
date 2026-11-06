@@ -17,6 +17,8 @@ interface Props {
   pr: PrInfo;
   /** Worktree the `gh` commands run in. */
   worktree: string | null;
+  /** The workspace's project, so the branch list resolves to it when its folder has `-v1` copies. */
+  repoId?: string;
   /** Source checkout of the repository, for the branch list. */
   repoPath: string;
   defaultBranch: string;
@@ -52,7 +54,7 @@ function TitleDialog({ title, onSave, onClose }: { title: string; onSave: (t: st
   );
 }
 
-export function PrHeader({ pr, worktree, repoPath, defaultBranch, refresh, target }: Props) {
+export function PrHeader({ pr, worktree, repoId, repoPath, defaultBranch, refresh, target }: Props) {
   // Saved values shown until the next lookup brings GitHub's.
   const [saved, setSaved] = useState<Partial<PrText> & { base?: string }>({});
   useEffect(() => setSaved({}), [pr.title, pr.body, pr.baseRefName, pr.number]);
@@ -114,7 +116,7 @@ export function PrHeader({ pr, worktree, repoPath, defaultBranch, refresh, targe
           >
             {base}
           </button>
-          {picking && <BranchPicker base={base} repoPath={repoPath} defaultBranch={defaultBranch} onPick={(b) => void pickBase(b)} onClose={() => setPicking(false)} />}
+          {picking && <BranchPicker base={base} repoId={repoId} repoPath={repoPath} defaultBranch={defaultBranch} onPick={(b) => void pickBase(b)} onClose={() => setPicking(false)} />}
         </span>
       </div>
       <button className="pr-title" disabled={readOnly} title={readOnly ? undefined : "Edit PR title"} onClick={() => setEditingTitle(true)}>
