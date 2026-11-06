@@ -13,6 +13,7 @@ import { installContextMenuGuard } from "./lib/nativeContextMenu";
 import "./fonts.css";
 import "./theme/tokens.css";
 import "./styles.css";
+import "./components/motion/screens.css";
 
 // Conductor's startup migration: a legacy "Send messages with" of ⌘ Enter
 // fills each send command that has no override with the ⌘ Enter preset.
