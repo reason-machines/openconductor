@@ -97,20 +97,26 @@
   const report = { flow: "model-picker", started: new Date().toISOString(), result: "fail", steps };
   try {
     await waitFor("the app", () => q(".home-card") || q(".workspace"));
-    // The app reopens the last selection; Open project is on Home. A
-    // workspace still loading can swallow the first click, so retry it.
-    await waitFor("Home", () => {
-      if (q(".home-card")) return true;
-      qa("button.sb-row").find((b) => text(b.querySelector(".sb-row-label")) === "Home")?.click();
-      return false;
-    }, 60000);
-    if (!qa(".sb-repo-name").map(text).includes(cfg.repoName)) {
+    // A fixture repo an earlier run added is reused; else Open project on
+    // Home (the app reopens the last selection, and a workspace still
+    // loading can swallow the first Home click, so it is retried).
+    await waitFor("the sidebar", () => q("button.sb-row"));
+    const repoNames = () => qa(".sb-repo-name").map(text);
+    let repoName = repoNames().includes(cfg.repoName) ? cfg.repoName : repoNames().find((n) => n.startsWith("model-e2e-"));
+    if (!repoName) {
+      await waitFor("Home", () => {
+        if (q(".home-card")) return true;
+        qa("button.sb-row").find((b) => text(b.querySelector(".sb-row-label")) === "Home")?.click();
+        return false;
+      }, 60000);
       window.__OC_E2E_PICK_FOLDER__ = cfg.repo;
       const open = await waitFor("Open project on Home", () => qa(".home-card").find((c) => text(c.querySelector(".home-card-label")) === "Open project"));
       open.click();
-      await waitFor(`${cfg.repoName} in the sidebar`, () => qa(".sb-repo-name").map(text).includes(cfg.repoName));
+      await waitFor(`${cfg.repoName} in the sidebar`, () => repoNames().includes(cfg.repoName));
+      repoName = cfg.repoName;
     }
-    (await waitFor("Create workspace button", () => q(`.sb-repo-add[aria-label="Create workspace in ${cfg.repoName}"]`))).click();
+    step("repository", { repoName });
+    (await waitFor("Create workspace button", () => q(`.sb-repo-add[aria-label="Create workspace in ${repoName}"]`))).click();
     (await waitFor("the Create workspace dialog", () => q('form.create-ws button[type="submit"]'))).click();
     await waitFor("the workspace view", () => q(".workspace .composer textarea"), 60000);
     await waitFor("the model chip", () => chip());
