@@ -1,7 +1,7 @@
 // parity:diff.file-render:ui parity:diff.split-unified:ui parity:diff.viewed:ui parity:diff.virtualized:ui
 // One changed file in the "All changes" tab. The code is drawn by Pierre's
 // diff library with the options Conductor's diff tab passes it (REA, 0.87.6):
-// no Pierre file header (ours carries Viewed and discard), Pierre themes,
+// no Pierre file header (ours carries Viewed, discard and copy), Pierre themes,
 // "line-info-basic" separators expanding 20 lines per click, lines wrapped or
 // scrolled by the Wrap lines toggle (the wrap_lines setting, on by default),
 // number-column hover, and a comment started from the gutter button or by
@@ -10,6 +10,10 @@
 // Like Conductor, the file is one item of a Pierre CodeView, which renders only
 // the rows in and near the viewport, so a long diff stays cheap to show.
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
+import { CheckIcon, CopyIcon } from "../../components/Icons.tsx";
+import { invoke } from "@tauri-apps/api/core";
+import { inTauri } from "../../backend";
+import { clipboardHtml, COPIED_MS, copySource } from "./copyFile.ts";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { processFile, type CodeViewItem, type CodeViewLineSelection, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, EditProvider, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
@@ -54,6 +58,10 @@ interface Props {
   onShowWhitespace?: () => void;
   /** Make the entire-file view an editor (EditInViewer.ts); absent where the file can't be edited. */
   edit?: FileEdit;
+  /** The whole new file, for the header's "Copy file contents" button. */
+  loadText?: () => Promise<string>;
+  /** Shows a toast (a failed copy). */
+  notify?: (kind: "info" | "error", message: string) => void;
 }
 
 /** The app theme as Pierre's themeType: `data-theme` on the root, or the system setting when absent. */
@@ -214,7 +222,8 @@ function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, l
 }
 
 export function FileDiffView(props: Props) {
-  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, onShowWhitespace, edit } = props;
+  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, onShowWhitespace, edit, loadText, notify } = props;
+  const copy = copySource(file, { draft: edit?.current, loadText });
   let body: ReactNode;
   if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
   else if (file.hunks.length === 0)
@@ -250,6 +259,7 @@ export function FileDiffView(props: Props) {
             <span className="oc-unsaved" role="img" aria-label="Unsaved changes" />
           </Tooltip>
         )}
+        {copy && <CopyFileButton path={file.path} read={copy} notify={notify} />}
         {tools}
         <ViewedToggle viewed={viewed} onToggle={onToggleViewed} />
       </header>
@@ -260,6 +270,58 @@ export function FileDiffView(props: Props) {
       )}
       {!viewed && body}
     </section>
+  );
+}
+
+/** Plain text plus Conductor's HTML flavour naming the path (`V$r`), falling back to plain text. */
+async function writeFileToClipboard(path: string, contents: string): Promise<void> {
+  const html = clipboardHtml(path, contents);
+  if (inTauri()) {
+    try {
+      await invoke("plugin:clipboard-manager|write_html", { html, altText: contents });
+    } catch {
+      await invoke("plugin:clipboard-manager|write_text", { text: contents });
+    }
+    return;
+  }
+  try {
+    await navigator.clipboard.write([
+      new ClipboardItem({ "text/plain": new Blob([contents], { type: "text/plain" }), "text/html": new Blob([html], { type: "text/html" }) }),
+    ]);
+  } catch {
+    await navigator.clipboard.writeText(contents);
+  }
+}
+
+/**
+ * Conductor's SimpleCopyButton in the file header: a copy icon that turns into a
+ * check, with the tooltip "Copied!", for two seconds after a copy.
+ */
+function CopyFileButton({ path, read, notify }: { path: string; read: () => Promise<string>; notify?: Props["notify"] }) {
+  const [copied, setCopied] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(timer.current), []);
+  const onClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    read()
+      .then((contents) => writeFileToClipboard(path, contents))
+      .then(() => {
+        setCopied(true);
+        clearTimeout(timer.current);
+        timer.current = setTimeout(() => setCopied(false), COPIED_MS);
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+        notify?.("error", "Failed to copy");
+      });
+  };
+  const label = "Copy file contents";
+  return (
+    <Tooltip content={copied ? "Copied!" : label}>
+      <button type="button" className="oc-copy-file" aria-label={label} onClick={onClick}>
+        {copied ? <CheckIcon size={14} strokeWidth={1.5} /> : <CopyIcon size={14} strokeWidth={1.5} />}
+      </button>
+    </Tooltip>
   );
 }
 
