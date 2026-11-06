@@ -43,6 +43,7 @@ export const ArrowRightIcon = ({ size, strokeWidth }: P) => <ConductorIcon name=
 export const MoreIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="ellipsis" size={size} strokeWidth={strokeWidth} />;
 export const CodeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="code-xml" size={size} strokeWidth={strokeWidth} />;
 export const ChevronDownIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="chevron-down" size={size} strokeWidth={strokeWidth} />;
+export const ChevronsUpDownIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="chevrons-up-down" size={size} strokeWidth={strokeWidth} />;
 export const HelpIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="circle-question-mark" size={size} strokeWidth={strokeWidth} />;
 export const SettingsIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="settings" size={size} strokeWidth={strokeWidth} />;
 export const BookIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="book-open" size={size} strokeWidth={strokeWidth} />;

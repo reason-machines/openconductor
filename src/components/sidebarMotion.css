@@ -17,18 +17,17 @@
    Ours enter with a keyframe from the starting style and leave through data-ending-style
    (useMenuPresence keeps them mounted for the 100ms). Right-click menus use the shared
    menu/ContextMenu (#548), which runs the same 100ms itself. */
-.sb-menu, .sb-account-menu, .sb-help-menu, .add-repo-pop, .usage-popover {
+.sb-menu, .sb-account-menu, .sb-help-menu, .usage-popover {
   animation: sb-popup-in 100ms cubic-bezier(0.4, 0, 0.2, 1);
   transition: opacity 100ms cubic-bezier(0.4, 0, 0.2, 1), scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-:is(.sb-menu, .sb-account-menu, .sb-help-menu, .add-repo-pop, .usage-popover)[data-ending-style] { opacity: 0; scale: 0.95; pointer-events: none; }
+:is(.sb-menu, .sb-account-menu, .sb-help-menu, .usage-popover)[data-ending-style] { opacity: 0; scale: 0.95; pointer-events: none; }
 @keyframes sb-popup-in { from { opacity: 0; scale: 0.95; } }
 /* --transform-origin: Base UI puts it on the anchor; for these placements that is: */
 .sb-menu { transform-origin: top right; }          /* "..." header menus: below, align end */
 .pf-popup { transform-origin: top left; } /* submenu to the right */
 .sb-account-menu { transform-origin: top left; }   /* below the account row, align start */
 .sb-help-menu { transform-origin: bottom left; }   /* above the help button, align start */
-.add-repo-pop { transform-origin: top right; }
 .usage-popover { transform-origin: top; }
 
 /* Ghost buttons (Conductor's `tt`, REe @base: "transition-transform duration-150 ease-out

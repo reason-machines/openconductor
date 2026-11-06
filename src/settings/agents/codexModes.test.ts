@@ -38,14 +38,11 @@ test("CLI and API key clear chatgpt_sign_in first, then connect; API key keeps i
   assert.equal(withCodexProvider(s({ codex_provider: "x" }), null).codex_provider, null);
 });
 
-test("the ChatGPT card's status: account and plan, or not signed in", () => {
-  const acct = { kind: "chatgpt", email: "e2e@example.com", planType: "pro", requiresOpenaiAuth: true };
+test("the ChatGPT card's status: the account's email only, or not signed in", () => {
+  const acct = { kind: "chatgpt", email: "e2e@example.com", planType: "pro", workspaceName: "ws", requiresOpenaiAuth: true };
   assert.deepEqual(chatgptStatus(acct), {
     authenticated: true,
-    rows: [
-      { label: "ChatGPT account", value: "e2e@example.com" },
-      { label: "Plan", value: "Pro" },
-    ],
+    rows: [{ label: "ChatGPT account", value: "e2e@example.com" }],
     notConnectedMessage: "Not signed in with ChatGPT",
   });
   assert.equal(chatgptStatus({ kind: "apiKey", requiresOpenaiAuth: true }).authenticated, false);

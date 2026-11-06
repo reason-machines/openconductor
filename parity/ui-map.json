@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "f30cacf",
+  "commit": "2d9ead58",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -33,27 +33,27 @@
  },
  "summary": {
   "total": 965,
-  "missing": 770,
-  "wrong": 80,
-  "matches": 115,
+  "missing": 763,
+  "wrong": 79,
+  "matches": 123,
   "states": {
    "total": 67,
-   "missing": 17,
-   "wrong": 26,
-   "matches": 24
+   "missing": 15,
+   "wrong": 25,
+   "matches": 27
   },
   "items": {
    "total": 898,
-   "missing": 753,
+   "missing": 748,
    "wrong": 54,
-   "matches": 91
+   "matches": 96
   },
   "items_by_kind": {
    "dialog": {
     "total": 64,
-    "missing": 56,
+    "missing": 55,
     "wrong": 4,
-    "matches": 4
+    "matches": 5
    },
    "empty-state": {
     "total": 52,
@@ -81,21 +81,21 @@
    },
    "route": {
     "total": 65,
-    "missing": 42,
-    "wrong": 10,
-    "matches": 13
+    "missing": 41,
+    "wrong": 9,
+    "matches": 15
    },
    "select": {
     "total": 29,
-    "missing": 23,
+    "missing": 22,
     "wrong": 5,
-    "matches": 1
+    "matches": 2
    },
    "settings-page": {
     "total": 29,
-    "missing": 15,
+    "missing": 14,
     "wrong": 6,
-    "matches": 8
+    "matches": 9
    },
    "settings-row": {
     "total": 121,
@@ -111,8 +111,8 @@
    },
    "tab": {
     "total": 35,
-    "missing": 30,
-    "wrong": 1,
+    "missing": 29,
+    "wrong": 2,
     "matches": 4
    },
    "toast": {
@@ -125,15 +125,15 @@
   "by_team": {
    "chat": {
     "total": 55,
-    "missing": 50,
+    "missing": 49,
     "wrong": 4,
-    "matches": 1
+    "matches": 2
    },
    "cloud-org": {
     "total": 83,
-    "missing": 74,
-    "wrong": 3,
-    "matches": 6
+    "missing": 70,
+    "wrong": 4,
+    "matches": 9
    },
    "git-review": {
     "total": 35,
@@ -143,8 +143,8 @@
    },
    "onboarding-auth": {
     "total": 23,
-    "missing": 16,
-    "wrong": 6,
+    "missing": 15,
+    "wrong": 7,
     "matches": 1
    },
    "routines": {
@@ -179,13 +179,13 @@
    },
    "workspaces": {
     "total": 56,
-    "missing": 39,
-    "wrong": 10,
-    "matches": 7
+    "missing": 38,
+    "wrong": 7,
+    "matches": 11
    }
   },
-  "located_items": 212,
-  "items_with_reference_screenshot": 212
+  "located_items": 213,
+  "items_with_reference_screenshot": 213
  },
  "states": [
   {
@@ -368,80 +368,75 @@
   {
    "id": "create",
    "title": "Create workspace composer",
-   "status": "wrong",
-   "why": "diff 5.4% at t24, copy 86%",
+   "status": "matches",
+   "why": "diff 0.8% at t24, copy 90%",
    "team": "chat",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/create.png",
+    "file": "side-by-side/create-composer-01-dialog.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 2,
-    "actions_total": 2,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_6eab55a28ed8ecba6945fdde84a265015ce6b4bd84b871b00567de1946b1859e"
+    "rea_evidence_id": "ev_d49b212b4bd1a86269a3b860d9b08cee02b044ea9a2b1e44b34408c298eaae3c"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/create.png",
+    "file": "side-by-side/create-composer-01-dialog.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 5ff712cf9: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/create-composer-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/create.jpg",
-    "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.053726181402439024,
+    "file": null,
+    "changed_ratio_t0": 0.9999971417682927,
+    "changed_ratio_t24": 0.008146913109756097,
     "rea_evidence_ids": [
-     "ev_7bdec9a8628774d95c095547a22347c68443a9b78f49a845b2614414e81ee447",
-     "ev_64d61ce4d2915945c52ca82296680264c6e6e7e2403a82305500ad875f10af06"
+     "ev_538164f527426afe7b2fc4baa26aca0083ae056883543384bc7eb2a820a48177",
+     "ev_618774ca72a1fce0b778ec62829130580ccadb77901901424ed01aa5b6e6071c"
     ]
    },
-   "copy_coverage": 0.864,
+   "copy_coverage": 0.9,
    "copy_missing": [
-    "select repo",
-    "target branch",
-    "composer"
+    "select repo"
    ]
   },
   {
    "id": "create-repo-picker",
    "title": "Create: repo picker open",
-   "status": "wrong",
-   "why": "diff 5.7% at t24, copy 83%",
+   "status": "matches",
+   "why": "diff 1.0% at t24, copy 90%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/create-repo-picker.png",
+    "file": "side-by-side/create-composer-02-repo-picker.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 3,
-    "actions_total": 3,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_289dd0f1117c4785a850d7284b136003101cff2c22eb64278037d79cc149e3c4"
+    "rea_evidence_id": "ev_b7a509d7dc64d79828b233440fa8f9a0e6f19960334eb29663ad401eaf05d62b"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/create-repo-picker.png",
+    "file": "side-by-side/create-composer-02-repo-picker.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 5ff712cf9: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/create-composer-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/create-repo-picker.jpg",
-    "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.05680735518292683,
+    "file": null,
+    "changed_ratio_t0": 0.985813643292683,
+    "changed_ratio_t24": 0.010496379573170731,
     "rea_evidence_ids": [
-     "ev_9d1318520edf6df8bed4cf039714bfc7351f7fc2d0a9e3917377bcea22718683",
-     "ev_17e64cec0dc905429b3a96435d70c4896bd61168bb31d0df978123c319f1e1fe"
+     "ev_e8132208dd930a2ef4d15b565caea6037d0e21d3f8b07bbd0a909267b7b30f0f",
+     "ev_09b6c27b692293906489f27a84bb3167d5456964aa6f7593b26f35ea5073d0d3"
     ]
    },
-   "copy_coverage": 0.826,
+   "copy_coverage": 0.909,
    "copy_missing": [
-    "select repo",
-    "add project",
-    "target branch",
-    "composer"
+    "select repo"
    ]
   },
   {
@@ -526,7 +521,7 @@
    "id": "workspace-tool-calls",
    "title": "Chat: tool calls expanded",
    "status": "wrong",
-   "why": "diff 7.3% at t24, copy 83%",
+   "why": "diff 6.6% at t24, copy 93%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -537,7 +532,7 @@
     "actions_run": 4,
     "actions_total": 4,
     "error": null,
-    "rea_evidence_id": "ev_0c9883b387374f67f685cdc7b02353b77e1b11d719bf1bd5e10ae992c225c588"
+    "rea_evidence_id": "ev_ec2657eaeb9c8491396cf9c8bf2968e3b0d0e9261cac4019a1840eae17a3e27f"
    },
    "openconductor": {
     "status": "captured",
@@ -547,20 +542,17 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-tool-calls.jpg",
-    "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.0734546493902439,
+    "changed_ratio_t0": 0.9999161585365853,
+    "changed_ratio_t24": 0.0660889862804878,
     "rea_evidence_ids": [
-     "ev_3697bc9e1dc4ce6596e4e8c0c0e1012d4600aaf6fa3ecd64003b06d45e2c1436",
-     "ev_703e631e2fa2058d3eef8faf4b0b73c87c972ee9a642b27836d1b20aab1c04b3"
+     "ev_05b1c4dceae73efa2c0b603360c0abda6b6c0db99120f05b28673d1ecce22231",
+     "ev_6903d26297e933b725561399e1eb22a5fc35c292eb623bc3bf501dbd64daf834"
     ]
    },
-   "copy_coverage": 0.828,
+   "copy_coverage": 0.931,
    "copy_missing": [
-    "edit",
     "next unread",
-    "copy final message",
-    "show message actions",
-    "filter files"
+    "archive workspace"
    ]
   },
   {
@@ -683,34 +675,41 @@
   {
    "id": "needs-permission",
    "title": "Workspace needing permission",
-   "status": "missing",
-   "why": "the OpenConductor seed has no workspace with a pending permission request",
+   "status": "wrong",
+   "why": "diff 3.9% at t24, copy 88%",
    "team": "chat",
    "reference": {
     "status": "captured",
     "file": "ui-map/ref/needs-permission.png",
     "path": "/",
     "final_path": "/repository/repo-tide-api/workspace/ws-tallinn",
-    "scenario": "populated",
+    "scenario": "needs-permission",
     "actions_run": 3,
     "actions_total": 3,
     "error": null,
-    "rea_evidence_id": "ev_b4fb5e2422c0e97b120f6a6854afca43a7c6894e71f11458811a65adc683f2f2"
+    "rea_evidence_id": "ev_9904510eaa8d51580a6bc11c40086fc0db29feb1b2e1d892354f6c3a50ce627d"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "the OpenConductor seed has no workspace with a pending permission request",
+    "status": "captured",
+    "file": "ui-map/oc/needs-permission.png",
+    "error": null,
     "note": null
    },
    "diff": {
-    "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "file": "ui-map/diff/needs-permission.jpg",
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.03914729420731707,
+    "rea_evidence_ids": [
+     "ev_b2aa8b5e0db6205263feb176d9e117616d68b5cc88d16a1ab597d70f132ea31a",
+     "ev_02f43fbcf7ab839737cf6a8051820480a521d8dc4a27a710cf77f7b83455b6db"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.88,
+   "copy_missing": [
+    "next unread",
+    "archive workspace",
+    "composer"
+   ]
   },
   {
    "id": "route-dashboard",
@@ -1885,34 +1884,40 @@
   {
    "id": "settings-cloud-setup",
    "title": "Settings > Cloud setup",
-   "status": "missing",
-   "why": "OpenConductor has no cloud settings",
+   "status": "matches",
+   "why": "diff 4.0% at t24, copy 90%",
    "team": "cloud-org",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/settings-cloud-setup.png",
+    "file": "side-by-side/settings-org-01-cloud-setup.png",
     "path": "/settings/cloud/setup",
     "final_path": "/settings/cloud/setup",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_9d5e3b6f8d1530e8257b77b49cc6a052d88d58cc72c9fc6d1154659ca6ccf5a5"
+    "rea_evidence_id": "ev_7496661c3509619635b51d80efdf089b4a42a6f647257a31e36c6f27e69e8972"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no cloud settings",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/settings-org-01-cloud-setup.png",
+    "error": null,
+    "note": "side-by-side lane at 156eedda4: tools/side-by-side/cloud-setupnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.03963224085365854,
+    "rea_evidence_ids": [
+     "ev_a6c025944ed0f34ae2aee6cae6752c0a73b0952fa7f3140f41f37190262ab809",
+     "ev_9e2239882c7575ed37f19d1717796455765a47aa3bb6e3810cdcfad34158733d"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.9,
+   "copy_missing": [
+    "you're subscribed to conductor pro. run workspaces in the cloud, and get early access to mobile and team features",
+    "personal access token"
+   ]
   },
   {
    "id": "settings-search",
@@ -3074,8 +3079,8 @@
    "id": "route:settings-cloud-setup",
    "kind": "route",
    "name": "/settings/cloud/setup",
-   "status": "missing",
-   "why": "OpenConductor has no cloud settings",
+   "status": "matches",
+   "why": "diff 4.0% at t24, copy 90%",
    "team": "cloud-org",
    "component": "TEa",
    "source": {
@@ -3087,10 +3092,10 @@
    "tokens": [],
    "state": "settings-cloud-setup",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/settings-cloud-setup.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/settings-org-01-cloud-setup.png",
+   "openconductor_screenshot": "side-by-side/settings-org-01-cloud-setup.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.03963224085365854
   },
   {
    "id": "route:settings-cloud-cloudprojectid",
@@ -3580,8 +3585,8 @@
    "id": "route:create",
    "kind": "route",
    "name": "/create",
-   "status": "wrong",
-   "why": "diff 5.4% at t24, copy 86%",
+   "status": "matches",
+   "why": "diff 0.8% at t24, copy 90%",
    "team": "workspaces",
    "component": "$Ca",
    "source": {
@@ -3593,10 +3598,10 @@
    "tokens": [],
    "state": "create",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/create.png",
-   "openconductor_screenshot": "ui-map/oc/create.png",
-   "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.053726181402439024
+   "reference_screenshot": "side-by-side/create-composer-01-dialog.png",
+   "openconductor_screenshot": "side-by-side/create-composer-01-dialog.png",
+   "diff": null,
+   "changed_ratio_t24": 0.008146913109756097
   },
   {
    "id": "route:team",
@@ -4670,8 +4675,8 @@
    "id": "dialog:new-workspace",
    "kind": "dialog",
    "name": "New workspace",
-   "status": "wrong",
-   "why": "host state create is wrong",
+   "status": "matches",
+   "why": "on screen in both; state create matches",
    "team": "workspaces",
    "component": "pya",
    "source": {
@@ -4685,10 +4690,10 @@
    "tokens": [],
    "state": "create",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/create.png",
-   "openconductor_screenshot": "ui-map/oc/create.png",
-   "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.053726181402439024,
+   "reference_screenshot": "side-by-side/create-composer-01-dialog.png",
+   "openconductor_screenshot": "side-by-side/create-composer-01-dialog.png",
+   "diff": null,
+   "changed_ratio_t24": 0.008146913109756097,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4792,8 +4797,8 @@
    "id": "dialog:connect-github",
    "kind": "dialog",
    "name": "Connect GitHub",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "OpenConductor shows it in settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing",
    "team": "onboarding-auth",
    "component": "C5a",
    "source": {
@@ -9330,8 +9335,8 @@
    "id": "tab:cloud",
    "kind": "tab",
    "name": "Cloud",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "not rendered in a reference capture; OpenConductor shows it in settings-cloud-setup, not in the host state",
    "team": "cloud-org",
    "component": "zda",
    "source": {
@@ -9383,7 +9388,7 @@
    "kind": "tab",
    "name": "Recommended",
    "status": "wrong",
-   "why": "OpenConductor shows it in settings-providers, not in the host state; host state route-new-member-onboarding is missing",
+   "why": "OpenConductor shows it in settings-providers, settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing",
    "team": "onboarding-auth",
    "component": "V1a",
    "source": {
@@ -9992,8 +9997,8 @@
    "id": "select:zqo",
    "kind": "select",
    "name": null,
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state create-repo-picker matches",
    "team": "workspaces",
    "component": "ZQo",
    "source": {
@@ -10009,10 +10014,10 @@
    ],
    "state": "create-repo-picker",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/create-repo-picker.png",
-   "openconductor_screenshot": "ui-map/oc/create-repo-picker.png",
-   "diff": "ui-map/diff/create-repo-picker.jpg",
-   "changed_ratio_t24": 0.05680735518292683,
+   "reference_screenshot": "side-by-side/create-composer-02-repo-picker.png",
+   "openconductor_screenshot": "side-by-side/create-composer-02-repo-picker.png",
+   "diff": null,
+   "changed_ratio_t24": 0.010496379573170731,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -25428,8 +25433,8 @@
    "id": "settings-page:setup",
    "kind": "settings-page",
    "name": "setup",
-   "status": "missing",
-   "why": "no state for this page",
+   "status": "matches",
+   "why": "diff 4.0% at t24, copy 90%",
    "team": "cloud-org",
    "component": null,
    "source": {
@@ -25437,12 +25442,12 @@
    },
    "copy": [],
    "tokens": [],
-   "state": null,
-   "state_basis": "no state for this page",
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "settings-cloud-setup",
+   "state_basis": "settings page state",
+   "reference_screenshot": "side-by-side/settings-org-01-cloud-setup.png",
+   "openconductor_screenshot": "side-by-side/settings-org-01-cloud-setup.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.03963224085365854,
    "route": "/settings/cloud/setup",
    "route_guess": "/settings/cloud/setup",
    "rows": 0
