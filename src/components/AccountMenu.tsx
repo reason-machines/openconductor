@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { ChevronDownIcon, SettingsIcon, UserIcon } from "./Icons";
 import { accountMenuModel, type LocalAccount } from "./accountMenuModel";
+import { endingProps, useMenuPresence } from "./sidebarMotion";
 
 const NO_ACCOUNT: LocalAccount = { name: "", email: null };
 
@@ -37,6 +38,7 @@ export function AccountMenu({ onOpenSettings }: { onOpenSettings: () => void }) 
     };
   }, [open, close]);
   const icon = model.triggerIcon;
+  const popup = useMenuPresence(open);
   return (
     <div ref={ref} className="sb-account">
       <button type="button" className="sb-row sb-computer" aria-label="Account menu" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -48,8 +50,8 @@ export function AccountMenu({ onOpenSettings }: { onOpenSettings: () => void }) 
         <span className="sb-computer-name">{model.triggerLabel}</span>
         <ChevronDownIcon size={14} />
       </button>
-      {open && (
-        <div className="sb-account-menu" role="menu" aria-label="Account">
+      {popup.mounted && (
+        <div className="sb-account-menu" role="menu" aria-label="Account" {...endingProps(popup.ending)}>
           {model.entries.map((e, i) =>
             e.kind === "email" ? (
               <div key="email" className="sb-account-email" role="presentation">{e.email}</div>

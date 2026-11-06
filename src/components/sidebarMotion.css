@@ -1,0 +1,55 @@
+/* Sidebar motion, after Conductor v0.87.6 (renderApp-BYEcFwvt.css / renderApp-D_fmY7hW.js,
+   REA-extracted, read as data). Tailwind's default transition timing in Conductor is
+   --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1); `ease-out` is
+   --ease-out: cubic-bezier(0, 0, .2, 1). */
+
+/* Row motion wrapper (Conductor's `Qj` motion.div: "w-full min-w-0"). */
+.sb-ws-motion { width: 100%; min-width: 0; }
+/* A section leaving (Conductor's `Yia`: overflow-hidden while !isPresent). */
+.sb-motion-leaving { overflow: hidden; }
+/* Sections container stays mounted so the last section can animate out (`sBi`: empty:hidden). */
+.sb-nav-sections:empty { display: none; }
+
+/* Popups: Base UI menus and popovers in the sidebar all use
+   data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0
+   data-[ending-style]:scale-95 transition-[opacity,scale] duration-100 origin-(--transform-origin)
+   (`my` menu class; header menus `Aet`, help `KQo` @9742478, add-repository `wra` @10025355).
+   Ours enter with a keyframe from the starting style and leave through data-ending-style
+   (useMenuPresence keeps them mounted for the 100ms). */
+.sb-menu, .sb-ctx-menu, .sb-account-menu, .sb-help-menu, .add-repo-pop, .usage-popover {
+  animation: sb-popup-in 100ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 100ms cubic-bezier(0.4, 0, 0.2, 1), scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+:is(.sb-menu, .sb-ctx-menu, .sb-account-menu, .sb-help-menu, .add-repo-pop, .usage-popover)[data-ending-style] { opacity: 0; scale: 0.95; pointer-events: none; }
+@keyframes sb-popup-in { from { opacity: 0; scale: 0.95; } }
+/* --transform-origin: Base UI puts it on the anchor; for these placements that is: */
+.sb-menu { transform-origin: top right; }          /* "..." header menus: below, align end */
+.sb-menu[data-context], .sb-ctx-menu, .pf-popup { transform-origin: top left; } /* at the pointer, submenus to the right */
+.sb-account-menu { transform-origin: top left; }   /* below the account row, align start */
+.sb-help-menu { transform-origin: bottom left; }   /* above the help button, align start */
+.add-repo-pop { transform-origin: top right; }
+.usage-popover { transform-origin: top; }
+
+/* Ghost buttons (Conductor's `tt`, REe @base: "transition-transform duration-150 ease-out
+   will-change-transform active:scale-[0.97] motion-reduce:active:scale-100"): back/forward,
+   repo "+" and the "..." header triggers press down to 97% over 150ms; hover colours are instant. */
+.sb-icon-btn, .sb-repo-add, .sb-menu-trigger {
+  transition: transform 150ms cubic-bezier(0, 0, 0.2, 1), translate 150ms cubic-bezier(0, 0, 0.2, 1), scale 150ms cubic-bezier(0, 0, 0.2, 1), rotate 150ms cubic-bezier(0, 0, 0.2, 1);
+  will-change: transform;
+}
+.sb-icon-btn:active:not(:disabled), .sb-repo-add:active, .sb-menu-trigger:active { scale: 0.97; }
+/* The sidebar toggle (`Rta` + "transition-colors"): tailwind-merge drops transition-transform, so its
+   colour eases over 150ms and the 97% press is instant. */
+.sb-toggle:active { scale: 0.97; }
+@media (prefers-reduced-motion: reduce) {
+  .sb-icon-btn:active:not(:disabled), .sb-repo-add:active, .sb-menu-trigger:active, .sb-toggle:active { scale: 1; }
+}
+
+/* Repository reorder (@hello-pangea/dnd, renderApp @10042299): the lifted group is
+   "bg-sidebar-accent rounded-md shadow-md pointer-events-auto", the column stops
+   pointer events on its children while something is dragged over it, and the lifted
+   repo shows its chevron in place of the icon (`Dra`: isDragging ? invisible : group-hover:invisible). */
+.sb-repo-groups[data-dragging-over] > * { pointer-events: none; }
+.sb-repo-group[data-dragging] { pointer-events: auto; border-radius: 6px; background: var(--sidebar-accent); box-shadow: 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a; }
+.sb-repo-group[data-dragging] .sb-repo-initial, .sb-repo-group[data-dragging] .repo-icon { visibility: hidden; }
+.sb-repo-group[data-dragging] .sb-repo-chevron { visibility: visible; }

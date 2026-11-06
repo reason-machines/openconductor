@@ -43,7 +43,9 @@ const menu = (page) => page.getByRole("menu", { name: "Workspace actions" });
 const menuItems = (page) => menu(page).locator(":scope > [role=menuitem], :scope > .sb-ctx-sub > [role=menuitem]").evaluateAll((els) => els.map((e) => e.querySelector(".sb-ctx-label").textContent));
 
 test("row menu: read/unread, pin into the Pinned group, status, keys, archive", async () => {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  // Reduced motion: rows move between groups at once instead of collapsing out over 200ms
+  // (Conductor's `Qj` skips its motion wrapper the same way), so counts are final right away.
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
   await page.goto(`${base}/?demo=1`);
   const harbor = row(page, "Quiet harbor");
   await harbor.waitFor();

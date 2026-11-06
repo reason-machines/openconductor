@@ -55,7 +55,9 @@ async function openMoveMenu(page, label) {
 }
 
 test("sections: create, move in and out, edit, delete", async () => {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  // Reduced motion: rows move between groups at once instead of collapsing out over 200ms
+  // (Conductor's `Qj` skips its motion wrapper the same way), so counts are final right away.
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
   await page.goto(`${base}/?demo=1`);
   await row(page, "Quiet harbor").waitFor();
   assert.equal(await page.locator(".sb-nav-section").count(), 0);

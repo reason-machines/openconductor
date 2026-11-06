@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { endingProps } from "./sidebarMotion";
 import type { Workspace } from "../state/types";
 import type { NavSection } from "../state/navigationSections";
 import { WORKSPACE_STATUSES, effectiveStatus, statusLabel, type WorkspaceStatusValue } from "../state/workspaceStatus";
@@ -45,9 +46,11 @@ interface Props {
   /** Section that holds this workspace, if any. */
   currentSectionId?: string;
   onClose: () => void;
+  /** Closing: shown for Conductor's 100ms exit (data-[ending-style]), inert and without key handling. */
+  ending?: boolean;
 }
 
-export function WorkspaceActionsMenu({ workspace, selected, at, actions, sections, currentSectionId, onClose }: Props) {
+export function WorkspaceActionsMenu({ workspace, selected, at, actions, sections, currentSectionId, onClose, ending = false }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState(at);
   const [sub, setSub] = useState<"status" | "section" | null>(null);
@@ -72,6 +75,7 @@ export function WorkspaceActionsMenu({ workspace, selected, at, actions, section
   }, [at]);
 
   useEffect(() => {
+    if (ending) return;
     ref.current?.querySelector<HTMLElement>("[role=menuitem]")?.focus();
     const onDown = (e: MouseEvent) => {
       if (!ref.current?.contains(e.target as Node)) onClose();
@@ -105,10 +109,10 @@ export function WorkspaceActionsMenu({ workspace, selected, at, actions, section
       window.removeEventListener("blur", onClose);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [ending]);
 
   return (
-    <div ref={ref} className="sb-ctx-menu" role="menu" aria-label="Workspace actions" style={{ left: pos.x, top: pos.y }} onContextMenu={(e) => e.preventDefault()}>
+    <div ref={ref} className="sb-ctx-menu" role="menu" aria-label="Workspace actions" style={{ left: pos.x, top: pos.y }} onContextMenu={(e) => e.preventDefault()} {...endingProps(ending)}>
       <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.toggleRead)}>
         <span className="sb-ctx-label">{workspace.unread ? "Mark as read" : "Mark as unread"}</span>
         <kbd className="sb-ctx-kbd">R</kbd>

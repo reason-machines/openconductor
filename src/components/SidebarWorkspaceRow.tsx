@@ -16,6 +16,7 @@ import { useWorkspaceSessionStatus } from "../features/chat/useWorkspaceSession"
 import { applyRowLookup, useRowPrPoll } from "../features/pr/sidebarPrPoller";
 import { usePrSettings } from "../features/pr/usePullRequest";
 import type { LookupResult } from "../features/pr/types";
+import { useMenuPresence } from "./sidebarMotion";
 
 interface Props {
   workspace: Workspace;
@@ -200,17 +201,20 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
   });
 
   let element: JSX.Element | null = null;
-  const repo = menu && state.repos.find((r) => r.id === menu.repoId);
-  const ws = menu && repo?.workspaces.find((w) => w.id === menu.workspaceId);
-  if (menu && repo && ws) {
+  // The menu stays for its 100ms close (Conductor's `my`: data-[ending-style] opacity-0 scale-95).
+  const shown = useMenuPresence(menu);
+  const repo = shown.mounted && state.repos.find((r) => r.id === shown.mounted?.repoId);
+  const ws = shown.mounted && repo?.workspaces.find((w) => w.id === shown.mounted?.workspaceId);
+  if (shown.mounted && repo && ws) {
     const ids = { repoId: repo.id, workspaceId: ws.id };
     element = (
       <WorkspaceActionsMenu
         key={ws.id}
         workspace={ws}
         selected={sel.kind === "workspace" && sel.workspaceId === ws.id}
-        at={{ x: menu.x, y: menu.y }}
+        at={{ x: shown.mounted.x, y: shown.mounted.y }}
         onClose={close}
+        ending={shown.ending}
         sections={state.sections ?? []}
         currentSectionId={sectionOf(state.sections, ws.id)?.id}
         actions={{

@@ -28,6 +28,8 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { AccountMenu } from "./AccountMenu";
 import { ResourceUsagePill } from "./ResourceUsagePill";
 import type { WorkspaceRef as UsageWorkspace } from "./resourceUsage";
+import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
+import { endingProps, SidebarPresence, SidebarRowMotion, SidebarSectionMotion, useMenuPresence } from "./sidebarMotion";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
 function hint(commandId: string): string {
@@ -79,9 +81,9 @@ interface MenuNode { key: string; render: (close: () => void) => ReactNode }
 type MenuEntry = MenuItem | MenuNode | "-";
 
 /** Menu panel shared by the hover "..." trigger and the right-click context menu. */
-function MenuPanel({ items, close, at }: { items: MenuEntry[]; close: () => void; at?: { x: number; y: number } }) {
+function MenuPanel({ items, close, at, ending = false }: { items: MenuEntry[]; close: () => void; at?: { x: number; y: number }; ending?: boolean }) {
   return (
-    <div className="sb-menu" role="menu" data-context={at ? "true" : undefined} style={at ? { position: "fixed", left: at.x, top: at.y, right: "auto" } : undefined}>
+    <div className="sb-menu" role="menu" data-context={at ? "true" : undefined} style={at ? { position: "fixed", left: at.x, top: at.y, right: "auto" } : undefined} {...endingProps(ending)}>
       {items.map((item, i) =>
         item === "-" ? (
           <div key={`sep-${i}`} role="separator" className="sb-menu-sep" />
@@ -132,14 +134,17 @@ function HeaderMenu({ label, items, className, contextAt, onContextClose }: { la
   const close = useCallback(() => { setOpen(false); onContextClose?.(); }, [onContextClose]);
   useDismiss(open, ref, close);
   useDismiss(!!contextAt, portalRef, close);
+  // Both panels stay mounted for Conductor's 100ms close (data-[ending-style], `my`).
+  const dropdown = useMenuPresence(open && !contextAt);
+  const pointer = useMenuPresence(contextAt);
   return (
     <div ref={ref} className={`sb-menu-anchor ${className}`} data-open={open || !!contextAt || undefined}>
       <button type="button" className="sb-menu-trigger" aria-label={`${label} actions`} aria-haspopup="menu" aria-expanded={open} onClick={(e) => { e.stopPropagation(); onContextClose?.(); setOpen(!open); }}>
         <MoreIcon size={14} />
       </button>
-      {open && !contextAt && <MenuPanel items={items} close={close} />}
+      {dropdown.mounted && <MenuPanel items={items} close={close} ending={dropdown.ending} />}
       {/* The anchor is transformed and the list scrolls, so the pointer menu renders on <body>. */}
-      {contextAt && createPortal(<div ref={portalRef} className="sb-context-root"><MenuPanel items={items} close={close} at={contextAt} /></div>, document.body)}
+      {pointer.mounted && createPortal(<div ref={pointer.ending ? undefined : portalRef} className="sb-context-root"><MenuPanel items={items} close={close} at={pointer.mounted} ending={pointer.ending} /></div>, document.body)}
     </div>
   );
 }
@@ -154,7 +159,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   collapsed: boolean;
   onToggle: () => void;
   menuItems: MenuEntry[];
-  renderRow: (entry: SidebarSection["entries"][number]) => JSX.Element;
+  renderRow: (entry: SidebarSection["entries"][number], listIndex: number) => JSX.Element;
   /* Drag and drop (useSidebarDrag.tsx, Conductor's `Yia`): */
   /** A dragged row is over this section (`Dea`): accent fill. */
   isDropTarget: boolean;
@@ -170,7 +175,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   const [contextAt, setContextAt] = useState<{ x: number; y: number } | null>(null);
   const closeContext = useCallback(() => setContextAt(null), []);
   return (
-    <div className="sb-nav-section" data-navigation-section-drop-id={section.id} data-drop-target={isDropTarget || undefined} data-dragging={isDragging || undefined}>
+    <SidebarSectionMotion className="sb-nav-section" data-navigation-section-drop-id={section.id} data-drop-target={isDropTarget || undefined} data-dragging={isDragging || undefined}>
       {indicator && <div className="sb-nav-section-indicator" data-position={indicator} data-first={isFirst || undefined} aria-hidden />}
       <div className="sb-section-header" onContextMenu={(e) => { e.preventDefault(); setContextAt({ x: e.clientX, y: e.clientY }); }}>
         <button type="button" className="sb-section-toggle" aria-expanded={!collapsed} onClick={onToggle} onPointerDown={onHeaderPointerDown}>
@@ -186,7 +191,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
       </div>
       {!collapsed && (
         <div className="sb-ws-list sb-group-list">
-          {entries.map(renderRow)}
+          <SidebarPresence>{entries.map(renderRow)}</SidebarPresence>
           {entries.length === 0 && (
             <div className="sb-section-empty">
               <PlusIcon size={14} />
@@ -195,7 +200,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
           )}
         </div>
       )}
-    </div>
+    </SidebarSectionMotion>
   );
 }
 
@@ -257,9 +262,13 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
       { label: "Delete section", destructive: true, onSelect: () => dispatch({ type: "deleteSection", sectionId }) },
     ];
   };
-  const row = ({ repoId, workspace }: SidebarSection["entries"][number]) => {
+  const row = ({ repoId, workspace }: SidebarSection["entries"][number], listIndex: number) => {
     const repo = state.repos.find((r) => r.id === repoId);
-    return <SidebarWorkspaceRow key={workspace.id} workspace={workspace} targetBranch={repo?.defaultBranch ?? ""} hasRemote={Boolean(repo?.remote)} {...rows.rowProps(repoId, workspace)} />;
+    return (
+      <SidebarRowMotion key={workspace.id} listIndex={listIndex}>
+        <SidebarWorkspaceRow workspace={workspace} targetBranch={repo?.defaultBranch ?? ""} hasRemote={Boolean(repo?.remote)} {...rows.rowProps(repoId, workspace)} />
+      </SidebarRowMotion>
+    );
   };
   const sel = state.selection;
   // Conductor persists this per collapse key; ours lasts for the session.
@@ -270,13 +279,11 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   const closeRepoContext = useCallback(() => setRepoContext(null), []);
   const [iconRepoId, setIconRepoId] = useState<string | null>(null);
   const iconRepo = iconRepoId ? state.repos.find((r) => r.id === iconRepoId) : undefined;
-  const [dragRepoId, setDragRepoId] = useState<string | null>(null);
   // The add-repository popover (Conductor's `wra`): "Add project…" opens it on the next
   // frame, after the header menu closes (`yra`); ⌥⌘A (`nav.addRepository`) opens it too.
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const addMenuAnchor = useRef<HTMLSpanElement>(null);
   useKeybindings({ "nav.addRepository": () => setAddMenuOpen(true) });
-  const [dropRepoId, setDropRepoId] = useState<string | null>(null);
   // "Filter by project" (Conductor's `pra`, setting `sidebar_repo_filter`). Repos arrive from
   // conductor.db after the first render (before that, only path-less placeholders for collapsed
   // repos), so a stale filter is cleared only once real repos have loaded.
@@ -289,13 +296,13 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   const usageWorkspaces: UsageWorkspace[] = state.repos.flatMap((r) =>
     r.workspaces.flatMap((w) => (w.path ? [{ localId: w.id, directoryName: w.directoryName ?? w.name, workspacePath: w.path }] : [])),
   );
-  const dropOn = (targetId: string) => {
-    if (dragRepoId && dragRepoId !== targetId) {
-      const ids = moveRepo(state.repos.map((r) => r.id), dragRepoId, targetId);
-      dispatch({ type: "reorderRepos", ids });
-    }
-    setDragRepoId(null);
-    setDropRepoId(null);
+  // Conductor's repo list is a @hello-pangea/dnd column (renderApp @10042299): a drop moves the
+  // dragged repo to the target row's place in the full id list, hidden repos included.
+  const onRepoDragEnd = (result: DropResult) => {
+    const from = listed[result.source.index]?.id;
+    const to = result.destination ? listed[result.destination.index]?.id : undefined;
+    if (!from || !to || from === to) return;
+    dispatch({ type: "reorderRepos", ids: moveRepo(state.repos.map((r) => r.id), from, to) });
   };
   return (
     <aside className="sidebar" aria-label="Repositories and workspaces">
@@ -333,11 +340,12 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
       <nav className="repo-list" ref={scrollRoot}>
         {pinned.length > 0 && (
           <SidebarGroup label="Pinned" count={pinned.length} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
-            {pinned.map(row)}
+            <SidebarPresence>{pinned.map(row)}</SidebarPresence>
           </SidebarGroup>
         )}
-        {sections.length > 0 && (
-          <section className="sb-nav-sections" aria-label="Sections" data-navigation-sections-section="">
+        {/* Always mounted, like Conductor's `sBi` (empty:hidden), so the last section can animate out. */}
+        <section className="sb-nav-sections" aria-label="Sections" data-navigation-sections-section="">
+          <SidebarPresence>
             {sections.map((group, i) => (
               <NavSectionGroup
                 key={group.section.id}
@@ -353,8 +361,8 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
                 renderRow={row}
               />
             ))}
-          </section>
-        )}
+          </SidebarPresence>
+        </section>
         {/* My workspaces takes rows dragged out of a section or off Pinned (Conductor's `Gra`, `data-workspace-unsectioned-drop`). */}
         <section className="sb-my-workspaces" aria-label="My workspaces" data-drop-target={dropTarget?.type === "unsectioned" || undefined} {...{ [DROP_ATTR.unsectioned]: "" }}>
         {/* "My workspaces" section header (Conductor's `lBi`): label, hover chevron, "..." menu with Add project. */}
@@ -385,34 +393,26 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
         </div>
         {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
         {!groupCollapsed && (
-          <div className="sb-repo-groups">
-            {listed.map((repo) => (
+          <DragDropContext onDragEnd={onRepoDragEnd}>
+          <Droppable droppableId="repo-list">
+            {(drop, dropState) => (
+          <div className="sb-repo-groups" ref={drop.innerRef} {...drop.droppableProps} data-dragging-over={dropState.isDraggingOver || undefined}>
+            {listed.map((repo, repoIndex) => (
+          <Draggable key={repo.id} draggableId={repo.id} index={repoIndex} isDragDisabled={!canDrag}>
+            {(drag, dragState) => (
           <div
-            key={repo.id}
+            ref={drag.innerRef}
+            {...drag.draggableProps}
             className="sb-repo-group"
-            data-dragging={dragRepoId === repo.id || undefined}
-            data-drop-target={(dropRepoId === repo.id && dragRepoId !== repo.id) || undefined}
-            onDragOver={(e) => {
-              if (!dragRepoId) return;
-              e.preventDefault();
-              e.dataTransfer.dropEffect = "move";
-              if (dropRepoId !== repo.id) setDropRepoId(repo.id);
-            }}
-            onDrop={(e) => { e.preventDefault(); dropOn(repo.id); }}
+            data-dragging={dragState.isDragging || undefined}
           >
             <div className="sb-repo">
               <div
+                {...drag.dragHandleProps}
                 className="sb-repo-header"
                 role="button"
                 tabIndex={0}
                 aria-expanded={!repo.collapsed}
-                draggable={canDrag}
-                onDragStart={(e) => {
-                  e.dataTransfer.effectAllowed = "move";
-                  e.dataTransfer.setData("text/plain", repo.id);
-                  setDragRepoId(repo.id);
-                }}
-                onDragEnd={() => { setDragRepoId(null); setDropRepoId(null); }}
                 onClick={() => dispatch({ type: "toggleRepo", repoId: repo.id })}
                 onContextMenu={(e) => { e.preventDefault(); setRepoContext({ repoId: repo.id, x: e.clientX, y: e.clientY }); }}
                 onKeyDown={(e) => {
@@ -453,18 +453,28 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
               />
             </div>
             <RepoWorkspaceList repoId={repo.id} collapsed={!!repo.collapsed} isEmpty={repo.workspaces.length === 0} empty={<p className="ws-empty">No workspaces</p>}>
-              {repoGroupWorkspaces(repo.workspaces, sectioned).map((ws) => (
-                <SidebarWorkspaceRow key={ws.id} workspace={ws} targetBranch={repo.defaultBranch} hasRemote={Boolean(repo.remote)} {...rows.rowProps(repo.id, ws)} />
-              ))}
+              <SidebarPresence>
+                {repoGroupWorkspaces(repo.workspaces, sectioned).map((ws, i) => (
+                  <SidebarRowMotion key={ws.id} listIndex={i}>
+                    <SidebarWorkspaceRow workspace={ws} targetBranch={repo.defaultBranch} hasRemote={Boolean(repo.remote)} {...rows.rowProps(repo.id, ws)} />
+                  </SidebarRowMotion>
+                ))}
+              </SidebarPresence>
             </RepoWorkspaceList>
           </div>
+            )}
+          </Draggable>
             ))}
+            {drop.placeholder}
             {hasHiddenRepos(state.repos) && (
               <button type="button" className="sb-show-hidden" onClick={() => setShowHidden(!showHidden)}>
                 {showHidden ? "Hide hidden repositories" : "Show hidden repositories"}
               </button>
             )}
           </div>
+            )}
+          </Droppable>
+          </DragDropContext>
         )}
         </section>
       </nav>
