@@ -28,11 +28,13 @@ export interface ModelPickerProps {
   disabled?: boolean;
   /** Extra entries under the favourites (e.g. the agent picker). */
   children?: ReactNode;
+  /** Name for a listed entry that is not a Conductor model id (an agent such as Codex). */
+  itemLabel?: (choice: ModelChoice) => string | undefined;
 }
 
 const same = (a: ModelChoice, b: ModelChoice) => a.model === b.model;
 
-export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children }: ModelPickerProps) {
+export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel }: ModelPickerProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [effortOpen, setEffortOpen] = useState(false);
@@ -49,8 +51,9 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
   const items = useMemo(() => {
     const list = [value, ...favorites.filter((f) => !same(f, value))].slice(0, 5);
     const q = query.trim().toLowerCase();
-    return q ? list.filter((f) => modelDisplayName(f.model).toLowerCase().includes(q) || f.model.includes(q)) : list;
-  }, [favorites, value, query]);
+    const name = (f: ModelChoice) => itemLabel?.(f) ?? modelDisplayName(f.model);
+    return q ? list.filter((f) => name(f).toLowerCase().includes(q) || f.model.includes(q)) : list;
+  }, [favorites, value, query, itemLabel]);
 
   useKeybindings({
     "chat.openModelPicker": () => (disabled ? false : setOpen((o) => !o)),
@@ -120,14 +123,14 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                     role="menuitem"
                     className="oc-model-item"
                     data-selected={selected || undefined}
-                    title={modelDisplayName(f.model)}
+                    title={itemLabel?.(f) ?? modelDisplayName(f.model)}
                     onClick={() => {
                       if (!selected) onChange(f);
                       setOpen(false);
                     }}
                   >
                     <ModelGlyph model={f.model} />
-                    <span className="oc-model-item-name">{selected && label ? label : modelDisplayName(f.model)}</span>
+                    <span className="oc-model-item-name">{selected && label ? label : (itemLabel?.(f) ?? modelDisplayName(f.model))}</span>
                     {e ? <span className="oc-model-item-effort">{e}</span> : null}
                     {selected ? <CheckIcon className="oc-model-item-check" /> : null}
                   </button>

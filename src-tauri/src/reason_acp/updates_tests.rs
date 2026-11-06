@@ -182,3 +182,29 @@ fn cloud_write_reported_under_the_chat_folder_is_cloud() {
     };
     assert_eq!(row.locations[0].place, Place::Other);
 }
+
+#[test]
+fn tool_rows_keep_the_raw_input_and_the_claude_code_tool_name() {
+    let update = json!({
+        "sessionUpdate": "tool_call", "toolCallId": "toolu_9", "title": "Grep: redirectTo",
+        "kind": "search", "status": "pending",
+        "rawInput": {"pattern": "redirectTo", "path": "src"},
+        "_meta": {"claudeCode": {"toolName": "Grep"}}
+    });
+    let Some(AgentEvent::Tool(row)) = parse_update(&update, ctx(true, false)) else {
+        panic!("expected a tool row");
+    };
+    assert_eq!(row.tool_name.as_deref(), Some("Grep"));
+    assert_eq!(
+        row.raw_input,
+        Some(json!({"pattern": "redirectTo", "path": "src"}))
+    );
+
+    let plain =
+        json!({"sessionUpdate": "tool_call", "toolCallId": "t", "_meta": {"toolName": "bash"}});
+    let Some(AgentEvent::Tool(row)) = parse_update(&plain, ctx(true, false)) else {
+        panic!("expected a tool row");
+    };
+    assert_eq!(row.tool_name.as_deref(), Some("bash"));
+    assert_eq!(row.raw_input, None, "a missing rawInput stays None");
+}

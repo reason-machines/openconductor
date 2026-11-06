@@ -95,7 +95,9 @@
         delete keychain[args.key];
         return null;
       },
-      native_http_fetch: () => {
+      native_http_fetch: (args) => {
+        const r = (args && args.request) || {};
+        console.warn(`[oc-mock] refused native_http_fetch ${r.method} ${r.url}`);
         throw "network disabled in the screenshot harness";
       },
       execute_shell_command: shell,
