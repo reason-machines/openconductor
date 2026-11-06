@@ -344,6 +344,7 @@ pub fn run() {
             create_new_project,
             save_repo_scripts,
             workspace::commands::add_repository,
+            workspace::commands::ensure_repository,
             workspace::commands::clone_repository,
             workspace::commands::default_clone_directory,
             workspace::commands::list_repositories,
