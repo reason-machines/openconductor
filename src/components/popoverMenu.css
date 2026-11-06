@@ -1,28 +1,13 @@
 /* Conductor's right-click menu (`my` popup, `yu` items; see PopoverMenu.tsx).
-   Tokens from renderApp-BYEcFwvt.css: --popover #fff / #2c2826,
-   --popover-ring #211e1c0d / #ffffff1a, --popover-accent #14100f0d / #ffffff0d. */
+   Tokens from renderApp-BYEcFwvt.css: --popover, --popover-ring, --popover-accent, --muted-foreground. */
 :root {
-  --menu-popover: #fff;
-  --menu-popover-foreground: #2c2826;
-  --menu-popover-ring: #211e1c0d;
-  --menu-popover-accent: #14100f0d;
-  --menu-muted-foreground: #8e8885;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --menu-popover: #2c2826;
-    --menu-popover-foreground: #eae8e6;
-    --menu-popover-ring: #ffffff1a;
-    --menu-popover-accent: #ffffff0d;
-    --menu-muted-foreground: #a5a09c;
-  }
-}
-:root[data-theme="dark"] {
-  --menu-popover: #2c2826;
-  --menu-popover-foreground: #eae8e6;
-  --menu-popover-ring: #ffffff1a;
-  --menu-popover-accent: #ffffff0d;
-  --menu-muted-foreground: #a5a09c;
+  /* Conductor's fixed Stone values, from src/theme/tokens.css (--conductor-*). The text keeps this
+     menu's measured #2c2826 / #eae8e6, which is --conductor-fg (--conductor-popover-fg is #211e1c in light). */
+  --menu-popover: var(--conductor-popover);
+  --menu-popover-foreground: var(--conductor-fg);
+  --menu-popover-ring: var(--conductor-popover-ring);
+  --menu-popover-accent: var(--conductor-popover-accent);
+  --menu-muted-foreground: var(--conductor-muted-fg);
 }
 
 .oc-popover-menu {
@@ -38,8 +23,8 @@
   color: var(--menu-popover-foreground);
   box-shadow:
     0 0 0 1px var(--menu-popover-ring),
-    0 4px 6px -1px #0000001a,
-    0 2px 4px -2px #0000001a;
+    0 4px 6px -1px var(--conductor-menu-shadow),
+    0 2px 4px -2px var(--conductor-menu-shadow);
   outline: none;
   font-size: 14px;
   line-height: 20px;
