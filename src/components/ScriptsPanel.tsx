@@ -76,7 +76,7 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
   const spotPicked = picked === SPOTLIGHT_TASK_ID && spotEnabled;
   const shown = spotPicked
     ? SPOTLIGHT_TASK_ID
-    : (picked !== SPOTLIGHT_TASK_ID ? picked : null) ?? activeRun(runs)?.scriptId ?? (spotMine ? SPOTLIGHT_TASK_ID : null) ?? defaultScript(config)?.id ?? null;
+    : (picked !== SPOTLIGHT_TASK_ID ? picked : null) ?? activeRun(runs)?.scriptId ?? (spotMine ? SPOTLIGHT_TASK_ID : null) ?? defaultScript(config)?.id ?? (spotEnabled ? SPOTLIGHT_TASK_ID : null);
   const showSpotlight = shown === SPOTLIGHT_TASK_ID;
 
   const refresh = useCallback(async () => {
