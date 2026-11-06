@@ -17,6 +17,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
+import { showTerminalPanel } from "./terminal-panel.mjs";
 
 const CANDIDATES = [
   process.env.CHROME_PATH,
@@ -126,7 +127,8 @@ test("the workspace's first terminal leaves the keyboard in the chat box", async
   const box = page.locator(".composer textarea");
   await box.click();
   await page.keyboard.type("lo");
-  // The terminal arrives while the user is typing in the chat box.
+  // ⌘J from the chat box shows the panel; its first terminal arrives while the user is typing.
+  await showTerminalPanel(page);
   await page.evaluate(() => window.__releasePty());
   await page.locator(".terminal-panel .xterm").waitFor();
   await page.waitForFunction(() => document.querySelector(".terminal-panel .xterm-rows")?.textContent?.includes("/repo$"));
@@ -141,6 +143,7 @@ test("the workspace's first terminal leaves the keyboard in the chat box", async
 test("with nothing focused, the workspace's first terminal still takes the keyboard", async () => {
   const page = await browser.newPage();
   await open(page);
+  await showTerminalPanel(page);
   await page.evaluate(() => window.__releasePty());
   await page.locator(".terminal-panel .xterm").waitFor();
   await page.waitForFunction(() => document.activeElement?.closest(".terminal-panel"));
@@ -151,6 +154,7 @@ test("with nothing focused, the workspace's first terminal still takes the keybo
 test("a tab the user opens takes the keyboard", async () => {
   const page = await browser.newPage();
   await open(page);
+  await showTerminalPanel(page);
   await page.evaluate(() => window.__releasePty());
   await page.locator(".term-tab").first().waitFor();
   await page.locator(".composer textarea").click();
