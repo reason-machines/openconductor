@@ -4,7 +4,7 @@
 //
 // Reference (Conductor's frontend, read on sven m5 max): when the repository's
 // `spotlight_testing` setting is on, a "Spotlight" task is appended after the
-// run scripts; it is never the default task. Its idle panel offers
+// run scripts; it is never the default over a run script. Its idle panel offers
 // "Start spotlight" with "Sync your changes to the repository root.", and
 // the button reads "Run Spotlight" / "Stop Spotlight" / "Stopping...".
 
@@ -65,6 +65,32 @@ export function runTasks(scripts: RunScript[], spotlightEnabled: boolean): RunTa
   const tasks: RunTask[] = scripts.map((s) => ({ id: s.id, label: s.label, kind: "script" }));
   if (spotlightEnabled) tasks.push({ id: SPOTLIGHT_TASK_ID, label: SPOTLIGHT_LABEL, kind: "spotlight" });
   return tasks;
+}
+
+/**
+ * The Run task the panel shows. An explicit pick wins (Spotlight only while
+ * the setting is on), then the running script, then this workspace's live
+ * Spotlight session, then the default run script. Spotlight is never chosen
+ * over a run script, but with the setting on and no run script it is the
+ * only task, so the panel shows it rather than a dead "Run" button (the
+ * setting is switched in Settings › Actions, outside the panel).
+ */
+export function shownTask(o: {
+  picked: string | null;
+  spotlightEnabled: boolean;
+  activeScriptId: string | null;
+  spotlightMine: boolean;
+  defaultScriptId: string | null;
+}): string | null {
+  if (o.picked === SPOTLIGHT_TASK_ID && o.spotlightEnabled) return SPOTLIGHT_TASK_ID;
+  const picked = o.picked !== SPOTLIGHT_TASK_ID ? o.picked : null;
+  return (
+    picked ??
+    o.activeScriptId ??
+    (o.spotlightMine ? SPOTLIGHT_TASK_ID : null) ??
+    o.defaultScriptId ??
+    (o.spotlightEnabled ? SPOTLIGHT_TASK_ID : null)
+  );
 }
 
 /** What the panel knows about the Spotlight session on one repository root. */
