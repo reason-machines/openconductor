@@ -32060,7 +32060,7 @@
   }
  ],
  "supplemental_evidence": {
-  "source_main_commit": "9d1a106a7d9206d01a57a76ce2e62723584369e5",
+  "source_main_commit": "623b0936be1ebf430255c719dff4e1d04e7afeed",
   "records": [
    {
     "id": "shell-actions-722",
@@ -32126,6 +32126,29 @@
      "No installed native Mac run or real signed-in Mac-to-cloud chat was exercised.",
      "The gate requirement and all nine native final-review verdicts remain unverified; deferred cloud UI stays excluded from the denominator.",
      "The pre-existing broad settings test-harness problem remains separately tracked as issue #720."
+    ]
+   },
+   {
+    "id": "local-dialogs-725",
+    "areas": [
+     "dialogs"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/725",
+    "merge_commit": "623b0936be1ebf430255c719dff4e1d04e7afeed",
+    "evidence_path": "evidence/dialogs/NOTES.md",
+    "capture_manifests": [
+     "evidence/dialogs/captures.json",
+     "evidence/dialogs/baseline-captures.json"
+    ],
+    "lane": "REA Chromium captures of the identity-checked extracted Conductor frontend and actual OpenConductor dialog components in isolated synthetic fixtures, 1280x820 dark, Stone palette",
+    "summary": "Fresh rename, clone, create and remove reference pairs accompany 12 passing isolated component checks for layout, focus, cancellation and configured primary shortcuts. The original 10 checks failed 8 before the fix and pass after. This does not replace whole-state scores or sign off native dialogs.",
+    "limits": [
+     "Stone is selected to match the reference. Default palette parity is not exercised, and repository-removal body copy differs between fixtures.",
+     "The Archive reference capture lacked the required dialog title and was rejected. Archive and restore have component checks and static reference evidence, not fresh successful reference-screen pairs.",
+     "Native macOS, Tauri/WebKit, folder pickers, filesystem creation, real GitHub clone and authentication are not exercised by this pass.",
+     "The gstack template remains omitted. Generic Modal and Reset chat are untouched. Existing #682 workspace-create and #690 onboarding evidence is reused, not rerun.",
+     "The area's supplemental verdict is partial. All nine final native-review verdicts remain unverified; packaging and branch CI do not close them."
     ]
    }
   ]
@@ -32562,7 +32585,9 @@
     "dialog-reset-chat"
    ],
    "gap": "Captured dialogs are a subset. Onboarding and unlocated dialogs remain separately visible.",
-   "supplemental_evidence": []
+   "supplemental_evidence": [
+    "local-dialogs-725"
+   ]
   }
  }
 }

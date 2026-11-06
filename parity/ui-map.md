@@ -52,7 +52,7 @@ Raw retained rows: 983. Excluded rows: 644. The in-scope queue includes two addi
 
 ## Supplemental evidence
 
-Ledger reconciled against main `9d1a106a7d9206d01a57a76ce2e62723584369e5`. This is not a new capture identity. Supplemental crops do not replace full-state scores, change the denominator, or sign off native parity.
+Ledger reconciled against main `623b0936be1ebf430255c719dff4e1d04e7afeed`. This is not a new capture identity. Supplemental crops do not replace full-state scores, change the denominator, or sign off native parity.
 
 - **shell-actions-722 (partial)**: Repository actions menu crop matches exactly at thresholds 0 and 24. The larger Home and sidebar comparisons remain partial. This adds supplemental evidence, not whole-state matches or native sign-off. [Merged PR](https://github.com/reason-machines/openconductor/pull/722), [evidence](../evidence/shell-actions/README.md). Lane: REA captures of the extracted Conductor frontend and OpenConductor in Chromium, mocked IPC, synthetic populated fixture, 1280x820 dark, Stone palette
   - Only the 169x179 menu crop at x45/y247 is exact; it does not replace the map's full-state comparisons.
@@ -69,6 +69,12 @@ Ledger reconciled against main `9d1a106a7d9206d01a57a76ce2e62723584369e5`. This 
   - No installed native Mac run or real signed-in Mac-to-cloud chat was exercised.
   - The gate requirement and all nine native final-review verdicts remain unverified; deferred cloud UI stays excluded from the denominator.
   - The pre-existing broad settings test-harness problem remains separately tracked as issue #720.
+- **local-dialogs-725 (partial)**: Fresh rename, clone, create and remove reference pairs accompany 12 passing isolated component checks for layout, focus, cancellation and configured primary shortcuts. The original 10 checks failed 8 before the fix and pass after. This does not replace whole-state scores or sign off native dialogs. [Merged PR](https://github.com/reason-machines/openconductor/pull/725), [evidence](../evidence/dialogs/NOTES.md). Lane: REA Chromium captures of the identity-checked extracted Conductor frontend and actual OpenConductor dialog components in isolated synthetic fixtures, 1280x820 dark, Stone palette
+  - Stone is selected to match the reference. Default palette parity is not exercised, and repository-removal body copy differs between fixtures.
+  - The Archive reference capture lacked the required dialog title and was rejected. Archive and restore have component checks and static reference evidence, not fresh successful reference-screen pairs.
+  - Native macOS, Tauri/WebKit, folder pickers, filesystem creation, real GitHub clone and authentication are not exercised by this pass.
+  - The gstack template remains omitted. Generic Modal and Reset chat are untouched. Existing #682 workspace-create and #690 onboarding evidence is reused, not rerun.
+  - The area's supplemental verdict is partial. All nine final native-review verdicts remain unverified; packaging and branch CI do not close them.
 
 ## By owning team
 

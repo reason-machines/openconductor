@@ -1,0 +1,50 @@
+{
+  "rename": {
+    "ref": {
+      "evidence_id": "ev_7aacc8f4c78574cc2d15d0eec361cd2bb9ebd82b9c9a6531cc61599d67d6cac9",
+      "png_sha256": "bdc821adedc54b9268678209440d0b5631609b93f04e8834b7bbbe07e80219d8",
+      "input": "inputs/ref-rename.input.json"
+    },
+    "oc": {
+      "evidence_id": "ev_8f213e77168f9ea27735375471e8ae7cfbb95541fc84a8486259dcbd35fb8a31",
+      "png_sha256": "c6ad78fc4a779234896b888f349c950ee190477a2a62080de4c1a75d7682e8c4",
+      "input": "inputs/oc-rename.input.json"
+    }
+  },
+  "clone": {
+    "ref": {
+      "evidence_id": "ev_8c570cf35c613837e8a3ed1dcd4b12ae621e692c039c0f46e77bcb319c796f7b",
+      "png_sha256": "8a64d01861e7f185181d3695374b77b5408521d792f6f8cf060d811b23910415",
+      "input": "inputs/ref-clone.input.json"
+    },
+    "oc": {
+      "evidence_id": "ev_87aea07892018c7651f32c8b85dcc37760d9640044bd3196f2f811a95a55530c",
+      "png_sha256": "cf1f3a64498c3aa0f0c5493fa412bc0df31cdbe4d0bd80267f3ec02f61b877a4",
+      "input": "inputs/oc-clone.input.json"
+    }
+  },
+  "create": {
+    "ref": {
+      "evidence_id": "ev_72390034f3addeeb839f96f143f7bc5f00c54a9512137fa40553fc19e2e32fc4",
+      "png_sha256": "6169cd0d056a8d3b4f238f30fec7bce3d967ba8c6c98f3a020c02f93c539eb79",
+      "input": "inputs/ref-create.input.json"
+    },
+    "oc": {
+      "evidence_id": "ev_eaa3ac1cc6cfb9041f5d87e137d5bd8bc971692a07ef9e5df8309c42c3342fc3",
+      "png_sha256": "134d2a33cd7947901e45955b4e0698834b1d0b833f9b5bc38d0c0758a37eac60",
+      "input": "inputs/oc-create.input.json"
+    }
+  },
+  "remove": {
+    "ref": {
+      "evidence_id": "ev_a2ecba246f60795c23e980b561c2f087262c1c9a836ee02e0879357ae24d231c",
+      "png_sha256": "524bd3d63e65f5dcb7f274c586e435319708d9b7cf1fb49fc6f92614a7470fcb",
+      "input": "inputs/ref-remove.input.json"
+    },
+    "oc": {
+      "evidence_id": "ev_dcd94badfe05cc85882c2a65be132cc4dd195fcd7cddf4f93d69097f75a61e64",
+      "png_sha256": "8d9629f60b5c22798c4b504d29108266745fd8ab7ff67828a4963b8d6ebcb732",
+      "input": "inputs/oc-remove.input.json"
+    }
+  }
+}
