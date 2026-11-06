@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { keyedCache } from "../lib/keyedCache";
 import type { Repo, Workspace } from "../state/types";
 import * as api from "../scripts/api";
 import {
@@ -17,6 +19,10 @@ import {
 } from "../scripts/model";
 import * as spotlight from "../spotlight/testingApi";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
+import { openUrl } from "../backend";
+import { useRepoSettings } from "../settings/useRepoSettings";
+import { detectLocalhostUrl, previewEnvFrom, previewOptions, type PreviewEnv, type PreviewOption } from "../scripts/preview";
+import { PreviewOpenButton } from "./PreviewOpenButton";
 import {
   EMPTY_VIEW,
   SPOTLIGHT_EMPTY_TEXT,
@@ -38,6 +44,10 @@ interface Props {
   workspace: Workspace;
   /** Which strip tab this body is for (the strip draws the tabs). */
   tab: "run" | "setup";
+  /** The strip's Run tab is the selected one (open or collapsed), as Conductor's `it === Rx.RUN`. */
+  active: boolean;
+  /** The strip's tab-row slot for the Open button; null when the Run tab is not selected. */
+  actionsSlot?: HTMLElement | null;
   /** Reports the setup state, for the dot on the strip's Setup tab. */
   onSetupState?: (state: SetupStatus["state"]) => void;
   /** The Run tab's empty state: "Add run script" opens the repository's Scripts settings. */
@@ -53,25 +63,39 @@ const SETUP_EMPTY_TEXT = "Setup script output will appear here after running set
 
 const errorText = (e: unknown) => (typeof e === "string" ? e : e instanceof Error ? e.message : String(e));
 
+// Each workspace's scripts config and each repository's spotlight setting, last read:
+// switching back to a workspace shows its Run tab as it was at once, not the
+// "No run script configured" view for the frames until the config loads again
+// (lib/keyedCache.ts).
+const configs = keyedCache<ScriptsConfig>(64);
+const spotSettings = keyedCache<SpotlightTesting>(64);
+
 /**
  * The Run and Setup tab bodies of the right panel's strip: start/stop the
  * repository's run scripts and watch setup.
  * With the repository's spotlight_testing setting on, the Run task picker also
  * offers Spotlight, which syncs this workspace into the repository root.
  */
-export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScript, onShowRun }: Props) {
+export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetupState, onAddRunScript, onShowRun }: Props) {
   const ref = useMemo(() => workspaceRef(repo, workspace), [repo, workspace]);
   const wsId = workspace.id;
-  const [config, setConfig] = useState<ScriptsConfig | null>(null);
+  const configKey = JSON.stringify(ref);
+  const [configState, setConfigState] = useState<{ key: string; config: ScriptsConfig | null }>(() => ({ key: configKey, config: configs.get(configKey) ?? null }));
+  // null until this workspace's config is known (from the cache or the backend).
+  const config = configState.key === configKey ? configState.config : (configs.get(configKey) ?? null);
   const [runs, setRuns] = useState<RunStatus[]>([]);
   const [picked, setPicked] = useState<string | null>(null);
   const [runOut, setRunOut] = useState("");
   const [setup, setSetup] = useState<SetupStatus>({ state: "idle", log: null, last: null });
   const [error, setError] = useState<string | null>(null);
-  const [spotSetting, setSpotSetting] = useState<SpotlightTesting | null>(null);
+  const [spotState, setSpotState] = useState<{ repoId: string; setting: SpotlightTesting | null }>(() => ({ repoId: repo.id, setting: spotSettings.get(repo.id) ?? null }));
+  const spotSetting = spotState.repoId === repo.id ? spotState.setting : (spotSettings.get(repo.id) ?? null);
   const [spotView, setSpotView] = useState<SpotlightView>(EMPTY_VIEW);
   const [spotPending, setSpotPending] = useState<"starting" | "stopping" | null>(null);
   const outRef = useRef<HTMLPreElement>(null);
+  const repoSettings = useRepoSettings(repo.path || undefined, workspace.path);
+  const [previewEnv, setPreviewEnv] = useState<PreviewEnv>({});
+  const [detectedUrl, setDetectedUrl] = useState<string | null>(null);
 
   const repoRoot = repo.path;
   const spotEnabled = spotSetting?.enabled === true;
@@ -93,22 +117,28 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
   }, [wsId]);
 
   useEffect(() => {
-    setConfig(null);
     setPicked(null);
     setError(null);
-    if (ref) api.scriptsConfig(ref).then(setConfig, (e) => setError(errorText(e)));
+    if (ref)
+      api.scriptsConfig(ref).then(
+        (c) => {
+          configs.set(configKey, c);
+          setConfigState({ key: configKey, config: c });
+        },
+        (e) => setError(errorText(e)),
+      );
     refresh().catch(() => {});
-  }, [ref, refresh]);
+  }, [ref, configKey, refresh]);
 
   const refreshSpotlight = useCallback(async () => {
     if (!repoRoot) return;
     const [setting, status] = await Promise.all([spotlight.spotlightTesting(repo.id), spotlight.spotlightStatus(repoRoot)]);
-    setSpotSetting(setting);
+    spotSettings.set(repo.id, setting);
+    setSpotState({ repoId: repo.id, setting });
     setSpotView((v) => (v.workspaceId === status.workspaceId ? v : viewFromStatus(status)));
   }, [repo.id, repoRoot]);
 
   useEffect(() => {
-    setSpotSetting(null);
     setSpotView(EMPTY_VIEW);
     refreshSpotlight().catch(() => {});
   }, [refreshSpotlight]);
@@ -155,6 +185,11 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
     onSetupState?.(setup.state);
   }, [onSetupState, setup.state]);
 
+  useEffect(() => {
+    setPreviewEnv({});
+    if (ref) api.previewEnv(ref).then((pairs) => setPreviewEnv(previewEnvFrom(pairs)), () => {});
+  }, [ref]);
+
   async function act(f: () => Promise<unknown>) {
     setError(null);
     try {
@@ -192,7 +227,8 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
     setError(null);
     try {
       const change = await spotlight.setSpotlightTesting(repo.id, repoRoot, enabled);
-      setSpotSetting(change.setting);
+      spotSettings.set(repo.id, change.setting);
+      setSpotState({ repoId: repo.id, setting: change.setting });
       if (!change.setting.enabled && picked === SPOTLIGHT_TASK_ID) setPicked(null);
       if (change.setting.enabled) setPicked(SPOTLIGHT_TASK_ID);
     } catch (e) {
@@ -210,6 +246,22 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
   const shownStatus = runs.find((r) => r.scriptId === shown);
   const setupRunning = setup.state === "running";
 
+  // Conductor's run-tab URL (`ea`): found in the run output while the task runs, kept until it stops.
+  const runBusy = !showSpotlight && busy;
+  useEffect(() => {
+    if (!runBusy) setDetectedUrl(null);
+  }, [runBusy, shown, wsId]);
+  useEffect(() => {
+    if (runBusy && detectedUrl === null) setDetectedUrl(detectLocalhostUrl(runOut));
+  }, [runBusy, detectedUrl, runOut]);
+  // The Open button (`id`): while the run task runs, with a preview URL or one found in its output.
+  const previews = runBusy ? previewOptions(repoSettings?.previewUrls?.value, detectedUrl, previewEnv) : [];
+  // In-app browser preview is an experimental setting in Conductor, off by default; with it off
+  // (`lr`, `vs`) the URL opens in the default browser.
+  const openPreview = (option: PreviewOption) => {
+    openUrl(option.resolvedUrl).catch((e) => console.error("Failed to open URL:", e));
+  };
+
   // The Run tab's ▶/■ button: stop what runs, else start the task shown.
   const toggleRun = () => {
     if (showSpotlight) {
@@ -225,10 +277,23 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
       onShowRun();
       toggleRun();
     },
+    // terminal.openLocalhost (⌘⇧B), Conductor's terminal panel handler (~7,141,744): on the Run tab,
+    // open the first preview URL; otherwise pass the key on.
+    "terminal.openLocalhost": () => {
+      if (!active || previews.length === 0) return false;
+      openPreview(previews[0]);
+      return true;
+    },
   });
 
   // Conductor's Run tab with no run script: a dashed box offering to add one.
   const noRunScript = (config !== null || !ref) && tasks.length === 0 && !showSpotlight && runs.length === 0;
+
+  // A workspace seen for the first time: nothing until its config is known, rather than
+  // the "No run script configured" view for the frames before the dashed box replaces it.
+  if (tab === "run" && ref && config === null && !error && runs.length === 0) {
+    return <section className="scripts" aria-label="Run" aria-busy="true" />;
+  }
 
   if (tab === "run" && noRunScript) {
     return (
@@ -248,6 +313,7 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
 
   return (
     <section className="scripts" aria-label={tab === "run" ? "Run" : "Setup"}>
+      {actionsSlot && previews.length > 0 && createPortal(<PreviewOpenButton options={previews} onOpen={openPreview} />, actionsSlot)}
       {error && <div className="scripts-error">{error}</div>}
       {tab === "run" ? (
         <>

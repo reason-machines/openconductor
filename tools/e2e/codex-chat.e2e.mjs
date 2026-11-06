@@ -16,6 +16,16 @@
 //                        the sidebar row; Continue sends the form's content
 //   6. "perm" + Deny     Codex asks for network access: the card, Needs input;
 //                        Deny grants nothing
+//   7. "unauth"          the turn fails with a 401: "Authentication required"
+//                        under it, and "Open Codex settings" opens Settings ›
+//                        Agents on the Codex tab
+//   8. auth modes        on that tab: ChatGPT (in-app sign-in), CLI, then API
+//                        key (typed and saved), each stored as codexModes.ts
+//                        says; a new chat per mode sends a turn, and that
+//                        chat's app-server launch has the key only under API
+//                        key (the shell's leaked key is cleared otherwise),
+//                        the signed-in account, the custom executable and
+//                        personality, and the reply renders
 //
 // Usage (under a display, e.g. xvfb-run):
 //   node tools/e2e/codex-chat.e2e.mjs <path to the built app binary>
@@ -24,6 +34,7 @@
 // No npm dependencies: WebDriver is plain HTTP.
 
 import { spawn, execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { mkdtempSync, mkdirSync, writeFileSync, chmodSync, readFileSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -72,6 +83,11 @@ writeFileSync(
 
 const env = { ...process.env, HOME: home, SHELL: "/bin/bash" };
 for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME", "OPENAI_API_KEY", "CODEX_API_KEY", "CODEX_HOME"]) delete env[k];
+// A key left in the user's shell: only the API key mode may hand Codex a key, and it must be the stored one.
+const SHELL_KEY = "sk-e2e-left-in-the-shell";
+env.OPENAI_API_KEY = env.CODEX_API_KEY = SHELL_KEY;
+// "Sign in with ChatGPT" opens the auth URL: xdg-open runs $BROWSER, so no real browser starts.
+env.BROWSER = "true";
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
 const driverExited = new Promise((r) => driver.on("exit", r));
 
@@ -79,11 +95,15 @@ const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
 let sessionUrl = null;
 
-async function wd(method, path, body) {
+async function wd(method, path, body, timeoutMs = 45000) {
   const res = await fetch(`${sessionUrl ?? base}${path}`, {
     method,
     headers: { "content-type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
+    // A hung WebDriver call fails here, naming the call, instead of at the job's step timeout.
+    signal: AbortSignal.timeout(timeoutMs),
+  }).catch((e) => {
+    throw new Error(`${method} ${path}: ${e.message}`);
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`${method} ${path}: ${res.status} ${JSON.stringify(json.value ?? json)}`);
@@ -116,8 +136,8 @@ async function waitFor(what, fn, timeoutMs = 30000) {
   throw new Error(`timed out waiting for ${what}; last: ${last instanceof Error ? last.message : JSON.stringify(last)}`);
 }
 
-async function screenshot(name) {
-  const png = await wd("GET", "/screenshot");
+async function screenshot(name, timeoutMs) {
+  const png = await wd("GET", "/screenshot", undefined, timeoutMs);
   const file = join(out, `${name}.png`);
   writeFileSync(file, Buffer.from(png, "base64"));
   console.log(`screenshot: ${file}`);
@@ -145,6 +165,18 @@ const requests = () =>
 async function send(text) {
   await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
+}
+
+/** Picks Codex in the composer's model picker (Conductor's picker picks the agent too). */
+async function pickCodex(shot) {
+  await run("document.querySelector(\"[data-testid='composer-model-button']\").click();");
+  await waitFor("Codex in the model picker", () =>
+    run("return [...document.querySelectorAll('.oc-model-menu .oc-model-item')].some((b) => b.textContent.trim() === 'Codex') || null;"),
+  );
+  if (shot) await screenshot(shot);
+  await run("[...document.querySelectorAll('.oc-model-menu .oc-model-item')].find((b) => b.textContent.trim() === 'Codex').click();");
+  await waitFor("Codex on the picker chip", () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title === 'Codex' || null;"));
+  await waitFor("the Codex access menu", () => run("return !!document.querySelector('.codex-access') || null;"));
 }
 
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));
@@ -179,18 +211,11 @@ try {
   await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   const cliPath = await runAsync("const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke('codex_cli_path').then(done, (e) => done('error: ' + e));");
-  assert.equal(cliPath, join(bin, "codex"));
-  pass(`codex_cli_path finds the CLI in ~/.local/bin: ${cliPath}`);
+  // Settings' "Codex executable path" overrides the CLI found on PATH (~/.local/bin).
+  assert.equal(cliPath, custom);
+  pass(`codex_cli_path honours the Codex executable path override: ${cliPath}`);
 
-  // Pick Codex in the composer's model picker (Conductor's picker picks the agent too).
-  await run("document.querySelector(\"[data-testid='composer-model-button']\").click();");
-  await waitFor("Codex in the model picker", () =>
-    run("return [...document.querySelectorAll('.oc-model-menu .oc-model-item')].some((b) => b.textContent.trim() === 'Codex') || null;"),
-  );
-  await screenshot("codex-0-model-picker");
-  await run("[...document.querySelectorAll('.oc-model-menu .oc-model-item')].find((b) => b.textContent.trim() === 'Codex').click();");
-  await waitFor("Codex on the picker chip", () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title === 'Codex' || null;"));
-  await waitFor("the Codex access menu", () => run("return !!document.querySelector('.codex-access') || null;"));
+  await pickCodex("codex-0-model-picker");
   pass("the model picker switches the chat to Codex: the chip reads Codex and the access menu shows");
   const access = await run("const s = document.querySelector('.codex-access'); return s && [s.value, [...s.options].map((o) => o.textContent)];");
   assert.deepEqual(access, ["full", ["Full access", "Ask first", "Read only"]], "Conductor's default: full access");
@@ -336,6 +361,116 @@ try {
   assert.deepEqual(lastResponse("perm-turn-6"), { id: "perm-turn-6", result: { permissions: {}, scope: "turn" } });
   await waitFor("the sidebar row to leave Needs input", async () => !(await needsInput()), 15000);
   pass('a permission request shows "codex requests permission" with Network access and Needs input; Deny grants nothing');
+
+  // 7. Signed out: the failed turn links to the Codex tab of Settings › Agents.
+  await send("unauth: anything");
+  const signIn = await waitFor("the sign-in notice", () => run("const n = document.querySelector('[data-testid=\"chat-sign-in\"]'); return n ? n.textContent : null;"));
+  assert.ok(signIn.includes("Authentication required") && signIn.includes("Codex is not signed in"), signIn);
+  await screenshot("codex-6-sign-in-required");
+  await run("Array.from(document.querySelectorAll('[data-testid=\"chat-sign-in\"] button')).find((b) => b.textContent.trim() === 'Open Codex settings').click();");
+  const tab = await waitFor("Settings › Agents on the Codex tab", () =>
+    run("const t = document.querySelector('[role=\"tab\"][aria-selected=\"true\"]'); return t && location.pathname === '/settings/user/providers' ? t.textContent.trim() : null;"),
+  );
+  assert.equal(tab, "Codex");
+  await screenshot("codex-7-agents-codex-tab");
+  pass('a 401 turn shows "Authentication required" and "Open Codex settings" opens Settings › Agents on the Codex tab');
+
+  // 8. Each Codex auth mode, set on the Codex tab as a user does, then a turn in a new chat (its own app-server).
+  const codexTab = 'section[aria-label="Codex"]';
+  const fingerprint = (v) => createHash("sha256").update(v).digest("hex").slice(0, 16);
+  const API_KEY = "sk-e2e-0123456789-mode";
+  const codexSettings = () =>
+    runAsync("const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke('get_settings').then((s) => done({ top: s.codex_provider ?? null, stored: s.providers?.codex ?? null }), (e) => done({ error: String(e) }));");
+  const pressedCard = () => run(`return [...document.querySelectorAll('${codexTab} button[aria-pressed="true"]')].map((b) => b.textContent);`);
+  const clickIn = (css, text) =>
+    run("const b = [...document.querySelectorAll(arguments[0])].find((b) => b.textContent === arguments[1]); if (!b) return false; b.click(); return true;", css, text);
+  const authStatus = () => run(`const s = document.querySelector('${codexTab} [data-testid="agent-auth-status"]'); return s ? s.innerText : '';`);
+  const statusSays = (text) =>
+    waitFor(`the status line to say "${text}"`, async () => (await authStatus()).includes(text), 20000).catch(async (e) => {
+      throw new Error(`${e.message}; status: ${JSON.stringify(await authStatus())}`);
+    });
+  const settingsFile = () => readFileSync(join(home, ".openconductor", "settings.toml"), "utf8");
+  const modes = [
+    {
+      id: "chatgpt",
+      card: "ChatGPTRecommended",
+      stored: (s) => s.top === "chatgpt_sign_in" && s.stored === null,
+      async connect() {
+        await waitFor("Not signed in with ChatGPT", async () => (await authStatus()).includes("Not signed in with ChatGPT"), 20000);
+        assert.ok(await clickIn(`${codexTab} button`, "Sign in with ChatGPT"));
+        const line = await waitFor("Connected with ChatGPT", () => run("const c = document.querySelector('[data-testid=\"codex-chatgpt-connected\"] .agc-ok'); return c ? c.textContent : null;"), 20000);
+        assert.equal(line, "Connected with ChatGPT as e2e@example.com");
+        assert.ok(requests().some((r) => r.method === "account/login/start"), "the sign-in reached Codex");
+      },
+      keys: { CODEX_API_KEY: null, OPENAI_API_KEY: null },
+    },
+    {
+      // `codex login` and the in-app ChatGPT sign-in share Codex's own login, so the account carries over.
+      id: "cli",
+      card: "CLI",
+      stored: (s) => (s.top === null || s.top === "default") && s.stored?.kind === "codex_login",
+      async connect() {
+        await waitFor("the CLI status", async () => /Connected|not authenticated/i.test(await authStatus()), 20000);
+      },
+      keys: { CODEX_API_KEY: null, OPENAI_API_KEY: null },
+    },
+    {
+      id: "apikey",
+      card: "API key",
+      stored: (s) => s.top === null && s.stored?.kind === "openai_api",
+      async connect() {
+        await statusSays("No OpenAI API key configured");
+        await wd("POST", `/element/${await find(`${codexTab} input[aria-label="OpenAI API key"]`)}/value`, { text: API_KEY });
+        assert.ok(await clickIn(`${codexTab} button`, "Save"));
+        await waitFor("the masked key", () => run(`return document.querySelector('${codexTab} [data-testid="secret-value"]')?.textContent.endsWith('mode') || null;`));
+        await statusSays("Connected");
+        assert.ok(!settingsFile().includes(API_KEY), "the key stays out of settings.toml");
+      },
+      keys: { CODEX_API_KEY: fingerprint(API_KEY), OPENAI_API_KEY: fingerprint(API_KEY) },
+    },
+  ];
+  assert.deepEqual(await waitFor("the Codex cards", () => pressedCard().then((c) => (c.length ? c : null))), ["CLI"], "no codex_provider and no [providers.codex] reads as CLI");
+  for (const mode of modes) {
+    if (mode.id !== "chatgpt") {
+      await run("window.dispatchEvent(new CustomEvent('openconductor:open-settings', { detail: { page: 'providers', providerTab: 'codex' } }));");
+      await waitFor("the Codex tab", () => run(`return !!document.querySelector('${codexTab} button[aria-pressed]') || null;`));
+    }
+    assert.ok(await clickIn(`${codexTab} button[aria-pressed]`, mode.card), `the ${mode.card} card`);
+    await waitFor(`the ${mode.card} card selected`, async () => (await pressedCard())[0] === mode.card);
+    const stored = await waitFor(`${mode.id} stored in settings.toml`, () => codexSettings().then((s) => (mode.stored(s) ? s : null)), 15000).catch(async (e) => {
+      throw new Error(`${e.message}; settings: ${JSON.stringify(await codexSettings())}`);
+    });
+    await mode.connect();
+    await screenshot(`codex-8-${mode.id}-settings`);
+    pass(`the ${mode.card} card stores ${JSON.stringify(stored)}`);
+
+    // Back to the workspace, a new chat on Codex, one turn.
+    console.log(`# ${mode.id}: back to the workspace`);
+    await run("document.querySelector('.settings-back').click();");
+    await waitFor("the workspace", () => run("return !!document.querySelector('.main-tab-new-button') || null;"));
+    console.log(`# ${mode.id}: new chat`);
+    await run("document.querySelector('.main-tab-new-button').click();");
+    await waitFor("the new, empty chat", () => chatText().then((t) => t !== null && !/unauth|turn \d+:/.test(t)));
+    console.log(`# ${mode.id}: pick Codex`);
+    await pickCodex();
+    console.log(`# ${mode.id}: send the turn`);
+    const prompt = `mode ${mode.id}`;
+    await send(prompt);
+    await waitFor(`"turn 1: ${prompt}"`, () => chatText().then((t) => t.includes(`turn 1: ${prompt}`)));
+    await waitFor("the turn to finish", async () => !(await running()));
+    const all = requests();
+    const turnStart = all.find((r) => r.method === "turn/start" && r.params.input.some((i) => i.text === prompt));
+    assert.ok(turnStart, `${mode.id}: Codex got turn/start for "${prompt}"`);
+    const launch = all.find((r) => r.launch && r.pid === turnStart.pid)?.launch;
+    assert.ok(launch, `a launch line for pid ${turnStart.pid}`);
+    assert.equal(launch.launcher, "custom", `${mode.id}: the Codex executable path`);
+    assert.ok(launch.args.includes('personality="friendly"'), `${mode.id}: launch args ${JSON.stringify(launch.args)}`);
+    assert.deepEqual(launch.keys, mode.keys, `${mode.id}: the API key variables Codex got`);
+    assert.equal(launch.account, "chatgpt", `${mode.id}: Codex's own login`);
+    // WebKitWebDriver's snapshot of a new chat right after its turn can stall (seen on CI); the picture is evidence, not a check.
+    await screenshot(`codex-9-${mode.id}-turn`, 10000).catch((e) => console.log(`# no screenshot: ${e.message}`));
+    pass(`${mode.card}: a new chat's turn renders "turn 1: ${prompt}"; its app-server got ${mode.keys.CODEX_API_KEY ? "the stored key" : "no key"}, the ChatGPT account, the custom path and personality`);
+  }
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {

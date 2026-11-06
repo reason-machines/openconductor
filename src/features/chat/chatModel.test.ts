@@ -19,7 +19,7 @@ test("the New workspace dialog's model and effort become the Session's options",
 
 test("a model or effort Reason has no value for is left to Reason's default", () => {
   assert.deepEqual(sessionConfig("opus", "high"), [{ id: "reasoning_effort", value: "high" }], "a Claude alias has no fixed Reason id");
-  assert.deepEqual(sessionConfig("composer-2.5", "none"), [], "Cursor model, unknown effort");
+  assert.deepEqual(sessionConfig("composer-2.5", "none"), [], "a removed Cursor id, unknown effort");
   assert.deepEqual(sessionConfig("  ", null), []);
   assert.deepEqual(sessionConfig("opus-5-1m", "ultracode"), [
     { id: "model", value: "byok:anthropic:claude-opus-5" },
@@ -48,6 +48,16 @@ test("the New workspace dialog's effort starts from the agent's default effort s
   const s = withModels({ claude_code: { default_effort_level: "low" }, codex: { default_thinking_level: "xhigh", review_thinking_level: "high" } });
   assert.equal(defaultEffortSetting(s, "claude"), "low");
   assert.equal(defaultEffortSetting(s, "codex"), "xhigh");
-  assert.equal(defaultEffortSetting(s, "cursor"), null);
+  assert.equal(defaultEffortSetting(s, null), null);
   assert.equal(defaultEffortSetting(withModels({ claude_code: {} }), "claude"), null);
+});
+
+test("Settings › Agents › Reason's default model and effort win for new Reason chats", () => {
+  const s = { ...DEFAULT_SETTINGS, reason: { model: "byok:anthropic:claude-opus-5-5", reasoning_effort: "high" } };
+  assert.deepEqual(defaultChatConfig(s), [
+    { id: "model", value: "byok:anthropic:claude-opus-5-5" },
+    { id: "reasoning_effort", value: "high" },
+  ]);
+  assert.deepEqual(defaultChatConfig({ ...DEFAULT_SETTINGS, reason: { model: "default" } }), [{ id: "model", value: "default" }]);
+  assert.deepEqual(defaultChatConfig({ ...DEFAULT_SETTINGS, reason: { model: null, reasoning_effort: "high" } }), [], "no model: Default models applies");
 });

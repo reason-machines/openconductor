@@ -69,6 +69,12 @@ export async function quitApp(): Promise<void> {
 }
 
 /** Open a web page in the default browser (tauri-plugin-opener's `open_url`). */
+/** Help › "Open debug tools": the window's web inspector (Conductor's `open_devtools`). */
+export async function openDevtools(): Promise<void> {
+  if (!inTauri()) return;
+  await invoke("open_devtools");
+}
+
 export async function openUrl(url: string): Promise<void> {
   if (!inTauri()) {
     window.open(url, "_blank", "noopener");

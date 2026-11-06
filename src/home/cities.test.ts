@@ -1,12 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CITY_TOTAL, visitedCities } from "./cities.ts";
+import { CITY_TOTAL, cityOf, visitedCities } from "./cities.ts";
 import type { Repo, Workspace } from "../state/types";
 
-function ws(name: string): Workspace {
+function ws(name: string, directoryName?: string): Workspace {
   return {
     id: name,
     name,
+    directoryName,
     branch: name,
     status: "idle",
     diff: { added: 0, removed: 0 },
@@ -30,4 +31,15 @@ test("a city counts once however many workspaces carry its name, in catalogue or
 
 test("the total is the size of the city catalogue", () => {
   assert.ok(CITY_TOTAL > 0);
+});
+
+test("a -vN suffix and letter case still name the city", () => {
+  assert.equal(cityOf("oslo"), "oslo");
+  assert.equal(cityOf("Oslo-v2"), "oslo");
+  assert.equal(cityOf("fix-login"), null);
+});
+
+test("a renamed workspace counts by its directory name, as Conductor's does", () => {
+  const repos = [repo([ws("Oslo PR title", "oslo"), ws("oslo-v1"), ws("fix-login")]), repo([ws("lima")])];
+  assert.deepEqual(visitedCities(repos), ["lima", "oslo"]);
 });

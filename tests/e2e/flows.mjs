@@ -227,10 +227,9 @@ export const flows = [
   },
   {
     // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
-    // active result. Go to Home leaves the workspace for the Home list
-    // (Conductor's /all-workspaces, titled "Home"; the wordmark-and-cards
-    // screen at / only shows at start-up), and searching the workspace's name
-    // brings it back.
+    // active result. Go to Home leaves the workspace for the wordmark-and-cards
+    // Home screen (Conductor opens its /all-workspaces list here; ours follows
+    // Sven's brief for #483), and searching the workspace's name brings it back.
     name: "command-palette",
     async run(wd) {
       const META = "\uE03D";
@@ -265,16 +264,16 @@ export const flows = [
 
       await open();
       await run("Go to Home", "Go to Home");
-      const homeList = () =>
+      const home = () =>
         wd.execute(
-          "return { title: document.querySelector('.allws .allws-title')?.textContent.trim() ?? null, rows: document.querySelectorAll('.allws .allws-row').length, workspace: !!document.querySelector('.workspace') };",
+          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), workspace: !!document.querySelector('.workspace') };",
           [],
         );
-      await wd.waitFor("the Home list with the workspace's row", async () => {
-        const h = await homeList();
-        return h.title === "Home" && h.rows > 0 && !h.workspace;
+      await wd.waitFor("the Home screen with its entry cards", async () => {
+        const h = await home();
+        return h.cards === 3 && !h.list && !h.workspace;
       }).catch(async (e) => {
-        throw new Error(`${e.message}; saw ${JSON.stringify(await homeList())}`);
+        throw new Error(`${e.message}; saw ${JSON.stringify(await home())}`);
       });
 
       await open();
@@ -327,9 +326,8 @@ export const flows = [
         const stored = (await invoke("session_statuses", {})).value ?? [];
         if (!stored.some((r) => r.chatId === ws.id && r.status === "needs_user_permission")) throw new Error(`session_statuses ${JSON.stringify(stored)}`);
 
-        // The sidebar's Home row (its title carries the shortcut hint).
-        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
-        if (!opened) throw new Error("no Home row in the sidebar");
+        // The Home list is the /all-workspaces route (sidebar Home opens the wordmark screen, #483).
+        await wd.execute('history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;', []);
         await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
         await waitShown("Needs permission on the Home row", homeIcons, "needs-user-permission", "Needs permission");
         if (process.env.E2E_OUT) {
@@ -629,10 +627,16 @@ export const flows = [
       await wd.waitFor("the Agents page", async () => (await heading()) === "Agents");
       const tabs = await wd.waitFor("the agent tabs", async () => {
         const t = await textsOf(wd, '[role="tab"]');
-        return t.length === 4 ? t : null;
+        return t.length === 3 ? t : null;
       });
-      if (JSON.stringify(tabs) !== JSON.stringify(["Claude Code", "Codex", "Cursor", "OpenCode"])) throw new Error(`agent tabs ${JSON.stringify(tabs)}`);
-      const cards = await textsOf(wd, "button[aria-pressed]");
+      if (JSON.stringify(tabs) !== JSON.stringify(["Reason", "Claude Code", "Codex"])) throw new Error(`agent tabs ${JSON.stringify(tabs)}`);
+      const openToml = await textsOf(wd, ".agk-header .agk-split-main");
+      if (openToml[0] !== "Open settings.toml") throw new Error(`page header button ${JSON.stringify(openToml)}`);
+      await clickByText(wd, '[role="tab"]', "Claude Code");
+      const cards = await wd.waitFor("the Claude Code cards", async () => {
+        const c = await textsOf(wd, "button[aria-pressed]");
+        return c.length === 2 ? c : null;
+      });
       if (JSON.stringify(cards) !== JSON.stringify(["CLI", "API key"])) throw new Error(`Authentication cards ${JSON.stringify(cards)}`);
       await wd.waitFor("the Claude Code status line", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]')).length === 1, 20000);
       const before = claudeKind();
@@ -640,27 +644,31 @@ export const flows = [
       await wd.waitFor('kind = "anthropic_api" under [providers.claude]', async () => claudeKind() === '"anthropic_api"').catch((e) => {
         throw new Error(`${e.message}; [providers.claude] kind is ${claudeKind()}`);
       });
-      await wd.waitFor("the Anthropic API key field", async () => (await wd.findAll('input[aria-label="Anthropic API key"]')).length === 1);
+      const keyField = 'input[aria-label="Anthropic API key"]';
+      await wd.waitFor("the Anthropic API key field", async () => (await wd.findAll(keyField)).length === 1);
       const status = await textsOf(wd, '[data-testid="agent-auth-status"]');
       if (!status[0]?.includes("No Anthropic API key configured")) throw new Error(`status line ${JSON.stringify(status)}`);
-      // The row's Setting actions › Reset returns Claude Code to its CLI login.
-      // The gear shows on hover (opacity 0 otherwise), so it is clicked in the page.
-      const gear = await wd.waitFor("the Setting actions gear", async () => (await wd.findAll('button[aria-label="Setting actions"]')).length > 0);
-      if (!gear) throw new Error("no Setting actions on the Authentication row");
-      await wd.execute("document.querySelector('button[aria-label=\"Setting actions\"]').click();", []);
-      await wd.waitFor("the Reset item", async () => (await textsOf(wd, '[role="menuitem"]')).includes("Reset"));
-      await clickByText(wd, '[role="menuitem"]', "Reset");
-      await wd.waitFor("[providers.claude] cleared", async () => claudeKind() === null || claudeKind() === '"claude_login"');
-      await wd.waitFor("the Run claude /login button", async () => (await textsOf(wd, "button")).includes("Run claude /login"));
-      for (const [tab, want] of [
-        ["Codex", "Run codex login"],
-        ["Cursor", "Get key"],
-      ]) {
-        await clickByText(wd, '[role="tab"]', tab);
-        await wd.waitFor(`${tab}: ${want}`, async () => (await textsOf(wd, "button")).includes(want));
-      }
-      await clickByText(wd, '[role="tab"]', "OpenCode");
-      await wd.waitFor("the OpenCode tab", async () => (await textsOf(wd, "button")).some((t) => t === "Install OpenCode" || t === "Add your first provider"), 20000);
+      // Save a key: the row masks it to its last four characters; the eye
+      // shows the whole key only on request, the trash removes it.
+      const key = "sk-ant-e2e-0123456789-bAAA";
+      await wd.click((await wd.findAll(keyField))[0]);
+      await wd.keys(key);
+      await clickByText(wd, "button", "Save");
+      const secret = () => wd.execute("return document.querySelector('[data-testid=\"secret-value\"]')?.textContent ?? null;", []);
+      await wd.waitFor("the masked key", async () => (await secret()) === "••••••••bAAA");
+      await wd.waitFor("Connected", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0]?.includes("Connected"));
+      if ((await wd.execute("return document.body.textContent.includes(arguments[0]);", [key]))) throw new Error("the key is on the page before Show");
+      await wd.click((await wd.findAll('button[aria-label="Show Anthropic API key"]'))[0]);
+      await wd.waitFor("the revealed key", async () => (await secret()) === key);
+      await wd.click((await wd.findAll('button[aria-label="Hide Anthropic API key"]'))[0]);
+      await wd.waitFor("the key masked again", async () => (await secret()) === "••••••••bAAA");
+      await wd.click((await wd.findAll('button[aria-label="Remove Anthropic API key"]'))[0]);
+      await wd.waitFor("the key field after Remove", async () => (await wd.findAll(keyField)).length === 1);
+      // The CLI card puts Claude Code back on its own login.
+      await clickByText(wd, "button[aria-pressed]", "CLI");
+      await wd.waitFor("[providers.claude] back on the CLI", async () => claudeKind() === null || claudeKind() === '"claude_login"');
+      await clickByText(wd, '[role="tab"]', "Codex");
+      await wd.waitFor("the Codex tab", async () => (await textsOf(wd, "button[aria-pressed]")).includes("API key"));
       if (before !== null && before !== '"claude_login"') throw new Error(`[providers.claude] was ${before} before the flow; it is now reset`);
 
       await clickByText(wd, ".settings-nav .nav-item", "Default models");
@@ -698,7 +706,7 @@ export const flows = [
       await clickByText(wd, '[role="tab"]', "Claude Code");
       const section = 'section[aria-label="Claude Code"]';
       await wd.waitFor("the Claude Code options", async () => (await wd.findAll(`${section} input[aria-label="Use Claude Code with Chrome"]`)).length === 1);
-      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
+      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .agk-config h3`);
       const want = ["Use Claude Code with Chrome", "Claude Code executable path", "Claude settings"];
       if (want.some((w, i) => labels.at(i - want.length) !== w)) throw new Error(`Claude option rows ${JSON.stringify(labels)}, want them to end with ${JSON.stringify(want)}`);
 
@@ -740,31 +748,84 @@ export const flows = [
         await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
         await wd.waitFor(`models.codex personality = "${v}"`, async () => tomlValue(file, "models.codex", "personality") === `"${v}"`);
       }
-      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .oc-agent-config h3`);
+      const labels = await textsOf(wd, `${section} .settings-row-label, ${section} .agk-config h3`);
       const want = ["Codex personality for new chats", "Codex executable path", "Codex config"];
       if (want.some((w, i) => labels.at(i - want.length) !== w)) throw new Error(`Codex option rows ${JSON.stringify(labels)}, want them to end with ${JSON.stringify(want)}`);
-      const path = await textsOf(wd, `${section} .oc-agent-config-path`);
+      const path = await textsOf(wd, `${section} .agk-config .agk-mono`);
       if (path[0] !== "~/.codex/config.toml") throw new Error(`Codex config card shows ${JSON.stringify(path)}`);
       await showRows(wd, `${section} .oc-agent-select-180`);
     },
   },
+  // Settings › Agents › Codex Authentication against the stand-in app-server
+  // (tools/e2e/fake_codex_app_server.py, set as the Codex executable path):
+  // ChatGPT signs in from the app, then API key and CLI, each checked in
+  // settings.toml. Ends signed in with ChatGPT for the screenshot.
   {
-    name: "agents-opencode-advanced",
-    async run(wd) {
+    name: "agents-codex-chatgpt",
+    setup(ctx) {
+      const dir = realpathSync(mkdtempSync(join(tmpdir(), "oc-e2e-codex-")));
+      const exe = join(dir, "codex");
+      writeFileSync(exe, `#!/bin/sh\nOC_FAKE_CODEX_DIR="${dir}" exec python3 "${resolve("tools/e2e/fake_codex_app_server.py")}" "$@"\n`);
+      chmodSync(exe, 0o755);
+      ctx.fakeCodex = { dir, exe };
+    },
+    teardown(ctx) {
+      if (ctx.fakeCodex) rmSync(ctx.fakeCodex.dir, { recursive: true, force: true });
+    },
+    async run(wd, ctx) {
       await openSettingsPage(wd, "Agents");
-      await clickByText(wd, '[role="tab"]', "OpenCode");
-      const section = 'section[aria-label="OpenCode"]';
-      const toggle = `${section} .oc-agent-advanced-toggle`;
-      if ((await wd.execute("return document.querySelector(arguments[0])?.getAttribute('aria-expanded');", [toggle])) !== "true") {
-        await wd.click((await wd.findAll(toggle))[0]);
-      }
-      const badge = await wd.waitFor("the OpenCode status badge", async () => {
-        const [t] = await textsOf(wd, `${section} .oc-agent-badge`);
-        return t && t !== "Checking" ? t : null;
+      await clickByText(wd, '[role="tab"]', "Codex");
+      const section = 'section[aria-label="Codex"]';
+      const file = settingsFile();
+      const cards = await wd.waitFor("the Codex cards", async () => {
+        const c = await textsOf(wd, `${section} button[aria-pressed]`);
+        return c.length === 3 ? c : null;
       });
-      if (!/^(Installed|Missing|Update required|Needs repair)/.test(badge)) throw new Error(`OpenCode status badge ${JSON.stringify(badge)}`);
-      if ((await wd.findAll(`${section} input[aria-label="OpenCode executable path"]`)).length !== 1) throw new Error("no OpenCode executable path row under Advanced");
-      await showRows(wd, `${section} .oc-agent-advanced`);
+      if (JSON.stringify(cards) !== JSON.stringify(["ChatGPTRecommended", "CLI", "API key"])) throw new Error(`Codex Authentication cards ${JSON.stringify(cards)}`);
+      await wd.click((await wd.findAll(`${section} input[aria-label="Codex executable path"]`))[0]);
+      await wd.keys(ctx.fakeCodex.exe);
+      await wd.waitFor("codex_executable_path in settings.toml", async () => tomlValue(file, "", "codex_executable_path") === JSON.stringify(ctx.fakeCodex.exe));
+      await clickByText(wd, `${section} button[aria-pressed]`, "ChatGPTRecommended");
+      await wd.waitFor('codex_provider = "chatgpt_sign_in" and no [providers.codex]', async () => tomlValue(file, "", "codex_provider") === '"chatgpt_sign_in"' && tomlValue(file, "providers.codex", "kind") === null);
+      await wd.waitFor("Not signed in with ChatGPT", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0]?.includes("Not signed in with ChatGPT"), 20000);
+      await clickByText(wd, `${section} button`, "Sign in with ChatGPT");
+      const connected = await wd.waitFor("Connected with ChatGPT", async () => (await textsOf(wd, '[data-testid="codex-chatgpt-connected"] .agc-ok'))[0], 20000);
+      if (connected !== "Connected with ChatGPT as e2e@example.com") throw new Error(`connected line ${JSON.stringify(connected)}`);
+      const table = await textsOf(wd, `${section} .ag-info tr`);
+      if (JSON.stringify(table) !== JSON.stringify(["ChatGPT accounte2e@example.com", "PlanPro"])) throw new Error(`status table ${JSON.stringify(table)}`);
+      const buttons = await textsOf(wd, '[data-testid="codex-chatgpt-connected"] button');
+      if (JSON.stringify(buttons) !== JSON.stringify(["Manage usage", "Reconnect"])) throw new Error(`connected actions ${JSON.stringify(buttons)}`);
+      const sent = readFileSync(join(ctx.fakeCodex.dir, "codex-fake.jsonl"), "utf8");
+      if (!sent.includes('"method": "account/login/start"')) throw new Error("the stand-in Codex got no account/login/start");
+      await showRows(wd, `${section} .agk-cards`);
+    },
+  },
+  {
+    name: "agents-codex-modes",
+    async run(wd, ctx) {
+      const section = 'section[aria-label="Codex"]';
+      const file = settingsFile();
+      const status = async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0] ?? "";
+      await clickByText(wd, `${section} button[aria-pressed]`, "API key");
+      await wd.waitFor("[providers.codex] openai_api, codex_provider cleared", async () => tomlValue(file, "providers.codex", "kind") === '"openai_api"' && tomlValue(file, "", "codex_provider") === null);
+      const keyField = `${section} input[aria-label="OpenAI API key"]`;
+      await wd.waitFor("the OpenAI API key field", async () => (await wd.findAll(keyField)).length === 1);
+      await wd.click((await wd.findAll(keyField))[0]);
+      await wd.keys("sk-e2e-0123456789-cAAA");
+      await clickByText(wd, `${section} button`, "Save");
+      await wd.waitFor("the masked key", async () => (await textsOf(wd, `${section} [data-testid="secret-value"]`))[0] === "••••••••cAAA");
+      await wd.waitFor("Connected with the key", async () => (await status()).startsWith("Connected"));
+      await clickByText(wd, `${section} button[aria-pressed]`, "CLI");
+      await wd.waitFor("[providers.codex] codex_login", async () => tomlValue(file, "providers.codex", "kind") === '"codex_login"');
+      await wd.waitFor("the CLI status", async () => /Connected|CLI not authenticated/.test(await status()), 20000);
+      const select = `${section} select[aria-label="Codex personality for new chats"]`;
+      for (const v of ["none", "pragmatic"]) {
+        await wd.click((await wd.findAll(`${select} option[value="${v}"]`))[0]);
+        await wd.waitFor(`models.codex personality = "${v}"`, async () => tomlValue(file, "models.codex", "personality") === `"${v}"`);
+      }
+      await wd.click((await wd.findAll(`${section} button[aria-label="Reset to bundled Codex"]`))[0]);
+      await wd.waitFor("codex_executable_path cleared", async () => tomlValue(file, "", "codex_executable_path") === null);
+      if (!ctx.fakeCodex) throw new Error("agents-codex-chatgpt did not set up the stand-in Codex");
     },
   },
   {
@@ -972,9 +1033,9 @@ export const flows = [
            });`,
           [],
         );
+      // The Home list is the /all-workspaces route (sidebar Home opens the wordmark screen, #483).
       const openHome = async () => {
-        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
-        if (!opened) throw new Error("no Home row in the sidebar");
+        await wd.execute('history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;', []);
         await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
       };
       const shot = async (name) => {

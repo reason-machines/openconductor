@@ -1,4 +1,4 @@
-//! Providers for Codex, Cursor's agent CLI and OpenCode. Provider kinds
+//! Providers for Codex. Provider kinds
 //! follow `evidence/providers/README.md`; variable names are each CLI's
 //! documented configuration.
 
@@ -90,109 +90,6 @@ impl Provider for OpenAiApi {
     }
 }
 
-/// Hosted OpenAI-compatible gateways with a fixed endpoint.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum Gateway {
-    OpenRouter,
-    VercelAiGateway,
-}
-
-impl Gateway {
-    pub fn base_url(self) -> &'static str {
-        match self {
-            Gateway::OpenRouter => "https://openrouter.ai/api/v1",
-            Gateway::VercelAiGateway => "https://ai-gateway.vercel.sh/v1",
-        }
-    }
-
-    pub fn secret_key(self) -> &'static str {
-        match self {
-            Gateway::OpenRouter => keys::OPENROUTER_API_KEY,
-            Gateway::VercelAiGateway => keys::VERCEL_AI_GATEWAY_API_KEY,
-        }
-    }
-}
-
-/// Codex through a hosted gateway, with the gateway's own API key.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct CodexGateway {
-    pub gateway: Gateway,
-}
-
-impl Provider for CodexGateway {
-    fn agent(&self) -> AgentKind {
-        AgentKind::Codex
-    }
-    fn kind(&self) -> &'static str {
-        "codex_gateway"
-    }
-    fn secret_keys(&self) -> Vec<&'static str> {
-        vec![self.gateway.secret_key()]
-    }
-    fn check_options(&self) -> Result<(), ProviderError> {
-        Ok(())
-    }
-    fn launch_env(&self, store: &dyn SecretStore) -> Result<LaunchEnv, ProviderError> {
-        let mut env = LaunchEnv::cleared_for(AgentKind::Codex);
-        set_codex_key(&mut env, require_secret(store, self.gateway.secret_key())?);
-        env.set(vars::OPENAI_BASE_URL, self.gateway.base_url());
-        Ok(env)
-    }
-}
-
-/// Cursor's agent CLI with a Cursor API key.
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct CursorApi {}
-
-impl Provider for CursorApi {
-    fn agent(&self) -> AgentKind {
-        AgentKind::Cursor
-    }
-    fn kind(&self) -> &'static str {
-        "cursor_api"
-    }
-    fn secret_keys(&self) -> Vec<&'static str> {
-        vec![keys::CURSOR_API_KEY]
-    }
-    fn check_options(&self) -> Result<(), ProviderError> {
-        Ok(())
-    }
-    fn launch_env(&self, store: &dyn SecretStore) -> Result<LaunchEnv, ProviderError> {
-        let mut env = LaunchEnv::cleared_for(AgentKind::Cursor);
-        env.set_secret(
-            vars::CURSOR_API_KEY,
-            require_secret(store, keys::CURSOR_API_KEY)?,
-        );
-        Ok(env)
-    }
-}
-
-/// OpenCode with the providers configured in its own auth store.
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct OpencodeLogin {}
-
-impl Provider for OpencodeLogin {
-    fn agent(&self) -> AgentKind {
-        AgentKind::Opencode
-    }
-    fn kind(&self) -> &'static str {
-        "opencode_login"
-    }
-    fn secret_keys(&self) -> Vec<&'static str> {
-        Vec::new()
-    }
-    fn check_options(&self) -> Result<(), ProviderError> {
-        Ok(())
-    }
-    fn launch_env(&self, _store: &dyn SecretStore) -> Result<LaunchEnv, ProviderError> {
-        Ok(LaunchEnv::new())
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::super::claude::testutil::{plain, secret};
@@ -242,56 +139,5 @@ mod tests {
             ..Default::default()
         };
         assert!(bad.check_options().is_err());
-    }
-
-    #[test]
-    fn gateways_use_their_own_key_and_fixed_endpoint() {
-        let store = MemorySecretStore::with(&[
-            (keys::OPENROUTER_API_KEY, "or-key"),
-            (keys::VERCEL_AI_GATEWAY_API_KEY, "vc-key"),
-            (keys::OPENAI_API_KEY, "openai-key"),
-        ]);
-        for (gateway, key, url) in [
-            (
-                Gateway::OpenRouter,
-                "or-key",
-                "https://openrouter.ai/api/v1",
-            ),
-            (
-                Gateway::VercelAiGateway,
-                "vc-key",
-                "https://ai-gateway.vercel.sh/v1",
-            ),
-        ] {
-            let p = CodexGateway { gateway };
-            let env = p.launch_env(&store).unwrap();
-            assert_eq!(secret(&env, vars::CODEX_API_KEY), Some(key));
-            assert_eq!(secret(&env, vars::OPENAI_API_KEY), Some(key));
-            assert_eq!(plain(&env, vars::OPENAI_BASE_URL), Some(url));
-            assert!(env.is_removed(vars::OPENAI_ORGANIZATION));
-            assert_eq!(p.secret_keys(), vec![gateway.secret_key()]);
-        }
-        let json = serde_json::to_string(&CodexGateway {
-            gateway: Gateway::VercelAiGateway,
-        })
-        .unwrap();
-        assert_eq!(json, r#"{"gateway":"vercel_ai_gateway"}"#);
-    }
-
-    #[test]
-    fn cursor_needs_a_key_and_opencode_touches_nothing() {
-        assert_eq!(
-            CursorApi {}.validate(&MemorySecretStore::new()),
-            Err(ProviderError::MissingSecret {
-                key: keys::CURSOR_API_KEY
-            })
-        );
-        let store = MemorySecretStore::with(&[(keys::CURSOR_API_KEY, KEY)]);
-        let env = CursorApi {}.launch_env(&store).unwrap();
-        assert_eq!(secret(&env, vars::CURSOR_API_KEY), Some(KEY));
-        let env = OpencodeLogin {}
-            .launch_env(&MemorySecretStore::new())
-            .unwrap();
-        assert_eq!(env, LaunchEnv::new());
     }
 }

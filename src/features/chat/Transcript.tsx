@@ -6,6 +6,7 @@
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { usePresence } from "../../components/motion/usePresence.ts";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
@@ -13,6 +14,9 @@ import { Markdown } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
 import { turnTime } from "./turnTime.ts";
 import { openUrl } from "../../backend.ts";
+import type { ChatAgentId } from "./agentChoice.ts";
+import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
+import { openAgentSettings } from "./ChatModelPicker.tsx";
 import "./chat.css";
 
 export interface TranscriptProps {
@@ -33,6 +37,8 @@ export interface TranscriptProps {
   forkDisabled?: boolean;
   /** The footer hover's first line, "Opus 5.5 via Reason" (Conductor's `kDo`). */
   turnAgent?: string;
+  /** The chat's agent: a turn that failed because it is not signed in links to its Settings › Agents tab. */
+  chatAgent?: ChatAgentId;
   /** "Reset chat" is shown but disabled, e.g. while the agent is working. */
   resetDisabled?: boolean;
   /** Extra content at the end of a finished turn's footer (the files it changed). */
@@ -60,6 +66,7 @@ export function Transcript({
   onForkToNewWorkspace,
   forkDisabled = false,
   turnAgent,
+  chatAgent,
 }: TranscriptProps) {
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const turns = useMemo(() => groupTurns(rows), [rows]);
@@ -84,6 +91,7 @@ export function Transcript({
     onForkToNewWorkspace,
     forkDisabled,
     turnAgent,
+    chatAgent,
   };
 
   return (
@@ -146,6 +154,7 @@ interface RowContext {
   onForkToNewWorkspace?: (turnId: string) => void;
   forkDisabled: boolean;
   turnAgent?: string;
+  chatAgent?: ChatAgentId;
 }
 
 function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowContext }) {
@@ -204,6 +213,21 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
         ) : null}
       </span>
       {turnFooter?.(row.turnId)}
+      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <SignInNotice agent={ctx.chatAgent} /> : null}
+    </div>
+  );
+}
+
+/** "Authentication required" under a turn its agent refused for want of a login, with a link to that agent's tab. */
+function SignInNotice({ agent }: { agent: ChatAgentId }) {
+  const copy = signInCopy(agent);
+  return (
+    <div className="chat-sign-in" data-testid="chat-sign-in" data-agent={agent}>
+      <span className="chat-sign-in-badge">{copy.badge}</span>
+      <p>{copy.text}</p>
+      <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>
+        {copy.action}
+      </button>
     </div>
   );
 }
@@ -226,6 +250,7 @@ function TurnMenu({
   resetDisabled: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const menu = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
   useEffect(() => {
     if (!open) return;
@@ -240,8 +265,8 @@ function TurnMenu({
           <Lucide name="ellipsis" className="oc-icon-action-svg" />
         </button>
       </Tooltip>
-      {open ? (
-        <div className="chat-menu" role="menu">
+      {menu.mounted ? (
+        <div className="chat-menu" role="menu" data-motion="popup" {...menu.attrs}>
           {onFork ? (
             <button
               type="button"

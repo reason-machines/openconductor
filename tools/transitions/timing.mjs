@@ -91,7 +91,7 @@ if (!window.__tm) {
   };
   const boxes = () => LANDMARKS.map((s) => { const el = document.querySelector(s); if (!el) return s + ':-'; const r = el.getBoundingClientRect(); return s + ':' + [r.x, r.y, r.width, r.height].map(Math.round).join(','); });
   const tm = (window.__tm = { t0: null, frames: [], on: false });
-  window.addEventListener('keydown', (e) => { if (tm.on && tm.t0 === null) tm.t0 = performance.now(); }, true);
+  window.addEventListener('keydown', (e) => { if (tm.on && tm.t0 === null) { tm.t0 = performance.now(); tm.wall0 = Date.now(); } }, true);
   tm.start = (pred) => { tm.pred = new Function('return (' + pred + ')'); tm.t0 = null; tm.frames = []; tm.on = true; requestAnimationFrame(tm.tick); };
   tm.tick = (ts) => {
     if (!tm.on) return;
@@ -108,6 +108,7 @@ if (!window.__tm) {
     const el = Array.from(document.querySelectorAll(css)).find((e) => (e.getAttribute('aria-label') || e.textContent || '').trim().replace(/^\\d+/, '').startsWith(text));
     if (!el) throw new Error('no ' + css + ' ' + text);
     tm.t0 = performance.now();
+    tm.wall0 = Date.now();
     el.click();
   };
 }`;
@@ -120,6 +121,7 @@ function summarize(frames) {
   if (first === frames.length) first = -1;
   let flips = 0;
   for (let i = 1; i < frames.length; i++) if (frames[i - 1].ok && !frames[i].ok) flips++;
+  const moved = [];
   let settled = first >= 0 ? frames[first].t : null, shifts = 0, loaderMs = 0, blankFrames = 0, maxFrameMs = 0;
   for (let i = 0; i < frames.length; i++) {
     const f = frames[i], prev = frames[i - 1];
@@ -128,13 +130,17 @@ function summarize(frames) {
     if (f.blank) blankFrames++;
     const changed = prev && (f.boxes !== prev.boxes || f.ok !== prev.ok || f.loader !== prev.loader);
     if (changed) settled = Math.max(settled ?? 0, f.t);
-    if (changed && first >= 0 && i > first && f.boxes !== prev.boxes) shifts++;
+    if (changed && first >= 0 && i > first && f.boxes !== prev.boxes) {
+      shifts++;
+      const a = prev.boxes.split("|"), b = f.boxes.split("|");
+      for (let j = 0; j < b.length; j++) if (a[j] !== b[j] && moved.length < 6) moved.push(`${Math.round(f.t)}ms ${a[j]} -> ${b[j].split(":")[1]}`);
+    }
   }
   for (let i = 0; i < frames.length; i++) {
     const dt = i ? frames[i].t - frames[i - 1].t : Math.max(0, frames[i].t);
     if (settled === null || frames[i].t <= settled) maxFrameMs = Math.max(maxFrameMs, dt);
   }
-  return { flips, contentMs: first >= 0 ? +frames[first].t.toFixed(1) : null, settledMs: settled === null ? null : +settled.toFixed(1), loaderMs: +loaderMs.toFixed(1), blankFrames, shifts, maxFrameMs: +maxFrameMs.toFixed(1), frames: frames.length };
+  return { moved, flips, contentMs: first >= 0 ? +frames[first].t.toFixed(1) : null, settledMs: settled === null ? null : +settled.toFixed(1), loaderMs: +loaderMs.toFixed(1), blankFrames, shifts, maxFrameMs: +maxFrameMs.toFixed(1), frames: frames.length };
 }
 
 // `act` performs the input; `done` is a page expression that is true once the target content shows.
@@ -217,8 +223,12 @@ async function launch(n, film) {
     // Row text starts with the row's ⌘-number badge.
     const ctx = { wsA: names[0].replace(/^\d+/, ""), wsB: names[1].replace(/^\d+/, "") };
     await wd.execute(RECORDER, []);
-    await wd.execute("window.__tm.click('.sb-ws', arguments[0]);", [ctx.wsA]);
-    await sleep(2500);
+    // Open each workspace once after the edits, as a user would have, so what the
+    // app remembers of them is current; then start on A.
+    for (const ws of [ctx.wsB, ctx.wsA]) {
+      await wd.execute("window.__tm.click('.sb-ws', arguments[0]);", [ws]);
+      await sleep(2500);
+    }
     if (film) rec = startFilm(film);
     for (let pass = 0; pass <= WARM; pass++) {
       for (const s of steps) {
@@ -233,6 +243,7 @@ async function launch(n, film) {
           await s.act(wd, ctx);
           await wd.waitFor(`${s.id} recorded`, () => wd.execute("return !window.__tm.on;", []), 10000);
           const frames = await wd.execute("return window.__tm.frames;", []);
+          r.inputWall = await wd.execute("return window.__tm.wall0;", []);
           Object.assign(r, summarize(frames));
           r.loaders = [...new Set(frames.map((f) => f.loader).filter(Boolean))];
           if (film && pass === 0) r.rawFrames = frames.map((f) => ({ t: +f.t.toFixed(1), ok: f.ok, loader: f.loader, blank: f.blank }));
@@ -241,7 +252,7 @@ async function launch(n, film) {
           r.error = String(e?.message ?? e).slice(0, 300);
         }
         results.push(r);
-        console.error(`launch ${n} ${r.temp} ${s.id}: ${r.error ?? `${r.loaders?.length ? `[${r.loaders.join(" / ")}] ` : ""}content ${r.contentMs} ms, settled ${r.settledMs} ms, loader ${r.loaderMs} ms, blank ${r.blankFrames}, flips ${r.flips}, shifts ${r.shifts}, max frame ${r.maxFrameMs} ms`}`);
+        console.error(`launch ${n} ${r.temp} ${s.id}: ${r.error ?? `${r.loaders?.length ? `[${r.loaders.join(" / ")}] ` : ""}content ${r.contentMs} ms, settled ${r.settledMs} ms, loader ${r.loaderMs} ms, blank ${r.blankFrames}, flips ${r.flips}, shifts ${r.shifts}${r.moved?.length ? ` [${r.moved.join("; ")}]` : ""}, max frame ${r.maxFrameMs} ms`}`);
         await sleep(300);
       }
     }
@@ -256,14 +267,14 @@ async function launch(n, film) {
 function startFilm(dir) {
   mkdirSync(dir, { recursive: true });
   const file = join(dir, "screen.mkv");
-  const proc = spawn("ffmpeg", ["-y", "-loglevel", "error", "-use_wallclock_as_timestamps", "1", "-f", "x11grab", "-framerate", "60", "-video_size", SIZE, "-i", process.env.DISPLAY, "-c:v", "libx264", "-preset", "ultrafast", "-qp", "0", file], { stdio: ["pipe", "ignore", "inherit"] });
+  const proc = spawn("ffmpeg", ["-y", "-loglevel", "error", "-use_wallclock_as_timestamps", "1", "-f", "x11grab", "-framerate", "60", "-video_size", SIZE, "-i", process.env.DISPLAY, "-copyts", "-c:v", "libx264", "-preset", "ultrafast", "-qp", "0", file], { stdio: ["pipe", "ignore", "inherit"] });
   return { proc, file };
 }
 
 async function stopFilm(rec) {
   rec.proc.stdin.write("q");
   await new Promise((r) => rec.proc.on("exit", r));
-  // Frame timestamps are wall-clock seconds; filmstrip.py cuts each step at its `wall`.
+  // Frame timestamps are wall-clock seconds (-copyts); filmstrip.sh cuts each step at its `inputWall`.
   return { file: rec.file };
 }
 

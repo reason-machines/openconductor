@@ -85,8 +85,10 @@ export interface Repo {
 
 /**
  * `root` is Conductor's `/` route: the wordmark and the three entry cards, shown at
- * start and when the open workspace goes away. `home` is its `/all-workspaces`
- * route, the workspace list that the sidebar Home row and nav.home open.
+ * start, when the open workspace goes away, and from the sidebar Home row, nav.home
+ * (⌘⇧H) and the palette's Go to Home. `home` is Conductor's `/all-workspaces` route,
+ * the workspace list, reached by opening /all-workspaces (and restored if it was
+ * open). Conductor itself sends Home to /all-workspaces; ours differs on purpose.
  */
 export type Selection =
   | { kind: "root" }

@@ -55,6 +55,9 @@ interface Props {
   onAddProjectAt?: (path: string) => void;
   onOpenSettings: () => void;
   onOpenShortcuts: () => void;
+  /** Help › Submit a prompt and Help › Diagnostics. */
+  onSubmitPrompt: () => void;
+  onOpenDiagnostics: () => void;
   onSearch: () => void;
   nav: NavControls;
   info: AppInfo | null;
@@ -235,7 +238,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
@@ -387,7 +390,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
           {dashboardEnabled && (
             <NavRow icon={<LayoutGridIcon size={12} />} label="Dashboard" shortcut="" active={sel.kind === "dashboard"} onClick={() => dispatch({ type: "select", selection: { kind: "dashboard" } })} />
           )}
-          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} title={titleWithShortcut("Home", hint("nav.home"))} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
+          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} title={titleWithShortcut("Home", hint("nav.home"))} active={sel.kind === "root"} onClick={() => dispatch({ type: "select", selection: { kind: "root" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
           <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />
         </div>
@@ -543,8 +546,11 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
 
       {/* Footer, after Conductor's `Nna`: px-4 py-3, top border, help and settings icons (h-4 w-4, stroke 1.5) gap-5 at the right. */}
       <div className="sb-footer">
+        {/* Conductor's `Nna` shows the account's plan; with no paid entitlement that is a dashed "FREE" badge.
+            Conductor's badge opens its pricing page; OpenConductor has none, so it is not a button. */}
+        <span className="sb-plan-badge">FREE</span>
         <div className="sb-footer-actions">
-          <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} />
+          <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
           {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}
           <Tooltip content="Settings" shortcut={hint("openSettings")}>
             <button type="button" className="sb-footer-btn" aria-label="Settings" onClick={onOpenSettings}>

@@ -321,7 +321,14 @@ impl SessionWorkspaces {
 }
 
 pub struct ReasonProvider {
-    launch: LaunchConfig,
+    /// How `reason` starts; [`ReasonProvider::reconfigure`] changes it.
+    launch: Mutex<LaunchConfig>,
+    /// The launch changed while agents ran with the old one: they restart
+    /// before the next prompt when no turn runs.
+    stale: Mutex<bool>,
+    /// Settings › Agents › Reason's workspace for new Sessions; `None`
+    /// follows the Reason desktop app's selection.
+    new_workspace: Mutex<Option<String>>,
     /// Folder the agent process runs in (the user's home folder).
     dir: PathBuf,
     sink: Sink,
@@ -335,7 +342,9 @@ pub struct ReasonProvider {
 impl ReasonProvider {
     pub fn new(launch: LaunchConfig, dir: PathBuf, sink: Sink) -> Self {
         ReasonProvider {
-            launch,
+            launch: Mutex::new(launch),
+            stale: Mutex::new(false),
+            new_workspace: Mutex::default(),
             dir,
             sink,
             shared: Arc::default(),
@@ -349,6 +358,54 @@ impl ReasonProvider {
     pub fn with_session_store(self, path: PathBuf) -> Self {
         *self.workspaces.lock().unwrap() = SessionWorkspaces::load(path);
         self
+    }
+
+    fn launch(&self) -> LaunchConfig {
+        self.launch.lock().unwrap().clone()
+    }
+
+    /// Applies Settings › Agents › Reason: the CLI, its environment (the
+    /// API key) and the workspace new Sessions open in. A changed launch
+    /// restarts the agents now when no turn runs, else before the next
+    /// prompt once none does; chats resume their Sessions there.
+    pub fn reconfigure(&self, launch: LaunchConfig, new_workspace: Option<String>) {
+        *self.new_workspace.lock().unwrap() = new_workspace;
+        {
+            let mut current = self.launch.lock().unwrap();
+            if *current == launch {
+                return;
+            }
+            *current = launch;
+        }
+        *self.stale.lock().unwrap() = true;
+        self.restart_if_stale();
+    }
+
+    /// Sets only the workspace new Sessions open in.
+    pub fn reconfigure_workspace(&self, new_workspace: Option<String>) {
+        *self.new_workspace.lock().unwrap() = new_workspace;
+    }
+
+    fn restart_if_stale(&self) {
+        let busy = self
+            .shared
+            .lock()
+            .unwrap()
+            .chats
+            .values()
+            .any(|c| c.turn.is_some());
+        let mut stale = self.stale.lock().unwrap();
+        if *stale && !busy {
+            *stale = false;
+            self.shutdown();
+        }
+    }
+
+    /// The workspace a new Session opens in: the pinned one, else the one
+    /// selected in the Reason desktop app.
+    fn workspace_for_new(&self) -> Option<String> {
+        let pinned = self.new_workspace.lock().unwrap().clone();
+        pinned.or_else(|| self.launch().whoami(&self.dir).and_then(|w| w.selected))
     }
 
     /// Registers a chat working in `cwd`, with its stored Session id when
@@ -374,7 +431,8 @@ impl ReasonProvider {
 
     /// The models Reason offers new Sessions in the selected workspace.
     pub fn models(&self) -> Result<ModelList, String> {
-        let workspace = self.launch.whoami(&self.dir).and_then(|w| w.selected);
+        self.restart_if_stale();
+        let workspace = self.workspace_for_new();
         let (conn, _) = self.ensure_agent(workspace.as_deref())?;
         let base = json!({ "cwd": self.dir, "mcpServers": [] });
         let v = conn
@@ -460,7 +518,7 @@ impl ReasonProvider {
             }
         };
         let (launch, dir, sink, chat) = (
-            self.launch.clone(),
+            self.launch(),
             self.dir.clone(),
             self.sink.clone(),
             chat.to_string(),
@@ -479,6 +537,7 @@ impl ReasonProvider {
         attachments: &[Attachment],
         ticket: Option<u64>,
     ) -> TurnEnd {
+        self.restart_if_stale();
         let (conn, session_id) = match self.ensure_session(chat) {
             Ok(v) => v,
             Err(e) => return TurnEnd::Failed(e),
@@ -681,8 +740,8 @@ impl ReasonProvider {
                 (conn, generation, id, workspace, v["configOptions"].clone())
             }
             None => {
-                // A new Session opens in the workspace selected now.
-                let workspace = self.launch.whoami(&self.dir).and_then(|w| w.selected);
+                // A new Session opens in the pinned or selected workspace.
+                let workspace = self.workspace_for_new();
                 let (conn, generation) = self.ensure_agent(workspace.as_deref())?;
                 let v = conn
                     .call("session/new", base, SETUP_TIMEOUT)
@@ -773,13 +832,13 @@ impl ReasonProvider {
     fn locate(&self, id: &str, hint: Option<String>) -> Result<Option<String>, String> {
         let mut unsure = None;
         if let Some(w) = &hint {
-            match self.launch.session_presence(&self.dir, w, id) {
+            match self.launch().session_presence(&self.dir, w, id) {
                 Presence::Found => return Ok(hint),
                 Presence::Unknown => unsure = hint.clone(),
                 Presence::Missing => {}
             }
         }
-        let Some(signed_in) = self.launch.whoami(&self.dir) else {
+        let Some(signed_in) = self.launch().whoami(&self.dir) else {
             return Ok(hint);
         };
         let mut order: Vec<&String> = signed_in.selected.iter().collect();
@@ -790,7 +849,7 @@ impl ReasonProvider {
                 .filter(|w| Some(*w) != signed_in.selected.as_ref()),
         );
         for w in order.into_iter().filter(|w| Some(*w) != hint.as_ref()) {
-            match self.launch.session_presence(&self.dir, w, id) {
+            match self.launch().session_presence(&self.dir, w, id) {
                 Presence::Found => {
                     self.workspaces.lock().unwrap().set(id, w);
                     return Ok(Some(w.clone()));
@@ -827,11 +886,11 @@ impl ReasonProvider {
             return Ok((a.conn.clone(), a.generation));
         }
         let launch = self
-            .launch
+            .launch()
             .in_workspace(workspace)
             .map_err(|e| e.to_string())?;
         let (process, stdin, stdout) = AgentProcess::spawn(&launch, &self.dir)
-            .map_err(|e| format!("Could not start {}: {e}", self.launch.cli().display()))?;
+            .map_err(|e| format!("Could not start {}: {e}", launch.cli().display()))?;
         let generation = {
             let mut g = self.generations.lock().unwrap();
             *g += 1;

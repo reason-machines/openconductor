@@ -23,6 +23,8 @@
 //! * [`api`]: the operations the Tauri commands run (lookup, merge,
 //!   auto-merge, create-PR prompt), free of `tauri` so they are testable.
 //! * `commands`: the `#[tauri::command]` wrappers registered in `lib.rs`.
+//! * [`pull_latest`]: "Pull latest from <target>": fetch, then fast-forward
+//!   or hand the merge / rebase to the agent.
 //! * [`prompt`]: the create-PR message sent to the agent, and the
 //!   archive-on-merge rule.
 //! * [`runs`]: a failing check's GitHub Actions job log, and re-running a
@@ -50,6 +52,7 @@ pub mod list;
 pub mod merge_eligibility;
 pub mod model;
 pub mod prompt;
+pub mod pull_latest;
 pub mod review_comments;
 pub mod runs;
 /// Store a lookup's derived status and PR title/body on the workspace row.
@@ -76,6 +79,8 @@ mod list_tests;
 mod merge_eligibility_tests;
 #[cfg(test)]
 mod prompt_tests;
+#[cfg(test)]
+mod pull_latest_tests;
 #[cfg(test)]
 mod review_comments_tests;
 #[cfg(test)]

@@ -18,6 +18,7 @@ use super::prompt::{
     commit_and_push_prompt, create_pr_prompt, find_pr_template, pull_rebase_enabled,
     resolve_merge_conflicts_prompt, ResolveConflictsRequest,
 };
+use super::pull_latest::{pull_latest_from_target, PullOutcome};
 
 fn merge_methods() -> &'static MergeMethodCache {
     static CACHE: OnceLock<MergeMethodCache> = OnceLock::new();
@@ -61,6 +62,25 @@ pub async fn pr_git_state(
     target_branch: String,
 ) -> Result<GitState, String> {
     blocking(move || read_git_state(std::path::Path::new(&workspace_path), &target_branch)).await
+}
+
+/// "Pull latest from <target>" (`git.pull`, ⌘⇧L): fetch `remote_name`, then
+/// fast-forward to `<remote>/<target>` or return the message for the agent.
+/// `remote_name` is null for a repository without a remote.
+#[tauri::command]
+pub async fn pr_pull_latest_from_target(
+    workspace_path: String,
+    remote_name: Option<String>,
+    target_branch: String,
+) -> Result<PullOutcome, String> {
+    blocking(move || {
+        pull_latest_from_target(
+            std::path::Path::new(&workspace_path),
+            remote_name.as_deref(),
+            &target_branch,
+        )
+    })
+    .await
 }
 
 /// What the workspace header's PR control shows.

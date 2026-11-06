@@ -74,9 +74,9 @@ What OpenConductor does now:
 
 ## Differences that remain
 
-1. Review tabs live in memory (`features/diff/ReviewButton.tsx`). After a restart, a stored unread review chat has no tab, so it counts as hidden, as Conductor's hidden sessions do: it does not keep the row bold, and Next unread skips it. Closing a review tab marks it read. Its DB row keeps `unread_count = 1` until the workspace is marked read.
+1. Closed by #628 (9ea6735d): an open review, fork or "+" chat tab is a visible `sessions` row (`db_open_chat_tab`, `sessions::open_tab`), and closing it hides the row (`db_close_chat_tab`, `is_hidden = 1`). `db_list_workspaces` rows carry `chatTabs`, so after a restart the tabs come back (`restoreChatTabs`, `ReviewButton.tsx`) and an unread review chat keeps the row bold and stays in Next unread (`persisted.ts`). This matches Conductor, where the review chat is a `sessions` row (`GNt` at index-BGEQ8YjU.js 1949:3602, `Xet` at 708:7705 inserts it), the tab strip is the workspace's non-hidden sessions (`ylt` at 1226:63776), and close and reopen set `is_hidden` (`nie` at 710:2534, `Oet`). Restart is covered by unit tests only; it has not been relaunched in the built app.
 2. Closed by #421 (75e4bb6): Claude Code's ExitPlanMode and AskUserQuestion prompts, like Reason's, open plan and question requests on PermissionEvents, which move the chat into `needs_plan_response` or `needs_user_input` and so mark it unread. Codex approvals and consents were hooked by #443 and #567. Unread is not yet seen in the built app.
-3. The chat tab menu has only the read and unread item. Rename, fork, copy transcript and close are not built. Chat tabs carry `data-unread`, but there is no unread dot yet.
+3. The chat tab menu has only the read and unread item. Rename, fork, copy transcript and close are not built. The chat tab's unread dot is built (see "Chat tab unread dot" below); its plan, question and typing icons are not.
 4. There is no `next_unread_used` telemetry.
 
 ## REA
@@ -105,3 +105,36 @@ Main signalled only turn end, Reason permission requests and Codex tool approval
 - `needs_user_permission` stays signalled per request, so a second approval in the same wait still asks again, as in Conductor.
 
 Per-chat unread (`sessions.unread_count`) is PR #564; with it the signal marks the chat, without it the chat's workspace.
+
+## Chat tab unread dot
+
+Conductor draws an unread mark on the chat tab itself. Character offsets into
+renderApp-D_fmY7hW.js (sha256 5199d392..., Conductor 0.87.6), byte offsets in brackets;
+read as plain text on sven m5 max.
+
+| What | Where | Behavior |
+| --- | --- | --- |
+| Tab | `u8i` @7,374,777 [7,417,968] (its `l8i` call @7,377,558) | The tab (`Q1`, `w-44 shrink-0 justify-start`) holds `f1e` (`flex items-center gap-2 px-2 text-xs font-medium`) with `l8i({...session, status})` first, then the title span. |
+| Icon | `l8i` @7,370,428 [7,413,619] | In order: plan icon for `needs_plan_response`, question icon for `needs_user_input` / `needs_user_permission` (both `size-3 text-unread`); else, when `unread` and the status is neither `working` nor `waiting`, a lucide `circle` (`X3` @607,806) with `stroke="transparent" fill="currentColor"` and `size-2 shrink-0 text-unread`; else the typing or waiting indicator, or nothing. So `error`, `cancelling` and `idle` unread chats show the dot. |
+| Colour | renderApp-BYEcFwvt.css @162,519, @397,531, @400,531 | `.text-unread{color:var(--unread)}`; `--unread` is `#a4847f` on `:root,.light` and `#cca694` on `.dark`, not per palette. |
+| Clears | same `session.unread` flag | The dot follows `session.unread`, so it goes when the chat is read: read-on-view (`yIo`), the tab menu's "Mark as read", the row's "Mark as read" (`markWorkspaceAsRead`), or a row click that opens it. |
+| Elsewhere | `NYo` @9,695,498 | The same `l8i` icon leads each chat in another chat list (`Open chat <title>`). Not part of this change. |
+
+OpenConductor:
+
+- `src/state/chatTabUnread.ts`: `chatTabUnreadDot(unread, status)` is `l8i`'s dot rule; `chatTabStatus` reads the chat's status (or its Claude Code chat's, whichever is more urgent).
+- `WorkspaceView` `MainTabs`: the main chat and review tabs show an 8 px SVG circle (r=10 of 24, `currentColor`) before the title, 8 px from it, coloured `--unread`.
+- `src/theme/tokens.css`: `--unread` is `#a4847f`, and `#cca694` under dark (explicit and system), in every palette.
+
+REA: `rea trace-application-feature` (6.7.0, sven m5 max) on the whole-frontend
+Evidence `ev_8673dbcd1e26...` with string seeds `size-2 shrink-0 text-unread` and
+`Mark as unread` both exited 0 with coverage `no-match` and 0 seed matches, the same
+gap as before (string literals are not graph entities). `--schema` and `--llms-full`
+document `inputJson` only as a string, so the input shape (`application`: the whole
+Evidence `data` object inline; `seed`: `{kind, value, match}`) came from validation
+errors. Both runs are in evidence/rea/rea-invocations.tsv (ws_unread_tab_*).
+
+Checks: `node --test src/state/chatTabUnread.test.ts src/theme/tokens.test.ts`, and
+`node --test tests/e2e/next-unread.e2e.mjs` (test 3 asserts the dot appears on
+"Mark as unread" and clears on read).
+

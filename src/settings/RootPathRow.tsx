@@ -56,10 +56,10 @@ export function RootPathRow() {
       <Row
         label={ROOT_TITLE}
         help={
-          <>
+          <div className="settings-help-spaced">
             <p>{ROOT_DESCRIPTION}</p>
             <p>{ROOT_WARNING}</p>
-          </>
+          </div>
         }
         stacked
       >

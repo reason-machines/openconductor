@@ -15,13 +15,22 @@ first command really writes hello.txt in the thread's cwd. Prompts:
   contains "perm"   Codex asks for network access; the reply says whether it
                     was granted ("permissions: network granted" or
                     "permissions: none granted")
+  contains "unauth" the turn fails with "unexpected status 401 Unauthorized"
+                   (signed out), as Codex 0.166.0 reports it
   anything else     replies "turn <n>: <prompt>", n counting this thread's turns
 
 Every request it receives is appended to $HOME/codex-fake.jsonl, after one
-{"launch": {"args", "launcher"}} line: its arguments (the `-c` overrides) and
-$OC_FAKE_CODEX, which names the wrapper that started it.
+{"launch": {"args", "launcher", "keys", "account"}} line: its arguments (the
+`-c` overrides), $OC_FAKE_CODEX, which names the wrapper that started it, a
+fingerprint (sha256, 16 hex) of CODEX_API_KEY and OPENAI_API_KEY or null when
+unset, and the signed-in account's type (null when signed out). Every line
+carries the process's "pid", so a request can be traced to its launch.
+account/read answers signed out until account/login/start (ChatGPT) has run:
+that sign-in completes by itself after 0.5 s as e2e@example.com and is kept
+in codex-fake-account.json beside the log ($OC_FAKE_CODEX_DIR or $HOME).
 Only "codex app-server" is handled; other subcommands exit 2.
 """
+import hashlib
 import json
 import os
 import sys
@@ -31,7 +40,9 @@ if sys.argv[1:2] != ["app-server"]:
     sys.stderr.write(f"fake codex: unsupported {sys.argv[1:]}\n")
     sys.exit(2)
 
-LOG = os.path.join(os.environ.get("HOME", "."), "codex-fake.jsonl")
+FAKE_DIR = os.environ.get("OC_FAKE_CODEX_DIR") or os.environ.get("HOME", ".")
+LOG = os.path.join(FAKE_DIR, "codex-fake.jsonl")
+ACCOUNT = os.path.join(FAKE_DIR, "codex-fake-account.json")
 out_lock = threading.Lock()
 
 
@@ -43,14 +54,31 @@ def send(obj):
 
 def note(obj):
     with open(LOG, "a") as f:
-        f.write(json.dumps(obj) + "\n")
+        f.write(json.dumps({**obj, "pid": os.getpid()}) + "\n")
+
+
+def read_account():
+    if not os.path.exists(ACCOUNT):
+        return None
+    with open(ACCOUNT) as f:
+        return json.load(f)
+
+
+def fingerprint(name):
+    value = os.environ.get(name)
+    return hashlib.sha256(value.encode()).hexdigest()[:16] if value is not None else None
 
 
 def notify(method, params):
     send({"method": method, "params": params})
 
 
-note({"launch": {"args": sys.argv[1:], "launcher": os.environ.get("OC_FAKE_CODEX", "path")}})
+note({"launch": {
+    "args": sys.argv[1:],
+    "launcher": os.environ.get("OC_FAKE_CODEX", "path"),
+    "keys": {k: fingerprint(k) for k in ("CODEX_API_KEY", "OPENAI_API_KEY")},
+    "account": (read_account() or {}).get("type"),
+}})
 
 state = {"thread": None, "cwd": None, "turns": 0, "turn": None, "pending": {}, "next_req": 0, "consents": {}}
 
@@ -169,6 +197,18 @@ def handle(msg):
     note({"method": method, "params": params})
     if method == "initialize":
         send({"id": mid, "result": {"userAgent": "fake-codex/0.166.0", "platformFamily": "unix"}})
+    elif method == "account/read":
+        send({"id": mid, "result": {"account": read_account(), "requiresOpenaiAuth": True}})
+    elif method == "account/login/start" and params.get("type") == "chatgpt":
+        login = "login-e2e"
+        send({"id": mid, "result": {"type": "chatgpt", "loginId": login, "authUrl": "http://127.0.0.1:1455/e2e-auth"}})
+
+        def signed_in():
+            with open(ACCOUNT, "w") as f:
+                json.dump({"type": "chatgpt", "email": "e2e@example.com", "planType": "pro"}, f)
+            notify("account/login/completed", {"loginId": login, "success": True, "error": None})
+
+        threading.Timer(0.5, signed_in).start()
     elif method in ("thread/start", "thread/resume"):
         state["thread"] = params.get("threadId") or "th-e2e-1"
         state["cwd"] = params.get("cwd") or os.getcwd()
@@ -190,6 +230,8 @@ def handle(msg):
             ask_consent(turn, "elicit")
         elif "perm" in text:
             ask_consent(turn, "perm")
+        elif "unauth" in text:
+            complete(turn, "failed", {"message": "unexpected status 401 Unauthorized", "codexErrorInfo": None})
         else:
             message(turn, f"msg-{turn}", f"turn {state['turns']}: {text}", "final_answer")
             complete(turn, "completed")

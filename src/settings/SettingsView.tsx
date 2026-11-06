@@ -1,5 +1,6 @@
-import { Fragment, useState, type MouseEvent, type ReactNode } from "react";
+import { Fragment, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { openUrl } from "../backend";
+import { AccountMenu } from "../components/AccountMenu";
 import { Tooltip } from "../components/Tooltip";
 import { CopyIcon, ExternalIcon } from "../components/Icons";
 import { PopoverMenu, type PopoverMenuItem } from "../components/PopoverMenu";
@@ -17,10 +18,13 @@ import { GitPage } from "./GitPage";
 import { KeyBindingsPage } from "./KeyBindingsPage";
 import { BigTerminalPage } from "./BigTerminalPage";
 import { ExperimentalPage } from "./ExperimentalPage";
+import { AGENTS_TABS, AGENTS_TAB_LABEL } from "./agents/kitModel";
 import { pageLabel, settingsGroups, type SettingsPage } from "./pages";
 import { RepoSettingsPage } from "./RepoSettingsPage";
 import type { RepoMiscActions } from "./rows/RepoMiscRows";
-import { REPO_SECTIONS, REPO_SECTION_LABELS, sameLocation, settingsDeepLink, type SettingsLocation } from "./routes";
+import { REPO_SECTIONS, REPO_SECTION_LABELS, sameLocation, settingsDeepLink, type RepoSection, type SettingsLocation } from "./routes";
+import { buildSearchIndex, type SearchItem } from "./searchIndex";
+import { SettingsSearch } from "./SettingsSearch";
 import type { Settings } from "./types";
 import { useSettings } from "./useSettings";
 import {
@@ -115,6 +119,28 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
     );
   };
   const header = location.scope === "user" ? PAGE_HEADERS[location.page] : REPO_HEADERS[location.section];
+  const bigTerminal = settings?.experimental?.experimental_big_terminal_mode === true;
+  const groups = useMemo(() => settingsGroups(bigTerminal), [bigTerminal]);
+  const searchItems = useMemo(
+    () => buildSearchIndex({ pages: groups.flatMap((g) => g.pages), agentTabs: AGENT_SEARCH_TABS, hasRepos: repos.length > 0 }),
+    [groups, repos.length],
+  );
+  // Conductor's `wGt`: a repository section opens in the repository being viewed, else the first one.
+  const openResult = (item: SearchItem) => {
+    const t = item.target;
+    if (t.scope === "repo") {
+      const repoId = location.scope === "repo" ? location.repoId : repos[0]?.id;
+      if (repoId) onNavigate({ scope: "repo", repoId, section: t.section });
+    } else {
+      onNavigate({ scope: "user", page: t.page });
+      if (t.providerTab) {
+        const q = new URLSearchParams(window.location.search);
+        q.set("providerTab", t.providerTab);
+        window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}`);
+      }
+    }
+    if (t.row) scrollToRow(t.row);
+  };
 
   return (
     <div className="settings" onContextMenu={onPageContextMenu}>
@@ -130,7 +156,14 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
             </button>
           </Tooltip>
         </div>
-        {settingsGroups(settings?.experimental?.experimental_big_terminal_mode === true).map((g) => (
+        {/* Conductor's `I9a`: the account switcher ("pt-1.5", `oOt stayInSettings`), then "Search settings" ("px-0.5 py-3"). */}
+        <div className="settings-nav-account">
+          <AccountMenu onOpenSettings={() => onNavigate({ scope: "user", page: "general" })} />
+        </div>
+        <div className="settings-nav-search">
+          <SettingsSearch items={searchItems} iconFor={searchIcon} onPick={openResult} />
+        </div>
+        {groups.map((g) => (
           <Fragment key={g.title || g.pages[0]?.id}>
             <div className="settings-group">
               {g.title && <div className="settings-group-title">{g.title}</div>}
@@ -166,7 +199,7 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
           ) : !settings ? (
             <p className="muted">Loading…</p>
           ) : (
-            <UserPage page={location.page} settings={settings} save={save} reload={reload} onNavigate={onNavigate} />
+            <UserPage page={location.page} settings={settings} save={save} reload={reload} />
           )}
         </div>
       </section>
@@ -179,21 +212,12 @@ function UserPage({
   settings,
   save,
   reload,
-  onNavigate,
 }: {
   page: SettingsPage;
   settings: Settings;
   save: ReturnType<typeof useSettings>["save"];
   reload: () => void;
-  onNavigate: (location: SettingsLocation) => void;
 }) {
-  // Conductor's "Configure <agent>": Settings › Agents on that agent's tab (`?providerTab=`).
-  const openAgentsTab = (tab: string) => {
-    onNavigate({ scope: "user", page: "providers" });
-    const q = new URLSearchParams(window.location.search);
-    q.set("providerTab", tab);
-    window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}`);
-  };
   switch (page) {
     case "account":
       return <AccountPage settings={settings} save={save} />;
@@ -202,7 +226,7 @@ function UserPage({
     case "key-bindings":
       return <KeyBindingsPage settings={settings} save={save} />;
     case "models":
-      return <DefaultModelsPage settings={settings} save={save} openAgentsTab={openAgentsTab} />;
+      return <DefaultModelsPage settings={settings} save={save} />;
     case "providers":
       return <AgentsPage settings={settings} save={save} reload={reload} />;
     case "appearance":
@@ -276,11 +300,33 @@ const PAGE_ICONS: Record<SettingsPage, ReactNode> = {
   terminal: <TerminalIcon />,
 };
 
+/** The Agents page's tabs, listed after Agents in search (Conductor's `$ba` per agent tab). */
+const AGENT_SEARCH_TABS = AGENTS_TABS.map((id) => ({ id, label: AGENTS_TAB_LABEL[id] }));
+
+/** A search result's icon: its page's (Conductor's `tab.icon`), an agent tab's, or a repository section's. */
+const searchIcon = (item: SearchItem): ReactNode =>
+  item.target.scope === "repo"
+    ? REPO_SECTION_ICONS[item.target.section]
+    : item.target.providerTab
+      ? <AgentIcon />
+      : PAGE_ICONS[item.target.page];
+
+/** Conductor's `scrollTo`: once the page renders, bring the row with this title into view. */
+function scrollToRow(title: string, tries = 20) {
+  requestAnimationFrame(() => {
+    const label = Array.from(document.querySelectorAll(".settings-page [data-settings-row]")).find((row) =>
+      Array.from(row.querySelectorAll(".settings-row-label, h2, h3, label, strong")).some((el) => el.textContent?.trim() === title),
+    );
+    if (label) label.scrollIntoView({ block: "start" });
+    else if (tries > 0) scrollToRow(title, tries - 1);
+  });
+}
+
 /** Settings' Back opens its "Esc" tooltip after 100 ms, not the app's 600 ms (Conductor's `I9a`). */
 const BACK_TOOLTIP_DELAY_MS = 100;
 
 /** Pages that draw their own header (Conductor's environment panel has an "Add" action beside its title). */
-const SELF_HEADED: readonly SettingsPage[] = ["environment"];
+const SELF_HEADED: readonly SettingsPage[] = ["environment", "providers"];
 
 /** Conductor's `_Sa` page headers: a description under the title where it has one. */
 const PAGE_HEADERS: Partial<Record<SettingsPage, { description: ReactNode }>> = {
@@ -293,7 +339,7 @@ const PAGE_HEADERS: Partial<Record<SettingsPage, { description: ReactNode }>> = 
   },
 };
 /** Conductor's repository tab icons: the Git and Environment pages' own, then file-code, mouse-pointer-click, sliders-horizontal. */
-const REPO_SECTION_ICONS: Record<(typeof REPO_SECTIONS)[number], ReactNode> = {
+const REPO_SECTION_ICONS: Record<RepoSection, ReactNode> = {
   git: <GitIcon />,
   environment: <KeyIcon />,
   scripts: <ScriptIcon />,

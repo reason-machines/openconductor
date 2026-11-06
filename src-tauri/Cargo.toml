@@ -15,7 +15,8 @@ tauri-build = { version = "2", features = [] }
 [dependencies]
 # macos-private-api: a transparent window's WKWebView stops drawing its background (wry
 # `drawsBackground`), as in Conductor, so Sidebar transparency shows the window vibrancy.
-tauri = { version = "2", features = ["macos-private-api"] }
+# devtools: Help › "Open debug tools" opens the web inspector in release builds too, as Conductor does.
+tauri = { version = "2", features = ["macos-private-api", "devtools"] }
 tauri-plugin-dialog = "2"
 # Plugins Conductor 0.87.6 links (evidence/ipc/rust-crates-from-paths.txt); the commands its
 # frontend calls are in evidence/packaging/conductor-plugin-commands.json.
