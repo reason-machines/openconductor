@@ -53,7 +53,7 @@
   height: 24px;
   padding: 0 8px;
   border: 1px solid var(--oi-input);
-  transition: transform 150ms ease-out;
+  transition: transform var(--oc-motion-press) var(--oc-motion-ease-out); /* transition-transform duration-150 ease-out */
 }
 .oi-main { border-right: 0; border-radius: 4px 0 0 4px; background: var(--oi-bg); }
 .oi-chevron { border-radius: 0 4px 4px 0; background: color-mix(in srgb, var(--oi-sidebar) 4%, transparent); }
@@ -71,6 +71,7 @@
   position: absolute;
   top: calc(100% + 4px);
   right: 0;
+  transform-origin: top right;
   z-index: 1000;
   width: 192px;
   padding: 4px;

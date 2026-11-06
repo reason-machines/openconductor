@@ -5,6 +5,7 @@
 // preferred method, named in the tooltip), Ready for review on a draft,
 // Approve PR, Automerge while checks run (with the setting on), or the PR's current state, which opens it on GitHub.
 import { useEffect, useRef, useState } from "react";
+import { usePresence } from "../../components/motion/usePresence.ts";
 import { prControl } from "./control.ts";
 import type { PrActions } from "./usePrActions.ts";
 import type { PullRequest } from "./usePullRequest.ts";
@@ -19,6 +20,7 @@ export function PrControl({ pullRequest, actions }: Props) {
   const { header, pr } = pullRequest;
   const { busy } = actions;
   const [menu, setMenu] = useState(false);
+  const menuPresence = usePresence(menu);
   const menuRef = useRef<HTMLSpanElement>(null);
   const control = prControl(header, pr, { method: actions.method, automerge: pullRequest.settings.automerge });
 
@@ -49,8 +51,8 @@ export function PrControl({ pullRequest, actions }: Props) {
           <button className="btn btn-small btn-primary pr-caret" aria-label="More ways to create a PR" aria-expanded={menu} disabled={busy !== null} onClick={() => setMenu((m) => !m)}>
             ▾
           </button>
-          {menu && (
-            <div className="pr-menu" role="menu" data-tauri-drag-region="false">
+          {menuPresence.mounted && (
+            <div className="pr-menu" role="menu" data-tauri-drag-region="false" data-motion="popup" {...menuPresence.attrs}>
               <button
                 role="menuitem"
                 onClick={() => {

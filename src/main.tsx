@@ -9,6 +9,7 @@ import { overridesRaw } from "./settings/keybindingOverrides";
 import { installContextMenuGuard } from "./lib/nativeContextMenu";
 import "./fonts.css";
 import "./styles.css";
+import "./components/motion/motion.css";
 
 const loadOverrides = async () => overridesRaw(await getSettings());
 

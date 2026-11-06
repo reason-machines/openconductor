@@ -1,0 +1,76 @@
+/* Shared motion tokens and classes, measured from Conductor 0.87.6
+   (renderApp-BYEcFwvt.css and the classes on each element in
+   renderApp-D_fmY7hW.js; table and probe in
+   parity/side-by-side/chat-diff-pr/animations/README.md).
+
+   --oc-motion-ease       Tailwind v4 --default-transition-timing-function / --ease-in-out
+   --oc-motion-ease-out   Tailwind v4 --ease-out (the `ease-out` class)
+   --oc-motion-popup      `duration-100` on every Base UI menu/popover popup
+   --oc-motion-press      Button: `transition-transform duration-150 ease-out active:scale-[0.97]`
+   --oc-motion-toast      .conductor-toast: `transition: transform .4s, opacity .4s` (default ease) */
+:root {
+  --oc-motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --oc-motion-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --oc-motion-popup: 100ms;
+  --oc-motion-press: 150ms;
+  --oc-motion-toast: 400ms;
+  --oc-motion-press-scale: 0.97;
+}
+
+/* Menus and popovers: `origin-(--transform-origin) transition-[opacity,scale] duration-100
+   data-[starting-style]:opacity-0 data-[starting-style]:scale-95
+   data-[ending-style]:opacity-0 data-[ending-style]:scale-95`. Each popup sets its own
+   transform-origin toward its trigger (Base UI's --transform-origin). Spread
+   usePresence().attrs on the element and mark it data-motion="popup" (or class
+   oc-popup). Conductor's popups do not opt out under prefers-reduced-motion, so
+   neither do these. */
+.oc-popup,
+[data-motion="popup"] {
+  transition-property: opacity, scale;
+  transition-duration: var(--oc-motion-popup);
+  transition-timing-function: var(--oc-motion-ease);
+}
+.oc-popup[data-starting-style],
+.oc-popup[data-ending-style],
+[data-motion="popup"][data-starting-style],
+[data-motion="popup"][data-ending-style] {
+  opacity: 0;
+  scale: 0.95;
+}
+.oc-popup[data-ending-style],
+[data-motion="popup"][data-ending-style] { pointer-events: none; }
+
+/* Buttons and tabs: scale to .97 while pressed; hover colours change at once
+   (Conductor's Button transitions only transform). */
+.oc-press {
+  transition-property: transform, translate, scale, rotate;
+  transition-duration: var(--oc-motion-press);
+  transition-timing-function: var(--oc-motion-ease-out);
+}
+.oc-press:active:not(:disabled) { transform: scale(var(--oc-motion-press-scale)); }
+@media (prefers-reduced-motion: reduce) {
+  .oc-press:active:not(:disabled) { transform: none; }
+}
+
+/* Right panel tabs (All files / Changes / Checks) and the Review button are
+   Conductor Buttons: press scale only, hover colour at once. */
+.diff > .tabs button {
+  transition: transform var(--oc-motion-press) var(--oc-motion-ease-out);
+}
+.diff > .tabs button:active:not(:disabled) { transform: scale(var(--oc-motion-press-scale)); }
+@media (prefers-reduced-motion: reduce) {
+  .diff > .tabs button:active:not(:disabled) { transform: none; }
+}
+
+/* Toasts (.conductor-toast): slide up from translateY(150%) with opacity over
+   400ms on enter and leave the same way; `transition: transform .4s, opacity .4s`
+   with the default `ease`. Only timing and animation here; layout is Toast.tsx's. */
+.toast {
+  transition: transform var(--oc-motion-toast) ease, opacity var(--oc-motion-toast) ease;
+}
+.toast[data-starting-style],
+.toast[data-ending-style] {
+  opacity: 0;
+  transform: translateY(150%);
+}
+.toast[data-ending-style] { pointer-events: none; }

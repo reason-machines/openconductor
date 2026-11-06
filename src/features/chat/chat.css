@@ -225,7 +225,7 @@
 .hljs-strong { font-weight: 700; }
 .hljs-link { text-decoration: underline; }
 .chat-turn-menu { position: relative; display: inline-flex; }
-.chat-menu { position: absolute; right: 0; bottom: calc(100% + 4px); z-index: 20; min-width: 140px; padding: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.chat-menu { position: absolute; right: 0; bottom: calc(100% + 4px); transform-origin: bottom right; z-index: 20; min-width: 140px; padding: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
 .chat-menu-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 5px 8px; border-radius: 5px; font-size: 12.5px; text-align: left; white-space: nowrap; }
 .chat-menu-item:hover:not(:disabled) { background: var(--hover); }
 .chat-menu-item:disabled { opacity: 0.5; cursor: default; }

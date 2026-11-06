@@ -171,11 +171,12 @@
   background: transparent;
   color: var(--oc-c-muted-fg);
   cursor: default;
-  transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease-out;
+  /* Conductor's Button: transition-transform duration-150 ease-out; hover colours switch at once. */
+  transition: transform var(--oc-motion-press) var(--oc-motion-ease-out), translate var(--oc-motion-press) var(--oc-motion-ease-out), scale var(--oc-motion-press) var(--oc-motion-ease-out), rotate var(--oc-motion-press) var(--oc-motion-ease-out);
 }
 .oc-icon-btn:hover { background: var(--oc-c-sidebar-accent); color: var(--oc-c-fg); }
 .oc-icon-btn:active,
-.oc-send:active:not(:disabled) { transform: scale(0.97); }
+.oc-send:active:not(:disabled) { transform: scale(var(--oc-motion-press-scale)); }
 .oc-icon-btn:focus-visible,
 .oc-send:focus-visible { outline: none; box-shadow: 0 0 0 1px var(--oc-c-ring); }
 /* Cancel: border border-border hover:bg-muted, stop icon text-foreground. */
@@ -183,7 +184,7 @@
 .oc-icon-btn.composer-stop:hover { background: var(--oc-c-muted); }
 .oc-icon-btn.composer-stop:disabled { opacity: 0.5; }
 /* Send: bg-foreground hover:bg-foreground/80, icon text-background; disabled bg-foreground/50. */
-.oc-send { background: var(--oc-c-fg); color: var(--oc-c-bg); }
+.oc-send { background: var(--oc-c-fg); color: var(--oc-c-bg); transition: background-color 150ms ease, border-color 150ms ease; }
 .oc-send:hover { background: color-mix(in oklab, var(--oc-c-fg) 80%, transparent); }
 .oc-send:disabled { background: color-mix(in oklab, var(--oc-c-fg) 50%, transparent); cursor: not-allowed; }
 
@@ -201,7 +202,7 @@
 }
 .oc-add-menu { position: relative; display: inline-flex; }
 /* "+" menu: w-56 space-y-1, side top, align end. */
-.oc-add-popup { bottom: calc(100% + 4px); right: 0; width: 224px; display: flex; flex-direction: column; gap: 4px; }
+.oc-add-popup { bottom: calc(100% + 4px); right: 0; transform-origin: bottom right; width: 224px; display: flex; flex-direction: column; gap: 4px; }
 .oc-menu-item {
   display: flex;
   align-items: center;
@@ -257,6 +258,7 @@
   z-index: 50;
   left: 0;
   bottom: calc(100% + 4px);
+  transform-origin: bottom left;
   width: 352px;
   max-height: min(28rem, calc(100vh - 120px));
   display: flex;
@@ -363,7 +365,7 @@
   border: 1px solid transparent;
   border-radius: 9999px;
   background: var(--oc-c-input);
-  transition: background-color 150ms;
+  transition: background-color 150ms var(--oc-motion-ease); /* transition-colors duration-150 */
 }
 .oc-switch > span {
   display: block;
@@ -373,7 +375,7 @@
   background: var(--oc-c-switch-fg);
   box-shadow: 0 10px 15px -3px #0000001a, 0 4px 6px -4px #0000001a;
   transform: translateX(1px);
-  transition: transform 150ms;
+  transition: transform 150ms var(--oc-motion-ease); /* transition-transform duration-150 */
 }
 .oc-switch[data-state="checked"] { background: var(--oc-c-switch-bg); }
 .oc-switch[data-state="checked"] > span { transform: translateX(21px); }

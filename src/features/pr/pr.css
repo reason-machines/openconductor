@@ -12,7 +12,7 @@
 .pr-split .btn-primary:first-child { border-top-right-radius: 0; border-bottom-right-radius: 0; }
 .pr-control.pr-split { gap: 0; }
 .pr-split .pr-caret { border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 4px; padding-right: 4px; border-left: 1px solid rgba(255, 255, 255, 0.25); }
-.pr-menu { position: absolute; right: 0; top: calc(100% + 4px); z-index: 40; min-width: 160px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.pr-menu { position: absolute; right: 0; top: calc(100% + 4px); transform-origin: top right; z-index: 40; min-width: 160px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
 .pr-menu button { display: block; width: 100%; text-align: left; padding: 6px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--text); font-size: 12px; cursor: pointer; }
 .pr-menu button:hover { background: var(--hover); }
 .pr-control .btn-merge { background: var(--add); border-color: var(--add); color: #fff; }

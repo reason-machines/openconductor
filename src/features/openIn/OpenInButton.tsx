@@ -5,6 +5,7 @@
 // Conductor's catalog order with their icons, the default app's ⌘O hint and
 // number keys 1-9, then "Copy path" (`bvs`, rows `X7t`).
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { usePresence } from "../../components/motion/usePresence.ts";
 import { PRIORITY } from "../../keybindings/dispatcher.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
@@ -69,6 +70,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
   const defaultId = defaultAppId(apps, useAppPrefs().default_open_in);
   const defaultApp = apps.find((a) => a.id === defaultId);
   const [open, setOpen] = useState(false);
+  const presence = usePresence(open);
   const wrap = useRef<HTMLDivElement>(null);
   const menu = useRef<HTMLDivElement>(null);
   const { overrides } = useKeybindingOverrides();
@@ -168,8 +170,8 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
       >
         <ChevronDownIcon size={12} />
       </button>
-      {open && (
-        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey} data-tauri-drag-region="false">
+      {presence.mounted && (
+        <div className="oi-menu" role="menu" aria-label="Open in" ref={menu} onKeyDown={onMenuKey} data-tauri-drag-region="false" data-motion="popup" {...presence.attrs}>
           {installed === null ? (
             <div className="oi-menu-note">Loading…</div>
           ) : apps.length === 0 ? (
