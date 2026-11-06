@@ -1,0 +1,58 @@
+/*
+ * Screen-level motion, matched to Conductor 0.87.6 (measured in its extracted
+ * frontend with tools/transitions; see parity/side-by-side/transitions).
+ *
+ * Conductor animates dialogs and the Home dashboard only. Route changes
+ * (Home, workspace, settings), settings page switches, tab switches and
+ * sidebar, right-panel and terminal toggles swap in one frame there, so
+ * they have no motion here either.
+ *
+ * Dialog kinds (set data-dialog-motion on the backdrop; its child is the panel):
+ * - "dialog": Base UI DialogContent. Backdrop and panel fade, 200 ms.
+ * - "alert":  Base UI AlertDialogContent (confirmations). Backdrop fades,
+ *             panel fades and scales from .95, 200 ms.
+ * - "cmdk":   the command palette and quick open (cmdk dialog). Panel fades
+ *             in and slides down 12 px over 180 ms ease-out, leaves up 8 px
+ *             over 130 ms ease-in.
+ * Enter runs on mount; exit runs on the inert snapshot useDialogMotion
+ * leaves in place (class oc-leaving).
+ */
+:root {
+  /* Tailwind v4 default transition easing in Conductor's build. */
+  --oc-motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --oc-motion-dialog: 200ms;
+  --oc-motion-dialog-scale: 0.95;
+  --oc-motion-cmdk-in: 180ms;
+  --oc-motion-cmdk-out: 130ms;
+  --oc-motion-cmdk-in-y: -12px;
+  --oc-motion-cmdk-out-y: -8px;
+  /* Home dashboard on mount: tw-animate-css `animate-in fade-in duration-1000` (default `ease`). */
+  --oc-motion-page-fade: 1000ms;
+}
+
+@keyframes oc-backdrop-in { from { background-color: transparent; } }
+@keyframes oc-backdrop-out { to { background-color: transparent; } }
+@keyframes oc-dialog-in { from { opacity: 0; } }
+@keyframes oc-dialog-out { to { opacity: 0; } }
+@keyframes oc-alert-in { from { opacity: 0; scale: var(--oc-motion-dialog-scale); } }
+@keyframes oc-alert-out { to { opacity: 0; scale: var(--oc-motion-dialog-scale); } }
+@keyframes oc-cmdk-in { from { opacity: 0; transform: translateY(var(--oc-motion-cmdk-in-y)); } }
+@keyframes oc-cmdk-out { to { opacity: 0; transform: translateY(var(--oc-motion-cmdk-out-y)); } }
+
+/* The backdrop and panel are nested here (siblings in Conductor), so the backdrop fades its colour, not its opacity. */
+[data-dialog-motion="dialog"], [data-dialog-motion="alert"] { animation: oc-backdrop-in var(--oc-motion-dialog) var(--oc-motion-ease) backwards; }
+[data-dialog-motion="dialog"] > * { animation: oc-dialog-in var(--oc-motion-dialog) var(--oc-motion-ease) backwards; }
+[data-dialog-motion="alert"] > * { animation: oc-alert-in var(--oc-motion-dialog) var(--oc-motion-ease) backwards; }
+[data-dialog-motion="cmdk"] { animation: oc-backdrop-in var(--oc-motion-cmdk-in) ease-out backwards; }
+[data-dialog-motion="cmdk"] > * { animation: oc-cmdk-in var(--oc-motion-cmdk-in) ease-out backwards; }
+
+[data-dialog-motion].oc-leaving { pointer-events: none; }
+[data-dialog-motion="dialog"].oc-leaving, [data-dialog-motion="alert"].oc-leaving { animation: oc-backdrop-out var(--oc-motion-dialog) var(--oc-motion-ease) forwards; }
+[data-dialog-motion="dialog"].oc-leaving > * { animation: oc-dialog-out var(--oc-motion-dialog) var(--oc-motion-ease) forwards; }
+[data-dialog-motion="alert"].oc-leaving > * { animation: oc-alert-out var(--oc-motion-dialog) var(--oc-motion-ease) forwards; }
+[data-dialog-motion="cmdk"].oc-leaving { animation: oc-backdrop-out var(--oc-motion-cmdk-out) ease-in forwards; }
+[data-dialog-motion="cmdk"].oc-leaving > * { animation: oc-cmdk-out var(--oc-motion-cmdk-out) ease-in forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-dialog-motion], [data-dialog-motion] > * { animation: none; }
+}

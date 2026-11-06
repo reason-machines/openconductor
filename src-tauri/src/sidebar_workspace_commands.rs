@@ -1,10 +1,10 @@
-//! Sidebar row actions written to `conductor.db`: pin, unread and the manual
-//! status override. Conductor does these as single-column updates on
+//! Sidebar row actions written to `conductor.db`: pin, unread (per chat, in
+//! `sessions`) and the manual status override. Conductor does these as single-column updates on
 //! `workspaces` (`UPDATE workspaces SET manual_status = ? WHERE local_id = ?`
 //! in its frontend, REA-extracted, read as data); the setters live in
 //! `openconductor_db::workspaces`.
 
-use openconductor_db::{iso_time, workspaces, SqlitePool};
+use openconductor_db::{iso_time, sessions, workspaces, SqlitePool};
 use tauri::State;
 
 use crate::db::Db;
@@ -69,16 +69,58 @@ pub async fn db_set_workspace_pinned(
     set_pinned(&db.0, &workspace_id, pinned).await
 }
 
-/// JS: `invoke("db_set_workspace_unread", { workspaceId, unread })`.
+/// JS: `invoke("db_set_chat_unread", { chatId, workspaceId, unread })`: a
+/// chat's unread flag (`sessions.unread_count`, Conductor's `setUnread`,
+/// index-BGEQ8YjU.js `ret` @1,108,155). The chat's row is created or given its
+/// workspace when needed (`sessions::upsert_unread`). Reading the main chat
+/// (id = workspace id) also clears the legacy `workspaces.unread`, which the
+/// frontend folds into that chat.
 #[tauri::command]
-pub async fn db_set_workspace_unread(
+pub async fn db_set_chat_unread(
     db: State<'_, Db>,
+    chat_id: String,
     workspace_id: String,
     unread: bool,
 ) -> Result<(), String> {
-    workspaces::set_unread(&db.0, &workspace_id, unread)
+    set_chat_unread(&db.0, &chat_id, &workspace_id, unread).await
+}
+
+async fn set_chat_unread(
+    pool: &SqlitePool,
+    chat_id: &str,
+    workspace_id: &str,
+    unread: bool,
+) -> Result<(), String> {
+    sessions::upsert_unread(pool, chat_id, workspace_id, unread)
         .await
-        .map_err(|e| e.to_string())
+        .map_err(|e| e.to_string())?;
+    if !unread && chat_id == workspace_id {
+        clear_legacy_unread(pool, workspace_id).await?;
+    }
+    Ok(())
+}
+
+/// JS: `invoke("db_mark_workspace_read", { workspaceId })`: every chat of the
+/// workspace is read (Conductor's `markWorkspaceAsRead`, index-BGEQ8YjU.js
+/// `ntt` @1,141,730), and so is the legacy `workspaces.unread`.
+#[tauri::command]
+pub async fn db_mark_workspace_read(db: State<'_, Db>, workspace_id: String) -> Result<(), String> {
+    mark_workspace_read(&db.0, &workspace_id).await
+}
+
+async fn mark_workspace_read(pool: &SqlitePool, workspace_id: &str) -> Result<(), String> {
+    sessions::mark_workspace_read(pool, workspace_id)
+        .await
+        .map_err(|e| e.to_string())?;
+    clear_legacy_unread(pool, workspace_id).await
+}
+
+/// A workspace with no row has no legacy flag to clear.
+async fn clear_legacy_unread(pool: &SqlitePool, workspace_id: &str) -> Result<(), String> {
+    match workspaces::set_unread(pool, workspace_id, false).await {
+        Ok(()) | Err(openconductor_db::Error::NotFound) => Ok(()),
+        Err(e) => Err(e.to_string()),
+    }
 }
 
 /// JS: `invoke("db_touch_workspace", { workspaceId, at })`, `at` in ms since
@@ -311,5 +353,69 @@ mod tests {
         assert_eq!(updated_at(pool.clone()).await, "2100-01-01T00:00:00.000Z");
         // A workspace with no row is not an error.
         touch(&pool, "app/none", later).await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn chat_unread_and_workspace_read_reach_sessions_and_the_legacy_flag() {
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        let repo = KnownRepo {
+            id: "app".into(),
+            name: "app".into(),
+            root: "/src/app".into(),
+            default_branch: "main".into(),
+        };
+        let ws = KnownWorkspace {
+            id: "app/oslo".into(),
+            repository_id: "app".into(),
+            directory_name: "oslo".into(),
+            branch: "oslo".into(),
+            path: "/data/workspaces/app/oslo".into(),
+            archived: false,
+        };
+        store::record_repository(&pool, &repo).await.unwrap();
+        store::finish_workspace(&pool, &ws, Some("main"), None)
+            .await
+            .unwrap();
+        let row = |pool: SqlitePool| async move {
+            store::list_workspaces(&pool)
+                .await
+                .unwrap()
+                .into_iter()
+                .find(|w| w.id == "app/oslo")
+                .unwrap()
+        };
+
+        // A chat with no sessions row yet (Codex) becomes an unread chat of its workspace.
+        set_chat_unread(&pool, "app/oslo:review:1", "app/oslo", true)
+            .await
+            .unwrap();
+        let ids: Vec<_> = row(pool.clone())
+            .await
+            .unread_chats
+            .into_iter()
+            .map(|c| c.id)
+            .collect();
+        assert_eq!(ids, ["app/oslo:review:1"]);
+
+        // Reading the main chat clears the legacy workspace flag it stands for.
+        workspaces::set_unread(&pool, "app/oslo", true)
+            .await
+            .unwrap();
+        set_chat_unread(&pool, "app/oslo", "app/oslo", false)
+            .await
+            .unwrap();
+        let r = row(pool.clone()).await;
+        assert!(!r.unread);
+        assert_eq!(r.unread_chats.len(), 1);
+
+        // Mark as read clears every chat and the legacy flag.
+        workspaces::set_unread(&pool, "app/oslo", true)
+            .await
+            .unwrap();
+        mark_workspace_read(&pool, "app/oslo").await.unwrap();
+        let r = row(pool.clone()).await;
+        assert!(!r.unread && r.unread_chats.is_empty());
+        // A workspace with no row is not an error.
+        mark_workspace_read(&pool, "app/none").await.unwrap();
     }
 }

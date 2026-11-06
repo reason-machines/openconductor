@@ -17,7 +17,7 @@ export function QuitDialog({ running, onConfirm, onClose }: { running: number | 
   };
   useKeybindings({ "dialog.primaryAction": confirm }, { priority: PRIORITY.DIALOG, enableOnDialogIds: [QUIT_DIALOG_ID] });
   return (
-    <Modal title={COPY.title} onClose={onClose} dialogId={QUIT_DIALOG_ID}>
+    <Modal title={COPY.title} onClose={onClose} dialogId={QUIT_DIALOG_ID} motion="alert">
       <div className="modal-body">
         <p>{COPY.description(running)}</p>
         <div className="modal-actions">

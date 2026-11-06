@@ -11,7 +11,7 @@
 //! other workspace commands (`rename_workspace_branch`, ...) take.
 
 use openconductor_db::workspaces::{NewWorkspace, WorkspaceState};
-use openconductor_db::{repos, workspaces, Result, SqlitePool};
+use openconductor_db::{repos, sessions, workspaces, Result, SqlitePool};
 use serde::Serialize;
 
 /// Delete every workspace still `initializing` (its worktree was never
@@ -198,6 +198,15 @@ pub struct RepoRow {
     pub created_at: String,
 }
 
+/// An unread chat of a [`WorkspaceRow`].
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UnreadChatRow {
+    pub id: String,
+    /// `sessions.updated_at`: "Go to next unread" sorts chats by it (Conductor's `Qre`).
+    pub updated_at: String,
+}
+
 /// `db_list_workspaces` row. `state` is the snake_case schema value.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -217,7 +226,11 @@ pub struct WorkspaceRow {
     /// `intended_target_branch`: the branch the work merges into; "All changes" diffs against it.
     pub intended_target_branch: Option<String>,
     pub pinned_at: Option<String>,
+    /// `workspaces.unread`, the legacy flag: Conductor keeps unread per chat
+    /// (`unread_chats`); the frontend folds this into the workspace's main chat.
     pub unread: bool,
+    /// The workspace's unread, non-hidden chats (`sessions.unread_count`).
+    pub unread_chats: Vec<UnreadChatRow>,
     /// The PR's title and body as last stored (`pr_title`, `pr_description`):
     /// the sidebar label and Create PR's title / description.
     pub pr_title: Option<String>,
@@ -253,6 +266,17 @@ pub async fn list_repos(pool: &SqlitePool) -> Result<Vec<RepoRow>> {
 
 /// Every workspace, oldest first.
 pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
+    let mut unread: std::collections::HashMap<String, Vec<UnreadChatRow>> =
+        std::collections::HashMap::new();
+    for c in sessions::unread_chats(pool).await? {
+        unread
+            .entry(c.workspace_id)
+            .or_default()
+            .push(UnreadChatRow {
+                id: c.id,
+                updated_at: c.updated_at,
+            });
+    }
     Ok(workspaces::list(pool)
         .await?
         .into_iter()
@@ -271,6 +295,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 intended_target_branch: w.intended_target_branch,
                 pinned_at: w.pinned_at,
                 unread: w.unread,
+                unread_chats: unread.remove(&w.local_id).unwrap_or_default(),
                 pr_title: w.pr_title,
                 pr_description: w.pr_description,
                 number: w.number,
