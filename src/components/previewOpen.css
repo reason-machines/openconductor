@@ -1,0 +1,16 @@
+/* The Run tab's Open button (Conductor's `Yve`), at the right end of the terminal panel's
+   tab row (Conductor's `flex min-w-0 items-center ml-auto pl-2 gap-2`). The xs outline
+   button (h-6 px-2 text-xs gap-1.5 rounded-sm): a 12px globe, "Open" and the port in muted
+   mono. The label hides while the row is narrower than 440px (`hidden @[440px]:inline-block
+   max-w-40 truncate`), leaving the globe. With several preview URLs a chevron joins it. */
+.ws-strip-tabs { container-type: inline-size; }
+.ws-strip-actions { display: flex; align-items: center; gap: 8px; min-width: 0; margin-left: auto; padding-left: 8px; }
+.preview-open { display: flex; align-items: center; min-width: 0; }
+.preview-open .btn { height: 24px; gap: 6px; padding: 0 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--panel); color: var(--text); font-size: 12px; line-height: 16px; }
+.preview-open .btn:hover { background: var(--hover); }
+.preview-open-main { min-width: 0; }
+.preview-open-main.split { border-radius: 4px 0 0 4px; }
+.preview-open .preview-open-chevron { border-left: 0; border-radius: 0 4px 4px 0; padding: 0 4px; }
+.preview-open-label { display: none; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.preview-open-port { font-family: var(--font-mono); color: var(--muted); }
+@container (min-width: 440px) { .preview-open-label { display: inline-block; } }

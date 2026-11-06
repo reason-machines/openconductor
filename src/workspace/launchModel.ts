@@ -18,7 +18,7 @@ export interface LaunchModel {
 /** Effort when Settings › Default models leaves it unset (the create flow's earlier fixed value). */
 const FALLBACK_EFFORT = "high";
 
-/** The levels the effort menu offers for an agent; none for Cursor and others. */
+/** The levels the effort menu offers for an agent; none for other agents. */
 export function effortLevels(agent: string): readonly string[] {
   if (agent === "claude") return CLAUDE_EFFORT_LEVELS;
   if (agent === "codex") return CODEX_THINKING_LEVELS;

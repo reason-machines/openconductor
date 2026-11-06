@@ -35,6 +35,8 @@ import { RowStatusIcon } from "./RowStatusIcon";
 import { StatusMatrix } from "./StatusMatrix";
 import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { glyphs } from "../keybindings/shortcut";
+import { useBoolPref } from "../settings/useBoolPref";
+import { workspaceNumberLabel } from "../state/workspaceNumber";
 
 interface Props {
   repos: Repo[];
@@ -94,9 +96,24 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
   );
 }
 
-function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRepoIcon: boolean; active: boolean; now: number; onOpen: () => void }) {
+function Row({
+  row,
+  showRepoIcon,
+  showNumber,
+  active,
+  now,
+  onOpen,
+}: {
+  row: HomeRow;
+  showRepoIcon: boolean;
+  showNumber: boolean;
+  active: boolean;
+  now: number;
+  onOpen: () => void;
+}) {
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : isWorkspaceUnread(ws) ? "is-unread" : "";
+  const label = workspaceNumberLabel(ws.number);
   // Conductor's Home row (`vJo`): the agent's or setup's status, else the last-activity time.
   const status = homeStatus(ws.state, useWorkspaceAgentStatus(ws));
   const statusLabel = rowStatusLabel(status);
@@ -125,6 +142,12 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
         ) : showRepoIcon && (
           <span className="allws-repo-initial" title={repo.name} aria-hidden>
             {repo.name.charAt(0).toUpperCase()}
+          </span>
+        )}
+        {/* "Show workspace numbers" (Conductor's `_Jo`): a fixed-width W-<n> column, empty for unnumbered rows. */}
+        {showNumber && (
+          <span className={`allws-number${archived ? " is-archived" : ""}`}>
+            {label !== null && <Highlight match={matches?.number} fallback={label} />}
           </span>
         )}
         <span className={`allws-name ${tone}`}>
@@ -169,6 +192,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
   const [activeIndex, setActiveIndex] = useState(0);
   const sentinel = useRef<HTMLDivElement>(null);
   const now = Date.now();
+  const showNumbers = useBoolPref("experimental_show_workspace_numbers");
 
   useEffect(() => setLimit(PAGE_SIZE), [query, filters]);
 
@@ -317,6 +341,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
                         key={row.workspace.id}
                         row={row}
                         showRepoIcon={filters.projects.length === 0}
+                        showNumber={showNumbers}
                         active={i === activeIndex}
                         now={now}
                         onOpen={() => open(row)}

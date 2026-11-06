@@ -62,13 +62,13 @@ export function paletteDataFromState(state: AppState, recentIds: readonly string
       const r0 = rank.get(w.id);
       // Recently visited workspaces sort above the rest; others by creation time.
       const lastActiveAt = r0 === undefined ? w.createdAt : Number.MAX_SAFE_INTEGER - r0;
-      return { id: w.id, name: w.name, branch: w.branch, repoName: r.name, lastActiveAt, archived: w.status === "archived" };
+      return { id: w.id, name: w.name, branch: w.branch, repoName: r.name, lastActiveAt, archived: w.status === "archived", number: w.number ?? null };
     }),
   );
   const repoNames = new Map(state.repos.map((r) => [r.id, r.name]));
   for (const a of archived) {
     if (!repoNames.has(a.repoId)) continue;
-    workspaces.push({ id: a.id, name: a.name, branch: a.branch, repoName: repoNames.get(a.repoId) ?? "", lastActiveAt: a.createdAt - Number.MAX_SAFE_INTEGER / 2, archived: true });
+    workspaces.push({ id: a.id, name: a.name, branch: a.branch, repoName: repoNames.get(a.repoId) ?? "", lastActiveAt: a.createdAt - Number.MAX_SAFE_INTEGER / 2, archived: true, number: a.workspace.number ?? null });
   }
   const activeWorkspaceId = state.selection.kind === "workspace" ? state.selection.workspaceId : null;
   return {

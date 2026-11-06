@@ -20,6 +20,8 @@ import { generateWorkspaceNames } from "../workspace/naming";
 import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { AgentBinaryBanner } from "../features/chat/AgentBinaryBanner.tsx";
+import { binaryAgentFor } from "../features/chat/agentBinaries.ts";
 import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
 import { ChatEmptyState } from "../features/chat/ChatEmptyState.tsx";
 import { NewChatButton } from "../features/chat/NewChatButton.tsx";
@@ -82,8 +84,9 @@ import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } fr
 import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
-import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { useBoolPref } from "../settings/useBoolPref";
+import { workspaceNumberLabel } from "../state/workspaceNumber";
+import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 
 interface Props {
@@ -91,6 +94,8 @@ interface Props {
   workspace: Workspace;
   dispatch: Dispatch<Action>;
   notify?: ArchiveNotify;
+  /** Copy link (`XV`), which the header's W-<n> badge runs. */
+  onCopyLink?: () => void;
   /** Opens the next unread chat (the composer's "Next unread" button). */
   onNextUnread?: () => void;
   /** Whether a chat other than `selectedChatId` is unread: the button shows only then. */
@@ -566,6 +571,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           </button>
         </div>
       ) : null}
+      <AgentBinaryBanner agent={binaryAgentFor(agentId)} />
       <Composer
         draft={draft}
         setDraft={setDraft}
@@ -874,7 +880,7 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
   );
 }
 
-export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread, hasNextUnread }: Props) {
+export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, onNextUnread, hasNextUnread }: Props) {
   // The right panel's Setup / Run / Terminal strip: open on Run, like Conductor.
   // ⌘J (view.toggleTerminalPanel) hides or shows it; ⌘⇧T opens a big terminal
   // in it while Big terminal mode is on.
@@ -1120,7 +1126,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
     dispatch({ type: "setChatUnread", repoId: repo.id, workspaceId: workspace.id, chatId, unread, at: Date.now() });
   };
   // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
-  const rightPanelVisible = useAppPrefs().right_panel_visible;
+  const prefs = useAppPrefs();
+  const rightPanelVisible = prefs.right_panel_visible;
+  const showNumbers = useBoolPref("experimental_show_workspace_numbers");
+  const numberLabel = showNumbers ? workspaceNumberLabel(workspace.number) : null;
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region="deep">
@@ -1128,6 +1137,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
           <span className="crumb">{repo.name}</span>
           <span className="crumb-sep">/</span>
           <strong>{workspace.name}</strong>
+          {/* "Show workspace numbers": Conductor's header badge (`Plo`), a W-<n> button whose click is Copy link. */}
+          {numberLabel && (
+            <button type="button" className="ws-number" title="Copy link" aria-label={`Copy link to ${numberLabel}`} onClick={onCopyLink} disabled={!onCopyLink}>
+              {numberLabel}
+            </button>
+          )}
           <span className="chip">
             <BranchIcon size={12} /> {workspace.branch}
           </span>

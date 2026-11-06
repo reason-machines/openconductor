@@ -40,7 +40,7 @@ export interface CodexLoginEvent {
 
 export function codexModeOf(settings: Settings): CodexMode {
   const p = settings.providers.codex;
-  if (p) return p.kind === "openai_api" || p.kind === "codex_gateway" ? "apikey" : "cli";
+  if (p) return p.kind === "openai_api" ? "apikey" : "cli";
   const top = settings.codex_provider?.trim();
   if (top === CHATGPT_SIGN_IN) return "chatgpt";
   return top === "custom" ? "apikey" : "cli";

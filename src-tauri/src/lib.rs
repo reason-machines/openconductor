@@ -127,6 +127,12 @@ fn app_info() -> AppInfo {
     }
 }
 
+/// Help › "Open debug tools" (Conductor's `open_devtools`): the window's web inspector.
+#[tauri::command]
+fn open_devtools(window: tauri::WebviewWindow) {
+    window.open_devtools();
+}
+
 /// Folder checks for Home "Open project" (see `project`).
 #[tauri::command]
 fn inspect_project_folder(path: String) -> project::FolderInspection {
@@ -367,6 +373,7 @@ pub fn run() {
             root_path_commands::repo_workspaces_path,
             root_path_commands::change_conductor_root,
             app_info,
+            open_devtools,
             inspect_project_folder,
             branch_prefix_settings,
             github_repo_owners,
@@ -436,6 +443,9 @@ pub fn run() {
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
+            reason_chat::reason_account_status,
+            reason_chat::reason_login_start,
+            reason_chat::reason_connect_computer,
             reason_chat::reason_open_chat,
             reason_chat::reason_set_config,
             chat_store_commands::chat_messages_save,
@@ -498,7 +508,6 @@ pub fn run() {
             agent_launch::agent_executable_status,
             agent_options::agent_config_file,
             agent_options::open_agent_config,
-            agent_options::acp_agent_status,
             app_prefs::commands::set_app_pref,
             app_prefs::commands::record_open_in,
             open_in::commands::open_in_apps,
@@ -550,6 +559,7 @@ pub fn run() {
             scripts::run_script_stop,
             scripts::run_script_status,
             scripts::run_script_output,
+            scripts::run_script_preview_env,
             scripts::archive_script_run,
             scripts::auto_run_after_setup_get,
             scripts::auto_run_after_setup_set,

@@ -3,6 +3,7 @@ import { effectiveShortcuts, type Overrides } from "../keybindings/overrides.ts"
 import { glyphs } from "../keybindings/shortcut.ts";
 import { buildResults, cycleTab, emptyText, placeholderFor, TABS, type PaletteData, type PaletteTab, type ResultItem } from "./search/model.ts";
 import { COMMAND_PALETTE_DIALOG_ID, moveActive, paletteCommandFor } from "./state.ts";
+import { workspaceNumberLabel } from "../state/workspaceNumber.ts";
 import { VIEW_ARCHIVED_ACTION } from "./fromAppState.ts";
 import { ARCHIVE_FILTERS, ARCHIVE_FILTER_LABEL, ARCHIVE_FILTER_TEXT, UNARCHIVE_LABEL, type ArchiveFilter } from "../workspace/archivedList.ts";
 import { ArchiveIcon } from "../components/Icons";
@@ -15,6 +16,8 @@ export interface CommandPaletteProps {
   /** Projects tab is hidden for team organisations. */
   showProjects?: boolean;
   initialTab?: PaletteTab;
+  /** Experimental "Show workspace numbers": W-<n> before each workspace's name. */
+  showWorkspaceNumbers?: boolean;
   /** Initial "Archived workspaces" filter of the Workspaces tab. */
   initialArchiveFilter?: ArchiveFilter;
   onSelect: (item: ResultItem) => void;
@@ -42,7 +45,7 @@ function shortcutFor(item: ResultItem, overrides: Overrides): string | null {
   return key ? glyphs(key) : null;
 }
 
-export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter = "active", onSelect, onUnarchive, onClose }: CommandPaletteProps) {
+export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter = "active", showWorkspaceNumbers = false, onSelect, onUnarchive, onClose }: CommandPaletteProps) {
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
@@ -147,6 +150,10 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => choose(item)}
                   >
+                    {/* Conductor's workspace switcher row (`SUi`): a fixed-width W-<n> column, empty when unnumbered. */}
+                    {showWorkspaceNumbers && item.kind === "workspace" && (
+                      <span className="palette-number">{workspaceNumberLabel(item.workspace.number)}</span>
+                    )}
                     <span className="palette-title">{title}</span>
                     {detail && <span className="palette-detail">{detail}</span>}
                     {shortcut && <kbd className="palette-kbd">{shortcut}</kbd>}

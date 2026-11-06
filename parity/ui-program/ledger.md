@@ -35,12 +35,12 @@ that justifies the status.
 | Chat tabs + chat area + composer `chat` | unassigned | #516 | wrong | seed | build: desktop-local-ffc7c778 (098edd23), unrecorded (379d1c82); verify: oauth-cf0b3f60 (8eb44615) |
 | Right panel: All files / Changes / Checks `right-panel` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (3530d46d, Diff viewer and review); verify: oauth-2791179c (0fa2bcc5, Diff viewer) |
 | Setup / Run / Terminal strip `strip` | unassigned | #509 | wrong | seed | build: oauth-cf0b3f60 (4bf88c3a, Setup and run scripts), desktop-local-ffc7c778 (d3abaff9 Spotlight and run, e6d07b82 Terminal); verify: oauth-cf0b3f60 (30f21708) |
-| Settings: Personal (General, Account, Appearance, Default models, Git, Ports) `settings-personal` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
+| Settings: Personal (General, Account, Appearance, Default models, Git, Ports) `settings-personal` | 396d0d00 (track B) | #644 | wrong | 2026-11-06, 841a805 + #644, [settings-personal-01](../side-by-side/settings-personal-01-search-branch.png) (harness render, does not count as matches) | build: desktop-local-ffc7c778 (2bc15518) |
 | Settings: Agents & environment (Agents, Environment) `settings-agents-env` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
 | Settings: Repositories (per repo: Environment, Git, Scripts, Actions, Misc) `settings-repos` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
 | Settings: More (Experimental, Advanced) `settings-more` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
 | Settings: Organization and Cloud (cloud org only) `settings-org` | unassigned | | missing | seed | n/a |
-| Dialogs and menus `dialogs-menus` | unassigned | | wrong | seed | n/a |
+| Dialogs and menus `dialogs-menus` | 700983e1 (Help menu, Submit a prompt, Diagnostics) | #631 | wrong | 2026-11-06, 18ecd9590, [dialogs-menus-01](../side-by-side/dialogs-menus-01-help-menu.png) (harness render) | build: unrecorded (700983e1, Opus 5.5 high) |
 | Toasts `toasts` | unassigned | | wrong | seed | n/a |
 
 Settings groups follow Conductor's settings navigation as read from its bundle
@@ -123,6 +123,19 @@ rules, so the coordinator re-checks each before changing a seed status.
 | `settings-org` | ui-map: OpenConductor has no organization or cloud settings |
 | `dialogs-menus` | ui-map dialog and menu states all wrong; 56 of 64 dialogs and 39 of 39 menus missing in the inventory |
 | `toasts` | ui-map `toast-copied-link` wrong; 326 of 327 inventory toasts missing |
+
+## Shell rows of the UI map (sidebar, header, Home, menus)
+
+Builder `700983e1`, PR #631. Statuses come from [ui-map.md](../ui-map.md). The UI map's references are Conductor's extracted frontend, not the native window, so the images below are labelled "harness render". They do not count as `matches` for the `dialogs-menus` node above.
+
+| UI map row | Before | After | Evidence |
+|---|---|---|---|
+| `menu-help` Help menu | wrong (10.4%, copy 70%) | matches (3.7%, copy 93%) | [dialogs-menus-01](../side-by-side/dialogs-menus-01-help-menu.png). Discord is left out on purpose (Conductor's own server). Conductor's version line also lists the Claude Code and Codex versions; ours shows only the app version. |
+| `dialog-submit-prompt` (new), `dialog:submit-a-prompt` | missing | matches (2.4%, copy 100%) | [dialogs-menus-02](../side-by-side/dialogs-menus-02-submit-prompt.png). Submitting opens a GitHub issue instead of Conductor's feedback proxy. |
+| `route-diagnostics`, `route:diagnostics` | missing | matches (0.7%, copy 100%) | [dialogs-menus-03](../side-by-side/dialogs-menus-03-diagnostics.png) |
+| `diagnostics-run` (new) | n/a | wrong (3.4%, copy 83%) | [dialogs-menus-04](../side-by-side/dialogs-menus-04-diagnostics-run.png). It has no "Ask agent to analyze … report" buttons, which create a chat (chat team), and its env row is "OpenConductor app env". |
+| `home` Home with projects | wrong (copy 79%) | wrong, measurement only | Conductor's sidebar Home row and ⌘⇧H both go to `/all-workspaces` (renderApp @10,030,267 and @10,928,888), as OpenConductor's do. The lane's `home` state clicks Home and so captures All workspaces, not `/`. The missing copy ("Open project", "Open GitHub project", "Quick start") is the `/` cards, which OpenConductor shows at its root view. `dialog-keyboard-shortcuts`, `menu-account` and `palette-*` miss the same three strings for the same reason: the lane opens them over a workspace instead of `/`. |
+| `menu-account` Account menu | wrong (copy 73%) | unchanged | Missing copy beyond the `/` cards: "Log out" only. It ends Conductor's cloud session, and OpenConductor has none (`accountMenuModel.ts`). |
 
 ## Native references
 
@@ -311,3 +324,38 @@ Scope: user Settings (General, Account, Appearance, Agents, Models, Git, Environ
 | Transitions: switches, Back | Switch track `transition-colors duration-150`, thumb `transition-transform duration-150` (cubic-bezier(.4,0,.2,1)); Back `transition-colors` 150 ms | Same durations and easing (were `ease`) | **matches** |
 | Transitions: nav links, comboboxes | none (`all 0s`) | none | matches |
 | Alignment | Back: 28 px tall, right edge 6 px inside the 256 px nav; account switcher and "Search settings" above the groups | Back 22 px tall and 40 px further left; no account switcher or search | open: PR (d) |
+
+## Track B: UI detail program (UI map rounds)
+
+Owner: Session 396d0d00 (track B). One node per UI map screen; each round fixes the shared
+differences that move the most states first, then screen by screen. Every count below is a full
+UI map run on a Reason cloud computer: Conductor 0.87.6's frontend decoded from the real binary on
+sven m5 max (sha256 `0ba55751…831d`, copied with Reason's device copy) and captured with REA 6.8.0
+`capture-browser-scenario`; OpenConductor's debug build driven by `tools/ui-map/oc_lane.mjs`
+under Xvfb; REA `compare-web-screenshots`; `tools/ui-map/build_map.py`. The committed
+[ui-map.md](../ui-map.md) says 54 at `4d67e995d`; the baseline below is the same pipeline re-run on
+main `841a805`.
+
+| Round | OpenConductor | Matches / 963 | Missing | Wrong | States matching (of 65) | What moved it |
+|---|---|---:|---:|---:|---:|---|
+| baseline | main `841a805` | 61 | 778 | 124 | 8 | (none) |
+| B1 | `841a805` + #644 | 89 | 777 | 97 | 12 | Settings nav: account switcher and "Search settings ⌘F" above the groups (11 settings states were missing "account menu", "search settings", "search settings shortcut"); Big terminal in More |
+
+### Track B nodes
+
+| Node (UI map states) | PRs | Status (UI map) | Open differences |
+|---|---|---|---|
+| Settings chrome (all `settings-*`) | #644 | General, Models, Environment, Git, Experimental, repo Environment, Git, Scripts, Actions, Settings search match | Account (Linear, Billing, Sign out cards), Appearance (code preview), Advanced (Browse buttons), Agents (track A owns), repo Misc (pixels 6.1%) |
+
+### REA gaps hit by track B
+
+30. **`capture-browser-scenario` cannot read a row registry's search terms.** Conductor's settings
+    search indexes each row's `searchTerms` and its repository prompt rows (`S6e`); neither is in
+    `evidence/settings/settings-registry.json` (a regex over one call shape), and REA has no query
+    for "the arguments of every call to function X" in a JavaScript chunk (REA-GAPS 14, 17, 25,
+    28). `tools/settings/extract_settings_rows.py` reads the `ir({...})` and `S6e({...})` calls as
+    text, with their order in `fUi`, into `evidence/settings/settings-search-rows.json`.
+31. **The UI map's Linux lane needs WebKit's helper processes at a hard-coded `/usr/lib` path.**
+    Not a REA bug: on a Reason cloud computer without root, WebKitGTK from a sysroot fails with
+    "Unable to spawn … WebKitNetworkProcess"; the lane runs under `unshare -rm` with the sysroot's
+    `/usr/lib/x86_64-linux-gnu` and `/usr/share` overlaid.

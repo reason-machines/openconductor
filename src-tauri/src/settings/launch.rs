@@ -19,7 +19,6 @@ use serde_json::json;
 
 use super::{CodexPersonality, CodexToolApprovalPolicy, EffortLevel, Settings};
 use crate::agent::claude::AnthropicApi;
-use crate::agent::claude_cloud::{Bedrock, Vertex};
 use crate::agent::codex::{CodexLogin, OpenAiApi};
 use crate::agent::codex_cli::CodexLaunch;
 use crate::agent::codex_rpc::ApprovalDecision;
@@ -36,10 +35,6 @@ pub enum Purpose {
     Review,
 }
 
-/// Vertex region when `claude_provider = "vertex"`: Claude Code's `global`
-/// endpoint, since Conductor's settings carry no Vertex region.
-pub const VERTEX_DEFAULT_REGION: &str = "global";
-
 /// Conductor's review model when `models.review` is unset: its built-in
 /// Claude default, not `models.default` (evidence/pr/ai-review.md).
 pub const REVIEW_FALLBACK_MODEL: &str = "opus-5-1m";
@@ -49,15 +44,20 @@ fn nonblank(v: &Option<String>) -> Option<&str> {
 }
 
 /// The agent that runs a model id from Conductor's catalog: `gpt-*` is
-/// Codex, Cursor's ids are Cursor, everything else is Claude.
+/// Codex, everything else is Claude.
 pub fn model_agent(model: &str) -> AgentKind {
     if model.starts_with("gpt-") {
         AgentKind::Codex
-    } else if model == "auto" || model.starts_with("composer-") || model.starts_with("grok-") {
-        AgentKind::Cursor
     } else {
         AgentKind::Claude
     }
+}
+
+/// Model ids of Conductor's Cursor agent (`auto`, `composer-*`, `grok-*`),
+/// which OpenConductor no longer runs. A settings file that still picks one
+/// starts chats on [`super::DEFAULT_MODEL`] instead.
+pub fn is_removed_model(model: &str) -> bool {
+    model == "auto" || model.starts_with("composer-") || model.starts_with("grok-")
 }
 
 /// The `claude --model` value for a Conductor model id, as Conductor maps
@@ -84,9 +84,8 @@ impl Settings {
     /// table, see [`super::layers::merge`].)
     ///
     /// `claude_provider`: `custom` is the Anthropic API with the stored key;
-    /// `bedrock` / `vertex` (OpenConductor's) use `bedrock_region` /
-    /// `vertex_project_id` and fall back to the login when that is blank;
-    /// anything else is the login. `codex_provider`: `custom` is the OpenAI
+    /// anything else is the login, with a warning for the removed `bedrock`
+    /// and `vertex`. `codex_provider`: `custom` is the OpenAI
     /// API with the stored key; anything else (`default`, `chatgpt_sign_in`)
     /// is Codex's own login.
     pub fn provider_for(&self, agent: AgentKind) -> ProviderConfig {
@@ -96,21 +95,12 @@ impl Settings {
         match agent {
             AgentKind::Claude => match nonblank(&self.claude_provider) {
                 Some("custom") => ProviderConfig::AnthropicApi(AnthropicApi::default()),
-                Some("bedrock") => match nonblank(&self.bedrock_region) {
-                    Some(region) => ProviderConfig::Bedrock(Bedrock {
-                        region: region.to_string(),
-                        ..Bedrock::default()
-                    }),
-                    None => ProviderConfig::default_for(agent),
-                },
-                Some("vertex") => match nonblank(&self.vertex_project_id) {
-                    Some(project) => ProviderConfig::Vertex(Vertex {
-                        project_id: project.to_string(),
-                        region: VERTEX_DEFAULT_REGION.to_string(),
-                        ..Vertex::default()
-                    }),
-                    None => ProviderConfig::default_for(agent),
-                },
+                Some(removed @ ("bedrock" | "vertex")) => {
+                    eprintln!(
+                        "settings: claude_provider `{removed}` is no longer supported; using Claude Code's own login"
+                    );
+                    ProviderConfig::default_for(agent)
+                }
                 _ => ProviderConfig::default_for(agent),
             },
             AgentKind::Codex => match nonblank(&self.codex_provider) {
@@ -127,8 +117,7 @@ impl Settings {
         let configured = match agent {
             AgentKind::Claude => nonblank(&self.claude_code_executable_path),
             AgentKind::Codex => nonblank(&self.codex_executable_path),
-            AgentKind::Opencode => nonblank(&self.opencode_executable_path),
-            _ => None,
+            AgentKind::Reason => nonblank(&self.reason_executable_path),
         };
         PathBuf::from(configured.unwrap_or(agent.as_str()))
     }
@@ -139,11 +128,21 @@ impl Settings {
     }
 
     /// The model a session of `purpose` starts with.
+    /// A removed Cursor model ([`is_removed_model`]) reads as
+    /// [`super::DEFAULT_MODEL`], with a warning.
     pub fn model_for(&self, purpose: Purpose) -> &str {
-        match purpose {
+        let model = match purpose {
             Purpose::Chat => &self.models.default,
             Purpose::Review => nonblank(&self.models.review).unwrap_or(REVIEW_FALLBACK_MODEL),
+        };
+        if is_removed_model(model) {
+            eprintln!(
+                "settings: model `{model}` belonged to the removed Cursor agent; using `{}`",
+                super::DEFAULT_MODEL
+            );
+            return super::DEFAULT_MODEL;
         }
+        model
     }
 
     pub fn fast_mode_for(&self, purpose: Purpose) -> bool {
@@ -252,13 +251,4 @@ pub fn codex_launch(
         launch.config.push(("service_tier".into(), quoted("fast")));
     }
     Ok(launch)
-}
-
-/// The OpenCode ACP command: the configured executable and `acp`, as
-/// Conductor starts it.
-pub fn opencode_acp_command(settings: &Settings) -> (PathBuf, Vec<String>) {
-    (
-        settings.executable(AgentKind::Opencode),
-        vec!["acp".to_string()],
-    )
 }

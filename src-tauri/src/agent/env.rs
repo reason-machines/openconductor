@@ -24,27 +24,17 @@ use super::secret::SecretString;
 pub enum AgentKind {
     Claude,
     Codex,
-    Cursor,
-    Opencode,
     /// Reason over ACP (`crate::reason_acp`), not a stream-json CLI.
     Reason,
 }
 
 impl AgentKind {
-    pub const ALL: [AgentKind; 5] = [
-        AgentKind::Claude,
-        AgentKind::Codex,
-        AgentKind::Cursor,
-        AgentKind::Opencode,
-        AgentKind::Reason,
-    ];
+    pub const ALL: [AgentKind; 3] = [AgentKind::Claude, AgentKind::Codex, AgentKind::Reason];
 
     pub fn as_str(self) -> &'static str {
         match self {
             AgentKind::Claude => "claude",
             AgentKind::Codex => "codex",
-            AgentKind::Cursor => "cursor",
-            AgentKind::Opencode => "opencode",
             AgentKind::Reason => "reason",
         }
     }
@@ -52,6 +42,9 @@ impl AgentKind {
     /// Environment variables that decide where this agent sends requests or
     /// how it authenticates. Every provider for the agent clears these
     /// before setting its own, so the user's shell cannot override settings.
+    /// Claude's list keeps the Bedrock, Vertex and Foundry switches although
+    /// OpenConductor no longer offers those backends: a stale one in the
+    /// user's shell would still divert Claude Code away from the chosen auth.
     pub fn routing_vars(self) -> &'static [&'static str] {
         match self {
             AgentKind::Claude => &[
@@ -79,10 +72,7 @@ impl AgentKind {
                 vars::OPENAI_PROJECT,
                 vars::CODEX_ACCESS_TOKEN,
             ],
-            AgentKind::Cursor => &[vars::CURSOR_API_KEY],
-            AgentKind::Opencode => &[],
-            // Reason routes through its own signed-in CLI.
-            AgentKind::Reason => &[],
+            AgentKind::Reason => &[vars::REASON_API_KEY],
         }
     }
 }
@@ -101,8 +91,6 @@ pub mod vars {
     pub const CLAUDE_CODE_USE_BEDROCK: &str = "CLAUDE_CODE_USE_BEDROCK";
     pub const CLAUDE_CODE_USE_VERTEX: &str = "CLAUDE_CODE_USE_VERTEX";
     pub const CLAUDE_CODE_USE_FOUNDRY: &str = "CLAUDE_CODE_USE_FOUNDRY";
-    pub const AWS_REGION: &str = "AWS_REGION";
-    pub const AWS_PROFILE: &str = "AWS_PROFILE";
     pub const AWS_BEARER_TOKEN_BEDROCK: &str = "AWS_BEARER_TOKEN_BEDROCK";
     pub const ANTHROPIC_VERTEX_PROJECT_ID: &str = "ANTHROPIC_VERTEX_PROJECT_ID";
     pub const CLOUD_ML_REGION: &str = "CLOUD_ML_REGION";
@@ -112,7 +100,6 @@ pub mod vars {
     pub const ANTHROPIC_DEFAULT_OPUS_MODEL: &str = "ANTHROPIC_DEFAULT_OPUS_MODEL";
     pub const ANTHROPIC_DEFAULT_SONNET_MODEL: &str = "ANTHROPIC_DEFAULT_SONNET_MODEL";
     pub const ANTHROPIC_DEFAULT_HAIKU_MODEL: &str = "ANTHROPIC_DEFAULT_HAIKU_MODEL";
-    pub const GOOGLE_APPLICATION_CREDENTIALS: &str = "GOOGLE_APPLICATION_CREDENTIALS";
     pub const OPENAI_API_KEY: &str = "OPENAI_API_KEY";
     pub const CODEX_API_KEY: &str = "CODEX_API_KEY";
     /// Never passed to Codex: Conductor 0.87.6 deletes it from every Codex
@@ -122,7 +109,7 @@ pub mod vars {
     pub const OPENAI_BASE_URL: &str = "OPENAI_BASE_URL";
     pub const OPENAI_ORGANIZATION: &str = "OPENAI_ORGANIZATION";
     pub const OPENAI_PROJECT: &str = "OPENAI_PROJECT";
-    pub const CURSOR_API_KEY: &str = "CURSOR_API_KEY";
+    pub const REASON_API_KEY: &str = "REASON_API_KEY";
 }
 
 /// One environment value for an agent process.

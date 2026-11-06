@@ -18,7 +18,6 @@ export interface CustomCommand {
 export interface ExecutablePaths {
   claude?: string;
   codex?: string;
-  opencode?: string;
 }
 
 /** What a preset runs when tool approvals are not required. */
@@ -112,7 +111,7 @@ export function bigTerminalCommand(opts: {
   if (!isBuiltIn(preset)) return undefined;
   const command = (opts.requiresToolApprovals ? APPROVAL_COMMANDS : COMMANDS)[preset];
   const path =
-    preset === "claude" || preset === "codex" || preset === "opencode" ? nonEmpty(opts.executablePaths?.[preset]) : undefined;
+    preset === "claude" || preset === "codex" ? nonEmpty(opts.executablePaths?.[preset]) : undefined;
   if (command === undefined || path === undefined) return command;
   const space = command.indexOf(" ");
   return space === -1 ? shellQuote(path) : `${shellQuote(path)}${command.slice(space)}`;

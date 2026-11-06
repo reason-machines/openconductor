@@ -58,6 +58,8 @@ export interface WorkspaceEntry {
   /** Last activity, ms since epoch; newest first. */
   lastActiveAt: number;
   archived?: boolean;
+  /** `workspaces.number`, shown as `W-<n>` with "Show workspace numbers"; null before numbering. */
+  number?: number | null;
 }
 
 export interface ProjectEntry {

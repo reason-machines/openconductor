@@ -37,9 +37,12 @@ use serde::Deserialize;
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager, State};
 
-use crate::reason_acp::cli::{find_reason_cli, LaunchConfig};
+use crate::agent::AgentKind;
+use crate::reason_acp::account::{Account, CommandResult, LoginPrompt};
+use crate::reason_acp::cli::{find_reason_cli, CliEnv, LaunchConfig};
 use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
 use crate::reason_acp::wire;
+use crate::settings::service::SettingsService;
 use crate::turn_checkpoint::{around_turn, TurnTarget};
 
 /// JS `{ id, value }`: one Session config option.
@@ -77,15 +80,39 @@ pub(crate) fn cli_path() -> Option<PathBuf> {
     find_reason_cli(std::env::var_os("PATH").as_deref(), home.as_deref())
 }
 
+/// How `reason` runs per Settings › Agents › Reason: the executable path
+/// override (else the installed CLI), the provider's environment (an API
+/// key) and the workspace new chats open in.
+fn configured(app: &AppHandle) -> Result<(LaunchConfig, Option<String>), String> {
+    let service = app.state::<SettingsService>();
+    let settings = service.get().map_err(|e| e.to_string())?;
+    let cli = match settings.reason_executable_path.as_deref().map(str::trim) {
+        Some(p) if !p.is_empty() => PathBuf::from(p),
+        _ => cli_path().ok_or(
+            "The Reason CLI was not found. Install it, then sign in from Settings › Agents › Reason.",
+        )?,
+    };
+    let launch_env = service.launch_env(AgentKind::Reason)?;
+    let mut env = CliEnv::default();
+    for name in launch_env.removed_vars() {
+        env.remove(name);
+    }
+    for (name, value) in launch_env.set_vars() {
+        env.set(name, value.expose());
+    }
+    let launch = LaunchConfig::new(cli).map_err(|e| e.to_string())?.env(env);
+    let workspace = settings.reason.workspace.filter(|w| !w.trim().is_empty());
+    Ok((launch, workspace))
+}
+
 impl ReasonChats {
     fn provider(&self, app: &AppHandle) -> Result<Arc<ReasonProvider>, String> {
+        let (launch, workspace) = configured(app)?;
         let mut slot = self.provider.lock().unwrap();
         if let Some(p) = slot.as_ref() {
+            p.reconfigure(launch, workspace);
             return Ok(p.clone());
         }
-        let cli = cli_path()
-            .ok_or("The Reason CLI was not found. Install it, then sign in with `reason login`.")?;
-        let launch = LaunchConfig::new(cli).map_err(|e| e.to_string())?;
         let store = app
             .path()
             .app_data_dir()
@@ -98,6 +125,7 @@ impl ReasonChats {
             let _ = app.emit(wire::EVENT, event);
         });
         let mut provider = ReasonProvider::new(launch, home()?, sink);
+        provider.reconfigure_workspace(workspace);
         // Each Session's workspace, so a chat resumes there after a restart
         // even when the Reason desktop app has another workspace selected.
         if let Some(store) = store {
@@ -111,8 +139,44 @@ impl ReasonChats {
 
 /// Absolute path of the `reason` CLI the provider would run, or null.
 #[tauri::command]
-pub fn reason_cli_path() -> Option<String> {
-    cli_path().map(|p| p.display().to_string())
+pub fn reason_cli_path(app: AppHandle) -> Option<String> {
+    configured(&app)
+        .ok()
+        .map(|(l, _)| l.cli().display().to_string())
+}
+
+/// Runs `f` with the configured CLI off the UI thread, in the home folder.
+async fn with_cli<T: Send + 'static>(
+    app: &AppHandle,
+    f: impl FnOnce(&LaunchConfig, &std::path::Path) -> T + Send + 'static,
+) -> Result<T, String> {
+    let (launch, _) = configured(app)?;
+    let dir = home()?;
+    tauri::async_runtime::spawn_blocking(move || f(&launch, &dir))
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// Settings › Agents › Reason's status: `reason status --json` with the
+/// configured CLI and key (version, account, workspaces, this computer).
+#[tauri::command]
+pub async fn reason_account_status(app: AppHandle) -> Result<Account, String> {
+    with_cli(&app, |l, dir| l.account(dir))
+        .await?
+        .ok_or_else(|| "`reason status` did not answer".into())
+}
+
+/// Starts signing in from the app: the link to open and the code it shows.
+/// The page polls [`reason_account_status`] until the account appears.
+#[tauri::command]
+pub async fn reason_login_start(app: AppHandle) -> Result<LoginPrompt, String> {
+    with_cli(&app, |l, dir| l.login(dir)).await?
+}
+
+/// "Connect" next to "This Mac": `reason connect`.
+#[tauri::command]
+pub async fn reason_connect_computer(app: AppHandle) -> Result<CommandResult, String> {
+    with_cli(&app, |l, dir| l.connect_computer(dir)).await
 }
 
 #[tauri::command]
