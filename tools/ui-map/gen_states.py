@@ -47,7 +47,14 @@ st("login","Login", ref("/login","signed-out"), oc=[], oc_fresh=True, covers=[{"
 USER=[("general","General"),("account","Account"),("models","Default models"),("providers","Agents"),("environment","Environment"),("git","Git"),("ports",None),("appearance","Appearance"),("key-bindings","Keyboard shortcuts"),("experimental","Experimental"),("advanced","Advanced"),("terminal","Big terminal"),("internal",None)]
 for tab,label in USER:
     path="/settings/user/"+tab
-    if label:
+    if tab=="terminal":
+        # Conductor lists the Big terminal tab (under More) only while Big terminal mode is on, and
+        # /settings/user/terminal renders General when it is off, so both sides turn the mode on first.
+        st("settings-terminal", "Settings > Big terminal",
+           ref("/settings/user/experimental", actions=[{"click":"#big-terminal-mode"},{"click":"text=\"Big terminal\""}]),
+           oc=oc_settings("Experimental", [{"click":"input[role=switch]","text":"Big terminal mode","after_ms":400},{"click":".settings-nav .nav-item","text":"Big terminal","after_ms":600}]),
+           covers=[{"kind":"route","name":path},{"kind":"settings-page","name":tab}])
+    elif label:
         st("settings-"+tab, "Settings > "+(label), ref(path), oc=oc_settings(label), covers=[{"kind":"route","name":path},{"kind":"settings-page","name":tab}])
     else:
         st("settings-"+tab, "Settings > "+tab, ref(path), oc_reason="OpenConductor's settings have no %s page" % tab, covers=[{"kind":"route","name":path},{"kind":"settings-page","name":tab}])
@@ -83,7 +90,7 @@ st("dialog-keyboard-shortcuts","Keyboard shortcuts dialog", ref(actions=[{"press
 st("menu-account","Account / computer menu", ref(actions=[{"click":"[aria-label='Account menu']"}]), oc=[{"click":".sb-computer"}])
 st("menu-workspace-context","Workspace context menu", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"}]), oc=[{"rclick":".sb-ws-name"}])
 st("menu-workspace-status","Workspace context menu > Set status", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Set status"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Set status"}])
-st("menu-model-picker","Composer model picker", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=Opus 5 >> nth=-1"}]), oc=OPEN_WS+[{"click":".composer button","text":"Opus 5"}])
+st("menu-model-picker","Composer model picker", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=Opus 5 >> nth=-1"}]), oc=OPEN_WS+[{"click":".composer .oc-model-chip"}])
 st("menu-repo-actions","Sidebar repo actions menu", ref(actions=[{"hover":"text=tide-web"},{"click":"[aria-label='tide-web actions']"}]), oc=[{"click":".sb-menu-trigger","text":"tide-web actions"}])
 st("menu-help","Help menu", ref(actions=[{"click":"xpath=//button[@aria-label='Settings']/preceding::button[1]"}]), oc=[{"click":".sb-footer-btn","text":"Help"}])
 HELP_REF={"click":"xpath=//button[@aria-label='Settings']/preceding::button[1]"}
