@@ -1,0 +1,147 @@
+{
+  "tool": "playwright-core Chromium headless, 1440x900 @2x, en-US, UTC",
+  "dark": {
+    "actions": {
+      "controls": [
+        {
+          "el": "button.oi-main",
+          "text": "Open in Finder",
+          "top": 34.56,
+          "height": 24,
+          "centerY": 46.56
+        },
+        {
+          "el": "button.oi-chevron",
+          "text": "Open in...",
+          "top": 34.56,
+          "height": 24,
+          "centerY": 46.56
+        },
+        {
+          "el": "button.btn.btn-small.btn-primary",
+          "text": "Create PR",
+          "top": 33,
+          "height": 26,
+          "centerY": 46
+        },
+        {
+          "el": "button.btn.btn-small.btn-primary.pr-caret",
+          "text": "▾",
+          "top": 33,
+          "height": 26,
+          "centerY": 46
+        },
+        {
+          "el": "button.btn.btn-small",
+          "text": "Archive",
+          "top": 30,
+          "height": 26,
+          "centerY": 43
+        }
+      ],
+      "heights": [
+        24,
+        26
+      ],
+      "height_spread": 2,
+      "center_spread": 3.56,
+      "pass": false
+    },
+    "title_chips": {
+      "controls": [
+        {
+          "el": "span.chip",
+          "text": "ada/fix-login-redirect",
+          "top": 34.5,
+          "height": 20,
+          "centerY": 44.5
+        },
+        {
+          "el": "span.chip.status.idle",
+          "text": "Idle",
+          "top": 34.5,
+          "height": 20,
+          "centerY": 44.5
+        }
+      ],
+      "heights": [
+        20
+      ],
+      "height_spread": 0,
+      "center_spread": 0,
+      "pass": true
+    }
+  },
+  "light": {
+    "actions": {
+      "controls": [
+        {
+          "el": "button.oi-main",
+          "text": "Open in Finder",
+          "top": 34.56,
+          "height": 24,
+          "centerY": 46.56
+        },
+        {
+          "el": "button.oi-chevron",
+          "text": "Open in...",
+          "top": 34.56,
+          "height": 24,
+          "centerY": 46.56
+        },
+        {
+          "el": "button.btn.btn-small.btn-primary",
+          "text": "Create PR",
+          "top": 33,
+          "height": 26,
+          "centerY": 46
+        },
+        {
+          "el": "button.btn.btn-small.btn-primary.pr-caret",
+          "text": "▾",
+          "top": 33,
+          "height": 26,
+          "centerY": 46
+        },
+        {
+          "el": "button.btn.btn-small",
+          "text": "Archive",
+          "top": 30,
+          "height": 26,
+          "centerY": 43
+        }
+      ],
+      "heights": [
+        24,
+        26
+      ],
+      "height_spread": 2,
+      "center_spread": 3.56,
+      "pass": false
+    },
+    "title_chips": {
+      "controls": [
+        {
+          "el": "span.chip",
+          "text": "ada/fix-login-redirect",
+          "top": 34.5,
+          "height": 20,
+          "centerY": 44.5
+        },
+        {
+          "el": "span.chip.status.idle",
+          "text": "Idle",
+          "top": 34.5,
+          "height": 20,
+          "centerY": 44.5
+        }
+      ],
+      "heights": [
+        20
+      ],
+      "height_spread": 0,
+      "center_spread": 0,
+      "pass": true
+    }
+  }
+}
