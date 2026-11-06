@@ -3,7 +3,7 @@ import { autoRunAfterSetup, setAutoRunAfterSetup } from "../scripts/api";
 import { errorText } from "./api";
 import { PrefSwitchRow, Toggle } from "./controls";
 import { Row } from "./GeneralPage";
-import { DashboardRow, GraphiteRow, ShowAgentCostRow, SidebarResourceUsageRow, TabFreakModeRow } from "./rows/AppPrefRows";
+import { DashboardRow, GraphiteRow, NewWorkspacePageRow, ShowAgentCostRow, SidebarResourceUsageRow, TabFreakModeRow } from "./rows/AppPrefRows";
 import type { Settings } from "./types";
 
 interface Props {
@@ -15,8 +15,7 @@ interface Props {
  * Settings › More › Experimental, row for row with Conductor 0.87.6's
  * `experimental` tab (renderApp-D_fmY7hW.js registry, evidence/settings/NOTES.md
  * "Settings pages, row for row"). Left out: "Use default internal and
- * experimental settings" (internal builds only), and the New workspace page
- * row, which its own feature adds (open PR #388).
+ * experimental settings" (internal builds only).
  * Turning Big terminal mode on also lists
  * the Big terminal tab in the settings navigation, as Conductor does.
  */
@@ -44,6 +43,7 @@ export function ExperimentalPage({ settings, save }: Props) {
           onChange={(checked) => save({ ...settings, experimental: { ...settings.experimental, experimental_big_terminal_mode: checked } })}
         />
       </Row>
+      <NewWorkspacePageRow />
       <TabFreakModeRow />
       {row("experimental_configurable_center_panel", "Split tabs", "Split the center panel and move tabs between panes.")}
       {row("experimental_fork_to_new_tab", "Fork chat to new tab", "Fork a chat, even mid-turn, from its tab's context menu or with ⌘⌥↵.")}

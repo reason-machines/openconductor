@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { ArchiveIcon, BranchIcon } from "./Icons";
+import { BranchIcon, RightSidebarIcon } from "./Icons";
+import { toggleRightPanel } from "./panelPrefs";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { answerPermission, chatSnapshot, configureReason, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, reasonChatConfig, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type PermissionPrompt } from "../features/chat/reasonChat.ts";
 import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
@@ -43,7 +44,6 @@ interface AttachedSend {
 }
 type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend;
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
-import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import { openBigTab } from "../features/terminal/session";
 import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
@@ -325,7 +325,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     setForking(true);
     try {
       if (!repo.path) throw new Error("Unable to fork chat: workspace not found");
-      const backendRepo = await ensureRepository(repo.path);
+      const backendRepo = await ensureRepository(repo.path, repo.id);
       const taken = repo.workspaces.flatMap((w) => [w.name, w.branch.replace(/^.*\//, "")]);
       const [name] = generateWorkspaceNames(1, taken, Math.random);
       const targetBranch = workspace.targetBranch || backendRepo.defaultBranch;
@@ -697,6 +697,7 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
       {open && (
         <BranchPicker
           base={target.branch}
+          repoId={repo.id}
           repoPath={repo.path}
           defaultBranch={repo.defaultBranch}
           onPick={(b) => {
@@ -715,17 +716,11 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
   );
 }
 
-const STATUS_TEXT: Record<Workspace["status"], string> = {
-  idle: "Idle",
-  working: "Working",
-  "needs-review": "Ready for review",
-  archived: "Archived",
-};
-
 export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) shows it,
   // and ⌘⇧T opens a big terminal while Big terminal mode is on.
-  const [showTerminal, setShowTerminal] = useState(false);
+  const [terminalRequest, setTerminalRequest] = useState(0);
+  const showTerminal = () => setTerminalRequest((n) => n + 1);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
@@ -844,7 +839,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...(prOpen ? ["pr"] : []), ...reviews.tabs.map((r) => r.chatId)];
   const stepTab = (dir: 1 | -1) => setMainTab((t) => tabOrder[(tabOrder.indexOf(t) + dir + tabOrder.length) % tabOrder.length] ?? "chat");
   useKeybindings({
-    "view.toggleTerminalPanel": () => setShowTerminal((v) => !v),
+    "view.toggleTerminalPanel": showTerminal,
     "diff.open": () => (diff.current < 0 && diff.files.length > 0 ? diff.open(0) : openDiffTab()),
     "nav.nextTab": () => stepTab(1),
     "nav.previousTab": () => stepTab(-1),
@@ -868,7 +863,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         if (!big || !repo.path) return false;
         void openBigTab(workspace.id, repo.path, big)
           .catch(() => {})
-          .finally(() => setShowTerminal(true));
+          .finally(showTerminal);
         return true;
       },
     },
@@ -898,9 +893,6 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               PR #{prNumber}
             </button>
           )}
-          <span className={`chip status ${workspace.status}`}>
-            <span className={`status-dot ${workspace.status}`} /> {STATUS_TEXT[workspace.status]}
-          </span>
           {settingUp && (
             <span className="chip status setting-up" role="status">
               <span className="status-dot working" /> {RUNNING_SETUP}
@@ -910,8 +902,14 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         <div className="ws-actions">
           {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
           <PrControl pullRequest={pullRequest} actions={prActions} />
-          <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
-            <ArchiveIcon size={12} /> Archive
+          <button
+            className={`btn btn-small btn-icon${rightPanelVisible ? " active" : ""}`}
+            title="Toggle right sidebar ⌥⌘B"
+            aria-label="Toggle right sidebar"
+            aria-pressed={rightPanelVisible}
+            onClick={toggleRightPanel}
+          >
+            <RightSidebarIcon size={12} />
           </button>
         </div>
       </header>
@@ -960,13 +958,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               readOnly={workspace.status === "archived"}
               notify={notify}
             />
-            <ScriptsPanel repo={repo} workspace={workspace} />
+            <ScriptsPanel repo={repo} workspace={workspace} terminalRequest={terminalRequest} />
           </div>
         )}
       </div>
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />
-      {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}
     </div>
   );
 }

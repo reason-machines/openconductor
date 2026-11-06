@@ -34,10 +34,10 @@ function fakes(opts: { checkpoint?: boolean; head?: { stdout: string; exitCode: 
       fetched: false,
       copiedFiles: [],
       upstreamWarning: null,
-      number: 7,
       initializationLogPath: null,
       initializationFilesCopied: 0,
       auxiliaryFailureMessage: null,
+      number: 7,
     };
   };
   return { deps: { invoke, createWorkspace }, calls, created };

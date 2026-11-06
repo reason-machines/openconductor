@@ -94,6 +94,8 @@ pub mod keys {
     pub const EXPERIMENTAL_SHOW_AGENT_COST: &str = "experimental_show_agent_cost";
     /// Up to 10 chat and terminal tabs per workspace instead of 5.
     pub const EXPERIMENTAL_TAB_FREAK_MODE: &str = "experimental_tab_freak_mode";
+    /// Create workspaces on the full-screen `/create` page instead of the dialog.
+    pub const EXPERIMENTAL_NEW_WORKSPACE_PAGE: &str = "experimental_new_workspace_page";
     /// `"true"` turns Graphite stack detection off.
     pub const GRAPHITE_DISABLED: &str = "graphite_disabled";
     /// Last "Open in" app id.

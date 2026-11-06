@@ -46,15 +46,38 @@ not part of Clone or Open project.
   that is already added.
 - Clone uses the backend's folder name for the project name.
 
+## Open project of an added folder (re-read 2026-11-05, same chunks)
+
+Re-confirmed in `index-BGEQ8YjU.js` (sha256 `b5b01f33…dbf3`): `g2t` (offset
+~3,331,000) takes `h` = the last path segment of the picked folder and runs
+`makeRepoNameUnique(h, null)` (`C2t`, offset 3,344,140: bump with `hf`,
+offset 213,152, while `<workspaces root>/<name>` exists), then
+`INSERT INTO repos` with `crypto.randomUUID()`. The renderApp mutation
+`addLocalRepository` (offset ~1,795,495, "Select project directory") only
+checks `.git` and `origin` before `createRepo({remoteUrl: file://<path>})`;
+`getRepoByRemoteUrl` exists on the repo service but is not on this path.
+
+OpenConductor now does the same:
+
+- `WorkspaceService::add_repository` (src-tauri/src/workspace/service.rs) no
+  longer returns the existing id for a known root. Every add is a new project:
+  the name is the folder name bumped with `naming::uniquify` (`-v1`, `-v2`)
+  while another project has it or `<root>/workspaces/<name>` exists, and the id
+  is a fresh slug of that name. The registry keeps the name as a third column
+  (older two-column files still load). Clone uses the same name test, so the
+  clone folder and the project name agree.
+- `App.tsx` `openProject` no longer refuses with "This repository already
+  exists." (`REPO_EXISTS` and `findExistingRepo` are gone); it adds the
+  backend's project under the backend's name.
+- conductor.db gets a second `repos` row (no unique `root_path`).
+
 ## Remaining differences
 
-- Our backend suffixes `-2`, `-3`; Conductor's suffix is `-v1`, `-v2`
-  (`naming::uniquify`, in the create-workspace owner's files).
-- Opening an already-added folder: our backend `add_repository` returns the
-  existing id for a known path, so the app shows "This repository already
-  exists." (or unhides a hidden repo) instead of adding a second `-v1` row.
-  A second row per path would need ids that are not keyed by path.
-
+- Two projects on one folder share the folder's workspaces directory
+  (`<root>/workspaces/<folder slug>`); Conductor's is per project name
+  (`Ffe(t, h)`). Workspace rows stay per project, so the sidebar is right,
+  but worktree folder names are uniquified across both projects.
+- Conductor's ids are UUIDs; ours are name slugs (`my-app-v1`).
 ## REA notes
 
 - Same limit as `evidence/screens/home.md`: REA cannot extract the Tauri asset
