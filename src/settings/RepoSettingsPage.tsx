@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { openUrl } from "../backend";
 import type { Repo } from "../state/types";
 import { setSpotlightTesting, spotlightTesting } from "../spotlight/testingApi";
-import { SPOTLIGHT_SETTING_DESCRIPTION, SPOTLIGHT_SETTING_TITLE, toggleBlocked, type SpotlightTesting } from "../spotlight/testing";
+import { SPOTLIGHT_DOCS_URL, SPOTLIGHT_SETTING_DESCRIPTION, SPOTLIGHT_SETTING_TITLE, toggleBlocked, type SpotlightTesting } from "../spotlight/testing";
 import { Row } from "./GeneralPage";
 import { errorText } from "./api";
 import type { RepoSection } from "./routes";
@@ -52,6 +53,10 @@ function RepoScripts({ repo }: { repo: Repo }) {
   return <RepoScriptsRows repo={repo} />;
 }
 
+/**
+ * Conductor's Actions tab (registry `Q3a`): "Use spotlight testing" with its
+ * "Learn how" link, then the six prompt rows, all in one row list.
+ */
 function RepoActions({ repo }: { repo: Repo }) {
   const [setting, setSetting] = useState<SpotlightTesting | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +72,24 @@ function RepoActions({ repo }: { repo: Repo }) {
   return (
     <>
       <div className="settings-rows">
-        <Row label={SPOTLIGHT_SETTING_TITLE} help={blocked && blocked !== "Loading" ? blocked : SPOTLIGHT_SETTING_DESCRIPTION}>
+        <Row
+          label={SPOTLIGHT_SETTING_TITLE}
+          help={
+            blocked && blocked !== "Loading" ? (
+              blocked
+            ) : (
+              <>
+                {SPOTLIGHT_SETTING_DESCRIPTION}{" "}
+                <button type="button" className="oc-learn-how" onClick={() => void openUrl(SPOTLIGHT_DOCS_URL)}>
+                  Learn how
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M7 7h10v10M7 17 17 7" />
+                  </svg>
+                </button>
+              </>
+            )
+          }
+        >
           <input
             type="checkbox"
             role="switch"
@@ -77,9 +99,9 @@ function RepoActions({ repo }: { repo: Repo }) {
             onChange={(e) => change(e.target.checked)}
           />
         </Row>
+        {repo.path && <RepoActionsRows repoPath={repo.path} />}
       </div>
       {error && <p className="error small" role="alert">{error}</p>}
-      {repo.path && <RepoActionsRows repoPath={repo.path} />}
     </>
   );
 }
