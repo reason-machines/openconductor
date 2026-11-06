@@ -7,8 +7,11 @@
   --muted: #6b6f76;
   --hover: rgba(0, 0, 0, 0.05);
   --active: rgba(38, 46, 64, 0.1);
-  --accent: #2f5bd3;
-  --accent-text: #ffffff;
+  /* Accent = Conductor's --primary / --primary-foreground (evidence/frontend/css-tokens.json,
+     :root,.light and .dark): near-black on light, near-white on dark. No blue accent anywhere:
+     tab underlines, selected states, primary buttons (Run, Create PR), links and focus rings follow it. */
+  --accent: #413030;
+  --accent-text: #f3f2f1;
   --add: #1a7f37;
   --del: #cf222e;
   --amber: #c98a1b;
@@ -47,7 +50,8 @@
     --muted: #8b9099;
     --hover: rgba(255, 255, 255, 0.05);
     --active: rgba(255, 255, 255, 0.09);
-    --accent: #5b82f0;
+    --accent: #f3f2f1;
+    --accent-text: #2c2826;
     --add: #3fb950;
     --del: #f85149;
     --amber: #e8b04b;
@@ -73,7 +77,8 @@
   --muted: #8b9099;
   --hover: rgba(255, 255, 255, 0.05);
   --active: rgba(255, 255, 255, 0.09);
-  --accent: #5b82f0;
+  --accent: #f3f2f1;
+  --accent-text: #2c2826;
   --add: #3fb950;
   --del: #f85149;
   --amber: #e8b04b;
@@ -216,6 +221,8 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-ws-status[data-color="ready"] { color: var(--add); }
 .sb-ws-status[data-color="conflict"] { color: #d29922; opacity: 0.8; }
 .sb-ws-status[data-color="checks-pending"] { color: #d29922; }
+/* Workspace status matrix: the matrix colours itself and otherwise takes the row's colour (Conductor's text-sidebar-foreground). */
+.sb-ws-status[data-matrix] { color: inherit; }
 .sb-ws-loader circle { animation: sb-ws-dot 1.2s ease-in-out infinite; opacity: 0.35; }
 .sb-ws-loader circle:nth-child(2) { animation-delay: 0.2s; }
 .sb-ws-loader circle:nth-child(3) { animation-delay: 0.4s; }

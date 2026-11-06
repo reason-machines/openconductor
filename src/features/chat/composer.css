@@ -423,6 +423,10 @@
 }
 .oc-suggest-row { display: flex; align-items: center; gap: 8px; padding: 6px 8px; }
 .oc-suggest-row[data-focused] { background: var(--oc-c-sidebar-accent); }
+/* Conductor's fTo({ label: "Skills", withDivider: true }): px-2 pt-2.5 pb-1.5, a border-t rule with mb-2, then text-xs font-medium text-muted-foreground. */
+.oc-suggest-heading { padding: 10px 8px 6px; }
+.oc-suggest-divider { margin-bottom: 8px; border-top: 1px solid var(--oc-c-border); }
+.oc-suggest-heading-label { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--oc-c-muted-fg); }
 .oc-suggest-slash { flex-shrink: 0; font-size: 14px; line-height: 20px; color: var(--oc-c-muted-fg); }
 .oc-suggest-name { flex-shrink: 0; white-space: nowrap; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; font-weight: 500; }
 .oc-suggest-desc {

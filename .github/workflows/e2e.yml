@@ -124,6 +124,21 @@ jobs:
           name: transcript-parity-screens
           path: ${{ runner.temp }}/transcript-parity
           retention-days: 14
+      # The composer's "/" menu for Reason, Claude Code and Codex chats: non-empty,
+      # with the fixture skill, filtered by typing, picked with Enter.
+      - name: Slash menu e2e (fixture skills, stand-in reason)
+        if: always()
+        env:
+          E2E_OUT: ${{ runner.temp }}/slash-menu
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a -s "-screen 0 1600x1000x24" node tools/e2e/slash-menu.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: slash-menu-e2e-screens
+          path: ${{ runner.temp }}/slash-menu
+          retention-days: 14
       - name: Configure git identity
         if: always()
         run: |
