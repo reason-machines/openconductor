@@ -195,6 +195,8 @@ jobs:
         run: npx tauri build --debug --no-bundle
       - name: Install tauri-driver
         run: cargo install tauri-driver --locked
+      - name: WebDriver transport tests
+        run: node --test tests/e2e/webdriver.test.mjs
       - name: Reason chat e2e (fake reason acp)
         timeout-minutes: 10
         env:

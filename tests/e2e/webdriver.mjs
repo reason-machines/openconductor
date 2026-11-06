@@ -74,8 +74,8 @@ export class WebDriver {
     this.sessionId = null;
   }
 
-  execute(script, args = []) {
-    return this.#call("POST", this.#s("/execute/sync"), { script, args });
+  execute(script, args = [], timeoutMs) {
+    return this.#call("POST", this.#s("/execute/sync"), { script, args }, timeoutMs);
   }
 
   async findAll(css) {
@@ -135,14 +135,16 @@ export class WebDriver {
    * invisible element repainting until the snapshot is taken, and bound the wait.
    */
   async screenshot(timeoutMs = 20000) {
-    await this.execute(REPAINT_START, [timeoutMs]);
+    const deadline = Date.now() + timeoutMs;
+    const remaining = () => Math.max(1, deadline - Date.now());
     try {
-      return Buffer.from(await this.#call("GET", this.#s("/screenshot"), undefined, timeoutMs), "base64");
+      await this.execute(REPAINT_START, [timeoutMs], remaining());
+      return Buffer.from(await this.#call("GET", this.#s("/screenshot"), undefined, remaining()), "base64");
     } catch (e) {
       if (e?.name !== "TimeoutError") throw e;
-      throw new Error(`screenshot timed out after ${timeoutMs} ms: WebKit painted no frame even with the page forced to repaint, so the webview may be stuck`);
+      throw new Error(`screenshot timed out after ${timeoutMs} ms: WebKit did not answer before the capture deadline`);
     } finally {
-      await this.execute(REPAINT_STOP).catch(() => undefined);
+      await this.execute(REPAINT_STOP, [], remaining()).catch(() => undefined);
     }
   }
 

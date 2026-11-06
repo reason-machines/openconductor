@@ -54,4 +54,10 @@ Inspected CI screenshots show the exact `2 changed` reset dialog, the original `
 
 The picker now reloads only to load seeded rows, expands the repository using its role and name, clicks the workspace's titled sidebar button, and waits for `aria-current="page"`. The strict IPC branch assertion, isolated `OPENCONDUCTOR_HOME`, and current Stop button's accessible label are explicit. Every existing model, effort, picker-list and Session configuration assertion remains. Syntax, TypeScript and diff checks passed locally. Built-app verification of this increment remains pending.
 
-The five-pass outcome and ten-run ledger remain pending. The full-main streak remains **0/10**.
+## Five-pass failure and capture deadline
+
+Dispatch [42301712680](https://github.com/reason-machines/openconductor/actions/runs/42301712680), `cd10f36f63a28b6ef3f1e88a0f652cb170cb8ed0`, failed its Reason chat step on pass 4. Artifacts contain full screenshot sets for passes 1–3 and `pass-4/failure.png`, which shows the fork (`osaka`, branch `e2e-v1`) selected after relaunch, not the original `e2e` workspace. The chat owner is investigating startup navigation/hydration. Final job logs were unavailable while later workflow steps were still running. No five-pass proof is claimed and no retry hides this failure.
+
+The Sol reviewer also reproduced unbounded repaint setup/cleanup around the shared screenshot helper. `node --test tests/e2e/webdriver.test.mjs` failed 2 of 3 cases before the fix: stalled setup did not reject and stalled cleanup was not cancelled. After giving setup, screenshot and cleanup one shared deadline, all 3 cases passed. The E2E workflow runs this regression before the Reason chat suite. Successful PNG output and cleanup after errors remain checked. This is mocked transport evidence, not WebKit runtime proof.
+
+The five-pass proof and ten-run ledger remain incomplete. The full-main streak remains **0/10**.
