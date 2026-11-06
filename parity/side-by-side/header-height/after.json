@@ -1,0 +1,412 @@
+{
+ "dark-sidebar": {
+  "header": {
+   "top": 0,
+   "height": 40,
+   "left": 256,
+   "centerY": 20,
+   "contentCenterY": 19.5
+  },
+  "controls": [
+   {
+    "el": "crumb",
+    "text": "tide-web",
+    "top": 11,
+    "height": 17,
+    "left": 272,
+    "centerY": 19.5
+   },
+   {
+    "el": "crumb-sep",
+    "text": "/",
+    "top": 11,
+    "height": 17,
+    "left": 333.48,
+    "centerY": 19.5
+   },
+   {
+    "el": "strong",
+    "text": "lisbon",
+    "top": 11,
+    "height": 17,
+    "left": 347.73,
+    "centerY": 19.5
+   },
+   {
+    "el": "chip",
+    "text": "ada/fix-login-redirect",
+    "top": 9.5,
+    "height": 20,
+    "left": 394.48,
+    "centerY": 19.5
+   },
+   {
+    "el": "pr-base-anchor target-chip",
+    "text": "→ main",
+    "top": 10.5,
+    "height": 18,
+    "left": 593.89,
+    "centerY": 19.5
+   },
+   {
+    "el": "oi-main",
+    "text": "Open in Finder",
+    "top": 7.5,
+    "height": 24,
+    "left": 1078.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "oi-chevron",
+    "text": "Open in...",
+    "top": 7.5,
+    "height": 24,
+    "left": 1107.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-primary",
+    "text": "Create PR",
+    "top": 7.5,
+    "height": 24,
+    "left": 1143.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-primary pr-caret",
+    "text": "▾",
+    "top": 7.5,
+    "height": 24,
+    "left": 1217.97,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-icon active",
+    "text": "Toggle right sidebar",
+    "top": 7.5,
+    "height": 24,
+    "left": 1248,
+    "centerY": 19.5
+   }
+  ],
+  "sidebar_toggle": {
+   "top": 12,
+   "height": 16,
+   "left": 86,
+   "centerY": 20
+  },
+  "first_control_left": 272,
+  "clearance": 66,
+  "checks": {
+   "header is 40px": true,
+   "controls centred on the header line": true,
+   "sidebar toggle on the same line": true,
+   "clears the traffic lights without a sidebar": true
+  }
+ },
+ "dark-no-sidebar": {
+  "header": {
+   "top": 0,
+   "height": 40,
+   "left": 0,
+   "centerY": 20,
+   "contentCenterY": 19.5
+  },
+  "controls": [
+   {
+    "el": "crumb",
+    "text": "tide-web",
+    "top": 11,
+    "height": 17,
+    "left": 82,
+    "centerY": 19.5
+   },
+   {
+    "el": "crumb-sep",
+    "text": "/",
+    "top": 11,
+    "height": 17,
+    "left": 143.48,
+    "centerY": 19.5
+   },
+   {
+    "el": "strong",
+    "text": "lisbon",
+    "top": 11,
+    "height": 17,
+    "left": 157.73,
+    "centerY": 19.5
+   },
+   {
+    "el": "chip",
+    "text": "ada/fix-login-redirect",
+    "top": 9.5,
+    "height": 20,
+    "left": 204.48,
+    "centerY": 19.5
+   },
+   {
+    "el": "pr-base-anchor target-chip",
+    "text": "→ main",
+    "top": 10.5,
+    "height": 18,
+    "left": 403.89,
+    "centerY": 19.5
+   },
+   {
+    "el": "oi-main",
+    "text": "Open in Finder",
+    "top": 7.5,
+    "height": 24,
+    "left": 1078.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "oi-chevron",
+    "text": "Open in...",
+    "top": 7.5,
+    "height": 24,
+    "left": 1107.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-primary",
+    "text": "Create PR",
+    "top": 7.5,
+    "height": 24,
+    "left": 1143.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-primary pr-caret",
+    "text": "▾",
+    "top": 7.5,
+    "height": 24,
+    "left": 1217.97,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-icon active",
+    "text": "Toggle right sidebar",
+    "top": 7.5,
+    "height": 24,
+    "left": 1248,
+    "centerY": 19.5
+   }
+  ],
+  "sidebar_toggle": null,
+  "first_control_left": 82,
+  "clearance": 66,
+  "checks": {
+   "header is 40px": true,
+   "controls centred on the header line": true,
+   "sidebar toggle on the same line": true,
+   "clears the traffic lights without a sidebar": true
+  }
+ },
+ "light-sidebar": {
+  "header": {
+   "top": 0,
+   "height": 40,
+   "left": 256,
+   "centerY": 20,
+   "contentCenterY": 19.5
+  },
+  "controls": [
+   {
+    "el": "crumb",
+    "text": "tide-web",
+    "top": 11,
+    "height": 17,
+    "left": 272,
+    "centerY": 19.5
+   },
+   {
+    "el": "crumb-sep",
+    "text": "/",
+    "top": 11,
+    "height": 17,
+    "left": 333.48,
+    "centerY": 19.5
+   },
+   {
+    "el": "strong",
+    "text": "lisbon",
+    "top": 11,
+    "height": 17,
+    "left": 347.73,
+    "centerY": 19.5
+   },
+   {
+    "el": "chip",
+    "text": "ada/fix-login-redirect",
+    "top": 9.5,
+    "height": 20,
+    "left": 394.48,
+    "centerY": 19.5
+   },
+   {
+    "el": "pr-base-anchor target-chip",
+    "text": "→ main",
+    "top": 10.5,
+    "height": 18,
+    "left": 593.89,
+    "centerY": 19.5
+   },
+   {
+    "el": "oi-main",
+    "text": "Open in Finder",
+    "top": 7.5,
+    "height": 24,
+    "left": 1078.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "oi-chevron",
+    "text": "Open in...",
+    "top": 7.5,
+    "height": 24,
+    "left": 1107.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-primary",
+    "text": "Create PR",
+    "top": 7.5,
+    "height": 24,
+    "left": 1143.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-primary pr-caret",
+    "text": "▾",
+    "top": 7.5,
+    "height": 24,
+    "left": 1217.97,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-icon active",
+    "text": "Toggle right sidebar",
+    "top": 7.5,
+    "height": 24,
+    "left": 1248,
+    "centerY": 19.5
+   }
+  ],
+  "sidebar_toggle": {
+   "top": 12,
+   "height": 16,
+   "left": 86,
+   "centerY": 20
+  },
+  "first_control_left": 272,
+  "clearance": 66,
+  "checks": {
+   "header is 40px": true,
+   "controls centred on the header line": true,
+   "sidebar toggle on the same line": true,
+   "clears the traffic lights without a sidebar": true
+  }
+ },
+ "light-no-sidebar": {
+  "header": {
+   "top": 0,
+   "height": 40,
+   "left": 0,
+   "centerY": 20,
+   "contentCenterY": 19.5
+  },
+  "controls": [
+   {
+    "el": "crumb",
+    "text": "tide-web",
+    "top": 11,
+    "height": 17,
+    "left": 82,
+    "centerY": 19.5
+   },
+   {
+    "el": "crumb-sep",
+    "text": "/",
+    "top": 11,
+    "height": 17,
+    "left": 143.48,
+    "centerY": 19.5
+   },
+   {
+    "el": "strong",
+    "text": "lisbon",
+    "top": 11,
+    "height": 17,
+    "left": 157.73,
+    "centerY": 19.5
+   },
+   {
+    "el": "chip",
+    "text": "ada/fix-login-redirect",
+    "top": 9.5,
+    "height": 20,
+    "left": 204.48,
+    "centerY": 19.5
+   },
+   {
+    "el": "pr-base-anchor target-chip",
+    "text": "→ main",
+    "top": 10.5,
+    "height": 18,
+    "left": 403.89,
+    "centerY": 19.5
+   },
+   {
+    "el": "oi-main",
+    "text": "Open in Finder",
+    "top": 7.5,
+    "height": 24,
+    "left": 1078.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "oi-chevron",
+    "text": "Open in...",
+    "top": 7.5,
+    "height": 24,
+    "left": 1107.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-primary",
+    "text": "Create PR",
+    "top": 7.5,
+    "height": 24,
+    "left": 1143.53,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-primary pr-caret",
+    "text": "▾",
+    "top": 7.5,
+    "height": 24,
+    "left": 1217.97,
+    "centerY": 19.5
+   },
+   {
+    "el": "btn btn-small btn-icon active",
+    "text": "Toggle right sidebar",
+    "top": 7.5,
+    "height": 24,
+    "left": 1248,
+    "centerY": 19.5
+   }
+  ],
+  "sidebar_toggle": null,
+  "first_control_left": 82,
+  "clearance": 66,
+  "checks": {
+   "header is 40px": true,
+   "controls centred on the header line": true,
+   "sidebar toggle on the same line": true,
+   "clears the traffic lights without a sidebar": true
+  }
+ }
+}

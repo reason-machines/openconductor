@@ -8,6 +8,8 @@ test("entering plan review or user input is a new wait; staying in it or other s
   assert.equal(enteredWait("working", "needs_user_input"), true, "AskUserQuestion or an MCP elicitation");
   assert.equal(enteredWait(undefined, "needs_user_input"), true, "a chat with no status yet");
   assert.equal(enteredWait("needs_user_permission", "needs_plan_response"), true);
+  // An approval answered while a question that opened under it stays open: back to that question, already signalled.
+  assert.equal(enteredWait("needs_user_permission", "needs_user_input"), false);
   assert.equal(enteredWait("needs_user_input", "needs_user_input"), false, "the same wait again");
   // Tool approvals signal per request, and the other statuses are no wait on the user.
   assert.equal(enteredWait("working", "needs_user_permission"), false);
