@@ -1,6 +1,17 @@
 # UI map tooling
 
-Builds [parity/ui-map.md](../../parity/ui-map.md) and [parity/ui-map.json](../../parity/ui-map.json): every Conductor screen, route, panel, dialog, menu, popover, toast, empty state and settings page and row, each with a Conductor reference screenshot, an OpenConductor screenshot from the built app, a REA visual diff and a status (missing / wrong / matches).
+Builds [parity/ui-map.md](../../parity/ui-map.md), [parity/ui-map.json](../../parity/ui-map.json) and the [interactive program ledger](../../parity/ui-program/ledger.html). Raw inventory and assessments are preserved. The summary counts only in-scope local UI, with separate missing, wrong, matches and unverified statuses.
+
+## Rescore retained evidence without rebuilding
+
+```bash
+python3 tools/ui-map/build_map.py
+python3 -m unittest discover -s tools/ui-map -p 'test_scope.py'
+```
+
+This does not capture either app or verify current native parity. `scoped_report.py` excludes cloud-org, routines, triage, cloud-only onboarding and Ports from the denominator. Unobservable toast literals are not required. It adds one toast-system requirement and one Experimental default-off-gate requirement, both unverified until supported by evidence. Every row retains `raw_status`, `raw_why`, `scope` and `scope_reason`; `raw_summary` preserves the old counts. Version 2 readers must use the scoped `summary`, not count all retained rows.
+
+The nine `main_screens` verdicts separate retained state evidence from final native review. A threshold match never signs off a main screen. The generated page provides filters over both the in-scope queue and retained exclusions. Builders submit evidence summaries to the ledger owner rather than editing aggregate files concurrently.
 
 ## Regenerate (one command)
 
