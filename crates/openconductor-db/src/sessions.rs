@@ -519,6 +519,64 @@ pub async fn unread_chats(pool: &SqlitePool) -> Result<Vec<UnreadChat>> {
     .await?)
 }
 
+/// Open a chat tab (a review, a fork or a "+" chat): the chat's row in its
+/// workspace, visible, with `title`. A row `chat_messages::save` made with no
+/// workspace gets one; an existing workspace is kept. Opening a closed tab
+/// again shows it again and keeps its place. `now` (ISO-8601) is its
+/// `created_at`, which orders the tabs.
+///
+/// The reference's Review button creates the review chat with
+/// `createSession` (index-BGEQ8YjU.js `GNt` at 1949:3602), a `sessions` row in
+/// the workspace (`Xet` at 708:7705, `INSERT INTO sessions`); closing a tab sets
+/// `is_hidden = 1` (`nie` at 710:2534) and reopening it clears it (`Oet`).
+pub async fn open_tab(
+    pool: &SqlitePool,
+    id: &str,
+    workspace_id: &str,
+    title: &str,
+    now: &str,
+) -> Result<()> {
+    sqlx::query(
+        "INSERT INTO sessions (id, workspace_id, title, is_hidden, created_at, updated_at) \
+         VALUES (?, ?, ?, 0, ?, ?) ON CONFLICT(id) DO UPDATE SET is_hidden = 0, title = excluded.title, \
+         workspace_id = COALESCE(sessions.workspace_id, excluded.workspace_id)",
+    )
+    .bind(id)
+    .bind(workspace_id)
+    .bind(title)
+    .bind(now)
+    .bind(now)
+    .execute(pool)
+    .await?;
+    Ok(())
+}
+
+/// A chat tab that is open (one row of [`open_tabs`]).
+#[derive(Debug, Clone, PartialEq, Eq, sqlx::FromRow)]
+pub struct OpenTab {
+    pub workspace_id: String,
+    pub id: String,
+    pub title: String,
+}
+
+/// Every open chat tab besides the workspaces' main chats, by workspace, then
+/// oldest first: the tabs a restart shows again. The reference's tab strip is
+/// the workspace's non-hidden sessions as stored (`ylt` at 1226:63776 over
+/// `doGetSessionsForWorkspace` at 1226:36669), so a review chat and its unread
+/// survive a restart. Only our own tab ids count: `<workspace id>:review:<n>`
+/// and `<workspace id>:chat:<n>`, not a Claude Code chat (`<chat id>:claude`).
+pub async fn open_tabs(pool: &SqlitePool) -> Result<Vec<OpenTab>> {
+    Ok(sqlx::query_as(
+        "SELECT workspace_id, id, COALESCE(title, 'Untitled') AS title FROM sessions \
+         WHERE is_hidden IS NOT 1 AND workspace_id IS NOT NULL AND id NOT LIKE '%:claude' \
+         AND (substr(id, 1, length(workspace_id) + 8) = workspace_id || ':review:' \
+           OR substr(id, 1, length(workspace_id) + 6) = workspace_id || ':chat:') \
+         ORDER BY workspace_id, julianday(created_at), julianday(updated_at), id",
+    )
+    .fetch_all(pool)
+    .await?)
+}
+
 /// Mark every unread session in a workspace read; returns their ids.
 pub async fn mark_workspace_read(pool: &SqlitePool, workspace_id: &str) -> Result<Vec<String>> {
     let ids: Vec<(String,)> =
