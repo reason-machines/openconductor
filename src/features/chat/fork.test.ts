@@ -86,3 +86,10 @@ test("footer hover agent line: model via agent when the model is known, else the
   assert.equal(turnAgentLabel(null, "Codex"), "Codex");
   assert.equal(knownModelLabel("byok:anthropic:claude-sonnet-4-6"), "Sonnet 4.6");
 });
+
+test("the copy toast names the chat, cut to 20 characters (Conductor's chat tab `L`)", async () => {
+  const { copiedTranscriptMessage } = await import("./fork.ts");
+  assert.equal(copiedTranscriptMessage("concise", "amber-falcon"), 'Copied concise transcript of "amber-falcon"');
+  assert.equal(copiedTranscriptMessage("concise", "  "), 'Copied concise transcript of "chat"');
+  assert.equal(copiedTranscriptMessage("concise", "Fix the flaky login test today"), 'Copied concise transcript of "Fix the flaky login..."');
+});

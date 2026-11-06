@@ -10,7 +10,7 @@ import { configureReason, configureReasonDefault, reasonAvailable, reasonChatCon
 import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
 import type { ChatSnapshot, PermissionPrompt } from "../features/chat/chatRuntime.ts";
 import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
-import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
+import { copiedTranscriptMessage, forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
 import { forkToNewWorkspace } from "../features/chat/forkWorkspace.ts";
 import { createWorkspace, ensureRepository } from "../workspace/api";
 import { generateWorkspaceNames } from "../workspace/naming";
@@ -56,6 +56,7 @@ import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { openBigTab } from "../features/terminal/session";
 import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
+import { PRIORITY } from "../keybindings/dispatcher.ts";
 import { PanelStrip, type StripView } from "./PanelStrip";
 import "./rightPanel.css";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
@@ -78,6 +79,7 @@ import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
 import { useFollowUpMode } from "../settings/useFollowUpMode";
+import { useBoolPref } from "../settings/useBoolPref";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 
 interface Props {
@@ -167,7 +169,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
 /** What the chat panel shows: Codex's approvals and consent requests, or the permission requests of Reason and Claude Code. */
 type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly PermissionPrompt[]; approvals?: CodexApproval[]; consents?: CodexConsent[] };
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -207,6 +209,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
   // groups stay open after the turn ends and tool calls start expanded.
   const garryMode = useAppPrefs().garry_mode;
+  // Experimental › "Fork chat to new tab" turns on ⌥⌘↩ (Conductor's `experimental_fork_to_new_tab`).
+  const forkTabEnabled = useBoolPref("experimental_fork_to_new_tab");
   const followUpMode = useFollowUpMode();
 
   useEffect(() => {
@@ -308,10 +312,11 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
 
   /**
    * Conductor's "Fork to new tab" (`y9t`): a new tab in this workspace on this
-   * chat's options, with the conversation up to `turnId` attached as
-   * "Transcript of <title>.md" and this composer's text copied. Not sent.
+   * chat's options, with the conversation up to `turnId` (all of it when
+   * omitted, as ⌥⌘↩ forks) attached as "Transcript of <title>.md" and this
+   * composer's text copied. Not sent.
    */
-  async function forkToTab(turnId: string) {
+  async function forkToTab(turnId?: string) {
     setAttachError(null);
     const markdown = forkTranscript(transcript, turnId);
     if (markdown === null) {
@@ -377,6 +382,36 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       setForking(false);
     }
   }
+
+  /** Conductor's "Copy concise transcript": the whole chat in the fork's concise Markdown, to the clipboard. */
+  async function copyConciseTranscript() {
+    const text = forkTranscript(transcript);
+    if (!text?.trim()) return notify?.("info", "No chat content to copy");
+    try {
+      await navigator.clipboard.writeText(text);
+      notify?.("info", copiedTranscriptMessage("concise", review?.title ?? workspace.name));
+    } catch {
+      notify?.("error", "Failed to copy concise transcript");
+    }
+  }
+
+  // ⌥⌘C and ⌥⌘↩ act on the chat on screen, as Conductor binds them on the active chat tab
+  // (renderApp-D_fmY7hW.js ~7,376,706, priority 100). The fork needs the "Fork chat to new tab"
+  // experimental setting and a workspace that is not archived; otherwise the key passes on.
+  const chatShown = content === null;
+  useKeybindings(
+    {
+      "chat.copyTextConcise": () => {
+        if (!chatShown) return false;
+        void copyConciseTranscript();
+      },
+      "chat.forkToNewTab": () => {
+        if (!chatShown || !forkTabEnabled || workspace.status === "archived") return false;
+        if (!forking) void forkToTab();
+      },
+    },
+    PRIORITY.HIGH,
+  );
 
   const turnFooter = (turnId: string) => {
     const turn = turnCheckpointRef(runId, turnId);
@@ -479,7 +514,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             workspacePath={cwd}
             onOpenFile={openFile ? (path) => openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined}
             // Conductor: any turn of a chat in a workspace that is not archived; disabled while a fork is made.
-            onForkToNewTab={workspace.status !== "archived" ? (turnId) => void forkToTab(turnId) : undefined}
+            onForkToNewTab={workspace.status !== "archived" ? (turnId: string) => void forkToTab(turnId) : undefined}
             // Conductor: the same, and only for a workspace on this machine. It restores the turn's
             // end checkpoint under the Reason chat id, so Codex and Claude Code chats do not offer it yet.
             onForkToNewWorkspace={reason && agentId === "reason" && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
@@ -1012,6 +1047,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
           repo={repo}
           workspace={workspace}
           dispatch={dispatch}
+          notify={notify}
           chatId={activeReview?.chatId ?? workspace.id}
           review={activeReview}
           bridge={chatBridge}

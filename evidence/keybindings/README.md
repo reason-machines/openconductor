@@ -295,3 +295,22 @@ Not bound, because OpenConductor lacks the feature behind them:
   `conductor_lib::run` at `0x100498360` fails with `provider_unavailable`: Ghidra,
   Hopper, IDA and Kuna are all unconfigured there (no Java runtime). So the menu
   builder was not decompiled; the native menu table above is from the string table.
+
+## Chat tab shortcuts: copy concise transcript and fork
+
+Read on sven m5 max in `renderApp-D_fmY7hW.js` (~7,376,706), the chat tab
+component `u8i`. Both bind at priority 100 and return false (pass the key on)
+unless their tab is the active one:
+
+- `chat.copyTextConcise` (⌥⌘C): fetches the chat's messages, builds the concise
+  transcript and copies it. Empty: warning "No chat content to copy". Copied:
+  `Copied concise transcript of "<tab title, cut to 20 chars + ...>"`. Failure:
+  "Failed to copy concise transcript". Ours: `ChatPanel` in
+  `src/components/WorkspaceView.tsx` with `forkTranscript` (the same concise
+  form) and `copiedTranscriptMessage` in `src/features/chat/fork.ts`.
+- `chat.forkToNewTab` (⌥⌘↩): also needs `canRename && !archived &&
+  experimental_fork_to_new_tab`; forks the whole chat (ignored while a fork is
+  pending). Ours: the turn menu's "Fork to new tab" path with every turn, gated
+  on Experimental › "Fork chat to new tab" and a workspace that is not archived.
+  Conductor's `canRename` comes from the parent tab strip and was not traced
+  further; we treat it as true.
