@@ -49,7 +49,7 @@ const item = (label) => css(`[role=menuitem] >> text=${label}`);
  * Per state: the clicks on each side (REA actions without step ids), how long to settle
  * after, its UI map state id and its committed side-by-side image (parity/side-by-side/).
  */
-const STATES = {
+const HELP_STATES = {
   "help-menu": { ref: [REF_HELP], oc: [OC_HELP], uiMap: "menu-help", image: "dialogs-menus-01-help-menu.png" },
   "submit-prompt": { ref: [REF_HELP, item("Submit a prompt")], oc: [OC_HELP, item("Submit a prompt")], uiMap: "dialog-submit-prompt", image: "dialogs-menus-02-submit-prompt.png" },
   diagnostics: { ref: [REF_HELP, item("Diagnostics")], oc: [OC_HELP, item("Diagnostics")], uiMap: "route-diagnostics", image: "dialogs-menus-03-diagnostics.png" },
@@ -61,6 +61,12 @@ const STATES = {
     image: "dialogs-menus-04-diagnostics-run.png",
   },
 };
+
+// SBS_STATES=<module> swaps in another set of states with the same shape (its default export,
+// built from the `css` helper it is given), e.g. tools/side-by-side/create-composer-states.mjs.
+const STATES = process.env.SBS_STATES
+  ? (await import(path.resolve(process.env.SBS_STATES))).default({ css })
+  : HELP_STATES;
 
 // OpenConductor: dist/ with the sidebar-screens seed, Home (not All workspaces)
 // selected like Conductor's "/", and a Tauri shell that answers every command empty.
@@ -191,10 +197,10 @@ try {
       const { png: ocPng, ...oc } = capture(`oc-${state}`, `http://localhost:${OC_PORT}/?${q}`, spec.oc, spec.settle);
       manifest[state] = { tool: "rea capture-browser-scenario", viewport: VIEWPORT, theme: "dark", ref, oc };
       let line = `${state}: ref ${ref.evidence_id} | oc ${oc.evidence_id}`;
-      if (RECORD) {
+      if (RECORD && spec.uiMap) {
         const cmp = compare(state, refPng, ocPng);
         record.states[spec.uiMap] = {
-          lane: "tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
+          lane: `tools/side-by-side/help-diagnostics.mjs${process.env.SBS_STATES ? ` (SBS_STATES=${path.relative(repoRoot, path.resolve(process.env.SBS_STATES))})` : ""}: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium`,
           openconductor_commit: head,
           viewport: VIEWPORT,
           image: `side-by-side/${spec.image}`,

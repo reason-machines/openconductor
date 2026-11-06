@@ -172,8 +172,7 @@
      "after_ms": 800
     },
     {
-     "click": "form.create-ws button",
-     "nth": 0
+     "click": ".create-repo-trigger"
     }
    ]
   },
