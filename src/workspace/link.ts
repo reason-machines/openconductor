@@ -21,14 +21,18 @@ export const COPY_LINK_FAILED = "Failed to copy link";
 
 type Clipboard = { writeText(text: string): Promise<void> };
 
-/** Copies the workspace's link; resolves to the toast Conductor shows for the outcome. */
+/**
+ * Copies the workspace's link, or one chat's in it (a chat tab's "Copy link", Conductor's
+ * `XV({ localWorkspaceId, sessionId })`); resolves to the toast Conductor shows for the outcome.
+ */
 export async function copyWorkspaceLink(
   workspaceId: string,
   clipboard: Clipboard | undefined = typeof navigator === "undefined" ? undefined : navigator.clipboard,
+  sessionId?: string,
 ): Promise<{ kind: "info" | "error"; message: string }> {
   try {
     if (!clipboard) throw new Error("no clipboard");
-    await clipboard.writeText(workspaceLink(workspaceId));
+    await clipboard.writeText(workspaceLink(workspaceId, sessionId));
     return { kind: "info", message: COPIED_LINK };
   } catch {
     return { kind: "error", message: COPY_LINK_FAILED };

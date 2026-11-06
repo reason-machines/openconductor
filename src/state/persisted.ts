@@ -40,6 +40,8 @@ export interface DbWorkspaceRow {
   unreadChats?: { id: string; updatedAt: string }[];
   /** The open chat tabs besides the main chat (review, fork, "+"), oldest first; absent from rows of an older backend. */
   chatTabs?: StoredChatTab[];
+  /** The main chat's own title once renamed ("Rename chat"); absent otherwise and from rows of an older backend. */
+  chatTitle?: string | null;
   /** The PR's title and body as last stored (`pr_title`, `pr_description`). */
   prTitle: string | null;
   prDescription: string | null;
@@ -94,6 +96,7 @@ export function workspaceFromRow(w: DbWorkspaceRow): Workspace {
     number: w.number ?? null,
     state: w.state,
     userSetWorkspaceName: w.userSetWorkspaceName || undefined,
+    chatTitle: w.chatTitle ?? undefined,
   };
 }
 
