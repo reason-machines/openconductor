@@ -173,10 +173,12 @@ export function buildResults(tab: PaletteTab, query: string, data: PaletteData, 
       return group("settings", "Settings", settingResults(data, query));
     case "all": {
       if (empty) {
+        // Conductor (m_a, renderApp @10,854,949) maps each recent id onto every
+        // workspace, archived included, and drops only ids it cannot find.
         const byId = new Map(data.workspaces.map((w) => [w.id, w]));
         const recents = data.recentWorkspaceIds
           .map((id) => byId.get(id))
-          .filter((w): w is WorkspaceEntry => w !== undefined && !w.archived)
+          .filter((w): w is WorkspaceEntry => w !== undefined)
           .map((w): ResultItem => ({ kind: "workspace", id: `workspace:${w.id}`, workspace: w }));
         return [...group("recent-workspaces", "Recent workspaces", recents), ...actionGroups(data, query)];
       }

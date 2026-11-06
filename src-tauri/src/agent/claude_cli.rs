@@ -37,9 +37,14 @@ pub fn bundled_plugin_dir(resource_dir: &Path) -> Option<PathBuf> {
 }
 
 /// Remember the bundled plugin at startup, so every [`ClaudeLaunch::new`]
-/// loads it with `--plugin-dir`.
+/// loads it with `--plugin-dir`. A debug build run from `target/` has no
+/// bundle resources, so it uses the source tree's copy.
 pub fn set_bundled_plugin_dir(resource_dir: &Path) {
-    if let Some(dir) = bundled_plugin_dir(resource_dir) {
+    let source =
+        cfg!(debug_assertions).then(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("resources"));
+    if let Some(dir) =
+        bundled_plugin_dir(resource_dir).or_else(|| source.as_deref().and_then(bundled_plugin_dir))
+    {
         let _ = BUNDLED_PLUGIN_DIR.set(dir);
     }
 }

@@ -203,3 +203,18 @@ fn a_saved_session_is_resumed_and_a_missing_cli_fails_the_turn() {
     assert_eq!(*events.lock().unwrap(), vec![ProviderEvent::TurnEnded(end)]);
     assert!(matches!(runner.prompt("nope", "hi"), TurnEnd::Failed(_)));
 }
+
+#[test]
+fn a_stop_before_the_prompt_is_sent_cancels_it() {
+    let h = harness();
+    h.runner.open_chat("c1", &cwd(), None);
+    // The start checkpoint is being saved: announced, not sent yet.
+    h.runner.expect_prompt("c1");
+    h.runner.cancel("c1");
+    assert_eq!(h.runner.prompt("c1", "hello"), TurnEnd::Cancelled);
+    assert_eq!(h.types(), ["turnEnded"]);
+    assert!(h.args().is_empty(), "no process was started");
+    // The next announced prompt runs normally.
+    h.runner.expect_prompt("c1");
+    assert_eq!(h.runner.prompt("c1", "hello"), TurnEnd::Completed);
+}

@@ -9,11 +9,11 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { fuzzyFilterFiles, inTauri } from "../../backend";
-import { FileGlyph } from "../chat/ToolRows";
+import { FileTypeIcon, FolderTypeIcon } from "../../components/FileIcons";
 import { recordOpenIn, useAppPrefs } from "../../settings/appPrefs";
 import { defaultAppId, loadOpenInApps, openInApp, type OpenInApp } from "../openIn/apps";
 import { absolutePath, allDirs, ancestors, buildTree, filterPaths, newFilePath, visibleRows, type TreeRow } from "./tree";
-import { ChevronDownIcon, ChevronRightIcon, CollapseAllIcon, FilePlusIcon, FolderClosedIcon, FolderOpenIcon, SearchIcon } from "./panelIcons";
+import { ChevronDownIcon, ChevronRightIcon, CollapseAllIcon, FilePlusIcon, SearchIcon } from "./panelIcons";
 import "./allFiles.css";
 
 type Notify = (kind: "info" | "error", message: string) => void;
@@ -199,7 +199,7 @@ export function AllFilesTree({ worktree, notify, toolbar }: { worktree: string |
     creating && (
       <div key="new-file" className="oc-files-new" style={{ paddingLeft: 8 + depth * 20 }}>
         <span className="oc-files-icon">
-          <FileGlyph path={creating.name || "new"} />
+          <FileTypeIcon path={creating.name || "new"} />
         </span>
         <input
           autoFocus
@@ -235,7 +235,7 @@ export function AllFilesTree({ worktree, notify, toolbar }: { worktree: string |
         title={r.path}
       >
         <span className="oc-files-icon">
-          <span className="oc-files-folder">{r.expanded ? <FolderOpenIcon /> : <FolderClosedIcon />}</span>
+          <span className="oc-files-folder"><FolderTypeIcon open={r.expanded} /></span>
           <span className="oc-files-chevron">{r.expanded ? <ChevronDownIcon /> : <ChevronRightIcon />}</span>
         </span>
         <span className="name">{r.name}</span>
@@ -251,7 +251,7 @@ export function AllFilesTree({ worktree, notify, toolbar }: { worktree: string |
         title={app ? `Open ${r.path} in ${app.name}` : r.path}
       >
         <span className="oc-files-icon">
-          <FileGlyph path={r.name} />
+          <FileTypeIcon path={r.path} />
         </span>
         <span className="name">{r.name}</span>
       </button>

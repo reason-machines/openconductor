@@ -1,0 +1,139 @@
+{
+  "tool": "playwright-core + Chromium on tools/screens",
+  "conductor": "0.87.6 extracted frontend",
+  "fixture": {
+    "claude": {
+      "slashCommands": [
+        {
+          "name": "oc-fixture-skill",
+          "description": "OpenConductor e2e fixture skill. Replies with one marker line and does nothing else.",
+          "argumentHint": ""
+        }
+      ],
+      "skills": []
+    },
+    "codex": {
+      "slashCommands": [
+        {
+          "name": "review",
+          "description": "Review uncommitted changes, or describe what to review",
+          "argumentHint": "instructions"
+        }
+      ],
+      "skills": [
+        {
+          "name": "oc-fixture-skill",
+          "description": "OpenConductor e2e fixture skill. Replies with one marker line and does nothing else.",
+          "path": "/home/e2e/.agents/skills/oc-fixture-skill/SKILL.md",
+          "scope": "user",
+          "enabled": true
+        }
+      ]
+    }
+  },
+  "results": {
+    "claude": {
+      "open": [
+        "/",
+        "oc-fixture-skill",
+        "OpenConductor e2e fixture skill. Replies with one marker line and does nothing else.",
+        "/",
+        "clear",
+        "Close this tab and start a fresh chat",
+        "/",
+        "restart",
+        "Restart the agent process. Useful to pick up config changes.",
+        "/",
+        "add-dir",
+        "Link a directory or workspace",
+        "/",
+        "mcp-status",
+        "View MCP server connection status",
+        "/",
+        "mcp",
+        "Manage MCP servers (opens terminal)",
+        "/",
+        "agents",
+        "Manage agents (opens terminal)",
+        "/",
+        "hooks",
+        "Manage hooks (opens terminal)",
+        "/",
+        "memory",
+        "Manage memory (opens terminal)",
+        "/",
+        "permissions",
+        "Manage permissions (opens terminal)",
+        "/",
+        "plugins",
+        "Manage plugins (opens terminal)",
+        "/",
+        "compact",
+        "Compact the context window",
+        "/",
+        "ultracode",
+        "Enable Ultracode",
+        "/",
+        "plan",
+        "Enter plan mode",
+        "/",
+        "fast",
+        "Enable fast mode (uses extra credits)"
+      ],
+      "filtered": [
+        "/",
+        "oc-fixture-skill",
+        "OpenConductor e2e fixture skill. Replies with one marker line and does nothing else."
+      ],
+      "pageErrors": 0
+    },
+    "codex": {
+      "open": [
+        "/",
+        "review",
+        "Review uncommitted changes, or describe what to review",
+        "/",
+        "clear",
+        "Close this tab and start a fresh chat",
+        "/",
+        "restart",
+        "Restart the agent process. Useful to pick up config changes.",
+        "/",
+        "add-dir",
+        "Link a directory or workspace",
+        "/",
+        "personality",
+        "Choose Codex's personality for this session and future ones",
+        "/",
+        "goal",
+        "Set the objective Codex should keep working toward",
+        "/",
+        "mcp-status",
+        "View MCP server connection status",
+        "/",
+        "mcp",
+        "Manage MCP servers (opens terminal)",
+        "/",
+        "compact",
+        "Compact the context window",
+        "/",
+        "plan",
+        "Enter plan mode",
+        "/",
+        "fast",
+        "Enable fast mode (uses credits 2x faster)",
+        "Skills",
+        "/",
+        "oc-fixture-skill",
+        "OpenConductor e2e fixture skill. Replies with one marker line and does nothing else."
+      ],
+      "filtered": [
+        "Skills",
+        "/",
+        "oc-fixture-skill",
+        "OpenConductor e2e fixture skill. Replies with one marker line and does nothing else."
+      ],
+      "pageErrors": 0
+    }
+  }
+}

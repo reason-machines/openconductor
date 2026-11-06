@@ -221,3 +221,57 @@ mod repo_prompt_tests {
         assert!(repo_prompt(&s, "review").is_err());
     }
 }
+
+#[cfg(test)]
+mod duplicate_repo_tests {
+    use super::*;
+    use std::path::Path;
+    use std::process::Command;
+
+    fn git(dir: &Path, args: &[&str]) {
+        let ok = Command::new("git").arg("-C").arg(dir).args(args).status().unwrap().success();
+        assert!(ok, "git {args:?}");
+    }
+
+    /// Open project on a folder that is already added, through the two steps
+    /// of the `add_repository` command (register with the service, then
+    /// `on_repository_added` writes conductor.db): as Conductor's `g2t`, a
+    /// second `repos` row on the same folder named `<name>-v1`, next in
+    /// display order (evidence/screens/duplicate-repo.md).
+    #[tokio::test]
+    async fn open_project_twice_on_one_folder_writes_a_second_repos_row() {
+        let tmp = std::env::temp_dir().join(format!("oc-duplicate-repo-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&tmp);
+        let repo = tmp.join("My App");
+        std::fs::create_dir_all(&repo).unwrap();
+        git(&repo, &["init", "-q", "-b", "main"]);
+        git(&repo, &["config", "user.name", "t"]);
+        git(&repo, &["config", "user.email", "t@example.com"]);
+        std::fs::write(repo.join("README.md"), "hello\n").unwrap();
+        git(&repo, &["add", "README.md"]);
+        git(&repo, &["commit", "-q", "-m", "init"]);
+
+        let svc = WorkspaceService::new(tmp.join("svc")).unwrap();
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        let mut roots = Vec::new();
+        for _ in 0..2 {
+            let r = svc.add_repository(&repo).unwrap();
+            store::record_repository(&pool, &known_repo(&r)).await.unwrap();
+            roots.push(r.root.display().to_string());
+        }
+        assert_eq!(roots[0], roots[1]);
+        let rows = store::list_repos(&pool).await.unwrap();
+        let got: Vec<_> = rows
+            .iter()
+            .map(|r| (r.id.as_str(), r.name.as_str(), r.root_path.as_str(), r.display_order))
+            .collect();
+        assert_eq!(
+            got,
+            [
+                ("my-app", "My App", roots[0].as_str(), 0),
+                ("my-app-v1", "My App-v1", roots[0].as_str(), 1)
+            ]
+        );
+        let _ = std::fs::remove_dir_all(&tmp);
+    }
+}

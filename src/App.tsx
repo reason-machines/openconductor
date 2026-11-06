@@ -5,6 +5,7 @@ import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { AllWorkspaces } from "./components/AllWorkspaces";
+import { Dashboard } from "./components/Dashboard";
 import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
 import type { DialogKind } from "./components/Dialogs";
@@ -13,6 +14,8 @@ import { OPEN_IN_GITHUB, SUCCESS_TOAST } from "./state/createProject";
 import { CloneGitHubRepoDialog } from "./components/CloneGitHubRepoDialog";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { CreateWorkspacePage } from "./components/CreateWorkspacePage";
+import { RemoveRepositoryDialog } from "./components/RemoveRepositoryDialog";
+import { MISC_COPY } from "./settings/repoMisc";
 import { useAppPrefs } from "./settings/appPrefs";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
@@ -20,7 +23,7 @@ import { Toaster, useToasts, type ToastAction } from "./components/Toast";
 import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { ArchiveRunningDialog } from "./components/ArchiveRunningDialog";
-import { clearUnarchiveConflict, directoryExistsToast, failureToast, onArchiveEvent, revealUnarchiveConflict, unarchiveFailedMessage } from "./workspace/archive";
+import { clearUnarchiveConflict, directoryExistsToast, failureToast, onArchiveEvent, restoreRequestFor, revealUnarchiveConflict, unarchiveFailedMessage } from "./workspace/archive";
 import { ArchivedWorkspaceView } from "./components/ArchivedWorkspaceView";
 import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/RestoreWorkspaceDialog";
 import type { Action } from "./state/store";
@@ -28,7 +31,7 @@ import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
-import { decideOpenProject, failedToAddMessage } from "./state/openProject";
+import { addRegisteredRepo, decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
 import { PaletteHost } from "./palette/PaletteHost";
@@ -45,6 +48,7 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { useWorkspaceDeepLinks } from "./workspace/useWorkspaceDeepLinks";
 import { useAutoUnread } from "./state/useAutoUnread";
 import { nextUnreadWorkspace, openNextUnread } from "./state/nextUnread";
 import { createRepoDefault } from "./home/repoFilter";
@@ -55,7 +59,7 @@ export default function App() {
   const [state, storeDispatch] = useAppStore();
   // The full-screen create page (`/create`) fills the main area until a
   // selection or a created workspace replaces it.
-  const [createPage, setCreatePage] = useState<{ repoId: string | null; sectionId?: string } | null>(() => (window.location.pathname === "/create" ? { repoId: null } : null));
+  const [createPage, setCreatePage] = useState<{ repoId: string | null; sectionId?: string; fromOpen?: boolean } | null>(() => (window.location.pathname === "/create" ? { repoId: null } : null));
   const dispatch = useCallback(
     (action: Action) => {
       if (action.type === "select" || action.type === "addWorkspace") setCreatePage(null);
@@ -77,6 +81,8 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
+  // openconductor://workspace?id=<id> (Copy link) selects that workspace.
+  useWorkspaceDeepLinks(state, dispatch);
   // A chat that finishes or waits on the user while not in view marks its workspace unread.
   useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
@@ -86,7 +92,9 @@ export default function App() {
   const [dialog, setDialog] = useState<DialogKind | null>(() => new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
   const [createRepoId, setCreateRepoId] = useState<string | null>(null);
   const [createSectionId, setCreateSectionId] = useState<string | undefined>(undefined);
-  const openDialog = (d: DialogKind, repoId?: string, sectionId?: string) => {
+  const [createFromOpen, setCreateFromOpen] = useState(false);
+  /** `fromOpen`: Conductor's `createFromOpen` (repo menu "Create from...", ⌘⇧N) opens the source picker. */
+  const openDialog = (d: DialogKind, repoId?: string, sectionId?: string, fromOpen = false) => {
     const requested = repoId ?? (state.selection.kind === "workspace" ? state.selection.repoId : null);
     // Nothing requested: start on the sidebar's project filter, as Conductor's `q4a` does.
     const id = createRepoDefault(state.repos.map((r) => r.id), requested, storedRepoFilter(prefs.sidebar_repo_filter));
@@ -95,10 +103,11 @@ export default function App() {
       setDialog(null);
       // Off the current workspace, as Conductor's route change does; Back returns to it.
       if (state.selection.kind !== "root") storeDispatch({ type: "select", selection: { kind: "root" } });
-      return setCreatePage({ repoId: id, sectionId });
+      return setCreatePage({ repoId: id, sectionId, ...(fromOpen ? { fromOpen } : {}) });
     }
     setCreateRepoId(id);
     setCreateSectionId(sectionId);
+    setCreateFromOpen(fromOpen);
     setDialog(d);
   };
   const [info, setInfo] = useState<AppInfo | null>(null);
@@ -120,9 +129,8 @@ export default function App() {
       onArchiveEvent<Action>((e) => {
         if (e.type === "agents-running" && e.action.type === "archiveWorkspace") setArchiveOverAgents(e.action);
         if (e.type === "archived" || e.type === "unarchived") for (const n of e.result.notices) show(n.kind, n.message, { sticky: n.kind === "error" });
-        if (e.type === "unarchived" && e.result.scenario && e.action.type === "unarchiveWorkspace") {
-          setRestoreRequest({ repoId: e.action.repoId, workspaceId: e.action.workspaceId, branch: e.result.branch ?? "unknown", scenario: e.result.scenario });
-        }
+        const restore = restoreRequestFor(e);
+        if (restore) setRestoreRequest(restore);
         if (e.type === "unarchive-failed") {
           const conflict = directoryExistsToast(e.error);
           const retry = e.action.type === "unarchiveWorkspace" ? e.action : null;
@@ -222,8 +230,7 @@ export default function App() {
       : null,
   );
   const addCreatedRepo = useCallback(async (target: GitHubRepoTarget, remote: string) => {
-    const registered = await addRepository(target.path);
-    dispatch({ type: "addRepo", id: registered.id, repo: { name: target.name, path: registered.root, remote, defaultBranch: registered.defaultBranch } });
+    dispatch(addRegisteredRepo(await addRepository(target.path), remote));
   }, [dispatch]);
 
   // Open project: native picker straight away, then the backend folder checks.
@@ -240,8 +247,7 @@ export default function App() {
       // An already-added folder is not refused: as in Conductor the backend
       // registers a second project for it, named `<name>-v1`, `-v2`, ...
       // (evidence/screens/duplicate-repo.md).
-      const registered = await addRepository(outcome.path);
-      dispatch({ type: "addRepo", id: registered.id, repo: { name: registered.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
+      dispatch(addRegisteredRepo(await addRepository(outcome.path), outcome.remote));
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
@@ -295,8 +301,13 @@ export default function App() {
     "toggleGarryMode": toggleGarryMode,
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
     "workspace.create": () => openDialog("create"),
+    "workspace.createFromPRBranchIssue": () => openDialog("create", undefined, undefined, true),
   });
 
+  // Repo menu "Remove repository" (Conductor's `Dra` dialog), then the same toast and state as Settings › Misc.
+  const [removingRepoId, setRemovingRepoId] = useState<string | null>(null);
+  const removingRepo = removingRepoId ? state.repos.find((r) => r.id === removingRepoId) : undefined;
+  const removeRepositoryFromMenu = (repoId: string) => setRemovingRepoId(repoId);
   const copyLink = useCallback(
     (workspaceId: string) => void copyWorkspaceLink(workspaceId).then(({ kind, message }) => show(kind, message)),
     [show],
@@ -345,7 +356,7 @@ export default function App() {
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} />}
+      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
       <main className="main">
         {createPage ? (
           <CreateWorkspacePage
@@ -355,6 +366,7 @@ export default function App() {
             initialRepoId={createPage.repoId}
             sections={state.sections ?? []}
             initialSectionId={createPage.sectionId}
+            fromOpen={createPage.fromOpen}
             prefixSettings={prefix.settings}
             githubUsername={prefix.githubUsername}
             sidebarVisible={isSidebarVisible(state)}
@@ -376,6 +388,15 @@ export default function App() {
           />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+        ) : sel.kind === "dashboard" ? (
+          <Dashboard
+            repos={state.repos}
+            repo={sel.repo}
+            sidebarVisible={isSidebarVisible(state)}
+            dispatch={dispatch}
+            onCreateWorkspace={(repoId) => openDialog("create", repoId)}
+            onError={(message) => show("error", message)}
+          />
         ) : (
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}
@@ -397,12 +418,25 @@ export default function App() {
           }}
         />
       )}
+      {removingRepo && (
+        <RemoveRepositoryDialog
+          repo={removingRepo}
+          onClose={() => setRemovingRepoId(null)}
+          onRemoved={() => {
+            setRemovingRepoId(null);
+            show("info", MISC_COPY.remove.removed);
+            dispatch({ type: "removeRepo", repoId: removingRepo.id });
+          }}
+          onError={(message) => show("error", message)}
+        />
+      )}
       {dialog === "create" && (
         <CreateWorkspaceDialog
           repos={state.repos}
           initialRepoId={createRepoId}
           sections={state.sections ?? []}
           initialSectionId={createSectionId}
+          fromOpen={createFromOpen}
           prefixSettings={prefix.settings}
           githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
