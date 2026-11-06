@@ -34,7 +34,7 @@ fn zsh_prints_command_marks_and_keeps_the_users_setup() {
         "export OC_RC=rc\nPROMPT='user> '\nsetopt INC_APPEND_HISTORY\n",
     )
     .unwrap();
-    crate::test_exe::write_executable(
+    super::test_exe::write_executable(
         &bin.join("oc-prefixed"),
         "#!/bin/sh\necho prefixed-tool-ran\n",
         0o755,
