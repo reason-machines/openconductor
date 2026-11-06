@@ -41,7 +41,26 @@ pub struct Batch {
     pub upserts: Vec<StoredMessage>,
     pub delete_ids: Vec<String>,
     /// The agent's session id, when known (`sessions.claude_session_id`).
+    /// Saving it also clears `resume_session_at`: the session is current.
     pub agent_session_id: Option<String>,
+    /// Reset chat: the agent session remembers turns after this message,
+    /// which were deleted. Forgets the session (`claude_session_id`) and
+    /// records the message in `resume_session_at`, as Conductor does, so the
+    /// chat's next turn starts a new session. Applied before
+    /// `agent_session_id`.
+    pub rewind_to: Option<String>,
+}
+
+/// When the batch's newest user message was created, if it has one: the time
+/// that moves `sessions.last_user_message_at` and the workspace's
+/// `updated_at` forward.
+pub fn latest_user_message_at(batch: &Batch) -> Option<&str> {
+    batch
+        .upserts
+        .iter()
+        .filter(|m| m.role == "user")
+        .map(|m| m.created_at.as_str())
+        .max()
 }
 
 /// Apply `batch` to chat `session_id`, creating its `sessions` row if needed.
@@ -52,20 +71,25 @@ pub async fn save(pool: &SqlitePool, session_id: &str, batch: &Batch) -> Result<
         .bind(session_id)
         .execute(&mut *tx)
         .await?;
-    if let Some(agent) = &batch.agent_session_id {
-        sqlx::query("UPDATE sessions SET claude_session_id = ? WHERE id = ?")
-            .bind(agent)
-            .bind(session_id)
-            .execute(&mut *tx)
-            .await?;
+    if let Some(at) = &batch.rewind_to {
+        sqlx::query(
+            "UPDATE sessions SET claude_session_id = NULL, resume_session_at = ? WHERE id = ?",
+        )
+        .bind(at)
+        .bind(session_id)
+        .execute(&mut *tx)
+        .await?;
     }
-    if let Some(last) = batch
-        .upserts
-        .iter()
-        .filter(|m| m.role == "user")
-        .map(|m| &m.created_at)
-        .max()
-    {
+    if let Some(agent) = &batch.agent_session_id {
+        sqlx::query(
+            "UPDATE sessions SET claude_session_id = ?, resume_session_at = NULL WHERE id = ?",
+        )
+        .bind(agent)
+        .bind(session_id)
+        .execute(&mut *tx)
+        .await?;
+    }
+    if let Some(last) = latest_user_message_at(batch) {
         sqlx::query(
             "UPDATE sessions SET last_user_message_at = ? \
              WHERE id = ? AND (last_user_message_at IS NULL OR last_user_message_at < ?)",

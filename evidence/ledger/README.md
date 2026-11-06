@@ -12,19 +12,29 @@ The REA ledger above is the obligation list as built from Conductor; it is not r
 
 | Record | Areas | Target | Parity | REA ledger obligations pass / fail | Builder obligations open |
 |---|---|---|---|---|---|
-| [`verifier/settings-shortcuts-persistence-packaging.md`](verifier/settings-shortcuts-persistence-packaging.md) (`.json`) | settings 84.4%, shortcuts 66.9%, persistence 75.0%, packaging 76.9% | main `1cedef0` | 74.8% | 10 / 7 | 15 of 35 |
+| [`verifier/settings-shortcuts-persistence-packaging.md`](verifier/settings-shortcuts-persistence-packaging.md) (`.json`) | settings 96.4%, shortcuts 71.5%, persistence 100.0%, packaging 82.1% | main `274ac80` | 83.9% | 14 / 3 | 10 of 35 |
 | [`../parity/chat-diff-pr/PARITY.md`](../parity/chat-diff-pr/PARITY.md) (`parity.json`, `tools/parity_chat_diff_pr.py`) | chat 21.7%, diff 42.9%, PR 27.1% (41 features, hand-reviewed) | main `d91540c` | 30.5% (strict 0%) | not scored per REA obligation; parent obligations `agent.*`, `diff.*`, `pr.*` all still open | 39 of 41 ([#139](https://github.com/reason-machines/openconductor/issues/139), [#140](https://github.com/reason-machines/openconductor/issues/140), [#141](https://github.com/reason-machines/openconductor/issues/141)) |
 | [`../parity/reason-acp/PARITY.md`](../parity/reason-acp/PARITY.md) (`parity.json`, `tools/parity_reason_acp.py`) | Reason agent over ACP: 11 items under `agent.session-run`, `agent.providers`, `agent.message-queue` | `59ac0ba` | 100.0% | not scored (OpenConductor's own items; Conductor has no Reason agent) | none (`acp.signed-in`: [signed-in Mac run](../reason-acp/signed-in-run.md)) |
+| [`../providers/codex-conductor-client.md`](../providers/codex-conductor-client.md), [`../e2e-mac/codex.md`](../e2e-mac/codex.md) | Codex agent over `codex app-server`: 10 sidecar facts under `agent.session-run`, `agent.providers`, `agent.message-queue` | PR #275 | 3 same, 4 differ on purpose or superset, 3 gaps (hand-reviewed, not scored by a checker) | `agent.session-run` (codex slice) now has the sidecar protocol from the Bun bundle that it listed as next evidence. Positive: live turns with the signed-in codex on sven m5 max through the app's commands. Negative: a missing CLI, failed turns and declined requests (runner tests). Cancellation: Stop and "Deny and stop" (GUI e2e) and interrupt (runner tests) | [#340](https://github.com/reason-machines/openconductor/issues/340) |
+
+### Final UI checklist: chat, diff and PR screens (Verifier C)
+
+Sven's four checks for every screen, coordinated by Conductor Rebuild (`dcaa6e78`). Every PR is a draft under the merge hold. Status as of 2026-11-06 ~01:15Z:
+
+| Check | Owner | Status | Evidence |
+|---|---|---|---|
+| Right-click menus match Conductor (chat tabs, messages and turns, Changes rows, diff headers, PR crumbs) | builder [`a940e0ef`](https://reasonmachines.com/agents/a940e0ef-7336-4396-89a2-4a358254c92e) | in progress: inventory from REA's 39 menus and 89 items | `parity/side-by-side/chat-diff-pr/menus/` (pending) |
+| Tooltips with Conductor's text, shortcut hint, delay and placement | builder [`e941c7fb`](https://reasonmachines.com/agents/e941c7fb-b49a-48d5-975a-d36de699d0cd) | in progress. Conductor uses `delayDuration` 0 and 100, and the + tab button shows "New chat, same files" plus the `nav.newTab` key | `parity/side-by-side/chat-diff-pr/tooltips/` (pending) |
+| Animations and transitions (panels, tab switches, popovers, toasts, hover and press) | builder [`b22ed03b`](https://reasonmachines.com/agents/b22ed03b-43aa-4b87-a7bc-9df3910a7890) | in progress. The first builder (`4feafae1`) never started: its Anthropic sign-in had expired | `parity/side-by-side/chat-diff-pr/animations/` (pending) |
+| Alignment sweep (headers, toolbars, tab strips, rows, dialogs) | Verifier C | header actions fixed in a draft PR: Open in, Create PR and Archive went from 24/26px tall on three centre lines to 24px on one, and the title chips now share that centre line. The rest of the sweep (tab strips, composer toolbar, Changes rows, diff header, dialogs) is not started | [`parity/side-by-side/chat-diff-pr/alignment/`](../../parity/side-by-side/chat-diff-pr/alignment/README.md) |
 
 ### Open pull requests scored against a verifier
 
 The records above score main only. An open PR that targets a failing builder obligation is scored here with the same checker (`python3 tools/parity_check.py check --ref <PR head> --out-dir <tmp>`), so the expected change is known before it merges. This is a projection; the record changes only when the PR is on main.
 
-| PR | Head (base) | Builder obligation | On main | With the PR | Record totals with the PR |
-|---|---|---|---|---|---|
-| [#358](https://github.com/reason-machines/openconductor/pull/358) frontend local-storage client, 11 subsystems, composer drafts | `b424d34` merged with main `1cedef0` (no conflicts) | `db.local-storage.stores` (parent `db.local-storage`) | fail, 9.1% (1/11) | pass, 100.0% (11/11) | persistence 75.0% -> 97.7%, overall 74.8% -> 77.2%; REA ledger obligations 10 / 7 -> 11 / 6; builder obligations open 15 -> 14 of 35 |
+No projection recorded. [#358](https://github.com/reason-machines/openconductor/pull/358) (`db.local-storage.stores`) merged as `a013933` and [#374](https://github.com/reason-machines/openconductor/pull/374) (`persistence.agent-binaries`) merged as `8eb3b4a`; both pass on main.
 
-With #358, the only open persistence builder obligation is `persistence.agent-binaries`. `persistence.bin-source-markers` passes on main since [#329](https://github.com/reason-machines/openconductor/pull/329).
+Every persistence builder obligation now passes on main (persistence 100.0%, 44/44). `persistence.bin-source-markers` passes since [#329](https://github.com/reason-machines/openconductor/pull/329).
 
 A builder obligation is a slice of a failing feature that one builder can own. Every failing item belongs to exactly one, and each names its parent REA ledger obligation (keybindings have none: REA's JavaScript analysis did not return the registry, so the ledger has no keybinding obligation). `pass` is static presence on main, not observed runtime behavior.
 

@@ -18,6 +18,9 @@ pub fn startup(db: &Db, service: &WorkspaceService) -> Result<(), Box<dyn std::e
     let pool = &db.0;
     tauri::async_runtime::block_on(async {
         store::delete_incomplete(pool).await?;
+        // Conductor's `xet`: sessions of local workspaces left busy by the
+        // last run go idle; `needs_user_input` survives.
+        openconductor_db::sessions::reset_busy_to_idle_at_startup(pool).await?;
         for repo in service.repositories() {
             if openconductor_db::repos::get(pool, &repo.id).await?.is_some() {
                 continue;
@@ -46,26 +49,6 @@ pub async fn db_list_repos(db: State<'_, Db>) -> Result<Vec<RepoRow>, String> {
 #[tauri::command]
 pub async fn db_list_workspaces(db: State<'_, Db>) -> Result<Vec<WorkspaceRow>, String> {
     store::list_workspaces(&db.0).await.map_err(|e| e.to_string())
-}
-
-/// JS: `invoke("db_archive_workspace", { workspaceId })`: mark the row
-/// archived so it stays out of the sidebar after a restart.
-#[tauri::command]
-pub async fn db_archive_workspace(db: State<'_, Db>, workspace_id: String) -> Result<(), String> {
-    store::archive(&db.0, &workspace_id).await.map_err(|e| e.to_string())
-}
-
-/// JS: `invoke("db_unarchive_workspace", { workspaceId })`: the toast's
-/// Unarchive after archive on merge. Archiving keeps the worktree, so the
-/// row goes straight back to `ready`.
-#[tauri::command]
-pub async fn db_unarchive_workspace(
-    db: State<'_, Db>,
-    workspace_id: String,
-) -> Result<(), String> {
-    store::unarchive(&db.0, &workspace_id)
-        .await
-        .map_err(|e| e.to_string())
 }
 
 /// JS: `invoke("db_set_workspace_target_branch", { workspaceId, branch })`:
@@ -172,13 +155,27 @@ pub async fn on_create_started(
     store::begin_workspace(&db.0, &pending, Some(parent_branch)).await.ok().map(|_| pending.id)
 }
 
-/// The worktree exists: its row becomes `ready`; returns its number. A
-/// database error is logged, not returned: the worktree was created and the UI
-/// must show it (without a number).
-pub async fn on_create_finished(db: &Db, repository_id: &str, w: &Workspace, parent_branch: &str) -> Option<i64> {
+/// The worktree exists: its row becomes `ready` with the initialization log
+/// and tracked-file count recorded on the way (`record_initialization`);
+/// returns its number. A database error is logged, not returned: the worktree
+/// was created and the UI must show it (without a number).
+pub async fn on_create_finished(
+    db: &Db,
+    repository_id: &str,
+    w: &Workspace,
+    parent_branch: &str,
+    init_log: Option<&str>,
+    files_copied: i64,
+) -> Option<i64> {
     let row = known_workspace(repository_id, w);
     match store::finish_workspace(&db.0, &row, Some(parent_branch), None).await {
-        Ok(number) => Some(number),
+        Ok(number) => {
+            log_err(
+                "record initialization log",
+                store::record_initialization(&db.0, &row.id, init_log, files_copied).await,
+            );
+            Some(number)
+        }
         Err(e) => {
             log_err("record workspace", Err(e));
             None

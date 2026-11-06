@@ -227,18 +227,20 @@ pub fn save(workspace: &Path, opts: &SaveOptions) -> Result<String, CheckpointEr
     if busy::has_unmerged_entries(&root)? {
         return Err(CheckpointError::UnresolvedConflicts);
     }
-    let index_tree = git.run(["write-tree"])?;
-
-    // Full working tree via a temp index seeded with the real index tree, so
-    // tracked files that match .gitignore are kept (ignore rules only apply
-    // to untracked paths). The index file itself must not exist beforehand.
-    let worktree_tree = {
-        let tmp = TempIndexDir::create(&root, "chkpt-index")?;
-        let tmp_git = Git::new(&root).env("GIT_INDEX_FILE", tmp.index_path());
-        tmp_git.run(["read-tree", &index_tree])?;
-        tmp_git.run(["add", "-A", "--", "."])?;
-        tmp_git.run(["write-tree"])?
-    };
+    // Both trees come from a private copy of the real index: `write-tree`
+    // takes `index.lock` on the index it reads, so running it on the real
+    // index fails whenever another git process in this worktree holds the
+    // lock (#435). Git replaces the index by rename, so the copy is a whole
+    // index, and it keeps stat info, so `add -A` only rehashes changed files.
+    // Tracked files that match .gitignore stay in the worktree tree (ignore
+    // rules only apply to untracked paths).
+    let tmp = TempIndexDir::create(&root, "chkpt-index")?;
+    copy_real_index(&root, &tmp.index_path())?;
+    let tmp_git = Git::new(&root).env("GIT_INDEX_FILE", tmp.index_path());
+    let index_tree = tmp_git.run(["write-tree"])?;
+    tmp_git.run(["add", "-A", "--", "."])?;
+    let worktree_tree = tmp_git.run(["write-tree"])?;
+    drop(tmp);
 
     let created = iso_utc(now);
     let mut msg = format!(
@@ -426,6 +428,23 @@ fn current_tree(root: &Path, git: &Git) -> Result<String, CheckpointError> {
     }
     tmp_git.run(["add", "-A", "--", "."])?;
     tmp_git.run(["write-tree"])
+}
+
+/// Copy the worktree's index to `dest` without taking its lock. A repository
+/// with no index yet (nothing ever staged) leaves `dest` absent, which git
+/// reads as an empty index, as it would the real one.
+fn copy_real_index(root: &Path, dest: &Path) -> Result<(), CheckpointError> {
+    let path = PathBuf::from(Git::new(root).run(["rev-parse", "--git-path", "index"])?);
+    let path = if path.is_relative() {
+        root.join(path)
+    } else {
+        path
+    };
+    match fs::copy(&path, dest) {
+        Ok(_) => Ok(()),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
+        Err(e) => Err(CheckpointError::Io(e)),
+    }
 }
 
 /// Temporary index directory under the worktree's git dir, removed on drop.

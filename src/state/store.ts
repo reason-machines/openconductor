@@ -9,8 +9,13 @@ import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
-import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, sectionsFromDb, type DbNavSection, type NavSection } from "./navigationSections";
+import { withActivity } from "./nextUnread";
+import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, reorderSection, sectionOf, sectionsFromDb, withoutWorkspace, type DbNavSection, type NavSection } from "./navigationSections";
 import { sameRepoRecord } from "./addRepo";
+import { archiveWorkspace, deleteWorkspace, emitArchiveEvent, startArchive, startUnarchive, rememberBrowserArchived, stopWorkspaceAgents, takeBrowserArchived, unarchiveWorkspace, workspaceAgentStatus, type ArchiveMode } from "../workspace/archive";
+import { scriptsConfig, startSetup } from "../scripts/api";
+import { workspaceRef } from "../scripts/model";
+import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -32,11 +37,27 @@ export type Action =
   /** `userSet` marks a rename the user made, which blocks the automatic first-message rename. */
   /** `keepPlaceholder`: a name-only rename from the Rename dialog leaves `placeholder_branch_name` alone. */
   | { type: "renameWorkspace"; repoId: string; workspaceId: string; name?: string; branch?: string; userSet?: boolean; keepPlaceholder?: boolean }
-  | { type: "archiveWorkspace"; repoId: string; workspaceId: string }
+  /**
+   * Full archive (`archive_workspace`). `mode` "discardGitOperationState" is the
+   * retry from the Git-operation warning; `stopRunningAgents` the confirmed
+   * "Stop agents and archive".
+   */
+  | { type: "archiveWorkspace"; repoId: string; workspaceId: string; mode?: ArchiveMode; stopRunningAgents?: boolean }
   /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). `prDescription` and `pr` left out keep what the row has. */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
   /** The open workspace's agent started or finished a turn; the sidebar row shows it working. */
   | { type: "setWorkspaceWorking"; repoId: string; workspaceId: string; working: boolean }
+  /** Open an archived workspace from the archived list: read-only, with Unarchive. */
+  | { type: "openArchivedWorkspace"; repoId: string; workspace: Workspace }
+  /**
+   * Unarchive by id (the archived list, the archived workspace's banner and
+   * header, the restore dialog's "Restore to new branch" with `useNewBranch`).
+   */
+  | { type: "unarchiveWorkspace"; repoId: string; workspaceId: string; useNewBranch?: boolean }
+  /** "Delete permanently" / "Delete anyway" after a failed archive: drop the row and its folder. */
+  | { type: "deleteWorkspace"; repoId: string; workspaceId: string }
+  /** The workspace is back in `repos`: stop showing it as archived. */
+  | { type: "unarchivedWorkspace"; workspaceId: string }
   /** Unarchive from the archive-on-merge toast: put the workspace back where it was. */
   | { type: "restoreWorkspace"; repoId: string; workspace: Workspace }
   /** The target-branch picker saved `intended_target_branch` (useTargetBranch writes the row). */
@@ -56,10 +77,14 @@ export type Action =
   | { type: "setWorkspaceUnread"; repoId: string; workspaceId: string; unread: boolean }
   | { type: "setWorkspacePinned"; repoId: string; workspaceId: string; pinned: boolean; at?: number }
   | { type: "setWorkspaceStatus"; repoId: string; workspaceId: string; status: WorkspaceStatusValue }
+  /** The user sent a message at `at`: last activity moves forward (chat_messages_save writes the same to conductor.db). */
+  | { type: "touchWorkspace"; repoId: string; workspaceId: string; at: number }
   /* sidebar: user sections (navigationSections.ts) */
   | { type: "createSection"; section: NavSection; beforeSectionId?: string }
   | { type: "editSection"; sectionId: string; name: string; emoji?: string }
   | { type: "deleteSection"; sectionId: string }
+  /** Drag a section header to `toIndex` (Conductor's `bY`). */
+  | { type: "reorderSection"; sectionId: string; toIndex: number }
   /** Move a workspace into `sectionId`, or out of its section with null. */
   | { type: "assignSection"; workspaceId: string; sectionId: string | null }
   | { type: "hydrateSections"; sections: NavSection[]; updatedAt: number }
@@ -119,7 +144,7 @@ export function reducer(state: AppState, action: Action): AppState {
     case "addWorkspace": {
       const ws: Workspace = { ...action.workspace, status: "idle", diff: { added: 0, removed: 0 }, createdAt: Date.now() };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, collapsed: false, workspaces: [...r.workspaces, ws] } : r));
-      return { repos, selection: { kind: "workspace", repoId: action.repoId, workspaceId: ws.id } };
+      return { ...state, repos, selection: { kind: "workspace", repoId: action.repoId, workspaceId: ws.id } };
     }
     case "renameWorkspace": {
       const rename = (w: Workspace): Workspace =>
@@ -159,9 +184,16 @@ export function reducer(state: AppState, action: Action): AppState {
       );
       return { ...state, repos };
     }
+    case "openArchivedWorkspace":
+      return { ...state, archivedOpen: { repoId: action.repoId, workspace: action.workspace }, selection: { kind: "workspace", repoId: action.repoId, workspaceId: action.workspace.id } };
+    case "unarchiveWorkspace":
+      return state;
+    case "unarchivedWorkspace":
+      return state.archivedOpen?.workspace.id === action.workspaceId ? { ...state, archivedOpen: undefined } : state;
     case "setWorkspaceTargetBranch":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, targetBranch: action.branch }));
-    case "archiveWorkspace": {
+    case "archiveWorkspace":
+    case "deleteWorkspace": {
       const repos = state.repos.map((r) =>
         r.id === action.repoId ? { ...r, workspaces: r.workspaces.filter((w) => w.id !== action.workspaceId) } : r,
       );
@@ -189,20 +221,28 @@ export function reducer(state: AppState, action: Action): AppState {
         return old ? { ...w, status: old.status, ...(old.pr !== undefined ? { pr: old.pr } : {}) } : w;
       };
       const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map(keepLive) }));
-      return { ...state, repos, selection: validSelection(state.selection, repos) };
+      const viewingArchived = state.selection.kind === "workspace" && state.archivedOpen?.workspace.id === state.selection.workspaceId;
+      return { ...state, repos, selection: viewingArchived ? state.selection : validSelection(state.selection, repos) };
     }
     case "setWorkspaceUnread":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, unread: action.unread || undefined }));
-    case "setWorkspacePinned":
-      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
+    case "setWorkspacePinned": {
+      const next = updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, pinnedAt: action.pinned ? (action.at ?? Date.now()) : undefined }));
+      // Conductor's pin mutation unassigns the workspace from its section first (index-BGEQ8YjU.js @3315700).
+      return action.pinned && sectionOf(state.sections, action.workspaceId) ? withSections(next, withoutWorkspace(state.sections ?? [], action.workspaceId)) : next;
+    }
     case "setWorkspaceStatus":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
+    case "touchWorkspace":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => withActivity(w, action.at));
     case "createSection":
       return withSections(state, createSection(state.sections ?? [], action.section, action.beforeSectionId));
     case "editSection":
       return withSections(state, editSection(state.sections ?? [], { id: action.sectionId, name: action.name, emoji: action.emoji }));
     case "deleteSection":
       return withSections(state, deleteSection(state.sections ?? [], action.sectionId));
+    case "reorderSection":
+      return withSections(state, reorderSection(state.sections ?? [], action.sectionId, action.toIndex));
     case "assignSection": {
       const next = withSections(state, assignWorkspace(state.sections ?? [], action.workspaceId, action.sectionId));
       if (action.sectionId === null) return next;
@@ -230,6 +270,8 @@ const demoPr = (over: Partial<RowPr>): RowPr => ({
 export function demoState(): AppState {
   const ws = (name: string, status: Workspace["status"], added: number, removed: number): Workspace => ({
     id: newId(), name, branch: name, status, diff: { added, removed }, createdAt: Date.now(),
+    // A worktree path so the right panel's All files tab has a tree (demo files outside Tauri).
+    path: `/Users/you/conductor/workspaces/openconductor/${name}`,
   });
   const repos: Repo[] = [
     {
@@ -345,22 +387,89 @@ export function useAppStore() {
     else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, demo, desktop]);
   // Writes the backend does not already record when its command runs.
+  const stateRef = useRef(state);
+  stateRef.current = state;
   const dispatch = useCallback(
     (action: Action) => {
-      rawDispatch(action);
-      if (desktop && action.type === "archiveWorkspace") {
-        invoke("db_archive_workspace", { workspaceId: action.workspaceId }).catch((err) =>
-          console.error("conductor.db: could not archive workspace", err),
-        );
+      if (action.type === "archiveWorkspace") {
+        const ws = stateRef.current.repos.find((r) => r.id === action.repoId)?.workspaces.find((w) => w.id === action.workspaceId);
+        void startArchive(action, {
+          status: workspaceAgentStatus(action.workspaceId),
+          hide: () => {
+            if (!desktop && ws) rememberBrowserArchived(action.repoId, ws);
+            rawDispatch(action);
+          },
+          stopAgents: () => stopWorkspaceAgents(action.workspaceId),
+          run: desktop ? (mode) => archiveWorkspace(action.workspaceId, mode) : null,
+          reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
+          emit: emitArchiveEvent,
+        });
+        return;
       }
+      if (action.type === "deleteWorkspace") {
+        rawDispatch(action);
+        if (desktop)
+          deleteWorkspace(action.workspaceId).then(
+            () => undefined,
+            (err) => {
+              console.error("delete_workspace failed", err);
+              void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined);
+            },
+          );
+        return;
+      }
+      if (action.type === "unarchiveWorkspace") {
+        const { repoId, workspaceId } = action;
+        const done = () => rawDispatch({ type: "unarchivedWorkspace", workspaceId });
+        if (!desktop) {
+          // Browser stand-in: put the archived row back.
+          const a = takeBrowserArchived(workspaceId) ?? (stateRef.current.archivedOpen?.workspace.id === workspaceId ? stateRef.current.archivedOpen : undefined);
+          void startUnarchive(action, {
+            show: () => {
+              if (a) rawDispatch({ type: "restoreWorkspace", repoId, workspace: { ...a.workspace, status: "idle", state: "ready" } });
+              done();
+            },
+            run: null,
+            setup: () => undefined,
+            reload: () => undefined,
+            emit: emitArchiveEvent,
+          });
+          return;
+        }
+        void startUnarchive(action, {
+          show: () => undefined,
+          run: () => unarchiveWorkspace(workspaceId, { useNewBranch: action.useNewBranch }),
+          // Restored: reload the rows (the workspace is `ready` again, maybe on a new branch), then rerun setup.
+          setup: () =>
+            void loadReposFromDb().then((repos) => {
+              rawDispatch({ type: "hydrate", repos });
+              done();
+              const repo = repos.find((r) => r.id === repoId);
+              const ws = repo?.workspaces.find((w) => w.id === workspaceId);
+              if (ws) void rerunSetup(repo, ws);
+            }, () => undefined),
+          reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
+          emit: emitArchiveEvent,
+        });
+        return;
+      }
+      if (action.type === "restoreWorkspace") {
+        const repo = stateRef.current.repos.find((r) => r.id === action.repoId);
+        void startUnarchive(action, {
+          show: () => rawDispatch(action),
+          run: desktop ? () => unarchiveWorkspace(action.workspace.id) : null,
+          setup: () => void rerunSetup(repo, action.workspace),
+          reload: () => void loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined),
+          emit: emitArchiveEvent,
+        });
+        return;
+      }
+      rawDispatch(action);
       // Optimistic, as in Conductor: on a failed write, reload the rows the database has.
       const rollback = (what: string) => (err: unknown) => {
         console.error(`conductor.db: could not ${what}`, err);
         loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), () => undefined);
       };
-      if (desktop && action.type === "restoreWorkspace") {
-        invoke("db_unarchive_workspace", { workspaceId: action.workspace.id }).catch(rollback("unarchive workspace"));
-      }
       if (desktop && action.type === "setRepoHidden") {
         invoke("db_set_repo_hidden", { repoId: action.repoId, hidden: action.hidden }).catch(rollback("hide repository"));
       }
@@ -376,4 +485,18 @@ export function useAppStore() {
     [desktop],
   );
   return [state, dispatch] as const;
+}
+
+/** Conductor reruns the setup script after an unarchive; a failure shows through the setup watch. */
+async function rerunSetup(repo: Repo | undefined, ws: Workspace): Promise<void> {
+  const ref = repo && workspaceRef({ id: repo.id, path: repo.path, defaultBranch: repo.defaultBranch }, { id: ws.id, name: ws.name, path: ws.path });
+  if (!ref) return;
+  const workspace = { ...ref, targetBranch: ws.targetBranch ?? null };
+  try {
+    if (!(await scriptsConfig(workspace)).setup) return;
+    watchSetup(ws.id);
+    if (!(await startSetup(workspace))) unwatchSetup(ws.id);
+  } catch {
+    unwatchSetup(ws.id);
+  }
 }

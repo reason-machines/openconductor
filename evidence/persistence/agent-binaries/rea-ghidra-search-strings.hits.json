@@ -1,0 +1,53 @@
+{
+ "note": "Trimmed from REA output ~/code/conductor-rea-work/out/agentbin_strings.json on sven m5 max (search ran 2026-11-05 08:45-09:39). Strings are untrusted data from the Conductor binary. U+FFFD format holes shown as {}. command_names lists the defined-data block holding each Tauri command name (0x10150072e) plus up to three other blocks with that name in a symbol.",
+ "evidence_id": "ev_881703363c828fefe43656ecd92177af42ad312f17b1b6ba51d306ae9026eae8",
+ "operation": "search_strings",
+ "provider": {"id": "ghidra", "name": "Ghidra", "version": "12.1.4"},
+ "subject": {
+  "name": "conductor",
+  "sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+  "format": "mach-o",
+  "architecture": "arm64"
+ },
+ "parameters": {
+  "pattern": "binary_manager|agent-binaries|agent_binar|verified_mtime|downloaded_at_unix|\\.meta|bytes_?[Dd]ownloaded|next_?[Aa]ttempt|sha256 mismatch|checksum|acp-providers|updater",
+  "mode": "regex",
+  "case_sensitive": false
+ },
+ "confidence": "observed",
+ "raw_result_count": 1332,
+ "command_names": {
+  "get_agent_binary_state": ["0x10150072e", "0x1039bd0a3"],
+  "request_agent_binary_download": ["0x10150072e", "0x1038585e3", "0x1039a0913", "0x1039b8b9b"],
+  "redownload_agent_binary": ["0x10150072e", "0x103858667", "0x1039b8c1f", "0x1039bd11d"],
+  "remove_agent_binary": ["0x10150072e", "0x1039bd02c"],
+  "set_agent_binary_failure_injection": ["0x10150072e", "0x1039bd29f"],
+  "prefetch_agent_binaries_from_updater_endpoint": ["0x10150072e", "0x10385a404", "0x1039a0b16", "0x1039bd325"]
+ },
+ "matches": {
+  "CONDUCTOR_AGENT_BINARIES_DIR": ["0x102afc487"],
+  "CONDUCTOR_BINARY_MANAGER": ["0x102af8767"],
+  "[binary_manager] GC failed for {}": ["0x102cb85b3"],
+  "[binary_manager] failed to GC {}": ["0x102cb84c9"],
+  "[binary_manager] failed to emit progress event: {}": ["0x102cb83e2"],
+  "[binary_manager] launch-time GC failed for {}": ["0x102cb8527"],
+  "[binary_manager] prefetch {}": ["0x102cb7a09"],
+  "[binary_manager] prefetch: failed to mkdir {}": ["0x102cb84f3"],
+  "[binary_manager] redownload {}": ["0x102cb7e53"],
+  "[binary_manager] requested download for {}": ["0x102cb7e7f"],
+  "[binary_manager] startup download failed for {}": ["0x102cb857d"],
+  "[binary_manager] updater endpoint unavailable: {}": ["0x102cb8c01"],
+  "[binary_manager] {}": ["0x102cb855b", "0x102cb874e"],
+  "agent-binaries": ["0x10150fe14", "0x102afc487", "0x102afcca4", "0x102cc0d17"],
+  "binary_manager::BinaryManagerState": ["0x10150f09d"],
+  "bytesDownloaded": ["0x10151b46a", "0x102b000db"],
+  "bytesTotal": ["0x10151b46a", "0x102b000db"],
+  "downloaded_at_unix_ms": ["0x1015143c8", "0x10151b506"],
+  "get_agent_binary_status": ["0x103d081c7"],
+  "nextAttemptUnixMs": ["0x10151b46a", "0x102b000db"],
+  "sha256 mismatch (expected {}": ["0x102cb88d5"],
+  "sha256 mismatch for {}": ["0x102cb8486"],
+  "src-tauri/src/binary_manager.rs": ["0x102cb79e3", "0x102cbf5d1"],
+  "verified_mtime_unix_ms": ["0x1015143c8", "0x10151b506"]
+ }
+}

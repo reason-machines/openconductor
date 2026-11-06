@@ -37,6 +37,11 @@ interface Live {
   host: HTMLDivElement;
   ack: AckBatcher;
   opened: boolean;
+  /**
+   * Opened by the app, not the user (a workspace's first terminal, restored
+   * tabs). Its first attach leaves the keyboard where the user is typing.
+   */
+  quiet: boolean;
   /** Spawn settings, reused by a new tab opened from this one (the panel's command, not a big terminal's). */
   cwd: string;
   initialCommand?: string;
@@ -160,9 +165,22 @@ function cssVar(name: string, fallback: string): string {
 /** `#rrggbb` plus an alpha byte; other colour forms pass through unchanged. */
 const withAlpha = (hex: string, alpha: string) => (/^#[0-9a-f]{6}$/i.test(hex) ? hex + alpha : hex);
 
-/** Open a new tab running the login shell in `cwd`; resolves to its id. */
-export const openTab = (workspaceId: string, cwd: string, initialCommand?: string): Promise<string> =>
-  startTab(workspaceId, cwd, initialCommand);
+/**
+ * Open a new tab running the login shell in `cwd`; resolves to its id. `quiet`
+ * when the app opens it by itself, so it does not take focus from a text field.
+ */
+export const openTab = (workspaceId: string, cwd: string, initialCommand?: string, opts: { quiet?: boolean } = {}): Promise<string> =>
+  startTab(workspaceId, cwd, initialCommand, undefined, undefined, opts.quiet);
+
+/**
+ * ⌘⇧T from outside a terminal: open a tab running the Big terminal preset
+ * (`run`, from `bigTabRequest`). The workspace's saved tabs come back first, so
+ * the panel shown afterwards finds tabs and opens no plain shell of its own.
+ */
+export async function openBigTab(workspaceId: string, cwd: string, run: { command: string | undefined }, initialCommand?: string): Promise<string> {
+  await restoreWorkspaceTabs(workspaceId, cwd, initialCommand);
+  return startTab(workspaceId, cwd, initialCommand, undefined, run);
+}
 
 /**
  * Reopen the tabs `workspaceId` had when the app last ran, each with its saved
@@ -180,7 +198,7 @@ async function restoreOnce(workspaceId: string, cwd: string, initialCommand?: st
   const saved = await tabList.workspace(workspaceId);
   for (const tab of saved?.tabs ?? []) {
     if (live.has(tab.id)) continue;
-    await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }).catch(() => {});
+    await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }, undefined, true).catch(() => {});
   }
   hydrated.add(workspaceId);
   dispatch(workspaceId, { type: "restored", activeId: saved?.activeId ?? null, next: saved?.next ?? 1 });
@@ -197,6 +215,7 @@ async function startTab(
   initialCommand?: string,
   restore?: { id: string; title: string },
   run?: { command: string | undefined },
+  quiet = false,
 ): Promise<string> {
   // Saved tabs come back as they were; new ones respect Tab Freak Mode's limit.
   const tabs = getTabs(workspaceId);
@@ -243,6 +262,7 @@ async function startTab(
     host,
     ack,
     opened: false,
+    quiet,
     cwd,
     initialCommand,
     startedAt: record?.startedAt ?? new Date().toISOString(),
@@ -291,6 +311,13 @@ async function spawnIn(dirs: string[], spawn: (dir: string) => Promise<unknown>)
   }
 }
 
+/** Focus is in a text field outside the terminal panel: the chat box, a dialog's input. */
+function typingElsewhere(): boolean {
+  const a = document.activeElement;
+  if (!(a instanceof HTMLElement) || a.closest(".terminal-panel")) return false;
+  return a.isContentEditable || a instanceof HTMLTextAreaElement || a instanceof HTMLInputElement || a instanceof HTMLSelectElement;
+}
+
 /** Show terminal `id` inside `container`; returns the detach function. */
 export function attachTab(id: string, container: HTMLElement): () => void {
   const l = live.get(id);
@@ -304,7 +331,11 @@ export function attachTab(id: string, container: HTMLElement): () => void {
     if (l.host.clientWidth > 0) l.fit.fit();
   };
   refit();
-  l.term.focus();
+  // A tab takes the keyboard when shown. A quiet tab's first showing lands a
+  // moment after the workspace opens (it waits on the PTY listener), so it
+  // leaves focus in a text field the user is typing in, such as the chat box.
+  if (!(l.quiet && typingElsewhere())) l.term.focus();
+  l.quiet = false;
   const ro = new ResizeObserver(refit);
   ro.observe(container);
   return () => {

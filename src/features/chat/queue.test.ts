@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  actionStep,
   beginEdit,
   cancelEdit,
   canSteerNow,
@@ -188,4 +189,41 @@ test("a queued message keeps its attachments until it sends", () => {
   assert.deepEqual(s.queue.items[0]!.attachments, [file]);
   s = turnEnded(s.queue, "completed");
   assert.deepEqual(s.effects, [{ kind: "start", text: "with a file", attachments: [file] }]);
+});
+
+test("a permission request holds the turn: follow-ups queue, Stop cancels, an answer resumes working", async () => {
+  const { permissionRequested, permissionAnswered, turnRunning } = await import("./queue.ts");
+  let q = submit(emptyQueue(), "go", "queue").queue;
+  q = permissionRequested(q);
+  assert.equal(q.status, "needs_user_permission");
+  assert.ok(turnRunning(q.status));
+  assert.equal(canSteerNow(q, true), false, "nothing to steer into while Reason waits on the user");
+
+  const followUp = submit(q, "and then", "steer");
+  assert.deepEqual(followUp.effects, [], "the follow-up waits");
+  assert.equal(followUp.queue.items.length, 1);
+  assert.deepEqual(steerQueued(followUp.queue, followUp.queue.items[0]!.id).effects, []);
+
+  assert.equal(permissionAnswered(q).status, "working");
+  assert.equal(permissionRequested(emptyQueue()).status, "idle", "only a running turn asks");
+  assert.equal(permissionAnswered(emptyQueue()).status, "idle");
+
+  const stopped = stop(q);
+  assert.equal(stopped.queue.status, "cancelling");
+  assert.deepEqual(stopped.effects, [{ kind: "cancel", hard: false }]);
+});
+
+test("queue-panel actions run through actionStep (shared by the Reason and Codex chats)", () => {
+  let q = submit(emptyQueue(), "first", "queue").queue;
+  q = submit(q, "second", "queue").queue;
+  q = submit(q, "third", "queue").queue;
+  assert.deepEqual(q.items.map((m) => m.text), ["second", "third"]);
+  const moved = actionStep(q, { kind: "move", id: q.items[1]!.id, by: -1 });
+  assert.ok(!("effects" in moved));
+  assert.deepEqual(moved.items.map((m) => m.text), ["third", "second"]);
+  const idle = turnEnded(moved, "completed");
+  assert.deepEqual(idle.effects, [{ kind: "start", text: "third", attachments: [] }]);
+  const del = actionStep(idle.queue, { kind: "delete", id: idle.queue.items[0]!.id });
+  assert.ok("effects" in del);
+  assert.deepEqual(del.queue.items, []);
 });

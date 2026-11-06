@@ -39,7 +39,12 @@ export interface DbWorkspaceRow {
   prDescription: string | null;
   /** `workspaces.number` (`W-<n>`); null for workspaces from before numbering. */
   number: number | null;
+  /** `initialization_log_path` / `initialization_files_copied`; absent from rows of an older backend. */
+  initializationLogPath?: string | null;
+  initializationFilesCopied?: number | null;
   createdAt: string;
+  /** `workspaces.updated_at`; absent from rows of an older backend. */
+  updatedAt?: string;
 }
 
 /** What the desktop app keeps in localStorage. */
@@ -58,6 +63,34 @@ function sqliteTime(s: string): number {
   return Number.isNaN(t) ? 0 : t;
 }
 
+/** One `db_list_workspaces` row as a workspace; an archived row gets status "archived". */
+export function workspaceFromRow(w: DbWorkspaceRow): Workspace {
+  return {
+    id: w.id,
+    name: w.workspaceName ?? w.directoryName,
+    workspaceName: w.workspaceName,
+    directoryName: w.directoryName,
+    branch: w.branch,
+    status: w.state === "archived" ? "archived" : "idle",
+    diff: { added: 0, removed: 0 },
+    createdAt: sqliteTime(w.createdAt),
+    updatedAt: w.updatedAt ? sqliteTime(w.updatedAt) : undefined,
+    path: w.workspacePath ?? undefined,
+    placeholderBranchName: w.placeholderBranchName,
+    targetBranch: w.intendedTargetBranch ?? null,
+    /* sidebar: pin, unread and status columns */
+    pinnedAt: w.pinnedAt ? sqliteTime(w.pinnedAt) : undefined,
+    unread: w.unread || undefined,
+    manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
+    derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
+    prTitle: w.prTitle ?? null,
+    prDescription: w.prDescription ?? null,
+    number: w.number ?? null,
+    state: w.state,
+    userSetWorkspaceName: w.userSetWorkspaceName || undefined,
+  };
+}
+
 export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], collapsed: Iterable<string>): Repo[] {
   const folded = new Set(collapsed);
   // Hidden repos stay in the list; the sidebar shows them behind its "show hidden" toggle.
@@ -73,31 +106,7 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
       icon: r.icon,
       workspaces: workspaces
         .filter((w) => w.repositoryId === r.id && !HIDDEN_STATES.has(w.state))
-        .map(
-          (w): Workspace => ({
-            id: w.id,
-            name: w.workspaceName ?? w.directoryName,
-            workspaceName: w.workspaceName,
-            directoryName: w.directoryName,
-            branch: w.branch,
-            status: "idle",
-            diff: { added: 0, removed: 0 },
-            createdAt: sqliteTime(w.createdAt),
-            path: w.workspacePath ?? undefined,
-            placeholderBranchName: w.placeholderBranchName,
-            targetBranch: w.intendedTargetBranch ?? null,
-            /* sidebar: pin, unread and status columns */
-            pinnedAt: w.pinnedAt ? sqliteTime(w.pinnedAt) : undefined,
-            unread: w.unread || undefined,
-            manualStatus: isWorkspaceStatus(w.manualStatus) ? w.manualStatus : undefined,
-            derivedStatus: isWorkspaceStatus(w.derivedStatus) ? w.derivedStatus : undefined,
-            prTitle: w.prTitle ?? null,
-            prDescription: w.prDescription ?? null,
-            number: w.number ?? null,
-            state: w.state,
-            userSetWorkspaceName: w.userSetWorkspaceName || undefined,
-          }),
-        ),
+        .map(workspaceFromRow),
     }));
 }
 

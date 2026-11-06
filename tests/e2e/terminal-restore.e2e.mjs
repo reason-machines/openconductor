@@ -12,6 +12,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
+import { showTerminalPanel } from "./terminal-panel.mjs";
 
 const CANDIDATES = [
   process.env.CHROME_PATH,
@@ -87,8 +88,8 @@ function fakeBackend(shellState) {
           return shellState.repos.map((r, i) => ({ id: r.id, name: r.name, rootPath: r.path, remoteUrl: null, defaultBranch: r.defaultBranch, displayOrder: i, hidden: false, icon: null, createdAt: "2026-01-01T00:00:00Z" }));
         case "db_list_workspaces":
           return shellState.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path ?? null, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" })));
-        case "db_archive_workspace":
-          return null;
+        case "archive_workspace":
+          return { archived: true, branch: null, archiveCommit: null, notices: [] };
         case "pty_spawn": {
           const a = args.args;
           const d = disk();
@@ -226,6 +227,7 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   page.on("pageerror", (err) => errors.push(err.message));
   await page.addInitScript(fakeBackend, SHELL_STATE);
   await page.goto(base + "/");
+  await showTerminalPanel(page);
 
   // First launch: one tab; run a command and cd, open a second tab, go back to the first.
   await page.locator(".term-tab").first().waitFor();
@@ -267,6 +269,7 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
 
   // Relaunch.
   await page.reload();
+  await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 2"]);
   assert.equal(await page.locator(".term-tab.active span:not(.term-dot)").innerText(), "Terminal 1", "the saved active tab is selected");
@@ -296,6 +299,7 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   await page.waitForFunction((id) => !(id in JSON.parse(localStorage.getItem("__fake_backend_disk")).history), second, { timeout: 5000 });
   assert.ok((await disk(page)).history[first], "the open tab's saved session stays");
   await page.reload();
+  await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 1);
   await waitForScreen(page, "Previous terminal session restored");
   await page.getByRole("button", { name: "New terminal tab" }).click();
@@ -316,7 +320,8 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
 
   // Archiving the workspace ends its terminals and deletes its saved sessions and tab list.
   await page.waitForFunction(() => Object.keys(JSON.parse(localStorage.getItem("__fake_backend_disk")).history).length === 2, null, { timeout: 5000 });
-  await page.getByTitle("Archive workspace").click();
+  await page.locator('[data-testid="left-sidebar-workspace-item"]', { has: page.locator(".sb-ws-name", { hasText: "lisbon" }) }).click({ button: "right" });
+  await page.getByRole("menu", { name: "Workspace actions" }).getByRole("menuitem", { name: "Archive" }).click();
   await page.waitForFunction(() => (JSON.parse(localStorage.getItem("__fake_backend_disk")).workspaceDeletes ?? []).includes("w1"), null, { timeout: 5000 });
   const archived = await disk(page);
   assert.deepEqual(archived.history, {});
@@ -342,6 +347,7 @@ test("a tab list saved in the webview's localStorage by an earlier build moves t
   });
   await page.addInitScript(fakeBackend, SHELL_STATE);
   await page.goto(base + "/");
+  await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   assert.deepEqual(await tabTitles(page), ["Terminal 2", "Terminal 5"]);
   assert.equal(await page.locator(".term-tab.active span:not(.term-dot)").innerText(), "Terminal 5");
@@ -351,6 +357,7 @@ test("a tab list saved in the webview's localStorage by an earlier build moves t
 
   // The next launch reads the backend's copy; the counter carried over.
   await page.reload();
+  await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   await page.getByRole("button", { name: "New terminal tab" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 3);

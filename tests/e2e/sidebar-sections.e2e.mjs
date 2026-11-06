@@ -130,3 +130,54 @@ test("sections: create, move in and out, edit, delete", async () => {
   assert.ok((await rowsIn(repoGroup(page, "api-server"))).includes("Brisk otter"));
   await page.close();
 });
+
+// parity.create.in-section: Conductor's section menu starts with Create workspace
+// (renderApp oBi), which opens the composer on that section; Create then reads
+// "Create in <name>" and the new workspace lands in the section. With no section
+// chosen, the split button's "Create in section" menu lists every section.
+test("create a workspace directly inside a section", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${base}/?demo=1`);
+  await row(page, "Quiet harbor").waitFor();
+  for (const name of ["Focus", "Backend"]) {
+    await page.getByRole("button", { name: "My workspaces actions" }).click();
+    await page.getByRole("menuitem", { name: "New section…" }).click();
+    await dialog(page, "New section").getByLabel("Section name").fill(name);
+    await dialog(page, "New section").getByRole("button", { name: "Create" }).click();
+    await section(page, name).waitFor();
+  }
+
+  // The section menu's first item, then Create in <section>.
+  await page.getByRole("button", { name: "Focus actions" }).click();
+  const items = await page.getByRole("menu").getByRole("menuitem").allTextContents();
+  assert.deepEqual(items, ["Create workspace", "Edit section", "New section…", "Delete section"]);
+  await page.getByRole("menuitem", { name: "Create workspace" }).click();
+  const create = dialog(page, "New workspace");
+  await create.waitFor();
+  assert.equal(await create.getByRole("button", { name: "Create in section" }).count(), 0);
+  // The composer names the workspace after a city, so the new row is the section's only one.
+  const before = await page.locator(NAMES).allTextContents();
+  await create.getByRole("button", { name: "Create in Focus" }).click();
+  await create.waitFor({ state: "detached" });
+  await section(page, "Focus").locator(NAMES).first().waitFor();
+  const [inFocus, ...extraFocus] = await rowsIn(section(page, "Focus"));
+  assert.deepEqual(extraFocus, []);
+  assert.ok(!before.includes(inFocus), `${inFocus} should be the new workspace`);
+
+  // From the plain Create: the split menu lists the sections and creates into the chosen one.
+  await page.locator("button.sb-row", { has: page.locator(".sb-row-label", { hasText: /^Create$/ }) }).click();
+  const plain = dialog(page, "New workspace");
+  await plain.waitFor();
+  assert.equal(await plain.getByRole("button", { name: "Create", exact: true }).count(), 1);
+  await plain.getByRole("button", { name: "Create in section" }).click();
+  const menu = plain.getByRole("menu");
+  assert.deepEqual(await menu.getByRole("menuitem").allTextContents(), ["Focus", "Backend"]);
+  await menu.getByRole("menuitem", { name: "Backend" }).click();
+  await plain.waitFor({ state: "detached" });
+  await section(page, "Backend").locator(NAMES).first().waitFor();
+  const [inBackend, ...extraBackend] = await rowsIn(section(page, "Backend"));
+  assert.deepEqual(extraBackend, []);
+  assert.ok(!before.includes(inBackend) && inBackend !== inFocus, `${inBackend} should be the second new workspace`);
+  assert.deepEqual(await rowsIn(section(page, "Focus")), [inFocus]);
+  await page.close();
+});

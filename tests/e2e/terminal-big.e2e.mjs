@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
+import { showTerminalPanel } from "./terminal-panel.mjs";
 
 const CANDIDATES = [
   process.env.CHROME_PATH,
@@ -86,8 +87,8 @@ function fakeBackend(shellState) {
           return shellState.repos.map((r, i) => ({ id: r.id, name: r.name, rootPath: r.path, remoteUrl: null, defaultBranch: r.defaultBranch, displayOrder: i, hidden: false, icon: null, createdAt: "2026-01-01T00:00:00Z" }));
         case "db_list_workspaces":
           return shellState.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path ?? null, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" })));
-        case "db_archive_workspace":
-          return null;
+        case "archive_workspace":
+          return { archived: true, branch: null, archiveCommit: null, notices: [] };
         case "get_settings":
           return structuredClone(settings);
         case "update_settings": {
@@ -140,10 +141,21 @@ test("Big terminal mode: ⌘⇧T does nothing while off; on, it opens a tab runn
   page.on("pageerror", (err) => errors.push(err.message));
   await page.addInitScript(fakeBackend, SHELL_STATE);
   await page.goto(base + "/");
+  // Conductor's default workspace layout has no terminal and no header Terminal button.
+  await page.locator(".ws-header").waitFor();
+  assert.equal(await page.locator(".terminal-panel").count(), 0);
+  assert.equal(await page.locator(".ws-header").getByRole("button", { name: "Terminal", exact: true }).count(), 0);
+  // Off (Conductor's default): ⌘⇧T outside a terminal opens nothing, not even the panel.
+  await page.keyboard.press("Meta+Shift+t");
+  await page.waitForTimeout(300);
+  assert.equal(await page.locator(".terminal-panel").count(), 0);
+  assert.deepEqual(await spawns(page), []);
+  // ⌘J shows the panel with one plain shell.
+  await showTerminalPanel(page);
   await page.waitForFunction(() => window.__fake.spawns.length === 1 && document.querySelector(".term-mount .xterm-rows")?.textContent?.includes("/repo$"));
   assert.deepEqual(await spawns(page), [null]);
 
-  // Off (Conductor's default): the key opens nothing.
+  // Off: inside the terminal the key opens nothing either.
   await bigTab(page);
   await page.waitForTimeout(300);
   assert.deepEqual(await spawns(page), [null]);
@@ -174,6 +186,7 @@ test("Big terminal mode: ⌘⇧T does nothing while off; on, it opens a tab runn
   await group.getByText("Codex", { exact: true }).click();
   await page.waitForFunction(() => window.__fake.saves.at(-1)?.terminal?.big_terminal_preset === "codex");
   await page.getByRole("button", { name: "Back" }).click();
+  await showTerminalPanel(page);
   await bigTab(page);
   await page.waitForFunction(() => window.__fake.spawns.length === 2);
   assert.deepEqual(await spawns(page), [null, 'codex -c model_reasoning_effort="high" --ask-for-approval never --sandbox danger-full-access']);
@@ -183,6 +196,21 @@ test("Big terminal mode: ⌘⇧T does nothing while off; on, it opens a tab runn
   await page.keyboard.press("Meta+t");
   await page.waitForFunction(() => window.__fake.spawns.length === 3);
   assert.equal((await spawns(page))[2], null);
+
+  // Outside a terminal, with the panel hidden (⌘J), ⌘⇧T shows it with a new big terminal that has the keyboard.
+  await page.evaluate(() => document.activeElement?.blur());
+  await page.keyboard.press("Meta+j");
+  await page.waitForFunction(() => !document.querySelector(".terminal-panel"));
+  await page.keyboard.press("Meta+Shift+t");
+  await page.waitForFunction(() => window.__fake.spawns.length === 4);
+  assert.equal((await spawns(page))[3], 'codex -c model_reasoning_effort="high" --ask-for-approval never --sandbox danger-full-access');
+  await page.locator(".terminal-panel").waitFor();
+  assert.equal(await page.locator(".term-tab").count(), 4);
+  await page.waitForFunction(() => document.activeElement?.closest(".terminal-panel .term-mount"));
+  if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/big-terminal-shortcut.png` });
+  // Close it again so the tabs below stay under the per-workspace tab limit.
+  await page.getByRole("button", { name: "Close terminal" }).last().click();
+  await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 3);
 
   // A custom command: added selected with "No command set", saved on Enter.
   await page.getByRole("button", { name: "Settings" }).click();
@@ -199,9 +227,10 @@ test("Big terminal mode: ⌘⇧T does nothing while off; on, it opens a tab runn
   await page.waitForFunction(() => window.__fake.saves.at(-1)?.terminal?.big_terminal_custom_commands?.[0]?.command === "  htop -d 5 ");
   if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/big-terminal-custom.png` });
   await page.getByRole("button", { name: "Back" }).click();
+  await showTerminalPanel(page);
   await bigTab(page);
-  await page.waitForFunction(() => window.__fake.spawns.length === 4);
-  assert.equal((await spawns(page))[3], "htop -d 5");
+  await page.waitForFunction(() => window.__fake.spawns.length === 5);
+  assert.equal((await spawns(page))[4], "htop -d 5");
 
   // Deleting the selected custom command falls back to Claude.
   await page.getByRole("button", { name: "Settings" }).click();
@@ -217,9 +246,10 @@ test("Big terminal mode: ⌘⇧T does nothing while off; on, it opens a tab runn
   await page.waitForFunction(() => window.__fake.saves.at(-1)?.experimental?.experimental_big_terminal_mode === false);
   assert.equal(await nav.getByRole("button", { name: "Big terminal" }).count(), 0);
   await page.getByRole("button", { name: "Back" }).click();
+  await showTerminalPanel(page);
   await bigTab(page);
   await page.waitForTimeout(300);
-  assert.equal((await spawns(page)).length, 4);
+  assert.equal((await spawns(page)).length, 5);
 
   assert.deepEqual(errors, []);
   await context.close();

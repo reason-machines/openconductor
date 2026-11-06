@@ -12,6 +12,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
+import { showTerminalPanel } from "./terminal-panel.mjs";
 
 const CANDIDATES = [
   process.env.CHROME_PATH,
@@ -87,8 +88,8 @@ function fakeBackend(shellState) {
           return shellState.repos.map((r, i) => ({ id: r.id, name: r.name, rootPath: r.path, remoteUrl: null, defaultBranch: r.defaultBranch, displayOrder: i, hidden: false, icon: null, createdAt: "2026-01-01T00:00:00Z" }));
         case "db_list_workspaces":
           return shellState.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path ?? null, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" })));
-        case "db_archive_workspace":
-          return null;
+        case "archive_workspace":
+          return { archived: true, branch: null, archiveCommit: null, notices: [] };
         case "get_settings":
           return structuredClone(settings);
         case "update_settings": {
@@ -149,6 +150,7 @@ test("Scrollback limit is set in MB and an open terminal keeps only that much ou
   page.on("pageerror", (err) => errors.push(err.message));
   await page.addInitScript(fakeBackend, SHELL_STATE);
   await page.goto(base + "/");
+  await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelector(".term-mount .xterm-rows")?.textContent?.includes("/repo$"));
 
   // 10 MB by default keeps 62,500 rows, so the first of 7000 is still there.
@@ -183,6 +185,7 @@ test("Scrollback limit is set in MB and an open terminal keeps only that much ou
   // scrollback plus its screen: of the 7001 lines (7000 rows and the prompt)
   // the oldest are gone and the newest kept.
   await page.getByRole("button", { name: "Back" }).click();
+  await showTerminalPanel(page);
   await page.locator(".term-mount .xterm-rows").waitFor();
   const { rows } = await page.evaluate(() => window.__fake.sizes.at(-1));
   const firstKept = 7001 - (6250 + rows) + 1;

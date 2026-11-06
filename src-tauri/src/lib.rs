@@ -8,6 +8,7 @@
 //! - `diff/`       diff viewer: git changes, unified diff parser
 //! - `quick_open/` quick open file index and fuzzy matching
 //! - `reason_acp/` the Reason agent over ACP; its commands are `reason_chat`
+//! - `codex_chat.rs` chats run by Codex (`agent::codex_runner`)
 //! - `claude_chat/` Claude Code chats with the signed-in `claude` CLI
 //! - `spotlight/`  Spotlight testing: sync a workspace into the repo root
 //!   (`spotlight_commands.rs` is its IPC layer)
@@ -19,12 +20,16 @@
 //! Those modules are added here once their owners land them.
 
 pub mod agent;
+pub mod agent_binaries;
+pub mod agent_options;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
 pub mod checkpoint;
 mod checkpoint_commands;
 mod chat_store_commands;
+pub mod codex_chat;
+mod session_status_commands;
 pub mod claude_chat;
 pub mod create_project;
 pub mod archive_on_merge;
@@ -33,21 +38,27 @@ pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
+pub mod recent_local_repos;
+mod recent_local_repos_commands;
 mod sidebar_repo_commands;
+mod repo_misc_commands;
 mod sidebar_section_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
 pub mod draft_attachments;
 pub mod github_repo;
+pub mod local_account;
 pub mod menu;
 pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
+pub mod open_in;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
 pub mod reason_chat;
+pub mod resource_usage;
 mod root_path_commands;
 pub mod scripts;
 pub mod settings;
@@ -66,6 +77,8 @@ pub mod tool_spotlighter;
 pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
+pub mod workspace_archive;
+mod workspace_archive_commands;
 
 use serde::Serialize;
 
@@ -257,6 +270,8 @@ pub fn run() {
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
             // Conductor sweeps draft-attachments/ dirs older than 30 days at start.
             draft_attachments::sweep_at_startup(&data_dir);
+            // Conductor's binary_manager: agent-binaries/ with .meta sha256 files.
+            app.manage(agent_binaries::commands::manager(app.handle(), &data_dir));
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
@@ -285,10 +300,13 @@ pub fn run() {
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
             let settings_pool = db.0.clone();
+            settings::stored_env::install(db.0.clone());
             app.manage(db);
             app.manage(workspaces);
+            app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
+            app.manage(codex_chat::CodexChats::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
@@ -326,6 +344,7 @@ pub fn run() {
             create_new_project,
             save_repo_scripts,
             workspace::commands::add_repository,
+            workspace::commands::ensure_repository,
             workspace::commands::clone_repository,
             workspace::commands::default_clone_directory,
             workspace::commands::list_repositories,
@@ -334,14 +353,17 @@ pub fn run() {
             workspace::commands::create_workspace,
             workspace::commands::list_workspaces,
             workspace::commands::rename_workspace_branch,
+            workspace_archive_commands::archive_workspace,
+            workspace_archive_commands::unarchive_workspace,
+            workspace_archive_commands::delete_workspace,
+            workspace_archive_commands::reveal_unarchive_conflict,
+            workspace_archive_commands::clear_unarchive_conflict,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
-            persistence_commands::db_archive_workspace,
             persistence_commands::db_repo_prompt,
             onboarding_commands::db_first_run_onboarding_step,
             onboarding_commands::db_finish_first_run_onboarding,
             persistence_commands::db_set_workspace_target_branch,
-            persistence_commands::db_unarchive_workspace,
             archive_on_merge_commands::repo_archive_on_merge,
             sidebar_repo_commands::db_set_repo_hidden,
             sidebar_repo_commands::db_reorder_repos,
@@ -351,12 +373,16 @@ pub fn run() {
             sidebar_workspace_commands::db_set_workspace_unread,
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
+            repo_misc_commands::repo_files_to_copy_preview,
+            repo_misc_commands::db_remove_repo,
             sidebar_repo_commands::repo_favicon,
+            recent_local_repos_commands::recent_local_repositories,
             sidebar_rename_commands::db_rename_workspace,
             sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
             diff::commands::diff_discard_file,
+            diff::commands::diff_write_file,
             checkpoint_commands::checkpoint_save,
             checkpoint_commands::checkpoint_exists,
             checkpoint_commands::checkpoint_restore,
@@ -378,7 +404,16 @@ pub fn run() {
             chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
+            reason_chat::reason_answer_permission,
+            session_status_commands::session_statuses,
+            session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
+            codex_chat::codex_cli_path,
+            codex_chat::codex_open_chat,
+            codex_chat::codex_prompt,
+            codex_chat::codex_cancel,
+            codex_chat::codex_answer,
+            codex_chat::codex_close_chat,
             claude_chat::commands::claude_cli_path,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
@@ -411,13 +446,25 @@ pub fn run() {
             terminal_commands::execute_shell_command_cancellable,
             terminal_commands::cancel_shell_command,
             app_prefs::commands::get_app_prefs,
+            agent_options::agent_system_binary,
+            agent_options::agent_config_file,
+            agent_options::open_agent_config,
+            agent_options::acp_agent_status,
             app_prefs::commands::set_app_pref,
             app_prefs::commands::record_open_in,
+            open_in::commands::open_in_apps,
+            open_in::commands::open_in_app,
             app_prefs::commands::client_instance_id,
             app_prefs::commands::graphite_cli_installed,
+            resource_usage::commands::get_resource_usage,
+            local_account::local_account,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
+            settings::stored_env::env_vars_list,
+            settings::stored_env::env_vars_set,
+            settings::stored_env::env_vars_delete,
+            settings::stored_env::env_files_loaded,
             settings::commands::update_settings,
             settings::commands::get_repo_settings,
             settings::commands::provider_status,
@@ -465,6 +512,9 @@ pub fn run() {
             draft_attachments::commands::draft_attachment_upload,
             draft_attachments::commands::draft_attachments_materialize,
             draft_attachments::commands::materialize_local_path_attachment,
+            agent_binaries::commands::get_agent_binary_state,
+            agent_binaries::commands::request_agent_binary_download,
+            agent_binaries::commands::cancel_agent_binary_download,
         ])
         .build(tauri::generate_context!())
         .expect("error while building OpenConductor")
@@ -473,6 +523,10 @@ pub fn run() {
             if let tauri::RunEvent::Exit = event {
                 if let Some(terminals) = app.try_state::<Terminals>() {
                     terminals.0.kill_all();
+                }
+                // Each Codex chat runs its own app-server.
+                if let Some(codex) = app.try_state::<codex_chat::CodexChats>() {
+                    codex.close_all();
                 }
                 // Run scripts lead their own process groups; do not orphan them.
                 if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {

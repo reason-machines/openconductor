@@ -94,6 +94,8 @@ pub mod keys {
     pub const EXPERIMENTAL_SHOW_AGENT_COST: &str = "experimental_show_agent_cost";
     /// Up to 10 chat and terminal tabs per workspace instead of 5.
     pub const EXPERIMENTAL_TAB_FREAK_MODE: &str = "experimental_tab_freak_mode";
+    /// Create workspaces on the full-screen `/create` page instead of the dialog.
+    pub const EXPERIMENTAL_NEW_WORKSPACE_PAGE: &str = "experimental_new_workspace_page";
     /// `"true"` turns Graphite stack detection off.
     pub const GRAPHITE_DISABLED: &str = "graphite_disabled";
     /// Last "Open in" app id.
@@ -118,9 +120,14 @@ pub mod keys {
     pub const CLIENT_INSTANCE_ID: &str = "client_instance_id";
     /// User id of the cloud (Roundhouse) client sign-in.
     pub const ROUNDHOUSE_CLIENT_USER_ID: &str = "roundhouse_client_user_id";
+    /// `"true"` launches Claude Code chats with `--chrome` ("Use Claude Code
+    /// with Chrome", Settings › Agents › Claude Code); unset means off.
+    pub const CHROME_MODE_ENABLED: &str = "chrome_mode_enabled";
     /// Repository id the sidebar is narrowed to ("Filter by project"); no
     /// row means all projects.
     pub const SIDEBAR_REPO_FILTER: &str = "sidebar_repo_filter";
+    /// Experimental: CPU and memory readout in the sidebar; unset means off.
+    pub const SIDEBAR_RESOURCE_USAGE: &str = "sidebar_resource_usage";
 }
 
 #[cfg(test)]

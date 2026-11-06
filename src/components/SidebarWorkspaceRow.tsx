@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState, type Dispatch, type MouseEvent } from "react";
+import { useCallback, useEffect, useState, type Dispatch, type MouseEvent, type PointerEvent } from "react";
 import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { RowStatusIcon } from "./RowStatusIcon";
-import { aggregateSessions, rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
+import { rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
 import { labelTargetBranch, workspaceLabel } from "./sidebarLabel";
 import { useBranchPrefix } from "./useBranchPrefix";
 import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
@@ -12,7 +12,7 @@ import { sidebarEntries } from "../state/sidebarOrder";
 import { sectionOf } from "../state/navigationSections";
 import { compactCount } from "../state/sidebarDiffStat";
 import { useRowDiffStat } from "./useRowDiffStat";
-import { useWorkspaceSessionStatus } from "../features/chat/useWorkspaceSession";
+import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { applyRowLookup, useRowPrPoll } from "../features/pr/sidebarPrPoller";
 import { usePrSettings } from "../features/pr/usePullRequest";
 import type { LookupResult } from "../features/pr/types";
@@ -38,10 +38,12 @@ interface Props {
   onPrLookup?: (r: LookupResult) => void;
   /** Branch prefix stripped from the label's prettified branch. */
   branchPrefix?: string;
+  /** A press that may become a drag onto a section, Pinned or My workspaces. */
+  onPointerDown?: (e: PointerEvent<HTMLButtonElement>) => void;
 }
 
 /** One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat. */
-export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix }: Props) {
+export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix, onPointerDown }: Props) {
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({
     name: ws.name,
@@ -55,7 +57,7 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
   const { ref, stat, onScreen } = useRowDiffStat(ws, targetBranch, active);
   useRowPrPoll({ ws, repoPath, onScreen, active, onResult: (r) => onPrLookup?.(r) });
   // Every chat of the workspace, open or not, plus what the open view reports (and the demo's "working").
-  const session = aggregateSessions([useWorkspaceSessionStatus(ws.id), ws.status === "working" ? "working" : "idle"]);
+  const session = useWorkspaceAgentStatus(ws);
   const status = rowStatus({ workspaceState: ws.state, session, pr: ws.pr, hasRemote });
   const statusLabel = rowStatusLabel(status);
   return (
@@ -71,6 +73,7 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
       aria-current={active ? "page" : undefined}
       onClick={onSelect}
       onContextMenu={onContextMenu}
+      onPointerDown={onPointerDown}
       title={`${label} · ${ws.branch} · ${statusLabel}`}
     >
       <span className="sb-ws-lead" data-testid="workspace-leading-visual" data-hint={hint || undefined}>
@@ -111,6 +114,10 @@ export interface RowCallbacks {
   onNewSection?: (ws: Workspace) => void;
   /** Collapsed user sections: their rows get no Cmd+1..9 number. */
   collapsedSections?: ReadonlySet<string>;
+  /** Row press, for dragging rows onto sections (useSidebarDrag.tsx). */
+  onRowPointerDown?: (e: PointerEvent<HTMLButtonElement>, repoId: string, ws: Workspace) => void;
+  /** Copy link; the menu hides the item until one is passed. */
+  onCopyLink?: (ws: Workspace) => void;
 }
 
 const SWITCH_MODIFIERS = COMMANDS.find((c) => c.id === "workspace.switchTo1")?.key.modifiers ?? ["meta"];
@@ -164,7 +171,7 @@ type MenuTarget = { repoId: string; workspaceId: string; x: number; y: number };
  * `rowProps(repoId, ws)` gives select (which also clears unread, as opening a
  * workspace's session does in Conductor) and right-click.
  */
-export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { onRename, onArchive, onNewSection, collapsedSections }: RowCallbacks = {}) {
+export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { onRename, onArchive, onNewSection, collapsedSections, onRowPointerDown, onCopyLink }: RowCallbacks = {}) {
   const [menu, setMenu] = useState<MenuTarget | null>(null);
   const sel = state.selection;
   const close = useCallback(() => setMenu(null), []);
@@ -189,6 +196,7 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
       e.preventDefault();
       setMenu({ repoId, workspaceId: ws.id, x: e.clientX, y: e.clientY });
     },
+    onPointerDown: onRowPointerDown && ((e: PointerEvent<HTMLButtonElement>) => onRowPointerDown(e, repoId, ws)),
   });
 
   let element: JSX.Element | null = null;
@@ -210,6 +218,7 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
           togglePin: () => dispatch({ type: "setWorkspacePinned", ...ids, pinned: typeof ws.pinnedAt !== "number" }),
           setStatus: (status) => dispatch({ type: "setWorkspaceStatus", ...ids, status }),
           rename: onRename && (() => onRename(repo.id, ws)),
+          copyLink: onCopyLink && (() => onCopyLink(ws)),
           archive: () => (onArchive ? onArchive(repo.id, ws) : dispatch({ type: "archiveWorkspace", ...ids })),
           moveToSection: (sectionId) => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId }),
           newSection: () => onNewSection?.(ws),

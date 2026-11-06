@@ -25,6 +25,7 @@
 
 pub mod files_to_copy;
 pub mod git;
+pub mod init_log;
 pub mod naming;
 pub mod scripts;
 pub mod service;
@@ -82,6 +83,9 @@ pub enum WorkspaceError {
     TargetMissing(PathBuf),
     /// `clone_repository`: `git clone` failed; see [`git::clone`] for the text.
     CloneFailed(String),
+    /// `git worktree add` failed and left no worktree; the text is
+    /// [`init_log::worktree_failure_message`].
+    WorktreeFailed(String),
 }
 
 impl fmt::Display for WorkspaceError {
@@ -111,7 +115,7 @@ impl fmt::Display for WorkspaceError {
             WorkspaceError::NotActive(n) => write!(f, "workspace {n} is archived or missing"),
             WorkspaceError::InvalidCloneUrl(u) => write!(f, "cannot derive a repository name from {u:?}"),
             WorkspaceError::TargetMissing(p) => write!(f, "Target directory does not exist: {}", p.display()),
-            WorkspaceError::CloneFailed(msg) => f.write_str(msg),
+            WorkspaceError::CloneFailed(msg) | WorkspaceError::WorktreeFailed(msg) => f.write_str(msg),
         }
     }
 }
@@ -173,8 +177,9 @@ pub struct CreateOptions {
     /// Fetch `origin/<base>` first so the workspace starts from the latest
     /// remote commit (does not move the branch checked out in the root).
     pub fetch: bool,
-    /// `file_include_globs` from repository settings.
-    pub file_include_globs: Option<Vec<String>>,
+    /// `file_include_globs` from repository settings: gitignore-style
+    /// patterns, one per line (see [`files_to_copy::patterns`]).
+    pub file_include_globs: Option<String>,
     /// Set `push.autoSetupRemote` in the new worktree's config
     /// (`git.worktree_push_auto_setup_remote`, see [`git::configure_push_upstream`]).
     pub push_auto_setup_remote: bool,
@@ -191,6 +196,15 @@ pub struct Created {
     pub copied_files: Vec<PathBuf>,
     /// Set when `push_auto_setup_remote` was asked for but could not be applied.
     pub upstream_warning: Option<String>,
+    /// Log of the `git worktree add` script (`workspaces.initialization_log_path`).
+    pub initialization_log_path: Option<PathBuf>,
+    /// `git ls-files | wc -l` in the new worktree, which Conductor stores as
+    /// `workspaces.initialization_files_copied`.
+    pub initialization_files_copied: i64,
+    /// Non-fatal problems, joined with a space: the worktree exists although
+    /// `git worktree add` failed, push upstream could not be configured, files
+    /// could not be copied. Shown as a persistent toast with "View logs".
+    pub auxiliary_failure_message: Option<String>,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -221,6 +235,10 @@ pub struct WorkspaceManager {
     /// Worktree paths still being set up. In memory only, so a crash never
     /// leaves a workspace stuck as initializing.
     initializing: Arc<Mutex<HashSet<PathBuf>>>,
+    /// Shell and directory for internal scripts and their logs
+    /// ([`init_log::default_shell`], `$TMPDIR`).
+    script_shell: PathBuf,
+    script_tmp_dir: PathBuf,
 }
 
 /// Marks a workspace as initializing until dropped.
@@ -242,7 +260,19 @@ impl WorkspaceManager {
     /// Rooted at `data_dir` until [`Self::with_root`] names another root.
     pub fn new(data_dir: impl Into<PathBuf>) -> Self {
         let data_dir = data_dir.into();
-        Self { root: data_dir.clone(), data_dir, initializing: Arc::default() }
+        Self {
+            root: data_dir.clone(),
+            data_dir,
+            initializing: Arc::default(),
+            script_shell: init_log::default_shell(),
+            script_tmp_dir: std::env::temp_dir(),
+        }
+    }
+
+    /// Write internal scripts and their logs to `dir` instead of `$TMPDIR`.
+    pub fn with_script_tmp_dir(mut self, dir: impl Into<PathBuf>) -> Self {
+        self.script_tmp_dir = dir.into();
+        self
     }
 
     /// Keep workspaces, archive records and default clones under `root`.
@@ -413,27 +443,77 @@ impl WorkspaceManager {
         let path = ws_dir.join(&name);
         let _initializing = self.mark_initializing(&path);
         std::fs::create_dir_all(&ws_dir)?;
-        let mut args: Vec<&std::ffi::OsStr> = vec!["worktree".as_ref(), "add".as_ref(), "--quiet".as_ref()];
-        match checkout {
-            Checkout::NewBranch => args.extend(["--no-track".as_ref(), "-b".as_ref(), branch.as_ref() as &std::ffi::OsStr]),
-            Checkout::Track => args.extend(["--track".as_ref(), "-b".as_ref(), branch.as_ref() as &std::ffi::OsStr]),
-            Checkout::Local => {}
+        // Conductor's UYe: `git worktree add` runs as a logged internal script
+        // in the main worktree (see `init_log`).
+        let q = |s: &str| init_log::shell_quote(s);
+        let p = q(&path.to_string_lossy());
+        let command = match checkout {
+            // From the resolved commit, as Conductor does, so no upstream is set.
+            Checkout::NewBranch => format!("git worktree add {p} -b {} {}", q(&branch), q(&base_commit)),
+            Checkout::Track => format!("git worktree add --track -b {} {p} {}", q(&branch), q(&base_ref)),
+            Checkout::Local => format!("git worktree add {p} {}", q(&base_ref)),
+        };
+        let run = init_log::run_internal_script(
+            &command,
+            &root,
+            &self.script_shell,
+            &self.script_tmp_dir,
+            &[("GIT_TERMINAL_PROMPT", "0"), ("GIT_EDITOR", "true")],
+        );
+        let mut aux = None;
+        if run.exit_code != 0 {
+            if worktree_listed(&root, &path) {
+                eprintln!("Worktree created at {} but post-checkout hook failed: {}", path.display(), run.stderr);
+                aux = Some(init_log::WORKTREE_PARTIAL_FAILURE.to_string());
+            } else {
+                return Err(WorkspaceError::WorktreeFailed(init_log::worktree_failure_message(
+                    &init_log::failure_output(&run),
+                )));
+            }
         }
-        args.push(path.as_os_str());
-        args.push(base_ref.as_ref());
-        git::git(&root, args)?;
 
-        let source = files_to_copy::resolve_source(&root, opts.file_include_globs.as_deref());
-        let files = files_to_copy::files_to_copy(&root, &source)?;
-        let copied_files = files_to_copy::copy_files(&root, &path, &files)?;
         let upstream_warning = if opts.push_auto_setup_remote {
             git::configure_push_upstream(&root, &path).map(str::to_string)
         } else {
             None
         };
+        aux = init_log::join_messages(aux, upstream_warning.clone());
+        let source = files_to_copy::resolve_source(&root, opts.file_include_globs.as_deref());
+        let copied_files = match files_to_copy::files_to_copy(&root, &source)
+            .and_then(|files| files_to_copy::copy_files(&root, &path, &files))
+        {
+            Ok(copied) => copied,
+            Err(e) => {
+                let msg = format!("Couldn't copy files from .worktreeinclude: {e}");
+                eprintln!("{msg}");
+                aux = init_log::join_messages(aux, Some(msg));
+                Vec::new()
+            }
+        };
+        let initialization_files_copied = match git::git(&path, ["ls-files"]) {
+            Ok(out) => out.lines().count() as i64,
+            Err(e) => {
+                eprintln!("Failed to parse number of files: {e}");
+                0
+            }
+        };
+        if let Some(msg) = &aux {
+            let at = run.log_file_path.as_ref().map(|p| format!(" See logs at: {}", p.display())).unwrap_or_default();
+            eprintln!("Workspace {name} had non-fatal initialization issues. Workspace created successfully.{at} ({msg})");
+        }
 
         let workspace = self.make(&root, &name, branch, WorkspaceState::Active, Some(base_commit.clone()));
-        Ok(Created { workspace, base_ref, base_commit, fetched, copied_files, upstream_warning })
+        Ok(Created {
+            workspace,
+            base_ref,
+            base_commit,
+            fetched,
+            copied_files,
+            upstream_warning,
+            initialization_log_path: run.log_file_path,
+            initialization_files_copied,
+            auxiliary_failure_message: aux,
+        })
     }
 
     /// Active (and missing) workspaces from `git worktree list`, plus archived
@@ -521,20 +601,44 @@ impl WorkspaceManager {
             }
             _ => None,
         };
-        let record = self.archive_record(&ws.repo_root, &ws.name);
-        std::fs::create_dir_all(record.parent().expect("record has parent"))?;
         let commit = ws.head.clone().or_else(|| git::git(&ws.repo_root, ["rev-parse", "--verify", "-q", &format!("refs/heads/{}^{{commit}}", ws.branch)]).ok());
-        let mut text = format!("branch={}\n", ws.branch);
-        if let Some(c) = &commit {
-            text.push_str(&format!("commit={c}\n"));
-        }
-        std::fs::write(&record, text)?;
+        self.record_archive(&ws.repo_root, &ws.name, &ws.branch, commit.as_deref())?;
         self.remove_worktree(&ws)?;
         if opts.delete_branch && !ws.branch.is_empty() && git::branch_exists(&ws.repo_root, &ws.branch) {
             git::git(&ws.repo_root, ["branch", "-D", &ws.branch])?;
         }
         let workspace = self.make(&ws.repo_root, &ws.name, ws.branch, WorkspaceState::Archived, commit);
         Ok(Archived { workspace, script })
+    }
+
+    /// Write the archive record (`branch=`, `commit=`) that keeps an archived
+    /// workspace listed and its name taken. [`Self::archive`] and the app's
+    /// full archive (`workspace_archive_commands`) both write it.
+    pub fn record_archive(
+        &self,
+        repo_root: &Path,
+        name: &str,
+        branch: &str,
+        commit: Option<&str>,
+    ) -> Result<(), WorkspaceError> {
+        let record = self.archive_record(repo_root, name);
+        std::fs::create_dir_all(record.parent().expect("record has parent"))?;
+        let mut text = format!("branch={branch}\n");
+        if let Some(c) = commit {
+            text.push_str(&format!("commit={c}\n"));
+        }
+        std::fs::write(&record, text)?;
+        Ok(())
+    }
+
+    /// Remove the archive record of `name`, if any (the full unarchive in
+    /// `workspace_archive` recreated the worktree itself).
+    pub fn forget_archive_record(&self, repo_root: &Path, name: &str) -> Result<(), WorkspaceError> {
+        let record = self.archive_record(repo_root, name);
+        if record.exists() {
+            std::fs::remove_file(record)?;
+        }
+        Ok(())
     }
 
     /// Restore an archived workspace: re-add its worktree on its branch, or
@@ -610,6 +714,27 @@ impl WorkspaceManager {
         Ok(())
     }
 
+    /// "Remove repository": remove every workspace of `repo` (worktrees,
+    /// forced, and archive records) and then the repository's workspaces
+    /// directory when nothing else is left in it. Branches and the repository
+    /// checkout itself are left alone, as Conductor's dialog promises ("The
+    /// source directory ... will not be modified").
+    pub fn remove_all(&self, repo: &Path) -> Result<(), WorkspaceError> {
+        let root = git::toplevel(repo)?;
+        for ws in self.list(&root)? {
+            if ws.state != WorkspaceState::Archived {
+                self.remove_worktree(&ws)?;
+            }
+            self.forget_archive_record(&root, &ws.name)?;
+        }
+        let dir = self.workspaces_dir(&root);
+        // Only empty directories go: anything a user put there stays.
+        for empty in [dir, self.archive_dir(&root)] {
+            let _ = std::fs::remove_dir(empty);
+        }
+        Ok(())
+    }
+
     fn remove_worktree(&self, ws: &Workspace) -> Result<(), WorkspaceError> {
         if ws.path.exists() {
             // Forced: callers have already applied the dirty/busy policy, and
@@ -623,6 +748,14 @@ impl WorkspaceManager {
         git::git(&ws.repo_root, ["worktree", "prune"])?;
         Ok(())
     }
+}
+
+/// `git worktree list --porcelain` has a worktree at `path`.
+fn worktree_listed(root: &Path, path: &Path) -> bool {
+    let want = std::fs::canonicalize(path).unwrap_or_else(|_| path.to_path_buf());
+    git::list_worktrees(root).is_ok_and(|list| {
+        list.iter().any(|w| w.path == path || std::fs::canonicalize(&w.path).is_ok_and(|p| p == want))
+    })
 }
 
 /// How [`WorkspaceManager::create`] gets the worktree's branch.

@@ -97,12 +97,16 @@ async fn create_lifecycle_initializing_then_ready() {
         ("sven/fix-login", None)
     );
 
-    archive(&pool, "app/oslo").await.unwrap();
+    // The full archive and unarchive (workspace_archive::flow) write these rows.
+    mark_archived(&pool, "app/oslo").await;
     assert_eq!(list_workspaces(&pool).await.unwrap()[0].state, "archived");
+}
 
-    unarchive(&pool, "app/oslo").await.unwrap();
-    assert_eq!(list_workspaces(&pool).await.unwrap()[0].state, "ready");
-    assert!(unarchive(&pool, "app/oslo").await.is_err());
+/// The row as `workspace_archive::flow::archive_workspace` leaves it.
+async fn mark_archived(pool: &SqlitePool, local_id: &str) {
+    openconductor_db::workspaces::archive(pool, local_id, "sven/fix-login", Some("abc123"))
+        .await
+        .unwrap();
 }
 
 #[tokio::test]
@@ -150,7 +154,7 @@ async fn finish_replaces_a_stale_row_with_the_same_id() {
     finish_workspace(&pool, &ws("app", "oslo"), None, None)
         .await
         .unwrap();
-    archive(&pool, "app/oslo").await.unwrap();
+    mark_archived(&pool, "app/oslo").await;
     finish_workspace(&pool, &ws("app", "oslo"), None, None)
         .await
         .unwrap();
@@ -176,6 +180,19 @@ async fn record_repository_is_idempotent_and_unhides() {
         (rows[0].root_path.as_str(), rows[0].default_branch.as_str()),
         ("/src/a", "main")
     );
+}
+
+#[tokio::test]
+async fn a_second_project_on_the_same_folder_gets_its_own_row() {
+    // Conductor's repos table has no unique root_path: opening an added
+    // folder again inserts `<name>-v1` (evidence/screens/duplicate-repo.md).
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    let again = KnownRepo { id: "app-v1".into(), name: "app-v1".into(), ..repo("app") };
+    record_repository(&pool, &again).await.unwrap();
+    let rows = list_repos(&pool).await.unwrap();
+    let got: Vec<_> = rows.iter().map(|r| (r.id.as_str(), r.name.as_str(), r.root_path.as_str(), r.display_order)).collect();
+    assert_eq!(got, [("app", "app", "/src/app", 0), ("app-v1", "app-v1", "/src/app", 1)]);
 }
 
 #[tokio::test]
@@ -287,7 +304,7 @@ async fn numbers_are_not_reused_after_archive_or_a_failed_create() {
     finish_workspace(&pool, &ws("app", "oslo"), None, None)
         .await
         .unwrap();
-    archive(&pool, "app/oslo").await.unwrap();
+    mark_archived(&pool, "app/oslo").await;
     // A failed create gives its number back (its row is gone)...
     begin_workspace(&pool, &ws("app", "lima"), None)
         .await
@@ -323,4 +340,58 @@ async fn imported_workspaces_have_no_number() {
         .await
         .unwrap();
     assert_eq!(numbers(&pool).await, [("app/oslo".to_string(), None)]);
+}
+
+#[tokio::test]
+async fn record_initialization_stores_the_log_and_file_count_and_ends_ready() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    begin_workspace(&pool, &ws("app", "oslo"), Some("main"))
+        .await
+        .unwrap();
+    finish_workspace(&pool, &ws("app", "oslo"), Some("main"), None)
+        .await
+        .unwrap();
+    record_initialization(&pool, "app/oslo", Some("/tmp/conductor-1-abc.log"), 42)
+        .await
+        .unwrap();
+    let w = workspaces::get(&pool, "app/oslo")
+        .await
+        .unwrap()
+        .unwrap()
+        .workspace;
+    assert_eq!(w.state, WorkspaceState::Ready);
+    assert_eq!(
+        w.initialization_log_path.as_deref(),
+        Some("/tmp/conductor-1-abc.log")
+    );
+    assert_eq!(w.initialization_files_copied, Some(42));
+    // db_list_workspaces rows carry both, for the E2E check and the UI.
+    let row = &list_workspaces(&pool).await.unwrap()[0];
+    assert_eq!(
+        (
+            row.initialization_log_path.as_deref(),
+            row.initialization_files_copied
+        ),
+        (Some("/tmp/conductor-1-abc.log"), Some(42))
+    );
+    // An unknown workspace is an error, not a silent no-op.
+    assert!(record_initialization(&pool, "app/nope", None, 0)
+        .await
+        .is_err());
+}
+
+#[tokio::test]
+async fn lists_updated_at_as_last_activity() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    finish_workspace(&pool, &ws("app", "oslo"), Some("main"), None)
+        .await
+        .unwrap();
+    openconductor_db::workspaces::touch(&pool, "app/oslo", "2030-01-02 03:04:05")
+        .await
+        .unwrap();
+    let w = &list_workspaces(&pool).await.unwrap()[0];
+    assert_eq!(w.updated_at, "2030-01-02 03:04:05");
+    assert_ne!(w.created_at, w.updated_at);
 }

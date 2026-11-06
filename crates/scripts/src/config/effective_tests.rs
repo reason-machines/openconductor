@@ -209,6 +209,25 @@ fn preview_urls_parse_tables_and_legacy_strings() {
 }
 
 #[test]
+fn file_include_globs_is_a_string_the_repository_local_file_overrides() {
+    let f = Fixture::new();
+    write(
+        &f.user.join("settings.toml"),
+        "file_include_globs = \".env*\"\n",
+    );
+    write(
+        &f.root.join(".conductor/settings.local.toml"),
+        "file_include_globs = \".env\\n*.local\\n!.keep.local\"\n",
+    );
+    let g = f.load().file_include_globs.unwrap();
+    assert_eq!(
+        (g.value.as_str(), g.layer),
+        (".env\n*.local\n!.keep.local", Layer::RepoLocal)
+    );
+    assert!(is_local_writable(&["file_include_globs"]));
+}
+
+#[test]
 fn dotenv_parsing_matches_the_reference_rules() {
     let vars = parse_dotenv(
         "# comment\n\nexport A=1\nB = two words # trailing\nC=\"x\\ny\\tz\\\"q\"\nD='raw\\n'\n1BAD=no\n=empty\nE=a#b\nF=\n",
@@ -443,4 +462,32 @@ fn local_writes_set_and_remove_only_known_keys() {
             "{bad:?}"
         );
     }
+}
+
+#[test]
+fn stored_variables_replace_user_file_values_but_not_repository_ones() {
+    let f = Fixture::new();
+    write(
+        &f.home.join(".env.user"),
+        "FROM_USER_FILE=file\nUNTOUCHED=keep\n",
+    );
+    write(
+        &f.user.join("settings.toml"),
+        "environment_variable_files = [\"~/.env.user\"]\n",
+    );
+    write(
+        &f.root.join(".conductor/settings.toml"),
+        "[environment_variables]\nREPO_PINNED = \"repo\"\n",
+    );
+    let e = f.load();
+    let stored = [
+        ("FROM_USER_FILE", "stored"),
+        ("REPO_PINNED", "stored"),
+        ("ONLY_STORED", "s"),
+    ];
+    let vars = e.env.vars_with_stored(EnvContext::Local, stored);
+    assert_eq!(vars["FROM_USER_FILE"], "stored");
+    assert_eq!(vars["REPO_PINNED"], "repo");
+    assert_eq!(vars["ONLY_STORED"], "s");
+    assert_eq!(vars["UNTOUCHED"], "keep");
 }

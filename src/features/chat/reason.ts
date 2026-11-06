@@ -33,6 +33,10 @@ export interface ReasonTool {
   output: string | null;
   diffs: { path: ReasonPath; oldText: string | null; newText: string }[];
   locations: ReasonPath[];
+  /** The provider's own tool name (Claude Code's "Grep", ...), when it reports one. */
+  toolName?: string | null;
+  /** The tool's raw input as the provider sent it (ACP `rawInput`, Claude Code's `input`). */
+  rawInput?: unknown;
 }
 
 export interface ReasonTurnEnd {
@@ -47,6 +51,8 @@ export type ReasonPayload = { chatId: string } & (
   | { type: "error"; code: string | null; status: number | null; message: string }
   | ReasonTool
   | { type: "turnEnded"; end: ReasonTurnEnd }
+  | { type: "permissionRequest"; requestId: string; title: string; options: { optionId: string; name: string; kind: string }[] }
+  | { type: "permissionResolved"; requestId: string }
 );
 
 /** Sender recorded on reports; Reason does not say which Session sent one. */
@@ -158,9 +164,23 @@ function closeTurn(state: ReasonChatState, turnId: string, end: ReasonTurnEnd, n
   return { state: { ...state, open: state.open.filter((t) => t !== turn) }, events };
 }
 
+const pathInput = (p: ReasonPath) => ({ place: p.place, relative: p.relative, raw: p.raw, ...(p.sessionId ? { sessionId: p.sessionId } : {}) });
+
+/**
+ * A tool row's input: its paths (marked local or cloud), plus what the
+ * transcript needs to draw it as Conductor does (conductorTools.ts): the
+ * title, the provider's tool name and raw input when sent, and the diffs.
+ */
 function toolInput(t: ReasonTool): unknown {
   const paths = [...t.locations, ...t.diffs.map((d) => d.path)];
-  return { kind: t.kind, paths: paths.map((p) => ({ place: p.place, relative: p.relative, raw: p.raw, ...(p.sessionId ? { sessionId: p.sessionId } : {}) })) };
+  return {
+    kind: t.kind,
+    paths: paths.map(pathInput),
+    title: t.title,
+    ...(t.toolName ? { toolName: t.toolName } : {}),
+    ...(t.rawInput !== undefined && t.rawInput !== null ? { rawInput: t.rawInput } : {}),
+    ...(t.diffs.length > 0 ? { diffs: t.diffs.map((d) => ({ path: pathInput(d.path), oldText: d.oldText, newText: d.newText })) } : {}),
+  };
 }
 
 /** Blocks after applying one content payload to the assistant message. */
@@ -220,6 +240,9 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
     case "error":
     case "userReplay":
     case "title":
+    // Permission requests change the chat's status, not its transcript (reasonChat.ts).
+    case "permissionRequest":
+    case "permissionResolved":
       return { state, events: [] };
   }
 }

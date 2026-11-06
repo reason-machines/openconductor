@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
+import { showTerminalPanel } from "./terminal-panel.mjs";
 
 const CANDIDATES = [
   process.env.CHROME_PATH,
@@ -86,8 +87,8 @@ function fakeBackend(shellState) {
           return shellState.repos.map((r, i) => ({ id: r.id, name: r.name, rootPath: r.path, remoteUrl: null, defaultBranch: r.defaultBranch, displayOrder: i, hidden: false, icon: null, createdAt: "2026-01-01T00:00:00Z" }));
         case "db_list_workspaces":
           return shellState.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path ?? null, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" })));
-        case "db_archive_workspace":
-          return null;
+        case "archive_workspace":
+          return { archived: true, branch: null, archiveCommit: null, notices: [] };
         case "get_settings":
           return structuredClone(settings);
         case "update_settings": {
@@ -149,6 +150,7 @@ test("Terminal font and size apply to an already open terminal, which refits its
   page.on("pageerror", (err) => errors.push(err.message));
   await page.addInitScript(fakeBackend, SHELL_STATE);
   await page.goto(base + "/");
+  await showTerminalPanel(page);
 
   await page.waitForFunction(() => document.querySelector(".term-mount .xterm-rows")?.textContent?.includes("/repo$"));
   const start = await rowsStyle(page);
@@ -183,6 +185,7 @@ test("Terminal font and size apply to an already open terminal, which refits its
 
   // Back to the workspace: the same terminal now draws at 18 px in Courier, and its PTY got fewer cols and rows.
   await page.getByRole("button", { name: "Back" }).click();
+  await showTerminalPanel(page);
   await page.waitForFunction(() => getComputedStyle(document.querySelector(".term-mount .xterm-rows")).fontSize === "18px");
   assert.match((await rowsStyle(page)).fontFamily, /^Courier, Menlo/);
   await page.waitForFunction((b) => {

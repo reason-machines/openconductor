@@ -27,6 +27,7 @@
     "rehype-sanitize": "^6.0.0",
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1",
+    "remark-smartypants": "^3.0.3",
     "unist-util-visit": "^5.2.0"
   },
   "devDependencies": {

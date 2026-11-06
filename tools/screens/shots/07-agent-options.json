@@ -1,0 +1,124 @@
+[
+  {
+    "name": "conductor--agents-claude--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "path": "/settings/user/providers",
+    "settle_ms": 6000,
+    "actions": [],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Agents > Claude Code with the harness's signed-in user and no organization list: Conductor hides the Chrome row (Rpa returns null while organizations are loading), so only Authentication, status and login show."
+  },
+  {
+    "name": "conductor--agents-codex--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "path": "/settings/user/providers",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "tab",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "tab",
+          "name": "Codex"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Agents > Codex: Authentication (ChatGPT / CLI / API key), status, login, then Codex personality for new chats, Codex executable path, Codex config card."
+  },
+  {
+    "name": "conductor--agents-opencode--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "path": "/settings/user/providers",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "tab",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "tab",
+          "name": "OpenCode"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Agents > OpenCode before Advanced is opened."
+  },
+  {
+    "name": "conductor--agents-opencode-advanced--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "path": "/settings/user/providers",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "tab",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "tab",
+          "name": "OpenCode"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "p",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "adv",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Advanced >> nth=-1"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "OpenCode tab after clicking Advanced: header, Providers, Models, then the Advanced section with the status line (the harness's fake shell answers opencode --version with 2.0.5) and OpenCode executable path."
+  },
+  {
+    "name": "conductor--agents-codex-personality-open--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "path": "/settings/user/providers",
+    "settle_ms": 6000,
+    "actions": [
+      {
+        "step_id": "tab",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "tab",
+          "name": "Codex"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "p",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=Pragmatic (default)"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1000,
+    "notes": "Codex tab with the personality select open: Pragmatic (default), Friendly, None."
+  }
+]
