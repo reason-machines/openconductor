@@ -7,6 +7,7 @@ import type { CreateFrom, CreateWorkspaceArgs } from "./createFlow";
 import { issueToFrom, listErrorState, prToFrom, type OpenIssueDto, type OpenPrDto, type SourceState } from "./createFrom";
 import type { BranchPrefixInfo } from "./naming";
 import { UPSTREAM_WARNING } from "./upstream";
+import { reportInitIssue, WORKTREE_PARTIAL_FAILURE } from "./initIssues";
 
 export interface RepositoryDto {
   id: string;
@@ -29,8 +30,21 @@ export interface CreatedWorkspaceDto {
   baseCommit: string;
   fetched: boolean;
   copiedFiles: string[];
-  /** Set when "Set upstream on plain git push" could not be applied to the new workspace. */
-  upstreamWarning: string | null;
+  /** Log of the `git worktree add` script (`workspaces.initialization_log_path`). */
+  initializationLogPath: string | null;
+  /** Tracked files in the new worktree (`workspaces.initialization_files_copied`). */
+  initializationFilesCopied: number;
+  /**
+   * Non-fatal initialization issues joined with a space (failed post-checkout
+   * hook, push upstream not configured, files not copied). `createWorkspace`
+   * reports it to initIssues, which App shows as a persistent toast.
+   */
+  auxiliaryFailureMessage: string | null;
+  /**
+   * No longer sent: the push-upstream warning is part of
+   * `auxiliaryFailureMessage`. Optional until CreateWorkspaceDialog stops reading it.
+   */
+  upstreamWarning?: string | null;
   /** `workspaces.number` assigned on creation (shown as `W-<n>`); null when conductor.db could not record it. */
   number: number | null;
 }
@@ -90,22 +104,30 @@ export async function listBranches(repoId: string, defaultBranch: string): Promi
 
 let browserNumber = 0;
 
+/** Creates the workspace and reports any non-fatal initialization issue (see initIssues). */
 export async function createWorkspace(args: CreateWorkspaceArgs): Promise<CreatedWorkspaceDto> {
-  if (!inTauri()) {
-    await new Promise((r) => setTimeout(r, 400));
-    const path = `~/openconductor/workspaces/${args.directoryName}`;
-    return {
-      workspace: { id: `${args.repositoryId}/${args.directoryName}`, repositoryId: args.repositoryId, directoryName: args.directoryName, path, branchName: args.branchName, state: "active", head: null },
-      baseRef: args.baseBranch,
-      baseCommit: "",
-      fetched: false,
-      copiedFiles: [],
-      // `?upstream-warning` in a plain browser previews the warning toast.
-      upstreamWarning: new URLSearchParams(window.location.search).has("upstream-warning") ? UPSTREAM_WARNING : null,
-      number: ++browserNumber,
-    };
-  }
-  return invoke<CreatedWorkspaceDto>("create_workspace", { ...args });
+  const created = inTauri() ? await invoke<CreatedWorkspaceDto>("create_workspace", { ...args }) : await createInBrowser(args);
+  reportInitIssue(created);
+  return created;
+}
+
+async function createInBrowser(args: CreateWorkspaceArgs): Promise<CreatedWorkspaceDto> {
+  await new Promise((r) => setTimeout(r, 400));
+  const path = `~/openconductor/workspaces/${args.directoryName}`;
+  // `?init-issue` and `?upstream-warning` in a plain browser preview the initialization-issue toast.
+  const q = new URLSearchParams(window.location.search);
+  const issues = [q.has("init-issue") ? WORKTREE_PARTIAL_FAILURE : null, q.has("upstream-warning") ? UPSTREAM_WARNING : null].filter((m) => m !== null);
+  return {
+    workspace: { id: `${args.repositoryId}/${args.directoryName}`, repositoryId: args.repositoryId, directoryName: args.directoryName, path, branchName: args.branchName, state: "active", head: null },
+    baseRef: args.baseBranch,
+    baseCommit: "",
+    fetched: false,
+    copiedFiles: [],
+    initializationLogPath: `/tmp/conductor-${Date.now()}-demo.log`,
+    initializationFilesCopied: 0,
+    auxiliaryFailureMessage: issues.length > 0 ? issues.join(" ") : null,
+    number: ++browserNumber,
+  };
 }
 
 // The browser stand-in has no gh, so it lists samples (one fork PR among them).

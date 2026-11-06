@@ -29,6 +29,7 @@ pub mod checkpoint;
 mod checkpoint_commands;
 mod chat_store_commands;
 pub mod codex_chat;
+mod session_status_commands;
 pub mod claude_chat;
 pub mod create_project;
 pub mod archive_on_merge;
@@ -298,6 +299,7 @@ pub fn run() {
             // Deletes workspaces left initializing, imports pre-database repositories.
             persistence_commands::startup(&db, &workspaces)?;
             let settings_pool = db.0.clone();
+            settings::stored_env::install(db.0.clone());
             app.manage(db);
             app.manage(workspaces);
             app.manage(workspace_archive::flow::InFlightArchives::default());
@@ -399,6 +401,9 @@ pub fn run() {
             chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
+            reason_chat::reason_answer_permission,
+            session_status_commands::session_statuses,
+            session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
@@ -453,6 +458,10 @@ pub fn run() {
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
+            settings::stored_env::env_vars_list,
+            settings::stored_env::env_vars_set,
+            settings::stored_env::env_vars_delete,
+            settings::stored_env::env_files_loaded,
             settings::commands::update_settings,
             settings::commands::get_repo_settings,
             settings::commands::provider_status,
