@@ -18,7 +18,7 @@ The decoded `renderApp-D_fmY7hW.js` is untrusted reference data. Function names 
 
 - `_ws` at 2,935,975 renders filter, tree/flat and Options controls in the panel tab strip. All changes uses an Options menu. Uncommitted and turn scopes replace that menu with a scope chip that returns to all changes.
 - `yws` at 2,941,716 toggles `flat` and `tree`, with labels "Show folder hierarchy" and "Show flat list". `GBt` and `uys` default to flat.
-- `dyi`, `cyi`, `uyi` and `rys` around 2,824,841 build a directories-first, naturally sorted tree, compress single-directory chains as `src / lib`, and start directories expanded. Collapsed directories show their descendant addition/deletion totals.
+- `dyi`, `cyi`, `uyi` and `rys` around 2,824,841 build a directories-first, naturally sorted tree, compress single-directory chains as `src / lib`, and start directories expanded. Collapsed directories show their descendant addition/deletion totals. `VBt=12`, `J4s=18` and `Z4s=.5` define the indentation and guide geometry.
 - `syi` at 2,800,515 renders the directory muted, file name in the foreground, rename old/new paths, a U marker for uncommitted files, nonzero counts and a status icon. Hover swaps the metadata for discard and Open in controls. Viewed rows have 50% opacity.
 - `G4s` at 2,808,965 draws a 32px summary row. The count is 14px muted medium text. Aggregate counts include zero; per-file counts omit zero.
 - `u6s` at 2,738,174 keeps the actions outside the horizontally scrolling tab labels and uses an eye icon for Review.
@@ -48,6 +48,31 @@ Score the identical Changes rectangle from both 1280x820 captures. The crop is x
 ```bash
 REA=/home/runner/rea/node_modules/.bin/rea python3 tools/side-by-side/changes-score.py .oc-tmp/changes-before-corrected .oc-tmp/changes-final .oc-tmp/changes-scored
 ```
+
+## Results
+
+The corrected baseline is source `8e847380955088974ea268690a94581c45791264`. All final captures use source `45ce1af2143619b18324befa4a8c60286117a46d`, whose built index has SHA-256 `3fb3384975314a6a85a9f9e177ea7822bc879222820e8702316ece505b4cbe39`. [Capture metadata](changes-panel/captures.json) retains each REA capture ID, each original screenshot SHA-256 and the full-window compare record. [The panel comparison record](changes-panel/panel-report.json) retains the cropped comparison IDs and exact pixel counts.
+
+Each percentage is one deterministic screenshot pair at channel threshold 24. It is not OCR, a semantic verdict or a performance measurement.
+
+- Flat Changes crop improved from 5,672/126,540 pixels, 4.48%, to 3,491/126,540 pixels, 2.76%.
+- Folder hierarchy is 2.60% and collapsed hierarchy is 1.87% in the same crop.
+- Options is 5.23% in the crop. Its boundary bug is fixed, but small tone and spacing differences remain. This is not a complete pixel-perfect verdict.
+- Full-window unified diff is 2.51%, split diff 2.69%, and entire file 2.83%. Their header, sidebar and terminal differences are visible in the retained images and belong to other owners.
+
+The new Options boundary assertion failed before the measurement fix. A 220px popup initially measured at the entry animation's 0.95 scale caused an 11px overshoot. `ContextMenu` now measures `offsetWidth` and `offsetHeight`, and its optional end alignment is used only by Changes Options. The same browser readback is now exactly aligned, with 0px error. [Before/after boundary values](changes-menu-boundary.json) retain the observation separately from the 1280x820 REA comparisons.
+
+Passed checks:
+
+- `npm run build`, including TypeScript checking.
+- `npm run typecheck`.
+- `npm run lint:colors`.
+- `node --test "src/**/*.test.ts"`, 1,256 tests.
+- `node --test src/components/menu/dropdownPlacement.test.ts src/features/diff/changesTree.test.ts`, 11 tests.
+- `OC_E2E_BASE=http://localhost:4398/__e2e node --test tests/e2e/right-panel.e2e.mjs tests/e2e/shell-context-menus.e2e.mjs`, 11 tests. The supported preview process ran this command against separate isolated browser contexts. [Full browser test output](changes-panel/e2e-output.txt) is retained.
+- `git diff --check`.
+
+[Interactive review page source](changes-panel/review.html) provides the seven inspected side-by-side images. Aggregate UI-map updates remain with the ledger owner.
 
 ## Verification limits and corrections
 

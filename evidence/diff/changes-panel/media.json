@@ -1,0 +1,37 @@
+[
+  {
+    "state": "panel-flat",
+    "url": "https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/6b1065f31ef10dbb42d48bcaaf723bd5/changes-panel-flat.png",
+    "markdown": "![Conductor and OpenConductor panel flat](https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/6b1065f31ef10dbb42d48bcaaf723bd5/changes-panel-flat.png#w=692&h=398)"
+  },
+  {
+    "state": "panel-tree",
+    "url": "https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/e4edfc328f440e5f071d177cc4da24cd/changes-panel-tree.png",
+    "markdown": "![Conductor and OpenConductor panel tree](https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/e4edfc328f440e5f071d177cc4da24cd/changes-panel-tree.png#w=692&h=398)"
+  },
+  {
+    "state": "panel-collapsed",
+    "url": "https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/63d3e1d50e36e3ad4ad247238ec8d37c/changes-panel-collapsed.png",
+    "markdown": "![Conductor and OpenConductor panel collapsed](https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/63d3e1d50e36e3ad4ad247238ec8d37c/changes-panel-collapsed.png#w=692&h=398)"
+  },
+  {
+    "state": "panel-options",
+    "url": "https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/06d7487015ca0bccab5f083bc9c9d8dc/changes-panel-options.png",
+    "markdown": "![Conductor and OpenConductor panel options](https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/06d7487015ca0bccab5f083bc9c9d8dc/changes-panel-options.png#w=692&h=398)"
+  },
+  {
+    "state": "diff-unified",
+    "url": "https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/a1d85d3ce479632b006860edc99ea8ce/changes-diff-unified.png",
+    "markdown": "![Conductor and OpenConductor diff unified](https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/a1d85d3ce479632b006860edc99ea8ce/changes-diff-unified.png#w=2568&h=848)"
+  },
+  {
+    "state": "diff-split",
+    "url": "https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/82bc6178c9089858f08bb6cfd0c6bf67/changes-diff-split.png",
+    "markdown": "![Conductor and OpenConductor diff split](https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/82bc6178c9089858f08bb6cfd0c6bf67/changes-diff-split.png#w=2568&h=848)"
+  },
+  {
+    "state": "diff-entire-file",
+    "url": "https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/ea0942fdfeba0421c97e6a268a19271c/changes-diff-entire-file.png",
+    "markdown": "![Conductor and OpenConductor diff entire file](https://api.reasonmachines.com/media/pr-screenshots/de6c02f4-4880-4a0d-bf8f-9e3954522753/ea0942fdfeba0421c97e6a268a19271c/changes-diff-entire-file.png#w=2568&h=848)"
+  }
+]

@@ -1,4 +1,3 @@
-"""Score the same Changes panel rectangle in REA's 1280x820 captures."""
 import base64
 import hashlib
 import json
@@ -52,4 +51,14 @@ for state in ("flat", "tree", "collapsed", "options"):
     pair.paste(oc.convert("RGB"), (350, 28))
     pair.save(output / f"changes-panel-{state}.png")
     print(state, json.dumps(scored))
+for state in ("diff-unified", "diff-split", "diff-entire-file"):
+    left = Image.open(after / f"ref-{state}.png").convert("RGB")
+    right = Image.open(after / f"oc-{state}.png").convert("RGB")
+    pair = Image.new("RGB", (2568, 848), "white")
+    draw = ImageDraw.Draw(pair)
+    draw.text((8, 8), "Conductor 0.87.6", fill="black")
+    draw.text((1296, 8), "OpenConductor", fill="black")
+    pair.paste(left, (0, 28))
+    pair.paste(right, (1288, 28))
+    pair.save(output / f"changes-{state}.png")
 (output / "panel-report.json").write_text(json.dumps(report, indent=2) + "\n")
