@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   ALL_PROJECTS,
   ALL_PROJECTS_VALUE,
+  createRepoDefault,
   filterRepoGroups,
   filterToValue,
   projectFilterOptions,
@@ -47,4 +48,23 @@ test("a filter on a removed repository is cleared only after repositories load",
   assert.equal(reconcileRepoFilter("gone", repos, true), undefined);
   assert.equal(reconcileRepoFilter("r1", repos, true), "r1");
   assert.equal(reconcileRepoFilter(undefined, repos, true), undefined);
+});
+
+test("createRepoDefault keeps a requested repository", () => {
+  assert.equal(createRepoDefault(["r1", "r2", "r3"], "r3", "r2"), "r3");
+});
+
+test("createRepoDefault starts on the sidebar's project filter when nothing is requested", () => {
+  assert.equal(createRepoDefault(["r1", "r2", "r3"], null, "r2"), "r2");
+  assert.equal(createRepoDefault(["r1", "r2", "r3"], undefined, "r2"), "r2");
+});
+
+test("createRepoDefault skips a requested or filtered repository that is gone", () => {
+  assert.equal(createRepoDefault(["r1", "r2", "r3"], "gone", "r2"), "r2");
+  assert.equal(createRepoDefault(["r1", "r2", "r3"], null, "gone"), "r1");
+});
+
+test("createRepoDefault falls back to the first repository, or none", () => {
+  assert.equal(createRepoDefault(["r1", "r2", "r3"], null, undefined), "r1");
+  assert.equal(createRepoDefault([], "r1", "r1"), null);
 });

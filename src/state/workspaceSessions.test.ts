@@ -7,6 +7,9 @@ test("a review chat belongs to the workspace in its id; the main chat is the wor
   assert.equal(workspaceOfChat("ws-1"), "ws-1");
   assert.equal(workspaceOfChat("ws-1:review:abc-1"), "ws-1");
   assert.equal(workspaceOfChat("ws-1:claude"), "ws-1");
+  assert.equal(workspaceOfChat("ws-1:chat:2"), "ws-1");
+  assert.equal(workspaceOfChat("ws-1:chat:2:claude"), "ws-1");
+  assert.equal(workspaceOfChat("ws-1:review:abc-1:claude"), "ws-1");
 });
 
 test("a workspace's Claude Code chat counts toward its status", () => {

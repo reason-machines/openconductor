@@ -4,17 +4,19 @@
 // their `sessions.status` with `nTr` (aggregateSessions). Here the sessions
 // are the chats in the chat store: the main chat's id is the workspace id and
 // a review chat's is `<workspace id>:review:<n>` (features/diff/ReviewButton)
-// and the main chat's Claude Code chat is `<workspace id>:claude`
-// (features/chat/claudeChat).
+// and a chat opened with "+" or ⌘T `<workspace id>:chat:<n>` (features/chat/chatTabs).
+// A Claude Code chat is its Reason chat's id plus `:claude` (features/chat/claudeChat).
 import { aggregateSessions, type SessionStatus } from "./rowStatus.ts";
 
-const REVIEW = ":review:";
+const SEGMENTS = [":review:", ":chat:"];
 const CLAUDE = ":claude";
 
 /** The workspace a chat belongs to. */
 export function workspaceOfChat(chatId: string): string {
-  const i = chatId.indexOf(REVIEW);
-  if (i >= 0) return chatId.slice(0, i);
+  for (const s of SEGMENTS) {
+    const i = chatId.indexOf(s);
+    if (i >= 0) return chatId.slice(0, i);
+  }
   return chatId.endsWith(CLAUDE) ? chatId.slice(0, -CLAUDE.length) : chatId;
 }
 

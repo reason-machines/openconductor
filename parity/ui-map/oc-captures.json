@@ -5536,7 +5536,7 @@
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-environment.png",
-  "png_sha256": "45424e458fae114d0c0ff8f4760288813265d2852e574373d781e9f46ef06d33",
+  "png_sha256": "93190d52ba19f64d5b97a8b4c82a271b537831d5e76ae8e32cf2467c7d4bb7e5",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5545,13 +5545,7 @@
     "tide-web",
     "tide-api",
     "dotfiles",
-    "Environment variable files",
-    "~/.env",
-    "Variable name",
-    "MY_VARIABLE",
-    "Variable value",
-    "Value",
-    "Variable context"
+    "Environment variables"
    ],
    "roles": [],
    "texts": [
@@ -5582,12 +5576,16 @@
     "Experimental",
     "Advanced",
     "Environment",
-    "Environment variable files",
-    "dotenv files whose variables agents, terminals and scripts get, one path per line. Relative paths resolve against the settings file's folder, then the repository root; ~ is your home folder.",
-    "Environment variables",
-    "Variables for local workspaces and for cloud workspaces of this repository. Use an empty value to set a variable to an empty string.",
-    "No variables yet.",
-    "Add variable"
+    "Configure environment variables used by OpenConductor and passed to agents.",
+    "Add environment variable",
+    "No variables set",
+    "Add a variable to make it available in this environment.",
+    "Show documented variables (18)",
+    "Env files",
+    "Load environment variables from env files. In the native file picker, press",
+    "Cmd+Shift+.",
+    "to show hidden files.",
+    "Add env file"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/environment",
    "viewport": [
@@ -5595,7 +5593,7 @@
     820
    ]
   },
-  "ms": 7284
+  "ms": 7327
  },
  "settings-repo-git": {
   "status": "captured",
@@ -5677,7 +5675,7 @@
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-misc.png",
-  "png_sha256": "65d92c863358f0879bbafcd7ce9ec8c3b7b62b1e5b261a2deaebb38e5009aa44",
+  "png_sha256": "121c472755e9d4d74538eabb839d37994ded7796325fa4b14993f30ca20e711f",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5686,9 +5684,21 @@
     "tide-web",
     "tide-api",
     "dotfiles",
-    "Root path",
-    "Workspaces path",
-    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web"
+    "Change repository icon",
+    "/tmp/oc-uimap-run/repos/tide-web",
+    "Open in...",
+    "Open in...",
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web",
+    "Open in...",
+    "Open in...",
+    "Preview URL name",
+    "Name",
+    "Preview URL",
+    "https://localhost:$CONDUCTOR_PORT",
+    "Remove preview URL",
+    "Files to copy",
+    ".env\n*.local\n!.keep.local",
+    "Refresh files to copy preview"
    ],
    "roles": [],
    "texts": [
@@ -5720,12 +5730,26 @@
     "Advanced",
     "Misc",
     "Repository paths and workspace file behavior.",
+    "Icon",
+    "Shown next to the repository name in the sidebar.",
+    "T",
     "Root path",
     "Do not move or delete this directory. Instead, remove the repository in OpenConductor.",
-    "/tmp/oc-uimap-run/repos/tide-web",
+    "/tmp/oc-uimap-run/repos/",
+    "tide-web",
     "Workspaces path",
     "Do not move or delete the workspace subdirectories. Instead, archive workspaces in OpenConductor.",
-    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web"
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/",
+    "tide-web",
+    "Preview URLs",
+    "Set the terminal panel's Open URLs. The first URL is the default; additional URLs appear in its menu. Supports OpenConductor variables such as $CONDUCTOR_PORT. Use $((CONDUCTOR_PORT + 1)) through $((CONDUCTOR_PORT + 9)) for other allocated ports. Leave blank to detect a URL from output.",
+    "Add preview URL",
+    "Files to copy",
+    "OpenConductor will automatically copy these file paths in each new workspace.",
+    "Learn more",
+    ".env*",
+    "No matching gitignored files found.",
+    "Remove repository"
    ],
    "url": "tauri://localhost/settings/repos/tide-web/misc",
    "viewport": [
@@ -5733,7 +5757,95 @@
     820
    ]
   },
-  "ms": 6540
+  "ms": 6224
+ },
+ "settings-repo-misc-lower": {
+  "status": "captured",
+  "steps": 5,
+  "file": "oc/settings-repo-misc-lower.png",
+  "png_sha256": "1b8abcbf739ac411b8e6d9e0a776d7c1431f6073fc35dc85f03ec72e5cc283e3",
+  "dom": {
+   "labels": [
+    "Settings pages",
+    "Esc",
+    "Repositories",
+    "tide-web",
+    "tide-api",
+    "dotfiles",
+    "Change repository icon",
+    "/tmp/oc-uimap-run/repos/tide-web",
+    "Open in...",
+    "Open in...",
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web",
+    "Open in...",
+    "Open in...",
+    "Preview URL name",
+    "Name",
+    "Preview URL",
+    "https://localhost:$CONDUCTOR_PORT",
+    "Remove preview URL",
+    "Files to copy",
+    ".env\n*.local\n!.keep.local",
+    "Refresh files to copy preview"
+   ],
+   "roles": [],
+   "texts": [
+    "Back",
+    "Personal",
+    "General",
+    "Account",
+    "Appearance",
+    "Keyboard shortcuts",
+    "Default models",
+    "Git",
+    "Agents & environment",
+    "Agents",
+    "Environment",
+    "Repositories",
+    "T",
+    "tide-web",
+    "Git",
+    "Environment",
+    "Scripts",
+    "Actions",
+    "Misc",
+    "T",
+    "tide-api",
+    "D",
+    "dotfiles",
+    "More",
+    "Experimental",
+    "Advanced",
+    "Misc",
+    "Repository paths and workspace file behavior.",
+    "Icon",
+    "Shown next to the repository name in the sidebar.",
+    "T",
+    "Root path",
+    "Do not move or delete this directory. Instead, remove the repository in OpenConductor.",
+    "/tmp/oc-uimap-run/repos/",
+    "tide-web",
+    "Workspaces path",
+    "Do not move or delete the workspace subdirectories. Instead, archive workspaces in OpenConductor.",
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/",
+    "tide-web",
+    "Preview URLs",
+    "Set the terminal panel's Open URLs. The first URL is the default; additional URLs appear in its menu. Supports OpenConductor variables such as $CONDUCTOR_PORT. Use $((CONDUCTOR_PORT + 1)) through $((CONDUCTOR_PORT + 9)) for other allocated ports. Leave blank to detect a URL from output.",
+    "Add preview URL",
+    "Files to copy",
+    "OpenConductor will automatically copy these file paths in each new workspace.",
+    "Learn more",
+    ".env*",
+    "No matching gitignored files found.",
+    "Remove repository"
+   ],
+   "url": "tauri://localhost/settings/repos/tide-web/misc",
+   "viewport": [
+    1280,
+    820
+   ]
+  },
+  "ms": 7120
  },
  "settings-repo-scripts": {
   "status": "captured",
