@@ -70,6 +70,7 @@ export function fakeBackend({ shell, files, spotlight = false, setupScript = nul
         case "fuzzy_filter_files":
           return fileList.map((p) => ({ file: { name: p.split("/").pop(), path: p, is_directory: false }, relative_path: p, score: 0, match_indices: [] }));
         case "diff_workspace":
+          window.__fake.calls.push({ cmd, request: args.request });
           return {
             files: [
               { path: "src/lib/auth.test.ts", old_path: null, status: "untracked", binary: false, additions: 14, deletions: 0, hunks: [] },

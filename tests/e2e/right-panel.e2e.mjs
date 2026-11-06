@@ -76,7 +76,7 @@ test("Changes: sorted flat rows, compressed hierarchy, collapsing counts, filter
   await changed.locator(".oc-change").first().waitFor();
   assert.deepEqual(await changed.locator(".oc-change .name").allTextContents(), ["src/lib/auth.test.ts", "src/lib/auth.ts"]);
   assert.equal(await page.getByRole("button", { name: "Refresh", exact: true }).count(), 0);
-  assert.equal(await changed.getByRole("img", { name: "modified", exact: true }).count(), 2);
+  assert.equal(await changed.getByRole("img", { name: "untracked", exact: true }).count(), 2);
   await page.getByRole("button", { name: "Show folder hierarchy", exact: true }).click();
   const folder = changed.getByRole("button", { name: "src / lib", exact: true });
   assert.equal(await folder.getAttribute("aria-expanded"), "true");

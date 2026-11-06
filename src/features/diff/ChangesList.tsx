@@ -68,13 +68,16 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
         <div className="oc-changes-header"><span>{files.length} {files.length === 1 ? "file" : "files"} changed</span><ChangeCounts additions={totals.a} deletions={totals.d} showZero /></div>
         <nav className="oc-changes" aria-label="Changed files" data-view={view}>
           {shown.length === 0 && <div className="oc-changes-nomatch">No files match this filter</div>}
-          {rows.map((row) => {
-            if (row.kind === "directory") return <button key={row.path} type="button" className="oc-change-directory" aria-label={row.name} aria-expanded={row.expanded} style={{ paddingLeft: 12 + row.depth * 16 }} onClick={() => setCollapsed((prev) => { const next = new Set(prev); if (next.has(row.path)) next.delete(row.path); else next.add(row.path); return next; })}>
+          {rows.map((row, rowIndex) => {
+            const nextDepth = rows[rowIndex + 1]?.depth ?? -1;
+            if (row.kind === "directory") return <button key={row.path} type="button" className="oc-change-directory" aria-label={row.name} aria-expanded={row.expanded} style={{ paddingLeft: 12 + row.depth * 12 }} onClick={() => setCollapsed((prev) => { const next = new Set(prev); if (next.has(row.path)) next.delete(row.path); else next.add(row.path); return next; })}>
+              <TreeGuides depth={row.depth} nextDepth={nextDepth} />
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d={row.expanded ? "m6 9 6 6 6-6" : "m9 18 6-6-6-6"} /></svg>
               <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d={row.expanded ? "M1.5 14h11l.48-.37 2.63-7-.48-.63H14V3.5l-.5-.5H7.71l-.86-.85L6.5 2h-5l-.5.5v11l.5.5zM2 3h4.29l.86.85.35.15H13v2H8.5l-.35.15-.86.85H3.5l-.47.34-1 3.08L2 3zm10.13 10H2.19l1.67-5H7.5l.35-.15.86-.85h5.79l-2.37 6z" : "M1.5 2h5l.35.15.86.85h5.79l.5.5v10l-.5.5h-12l-.5-.5v-11l.5-.5zM2 3v10h11V4H7.5l-.35-.15L6.29 3H2z"} /></svg><span className="name">{row.name}</span>{!row.expanded && <ChangeCounts additions={row.additions} deletions={row.deletions} />}
             </button>;
             const f = row.file;
-            return <div key={f.path} className="oc-change-row" style={view === "tree" ? { marginLeft: 8 + row.depth * 16 } : undefined} onContextMenu={(e) => { e.preventDefault(); setMenu({ path: f.path, x: e.clientX, y: e.clientY }); }}>
+            return <div key={f.path} className="oc-change-row" style={view === "tree" ? { marginLeft: 8 + row.depth * 12 } : undefined} onContextMenu={(e) => { e.preventDefault(); setMenu({ path: f.path, x: e.clientX, y: e.clientY }); }}>
+              {view === "tree" && <TreeGuides depth={row.depth} nextDepth={nextDepth} offset={8 + row.depth * 12} />}
               <button className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={files[current]?.path === f.path} onClick={() => diff.openPath(f.path)} title={`Open ${f.path}`}>
                 <span className="name">{f.status === "renamed" && f.old_path && <><PathParts path={view === "tree" ? splitPath(f.old_path).fileName : f.old_path} /><span className="oc-change-rename-arrow">→</span></>}<PathParts path={row.name} /></span>
                 <span className="oc-change-meta">{diff.uncommittedPaths.has(f.path) && <span className="oc-change-uncommitted">U</span>}<ChangeCounts additions={f.additions} deletions={f.deletions} /><ChangeStatus status={f.status} /></span>
@@ -97,6 +100,10 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
       }} />}
     </div>
   );
+}
+
+function TreeGuides({ depth, nextDepth, offset = 0 }: { depth: number; nextDepth: number; offset?: number }) {
+  return Array.from({ length: depth }, (_, level) => <span key={level} className="oc-change-guide" aria-hidden="true" style={{ left: 18 + level * 12 - offset, height: nextDepth <= level ? "50%" : "100%" }} />);
 }
 
 function PathParts({ path }: { path: string }) {

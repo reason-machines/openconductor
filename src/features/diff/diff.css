@@ -82,7 +82,8 @@
 .oc-change-row:has(.oc-change-actions button:hover) .oc-change { background: transparent; }
 .oc-change-row .oc-change-actions .oc-discard { opacity: 1; margin: 0; }
 .oc-change-rename-arrow { flex: none; margin: 0 8px; color: var(--muted); }
-.oc-change-directory { display: flex; flex: none; align-items: center; gap: 6px; height: 32px; width: 100%; padding-right: 18px; text-align: left; color: var(--muted); }
+.oc-change-guide { position: absolute; pointer-events: none; top: 0; width: .5px; background: color-mix(in srgb, var(--muted) 20%, transparent); }
+.oc-change-directory { position: relative; display: flex; flex: none; align-items: center; gap: 6px; height: 32px; width: 100%; padding-right: 18px; text-align: left; color: var(--muted); }
 .oc-change-directory:hover { background: var(--hover); }
 .oc-change-directory > svg { flex: none; }
 .oc-change-directory .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 12px; }
