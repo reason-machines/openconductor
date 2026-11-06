@@ -5,7 +5,8 @@ import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { configureReason, configureReasonDefault, reasonAvailable, reasonChatConfig } from "../features/chat/reasonChat.ts";
 import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
-import type { ChatSnapshot } from "../features/chat/chatRuntime.ts";
+import type { ChatSnapshot, PermissionPrompt } from "../features/chat/chatRuntime.ts";
+import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
 import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
 import { forkToNewWorkspace } from "../features/chat/forkWorkspace.ts";
 import { createWorkspace, ensureRepository } from "../workspace/api";
@@ -44,6 +45,8 @@ interface AttachedSend {
 type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend;
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
+import { openBigTab } from "../features/terminal/session";
+import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
@@ -52,6 +55,7 @@ import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest"
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { AllFilesTree } from "../features/files/AllFilesTree";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
 import { BranchPicker } from "../features/pr/edit/BranchPicker";
@@ -147,6 +151,9 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
+/** What the chat panel shows: Codex's approvals, or the permission requests of Reason and Claude Code. */
+type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly PermissionPrompt[]; approvals?: CodexApproval[] };
+
 function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
@@ -157,8 +164,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const codex = agentId === "codex";
   /** The chat id on the agent's side. */
   const runId = agent.chatId(chatId);
-  // Codex's snapshots also carry its pending approvals.
-  const [{ transcript, queue, approvals = [] }, setSnapshot] = useState<ChatSnapshot & { approvals?: CodexApproval[] }>(() => agent.snapshot(runId));
+  // Codex's snapshots carry its pending approvals; the others' carry permission requests.
+  const [{ transcript, queue, approvals = [], permissions = [] }, setSnapshot] = useState<ChatView>(() => agent.snapshot(runId));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
@@ -468,6 +475,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           onClose={() => setResetTurn(null)}
         />
       ) : null}
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, optionId) => void agent.answerPermission?.(runId, requestId, optionId)} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
@@ -559,9 +567,10 @@ interface RightPanelProps {
   /** Fix errors: send to the workspace's own chat. */
   sendToChat: (text: string, attachments: TextAttachment[]) => void;
   readOnly: boolean;
+  notify?: ArchiveNotify;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly }: RightPanelProps) {
+function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly, notify }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -604,11 +613,7 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
           readOnly={readOnly}
         />
       ) : (
-        <div className="diff-body">
-          <div className="placeholder small">
-            <p>File tree of the worktree will appear here.</p>
-          </div>
-        </div>
+        <AllFilesTree worktree={worktree} notify={notify} />
       )}
     </section>
   );
@@ -715,7 +720,9 @@ const STATUS_TEXT: Record<Workspace["status"], string> = {
 };
 
 export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
-  const [showTerminal, setShowTerminal] = useState(true);
+  // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) shows it,
+  // and ⌘⇧T opens a big terminal while Big terminal mode is on.
+  const [showTerminal, setShowTerminal] = useState(false);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
@@ -850,6 +857,20 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     },
     "git.openInGitHub": prActions.openOnGitHub,
   });
+  // ⌘⇧T inside a terminal is handled by the terminal itself (session.ts), so this one skips terminal focus.
+  useKeybindings(
+    {
+      "terminal.newBigTab": () => {
+        const big = bigTabRequest();
+        if (!big || !repo.path) return false;
+        void openBigTab(workspace.id, repo.path, big)
+          .catch(() => {})
+          .finally(() => setShowTerminal(true));
+        return true;
+      },
+    },
+    { enableOnTerminalFocus: false },
+  );
   const showDiff = diffOpen && mainTab === "diff";
   const showPr = prOpen && mainTab === "pr";
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
@@ -886,11 +907,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         <div className="ws-actions">
           {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
           <PrControl pullRequest={pullRequest} actions={prActions} />
-          <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
-            Terminal
-          </button>
           <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
-            <ArchiveIcon size={14} /> Archive
+            <ArchiveIcon size={12} /> Archive
           </button>
         </div>
       </header>
@@ -937,6 +955,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               repo={repo}
               sendToChat={sendToChat}
               readOnly={workspace.status === "archived"}
+              notify={notify}
             />
             <ScriptsPanel repo={repo} workspace={workspace} />
           </div>

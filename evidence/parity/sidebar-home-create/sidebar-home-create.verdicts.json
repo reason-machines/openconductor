@@ -218,7 +218,7 @@
     },
     "create.copy-files": {
       "verdict": "implemented",
-      "why": "The create path resolves .worktreeinclude / include globs / .env* through files_to_copy.rs and copies them into each new worktree; initialization_files_copied is not written to conductor.db."
+      "why": "The create path resolves .worktreeinclude / include globs / .env* through files_to_copy.rs and copies them into each new worktree; initialization_files_copied (the git ls-files count, as Conductor's qYe) is written to conductor.db by record_initialization (#399)."
     },
     "create.setup-script": {
       "verdict": "implemented",
@@ -226,11 +226,11 @@
     },
     "create.initializing": {
       "verdict": "partial",
-      "why": "#327 adds a pendingLaunches store (src/workspace/pendingLaunches.ts, a port of Conductor's Y5e with the 120 s expiry): CreateWorkspaceDialog adds a launch on submit and removes it when the create finishes or fails, and RepoWorkspaceList/PendingWorkspaceRow (Sidebar.tsx) show an inert 'Untitled' row with a spinner ('Creating workspace...'), also in a collapsed group. Still no initializing workspace view and no initialization log, and the loader is a CSS spinner rather than Conductor's sprite."
+      "why": "#327 adds a pendingLaunches store (src/workspace/pendingLaunches.ts, a port of Conductor's Y5e with the 120 s expiry): CreateWorkspaceDialog adds a launch on submit and removes it when the create finishes or fails, and RepoWorkspaceList/PendingWorkspaceRow (Sidebar.tsx) show an inert 'Untitled' row with a spinner ('Creating workspace...'), also in a collapsed group. #399 logs git worktree add to a Conductor-style $TMPDIR/conductor-<ms>-<rand>.log (init_log.rs), stores it as initialization_log_path with initialization_files_copied, and shows non-fatal initialization issues as a persistent toast with View logs. Still no initializing workspace view, and the loader is a CSS spinner rather than Conductor's sprite."
     },
     "create.failure": {
       "verdict": "implemented",
-      "why": "A failed create shows the backend error in the dialog and on_create_failed drops the pending row; a failed setup raises a toast pointing to the Setup log (setupWatch.ts); startup runs delete_incomplete -> delete_if_initializing (#224). No initialization_log_path for worktree failures."
+      "why": "A failed create shows the backend error in the dialog and on_create_failed drops the pending row; a failed setup raises a toast pointing to the Setup log (setupWatch.ts); startup runs delete_incomplete -> delete_if_initializing (#224). #399: a failed git worktree add reports Conductor's fallback text (stderr, stdout, error, log contents, exit code; the branch-prefix clash message), and a worktree created despite a failure (post-checkout hook), a failed push-upstream setup or copy are non-fatal, recorded with initialization_log_path and shown with View logs."
     },
     "create.in-section": {
       "verdict": "implemented",

@@ -5,7 +5,7 @@
 // or sessions. The pick is kept per chat.
 
 import type { ChatRuntime } from "./chatRuntime.ts";
-import { chatSnapshot, queueAction, REASON_CAN_STEER, resetReasonChat, stopChat, submitChat, subscribeChat } from "./reasonChat.ts";
+import { answerPermission, chatSnapshot, queueAction, REASON_CAN_STEER, resetReasonChat, stopChat, submitChat, subscribeChat } from "./reasonChat.ts";
 import { claudeChatId, claudeRuntime } from "./claudeChat.ts";
 import { CODEX_CAN_STEER, codexQueueAction, codexSnapshot, stopCodex, submitCodex, subscribeCodex } from "./codexChat.ts";
 
@@ -13,8 +13,12 @@ import type { ChatAgentId } from "./agentChoice.ts";
 
 export { saveAgent, savedAgent, type ChatAgentId } from "./agentChoice.ts";
 
-/** Reset chat and turn changes come from turn checkpoints; an agent without `reset` has none (Codex). */
-export interface ChatAgent extends Pick<ChatRuntime<unknown>, "canSteer" | "snapshot" | "subscribe" | "submit" | "stop" | "queueAction">, Partial<Pick<ChatRuntime<unknown>, "reset">> {
+/**
+ * Reset chat and turn changes come from turn checkpoints; an agent without `reset` has none (Codex).
+ * Only Reason asks for permission mid-turn (`answerPermission`): Codex asks through its own approvals,
+ * and Claude Code chats run in bypassPermissions.
+ */
+export interface ChatAgent extends Pick<ChatRuntime<unknown>, "canSteer" | "snapshot" | "subscribe" | "submit" | "stop" | "queueAction">, Partial<Pick<ChatRuntime<unknown>, "reset" | "answerPermission">> {
   id: ChatAgentId;
   label: string;
   /** The agent's chat id for a chat shown under `chatId` (Claude Code's is `<chatId>:claude`). */
@@ -32,14 +36,16 @@ export const CHAT_AGENTS: Record<ChatAgentId, ChatAgent> = {
     stop: stopChat,
     queueAction,
     reset: resetReasonChat,
+    answerPermission,
     chatId: (id) => id,
   },
   codex: {
     id: "codex",
     label: "Codex",
     canSteer: CODEX_CAN_STEER,
-    snapshot: codexSnapshot,
-    subscribe: subscribeCodex,
+    // Codex asks through its approvals (in its snapshot), never a permission request.
+    snapshot: (chatId) => ({ ...codexSnapshot(chatId), permissions: [] }),
+    subscribe: (chatId, fn) => subscribeCodex(chatId, (s) => fn({ ...s, permissions: [] })),
     // Codex gets attachments inline in the prompt; a follow-up always queues.
     submit: (chatId, cwd, text, _mode, attachments) => submitCodex(chatId, cwd, text, attachments),
     stop: stopCodex,

@@ -29,6 +29,7 @@ pub mod checkpoint;
 mod checkpoint_commands;
 mod chat_store_commands;
 pub mod codex_chat;
+mod session_status_commands;
 pub mod claude_chat;
 pub mod create_project;
 pub mod archive_on_merge;
@@ -399,6 +400,9 @@ pub fn run() {
             chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
+            reason_chat::reason_answer_permission,
+            session_status_commands::session_statuses,
+            session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,

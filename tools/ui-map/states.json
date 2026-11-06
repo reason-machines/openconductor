@@ -1153,7 +1153,7 @@
     "scenario": "populated",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Repository paths and workspace file behavior."
      }
     ]
    },
