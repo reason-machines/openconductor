@@ -352,7 +352,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* Footer controls sit 12px in from the card's sides (Conductor: model trigger and Create at card edge + 12). */
 .create-card-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px -4px 0; }
 .create-ws-attached .create-card-bar { margin-left: -6px; }
-.create-model { display: flex; align-items: center; gap: 2px; min-width: 0; overflow: hidden; }
 .create-chip { field-sizing: content; height: 28px; max-width: 220px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); font: inherit; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
 .create-chip:hover:not(:disabled), .create-chip[aria-expanded="true"] { background: var(--hover); color: var(--text); }
 .create-chip:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }

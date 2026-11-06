@@ -6,6 +6,7 @@
 import { CODEX_THINKING_LEVELS } from "../settings/agentSettings.ts";
 import { agentForModel, newChatModel, type ModelAgent } from "../settings/models.ts";
 import { CLAUDE_EFFORT_LEVELS, type Settings } from "../settings/types.ts";
+import type { Favorite } from "../settings/agents/loadout.ts";
 
 export interface LaunchModel {
   agent: string;
@@ -46,4 +47,25 @@ export function chooseModel(current: LaunchModel, model: string, settings: Setti
   const agent = agentForModel(model) ?? "claude";
   const effort = effortLevels(agent).includes(current.effort) ? current.effort : defaultEffort(agent, settings);
   return { agent, model, effort };
+}
+
+/** A row of the "Change agent" picker: a model with the effort it applies (Conductor's favorite configuration). */
+export interface LaunchPick {
+  model: string;
+  effort: string | null;
+}
+
+/**
+ * Applies a pick from the "Change agent" picker (Conductor's `RNi` in the
+ * create composer `Hji`): a favorite brings its own effort, a new effort keeps
+ * the model. An effort the model's agent does not offer becomes its default.
+ */
+export function pickLaunch(current: LaunchModel, pick: LaunchPick, settings: Settings | null): LaunchModel {
+  const next = pick.model === current.model ? current : chooseModel(current, pick.model, settings);
+  return pick.effort && effortLevels(next.agent).includes(pick.effort) ? { ...next, effort: pick.effort } : next;
+}
+
+/** The loadout's built-in favorites as picker rows (ACP favorites need an agent the create flow cannot launch). */
+export function loadoutPicks(favorites: readonly Favorite[]): LaunchPick[] {
+  return favorites.flatMap((f) => (f.type === "built-in" ? [{ model: f.model, effort: f.thinkingLevel ?? null }] : []));
 }

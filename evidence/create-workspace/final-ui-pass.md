@@ -43,7 +43,7 @@ Popup (`ni`, @565,215):
 | Target branch (icon button) | **Target branch**; when disabled, the disabled reason (`U4a` @10,978,328) | native `title="Base branch"` |
 | Create from (icon button) | **Create from** + its command's hint, so "Create from ⌘⇧N" (@10,954,392) | native `title="Create new workspace from PR, branch, or issue"` |
 | Clear create-from selection | no tooltip; `aria-label="Clear create from selection"` | `title` with that text, so it shows a native tooltip that Conductor does not have |
-| Model and effort picker | **Change agent** (create composer's `cka`, @11,384,580); the chat composer adds the `chat.openModelPicker` hint | native `title="Model"` and `title="Effort"` on two selects |
+| Model and effort picker | **Change agent ⌘/**: the create composer `Hji` (@9,732,008) renders the chat composer's picker `RNi` (tooltip @8,577,282, hint `chat.openModelPicker`). Correction: `cka` (@11,384,580, "Change agent" with no hint) is the routines editor's picker, not the create composer's | **Done (Change agent PR):** the chat `ModelPicker`, whose trigger now always shows "Change agent ⌘/" (main) |
 | + (attachments) | **Add attachments and more**, or **Add attachments, link issues, and more** when issues can be linked (`a7i` @7,908,848) | button missing |
 | Create | no Base UI tooltip; native `title` = **Create workspace ↵** and `aria-label` = Create (`sQo` @rQo). When disabled for a reason, that reason is the tooltip | `title` matches |
 
@@ -68,7 +68,7 @@ Popup (`ni`, @565,215):
 
 Gaps for #388's owner (or this screen after it lands), in order:
 1. **Done (footer alignment PR):** Create button `xs` (24 px), foreground fill, background text, no press scale. Footer controls now sit 12 px in from the card on both sides, as Conductor's do. Side by side: `parity/side-by-side/create-workspace--footer-alignment.png`.
-2. One "Change agent" ghost trigger with model and effort, instead of two selects.
+2. **Done (Change agent PR):** one "Change agent" ghost trigger with model and effort, instead of two selects. It reuses the chat composer's `ModelPicker` as `Hji` reuses `RNi`: the loadout's favorites (slot 1 is the default model), "Add models" and "Edit" to Settings › Default models, the Effort/Thinking submenu, ⌘/ to open and ⌘⇧/ to cycle effort. Measured at 1440×900: trigger x 477, 28 high, as Conductor's (x 477, 28 high). Side by side: `parity/side-by-side/create-workspace--change-agent.png`. Not built: `RNi`'s ⌘1–5 loadout shortcuts (the chat picker lacks them too), its ACP agent rows, and the agent icon shown only in the minimized composer.
 3. Add the `+` attachments button.
 4. Make target branch and create-from icon triggers with Base UI tooltips.
 5. Fold "Add…" into the repo menu's trailing "Add project" row after a separator, as `ZQo` does.
