@@ -20,6 +20,9 @@ first command really writes hello.txt in the thread's cwd. Prompts:
 Every request it receives is appended to $HOME/codex-fake.jsonl, after one
 {"launch": {"args", "launcher"}} line: its arguments (the `-c` overrides) and
 $OC_FAKE_CODEX, which names the wrapper that started it.
+account/read answers signed out until account/login/start (ChatGPT) has run:
+that sign-in completes by itself after 0.5 s as e2e@example.com and is kept
+in codex-fake-account.json beside the log ($OC_FAKE_CODEX_DIR or $HOME).
 Only "codex app-server" is handled; other subcommands exit 2.
 """
 import json
@@ -31,7 +34,9 @@ if sys.argv[1:2] != ["app-server"]:
     sys.stderr.write(f"fake codex: unsupported {sys.argv[1:]}\n")
     sys.exit(2)
 
-LOG = os.path.join(os.environ.get("HOME", "."), "codex-fake.jsonl")
+FAKE_DIR = os.environ.get("OC_FAKE_CODEX_DIR") or os.environ.get("HOME", ".")
+LOG = os.path.join(FAKE_DIR, "codex-fake.jsonl")
+ACCOUNT = os.path.join(FAKE_DIR, "codex-fake-account.json")
 out_lock = threading.Lock()
 
 
@@ -169,6 +174,19 @@ def handle(msg):
     note({"method": method, "params": params})
     if method == "initialize":
         send({"id": mid, "result": {"userAgent": "fake-codex/0.166.0", "platformFamily": "unix"}})
+    elif method == "account/read":
+        account = json.load(open(ACCOUNT)) if os.path.exists(ACCOUNT) else None
+        send({"id": mid, "result": {"account": account, "requiresOpenaiAuth": True}})
+    elif method == "account/login/start" and params.get("type") == "chatgpt":
+        login = "login-e2e"
+        send({"id": mid, "result": {"type": "chatgpt", "loginId": login, "authUrl": "http://127.0.0.1:1455/e2e-auth"}})
+
+        def signed_in():
+            with open(ACCOUNT, "w") as f:
+                json.dump({"type": "chatgpt", "email": "e2e@example.com", "planType": "pro"}, f)
+            notify("account/login/completed", {"loginId": login, "success": True, "error": None})
+
+        threading.Timer(0.5, signed_in).start()
     elif method in ("thread/start", "thread/resume"):
         state["thread"] = params.get("threadId") or "th-e2e-1"
         state["cwd"] = params.get("cwd") or os.getcwd()
