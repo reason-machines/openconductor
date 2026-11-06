@@ -10,6 +10,7 @@
 use serde::Serialize;
 use serde_json::{json, Value};
 
+use super::codex_consent::{consent, Consent};
 use super::codex_events::{Notification, ServerMessage, ServerRequest, TurnStatus};
 use super::codex_rpc::{ApprovalDecision, RequestId};
 
@@ -160,6 +161,9 @@ pub enum Payload {
         delta: String,
     },
     Approval(Approval),
+    /// An MCP elicitation or a permission request the turn waits on; it
+    /// ends with [`Payload::ApprovalResolved`] like an approval.
+    Consent(Consent),
     /// The approval is answered (here or by Codex itself).
     ApprovalResolved {
         request_id: RequestId,
@@ -367,7 +371,12 @@ pub fn payloads(message: &ServerMessage) -> Vec<Payload> {
             reason: reason.clone(),
             decisions: offered(decisions),
         })],
-        ServerMessage::Request(ServerRequest::Other { .. }) => vec![],
+        ServerMessage::Request(ServerRequest::Other { id, method, params }) => {
+            consent(id, method, params)
+                .map(Payload::Consent)
+                .into_iter()
+                .collect()
+        }
         ServerMessage::Notification(n) => notification_payloads(n),
     }
 }

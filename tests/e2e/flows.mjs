@@ -144,8 +144,35 @@ export const flows = [
       const buttonText = () => wd.execute("return document.querySelector('.scripts-actions .btn-primary, .scripts-actions .btn-stop')?.textContent.trim() ?? null;", []);
       if (existsSync(inRoot)) throw new Error("e2e-diff.txt is already in the repository root");
 
-      const [toggle] = await wd.waitFor("the spotlight testing toggle", () => wd.findAll(".spotlight-toggle input:not([disabled])").then((ids) => ids.length && ids));
-      await wd.click(toggle);
+      // Like Conductor, the Run tab of a repository without a run script shows only
+      // "Add run script", which opens the repository's settings; spotlight
+      // testing is a switch on its Actions page. Esc goes back to the workspace.
+      const heading = () => wd.execute("return document.querySelector('.settings .settings-header h1')?.textContent.trim() ?? null;", []);
+      async function setSpotlightTesting(on) {
+        if (on) {
+          const [add] = await wd.waitFor("the Run tab's Add run script", () => wd.findAll(".scripts-empty-btn").then((ids) => ids.length && ids));
+          await wd.click(add);
+          await wd.waitFor("the repository's Scripts settings", async () => (await heading()) === "Scripts", 10000);
+        } else {
+          await wd.execute("document.activeElement?.blur();", []);
+          await wd.chord(["\uE03D"], ",");
+          await wd.waitFor("Settings after ⌘,", heading, 10000);
+          const [repoNav] = await wd.findAll('.settings-nav .settings-repo[aria-label="e2e-demo"]');
+          if (!repoNav) throw new Error("no e2e-demo under Settings › Repositories");
+          await wd.click(repoNav);
+        }
+        await clickByText(wd, ".settings-nav .settings-repo-sections .nav-item", "Actions");
+        await wd.waitFor("the repository's Actions page", async () => (await heading()) === "Actions");
+        const [toggle] = await wd.waitFor("the spotlight testing switch", () =>
+          wd.findAll(`input[aria-label="Use spotlight testing"]${on ? ":not(:checked)" : ":checked"}:not([disabled])`).then((ids) => ids.length && ids),
+        );
+        await wd.click(toggle);
+        await wd.waitFor(`spotlight_testing = ${on} in .conductor/settings.local.toml`, async () => spotlightSetting() === String(on));
+        await wd.execute("document.activeElement?.blur();", []);
+        await wd.keys("\uE00C");
+        await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
+      }
+      await setSpotlightTesting(true);
       await wd.waitFor("Run Spotlight", async () => (await buttonText())?.endsWith("Run Spotlight"));
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after turning it on, want true`);
       const [start] = await wd.findAll(".scripts-actions .btn-primary");
@@ -169,11 +196,8 @@ export const flows = [
       if (JSON.stringify(status) !== JSON.stringify(want)) throw new Error(`repository root status ${JSON.stringify(status)}, want ${JSON.stringify(want)}`);
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after Stop, want true`);
 
-      // Turn spotlight testing back off for later flows.
-      const [again] = await wd.findAll(".spotlight-toggle input:checked:not([disabled])");
-      if (!again) throw new Error("no checked spotlight testing toggle to turn off");
-      await wd.click(again);
-      await wd.waitFor("spotlight_testing = false in .conductor/settings.local.toml", async () => spotlightSetting() === "false");
+      // Turn spotlight testing back off for later flows (Settings › repository › Actions).
+      await setSpotlightTesting(false);
     },
   },
   {
@@ -184,10 +208,10 @@ export const flows = [
     async run(wd, ctx) {
       if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
       const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
-      // Conductor's default layout shows no terminal; ⌘J (Toggle terminal panel) shows it.
-      if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal panel by default");
-      await wd.execute("document.activeElement?.blur();", []);
-      await wd.chord(["\uE03D"], "j");
+      // Conductor's workspace opens on the right panel's Run tab with no terminal; + (New terminal) in that strip opens one.
+      if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal by default");
+      const [plus] = await wd.waitFor("the strip's New terminal button", () => wd.findAll('.ws-strip-tabs button[aria-label="New terminal"]').then((ids) => ids.length && ids));
+      await wd.click(plus);
       const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
       await wd.click(screen);
       await wd.keys("echo oc-term-$((6*7)); pwd\uE007");
@@ -548,6 +572,41 @@ export const flows = [
       } finally {
         rmSync(hook, { force: true });
       }
+    },
+  },
+  {
+    // Open project on a folder that is already added is not refused: like
+    // Conductor it adds a second project on the same folder, `<name>-v1`
+    // (evidence/screens/duplicate-repo.md). Runs from the palette's
+    // "Open project" action, since Home's cards only show at start-up.
+    name: "duplicate-repo",
+    async run(wd, ctx) {
+      if (!ctx.repo) throw new Error("needs the add-repo flow's repo");
+      const ENTER = "\uE007";
+      await wd.execute("window.__OC_E2E_PICK_FOLDER__ = arguments[0];", [ctx.repo]);
+      await wd.execute("document.activeElement?.blur();", []);
+      await wd.chord(["\uE03D"], "k");
+      await wd.waitFor("the command palette", async () => (await wd.findAll('.palette[aria-label="Command palette"]')).length > 0, 10000);
+      await wd.keys("Open project");
+      await wd.waitFor("Open project highlighted", () =>
+        wd.execute("return document.querySelector('.palette-item.active .palette-title')?.textContent.trim() === 'Open project';", []),
+      );
+      await wd.keys(ENTER);
+      await wd.waitFor("e2e-demo-v1 in the sidebar", async () => (await textsOf(wd, ".sb-repo-name")).includes("e2e-demo-v1")).catch(async (e) => {
+        throw new Error(`${e.message}; sidebar ${JSON.stringify(await textsOf(wd, ".sb-repo-name"))}`);
+      });
+      // Exactly two projects on the folder, whatever their names: the
+      // create-workspace flow and the branch lookups must not have
+      // registered hidden extra copies (#401 once saw e2e-demo-v3 here).
+      const rows = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_list_repos');", []);
+      const root = rows.find((r) => r.name === "e2e-demo")?.rootPath;
+      const demo = rows.filter((r) => r.rootPath === root);
+      const names = demo.map((r) => r.name).sort();
+      if (!root || demo.length !== 2 || new Set(demo.map((r) => r.id)).size !== 2 || names.join() !== "e2e-demo,e2e-demo-v1") {
+        throw new Error(`want two repos rows on one folder (e2e-demo, e2e-demo-v1), got ${JSON.stringify(demo.map((r) => [r.id, r.name, r.rootPath]))}`);
+      }
+      const shown = (await textsOf(wd, ".sb-repo-name")).filter((n) => /^e2e-demo(-v\d+)?$/.test(n)).sort();
+      if (shown.join() !== "e2e-demo,e2e-demo-v1") throw new Error(`want the sidebar to show e2e-demo and e2e-demo-v1, got ${JSON.stringify(shown)}`);
     },
   },
 

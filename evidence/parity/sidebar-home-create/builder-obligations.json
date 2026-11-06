@@ -1,14 +1,14 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-06 (main 563981a: create.page after #388 (563981a), create.first-message model/effort note after #388, create.initializing re-read after #388/#399 (unchanged), sidebar.archive: #467 merged into #428's branch after #428 landed, so its fix is not on main; main f6da48f: sidebar.ws-status after #428 (5751628), home.status-overview after #428 and #457 (f6da48f), sidebar.archive re-read (Codex chats now block archive, Stop still skips them and needs_user_permission chats); main 2e13137: sidebar.archive Codex-chat gap in progress via open draft #467, verdict unchanged; main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 92.5,
+ "verdicts_verified_at": "2026-11-06 (main a9e4a48: sidebar.archive after #532 (a9e4a48), home.duplicate-repo after #401 (1121ccc), home.recent re-read after #401 (persistence closed; archived workspaces still dropped from Recent, open #551); main 563981a: create.page after #388 (563981a), create.first-message model/effort note after #388, create.initializing re-read after #388/#399 (unchanged), sidebar.archive: #467 merged into #428's branch after #428 landed, so its fix is not on main; main f6da48f: sidebar.ws-status after #428 (5751628), home.status-overview after #428 and #457 (f6da48f), sidebar.archive re-read (Codex chats now block archive, Stop still skips them and needs_user_permission chats); main 2e13137: sidebar.archive Codex-chat gap in progress via open draft #467, verdict unchanged; main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 94.0,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 9,
+ "open": 7,
  "by_owner": {
   "create-workspace": 1,
-  "home": 4,
-  "sidebar": 4
+  "home": 3,
+  "sidebar": 3
  },
  "obligations": [
   {
@@ -63,25 +63,6 @@
    "status": "open"
   },
   {
-   "obligation_id": "parity.home.duplicate-repo",
-   "item": "home.duplicate-repo",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Adding an already-added repository again (Clone or Open project) makes a new project: no duplicate check, a new repos row, and Clone picks a unique folder (name-v1, name-v2)",
-   "verdict": "partial",
-   "gap": "Clone now matches (#343): the Clone dialog result is added under its backend id and a second clone of an added remote becomes its own project in a <name>-v1 folder (sameRepoRecord, src/state/addRepo.ts, tested; naming::bump since #379), as Conductor's g2t/C2t do. Open project still differs: App.tsx openProject refuses an already-added folder with REPO_EXISTS (findExistingRepo), and add_repository returns the existing id for a known path, while Conductor inserts a second repos row for the same folder named <name>-v1 (evidence/screens/duplicate-repo.md).",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "schema": [
-     "repos.remote_url",
-     "repos.root_path"
-    ]
-   },
-   "status": "open"
-  },
-  {
    "obligation_id": "parity.home.recent",
    "item": "home.recent",
    "area": "home",
@@ -89,7 +70,7 @@
    "depends_on_builders": [],
    "feature": "Recent workspaces list",
    "verdict": "partial",
-   "gap": "Re-read with REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest): 'Recent workspaces' is the command palette's All-tab heading with an empty query (m_a @10,909,908), not a Home list. Conductor keeps recentWorkspaceIds (most recent first, cap XOt = 5, recordViewedWorkspace) in its persisted UI store (partialize includes recentWorkspaceIds, index chunk @3,121,897), so the list survives a restart. Ours (src/palette/PaletteHost.tsx) shows the same heading and order but keeps up to 8 ids in React state only, so it is empty after a restart and holds 3 more than Conductor.",
+   "gap": "Re-read with REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest): 'Recent workspaces' is the command palette's All-tab heading with an empty query (m_a @10,909,908), not a Home list. Conductor keeps recentWorkspaceIds (most recent first, cap XOt = 5, recordViewedWorkspace) in its persisted UI store (partialize includes recentWorkspaceIds, index chunk @3,121,897), so the list survives a restart. Ours (src/palette/PaletteHost.tsx) shows the same heading and order but keeps up to 8 ids in React state only, so it is empty after a restart and holds 3 more than Conductor. Re-read on a9e4a48 after #401 (1121ccc): the persistence half is closed. src/palette/recentWorkspaces.ts keeps recentWorkspaceIds with Conductor's recordViewedWorkspace rule (unchanged when already first, else moved to the front, at most 5) and persists it under the same localStorage key workspace-tab-state-v2 in zustand's {state, version} shape; PaletteHost starts from the stored list and saves on every change. Matches index-BGEQ8YjU.js recordViewedWorkspace (@3,122,391), XOt=5 (@3,120,888) and partialize keeping recentWorkspaceIds (@3,125,154); tests/e2e/palette-recents.e2e.mjs covers a reload. Still partial: Conductor's palette maps the stored ids over every workspace, archived included, and drops only ids that no longer resolve (renderApp-D_fmY7hW.js @10,854,949: w.map(...).filter(E_a), E_a = t!==void 0 @10,875,488; the search path alone filters archived, S_a/k_a @10,875,434), so archived workspaces stay under 'Recent workspaces'. Ours drops them twice: paletteDataFromState keeps only ids in the sidebar's known set (src/palette/fromAppState.ts) and the All tab's Recent group filters !w.archived (src/palette/search/model.ts). Open #551 (builder 9afba896) closes this. Not run in the desktop app.",
    "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
    "ledger_obligations": [],
    "evidence": {
@@ -139,39 +120,6 @@
     ],
     "ipc": [
      "experimental_sidebar_transparency"
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.sidebar.archive",
-   "item": "sidebar.archive",
-   "area": "sidebar",
-   "owner": "sidebar",
-   "depends_on_builders": [],
-   "feature": "Archive with confirmation, refusing while a git operation is in progress, recording an archive commit",
-   "verdict": "partial",
-   "gap": "#391 (274ac80) replaces the row-only db_archive_workspace with archive_workspace (src-tauri/src/workspace_archive/, flow.rs), which the row menu, WorkspaceView, the palette and archive on merge all reach through startArchive (store.ts). It follows Conductor's dYe/mYe (index-BGEQ8YjU.js @ ~966,478 / ~969,254): checkpoint conductor-archive-<id>, refuse in safe mode while a merge/rebase/cherry-pick/revert is in progress with the sticky warning and Archive retry (discardGitOperationState), archive commit = HEAD kept under refs/conductor-archive-heads/<id>, row state/branch/archive_commit, archive script, .context move, worktree removal and delete_branch_on_archive. #397 (aa32456) closes the last gap: the running-agents check folds every chat of the workspace (workspaceAgentStatus; working, cancelling or waiting block, as dYe), and every archive calls stopWorkspaceAgents, which stops each working or cancelling chat of the workspace (stopChat), as Conductor's Z$ (@974,859) calls cancelSession for every session of a local workspace. Conductor's cancel also settles a 'waiting' session (@3,013,752); no OpenConductor chat reports 'waiting', so there is nothing to settle. Read on f6c05d7 with the bundle (sha256 prefix b5b01f33); not run in the desktop app. Re-read on 1944b98: partial, because 'every chat' covers only Reason chats. chatStatuses is published only by createChatRuntime (chatRuntime.ts), which only reasonChat.ts uses; codexChat.ts keeps its own queue and never publishes a status, and stopWorkspaceAgents calls reasonChat's stopChat. So a working Codex chat neither blocks archive nor is stopped by 'Stop agents and archive', and its worktree is removed under it, unlike Conductor's Z$, which cancels every session of the workspace (gap reported in #437's body). Re-read on f6da48f after #428: half of the Codex gap is closed. #428 makes codexChat.ts report each Codex chat's status into the shared chatStatuses map (reportChatStatus), so workspaceAgentStatus now sees a working Codex chat and blockedByAgents refuses the plain archive, as dYe (@966,484) does for every session. 'Stop agents and archive' still does not stop it: stopWorkspaceAgents calls reasonChat's stopChat (reason.stop), which acts on the Reason runtime's own idle queue for that chat id, not on codexChat's, so the Codex turn keeps running while its worktree is removed. New with #428: stopWorkspaceAgents stops only working or cancelling chats, so a chat in needs_user_permission (Reason or Codex) is not stopped either, while Conductor's Z$ (@974,859) cancels every session of the workspace. PR #467 (head d5868c5, builder aebd8c64) was merged at 2026-11-06 01:41Z into its base reason/openconductor-home-statu-cdb73745, #428's branch, after #428 had already landed on main at 01:39Z, so none of it reached main: on 563981a src/workspace/archiveAgents.test.ts does not exist and src/workspace/archive.ts never calls stopCodex. It needs reopening against main; not scored until it lands there.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [
-    "ws.status-archive",
-    "ws.git-busy"
-   ],
-   "evidence": {
-    "copy": [
-     219,
-     223,
-     224,
-     786,
-     2723,
-     4222
-    ],
-    "schema": [
-     "workspaces.state",
-     "workspaces.archive_commit"
-    ],
-    "cli": [
-     "workspace archive"
     ]
    },
    "status": "open"

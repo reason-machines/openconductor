@@ -19,6 +19,14 @@ function readLocal(): RepoFilter {
   }
 }
 
+/**
+ * The stored filter, read once (for code outside the sidebar, such as opening
+ * Create): the app preference on desktop, localStorage in the browser.
+ */
+export function storedRepoFilter(desktopPref: string | null | undefined): RepoFilter {
+  return isTauri() ? (desktopPref ?? undefined) : readLocal();
+}
+
 function writeLocal(filter: RepoFilter) {
   try {
     if (filter === undefined) localStorage.removeItem(STORAGE_KEY);
