@@ -54,6 +54,7 @@ export type ReasonPayload = { chatId: string } & (
   | { type: "turnEnded"; end: ReasonTurnEnd }
   | PermissionRequestPayload
   | { type: "permissionResolved"; requestId: string }
+  | { type: "sessionModel"; model: string; effort: string | null }
 );
 
 /**
@@ -267,6 +268,8 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
     // Permission requests change the chat's status, not its transcript (reasonChat.ts).
     case "permissionRequest":
     case "permissionResolved":
+    // The Session's model goes to the model picker (reasonChat.ts).
+    case "sessionModel":
       return { state, events: [] };
   }
 }

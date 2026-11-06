@@ -8,6 +8,7 @@
 // organization, so every route Conductor gates behind one resolves where
 // Conductor sends a local user: /settings/user/general.
 
+import { APP_URL_SCHEME } from "../workspace/link.ts";
 import type { SettingsPage } from "./pages.ts";
 
 /**
@@ -200,6 +201,16 @@ export function settingsPath(loc: SettingsLocation): string {
   return loc.scope === "user"
     ? `/settings/user/${loc.page}`
     : `/settings/repos/${encodeURIComponent(loc.repoId)}/${loc.section}`;
+}
+
+/**
+ * What "Copy link" on a settings page link copies: Conductor's `TGt`
+ * (index-BGEQ8YjU.js) builds `${scheme}://settings/` + the page's route
+ * (`user/<page>`, `repos/<repoId>/<section>`), so it is the canonical path
+ * under the app's URL scheme.
+ */
+export function settingsDeepLink(loc: SettingsLocation): string {
+  return `${APP_URL_SCHEME}:/${settingsPath(loc)}`;
 }
 
 export const sameLocation = (a: SettingsLocation, b: SettingsLocation): boolean =>

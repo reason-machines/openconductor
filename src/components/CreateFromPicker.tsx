@@ -18,6 +18,7 @@ import {
   type SourceState,
 } from "../workspace/createFrom";
 import { listIssues, listPullRequests } from "../workspace/api";
+import { Tooltip } from "./Tooltip";
 
 interface Props {
   value: CreateFrom | null;
@@ -25,13 +26,15 @@ interface Props {
   /** Local checkout of the chosen repository; PRs and issues are listed through it. */
   repoPath: string | null;
   disabled?: boolean;
+  /** Shortcut glyphs for the trigger's tooltip (the createFromPRBranchIssue command). */
+  shortcut?: string;
   onChange: (from: CreateFrom | null) => void;
   /** Start with the picker open (Conductor's `createFromOpen`, the repo menu's "Create from..."). */
   defaultOpen?: boolean;
 }
 
 /** "Create from..." in the create composer's eyebrow, and its PR / branch / issue picker. */
-export function CreateFromPicker({ value, branches, repoPath, disabled, onChange, defaultOpen = false }: Props) {
+export function CreateFromPicker({ value, branches, repoPath, disabled, shortcut, onChange, defaultOpen = false }: Props) {
   const [open, setOpen] = useState(defaultOpen);
   const [tab, setTab] = useState<FromTab>("pr");
   const [query, setQuery] = useState("");
@@ -102,11 +105,14 @@ export function CreateFromPicker({ value, branches, repoPath, disabled, onChange
 
   return (
     <div className="create-from">
-      <button type="button" className="create-chip create-from-btn" onClick={() => setOpen(!open)} disabled={disabled} aria-expanded={open} title="Create new workspace from PR, branch, or issue">
-        {value ? fromLabel(value) : "Create from..."}
-      </button>
+      {/* Conductor's create-from trigger: Tooltip "Create from" with its command's shortcut hint. */}
+      <Tooltip content="Create from" shortcut={shortcut}>
+        <button type="button" className="create-chip create-from-btn" onClick={() => setOpen(!open)} disabled={disabled} aria-expanded={open} aria-label="Create new workspace from PR, branch, or issue">
+          {value ? fromLabel(value) : "Create from..."}
+        </button>
+      </Tooltip>
       {value && (
-        <button type="button" className="create-chip create-from-clear" aria-label="Clear create from selection" title="Clear create from selection" onClick={() => onChange(null)} disabled={disabled}>
+        <button type="button" className="create-chip create-from-clear" aria-label="Clear create from selection" onClick={() => onChange(null)} disabled={disabled}>
           ×
         </button>
       )}

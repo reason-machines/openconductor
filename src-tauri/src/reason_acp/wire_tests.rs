@@ -204,3 +204,39 @@ fn plan_and_question_requests_carry_what_they_ask() {
                 "options": [{ "label": "SQLite", "description": null }] }] })
     );
 }
+
+#[test]
+fn session_model_and_the_model_list_reach_the_ui() {
+    use super::cli::RunningModel;
+    use super::provider::model_list;
+    use super::wire::models_json;
+    let ran = ProviderEvent::SessionModel(RunningModel {
+        model: "byok:anthropic:claude-opus-5-5".into(),
+        effort: Some("high".into()),
+    });
+    assert_eq!(
+        event_json("c", &ran),
+        json!({ "chatId": "c", "type": "sessionModel",
+                "model": "byok:anthropic:claude-opus-5-5", "effort": "high" })
+    );
+    // Trimmed from `session/new` of `reason acp` 0.2.692.
+    let options = json!([
+        { "id": "model", "name": "Model", "category": "model", "type": "select",
+          "currentValue": "default", "options": [
+            { "value": "default", "name": "Auto", "description": "Your Workspace's default" },
+            { "value": "byok:anthropic:claude-opus-5-5", "name": "Claude Opus 5.5",
+              "description": "Claude · Subscription" },
+            { "value": "openai/gpt-6.1-sol", "name": "Reason" } ] },
+        { "id": "reasoning_effort", "currentValue": "default", "options": [] }
+    ]);
+    let list = model_list(&options).unwrap();
+    assert_eq!(
+        models_json(&list),
+        json!({ "current": "default", "options": [
+            { "value": "default", "name": "Auto", "description": "Your Workspace's default" },
+            { "value": "byok:anthropic:claude-opus-5-5", "name": "Claude Opus 5.5",
+              "description": "Claude · Subscription" },
+            { "value": "openai/gpt-6.1-sol", "name": "Reason" } ] })
+    );
+    assert_eq!(model_list(&json!([])), None);
+}
