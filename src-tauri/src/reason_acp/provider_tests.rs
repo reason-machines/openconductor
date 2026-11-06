@@ -211,6 +211,83 @@ fn config_is_set_on_a_new_session_and_unoffered_values_become_notices() {
     assert!(notices[1].contains("speed"));
 }
 
+/// The last `config` reply: each one is "model=M effort=E".
+fn last_config(log: &Log) -> String {
+    let r = reply(log);
+    let i = r.rfind("model=").expect("a config reply");
+    r[i..].to_string()
+}
+
+#[test]
+fn a_changed_config_applies_to_the_open_session_at_its_next_prompt() {
+    use super::provider::ConfigChoice;
+    let choice = |id: &str, value: &str| ConfigChoice {
+        id: id.into(),
+        value: value.into(),
+    };
+    let (p, log, home) = provider("config-live");
+    p.open_chat("ws", &home, None);
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "high"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=high"
+    );
+
+    // A pick in the running chat: the same Session switches, as Conductor's
+    // `reconcileSessionConfig` does before its next prompt.
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:openai-codex:gpt-5.6-sol"),
+            choice("reasoning_effort", "low"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:openai-codex:gpt-5.6-sol effort=low"
+    );
+    assert_eq!(started(&log), vec!["sess-1"], "no new Session");
+
+    // After a restart the resumed Session gets a pick made meanwhile.
+    p.shutdown();
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "medium"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=medium"
+    );
+    assert_eq!(started(&log), vec!["sess-1"], "resumed, not replaced");
+
+    // A value the Session does not offer is told, not sent.
+    p.set_config("ws", vec![choice("model", "opus-5-1m")]);
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=medium"
+    );
+    let notices = log
+        .lock()
+        .unwrap()
+        .iter()
+        .filter(|(_, e)| matches!(e, ProviderEvent::Notice(n) if n.contains("opus-5-1m")))
+        .count();
+    assert_eq!(notices, 1);
+}
+
 #[test]
 fn attachments_go_to_reason_as_embedded_files() {
     use super::provider::Attachment;
