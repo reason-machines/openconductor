@@ -27,6 +27,7 @@ mod git;
 #[cfg(test)]
 mod tests;
 
+use std::ffi::OsString;
 use std::fmt;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -311,6 +312,15 @@ fn parse_checkpoint(git: &Git<'_>, id: &str, commit: &str) -> Result<Checkpoint,
 /// index or a half-finished merge/cherry-pick/revert. The checkpoint may
 /// have been taken in another worktree of the same repository.
 pub fn restore(workspace: &Path, id: &str) -> Result<(), CheckpointError> {
+    restore_keeping(workspace, id, &[])
+}
+
+/// [`restore`], except that each file in `keep` (relative to the workspace
+/// root) is left as it is on disk, whatever the checkpoint holds for it: it
+/// is never written and never removed, not even for a moment, so a reader
+/// that looks at it during the restore sees its bytes (or its absence)
+/// unchanged. The index still follows the checkpoint.
+pub fn restore_keeping(workspace: &Path, id: &str, keep: &[&Path]) -> Result<(), CheckpointError> {
     let root = workspace_root(workspace)?;
     let git = Git::new(&root);
     let commit = git
@@ -337,16 +347,52 @@ pub fn restore(workspace: &Path, id: &str) -> Result<(), CheckpointError> {
     // 2) Snapshot the current files into the index with fresh stat info, then
     //    two-way merge to the saved worktree tree so only differing files are
     //    written; then drop untracked files/dirs that were not saved.
+    //    A kept file is in neither the index nor the target tree, so the
+    //    two-way merge does not touch it, and `clean` is told to skip it.
     git.run(["read-tree", "--reset", &head])?;
     git.run(["add", "-A", "--", "."])?;
-    git.run(["read-tree", "--reset", "-u", &cp.worktree_tree])?;
-    git.run(["clean", "-fd"])?;
+    let target = if keep.is_empty() {
+        cp.worktree_tree.clone()
+    } else {
+        forget_paths(&git, keep)?;
+        let tmp = TempIndexDir::create(&root, "chkpt-keep")?;
+        let tmp_git = Git::new(&root).env("GIT_INDEX_FILE", tmp.index_path());
+        tmp_git.run(["read-tree", &cp.worktree_tree])?;
+        forget_paths(&tmp_git, keep)?;
+        tmp_git.run(["write-tree"])?
+    };
+    git.run(["read-tree", "--reset", "-u", &target])?;
+    let mut clean: Vec<OsString> = vec!["clean".into(), "-fd".into()];
+    for path in keep {
+        clean.push("-e".into());
+        clean.push(anchored_ignore_pattern(path).into());
+    }
+    git.run(clean)?;
 
     // 3) Put the staged state back without touching files and refresh stat
     //    info so later status/restore calls do not rehash everything.
     git.run(["read-tree", "--reset", &cp.index_tree])?;
     let _ = git.output(["update-index", "-q", "--refresh"]);
     Ok(())
+}
+
+/// Drop `paths` from the index `git` works on, without touching any file.
+fn forget_paths(git: &Git<'_>, paths: &[&Path]) -> Result<(), CheckpointError> {
+    let mut args: Vec<OsString> = vec!["update-index".into(), "--force-remove".into(), "--".into()];
+    args.extend(paths.iter().map(|p| p.as_os_str().to_owned()));
+    git.run(args).map(|_| ())
+}
+
+/// A gitignore pattern matching exactly `path` (relative to the root).
+fn anchored_ignore_pattern(path: &Path) -> String {
+    let mut pattern = String::from("/");
+    for c in path.to_string_lossy().chars() {
+        if matches!(c, '*' | '?' | '[' | '\\' | '!' | '#' | ' ') {
+            pattern.push('\\');
+        }
+        pattern.push(c);
+    }
+    pattern
 }
 
 /// One side of `checkpointer diff`: a saved checkpoint or the current files.

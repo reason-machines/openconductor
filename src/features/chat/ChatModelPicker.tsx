@@ -2,18 +2,21 @@
 // from the New workspace dialog, or Settings › Default models), a list with
 // that model and the default one, and "Add models" / "Edit" opening
 // Settings › Default models. A pick becomes the chat's Reason Session options
-// (model, reasoning_effort) for the next Session it opens.
+// (model, reasoning_effort); a Session already open switches before its next
+// prompt, as Conductor's does.
 //
 // It also picks the chat's agent, as Conductor's picker does (the model decides
-// the agent): when Codex can run here it is listed as "Codex" after the models
-// (chatAgentChoice.ts), and a Codex chat shows "Codex" on the chip.
+// the agent): when the CLI agents can run here they are listed as "Codex" and
+// "Claude Code" after the models (chatAgentChoice.ts), and such a chat shows its
+// agent's name on the chip.
 
 import { useEffect, useState } from "react";
 import { getSettings } from "../../settings/api";
 import { configureReason } from "./reasonChat.ts";
 import { sessionConfig } from "./chatModel.ts";
 import { defaultModelChoice, loadModelChoice, saveModelChoice } from "./chatModelChoice.ts";
-import { agentEntryLabel, agentForPick, pickerState, type ChatAgent } from "./chatAgentChoice.ts";
+import { agentEntryLabel, agentForPick, pickerState } from "./chatAgentChoice.ts";
+import type { ChatAgentId } from "./agentChoice.ts";
 import type { ModelChoice } from "./composerModels.ts";
 import { ModelPicker } from "./ModelPicker.tsx";
 
@@ -31,9 +34,9 @@ export interface ChatModelPickerProps {
   chatId: string;
   disabled?: boolean;
   /** The chat's agent; defaults to Reason. */
-  agent?: ChatAgent;
-  /** Set when the chat can switch agents (Codex runs here): picking Codex or a model calls it. */
-  onAgentChange?: (next: ChatAgent) => void;
+  agent?: ChatAgentId;
+  /** Set when the chat can switch agents (the CLIs run here): picking Codex, Claude Code or a model calls it. */
+  onAgentChange?: (next: ChatAgentId) => void;
 }
 
 export function ChatModelPicker({ chatId, disabled = false, agent = "reason", onAgentChange }: ChatModelPickerProps) {

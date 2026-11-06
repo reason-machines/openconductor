@@ -54,8 +54,9 @@
         workspace_id: id,
         status: sstatus,
         title,
-        model: "claude-opus-4-8",
-        agent_type: "claude",
+        // A capture may run the chats on Codex (window.__OC_SESSION_AGENT__ = "codex").
+        model: window.__OC_SESSION_AGENT__ === "codex" ? "gpt-5.5" : "claude-opus-4-8",
+        agent_type: window.__OC_SESSION_AGENT__ === "codex" ? "codex" : "claude",
         permission_mode: "default",
         unread_count: unread,
         context_token_count: 18400 + i * 3100,

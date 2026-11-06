@@ -12,7 +12,7 @@
   resize: vertical;
 }
 .settings-row-stacked textarea.settings-env-files { min-height: 64px; }
-.settings-badge { font-size: 11px; padding: 1px 6px; border-radius: 4px; background: var(--hover, rgba(127, 127, 127, 0.15)); color: var(--muted, inherit); margin-left: 8px; font-weight: 400; }
+.settings-badge { font-size: 11px; padding: 1px 6px; border-radius: 4px; background: var(--hover); color: var(--muted, inherit); margin-left: 8px; font-weight: 400; }
 .settings-env-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .settings-env-table th, .settings-env-table td { text-align: left; padding: 4px 6px; border-top: 1px solid var(--border); vertical-align: top; }
 .settings-env-table code { word-break: break-all; }
@@ -59,8 +59,8 @@
 .settings .settings-misc-refresh { display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex-shrink: 0; border: 0; border-radius: 4px; background: transparent; color: var(--s-muted); }
 .settings .settings-misc-refresh:hover { background: var(--s-hover); color: var(--s-fg); }
 .settings .settings-misc-remove { padding-bottom: 20px; }
-.settings .btn.settings-outline.settings-misc-remove-btn { height: 28px; padding: 0 10px; gap: 6px; font-size: 13px; color: var(--del); border-color: color-mix(in srgb, var(--del) 40%, transparent); }
-.settings .btn.settings-outline.settings-misc-remove-btn:hover { background: color-mix(in srgb, var(--del) 10%, transparent); }
+.settings .btn.settings-outline.settings-misc-remove-btn { height: 28px; padding: 0 10px; gap: 6px; font-size: 13px; color: var(--diff-del); border-color: color-mix(in srgb, var(--diff-del) 40%, transparent); }
+.settings .btn.settings-outline.settings-misc-remove-btn:hover { background: color-mix(in srgb, var(--diff-del) 10%, transparent); }
 .settings-misc-break { word-break: break-all; }
 /* Repository Actions prompt rows (Conductor's `vho`), measured in the reference harness:
    a 42px trigger (title 14/20 medium, description 14/20 muted, space-y-0.5), chevron 16px. */

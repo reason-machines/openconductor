@@ -5,9 +5,11 @@
 // resumes its thread.
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
+import { cachedAgentCommands, linkCodexSkills } from "./slashCompletions.ts";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import * as Q from "./queue.ts";
+import { chatWantsAttention, codexAsks, turnSettled } from "./attention.ts";
 import { reportChatStatus } from "./chatRuntime.ts";
 import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn, type CodexApproval, type CodexChatState, type CodexDecision, type CodexPayload, type Step } from "./codex.ts";
 import { statusWithOpenRequests, type CodexConsent, type ConsentAnswer } from "./codexConsent.ts";
@@ -86,6 +88,7 @@ function publish(c: Chat, next: Partial<CodexSnapshot>) {
 
 function apply(c: Chat, step: Step) {
   const approvalsChanged = step.state.approvals !== c.state.approvals;
+  const before = { approvals: c.state.approvals, consents: c.state.consents, status: c.view.queue.status };
   const prevConsents = c.state.consents;
   c.state = step.state;
   // An open approval is Conductor's tool approval: needs_user_permission until answered (`qV`).
@@ -97,6 +100,8 @@ function apply(c: Chat, step: Step) {
     const status = statusWithOpenRequests(c.view.queue.status, c.state.approvals.length, c.state.consents.length);
     if (status !== c.view.queue.status) setQueue(c, { ...c.view.queue, status });
   }
+  // A new approval or consent is a wait on the user (Conductor's `_p`, attention.ts).
+  if (codexAsks(before, { approvals: c.state.approvals, consents: c.state.consents, status: c.view.queue.status })) chatWantsAttention(c.state.chatId);
   if (step.threadId) localStorage.setItem(threadKey(c.state.chatId), step.threadId);
   if (step.events.length === 0) {
     if (approvalsChanged || consentsChanged) publish(c, {});
@@ -112,6 +117,7 @@ function apply(c: Chat, step: Step) {
   for (const e of step.events) {
     if (e.type !== "turn_status" || e.status === "running") continue;
     setQueue(c, Q.turnEnded(c.view.queue, e.status));
+    if (turnSettled(e.status, c.view.queue)) chatWantsAttention(c.state.chatId);
   }
 }
 
@@ -166,7 +172,9 @@ async function prompt(c: Chat, text: string): Promise<void> {
       c.opened = true;
     }
     // Resolves with the prompt's end; the `turnEnded` event closes the turn.
-    await invoke("codex_prompt", { chatId, text });
+    // A skill picked in the "/" menu (`$name`) goes to Codex as a skill input item too.
+    const skills = cachedAgentCommands("codex", c.cwd ?? "")?.skills ?? [];
+    await invoke("codex_prompt", { chatId, text: linkCodexSkills(text, skills) });
   } catch (e) {
     // The prompt never reached Codex (no CLI, chat not open), so no event will end it.
     apply(c, failTurn(c.state, turnId, String(e)));

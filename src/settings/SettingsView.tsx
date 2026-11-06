@@ -124,7 +124,7 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
           ) : !settings ? (
             <p className="muted">Loading…</p>
           ) : (
-            <UserPage page={location.page} settings={settings} save={save} reload={reload} />
+            <UserPage page={location.page} settings={settings} save={save} reload={reload} onNavigate={onNavigate} />
           )}
         </div>
       </section>
@@ -137,12 +137,21 @@ function UserPage({
   settings,
   save,
   reload,
+  onNavigate,
 }: {
   page: SettingsPage;
   settings: Settings;
   save: ReturnType<typeof useSettings>["save"];
   reload: () => void;
+  onNavigate: (location: SettingsLocation) => void;
 }) {
+  // Conductor's "Configure <agent>": Settings › Agents on that agent's tab (`?providerTab=`).
+  const openAgentsTab = (tab: string) => {
+    onNavigate({ scope: "user", page: "providers" });
+    const q = new URLSearchParams(window.location.search);
+    q.set("providerTab", tab);
+    window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}`);
+  };
   switch (page) {
     case "account":
       return <AccountPage settings={settings} save={save} />;
@@ -151,9 +160,9 @@ function UserPage({
     case "key-bindings":
       return <KeyBindingsPage settings={settings} save={save} />;
     case "models":
-      return <DefaultModelsPage settings={settings} save={save} />;
+      return <DefaultModelsPage settings={settings} save={save} openAgentsTab={openAgentsTab} />;
     case "providers":
-      return <AgentsPage settings={settings} reload={reload} save={save} />;
+      return <AgentsPage settings={settings} save={save} reload={reload} />;
     case "appearance":
       return <AppearancePage settings={settings} save={save} />;
     case "experimental":
