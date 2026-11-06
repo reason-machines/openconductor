@@ -879,7 +879,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const rightPanelVisible = useAppPrefs().right_panel_visible;
   return (
     <div className="workspace">
-      <header className="ws-header" data-tauri-drag-region>
+      <header className="ws-header" data-tauri-drag-region="deep">
         <div className="ws-title">
           <span className="crumb">{repo.name}</span>
           <span className="crumb-sep">/</span>
