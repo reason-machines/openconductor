@@ -16,13 +16,41 @@ jobs:
   codex-chat:
     name: Codex chat through the built app (ubuntu-22.04)
     runs-on: ubuntu-22.04
+    # Normally about 4 minutes. 30 leaves room for a slow apt mirror (capped at 20 below)
+    # or a cold Rust cache, and stops a hung job from holding main's E2E queue for hours.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      # The Azure apt mirror sometimes serves at 30-50 kB/s for 10-25 minutes, so keep the
+      # downloaded .debs in the Actions cache (one key per ISO week; restore-keys reuse last week's).
+      - name: apt cache key
+        id: apt-key
+        run: echo "week=$(date -u +%G-%V)" >> "$GITHUB_OUTPUT"
+      - name: Restore apt archives
+        id: apt-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/apt-archives
+          key: apt-e2e-${{ runner.os }}-22.04-v1-${{ steps.apt-key.outputs.week }}
+          restore-keys: apt-e2e-${{ runner.os }}-22.04-v1-
       - name: Install Tauri system deps, WebKitWebDriver and Xvfb
+        # About 30 seconds with a warm cache or a healthy mirror. The script bounds each apt attempt
+        # (5 min) and moves to the next mirror on a retry.
+        timeout-minutes: 20
+        env:
+          APT_ARCHIVES: ${{ runner.temp }}/apt-archives
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
+          tools/ci/apt-install.sh libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
             webkit2gtk-driver xvfb
+      # Saved right away so a later E2E failure still keeps the downloads. Both jobs race to save
+      # the same key; the loser only logs a warning.
+      - name: Save apt archives
+        if: steps.apt-cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/apt-archives
+          key: apt-e2e-${{ runner.os }}-22.04-v1-${{ steps.apt-key.outputs.week }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -47,6 +75,8 @@ jobs:
           git config --global user.email "ci@example.invalid"
       # tools/e2e/fake_codex_app_server.py replays a turn recorded from Codex 0.166.0 on macOS.
       - name: Codex chat e2e (stand-in codex app-server)
+        # Normally about 1 minute.
+        timeout-minutes: 5
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-codex
           WEBKIT_DISABLE_DMABUF_RENDERER: "1"
@@ -64,13 +94,41 @@ jobs:
     # WebDriver for Tauri apps exists on Linux (WebKitWebDriver) and Windows
     # only; macOS WKWebView has no driver.
     runs-on: ubuntu-22.04
+    # Normally about 10.5 minutes. 40 leaves room for a slow apt mirror (capped at 20 below)
+    # or a cold Rust cache, and stops a hung job from holding main's E2E queue for hours.
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
+      # The Azure apt mirror sometimes serves at 30-50 kB/s for 10-25 minutes, so keep the
+      # downloaded .debs in the Actions cache (one key per ISO week; restore-keys reuse last week's).
+      - name: apt cache key
+        id: apt-key
+        run: echo "week=$(date -u +%G-%V)" >> "$GITHUB_OUTPUT"
+      - name: Restore apt archives
+        id: apt-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/apt-archives
+          key: apt-e2e-${{ runner.os }}-22.04-v1-${{ steps.apt-key.outputs.week }}
+          restore-keys: apt-e2e-${{ runner.os }}-22.04-v1-
       - name: Install Tauri system deps, WebKitWebDriver and Xvfb
+        # About 30 seconds with a warm cache or a healthy mirror. The script bounds each apt attempt
+        # (5 min) and moves to the next mirror on a retry.
+        timeout-minutes: 20
+        env:
+          APT_ARCHIVES: ${{ runner.temp }}/apt-archives
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
+          tools/ci/apt-install.sh libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
             webkit2gtk-driver xvfb
+      # Saved right away so a later E2E failure still keeps the downloads. Both jobs race to save
+      # the same key; the loser only logs a warning.
+      - name: Save apt archives
+        if: steps.apt-cache.outputs.cache-hit != 'true'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/apt-archives
+          key: apt-e2e-${{ runner.os }}-22.04-v1-${{ steps.apt-key.outputs.week }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -91,6 +149,8 @@ jobs:
       - name: Install tauri-driver
         run: cargo install tauri-driver --locked
       - name: Reason chat e2e (fake reason acp)
+        # Normally about 1 minute.
+        timeout-minutes: 5
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-screens
         run: xvfb-run -a node tools/e2e/reason-chat.e2e.mjs src-tauri/target/debug/openconductor
@@ -102,6 +162,8 @@ jobs:
           retention-days: 14
       - name: Codex chat e2e (fake codex app-server)
         if: always()
+        # Normally about 1 minute.
+        timeout-minutes: 5
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-codex
         run: xvfb-run -a node tools/e2e/codex-chat.e2e.mjs src-tauri/target/debug/openconductor
@@ -112,6 +174,8 @@ jobs:
           path: ${{ runner.temp }}/e2e-codex
       - name: Transcript parity screenshots (fake reason acp, lisbon turn)
         if: always()
+        # Normally about 4.5 minutes.
+        timeout-minutes: 15
         env:
           E2E_OUT: ${{ runner.temp }}/transcript-parity
           # WebKitGTK on a GPU-less Xvfb paints nothing without these.
@@ -124,6 +188,21 @@ jobs:
           name: transcript-parity-screens
           path: ${{ runner.temp }}/transcript-parity
           retention-days: 14
+      # The composer's "/" menu for Reason, Claude Code and Codex chats: non-empty,
+      # with the fixture skill, filtered by typing, picked with Enter.
+      - name: Slash menu e2e (fixture skills, stand-in reason)
+        if: always()
+        env:
+          E2E_OUT: ${{ runner.temp }}/slash-menu
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a -s "-screen 0 1600x1000x24" node tools/e2e/slash-menu.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: slash-menu-e2e-screens
+          path: ${{ runner.temp }}/slash-menu
+          retention-days: 14
       - name: Configure git identity
         if: always()
         run: |
@@ -131,6 +210,8 @@ jobs:
           git config --global user.email "ci@example.invalid"
       - name: App flows (tests/e2e/run.mjs)
         if: always()
+        # Normally about 1 minute; more flows land here often.
+        timeout-minutes: 10
         env:
           OC_APP: src-tauri/target/debug/openconductor
           E2E_OUT: ${{ runner.temp }}/e2e-flows

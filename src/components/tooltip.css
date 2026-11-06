@@ -7,24 +7,10 @@
    transition-[opacity,scale] duration-100", pr-1 when a child is a <kbd>,
    else pr-2. Token values from renderApp-BYEcFwvt.css (:root / .dark). */
 :root {
-  --tooltip-popover: #fff;
-  --tooltip-popover-foreground: #211e1c;
-  --tooltip-popover-ring: #211e1c0d;
-  --tooltip-muted-foreground: #8e8885;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --tooltip-popover: #2c2826;
-    --tooltip-popover-foreground: #eae8e6;
-    --tooltip-popover-ring: #ffffff1a;
-    --tooltip-muted-foreground: #a5a09c;
-  }
-}
-:root[data-theme="dark"] {
-  --tooltip-popover: #2c2826;
-  --tooltip-popover-foreground: #eae8e6;
-  --tooltip-popover-ring: #ffffff1a;
-  --tooltip-muted-foreground: #a5a09c;
+  --tooltip-popover: var(--popover);
+  --tooltip-popover-foreground: var(--popover-text);
+  --tooltip-popover-ring: var(--popover-ring);
+  --tooltip-muted-foreground: var(--muted);
 }
 
 .oc-tooltip {
@@ -49,8 +35,8 @@
   /* ring-1 ring-popover-ring + shadow-md */
   box-shadow:
     0 0 0 1px var(--tooltip-popover-ring),
-    0 4px 6px -1px #0000001a,
-    0 2px 4px -2px #0000001a;
+    0 4px 6px -1px var(--shadow-10),
+    0 2px 4px -2px var(--shadow-10);
   transition-property: opacity, scale;
   transition-duration: 100ms;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

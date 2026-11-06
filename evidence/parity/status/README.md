@@ -74,8 +74,34 @@ waiting`. Stop treats `idle, error, cancelling, waiting` as not running
 | `oWt`, `xze`, `RCe`, `dWt` | `src/state/rowStatus.ts`, `RowStatusIcon.tsx` (ported earlier, #370) |
 | Home `vJo` + `aWt` | `homeStatus` / `showsActivityStatus` (rowStatus.ts), AllWorkspaces.tsx |
 
-Not built here: the status matrix option (internal Experimental setting)
-and the Home owner filter (mine vs all, team organizations only). Reason's
+| Workspace status matrix (`fJo`, `fFi`, `hWt`; Home `_Jo`/`vJo`; pending `Ora`) | `src/state/statusMatrix.ts` (model, unit tests), `StatusMatrix.tsx` + `statusMatrix.css`, read from `internal_workspace_status_matrix` by `useStatusMatrix` in SidebarWorkspaceRow, AllWorkspaces and PendingWorkspaceRow |
+
+### Workspace status matrix
+
+With Settings › Experimental › "Workspace status matrix" on, Conductor draws
+a 16×16 SVG of 4×4 dots (1.5 wide, 3 apart, inset 2.5) in place of the row
+status icon, in the sidebar and in Home (where it takes the repository icon's
+place and the time column always shows the time). What it draws:
+
+| Status | Matrix |
+|---|---|
+| unstarted | the 12-dot ring only, dim |
+| setting up | the ring waves around (corners lit with reduced motion) |
+| working | a 7×7 fine grid twinkles in the foreground colour; an automation run scrolls `>` chevrons instead |
+| waiting, cancelling | waiting waves row by row; cancelling pulses |
+| needs permission / plan response | the full grid blinks, amber (`text-highlight-muted`) |
+| needs input | the full grid blinks, uncoloured |
+| failed (or checks failing on an idle row) | a red X over a faded red grid |
+| checks running | a diagonal sweep over the fine grid |
+| merged | a purple checkerboard |
+| ready to merge, merge conflict, in merge queue | the grid in git green, amber, in-progress colour |
+| plain branch | dim grid; lit in the foreground colour when unread |
+
+The label (`fFi`) joins the agent's status, the PR's and "Unread", e.g.
+"Working; Pull request open; Unread". `evidence/parity/status/matrix-gallery.png`
+shows every state from OpenConductor's component, still and animated.
+
+Not built here: the Home owner filter (mine vs all, team organizations only). Reason's
 ACP has no plan-approval, question or background-task signal, so a Reason
 chat itself reaches needs_user_permission but not needs_plan_response,
 needs_user_input or waiting; those still render when `conductor.db` holds
