@@ -3,15 +3,16 @@
 
 Usage: reason_acp_signed_in.py CHECKOUT OUT_DIR [MODEL] [WORKSPACE_SLUG]
 
-WORKSPACE_SLUG defaults to the CLI's selected workspace; it must be the one
-this computer's `reason connect` is in.
+MODEL defaults to subscription GPT-6.1 Sol, WORKSPACE_SLUG to reason-tests.
+The exact subscription source is checked before starting ACP. Override its ID
+with --model-source-id only when the person has authorized that source.
 
-CHECKOUT is a clone of this repository under HOME on a Mac whose `reason`
-CLI is signed in. The chat has four turns in one ACP session:
+CHECKOUT is a fresh scratch folder under HOME containing README.md on a Mac
+whose `reason` CLI is signed in. Never pass a real workspace. The chat has four
+turns in one ACP session:
   1. write acp-check.txt and read README.md here: a local path,
   2. move the Session to Reason cloud,
-  3. write the same file in the cloud Session's working folder, a path
-     under /home/runner/.reason/workspace/sessions/<id>/repo,
+  3. write the same file in the cloud Session's current working folder,
   4. a follow-up in the same session.
 Every JSON-RPC line goes to OUT_DIR/transcript.jsonl and the classified
 result to OUT_DIR/summary.json. Paths are classified with the same rule as
@@ -19,6 +20,7 @@ src-tauri/src/reason_acp/updates.rs (map_path, plus computer_is_cloud: once
 Reason says the Session runs on Reason cloud, paths under the folder are the
 cloud checkout's, because `reason acp` reports them under the folder).
 """
+import argparse
 import json
 import os
 import queue
@@ -27,20 +29,29 @@ import sys
 import threading
 import time
 
-CWD = os.path.realpath(os.path.expanduser(sys.argv[1]))
-OUT = os.path.expanduser(sys.argv[2])
-MODEL = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] else None
-WORKSPACE = sys.argv[4] if len(sys.argv) > 4 else None
+from reason_acp_smoke_checks import MODEL, SOURCE, WORKSPACE, check_source, computer_kind, verdict
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("checkout")
+parser.add_argument("out_dir")
+parser.add_argument("model", nargs="?", default=MODEL)
+parser.add_argument("workspace", nargs="?", default=WORKSPACE, choices=[WORKSPACE])
+parser.add_argument("--model-source-id", default=SOURCE)
+options = parser.parse_args()
+CWD = os.path.realpath(os.path.expanduser(options.checkout))
+OUT = os.path.expanduser(options.out_dir)
+MODEL, WORKSPACE = options.model, options.workspace
 CLOUD_ROOT = "/home/runner/.reason/workspace/sessions/"
 PROMPTS = [
     "Signed-in check for OpenConductor. Use your file write tool to create acp-check.txt in this folder "
     "containing the single line `local`, then use your file read tool to read README.md here and reply with "
     "only its first line. Do nothing else.",
-    "Now move this Session to Reason cloud (devices.disconnect). In the move note, say the next turn writes "
-    "acp-check.txt in the Session's working folder on the cloud computer. Do nothing else, then end the turn.",
-    "On the cloud computer, use your file write tool to create acp-check.txt in this Session's working folder "
-    "(its /repo folder) containing the single line `cloud`, then reply with the absolute path you wrote. "
-    "Do not clone, attach, commit or push anything.",
+    "Now move THIS Session to Reason cloud using the supported computer/device move operation. "
+    "Never create a child Session. In the move note, say the next turn writes acp-check.txt in this "
+    "Session's working folder on the cloud computer. Do nothing else, then end the turn.",
+    "On the cloud computer, use your file write tool to create acp-check.txt in THIS Session's current "
+    "working folder (use the execution context; do not assume a /repo subfolder) containing the single "
+    "line `cloud`, then reply with the absolute path you wrote. Do not delegate, clone, attach, commit or push anything.",
     "Follow-up: reply with exactly `follow-up ok` and nothing else.",
 ]
 
@@ -55,9 +66,26 @@ def note(s):
 
 # The CLI refuses inherited DYLD_* variables on macOS (see cli.rs).
 env = {k: v for k, v in os.environ.items() if not k.startswith("DYLD_")}
-args = ["reason"] + (["--workspace", WORKSPACE] if WORKSPACE else []) + ["acp", "-y"]
-if MODEL:
-    args += ["--model", MODEL, "--reasoning-effort", "high"]
+preflight = {"result": "blocked", "workspace": WORKSPACE, "model": MODEL,
+             "model_source_id": options.model_source_id, "reasoning_effort": "xhigh",
+             "started": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "turns": []}
+try:
+    models = subprocess.run(["reason", "--workspace", WORKSPACE, "call", "models.list", "--input-file", "-"],
+                            input="{}", capture_output=True, text=True, env=env, check=True, timeout=30)
+    preflight["source_check"] = check_source(json.loads(models.stdout), MODEL, options.model_source_id)
+    if not preflight["source_check"]["allowed"]:
+        raise RuntimeError("required subscription source unavailable or ambiguous; no ACP session started")
+    if os.path.exists(os.path.join(CWD, "acp-check.txt")) or not os.path.isfile(os.path.join(CWD, "README.md")):
+        raise RuntimeError("use a fresh scratch folder with README.md and no acp-check.txt; no ACP session started")
+except Exception as error:
+    preflight["error"] = str(error)
+    with open(os.path.join(OUT, "summary.json"), "w") as f:
+        json.dump(preflight, f, indent=2)
+    note("blocked before ACP; no model turn started")
+    print(preflight["error"], file=sys.stderr)
+    sys.exit(2)
+args = ["reason", "--workspace", WORKSPACE, "acp", "-y", "--model", MODEL,
+        "--reasoning-effort", "xhigh"]
 proc = subprocess.Popen(args, cwd=CWD, env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                         stderr=open(os.path.join(OUT, "stderr.txt"), "a"), text=True, bufsize=1)
 inbox = queue.Queue()
@@ -124,6 +152,9 @@ def request(method, params, turn=None, timeout=1500):
             send({"jsonrpc": "2.0", "id": m["id"], "error": {"code": -32601, "message": "not supported"}})
         elif method_in == "session/update" and turn is not None:
             u = m["params"]["update"]
+            update_sid = m["params"].get("sessionId")
+            if update_sid not in turn["sessionIds"]:
+                turn["sessionIds"].append(update_sid)
             kind = u.get("sessionUpdate")
             computer = ((u.get("_meta") or {}).get("com.reasonmachines/computer") or {})
             if kind == "session_info_update" and isinstance(computer, dict) and computer.get("kind"):
@@ -138,32 +169,16 @@ def request(method, params, turn=None, timeout=1500):
                 for c in u.get("content") or []:
                     if c.get("type") == "diff" and c.get("path"):
                         turn["paths"].append(classify(c["path"]))
-                turn["tools"].append({k: u.get(k) for k in ("toolCallId", "title", "kind", "status")})
+                tool = {k: u[k] for k in ("toolCallId", "title", "kind", "status", "content") if k in u}
+                tool_kind = computer_kind(u, "cloud" if where["cloud"] else "headless")
+                tool["place"] = "cloud" if tool_kind == "cloud" else "local"
+                turn["tools"].append(tool)
             elif kind == "user_message_chunk":
                 turn["reports"].append((u.get("content") or {}).get("text", ""))
     raise RuntimeError(f"{method} timed out")
 
 
-def verdict(s):
-    t = {x["n"]: x for x in s["turns"]}
-    if len(t) < 4:
-        return "fail"
-    files = ("README.md", "acp-check.txt")
-    local = any(p["place"] == "local" and p["relative"] in files for p in t[1]["paths"])
-    cloud = any(p["place"] == "cloud" and p["relative"] in files for p in t[3]["paths"])
-    follow = t[4]["stopReason"] == "end_turn" and "follow-up ok" in t[4]["text"]
-    # The cloud write must not have touched this computer's copy.
-    try:
-        mac_copy = open(os.path.join(CWD, "acp-check.txt")).read().strip()
-    except OSError:
-        mac_copy = None
-    untouched = mac_copy == "local"
-    s["checks"] = {"local_path": local, "cloud_repo_path": cloud, "follow_up_same_session": follow,
-                   "mac_copy_still_local": untouched}
-    return "pass" if local and cloud and follow and untouched else "fail"
-
-
-summary = {"cwd": CWD, "model": MODEL, "workspace": WORKSPACE, "started": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "turns": []}
+summary = {**preflight, "cwd": CWD, "turns": []}
 try:
     init = request("initialize", {"protocolVersion": 1, "clientCapabilities": {}})
     summary["agentInfo"] = init.get("agentInfo")
@@ -172,7 +187,7 @@ try:
     summary["sessionId"] = sid
     note(f"session {sid}")
     for n, text in enumerate(PROMPTS, 1):
-        turn = {"n": n, "prompt": text, "text": "", "paths": [], "tools": [], "reports": [], "computers": []}
+        turn = {"n": n, "prompt": text, "text": "", "paths": [], "tools": [], "reports": [], "computers": [], "sessionIds": []}
         note(f"turn {n} start")
         turn["stopReason"] = request("session/prompt",
                                      {"sessionId": sid, "prompt": [{"type": "text", "text": text}]},
@@ -184,7 +199,7 @@ except Exception as e:  # recorded, so a failed run still leaves evidence
     summary["error"] = repr(e)
     note("error " + repr(e))
 finally:
-    summary["result"] = verdict(summary)
+    summary["result"] = verdict(summary, CWD)
     json.dump(summary, open(os.path.join(OUT, "summary.json"), "w"), indent=2)
     note("done " + summary["result"])
     try:
@@ -192,3 +207,5 @@ finally:
         proc.wait(timeout=10)
     except Exception:
         proc.kill()
+        proc.wait()
+    sys.exit(0 if summary["result"] == "pass" else 1)

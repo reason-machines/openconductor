@@ -1,10 +1,84 @@
 # Reason ACP: signed-in run on a Mac
 
+## Current attempt, 2026-11-06
+
+The [fresh Mac attempt](signed-in-attempt-2026-11-06.json) is **blocked**, not a
+new pass. CLI 0.2.700 is signed in and connected to Reason Tests. The driver
+exited **2 before starting ACP**, with zero Session turns, because the required
+subscription source is not available in that workspace. No Anthropic, managed
+inference, API key, or alternate subscription was used.
+
+Required source `openai-codex:42b88e79-2ef2-4e3e-93b1-8c93dcad16a7` is registered
+in Reason Engineering, not in Reason Tests. Reason Tests offers Sol through
+`openai-codex:desktop-local-ffc7c778-746b-4844-85ab-2db2b99cddc5` instead.
+This is a difference between saved account slots. The underlying provider
+identity has not been established, so the driver does not treat them as aliases.
+The [source-registration record](source-registration-2026-11-06.json) contains
+only supported CLI metadata, not credentials.
+
+The driver defaults to `reason-tests`, subscription GPT-6.1 Sol, and `xhigh`.
+Its assertions now require completed edit diffs with the expected local and
+cloud contents, one ACP Session across all four turns, a completed cloud move,
+an exact follow-up reply, and the Mac file still containing `local`. Reads,
+failed writes, a child Session, or a reply that merely contains `follow-up ok`
+cannot pass. Per-tool computer metadata works even when cloud rows have no
+editor locations. A missing or ambiguous subscription source stops before ACP.
+The preflight checks the unique available source for the requested model; the
+CLI does not expose a model-source pin flag.
+
+A reproduction against the previous verdict accepted read-only README paths
+and `cannot do follow-up ok` as a pass. The same fixture now fails. The assertions
+and blocked-before-ACP behavior have deterministic tests in
+[test_reason_acp_smoke_checks.py](../../tools/test_reason_acp_smoke_checks.py).
+These tests do not prove a signed-in runtime pass.
+
+Run only in an isolated folder on the authorized Mac:
+
+```bash
+scratch=$(mktemp -d "$HOME/oc-reason-smoke-XXXXXX")
+printf '# Isolated OpenConductor runtime smoke\n' > "$scratch/README.md"
+python3 tools/reason_acp_signed_in.py "$scratch" "$scratch/proof"
+```
+
+Exit 0 means all runtime assertions passed. Exit 1 means the runtime check
+failed. Exit 2 means preflight blocked before any ACP Session started. Keep the
+summary for every result. An explicitly authorized source can be supplied with
+`--model-source-id`; it must still be the unique available subscription source.
+Do not substitute another source without authorization.
+
+## Real-data cleanup audit, 2026-11-06
+
+The [read-only inventory](cleanup-audit-2026-11-06.json) opened the primary real
+OpenConductor database with SQLite `mode=ro` and inspected directory names only.
+It found **0 test workspace rows, 0 test repository rows, and 0 `-e2e-` directory
+names** under its `workspaces`, `archived`, and `repos` trees. **0 rows and 0
+directories were removed.** There are 2 workspace rows and 3 repository rows.
+
+`openconductor-playground` remains in the database and its repository directory
+exists. The `bergen` workspace row remains archived and unchanged. Its stored
+workspace directory and the expected archived directory were already absent
+during read-only inspection. A bounded search found no Bergen-named directory
+under this app data root; Git's worktree list contains the repository and Milan,
+not Bergen. This audit does not establish where Bergen's files were archived.
+No real workspace was recreated, removed, or modified. Chat contents were not read.
+
+Rerun [audit_openconductor_test_data.py](../../tools/audit_openconductor_test_data.py)
+with the primary app data directory. It only inventories candidates and never
+deletes them. Other test app profiles and unrelated folders outside this data
+root are not covered.
+
+No OpenConductor UI was changed or driven for this attempt. There is no new
+built-window or side-by-side screenshot. Local write, cloud write, and follow-up
+remain unverified in a fresh signed-in Session until source access is resolved.
+
+## Historical run, 2026-11-05
+
 Recorded on Sven's Mac ("sven m5 max") with `reason acp` 0.2.683 signed in
 (workspace Reason Tests), model `byok:anthropic:claude-opus-5-5`, driven by
 [tools/reason_acp_signed_in.py](../../tools/reason_acp_signed_in.py) on
-2026-11-05. [signed-in-run.json](signed-in-run.json) is run 5's summary:
-`"result": "pass"`.
+2026-11-05. This note describes run 5. The checked-in
+[signed-in-run.json](signed-in-run.json) records an earlier provider-level run,
+not this four-turn run. Neither is a new verification of the current build.
 
 Run 5 (Session `9a328e45-cd8d-49be-8093-9fc49c4dcd89`, one ACP session, four turns):
 
