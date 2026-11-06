@@ -8,7 +8,6 @@ import {
   PERSIST_NAMES,
   SUBSYSTEMS,
   TERMINAL,
-  opencodeModelDiscoveryId,
   preWorkspaceCompletionId,
   routeStateKey,
   subsystemStoreFileName,
@@ -20,7 +19,7 @@ function clock() {
   return () => new Date((t += 1000)).toISOString();
 }
 
-test("the 11 subsystems have the reference names, files and limits", () => {
+test("the 10 subsystems have the reference names, files and limits", () => {
   const MiB = 1024 * 1024;
   assert.deepEqual(
     SUBSYSTEMS.map((s) => [subsystemStoreFileName(s.name), s.sizeLimit]),
@@ -30,7 +29,6 @@ test("the 11 subsystems have the reference names, files and limits", () => {
       ["local-storage.subsystem.composer-drafts.json", 5 * MiB],
       ["local-storage.subsystem.dispatcher-state.json", 1 * MiB],
       ["local-storage.subsystem.model-picker-configs-v1.json", 64 * 1024],
-      ["local-storage.subsystem.opencode-model-discovery-v1.json", 4194304],
       ["local-storage.subsystem.pre-workspace-completions-v1.json", 5 * MiB],
       ["local-storage.subsystem.route-user-state.json", 5 * MiB],
       ["local-storage.subsystem.run-script-history.json", 5 * MiB],
@@ -43,10 +41,6 @@ test("the 11 subsystems have the reference names, files and limits", () => {
 
 test("entry ids are built the reference's way", () => {
   assert.equal(turnChangesId({ sessionId: "s", turnId: "t" }), '["s","t"]');
-  assert.equal(
-    opencodeModelDiscoveryId({ repoId: "r", mainWorktreePath: "/p", executablePath: undefined }),
-    '["r","/p",null]',
-  );
   assert.equal(preWorkspaceCompletionId("k"), "completion:k");
   assert.equal(routeStateKey({ routeId: "/settings", scope: ["a b", "c/d"] }), "%2Fsettings/a%20b/c%2Fd");
   assert.equal(routeStateKey({ routeId: "home" }), "home");
