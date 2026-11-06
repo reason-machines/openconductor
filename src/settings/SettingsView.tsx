@@ -14,6 +14,7 @@ import { BigTerminalPage } from "./BigTerminalPage";
 import { ExperimentalPage } from "./ExperimentalPage";
 import { pageLabel, settingsGroups, type SettingsPage } from "./pages";
 import { RepoSettingsPage } from "./RepoSettingsPage";
+import type { RepoMiscActions } from "./rows/RepoMiscRows";
 import { REPO_SECTIONS, REPO_SECTION_LABELS, sameLocation, type SettingsLocation } from "./routes";
 import type { Settings } from "./types";
 import { useSettings } from "./useSettings";
@@ -41,6 +42,8 @@ interface Props {
   repos: Repo[];
   onNavigate: (location: SettingsLocation) => void;
   onClose: () => void;
+  /** Repository › Misc: change a repository's icon, after a removal, and toasts. */
+  miscActions: RepoMiscActions;
 }
 
 /**
@@ -48,7 +51,7 @@ interface Props {
  * Under "Agents & environment" a Repositories list opens each repository's own
  * settings (Conductor's `A9a`): the active repository expands to its sections.
  */
-export function SettingsView({ location, repos, onNavigate, onClose }: Props) {
+export function SettingsView({ location, repos, onNavigate, onClose, miscActions }: Props) {
   const { settings, error, save, reload } = useSettings();
 
   useKeybindings({ "settings.close": onClose });
@@ -110,7 +113,7 @@ export function SettingsView({ location, repos, onNavigate, onClose }: Props) {
           )}
           {location.scope === "repo" ? (
             repo ? (
-              <RepoSettingsPage repo={repo} section={location.section} />
+              <RepoSettingsPage repo={repo} section={location.section} miscActions={miscActions} />
             ) : (
               <p className="muted">This repository is no longer in OpenConductor.</p>
             )

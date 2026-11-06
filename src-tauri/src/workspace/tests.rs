@@ -320,7 +320,7 @@ fn files_to_copy_prefers_worktreeinclude_then_settings_globs() {
     std::fs::create_dir_all(f.repo.join("certs")).unwrap();
     std::fs::write(f.repo.join("certs/dev.pem"), "p\n").unwrap();
 
-    let globs = Some(vec!["certs/*.pem".to_string()]);
+    let globs = Some("# pem files\ncerts/*.pem\n".to_string());
     let c = f.mgr.create(&f.repo, &CreateOptions { file_include_globs: globs.clone(), ..named("g") }).unwrap();
     assert_eq!(c.copied_files, vec![PathBuf::from("certs/dev.pem")]);
 
@@ -328,6 +328,32 @@ fn files_to_copy_prefers_worktreeinclude_then_settings_globs() {
     let c = f.mgr.create(&f.repo, &CreateOptions { file_include_globs: globs, ..named("w") }).unwrap();
     assert_eq!(c.copied_files, vec![PathBuf::from("config/local.toml")]);
     assert!(c.workspace.path.join("config/local.toml").is_file());
+
+    // An explicit empty "Files to copy" copies nothing, unlike no setting (`.env*`).
+    std::fs::remove_file(f.repo.join(".worktreeinclude")).unwrap();
+    let c = f.mgr.create(&f.repo, &CreateOptions { file_include_globs: Some(String::new()), ..named("e") }).unwrap();
+    assert!(c.copied_files.is_empty());
+    let c = f.mgr.create(&f.repo, &CreateOptions { file_include_globs: None, ..named("d") }).unwrap();
+    assert_eq!(c.copied_files, vec![PathBuf::from(".env")]);
+}
+
+#[test]
+fn remove_all_deletes_worktrees_and_records_but_keeps_branches_and_the_checkout() {
+    let f = fixture();
+    let a = f.mgr.create(&f.repo, &named("a")).unwrap().workspace;
+    let b = f.mgr.create(&f.repo, &named("b")).unwrap().workspace;
+    f.mgr.archive(&f.repo, "b", &ArchiveOptions::default()).unwrap();
+    std::fs::write(a.path.join("dirty.txt"), "x").unwrap();
+
+    f.mgr.remove_all(&f.repo).unwrap();
+
+    assert!(f.mgr.list(&f.repo).unwrap().is_empty());
+    assert!(!a.path.exists());
+    assert!(!f.mgr.workspaces_dir(&f.repo).exists());
+    for branch in [&a.branch, &b.branch] {
+        assert!(git::branch_exists(&f.repo, branch), "{branch} kept");
+    }
+    assert!(f.repo.join(".git").exists());
 }
 
 #[test]

@@ -311,7 +311,27 @@ export default function App() {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
-  if (settingsLocation) return <SettingsView location={settingsLocation} repos={state.repos} onNavigate={navigateSettings} onClose={closeSettings} />;
+  if (settingsLocation)
+    return (
+      <>
+        <SettingsView
+          location={settingsLocation}
+          repos={state.repos}
+          onNavigate={navigateSettings}
+          onClose={closeSettings}
+          miscActions={{
+            onSetIcon: (repoId, icon) => dispatch({ type: "setRepoIcon", repoId, icon }),
+            // Conductor leaves for Settings › Git once the repository is gone.
+            onRemoved: (repoId) => {
+              dispatch({ type: "removeRepo", repoId });
+              navigateSettings({ scope: "user", page: "git" });
+            },
+            notify: (kind, message) => show(kind, message),
+          }}
+        />
+        <Toaster toasts={toasts} dismiss={dismiss} />
+      </>
+    );
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
