@@ -771,10 +771,14 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* sidebar: Account menu (Conductor's `zna`: w-[260px], align start; items gap-2 with size-3.5 muted icons;
    the email heading is font-normal, muted). */
 .sb-account { position: relative; }
-.sb-account-menu { position: absolute; left: 0; top: calc(100% + 4px); z-index: 50; width: 260px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px var(--shadow-18); }
-.sb-account-email { padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--muted); }
-.sb-account-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 4px; text-align: left; font-size: 13px; color: var(--text); }
-.sb-account-item:hover, .sb-account-item:focus-visible { background: var(--hover); }
+/* Conductor's `zna` popup (`Tm`, w-[260px]): rounded-lg, ring-1 ring-popover-ring, bg-popover, p-1, shadow-md;
+   the email heading and items px-2 py-1.5 text-sm, separators -mx-1 my-1 h-px bg-muted, icons size-3.5 muted.
+   Palette tokens, so Neutral stays grey (scripts/check-colors.mjs). */
+.sb-account-menu { position: absolute; left: 0; top: calc(100% + 4px); z-index: 50; width: 260px; padding: 4px; border-radius: 8px; background: var(--popover); color: var(--popover-text); box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10); font-size: 14px; line-height: 20px; }
+.sb-account-menu .sb-menu-sep { margin: 4px -4px; background: var(--surface-muted); }
+.sb-account-email { padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: var(--muted); }
+.sb-account-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 6px; text-align: left; font-size: 14px; line-height: 20px; color: inherit; }
+.sb-account-item:hover, .sb-account-item:focus-visible { outline: none; background: var(--hover); }
 .sb-account-item-icon { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex: none; color: var(--muted); }
 /* Conductor's organization rows (`zna`): label, a cloud mark for cloud organizations, a check on the active one. */
 .sb-account-org-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

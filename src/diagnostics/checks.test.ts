@@ -1,7 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  capturedShellEnv,
   diagnosticChecks,
+  mergedPath,
   progress,
   redactEnv,
   reportMarkdown,
@@ -17,13 +19,13 @@ test("the check list follows Conductor's order and ends with the non-zsh shell c
   const labels = diagnosticChecks().map((c) => c.label);
   assert.equal(labels.length, 59);
   assert.deepEqual(labels.slice(0, 4), ["macOS version", "CPU architecture", "Default shell (dscl)", "$SHELL"]);
-  assert.deepEqual(labels.slice(-4), ["OpenConductor app env", "Disk space (root)", "System integrity protection (SIP)", "Non-zsh default shell env"]);
+  assert.deepEqual(labels.slice(-4), ["OpenConductor captured shell env", "Disk space (root)", "System integrity protection (SIP)", "Non-zsh default shell env"]);
   assert.equal(new Set(labels).size, labels.length, "labels are row keys, so they must be unique");
 });
 
 test("env checks are the ones marked for redaction", () => {
   const env = diagnosticChecks().filter((c) => c.containsEnv).map((c) => c.label);
-  assert.deepEqual(env, ["Login shell env", "Interactive login shell env", "Non-interactive non-login shell env", "OpenConductor app env", "Non-zsh default shell env"]);
+  assert.deepEqual(env, ["Login shell env", "Interactive login shell env", "Non-interactive non-login shell env", "OpenConductor captured shell env", "Non-zsh default shell env"]);
 });
 
 test("a command check passes its command and deadline to the shell", async () => {
@@ -126,4 +128,35 @@ test("shellResult trims stdout and reports failures like Conductor", () => {
   assert.equal(shellResult({ stdout: "", stderr: "nope\n", exitCode: 1 }), "[error] nope");
   assert.equal(shellResult({ stdout: "", stderr: "", exitCode: 2 }), "[error] exit code 2");
   assert.equal(shellResult({ stdout: "", stderr: "", exitCode: null }), "[error] exit code null");
+});
+
+test("captured shell env: zsh -ilc's env between the markers, kept keys sorted after fellBack and the merged PATH", async () => {
+  const calls: [string, number | undefined][] = [];
+  const out = await capturedShellEnv(async (command, timeoutMs) => {
+    calls.push([command, timeoutMs]);
+    return "motd\n_OPENCONDUCTOR_SHELL_ENV_DELIMITER_\nPATH=/a:/usr/bin\nHOME=/Users/ada\nSECRET=x\nLANG=en_US.UTF-8\nGH_HOST=\n_OPENCONDUCTOR_SHELL_ENV_DELIMITER_\n";
+  });
+  assert.equal(calls.length, 1);
+  assert.match(calls[0]![0], /^DISABLE_AUTO_UPDATE=true zsh -ilc '/);
+  assert.equal(calls[0]![1], 6000);
+  assert.equal(
+    out,
+    ["fellBack=false", "PATH=/a:/usr/bin:/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/Users/ada/.local/bin:/opt/local/bin:/usr/local/git/bin:/bin", "HOME=/Users/ada", "LANG=en_US.UTF-8"].join("\n"),
+  );
+});
+
+test("captured shell env falls back to zsh -lc, then to the fallback PATH with fellBack=true", async () => {
+  const flags: string[] = [];
+  const out = await capturedShellEnv(async (command, timeoutMs) => {
+    if (command === "echo $HOME") return "/Users/ada";
+    flags.push(`${command.split(" ")[2]} ${timeoutMs}`);
+    return "[error] exit code 1";
+  });
+  assert.deepEqual(flags, ["-ilc 6000", "-lc 3000"]);
+  assert.equal(out, `fellBack=true\nPATH=${mergedPath(undefined, "/Users/ada")}`);
+  assert.ok(out.includes("/Users/ada/.local/bin"));
+});
+
+test("mergedPath drops $HOME dirs without a home and repeats", () => {
+  assert.equal(mergedPath("/usr/bin:/x: :/x", undefined), "/usr/bin:/x:/opt/homebrew/bin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/opt/local/bin:/usr/local/git/bin:/bin");
 });
