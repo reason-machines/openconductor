@@ -5,8 +5,7 @@ import type { Workspace } from "../../state/types.ts";
 import { chatStatuses, subscribeChatStatuses } from "./chatRuntime.ts";
 
 /**
- * The status a workspace's agent shows (sidebar row, Home and the workspace
- * header): every chat's stored or live status, open or not, folded with
+ * The status a workspace's agent shows (sidebar row and Home): every chat's stored or live status, open or not, folded with
  * `aggregateSessions`. `ws.sessionStatus` (the demo's) counts only when the
  * workspace has no chat here.
  */
