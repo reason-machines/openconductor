@@ -21,6 +21,7 @@ import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
 import { ChatEmptyState } from "../features/chat/ChatEmptyState.tsx";
 import { NewChatButton } from "../features/chat/NewChatButton.tsx";
 import { atTabLimit, tabLimitToast } from "../features/chat/chatTabs.ts";
+import { chatAfterClose, popClosedTab, pushClosedTab, recordViewedChat } from "../features/chat/closedTabs.ts";
 import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptyState.ts";
 import { AGENT_NAMES, commandSet, isKnownCommand, parseSlashCommand, type ComposerAgent } from "../features/chat/slashCommands.ts";
 import { useAgentCommands } from "../features/chat/slashCompletions.ts";
@@ -790,6 +791,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     setMainTab("diff");
   }, []);
   const closeDiffTab = () => {
+    pushClosedTab(workspace.id, { kind: "diff" });
     setDiffOpen(false);
     setMainTab("chat");
   };
@@ -873,9 +875,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     if (atTabLimit(openChatTabs)) notify?.("info", tabLimitToast());
     else reviews.newChat();
   };
+  // Closing the chat on screen shows the chat viewed before it that is still open (closedTabs.ts).
   const closeReview = (chatId: string) => {
+    const tab = reviews.tabs.find((r) => r.chatId === chatId);
+    if (tab) pushClosedTab(workspace.id, { kind: "chat", tab });
     reviews.close(chatId);
-    if (mainTab === chatId) setMainTab("chat");
+    if (mainTab === chatId) setMainTab(chatAfterClose(workspace.id, chatId, ["chat", ...reviews.tabs.map((r) => r.chatId)]) ?? "chat");
   };
   const canReview = diff.load.state === "ready" && diff.files.length > 0;
 
@@ -930,6 +935,27 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
   const activeTab = showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const prNumber = pullRequest.pr?.number ?? null;
+  useEffect(() => {
+    if (activeTab !== "diff" && activeTab !== "pr") recordViewedChat(workspace.id, activeTab);
+  }, [workspace.id, activeTab]);
+  // ⌘W closes the tab on screen and ⌘⇧T reopens the last closed one, as Conductor's workspace
+  // view does. The workspace's own chat has no close button here, so ⌘W leaves it. Inside a
+  // terminal ⌘W is terminal.closeTab, which the terminal handles itself (session.ts).
+  useKeybindings(
+    {
+      "nav.closeTab": () => {
+        if (activeTab === "diff") closeDiffTab();
+        else if (activeTab === "pr") closePrTab();
+        else if (activeTab !== "chat") closeReview(activeTab);
+      },
+      "nav.reopenTab": () => {
+        const tab = popClosedTab(workspace.id);
+        if (tab?.kind === "chat") reviews.reopen(tab.tab);
+        else if (tab?.kind === "diff") openDiffTab();
+      },
+    },
+    { enableOnTerminalFocus: false },
+  );
   shownChat.current = activeReview?.chatId ?? workspace.id;
   // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
   // skips it while the window has focus, and an unread workspace shown that way is read.
