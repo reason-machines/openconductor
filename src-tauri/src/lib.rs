@@ -29,6 +29,7 @@ pub mod checkpoint;
 mod checkpoint_commands;
 mod chat_store_commands;
 pub mod codex_chat;
+mod session_status_commands;
 pub mod claude_chat;
 pub mod create_project;
 pub mod archive_on_merge;
@@ -40,6 +41,7 @@ mod persistence_commands;
 pub mod recent_local_repos;
 mod recent_local_repos_commands;
 mod sidebar_repo_commands;
+mod repo_misc_commands;
 mod sidebar_section_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
@@ -371,6 +373,8 @@ pub fn run() {
             sidebar_workspace_commands::db_touch_workspace,
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
+            repo_misc_commands::repo_files_to_copy_preview,
+            repo_misc_commands::db_remove_repo,
             sidebar_repo_commands::repo_favicon,
             recent_local_repos_commands::recent_local_repositories,
             sidebar_rename_commands::db_rename_workspace,
@@ -400,6 +404,9 @@ pub fn run() {
             chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
+            reason_chat::reason_answer_permission,
+            session_status_commands::session_statuses,
+            session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,

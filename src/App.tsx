@@ -15,7 +15,7 @@ import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
-import { Toaster, useToasts } from "./components/Toast";
+import { Toaster, useToasts, type ToastAction } from "./components/Toast";
 import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { ArchiveRunningDialog } from "./components/ArchiveRunningDialog";
@@ -23,6 +23,7 @@ import { clearUnarchiveConflict, directoryExistsToast, failureToast, onArchiveEv
 import { ArchivedWorkspaceView } from "./components/ArchivedWorkspaceView";
 import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/RestoreWorkspaceDialog";
 import type { Action } from "./state/store";
+import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
@@ -76,6 +77,8 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // Non-fatal initialization issues (Conductor's workspaceError with "View logs"), from every create path.
+  useInitIssues(useCallback((message: string, opts: { sticky: true; action?: ToastAction }) => show("error", message, opts), [show]));
   // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
   useArchiveOnMergeWatcher({ repos: state.repos, openWorkspaceId: state.selection.kind === "workspace" ? state.selection.workspaceId : null, dispatch, notify: show });
   // Full archive (src/workspace/archive.ts): the running-agents question and
@@ -286,7 +289,27 @@ export default function App() {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
-  if (settingsLocation) return <SettingsView location={settingsLocation} repos={state.repos} onNavigate={navigateSettings} onClose={closeSettings} />;
+  if (settingsLocation)
+    return (
+      <>
+        <SettingsView
+          location={settingsLocation}
+          repos={state.repos}
+          onNavigate={navigateSettings}
+          onClose={closeSettings}
+          miscActions={{
+            onSetIcon: (repoId, icon) => dispatch({ type: "setRepoIcon", repoId, icon }),
+            // Conductor leaves for Settings › Git once the repository is gone.
+            onRemoved: (repoId) => {
+              dispatch({ type: "removeRepo", repoId });
+              navigateSettings({ scope: "user", page: "git" });
+            },
+            notify: (kind, message) => show(kind, message),
+          }}
+        />
+        <Toaster toasts={toasts} dismiss={dismiss} />
+      </>
+    );
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
@@ -322,7 +345,6 @@ export default function App() {
           onRepoAdded={({ id, ...repo }) => dispatch({ type: "addRepo", id, repo })}
           onCreated={(repoId, first, githubUrl) => {
             dispatch({ type: "addWorkspace", repoId, workspace: first.workspace });
-            for (const warning of first.warnings) show("error", warning, { sticky: true });
             show("info", SUCCESS_TOAST, { action: { label: OPEN_IN_GITHUB, onClick: () => void openUrl(githubUrl) } });
           }}
         />
