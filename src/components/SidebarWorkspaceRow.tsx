@@ -22,7 +22,6 @@ import { clearManuallyUnread, markManuallyUnread } from "../state/autoUnread";
 import { Tooltip } from "./Tooltip";
 import { ArchiveIcon } from "./Icons";
 import { glyphs } from "../keybindings/shortcut";
-import { useMenuPresence } from "./sidebarMotion";
 
 interface Props {
   workspace: Workspace;
@@ -71,8 +70,8 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
   });
   const { ref, stat, onScreen } = useRowDiffStat(ws, targetBranch, active);
   useRowPrPoll({ ws, repoPath, onScreen, active, onResult: (r) => onPrLookup?.(r) });
-  // Every chat of the workspace, open or not, plus what the open view reports (and the demo's "working").
-  const session = useWorkspaceAgentStatus(ws);
+  // Every chat of the workspace, open or not; the demo's status only while the workspace is not open.
+  const session = useWorkspaceAgentStatus(ws, active);
   const status = rowStatus({ workspaceState: ws.state, session, pr: ws.pr, hasRemote });
   const statusLabel = rowStatusLabel(status);
   // Settings › Experimental › Workspace status matrix: the matrix with the PR's status and unread folded in (`hWt`).
@@ -217,11 +216,6 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
   const [menu, setMenu] = useState<MenuTarget | null>(null);
   const sel = state.selection;
   const close = useCallback(() => setMenu(null), []);
-  // Conductor's row menu lives inside the row (`Qj` > `D9e`): an action that moves the row
-  // (pin, archive, sections) unmounts it with the row, so the menu vanishes without its fade.
-  const [instantClose, setInstantClose] = useState(false);
-  const closeWithRow = (fn: () => void) => () => { setInstantClose(true); fn(); };
-  useEffect(() => { if (menu) setInstantClose(false); }, [menu]);
   const hintsVisible = useShortcutHints();
   const numbers = hintNumbers(sidebarEntries(state, { visibleOnly: true, collapsedSections }).map((e) => e.workspace.id));
   const { optionalChecksBlock } = usePrSettings();
@@ -251,20 +245,17 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
   });
 
   let element: JSX.Element | null = null;
-  // The menu stays for its 100ms close (Conductor's `my`: data-[ending-style] opacity-0 scale-95).
-  const shown = useMenuPresence(menu, { instant: instantClose });
-  const repo = shown.mounted && state.repos.find((r) => r.id === shown.mounted?.repoId);
-  const ws = shown.mounted && repo?.workspaces.find((w) => w.id === shown.mounted?.workspaceId);
-  if (shown.mounted && repo && ws) {
+  const repo = menu && state.repos.find((r) => r.id === menu.repoId);
+  const ws = menu && repo?.workspaces.find((w) => w.id === menu.workspaceId);
+  if (menu && repo && ws) {
     const ids = { repoId: repo.id, workspaceId: ws.id };
     element = (
       <WorkspaceActionsMenu
         key={ws.id}
         workspace={ws}
         selected={sel.kind === "workspace" && sel.workspaceId === ws.id}
-        at={{ x: shown.mounted.x, y: shown.mounted.y }}
+        at={{ x: menu.x, y: menu.y }}
         onClose={close}
-        ending={shown.ending}
         sections={state.sections ?? []}
         currentSectionId={sectionOf(state.sections, ws.id)?.id}
         actions={{
@@ -274,14 +265,14 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
             else markManuallyUnread(ws.id);
             dispatch({ type: "setWorkspaceUnread", ...ids, unread: !ws.unread });
           },
-          togglePin: closeWithRow(() => dispatch({ type: "setWorkspacePinned", ...ids, pinned: typeof ws.pinnedAt !== "number" })),
+          togglePin: () => dispatch({ type: "setWorkspacePinned", ...ids, pinned: typeof ws.pinnedAt !== "number" }),
           setStatus: (status) => dispatch({ type: "setWorkspaceStatus", ...ids, status }),
           rename: onRename && (() => onRename(repo.id, ws)),
           copyLink: onCopyLink && (() => onCopyLink(ws)),
-          archive: closeWithRow(() => archive(repo.id, ws)),
-          moveToSection: (sectionId) => { setInstantClose(true); dispatch({ type: "assignSection", workspaceId: ws.id, sectionId }); },
+          archive: () => archive(repo.id, ws),
+          moveToSection: (sectionId) => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId }),
           newSection: () => onNewSection?.(ws),
-          removeFromSection: closeWithRow(() => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId: null })),
+          removeFromSection: () => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId: null }),
         }}
       />
     );

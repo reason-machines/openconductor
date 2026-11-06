@@ -172,7 +172,7 @@ the UI was checked in the browser build only.
 | Unarchive: branch moved since archive (`branchDiverged`) | `restore` keeps the branch and skips the checkpoint, with a notice | `unarchive_leaves_the_checkpoint_when_the_branch_moved_since` | partial: no restore dialog |
 | Unarchive: row back, archive record dropped, setup rerun (`MY`, `Pfe`) | `flow::unarchive_workspace` (row `ready`), `startUnarchive` + `rerunSetup` in the store | `unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready`, `unarchive shows the row, recreates the worktree, then reruns setup` | implemented (row goes to `ready`; the setup state lives in the UI, as for a new workspace) |
 | Unarchive failure: "Failed to unarchive: …", row put away again | `startUnarchive`, `unarchiveFailedMessage` | `a failed unarchive puts the row away again…` | implemented (no Open in Finder / Reset buttons) |
-| Unarchive from the archive-on-merge toast | `restoreWorkspace` action (from #366) now runs `unarchive_workspace` | store wiring | implemented; there is no archived-workspaces list yet to unarchive from elsewhere |
+| Unarchive from the archive-on-merge toast: the same unarchive as everywhere else (`{label:"Unarchive",onClick:()=>e.unarchiveWorkspace(i)}` in `mGe` @ ~669,286; `unarchiveWorkspace: r => Xk.unarchive(r)` @ ~3,233,438), so a deleted, taken or moved branch opens "Restore to new branch?" | the toast dispatches `unarchiveWorkspace` (`unarchiveOnMergeAction`); `restoreRequestFor` decides the dialog | `the toast's Unarchive is the store's unarchive, so a deleted branch opens Restore to new branch?` | implemented |
 
 ## Differences, on purpose
 

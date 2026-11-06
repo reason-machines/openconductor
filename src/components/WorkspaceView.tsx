@@ -6,7 +6,9 @@ import { toggleRightPanel } from "./panelPrefs";
 import { clearManuallyUnread, readOnView, setShownChat } from "../state/autoUnread";
 import { useWindowFocused } from "../state/useAutoUnread";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { answerPermission, chatSnapshot, configureReason, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, reasonChatConfig, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type PermissionPrompt } from "../features/chat/reasonChat.ts";
+import { configureReason, configureReasonDefault, reasonAvailable, reasonChatConfig } from "../features/chat/reasonChat.ts";
+import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
+import type { ChatSnapshot, PermissionPrompt } from "../features/chat/chatRuntime.ts";
 import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
 import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
 import { forkToNewWorkspace } from "../features/chat/forkWorkspace.ts";
@@ -19,15 +21,17 @@ import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
 import { ChatEmptyState } from "../features/chat/ChatEmptyState.tsx";
 import { NewChatButton } from "../features/chat/NewChatButton.tsx";
 import { atTabLimit, tabLimitToast } from "../features/chat/chatTabs.ts";
+import { chatAfterClose, popClosedTab, pushClosedTab, recordViewedChat } from "../features/chat/closedTabs.ts";
 import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptyState.ts";
-import type { ChatAgent } from "../features/chat/chatAgentChoice.ts";
-import { commandSet, isKnownCommand, parseSlashCommand } from "../features/chat/slashCommands.ts";
+import { AGENT_NAMES, commandSet, isKnownCommand, parseSlashCommand, type ComposerAgent } from "../features/chat/slashCommands.ts";
+import { useAgentCommands } from "../features/chat/slashCompletions.ts";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
 import { CodexConsentCard } from "../features/chat/CodexConsentCard.tsx";
-import { answerCodex, answerCodexConsent, CODEX_ACCESS, CODEX_CAN_STEER, codexAccess, codexQueueAction, codexSnapshot, setCodexAccess, stopCodex, submitCodex, subscribeCodex, type CodexAccess, type CodexSnapshot } from "../features/chat/codexChat.ts";
+import type { CodexConsent } from "../features/chat/codexConsent.ts";
+import { answerCodex, answerCodexConsent, CODEX_ACCESS, codexAccess, setCodexAccess, type CodexAccess } from "../features/chat/codexChat.ts";
 import { DECISION_LABELS, type CodexApproval, type CodexDecision } from "../features/chat/codex.ts";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
@@ -60,6 +64,8 @@ import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest"
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { fixShortcutApplies } from "../features/pr/checks/fixErrors";
+import { useFixErrors, type FixErrors } from "../features/pr/checks/useFixErrors";
 import { AllFilesTree, FilesToolbarButtons, useFilesToolbar } from "../features/files/AllFilesTree";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
@@ -71,6 +77,7 @@ import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } fr
 import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
+import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 
 interface Props {
@@ -82,13 +89,14 @@ interface Props {
   onNextUnread?: () => void;
 }
 
-// The chat runs Reason in the desktop app (one Reason Session per chat,
-// `features/chat/reasonChat.ts`): the workspace's own chat has the workspace
-// id, review chats their own. The browser preview uses a stand-in agent. Turn
+// In the desktop app the workspace's own chat runs the agent picked in the
+// composer (`features/chat/agents.ts`): Reason (one Reason Session per chat,
+// `features/chat/reasonChat.ts`) or Claude Code (the signed-in `claude` CLI,
+// `features/chat/claudeChat.ts`). It has the workspace id; review chats their
+// own and always run Reason. The browser preview uses a stand-in agent. Turn
 // lifecycle, Stop and the follow-up queue live in `features/chat/queue.ts`.
-/** The "/" menu for a Reason chat: Reason runs as an ACP agent, so only its own commands (none reported yet). */
-const SLASH_COMMANDS = commandSet({ agent: "acp" });
-const CODEX_SLASH_COMMANDS = commandSet({ agent: "codex" });
+/** The "/" menu's agent for a chat's agent: Reason runs as an ACP agent. */
+const COMPOSER_AGENT: Record<ChatAgentId, ComposerAgent> = { reason: "acp", codex: "codex", claude: "claude" };
 /** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
 
@@ -131,14 +139,12 @@ function branchedFrom(repo: Repo, workspace: Workspace): string | null {
 
 /** Another chat tab of the workspace, with its last user message, for the empty chat's transcript chips. */
 function otherChat(chatId: string, title: string, reason: boolean): OtherChat {
-  const agent = reason && savedAgent(chatId) === "codex" ? "codex" : "reason";
-  const messages = (agent === "codex" ? codexSnapshot(chatId) : chatSnapshot(chatId)).transcript.messages;
-  return { chatId, title, agent, lastUserMessageAt: lastUserMessageAt(messages) };
+  const agent: ChatAgentId = reason ? savedAgent(chatId) : "reason";
+  return { chatId, title, agent, lastUserMessageAt: lastUserMessageAt(agentSnapshot(agent, chatId).transcript.messages) };
 }
 
-// Which agent runs a chat; each keeps its own transcript.
-const agentKey = (chatId: string) => `openconductor.agent.${chatId}`;
-const savedAgent = (chatId: string): ChatAgent => (localStorage.getItem(agentKey(chatId)) === "codex" ? "codex" : "reason");
+/** The transcript of the chat shown under `chatId` on `agent` (Claude Code keeps its own chat id). */
+const agentSnapshot = (agent: ChatAgentId, chatId: string) => CHAT_AGENTS[agent].snapshot(CHAT_AGENTS[agent].chatId(chatId));
 
 /** Codex asks before a command or patch; the turn waits for the answer. */
 function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswer: (d: CodexDecision) => void }) {
@@ -158,17 +164,28 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
-/** What the chat panel shows: Codex's approvals, or Reason's permission requests. */
-type ChatView = CodexSnapshot & { permissions?: readonly PermissionPrompt[] };
+/** What the chat panel shows: Codex's approvals and consent requests, or the permission requests of Reason and Claude Code. */
+type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly PermissionPrompt[]; approvals?: CodexApproval[]; consents?: CodexConsent[] };
 
 function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
-  const [agent, setAgent] = useState<ChatAgent>(() => savedAgent(chatId));
-  const codex = reason && agent === "codex";
-  const snapshotOf = (a: ChatAgent): ChatView => (reason && a === "codex" ? codexSnapshot(chatId) : { ...chatSnapshot(chatId), approvals: [], consents: [] });
-  const [{ transcript, queue, approvals, consents, permissions = [] }, setSnapshot] = useState<ChatView>(() => snapshotOf(agent));
+  const [picked, setPicked] = useState<Record<string, ChatAgentId>>({});
+  const agentId: ChatAgentId = reason ? (picked[chatId] ?? savedAgent(chatId)) : "reason";
+  const agent = CHAT_AGENTS[agentId];
+  const codex = agentId === "codex";
+  // The "/" menu: Conductor's built-ins for the agent, then the commands and
+  // skills the agent reports for this folder (agent_commands backend).
+  const reported = useAgentCommands(agentId, cwd);
+  const slashCommands = useMemo(
+    () => commandSet({ agent: COMPOSER_AGENT[agentId], agentCommands: reported?.slashCommands, skills: reported?.skills }),
+    [agentId, reported],
+  );
+  /** The chat id on the agent's side. */
+  const runId = agent.chatId(chatId);
+  // Codex's snapshots carry its pending approvals and consent requests; the others' carry permission requests.
+  const [{ transcript, queue, approvals = [], consents = [], permissions = [] }, setSnapshot] = useState<ChatView>(() => agent.snapshot(runId));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
@@ -190,27 +207,17 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
   // groups stay open after the turn ends and tool calls start expanded.
   const garryMode = useAppPrefs().garry_mode;
-
-  useEffect(() => {
-    setAgent(savedAgent(chatId));
-    setAccess(codexAccess(chatId));
-  }, [chatId]);
-
-  // Follows the chat and its agent (picking another agent shows that agent's transcript and queue).
-  useEffect(() => {
-    setSnapshot(snapshotOf(agent));
-    return codex ? subscribeCodex(chatId, setSnapshot) : subscribeChat(chatId, (s) => setSnapshot({ ...s, approvals: [], consents: [] }));
-  }, [chatId, agent]);
-
-  function chooseAgent(next: ChatAgent) {
-    localStorage.setItem(agentKey(chatId), next);
-    setAgent(next);
-  }
+  const followUpMode = useFollowUpMode();
 
   useEffect(() => {
     setDraft("");
     setAttachments([]);
     setAttachError(null);
+    setAccess(codexAccess(chatId));
+  }, [chatId]);
+
+  useEffect(() => {
+    setSnapshot(agent.snapshot(runId));
     setResetTurn(null);
     const pendingMessage = takePendingMessage(chatId);
     if (pendingMessage?.kind === "draft") {
@@ -218,16 +225,22 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       setAttachments(pendingMessage.attachments ?? []);
       inputRef.current?.focus();
     }
-    // The workspace's chat runs the default model unless the New workspace dialog picked one.
+    const unsubscribe = agent.subscribe(runId, setSnapshot);
+    // The workspace's Reason chat runs the default model unless the New workspace dialog picked one.
     if (main) configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
     if (pendingMessage?.kind === "send") submit(pendingMessage.text, "queue", pendingMessage.attachments);
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      if (reason && savedAgent(chatId) === "codex") submitCodex(chatId, cwd, first);
-      else sendReason(workspace.id, cwd, first, [], repo.path || undefined);
+      agent.submit(runId, cwd, first, "queue", [], repo.path || undefined);
     }
-  }, [chatId]);
+    return unsubscribe;
+  }, [chatId, agentId]);
+
+  function pickAgent(next: ChatAgentId) {
+    saveAgent(chatId, next);
+    setPicked((p) => ({ ...p, [chatId]: next }));
+  }
 
   // The draft is kept between launches (`composer-drafts`, keyed by the chat
   // session, which is the workspace): loaded when the workspace opens, saved
@@ -272,30 +285,26 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     endRef.current?.scrollIntoView({ block: "end" });
   }, [transcript]);
 
-  // Attachments (a review request, revert notes) go to Reason as embedded files and show by name.
-  // Codex gets them inline in the prompt.
+  // Attachments (a review request, revert notes) go to the agent with the message and show by name.
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
-    const useCodex = reason && savedAgent(chatId) === "codex";
-    const before = useCodex ? codexSnapshot(chatId).transcript : chatSnapshot(chatId).transcript;
-    const first = main && !before.messages.some((m) => m.role === "user");
-    if (useCodex) submitCodex(chatId, cwd, text, attached);
-    else submitChat(chatId, cwd, text, mode, attached, repo.path || undefined);
+    const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
+    agent.submit(runId, cwd, text, mode, attached, repo.path || undefined);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
-  // The chat's model, for the turn footer hover. A Codex chat names only its agent.
+  // The chat's model, for the turn footer hover. A Codex or Claude Code chat names only its agent.
   useEffect(() => {
     let live = true;
-    setTurnAgent(codex ? "Codex" : "Reason");
-    if (!codex)
+    setTurnAgent(agent.label);
+    if (agentId === "reason")
       void reasonChatConfig(chatId).then((config) => {
         if (live) setTurnAgent(turnAgentLabel(config.find((o) => o.id === "model")?.value, "Reason"));
       });
     return () => {
       live = false;
     };
-  }, [chatId, codex]);
+  }, [chatId, agentId]);
 
   /**
    * Conductor's "Fork to new tab" (`y9t`): a new tab in this workspace on this
@@ -311,10 +320,11 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     }
     setForking(true);
     try {
-      const config = codex ? [] : await reasonChatConfig(chatId);
+      // Only Reason chats carry options; a fork of a Codex or Claude Code chat keeps its agent.
+      const config = agentId === "reason" ? await reasonChatConfig(chatId) : [];
       const title = review?.title ?? workspace.name;
       const id = forkToNewTab(`Fork of ${title}`, config, { text: draft, attachments: [{ name: forkAttachmentName(title), text: markdown }] });
-      if (codex) localStorage.setItem(agentKey(id), "codex");
+      if (agentId !== "reason") saveAgent(id, agentId);
     } catch (e) {
       setAttachError(e instanceof Error ? e.message : "Failed to fork chat to new tab");
     } finally {
@@ -369,7 +379,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   }
 
   const turnFooter = (turnId: string) => {
-    const turn = turnCheckpointRef(chatId, turnId);
+    const turn = turnCheckpointRef(runId, turnId);
     return <TurnChanges turn={turn} worktree={workspace.path ?? null} onOpenFile={(path) => openTurnFile(turn, path)} />;
   };
 
@@ -450,7 +460,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             otherChats={chatTabs.filter((t) => t.chatId !== chatId).map((t) => otherChat(t.chatId, t.title, reason))}
             onAttachTranscript={(c) => {
               // Conductor: "Transcript of <title>.md", or "No messages in this chat".
-              const text = forkTranscript((c.agent === "codex" ? codexSnapshot(c.chatId) : chatSnapshot(c.chatId)).transcript);
+              const text = forkTranscript(agentSnapshot(c.agent, c.chatId).transcript);
               if (text === null) return setAttachError("No messages in this chat");
               setAttachments((list) => addAttachment(list, { name: forkAttachmentName(c.title), text }));
             }}
@@ -462,17 +472,17 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
             dontCollapseToolCalls={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
             // Conductor: workspace with a path, not archived; disabled while the agent works.
-            // Reset chat and turn changes come from Reason turn checkpoints; Codex turns have none yet.
-            onResetChat={reason && !codex && workspace.status !== "archived" ? setResetTurn : undefined}
+            // Reset chat and turn changes come from turn checkpoints (Reason, Claude Code); Codex turns have none yet.
+            onResetChat={reason && agent.reset && workspace.status !== "archived" ? setResetTurn : undefined}
             resetDisabled={running}
-            turnFooter={codex ? undefined : turnFooter}
+            turnFooter={agent.reset ? turnFooter : undefined}
             workspacePath={cwd}
             onOpenFile={openFile ? (path) => openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined}
             // Conductor: any turn of a chat in a workspace that is not archived; disabled while a fork is made.
             onForkToNewTab={workspace.status !== "archived" ? (turnId) => void forkToTab(turnId) : undefined}
             // Conductor: the same, and only for a workspace on this machine. It restores the turn's
-            // end checkpoint, which only Reason turns have so far.
-            onForkToNewWorkspace={reason && !codex && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
+            // end checkpoint under the Reason chat id, so Codex and Claude Code chats do not offer it yet.
+            onForkToNewWorkspace={reason && agentId === "reason" && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
             forkDisabled={forking}
             turnAgent={turnAgent}
           />
@@ -481,12 +491,12 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
       </div>
       {resetTurn !== null ? (
         <ResetChatDialog
-          loadChangedCount={() => changedSinceTurn(invoke, cwd, chatId, resetTurn)}
-          onConfirm={(resetFiles) => resetReasonChat(chatId, cwd, resetTurn, resetFiles)}
+          loadChangedCount={() => changedSinceTurn(invoke, cwd, runId, resetTurn)}
+          onConfirm={(resetFiles) => (agent.reset ? agent.reset(runId, cwd, resetTurn, resetFiles) : Promise.resolve())}
           onClose={() => setResetTurn(null)}
         />
       ) : null}
-      <PermissionRequests permissions={permissions} onAnswer={(requestId, optionId) => void answerPermission(chatId, requestId, optionId)} />
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, optionId) => void agent.answerPermission?.(runId, requestId, optionId)} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
@@ -516,10 +526,11 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         setDraft={setDraft}
         inputRef={inputRef}
         queue={queue}
-        canSteer={codex ? CODEX_CAN_STEER : REASON_CAN_STEER}
+        canSteer={agent.canSteer}
+        followUpMode={followUpMode}
         onSubmit={onSubmit}
-        onStop={() => (codex ? stopCodex : stopChat)(chatId)}
-        onQueue={(action) => (codex ? codexQueueAction : queueAction)(chatId, action)}
+        onStop={() => agent.stop(runId)}
+        onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
         controls={
           // Codex's access mode; the agent itself is picked in the model picker.
@@ -547,17 +558,16 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           review && !review.blank ? (
             <span className="oc-review-model">{review.modelLabel}</span>
           ) : (
-            // A review chat keeps its model. The agent changes only between turns.
-            <ChatModelPicker chatId={chatId} agent={codex ? "codex" : "reason"} onAgentChange={reason && !running ? chooseAgent : undefined} />
+            // A review chat keeps its model. The agent changes only while no turn runs and no message waits, so queued messages never move to another agent.
+            <ChatModelPicker chatId={chatId} agent={agentId} onAgentChange={reason && queue.status === "idle" && queue.items.length === 0 ? pickAgent : undefined} />
           )
         }
-        slashCommands={codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS}
+        slashCommands={slashCommands}
         onCommand={(text) => {
-          // Reason runs as an ACP agent and Codex here through its app server: Conductor's built-in commands are not wired for either yet.
-          const commands = codex ? CODEX_SLASH_COMMANDS : SLASH_COMMANDS;
+          // Conductor's built-in effects are not wired here yet; the agent's own commands and skills go to the agent as typed.
           const cmd = parseSlashCommand(text, isKnownCommand);
-          if (!cmd || commands.some((c) => c.name === cmd.name && c.effect === "agent")) return false;
-          const who = codex ? "Codex" : "Reason";
+          if (!cmd || slashCommands.some((c) => c.name === cmd.name && (c.effect === "agent" || c.effect === "skill"))) return false;
+          const who = agentId === "reason" ? "Reason" : AGENT_NAMES[COMPOSER_AGENT[agentId]];
           setAttachError(cmd.name === "plan" ? "Plan mode is not available in this chat." : `/${cmd.name} is not available for ${who}.`);
           return true;
         }}
@@ -591,14 +601,13 @@ interface RightPanelProps {
   pr: PullRequest;
   worktree: string | null;
   review: ReactNode;
-  repo: Repo;
-  /** Fix errors: send to the workspace's own chat. */
-  sendToChat: (text: string, attachments: TextAttachment[]) => void;
+  /** Fix errors (shared with the `git.fixErrors` shortcut). */
+  fixErrors: FixErrors;
   readOnly: boolean;
   notify?: ArchiveNotify;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly, notify }: RightPanelProps) {
+function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, notify }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -640,8 +649,7 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
           worktree={worktree}
           pr={pr.pr}
           refresh={pr.refresh}
-          repoId={repo.id}
-          sendToChat={sendToChat}
+          fixErrors={fixErrors}
           readOnly={readOnly}
         />
       ) : (
@@ -783,6 +791,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     setMainTab("diff");
   }, []);
   const closeDiffTab = () => {
+    pushClosedTab(workspace.id, { kind: "diff" });
     setDiffOpen(false);
     setMainTab("chat");
   };
@@ -820,6 +829,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     },
     [workspace.id],
   );
+  const fixErrors = useFixErrors({ worktree: workspace.path ?? null, repoId: repo.id, sendToChat, notify });
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
@@ -844,14 +854,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
   const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: intendedTarget, agentWorking, hasPendingComments: review.hasPending, onLookup, onDerivedStatus });
   const target = useTargetBranch({ repo, workspace, pr: pullRequest.pr, refresh: pullRequest.refresh, dispatch });
   optionalChecksBlock.current = pullRequest.settings.optionalChecksBlock;
-  useEffect(() => {
-    dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: agentWorking });
-  }, [dispatch, repo.id, workspace.id, agentWorking]);
-  // Nothing reports a closed workspace's agent, so its row stops showing it working.
-  useEffect(() => () => dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: false }), [dispatch, repo.id, workspace.id]);
   const prActions = usePrActions({
     pullRequest,
     repoId: repo.id,
+    repoPath: repo.path,
     worktree: workspace.path ?? null,
     branch: workspace.branch,
     targetBranch: target.branch,
@@ -869,9 +875,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     if (atTabLimit(openChatTabs)) notify?.("info", tabLimitToast());
     else reviews.newChat();
   };
+  // Closing the chat on screen shows the chat viewed before it that is still open (closedTabs.ts).
   const closeReview = (chatId: string) => {
+    const tab = reviews.tabs.find((r) => r.chatId === chatId);
+    if (tab) pushClosedTab(workspace.id, { kind: "chat", tab });
     reviews.close(chatId);
-    if (mainTab === chatId) setMainTab("chat");
+    if (mainTab === chatId) setMainTab(chatAfterClose(workspace.id, chatId, ["chat", ...reviews.tabs.map((r) => r.chatId)]) ?? "chat");
   };
   const canReview = diff.load.state === "ready" && diff.files.length > 0;
 
@@ -892,6 +901,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     },
     "git.mergePR": () => {
       if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
+    },
+    "git.fixErrors": () => {
+      const failing = pullRequest.pr?.status?.checks.failing ?? [];
+      if (fixShortcutApplies(failing, fixErrors.fixing, workspace.status === "archived")) void fixErrors.run(failing);
     },
     "git.openInGitHub": prActions.openOnGitHub,
   });
@@ -922,6 +935,27 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
   const activeTab = showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const prNumber = pullRequest.pr?.number ?? null;
+  useEffect(() => {
+    if (activeTab !== "diff" && activeTab !== "pr") recordViewedChat(workspace.id, activeTab);
+  }, [workspace.id, activeTab]);
+  // ⌘W closes the tab on screen and ⌘⇧T reopens the last closed one, as Conductor's workspace
+  // view does. The workspace's own chat has no close button here, so ⌘W leaves it. Inside a
+  // terminal ⌘W is terminal.closeTab, which the terminal handles itself (session.ts).
+  useKeybindings(
+    {
+      "nav.closeTab": () => {
+        if (activeTab === "diff") closeDiffTab();
+        else if (activeTab === "pr") closePrTab();
+        else if (activeTab !== "chat") closeReview(activeTab);
+      },
+      "nav.reopenTab": () => {
+        const tab = popClosedTab(workspace.id);
+        if (tab?.kind === "chat") reviews.reopen(tab.tab);
+        else if (tab?.kind === "diff") openDiffTab();
+      },
+    },
+    { enableOnTerminalFocus: false },
+  );
   shownChat.current = activeReview?.chatId ?? workspace.id;
   // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
   // skips it while the window has focus, and an unread workspace shown that way is read.
@@ -998,7 +1032,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
                 pr={pullRequest.pr}
                 refresh={pullRequest.refresh}
                 repoId={repo.id}
-                sendToChat={sendToChat}
+                fixErrors={fixErrors}
                 readOnly={workspace.status === "archived"}
                 repoPath={repo.path}
                 defaultBranch={repo.defaultBranch}
@@ -1015,8 +1049,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
               pr={pullRequest}
               worktree={workspace.path ?? null}
               review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
-              repo={repo}
-              sendToChat={sendToChat}
+              fixErrors={fixErrors}
               readOnly={workspace.status === "archived"}
               notify={notify}
             />

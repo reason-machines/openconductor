@@ -21,6 +21,7 @@
 
 pub mod agent;
 pub mod agent_binaries;
+pub mod agent_commands;
 pub mod agent_options;
 pub mod app_prefs;
 pub mod bin_source_markers;
@@ -43,6 +44,7 @@ mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
 mod sidebar_section_commands;
+mod agent_settings_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
@@ -401,6 +403,7 @@ pub fn run() {
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
             reason_chat::reason_open_chat,
+            reason_chat::reason_set_config,
             chat_store_commands::chat_messages_save,
             chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
@@ -417,9 +420,13 @@ pub fn run() {
             codex_chat::codex_respond,
             codex_chat::codex_close_chat,
             claude_chat::commands::claude_cli_path,
+            agent_settings_commands::cli_login_status,
+            agent_settings_commands::favorite_models_list,
+            agent_settings_commands::favorite_models_replace,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,
+            agent_commands::agent_slash_commands,
             e2e::e2e_report,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,

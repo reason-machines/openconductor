@@ -15,6 +15,17 @@
 //! * After the app or the agent restarts, a chat with a stored id is
 //!   reattached with `session/resume` (no history replay; the app keeps its
 //!   own transcript) before its next prompt.
+//! * A Session lives in the workspace `reason` used when it was created,
+//!   and `reason acp` without `--workspace` follows the Reason desktop app's
+//!   selection, which can change in between. `session/resume` of a Session
+//!   the workspace in use cannot see still succeeds (0.2.690 hides the 404)
+//!   and the next prompt then fails `409 client_session_id_conflict`: it
+//!   tries to create a Session under the taken id. So the provider runs one
+//!   agent per workspace (`reason --workspace SLUG acp`), remembers each
+//!   Session's workspace ([`ReasonProvider::with_session_store`]), and
+//!   before resuming checks with `reason session get` which signed-in
+//!   workspace has the Session. A Session none has fails the turn with a
+//!   message saying so; nothing is sent.
 //! * An error Reason sends as reply text (see [`super::updates`]) ends the
 //!   turn as [`TurnEnd::Failed`] even though the prompt says `end_turn`.
 //! * A chat can ask for Session config options (`model`,
@@ -22,7 +33,12 @@
 //!   with `session/set_config_option` right after `session/new`, only when
 //!   the Session offers the value: Reason resets a value it does not offer
 //!   to its default without an error, so the provider checks first and
-//!   sends a [`ProviderEvent::Notice`] instead.
+//!   sends a [`ProviderEvent::Notice`] instead. Options changed while the
+//!   Session is open (a model pick in a running chat) are set on that same
+//!   Session before its next prompt, and on a resumed one before its first,
+//!   as Conductor's ACP runner reconciles them (`reconcileSessionConfig`).
+//!   A follow-up that steers a running turn leaves them for the prompt after
+//!   it.
 //! * A prompt can carry attachments, sent as embedded `resource` blocks
 //!   after the text (Reason advertises `embeddedContext`).
 //! * `session/request_permission` (Reason asks before a tool call) is held
@@ -32,7 +48,7 @@
 //!   does. Stop and the end of the turn answer what is still open with
 //!   `cancelled`, as ACP requires.
 
-use super::cli::{AgentProcess, LaunchConfig};
+use super::cli::{AgentProcess, LaunchConfig, Presence};
 use super::rpc::{CallError, Incoming, Responder, RpcConnection, RpcError};
 use super::updates::{computer_is_cloud, parse_update, AgentEvent, ReasonError, UpdateContext};
 use serde_json::{json, Value};
@@ -132,10 +148,18 @@ struct Chat {
     /// Agent process generation the Session is open in.
     open_in: Option<u64>,
     turn: Option<Turn>,
+    /// Workspace (slug) of the Session's agent; `None` is `reason`'s default.
+    workspace: Option<String>,
     /// Reason said the Session runs on Reason cloud (see `computer_is_cloud`).
     on_cloud: bool,
-    /// Config options to set when the Session is created.
+    /// Config options the chat wants its Session to run on.
     config: Vec<ConfigChoice>,
+    /// The options last set on the open Session; `None` until they are set
+    /// on a new or resumed Session.
+    applied: Option<Vec<ConfigChoice>>,
+    /// The Session's `configOptions` as Reason last reported them; null when
+    /// unknown (a resumed Session that reported none).
+    options: Value,
     /// Prompts announced by `expect_prompt` and not sent yet, with whether
     /// a Stop came for them meanwhile.
     pending: HashMap<u64, bool>,
@@ -168,14 +192,55 @@ struct Agent {
     generation: u64,
 }
 
+/// Workspace slug by Reason Session id, kept in a JSON file when the app
+/// gives one, so a chat resumes in its Session's workspace after a restart.
+#[derive(Default)]
+struct SessionWorkspaces {
+    path: Option<PathBuf>,
+    by_session: HashMap<String, String>,
+}
+
+impl SessionWorkspaces {
+    fn load(path: PathBuf) -> Self {
+        let by_session = std::fs::read_to_string(&path)
+            .ok()
+            .and_then(|t| serde_json::from_str(&t).ok())
+            .unwrap_or_default();
+        SessionWorkspaces {
+            path: Some(path),
+            by_session,
+        }
+    }
+
+    fn get(&self, session_id: &str) -> Option<String> {
+        self.by_session.get(session_id).cloned()
+    }
+
+    fn set(&mut self, session_id: &str, workspace: &str) {
+        if self.get(session_id).as_deref() == Some(workspace) {
+            return;
+        }
+        self.by_session.insert(session_id.into(), workspace.into());
+        if let Some(path) = &self.path {
+            if let Some(dir) = path.parent() {
+                let _ = std::fs::create_dir_all(dir);
+            }
+            let text = serde_json::to_string_pretty(&self.by_session).unwrap_or_default();
+            let _ = std::fs::write(path, text);
+        }
+    }
+}
+
 pub struct ReasonProvider {
     launch: LaunchConfig,
     /// Folder the agent process runs in (the user's home folder).
     dir: PathBuf,
     sink: Sink,
     shared: Arc<Mutex<Shared>>,
-    agent: Mutex<Option<Agent>>,
+    /// Running agents by workspace (`None`: `reason`'s default workspace).
+    agents: Mutex<HashMap<Option<String>, Agent>>,
     generations: Mutex<u64>,
+    workspaces: Mutex<SessionWorkspaces>,
 }
 
 impl ReasonProvider {
@@ -185,14 +250,24 @@ impl ReasonProvider {
             dir,
             sink,
             shared: Arc::default(),
-            agent: Mutex::new(None),
+            agents: Mutex::default(),
             generations: Mutex::new(0),
+            workspaces: Mutex::default(),
         }
+    }
+
+    /// Keeps each Session's workspace in `path` (JSON), across restarts.
+    pub fn with_session_store(self, path: PathBuf) -> Self {
+        *self.workspaces.lock().unwrap() = SessionWorkspaces::load(path);
+        self
     }
 
     /// Registers a chat working in `cwd`, with its stored Session id when
     /// it had one before a restart. No process is started yet.
     pub fn open_chat(&self, chat: &str, cwd: &Path, session_id: Option<String>) {
+        let workspace = session_id
+            .as_deref()
+            .and_then(|id| self.workspaces.lock().unwrap().get(id));
         let mut s = self.shared.lock().unwrap();
         if let Some(id) = &session_id {
             s.by_session.insert(id.clone(), chat.into());
@@ -202,13 +277,14 @@ impl ReasonProvider {
             Chat {
                 cwd: cwd.into(),
                 session_id,
+                workspace,
                 ..Chat::default()
             },
         );
     }
 
-    /// Config options for the chat's Session, applied when `session/new`
-    /// creates it; a chat whose Session already exists keeps its options.
+    /// Config options for the chat's Session: set when `session/new`
+    /// creates it, or on the open Session before its next prompt.
     pub fn set_config(&self, chat: &str, config: Vec<ConfigChoice>) {
         if let Some(c) = self.shared.lock().unwrap().chats.get_mut(chat) {
             c.config = config;
@@ -320,7 +396,13 @@ impl ReasonProvider {
                 "cancelled" => TurnEnd::Cancelled,
                 "error" => TurnEnd::Failed(error_text(&v["error"])),
                 _ => match turn.error {
-                    Some(e) => TurnEnd::Failed(explain(e, &c.cwd)),
+                    Some(e) => {
+                        if e.code.as_deref() == Some("client_session_id_conflict") {
+                            // Reattach (and look for its workspace) next time.
+                            c.open_in = None;
+                        }
+                        TurnEnd::Failed(explain(e, &c.cwd))
+                    }
                     None => TurnEnd::Completed,
                 },
             },
@@ -346,9 +428,15 @@ impl ReasonProvider {
                 return;
             };
             turn.stop_requested = true;
-            c.session_id.clone()
+            (c.session_id.clone(), c.workspace.clone())
         };
-        let conn = self.agent.lock().unwrap().as_ref().map(|a| a.conn.clone());
+        let (session_id, workspace) = session_id;
+        let conn = self
+            .agents
+            .lock()
+            .unwrap()
+            .get(&workspace)
+            .map(|a| a.conn.clone());
         if let (Some(conn), Some(id)) = (conn, session_id) {
             let _ = conn.notify("session/cancel", json!({ "sessionId": id }));
         }
@@ -405,7 +493,7 @@ impl ReasonProvider {
 
     /// Recent Sessions in the signed-in Workspace, newest first.
     pub fn list_sessions(&self) -> Result<Vec<SessionInfo>, String> {
-        let agent = self.ensure_agent()?;
+        let agent = self.ensure_agent(None)?;
         let params = json!({ "cwd": self.dir });
         let v = agent.0.call("session/list", params, SETUP_TIMEOUT);
         let v = v.map_err(|e| e.to_string())?;
@@ -425,76 +513,193 @@ impl ReasonProvider {
     /// Kills the agent process. Chats keep their Session ids and resume on
     /// their next prompt.
     pub fn shutdown(&self) {
-        self.agent.lock().unwrap().take();
+        self.agents.lock().unwrap().clear();
     }
 
-    /// The chat's Session, open in the running agent process.
+    /// The chat's Session, open in the running agent process of its
+    /// workspace, with the chat's config options set on it.
     fn ensure_session(&self, chat: &str) -> Result<(Arc<RpcConnection>, String), String> {
-        let (conn, generation) = self.ensure_agent()?;
-        let (cwd, known, open_in, config) = {
+        let (cwd, known, open_in, workspace) = {
             let s = self.shared.lock().unwrap();
             let c = s.chats.get(chat).ok_or("unknown chat")?;
             (
                 c.cwd.clone(),
                 c.session_id.clone(),
                 c.open_in,
-                c.config.clone(),
+                c.workspace.clone(),
             )
         };
+        if let (Some(id), Some(open_in)) = (&known, open_in) {
+            if let Some((conn, generation)) = self.live_agent(&workspace) {
+                if generation == open_in {
+                    self.reconcile_config(chat, &conn, id);
+                    return Ok((conn, id.clone()));
+                }
+            }
+        }
         let base = json!({ "cwd": cwd, "mcpServers": [] });
-        let id = match known {
-            Some(id) if open_in == Some(generation) => return Ok((conn, id)),
+        let (conn, generation, id, workspace, options) = match known {
             Some(id) => {
+                let workspace = self.locate(&id, workspace)?;
+                let (conn, generation) = self.ensure_agent(workspace.as_deref())?;
                 let mut params = base;
                 params["sessionId"] = json!(id);
-                conn.call("session/resume", params, SETUP_TIMEOUT)
+                let v = conn
+                    .call("session/resume", params, SETUP_TIMEOUT)
                     .map_err(|e| format!("Could not resume the Reason session: {e}"))?;
-                id
+                (conn, generation, id, workspace, v["configOptions"].clone())
             }
             None => {
+                // A new Session opens in the workspace selected now.
+                let workspace = self.launch.whoami(&self.dir).and_then(|w| w.selected);
+                let (conn, generation) = self.ensure_agent(workspace.as_deref())?;
                 let v = conn
                     .call("session/new", base, SETUP_TIMEOUT)
                     .map_err(|e| e.to_string())?;
                 let id = v["sessionId"].as_str().ok_or("no sessionId")?.to_string();
+                if let Some(w) = &workspace {
+                    self.workspaces.lock().unwrap().set(&id, w);
+                }
                 (self.sink)(
                     chat,
                     ProviderEvent::SessionStarted {
                         session_id: id.clone(),
                     },
                 );
-                let (set, mut notices) = plan_config(&v["configOptions"], &config);
-                for choice in set {
-                    let params = json!({ "sessionId": id, "configId": choice.id,
-                        "value": choice.value });
-                    if let Err(e) = conn.call("session/set_config_option", params, SETUP_TIMEOUT) {
-                        notices.push(format!(
-                            "Could not set {} to {}: {e}. Reason's default is used.",
-                            choice.id, choice.value
-                        ));
-                    }
-                }
-                for n in notices {
-                    (self.sink)(chat, ProviderEvent::Notice(n));
-                }
-                id
+                (conn, generation, id, workspace, v["configOptions"].clone())
             }
         };
-        let mut s = self.shared.lock().unwrap();
-        s.by_session.insert(id.clone(), chat.into());
-        if let Some(c) = s.chats.get_mut(chat) {
-            c.session_id = Some(id.clone());
-            c.open_in = Some(generation);
+        {
+            let mut s = self.shared.lock().unwrap();
+            s.by_session.insert(id.clone(), chat.into());
+            if let Some(c) = s.chats.get_mut(chat) {
+                c.session_id = Some(id.clone());
+                c.open_in = Some(generation);
+                c.workspace = workspace;
+                c.options = options;
+                c.applied = None;
+            }
         }
+        self.reconcile_config(chat, &conn, &id);
         Ok((conn, id))
     }
 
+    /// Sets the chat's wanted options on its open Session when they differ
+    /// from what was last set there. Not while a turn runs: a follow-up
+    /// steering it leaves them for the next prompt.
+    fn reconcile_config(&self, chat: &str, conn: &RpcConnection, id: &str) {
+        let (wanted, mut options) = {
+            let s = self.shared.lock().unwrap();
+            let Some(c) = s.chats.get(chat) else {
+                return;
+            };
+            if c.turn.is_some() || c.applied.as_ref() == Some(&c.config) {
+                return;
+            }
+            (c.config.clone(), c.options.clone())
+        };
+        // A resumed Session may not report its options: send each and check
+        // what Reason answers with.
+        let known = options.is_array();
+        let (set, mut notices) = if known {
+            plan_config(&options, &wanted)
+        } else {
+            (wanted.clone(), Vec::new())
+        };
+        for choice in &set {
+            let params = json!({ "sessionId": id, "configId": choice.id,
+                "value": choice.value });
+            match conn.call("session/set_config_option", params, SETUP_TIMEOUT) {
+                Ok(v) if v["configOptions"].is_array() => options = v["configOptions"].clone(),
+                Ok(_) => {}
+                Err(e) => notices.push(format!(
+                    "Could not set {} to {}: {e}. Reason's default is used.",
+                    choice.id, choice.value
+                )),
+            }
+        }
+        if !known && options.is_array() {
+            notices.extend(unapplied(&options, &set));
+        }
+        {
+            let mut s = self.shared.lock().unwrap();
+            if let Some(c) = s.chats.get_mut(chat) {
+                c.applied = Some(wanted);
+                c.options = options;
+            }
+        }
+        for n in notices {
+            (self.sink)(chat, ProviderEvent::Notice(n));
+        }
+    }
+
+    /// The workspace that has Session `id`: `hint` (where it was created)
+    /// when `reason session get` finds it there, else the first signed-in
+    /// workspace that has it, the selected one first. When `reason` cannot
+    /// tell (offline, no `whoami`), the best guess, as before this check.
+    /// A Session no signed-in workspace has is an error: resuming it would
+    /// end in `409 client_session_id_conflict`.
+    fn locate(&self, id: &str, hint: Option<String>) -> Result<Option<String>, String> {
+        let mut unsure = None;
+        if let Some(w) = &hint {
+            match self.launch.session_presence(&self.dir, w, id) {
+                Presence::Found => return Ok(hint),
+                Presence::Unknown => unsure = hint.clone(),
+                Presence::Missing => {}
+            }
+        }
+        let Some(signed_in) = self.launch.whoami(&self.dir) else {
+            return Ok(hint);
+        };
+        let mut order: Vec<&String> = signed_in.selected.iter().collect();
+        order.extend(
+            signed_in
+                .saved
+                .iter()
+                .filter(|w| Some(*w) != signed_in.selected.as_ref()),
+        );
+        for w in order.into_iter().filter(|w| Some(*w) != hint.as_ref()) {
+            match self.launch.session_presence(&self.dir, w, id) {
+                Presence::Found => {
+                    self.workspaces.lock().unwrap().set(id, w);
+                    return Ok(Some(w.clone()));
+                }
+                Presence::Unknown => {
+                    unsure.get_or_insert_with(|| w.clone());
+                }
+                Presence::Missing => {}
+            }
+        }
+        if unsure.is_some() {
+            return Ok(unsure);
+        }
+        Err(format!(
+            "This chat's Reason Session {id} is not in any workspace the Reason CLI is \
+             signed in to ({}), so the message was not sent. Sign in to the workspace \
+             that has it (`reason login`), or use Reset chat to start a new Session.",
+            signed_in.saved.join(", ")
+        ))
+    }
+
+    /// The running agent of `workspace`, if its process is still up.
+    fn live_agent(&self, workspace: &Option<String>) -> Option<(Arc<RpcConnection>, u64)> {
+        let agents = self.agents.lock().unwrap();
+        let a = agents.get(workspace).filter(|a| !a.conn.is_closed())?;
+        Some((a.conn.clone(), a.generation))
+    }
+
     /// The running agent, started and initialized when needed.
-    fn ensure_agent(&self) -> Result<(Arc<RpcConnection>, u64), String> {
-        let mut slot = self.agent.lock().unwrap();
-        if let Some(a) = slot.as_ref().filter(|a| !a.conn.is_closed()) {
+    fn ensure_agent(&self, workspace: Option<&str>) -> Result<(Arc<RpcConnection>, u64), String> {
+        let key = workspace.map(str::to_string);
+        let mut agents = self.agents.lock().unwrap();
+        if let Some(a) = agents.get(&key).filter(|a| !a.conn.is_closed()) {
             return Ok((a.conn.clone(), a.generation));
         }
-        let (process, stdin, stdout) = AgentProcess::spawn(&self.launch, &self.dir)
+        let launch = self
+            .launch
+            .in_workspace(workspace)
+            .map_err(|e| e.to_string())?;
+        let (process, stdin, stdout) = AgentProcess::spawn(&launch, &self.dir)
             .map_err(|e| format!("Could not start {}: {e}", self.launch.cli().display()))?;
         let generation = {
             let mut g = self.generations.lock().unwrap();
@@ -515,11 +720,14 @@ impl ReasonProvider {
                 .trim()
                 .to_string()
         })?;
-        *slot = Some(Agent {
-            _process: process,
-            conn: conn.clone(),
-            generation,
-        });
+        agents.insert(
+            key,
+            Agent {
+                _process: process,
+                conn: conn.clone(),
+                generation,
+            },
+        );
         Ok((conn, generation))
     }
 }
@@ -536,6 +744,11 @@ fn explain(e: ReasonError, cwd: &Path) -> String {
             e.message,
             home.unwrap_or_default().display(),
             cwd.display()
+        ),
+        Some("client_session_id_conflict") => format!(
+            "{} Reason could not reach this chat's Session from the workspace the Reason \
+             CLI uses now; send the message again to look for it in your other workspaces.",
+            e.message
         ),
         _ => e.message,
     }
@@ -575,6 +788,30 @@ pub fn plan_config(options: &Value, wanted: &[ConfigChoice]) -> (Vec<ConfigChoic
         }
     }
     (set, notices)
+}
+
+/// A notice for each option that Reason's reported `configOptions` do not
+/// hold at the value that was sent: Reason reset it to its default.
+fn unapplied(options: &Value, sent: &[ConfigChoice]) -> Vec<String> {
+    let options = options.as_array().map(Vec::as_slice).unwrap_or_default();
+    sent.iter()
+        .filter_map(|w| {
+            let Some(opt) = options.iter().find(|o| o["id"] == w.id.as_str()) else {
+                return Some(format!(
+                    "Reason has no \"{}\" option, so {} was not applied.",
+                    w.id, w.value
+                ));
+            };
+            let name = opt["name"].as_str().unwrap_or(&w.id);
+            (opt["currentValue"] != w.value.as_str()).then(|| {
+                format!(
+                    "Reason does not offer {} \"{}\" for this chat, so it uses Reason's default.",
+                    name.to_lowercase(),
+                    w.value
+                )
+            })
+        })
+        .collect()
 }
 
 /// The `session/prompt` content: the text, then each attachment as an

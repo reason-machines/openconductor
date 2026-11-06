@@ -6,10 +6,8 @@ import type { AppInfo } from "../backend";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
-import { createPortal } from "react-dom";
 import { HelpMenu } from "./HelpMenu";
 import { RepoIcon } from "./RepoIcon";
-import { RepoIconDialog } from "./RepoIconDialog";
 import { RenameWorkspaceDialog } from "./RenameWorkspaceDialog";
 import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
@@ -29,6 +27,8 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { AccountMenu } from "./AccountMenu";
 import { ResourceUsagePill } from "./ResourceUsagePill";
 import { Tooltip, titleWithShortcut } from "./Tooltip";
+import { ContextMenu, MenuItem as CtxItem, MenuSeparator } from "./menu/ContextMenu";
+import { EyeIcon, EyeOffIcon, Link2Icon, PencilIcon, PlusIcon as MenuPlusIcon, SettingsIcon as MenuSettingsIcon, Trash2Icon } from "./menu/menuIcons";
 import type { WorkspaceRef as UsageWorkspace } from "./resourceUsage";
 import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { endingProps, SidebarPresence, SidebarRowMotion, SidebarSectionMotion, useMenuPresence } from "./sidebarMotion";
@@ -64,6 +64,12 @@ interface Props {
   onCopyWorkspaceLink?: RowCallbacks["onCopyLink"];
   /** Shows an error toast (icon upload failures). */
   onError?: (message: string) => void;
+  /** Repo menu "Create from...": the Create dialog with its PR / branch / issue picker open. */
+  onCreateFrom?: (repoId: string) => void;
+  /** Repo menu "Configuration": the repository's settings, Misc section. */
+  onOpenRepoSettings?: (repoId: string) => void;
+  /** Repo menu "Remove repository"; the item is hidden until something handles it. */
+  onRemoveRepository?: (repoId: string) => void;
 }
 
 // Conductor's nav rows: only Home has a native title (`HH("Home","nav.home")`, "Home ⌘…");
@@ -78,16 +84,21 @@ function NavRow({ icon, label, shortcut, title, active, onClick }: { icon: JSX.E
   );
 }
 
-interface MenuItem { label: string; onSelect: () => void; shortcut?: string; destructive?: boolean }
+/**
+ * A menu entry. `icon` and `contextShortcut` show only in the right-click menu: Conductor's
+ * header menus (`uBi`, `oBi`) take `menuType` "context" or "menu" and add the shortcut hints
+ * only for "context"; the hover "..." dropdown here keeps its own plain rows.
+ */
+interface MenuItem { label: string; onSelect: () => void; shortcut?: string; contextShortcut?: string; icon?: ReactNode; destructive?: boolean; disabled?: boolean }
 /** A custom entry, such as a submenu, rendered with the menu's close function. */
 interface MenuNode { key: string; render: (close: () => void) => ReactNode }
 /** A menu entry, a custom node, or "-" for a separator line. */
 type MenuEntry = MenuItem | MenuNode | "-";
 
-/** Menu panel shared by the hover "..." trigger and the right-click context menu. */
-function MenuPanel({ items, close, at, ending = false }: { items: MenuEntry[]; close: () => void; at?: { x: number; y: number }; ending?: boolean }) {
+/** Menu panel of the hover "..." trigger. */
+function MenuPanel({ items, close, ending = false }: { items: MenuEntry[]; close: () => void; ending?: boolean }) {
   return (
-    <div className="sb-menu" role="menu" data-context={at ? "true" : undefined} style={at ? { position: "fixed", left: at.x, top: at.y, right: "auto" } : undefined} {...endingProps(ending)}>
+    <div className="sb-menu" role="menu" {...endingProps(ending)}>
       {items.map((item, i) =>
         item === "-" ? (
           <div key={`sep-${i}`} role="separator" className="sb-menu-sep" />
@@ -129,27 +140,42 @@ function useDismiss(open: boolean, ref: RefObject<HTMLElement>, close: () => voi
 
 /**
  * Hover "..." trigger and its menu on a section or repo header (Conductor's `Aet`).
- * `contextAt` opens the same items at the pointer, for a right-click on the header.
+ * `contextOpen` keeps the trigger shown while the header's right-click menu is open
+ * (`group-has-[[data-popup-open]]/section-header:opacity-100`).
  */
-function HeaderMenu({ label, items, className, contextAt, onContextClose }: { label: string; items: MenuEntry[]; className: string; contextAt?: { x: number; y: number } | null; onContextClose?: () => void }) {
+function HeaderMenu({ label, items, className, contextOpen }: { label: string; items: MenuEntry[]; className: string; contextOpen?: boolean }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const portalRef = useRef<HTMLDivElement>(null);
-  const close = useCallback(() => { setOpen(false); onContextClose?.(); }, [onContextClose]);
+  const close = useCallback(() => setOpen(false), []);
   useDismiss(open, ref, close);
-  useDismiss(!!contextAt, portalRef, close);
-  // Both panels stay mounted for Conductor's 100ms close (data-[ending-style], `my`).
-  const dropdown = useMenuPresence(open && !contextAt);
-  const pointer = useMenuPresence(contextAt);
+  // The panel stays mounted for Conductor's 100ms close (data-[ending-style], `my`).
+  const dropdown = useMenuPresence(open);
   return (
-    <div ref={ref} className={`sb-menu-anchor ${className}`} data-open={open || !!contextAt || undefined}>
-      <button type="button" className="sb-menu-trigger" aria-label={`${label} actions`} aria-haspopup="menu" aria-expanded={open} onClick={(e) => { e.stopPropagation(); onContextClose?.(); setOpen(!open); }}>
+    <div ref={ref} className={`sb-menu-anchor ${className}`} data-open={open || contextOpen || undefined}>
+      <button type="button" className="sb-menu-trigger" aria-label={`${label} actions`} aria-haspopup="menu" aria-expanded={open} onClick={(e) => { e.stopPropagation(); setOpen(!open); }}>
         <MoreIcon size={14} />
       </button>
       {dropdown.mounted && <MenuPanel items={items} close={close} ending={dropdown.ending} />}
-      {/* The anchor is transformed and the list scrolls, so the pointer menu renders on <body>. */}
-      {pointer.mounted && createPortal(<div ref={pointer.ending ? undefined : portalRef} className="sb-context-root"><MenuPanel items={items} close={close} at={pointer.mounted} ending={pointer.ending} /></div>, document.body)}
     </div>
+  );
+}
+
+type Point = { x: number; y: number };
+
+/** The right-click version of a header's items (Conductor's `menuType: "context"`), at the pointer. */
+function HeaderContextMenu({ label, items, at, onClose }: { label: string; items: MenuEntry[]; at: Point; onClose: () => void }) {
+  return (
+    <ContextMenu at={at} onClose={onClose} label={`${label} actions`}>
+      {items.map((item, i) =>
+        item === "-" ? (
+          <MenuSeparator key={`sep-${i}`} />
+        ) : "render" in item ? null : (
+          <CtxItem key={item.label} icon={item.icon} shortcut={item.contextShortcut} destructive={item.destructive} disabled={item.disabled} onSelect={item.onSelect}>
+            {item.label}
+          </CtxItem>
+        ),
+      )}
+    </ContextMenu>
   );
 }
 
@@ -176,7 +202,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   onHeaderPointerDown: (e: PointerEvent<HTMLButtonElement>) => void;
 }) {
   const { section, entries } = group;
-  const [contextAt, setContextAt] = useState<{ x: number; y: number } | null>(null);
+  const [contextAt, setContextAt] = useState<Point | null>(null);
   const closeContext = useCallback(() => setContextAt(null), []);
   return (
     <SidebarSectionMotion className="sb-nav-section" data-navigation-section-drop-id={section.id} data-drop-target={isDropTarget || undefined} data-dragging={isDragging || undefined}>
@@ -191,7 +217,8 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
             {collapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}
           </span>
         </button>
-        <HeaderMenu label={section.name} className="sb-section-menu" items={menuItems} contextAt={contextAt} onContextClose={closeContext} />
+        <HeaderMenu label={section.name} className="sb-section-menu" items={menuItems} contextOpen={!!contextAt} />
+        {contextAt && <HeaderContextMenu label={section.name} items={menuItems} at={contextAt} onClose={closeContext} />}
       </div>
       {!collapsed && (
         <div className="sb-ws-list sb-group-list">
@@ -208,7 +235,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError }: Props) {
+export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
@@ -257,13 +284,14 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   };
   const sectionMenu = (sectionId: string): MenuEntry[] => {
     const s = state.sections?.find((x) => x.id === sectionId);
-    // Conductor's section menu (oBi): Create workspace, Edit section, New section…, then Delete section.
+    // Conductor's section menu (`oBi` @10004433, right-click via `Qia`): Create workspace (plus),
+    // Edit section (pencil), New section… (plus), separator, Delete section (trash-2, destructive).
     return [
-      { label: "Create workspace", onSelect: () => onOpenDialog("create", undefined, sectionId) },
-      { label: "Edit section", onSelect: () => s && setSectionDialog({ mode: "edit", sectionId, name: s.name, emoji: s.emoji }) },
-      { label: "New section…", onSelect: () => setSectionDialog({ mode: "create", beforeSectionId: sectionId }) },
+      { label: "Create workspace", icon: <MenuPlusIcon />, onSelect: () => onOpenDialog("create", undefined, sectionId) },
+      { label: "Edit section", icon: <PencilIcon />, onSelect: () => s && setSectionDialog({ mode: "edit", sectionId, name: s.name, emoji: s.emoji }) },
+      { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => setSectionDialog({ mode: "create", beforeSectionId: sectionId }) },
       "-",
-      { label: "Delete section", destructive: true, onSelect: () => dispatch({ type: "deleteSection", sectionId }) },
+      { label: "Delete section", icon: <Trash2Icon />, destructive: true, onSelect: () => dispatch({ type: "deleteSection", sectionId }) },
     ];
   };
   const row = ({ repoId, workspace }: SidebarSection["entries"][number], listIndex: number) => {
@@ -282,8 +310,26 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   const [showHidden, setShowHidden] = useState(false);
   const [repoContext, setRepoContext] = useState<{ repoId: string; x: number; y: number } | null>(null);
   const closeRepoContext = useCallback(() => setRepoContext(null), []);
-  const [iconRepoId, setIconRepoId] = useState<string | null>(null);
-  const iconRepo = iconRepoId ? state.repos.find((r) => r.id === iconRepoId) : undefined;
+  // Right-click on "My workspaces" (Conductor's `rBi` around `lBi`'s button): New section… only.
+  const [myContext, setMyContext] = useState<Point | null>(null);
+  const closeMyContext = useCallback(() => setMyContext(null), []);
+  /**
+   * Conductor's repository menu (`uBi` @10030179; right-click `Dra` -> `Nra` with menuType
+   * "context", the "..." with "menu"): Create workspace (plus; ⌘N in the right-click menu
+   * while a workspace of this repo is open), Create from... (link-2, ⌘⇧N), Configuration
+   * (settings, ⌘,; opens /settings/repos/$repoId/misc), Hide / Unhide repository (eye-off /
+   * eye), separator, Remove repository (trash-2, destructive).
+   */
+  const repoMenu = (repo: AppState["repos"][number]): MenuEntry[] => {
+    const active = sel.kind === "workspace" && sel.repoId === repo.id;
+    return [
+      { label: "Create workspace", icon: <MenuPlusIcon />, contextShortcut: active ? hint("workspace.create") : undefined, onSelect: () => onOpenDialog("create", repo.id) },
+      ...(onCreateFrom ? [{ label: "Create from...", icon: <Link2Icon />, contextShortcut: hint("workspace.createFromPRBranchIssue"), onSelect: () => onCreateFrom(repo.id) }] : []),
+      ...(onOpenRepoSettings ? [{ label: "Configuration", icon: <MenuSettingsIcon />, contextShortcut: hint("openSettings"), onSelect: () => onOpenRepoSettings(repo.id) }] : []),
+      { label: repo.hidden ? "Unhide repository" : "Hide repository", icon: repo.hidden ? <EyeIcon /> : <EyeOffIcon />, onSelect: () => dispatch({ type: "setRepoHidden", repoId: repo.id, hidden: !repo.hidden }) },
+      ...(onRemoveRepository ? ["-" as const, { label: "Remove repository", icon: <Trash2Icon />, destructive: true, onSelect: () => onRemoveRepository(repo.id) }] : []),
+    ];
+  };
   // The add-repository popover (Conductor's `wra`): "Add project…" opens it on the next
   // frame, after the header menu closes (`yra`); ⌥⌘A (`nav.addRepository`) opens it too.
   const [addMenuOpen, setAddMenuOpen] = useState(false);
@@ -376,7 +422,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
         {/* My workspaces takes rows dragged out of a section or off Pinned (Conductor's `Gra`, `data-workspace-unsectioned-drop`). */}
         <section className="sb-my-workspaces" aria-label="My workspaces" data-drop-target={dropTarget?.type === "unsectioned" || undefined} {...{ [DROP_ATTR.unsectioned]: "" }}>
         {/* "My workspaces" section header (Conductor's `lBi`): label, hover chevron, "..." menu with Add project. */}
-        <div className="sb-section-header">
+        <div className="sb-section-header" onContextMenu={(e) => { e.preventDefault(); setMyContext({ x: e.clientX, y: e.clientY }); }}>
           <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => setGroupCollapsed(!groupCollapsed)}>
             <span className="sb-section-label">My workspaces</span>
             <span className="sb-section-spacer" aria-hidden />
@@ -384,7 +430,12 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
               {groupCollapsed ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}
             </span>
           </button>
-          <HeaderMenu label="My workspaces" className="sb-section-menu" items={[
+          {myContext && (
+            <ContextMenu at={myContext} onClose={closeMyContext} label="My workspaces actions">
+              <CtxItem icon={<MenuPlusIcon />} onSelect={() => setSectionDialog({ mode: "create" })}>New section…</CtxItem>
+            </ContextMenu>
+          )}
+          <HeaderMenu label="My workspaces" className="sb-section-menu" contextOpen={!!myContext} items={[
             { label: "Add project…", onSelect: () => requestAnimationFrame(() => setAddMenuOpen(true)) },
             { label: "New section…", onSelect: () => setSectionDialog({ mode: "create" }) },
             { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
@@ -450,17 +501,8 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
                   <PlusIcon size={16} />
                 </button>
               </div>
-              <HeaderMenu
-                label={repo.name}
-                className="sb-repo-menu"
-                contextAt={repoContext?.repoId === repo.id ? repoContext : null}
-                onContextClose={closeRepoContext}
-                items={[
-                  { label: "Create workspace", shortcut: repoContext?.repoId === repo.id && sel.kind === "workspace" && sel.repoId === repo.id ? hint("workspace.create") : undefined, onSelect: () => onOpenDialog("create", repo.id) },
-                  { label: "Change icon…", onSelect: () => setIconRepoId(repo.id) },
-                  { label: repo.hidden ? "Unhide repository" : "Hide repository", onSelect: () => dispatch({ type: "setRepoHidden", repoId: repo.id, hidden: !repo.hidden }) },
-                ]}
-              />
+              <HeaderMenu label={repo.name} className="sb-repo-menu" contextOpen={repoContext?.repoId === repo.id} items={repoMenu(repo)} />
+              {repoContext?.repoId === repo.id && <HeaderContextMenu label={repo.name} items={repoMenu(repo)} at={repoContext} onClose={closeRepoContext} />}
             </div>
             <RepoWorkspaceList repoId={repo.id} collapsed={!!repo.collapsed} isEmpty={repo.workspaces.length === 0} empty={<p className="ws-empty">No workspaces</p>}>
               <SidebarPresence>
@@ -518,14 +560,6 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
           workspace={renamingWs}
           dispatch={dispatch}
           onClose={() => setRenaming(null)}
-          onError={(message) => onError?.(message)}
-        />
-      )}
-      {iconRepo && (
-        <RepoIconDialog
-          repo={iconRepo}
-          onChange={(icon) => dispatch({ type: "setRepoIcon", repoId: iconRepo.id, icon })}
-          onClose={() => setIconRepoId(null)}
           onError={(message) => onError?.(message)}
         />
       )}

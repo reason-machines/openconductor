@@ -15,16 +15,17 @@
    data-[ending-style]:scale-95 transition-[opacity,scale] duration-100 origin-(--transform-origin)
    (`my` menu class; header menus `Aet`, help `KQo` @9742478, add-repository `wra` @10025355).
    Ours enter with a keyframe from the starting style and leave through data-ending-style
-   (useMenuPresence keeps them mounted for the 100ms). */
-.sb-menu, .sb-ctx-menu, .sb-account-menu, .sb-help-menu, .add-repo-pop, .usage-popover {
+   (useMenuPresence keeps them mounted for the 100ms). Right-click menus use the shared
+   menu/ContextMenu (#548), which runs the same 100ms itself. */
+.sb-menu, .sb-account-menu, .sb-help-menu, .add-repo-pop, .usage-popover {
   animation: sb-popup-in 100ms cubic-bezier(0.4, 0, 0.2, 1);
   transition: opacity 100ms cubic-bezier(0.4, 0, 0.2, 1), scale 100ms cubic-bezier(0.4, 0, 0.2, 1);
 }
-:is(.sb-menu, .sb-ctx-menu, .sb-account-menu, .sb-help-menu, .add-repo-pop, .usage-popover)[data-ending-style] { opacity: 0; scale: 0.95; pointer-events: none; }
+:is(.sb-menu, .sb-account-menu, .sb-help-menu, .add-repo-pop, .usage-popover)[data-ending-style] { opacity: 0; scale: 0.95; pointer-events: none; }
 @keyframes sb-popup-in { from { opacity: 0; scale: 0.95; } }
 /* --transform-origin: Base UI puts it on the anchor; for these placements that is: */
 .sb-menu { transform-origin: top right; }          /* "..." header menus: below, align end */
-.sb-menu[data-context], .sb-ctx-menu, .pf-popup { transform-origin: top left; } /* at the pointer, submenus to the right */
+.pf-popup { transform-origin: top left; } /* submenu to the right */
 .sb-account-menu { transform-origin: top left; }   /* below the account row, align start */
 .sb-help-menu { transform-origin: bottom left; }   /* above the help button, align start */
 .add-repo-pop { transform-origin: top right; }
@@ -50,6 +51,6 @@
    pointer events on its children while something is dragged over it, and the lifted
    repo shows its chevron in place of the icon (`Dra`: isDragging ? invisible : group-hover:invisible). */
 .sb-repo-groups[data-dragging-over] > * { pointer-events: none; }
-.sb-repo-group[data-dragging] { pointer-events: auto; border-radius: 6px; background: var(--sidebar-accent); box-shadow: 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a; }
+.sb-repo-group[data-dragging] { pointer-events: auto; border-radius: 6px; background: var(--sidebar-accent); box-shadow: 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10); }
 .sb-repo-group[data-dragging] .sb-repo-initial, .sb-repo-group[data-dragging] .repo-icon { visibility: hidden; }
 .sb-repo-group[data-dragging] .sb-repo-chevron { visibility: visible; }

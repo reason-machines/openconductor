@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "lint:colors": "node --test scripts/check-colors.test.mjs && node scripts/check-colors.mjs",
     "tauri": "tauri",
     "test:e2e": "node --test tests/e2e/*.e2e.mjs"
   },
@@ -15,6 +16,7 @@
     "@hello-pangea/dnd": "^18.0.1",
     "@pierre/diffs": "^1.6.4",
     "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-deep-link": "^2.6.3",
     "@tauri-apps/plugin-dialog": "^2.0.0",
     "@xterm/addon-fit": "^0.11.0",
     "@xterm/xterm": "^6.0.0",
@@ -29,7 +31,8 @@
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "remark-smartypants": "^3.0.3",
-    "unist-util-visit": "^5.2.0"
+    "unist-util-visit": "^5.2.0",
+    "vscode-material-icons": "0.1.1"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0",

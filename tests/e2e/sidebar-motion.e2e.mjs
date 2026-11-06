@@ -43,6 +43,8 @@ after(async () => {
 const ROW = '[data-testid="left-sidebar-workspace-item"]';
 const row = (scope, label) => scope.locator(ROW, { has: scope.locator(".sb-ws-name", { hasText: label }) });
 const SHADOW_MD = "rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px";
+// The shadow comes from the --shadow-10 token (a color-mix), which Chromium serialises as color(srgb ...).
+const rgba = (css) => css.replace(/color\(srgb (\S+) (\S+) (\S+) \/ ([\d.]+)\)/g, (_, r, g, b, a) => `rgba(${[r, g, b].map((v) => Math.round(Number(v) * 255)).join(", ")}, ${a})`);
 
 async function open(page) {
   await page.goto(`${base}/?demo=1`);
@@ -65,8 +67,6 @@ test("rows: pinning rises the row into Pinned and collapses it out of its repo o
   await page.waitForTimeout(400);
   const before = await page.locator(".sb-repo-groups .sb-ws-name").count();
   await pin(page, second);
-  // The row menu goes with its row (Conductor's menu lives inside the row): no 100ms fade here.
-  assert.equal(await page.locator(".sb-ctx-menu").count(), 0);
   // Mid-flight: the new row is still fading in, the old one is still in its repo group.
   const mid = await page.evaluate((label) => {
     const entering = [...document.querySelectorAll('.sb-group[data-group="Pinned"] .sb-ws-motion')].find((el) => el.textContent.includes(label));
@@ -157,7 +157,7 @@ test("repositories reorder by drag; the lifted group is accent with shadow-md", 
   const lifted = page.locator(".sb-repo-group[data-dragging]");
   await lifted.waitFor();
   const style = await lifted.evaluate((el) => ({ shadow: getComputedStyle(el).boxShadow, radius: getComputedStyle(el).borderRadius }));
-  assert.equal(style.shadow, SHADOW_MD);
+  assert.equal(rgba(style.shadow), SHADOW_MD);
   assert.equal(style.radius, "6px");
   await page.mouse.up();
   await page.waitForTimeout(700);

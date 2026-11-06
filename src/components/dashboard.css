@@ -2,24 +2,10 @@
    decoded renderApp chunk). Colors are Conductor's --card, --border-highlight,
    --accent and --popover-accent (evidence/frontend/css-tokens.json). */
 :root {
-  --dash-card: #fff;
-  --dash-border-highlight: #a4847f;
-  --dash-accent: #fafaf9;
-  --dash-popover-accent: #14100f0d;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --dash-card: #2c2826;
-    --dash-border-highlight: #cca694;
-    --dash-accent: #2c2826;
-    --dash-popover-accent: #ffffff0d;
-  }
-}
-:root[data-theme="dark"] {
-  --dash-card: #2c2826;
-  --dash-border-highlight: #cca694;
-  --dash-accent: #2c2826;
-  --dash-popover-accent: #ffffff0d;
+  --dash-card: var(--card);
+  --dash-border-highlight: var(--emphasis);
+  --dash-accent: var(--surface-accent);
+  --dash-popover-accent: var(--popover-hover);
 }
 
 /* h-full flex flex-col bg-background */
@@ -60,7 +46,7 @@
 /* The "Move to <column>" hint over a column a card is dragged over. */
 .dash-drop { pointer-events: none; position: absolute; inset: 0 8px 8px; z-index: 20; display: flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid transparent; opacity: 0; transition: opacity 150ms, background-color 150ms, border-color 150ms; }
 .dash-drop[data-over] { opacity: 1; border-color: var(--dash-border-highlight); background: color-mix(in srgb, var(--bg) 80%, transparent); }
-.dash-drop-pill { border-radius: 999px; border: 1px solid var(--dash-border-highlight); background: var(--dash-card); padding: 6px 12px; font-size: 13px; font-weight: 500; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
+.dash-drop-pill { border-radius: 999px; border: 1px solid var(--dash-border-highlight); background: var(--dash-card); padding: 6px 12px; font-size: 13px; font-weight: 500; box-shadow: 0 1px 2px var(--shadow-5); }
 
 /* rounded-lg border border-border bg-card p-3 text-left flex flex-col select-none cursor-grab */
 .dash-card { border-radius: 8px; border: 1px solid var(--border); background: var(--dash-card); padding: 12px; text-align: left; display: flex; flex-direction: column; gap: 4px; user-select: none; cursor: grab; transition: background-color 150ms, box-shadow 150ms; }
@@ -73,8 +59,8 @@
 .dash-card-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--muted); cursor: text; }
 .dash-card-name:hover { color: var(--text); }
 .dash-card-diff { flex: none; display: flex; gap: 4px; font-family: var(--font-mono); font-size: 11px; }
-.dash-add { color: var(--add); }
-.dash-del { color: var(--del); }
+.dash-add { color: var(--diff-add); }
+.dash-del { color: var(--diff-del); }
 .dash-card-branch { min-width: 0; font-size: 13px; font-weight: 500; color: var(--text); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; word-break: break-all; }
 /* mt-5 flex flex-wrap items-center gap-2 */
 .dash-card-foot { margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
@@ -85,7 +71,7 @@
 .dash-status { position: relative; margin-left: auto; }
 .dash-status-btn { margin-top: 2px; display: flex; align-items: center; border-radius: 3px; color: var(--muted); }
 .dash-status-btn:hover { color: var(--text); }
-.dash-menu { position: absolute; top: calc(100% + 4px); left: 0; z-index: 50; width: 192px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); cursor: default; }
+.dash-menu { position: absolute; top: calc(100% + 4px); left: 0; z-index: 50; width: 192px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px var(--shadow-18); cursor: default; }
 .dash-tabs .dash-status { margin-left: 0; }
 .dash-menu-item { width: 100%; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; font-size: 13px; text-align: left; color: var(--text); }
 .dash-menu-item:hover, .dash-menu-item:focus-visible { background: var(--dash-popover-accent); outline: none; }

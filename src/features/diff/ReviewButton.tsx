@@ -17,7 +17,7 @@ import type { Repo, Workspace } from "../../state/types";
 import { configureReason, configureReasonDefault } from "../chat/reasonChat.ts";
 import { defaultChatConfig } from "../chat/chatModel.ts";
 import { NEW_CHAT_TITLE, newChatId } from "../chat/chatTabs.ts";
-import { hideChat } from "../chat/chatRuntime.ts";
+import { hideChat, showChat } from "../chat/chatRuntime.ts";
 import type { PromptAttachment } from "../chat/reason.ts";
 import { buildReviewPrompt, type ConfigChoice, REVIEW_ATTACHMENT, REVIEW_MESSAGE, reviewDraft, reviewModel, reviewTabTitle } from "./review.ts";
 import { repoReviewPrompt } from "./reviewApi.ts";
@@ -132,7 +132,17 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
     return chatId;
   }, [workspace.id, save, onOpen]);
 
-  return { tabs, start, close, fork, newChat, error };
+  /** ⌘⇧T: put a closed chat tab back at the end of the strip and show it. */
+  const reopen = useCallback(
+    (tab: ReviewTab) => {
+      showChat(tab.chatId);
+      save([...(tabsByWorkspace.get(workspace.id) ?? []).filter((t) => t.chatId !== tab.chatId), tab]);
+      onOpen(tab.chatId);
+    },
+    [workspace.id, save, onOpen],
+  );
+
+  return { tabs, start, close, fork, newChat, reopen, error };
 }
 
 /**
