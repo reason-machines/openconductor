@@ -23,13 +23,16 @@ import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { addPendingLaunch, removePendingLaunch } from "../workspace/pendingLaunches";
 import type { SourceState } from "../workspace/createFrom";
-import { chooseModel, effortLevels, launchDefaults, type LaunchModel } from "../workspace/launchModel";
+import { launchDefaults, loadoutPicks, pickLaunch, type LaunchModel, type LaunchPick } from "../workspace/launchModel";
+import { ModelPicker } from "../features/chat/ModelPicker";
+import { openSettingsPage } from "../features/chat/ChatModelPicker";
+import { listFavorites } from "../settings/agents/api";
+import { displayedLoadout, parseFavorites } from "../settings/agents/loadout";
 import { CreateFromPicker } from "./CreateFromPicker";
 import { Tooltip } from "./Tooltip";
 import { getSettings } from "../settings/api";
 import type { Settings } from "../settings/types";
-import { AGENT_LABEL, CLAUDE_ALIASES, MODEL_CATALOG, agentForModel, modelLabel, type ModelAgent } from "../settings/models";
-import { levelLabel } from "../settings/agentSettings";
+import { modelLabel } from "../settings/models";
 import { AddRepositoryMenu } from "./AddRepositoryMenu";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../keybindings/overrides";
@@ -103,6 +106,7 @@ export function CreateWorkspaceComposer({
   const [sectionMenuOpen, setSectionMenuOpen] = useState(false);
   const startRepo = repos.find((r) => r.id === initialRepoId) ?? repos[0];
   const [settings, setSettings] = useState<Settings | null>(null);
+  const [favorites, setFavorites] = useState<LaunchPick[]>([]);
   const [draft, setDraft] = useState<CreateDraft>(() =>
     newDraft({ repoId: startRepo?.id ?? null, defaultBranch: startRepo?.defaultBranch ?? "main", cityName: suggestName(startRepo)?.name ?? "", ...launchDefaults(null) }),
   );
@@ -146,6 +150,11 @@ export function CreateWorkspaceComposer({
         if (!live) return;
         setSettings(s);
         setDraft((d) => ({ ...d, ...launchDefaults(s) }));
+        // Conductor lists the loadout (slot 1 is the default model) as the picker's favorites.
+        listFavorites().then(
+          (rows) => live && setFavorites(loadoutPicks(displayedLoadout(s, parseFavorites(rows)))),
+          () => live && setFavorites(loadoutPicks(displayedLoadout(s, []))),
+        );
       },
       () => undefined,
     );
@@ -352,7 +361,7 @@ export function CreateWorkspaceComposer({
           disabled={busy}
         />
         <div className="create-card-bar">
-          <ModelControls value={draft} settings={settings} disabled={busy} onChange={chooseLaunch} />
+          <CreateModelPicker value={draft} favorites={favorites} settings={settings} disabled={busy} onChange={chooseLaunch} />
           <div className="create-split" role="group" aria-label="Create workspace">
             <button
               type="submit"
@@ -412,43 +421,22 @@ export function CreateWorkspaceComposer({
   );
 }
 
-/** The model menu (grouped by agent) and the effort menu for that model's agent. */
-function ModelControls({ value, settings, disabled, onChange }: { value: LaunchModel; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
-  const known = agentForModel(value.model) !== null;
-  const levels = effortLevels(value.agent);
+/**
+ * Conductor's create composer model trigger: the chat composer's "Change agent"
+ * picker (`RNi` inside `Hji`), with the loadout's favorites, "Add models" and
+ * "Edit" (Settings › Default models) and the effort submenu, in place of two selects.
+ */
+function CreateModelPicker({ value, favorites, settings, disabled, onChange }: { value: LaunchModel; favorites: readonly LaunchPick[]; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
   return (
-    <span className="create-model">
-      {/* Conductor's create composer model trigger (`cka`): Tooltip "Change agent", no shortcut hint. */}
-      <Tooltip content="Change agent">
-      <select className="create-chip" aria-label="Model" value={value.model} disabled={disabled} onChange={(e) => onChange(chooseModel(value, e.target.value, settings))}>
-        {!known && <option value={value.model}>{value.model}</option>}
-        {(Object.keys(MODEL_CATALOG) as ModelAgent[]).map((agent) => (
-          <optgroup key={agent} label={AGENT_LABEL[agent]}>
-            {MODEL_CATALOG[agent].map((m) => (
-              <option key={m} value={m}>{modelLabel(m)}</option>
-            ))}
-            {agent === "claude" &&
-              CLAUDE_ALIASES.map((m) => (
-                <option key={m} value={m}>{`${modelLabel(m)}, latest`}</option>
-              ))}
-          </optgroup>
-        ))}
-      </select>
-      </Tooltip>
-      {levels.length > 0 && (
-        <select
-          className="create-chip"
-          aria-label={value.agent === "codex" ? "Thinking level" : "Effort"}
-          value={value.effort}
-          disabled={disabled}
-          onChange={(e) => onChange({ ...value, effort: e.target.value })}
-        >
-          {!levels.includes(value.effort) && <option value={value.effort}>{levelLabel(value.effort)}</option>}
-          {levels.map((l) => (
-            <option key={l} value={l}>{levelLabel(l)}</option>
-          ))}
-        </select>
-      )}
-    </span>
+    <ModelPicker
+      tooltip
+      value={{ model: value.model, effort: value.effort || null }}
+      favorites={favorites}
+      itemLabel={(f) => modelLabel(f.model)}
+      modelName={modelLabel}
+      disabled={disabled}
+      onOpenSettings={() => openSettingsPage("models")}
+      onChange={(next) => onChange(pickLaunch(value, next, settings))}
+    />
   );
 }

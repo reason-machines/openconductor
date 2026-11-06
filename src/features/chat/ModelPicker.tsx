@@ -10,6 +10,7 @@ import { useKeybindingOverrides, useKeybindings } from "../../keybindings/Keybin
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs } from "../../keybindings/shortcut.ts";
 import { effectiveEffort, fastModeAvailable, modelChip, modelDisplayName, modelEfforts, nextEffort, type ModelChoice } from "./composerModels.ts";
+import { Tooltip } from "../../components/Tooltip.tsx";
 import { ArrowUpRightIcon, CheckIcon, ChevronDownIcon, ChevronRightIcon, ModelGlyph, PlusSmallIcon, SearchSmallIcon, SettingsSmallIcon } from "./composerIcons.tsx";
 
 export type { ModelChoice };
@@ -36,11 +37,13 @@ export interface ModelPickerProps {
   modelName?: (model: string) => string | undefined;
   /** A line about a model (Reason's "Claude · Subscription"), shown as its tooltip. */
   modelDescription?: (model: string) => string | undefined;
+  /** Conductor's trigger tooltip "Change agent ⌘/" (`RNi`'s triggerTooltip), as the create composer shows it. */
+  tooltip?: boolean;
 }
 
 const same = (a: ModelChoice, b: ModelChoice) => a.model === b.model;
 
-export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription }: ModelPickerProps) {
+export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription, tooltip = false }: ModelPickerProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [effortOpen, setEffortOpen] = useState(false);
@@ -97,23 +100,25 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
 
   return (
     <span className="oc-model-picker" ref={root} onKeyDown={onMenuKey}>
-      <button
-        type="button"
-        className="oc-model-chip"
-        data-testid="composer-model-button"
-        aria-label={`${label ? "Change model" : "Change agent"} (${label ?? chip.accessible})`}
-        title={label ?? chip.accessible}
-        aria-haspopup="menu"
-        aria-expanded={open}
-        disabled={disabled}
-        onClick={() => setOpen((o) => !o)}
-      >
-        <span className="oc-model-chip-label">{label ?? chip.label}</span>
-        <span className="oc-model-chip-details">
-          {!label && chip.effort ? <span className="oc-model-chip-effort">{chip.effort}</span> : null}
-          <ChevronDownIcon className="oc-model-chip-chevron" />
-        </span>
-      </button>
+      <Tooltip content="Change agent" shortcut={hint("chat.openModelPicker") || undefined} disabled={!tooltip || open}>
+        <button
+          type="button"
+          className="oc-model-chip"
+          data-testid="composer-model-button"
+          aria-label={`${label ? "Change model" : "Change agent"} (${label ?? chip.accessible})`}
+          title={label ?? chip.accessible}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          disabled={disabled}
+          onClick={() => setOpen((o) => !o)}
+        >
+          <span className="oc-model-chip-label">{label ?? chip.label}</span>
+          <span className="oc-model-chip-details">
+            {!label && chip.effort ? <span className="oc-model-chip-effort">{chip.effort}</span> : null}
+            <ChevronDownIcon className="oc-model-chip-chevron" />
+          </span>
+        </button>
+      </Tooltip>
       {open ? (
         <div className="oc-model-menu" role="menu" aria-label="Model">
           <div className="oc-model-menu-inner">
