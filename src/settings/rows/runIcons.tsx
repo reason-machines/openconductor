@@ -6,7 +6,8 @@
 import type { ReactNode } from "react";
 
 const ICONS: Record<string, ReactNode> = {
-  play: <polygon points="6 3 20 12 6 21 6 3" />,
+  // Conductor bundles the rounded lucide play (`uy`, renderApp ~"sfi"), not the older polygon.
+  play: <path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z" />,
   terminal: (
     <>
       <polyline points="4 17 10 11 4 5" />

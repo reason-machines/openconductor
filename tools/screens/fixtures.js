@@ -19,6 +19,7 @@
   // The apps of Sven's Mac "sven m5 max" (checked 2026-11-05) besides Finder and Terminal.
   const INSTALLED_APPS = ["Cursor", "Visual Studio Code", "Zed", "Xcode", "Ghostty"];
   const ok = (stdout) => ({ code: 0, stdout, stderr: "" });
+  const XCODE_UNACCEPTED = "You have not agreed to the Xcode license agreements. Please run 'sudo xcodebuild -license' from within a Terminal window to review and agree to the Xcode and Apple SDKs license.\n";
   const fail = (stderr) => ({ code: 1, stdout: "", stderr });
 
   // A tiny fake git: answers the read-only commands Conductor runs on startup
@@ -35,6 +36,10 @@
     const diff = git.diffs[cwd];
 
     if (/pmset -g batt/.test(cmd)) return ok("Now drawing from 'AC Power'\n");
+    // ?oc_xcode_license=unaccepted: `xcodebuild -license check` fails the way an unaccepted license
+    // does, so Conductor's startup check (`HBr`) raises its "Xcode license is not accepted" toast.
+    if (/xcodebuild -license check/.test(cmd) && new URLSearchParams(location.search).get("oc_xcode_license") === "unaccepted")
+      return { code: 69, stdout: XCODE_UNACCEPTED, stderr: "" };
     // Conductor's installed-apps check (`Z_s`): one `test -d "/Applications/<App>.app" ... && echo "<id>"`
     // clause per catalog app. Answers as a Mac with INSTALLED_APPS in /Applications.
     if (/test -d "\/Applications\//.test(cmd) && /&& echo "/.test(cmd)) {
@@ -100,6 +105,10 @@
         console.warn(`[oc-mock] refused native_http_fetch ${r.method} ${r.url}`);
         throw "network disabled in the screenshot harness";
       },
+      // Conductor runs its startup tasks (`FTa`: repo dirs, the Xcode license check `HBr`, binary
+      // verification, ...) only once this answers false; the harness leaves it null unless a capture
+      // opts in with ?oc_xcode_license=, so other reference states keep their startup quiet.
+      is_running_under_rosetta: () => (new URLSearchParams(location.search).has("oc_xcode_license") ? false : null),
       execute_shell_command: shell,
       execute_shell_command_cancellable: shell,
       "plugin:shell|execute": shell,

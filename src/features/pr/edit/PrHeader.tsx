@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Modal } from "../../../components/Dialogs";
 import type { PrInfo } from "../types";
 import type { TargetBranch } from "../useTargetBranch";
+import { usePrBadgeMenu } from "../PrBadgeMenu";
 import { BranchPicker } from "./BranchPicker";
 import { editPr } from "./api";
 import { planPrEdit, prEditErrorMessage, type PrText } from "./edit";
@@ -25,6 +26,8 @@ interface Props {
   refresh: () => Promise<void>;
   /** The workspace's target branch: picking a base changes it, retargeting the PR (useTargetBranch). */
   target: TargetBranch;
+  /** Toasts for the "#N" right-click menu. */
+  notify?: (kind: "info" | "error", message: string) => void;
 }
 
 function TitleDialog({ title, onSave, onClose }: { title: string; onSave: (t: string) => Promise<string | null>; onClose: () => void }) {
@@ -54,7 +57,8 @@ function TitleDialog({ title, onSave, onClose }: { title: string; onSave: (t: st
   );
 }
 
-export function PrHeader({ pr, worktree, repoId, repoPath, defaultBranch, refresh, target }: Props) {
+export function PrHeader({ pr, worktree, repoId, repoPath, defaultBranch, refresh, target, notify }: Props) {
+  const linkMenu = usePrBadgeMenu(pr, notify);
   // Saved values shown until the next lookup brings GitHub's.
   const [saved, setSaved] = useState<Partial<PrText> & { base?: string }>({});
   useEffect(() => setSaved({}), [pr.title, pr.body, pr.baseRefName, pr.number]);
@@ -104,7 +108,11 @@ export function PrHeader({ pr, worktree, repoId, repoPath, defaultBranch, refres
   return (
     <div className="pr-header" aria-label="Pull request">
       <div className="pr-header-meta">
-        <span className="pr-number">#{pr.number}</span>
+        {/* Conductor's PR title "#N" (`sKo`) opens the PR link menu (`w_i`) on right-click. */}
+        <span className="pr-number" onContextMenu={linkMenu.onContextMenu}>
+          #{pr.number}
+        </span>
+        {linkMenu.menu}
         {pr.authorLogin && <span className="pr-author">{pr.authorLogin}</span>}
         <span className="muted">into</span>
         <span className="pr-base-anchor">

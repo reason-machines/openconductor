@@ -4,9 +4,10 @@
 // agent message), Resolve (merge conflicts, an agent message), Merge (gh pr merge with the repository's
 // preferred method, named in the tooltip), Ready for review on a draft,
 // Approve PR, Automerge while checks run (with the setting on), or the PR's current state, which opens it on GitHub.
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { prControl } from "./control.ts";
+import { usePrBadgeMenu } from "./PrBadgeMenu";
 import type { PrActions } from "./usePrActions.ts";
 import type { PullRequest } from "./usePullRequest.ts";
 import "./pr.css";
@@ -14,9 +15,22 @@ import "./pr.css";
 interface Props {
   pullRequest: PullRequest;
   actions: PrActions;
+  /** Toasts for the PR number's right-click menu. */
+  notify?: (kind: "info" | "error", message: string) => void;
 }
 
-export function PrControl({ pullRequest, actions }: Props) {
+/** The header PR control; right-clicking its PR number or status pill opens Conductor's PR menu (`RFt` -> `w_i`, PrBadgeMenu). */
+export function PrControl({ pullRequest, actions, notify }: Props) {
+  const prMenu = usePrBadgeMenu(pullRequest.pr, notify);
+  return (
+    <>
+      <PrControlButtons pullRequest={pullRequest} actions={actions} onPrContextMenu={prMenu.onContextMenu} />
+      {prMenu.menu}
+    </>
+  );
+}
+
+function PrControlButtons({ pullRequest, actions, onPrContextMenu }: Omit<Props, "notify"> & { onPrContextMenu: (e: ReactMouseEvent) => void }) {
   const { header, pr } = pullRequest;
   const { busy } = actions;
   const [menu, setMenu] = useState(false);
@@ -36,7 +50,7 @@ export function PrControl({ pullRequest, actions }: Props) {
 
   const tone = `pr-control tone-${control.tone}`;
   const prLink = pr && (
-    <button className="btn btn-small pr-link" title={`Open PR #${pr.number} on GitHub`} onClick={actions.openOnGitHub}>
+    <button className="btn btn-small pr-link" title={`Open PR #${pr.number} on GitHub`} onClick={actions.openOnGitHub} onContextMenu={onPrContextMenu}>
       #{pr.number}
     </button>
   );
@@ -140,7 +154,7 @@ export function PrControl({ pullRequest, actions }: Props) {
       );
     case "status":
       return (
-        <button className={`btn btn-small ${tone}`} title={pr ? `${control.title}. Open PR #${pr.number} on GitHub` : control.title} disabled={!pr} onClick={actions.openOnGitHub}>
+        <button className={`btn btn-small ${tone}`} title={pr ? `${control.title}. Open PR #${pr.number} on GitHub` : control.title} disabled={!pr} onClick={actions.openOnGitHub} onContextMenu={onPrContextMenu}>
           <span className="pr-dot" /> {control.label}
         </button>
       );

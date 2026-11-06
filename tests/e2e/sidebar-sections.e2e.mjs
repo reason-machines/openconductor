@@ -45,6 +45,16 @@ const row = (page, label) => page.locator(ROW, { has: page.locator(NAMES, { hasT
 const section = (page, name) => page.locator(".sb-nav-section", { has: page.locator(".sb-section-label", { hasText: name }) });
 const rowsIn = (scope) => scope.locator(NAMES).allTextContents();
 const repoGroup = (page, name) => page.locator(".sb-repo-group", { has: page.locator(".sb-repo-name", { hasText: name }) });
+
+// A repository group nobody has toggled is folded unless the open workspace is one of its rows
+// (Conductor's `Dra`, src/state/sidebarOrder.ts isRepoCollapsed). A header click stores the
+// group's state, so this leaves it unfolded by hand whatever is opened or pinned next.
+async function unfold(page, name) {
+  const header = page.locator(".sb-repo-header", { has: page.locator(".sb-repo-name", { hasText: name }) });
+  if ((await header.getAttribute("aria-expanded")) === "true") await header.click();
+  await header.click();
+  await page.locator(".sb-repo-header[aria-expanded=true]", { has: page.locator(".sb-repo-name", { hasText: name }) }).waitFor();
+}
 const dialog = (page, title) => page.getByRole("dialog", { name: title });
 const rowMenu = (page) => page.getByRole("menu", { name: "Workspace actions" });
 const moveMenu = (page) => page.getByRole("menu", { name: "Move to section" });
@@ -73,6 +83,7 @@ test("sections: create, move in and out, edit, delete", async () => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
   await page.goto(`${base}/?demo=1`);
   await row(page, "Quiet harbor").waitFor();
+  await unfold(page, "api-server");
   assert.equal(await page.locator(".sb-nav-section").count(), 0);
 
   // New section from the My workspaces menu: empty name disables Create; Enter submits.

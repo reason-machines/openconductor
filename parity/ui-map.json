@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": null,
+  "commit": "364b994",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -32,21 +32,21 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 974,
-  "missing": 747,
+  "total": 978,
+  "missing": 746,
   "wrong": 80,
-  "matches": 147,
+  "matches": 152,
   "states": {
-   "total": 76,
+   "total": 80,
    "missing": 13,
    "wrong": 23,
-   "matches": 40
+   "matches": 44
   },
   "items": {
    "total": 898,
-   "missing": 734,
+   "missing": 733,
    "wrong": 57,
-   "matches": 107
+   "matches": 108
   },
   "items_by_kind": {
    "dialog": {
@@ -117,9 +117,9 @@
    },
    "toast": {
     "total": 327,
-    "missing": 325,
+    "missing": 324,
     "wrong": 1,
-    "matches": 1
+    "matches": 2
    }
   },
   "by_team": {
@@ -154,22 +154,22 @@
     "matches": 5
    },
    "settings": {
-    "total": 181,
+    "total": 178,
     "missing": 46,
     "wrong": 46,
-    "matches": 89
+    "matches": 86
    },
    "shell": {
-    "total": 197,
+    "total": 201,
     "missing": 178,
     "wrong": 5,
-    "matches": 14
+    "matches": 18
    },
    "terminal-scripts": {
-    "total": 22,
-    "missing": 19,
+    "total": 25,
+    "missing": 18,
     "wrong": 0,
-    "matches": 3
+    "matches": 7
    },
    "triage": {
     "total": 268,
@@ -184,8 +184,8 @@
     "matches": 13
    }
   },
-  "located_items": 225,
-  "items_with_reference_screenshot": 225
+  "located_items": 226,
+  "items_with_reference_screenshot": 226
  },
  "states": [
   {
@@ -807,6 +807,152 @@
    "copy_missing": [
     "add chat transcripts"
    ]
+  },
+  {
+   "id": "panel-run-add",
+   "title": "Terminal panel: Run, no run script",
+   "status": "matches",
+   "why": "diff 2.9% at t24, copy 92%",
+   "team": "terminal-scripts",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-03-run-add.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-osaka",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_80a301c5d64f2f8242553216e23e2d538f092867078e21b441a4371b8116df06"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-03-run-add.png",
+    "error": null,
+    "note": "side-by-side lane at bd29b1777: tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.029383574695121952,
+    "rea_evidence_ids": [
+     "ev_8e4a6af86bbc0153101a55eb3e65df3785f37bb8db967697bbf1106926ee078a",
+     "ev_181cedece7bc075477464f300342037df824da160aeff5e8673299f216ef5ad4"
+    ]
+   },
+   "copy_coverage": 0.923,
+   "copy_missing": [
+    "add chat transcripts"
+   ]
+  },
+  {
+   "id": "panel-run-idle",
+   "title": "Terminal panel: Run, before the run script runs",
+   "status": "matches",
+   "why": "diff 2.8% at t24, copy 90%",
+   "team": "terminal-scripts",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-04-run-idle.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-osaka",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_eb2d5d6a8f1c2281844703abd494db0d3df0de0fbf59823b5ae9936d66fe9136"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-04-run-idle.png",
+    "error": null,
+    "note": "side-by-side lane at bd29b1777: tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.02811737804878049,
+    "rea_evidence_ids": [
+     "ev_5a5d886fd397384e1a72aaa95f6103678d3da54f3bf64adb43d513671525b258",
+     "ev_71153a81872cb6c9673f80dd75d4cfd14bfea448d6c354dff1ef01477690ba8f"
+    ]
+   },
+   "copy_coverage": 0.909,
+   "copy_missing": [
+    "add chat transcripts"
+   ]
+  },
+  {
+   "id": "toast-xcode-license",
+   "title": "Toast: Xcode license is not accepted",
+   "status": "matches",
+   "why": "diff 3.8% at t24, copy 93%",
+   "team": "shell",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-05-xcode-license.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-osaka",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_12247626d65e269423a3e583ab59c7035b095e33d23645601af0dd56c43780aa"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-05-xcode-license.png",
+    "error": null,
+    "note": "side-by-side lane at 364b994a3: tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999904725609756,
+    "changed_ratio_t24": 0.037522865853658535,
+    "rea_evidence_ids": [
+     "ev_ee8b401b8a8f2f03680eb80786582cb14223ebbc256ab84f5910675e08d99e16",
+     "ev_bf75a025f4eb8cbfc79b7e050627bd3cc1052af2731c92917aa8fa7232949701"
+    ]
+   },
+   "copy_coverage": 0.933,
+   "copy_missing": [
+    "add chat transcripts"
+   ]
+  },
+  {
+   "id": "toast-save-setting-failed",
+   "title": "Toast: Failed to save setting (Scripts, read-only settings file)",
+   "status": "matches",
+   "why": "diff 1.6% at t24, copy 100%",
+   "team": "settings",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-06-save-setting-failed.png",
+    "path": "/settings/repos/repo-tide-web/scripts",
+    "final_path": "/settings/repos/repo-tide-web/scripts",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_b3ef1dbae9365c0e1a725e15eae0b1df5191edf7d6a1f7cd6c6d0a4cb04a1f10"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-06-save-setting-failed.png",
+    "error": null,
+    "note": "side-by-side lane at 364b994a3: tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999961890243902,
+    "changed_ratio_t24": 0.01648342225609756,
+    "rea_evidence_ids": [
+     "ev_290d471a45fd668f28ae3ac7d8176148caace2326444b5974342371c7cb2be5b",
+     "ev_5328d90aaaf92b78c30648e4457ed8b7648dccf6fd37034c7d049e7b4e260218"
+    ]
+   },
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "needs-permission",
@@ -2114,13 +2260,13 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_7b077b4f6dc01e92a75b5d840ad8a6143c6921db3a4475a00e12246a49f5d890"
+    "rea_evidence_id": "ev_9b79d2a6706ee01de03aa1e3d2fbd4eda59f7481ad63dd3c94faabc126c91a4d"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/shell-palette-01-all.png",
     "error": null,
-    "note": "side-by-side lane at 347acb1d8: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-palette-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 28050c122: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-palette-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
@@ -2191,13 +2337,13 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_660e2d501bd836e238345987b92325e212937786fd67ef248478d110c9b5d7fd"
+    "rea_evidence_id": "ev_43560861536cd49d39a3fe19574300a682b5bb296afb65b1c8401979b466d9c4"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/shell-palette-02-search.png",
     "error": null,
-    "note": "side-by-side lane at 347acb1d8: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-palette-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 28050c122: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-palette-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
@@ -2228,13 +2374,13 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_c31fc70b1c87ab35b8c5ef5008bd1044cbba3b9429fbec674ff6a22f980ac6c5"
+    "rea_evidence_id": "ev_e3c5ada83ce5648c1ef1d0ed6ec81321847b7233d92454f99f3f5c46758eebf8"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/shell-palette-03-no-results.png",
     "error": null,
-    "note": "side-by-side lane at 347acb1d8: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-palette-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 28050c122: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-palette-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
@@ -9780,8 +9926,8 @@
    "kind": "tab",
    "name": "Personal",
    "status": "matches",
-   "why": "on screen in both; state settings-general matches",
-   "team": "settings",
+   "why": "on screen in both; state toast-save-setting-failed matches",
+   "team": "shell",
    "component": "r0a",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -9792,12 +9938,12 @@
     "Personal"
    ],
    "tokens": [],
-   "state": "settings-general",
+   "state": "toast-save-setting-failed",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/settings-general.png",
-   "openconductor_screenshot": "ui-map/oc/settings-general.png",
-   "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.031363376524390245,
+   "reference_screenshot": "side-by-side/terminal-scripts-06-save-setting-failed.png",
+   "openconductor_screenshot": "side-by-side/terminal-scripts-06-save-setting-failed.png",
+   "diff": null,
+   "changed_ratio_t24": 0.01648342225609756,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -9832,8 +9978,8 @@
    "kind": "tab",
    "name": "Personal",
    "status": "matches",
-   "why": "on screen in both; state settings-general matches",
-   "team": "settings",
+   "why": "on screen in both; state toast-save-setting-failed matches",
+   "team": "shell",
    "component": "S0a",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -9844,12 +9990,12 @@
     "Personal"
    ],
    "tokens": [],
-   "state": "settings-general",
+   "state": "toast-save-setting-failed",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/settings-general.png",
-   "openconductor_screenshot": "ui-map/oc/settings-general.png",
-   "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.031363376524390245,
+   "reference_screenshot": "side-by-side/terminal-scripts-06-save-setting-failed.png",
+   "openconductor_screenshot": "side-by-side/terminal-scripts-06-save-setting-failed.png",
+   "diff": null,
+   "changed_ratio_t24": 0.01648342225609756,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -10082,8 +10228,8 @@
    "kind": "tab",
    "name": "Personal",
    "status": "matches",
-   "why": "on screen in both; state settings-general matches",
-   "team": "settings",
+   "why": "on screen in both; state toast-save-setting-failed matches",
+   "team": "shell",
    "component": "KSa",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -10094,12 +10240,12 @@
     "Personal"
    ],
    "tokens": [],
-   "state": "settings-general",
+   "state": "toast-save-setting-failed",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/settings-general.png",
-   "openconductor_screenshot": "ui-map/oc/settings-general.png",
-   "diff": "ui-map/diff/settings-general.jpg",
-   "changed_ratio_t24": 0.031363376524390245,
+   "reference_screenshot": "side-by-side/terminal-scripts-06-save-setting-failed.png",
+   "openconductor_screenshot": "side-by-side/terminal-scripts-06-save-setting-failed.png",
+   "diff": null,
+   "changed_ratio_t24": 0.01648342225609756,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -12061,8 +12207,8 @@
    "id": "toast:xcode-license-is-not-accepted",
    "kind": "toast",
    "name": "Xcode license is not accepted",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state toast-xcode-license matches",
    "team": "terminal-scripts",
    "component": "HBr",
    "source": {
@@ -12075,12 +12221,12 @@
     "Run `sudo xcodebuild -license accept` in terminal to continue"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "toast-xcode-license",
+   "state_basis": "state covers it",
+   "reference_screenshot": "side-by-side/terminal-scripts-05-xcode-license.png",
+   "openconductor_screenshot": "side-by-side/terminal-scripts-05-xcode-license.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.037522865853658535,
    "variant": "error",
    "dynamic": false
   },
@@ -21239,8 +21385,8 @@
    "kind": "empty-state",
    "name": "No run scripts yet. Add one to get started.",
    "status": "matches",
-   "why": "on screen in both; state settings-repo-scripts matches",
-   "team": "settings",
+   "why": "on screen in both; state toast-save-setting-failed matches",
+   "team": "terminal-scripts",
    "component": "ama",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -21251,12 +21397,12 @@
     "No run scripts yet. Add one to get started."
    ],
    "tokens": [],
-   "state": "settings-repo-scripts",
+   "state": "toast-save-setting-failed",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/settings-repo-scripts.png",
-   "openconductor_screenshot": "ui-map/oc/settings-repo-scripts.png",
-   "diff": "ui-map/diff/settings-repo-scripts.jpg",
-   "changed_ratio_t24": 0.023413681402439025
+   "reference_screenshot": "side-by-side/terminal-scripts-06-save-setting-failed.png",
+   "openconductor_screenshot": "side-by-side/terminal-scripts-06-save-setting-failed.png",
+   "diff": null,
+   "changed_ratio_t24": 0.01648342225609756
   },
   {
    "id": "empty-state:no-account-information-available-please-sign-in",
@@ -25592,7 +25738,7 @@
    "kind": "settings-row",
    "name": "Environment",
    "status": "wrong",
-   "why": "not rendered in a reference capture; OpenConductor shows it in settings-general, settings-account, settings-models, not in the host state; host state settings-org-environment is missing",
+   "why": "not rendered in a reference capture; OpenConductor shows it in toast-save-setting-failed, settings-general, settings-account, not in the host state; host state settings-org-environment is missing",
    "team": "cloud-org",
    "component": null,
    "source": {
