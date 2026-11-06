@@ -19,6 +19,20 @@
 //!
 //! Those modules are added here once their owners land them.
 
+/// `std::eprintln!` for every module below, except that a failed write is
+/// dropped instead of panicking. An agent that launches the app with stderr on
+/// its own pipe closes that pipe when its command returns; `std::eprintln!`
+/// then panics with EPIPE, and the first log line in the setup hook aborted the
+/// app before its window opened (tests/closed_stderr.rs). Unit tests keep
+/// `std::eprintln!` so the test harness still captures their output.
+#[cfg(not(test))]
+macro_rules! eprintln {
+    ($($arg:tt)*) => {{
+        use ::std::io::Write as _;
+        let _ = ::std::writeln!(::std::io::stderr(), $($arg)*);
+    }};
+}
+
 pub mod agent;
 pub mod agent_binaries;
 pub mod agent_options;
