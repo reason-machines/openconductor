@@ -2,7 +2,7 @@
  "states": {
   "menu-help": {
    "lane": "tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "1e8445dc3",
+   "openconductor_commit": "18ecd9590",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -145,7 +145,7 @@
   },
   "dialog-submit-prompt": {
    "lane": "tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "1e8445dc3",
+   "openconductor_commit": "18ecd9590",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -273,7 +273,7 @@
   },
   "route-diagnostics": {
    "lane": "tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "1e8445dc3",
+   "openconductor_commit": "18ecd9590",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -350,7 +350,7 @@
   },
   "diagnostics-run": {
    "lane": "tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "1e8445dc3",
+   "openconductor_commit": "18ecd9590",
    "viewport": {
     "width": 1280,
     "height": 820

@@ -36,7 +36,7 @@ that justifies the status.
 | Settings: Repositories (per repo: Environment, Git, Scripts, Actions, Misc) `settings-repos` | unassigned | | wrong | seed |
 | Settings: More (Experimental, Advanced) `settings-more` | unassigned | | wrong | seed |
 | Settings: Organization and Cloud (cloud org only) `settings-org` | unassigned | | missing | seed |
-| Dialogs and menus `dialogs-menus` | 700983e1 (Help menu, Submit a prompt, Diagnostics) | #631 | wrong | 2026-11-06, 1e8445dc, [dialogs-menus-01](../side-by-side/dialogs-menus-01-help-menu.png) (harness render) |
+| Dialogs and menus `dialogs-menus` | 700983e1 (Help menu, Submit a prompt, Diagnostics) | #631 | wrong | 2026-11-06, 18ecd9590, [dialogs-menus-01](../side-by-side/dialogs-menus-01-help-menu.png) (harness render) |
 | Toasts `toasts` | unassigned | | wrong | seed |
 
 Settings groups follow Conductor's settings navigation as read from its bundle

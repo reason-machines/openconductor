@@ -865,7 +865,7 @@
     "status": "captured",
     "file": "side-by-side/dialogs-menus-03-diagnostics.png",
     "error": null,
-    "note": "side-by-side lane at 1e8445dc3: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 18ecd9590: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
@@ -2531,7 +2531,7 @@
     "status": "captured",
     "file": "side-by-side/dialogs-menus-01-help-menu.png",
     "error": null,
-    "note": "side-by-side lane at 1e8445dc3: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 18ecd9590: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
@@ -2568,7 +2568,7 @@
     "status": "captured",
     "file": "side-by-side/dialogs-menus-02-submit-prompt.png",
     "error": null,
-    "note": "side-by-side lane at 1e8445dc3: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 18ecd9590: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
@@ -2603,7 +2603,7 @@
     "status": "captured",
     "file": "side-by-side/dialogs-menus-04-diagnostics-run.png",
     "error": null,
-    "note": "side-by-side lane at 1e8445dc3: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+    "note": "side-by-side lane at 18ecd9590: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
