@@ -47,6 +47,7 @@ for (const kind of ["setup", "run"]) {
       await page.setViewportSize({ width: 1000, height: 760 });
       assert.equal(await output.evaluate((el) => el.scrollWidth <= el.clientWidth), true);
       if (kind === "setup") {
+        await page.evaluate(() => window.__scriptOutputTest.finish());
         await page.getByRole("button", { name: "Rerun setup", exact: true }).click();
         await page.evaluate(() => window.__scriptOutputTest.emit("Fresh setup\r\n"));
         await page.waitForFunction(() => document.querySelector(".script-output .xterm-rows")?.textContent.includes("Fresh setup"));

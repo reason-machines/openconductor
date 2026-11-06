@@ -42,10 +42,10 @@ for (const [name, scenario] of Object.entries(cases)) {
     fs.writeFileSync(path.join(out, `${name}-failure.json`), JSON.stringify(evidence, null, 2));
     throw new Error(`${name} capture failed; inspect ${name}-failure.json`);
   }
+  const dom = JSON.stringify(artifact.dom?.value ?? "");
+  if (!dom.includes("Dependencies installed") || !dom.includes("Progress 100%")) throw new Error(`${name} did not show the synthetic script output`);
   const png = Buffer.from(artifact.screenshot.value.data_base64, "base64");
   fs.writeFileSync(path.join(out, `${name}.png`), png);
-  const dom = artifact.dom?.value;
-  fs.writeFileSync(path.join(out, `${name}-dom.json`), JSON.stringify(dom));
   captures[name] = { evidence_id: evidence.evidence_id, sha256: createHash("sha256").update(png).digest("hex"), scenario: `${name}-scenario.json`, screenshot: `${name}.png`, url: artifact.url?.value, issues: evidence.normalized_result?.issues ?? [] };
   console.log(name, captures[name].evidence_id);
 }

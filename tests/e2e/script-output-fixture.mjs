@@ -15,6 +15,10 @@ export function scriptOutputBackend({ output, kind = "setup", running = false })
   };
   window.__scriptOutputTest = {
     setOutput(next) { output = next; },
+    finish() {
+      state = "completed";
+      callbacks.get(listener)?.({ event: "scripts://event", payload: { type: "setupFinished", workspaceId: "w1", state, exitCode: 0, logPath: "/synthetic/setup.log", log: output } });
+    },
     emit(chunk) {
       output += chunk;
       callbacks.get(listener)?.({ event: "scripts://event", payload: { type: "output", workspaceId: "w1", kind, scriptId: kind === "run" ? "run" : "setup", chunk } });

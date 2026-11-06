@@ -1,0 +1,62 @@
+{
+  "exact": {
+    "evidence_id": "ev_2cda1fadbe5ccc64ae2553c09314d854278acb170a3e5991bd2cbbe8ebe234ef",
+    "parameters": {
+      "before_artifact_sha256": "aacbbc2c5771e60ea5e65446008869fa3b1bc24110b18b6a46c497dc4ac84647",
+      "after_artifact_sha256": "d0b497255629f75abcdd9a42350f0bbd6f2f33c653c22355e5aa8ee4b8c73cdd",
+      "channel_threshold": 0
+    },
+    "result": {
+      "before": {
+        "width": 341,
+        "height": 410
+      },
+      "after": {
+        "width": 341,
+        "height": 410
+      },
+      "channel_threshold": 0,
+      "limitations": [
+        "Pixel comparison does not perform OCR, semantic layout analysis, or perceptual color correction.",
+        "Only non-interlaced 8-bit RGB and RGBA PNG screenshots are accepted.",
+        "PNG tRNS transparency is accepted only as a six-byte RGB color key; tRNS on RGBA or with another length is rejected."
+      ],
+      "status": "different",
+      "compared_pixels": 139810,
+      "changed_pixels": 139806,
+      "changed_ratio": 0.999971389743223,
+      "maximum_channel_delta": 246,
+      "mean_absolute_channel_delta": 7.856342536299263
+    }
+  },
+  "channel24": {
+    "evidence_id": "ev_85389b218562f7b946ecca702dc6b395a1441ae4bc2b68c592afe0aaff52e6b3",
+    "parameters": {
+      "before_artifact_sha256": "aacbbc2c5771e60ea5e65446008869fa3b1bc24110b18b6a46c497dc4ac84647",
+      "after_artifact_sha256": "d0b497255629f75abcdd9a42350f0bbd6f2f33c653c22355e5aa8ee4b8c73cdd",
+      "channel_threshold": 24
+    },
+    "result": {
+      "before": {
+        "width": 341,
+        "height": 410
+      },
+      "after": {
+        "width": 341,
+        "height": 410
+      },
+      "channel_threshold": 24,
+      "limitations": [
+        "Pixel comparison does not perform OCR, semantic layout analysis, or perceptual color correction.",
+        "Only non-interlaced 8-bit RGB and RGBA PNG screenshots are accepted.",
+        "PNG tRNS transparency is accepted only as a six-byte RGB color key; tRNS on RGBA or with another length is rejected."
+      ],
+      "status": "different",
+      "compared_pixels": 139810,
+      "changed_pixels": 4388,
+      "changed_ratio": 0.03138545168442887,
+      "maximum_channel_delta": 246,
+      "mean_absolute_channel_delta": 7.856342536299263
+    }
+  }
+}
