@@ -74,9 +74,11 @@ pub fn resolve(
     };
     match system() {
         Some(path) => {
-            eprintln!(
-                "[binary_manager] {agent} download unavailable ({download_error}); using {path:?}"
-            );
+            if !download_error.is_empty() {
+                eprintln!(
+                    "[binary_manager] {agent} download unavailable ({download_error}); using {path:?}"
+                );
+            }
             Ok(Resolved {
                 path,
                 source: Source::System,
@@ -147,13 +149,21 @@ pub fn launch<R: Runtime>(app: &AppHandle<R>, agent: Agent) -> Result<PathBuf, S
 /// What a chat would run right now, without downloading: the custom path,
 /// else a verified bundled copy, else the system CLI.
 pub fn current<R: Runtime>(app: &AppHandle<R>, agent: Agent) -> Option<Resolved> {
-    let manager = manager(app);
+    current_with(agent, custom_path(app, agent).as_deref(), manager(app).as_ref())
+}
+
+/// [`current`] from its parts, for callers holding the settings and the
+/// store rather than the app (`CodexChats::executable`).
+pub fn current_with(
+    agent: Agent,
+    custom: Option<&str>,
+    manager: Option<&BinaryManager>,
+) -> Option<Resolved> {
     resolve(
         agent,
-        custom_path(app, agent).as_deref(),
+        custom,
         || {
             manager
-                .as_ref()
                 .and_then(|m| m.ready_path(agent))
                 .ok_or_else(String::new)
         },

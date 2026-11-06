@@ -22,7 +22,7 @@
 use std::collections::HashMap;
 use std::ffi::OsString;
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, OnceLock};
 
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Runtime, State};
@@ -32,7 +32,7 @@ use crate::agent::codex_consent::ConsentAnswer;
 use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
 use crate::agent::codex_wire::{Payload, TurnEnd};
-use crate::agent_binaries::Agent;
+use crate::agent_binaries::{Agent, BinaryManager};
 use crate::settings::service::SettingsService;
 
 pub const EVENT: &str = "codex-chat-event";
@@ -40,6 +40,8 @@ pub const EVENT: &str = "codex-chat-event";
 #[derive(Default)]
 pub struct CodexChats {
     chats: Mutex<HashMap<String, Arc<CodexRunner>>>,
+    /// The bundled-binary store, for [`Self::executable`].
+    binaries: OnceLock<BinaryManager>,
 }
 
 /// Conductor's default when a session sets neither: never ask, full
@@ -49,9 +51,24 @@ fn default_policy() -> CodexPolicy {
 }
 
 impl CodexChats {
+    pub fn with_binaries(binaries: BinaryManager) -> Self {
+        let chats = Self::default();
+        let _ = chats.binaries.set(binaries);
+        chats
+    }
+
     /// `PATH` from the user's login shell, falling back to the app's own.
     pub(crate) fn path(&self) -> Option<OsString> {
         crate::agent_launch::login_shell_path()
+    }
+
+    /// The `codex` a chat would run now, without downloading (account and
+    /// sign-in): "Codex executable path", else the verified bundled copy,
+    /// else the CLI on the login shell's `PATH` ([`crate::agent_launch`]).
+    pub(crate) fn executable(&self, settings: &SettingsService) -> Option<PathBuf> {
+        let custom = settings.get().ok().and_then(|s| s.codex_executable_path);
+        crate::agent_launch::current_with(Agent::Codex, custom.as_deref(), self.binaries.get())
+            .map(|r| r.path)
     }
 
     fn get(&self, chat_id: &str) -> Result<Arc<CodexRunner>, String> {

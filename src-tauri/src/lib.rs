@@ -294,7 +294,7 @@ pub fn run() {
             for agent in agent_binaries::Agent::ALL {
                 binaries.request_download(agent);
             }
-            app.manage(binaries);
+            app.manage(binaries.clone());
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
@@ -331,7 +331,7 @@ pub fn run() {
             app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
-            app.manage(codex_chat::CodexChats::default());
+            app.manage(codex_chat::CodexChats::with_binaries(binaries));
             app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
