@@ -16,12 +16,16 @@ jobs:
   codex-chat:
     name: Codex chat through the built app (ubuntu-22.04)
     runs-on: ubuntu-22.04
+    # Normally about 4 minutes. 25 leaves room for a slow apt mirror (capped at 15 below)
+    # or a cold Rust cache, and stops a hung job from holding main's E2E queue for hours.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - name: Install Tauri system deps, WebKitWebDriver and Xvfb
+        # Normally about 30 seconds; the script bounds and retries each apt attempt.
+        timeout-minutes: 15
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
+          tools/ci/apt-install.sh libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
             webkit2gtk-driver xvfb
       - uses: actions/setup-node@v4
         with:
@@ -47,6 +51,8 @@ jobs:
           git config --global user.email "ci@example.invalid"
       # tools/e2e/fake_codex_app_server.py replays a turn recorded from Codex 0.166.0 on macOS.
       - name: Codex chat e2e (stand-in codex app-server)
+        # Normally about 1 minute.
+        timeout-minutes: 5
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-codex
           WEBKIT_DISABLE_DMABUF_RENDERER: "1"
@@ -64,12 +70,16 @@ jobs:
     # WebDriver for Tauri apps exists on Linux (WebKitWebDriver) and Windows
     # only; macOS WKWebView has no driver.
     runs-on: ubuntu-22.04
+    # Normally about 10.5 minutes. 35 leaves room for a slow apt mirror (capped at 15 below)
+    # or a cold Rust cache, and stops a hung job from holding main's E2E queue for hours.
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
       - name: Install Tauri system deps, WebKitWebDriver and Xvfb
+        # Normally about 30 seconds; the script bounds and retries each apt attempt.
+        timeout-minutes: 15
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
+          tools/ci/apt-install.sh libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev \
             webkit2gtk-driver xvfb
       - uses: actions/setup-node@v4
         with:
@@ -91,6 +101,8 @@ jobs:
       - name: Install tauri-driver
         run: cargo install tauri-driver --locked
       - name: Reason chat e2e (fake reason acp)
+        # Normally about 1 minute.
+        timeout-minutes: 5
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-screens
         run: xvfb-run -a node tools/e2e/reason-chat.e2e.mjs src-tauri/target/debug/openconductor
@@ -102,6 +114,8 @@ jobs:
           retention-days: 14
       - name: Codex chat e2e (fake codex app-server)
         if: always()
+        # Normally about 1 minute.
+        timeout-minutes: 5
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-codex
         run: xvfb-run -a node tools/e2e/codex-chat.e2e.mjs src-tauri/target/debug/openconductor
@@ -112,6 +126,8 @@ jobs:
           path: ${{ runner.temp }}/e2e-codex
       - name: Transcript parity screenshots (fake reason acp, lisbon turn)
         if: always()
+        # Normally about 4.5 minutes.
+        timeout-minutes: 15
         env:
           E2E_OUT: ${{ runner.temp }}/transcript-parity
           # WebKitGTK on a GPU-less Xvfb paints nothing without these.
@@ -131,6 +147,8 @@ jobs:
           git config --global user.email "ci@example.invalid"
       - name: App flows (tests/e2e/run.mjs)
         if: always()
+        # Normally about 1 minute; more flows land here often.
+        timeout-minutes: 10
         env:
           OC_APP: src-tauri/target/debug/openconductor
           E2E_OUT: ${{ runner.temp }}/e2e-flows
