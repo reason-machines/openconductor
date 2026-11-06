@@ -1600,11 +1600,15 @@
     "scenario": "populated",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Configure your organization's shared cloud computer."
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    },
+    "expect_path": "/settings/organization/computer"
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1626,9 +1630,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1650,9 +1657,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1672,11 +1682,14 @@
     "scenario": "populated",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Configure your organization's shared cloud computer."
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1698,9 +1711,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1722,9 +1738,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1746,9 +1765,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",

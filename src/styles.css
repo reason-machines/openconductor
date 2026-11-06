@@ -762,6 +762,10 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-account-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 4px; text-align: left; font-size: 13px; color: var(--text); }
 .sb-account-item:hover, .sb-account-item:focus-visible { background: var(--hover); }
 .sb-account-item-icon { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex: none; color: var(--muted); }
+/* Conductor's organization rows (`zna`): label, a cloud mark for cloud organizations, a check on the active one. */
+.sb-account-org-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-account-org-cloud { display: flex; color: var(--muted); }
+.sb-account-org-check { display: flex; margin-left: auto; }
 
 /* sidebar: resource usage pill (Conductor's `vna`: rounded-md border border-sidebar-border text-2xs
    sidebar-muted; gap-1 px-2 py-1, or p-1 when collapsed; size-3 microchip icon). */

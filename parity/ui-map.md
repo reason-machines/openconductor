@@ -8,21 +8,21 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **977** | **746** | **84** | **147** |
-| States (captured screens) | 79 | 13 | 25 | 41 |
-| Inventory items | 898 | 733 | 59 | 106 |
-| &nbsp;&nbsp;dialog | 64 | 54 | 5 | 5 |
-| &nbsp;&nbsp;empty-state | 52 | 44 | 1 | 7 |
+| **All** | **977** | **717** | **90** | **170** |
+| States (captured screens) | 79 | 6 | 27 | 46 |
+| Inventory items | 898 | 711 | 63 | 124 |
+| &nbsp;&nbsp;dialog | 64 | 53 | 6 | 5 |
+| &nbsp;&nbsp;empty-state | 52 | 43 | 1 | 8 |
 | &nbsp;&nbsp;menu | 39 | 37 | 1 | 1 |
 | &nbsp;&nbsp;menu-item | 89 | 84 | 4 | 1 |
 | &nbsp;&nbsp;popover | 45 | 44 | 1 | 0 |
-| &nbsp;&nbsp;route | 65 | 39 | 9 | 17 |
+| &nbsp;&nbsp;route | 65 | 32 | 11 | 22 |
 | &nbsp;&nbsp;select | 29 | 22 | 5 | 2 |
-| &nbsp;&nbsp;settings-page | 29 | 14 | 6 | 9 |
-| &nbsp;&nbsp;settings-row | 121 | 41 | 24 | 56 |
+| &nbsp;&nbsp;settings-page | 29 | 9 | 7 | 13 |
+| &nbsp;&nbsp;settings-row | 121 | 38 | 24 | 59 |
 | &nbsp;&nbsp;sheet | 3 | 3 | 0 | 0 |
-| &nbsp;&nbsp;tab | 35 | 27 | 2 | 6 |
-| &nbsp;&nbsp;toast | 327 | 324 | 1 | 2 |
+| &nbsp;&nbsp;tab | 35 | 23 | 2 | 10 |
+| &nbsp;&nbsp;toast | 327 | 323 | 1 | 3 |
 
 ### By owning team
 
@@ -31,17 +31,17 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Team | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
 | chat | 63 | 50 | 10 | 3 |
-| cloud-org | 83 | 70 | 4 | 9 |
+| cloud-org | 83 | 44 | 10 | 29 |
 | git-review | 39 | 28 | 1 | 10 |
 | onboarding-auth | 23 | 15 | 7 | 1 |
 | routines | 40 | 35 | 0 | 5 |
-| settings | 178 | 46 | 46 | 86 |
-| shell | 200 | 178 | 9 | 13 |
+| settings | 181 | 46 | 46 | 89 |
+| shell | 197 | 175 | 9 | 13 |
 | terminal-scripts | 25 | 18 | 0 | 7 |
 | triage | 268 | 268 | 0 | 0 |
 | workspaces | 58 | 38 | 7 | 13 |
 
-225 of 898 items were located in a captured state; 225 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
+232 of 898 items were located in a captured state; 232 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
 
 ## How it was measured
 
@@ -111,13 +111,13 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Settings > tide-web > Actions<br>`settings-repo-actions` | matches | settings | diff 4.2% at t24, copy 100% | [png](ui-map/ref/settings-repo-actions.png) | [png](ui-map/oc/settings-repo-actions.png) | [jpg](ui-map/diff/settings-repo-actions.jpg) | 4.2% |
 | Settings > tide-web > Misc<br>`settings-repo-misc` | matches | settings | diff 4.4% at t24, copy 100% | [png](ui-map/ref/settings-repo-misc.png) | [png](ui-map/oc/settings-repo-misc.png) | [jpg](ui-map/diff/settings-repo-misc.jpg) | 4.4% |
 | Settings > tide-web > Misc, scrolled to Remove repository<br>`settings-repo-misc-lower` | matches | settings | diff 4.5% at t24, copy 100% | [png](ui-map/ref/settings-repo-misc-lower.png) | [png](ui-map/oc/settings-repo-misc-lower.png) | [jpg](ui-map/diff/settings-repo-misc-lower.jpg) | 4.5% |
-| Settings > Organization > github<br>`settings-org-github` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-github.png) | no-equivalent |  |  |
-| Settings > Organization > members<br>`settings-org-members` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-members.png) | no-equivalent |  |  |
-| Settings > Organization > preferences<br>`settings-org-preferences` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-preferences.png) | no-equivalent |  |  |
-| Settings > Organization > computer<br>`settings-org-computer` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-computer.png) | no-equivalent |  |  |
-| Settings > Organization > environment<br>`settings-org-environment` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-environment.png) | no-equivalent |  |  |
-| Settings > Organization > mcp<br>`settings-org-mcp` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-mcp.png) | no-equivalent |  |  |
-| Settings > Organization > prompts<br>`settings-org-prompts` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-prompts.png) | no-equivalent |  |  |
+| Settings > Organization > github<br>`settings-org-github` | wrong | cloud-org | diff 4.5% at t24, copy 83% | [png](side-by-side/settings-org-03-computer.png) | [png](side-by-side/settings-org-03-computer.png) |  | 4.5% |
+| Settings > Organization > members<br>`settings-org-members` | matches | cloud-org | diff 1.5% at t24, copy 96% | [png](side-by-side/settings-org-04-members.png) | [png](side-by-side/settings-org-04-members.png) |  | 1.5% |
+| Settings > Organization > preferences<br>`settings-org-preferences` | matches | cloud-org | diff 1.3% at t24, copy 96% | [png](side-by-side/settings-org-05-preferences.png) | [png](side-by-side/settings-org-05-preferences.png) |  | 1.3% |
+| Settings > Organization > computer<br>`settings-org-computer` | wrong | cloud-org | diff 4.5% at t24, copy 83% | [png](side-by-side/settings-org-03-computer.png) | [png](side-by-side/settings-org-03-computer.png) |  | 4.5% |
+| Settings > Organization > environment<br>`settings-org-environment` | matches | cloud-org | diff 1.4% at t24, copy 92% | [png](side-by-side/settings-org-06-environment.png) | [png](side-by-side/settings-org-06-environment.png) |  | 1.4% |
+| Settings > Organization > mcp<br>`settings-org-mcp` | matches | cloud-org | diff 1.1% at t24, copy 93% | [png](side-by-side/settings-org-07-mcp.png) | [png](side-by-side/settings-org-07-mcp.png) |  | 1.1% |
+| Settings > Organization > prompts<br>`settings-org-prompts` | matches | cloud-org | diff 2.0% at t24, copy 92% | [png](side-by-side/settings-org-08-prompts.png) | [png](side-by-side/settings-org-08-prompts.png) |  | 2.0% |
 | Settings > Cloud setup<br>`settings-cloud-setup` | matches | cloud-org | diff 4.0% at t24, copy 90% | [png](side-by-side/settings-org-01-cloud-setup.png) | [png](side-by-side/settings-org-01-cloud-setup.png) |  | 4.0% |
 | Settings search<br>`settings-search` | matches | settings | diff 3.2% at t24, copy 96% | [png](ui-map/ref/settings-search.png) | [png](ui-map/oc/settings-search.png) | [jpg](ui-map/diff/settings-search.jpg) | 3.2% |
 | Command palette<br>`palette-all` | wrong | shell | diff 7.5% at t24, copy 47% | [png](ui-map/ref/palette-all.png) | [png](ui-map/oc/palette-all.png) | [jpg](ui-map/diff/palette-all.jpg) | 7.5% |
@@ -142,7 +142,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Rename chat dialog<br>`dialog-rename-chat` | matches | chat | diff 4.1% at t24, copy 96% | [png](side-by-side/chat-tabs-dialog-rename-chat.png) | [png](side-by-side/chat-tabs-dialog-rename-chat.png) |  | 4.1% |
 | Review button menu (Edit before sending)<br>`menu-review-edit` | matches | git-review | diff 4.5% at t24, copy 96% | [png](side-by-side/chat-tabs-menu-review-edit.png) | [png](side-by-side/chat-tabs-menu-review-edit.png) |  | 4.5% |
 
-## route (65: 39 missing, 9 wrong, 17 matches)
+## route (65: 32 missing, 11 wrong, 22 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -171,14 +171,14 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:settings-cloud-cloudprojectid`<br>/settings/cloud/$cloudProjectId | missing | cloud-org |  | `IEa` |  | no state captures this route |
 | `route:settings-organization`<br>/settings/organization | missing | cloud-org |  | `` |  | no state captures this route |
 | `route:settings-organization~2`<br>/settings/organization | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:settings-organization-github`<br>/settings/organization/github | missing | cloud-org |  | `REa` | [settings-org-github](ui-map/ref/settings-org-github.png) | OpenConductor has no organization settings |
-| `route:settings-organization-members`<br>/settings/organization/members | missing | cloud-org |  | `NEa` | [settings-org-members](ui-map/ref/settings-org-members.png) | OpenConductor has no organization settings |
-| `route:settings-organization-preferences`<br>/settings/organization/preferences | missing | cloud-org |  | `OEa` | [settings-org-preferences](ui-map/ref/settings-org-preferences.png) | OpenConductor has no organization settings |
-| `route:settings-organization-computer`<br>/settings/organization/computer | missing | cloud-org |  | `DEa` | [settings-org-computer](ui-map/ref/settings-org-computer.png) | OpenConductor has no organization settings |
-| `route:settings-organization-environment`<br>/settings/organization/environment | missing | cloud-org |  | `PEa` | [settings-org-environment](ui-map/ref/settings-org-environment.png) | OpenConductor has no organization settings |
-| `route:settings-organization-mcp`<br>/settings/organization/mcp | missing | cloud-org |  | `MEa` | [settings-org-mcp](ui-map/ref/settings-org-mcp.png) | OpenConductor has no organization settings |
+| `route:settings-organization-github`<br>/settings/organization/github | wrong | cloud-org |  | `REa` | [settings-org-github](side-by-side/settings-org-03-computer.png) | diff 4.5% at t24, copy 83% |
+| `route:settings-organization-members`<br>/settings/organization/members | matches | cloud-org |  | `NEa` | [settings-org-members](side-by-side/settings-org-04-members.png) | diff 1.5% at t24, copy 96% |
+| `route:settings-organization-preferences`<br>/settings/organization/preferences | matches | cloud-org |  | `OEa` | [settings-org-preferences](side-by-side/settings-org-05-preferences.png) | diff 1.3% at t24, copy 96% |
+| `route:settings-organization-computer`<br>/settings/organization/computer | wrong | cloud-org |  | `DEa` | [settings-org-computer](side-by-side/settings-org-03-computer.png) | diff 4.5% at t24, copy 83% |
+| `route:settings-organization-environment`<br>/settings/organization/environment | matches | cloud-org |  | `PEa` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | diff 1.4% at t24, copy 92% |
+| `route:settings-organization-mcp`<br>/settings/organization/mcp | matches | cloud-org |  | `MEa` | [settings-org-mcp](side-by-side/settings-org-07-mcp.png) | diff 1.1% at t24, copy 93% |
 | `route:settings-organization-mcp-servers`<br>/settings/organization/mcp-servers | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:settings-organization-prompts`<br>/settings/organization/prompts | missing | cloud-org |  | `LEa` | [settings-org-prompts](ui-map/ref/settings-org-prompts.png) | OpenConductor has no organization settings |
+| `route:settings-organization-prompts`<br>/settings/organization/prompts | matches | cloud-org |  | `LEa` | [settings-org-prompts](side-by-side/settings-org-08-prompts.png) | diff 2.0% at t24, copy 92% |
 | `route:settings-organization-repositories-owner-repo`<br>/settings/organization/repositories/$owner/$repo | missing | cloud-org |  | `BEa` |  | no state captures this route |
 | `route:settings-organization-repositories-owner-repo~2`<br>/settings/organization/repositories/$owner/$repo | missing | cloud-org |  | `` |  | no state captures this route |
 | `route:settings-organization-repositories-owner-repo-scripts`<br>/settings/organization/repositories/$owner/$repo/scripts | missing | cloud-org |  | `` |  | no state captures this route |
@@ -212,7 +212,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:settings-user-experimental`<br>/settings/user/experimental | matches | settings |  | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | diff 3.2% at t24, copy 100% |
 | `route:settings-user-advanced`<br>/settings/user/advanced | wrong | settings |  | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | diff 6.3% at t24, copy 95% |
 
-## settings-page (29: 14 missing, 6 wrong, 9 matches)
+## settings-page (29: 9 missing, 7 wrong, 13 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -224,7 +224,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-page:ports`<br>ports | missing | settings |  | `` | [settings-ports](ui-map/ref/settings-ports.png) | OpenConductor's settings have no ports page |
 | `settings-page:internal`<br>internal | missing | settings |  | `` | [settings-internal](ui-map/ref/settings-internal.png) | OpenConductor's settings have no internal page |
 | `settings-page:models`<br>models | matches | settings |  | `` | [settings-models](ui-map/oc/settings-models.png) | diff 3.3% at t24, copy 93% |
-| `settings-page:organization-preferences`<br>organization-preferences | missing | cloud-org |  | `` | [settings-org-preferences](ui-map/ref/settings-org-preferences.png) | OpenConductor has no organization settings |
+| `settings-page:organization-preferences`<br>organization-preferences | matches | cloud-org |  | `` | [settings-org-preferences](side-by-side/settings-org-05-preferences.png) | diff 1.3% at t24, copy 96% |
 | `settings-page:actions`<br>actions | matches | settings |  | `` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | diff 4.2% at t24, copy 100% |
 | `settings-page:misc`<br>misc | matches | settings |  | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | diff 4.5% at t24, copy 100% |
 | `settings-page:appearance`<br>appearance | wrong | settings |  | `` | [settings-appearance](ui-map/oc/settings-appearance.png) | diff 5.8% at t24, copy 96% |
@@ -232,10 +232,10 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-page:environment`<br>environment | matches | settings |  | `` | [settings-environment](ui-map/oc/settings-environment.png) | diff 2.9% at t24, copy 100% |
 | `settings-page:scripts`<br>scripts | matches | settings |  | `` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | diff 2.3% at t24, copy 100% |
 | `settings-page:terminal`<br>terminal | wrong | settings |  | `` | [settings-terminal](ui-map/oc/settings-terminal.png) | no valid reference render (redirected to /settings/user/terminal), diff 5.0% at t24 |
-| `settings-page:organization-members`<br>organization-members | missing | cloud-org |  | `` | [settings-org-members](ui-map/ref/settings-org-members.png) | OpenConductor has no organization settings |
-| `settings-page:organization-computer`<br>organization-computer | missing | cloud-org |  | `` | [settings-org-computer](ui-map/ref/settings-org-computer.png) | OpenConductor has no organization settings |
-| `settings-page:organization-environment`<br>organization-environment | missing | cloud-org |  | `` | [settings-org-environment](ui-map/ref/settings-org-environment.png) | OpenConductor has no organization settings |
-| `settings-page:organization-prompts`<br>organization-prompts | missing | cloud-org |  | `` | [settings-org-prompts](ui-map/ref/settings-org-prompts.png) | OpenConductor has no organization settings |
+| `settings-page:organization-members`<br>organization-members | matches | cloud-org |  | `` | [settings-org-members](side-by-side/settings-org-04-members.png) | diff 1.5% at t24, copy 96% |
+| `settings-page:organization-computer`<br>organization-computer | wrong | cloud-org |  | `` | [settings-org-computer](side-by-side/settings-org-03-computer.png) | diff 4.5% at t24, copy 83% |
+| `settings-page:organization-environment`<br>organization-environment | matches | cloud-org |  | `` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | diff 1.4% at t24, copy 92% |
+| `settings-page:organization-prompts`<br>organization-prompts | matches | cloud-org |  | `` | [settings-org-prompts](side-by-side/settings-org-08-prompts.png) | diff 2.0% at t24, copy 92% |
 | `settings-page:organization-mcp-servers`<br>organization-mcp-servers | missing | cloud-org |  | `` |  | no state for this page |
 | `settings-page:cloud`<br>cloud | missing | cloud-org |  | `` |  | no state for this page |
 | `settings-page:setup`<br>setup | matches | cloud-org |  | `` | [settings-cloud-setup](side-by-side/settings-org-01-cloud-setup.png) | diff 4.0% at t24, copy 90% |
@@ -246,7 +246,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-page:user`<br>user | missing | settings |  | `` |  | no state for this page |
 | `settings-page:key-bindings`<br>key-bindings | wrong | settings |  | `` | [settings-key-bindings](ui-map/oc/settings-key-bindings.png) | no valid reference render (redirected to /settings/user/general), diff 5.0% at t24 |
 
-## settings-row (121: 41 missing, 24 wrong, 56 matches)
+## settings-row (121: 38 missing, 24 wrong, 59 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -342,7 +342,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:models:claude-output-style`<br>models › Claude output style | matches | settings | Claude output style / Choose which output style to apply to new chats. Existing chats do not | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
 | `settings-row:models:review-model`<br>models › Review model | matches | settings | Review model | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
 | `settings-row:models:default-to-plan-mode-in-new-chats`<br>models › Default to plan mode in new chats | matches | cloud-org | Default to plan mode in new chats | `` | [settings-models](ui-map/oc/settings-models.png) | on screen in both; state settings-models matches |
-| `settings-row:organization-preferences:include-link-to-workspace-in-pr-description`<br>organization-preferences › Include link to workspace in PR description | missing | cloud-org | Include link to workspace in PR description | `` | [settings-org-preferences](ui-map/ref/settings-org-preferences.png) | copy not shown in any OpenConductor capture |
+| `settings-row:organization-preferences:include-link-to-workspace-in-pr-description`<br>organization-preferences › Include link to workspace in PR description | matches | cloud-org | Include link to workspace in PR description | `` | [settings-org-preferences](side-by-side/settings-org-05-preferences.png) | on screen in both; state settings-org-preferences matches |
 | `settings-row:actions:use-spotlight-testing`<br>actions › Use spotlight testing | matches | settings | Use spotlight testing / Replace Run with Spotlight for this repository so workspace changes ar | `` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | on screen in both; state settings-repo-actions matches |
 | `settings-row:actions:general-preferences`<br>actions › General preferences | matches | settings | General preferences / Add custom instructions sent to the agent at the start of every new ch | `` | [settings-repo-actions](ui-map/oc/settings-repo-actions.png) | on screen in both; state settings-repo-actions matches |
 | `settings-row:misc:icon`<br>misc › Icon | matches | settings | Icon / Shown next to the repository name in the sidebar. | `` | [settings-repo-misc-lower](ui-map/oc/settings-repo-misc-lower.png) | on screen in both; state settings-repo-misc-lower matches |
@@ -366,13 +366,13 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:environment:environment-settings`<br>environment › Environment settings | missing | settings | Environment settings / Environment variables, files, and preview URLs. | `` | [settings-environment](ui-map/oc/settings-environment.png) | copy not shown in any OpenConductor capture |
 | `settings-row:scripts:repository-scripts`<br>scripts › Repository scripts | missing | settings | Repository scripts / Setup and run scripts for the selected repository. | `` | [settings-repo-scripts](ui-map/oc/settings-repo-scripts.png) | copy not shown in any OpenConductor capture |
 | `settings-row:terminal:big-terminal-settings`<br>terminal › Big terminal settings | missing | settings | Big terminal settings / Configure the experimental center-pane terminal. | `` | [settings-terminal](ui-map/oc/settings-terminal.png) | copy not shown in any OpenConductor capture |
-| `settings-row:organization-members:organization-members`<br>organization-members › Organization members | missing | cloud-org | Organization members / Manage organization membership. | `` | [settings-org-members](ui-map/ref/settings-org-members.png) | copy not shown in any OpenConductor capture |
-| `settings-row:organization-computer:cloud-computer`<br>organization-computer › Cloud computer | missing | cloud-org | Cloud computer / Configure the organization's cloud computer. | `` | [settings-org-computer](ui-map/ref/settings-org-computer.png) | copy not shown in any OpenConductor capture |
-| `settings-row:organization-environment:environment`<br>organization-environment › Environment | wrong | cloud-org | Environment / Configure personal and shared cloud environment variables. | `` | [settings-org-environment](ui-map/ref/settings-org-environment.png) | not rendered in a reference capture; OpenConductor shows it in toast-save-setting-failed, settings-general, settings-account, not in the host state; host state settings-org-environment is missing |
-| `settings-row:organization-prompts:prompts`<br>organization-prompts › Prompts | missing | cloud-org | Prompts / Custom instructions for the Review, Create PR, and Resolve conflicts b | `` | [settings-org-prompts](ui-map/ref/settings-org-prompts.png) | copy not shown in any OpenConductor capture |
+| `settings-row:organization-members:organization-members`<br>organization-members › Organization members | missing | cloud-org | Organization members / Manage organization membership. | `` | [settings-org-members](side-by-side/settings-org-04-members.png) | copy not shown in any OpenConductor capture |
+| `settings-row:organization-computer:cloud-computer`<br>organization-computer › Cloud computer | wrong | cloud-org | Cloud computer / Configure the organization's cloud computer. | `` | [settings-org-computer](side-by-side/settings-org-03-computer.png) | host state settings-org-computer is wrong |
+| `settings-row:organization-environment:environment`<br>organization-environment › Environment | matches | cloud-org | Environment / Configure personal and shared cloud environment variables. | `` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
+| `settings-row:organization-prompts:prompts`<br>organization-prompts › Prompts | matches | cloud-org | Prompts / Custom instructions for the Review, Create PR, and Resolve conflicts b | `` | [settings-org-prompts](side-by-side/settings-org-08-prompts.png) | on screen in both; state settings-org-prompts matches |
 | `settings-row:organization-mcp-servers:mcps`<br>organization-mcp-servers › MCPs | missing | cloud-org | MCPs / Configure MCP servers for cloud workspaces. | `` |  | copy not shown in any OpenConductor capture |
 
-## dialog (64: 54 missing, 5 wrong, 5 matches)
+## dialog (64: 53 missing, 6 wrong, 5 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -394,7 +394,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `dialog:select-mcp-servers`<br>Select MCP servers | missing | chat | Select MCP servers | `z1a` |  | copy not shown in any OpenConductor capture |
 | `dialog:rfa` | missing | triage |  | `rfa` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:nfa` | missing | triage |  | `Nfa` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:github-organizations`<br>GitHub organizations | missing | cloud-org | GitHub organizations | `Nfa` |  | copy not shown in any OpenConductor capture |
+| `dialog:github-organizations`<br>GitHub organizations | wrong | cloud-org | GitHub organizations | `Nfa` | [settings-org-github](side-by-side/settings-org-03-computer.png) | host state settings-org-github is wrong |
 | `dialog:xzi` | missing | triage |  | `xzi` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:providers`<br>Providers | missing | shell | Providers | `I0a` |  | copy not shown in any OpenConductor capture |
 | `dialog:uma` | missing | triage |  | `uma` |  | no literal copy to locate it; not observed in any capture |
@@ -671,7 +671,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `select:fti` | missing | triage |  | `Fti` |  | no literal copy to locate it; not observed in any capture |
 | `select:jka` | missing | triage |  | `Jka` |  | no literal copy to locate it; not observed in any capture |
 
-## tab (35: 27 missing, 2 wrong, 6 matches)
+## tab (35: 23 missing, 2 wrong, 10 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -690,14 +690,14 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `tab:fta` | missing | triage |  | `fta` |  | no literal copy to locate it; not observed in any capture |
 | `tab:local`<br>Local | missing | shell | Local | `zda` |  | copy not shown in any OpenConductor capture |
 | `tab:cloud`<br>Cloud | wrong | cloud-org | Cloud | `zda` |  | not rendered in a reference capture; OpenConductor shows it in settings-cloud-setup, not in the host state |
-| `tab:installed`<br>Installed | missing | shell | Installed | `V1a` |  | copy not shown in any OpenConductor capture |
-| `tab:recommended`<br>Recommended | wrong | onboarding-auth | Recommended | `V1a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor shows it in settings-providers, settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing |
+| `tab:installed`<br>Installed | matches | settings | Installed | `V1a` | [settings-org-mcp](side-by-side/settings-org-07-mcp.png) | on screen in both; state settings-org-mcp matches |
+| `tab:recommended`<br>Recommended | wrong | onboarding-auth | Recommended | `V1a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor shows it in settings-providers, settings-org-mcp, settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing |
 | `tab:logs`<br>Logs | missing | shell | Logs | `rfa` |  | copy not shown in any OpenConductor capture |
 | `tab:settings`<br>Settings | matches | shell | Settings | `rfa` | [home-empty](ui-map/oc/home-empty.png) | on screen in both; state home-empty matches |
 | `tab:personal`<br>Personal | matches | shell | Personal | `r0a` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
-| `tab:shared`<br>Shared | missing | cloud-org | Shared | `r0a` |  | copy not shown in any OpenConductor capture |
+| `tab:shared`<br>Shared | matches | cloud-org | Shared | `r0a` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
 | `tab:personal~2`<br>Personal | matches | shell | Personal | `S0a` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
-| `tab:shared~2`<br>Shared | missing | cloud-org | Shared | `S0a` |  | copy not shown in any OpenConductor capture |
+| `tab:shared~2`<br>Shared | matches | cloud-org | Shared | `S0a` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
 | `tab:pa` | missing | triage |  | `$pa` |  | no literal copy to locate it; not observed in any capture |
 | `tab:pa~2` | missing | triage |  | `$pa` |  | no literal copy to locate it; not observed in any capture |
 | `tab:pa~3` | missing | triage |  | `$pa` |  | no literal copy to locate it; not observed in any capture |
@@ -707,11 +707,11 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `tab:branches`<br>Branches | matches | git-review | Branches | `l4a` | [create-from-branches](side-by-side/git-review-05-create-from-branches.png) | on screen in both; state create-from-branches matches |
 | `tab:issues`<br>Issues | matches | workspaces | Issues | `l4a` | [create-from-prs](side-by-side/git-review-04-create-from-prs.png) | on screen in both; state create-from-prs matches |
 | `tab:personal~3`<br>Personal | matches | shell | Personal | `KSa` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
-| `tab:shared~3`<br>Shared | missing | cloud-org | Shared | `KSa` |  | copy not shown in any OpenConductor capture |
+| `tab:shared~3`<br>Shared | matches | cloud-org | Shared | `KSa` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
 | `tab:wpo` | missing | triage |  | `WPo` |  | no literal copy to locate it; not observed in any capture |
 | `tab:u8a` | missing | triage |  | `U8a` |  | no literal copy to locate it; not observed in any capture |
 
-## toast (327: 324 missing, 1 wrong, 2 matches)
+## toast (327: 323 missing, 1 wrong, 3 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -867,7 +867,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `toast:failed-to-update-api-key-e~2`<br>Failed to update API key: ${e} | missing | shell | Failed to update API key: ${e} | `D0a` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-update-api-key-e~3`<br>Failed to update API key: ${e} | missing | shell | Failed to update API key: ${e} | `P0a` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-update-api-key-e~4`<br>Failed to update API key: ${e} | missing | shell | Failed to update API key: ${e} | `L0a` |  | copy not shown in any OpenConductor capture |
-| `toast:installed-u`<br>Installed ${u}. | missing | shell | Installed ${u}. | `Izi` |  | copy not shown in any OpenConductor capture |
+| `toast:installed-u`<br>Installed ${u}. | matches | settings | Installed ${u}. | `Izi` | [settings-org-mcp](side-by-side/settings-org-07-mcp.png) | on screen in both; state settings-org-mcp matches |
 | `toast:failed-to-install-u-i`<br>Failed to install ${u}: ${I} | missing | shell | Failed to install ${u}: ${I} | `Izi` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-open-install-location-e`<br>Failed to open install location: ${e} | missing | shell | Failed to open install location: ${e} | `bpa` |  | copy not shown in any OpenConductor capture |
 | `toast:api-key-saved~3`<br>API key saved | missing | shell | API key saved | `Spa` |  | copy not shown in any OpenConductor capture |
@@ -1043,7 +1043,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `toast:failed-to-unarchive-t-workspacedirectoryname`<br>Failed to unarchive: ${t.workspaceDirectoryName} | missing | workspaces | Failed to unarchive: ${t.workspaceDirectoryName} | `kIa` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-start-agents`<br>Failed to start agents | missing | chat | Failed to start agents / Conductor will not work. Please report this error. | `wVi` |  | copy not shown in any OpenConductor capture |
 
-## empty-state (52: 44 missing, 1 wrong, 7 matches)
+## empty-state (52: 43 missing, 1 wrong, 8 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -1075,7 +1075,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `empty-state:no-variables-set`<br>No variables set | matches | settings | No variables set | `T$i` | [settings-environment](ui-map/oc/settings-environment.png) | on screen in both; state settings-environment matches |
 | `empty-state:no-matching-mcp-servers`<br>No matching MCP servers. | missing | chat | No matching MCP servers. | `z1a` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-matching-repositories`<br>No matching repositories. | missing | workspaces | No matching repositories. | `mfa` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-variables-yet`<br>No variables yet | missing | shell | No variables yet | `Xha` |  | copy not shown in any OpenConductor capture |
+| `empty-state:no-variables-yet`<br>No variables yet | matches | settings | No variables yet | `Xha` | [settings-org-environment](side-by-side/settings-org-06-environment.png) | on screen in both; state settings-org-environment matches |
 | `empty-state:no-members-yet`<br>No members yet. | missing | cloud-org | No members yet. | `m0a` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-icons-found`<br>No icons found | missing | shell | No icons found | `Mzi` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-run-scripts-yet-add-one-to-get-started`<br>No run scripts yet. Add one to get started. | matches | terminal-scripts | No run scripts yet. Add one to get started. | `ama` | [toast-save-setting-failed](side-by-side/terminal-scripts-06-save-setting-failed.png) | on screen in both; state toast-save-setting-failed matches |
@@ -1204,4 +1204,6 @@ Harness limits that shape the reference (not REA bugs): settings pages behind an
 
 52. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30, 34, 36, 41, 45, 48): `rea search renderApp-D_fmY7hW.js "Test your changes here"` fails `capability_unavailable` / `unsupported_provider`. The Run tab body and split button in `nro` (@7,143,300-7,154,800: `n0`, `Vn`, `_n`, `Dn`, `Wt`, the `wio` label density, `_Vn`, `V9i`), the lucide play icon `uy` and the run script dialog `uma` (@10,601,205) were read from the chunk by byte offset; the rendered Run tab was captured with `capture-browser-scenario` (`tools/side-by-side/setup-tab.mjs`, states `panel-run-add`, `panel-run-idle`).
 53. **No cross-chunk symbol resolution.** `ama`'s name checks call `ek` → `cJ`, which `renderApp` imports from `index-BGEQ8YjU.js` as `q9`, which `index` exports from its local `pf` (with `_An` → `qb` → `bNe` and `Jw` → `q4` → `lo` the same way). REA has no "go to definition" across an import/export alias, so both alias tables were resolved by hand. That read is what shows Conductor's "Run script names can't be empty" and "must be unique" toasts cannot be reached from the UI (the name field keeps only letters, digits and spaces, and Save is disabled for an empty or taken name), so they have no reference render.
+54. **`capture-browser-scenario` cannot set the user agent or platform.** `environment.user_agent` fails `unknown_argument`, and there is no init-script action. Conductor's frontend sets `<html data-platform>` from `navigator.userAgent` when `window.__TAURI__` is absent (renderApp `Hde`), and its macOS-only startup Xcode license check (`QQt`) reads that. Headless Chromium on Linux reports "linux", so the `tools/screens` harness now presents a macOS user agent itself, and only when a capture asks for `?oc_xcode_license=`.
+55. **No IPC trace in the scenario result, again (gap 50).** To find why Conductor's Xcode check never ran in the harness, the mock's own IPC log was needed: Conductor's startup tasks (`FTa`) wait for `is_running_under_rosetta` to answer `false`, and the harness answered `null`. A failed settings write was traced the same way: it surfaces as the settings service's "Failed to save setting" (index `Sz`), not as `ama`'s "Failed to save run script", which REA's capture alone could not show.
 

@@ -258,6 +258,26 @@
     },
     "GET https://api.conductor.build/organizations": { organizations: [] },
   };
+  // ?oc_org=cloud: the user belongs to one cloud organization (Conductor's `iPe` with
+  // supportsLocal false, which `Qo` reads as "cloud"), so the /settings/organization/*
+  // routes and /team render instead of redirecting to /settings/user/general. Its
+  // answers are invented (tools/screens/org-fixtures.js), keyed by "METHOD /path".
+  const orgMode = new URLSearchParams(location.search).get("oc_org");
+  const ORG_FIXTURES = orgMode && window.__OC_ORG_FIXTURES__ ? window.__OC_ORG_FIXTURES__(orgMode) : null;
+  if (ORG_FIXTURES) HTTP_FIXTURES["GET https://api.conductor.build/organizations"] = ORG_FIXTURES["GET /organizations"];
+  const refusedHttp = (window.__OC_REFUSED_HTTP__ = []);
+  function httpFixture(method, url) {
+    const exact = HTTP_FIXTURES[`${method} ${url}`];
+    if (exact !== undefined || !ORG_FIXTURES) return exact;
+    let u;
+    try {
+      u = new URL(url);
+    } catch (e) {
+      return undefined;
+    }
+    const f = ORG_FIXTURES[`${method} ${u.pathname}`];
+    return typeof f === "function" ? f(u.searchParams) : f;
+  }
   const httpResponses = new Map();
   let nextHttpRid = 1;
 
@@ -364,8 +384,9 @@
         return String(args.path).startsWith("/");
       case "plugin:http|fetch": {
         const { method, url } = args.clientConfig || {};
-        const body = HTTP_FIXTURES[`${method} ${url}`];
+        const body = httpFixture(method, url);
         if (body === undefined) {
+          refusedHttp.push(`${method} ${url}`);
           console.warn(`[oc-mock] refused plugin:http ${method} ${url}`);
           throw "network disabled in the screenshot harness";
         }
@@ -461,7 +482,7 @@
     try {
       realFetch("/__mock/log?scenario=" + encodeURIComponent(scenarioName), {
         method: "POST",
-        body: JSON.stringify({ unhandled, vfs, shell: window.__OC_SHELL_LOG__, log: log.map((e) => ({ cmd: e.cmd, args: e.args, error: e.error, rows: e.rows })) }),
+        body: JSON.stringify({ unhandled, refusedHttp, vfs, shell: window.__OC_SHELL_LOG__, log: log.map((e) => ({ cmd: e.cmd, args: e.args, error: e.error, rows: e.rows })) }),
       });
     } catch (e) {}
   }, 1000);

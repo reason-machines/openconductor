@@ -157,7 +157,9 @@ def main():
         r = ref.get(sid, {})
         o = oc.get(sid, {})
         c = cmp_.get(sid, {})
-        want_path = (st.get("ref") or {}).get("path", "/")
+        # A state whose route Conductor itself redirects (e.g. /settings/organization/github → /computer)
+        # names where the reference should land as ref.expect_path.
+        want_path = (st.get("ref") or {}).get("expect_path") or (st.get("ref") or {}).get("path", "/")
         final = ((r.get("rea") or {}).get("final_url") or "")
         final_path = re.sub(r"^https?://[^/]+", "", final).split("?")[0]
         ref_status = r.get("status", "not-run")
