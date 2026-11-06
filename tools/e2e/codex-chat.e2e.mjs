@@ -58,6 +58,18 @@ const fake = join(repoRoot, "tools/e2e/fake_codex_app_server.py");
 writeFileSync(join(bin, "codex"), `#!/bin/sh\nexec python3 "${fake}" "$@"\n`);
 chmodSync(join(bin, "codex"), 0o755);
 
+// Settings › Agents › Codex: "Codex executable path" points at a second
+// wrapper (it tags the fake's launch line "custom"), personality "friendly".
+const custom = join(home, "custom-codex", "codex");
+mkdirSync(dirname(custom), { recursive: true });
+writeFileSync(custom, `#!/bin/sh\nOC_FAKE_CODEX=custom exec python3 "${fake}" "$@"\n`);
+chmodSync(custom, 0o755);
+mkdirSync(join(home, ".openconductor"), { recursive: true });
+writeFileSync(
+  join(home, ".openconductor", "settings.toml"),
+  `codex_executable_path = ${JSON.stringify(custom)}\n\n[models.codex]\npersonality = "friendly"\n`,
+);
+
 const env = { ...process.env, HOME: home, SHELL: "/bin/bash" };
 for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME", "OPENAI_API_KEY", "CODEX_API_KEY", "CODEX_HOME"]) delete env[k];
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
@@ -239,6 +251,12 @@ try {
   assert.equal(turn.params.effort, "medium", "default Codex thinking level from settings");
   assert.deepEqual(sent.find((r) => r.response)?.response, { id: 0, result: { decision: "accept" } });
   pass("Codex got thread/start in the workspace folder (on-request, workspace-write), effort medium, and the accept answer");
+  const launches = sent.filter((r) => r.launch).map((r) => r.launch);
+  assert.ok(launches.length > 0, "the fake logged its launch");
+  assert.deepEqual([...new Set(launches.map((l) => l.launcher))], ["custom"], "every app-server ran the Codex executable path from settings");
+  const chatLaunch = launches.find((l) => l.args.includes("stdio://"));
+  assert.ok(chatLaunch?.args.includes('personality="friendly"'), `chat launch args ${JSON.stringify(chatLaunch?.args)}`);
+  pass('the chat\'s app-server is the custom "Codex executable path" and got -c personality="friendly"');
 
   // 2. Follow-up on the same thread.
   await send("follow-up");

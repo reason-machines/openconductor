@@ -504,12 +504,14 @@ pub enum CodexPersonality {
 }
 
 impl CodexPersonality {
-    /// Codex's `personality` config value; `None` leaves Codex's own.
-    pub fn codex_value(self) -> Option<&'static str> {
+    /// Codex's `personality` config value. Codex 0.167's own `Personality`
+    /// is `none | friendly | pragmatic`, so "None" is passed as `none` (no
+    /// personality instructions), not left out.
+    pub fn codex_value(self) -> &'static str {
         match self {
-            CodexPersonality::None => None,
-            CodexPersonality::Friendly => Some("friendly"),
-            CodexPersonality::Pragmatic => Some("pragmatic"),
+            CodexPersonality::None => "none",
+            CodexPersonality::Friendly => "friendly",
+            CodexPersonality::Pragmatic => "pragmatic",
         }
     }
 }
