@@ -31,7 +31,7 @@ use serde_json::{json, Value};
 use super::codex_cli::CodexLaunch;
 use super::codex_consent::{self, consent, ConsentAnswer, ConsentKind};
 use super::codex_events::{Notification, ServerMessage, ServerRequest};
-use super::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
+use super::codex_rpc::{ApprovalDecision, ClientRequest, RequestId, ThreadOptions};
 use super::codex_session::{CallError, CodexEvent, CodexSession};
 use super::codex_wire::{payloads, Payload, TurnEnd};
 
@@ -79,6 +79,12 @@ const UNSUPPORTED: i64 = -32601;
 /// one instead of an error.
 fn default_answer(method: &str) -> Option<Value> {
     match method {
+        // A chat on another machine: the target splices the same ChatGPT
+        // token in again (agent::handoff); a new chat hands over a fresh one.
+        "account/chatgptAuthTokens/refresh" => Some(json!({
+            "accessToken": super::handoff::ACCESS_PLACEHOLDER,
+            "chatgptAccountId": super::handoff::ACCOUNT_PLACEHOLDER,
+        })),
         "item/tool/requestUserInput" => Some(json!({ "answers": {} })),
         "mcpServer/elicitation/request" => Some(json!({ "action": "cancel", "content": null })),
         _ => None,
@@ -336,6 +342,18 @@ impl Worker {
         session
             .initialize(&c.client_name, &c.client_version, c.timeouts.initialize)
             .map_err(|e| format!("Codex did not start: {e}"))?;
+        if c.launch
+            .target
+            .as_ref()
+            .is_some_and(|t| t.handoff.codex_chatgpt.is_some())
+        {
+            session
+                .call(
+                    &ClientRequest::AccountLoginChatgptHandoff,
+                    c.timeouts.initialize,
+                )
+                .map_err(|e| format!("Codex could not sign in on the target: {e}"))?;
+        }
         let resume = self.thread_id.clone().or_else(|| c.resume.clone());
         let opened = match resume {
             Some(id) => {

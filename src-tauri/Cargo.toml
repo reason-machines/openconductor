@@ -47,6 +47,13 @@ plist = "1"
 # terminal history entries (terminal/history_store.rs): AES-256-GCM, SHA-256 long names
 aes-gcm = "0.10"
 sha2 = "0.10"
+# agent/handoff.rs: a chat's credential sealed to the target machine's ephemeral key
+# (X25519, then AES-256-CTR keyed as `openssl enc -pbkdf2` derives it on the target)
+x25519-dalek = { version = "2", features = ["getrandom"] }
+aes = "0.8"
+ctr = "0.9"
+hmac = "0.12"
+getrandom = "0.2"
 # agent_binaries.rs: Codex release assets are .tar.gz (both already linked through tauri)
 flate2 = "1"
 tar = "0.4"

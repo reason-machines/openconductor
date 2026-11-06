@@ -18,6 +18,7 @@ use std::str::FromStr;
 use serde::{Deserialize, Serialize};
 
 use super::env::{vars, LaunchEnv};
+use super::handoff::TargetLaunch;
 use super::secret::SecretString;
 
 /// Keeps a login made through `account/login/start` in memory: an API key
@@ -162,6 +163,9 @@ pub struct CodexLaunch {
     /// `-c key=value` overrides of Codex's config, in order. Values are
     /// TOML, as the CLI parses them.
     pub config: Vec<(String, String)>,
+    /// Run on another machine with the credential handed over
+    /// ([`super::handoff`]); `executable`, `cwd` and `env` are then unused.
+    pub target: Option<TargetLaunch>,
 }
 
 impl CodexLaunch {
@@ -171,6 +175,7 @@ impl CodexLaunch {
             cwd: cwd.into(),
             env,
             config: Vec::new(),
+            target: None,
         }
     }
 
@@ -183,7 +188,11 @@ impl CodexLaunch {
         for (key, value) in &self.config {
             args.extend(["-c".into(), format!("{key}={value}")]);
         }
-        if self.api_key().is_some() {
+        let handed_key = self
+            .target
+            .as_ref()
+            .is_some_and(|t| t.handoff.codex_api_key.is_some());
+        if self.api_key().is_some() || handed_key {
             args.extend(["-c".into(), EPHEMERAL_AUTH_STORE.into()]);
         }
         args
@@ -200,6 +209,9 @@ impl CodexLaunch {
     /// The command to spawn: piped stdio, the workspace as cwd, and the
     /// provider environment applied over the inherited one.
     pub fn command(&self) -> Command {
+        if let Some(target) = &self.target {
+            return target.command(&self.args());
+        }
         let mut cmd = Command::new(&self.executable);
         cmd.args(self.args())
             .current_dir(&self.cwd)
