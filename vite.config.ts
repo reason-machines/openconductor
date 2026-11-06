@@ -3,7 +3,7 @@ import path from "node:path";
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 
-// File and folder icons (src/components/fileIcons.ts): serve the MIT
+// File and folder icons (src/components/fileIconNames.ts): serve the MIT
 // vscode-material-icons SVGs at /material-icons/<name>.svg, the path Conductor
 // uses, in dev and in the build, without copying 910 files into the repo.
 function materialIcons(): Plugin {

@@ -4,10 +4,10 @@
 //   <FolderTypeIcon open={expanded} />          folders
 //   <BranchIcon />                              workspace branch glyph
 // plus the named file-type icons below. File and folder icons are the material
-// icon SVGs Conductor ships (see fileIcons.ts); the branch glyph is the
+// icon SVGs Conductor ships (see fileIconNames.ts); the branch glyph is the
 // "branch" shape from Conductor's sidebar status table (REA, RowStatusIcon.tsx),
 // which is Lucide's git-branch, re-exported from the shared set in Icons.tsx.
-import { fileIconName, folderIconName, materialIconUrl, type MaterialIcon } from "./fileIcons";
+import { fileIconName, folderIconName, materialIconUrl, type MaterialIcon } from "./fileIconNames";
 
 type IconProps = { size?: number; className?: string };
 

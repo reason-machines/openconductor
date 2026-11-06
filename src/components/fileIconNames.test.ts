@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { fileIconName, folderIconName, materialIconUrl } from "./fileIcons.ts";
+import { fileIconName, folderIconName, materialIconUrl } from "./fileIconNames.ts";
 
 test("file types map to Conductor's material icons", () => {
   assert.equal(fileIconName(".gitignore"), "git");
