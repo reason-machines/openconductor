@@ -88,3 +88,30 @@ test("the running model and the model list are kept across restarts", () => {
   store.setItem("openconductor.reason.models", "{not json");
   assert.deepEqual(loadCachedModels(store), []);
 });
+
+test("before a turn the chip shows Settings › Agents › Reason's model by Reason's name, not the Claude alias", async () => {
+  const { defaultModelChoice } = await import("./chatModelChoice.ts");
+  const { DEFAULT_SETTINGS } = await import("../../settings/types.ts");
+  const s = { ...DEFAULT_SETTINGS, reason: { model: "byok:anthropic:claude-opus-5-5", reasoning_effort: "high" } };
+  const shown = shownModel(null, defaultModelChoice(s));
+  assert.deepEqual(shown, { model: "byok:anthropic:claude-opus-5-5", effort: "high" });
+  assert.equal(reasonModelName(shown.model, []), "Claude Opus 5.5");
+  // What the Session reports after a turn replaces it.
+  assert.deepEqual(shownModel({ model: "byok:anthropic:claude-haiku-5-5", effort: "low" }, defaultModelChoice(s)).model, "byok:anthropic:claude-haiku-5-5");
+});
+
+test("a Session model in session get's spelling is the offered model it names (reason 0.2.693)", () => {
+  // Read on Sven's Mac in Reason Tests: the model option lists byok ids, `session get --json` reports provider/model with dots.
+  const offered = [
+    { value: "default", name: "Auto" },
+    { value: "openai/gpt-6.1-sol", name: "Reason" },
+    { value: "byok:openai-codex:gpt-6.1-sol", name: "GPT-6.1-Sol" },
+    { value: "byok:anthropic:claude-opus-5-5", name: "Claude Opus 5.5" },
+  ];
+  const shown = shownModel({ model: "anthropic/claude-opus-5.5", effort: "high" }, { model: "opus", effort: null }, offered);
+  assert.deepEqual(shown, { model: "byok:anthropic:claude-opus-5-5", effort: "high" });
+  assert.equal(reasonModelName("anthropic/claude-opus-5.5", offered), "Claude Opus 5.5");
+  assert.equal(reasonModelName("anthropic/claude-opus-5.5", []), "Claude Opus 5.5", "named without the list too");
+  assert.equal(shownModel({ model: "openai/gpt-6.1-sol", effort: null }, { model: "opus", effort: null }, offered).model, "openai/gpt-6.1-sol", "an exact value is kept");
+  assert.equal(shownModel({ model: "kimi/k3", effort: null }, { model: "opus", effort: null }, offered).model, "kimi/k3");
+});

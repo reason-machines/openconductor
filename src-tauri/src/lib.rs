@@ -127,6 +127,12 @@ fn app_info() -> AppInfo {
     }
 }
 
+/// Help › "Open debug tools" (Conductor's `open_devtools`): the window's web inspector.
+#[tauri::command]
+fn open_devtools(window: tauri::WebviewWindow) {
+    window.open_devtools();
+}
+
 /// Folder checks for Home "Open project" (see `project`).
 #[tauri::command]
 fn inspect_project_folder(path: String) -> project::FolderInspection {
@@ -367,6 +373,7 @@ pub fn run() {
             root_path_commands::repo_workspaces_path,
             root_path_commands::change_conductor_root,
             app_info,
+            open_devtools,
             inspect_project_folder,
             branch_prefix_settings,
             github_repo_owners,
@@ -439,6 +446,7 @@ pub fn run() {
             reason_chat::reason_account_status,
             reason_chat::reason_login_start,
             reason_chat::reason_connect_computer,
+            reason_chat::reason_paths,
             reason_chat::reason_open_chat,
             reason_chat::reason_set_config,
             chat_store_commands::chat_messages_save,
@@ -470,6 +478,7 @@ pub fn run() {
             claude_chat::commands::claude_respond,
             agent_commands::agent_slash_commands,
             e2e::e2e_report,
+            e2e::e2e_secret,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,
             terminal_commands::pty_resize,

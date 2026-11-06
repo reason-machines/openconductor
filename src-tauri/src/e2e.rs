@@ -7,7 +7,9 @@
 //! `$OC_E2E_OUT/<name>.json`. With `OC_E2E_OUT` set, agent chat events are
 //! also appended to `$OC_E2E_OUT/<agent>-chat-events.jsonl` (Claude Code,
 //! Codex, Reason); `OC_E2E_SIZE=<w>x<h>` sets the window size. Without these
-//! variables, and in release builds, nothing here does anything.
+//! variables, and in release builds, nothing here does anything. An e2e run
+//! keeps provider secrets in memory (`agent::keychain::default_store`), so a
+//! throwaway HOME that shares the login Keychain never writes the user's items.
 //! Driver: `tools/claude-code/e2e-driver.js`.
 
 use std::fs::{self, OpenOptions};
@@ -25,6 +27,27 @@ fn out_dir() -> Option<PathBuf> {
         return None;
     }
     std::env::var_os("OC_E2E_OUT").map(PathBuf::from)
+}
+
+/// Debug build started with `OC_E2E_OUT`: an e2e run.
+pub fn enabled() -> bool {
+    out_dir().is_some()
+}
+
+/// Keys an e2e driver may type into a key field, as a user pastes one:
+/// `OC_E2E_SECRET_<NAME>` from the app's environment, set by the runner from
+/// 1Password for this process only. Only these names.
+const E2E_SECRETS: [&str; 2] = ["ANTHROPIC_API_KEY", "OPENAI_API_KEY"];
+
+/// JS: `invoke("e2e_secret", { name })`. Debug builds with `OC_E2E_OUT`
+/// only. The driver types the value into the field and never reports it.
+#[tauri::command]
+pub fn e2e_secret(name: String) -> Result<String, String> {
+    if !enabled() || !E2E_SECRETS.contains(&name.as_str()) {
+        return Err("not available".into());
+    }
+    std::env::var(format!("OC_E2E_SECRET_{name}"))
+        .map_err(|_| format!("OC_E2E_SECRET_{name} is not set"))
 }
 
 /// Evaluates `$OC_E2E_SCRIPT` in the main window after it loads.

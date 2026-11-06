@@ -263,10 +263,12 @@ let models: Promise<ReasonModelOption[]> | null = null;
 /**
  * The models Reason offers, asked once per app run (the last answer is
  * cached for the next start); the cached list, or none, outside the
- * desktop app or when Reason cannot answer.
+ * desktop app or when Reason cannot answer. `fresh` asks again, e.g.
+ * after the Reason executable path changed.
  */
-export function reasonModels(): Promise<ReasonModelOption[]> {
+export function reasonModels(fresh = false): Promise<ReasonModelOption[]> {
   if (!reasonAvailable()) return Promise.resolve(loadCachedModels());
+  if (fresh) models = null;
   models ??= invoke<{ options: unknown }>("reason_models").then(
     (r) => {
       const options = parseModelOptions(r.options);

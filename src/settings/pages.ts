@@ -46,12 +46,16 @@ export const SETTINGS_GROUPS: { title: string; pages: { id: SettingsPage; label:
   },
 ];
 
-/** Conductor's "Big terminal" tab: listed after every group, only while Big terminal mode is on. */
+/** Conductor's "Big terminal" tab, only while Big terminal mode is on. */
 export const BIG_TERMINAL_PAGE: { id: SettingsPage; label: string } = { id: "terminal", label: "Big terminal" };
 
-/** The page list to show; the Big terminal tab joins as its own untitled group when the mode is on. */
+/**
+ * The page list to show. Conductor's `dti` (renderApp-D_fmY7hW.js @11,263,400) appends the
+ * Big terminal tab to the last group's tabs (More, after Advanced) when the mode is on.
+ */
 export function settingsGroups(bigTerminalEnabled: boolean): typeof SETTINGS_GROUPS {
-  return bigTerminalEnabled ? [...SETTINGS_GROUPS, { title: "", pages: [BIG_TERMINAL_PAGE] }] : SETTINGS_GROUPS;
+  if (!bigTerminalEnabled) return SETTINGS_GROUPS;
+  return SETTINGS_GROUPS.map((g, i) => (i === SETTINGS_GROUPS.length - 1 ? { ...g, pages: [...g.pages, BIG_TERMINAL_PAGE] } : g));
 }
 
 const PAGES = [...SETTINGS_GROUPS.flatMap((g) => g.pages), BIG_TERMINAL_PAGE];

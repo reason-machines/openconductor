@@ -2,7 +2,7 @@ import type { Dispatch, ReactNode } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
-import { CloudIcon, FolderIcon, SidebarIcon, SparkIcon } from "./Icons";
+import { FolderIcon, FolderPlusIcon, GlobeIcon, SidebarIcon, TicketsPlaneIcon } from "./Icons";
 import { Wordmark } from "./Wordmark";
 import { activeWorkspaceCount } from "../state/selectors";
 import { effectiveShortcuts } from "../keybindings/overrides";
@@ -11,8 +11,9 @@ import { CITY_TOTAL, visitedCities } from "../home/cities";
 
 const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
 
-// Layout follows evidence/screens/home.md: wordmark, three entry cards, and a sidebar
-// toggle only while the sidebar is hidden. The repository list lives in the sidebar.
+// Layout follows evidence/screens/home.md (Conductor's `Gls`): wordmark, three entry
+// cards, the "cities visited" line, and a sidebar toggle only while the sidebar is
+// hidden. The repository list lives in the sidebar.
 
 interface Props {
   repos: Repo[];
@@ -53,13 +54,16 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOp
       <div className={`home-cards-wrap ${hasWorkspaces ? "has-workspaces" : ""}`}>
         <div className="home-cards">
           <EntryCard icon={<FolderIcon size={16} />} label="Open project" onClick={onOpenProject} />
-          <EntryCard icon={<CloudIcon size={16} />} label="Open GitHub project" onClick={() => onOpenDialog("clone")} />
-          <EntryCard icon={<SparkIcon size={16} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
+          <EntryCard icon={<GlobeIcon size={16} />} label="Open GitHub project" onClick={() => onOpenDialog("clone")} />
+          <EntryCard icon={<FolderPlusIcon size={16} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
         </div>
       </div>
+      {/* Conductor's `Xrs`: "<n>/<total> cities visited" behind a tickets-plane icon, nothing while no
+          workspace is named after a city. Conductor's button opens its world-map dialog, which we lack. */}
       {cities.length > 0 && (
         <div className="home-footer">
           <button type="button" className="home-cities" title={cities.join(", ")}>
+            <TicketsPlaneIcon size={16} />
             {`${cities.length}/${CITY_TOTAL} cities visited`}
           </button>
         </div>

@@ -7,12 +7,12 @@ import type { Repo } from "../../state/types";
 import { RepoIcon } from "../../components/RepoIcon";
 import { RepoIconDialog } from "../../components/RepoIconDialog";
 import { RemoveRepositoryDialog } from "../../components/RemoveRepositoryDialog";
-import { ChevronDownIcon, ChevronUpIcon, ExternalIcon, PlusIcon } from "../../components/Icons";
+import { ArrowUpRightIcon, ChevronDownIcon, ChevronUpIcon, CircleAlertIcon, PlusIcon, RefreshCwIcon } from "../../components/Icons";
 import { openUrl } from "../../backend";
 import "./rows.css";
 import { OpenInButton } from "../../features/openIn/OpenInButton";
 import { Row } from "../GeneralPage";
-import { InfoIcon, RefreshIcon, TrashIcon } from "../icons";
+import { TrashIcon } from "../icons";
 import { repoWorkspacesPath } from "../rootPath";
 import { repoSettingsSetLocal } from "../repoSettings";
 import { notifyRepoSettingsChanged, useRepoSettings } from "../useRepoSettings";
@@ -67,7 +67,7 @@ export function RepoMiscRows({ repo, actions }: { repo: Repo; actions: RepoMiscA
 function Warn({ text }: { text: string }) {
   return (
     <span className="settings-misc-warn">
-      <InfoIcon size={14} />
+      <CircleAlertIcon size={14} />
       {text}
     </span>
   );
@@ -251,7 +251,7 @@ function FilesToCopyRow({ repoPath }: { repoPath: string | null }) {
       {COPY.filesToCopy.description}{" "}
       <button type="button" className="settings-misc-learn" onClick={() => openUrl(FILES_TO_COPY_DOCS).catch(() => undefined)}>
         Learn more
-        <ExternalIcon size={12} />
+        <ArrowUpRightIcon size={12} />
       </button>
     </>
   );
@@ -304,7 +304,7 @@ function FilesToCopyRow({ repoPath }: { repoPath: string | null }) {
 function FilesPreview({ preview, repoPath, onRefresh }: { preview: FilesToCopyPreview | "error" | null; repoPath: string; onRefresh: () => void }) {
   const refresh = (
     <button type="button" className="settings-misc-refresh" aria-label="Refresh files to copy preview" onClick={onRefresh}>
-      <RefreshIcon size={12} />
+      <RefreshCwIcon size={12} />
     </button>
   );
   const note = (text: string) => (
