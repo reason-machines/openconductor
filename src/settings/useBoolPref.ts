@@ -1,8 +1,5 @@
-// One of conductor.db's `settings` flags (./prefs.ts) for code outside the
-// Settings pages. Reads Conductor's default until the stored value loads, and
-// re-reads when settings change elsewhere in the app. Settings replaces the
-// whole app view, so a component under it mounts again (and reads again) when
-// Settings closes.
+// One boolean table pref (prefs.ts BOOL_PREFS) for a view: read when the view
+// mounts and again whenever settings are saved elsewhere (SETTINGS_CHANGED).
 import { useEffect, useState } from "react";
 import { getSettings } from "./api";
 import { SETTINGS_CHANGED } from "./appearance";
@@ -13,9 +10,9 @@ export function useBoolPref(key: BoolPrefKey): boolean {
   useEffect(() => {
     let live = true;
     const load = () =>
-      void getSettings().then(
+      getSettings().then(
         (s) => live && setValue(boolPref(s, key)),
-        () => live && setValue(BOOL_PREFS[key].default),
+        (err) => console.warn(`Failed to read ${key}`, err),
       );
     load();
     window.addEventListener(SETTINGS_CHANGED, load);
