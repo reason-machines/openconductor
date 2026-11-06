@@ -12,6 +12,7 @@
 //! })
 //! .invoke_handler(tauri::generate_handler![
 //!     workspace::commands::add_repository,
+//!     workspace::commands::ensure_repository,
 //!     workspace::commands::clone_repository,
 //!     workspace::commands::default_clone_directory,
 //!     workspace::commands::list_repositories,
@@ -77,8 +78,14 @@ pub struct CreatedWorkspaceDto {
     pub base_commit: String,
     pub fetched: bool,
     pub copied_files: Vec<String>,
-    /// Set when the "Set upstream on plain git push" setting could not be applied.
-    pub upstream_warning: Option<String>,
+    /// Log of the `git worktree add` script (`workspaces.initialization_log_path`).
+    pub initialization_log_path: Option<String>,
+    /// `git ls-files | wc -l` in the new worktree (`workspaces.initialization_files_copied`).
+    pub initialization_files_copied: i64,
+    /// Non-fatal initialization issues joined with a space (a failed
+    /// post-checkout hook, "Set upstream on plain git push" not applied, files
+    /// not copied). The frontend shows it as a persistent toast with "View logs".
+    pub auxiliary_failure_message: Option<String>,
     /// `workspaces.number` given on creation (`W-<n>`); null if conductor.db could not record it.
     pub number: Option<i64>,
 }
@@ -90,6 +97,21 @@ pub async fn add_repository(
     path: String,
 ) -> Result<RepositoryDto, String> {
     let repo = service.add_repository(path.as_ref()).map_err(|e| e.to_string())?;
+    persistence::on_repository_added(&db, &repo).await?;
+    Ok(repo_dto(repo))
+}
+
+/// JS: `invoke("ensure_repository", { path, repositoryId })`. The project a
+/// sidebar repo already is (by id, else by folder), registered only when the
+/// backend has none; unlike `add_repository` it never adds a `<name>-v1`.
+#[tauri::command]
+pub async fn ensure_repository(
+    service: State<'_, WorkspaceService>,
+    db: State<'_, Db>,
+    path: String,
+    repository_id: Option<String>,
+) -> Result<RepositoryDto, String> {
+    let repo = service.ensure_repository(repository_id.as_deref(), path.as_ref()).map_err(|e| e.to_string())?;
     persistence::on_repository_added(&db, &repo).await?;
     Ok(repo_dto(repo))
 }
@@ -179,6 +201,10 @@ pub async fn create_workspace(
     let parent = base_branch.clone().filter(|b| !b.trim().is_empty()).unwrap_or_else(|| repo.default_branch.clone());
     let pending =
         persistence::on_create_started(&db, &repo, directory_name.as_deref(), branch_name.as_deref(), &parent).await;
+    let effective = service
+        .repository_root(&repository_id)
+        .ok()
+        .and_then(|root| crate::settings::effective::resolve(&root, None).ok());
     let req = CreateWorkspaceRequest {
         repository_id: repository_id.clone(),
         branch_name,
@@ -188,15 +214,21 @@ pub async fn create_workspace(
         pr_number,
         // The repository's effective `git.worktree_push_auto_setup_remote`;
         // unreadable settings fall back to Conductor's default (on).
-        push_auto_setup_remote: service
-            .repository_root(&repository_id)
-            .ok()
-            .and_then(|root| crate::settings::effective::resolve(&root, None).ok())
-            .is_none_or(|e| e.git.worktree_push_auto_setup_remote.value),
+        push_auto_setup_remote: effective.as_ref().is_none_or(|e| e.git.worktree_push_auto_setup_remote.value),
+        file_include_globs: effective.and_then(|e| e.file_include_globs).map(|g| g.value),
     };
     match service.create_workspace(&req) {
         Ok(created) => {
-            let number = persistence::on_create_finished(&db, &repository_id, &created.workspace, &parent).await;
+            let log = created.initialization_log_path.as_ref().map(|p| p.display().to_string());
+            let number = persistence::on_create_finished(
+                &db,
+                &repository_id,
+                &created.workspace,
+                &parent,
+                log.as_deref(),
+                created.initialization_files_copied,
+            )
+            .await;
             Ok(CreatedWorkspaceDto { number, ..created_dto(&repository_id, created) })
         }
         Err(e) => {
@@ -268,7 +300,9 @@ fn created_dto(repository_id: &str, c: Created) -> CreatedWorkspaceDto {
         base_commit: c.base_commit,
         fetched: c.fetched,
         copied_files: c.copied_files.into_iter().map(|p| p.display().to_string()).collect(),
-        upstream_warning: c.upstream_warning,
+        initialization_log_path: c.initialization_log_path.map(|p| p.display().to_string()),
+        initialization_files_copied: c.initialization_files_copied,
+        auxiliary_failure_message: c.auxiliary_failure_message,
         number: None,
     }
 }

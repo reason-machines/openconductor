@@ -3,7 +3,7 @@ import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { createPortal } from "react-dom";
@@ -22,11 +22,13 @@ import { useSidebarDrag, type WorkspaceRef } from "./useSidebarDrag";
 import { DROP_ATTR, reorderIndicator, reorderToIndex, workspaceDropAction, type DropTarget } from "../state/navigationSections";
 import { ProjectFilterSubmenu } from "./home/ProjectFilterSubmenu";
 import { useRepoFilter } from "../home/useRepoFilter";
+import { useDashboardEnabled } from "../home/useDashboardEnabled";
 import { filterRepoGroups } from "../home/repoFilter";
 import { SidebarAddRepositoryMenu } from "./AddRepositoryMenu";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { AccountMenu } from "./AccountMenu";
 import { ResourceUsagePill } from "./ResourceUsagePill";
+import { Tooltip, titleWithShortcut } from "./Tooltip";
 import type { WorkspaceRef as UsageWorkspace } from "./resourceUsage";
 
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
@@ -62,9 +64,11 @@ interface Props {
   onError?: (message: string) => void;
 }
 
-function NavRow({ icon, label, shortcut, active, onClick }: { icon: JSX.Element; label: string; shortcut: string; active?: boolean; onClick: () => void }) {
+// Conductor's nav rows: only Home has a native title (`HH("Home","nav.home")`, "Home ⌘…");
+// Create and Search have none. All three show the shortcut in the row on hover.
+function NavRow({ icon, label, shortcut, title, active, onClick }: { icon: JSX.Element; label: string; shortcut: string; title?: string; active?: boolean; onClick: () => void }) {
   return (
-    <button type="button" className="sb-row" data-active={active ? "true" : undefined} title={shortcut ? `${label} (${shortcut})` : label} onClick={onClick}>
+    <button type="button" className="sb-row" data-active={active ? "true" : undefined} title={title} onClick={onClick}>
       <span className="sb-row-icon">{icon}</span>
       <span className="sb-row-label">{label}</span>
       {shortcut && <kbd className="sb-row-hint">{shortcut}</kbd>}
@@ -262,6 +266,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
     return <SidebarWorkspaceRow key={workspace.id} workspace={workspace} targetBranch={repo?.defaultBranch ?? ""} hasRemote={Boolean(repo?.remote)} {...rows.rowProps(repoId, workspace)} />;
   };
   const sel = state.selection;
+  const dashboardEnabled = useDashboardEnabled().enabled;
   // Conductor persists this per collapse key; ours lasts for the session.
   const [groupCollapsed, setGroupCollapsed] = useState(false);
   // Conductor keeps "show hidden repositories" in component state, so it resets on reload.
@@ -299,14 +304,15 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   };
   return (
     <aside className="sidebar" aria-label="Repositories and workspaces">
-      {/* Top bar: drag region with the sidebar toggle, back/forward at the top right. */}
-      <div className="sb-header">
-        <div className="sb-topbar" data-tauri-drag-region>
+      {/* Header: the whole block drags the window ("deep"); its buttons and menus don't (tauri drag.js skips clickable elements).
+          Top bar holds the sidebar toggle, back/forward at the top right. */}
+      <div className="sb-header" data-tauri-drag-region="deep">
+        <div className="sb-topbar">
           <button
             type="button"
             className="sb-toggle"
             aria-label="Toggle left sidebar"
-            title={`Toggle left sidebar (${hint("view.toggleLeftSidebar")})`}
+            title={titleWithShortcut("Toggle left sidebar", hint("view.toggleLeftSidebar"))}
             onClick={() => dispatch({ type: "toggleSidebar" })}
           >
             <SidebarIcon size={16} />
@@ -314,17 +320,21 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
         </div>
         <div className="sb-history">
           <ResourceUsagePill workspaces={usageWorkspaces} />
-          <button type="button" className="sb-icon-btn" aria-label="Go back" title={`Go back (${hint("nav.back")})`} disabled={!nav.canBack} onClick={nav.onBack}>
+          <button type="button" className="sb-icon-btn" aria-label="Go back" title={titleWithShortcut("Go back", hint("nav.back"))} disabled={!nav.canBack} onClick={nav.onBack}>
             <ArrowLeftIcon size={12} />
           </button>
-          <button type="button" className="sb-icon-btn" aria-label="Go forward" title={`Go forward (${hint("nav.forward")})`} disabled={!nav.canForward} onClick={nav.onForward}>
+          <button type="button" className="sb-icon-btn" aria-label="Go forward" title={titleWithShortcut("Go forward", hint("nav.forward"))} disabled={!nav.canForward} onClick={nav.onForward}>
             <ArrowRightIcon size={12} />
           </button>
         </div>
 
         <div className="sb-primary">
           <AccountMenu onOpenSettings={onOpenSettings} />
-          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
+          {/* "Dashboard" (Conductor's `Aia` @10,029,038): shown while the Experimental setting is on, above Home. */}
+          {dashboardEnabled && (
+            <NavRow icon={<LayoutGridIcon size={12} />} label="Dashboard" shortcut="" active={sel.kind === "dashboard"} onClick={() => dispatch({ type: "select", selection: { kind: "dashboard" } })} />
+          )}
+          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} title={titleWithShortcut("Home", hint("nav.home"))} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
           <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />
         </div>
@@ -483,9 +493,12 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
       <div className="sb-footer">
         <div className="sb-footer-actions">
           <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} />
-          <button type="button" className="sb-footer-btn" aria-label="Settings" title={`Settings (${hint("openSettings")})`} onClick={onOpenSettings}>
-            <SettingsIcon size={16} strokeWidth={1.5} />
-          </button>
+          {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}
+          <Tooltip content="Settings" shortcut={hint("openSettings")}>
+            <button type="button" className="sb-footer-btn" aria-label="Settings" onClick={onOpenSettings}>
+              <SettingsIcon size={16} strokeWidth={1.5} />
+            </button>
+          </Tooltip>
         </div>
       </div>
       {renaming && renamingWs && (

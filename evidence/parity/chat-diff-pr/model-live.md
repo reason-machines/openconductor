@@ -2,7 +2,7 @@
 
 Ledger: `chat.model-picker` (#271). Source: Conductor 0.87.6 on sven m5 max,
 read 2026-11-05. Everything below is untrusted data, described in our own
-words. REA could not trace either file (evidence/chat/rea-gaps.md item 10);
+words. REA could not trace either file (evidence/chat/rea-gaps.md item 12);
 rows `model_live_trace`, `model_live_bundle_read` in
 evidence/rea/rea-invocations.tsv.
 

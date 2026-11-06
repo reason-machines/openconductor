@@ -5,6 +5,7 @@ import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
 import { AllWorkspaces } from "./components/AllWorkspaces";
+import { Dashboard } from "./components/Dashboard";
 import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
 import type { DialogKind } from "./components/Dialogs";
@@ -12,10 +13,11 @@ import { CreateProjectDialog } from "./components/CreateProjectDialog";
 import { OPEN_IN_GITHUB, SUCCESS_TOAST } from "./state/createProject";
 import { CloneGitHubRepoDialog } from "./components/CloneGitHubRepoDialog";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
-import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
+import { CreateWorkspacePage } from "./components/CreateWorkspacePage";
+import { useAppPrefs } from "./settings/appPrefs";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
-import { Toaster, useToasts } from "./components/Toast";
+import { Toaster, useToasts, type ToastAction } from "./components/Toast";
 import { useArchiveOnMergeWatcher } from "./features/pr/useArchiveOnMerge";
 import { useSetupWatch } from "./workspace/useSetupWatch";
 import { ArchiveRunningDialog } from "./components/ArchiveRunningDialog";
@@ -23,10 +25,11 @@ import { clearUnarchiveConflict, directoryExistsToast, failureToast, onArchiveEv
 import { ArchivedWorkspaceView } from "./components/ArchivedWorkspaceView";
 import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/RestoreWorkspaceDialog";
 import type { Action } from "./state/store";
+import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, type AppInfo } from "./backend";
-import { decideOpenProject, failedToAddMessage } from "./state/openProject";
+import { addRegisteredRepo, decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
 import { PaletteHost } from "./palette/PaletteHost";
@@ -36,17 +39,37 @@ import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT } from "./features/chat/ChatModelPicker.tsx";
-import { keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
 import { changeZoom } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
 import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { useAutoUnread } from "./state/useAutoUnread";
+import { nextUnreadWorkspace, openNextUnread } from "./state/nextUnread";
+import { createRepoDefault } from "./home/repoFilter";
+import { storedRepoFilter } from "./home/useRepoFilter";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
 
 export default function App() {
-  const [state, dispatch] = useAppStore();
+  const [state, storeDispatch] = useAppStore();
+  // The full-screen create page (`/create`) fills the main area until a
+  // selection or a created workspace replaces it.
+  const [createPage, setCreatePage] = useState<{ repoId: string | null; sectionId?: string } | null>(() => (window.location.pathname === "/create" ? { repoId: null } : null));
+  const dispatch = useCallback(
+    (action: Action) => {
+      if (action.type === "select" || action.type === "addWorkspace") setCreatePage(null);
+      storeDispatch(action);
+    },
+    [storeDispatch],
+  );
+  const prefs = useAppPrefs();
+  // A `/create` start URL shows no workspace as current, like the reference's route.
+  useEffect(() => {
+    if (createPage && state.selection.kind === "workspace") storeDispatch({ type: "select", selection: { kind: "root" } });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   // A workspace that leaves the app (archived, or its repository removed)
   // takes its terminals and their saved history with it, as in Conductor.
   const prevState = useRef(state);
@@ -55,16 +78,27 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
+  // A chat that finishes or waits on the user while not in view marks its workspace unread.
+  useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
-  // `/create` (or `?dialog=create`) opens the Create-workspace dialog directly.
-  const initialDialog = window.location.pathname === "/create" ? "create" : (new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
-  const [dialog, setDialog] = useState<DialogKind | null>(initialDialog);
+  // `/create` opens the full-screen create page; `?dialog=create` the dialog.
+  const [dialog, setDialog] = useState<DialogKind | null>(() => new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
   const [createRepoId, setCreateRepoId] = useState<string | null>(null);
   const [createSectionId, setCreateSectionId] = useState<string | undefined>(undefined);
   const openDialog = (d: DialogKind, repoId?: string, sectionId?: string) => {
-    setCreateRepoId(repoId ?? (state.selection.kind === "workspace" ? state.selection.repoId : null));
+    const requested = repoId ?? (state.selection.kind === "workspace" ? state.selection.repoId : null);
+    // Nothing requested: start on the sidebar's project filter, as Conductor's `q4a` does.
+    const id = createRepoDefault(state.repos.map((r) => r.id), requested, storedRepoFilter(prefs.sidebar_repo_filter));
+    // Like Conductor's `g5`: the page when Experimental › New workspace page is on, else the dialog.
+    if (d === "create" && prefs.experimental_new_workspace_page) {
+      setDialog(null);
+      // Off the current workspace, as Conductor's route change does; Back returns to it.
+      if (state.selection.kind !== "root") storeDispatch({ type: "select", selection: { kind: "root" } });
+      return setCreatePage({ repoId: id, sectionId });
+    }
+    setCreateRepoId(id);
     setCreateSectionId(sectionId);
     setDialog(d);
   };
@@ -72,6 +106,8 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // Non-fatal initialization issues (Conductor's workspaceError with "View logs"), from every create path.
+  useInitIssues(useCallback((message: string, opts: { sticky: true; action?: ToastAction }) => show("error", message, opts), [show]));
   // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
   useArchiveOnMergeWatcher({ repos: state.repos, openWorkspaceId: state.selection.kind === "workspace" ? state.selection.workspaceId : null, dispatch, notify: show });
   // Full archive (src/workspace/archive.ts): the running-agents question and
@@ -162,8 +198,11 @@ export default function App() {
   // The composer's model picker ("Add models", "Edit") opens Settings › Default models.
   useEffect(() => {
     const open = (e: Event) => {
-      const page = (e as CustomEvent<{ page?: string }>).detail?.page;
-      const known = USER_PAGES.find((p) => p === page);
+      const detail = (e as CustomEvent<{ page?: string; repoId?: string; section?: string }>).detail;
+      // The right panel's "Add run script" opens the repository's Scripts settings.
+      const section = REPO_SECTIONS.find((s) => s === detail?.section);
+      if (detail?.repoId && section) return navigateSettings({ scope: "repo", repoId: detail.repoId, section });
+      const known = USER_PAGES.find((p) => p === detail?.page);
       if (known) navigateSettings({ scope: "user", page: known });
     };
     window.addEventListener(OPEN_SETTINGS_EVENT, open);
@@ -184,8 +223,7 @@ export default function App() {
       : null,
   );
   const addCreatedRepo = useCallback(async (target: GitHubRepoTarget, remote: string) => {
-    const registered = await addRepository(target.path);
-    dispatch({ type: "addRepo", id: registered.id, repo: { name: target.name, path: registered.root, remote, defaultBranch: registered.defaultBranch } });
+    dispatch(addRegisteredRepo(await addRepository(target.path), remote));
   }, [dispatch]);
 
   // Open project: native picker straight away, then the backend folder checks.
@@ -199,16 +237,14 @@ export default function App() {
       const outcome = decideOpenProject(path, await inspectProjectFolder(path));
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
       if (outcome.kind === "needsGitHubRepo") return setGithubRepo({ path: outcome.path, name: outcome.name, needsGitInit: outcome.needsGitInit });
-      const registered = await addRepository(outcome.path);
-      const existing = findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote });
-      // Adding a hidden repository again unhides it (the backend's record_repository does the same).
-      if (existing?.hidden) return dispatch({ type: "setRepoHidden", repoId: existing.id, hidden: false });
-      if (existing) return show("error", REPO_EXISTS);
-      dispatch({ type: "addRepo", id: registered.id, repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
+      // An already-added folder is not refused: as in Conductor the backend
+      // registers a second project for it, named `<name>-v1`, `-v2`, ...
+      // (evidence/screens/duplicate-repo.md).
+      dispatch(addRegisteredRepo(await addRepository(outcome.path), outcome.remote));
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
-  }, [dispatch, show, state.repos]);
+  }, [dispatch, show]);
   const openProject = useCallback(() => void addProject(), [addProject]);
   const addProjectAt = useCallback((path: string) => void addProject(path), [addProject]);
   const [quickOpen, setQuickOpen] = useState(false);
@@ -257,7 +293,7 @@ export default function App() {
     "view.toggleZenMode": () => toggleZenMode(isSidebarVisible(state), dispatch),
     "toggleGarryMode": toggleGarryMode,
     "nav.quickOpen": () => setQuickOpen((open) => !open && canQuickOpen),
-    "workspace.create": () => setDialog("create"),
+    "workspace.create": () => openDialog("create"),
   });
 
   const copyLink = useCallback(
@@ -272,29 +308,81 @@ export default function App() {
   );
 
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
-  // Re-read each time the dialog opens so a settings change applies to the next create.
+  // Re-read each time the dialog or page opens so a settings change applies to the next create.
+  const creating = dialog === "create" || createPage !== null;
   useEffect(() => {
-    if (dialog !== "create") return;
+    if (!creating) return;
     loadBranchPrefix().then((info) => setPrefix(prefixSettingsFromInfo(info))).catch(() => {});
-  }, [dialog]);
+  }, [creating]);
 
   useEffect(() => {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
-  if (settingsLocation) return <SettingsView location={settingsLocation} repos={state.repos} onNavigate={navigateSettings} onClose={closeSettings} />;
+  if (settingsLocation)
+    return (
+      <>
+        <SettingsView
+          location={settingsLocation}
+          repos={state.repos}
+          onNavigate={navigateSettings}
+          onClose={closeSettings}
+          miscActions={{
+            onSetIcon: (repoId, icon) => dispatch({ type: "setRepoIcon", repoId, icon }),
+            // Conductor leaves for Settings › Git once the repository is gone.
+            onRemoved: (repoId) => {
+              dispatch({ type: "removeRepo", repoId });
+              navigateSettings({ scope: "user", page: "git" });
+            },
+            notify: (kind, message) => show(kind, message),
+          }}
+        />
+        <Toaster toasts={toasts} dismiss={dismiss} />
+      </>
+    );
 
   return (
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} />}
       <main className="main">
-        {repo && workspace?.status === "archived" ? (
+        {createPage ? (
+          <CreateWorkspacePage
+            // A new page for each open, so its draft starts fresh.
+            key={JSON.stringify(createPage)}
+            repos={state.repos}
+            initialRepoId={createPage.repoId}
+            sections={state.sections ?? []}
+            initialSectionId={createPage.sectionId}
+            prefixSettings={prefix.settings}
+            githubUsername={prefix.githubUsername}
+            sidebarVisible={isSidebarVisible(state)}
+            onClose={() => setCreatePage(null)}
+            onAddRepository={() => void openProject()}
+            onWarning={(message) => show("error", message, { sticky: true })}
+            dispatch={dispatch}
+          />
+        ) : repo && workspace?.status === "archived" ? (
           <ArchivedWorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
         ) : repo && workspace ? (
-          <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
+          <WorkspaceView
+            repo={repo}
+            workspace={workspace}
+            dispatch={dispatch}
+            notify={show}
+            onNextUnread={nextUnreadWorkspace(state, { skipSelected: true }) ? () => void openNextUnread(state, dispatch, { skipSelected: true }) : undefined}
+          />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+        ) : sel.kind === "dashboard" ? (
+          <Dashboard
+            repos={state.repos}
+            repo={sel.repo}
+            sidebarVisible={isSidebarVisible(state)}
+            dispatch={dispatch}
+            onCreateWorkspace={(repoId) => openDialog("create", repoId)}
+            onError={(message) => show("error", message)}
+          />
         ) : (
           <HomeScreen repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} />
         )}
@@ -312,7 +400,6 @@ export default function App() {
           onRepoAdded={({ id, ...repo }) => dispatch({ type: "addRepo", id, repo })}
           onCreated={(repoId, first, githubUrl) => {
             dispatch({ type: "addWorkspace", repoId, workspace: first.workspace });
-            for (const warning of first.warnings) show("error", warning, { sticky: true });
             show("info", SUCCESS_TOAST, { action: { label: OPEN_IN_GITHUB, onClick: () => void openUrl(githubUrl) } });
           }}
         />

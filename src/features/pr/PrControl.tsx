@@ -50,7 +50,7 @@ export function PrControl({ pullRequest, actions }: Props) {
             ▾
           </button>
           {menu && (
-            <div className="pr-menu" role="menu">
+            <div className="pr-menu" role="menu" data-tauri-drag-region="false">
               <button
                 role="menuitem"
                 onClick={() => {

@@ -21,6 +21,7 @@
 
 pub mod agent;
 pub mod agent_binaries;
+pub mod agent_commands;
 pub mod agent_options;
 pub mod app_prefs;
 pub mod bin_source_markers;
@@ -29,6 +30,7 @@ pub mod checkpoint;
 mod checkpoint_commands;
 mod chat_store_commands;
 pub mod codex_chat;
+mod session_status_commands;
 pub mod claude_chat;
 pub mod create_project;
 pub mod archive_on_merge;
@@ -40,6 +42,7 @@ mod persistence_commands;
 pub mod recent_local_repos;
 mod recent_local_repos_commands;
 mod sidebar_repo_commands;
+mod repo_misc_commands;
 mod sidebar_section_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
@@ -342,6 +345,7 @@ pub fn run() {
             create_new_project,
             save_repo_scripts,
             workspace::commands::add_repository,
+            workspace::commands::ensure_repository,
             workspace::commands::clone_repository,
             workspace::commands::default_clone_directory,
             workspace::commands::list_repositories,
@@ -368,8 +372,11 @@ pub fn run() {
             sidebar_section_commands::db_write_navigation_sections,
             sidebar_workspace_commands::db_set_workspace_pinned,
             sidebar_workspace_commands::db_set_workspace_unread,
+            sidebar_workspace_commands::db_touch_workspace,
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
+            repo_misc_commands::repo_files_to_copy_preview,
+            repo_misc_commands::db_remove_repo,
             sidebar_repo_commands::repo_favicon,
             recent_local_repos_commands::recent_local_repositories,
             sidebar_rename_commands::db_rename_workspace,
@@ -400,17 +407,22 @@ pub fn run() {
             chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
             reason_chat::reason_cancel,
+            reason_chat::reason_answer_permission,
+            session_status_commands::session_statuses,
+            session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
             codex_chat::codex_cancel,
             codex_chat::codex_answer,
+            codex_chat::codex_respond,
             codex_chat::codex_close_chat,
             claude_chat::commands::claude_cli_path,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,
+            agent_commands::agent_slash_commands,
             e2e::e2e_report,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,

@@ -15,10 +15,10 @@ import { useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type D
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
-import { canSteerNow, headStatusLabel, resolveSendMode, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
+import { canSteerNow, headStatusLabel, resolveSendMode, turnRunning, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
 import type { QueueAction } from "./queue.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
-import { completeCommand, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
+import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
 import { SlashMenu } from "./SlashMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
 import "./queue.css";
@@ -87,7 +87,7 @@ export function Composer({
     const s = keys(id)[0];
     return s ? glyphs(s) : "";
   };
-  const working = queue.status === "working" || queue.status === "cancelling";
+  const working = turnRunning(queue.status);
   const hasText = draft.trim() !== "";
   const mode = (opposite: boolean) => resolveSendMode({ canSteer: canSteerNow(queue, canSteer), defaultMode: followUpMode, opposite });
   const sendMode = working ? mode(false) : "queue";
@@ -107,8 +107,8 @@ export function Composer({
   const slashOpen = slashMatches.length > 0;
   const slashFocus = Math.min(slashIndex, Math.max(0, slashMatches.length - 1));
 
-  function pickCommand(name: string) {
-    const next = completeCommand(draft, name);
+  function pickCommand(command: SlashCommand) {
+    const next = completeInsert(draft, command.insert ?? `/${command.name}`);
     setDraft(next);
     setSlashIndex(0);
     requestAnimationFrame(() => {
@@ -172,7 +172,7 @@ export function Composer({
     }
     if (slashOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
       e.preventDefault();
-      pickCommand(slashMatches[slashFocus]!.command.name);
+      pickCommand(slashMatches[slashFocus]!.command);
       return;
     }
     if (slashOpen && e.key === "Escape") {

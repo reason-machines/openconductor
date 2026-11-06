@@ -13,11 +13,17 @@
 // Outside the desktop app (the Vite preview) a stand-in agent answers each
 // prompt after a short delay with a note that no agent runs there, so the
 // queue and Stop can be exercised in a browser.
+//
+// Reason asks before some tool calls (ACP `session/request_permission`, held
+// by the backend as `permissionRequest`); the chat lists the request and its
+// status is `needs_user_permission` until `answerPermission` (chatRuntime.ts).
+// In the desktop app every chat's status is kept in `conductor.db`
+// (`connectStatusStore`).
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyReasonPayload, type PromptAttachment, type ReasonPayload } from "./reason.ts";
-import { createChatRuntime, type ChatBackend, type Deliver } from "./chatRuntime.ts";
+import { connectStatusStore, createChatRuntime, type ChatBackend, type Deliver } from "./chatRuntime.ts";
 import { desktopHost } from "./desktopHost.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { withGeneralPreferences } from "../../settings/prompts.ts";
@@ -47,7 +53,13 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
   sessionKey,
   configKey,
   parseConfig,
-  listen: (deliver) => listen<ReasonPayload>(EVENT, ({ payload }) => deliver(payload.chatId, (s) => applyReasonPayload(s, payload))),
+  listen: (deliver, permissions) =>
+    listen<ReasonPayload>(EVENT, ({ payload }) => {
+      if (payload.type === "permissionRequest") {
+        permissions.requested(payload.chatId, { requestId: payload.requestId, title: payload.title, options: payload.options });
+      } else if (payload.type === "permissionResolved") permissions.resolved(payload.chatId, payload.requestId);
+      else deliver(payload.chatId, (s) => applyReasonPayload(s, payload));
+    }),
   async open(chatId, cwd, sessionId, config) {
     await invoke("reason_open_chat", { chatId, cwd, sessionId, config });
   },
@@ -63,6 +75,7 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
   cancel(chatId) {
     void invoke("reason_cancel", { chatId });
   },
+  answerPermission: (chatId, requestId, optionId) => invoke<boolean>("reason_answer_permission", { chatId, requestId, optionId }),
 };
 
 async function withGeneral(text: string, repoPath: string, cwd: string): Promise<string> {
@@ -114,6 +127,7 @@ function previewBackend(): ChatBackend<ReasonConfig[]> {
 }
 
 const reason = createChatRuntime(reasonAvailable() ? reasonBackend : previewBackend(), desktopHost);
+if (reasonAvailable()) connectStatusStore({ invoke: desktopHost.invoke, listen });
 
 export const chatSnapshot = reason.snapshot;
 export const subscribeChat = reason.subscribe;
@@ -130,6 +144,9 @@ export const resetReasonChat = reason.reset;
 export const configureReason = reason.configure;
 /** The default model's options; a failed lookup leaves Reason's default. */
 export const configureReasonDefault = reason.configureDefault;
+/** Answers Reason's permission request with one of its options, or declines it with null. */
+export const answerPermission = reason.answerPermission;
+export type { ChatSnapshot, PermissionPrompt } from "./chatRuntime.ts";
 /** The options the chat's Sessions open with (a fork opens on the same). */
 export const reasonChatConfig = reason.config;
 

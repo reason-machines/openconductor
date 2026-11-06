@@ -22,6 +22,9 @@
 //!    carries `turnChanges`, the files the turn changed (absent when a
 //!    checkpoint was skipped or the turn touched more than 200 files).
 //! 3. `reason_cancel(chatId)` for Stop.
+//! 4. `reason_answer_permission(chatId, requestId, optionId?)` answers a
+//!    `permissionRequest` event: with the chosen option, or `cancelled`
+//!    without one. A `permissionResolved` event follows.
 
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -63,7 +66,7 @@ fn home() -> Result<PathBuf, String> {
         .ok_or_else(|| "HOME is not set".to_string())
 }
 
-fn cli_path() -> Option<PathBuf> {
+pub(crate) fn cli_path() -> Option<PathBuf> {
     let home = std::env::var_os("HOME").map(PathBuf::from);
     find_reason_cli(std::env::var_os("PATH").as_deref(), home.as_deref())
 }
@@ -79,7 +82,9 @@ impl ReasonChats {
         let launch = LaunchConfig::new(cli).map_err(|e| e.to_string())?;
         let app = app.clone();
         let sink: Sink = Arc::new(move |chat: &str, ev: ProviderEvent| {
-            let _ = app.emit(wire::EVENT, wire::event_json(chat, &ev));
+            let event = wire::event_json(chat, &ev);
+            crate::e2e::log_event("reason", &event);
+            let _ = app.emit(wire::EVENT, event);
         });
         let provider = Arc::new(ReasonProvider::new(launch, home()?, sink));
         *slot = Some(provider.clone());
@@ -187,6 +192,18 @@ pub fn reason_cancel(state: State<'_, ReasonChats>, chat_id: String) {
     if let Some(p) = state.provider.lock().unwrap().as_ref() {
         p.cancel(&chat_id);
     }
+}
+
+/// Answers the chat's open permission request; false when it is no longer open.
+#[tauri::command]
+pub fn reason_answer_permission(
+    state: State<'_, ReasonChats>,
+    chat_id: String,
+    request_id: String,
+    option_id: Option<String>,
+) -> bool {
+    let provider = state.provider.lock().unwrap().clone();
+    provider.is_some_and(|p| p.answer_permission(&chat_id, &request_id, option_id.as_deref()))
 }
 
 /// Recent Sessions in the signed-in Workspace, newest first.

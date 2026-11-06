@@ -1,7 +1,7 @@
 // Run: node --test "src/**/*.test.ts"
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { commandSet, completeCommand, isKnownCommand, matchCommands, parseSlashCommand, slashQuery } from "./slashCommands.ts";
+import { commandSet, completeCommand, completeInsert, isKnownCommand, matchCommands, parseSlashCommand, slashQuery } from "./slashCommands.ts";
 
 const names = (cs: { name: string }[]) => cs.map((c) => c.name);
 
@@ -73,4 +73,41 @@ test("parse: /name args and /[name](command) args", () => {
   assert.deepEqual(parseSlashCommand("/[plan](command) now", isKnownCommand), { name: "plan", args: "now" });
   assert.equal(parseSlashCommand("/usr/bin is a path", isKnownCommand), null);
   assert.equal(parseSlashCommand("no slash", isKnownCommand), null);
+});
+
+test("skills follow every command, keyed by name and path, and insert /name or Codex's $name", () => {
+  const skills = [
+    { name: "deploy", description: "Ship it", path: "/u/.codex/skills/deploy/SKILL.md", displayName: "Deploy" },
+    { name: "deploy", description: "Ship it", path: "/u/.codex/skills/deploy/SKILL.md" },
+    { name: "notes", description: "Take notes", path: "/r/.agents/skills/notes/SKILL.md" },
+  ];
+  const codex = commandSet({ agent: "codex", agentCommands: [{ name: "review", description: "Review", argumentHint: "instructions" }], skills });
+  assert.deepEqual(names(codex), ["review", "clear", "restart", "add-dir", "personality", "mcp-status", "mcp", "compact", "Deploy", "notes"]);
+  const deploy = codex.find((c) => c.name === "Deploy")!;
+  assert.equal(deploy.effect, "skill");
+  assert.equal(deploy.insert, "$deploy");
+  assert.equal(deploy.id, `skill:deploy|${encodeURIComponent("/u/.codex/skills/deploy/SKILL.md")}`);
+  assert.equal(codex[0]!.argumentHint, "instructions");
+  const reason = commandSet({ agent: "acp", skills: [{ name: "yc-cli", description: "YC", path: "reason-skill:s1" }] });
+  assert.deepEqual(names(reason), ["yc-cli"]);
+  assert.equal(reason[0]!.insert, "/yc-cli");
+  assert.equal(completeInsert("/yc", "/yc-cli"), "/yc-cli ");
+  assert.equal(completeInsert("/dep now", "$deploy"), "$deploy now");
+});
+
+test("filtering keeps commands before skills (Conductor's jNi)", () => {
+  const set = commandSet({
+    agent: "claude",
+    agentCommands: [{ name: "compact", description: "Compact" }],
+    skills: [{ name: "compact-notes", description: "A skill", path: "/s/compact-notes/SKILL.md" }],
+  });
+  // The skill matches "comp" better than the command would rank it, but commands come first.
+  assert.deepEqual(
+    matchCommands(set, "comp").map((m) => m.command.name),
+    ["compact", "compact-notes"],
+  );
+  assert.deepEqual(names(matchCommands(set, "notes").map((m) => m.command)), ["compact-notes"]);
+  assert.equal(matchCommands(set, "zzz").length, 0);
+  // The empty query lists skills last too.
+  assert.equal(matchCommands(set, "").at(-1)!.command.name, "compact-notes");
 });

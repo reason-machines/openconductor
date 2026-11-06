@@ -48,6 +48,11 @@ struct Chat {
     /// Claude session id to resume when a process starts.
     resume: Option<String>,
     live: Option<Live>,
+    /// A prompt was announced ([`ClaudeRunner::expect_prompt`]) and has not
+    /// been sent yet.
+    expected: bool,
+    /// Stop was pressed while the expected prompt was not sent yet.
+    stopped_before_send: bool,
 }
 
 pub struct ClaudeRunner {
@@ -74,12 +79,23 @@ impl ClaudeRunner {
             cwd: cwd.to_owned(),
             resume: None,
             live: None,
+            expected: false,
+            stopped_before_send: false,
         });
         if chat.live.is_none() {
             chat.cwd = cwd.to_owned();
             if session_id.is_some() {
                 chat.resume = session_id;
             }
+        }
+    }
+
+    /// Announces a prompt about to be sent (after the turn's start
+    /// checkpoint), so a Stop before it is sent still stops it.
+    pub fn expect_prompt(&self, chat_id: &str) {
+        if let Some(chat) = self.chats.lock().unwrap().get_mut(chat_id) {
+            chat.expected = true;
+            chat.stopped_before_send = false;
         }
     }
 
@@ -90,6 +106,12 @@ impl ClaudeRunner {
             let Some(chat) = chats.get_mut(chat_id) else {
                 return self.fail_now(chat_id, "This chat was not opened.".into());
             };
+            chat.expected = false;
+            if std::mem::take(&mut chat.stopped_before_send) {
+                let end = TurnEnd::Cancelled;
+                (self.sink)(chat_id, ProviderEvent::TurnEnded(end.clone()));
+                return end;
+            }
             if let Err(e) = self.ensure_live(chat_id, chat) {
                 return self.fail_now(chat_id, e);
             }
@@ -118,11 +140,23 @@ impl ClaudeRunner {
     }
 
     /// Stop: interrupts the running turn; pressed again, kills the process.
+    /// A Stop before an expected prompt was sent cancels that prompt.
     pub fn cancel(&self, chat_id: &str) {
-        let chats = self.chats.lock().unwrap();
-        let Some(live) = chats.get(chat_id).and_then(|c| c.live.as_ref()) else {
+        let mut chats = self.chats.lock().unwrap();
+        let Some(chat) = chats.get_mut(chat_id) else {
             return;
         };
+        let running = chat
+            .live
+            .as_ref()
+            .is_some_and(|live| !live.state.lock().unwrap().waiting.is_empty());
+        if !running {
+            if chat.expected {
+                chat.stopped_before_send = true;
+            }
+            return;
+        }
+        let live = chat.live.as_ref().unwrap();
         let again = {
             let mut st = live.state.lock().unwrap();
             if st.waiting.is_empty() {
