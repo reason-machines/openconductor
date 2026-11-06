@@ -375,10 +375,10 @@ const ORG_PAGE_ICONS: Record<OrgPageId, ReactNode> = {
 };
 
 /** The Agents page's tabs, listed after Agents in search (Conductor's `$ba` per agent tab). */
-const AGENT_SEARCH_TABS = AGENTS_TABS.map((id) => ({ id, label: AGENTS_TAB_LABEL[id] }));
+export const AGENT_SEARCH_TABS = AGENTS_TABS.map((id) => ({ id, label: AGENTS_TAB_LABEL[id] }));
 
 /** A search result's icon: its page's (Conductor's `tab.icon`), an agent tab's, or a repository section's. */
-const searchIcon = (item: SearchItem): ReactNode =>
+export const searchIcon = (item: SearchItem): ReactNode =>
   item.target.scope === "repo"
     ? REPO_SECTION_ICONS[item.target.section]
     : item.target.providerTab
@@ -386,7 +386,7 @@ const searchIcon = (item: SearchItem): ReactNode =>
       : PAGE_ICONS[item.target.page];
 
 /** Conductor's `scrollTo`: once the page renders, bring the row with this title into view. */
-function scrollToRow(title: string, tries = 20) {
+export function scrollToRow(title: string, tries = 20) {
   requestAnimationFrame(() => {
     const label = Array.from(document.querySelectorAll(".settings-page [data-settings-row]")).find((row) =>
       Array.from(row.querySelectorAll(".settings-row-label, h2, h3, label, strong")).some((el) => el.textContent?.trim() === title),

@@ -144,6 +144,8 @@ st("settings-search","Settings search", ref("/settings/user/general", actions=[{
 st("palette-all","Command palette", ref(actions=[{"press":"Meta+k"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800}])
 st("palette-workspaces","Command palette: Workspaces tab", ref(actions=[{"press":"Meta+k"},{"click":"[role=dialog] >> text=Workspaces"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"click":"[role=dialog] button, [role=dialog] [role=tab]","text":"Workspaces"}])
 st("palette-search","Command palette: search", ref(actions=[{"press":"Meta+k"},{"fill":["[role=dialog] input","login"]}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"login"}])
+# A query nothing matches: the All tab keeps its Workspaces group with a disabled "No results found" row (`m_a`).
+st("palette-no-results","Command palette: no results", ref(actions=[{"press":"Meta+k"},{"fill":["[role=dialog] input","zzqx"]}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"zzqx"}], covers=[{"kind":"empty-state","name":"No results found"}])
 
 # dialogs
 st("dialog-clone-github","Clone GitHub repo dialog", ref(actions=[{"click":"text=Open GitHub project"}]), oc=[{"click":".home-card","text":"Open GitHub project","after_ms":800}])

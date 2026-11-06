@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { commandScore, filterScore, tokensMatch } from "./search/score.ts";
-import { buildResults, cycleTab, emptyText, placeholderFor, RESULT_CAP, type PaletteData } from "./search/model.ts";
+import { buildResults, cycleTab, emptyText, groupOrder, placeholderFor, RESULT_CAP, type PaletteData } from "./search/model.ts";
 
 const ws = (id: string, name: string, lastActiveAt: number, extra = {}) => ({
   id,
@@ -24,10 +24,13 @@ const data: PaletteData = {
     { id: "new-workspace", title: "New workspace", group: "actions" },
     { id: "toggle-theme", title: "Toggle theme", group: "actions", keywords: ["dark", "light"] },
     { id: "go-home", title: "Go to Home", group: "navigation" },
-    { id: "settings", title: "Open settings", group: "settings" },
+    { id: "settings", title: "Settings", group: "navigation" },
     { id: "open-vscode", title: "VS Code", group: "open-in" },
   ],
-  settings: [{ id: "appearance.theme", title: "Theme", section: "Appearance" }],
+  settings: [
+    { id: "appearance", title: "Appearance", keywords: ["settings", "appearance", "theme"] },
+    { id: "appearance.theme", title: "Theme", section: "Appearance", row: true },
+  ],
   recentWorkspaceIds: ["w2", "w4", "gone", "w1"],
   activeWorkspaceId: "w2",
 };
@@ -67,8 +70,8 @@ test("All tab with empty query: recents (archived included, unknown ids dropped)
     "Recent workspaces: w2,w4,w1",
     "Workspace actions: quick-open,archive-workspace",
     "Actions: new-workspace,toggle-theme",
-    "Navigation: go-home",
-    "Settings: settings",
+    "Navigation: go-home,settings",
+    "Settings: appearance",
     "Open in: open-vscode",
   ]);
 });
@@ -78,10 +81,23 @@ test("workspace actions are hidden without an active workspace", () => {
   assert.ok(!groups.some((g) => g.startsWith("Workspace actions")));
 });
 
-test("All tab with a query replaces recents with matches across kinds", () => {
-  assert.deepEqual(ids("all", "theme"), ["Actions: toggle-theme", "Settings: appearance.theme"]);
+test("All tab with a query: command groups ranked by their words, then Projects, then Workspaces (Conductor's `J1`)", () => {
+  // "theme" is in the Actions and Settings words; Actions comes first in the fixed order.
+  assert.deepEqual(ids("all", "theme"), ["Actions: toggle-theme", "Settings: appearance.theme,appearance", "Workspaces: "]);
   assert.deepEqual(ids("all", "oslo"), ["Workspaces: w2"]);
-  assert.deepEqual(ids("all", "find"), ["Workspace actions: quick-open"]);
+  assert.deepEqual(ids("all", "find"), ["Workspace actions: quick-open", "Workspaces: "]);
+  assert.deepEqual(ids("all", "mono"), ["Projects: p2"], "Workspaces is dropped while a project matches and no workspace does");
+});
+
+test("a query nothing matches keeps the All tab's Workspaces group with \"No results found\"", () => {
+  const groups = buildResults("all", "zzqx", data);
+  assert.deepEqual(groups.map((g) => [g.heading, g.items.length, g.emptyText]), [["Workspaces", 0, "No results found"]]);
+});
+
+test("group order follows the query's words: settings words put Settings first", () => {
+  assert.deepEqual(groupOrder(""), ["workspace-actions", "actions", "navigation", "settings", "open-in"]);
+  assert.deepEqual(groupOrder("git env").slice(0, 1), ["settings"]);
+  assert.deepEqual(groupOrder("vscode", ["vscode"]).slice(0, 1), ["open-in"]);
 });
 
 test("Workspaces tab lists non-archived workspaces newest first and caps results", () => {
@@ -92,9 +108,11 @@ test("Workspaces tab lists non-archived workspaces newest first and caps results
 });
 
 test("Projects, Actions and Settings tabs", () => {
-  assert.deepEqual(ids("projects", "mono"), ["Projects: p2"]);
+  assert.deepEqual(ids("projects", "mono"), ["undefined: p2"], "the Projects tab has one group with no heading");
   assert.deepEqual(ids("actions", "new"), ["Actions: new-workspace"]);
-  assert.deepEqual(ids("settings", "appear"), ["Settings: appearance.theme"]);
+  assert.deepEqual(ids("actions", ""), ["Workspace actions: quick-open,archive-workspace", "Actions: new-workspace,toggle-theme", "Open in: open-vscode"]);
+  assert.deepEqual(ids("settings", "appear"), ["Settings: appearance,appearance.theme"]);
+  assert.deepEqual(ids("settings", ""), ["Settings: appearance"]);
   assert.deepEqual(ids("projects", "nothing"), []);
 });
 

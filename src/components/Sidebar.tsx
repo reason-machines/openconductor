@@ -36,6 +36,9 @@ import type { WorkspaceRef as UsageWorkspace } from "./resourceUsage";
 import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { endingProps, SidebarPresence, SidebarRowMotion, SidebarSectionMotion, useMenuPresence } from "./sidebarMotion";
 
+/** Window event that opens the sidebar's add-project popover (the palette's "Add project"). */
+export const OPEN_ADD_PROJECT_MENU = "openconductor:open-add-project-menu";
+
 /** Default shortcut glyphs for a registered command, e.g. "⌘N" for workspace.create. */
 function hint(commandId: string): string {
   const c = COMMANDS.find((cmd) => cmd.id === commandId);
@@ -342,6 +345,12 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const addMenuAnchor = useRef<HTMLSpanElement>(null);
   useKeybindings({ "nav.addRepository": () => setAddMenuOpen(true) });
+  // The command palette's "Add project" opens the same popover (Conductor's `g9e.open()`).
+  useEffect(() => {
+    const open = () => setAddMenuOpen(true);
+    window.addEventListener(OPEN_ADD_PROJECT_MENU, open);
+    return () => window.removeEventListener(OPEN_ADD_PROJECT_MENU, open);
+  }, []);
   // "Filter by project" (Conductor's `pra`, setting `sidebar_repo_filter`). Repos arrive from
   // conductor.db after the first render (before that, only path-less placeholders for collapsed
   // repos), so a stale filter is cleared only once real repos have loaded.

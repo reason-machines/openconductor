@@ -2103,6 +2103,51 @@
    ]
   },
   {
+   "id": "palette-no-results",
+   "title": "Command palette: no results",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "fill": [
+       "[role=dialog] input",
+       "zzqx"
+      ]
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "keys": "zzqx"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "empty-state",
+     "name": "No results found"
+    }
+   ]
+  },
+  {
    "id": "dialog-clone-github",
    "title": "Clone GitHub repo dialog",
    "ref": {

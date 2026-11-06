@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { effectiveShortcuts, type Overrides } from "../keybindings/overrides.ts";
 import { glyphs } from "../keybindings/shortcut.ts";
-import { buildResults, cycleTab, emptyText, placeholderFor, TABS, type PaletteData, type PaletteTab, type ResultItem } from "./search/model.ts";
+import { buildResults, cycleTab, emptyText, placeholderFor, TABS, type PaletteData, type PaletteIcon, type PaletteTab, type ResultItem } from "./search/model.ts";
 import { COMMAND_PALETTE_DIALOG_ID, moveActive, paletteCommandFor } from "./state.ts";
 import { workspaceNumberLabel } from "../state/workspaceNumber.ts";
 import { VIEW_ARCHIVED_ACTION } from "./fromAppState.ts";
@@ -12,6 +12,9 @@ import { showClearFilters, workspacesTabRows } from "./workspacesTab.ts";
 import { WorkspaceFilters, WorkspaceRow } from "./WorkspacesTab.tsx";
 import { SearchIcon } from "../components/Icons";
 import { useDialogMotion } from "../components/motion/dialogMotion";
+import { ConductorIcon } from "../components/ConductorIcon";
+import type { ConductorIconName } from "../components/conductorIcons.generated";
+import { shortRelativeTime as shortTime } from "../home/allWorkspaces";
 import "./palette.css";
 
 export interface CommandPaletteProps {
@@ -31,6 +34,8 @@ export interface CommandPaletteProps {
   repos?: readonly Repo[];
   archived?: readonly ArchivedWorkspace[];
   onSelect: (item: ResultItem) => void;
+  /** A settings result's icon (its page's, as in Settings' own search). */
+  settingIcon?: (settingId: string) => ReactNode;
   onClose: () => void;
 }
 
@@ -44,26 +49,68 @@ function rowItem(row: HomeRow): ResultItem {
   };
 }
 
-function itemLabel(item: ResultItem): { title: string; detail?: string } {
-  switch (item.kind) {
-    case "workspace":
-      return { title: item.workspace.name, detail: `${item.workspace.repoName} · ${item.workspace.branch}` };
-    case "project":
-      return { title: item.project.name };
-    case "action":
-      return { title: item.action.title };
-    case "setting":
-      return { title: item.setting.title, detail: item.setting.section };
-  }
+/** Lucide names of Conductor's palette icons (`Ln("sun")` and so on, renderApp @10,913,500). */
+const ICONS: Record<PaletteIcon, ConductorIconName> = {
+  plus: "plus",
+  "folder-plus": "folder-plus",
+  "sun-moon": "sun",
+  "panel-left": "panel-left",
+  "panel-right": "panel-right",
+  maximize: "maximize-2",
+  message: "message-square",
+  keyboard: "keyboard",
+  book: "book-open",
+  "chevron-right": "chevron-right",
+  settings: "settings",
+  home: "house",
+  archive: "archive",
+  file: "file-text",
+  link: "link",
+};
+
+/** Every chord bound to an action, as Conductor's `Ss` lists a key and its alternatives ("⌘B or ["). */
+function shortcutsFor(item: ResultItem, overrides: Overrides): string[] {
+  if (item.kind !== "action") return [];
+  if (item.action.hint) return [item.action.hint];
+  if (!item.action.bindingId) return [];
+  return effectiveShortcuts(item.action.bindingId, overrides).map(glyphs);
 }
 
-function shortcutFor(item: ResultItem, overrides: Overrides): string | null {
-  if (item.kind !== "action" || !item.action.bindingId) return null;
-  const key = effectiveShortcuts(item.action.bindingId, overrides)[0];
-  return key ? glyphs(key) : null;
+function Shortcut({ keys }: { keys: string[] }) {
+  if (keys.length === 0) return null;
+  return (
+    <span className="palette-kbd">
+      {keys.map((k, i) => (
+        <span key={i}>
+          {i > 0 && <span className="palette-kbd-or">or</span>}
+          {k}
+        </span>
+      ))}
+    </span>
+  );
 }
 
-export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, onClose }: CommandPaletteProps) {
+/** Conductor's workspace result row (`SUi`): repo initial, display name, then the last-activity time. */
+function ResultWorkspaceRow({ item, showNumber }: { item: Extract<ResultItem, { kind: "workspace" }>; showNumber: boolean }) {
+  const w = item.workspace;
+  return (
+    <>
+      <span className="palette-repo-initial" title={w.repoName} aria-hidden>
+        {w.repoName.charAt(0).toUpperCase()}
+      </span>
+      <span className="palette-ws-main">
+        {/* Conductor's workspace switcher row (`SUi`): a fixed-width W-<n> column, empty when unnumbered. */}
+        {showNumber && <span className="palette-number">{workspaceNumberLabel(w.number)}</span>}
+        <span className="palette-title palette-ws-name" data-unread={w.unread || undefined}>
+          {w.label ?? w.name}
+        </span>
+      </span>
+      <span className="palette-ws-time">{w.activeAt !== undefined ? shortTime(w.activeAt) : null}</span>
+    </>
+  );
+}
+
+export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, onClose }: CommandPaletteProps) {
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
@@ -163,7 +210,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
           </div>
           {tab === "workspaces" && <WorkspaceFilters repos={repos} filters={filters} onChange={setFilters} />}
         </div>
-        <div className="palette-list" id="palette-list" role="listbox" ref={listRef}>
+        <div className="palette-list" id="palette-list" role="listbox" ref={listRef} data-tab={tab}>
           {tab === "workspaces" ? (
             flat.length === 0 ? (
               <div className="palette-ws-empty">
@@ -192,33 +239,54 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
             )
           ) : (
             <>
-              {flat.length === 0 && <div className="palette-empty">{emptyText(tab)}</div>}
+              {flat.length === 0 && !groups.some((g) => g.emptyText) && <div className="palette-empty">{emptyText(tab)}</div>}
               {groups.map((g) => (
                 <div key={g.id} className="palette-group" role="group" aria-label={g.heading}>
-                  <div className="palette-heading">{g.heading}</div>
+                  {g.heading && <div className="palette-heading">{g.heading}</div>}
+                  {g.items.length === 0 && g.emptyText && (
+                    <div className="palette-item palette-item-empty" role="option" aria-disabled="true" aria-selected="false">
+                      <span className="palette-icon" aria-hidden>
+                        <ConductorIcon name="search" size={16} />
+                      </span>
+                      <span className="palette-title">{g.emptyText}</span>
+                    </div>
+                  )}
                   {g.items.map((item) => {
                     const i = ++index;
-                    const { title, detail } = itemLabel(item);
-                    const shortcut = shortcutFor(item, overrides);
-                    const archived = item.kind === "workspace" && !!item.workspace.archived;
+                    const archivedRow = item.kind === "workspace" && !!item.workspace.archived;
                     return (
                       <div
                         key={item.id}
                         role="option"
                         aria-selected={i === active}
-                        data-archived={archived || undefined}
+                        data-archived={archivedRow || undefined}
+                        data-kind={item.kind}
                         className={i === active ? "palette-item active" : "palette-item"}
                         onMouseMove={() => i !== active && setActive(i)}
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => choose(item)}
                       >
-                        {/* Conductor's workspace switcher row (`SUi`): a fixed-width W-<n> column, empty when unnumbered. */}
-                        {showWorkspaceNumbers && item.kind === "workspace" && (
-                          <span className="palette-number">{workspaceNumberLabel(item.workspace.number)}</span>
+                        {item.kind === "workspace" ? (
+                          <ResultWorkspaceRow item={item} showNumber={showWorkspaceNumbers} />
+                        ) : item.kind === "project" ? (
+                          <>
+                            <span className="palette-repo-initial" aria-hidden>{item.project.name.charAt(0).toUpperCase()}</span>
+                            <span className="palette-title">{item.project.name}</span>
+                          </>
+                        ) : item.kind === "action" ? (
+                          <>
+                            <span className="palette-icon" aria-hidden>
+                              {item.action.icon && <ConductorIcon name={ICONS[item.action.icon]} size={16} />}
+                            </span>
+                            <span className="palette-title">{item.action.title}</span>
+                            <Shortcut keys={shortcutsFor(item, overrides)} />
+                          </>
+                        ) : (
+                          <>
+                            <span className="palette-icon" aria-hidden>{settingIcon?.(item.setting.id)}</span>
+                            <span className="palette-title">{item.setting.title}</span>
+                          </>
                         )}
-                        <span className="palette-title">{title}</span>
-                        {detail && <span className="palette-detail">{detail}</span>}
-                        {shortcut && <kbd className="palette-kbd">{shortcut}</kbd>}
                       </div>
                     );
                   })}

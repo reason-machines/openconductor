@@ -74,3 +74,6 @@ laptop
 users
 credit-card
 upload
+sun
+maximize-2
+panel-right
