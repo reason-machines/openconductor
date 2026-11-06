@@ -7,7 +7,7 @@ import { Wordmark } from "./Wordmark";
 import { activeWorkspaceCount } from "../state/selectors";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs } from "../keybindings/shortcut";
-import { PassportButton } from "../home/Passport";
+import { PassportButton } from "../home/PassportDialog";
 
 const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
 

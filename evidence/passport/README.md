@@ -37,6 +37,7 @@ All checks below ran on Reason cloud with isolated test data.
 - Reference and OpenConductor both passed button zoom factor 1.5, limits 1 through 8, reset, and active-city navigation. OpenConductor additionally passed drag/pointer-release, wheel zoom, Escape, Back, and focus return. Archived non-navigation is covered by the pure-model tests, not a native interaction capture.
 - The first browser comparison failed the footer height, 32 instead of 37 pixels. The same assertion passes after the correction. A tighter Back-button assertion then caught padding and letter-spacing differences, which were corrected.
 - Both data generators reproduced their checked-in output byte-for-byte with `cmp`.
+- The first macOS CI build failed because `Passport.tsx` and `passport.ts` resolve to the same case-insensitive module stem. The component is now `PassportDialog.tsx`. Local TypeScript and module-stem checks pass after the rename. The macOS rerun result is recorded by PR #734, not inferred from Linux.
 
 ## Match verdicts and gaps
 
