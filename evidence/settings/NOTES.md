@@ -143,14 +143,11 @@ on 2026-11-05.
 - Fallback model per agent: claude opus-5-1m, codex gpt-5.6-sol, cursor composer-2.5.
 - Effort levels per agent: claude low..max; codex none, low..max, ultra; cursor low..xhigh.
 
-OpenConductor's Default models page shows only Default model, as a plain select grouped by
-agent, because the only reader is the new-workspace dialog's first chat
-(`src/settings/models.ts` `newChatModel`). No agent launch consumes it yet (the dialog's
-first session is "agent runtime pending"). Divergences: no loadout picker, no per-model
-effort or fast mode; display names are derived from ids (`opus-5-5-1m` is "Opus 5.5 (1M)")
-because the bundle holds no labels for them; our stored default stays `opus` (a Conductor
-alias) rather than Conductor's `opus-5-1m` fallback. Not built: Codex personality, Claude
-output style, Review model, Default to plan mode.
+OpenConductor's Default models page (`src/settings/DefaultModelsPage.tsx`) now follows that
+layout: the Loadout (five slots, slot 1 the default model, palette columns per agent, stored in
+`conductor.db` `favorite_models`), Codex personality, Claude output style, Review model and
+Default to plan mode in new chats, with Conductor's model labels (`lv`). Differences and the
+built-app comparison: [agents-screens/README.md](agents-screens/README.md).
 
 ## Agents
 
@@ -163,20 +160,12 @@ Gateway; a Cursor API key; OpenCode. Its only registry row on this tab is
 `chrome_mode_enabled` ("Use Claude Code with Chrome"); the provider forms are registered
 through another call shape the registry regex does not catch.
 
-OpenConductor's Agents page (`src/settings/AgentsPage.tsx`) shows one card per agent
-(Claude Code, Codex, Cursor, OpenCode) with a provider picker, that provider's options and
-its key fields, built on `connect_provider` / `disconnect_provider` / `provider_status`.
-Keys are write-only: a stored key shows only as stored, and leaving its field blank keeps
-it. Divergences and gaps:
-
-- Conductor's key commands return key values to its frontend (Reveal API key); ours never
-  do, so there is no Reveal.
-- Not built: "Use Claude Code with Chrome", the custom provider, per-provider model
-  overrides (stored ones are kept on save), Conductor's provider search, and validating a
-  key against the backend ("Could not validate this API key.").
-- The Reason agent is ours, not Conductor's, and has nothing to configure, so it has no card.
-- Layout is not compared against Conductor: no screenshot of its providers page exists
-  (native capture blocked, `evidence/providers/README.md`).
+OpenConductor's Agents page (`src/settings/AgentsPage.tsx`) now follows Conductor's tabbed page
+(Claude Code, Codex, Cursor, OpenCode; Authentication cards, status line with Refresh, login
+terminal or API key field), built on `connect_provider` / `disconnect_provider` /
+`provider_status` plus `cli_login_status` for the CLIs' own login. Keys stay write-only. Rows,
+sources, the built-app comparison and the remaining differences:
+[agents-screens/README.md](agents-screens/README.md).
 
 ## Appearance page
 
