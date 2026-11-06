@@ -26,10 +26,13 @@ import {
   type HomeFilters,
   type HomeRow,
 } from "../home/allWorkspaces";
+import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
-import { homeStatus, rowStatusColor, rowStatusLabel, showsActivityStatus } from "../state/rowStatus";
+import { homeStatus, rowGitStatus, rowStatusColor, rowStatusLabel, showsActivityStatus } from "../state/rowStatus";
 import { RowStatusIcon } from "./RowStatusIcon";
+import { StatusMatrix } from "./StatusMatrix";
+import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { glyphs } from "../keybindings/shortcut";
 
 interface Props {
@@ -96,6 +99,10 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
   // Conductor's Home row (`vJo`): the agent's or setup's status, else the last-activity time.
   const status = homeStatus(ws.state, useWorkspaceAgentStatus(ws));
   const statusLabel = rowStatusLabel(status);
+  // Workspace status matrix (Settings › Experimental): Conductor's Home row (`_Jo`) puts the
+  // matrix where the repository icon goes, and the time column then always shows the time (`vJo`).
+  const matrix = useStatusMatrix();
+  const unstarted = ws.state === "unstarted";
   return (
     <div
       role="option"
@@ -106,7 +113,15 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
       title={row.title}
     >
       <div className="allws-row-main">
-        {showRepoIcon && (
+        {matrix ? (
+          <span className="allws-matrix" data-testid="home-workspace-status-matrix">
+            <StatusMatrix
+              status={archived ? "branch" : status}
+              gitStatus={unstarted ? undefined : rowGitStatus({ pr: ws.pr, hasRemote: Boolean(repo.remote) })}
+              hasUnread={!archived && !unstarted && ws.unread === true}
+            />
+          </span>
+        ) : showRepoIcon && (
           <span className="allws-repo-initial" title={repo.name} aria-hidden>
             {repo.name.charAt(0).toUpperCase()}
           </span>
@@ -128,7 +143,7 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
             <span className="allws-archived" title="Archived" aria-label="Archived">
               <ArchiveIcon size={14} />
             </span>
-          ) : showsActivityStatus(status) ? (
+          ) : !matrix && showsActivityStatus(status) ? (
             <span className="allws-status" data-testid="home-workspace-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={statusLabel} aria-label={statusLabel}>
               <RowStatusIcon status={status} />
             </span>
@@ -156,7 +171,24 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
 
   useEffect(() => setLimit(PAGE_SIZE), [query, filters]);
 
-  const rows = useMemo(() => homeRows(repos, filters, query), [repos, filters, query]);
+  // Archived workspaces are not in the sidebar state; read them from
+  // conductor.db when the archive filter shows them, and again after an
+  // archive or unarchive changes the repos.
+  const [archivedRows, setArchivedRows] = useState<ArchivedWorkspace[]>([]);
+  const showsArchived = filters.archiveFilter !== "active";
+  useEffect(() => {
+    if (!showsArchived) return;
+    let live = true;
+    listArchivedWorkspaces().then(
+      (rows) => live && setArchivedRows(rows),
+      (err) => console.error("conductor.db: could not list archived workspaces", err),
+    );
+    return () => {
+      live = false;
+    };
+  }, [showsArchived, repos]);
+
+  const rows = useMemo(() => homeRows(repos, filters, query, archivedRows), [repos, filters, query, archivedRows]);
   const shown = rows.slice(0, limit);
   const hasMore = rows.length > limit;
   const groups = groupByDate(shown, now);
@@ -174,7 +206,11 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
     return () => io.disconnect();
   }, [hasMore]);
 
-  const open = (row: HomeRow) => dispatch({ type: "select", selection: { kind: "workspace", repoId: row.repo.id, workspaceId: row.workspace.id } });
+  // An archived row opens the read-only archived view, as the palette's does.
+  const open = (row: HomeRow) =>
+    row.archived && !row.repo.workspaces.some((w) => w.id === row.workspace.id)
+      ? dispatch({ type: "openArchivedWorkspace", repoId: row.repo.id, workspace: row.workspace })
+      : dispatch({ type: "select", selection: { kind: "workspace", repoId: row.repo.id, workspaceId: row.workspace.id } });
 
   const onSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (flat.length === 0) return;
