@@ -4,6 +4,7 @@
 // its prompt bubble, its agent output (tool rows from ToolRows.tsx, text as
 // markdown) and, once finished, its footer.
 
+import { LinkWithMenu } from "./LinkMenu.tsx";
 import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
@@ -379,6 +380,7 @@ function Part({ part, preview = false, group, ctx }: { part: PartView; preview?:
                 onOpenLink={(href) => void openUrl(href)}
                 workspacePath={ctx.workspacePath}
                 onOpenFile={ctx.onOpenFile}
+                Link={LinkWithMenu}
               />
             </div>
           </div>

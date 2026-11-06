@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MutableRefObject, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MouseEvent as ReactMouseEvent, type MutableRefObject, type ReactNode } from "react";
+import { ChatTabMenu, forkShortcut, type ChatTabMenuActions } from "../features/chat/ChatTabMenu.tsx";
+import { copiedTranscriptToast, transcriptText, type TranscriptMode } from "../features/chat/transcriptCopy.ts";
+import { copyText } from "../features/openIn/apps.ts";
+import { COPIED_LINK, COPY_LINK_FAILED, workspaceLink } from "../workspace/link.ts";
+import { boolPref } from "../settings/prefs.ts";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider.tsx";
+import { effectiveShortcuts } from "../keybindings/overrides.ts";
+import { glyphs } from "../keybindings/shortcut.ts";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
@@ -631,9 +639,18 @@ interface MainTabsProps {
   onSelect: (t: MainTab) => void;
   onCloseDiff: () => void;
   onCloseReview: (chatId: string) => void;
+  /** Right-click on a chat tab (the workspace chat or a review/fork chat): Conductor's `u8i` menu. */
+  onChatMenu?: (chatId: string, at: { x: number; y: number }) => void;
+  /** The workspace chat's id. */
+  mainChatId: string;
 }
 
-function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview }: MainTabsProps) {
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview, onChatMenu, mainChatId }: MainTabsProps) {
+  const menu = (chatId: string) => (e: ReactMouseEvent) => {
+    if (!onChatMenu) return;
+    e.preventDefault();
+    onChatMenu(chatId, { x: e.clientX, y: e.clientY });
+  };
   return (
     <div className="tabs main-tabs" role="tablist" aria-label="Workspace tabs">
       {diffOpen && (
@@ -647,7 +664,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
         </span>
       )}
       <span className={`main-tab${active === "chat" ? " active" : ""}`}>
-        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")} title={title}>
+        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")} onContextMenu={menu(mainChatId)} title={title}>
           {title}
         </button>
       </span>
@@ -663,7 +680,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
       )}
       {reviews.map((r) => (
         <span key={r.chatId} className={`main-tab${active === r.chatId ? " active" : ""}`}>
-          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} title={r.fork ? r.title : `Code review on ${r.modelLabel}`}>
+          <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} onContextMenu={menu(r.chatId)} title={r.fork ? r.title : `Code review on ${r.modelLabel}`}>
             {r.title}
           </button>
           <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} title="Close tab" aria-label={`Close ${r.title} tab`}>
@@ -835,6 +852,64 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   };
   const canReview = diff.load.state === "ready" && diff.files.length > 0;
 
+  // Chat tab right-click menu (Conductor's `u8i`, src/features/chat/ChatTabMenu.tsx).
+  const [chatMenu, setChatMenu] = useState<{ chatId: string; at: { x: number; y: number } } | null>(null);
+  const closeChatMenu = useCallback(() => setChatMenu(null), []);
+  const forkToTabOn = useForkToTabSetting();
+  const { overrides: keyOverrides } = useKeybindingOverrides();
+  const keyHint = (id: string) => {
+    const k = effectiveShortcuts(id, keyOverrides)[0];
+    return k ? glyphs(k) : undefined;
+  };
+  const chatTitle = (chatId: string) => (chatId === workspace.id ? workspace.name : (reviews.tabs.find((r) => r.chatId === chatId)?.title ?? "chat"));
+  const chatTranscript = (chatId: string) => (savedAgent(chatId) === "codex" ? codexSnapshot(chatId) : chatSnapshot(chatId)).transcript;
+  const copyChatTranscript = (chatId: string, mode: TranscriptMode) => {
+    const text = transcriptText(chatTranscript(chatId), mode);
+    if (!text?.trim()) {
+      notify?.("info", "No chat content to copy");
+      return;
+    }
+    copyText(text).then(
+      () => notify?.("info", copiedTranscriptToast(mode, chatTitle(chatId))),
+      () => notify?.("error", `Failed to copy ${mode} transcript`),
+    );
+  };
+  const forkChatToTab = async (chatId: string) => {
+    const title = chatTitle(chatId);
+    const markdown = forkTranscript(chatTranscript(chatId));
+    if (markdown === null) {
+      notify?.("error", "Unable to fork chat to new tab: failed to generate chat transcript");
+      return;
+    }
+    const codexChat = savedAgent(chatId) === "codex";
+    try {
+      const config = codexChat ? [] : await reasonChatConfig(chatId);
+      const id = reviews.fork(`Fork of ${title}`, config, { text: "", attachments: [{ name: forkAttachmentName(title), text: markdown }] });
+      if (codexChat) localStorage.setItem(agentKey(id), "codex");
+    } catch (e) {
+      notify?.("error", e instanceof Error ? e.message : "Failed to fork chat to new tab");
+    }
+  };
+  const activeChatId = mainTab === "chat" ? workspace.id : reviews.tabs.some((r) => r.chatId === mainTab) ? mainTab : null;
+  const chatMenuActions = (chatId: string): ChatTabMenuActions => ({
+    fork: forkToTabOn && workspace.status !== "archived" ? () => void forkChatToTab(chatId) : undefined,
+    copyTranscript: (mode) => copyChatTranscript(chatId, mode),
+    copyLink: () =>
+      copyText(workspaceLink(workspace.id, chatId)).then(
+        () => notify?.("info", COPIED_LINK),
+        () => notify?.("error", COPY_LINK_FAILED),
+      ),
+    // Conductor (`u8i` showClose): a tab with messages, or one of several, offers Close.
+    // OpenConductor cannot close the workspace's own chat yet, so there it is disabled.
+    showClose: chatId !== workspace.id || reviews.tabs.length > 0 || chatTranscript(chatId).messages.length > 0,
+    close: chatId === workspace.id ? undefined : () => closeReview(chatId),
+    closeOthers: () => {
+      setMainTab(chatId === workspace.id ? "chat" : chatId);
+      for (const r of reviews.tabs) if (r.chatId !== chatId) reviews.close(r.chatId);
+    },
+    hasOtherChats: reviews.tabs.length > 0,
+  });
+
   // Cycles All changes, the workspace chat and review chats in strip order.
   const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...(prOpen ? ["pr"] : []), ...reviews.tabs.map((r) => r.chatId)];
   const stepTab = (dir: 1 | -1) => setMainTab((t) => tabOrder[(tabOrder.indexOf(t) + dir + tabOrder.length) % tabOrder.length] ?? "chat");
@@ -854,6 +929,15 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
       if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
     },
     "git.openInGitHub": prActions.openOnGitHub,
+    // Conductor binds these in the active chat tab (`u8i`).
+    "chat.copyTextConcise": () => {
+      if (!activeChatId) return false;
+      copyChatTranscript(activeChatId, "concise");
+    },
+    "chat.forkToNewTab": () => {
+      if (!activeChatId || !forkToTabOn || workspace.status === "archived") return false;
+      void forkChatToTab(activeChatId);
+    },
   });
   // ⌘⇧T inside a terminal is handled by the terminal itself (session.ts), so this one skips terminal focus.
   useKeybindings(
@@ -904,7 +988,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         </div>
         <div className="ws-actions">
           {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
-          <PrControl pullRequest={pullRequest} actions={prActions} />
+          <PrControl pullRequest={pullRequest} actions={prActions} notify={notify} />
           <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
             <ArchiveIcon size={14} /> Archive
           </button>
@@ -923,7 +1007,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           openFile={diff.openPath}
           forkToNewTab={reviews.fork}
           chatTabs={[{ chatId: workspace.id, title: workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
-          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} />}
+          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} onChatMenu={(chatId, at) => setChatMenu({ chatId, at })} mainChatId={workspace.id} />}
           content={
             showDiff ? (
               <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} />
@@ -938,6 +1022,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
                 repoPath={repo.path}
                 defaultBranch={repo.defaultBranch}
                 target={target}
+                notify={notify}
               />
             ) : null
           }
@@ -962,6 +1047,32 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
       {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />
       {showTerminal && <TerminalPanel workspaceId={workspace.id} cwd={repo.path} />}
+      {chatMenu && (
+        <ChatTabMenu
+          key={chatMenu.chatId}
+          at={chatMenu.at}
+          title={chatTitle(chatMenu.chatId)}
+          actions={chatMenuActions(chatMenu.chatId)}
+          keys={{ fork: forkShortcut(keyHint("chat.forkToNewTab")), copyConcise: keyHint("chat.copyTextConcise"), close: keyHint("nav.closeTab") }}
+          onClose={closeChatMenu}
+        />
+      )}
     </div>
   );
+}
+
+/** Experimental › Fork chat to new tab (`experimental_fork_to_new_tab`), read once per workspace view. */
+function useForkToTabSetting(): boolean {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    let live = true;
+    getSettings().then(
+      (s) => live && setOn(boolPref(s, "experimental_fork_to_new_tab")),
+      () => undefined,
+    );
+    return () => {
+      live = false;
+    };
+  }, []);
+  return on;
 }

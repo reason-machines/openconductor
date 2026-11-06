@@ -32,7 +32,8 @@ const TMP = process.env.TMPDIR ?? "/tmp";
 const { seed, shots: allShots } = JSON.parse(fs.readFileSync(path.join(here, "shots.json"), "utf8"));
 const only = process.argv.slice(2);
 const shots = only.length ? allShots.filter((s) => only.includes(s.name)) : allShots;
-const seedScript = `<script>localStorage.setItem("openconductor.shell.v1", ${JSON.stringify(JSON.stringify(seed))});</script>`;
+// ?ls=<json> on our URL adds per-shot localStorage entries (e.g. the PR demo scenario).
+const seedScript = `<script>localStorage.setItem("openconductor.shell.v1", ${JSON.stringify(JSON.stringify(seed))});try{const x=new URLSearchParams(location.search).get("ls");if(x)for(const[k,v]of Object.entries(JSON.parse(x)))localStorage.setItem(k,v)}catch{}</script>`;
 
 // OpenConductor's build with the seed injected, plus /__sbs, the side-by-side page.
 const ours = http.createServer((req, res) => {
@@ -79,11 +80,13 @@ for (let i = 0; i < 100; i++) {
 function sbsPage(q) {
   const [x, y, w, h] = (q.get("crop") ?? "0,0,1440,900").split(",").map(Number);
   const panel = (label, img) => `<figure><figcaption>${label}</figcaption><div class="crop" style="width:${w}px;height:${h}px;background-image:url('/__img/${img}');background-position:-${x}px -${y}px"></div></figure>`;
+  const none = `<figure><figcaption>Conductor 0.87.6</figcaption><div class="crop none" style="width:${w}px;height:${h}px">No reference capture: the screens harness has no fixture with a pull request (see README)</div></figure>`;
   return `<!doctype html><html><head><style>
     body{margin:0;padding:16px;background:#d9d6d3;font:600 14px -apple-system,system-ui,sans-serif;color:#2c2826;display:flex;gap:16px;align-items:flex-start}
     figure{margin:0} figcaption{margin:0 0 8px}
     .crop{background-repeat:no-repeat;outline:1px solid #0003}
-  </style></head><body>${panel("Conductor 0.87.6", q.get("left"))}${panel("OpenConductor", q.get("right"))}</body></html>`;
+    .none{display:flex;align-items:center;justify-content:center;text-align:center;font-weight:400;padding:24px;box-sizing:border-box;background:#eeeae7}
+  </style></head><body>${q.get("left") ? panel("Conductor 0.87.6", q.get("left")) : none}${panel("OpenConductor", q.get("right"))}</body></html>`;
 }
 
 const sha256 = (b) => crypto.createHash("sha256").update(b).digest("hex");
@@ -135,7 +138,7 @@ for (const shot of shots) {
   const q = new URLSearchParams({ oc_scenario: shot.conductor.scenario ?? "populated", oc_theme: theme });
   const entry = { theme, crop: shot.crop };
   if (shot.conductor.actions) entry.conductor = await capture(`conductor-${shot.name}`, `http://conductor.localhost:${C_PORT}${shot.conductor.path ?? "/"}?${q}`, theme, shot.conductor.actions);
-  if (shot.ours?.actions) entry.ours = await capture(`ours-${shot.name}`, `http://127.0.0.1:${O_PORT}/`, theme, shot.ours.actions);
+  if (shot.ours?.actions) entry.ours = await capture(`ours-${shot.name}`, `http://127.0.0.1:${O_PORT}/${shot.ours.storage ? `?ls=${encodeURIComponent(JSON.stringify(shot.ours.storage))}` : ""}`, theme, shot.ours.actions);
   if (entry.conductor && entry.ours) {
     const a = path.join(TMP, `cm-a-${shot.name}.json`);
     const b = path.join(TMP, `cm-b-${shot.name}.json`);
@@ -148,6 +151,11 @@ for (const shot of shots) {
     const sbsQ = new URLSearchParams({ left: entry.conductor.file, right: entry.ours.file, crop });
     const [, , w, h] = shot.crop ?? [0, 0, 1440, 900];
     entry.sbs = await capture(`sbs-${shot.name}`, `http://127.0.0.1:${O_PORT}/__sbs?${sbsQ}`, "light", [], { width: w * 2 + 48, height: h + 60 });
+  }
+  else if (entry.ours) {
+    const [x, y, w, h] = shot.crop ?? [0, 0, 1440, 900];
+    const q1 = new URLSearchParams({ left: "", right: entry.ours.file, crop: [x, y, w, h].join(",") });
+    entry.sbs = await capture(`sbs-${shot.name}`, `http://127.0.0.1:${O_PORT}/__sbs?${q1}`, "light", [], { width: w * 2 + 48, height: h + 60 });
   }
   index[shot.name] = entry;
   console.log(shot.name, JSON.stringify({ c: entry.conductor?.failed_steps, o: entry.ours?.failed_steps, cmp: entry.compare_t24?.changed_pixel_ratio }));

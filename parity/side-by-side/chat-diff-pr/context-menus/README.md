@@ -24,18 +24,21 @@ were read as untrusted data. OpenConductor's equivalent is
 
 ## Menu inventory (Conductor menu -> our element -> status)
 
-| Conductor menu (owner) | Where | Items in order | OpenConductor element | Status |
+Every `gy` (ContextMenuContent) mount in renderApp, resolved to its owner. The
+ui-map ids are `menu:<owner>`; most are unnamed in the map.
+
+| Conductor menu (owner) | Where | Items in order (icons, shortcuts, states) | OpenConductor element | Status |
 | --- | --- | --- | --- | --- |
-| `Svs` via `syi` | Changes list row | View (eye), Open in ▸ (arrow-up-right; apps with `supportsFileOpen`, number keys), Copy path (copy), Copy relative path (copy), ─, Discard changes (undo-2). Attach in chat only where the caller passes `onAttach`; `syi` does not | `FileContextMenu` | fixed in this PR (icons, Open in ▸, toasts, look) |
-| `u6s` | Right panel Review button | Edit before sending (disabled in a read-only workspace) | `ReviewButton` | fixed in this PR (shared menu; disabled when archived) |
-| `u8i` | Chat tab | see the chat-tab row below | `MainTabs` | see below |
-| `RFt` -> `w_i` | Header PR pill | see below | `PrControl` | see below |
-| `sKo` -> `w_i` | PR tab title `#N` | see below | `PrTab` | see below |
-| `EQ` (`cEi`) | Links in chat markdown | Open in Finder (file links only), Copy link address / Copy file path | Transcript markdown | see below |
-| diff viewer file headers | — | Conductor mounts no context menu there | — | match (none) |
-| Checks rows | — | no context menu | — | match (none) |
-| `Svs` via `Bvs` | File tree | same menu | file tree (other owner) | out of scope |
-| `Plo`, `e9a`/`t9a`, `zOo`, `Lna`, `gJn`, `h0a`, `bro` | W-N chip, settings nav, members, Roundhouse | — | other owners | out of scope |
+| `menu:u8i` | Chat tab | Mark as read / Mark as unread; Rename chat (when renamable); Fork to new tab ⌘⌥↵ (Experimental setting on, not archived); ─; Copy concise transcript ⌘⌥C; Copy full transcript; Copy link; (─ Copy session info: internal builds only); ─ Close tab ⌘W, Close others (disabled with one chat). No icons, `min-w-[200px]` | [ChatTabMenu.tsx](../../../../src/features/chat/ChatTabMenu.tsx) on every chat tab (workspace chat and review/fork chats) | items, order, separators, shortcuts and width match. Copy concise/full transcript (Conductor's `VOt` formats, [transcriptCopy.ts](../../../../src/features/chat/transcriptCopy.ts)), Copy link (`openconductor://workspace?id=..&session=..`), Fork to new tab, Close tab (review/fork chats), Close others and ⌘⌥C work. Disabled until their backends exist: Mark as read/unread (PR #456 adds per-chat unread), Rename chat (chats have no rename), Close tab on the workspace's own chat (it cannot be closed yet) |
+| `menu:svs` via `syi` | Changes list row | View (eye); Attach in chat (plus) only where the caller passes `onAttach`, which `syi` does not; Open in ▸ (arrow-up-right; installed apps with `supportsFileOpen`, number keys 1-9); Copy path (copy); Copy relative path (copy); ─; Discard changes (undo-2) | [FileContextMenu.tsx](../../../../src/features/diff/FileContextMenu.tsx) | match; toasts "Copied path to clipboard" / "Copied relative path to clipboard" |
+| `menu:u6s` | Right panel Review button | Edit before sending (disabled in a read-only workspace) | [ReviewButton.tsx](../../../../src/features/diff/ReviewButton.tsx) | match (the ui-map files this under "queued message"; it is the Review button's menu) |
+| `RFt` -> `w_i` | Header PR pill | Open in <PR open target> (arrow-up-right) ⌘⇧G; Open in each other target (github.com PRs); Copy link (copy); Copy number (hash). `min-w-[180px]` | [PrLinkMenu.tsx](../../../../src/features/pr/PrLinkMenu.tsx) on `PrControl`'s PR link and status buttons | match; target URLs from Conductor's `fds` ([prLinkMenu.ts](../../../../src/features/pr/prLinkMenu.ts), tested) |
+| `sKo` -> `w_i` | PR tab title "#N" | same as above | `PrHeader`'s "#N" | match |
+| `EQ` via `cEi` | Links in chat markdown | Web link: Copy link address (copy). Workspace file link: Open in Finder (folder-open), Copy file path (copy) | [LinkMenu.tsx](../../../../src/features/chat/LinkMenu.tsx) on markdown links in assistant text | web-link form only (our markdown has no href file links); copies without Conductor's "Copied address to clipboard" toast (no toast channel reaches the transcript); not captured on screen, neither fixture set has a link |
+| `gwt` | Image/file attachment previews | Open in ▸, Download, Copy file path | composer/transcript attachments | not done in this PR |
+| turn "…" More actions | Turn footer | a click dropdown (`Tm`, DropdownMenuContent), not a right-click menu | — | outside this check |
+| diff viewer file headers, Checks rows, header breadcrumb | — | Conductor mounts no context menu there | — | match (none) |
+| `Svs` via `Bvs`, `Plo`, `e9a`/`t9a`, `zOo`, `Lna`, `gJn`, `h0a`, `bro`, `S_i` | File tree, W-N chip, settings nav, members, Roundhouse, stack | — | other screen owners | out of scope |
 
 ## Captures
 
@@ -46,6 +49,9 @@ records REA `compare-web-screenshots` (channel threshold 24) and renders the
 side-by-side crop through REA. Hashes and evidence ids: [captures.json](captures.json).
 
 ![Changes row menu](sbs-diff-file-row--dark.png)
+![Chat tab menu](sbs-chat-tab--dark.png)
+![Review button menu](sbs-review-button--dark.png)
+![PR pill menu (no Conductor reference: the harness has no PR fixture)](sbs-pr-pill--dark.png)
 
 ## REA gaps and harness issues hit
 
