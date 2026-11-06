@@ -1,0 +1,68 @@
+/* Conductor's TooltipContent (`ni`), Tailwind classes resolved against renderApp-BYEcFwvt.css:
+   overflow-hidden flex items-center rounded-sm ring-1 ring-popover-ring bg-popover/50 backdrop-blur-md
+   pl-2 py-1 text-xs tracking-wide text-popover-foreground shadow-md outline-none
+   data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0
+   data-[ending-style]:scale-95 transition-[opacity,scale] duration-100, plus pr-1 / pr-2.
+   Tokens: evidence/frontend/css-tokens.json (`:root,.light` and `.dark`). */
+:root {
+  --popover: #fff;
+  --popover-foreground: #211e1c;
+  --popover-ring: #211e1c0d;
+  --muted-foreground: #8e8885;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --popover: #2c2826;
+    --popover-foreground: #eae8e6;
+    --popover-ring: #ffffff1a;
+    --muted-foreground: #a5a09c;
+  }
+}
+:root[data-theme="dark"] {
+  --popover: #2c2826;
+  --popover-foreground: #eae8e6;
+  --popover-ring: #ffffff1a;
+  --muted-foreground: #a5a09c;
+}
+
+.oc-tip-positioner { z-index: 50; }
+
+.oc-tip {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  border-radius: 4px; /* rounded-sm: calc(var(--radius) - 4px), --radius .5rem */
+  background-color: var(--popover);
+  background-color: color-mix(in oklab, var(--popover) 50%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  padding: 4px 8px 4px 8px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.025px; /* tracking-wide: --tracking-wide is .025px in Conductor's build */
+  color: var(--popover-foreground);
+  /* ring-1 then shadow-md, in Tailwind's box-shadow order */
+  box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a;
+  outline: none;
+  transition-property: opacity, scale;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.1s;
+}
+.oc-tip.oc-tip-pr1 { padding-right: 4px; }
+.oc-tip.oc-tip-pr2 { padding-right: 8px; }
+.oc-tip[data-starting-style],
+.oc-tip[data-ending-style] { opacity: 0; scale: 0.95; }
+
+/* Default composition for a label plus shortcut: `span.flex.items-center.gap-1` (chat tab strip +). */
+.oc-tip-row { display: flex; align-items: center; gap: 4px; }
+
+/* Ss: inline-flex items-center ml-auto pl-1; each binding: inline-flex items-center text-xs text-muted-foreground. */
+.oc-tip-hint { display: inline-flex; align-items: center; margin-left: auto; padding-left: 4px; }
+.oc-tip-hint-keys { display: inline-flex; align-items: center; font-size: 12px; line-height: 16px; color: var(--muted-foreground); }
+.oc-tip-hint-or { padding: 0 4px; font-size: 12px; line-height: 16px; color: var(--muted-foreground); }
+/* gf: inline-block size-3 shrink-0 */
+.oc-tip-enter { display: inline-block; width: 12px; height: 12px; flex-shrink: 0; }
+
+/* `span.inline-flex.items-center.gap-1` (Send, Cancel) and Tailwind's preflight reset for `<p>` children. */
+.oc-tip-inline { display: inline-flex; align-items: center; gap: 4px; }
+.oc-tip p { margin: 0; }

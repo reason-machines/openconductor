@@ -5,6 +5,7 @@
 // the workspace's chat (`fixErrors.ts`). Data comes from the workspace's PR lookup
 // (`usePullRequest`); after a re-run the jobs show as running until the next
 // lookup.
+import { Tooltip } from "../../../components/ui/Tooltip.tsx";
 import { isTauri } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import { openUrl } from "../../../backend";
@@ -134,12 +135,14 @@ export function ChecksTab({ worktree, pr, refresh, repoId, sendToChat, readOnly 
         <span className="checks-title">Checks</span>
         <span className="checks-actions">
           {canRerun(failing) && (
-            <button className="btn btn-small btn-ghost" title="Re-run failed checks" disabled={readOnly || rerunning} onClick={() => void rerun()}>
-              {rerunning ? "Re-running…" : "Re-run"}
-            </button>
+            <Tooltip content="Re-run failed checks">
+              <button className="btn btn-small btn-ghost" disabled={readOnly || rerunning} onClick={() => void rerun()}>
+                {rerunning ? "Re-running…" : "Re-run"}
+              </button>
+            </Tooltip>
           )}
           {sendToChat && canFixErrors(failing) && (
-            <button className="btn btn-small btn-ghost" title="Send the failing logs to the agent" disabled={readOnly || fixing} aria-busy={fixing} onClick={() => void fixErrors()}>
+            <button className="btn btn-small btn-ghost" disabled={readOnly || fixing} aria-busy={fixing} onClick={() => void fixErrors()}>
               {fixing ? "Fixing…" : "Fix errors"}
             </button>
           )}

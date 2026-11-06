@@ -647,13 +647,13 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           <button role="tab" aria-selected={active === "diff"} className={active === "diff" ? "active" : ""} onClick={() => onSelect("diff")}>
             All changes
           </button>
-          <button className="main-tab-close" onClick={onCloseDiff} title="Close tab" aria-label="Close All changes tab">
+          <button className="main-tab-close" onClick={onCloseDiff} aria-label="Close All changes tab">
             ×
           </button>
         </span>
       )}
       <span className={`main-tab${active === "chat" ? " active" : ""}`}>
-        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")} title={title}>
+        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")}>
           {title}
         </button>
       </span>
@@ -662,7 +662,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           <button role="tab" aria-selected={active === "pr"} className={active === "pr" ? "active" : ""} onClick={() => onSelect("pr")}>
             {prTab}
           </button>
-          <button className="main-tab-close" onClick={onClosePr} title="Close tab" aria-label={`Close ${prTab} tab`}>
+          <button className="main-tab-close" onClick={onClosePr} aria-label={`Close ${prTab} tab`}>
             ×
           </button>
         </span>
@@ -672,7 +672,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} title={r.fork ? r.title : `Code review on ${r.modelLabel}`}>
             {r.title}
           </button>
-          <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} title="Close tab" aria-label={`Close ${r.title} tab`}>
+          <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} aria-label={`Close ${r.title} tab`}>
             ×
           </button>
         </span>

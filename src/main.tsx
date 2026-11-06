@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { DiffWorkerPool } from "./features/diff/DiffWorkerPool";
+import { TooltipProvider } from "./components/ui/Tooltip";
 import { KeybindingsProvider } from "./keybindings/KeybindingsProvider";
 import { FirstRunGate } from "./onboarding/FirstRunGate";
 import { getSettings } from "./settings/api";
@@ -18,9 +19,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <DiffWorkerPool>
       <KeybindingsProvider loadOverrides={loadOverrides}>
-        <FirstRunGate>
-          <App />
-        </FirstRunGate>
+        <TooltipProvider>
+          <FirstRunGate>
+            <App />
+          </FirstRunGate>
+        </TooltipProvider>
       </KeybindingsProvider>
     </DiffWorkerPool>
   </React.StrictMode>,

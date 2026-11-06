@@ -43,7 +43,7 @@ export function PrControl({ pullRequest, actions }: Props) {
     case "create":
       return (
         <span className={`${tone} pr-split`} ref={menuRef}>
-          <button className="btn btn-small btn-primary" title={control.title} disabled={busy !== null} onClick={() => void actions.create(false)}>
+          <button className="btn btn-small btn-primary" disabled={busy !== null} onClick={() => void actions.create(false)}>
             {busy === "creating" ? "Creating…" : control.label}
           </button>
           <button className="btn btn-small btn-primary pr-caret" aria-label="More ways to create a PR" aria-expanded={menu} disabled={busy !== null} onClick={() => setMenu((m) => !m)}>
