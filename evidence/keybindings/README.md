@@ -241,7 +241,44 @@ listed as "Keyboard shortcuts" under Personal. Two deliberate differences:
   later change on another settings page cannot overwrite them with a stale copy.
   A failed save shows the toast "Failed to save keyboard shortcut".
 
+## Bound commands: run, select all, chat copy and fork
+
+Read on sven m5 max in the decoded `renderApp-D_fmY7hW.js` (by byte offset,
+with python over the file; see REA gaps). Conductor's strings are data only.
+
+- `workspace.toggleRun` (⌘R), offset ~7,141,947, in the terminal panel's
+  scripts component: `if (hasRunTask && workspace && ready) { selectTab(Run);
+  running ? stop() : start(); return true }`, nothing otherwise. `start` is a
+  no-op while the button is disabled. Ours: `ScriptsPanel` (always mounted in
+  the strip), which opens the strip on Run and presses its ▶/■ button.
+- `native.preventSelectAll` (⌘A), offset ~11,089,745: a root hook adds a
+  capture `keydown` listener on `document`; on the command's shortcut it calls
+  `preventDefault` and `stopPropagation` unless the event's first path element
+  (else `document.activeElement`) is an input, a textarea, has
+  `contenteditable="true"` or is inside `.composer-tiptap`. Ours:
+  `src/keybindings/selectAll.ts`, installed by `KeybindingsProvider`.
+- `git.fixErrors` (⌘⇧X), offset ~2,300,368: already bound (PR #393).
+
+Not bound, because OpenConductor lacks the feature behind them:
+
+- `git.pull` (⌘⇧L, priority HIGH, offset ~2,299,746): Conductor runs a
+  "pull latest from <target>" mutation (`{workspacePath, remoteName,
+  targetBranch}`) when the branch is behind its target, not merged, not
+  conflicting and not in a stack; its button's tooltip is "Pull latest from
+  <target> (<n> commits)". OpenConductor has neither that button nor a backend
+  command that merges the target into the workspace (its header "Pull <n>" is
+  a status about the remote branch). Note `openSidecarLogs` has ⌘⇧L too.
+- `terminal.openLocalhost` (⌘⇧B): the workspace view (priority LOW, offset
+  ~7,404,615) and the panel (offset ~7,141,734) open the preview URL in
+  Conductor's in-app Browser tab, or a detected localhost URL; false when
+  there is none. OpenConductor has the `preview_urls` setting but no Open
+  button and no Browser tab.
+
 ## REA gaps
+
+- `rea search` over the decoded JavaScript and the binary on sven m5 max fails
+  with `capability_unavailable` / `provider_unavailable`, so the handlers above
+  were found with python string search over the decoded chunk.
 
 - `analyze-javascript-application` finds no IPC operations: it does not model
   Tauri `invoke` or `listen`. The registry and event wiring were located by
