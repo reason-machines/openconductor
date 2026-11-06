@@ -28,8 +28,18 @@ function settingsBackend() {
   };
   const account = { version: "0.2.692", name: "Ada Demo", email: "ada@example.com", credential: "login", error: null, organization: "Tide Labs", computerConnected: true, workspaces: [{ slug: "ws-a", name: "Workspace A", selected: true, connected: true }, { slug: "ws-b", name: "Workspace B", selected: false, connected: true }] };
   const writes = [];
+  const statuses = [];
   window.__settingsTest = {
     writes,
+    statuses,
+    delayStatus: false,
+    completeStatus(index, fail = false) {
+      const status = statuses[index];
+      if (!status || status.done) throw new Error("No pending Reason status " + index);
+      status.done = true;
+      if (fail) status.reject(new Error("obsolete Reason status"));
+      else status.resolve({ ...account, version: "fixture-persisted" });
+    },
     stored: () => structuredClone(settings),
     complete(index, fail = false) {
       const write = writes[index];
@@ -47,7 +57,10 @@ function settingsBackend() {
       if (!manual) { settings = structuredClone(args.settings); return structuredClone(settings); }
       return new Promise((resolve, reject) => writes.push({ next: structuredClone(args.settings), resolve, reject, done: false }));
     }
-    if (cmd === "reason_account_status") return account;
+    if (cmd === "reason_account_status") {
+      if (!window.__settingsTest.delayStatus) return account;
+      return new Promise((resolve, reject) => statuses.push({ path: settings.reason_executable_path ?? null, resolve, reject, done: false }));
+    }
     if (cmd === "reason_models") return [{ value: "test-model", name: "Test model" }];
     if (cmd === "reason_paths") return { systemCli: "/Users/demo/.local/bin/reason", configDir: "/Users/demo/.config/reason" };
     if (cmd === "provider_status") return { agent: args.agent, kind: args.agent === "reason" ? "reason_login" : args.agent === "codex" ? "codex_login" : "claude_login", secrets: [], ready: false, problem: null };

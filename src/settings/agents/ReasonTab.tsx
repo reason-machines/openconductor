@@ -54,18 +54,26 @@ function useReasonStatus(storedKey: string) {
   const [provider, setProvider] = useState<ProviderStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>();
+  const requests = useRef(0);
   const refresh = useCallback(() => {
+    const request = ++requests.current;
     setLoading(true);
     const status = inTauri() ? invoke<ReasonAccount>("reason_account_status") : Promise.reject(new Error("Reason runs in the desktop app."));
     Promise.allSettled([status, providerStatus("reason")])
       .then(([a, p]) => {
+        if (request !== requests.current) return;
         setAccount(a.status === "fulfilled" ? a.value : null);
         setError(a.status === "rejected" ? errorText(a.reason) : undefined);
         if (p.status === "fulfilled") setProvider(p.value);
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (request === requests.current) setLoading(false);
+      });
   }, []);
-  useEffect(refresh, [refresh, storedKey]);
+  useEffect(() => {
+    refresh();
+    return () => { requests.current++; };
+  }, [refresh, storedKey]);
   return { account, setAccount, provider, setProvider, loading, error, refresh };
 }
 
@@ -140,7 +148,11 @@ export function ReasonTab({ settings, save, reload }: AgentTabProps) {
       <div className="settings-rows agk-rows">
         <WorkspaceRow settings={settings} account={account} save={save} />
         <DefaultModelRows settings={settings} save={save} />
-        <ReasonExecutableRow settings={settings} save={save} systemCli={paths?.systemCli ?? null} />
+        <ReasonExecutableRow settings={settings} save={async (next) => {
+          const saved = await save(next);
+          if (saved !== false) refresh();
+          return saved !== false;
+        }} systemCli={paths?.systemCli ?? null} />
       </div>
       <ConfigFileCard title="Reason config" displayPath="~/.config/reason" path={paths?.configDir ?? null} />
     </div>

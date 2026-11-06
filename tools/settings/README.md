@@ -12,7 +12,7 @@ PORT=51749 CHECK_SAVE_RACE=1 node tools/settings/fixture.mjs
 
 The fixture replaces only the Tauri IPC boundary. It uses invented accounts, paths, and repository data. It never runs an agent or reads real settings.
 
-The regression driver opens the built Agents page, clears three Reason defaults, and completes an older write while newer edits remain pending. It also checks a refused save followed by a successful save, then the Big terminal preset and custom-command controls. A successful run prints `SAVE_RACE_CHECK_PASSED`. Stop the preview after the check. Set `EXIT_AFTER_CHECK=1` to close the server after verification and return a failing exit code when a check fails.
+The regression driver opens the built Agents page, clears three Reason defaults, and completes an older write while newer edits remain pending. It also checks a refused save followed by a successful save. A delayed Reason-status response verifies that saving the executable path starts a new status read and that an older failure cannot erase the latest account. The final check covers the Big terminal preset and custom-command controls. A successful run prints `SAVE_RACE_CHECK_PASSED`. Stop the preview after the check. Set `EXIT_AFTER_CHECK=1` to close the server after verification and return a failing exit code when a check fails.
 
 To run the driver against an already running fixture in the same network namespace:
 

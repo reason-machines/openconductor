@@ -41,6 +41,26 @@ try {
   await page.waitForFunction(() => window.__settingsTest.stored().reason.reasoning_effort === "medium");
   console.log("PASS: rejected save rolls back and does not poison the next save");
 
+  await page.goto(`${base}/settings/user/providers?manual_writes=1`);
+  const executable = page.getByLabel("Reason executable path", { exact: true });
+  await executable.waitFor();
+  await page.getByText("0.2.692", { exact: true }).waitFor();
+  await page.evaluate(() => { window.__settingsTest.delayStatus = true; });
+  const savedPath = "/Users/demo/.local/bin/reason";
+  await executable.fill(savedPath);
+  await page.waitForFunction(() => window.__settingsTest.writes.length === 1 && window.__settingsTest.statuses.length === 1);
+  assert.equal(await page.evaluate(() => window.__settingsTest.statuses[0].path), null);
+  await page.evaluate(() => window.__settingsTest.complete(0));
+  await page.waitForFunction(() => window.__settingsTest.statuses.length === 2, null, { timeout: 3000 });
+  assert.equal(await page.evaluate(() => window.__settingsTest.statuses[1].path), savedPath, "status must read the persisted executable");
+  await page.evaluate(() => window.__settingsTest.completeStatus(1));
+  await page.getByText("fixture-persisted", { exact: true }).waitFor();
+  await page.evaluate(() => window.__settingsTest.completeStatus(0, true));
+  await page.waitForTimeout(100);
+  assert.equal(await page.getByText("fixture-persisted", { exact: true }).count(), 1, "older status erased the latest account");
+  assert.equal(await page.getByText("obsolete Reason status", { exact: true }).count(), 0, "older status restored an obsolete error");
+  console.log("PASS: executable persistence refreshes Reason status and obsolete results are ignored");
+
   await page.goto(`${base}/settings/user/terminal`);
   await page.locator("label.preset-option").filter({ hasText: /^Codex/ }).click();
   await page.waitForFunction(() => window.__settingsTest.stored().terminal?.big_terminal_preset === "codex");
