@@ -147,7 +147,14 @@ const banner = () =>
          text: b.querySelector('.agent-binary-banner-text').innerText.replace(/\\s+/g, ' ').trim(),
          action: b.querySelector('.agent-binary-banner-action')?.innerText.trim() ?? null,
          error: b.querySelector('.agent-binary-banner-error')?.innerText ?? null,
-         aboveComposer: !!b.nextElementSibling?.classList.contains('composer-wrap'),
+         // Right above the visible composer: .composer-wrap itself (a tool approval in its
+         // place), or the composer's slot (WorkspaceView) when shown and holding it.
+         aboveComposer: (() => {
+           const n = b.nextElementSibling;
+           if (!n) return false;
+           if (n.classList.contains('composer-wrap')) return true;
+           return n.classList.contains('oc-composer-slot') && !n.hidden && !!n.querySelector(':scope > .composer-wrap');
+         })(),
          pulsing: !!b.querySelector('.agent-binary-banner-icon.is-downloading'),
          alert: !!b.querySelector('.agent-binary-banner-icon.is-failed'),
        };`);
