@@ -69,8 +69,6 @@ function serveOc() {
     })
     .listen(OC_PORT);
 }
-if (process.argv[2] === "--serve-oc") serveOc();
-else await main();
 
 function visibleText(html) {
   const body = html.replace(/<(script|style|svg)[\s\S]*?<\/\1>/gi, " ");
@@ -182,3 +180,7 @@ async function main() {
   }
   process.exit(failures ? 1 : 0);
 }
+
+// Last, so every helper above is initialised before main runs.
+if (process.argv[2] === "--serve-oc") serveOc();
+else await main();
