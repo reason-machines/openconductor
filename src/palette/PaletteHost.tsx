@@ -7,10 +7,9 @@ import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
 import { paletteDataFromState, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import type { ResultItem } from "./search/model.ts";
+import { loadRecentWorkspaceIds, recordViewedWorkspace, saveRecentWorkspaceIds } from "./recentWorkspaces.ts";
 import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { openNextUnread } from "../state/nextUnread.ts";
-
-const RECENT_LIMIT = 8;
 
 interface Props {
   state: AppState;
@@ -25,13 +24,14 @@ interface Props {
 
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
 export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open, onOpenChange }: Props) {
-  const [recents, setRecents] = useState<string[]>([]);
+  const [recents, setRecents] = useState<readonly string[]>(loadRecentWorkspaceIds);
   const sel = state.selection;
   const selectedId = sel.kind === "workspace" ? sel.workspaceId : null;
 
   useEffect(() => {
-    if (selectedId) setRecents((r) => [selectedId, ...r.filter((id) => id !== selectedId)].slice(0, RECENT_LIMIT));
+    if (selectedId) setRecents((r) => recordViewedWorkspace(r, selectedId));
   }, [selectedId]);
+  useEffect(() => saveRecentWorkspaceIds(recents), [recents]);
 
   // parity:sidebar.archived-view: archived workspaces are not in the sidebar
   // state; read them from conductor.db each time the palette opens.

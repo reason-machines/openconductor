@@ -183,6 +183,19 @@ async fn record_repository_is_idempotent_and_unhides() {
 }
 
 #[tokio::test]
+async fn a_second_project_on_the_same_folder_gets_its_own_row() {
+    // Conductor's repos table has no unique root_path: opening an added
+    // folder again inserts `<name>-v1` (evidence/screens/duplicate-repo.md).
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    let again = KnownRepo { id: "app-v1".into(), name: "app-v1".into(), ..repo("app") };
+    record_repository(&pool, &again).await.unwrap();
+    let rows = list_repos(&pool).await.unwrap();
+    let got: Vec<_> = rows.iter().map(|r| (r.id.as_str(), r.name.as_str(), r.root_path.as_str(), r.display_order)).collect();
+    assert_eq!(got, [("app", "app", "/src/app", 0), ("app-v1", "app-v1", "/src/app", 1)]);
+}
+
+#[tokio::test]
 async fn import_adds_unknown_repos_with_worktrees_once() {
     let pool = pool().await;
     let mut archived = ws("app", "lima");
