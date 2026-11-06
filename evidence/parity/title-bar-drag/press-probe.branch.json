@@ -1,0 +1,137 @@
+[
+ {
+  "name": "main header, empty top strip",
+  "at": {
+   "x": 260,
+   "y": 6
+  },
+  "hit": "ws-header",
+  "drags": true
+ },
+ {
+  "name": "breadcrumb repo name",
+  "at": {
+   "x": 299,
+   "y": 45
+  },
+  "hit": "crumb",
+  "drags": true
+ },
+ {
+  "name": "workspace name",
+  "at": {
+   "x": 367,
+   "y": 45
+  },
+  "hit": "",
+  "drags": true
+ },
+ {
+  "name": "branch chip",
+  "at": {
+   "x": 424,
+   "y": 45
+  },
+  "hit": "chip",
+  "drags": true
+ },
+ {
+  "name": "status chip",
+  "at": {
+   "x": 682,
+   "y": 45
+  },
+  "hit": "chip status idle",
+  "drags": true
+ },
+ {
+  "name": "gap between header actions",
+  "at": {
+   "x": 1078,
+   "y": 46
+  },
+  "hit": "ws-actions",
+  "drags": true
+ },
+ {
+  "name": "target-branch chip (button)",
+  "at": {
+   "x": 622,
+   "y": 45
+  },
+  "hit": "chip",
+  "drags": false
+ },
+ {
+  "name": "Open in button",
+  "at": {
+   "x": 1032,
+   "y": 47
+  },
+  "hit": "",
+  "drags": false
+ },
+ {
+  "name": "sidebar header, empty",
+  "at": {
+   "x": 4,
+   "y": 6
+  },
+  "hit": "sb-topbar",
+  "drags": true
+ },
+ {
+  "name": "gap between back/forward",
+  "at": {
+   "x": 213,
+   "y": 20
+  },
+  "hit": "sb-history",
+  "drags": true
+ },
+ {
+  "name": "Go back (button)",
+  "at": {
+   "x": 197,
+   "y": 20
+  },
+  "hit": "null",
+  "drags": false
+ },
+ {
+  "name": "Home row (button)",
+  "at": {
+   "x": 36,
+   "y": 54
+  },
+  "hit": "sb-computer-name",
+  "drags": false
+ },
+ {
+  "name": "chat area (not header)",
+  "at": {
+   "x": 286,
+   "y": 445
+  },
+  "hit": "chat-scroll",
+  "drags": false
+ },
+ {
+  "name": "sidebar toggle (button, hides sidebar)",
+  "at": {
+   "x": 94,
+   "y": 20
+  },
+  "hit": "",
+  "drags": false
+ },
+ {
+  "name": "Archive button (last: it archives)",
+  "at": {
+   "x": 1210,
+   "y": 43
+  },
+  "hit": "btn btn-small",
+  "drags": false
+ }
+]

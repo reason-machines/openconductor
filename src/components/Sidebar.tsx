@@ -312,7 +312,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
             <SidebarIcon size={16} />
           </button>
         </div>
-        <div className="sb-history">
+        <div className="sb-history" data-tauri-drag-region>
           <ResourceUsagePill workspaces={usageWorkspaces} />
           <button type="button" className="sb-icon-btn" aria-label="Go back" title={`Go back (${hint("nav.back")})`} disabled={!nav.canBack} onClick={nav.onBack}>
             <ArrowLeftIcon size={12} />

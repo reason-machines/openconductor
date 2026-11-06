@@ -42,7 +42,7 @@ export function ArchivedWorkspaceView({ repo, workspace, dispatch }: Props) {
   return (
     <div className="workspace archived-workspace" data-archived>
       <header className="ws-header" data-tauri-drag-region>
-        <div className="ws-title">
+        <div className="ws-title" data-tauri-drag-region="deep">
           <span className="crumb">{repo.name}</span>
           <span className="crumb-sep">/</span>
           <strong>{workspace.name}</strong>
@@ -53,7 +53,7 @@ export function ArchivedWorkspaceView({ repo, workspace, dispatch }: Props) {
             <span className="status-dot archived" /> Archived
           </span>
         </div>
-        <div className="ws-actions">
+        <div className="ws-actions" data-tauri-drag-region>
           <button className="btn btn-small" title="Unarchive workspace" disabled={pending} onClick={unarchive}>
             <ArchiveIcon size={14} /> {ARCHIVED_BANNER.unarchive}
           </button>

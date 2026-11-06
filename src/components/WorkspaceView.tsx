@@ -679,7 +679,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
 function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; open: boolean; setOpen: (v: boolean) => void; repo: Repo }) {
   const disabled = target.disabledReason !== null || target.changing;
   return (
-    <span className="pr-base-anchor target-chip">
+    <span className="pr-base-anchor target-chip" data-tauri-drag-region="false">
       <button
         className="chip"
         disabled={disabled}
@@ -880,7 +880,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region>
-        <div className="ws-title">
+        <div className="ws-title" data-tauri-drag-region="deep">
           <span className="crumb">{repo.name}</span>
           <span className="crumb-sep">/</span>
           <strong>{workspace.name}</strong>
@@ -902,7 +902,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
             </span>
           )}
         </div>
-        <div className="ws-actions">
+        <div className="ws-actions" data-tauri-drag-region>
           {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
           <PrControl pullRequest={pullRequest} actions={prActions} />
           <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
