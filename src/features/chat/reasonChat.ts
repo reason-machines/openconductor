@@ -69,6 +69,10 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
   async open(chatId, cwd, sessionId, config) {
     await invoke("reason_open_chat", { chatId, cwd, sessionId, config });
   },
+  // The open Session switches before its next prompt (reason_acp/provider.rs).
+  reconfigure(chatId, config) {
+    void invoke("reason_set_config", { chatId, config }).catch((e) => console.warn("reason chat: options not updated", e));
+  },
   async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath }) {
     const agentText = firstMessage && repoPath ? await withGeneral(text, repoPath, cwd) : text;
     return invoke("reason_prompt", { chatId, text: agentText, attachments, turn });
@@ -142,7 +146,7 @@ export const queueAction = reason.queueAction;
  * carrying the kept conversation.
  */
 export const resetReasonChat = reason.reset;
-/** Session options for the chat's next new Session (its first, or the one after Reset chat); kept across restarts. */
+/** The chat's Session options: an open Session switches before its next prompt; kept across restarts. */
 export const configureReason = reason.configure;
 /** The default model's options; a failed lookup leaves Reason's default. */
 export const configureReasonDefault = reason.configureDefault;
@@ -162,16 +166,13 @@ export function setRunningModel(chatId: string, running: RunningModel | null): v
 }
 
 /**
- * A pick in the chat's model picker: the options for its next new Session
- * (`configureReason`) and, in the desktop app, for the Session it already
- * has, from its next prompt on.
+ * A pick in the chat's model picker: the chat's Session options
+ * (`configureReason`, which an open Session takes before its next prompt).
+ * What the Session ran on before no longer says what it runs.
  */
 export function pickReasonModel(chatId: string, config: ReasonConfig[]): void {
   reason.configure(chatId, config);
   setRunningModel(chatId, null);
-  if (reasonAvailable()) {
-    invoke("reason_set_config", { chatId, config }).catch((e) => console.warn("reason: pick not applied to the open Session", e));
-  }
 }
 
 let models: Promise<ReasonModelOption[]> | null = null;

@@ -33,11 +33,12 @@
 //!   with `session/set_config_option` right after `session/new`, only when
 //!   the Session offers the value: Reason resets a value it does not offer
 //!   to its default without an error, so the provider checks first and
-//!   sends a [`ProviderEvent::Notice`] instead.
-//! * [`ReasonProvider::apply_config`] changes the options of a chat whose
-//!   Session already exists (a pick in the composer's model picker): they
-//!   are set on that Session before its next prompt, and a value Reason
-//!   does not keep comes back as a notice.
+//!   sends a [`ProviderEvent::Notice`] instead. Options changed while the
+//!   Session is open (a model pick in a running chat) are set on that same
+//!   Session before its next prompt, and on a resumed one before its first,
+//!   as Conductor's ACP runner reconciles them (`reconcileSessionConfig`).
+//!   A follow-up that steers a running turn leaves them for the prompt after
+//!   it.
 //! * Reason reports no model in the ACP stream, and with the model option
 //!   "default" (Auto) it picks one per turn. After each turn the provider
 //!   asks `reason session get` which model and effort the Session ran on
@@ -206,10 +207,14 @@ struct Chat {
     workspace: Option<String>,
     /// Reason said the Session runs on Reason cloud (see `computer_is_cloud`).
     on_cloud: bool,
-    /// Config options to set when the Session is created.
+    /// Config options the chat wants its Session to run on.
     config: Vec<ConfigChoice>,
-    /// Config options to set on the existing Session before its next prompt.
-    apply: Vec<ConfigChoice>,
+    /// The options last set on the open Session; `None` until they are set
+    /// on a new or resumed Session.
+    applied: Option<Vec<ConfigChoice>>,
+    /// The Session's `configOptions` as Reason last reported them; null when
+    /// unknown (a resumed Session that reported none).
+    options: Value,
     /// Prompts announced by `expect_prompt` and not sent yet, with whether
     /// a Stop came for them meanwhile.
     pending: HashMap<u64, bool>,
@@ -233,8 +238,6 @@ struct Shared {
     next_ticket: u64,
     /// Open permission requests by `request_id`.
     permissions: HashMap<String, PendingPermission>,
-    /// Picks for chats not open yet, applied to their Session when they open.
-    picks: HashMap<String, Vec<ConfigChoice>>,
     next_permission: u64,
 }
 
@@ -324,45 +327,15 @@ impl ReasonProvider {
         if let Some(id) = &session_id {
             s.by_session.insert(id.clone(), chat.into());
         }
-        // A pick not applied yet still applies to the same Session.
-        let picked = s.picks.remove(chat);
-        let kept = s
-            .chats
-            .get(chat)
-            .filter(|c| c.session_id == session_id)
-            .map(|c| c.apply.clone());
-        let apply = match &session_id {
-            Some(_) => kept.or(picked).unwrap_or_default(),
-            None => Vec::new(),
-        };
         s.chats.insert(
             chat.into(),
             Chat {
                 cwd: cwd.into(),
                 session_id,
                 workspace,
-                apply,
                 ..Chat::default()
             },
         );
-    }
-
-    /// A pick in the chat's model picker: the options for a Session the
-    /// chat opens later, and, when it has one already, for that Session
-    /// from its next prompt on.
-    pub fn apply_config(&self, chat: &str, config: Vec<ConfigChoice>) {
-        let mut s = self.shared.lock().unwrap();
-        match s.chats.get_mut(chat) {
-            Some(c) => {
-                if c.session_id.is_some() {
-                    c.apply = config.clone();
-                }
-                c.config = config;
-            }
-            None => {
-                s.picks.insert(chat.into(), config);
-            }
-        }
     }
 
     /// The models Reason offers new Sessions in the selected workspace.
@@ -379,8 +352,8 @@ impl ReasonProvider {
         model_list(&v["configOptions"]).ok_or_else(|| "Reason offers no model option".into())
     }
 
-    /// Config options for the chat's Session, applied when `session/new`
-    /// creates it; a chat whose Session already exists keeps its options.
+    /// Config options for the chat's Session: set when `session/new`
+    /// creates it, or on the open Session before its next prompt.
     pub fn set_config(&self, chat: &str, config: Vec<ConfigChoice>) {
         if let Some(c) = self.shared.lock().unwrap().chats.get_mut(chat) {
             c.config = config;
@@ -641,37 +614,37 @@ impl ReasonProvider {
     }
 
     /// The chat's Session, open in the running agent process of its
-    /// workspace.
+    /// workspace, with the chat's config options set on it.
     fn ensure_session(&self, chat: &str) -> Result<(Arc<RpcConnection>, String), String> {
-        let (cwd, known, open_in, config, workspace) = {
+        let (cwd, known, open_in, workspace) = {
             let s = self.shared.lock().unwrap();
             let c = s.chats.get(chat).ok_or("unknown chat")?;
             (
                 c.cwd.clone(),
                 c.session_id.clone(),
                 c.open_in,
-                c.config.clone(),
                 c.workspace.clone(),
             )
         };
         if let (Some(id), Some(open_in)) = (&known, open_in) {
             if let Some((conn, generation)) = self.live_agent(&workspace) {
                 if generation == open_in {
-                    self.apply_pending(chat, &conn, id);
+                    self.reconcile_config(chat, &conn, id);
                     return Ok((conn, id.clone()));
                 }
             }
         }
         let base = json!({ "cwd": cwd, "mcpServers": [] });
-        let (conn, generation, id, workspace) = match known {
+        let (conn, generation, id, workspace, options) = match known {
             Some(id) => {
                 let workspace = self.locate(&id, workspace)?;
                 let (conn, generation) = self.ensure_agent(workspace.as_deref())?;
                 let mut params = base;
                 params["sessionId"] = json!(id);
-                conn.call("session/resume", params, SETUP_TIMEOUT)
+                let v = conn
+                    .call("session/resume", params, SETUP_TIMEOUT)
                     .map_err(|e| format!("Could not resume the Reason session: {e}"))?;
-                (conn, generation, id, workspace)
+                (conn, generation, id, workspace, v["configOptions"].clone())
             }
             None => {
                 // A new Session opens in the workspace selected now.
@@ -690,70 +663,70 @@ impl ReasonProvider {
                         session_id: id.clone(),
                     },
                 );
-                let (set, mut notices) = plan_config(&v["configOptions"], &config);
-                for choice in set {
-                    let params = json!({ "sessionId": id, "configId": choice.id,
-                        "value": choice.value });
-                    if let Err(e) = conn.call("session/set_config_option", params, SETUP_TIMEOUT) {
-                        notices.push(format!(
-                            "Could not set {} to {}: {e}. Reason's default is used.",
-                            choice.id, choice.value
-                        ));
-                    }
-                }
-                for n in notices {
-                    (self.sink)(chat, ProviderEvent::Notice(n));
-                }
-                (conn, generation, id, workspace)
+                (conn, generation, id, workspace, v["configOptions"].clone())
             }
         };
-        let mut s = self.shared.lock().unwrap();
-        s.by_session.insert(id.clone(), chat.into());
-        if let Some(c) = s.chats.get_mut(chat) {
-            c.session_id = Some(id.clone());
-            c.open_in = Some(generation);
-            c.workspace = workspace;
+        {
+            let mut s = self.shared.lock().unwrap();
+            s.by_session.insert(id.clone(), chat.into());
+            if let Some(c) = s.chats.get_mut(chat) {
+                c.session_id = Some(id.clone());
+                c.open_in = Some(generation);
+                c.workspace = workspace;
+                c.options = options;
+                c.applied = None;
+            }
         }
-        drop(s);
-        self.apply_pending(chat, &conn, &id);
+        self.reconcile_config(chat, &conn, &id);
         Ok((conn, id))
     }
 
-    /// Sets the options picked for the chat's existing Session
-    /// ([`Self::apply_config`]) on it, with a notice for each value Reason
-    /// did not keep (it resets one it does not offer to its default).
-    fn apply_pending(&self, chat: &str, conn: &RpcConnection, id: &str) {
-        let apply = {
-            let mut s = self.shared.lock().unwrap();
-            let c = s.chats.get_mut(chat);
-            c.map(|c| std::mem::take(&mut c.apply)).unwrap_or_default()
+    /// Sets the chat's wanted options on its open Session when they differ
+    /// from what was last set there. Not while a turn runs: a follow-up
+    /// steering it leaves them for the next prompt.
+    fn reconcile_config(&self, chat: &str, conn: &RpcConnection, id: &str) {
+        let (wanted, mut options) = {
+            let s = self.shared.lock().unwrap();
+            let Some(c) = s.chats.get(chat) else {
+                return;
+            };
+            if c.turn.is_some() || c.applied.as_ref() == Some(&c.config) {
+                return;
+            }
+            (c.config.clone(), c.options.clone())
         };
-        for choice in apply {
+        // A resumed Session may not report its options: send each and check
+        // what Reason answers with.
+        let known = options.is_array();
+        let (set, mut notices) = if known {
+            plan_config(&options, &wanted)
+        } else {
+            (wanted.clone(), Vec::new())
+        };
+        for choice in &set {
             let params = json!({ "sessionId": id, "configId": choice.id,
                 "value": choice.value });
-            let notice = match conn.call("session/set_config_option", params, SETUP_TIMEOUT) {
-                Ok(v) => {
-                    let options = v["configOptions"].as_array().cloned().unwrap_or_default();
-                    let opt = options.iter().find(|o| o["id"] == choice.id.as_str());
-                    opt.filter(|o| o["currentValue"] != choice.value.as_str())
-                        .map(|o| {
-                            let name = o["name"].as_str().unwrap_or(&choice.id);
-                            format!(
-                                "Reason does not offer {} \"{}\" for this chat, so it uses \
-                                 Reason's default.",
-                                name.to_lowercase(),
-                                choice.value
-                            )
-                        })
-                }
-                Err(e) => Some(format!(
+            match conn.call("session/set_config_option", params, SETUP_TIMEOUT) {
+                Ok(v) if v["configOptions"].is_array() => options = v["configOptions"].clone(),
+                Ok(_) => {}
+                Err(e) => notices.push(format!(
                     "Could not set {} to {}: {e}. Reason's default is used.",
                     choice.id, choice.value
                 )),
-            };
-            if let Some(n) = notice {
-                (self.sink)(chat, ProviderEvent::Notice(n));
             }
+        }
+        if !known && options.is_array() {
+            notices.extend(unapplied(&options, &set));
+        }
+        {
+            let mut s = self.shared.lock().unwrap();
+            if let Some(c) = s.chats.get_mut(chat) {
+                c.applied = Some(wanted);
+                c.options = options;
+            }
+        }
+        for n in notices {
+            (self.sink)(chat, ProviderEvent::Notice(n));
         }
     }
 
@@ -912,6 +885,30 @@ pub fn plan_config(options: &Value, wanted: &[ConfigChoice]) -> (Vec<ConfigChoic
         }
     }
     (set, notices)
+}
+
+/// A notice for each option that Reason's reported `configOptions` do not
+/// hold at the value that was sent: Reason reset it to its default.
+fn unapplied(options: &Value, sent: &[ConfigChoice]) -> Vec<String> {
+    let options = options.as_array().map(Vec::as_slice).unwrap_or_default();
+    sent.iter()
+        .filter_map(|w| {
+            let Some(opt) = options.iter().find(|o| o["id"] == w.id.as_str()) else {
+                return Some(format!(
+                    "Reason has no \"{}\" option, so {} was not applied.",
+                    w.id, w.value
+                ));
+            };
+            let name = opt["name"].as_str().unwrap_or(&w.id);
+            (opt["currentValue"] != w.value.as_str()).then(|| {
+                format!(
+                    "Reason does not offer {} \"{}\" for this chat, so it uses Reason's default.",
+                    name.to_lowercase(),
+                    w.value
+                )
+            })
+        })
+        .collect()
 }
 
 /// The `session/prompt` content: the text, then each attachment as an

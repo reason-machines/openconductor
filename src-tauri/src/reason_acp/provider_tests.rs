@@ -211,6 +211,83 @@ fn config_is_set_on_a_new_session_and_unoffered_values_become_notices() {
     assert!(notices[1].contains("speed"));
 }
 
+/// The last `config` reply: each one is "model=M effort=E".
+fn last_config(log: &Log) -> String {
+    let r = reply(log);
+    let i = r.rfind("model=").expect("a config reply");
+    r[i..].to_string()
+}
+
+#[test]
+fn a_changed_config_applies_to_the_open_session_at_its_next_prompt() {
+    use super::provider::ConfigChoice;
+    let choice = |id: &str, value: &str| ConfigChoice {
+        id: id.into(),
+        value: value.into(),
+    };
+    let (p, log, home) = provider("config-live");
+    p.open_chat("ws", &home, None);
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "high"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=high"
+    );
+
+    // A pick in the running chat: the same Session switches, as Conductor's
+    // `reconcileSessionConfig` does before its next prompt.
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:openai-codex:gpt-5.6-sol"),
+            choice("reasoning_effort", "low"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:openai-codex:gpt-5.6-sol effort=low"
+    );
+    assert_eq!(started(&log), vec!["sess-1"], "no new Session");
+
+    // After a restart the resumed Session gets a pick made meanwhile.
+    p.shutdown();
+    p.set_config(
+        "ws",
+        vec![
+            choice("model", "byok:anthropic:claude-opus-5-5"),
+            choice("reasoning_effort", "medium"),
+        ],
+    );
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=medium"
+    );
+    assert_eq!(started(&log), vec!["sess-1"], "resumed, not replaced");
+
+    // A value the Session does not offer is told, not sent.
+    p.set_config("ws", vec![choice("model", "opus-5-1m")]);
+    assert_eq!(p.prompt("ws", "config"), TurnEnd::Completed);
+    assert_eq!(
+        last_config(&log),
+        "model=byok:anthropic:claude-opus-5-5 effort=medium"
+    );
+    let notices = log
+        .lock()
+        .unwrap()
+        .iter()
+        .filter(|(_, e)| matches!(e, ProviderEvent::Notice(n) if n.contains("opus-5-1m")))
+        .count();
+    assert_eq!(notices, 1);
+}
+
 #[test]
 fn attachments_go_to_reason_as_embedded_files() {
     use super::provider::Attachment;
@@ -438,73 +515,6 @@ fn after_each_turn_the_model_the_session_ran_on_is_reported() {
             Some("high".to_string())
         )]
     );
-}
-
-#[test]
-fn a_pick_applies_to_the_existing_session_from_its_next_prompt() {
-    use super::provider::ConfigChoice;
-    let (p, log, home) = provider("apply-config");
-    p.open_chat("c", &home, None);
-    assert_eq!(p.prompt("c", "config"), TurnEnd::Completed);
-    wait_for(&log, |e| matches!(e, ProviderEvent::SessionModel(_)));
-    let sid = started(&log).pop().unwrap();
-    let choice = |id: &str, value: &str| ConfigChoice {
-        id: id.into(),
-        value: value.into(),
-    };
-    p.apply_config(
-        "c",
-        vec![
-            choice("model", "byok:openai-codex:gpt-5.6-sol"),
-            choice("reasoning_effort", "low"),
-        ],
-    );
-    // Reopening the chat on the same Session (switching tabs) keeps the pick.
-    p.open_chat("c", &home, Some(sid.clone()));
-    log.lock().unwrap().clear();
-    assert_eq!(p.prompt("c", "config"), TurnEnd::Completed);
-    assert_eq!(
-        reply(&log),
-        "model=byok:openai-codex:gpt-5.6-sol effort=low"
-    );
-    assert!(started(&log).is_empty(), "no new Session");
-    wait_for(&log, |e| matches!(e, ProviderEvent::SessionModel(_)));
-    assert_eq!(
-        session_models(&log),
-        vec![(
-            "byok:openai-codex:gpt-5.6-sol".to_string(),
-            Some("low".to_string())
-        )]
-    );
-
-    // After a restart the chat opens at its next prompt: a pick made before
-    // that still reaches its Session.
-    drop(p);
-    let (p, log, _) = provider_in(home.clone());
-    p.apply_config("c", vec![choice("model", "byok:anthropic:claude-opus-5-5")]);
-    p.open_chat("c", &home, Some(sid.clone()));
-    assert_eq!(p.prompt("c", "config"), TurnEnd::Completed);
-    assert_eq!(
-        reply(&log),
-        "model=byok:anthropic:claude-opus-5-5 effort=low"
-    );
-    assert!(started(&log).is_empty(), "no new Session");
-
-    // A value Reason does not offer: it resets it, and the chat is told.
-    p.apply_config("c", vec![choice("model", "byok:nope:model")]);
-    log.lock().unwrap().clear();
-    assert_eq!(p.prompt("c", "config"), TurnEnd::Completed);
-    let notices: Vec<String> = log
-        .lock()
-        .unwrap()
-        .iter()
-        .filter_map(|(_, e)| match e {
-            ProviderEvent::Notice(n) => Some(n.clone()),
-            _ => None,
-        })
-        .collect();
-    assert_eq!(notices.len(), 1, "{notices:?}");
-    assert!(notices[0].contains("byok:nope:model"), "{notices:?}");
 }
 
 #[test]

@@ -5,8 +5,8 @@
 // them, which is "Auto" for a model Reason has no fixed id for. The list has
 // every model Reason offers, by Reason's names, and "Add models" / "Edit"
 // open Settings › Default models. A pick becomes the chat's Reason Session
-// options (model, reasoning_effort): for the next Session it opens and for
-// the one it has, from its next prompt on.
+// options (model, reasoning_effort); a Session already open switches before
+// its next prompt, as Conductor's does.
 //
 // It also picks the chat's agent, as Conductor's picker does (the model decides
 // the agent): when the CLI agents can run here they are listed as "Codex" and

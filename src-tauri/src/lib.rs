@@ -44,6 +44,7 @@ mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
 mod sidebar_section_commands;
+mod agent_settings_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
@@ -402,6 +403,7 @@ pub fn run() {
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
             reason_chat::reason_open_chat,
+            reason_chat::reason_set_config,
             chat_store_commands::chat_messages_save,
             chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
@@ -411,7 +413,6 @@ pub fn run() {
             session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
             reason_chat::reason_models,
-            reason_chat::reason_set_config,
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
@@ -420,6 +421,9 @@ pub fn run() {
             codex_chat::codex_respond,
             codex_chat::codex_close_chat,
             claude_chat::commands::claude_cli_path,
+            agent_settings_commands::cli_login_status,
+            agent_settings_commands::favorite_models_list,
+            agent_settings_commands::favorite_models_replace,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,

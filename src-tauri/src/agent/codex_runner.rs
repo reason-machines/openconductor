@@ -475,7 +475,6 @@ impl Worker {
 #[cfg(all(test, unix))]
 mod tests {
     use std::fs;
-    use std::os::unix::fs::PermissionsExt;
     use std::path::{Path, PathBuf};
     use std::sync::atomic::{AtomicU32, Ordering};
     use std::sync::Mutex;
@@ -485,6 +484,7 @@ mod tests {
 
     use super::super::codex_cli::{ApprovalPolicy, CodexPolicy, SandboxMode};
     use super::super::codex_wire::Outcome;
+    use super::super::test_exe::write_executable;
     use super::super::{AgentKind, LaunchEnv};
     use super::*;
 
@@ -548,8 +548,7 @@ done
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         let path = dir.join("codex");
-        fs::write(&path, FAKE).unwrap();
-        fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+        write_executable(&path, FAKE, 0o755);
         path
     }
 

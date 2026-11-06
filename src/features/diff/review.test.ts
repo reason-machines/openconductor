@@ -51,7 +51,7 @@ test("Claude reviews use the Claude review effort, Codex reviews the Codex one",
     { id: "model", value: "byok:anthropic:claude-opus-5-5" },
     { id: "reasoning_effort", value: "xhigh" },
   ]);
-  assert.equal(claude.label, "Opus 5.5 (1M)");
+  assert.equal(claude.label, "Opus 5.5");
 
   const codex = reviewModel(withModels({ review: "gpt-5.6-sol", claude_code: { review_effort_level: "low" }, codex: { default_thinking_level: "low", review_thinking_level: "high" } }));
   assert.deepEqual(codex.config, [
@@ -69,7 +69,7 @@ test("a model Reason cannot name runs on Reason's default with no options set", 
   const r = reviewModel(withModels({ review: "opus" }));
   assert.equal(r.reasonModel, null);
   assert.deepEqual(r.config, []);
-  assert.equal(r.label, "Opus");
+  assert.equal(r.label, "Opus 4.8");
   const reason = reviewModel(withModels({ review: "byok:openai-codex:gpt-6-sol", codex: { default_thinking_level: "medium", review_thinking_level: "minimal" } }));
   assert.deepEqual(reason.config, [
     { id: "model", value: "byok:openai-codex:gpt-6-sol" },
