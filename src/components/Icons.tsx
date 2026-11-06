@@ -10,6 +10,13 @@ export const CloudIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="clou
 export const SparkIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="sparkle" size={size} strokeWidth={strokeWidth} />;
 export const HomeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="house" size={size} strokeWidth={strokeWidth} />;
 export const SidebarIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="panel-left" size={size} strokeWidth={strokeWidth} />;
+/** Right-hand panel toggle: Conductor's sidebar glyph with the divider on the right (hand-drawn, not in the Lucide set). */
+export const RightSidebarIcon = ({ size = 16, strokeWidth }: P) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth ?? 2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <path d="M15 4v16" />
+  </svg>
+);
 export const PlusIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="plus" size={size} strokeWidth={strokeWidth} />;
 export const ChevronIcon = ({ size, open, strokeWidth }: P & { open?: boolean }) => {
   const style: CSSProperties = { transform: open ? "rotate(90deg)" : undefined, transition: "transform .12s" };
