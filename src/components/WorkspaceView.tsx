@@ -25,7 +25,9 @@ import { defaultChatConfig } from "../features/chat/chatModel.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
-import { answerCodex, CODEX_ACCESS, codexAccess, setCodexAccess, type CodexAccess } from "../features/chat/codexChat.ts";
+import { CodexConsentCard } from "../features/chat/CodexConsentCard.tsx";
+import type { CodexConsent } from "../features/chat/codexConsent.ts";
+import { answerCodex, answerCodexConsent, CODEX_ACCESS, codexAccess, setCodexAccess, type CodexAccess } from "../features/chat/codexChat.ts";
 import { DECISION_LABELS, type CodexApproval, type CodexDecision } from "../features/chat/codex.ts";
 import { changedSinceTurn, turnCheckpointRef } from "../features/chat/checkpoints.ts";
 import { invoke } from "@tauri-apps/api/core";
@@ -153,8 +155,8 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
-/** What the chat panel shows: Codex's approvals, or the permission requests of Reason and Claude Code. */
-type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly PermissionPrompt[]; approvals?: CodexApproval[] };
+/** What the chat panel shows: Codex's approvals and consent requests, or the permission requests of Reason and Claude Code. */
+type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly PermissionPrompt[]; approvals?: CodexApproval[]; consents?: CodexConsent[] };
 
 function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
@@ -166,8 +168,8 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const codex = agentId === "codex";
   /** The chat id on the agent's side. */
   const runId = agent.chatId(chatId);
-  // Codex's snapshots carry its pending approvals; the others' carry permission requests.
-  const [{ transcript, queue, approvals = [], permissions = [] }, setSnapshot] = useState<ChatView>(() => agent.snapshot(runId));
+  // Codex's snapshots carry its pending approvals and consent requests; the others' carry permission requests.
+  const [{ transcript, queue, approvals = [], consents = [], permissions = [] }, setSnapshot] = useState<ChatView>(() => agent.snapshot(runId));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
@@ -482,6 +484,13 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         <div className="codex-approvals">
           {approvals.map((a) => (
             <ApprovalCard key={String(a.requestId)} approval={a} onAnswer={(d) => void answerCodex(chatId, a.requestId, d)} />
+          ))}
+        </div>
+      ) : null}
+      {codex && consents.length > 0 ? (
+        <div className="codex-approvals">
+          {consents.map((c) => (
+            <CodexConsentCard key={String(c.requestId)} consent={c} onRespond={(answer) => void answerCodexConsent(chatId, c.requestId, answer)} />
           ))}
         </div>
       ) : null}

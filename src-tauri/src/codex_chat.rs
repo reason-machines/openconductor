@@ -11,7 +11,11 @@
 //! 2. `codex_prompt(chatId, text, model?, effort?)` for each message; it
 //!    resolves with the prompt's end (`{ outcome, message? }`), which also
 //!    arrives as a `turnEnded` event.
-//! 3. `codex_answer(chatId, requestId, decision)` for an `approval` event.
+//! 3. `codex_answer(chatId, requestId, decision)` for an `approval` event;
+//!    `codex_respond(chatId, requestId, answer)` for a `consent` event (an MCP
+//!    elicitation or a permission request), where `answer` is
+//!    `{action: "accept", content?}`, `{action: "decline"}`,
+//!    `{action: "cancel"}` or `{action: "grant", grantedPermissions, scope}`.
 //! 4. `codex_cancel(chatId)` for Stop; `codex_close_chat(chatId)` ends the
 //!    process (archive, app exit).
 
@@ -26,6 +30,7 @@ use tauri::{AppHandle, Emitter, Runtime, State};
 use crate::agent::codex_cli::{
     find_codex_cli, ApprovalPolicy, CodexLaunch, CodexPolicy, SandboxMode,
 };
+use crate::agent::codex_consent::ConsentAnswer;
 use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
 use crate::agent::codex_wire::{Payload, TurnEnd};
@@ -186,6 +191,18 @@ pub fn codex_answer(
     decision: ApprovalDecision,
 ) -> Result<(), String> {
     state.get(&chat_id)?.answer(request_id, decision);
+    Ok(())
+}
+
+/// Answers a `consent` event; the turn goes on once Codex has the answer.
+#[tauri::command]
+pub fn codex_respond(
+    state: State<'_, CodexChats>,
+    chat_id: String,
+    request_id: RequestId,
+    answer: ConsentAnswer,
+) -> Result<(), String> {
+    state.get(&chat_id)?.respond(request_id, answer);
     Ok(())
 }
 

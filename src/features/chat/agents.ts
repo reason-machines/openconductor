@@ -15,7 +15,7 @@ export { saveAgent, savedAgent, type ChatAgentId } from "./agentChoice.ts";
 
 /**
  * Reset chat and turn changes come from turn checkpoints; an agent without `reset` has none (Codex).
- * Only Reason asks for permission mid-turn (`answerPermission`): Codex asks through its own approvals,
+ * Only Reason asks for permission mid-turn (`answerPermission`): Codex asks through its own approvals and consent requests,
  * and Claude Code chats run in bypassPermissions.
  */
 export interface ChatAgent extends Pick<ChatRuntime<unknown>, "canSteer" | "snapshot" | "subscribe" | "submit" | "stop" | "queueAction">, Partial<Pick<ChatRuntime<unknown>, "reset" | "answerPermission">> {
