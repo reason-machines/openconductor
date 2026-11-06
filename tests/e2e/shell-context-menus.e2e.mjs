@@ -29,15 +29,18 @@ let base;
 before(async () => {
   assert.ok(executablePath, `no Chrome or Chromium found; set CHROME_PATH (tried ${CANDIDATES.join(", ")})`);
   assert.ok(existsSync("dist/index.html"), "dist/ is missing; run `npm run build` first");
-  server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
-  base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  if (process.env.OC_E2E_BASE) base = process.env.OC_E2E_BASE;
+  else {
+    server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
+    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  }
   browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
   if (SHOTS) mkdirSync(SHOTS, { recursive: true });
 });
 
 after(async () => {
   await browser?.close();
-  await new Promise((resolve) => server?.httpServer.close(resolve));
+  if (server) await new Promise((resolve) => server.httpServer.close(resolve));
 });
 
 async function shot(page, name) {

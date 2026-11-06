@@ -198,7 +198,7 @@ export function ContextMenu({ at, anchor, align = "start", onClose, label, class
     setOpenSub(null);
     const el = ref.current;
     if (!el) return;
-    const r = el.getBoundingClientRect();
+    const r = { width: el.offsetWidth, height: el.offsetHeight };
     if (anchor) {
       const p = placeDropdown(anchor, { width: r.width, height: r.height }, { width: window.innerWidth, height: window.innerHeight }, 4, align);
       setPos({ left: p.left, top: p.top, origin: `${p.originX}px ${p.originY}px` });

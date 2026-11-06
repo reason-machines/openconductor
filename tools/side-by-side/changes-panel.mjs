@@ -100,8 +100,11 @@ process.on("exit", () => refServer.kill());
 server.listen(port, "0.0.0.0", () => {
   console.log(`Changes panel preview on ${port}`);
   if (process.env.E2E === "1") {
-    const tests = spawn(process.execPath, ["--test", "tests/e2e/right-panel.e2e.mjs"], { env: { ...process.env, OC_E2E_BASE: `http://localhost:${port}/__e2e` }, stdio: "inherit" });
-    tests.on("exit", (code) => console.log(`Right-panel e2e exited ${code}`));
+    const tests = spawn(process.execPath, ["--test", "tests/e2e/right-panel.e2e.mjs", "tests/e2e/shell-context-menus.e2e.mjs"], { env: { ...process.env, OC_E2E_BASE: `http://localhost:${port}/__e2e` }, stdio: ["ignore", "pipe", "pipe"] });
+    const logPath = path.join(out, "e2e.log");
+    fs.writeFileSync(logPath, "");
+    for (const stream of [tests.stdout, tests.stderr]) stream.on("data", (data) => { process.stdout.write(data); fs.appendFileSync(logPath, data); });
+    tests.on("exit", (code) => console.log(`Right-panel and shell-menu e2e exited ${code}`));
   }
   if (process.env.CAPTURE === "1") prove().catch(console.error);
 });
