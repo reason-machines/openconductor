@@ -1,23 +1,43 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
 import type { Workspace } from "../state/types";
 import type { NavSection } from "../state/navigationSections";
 import { WORKSPACE_STATUSES, effectiveStatus, statusLabel, type WorkspaceStatusValue } from "../state/workspaceStatus";
-import { ChevronIcon } from "./Icons";
+import { ContextMenu, MenuItem, MenuSeparator, SubMenu } from "./menu/ContextMenu";
+import {
+  ArchiveIcon,
+  CheckIcon,
+  CircleDashedIcon,
+  FolderInputIcon,
+  FolderMinusIcon,
+  LinkIcon,
+  MailIcon,
+  MailOpenIcon,
+  PencilIcon,
+  PinIcon,
+  PinOffIcon,
+  PlusIcon,
+  WorkspaceStatusGlyph,
+} from "./menu/menuIcons";
 import { isWorkspaceUnread } from "../state/chatUnread";
 
-// Conductor's workspace row menu (`D9e` -> `Aao` in the renderApp chunk,
-// REA-extracted and read as data), opened by right-clicking a sidebar row.
-// Local-workspace items, in order: Mark as read / Mark as unread (R),
-// Pin / Unpin (P), Set status ▸, Move to section ▸, Rename, Copy link (⌘⇧C),
-// separator, Archive (⌘⇧A, shown on the selected row) / Unarchive.
-// R and P act on the row while the menu is open
-// (workspace.contextMenu.toggleRead / togglePin).
-// Move to section ▸ (Conductor's `Xoo` / `Joo`): every section (emoji, name,
-// a check on the current one, which is disabled), a separator when there are
-// sections, "New section…" (creates one holding this workspace) and
-// "Remove from section" when it is in one.
-// Copy link (`XV`) copies openconductor://workspace?id=<id> (src/workspace/link.ts);
-// its ⌘⇧C hint shows only on the open workspace's row (`de = NCi(n)`).
+// Conductor's workspace row menu: the sidebar row (`Qj` @9894200) wraps itself in a Base UI
+// ContextMenu whose popup is `${my} min-w-[200px]` around `D9e` -> `Aao` @7302657
+// (renderApp-D_fmY7hW.js, REA-extracted, read as data). Local-workspace items, in order:
+//   Mark as read (mail-open) / Mark as unread (mail), shortcut R
+//   Pin (pin) / Unpin (pin-off), shortcut P
+//   Set status ▸ (circle-dashed; submenu `w-44`: status glyph, label flex-1, check on current)
+//   Move to section ▸ (folder-input; `Xoo`/`Joo`, submenu `min-w-44`: sections with emoji,
+//     the current one checked and disabled, a separator when there are sections,
+//     New section… (plus), Remove from section (folder-minus) when it is in one)
+//   Rename (pencil)
+//   Copy link (link), ⌘⇧C only on the open workspace's row (`de = NCi(n)`)
+//   separator
+//   Archive (archive), ⌘⇧A only on the open workspace's row (Unarchive, rotate-ccw, on an
+//     archived one, which the sidebar does not list)
+// Cloud-only items (Start, Follow, Reassign, Copy SSH command) and the internal build's
+// "Copy workspace info" rows do not apply to a local OpenConductor workspace.
+// R and P act on the row while the menu is open (`Fao`: workspace.contextMenu.toggleRead /
+// togglePin). Copy link (`XV`) copies openconductor://workspace?id=<id> (src/workspace/link.ts).
 
 export interface WorkspaceActions {
   toggleRead: () => void;
@@ -36,7 +56,7 @@ export interface WorkspaceActions {
 
 interface Props {
   workspace: Workspace;
-  /** Row is the selected workspace: Conductor shows the ⌘⇧A hint only then. */
+  /** Row is the selected workspace: Conductor shows the ⌘⇧C and ⌘⇧A hints only then. */
   selected: boolean;
   /** Viewport point the menu opens at (the right-click position). */
   at: { x: number; y: number };
@@ -49,163 +69,73 @@ interface Props {
 }
 
 export function WorkspaceActionsMenu({ workspace, selected, at, actions, sections, currentSectionId, onClose }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState(at);
-  const [sub, setSub] = useState<"status" | "section" | null>(null);
-  const statusOpen = sub === "status";
-  const sectionOpen = sub === "section";
-  const setStatusOpen = (open: boolean) => setSub(open ? "status" : null);
-  const setSectionOpen = (open: boolean) => setSub(open ? "section" : null);
   const current = effectiveStatus(workspace);
   const pinned = typeof workspace.pinnedAt === "number";
 
-  const run = (fn: () => void) => () => {
+  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const key = e.key.toLowerCase();
+    if (key !== "r" && key !== "p") return;
+    e.preventDefault();
+    (key === "r" ? actions.toggleRead : actions.togglePin)();
     onClose();
-    fn();
   };
 
-  // Keep the menu inside the window.
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    setPos({ x: Math.max(4, Math.min(at.x, window.innerWidth - r.width - 4)), y: Math.max(4, Math.min(at.y, window.innerHeight - r.height - 4)) });
-  }, [at]);
-
-  useEffect(() => {
-    ref.current?.querySelector<HTMLElement>("[role=menuitem]")?.focus();
-    const onDown = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) onClose();
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-      const key = e.key.toLowerCase();
-      if (key === "escape") {
-        e.preventDefault();
-        onClose();
-      } else if (key === "r") {
-        e.preventDefault();
-        run(actions.toggleRead)();
-      } else if (key === "p") {
-        e.preventDefault();
-        run(actions.togglePin)();
-      } else if (key === "arrowdown" || key === "arrowup") {
-        e.preventDefault();
-        const items = [...(ref.current?.querySelectorAll<HTMLElement>("[role=menuitem]:not(:disabled)") ?? [])];
-        const i = items.indexOf(document.activeElement as HTMLElement);
-        const next = items[(i + (key === "arrowdown" ? 1 : -1) + items.length) % items.length];
-        next?.focus();
-      }
-    };
-    document.addEventListener("mousedown", onDown);
-    document.addEventListener("keydown", onKey, true);
-    window.addEventListener("blur", onClose);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("keydown", onKey, true);
-      window.removeEventListener("blur", onClose);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return (
-    <div ref={ref} className="sb-ctx-menu" role="menu" aria-label="Workspace actions" style={{ left: pos.x, top: pos.y }} onContextMenu={(e) => e.preventDefault()}>
-      <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.toggleRead)}>
-        <span className="sb-ctx-label">{isWorkspaceUnread(workspace) ? "Mark as read" : "Mark as unread"}</span>
-        <kbd className="sb-ctx-kbd">R</kbd>
-      </button>
-      <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.togglePin)}>
-        <span className="sb-ctx-label">{pinned ? "Unpin" : "Pin"}</span>
-        <kbd className="sb-ctx-kbd">P</kbd>
-      </button>
-      <div className="sb-ctx-sub" onMouseEnter={() => setStatusOpen(true)} onMouseLeave={() => setStatusOpen(false)}>
-        <button
-          type="button"
-          role="menuitem"
-          className="sb-ctx-item"
-          aria-haspopup="menu"
-          aria-expanded={statusOpen}
-          onClick={() => setStatusOpen(!statusOpen)}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowRight") {
-              e.preventDefault();
-              setStatusOpen(true);
-            }
-          }}
-        >
-          <span className="sb-ctx-label">Set status</span>
-          <ChevronIcon size={14} />
-        </button>
-        {statusOpen && (
-          <div className="sb-ctx-menu sb-ctx-submenu" role="menu" aria-label="Set status">
-            {WORKSPACE_STATUSES.map((s) => (
-              <button key={s} type="button" role="menuitemradio" aria-checked={s === current} className="sb-ctx-item" onClick={run(() => actions.setStatus(s))}>
-                <span className={`sb-status-dot status-${s}`} aria-hidden />
-                <span className="sb-ctx-label">{statusLabel(s)}</span>
-                {s === current && <span className="sb-ctx-check" aria-hidden>✓</span>}
-              </button>
-            ))}
-          </div>
+    <ContextMenu at={at} onClose={onClose} label="Workspace actions" className="cm-min-w-200" onKeyDown={onKeyDown}>
+      <MenuItem icon={isWorkspaceUnread(workspace) ? <MailOpenIcon /> : <MailIcon />} shortcut="R" onSelect={actions.toggleRead}>
+        {isWorkspaceUnread(workspace) ? "Mark as read" : "Mark as unread"}
+      </MenuItem>
+      <MenuItem icon={pinned ? <PinOffIcon /> : <PinIcon />} shortcut="P" onSelect={actions.togglePin}>
+        {pinned ? "Unpin" : "Pin"}
+      </MenuItem>
+      <SubMenu icon={<CircleDashedIcon />} label="Set status" className="cm-w-44">
+        {WORKSPACE_STATUSES.map((s) => (
+          <MenuItem
+            key={s}
+            icon={<span className="cm-status-wrap"><WorkspaceStatusGlyph status={s} /></span>}
+            grow
+            checked={s === current}
+            trailing={s === current ? <CheckIcon /> : undefined}
+            onSelect={() => actions.setStatus(s)}
+          >
+            {statusLabel(s)}
+          </MenuItem>
+        ))}
+      </SubMenu>
+      <SubMenu icon={<FolderInputIcon />} label="Move to section" className="cm-min-w-44">
+        {sections.map((section) => {
+          const here = section.id === currentSectionId;
+          return (
+            <MenuItem
+              key={section.id}
+              icon={section.emoji !== undefined ? <span aria-hidden className="cm-emoji">{section.emoji}</span> : undefined}
+              grow
+              checked={here}
+              disabled={here}
+              trailing={here ? <CheckIcon /> : undefined}
+              onSelect={() => actions.moveToSection(section.id)}
+            >
+              {section.name}
+            </MenuItem>
+          );
+        })}
+        {sections.length > 0 && <MenuSeparator />}
+        <MenuItem icon={<PlusIcon />} onSelect={actions.newSection}>New section…</MenuItem>
+        {currentSectionId !== undefined && (
+          <MenuItem icon={<FolderMinusIcon />} onSelect={actions.removeFromSection}>Remove from section</MenuItem>
         )}
-      </div>
-      <div className="sb-ctx-sub" onMouseEnter={() => setSectionOpen(true)} onMouseLeave={() => setSectionOpen(false)}>
-        <button
-          type="button"
-          role="menuitem"
-          className="sb-ctx-item"
-          aria-haspopup="menu"
-          aria-expanded={sectionOpen}
-          onClick={() => setSectionOpen(!sectionOpen)}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowRight") {
-              e.preventDefault();
-              setSectionOpen(true);
-            }
-          }}
-        >
-          <span className="sb-ctx-label">Move to section</span>
-          <ChevronIcon size={14} />
-        </button>
-        {sectionOpen && (
-          <div className="sb-ctx-menu sb-ctx-submenu" role="menu" aria-label="Move to section">
-            {sections.map((section) => {
-              const current = section.id === currentSectionId;
-              return (
-                <button key={section.id} type="button" role="menuitemradio" aria-checked={current} disabled={current} className="sb-ctx-item" onClick={run(() => actions.moveToSection(section.id))}>
-                  {section.emoji !== undefined && <span className="sb-section-emoji" aria-hidden>{section.emoji}</span>}
-                  <span className="sb-ctx-label">{section.name}</span>
-                  {current && <span className="sb-ctx-check" aria-hidden>✓</span>}
-                </button>
-              );
-            })}
-            {sections.length > 0 && <div className="sb-ctx-sep" role="separator" />}
-            <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.newSection)}>
-              <span className="sb-ctx-label">New section…</span>
-            </button>
-            {currentSectionId !== undefined && (
-              <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.removeFromSection)}>
-                <span className="sb-ctx-label">Remove from section</span>
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-      {actions.rename && (
-        <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.rename)}>
-          <span className="sb-ctx-label">Rename</span>
-        </button>
-      )}
+      </SubMenu>
+      {actions.rename && <MenuItem icon={<PencilIcon />} onSelect={actions.rename}>Rename</MenuItem>}
       {actions.copyLink && (
-        <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.copyLink)}>
-          <span className="sb-ctx-label">Copy link</span>
-          {selected && <kbd className="sb-ctx-kbd">⌘⇧C</kbd>}
-        </button>
+        <MenuItem icon={<LinkIcon />} shortcut={selected ? "⌘⇧C" : undefined} onSelect={actions.copyLink}>
+          Copy link
+        </MenuItem>
       )}
-      <div className="sb-ctx-sep" role="separator" />
-      <button type="button" role="menuitem" className="sb-ctx-item" onClick={run(actions.archive)}>
-        <span className="sb-ctx-label">Archive</span>
-        {selected && <kbd className="sb-ctx-kbd">⌘⇧A</kbd>}
-      </button>
-    </div>
+      <MenuSeparator />
+      <MenuItem icon={<ArchiveIcon />} shortcut={selected ? "⌘⇧A" : undefined} onSelect={actions.archive}>
+        Archive
+      </MenuItem>
+    </ContextMenu>
   );
 }

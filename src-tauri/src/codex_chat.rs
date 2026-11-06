@@ -58,7 +58,7 @@ fn home() -> Option<PathBuf> {
 
 impl CodexChats {
     /// `PATH` from the user's login shell, falling back to the app's own.
-    fn path(&self) -> Option<OsString> {
+    pub(crate) fn path(&self) -> Option<OsString> {
         self.shell_path
             .get_or_init(|| {
                 let shell = std::env::var("SHELL").unwrap_or_else(|_| "/bin/zsh".into());
@@ -69,7 +69,7 @@ impl CodexChats {
             .clone()
     }
 
-    fn cli(&self) -> Option<PathBuf> {
+    pub(crate) fn cli(&self) -> Option<PathBuf> {
         find_codex_cli(self.path().as_deref(), home().as_deref())
     }
 
@@ -142,7 +142,9 @@ pub async fn codex_open_chat<R: Runtime>(
     };
     let chat = chat_id.clone();
     let sink: Sink = Arc::new(move |payload: Payload| {
-        let _ = app.emit(EVENT, event_json(&chat, &payload));
+        let event = event_json(&chat, &payload);
+        crate::e2e::log_event("codex", &event);
+        let _ = app.emit(EVENT, event);
     });
     let runner = Arc::new(CodexRunner::start(config, sink));
     state.chats.lock().unwrap().entry(chat_id).or_insert(runner);

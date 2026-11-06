@@ -1,7 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { nextUnreadChat } from "./nextUnread.ts";
-import { parsePrefs, prefsOf, reposFromDb, validSelection, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
+import { keepPr, parsePrefs, prefsOf, reposFromDb, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
+import type { Workspace } from "./types";
 
 const repo = (id: string, extra: Partial<DbRepoRow> = {}): DbRepoRow => ({
   id, name: id, rootPath: `/src/${id}`, remoteUrl: null, defaultBranch: "main", displayOrder: 0, hidden: false, icon: null,
@@ -103,6 +104,28 @@ test("sidebar: a user-set workspace name is shown as is", async () => {
   const label = (w: typeof oslo) => workspaceLabel({ name: w.name, branch: w.branch, prTitle: w.prTitle, userSetWorkspaceName: w.userSetWorkspaceName, targetBranch: "main" });
   assert.equal(label(oslo), "Fix login");
   assert.notEqual(label(lima), "lima");
+});
+
+
+const live = (extra: Partial<Workspace> = {}): Workspace => ({ id: "w", name: "w", branch: "w", status: "idle", diff: { added: 0, removed: 0 }, createdAt: 0, ...extra });
+
+test("re-reading conductor.db keeps the PR the app last read", () => {
+  const fresh = live({ name: "renamed" });
+  assert.deepEqual(keepPr(fresh, undefined), fresh);
+  assert.deepEqual(keepPr(fresh, live()), fresh);
+  const kept = keepPr(fresh, live({ pr: null, sessionStatus: "working" }));
+  assert.equal(kept.pr, null);
+  assert.equal(kept.name, "renamed");
+  assert.ok(!("sessionStatus" in kept));
+});
+
+test("saved browser state drops live session statuses, including the old status: working", () => {
+  const saved = {
+    repos: [{ id: "r", name: "r", path: "/r", defaultBranch: "main", workspaces: [live({ id: "a", sessionStatus: "working" }), { ...live({ id: "b" }), status: "working" } as unknown as Workspace, live({ id: "c", status: "archived" })] }],
+    selection: { kind: "home" as const },
+  };
+  const ws = withoutLiveSessions(saved).repos[0].workspaces;
+  assert.deepEqual(ws.map((w) => [w.id, w.status, w.sessionStatus]), [["a", "idle", undefined], ["b", "idle", undefined], ["c", "archived", undefined]]);
 });
 
 test("loads updated_at, so Go to next unread picks the most recently active row", () => {

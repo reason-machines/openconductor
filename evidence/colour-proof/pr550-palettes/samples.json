@@ -1,0 +1,937 @@
+{
+  "tool": "playwright-core + system Chromium, 1440x900, scale 1, sRGB, en-US, UTC",
+  "tolerance": 3,
+  "palette_attr": "data-color-palette",
+  "results": [
+    {
+      "palette": "neutral",
+      "scheme": "light",
+      "file": "neutral--light.png",
+      "root": {
+        "theme": "light",
+        "palette": "neutral"
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            23,
+            23,
+            23
+          ],
+          "hex": "#171717",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            23,
+            23,
+            23
+          ],
+          "hex": "#171717",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            1374,
+            537
+          ],
+          "element": "Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            240,
+            240,
+            240
+          ],
+          "hex": "#f0f0f0",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "hex": "#ffffff",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            1177,
+            458
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            249,
+            249,
+            249
+          ],
+          "hex": "#f9f9f9",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    },
+    {
+      "palette": "neutral",
+      "scheme": "dark",
+      "file": "neutral--dark.png",
+      "root": {
+        "theme": "dark",
+        "palette": "neutral"
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            250,
+            250,
+            250
+          ],
+          "hex": "#fafafa",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            250,
+            250,
+            250
+          ],
+          "hex": "#fafafa",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            1374,
+            537
+          ],
+          "element": "Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            31,
+            31,
+            31
+          ],
+          "hex": "#1f1f1f",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            10,
+            10,
+            10
+          ],
+          "hex": "#0a0a0a",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            1177,
+            458
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            16,
+            16,
+            16
+          ],
+          "hex": "#101010",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    },
+    {
+      "palette": "stone",
+      "scheme": "light",
+      "file": "stone--light.png",
+      "root": {
+        "theme": "light",
+        "palette": "stone"
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            65,
+            48,
+            48
+          ],
+          "hex": "#413030",
+          "spread": 17,
+          "achromatic": false,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            65,
+            48,
+            48
+          ],
+          "hex": "#413030",
+          "spread": 17,
+          "achromatic": false,
+          "at": [
+            1374,
+            537
+          ],
+          "element": "Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            250,
+            250,
+            249
+          ],
+          "hex": "#fafaf9",
+          "spread": 1,
+          "achromatic": true,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "hex": "#ffffff",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            1177,
+            458
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            252,
+            252,
+            251
+          ],
+          "hex": "#fcfcfb",
+          "spread": 1,
+          "achromatic": true,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    },
+    {
+      "palette": "stone",
+      "scheme": "dark",
+      "file": "stone--dark.png",
+      "root": {
+        "theme": "dark",
+        "palette": "stone"
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            243,
+            242,
+            241
+          ],
+          "hex": "#f3f2f1",
+          "spread": 2,
+          "achromatic": true,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            243,
+            242,
+            241
+          ],
+          "hex": "#f3f2f1",
+          "spread": 2,
+          "achromatic": true,
+          "at": [
+            1374,
+            537
+          ],
+          "element": "Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            33,
+            30,
+            28
+          ],
+          "hex": "#211e1c",
+          "spread": 5,
+          "achromatic": false,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            20,
+            17,
+            16
+          ],
+          "hex": "#141110",
+          "spread": 4,
+          "achromatic": false,
+          "at": [
+            1177,
+            458
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            28,
+            24,
+            23
+          ],
+          "hex": "#1c1817",
+          "spread": 5,
+          "achromatic": false,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    },
+    {
+      "palette": "blue",
+      "scheme": "light",
+      "file": "blue--light.png",
+      "root": {
+        "theme": "light",
+        "palette": "blue"
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            37,
+            99,
+            235
+          ],
+          "hex": "#2563eb",
+          "spread": 198,
+          "achromatic": false,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            37,
+            99,
+            235
+          ],
+          "hex": "#2563eb",
+          "spread": 198,
+          "achromatic": false,
+          "at": [
+            1374,
+            537
+          ],
+          "element": "Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            232,
+            239,
+            249
+          ],
+          "hex": "#e8eff9",
+          "spread": 17,
+          "achromatic": false,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "hex": "#ffffff",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            1177,
+            458
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            245,
+            248,
+            251
+          ],
+          "hex": "#f5f8fb",
+          "spread": 6,
+          "achromatic": false,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    },
+    {
+      "palette": "blue",
+      "scheme": "dark",
+      "file": "blue--dark.png",
+      "root": {
+        "theme": "dark",
+        "palette": "blue"
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            91,
+            141,
+            239
+          ],
+          "hex": "#5b8def",
+          "spread": 148,
+          "achromatic": false,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            91,
+            141,
+            239
+          ],
+          "hex": "#5b8def",
+          "spread": 148,
+          "achromatic": false,
+          "at": [
+            1374,
+            537
+          ],
+          "element": "Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            27,
+            42,
+            66
+          ],
+          "hex": "#1b2a42",
+          "spread": 39,
+          "achromatic": false,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            15,
+            22,
+            36
+          ],
+          "hex": "#0f1624",
+          "spread": 21,
+          "achromatic": false,
+          "at": [
+            1177,
+            458
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            17,
+            25,
+            41
+          ],
+          "hex": "#111929",
+          "spread": 24,
+          "achromatic": false,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    },
+    {
+      "palette": "slate",
+      "scheme": "light",
+      "file": "slate--light.png",
+      "root": {
+        "theme": "light",
+        "palette": "slate"
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            51,
+            65,
+            85
+          ],
+          "hex": "#334155",
+          "spread": 34,
+          "achromatic": false,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            51,
+            65,
+            85
+          ],
+          "hex": "#334155",
+          "spread": 34,
+          "achromatic": false,
+          "at": [
+            1374,
+            537
+          ],
+          "element": "Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            241,
+            245,
+            249
+          ],
+          "hex": "#f1f5f9",
+          "spread": 8,
+          "achromatic": false,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "hex": "#ffffff",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            1177,
+            458
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            251,
+            252,
+            253
+          ],
+          "hex": "#fbfcfd",
+          "spread": 2,
+          "achromatic": true,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    },
+    {
+      "palette": "slate",
+      "scheme": "dark",
+      "file": "slate--dark.png",
+      "root": {
+        "theme": "dark",
+        "palette": "slate"
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            226,
+            232,
+            240
+          ],
+          "hex": "#e2e8f0",
+          "spread": 14,
+          "achromatic": false,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            226,
+            232,
+            240
+          ],
+          "hex": "#e2e8f0",
+          "spread": 14,
+          "achromatic": false,
+          "at": [
+            1374,
+            537
+          ],
+          "element": "Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            30,
+            41,
+            59
+          ],
+          "hex": "#1e293b",
+          "spread": 29,
+          "achromatic": false,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            2,
+            6,
+            23
+          ],
+          "hex": "#020617",
+          "spread": 21,
+          "achromatic": false,
+          "at": [
+            1177,
+            458
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            7,
+            13,
+            29
+          ],
+          "hex": "#070d1d",
+          "spread": 22,
+          "achromatic": false,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    },
+    {
+      "palette": "zinc",
+      "scheme": "light",
+      "file": "zinc--light.png",
+      "root": {
+        "theme": "light",
+        "palette": "zinc"
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            24,
+            24,
+            27
+          ],
+          "hex": "#18181b",
+          "spread": 3,
+          "achromatic": true,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            24,
+            24,
+            27
+          ],
+          "hex": "#18181b",
+          "spread": 3,
+          "achromatic": true,
+          "at": [
+            1374,
+            537
+          ],
+          "element": "Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            244,
+            244,
+            245
+          ],
+          "hex": "#f4f4f5",
+          "spread": 1,
+          "achromatic": true,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "hex": "#ffffff",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            1177,
+            458
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            252,
+            252,
+            252
+          ],
+          "hex": "#fcfcfc",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    },
+    {
+      "palette": "zinc",
+      "scheme": "dark",
+      "file": "zinc--dark.png",
+      "root": {
+        "theme": "dark",
+        "palette": "zinc"
+      },
+      "samples": {
+        "tab_underline": {
+          "rgb": [
+            250,
+            250,
+            250
+          ],
+          "hex": "#fafafa",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            296,
+            101
+          ],
+          "element": ".main-tabs active tab, bottom border",
+          "hit": "button.active"
+        },
+        "run_button": {
+          "rgb": [
+            250,
+            250,
+            250
+          ],
+          "hex": "#fafafa",
+          "spread": 0,
+          "achromatic": true,
+          "at": [
+            1374,
+            537
+          ],
+          "element": "Run button, left padding",
+          "hit": "button.btn.btn-small.btn-primary"
+        },
+        "user_bubble": {
+          "rgb": [
+            39,
+            39,
+            42
+          ],
+          "hex": "#27272a",
+          "spread": 3,
+          "achromatic": true,
+          "at": [
+            291,
+            146
+          ],
+          "element": ".oc-bubble, top-left padding",
+          "hit": "div.chat-bubble.oc-bubble"
+        },
+        "panel_bg": {
+          "rgb": [
+            9,
+            9,
+            11
+          ],
+          "hex": "#09090b",
+          "spread": 2,
+          "achromatic": true,
+          "at": [
+            1177,
+            458
+          ],
+          "element": "right panel, empty area above .scripts",
+          "hit": "nav.oc-changes"
+        },
+        "sidebar_bg": {
+          "rgb": [
+            13,
+            13,
+            15
+          ],
+          "hex": "#0d0d0f",
+          "spread": 2,
+          "achromatic": true,
+          "at": [
+            128,
+            780
+          ],
+          "element": "aside.sidebar, empty area",
+          "hit": "nav.repo-list"
+        }
+      },
+      "missing": [],
+      "page_errors": []
+    }
+  ]
+}

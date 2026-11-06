@@ -93,3 +93,15 @@ Follow-up: `rea trace-javascript-semantics` with seeds `markUnreadIfNotViewing`,
 Part 4: `rea trace-javascript-semantics` with seeds `markWorkspaceAsRead`, `needs_plan_response` (the row click's attention filter) and `UPDATE sessions SET unread_count = 0 WHERE workspace_id = ?` (REA 6.7.0 on sven m5 max) all exited 0 with status partial, `seed_node_ids` [] and 0 seed matches. This is the same gap as before. The part-4 offsets come from plain-text reads of `/tmp/rea` copies with matching sha256 (ws_unread_chat_*).
 
 Part 4 checks: `cargo test` in crates/openconductor-db, `bash evidence/persistence/run-tests.sh`, `node --test src/state/chatUnread.test.ts src/state/openChat.test.ts src/state/autoUnread.test.ts src/state/nextUnread.test.ts src/state/persisted.test.ts`, and `TMPDIR=/tmp/<short> node --test tests/e2e/next-unread.e2e.mjs` (tests 3 and 4 are new).
+
+## Attention triggers for plan review, questions and Codex consents
+
+Conductor's `_p` (`index-BGEQ8YjU.js` @2,941,190) marks a chat unread unless it is selected with the window focused, and every wait on the user calls it right after `updateSessionStatus`: ExitPlanMode `needs_plan_response` @2,945,001, AskUserQuestion `needs_user_input` @2,945,451, Codex MCP elicitation @2,946,028 and Codex permission approval @2,946,583 (both `needs_user_input`), tool approval `needs_user_permission` @2,947,277. Read as plain text by byte offset; `rea search` has no route for a JavaScript chunk (REA-GAPS 25).
+
+Main signalled only turn end, Reason permission requests and Codex tool approvals. Now:
+
+- `reportChatStatus` signals attention whenever a chat's status enters `needs_plan_response` or `needs_user_input` (`enteredWait` in `src/features/chat/attention.ts`), so plan review and questions mark the chat for any runtime that reports those statuses. Our Reason and Codex runtimes do not produce ExitPlanMode or AskUserQuestion waits yet; when they do, the status they report is enough.
+- A new Codex MCP elicitation or permission consent signals attention (`codexAsks`): through its status when it moves the chat into `needs_user_input`, directly when the chat already waits (a second consent, or one behind an open tool approval, which outranks it). A re-sent request with the same id does not.
+- `needs_user_permission` stays signalled per request, so a second approval in the same wait still asks again, as in Conductor.
+
+Per-chat unread (`sessions.unread_count`) is PR #564; with it the signal marks the chat, without it the chat's workspace.

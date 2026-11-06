@@ -10,9 +10,23 @@ instructions.
 - Claude Code chats call `claude_open_chat`, `claude_prompt` and
   `claude_cancel` (`src-tauri/src/claude_chat/`) and receive
   `claude-chat-event` payloads in the same shape as Reason chats, so the
-  transcript reducer (`src/features/chat/reason.ts`) is shared. The
-  composer's agent picker that selects Claude Code lands with the shared
-  chat runtime (after #303).
+  transcript reducer (`src/features/chat/reason.ts`) is shared. Claude Code
+  is a backend of the shared chat runtime (`src/features/chat/claudeChat.ts`
+  on `chatRuntime.ts`), so the queue, Stop, persistence and "Reset chat"
+  work as for Reason. The composer's agent picker
+  (`src/features/chat/agents.ts`) switches a workspace's own chat between
+  Reason and Claude Code and remembers the pick per workspace; each agent
+  has its own chat id (`<workspace id>:claude` for Claude Code, which still counts toward the workspace's sidebar status), so their
+  stored transcripts, saved sessions and checkpoints never mix. Review
+  chats always run Reason.
+- Claude Code does not steer: a message sent during a turn waits in the
+  queue and runs after it. Attachments go in the message as named
+  `<attachment>` blocks; a new chat's first message carries the
+  repository's general preferences, as for Reason.
+- Each turn is checkpointed before and after (`claude_prompt` takes the
+  turn's checkpoint ref, as `reason_prompt` does), so the changed-file chips
+  under a turn and "Reset chat" work. A Stop pressed while the start
+  checkpoint is saved still stops the turn (`ClaudeRunner::expect_prompt`).
 - One `claude` process per chat, started on the first message in the
   workspace folder: `claude --input-format stream-json --output-format
   stream-json --verbose --permission-mode bypassPermissions`, with the
@@ -62,8 +76,11 @@ debug-only in-app seam (`src-tauri/src/e2e.rs`): a debug build started with
 script drives the real UI and writes its report with `e2e_report` to
 `$OC_E2E_OUT`, and the app appends every Claude chat event it emits to
 `$OC_E2E_OUT/claude-chat-events.jsonl`. Release builds ignore both
-variables. The driver (`tools/claude-code/`) and the signed-in run
-(`signed-in-run.json`) land with the composer's agent picker.
+variables. Run it with `tools/claude-code/run-e2e-mac.sh OUT` against a
+debug bundle; `tools/claude-code/summarize.py` writes the summary.
+
+The latest signed-in run is [signed-in-run.md](signed-in-run.md)
+([signed-in-run.json](signed-in-run.json)).
 
 ## Probe of the signed-in CLI (2026-11-05)
 
