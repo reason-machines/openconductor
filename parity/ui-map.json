@@ -32,15 +32,15 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 973,
+  "total": 975,
   "missing": 747,
   "wrong": 84,
-  "matches": 142,
+  "matches": 144,
   "states": {
-   "total": 75,
+   "total": 77,
    "missing": 13,
    "wrong": 25,
-   "matches": 37
+   "matches": 39
   },
   "items": {
    "total": 898,
@@ -166,10 +166,10 @@
     "matches": 9
    },
    "terminal-scripts": {
-    "total": 22,
+    "total": 24,
     "missing": 19,
     "wrong": 0,
-    "matches": 3
+    "matches": 5
    },
    "triage": {
     "total": 268,
@@ -804,6 +804,80 @@
     ]
    },
    "copy_coverage": 0.923,
+   "copy_missing": [
+    "add chat transcripts"
+   ]
+  },
+  {
+   "id": "panel-run-add",
+   "title": "Terminal panel: Run, no run script",
+   "status": "matches",
+   "why": "diff 2.9% at t24, copy 92%",
+   "team": "terminal-scripts",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-03-run-add.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-osaka",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_80a301c5d64f2f8242553216e23e2d538f092867078e21b441a4371b8116df06"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-03-run-add.png",
+    "error": null,
+    "note": "side-by-side lane at bd29b1777: tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.029383574695121952,
+    "rea_evidence_ids": [
+     "ev_8e4a6af86bbc0153101a55eb3e65df3785f37bb8db967697bbf1106926ee078a",
+     "ev_181cedece7bc075477464f300342037df824da160aeff5e8673299f216ef5ad4"
+    ]
+   },
+   "copy_coverage": 0.923,
+   "copy_missing": [
+    "add chat transcripts"
+   ]
+  },
+  {
+   "id": "panel-run-idle",
+   "title": "Terminal panel: Run, before the run script runs",
+   "status": "matches",
+   "why": "diff 2.8% at t24, copy 90%",
+   "team": "terminal-scripts",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-04-run-idle.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-osaka",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_eb2d5d6a8f1c2281844703abd494db0d3df0de0fbf59823b5ae9936d66fe9136"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/terminal-scripts-04-run-idle.png",
+    "error": null,
+    "note": "side-by-side lane at bd29b1777: tools/side-by-side/setup-tab.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs fake backend) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.02811737804878049,
+    "rea_evidence_ids": [
+     "ev_5a5d886fd397384e1a72aaa95f6103678d3da54f3bf64adb43d513671525b258",
+     "ev_71153a81872cb6c9673f80dd75d4cfd14bfea448d6c354dff1ef01477690ba8f"
+    ]
+   },
+   "copy_coverage": 0.909,
    "copy_missing": [
     "add chat transcripts"
    ]

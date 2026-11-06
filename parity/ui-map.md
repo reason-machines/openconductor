@@ -8,8 +8,8 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **973** | **747** | **84** | **142** |
-| States (captured screens) | 75 | 13 | 25 | 37 |
+| **All** | **975** | **747** | **84** | **144** |
+| States (captured screens) | 77 | 13 | 25 | 39 |
 | Inventory items | 898 | 734 | 59 | 105 |
 | &nbsp;&nbsp;dialog | 64 | 54 | 5 | 5 |
 | &nbsp;&nbsp;empty-state | 52 | 44 | 1 | 7 |
@@ -37,7 +37,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | routines | 40 | 35 | 0 | 5 |
 | settings | 181 | 46 | 46 | 89 |
 | shell | 196 | 178 | 9 | 9 |
-| terminal-scripts | 22 | 19 | 0 | 3 |
+| terminal-scripts | 24 | 19 | 0 | 5 |
 | triage | 268 | 268 | 0 | 0 |
 | workspaces | 58 | 38 | 7 | 13 |
 
@@ -79,6 +79,8 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Diff: entire file<br>`diff-entire-file` | matches | git-review | diff 4.7% at t24, copy 100% | [png](side-by-side/git-review-03-diff-entire-file.png) | [png](side-by-side/git-review-03-diff-entire-file.png) |  | 4.7% |
 | Terminal panel: Setup, no setup script<br>`panel-setup-add` | matches | terminal-scripts | diff 3.1% at t24, copy 93% | [png](side-by-side/terminal-scripts-01-setup-add.png) | [png](side-by-side/terminal-scripts-01-setup-add.png) |  | 3.1% |
 | Terminal panel: Setup, before setup runs<br>`panel-setup-idle` | matches | terminal-scripts | diff 2.9% at t24, copy 92% | [png](side-by-side/terminal-scripts-02-setup-idle.png) | [png](side-by-side/terminal-scripts-02-setup-idle.png) |  | 2.9% |
+| Terminal panel: Run, no run script<br>`panel-run-add` | matches | terminal-scripts | diff 2.9% at t24, copy 92% | [png](side-by-side/terminal-scripts-03-run-add.png) | [png](side-by-side/terminal-scripts-03-run-add.png) |  | 2.9% |
+| Terminal panel: Run, before the run script runs<br>`panel-run-idle` | matches | terminal-scripts | diff 2.8% at t24, copy 90% | [png](side-by-side/terminal-scripts-04-run-idle.png) | [png](side-by-side/terminal-scripts-04-run-idle.png) |  | 2.8% |
 | Workspace needing permission<br>`needs-permission` | wrong | chat | diff 3.9% at t24, copy 88% | [png](ui-map/ref/needs-permission.png) | [png](ui-map/oc/needs-permission.png) | [jpg](ui-map/diff/needs-permission.jpg) | 3.9% |
 | Dashboard<br>`route-dashboard` | missing | shell | OpenConductor has no route or view for /dashboard | [png](ui-map/ref/route-dashboard.png) | no-equivalent |  |  |
 | Routines<br>`route-routines` | matches | routines | diff 1.7% at t24, copy 100% | [png](side-by-side/routines-01-list.png) | [png](side-by-side/routines-01-list.png) |  | 1.7% |

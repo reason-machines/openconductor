@@ -145,7 +145,8 @@ export const flows = [
       const settings = join(ctx.repo, ".conductor", "settings.local.toml");
       const spotlightSetting = () => (existsSync(settings) ? readFileSync(settings, "utf8").match(/^spotlight_testing = (true|false)$/m)?.[1] ?? "unset" : "no file");
       const refs = () => git(ctx.repo, "for-each-ref", "--format=%(refname)", "refs/conductor-checkpoints").toString().split("\n").filter(Boolean);
-      const buttonText = () => wd.execute("return document.querySelector('.scripts-actions .btn-primary, .scripts-actions .btn-stop')?.textContent.trim() ?? null;", []);
+      // The strip's run split button (Conductor's): its name is "Start spotlight" idle, "Stop Spotlight" while it syncs.
+      const buttonText = () => wd.execute("return document.querySelector('.ws-strip .run-split-main')?.getAttribute('aria-label') ?? null;", []);
       if (existsSync(inRoot)) throw new Error("e2e-diff.txt is already in the repository root");
 
       // Like Conductor, the Run tab of a repository without a run script shows only
@@ -177,9 +178,9 @@ export const flows = [
         await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
       }
       await setSpotlightTesting(true);
-      await wd.waitFor("Run Spotlight", async () => (await buttonText())?.endsWith("Run Spotlight"));
+      await wd.waitFor("Start spotlight", async () => (await buttonText()) === "Start spotlight");
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after turning it on, want true`);
-      const [start] = await wd.findAll(".scripts-actions .btn-primary");
+      const [start] = await wd.findAll(".ws-strip .run-split-main");
       await wd.click(start);
 
       await wd.waitFor("the workspace's file synced into the repository root", async () => existsSync(inRoot) && readFileSync(inRoot, "utf8") === "one\ntwo\nthree\n", 60000);
@@ -188,10 +189,10 @@ export const flows = [
         throw new Error(`checkpoint refs while syncing: ${JSON.stringify(during)}, want pre-spotlight and cp-spotlight-<epoch>-<pid>`);
       }
       if (!existsSync(join(ctx.worktree, "e2e-diff.txt"))) throw new Error("saving the checkpoint removed e2e-diff.txt from the worktree");
-      await wd.waitFor("Stop Spotlight", async () => (await buttonText())?.endsWith("Stop Spotlight"));
+      await wd.waitFor("Stop Spotlight", async () => (await buttonText()) === "Stop Spotlight");
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} while syncing, want true (the sync must not touch the root's own settings)`);
 
-      const [stop] = await wd.findAll(".scripts-actions .btn-stop");
+      const [stop] = await wd.findAll(".ws-strip .run-split-main.is-stop");
       await wd.click(stop);
       await wd.waitFor("the repository root restored from pre-spotlight", async () => !existsSync(inRoot), 60000);
       await wd.waitFor("the pre-spotlight ref dropped", async () => !refs().includes("refs/conductor-checkpoints/pre-spotlight"));

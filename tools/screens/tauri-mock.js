@@ -124,8 +124,12 @@
   };
   // ?oc_setup_script=<command>: tide-web's repository-local settings (.conductor/settings.local.toml in its
   // main checkout) set scripts.setup, for the terminal panel's Setup tab (tools/side-by-side/setup-tab.mjs).
+  // ?oc_run_script=<command> sets scripts.run the same way, for the Run tab (one run script, "run").
   const setupScript = new URLSearchParams(location.search).get("oc_setup_script");
-  if (setupScript) vfs["/Users/demo/code/tide-web/.main/.conductor/settings.local.toml"] = `[scripts]\nsetup = ${JSON.stringify(setupScript)}\n`;
+  const runScript = new URLSearchParams(location.search).get("oc_run_script");
+  if (setupScript || runScript)
+    vfs["/Users/demo/code/tide-web/.main/.conductor/settings.local.toml"] =
+      "[scripts]\n" + (setupScript ? `setup = ${JSON.stringify(setupScript)}\n` : "") + (runScript ? `run = ${JSON.stringify(runScript)}\n` : "");
   saveVfs();
   window.__OC_VFS__ = vfs;
   const enc = new TextEncoder();

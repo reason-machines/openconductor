@@ -59,6 +59,12 @@ st("panel-setup-add","Terminal panel: Setup, no setup script", ref(actions=[{"cl
 st("panel-setup-idle","Terminal panel: Setup, before setup runs", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Setup"}], query={"oc_setup_script":"npm install"}),
    oc_reason="the lane's seeded repositories have no setup script; tools/side-by-side/setup-tab.mjs captures this state",
    covers=[{"kind":"empty-state","name":"No setup script output"}])
+# The Run tab next to it: no run script (the dashed "Add run script" card), and a run script that
+# has not run yet (Conductor's idle "Start Run" view and the strip's run split button).
+RUN_TAB=[{"click":".ws-strip-tabs [role=tab]","text":"Run","after_ms":800}]
+st("panel-run-add","Terminal panel: Run, no run script", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"}]), oc=OPEN_WS+RUN_TAB)
+st("panel-run-idle","Terminal panel: Run, before the run script runs", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"}], query={"oc_run_script":"npm run dev"}),
+   oc_reason="the lane's seeded repositories have no run script; tools/side-by-side/setup-tab.mjs captures this state")
 # Conductor's harness sends the sidecar's toolApproval request for "tallinn" (scenario needs-permission,
 # tools/screens/seed-data.js); OpenConductor gets the same turn from the fake `reason acp` ("tallinn").
 st("needs-permission","Workspace needing permission", ref(scenario="needs-permission", actions=[{"click":"text=tide-api"},{"click":"text=Ada/rate limit headers"},{"wait":"text=Do you want to run this command?"}]),

@@ -44,10 +44,13 @@ const css = (selector) => ({ kind: "css", selector });
 
 /** An invented setup script for the idle state, the same on both sides. */
 const SETUP_SCRIPT = "npm install";
+/** An invented run script for the Run tab's idle state, the same on both sides. */
+const RUN_SCRIPT = "npm run dev";
 // The workspace tools/ui-map/states.json's workspace-new-chat opens (an empty chat, like the
 // OpenConductor fixture's), so the chat area does not weigh on the score; then the strip's Setup tab.
 const REF_OPEN = [css("text=tide-web"), css("text=Ada/dark mode tokens")];
 const SETUP_TAB = css("[role=tab] >> text=Setup");
+const RUN_TAB = css("[role=tab] >> text=Run");
 
 // The right-panel fixture plus a second, unread workspace, as the harness seeds one
 // ("Add search to settings"), so both sides show the composer's "Next unread".
@@ -59,6 +62,8 @@ const OC_SHELL = {
 const STATES = {
   "panel-setup-add": { ref: [...REF_OPEN, SETUP_TAB], oc: [SETUP_TAB], setup: null, uiMap: "panel-setup-add", image: "terminal-scripts-01-setup-add.png" },
   "panel-setup-idle": { ref: [...REF_OPEN, SETUP_TAB], oc: [SETUP_TAB], setup: SETUP_SCRIPT, uiMap: "panel-setup-idle", image: "terminal-scripts-02-setup-idle.png" },
+  "panel-run-add": { ref: [...REF_OPEN, RUN_TAB], oc: [RUN_TAB], setup: null, uiMap: "panel-run-add", image: "terminal-scripts-03-run-add.png" },
+  "panel-run-idle": { ref: [...REF_OPEN, RUN_TAB], oc: [RUN_TAB], setup: null, run: RUN_SCRIPT, uiMap: "panel-run-idle", image: "terminal-scripts-04-run-idle.png" },
 };
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".woff2": "font/woff2", ".json": "application/json" };
@@ -72,7 +77,8 @@ function serveOc() {
       let body = fs.readFileSync(file);
       if (file.endsWith("index.html")) {
         const setupScript = url.searchParams.get("oc_setup_script");
-        const init = `(${fakeBackend})(${JSON.stringify({ shell: OC_SHELL, files: FILES, setupScript })});`;
+        const runScript = url.searchParams.get("oc_run_script");
+        const init = `(${fakeBackend})(${JSON.stringify({ shell: OC_SHELL, files: FILES, setupScript, runScript })});`;
         body = body.toString().replace("<head>", `<head><script>${init}</script>`);
       }
       res.writeHead(200, { "content-type": TYPES[path.extname(file)] ?? "application/octet-stream" });
@@ -167,7 +173,7 @@ async function main() {
   try {
     for (const [state, spec] of Object.entries(STATES)) {
       if (only.length && !only.includes(state)) continue;
-      const q = `oc_scenario=populated&oc_theme=dark${spec.setup ? `&oc_setup_script=${encodeURIComponent(spec.setup)}` : ""}`;
+      const q = `oc_scenario=populated&oc_theme=dark${spec.setup ? `&oc_setup_script=${encodeURIComponent(spec.setup)}` : ""}${spec.run ? `&oc_run_script=${encodeURIComponent(spec.run)}` : ""}`;
       try {
         const { png: refPng, ...ref } = capture(`ref-${state}`, `http://conductor.localhost:${REF_PORT}/?${q}`, spec.ref);
         const { png: ocPng, ...oc } = capture(`oc-${state}`, `http://localhost:${OC_PORT}/?${q}`, spec.oc);

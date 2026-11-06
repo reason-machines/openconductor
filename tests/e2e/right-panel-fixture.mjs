@@ -30,7 +30,7 @@ export const FILES = [
  * Calls the right panel makes are recorded in window.__fake.calls; commands it
  * does not know fail, as in the other e2e fakes, and are listed in window.__fake.unmocked.
  */
-export function fakeBackend({ shell, files, spotlight = false, setupScript = null }) {
+export function fakeBackend({ shell, files, spotlight = false, setupScript = null, runScript = null }) {
   localStorage.setItem("openconductor.shell.v1", JSON.stringify(shell));
   localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shell.selection, collapsed: [] }));
   const settings = {
@@ -81,7 +81,17 @@ export function fakeBackend({ shell, files, spotlight = false, setupScript = nul
           fileList.push(args.request.path);
           return;
         case "scripts_config":
-          return { setup: setupScript, setupLayer: setupScript === null ? null : "repo_local", archive: null, runMode: "concurrent", autoRunAfterSetup: false, run: [], managedKeys: [], warnings: [] };
+          return {
+            setup: setupScript,
+            setupLayer: setupScript === null ? null : "repo_local",
+            archive: null,
+            runMode: "concurrent",
+            autoRunAfterSetup: false,
+            // Conductor's `scripts.run` string is one run script named "run".
+            run: runScript === null ? [] : [{ id: "run", label: "Run", command: runScript, args: [], cwd: null, default: true, icon: "play", hide: false, availableIn: ["local", "cloud"], layer: "repo_local" }],
+            managedKeys: [],
+            warnings: [],
+          };
         case "setup_script_status":
           return { state: "idle", log: null, last: null };
         case "run_script_status":
