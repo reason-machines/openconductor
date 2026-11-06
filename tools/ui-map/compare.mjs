@@ -21,6 +21,12 @@ const sha256 = (b) => createHash("sha256").update(b).digest("hex");
 const artifact = (b) => ({ sha256: sha256(b), bytes: b.length, media_type: "image/png", data_base64: b.toString("base64") });
 const THRESHOLDS = [0, 24];
 const results = {};
+const probe = spawnSync(REA, ["--version"], { encoding: "utf8" });
+if (probe.status !== 0) {
+  console.error(`REA ("${REA}") is not runnable (${probe.error?.code ?? `exit ${probe.status}`}); every state would score 0. npm i -g rea-agents, or set REA=.`);
+  process.exit(2);
+}
+let errors = 0;
 mkdirSync(join(out, "diff"), { recursive: true });
 
 for (const id of Object.keys(ref).sort()) {
@@ -53,6 +59,7 @@ for (const id of Object.keys(ref).sort()) {
       };
     } catch {
       res[`t${t}`] = { error: (p.stderr || p.stdout || `exit ${p.status}`).replace(/\s+/g, " ").slice(0, 300) };
+      errors++;
     }
   }
   results[id] = res;
@@ -82,3 +89,7 @@ writeFileSync(
   join(out, "compare.json"),
   JSON.stringify({ tool: "rea compare-web-screenshots", thresholds: THRESHOLDS, results }, null, 1) + "\n",
 );
+if (errors) {
+  console.error(`${errors} REA comparisons failed; see the error fields in compare.json`);
+  process.exit(1);
+}
