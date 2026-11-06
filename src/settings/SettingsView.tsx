@@ -102,7 +102,7 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
       </nav>
       <section className="settings-page">
         <div className="settings-page-inner">
-          {!(location.scope === "user" && SELF_HEADED.includes(location.page)) && (
+          {!(location.scope === "user" ? SELF_HEADED.includes(location.page) : location.section === "environment") && (
             <header className="settings-header">
               <div>
                 <h1>{title}</h1>
