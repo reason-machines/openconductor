@@ -270,8 +270,8 @@ function useSiblingHover(key: string | null) {
 interface ItemProps {
   icon?: ReactNode;
   children: ReactNode;
-  /** Shortcut hint at the right (`ContextMenuShortcut`). */
-  shortcut?: string;
+  /** Shortcut hint at the right (`ContextMenuShortcut`); a node for glyphs such as ↵. */
+  shortcut?: ReactNode;
   /** Content after the label, such as a check on the current choice. */
   trailing?: ReactNode;
   disabled?: boolean;
@@ -312,7 +312,7 @@ export function MenuItem({ icon, children, shortcut, trailing, disabled, destruc
       {icon}
       {grow ? <span className="cm-grow">{children}</span> : children}
       {trailing}
-      {shortcut && <span className="cm-shortcut">{shortcut}</span>}
+      {shortcut && <span className={typeof shortcut === "string" ? "cm-shortcut" : "cm-shortcut cm-shortcut-glyphs"}>{shortcut}</span>}
     </div>
   );
 }

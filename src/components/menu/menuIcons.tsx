@@ -132,6 +132,12 @@ export const Undo2Icon = lucide([
   ["path", "M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"],
 ]);
 /** `chevron-right` (`td`): submenu triggers. */
+/** `corner-down-left` (`BLt`, drawn by `gf`): the Enter key in the chat tab menu's Fork to new tab hint. */
+export const CornerDownLeftIcon = lucide([
+  ["path", "M20 4v7a4 4 0 0 1-4 4H4"],
+  ["path", "m9 10-5 5 5 5"],
+]);
+
 export const ChevronRightIcon = lucide([["path", "m9 18 6-6-6-6"]]);
 /** `plus` (`Qc`). */
 export const PlusIcon = lucide([

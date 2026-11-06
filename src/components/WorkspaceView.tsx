@@ -15,6 +15,13 @@ import { chatStatuses, subscribeChatStatuses, type ChatSnapshot, type Permission
 import { PermissionRequests, ToolApproval, pendingToolApproval } from "../features/chat/PermissionRequests.tsx";
 import { copiedTranscriptMessage, forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
 import { forkToNewWorkspace } from "../features/chat/forkWorkspace.ts";
+import { ChatTabMenu, type ChatTabMenuActions, type ChatTabMenuKeys } from "../features/chat/ChatTabMenu.tsx";
+import { showCloseSection } from "../features/chat/chatTabMenuRules.ts";
+import { transcriptText, type TranscriptMode } from "../features/chat/transcriptCopy.ts";
+import { copyText } from "../features/openIn/apps";
+import { COPIED_LINK, COPY_LINK_FAILED, workspaceLink } from "../workspace/link";
+import { effectiveShortcuts } from "../keybindings/overrides.ts";
+import { glyphs } from "../keybindings/shortcut.ts";
 import { createWorkspace, ensureRepository } from "../workspace/api";
 import { generateWorkspaceNames } from "../workspace/naming";
 import { startSetupScript } from "../home/createFirstWorkspace";
@@ -65,7 +72,7 @@ type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend;
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { openBigTab } from "../features/terminal/session";
 import { bigTabRequest } from "../features/terminal/bigTerminal";
-import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
+import { useKeybindingOverrides, useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { PRIORITY } from "../keybindings/dispatcher.ts";
 import { PanelStrip, type StripView } from "./PanelStrip";
 import "./rightPanel.css";
@@ -788,24 +795,28 @@ interface MainTabsProps {
   /** The workspace's own chat id (its tab is "chat"). */
   mainChatId: string;
   isUnread: (chatId: string) => boolean;
-  /** The chat tab menu's "Mark as read" / "Mark as unread". */
-  onToggleRead: (chatId: string) => void;
+  /** A chat tab's right-click menu (Conductor's `u8i`): what each item does for `chatId`. */
+  chatMenu: (chatId: string) => ChatTabMenuActions;
+  /** The menu's shortcut hints, from the user's key bindings. */
+  chatMenuKeys: ChatTabMenuKeys;
   /** The "+" after the chat tabs (NewChatButton). */
   newChat: ReactNode;
 }
 
-function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, newChat }: MainTabsProps) {
-  const [menu, setMenu] = useState<{ chatId: string; x: number; y: number } | null>(null);
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, chatMenu, chatMenuKeys, newChat }: MainTabsProps) {
+  // `seq` remounts the menu on every right-click, so a click during the close animation reopens it.
+  const [menu, setMenu] = useState<{ chatId: string; seq: number; at: { x: number; y: number } } | null>(null);
+  const closeMenu = useCallback(() => setMenu(null), []);
   const openMenu = (chatId: string) => (e: ReactMouseEvent) => {
     e.preventDefault();
-    setMenu({ chatId, x: e.clientX, y: e.clientY });
+    setMenu((m) => ({ chatId, seq: (m?.seq ?? 0) + 1, at: { x: e.clientX, y: e.clientY } }));
   };
   const statuses = useSyncExternalStore(subscribeChatStatuses, chatStatuses);
   // Conductor's l8i before the chat tab's title: an 8px --unread dot while the chat is unread and idle.
   const unreadDot = (chatId: string) => (chatTabUnreadDot(isUnread(chatId), chatTabStatus(statuses, chatId)) ? <ChatTabUnreadDot /> : null);
   return (
     <div className="tabs main-tabs" role="tablist" aria-label="Workspace tabs">
-      {menu && <ChatTabMenu at={menu} unread={isUnread(menu.chatId)} onToggleRead={() => onToggleRead(menu.chatId)} onClose={() => setMenu(null)} />}
+      {menu && <ChatTabMenu key={menu.seq} at={menu.at} actions={chatMenu(menu.chatId)} keys={chatMenuKeys} onClose={closeMenu} />}
       {diffOpen && (
         <span className={`main-tab${active === "diff" ? " active" : ""}`}>
           <button role="tab" aria-selected={active === "diff"} className={active === "diff" ? "active" : ""} onClick={() => onSelect("diff")}>
@@ -854,45 +865,6 @@ function ChatTabUnreadDot() {
     <svg className="main-tab-unread" data-testid="chat-tab-unread" width="8" height="8" viewBox="0 0 24 24" aria-label="Unread" role="img">
       <circle cx="12" cy="12" r="10" fill="currentColor" stroke="transparent" strokeWidth="2" />
     </svg>
-  );
-}
-
-/**
- * A chat tab's right-click menu. Conductor's (renderApp-D_fmY7hW.js @7,377,893) starts
- * with "Mark as read" / "Mark as unread" for that chat (`Q`: setUnread, and a hand mark
- * when marking unread, cleared when marking read); its rename, fork, copy and close items
- * are not here yet.
- */
-function ChatTabMenu({ at, unread, onToggleRead, onClose }: { at: { x: number; y: number }; unread: boolean; onToggleRead: () => void; onClose: () => void }) {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const onDown = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) onClose();
-    };
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("mousedown", onDown);
-    document.addEventListener("keydown", onKey);
-    window.addEventListener("blur", onClose);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("keydown", onKey);
-      window.removeEventListener("blur", onClose);
-    };
-  }, [onClose]);
-  return (
-    <div ref={ref} className="sb-ctx-menu" role="menu" aria-label="Chat actions" style={{ left: at.x, top: at.y }} onContextMenu={(e) => e.preventDefault()}>
-      <button
-        type="button"
-        role="menuitem"
-        className="sb-ctx-item"
-        onClick={() => {
-          onClose();
-          onToggleRead();
-        }}
-      >
-        <span className="sb-ctx-label">{unread ? "Mark as read" : "Mark as unread"}</span>
-      </button>
-    </div>
   );
 }
 
@@ -1177,6 +1149,72 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
     else clearManuallyUnread(chatId);
     dispatch({ type: "setChatUnread", repoId: repo.id, workspaceId: workspace.id, chatId, unread, at: Date.now() });
   };
+
+  // A chat tab's right-click menu (Conductor's `u8i`, features/chat/ChatTabMenu.tsx) acts on that tab's chat, shown or not.
+  const forkTabEnabled = useBoolPref("experimental_fork_to_new_tab");
+  const [menuForking, setMenuForking] = useState(false);
+  const { overrides: keyOverrides } = useKeybindingOverrides();
+  const keyHint = (commandId: string) => {
+    const k = effectiveShortcuts(commandId, keyOverrides)[0];
+    return k ? glyphs(k) : undefined;
+  };
+  const chatMenuKeys: ChatTabMenuKeys = { fork: keyHint("chat.forkToNewTab"), copyConcise: keyHint("chat.copyTextConcise"), close: keyHint("nav.closeTab") };
+  const chatAgentOf = (chatId: string): ChatAgentId => (reasonAvailable() ? savedAgent(chatId) : "reason");
+  const chatTranscript = (chatId: string) => {
+    const agent = CHAT_AGENTS[chatAgentOf(chatId)];
+    return agent.snapshot(agent.chatId(chatId)).transcript;
+  };
+  const chatTitle = (chatId: string) => (chatId === workspace.id ? workspace.name : (reviews.tabs.find((r) => r.chatId === chatId)?.title ?? workspace.name));
+  // Conductor's `U`: "Copied <mode> transcript of "<title>"", "No chat content to copy" when empty.
+  const copyChatTranscript = (chatId: string, mode: TranscriptMode) => {
+    const text = transcriptText(chatTranscript(chatId), mode);
+    if (!text?.trim()) return notify?.("info", "No chat content to copy");
+    copyText(text).then(
+      () => notify?.("info", copiedTranscriptMessage(mode, chatTitle(chatId))),
+      () => notify?.("error", `Failed to copy ${mode} transcript`),
+    );
+  };
+  // Conductor's `XV`: the workspace link with `&session=<chat>`.
+  const copyChatLink = (chatId: string) =>
+    copyText(workspaceLink(workspace.id, chatId)).then(
+      () => notify?.("info", COPIED_LINK),
+      () => notify?.("error", COPY_LINK_FAILED),
+    );
+  // The whole chat into a new tab on its options, as ⌥⌘↩ forks (ChatPanel's forkToTab), with an empty composer.
+  const forkChatToTab = async (chatId: string) => {
+    const markdown = forkTranscript(chatTranscript(chatId));
+    if (markdown === null) return notify?.("error", "Unable to fork chat to new tab: failed to generate chat transcript");
+    const agentId = chatAgentOf(chatId);
+    const title = chatTitle(chatId);
+    setMenuForking(true);
+    try {
+      const config = agentId === "reason" ? await reasonChatConfig(chatId) : [];
+      const id = reviews.fork(`Fork of ${title}`, config, { text: "", attachments: [{ name: forkAttachmentName(title), text: markdown }] });
+      if (agentId !== "reason") saveAgent(id, agentId);
+    } catch (e) {
+      notify?.("error", e instanceof Error ? e.message : "Failed to fork chat to new tab");
+    } finally {
+      setMenuForking(false);
+    }
+  };
+  // Conductor's `H`: show this chat and close every other one (they go on the reopen stack).
+  // The workspace's own chat cannot be closed yet (issue #524), so it stays.
+  const closeOtherChats = (chatId: string) => {
+    for (const r of reviews.tabs) if (r.chatId !== chatId) closeReview(r.chatId);
+    setMainTab(tabOfChat(workspace.id, chatId));
+  };
+  const chatMenu = (chatId: string): ChatTabMenuActions => ({
+    unread: isChatUnread(workspace, chatId),
+    toggleRead: () => toggleChatRead(chatId),
+    // Chats have no rename yet (issue #523): Rename chat stays, disabled.
+    fork: forkTabEnabled && workspace.status !== "archived" ? { run: () => void forkChatToTab(chatId), pending: menuForking } : undefined,
+    copyTranscript: (mode) => copyChatTranscript(chatId, mode),
+    copyLink: () => void copyChatLink(chatId),
+    showClose: showCloseSection({ writable: true, chatCount: openChatTabs, hasUserMessage: lastUserMessageAt(chatTranscript(chatId).messages) !== null }),
+    close: chatId === workspace.id ? undefined : () => closeReview(chatId),
+    closeOthers: () => closeOtherChats(chatId),
+    hasOtherChats: openChatTabs > 1,
+  });
   // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
   const prefs = useAppPrefs();
   const rightPanelVisible = prefs.right_panel_visible;
@@ -1240,7 +1278,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
           onNextUnread={!prBase?.merged && hasNextUnread?.(selectedChat) ? onNextUnread : undefined}
           forkToNewTab={reviews.fork}
           chatTabs={[{ chatId: workspace.id, title: workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
-          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />}
+          tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} chatMenu={chatMenu} chatMenuKeys={chatMenuKeys} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />}
           content={
             showDiff ? (
               <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />

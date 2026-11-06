@@ -92,6 +92,9 @@
   letter-spacing: 1.44px;
   color: var(--cm-muted);
 }
+/* A hint with a glyph (the chat tab menu's ⌘⌥ + corner-down-left, `J4` with `inline-flex items-center`). */
+.cm-shortcut-glyphs { display: inline-flex; align-items: center; }
+.cm-enter-glyph { display: inline-flex; }
 .cm-sep {
   height: 1px;
   margin: 4px -4px;
