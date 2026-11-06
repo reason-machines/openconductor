@@ -8,16 +8,16 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **965** | **771** | **80** | **114** |
-| States (captured screens) | 67 | 18 | 26 | 23 |
-| Inventory items | 898 | 753 | 54 | 91 |
-| &nbsp;&nbsp;dialog | 64 | 56 | 4 | 4 |
+| **All** | **965** | **770** | **76** | **119** |
+| States (captured screens) | 67 | 18 | 24 | 25 |
+| Inventory items | 898 | 752 | 52 | 94 |
+| &nbsp;&nbsp;dialog | 64 | 56 | 3 | 5 |
 | &nbsp;&nbsp;empty-state | 52 | 47 | 1 | 4 |
 | &nbsp;&nbsp;menu | 39 | 39 | 0 | 0 |
 | &nbsp;&nbsp;menu-item | 89 | 88 | 1 | 0 |
 | &nbsp;&nbsp;popover | 45 | 44 | 1 | 0 |
-| &nbsp;&nbsp;route | 65 | 42 | 10 | 13 |
-| &nbsp;&nbsp;select | 29 | 23 | 5 | 1 |
+| &nbsp;&nbsp;route | 65 | 42 | 9 | 14 |
+| &nbsp;&nbsp;select | 29 | 22 | 5 | 2 |
 | &nbsp;&nbsp;settings-page | 29 | 15 | 6 | 8 |
 | &nbsp;&nbsp;settings-row | 121 | 41 | 24 | 56 |
 | &nbsp;&nbsp;sheet | 3 | 3 | 0 | 0 |
@@ -30,7 +30,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 
 | Team | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| chat | 55 | 50 | 4 | 1 |
+| chat | 55 | 50 | 3 | 2 |
 | cloud-org | 83 | 74 | 3 | 6 |
 | git-review | 35 | 30 | 3 | 2 |
 | onboarding-auth | 23 | 17 | 6 | 0 |
@@ -39,7 +39,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | shell | 194 | 178 | 7 | 9 |
 | terminal-scripts | 30 | 29 | 1 | 0 |
 | triage | 268 | 268 | 0 | 0 |
-| workspaces | 56 | 39 | 10 | 7 |
+| workspaces | 56 | 38 | 7 | 11 |
 
 212 of 898 items were located in a captured state; 212 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
 
@@ -67,8 +67,8 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Home, no projects<br>`home-empty` | matches | workspaces | diff 3.9% at t24, copy 100% | [png](ui-map/ref/home-empty.png) | [png](ui-map/oc/home-empty.png) | [jpg](ui-map/diff/home-empty.jpg) | 3.9% |
 | Home with projects<br>`home` | matches | workspaces | diff 4.2% at t24, copy 100% | [png](ui-map/ref/home.png) | [png](ui-map/oc/home.png) | [jpg](ui-map/diff/home.jpg) | 4.2% |
 | All workspaces list<br>`all-workspaces` | matches | workspaces | diff 3.9% at t24, copy 92% | [png](ui-map/ref/all-workspaces.png) | [png](ui-map/oc/all-workspaces.png) | [jpg](ui-map/diff/all-workspaces.jpg) | 3.9% |
-| Create workspace composer<br>`create` | wrong | chat | diff 5.4% at t24, copy 86% | [png](ui-map/ref/create.png) | [png](ui-map/oc/create.png) | [jpg](ui-map/diff/create.jpg) | 5.4% |
-| Create: repo picker open<br>`create-repo-picker` | wrong | workspaces | diff 5.7% at t24, copy 83% | [png](ui-map/ref/create-repo-picker.png) | [png](ui-map/oc/create-repo-picker.png) | [jpg](ui-map/diff/create-repo-picker.jpg) | 5.7% |
+| Create workspace composer<br>`create` | matches | chat | diff 0.8% at t24, copy 90% | [png](side-by-side/create-composer-01-dialog.png) | [png](side-by-side/create-composer-01-dialog.png) |  | 0.8% |
+| Create: repo picker open<br>`create-repo-picker` | matches | workspaces | diff 1.0% at t24, copy 90% | [png](side-by-side/create-composer-02-repo-picker.png) | [png](side-by-side/create-composer-02-repo-picker.png) |  | 1.0% |
 | Workspace: chat transcript<br>`workspace-chat` | wrong | terminal-scripts | diff 6.0% at t24, copy 86% | [png](ui-map/ref/workspace-chat.png) | [png](ui-map/oc/workspace-chat.png) | [jpg](ui-map/diff/workspace-chat.jpg) | 6.0% |
 | Workspace: new empty chat<br>`workspace-new-chat` | matches | chat | diff 3.3% at t24, copy 92% | [png](ui-map/ref/workspace-new-chat.png) | [png](ui-map/oc/workspace-new-chat.png) | [jpg](ui-map/diff/workspace-new-chat.jpg) | 3.3% |
 | Chat: tool calls expanded<br>`workspace-tool-calls` | wrong | chat | diff 7.3% at t24, copy 83% | [png](ui-map/ref/workspace-tool-calls.png) | [png](ui-map/oc/workspace-tool-calls.png) | [jpg](ui-map/diff/workspace-tool-calls.jpg) | 7.3% |
@@ -130,7 +130,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Toast: copied link<br>`toast-copied-link` | matches | shell | diff 4.6% at t24, copy 93% | [png](ui-map/ref/toast-copied-link.png) | [png](ui-map/oc/toast-copied-link.png) | [jpg](ui-map/diff/toast-copied-link.jpg) | 4.6% |
 | Sidebar after archiving a workspace<br>`sidebar-after-archive` | matches | workspaces | diff 4.7% at t24, copy 93% | [png](ui-map/ref/sidebar-after-archive.png) | [png](ui-map/oc/sidebar-after-archive.png) | [jpg](ui-map/diff/sidebar-after-archive.jpg) | 4.7% |
 
-## route (65: 42 missing, 10 wrong, 13 matches)
+## route (65: 42 missing, 9 wrong, 14 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -178,7 +178,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:untitled`<br>/ | matches | shell |  | `Wls` | [home](ui-map/oc/home.png) | diff 4.2% at t24, copy 100% |
 | `route:repository-repositoryid-workspace-localworkspaceid`<br>/repository/$repositoryId/workspace/$localWorkspaceId | wrong | chat |  | `dXo` | [workspace-chat](ui-map/oc/workspace-chat.png) | diff 6.0% at t24, copy 86% |
 | `route:all-workspaces`<br>/all-workspaces | matches | workspaces |  | `UJo` | [all-workspaces](ui-map/oc/all-workspaces.png) | diff 3.9% at t24, copy 92% |
-| `route:create`<br>/create | wrong | workspaces |  | `$Ca` | [create](ui-map/oc/create.png) | diff 5.4% at t24, copy 86% |
+| `route:create`<br>/create | matches | workspaces |  | `$Ca` | [create](side-by-side/create-composer-01-dialog.png) | diff 0.8% at t24, copy 90% |
 | `route:team`<br>/team | missing | cloud-org |  | `Yea` | [route-team](ui-map/ref/route-team.png) | OpenConductor has no route or view for /team |
 | `route:dashboard`<br>/dashboard | missing | shell |  | `lta` | [route-dashboard](ui-map/ref/route-dashboard.png) | OpenConductor has no route or view for /dashboard |
 | `route:routines`<br>/routines | missing | routines |  | `eka` | [route-routines](ui-map/ref/route-routines.png) | OpenConductor has no route or view for /routines |
@@ -360,7 +360,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:organization-prompts:prompts`<br>organization-prompts › Prompts | missing | cloud-org | Prompts / Custom instructions for the Review, Create PR, and Resolve conflicts b | `` | [settings-org-prompts](ui-map/ref/settings-org-prompts.png) | copy not shown in any OpenConductor capture |
 | `settings-row:organization-mcp-servers:mcps`<br>organization-mcp-servers › MCPs | missing | cloud-org | MCPs / Configure MCP servers for cloud workspaces. | `` |  | copy not shown in any OpenConductor capture |
 
-## dialog (64: 56 missing, 4 wrong, 4 matches)
+## dialog (64: 56 missing, 3 wrong, 5 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -389,7 +389,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `dialog:hma` | missing | triage |  | `Hma` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:w-a` | missing | triage |  | `W_a` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:sync-agent-configs`<br>Sync agent configs | matches | settings | Sync agent configs | `h` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
-| `dialog:new-workspace`<br>New workspace | wrong | workspaces | New workspace | `pya` | [create](ui-map/oc/create.png) | host state create is wrong |
+| `dialog:new-workspace`<br>New workspace | matches | workspaces | New workspace | `pya` | [create](side-by-side/create-composer-01-dialog.png) | on screen in both; state create matches |
 | `dialog:sya` | missing | triage |  | `Sya` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:tya` | missing | triage |  | `Tya` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:rya` | missing | triage |  | `Rya` |  | no literal copy to locate it; not observed in any capture |
@@ -625,7 +625,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `popover:gka~2` | missing | triage |  | `Gka` |  | no literal copy to locate it; not observed in any capture |
 | `popover:gka~3` | missing | triage |  | `Gka` |  | no literal copy to locate it; not observed in any capture |
 
-## select (29: 23 missing, 5 wrong, 1 matches)
+## select (29: 22 missing, 5 wrong, 2 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -634,7 +634,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `select:goo` | missing | shell | Read / Write | `goo` |  | copy not shown in any OpenConductor capture |
 | `select:xdo` | missing | triage |  | `Xdo` |  | no literal copy to locate it; not observed in any capture |
 | `select:z5e` | missing | triage |  | `Z5e` |  | no literal copy to locate it; not observed in any capture |
-| `select:zqo` | missing | workspaces | Add project | `ZQo` | [create-repo-picker](ui-map/oc/create-repo-picker.png) | copy not shown in any OpenConductor capture |
+| `select:zqo` | matches | workspaces | Add project | `ZQo` | [create-repo-picker](side-by-side/create-composer-02-repo-picker.png) | on screen in both; state create-repo-picker matches |
 | `select:yji` | missing | triage |  | `Yji` |  | no literal copy to locate it; not observed in any capture |
 | `select:nfi` | missing | triage |  | `nFi` |  | no literal copy to locate it; not observed in any capture |
 | `select:qaa` | missing | shell | Light / Dark | `Qaa` |  | copy not shown in any OpenConductor capture |
@@ -1151,4 +1151,15 @@ Harness limits that shape the reference (not REA bugs): settings pages behind an
 31. **No way to diff a ported table against the original.** REA cannot evaluate or extract a literal array from the bundle (the `hoa()` check list), so the comparison of OpenConductor's `diagnosticChecks()` with Conductor's list ran outside REA: Conductor's own `hoa` source was evaluated in Node with a capturing `dl`. All 59 labels, commands, deadlines and env flags are equal except the one deliberate row ("OpenConductor app env").
 32. **No native capture on sven m5 max (still, see 26).** `devices_computer` refuses with "Computer use needs Accessibility and Screen & System Audio Recording permissions" for the Reason worker, and REA's `observe-native-ui` / `capture-native-ui-scenario` need the same grants (gap 6). So the left half of every new side-by-side image is Conductor's extracted frontend in the `tools/screens` harness, not the native window.
 33. **`compare-web-screenshots` scores only same-size PNGs and gives no regions** (gap 5 still holds). The side-by-side record therefore captures both apps at the map's 1280x820 for scoring and again at 1440x900 for the committed images (`tools/side-by-side/help-diagnostics.mjs`).
+
+### Hit while building the Changes tab's Filter files (REA 6.8.0, Linux cloud)
+
+34. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30): `rea search renderApp-D_fmY7hW.js "Filter changed files"` fails `capability_unavailable` / `unsupported_provider` (`target_unsupported`; ghidra not configured, hopper, ida, kuna reject it). The committed `analyze-javascript-application` Evidence has none of the components either (0 hits for `xws`, `W4s`, `gyi`, `bys`). The toggle (`xws` @2,942,885), its gate in the Changes header (`_ws` @2,936,428), the filter row (`W4s` @2,806,981), the match function (`gyi` @2,840,025) and the list (`bys` @2,840,211) were read from the chunk by byte offset; the rendered result was captured with `capture-browser-scenario`.
+35. **`capture-browser-scenario`'s `fill` takes `value: {source: "literal", value: "..."}`, not a string,** and `--schema` does not say so (gap 8): a plain string fails as `invalid_type` at `actions[n].value` with `expected: "object"`, then `missing_argument` at `value.source` (`literal` or `secret`), then at `value.value`, one field per retry.
+
+### Hit while building the chat turn footer's "Show message actions" menu (REA 6.8.0, Linux cloud)
+
+36. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30, 34): `rea search renderApp-D_fmY7hW.js "Show message actions"` fails `capability_unavailable` / `unsupported_provider` (`target_unsupported`; candidates ghidra, hopper, ida, kuna). The turn footer `TDo` (~@8,918,9xx-8,926,4xx), its trigger and items, the dropdown `Tm` (@2,227,269), the item class `CFt`, the button variants `REe` and the copy button `t0` (@1,792,792) were read from the chunk by byte offset; the rendered result was captured with `capture-browser-scenario` (`tools/side-by-side/turn-menu.mjs`).
+37. **`capture-browser-scenario` cannot show a tooltip**: `hover` is rejected (`invalid_value` at `actions[0].action`, gap noted in team memory for `tools/ui-map/capture_ref.mjs`), so the trigger's "More actions" tooltip has no side-by-side; it rests on the bundle read (`ni` children "More actions") and our unit test.
+38. **No element geometry in a capture.** The scenario result has the screenshot and the DOM but no bounding box for a locator, so the 2x crops of the footer in the side-by-side use a hand-picked rectangle (`270,320,360,120`) read off the full screenshots, not a box REA measured.
 

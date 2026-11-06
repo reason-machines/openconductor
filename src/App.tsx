@@ -268,6 +268,14 @@ export default function App() {
   }, [dispatch, show]);
   const openProject = useCallback(() => void addProject(), [addProject]);
   const addProjectAt = useCallback((path: string) => void addProject(path), [addProject]);
+  // The create composer's "Add project" (Conductor's `ZQo` opens `Gji`, the sidebar's add menu): a project
+  // opened from there becomes the composer's repository; the GitHub and Quick start items open their dialogs.
+  const createAddActions = {
+    onOpenProject: openProject,
+    onOpenGitHubProject: () => openDialog("clone"),
+    onQuickStart: () => openDialog("quickstart"),
+    onAddProjectAt: addProjectAt,
+  };
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -437,7 +445,7 @@ export default function App() {
             githubUsername={prefix.githubUsername}
             sidebarVisible={isSidebarVisible(state)}
             onClose={() => setCreatePage(null)}
-            onAddRepository={() => void openProject()}
+            addActions={createAddActions}
             onWarning={(message) => show("error", message, { sticky: true })}
             dispatch={dispatch}
           />
@@ -507,10 +515,7 @@ export default function App() {
           prefixSettings={prefix.settings}
           githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
-          onAddRepository={() => {
-            setDialog(null);
-            void openProject();
-          }}
+          addActions={createAddActions}
           onWarning={(message) => show("error", message, { sticky: true })}
           dispatch={dispatch}
         />

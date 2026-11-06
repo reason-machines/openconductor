@@ -26,7 +26,7 @@ st("home-empty","Home, no projects", ref("/","signed-in"), oc=[{"click":".onb-co
 st("home","Home with projects", ref("/"), oc=HOME, covers=[{"kind":"route","name":"/"}])
 st("all-workspaces","All workspaces list", ref("/all-workspaces"), oc=HOME, covers=[{"kind":"route","name":"/all-workspaces"}])
 st("create","Create workspace composer", ref(actions=[{"click":"text=Create >> nth=0"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800}], covers=[{"kind":"route","name":"/create"}])
-st("create-repo-picker","Create: repo picker open", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"text=Select repo"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800},{"click":"form.create-ws button","nth":0}])
+st("create-repo-picker","Create: repo picker open", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"text=Select repo"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800},{"click":".create-repo-trigger"}])
 st("workspace-chat","Workspace: chat transcript", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]), oc=OPEN_WS, covers=[{"kind":"route","name":"/repository/$repositoryId/workspace/$localWorkspaceId"}])
 st("workspace-new-chat","Workspace: new empty chat", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"}]), oc=OPEN_WS)
 st("workspace-tool-calls","Chat: tool calls expanded", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=4 tool calls, 2 messages"}]), oc=OPEN_WS)
