@@ -934,11 +934,17 @@
    "id": "settings-terminal",
    "title": "Settings > Big terminal",
    "ref": {
-    "path": "/settings/user/terminal",
+    "path": "/settings/user/experimental",
     "scenario": "populated",
     "actions": [
      {
       "wait": "text=tide-web"
+     },
+     {
+      "click": "#big-terminal-mode"
+     },
+     {
+      "click": "text=\"Big terminal\""
      }
     ]
    },
@@ -953,7 +959,17 @@
     },
     {
      "click": ".settings-nav .nav-item",
-     "text": "Big terminal"
+     "text": "Experimental"
+    },
+    {
+     "click": "input[role=switch]",
+     "text": "Big terminal mode",
+     "after_ms": 400
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Big terminal",
+     "after_ms": 600
     }
    ],
    "covers": [
@@ -1780,8 +1796,7 @@
      "after_ms": 1500
     },
     {
-     "click": ".composer button",
-     "text": "Opus 5"
+     "click": ".composer .oc-model-chip"
     }
    ]
   },

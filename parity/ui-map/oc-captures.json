@@ -3,7 +3,7 @@
   "status": "captured",
   "steps": 1,
   "file": "oc/all-workspaces.png",
-  "png_sha256": "65e8a356bda5c07ae7b3ce45434eb26e3279b78a41ffbd1ddd6e9828407df0e0",
+  "png_sha256": "4c3d6b54e96828a1aadeba20fad3dfa957c20563b6a685e507a4b513d04f356f",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -21,7 +21,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -32,7 +32,7 @@
     "dotfiles actions",
     "Help",
     "Settings",
-    "moscow"
+    "alert"
    ],
    "roles": [],
    "texts": [
@@ -47,7 +47,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -68,13 +68,13 @@
     820
    ]
   },
-  "ms": 4454
+  "ms": 4258
  },
  "create": {
   "status": "captured",
   "steps": 1,
   "file": "oc/create.png",
-  "png_sha256": "8dfb8215622d3465f30155002c4569d2f55ca2c9fdbae0e1734afba865aae57f",
+  "png_sha256": "f285ac01eee2e479890f0cbb72a3af458f52bf31f391921ed4b8d8abf10e0b01",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -92,7 +92,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -157,7 +157,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -169,21 +169,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -237,13 +237,13 @@
     820
    ]
   },
-  "ms": 4813
+  "ms": 4614
  },
  "create-repo-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/create-repo-picker.png",
-  "png_sha256": "16efa0bda2359762e18bb015c468da1fe82e99d2cb9391f7934591104791bcb8",
+  "png_sha256": "907b82dd85c1e63f945eee34eb7215ab63be0a4cf34d9773eca4ca7219acd5fd",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -261,7 +261,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -327,7 +327,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -339,21 +339,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -409,7 +409,7 @@
     820
    ]
   },
-  "ms": 5512
+  "ms": 4682
  },
  "diagnostics-run": {
   "status": "captured",
@@ -542,13 +542,13 @@
     820
    ]
   },
-  "ms": 10211
+  "ms": 9452
  },
  "dialog-clone-github": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-clone-github.png",
-  "png_sha256": "6eecdc619f9061e14d23422e34e8ef820135ad5e3186d4972722d4ca16f9da64",
+  "png_sha256": "25731d249bcd3c1c338781d1511d1d0981623b8b3d25cef83a8e46b59486036f",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -566,7 +566,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -625,7 +625,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -637,21 +637,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -704,13 +704,13 @@
     820
    ]
   },
-  "ms": 7811
+  "ms": 6406
  },
  "dialog-create-project": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-create-project.png",
-  "png_sha256": "b25237485a113f03ce1369982356fb19231f0496ba5ae47d716f727b89ea562a",
+  "png_sha256": "685c716070169c8b47ff57d740dcb79de9bf9ee6352865a3d821b8c275d2614b",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -728,7 +728,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -788,7 +788,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -800,21 +800,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -874,13 +874,13 @@
     820
    ]
   },
-  "ms": 7875
+  "ms": 6614
  },
  "dialog-keyboard-shortcuts": {
   "status": "captured",
   "steps": 1,
   "file": "oc/dialog-keyboard-shortcuts.png",
-  "png_sha256": "006b828d89863940087cf3990f91cbbc2c462fd216a8c9955217ff491c4253f6",
+  "png_sha256": "9fdd9888ab3f18ffce62a20d71e562f7230c418fe0e09c1e9b10d9b801baa9a0",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -898,7 +898,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -959,7 +959,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -971,21 +971,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "Auto",
     "Auto",
     "Codex",
@@ -1037,13 +1037,13 @@
     820
    ]
   },
-  "ms": 5511
+  "ms": 4491
  },
  "dialog-rename-workspace": {
   "status": "captured",
   "steps": 2,
   "file": "oc/dialog-rename-workspace.png",
-  "png_sha256": "ee54748bea863d231ba260970ce4131ec3f740f35787272285ad2233ff99db8c",
+  "png_sha256": "f7c27f75f85fcaa3311e98936fc6da085b18f370b798006a81b31629b6d9d113",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1061,7 +1061,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1118,7 +1118,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -1135,21 +1135,21 @@
     "OK",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -1206,13 +1206,13 @@
     820
    ]
   },
-  "ms": 6089
+  "ms": 5149
  },
  "dialog-submit-prompt": {
   "status": "captured",
   "steps": 2,
   "file": "oc/dialog-submit-prompt.png",
-  "png_sha256": "28562681d37ecc35a6b44c607b14d64df44835119fc84fe2459b3927c1df504e",
+  "png_sha256": "2a6afb76cd32de35fa9591a6a9731697707f7a771e2fcec4792a1d4159cdacc2",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1230,7 +1230,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1287,7 +1287,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -1299,21 +1299,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -1365,13 +1365,13 @@
     820
    ]
   },
-  "ms": 6123
+  "ms": 5371
  },
  "diff-entire-file": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-entire-file.png",
-  "png_sha256": "24d5d5d183200cd5fe6206e6bf00912592af7065caf5ccf7364eb65b71dfe877",
+  "png_sha256": "e9e3ac586d1f679975e1fec0d5df39a35d0a062c9bc246094fcd7b0543a61769",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1389,7 +1389,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1451,7 +1451,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -1463,13 +1463,13 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
     "All changes",
     "×",
-    "moscow",
+    "alert",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1523,13 +1523,13 @@
     820
    ]
   },
-  "ms": 9087
+  "ms": 7133
  },
  "diff-split": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-split.png",
-  "png_sha256": "cd465f6f545cbaf7f9dbc7d8f7d6c3bdb90fa11cb1d4c71a9cd1eab043a5393c",
+  "png_sha256": "89248513056878babc4741b9c16d23222aca6c88fc608b3ce728513121b55440",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1547,7 +1547,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1609,7 +1609,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -1621,13 +1621,13 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
     "All changes",
     "×",
-    "moscow",
+    "alert",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1681,13 +1681,13 @@
     820
    ]
   },
-  "ms": 7974
+  "ms": 7156
  },
  "diff-unified": {
   "status": "captured",
   "steps": 2,
   "file": "oc/diff-unified.png",
-  "png_sha256": "dca8c9ddceb1abeb3bbe9d864f9a26783ce227809e652e91ba4d1bb5f5134147",
+  "png_sha256": "7556b941bb4497c406a8ba6c97117eec5950922f7179985feca4a807571f9199",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1705,7 +1705,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1767,7 +1767,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -1779,13 +1779,13 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
     "All changes",
     "×",
-    "moscow",
+    "alert",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1839,13 +1839,13 @@
     820
    ]
   },
-  "ms": 7435
+  "ms": 6571
  },
  "first-run-onboarding": {
   "status": "captured",
   "steps": 0,
   "file": "oc/first-run-onboarding.png",
-  "png_sha256": "d03862fa016a17bf33b87057ccd72c98b46ab72197f52f3921688fadee583758",
+  "png_sha256": "cf587526fcbd8879db138a96096fdadb92a561354cca23cffd81d7d1cee43105",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1867,13 +1867,13 @@
     820
    ]
   },
-  "ms": 4395
+  "ms": 4291
  },
  "home": {
   "status": "captured",
   "steps": 1,
   "file": "oc/home.png",
-  "png_sha256": "65e8a356bda5c07ae7b3ce45434eb26e3279b78a41ffbd1ddd6e9828407df0e0",
+  "png_sha256": "4c3d6b54e96828a1aadeba20fad3dfa957c20563b6a685e507a4b513d04f356f",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1891,7 +1891,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1902,7 +1902,7 @@
     "dotfiles actions",
     "Help",
     "Settings",
-    "moscow"
+    "alert"
    ],
    "roles": [],
    "texts": [
@@ -1917,7 +1917,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -1938,7 +1938,7 @@
     820
    ]
   },
-  "ms": 4682
+  "ms": 4322
  },
  "home-empty": {
   "status": "captured",
@@ -1984,13 +1984,13 @@
     820
    ]
   },
-  "ms": 5762
+  "ms": 5447
  },
  "login": {
   "status": "captured",
   "steps": 0,
   "file": "oc/login.png",
-  "png_sha256": "44ffcb2cdc268ff10b3ca5bfcd4e03044d2adfb359a76d7200c6c446868b0846",
+  "png_sha256": "fd893cd0bba2aac0da786f97a0ec2f6b7da6b537da441040787008e1b9285c40",
   "dom": {
    "labels": [
     "Slide progress"
@@ -2012,13 +2012,13 @@
     820
    ]
   },
-  "ms": 5905
+  "ms": 4075
  },
  "menu-account": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-account.png",
-  "png_sha256": "6b6fa1e3acf38ee5a78db678e1a025c315a9c25552ac0344b8ce3969c0626610",
+  "png_sha256": "77dd4739297e6ad19daf09c6531f03a8537bfa30cad4c9dfc887efcafd989a11",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2037,7 +2037,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2093,7 +2093,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -2105,21 +2105,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -2165,13 +2165,13 @@
     820
    ]
   },
-  "ms": 4566
+  "ms": 3957
  },
  "menu-help": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-help.png",
-  "png_sha256": "bf7adbb0f95c88e270b38f5daceb312cc4f2d6571bae8a96972022ca8a033cf5",
+  "png_sha256": "dd0b8008f3cf3ef1ac507ed166445d685bb2a21b52d75624f3b0df02d1095430",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2189,7 +2189,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2245,7 +2245,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -2268,21 +2268,21 @@
     "OpenConductor v0.1.0",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -2328,15 +2328,13 @@
     820
    ]
   },
-  "ms": 5577
+  "ms": 5213
  },
  "menu-model-picker": {
-  "status": "step-failed",
+  "status": "captured",
   "steps": 2,
-  "failed_step": 1,
-  "error": "timed out waiting for .composer button \"Opus 5\"",
   "file": "oc/menu-model-picker.png",
-  "png_sha256": "35e0062fe5e8cea266d54e544ee97d145eaa10448548ad631f95ab38bda5f7d4",
+  "png_sha256": "f036dcddfbbe18b3a21a30bfe63e37e59a0aceeae5d45d812ed7908bd208083f",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2354,10 +2352,9 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
-    "Archive workspace",
     "Create workspace in tide-api",
     "Create workspace",
     "tide-api actions",
@@ -2379,6 +2376,12 @@
     "Ask to make changes, @mention files, run /commands",
     "Change agent (Auto)",
     "Auto",
+    "Model",
+    "Search models",
+    "Search models",
+    "Auto",
+    "Codex",
+    "Claude Code",
     "Add",
     "Send message ↵",
     "Changes",
@@ -2395,7 +2398,9 @@
     "New terminal",
     "Run"
    ],
-   "roles": [],
+   "roles": [
+    "menu"
+   ],
    "texts": [
     "My Mac",
     "Home",
@@ -2408,7 +2413,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -2420,24 +2425,30 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
-    "⌘L",
-    "to focus",
+    "alert",
     "Auto",
+    "Auto",
+    "Codex",
+    "Claude Code",
+    "Add models",
+    "Effort",
+    "Edit",
+    "⌘⇧/",
+    "Cycle effort",
     "All files",
     "Changes",
     "2",
@@ -2480,13 +2491,13 @@
     820
    ]
   },
-  "ms": 15227
+  "ms": 6164
  },
  "menu-repo-actions": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-repo-actions.png",
-  "png_sha256": "ae5d44d4769be55857413cd283c68b93c34b3e5a1669e8ea9ddb901ea7833b92",
+  "png_sha256": "68e5eb8c6e25fe8c0fccec9f9b01ffe03a3bf379664a0b7d5677373cc1cff229",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2504,7 +2515,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2563,7 +2574,7 @@
     "Hide repository",
     "Remove repository",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -2575,21 +2586,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -2635,13 +2646,13 @@
     820
    ]
   },
-  "ms": 6408
+  "ms": 5697
  },
  "menu-workspace-context": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-workspace-context.png",
-  "png_sha256": "ee11b32fe7a690da5a603c54449d50ee0ae819a9184af772a8f351ee311b2337",
+  "png_sha256": "140ad2f9b2f08e12515bcc6dcff8cd4a5a13f43c2b9ccf28f8c36e882f0e5964",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2659,7 +2670,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2715,7 +2726,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -2727,21 +2738,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -2798,13 +2809,13 @@
     820
    ]
   },
-  "ms": 5515
+  "ms": 4679
  },
  "menu-workspace-status": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-workspace-status.png",
-  "png_sha256": "d8a93956af9c8b24091c3cb175534b42a6086cb77d07d5ddf7019d2937cfd161",
+  "png_sha256": "94f56ac180b1299bc25c18ea8afec169de243ac3474b30c952293ccfc7b03927",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2822,7 +2833,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2880,7 +2891,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -2892,21 +2903,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -2968,7 +2979,7 @@
     820
    ]
   },
-  "ms": 6050
+  "ms": 4917
  },
  "needs-permission": {
   "status": "no-equivalent",
@@ -2978,7 +2989,7 @@
   "status": "captured",
   "steps": 0,
   "file": "oc/onboarding-signed-out.png",
-  "png_sha256": "a8bab98f1325f0b23d9a5c93246fb0f4fa65df143208875800d4f3c52f8ff3d9",
+  "png_sha256": "cf587526fcbd8879db138a96096fdadb92a561354cca23cffd81d7d1cee43105",
   "dom": {
    "labels": [
     "Slide progress"
@@ -3000,13 +3011,13 @@
     820
    ]
   },
-  "ms": 4323
+  "ms": 4547
  },
  "palette-all": {
   "status": "captured",
   "steps": 1,
   "file": "oc/palette-all.png",
-  "png_sha256": "d3e7870ec0927d7910e08e4d38f9185c93652553b872ce309c5397247f27fa0e",
+  "png_sha256": "1b45a7dfdb8dd2e2d05b2f864f9c3aec2a12c683d1ba9c8eca9272afaf7fec1e",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3024,7 +3035,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3086,7 +3097,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -3098,21 +3109,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -3157,8 +3168,8 @@
     "Actions",
     "Settings",
     "Recent workspaces",
-    "moscow",
-    "tide-web · moscow",
+    "alert",
+    "tide-web · alert",
     "Workspace actions",
     "Archive workspace",
     "⌘⇧A",
@@ -3183,13 +3194,13 @@
     820
    ]
   },
-  "ms": 5730
+  "ms": 4423
  },
  "palette-search": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-search.png",
-  "png_sha256": "4b7cff64d29da79969b23b05fa93eab952ec071e9e052c8f4d13356fad1cb2be",
+  "png_sha256": "77684b5d9fcae3e6a425bcb4ab1f77adda3c830ceddc9b2065d9f91031475555",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3207,7 +3218,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3265,7 +3276,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -3277,21 +3288,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -3343,13 +3354,13 @@
     820
    ]
   },
-  "ms": 6688
+  "ms": 6070
  },
  "palette-workspaces": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-workspaces.png",
-  "png_sha256": "12133bb556cf41ac8076221d6ca518e66ebf4905d036fcf17029a0c079498623",
+  "png_sha256": "cfc3d486728f43c8b291238f7b4f74866af64b22412abb351269e1eb4f4613a4",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3367,7 +3378,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3427,7 +3438,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -3439,21 +3450,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -3498,8 +3509,8 @@
     "Actions",
     "Settings",
     "Workspaces",
-    "moscow",
-    "tide-web · moscow"
+    "alert",
+    "tide-web · alert"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -3507,7 +3518,7 @@
     820
    ]
   },
-  "ms": 5933
+  "ms": 5091
  },
  "route-cloud-collab-onboarding": {
   "status": "no-equivalent",
@@ -3538,7 +3549,7 @@
     820
    ]
   },
-  "ms": 6519
+  "ms": 4604
  },
  "route-new-member-onboarding": {
   "status": "no-equivalent",
@@ -3621,13 +3632,13 @@
     820
    ]
   },
-  "ms": 7303
+  "ms": 5412
  },
  "settings-advanced": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-advanced.png",
-  "png_sha256": "88cf6b50e3276448ca240762d760c68f26a860bc0c728cff203bad63414eeb6e",
+  "png_sha256": "81b919f086ed95e1b0e7a80d01301aaeebcc420041e7bc8b44f5c1f580a678f2",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3711,13 +3722,13 @@
     820
    ]
   },
-  "ms": 5574
+  "ms": 6651
  },
  "settings-appearance": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-appearance.png",
-  "png_sha256": "adac933c6020df5a799e4c05cfc5e3be24eb90e9dff6efbf369b98e8e7477ce5",
+  "png_sha256": "633ae9f51dcdeb1fcb269da2f4827457f73f9568351da3a8d70410c52c19c27b",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3815,7 +3826,7 @@
     820
    ]
   },
-  "ms": 6247
+  "ms": 5584
  },
  "settings-cloud-setup": {
   "status": "no-equivalent",
@@ -3882,13 +3893,13 @@
     820
    ]
   },
-  "ms": 7124
+  "ms": 5502
  },
  "settings-experimental": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-experimental.png",
-  "png_sha256": "d46c9d4527c2a53f1dd5f17982b10f5b01cbcd955c07007ebc8bfd61441f5e0c",
+  "png_sha256": "b5a219c9afdf772fd6a2108c6ba13aab1a8d6f6a447c44b2baf213c12654bae9",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3996,13 +4007,13 @@
     820
    ]
   },
-  "ms": 5891
+  "ms": 5701
  },
  "settings-general": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-general.png",
-  "png_sha256": "885bfc95396ba8d0cfc89eee6e4749fd6648db418a0868a45e24926b0d2209d3",
+  "png_sha256": "d55a67b780a29758ef90f61da49f3c8786f361cddf571e87a2b7e82011987d2d",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4098,13 +4109,13 @@
     820
    ]
   },
-  "ms": 6377
+  "ms": 5052
  },
  "settings-git": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-git.png",
-  "png_sha256": "9339bdea144ded6457acb421fbaf75678066befb2d363fff42cde07374483c11",
+  "png_sha256": "0f7731ac88dea7bca3216d4fb4a423afa03284492b5f02fb358786ff5cf9c8d1",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4186,7 +4197,7 @@
     820
    ]
   },
-  "ms": 6855
+  "ms": 5217
  },
  "settings-internal": {
   "status": "no-equivalent",
@@ -4196,7 +4207,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-key-bindings.png",
-  "png_sha256": "c32f973008b36fc45bcd7957162783ed8d8310da1023bf8e2070cf318cbf1cf7",
+  "png_sha256": "84086f15b1d89c2798b7ce0937bf7627d167edcecd90ea0021a801b69f93e1fa",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5029,13 +5040,13 @@
     820
    ]
   },
-  "ms": 6002
+  "ms": 5946
  },
  "settings-models": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-models.png",
-  "png_sha256": "217e9262eec946fa66c733979295aa5986fbd4ba92f075e069f3fffa2a398cd4",
+  "png_sha256": "7621b6312e811b7c0652206cc611cc0faf1dc3bda88a6716442f27d8ad958d35",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5168,7 +5179,7 @@
     820
    ]
   },
-  "ms": 7395
+  "ms": 5682
  },
  "settings-org-computer": {
   "status": "no-equivalent",
@@ -5206,7 +5217,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-providers.png",
-  "png_sha256": "9adfef57db6d27cb1782bd5ca26d14eaa55a652ee2e6a0375149aede97124f36",
+  "png_sha256": "827a58c750b89e6ad219221868c7aff6a63b2bdb8e97298dda5f31c33a90817f",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5220,7 +5231,18 @@
     "Open settings.toml Finder",
     "Open settings.toml...",
     "Agents",
-    "Reason"
+    "Reason",
+    "Workspace for new chats",
+    "Default Reason model",
+    "Default Reason effort",
+    "Reason executable path",
+    "/usr/local/bin/reason",
+    "Browse for executable",
+    "Browse for executable",
+    "/usr/local/bin/reason",
+    "Reason config",
+    "Open in Finder",
+    "Open in..."
    ],
    "roles": [],
    "texts": [
@@ -5253,7 +5275,26 @@
     "Reason",
     "Claude Code",
     "Codex",
-    "Reason is installed and signed in through the Reason installer."
+    "Authentication",
+    "Reason account",
+    "Recommended",
+    "CLI",
+    "API key",
+    "Not signed in. Sign in with your Reason account.",
+    "Refresh",
+    "Sign in with Reason",
+    "Workspace for new chats",
+    "New Reason chats open their Session in this workspace. Existing chats stay in theirs.",
+    "Default model",
+    "The model new Reason chats start on. You can change it per chat in the composer.",
+    "Default effort",
+    "Reasoning effort for new Reason chats.",
+    "Reason executable path",
+    "Override the installed Reason executable with a custom one. Leave empty to use the installed version (recommended).",
+    "Use system Reason",
+    "Reason config",
+    "~/.config/reason",
+    "Open in"
    ],
    "url": "tauri://localhost/settings/user/providers",
    "viewport": [
@@ -5261,7 +5302,7 @@
     820
    ]
   },
-  "ms": 6673
+  "ms": 5252
  },
  "settings-repo-actions": {
   "status": "captured",
@@ -5335,7 +5376,7 @@
     820
    ]
   },
-  "ms": 6267
+  "ms": 6019
  },
  "settings-repo-environment": {
   "status": "captured",
@@ -5403,7 +5444,7 @@
     820
    ]
   },
-  "ms": 6391
+  "ms": 6135
  },
  "settings-repo-git": {
   "status": "captured",
@@ -5484,13 +5525,13 @@
     820
    ]
   },
-  "ms": 6495
+  "ms": 6305
  },
  "settings-repo-misc": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-misc.png",
-  "png_sha256": "d895aef7125043a18ddc86573a623ded7255a07da13c6c5bf1a1a33644b631f2",
+  "png_sha256": "bd2593dadbe583d161b20fd6a1f8ee353c7038b44b978345ce2df229c28f14ac",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5575,13 +5616,13 @@
     820
    ]
   },
-  "ms": 6051
+  "ms": 6488
  },
  "settings-repo-misc-lower": {
   "status": "captured",
   "steps": 5,
   "file": "oc/settings-repo-misc-lower.png",
-  "png_sha256": "4aa029260f93caf9e9bffc46d968d1d2d56d6905b36068a621e541ced5ff91f2",
+  "png_sha256": "5d8bf06341c1ed83b5a81e1cbb004569f0ae967140c5f4bd14448042b43f9c38",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5666,7 +5707,7 @@
     820
    ]
   },
-  "ms": 7197
+  "ms": 7032
  },
  "settings-repo-scripts": {
   "status": "captured",
@@ -5738,13 +5779,13 @@
     820
    ]
   },
-  "ms": 6739
+  "ms": 6687
  },
  "settings-search": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-search.png",
-  "png_sha256": "7f4801c413d41b0ed8a96c40c5cb019950df63989f49d817c700a9f16a268f0a",
+  "png_sha256": "89233b0b02a9bd9c072bd2cb759f1fa9055d6c0da9165143955c4da192400d99",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5865,15 +5906,13 @@
     820
    ]
   },
-  "ms": 5814
+  "ms": 5629
  },
  "settings-terminal": {
-  "status": "step-failed",
-  "steps": 3,
-  "failed_step": 2,
-  "error": "timed out waiting for .settings-nav .nav-item \"Big terminal\"",
+  "status": "captured",
+  "steps": 5,
   "file": "oc/settings-terminal.png",
-  "png_sha256": "a040faa2842aa7b42379e3efdee3fc407dd7c53d40f705134f4831fcd5e84dd5",
+  "png_sha256": "dd5f1844f88be51fbaae65d337785980e50c747ee9f041aa4ba89ac206fd34d5",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5884,18 +5923,7 @@
     "tide-web",
     "tide-api",
     "dotfiles",
-    "Send messages with",
-    "Follow-up behavior",
-    "Agent notifications",
-    "@ notifications",
-    "Completion sound",
-    "Auto-convert long text",
-    "I'm not absolutely right, thank you very much",
-    "Always show context usage",
-    "Caffeinate while agents are running",
-    "Restart automatically on update",
-    "Show MCP status in chat",
-    "Don't collapse tool calls (Garry Mode)"
+    "New tab preset"
    ],
    "roles": [],
    "texts": [
@@ -5923,53 +5951,33 @@
     "More",
     "Experimental",
     "Advanced",
-    "General",
-    "Send messages with",
-    "Choose which key combination sends messages",
-    "Use",
-    "⇧↵",
-    "for new lines",
-    "Follow-up behavior",
-    "Queue messages to send after the agent finishes, or steer the agent mid-turn.",
-    "Use",
-    "⌘↵",
-    "to",
-    "queue",
-    "Agent notifications",
-    "Get notified when an agent finishes working.",
-    "@ notifications",
-    "Get notified when a teammate mentions you.",
-    "Completion sound",
-    "Choose what plays when AI finishes working in a chat.",
-    "Test",
-    "Full disk access permissions",
-    "To let agents work without repeated folder permission prompts.",
-    "Open System Settings",
-    "Auto-convert long text",
-    "Convert pasted text over 5000 characters into text attachments",
-    "I'm not absolutely right, thank you very much",
-    "Strip \"You're absolutely right!\" from AI messages",
-    "Always show context usage",
-    "Always show context usage. By default, it is only shown when more than 70% is used.",
-    "Caffeinate while agents are running",
-    "Prevent your Mac from sleeping while an agent is actively working. Shuts off below 10% battery.",
-    "Restart automatically on update",
-    "Auto-triggers \"Restart when idle\" for downloaded OpenConductor updates.",
-    "Show MCP status in chat",
-    "Show a per-session MCP server status indicator in the composer.",
-    "Don't collapse tool calls (Garry Mode)",
-    "Show all tool calls expanded by default instead of collapsed. Toggle with ⌃O.",
-    "Sync agent configs",
-    "Copy skills, slash commands, and MCP servers between Claude Code and Codex.",
-    "Sync"
+    "Big terminal",
+    "Big terminal",
+    "Configure big terminal mode behavior (⌘⇧T).",
+    "New tab preset",
+    "Command to auto-run when creating a new terminal tab.",
+    "Claude",
+    "claude --dangerously-skip-permissions",
+    "Codex",
+    "codex -c model_reasoning_effort=\"high\" --ask-for-approval never --sandbox danger-full-access",
+    "OpenCode",
+    "opencode",
+    "Amp",
+    "amp",
+    "Copilot",
+    "copilot --allow-all",
+    "Gemini",
+    "gemini -y",
+    "None",
+    "+ Add custom command"
    ],
-   "url": "tauri://localhost/settings/user/general",
+   "url": "tauri://localhost/settings/user/terminal",
    "viewport": [
     1280,
     820
    ]
   },
-  "ms": 13783
+  "ms": 7017
  },
  "sidebar-after-archive": {
   "status": "captured",
@@ -6032,13 +6040,13 @@
     820
    ]
   },
-  "ms": 5116
+  "ms": 6042
  },
  "toast-copied-link": {
   "status": "captured",
   "steps": 2,
   "file": "oc/toast-copied-link.png",
-  "png_sha256": "66cae30f6c1af0a5310226f2d4a09521946b760beb5272cd14c7d7e9c632d0f4",
+  "png_sha256": "99e90246c5c60855e66b93955f0f5889850be8e0065d3f96de76dd80a190c520",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6056,7 +6064,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -6112,7 +6120,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -6124,21 +6132,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -6185,13 +6193,13 @@
     820
    ]
   },
-  "ms": 5143
+  "ms": 4900
  },
  "workspace-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-chat.png",
-  "png_sha256": "35e0062fe5e8cea266d54e544ee97d145eaa10448548ad631f95ab38bda5f7d4",
+  "png_sha256": "50159163385cc0e91da8d1d8338a86b095ebb50813728e9d1605fe23bef28162",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6209,7 +6217,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6263,7 +6271,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -6275,21 +6283,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -6335,13 +6343,13 @@
     820
    ]
   },
-  "ms": 5361
+  "ms": 4978
  },
  "workspace-new-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-new-chat.png",
-  "png_sha256": "cfc9626c6cb91ab346948f8502bdd6bb866b5bceccb92ffb767beed7a7b2a5fd",
+  "png_sha256": "50159163385cc0e91da8d1d8338a86b095ebb50813728e9d1605fe23bef28162",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6359,7 +6367,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6413,7 +6421,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -6425,21 +6433,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -6485,13 +6493,13 @@
     820
    ]
   },
-  "ms": 5144
+  "ms": 4865
  },
  "workspace-tool-calls": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-tool-calls.png",
-  "png_sha256": "35e0062fe5e8cea266d54e544ee97d145eaa10448548ad631f95ab38bda5f7d4",
+  "png_sha256": "50159163385cc0e91da8d1d8338a86b095ebb50813728e9d1605fe23bef28162",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6509,7 +6517,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Moscow · moscow · Local workspace",
+    "Alert · alert · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6563,7 +6571,7 @@
     "T",
     "tide-web",
     "1",
-    "Moscow",
+    "Alert",
     "+",
     "5",
     "T",
@@ -6575,21 +6583,21 @@
     "FREE",
     "tide-web",
     "/",
-    "moscow",
-    "moscow",
+    "alert",
+    "alert",
     "→",
     "main",
-    "moscow",
+    "alert",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "moscow",
+    "alert",
     "Branched",
-    "moscow",
+    "alert",
     "from",
     "main",
     "Created",
-    "moscow",
+    "alert",
     "⌘L",
     "to focus",
     "Auto",
@@ -6635,6 +6643,6 @@
     820
    ]
   },
-  "ms": 4975
+  "ms": 4955
  }
 }
