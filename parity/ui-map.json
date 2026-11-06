@@ -33,13 +33,13 @@
  },
  "summary": {
   "total": 965,
-  "missing": 770,
-  "wrong": 76,
+  "missing": 769,
+  "wrong": 77,
   "matches": 119,
   "states": {
    "total": 67,
-   "missing": 18,
-   "wrong": 24,
+   "missing": 17,
+   "wrong": 25,
    "matches": 25
   },
   "items": {
@@ -125,8 +125,8 @@
   "by_team": {
    "chat": {
     "total": 55,
-    "missing": 50,
-    "wrong": 3,
+    "missing": 49,
+    "wrong": 4,
     "matches": 2
    },
    "cloud-org": {
@@ -523,7 +523,7 @@
    "id": "workspace-tool-calls",
    "title": "Chat: tool calls expanded",
    "status": "wrong",
-   "why": "diff 7.3% at t24, copy 83%",
+   "why": "diff 6.6% at t24, copy 93%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -534,7 +534,7 @@
     "actions_run": 4,
     "actions_total": 4,
     "error": null,
-    "rea_evidence_id": "ev_0c9883b387374f67f685cdc7b02353b77e1b11d719bf1bd5e10ae992c225c588"
+    "rea_evidence_id": "ev_ec2657eaeb9c8491396cf9c8bf2968e3b0d0e9261cac4019a1840eae17a3e27f"
    },
    "openconductor": {
     "status": "captured",
@@ -544,20 +544,17 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-tool-calls.jpg",
-    "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.0734546493902439,
+    "changed_ratio_t0": 0.9999161585365853,
+    "changed_ratio_t24": 0.0660889862804878,
     "rea_evidence_ids": [
-     "ev_3697bc9e1dc4ce6596e4e8c0c0e1012d4600aaf6fa3ecd64003b06d45e2c1436",
-     "ev_703e631e2fa2058d3eef8faf4b0b73c87c972ee9a642b27836d1b20aab1c04b3"
+     "ev_05b1c4dceae73efa2c0b603360c0abda6b6c0db99120f05b28673d1ecce22231",
+     "ev_6903d26297e933b725561399e1eb22a5fc35c292eb623bc3bf501dbd64daf834"
     ]
    },
-   "copy_coverage": 0.828,
+   "copy_coverage": 0.931,
    "copy_missing": [
-    "edit",
     "next unread",
-    "copy final message",
-    "show message actions",
-    "filter files"
+    "archive workspace"
    ]
   },
   {
@@ -680,34 +677,41 @@
   {
    "id": "needs-permission",
    "title": "Workspace needing permission",
-   "status": "missing",
-   "why": "the OpenConductor seed has no workspace with a pending permission request",
+   "status": "wrong",
+   "why": "diff 3.9% at t24, copy 88%",
    "team": "chat",
    "reference": {
     "status": "captured",
     "file": "ui-map/ref/needs-permission.png",
     "path": "/",
     "final_path": "/repository/repo-tide-api/workspace/ws-tallinn",
-    "scenario": "populated",
+    "scenario": "needs-permission",
     "actions_run": 3,
     "actions_total": 3,
     "error": null,
-    "rea_evidence_id": "ev_b4fb5e2422c0e97b120f6a6854afca43a7c6894e71f11458811a65adc683f2f2"
+    "rea_evidence_id": "ev_9904510eaa8d51580a6bc11c40086fc0db29feb1b2e1d892354f6c3a50ce627d"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "the OpenConductor seed has no workspace with a pending permission request",
+    "status": "captured",
+    "file": "ui-map/oc/needs-permission.png",
+    "error": null,
     "note": null
    },
    "diff": {
-    "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "file": "ui-map/diff/needs-permission.jpg",
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.03914729420731707,
+    "rea_evidence_ids": [
+     "ev_b2aa8b5e0db6205263feb176d9e117616d68b5cc88d16a1ab597d70f132ea31a",
+     "ev_02f43fbcf7ab839737cf6a8051820480a521d8dc4a27a710cf77f7b83455b6db"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.88,
+   "copy_missing": [
+    "next unread",
+    "archive workspace",
+    "composer"
+   ]
   },
   {
    "id": "route-dashboard",

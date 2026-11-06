@@ -8,8 +8,8 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **965** | **770** | **76** | **119** |
-| States (captured screens) | 67 | 18 | 24 | 25 |
+| **All** | **965** | **769** | **77** | **119** |
+| States (captured screens) | 67 | 17 | 25 | 25 |
 | Inventory items | 898 | 752 | 52 | 94 |
 | &nbsp;&nbsp;dialog | 64 | 56 | 3 | 5 |
 | &nbsp;&nbsp;empty-state | 52 | 47 | 1 | 4 |
@@ -30,7 +30,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 
 | Team | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| chat | 55 | 50 | 3 | 2 |
+| chat | 55 | 49 | 4 | 2 |
 | cloud-org | 83 | 74 | 3 | 6 |
 | git-review | 35 | 30 | 3 | 2 |
 | onboarding-auth | 23 | 17 | 6 | 0 |
@@ -71,11 +71,11 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Create: repo picker open<br>`create-repo-picker` | matches | workspaces | diff 1.0% at t24, copy 90% | [png](side-by-side/create-composer-02-repo-picker.png) | [png](side-by-side/create-composer-02-repo-picker.png) |  | 1.0% |
 | Workspace: chat transcript<br>`workspace-chat` | wrong | terminal-scripts | diff 6.0% at t24, copy 86% | [png](ui-map/ref/workspace-chat.png) | [png](ui-map/oc/workspace-chat.png) | [jpg](ui-map/diff/workspace-chat.jpg) | 6.0% |
 | Workspace: new empty chat<br>`workspace-new-chat` | matches | chat | diff 3.3% at t24, copy 92% | [png](ui-map/ref/workspace-new-chat.png) | [png](ui-map/oc/workspace-new-chat.png) | [jpg](ui-map/diff/workspace-new-chat.jpg) | 3.3% |
-| Chat: tool calls expanded<br>`workspace-tool-calls` | wrong | chat | diff 7.3% at t24, copy 83% | [png](ui-map/ref/workspace-tool-calls.png) | [png](ui-map/oc/workspace-tool-calls.png) | [jpg](ui-map/diff/workspace-tool-calls.jpg) | 7.3% |
+| Chat: tool calls expanded<br>`workspace-tool-calls` | wrong | chat | diff 6.6% at t24, copy 93% | [png](ui-map/ref/workspace-tool-calls.png) | [png](ui-map/oc/workspace-tool-calls.png) | [jpg](ui-map/diff/workspace-tool-calls.jpg) | 6.6% |
 | Diff: file, unified<br>`diff-unified` | wrong | git-review | diff 10.7% at t24, copy 91% | [png](ui-map/ref/diff-unified.png) | [png](ui-map/oc/diff-unified.png) | [jpg](ui-map/diff/diff-unified.jpg) | 10.7% |
 | Diff: file, split<br>`diff-split` | wrong | git-review | diff 10.8% at t24, copy 91% | [png](ui-map/ref/diff-split.png) | [png](ui-map/oc/diff-split.png) | [jpg](ui-map/diff/diff-split.jpg) | 10.8% |
 | Diff: entire file<br>`diff-entire-file` | wrong | git-review | diff 5.3% at t24, copy 91% | [png](ui-map/ref/diff-entire-file.png) | [png](ui-map/oc/diff-entire-file.png) | [jpg](ui-map/diff/diff-entire-file.jpg) | 5.3% |
-| Workspace needing permission<br>`needs-permission` | missing | chat | the OpenConductor seed has no workspace with a pending permission request | [png](ui-map/ref/needs-permission.png) | no-equivalent |  |  |
+| Workspace needing permission<br>`needs-permission` | wrong | chat | diff 3.9% at t24, copy 88% | [png](ui-map/ref/needs-permission.png) | [png](ui-map/oc/needs-permission.png) | [jpg](ui-map/diff/needs-permission.jpg) | 3.9% |
 | Dashboard<br>`route-dashboard` | missing | shell | OpenConductor has no route or view for /dashboard | [png](ui-map/ref/route-dashboard.png) | no-equivalent |  |  |
 | Routines<br>`route-routines` | missing | routines | OpenConductor has no route or view for /routines | [png](ui-map/ref/route-routines.png) | no-equivalent |  |  |
 | New routine<br>`route-routines-new` | missing | routines | OpenConductor has no route or view for /routines/new | [png](ui-map/ref/route-routines-new.png) | no-equivalent |  |  |
