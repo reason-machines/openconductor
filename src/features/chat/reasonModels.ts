@@ -1,147 +1,119 @@
-// What a Reason chat's Session runs and offers, as Reason reports it over ACP
-// (the backend's `models` event, src-tauri/src/reason_acp/provider.rs): its
-// `model` config option's values with Reason's names ("Claude Opus 5.5",
-// "Auto"), and the model it runs. A new Session's model is "default" (Auto)
-// until its first turn; after each turn the backend names the model that
-// turn actually ran on (`reason session get`).
+// What a Reason chat's model picker shows: the model the chat's Session
+// actually runs, and the models Reason offers.
 //
-// The composer's chip shows that model, and the picker lists Reason's models.
-// Conductor does the same for its ACP agents: their models come from the
-// agent's own `model` config option (sidecar `listAcpModels`), and a pick is
-// set on the running session (`setAcpSessionConfigOption`).
-//
-// Kept per chat (so a reopened chat shows its last known model before its
-// Session is resumed) and the last list seen is kept for chats with no
-// Session yet.
+// Reason's ACP agent offers its models as the `model` option of a new
+// Session (`reason_models`, e.g. "Auto" for `default`, "Claude Opus 5.5" for
+// `byok:anthropic:claude-opus-5-5`). With `default` Reason picks a model per
+// turn, and its ACP stream names none, so after each turn the backend asks
+// `reason session get` and sends a `sessionModel` event with the model and
+// effort the Session ran on. That is what the chip shows once a turn ran;
+// before, it shows what the next Session will run: the picked or default
+// model as Reason runs it (a Claude alias such as `opus` has no fixed Reason
+// model and runs Auto).
+// Pure: no React, no Tauri, so reasonModels.test.ts covers it.
 
-import { conductorModelId } from "./chatModelChoice.ts";
-import { isReasonModelId, modelDisplayName, type ModelChoice } from "./composerModels.ts";
+import { reasonEffort, reasonModelId } from "../diff/review.ts";
+import { modelLabel } from "../../settings/models.ts";
+import type { ModelChoice } from "./composerModels.ts";
 
-/** Reason's "Auto": the Workspace's default model. */
-export const AUTO_MODEL = "default";
-
+/** One model Reason offers. */
 export interface ReasonModelOption {
-  /** Reason's model id, e.g. `byok:anthropic:claude-opus-5-5`, or `default`. */
+  /** Reason model id; `default` is Auto. */
   value: string;
-  /** Reason's name, e.g. "Claude Opus 5.5" or "Auto". */
+  /** Reason's name, e.g. "Claude Opus 5.5". */
   name: string;
-  /** E.g. "Claude · Subscription". */
-  description?: string | null;
+  /** e.g. "Claude · Subscription". */
+  description?: string;
 }
 
-export interface SessionModels {
-  /** The model the Session runs; `default` until Reason has picked one. */
-  current: string;
-  /** Its reasoning effort, when known (`default` means Reason's own). */
+/** The model and effort a chat's Session ran its last turn on. */
+export interface RunningModel {
+  model: string;
   effort: string | null;
-  /** The models it offers, in Reason's order. */
-  options: ReasonModelOption[];
 }
 
-/** The `models` event from the backend. */
-export interface ReasonModelsPayload extends SessionModels {
-  chatId: string;
-  type: "models";
+/** Reason's model option value for "Auto": the Workspace's default, picked per turn. */
+export const AUTO = "default";
+
+type Store = Pick<Storage, "getItem" | "setItem" | "removeItem">;
+const runningKey = (chatId: string) => `openconductor.reason.running.${chatId}`;
+const MODELS_KEY = "openconductor.reason.models";
+
+/** The Reason model id a model runs as: Conductor ids map to Reason's; one Reason has no fixed model for runs Auto. */
+export function reasonModelFor(model: string): string {
+  return model === AUTO ? AUTO : (reasonModelId(model) ?? AUTO);
 }
 
-type Store = Pick<Storage, "getItem" | "setItem">;
-const chatKey = (chatId: string) => `openconductor.reason.models.${chatId}`;
-const OPTIONS_KEY = "openconductor.reason.modelOptions";
-
-function parseOptions(v: unknown): ReasonModelOption[] {
-  if (!Array.isArray(v)) return [];
-  return v.filter((o): o is ReasonModelOption => typeof o?.value === "string" && typeof o?.name === "string");
+/** A choice in Reason's terms: its Reason model id and a reasoning effort Reason offers (else none). */
+export function reasonChoice(choice: ModelChoice): ModelChoice {
+  return { model: reasonModelFor(choice.model), effort: reasonEffort(choice.effort) };
 }
 
-function parseModels(raw: string | null): SessionModels | null {
+/** Reason's name for a model id, else one made from the id ("Claude Opus 5.5", "GPT-5.6 Sol"). */
+export function reasonModelName(model: string, options: readonly ReasonModelOption[]): string {
+  const offered = options.find((o) => o.value === model);
+  if (offered) return offered.name;
+  if (model === AUTO) return "Auto";
+  const claude = /^byok:anthropic:claude-(.+)$/.exec(model)?.[1];
+  if (claude) return `Claude ${modelLabel(claude)}`;
+  const id = model.split(/[:/]/).at(-1) ?? model;
+  return id.startsWith("gpt-") ? modelLabel(id) : id;
+}
+
+/**
+ * The picker's current entry: the model the Session ran its last turn on
+ * when there is one, else the picked choice (or the default) as Reason runs it.
+ */
+export function shownModel(running: RunningModel | null, picked: ModelChoice): ModelChoice {
+  return running ? { model: running.model, effort: running.effort } : reasonChoice(picked);
+}
+
+/** Each offered model as a picker entry, Auto first as Reason lists it. */
+export function modelEntries(options: readonly ReasonModelOption[]): ModelChoice[] {
+  return options.map((o) => ({ model: o.value, effort: null }));
+}
+
+function parse(raw: string | null): unknown {
   try {
-    const v = raw === null ? null : JSON.parse(raw);
-    if (!v || typeof v.current !== "string") return null;
-    return { current: v.current, effort: typeof v.effort === "string" ? v.effort : null, options: parseOptions(v.options) };
+    return raw === null ? null : JSON.parse(raw);
   } catch {
     return null;
   }
 }
 
-/**
- * The name the composer shows for a Reason model id: Reason's own name when
- * the list has it, "Auto" for `default`, else Conductor's name for the same
- * model (`byok:anthropic:claude-opus-5-5` → "Opus 5.5"), else the id.
- */
-export function reasonModelName(model: string, options: readonly ReasonModelOption[]): string {
-  const named = options.find((o) => o.value === model)?.name;
-  if (named) return named;
-  if (model === AUTO_MODEL) return "Auto";
-  return modelDisplayName(conductorModelId(model));
+export function loadRunningModel(chatId: string, store: Store = localStorage): RunningModel | null {
+  const v = parse(store.getItem(runningKey(chatId))) as Partial<RunningModel> | null;
+  if (!v || typeof v.model !== "string" || !v.model) return null;
+  return { model: v.model, effort: typeof v.effort === "string" ? v.effort : null };
 }
 
-/** An effort Reason reported, or null for none or Reason's `default`. */
-const knownEffort = (e: string | null | undefined): string | null => (e && e !== "default" ? e : null);
-
-/**
- * What the composer's chip shows for a Reason chat: the model its Session
- * runs once Reason has named one, else the chat's pick (a Conductor id is
- * shown as the Reason model it runs as; one Reason has no id for, such as
- * the `opus` alias, runs as Auto).
- */
-export function chipModel(picked: ModelChoice, session: SessionModels | null, toReasonId: (model: string) => string | null): ModelChoice {
-  if (session && session.current !== AUTO_MODEL) return { model: session.current, effort: knownEffort(session.effort) ?? picked.effort };
-  const model = isReasonModelId(picked.model) ? picked.model : (toReasonId(picked.model) ?? AUTO_MODEL);
-  return { model, effort: picked.effort };
-}
-
-// The live store: one record per chat, the last list any Session offered,
-// and listeners. Reads return the same objects until something is recorded
-// (React's useSyncExternalStore compares snapshots by identity).
-const byChat = new Map<string, SessionModels | null>();
-let lastOptions: ReasonModelOption[] | undefined;
-const listeners = new Set<() => void>();
-
-function storage(): Store | null {
-  return typeof localStorage === "undefined" ? null : localStorage;
-}
-
-/** Keeps what the backend reported for the chat's Session and tells listeners. */
-export function recordModels(chatId: string, models: SessionModels, store: Store | null = storage()): void {
-  const known = models.options.length ? models : { ...models, options: sessionModels(chatId, store)?.options ?? [] };
-  byChat.set(chatId, known);
-  if (models.options.length) lastOptions = models.options;
+/** Saves what the chat's Session ran on; null forgets it (a new Session, or a new pick). */
+export function saveRunningModel(chatId: string, running: RunningModel | null, store: Store = localStorage): void {
   try {
-    store?.setItem(chatKey(chatId), JSON.stringify(known));
-    if (models.options.length) store?.setItem(OPTIONS_KEY, JSON.stringify(models.options));
+    if (running) store.setItem(runningKey(chatId), JSON.stringify(running));
+    else store.removeItem(runningKey(chatId));
   } catch (e) {
-    console.warn("reason: models not saved", e);
+    console.warn("reason: running model not saved", e);
   }
-  for (const fn of listeners) fn();
 }
 
-/** The chat's Session models as last reported (this run or an earlier one), or null. */
-export function sessionModels(chatId: string, store: Store | null = storage()): SessionModels | null {
-  if (!byChat.has(chatId)) byChat.set(chatId, parseModels(store?.getItem(chatKey(chatId)) ?? null));
-  return byChat.get(chatId) ?? null;
+/** Parses `reason_models`' `options` (or a cached copy); drops malformed entries. */
+export function parseModelOptions(v: unknown): ReasonModelOption[] {
+  if (!Array.isArray(v)) return [];
+  return v
+    .filter((o): o is ReasonModelOption => typeof o?.value === "string" && typeof o?.name === "string")
+    .map((o) => ({ value: o.value, name: o.name, ...(typeof o.description === "string" ? { description: o.description } : {}) }));
 }
 
-/** The models the chat's Session offers, else the last list any Reason Session offered. */
-export function modelOptions(chatId: string, store: Store | null = storage()): ReasonModelOption[] {
-  const own = sessionModels(chatId, store)?.options ?? [];
-  if (own.length) return own;
-  if (lastOptions === undefined) {
-    try {
-      lastOptions = parseOptions(JSON.parse(store?.getItem(OPTIONS_KEY) ?? "null"));
-    } catch {
-      lastOptions = [];
-    }
+/** The last model list Reason gave, so the picker lists it before Reason answers again. */
+export function loadCachedModels(store: Store = localStorage): ReasonModelOption[] {
+  return parseModelOptions(parse(store.getItem(MODELS_KEY)));
+}
+
+export function saveCachedModels(options: readonly ReasonModelOption[], store: Store = localStorage): void {
+  try {
+    store.setItem(MODELS_KEY, JSON.stringify(options));
+  } catch (e) {
+    console.warn("reason: model list not cached", e);
   }
-  return lastOptions;
-}
-
-export function subscribeModels(fn: () => void): () => void {
-  listeners.add(fn);
-  return () => listeners.delete(fn);
-}
-
-/** Forgets the in-memory records (tests). */
-export function resetModelsForTest(): void {
-  byChat.clear();
-  lastOptions = undefined;
 }

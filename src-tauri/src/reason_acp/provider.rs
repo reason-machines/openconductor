@@ -39,12 +39,13 @@
 //!   as Conductor's ACP runner reconciles them (`reconcileSessionConfig`).
 //!   A follow-up that steers a running turn leaves them for the prompt after
 //!   it.
-//! * The Session's models are reported as [`ProviderEvent::Models`]: the
-//!   `model` config option's offered values (Reason's ids and names) and
-//!   current value, from `session/new`, `session/resume` and
-//!   `session/set_config_option`, and after every turn the model the
-//!   Session actually ran on (`reason session get`): a new Session's `model`
-//!   is `default` ("Auto") until Reason picks one for its first turn.
+//! * Reason reports no model in the ACP stream, and with the model option
+//!   "default" (Auto) it picks one per turn. After each turn the provider
+//!   asks `reason session get` which model and effort the Session ran on
+//!   and reports them as [`ProviderEvent::SessionModel`].
+//! * [`ReasonProvider::models`] lists the models Reason offers: the `model`
+//!   option of a `session/new` that is closed again unprompted (Reason keeps
+//!   no Session that never got a prompt).
 //! * A prompt can carry attachments, sent as embedded `resource` blocks
 //!   after the text (Reason advertises `embeddedContext`).
 //! * `session/request_permission` (Reason asks before a tool call) is held
@@ -54,7 +55,7 @@
 //!   does. Stop and the end of the turn answer what is still open with
 //!   `cancelled`, as ACP requires.
 
-use super::cli::{AgentProcess, LaunchConfig, Presence};
+use super::cli::{AgentProcess, LaunchConfig, Presence, RunningModel};
 use super::rpc::{CallError, Incoming, Responder, RpcConnection, RpcError};
 use super::updates::{computer_is_cloud, parse_update, AgentEvent, ReasonError, UpdateContext};
 use serde_json::{json, Value};
@@ -83,32 +84,54 @@ pub enum ProviderEvent {
     PermissionResolved {
         request_id: String,
     },
-    /// The models the chat's Session offers and the one it runs.
-    Models(SessionModels),
+    /// The model and effort the chat's Session ran its last turn on.
+    SessionModel(RunningModel),
 }
 
-/// One value of a Session's `model` config option.
+/// One model Reason offers (an option of the Session's `model` option).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ModelOption {
-    /// Reason's model id, e.g. `byok:anthropic:claude-opus-5-5`, or `default`.
+    /// Reason model id, e.g. `byok:anthropic:claude-opus-5-5`; `default` is Auto.
     pub value: String,
-    /// Reason's name for it, e.g. "Claude Opus 5.5" or "Auto".
+    /// Reason's name for it, e.g. `Claude Opus 5.5`.
     pub name: String,
-    /// E.g. "Claude · Subscription".
+    /// e.g. `Claude · Subscription`.
     pub description: Option<String>,
 }
 
-/// What a chat's Session runs and offers.
+/// The models a new Session offers, and the one it starts on.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct SessionModels {
-    /// The model the Session runs: its `model` option's current value, or
-    /// after a turn the model that turn ran on. `default` means Reason has
-    /// not picked one yet.
+pub struct ModelList {
     pub current: String,
-    /// Its reasoning effort (`reasoning_effort`), when known.
-    pub effort: Option<String>,
-    /// The models it offers, in Reason's order; empty when not known.
     pub options: Vec<ModelOption>,
+}
+
+/// The `model` option of a Session's `configOptions`.
+pub fn model_list(config_options: &Value) -> Option<ModelList> {
+    let options = config_options.as_array()?;
+    let opt = options.iter().find(|o| o["id"] == "model")?;
+    let list = opt["options"]
+        .as_array()
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let options = list
+        .iter()
+        .filter_map(|o| {
+            let value = o["value"].as_str()?.to_string();
+            let name = o["name"].as_str().unwrap_or(&value).to_string();
+            let description = o["description"].as_str().map(str::to_string);
+            Some(ModelOption {
+                value,
+                name,
+                description,
+            })
+        })
+        .collect();
+    let current = opt["currentValue"]
+        .as_str()
+        .unwrap_or("default")
+        .to_string();
+    Some(ModelList { current, options })
 }
 
 /// One `session/request_permission`, as the app shows it.
@@ -315,6 +338,20 @@ impl ReasonProvider {
         );
     }
 
+    /// The models Reason offers new Sessions in the selected workspace.
+    pub fn models(&self) -> Result<ModelList, String> {
+        let workspace = self.launch.whoami(&self.dir).and_then(|w| w.selected);
+        let (conn, _) = self.ensure_agent(workspace.as_deref())?;
+        let base = json!({ "cwd": self.dir, "mcpServers": [] });
+        let v = conn
+            .call("session/new", base, SETUP_TIMEOUT)
+            .map_err(|e| e.to_string())?;
+        if let Some(id) = v["sessionId"].as_str() {
+            let _ = conn.call("session/close", json!({ "sessionId": id }), SETUP_TIMEOUT);
+        }
+        model_list(&v["configOptions"]).ok_or_else(|| "Reason offers no model option".into())
+    }
+
     /// Config options for the chat's Session: set when `session/new`
     /// creates it, or on the open Session before its next prompt.
     pub fn set_config(&self, chat: &str, config: Vec<ConfigChoice>) {
@@ -370,45 +407,35 @@ impl ReasonProvider {
             self.withdraw_permissions(chat);
         }
         (self.sink)(chat, ProviderEvent::TurnEnded(end.clone()));
-        if end != TurnEnd::Superseded {
-            self.report_model_used(chat);
-        }
+        self.report_model(chat);
         end
     }
 
-    /// Reports the models a Session's `configOptions` describe.
-    fn report_options(&self, chat: &str, options: &Value) {
-        if let Some(m) = session_models(options) {
-            (self.sink)(chat, ProviderEvent::Models(m));
-        }
-    }
-
-    /// After a turn: the model the Session ran on, from `reason session
-    /// get`, with the models it offers. Nothing when `reason` cannot say.
-    fn report_model_used(&self, chat: &str) {
-        let (id, workspace, options) = {
+    /// Asks Reason, off this thread, which model the chat's Session ran on
+    /// and reports it as [`ProviderEvent::SessionModel`].
+    fn report_model(&self, chat: &str) {
+        let (session_id, workspace) = {
             let s = self.shared.lock().unwrap();
-            let Some(c) = s.chats.get(chat) else {
-                return;
-            };
-            (c.session_id.clone(), c.workspace.clone(), c.options.clone())
+            match s.chats.get(chat) {
+                Some(Chat {
+                    session_id: Some(id),
+                    workspace,
+                    ..
+                }) => (id.clone(), workspace.clone()),
+                _ => return,
+            }
         };
-        let Some(id) = id else {
-            return;
-        };
-        let Some((model, effort)) = self
-            .launch
-            .session_model(&self.dir, workspace.as_deref(), &id)
-        else {
-            return;
-        };
-        let known = session_models(&options);
-        let models = SessionModels {
-            current: model,
-            effort: effort.or_else(|| known.as_ref().and_then(|k| k.effort.clone())),
-            options: known.map(|k| k.options).unwrap_or_default(),
-        };
-        (self.sink)(chat, ProviderEvent::Models(models));
+        let (launch, dir, sink, chat) = (
+            self.launch.clone(),
+            self.dir.clone(),
+            self.sink.clone(),
+            chat.to_string(),
+        );
+        std::thread::spawn(move || {
+            if let Some(m) = launch.session_model(&dir, workspace.as_deref(), &session_id) {
+                sink(&chat, ProviderEvent::SessionModel(m));
+            }
+        });
     }
 
     fn run_prompt(
@@ -646,11 +673,10 @@ impl ReasonProvider {
                 c.session_id = Some(id.clone());
                 c.open_in = Some(generation);
                 c.workspace = workspace;
-                c.options = options.clone();
+                c.options = options;
                 c.applied = None;
             }
         }
-        self.report_options(chat, &options);
         self.reconcile_config(chat, &conn, &id);
         Ok((conn, id))
     }
@@ -696,11 +722,8 @@ impl ReasonProvider {
             let mut s = self.shared.lock().unwrap();
             if let Some(c) = s.chats.get_mut(chat) {
                 c.applied = Some(wanted);
-                c.options = options.clone();
+                c.options = options;
             }
-        }
-        if !set.is_empty() {
-            self.report_options(chat, &options);
         }
         for n in notices {
             (self.sink)(chat, ProviderEvent::Notice(n));
@@ -862,46 +885,6 @@ pub fn plan_config(options: &Value, wanted: &[ConfigChoice]) -> (Vec<ConfigChoic
         }
     }
     (set, notices)
-}
-
-/// The models a Session's `configOptions` describe: its `model` option
-/// (id `model`, else category `model`) and `reasoning_effort`'s current
-/// value. `None` without a `model` option.
-pub fn session_models(options: &Value) -> Option<SessionModels> {
-    let list = options.as_array()?;
-    let model = list
-        .iter()
-        .find(|o| o["id"] == "model")
-        .or_else(|| list.iter().find(|o| o["category"] == "model"))?;
-    let effort = list
-        .iter()
-        .find(|o| o["id"] == "reasoning_effort")
-        .and_then(|o| o["currentValue"].as_str())
-        .map(str::to_string);
-    let offered = model["options"]
-        .as_array()
-        .map(Vec::as_slice)
-        .unwrap_or_default();
-    Some(SessionModels {
-        current: model["currentValue"]
-            .as_str()
-            .unwrap_or("default")
-            .to_string(),
-        effort,
-        options: offered
-            .iter()
-            .filter_map(|o| {
-                let value = o["value"].as_str()?.to_string();
-                let name = o["name"].as_str().unwrap_or(&value).to_string();
-                let description = o["description"].as_str().map(str::to_string);
-                Some(ModelOption {
-                    value,
-                    name,
-                    description,
-                })
-            })
-            .collect(),
-    })
 }
 
 /// A notice for each option that Reason's reported `configOptions` do not

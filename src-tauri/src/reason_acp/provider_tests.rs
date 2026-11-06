@@ -256,9 +256,7 @@ fn a_changed_config_applies_to_the_open_session_at_its_next_prompt() {
     );
     assert_eq!(started(&log), vec!["sess-1"], "no new Session");
 
-    // After a restart the resumed Session gets a pick made meanwhile, also
-    // from a reason acp whose session/resume reports no configOptions.
-    std::fs::write(home.join("fake-reason-resume-bare"), "").unwrap();
+    // After a restart the resumed Session gets a pick made meanwhile.
     p.shutdown();
     p.set_config(
         "ws",
@@ -494,103 +492,50 @@ fn the_session_store_remembers_each_sessions_workspace() {
     assert_eq!(reply(&log), "turn 2: two");
 }
 
-fn models(log: &Log) -> Vec<super::provider::SessionModels> {
+fn session_models(log: &Log) -> Vec<(String, Option<String>)> {
     let log = log.lock().unwrap();
-    let all = log.iter().filter_map(|(_, ev)| match ev {
-        ProviderEvent::Models(m) => Some(m.clone()),
+    let models = log.iter().filter_map(|(_, ev)| match ev {
+        ProviderEvent::SessionModel(m) => Some((m.model.clone(), m.effort.clone())),
         _ => None,
     });
-    all.collect()
+    models.collect()
 }
 
 #[test]
-fn the_session_reports_its_models_and_the_one_a_turn_ran_on() {
-    let (p, log, home) = provider("models");
-    p.open_chat("chat", &home, None);
-    assert_eq!(p.prompt("chat", "echo: hi"), TurnEnd::Completed);
-    let seen = models(&log);
-    assert_eq!(seen.len(), 2, "{seen:?}");
-    // session/new: "Auto" until Reason picks a model, with Reason's names.
-    assert_eq!(seen[0].current, "default");
-    let names: Vec<&str> = seen[0].options.iter().map(|o| o.name.as_str()).collect();
+fn after_each_turn_the_model_the_session_ran_on_is_reported() {
+    let (p, log, home) = provider("session-model");
+    p.open_chat("c", &home, None);
+    assert_eq!(p.prompt("c", "hello"), TurnEnd::Completed);
+    // Auto: the fake's `session get` says it ran Claude Opus 5.5 at high.
+    wait_for(&log, |e| matches!(e, ProviderEvent::SessionModel(_)));
     assert_eq!(
-        names,
+        session_models(&log),
+        vec![(
+            "byok:anthropic:claude-opus-5-5".to_string(),
+            Some("high".to_string())
+        )]
+    );
+}
+
+#[test]
+fn models_lists_what_a_new_session_offers_without_keeping_it() {
+    let (p, log, _home) = provider("models");
+    let list = p.models().unwrap();
+    assert_eq!(list.current, "default");
+    let values: Vec<&str> = list.options.iter().map(|o| o.value.as_str()).collect();
+    assert_eq!(
+        &values[..3],
         [
-            "Auto",
-            "Claude Opus 5.5",
-            "Claude Sonnet 5.5",
-            "GPT-5.6-Sol"
+            "default",
+            "byok:anthropic:claude-opus-5-5",
+            "byok:openai-codex:gpt-5.6-sol"
         ]
     );
+    assert_eq!(list.options[0].name, "Auto");
+    assert_eq!(list.options[1].name, "Claude Opus 5.5");
     assert_eq!(
-        seen[0].options[1].description.as_deref(),
-        Some("Claude \u{b7} Subscription")
+        list.options[1].description.as_deref(),
+        Some("Claude · Subscription")
     );
-    // After the turn: the model it ran on (`reason session get`), same list.
-    assert_eq!(seen[1].current, "byok:anthropic:claude-opus-5-5");
-    assert_eq!(seen[1].options, seen[0].options);
-    let id = started(&log).pop().unwrap();
-    p.shutdown();
-    drop(p);
-
-    // After a restart, session/resume names the model the Session ran on.
-    let (p, log, _) = provider_in(home.clone());
-    p.open_chat("chat", &home, Some(id));
-    assert_eq!(p.prompt("chat", "echo: again"), TurnEnd::Completed);
-    let seen = models(&log);
-    assert_eq!(seen[0].current, "byok:anthropic:claude-opus-5-5");
-    assert_eq!(seen[0].options.len(), 4);
-}
-
-#[test]
-fn a_pick_in_an_open_chat_is_reported_once_the_session_takes_it() {
-    use super::provider::ConfigChoice;
-    let (p, log, home) = provider("models-pick");
-    p.open_chat("chat", &home, None);
-    assert_eq!(p.prompt("chat", "echo: hi"), TurnEnd::Completed);
-    // The pick reaches the open Session before its next prompt: reported
-    // when Reason takes it, and again as the model the turn ran on.
-    log.lock().unwrap().clear();
-    p.set_config(
-        "chat",
-        vec![ConfigChoice {
-            id: "model".into(),
-            value: "byok:anthropic:claude-sonnet-5-5".into(),
-        }],
-    );
-    assert_eq!(p.prompt("chat", "config"), TurnEnd::Completed);
-    assert_eq!(
-        reply(&log),
-        "model=byok:anthropic:claude-sonnet-5-5 effort=default"
-    );
-    let seen: Vec<String> = models(&log).into_iter().map(|m| m.current).collect();
-    assert_eq!(
-        seen,
-        [
-            "byok:anthropic:claude-sonnet-5-5",
-            "byok:anthropic:claude-sonnet-5-5"
-        ]
-    );
-}
-
-#[test]
-fn session_models_reads_reasons_model_option() {
-    use super::provider::session_models;
-    // The shape reason acp 0.2.692 answers session/new with (trimmed).
-    let options = serde_json::json!([
-        { "id": "model", "name": "Model", "category": "model", "type": "select", "currentValue": "default",
-          "options": [
-            { "value": "default", "name": "Auto", "description": "Your Workspace's default" },
-            { "value": "openai/gpt-6.1-sol", "name": "Reason", "description": "Included with Reason" },
-            { "value": "byok:anthropic:claude-opus-5-5", "name": "Claude Opus 5.5", "description": "Claude \u{b7} Subscription" } ] },
-        { "id": "reasoning_effort", "name": "Reasoning", "category": "thought_level", "type": "select", "currentValue": "high",
-          "options": [ { "value": "default", "name": "Default" }, { "value": "high", "name": "high" } ] }
-    ]);
-    let m = session_models(&options).unwrap();
-    assert_eq!(m.current, "default");
-    assert_eq!(m.effort.as_deref(), Some("high"));
-    assert_eq!(m.options.len(), 3);
-    assert_eq!(m.options[1].name, "Reason");
-    assert!(session_models(&serde_json::json!([])).is_none());
-    assert!(session_models(&serde_json::Value::Null).is_none());
+    assert!(started(&log).is_empty(), "no chat gets a Session");
 }

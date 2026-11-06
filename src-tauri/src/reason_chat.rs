@@ -22,10 +22,10 @@
 //!    before and after the turn ([`crate::turn_checkpoint`]) and the result
 //!    carries `turnChanges`, the files the turn changed (absent when a
 //!    checkpoint was skipped or the turn touched more than 200 files).
-//!    A `models` event reports the Session's models: what it offers and
-//!    what it runs (after each turn, the model the turn ran on).
 //! 3. `reason_cancel(chatId)` for Stop.
-//! 4. `reason_answer_permission(chatId, requestId, optionId?)` answers a
+//! 4. `reason_models()` lists the models Reason offers. After each turn a
+//!    `sessionModel` event (`{ model, effort }`) says what the Session ran.
+//! 5. `reason_answer_permission(chatId, requestId, optionId?)` answers a
 //!    `permissionRequest` event: with the chosen option, or `cancelled`
 //!    without one. A `permissionResolved` event follows.
 
@@ -221,6 +221,16 @@ pub fn reason_answer_permission(
 ) -> bool {
     let provider = state.provider.lock().unwrap().clone();
     provider.is_some_and(|p| p.answer_permission(&chat_id, &request_id, option_id.as_deref()))
+}
+
+/// The models Reason offers (`{ current, options: [{ value, name, description? }] }`).
+#[tauri::command]
+pub async fn reason_models(app: AppHandle, state: State<'_, ReasonChats>) -> Result<Value, String> {
+    let provider = state.provider(&app)?;
+    let list = tauri::async_runtime::spawn_blocking(move || provider.models())
+        .await
+        .map_err(|e| e.to_string())??;
+    Ok(wire::models_json(&list))
 }
 
 /// Recent Sessions in the signed-in Workspace, newest first.

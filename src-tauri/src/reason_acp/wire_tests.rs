@@ -167,20 +167,37 @@ fn a_permission_request_carries_its_title_and_options() {
 }
 
 #[test]
-fn models_carry_the_current_model_and_reasons_names() {
-    use super::provider::{ModelOption, SessionModels};
-    let m = ProviderEvent::Models(SessionModels {
-        current: "byok:anthropic:claude-opus-5-5".into(),
+fn session_model_and_the_model_list_reach_the_ui() {
+    use super::cli::RunningModel;
+    use super::provider::model_list;
+    use super::wire::models_json;
+    let ran = ProviderEvent::SessionModel(RunningModel {
+        model: "byok:anthropic:claude-opus-5-5".into(),
         effort: Some("high".into()),
-        options: vec![ModelOption {
-            value: "default".into(),
-            name: "Auto".into(),
-            description: Some("Your Workspace's default".into()),
-        }],
     });
     assert_eq!(
-        event_json("c", &m),
-        json!({ "chatId": "c", "type": "models", "current": "byok:anthropic:claude-opus-5-5", "effort": "high",
-                "options": [{ "value": "default", "name": "Auto", "description": "Your Workspace's default" }] })
+        event_json("c", &ran),
+        json!({ "chatId": "c", "type": "sessionModel",
+                "model": "byok:anthropic:claude-opus-5-5", "effort": "high" })
     );
+    // Trimmed from `session/new` of `reason acp` 0.2.692.
+    let options = json!([
+        { "id": "model", "name": "Model", "category": "model", "type": "select",
+          "currentValue": "default", "options": [
+            { "value": "default", "name": "Auto", "description": "Your Workspace's default" },
+            { "value": "byok:anthropic:claude-opus-5-5", "name": "Claude Opus 5.5",
+              "description": "Claude · Subscription" },
+            { "value": "openai/gpt-6.1-sol", "name": "Reason" } ] },
+        { "id": "reasoning_effort", "currentValue": "default", "options": [] }
+    ]);
+    let list = model_list(&options).unwrap();
+    assert_eq!(
+        models_json(&list),
+        json!({ "current": "default", "options": [
+            { "value": "default", "name": "Auto", "description": "Your Workspace's default" },
+            { "value": "byok:anthropic:claude-opus-5-5", "name": "Claude Opus 5.5",
+              "description": "Claude · Subscription" },
+            { "value": "openai/gpt-6.1-sol", "name": "Reason" } ] })
+    );
+    assert_eq!(model_list(&json!([])), None);
 }

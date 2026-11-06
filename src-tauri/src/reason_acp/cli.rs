@@ -223,17 +223,16 @@ impl LaunchConfig {
         }
     }
 
-    /// The model and reasoning effort Session `session_id` last ran with,
-    /// as `reason session get --json` reports them (`model`,
-    /// `reasoning_effort`). A Session on "Auto" names the model Reason
-    /// picked for it here, not `default`. `None` when `reason` cannot say.
+    /// The model and reasoning effort Session `session_id` last ran on, as
+    /// `reason [--workspace SLUG] session get ID --json` reports them; `None`
+    /// when it cannot tell (offline, not found, no turn run yet).
     pub fn session_model(
         &self,
         dir: &Path,
-        workspace: Option<&str>,
+        slug: Option<&str>,
         session_id: &str,
-    ) -> Option<(String, Option<String>)> {
-        let cfg = self.in_workspace(workspace).ok()?;
+    ) -> Option<RunningModel> {
+        let cfg = self.in_workspace(slug).ok()?;
         checked("session", session_id).ok()?;
         let out = cfg.run(dir, &["session", "get", session_id, "--json"], true)?;
         if !out.status.success() {
@@ -258,23 +257,6 @@ impl LaunchConfig {
 
 /// How long `reason whoami` or `reason session get` may take.
 const SUBCOMMAND_TIMEOUT: Duration = Duration::from_secs(20);
-
-/// `model` and `reasoning_effort` of `reason session get --json` output
-/// (0.2.692 prints the Session object; a versioned `{ data: … }` envelope is
-/// read too).
-pub fn parse_session_model(json: &str) -> Option<(String, Option<String>)> {
-    let v: serde_json::Value = serde_json::from_str(json.trim()).ok()?;
-    let s = if v["data"].is_object() {
-        &v["data"]
-    } else {
-        &v
-    };
-    let model = s["model"].as_str().filter(|m| !m.trim().is_empty())?;
-    let effort = s["reasoning_effort"]
-        .as_str()
-        .filter(|e| !e.trim().is_empty());
-    Some((model.to_string(), effort.map(str::to_string)))
-}
 
 /// The workspaces `reason whoami` lists.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
@@ -320,6 +302,36 @@ pub fn parse_whoami(text: &str) -> Workspaces {
         w.saved.push(slug.to_string());
     }
     w
+}
+
+/// The model a Session runs on: Reason picks it per turn when the Session's
+/// model option is "default" (Auto), so only the Session itself knows it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RunningModel {
+    /// Reason model id, e.g. `byok:anthropic:claude-opus-5-5`.
+    pub model: String,
+    /// Reasoning effort, e.g. `high`; `None` when Reason reports none.
+    pub effort: Option<String>,
+}
+
+/// Reads `model` and `reasoning_effort` from `reason session get --json`
+/// (0.2.692 prints the Session object; an object under `session` is read
+/// too). `None` without a model or with the placeholder `default`.
+pub fn parse_session_model(text: &str) -> Option<RunningModel> {
+    let v: serde_json::Value = serde_json::from_str(text.trim()).ok()?;
+    let s = if v["session"].is_object() {
+        &v["session"]
+    } else {
+        &v
+    };
+    let model = s["model"].as_str().map(str::trim);
+    let model = model.filter(|m| !m.is_empty() && *m != "default")?;
+    let effort = s["reasoning_effort"].as_str().map(str::trim);
+    let effort = effort.filter(|e| !e.is_empty() && *e != "default");
+    Some(RunningModel {
+        model: model.to_string(),
+        effort: effort.map(str::to_string),
+    })
 }
 
 /// What `reason session get` said about a Session in one workspace.

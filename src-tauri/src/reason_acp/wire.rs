@@ -4,7 +4,7 @@
 //! [`event_json`] as its payload. Every payload has `chatId` and a `type`;
 //! field names are camelCase like the rest of the app's commands.
 
-use super::provider::{ProviderEvent, SessionInfo, SessionModels, TurnEnd};
+use super::provider::{ModelList, ProviderEvent, SessionInfo, TurnEnd};
 use super::updates::{AgentEvent, Diff, MappedPath, Place, ToolRow, ToolStatus};
 use serde_json::{json, Value};
 
@@ -30,7 +30,9 @@ pub fn event_json(chat: &str, ev: &ProviderEvent) -> Value {
         ProviderEvent::PermissionResolved { request_id } => {
             json!({ "type": "permissionResolved", "requestId": request_id })
         }
-        ProviderEvent::Models(m) => models_json(m),
+        ProviderEvent::SessionModel(m) => {
+            json!({ "type": "sessionModel", "model": m.model, "effort": m.effort })
+        }
     };
     v["chatId"] = json!(chat);
     v
@@ -45,16 +47,16 @@ pub fn turn_end_json(end: &TurnEnd) -> Value {
     }
 }
 
-/// `{ type: "models", current, effort, options: [{ value, name, description }] }`.
-pub fn models_json(m: &SessionModels) -> Value {
-    json!({
-        "type": "models",
-        "current": m.current,
-        "effort": m.effort,
-        "options": m.options.iter().map(|o| json!({
-            "value": o.value, "name": o.name, "description": o.description,
-        })).collect::<Vec<_>>(),
-    })
+/// `{ current, options: [{ value, name, description? }] }`.
+pub fn models_json(list: &ModelList) -> Value {
+    let options = list.options.iter().map(|o| {
+        let mut v = json!({ "value": o.value, "name": o.name });
+        if let Some(d) = &o.description {
+            v["description"] = json!(d);
+        }
+        v
+    });
+    json!({ "current": list.current, "options": options.collect::<Vec<_>>() })
 }
 
 pub fn session_json(s: &SessionInfo) -> Value {

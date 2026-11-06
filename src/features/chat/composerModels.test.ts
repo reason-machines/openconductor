@@ -51,14 +51,3 @@ test("the chip reads 'Opus 5' 'High', accessible 'Opus 5 · High'", () => {
   assert.deepEqual(modelChip("opus-5-1m", "high"), { label: "Opus 5", effort: "High", accessible: "Opus 5 · High" });
   assert.equal(modelChip("opus-5-1m", "high", true).accessible, "Opus 5 · High · Fast");
 });
-
-test("Reason model ids get Reason's effort levels, and no guessed default", () => {
-  const e = modelEfforts("byok:anthropic:claude-opus-5-5");
-  assert.deepEqual(e?.options.map((o) => o.value), ["minimal", "low", "medium", "high", "xhigh", "max"]);
-  assert.equal(e?.axisLabel, "Effort");
-  assert.equal(effortLabel("byok:anthropic:claude-opus-5-5", "high"), "High");
-  // Reason's own default depends on the model: an unset effort shows none.
-  assert.equal(effortLabel("default", null), null);
-  assert.equal(nextEffort("default", null), "minimal");
-  assert.equal(modelEfforts("not-a-model"), null);
-});

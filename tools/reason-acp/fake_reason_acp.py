@@ -42,14 +42,11 @@ tool_call_update to completed, with ACP kind, rawInput and _meta.claudeCode.tool
 LISBON_PROMPT, the fixture's user message, is an alias).
 
 session/new reports configOptions `model` and `reasoning_effort` like
-Reason does (model names and descriptions as 0.2.692 gives them);
-session/set_config_option with a value an option does not offer resets it
-to "default" without an error, as Reason does. A Session on "default"
-runs its turns on WORKSPACE_DEFAULT_MODEL: after a turn, session/resume
-reports that model as `model`'s currentValue and `session get` prints it as
-`model`, as reason acp 0.2.692 and `reason session get --json` do. With the
-file `fake-reason-resume-bare` in the working directory, session/resume
-reports no configOptions, as older reason acp builds did.
+Reason does (session/close drops one that never got a prompt, as Reason
+keeps none); `session get --json`
+reports the model a Session ran on (Claude Opus 5.5 for "default") and its
+reasoning effort; session/set_config_option with a value an option does not
+offer resets it to "default" without an error, as Reason does.
 """
 import json
 import os
@@ -57,39 +54,32 @@ import sys
 import threading
 import urllib.parse
 
+# Values, names and descriptions as `reason acp` 0.2.692 reports them (a subset).
+MODELS = [
+    ("default", "Auto", "Your Workspace's default"),
+    ("byok:anthropic:claude-opus-5-5", "Claude Opus 5.5", "Claude · Subscription"),
+    ("byok:openai-codex:gpt-5.6-sol", "GPT-5.6-Sol", "ChatGPT · Subscription"),
+    ("byok:anthropic:claude-sonnet-5-5", "Claude Sonnet 5.5", "Claude · Subscription"),
+    ("byok:anthropic:claude-haiku-5-5", "Claude Haiku 5.5", "Claude · Subscription"),
+    ("byok:anthropic:claude-opus-4-8", "Claude Opus 4.8", "Claude · Subscription"),
+    ("byok:openai-codex:gpt-6.1-sol", "GPT-6.1-Sol", "ChatGPT · Subscription"),
+]
 OPTIONS = {
-    "model": ("Model", ["default", "byok:anthropic:claude-opus-5-5", "byok:anthropic:claude-sonnet-5-5",
-                        "byok:openai-codex:gpt-5.6-sol"]),
+    "model": ("Model", [m[0] for m in MODELS]),
     "reasoning_effort": ("Reasoning", ["default", "low", "medium", "high", "xhigh", "max"]),
 }
-# Names and descriptions as reason acp 0.2.692 gives them.
-MODEL_NAMES = {
-    "default": ("Auto", "Your Workspace's default"),
-    "byok:anthropic:claude-opus-5-5": ("Claude Opus 5.5", "Claude \u00b7 Subscription"),
-    "byok:anthropic:claude-sonnet-5-5": ("Claude Sonnet 5.5", "Claude \u00b7 Subscription"),
-    "byok:openai-codex:gpt-5.6-sol": ("GPT-5.6-Sol", "ChatGPT \u00b7 Subscription"),
-}
-# The model Reason picks for a Session on "Auto" once it runs a turn.
-WORKSPACE_DEFAULT_MODEL = "byok:anthropic:claude-opus-5-5"
+NAMES = {m[0]: (m[1], m[2]) for m in MODELS}
 
 
-def option_value(k, v):
-    if k != "model":
-        return {"value": v, "name": "Default" if v == "default" else v}
-    name, description = MODEL_NAMES[v]
-    return {"value": v, "name": name, "description": description}
+def option(value):
+    name, description = NAMES.get(value, (value, None))
+    return {"value": value, "name": name, **({"description": description} if description else {})}
 
 
 def config_options(config):
-    return [{"id": k, "name": name, "category": "model" if k == "model" else "thought_level", "type": "select",
-             "currentValue": config.get(k, "default"), "options": [option_value(k, v) for v in values]}
+    return [{"id": k, "name": name, "type": "select", "currentValue": config.get(k, "default"),
+             "options": [option(v) for v in values]}
             for k, (name, values) in OPTIONS.items()]
-
-
-def ran_model(session):
-    """The model a Session ran its last turn on: its pick, else the Workspace default."""
-    picked = session.get("config", {}).get("model", "default")
-    return picked if picked != "default" else WORKSPACE_DEFAULT_MODEL
 
 HOME = os.path.realpath(os.getcwd())
 STATE = os.path.join(HOME, "state.json")
@@ -320,19 +310,21 @@ def handle(msg):
         config[p["configId"]] = p["value"] if p["value"] in values else "default"
         save(state)
         send({"id": rid, "result": {"configOptions": config_options(config)}})
+    elif method == "session/close":
+        # Reason keeps no Session that never got a prompt.
+        state = load()
+        if state["sessions"].get(p.get("sessionId"), {}).get("turns") == 0:
+            del state["sessions"][p["sessionId"]]
+            save(state)
+        opened.discard(p.get("sessionId"))
+        send({"id": rid, "result": {}})
     elif method == "session/resume":
         session = load()["sessions"].get(p["sessionId"])
         if session is not None:
             opened.add(p["sessionId"])
             if session.get("workspace", "ws-a") != WORKSPACE:
                 foreign.add(p["sessionId"])
-            if os.path.exists(os.path.join(HOME, "fake-reason-resume-bare")):
-                # Like reason acp before 0.2.692: resume reports no options.
-                return send({"id": rid, "result": {}})
-            config = dict(session.get("config", {}))
-            if session.get("turns", 0) > 0:
-                config["model"] = ran_model(session)
-            send({"id": rid, "result": {"configOptions": config_options(config)}})
+            send({"id": rid, "result": {}})
         else:
             send({"id": rid, "error": {"code": -32002, "message": "Resource not found"}})
     elif method == "session/list":
@@ -364,10 +356,14 @@ def session_get(sid):
     if session is None or session.get("workspace", "ws-a") != WORKSPACE:
         sys.stderr.write("Reason: Reason request failed (404 session_not_found)\n")
         sys.exit(1)
+    # Auto ("default") runs Reason's pick; the fake picks Claude Opus 5.5.
     config = session.get("config", {})
+    model = config.get("model", "default")
+    effort = config.get("reasoning_effort", "default")
     print(json.dumps({"session_id": sid, "status": "exit", "title": session.get("title"),
-                      "model": ran_model(session) if session.get("turns", 0) > 0 else None,
-                      "reasoning_effort": config.get("reasoning_effort", "high")}))
+                      "model": None if session["turns"] == 0 else
+                      ("byok:anthropic:claude-opus-5-5" if model == "default" else model),
+                      "reasoning_effort": "high" if effort == "default" else effort}))
 
 
 if ARGS[:1] == ["whoami"]:

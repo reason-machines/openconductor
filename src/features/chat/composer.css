@@ -265,8 +265,7 @@
   font-size: 14px;
 }
 .oc-model-search input::placeholder { color: var(--oc-c-muted-fg); }
-/* One column the menu's width: a long model name truncates instead of widening the rows past the check. */
-.oc-model-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; align-content: start; overflow-y: auto; min-height: 0; }
+.oc-model-list { display: grid; gap: 4px; align-content: start; overflow-y: auto; min-height: 0; }
 .oc-model-empty { padding: 6px 8px; text-align: center; color: var(--oc-c-muted-fg); }
 .oc-model-item,
 .oc-model-row {
