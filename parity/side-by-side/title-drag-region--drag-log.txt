@@ -1,0 +1,30 @@
+# workspace drags (fix build, rebased on origin/main 7cd4ede0)
+start 160,97
+main header title-bar strip (top padding): pressed client (700,12) moved (-120,-60): window 160,97 -> 40,37
+main header: workspace name text: pressed client (360,44) moved (100,50): window 40,37 -> 140,87
+main header: branch chip (span, not a button): pressed client (450,44) moved (-60,40): window 140,87 -> 80,127
+main header: gap between title and actions: pressed client (840,44) moved (50,-20): window 80,127 -> 130,107
+sidebar header top bar (title-bar strip): pressed client (40,20) moved (30,30): window 130,107 -> 160,137
+sidebar header gap right of Home row: pressed client (236,70) moved (-30,-30): window 160,137 -> 130,107
+NEG target-branch button in main header: pressed client (530,44) moved (120,60): window 130,107 -> 130,107
+NEG sidebar toggle button: pressed client (94,20) moved (120,60): window 130,107 -> 130,107
+NEG right-panel toggle button in main header: pressed client (1252,44) moved (-120,60): window 130,107 -> 130,107
+NEG chat transcript below headers: pressed client (540,403) moved (120,60): window 130,107 -> 130,107
+# target-branch picker open (fix build)
+NEG inside open target-branch picker (gap under its input): pressed client (620,89) moved (120,60): window 160,97 -> 160,97
+NEG on a picker row (default branch): pressed client (560,127) moved (120,60): window 160,97 -> 160,97
+# 1440x900 (fix build)
+client 61,60  Width: 1440  Height: 900 
+main header strip at 1440x900: pressed client (900,14) moved (40,30): window 61,60 -> 101,90
+sidebar header strip at 1440x900: pressed client (150,18) moved (-40,-30): window 101,90 -> 61,60
+# same press/move sequence on origin/main ff1dec61 (before the fix; that main still had the status chip at x=598)
+start 160,97
+main header title-bar strip (top padding): pressed client (700,12) moved (-120,-60): window 160,97 -> 160,97
+main header: workspace name text: pressed client (360,44) moved (100,50): window 160,97 -> 160,97
+main header: Idle status chip: pressed client (598,44) moved (-60,40): window 160,97 -> 160,97
+main header: gap between title and actions: pressed client (840,44) moved (50,-20): window 160,97 -> 160,97
+sidebar header top bar (title-bar strip): pressed client (40,20) moved (30,30): window 160,97 -> 160,97
+sidebar header gap right of Home row: pressed client (236,70) moved (-30,-30): window 160,97 -> 160,97
+NEG target-branch button in main header: pressed client (530,44) moved (120,60): window 160,97 -> 160,97
+NEG sidebar toggle button: pressed client (94,20) moved (120,60): window 160,97 -> 160,97
+NEG chat transcript below headers: pressed client (540,403) moved (120,60): window 160,97 -> 160,97

@@ -41,7 +41,7 @@ export function ArchivedWorkspaceView({ repo, workspace, dispatch }: Props) {
   const label = pending ? ARCHIVED_BANNER.unarchiving : ARCHIVED_BANNER.unarchive;
   return (
     <div className="workspace archived-workspace" data-archived>
-      <header className="ws-header" data-tauri-drag-region>
+      <header className="ws-header" data-tauri-drag-region="deep">
         <div className="ws-title">
           <span className="crumb">{repo.name}</span>
           <span className="crumb-sep">/</span>
