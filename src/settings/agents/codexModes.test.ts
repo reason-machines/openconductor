@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { chatgptStatus, codexModeOf, loginResult, switchSteps, withCodexProvider } from "./codexTab.ts";
+import { chatgptStatus, codexModeOf, loginResult, switchSteps, withCodexProvider } from "./codexModes.ts";
 import { DEFAULT_SETTINGS, type Settings } from "../types.ts";
 
 const s = (patch: Partial<Settings>): Settings => ({ ...DEFAULT_SETTINGS, ...patch });

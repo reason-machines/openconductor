@@ -5,7 +5,7 @@
 // ~/.codex/config.toml card. Laid out as Conductor 0.87.6's `Fpa` and Sven's
 // native screenshots (evidence/settings/agents-screens/conductor/
 // settings--agents-codex*); the ChatGPT card is Sven's addition. Rules:
-// codexTab.ts.
+// codexModes.ts.
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useState } from "react";
 import { inTauri, openUrl } from "../../backend";
@@ -16,7 +16,7 @@ import { Row } from "../GeneralPage";
 import type { CodexPersonality } from "../types";
 import { codexAuthState, providerOf } from "./agentAuth";
 import { useAgentConfigPaths, type AgentTabProps } from "./ClaudeTab";
-import { CODEX_MODES, MANAGE_USAGE_URL, OPENAI_KEY, chatgptStatus, codexModeOf, loginResult, switchSteps, type CodexAccount, type CodexLoginEvent, type CodexMode } from "./codexTab";
+import { CODEX_MODES, MANAGE_USAGE_URL, OPENAI_KEY, chatgptStatus, codexModeOf, loginResult, switchSteps, type CodexAccount, type CodexLoginEvent, type CodexMode } from "./codexModes";
 import { CheckIcon, ExternalIcon, KeyIcon, TerminalIcon } from "./icons";
 import { AuthCards, ConfigFileCard, ExecutablePathRow, LoginButton, SecretRow, StatusLine, type AuthOption } from "./kit";
 import { storedSecret, useAgentStatus } from "./useAgentStatus";

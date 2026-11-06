@@ -52,3 +52,10 @@ test("Stone keeps Conductor's values for the surfaces Sven compared", () => {
   assert.equal(dark.get("--sidebar-background"), "#211e1c");
   assert.equal(light.get("--border"), "#eae8e6");
 });
+
+test("--unread is Conductor's text-unread colour in every palette: light, dark and system dark", () => {
+  // renderApp-BYEcFwvt.css: `:root,.light{--unread:#a4847f}` and `.dark{--unread:#cca694}`.
+  assert.equal(block(":root").get("--unread"), "#a4847f");
+  assert.equal(block(':root[data-theme="dark"]').get("--unread"), "#cca694");
+  assert.equal(block(':root:not([data-theme="light"])').get("--unread"), "#cca694");
+});

@@ -43,10 +43,12 @@ pub struct Settings {
     /// GCP project for `claude_provider = "vertex"`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vertex_project_id: Option<String>,
-    /// Advanced › "Claude Code executable path"; blank means `claude` on `PATH`.
+    /// Settings › Agents "Claude Code executable path"; blank means the
+    /// bundled copy in agent-binaries/ (crate::agent_launch).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub claude_code_executable_path: Option<String>,
-    /// Advanced › "Codex executable path"; blank means `codex` on `PATH`.
+    /// Settings › Agents "Codex executable path"; blank means the bundled
+    /// copy in agent-binaries/ (crate::agent_launch).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub codex_executable_path: Option<String>,
     /// Advanced › "OpenCode executable path"; blank means `opencode` on `PATH`.
