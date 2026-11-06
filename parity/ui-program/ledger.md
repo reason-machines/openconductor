@@ -27,7 +27,7 @@ that justifies the status.
 |---|---|---|---|---|
 | Home `home` | unassigned | #457, #501 | wrong | seed |
 | Sidebar `sidebar` | unassigned | #491, #505 | wrong | seed |
-| Header + title bar `header` | unassigned | #504, #514 | wrong | seed |
+| Header + title bar `header` | unassigned | #504, #514, #590, #586 | wrong | 2026-11-06, b3615ed, [header-01](../side-by-side/header-01-height-built-app-light.png) |
 | Chat tabs + chat area + composer `chat` | unassigned | #516 | wrong | seed |
 | Right panel: All files / Changes / Checks `right-panel` | unassigned | | wrong | seed |
 | Setup / Run / Terminal strip `strip` | unassigned | #509 | wrong | seed |
@@ -182,6 +182,8 @@ side-by-side README).
 
 **Totals** (states and inventory items; `c3c7b31` in brackets): 963 entries, 781 missing (780), 137 wrong (160), 45 matches (23). States: 22 missing, 38 wrong, 5 match. Settings rows matching went from 11 to 30.
 
+**Since run 2.** Main has regenerated the map after this pass (#578, #580 and later), so [parity/ui-map.md](../ui-map.md) and its JSON now carry a newer OpenConductor commit and newer totals than the table below; this section and the diff images in [parity/ui-map/diff/](../ui-map/diff/) stay the dated record of `0b89bf8`. When this branch was brought up to date with main (merge of `1255f7f`), the generated map files were taken from main unchanged.
+
 **What these images are.** The left side of each diff is Conductor's own frontend in Chromium with mocked IPC and synthetic data, not the native window, so these are not side-by-side images under [side-by-side/README.md](../side-by-side/README.md) and do not change any node's seed status above. Seed data differs between the sides (the reference has six workspaces and a transcript, OpenConductor one fresh worktree), so pixel ratios include content differences. Background tone differs on every screen because OpenConductor uses the Neutral grading Sven chose; that is intended, not a finding. The diff and side-by-side JPGs are committed under `parity/ui-map/diff/`; the raw PNGs are not.
 
 ### Ledger: every screen
@@ -263,7 +265,7 @@ side-by-side README).
 
 ### Native pass on the Mac (not completed)
 
-- **Conductor, real window:** REA `observe-native-ui` refused (`screen-recording-denied`; REA-GAPS 20). The live Conductor had a running agent, so it was not clicked. The only native Conductor references remain Sven's captures in `~/oc-native-refs/` (6 Conductor images; `conductor-main.png` and `conductor-settings-general.png` are the same file, sha256 `552d17f4…`, so there is no native Settings reference).
+- **Conductor, real window:** REA `observe-native-ui` refused (`screen-recording-denied`; REA-GAPS 26). The live Conductor had a running agent, so it was not clicked. The only native Conductor references remain Sven's captures in `~/oc-native-refs/` (6 Conductor images; `conductor-main.png` and `conductor-settings-general.png` are the same file, sha256 `552d17f4…`, so there is no native Settings reference).
 - **OpenConductor, built app:** the CI build of `0b89bf8` (`~/OpenConductor-ci-0b89bf84`, ad-hoc signed) was copied as `OCFinalPass2` on a throwaway HOME with three fixture repos and captured once through Reason's computer tool (Home with sidebar, light theme). The rest of the walk failed: the Mac's load average was 88 on 18 cores from other Sessions' builds, computer use returned a run of transient errors, and a later snapshot resolved to another Session's OpenConductor window with the same bundle id, so the run stopped there rather than click in someone else's app (reported to the Reason team). The copy was quit and left in `~/ocfp-75177d01`.
 - **Launch crash, again:** the first copy, run from `/tmp`, panicked in setup with `Failed to setup app: error encountered during setup hook: unknown path` (tauri `app.rs:1444`), the crash run 1 recorded; the same bundle moved under `~` launched. That points at `/tmp` → `/private/tmp` canonicalisation of the resource dir, not at the identifier change run 1 suspected; not confirmed.
 
@@ -287,8 +289,8 @@ Scope: user Settings (General, Account, Appearance, Agents, Models, Git, Environ
 |---|---|---|---|
 | Tooltip: Back | "Esc", `side:"right"`, Root `delayDuration:100` (`I9a`); live: opens after ~115 ms, 36×24 at 4 px right of the button, fade + scale from 95% over 100 ms | Same text, side, delay and box (opens after ~103 ms) through the shared `Tooltip` (`delay` prop added) | **matches** ([back-tooltip.png](../side-by-side/settings/back-tooltip.png)) |
 | Tooltip: Account › Linear Connect, Billing | "Opens settings in your browser", "Opens billing in your browser" (600 ms, top) | No Linear or Billing card (no Conductor account service) | n/a until those cards exist |
-| Right-click: settings nav links | Every page link: one item, copy icon + "Copy link", copies `<scheme>://settings/<path>` (`t9a`, `TGt`) | none yet | open: PR (b) |
-| Right-click: links in row text | "Open link", "Copy link" (`Q$r`, app-wide `X$r`) | none yet | open: PR (b) |
+| Right-click: settings nav links | Every page link (user pages and repo sections): one item, copy icon + "Copy link", copies `<scheme>://settings/<path>` (`t9a`, `TGt`); menu 128×40 at pointer +2 px, item 32 px, 16 px muted icon. REA Evidence `ev_c20f4c8e…` (right-click through `capture-browser-scenario`) | Same item, icon, size and offset; copies `openconductor://settings/user/<page>` or `…/repos/<id>/<section>`, toast "Copied link to clipboard" | **matches** ([nav-copy-link-menu.png](../side-by-side/settings/nav-copy-link-menu.png)) |
+| Right-click: links in row text | "Open link" (external-link icon), "Copy link" (copy icon), no separator (`Q$r`, `X$r` for any `<a>` whose href has a scheme); 128×72 at the pointer, 5 px up | Same items, order, icons and placement, on every link inside Settings | **matches** ([row-link-menu.png](../side-by-side/settings/row-link-menu.png)) |
 | Press state: buttons | `REe`: `transition-transform duration-150 ease-out` (cubic-bezier(0,0,.2,1)), `active:scale-[0.97]`, reduced motion keeps scale 1; ghost hover `bg-sidebar-accent` (#ffffff0d dark), instant | Settings `.btn`: same transition, scale .97 on `:active`, reduced-motion guard; Test button gets the ghost hover. Measured: both at scale 0.97 when `:active` | **matches** ([button-press.png](../side-by-side/settings/button-press.png)) |
 | Transitions: switches, Back | Switch track `transition-colors duration-150`, thumb `transition-transform duration-150` (cubic-bezier(.4,0,.2,1)); Back `transition-colors` 150 ms | Same durations and easing (were `ease`) | **matches** |
 | Transitions: nav links, comboboxes | none (`all 0s`) | none | matches |

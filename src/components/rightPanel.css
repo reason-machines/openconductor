@@ -18,10 +18,14 @@
   --panel: var(--bg);
   background: var(--bg);
 }
+.ws-right, .ws-right > * { min-width: 0; }
 .ws-right.strip-collapsed { grid-template-rows: minmax(0, 1fr) auto; }
 
 /* Tab row: 28 px pills, 13 px labels. */
-.rp-tabs { display: flex; align-items: center; gap: 2px; height: 44px; padding: 0 8px 0 10px; flex: none; }
+/* At a third of a narrow window the row is wider than the panel; it scrolls sideways inside the
+   panel (Conductor's tab list is a horizontal scroll area) instead of spilling past the window. */
+.rp-tabs { display: flex; align-items: center; gap: 2px; height: 44px; padding: 0 8px 0 10px; flex: none; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.rp-tabs > * { flex: none; }
 .rp-tab { display: inline-flex; align-items: center; height: 28px; padding: 0 9px; border-radius: 6px; color: var(--rp-muted-fg); font-size: 13px; font-weight: 500; white-space: nowrap; }
 .rp-tab:hover { color: var(--text); }
 .rp-tab.active { background: var(--rp-pill); color: var(--text); }
@@ -54,7 +58,8 @@
 .scripts-empty { flex: 1; min-height: 0; padding: 32px; overflow: auto; }
 .scripts-empty-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 170px; padding: 24px; border: 1px dashed var(--border); border-radius: 8px; text-align: center; }
 .scripts-empty-box p { margin: 0; max-width: 240px; color: var(--rp-muted-fg); font-size: 14px; line-height: 20px; }
-.scripts-empty-btn { height: 32px; padding: 0 12px; border-radius: 6px; background: var(--rp-secondary); color: var(--text); font-size: 14px; font-weight: 500; }
+/* Conductor's Button base (`REe`: inline-flex … whitespace-nowrap): the label stays on one line in a narrow panel. */
+.scripts-empty-btn { flex: none; height: 32px; padding: 0 12px; border-radius: 6px; background: var(--rp-secondary); color: var(--text); font-size: 14px; font-weight: 500; white-space: nowrap; }
 .scripts-empty-btn:hover { background: var(--rp-pill); }
 .ws-strip .scripts-meta .scripts-actions { margin-left: auto; }
 .ws-right .diff { background: var(--bg); }

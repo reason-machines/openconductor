@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { CreateWorkspaceComposer, type CreateWorkspaceComposerProps } from "./CreateWorkspaceComposer";
+import { useDialogMotion } from "./motion/dialogMotion";
 
 type Props = Omit<CreateWorkspaceComposerProps, "eyebrowVariant" | "onBusyChange">;
 
@@ -11,11 +12,12 @@ type Props = Omit<CreateWorkspaceComposerProps, "eyebrowVariant" | "onBusyChange
  */
 export function CreateWorkspaceDialog(props: Props) {
   const [busy, setBusy] = useState(false);
+  const ref = useDialogMotion<HTMLDivElement>();
   const close = useCallback(() => {
     if (!busy) props.onClose();
   }, [busy, props]);
   return (
-    <div className="modal-backdrop create-backdrop" onMouseDown={(e) => e.target === e.currentTarget && close()}>
+    <div className="modal-backdrop create-backdrop" ref={ref} data-dialog-motion="dialog" onMouseDown={(e) => e.target === e.currentTarget && close()}>
       <div
         className="create-dialog"
         role="dialog"

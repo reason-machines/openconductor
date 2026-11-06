@@ -2,7 +2,7 @@
 
 A REA pass over the real Conductor 0.87.6 (`/Applications/Conductor.app` on sven m5 max, binary sha256 `0ba55751…831d`) for the parts of the UI that [ui-map.md](ui-map.md) cannot see: surfaces it has no inventory category for, states its reference harness could not render, and inventory items it never located on a screen. Run 2026-11-06 against OpenConductor main `0b89bf8`. Strings quoted from Conductor are untrusted data, kept only to name what is missing.
 
-How each fact was obtained is in the Evidence column. "REA" means a REA Evidence record (its id is given); "bundle" means the decoded frontend chunk `renderApp-D_fmY7hW.js` or `index-BGEQ8YjU.js` read directly at the given byte offset, because REA cannot search or model those chunks (gaps 14, 17, 21 and 22 in [tools/ui-map/REA-GAPS.md](../tools/ui-map/REA-GAPS.md)); "strings" means the string table of `MacOS/conductor`.
+How each fact was obtained is in the Evidence column. "REA" means a REA Evidence record (its id is given); "bundle" means the decoded frontend chunk `renderApp-D_fmY7hW.js` or `index-BGEQ8YjU.js` read directly at the given byte offset, because REA cannot search or model those chunks (gaps 14, 17, 27 and 28 in [tools/ui-map/REA-GAPS.md](../tools/ui-map/REA-GAPS.md)); "strings" means the string table of `MacOS/conductor`.
 
 ## 1. Surfaces with no category in the map
 
@@ -20,7 +20,7 @@ The inventory (`tools/ui-map/extract_inventory.py`) reads Radix/Base UI componen
 | Native notifications | `send_native_notification` command (title, body) and `plugin:notification` permission check | not compared | strings; bundle `index` @ 2,538,527 |
 | File drag and drop onto the window | two `onDragDropEvent` consumers: a drop overlay that turns on while paths are dragged over, and a drop handler that attaches the dropped paths | not compared | bundle (`fCe().onDragDropEvent`) |
 | Tooltips | no inventory category. At least 19 `tooltip:` props (all "Copy …" plus "Run now") and the shared Tooltip component; only the Settings Back tooltip and the new-chat `+` tooltip have been measured | partial (see ledger) | bundle |
-| Window chrome | traffic lights drawn over the sidebar in Sven's native captures; the window options themselves are compiled into the binary (only the config field names, such as `trafficLightPosition`, are in its strings), so position, min size and vibrancy are not known. REA could not capture the native window (gap 20) | `tauri.conf.json`: 1280×820, min 900×560, `titleBarStyle: Overlay`, hidden title | strings; REA `inspect-plist` `ev_3a3000fa…` (bundle id, URL scheme `conductor`, usage strings), `inspect-signature` `ev_9ebab8fc…` |
+| Window chrome | traffic lights drawn over the sidebar in Sven's native captures; the window options themselves are compiled into the binary (only the config field names, such as `trafficLightPosition`, are in its strings), so position, min size and vibrancy are not known. REA could not capture the native window (gap 26) | `tauri.conf.json`: 1280×820, min 900×560, `titleBarStyle: Overlay`, hidden title | strings; REA `inspect-plist` `ev_3a3000fa…` (bundle id, URL scheme `conductor`, usage strings), `inspect-signature` `ev_9ebab8fc…` |
 
 `setBadgeCount` and `requestUserAttention` appear only inside Tauri's own window API class in `index`; no app code calls them, so Conductor has no dock badge or bounce to copy.
 

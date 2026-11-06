@@ -102,7 +102,7 @@ test("Stop agents and archive also cancels a Reason chat waiting on a permission
   await settle();
   await settle();
   assert.equal(calls.filter((c) => c.cmd === "reason_prompt" && c.args.chatId === "ws-reason-ask").length, 1);
-  emitReason({ chatId: "ws-reason-ask", type: "permissionRequest", requestId: "permission-1", title: "bash: rm -rf build", options: [{ optionId: "allow", name: "Allow", kind: "allow_once" }] });
+  emitReason({ chatId: "ws-reason-ask", type: "permissionRequest", requestId: "permission-1", title: "bash: rm -rf build", options: [{ optionId: "allow", name: "Allow", kind: "allow_once" }], kind: "permission", tool: "execute", input: { command: "rm -rf build" } });
   assert.equal(reason.chatSnapshot("ws-reason-ask").queue.status, "needs_user_permission");
   archive.stopWorkspaceAgents("ws-reason-ask");
   await settle();

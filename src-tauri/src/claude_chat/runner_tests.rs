@@ -1,7 +1,8 @@
 //! [`ClaudeRunner`] against a stand-in `claude` that speaks stream-json:
 //! each user line gets init (once), a text reply echoing it and a result.
 //! A message containing `sleep` waits for an interrupt (`ignore`: waits
-//! for good); `exit` exits 2 after printing to stderr.
+//! for good); `exit` exits 2 after printing to stderr; `askplan` asks to
+//! run ExitPlanMode and replies `allowed` or `denied` to the answer.
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -27,7 +28,15 @@ while IFS= read -r line; do
   case "$line" in
     *'"interrupt"'*)
       [ "$ignore" = 1 ] && continue
+      asked=0
       echo '{"type":"result","subtype":"error_during_execution","is_error":true,"session_id":"'$sid'"}'
+      continue;;
+    *'"control_response"'*)
+      [ "$asked" = 1 ] || continue
+      asked=0
+      case "$line" in *'"behavior":"allow"'*) b=allowed;; *) b=denied;; esac
+      echo '{"type":"assistant","session_id":"'$sid'","message":{"id":"p1","content":[{"type":"text","text":"'$b'"}]}}'
+      echo '{"type":"result","subtype":"success","is_error":false,"result":"'$b'","session_id":"'$sid'"}'
       continue;;
   esac
   if [ $init = 0 ]; then
@@ -37,6 +46,10 @@ while IFS= read -r line; do
   case "$line" in
     *ignore*) ignore=1; continue;;
     *sleep*) continue;;
+    *askplan*)
+      asked=1
+      echo '{"type":"control_request","request_id":"req-1","request":{"subtype":"can_use_tool","tool_name":"ExitPlanMode","input":{"plan":"1. build it"}}}'
+      continue;;
     *exit*) echo 'boom: fake claude died' >&2; exit 2;;
   esac
   n=$(wc -l < "$0.stdin" | tr -d ' ')
@@ -202,6 +215,101 @@ fn a_saved_session_is_resumed_and_a_missing_cli_fails_the_turn() {
     assert_eq!(end, TurnEnd::Failed("Claude Code was not found.".into()));
     assert_eq!(*events.lock().unwrap(), vec![ProviderEvent::TurnEnded(end)]);
     assert!(matches!(runner.prompt("nope", "hi"), TurnEnd::Failed(_)));
+}
+
+fn wait_for_type(h: &Harness, ty: &str) {
+    for _ in 0..500 {
+        if h.types().iter().any(|t| t == ty) {
+            return;
+        }
+        thread::sleep(Duration::from_millis(10));
+    }
+    panic!("no {ty} event: {:?}", h.types());
+}
+
+#[test]
+fn a_plan_prompt_waits_for_the_user_and_the_answer_goes_back() {
+    use super::interact::Answer;
+    let h = harness();
+    h.runner.open_chat("c1", &cwd(), None);
+    let r = h.runner.clone();
+    let turn = thread::spawn(move || r.prompt("c1", "askplan please"));
+    wait_for_type(&h, "permissionRequest");
+    let asked = h
+        .events
+        .lock()
+        .unwrap()
+        .iter()
+        .find(|e| e["type"] == "permissionRequest")
+        .cloned()
+        .unwrap();
+    assert_eq!(asked["requestId"], "req-1");
+    assert_eq!(asked["kind"], "plan");
+    assert_eq!(asked["plan"], "1. build it");
+    let wrong = Answer::Option("allow".into());
+    assert!(
+        h.runner.respond("c1", "req-1", &wrong).is_err(),
+        "a plan takes a plan answer"
+    );
+    assert!(h.runner.respond("c1", "nope", &Answer::Cancel).is_err());
+    let approve = Answer::Plan {
+        approved: true,
+        feedback: None,
+    };
+    h.runner.respond("c1", "req-1", &approve).unwrap();
+    assert_eq!(turn.join().unwrap(), TurnEnd::Completed);
+    // The waiter hears of the end just before the event is emitted.
+    wait_for_type(&h, "turnEnded");
+    assert_eq!(
+        h.types(),
+        [
+            "sessionStarted",
+            "permissionRequest",
+            "permissionResolved",
+            "text",
+            "turnEnded"
+        ]
+    );
+    let reply = h.stdin().last().unwrap().clone();
+    assert_eq!(reply["response"]["request_id"], "req-1");
+    assert_eq!(
+        reply["response"]["response"],
+        serde_json::json!({ "behavior": "allow", "updatedInput": { "plan": "1. build it" } })
+    );
+    assert_eq!(h.events.lock().unwrap()[3]["text"], "allowed");
+}
+
+#[test]
+fn stop_denies_a_waiting_prompt_and_resolves_it() {
+    let h = harness();
+    h.runner.open_chat("c1", &cwd(), None);
+    let r = h.runner.clone();
+    let turn = thread::spawn(move || r.prompt("c1", "askplan please"));
+    wait_for_type(&h, "permissionRequest");
+    h.runner.cancel("c1");
+    assert_eq!(turn.join().unwrap(), TurnEnd::Cancelled);
+    wait_for_type(&h, "turnEnded");
+    let types = h.types();
+    let resolved = types
+        .iter()
+        .position(|t| t == "permissionResolved")
+        .unwrap();
+    let ended = types.iter().position(|t| t == "turnEnded").unwrap();
+    assert!(resolved < ended, "{types:?}");
+    // The fake logs a line when it reads it, which can be after the turn ended.
+    let mut deny = None;
+    for _ in 0..500 {
+        deny = h
+            .stdin()
+            .into_iter()
+            .find(|m| m["type"] == "control_response");
+        if deny.is_some() {
+            break;
+        }
+        thread::sleep(Duration::from_millis(10));
+    }
+    let deny = deny.expect("Stop answers the waiting prompt");
+    assert_eq!(deny["response"]["response"]["behavior"], "deny");
 }
 
 #[test]

@@ -1,0 +1,527 @@
+[
+  {
+    "name": "settings--agents-claude-apikey--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_agents",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Agents\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "claude_apikey",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "button[aria-pressed] >> text=\"API key\""
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Agents > Claude Code with the API key card selected."
+  },
+  {
+    "name": "settings--agents-codex--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_agents",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Agents\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "tab_codex",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=tab] >> text=\"Codex\""
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Agents > Codex tab (CLI)."
+  },
+  {
+    "name": "settings--agents-codex-apikey--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_agents",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Agents\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "tab_codex",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=tab] >> text=\"Codex\""
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause2",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "codex_apikey",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "button[aria-pressed] >> text=\"API key\""
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Agents > Codex with the API key card selected."
+  },
+  {
+    "name": "settings--agents-cursor--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_agents",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Agents\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "tab_cursor",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=tab] >> text=\"Cursor\""
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Agents > Cursor tab."
+  },
+  {
+    "name": "settings--agents-opencode--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_agents",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Agents\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "tab_opencode",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=tab] >> text=\"OpenCode\""
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Agents > OpenCode tab."
+  },
+  {
+    "name": "settings--default-models-full--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_default_models",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Default models\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Settings > Default models, 1800 px tall to show every row.",
+    "viewport": {
+      "width": 1440,
+      "height": 1800
+    }
+  },
+  {
+    "name": "settings--agents-claude-full--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_agents",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Agents\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Agents > Claude Code (CLI), 1800 px tall.",
+    "viewport": {
+      "width": 1440,
+      "height": 1800
+    }
+  },
+  {
+    "name": "settings--agents-codex-full--dark",
+    "scenario": "populated",
+    "theme": "dark",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_agents",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Agents\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "tab_codex",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "[role=tab] >> text=\"Codex\""
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Agents > Codex (CLI), 1800 px tall.",
+    "viewport": {
+      "width": 1440,
+      "height": 1800
+    }
+  },
+  {
+    "name": "settings--agents-claude-apikey--light",
+    "scenario": "populated",
+    "theme": "light",
+    "settle_ms": 5000,
+    "actions": [
+      {
+        "step_id": "wait_sidebar",
+        "action": "wait_for",
+        "locator": {
+          "kind": "css",
+          "selector": "text=tide-web"
+        },
+        "state": "visible",
+        "timeout_ms": 10000
+      },
+      {
+        "step_id": "open_settings",
+        "action": "click",
+        "locator": {
+          "kind": "role",
+          "role": "button",
+          "name": "Settings"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "open_agents",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "text=\"Agents\" >> nth=0"
+        },
+        "timeout_ms": 5000
+      },
+      {
+        "step_id": "pause1",
+        "action": "wait_for_timeout",
+        "duration_ms": 800
+      },
+      {
+        "step_id": "claude_apikey",
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "button[aria-pressed] >> text=\"API key\""
+        },
+        "timeout_ms": 5000
+      }
+    ],
+    "final_settle_ms": 1500,
+    "notes": "Agents > Claude Code with the API key card selected, light theme."
+  }
+]

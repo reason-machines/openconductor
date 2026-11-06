@@ -25,6 +25,7 @@ import { addPendingLaunch, removePendingLaunch } from "../workspace/pendingLaunc
 import type { SourceState } from "../workspace/createFrom";
 import { chooseModel, effortLevels, launchDefaults, type LaunchModel } from "../workspace/launchModel";
 import { CreateFromPicker } from "./CreateFromPicker";
+import { Tooltip } from "./Tooltip";
 import { getSettings } from "../settings/api";
 import type { Settings } from "../settings/types";
 import { AGENT_LABEL, CLAUDE_ALIASES, MODEL_CATALOG, agentForModel, modelLabel, type ModelAgent } from "../settings/models";
@@ -61,6 +62,8 @@ export interface CreateWorkspaceComposerProps {
   sections?: readonly NavSection[];
   /** The section the composer was opened from (its menu's Create workspace). */
   initialSectionId?: string;
+  /** Open with the "Create from..." picker showing (the repo menu's Create from..., ⌘⇧N). */
+  fromOpen?: boolean;
 }
 
 /** Conductor's composer placeholder for a new workspace (`oya` -> `Hji`). */
@@ -91,6 +94,7 @@ export function CreateWorkspaceComposer({
   dispatch,
   sections = [],
   initialSectionId,
+  fromOpen,
 }: CreateWorkspaceComposerProps) {
   const choice = sectionChoice(sections, initialSectionId);
   // The create outlives a render; check the section against the latest list when assigning.
@@ -115,6 +119,10 @@ export function CreateWorkspaceComposer({
   const submitKeys = [...effectiveShortcuts("chat.submitMessage", overrides), ...effectiveShortcuts("chat.submitOppositeFollowUp", overrides)];
   const submitShortcut = effectiveShortcuts("chat.submitMessage", overrides)[0];
   const submitHint = submitShortcut ? glyphs(submitShortcut) : "↵";
+  const hint = (commandId: string) => {
+    const first = effectiveShortcuts(commandId, overrides)[0];
+    return first ? glyphs(first) : undefined;
+  };
 
   // With no repository yet, the first one added (opened or cloned) is chosen.
   useEffect(() => {
@@ -291,25 +299,30 @@ export function CreateWorkspaceComposer({
           addRepository("Add repository", true)
         ) : (
           <>
-            <select className="create-chip" aria-label="Repository" value={draft.repoId ?? ""} onChange={(e) => chooseRepo(e.target.value)} disabled={busy} aria-invalid={!!errors.repo}>
-              {repos.map((r) => (
-                <option key={r.id} value={r.id}>{r.name}</option>
-              ))}
-            </select>
+            {/* Conductor's repo trigger (`ZQo`): Tooltip "Switch repo" with the workspace.create hint. */}
+            <Tooltip content="Switch repo" shortcut={hint("workspace.create")}>
+              <select className="create-chip" aria-label="Repository" value={draft.repoId ?? ""} onChange={(e) => chooseRepo(e.target.value)} disabled={busy} aria-invalid={!!errors.repo}>
+                {repos.map((r) => (
+                  <option key={r.id} value={r.id}>{r.name}</option>
+                ))}
+              </select>
+            </Tooltip>
             {addRepository("Add…")}
-            <select
-              className="create-chip"
-              aria-label="Base branch"
-              title="Base branch"
-              value={draft.baseBranch}
-              onChange={(e) => setDraft({ ...draft, baseBranch: e.target.value })}
-              disabled={busy}
-              aria-invalid={!!errors.baseBranch}
-            >
-              {branchOptions.map((b) => (
-                <option key={b} value={b}>{b}</option>
-              ))}
-            </select>
+            {/* Conductor's target-branch trigger (`U4a`): Tooltip "Target branch". */}
+            <Tooltip content="Target branch">
+              <select
+                className="create-chip"
+                aria-label="Base branch"
+                value={draft.baseBranch}
+                onChange={(e) => setDraft({ ...draft, baseBranch: e.target.value })}
+                disabled={busy}
+                aria-invalid={!!errors.baseBranch}
+              >
+                {branchOptions.map((b) => (
+                  <option key={b} value={b}>{b}</option>
+                ))}
+              </select>
+            </Tooltip>
           </>
         )}
         <span className="create-eyebrow-end">
@@ -318,6 +331,8 @@ export function CreateWorkspaceComposer({
             branches={branchSrc}
             repoPath={repo?.path ?? null}
             disabled={busy || !repo}
+            shortcut={hint("workspace.createFromPRBranchIssue")}
+            defaultOpen={fromOpen}
             onChange={(from) => {
               setDraft(selectFrom(draft, from));
               if (errors.from) setErrors({ ...errors, from: undefined });
@@ -403,7 +418,9 @@ function ModelControls({ value, settings, disabled, onChange }: { value: LaunchM
   const levels = effortLevels(value.agent);
   return (
     <span className="create-model">
-      <select className="create-chip" aria-label="Model" title="Model" value={value.model} disabled={disabled} onChange={(e) => onChange(chooseModel(value, e.target.value, settings))}>
+      {/* Conductor's create composer model trigger (`cka`): Tooltip "Change agent", no shortcut hint. */}
+      <Tooltip content="Change agent">
+      <select className="create-chip" aria-label="Model" value={value.model} disabled={disabled} onChange={(e) => onChange(chooseModel(value, e.target.value, settings))}>
         {!known && <option value={value.model}>{value.model}</option>}
         {(Object.keys(MODEL_CATALOG) as ModelAgent[]).map((agent) => (
           <optgroup key={agent} label={AGENT_LABEL[agent]}>
@@ -417,11 +434,11 @@ function ModelControls({ value, settings, disabled, onChange }: { value: LaunchM
           </optgroup>
         ))}
       </select>
+      </Tooltip>
       {levels.length > 0 && (
         <select
           className="create-chip"
           aria-label={value.agent === "codex" ? "Thinking level" : "Effort"}
-          title={value.agent === "codex" ? "Thinking level" : "Effort"}
           value={value.effort}
           disabled={disabled}
           onChange={(e) => onChange({ ...value, effort: e.target.value })}

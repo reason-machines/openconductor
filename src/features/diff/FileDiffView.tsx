@@ -9,13 +9,14 @@
 // written (enableLineSelection with a controlled selection).
 // Like Conductor, the file is one item of a Pierre CodeView, which renders only
 // the rows in and near the viewport, so a long diff stays cheap to show.
+import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { processFile, type CodeViewItem, type CodeViewLineSelection, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, EditProvider, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { WhitespaceOnly } from "./Whitespace";
 import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
-import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
+import { matchesEvent } from "../../keybindings/shortcut.ts";
 import { createEditor, type FileEdit } from "./EditInViewer.ts";
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
@@ -238,11 +239,17 @@ export function FileDiffView(props: Props) {
           <span className="d">-{file.deletions}</span>
         </span>
         {onDiscard && (
-          <button className="icon-btn oc-discard" onClick={onDiscard} title="Discard changes" aria-label={`Discard changes to ${file.path}`}>
-            <RevertIcon />
-          </button>
+          <Tooltip content="Discard changes">
+            <button className="icon-btn oc-discard" onClick={onDiscard} aria-label={`Discard changes to ${file.path}`}>
+              <RevertIcon />
+            </button>
+          </Tooltip>
         )}
-        {edit?.dirty && <span className="oc-unsaved" role="img" aria-label="Unsaved changes" title="Unsaved changes" />}
+        {edit?.dirty && (
+          <Tooltip content="Unsaved changes">
+            <span className="oc-unsaved" role="img" aria-label="Unsaved changes" />
+          </Tooltip>
+        )}
         {tools}
         <ViewedToggle viewed={viewed} onToggle={onToggleViewed} />
       </header>
@@ -261,17 +268,17 @@ export const viewedLabel = (viewed: boolean): string => (viewed ? "Mark as not v
 
 /** Conductor's ghost "Viewed" button: a check box icon and the word, tooltip with the toggle's shortcut. */
 function ViewedToggle({ viewed, onToggle }: { viewed: boolean; onToggle: () => void }) {
-  const { overrides } = useKeybindingOverrides();
-  const key = effectiveShortcuts("diff.toggleViewed", overrides)[0];
   const label = viewedLabel(viewed);
   return (
-    <button type="button" className="oc-viewed" aria-pressed={viewed} aria-label={label} title={key ? `${label} (${glyphs(key)})` : label} onClick={onToggle}>
-      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" />
-        {viewed && <path d="M5.5 8.2l1.8 1.8 3.4-4" />}
-      </svg>
-      Viewed
-    </button>
+    <Tooltip content={label} shortcut="diff.toggleViewed">
+      <button type="button" className="oc-viewed" aria-pressed={viewed} aria-label={label} onClick={onToggle}>
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <rect x="2.5" y="2.5" width="11" height="11" rx="2.5" />
+          {viewed && <path d="M5.5 8.2l1.8 1.8 3.4-4" />}
+        </svg>
+        Viewed
+      </button>
+    </Tooltip>
   );
 }
 

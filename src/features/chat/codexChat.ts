@@ -9,7 +9,7 @@ import { cachedAgentCommands, linkCodexSkills } from "./slashCompletions.ts";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import * as Q from "./queue.ts";
-import { chatWantsAttention, turnSettled } from "./attention.ts";
+import { chatWantsAttention, codexAsks, turnSettled } from "./attention.ts";
 import { reportChatStatus } from "./chatRuntime.ts";
 import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn, type CodexApproval, type CodexChatState, type CodexDecision, type CodexPayload, type Step } from "./codex.ts";
 import { statusWithOpenRequests, type CodexConsent, type ConsentAnswer } from "./codexConsent.ts";
@@ -88,20 +88,19 @@ function publish(c: Chat, next: Partial<CodexSnapshot>) {
 
 function apply(c: Chat, step: Step) {
   const approvalsChanged = step.state.approvals !== c.state.approvals;
-  // A new approval request is a wait on the user (Conductor's `_p` on needs_user_permission).
-  const asked = step.state.approvals.some((a) => !c.state.approvals.some((b) => b.requestId === a.requestId));
+  const before = { approvals: c.state.approvals, consents: c.state.consents, status: c.view.queue.status };
   const prevConsents = c.state.consents;
   c.state = step.state;
-  if (asked) chatWantsAttention(c.state.chatId);
   // An open approval is Conductor's tool approval: needs_user_permission until answered (`qV`).
-  if (approvalsChanged) setQueue(c, c.state.approvals.length > 0 ? Q.permissionRequested(c.view.queue) : Q.permissionAnswered(c.view.queue));
   // An open MCP elicitation or permission request is needs_user_input until answered
   // (Conductor's codexMcpElicitation / codexPermissionApproval); a tool approval outranks it.
   const consentsChanged = step.state.consents !== prevConsents;
   if (approvalsChanged || consentsChanged) {
     const status = statusWithOpenRequests(c.view.queue.status, c.state.approvals.length, c.state.consents.length);
-    if (status !== c.view.queue.status) setQueue(c, { ...c.view.queue, status });
+    setQueue(c, Q.waitingOn(c.view.queue, status === "working" ? null : status));
   }
+  // A new approval or consent is a wait on the user (Conductor's `_p`, attention.ts).
+  if (codexAsks(before, { approvals: c.state.approvals, consents: c.state.consents, status: c.view.queue.status })) chatWantsAttention(c.state.chatId);
   if (step.threadId) localStorage.setItem(threadKey(c.state.chatId), step.threadId);
   if (step.events.length === 0) {
     if (approvalsChanged || consentsChanged) publish(c, {});

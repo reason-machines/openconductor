@@ -21,6 +21,7 @@ import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
 import { ChatEmptyState } from "../features/chat/ChatEmptyState.tsx";
 import { NewChatButton } from "../features/chat/NewChatButton.tsx";
 import { atTabLimit, tabLimitToast } from "../features/chat/chatTabs.ts";
+import { chatAfterClose, popClosedTab, pushClosedTab, recordViewedChat } from "../features/chat/closedTabs.ts";
 import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptyState.ts";
 import { AGENT_NAMES, commandSet, isKnownCommand, parseSlashCommand, type ComposerAgent } from "../features/chat/slashCommands.ts";
 import { useAgentCommands } from "../features/chat/slashCompletions.ts";
@@ -63,6 +64,8 @@ import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest"
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { fixShortcutApplies } from "../features/pr/checks/fixErrors";
+import { useFixErrors, type FixErrors } from "../features/pr/checks/useFixErrors";
 import { AllFilesTree, FilesToolbarButtons, useFilesToolbar } from "../features/files/AllFilesTree";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
@@ -74,6 +77,7 @@ import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } fr
 import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
+import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 
 interface Props {
@@ -183,6 +187,9 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Codex's snapshots carry its pending approvals and consent requests; the others' carry permission requests.
   const [{ transcript, queue, approvals = [], consents = [], permissions = [] }, setSnapshot] = useState<ChatView>(() => agent.snapshot(runId));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
+  // The card shows the oldest open request; while it is a plan, the message box asks for changes to it.
+  const waiting = permissions[0];
+  const planWaiting = waiting?.kind === "plan" ? waiting : undefined;
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
   const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
@@ -203,6 +210,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
   // groups stay open after the turn ends and tool calls start expanded.
   const garryMode = useAppPrefs().garry_mode;
+  const followUpMode = useFollowUpMode();
 
   useEffect(() => {
     setDraft("");
@@ -278,7 +286,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [transcript]);
+  }, [transcript, waiting]);
 
   // Attachments (a review request, revert notes) go to the agent with the message and show by name.
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
@@ -491,7 +499,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           onClose={() => setResetTurn(null)}
         />
       ) : null}
-      <PermissionRequests permissions={permissions} onAnswer={(requestId, optionId) => void agent.answerPermission?.(runId, requestId, optionId)} />
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => void agent.answerPermission?.(runId, requestId, answer)} onStop={() => agent.stop(runId)} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
@@ -520,9 +528,12 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         draft={draft}
         setDraft={setDraft}
         inputRef={inputRef}
+        // Conductor: while a plan waits, the message box asks for changes to it; otherwise its own placeholders.
+        placeholder={planWaiting ? "Enter your plan adjustments here..." : undefined}
         queue={queue}
         canSteer={agent.canSteer}
-        onSubmit={onSubmit}
+        followUpMode={followUpMode}
+        onSubmit={planWaiting ? (text) => void agent.answerPermission?.(runId, planWaiting.requestId, { kind: "plan", approved: false, feedback: text }) : onSubmit}
         onStop={() => agent.stop(runId)}
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
@@ -595,14 +606,13 @@ interface RightPanelProps {
   pr: PullRequest;
   worktree: string | null;
   review: ReactNode;
-  repo: Repo;
-  /** Fix errors: send to the workspace's own chat. */
-  sendToChat: (text: string, attachments: TextAttachment[]) => void;
+  /** Fix errors (shared with the `git.fixErrors` shortcut). */
+  fixErrors: FixErrors;
   readOnly: boolean;
   notify?: ArchiveNotify;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly, notify }: RightPanelProps) {
+function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, notify }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -644,8 +654,7 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
           worktree={worktree}
           pr={pr.pr}
           refresh={pr.refresh}
-          repoId={repo.id}
-          sendToChat={sendToChat}
+          fixErrors={fixErrors}
           readOnly={readOnly}
         />
       ) : (
@@ -681,13 +690,13 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           <button role="tab" aria-selected={active === "diff"} className={active === "diff" ? "active" : ""} onClick={() => onSelect("diff")}>
             All changes
           </button>
-          <button className="main-tab-close" onClick={onCloseDiff} title="Close tab" aria-label="Close All changes tab">
+          <button className="main-tab-close" onClick={onCloseDiff} aria-label="Close All changes tab">
             ×
           </button>
         </span>
       )}
       <span className={`main-tab${active === "chat" ? " active" : ""}`}>
-        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")} title={title}>
+        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")}>
           {title}
         </button>
       </span>
@@ -696,7 +705,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           <button role="tab" aria-selected={active === "pr"} className={active === "pr" ? "active" : ""} onClick={() => onSelect("pr")}>
             {prTab}
           </button>
-          <button className="main-tab-close" onClick={onClosePr} title="Close tab" aria-label={`Close ${prTab} tab`}>
+          <button className="main-tab-close" onClick={onClosePr} aria-label={`Close ${prTab} tab`}>
             ×
           </button>
         </span>
@@ -706,7 +715,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} title={r.fork || r.blank ? r.title : `Code review on ${r.modelLabel}`}>
             {r.title}
           </button>
-          <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} title="Close tab" aria-label={`Close ${r.title} tab`}>
+          <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} aria-label={`Close ${r.title} tab`}>
             ×
           </button>
         </span>
@@ -787,6 +796,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     setMainTab("diff");
   }, []);
   const closeDiffTab = () => {
+    pushClosedTab(workspace.id, { kind: "diff" });
     setDiffOpen(false);
     setMainTab("chat");
   };
@@ -824,6 +834,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     },
     [workspace.id],
   );
+  const fixErrors = useFixErrors({ worktree: workspace.path ?? null, repoId: repo.id, sendToChat, notify });
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
@@ -848,14 +859,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
   const pullRequest = usePullRequest({ worktree: workspace.path ?? null, branch: workspace.branch, targetBranch: intendedTarget, agentWorking, hasPendingComments: review.hasPending, onLookup, onDerivedStatus });
   const target = useTargetBranch({ repo, workspace, pr: pullRequest.pr, refresh: pullRequest.refresh, dispatch });
   optionalChecksBlock.current = pullRequest.settings.optionalChecksBlock;
-  useEffect(() => {
-    dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: agentWorking });
-  }, [dispatch, repo.id, workspace.id, agentWorking]);
-  // Nothing reports a closed workspace's agent, so its row stops showing it working.
-  useEffect(() => () => dispatch({ type: "setWorkspaceWorking", repoId: repo.id, workspaceId: workspace.id, working: false }), [dispatch, repo.id, workspace.id]);
   const prActions = usePrActions({
     pullRequest,
     repoId: repo.id,
+    repoPath: repo.path,
     worktree: workspace.path ?? null,
     branch: workspace.branch,
     targetBranch: target.branch,
@@ -873,9 +880,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     if (atTabLimit(openChatTabs)) notify?.("info", tabLimitToast());
     else reviews.newChat();
   };
+  // Closing the chat on screen shows the chat viewed before it that is still open (closedTabs.ts).
   const closeReview = (chatId: string) => {
+    const tab = reviews.tabs.find((r) => r.chatId === chatId);
+    if (tab) pushClosedTab(workspace.id, { kind: "chat", tab });
     reviews.close(chatId);
-    if (mainTab === chatId) setMainTab("chat");
+    if (mainTab === chatId) setMainTab(chatAfterClose(workspace.id, chatId, ["chat", ...reviews.tabs.map((r) => r.chatId)]) ?? "chat");
   };
   const canReview = diff.load.state === "ready" && diff.files.length > 0;
 
@@ -896,6 +906,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     },
     "git.mergePR": () => {
       if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
+    },
+    "git.fixErrors": () => {
+      const failing = pullRequest.pr?.status?.checks.failing ?? [];
+      if (fixShortcutApplies(failing, fixErrors.fixing, workspace.status === "archived")) void fixErrors.run(failing);
     },
     "git.openInGitHub": prActions.openOnGitHub,
   });
@@ -926,6 +940,27 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
   const activeTab = showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const prNumber = pullRequest.pr?.number ?? null;
+  useEffect(() => {
+    if (activeTab !== "diff" && activeTab !== "pr") recordViewedChat(workspace.id, activeTab);
+  }, [workspace.id, activeTab]);
+  // ⌘W closes the tab on screen and ⌘⇧T reopens the last closed one, as Conductor's workspace
+  // view does. The workspace's own chat has no close button here, so ⌘W leaves it. Inside a
+  // terminal ⌘W is terminal.closeTab, which the terminal handles itself (session.ts).
+  useKeybindings(
+    {
+      "nav.closeTab": () => {
+        if (activeTab === "diff") closeDiffTab();
+        else if (activeTab === "pr") closePrTab();
+        else if (activeTab !== "chat") closeReview(activeTab);
+      },
+      "nav.reopenTab": () => {
+        const tab = popClosedTab(workspace.id);
+        if (tab?.kind === "chat") reviews.reopen(tab.tab);
+        else if (tab?.kind === "diff") openDiffTab();
+      },
+    },
+    { enableOnTerminalFocus: false },
+  );
   shownChat.current = activeReview?.chatId ?? workspace.id;
   // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
   // skips it while the window has focus, and an unread workspace shown that way is read.
@@ -1002,7 +1037,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
                 pr={pullRequest.pr}
                 refresh={pullRequest.refresh}
                 repoId={repo.id}
-                sendToChat={sendToChat}
+                fixErrors={fixErrors}
                 readOnly={workspace.status === "archived"}
                 repoPath={repo.path}
                 defaultBranch={repo.defaultBranch}
@@ -1019,8 +1054,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
               pr={pullRequest}
               worktree={workspace.path ?? null}
               review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
-              repo={repo}
-              sendToChat={sendToChat}
+              fixErrors={fixErrors}
               readOnly={workspace.status === "archived"}
               notify={notify}
             />

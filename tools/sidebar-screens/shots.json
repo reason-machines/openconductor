@@ -23,5 +23,9 @@
       { "step_id": "rename", "action": "click", "locator": { "kind": "css", "selector": "[role=menu] >> text=Rename" }, "timeout_ms": 4000 }
     ],
     "notes": "Workspace context menu > Rename, the same steps as evidence/screens/modal--rename-workspace--dark.png."
-  }
+  },
+  {"name": "sidebar-menu--workspace-row--dark", "scenario": "populated", "theme": "dark", "actions": [{"step_id": "expand_tide_web", "action": "click", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000}, {"step_id": "pause", "action": "wait_for_timeout", "duration_ms": 600}, {"step_id": "context", "action": "click", "button": "right", "locator": {"kind": "css", "selector": "text=Ada/fix login redirect"}, "timeout_ms": 3000}], "notes": "Right-click a workspace row: Conductor's D9e -> Aao in a ContextMenu (wI/SI, g2/b2/m2, min-w-[200px])."},
+  {"name": "sidebar-menu--workspace-row--light", "scenario": "populated", "theme": "light", "actions": [{"step_id": "expand_tide_web", "action": "click", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000}, {"step_id": "pause", "action": "wait_for_timeout", "duration_ms": 600}, {"step_id": "context", "action": "click", "button": "right", "locator": {"kind": "css", "selector": "text=Ada/fix login redirect"}, "timeout_ms": 3000}]},
+  {"name": "sidebar-menu--repo-row--dark", "scenario": "populated", "theme": "dark", "actions": [{"step_id": "context", "action": "click", "button": "right", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000}], "notes": "Right-click a repository header: Conductor's Dra -> Nra -> uBi menuType context."},
+  {"name": "sidebar-menu--repo-row--light", "scenario": "populated", "theme": "light", "actions": [{"step_id": "context", "action": "click", "button": "right", "locator": {"kind": "css", "selector": "text=tide-web"}, "timeout_ms": 5000}]}
 ]

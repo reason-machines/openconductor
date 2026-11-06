@@ -23,6 +23,7 @@ pub mod agent;
 pub mod agent_binaries;
 pub mod agent_commands;
 pub mod agent_options;
+pub mod app_quit;
 pub mod app_prefs;
 pub mod bin_source_markers;
 pub mod bundled_bin;
@@ -44,6 +45,8 @@ mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
 mod sidebar_section_commands;
+pub mod sidebar_transparency;
+mod agent_settings_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
@@ -79,6 +82,7 @@ pub mod turn_checkpoint;
 mod turn_checkpoint_commands;
 pub mod workspace;
 pub mod workspace_archive;
+mod window_bounds;
 mod workspace_archive_commands;
 
 use serde::Serialize;
@@ -249,6 +253,16 @@ pub fn run() {
     let builder = builder.menu(menu::build);
     builder
         .on_menu_event(|app, event| menu::handle_event(app, event.id().as_ref()))
+        // A window-state restore can set a size below the configured minimum; raise it back.
+        .on_window_event(|window, event| {
+            if let tauri::WindowEvent::Resized(size) = event {
+                if let Ok(scale) = window.scale_factor() {
+                    if let Some((w, h)) = window_bounds::clamp_to_min(size.width, size.height, scale) {
+                        let _ = window.set_size(tauri::PhysicalSize::new(w, h));
+                    }
+                }
+            }
+        })
         // Same plugin set as Conductor 0.87.6 (see Cargo.toml). Capabilities grant only the
         // commands its frontend calls (capabilities/default.json).
         .plugin(tauri_plugin_deep_link::init())
@@ -276,6 +290,8 @@ pub fn run() {
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
+            // Conductor's `startup_sidebar_transparency_enabled`: read once, before the window exists.
+            let transparent_window = sidebar_transparency::startup_enabled(&db.0);
             app.manage(db::open_cache(&data_dir));
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
@@ -327,10 +343,17 @@ pub fn run() {
             app.manage(scripts);
             app.manage(spotlight);
             spawn_push_upstream_backfill(app.handle().clone());
+            // tauri.conf.json leaves the main window to us (`"create": false`) so it can be
+            // created transparent when Sidebar transparency was on at launch. Last, so every
+            // managed state exists before the webview loads.
+            sidebar_transparency::create_main_window(app.handle(), transparent_window)?;
             e2e::install(app.handle());
             Ok(())
         })
+        .manage(app_quit::QuitHandler::default())
         .invoke_handler(tauri::generate_handler![
+            app_quit::set_quit_handler_ready,
+            app_quit::quit_app,
             root_path_commands::get_conductor_root,
             root_path_commands::repo_workspaces_path,
             root_path_commands::change_conductor_root,
@@ -402,6 +425,7 @@ pub fn run() {
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
             reason_chat::reason_open_chat,
+            reason_chat::reason_set_config,
             chat_store_commands::chat_messages_save,
             chat_store_commands::chat_messages_load,
             reason_chat::reason_prompt,
@@ -410,6 +434,7 @@ pub fn run() {
             session_status_commands::session_statuses,
             session_status_commands::session_set_status,
             reason_chat::reason_list_sessions,
+            reason_chat::reason_models,
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
@@ -418,9 +443,13 @@ pub fn run() {
             codex_chat::codex_respond,
             codex_chat::codex_close_chat,
             claude_chat::commands::claude_cli_path,
+            agent_settings_commands::cli_login_status,
+            agent_settings_commands::favorite_models_list,
+            agent_settings_commands::favorite_models_replace,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,
+            claude_chat::commands::claude_respond,
             agent_commands::agent_slash_commands,
             e2e::e2e_report,
             terminal_commands::pty_spawn,
@@ -461,6 +490,7 @@ pub fn run() {
             app_prefs::commands::client_instance_id,
             app_prefs::commands::graphite_cli_installed,
             resource_usage::commands::get_resource_usage,
+            sidebar_transparency::update_window_vibrancy,
             local_account::local_account,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,

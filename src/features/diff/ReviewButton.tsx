@@ -8,16 +8,14 @@
 // click. Review tabs live until closed or the app quits; their Reason
 // Sessions stay in Reason.
 import { useCallback, useEffect, useState } from "react";
-import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
-import { effectiveShortcuts } from "../../keybindings/overrides.ts";
-import { glyphs } from "../../keybindings/shortcut.ts";
+import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
 import { configureReason, configureReasonDefault } from "../chat/reasonChat.ts";
 import { defaultChatConfig } from "../chat/chatModel.ts";
 import { NEW_CHAT_TITLE, newChatId } from "../chat/chatTabs.ts";
-import { hideChat } from "../chat/chatRuntime.ts";
+import { hideChat, showChat } from "../chat/chatRuntime.ts";
 import type { PromptAttachment } from "../chat/reason.ts";
 import { buildReviewPrompt, type ConfigChoice, REVIEW_ATTACHMENT, REVIEW_MESSAGE, reviewDraft, reviewModel, reviewTabTitle } from "./review.ts";
 import { repoReviewPrompt } from "./reviewApi.ts";
@@ -132,7 +130,17 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
     return chatId;
   }, [workspace.id, save, onOpen]);
 
-  return { tabs, start, close, fork, newChat, error };
+  /** ⌘⇧T: put a closed chat tab back at the end of the strip and show it. */
+  const reopen = useCallback(
+    (tab: ReviewTab) => {
+      showChat(tab.chatId);
+      save([...(tabsByWorkspace.get(workspace.id) ?? []).filter((t) => t.chatId !== tab.chatId), tab]);
+      onOpen(tab.chatId);
+    },
+    [workspace.id, save, onOpen],
+  );
+
+  return { tabs, start, close, fork, newChat, reopen, error };
 }
 
 /**
@@ -156,8 +164,6 @@ const MENU_WIDTH = 180;
 
 /** The Review button; right-click offers "Edit before sending". */
 export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void; onEdit: () => void; error: string | null }) {
-  const { overrides } = useKeybindingOverrides();
-  const key = effectiveShortcuts("workspace.showReview", overrides)[0];
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   useEffect(() => {
     if (!menu) return;
@@ -176,17 +182,18 @@ export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void
           Review failed
         </span>
       )}
-      <button
-        className="btn btn-small review-button"
-        onClick={onReview}
-        onContextMenu={(e) => {
-          e.preventDefault();
-          setMenu({ x: e.clientX, y: e.clientY });
-        }}
-        title={`Get an AI code review${key ? ` (${glyphs(key)})` : ""}. Right-click to edit the request first.`}
-      >
-        <ReviewIcon /> Review
-      </button>
+      <Tooltip content="Get an AI code review" shortcut="workspace.showReview">
+        <button
+          className="btn btn-small review-button"
+          onClick={onReview}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setMenu({ x: e.clientX, y: e.clientY });
+          }}
+        >
+          <ReviewIcon /> Review
+        </button>
+      </Tooltip>
       {menu && (
         // The button sits at the window's right edge: keep the menu inside it.
         <div className="review-menu" role="menu" style={{ left: Math.max(4, Math.min(menu.x, window.innerWidth - MENU_WIDTH - 8)), top: menu.y }}>

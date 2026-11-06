@@ -27,6 +27,11 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .app { display: grid; grid-template-columns: min(var(--sidebar-width), 40%) 1fr; height: 100vh; overflow: hidden; background: var(--bg); }
 .app.sidebar-hidden { grid-template-columns: 1fr; }
 .app { position: relative; }
+/* Experimental "Sidebar transparency": Conductor's rule (renderApp-BYEcFwvt.css) clears html, body, #root and its
+   `sidebar-vibrancy-passthrough` app shell, so the window's native vibrancy shows through the sidebar's 60% fill
+   while .main keeps its opaque --bg. Our shell is .app; Settings, which has no fill of its own, stays opaque. */
+html.sidebar-transparency, html.sidebar-transparency body, html.sidebar-transparency #root, html.sidebar-transparency .app { background: transparent; }
+html.sidebar-transparency .settings { background: var(--bg); }
 /* Conductor's rail (`Nta`): absolute inset-y-0 right-0 w-2 translate-x-1/2 cursor-col-resize bg-transparent,
    inside the overflow-hidden aside, so only its inner 4px take the pointer. No hover or drag highlight. */
 .sidebar-resizer { position: absolute; top: 0; bottom: 0; left: calc(min(var(--sidebar-width), 40%) - 4px); width: 4px; padding: 0; border: 0; background: transparent; outline: none; cursor: col-resize; z-index: 30; touch-action: none; }
@@ -187,8 +192,8 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .home-sidebar-toggle:hover { color: var(--text); }
 .home-wordmark { margin: 224px 0 48px; text-align: center; }
 .wordmark { display: flex; align-items: center; justify-content: center; gap: 16px; height: 96px; width: 100%; max-width: 627px; margin: 0 auto; color: var(--text); user-select: none; }
-.wordmark-text { font-size: 44px; font-weight: 600; letter-spacing: -0.02em; }
-.home-cards-wrap { max-width: 896px; width: 100%; margin: 0 auto; padding: 0 32px; animation: home-fade-in 1s ease both; }
+.wordmark-svg { display: block; width: 627px; max-width: 100%; height: 96px; margin: 0 auto; }
+.home-cards-wrap { max-width: 896px; width: 100%; margin: 0 auto; padding: 0 32px; animation: home-fade-in var(--oc-motion-page-fade) ease both; }
 .home-cards-wrap.has-workspaces { margin-top: 16px; }
 .home-cards { display: grid; grid-template-columns: 1fr; gap: 12px; max-width: 640px; width: 100%; margin: 0 auto; }
 @media (min-width: 768px) { .home-cards { grid-template-columns: repeat(3, 1fr); } }
@@ -216,8 +221,13 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 
 /* Workspace */
 .workspace { display: flex; flex-direction: column; height: 100%; }
-.ws-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 30px 16px 10px; border-bottom: 1px solid var(--border); background: var(--panel); }
-.ws-title { display: flex; align-items: center; gap: 8px; min-width: 0; }
+/* Conductor's workspace header (renderApp `poo`): flex justify-between items-center pl-4 pr-2 py-2 h-10
+   border-b, so it is 40px tall with the breadcrumb, chips and buttons centred on one line, the same
+   centre line as the sidebar's toggle row (h-8 pt-2). With the sidebar hidden, its content clears the
+   traffic lights (Conductor's ml-[var(--traffic-lights-clearance)]). */
+.ws-header { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 12px; box-sizing: border-box; height: 40px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--border); background: var(--panel); }
+.app.sidebar-hidden .ws-header { padding-left: calc(16px + var(--traffic-lights-clearance)); }
+.ws-title { display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; white-space: nowrap; }
 /* Header actions row: Conductor's header group is "flex items-center gap-1.5" and its
    buttons use the xs button size (h-6 px-2 text-xs gap-1.5 rounded-sm, icons size-3),
    so Open in, the PR control and Archive share one 24px height and centre line. */
@@ -230,7 +240,10 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .crumb-sep { color: var(--muted); opacity: 0.6; }
 .chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; background: var(--hover); color: var(--muted); font-size: 12px; font-family: var(--font-mono); }
 .chip.status { font-family: inherit; }
-.ws-split { flex: 1; display: grid; grid-template-columns: minmax(360px, 1.25fr) minmax(300px, 1fr); min-height: 0; }
+/* Conductor's workspace is a horizontal panel group: main-content defaultSize 70, right-panel 35
+   (react-resizable-panels normalises them to 2:1), so the right panel is a third of the space right
+   of the sidebar at every window width and both shrink together; no breakpoint collapses either. */
+.ws-split { flex: 1; display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); min-height: 0; }
 .ws-split.right-hidden { grid-template-columns: minmax(0, 1fr); }
 
 .chat { display: flex; flex-direction: column; min-height: 0; border-right: 1px solid var(--border); }
@@ -515,8 +528,9 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .setup-dot.running { background: var(--amber); }
 .setup-dot.completed { background: var(--success); }
 .setup-dot.failed { background: var(--destructive); }
-.scripts-meta { display: flex; gap: 10px; align-items: center; padding: 6px 12px; font-size: 12px; color: var(--muted); }
-.scripts-meta code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scripts-meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; padding: 6px 12px; font-size: 12px; color: var(--muted); }
+/* The command shrinks first; in a narrow panel the controls wrap onto a second row instead of being clipped. */
+.scripts-meta code { flex: 1 1 0; min-width: 80px; max-width: max-content; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scripts-output { flex: 1; margin: 0; padding: 8px 12px 12px; overflow: auto; font: 12px/1.5 var(--font-mono); white-space: pre-wrap; color: var(--text); }
 .scripts-error { padding: 6px 12px; font-size: 12px; color: var(--destructive); }
 
@@ -557,6 +571,7 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .clone-log { height: 8rem; margin: 0; padding: 8px; overflow: auto; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); font: 11px/1.4 ui-monospace, "SF Mono", Menlo, monospace; white-space: pre-wrap; }
 .clone-error { padding: 8px 10px; border-radius: 6px; background: color-mix(in srgb, var(--diff-del) 12%, transparent); color: var(--diff-del); user-select: text; white-space: pre-wrap; word-break: break-word; }
 .clone-kbd { margin-left: 6px; opacity: 0.6; font: inherit; }
+.quit-kbd { margin-left: 8px; opacity: 0.6; font: inherit; }
 
 /* Create project (Home → Quick start), evidence/screens/create-project.md. */
 .modal:has(.create-project-dialog) { width: min(525px, calc(100vw - 48px)); }
@@ -578,17 +593,14 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .sb-menu-item { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .sb-menu-item[data-destructive] { color: var(--diff-del); }
 .sb-menu-hint { font-family: inherit; font-size: 12px; color: var(--muted); }
-.sb-menu[data-context] { z-index: 50; }
 .sb-repo-name[data-hidden] { opacity: 0.5; }
 .sb-show-hidden { align-self: flex-start; padding: 4px 0 4px 6px; font-size: 12px; line-height: 16px; font-weight: 500; color: color-mix(in srgb, var(--sidebar-muted-foreground) 70%, transparent); }
 .sb-show-hidden:hover { color: var(--sidebar-foreground); }
 .sb-repo-group[data-dragging] { background: var(--sidebar-accent); border-radius: 6px; box-shadow: 0 4px 12px var(--shadow-18); }
 .sb-repo-group[data-drop-target] > .sb-repo .sb-repo-header { box-shadow: inset 0 2px 0 var(--accent); }
-.sb-context-root { position: fixed; inset: 0 auto auto 0; width: 0; height: 0; z-index: 50; }
 /* sidebar: workspace row menu, Pinned group, status dots.
    Menu after Conductor's context menu (min-w-[200px], items with a trailing kbd hint);
    status colours are Conductor's --status-* tokens (evidence/frontend/css-tokens.json). */
-.sb-ws[data-menu-open] { background: var(--sidebar-accent); }
 .sb-group { margin-bottom: 4px; }
 .sb-group-count { flex: none; font-size: 12px; color: var(--sidebar-muted-foreground); }
 .sb-group-list .sb-ws { padding-left: 6px; }
@@ -755,6 +767,8 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .usage-group-chevron[data-open] { transform: rotate(180deg); }
 .usage-show-all { display: block; width: 100%; padding: 6px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--muted); }
 .usage-show-all:hover { color: var(--text); }
+/* Remove repository confirmation (`Dra`): the source path wraps anywhere (`break-all`). */
+.modal .settings-misc-break { word-break: break-all; }
 
 /* parity:sidebar.ws-unread — the composer's "Next unread" (Conductor's g1o: absolute -top-10 right-0 z-10, outline sm button). */
 .next-unread-anchor { position: relative; height: 0; margin: 0 16px; }

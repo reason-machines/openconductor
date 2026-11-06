@@ -16,7 +16,7 @@ const ok = (m) => console.log("ok -", m);
 const active = () => p.evaluate(() => document.activeElement?.dataset?.id ? document.activeElement.textContent.trim().split("\n")[0] : document.activeElement?.tagName);
 const rows = () => p.$$eval(".queue-list li .queue-text", (els) => els.map((e) => e.textContent.trim()));
 await box.fill("one"); await box.press("Enter");
-await p.locator('.composer button[title="Stop the agent"]').waitFor();
+await p.locator('.composer button[aria-label^="Stop the agent"]').waitFor();
 for (const t of ["two", "three", "four"]) { await box.fill(t); await box.press("Meta+Enter"); }
 await p.getByRole("button", { name: "Pause" }).click();
 assert.deepEqual(await rows(), ["two", "three", "four"]); ok("three follow-ups queued with ⌘↵, queue paused");

@@ -94,6 +94,9 @@ pub mod keys {
     pub const EXPERIMENTAL_SHOW_AGENT_COST: &str = "experimental_show_agent_cost";
     /// Up to 10 chat and terminal tabs per workspace instead of 5.
     pub const EXPERIMENTAL_TAB_FREAK_MODE: &str = "experimental_tab_freak_mode";
+    /// Native macOS vibrancy behind the sidebar; read once at startup, so a
+    /// change takes effect after a restart. Unset means off.
+    pub const EXPERIMENTAL_SIDEBAR_TRANSPARENCY: &str = "experimental_sidebar_transparency";
     /// Create workspaces on the full-screen `/create` page instead of the dialog.
     pub const EXPERIMENTAL_NEW_WORKSPACE_PAGE: &str = "experimental_new_workspace_page";
     /// `"true"` turns Graphite stack detection off.
@@ -128,6 +131,9 @@ pub mod keys {
     pub const SIDEBAR_REPO_FILTER: &str = "sidebar_repo_filter";
     /// Experimental: CPU and memory readout in the sidebar; unset means off.
     pub const SIDEBAR_RESOURCE_USAGE: &str = "sidebar_resource_usage";
+    /// Legacy "Send messages with" choice, `enter` or `cmd-enter`; the
+    /// keybinding overrides hold the live keys, this row only seeds them.
+    pub const MESSAGE_SEND_KEY: &str = "message_send_key";
     /// Experimental "Dashboard": the sidebar's Dashboard row and the
     /// `/dashboard` board; unset means off (`_z.dashboard_enabled = "false"`).
     pub const DASHBOARD_ENABLED: &str = "dashboard_enabled";
