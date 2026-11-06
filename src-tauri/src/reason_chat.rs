@@ -80,7 +80,9 @@ impl ReasonChats {
         let launch = LaunchConfig::new(cli).map_err(|e| e.to_string())?;
         let app = app.clone();
         let sink: Sink = Arc::new(move |chat: &str, ev: ProviderEvent| {
-            let _ = app.emit(wire::EVENT, wire::event_json(chat, &ev));
+            let event = wire::event_json(chat, &ev);
+            crate::e2e::log_event("reason", &event);
+            let _ = app.emit(wire::EVENT, event);
         });
         let provider = Arc::new(ReasonProvider::new(launch, home()?, sink));
         *slot = Some(provider.clone());

@@ -142,7 +142,9 @@ pub async fn codex_open_chat<R: Runtime>(
     };
     let chat = chat_id.clone();
     let sink: Sink = Arc::new(move |payload: Payload| {
-        let _ = app.emit(EVENT, event_json(&chat, &payload));
+        let event = event_json(&chat, &payload);
+        crate::e2e::log_event("codex", &event);
+        let _ = app.emit(EVENT, event);
     });
     let runner = Arc::new(CodexRunner::start(config, sink));
     state.chats.lock().unwrap().entry(chat_id).or_insert(runner);

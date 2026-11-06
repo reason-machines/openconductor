@@ -5,7 +5,8 @@
 //! that script is evaluated in the main window once it has loaded; it drives
 //! the real UI (clicks, typing) and reports with `e2e_report`, which writes
 //! `$OC_E2E_OUT/<name>.json`. With `OC_E2E_OUT` set, agent chat events are
-//! also appended to `$OC_E2E_OUT/<agent>-chat-events.jsonl`. Without these
+//! also appended to `$OC_E2E_OUT/<agent>-chat-events.jsonl` (Claude Code,
+//! Codex, Reason); `OC_E2E_SIZE=<w>x<h>` sets the window size. Without these
 //! variables, and in release builds, nothing here does anything.
 //! Driver: `tools/claude-code/e2e-driver.js`.
 
@@ -47,6 +48,13 @@ pub fn install<R: tauri::Runtime>(app: &tauri::AppHandle<R>) {
         // running twice with `window.__OC_E2E_RUNNING__`).
         for _ in 0..100 {
             if let Some(w) = app.get_webview_window("main") {
+                // OC_E2E_SIZE=1440x900 sizes the window for comparable captures.
+                if let Some((wd, ht)) = std::env::var("OC_E2E_SIZE").ok().and_then(|s| {
+                    let (a, b) = s.split_once('x')?;
+                    Some((a.parse::<f64>().ok()?, b.parse::<f64>().ok()?))
+                }) {
+                    let _ = w.set_size(tauri::LogicalSize::new(wd, ht));
+                }
                 std::thread::sleep(std::time::Duration::from_secs(2));
                 for _ in 0..30 {
                     if let Err(e) = w.eval(&script) {
@@ -54,7 +62,13 @@ pub fn install<R: tauri::Runtime>(app: &tauri::AppHandle<R>) {
                     }
                     for _ in 0..50 {
                         if REPORTED.load(Ordering::SeqCst) {
-                            return;
+                            // A hidden window (locked screen) suspends the page's
+                            // timers; a DOM change every 250 ms wakes the driver's
+                            // waits, which also resolve on mutations.
+                            loop {
+                                let _ = w.eval("document.body && (document.body.dataset.ocE2eTick = String(Date.now()))");
+                                std::thread::sleep(std::time::Duration::from_millis(250));
+                            }
                         }
                         std::thread::sleep(std::time::Duration::from_millis(200));
                     }

@@ -143,7 +143,11 @@ impl ClientRequest {
                 p.insert("threadId".into(), json!(thread_id));
                 let (text, skills) = skill_links(text);
                 let mut input = vec![json!({ "type": "text", "text": text })];
-                input.extend(skills.into_iter().map(|(name, path)| json!({ "type": "skill", "name": name, "path": path })));
+                input.extend(
+                    skills
+                        .into_iter()
+                        .map(|(name, path)| json!({ "type": "skill", "name": name, "path": path })),
+                );
                 p.insert("input".into(), Value::Array(input));
                 put(&mut p, "model", model.as_ref().map(|m| json!(m)));
                 put(&mut p, "effort", effort.as_ref().map(|e| json!(e)));
@@ -178,7 +182,10 @@ pub fn skill_links(text: &str) -> (String, Vec<(String, String)>) {
             let after = &tail[n + 2..];
             let close = after.find(')')?;
             let path = &after[..close];
-            let ok = !name.is_empty() && !name.contains(char::is_whitespace) && path.ends_with("SKILL.md") && !path.contains(char::is_whitespace);
+            let ok = !name.is_empty()
+                && !name.contains(char::is_whitespace)
+                && path.ends_with("SKILL.md")
+                && !path.contains(char::is_whitespace);
             ok.then(|| (name, path, n + 2 + close + 1))
         });
         match link {
@@ -281,7 +288,8 @@ mod tests {
         // A skill picked in the "/" menu: `$name` in the text and a skill item.
         let skill = ClientRequest::TurnStart {
             thread_id: "t1".into(),
-            text: "[$deploy](/u/.codex/skills/deploy/SKILL.md) to staging [$x](not-a-skill) [$".into(),
+            text: "[$deploy](/u/.codex/skills/deploy/SKILL.md) to staging [$x](not-a-skill) [$"
+                .into(),
             model: None,
             effort: None,
         };

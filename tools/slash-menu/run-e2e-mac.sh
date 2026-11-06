@@ -63,7 +63,7 @@ PY
 cat tools/slash-menu/e2e-driver.js >> "$out/driver.js"
 
 rm -f "$out"/slash-menu*.json "$out"/slash-dom-*.json
-OC_E2E_SCRIPT="$out/driver.js" OC_E2E_OUT="$out" "$exe" > "$out/app.log" 2>&1 &
+OC_E2E_SIZE=1440x900 OC_E2E_SCRIPT="$out/driver.js" OC_E2E_OUT="$out" "$exe" > "$out/app.log" 2>&1 &
 pid=$!
 echo "$pid" > "$out/app.pid"
 for _ in $(seq 1 1500); do
@@ -74,4 +74,4 @@ done
 kill "$pid" 2>/dev/null || true
 wait "$pid" 2>/dev/null || true
 [[ -f $out/slash-menu.json ]] || { echo "no report; see $out/app.log" >&2; exit 1; }
-python3 -c 'import json,sys; r=json.load(open(sys.argv[1])); print(r["result"]); [print(a["id"], a.get("menu",{}).get("count"), a.get("ran"), a.get("error","")[:200]) for a in r["agents"]]' "$out/slash-menu.json"
+python3 tools/slash-menu/summarize.py "$out" | tee "$out/summary.txt"

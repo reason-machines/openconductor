@@ -164,7 +164,8 @@ try {
     await wd("POST", `/element/${await find(".composer textarea")}/click`, {});
     await type("/");
     const rows = await waitFor(`${a.id}: the fixture skill in the "/" menu`, () => menu().then((rs) => (rs.some((r) => r.name === FIXTURE) ? rs : null)), 45000);
-    assert.ok(rows.length > 1, `${a.id}: the menu lists more than the fixture: ${rows.length}`);
+    // A Reason chat has no built-in commands, so the stand-in's one skill can be the whole menu.
+    assert.ok(rows.length >= (a.id === "reason" ? 1 : 2), `${a.id}: the "/" menu is non-empty: ${rows.length}`);
     const fixture = rows.find((r) => r.name === FIXTURE);
     assert.equal(fixture.description, FIXTURE_DESCRIPTION, `${a.id}: the skill's description`);
     assert.equal(fixture.skill, a.heading, `${a.id}: listed as a ${a.heading ? "skill" : "command"}`);
