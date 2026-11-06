@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "369659b",
+  "commit": "212c4b3",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -214,10 +214,10 @@
    "diff": {
     "file": "ui-map/diff/onboarding-signed-out.jpg",
     "changed_ratio_t0": 0.999969512195122,
-    "changed_ratio_t24": 0.9926724466463415,
+    "changed_ratio_t24": 0.9926381478658537,
     "rea_evidence_ids": [
-     "ev_0b93ab1f2f87adadf09ef6d002b8e10ecda82178515a53029517a64734d76c8b",
-     "ev_f16d8ca76ce9969a96cd125c3b2322b4ef444cc8fb1ac0dd67cc6098f1966d11"
+     "ev_137654a56eadc1f3dab2a9b1fbba0355b91ec8dc8cd79c75a4ccdddf6b0329c7",
+     "ev_03704ce3461f116ac9a19f2bd7a610ceb456c93bc2735eed7a9e993d80ce328b"
     ]
    },
    "copy_coverage": 0.857,
@@ -251,10 +251,10 @@
    "diff": {
     "file": "ui-map/diff/first-run-onboarding.jpg",
     "changed_ratio_t0": 0.9844693216463415,
-    "changed_ratio_t24": 0.9680697408536585,
+    "changed_ratio_t24": 0.9679897103658537,
     "rea_evidence_ids": [
-     "ev_9a025761c49ce81cecdc620b7c43d8c10b8028af5e992b3c3296f1342215ddc2",
-     "ev_176a4095ebd55ba7f0c8cd09157caad06e910679cf0ad0fbb68e01fcc8708adb"
+     "ev_29902e50b10e10a97250ed49b23623b7afbadb5a5a4c5af24c50338a5943ec09",
+     "ev_6a68145040b9c392b058ea48fc1537e9827534505fa0f969c2bdf481f8b78e11"
     ]
    },
    "copy_coverage": 0.071,
@@ -320,11 +320,11 @@
    },
    "diff": {
     "file": "ui-map/diff/home.jpg",
-    "changed_ratio_t0": 0.15722942073170731,
-    "changed_ratio_t24": 0.04265625,
+    "changed_ratio_t0": 0.15724371189024391,
+    "changed_ratio_t24": 0.0426610137195122,
     "rea_evidence_ids": [
-     "ev_9db135526bbe61938e62adc0df743f6e1a544455f06205f3337d9c51f5b90d6b",
-     "ev_23ea9fa92d52bbc2ead88186560c4a793faf40a4ca863b26bf17685a1ba5a0db"
+     "ev_a7f83510eb15ee237b8c0843619e4d738a2ada80df5558f1b888a6032916cb52",
+     "ev_eb309a38bbdf0db8488a153e25fd2bf75b5c00e3a0169a86c8b839cbc5e82186"
     ]
    },
    "copy_coverage": 0.786,
@@ -359,11 +359,11 @@
    },
    "diff": {
     "file": "ui-map/diff/all-workspaces.jpg",
-    "changed_ratio_t0": 0.022817263719512194,
-    "changed_ratio_t24": 0.011239519817073171,
+    "changed_ratio_t0": 0.0227953506097561,
+    "changed_ratio_t24": 0.011187118902439024,
     "rea_evidence_ids": [
-     "ev_dcee5d7c3ecca0fc23b371fd3a5ccb44e0f0949fa047f8538f1053f39d4243fc",
-     "ev_071a61a0cc052ef4f8ff7ccf6ee3093c48af8b28aee630884efe72c50316225d"
+     "ev_046e5836a91c93529d24498704f03b4774a71c62cfc263ed365f15a1ae401dcd",
+     "ev_a1a0f33f05f5539ca497dc52309dc38ee32606b0315178cadec9d95d0be8d3df"
     ]
    },
    "copy_coverage": 1.0,
@@ -395,10 +395,10 @@
    "diff": {
     "file": "ui-map/diff/create.jpg",
     "changed_ratio_t0": 0.8686423399390244,
-    "changed_ratio_t24": 0.06896055640243902,
+    "changed_ratio_t24": 0.06891291920731707,
     "rea_evidence_ids": [
-     "ev_0c9b077f08e861c7d743ed99f480d88c8b61ccd7599592717e5a071d17bad143",
-     "ev_f48ab1a54285d9fad77dd2fd38dfdee8a4a12f1ec21abf7cbb79d88b9d80d1e6"
+     "ev_e91a19eaee307ef134fb68f4b87c0c14e7d348d5663a5a54f05216189825c332",
+     "ev_683117049fc028597a73b06d119b7c6d53b97c8693668a6c28c5b7f4a38a4ae5"
     ]
    },
    "copy_coverage": 0.81,
@@ -435,10 +435,10 @@
    "diff": {
     "file": "ui-map/diff/create-repo-picker.jpg",
     "changed_ratio_t0": 0.8980535442073171,
-    "changed_ratio_t24": 0.07301162347560976,
+    "changed_ratio_t24": 0.07296398628048781,
     "rea_evidence_ids": [
-     "ev_e68ae7e0a1218bf7a2e95d9bec42a5cb97bd4968f042d84493ff5bc71305a81b",
-     "ev_b6d80f604323343afe336ebd07cd0d76ab2e4282dd08216d9da9935e751236c3"
+     "ev_fbdd98b6744203383f99a79085320b58b198a0bc896c697e4a1266848a3a9ad2",
+     "ev_75704bea123ce825fa34219195e0df7c1ec69016e2f0da646a0875ab1fd7f23a"
     ]
    },
    "copy_coverage": 0.818,
@@ -474,11 +474,11 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-chat.jpg",
-    "changed_ratio_t0": 0.19403487042682926,
-    "changed_ratio_t24": 0.04541920731707317,
+    "changed_ratio_t0": 0.19397865853658536,
+    "changed_ratio_t24": 0.04530297256097561,
     "rea_evidence_ids": [
-     "ev_e7fee13f0c0dd889e1ace035bec69a4639abebb20fc24bce7abd3c605af765a1",
-     "ev_c9a043b747c09c7f328524b9a3e4372cd32c003f1030f0f8deafd713fc6f13cf"
+     "ev_a9bc34a07712c005d75e948f945b72d6356a5c5b8bbba1626ae0731a42a0b0a5",
+     "ev_06e1c46fc2852f918a3f023296a7bccb9cbcfd3d78c48dce6df1c5c5ad46fa3c"
     ]
    },
    "copy_coverage": 0.852,
@@ -514,11 +514,11 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-new-chat.jpg",
-    "changed_ratio_t0": 0.15426829268292683,
-    "changed_ratio_t24": 0.03266673018292683,
+    "changed_ratio_t0": 0.15421017530487804,
+    "changed_ratio_t24": 0.032545731707317074,
     "rea_evidence_ids": [
-     "ev_28e37e3623f7449bb022699dbdc1085d17d54342eb2ecf48acc2d3fb2bff3a24",
-     "ev_824d9086b34dceb157dcb6a50282b2968b82d9096a1591ef0c31312d24e6567d"
+     "ev_cc074ea2e0c7b472befebc0909a96285f43ae046093e81ea594c87c52d8ab46d",
+     "ev_8b6cfad9a859d3fc9ae9fcad4b6674d59cbc2a98138f63971edcab69052af910"
     ]
    },
    "copy_coverage": 0.92,
@@ -552,11 +552,11 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-tool-calls.jpg",
-    "changed_ratio_t0": 0.2115720274390244,
-    "changed_ratio_t24": 0.0583984375,
+    "changed_ratio_t0": 0.21150819359756098,
+    "changed_ratio_t24": 0.058275533536585364,
     "rea_evidence_ids": [
-     "ev_15af4d55da8edf891735525a78f482d83462b14cba94a3f210656f2a1c4e9e7a",
-     "ev_0079791b2dd56a42a9fb6efbc0764b8ecc540ed52c919cbf4cb381aa51dc675e"
+     "ev_975f5a31f8c8a6ad8f967a29a9a988758df1ede19ea4146877ca9e21a89de09c",
+     "ev_f1bf07c007692ff602462fc5b4172556e5c1e797bbf2d277074e3f6d515f8747"
     ]
    },
    "copy_coverage": 0.857,
@@ -592,11 +592,11 @@
    },
    "diff": {
     "file": "ui-map/diff/diff-unified.jpg",
-    "changed_ratio_t0": 0.5094045350609756,
-    "changed_ratio_t24": 0.1095874618902439,
+    "changed_ratio_t0": 0.5093778582317073,
+    "changed_ratio_t24": 0.10952267530487805,
     "rea_evidence_ids": [
-     "ev_354d57916d29372641844b741732b7e7c715887c1f635e6efbdcb05dbfb7edd8",
-     "ev_0bf832d0b1f8eaba07ef9c2187ed19e33484a0e147ddd105625ae3ae712422ac"
+     "ev_8e71f69d1902b6a861282ea7f58c75e14a44518f1f96537f7c5730c498e88bef",
+     "ev_be4ebde7b03630251390d007974f5e7d629e6a3201dd2558dd77451c4d3c9890"
     ]
    },
    "copy_coverage": 0.906,
@@ -631,11 +631,11 @@
    },
    "diff": {
     "file": "ui-map/diff/diff-split.jpg",
-    "changed_ratio_t0": 0.5099685594512195,
-    "changed_ratio_t24": 0.11074790396341463,
+    "changed_ratio_t0": 0.5099418826219512,
+    "changed_ratio_t24": 0.11068311737804878,
     "rea_evidence_ids": [
-     "ev_13a3673aef1e1bd4d4b6bb11d6624c359e06d76add5da69775e7e1e68312e54b",
-     "ev_c22cf42539662f3f0cb65a1604b2398593902101facfa284c82aa10d0d9d1433"
+     "ev_6309fbae31d8d44be8632b84637d552443594255428f61e9da64aa6040ecdd9d",
+     "ev_5e9a9420e36d31784a7b374c7153b500f647324775043da730cb410becff5cfe"
     ]
    },
    "copy_coverage": 0.906,
@@ -670,11 +670,11 @@
    },
    "diff": {
     "file": "ui-map/diff/diff-entire-file.jpg",
-    "changed_ratio_t0": 0.502584794207317,
-    "changed_ratio_t24": 0.06199314024390244,
+    "changed_ratio_t0": 0.5025581173780488,
+    "changed_ratio_t24": 0.061928353658536585,
     "rea_evidence_ids": [
-     "ev_c8fa36ca88b1a5e6243839621a8edc1a0a8727e7f4ad93ced3545d0450043eef",
-     "ev_1a25640fa28f265d5de81fee6cc58c0b8edb9fc434b14c6b349668d8d425370d"
+     "ev_05273eae8afb7f486644b952614bba275af891b5e139b9a337940fa139cc4211",
+     "ev_ee62bbe258e0cd13fc4f67a3159a72d599fffe8c04a08e01c43ad00c41001216"
     ]
    },
    "copy_coverage": 0.906,
@@ -966,10 +966,10 @@
    "diff": {
     "file": "ui-map/diff/login.jpg",
     "changed_ratio_t0": 0.999969512195122,
-    "changed_ratio_t24": 0.9931783536585366,
+    "changed_ratio_t24": 0.9932012195121951,
     "rea_evidence_ids": [
-     "ev_c250241c51675d1132bd2f0b23a83328451a2c96282528f9ffab96d455aa33f9",
-     "ev_78ee9153475bd751a5b0d439576163723fd8f621e732dcfa3d3111cce4ca4e84"
+     "ev_287877af09b55f32efd94de9fcf42c3bc78ae4a4de3b2cb285df8ed2b4f37149",
+     "ev_c2ddfe50d739ad1dc6398ec5bcebb861f385dcae0c24bcb04c716899f0a3c6b8"
     ]
    },
    "copy_coverage": 0.0,
@@ -1006,8 +1006,8 @@
     "changed_ratio_t0": 0.058445121951219516,
     "changed_ratio_t24": 0.03120236280487805,
     "rea_evidence_ids": [
-     "ev_2d75674067ee275479e45b87c334a56272e57d5d5f70e7b455ccb8d5b36ad796",
-     "ev_47589a98ce6a459d7b6fb6e3295b5e55a749672dc540c73afab13efa33be3644"
+     "ev_7b1fffa4063b223aab1d54d815e0960a3d09d2fecb40a4a844ce79514743a9da",
+     "ev_008cb39cdf42dc51ccb4499377c51e6e5898632020c5c6253511b713c2450d76"
     ]
    },
    "copy_coverage": 0.891,
@@ -1134,10 +1134,10 @@
    "diff": {
     "file": "ui-map/diff/settings-providers.jpg",
     "changed_ratio_t0": 0.11030487804878049,
-    "changed_ratio_t24": 0.045514481707317075,
+    "changed_ratio_t24": 0.04550495426829268,
     "rea_evidence_ids": [
-     "ev_e27e66760fb1378ac4cd5743de37c8d3997b3aeefefe26b4174196c9a90e62d1",
-     "ev_7ceb59f26ccc29e8964d04bd3db70e74e9b105af61d87e3c0fb987a169737414"
+     "ev_dce3d49967a202302da035cd6d54fcfbd3e0e9b26c184e853b2d0faaaa7b3e40",
+     "ev_67e28388d62db637a97455a5fb2b46c84c23899db98fe739a9f5596d4f870d79"
     ]
    },
    "copy_coverage": 0.792,
@@ -1216,8 +1216,8 @@
     "changed_ratio_t0": 0.07965034298780488,
     "changed_ratio_t24": 0.04201124237804878,
     "rea_evidence_ids": [
-     "ev_13ee3ec435bdec578a063f370a5efa8561d10b67220bf14ac77bc146d2b81e02",
-     "ev_1a21ed1e6505f1c1143530a5650de269fe513c15d154a66154dbd4a024b89842"
+     "ev_76e69f23528670a330f44260f829150de164052e4e64bdb9c54c787567b81a61",
+     "ev_82b513adbe28acb45496b3184710418ae154456d83b088ab7527da81c2fd18e3"
     ]
    },
    "copy_coverage": 0.921,
@@ -1287,8 +1287,8 @@
     "changed_ratio_t0": 0.19623189786585366,
     "changed_ratio_t24": 0.04945217225609756,
     "rea_evidence_ids": [
-     "ev_a5593948b192a6e21726c9eece1b796a432bb5fd61443f3cb4845e9e97ff2f6d",
-     "ev_07f2c532f5db6ea5ab286149b7dc132669a8b5e4b33fecf26c9258a0f98c9698"
+     "ev_491cc904720e6f69d01c9d70183d96609442ad47ba43c1d9c69da17a85124f4e",
+     "ev_81b33b50b375448fe75a37c66f1dff376ed718d2a481eb58df1f7723b3ef3561"
     ]
    },
    "copy_coverage": 0.891,
@@ -1328,8 +1328,8 @@
     "changed_ratio_t0": 0.0849171112804878,
     "changed_ratio_t24": 0.04391673018292683,
     "rea_evidence_ids": [
-     "ev_7fa1f3a6d6814f9074a7b70be5b63b1a66dc842855face31e3bec441e3427922",
-     "ev_0dc22bfdcf448148eca1728fe37f5004af232615c2e9aa73d729009f0f48247d"
+     "ev_d34c68ef99cc45fe3ea62c49465cd185e197142d5458800fc64a4edeb2b7bcc0",
+     "ev_bf80125226044e36750603c918a8a59690fc2feafb7c8e28ebebac618acef3cc"
     ]
    },
    "copy_coverage": 0.37,
@@ -1363,8 +1363,8 @@
     "changed_ratio_t0": 0.06297923018292682,
     "changed_ratio_t24": 0.03231993140243902,
     "rea_evidence_ids": [
-     "ev_bdd0e052db1a4d0870c5f0028dc7f7109f913a1d681d53adfe5753c0cde3f760",
-     "ev_766c975ea780c58fb3825c9e02156087e1a0b5a8a20f0bfa987970f97c1cfdef"
+     "ev_fae7837bda865fc6208e5837dd8a3d6bba9de16d173a43c4191a29111c76df0b",
+     "ev_8fc33037ce8067efd40c331fb705ecc6163d2ef268a28648dfb1dbfb669823a8"
     ]
    },
    "copy_coverage": 0.946,
@@ -1402,8 +1402,8 @@
     "changed_ratio_t0": 0.10380716463414634,
     "changed_ratio_t24": 0.07026581554878049,
     "rea_evidence_ids": [
-     "ev_97cf115845bb168ba6c2f4f536edfc8a5ad07a4a5f31395515deef230bed4099",
-     "ev_7f13329d60e2e42eddae893fa7be02b7e17f464b359bba770bfa41eb1d5c6d78"
+     "ev_e58c8a82ba5d2804c8c8385ef8dac93007e2beb7023e0a4026811febaed2d73e",
+     "ev_65060419d3af75484fd47d5de21ab5a65fe0f5ad3a324c97157faabdc29f79c9"
     ]
    },
    "copy_coverage": 0.881,
@@ -1634,8 +1634,8 @@
     "changed_ratio_t0": 0.09296208079268292,
     "changed_ratio_t24": 0.054264481707317076,
     "rea_evidence_ids": [
-     "ev_2618f5d3b168e155549dd7f103f35f5c49b512c7274043edbff76fc2175b70af",
-     "ev_7cb52096c3110114fc8b2eaf8062f8b0e809171382d5d873dd7113dabaa65043"
+     "ev_90b801bad000072cf764a86a9e0ae19a34281eada7464162486f8a6180b8a40e",
+     "ev_114b1221c7d820266c35b04a0c6be1f6f1471026c41bb6eca87b37d8541ff8bf"
     ]
    },
    "copy_coverage": 0.743,
@@ -1677,10 +1677,10 @@
    "diff": {
     "file": "ui-map/diff/settings-repo-misc.jpg",
     "changed_ratio_t0": 0.09153105945121952,
-    "changed_ratio_t24": 0.057943978658536587,
+    "changed_ratio_t24": 0.05794874237804878,
     "rea_evidence_ids": [
-     "ev_26d028059a9718226a4c45cb631637f607f828994d3b2a3a19159f517a6e5a29",
-     "ev_829c34649be5dd1c79692353d6168c675ab602346f2f6e013b652b5542bf0460"
+     "ev_9e57aea1d6a16003fa7946bfd1c0fddf1f297ed2123f138290500f0d26d0c059",
+     "ev_26c631e172a963514732e52dcc1a5225ced1f2b2ee753fd9014d41fc996ff826"
     ]
    },
    "copy_coverage": 0.921,
@@ -1718,8 +1718,8 @@
     "changed_ratio_t0": 0.09433307926829268,
     "changed_ratio_t24": 0.05978563262195122,
     "rea_evidence_ids": [
-     "ev_a2a5544c3cc8aafda54ca4028ea3cd4c1d982a7521f8100a8871171e348a50df",
-     "ev_9ddb4b2226940dcc01377c83dd34d30977de7dd691b8661b1bffd5cf1bb8b8f9"
+     "ev_b96562d031bd7bfb171b4b36a5ac3e9315efb746f7d19ad05df2783256c76f5c",
+     "ev_f76e13b2f57765767b4450120c69820f922a16522d4e50678d6038912b20fdeb"
     ]
    },
    "copy_coverage": 0.921,
@@ -2046,10 +2046,10 @@
    "diff": {
     "file": "ui-map/diff/palette-all.jpg",
     "changed_ratio_t0": 0.9999866615853659,
-    "changed_ratio_t24": 0.05899199695121951,
+    "changed_ratio_t24": 0.058968178353658536,
     "rea_evidence_ids": [
-     "ev_fa8ca0d283aec21fdb625e7ca48b264282861c7aa3347cfa634fd2f9e756ef63",
-     "ev_178f640cfcf834a692a01880a49046c100bee7e141d15c85c93c7d06127c1fa1"
+     "ev_cc429cdc69e965d54be91b3ee82bef98b5b4a5d555550e9ce8aac056d2352de5",
+     "ev_27e1e0290a4b38e3e8588fe28c2c75358f796a19f0748c29da18e097b0e16388"
     ]
    },
    "copy_coverage": 0.5,
@@ -2104,10 +2104,10 @@
    "diff": {
     "file": "ui-map/diff/palette-workspaces.jpg",
     "changed_ratio_t0": 0.9999876143292683,
-    "changed_ratio_t24": 0.05637004573170732,
+    "changed_ratio_t24": 0.05633765243902439,
     "rea_evidence_ids": [
-     "ev_8617a52bf509b5df7d1ecc3baac9fb7e4fda1cf704c67efcacb7fa2b428be013",
-     "ev_0eae6c3408e6ada94845c219492368c37d763816cdfe357c7a3367280d139147"
+     "ev_f611d2ce03a0de7988efa367d5b0a390250f5c08f28df04db80e5eb45377f92c",
+     "ev_7ebfe9c20c1536f3c0d31d54eed34bb3f8f0e6d0e5d34b36cac7065834481dfd"
     ]
    },
    "copy_coverage": 0.81,
@@ -2144,10 +2144,10 @@
    "diff": {
     "file": "ui-map/diff/palette-search.jpg",
     "changed_ratio_t0": 0.9999809451219512,
-    "changed_ratio_t24": 0.05930830792682927,
+    "changed_ratio_t24": 0.05928639481707317,
     "rea_evidence_ids": [
-     "ev_cf287ccb1635c6f5594663ee12d0cacbacdf9e40bcf2969d6749df1ff8ec4a25",
-     "ev_bc0ef9cf3b398e12ada9f7059dd8839d37d48def006c7bfd5e9bebf528312b37"
+     "ev_974a46975d7d676d7df9b07372e2b1ee1c1a8e9013e548db013ecf0252f095a5",
+     "ev_891da6bb7f072ab9652b06ce591823646439b568ea603b8171a58a8a80a91f56"
     ]
    },
    "copy_coverage": 0.8,
@@ -2183,11 +2183,11 @@
    },
    "diff": {
     "file": "ui-map/diff/dialog-clone-github.jpg",
-    "changed_ratio_t0": 0.9893530868902439,
-    "changed_ratio_t24": 0.08523628048780488,
+    "changed_ratio_t0": 0.989351181402439,
+    "changed_ratio_t24": 0.0851295731707317,
     "rea_evidence_ids": [
-     "ev_8e5d109eb70368b9b10de64c3420bbd05393a4c4058d5eeb09ee30a4be29f2c0",
-     "ev_3fb7b4315b7eb0147649985b367179fe8b239898a354ae0cae7ac4796dceeaa8"
+     "ev_a0671b0e605748542701822f6da900f9968d740a142e3f13183e015feaedccbd",
+     "ev_93a029bc16b211ab8bf3faaaf2122b20e251ef909a20b76d5c42357e0a6e7f8b"
     ]
    },
    "copy_coverage": 0.8,
@@ -2202,7 +2202,7 @@
    "id": "dialog-create-project",
    "title": "Create project dialog",
    "status": "wrong",
-   "why": "diff 9.7% at t24, copy 83%",
+   "why": "diff 9.6% at t24, copy 83%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2223,11 +2223,11 @@
    },
    "diff": {
     "file": "ui-map/diff/dialog-create-project.jpg",
-    "changed_ratio_t0": 0.9785289634146341,
-    "changed_ratio_t24": 0.09661966463414634,
+    "changed_ratio_t0": 0.9785270579268293,
+    "changed_ratio_t24": 0.09640720274390244,
     "rea_evidence_ids": [
-     "ev_f5bbdb74f08a11723fe798f09b86e61c90115aece5423ebfd0cb0addfc1baca8",
-     "ev_87314c2a382ee5a587a6afe02b31bb2d736685515667f425b71c7c3ff588a3cf"
+     "ev_9393d22e66bf7c24ca7b9c476266a5b3c4bc3af825bce716036b9b00bf2b7600",
+     "ev_40704e118143bf85820c8c21cf710e6ca39e8d8c6cdfb4838af6e212b2d1cb73"
     ]
    },
    "copy_coverage": 0.828,
@@ -2265,10 +2265,10 @@
    "diff": {
     "file": "ui-map/diff/dialog-rename-workspace.jpg",
     "changed_ratio_t0": 0.9999904725609756,
-    "changed_ratio_t24": 0.053443216463414635,
+    "changed_ratio_t24": 0.05327267530487805,
     "rea_evidence_ids": [
-     "ev_1348aa5e332b057082277f9b95ef0058888d3d94e9bdc6aa779b028a4547ddee",
-     "ev_7c6e04de1ed4995413becbfaf38a9fa588746ea5e54c22bc84ba3aa7eb850014"
+     "ev_342c583270432a83b6d49046033970ba2decc0ea7b0773f06a5e3b9b8d53f9c0",
+     "ev_b4572fb4b74fd3da15612618cab38ba5261e78abbf79cbd2c6075a0c638d8625"
     ]
    },
    "copy_coverage": 0.778,
@@ -2304,11 +2304,11 @@
    },
    "diff": {
     "file": "ui-map/diff/dialog-keyboard-shortcuts.jpg",
-    "changed_ratio_t0": 0.34313833841463415,
-    "changed_ratio_t24": 0.0592625762195122,
+    "changed_ratio_t0": 0.3430783155487805,
+    "changed_ratio_t24": 0.05916825457317073,
     "rea_evidence_ids": [
-     "ev_97cc2269b5431299ee1e55d761d9700d488b4884c641d5edae9d43111954811a",
-     "ev_a142260f8a8ae9ea2c5ab581b7c09fdc8eaef5f59a1a66e8a9ae1a5276585306"
+     "ev_af0c0c6ff64925e59930b48af235a9a6ff8fe34994018c78a55cfbc5f7b309c8",
+     "ev_fa7db0d8c58dac875f65609acddc8a534da0106a555d33b85224703a6c842a0b"
     ]
    },
    "copy_coverage": 0.786,
@@ -2343,11 +2343,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-account.jpg",
-    "changed_ratio_t0": 0.33601943597560974,
-    "changed_ratio_t24": 0.05777915396341463,
+    "changed_ratio_t0": 0.3359594131097561,
+    "changed_ratio_t24": 0.05768483231707317,
     "rea_evidence_ids": [
-     "ev_80ca00ba500ae88baae3b9e0b8eea9295064b8e78b47ed8e4c0b298a3457228e",
-     "ev_3275009753ab7e628f2c80f182991c279cd94682cd7ff11007db2d1dd19ef98a"
+     "ev_d4e509d988e9c07b152f7994229d5b86106fdc2a942b940b06fb49a3853146d7",
+     "ev_ab642475ab81d4fa4150778af6f029f5370f093ec5faa37396b013afbf3dba2f"
     ]
    },
    "copy_coverage": 0.733,
@@ -2362,7 +2362,7 @@
    "id": "menu-workspace-context",
    "title": "Workspace context menu",
    "status": "wrong",
-   "why": "diff 6.2% at t24, copy 83%",
+   "why": "diff 6.1% at t24, copy 83%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2383,11 +2383,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-workspace-context.jpg",
-    "changed_ratio_t0": 0.35594035823170733,
-    "changed_ratio_t24": 0.061529153963414636,
+    "changed_ratio_t0": 0.3558812881097561,
+    "changed_ratio_t24": 0.06141196646341463,
     "rea_evidence_ids": [
-     "ev_b4f58c06773c0b85826513dd9e780f9463c15544169bee9d59194e794b16b33f",
-     "ev_8ca852939e4cce4053406b619d6753822586dc8a302b953b718ef0d45c80517a"
+     "ev_bb2cfd4e38b4cb8db3ecd78ec07c271b4d0c2bbc9ceab97233aeee8b092eee19",
+     "ev_9c556fea12fb47ff547d6c23e45db2892dbdc11cb958e3256dcc83f53b7b633b"
     ]
    },
    "copy_coverage": 0.833,
@@ -2401,7 +2401,7 @@
    "id": "menu-workspace-status",
    "title": "Workspace context menu > Set status",
    "status": "wrong",
-   "why": "diff 7.3% at t24, copy 79%",
+   "why": "diff 7.2% at t24, copy 79%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2422,11 +2422,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-workspace-status.jpg",
-    "changed_ratio_t0": 0.3845293445121951,
-    "changed_ratio_t24": 0.0726095655487805,
+    "changed_ratio_t0": 0.3844702743902439,
+    "changed_ratio_t24": 0.07249237804878049,
     "rea_evidence_ids": [
-     "ev_ca224c958a6a79c7d2aba5e3b0c1d3f19420531b41149eb669c8c3f47fb3fd50",
-     "ev_6c0c9e23f7c643a4382376b8904891fa0cb303f937ce17cb534ee7e567d347c3"
+     "ev_d035f36634fba95cedcb9c531cd3ed5676b548a1e58fc06c0ee5f5fd2c78eaf5",
+     "ev_8f8b7dd82b37a12e1aa1eb39e99bdc8f7c1dea8462fb8dfc1674e77b49e5f159"
     ]
    },
    "copy_coverage": 0.789,
@@ -2462,11 +2462,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-model-picker.jpg",
-    "changed_ratio_t0": 0.21260289634146343,
-    "changed_ratio_t24": 0.047664824695121955,
+    "changed_ratio_t0": 0.21254668445121952,
+    "changed_ratio_t24": 0.04754858993902439,
     "rea_evidence_ids": [
-     "ev_1215fb8a8acb114b35f07d0fbcfe98bb1297b951973a5a5c8789c466e12e66e4",
-     "ev_974f1f8cd55f925db230b869238ca98a466556ea0fab0c0899d5d1df49df3f86"
+     "ev_d2dd28ca9c7649d18b8bbcc2b97fc2622cc65d91915d8f97fdaff20cc51d5de6",
+     "ev_bdb14a7af7bda3666142ad2220d3c7a42cb2255fe2ad3d48eaacb9dfbb0a5537"
     ]
    },
    "copy_coverage": 0.812,
@@ -2504,11 +2504,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-repo-actions.jpg",
-    "changed_ratio_t0": 0.3251638719512195,
-    "changed_ratio_t24": 0.057015053353658536,
+    "changed_ratio_t0": 0.32510575457317076,
+    "changed_ratio_t24": 0.056920731707317075,
     "rea_evidence_ids": [
-     "ev_79adb177d7739dc8fdc0352ed8e426a31cc5138540e8ac3c03b3113ce20dbd00",
-     "ev_ce6732bf1c8623713f351ba556d2e6490fc91b8d69ce479053fa889aa17d3594"
+     "ev_b4d5857852dee25a7e84002018d35949f4fcc4344c132233306e33f3bfec1d15",
+     "ev_eda32fab1a24a1aae0453df858c16b6c1cb105fb18afe22294278dad1edb99dc"
     ]
    },
    "copy_coverage": 0.786,
@@ -2539,11 +2539,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-help.jpg",
-    "changed_ratio_t0": 0.3831173780487805,
-    "changed_ratio_t24": 0.07233136432926829,
+    "changed_ratio_t0": 0.38305735518292683,
+    "changed_ratio_t24": 0.07223704268292683,
     "rea_evidence_ids": [
-     "ev_82678202fbbcbeaf8ea2cbb12b4185bf6696dffcabf812a2ac9d4d2ff2006a25",
-     "ev_86d019a02879802063bb6855fc3211249a195338f3ef54213f13334802f5ae7f"
+     "ev_417bf03b33719024611a8f8667376075bf6a6952848524ff79606d3248653e29",
+     "ev_16ffbfe831b1045064d26edb6179f4daaaea1fbd337260177648ab28125a361c"
     ]
    },
    "copy_coverage": 0.696,
@@ -2582,11 +2582,11 @@
    },
    "diff": {
     "file": "ui-map/diff/toast-copied-link.jpg",
-    "changed_ratio_t0": 0.343765243902439,
-    "changed_ratio_t24": 0.06310403963414635,
+    "changed_ratio_t0": 0.3437061737804878,
+    "changed_ratio_t24": 0.06298685213414634,
     "rea_evidence_ids": [
-     "ev_3dbbd5a47208dcc2addc0eb34e40cb84527e1260953826904d72d23e152cc185",
-     "ev_8c707784a49c891d65f9f79d73641ebeb29a82b282a6f8ba8914e7b793e252e1"
+     "ev_dd2c79202c6f5401f907de3fe222c98beb50b0512355185d6afc3e7e526a2188",
+     "ev_290dec97310419738a13f076e3770967d1a372d1bb51d439f346873153bf49ee"
     ]
    },
    "copy_coverage": 0.733,
@@ -2656,7 +2656,7 @@
    "reference_screenshot": "ui-map/ref/onboarding-signed-out.png",
    "openconductor_screenshot": "ui-map/oc/onboarding-signed-out.png",
    "diff": "ui-map/diff/onboarding-signed-out.jpg",
-   "changed_ratio_t24": 0.9926724466463415
+   "changed_ratio_t24": 0.9926381478658537
   },
   {
    "id": "route:settings",
@@ -2744,7 +2744,7 @@
    "reference_screenshot": "ui-map/ref/settings-providers.png",
    "openconductor_screenshot": "ui-map/oc/settings-providers.png",
    "diff": "ui-map/diff/settings-providers.jpg",
-   "changed_ratio_t24": 0.045514481707317075
+   "changed_ratio_t24": 0.04550495426829268
   },
   {
    "id": "route:settings-user-environment",
@@ -3052,7 +3052,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
    "diff": "ui-map/diff/settings-repo-misc.jpg",
-   "changed_ratio_t24": 0.057943978658536587
+   "changed_ratio_t24": 0.05794874237804878
   },
   {
    "id": "route:settings-cloud",
@@ -3514,7 +3514,7 @@
    "reference_screenshot": "ui-map/ref/first-run-onboarding.png",
    "openconductor_screenshot": "ui-map/oc/first-run-onboarding.png",
    "diff": "ui-map/diff/first-run-onboarding.jpg",
-   "changed_ratio_t24": 0.9680697408536585
+   "changed_ratio_t24": 0.9679897103658537
   },
   {
    "id": "route:new-member-onboarding",
@@ -3558,7 +3558,7 @@
    "reference_screenshot": "ui-map/ref/home.png",
    "openconductor_screenshot": "ui-map/oc/home.png",
    "diff": "ui-map/diff/home.jpg",
-   "changed_ratio_t24": 0.04265625
+   "changed_ratio_t24": 0.0426610137195122
   },
   {
    "id": "route:repository-repositoryid-workspace-localworkspaceid",
@@ -3580,7 +3580,7 @@
    "reference_screenshot": "ui-map/ref/workspace-chat.png",
    "openconductor_screenshot": "ui-map/oc/workspace-chat.png",
    "diff": "ui-map/diff/workspace-chat.jpg",
-   "changed_ratio_t24": 0.04541920731707317
+   "changed_ratio_t24": 0.04530297256097561
   },
   {
    "id": "route:all-workspaces",
@@ -3602,7 +3602,7 @@
    "reference_screenshot": "ui-map/ref/all-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/all-workspaces.png",
    "diff": "ui-map/diff/all-workspaces.jpg",
-   "changed_ratio_t24": 0.011239519817073171
+   "changed_ratio_t24": 0.011187118902439024
   },
   {
    "id": "route:create",
@@ -3624,7 +3624,7 @@
    "reference_screenshot": "ui-map/ref/create.png",
    "openconductor_screenshot": "ui-map/oc/create.png",
    "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.06896055640243902
+   "changed_ratio_t24": 0.06891291920731707
   },
   {
    "id": "route:team",
@@ -4116,7 +4116,7 @@
    "reference_screenshot": "ui-map/ref/dialog-clone-github.png",
    "openconductor_screenshot": "ui-map/oc/dialog-clone-github.png",
    "diff": "ui-map/diff/dialog-clone-github.jpg",
-   "changed_ratio_t24": 0.08523628048780488,
+   "changed_ratio_t24": 0.0851295731707317,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4142,7 +4142,7 @@
    "reference_screenshot": "ui-map/ref/dialog-create-project.png",
    "openconductor_screenshot": "ui-map/oc/dialog-create-project.png",
    "diff": "ui-map/diff/dialog-create-project.jpg",
-   "changed_ratio_t24": 0.09661966463414634,
+   "changed_ratio_t24": 0.09640720274390244,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4716,7 +4716,7 @@
    "reference_screenshot": "ui-map/ref/create.png",
    "openconductor_screenshot": "ui-map/oc/create.png",
    "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.06896055640243902,
+   "changed_ratio_t24": 0.06891291920731707,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4914,7 +4914,7 @@
    "reference_screenshot": "ui-map/ref/palette-all.png",
    "openconductor_screenshot": "ui-map/oc/palette-all.png",
    "diff": "ui-map/diff/palette-all.jpg",
-   "changed_ratio_t24": 0.05899199695121951,
+   "changed_ratio_t24": 0.058968178353658536,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -6923,7 +6923,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.05637004573170732,
+   "changed_ratio_t24": 0.05633765243902439,
    "primitive": "DropdownMenuCheckboxItem",
    "dynamic": false
   },
@@ -7615,7 +7615,7 @@
    "reference_screenshot": "ui-map/ref/menu-workspace-context.png",
    "openconductor_screenshot": "ui-map/oc/menu-workspace-context.png",
    "diff": "ui-map/diff/menu-workspace-context.jpg",
-   "changed_ratio_t24": 0.061529153963414636,
+   "changed_ratio_t24": 0.06141196646341463,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -8333,7 +8333,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.05637004573170732,
+   "changed_ratio_t24": 0.05633765243902439,
    "primitive": "DropdownMenuContent",
    "dynamic": true
   },
@@ -9300,7 +9300,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.05637004573170732,
+   "changed_ratio_t24": 0.05633765243902439,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -10040,7 +10040,7 @@
    "reference_screenshot": "ui-map/ref/create-repo-picker.png",
    "openconductor_screenshot": "ui-map/oc/create-repo-picker.png",
    "diff": "ui-map/diff/create-repo-picker.jpg",
-   "changed_ratio_t24": 0.07301162347560976,
+   "changed_ratio_t24": 0.07296398628048781,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -11365,7 +11365,7 @@
    "reference_screenshot": "ui-map/ref/palette-all.png",
    "openconductor_screenshot": "ui-map/oc/palette-all.png",
    "diff": "ui-map/diff/palette-all.jpg",
-   "changed_ratio_t24": 0.05899199695121951,
+   "changed_ratio_t24": 0.058968178353658536,
    "primitive": "E1",
    "dynamic": true
   },
@@ -19095,7 +19095,7 @@
    "reference_screenshot": "ui-map/ref/toast-copied-link.png",
    "openconductor_screenshot": "ui-map/oc/toast-copied-link.png",
    "diff": "ui-map/diff/toast-copied-link.jpg",
-   "changed_ratio_t24": 0.06310403963414635,
+   "changed_ratio_t24": 0.06298685213414634,
    "variant": "success",
    "dynamic": false
   },
@@ -21085,7 +21085,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
    "diff": "ui-map/diff/settings-repo-misc.jpg",
-   "changed_ratio_t24": 0.057943978658536587
+   "changed_ratio_t24": 0.05794874237804878
   },
   {
    "id": "empty-state:no-emoji-found",
@@ -24979,7 +24979,7 @@
    "reference_screenshot": "ui-map/ref/settings-providers.png",
    "openconductor_screenshot": "ui-map/oc/settings-providers.png",
    "diff": "ui-map/diff/settings-providers.jpg",
-   "changed_ratio_t24": 0.045514481707317075,
+   "changed_ratio_t24": 0.04550495426829268,
    "route": "/settings/user/providers",
    "route_guess": "/settings/user/providers",
    "rows": 1
@@ -25004,7 +25004,7 @@
    "reference_screenshot": "ui-map/ref/settings-providers.png",
    "openconductor_screenshot": "ui-map/oc/settings-providers.png",
    "diff": "ui-map/diff/settings-providers.jpg",
-   "changed_ratio_t24": 0.045514481707317075,
+   "changed_ratio_t24": 0.04550495426829268,
    "page": "providers",
    "setting_key": "chrome_mode_enabled",
    "row_id": null,
