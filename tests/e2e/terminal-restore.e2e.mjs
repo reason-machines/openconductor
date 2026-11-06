@@ -320,7 +320,8 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
 
   // Archiving the workspace ends its terminals and deletes its saved sessions and tab list.
   await page.waitForFunction(() => Object.keys(JSON.parse(localStorage.getItem("__fake_backend_disk")).history).length === 2, null, { timeout: 5000 });
-  await page.getByTitle("Archive workspace").click();
+  await page.locator('[data-testid="left-sidebar-workspace-item"]', { has: page.locator(".sb-ws-name", { hasText: "lisbon" }) }).click({ button: "right" });
+  await page.getByRole("menu", { name: "Workspace actions" }).getByRole("menuitem", { name: "Archive" }).click();
   await page.waitForFunction(() => (JSON.parse(localStorage.getItem("__fake_backend_disk")).workspaceDeletes ?? []).includes("w1"), null, { timeout: 5000 });
   const archived = await disk(page);
   assert.deepEqual(archived.history, {});
