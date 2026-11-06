@@ -599,6 +599,9 @@ elif ARGS[:2] == ["status", "--json"]:
     status()
 elif ARGS[:1] == ["login"]:
     login()
+elif ARGS[:1] == ["logout"]:
+    open(marker("fake-reason-signed-out"), "w").close()
+    print("Signed out of Reason.")
 elif ARGS[:1] == ["connect"]:
     open(marker("fake-reason-connected"), "w").close()
     print("Connected this computer to Reason.")

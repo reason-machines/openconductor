@@ -31,7 +31,9 @@ def send_prompt(text):
 
 # screens and routes
 st("onboarding-signed-out","Onboarding, signed out", ref("/", "signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
-st("first-run-onboarding","First-run onboarding", ref("/first-run-onboarding","signed-in"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/first-run-onboarding"}])
+# Conductor renders /first-run-onboarding only through its auth guard: signed in with
+# projects the harness redirects it to "/", so the reference is the signed-out first run.
+st("first-run-onboarding","First-run onboarding", ref("/first-run-onboarding","signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/first-run-onboarding"}])
 st("home-empty","Home, no projects", ref("/","signed-in"), oc=[{"click":".onb-continue","after_ms":1000}], oc_fresh=True)
 st("home","Home with projects", ref("/"), oc=HOME, covers=[{"kind":"route","name":"/"}])
 st("all-workspaces","All workspaces list", ref("/all-workspaces"), oc=HOME, covers=[{"kind":"route","name":"/all-workspaces"}])
@@ -59,7 +61,8 @@ for path,title in [("/dashboard","Dashboard"),("/routines","Routines"),("/routin
     reason = ("the UI map lane has no Reason account; scored by tools/side-by-side/routines.mjs" if path.startswith("/routines")
               else "OpenConductor has no route or view for "+path)
     st(sid, title, ref(path, wait=path not in ("/diagnostics","/new-member-onboarding","/cloud-collab-onboarding")), oc_reason=reason, covers=[{"kind":"route","name":path}])
-st("login","Login", ref("/login","signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
+# The gate reads the path once at startup, so the lane loads /login rather than pushing it.
+st("login","Login", ref("/login","signed-out"), oc=[{"exec":"location.assign('/login');"},{"wait":".onb-login","after_ms":800}], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
 
 # settings
 USER=[("general","General"),("account","Account"),("models","Default models"),("providers","Agents"),("environment","Environment"),("git","Git"),("ports",None),("appearance","Appearance"),("key-bindings","Keyboard shortcuts"),("experimental","Experimental"),("advanced","Advanced"),("terminal","Big terminal"),("internal",None)]
@@ -120,6 +123,9 @@ HELP_OC={"click":".sb-footer-btn","text":"Help"}
 st("dialog-submit-prompt","Help > Submit a prompt dialog", ref(actions=[HELP_REF,{"click":"[role=menuitem] >> text=Submit a prompt"}]), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Submit a prompt","after_ms":800}], covers=[{"kind":"dialog","name":"Submit a prompt"}])
 st("diagnostics-run","Diagnostics after a run", ref("/diagnostics", wait=False, actions=[{"click":"text=Run environment diagnostics"}], final_settle_ms=4000), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800},{"click":".diag-btn-primary","after_ms":4000}])
 st("toast-copied-link","Toast: copied link", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Copy link"}], final_settle_ms=300), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Copy link","after_ms":200}])
+# Right-click menus inside a workspace (side-by-side records: tools/side-by-side/shell-menus.mjs).
+st("menu-chat-tab","Chat tab context menu", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"rclick":"[role=tab][aria-label^='Close chat']"}]), oc=OPEN_WS+[{"rclick":".main-tabs [role=tab]"}])
+st("menu-changes-file","Changes file context menu", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"rclick":".cursor-pointer.mx-2:has-text('auth.test.ts')"}]), oc=OPEN_WS+[{"rclick":".oc-change-row"}])
 st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Archive"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Archive","after_ms":1000}])
 # Conductor's reference opens on "/" (Home: wordmark and the Open project / Open GitHub
 # project / Quick start cards) and stays there unless its actions open a workspace (Create

@@ -77,6 +77,10 @@ export function chatTabWrites(workspaceId: string, prev: readonly { chatId: stri
   return [
     ...next.filter((t) => !before.has(t.chatId)).map((t): ChatTabWrite => ({ command: "db_open_chat_tab", args: { chatId: t.chatId, workspaceId, title: t.title } })),
     ...prev.filter((t) => !after.has(t.chatId)).map((t): ChatTabWrite => ({ command: "db_close_chat_tab", args: { chatId: t.chatId } })),
+    // "Rename chat": the same upsert stores the new title (`sessions::open_tab`).
+    ...next
+      .filter((t) => prev.some((p) => p.chatId === t.chatId && p.title !== t.title))
+      .map((t): ChatTabWrite => ({ command: "db_open_chat_tab", args: { chatId: t.chatId, workspaceId, title: t.title } })),
   ];
 }
 

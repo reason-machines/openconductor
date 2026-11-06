@@ -28,7 +28,7 @@
    "title": "First-run onboarding",
    "ref": {
     "path": "/first-run-onboarding",
-    "scenario": "signed-in",
+    "scenario": "signed-out",
     "actions": []
    },
    "oc": [],
@@ -585,7 +585,15 @@
     "scenario": "signed-out",
     "actions": []
    },
-   "oc": [],
+   "oc": [
+    {
+     "exec": "location.assign('/login');"
+    },
+    {
+     "wait": ".onb-login",
+     "after_ms": 800
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -2065,6 +2073,68 @@
      "click": "[role=menu] [role=menuitem]",
      "text": "Copy link",
      "after_ms": 200
+    }
+   ]
+  },
+  {
+   "id": "menu-chat-tab",
+   "title": "Chat tab context menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": "[role=tab][aria-label^='Close chat']"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".main-tabs [role=tab]"
+    }
+   ]
+  },
+  {
+   "id": "menu-changes-file",
+   "title": "Changes file context menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": ".cursor-pointer.mx-2:has-text('auth.test.ts')"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".oc-change-row"
     }
    ]
   },

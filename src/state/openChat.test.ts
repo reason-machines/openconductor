@@ -52,3 +52,10 @@ test("a strip change writes the tabs that opened and closed", () => {
   assert.deepEqual(chatTabWrites("app/oslo", [review, blank], [blank]), [{ command: "db_close_chat_tab", args: { chatId: "app/oslo:review:1" } }]);
   assert.deepEqual(chatTabWrites("app/oslo", [review, blank], [blank, review]), [], "reordering writes nothing");
 });
+
+test("Rename chat on an open tab writes its new title", () => {
+  const review = { chatId: "app/oslo:review:1", title: "Review" };
+  assert.deepEqual(chatTabWrites("app/oslo", [review], [{ ...review, title: "Second look" }]), [
+    { command: "db_open_chat_tab", args: { chatId: "app/oslo:review:1", workspaceId: "app/oslo", title: "Second look" } },
+  ]);
+});
