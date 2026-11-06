@@ -47,6 +47,8 @@ export function paletteCommandFor(e: KeyEventLike, overrides: Overrides = {}): P
 /** New active index after a movement command; the list wraps around. */
 export function moveActive(active: number, count: number, cmd: PaletteCommand): number {
   if (count === 0) return 0;
+  // No row highlighted yet (the Workspaces tab opens that way): the first move picks an end.
+  if (active < 0) return cmd === "prev-item" || cmd === "last-item" ? count - 1 : 0;
   switch (cmd) {
     case "next-item":
       return (active + 1) % count;
