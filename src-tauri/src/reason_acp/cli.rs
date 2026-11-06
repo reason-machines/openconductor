@@ -142,7 +142,7 @@ impl LaunchConfig {
         &self.cli
     }
 
-    fn workspace_args(&self) -> Vec<String> {
+    pub(super) fn workspace_args(&self) -> Vec<String> {
         match &self.workspace {
             Some(slug) => vec!["--workspace".into(), slug.clone()],
             None => Vec::new(),
@@ -176,7 +176,7 @@ impl LaunchConfig {
         cmd
     }
 
-    fn base_command(&self, dir: &Path) -> Command {
+    pub(super) fn base_command(&self, dir: &Path) -> Command {
         let mut cmd = Command::new(&self.cli);
         for key in refused_env(env::vars_os()) {
             cmd.env_remove(key);
@@ -191,13 +191,6 @@ impl LaunchConfig {
     /// when it cannot start or takes longer than [`SUBCOMMAND_TIMEOUT`].
     pub(crate) fn run(&self, dir: &Path, args: &[&str], stdout: bool) -> Option<Output> {
         self.run_for(dir, args, stdout, SUBCOMMAND_TIMEOUT)
-    }
-
-    /// `reason [--workspace SLUG]` in `dir`, for a subcommand the caller adds.
-    pub(crate) fn command_for(&self, dir: &Path) -> Command {
-        let mut cmd = self.base_command(dir);
-        cmd.args(self.workspace_args());
-        cmd
     }
 
     /// [`Self::run`] with its own time limit.

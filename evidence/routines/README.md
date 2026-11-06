@@ -4,7 +4,7 @@ Conductor 0.87.6's `/routines` ("automations" in its code and API) rebuilt on Re
 
 ## What Conductor does (REA-extracted bundle, read as data)
 
-Everything below is from the decoded Tauri asset table of `/Applications/Conductor.app` 0.87.6 (`renderApp-D_fmY7hW.js`, `index-BGEQ8YjU.js`), rendered with REA `capture-browser-scenario` in the tools/screens harness. `rea search` refuses these chunks (REA-GAPS 39), so the code was read as plain text at the byte offsets given.
+Everything below is from the decoded Tauri asset table of `/Applications/Conductor.app` 0.87.6 (`renderApp-D_fmY7hW.js`, `index-BGEQ8YjU.js`), rendered with REA `capture-browser-scenario` in the tools/screens harness. `rea search` refuses these chunks (REA-GAPS 41), so the code was read as plain text at the byte offsets given.
 
 | What | Where | Notes |
 |---|---|---|
@@ -48,6 +48,6 @@ Only the operations in `src-tauri/src/reason_acp/api.rs` `OPERATIONS` run; anyth
 
 ## Evidence
 
-- Side by side (REA `capture-browser-scenario`, 1280×820 dark, `tools/side-by-side/routines.mjs`): [list](../../parity/side-by-side/routines-01-list.png) t24 1.7%, [new routine](../../parity/side-by-side/routines-02-new.png) t24 0.9% (REA `compare-web-screenshots`). OpenConductor only (no reference: the harness has no cloud organization, REA-GAPS 41): [table](../../parity/side-by-side/routines-03-oc-table.png), [saved routine](../../parity/side-by-side/routines-04-oc-edit.png), [Add trigger menu](../../parity/side-by-side/routines-05-oc-add-trigger.png).
+- Side by side (REA `capture-browser-scenario`, 1280×820 dark, `tools/side-by-side/routines.mjs`): [list](../../parity/side-by-side/routines-01-list.png) t24 1.7%, [new routine](../../parity/side-by-side/routines-02-new.png) t24 0.9% (REA `compare-web-screenshots`). OpenConductor only (no reference: the harness has no cloud organization, REA-GAPS 43): [table](../../parity/side-by-side/routines-03-oc-table.png), [saved routine](../../parity/side-by-side/routines-04-oc-edit.png), [Add trigger menu](../../parity/side-by-side/routines-05-oc-add-trigger.png).
 - Tests: `src/features/routines/model.test.ts` (mapping, schedules, columns, bodies), `src/state/selectors.test.ts` and `history.test.ts` (routes), `src-tauri/src/reason_acp/api_tests.rs` (`reason call` against `tools/reason-acp/fake_reason_acp.py`: allowlist, envelope, Loop lifecycle in a pinned workspace, signed out).
 - Not verified: a real Reason Loop created from the desktop app (this cloud computer's `reason` is signed out, and no test touches Sven's account), and the pages inside the Tauri/WebKit build.

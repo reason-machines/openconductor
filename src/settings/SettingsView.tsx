@@ -19,6 +19,8 @@ import { KeyBindingsPage } from "./KeyBindingsPage";
 import { BigTerminalPage } from "./BigTerminalPage";
 import { ExperimentalPage } from "./ExperimentalPage";
 import { AGENTS_TABS, AGENTS_TAB_LABEL } from "./agents/kitModel";
+import { CloudCogIcon, CloudSetupPage } from "./cloud/CloudSetupPage";
+import { useCloudSetup } from "./cloud/useCloudSetup";
 import { pageLabel, settingsGroups, type SettingsPage } from "./pages";
 import { RepoSettingsPage } from "./RepoSettingsPage";
 import type { RepoMiscActions } from "./rows/RepoMiscRows";
@@ -53,6 +55,8 @@ interface Props {
   onClose: () => void;
   /** Repository › Misc: change a repository's icon, after a removal, and toasts. */
   miscActions: RepoMiscActions;
+  /** Cloud setup's "Launch a cloud workspace" (Conductor's `Gua`: home, then the create dialog). */
+  onLaunchCloudWorkspace: () => void;
 }
 
 /**
@@ -60,7 +64,7 @@ interface Props {
  * Under "Agents & environment" a Repositories list opens each repository's own
  * settings (Conductor's `A9a`): the active repository expands to its sections.
  */
-export function SettingsView({ location, repos, onNavigate, onClose, miscActions }: Props) {
+export function SettingsView({ location, repos, onNavigate, onClose, miscActions, onLaunchCloudWorkspace }: Props) {
   const { settings, error, save, reload } = useSettings();
 
   useKeybindings({ "settings.close": onClose });
@@ -120,7 +124,9 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
   };
   const header = location.scope === "user" ? PAGE_HEADERS[location.page] : REPO_HEADERS[location.section];
   const bigTerminal = settings?.experimental?.experimental_big_terminal_mode === true;
-  const groups = useMemo(() => settingsGroups(bigTerminal), [bigTerminal]);
+  // The Cloud group shows for a signed-in Reason CLI (Conductor's cloud entitlement, `F` in `L9a`).
+  const cloud = useCloudSetup().setup?.signedIn === true;
+  const groups = useMemo(() => settingsGroups(bigTerminal, cloud), [bigTerminal, cloud]);
   const searchItems = useMemo(
     () => buildSearchIndex({ pages: groups.flatMap((g) => g.pages), agentTabs: AGENT_SEARCH_TABS, hasRepos: repos.length > 0 }),
     [groups, repos.length],
@@ -166,7 +172,12 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
         {groups.map((g) => (
           <Fragment key={g.title || g.pages[0]?.id}>
             <div className="settings-group">
-              {g.title && <div className="settings-group-title">{g.title}</div>}
+              {g.title && (
+                <div className={`settings-group-title ${g.badge ? "with-badge" : ""}`}>
+                  {g.title}
+                  {g.badge && <span className="cloud-badge">{g.badge}</span>}
+                </div>
+              )}
               {g.pages.map((p) => navButton({ scope: "user", page: p.id }, p.label, "nav-item", PAGE_ICONS[p.id]))}
             </div>
             {g.title === "Agents & environment" && (
@@ -199,7 +210,14 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
           ) : !settings ? (
             <p className="muted">Loading…</p>
           ) : (
-            <UserPage page={location.page} settings={settings} save={save} reload={reload} />
+            <UserPage
+              page={location.page}
+              settings={settings}
+              save={save}
+              reload={reload}
+              onOpenReasonSettings={() => onNavigate({ scope: "user", page: "providers" })}
+              onLaunchCloudWorkspace={onLaunchCloudWorkspace}
+            />
           )}
         </div>
       </section>
@@ -212,13 +230,19 @@ function UserPage({
   settings,
   save,
   reload,
+  onOpenReasonSettings,
+  onLaunchCloudWorkspace,
 }: {
   page: SettingsPage;
   settings: Settings;
   save: ReturnType<typeof useSettings>["save"];
   reload: () => void;
+  onOpenReasonSettings: () => void;
+  onLaunchCloudWorkspace: () => void;
 }) {
   switch (page) {
+    case "setup-cloud":
+      return <CloudSetupPage onOpenReasonSettings={onOpenReasonSettings} onLaunchCloudWorkspace={onLaunchCloudWorkspace} />;
     case "account":
       return <AccountPage settings={settings} save={save} />;
     case "environment":
@@ -298,6 +322,7 @@ const PAGE_ICONS: Record<SettingsPage, ReactNode> = {
   experimental: <FlaskIcon />,
   advanced: <DriveIcon />,
   terminal: <TerminalIcon />,
+  "setup-cloud": <CloudCogIcon />,
 };
 
 /** The Agents page's tabs, listed after Agents in search (Conductor's `$ba` per agent tab). */
@@ -326,7 +351,7 @@ function scrollToRow(title: string, tries = 20) {
 const BACK_TOOLTIP_DELAY_MS = 100;
 
 /** Pages that draw their own header (Conductor's environment panel has an "Add" action beside its title). */
-const SELF_HEADED: readonly SettingsPage[] = ["environment", "providers"];
+const SELF_HEADED: readonly SettingsPage[] = ["environment", "providers", "setup-cloud"];
 
 /** Conductor's `_Sa` page headers: a description under the title where it has one. */
 const PAGE_HEADERS: Partial<Record<SettingsPage, { description: ReactNode }>> = {

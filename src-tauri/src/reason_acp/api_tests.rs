@@ -1,7 +1,8 @@
-//! `reason call` against `tools/reason-acp/fake_reason_acp.py`, which answers
-//! the Routines operations in the shapes `reason tools describe` documents.
+//! Routines' `reason call`s against `tools/reason-acp/fake_reason_acp.py`,
+//! which answers the Loop operations in the shapes `reason tools describe`
+//! documents. The envelope parsing itself is tested in `cloud_tests`.
 
-use super::api::{parse_envelope, OPERATIONS};
+use super::api::OPERATIONS;
 use super::cli::LaunchConfig;
 use serde_json::{json, Value};
 use std::path::PathBuf;
@@ -30,38 +31,6 @@ fn calls(dir: &std::path::Path) -> Vec<Value> {
 }
 
 #[test]
-fn envelope_gives_data_or_the_error() {
-    assert_eq!(
-        parse_envelope(r#"{"schema_version":1,"ok":true,"data":{"items":[]}}"#, ""),
-        Ok(json!({"items": []}))
-    );
-    // reason 0.2.673 signed out.
-    let e = parse_envelope(
-        r#"{"schema_version":1,"ok":false,"error":{"code":"authentication_required","message":"Sign in with reason login or supply REASON_API_KEY for the selected API origin."}}"#,
-        "",
-    )
-    .unwrap_err();
-    assert_eq!(e.code, "authentication_required");
-    assert!(e.message.starts_with("Sign in with reason login"));
-    // An API error object with `type` (the HTTP API's rate limit shape).
-    let e = parse_envelope(
-        r#"{"ok":false,"error":{"type":"rate_limited","message":"slow down"}}"#,
-        "",
-    )
-    .unwrap_err();
-    assert_eq!(
-        (e.code.as_str(), e.message.as_str()),
-        ("rate_limited", "slow down")
-    );
-    // Not JSON: the CLI's own words, stderr first.
-    let e = parse_envelope("", "reason: crashed").unwrap_err();
-    assert_eq!(
-        (e.code.as_str(), e.message.as_str()),
-        ("bad_output", "reason: crashed")
-    );
-}
-
-#[test]
 fn only_listed_operations_run() {
     let dir = scratch("refuse");
     let cfg = LaunchConfig::new(fake()).unwrap();
@@ -73,7 +42,7 @@ fn only_listed_operations_run() {
         "call",
     ] {
         assert!(!OPERATIONS.contains(&op));
-        let e = cfg.call(&dir, op, &json!({})).unwrap_err();
+        let e = cfg.api_call(&dir, op, &json!({})).unwrap_err();
         assert_eq!(e.code, "operation_not_allowed", "{op}");
     }
     assert!(
@@ -89,13 +58,13 @@ fn loop_lifecycle_through_reason_call() {
         .unwrap()
         .workspace("ws-b")
         .unwrap();
-    let reasons = cfg.call(&dir, "listReasons", &json!({})).unwrap();
+    let reasons = cfg.api_call(&dir, "listReasons", &json!({})).unwrap();
     assert_eq!(reasons["items"][0]["id"], MAIN);
     assert_eq!(reasons["items"][0]["main"], true);
 
     let path = json!({ "reasonId": MAIN });
     let created = cfg
-        .call(
+        .api_call(
             &dir,
             "createReasonLoop",
             &json!({ "path": path, "body": {
@@ -114,7 +83,7 @@ fn loop_lifecycle_through_reason_call() {
 
     let loop_path = json!({ "reasonId": MAIN, "loopId": id });
     let paused = cfg
-        .call(
+        .api_call(
             &dir,
             "updateReasonLoop",
             &json!({ "path": loop_path, "body": { "enabled": false } }),
@@ -122,25 +91,25 @@ fn loop_lifecycle_through_reason_call() {
         .unwrap();
     assert_eq!(paused["loop"]["status"], "paused");
     let refused = cfg
-        .call(&dir, "runReasonLoop", &json!({ "path": loop_path }))
+        .api_call(&dir, "runReasonLoop", &json!({ "path": loop_path }))
         .unwrap_err();
     assert_eq!(refused.code, "routine_not_active");
 
-    cfg.call(
+    cfg.api_call(
         &dir,
         "updateReasonLoop",
         &json!({ "path": loop_path, "body": { "enabled": true } }),
     )
     .unwrap();
     let ran = cfg
-        .call(&dir, "runReasonLoop", &json!({ "path": loop_path }))
+        .api_call(&dir, "runReasonLoop", &json!({ "path": loop_path }))
         .unwrap();
     assert_eq!(ran["loop"]["run_count"], 1);
 
-    cfg.call(&dir, "deleteReasonLoop", &json!({ "path": loop_path }))
+    cfg.api_call(&dir, "deleteReasonLoop", &json!({ "path": loop_path }))
         .unwrap();
     let gone = cfg
-        .call(&dir, "getReasonLoop", &json!({ "path": loop_path }))
+        .api_call(&dir, "getReasonLoop", &json!({ "path": loop_path }))
         .unwrap_err();
     assert_eq!(gone.code, "loop_not_found");
 
@@ -156,6 +125,6 @@ fn signed_out_call_reports_authentication_required() {
     let dir = scratch("signed-out");
     std::fs::write(dir.join("fake-reason-signed-out"), "").unwrap();
     let cfg = LaunchConfig::new(fake()).unwrap();
-    let e = cfg.call(&dir, "listReasons", &json!({})).unwrap_err();
+    let e = cfg.api_call(&dir, "listReasons", &json!({})).unwrap_err();
     assert_eq!(e.code, "authentication_required");
 }

@@ -9,6 +9,8 @@
 //! * [`cli`]: finding the `reason` binary and starting `reason acp`.
 //! * [`account`]: `reason status`, `reason login` and `reason connect` for
 //!   Settings › Agents › Reason.
+//! * [`cloud`]: `reason call` reads of the Reason HTTP API for Settings ›
+//!   Cloud setup (cloud workspaces run as Reason Sessions in Reason's cloud).
 //! * [`api`]: allowlisted public API operations through `reason call`, for
 //!   Routines (Reason Loops).
 //! * [`updates`]: `session/update` to provider events, error notices sent
@@ -23,6 +25,7 @@
 pub mod account;
 pub mod api;
 pub mod cli;
+pub mod cloud;
 pub mod provider;
 pub mod rpc;
 pub mod updates;
@@ -34,6 +37,8 @@ mod account_tests;
 mod api_tests;
 #[cfg(test)]
 mod cli_tests;
+#[cfg(test)]
+mod cloud_tests;
 #[cfg(test)]
 mod provider_tests;
 // Mounted here as well as at the crate root because tools/reason-acp/run-rust-tests.sh
