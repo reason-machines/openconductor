@@ -10,6 +10,4 @@ bot-message-square
 circle-alert
 arrow-up-right
 arrow-down
-arrow-up-right
-circle-alert
 refresh-cw
