@@ -6,7 +6,10 @@
 // map `Jse`), REA-extracted on sven m5 max; evidence/settings/NOTES.md,
 // "Settings routes". OpenConductor has no Conductor account or cloud
 // organization, so every route Conductor gates behind one resolves where
-// Conductor sends a local user: /settings/user/general.
+// Conductor sends a local user: /settings/user/general. The exception is
+// /settings/cloud/setup (Conductor's `TEa`, which renders the page unless the
+// active organization is already a cloud one): OpenConductor's cloud is
+// Reason, set up there.
 
 import { APP_URL_SCHEME } from "../workspace/link.ts";
 import type { SettingsPage } from "./pages.ts";
@@ -43,6 +46,8 @@ export interface RouteContext {
 }
 
 const GENERAL: SettingsLocation = { scope: "user", page: "general" };
+const CLOUD_SETUP: SettingsLocation = { scope: "user", page: "setup-cloud" };
+export const CLOUD_SETUP_PATH = "/settings/cloud/setup";
 
 /**
  * Settings routes that need a Conductor cloud organization or account
@@ -50,8 +55,6 @@ const GENERAL: SettingsLocation = { scope: "user", page: "general" };
  * for a local user, which is every OpenConductor user.
  */
 export const CLOUD_ONLY_ROUTES = [
-  "/settings/cloud",
-  "/settings/cloud/setup",
   "/settings/cloud/$cloudProjectId",
   "/settings/organization",
   "/settings/organization/github",
@@ -164,6 +167,9 @@ export const SETTINGS_ROUTES: readonly (readonly [string, Resolver])[] = [
     "/settings/repos/$repoId/$section",
     ({ repoId, section }, _, ctx) => (isRepoSection(section) ? repoLocation(repoId, section, ctx) : GENERAL),
   ],
+  // Conductor's `dCa`: the /settings/cloud index redirects to /settings/cloud/setup.
+  ["/settings/cloud", () => CLOUD_SETUP],
+  [CLOUD_SETUP_PATH, () => CLOUD_SETUP],
   ...CLOUD_ONLY_ROUTES.map((p) => [p, () => GENERAL] as const),
 ];
 
@@ -198,6 +204,7 @@ export function keptSearch(search: string): string {
 
 /** The canonical path of a location, as Conductor's router shows it. */
 export function settingsPath(loc: SettingsLocation): string {
+  if (loc.scope === "user" && loc.page === "setup-cloud") return CLOUD_SETUP_PATH;
   return loc.scope === "user"
     ? `/settings/user/${loc.page}`
     : `/settings/repos/${encodeURIComponent(loc.repoId)}/${loc.section}`;

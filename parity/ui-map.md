@@ -8,20 +8,20 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **967** | **764** | **84** | **119** |
-| States (captured screens) | 69 | 17 | 27 | 25 |
-| Inventory items | 898 | 747 | 57 | 94 |
-| &nbsp;&nbsp;dialog | 64 | 55 | 4 | 5 |
+| **All** | **967** | **759** | **86** | **122** |
+| States (captured screens) | 69 | 16 | 27 | 26 |
+| Inventory items | 898 | 743 | 59 | 96 |
+| &nbsp;&nbsp;dialog | 64 | 54 | 5 | 5 |
 | &nbsp;&nbsp;empty-state | 52 | 47 | 1 | 4 |
 | &nbsp;&nbsp;menu | 39 | 38 | 1 | 0 |
 | &nbsp;&nbsp;menu-item | 89 | 85 | 4 | 0 |
 | &nbsp;&nbsp;popover | 45 | 44 | 1 | 0 |
-| &nbsp;&nbsp;route | 65 | 42 | 9 | 14 |
+| &nbsp;&nbsp;route | 65 | 41 | 9 | 15 |
 | &nbsp;&nbsp;select | 29 | 22 | 5 | 2 |
-| &nbsp;&nbsp;settings-page | 29 | 15 | 6 | 8 |
+| &nbsp;&nbsp;settings-page | 29 | 14 | 6 | 9 |
 | &nbsp;&nbsp;settings-row | 121 | 41 | 24 | 56 |
 | &nbsp;&nbsp;sheet | 3 | 3 | 0 | 0 |
-| &nbsp;&nbsp;tab | 35 | 30 | 1 | 4 |
+| &nbsp;&nbsp;tab | 35 | 29 | 2 | 4 |
 | &nbsp;&nbsp;toast | 327 | 325 | 1 | 1 |
 
 ### By owning team
@@ -31,9 +31,9 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Team | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
 | chat | 57 | 48 | 7 | 2 |
-| cloud-org | 83 | 74 | 3 | 6 |
+| cloud-org | 83 | 70 | 4 | 9 |
 | git-review | 35 | 30 | 3 | 2 |
-| onboarding-auth | 23 | 17 | 6 | 0 |
+| onboarding-auth | 23 | 16 | 7 | 0 |
 | routines | 40 | 40 | 0 | 0 |
 | settings | 181 | 46 | 46 | 89 |
 | shell | 194 | 176 | 9 | 9 |
@@ -41,7 +41,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | triage | 268 | 268 | 0 | 0 |
 | workspaces | 56 | 38 | 7 | 11 |
 
-217 of 898 items were located in a captured state; 217 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
+218 of 898 items were located in a captured state; 218 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
 
 ## How it was measured
 
@@ -110,7 +110,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Settings > Organization > environment<br>`settings-org-environment` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-environment.png) | no-equivalent |  |  |
 | Settings > Organization > mcp<br>`settings-org-mcp` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-mcp.png) | no-equivalent |  |  |
 | Settings > Organization > prompts<br>`settings-org-prompts` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-prompts.png) | no-equivalent |  |  |
-| Settings > Cloud setup<br>`settings-cloud-setup` | missing | cloud-org | OpenConductor has no cloud settings | [png](ui-map/ref/settings-cloud-setup.png) | no-equivalent |  |  |
+| Settings > Cloud setup<br>`settings-cloud-setup` | matches | cloud-org | diff 4.0% at t24, copy 90% | [png](side-by-side/settings-org-01-cloud-setup.png) | [png](side-by-side/settings-org-01-cloud-setup.png) |  | 4.0% |
 | Settings search<br>`settings-search` | matches | settings | diff 3.2% at t24, copy 96% | [png](ui-map/ref/settings-search.png) | [png](ui-map/oc/settings-search.png) | [jpg](ui-map/diff/settings-search.jpg) | 3.2% |
 | Command palette<br>`palette-all` | wrong | shell | diff 7.5% at t24, copy 47% | [png](ui-map/ref/palette-all.png) | [png](ui-map/oc/palette-all.png) | [jpg](ui-map/diff/palette-all.jpg) | 7.5% |
 | Command palette: Workspaces tab<br>`palette-workspaces` | wrong | workspaces | diff 15.2% at t24, copy 96% | [png](ui-map/ref/palette-workspaces.png) | [png](ui-map/oc/palette-workspaces.png) | [jpg](ui-map/diff/palette-workspaces.jpg) | 15.2% |
@@ -132,7 +132,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Changes file context menu<br>`menu-changes-file` | wrong | shell | diff 8.0% at t24, copy 84% | [png](side-by-side/shell-menus-02-changes-file.png) | [png](side-by-side/shell-menus-02-changes-file.png) |  | 8.0% |
 | Sidebar after archiving a workspace<br>`sidebar-after-archive` | matches | workspaces | diff 4.7% at t24, copy 93% | [png](ui-map/ref/sidebar-after-archive.png) | [png](ui-map/oc/sidebar-after-archive.png) | [jpg](ui-map/diff/sidebar-after-archive.jpg) | 4.7% |
 
-## route (65: 42 missing, 9 wrong, 14 matches)
+## route (65: 41 missing, 9 wrong, 15 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -157,7 +157,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:settings-repos-repoid-misc`<br>/settings/repos/$repoId/misc | matches | settings |  | `kEa` | [settings-repo-misc](ui-map/oc/settings-repo-misc.png) | diff 4.4% at t24, copy 100% |
 | `route:settings-cloud`<br>/settings/cloud | missing | cloud-org |  | `` |  | no state captures this route |
 | `route:settings-cloud~2`<br>/settings/cloud | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:settings-cloud-setup`<br>/settings/cloud/setup | missing | cloud-org |  | `TEa` | [settings-cloud-setup](ui-map/ref/settings-cloud-setup.png) | OpenConductor has no cloud settings |
+| `route:settings-cloud-setup`<br>/settings/cloud/setup | matches | cloud-org |  | `TEa` | [settings-cloud-setup](side-by-side/settings-org-01-cloud-setup.png) | diff 4.0% at t24, copy 90% |
 | `route:settings-cloud-cloudprojectid`<br>/settings/cloud/$cloudProjectId | missing | cloud-org |  | `IEa` |  | no state captures this route |
 | `route:settings-organization`<br>/settings/organization | missing | cloud-org |  | `` |  | no state captures this route |
 | `route:settings-organization~2`<br>/settings/organization | missing | cloud-org |  | `` |  | no state captures this route |
@@ -202,7 +202,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:settings-user-experimental`<br>/settings/user/experimental | matches | settings |  | `` | [settings-experimental](ui-map/oc/settings-experimental.png) | diff 3.2% at t24, copy 100% |
 | `route:settings-user-advanced`<br>/settings/user/advanced | wrong | settings |  | `` | [settings-advanced](ui-map/oc/settings-advanced.png) | diff 6.3% at t24, copy 95% |
 
-## settings-page (29: 15 missing, 6 wrong, 8 matches)
+## settings-page (29: 14 missing, 6 wrong, 9 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -228,7 +228,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-page:organization-prompts`<br>organization-prompts | missing | cloud-org |  | `` | [settings-org-prompts](ui-map/ref/settings-org-prompts.png) | OpenConductor has no organization settings |
 | `settings-page:organization-mcp-servers`<br>organization-mcp-servers | missing | cloud-org |  | `` |  | no state for this page |
 | `settings-page:cloud`<br>cloud | missing | cloud-org |  | `` |  | no state for this page |
-| `settings-page:setup`<br>setup | missing | cloud-org |  | `` |  | no state for this page |
+| `settings-page:setup`<br>setup | matches | cloud-org |  | `` | [settings-cloud-setup](side-by-side/settings-org-01-cloud-setup.png) | diff 4.0% at t24, copy 90% |
 | `settings-page:organization`<br>organization | missing | cloud-org |  | `` |  | no state for this page |
 | `settings-page:github`<br>github | missing | cloud-org |  | `` |  | no state for this page |
 | `settings-page:mcp`<br>mcp | missing | cloud-org |  | `` |  | no state for this page |
@@ -362,7 +362,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:organization-prompts:prompts`<br>organization-prompts › Prompts | missing | cloud-org | Prompts / Custom instructions for the Review, Create PR, and Resolve conflicts b | `` | [settings-org-prompts](ui-map/ref/settings-org-prompts.png) | copy not shown in any OpenConductor capture |
 | `settings-row:organization-mcp-servers:mcps`<br>organization-mcp-servers › MCPs | missing | cloud-org | MCPs / Configure MCP servers for cloud workspaces. | `` |  | copy not shown in any OpenConductor capture |
 
-## dialog (64: 55 missing, 4 wrong, 5 matches)
+## dialog (64: 54 missing, 5 wrong, 5 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -396,7 +396,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `dialog:tya` | missing | triage |  | `Tya` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:rya` | missing | triage |  | `Rya` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:lya` | missing | triage |  | `Lya` |  | no literal copy to locate it; not observed in any capture |
-| `dialog:connect-github`<br>Connect GitHub | missing | onboarding-auth | Connect GitHub | `C5a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | copy not shown in any OpenConductor capture |
+| `dialog:connect-github`<br>Connect GitHub | wrong | onboarding-auth | Connect GitHub | `C5a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor shows it in settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing |
 | `dialog:t5a` | missing | triage |  | `T5a` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:feedback`<br>Feedback | missing | shell | Feedback | `z5a` |  | copy not shown in any OpenConductor capture |
 | `dialog:submit-a-prompt`<br>Submit a prompt | matches | shell | Submit a prompt | `W5a` | [dialog-submit-prompt](ui-map/oc/dialog-submit-prompt.png) | on screen in both; state dialog-submit-prompt matches |
@@ -661,7 +661,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `select:fti` | missing | triage |  | `Fti` |  | no literal copy to locate it; not observed in any capture |
 | `select:jka` | missing | triage |  | `Jka` |  | no literal copy to locate it; not observed in any capture |
 
-## tab (35: 30 missing, 1 wrong, 4 matches)
+## tab (35: 29 missing, 2 wrong, 4 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -679,9 +679,9 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `tab:all-projects`<br>All projects | missing | workspaces | All projects | `dta` | [palette-workspaces](ui-map/oc/palette-workspaces.png) | copy not shown in any OpenConductor capture |
 | `tab:fta` | missing | triage |  | `fta` |  | no literal copy to locate it; not observed in any capture |
 | `tab:local`<br>Local | missing | shell | Local | `zda` |  | copy not shown in any OpenConductor capture |
-| `tab:cloud`<br>Cloud | missing | cloud-org | Cloud | `zda` |  | copy not shown in any OpenConductor capture |
+| `tab:cloud`<br>Cloud | wrong | cloud-org | Cloud | `zda` |  | not rendered in a reference capture; OpenConductor shows it in settings-cloud-setup, not in the host state |
 | `tab:installed`<br>Installed | missing | shell | Installed | `V1a` |  | copy not shown in any OpenConductor capture |
-| `tab:recommended`<br>Recommended | wrong | onboarding-auth | Recommended | `V1a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor shows it in settings-providers, not in the host state; host state route-new-member-onboarding is missing |
+| `tab:recommended`<br>Recommended | wrong | onboarding-auth | Recommended | `V1a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor shows it in settings-providers, settings-cloud-setup, not in the host state; host state route-new-member-onboarding is missing |
 | `tab:logs`<br>Logs | missing | shell | Logs | `rfa` |  | copy not shown in any OpenConductor capture |
 | `tab:settings`<br>Settings | matches | shell | Settings | `rfa` | [home-empty](ui-map/oc/home-empty.png) | on screen in both; state home-empty matches |
 | `tab:personal`<br>Personal | matches | settings | Personal | `r0a` | [settings-general](ui-map/oc/settings-general.png) | on screen in both; state settings-general matches |
@@ -1165,10 +1165,15 @@ Harness limits that shape the reference (not REA bugs): settings pages behind an
 37. **`capture-browser-scenario` cannot show a tooltip**: `hover` is rejected (`invalid_value` at `actions[0].action`, gap noted in team memory for `tools/ui-map/capture_ref.mjs`), so the trigger's "More actions" tooltip has no side-by-side; it rests on the bundle read (`ni` children "More actions") and our unit test.
 38. **No element geometry in a capture.** The scenario result has the screenshot and the DOM but no bounding box for a locator, so the 2x crops of the footer in the side-by-side use a hand-picked rectangle (`270,320,360,120`) read off the full screenshots, not a box REA measured.
 
+### Hit while building Settings › Cloud setup on Reason (REA 6.8.0, Linux cloud, 2 vCPU)
+
+39. **`analyze-javascript-application` on the renderApp chunk alone times out at its default budget.** `rea analyze-javascript-application .rea-work/dist --source-path assets/renderApp-D_fmY7hW.js --detail summary --evidence_output jsa.bundle --artifact-format directory --max-heap-mb 3072` ran 5 min 51 s and failed `provider_timeout` ("JavaScript source analysis reached its 300000ms per-source server/provider deadline") while still in `parse_javascript_source` for that one 11.6 MB file (gap 28 is the same file at the maximum budgets on an 18-core Mac). The Cloud setup page `Hua` (@10,298,246), its section `dOt`, step mark `Uua`, plan constant `uOt`, step count `PZn`, "all set" block `Gua`, the GitHub options `XWt` (@10,225,064), the nav group `zWt` and its gate in `I9a`/`L9a`, the routes `TEa`/`dCa`, and the create composer's Cloud control `H6a`/`F6a` (@10,926,130) were read from the decoded chunk by byte offset; the rendered page was captured with `capture-browser-scenario` (`tools/side-by-side/cloud-setup.mjs`).
+40. **`rea search` with a folder target answers only `invalid_request`** (`rea search .rea-work`), with no message saying a folder is not a target or which target kinds it takes.
+
 ### Hit while building the chat tab, Changes file and PR badge right-click menus (REA 6.8.0, Linux cloud)
 
-39. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30, 34, 36): `rea search renderApp-D_fmY7hW.js "Close others"` fails `capability_unavailable` / `unsupported_provider` (`target_unsupported`; candidates ghidra, hopper, ida, kuna). The menus (`u8i`, `Svs`, `w_i`), the Rename chat dialog (`Rya`) and the complete transcript (`VOt`, index chunk) were read as plain text from the decoded chunks.
-40. **`inspect-artifact` on Conductor's executable does not see the embedded frontend.** `rea inspect-artifact conductor` (sha256 `0ba55751…`, the same bytes as on sven m5 max) reports the Mach-O but not Tauri's brotli asset table, so the frontend was still decoded with `tools/extract_tauri_assets.py` (2,902 assets, table at file offset `0x3086910`).
-41. **`capture-browser-scenario`'s DOM artifact is `{sha256, bytes, text}`** (`artifacts.dom.value.text`), which `--schema` does not document; drivers that read `value.html` get nothing (`tools/side-by-side/shell-menus.mjs` reads `text`).
-42. **No reference render for the PR badge menu.** Conductor's `RFt` badge needs a found PR, and the `tools/screens` harness answers none ("Couldn't load PR info"), so REA can capture only OpenConductor's side of the PR badge's right-click menu; that menu rests on the bundle read alone. Not REA's fault, but REA has no way to inject a PR response into the run either (no network fixture action).
+41. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30, 34, 36, 40): `rea search renderApp-D_fmY7hW.js "Close others"` fails `capability_unavailable` / `unsupported_provider` (`target_unsupported`; candidates ghidra, hopper, ida, kuna). The menus (`u8i`, `Svs`, `w_i`), the Rename chat dialog (`Rya`) and the complete transcript (`VOt`, index chunk) were read as plain text from the decoded chunks.
+42. **`inspect-artifact` on Conductor's executable does not see the embedded frontend.** `rea inspect-artifact conductor` (sha256 `0ba55751…`, the same bytes as on sven m5 max) reports the Mach-O but not Tauri's brotli asset table, so the frontend was still decoded with `tools/extract_tauri_assets.py` (2,902 assets, table at file offset `0x3086910`).
+43. **`capture-browser-scenario`'s DOM artifact is `{sha256, bytes, text}`** (`artifacts.dom.value.text`), which `--schema` does not document; drivers that read `value.html` get nothing (`tools/side-by-side/shell-menus.mjs` reads `text`).
+44. **No reference render for the PR badge menu.** Conductor's `RFt` badge needs a found PR, and the `tools/screens` harness answers none ("Couldn't load PR info"), so REA can capture only OpenConductor's side of the PR badge's right-click menu; that menu rests on the bundle read alone. Not REA's fault, but REA has no way to inject a PR response into the run either (no network fixture action).
 
