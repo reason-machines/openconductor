@@ -400,3 +400,94 @@ fn stop_answers_an_open_permission_request_cancelled() {
     assert_eq!(resolved(&log), std::slice::from_ref(&r.request_id));
     assert!(!p.answer_permission("chat", &r.request_id, Some("allow")));
 }
+
+/// Sven's 409: the Reason desktop app's selected workspace changed while
+/// OpenConductor was closed, so a plain `reason acp` serves another
+/// workspace. Its `session/resume` hides the 404 and the follow-up got
+/// `409 client_session_id_conflict`. The follow-up must resume the chat's
+/// own Session in the workspace that has it.
+#[test]
+fn a_follow_up_after_relaunch_resumes_the_session_in_its_own_workspace() {
+    let (p, log, home) = provider("relaunch-ws");
+    p.open_chat("chat", &home, None);
+    assert_eq!(p.prompt("chat", "echo: one"), TurnEnd::Completed);
+    let id = started(&log).pop().unwrap();
+    p.shutdown();
+    drop(p);
+
+    std::fs::write(home.join("fake-reason-selected"), "ws-b").unwrap();
+    let (p, log, _) = provider_in(home.clone());
+    p.open_chat("chat", &home, Some(id.clone()));
+    let end = p.prompt("chat", "echo: two");
+    let errors: Vec<String> = log
+        .lock()
+        .unwrap()
+        .iter()
+        .filter_map(|(_, ev)| match ev {
+            ProviderEvent::Agent(AgentEvent::Error(e)) => Some(e.message.clone()),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(end, TurnEnd::Completed, "errors: {errors:?}");
+    assert!(errors.is_empty(), "{errors:?}");
+    assert_eq!(reply(&log), "turn 2: two", "the same Session ran turn 2");
+    assert!(started(&log).is_empty(), "no new Session");
+
+    // A new chat still opens in the workspace selected now.
+    p.open_chat("new", &home, None);
+    assert_eq!(p.prompt("new", "echo: b"), TurnEnd::Completed);
+    let state: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(home.join("state.json")).unwrap()).unwrap();
+    assert_eq!(state["sessions"][&id]["workspace"], "ws-a");
+    let new_id = started(&log).pop().unwrap();
+    assert_eq!(state["sessions"][&new_id]["workspace"], "ws-b");
+}
+
+/// A stored Session no signed-in workspace has: the follow-up is not sent
+/// and the chat says why, instead of Reason's bare 409.
+#[test]
+fn a_session_no_workspace_has_fails_with_a_clear_message() {
+    let (p, _log, home) = provider("relaunch-gone");
+    let mut state = serde_json::json!({ "sessions": {} });
+    state["sessions"]["sess-9"] =
+        serde_json::json!({ "cwd": home, "turns": 1, "title": null, "workspace": "ws-z" });
+    std::fs::write(home.join("state.json"), state.to_string()).unwrap();
+    p.open_chat("chat", &home, Some("sess-9".into()));
+    let end = p.prompt("chat", "echo: two");
+    let TurnEnd::Failed(message) = &end else {
+        panic!("expected a failure, got {end:?}");
+    };
+    assert!(message.contains("sess-9"), "{message}");
+    assert!(message.contains("ws-a, ws-b"), "{message}");
+    assert!(!message.contains("409"), "{message}");
+}
+
+/// The app keeps each Session's workspace in a file: after a relaunch the
+/// chat's agent starts in that workspace without asking every workspace.
+#[test]
+fn the_session_store_remembers_each_sessions_workspace() {
+    let (_, _, home) = provider("store");
+    let store = home.join("app-data/reason-session-workspaces.json");
+    let with_store = |home: &PathBuf| {
+        let (p, log, _) = provider_in(home.clone());
+        let p = Arc::try_unwrap(p)
+            .ok()
+            .unwrap()
+            .with_session_store(store.clone());
+        (Arc::new(p), log)
+    };
+    let (p, log) = with_store(&home);
+    p.open_chat("chat", &home, None);
+    assert_eq!(p.prompt("chat", "echo: one"), TurnEnd::Completed);
+    let id = started(&log).pop().unwrap();
+    drop(p);
+    let saved: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(&store).unwrap()).unwrap();
+    assert_eq!(saved[&id], "ws-a");
+
+    std::fs::write(home.join("fake-reason-selected"), "ws-b").unwrap();
+    let (p, log) = with_store(&home);
+    p.open_chat("chat", &home, Some(id));
+    assert_eq!(p.prompt("chat", "echo: two"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "turn 2: two");
+}
