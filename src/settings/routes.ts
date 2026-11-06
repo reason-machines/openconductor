@@ -10,8 +10,13 @@
 
 import type { SettingsPage } from "./pages.ts";
 
-/** Tabs of a repository's settings (`/settings/repos/$repoId/<section>`), Conductor's `BCe`. */
-export const REPO_SECTIONS = ["environment", "git", "scripts", "actions", "misc"] as const;
+/**
+ * Tabs of a repository's settings (`/settings/repos/$repoId/<section>`), Conductor's `BCe`, in
+ * the order its nav lists them: `dti` keeps the repository-capable tabs of its page list
+ * (Git under Personal, Environment under Agents & environment, then Scripts, Actions, Misc).
+ * Opening a repository still lands on Environment (`oYe`).
+ */
+export const REPO_SECTIONS = ["git", "environment", "scripts", "actions", "misc"] as const;
 export type RepoSection = (typeof REPO_SECTIONS)[number];
 
 export const REPO_SECTION_LABELS: Record<RepoSection, string> = {

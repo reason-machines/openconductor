@@ -3,7 +3,6 @@
 // (hard on the second), a Stop before the prompt was sent, and Reset chat.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { reportChatStatus } from "./chatStatusRegistry.ts";
 import { chatStatuses, createChatRuntime, hideChat, subscribeChatStatuses, type ChatBackend, type ChatHost, type Deliver, type PromptRequest } from "./chatRuntime.ts";
 import { applyReasonPayload, type ReasonPayload } from "./reason.ts";
 import type { FileChange } from "../diff/types.ts";
@@ -15,7 +14,6 @@ function fakeBackend() {
   const prompts: { req: PromptRequest; end: (r?: { turnChanges?: FileChange[] }) => void }[] = [];
   const calls = { listen: 0, open: [] as { chatId: string; cwd: string; sessionId: string | null; config: Config }[], cancel: [] as boolean[] };
   const backend: ChatBackend<Config> = {
-    agent: "reason",
     canSteer: true,
     defaultConfig: ["default"],
     sessionKey: (chatId) => `fake.session.${chatId}`,
@@ -217,14 +215,4 @@ test("chat statuses span runtimes, and a hidden chat drops out", async () => {
   assert.equal(chatStatuses().has("status-b"), false);
   assert.equal(chatStatuses().get("status-a"), "working");
   off();
-});
-
-test("a new chat is listed idle, and folds with another agent's status for the same chat", async () => {
-  const rt = createChatRuntime(fakeBackend().backend, fakeHost().host);
-  rt.snapshot("status-new");
-  assert.equal(chatStatuses().has("status-new"), false, "listed after the current render");
-  await settle();
-  assert.equal(chatStatuses().get("status-new"), "idle");
-  reportChatStatus("status-new", "codex", "needs_user_permission");
-  assert.equal(chatStatuses().get("status-new"), "needs_user_permission");
 });

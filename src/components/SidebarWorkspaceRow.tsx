@@ -12,7 +12,7 @@ import { sidebarEntries } from "../state/sidebarOrder";
 import { sectionOf } from "../state/navigationSections";
 import { compactCount } from "../state/sidebarDiffStat";
 import { useRowDiffStat } from "./useRowDiffStat";
-import { useWorkspaceSession } from "../features/chat/useWorkspaceSession";
+import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { applyRowLookup, useRowPrPoll } from "../features/pr/sidebarPrPoller";
 import { usePrSettings } from "../features/pr/usePullRequest";
 import type { LookupResult } from "../features/pr/types";
@@ -56,8 +56,8 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
   });
   const { ref, stat, onScreen } = useRowDiffStat(ws, targetBranch, active);
   useRowPrPoll({ ws, repoPath, onScreen, active, onResult: (r) => onPrLookup?.(r) });
-  // Every chat of the workspace, open or not, plus `ws.sessionStatus` (the demo's statuses).
-  const session = useWorkspaceSession(ws);
+  // Every chat of the workspace, open or not, plus what the open view reports (and the demo's "working").
+  const session = useWorkspaceAgentStatus(ws);
   const status = rowStatus({ workspaceState: ws.state, session, pr: ws.pr, hasRemote });
   const statusLabel = rowStatusLabel(status);
   return (

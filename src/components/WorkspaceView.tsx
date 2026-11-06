@@ -3,7 +3,8 @@ import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { ArchiveIcon, BranchIcon } from "./Icons";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { chatSnapshot, configureReason, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, reasonChatConfig, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat } from "../features/chat/reasonChat.ts";
+import { answerPermission, chatSnapshot, configureReason, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, reasonChatConfig, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type PermissionPrompt } from "../features/chat/reasonChat.ts";
+import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
 import { forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
 import { forkToNewWorkspace } from "../features/chat/forkWorkspace.ts";
 import { createWorkspace, ensureRepository } from "../workspace/api";
@@ -43,6 +44,8 @@ interface AttachedSend {
 type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend;
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { TerminalPanel } from "../features/terminal/TerminalPanel";
+import { openBigTab } from "../features/terminal/session";
+import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
@@ -62,8 +65,8 @@ import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } fr
 import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
-import { useWorkspaceSession } from "../features/chat/useWorkspaceSession";
-import { chatSessionStatus, hasActiveTurn, isBusyStatus, rowStatus, rowStatusLabel, type SessionStatus } from "../state/rowStatus";
+import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
+import { isBusyStatus, rowStatus, rowStatusLabel, type SessionStatus } from "../state/rowStatus";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 
 interface Props {
@@ -101,8 +104,8 @@ interface ChatPanelProps extends Props {
   tabs: ReactNode;
   /** Shown instead of the transcript while another tab (the diff) is active; the composer stays. */
   content: ReactNode | null;
-  /** The workspace chat's session status changed (a turn started, is cancelling, ended or failed). */
-  onSessionStatusChange?: (status: SessionStatus) => void;
+  /** The agent started or finished a turn. */
+  onRunningChange?: (running: boolean) => void;
   /** A file chip under a finished turn: open that file's changes from the turn. */
   openTurnFile: (turn: TurnRef, path: string) => void;
   /** A file badge in a tool row (repository-relative path): open the file's changes when it has some. */
@@ -149,14 +152,17 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
   );
 }
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onSessionStatusChange, openTurnFile, openFile, forkToNewTab, chatTabs }: ChatPanelProps) {
+/** What the chat panel shows: Codex's approvals, or Reason's permission requests. */
+type ChatView = CodexSnapshot & { permissions?: readonly PermissionPrompt[] };
+
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
   const [agent, setAgent] = useState<ChatAgent>(() => savedAgent(chatId));
   const codex = reason && agent === "codex";
-  const snapshotOf = (a: ChatAgent): CodexSnapshot => (reason && a === "codex" ? codexSnapshot(chatId) : { ...chatSnapshot(chatId), approvals: [] });
-  const [{ transcript, queue, approvals }, setSnapshot] = useState<CodexSnapshot>(() => snapshotOf(agent));
+  const snapshotOf = (a: ChatAgent): ChatView => (reason && a === "codex" ? codexSnapshot(chatId) : { ...chatSnapshot(chatId), approvals: [] });
+  const [{ transcript, queue, approvals, permissions = [] }, setSnapshot] = useState<ChatView>(() => snapshotOf(agent));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
@@ -171,12 +177,10 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const running = transcript.activeTurn !== null;
-  // A pending Codex approval waits on the user (Conductor's needs_user_permission).
-  const sessionStatus = approvals.length > 0 ? "needs_user_permission" : chatSessionStatus({ running, queue: queue.status });
-  // Only the workspace's own chat is the workspace's session; a review chat is not.
+  // Only the workspace's own chat counts as the agent working; a review chat does not.
   useEffect(() => {
-    if (main) onSessionStatusChange?.(sessionStatus);
-  }, [main, sessionStatus, onSessionStatusChange]);
+    if (main) onRunningChange?.(running);
+  }, [main, running, onRunningChange]);
   // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
   // groups stay open after the turn ends and tool calls start expanded.
   const garryMode = useAppPrefs().garry_mode;
@@ -476,6 +480,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           onClose={() => setResetTurn(null)}
         />
       ) : null}
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, optionId) => void answerPermission(chatId, requestId, optionId)} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
@@ -728,7 +733,9 @@ function headerStatus(ws: Workspace, session: SessionStatus): { className: strin
 }
 
 export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
-  const [showTerminal, setShowTerminal] = useState(true);
+  // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) shows it,
+  // and ⌘⇧T opens a big terminal while Big terminal mode is on.
+  const [showTerminal, setShowTerminal] = useState(false);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
@@ -795,10 +802,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     [workspace.id],
   );
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
-  // The workspace's own chat: PR polling and archive on merge wait while its turn is in flight.
-  const [sessionStatus, setSessionStatus] = useState<SessionStatus>("idle");
-  const agentWorking = hasActiveTurn(sessionStatus);
-  const header = headerStatus(workspace, useWorkspaceSession(workspace));
+  const [agentWorking, setAgentWorking] = useState(false);
+  // Every chat of the workspace (stored and live statuses, permission requests included).
+  const header = headerStatus(workspace, useWorkspaceAgentStatus(workspace));
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
   // Keep the sidebar's PR title and body (`workspaces.pr_title`, `pr_description`) in step with GitHub, then archive on merge.
   // The row's status icon reads the PR too (merged, checks failing, ready to merge, ...).
@@ -861,6 +867,20 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
     },
     "git.openInGitHub": prActions.openOnGitHub,
   });
+  // ⌘⇧T inside a terminal is handled by the terminal itself (session.ts), so this one skips terminal focus.
+  useKeybindings(
+    {
+      "terminal.newBigTab": () => {
+        const big = bigTabRequest();
+        if (!big || !repo.path) return false;
+        void openBigTab(workspace.id, repo.path, big)
+          .catch(() => {})
+          .finally(() => setShowTerminal(true));
+        return true;
+      },
+    },
+    { enableOnTerminalFocus: false },
+  );
   const showDiff = diffOpen && mainTab === "diff";
   const showPr = prOpen && mainTab === "pr";
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
@@ -897,11 +917,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         <div className="ws-actions">
           {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
           <PrControl pullRequest={pullRequest} actions={prActions} />
-          <button className="btn btn-small" title="Toggle terminal panel" aria-pressed={showTerminal} onClick={() => setShowTerminal((v) => !v)}>
-            Terminal
-          </button>
           <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
-            <ArchiveIcon size={14} /> Archive
+            <ArchiveIcon size={12} /> Archive
           </button>
         </div>
       </header>
@@ -913,7 +930,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           chatId={activeReview?.chatId ?? workspace.id}
           review={activeReview}
           bridge={chatBridge}
-          onSessionStatusChange={setSessionStatus}
+          onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
           openFile={diff.openPath}
           forkToNewTab={reviews.fork}

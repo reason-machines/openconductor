@@ -8,8 +8,7 @@ import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import * as Q from "./queue.ts";
-import { reportChatStatus } from "./chatStatusRegistry.ts";
-import { chatSessionStatus, type SessionStatus } from "../../state/rowStatus.ts";
+import { reportChatStatus } from "./chatRuntime.ts";
 import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn, type CodexApproval, type CodexChatState, type CodexDecision, type CodexPayload, type Step } from "./codex.ts";
 
 const EVENT = "codex-chat-event";
@@ -77,20 +76,16 @@ function chat(chatId: string): Chat {
   return c;
 }
 
-/** A pending command or patch approval is Conductor's needs_user_permission; otherwise the queue's state. */
-export function codexSessionStatus(v: CodexSnapshot): SessionStatus {
-  return v.approvals.length > 0 ? "needs_user_permission" : chatSessionStatus({ running: v.transcript.activeTurn !== null, queue: v.queue.status });
-}
-
 function publish(c: Chat, next: Partial<CodexSnapshot>) {
   c.view = { ...c.view, ...next, approvals: c.state.approvals };
   for (const fn of c.listeners) fn(c.view);
-  reportChatStatus(c.state.chatId, "codex", codexSessionStatus(c.view));
 }
 
 function apply(c: Chat, step: Step) {
   const approvalsChanged = step.state.approvals !== c.state.approvals;
   c.state = step.state;
+  // An open approval is Conductor's tool approval: needs_user_permission until answered (`qV`).
+  if (approvalsChanged) setQueue(c, c.state.approvals.length > 0 ? Q.permissionRequested(c.view.queue) : Q.permissionAnswered(c.view.queue));
   if (step.threadId) localStorage.setItem(threadKey(c.state.chatId), step.threadId);
   if (step.events.length === 0) {
     if (approvalsChanged) publish(c, {});
@@ -111,7 +106,11 @@ function apply(c: Chat, step: Step) {
 
 function setQueue(c: Chat, step: Q.QueueStep | Q.ChatQueue) {
   const { queue, effects } = "effects" in step ? step : { queue: step, effects: [] };
-  if (queue !== c.view.queue) publish(c, { queue });
+  if (queue !== c.view.queue) {
+    const changed = queue.status !== c.view.queue.status;
+    publish(c, { queue });
+    if (changed) reportChatStatus(c.state.chatId, queue.status);
+  }
   for (const e of effects) {
     // Codex cannot steer (`CODEX_CAN_STEER`), so a steer never comes from the composer.
     if (e.kind === "cancel") {

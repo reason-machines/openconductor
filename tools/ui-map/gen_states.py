@@ -49,7 +49,9 @@ for tab,label in USER:
         st("settings-"+tab, "Settings > "+tab, ref(path), oc_reason="OpenConductor's settings have no %s page" % tab, covers=[{"kind":"route","name":path},{"kind":"settings-page","name":tab}])
 for sec,label in [("environment","Environment"),("git","Git"),("scripts","Scripts"),("actions","Actions"),("misc","Misc")]:
     path="/settings/repos/repo-tide-web/"+sec
-    st("settings-repo-"+sec, "Settings > tide-web > "+label, ref(path), oc=oc_settings(None,[{"click":".settings-repo","text":"tide-web"},{"click":".settings-repo-sections .nav-item","text":label}]), covers=[{"kind":"route","name":"/settings/repos/$repoId/"+sec},{"kind":"settings-page","name":"repo-"+sec}])
+    # Misc shows the repository path too, so "text=tide-web" matches twice there and REA's wait fails.
+    r = ref(path, wait=False, actions=[{"wait":"text=Repository paths and workspace file behavior."}]) if sec=="misc" else ref(path)
+    st("settings-repo-"+sec, "Settings > tide-web > "+label, r, oc=oc_settings(None,[{"click":".settings-repo","text":"tide-web"},{"click":".settings-repo-sections .nav-item","text":label}]), covers=[{"kind":"route","name":"/settings/repos/$repoId/"+sec},{"kind":"settings-page","name":"repo-"+sec}])
 for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
     path="/settings/organization/"+sec
     st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path), oc_reason="OpenConductor has no organization settings", covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])

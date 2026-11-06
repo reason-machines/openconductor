@@ -26,10 +26,11 @@ import {
   type HomeFilters,
   type HomeRow,
 } from "../home/allWorkspaces";
+import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { effectiveShortcuts } from "../keybindings/overrides";
+import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
+import { homeStatus, rowStatusColor, rowStatusLabel, showsActivityStatus } from "../state/rowStatus";
 import { RowStatusIcon } from "./RowStatusIcon";
-import { useWorkspaceSession } from "../features/chat/useWorkspaceSession";
-import { homeRowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
 import { glyphs } from "../keybindings/shortcut";
 
 interface Props {
@@ -93,8 +94,9 @@ function MenuCheck({ checked, onClick, children }: { checked: boolean; onClick: 
 function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRepoIcon: boolean; active: boolean; now: number; onOpen: () => void }) {
   const { workspace: ws, repo, archived, matches } = row;
   const tone = archived ? "is-archived" : ws.unread ? "is-unread" : "";
-  // Conductor's `vJo`: the row's session or setup status replaces its time while there is one.
-  const status = homeRowStatus({ workspaceState: ws.state, session: useWorkspaceSession(ws) });
+  // Conductor's Home row (`vJo`): the agent's or setup's status, else the last-activity time.
+  const status = homeStatus(ws.state, useWorkspaceAgentStatus(ws));
+  const statusLabel = rowStatusLabel(status);
   return (
     <div
       role="option"
@@ -127,8 +129,8 @@ function Row({ row, showRepoIcon, active, now, onOpen }: { row: HomeRow; showRep
             <span className="allws-archived" title="Archived" aria-label="Archived">
               <ArchiveIcon size={14} />
             </span>
-          ) : status ? (
-            <span className="allws-status" data-testid="home-row-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={rowStatusLabel(status)} aria-label={rowStatusLabel(status)}>
+          ) : showsActivityStatus(status) ? (
+            <span className="allws-status" data-testid="home-workspace-status" data-status={status} data-color={rowStatusColor(status)} role="img" title={statusLabel} aria-label={statusLabel}>
               <RowStatusIcon status={status} />
             </span>
           ) : (
@@ -155,7 +157,24 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
 
   useEffect(() => setLimit(PAGE_SIZE), [query, filters]);
 
-  const rows = useMemo(() => homeRows(repos, filters, query), [repos, filters, query]);
+  // Archived workspaces are not in the sidebar state; read them from
+  // conductor.db when the archive filter shows them, and again after an
+  // archive or unarchive changes the repos.
+  const [archivedRows, setArchivedRows] = useState<ArchivedWorkspace[]>([]);
+  const showsArchived = filters.archiveFilter !== "active";
+  useEffect(() => {
+    if (!showsArchived) return;
+    let live = true;
+    listArchivedWorkspaces().then(
+      (rows) => live && setArchivedRows(rows),
+      (err) => console.error("conductor.db: could not list archived workspaces", err),
+    );
+    return () => {
+      live = false;
+    };
+  }, [showsArchived, repos]);
+
+  const rows = useMemo(() => homeRows(repos, filters, query, archivedRows), [repos, filters, query, archivedRows]);
   const shown = rows.slice(0, limit);
   const hasMore = rows.length > limit;
   const groups = groupByDate(shown, now);
@@ -173,7 +192,11 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
     return () => io.disconnect();
   }, [hasMore]);
 
-  const open = (row: HomeRow) => dispatch({ type: "select", selection: { kind: "workspace", repoId: row.repo.id, workspaceId: row.workspace.id } });
+  // An archived row opens the read-only archived view, as the palette's does.
+  const open = (row: HomeRow) =>
+    row.archived && !row.repo.workspaces.some((w) => w.id === row.workspace.id)
+      ? dispatch({ type: "openArchivedWorkspace", repoId: row.repo.id, workspace: row.workspace })
+      : dispatch({ type: "select", selection: { kind: "workspace", repoId: row.repo.id, workspaceId: row.workspace.id } });
 
   const onSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (flat.length === 0) return;
