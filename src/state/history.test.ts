@@ -47,3 +47,13 @@ test("prune drops archived workspaces and keeps the position", () => {
   assert.deepEqual(h.entries, [home, ws("b"), ws("c")]);
   assert.deepEqual(current(h), ws("b"));
 });
+
+test("routine pages are separate history entries", async () => {
+  const { sameSelection } = await import("./history.ts");
+  assert.equal(sameSelection({ kind: "routines" }, { kind: "routines" }), true);
+  assert.equal(sameSelection({ kind: "routines" }, { kind: "routines", page: { view: "new" } }), false);
+  assert.equal(
+    sameSelection({ kind: "routines", page: { view: "edit", reasonId: "r", id: "a" } }, { kind: "routines", page: { view: "edit", reasonId: "r", id: "b" } }),
+    false,
+  );
+});

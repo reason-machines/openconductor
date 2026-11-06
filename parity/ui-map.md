@@ -8,15 +8,15 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **969** | **756** | **86** | **127** |
-| States (captured screens) | 71 | 15 | 27 | 29 |
-| Inventory items | 898 | 741 | 59 | 98 |
+| **All** | **969** | **751** | **86** | **132** |
+| States (captured screens) | 71 | 13 | 27 | 31 |
+| Inventory items | 898 | 738 | 59 | 101 |
 | &nbsp;&nbsp;dialog | 64 | 54 | 5 | 5 |
-| &nbsp;&nbsp;empty-state | 52 | 47 | 1 | 4 |
+| &nbsp;&nbsp;empty-state | 52 | 46 | 1 | 5 |
 | &nbsp;&nbsp;menu | 39 | 37 | 1 | 1 |
 | &nbsp;&nbsp;menu-item | 89 | 84 | 4 | 1 |
 | &nbsp;&nbsp;popover | 45 | 44 | 1 | 0 |
-| &nbsp;&nbsp;route | 65 | 41 | 9 | 15 |
+| &nbsp;&nbsp;route | 65 | 39 | 9 | 17 |
 | &nbsp;&nbsp;select | 29 | 22 | 5 | 2 |
 | &nbsp;&nbsp;settings-page | 29 | 14 | 6 | 9 |
 | &nbsp;&nbsp;settings-row | 121 | 41 | 24 | 56 |
@@ -34,7 +34,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | cloud-org | 83 | 70 | 4 | 9 |
 | git-review | 38 | 30 | 3 | 5 |
 | onboarding-auth | 23 | 15 | 7 | 1 |
-| routines | 40 | 40 | 0 | 0 |
+| routines | 40 | 35 | 0 | 5 |
 | settings | 181 | 46 | 46 | 89 |
 | shell | 194 | 176 | 9 | 9 |
 | terminal-scripts | 30 | 27 | 3 | 0 |
@@ -77,8 +77,8 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Diff: entire file<br>`diff-entire-file` | wrong | git-review | diff 5.3% at t24, copy 91% | [png](ui-map/ref/diff-entire-file.png) | [png](ui-map/oc/diff-entire-file.png) | [jpg](ui-map/diff/diff-entire-file.jpg) | 5.3% |
 | Workspace needing permission<br>`needs-permission` | wrong | chat | diff 3.9% at t24, copy 88% | [png](ui-map/ref/needs-permission.png) | [png](ui-map/oc/needs-permission.png) | [jpg](ui-map/diff/needs-permission.jpg) | 3.9% |
 | Dashboard<br>`route-dashboard` | missing | shell | OpenConductor has no route or view for /dashboard | [png](ui-map/ref/route-dashboard.png) | no-equivalent |  |  |
-| Routines<br>`route-routines` | missing | routines | OpenConductor has no route or view for /routines | [png](ui-map/ref/route-routines.png) | no-equivalent |  |  |
-| New routine<br>`route-routines-new` | missing | routines | OpenConductor has no route or view for /routines/new | [png](ui-map/ref/route-routines-new.png) | no-equivalent |  |  |
+| Routines<br>`route-routines` | matches | routines | diff 1.7% at t24, copy 100% | [png](side-by-side/routines-01-list.png) | [png](side-by-side/routines-01-list.png) |  | 1.7% |
+| New routine<br>`route-routines-new` | matches | routines | diff 0.9% at t24, copy 100% | [png](side-by-side/routines-02-new.png) | [png](side-by-side/routines-02-new.png) |  | 0.9% |
 | Team<br>`route-team` | missing | cloud-org | OpenConductor has no route or view for /team | [png](ui-map/ref/route-team.png) | no-equivalent |  |  |
 | Diagnostics<br>`route-diagnostics` | matches | shell | diff 0.6% at t24, copy 100% | [png](ui-map/ref/route-diagnostics.png) | [png](ui-map/oc/route-diagnostics.png) | [jpg](ui-map/diff/route-diagnostics.jpg) | 0.6% |
 | New member onboarding<br>`route-new-member-onboarding` | missing | onboarding-auth | OpenConductor has no route or view for /new-member-onboarding | [png](ui-map/ref/route-new-member-onboarding.png) | no-equivalent |  |  |
@@ -134,7 +134,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Rename chat dialog<br>`dialog-rename-chat` | matches | chat | diff 4.1% at t24, copy 96% | [png](side-by-side/chat-tabs-dialog-rename-chat.png) | [png](side-by-side/chat-tabs-dialog-rename-chat.png) |  | 4.1% |
 | Review button menu (Edit before sending)<br>`menu-review-edit` | matches | git-review | diff 4.5% at t24, copy 96% | [png](side-by-side/chat-tabs-menu-review-edit.png) | [png](side-by-side/chat-tabs-menu-review-edit.png) |  | 4.5% |
 
-## route (65: 41 missing, 9 wrong, 15 matches)
+## route (65: 39 missing, 9 wrong, 17 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -185,9 +185,9 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:create`<br>/create | matches | workspaces |  | `$Ca` | [create](side-by-side/create-composer-01-dialog.png) | diff 0.8% at t24, copy 90% |
 | `route:team`<br>/team | missing | cloud-org |  | `Yea` | [route-team](ui-map/ref/route-team.png) | OpenConductor has no route or view for /team |
 | `route:dashboard`<br>/dashboard | missing | shell |  | `lta` | [route-dashboard](ui-map/ref/route-dashboard.png) | OpenConductor has no route or view for /dashboard |
-| `route:routines`<br>/routines | missing | routines |  | `eka` | [route-routines](ui-map/ref/route-routines.png) | OpenConductor has no route or view for /routines |
+| `route:routines`<br>/routines | matches | routines |  | `eka` | [route-routines](side-by-side/routines-01-list.png) | diff 1.7% at t24, copy 100% |
 | `route:routines-automationid`<br>/routines/$automationId | missing | routines |  | `k7a` |  | no state captures this route |
-| `route:routines-new`<br>/routines/new | missing | routines |  | `B7a` | [route-routines-new](ui-map/ref/route-routines-new.png) | OpenConductor has no route or view for /routines/new |
+| `route:routines-new`<br>/routines/new | matches | routines |  | `B7a` | [route-routines-new](side-by-side/routines-02-new.png) | diff 0.9% at t24, copy 100% |
 | `route:routines-new-suggestionid`<br>/routines/new/$suggestionId | missing | routines |  | `z7a` |  | no state captures this route |
 | `route:routines-automationid-fork`<br>/routines/$automationId/fork | missing | routines |  | `U7a` |  | no state captures this route |
 | `route:automations`<br>/automations | missing | routines |  | `` |  | no state captures this route |
@@ -1035,7 +1035,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `toast:failed-to-unarchive-t-workspacedirectoryname`<br>Failed to unarchive: ${t.workspaceDirectoryName} | missing | workspaces | Failed to unarchive: ${t.workspaceDirectoryName} | `kIa` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-start-agents`<br>Failed to start agents | missing | chat | Failed to start agents / Conductor will not work. Please report this error. | `wVi` |  | copy not shown in any OpenConductor capture |
 
-## empty-state (52: 47 missing, 1 wrong, 4 matches)
+## empty-state (52: 46 missing, 1 wrong, 5 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -1090,7 +1090,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `empty-state:no-run-scripts-found-in-this-source`<br>No run scripts found in this source. | missing | terminal-scripts | No run scripts found in this source. | `PSa` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-triggers`<br>No triggers | missing | routines | No triggers | `a7a` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-versions`<br>No versions | missing | shell | No versions | `c7a` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-runs-yet`<br>No runs yet | missing | routines | No runs yet | `Bti` | [route-routines-new](ui-map/ref/route-routines-new.png) | copy not shown in any OpenConductor capture |
+| `empty-state:no-runs-yet`<br>No runs yet | matches | routines | No runs yet | `Bti` | [route-routines-new](side-by-side/routines-02-new.png) | on screen in both; state route-routines-new matches |
 
 ## REA gaps and bugs hit while building this map
 
@@ -1178,4 +1178,10 @@ Harness limits that shape the reference (not REA bugs): settings pages behind an
 42. **`inspect-artifact` on Conductor's executable does not see the embedded frontend.** `rea inspect-artifact conductor` (sha256 `0ba55751…`, the same bytes as on sven m5 max) reports the Mach-O but not Tauri's brotli asset table, so the frontend was still decoded with `tools/extract_tauri_assets.py` (2,902 assets, table at file offset `0x3086910`).
 43. **`capture-browser-scenario`'s DOM artifact is `{sha256, bytes, text}`** (`artifacts.dom.value.text`), which `--schema` does not document; drivers that read `value.html` get nothing (`tools/side-by-side/shell-menus.mjs` reads `text`).
 44. **No reference render for the PR badge menu.** Conductor's `RFt` badge needs a found PR, and the `tools/screens` harness answers none ("Couldn't load PR info"), so REA can capture only OpenConductor's side of the PR badge's right-click menu; that menu rests on the bundle read alone. Not REA's fault, but REA has no way to inject a PR response into the run either (no network fixture action).
+
+### Hit while building Routines on Reason Loops (REA 6.8.0, Linux cloud)
+
+45. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30, 34, 36, 41): `rea search renderApp-D_fmY7hW.js "Run agents on a schedule"` fails `capability_unavailable` / `unsupported_provider` (`selection_reason: target_unsupported`; ghidra not configured, kuna rejects JavaScript). The routines list (`K8a`), editor (`GHi`), trigger menu (`r7a`), schedule presets (`itt`, `x8a`, `w8a`) and the automation API routes and zod schemas in `index-BGEQ8YjU.js` (`listOrganizationAutomations`, `lJ`, `aJ`, `WPe`) were read as plain text with byte offsets.
+46. **`capture-browser-scenario` has no `wait_for_selector`; the action is `wait_for` with `state`,** and `--schema` documents neither (gap 8). The error lists the allowed actions only in `details.issues[].expected`.
+47. **The harness cannot render Conductor's routine table or a saved routine.** Conductor gates its automation queries on a cloud organization (`fc(org) === "cloud"`) and the tools/screens harness has none, so `/routines` captures header, loader and suggestions only and `/routines/$automationId` has no reference. REA has no way to inject a query result into a captured page, so the OpenConductor-only states (`routines-03`..`05`) have no reference to score against.
 

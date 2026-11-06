@@ -56,7 +56,11 @@ for path,title in [("/dashboard","Dashboard"),("/routines","Routines"),("/routin
         # Help > Diagnostics opens it (Conductor's footer help popover navigates to /diagnostics).
         st(sid, title, ref(path, wait=False), oc=[{"click":".sb-footer-btn","text":"Help"},{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800}], covers=[{"kind":"route","name":path}])
         continue
-    st(sid, title, ref(path, wait=path not in ("/diagnostics","/new-member-onboarding","/cloud-collab-onboarding")), oc_reason="OpenConductor has no route or view for "+path, covers=[{"kind":"route","name":path}])
+    # OpenConductor's /routines pages run on Reason Loops and need a signed-in Reason account, which the lane's
+    # throwaway HOME has none of; tools/side-by-side/routines.mjs scores them with the Reason API mocked.
+    reason = ("the UI map lane has no Reason account; scored by tools/side-by-side/routines.mjs" if path.startswith("/routines")
+              else "OpenConductor has no route or view for "+path)
+    st(sid, title, ref(path, wait=path not in ("/diagnostics","/new-member-onboarding","/cloud-collab-onboarding")), oc_reason=reason, covers=[{"kind":"route","name":path}])
 # The gate reads the path once at startup, so the lane loads /login rather than pushing it.
 st("login","Login", ref("/login","signed-out"), oc=[{"exec":"location.assign('/login');"},{"wait":".onb-login","after_ms":800}], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
 

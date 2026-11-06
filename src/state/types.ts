@@ -100,7 +100,18 @@ export type Selection =
   | { kind: "home" }
   /** Conductor's `/dashboard` (Experimental "Dashboard"); `repo` is its `?repo=` project tab. */
   | { kind: "dashboard"; repo?: string }
+  /** Conductor's `/routines` pages on Reason Loops (src/features/routines). */
+  | { kind: "routines"; page?: RoutinesPage }
   | { kind: "workspace"; repoId: string; workspaceId: string };
+
+/**
+ * Which `/routines` page: the list (none), `/routines/new`, `/routines/new/$suggestionId`,
+ * `/routines/$automationId` (a Loop, by its Reason and id) or `/routines/$automationId/fork`.
+ */
+export type RoutinesPage =
+  | { view: "new"; suggestion?: string }
+  | { view: "edit"; reasonId: string; id: string }
+  | { view: "fork"; reasonId: string; id: string };
 
 export interface AppState {
   repos: Repo[];

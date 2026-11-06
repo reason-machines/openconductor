@@ -11,3 +11,12 @@ circle-alert
 arrow-up-right
 arrow-down
 refresh-cw
+calendar-check
+heart-pulse
+newspaper
+clock-3
+trash-2
+power
+link
+webhook
+git-pull-request

@@ -43,3 +43,17 @@ test("/dashboard opens the dashboard board, with ?repo= as its project tab", asy
   assert.deepEqual(startSelection({ repos: [], selection: ws }, "/dashboard", "?repo=r1").selection, { kind: "dashboard", repo: "r1" });
   assert.deepEqual(startSelection({ repos: [], selection: { kind: "dashboard" } }, "/").selection, { kind: "root" });
 });
+
+test("routines paths open the routines pages, legacy /automations included", async () => {
+  const { routinesSelection, startSelection } = await import("./selectors.ts");
+  assert.deepEqual(routinesSelection("/routines"), { kind: "routines" });
+  assert.deepEqual(routinesSelection("/automations/"), { kind: "routines" });
+  assert.deepEqual(routinesSelection("/routines/new"), { kind: "routines", page: { view: "new" } });
+  assert.deepEqual(routinesSelection("/automations/new/daily-herald"), { kind: "routines", page: { view: "new", suggestion: "daily-herald" } });
+  assert.deepEqual(routinesSelection("/routines/l1", "?reason=r1"), { kind: "routines", page: { view: "edit", reasonId: "r1", id: "l1" } });
+  assert.deepEqual(routinesSelection("/routines/l1/fork", "?reason=r1"), { kind: "routines", page: { view: "fork", reasonId: "r1", id: "l1" } });
+  assert.deepEqual(routinesSelection("/routines/l1"), { kind: "routines" }, "a Loop needs its Reason");
+  assert.equal(routinesSelection("/routinesX"), undefined);
+  const s = startSelection({ repos: [], selection: { kind: "workspace", repoId: "r", workspaceId: "w" } }, "/routines/new");
+  assert.deepEqual(s.selection, { kind: "routines", page: { view: "new" } });
+});
