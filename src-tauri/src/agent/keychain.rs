@@ -20,8 +20,19 @@ use super::secret::SecretStore;
 /// Keychain service name for provider secrets: the app's bundle identifier.
 pub const SERVICE: &str = "com.reasonmachines.openconductor";
 
-/// The store the app should use on this platform.
+/// The store the app should use on this platform. An e2e run (debug build
+/// with `OC_E2E_OUT`) gets one in-memory store shared by every caller: its
+/// throwaway HOME still reaches the user's login Keychain on macOS, and a key
+/// saved during the run must not replace the user's own item.
 pub fn default_store() -> Arc<dyn SecretStore> {
+    // Same condition as `crate::e2e::enabled` (this module also builds standalone).
+    if cfg!(debug_assertions) && std::env::var_os("OC_E2E_OUT").is_some() {
+        static E2E: std::sync::OnceLock<Arc<super::secret::MemorySecretStore>> =
+            std::sync::OnceLock::new();
+        return E2E
+            .get_or_init(|| Arc::new(super::secret::MemorySecretStore::new()))
+            .clone();
+    }
     #[cfg(target_os = "macos")]
     {
         Arc::new(macos::KeychainSecretStore::new(SERVICE))
