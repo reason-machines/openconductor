@@ -39,7 +39,10 @@ pub fn slugify(input: &str) -> String {
 
 /// Join an optional branch prefix and a workspace name.
 pub fn branch_for(prefix: Option<&str>, name: &str) -> String {
-    match prefix.map(|p| p.trim_matches('/')).filter(|p| !p.is_empty()) {
+    match prefix
+        .map(|p| p.trim_matches('/'))
+        .filter(|p| !p.is_empty())
+    {
         Some(p) => format!("{p}/{name}"),
         None => name.to_string(),
     }
@@ -50,7 +53,10 @@ pub fn branch_for(prefix: Option<&str>, name: &str) -> String {
 /// paths; `None` when nothing usable is left.
 pub fn repo_name_from_url(url: &str) -> Option<String> {
     let trimmed = url.trim().trim_end_matches(['/', '\\']);
-    let trimmed = trimmed.strip_suffix(".git").unwrap_or(trimmed).trim_end_matches(['/', '\\']);
+    let trimmed = trimmed
+        .strip_suffix(".git")
+        .unwrap_or(trimmed)
+        .trim_end_matches(['/', '\\']);
     let name = trimmed.rsplit(['/', '\\', ':']).next()?;
     (!name.is_empty() && name != "." && name != "..").then(|| name.to_string())
 }

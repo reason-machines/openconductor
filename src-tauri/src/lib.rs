@@ -23,45 +23,45 @@ pub mod agent;
 pub mod agent_binaries;
 pub mod agent_options;
 pub mod app_prefs;
-pub mod bin_source_markers;
-pub mod bundled_bin;
-pub mod checkpoint;
-mod checkpoint_commands;
-mod chat_store_commands;
-pub mod codex_chat;
-mod session_status_commands;
-pub mod claude_chat;
-pub mod create_project;
 pub mod archive_on_merge;
 mod archive_on_merge_commands;
+pub mod bin_source_markers;
+pub mod bundled_bin;
+mod chat_store_commands;
+pub mod checkpoint;
+mod checkpoint_commands;
+pub mod claude_chat;
+pub mod codex_chat;
+pub mod create_project;
 pub mod db;
-pub mod e2e;
-pub mod persistence;
-mod persistence_commands;
-pub mod recent_local_repos;
-mod recent_local_repos_commands;
-mod sidebar_repo_commands;
-mod repo_misc_commands;
-mod sidebar_section_commands;
-mod sidebar_workspace_commands;
-mod sidebar_rename_commands;
 pub mod diff;
 pub mod draft_attachments;
+pub mod e2e;
 pub mod github_repo;
 pub mod local_account;
-pub mod menu;
-pub mod pr;
 mod local_storage_commands;
+pub mod menu;
 mod onboarding_commands;
 pub mod open_in;
+pub mod persistence;
+mod persistence_commands;
+pub mod pr;
 pub mod project;
 pub mod quick_open;
 pub mod reason_acp;
 pub mod reason_chat;
+pub mod recent_local_repos;
+mod recent_local_repos_commands;
+mod repo_misc_commands;
 pub mod resource_usage;
 mod root_path_commands;
 pub mod scripts;
+mod session_status_commands;
 pub mod settings;
+mod sidebar_rename_commands;
+mod sidebar_repo_commands;
+mod sidebar_section_commands;
+mod sidebar_workspace_commands;
 pub mod sidecar_stores;
 pub mod slash_commands;
 pub mod spotlight;
@@ -97,7 +97,9 @@ fn spawn_push_upstream_backfill(app: tauri::AppHandle) {
                 .unwrap_or(true)
         };
         for (id, warning) in workspaces.configure_push_upstream_for_existing(enabled) {
-            eprintln!("Failed to configure Git push upstream settings for workspace {id}: {warning}");
+            eprintln!(
+                "Failed to configure Git push upstream settings for workspace {id}: {warning}"
+            );
         }
     });
 }

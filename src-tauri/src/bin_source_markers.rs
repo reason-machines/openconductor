@@ -38,7 +38,10 @@ pub struct Marker {
 pub type Markers = BTreeMap<String, Marker>;
 
 fn ms(t: io::Result<SystemTime>) -> Option<u64> {
-    t.ok()?.duration_since(UNIX_EPOCH).ok().map(|d| d.as_millis() as u64)
+    t.ok()?
+        .duration_since(UNIX_EPOCH)
+        .ok()
+        .map(|d| d.as_millis() as u64)
 }
 
 /// The marker of a source file.
@@ -84,7 +87,8 @@ mod tests {
     use super::*;
 
     fn temp(name: &str) -> std::path::PathBuf {
-        let dir = std::env::temp_dir().join(format!("oc-bin-markers-{name}-{}", std::process::id()));
+        let dir =
+            std::env::temp_dir().join(format!("oc-bin-markers-{name}-{}", std::process::id()));
         let _ = fs::remove_dir_all(&dir);
         fs::create_dir_all(&dir).unwrap();
         dir
@@ -94,9 +98,17 @@ mod tests {
     fn file_shape_matches_the_reference() {
         let dir = temp("shape");
         let mut m = Markers::new();
-        m.insert(".internal/logger".into(), Marker { created_ms: 1790625354000, modified_ms: 1790625354000, size: 102 });
+        m.insert(
+            ".internal/logger".into(),
+            Marker {
+                created_ms: 1790625354000,
+                modified_ms: 1790625354000,
+                size: 102,
+            },
+        );
         save(&dir, &m).unwrap();
-        let v: serde_json::Value = serde_json::from_str(&fs::read_to_string(dir.join(FILE_NAME)).unwrap()).unwrap();
+        let v: serde_json::Value =
+            serde_json::from_str(&fs::read_to_string(dir.join(FILE_NAME)).unwrap()).unwrap();
         assert_eq!(
             v,
             serde_json::json!({".internal/logger": {"created_ms": 1790625354000u64, "modified_ms": 1790625354000u64, "size": 102}})
@@ -125,8 +137,15 @@ mod tests {
 
     #[test]
     fn install_decision() {
-        let a = Marker { created_ms: 1, modified_ms: 2, size: 3 };
-        let b = Marker { modified_ms: 9, ..a };
+        let a = Marker {
+            created_ms: 1,
+            modified_ms: 2,
+            size: 3,
+        };
+        let b = Marker {
+            modified_ms: 9,
+            ..a
+        };
         assert!(!needs_install(Some(&a), &a, true));
         assert!(needs_install(Some(&a), &b, true), "same size, newer source");
         assert!(needs_install(Some(&a), &a, false), "installed copy deleted");

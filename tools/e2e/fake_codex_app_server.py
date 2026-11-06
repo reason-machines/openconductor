@@ -15,7 +15,12 @@ first command really writes hello.txt in the thread's cwd. Prompts:
   contains "perm"   Codex asks for network access; the reply says whether it
                     was granted ("permissions: network granted" or
                     "permissions: none granted")
+  a `skill` input  (the "/" menu's pick) replies "<SKILL MARKER> <prompt>",
+                    the marker being the skill body's first all-capitals line
   anything else     replies "turn <n>: <prompt>", n counting this thread's turns
+
+`skills/list` reports the skills under $HOME/.codex/skills and
+$HOME/.agents/skills (and the folder's .agents/skills), as Codex does.
 
 Every request it receives is appended to $HOME/codex-fake.jsonl.
 Only "codex app-server" is handled; other subcommands exit 2.
@@ -153,6 +158,50 @@ def consent_answered(req, result):
     complete(turn, "completed")
 
 
+def skill_meta(path):
+    try:
+        text = open(path, encoding="utf-8").read()
+    except OSError:
+        return None
+    if not text.startswith("---"):
+        return None
+    head, _, body = text[3:].partition("\n---")
+    meta = {}
+    for line in head.splitlines():
+        key, sep, value = line.partition(":")
+        if sep:
+            meta[key.strip()] = value.strip().strip("'\"")
+    if not meta.get("name") or not meta.get("description"):
+        return None
+    meta["body"] = body
+    return meta
+
+
+def list_skills(cwd):
+    home = os.environ.get("HOME", "")
+    roots = [(os.path.join(cwd, ".agents", "skills"), "repo"), (os.path.join(home, ".codex", "skills"), "user"),
+             (os.path.join(home, ".agents", "skills"), "user")]
+    skills = []
+    for root, scope in roots:
+        try:
+            names = sorted(os.listdir(root))
+        except OSError:
+            continue
+        for name in names:
+            path = os.path.join(root, name, "SKILL.md")
+            meta = skill_meta(path)
+            if meta and all(s["name"] != meta["name"] for s in skills):
+                skills.append({"name": meta["name"], "description": meta["description"], "path": path,
+                               "scope": scope, "enabled": True, "pluginId": None})
+    return skills
+
+
+def skill_marker(path):
+    meta = skill_meta(path) or {}
+    lines = [l.strip() for l in meta.get("body", "").splitlines()]
+    return next((l for l in lines if l and l.replace("-", "").isupper()), "SKILL")
+
+
 def handle(msg):
     if "method" not in msg:
         note({"response": msg})
@@ -170,6 +219,9 @@ def handle(msg):
         state["cwd"] = params.get("cwd") or os.getcwd()
         send({"id": mid, "result": {"thread": {"id": state["thread"], "preview": "", "ephemeral": False}}})
         notify("thread/started", {"thread": {"id": state["thread"]}})
+    elif method == "skills/list":
+        cwds = params.get("cwds") or [os.getcwd()]
+        send({"id": mid, "result": {"data": [{"cwd": c, "skills": list_skills(c), "errors": []} for c in cwds]}})
     elif method == "turn/start":
         state["turns"] += 1
         turn = f"turn-{state['turns']}"
@@ -178,7 +230,11 @@ def handle(msg):
         send({"id": mid, "result": {"turn": {"id": turn, "items": [], "status": "inProgress", "error": None}}})
         notify("turn/started", {"threadId": state["thread"], "turn": {"id": turn, "items": [], "status": "inProgress"}})
         notify("item/started", {"item": item("userMessage", f"user-{turn}", content=[{"type": "text", "text": text}]), "threadId": state["thread"], "turnId": turn})
-        if "hello" in text:
+        picked = [i for i in params.get("input", []) if i.get("type") == "skill"]
+        if picked:
+            message(turn, f"msg-{turn}", f"{skill_marker(picked[0].get('path', ''))} {text}", "final_answer")
+            complete(turn, "completed")
+        elif "hello" in text:
             hello_turn(turn)
         elif "slow" in text:
             pass

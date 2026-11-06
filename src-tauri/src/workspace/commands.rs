@@ -29,10 +29,10 @@ use tauri::ipc::Channel;
 use tauri::{AppHandle, Manager, State};
 
 use super::git::BranchRef;
-use crate::db::Db;
-use crate::persistence_commands as persistence;
 use super::service::{CreateWorkspaceRequest, RepositoryInfo, WorkspaceService};
 use super::{Created, Workspace, WorkspaceState};
+use crate::db::Db;
+use crate::persistence_commands as persistence;
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -96,7 +96,9 @@ pub async fn add_repository(
     db: State<'_, Db>,
     path: String,
 ) -> Result<RepositoryDto, String> {
-    let repo = service.add_repository(path.as_ref()).map_err(|e| e.to_string())?;
+    let repo = service
+        .add_repository(path.as_ref())
+        .map_err(|e| e.to_string())?;
     persistence::on_repository_added(&db, &repo).await?;
     Ok(repo_dto(repo))
 }
@@ -111,7 +113,9 @@ pub async fn ensure_repository(
     path: String,
     repository_id: Option<String>,
 ) -> Result<RepositoryDto, String> {
-    let repo = service.ensure_repository(repository_id.as_deref(), path.as_ref()).map_err(|e| e.to_string())?;
+    let repo = service
+        .ensure_repository(repository_id.as_deref(), path.as_ref())
+        .map_err(|e| e.to_string())?;
     persistence::on_repository_added(&db, &repo).await?;
     Ok(repo_dto(repo))
 }
@@ -134,7 +138,9 @@ pub async fn clone_repository(
         let mut send = |line: &str| {
             let _ = on_progress.send(line.to_string());
         };
-        service.clone_repository(&url, parent_dir.as_ref(), &mut send).map_err(|e| e.to_string())
+        service
+            .clone_repository(&url, parent_dir.as_ref(), &mut send)
+            .map_err(|e| e.to_string())
     })
     .await
     .map_err(|e| e.to_string())??;
@@ -150,13 +156,18 @@ pub fn default_clone_directory(service: State<'_, WorkspaceService>) -> String {
 }
 
 #[tauri::command]
-pub async fn list_repositories(service: State<'_, WorkspaceService>) -> Result<Vec<RepositoryDto>, String> {
+pub async fn list_repositories(
+    service: State<'_, WorkspaceService>,
+) -> Result<Vec<RepositoryDto>, String> {
     Ok(service.repositories().into_iter().map(repo_dto).collect())
 }
 
 /// JS: `invoke("list_branches", { repoId })`.
 #[tauri::command]
-pub async fn list_branches(service: State<'_, WorkspaceService>, repo_id: String) -> Result<Vec<BranchDto>, String> {
+pub async fn list_branches(
+    service: State<'_, WorkspaceService>,
+    repo_id: String,
+) -> Result<Vec<BranchDto>, String> {
     service
         .list_branches(&repo_id)
         .map(|b| b.into_iter().map(branch_dto).collect())
@@ -171,7 +182,9 @@ pub async fn branch_name_is_taken(
     repository_id: String,
     branch_name: String,
 ) -> Result<bool, String> {
-    service.branch_name_is_taken(&repository_id, &branch_name).map_err(|e| e.to_string())
+    service
+        .branch_name_is_taken(&repository_id, &branch_name)
+        .map_err(|e| e.to_string())
 }
 
 /// JS: `invoke("create_workspace", { repositoryId, branchName, directoryName, baseBranch, existingBranch, prNumber })`.
@@ -198,9 +211,18 @@ pub async fn create_workspace(
         .into_iter()
         .find(|r| r.id == repository_id)
         .ok_or_else(|| format!("unknown repository: {repository_id}"))?;
-    let parent = base_branch.clone().filter(|b| !b.trim().is_empty()).unwrap_or_else(|| repo.default_branch.clone());
-    let pending =
-        persistence::on_create_started(&db, &repo, directory_name.as_deref(), branch_name.as_deref(), &parent).await;
+    let parent = base_branch
+        .clone()
+        .filter(|b| !b.trim().is_empty())
+        .unwrap_or_else(|| repo.default_branch.clone());
+    let pending = persistence::on_create_started(
+        &db,
+        &repo,
+        directory_name.as_deref(),
+        branch_name.as_deref(),
+        &parent,
+    )
+    .await;
     let effective = service
         .repository_root(&repository_id)
         .ok()
@@ -214,12 +236,19 @@ pub async fn create_workspace(
         pr_number,
         // The repository's effective `git.worktree_push_auto_setup_remote`;
         // unreadable settings fall back to Conductor's default (on).
-        push_auto_setup_remote: effective.as_ref().is_none_or(|e| e.git.worktree_push_auto_setup_remote.value),
-        file_include_globs: effective.and_then(|e| e.file_include_globs).map(|g| g.value),
+        push_auto_setup_remote: effective
+            .as_ref()
+            .is_none_or(|e| e.git.worktree_push_auto_setup_remote.value),
+        file_include_globs: effective
+            .and_then(|e| e.file_include_globs)
+            .map(|g| g.value),
     };
     match service.create_workspace(&req) {
         Ok(created) => {
-            let log = created.initialization_log_path.as_ref().map(|p| p.display().to_string());
+            let log = created
+                .initialization_log_path
+                .as_ref()
+                .map(|p| p.display().to_string());
             let number = persistence::on_create_finished(
                 &db,
                 &repository_id,
@@ -229,7 +258,10 @@ pub async fn create_workspace(
                 created.initialization_files_copied,
             )
             .await;
-            Ok(CreatedWorkspaceDto { number, ..created_dto(&repository_id, created) })
+            Ok(CreatedWorkspaceDto {
+                number,
+                ..created_dto(&repository_id, created)
+            })
         }
         Err(e) => {
             persistence::on_create_failed(&db, pending).await;
@@ -244,11 +276,17 @@ pub async fn list_workspaces(
     service: State<'_, WorkspaceService>,
     repository_id: String,
 ) -> Result<Vec<WorkspaceDto>, String> {
-    let root = service.repository_root(&repository_id).map_err(|e| e.to_string())?;
+    let root = service
+        .repository_root(&repository_id)
+        .map_err(|e| e.to_string())?;
     service
         .manager()
         .list(&root)
-        .map(|ws| ws.into_iter().map(|w| workspace_dto(&repository_id, w)).collect())
+        .map(|ws| {
+            ws.into_iter()
+                .map(|w| workspace_dto(&repository_id, w))
+                .collect()
+        })
         .map_err(|e| e.to_string())
 }
 
@@ -264,17 +302,30 @@ pub async fn rename_workspace_branch(
 ) -> Result<WorkspaceDto, String> {
     let (repository_id, _) = workspace_id.rsplit_once('/').unwrap_or(("", ""));
     let repository_id = repository_id.to_string();
-    let w = service.rename_workspace_branch(&workspace_id, &branch_name).map_err(|e| e.to_string())?;
+    let w = service
+        .rename_workspace_branch(&workspace_id, &branch_name)
+        .map_err(|e| e.to_string())?;
     persistence::on_branch_renamed(&db, &workspace_id, &w.branch).await;
     Ok(workspace_dto(&repository_id, w))
 }
 
 fn repo_dto(r: RepositoryInfo) -> RepositoryDto {
-    RepositoryDto { id: r.id, name: r.name, root: r.root.display().to_string(), default_branch: r.default_branch }
+    RepositoryDto {
+        id: r.id,
+        name: r.name,
+        root: r.root.display().to_string(),
+        default_branch: r.default_branch,
+    }
 }
 
 fn branch_dto(b: BranchRef) -> BranchDto {
-    BranchDto { name: b.name, remote: b.remote, commit: b.commit, is_head: b.is_head, committed_at: b.committed_at }
+    BranchDto {
+        name: b.name,
+        remote: b.remote,
+        commit: b.commit,
+        is_head: b.is_head,
+        committed_at: b.committed_at,
+    }
 }
 
 fn workspace_dto(repository_id: &str, w: Workspace) -> WorkspaceDto {
@@ -299,7 +350,11 @@ fn created_dto(repository_id: &str, c: Created) -> CreatedWorkspaceDto {
         base_ref: c.base_ref,
         base_commit: c.base_commit,
         fetched: c.fetched,
-        copied_files: c.copied_files.into_iter().map(|p| p.display().to_string()).collect(),
+        copied_files: c
+            .copied_files
+            .into_iter()
+            .map(|p| p.display().to_string())
+            .collect(),
         initialization_log_path: c.initialization_log_path.map(|p| p.display().to_string()),
         initialization_files_copied: c.initialization_files_copied,
         auxiliary_failure_message: c.auxiliary_failure_message,

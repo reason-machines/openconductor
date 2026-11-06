@@ -469,14 +469,20 @@ impl From<String> for RestoreError {
 
 /// Conductor's `CWt`: deleted first, then checked out elsewhere, then moved
 /// since `archive_commit`. `None` is its "happy" scenario.
-pub fn restore_scenario(t: &ArchiveTarget, archive_commit: Option<&str>) -> Option<RestoreScenario> {
+pub fn restore_scenario(
+    t: &ArchiveTarget,
+    archive_commit: Option<&str>,
+) -> Option<RestoreScenario> {
     let branch = t.branch.trim();
     let branch_ref = format!("refs/heads/{branch}");
     let Ok(tip) = git(&t.repo_root, ["rev-parse", "--verify", "-q", &branch_ref]) else {
         return Some(RestoreScenario::BranchDeleted);
     };
     let worktrees = git(&t.repo_root, ["worktree", "list", "--porcelain"]).unwrap_or_default();
-    if worktrees.lines().any(|l| l == format!("branch {branch_ref}")) {
+    if worktrees
+        .lines()
+        .any(|l| l == format!("branch {branch_ref}"))
+    {
         return Some(RestoreScenario::BranchTaken);
     }
     match archive_commit {
@@ -501,10 +507,17 @@ pub fn next_branch_name(name: &str) -> String {
 /// local branch and no remote-tracking branch has the name (`Qpe`).
 pub fn unique_branch_name(repo_root: &Path, branch: &str) -> Result<String, String> {
     let taken = |b: &str| {
-        git(repo_root, ["rev-parse", "--verify", "-q", &format!("refs/heads/{b}")]).is_ok()
-            || git(repo_root, ["for-each-ref", "--format=%(refname)", "refs/remotes"])
-                .map(|out| out.lines().any(|r| r.splitn(4, '/').nth(3) == Some(b)))
-                .unwrap_or(false)
+        git(
+            repo_root,
+            ["rev-parse", "--verify", "-q", &format!("refs/heads/{b}")],
+        )
+        .is_ok()
+            || git(
+                repo_root,
+                ["for-each-ref", "--format=%(refname)", "refs/remotes"],
+            )
+            .map(|out| out.lines().any(|r| r.splitn(4, '/').nth(3) == Some(b)))
+            .unwrap_or(false)
     };
     let mut name = next_branch_name(branch);
     for _ in 0..1000 {
@@ -519,7 +532,10 @@ pub fn unique_branch_name(repo_root: &Path, branch: &str) -> Result<String, Stri
 /// "Restore to new branch" (`RWt` with `useNewBranch`): a uniquely named
 /// branch at `archive_commit` (or the stored branch's tip for rows archived
 /// without one), which [`restore`] then checks out. Returns its name.
-pub fn create_restore_branch(t: &ArchiveTarget, archive_commit: Option<&str>) -> Result<String, String> {
+pub fn create_restore_branch(
+    t: &ArchiveTarget,
+    archive_commit: Option<&str>,
+) -> Result<String, String> {
     let branch = t.branch.trim();
     if branch.is_empty() {
         return Err("Cannot rehydrate workspace without branch information".into());
@@ -555,7 +571,9 @@ pub fn restore(
 ) -> Result<Restored, RestoreError> {
     let branch = t.branch.trim();
     if branch.is_empty() {
-        return Err("Cannot rehydrate workspace without branch information".to_string().into());
+        return Err("Cannot rehydrate workspace without branch information"
+            .to_string()
+            .into());
     }
     let path = &t.workspace_path;
     if path.as_os_str().is_empty() || path == &t.repo_root {
@@ -575,7 +593,9 @@ pub fn restore(
             if let Some(p) = line.strip_prefix("worktree ") {
                 current = p;
             } else if line == format!("branch {branch_ref}") {
-                return Err(format!("Branch '{branch}' is already checked out at {current}").into());
+                return Err(
+                    format!("Branch '{branch}' is already checked out at {current}").into(),
+                );
             }
         }
     }
@@ -608,7 +628,9 @@ pub fn restore(
     if let Err(e) = crate::workspace::files_to_copy::files_to_copy(&t.repo_root, &source)
         .and_then(|files| crate::workspace::files_to_copy::copy_files(&t.repo_root, path, &files))
     {
-        notices.push(Notice::error(format!("Couldn't copy gitignored files: {e}")));
+        notices.push(Notice::error(format!(
+            "Couldn't copy gitignored files: {e}"
+        )));
     }
     if let Some(root) = root_dir {
         let saved = root

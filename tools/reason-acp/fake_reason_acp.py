@@ -27,6 +27,11 @@ embedded resource as "NAME: TEXT", NAME the last part of its uri),
 tool_call_update to completed, with ACP kind, rawInput and _meta.claudeCode.toolName;
 LISBON_PROMPT, the fixture's user message, is an alias).
 
+`reason skills list --input-file -` prints the skills under
+$HOME/.reason-fake/skills/<name>/SKILL.md in the CLI's JSON shape, and a
+prompt "/<name> ARGS" for one of them replies "<SKILL MARKER> ARGS", the
+marker being the skill body's first all-capitals line.
+
 session/new reports configOptions `model` and `reasoning_effort` like
 Reason does; session/set_config_option with a value an option does not
 offer resets it to "default" without an error, as Reason does.
@@ -47,6 +52,34 @@ def config_options(config):
     return [{"id": k, "name": name, "type": "select", "currentValue": config.get(k, "default"),
              "options": [{"value": v, "name": v} for v in values]}
             for k, (name, values) in OPTIONS.items()]
+
+SKILLS = os.path.join(os.environ.get("HOME", ""), ".reason-fake", "skills")
+
+
+def fake_skills():
+    out = []
+    try:
+        names = sorted(os.listdir(SKILLS))
+    except OSError:
+        return out
+    for name in names:
+        try:
+            text = open(os.path.join(SKILLS, name, "SKILL.md"), encoding="utf-8").read()
+        except OSError:
+            continue
+        head, _, body = text[3:].partition("\n---")
+        meta = dict((k.strip(), v.strip()) for k, _, v in (l.partition(":") for l in head.splitlines()) if _)
+        marker = next((l.strip() for l in body.splitlines() if l.strip() and l.strip().replace("-", "").isupper()), "SKILL")
+        out.append({"skill_id": f"fake-{name}", "name": meta.get("name", name), "description": meta.get("description", ""),
+                    "is_enabled": True, "installation_scope": "organization", "marker": marker})
+    return out
+
+
+if sys.argv[1:3] == ["skills", "list"]:
+    sys.stdin.read()
+    items = [{k: v for k, v in s.items() if k != "marker"} for s in fake_skills()]
+    print(json.dumps({"schema_version": 1, "ok": True, "data": {"items": items, "total": len(items)}}))
+    sys.exit(0)
 
 HOME = os.path.realpath(os.getcwd())
 STATE = os.path.join(HOME, "state.json")
@@ -170,6 +203,10 @@ def prompt(rid, p, cancel):
     inside_home = cwd == HOME or cwd.startswith(HOME.rstrip("/") + "/")
     if not inside_home:
         text(sid, "agent_message_chunk", "Reason request failed (404 device_not_found)")
+    elif cmd.startswith("/") and any(cmd[1:].split(" ")[0] == k["name"] for k in fake_skills()):
+        name, _, args = cmd[1:].partition(" ")
+        marker = next(k["marker"] for k in fake_skills() if k["name"] == name)
+        text(sid, "agent_message_chunk", f"{marker} {args}".strip())
     elif cmd.startswith("echo: "):
         reply = f"turn {session['turns']}: {cmd[6:]}"
         half = len(reply) // 2

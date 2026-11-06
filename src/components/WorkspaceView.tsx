@@ -19,7 +19,7 @@ import { NewChatButton } from "../features/chat/NewChatButton.tsx";
 import { atTabLimit, tabLimitToast } from "../features/chat/chatTabs.ts";
 import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptyState.ts";
 import type { ChatAgent } from "../features/chat/chatAgentChoice.ts";
-import { codexSkillMessage, commandSet, isKnownCommand, parseSlashCommand, type ComposerAgent } from "../features/chat/slashCommands.ts";
+import { codexSkillMessage, commandSet, reasonSkillMessage, isKnownCommand, parseSlashCommand, type ComposerAgent } from "../features/chat/slashCommands.ts";
 import { useAgentSlash, type SlashAgent } from "../features/chat/agentSlash.ts";
 import { claudeQueueAction, claudeSnapshot, stopClaude, submitClaude, subscribeClaude } from "../features/chat/claudeChat.ts";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
@@ -570,9 +570,10 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           if (!cmd) return false;
           const own = slashCommands.find((c) => c.name === cmd.name && c.effect === "agent");
           const skill = slashCommands.find((c) => c.name === cmd.name && c.effect === "skill");
-          if (own || (skill && !codex)) return false;
+          if (own || (skill && claude)) return false;
           if (skill) {
-            void onSubmit(codexSkillMessage(skill.name, cmd.args), "queue");
+            const message = codex ? codexSkillMessage(skill.name, cmd.args) : reasonSkillMessage(skill.name, skill.skillPath ?? "", cmd.args);
+            void onSubmit(message, "queue");
             return true;
           }
           setAttachError(cmd.name === "plan" ? "Plan mode is not available in this chat." : `/${cmd.name} is not available for ${AGENT_LABEL[chatAgent]}.`);

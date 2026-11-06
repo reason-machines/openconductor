@@ -224,6 +224,17 @@ export function codexSkillMessage(name: string, args: string): string {
   return args ? `$${name} ${args}` : `$${name}`;
 }
 
+/**
+ * A Reason message that runs skill `name`: "/name args" for a Reason skill
+ * (Reason runs its own skills by name); a skill file on this computer (the
+ * bundled one) goes as Conductor's skill link `[name](path/SKILL.md) args`,
+ * which the agent reads.
+ */
+export function reasonSkillMessage(name: string, path: string, args: string): string {
+  const head = path.startsWith("reason-skill:") ? `/${name}` : `[${name}](${path})`;
+  return args ? `${head} ${args}` : head;
+}
+
 /** Built-in names Conductor recognises even where they do not apply (`bmo`). */
 export function isKnownCommand(name: string): boolean {
   return name === "plan" || name === "fast" || BUILTIN_COMMANDS.some((c) => c.name === name);

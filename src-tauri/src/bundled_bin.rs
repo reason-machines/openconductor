@@ -154,7 +154,11 @@ pub fn gh_path() -> PathBuf {
 
 fn resolve_gh(env_override: Option<PathBuf>, installed_bin: Option<&Path>) -> PathBuf {
     env_override
-        .or_else(|| installed_bin.map(|dir| dir.join("gh")).filter(|p| p.is_file()))
+        .or_else(|| {
+            installed_bin
+                .map(|dir| dir.join("gh"))
+                .filter(|p| p.is_file())
+        })
         .unwrap_or_else(|| PathBuf::from("gh"))
 }
 
@@ -165,7 +169,8 @@ mod tests {
     struct TempDir(PathBuf);
     impl TempDir {
         fn new(name: &str) -> Self {
-            let dir = std::env::temp_dir().join(format!("oc-bundled-bin-{name}-{}", std::process::id()));
+            let dir =
+                std::env::temp_dir().join(format!("oc-bundled-bin-{name}-{}", std::process::id()));
             let _ = fs::remove_dir_all(&dir);
             fs::create_dir_all(&dir).unwrap();
             TempDir(dir)
@@ -195,19 +200,34 @@ mod tests {
 
         let mut first = install(&res, &data).unwrap();
         first.sort();
-        assert_eq!(first, vec![data.join("bin/.internal/helper"), data.join("bin/gh")]);
-        assert_eq!(fs::read_to_string(data.join("bin/gh")).unwrap(), "gh-binary");
+        assert_eq!(
+            first,
+            vec![data.join("bin/.internal/helper"), data.join("bin/gh")]
+        );
+        assert_eq!(
+            fs::read_to_string(data.join("bin/gh")).unwrap(),
+            "gh-binary"
+        );
         #[cfg(unix)]
         {
             use std::os::unix::fs::PermissionsExt;
-            let mode = fs::metadata(data.join("bin/gh")).unwrap().permissions().mode();
+            let mode = fs::metadata(data.join("bin/gh"))
+                .unwrap()
+                .permissions()
+                .mode();
             assert_eq!(mode & 0o777, 0o755);
         }
-        assert!(install(&res, &data).unwrap().is_empty(), "relaunch copies nothing");
+        assert!(
+            install(&res, &data).unwrap().is_empty(),
+            "relaunch copies nothing"
+        );
 
         write(&res.join("bin/gh"), "gh-binary-v2");
         assert_eq!(install(&res, &data).unwrap(), vec![data.join("bin/gh")]);
-        assert_eq!(fs::read_to_string(data.join("bin/gh")).unwrap(), "gh-binary-v2");
+        assert_eq!(
+            fs::read_to_string(data.join("bin/gh")).unwrap(),
+            "gh-binary-v2"
+        );
         assert!(!data.join("bin/.gh.partial").exists());
     }
 
@@ -236,34 +256,54 @@ mod tests {
 
         let saved = markers::load(&data);
         assert_eq!(saved.keys().collect::<Vec<_>>(), [".internal/logger", "gh"]);
-        assert_eq!(saved["gh"], markers::marker_of(&res.join("bin/gh")).unwrap());
+        assert_eq!(
+            saved["gh"],
+            markers::marker_of(&res.join("bin/gh")).unwrap()
+        );
         assert_eq!(saved["gh"].size, 4);
 
         // Same size, new content and a later modification time.
         write(&res.join("bin/gh"), "bbbb");
         let later = std::time::SystemTime::now() + std::time::Duration::from_secs(5);
-        fs::File::options().write(true).open(res.join("bin/gh")).unwrap().set_modified(later).unwrap();
+        fs::File::options()
+            .write(true)
+            .open(res.join("bin/gh"))
+            .unwrap()
+            .set_modified(later)
+            .unwrap();
         assert_eq!(install(&res, &data).unwrap(), vec![data.join("bin/gh")]);
         assert_eq!(fs::read_to_string(data.join("bin/gh")).unwrap(), "bbbb");
 
         // A deleted installed copy is restored; a removed source drops its marker.
         fs::remove_file(data.join("bin/.internal/logger")).unwrap();
         fs::remove_file(res.join("bin/gh")).unwrap();
-        assert_eq!(install(&res, &data).unwrap(), vec![data.join("bin/.internal/logger")]);
-        assert_eq!(markers::load(&data).keys().collect::<Vec<_>>(), [".internal/logger"]);
+        assert_eq!(
+            install(&res, &data).unwrap(),
+            vec![data.join("bin/.internal/logger")]
+        );
+        assert_eq!(
+            markers::load(&data).keys().collect::<Vec<_>>(),
+            [".internal/logger"]
+        );
     }
 
     #[test]
     fn dev_build_without_resources_installs_nothing() {
         let tmp = TempDir::new("dev");
-        assert!(install(&tmp.path().join("none"), &tmp.path().join("data")).unwrap().is_empty());
+        assert!(install(&tmp.path().join("none"), &tmp.path().join("data"))
+            .unwrap()
+            .is_empty());
     }
 
     #[test]
     fn gh_resolution_order() {
         let tmp = TempDir::new("resolve");
         let bin = tmp.path().join("bin");
-        assert_eq!(resolve_gh(None, Some(&bin)), PathBuf::from("gh"), "not installed: PATH");
+        assert_eq!(
+            resolve_gh(None, Some(&bin)),
+            PathBuf::from("gh"),
+            "not installed: PATH"
+        );
         write(&bin.join("gh"), "x");
         assert_eq!(resolve_gh(None, Some(&bin)), bin.join("gh"));
         assert_eq!(

@@ -51,7 +51,11 @@ pub fn patterns(text: &str) -> Vec<String> {
 /// What the repository settings' "Files to copy" row previews: where the
 /// patterns come from, their text, and the files they select today.
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[cfg_attr(not(workspace_std_only), derive(serde::Serialize), serde(rename_all = "camelCase"))]
+#[cfg_attr(
+    not(workspace_std_only),
+    derive(serde::Serialize),
+    serde(rename_all = "camelCase")
+)]
 pub struct Preview {
     /// `"worktreeinclude"`, `"settings"` or `"default"`, as in the reference (`NBt`).
     pub source: &'static str,
@@ -62,14 +66,24 @@ pub struct Preview {
 pub fn preview(root: &Path, settings_globs: Option<&str>) -> Result<Preview, WorkspaceError> {
     let source = resolve_source(root, settings_globs);
     let (label, contents) = match &source {
-        IncludeSource::WorktreeInclude => {
-            ("worktreeinclude", std::fs::read_to_string(root.join(WORKTREEINCLUDE)).map_err(WorkspaceError::Io)?)
+        IncludeSource::WorktreeInclude => (
+            "worktreeinclude",
+            std::fs::read_to_string(root.join(WORKTREEINCLUDE)).map_err(WorkspaceError::Io)?,
+        ),
+        IncludeSource::SettingsGlobs(_) => {
+            ("settings", settings_globs.unwrap_or_default().to_string())
         }
-        IncludeSource::SettingsGlobs(_) => ("settings", settings_globs.unwrap_or_default().to_string()),
         IncludeSource::Default => ("default", DEFAULT_GLOBS.join("\n")),
     };
-    let files = files_to_copy(root, &source)?.iter().map(|p| p.display().to_string()).collect();
-    Ok(Preview { source: label, contents, files })
+    let files = files_to_copy(root, &source)?
+        .iter()
+        .map(|p| p.display().to_string())
+        .collect();
+    Ok(Preview {
+        source: label,
+        contents,
+        files,
+    })
 }
 
 /// Paths (relative to `root`) that would be copied.
@@ -77,11 +91,17 @@ pub fn files_to_copy(root: &Path, source: &IncludeSource) -> Result<Vec<PathBuf>
     if matches!(source, IncludeSource::SettingsGlobs(g) if g.is_empty()) {
         return Ok(Vec::new());
     }
-    let mut args: Vec<String> = vec!["ls-files".into(), "-z".into(), "--others".into(), "--ignored".into()];
+    let mut args: Vec<String> = vec![
+        "ls-files".into(),
+        "-z".into(),
+        "--others".into(),
+        "--ignored".into(),
+    ];
     match source {
-        IncludeSource::WorktreeInclude => {
-            args.push(format!("--exclude-from={}", root.join(WORKTREEINCLUDE).display()))
-        }
+        IncludeSource::WorktreeInclude => args.push(format!(
+            "--exclude-from={}",
+            root.join(WORKTREEINCLUDE).display()
+        )),
         IncludeSource::SettingsGlobs(globs) => {
             for g in globs {
                 args.push("-x".into());
@@ -102,7 +122,11 @@ pub fn files_to_copy(root: &Path, source: &IncludeSource) -> Result<Vec<PathBuf>
             stderr: String::from_utf8_lossy(&out.stderr).trim().to_string(),
         });
     }
-    let candidates: Vec<&[u8]> = out.stdout.split(|b| *b == 0).filter(|s| !s.is_empty()).collect();
+    let candidates: Vec<&[u8]> = out
+        .stdout
+        .split(|b| *b == 0)
+        .filter(|s| !s.is_empty())
+        .collect();
     if candidates.is_empty() {
         return Ok(Vec::new());
     }
@@ -145,7 +169,11 @@ pub fn files_to_copy(root: &Path, source: &IncludeSource) -> Result<Vec<PathBuf>
 
 /// Copy the selected files from `root` into `dest`, never overwriting a file
 /// that already exists in `dest`. Returns the relative paths copied.
-pub fn copy_files(root: &Path, dest: &Path, files: &[PathBuf]) -> Result<Vec<PathBuf>, WorkspaceError> {
+pub fn copy_files(
+    root: &Path,
+    dest: &Path,
+    files: &[PathBuf],
+) -> Result<Vec<PathBuf>, WorkspaceError> {
     let mut copied = Vec::new();
     for rel in files {
         let from = root.join(rel);

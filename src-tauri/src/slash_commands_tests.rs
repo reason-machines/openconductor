@@ -133,6 +133,36 @@ fn output_serializes_like_conductors_fetch_slash_commands_output() {
     );
 }
 
+#[test]
+fn front_matter_gives_name_and_description() {
+    assert_eq!(
+        skill_front_matter(
+            "---\nname: oc-fixture\ndescription: \"Fixture: says hi\"\nother: x\n---\nBody"
+        ),
+        Some(("oc-fixture".into(), "Fixture: says hi".into()))
+    );
+    assert_eq!(skill_front_matter("no front matter"), None);
+    assert_eq!(
+        skill_front_matter("---\nname: x\n---\n"),
+        None,
+        "no description"
+    );
+}
+
+#[test]
+fn the_shipped_conductor_skill_is_listed_with_its_path() {
+    let plugin = Path::new(env!("CARGO_MANIFEST_DIR")).join("resources/conductor-skill");
+    let skill = bundled_skill(&plugin).expect("the bundled skill");
+    assert_eq!(skill.name, "conductor");
+    assert!(skill
+        .description
+        .starts_with("How OpenConductor workspaces"));
+    assert!(skill
+        .path
+        .ends_with("conductor-skill/skills/conductor/SKILL.md"));
+    assert!(Path::new(&skill.path).is_file());
+}
+
 #[cfg(unix)]
 mod processes {
     use super::*;

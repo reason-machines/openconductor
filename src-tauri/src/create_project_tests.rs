@@ -1,6 +1,6 @@
 use super::*;
-use oc_scripts::config::{load, SettingsPaths, SharedSource};
 use crate::test_exe::write_executable;
+use oc_scripts::config::{load, SettingsPaths, SharedSource};
 use std::path::PathBuf;
 
 /// A scratch dir with a `gh` stand-in whose `repo create` adds a local bare

@@ -14,6 +14,10 @@
 //!   `available_commands_update`) and the Session's skills from `reason
 //!   skills list` (personal and workspace).
 //!
+//! The bundled skill (`conductor-skill/skills/conductor/SKILL.md`) is
+//! added to the Codex and Reason skills; Claude Code already lists it, as
+//! it loads the bundle with `--plugin-dir`.
+//!
 //! A failed lookup comes back as `error` with empty lists, as Conductor's
 //! `fetch_slash_commands_output` does, so the menu still shows the
 //! app's built-in commands.
@@ -83,6 +87,62 @@ pub fn codex_commands() -> Vec<SlashCommand> {
         description: "Review uncommitted changes, or describe what to review".into(),
         argument_hint: "instructions".into(),
     }]
+}
+
+/// The `name` and `description` of a `SKILL.md`'s front matter (Conductor's
+/// `PX8`): plain `key: value` lines between `---` fences, quotes trimmed.
+pub fn skill_front_matter(text: &str) -> Option<(String, String)> {
+    let text = text.strip_prefix('\u{feff}').unwrap_or(text);
+    let mut lines = text.lines();
+    if lines.next()?.trim_end() != "---" {
+        return None;
+    }
+    let (mut name, mut description) = (None, None);
+    for line in lines {
+        if line.trim_end() == "---" {
+            break;
+        }
+        let Some((key, value)) = line.split_once(':') else {
+            continue;
+        };
+        let value = value
+            .trim()
+            .trim_matches(|c| c == '"' || c == '\'')
+            .to_owned();
+        match key.trim() {
+            "name" => name = Some(value),
+            "description" => description = Some(value),
+            _ => {}
+        }
+    }
+    Some((
+        name.filter(|n| !n.is_empty())?,
+        description.filter(|d| !d.is_empty())?,
+    ))
+}
+
+/// The bundled skill of the plugin directory `plugin`, if it has one.
+pub fn bundled_skill(plugin: &Path) -> Option<Skill> {
+    let path = plugin.join("skills/conductor/SKILL.md");
+    let (name, description) = skill_front_matter(&std::fs::read_to_string(&path).ok()?)?;
+    Some(Skill {
+        name,
+        description,
+        path: path.display().to_string(),
+        display_name: None,
+    })
+}
+
+/// `skills` with the bundled skill added at the end, unless one of the same
+/// name is already there.
+fn with_bundled(mut skills: Vec<Skill>) -> Vec<Skill> {
+    if let Some(skill) = crate::agent::claude_cli::bundled_plugin().and_then(|p| bundled_skill(&p))
+    {
+        if !skills.iter().any(|s| s.name == skill.name) {
+            skills.push(skill);
+        }
+    }
+    skills
 }
 
 // ---------------------------------------------------------------- Claude Code
@@ -364,7 +424,7 @@ pub async fn fetch_slash_commands(
         "codex" => match codex.launch(&settings, dir) {
             Err(e) => SlashCommandsOutput {
                 slash_commands: codex_commands(),
-                skills: Vec::new(),
+                skills: with_bundled(Vec::new()),
                 error: Some(e),
             },
             Ok(launch) => {
@@ -372,7 +432,7 @@ pub async fn fetch_slash_commands(
                 SlashCommandsOutput {
                     slash_commands: codex_commands(),
                     error: result.as_ref().err().cloned(),
-                    skills: result.unwrap_or_default(),
+                    skills: with_bundled(result.unwrap_or_default()),
                 }
             }
         },
@@ -380,13 +440,20 @@ pub async fn fetch_slash_commands(
             std::env::var_os("PATH").as_deref(),
             home().as_deref(),
         ) {
-            None => SlashCommandsOutput::failed("The Reason CLI was not found."),
-            Some(cli) => blocking(move || reason_lookup(&cli, &dir, LOOKUP_TIMEOUT))
-                .await
-                .map_or_else(SlashCommandsOutput::failed, |skills| SlashCommandsOutput {
-                    skills,
+            None => SlashCommandsOutput {
+                skills: with_bundled(Vec::new()),
+                ..SlashCommandsOutput::failed("The Reason CLI was not found.")
+            },
+            Some(cli) => match blocking(move || reason_lookup(&cli, &dir, LOOKUP_TIMEOUT)).await {
+                Ok(skills) => SlashCommandsOutput {
+                    skills: with_bundled(skills),
                     ..Default::default()
-                }),
+                },
+                Err(e) => SlashCommandsOutput {
+                    skills: with_bundled(Vec::new()),
+                    ..SlashCommandsOutput::failed(e)
+                },
+            },
         },
         other => SlashCommandsOutput::failed(format!("unknown agent {other}")),
     };

@@ -44,6 +44,11 @@ pub fn set_bundled_plugin_dir(resource_dir: &Path) {
     }
 }
 
+/// The bundled plugin directory remembered at startup, if any.
+pub fn bundled_plugin() -> Option<PathBuf> {
+    BUNDLED_PLUGIN_DIR.get().cloned()
+}
+
 /// Claude Code permission modes. The six values the reference app offers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]

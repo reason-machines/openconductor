@@ -1,7 +1,7 @@
 // Run: node --test "src/**/*.test.ts"
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { codexSkillMessage, commandKey, commandLabel, commandSet, completeCommand, isKnownCommand, matchCommands, parseSlashCommand, skillMentions, slashQuery } from "./slashCommands.ts";
+import { codexSkillMessage, commandKey, commandLabel, commandSet, completeCommand, isKnownCommand, matchCommands, parseSlashCommand, reasonSkillMessage, skillMentions, slashQuery } from "./slashCommands.ts";
 
 const names = (cs: { name: string }[]) => cs.map((c) => c.name);
 
@@ -126,4 +126,9 @@ test("Codex skill mentions: $name of a known skill, once each, in order", () => 
   assert.deepEqual(skillMentions("costs $5 and $unknown, not a$other", skills), []);
   assert.equal(codexSkillMessage("oc-fixture", "say hi"), "$oc-fixture say hi");
   assert.equal(codexSkillMessage("oc-fixture", ""), "$oc-fixture");
+});
+
+test("Reason runs its own skills by name and reads a skill file from its link", () => {
+  assert.equal(reasonSkillMessage("bro", "reason-skill:abc", "hi"), "/bro hi");
+  assert.equal(reasonSkillMessage("conductor", "/App/conductor-skill/skills/conductor/SKILL.md", ""), "[conductor](/App/conductor-skill/skills/conductor/SKILL.md)");
 });

@@ -388,7 +388,10 @@ fn diff_appearance_settings_default_and_round_trip() {
     save(&path, &s).unwrap();
     let text = fs::read_to_string(&path).unwrap();
     assert!(text.contains("file_ligatures_enabled = false"), "{text}");
-    assert!(text.contains("color_vision = \"protanopia-deuteranopia\""), "{text}");
+    assert!(
+        text.contains("color_vision = \"protanopia-deuteranopia\""),
+        "{text}"
+    );
     assert!(text.contains("code_theme = \"tokyo-night\""), "{text}");
     assert_eq!(load(&path).unwrap().appearance, s.appearance);
 

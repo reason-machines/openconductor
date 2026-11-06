@@ -307,14 +307,15 @@ pub async fn unarchive_workspace(
     workspace_id: &str,
     use_new_branch: bool,
 ) -> Result<UnarchiveResultDto, ArchiveFailureDto> {
-    let not_restored = |branch: Option<String>, scenario: Option<&'static str>| UnarchiveResultDto {
-        restored: false,
-        branch,
-        recreated_branch: false,
-        restored_changes: false,
-        notices: vec![],
-        scenario,
-    };
+    let not_restored =
+        |branch: Option<String>, scenario: Option<&'static str>| UnarchiveResultDto {
+            restored: false,
+            branch,
+            recreated_branch: false,
+            restored_changes: false,
+            notices: vec![],
+            scenario,
+        };
     let Some(_guard) = deps.in_flight.claim(workspace_id) else {
         return Ok(not_restored(None, None));
     };
@@ -334,25 +335,28 @@ pub async fn unarchive_workspace(
         let t = target.clone();
         let commit = commit.clone();
         let dir = target.directory_name.clone();
-        let step = tokio::task::spawn_blocking(move || -> Result<Result<archive::Restored, &'static str>, ArchiveFailureDto> {
-            let mut t = t;
-            if use_new_branch {
-                t.branch = archive::create_restore_branch(&t, commit.as_deref()).map_err(failed)?;
-            } else if let Some(s) = archive::restore_scenario(&t, commit.as_deref()) {
-                return Ok(Err(s.as_str()));
-            }
-            archive::restore(&t, commit.as_deref(), Some(&root), use_new_branch)
-                .map(Ok)
-                .map_err(|e| match e {
-                    archive::RestoreError::DirectoryExists(p) => ArchiveFailureDto {
-                        code: "UnarchiveDirectoryExists",
-                        message: archive::RestoreError::DirectoryExists(p.clone()).to_string(),
-                        path: Some(p.display().to_string()),
-                        directory_name: Some(dir),
-                    },
-                    archive::RestoreError::Failed(m) => failed(m),
-                })
-        })
+        let step = tokio::task::spawn_blocking(
+            move || -> Result<Result<archive::Restored, &'static str>, ArchiveFailureDto> {
+                let mut t = t;
+                if use_new_branch {
+                    t.branch =
+                        archive::create_restore_branch(&t, commit.as_deref()).map_err(failed)?;
+                } else if let Some(s) = archive::restore_scenario(&t, commit.as_deref()) {
+                    return Ok(Err(s.as_str()));
+                }
+                archive::restore(&t, commit.as_deref(), Some(&root), use_new_branch)
+                    .map(Ok)
+                    .map_err(|e| match e {
+                        archive::RestoreError::DirectoryExists(p) => ArchiveFailureDto {
+                            code: "UnarchiveDirectoryExists",
+                            message: archive::RestoreError::DirectoryExists(p.clone()).to_string(),
+                            path: Some(p.display().to_string()),
+                            directory_name: Some(dir),
+                        },
+                        archive::RestoreError::Failed(m) => failed(m),
+                    })
+            },
+        )
         .await
         .map_err(|e| failed(e.to_string()))??;
         match step {
@@ -362,9 +366,14 @@ pub async fn unarchive_workspace(
     };
     target.branch = restored.branch.clone();
     if use_new_branch {
-        openconductor_db::workspaces::rename_branch(pool, workspace_id, &restored.branch, w.placeholder_branch_name.as_deref())
-            .await
-            .map_err(|e| failed(e.to_string()))?;
+        openconductor_db::workspaces::rename_branch(
+            pool,
+            workspace_id,
+            &restored.branch,
+            w.placeholder_branch_name.as_deref(),
+        )
+        .await
+        .map_err(|e| failed(e.to_string()))?;
     }
     // `markSettingUpAfterUnarchive`, then ready: the setup script's state
     // lives in the UI, as for a new workspace.
@@ -414,7 +423,10 @@ pub async fn unarchive_conflict_path(
     }
     let t = target_of(pool, &row).await?;
     if !t.workspace_path.exists() {
-        return Err(failed(format!("{} does not exist", t.workspace_path.display())));
+        return Err(failed(format!(
+            "{} does not exist",
+            t.workspace_path.display()
+        )));
     }
     Ok(t.workspace_path)
 }
@@ -425,7 +437,11 @@ pub async fn reveal_unarchive_conflict(
     workspace_id: &str,
 ) -> Result<(), ArchiveFailureDto> {
     let path = unarchive_conflict_path(pool, workspace_id).await?;
-    let opener = if cfg!(target_os = "macos") { "open" } else { "xdg-open" };
+    let opener = if cfg!(target_os = "macos") {
+        "open"
+    } else {
+        "xdg-open"
+    };
     std::process::Command::new(opener)
         .arg(&path)
         .spawn()
@@ -463,7 +479,8 @@ pub async fn delete_workspace(
     openconductor_db::workspaces::delete(pool, workspace_id)
         .await
         .map_err(|e| failed(e.to_string()))?;
-    if let Some(path) = path.filter(|p| !p.as_os_str().is_empty() && p != &repo_root && p.exists()) {
+    if let Some(path) = path.filter(|p| !p.as_os_str().is_empty() && p != &repo_root && p.exists())
+    {
         let root = repo_root.clone();
         let _ = tokio::task::spawn_blocking(move || {
             if let Err(e) = std::fs::remove_dir_all(&path) {

@@ -5,8 +5,8 @@
 //! own terminal.
 
 use std::ffi::OsStr;
-use std::path::{Path, PathBuf};
 use std::io::Read;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Output, Stdio};
 use std::sync::mpsc;
 use std::thread;
@@ -29,7 +29,10 @@ where
     I: IntoIterator<Item = S>,
     S: AsRef<OsStr>,
 {
-    let args: Vec<_> = args.into_iter().map(|a| a.as_ref().to_os_string()).collect();
+    let args: Vec<_> = args
+        .into_iter()
+        .map(|a| a.as_ref().to_os_string())
+        .collect();
     Command::new("git")
         .arg("-C")
         .arg(dir)
@@ -46,13 +49,19 @@ where
     I: IntoIterator<Item = S>,
     S: AsRef<OsStr>,
 {
-    let args: Vec<_> = args.into_iter().map(|a| a.as_ref().to_os_string()).collect();
+    let args: Vec<_> = args
+        .into_iter()
+        .map(|a| a.as_ref().to_os_string())
+        .collect();
     let out = git_raw(dir, &args)?;
     if out.status.success() {
         Ok(out)
     } else {
         Err(WorkspaceError::Git {
-            args: args.iter().map(|a| a.to_string_lossy().into_owned()).collect(),
+            args: args
+                .iter()
+                .map(|a| a.to_string_lossy().into_owned())
+                .collect(),
             stderr: String::from_utf8_lossy(&out.stderr).trim().to_string(),
         })
     }
@@ -79,7 +88,10 @@ pub fn clone(url: &str, dest: &Path, on_line: &mut dyn FnMut(&str)) -> Result<()
         .spawn()
         .map_err(WorkspaceError::Io)?;
     let (tx, rx) = mpsc::channel();
-    let stdout = child.stdout.take().map(|r| spawn_line_reader(r, false, tx.clone()));
+    let stdout = child
+        .stdout
+        .take()
+        .map(|r| spawn_line_reader(r, false, tx.clone()));
     let stderr = child.stderr.take().map(|r| spawn_line_reader(r, true, tx));
     let (mut out, mut err) = (Vec::new(), Vec::new());
     for (is_err, line) in rx {
@@ -93,7 +105,9 @@ pub fn clone(url: &str, dest: &Path, on_line: &mut dyn FnMut(&str)) -> Result<()
     if status.success() {
         return Ok(());
     }
-    let code = status.code().map_or_else(|| "unknown".to_string(), |c| c.to_string());
+    let code = status
+        .code()
+        .map_or_else(|| "unknown".to_string(), |c| c.to_string());
     Err(WorkspaceError::CloneFailed(format!(
         "Git clone failed with code {code}\n\nSTDOUT:\n{}\n\nSTDERR:\n{}",
         out.join("\n"),
@@ -137,14 +151,19 @@ where
     I: IntoIterator<Item = S>,
     S: AsRef<OsStr>,
 {
-    git_raw(dir, args).map(|o| o.status.success()).unwrap_or(false)
+    git_raw(dir, args)
+        .map(|o| o.status.success())
+        .unwrap_or(false)
 }
 
 /// Resolve the main checkout of the repository containing `dir`, so a path
 /// inside any linked worktree maps to the repository root.
 pub fn toplevel(dir: &Path) -> Result<PathBuf, WorkspaceError> {
     let top = PathBuf::from(git(dir, ["rev-parse", "--show-toplevel"])?);
-    let common = PathBuf::from(git(dir, ["rev-parse", "--path-format=absolute", "--git-common-dir"])?);
+    let common = PathBuf::from(git(
+        dir,
+        ["rev-parse", "--path-format=absolute", "--git-common-dir"],
+    )?);
     match (common.file_name(), common.parent()) {
         (Some(n), Some(parent)) if n == ".git" => Ok(parent.to_path_buf()),
         _ => Ok(top),
@@ -152,7 +171,15 @@ pub fn toplevel(dir: &Path) -> Result<PathBuf, WorkspaceError> {
 }
 
 pub fn branch_exists(repo: &Path, branch: &str) -> bool {
-    git_ok(repo, ["show-ref", "--verify", "--quiet", &format!("refs/heads/{branch}")])
+    git_ok(
+        repo,
+        [
+            "show-ref",
+            "--verify",
+            "--quiet",
+            &format!("refs/heads/{branch}"),
+        ],
+    )
 }
 
 /// Whether a new workspace cannot use `branch`: a local branch or any
@@ -165,11 +192,29 @@ pub fn branch_name_is_taken(repo: &Path, branch: &str) -> Result<bool, Workspace
         return Ok(true);
     }
     for remote in git(repo, ["remote"])?.lines().filter(|l| !l.is_empty()) {
-        if git_ok(repo, ["show-ref", "--verify", "--quiet", &format!("refs/remotes/{remote}/{branch}")]) {
+        if git_ok(
+            repo,
+            [
+                "show-ref",
+                "--verify",
+                "--quiet",
+                &format!("refs/remotes/{remote}/{branch}"),
+            ],
+        ) {
             return Ok(true);
         }
     }
-    if !git(repo, ["for-each-ref", "--count=1", "--format=%(refname)", &format!("refs/heads/{branch}/")])?.is_empty() {
+    if !git(
+        repo,
+        [
+            "for-each-ref",
+            "--count=1",
+            "--format=%(refname)",
+            &format!("refs/heads/{branch}/"),
+        ],
+    )?
+    .is_empty()
+    {
         return Ok(true);
     }
     let parts: Vec<&str> = branch.split('/').collect();
@@ -181,7 +226,15 @@ pub fn remote_exists(repo: &Path, remote: &str) -> bool {
 }
 
 pub fn ref_exists(repo: &Path, rev: &str) -> bool {
-    git_ok(repo, ["rev-parse", "--verify", "--quiet", &format!("{rev}^{{commit}}")])
+    git_ok(
+        repo,
+        [
+            "rev-parse",
+            "--verify",
+            "--quiet",
+            &format!("{rev}^{{commit}}"),
+        ],
+    )
 }
 
 /// `git check-ref-format --branch`: is `name` a legal branch name?
@@ -192,7 +245,15 @@ pub fn valid_branch_name(repo: &Path, name: &str) -> bool {
 /// Default branch of `origin` (from `refs/remotes/origin/HEAD`), falling back
 /// to the branch checked out in the repository root, then `main`.
 pub fn default_branch(repo: &Path) -> String {
-    if let Ok(r) = git(repo, ["symbolic-ref", "--quiet", "--short", "refs/remotes/origin/HEAD"]) {
+    if let Ok(r) = git(
+        repo,
+        [
+            "symbolic-ref",
+            "--quiet",
+            "--short",
+            "refs/remotes/origin/HEAD",
+        ],
+    ) {
         if let Some(b) = r.strip_prefix("origin/") {
             return b.to_string();
         }
@@ -276,7 +337,11 @@ pub fn parse_branch_refs(text: &str, remotes: &[String]) -> Vec<BranchRef> {
 
 /// True when the worktree has staged, unstaged or untracked (non-ignored) changes.
 pub fn is_dirty(worktree: &Path) -> Result<bool, WorkspaceError> {
-    Ok(!git(worktree, ["status", "--porcelain", "--untracked-files=normal"])?.is_empty())
+    Ok(!git(
+        worktree,
+        ["status", "--porcelain", "--untracked-files=normal"],
+    )?
+    .is_empty())
 }
 
 /// One entry of `git worktree list --porcelain`.
@@ -292,7 +357,10 @@ pub struct WorktreeEntry {
 }
 
 pub fn list_worktrees(repo: &Path) -> Result<Vec<WorktreeEntry>, WorkspaceError> {
-    Ok(parse_worktree_porcelain(&git(repo, ["worktree", "list", "--porcelain"])?))
+    Ok(parse_worktree_porcelain(&git(
+        repo,
+        ["worktree", "list", "--porcelain"],
+    )?))
 }
 
 pub fn parse_worktree_porcelain(text: &str) -> Vec<WorktreeEntry> {
@@ -368,13 +436,15 @@ fn git_path(worktree: &Path, name: &str) -> Result<PathBuf, WorkspaceError> {
 /// conflicted SQUASH_MSG, CHERRY_PICK_HEAD, REVERT_HEAD.
 pub fn busy_state(worktree: &Path) -> Result<BusyState, WorkspaceError> {
     git(worktree, ["rev-parse", "--is-inside-work-tree"])?;
-    if git_path(worktree, "rebase-merge")?.is_dir() || git_path(worktree, "rebase-apply")?.is_dir() {
+    if git_path(worktree, "rebase-merge")?.is_dir() || git_path(worktree, "rebase-apply")?.is_dir()
+    {
         return Ok(BusyState::Rebase);
     }
     if git_path(worktree, "MERGE_HEAD")?.exists() {
         return Ok(BusyState::Merge);
     }
-    if git_path(worktree, "SQUASH_MSG")?.exists() && !git(worktree, ["ls-files", "-u"])?.is_empty() {
+    if git_path(worktree, "SQUASH_MSG")?.exists() && !git(worktree, ["ls-files", "-u"])?.is_empty()
+    {
         return Ok(BusyState::SquashMerge);
     }
     if git_path(worktree, "CHERRY_PICK_HEAD")?.exists() {
@@ -400,17 +470,31 @@ pub const PUSH_UPSTREAM_WARNING: &str =
 /// warning is returned unless push.autoSetupRemote is already true anyway.
 /// Returns `Some(warning)` when the setting could not be applied.
 pub fn configure_push_upstream(main_root: &Path, worktree: &Path) -> Option<&'static str> {
-    if git_ok(worktree, ["config", "--worktree", "--get", "push.autoSetupRemote"]) {
+    if git_ok(
+        worktree,
+        ["config", "--worktree", "--get", "push.autoSetupRemote"],
+    ) {
         return None;
     }
-    let shared = |key: &str| git(main_root, ["config", "--get", key]).ok().filter(|v| !v.is_empty());
+    let shared = |key: &str| {
+        git(main_root, ["config", "--get", key])
+            .ok()
+            .filter(|v| !v.is_empty())
+    };
     let core_worktree = shared("core.worktree").is_some();
     let core_bare = shared("core.bare").is_some_and(|v| v.eq_ignore_ascii_case("true"));
     if core_worktree || core_bare {
-        let already = git(worktree, ["config", "--type=bool", "--get", "push.autoSetupRemote"]).is_ok_and(|v| v == "true");
+        let already = git(
+            worktree,
+            ["config", "--type=bool", "--get", "push.autoSetupRemote"],
+        )
+        .is_ok_and(|v| v == "true");
         return (!already).then_some(PUSH_UPSTREAM_WARNING);
     }
     let ok = git_ok(main_root, ["config", "extensions.worktreeConfig", "true"])
-        && git_ok(worktree, ["config", "--worktree", "push.autoSetupRemote", "true"]);
+        && git_ok(
+            worktree,
+            ["config", "--worktree", "push.autoSetupRemote", "true"],
+        );
     (!ok).then_some(PUSH_UPSTREAM_WARNING)
 }

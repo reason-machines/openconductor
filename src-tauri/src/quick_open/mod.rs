@@ -125,7 +125,9 @@ pub fn fuzzy_filter(
     exclude_directories: bool,
     max_results: usize,
 ) -> Vec<FuzzyMatch> {
-    let candidates = files.iter().filter(|f| !(exclude_directories && f.is_directory));
+    let candidates = files
+        .iter()
+        .filter(|f| !(exclude_directories && f.is_directory));
     let query = query.trim();
     if query.is_empty() {
         return candidates
@@ -231,12 +233,22 @@ pub fn fuzzy_filter_files(
     let files = cache
         .get(Path::new(workspace_path), INDEX_TTL)
         .map_err(|e| e.to_string())?;
-    Ok(fuzzy_filter(&files, workspace_path, query, exclude_directories, MAX_RESULTS))
+    Ok(fuzzy_filter(
+        &files,
+        workspace_path,
+        query,
+        exclude_directories,
+        MAX_RESULTS,
+    ))
 }
 
 /// Body of the `fuzzy_match_files` command: rank a caller-supplied list (used
 /// for remote workspaces and @-mentions, where Rust cannot walk the tree).
 /// Paths are matched as given.
-pub fn fuzzy_match_files(files: &[FileEntry], query: &str, exclude_directories: bool) -> Vec<FuzzyMatch> {
+pub fn fuzzy_match_files(
+    files: &[FileEntry],
+    query: &str,
+    exclude_directories: bool,
+) -> Vec<FuzzyMatch> {
     fuzzy_filter(files, "", query, exclude_directories, MAX_RESULTS)
 }

@@ -22,7 +22,10 @@ pub fn startup(db: &Db, service: &WorkspaceService) -> Result<(), Box<dyn std::e
         // last run go idle; `needs_user_input` survives.
         openconductor_db::sessions::reset_busy_to_idle_at_startup(pool).await?;
         for repo in service.repositories() {
-            if openconductor_db::repos::get(pool, &repo.id).await?.is_some() {
+            if openconductor_db::repos::get(pool, &repo.id)
+                .await?
+                .is_some()
+            {
                 continue;
             }
             let worktrees: Vec<_> = service
@@ -48,7 +51,9 @@ pub async fn db_list_repos(db: State<'_, Db>) -> Result<Vec<RepoRow>, String> {
 /// JS: `invoke("db_list_workspaces")`, oldest first, every state.
 #[tauri::command]
 pub async fn db_list_workspaces(db: State<'_, Db>) -> Result<Vec<WorkspaceRow>, String> {
-    store::list_workspaces(&db.0).await.map_err(|e| e.to_string())
+    store::list_workspaces(&db.0)
+        .await
+        .map_err(|e| e.to_string())
 }
 
 /// JS: `invoke("db_set_workspace_target_branch", { workspaceId, branch })`:
@@ -128,7 +133,9 @@ pub fn known_workspace(repository_id: &str, w: &Workspace) -> KnownWorkspace {
 
 /// `add_repository` succeeded.
 pub async fn on_repository_added(db: &Db, repo: &RepositoryInfo) -> Result<(), String> {
-    store::record_repository(&db.0, &known_repo(repo)).await.map_err(|e| e.to_string())
+    store::record_repository(&db.0, &known_repo(repo))
+        .await
+        .map_err(|e| e.to_string())
 }
 
 /// Before the worktree is created: record the repository and, when the
@@ -140,19 +147,29 @@ pub async fn on_create_started(
     branch_name: Option<&str>,
     parent_branch: &str,
 ) -> Option<String> {
-    log_err("record repository", store::record_repository(&db.0, &known_repo(repo)).await);
+    log_err(
+        "record repository",
+        store::record_repository(&db.0, &known_repo(repo)).await,
+    );
     let dir = directory_name.map(str::trim).filter(|d| !d.is_empty())?;
     let pending = KnownWorkspace {
         id: format!("{}/{dir}", repo.id),
         repository_id: repo.id.clone(),
         directory_name: dir.to_string(),
-        branch: branch_name.map(str::trim).filter(|b| !b.is_empty()).unwrap_or(dir).to_string(),
+        branch: branch_name
+            .map(str::trim)
+            .filter(|b| !b.is_empty())
+            .unwrap_or(dir)
+            .to_string(),
         path: String::new(),
         archived: false,
     };
     // A leftover row with this id (an archived workspace) blocks the insert;
     // `on_create_finished` replaces it.
-    store::begin_workspace(&db.0, &pending, Some(parent_branch)).await.ok().map(|_| pending.id)
+    store::begin_workspace(&db.0, &pending, Some(parent_branch))
+        .await
+        .ok()
+        .map(|_| pending.id)
 }
 
 /// The worktree exists: its row becomes `ready` with the initialization log
@@ -186,13 +203,19 @@ pub async fn on_create_finished(
 /// Creating the worktree failed: drop the `initializing` row.
 pub async fn on_create_failed(db: &Db, pending: Option<String>) {
     if let Some(id) = pending {
-        log_err("drop initializing workspace", store::abandon_workspace(&db.0, &id).await.map(drop));
+        log_err(
+            "drop initializing workspace",
+            store::abandon_workspace(&db.0, &id).await.map(drop),
+        );
     }
 }
 
 /// `rename_workspace_branch` succeeded.
 pub async fn on_branch_renamed(db: &Db, workspace_id: &str, branch: &str) {
-    log_err("record branch rename", store::record_rename(&db.0, workspace_id, branch).await);
+    log_err(
+        "record branch rename",
+        store::record_rename(&db.0, workspace_id, branch).await,
+    );
 }
 
 fn log_err(what: &str, r: openconductor_db::Result<()>) {

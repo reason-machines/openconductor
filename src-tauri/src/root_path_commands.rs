@@ -27,7 +27,8 @@ const LAST_CLONE_DIRECTORY_KEY: &str = "last_clone_directory";
 
 /// The saved root, if any. Read at startup before the workspace service.
 pub fn root_from_settings(db: &Db) -> Option<PathBuf> {
-    let saved = tauri::async_runtime::block_on(openconductor_db::app_settings::get(&db.0, ROOT_PATH_KEY));
+    let saved =
+        tauri::async_runtime::block_on(openconductor_db::app_settings::get(&db.0, ROOT_PATH_KEY));
     match saved {
         Ok(Some(path)) if !path.trim().is_empty() => Some(PathBuf::from(path)),
         Ok(_) => None,
@@ -63,9 +64,18 @@ pub fn get_conductor_root(service: State<'_, WorkspaceService>) -> String {
 /// JS: `invoke("repo_workspaces_path", { repoId })`: the repository's
 /// workspaces directory ("Workspaces path" in its settings).
 #[tauri::command]
-pub fn repo_workspaces_path(service: State<'_, WorkspaceService>, repo_id: String) -> Result<String, String> {
-    let root = service.repository_root(&repo_id).map_err(|e| e.to_string())?;
-    Ok(service.manager().workspaces_dir(&root).display().to_string())
+pub fn repo_workspaces_path(
+    service: State<'_, WorkspaceService>,
+    repo_id: String,
+) -> Result<String, String> {
+    let root = service
+        .repository_root(&repo_id)
+        .map_err(|e| e.to_string())?;
+    Ok(service
+        .manager()
+        .workspaces_dir(&root)
+        .display()
+        .to_string())
 }
 
 /// JS: `invoke("change_conductor_root", { newPath })`: forget every
@@ -82,13 +92,20 @@ pub async fn change_conductor_root(
     // Directories first (the reference creates them last), so a root we
     // cannot write to leaves everything as it was.
     for dir in ["repos", "workspaces", "archived-contexts"] {
-        std::fs::create_dir_all(new.join(dir)).map_err(|e| format!("Could not create {}: {e}", new.join(dir).display()))?;
+        std::fs::create_dir_all(new.join(dir))
+            .map_err(|e| format!("Could not create {}: {e}", new.join(dir).display()))?;
     }
-    openconductor_db::maintenance::forget_repositories(&db.0).await.map_err(|e| e.to_string())?;
+    openconductor_db::maintenance::forget_repositories(&db.0)
+        .await
+        .map_err(|e| e.to_string())?;
     service.forget_repositories().map_err(|e| e.to_string())?;
     let saved = new.display().to_string();
-    openconductor_db::app_settings::set(&db.0, ROOT_PATH_KEY, &saved).await.map_err(|e| e.to_string())?;
-    openconductor_db::app_settings::delete(&db.0, LAST_CLONE_DIRECTORY_KEY).await.map_err(|e| e.to_string())?;
+    openconductor_db::app_settings::set(&db.0, ROOT_PATH_KEY, &saved)
+        .await
+        .map_err(|e| e.to_string())?;
+    openconductor_db::app_settings::delete(&db.0, LAST_CLONE_DIRECTORY_KEY)
+        .await
+        .map_err(|e| e.to_string())?;
     app.request_restart();
     Ok(saved)
 }
@@ -101,8 +118,15 @@ mod tests {
     fn refuses_empty_relative_and_unchanged_roots() {
         let cur = Path::new("/data/oc");
         assert!(check_new_root(cur, "  ").is_err());
-        assert!(check_new_root(cur, "conductor").unwrap_err().contains("absolute"));
-        assert!(check_new_root(cur, "/data/oc").unwrap_err().contains("already"));
-        assert_eq!(check_new_root(cur, " /Users/me/oc ").unwrap(), PathBuf::from("/Users/me/oc"));
+        assert!(check_new_root(cur, "conductor")
+            .unwrap_err()
+            .contains("absolute"));
+        assert!(check_new_root(cur, "/data/oc")
+            .unwrap_err()
+            .contains("already"));
+        assert_eq!(
+            check_new_root(cur, " /Users/me/oc ").unwrap(),
+            PathBuf::from("/Users/me/oc")
+        );
     }
 }

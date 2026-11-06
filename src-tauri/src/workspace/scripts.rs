@@ -57,9 +57,18 @@ impl ScriptContext {
         let mut v = vec![
             (format!("{p}_WORKSPACE_NAME"), self.workspace_name.clone()),
             (format!("{p}_WORKSPACE_ID"), self.workspace_id.clone()),
-            (format!("{p}_WORKSPACE_PATH"), self.workspace_path.display().to_string()),
-            (format!("{p}_ROOT_PATH"), self.root_path.display().to_string()),
-            (format!("{p}_IS_LOCAL"), if self.is_local { "1" } else { "0" }.to_string()),
+            (
+                format!("{p}_WORKSPACE_PATH"),
+                self.workspace_path.display().to_string(),
+            ),
+            (
+                format!("{p}_ROOT_PATH"),
+                self.root_path.display().to_string(),
+            ),
+            (
+                format!("{p}_IS_LOCAL"),
+                if self.is_local { "1" } else { "0" }.to_string(),
+            ),
         ];
         if self.is_local {
             if let Some(b) = &self.default_branch {
@@ -107,7 +116,11 @@ impl ScriptOutput {
 }
 
 /// Run a setup or archive script to completion.
-pub fn run_to_completion(kind: ScriptKind, script: &str, ctx: &ScriptContext) -> Result<ScriptOutput, WorkspaceError> {
+pub fn run_to_completion(
+    kind: ScriptKind,
+    script: &str,
+    ctx: &ScriptContext,
+) -> Result<ScriptOutput, WorkspaceError> {
     let out = command_for(script, ctx)
         .stdin(Stdio::null())
         .output()

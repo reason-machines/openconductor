@@ -73,7 +73,10 @@ impl WorkspaceService {
                     let mut cols = line.split('\t');
                     if let (Some(id), Some(root)) = (cols.next(), cols.next()) {
                         let root = PathBuf::from(root);
-                        let name = cols.next().filter(|n| !n.is_empty()).map_or_else(|| folder_name(&root), str::to_string);
+                        let name = cols
+                            .next()
+                            .filter(|n| !n.is_empty())
+                            .map_or_else(|| folder_name(&root), str::to_string);
                         repos.insert(id.to_string(), Entry { root, name });
                     }
                 }
@@ -81,7 +84,11 @@ impl WorkspaceService {
             Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
             Err(e) => return Err(e.into()),
         }
-        Ok(Self { manager: WorkspaceManager::new(data_dir), registry_file, repos: Mutex::new(repos) })
+        Ok(Self {
+            manager: WorkspaceManager::new(data_dir),
+            registry_file,
+            repos: Mutex::new(repos),
+        })
     }
 
     /// Keep workspaces, archive records and default clones under `root` (the
@@ -116,7 +123,9 @@ impl WorkspaceService {
         let mut repos = self.repos.lock().expect("registry lock");
         let name = naming::uniquify(&folder_name(&root), |c| self.name_taken(&repos, c));
         let slug = naming::slugify(&name);
-        let id = naming::uniquify(if slug.is_empty() { "repo" } else { &slug }, |c| repos.contains_key(c));
+        let id = naming::uniquify(if slug.is_empty() { "repo" } else { &slug }, |c| {
+            repos.contains_key(c)
+        });
         let entry = Entry { root, name };
         repos.insert(id.clone(), entry.clone());
         self.save(&repos)?;
@@ -128,7 +137,11 @@ impl WorkspaceService {
     /// on the root containing `path`, else a new one ([`Self::add_repository`]).
     /// For lookups by a sidebar repo (branch lists, Create workspace), which
     /// must not add a `<name>-v1` project the way Open project does.
-    pub fn ensure_repository(&self, id: Option<&str>, path: &Path) -> Result<RepositoryInfo, WorkspaceError> {
+    pub fn ensure_repository(
+        &self,
+        id: Option<&str>,
+        path: &Path,
+    ) -> Result<RepositoryInfo, WorkspaceError> {
         {
             let repos = self.repos.lock().expect("registry lock");
             if let Some((id, e)) = id.and_then(|id| repos.get_key_value(id)) {
@@ -145,7 +158,14 @@ impl WorkspaceService {
     /// Conductor's `makeRepoNameUnique` test: another project has the name, or
     /// `<root>/workspaces/<name>` exists.
     fn name_taken(&self, repos: &BTreeMap<String, Entry>, name: &str) -> bool {
-        repos.values().any(|e| e.name == name) || self.manager.root().join("workspaces").join(name).symlink_metadata().is_ok()
+        repos.values().any(|e| e.name == name)
+            || self
+                .manager
+                .root()
+                .join("workspaces")
+                .join(name)
+                .symlink_metadata()
+                .is_ok()
     }
 
     /// Forget one registered repository (no files are touched).
@@ -176,20 +196,26 @@ impl WorkspaceService {
         on_progress: &mut dyn FnMut(&str),
     ) -> Result<RepositoryInfo, WorkspaceError> {
         let url = url.trim();
-        let name = naming::repo_name_from_url(url).ok_or_else(|| WorkspaceError::InvalidCloneUrl(url.to_string()))?;
+        let name = naming::repo_name_from_url(url)
+            .ok_or_else(|| WorkspaceError::InvalidCloneUrl(url.to_string()))?;
         on_progress("Creating directory structure...");
         if !parent_dir.is_dir() {
             if parent_dir != self.default_clone_dir() {
                 return Err(WorkspaceError::TargetMissing(parent_dir.to_path_buf()));
             }
-            on_progress(&format!("Creating default directory: {}", parent_dir.display()));
+            on_progress(&format!(
+                "Creating default directory: {}",
+                parent_dir.display()
+            ));
             std::fs::create_dir_all(parent_dir)?;
         }
         // Like `makeRepoNameUnique(name, clonePath)`: free in the clone folder
         // and as a project name, so the folder and the project share it.
         let name = {
             let repos = self.repos.lock().expect("registry lock");
-            naming::uniquify(&name, |c| parent_dir.join(c).symlink_metadata().is_ok() || self.name_taken(&repos, c))
+            naming::uniquify(&name, |c| {
+                parent_dir.join(c).symlink_metadata().is_ok() || self.name_taken(&repos, c)
+            })
         };
         let dest = parent_dir.join(name);
         on_progress("Cloning repository...");
@@ -206,12 +232,18 @@ impl WorkspaceService {
 
     pub fn repository_root(&self, id: &str) -> Result<PathBuf, WorkspaceError> {
         let repos = self.repos.lock().expect("registry lock");
-        repos.get(id).map(|e| e.root.clone()).ok_or_else(|| WorkspaceError::UnknownRepository(id.to_string()))
+        repos
+            .get(id)
+            .map(|e| e.root.clone())
+            .ok_or_else(|| WorkspaceError::UnknownRepository(id.to_string()))
     }
 
     /// Create a workspace from the new-workspace form. Fetches `origin` first
     /// so the branch starts from the latest remote base (local base offline).
-    pub fn create_workspace(&self, req: &CreateWorkspaceRequest) -> Result<Created, WorkspaceError> {
+    pub fn create_workspace(
+        &self,
+        req: &CreateWorkspaceRequest,
+    ) -> Result<Created, WorkspaceError> {
         let root = self.repository_root(&req.repository_id)?;
         let opts = CreateOptions {
             name: non_empty(&req.directory_name),
@@ -240,11 +272,18 @@ impl WorkspaceService {
         enabled: impl Fn(&std::path::Path, &std::path::Path) -> bool,
     ) -> Vec<(String, &'static str)> {
         // Several projects can share a root; each root's workspaces once.
-        let roots: std::collections::BTreeSet<PathBuf> =
-            self.repos.lock().expect("registry lock").values().map(|e| e.root.clone()).collect();
+        let roots: std::collections::BTreeSet<PathBuf> = self
+            .repos
+            .lock()
+            .expect("registry lock")
+            .values()
+            .map(|e| e.root.clone())
+            .collect();
         let mut failed = Vec::new();
         for root in roots {
-            let Ok(list) = self.manager.list(&root) else { continue };
+            let Ok(list) = self.manager.list(&root) else {
+                continue;
+            };
             for ws in list
                 .into_iter()
                 .filter(|w| w.state == WorkspaceState::Active && enabled(&w.repo_root, &w.path))
@@ -263,23 +302,36 @@ impl WorkspaceService {
     }
 
     /// See [`git::branch_name_is_taken`].
-    pub fn branch_name_is_taken(&self, repository_id: &str, branch: &str) -> Result<bool, WorkspaceError> {
+    pub fn branch_name_is_taken(
+        &self,
+        repository_id: &str,
+        branch: &str,
+    ) -> Result<bool, WorkspaceError> {
         git::branch_name_is_taken(&self.repository_root(repository_id)?, branch)
     }
 
     /// Rename the branch of workspace `<repositoryId>/<directoryName>`; see
     /// [`WorkspaceManager::rename_branch`].
-    pub fn rename_workspace_branch(&self, workspace_id: &str, branch: &str) -> Result<Workspace, WorkspaceError> {
-        let (repository_id, name) =
-            workspace_id.rsplit_once('/').ok_or_else(|| WorkspaceError::NotFound(workspace_id.to_string()))?;
-        self.manager.rename_branch(&self.repository_root(repository_id)?, name, branch)
+    pub fn rename_workspace_branch(
+        &self,
+        workspace_id: &str,
+        branch: &str,
+    ) -> Result<Workspace, WorkspaceError> {
+        let (repository_id, name) = workspace_id
+            .rsplit_once('/')
+            .ok_or_else(|| WorkspaceError::NotFound(workspace_id.to_string()))?;
+        self.manager
+            .rename_branch(&self.repository_root(repository_id)?, name, branch)
     }
 
     fn save(&self, repos: &BTreeMap<String, Entry>) -> Result<(), WorkspaceError> {
         if let Some(dir) = self.registry_file.parent() {
             std::fs::create_dir_all(dir)?;
         }
-        let text: String = repos.iter().map(|(id, e)| format!("{id}\t{}\t{}\n", e.root.display(), e.name)).collect();
+        let text: String = repos
+            .iter()
+            .map(|(id, e)| format!("{id}\t{}\t{}\n", e.root.display(), e.name))
+            .collect();
         let tmp = self.registry_file.with_extension("tsv.tmp");
         std::fs::write(&tmp, text)?;
         std::fs::rename(tmp, &self.registry_file)?;
@@ -288,11 +340,16 @@ impl WorkspaceService {
 }
 
 fn non_empty(s: &Option<String>) -> Option<String> {
-    s.as_deref().map(str::trim).filter(|s| !s.is_empty()).map(str::to_string)
+    s.as_deref()
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(str::to_string)
 }
 
 fn folder_name(root: &Path) -> String {
-    root.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default()
+    root.file_name()
+        .map(|n| n.to_string_lossy().into_owned())
+        .unwrap_or_default()
 }
 
 fn info(id: &str, e: &Entry) -> RepositoryInfo {

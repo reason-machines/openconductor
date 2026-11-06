@@ -80,7 +80,12 @@ pub const FAVICON_PATHS: &[&str] = &[
 const FAVICON_MAX_BYTES: u64 = 1024 * 1024;
 
 fn favicon_mime(path: &str) -> &'static str {
-    match path.rsplit('.').next().map(str::to_ascii_lowercase).as_deref() {
+    match path
+        .rsplit('.')
+        .next()
+        .map(str::to_ascii_lowercase)
+        .as_deref()
+    {
         Some("svg") => "image/svg+xml",
         Some("ico") => "image/x-icon",
         Some("jpg" | "jpeg") => "image/jpeg",
