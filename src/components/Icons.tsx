@@ -47,6 +47,8 @@ export const HelpIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="circl
 export const SettingsIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="settings" size={size} strokeWidth={strokeWidth} />;
 export const BookIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="book-open" size={size} strokeWidth={strokeWidth} />;
 export const MessageIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="message-square" size={size} strokeWidth={strokeWidth} />;
+export const CircleAlertIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="circle-alert" size={size} strokeWidth={strokeWidth} />;
+export const RefreshCwIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="refresh-cw" size={size} strokeWidth={strokeWidth} />;
 export const ExternalIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="external-link" size={size} strokeWidth={strokeWidth} />;
 export const FileCodeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="file-code" size={size} strokeWidth={strokeWidth} />;
 export const GlobeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="globe" size={size} strokeWidth={strokeWidth} />;

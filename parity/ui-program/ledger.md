@@ -339,13 +339,15 @@ main `841a805`.
 | Round | OpenConductor | Matches / 963 | Missing | Wrong | States matching (of 65) | What moved it |
 |---|---|---:|---:|---:|---:|---|
 | baseline | main `841a805` | 61 | 778 | 124 | 8 | (none) |
-| B1 | `841a805` + #644 | 89 | 777 | 97 | 12 | Settings nav: account switcher and "Search settings ⌘F" above the groups (11 settings states were missing "account menu", "search settings", "search settings shortcut"); Big terminal in More |
+| B1 | `841a805` + #644 (first commit) | 89 | 777 | 97 | 12 | Settings nav: account switcher and "Search settings ⌘F" above the groups (11 settings states were missing "account menu", "search settings", "search settings shortcut"); Big terminal in More |
+| B2 | `841a805` + #644 (merged) | 103 | 776 | 84 | 13 | 32 px Input and outline Button, path fields ("Browse for executable", "Browse for SSH key"), SSH key as a bare block, RadioGroup circles: Advanced and Git match |
+| B3 | main `56e96e7` + #653 | 100 | 779 | 84 | 14 | Repo Misc: placeholders muted, warning line as a block with lucide circle-alert, "Learn more" arrow-up-right, refresh-cw in a 24 px button: both Misc states match. Main's #640 removed the OpenCode executable row, so Advanced is back to wrong (6.3%: the reference still has the row) |
 
 ### Track B nodes
 
 | Node (UI map states) | PRs | Status (UI map) | Open differences |
 |---|---|---|---|
-| Settings chrome (all `settings-*`) | #644 | General, Models, Environment, Git, Experimental, repo Environment, Git, Scripts, Actions, Settings search match | Account (Linear, Billing, Sign out cards), Appearance (code preview), Advanced (Browse buttons), Agents (track A owns), repo Misc (pixels 6.1%) |
+| Settings chrome (all `settings-*`) | #644, #653 | General, Models, Environment, Git, Experimental, repo Environment, Git, Scripts, Actions, Misc (both), Settings search match | Account (Linear, Billing, Sign out cards: no Conductor account service), Appearance (code preview "function sum"), Advanced (OpenCode row removed on purpose by #640), Agents (track A owns) |
 
 ### REA gaps hit by track B
 
@@ -355,6 +357,7 @@ main `841a805`.
     for "the arguments of every call to function X" in a JavaScript chunk (REA-GAPS 14, 17, 25,
     28). `tools/settings/extract_settings_rows.py` reads the `ir({...})` and `S6e({...})` calls as
     text, with their order in `fUi`, into `evidence/settings/settings-search-rows.json`.
+32. **Lane fixture reuse (not REA):** `oc_lane.mjs` keeps its seeded HOME template across runs when `UIMAP_RUN` is reused; after a full run, the archive state leaves the template's worktree gone, so later runs fail every diff state with "not a git repository … worktrees/montreal". Delete `UIMAP_RUN` before each full run.
 31. **The UI map's Linux lane needs WebKit's helper processes at a hard-coded `/usr/lib` path.**
     Not a REA bug: on a Reason cloud computer without root, WebKitGTK from a sysroot fails with
     "Unable to spawn … WebKitNetworkProcess"; the lane runs under `unshare -rm` with the sysroot's
