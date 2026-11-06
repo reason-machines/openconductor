@@ -29,6 +29,8 @@ doctest = false
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 sha2 = "0.10"
+flate2 = "1"
+tar = "0.4"
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ["cfg(agent_binaries_std_only)"] }

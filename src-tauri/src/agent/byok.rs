@@ -101,11 +101,24 @@ impl From<ProviderError> for ByokError {
     }
 }
 
-/// Whether one secret key is in the store. Never carries the value.
+/// Whether one secret key is in the store. Never carries the value, only
+/// its last four characters (`hint`) for the masked row on Settings › Agents.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct SecretStatus {
     pub key: &'static str,
     pub present: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hint: Option<String>,
+}
+
+/// Secrets shorter than this get no hint, so the hint never gives away a
+/// large share of a short value.
+pub const HINT_MIN_LEN: usize = 16;
+
+/// The last four characters of `value`, or none for a short value.
+pub fn secret_hint(value: &SecretString) -> Option<String> {
+    let chars: Vec<char> = value.expose().chars().collect();
+    (chars.len() >= HINT_MIN_LEN).then(|| chars[chars.len() - 4..].iter().collect())
 }
 
 /// What the settings page shows for a provider.
@@ -127,9 +140,13 @@ pub fn status(config: &ProviderConfig, store: &dyn SecretStore) -> ProviderStatu
     let secrets = provider
         .secret_keys()
         .into_iter()
-        .map(|key| SecretStatus {
-            key,
-            present: matches!(store.get(key), Ok(Some(_))),
+        .map(|key| {
+            let value = store.get(key).ok().flatten();
+            SecretStatus {
+                key,
+                present: value.is_some(),
+                hint: value.as_ref().and_then(secret_hint),
+            }
         })
         .collect();
     let problem = provider.validate(store).err().map(|e| e.to_string());
@@ -210,6 +227,24 @@ mod tests {
             assert_eq!(parse(&tag.to_string()), config, "round trip {json}");
         }
         assert!(serde_json::from_str::<ProviderConfig>(r#"{"kind":"nope"}"#).is_err());
+    }
+
+    #[test]
+    fn status_hints_only_the_last_four_characters_of_long_secrets() {
+        let config = parse(r#"{"kind":"anthropic_api"}"#);
+        let long = "sk-ant-api03-0123456789bAAA";
+        let store = MemorySecretStore::with(&[(keys::ANTHROPIC_API_KEY, long)]);
+        let secret = &status(&config, &store).secrets[0];
+        assert!(secret.present);
+        assert_eq!(secret.hint.as_deref(), Some("bAAA"));
+        let json = serde_json::to_string(secret).unwrap();
+        assert!(!json.contains("0123456789"), "{json}");
+
+        let short = MemorySecretStore::with(&[(keys::ANTHROPIC_API_KEY, "sk-short")]);
+        assert_eq!(status(&config, &short).secrets[0].hint, None);
+        let none = MemorySecretStore::new();
+        let missing = &status(&config, &none).secrets[0];
+        assert!(!missing.present && missing.hint.is_none());
     }
 
     #[test]

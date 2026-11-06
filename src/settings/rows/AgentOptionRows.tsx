@@ -98,7 +98,7 @@ export function AcpAgentOptions({ agent, settings, save }: Props & { agent: "ope
 }
 
 /** "Use Claude Code with Chrome" (`chrome_mode_enabled`, conductor.db's settings table). */
-function ChromeModeRow() {
+export function ChromeModeRow() {
   const checked = useAppPrefs().chrome_mode_enabled;
   const [error, setError] = useState<string | null>(null);
   return (

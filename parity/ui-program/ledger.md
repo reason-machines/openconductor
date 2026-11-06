@@ -20,30 +20,46 @@ that justifies the status.
   - `matches`: the latest side-by-side image shows no difference Sven would call out.
 - **Last verified**: date and OpenConductor commit of the side-by-side image behind the status,
   linked to the image. `seed` means no side-by-side exists yet (see Seed below).
+- **Source**: the Anthropic subscription source (`model_source_id`) of the program Sessions that
+  built and verified the node, as `build: <source> (<session>); verify: <source> (<session>)`.
+  `unrecorded` means Reason has no source for that Session; `n/a` means no program Session matches
+  the node by feature name. See Subscription sources below.
 
 ## Nodes
 
-| Node | Owner Session | PRs | Side-by-side status | Last verified |
-|---|---|---|---|---|
-| Home `home` | unassigned | #457, #501 | wrong | seed |
-| Sidebar `sidebar` | unassigned | #491, #505 | wrong | seed |
-| Header + title bar `header` | unassigned | #504, #514, #590, #586 | wrong | 2026-11-06, b3615ed, [header-01](../side-by-side/header-01-height-built-app-light.png) |
-| Chat tabs + chat area + composer `chat` | unassigned | #516 | wrong | seed |
-| Right panel: All files / Changes / Checks `right-panel` | unassigned | | wrong | seed |
-| Setup / Run / Terminal strip `strip` | unassigned | #509 | wrong | seed |
-| Settings: Personal (General, Account, Appearance, Default models, Git, Ports) `settings-personal` | unassigned | | wrong | seed |
-| Settings: Agents & environment (Agents, Environment) `settings-agents-env` | unassigned | | wrong | seed |
-| Settings: Repositories (per repo: Environment, Git, Scripts, Actions, Misc) `settings-repos` | unassigned | | wrong | seed |
-| Settings: More (Experimental, Advanced) `settings-more` | unassigned | | wrong | seed |
-| Settings: Organization and Cloud (cloud org only) `settings-org` | unassigned | | missing | seed |
-| Dialogs and menus `dialogs-menus` | unassigned | | wrong | seed |
-| Toasts `toasts` | unassigned | | wrong | seed |
+| Node | Owner Session | PRs | Side-by-side status | Last verified | Source |
+|---|---|---|---|---|---|
+| Home `home` | unassigned | #457, #501 | wrong | seed | build: desktop-local-ffc7c778 (4b079fc3), oauth-cf0b3f60 (230e1ee8, #181), unrecorded (4bc9f043); verify: oauth-39b595c4 (680ef06f, errored), oauth-2791179c (4addd04f) |
+| Sidebar `sidebar` | unassigned | #491, #505 | wrong | seed | build: desktop-local-ffc7c778 (da826963, 2a143f28), unrecorded (008a03c2); verify: oauth-8b4e0e0a (285aa125) |
+| Header + title bar `header` | unassigned | #504, #514, #590, #586 | wrong | 2026-11-06, b3615ed, [header-01](../side-by-side/header-01-height-built-app-light.png) | n/a |
+| Chat tabs + chat area + composer `chat` | unassigned | #516 | wrong | seed | build: desktop-local-ffc7c778 (098edd23), unrecorded (379d1c82); verify: oauth-cf0b3f60 (8eb44615) |
+| Right panel: All files / Changes / Checks `right-panel` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (3530d46d, Diff viewer and review); verify: oauth-2791179c (0fa2bcc5, Diff viewer) |
+| Setup / Run / Terminal strip `strip` | unassigned | #509 | wrong | seed | build: oauth-cf0b3f60 (4bf88c3a, Setup and run scripts), desktop-local-ffc7c778 (d3abaff9 Spotlight and run, e6d07b82 Terminal); verify: oauth-cf0b3f60 (30f21708) |
+| Settings: Personal (General, Account, Appearance, Default models, Git, Ports) `settings-personal` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
+| Settings: Agents & environment (Agents, Environment) `settings-agents-env` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
+| Settings: Repositories (per repo: Environment, Git, Scripts, Actions, Misc) `settings-repos` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
+| Settings: More (Experimental, Advanced) `settings-more` | unassigned | | wrong | seed | build: desktop-local-ffc7c778 (2bc15518) |
+| Settings: Organization and Cloud (cloud org only) `settings-org` | unassigned | | missing | seed | n/a |
+| Dialogs and menus `dialogs-menus` | unassigned | | wrong | seed | n/a |
+| Toasts `toasts` | unassigned | | wrong | seed | n/a |
 
 Settings groups follow Conductor's settings navigation as read from its bundle
 ([evidence/settings/NOTES.md](../../evidence/settings/NOTES.md), "Settings pages"): Personal,
 Agents & environment, Repositories, More. Conductor shows Ports and the Organization/Cloud pages
 only for a cloud organization and redirects a local user to General; whether OpenConductor builds
 them is the coordinator's call.
+
+### Subscription sources
+
+Sources from Reason's `sessions_get` for each program Session, read 2026-11-05. Probed the same day
+with one Claude Opus 5.5 call at high effort each:
+
+- **Working**, in round-robin order: oauth-8b4e0e0a, oauth-9de5292f, oauth-6a5827c3, oauth-4d2642bc,
+  oauth-1fc002d7, oauth-e48d873d, oauth-86162253.
+- **Failing**: oauth-39b595c4 (HTTP 403 `permission_error`: the plan does not allow Opus 5.5). Both
+  errored Sessions (680ef06f Verify Home screen, 57144f93 Verify Reason ACP provider) ran on it.
+- **No longer offered**: oauth-cf0b3f60, oauth-2791179c and desktop-local-ffc7c778 did earlier
+  program work but are no longer offered as sources.
 
 ## What each node covers
 
