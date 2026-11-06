@@ -15,25 +15,11 @@ use std::sync::Mutex;
 pub mod keys {
     pub const ANTHROPIC_API_KEY: &str = "anthropic_api_key";
     pub const ANTHROPIC_AUTH_TOKEN: &str = "anthropic_auth_token";
-    pub const BEDROCK_API_KEY: &str = "bedrock_api_key";
     pub const OPENAI_API_KEY: &str = "openai_api_key";
-    pub const CURSOR_API_KEY: &str = "cursor_api_key";
-    pub const FOUNDRY_API_KEY: &str = "foundry_api_key";
-    pub const OPENROUTER_API_KEY: &str = "openrouter_api_key";
-    pub const VERCEL_AI_GATEWAY_API_KEY: &str = "vercel_ai_gateway_api_key";
 
     /// Every key a provider may read; a store implementation may use it to
     /// list or wipe provider secrets.
-    pub const ALL: &[&str] = &[
-        ANTHROPIC_API_KEY,
-        ANTHROPIC_AUTH_TOKEN,
-        BEDROCK_API_KEY,
-        OPENAI_API_KEY,
-        CURSOR_API_KEY,
-        FOUNDRY_API_KEY,
-        OPENROUTER_API_KEY,
-        VERCEL_AI_GATEWAY_API_KEY,
-    ];
+    pub const ALL: &[&str] = &[ANTHROPIC_API_KEY, ANTHROPIC_AUTH_TOKEN, OPENAI_API_KEY];
 }
 
 /// A secret value. `Debug` and `Display` never show it; read it with

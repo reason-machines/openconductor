@@ -9,7 +9,7 @@
 // in this script, so the download can fail, retry and succeed on cue. One
 // workspace chat with the agent set to Claude Code and no executable path set:
 //
-//   1. the server answers 404: the banner reads "Downloading Claude Code
+//   1. the launch-time download gets 404s: the banner reads "Downloading Claude Code
 //      2.1.284… Retrying in Ns (attempt 2)" with Retry now, then "Couldn't
 //      download Claude Code." with Retry; "see error" shows the HTTP error
 //   2. a reload hydrates the failed status and the store retries it by itself
@@ -186,19 +186,24 @@ try {
     workspace.id,
   );
   await waitFor("the chat composer", () => run("return !!document.querySelector('.composer-wrap textarea');"));
-  await sleep(1000);
-  assert.equal(await banner(), null, "no download yet, no banner");
-  pass("a Claude Code chat with no download status shows no banner");
 
-  // 1. Failing download: retrying with a countdown, then failed.
-  await invoke("request_agent_binary_download", { agent: "claude" });
-  const retrying = await waitFor("the retrying banner", bannerIn("retrying"), 15000, 100);
-  assert.match(retrying.text, /^Downloading Claude Code 2\.1\.284…\s?Retrying in \d+s \(attempt [23]\)/, retrying.text);
-  assert.equal(retrying.action, "Retry now");
-  assert.ok(retrying.aboveComposer, "the banner sits right above the composer");
-  assert.ok(retrying.pulsing, "pulsing download icon");
-  await screenshot("binary-1-retrying");
-  pass(`a failed attempt shows "${retrying.text}" with Retry now, above the composer`);
+  // 1. The app fetches both agents at launch (lib.rs, as Conductor does); the host 404s:
+  // retrying with a countdown, then failed.
+  const checkRetrying = async (b, when) => {
+    assert.match(b.text, /^Downloading Claude Code 2\.1\.284…\s?Retrying in \d+s \(attempt [23]\)/, b.text);
+    assert.equal(b.action, "Retry now");
+    assert.ok(b.aboveComposer, "the banner sits right above the composer");
+    assert.ok(b.pulsing, "pulsing download icon");
+    await screenshot("binary-1-retrying");
+    pass(`${when}: "${b.text}" with Retry now, above the composer`);
+  };
+  // The launch-time download may already have used its attempts by the time the window is up.
+  const first = await waitFor("the launch-time download's banner", async () => {
+    const b = await banner();
+    return b && (b.state === "retrying" || b.state === "failed") ? b : null;
+  }, 30000, 100);
+  let sawRetrying = first.state === "retrying";
+  if (sawRetrying) await checkRetrying(first, "the launch-time download retries");
 
   const failed = await waitFor("the failed banner", bannerIn("failed"), 30000);
   assert.match(failed.text, /^Couldn't download Claude Code\. see error$/, failed.text);
@@ -214,7 +219,8 @@ try {
   // 2. Hydrating a failed status retries it (Conductor's AgentBinaryStore.initialize).
   await run("location.reload();");
   await waitFor("the chat composer after reload", () => run("return !!document.querySelector('.composer-wrap textarea');"));
-  await waitFor("the auto-retry", bannerIn("retrying"), 15000, 100);
+  const again = await waitFor("the auto-retry", bannerIn("retrying"), 15000, 100);
+  if (!sawRetrying) await checkRetrying(again, "the auto-retry retries");
   await waitFor("the auto-retry to fail again", bannerIn("failed"), 30000);
   pass("a reload hydrates the failed status and the store retries the download by itself");
 
