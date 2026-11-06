@@ -316,6 +316,13 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .codex-approval-title { font-weight: 600; }
 .codex-approval-command { margin: 0; font-family: var(--font-mono); font-size: 11.5px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 160px; overflow: auto; }
 .codex-approval-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.codex-consent-fields { display: flex; flex-direction: column; gap: 8px; }
+.codex-consent-field { display: flex; flex-direction: column; gap: 2px; }
+.codex-consent-field input, .codex-consent-field select, .codex-consent-field textarea { font: inherit; padding: 4px 6px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: inherit; }
+.codex-consent-field textarea { min-height: 72px; }
+.codex-consent-check { display: flex; gap: 6px; align-items: center; }
+.codex-consent-perms { margin: 0; padding-left: 16px; }
+.codex-consent-error { color: var(--del); }
 
 .placeholder { margin: auto; text-align: center; max-width: 380px; color: var(--text); line-height: 1.5; }
 .placeholder h3 { margin: 0 0 6px; font-size: 15px; }
@@ -342,6 +349,14 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .main-tab > button[role="tab"] { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .main-tab-close { margin-left: -6px; padding: 2px 6px; color: var(--muted); border-radius: 4px; font-size: 14px; line-height: 1; }
 .main-tab-close:hover { color: var(--text); background: var(--hover); }
+/* The "+" after the chat tabs (NewChatButton): Conductor's ghost iconXs button and its tooltip. */
+.main-tab-new { position: relative; display: inline-flex; align-items: center; margin-left: 4px; }
+.tabs .main-tab-new-button { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 4px; color: var(--muted); }
+.tabs .main-tab-new-button:hover:not(:disabled) { color: var(--text); background: var(--hover); }
+.tabs .main-tab-new-button:disabled { opacity: 0.5; cursor: default; }
+.main-tab-tip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); z-index: 20; align-items: center; gap: 8px; padding: 3px 8px; white-space: nowrap; font-size: 12px; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); pointer-events: none; }
+.main-tab-tip kbd { font: inherit; color: var(--muted); }
+.main-tab-new:hover .main-tab-tip, .main-tab-new-button:focus-visible + .main-tab-tip { display: inline-flex; }
 .chat > .oc-diff { flex: 1; }
 .diff-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
 .diff-summary { display: flex; gap: 10px; align-items: center; font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
@@ -365,7 +380,7 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 /* Create split button: "Create" plus the "Create in section" menu (Conductor's sQo / iQo). */
 .create-split { position: relative; display: inline-flex; }
 .create-split > .btn-primary[data-split] { border-top-right-radius: 0; border-bottom-right-radius: 0; }
-.create-split-toggle { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: 1px solid color-mix(in srgb, var(--accent-text) 20%, transparent); padding-left: 6px; padding-right: 6px; }
+.create-split-toggle { border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: 1px solid color-mix(in srgb, var(--bg) 20%, transparent); padding-left: 6px; padding-right: 6px; }
 .create-split-menu { position: absolute; right: 0; bottom: calc(100% + 4px); top: auto; width: 224px; max-height: 320px; overflow-y: auto; z-index: 20; }
 .create-split-heading { padding: 6px 8px; font-size: 12px; color: var(--muted); }
 .create-split-emoji { display: inline-flex; width: 16px; justify-content: center; margin-right: 6px; }
@@ -389,15 +404,22 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .create-ws-attached .create-card { border-radius: 0 0 12px 12px; }
 .create-ws-floating .create-card { padding-left: 16px; }
 .create-editor { flex: 1; width: 100%; min-height: 142px; max-height: 312px; padding: 4px 0; border: 0; outline: 0; resize: none; background: transparent; color: inherit; font: inherit; font-size: 14px; line-height: 1.5; }
-.create-card-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+/* Footer controls sit 12px in from the card's sides (Conductor: model trigger and Create at card edge + 12). */
+.create-card-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px -4px 0; }
+.create-ws-attached .create-card-bar { margin-left: -6px; }
 .create-model { display: flex; align-items: center; gap: 2px; min-width: 0; overflow: hidden; }
 .create-chip { field-sizing: content; height: 28px; max-width: 220px; padding: 0 8px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); font: inherit; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
 .create-chip:hover:not(:disabled), .create-chip[aria-expanded="true"] { background: var(--hover); color: var(--text); }
 .create-chip:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
 .create-chip:disabled { opacity: 0.6; cursor: default; }
 .create-chip[aria-invalid="true"] { color: var(--del); }
-.create-eyebrow > select.create-chip:first-child { color: var(--text); font-weight: 500; }
-.create-submit { height: 28px; gap: 6px; }
+/* Repo trigger `-ml-2 pl-2 pr-1.5`: its text lines up with the card's left edge. */
+.create-eyebrow > select.create-chip:first-child { margin-left: -8px; padding: 0 6px 0 8px; color: var(--text); font-weight: 500; }
+/* Create (`sQo`): Button size `xs` with `bg-foreground text-background`: h-6 px-2 text-xs gap-1.5 rounded-sm,
+   `transition-none active:scale-100` (no press scale). */
+.create-split > .btn-small { height: 24px; padding: 0 8px; gap: 6px; border-radius: 4px; border-color: var(--text); background: var(--text); color: var(--bg); font-size: 12px; line-height: 16px; transition: none; }
+.create-split > .btn-small:hover:not(:disabled) { background: color-mix(in srgb, var(--text) 90%, transparent); filter: none; }
+.create-split > .btn-small.create-split-toggle { padding: 0 6px; border-radius: 0 4px 4px 0; }
 .create-submit kbd { font: inherit; font-size: 12px; opacity: 0.75; }
 .create-status { margin: 8px 4px 0; }
 .create-dialog .create-status { padding: 6px 12px; border-radius: 8px; background: var(--panel); }

@@ -9,6 +9,12 @@ first command really writes hello.txt in the thread's cwd. Prompts:
   contains "hello"  the recorded turn above; "cancel" on the approval ends the
                     turn as interrupted, like Codex
   contains "slow"   runs until turn/interrupt
+  contains "elicit" an MCP server ("linear") asks for a form with a required
+                    "team"; the reply names what came back ("linear got team
+                    <team>", or "linear: cancel"/"linear: decline")
+  contains "perm"   Codex asks for network access; the reply says whether it
+                    was granted ("permissions: network granted" or
+                    "permissions: none granted")
   anything else     replies "turn <n>: <prompt>", n counting this thread's turns
 
 Every request it receives is appended to $HOME/codex-fake.jsonl.
@@ -42,7 +48,7 @@ def notify(method, params):
     send({"method": method, "params": params})
 
 
-state = {"thread": None, "cwd": None, "turns": 0, "turn": None, "pending": {}, "next_req": 0}
+state = {"thread": None, "cwd": None, "turns": 0, "turn": None, "pending": {}, "next_req": 0, "consents": {}}
 
 
 def item(kind, iid, **fields):
@@ -114,11 +120,46 @@ def answered(req, decision):
     complete(turn, "completed")
 
 
+def ask_consent(turn, kind):
+    """A request held for the user: an MCP elicitation or a permission request."""
+    req = f"{kind}-{turn}"
+    state["consents"][req] = (turn, kind)
+    t = state["thread"]
+    if kind == "elicit":
+        send({"id": req, "method": "mcpServer/elicitation/request", "params": {
+            "threadId": t, "turnId": turn, "serverName": "linear", "mode": "form",
+            "message": "Which team should own the issue?",
+            "requestedSchema": {"type": "object", "properties": {"team": {"type": "string", "title": "Team"}}, "required": ["team"]},
+            "_meta": None,
+        }})
+    else:
+        send({"id": req, "method": "item/permissions/requestApproval", "params": {
+            "threadId": t, "turnId": turn, "itemId": f"perm-{turn}", "startedAtMs": 1, "cwd": state["cwd"],
+            "reason": "Fetch the issue tracker", "permissions": {"network": {"enabled": True}},
+        }})
+
+
+def consent_answered(req, result):
+    turn, kind = state["consents"].pop(req)
+    notify("serverRequest/resolved", {"threadId": state["thread"], "requestId": req})
+    if kind == "elicit":
+        action = result.get("action")
+        team = (result.get("content") or {}).get("team")
+        text = f"linear got team {team}" if action == "accept" else f"linear: {action}"
+    else:
+        granted = (result.get("permissions") or {}).get("network", {}).get("enabled")
+        text = "permissions: network granted" if granted else "permissions: none granted"
+    message(turn, f"msg-{turn}", text, "final_answer")
+    complete(turn, "completed")
+
+
 def handle(msg):
     if "method" not in msg:
         note({"response": msg})
         if isinstance(msg.get("result"), dict) and msg.get("id") in state["pending"]:
             answered(msg["id"], msg["result"].get("decision"))
+        elif isinstance(msg.get("result"), dict) and msg.get("id") in state["consents"]:
+            consent_answered(msg["id"], msg["result"])
         return
     method, params, mid = msg["method"], msg.get("params") or {}, msg.get("id")
     note({"method": method, "params": params})
@@ -141,6 +182,10 @@ def handle(msg):
             hello_turn(turn)
         elif "slow" in text:
             pass
+        elif "elicit" in text:
+            ask_consent(turn, "elicit")
+        elif "perm" in text:
+            ask_consent(turn, "perm")
         else:
             message(turn, f"msg-{turn}", f"turn {state['turns']}: {text}", "final_answer")
             complete(turn, "completed")
