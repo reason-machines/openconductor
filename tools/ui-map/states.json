@@ -1989,6 +1989,150 @@
    ]
   },
   {
+   "id": "palette-workspaces-projects",
+   "title": "Command palette: Workspaces tab, project filter open",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "click": "[role=dialog] >> text=Workspaces"
+     },
+     {
+      "click": "[role=dialog] button:has-text('All projects')"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=dialog] button, [role=dialog] [role=tab]",
+     "text": "Workspaces"
+    },
+    {
+     "click": ".palette .palette-ws-filter",
+     "text": "All projects",
+     "after_ms": 600
+    }
+   ]
+  },
+  {
+   "id": "palette-workspaces-archive-filter",
+   "title": "Command palette: Workspaces tab, archive filter open",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "click": "[role=dialog] >> text=Workspaces"
+     },
+     {
+      "click": "[role=dialog] button:has-text('Hiding archived')"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=dialog] button, [role=dialog] [role=tab]",
+     "text": "Workspaces"
+    },
+    {
+     "click": ".palette .palette-ws-filter",
+     "text": "Hiding archived",
+     "after_ms": 600
+    }
+   ]
+  },
+  {
+   "id": "palette-workspaces-empty",
+   "title": "Command palette: Workspaces tab, no matching workspaces",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "click": "[role=dialog] >> text=Workspaces"
+     },
+     {
+      "fill": [
+       "[role=dialog] input[placeholder]",
+       "zzzz"
+      ]
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=dialog] button, [role=dialog] [role=tab]",
+     "text": "Workspaces"
+    },
+    {
+     "click": ".palette-input",
+     "type": "zzzz",
+     "after_ms": 600
+    }
+   ],
+   "covers": [
+    {
+     "kind": "empty-state",
+     "name": "No matching workspaces"
+    }
+   ]
+  },
+  {
    "id": "palette-search",
    "title": "Command palette: search",
    "ref": {
