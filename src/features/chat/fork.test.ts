@@ -93,3 +93,60 @@ test("the copy toast names the chat, cut to 20 characters (Conductor's chat tab 
   assert.equal(copiedTranscriptMessage("concise", "  "), 'Copied concise transcript of "chat"');
   assert.equal(copiedTranscriptMessage("concise", "Fix the flaky login test today"), 'Copied concise transcript of "Fix the flaky login..."');
 });
+
+test("Copy full transcript: every message, tool calls with their input and result (Conductor's VOt complete)", async () => {
+  const { fullTranscript, transcriptOf } = await import("./fork.ts");
+  const t = transcript([
+    msg("f1", "user", [text("Why does login loop?")]),
+    msg("f1", "assistant", [
+      text("Looking."),
+      // A Claude Code row: title, toolName and rawInput.
+      { type: "tool_use", id: "g", name: "Grep: redirectTo", input: { kind: "search", toolName: "Grep", rawInput: { pattern: "redirectTo", path: "src" } } },
+      { type: "tool_result", toolUseId: "g", content: "src/lib/auth.ts:42" },
+      // A Codex row: the input itself, with a command longer than 80 characters.
+      { type: "tool_use", id: "b", name: "pnpm test", input: { command: `pnpm test ${"x".repeat(80)}` } },
+      { type: "thinking", text: "hidden" },
+    ]),
+    msg("f1", "user", [{ type: "tool_result", toolUseId: "b", content: "4 passed" }]),
+    msg("f1", "user", [{ type: "tool_result", toolUseId: "orphan", content: "line 1\nline 2" }]),
+    msg("f1", "assistant", [text("Fixed.")]),
+    msg("f1", "assistant", [text("never sent")], { cancelledAt: "2026-11-05T10:01:00.000Z" }),
+  ]);
+  assert.equal(
+    fullTranscript(t),
+    [
+      "## User",
+      "",
+      "Why does login loop?",
+      "",
+      "## Assistant",
+      "",
+      "Looking.",
+      "",
+      // Conductor checks `path` before `pattern` (FOt).
+      "    Grep: src",
+      "    ↳ src/lib/auth.ts:42",
+      "",
+      "    pnpm test:",
+      `        pnpm test ${"x".repeat(80)}`,
+      "    ↳ 4 passed",
+      "",
+      "    ↳ line 1",
+      "      line 2",
+      "",
+      "Fixed.",
+    ].join("\n"),
+  );
+  // The concise copy is the fork's form.
+  assert.equal(transcriptOf(t, "concise"), forkTranscript(t));
+  assert.equal(fullTranscript(emptyTranscript("s1")), null);
+});
+
+test("Copy full transcript clips long results to 10 lines", async () => {
+  const { fullTranscript } = await import("./fork.ts");
+  const long = Array.from({ length: 14 }, (_, i) => `l${i}`).join("\n");
+  const t = transcript([msg("c1", "user", [text("go")]), msg("c1", "assistant", [{ type: "tool_use", id: "r", name: "Read", input: {} }, { type: "tool_result", toolUseId: "r", content: long }])]);
+  const out = fullTranscript(t)!;
+  assert.ok(out.includes("    Read\n    ↳ l0\n      l1"));
+  assert.ok(out.endsWith("      l9\n      …\n      (4 more lines)"));
+});

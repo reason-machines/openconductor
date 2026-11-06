@@ -160,7 +160,18 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
     [workspace.id, save, onOpen],
   );
 
-  return { tabs, start, close, fork, newChat, reopen, error };
+  /** "Rename chat" on one of these tabs: stored first, so a failed save keeps the old title. */
+  const rename = useCallback(
+    async (chatId: string, title: string) => {
+      if (inTauri()) await invoke("db_rename_chat", { chatId, workspaceId: workspace.id, title });
+      const next = currentTabs(workspace.id).map((t) => (t.chatId === chatId ? { ...t, title } : t));
+      tabsByWorkspace.set(workspace.id, next);
+      setTabs(next);
+    },
+    [workspace.id],
+  );
+
+  return { tabs, start, close, fork, newChat, reopen, rename, error };
 }
 
 /**

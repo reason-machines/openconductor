@@ -113,6 +113,14 @@ st("dialog-submit-prompt","Help > Submit a prompt dialog", ref(actions=[HELP_REF
 st("diagnostics-run","Diagnostics after a run", ref("/diagnostics", wait=False, actions=[{"click":"text=Run environment diagnostics"}], final_settle_ms=4000), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800},{"click":".diag-btn-primary","after_ms":4000}])
 st("toast-copied-link","Toast: copied link", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Copy link"}], final_settle_ms=300), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Copy link","after_ms":200}])
 st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Archive"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Archive","after_ms":1000}])
+# chat tabs and the Review button's right-click menu (chat builder 1)
+LISBON=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]
+REF_CHAT_TAB={"rclick":"[aria-label='Close chat Fix login redirect loop']"}
+OC_CHAT_TAB={"rclick":".main-tabs [role=tab]","after_ms":600}
+st("menu-chat-tab","Chat tab context menu", ref(actions=LISBON+[REF_CHAT_TAB]), oc=OPEN_WS+[OC_CHAT_TAB], covers=[{"kind":"menu","name":"u8i"}])
+st("dialog-rename-chat","Rename chat dialog", ref(actions=LISBON+[REF_CHAT_TAB,{"click":"[role=menuitem] >> text=Rename chat"}]), oc=OPEN_WS+[OC_CHAT_TAB,{"click":"[role=menu] [role=menuitem]","text":"Rename chat","after_ms":800}])
+st("menu-review-edit","Review button menu (Edit before sending)", ref(actions=LISBON+[{"rclick":"button:has-text('Review') >> nth=0"}]), oc=OPEN_WS+[{"rclick":".review-button","after_ms":600}], covers=[{"kind":"menu","name":"u6s"}])
+
 # Conductor's reference opens on "/" (Home: wordmark and the Open project / Open GitHub
 # project / Quick start cards) and stays there unless its actions open a workspace (Create
 # is a dialog over Home). The seeded OpenConductor app opens on its workspace instead, so

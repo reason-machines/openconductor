@@ -59,6 +59,8 @@ export interface Workspace {
   state?: string;
   /** The workspace's pull request as last read from GitHub; drives the row's status icon. */
   pr?: RowPr | null;
+  /** The workspace's own chat's title once renamed ("Rename chat" on its tab); its tab shows the workspace name until then. */
+  chatTitle?: string;
 }
 
 /** An unread chat; `at` (ms) is when its row last changed, the "Go to next unread" order. */

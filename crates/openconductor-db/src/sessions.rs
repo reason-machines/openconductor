@@ -551,6 +551,45 @@ pub async fn open_tab(
     Ok(())
 }
 
+/// Rename a chat ("Rename chat" on its tab; the reference's `updateSessionTitle`,
+/// renderApp `Rya` -> `D8r`): its row in `workspace_id` gets `title`, made
+/// first when the chat has none yet. Visibility and `created_at` are kept, so
+/// renaming never reopens a closed tab or moves it in the strip.
+pub async fn rename(
+    pool: &SqlitePool,
+    id: &str,
+    workspace_id: &str,
+    title: &str,
+    now: &str,
+) -> Result<()> {
+    sqlx::query(
+        "INSERT INTO sessions (id, workspace_id, title, created_at, updated_at) \
+         VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET title = excluded.title, \
+         workspace_id = COALESCE(sessions.workspace_id, excluded.workspace_id)",
+    )
+    .bind(id)
+    .bind(workspace_id)
+    .bind(title)
+    .bind(now)
+    .bind(now)
+    .execute(pool)
+    .await?;
+    Ok(())
+}
+
+/// The titles of workspaces' own chats (the chat whose id is the workspace's)
+/// that have one, as `(workspace_id, title)`: the main chat tab shows it in
+/// place of the workspace name once renamed. A row other code made for the
+/// chat carries the default [`UNTITLED`], which is not a name.
+pub async fn main_chat_titles(pool: &SqlitePool) -> Result<Vec<(String, String)>> {
+    Ok(sqlx::query_as(
+        "SELECT id, title FROM sessions WHERE id = workspace_id AND title IS NOT NULL \
+         AND trim(title) NOT IN ('', 'Untitled') ORDER BY id",
+    )
+    .fetch_all(pool)
+    .await?)
+}
+
 /// A chat tab that is open (one row of [`open_tabs`]).
 #[derive(Debug, Clone, PartialEq, Eq, sqlx::FromRow)]
 pub struct OpenTab {

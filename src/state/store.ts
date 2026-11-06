@@ -75,6 +75,8 @@ export type Action =
   /* sidebar: row actions (unread, pin, status) */
   /** A chat's unread flag (`at`: when, ms; it orders Go to next unread). */
   | { type: "setChatUnread"; repoId: string; workspaceId: string; chatId: string; unread: boolean; at: number }
+  /** "Rename chat" on the workspace's own chat tab. */
+  | { type: "setChatTitle"; repoId: string; workspaceId: string; title: string }
   /** Every chat of the workspace read (the row's "Mark as read"). */
   | { type: "markWorkspaceRead"; repoId: string; workspaceId: string }
   | { type: "setWorkspacePinned"; repoId: string; workspaceId: string; pinned: boolean; at?: number }
@@ -222,6 +224,8 @@ export function reducer(state: AppState, action: Action): AppState {
       const viewingArchived = state.selection.kind === "workspace" && state.archivedOpen?.workspace.id === state.selection.workspaceId;
       return { ...state, repos, selection: viewingArchived ? state.selection : validSelection(state.selection, repos) };
     }
+    case "setChatTitle":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => (w.chatTitle === action.title ? w : { ...w, chatTitle: action.title }));
     case "setChatUnread":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => withChatUnread(w, action.chatId, action.unread, action.at));
     case "markWorkspaceRead":
