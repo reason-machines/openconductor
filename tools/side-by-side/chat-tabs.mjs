@@ -1,6 +1,7 @@
-// Side-by-side evidence for the Rename chat dialog and the Review button's
-// "Edit before sending" menu (UI map states dialog-rename-chat and
-// menu-review-edit; the chat tab menu itself is tools/side-by-side/shell-menus.mjs): Conductor 0.87.6's extracted frontend
+// Side-by-side evidence for the chat area on one shared fixture (UI map states
+// workspace-chat, workspace-tool-calls, menu-chat-tab, menu-model-picker,
+// dialog-rename-chat and the Review button's "Edit before sending" menu,
+// menu-review-edit): Conductor 0.87.6's extracted frontend
 // (tools/screens harness, Tauri IPC mocked, the "lisbon" workspace) and
 // OpenConductor's built frontend (dist/, tests/e2e/right-panel-fixture.mjs's
 // fake backend with the same repos, workspaces and lisbon turn), both driven
@@ -40,32 +41,57 @@ const tmp = process.env.TMPDIR ?? "/tmp";
 const sha256 = (b) => createHash("sha256").update(b).digest("hex");
 const css = (selector) => ({ kind: "css", selector });
 const right = (selector) => ({ locator: css(selector), button: "right" });
+const fill = (selector, value) => ({ action: "fill", locator: css(selector), value: { source: "literal", value } });
 
 // The repos and workspaces of tools/screens/seed-data.js's populated scenario, lisbon open.
-const ws = (id, name, branch, path) => ({ id, name, branch, path: path ?? `/Users/demo/code/${name}` });
+// quito and tallinn are unread there (seed-data.js `unread` 1), which shows the composer's "Next unread".
+const ws = (id, name, branch, path, unread = false) => ({ id, name, branch, path: path ?? `/Users/demo/code/${name}`, unread });
 const SHELL = {
   repos: [
-    { id: "r1", name: "tide-web", path: "/Users/demo/code/tide-web", defaultBranch: "main", workspaces: [ws("w1", "lisbon", "ada/fix-login-redirect", WT), ws("w2", "osaka", "ada/dark-mode-tokens"), ws("w3", "quito", "ada/settings-search")] },
-    { id: "r2", name: "tide-api", path: "/Users/demo/code/tide-api", defaultBranch: "main", workspaces: [ws("w4", "tallinn", "ada/rate-limit-headers"), ws("w5", "accra", "ada/pagination-cursor")] },
+    { id: "r1", name: "tide-web", path: "/Users/demo/code/tide-web", defaultBranch: "main", workspaces: [ws("w1", "lisbon", "ada/fix-login-redirect", WT), ws("w2", "osaka", "ada/dark-mode-tokens"), ws("w3", "quito", "ada/settings-search", undefined, true)] },
+    { id: "r2", name: "tide-api", path: "/Users/demo/code/tide-api", defaultBranch: "main", workspaces: [ws("w4", "tallinn", "ada/rate-limit-headers", undefined, true), ws("w5", "accra", "ada/pagination-cursor")] },
     { id: "r3", name: "dotfiles", path: "/Users/demo/code/dotfiles", defaultBranch: "main", workspaces: [ws("w6", "bergen", "ada/zsh-prompt")] },
   ],
   selection: { kind: "workspace", repoId: "r1", workspaceId: "w1" },
 };
-const at = (s) => new Date(LISBON.startedAt + s * 1000).toISOString();
+// Conductor's seed dates its turns relative to now (seed-data.js `iso(ago)`), so its footer reads "8m, 0s · h:mm AM"
+// for today; the same turn here ends 12 minutes ago.
+const STARTED = Date.now() - (12 * 60 + LISBON.durationSeconds) * 1000;
+const at = (s) => new Date(STARTED + s * 1000).toISOString();
 const turn = { status: "completed", startedAt: at(0), endedAt: at(LISBON.durationSeconds) };
-const MESSAGES = [
+const MESSAGES_ONE = [
   { id: "w1:t1:user", sessionId: "w1", turnId: "w1:t1", role: "user", createdAt: at(0), blocks: [{ type: "text", text: LISBON.prompt }], turn },
   { id: "w1:t1:assistant", sessionId: "w1", turnId: "w1:t1", role: "assistant", createdAt: at(2), blocks: lisbonBlocks("claude") },
-].map((m) => JSON.stringify(m));
+];
+// tools/screens/seed-data.js "two-turns": a second, shorter lisbon turn, so the first is not the last
+// and its menu offers "Reset chat" (Conductor shows it only before the last turn).
+const LISBON_FOLLOW_UP = "Also cover a session that expires exactly now.";
+const at2 = (s) => new Date(Date.now() - 20 * 60 * 1000 + s * 1000).toISOString();
+const turn2 = { status: "completed", startedAt: at2(0), endedAt: at2(60) };
+const SECOND_TURN = [
+  { id: "w1:t2:user", sessionId: "w1", turnId: "w1:t2", role: "user", createdAt: at2(0), blocks: [{ type: "text", text: LISBON_FOLLOW_UP }], turn: turn2 },
+  { id: "w1:t2:assistant", sessionId: "w1", turnId: "w1:t2", role: "assistant", createdAt: at2(1), blocks: [{ type: "text", text: "Done. A session whose `expiresAt` equals now counts as expired, and a test covers it." }] },
+];
+const asJson = (list) => list.map((m) => JSON.stringify(m));
+const MESSAGES = { populated: asJson(MESSAGES_ONE), "two-turns": asJson([...MESSAGES_ONE, ...SECOND_TURN]) };
+// The lisbon turn's changed files, the chips Conductor's footer shows for it (its checkpoint diff in the harness).
+const change = (path, additions, deletions) => ({ path, old_path: null, status: "modified", binary: false, additions, deletions });
+const TURN_FILES = [change("src/lib/auth.ts", 1, 1), change("src/lib/auth.test.ts", 14, 0)];
 
 /** Runs in the page after fakeBackend: the lisbon transcript and its chat title. */
-function extras({ messages, chatTitle }) {
+function extras({ messages, chatTitle, turnFiles }) {
+  // The lisbon turn ran on Claude Opus 5.5 at High, Reason's counterpart of Conductor's "Opus 5 · High" chat
+  // (reasonModels.ts: the chip shows the model the Session last ran on).
+  localStorage.setItem("openconductor.reason.running.w1", JSON.stringify({ model: "byok:anthropic:claude-opus-5-5", effort: "high" }));
   const inner = window.__TAURI_INTERNALS__.invoke;
   window.__TAURI_INTERNALS__.invoke = async (cmd, args) => {
     if (cmd === "chat_messages_load") return { messages: args.chatId === "w1" ? messages : [], agentSessionId: null };
     if (cmd === "db_list_workspaces") return (await inner(cmd, args)).map((w) => (w.id === "w1" ? { ...w, chatTitle } : w));
     if (["local_storage_get_entry", "db_set_chat_unread", "db_open_chat_tab", "checkpoint_exists", "session_statuses"].includes(cmd)) return cmd === "local_storage_get_entry" ? null : cmd === "session_statuses" ? [] : cmd === "checkpoint_exists" ? false : undefined;
     if (cmd === "local_storage_set_entry") return { success: true };
+    if (cmd === "checkpoint_turn_changes") return turnFiles;
+    // The harness answers 1 file changed since the first turn ended (its fake checkpointer).
+    if (cmd === "checkpoint_changed_count") return 1;
     return inner(cmd, args);
   };
 }
@@ -74,13 +100,21 @@ const LISBON_REF = [css("text=tide-web"), css("text=Ada/fix login redirect")];
 const REF_TAB = right("[role=tab][aria-label^='Close chat']");
 const OC_TAB = right(".main-tabs [role=tab]");
 const STATES = {
+  "workspace-chat": { ref: LISBON_REF, oc: [] },
+  "workspace-tool-calls": { ref: [...LISBON_REF, css("text=4 tool calls, 2 messages")], oc: [css("text=4 tool calls, 2 messages")] },
+  "menu-chat-tab": { ref: [...LISBON_REF, REF_TAB], oc: [OC_TAB] },
+  "menu-model-picker": { ref: [...LISBON_REF, css("text=Opus 5 >> nth=-1")], oc: [css(".composer .oc-model-chip")] },
   "dialog-rename-chat": { ref: [...LISBON_REF, REF_TAB, css("[role=menuitem] >> text=Rename chat")], oc: [OC_TAB, css("[role=menuitem] >> text=Rename chat")] },
+  // The first of two turns: the last turn offers no Reset chat.
+  "dialog-reset-chat": { scenario: "two-turns", ref: [...LISBON_REF, css("[aria-label='Show message actions'] >> nth=0"), css("[role=menuitem] >> text=Reset chat")], oc: [css("[aria-label='Show message actions'] >> nth=0"), css("[role=menuitem] >> text=Reset chat")] },
+  "empty-model-search": { ref: [...LISBON_REF, css("text=Opus 5 >> nth=-1"), fill("[placeholder='Search models']", "zzz")], oc: [css(".composer .oc-model-chip"), fill("[placeholder='Search models']", "zzz")] },
   "menu-review-edit": { ref: [...LISBON_REF, right("button:has-text('Review') >> nth=0")], oc: [right(".review-button")] },
 };
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".woff2": "font/woff2", ".json": "application/json" };
 function serveOc() {
-  const init = `(${fakeBackend})(${JSON.stringify({ shell: SHELL, files: FILES })});(${extras})(${JSON.stringify({ messages: MESSAGES, chatTitle: "Fix login redirect loop" })});`;
+  // `?scenario=` picks the transcript, as `?oc_scenario=` picks Conductor's seed.
+  const init = (scenario) => `(${fakeBackend})(${JSON.stringify({ shell: SHELL, files: FILES })});(${extras})(${JSON.stringify({ messages: MESSAGES[scenario] ?? MESSAGES.populated, chatTitle: "Fix login redirect loop", turnFiles: TURN_FILES })});`;
   http
     .createServer((req, res) => {
       const url = new URL(req.url, "http://x");
@@ -88,7 +122,7 @@ function serveOc() {
       let file = path.join(DIST_OC, decodeURIComponent(url.pathname));
       if (!file.startsWith(DIST_OC) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) file = path.join(DIST_OC, "index.html");
       let body = fs.readFileSync(file);
-      if (file.endsWith("index.html")) body = body.toString().replace("<head>", `<head><script>${init}</script>`);
+      if (file.endsWith("index.html")) body = body.toString().replace("<head>", `<head><script>${init(url.searchParams.get("scenario") ?? "populated")}</script>`);
       res.writeHead(200, { "content-type": TYPES[path.extname(file)] ?? "application/octet-stream" });
       res.end(body);
     })
@@ -111,7 +145,7 @@ function capture(out, name, url, clicks) {
   const actions = [{ step_id: "settle", action: "wait_for_timeout", duration_ms: 5000 }];
   clicks.forEach((c, i) => {
     const click = c.kind ? { locator: c } : c;
-    actions.push({ step_id: `c${i}`, action: "click", ...click, timeout_ms: 8000 });
+    actions.push({ step_id: `c${i}`, action: "click", ...click, timeout_ms: 8000 }); // a step with its own `action` (fill) keeps it
     actions.push({ step_id: `p${i}`, action: "wait_for_timeout", duration_ms: 800 });
   });
   actions.push({ step_id: "final", action: "wait_for_timeout", duration_ms: 600 });
@@ -184,8 +218,9 @@ if (process.argv[2] === "--serve-oc") {
     for (const [state, spec] of Object.entries(STATES)) {
       if (only.length && !only.includes(state)) continue;
       try {
-        const { png: refPng, ...ref } = capture(out, `ref-${state}`, `http://conductor.localhost:${REF_PORT}/?oc_scenario=populated&oc_theme=dark`, spec.ref);
-        const { png: ocPng, ...oc } = capture(out, `oc-${state}`, `http://localhost:${OC_PORT}/`, spec.oc);
+        const scenario = spec.scenario ?? "populated";
+        const { png: refPng, ...ref } = capture(out, `ref-${state}`, `http://conductor.localhost:${REF_PORT}/?oc_scenario=${scenario}&oc_theme=dark`, spec.ref);
+        const { png: ocPng, ...oc } = capture(out, `oc-${state}`, `http://localhost:${OC_PORT}/?scenario=${scenario}`, spec.oc);
         manifest[state] = { ref: { evidence_id: ref.evidence_id, png_sha256: ref.png_sha256 }, oc: { evidence_id: oc.evidence_id, png_sha256: oc.png_sha256 } };
         let line = `${state}: ref ${ref.evidence_id} | oc ${oc.evidence_id}`;
         if (RECORD) {

@@ -2745,6 +2745,100 @@
    ]
   },
   {
+   "id": "dialog-reset-chat",
+   "title": "Reset chat? dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "[aria-label='Show message actions']"
+     },
+     {
+      "click": "[role=menuitem] >> text=Reset chat"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": "[aria-label='Show message actions']",
+     "after_ms": 600
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Reset chat",
+     "after_ms": 800
+    }
+   ],
+   "covers": [
+    {
+     "kind": "dialog",
+     "name": "Reset chat?"
+    }
+   ]
+  },
+  {
+   "id": "empty-model-search",
+   "title": "Model picker, search with no match",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "text=Opus 5 >> nth=-1"
+     },
+     {
+      "fill": [
+       "[placeholder='Search models']",
+       "zzz"
+      ]
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": ".composer .oc-model-chip",
+     "after_ms": 600
+    },
+    {
+     "type": "zzz",
+     "css": "[placeholder='Search models']"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "empty-state",
+     "name": "No models found"
+    }
+   ]
+  },
+  {
    "id": "menu-review-edit",
    "title": "Review button menu (Edit before sending)",
    "ref": {
