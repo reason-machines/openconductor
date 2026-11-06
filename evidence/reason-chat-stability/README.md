@@ -33,4 +33,9 @@ Fixtures use fresh temporary HOME and OPENCONDUCTOR_HOME. They do not touch the 
 
 No product behavior or visual design is changed by the harness patch. Existing Conductor evidence is reused from [chat status REA notes](../chat-status/README.md) and [chat tab/reset side-by-side](../../parity/side-by-side/chat-tabs-dialog-reset-chat.png). The REA limitations remain recorded in those notes and [UI map gaps 60–61](../../parity/ui-map.md). No new REA invocation was needed for this harness-only change.
 
-New built-app screenshots, the five-pass outcome and the ten-run ledger remain pending until their CI runs complete. Old screenshots are reference evidence, not proof of this branch.
+## Branch validation failures
+
+- [42298610520](https://github.com/reason-machines/openconductor/actions/runs/42298610520), `2510ee55cec15b365df7a6e304a62f9f823e915c`, failed in the Reason chat step before any chat assertions. The log says `timed out waiting for the undefined row in the sidebar`. `create_workspace` returns `WorkspaceDto.branchName`, not the frontend domain model's `branch`. Both navigation calls now use the IPC field, and seeding asserts the requested branch. All other E2E steps, including App flows, passed in this run.
+- [42298639850](https://github.com/reason-machines/openconductor/actions/runs/42298639850), the same SHA, also failed its first preflight pass. No five-pass proof is claimed. The failure screenshot request waited for WebKit's next paint for five minutes and produced no artifact. The harness now uses the existing `WebDriver.screenshot()` helper, which triggers an invisible repaint and bounds capture at 20 seconds.
+
+Built-app verification of these corrections, the five-pass outcome and the ten-run ledger remain pending. Old screenshots are reference evidence, not proof of this branch. The full-main streak remains **0/10**.

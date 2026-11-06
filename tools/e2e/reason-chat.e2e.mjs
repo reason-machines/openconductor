@@ -41,6 +41,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -78,6 +79,7 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
+const capture = new WebDriver(base);
 let sessionUrl = null;
 
 async function wd(method, path, body) {
@@ -124,9 +126,9 @@ async function waitFor(what, fn, timeoutMs = 30000) {
 }
 
 async function screenshot(name) {
-  const png = await wd("GET", "/screenshot");
+  const png = await capture.screenshot();
   const file = join(out, `${name}.png`);
-  writeFileSync(file, Buffer.from(png, "base64"));
+  writeFileSync(file, png);
   console.log(`screenshot: ${file}`);
 }
 
@@ -188,6 +190,7 @@ async function launch() {
     capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } },
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
+  capture.sessionId = session.sessionId;
 }
 
 try {
@@ -210,9 +213,10 @@ try {
   );
   assert.ok(seeded?.workspace, `seeding failed: ${JSON.stringify(seeded)}`);
   const workspace = seeded.workspace;
+  assert.equal(workspace.branchName, "e2e", "the seeded workspace has the requested branch");
   // The page loads conductor.db's rows at startup, so reload to list the seeded repo, then open its workspace.
   await run("location.reload(); return true;");
-  await openWorkspace("proj", workspace.branch);
+  await openWorkspace("proj", workspace.branchName);
   // Conductor's empty first chat (x9s) and a model, not Codex, on the picker chip.
   const intro = await waitFor("the empty chat's intro", () => chatText().then((t) => t && t.includes("You’re in a new copy of") && t));
   assert.ok(intro.includes("called e2e"), intro);
@@ -477,7 +481,7 @@ try {
   await launch();
   await waitFor("the app to load again", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
   // The app reopens the workspace that was open when it quit (the fork), so go back to the first chat from its sidebar row.
-  await openWorkspace("proj", workspace.branch);
+  await openWorkspace("proj", workspace.branchName);
   await waitFor("the first chat's transcript after the relaunch", () => chatText().then((t) => t && t.includes("turn 5 wrote notes.txt")));
   assert.equal(await run("return localStorage.getItem(arguments[0]);", sessionKey), before, "the chat kept its Session id");
   await send("echo: after relaunch");
