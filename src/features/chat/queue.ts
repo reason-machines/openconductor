@@ -24,8 +24,10 @@
 
 /**
  * `sessions.status` (Conductor's decoder `JZe` accepts exactly these). Reason
- * chats reach idle, working, cancelling, error and needs_user_permission; the
- * others come from `conductor.db` (reasonChat.ts `syncStatuses`).
+ * chats reach idle, working, cancelling, error, needs_user_permission and
+ * needs_user_input (a request asked as a question, chatRuntime.ts
+ * `isQuestion`); the others come from `conductor.db` (reasonChat.ts
+ * `syncStatuses`).
  */
 export type SessionStatus =
   | "idle"
@@ -102,6 +104,18 @@ export function permissionRequested(q: ChatQueue): ChatQueue {
 /** Every open permission request was answered: the turn carries on. */
 export function permissionAnswered(q: ChatQueue): ChatQueue {
   return q.status === "needs_user_permission" ? { ...q, status: "working" } : q;
+}
+
+/**
+ * Reason's open requests changed mid-turn: a tool approval waits as
+ * needs_user_permission, a question as needs_user_input (permission outranks
+ * input, as Conductor's `tTr`), and none left goes back to working. Only a
+ * running turn moves: idle, error and cancelling stay.
+ */
+export function requestsOpen(q: ChatQueue, approvals: number, questions: number): ChatQueue {
+  if (q.status !== "working" && q.status !== "needs_user_permission" && q.status !== "needs_user_input") return q;
+  const status: SessionStatus = approvals > 0 ? "needs_user_permission" : questions > 0 ? "needs_user_input" : "working";
+  return status === q.status ? q : { ...q, status };
 }
 
 /** Sends the head if the session is idle and nothing holds the queue. */
