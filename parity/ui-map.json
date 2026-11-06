@@ -34,26 +34,26 @@
  "summary": {
   "total": 976,
   "missing": 742,
-  "wrong": 80,
-  "matches": 154,
+  "wrong": 78,
+  "matches": 156,
   "states": {
    "total": 78,
    "missing": 13,
-   "wrong": 22,
-   "matches": 43
+   "wrong": 21,
+   "matches": 44
   },
   "items": {
    "total": 898,
    "missing": 729,
-   "wrong": 58,
-   "matches": 111
+   "wrong": 57,
+   "matches": 112
   },
   "items_by_kind": {
    "dialog": {
     "total": 64,
     "missing": 54,
-    "wrong": 5,
-    "matches": 5
+    "wrong": 4,
+    "matches": 6
    },
    "empty-state": {
     "total": 52,
@@ -180,8 +180,8 @@
    "workspaces": {
     "total": 61,
     "missing": 33,
-    "wrong": 3,
-    "matches": 25
+    "wrong": 1,
+    "matches": 27
    }
   },
   "located_items": 226,
@@ -2377,33 +2377,33 @@
   {
    "id": "dialog-create-project",
    "title": "Create project dialog",
-   "status": "wrong",
-   "why": "diff 6.7% at t24, copy 90%",
+   "status": "matches",
+   "why": "diff 4.4% at t24, copy 90%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/dialog-create-project.png",
+    "file": "side-by-side/workspaces-dialog-create-project.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 2,
-    "actions_total": 2,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_14294f671d476316bab17a522fb8e63d9b95b8f0624ea0aa789c752ccf92148e"
+    "rea_evidence_id": "ev_cd1270ac108ea98fd64c7394b06d05e4ad65e2015aa2f65fbd57df1524fe96d7"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/dialog-create-project.png",
+    "file": "side-by-side/workspaces-dialog-create-project.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at fbe5b5a7b: tools/side-by-side/workspaces.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/dialog-create-project.jpg",
-    "changed_ratio_t0": 0.9999685594512195,
-    "changed_ratio_t24": 0.06670922256097561,
+    "file": null,
+    "changed_ratio_t0": 0.9999647484756098,
+    "changed_ratio_t24": 0.044015815548780486,
     "rea_evidence_ids": [
-     "ev_8e0b337e248c6fbe104abe57660123b1c35016e0a1b321c904314e37fd07443a",
-     "ev_3d29d960207c5748ce43a9e7d3df1fd0fff36a5130ac0a082cca990d0703c53c"
+     "ev_8dd9f49fcf346e665d37d0e276bed9134c240a422cde4306d7ed90db840905c1",
+     "ev_cb0e05bf3387cf51cfd0e412d2a7fe7eeb6185890d7a372c10da8592d23dd25f"
     ]
    },
    "copy_coverage": 0.9,
@@ -4498,8 +4498,8 @@
    "id": "dialog:create-project",
    "kind": "dialog",
    "name": "Create project",
-   "status": "wrong",
-   "why": "host state dialog-create-project is wrong",
+   "status": "matches",
+   "why": "on screen in both; state dialog-create-project matches",
    "team": "workspaces",
    "component": "gbi",
    "source": {
@@ -4513,10 +4513,10 @@
    "tokens": [],
    "state": "dialog-create-project",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/dialog-create-project.png",
-   "openconductor_screenshot": "ui-map/oc/dialog-create-project.png",
-   "diff": "ui-map/diff/dialog-create-project.jpg",
-   "changed_ratio_t24": 0.06670922256097561,
+   "reference_screenshot": "side-by-side/workspaces-dialog-create-project.png",
+   "openconductor_screenshot": "side-by-side/workspaces-dialog-create-project.png",
+   "diff": null,
+   "changed_ratio_t24": 0.044015815548780486,
    "primitive": "DialogTitle",
    "dynamic": false
   },

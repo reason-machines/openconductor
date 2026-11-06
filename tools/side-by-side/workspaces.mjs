@@ -81,6 +81,8 @@ function extras({ rows }) {
     // The harness's repos have GitHub remotes (seed-data.js), which sets the rows' git status icon.
     if (cmd === "db_list_repos") return (await inner(cmd, args)).map((r) => ({ ...r, remoteUrl: `git@github.com:tide-labs/${r.name}.git` }));
     if (cmd === "db_list_sections" || cmd === "session_statuses" || cmd === "db_list_archived_workspaces") return [];
+    // Create project's parent folder: no saved location, so the default (the harness shows /Users/demo/conductor/repos).
+    if (cmd === "default_clone_directory") return "/Users/demo/openconductor/repos";
     if (cmd === "local_storage_get_entry") return null;
     if (cmd === "local_storage_set_entry") return { success: true };
     return inner(cmd, args);
@@ -97,6 +99,8 @@ const STATES = {
   "palette-workspaces-projects": both([css("[role=dialog] button:has-text('All projects')")]),
   "palette-workspaces-archive-filter": both([css("[role=dialog] button:has-text('Hiding archived')")]),
   "palette-workspaces-empty": both([{ fill: [SEARCH, "zzzz"] }]),
+  // Home's Quick start card: the Create project dialog.
+  "dialog-create-project": { ref: [css("text=Quick start")], oc: [css(".home-card:has-text('Quick start')")] },
   // The lisbon row's right-click menu, and its Set status submenu.
   "menu-workspace-context": {
     ref: [css("text=tide-web"), { right: "text=Ada/fix login redirect" }],

@@ -8,10 +8,10 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **976** | **742** | **80** | **154** |
-| States (captured screens) | 78 | 13 | 22 | 43 |
-| Inventory items | 898 | 729 | 58 | 111 |
-| &nbsp;&nbsp;dialog | 64 | 54 | 5 | 5 |
+| **All** | **976** | **742** | **78** | **156** |
+| States (captured screens) | 78 | 13 | 21 | 44 |
+| Inventory items | 898 | 729 | 57 | 112 |
+| &nbsp;&nbsp;dialog | 64 | 54 | 4 | 6 |
 | &nbsp;&nbsp;empty-state | 52 | 42 | 1 | 9 |
 | &nbsp;&nbsp;menu | 39 | 36 | 1 | 2 |
 | &nbsp;&nbsp;menu-item | 89 | 83 | 3 | 3 |
@@ -39,7 +39,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | shell | 196 | 178 | 9 | 9 |
 | terminal-scripts | 22 | 19 | 0 | 3 |
 | triage | 268 | 268 | 0 | 0 |
-| workspaces | 61 | 33 | 3 | 25 |
+| workspaces | 61 | 33 | 1 | 27 |
 
 226 of 898 items were located in a captured state; 226 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
 
@@ -123,7 +123,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Command palette: Workspaces tab, no matching workspaces<br>`palette-workspaces-empty` | matches | workspaces | diff 2.0% at t24, copy 100% | [png](side-by-side/workspaces-palette-workspaces-empty.png) | [png](side-by-side/workspaces-palette-workspaces-empty.png) |  | 2.0% |
 | Command palette: search<br>`palette-search` | wrong | shell | diff 10.2% at t24, copy 95% | [png](ui-map/ref/palette-search.png) | [png](ui-map/oc/palette-search.png) | [jpg](ui-map/diff/palette-search.jpg) | 10.2% |
 | Clone GitHub repo dialog<br>`dialog-clone-github` | matches | git-review | diff 4.9% at t24, copy 95% | [png](ui-map/ref/dialog-clone-github.png) | [png](ui-map/oc/dialog-clone-github.png) | [jpg](ui-map/diff/dialog-clone-github.jpg) | 4.9% |
-| Create project dialog<br>`dialog-create-project` | wrong | workspaces | diff 6.7% at t24, copy 90% | [png](ui-map/ref/dialog-create-project.png) | [png](ui-map/oc/dialog-create-project.png) | [jpg](ui-map/diff/dialog-create-project.jpg) | 6.7% |
+| Create project dialog<br>`dialog-create-project` | matches | workspaces | diff 4.4% at t24, copy 90% | [png](side-by-side/workspaces-dialog-create-project.png) | [png](side-by-side/workspaces-dialog-create-project.png) |  | 4.4% |
 | Rename workspace dialog<br>`dialog-rename-workspace` | matches | workspaces | diff 4.6% at t24, copy 94% | [png](ui-map/ref/dialog-rename-workspace.png) | [png](ui-map/oc/dialog-rename-workspace.png) | [jpg](ui-map/diff/dialog-rename-workspace.jpg) | 4.6% |
 | Keyboard shortcuts dialog<br>`dialog-keyboard-shortcuts` | matches | shell | diff 4.2% at t24, copy 100% | [png](ui-map/ref/dialog-keyboard-shortcuts.png) | [png](ui-map/oc/dialog-keyboard-shortcuts.png) | [jpg](ui-map/diff/dialog-keyboard-shortcuts.jpg) | 4.2% |
 | Account / computer menu<br>`menu-account` | wrong | shell | diff 6.2% at t24, copy 94% | [png](ui-map/ref/menu-account.png) | [png](ui-map/oc/menu-account.png) | [jpg](ui-map/diff/menu-account.jpg) | 6.2% |
@@ -371,13 +371,13 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:organization-prompts:prompts`<br>organization-prompts › Prompts | missing | cloud-org | Prompts / Custom instructions for the Review, Create PR, and Resolve conflicts b | `` | [settings-org-prompts](ui-map/ref/settings-org-prompts.png) | copy not shown in any OpenConductor capture |
 | `settings-row:organization-mcp-servers:mcps`<br>organization-mcp-servers › MCPs | missing | cloud-org | MCPs / Configure MCP servers for cloud workspaces. | `` |  | copy not shown in any OpenConductor capture |
 
-## dialog (64: 54 missing, 5 wrong, 5 matches)
+## dialog (64: 54 missing, 4 wrong, 6 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
 | `dialog:conductor-passport`<br>Conductor Passport | missing | shell | Conductor Passport | `tss` |  | copy not shown in any OpenConductor capture |
 | `dialog:clone-github-repo`<br>Clone GitHub repo | matches | git-review | Clone GitHub repo | `los` | [dialog-clone-github](ui-map/oc/dialog-clone-github.png) | on screen in both; state dialog-clone-github matches |
-| `dialog:create-project`<br>Create project | wrong | workspaces | Create project | `gbi` | [dialog-create-project](ui-map/oc/dialog-create-project.png) | host state dialog-create-project is wrong |
+| `dialog:create-project`<br>Create project | matches | workspaces | Create project | `gbi` | [dialog-create-project](side-by-side/workspaces-dialog-create-project.png) | on screen in both; state dialog-create-project matches |
 | `dialog:cloud-desktop`<br>Cloud desktop | matches | cloud-org | Cloud desktop | `O9s` | [settings-experimental](ui-map/oc/settings-experimental.png) | on screen in both; state settings-experimental matches |
 | `dialog:workspace-access`<br>Workspace access | wrong | settings | Workspace access | `ioo` | [settings-advanced](ui-map/oc/settings-advanced.png) | host state settings-advanced is wrong |
 | `dialog:mcp-status`<br>MCP status | missing | chat | MCP status | `duo` |  | copy not shown in any OpenConductor capture |
