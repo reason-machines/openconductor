@@ -26,6 +26,9 @@
 #   OC_E2E_ANTHROPIC_OP_REF  op:// reference of an Anthropic API key
 #   OC_E2E_OPENAI_OP_REF     op:// reference of an OpenAI API key
 # Without one, that API key mode is reported "not run".
+#   OC_E2E_KEY_ONLY=1        control run: the throwaway HOME gets no CLI login
+#                            at all and only the API key mode runs, so a reply
+#                            can only come from the key saved in the app.
 #
 # A stale key is left in the app's environment (ANTHROPIC_API_KEY or
 # OPENAI_API_KEY): a non-key mode only succeeds if the app clears it.
@@ -49,22 +52,26 @@ find_cli() {
 }
 
 home=$(mktemp -d "${TMPDIR:-/tmp}/oc-auth-$agent.XXXXXX")
-trap 'rm -rf "$home"' EXIT
+# The CLI may still be writing under HOME as the app exits: retry once.
+trap 'rm -rf "$home" 2>/dev/null || { sleep 3; rm -rf "$home"; }' EXIT
 mkdir -p "$home/.local/bin" "$home/Library"
 fp() { printf '%s' "$1" | shasum -a 256 | cut -c1-16; }
 
 key=""
+key_only=${OC_E2E_KEY_ONLY:-}
 case $agent in
   claude)
     cli=$(find_cli claude)
     ln -s "$cli" "$home/.local/bin/claude"
-    ln -s "$HOME/Library/Keychains" "$home/Library/Keychains"
-    python3 - "$HOME/.claude.json" "$home/.claude.json" <<'PY'
+    if [[ -z $key_only ]]; then
+      ln -s "$HOME/Library/Keychains" "$home/Library/Keychains"
+      python3 - "$HOME/.claude.json" "$home/.claude.json" <<'PY'
 import json, sys
 src = json.load(open(sys.argv[1]))
 json.dump({k: src[k] for k in ("oauthAccount", "hasCompletedOnboarding", "userID") if k in src}, open(sys.argv[2], "w"))
 PY
-    chmod 600 "$home/.claude.json"
+      chmod 600 "$home/.claude.json"
+    fi
     HOME=$home "$cli" auth status 2>/dev/null \
       | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({k: d.get(k) for k in ("loggedIn","authMethod","apiProvider","subscriptionType")}))' \
       > "$out/cli-auth.json" || true
@@ -76,7 +83,7 @@ PY
     cli=$(find_cli codex)
     ln -s "$(python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$cli")" "$home/.local/bin/codex"
     mkdir -p "$home/.codex"
-    python3 - "$HOME/.codex/auth.json" "$home/.codex/auth.json" <<'PY'
+    [[ -n $key_only ]] || python3 - "$HOME/.codex/auth.json" "$home/.codex/auth.json" <<'PY'
 import json, os, sys
 d = json.load(open(sys.argv[1]))
 t = d.get("tokens") or {}
@@ -106,6 +113,10 @@ python3 - "$out/key.json" "$keyname" "${key:+$(fp "$key")}" "${ref:+1password}" 
 import json, sys
 json.dump({"name": sys.argv[2], "fingerprint": sys.argv[3] or None, "source": sys.argv[4] or (None if not sys.argv[3] else "file")}, open(sys.argv[1], "w"))
 PY
+if [[ -n $key_only ]]; then
+  [[ -n $key ]] || { echo "OC_E2E_KEY_ONLY needs an API key (OC_E2E_*_OP_REF)" >&2; exit 1; }
+  echo '{"key_only": true}' > "$out/run.json"
+fi
 
 name="$agent-auth-$(date +%s)"
 fixture="$home/fixture"
@@ -117,10 +128,10 @@ git -C "$fixture/$name" add README.md
 git -C "$fixture/$name" -c user.name=e2e -c user.email=e2e@example.invalid commit -qm init
 git -C "$fixture/$name" push -q origin HEAD:main
 
-python3 - "$fixture/$name" "$name" "$agent" "$tab" "$picker" "$login_card" "$login_id" "$keyname" "$keylabel" "${key:+1}" > "$out/driver.js" <<'PY'
+python3 - "$fixture/$name" "$name" "$agent" "$tab" "$picker" "$login_card" "$login_id" "$keyname" "$keylabel" "${key:+1}" "$key_only" > "$out/driver.js" <<'PY'
 import json, sys
-repo, name, agent, tab, picker, login_card, login_id, keyname, keylabel, have_key = sys.argv[1:11]
-modes = [
+repo, name, agent, tab, picker, login_card, login_id, keyname, keylabel, have_key, key_only = sys.argv[1:12]
+modes = [] if key_only else [
     {"id": "import", "prompt": "Reply with exactly: oc-import-ok", "expect": "oc-import-ok"},
     {"id": login_id, "card": login_card, "prompt": f"Reply with exactly: oc-{login_id}-ok", "expect": f"oc-{login_id}-ok"},
 ]

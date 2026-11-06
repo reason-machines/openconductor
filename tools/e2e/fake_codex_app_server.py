@@ -28,6 +28,10 @@ carries the process's "pid", so a request can be traced to its launch.
 account/read answers signed out until account/login/start (ChatGPT) has run:
 that sign-in completes by itself after 0.5 s as e2e@example.com and is kept
 in codex-fake-account.json beside the log ($OC_FAKE_CODEX_DIR or $HOME).
+account/login/start {type: "apiKey"} is answered as Codex does and logged
+with the key's fingerprint ("apiKey": "sha256:<16 hex>"), never its value; it
+leaves the stored ChatGPT account alone, as Codex does with
+cli_auth_credentials_store="ephemeral".
 Only "codex app-server" is handled; other subcommands exit 2.
 """
 import hashlib
@@ -194,11 +198,16 @@ def handle(msg):
             consent_answered(msg["id"], msg["result"])
         return
     method, params, mid = msg["method"], msg.get("params") or {}, msg.get("id")
-    note({"method": method, "params": params})
+    logged = dict(params)
+    if isinstance(logged.get("apiKey"), str):
+        logged["apiKey"] = "sha256:" + hashlib.sha256(logged["apiKey"].encode()).hexdigest()[:16]
+    note({"method": method, "params": logged})
     if method == "initialize":
         send({"id": mid, "result": {"userAgent": "fake-codex/0.166.0", "platformFamily": "unix"}})
     elif method == "account/read":
         send({"id": mid, "result": {"account": read_account(), "requiresOpenaiAuth": True}})
+    elif method == "account/login/start" and params.get("type") == "apiKey":
+        send({"id": mid, "result": {"type": "apiKey"}})
     elif method == "account/login/start" and params.get("type") == "chatgpt":
         login = "login-e2e"
         send({"id": mid, "result": {"type": "chatgpt", "loginId": login, "authUrl": "http://127.0.0.1:1455/e2e-auth"}})

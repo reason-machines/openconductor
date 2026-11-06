@@ -1,0 +1,40 @@
+{
+  "agent": "codex",
+  "app_commit": "main 95ec07d plus this PR's Codex API key login (built from the working tree)",
+  "host": {
+    "os": "macOS-26.4-arm64-arm-64bit",
+    "machine": "arm64"
+  },
+  "cli_version": "codex-cli 0.166.0",
+  "key_only_control": true,
+  "cli_auth_in_throwaway_home": "Not logged in",
+  "started": "2026-11-06T14:16:11.338Z",
+  "ended": "2026-11-06T14:16:17.617Z",
+  "error": null,
+  "modes": [
+    {
+      "mode": "apikey",
+      "card": "API key",
+      "set_in_app": true,
+      "stored": {
+        "provider": null,
+        "config": {
+          "kind": "openai_api"
+        }
+      },
+      "connected": true,
+      "login_prompt": false,
+      "key_fingerprint": "76e86bc2f5441fbf",
+      "turn": {
+        "status": "completed",
+        "error": null,
+        "signInNotice": null,
+        "reply": "oc-apikey-ok",
+        "seconds": 3
+      },
+      "result": "pass"
+    }
+  ],
+  "driver_result": "pass",
+  "result": "pass"
+}
