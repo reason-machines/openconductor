@@ -427,6 +427,11 @@ export const flows = [
       const [cursor] = await wd.findAll('.oi-menu .oi-row[data-app="cursor"]');
       await wd.click(cursor);
       await wd.waitFor("the button to open in Cursor", async () => (await main())?.label === "Open in Cursor");
+      // That error toast dismisses itself after 8 s (toastTiming.ts) while the app keeps
+      // re-rendering; it used to stay up and show on every later screenshot (Settings › Agents).
+      const cursorToast = async () => (await textsOf(wd, ".toast-message")).some((t) => t.startsWith("Failed to open in cursor"));
+      await wd.waitFor("the Open in Cursor error toast", cursorToast, 5000);
+      await wd.waitFor("the Open in Cursor error toast to dismiss itself", async () => !(await cursorToast()), 12000);
       await openMenu();
       const kbdRow = (await rows()).find((r) => r.kbd)?.label;
       if (kbdRow !== "Cursor") throw new Error(`⌘O hint on ${JSON.stringify(kbdRow)}, want Cursor`);
