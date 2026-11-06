@@ -67,12 +67,12 @@ Popup (`ni`, @565,215):
 | Create button | `bg-foreground text-background`, `h-6 px-2 text-xs gap-1.5 rounded-sm` | accent blue fill, 28 high |
 
 Gaps for #388's owner (or this screen after it lands), in order:
-1. Create button: `xs` size (24 px), with foreground fill and background text.
+1. **Done (footer alignment PR):** Create button `xs` (24 px), foreground fill, background text, no press scale. Footer controls now sit 12 px in from the card on both sides, as Conductor's do. Side by side: `parity/side-by-side/create-workspace--footer-alignment.png`.
 2. One "Change agent" ghost trigger with model and effort, instead of two selects.
 3. Add the `+` attachments button.
 4. Make target branch and create-from icon triggers with Base UI tooltips.
 5. Fold "Add…" into the repo menu's trailing "Add project" row after a separator, as `ZQo` does.
-6. Line the repo trigger text up with the box edge (`-ml-2 pl-2`).
+6. **Done (footer alignment PR):** the repo trigger text lines up with the box edge (`-ml-2 pl-2 pr-1.5`); measured: text x 464 = card x 464 at 1440×900.
 
 ## REA and harness gaps hit
 

@@ -31,7 +31,7 @@ export function BranchPicker({ base, repoId, repoPath, defaultBranch, onPick, on
     return [...seen].filter((n) => n.toLowerCase().includes(q));
   }, [branches, query]);
   return (
-    <div className="pr-base-picker" role="dialog" aria-label="Select target branch" onKeyDown={(e) => e.key === "Escape" && onClose()}>
+    <div className="pr-base-picker" role="dialog" aria-label="Select target branch" data-tauri-drag-region="false" onKeyDown={(e) => e.key === "Escape" && onClose()}>
       <input autoFocus placeholder="Select target branch..." value={query} onChange={(e) => setQuery(e.target.value)} />
       {branches.status === "loading" && <p className="muted small">Loading branches...</p>}
       {branches.status === "error" && (
