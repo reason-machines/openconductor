@@ -1,0 +1,365 @@
+{
+ "seed": {
+  "repos": [
+   {
+    "id": "r1",
+    "name": "tide-web",
+    "path": "/Users/ada/src/tide-web",
+    "defaultBranch": "main",
+    "workspaces": [
+     {
+      "id": "w1",
+      "name": "lisbon",
+      "branch": "ada/fix-login-redirect",
+      "status": "needs-review",
+      "diff": {
+       "added": 15,
+       "removed": 1
+      },
+      "createdAt": 1762300000000,
+      "path": "/Users/ada/conductor/workspaces/tide-web/lisbon"
+     }
+    ]
+   }
+  ],
+  "selection": {
+   "kind": "workspace",
+   "repoId": "r1",
+   "workspaceId": "w1"
+  },
+  "sidebarVisible": true
+ },
+ "shots": [
+  {
+   "name": "chat-tab--dark",
+   "theme": "dark",
+   "crop": [
+    240,
+    30,
+    700,
+    380
+   ],
+   "conductor": {
+    "actions": [
+     {
+      "step_id": "c_repo",
+      "action": "click",
+      "locator": {
+       "kind": "css",
+       "selector": "text=tide-web"
+      },
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "c_ws",
+      "action": "click",
+      "locator": {
+       "kind": "css",
+       "selector": "text=Ada/fix login redirect"
+      },
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "c_wait",
+      "action": "wait_for_timeout",
+      "duration_ms": 1500
+     },
+     {
+      "step_id": "rc",
+      "action": "click",
+      "button": "right",
+      "locator": {
+       "kind": "css",
+       "selector": "[role=tab][aria-label^='Close chat'] >> nth=0"
+      },
+      "timeout_ms": 15000
+     }
+    ]
+   },
+   "ours": {
+    "actions": [
+     {
+      "step_id": "type",
+      "action": "fill",
+      "locator": {
+       "kind": "css",
+       "selector": ".composer textarea"
+      },
+      "value": {
+       "source": "literal",
+       "value": "Fix the login redirect loop"
+      }
+     },
+     {
+      "step_id": "send",
+      "action": "press",
+      "locator": {
+       "kind": "css",
+       "selector": ".composer textarea"
+      },
+      "key": "Enter",
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "wait_reply",
+      "action": "wait_for_timeout",
+      "duration_ms": 2500
+     },
+     {
+      "step_id": "rc",
+      "action": "click",
+      "button": "right",
+      "locator": {
+       "kind": "css",
+       "selector": ".main-tabs button[role=tab]:has-text('lisbon')"
+      },
+      "timeout_ms": 15000
+     }
+    ]
+   }
+  },
+  {
+   "name": "chat-tab-fork--dark",
+   "theme": "dark",
+   "crop": [
+    240,
+    30,
+    700,
+    380
+   ],
+   "conductor": {
+    "path": "/settings/user/experimental",
+    "actions": [
+     {
+      "step_id": "c_settle",
+      "action": "wait_for_timeout",
+      "duration_ms": 1500
+     },
+     {
+      "step_id": "c_flag",
+      "action": "click",
+      "locator": {
+       "kind": "css",
+       "selector": "#fork-to-new-tab"
+      },
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "c_flag_wait",
+      "action": "wait_for_timeout",
+      "duration_ms": 800
+     },
+     {
+      "step_id": "c_back",
+      "action": "press",
+      "locator": {
+       "kind": "css",
+       "selector": "body"
+      },
+      "key": "Escape",
+      "timeout_ms": 5000
+     },
+     {
+      "step_id": "c_back_wait",
+      "action": "wait_for_timeout",
+      "duration_ms": 1500
+     },
+     {
+      "step_id": "c_repo",
+      "action": "click",
+      "locator": {
+       "kind": "css",
+       "selector": "text=tide-web"
+      },
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "c_ws",
+      "action": "click",
+      "locator": {
+       "kind": "css",
+       "selector": "text=Ada/fix login redirect"
+      },
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "c_wait",
+      "action": "wait_for_timeout",
+      "duration_ms": 1500
+     },
+     {
+      "step_id": "rc",
+      "action": "click",
+      "button": "right",
+      "locator": {
+       "kind": "css",
+       "selector": "[role=tab][aria-label^='Close chat'] >> nth=0"
+      },
+      "timeout_ms": 15000
+     }
+    ]
+   },
+   "ours": {
+    "storage": {
+     "openconductor.settings.preview": "{\"experimental\": {\"experimental_fork_to_new_tab\": true}}"
+    },
+    "actions": [
+     {
+      "step_id": "type",
+      "action": "fill",
+      "locator": {
+       "kind": "css",
+       "selector": ".composer textarea"
+      },
+      "value": {
+       "source": "literal",
+       "value": "Fix the login redirect loop"
+      }
+     },
+     {
+      "step_id": "send",
+      "action": "press",
+      "locator": {
+       "kind": "css",
+       "selector": ".composer textarea"
+      },
+      "key": "Enter",
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "wait_reply",
+      "action": "wait_for_timeout",
+      "duration_ms": 2500
+     },
+     {
+      "step_id": "rc",
+      "action": "click",
+      "button": "right",
+      "locator": {
+       "kind": "css",
+       "selector": ".main-tabs button[role=tab]:has-text('lisbon')"
+      },
+      "timeout_ms": 15000
+     }
+    ]
+   }
+  },
+  {
+   "name": "chat-tab-two-chats--dark",
+   "theme": "dark",
+   "crop": [
+    240,
+    30,
+    700,
+    380
+   ],
+   "conductor": {
+    "actions": [
+     {
+      "step_id": "c_repo",
+      "action": "click",
+      "locator": {
+       "kind": "css",
+       "selector": "text=tide-web"
+      },
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "c_ws",
+      "action": "click",
+      "locator": {
+       "kind": "css",
+       "selector": "text=Ada/fix login redirect"
+      },
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "c_wait",
+      "action": "wait_for_timeout",
+      "duration_ms": 1500
+     },
+     {
+      "step_id": "c_new",
+      "action": "press",
+      "locator": {
+       "kind": "css",
+       "selector": "body"
+      },
+      "key": "Meta+t",
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "c_new_wait",
+      "action": "wait_for_timeout",
+      "duration_ms": 1500
+     },
+     {
+      "step_id": "rc",
+      "action": "click",
+      "button": "right",
+      "locator": {
+       "kind": "css",
+       "selector": "[role=tab][aria-label^='Close chat'] >> nth=0"
+      },
+      "timeout_ms": 15000
+     }
+    ]
+   },
+   "ours": {
+    "actions": [
+     {
+      "step_id": "type",
+      "action": "fill",
+      "locator": {
+       "kind": "css",
+       "selector": ".composer textarea"
+      },
+      "value": {
+       "source": "literal",
+       "value": "Fix the login redirect loop"
+      }
+     },
+     {
+      "step_id": "send",
+      "action": "press",
+      "locator": {
+       "kind": "css",
+       "selector": ".composer textarea"
+      },
+      "key": "Enter",
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "wait_reply",
+      "action": "wait_for_timeout",
+      "duration_ms": 2500
+     },
+     {
+      "step_id": "new",
+      "action": "click",
+      "locator": {
+       "kind": "css",
+       "selector": ".main-tab-new-button"
+      },
+      "timeout_ms": 15000
+     },
+     {
+      "step_id": "new_wait",
+      "action": "wait_for_timeout",
+      "duration_ms": 1000
+     },
+     {
+      "step_id": "rc",
+      "action": "click",
+      "button": "right",
+      "locator": {
+       "kind": "css",
+       "selector": ".main-tabs button[role=tab]:has-text('lisbon')"
+      },
+      "timeout_ms": 15000
+     }
+    ]
+   }
+  }
+ ]
+}
