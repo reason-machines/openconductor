@@ -97,12 +97,13 @@
   const report = { flow: "model-picker", started: new Date().toISOString(), result: "fail", steps };
   try {
     await waitFor("the app", () => q(".home-card") || q(".workspace"));
-    if (!q(".home-card")) {
-      const home = qa("button.sb-row").find((b) => text(b.querySelector(".sb-row-label")) === "Home");
-      if (!home) throw new Error("no Home row in the sidebar");
-      home.click();
-      await waitFor("Home", () => q(".home-card"));
-    }
+    // The app reopens the last selection; Open project is on Home. A
+    // workspace still loading can swallow the first click, so retry it.
+    await waitFor("Home", () => {
+      if (q(".home-card")) return true;
+      qa("button.sb-row").find((b) => text(b.querySelector(".sb-row-label")) === "Home")?.click();
+      return false;
+    }, 60000);
     if (!qa(".sb-repo-name").map(text).includes(cfg.repoName)) {
       window.__OC_E2E_PICK_FOLDER__ = cfg.repo;
       const open = await waitFor("Open project on Home", () => qa(".home-card").find((c) => text(c.querySelector(".home-card-label")) === "Open project"));
@@ -147,7 +148,8 @@
     report.result = "done";
   } catch (e) {
     report.error = `${e && e.message ? e.message : e}`;
-    step("failed", { error: report.error, chip: chip() ? text(chip()) : null });
+    step("failed", { error: report.error, chip: chip() ? text(chip()) : null, sidebar: qa("button.sb-row .sb-row-label").map(text).slice(0, 12) });
+    await saveDom("failure").catch(() => {});
   }
   report.ended = new Date().toISOString();
   await invoke("e2e_report", { name: "model-picker", data: report });

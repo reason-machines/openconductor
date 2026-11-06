@@ -391,11 +391,7 @@ impl ReasonProvider {
             let Some(c) = s.chats.get(chat) else {
                 return;
             };
-            (
-                c.session_id.clone(),
-                c.workspace.clone(),
-                c.options.clone(),
-            )
+            (c.session_id.clone(), c.workspace.clone(), c.options.clone())
         };
         let Some(id) = id else {
             return;
