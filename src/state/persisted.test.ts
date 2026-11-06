@@ -1,8 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { nextUnreadChat } from "./nextUnread.ts";
-import { keepPr, parsePrefs, prefsOf, reposFromDb, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
-import type { Workspace } from "./types";
+import { keepPr, parsePrefs, prefsOf, reposFromDb, restoreChatTabsOf, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
+import { chatOpenable, restoredChatTabs } from "./openChat.ts";
+import { isWorkspaceUnread } from "./chatUnread.ts";
+import type { AppState, Workspace } from "./types";
 
 const repo = (id: string, extra: Partial<DbRepoRow> = {}): DbRepoRow => ({
   id, name: id, rootPath: `/src/${id}`, remoteUrl: null, defaultBranch: "main", displayOrder: 0, hidden: false, icon: null,
@@ -73,7 +75,7 @@ test("sidebar: pin, unread and status columns reach the workspace", () => {
   assert.deepEqual([lima.pinnedAt, lima.unreadChats, lima.manualStatus, lima.derivedStatus], [undefined, undefined, undefined, undefined]);
 });
 
-test("sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; tabless reviews count as hidden", () => {
+test("sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; closed reviews count as hidden", () => {
   const [r] = reposFromDb(
     [repo("a")],
     [
@@ -88,7 +90,28 @@ test("sidebar: unread chats come from sessions; a legacy workspaces.unread marks
   assert.deepEqual(oslo.unreadChats, [{ id: "a/oslo", at: Date.UTC(2026, 10, 5, 13) }]);
   assert.deepEqual(lima.unreadChats, [{ id: "a/lima", at: Date.UTC(2026, 10, 5, 14) }], "the legacy flag does not add a second entry");
   assert.deepEqual(rome.unreadChats, [{ id: "a/rome", at: Date.UTC(2026, 10, 5, 15) }], "a legacy flag alone marks the main chat");
-  assert.equal(kyiv.unreadChats, undefined, "a review tab does not survive a restart");
+  assert.equal(kyiv.unreadChats, undefined, "a review whose tab was closed counts as hidden");
+});
+
+test("sidebar: a review tab open at quit comes back after a restart, still unread", () => {
+  const rows = [
+    ws("a", "kyiv", "ready", {
+      chatTabs: [{ id: "a/kyiv:review:1", title: "Review" }],
+      unreadChats: [{ id: "a/kyiv:review:1", updatedAt: "2026-11-05 16:00:00" }],
+    }),
+  ];
+  restoreChatTabsOf(rows);
+  const [r] = reposFromDb([repo("a")], rows, []);
+  const [kyiv] = r.workspaces;
+  assert.deepEqual(kyiv.unreadChats, [{ id: "a/kyiv:review:1", at: Date.UTC(2026, 10, 5, 16) }]);
+  assert.equal(isWorkspaceUnread(kyiv), true, "the row is unread");
+  assert.equal(chatOpenable("a/kyiv:review:1"), true, "it has a tab again");
+  assert.deepEqual(restoredChatTabs("a/kyiv"), [{ id: "a/kyiv:review:1", title: "Review" }]);
+  assert.deepEqual(
+    nextUnreadChat({ repos: [r], selection: { kind: "workspace", repoId: "a", workspaceId: "a/lima" } } as AppState, { skipSelected: true })?.chatId,
+    "a/kyiv:review:1",
+    "Go to next unread reaches it",
+  );
 });
 
 test("sidebar: a user-set workspace name is shown as is", async () => {
