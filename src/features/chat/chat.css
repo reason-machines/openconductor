@@ -209,7 +209,29 @@
 .hljs-strong { font-weight: 700; }
 .hljs-link { text-decoration: underline; }
 
-.oc-reset-files { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+/* "Reset chat?" in Conductor's AlertDialog: a centred 512px (max-w-lg) panel, p-6, gap-4, rounded-xl,
+   over the overlay with backdrop-blur-xs; header space-y-2 with a text-lg font-medium title and a
+   text-sm muted description; footer justify-end space-x-2 with 32px (h-8) outline and destructive buttons. */
+.oc-alert-backdrop { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.oc-alert { display: grid; gap: 16px; width: min(512px, calc(100vw - 32px)); box-sizing: border-box; padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 15px -3px var(--shadow-25); color: var(--text); }
+.oc-alert-header { display: flex; flex-direction: column; gap: 8px; }
+.oc-alert-header h2 { margin: 0; font-size: 18px; line-height: 28px; font-weight: 500; }
+.oc-alert-header p { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted); }
+.oc-alert-footer { display: flex; justify-content: flex-end; gap: 8px; }
+.oc-alert-btn { display: inline-flex; align-items: center; justify-content: center; height: 32px; box-sizing: border-box; gap: 8px; padding: 0 12px; border-radius: 6px; border: 1px solid transparent; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; }
+.oc-alert-btn:disabled { opacity: 0.5; cursor: default; }
+.oc-alert-cancel { background: transparent; border-color: var(--border); color: var(--text); }
+.oc-alert-cancel:hover { background: var(--hover); }
+.oc-alert-destructive { background: var(--destructive); color: var(--on-solid); }
+.oc-alert-destructive:hover:not(:disabled) { filter: brightness(1.08); }
+.oc-alert-kbd { margin-left: 8px; display: inline-flex; align-items: center; opacity: 0.6; }
+.oc-alert-enter { display: inline-block; width: 12px; height: 12px; flex-shrink: 0; }
+
+.oc-reset-files { display: flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; color: var(--text); }
+/* Conductor's checkbox `pv`: a 16px rounded box, filled with the foreground and a background-coloured check when on. */
+.oc-reset-files input[type="checkbox"] { appearance: none; -webkit-appearance: none; position: relative; flex-shrink: 0; width: 16px; height: 16px; margin: 0; border: 1px solid var(--text); border-radius: 4px; background: transparent; cursor: pointer; }
+.oc-reset-files input[type="checkbox"]:checked { background: var(--text); }
+.oc-reset-files input[type="checkbox"]:checked::after { content: ""; position: absolute; left: 4.5px; top: 1.5px; width: 4px; height: 8px; border: solid var(--bg); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
 .oc-reset-count { font-variant-numeric: tabular-nums; }
 .oc-skeleton { display: inline-block; width: 64px; height: 14px; border-radius: 4px; background: var(--muted); opacity: 0.2; animation: pulse 1.4s ease-in-out infinite; }
 
