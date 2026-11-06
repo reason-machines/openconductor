@@ -16,8 +16,8 @@ export type CodexPersonality = "none" | "friendly" | "pragmatic";
 export type CodexToolApprovalPolicy = "default" | "always_approve";
 
 /** `agent::AgentKind`. */
-export type AgentKind = "claude" | "codex" | "cursor" | "opencode" | "reason";
-export const AGENTS: AgentKind[] = ["claude", "codex", "cursor", "opencode", "reason"];
+export type AgentKind = "claude" | "codex" | "reason";
+export const AGENTS: AgentKind[] = ["claude", "codex", "reason"];
 
 /** `agent::ProviderConfig`, tagged by `kind`. Options are per kind. */
 export type ProviderKind =
@@ -25,8 +25,6 @@ export type ProviderKind =
   | "anthropic_api"
   | "codex_login"
   | "openai_api"
-  | "cursor_api"
-  | "opencode_login"
   | "reason_login";
 export interface ProviderConfig {
   kind: ProviderKind;
@@ -37,8 +35,6 @@ export interface ProviderConfig {
 export const DEFAULT_PROVIDER: Record<AgentKind, ProviderKind> = {
   claude: "claude_login",
   codex: "codex_login",
-  cursor: "cursor_api",
-  opencode: "opencode_login",
   reason: "reason_login",
 };
 

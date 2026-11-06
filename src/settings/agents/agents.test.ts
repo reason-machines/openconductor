@@ -14,7 +14,6 @@ test("the API key card stands for the key-based providers, the CLI card for the 
   assert.deepEqual(configForMode("codex", "cli", { kind: "openai_api" }), { kind: "codex_login" });
   assert.equal(apiKeyName("claude", { kind: "anthropic_api", auth: "auth_token" }), "anthropic_auth_token");
   assert.equal(apiKeyName("codex", { kind: "openai_api" }), "openai_api_key");
-  assert.equal(apiKeyName("cursor", null), "cursor_api_key");
 });
 
 test("status line copy and info rows follow Conductor's jpa/Fpa and Yki/Qki", () => {
@@ -62,7 +61,7 @@ test("equip appends at the next slot or replaces an occupied one; five slots at 
 });
 
 test("favorites round-trip as Conductor's favorite_models configuration JSON", () => {
-  const favs: Favorite[] = [builtIn("a", "gpt-5.6-sol", "high", true), { id: "b", type: "acp", acpAgentId: "opencode", modelId: "anthropic/claude" }];
+  const favs: Favorite[] = [builtIn("a", "gpt-5.6-sol", "high", true), { id: "b", type: "acp", acpAgentId: "some-acp-agent", modelId: "anthropic/claude" }];
   const rows = toRows(favs);
   assert.deepEqual(JSON.parse(rows[0].configuration), { type: "built-in", agent: "codex", model: "gpt-5.6-sol", thinkingLevel: "high", fastMode: true });
   assert.deepEqual(parseFavorites(rows), favs);

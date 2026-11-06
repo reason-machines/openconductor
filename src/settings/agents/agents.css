@@ -218,11 +218,6 @@
 .ag-palette-item:disabled { cursor: default; }
 .ag-palette-item > svg { flex-shrink: 0; color: var(--ag-muted-fg); }
 .ag-grip { position: absolute; right: 12px; display: inline-flex; color: var(--ag-muted-fg); pointer-events: none; }
-.ag-configure {
-  width: 100%; height: 40px; border-radius: 6px; border: 1px dashed var(--ag-border); background: var(--ag-bg);
-  color: var(--ag-muted-fg); font: inherit; font-size: 12px; font-weight: 500; cursor: default;
-}
-.ag-configure:hover { color: var(--ag-fg); background: var(--ag-accent); }
 
 /* Model menu. */
 .ag-menu {

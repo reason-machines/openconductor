@@ -41,7 +41,7 @@ test("once a turn ran, the chip shows the model and effort the Session reported"
 test("Conductor ids are shown as the Reason models they run as", () => {
   assert.equal(reasonModelFor("opus-5-5-1m"), "byok:anthropic:claude-opus-5-5");
   assert.equal(reasonModelFor("gpt-5.6-sol"), "byok:openai-codex:gpt-5.6-sol");
-  assert.equal(reasonModelFor("composer-2.5"), AUTO, "Cursor has no Reason model");
+  assert.equal(reasonModelFor("composer-2.5"), AUTO, "a removed Cursor id has no Reason model");
   assert.deepEqual(reasonChoice({ model: "opus-5-1m", effort: "ultracode" }), { model: "byok:anthropic:claude-opus-5", effort: "max" });
   assert.equal(reasonModelName("byok:anthropic:claude-opus-5-5", OFFERED), "Claude Opus 5.5");
   // Not in Reason's list (not loaded yet, or not offered): a name made from the id.

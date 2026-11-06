@@ -1,16 +1,18 @@
 // Model choices for Settings › Default models. Ids, lists and labels are
 // Conductor's, read from its shipped frontend bundle (index-BGEQ8YjU.js:
-// `Jf`/`BE`/`WE` Claude ids, `Yy`/`AN`/`IN` Codex ids, `Qy` Cursor ids and the
-// label table `lv`; evidence/settings/NOTES.md, "Default models").
+// `Jf`/`BE`/`WE` Claude ids, `Yy`/`AN`/`IN` Codex ids and the label table `lv`;
+// evidence/settings/NOTES.md, "Default models"). Conductor's Cursor and
+// OpenCode models are left out: OpenConductor runs only Reason, Claude Code
+// and Codex.
 
 import type { AgentKind, Settings } from "./types";
 
-/** Agents with a model catalog in Conductor; other agents pick their own models. */
-export type ModelAgent = Extract<AgentKind, "claude" | "codex" | "cursor">;
+/** Agents with a model catalog; Reason picks its own models. */
+export type ModelAgent = Extract<AgentKind, "claude" | "codex">;
 
 /**
  * The models each agent's column on the Default models page lists, in
- * Conductor's order (`Jf`, `Yy`, `Qy`): what its loadout palette shows.
+ * Conductor's order (`Jf`, `Yy`): what its loadout palette shows.
  */
 export const MODEL_PALETTE: Record<ModelAgent, string[]> = {
   claude: [
@@ -28,14 +30,12 @@ export const MODEL_PALETTE: Record<ModelAgent, string[]> = {
     "haiku-4-5",
   ],
   codex: ["gpt-5.6-sol", "gpt-5.6-terra", "gpt-5.6-luna", "gpt-5.5", "gpt-5.4"],
-  cursor: ["auto", "composer-2.5", "grok-4.7", "grok-4.6", "grok-4.5"],
 };
 
 /** Every model id Conductor accepts per agent: the palette plus ids it keeps for stored settings (`BE`, `AN`, `IN`). */
 export const MODEL_CATALOG: Record<ModelAgent, string[]> = {
   claude: [...MODEL_PALETTE.claude, "opus-4-8", "opus-4-7"],
   codex: [...MODEL_PALETTE.codex, "gpt-6-astra", "gpt-6-sol", "gpt-6-luna", "gpt-daybreak-blue-latest", "gpt-5.3-codex-spark", "gpt-5.3-codex", "gpt-5.2-codex"],
-  cursor: [...MODEL_PALETTE.cursor],
 };
 
 /** Conductor's display name per model id (`lv`), aliases included. */
@@ -70,23 +70,17 @@ export const MODEL_LABELS: Record<string, string> = {
   "gpt-5.3-codex-spark": "GPT-5.3 Codex Spark",
   "gpt-5.3-codex": "GPT-5.3 Codex",
   "gpt-5.2-codex": "GPT-5.2 Codex",
-  auto: "Auto",
-  "composer-2.5": "Composer 2.5",
-  "grok-4.7": "Grok 4.7",
-  "grok-4.6": "Grok 4.6",
-  "grok-4.5": "Grok 4.5",
 };
 
 /** Claude CLI aliases Conductor still accepts (our stored default is `opus`). */
 export const CLAUDE_ALIASES = ["opus-1m", "opus", "sonnet", "haiku"];
 
-export const AGENT_LABEL: Record<ModelAgent, string> = { claude: "Claude Code", codex: "Codex", cursor: "Cursor" };
+export const AGENT_LABEL: Record<ModelAgent, string> = { claude: "Claude Code", codex: "Codex" };
 
 /** Conductor's model for an agent when none is chosen. */
 export const AGENT_DEFAULT_MODEL: Record<ModelAgent, string> = {
   claude: "opus-5-1m",
   codex: "gpt-5.6-sol",
-  cursor: "composer-2.5",
 };
 
 /** The agent that runs a model id, or null for an id outside the catalog. */
@@ -118,8 +112,25 @@ export function modelLabel(model: string): string {
   return `${cap(name)}${version}${oneM ? " (1M)" : ""}`;
 }
 
+/** The default model when none is stored (the backend's `DEFAULT_MODEL`). */
+export const DEFAULT_MODEL = "opus";
+
+/**
+ * Cursor's ids (`auto`, `composer-*`, `grok-*`), which Conductor offered and
+ * OpenConductor no longer runs. A stored one reads as `DEFAULT_MODEL`, as the
+ * backend reads it.
+ */
+export function isRemovedCursorModel(model: string): boolean {
+  return model === "auto" || model.startsWith("composer-") || model.startsWith("grok-");
+}
+
+/** A stored `models.default`/`models.review` as it runs: a removed Cursor id reads as `DEFAULT_MODEL`. */
+export function storedModel(model: string): string {
+  return isRemovedCursorModel(model.trim()) ? DEFAULT_MODEL : model;
+}
+
 /** Agent and model a new chat starts with, from `models.default`. Unknown ids run on Claude. */
 export function newChatModel(settings: Settings): { agent: ModelAgent; model: string } {
-  const model = settings.models.default;
+  const model = storedModel(settings.models.default);
   return { agent: agentForModel(model) ?? "claude", model };
 }
