@@ -162,6 +162,7 @@ interface ContextMenuProps {
    * dropdownPlacement.ts) instead of at the pointer. Use `DropdownMenu`.
    */
   anchor?: Rect;
+  align?: "start" | "end";
   onClose: () => void;
   /** Accessible name of the menu. */
   label: string;
@@ -173,7 +174,7 @@ interface ContextMenuProps {
 }
 
 /** A right-click menu at `at`, portalled to <body>. */
-export function ContextMenu({ at, anchor, onClose, label, className, onKeyDown, children }: ContextMenuProps) {
+export function ContextMenu({ at, anchor, align = "start", onClose, label, className, onKeyDown, children }: ContextMenuProps) {
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useEnterPhase();
@@ -197,9 +198,9 @@ export function ContextMenu({ at, anchor, onClose, label, className, onKeyDown, 
     setOpenSub(null);
     const el = ref.current;
     if (!el) return;
-    const r = el.getBoundingClientRect();
+    const r = { width: el.offsetWidth, height: el.offsetHeight };
     if (anchor) {
-      const p = placeDropdown(anchor, { width: r.width, height: r.height }, { width: window.innerWidth, height: window.innerHeight });
+      const p = placeDropdown(anchor, { width: r.width, height: r.height }, { width: window.innerWidth, height: window.innerHeight }, 4, align);
       setPos({ left: p.left, top: p.top, origin: `${p.originX}px ${p.originY}px` });
       return;
     }

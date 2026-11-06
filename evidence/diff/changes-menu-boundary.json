@@ -1,0 +1,21 @@
+{
+  "surface": "OpenConductor browser fixture, visible Chrome on Reason cloud",
+  "viewport_width": 1200,
+  "before": {
+    "source_commit": "fea9a121",
+    "popup_width": 220,
+    "entry_measurement_width_derived_from_220_times_0_95": 209,
+    "popup_right": 1194.984375,
+    "trigger_right": 1183.984375,
+    "delta": 11
+  },
+  "after": {
+    "source_commit": "45ce1af2",
+    "popup_width": 220,
+    "popup_right": 1183.984375,
+    "trigger_right": 1183.984375,
+    "delta": 0
+  },
+  "mechanism": "Measure offsetWidth/offsetHeight instead of getBoundingClientRect while the entry animation has scale(0.95).",
+  "regression_check": "tests/e2e/right-panel.e2e.mjs asserts popup and trigger right edges differ by less than one pixel. It failed before this fix and passes after."
+}

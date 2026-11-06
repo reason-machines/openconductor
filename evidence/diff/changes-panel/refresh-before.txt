@@ -1,0 +1,31 @@
+(node:17320) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:17327) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Changes: external edits refresh without a Reload button
+not ok 1 - Changes: external edits refresh without a Reload button
+  ---
+  duration_ms: 6676.160683
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/tests/e2e/right-panel.e2e.mjs:117:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    locator.waitFor: Timeout 6000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'e2e-diff.txt' }) to be visible
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'TimeoutError'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/tests/e2e/right-panel.e2e.mjs:136:15)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7556.098657
