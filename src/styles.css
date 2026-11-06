@@ -772,3 +772,11 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* parity:sidebar.ws-unread — the composer's "Next unread" (Conductor's g1o: absolute -top-10 right-0 z-10, outline sm button). */
 .next-unread-anchor { position: relative; height: 0; margin: 0 16px; }
 .next-unread-anchor .next-unread { position: absolute; top: -40px; right: 0; z-index: 10; display: inline-flex; align-items: center; gap: 4px; background: var(--panel); }
+
+/* Help › Submit a prompt (Conductor's `W5a`: DialogContent sm:max-w-lg p-5, form space-y-4). */
+.modal:has(.submit-prompt-dialog) { width: min(512px, calc(100vw - 48px)); }
+.submit-prompt-dialog { gap: 16px; }
+.submit-prompt-dialog .submit-prompt-desc { color: var(--muted); font-size: 14px; line-height: 20px; }
+.submit-prompt-dialog textarea { padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: inherit; font: inherit; font-weight: 400; resize: vertical; outline: 0; }
+.submit-prompt-dialog textarea:focus { border-color: var(--accent); }
+.submit-prompt-dialog .submit-prompt-kbd { margin-left: 8px; opacity: 0.6; font: inherit; }
