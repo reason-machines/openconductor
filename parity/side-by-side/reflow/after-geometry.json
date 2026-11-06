@@ -1,0 +1,746 @@
+{
+ "900": {
+  "viewport": 900,
+  "sidebar": {
+   "left": 0,
+   "right": 256,
+   "width": 256,
+   "top": 0,
+   "height": 900,
+   "centerY": 450
+  },
+  "sidebar_topbar": {
+   "left": 0,
+   "right": 255,
+   "width": 255,
+   "top": 0,
+   "height": 32,
+   "centerY": 16
+  },
+  "sidebar_toggle": {
+   "left": 86,
+   "right": 102,
+   "width": 16,
+   "top": 12,
+   "height": 16,
+   "centerY": 20
+  },
+  "header": {
+   "left": 256,
+   "right": 900,
+   "width": 644,
+   "top": 0,
+   "height": 65,
+   "centerY": 32.5
+  },
+  "header_controls": [
+   {
+    "el": "crumb",
+    "left": 272,
+    "right": 325.5,
+    "width": 53.5,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "crumb-sep",
+    "left": 333.5,
+    "right": 339.7,
+    "width": 6.3,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "strong",
+    "left": 347.7,
+    "right": 386.5,
+    "width": 38.8,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "chip",
+    "left": 394.5,
+    "right": 585.9,
+    "width": 191.4,
+    "top": 32,
+    "height": 20,
+    "centerY": 42
+   },
+   {
+    "el": "pr-base-anchor target-chip",
+    "left": 593.9,
+    "right": 649.5,
+    "width": 55.6,
+    "top": 33,
+    "height": 18,
+    "centerY": 42
+   },
+   {
+    "el": "oi-main",
+    "left": 690.5,
+    "right": 719.5,
+    "width": 29,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "oi-chevron",
+    "left": 719.5,
+    "right": 749.5,
+    "width": 30,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-primary",
+    "left": 755.5,
+    "right": 830,
+    "width": 74.4,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-primary pr-caret",
+    "left": 830,
+    "right": 854,
+    "width": 24,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-icon active",
+    "left": 860,
+    "right": 884,
+    "width": 24,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   }
+  ],
+  "chat": {
+   "left": 256,
+   "right": 685.3,
+   "width": 429.3,
+   "top": 65,
+   "height": 835,
+   "centerY": 482.5
+  },
+  "right_panel": {
+   "left": 685.3,
+   "right": 900,
+   "width": 214.7,
+   "top": 65,
+   "height": 835,
+   "centerY": 482.5
+  },
+  "right_panel_head": {
+   "left": 686.3,
+   "right": 900,
+   "width": 213.7,
+   "top": 65,
+   "height": 44,
+   "centerY": 87
+  },
+  "turns": [
+   {
+    "left": 256,
+    "right": 684.3,
+    "width": 428.3,
+    "top": 119,
+    "height": 248,
+    "centerY": 243
+   },
+   {
+    "left": 256,
+    "right": 684.3,
+    "width": 428.3,
+    "top": 367,
+    "height": 228,
+    "centerY": 481
+   }
+  ],
+  "composer": {
+   "left": 272,
+   "right": 668.3,
+   "width": 396.3,
+   "top": 732,
+   "height": 152,
+   "centerY": 808
+  },
+  "doc_scroll_width": 900,
+  "overflow": [],
+  "checks": {
+   "no horizontal overflow": true,
+   "right panel is 1/3 of the space right of the sidebar": true,
+   "turns are min(chat, 896) wide": true,
+   "composer is min(chat - 32, 896) wide": true,
+   "turns and composer centred in chat": true
+  }
+ },
+ "1280": {
+  "viewport": 1280,
+  "sidebar": {
+   "left": 0,
+   "right": 256,
+   "width": 256,
+   "top": 0,
+   "height": 900,
+   "centerY": 450
+  },
+  "sidebar_topbar": {
+   "left": 0,
+   "right": 255,
+   "width": 255,
+   "top": 0,
+   "height": 32,
+   "centerY": 16
+  },
+  "sidebar_toggle": {
+   "left": 86,
+   "right": 102,
+   "width": 16,
+   "top": 12,
+   "height": 16,
+   "centerY": 20
+  },
+  "header": {
+   "left": 256,
+   "right": 1280,
+   "width": 1024,
+   "top": 0,
+   "height": 65,
+   "centerY": 32.5
+  },
+  "header_controls": [
+   {
+    "el": "crumb",
+    "left": 272,
+    "right": 325.5,
+    "width": 53.5,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "crumb-sep",
+    "left": 333.5,
+    "right": 339.7,
+    "width": 6.3,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "strong",
+    "left": 347.7,
+    "right": 386.5,
+    "width": 38.8,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "chip",
+    "left": 394.5,
+    "right": 585.9,
+    "width": 191.4,
+    "top": 32,
+    "height": 20,
+    "centerY": 42
+   },
+   {
+    "el": "pr-base-anchor target-chip",
+    "left": 593.9,
+    "right": 649.5,
+    "width": 55.6,
+    "top": 33,
+    "height": 18,
+    "centerY": 42
+   },
+   {
+    "el": "oi-main",
+    "left": 1070.5,
+    "right": 1099.5,
+    "width": 29,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "oi-chevron",
+    "left": 1099.5,
+    "right": 1129.5,
+    "width": 30,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-primary",
+    "left": 1135.5,
+    "right": 1210,
+    "width": 74.4,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-primary pr-caret",
+    "left": 1210,
+    "right": 1234,
+    "width": 24,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-icon active",
+    "left": 1240,
+    "right": 1264,
+    "width": 24,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   }
+  ],
+  "chat": {
+   "left": 256,
+   "right": 938.7,
+   "width": 682.7,
+   "top": 65,
+   "height": 835,
+   "centerY": 482.5
+  },
+  "right_panel": {
+   "left": 938.7,
+   "right": 1280,
+   "width": 341.3,
+   "top": 65,
+   "height": 835,
+   "centerY": 482.5
+  },
+  "right_panel_head": {
+   "left": 939.7,
+   "right": 1280,
+   "width": 340.3,
+   "top": 65,
+   "height": 44,
+   "centerY": 87
+  },
+  "turns": [
+   {
+    "left": 256,
+    "right": 937.7,
+    "width": 681.7,
+    "top": 119,
+    "height": 204,
+    "centerY": 221
+   },
+   {
+    "left": 256,
+    "right": 937.7,
+    "width": 681.7,
+    "top": 323,
+    "height": 184,
+    "centerY": 415
+   }
+  ],
+  "composer": {
+   "left": 272,
+   "right": 921.7,
+   "width": 649.7,
+   "top": 732,
+   "height": 152,
+   "centerY": 808
+  },
+  "doc_scroll_width": 1280,
+  "overflow": [],
+  "checks": {
+   "no horizontal overflow": true,
+   "right panel is 1/3 of the space right of the sidebar": true,
+   "turns are min(chat, 896) wide": true,
+   "composer is min(chat - 32, 896) wide": true,
+   "turns and composer centred in chat": true
+  }
+ },
+ "1600": {
+  "viewport": 1600,
+  "sidebar": {
+   "left": 0,
+   "right": 256,
+   "width": 256,
+   "top": 0,
+   "height": 900,
+   "centerY": 450
+  },
+  "sidebar_topbar": {
+   "left": 0,
+   "right": 255,
+   "width": 255,
+   "top": 0,
+   "height": 32,
+   "centerY": 16
+  },
+  "sidebar_toggle": {
+   "left": 86,
+   "right": 102,
+   "width": 16,
+   "top": 12,
+   "height": 16,
+   "centerY": 20
+  },
+  "header": {
+   "left": 256,
+   "right": 1600,
+   "width": 1344,
+   "top": 0,
+   "height": 65,
+   "centerY": 32.5
+  },
+  "header_controls": [
+   {
+    "el": "crumb",
+    "left": 272,
+    "right": 325.5,
+    "width": 53.5,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "crumb-sep",
+    "left": 333.5,
+    "right": 339.7,
+    "width": 6.3,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "strong",
+    "left": 347.7,
+    "right": 386.5,
+    "width": 38.8,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "chip",
+    "left": 394.5,
+    "right": 585.9,
+    "width": 191.4,
+    "top": 32,
+    "height": 20,
+    "centerY": 42
+   },
+   {
+    "el": "pr-base-anchor target-chip",
+    "left": 593.9,
+    "right": 649.5,
+    "width": 55.6,
+    "top": 33,
+    "height": 18,
+    "centerY": 42
+   },
+   {
+    "el": "oi-main",
+    "left": 1390.5,
+    "right": 1419.5,
+    "width": 29,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "oi-chevron",
+    "left": 1419.5,
+    "right": 1449.5,
+    "width": 30,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-primary",
+    "left": 1455.5,
+    "right": 1530,
+    "width": 74.4,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-primary pr-caret",
+    "left": 1530,
+    "right": 1554,
+    "width": 24,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-icon active",
+    "left": 1560,
+    "right": 1584,
+    "width": 24,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   }
+  ],
+  "chat": {
+   "left": 256,
+   "right": 1152,
+   "width": 896,
+   "top": 65,
+   "height": 835,
+   "centerY": 482.5
+  },
+  "right_panel": {
+   "left": 1152,
+   "right": 1600,
+   "width": 448,
+   "top": 65,
+   "height": 835,
+   "centerY": 482.5
+  },
+  "right_panel_head": {
+   "left": 1153,
+   "right": 1600,
+   "width": 447,
+   "top": 65,
+   "height": 44,
+   "centerY": 87
+  },
+  "turns": [
+   {
+    "left": 256,
+    "right": 1151,
+    "width": 895,
+    "top": 119,
+    "height": 204,
+    "centerY": 221
+   },
+   {
+    "left": 256,
+    "right": 1151,
+    "width": 895,
+    "top": 323,
+    "height": 184,
+    "centerY": 415
+   }
+  ],
+  "composer": {
+   "left": 272,
+   "right": 1135,
+   "width": 863,
+   "top": 732,
+   "height": 152,
+   "centerY": 808
+  },
+  "doc_scroll_width": 1600,
+  "overflow": [],
+  "checks": {
+   "no horizontal overflow": true,
+   "right panel is 1/3 of the space right of the sidebar": true,
+   "turns are min(chat, 896) wide": true,
+   "composer is min(chat - 32, 896) wide": true,
+   "turns and composer centred in chat": true
+  }
+ },
+ "2100": {
+  "viewport": 2100,
+  "sidebar": {
+   "left": 0,
+   "right": 256,
+   "width": 256,
+   "top": 0,
+   "height": 900,
+   "centerY": 450
+  },
+  "sidebar_topbar": {
+   "left": 0,
+   "right": 255,
+   "width": 255,
+   "top": 0,
+   "height": 32,
+   "centerY": 16
+  },
+  "sidebar_toggle": {
+   "left": 86,
+   "right": 102,
+   "width": 16,
+   "top": 12,
+   "height": 16,
+   "centerY": 20
+  },
+  "header": {
+   "left": 256,
+   "right": 2100,
+   "width": 1844,
+   "top": 0,
+   "height": 65,
+   "centerY": 32.5
+  },
+  "header_controls": [
+   {
+    "el": "crumb",
+    "left": 272,
+    "right": 325.5,
+    "width": 53.5,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "crumb-sep",
+    "left": 333.5,
+    "right": 339.7,
+    "width": 6.3,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "strong",
+    "left": 347.7,
+    "right": 386.5,
+    "width": 38.8,
+    "top": 33.5,
+    "height": 17,
+    "centerY": 42
+   },
+   {
+    "el": "chip",
+    "left": 394.5,
+    "right": 585.9,
+    "width": 191.4,
+    "top": 32,
+    "height": 20,
+    "centerY": 42
+   },
+   {
+    "el": "pr-base-anchor target-chip",
+    "left": 593.9,
+    "right": 649.5,
+    "width": 55.6,
+    "top": 33,
+    "height": 18,
+    "centerY": 42
+   },
+   {
+    "el": "oi-main",
+    "left": 1890.5,
+    "right": 1919.5,
+    "width": 29,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "oi-chevron",
+    "left": 1919.5,
+    "right": 1949.5,
+    "width": 30,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-primary",
+    "left": 1955.5,
+    "right": 2030,
+    "width": 74.4,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-primary pr-caret",
+    "left": 2030,
+    "right": 2054,
+    "width": 24,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   },
+   {
+    "el": "btn btn-small btn-icon active",
+    "left": 2060,
+    "right": 2084,
+    "width": 24,
+    "top": 30,
+    "height": 24,
+    "centerY": 42
+   }
+  ],
+  "chat": {
+   "left": 256,
+   "right": 1485.3,
+   "width": 1229.3,
+   "top": 65,
+   "height": 835,
+   "centerY": 482.5
+  },
+  "right_panel": {
+   "left": 1485.3,
+   "right": 2100,
+   "width": 614.7,
+   "top": 65,
+   "height": 835,
+   "centerY": 482.5
+  },
+  "right_panel_head": {
+   "left": 1486.3,
+   "right": 2100,
+   "width": 613.7,
+   "top": 65,
+   "height": 44,
+   "centerY": 87
+  },
+  "turns": [
+   {
+    "left": 422.2,
+    "right": 1318.2,
+    "width": 896,
+    "top": 119,
+    "height": 204,
+    "centerY": 221
+   },
+   {
+    "left": 422.2,
+    "right": 1318.2,
+    "width": 896,
+    "top": 323,
+    "height": 184,
+    "centerY": 415
+   }
+  ],
+  "composer": {
+   "left": 422.2,
+   "right": 1318.2,
+   "width": 896,
+   "top": 732,
+   "height": 152,
+   "centerY": 808
+  },
+  "doc_scroll_width": 2100,
+  "overflow": [],
+  "checks": {
+   "no horizontal overflow": true,
+   "right panel is 1/3 of the space right of the sidebar": true,
+   "turns are min(chat, 896) wide": true,
+   "composer is min(chat - 32, 896) wide": true,
+   "turns and composer centred in chat": true
+  }
+ }
+}
