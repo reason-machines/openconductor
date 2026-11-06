@@ -10,7 +10,7 @@ const p = await b.newPage({ viewport: { width: 1200, height: 820 } });
 const errors = [];
 p.on("pageerror", (e) => errors.push(e.message));
 await p.goto("http://127.0.0.1:5391/?demo=1");
-const box = p.locator(".composer textarea");
+const box = p.locator(".composer [contenteditable=true]");
 await box.waitFor();
 const ok = (m) => console.log("ok -", m);
 const active = () => p.evaluate(() => document.activeElement?.dataset?.id ? document.activeElement.textContent.trim().split("\n")[0] : document.activeElement?.tagName);

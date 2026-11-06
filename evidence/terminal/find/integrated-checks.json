@@ -1,0 +1,25 @@
+{
+  "owner": "Conductor Rebuild",
+  "pull_request": 719,
+  "base_branch": "main",
+  "tested_source_head": "2aa126f8bc0752ecf4d2193933379b78e7199ecc",
+  "tested_source_tree": "53051eccfb806efb310eb3a6783be405a786cc82",
+  "integrated_main": "1dc803d4",
+  "implementation_commits": ["663d234d", "72665270"],
+  "dist_index_sha256": "e2755eb67dc984b638fbbb5e20d3e18cb6ee2a94bc9a2c0f5b673761da3c6aab",
+  "checks": [
+    {"command": "npm run build", "result": "passed", "includes": "TypeScript and Vite"},
+    {"command": "node --test src/features/terminal/find.test.ts src/features/terminal/shortcuts.test.ts src/scripts/*.test.ts", "result": "passed", "tests": 31},
+    {"command": "npm run lint:colors", "result": "passed"},
+    {"command": "git diff --check", "result": "passed"},
+    {"command": "E2E_BASE=http://127.0.0.1:4402 OC_SHOT_DIR=.oc-tmp/integrated-find node --test tests/e2e/script-output.e2e.mjs", "result": "passed", "tests": 5, "runner": "supported Cloud preview process", "log": "integrated-after.tap"}
+  ],
+  "screenshot": {"path": "integrated-setup-find.png", "sha256": "fb8a703ca059ac6e897fc2ae618ac6baa1f126d71efc04dc5008d20a1ac08c54", "viewed": true},
+  "preview": "stopped after checks",
+  "limitations": [
+    "Browser fixture IPC is synthetic, not a native PTY.",
+    "The integrated screenshot is a behavior capture, not a fresh reference comparison.",
+    "The matched-Stone REA comparison is retained from the implementation pass and does not prove default-palette parity.",
+    "Built-app CI, native macOS rendering, real script processes, PTY lifecycle and full strip/tab parity remain separately unverified."
+  ]
+}

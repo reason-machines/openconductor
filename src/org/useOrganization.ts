@@ -3,6 +3,7 @@
 // `listOrganizations` read is shared by every caller and kept for a minute.
 import { useCallback, useEffect, useState } from "react";
 import { loadOrganizations } from "./api";
+import { useBoolPref } from "../settings/useBoolPref";
 import { ORGANIZATION_EVENT, reconcile, storeOrganization, storedOrganization, type Organization } from "./organization";
 
 const FRESH_MS = 60_000;
@@ -33,9 +34,11 @@ export interface OrganizationState {
 }
 
 export function useOrganization(): OrganizationState {
+  const cloudUI = useBoolPref("experimental_cloud_ui");
   const [active, setActive] = useState<Organization | null>(storedOrganization);
   const [organizations, setOrganizations] = useState<Organization[] | null>(cached?.value ?? null);
   useEffect(() => {
+    if (!cloudUI) return;
     const onChange = (e: Event) => setActive((e as CustomEvent<Organization | null>).detail);
     window.addEventListener(ORGANIZATION_EVENT, onChange);
     let live = true;
@@ -50,7 +53,7 @@ export function useOrganization(): OrganizationState {
       live = false;
       window.removeEventListener(ORGANIZATION_EVENT, onChange);
     };
-  }, []);
+  }, [cloudUI]);
   const select = useCallback((org: Organization | null) => storeOrganization(org), []);
-  return { active, organizations, select };
+  return { active: cloudUI ? active : null, organizations: cloudUI ? organizations : null, select };
 }

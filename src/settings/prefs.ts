@@ -50,6 +50,7 @@ export const BOOL_PREFS = {
   experimental_legacy_file_preview_and_editing: bool("experimental", false),
   experimental_show_workspace_numbers: bool("experimental", false),
   internal_workspace_status_matrix: bool("experimental", false),
+  experimental_cloud_ui: bool("experimental", false),
   experimental_cloud_desktop: bool("experimental", false),
   local_git_forge_enabled: bool("experimental", false),
   voice_mode: bool("experimental", false),

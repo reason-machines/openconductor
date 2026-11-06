@@ -1,6 +1,6 @@
 // parity:diff.discard:ui
 import { useState } from "react";
-import { Modal } from "../../components/Dialogs";
+import { ConfirmationDialog } from "../../components/ConfirmationDialog";
 import type { FileDiff } from "./types.ts";
 
 /** Counter-clockwise arrow: the per-file revert action in the changes list and file header. */
@@ -20,7 +20,6 @@ interface Props {
   onClose: () => void;
 }
 
-/** Confirm before discarding one file's changes; Cmd/Ctrl+Enter confirms, Escape cancels. */
 export function DiscardDialog({ file, onConfirm, onClose }: Props) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,29 +33,11 @@ export function DiscardDialog({ file, onConfirm, onClose }: Props) {
     });
   };
   return (
-    <Modal title="Discard file changes?" onClose={onClose} motion="alert">
-      <div
-        className="modal-body"
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-            e.preventDefault();
-            confirm();
-          }
-        }}
-      >
-        <p>
-          Discard all changes to <span className="oc-discard-path">{file.path}</span>? This action cannot be undone.
-        </p>
-        {error && <p className="error small">Couldn't discard: {error}</p>}
-        <div className="modal-actions">
-          <button className="btn" onClick={onClose}>
-            Cancel
-          </button>
-          <button className="btn oc-btn-danger" onClick={confirm} disabled={busy} autoFocus title="Discard (⌘↵)">
-            {busy ? "Discarding…" : "Discard"} <span className="muted">⌘↵</span>
-          </button>
-        </div>
-      </div>
-    </Modal>
+    <ConfirmationDialog title="Discard file changes?" confirmLabel="Discard" pendingLabel="Discarding…" pending={busy} destructive onConfirm={confirm} onClose={onClose}>
+      <p>
+        Discard all changes to <span className="oc-discard-path">{file.path}</span>? This action cannot be undone.
+      </p>
+      {error && <p className="error small">Couldn't discard: {error}</p>}
+    </ConfirmationDialog>
   );
 }

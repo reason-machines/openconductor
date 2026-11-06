@@ -1,13 +1,7 @@
-// Home's "N/M cities visited" line (Conductor v0.87.6, REA on the decoded
-// bundle: renderApp-D_fmY7hW.js `Xrs` @1,924,243, index-BGEQ8YjU.js `T8t`,
-// `wqt`, `tq`, `bE`, `_qt` @212,242). Conductor takes every workspace's
-// original directory name, strips a trailing `-vN`, keeps the names that are
-// cities in its list, and counts the distinct ones over the size of that list.
-// M here is our own city list (src/workspace/naming.ts), not Conductor's 385.
 import type { Repo } from "../state/types";
-import { CITIES } from "../workspace/naming.ts";
+import { HOME_CITY_SLUGS } from "./cityCatalog.ts";
 
-const CITY_NAMES = new Set(CITIES.map((c) => c.name.toLowerCase()));
+const CITY_NAMES = new Set(HOME_CITY_SLUGS);
 
 /** `oslo-v2` and `Oslo` both name the city `oslo`. */
 export function cityOf(directoryName: string): string | null {
@@ -24,8 +18,8 @@ export function visitedCities(repos: Repo[]): string[] {
       if (city) named.add(city);
     }
   }
-  return CITIES.map((c) => c.name).filter((name) => named.has(name.toLowerCase()));
+  return HOME_CITY_SLUGS.filter((name) => named.has(name));
 }
 
 /** Size of the city catalogue the cities line counts against. */
-export const CITY_TOTAL = CITIES.length;
+export const CITY_TOTAL = HOME_CITY_SLUGS.length;

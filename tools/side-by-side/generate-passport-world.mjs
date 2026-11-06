@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+const modules = path.resolve(process.env.PASSPORT_MODULES ?? 'tools/side-by-side/passport-generator/node_modules');
+const { geoEqualEarth, geoGraticule10, geoPath } = await import(pathToFileURL(path.join(modules, 'd3-geo/src/index.js')));
+const { feature } = await import(pathToFileURL(path.join(modules, 'topojson-client/dist/topojson-client.js')));
+const atlas = JSON.parse(fs.readFileSync(process.argv[2] ?? path.join(modules, 'world-atlas/countries-110m.json'), 'utf8'));
+const draw = geoPath(geoEqualEarth().translate([400, 300]).scale(220));
+const countries = feature(atlas, atlas.objects.countries).features.map(country => draw(country));
+const out = process.argv[3] ?? 'src/home/passportWorld.ts';
+fs.writeFileSync(out, '// Natural Earth public-domain boundaries, world-atlas 2.0.2. Generated with D3 geoEqualEarth.\n// Reproduce with tools/side-by-side/generate-passport-world.mjs; evidence/passport/README.md.\nexport const PASSPORT_GRATICULE = ' + JSON.stringify(draw(geoGraticule10())) + ';\nexport const PASSPORT_COUNTRIES: readonly string[] = ' + JSON.stringify(countries, null, 2) + ';\n');
+console.log(`${countries.length} countries, ${fs.statSync(out).size} bytes`);

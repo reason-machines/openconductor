@@ -5,7 +5,7 @@ import { markUserSetBranchName, renameWorkspaceRecord } from "../backend";
 import { renameWorkspaceBranch } from "../workspace/api";
 import { ALSO_RENAME_BRANCH_KEY, canRenameBranch, planRename, renameDefault, renamedBranch } from "../state/workspaceRename";
 import { FolderIcon } from "./Icons";
-import { useDialogMotion } from "./motion/dialogMotion";
+import { DialogFrame } from "./DialogFrame";
 
 interface Props {
   repoId: string;
@@ -45,7 +45,6 @@ export function RenameWorkspaceDialog({ repoId, workspace: ws, dispatch, onClose
   const target = { directoryName, workspaceName: ws.name === directoryName ? null : ws.name };
   const initial = renameDefault(target);
   const [value, setValue] = useState(initial);
-  const motionRef = useDialogMotion<HTMLDivElement>();
   const [alsoRenameBranch, setAlsoRenameBranch] = useState(readAlsoRenameBranch);
   const [pending, setPending] = useState(false);
   const branchRenamable = canRenameBranch(ws.branch);
@@ -99,15 +98,7 @@ export function RenameWorkspaceDialog({ repoId, workspace: ws, dispatch, onClose
   }
 
   return (
-    <div className="modal-backdrop" ref={motionRef} data-dialog-motion="dialog" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div
-        className="modal rename-ws-dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="rename-ws-title"
-        aria-describedby="rename-ws-desc"
-        onKeyDown={(e) => e.key === "Escape" && onClose()}
-      >
+    <DialogFrame kind="dialog" className="rename-ws-dialog" titleId="rename-ws-title" descriptionId="rename-ws-desc" blur={false} onClose={onClose}>
         <h2 id="rename-ws-title" className="rename-ws-title">
           <FolderIcon size={20} />
           Rename workspace
@@ -137,7 +128,6 @@ export function RenameWorkspaceDialog({ repoId, workspace: ws, dispatch, onClose
             {pending ? "Renaming..." : "OK"}
           </button>
         </div>
-      </div>
-    </div>
+    </DialogFrame>
   );
 }

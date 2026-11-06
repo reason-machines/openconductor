@@ -14,7 +14,7 @@
 // (composerMinimize.ts); focus, a click or ⌘L expands it.
 
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
@@ -24,6 +24,12 @@ import type { QueueAction } from "./queue.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
 import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
 import { SlashMenu } from "./SlashMenu.tsx";
+import { fuzzyFilterFiles } from "../../backend";
+import type { FileMatch } from "../../spotlight/quickOpen";
+import { fileMentionQuery } from "./fileMentions.ts";
+import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
+import { composerPrompt } from "./composerDocument.ts";
+import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
 import type { ComposerMinimize } from "./useComposerMinimize.ts";
 import "./queue.css";
@@ -36,7 +42,7 @@ export const COMPOSER_PLACEHOLDER_WORKING = "Add a follow up";
 export interface ComposerProps {
   draft: string;
   setDraft: (text: string) => void;
-  inputRef: RefObject<HTMLTextAreaElement>;
+  inputRef: RefObject<ComposerEditorHandle>;
   /** Defaults to Conductor's: "Ask to make changes, …", "Add a follow up" while working. */
   placeholder?: string;
   queue: ChatQueue;
@@ -47,6 +53,8 @@ export interface ComposerProps {
   onQueue: (action: QueueAction) => void;
   /** Files going out with the next message, shown above the message box. */
   attachments?: ReactNode;
+  hasAttachments?: boolean;
+  workspacePath?: string;
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
   /** The model picker (or another agent's picker), at the box's bottom left. */
@@ -76,6 +84,8 @@ export function Composer({
   onStop,
   onQueue,
   attachments,
+  hasAttachments = false,
+  workspacePath,
   onAttachFiles,
   picker,
   controls,
@@ -87,7 +97,10 @@ export function Composer({
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [focused, setFocused] = useState(false);
-  const [caret, setCaret] = useState(0);
+  const [selection, setSelection] = useState<ComposerSelection>({ text: "", start: 0, end: 0 });
+  const [mentionIndex, setMentionIndex] = useState(0);
+  const [mentionDismissed, setMentionDismissed] = useState<string | null>(null);
+  const [files, setFiles] = useState<{ workspacePath: string; query: string; matches: FileMatch[] } | null>(null);
   const [slashIndex, setSlashIndex] = useState(0);
   const [slashDismissed, setSlashDismissed] = useState<string | null>(null);
   const { overrides } = useKeybindingOverrides();
@@ -97,46 +110,59 @@ export function Composer({
     return s ? glyphs(s) : "";
   };
   const working = turnRunning(queue.status);
-  const hasText = draft.trim() !== "";
+  const hasText = composerPrompt(draft).trim() !== "";
+  const canSubmit = hasText || hasAttachments;
   const mode = (opposite: boolean) => resolveSendMode({ canSteer: canSteerNow(queue, canSteer), defaultMode: followUpMode, opposite });
   const sendMode = working ? mode(false) : "queue";
   // Conductor's send button: ↑ "Send message", or ↵ "Queue message" while a turn runs and the message would wait.
   const queues = working && sendMode === "queue";
 
-  // The message grows with its text, as Conductor's editor does; the box scrolls past 188 px.
-  useLayoutEffect(() => {
-    const box = inputRef.current;
-    if (!box) return;
-    box.style.height = "auto";
-    box.style.height = `${box.scrollHeight}px`;
-  }, [draft, inputRef, minimized]);
-
   // Conductor blurs the editor when the box minimizes.
   useLayoutEffect(() => {
-    if (minimized && document.activeElement === inputRef.current) inputRef.current?.blur();
+    if (minimized && inputRef.current?.focused()) inputRef.current.blur();
   }, [minimized, inputRef]);
 
-  const query = focused ? slashQuery(draft, caret) : null;
+  const query = focused ? slashQuery(selection.text, selection.start) : null;
   const slashMatches = useMemo(() => (query === null || query === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashDismissed, slashCommands]);
   const slashOpen = slashMatches.length > 0;
   const slashFocus = Math.min(slashIndex, Math.max(0, slashMatches.length - 1));
+  const mention = focused && workspacePath ? fileMentionQuery(selection.text, selection.start, selection.end) : null;
+  const mentionKey = mention ? `${mention.start}:${mention.query}` : null;
+  const mentionQuery = mentionKey !== mentionDismissed ? mention?.query : undefined;
+  useEffect(() => {
+    setFiles(null);
+    setMentionIndex(0);
+    if (!workspacePath || mentionQuery === undefined) return;
+    let live = true;
+    void fuzzyFilterFiles(workspacePath, mentionQuery, false).then(
+      (matches) => { if (live) setFiles({ workspacePath, query: mentionQuery, matches }); },
+      () => { if (live) setFiles(null); },
+    );
+    return () => { live = false; };
+  }, [workspacePath, mentionQuery]);
+  const mentionMatches = files && files.workspacePath === workspacePath && files.query === mentionQuery ? files.matches : [];
+  const mentionOpen = mention !== null && mentionQuery !== undefined && mentionMatches.length > 0;
+  const mentionFocus = Math.min(mentionIndex, Math.max(0, mentionMatches.length - 1));
+
+  function pickFile(file: FileMatch) {
+    const box = inputRef.current;
+    if (!box) return;
+    const current = box.selection();
+    const range = fileMentionQuery(current.text, current.start, current.end);
+    if (!range || `${range.start}:${range.query}` !== mentionKey) return;
+    box.insertFile(range, { path: file.relative_path, label: file.relative_path, directory: file.file.is_directory });
+    setMentionDismissed(mentionKey);
+  }
 
   function pickCommand(command: SlashCommand) {
-    const next = completeInsert(draft, command.insert ?? `/${command.name}`);
-    setDraft(next);
+    const next = completeInsert(selection.text, command.insert ?? `/${command.name}`);
+    inputRef.current?.replaceText(next);
     setSlashIndex(0);
-    requestAnimationFrame(() => {
-      const box = inputRef.current;
-      if (!box) return;
-      box.focus();
-      box.setSelectionRange(next.length, next.length);
-      setCaret(next.length);
-    });
   }
 
   function submit(opposite: boolean) {
-    const text = draft.trim();
-    if (!text) return;
+    const text = composerPrompt(draft).trim();
+    if (!text && !hasAttachments) return;
     if (text.startsWith("/") && onCommand?.(text)) {
       setDraft("");
       return;
@@ -150,7 +176,7 @@ export function Composer({
     "chat.addAttachment": () => (onAttachFiles ? fileInput.current?.click() : false),
     "chat.focus": () => {
       const box = inputRef.current;
-      if (!box || box.offsetParent === null) return false;
+      if (!box || !box.visible()) return false;
       box.focus();
     },
   });
@@ -161,9 +187,6 @@ export function Composer({
     onAttachFiles(files);
     return true;
   };
-  const onPaste = (e: ClipboardEvent<HTMLTextAreaElement>) => {
-    if (takeFiles(e.clipboardData?.files)) e.preventDefault();
-  };
   const hasFiles = (e: DragEvent) => onAttachFiles !== undefined && Array.from(e.dataTransfer?.types ?? []).includes("Files");
   const queueRef = useRef<HTMLOListElement>(null);
 
@@ -173,11 +196,30 @@ export function Composer({
     queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`)?.focus();
   }
 
-  function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
-    const ev = e.nativeEvent;
+  function onKeyDown(e: globalThis.KeyboardEvent) {
+    const ev = e;
     const hit = (id: string) => keys(id).some((s) => matchesEvent(s, ev));
     if (ev.isComposing) return;
     const plain = !e.shiftKey && !e.metaKey && !e.altKey && !e.ctrlKey;
+    if (mentionOpen && plain && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      e.preventDefault();
+      setMentionIndex((mentionFocus + (e.key === "ArrowDown" ? 1 : mentionMatches.length - 1)) % mentionMatches.length);
+      return;
+    }
+    if (mentionOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
+      const selected = mentionMatches[mentionFocus];
+      if (selected) {
+        e.preventDefault();
+        pickFile(selected);
+      }
+      return;
+    }
+    if (mentionOpen && e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      setMentionDismissed(mentionKey);
+      return;
+    }
     if (slashOpen && plain && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
       const n = slashMatches.length;
@@ -196,8 +238,8 @@ export function Composer({
       return;
     }
     // ↑ with the caret at the very start goes to the last queued message.
-    const box = e.currentTarget;
-    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.altKey && box.selectionStart === 0 && box.selectionEnd === 0 && queue.items.length > 0 && queue.editingId === null) {
+    const current = inputRef.current?.selection();
+    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {
       e.preventDefault();
       focus({ row: queue.items[queue.items.length - 1].id });
     } else if (hit("chat.cancel") && working) {
@@ -210,7 +252,10 @@ export function Composer({
       e.preventDefault();
       submit(false);
     }
-    // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the textarea.
+    else if (hit("chat.newLine")) {
+      e.preventDefault();
+      inputRef.current?.newline();
+    }
   }
 
   // Conductor's `Lm` (composerMinimize.ts focusHintVisible); the open model picker hides it in CSS.
@@ -226,6 +271,7 @@ export function Composer({
     <div className="composer-wrap">
       {queue.items.length > 0 ? <QueuePanel queue={queue} canSteer={canSteerNow(queue, canSteer)} onQueue={onQueue} listRef={queueRef} focus={focus} keys={keys} /> : null}
       <div className="oc-composer-anchor">
+        {mentionOpen ? <FileMentionMenu matches={mentionMatches} focused={mentionFocus} hasQuery={mentionQuery !== ""} onPick={pickFile} onFocus={setMentionIndex} /> : null}
         {slashOpen ? <SlashMenu matches={slashMatches} focused={slashFocus} hasQuery={query !== ""} onPick={pickCommand} onFocus={setSlashIndex} /> : null}
         <form
           className={`composer oc-composer${dragging ? " is-dropping" : ""}`}
@@ -257,26 +303,24 @@ export function Composer({
         >
           {attachments}
           <div className="oc-composer-input">
-            <textarea
-              ref={inputRef}
+            <ComposerEditor
+              inputRef={inputRef}
               value={draft}
               placeholder={placeholder ?? (working ? COMPOSER_PLACEHOLDER_WORKING : COMPOSER_PLACEHOLDER)}
-              onChange={(e) => {
-                setDraft(e.target.value);
-                setCaret(e.target.selectionStart ?? e.target.value.length);
+              onChange={(value) => {
+                setDraft(value);
+                setMentionDismissed(null);
                 setSlashIndex(0);
                 setSlashDismissed(null);
               }}
-              onSelect={(e) => setCaret(e.currentTarget.selectionStart ?? 0)}
+              onSelection={setSelection}
               onFocus={() => {
                 setFocused(true);
                 minimize?.expand();
               }}
               onBlur={() => setFocused(false)}
               onKeyDown={onKeyDown}
-              onPaste={onPaste}
-              rows={minimized ? 1 : 3}
-              spellCheck={false}
+              onPasteFiles={takeFiles}
             />
           </div>
           {showFocusPill && !minimized ? focusPill(false) : null}
@@ -318,9 +362,9 @@ export function Composer({
                 </button>
               </Tooltip>
             ) : null}
-            {!working || hasText ? (
+            {!working || canSubmit ? (
               <Tooltip content={<span className="oc-tip-inline">{queues ? "Queue message" : "Send message"}<ShortcutHint commandId="chat.submitMessage" /></span>}>
-                <button className="oc-send" type="submit" disabled={!hasText} data-mode={sendMode} aria-label={sendLabel} data-testid="composer-send-button">
+                <button className="oc-send" type="submit" disabled={!canSubmit} data-mode={sendMode} aria-label={sendLabel} data-testid="composer-send-button">
                   {queues ? <CornerDownLeftIcon size={16} strokeWidth={1.5} /> : <ArrowUpIcon size={16} strokeWidth={1.5} />}
                 </button>
               </Tooltip>
@@ -463,6 +507,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
               key={m.id}
               id={m.id}
               text={m.text}
+              attachmentNames={m.attachments.map((a) => a.name)}
               first={i === 0}
               last={i === queue.items.length - 1}
               editing={queue.editingId === m.id}
@@ -482,6 +527,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
 interface RowProps {
   id: string;
   text: string;
+  attachmentNames: readonly string[];
   first: boolean;
   last: boolean;
   editing: boolean;
@@ -493,7 +539,7 @@ interface RowProps {
   rowProps: React.LiHTMLAttributes<HTMLLIElement>;
 }
 
-function QueueRow({ id, text, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
+function QueueRow({ id, text, attachmentNames, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
   const [value, setValue] = useState(text);
   if (editing) {
     return (
@@ -537,10 +583,11 @@ function QueueRow({ id, text, first, last, editing, canSteer, onQueue, keys, dra
       </li>
     );
   }
+  const label = text.trim() || attachmentNames.join(", ");
   return (
-    <li className={`queue-row${dragging ? " is-dragging" : ""}`} data-id={id} tabIndex={0} aria-label={`Queued message: ${text}`} {...rowProps}>
-      <span className="queue-text" title={text}>
-        {text}
+    <li className={`queue-row${dragging ? " is-dragging" : ""}`} data-id={id} tabIndex={0} aria-label={`Queued message: ${label}`} {...rowProps}>
+      <span className="queue-text" title={label}>
+        {label}
       </span>
       <span className="queue-row-actions">
         <button type="button" className="chat-action" aria-label="Move up" disabled={first} onClick={() => onQueue({ kind: "move", id, by: -1 })}>

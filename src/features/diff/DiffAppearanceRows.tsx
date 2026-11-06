@@ -18,12 +18,13 @@ interface Props {
   save: (next: Settings) => void;
 }
 
-const PREVIEW = `// Load a workspace by id
-export async function loadWorkspace(id: string): Promise<Workspace | null> {
-  const rows = await db.select("SELECT * FROM workspaces WHERE id = ?", [id]);
-  return rows.length > 0 ? { ...rows[0], pinned: true } : null;
-}
-`;
+const PREVIEW = `// Fetch user data
+async function getUser(id: number): Promise<User> {
+    const response = await fetch(\`/api/users/\${id}\`);
+    const data = response.json();
+    return { name: data.name, active: true };
+}`;
+const PREVIEW_CSS = ":host { --diffs-font-size: 14px; --diffs-line-height: 20px; --diffs-font-family: var(--font-mono); --diffs-gap-block: 0; } [data-line] { padding-inline: 0; }";
 
 function themeType(): "light" | "dark" | "system" {
   const t = document.documentElement.dataset.theme;
@@ -57,7 +58,7 @@ export function DiffColorRows({ settings, save }: Props) {
         </select>
       </Row>
       <div className="settings-code-preview" data-code-theme={theme}>
-        <PierreFile file={{ name: "preview.ts", contents: PREVIEW }} options={{ disableFileHeader: true, disableLineNumbers: true, overflow: "scroll", theme: diffThemeFor(theme), themeType: themeType() }} />
+        <PierreFile file={{ name: "preview.ts", contents: PREVIEW }} options={{ disableFileHeader: true, disableLineNumbers: true, overflow: "scroll", theme: diffThemeFor(theme), themeType: themeType(), unsafeCSS: PREVIEW_CSS + (theme === "default" ? " :host { --diffs-bg: var(--s-card); }" : "") }} />
       </div>
     </>
   );

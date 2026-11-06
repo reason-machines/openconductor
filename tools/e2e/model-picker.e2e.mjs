@@ -27,6 +27,7 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -53,7 +54,7 @@ mkdirSync(bin);
 writeFileSync(join(bin, "reason"), `#!/bin/sh\nexec python3 "${join(repoRoot, "tools/reason-acp/fake_reason_acp.py")}" "$@"\n`);
 chmodSync(join(bin, "reason"), 0o755);
 
-const env = { ...process.env, HOME: home, PATH: `${bin}:${process.env.PATH}` };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), PATH: `${bin}:${process.env.PATH}` };
 delete env.REASON_CLI;
 delete env.XDG_DATA_HOME;
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
@@ -61,6 +62,7 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
+const startup = new WebDriver(base);
 let sessionUrl = null;
 
 async function wd(method, path, body) {
@@ -122,7 +124,7 @@ async function screenshot(name) {
 const CHIP = "[data-testid='composer-model-button']";
 const chipTitle = () => run(`return document.querySelector("${CHIP}")?.title || null;`);
 const chatText = () => run("const el = document.querySelector('.chat-scroll'); return el ? el.innerText : null;");
-const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
+const running = () => run("return !!document.querySelector('.composer button[aria-label^=\"Stop the agent\"]');");
 const menuItems = () => run("return [...document.querySelectorAll('.oc-model-menu .oc-model-list .oc-model-item:not(.oc-model-add) .oc-model-item-name')].map((e) => e.textContent);");
 const checkedItem = () => run("return document.querySelector('.oc-model-menu .oc-model-item[data-selected] .oc-model-item-name')?.textContent ?? null;");
 
@@ -137,7 +139,7 @@ async function closePicker() {
 }
 
 async function send(text) {
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));
@@ -152,6 +154,8 @@ try {
   await waitFor("tauri-driver", () => fetch(`${base}/status`).then((r) => r.ok), 20000);
   const session = await wd("POST", "/session", { capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } } });
   sessionUrl = `${base}/session/${session.sessionId}`;
+  startup.sessionId = session.sessionId;
+  await startup.waitForAppReady();
   if (process.env.E2E_WINDOW_RECT === "1") await wd("POST", "/window/rect", { width: 1280, height: 800 }).catch(() => undefined);
 
   await waitFor("the app to load", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
@@ -168,8 +172,20 @@ try {
   assert.ok(seeded?.workspace, `seeding failed: ${JSON.stringify(seeded)}`);
   const workspace = seeded.workspace;
   note(`Settings' default model is "${seeded.defaultModel}"`);
-  const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
-  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  assert.equal(workspace.branchName, "picker", "the seeded workspace has the requested branch");
+  await run("location.reload(); return true;");
+  await startup.waitForAppReady();
+  const row = 'button[data-testid="left-sidebar-workspace-item"][title*=" · picker · "]';
+  const rowId = await waitFor("the picker workspace row", async () => {
+    const el = await run("return document.querySelector(arguments[0]);", row);
+    if (el) return el[W3C_ELEMENT] ?? el.ELEMENT;
+    const header = await run(`return [...document.querySelectorAll('.sb-repo-header[role="button"][aria-expanded="false"]')]
+      .find((h) => h.querySelector('.sb-repo-name')?.textContent === 'proj') || null;`);
+    if (header) await wd("POST", `/element/${header[W3C_ELEMENT] ?? header.ELEMENT}/click`, {});
+    return null;
+  });
+  await wd("POST", `/element/${rowId}/click`, {});
+  await waitFor("picker to be the open workspace", () => run("return document.querySelector(arguments[0])?.getAttribute('aria-current') === 'page';", row));
   await waitFor("the empty chat", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   // 1. A new chat: what its first Session will run.

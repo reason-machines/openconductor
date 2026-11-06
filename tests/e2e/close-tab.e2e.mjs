@@ -88,7 +88,7 @@ test("⌘W closes only the chat tab on screen, never the workspace's own chat; �
   assert.equal(await strip(page).nth(2).getAttribute("aria-selected"), "true");
 
   // ⌘W, also from inside the chat's composer, closes the shown chat and shows the one viewed before it.
-  const composer = page.locator(".composer textarea, .composer [contenteditable=true]").first();
+  const composer = page.locator(".composer [contenteditable=true]").first();
   if (await composer.count()) await composer.focus();
   await page.keyboard.press("Meta+w");
   await expectTabs(page, ["lisbon", "Untitled"], "Untitled");

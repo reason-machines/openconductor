@@ -20,6 +20,7 @@ import { CreateWorkspacePage } from "./components/CreateWorkspacePage";
 import { RemoveRepositoryDialog } from "./components/RemoveRepositoryDialog";
 import { MISC_COPY } from "./settings/repoMisc";
 import { useAppPrefs } from "./settings/appPrefs";
+import { useBoolPrefState } from "./settings/useBoolPref";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts, type ToastAction } from "./components/Toast";
@@ -58,7 +59,7 @@ import { USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatModelPicker.tsx";
 import { RoutinesPage } from "./features/routines/RoutinesPage";
 import { RoutineEditor } from "./features/routines/RoutineEditor";
-import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { REPO_SECTIONS, cloudSettingsLocation, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
 import { ORGANIZATION_EVENT, storedOrganization } from "./org/organization";
 import { changeZoom, rememberSettings, toggleTheme } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
@@ -74,7 +75,7 @@ import { storedRepoFilter } from "./home/useRepoFilter";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
 
 export default function App() {
-  const [state, storeDispatch] = useAppStore();
+  const [state, storeDispatch, startup] = useAppStore();
   // The full-screen create page (`/create`) fills the main area until a
   // selection or a created workspace replaces it.
   const [createPage, setCreatePage] = useState<{ repoId: string | null; sectionId?: string; fromOpen?: boolean } | null>(() => (window.location.pathname === "/create" ? { repoId: null } : null));
@@ -86,6 +87,12 @@ export default function App() {
     [storeDispatch],
   );
   const prefs = useAppPrefs();
+  const cloudUI = useBoolPrefState("experimental_cloud_ui");
+  useEffect(() => {
+    if (cloudUI !== false || state.selection.kind !== "routines") return;
+    dispatch({ type: "select", selection: { kind: "root" } });
+    window.history.replaceState(window.history.state, "", "/" + keptSearch(window.location.search));
+  }, [cloudUI, state.selection, dispatch]);
   // A `/create` start URL shows no workspace as current, like the reference's route.
   useEffect(() => {
     if (createPage && state.selection.kind === "workspace") storeDispatch({ type: "select", selection: { kind: "root" } });
@@ -199,6 +206,8 @@ export default function App() {
     userPages: USER_PAGES,
     // Read synchronously from the stored choice, so an organization start URL resolves on the first render.
     organization: storedOrganization() !== null,
+    // Preserve start-URL intent until settings load; rendering and navigation enforce the preference.
+    experimentalCloudUI: true,
   });
   const [settingsLocation, setSettingsLocation] = useState<SettingsLocation | null>(() =>
     resolveSettingsUrl(window.location.pathname, window.location.search, routeContext()),
@@ -214,15 +223,15 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.repos]);
   const navigateSettings = useCallback((loc: SettingsLocation | null) => {
-    setSettingsLocation(loc);
+    const target = loc ? cloudSettingsLocation(loc, cloudUI === true) : null;
+    setSettingsLocation(target);
     const search = keptSearch(window.location.search);
-    window.history.replaceState(window.history.state, "", (loc ? settingsPath(loc) : "/") + search);
-  }, []);
-  // Show the page a start URL resolved to, as Conductor's redirects do.
+    window.history.replaceState(window.history.state, "", (target ? settingsPath(target) : "/") + search);
+  }, [cloudUI]);
   useEffect(() => {
-    if (settingsLocation && !pendingReposUrl.current) navigateSettings(settingsLocation);
+    if (cloudUI !== null && settingsLocation && !pendingReposUrl.current) navigateSettings(settingsLocation);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cloudUI]);
   // Switching to Personal while an organization page is open lands on General, as Conductor's `lW` redirect does.
   const settingsLocationRef = useRef(settingsLocation);
   settingsLocationRef.current = settingsLocation;
@@ -472,7 +481,7 @@ export default function App() {
       <>
         <>
         <SettingsView
-          location={settingsLocation}
+          location={cloudSettingsLocation(settingsLocation, cloudUI === true)}
           repos={state.repos}
           onNavigate={navigateSettings}
           onClose={closeSettings}
@@ -498,7 +507,7 @@ export default function App() {
 
   return (
     <>
-    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
+    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style} aria-busy={startup === "loading"} data-startup={startup}>
       {isSidebarVisible(state) && sidebarWidth.resizer}
       {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
       <main className="main">
@@ -533,7 +542,7 @@ export default function App() {
           />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
-        ) : sel.kind === "routines" ? (
+        ) : sel.kind === "routines" && cloudUI === true ? (
           sel.page ? (
             <RoutineEditor
               page={sel.page}

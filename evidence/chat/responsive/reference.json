@@ -1,0 +1,20 @@
+{
+  "viewport": {
+    "width": 1000,
+    "height": 820
+  },
+  "footer": {
+    "x": 285,
+    "y": 398.96875,
+    "width": 421.328125,
+    "height": 20
+  },
+  "captures": {
+    "reference-compact": {
+      "evidence_id": "ev_494aae95e060f77d747dbe141019fa2f10d43d080d973cd645510e047c6dc07e"
+    },
+    "reference-revealed": {
+      "evidence_id": "ev_06288249803a26c3aee4e79caf36fc2294db31a09c4d0234ef334778f78fd5f9"
+    }
+  }
+}

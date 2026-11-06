@@ -1,0 +1,76 @@
+[
+  {
+    "name": "chip",
+    "image": "/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/evidence/chat/composer/mentions/before/ours-chip.png",
+    "evidence_id": "ev_e44be58d42090390a3da456557b7a4d5fed50a9880e3c6961d4cb7276c39245e",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4427/tools/composer/demo.html?agent=claude"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": ".composer textarea"
+          },
+          "value": {
+            "source": "literal",
+            "value": "@README"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "suggestions",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        },
+        {
+          "step_id": "pick",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": ".composer textarea"
+          },
+          "key": "Enter"
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  }
+]

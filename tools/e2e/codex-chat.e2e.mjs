@@ -163,7 +163,7 @@ const requests = () =>
     .map((l) => JSON.parse(l));
 
 async function send(text) {
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 

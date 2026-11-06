@@ -24,19 +24,21 @@ const executablePath = CANDIDATES.find((p) => existsSync(p));
 
 let server;
 let browser;
-let base;
+let base = process.env.E2E_BASE;
 
 before(async () => {
   assert.ok(executablePath, `no Chrome or Chromium found; set CHROME_PATH (tried ${CANDIDATES.join(", ")})`);
   assert.ok(existsSync("dist/index.html"), "dist/ is missing; run `npm run build` first");
-  server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
-  base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  if (!base) {
+    server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
+    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  }
   browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
 });
 
 after(async () => {
   await browser?.close();
-  await new Promise((resolve) => server?.httpServer.close(resolve));
+  if (server) await new Promise((resolve) => server.httpServer.close(resolve));
 });
 
 async function openDemo() {
@@ -79,7 +81,7 @@ test("⌘⇧B opens the run's localhost URL from the Run tab; it does nothing be
 
   // Start the dev script; once its output prints the URL, the Open button appears.
   await strip.getByRole("button", { name: "Run Dev", exact: true }).click();
-  await run.locator(".scripts-output", { hasText: "http://localhost:55000/" }).waitFor();
+  await run.getByRole("region", { name: "Script output", exact: true }).locator(".xterm-rows", { hasText: "http://localhost:55000/" }).waitFor();
   const open = strip.getByRole("button", { name: "Open http://localhost:55000/" });
   await open.waitFor();
 

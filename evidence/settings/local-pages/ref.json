@@ -1,0 +1,354 @@
+{
+  "general": {
+    "evidence_id": "ev_a614731b60366f3c177c87af14da52bedf4718eca3034fa9d8d7361708d0ef49",
+    "final_url": "http://conductor.localhost:51749/settings/user/general?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-general.png",
+    "sha256": "cb8ebfb5d36a3065efb37c2174966e6d32f26a4823934aa7426f4645ce78f7bf",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "appearance": {
+    "evidence_id": "ev_270c2c996bbab993d029852f4d8fb49ceaee1d4d680b5486598195db8fa0cd28",
+    "final_url": "http://conductor.localhost:51749/settings/user/appearance?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-appearance.png",
+    "sha256": "dae416d258c4f35f9bc6627409b2bccf3242f2ae48722b3500f6aae0029c0b7e",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "models": {
+    "evidence_id": "ev_576cf1636fe9458beac3a07308731e09957cf109b891e744c9b8e0103716e0da",
+    "final_url": "http://conductor.localhost:51749/settings/user/models?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-models.png",
+    "sha256": "a6873c2a5b96efb773387a5336940c45be0cfe97e9af60f7c63961f721b1bddb",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "git": {
+    "evidence_id": "ev_d75663534dc94731b59d86f9d2f9dd9d67977b0005914b4d6b71e476b64fa7a0",
+    "final_url": "http://conductor.localhost:51749/settings/user/git?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-git.png",
+    "sha256": "063362a326f8c6a10d834a6900f06a6fc56eea76b47c392cb97273b311bed93d",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "environment": {
+    "evidence_id": "ev_30bdf773d2c7e21336cb13c977602a862a19d62c658dcdc6b2637a82593bb27b",
+    "final_url": "http://conductor.localhost:51749/settings/user/environment?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-environment.png",
+    "sha256": "1c3b9b7651863a9fb7e8a20aacc0444ca8d1108cfb05d7dcecf823493709bc32",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "experimental": {
+    "evidence_id": "ev_736b0f4c500d0e21e02f9b089145518d47531bd453d9bc9c3aaadbb96d02762a",
+    "final_url": "http://conductor.localhost:51749/settings/user/experimental?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-experimental.png",
+    "sha256": "89fa4bde7294e1e8ecc96fdd4b3421617da51e04d02b8dae1b58078b689ace9e",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "advanced": {
+    "evidence_id": "ev_9ea4a9daf7ad3f00517570e1fc5ca81801953393c4761ce14fda53a440f2f035",
+    "final_url": "http://conductor.localhost:51749/settings/user/advanced?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-advanced.png",
+    "sha256": "6583b3bf25173b7e5e1b3036ee739b1d122acbc5a63c4d92f470f8dff5d18536",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "appearance-lower": {
+    "evidence_id": "ev_d29038041cfaa12075e1bd6d347240f1f844a042aa93ebb886cbbdbe93e3aeff",
+    "final_url": "http://conductor.localhost:51749/settings/user/appearance?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-appearance-lower.png",
+    "sha256": "2ecb9892115d40738502e2ce2d374954a449aa61cd90cbab102e3e0b3dcd7dab",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "agents-claude": {
+    "evidence_id": "ev_810747dc0b625beb48337a469b97317fe9f66eb4e92185b02e944e69901eb3dc",
+    "final_url": "http://conductor.localhost:51749/settings/user/providers?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-agents-claude.png",
+    "sha256": "360eb4d117f0180073fa0196564e2c5ceaa083542ec2dc2f986a258d6b566d58",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "agents-codex": {
+    "evidence_id": "ev_a824eb6c72b2f4b67c74f8e1d23b55192d5354d7cbbabfd8b86f0d9e07d645c6",
+    "final_url": "http://conductor.localhost:51749/settings/user/providers?providerTab=codex",
+    "png": "ref-agents-codex.png",
+    "sha256": "bcecb2f450eae1a5855296ccf656f6ca8c77438684ffe6895cf4bad91ce81056",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "terminal": {
+    "evidence_id": "ev_31058ab1eeff48f2bc4a3557214e1840c41e1bce1a22db6850bb5a04dcddfe73",
+    "final_url": "http://conductor.localhost:51749/settings/user/terminal",
+    "png": "ref-terminal.png",
+    "sha256": "8715df1806d68fe2fe0b5fd6824042da7f1b6ef1e9f96520a07610b4174279ff",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "repo-environment": {
+    "evidence_id": "ev_b48c3214d3f3707bb2cd5ae2c0fab24fda7c13686ad14ae38fb85e59b0d56aea",
+    "final_url": "http://conductor.localhost:51749/settings/repos/repo-tide-web/environment?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-repo-environment.png",
+    "sha256": "bf2e4c7b91965878e79a252923c954b522e6aade0bd2ad2978cecee37106fafa",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "repo-git": {
+    "evidence_id": "ev_c74d4d4bb50b2650e75dcdecafaf602917d7b2bd73f9e8dd709f59fa9e84bc76",
+    "final_url": "http://conductor.localhost:51749/settings/repos/repo-tide-web/git?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-repo-git.png",
+    "sha256": "52158006211ef85d1107f2ff547a3ed13326775aec3f900787b5601aab33c1ad",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "repo-scripts": {
+    "evidence_id": "ev_ff3a5c1d40ad53205490067970b8e300bfb0f14d976e43f09433369d8efb8c2e",
+    "final_url": "http://conductor.localhost:51749/settings/repos/repo-tide-web/scripts?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-repo-scripts.png",
+    "sha256": "3ddf8427bd1eecd9415d4b3cde1ce0f3bf48becda8823edd31615bfa753af4ca",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "repo-actions": {
+    "evidence_id": "ev_2f2528fc7917000a9f189a5b7b690164a07d45db6da8f9772fd93492e09ef676",
+    "final_url": "http://conductor.localhost:51749/settings/repos/repo-tide-web/actions?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-repo-actions.png",
+    "sha256": "84a787270227766ce44f615e5ea03d654b2d7ff8fffb9d339dc15b55564aacde",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  },
+  "repo-misc": {
+    "evidence_id": "ev_67b82ddd2c02fed06b8b522d0ef5798bed6cf6c18b2289e157f8f8ed4f38ad32",
+    "final_url": "http://conductor.localhost:51749/settings/repos/repo-tide-web/misc?oc_scenario=populated&oc_theme=dark",
+    "png": "ref-repo-misc.png",
+    "sha256": "30af3c1c705f775e0e33504a6f5ad178f075109ec7d1ebce670af061f26878c6",
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "status": "captured",
+    "events": {
+      "retained": 0,
+      "dropped": 0,
+      "items": [],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    }
+  }
+}

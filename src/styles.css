@@ -107,8 +107,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-repo-lead { position: relative; display: flex; flex: none; }
 .sb-repo-initial { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 500; line-height: 1; }
 .sb-repo-chevron { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; visibility: hidden; color: var(--sidebar-muted-foreground); }
-.sb-repo:hover .sb-repo-initial { visibility: hidden; }
-.sb-repo:hover .sb-repo-chevron { visibility: visible; }
+.sb-repo-header:hover .sb-repo-initial { visibility: hidden; }
+.sb-repo-header:hover .sb-repo-chevron { visibility: visible; }
 .sb-repo-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: var(--sidebar-muted-foreground); }
 .sb-repo-count { flex: none; font-family: var(--font-mono); font-size: 11px; line-height: 14px; color: var(--sidebar-muted-foreground); }
 .sb-repo-spacer { width: 36px; flex: none; }
@@ -207,10 +207,11 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .home-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .home-card-icon { display: flex; }
 .home-card-label { font-size: 14px; line-height: 20px; }
-/* Conductor's `flex justify-center gap-4 mt-6` row holding a ghost sm button (h-8, px-3, text-sm, muted). */
 .home-footer { display: flex; justify-content: center; gap: 16px; margin-top: 24px; }
-.home-cities { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 4px; font-size: 14px; color: var(--muted); }
-.home-cities:hover { color: var(--text); }
+.home-cities { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 6px; font-size: 12px; font-weight: 450; line-height: 16px; letter-spacing: 0.01em; color: var(--muted); }
+.home-cities svg { margin-right: 6px; }
+.home-card-icon svg *, .home-cities svg * { vector-effect: non-scaling-stroke; }
+.home-cities:hover { color: var(--text); background: var(--hover); }
 @keyframes home-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .home-cards-wrap { animation: none; } }
 

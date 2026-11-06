@@ -1,0 +1,32 @@
+{
+  "checked_at": "2026-11-06T21:39:49.802067+00:00",
+  "scope": "primary OpenConductor data directory; DB opened mode=ro; no chat or file contents read",
+  "workspace_rows": 2,
+  "repository_rows": 3,
+  "test_workspace_rows_remaining": 0,
+  "test_repository_rows_remaining": 0,
+  "test_named_directories_remaining": 0,
+  "test_candidates": {
+    "workspace_ids": [],
+    "repository_ids": [],
+    "directories": []
+  },
+  "removed": {
+    "workspace_rows": 0,
+    "repository_rows": 0,
+    "directories": 0
+  },
+  "preserved": {
+    "openconductor-playground": {
+      "row_present": true,
+      "root_exists": true
+    },
+    "bergen": {
+      "row_present": true,
+      "state": "archived",
+      "workspace_path_exists": false,
+      "archived_path_exists": false
+    }
+  }
+}
+

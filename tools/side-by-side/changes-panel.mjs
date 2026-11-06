@@ -40,6 +40,8 @@ const settle = { action: "wait_for_timeout", duration_ms: 1200 };
 const refStart = [click("text=tide-web"), settle, click("text=Ada/fix login redirect"), settle];
 const specs = {
   flat: { ref: [], oc: [] },
+  "changes-file-menu": { ref: [{ ...click('.cursor-pointer.mx-2:has-text("auth.test.ts")'), button: "right" }], oc: [{ ...click('button.oc-change[title="Open src/lib/auth.test.ts"]'), button: "right" }] },
+  "discard-dialog": { ref: [{ ...click('.cursor-pointer.mx-2:has-text("auth.test.ts")'), button: "right" }, settle, click('role=menuitem[name="Discard changes"]')], oc: [{ ...click('button.oc-change[title="Open src/lib/auth.test.ts"]'), button: "right" }, settle, click('role=menuitem[name="Discard changes"]')] },
   tree: { ref: [click('[aria-label="Show folder hierarchy"]')], oc: [click('[aria-label="Show folder hierarchy"]')] },
   collapsed: { ref: [click('[aria-label="Show folder hierarchy"]'), settle, click('button:has-text("src / lib")')], oc: [click('[aria-label="Show folder hierarchy"]'), settle, click('button:has-text("src / lib")')] },
   options: { ref: [click('button:has(svg.lucide-ellipsis-vertical)')], oc: [click('[aria-label="Changes options"]')] },

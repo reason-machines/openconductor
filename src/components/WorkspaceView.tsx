@@ -26,6 +26,8 @@ import { generateWorkspaceNames } from "../workspace/naming";
 import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import type { ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
+import { appendComposerText } from "../features/chat/composerDocument.ts";
 import { canMinimize } from "../features/chat/composerMinimize.ts";
 import { useComposerMinimize } from "../features/chat/useComposerMinimize.ts";
 import { AgentBinaryBanner } from "../features/chat/AgentBinaryBanner.tsx";
@@ -231,7 +233,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   /** The turn footer hover's "Opus 5.5 via Reason". */
   const [turnAgent, setTurnAgent] = useState<string | undefined>(undefined);
   const endRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<ComposerEditorHandle>(null);
   const running = transcript.activeTurn !== null;
   // Only the workspace's own chat counts as the agent working; a review chat does not.
   useEffect(() => {
@@ -322,6 +324,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
 
   // Attachments (a review request, revert notes) go to the agent with the message and show by name.
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
+    if (!text.trim() && attached.length === 0) return;
     const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
     agent.submit(runId, cwd, text, mode, attached, repo.path || undefined);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
@@ -457,7 +460,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   // The diff viewer adds review comments to the composer of the chat shown; the PR control sends.
   bridge.current = {
     insert: (text) => {
-      setDraft((d) => (d.trim() ? `${d.trimEnd()}\n\n${text}` : text));
+      setDraft((d) => appendComposerText(d, text));
       inputRef.current?.focus();
     },
     send: (text) => submit(text, "queue"),
@@ -615,9 +618,12 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       {/* The composer stays mounted (draft, queue) but hidden while a tool approval takes its place. */}
       <div className="oc-composer-slot" hidden={toolApproval !== undefined}>
       <Composer
+        key={chatId}
         draft={draft}
         setDraft={setDraft}
         inputRef={inputRef}
+        workspacePath={cwd}
+        hasAttachments={!planWaiting && attachments.length > 0}
         // Conductor: while a plan waits, the message box asks for changes to it; otherwise its own placeholders.
         placeholder={planWaiting ? "Enter your plan adjustments here..." : undefined}
         queue={queue}
