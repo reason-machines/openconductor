@@ -31,7 +31,7 @@
 }
 .oc-files-row:hover,
 .oc-files-row:focus-visible {
-  background: var(--hover, rgba(255, 255, 255, 0.06));
+  background: var(--hover);
   outline: none;
 }
 .oc-files-row .name {
@@ -88,7 +88,7 @@
   font: inherit;
 }
 .oc-files-new input[aria-invalid] {
-  border-color: var(--del);
+  border-color: var(--diff-del);
 }
 .oc-files-new-error {
   position: absolute;
@@ -97,10 +97,10 @@
   right: 8px;
   z-index: 2;
   padding: 4px 6px;
-  border: 1px solid var(--del);
+  border: 1px solid var(--diff-del);
   border-radius: 4px;
   background: var(--panel);
-  color: var(--del);
+  color: var(--diff-del);
   font-family: var(--font-sans, inherit);
   font-size: 12px;
 }
