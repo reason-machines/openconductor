@@ -81,7 +81,7 @@
 .palette-empty { opacity: 0.7; font-size: 12px; }
 /* A workspace result in the All tab is Conductor's `SUi` row: repo initial, display name (semibold
    while unread), then the last-activity time. */
-.palette-repo-initial { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 500; line-height: 1; border: 1px solid var(--sidebar-border); }
+.palette-repo-initial { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 500; line-height: 1; }
 .palette-ws-name { font-weight: 500; color: var(--muted); }
 .palette-ws-name[data-unread] { font-weight: 600; color: var(--text); }
 .palette-item[data-archived] .palette-ws-name { color: var(--faint); }

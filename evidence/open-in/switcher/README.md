@@ -14,7 +14,7 @@ Observed source rules:
 - Releasing a bound modifier opens the selected app. An unmodified override opens on key release. Escape release and window blur cancel. Choosing Close cancels.
 - Pointer clicks on the header still open immediately. Pointer clicks on a chooser tile choose that app.
 
-`AppSwitcher` owns the transient selection and timer. `OpenInButton` still owns actual opening, saved preferences, the split button, and its numbered menu. No App, palette TypeScript, or shared ContextMenu wiring changes were needed. The chooser and palette CSS now reproduce the original `.lucide` one-pixel, non-scaling strokes. The exact original CSS filename, hash, offset, and declaration are recorded in the provenance file. Model the Domain shaped the nullable selection record; Prove It Works shaped the rerunnable browser checks.
+`AppSwitcher` owns the transient selection and timer. `OpenInButton` still owns actual opening, saved preferences, the split button, and its numbered menu. No App, palette TypeScript, or shared ContextMenu wiring changes were needed. The chooser and palette CSS now reproduce the original `.lucide` one-pixel, non-scaling strokes. The search result's repository initial also loses the extra border that Conductor's `U9` does not declare. Exact original CSS and component identities are recorded in the provenance file. Model the Domain shaped the nullable selection record; Prove It Works shaped the rerunnable browser checks.
 
 ## Verification
 
@@ -40,7 +40,7 @@ The unchanged numbered menu's dark and light evidence remains in [the Open in re
 Separate verdicts:
 
 - **Open in:** first, next, and Close chooser states have the same 928 by 144 bounds at 1280 by 820, tile layout, labels, native-icon branch, and one-pixel close glyph. Glass reveals different underlying workspace content, so these images are not a whole-window pixel-match claim. The numbered menu is unchanged and reuses its dark and light evidence.
-- **Palette:** the All dialog matches the reference layout, Stone tokens, row spacing, shortcuts, and icon weights in the fresh REA pair. Search and no-results have separate raw captures. Workspaces filters, Projects tab contents, keyboard overrides, and the separate Experimental cloud-entry gate are not promoted by this check.
+- **Palette:** All, `login` search, and `zzqx` no-results match the reference layout, Stone tokens, row spacing, shortcuts, and icon weights in fresh REA pairs. Search returns Account and the same visible workspace title. The displayed last-activity values differ because the two fake data sets have different timestamps; neither those values nor unrelated sidebar data were normalized or claimed as a match. Workspaces filters, Projects tab contents, keyboard overrides, and the separate Experimental cloud-entry gate are not promoted by this check.
 - **Global menus:** no implementation changes. #695, #697, and #713 were inspected and were already merged; their PR, chat-link, Review, Help, account, and diagnostics work was not duplicated. Packaged native menu ordering is still unverified.
 
 Earlier palette evidence from #705 remains in [the shell comparison](../../../parity/side-by-side/shell-palette-01-all.png), [search](../../../parity/side-by-side/shell-palette-02-search.png), and [no results](../../../parity/side-by-side/shell-palette-03-no-results.png). Experimental cloud-entry gating belongs to its separate owner.

@@ -10,10 +10,11 @@ const base = process.env.OPEN_IN_BASE_URL;
 if (!base) throw new Error("OPEN_IN_BASE_URL required");
 const out = process.env.OUT ?? "evidence/open-in/switcher/screens";
 fs.mkdirSync(out, { recursive: true });
-const manifest = {};
+const manifestPath = path.join(out, "captures.json");
+const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, "utf8")) : {};
 const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH ?? "/usr/bin/chromium", args: ["--no-sandbox"] });
 try {
-  for (const side of ["reference", "ours"]) {
+  for (const side of process.env.PALETTE_ONLY ? [] : ["reference", "ours"]) {
     const page = await browser.newPage({ viewport: { width: 1280, height: 820 }, colorScheme: "dark" });
     await page.goto(side === "reference" ? base + "/__reference/" : base);
     if (side === "reference") {
@@ -43,7 +44,7 @@ try {
 } finally { await browser.close(); }
 const rea = process.env.REA;
 if (rea) {
-  for (const side of ["reference", "ours"]) for (const [state, query] of [["all", ""], ["search", "login"], ["no-results", "zzqx"]]) {
+  for (const side of ["reference", "ours"]) for (const [state, query] of [["all", ""], ["search", "login"], ["no-results", "zzqx"]].filter(([state]) => !process.env.PALETTE_STATE || process.env.PALETTE_STATE === state)) {
     const actions = [
       { step_id: "ready", action: "wait_for", locator: { kind: "css", selector: "text=Home" }, state: "visible", timeout_ms: 10000 },
       { step_id: "settle", action: "wait_for_timeout", duration_ms: 800 },

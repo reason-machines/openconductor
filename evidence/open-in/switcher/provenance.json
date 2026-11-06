@@ -12,5 +12,11 @@
     "sha256": "5b876e143b67a7b0f09e3816b12c18bc588b4af7a9a43f04ce77fd5337d9ff04",
     "offset": 394812,
     "declaration": ".lucide{stroke-width:1px}.lucide *{vector-effect:non-scaling-stroke}#root{background:var"
+  },
+  "workspace_result_icon": {
+    "chunk": "renderApp-D_fmY7hW.js",
+    "SUi_character_offset": 10827163,
+    "U9_character_offset": 7161356,
+    "rule": "U9 fallback is 16x16 rounded-sm, bg-muted, text-muted-foreground, text10px medium; no border declaration"
   }
 }
