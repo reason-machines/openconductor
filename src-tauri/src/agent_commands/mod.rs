@@ -111,7 +111,8 @@ fn claude(app: &AppHandle, cwd: &Path) -> AgentCommands {
         .iter()
         .filter_map(|d| plugin_of(d))
         .collect();
-    let asked = crate::claude_chat::commands::cli_path()
+    let asked = crate::agent_launch::current(app, crate::agent_binaries::Agent::Claude)
+        .map(|r| r.path)
         .ok_or_else(|| "Claude Code is not installed".to_owned())
         .and_then(|exe| {
             launch.executable = exe;
@@ -144,9 +145,8 @@ fn codex(app: &AppHandle, cwd: &Path) -> AgentCommands {
     let chats = app.state::<crate::codex_chat::CodexChats>();
     let bundled = bundled_skills(&ClaudeLaunch::new(cwd, Default::default()).plugin_dirs);
     let cwd_s = cwd.display().to_string();
-    let settings = app.state::<crate::settings::service::SettingsService>();
-    let asked = chats
-        .executable(&settings)
+    let asked = crate::agent_launch::current(app, crate::agent_binaries::Agent::Codex)
+        .map(|r| r.path)
         .ok_or_else(|| "Codex is not installed".to_owned())
         .and_then(|exe| {
             let mut cmd = Command::new(exe);
