@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { Repo, Workspace } from "../state/types";
 import * as api from "../scripts/api";
 import {
@@ -17,6 +18,10 @@ import {
 } from "../scripts/model";
 import * as spotlight from "../spotlight/testingApi";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
+import { openUrl } from "../backend";
+import { useRepoSettings } from "../settings/useRepoSettings";
+import { detectLocalhostUrl, previewEnvFrom, previewOptions, type PreviewEnv, type PreviewOption } from "../scripts/preview";
+import { PreviewOpenButton } from "./PreviewOpenButton";
 import {
   EMPTY_VIEW,
   SPOTLIGHT_EMPTY_TEXT,
@@ -38,6 +43,10 @@ interface Props {
   workspace: Workspace;
   /** Which strip tab this body is for (the strip draws the tabs). */
   tab: "run" | "setup";
+  /** The strip's Run tab is the selected one (open or collapsed), as Conductor's `it === Rx.RUN`. */
+  active: boolean;
+  /** The strip's tab-row slot for the Open button; null when the Run tab is not selected. */
+  actionsSlot?: HTMLElement | null;
   /** Reports the setup state, for the dot on the strip's Setup tab. */
   onSetupState?: (state: SetupStatus["state"]) => void;
   /** The Run tab's empty state: "Add run script" opens the repository's Scripts settings. */
@@ -59,7 +68,7 @@ const errorText = (e: unknown) => (typeof e === "string" ? e : e instanceof Erro
  * With the repository's spotlight_testing setting on, the Run task picker also
  * offers Spotlight, which syncs this workspace into the repository root.
  */
-export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScript, onShowRun }: Props) {
+export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetupState, onAddRunScript, onShowRun }: Props) {
   const ref = useMemo(() => workspaceRef(repo, workspace), [repo, workspace]);
   const wsId = workspace.id;
   const [config, setConfig] = useState<ScriptsConfig | null>(null);
@@ -72,6 +81,9 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
   const [spotView, setSpotView] = useState<SpotlightView>(EMPTY_VIEW);
   const [spotPending, setSpotPending] = useState<"starting" | "stopping" | null>(null);
   const outRef = useRef<HTMLPreElement>(null);
+  const repoSettings = useRepoSettings(repo.path || undefined, workspace.path);
+  const [previewEnv, setPreviewEnv] = useState<PreviewEnv>({});
+  const [detectedUrl, setDetectedUrl] = useState<string | null>(null);
 
   const repoRoot = repo.path;
   const spotEnabled = spotSetting?.enabled === true;
@@ -155,6 +167,11 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
     onSetupState?.(setup.state);
   }, [onSetupState, setup.state]);
 
+  useEffect(() => {
+    setPreviewEnv({});
+    if (ref) api.previewEnv(ref).then((pairs) => setPreviewEnv(previewEnvFrom(pairs)), () => {});
+  }, [ref]);
+
   async function act(f: () => Promise<unknown>) {
     setError(null);
     try {
@@ -210,6 +227,22 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
   const shownStatus = runs.find((r) => r.scriptId === shown);
   const setupRunning = setup.state === "running";
 
+  // Conductor's run-tab URL (`ea`): found in the run output while the task runs, kept until it stops.
+  const runBusy = !showSpotlight && busy;
+  useEffect(() => {
+    if (!runBusy) setDetectedUrl(null);
+  }, [runBusy, shown, wsId]);
+  useEffect(() => {
+    if (runBusy && detectedUrl === null) setDetectedUrl(detectLocalhostUrl(runOut));
+  }, [runBusy, detectedUrl, runOut]);
+  // The Open button (`id`): while the run task runs, with a preview URL or one found in its output.
+  const previews = runBusy ? previewOptions(repoSettings?.previewUrls?.value, detectedUrl, previewEnv) : [];
+  // In-app browser preview is an experimental setting in Conductor, off by default; with it off
+  // (`lr`, `vs`) the URL opens in the default browser.
+  const openPreview = (option: PreviewOption) => {
+    openUrl(option.resolvedUrl).catch((e) => console.error("Failed to open URL:", e));
+  };
+
   // The Run tab's ▶/■ button: stop what runs, else start the task shown.
   const toggleRun = () => {
     if (showSpotlight) {
@@ -224,6 +257,13 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
       if (tasks.length === 0 || !ref || config === null) return;
       onShowRun();
       toggleRun();
+    },
+    // terminal.openLocalhost (⌘⇧B), Conductor's terminal panel handler (~7,141,744): on the Run tab,
+    // open the first preview URL; otherwise pass the key on.
+    "terminal.openLocalhost": () => {
+      if (!active || previews.length === 0) return false;
+      openPreview(previews[0]);
+      return true;
     },
   });
 
@@ -248,6 +288,7 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
 
   return (
     <section className="scripts" aria-label={tab === "run" ? "Run" : "Setup"}>
+      {actionsSlot && previews.length > 0 && createPortal(<PreviewOpenButton options={previews} onOpen={openPreview} />, actionsSlot)}
       {error && <div className="scripts-error">{error}</div>}
       {tab === "run" ? (
         <>

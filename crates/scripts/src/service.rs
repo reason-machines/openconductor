@@ -167,6 +167,12 @@ impl ScriptService {
         config::load(&self.settings_paths(ws)).map_err(|e| e.to_string())
     }
 
+    /// What the Run tab's Open URL templates expand with: the workspace's
+    /// `CONDUCTOR_*` variables, its port block included.
+    pub fn preview_env(&self, ws: &WorkspaceRef) -> Result<Vec<(String, String)>, String> {
+        Ok(env::preview_env(&self.context(ws)?))
+    }
+
     /// Start the setup script. `Ok(false)`: there is none, or it already runs.
     pub fn start_setup(&self, ws: &WorkspaceRef) -> Result<bool, String> {
         let cfg = self.config(ws)?;
