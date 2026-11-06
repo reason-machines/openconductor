@@ -39,8 +39,8 @@ use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::agent::AgentKind;
 use crate::reason_acp::account::{Account, CommandResult, LoginPrompt};
-use crate::reason_acp::cloud::CloudSetup;
 use crate::reason_acp::cli::{find_reason_cli, CliEnv, LaunchConfig};
+use crate::reason_acp::cloud::CloudSetup;
 use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
 use crate::reason_acp::wire;
 use crate::settings::service::SettingsService;
