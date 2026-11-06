@@ -48,6 +48,7 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { useWorkspaceDeepLinks } from "./workspace/useWorkspaceDeepLinks";
 import { useAutoUnread } from "./state/useAutoUnread";
 import { nextUnreadWorkspace, openNextUnread } from "./state/nextUnread";
 import { createRepoDefault } from "./home/repoFilter";
@@ -80,6 +81,8 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
+  // openconductor://workspace?id=<id> (Copy link) selects that workspace.
+  useWorkspaceDeepLinks(state, dispatch);
   // A chat that finishes or waits on the user while not in view marks its workspace unread.
   useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
