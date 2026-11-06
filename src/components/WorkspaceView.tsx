@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { BranchIcon, RightSidebarIcon } from "./Icons";
+import { BranchIcon, ChevronIcon, RightSidebarIcon } from "./Icons";
 import { toggleRightPanel } from "./panelPrefs";
+import { clearManuallyUnread, readOnView, setShownChat } from "../state/autoUnread";
+import { useWindowFocused } from "../state/useAutoUnread";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { answerPermission, chatSnapshot, configureReason, configureReasonDefault, queueAction, REASON_CAN_STEER, reasonAvailable, reasonChatConfig, resetReasonChat, sendReason, stopChat, submitChat, subscribeChat, type PermissionPrompt } from "../features/chat/reasonChat.ts";
 import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
@@ -50,14 +52,15 @@ import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { openBigTab } from "../features/terminal/session";
 import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
-import { ScriptsPanel } from "./ScriptsPanel";
+import { PanelStrip, type StripView } from "./PanelStrip";
+import "./rightPanel.css";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
 import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
-import { AllFilesTree } from "../features/files/AllFilesTree";
+import { AllFilesTree, FilesToolbarButtons, useFilesToolbar } from "../features/files/AllFilesTree";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
 import { BranchPicker } from "../features/pr/edit/BranchPicker";
@@ -75,6 +78,8 @@ interface Props {
   workspace: Workspace;
   dispatch: Dispatch<Action>;
   notify?: ArchiveNotify;
+  /** Opens the next unread workspace; unset when nothing else is unread (the composer's "Next unread" button). */
+  onNextUnread?: () => void;
 }
 
 // The chat runs Reason in the desktop app (one Reason Session per chat,
@@ -156,7 +161,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
 /** What the chat panel shows: Codex's approvals, or Reason's permission requests. */
 type ChatView = CodexSnapshot & { permissions?: readonly PermissionPrompt[] };
 
-function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, forkToNewTab, chatTabs }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -496,6 +501,16 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           ))}
         </div>
       ) : null}
+      {onNextUnread ? (
+        // parity:sidebar.ws-unread — Conductor's g1o (renderApp @7,528,638): a small outline
+        // "Next unread" button with a chevron, 40px above the composer's right edge.
+        <div className="next-unread-anchor">
+          <button type="button" className="btn btn-small next-unread" onClick={onNextUnread}>
+            <span>Next unread</span>
+            <ChevronIcon size={12} />
+          </button>
+        </div>
+      ) : null}
       <Composer
         draft={draft}
         setDraft={setDraft}
@@ -599,20 +614,24 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
   });
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
+  const files = useFilesToolbar();
+  const tabButton = (id: typeof tab, label: ReactNode) => (
+    <button type="button" role="tab" aria-selected={tab === id} className={`rp-tab${tab === id ? " active" : ""}`} onClick={() => setTab(id)}>
+      {label}
+    </button>
+  );
   return (
     <section className="diff" aria-label="Changes">
-      <div className="tabs" role="tablist">
-        <button role="tab" aria-selected={tab === "files"} className={tab === "files" ? "active" : ""} onClick={() => setTab("files")}>
-          All files
-        </button>
-        <button role="tab" aria-selected={tab === "changes"} className={tab === "changes" ? "active" : ""} onClick={() => setTab("changes")}>
-          Changes {count ? <span className="tab-count">{count}</span> : null}
-        </button>
-        <button role="tab" aria-selected={tab === "checks"} className={tab === "checks" ? "active" : ""} onClick={() => setTab("checks")}>
-          Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}
-        </button>
-        {/* Conductor shows Review only while the workspace has changes. */}
-        {count ? <span className="tabs-end">{review}</span> : null}
+      {/* Conductor's right panel: All files, Changes N, Checks, then the tab's own icons at the right end. */}
+      <div className="rp-tabs" role="tablist">
+        {tabButton("files", "All files")}
+        {tabButton("changes", <>Changes {count ? <span className="tab-count">{count}</span> : null}</>)}
+        {tabButton("checks", <>Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}</>)}
+        <span className="rp-tabs-end">
+          {tab === "files" && <FilesToolbarButtons toolbar={files} />}
+          {/* Conductor shows Review only while the workspace has changes. */}
+          {tab === "changes" && count ? review : null}
+        </span>
       </div>
       {tab === "changes" ? (
         <ChangesList diff={diff} actions={actions} worktree={worktree} />
@@ -626,7 +645,7 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
           readOnly={readOnly}
         />
       ) : (
-        <AllFilesTree worktree={worktree} notify={notify} />
+        <AllFilesTree worktree={worktree} notify={notify} toolbar={files} />
       )}
     </section>
   );
@@ -729,11 +748,13 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
   );
 }
 
-export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
-  // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) shows it,
-  // and ⌘⇧T opens a big terminal while Big terminal mode is on.
-  const [terminalRequest, setTerminalRequest] = useState(0);
-  const showTerminal = () => setTerminalRequest((n) => n + 1);
+export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread }: Props) {
+  // The right panel's Setup / Run / Terminal strip: open on Run, like Conductor.
+  // ⌘J (view.toggleTerminalPanel) hides or shows it; ⌘⇧T opens a big terminal
+  // in it while Big terminal mode is on.
+  const [stripOpen, setStripOpen] = useState(true);
+  const [stripView, setStripView] = useState<StripView>("run");
+  useEffect(() => setStripView("run"), [workspace.id]);
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
@@ -858,7 +879,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...(prOpen ? ["pr"] : []), ...reviews.tabs.map((r) => r.chatId)];
   const stepTab = (dir: 1 | -1) => setMainTab((t) => tabOrder[(tabOrder.indexOf(t) + dir + tabOrder.length) % tabOrder.length] ?? "chat");
   useKeybindings({
-    "view.toggleTerminalPanel": showTerminal,
+    "view.toggleTerminalPanel": () => setStripOpen((v) => !v),
     "diff.open": () => (diff.current < 0 && diff.files.length > 0 ? diff.open(0) : openDiffTab()),
     "nav.nextTab": () => stepTab(1),
     "nav.previousTab": () => stepTab(-1),
@@ -887,7 +908,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
         if (!big || !repo.path) return false;
         void openBigTab(workspace.id, repo.path, big)
           .catch(() => {})
-          .finally(showTerminal);
+          .finally(() => {
+            setStripView("terminal");
+            setStripOpen(true);
+          });
         return true;
       },
     },
@@ -899,6 +923,18 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
   const activeTab = showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const prNumber = pullRequest.pr?.number ?? null;
   shownChat.current = activeReview?.chatId ?? workspace.id;
+  // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
+  // skips it while the window has focus, and an unread workspace shown that way is read.
+  const transcriptShown = showDiff || showPr ? null : shownChat.current;
+  const focused = useWindowFocused();
+  useEffect(() => {
+    setShownChat(transcriptShown);
+    return () => setShownChat(null);
+  }, [transcriptShown]);
+  useEffect(() => clearManuallyUnread(workspace.id), [workspace.id]);
+  useEffect(() => {
+    if (readOnView(workspace, { shownChatId: transcriptShown, focused })) dispatch({ type: "setWorkspaceUnread", repoId: repo.id, workspaceId: workspace.id, unread: false });
+  }, [workspace, transcriptShown, focused, dispatch, repo.id]);
   // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
   const rightPanelVisible = useAppPrefs().right_panel_visible;
   return (
@@ -948,6 +984,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           onRunningChange={setAgentWorking}
           openTurnFile={diff.openTurnFile}
           openFile={diff.openPath}
+          // Conductor hides the button once the workspace's PR is merged (g1o's `hidden`, `mIo` isMerged).
+          onNextUnread={prBase?.merged ? undefined : onNextUnread}
           forkToNewTab={reviews.fork}
           chatTabs={[{ chatId: workspace.id, title: workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
           tabs={<MainTabs title={workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />}
@@ -970,7 +1008,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           }
         />
         {rightPanelVisible && (
-          <div className="ws-right">
+          <div className={`ws-right${stripOpen ? "" : " strip-collapsed"}`}>
             <RightPanel
               diff={diff}
               actions={review.actions}
@@ -982,11 +1020,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
               readOnly={workspace.status === "archived"}
               notify={notify}
             />
-            <ScriptsPanel repo={repo} workspace={workspace} terminalRequest={terminalRequest} />
+            {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
+            <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={repo.path} />
           </div>
         )}
       </div>
-      {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
       <DiffDiscardHost diff={diff} onDiscarded={(f) => chatBridge.current?.attach(revertedNote(f.path))} />
     </div>
   );

@@ -1,0 +1,53 @@
+/* "Workspace status matrix" (StatusMatrix.tsx). Colours follow Conductor's dWt/hJo/nJn;
+   the animations are Conductor's workspace-matrix-* rules from renderApp-BYEcFwvt.css. */
+.oc-matrix { width: 16px; height: 16px; flex: none; }
+.oc-matrix[data-dimmed] { opacity: 0.5; }
+.oc-matrix[data-color="destructive"], .oc-matrix [data-color="destructive"] { color: var(--del); }
+.oc-matrix[data-color="merged"], .oc-matrix [data-color="merged"] { color: #a855f7; }
+.oc-matrix[data-color="in-progress"], .oc-matrix [data-color="in-progress"] { color: #d29922; }
+.oc-matrix[data-color="ready"], .oc-matrix [data-color="ready"] { color: var(--add); }
+.oc-matrix[data-color="highlight"], .oc-matrix [data-color="highlight"] { color: #d29922; }
+.oc-matrix[data-color="amber"], .oc-matrix [data-color="amber"] { color: #f59e0b; }
+.oc-matrix[data-color="checks-pending"], .oc-matrix [data-color="checks-pending"] { color: #d29922; }
+.oc-matrix[data-color="muted"], .oc-matrix [data-color="muted"] { color: var(--sidebar-muted-foreground, var(--muted)); }
+.oc-matrix[data-color="foreground"], .oc-matrix [data-color="foreground"] { color: var(--text); }
+.oc-matrix-base, .oc-matrix-current { fill: currentColor; }
+.oc-matrix-foreground { fill: var(--text); }
+.oc-matrix-base[data-opacity="1"] { opacity: 1; }
+.oc-matrix-base[data-opacity="50"] { opacity: 0.5; }
+.oc-matrix-base[data-opacity="32"] { opacity: 0.32; }
+.oc-matrix-cell { opacity: 0; }
+.oc-matrix-cell[data-lit] { opacity: 1; }
+
+.workspace-matrix-pulse { animation: workspace-matrix-pulse-opacity var(--workspace-matrix-pulse-duration) linear var(--workspace-matrix-pulse-delay) infinite; }
+.workspace-matrix-attention { animation: 1s ease-in-out infinite alternate workspace-matrix-attention-opacity; }
+.workspace-matrix-attention[data-paused="true"] { opacity: 1; animation: none; }
+.workspace-matrix-twinkle { animation: workspace-matrix-twinkle-opacity var(--workspace-matrix-twinkle-duration) ease-in-out var(--workspace-matrix-twinkle-delay) infinite; }
+.workspace-matrix-sweep { animation: workspace-matrix-sweep-opacity var(--workspace-matrix-sweep-duration) ease-in-out var(--workspace-matrix-sweep-delay) infinite; }
+.workspace-matrix-automation-arrow { transform-box: view-box; animation: 1s steps(7, end) infinite workspace-matrix-automation-arrow; }
+.workspace-matrix-automation-arrow[data-paused="true"], .workspace-matrix-automation-arrow-static { display: none; }
+.workspace-matrix-automation-arrow-static[data-paused="true"] { display: inline; }
+.workspace-matrix-waiting { animation: workspace-matrix-wave-opacity 1.9635s linear var(--workspace-matrix-waiting-delay) infinite; }
+.workspace-matrix-setting-up { animation: workspace-matrix-wave-opacity 1.5708s linear var(--workspace-matrix-setup-delay) infinite; }
+@keyframes workspace-matrix-automation-arrow { 0% { transform: translate(0); } to { transform: translate(65.625%); } }
+@keyframes workspace-matrix-sweep-opacity { 0%, 32%, to { opacity: 0; } 14% { opacity: 1; } }
+@keyframes workspace-matrix-twinkle-opacity { 0%, 45%, to { opacity: 0; } 67% { opacity: 1; } 84% { opacity: 0.2; } }
+@keyframes workspace-matrix-attention-opacity { 0% { opacity: 1; } to { opacity: 0.1; } }
+@keyframes workspace-matrix-pulse-opacity {
+  0%, to { opacity: 0.333; } 2.5% { opacity: 0.507; } 5% { opacity: 0.677; } 7.5%, 42.5% { opacity: 0.838; }
+  10.24%, 39.76% { opacity: 1; } 45% { opacity: 0.677; } 47.5% { opacity: 0.507; } 50% { opacity: 0.333; }
+  52.5%, 97.5% { opacity: 0.16; } 54.85%, 95.15% { opacity: 0; }
+}
+@keyframes workspace-matrix-wave-opacity {
+  0%, to { opacity: 0.5; animation-timing-function: ease-out; } 25% { opacity: 1; animation-timing-function: ease-in; }
+  50% { opacity: 0.5; animation-timing-function: ease-out; } 75% { opacity: 0; animation-timing-function: ease-in; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .workspace-matrix-attention, .workspace-matrix-automation-arrow, .workspace-matrix-pulse, .workspace-matrix-setting-up,
+  .workspace-matrix-sweep, .workspace-matrix-twinkle, .workspace-matrix-waiting { opacity: 0; animation: none; }
+  .workspace-matrix-automation-arrow { opacity: 1; display: none; }
+  .workspace-matrix-automation-arrow-static { display: inline; }
+  .workspace-matrix-attention, .workspace-matrix-pulse[data-reduced-highlight="true"], .workspace-matrix-twinkle[data-reduced-highlight="true"],
+  .workspace-matrix-sweep[data-reduced-highlight="true"], .workspace-matrix-waiting[data-waiting-static="true"],
+  .workspace-matrix-setting-up[data-setup-corner="true"] { opacity: 1; }
+}
