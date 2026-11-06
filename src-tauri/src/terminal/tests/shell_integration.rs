@@ -34,17 +34,11 @@ fn zsh_prints_command_marks_and_keeps_the_users_setup() {
         "export OC_RC=rc\nPROMPT='user> '\nsetopt INC_APPEND_HISTORY\n",
     )
     .unwrap();
-    std::fs::write(
-        bin.join("oc-prefixed"),
+    crate::test_exe::write_executable(
+        &bin.join("oc-prefixed"),
         "#!/bin/sh\necho prefixed-tool-ran\n",
-    )
-    .unwrap();
-    use std::os::unix::fs::PermissionsExt;
-    std::fs::set_permissions(
-        bin.join("oc-prefixed"),
-        std::fs::Permissions::from_mode(0o755),
-    )
-    .unwrap();
+        0o755,
+    );
 
     let si = ShellIntegration::new(&data, Some(home.clone()));
     let mut req = SpawnRequest::argv(&root, [zsh.to_string_lossy().into_owned(), "-i".into()]);
