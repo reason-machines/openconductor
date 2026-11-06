@@ -3,15 +3,19 @@
 // (`aFi`, REA-read renderApp chunk) loads the workspace's sessions and folds
 // their `sessions.status` with `nTr` (aggregateSessions). Here the sessions
 // are the chats in the chat store: the main chat's id is the workspace id and
-// a review chat's is `<workspace id>:review:<n>` (features/diff/ReviewButton).
+// a review chat's is `<workspace id>:review:<n>` (features/diff/ReviewButton)
+// and a chat opened with "+" or ⌘T `<workspace id>:chat:<n>` (features/chat/chatTabs).
 import { aggregateSessions, type SessionStatus } from "./rowStatus.ts";
 
-const REVIEW = ":review:";
+const SEGMENTS = [":review:", ":chat:"];
 
 /** The workspace a chat belongs to. */
 export function workspaceOfChat(chatId: string): string {
-  const i = chatId.indexOf(REVIEW);
-  return i < 0 ? chatId : chatId.slice(0, i);
+  for (const s of SEGMENTS) {
+    const i = chatId.indexOf(s);
+    if (i >= 0) return chatId.slice(0, i);
+  }
+  return chatId;
 }
 
 /** The most urgent status across the workspace's chats; idle when it has none. */
