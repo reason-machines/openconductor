@@ -25,7 +25,7 @@ export const KeyIcon = ({ size }: P) => (<svg {...base(size)}><circle cx="8" cy=
 export const FlaskIcon = ({ size }: P) => (<svg {...base(size)}><path d="M9 3h6M10 3v6l-5.5 9.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3" /><path d="M7.5 15h9" /></svg>);
 export const DriveIcon = ({ size }: P) => (<svg {...base(size)}><path d="M3 13 6 5h12l3 8" /><rect x="3" y="13" width="18" height="6" rx="2" /><path d="M7 16h.01M11 16h.01" /></svg>);
 export const TerminalIcon = ({ size }: P) => (<svg {...base(size)}><rect x="3" y="4" width="18" height="16" rx="2" /><path d="m7 9 3 3-3 3M13 15h4" /></svg>);
-export const BackIcon = ({ size = 14 }: P) => (<svg {...base(size)}><path d="M19 12H5M11 18l-6-6 6-6" /></svg>);
+export const BackIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M19 12H5M11 18l-6-6 6-6" /></svg>);
 export const VolumeIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M11 5 6 9H3v6h3l5 4z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" /></svg>);
 export const SyncIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M4 8h13l-3-3M20 16H7l3 3" /></svg>);
 export const FolderIcon = ({ size = 16 }: P) => (<svg {...base(size)}><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>);

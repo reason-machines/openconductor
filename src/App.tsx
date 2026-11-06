@@ -38,7 +38,7 @@ import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT } from "./features/chat/ChatModelPicker.tsx";
-import { keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
 import { changeZoom } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
 import { errorText, getSettings } from "./settings/api";
@@ -197,8 +197,11 @@ export default function App() {
   // The composer's model picker ("Add models", "Edit") opens Settings › Default models.
   useEffect(() => {
     const open = (e: Event) => {
-      const page = (e as CustomEvent<{ page?: string }>).detail?.page;
-      const known = USER_PAGES.find((p) => p === page);
+      const detail = (e as CustomEvent<{ page?: string; repoId?: string; section?: string }>).detail;
+      // The right panel's "Add run script" opens the repository's Scripts settings.
+      const section = REPO_SECTIONS.find((s) => s === detail?.section);
+      if (detail?.repoId && section) return navigateSettings({ scope: "repo", repoId: detail.repoId, section });
+      const known = USER_PAGES.find((p) => p === detail?.page);
       if (known) navigateSettings({ scope: "user", page: known });
     };
     window.addEventListener(OPEN_SETTINGS_EVENT, open);
