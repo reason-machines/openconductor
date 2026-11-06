@@ -362,3 +362,27 @@ main `841a805`.
     Not a REA bug: on a Reason cloud computer without root, WebKitGTK from a sysroot fails with
     "Unable to spawn … WebKitNetworkProcess"; the lane runs under `unshare -rm` with the sysroot's
     `/usr/lib/x86_64-linux-gnu` and `/usr/share` overlaid.
+
+## Track C: responsiveness and transitions (transition lab)
+
+Owner: Session 818a22cc (track C). Click to content for every screen switch in the built app,
+cold and warm, against Conductor 0.87.6; full numbers, filmstrips and commands in
+[side-by-side/transitions/timing](../side-by-side/transitions/timing/README.md).
+
+| Area | PRs | Status | Measured (built app, median content ms; loader on screen) | Open |
+|---|---|---|---|---|
+| Workspace switch, Home to workspace, Settings › Back | #636 | matches: no loader, no flip, one-frame swap like Conductor's cached `useFilesChanged` | 13 to 35 ms (main `841a805`: 101 to 203 ms, "Loading changes…" 56 to 696 ms, wrong list for one frame) | a workspace never opened since launch still shows "Loading changes…" until git answers, as Conductor does |
+| Right panel tabs (All files, Changes, Checks) | #636 | matches: instant | 2 to 8 ms warm; first All files after launch 46 ms with its loader | none |
+| Panels (⌘B, ⌥⌘B, ⌘J) | (none needed) | matches: instant, layout shift 0 | 5 to 55 ms | none |
+| Dialogs (⌘K, ⌘P, ⌥⌘/, ⌘N, confirmations) | #605 (motion), #636 (measured) | matches: Conductor's durations and easing | open 13 to 51 ms; ⌘K exit 135 to 142 ms vs Conductor 141 to 144 | none |
+| Settings open and page switch | #636 | matches: no "Loading…" frame, no shift on open, Environment, Misc or Default models | 5 to 47 ms; Appearance cold 73 to 148 ms in both builds (code preview highlight) | Appearance first mount |
+| Window sizes 900, 1280, 1600, 2100 | #584, #591 (layout), #636 (checked) | matches: same boxes as Conductor within 1 px, no overflow | n/a | visual details in the sheet are track B's |
+
+### REA gaps hit by track C
+
+1. `analyze-javascript-application` (6.8.0) keeps bindings (`K9t`) but not object-pattern property
+   names or option objects, so a hook's query options cannot be read from its evidence; 3 min 9 s
+   and 125 MB of evidence for one 3.5 MB chunk.
+2. `inspect-analysis-view` documents only `{inputJson}`; no way to search an evidence bundle for a symbol.
+3. `capture-browser-scenario` forces reduced motion and has no per-frame sampling (as in #605), so
+   timing came from frame logs and the Xvfb recording; the native Conductor window was not measured.
