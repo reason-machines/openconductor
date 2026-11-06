@@ -55,17 +55,23 @@
 
 /* Navigation */
 .settings .settings-nav { background: var(--bg); border-right: 1px solid var(--s-border); padding: 8px 6px; font-size: 14px; }
-.settings .settings-nav-top { display: flex; justify-content: flex-end; align-items: center; height: 24px; margin: 2px 4px 12px; }
-.settings .settings-back { display: inline-flex; align-items: center; gap: 6px; color: var(--s-muted); font-size: 14px; padding: 2px 4px; border-radius: 6px; }
+/* Conductor's `I9a` top bar: "flex h-8 shrink-0 items-center justify-end pt-2" at the top of the nav;
+   Back is "gap-1.5 rounded-md px-1.5 py-1 text-sm" with a 16 px icon: 28 px tall, right edge on the items' edge. */
+.settings .settings-nav-top { display: flex; justify-content: flex-end; align-items: center; box-sizing: border-box; height: 32px; padding-top: 8px; margin: -8px 0 12px; }
+.settings .settings-back { display: inline-flex; align-items: center; gap: 6px; color: var(--s-muted); font-size: 14px; line-height: 20px; padding: 4px 6px; border-radius: 6px; }
 .settings .settings-back:hover { color: var(--s-fg); }
-.settings .settings-group { margin-top: 18px; gap: 4px; }
+/* Conductor's Back: "transition-colors" (Tailwind default 150 ms, cubic-bezier(.4,0,.2,1)). */
+.settings .settings-back { transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke; transition-duration: 150ms; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+/* Conductor: groups 20 px apart, title "px-2 py-1.5 text-xs" (28 px) directly above the items, items gap-1. */
+.settings .settings-group { margin-top: 20px; gap: 4px; }
 .settings .settings-group:first-of-type { margin-top: 6px; }
-.settings .settings-group-title { color: var(--s-muted); font-size: 12px; font-weight: 400; padding: 0 9px 4px; }
-.settings .settings-nav .nav-item { display: flex; align-items: center; gap: 10px; height: 32px; padding: 0 10px; border-radius: 6px; color: var(--s-fg); opacity: 0.85; font-size: 14px; }
+.settings .settings-group-title { color: var(--s-muted); font-size: 12px; line-height: 16px; font-weight: 400; padding: 6px 8px 2px; }
+/* Conductor's `t9a` link: "gap-3 rounded-md px-2 py-1.5 text-sm" (32 px, icon at 8 px, text at 36 px). */
+.settings .settings-nav .nav-item { display: flex; align-items: center; gap: 12px; height: 32px; padding: 0 8px; border-radius: 6px; color: var(--s-fg); opacity: 0.85; font-size: 14px; line-height: 20px; }
 .settings .settings-nav .nav-item svg { color: var(--s-muted); flex-shrink: 0; }
 .settings .settings-nav .nav-item:hover { background: var(--s-hover); opacity: 1; }
 .settings .settings-nav .nav-item.active { background: var(--s-active); opacity: 1; font-weight: 500; }
-.settings .settings-repos { margin-top: 18px; gap: 4px; }
+.settings .settings-repos { margin-top: 20px; gap: 4px; }
 .settings .settings-repo-initial { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 600; flex-shrink: 0; }
 .settings .settings-repo-sections { margin: 4px 0 0 16px; border-left: 1px solid var(--s-border); padding-left: 8px; display: flex; flex-direction: column; gap: 4px; }
 
@@ -96,6 +102,11 @@
 .settings .settings-row-warning { color: var(--s-warning); }
 .settings .settings-row-control { flex-shrink: 0; display: flex; align-items: center; gap: 8px; }
 .settings .settings-row-body { margin-top: 12px; }
+/* Conductor wraps a row's lone switch in a plain block ("shrink-0") around the inline-flex
+   Switch, so the 14px/20px line box makes the wrapper 23 px and the switch sits at its top,
+   1.5 px above the row's centre. Same layout here. */
+.settings .settings-row-control:has(> input[role="switch"]:only-child) { display: block; font-size: 14px; line-height: 20px; }
+.settings .settings-row-control:has(> input[role="switch"]:only-child) > input[role="switch"] { display: inline-block; vertical-align: -2px; /* Conductor's inline-flex switch takes its baseline from the 16 px thumb, 2 px above the bottom. */ }
 
 /* Controls */
 .settings select.settings-select, .settings .settings-row-control select {
@@ -108,11 +119,13 @@
 .settings select option { background: var(--bg); color: var(--s-fg); }
 .settings .settings-rows input[type="checkbox"][role="switch"] {
   appearance: none; -webkit-appearance: none; position: relative; width: 40px; height: 20px; margin: 0; border-radius: 999px;
-  background: var(--s-switch-off); cursor: pointer; transition: background-color 0.15s; flex-shrink: 0;
+  background: var(--s-switch-off); cursor: pointer; flex-shrink: 0;
+  /* Conductor's Switch: track "transition-colors duration-150", thumb "transition-transform duration-150", both Tailwind's default cubic-bezier(.4,0,.2,1). */
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .settings .settings-rows input[type="checkbox"][role="switch"]::after {
   content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
-  background: var(--s-switch-knob-on); transition: transform 0.15s;
+  background: var(--s-switch-knob-on); transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 .settings .settings-rows input[type="checkbox"][role="switch"]:checked { background: var(--s-switch-on); }
 .settings .settings-rows input[type="checkbox"][role="switch"]:checked::after { transform: translateX(20px); }
@@ -123,6 +136,11 @@
 .settings .btn.settings-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 .settings .btn.settings-test { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 8px; color: var(--s-fg); font-size: 13px; background: none; border: 0; }
 .settings .btn.settings-test:disabled { opacity: 0.5; }
+/* Conductor's ghost Button: "hover:bg-sidebar-accent" (#14100f0d light, #ffffff0d dark), instant. */
+.settings .btn.settings-test { border-radius: 6px; }
+.settings .btn.settings-test:hover:not(:disabled) { background: #14100f0d; }
+:root[data-theme="dark"] .settings .btn.settings-test:hover:not(:disabled) { background: #ffffff0d; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .settings .btn.settings-test:hover:not(:disabled) { background: #ffffff0d; } }
 .settings .settings-kbd { font: inherit; font-size: 12px; padding: 0 3px; letter-spacing: 1px; }
 .settings .settings-field {
   width: 100%; box-sizing: border-box; height: 36px; padding: 0 12px; border: 1px solid var(--s-input); border-radius: 6px;
@@ -243,3 +261,20 @@
 .settings .btn.settings-sm { height: 28px; padding: 0 10px; font-size: 13px; }
 .settings .settings-env-sections code, .settings .settings-env-pasted code { background: none; padding: 0; border-radius: 0; }
 .settings .settings-env-name-text code { font-size: 14px; }
+
+/* Press state. Conductor's Button (`REe`, renderApp-D_fmY7hW.js) is "transition-transform
+   duration-150 ease-out will-change-transform active:scale-[0.97]
+   motion-reduce:active:scale-100 disabled:pointer-events-none"; ease-out is
+   cubic-bezier(0, 0, .2, 1) (renderApp-BYEcFwvt.css --ease-out). Hover colours change
+   at once (no colour transition). Plain icon buttons (Browse for executable) and nav
+   links have no transition in Conductor and keep none here. */
+.settings .btn {
+  transition-property: transform, translate, scale, rotate;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  will-change: transform;
+}
+.settings .btn:active:not(:disabled) { scale: 0.97; }
+@media (prefers-reduced-motion: reduce) {
+  .settings .btn:active:not(:disabled) { scale: 1; }
+}

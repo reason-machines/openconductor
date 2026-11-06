@@ -3,7 +3,7 @@ import { autoRunAfterSetup, setAutoRunAfterSetup } from "../scripts/api";
 import { errorText } from "./api";
 import { PrefSwitchRow, Toggle } from "./controls";
 import { Row } from "./GeneralPage";
-import { GraphiteRow, NewWorkspacePageRow, ShowAgentCostRow, SidebarResourceUsageRow, TabFreakModeRow } from "./rows/AppPrefRows";
+import { DashboardRow, GraphiteRow, NewWorkspacePageRow, ShowAgentCostRow, SidebarResourceUsageRow, TabFreakModeRow } from "./rows/AppPrefRows";
 import type { Settings } from "./types";
 
 interface Props {
@@ -15,8 +15,7 @@ interface Props {
  * Settings › More › Experimental, row for row with Conductor 0.87.6's
  * `experimental` tab (renderApp-D_fmY7hW.js registry, evidence/settings/NOTES.md
  * "Settings pages, row for row"). Left out: "Use default internal and
- * experimental settings" (internal builds only), and the Dashboard row, which
- * its own feature adds (open PR #403).
+ * experimental settings" (internal builds only).
  * Turning Big terminal mode on also lists
  * the Big terminal tab in the settings navigation, as Conductor does.
  */
@@ -64,6 +63,8 @@ export function ExperimentalPage({ settings, save }: Props) {
         "Let OpenConductor add existing local repositories even when they are not connected to GitHub.",
       )}
       <AutoRunAfterSetupRow />
+      {/* After Auto-run after setup, before Voice mode (renderApp settings registry @10,702,873, evidence/screens/dashboard.md). */}
+      <DashboardRow />
       {row("voice_mode", "Voice mode", "Enables speech-to-text in the chat composer. Press Ctrl+Shift+D to start dictating.")}
       <SidebarResourceUsageRow />
       {row(
