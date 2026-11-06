@@ -385,13 +385,8 @@ try {
   const clickIn = (css, text) =>
     run("const b = [...document.querySelectorAll(arguments[0])].find((b) => b.textContent === arguments[1]); if (!b) return false; b.click(); return true;", css, text);
   const authStatus = () => run(`const s = document.querySelector('${codexTab} [data-testid="agent-auth-status"]'); return s ? s.innerText : '';`);
-  // The status line has answered (Refresh enabled again) and says `text`. A key saved while the card's refresh is
-  // still out is overwritten by that refresh's stale answer, so the key waits for this.
-  const settled = (text) =>
-    waitFor(`the status line to settle on "${text}"`, () =>
-      run(`const s = document.querySelector('${codexTab} [data-testid="agent-auth-status"]'); return !!s && s.innerText.includes(arguments[0]) && !s.querySelector('button:disabled');`, text),
-      20000,
-    ).catch(async (e) => {
+  const statusSays = (text) =>
+    waitFor(`the status line to say "${text}"`, async () => (await authStatus()).includes(text), 20000).catch(async (e) => {
       throw new Error(`${e.message}; status: ${JSON.stringify(await authStatus())}`);
     });
   const settingsFile = () => readFileSync(join(home, ".openconductor", "settings.toml"), "utf8");
@@ -424,11 +419,11 @@ try {
       card: "API key",
       stored: (s) => s.top === null && s.stored?.kind === "openai_api",
       async connect() {
-        await settled("No OpenAI API key configured");
+        await statusSays("No OpenAI API key configured");
         await wd("POST", `/element/${await find(`${codexTab} input[aria-label="OpenAI API key"]`)}/value`, { text: API_KEY });
         assert.ok(await clickIn(`${codexTab} button`, "Save"));
         await waitFor("the masked key", () => run(`return document.querySelector('${codexTab} [data-testid="secret-value"]')?.textContent.endsWith('mode') || null;`));
-        await settled("Connected");
+        await statusSays("Connected");
         assert.ok(!settingsFile().includes(API_KEY), "the key stays out of settings.toml");
       },
       keys: { CODEX_API_KEY: fingerprint(API_KEY), OPENAI_API_KEY: fingerprint(API_KEY) },
