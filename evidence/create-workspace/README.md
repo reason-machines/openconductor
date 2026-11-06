@@ -90,3 +90,84 @@ root changes nothing; archive records live in `<root>/archived`; the app
 restarts on the new root instead of reloading in place, because the
 workspace service reads the root at startup.
 
+
+## Create composer and page (create.page)
+
+REA: the decoded frontend chunks from `/Applications/Conductor.app` on
+"sven m5 max" (`renderApp-D_fmY7hW.js`, read as data with byte offsets).
+
+- Opening create (`g5`, ~7,339,960): when the user setting
+  `experimental_new_workspace_page` is off (and the organization is not a
+  cloud one) it opens dialog `NU`; otherwise it navigates to `/create`.
+- The setting is Settings › Experimental "New workspace page", "Full-screen
+  workspace creation", user scope, default off, search terms "create
+  workspace", "dispatcher", "home page" (~10,697,900). It is stored with
+  `f6({key, value})` in the settings table, not settings.toml.
+- Dialog `pya` (~11,048,900): `max-w-3xl gap-0 border-none bg-transparent p-0
+  shadow-none`, `topEdgeAnchored`, no initial focus on the dialog itself;
+  screen-reader title "New workspace" and description "Draft the first
+  message, then create and send it."; Escape closes it.
+- Route `/create` (`Q7a` -> `$Ca` -> `zCa`, ~11,520,273 and ~11,287,700):
+  `flex h-full flex-col bg-background`; a `pt-9` drag region holding a
+  "Toggle left sidebar" button only while the sidebar is hidden (`UCa`); a
+  scroll area `items-start justify-center px-6 pb-20` with a `max-w-3xl
+  pt-[clamp(3rem,12vh,8rem)]` column; a cloud-only logo; then the composer.
+  The page has a screen-reader `h1` "Create workspace" (`oya`, shown when
+  there is no `closeDialogId`).
+- Composer `oya` -> `Hji` (~11,035,000 and ~9,770,840): placeholder "What do
+  you want to work on?", box `min-h-[216px]`, editor `min-h-[142px]
+  max-h-[312px]`, `eyebrowVariant` "attached" in the dialog (the row joined
+  to the card's top, `rounded-t-lg border px-4 py-2`) and "floating" on the
+  page (`mb-2` above the card). The eyebrow row is the repo picker, the
+  target branch picker, then right-aligned the create-from picker
+  (`l4a`). Bottom-left is the model picker `RNi` (agent, model, effort);
+  bottom-right the attach button and the submit button `sQo`: label
+  "Create", title "Create workspace <key>", key `chat.submitMessage`
+  (`rQo`). Create is enabled once a repository is chosen (`Ws`); the first
+  message is optional. There is no workspace-name field: the workspace
+  takes its placeholder city name.
+- The top tab strip that lists `/create` as a "new" tab (`Bsa`, `Lsa`) only
+  renders for cloud organizations (`A9e`), so it is not built.
+
+Ours: `src/components/CreateWorkspaceComposer.tsx` (shared composer),
+`CreateWorkspaceDialog.tsx` (dialog), `CreateWorkspacePage.tsx` (page),
+`src/workspace/launchModel.ts` (model and effort), the
+`experimental_new_workspace_page` app preference, and `App.tsx` choosing
+the page or the dialog for every create entry point (Cmd+N, the sidebar
+Create row and each repository's +, the palette, the All workspaces
+button). A `/create` start URL opens the page; `?dialog=create` the dialog.
+Choosing a workspace, Back, or creating one leaves the page.
+
+Differences and gaps:
+
+- The repository, branch, model and effort pickers are native selects, not
+  Conductor's searchable menus; the model menu has no favorites.
+- No attach button: the create flow has no attachment path yet.
+- The chosen model and effort go into the create request's `firstSession`,
+  but the chat still starts its agent without them (chat.model-picker owns
+  passing them into the launch).
+- "Create in section" waits on sidebar sections (create.in-section).
+- The workspace-name field and its rarity badge are gone, as in Conductor;
+  rename the workspace afterwards.
+
+## Initialization log (create.initializing)
+
+REA, decoded `assets/index-BGEQ8YjU.js` (3,493,297 bytes, sha256 `b5b01f33…`, the copy REA extracted from `/Applications/Conductor.app` on "sven m5 max" into `~/code/conductor-rea-work/frontend/dist/assets/`), read as data on 2026-11-05 with byte offsets:
+
+- `Jfe` (~3,408,598): an internal script is written to `<tmp>/conductor-script-<Date.now()>-<Math.random().toString(36).substring(7)>.sh` (local `<tmp>` is `$TMPDIR`) and run as `"<shell>" "<script>" < /dev/null > "<tmp>/conductor-<same ms>-<same rand>.log" 2>&1`; the script is removed. When that command exits non-zero and printed something itself, `\n\n--- Additional Output ---\nExit code: N\n\nStdout:\n…\n\nStderr:\n…` is appended to the log with `echo`. Returns `{exitCode, stdout, stderr, logFilePath}`, or `{exitCode: 1, error: "Failed to write script: …" | "Failed to execute script: …"}` without a log. `Zfe` prefixes `set -e` and `cd "<workingDirectory>"`; the shell is the user's (`GI()`) locally.
+- `UYe` (~990,064): `git worktree add '<path>' -b '<branch>' '<rev>'` (rev = the resolved commit of the remote branch) or `git worktree add '<path>' '<existing branch>'`, run with `Zfe` in the main worktree. On a non-zero exit, if `git worktree list --porcelain` has `worktree <path>` the failure is non-fatal: logged as "Worktree created at … but post-checkout hook failed: …" and the auxiliary message becomes "Something failed while creating your workspace. Check the logs to see what went wrong." Otherwise it throws `hre(pre(result))`.
+- `pre` (~992,900): the first non-empty of `stderr`, `stdout`, `error`, then `cat '<logFilePath>'`, else `exit code N`. `hre`: a `fatal: cannot lock ref 'refs/heads/<a>': 'refs/heads/<b>' exists; cannot create 'refs/heads/<a>'` line with `<a>` under `<b>/` gives "Git won't let us create branch "<a>" because "<b>" already exists. Rename or delete "<b>", or change your git prefix in settings."; anything else is "Failed to create worktree: <text>".
+- Then, in order: push upstream (`cre`, its warning) and the `.worktreeinclude` copy (a throw becomes "Couldn't copy files from .worktreeinclude: <error>" and returns early). `Lj` joins the messages with a space.
+- `qYe` (~995,649): `cd "<path>" && git ls-files | wc -l` (0 when it does not parse), then `UPDATE workspaces SET state = 'setting_up', initialization_log_path = ?, initialization_files_copied = ? WHERE local_id = ?` with the worktree-add log. So `initialization_files_copied` is the number of tracked files in the new worktree, not the number of files copied. With an auxiliary message: logger.warn "Workspace <id> had non-fatal initialization issues. Workspace created successfully. See logs at: <path>" and `notifications.workspaceError({message, localWorkspaceId, duration: Infinity, action: {label: "View logs", onClick: open "<path>"}})`, the action only when there is a log path. Then the `initializing -> setting_up` transition.
+
+Ours:
+
+- `src-tauri/src/workspace/init_log.rs`: `run_internal_script` / `run_logged` (Zfe/Jfe), `failure_output` (pre), `worktree_failure_message` (hre), `join_messages` (Lj). `WorkspaceManager::create` runs `git worktree add` through it, from the resolved base commit for a new branch as Conductor does; tracking an `origin/<branch>` and checking out a local branch keep our forms. The failure is `WorkspaceError::WorktreeFailed` with that text. Push-upstream and copy failures are now non-fatal and joined into `Created.auxiliary_failure_message`; `Created.initialization_log_path` and `initialization_files_copied` (`git ls-files` count) come back with it.
+- `create_workspace` returns `initializationLogPath`, `initializationFilesCopied` and `auxiliaryFailureMessage` (no longer `upstreamWarning`, which is part of the message). `persistence::record_initialization` runs `openconductor_db::workspaces::begin_setup` (the same UPDATE) and then `finish_setup`: Conductor keeps the row `setting_up` until setup ends, while ours tracks setup in the scripts backend, so the row goes on to `ready`.
+- `src/workspace/initIssues.ts`: `createWorkspace` (api.ts) reports the message; `useInitIssues` (App) shows it as an error toast that stays until dismissed, with "View logs" opening the log through `plugin:opener|open_path` (Conductor runs `open "<path>"`). Every create path goes through it, Quick start included. In a plain browser, `?init-issue` and `?upstream-warning` preview it.
+- Deliberate differences: paths in the script are single-quoted (Conductor double-quotes `cd "<dir>"`); `failure_output` trims trailing whitespace from the log text; the outer command runs under `/bin/sh -c`; the random part is six base-36 characters.
+
+REA gaps:
+
+- `rea trace-javascript-semantics` needs `analyze-javascript-application` Evidence for this chunk; looking up the saved Evidence on the Mac through `devices exec` timed out at the 60 s cap, so the functions above come from reading the REA-extracted chunk as text, not a REA semantic trace.
+- The decoded copy in Session a4283992's checkout was not reachable from this Session's cloud machine; the same file (same sha256 as `evidence/pr/NOTES.md`) was read on the Mac instead.

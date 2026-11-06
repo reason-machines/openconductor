@@ -1,0 +1,151 @@
+/* An empty workspace chat, from Conductor 0.87.6's classes (renderApp-D_fmY7hW.js
+   `nPo`, `x9s`, `RIo`, `uKn`, `EIo`); colours are Conductor's tokens as in
+   composer.css, sizes its Tailwind classes at --spacing .25rem. */
+
+.oc-chat-empty {
+  --oc-c-fg: #2c2826;
+  --oc-c-muted: #fafaf9;
+  --oc-c-muted-fg: #8e8885;
+  --oc-c-border: #eae8e6;
+  --oc-c-accent: #14100f0d;
+  /* max-w-4xl mx-auto px-7; the transcript's top padding (CHe 16 + JDo 8) */
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 896px;
+  margin: 0 auto;
+  padding: 4px 8px 0;
+  color: var(--oc-c-fg);
+  font-size: 14px;
+  line-height: 20px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .oc-chat-empty {
+    --oc-c-fg: #eae8e6;
+    --oc-c-muted: #211e1c;
+    --oc-c-muted-fg: #a5a09c;
+    --oc-c-border: #ffffff1a;
+    --oc-c-accent: #ffffff0d;
+  }
+}
+:root[data-theme="dark"] .oc-chat-empty {
+  --oc-c-fg: #eae8e6;
+  --oc-c-muted: #211e1c;
+  --oc-c-muted-fg: #a5a09c;
+  --oc-c-border: #ffffff1a;
+  --oc-c-accent: #ffffff0d;
+}
+.oc-chat-empty .oc-mono {
+  font-family: var(--font-mono);
+}
+
+/* x9s: max-w-4xl space-y-4 select-text */
+.oc-first-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  user-select: text;
+}
+/* space-y-1 rounded-lg bg-muted p-3 > h3.min-w-0.break-words.text-sm.font-medium */
+.oc-first-chat-box {
+  border-radius: 8px;
+  background: var(--oc-c-muted);
+  padding: 12px;
+}
+.oc-first-chat-box h3 {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: break-word;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+.oc-first-chat-box .oc-mono {
+  word-break: break-all;
+  font-weight: 500;
+}
+/* space-y-4 of step rows: a 14px icon and the text */
+.oc-first-chat-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.oc-first-chat-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.oc-first-chat-step > svg {
+  width: 14px;
+  height: 14px;
+  color: var(--oc-c-muted-fg);
+  flex-shrink: 0;
+}
+.oc-first-chat-step .oc-mono {
+  font-weight: 500;
+}
+
+/* RIo: text-muted-foreground text-sm; w-full mb-2 space-y-3 */
+.oc-new-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: var(--oc-c-muted-fg);
+}
+.oc-new-chat p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+}
+/* uKn: flex flex-col gap-2 > flex flex-wrap gap-1.5 items-center */
+.oc-new-chat-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.oc-new-chat-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+/* EIo: Button variant outline size xs */
+.oc-transcript-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--oc-c-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--oc-c-fg);
+  font-size: 12px;
+  line-height: 16px;
+  cursor: pointer;
+}
+.oc-transcript-chip:hover {
+  background: var(--oc-c-accent);
+}
+.oc-transcript-chip:disabled {
+  opacity: 0.5;
+}
+.oc-transcript-chip > svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+.oc-transcript-chip span {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* "+N more": Button variant ghost size xs */
+.oc-transcript-more {
+  border-color: transparent;
+}

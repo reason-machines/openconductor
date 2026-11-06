@@ -271,6 +271,8 @@ export function demoState(): AppState {
   let number = 0;
   const ws = (name: string, status: Workspace["status"], added: number, removed: number): Workspace => ({
     id: newId(), name, branch: name, status, diff: { added, removed }, createdAt: Date.now(), number: ++number,
+    // A worktree path so the right panel's All files tab has a tree (demo files outside Tauri).
+    path: `/Users/you/conductor/workspaces/openconductor/${name}`,
   });
   const repos: Repo[] = [
     {

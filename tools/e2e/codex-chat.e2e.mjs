@@ -112,10 +112,13 @@ const running = () => run("return !!document.querySelector('.composer button[tit
 const approvalButtons = () => run("return [...document.querySelectorAll('.codex-approval button')].map((b) => b.textContent);");
 const clickApproval = (label) =>
   run("const b = [...document.querySelectorAll('.codex-approval button')].find((b) => b.textContent === arguments[0]); if (!b) return false; b.click(); return true;", label);
-/** Opens every collapsed "N tool calls" summary (tool rows fold into it once a turn ends), then reads each row's tool name. */
+/**
+ * Opens every collapsed "N tool calls" summary (tool rows fold into it once a turn ends), then reads each
+ * row's command: Conductor draws a Codex command as a Bash row with the command in its right-hand chip.
+ */
 const toolNames = () =>
   run(`for (const b of document.querySelectorAll('.chat-tool-summary-row[aria-expanded="false"]')) b.click(); return true;`).then(() =>
-    run("return [...document.querySelectorAll('.chat-tool-name')].map((n) => n.textContent);"),
+    run("return [...document.querySelectorAll('.chat-tool')].map((t) => t.querySelector('.oc-code-chip')?.textContent ?? t.innerText);"),
   );
 const requests = () =>
   readFileSync(join(home, "codex-fake.jsonl"), "utf8")
@@ -157,20 +160,22 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
-  await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("Reason runs this chat")));
+  await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   const cliPath = await runAsync("const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke('codex_cli_path').then(done, (e) => done('error: ' + e));");
   assert.equal(cliPath, join(bin, "codex"));
   pass(`codex_cli_path finds the CLI in ~/.local/bin: ${cliPath}`);
 
-  // Pick Codex in the composer's agent menu.
-  await run(
-    `const s = document.querySelector('.agent-select');
-     Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'codex');
-     s.dispatchEvent(new Event('change', { bubbles: true }));`,
+  // Pick Codex in the composer's model picker (Conductor's picker picks the agent too).
+  await run("document.querySelector(\"[data-testid='composer-model-button']\").click();");
+  await waitFor("Codex in the model picker", () =>
+    run("return [...document.querySelectorAll('.oc-model-menu .oc-model-item')].some((b) => b.textContent.trim() === 'Codex') || null;"),
   );
-  const placeholder = await waitFor("the Codex chat panel", () => chatText().then((t) => t && t.includes("Codex runs this chat") && t));
-  pass(`agent menu switches the chat to Codex: "${placeholder.split("\n").find((l) => l.includes("Codex runs"))}"`);
+  await screenshot("codex-0-model-picker");
+  await run("[...document.querySelectorAll('.oc-model-menu .oc-model-item')].find((b) => b.textContent.trim() === 'Codex').click();");
+  await waitFor("Codex on the picker chip", () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title === 'Codex' || null;"));
+  await waitFor("the Codex access menu", () => run("return !!document.querySelector('.codex-access') || null;"));
+  pass("the model picker switches the chat to Codex: the chip reads Codex and the access menu shows");
   const access = await run("const s = document.querySelector('.codex-access'); return s && [s.value, [...s.options].map((o) => o.textContent)];");
   assert.deepEqual(access, ["full", ["Full access", "Ask first", "Read only"]], "Conductor's default: full access");
   // Ask first, so Codex asks before running the command.
@@ -192,6 +197,12 @@ try {
   assert.ok(card.includes("hello.txt"), card);
   await screenshot("codex-1-approval");
   pass(`approval card shows the command and Codex's decisions: ${buttons.join(", ")}`);
+  // parity: sidebar.ws-status. An open approval is Conductor's tool approval: Needs permission.
+  const rowStatus = () => run(`return [...document.querySelectorAll('[data-testid="workspace-status-icon"]')].map((e) => e.dataset.status);`);
+  await waitFor("Needs permission on the sidebar row", async () => (await rowStatus()).includes("needs-user-permission"), 15000).catch(async (e) => {
+    throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await rowStatus())}`);
+  });
+  pass("the sidebar row shows Needs permission while the approval is open");
 
   assert.ok(await clickApproval("Allow"));
   await waitFor('"hello from codex" reply', () => chatText().then((t) => t.includes("hello from codex") && !t.includes("Codex wants")));
@@ -202,9 +213,9 @@ try {
   // The commentary message folds into the (now opened) tool-call group and renders as Markdown, so its
   // `code` spans lose their backticks; the final reply stays outside it (user bubbles are left out: the prompt quotes the reply).
   const [grouped, outside] = await run(
-    `const groups = [...document.querySelectorAll('.chat-scroll .chat-tool-group')];
+    `const groups = [...document.querySelectorAll('.chat-scroll [data-tool-group]')];
      const clone = document.querySelector('.chat-scroll').cloneNode(true);
-     for (const g of clone.querySelectorAll('.chat-tool-group, .chat-user')) g.remove();
+     for (const g of clone.querySelectorAll('[data-tool-group], .chat-user')) g.remove();
      return [groups.map((g) => g.innerText).join('\\n'), clone.textContent];`,
   );
   assert.match(grouped, /I.ll create `?hello\.txt`? in the workspace, then run `?cat hello\.txt`?\./, "commentary message shown inside the tool-call group");
@@ -212,6 +223,8 @@ try {
   assert.ok(!/I.ll create/.test(outside), "commentary is not outside the tool-call group");
   await screenshot("codex-2-turn-done");
   pass(`Allow runs the commands (${tools.join(" | ")}), hello.txt is in ${workspace.path}, reply shown`);
+  await waitFor("the sidebar row to leave Needs permission", async () => !(await rowStatus()).includes("needs-user-permission"), 15000);
+  pass("answering the approval clears Needs permission on the sidebar row");
 
   const sent = requests();
   const start = sent.find((r) => r.method === "thread/start");

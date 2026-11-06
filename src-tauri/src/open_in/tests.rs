@@ -220,6 +220,27 @@ fn macos_commands_match_conductor() {
 }
 
 #[test]
+fn a_file_opens_in_editors_is_revealed_in_finder_and_gives_terminals_its_folder() {
+    let file = Path::new("/Users/me/conductor/workspaces/app/lisbon/src/lib/auth.ts");
+    let f = file.to_string_lossy().into_owned();
+    let folder = "/Users/me/conductor/workspaces/app/lisbon/src/lib".to_string();
+    let cmd = |id| macos_open_file_command(find(id).unwrap(), file);
+    assert_eq!(cmd("finder"), ("open".into(), vec!["-R".into(), f.clone()]));
+    assert_eq!(cmd("xcode"), ("xed".into(), vec![f.clone()]));
+    assert_eq!(
+        cmd("vscode"),
+        (
+            "open".into(),
+            vec!["-a".into(), "Visual Studio Code".into(), f]
+        )
+    );
+    assert_eq!(
+        cmd("ghostty"),
+        ("open".into(), vec!["-a".into(), "Ghostty".into(), folder])
+    );
+}
+
+#[test]
 fn catalog_ids_are_unique() {
     let mut ids: Vec<_> = CATALOG.iter().map(|a| a.id).collect();
     ids.sort();
