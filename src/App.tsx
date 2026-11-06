@@ -282,8 +282,10 @@ export default function App() {
   const [quitConfirm, setQuitConfirm] = useState<number | null>(null);
   const reposRef = useRef(state.repos);
   reposRef.current = state.repos;
+  const openWorkspaceRef = useRef<string | undefined>(undefined);
+  openWorkspaceRef.current = state.selection.kind === "workspace" ? state.selection.workspaceId : undefined;
   const requestQuit = useCallback(() => {
-    const running = countRunningAgents(chatStatuses(), reposRef.current.flatMap((r) => r.workspaces));
+    const running = countRunningAgents(chatStatuses(), reposRef.current.flatMap((r) => r.workspaces), openWorkspaceRef.current);
     if (quitDecision(running) === "confirm") setQuitConfirm(running);
     else void quitApp().catch((e) => show("error", errorText(e)));
   }, [show]);

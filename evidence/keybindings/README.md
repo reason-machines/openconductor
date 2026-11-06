@@ -213,9 +213,9 @@ About and swaps the predefined Quit for `custom_quit` (`Cmd+Q`);
 `src/features/quit/` is the dialog. `quitApplication` is also bound in the
 webview (`src/App.tsx`), so ⌘Q follows the same path where there is no native
 menu. Differences: the `system` source (quit from the Dock or the OS) is not
-routed through the webview; the running count is the chat store's
-`working`/`cancelling` chats plus workspaces that report `working` without a chat
-status; no `gearshape` icon; dialog title says OpenConductor.
+routed through the webview; the running count is the sidebar row's rule: chats
+in this window that are `working`/`cancelling`, plus a workspace's own
+`sessionStatus` when it has no chat here and is not the open one; no `gearshape` icon; dialog title says OpenConductor.
 
 ## Key-bindings page (`/settings/user/key-bindings`)
 

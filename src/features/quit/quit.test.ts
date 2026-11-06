@@ -13,14 +13,20 @@ test("counts every running chat, including review and new chats of one workspace
   assert.equal(countRunningAgents(chats, []), 3);
 });
 
-test("a workspace reporting working counts once, unless its chats already report", () => {
-  const chats = new Map([["ws-a", "idle"]]);
+test("a workspace's own status counts only with no chat here and when it is not open (the sidebar's rule)", () => {
+  const chats = new Map([
+    ["ws-a", "idle"],
+    ["ws-d:review:1", "working"],
+  ]);
   const workspaces = [
-    { id: "ws-a", status: "working" },
-    { id: "ws-b", status: "working" },
-    { id: "ws-c", status: "idle" },
+    { id: "ws-a", sessionStatus: "working" }, // has a chat here: the chat wins
+    { id: "ws-b", sessionStatus: "working" }, // counts
+    { id: "ws-c", sessionStatus: "idle" },
+    { id: "ws-d", sessionStatus: "working" }, // its chat is already counted
+    { id: "ws-e", sessionStatus: "cancelling" }, // counts unless open
   ];
-  assert.equal(countRunningAgents(chats, workspaces), 1);
+  assert.equal(countRunningAgents(chats, workspaces), 3);
+  assert.equal(countRunningAgents(chats, workspaces, "ws-e"), 2);
   assert.equal(countRunningAgents(new Map(), []), 0);
 });
 

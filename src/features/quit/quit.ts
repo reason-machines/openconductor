@@ -9,24 +9,28 @@
 //
 // The registry's `quitApplication` (⌘Q, global, fixed) runs the same request, so
 // a platform without the native menu quits through the dispatcher too.
-import { workspaceOfChat } from "../../state/workspaceSessions.ts";
+import { workspaceChatStatuses } from "../../state/workspaceSessions.ts";
 
 /** Chat statuses that mean its agent is still running (stopping counts: quitting would cut it off). */
 const RUNNING = new Set(["working", "cancelling"]);
 
 /**
- * How many agents quitting would stop: every chat whose agent is running, plus
- * one per workspace that reports "working" with no chat status of its own (the
- * open view's report, and the demo state).
+ * How many agents quitting would stop, by the sidebar row's rule
+ * (useWorkspaceAgentStatus): every chat in this window whose agent is
+ * running, plus a workspace's own `sessionStatus` (the demo's) when it has no
+ * chat here and is not the open workspace.
  */
-export function countRunningAgents(chats: ReadonlyMap<string, string>, workspaces: readonly { id: string; status?: string }[]): number {
+export function countRunningAgents(
+  chats: ReadonlyMap<string, string>,
+  workspaces: readonly { id: string; sessionStatus?: string }[],
+  openWorkspaceId?: string,
+): number {
   let n = 0;
-  const withChats = new Set<string>();
-  for (const [chatId, status] of chats) {
-    withChats.add(workspaceOfChat(chatId));
-    if (RUNNING.has(status)) n++;
+  for (const status of chats.values()) if (RUNNING.has(status)) n++;
+  for (const ws of workspaces) {
+    if (ws.id === openWorkspaceId || ws.sessionStatus === undefined) continue;
+    if (workspaceChatStatuses(chats, ws.id).length === 0 && RUNNING.has(ws.sessionStatus)) n++;
   }
-  for (const ws of workspaces) if (ws.status === "working" && !withChats.has(ws.id)) n++;
   return n;
 }
 
