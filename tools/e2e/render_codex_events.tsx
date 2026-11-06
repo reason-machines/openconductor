@@ -38,7 +38,7 @@ for (const p of events) {
   if (p.type === "turnEnded" && next < prompts.length) apply(startTurn(state, prompts[next++]!));
 }
 
-const css = ["src/styles.css", "src/features/chat/chat.css"].map((f) => readFileSync(f, "utf8")).join("\n");
+const css = ["src/theme/tokens.css", "src/styles.css", "src/features/chat/chat.css"].map((f) => readFileSync(f, "utf8")).join("\n");
 const body = renderToStaticMarkup(<Transcript transcript={transcript} expandToolsByDefault />);
 const note = approvals.length ? `<p class="muted">Approvals answered Allow during these turns: ${approvals.map((a) => `<code>${a.replace(/</g, "&lt;")}</code>`).join(", ")}</p>` : "";
 writeFileSync(

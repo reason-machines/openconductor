@@ -11,8 +11,8 @@
 .check-line:hover { background: var(--hover); }
 .check-line.clickable { cursor: pointer; }
 .check-icon { width: 14px; flex-shrink: 0; text-align: center; font-size: 12px; font-weight: 700; color: var(--muted); }
-.state-failed .check-icon { color: var(--del); }
-.state-passed .check-icon { color: var(--add); }
+.state-failed .check-icon { color: var(--diff-del); }
+.state-passed .check-icon { color: var(--diff-add); }
 .state-running .check-icon { color: var(--amber); }
 .check-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .check-workflow { flex-shrink: 0; font-size: 11px; color: var(--muted); }
@@ -22,6 +22,6 @@
 .check-log-note { margin: 4px 18px 8px 34px; }
 .check-log { margin: 4px 12px 8px 30px; padding: 8px 10px; max-height: 280px; overflow: auto; border-radius: 6px; border: 1px solid var(--border); background: var(--panel); font-family: var(--font-mono); font-size: 11px; line-height: 1.45; white-space: pre; }
 .checks-dot { display: inline-block; width: 6px; height: 6px; margin-left: 4px; border-radius: 50%; vertical-align: middle; background: var(--muted); }
-.checks-dot.passing { background: var(--add); }
+.checks-dot.passing { background: var(--diff-add); }
 .checks-dot.pending { background: var(--amber); }
-.checks-dot.failing { background: var(--del); }
+.checks-dot.failing { background: var(--diff-del); }

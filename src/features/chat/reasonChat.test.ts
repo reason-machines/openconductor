@@ -268,6 +268,27 @@ test("a new permission request asks for attention once, while the turn still run
   off();
 });
 
+test("a plan request asks for attention once, though it both opens a request and enters plan review", async () => {
+  const { onChatAttention } = await import("./attention.ts");
+  const chatId = "attention-plan";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const ends = promptsEndOnDemand();
+  const asked: string[] = [];
+  const off = onChatAttention((id) => id === chatId && asked.push(id));
+
+  rc.submitChat(chatId, "/w", "plan", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
+  emit({ chatId, type: "permissionRequest", requestId: "plan-a", title: "", options: [], kind: "plan", plan: "1. Add a table" });
+  assert.deepEqual(asked, [chatId]);
+  // A tool request while the plan waits keeps plan review, so it signals on its own.
+  emit({ chatId, type: "permissionRequest", requestId: "tool-b", title: "t", options: [], kind: "permission", tool: "", input: null });
+  assert.deepEqual(asked, [chatId, chatId]);
+  emit({ chatId, type: "permissionResolved", requestId: "plan-a" });
+  emit({ chatId, type: "permissionResolved", requestId: "tool-b" });
+  ends.shift()!();
+  off();
+});
+
 function emitStatus(payload: Record<string, unknown>) {
   emitTo("session-status", payload);
 }

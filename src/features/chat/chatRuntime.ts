@@ -38,7 +38,7 @@ import { restoreCheckpoint, turnCheckpointRef, type Invoke } from "./checkpoints
 import { cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
-import { chatWantsAttention, turnSettled } from "./attention.ts";
+import { chatWantsAttention, enteredWait, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import type { FileChange } from "../diff/types.ts";
 
@@ -167,6 +167,12 @@ export interface ChatBackend<Config> {
   /** Opens the chat's agent session (a new one, or `sessionId` resumed) before its first prompt. */
   open(chatId: string, cwd: string, sessionId: string | null, config: Config): Promise<void>;
   /**
+   * New options for the chat's open session (a pick in a running chat): the
+   * session runs on them from its next prompt. A backend without it keeps
+   * them for its next new session.
+   */
+  reconfigure?(chatId: string, config: Config): void;
+  /**
    * Sends a prompt; steers it into a running turn when `canSteer`. Resolves
    * once the turn ended, with the files it changed; a rejection means the
    * turn never started, so no event will end it.
@@ -222,10 +228,10 @@ export interface ChatRuntime<Config> {
    */
   reset(chatId: string, cwd: string, turnId: string, resetFiles: boolean): Promise<void>;
   /**
-   * Session options for the chat's next new session: its first, or the one
-   * after Reset chat. A session that already exists keeps its own. Picked
-   * options are kept across restarts, so a session opened after a reset
-   * still runs on them.
+   * The chat's session options. An open session runs on them from its next
+   * prompt (as Conductor reconciles a picked model before each turn); a chat
+   * not opened yet opens on them, as does the session after Reset chat.
+   * Picked options are kept across restarts.
    */
   configure(chatId: string, config: Config): void;
   /**
@@ -251,7 +257,7 @@ interface Chat<Config> {
   /** Repository the chat's workspace belongs to. */
   repoPath: string | null;
   opened: boolean;
-  /** Options for the session `open` creates (the first, or the one after Reset chat); the first prompt waits for them. */
+  /** Options the chat's session runs on: `open` passes them, `configure` updates an open one; the first prompt waits for them. */
   config: Config | Promise<Config>;
   /** The chat's options were picked (New workspace dialog, review model) or defaulted, so the default does not replace them. */
   configured: boolean;
@@ -287,8 +293,11 @@ function setStatus(chatId: string, status: Q.SessionStatus | undefined) {
  */
 export function reportChatStatus(chatId: string, status: Q.SessionStatus): void {
   if (hiddenChats.has(chatId)) return setStatus(chatId, undefined);
+  const prev = statuses.get(chatId);
   setStatus(chatId, status);
   persistStatus(chatId, status);
+  // Conductor calls `_p` right after setting plan review or user input (attention.ts).
+  if (enteredWait(prev, status)) chatWantsAttention(chatId);
 }
 
 /** Chat id → session status of every visible chat; a new map on each change. */
@@ -498,9 +507,11 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       const fresh = !c.permissions.some((r) => r.requestId === request.requestId);
       c.permissions = [...c.permissions.filter((r) => r.requestId !== request.requestId), request];
       notify(c);
+      const before = c.queue.status;
       setQueue(c, Q.waitingOn(c.queue, promptsStatus(c.permissions)));
-      // A new request is a wait on the user (Conductor's `_p` on needs_user_permission).
-      if (fresh) chatWantsAttention(chatId);
+      // A new request is a wait on the user (Conductor's `_p`), signalled once:
+      // a status that just entered plan review or user input already did.
+      if (fresh && !enteredWait(before, c.queue.status)) chatWantsAttention(chatId);
     },
     resolved(chatId, requestId) {
       const c = chats.get(chatId);
@@ -629,6 +640,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       const c = chat(chatId);
       c.config = config;
       c.configured = true;
+      if (c.opened) backend.reconfigure?.(chatId, config);
       try {
         host.storage.setItem(backend.configKey(chatId), JSON.stringify(config));
       } catch (e) {

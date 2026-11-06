@@ -20,9 +20,18 @@ export function workspaceOfChat(chatId: string): string {
   return chatId.endsWith(CLAUDE) ? chatId.slice(0, -CLAUDE.length) : chatId;
 }
 
-/** The most urgent status across the workspace's chats; idle when it has none. */
-export function workspaceSessionStatus(statuses: ReadonlyMap<string, string>, workspaceId: string): SessionStatus {
+/** The status of each of the workspace's chats in this window; `[fallback]` when it has none. */
+export function workspaceChatStatuses(statuses: ReadonlyMap<string, string>, workspaceId: string, fallback?: SessionStatus): string[] {
   const own: string[] = [];
   for (const [chatId, status] of statuses) if (workspaceOfChat(chatId) === workspaceId) own.push(status);
-  return aggregateSessions(own);
+  return own.length === 0 && fallback !== undefined ? [fallback] : own;
+}
+
+/**
+ * The most urgent status across the workspace's chats. With none in this
+ * window, `fallback` (the workspace's `sessionStatus` from elsewhere: the demo
+ * today), else idle. A chat this window runs always wins over the fallback.
+ */
+export function workspaceSessionStatus(statuses: ReadonlyMap<string, string>, workspaceId: string, fallback?: SessionStatus): SessionStatus {
+  return aggregateSessions(workspaceChatStatuses(statuses, workspaceId, fallback));
 }

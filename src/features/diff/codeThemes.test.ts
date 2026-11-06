@@ -34,7 +34,7 @@ test("unknown stored values fall back to defaults", () => {
 test("a Shiki theme carries its palette and type", () => {
   const t = shikiTheme("nord", CODE_THEMES.nord);
   assert.equal(t.type, "dark");
-  assert.equal(t.bg, "#2e3440");
+  assert.equal(t.bg, "var(--syntax-nord-bg)");
   const kw = t.tokenColors.find((r) => "scope" in r && r.scope?.includes("keyword"));
   assert.equal(kw?.settings.foreground, CODE_THEMES.nord.palette.keyword);
 });

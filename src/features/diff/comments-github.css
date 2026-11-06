@@ -6,8 +6,8 @@
 .oc-suggestion-head { padding: 4px 10px; border-bottom: 1px solid var(--border); color: var(--muted); font-family: var(--font-sans, inherit); }
 .oc-suggestion-row { padding: 0 10px; overflow-x: auto; }
 .oc-suggestion-row .sign { display: inline-block; width: 14px; color: var(--muted); user-select: none; }
-.oc-suggestion-row.del { background: color-mix(in srgb, var(--del) 12%, transparent); }
-.oc-suggestion-row.add { background: color-mix(in srgb, var(--add) 12%, transparent); }
+.oc-suggestion-row.del { background: color-mix(in srgb, var(--diff-del) 12%, transparent); }
+.oc-suggestion-row.add { background: color-mix(in srgb, var(--diff-add) 12%, transparent); }
 .oc-file-notes { display: flex; flex-direction: column; gap: 8px; padding: 8px 12px; }
 .oc-pr-comments > summary { cursor: pointer; font-size: 12px; color: var(--muted); padding: 2px 0; }
 .oc-pr-comments[open] > summary { margin-bottom: 8px; }
@@ -19,6 +19,6 @@
 .oc-md summary { cursor: pointer; }
 /* PR-level comments, opened from the Changes toolbar with no file open. */
 .oc-pr-comments-pop { position: relative; display: inline-flex; }
-.oc-pr-comments-panel { position: absolute; top: calc(100% + 6px); right: 0; z-index: 20; width: min(420px, 80vw); max-height: 60vh; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgb(0 0 0 / 0.18); padding: 8px 10px; font-size: 13px; }
+.oc-pr-comments-panel { position: absolute; top: calc(100% + 6px); right: 0; z-index: 20; width: min(420px, 80vw); max-height: 60vh; overflow: auto; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow-18); padding: 8px 10px; font-size: 13px; }
 .oc-pr-comments-head { display: flex; align-items: center; gap: 8px; padding-bottom: 6px; margin-bottom: 6px; border-bottom: 1px solid var(--border); }
 .oc-pr-comments-head .spacer { flex: 1; }

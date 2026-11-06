@@ -3,26 +3,14 @@
    Conductor's Tailwind classes in px (text-sm 14/20, text-xs 12/16 +0.01em,
    spacing 4px steps); colours are its theme tokens (evidence/frontend/css-tokens.json). */
 .transcript {
-  --oc-fg: #2c2826; --oc-muted-fg: #8e8885; --oc-muted: #fafaf9; --oc-accent: #fafaf9; --oc-accent-fg: #2c2826;
-  --oc-highlight: #faf7f5; --oc-highlight-fg: #594545; --oc-border: #eae8e6; --oc-input: #14100f1a; --oc-bg: #fff;
-  --oc-git-green: #16a249; --oc-git-red: #dc2828; --oc-destructive: #dc2828; --oc-link-fg: #a4847f;
-  --oc-tint-blue-600: oklch(54.6% .245 262.881); --oc-tint-blue-500: oklch(62.3% .214 259.815); --oc-tint-cyan-400: oklch(78.9% .154 211.53);
-  --oc-tint-cyan-600: oklch(60.9% .126 221.723); --oc-tint-yellow-400: oklch(85.2% .199 91.936); --oc-tint-yellow-600: oklch(68.1% .162 75.834);
-  --oc-tint-orange-600: oklch(64.6% .222 41.116); --oc-tint-orange-700: oklch(55.3% .195 38.402); --oc-tint-red-600: oklch(57.7% .245 27.325);
-  --oc-tint-green-500: oklch(72.3% .219 149.579); --oc-tint-green-600: oklch(62.7% .194 149.214); --oc-tint-gray-600: #766f6b; --oc-tint-documentation: #47423e;
+  --oc-fg: var(--text); --oc-muted-fg: var(--muted); --oc-muted: var(--surface-muted); --oc-accent: var(--surface-accent); --oc-accent-fg: var(--surface-accent-text);
+  --oc-highlight: var(--highlight); --oc-highlight-fg: var(--highlight-text); --oc-border: var(--border); --oc-input: var(--input); --oc-bg: var(--bg);
+  --oc-git-green: var(--success); --oc-git-red: var(--destructive); --oc-destructive: var(--destructive); --oc-link-fg: var(--emphasis);
+  --oc-tint-blue-600: var(--tint-blue-600); --oc-tint-blue-500: var(--tint-blue-500); --oc-tint-cyan-400: var(--tint-cyan-400);
+  --oc-tint-cyan-600: var(--tint-cyan-600); --oc-tint-yellow-400: var(--tint-yellow-400); --oc-tint-yellow-600: var(--tint-yellow-600);
+  --oc-tint-orange-600: var(--tint-orange-600); --oc-tint-orange-700: var(--tint-orange-700); --oc-tint-red-600: var(--tint-red-600);
+  --oc-tint-green-500: var(--tint-green-500); --oc-tint-green-600: var(--tint-green-600); --oc-tint-gray-600: var(--tint-gray); --oc-tint-documentation: var(--tint-doc);
   display: flex; flex-direction: column; color: var(--oc-fg);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .transcript {
-    --oc-fg: #eae8e6; --oc-muted-fg: #a5a09c; --oc-muted: #211e1c; --oc-accent: #2c2826; --oc-accent-fg: #f3f2f1;
-    --oc-highlight: #2a1e1d; --oc-highlight-fg: #f3ece7; --oc-border: #ffffff1a; --oc-input: #fff3; --oc-bg: #141110;
-    --oc-git-green: #4ade80; --oc-git-red: #f87272; --oc-destructive: #f87272; --oc-link-fg: #cca694; --oc-tint-documentation: #8e8885;
-  }
-}
-:root[data-theme="dark"] .transcript {
-  --oc-fg: #eae8e6; --oc-muted-fg: #a5a09c; --oc-muted: #211e1c; --oc-accent: #2c2826; --oc-accent-fg: #f3f2f1;
-  --oc-highlight: #2a1e1d; --oc-highlight-fg: #f3ece7; --oc-border: #ffffff1a; --oc-input: #fff3; --oc-bg: #141110;
-  --oc-git-green: #4ade80; --oc-git-red: #f87272; --oc-destructive: #f87272; --oc-link-fg: #cca694; --oc-tint-documentation: #8e8885;
 }
 
 /* The scroll area is the list: no padding of its own, turns centre at max-w-4xl.
@@ -163,24 +151,7 @@
 .chat-action:hover { background: var(--hover); color: var(--text); }
 
 /* Markdown (markdown.ts) outside chat text, and code blocks. Code colours follow Conductor's default code theme
-   (--code-* from its palette; evidence/chat/README.md) and its .hljs rules. */
-:root {
-  --code-fg: hsl(25 8% 16%); --code-bg: hsl(30 9% 95%); --code-comment: hsl(23 5% 63%);
-  --code-keyword: hsl(0 72% 51%); --code-string: hsl(360 13% 31%); --code-number: hsl(221 83% 53%);
-  --code-function: hsl(292 100% 46%); --code-class: hsl(20 90% 48%); --code-tag: hsl(142 72% 29%); --code-operator: hsl(0 72% 51%);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --code-fg: hsl(30 8% 91%); --code-bg: hsl(24 9% 12%); --code-comment: hsl(22 4% 54%);
-    --code-keyword: hsl(0 91% 71%); --code-string: hsl(22 39% 78%); --code-number: hsl(213 94% 68%);
-    --code-function: hsl(292 100% 66%); --code-class: hsl(27 96% 61%); --code-tag: hsl(142 69% 58%); --code-operator: hsl(0 91% 71%);
-  }
-}
-:root[data-theme="dark"] {
-  --code-fg: hsl(30 8% 91%); --code-bg: hsl(24 9% 12%); --code-comment: hsl(22 4% 54%);
-  --code-keyword: hsl(0 91% 71%); --code-string: hsl(22 39% 78%); --code-number: hsl(213 94% 68%);
-  --code-function: hsl(292 100% 66%); --code-class: hsl(27 96% 61%); --code-tag: hsl(142 69% 58%); --code-operator: hsl(0 91% 71%);
-}
+   (--code-* in src/theme/tokens.css; evidence/chat/README.md) and its .hljs rules. */
 
 .md { white-space: normal; line-height: 1.6; min-width: 0; }
 .md > :first-child { margin-top: 0; }
@@ -216,8 +187,8 @@
 .hljs-section, .hljs-name, .hljs-selector-tag, .hljs-subst { color: var(--code-tag); }
 .hljs-literal { color: var(--code-operator); }
 .hljs-string, .hljs-regexp, .hljs-attribute, .hljs-meta .hljs-string { color: var(--code-string); }
-.hljs-addition { color: var(--add); }
-.hljs-deletion { color: var(--del); }
+.hljs-addition { color: var(--diff-add); }
+.hljs-deletion { color: var(--diff-del); }
 .hljs-attr, .hljs-variable, .hljs-template-variable, .hljs-type, .hljs-selector-class, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-number { color: var(--code-number); }
 .hljs-symbol, .hljs-bullet, .hljs-link, .hljs-meta, .hljs-selector-id, .hljs-title { color: var(--code-function); }
 .hljs-built_in, .hljs-title.class_, .hljs-class .hljs-title { color: var(--code-class); }
@@ -225,7 +196,7 @@
 .hljs-strong { font-weight: 700; }
 .hljs-link { text-decoration: underline; }
 .chat-turn-menu { position: relative; display: inline-flex; }
-.chat-menu { position: absolute; right: 0; bottom: calc(100% + 4px); z-index: 20; min-width: 140px; padding: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18); }
+.chat-menu { position: absolute; right: 0; bottom: calc(100% + 4px); z-index: 20; min-width: 140px; padding: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 6px 20px var(--shadow-18); }
 .chat-menu-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 5px 8px; border-radius: 5px; font-size: 12.5px; text-align: left; white-space: nowrap; }
 .chat-menu-item:hover:not(:disabled) { background: var(--hover); }
 .chat-menu-item:disabled { opacity: 0.5; cursor: default; }
@@ -243,8 +214,8 @@
 .chat-turn-chip:hover { background: var(--hover); }
 .chat-turn-chip .name { font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .chat-turn-chip .count { flex: none; font-family: var(--font-mono); font-size: 11px; }
-.chat-turn-chip .a { color: var(--add); }
-.chat-turn-chip .d { color: var(--del); }
+.chat-turn-chip .a { color: var(--diff-add); }
+.chat-turn-chip .d { color: var(--diff-del); }
 .chat-turn-chip.more { color: var(--muted); }
 
 
@@ -290,7 +261,7 @@
 .oc-tool-count.mono, .oc-task-note.mono, .oc-task-field-value.mono { font-family: var(--font-mono); }
 /* N0o's status pill */
 .oc-status-pill { font-size: 12px; line-height: 16px; padding: 2px 6px; border-radius: 4px; background: var(--oc-muted); }
-.oc-status-pill[data-status="running"] { background: #f59e0b; color: #451a03; }
+.oc-status-pill[data-status="running"] { background: var(--status-running); color: var(--status-running-text); }
 .oc-status-pill[data-status="completed"] { background: color-mix(in oklab, var(--oc-git-green) 15%, transparent); color: var(--oc-git-green); }
 /* Qu variant="outline" */
 .oc-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border: 1px solid var(--oc-border); border-radius: 6px; font-family: var(--font-mono); font-size: 12px; line-height: 16px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--oc-fg); }
@@ -330,7 +301,7 @@
 .oc-task[data-status="completed"] .oc-task-subject, .oc-task[data-status="deleted"] .oc-task-subject { text-decoration: line-through; }
 .oc-task-icon { width: 16px; height: 16px; margin-top: 2px; flex: none; color: var(--oc-muted-fg); }
 .oc-task[data-status="completed"] .oc-task-icon { color: var(--oc-git-green); }
-.oc-task[data-status="in_progress"] .oc-task-icon { color: #3b82f6; animation: pulse 1.4s ease-in-out infinite; }
+.oc-task[data-status="in_progress"] .oc-task-icon { color: var(--status-task-running); animation: pulse 1.4s ease-in-out infinite; }
 .oc-task[data-status="deleted"] .oc-task-icon { color: var(--oc-destructive); }
 .oc-task-body { flex: 1; min-width: 0; }
 .oc-task-subject { margin: 0; font-size: 12px; line-height: 16px; font-weight: 500; overflow-wrap: break-word; }
@@ -359,20 +330,12 @@
 .oc-collab-action { flex: none; }
 .oc-collab-agent { display: inline-flex; min-width: 0; align-items: baseline; gap: 4px; }
 .oc-collab-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
-.oc-collab-name[data-color="blue"] { color: #2563eb; }
-.oc-collab-name[data-color="green"] { color: #16a34a; }
-.oc-collab-name[data-color="cyan"] { color: #0891b2; }
-.oc-collab-name[data-color="fuchsia"] { color: #c026d3; }
-.oc-collab-name[data-color="orange"] { color: #ea580c; }
-.oc-collab-name[data-color="yellow"] { color: #ca8a04; }
-@media (prefers-color-scheme: dark) {
-  .oc-collab-name[data-color="blue"] { color: #60a5fa; }
-  .oc-collab-name[data-color="green"] { color: #4ade80; }
-  .oc-collab-name[data-color="cyan"] { color: #22d3ee; }
-  .oc-collab-name[data-color="fuchsia"] { color: #e879f9; }
-  .oc-collab-name[data-color="orange"] { color: #fb923c; }
-  .oc-collab-name[data-color="yellow"] { color: #facc15; }
-}
+.oc-collab-name[data-color="blue"] { color: var(--collab-blue); }
+.oc-collab-name[data-color="green"] { color: var(--collab-green); }
+.oc-collab-name[data-color="cyan"] { color: var(--collab-cyan); }
+.oc-collab-name[data-color="fuchsia"] { color: var(--collab-fuchsia); }
+.oc-collab-name[data-color="orange"] { color: var(--collab-orange); }
+.oc-collab-name[data-color="yellow"] { color: var(--collab-yellow); }
 .oc-collab-role, .oc-collab-state { flex: none; color: var(--oc-muted-fg); }
 .oc-collab-count { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; color: var(--oc-fg); }
 .oc-collab-children { margin-left: 6px; border-left: 1px solid var(--oc-border); padding-left: 16px; }

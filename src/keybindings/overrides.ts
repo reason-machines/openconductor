@@ -125,6 +125,28 @@ export function currentSendKeyMode(overrides: Overrides = {}): SendKeyMode | und
   );
 }
 
+/**
+ * The writes "Send messages with" makes: every send command gets the chosen
+ * preset (Conductor's settings row, `RQt` in index-BGEQ8YjU.js). The legacy
+ * `message_send_key` is written after these succeed.
+ */
+export function sendKeyPresetUpdates(mode: SendKeyMode): OverrideUpdate[] {
+  return SEND_KEY_COMMANDS.map((commandId) => ({ commandId, shortcuts: SEND_KEY_PRESETS[mode][commandId] }));
+}
+
+/**
+ * Conductor's startup migration (`HUt`): when the legacy `message_send_key`
+ * is `cmd-enter`, each send command without an override gets the cmd-enter
+ * preset. Returns the stored overrides to write, or `raw` itself when there
+ * is nothing to change.
+ */
+export function migrateLegacySendKey(raw: string | undefined, legacy: SendKeyMode | undefined): string | undefined {
+  if (legacy !== "cmd-enter") return raw;
+  const current = parseOverrides(raw, { legacyMessageSendKey: "cmd-enter" });
+  const updates = sendKeyPresetUpdates("cmd-enter").filter((u) => current[u.commandId] === undefined);
+  return updates.length === 0 ? raw : serializeOverrides(current, updates);
+}
+
 export interface OverrideStorage {
   read(): Promise<string | undefined>;
   /** Resolves false when the write was rejected. */
