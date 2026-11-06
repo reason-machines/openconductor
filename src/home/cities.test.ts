@@ -29,8 +29,11 @@ test("a city counts once however many workspaces carry its name, in catalogue or
   assert.deepEqual(visitedCities(repos), ["osaka", "tallinn"]);
 });
 
-test("the total is the size of the city catalogue", () => {
-  assert.ok(CITY_TOTAL > 0);
+test("Home recognizes the complete 385-city catalogue, independently of the name generator", () => {
+  assert.equal(CITY_TOTAL, 385);
+  assert.equal(cityOf("Troy-v2"), "troy");
+  assert.equal(cityOf("nukualofa"), "nukualofa");
+  assert.equal(cityOf("atlantis"), null);
 });
 
 test("a -vN suffix and letter case still name the city", () => {

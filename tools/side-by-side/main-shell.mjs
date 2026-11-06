@@ -12,7 +12,8 @@ for(const f of ['sql-wasm.js','sql-wasm.wasm']) mock['/__mock/'+f] = path.join(r
 for(const f of ['conductor.schema.sql','cache.schema.sql']) mock['/__mock/'+f] = path.join(root,'evidence/sqlite',f);
 const seed = fs.readFileSync(path.join(root,'tools/sidebar-screens/seed.js'),'utf8');
 const extra = `(() => {
- localStorage.setItem('openconductor.settings.preview',JSON.stringify({general:{theme:'dark',send_native_notification:true,sound_type:'default'},appearance:{color_palette:'stone',zoom_level_v2:1,low_contrast_dark_mode:false,terminal_font_size:12}}));
+ const theme = new URLSearchParams(location.search).get('oc_theme') || 'dark';
+ localStorage.setItem('openconductor.settings.preview',JSON.stringify({general:{theme,send_native_notification:true,sound_type:'default'},appearance:{color_palette:'stone',zoom_level_v2:1,low_contrast_dark_mode:false,terminal_font_size:12}}));
  const raw=localStorage.getItem('openconductor.shell.v1');
  if(raw){const s=JSON.parse(raw);s.selection={kind:'root'};localStorage.setItem('openconductor.shell.v1',JSON.stringify(s));}
  window.__TAURI_INTERNALS__={metadata:{currentWindow:{label:'main'},currentWebview:{label:'main'}}, transformCallback:()=>0,async invoke(cmd){
@@ -40,6 +41,9 @@ http.createServer((req,res)=>{
  console.log('Shell comparison preview on 4682');
  if(process.argv.includes('--check')) {
   try { await import('./sidebar-actions.check.mjs'); } catch(e) { console.error(e); return; }
+ }
+ if(process.argv.includes('--home-check')) {
+  try { await import('./home-details.check.mjs'); } catch(e) { console.error(e); return; }
  }
  if(process.argv.includes('--capture')) await import('./main-shell-capture.mjs');
 });

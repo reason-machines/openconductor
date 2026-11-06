@@ -1,0 +1,210 @@
+[
+  {
+    "region": "home",
+    "theme": "dark",
+    "crop": [
+      256,
+      0,
+      1280,
+      820
+    ],
+    "threshold": 0,
+    "evidence_id": "ev_1a34837d1846cd75b706b715d3badb8c99b5b94162ea1f52bf06bb955ce95803",
+    "changed_ratio": 0.051579173018292686
+  },
+  {
+    "region": "home",
+    "theme": "dark",
+    "crop": [
+      256,
+      0,
+      1280,
+      820
+    ],
+    "threshold": 24,
+    "evidence_id": "ev_117dbf5ec93c97fdc117b8fd70ab0719e3f79eb68adc77187f45c1a824b8bbd0",
+    "changed_ratio": 0.050141720655487804
+  },
+  {
+    "region": "cards-footer",
+    "theme": "dark",
+    "crop": [
+      440,
+      376,
+      1096,
+      600
+    ],
+    "threshold": 0,
+    "evidence_id": "ev_9b3588634420a58955edc666e09e02ed211a66d596831804fbac30112b9cbed0",
+    "changed_ratio": 0.0044370644599303136
+  },
+  {
+    "region": "cards-footer",
+    "theme": "dark",
+    "crop": [
+      440,
+      376,
+      1096,
+      600
+    ],
+    "threshold": 24,
+    "evidence_id": "ev_7bed59341e6099d596f8995e466b8bcd4c016e4e6d94615120b7f6f708d99a7b",
+    "changed_ratio": 0.0020892312717770037
+  },
+  {
+    "region": "sidebar",
+    "theme": "dark",
+    "crop": [
+      0,
+      0,
+      256,
+      820
+    ],
+    "threshold": 0,
+    "evidence_id": "ev_b3ded7b156cdfd5bbe00a088e1dc760224a76b2a259d4d949962d49a22d1ca4b",
+    "changed_ratio": 0.04741806402439024
+  },
+  {
+    "region": "sidebar",
+    "theme": "dark",
+    "crop": [
+      0,
+      0,
+      256,
+      820
+    ],
+    "threshold": 24,
+    "evidence_id": "ev_9e065e2f68757da3da606fcdb548f2377f262548346737ac475c00ac17c99c15",
+    "changed_ratio": 0.003725228658536585
+  },
+  {
+    "region": "repo-menu",
+    "theme": "dark",
+    "crop": [
+      45,
+      247,
+      214,
+      426
+    ],
+    "threshold": 0,
+    "evidence_id": "ev_91a7a9466306b61244db26e14e2692b618bf89255da1ff61fa81acde3be96a20",
+    "changed_ratio": 0
+  },
+  {
+    "region": "repo-menu",
+    "theme": "dark",
+    "crop": [
+      45,
+      247,
+      214,
+      426
+    ],
+    "threshold": 24,
+    "evidence_id": "ev_344b73902bf3ed14f640f1891fb2586b486f2500f049617b13bd8c0587c6084d",
+    "changed_ratio": 0
+  },
+  {
+    "region": "home",
+    "theme": "light",
+    "crop": [
+      256,
+      0,
+      1280,
+      820
+    ],
+    "threshold": 0,
+    "evidence_id": "ev_302a8317bb99277009e4d78c3edd50e90a0bed709c7655a4bb9620a55d4d288a",
+    "changed_ratio": 0.05168873856707317
+  },
+  {
+    "region": "home",
+    "theme": "light",
+    "crop": [
+      256,
+      0,
+      1280,
+      820
+    ],
+    "threshold": 24,
+    "evidence_id": "ev_2470ac3261519b79ec54ff0c2a5c13e0e8cd1f2f7db6e2a957094adb73825c11",
+    "changed_ratio": 0.043492759146341466
+  },
+  {
+    "region": "cards-footer",
+    "theme": "light",
+    "crop": [
+      440,
+      376,
+      1096,
+      600
+    ],
+    "threshold": 0,
+    "evidence_id": "ev_618375362fc1cfb8e0970471281af14a44683dbf494b57ecc7fe3fb0d8acaeeb",
+    "changed_ratio": 0.004491506968641115
+  },
+  {
+    "region": "cards-footer",
+    "theme": "light",
+    "crop": [
+      440,
+      376,
+      1096,
+      600
+    ],
+    "threshold": 24,
+    "evidence_id": "ev_8d79c8a805334db47e3974e98bb0a7308169904c01985dbc0a9610cdcec072d1",
+    "changed_ratio": 0.0018374346689895471
+  },
+  {
+    "region": "sidebar",
+    "theme": "light",
+    "crop": [
+      0,
+      0,
+      256,
+      820
+    ],
+    "threshold": 0,
+    "evidence_id": "ev_8552204f7eff13059482160aaeffccfdfb3e9108d8363aefe3c717570af6c1ec",
+    "changed_ratio": 0.04682259908536585
+  },
+  {
+    "region": "sidebar",
+    "theme": "light",
+    "crop": [
+      0,
+      0,
+      256,
+      820
+    ],
+    "threshold": 24,
+    "evidence_id": "ev_2ec018a843dec54f28213b1d574664c37a52164c1ed29fe6b47533acf11130bf",
+    "changed_ratio": 0.0037395198170731706
+  },
+  {
+    "region": "repo-menu",
+    "theme": "light",
+    "crop": [
+      45,
+      247,
+      214,
+      426
+    ],
+    "threshold": 0,
+    "evidence_id": "ev_8e8229e996fc3df5338acd80b12559f65a0ce0f56277f50b3a76707a2f72344a",
+    "changed_ratio": 0
+  },
+  {
+    "region": "repo-menu",
+    "theme": "light",
+    "crop": [
+      45,
+      247,
+      214,
+      426
+    ],
+    "threshold": 24,
+    "evidence_id": "ev_58f2ac001a767fd88f7393f7691caf87f664a55c2b7ddec78f43c47b96ace53a",
+    "changed_ratio": 0
+  }
+]
