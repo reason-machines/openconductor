@@ -27,14 +27,11 @@ use std::sync::{Arc, Mutex, OnceLock};
 use serde_json::Value;
 use tauri::{AppHandle, Emitter, Runtime, State};
 
-use crate::agent::codex_cli::{
-    find_codex_cli, ApprovalPolicy, CodexLaunch, CodexPolicy, SandboxMode,
-};
+use crate::agent::codex_cli::{find_codex_cli, ApprovalPolicy, CodexPolicy, SandboxMode};
 use crate::agent::codex_consent::ConsentAnswer;
 use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
 use crate::agent::codex_wire::{Payload, TurnEnd};
-use crate::agent::AgentKind;
 use crate::settings::service::SettingsService;
 
 pub const EVENT: &str = "codex-chat-event";
@@ -73,6 +70,12 @@ impl CodexChats {
         find_codex_cli(self.path().as_deref(), home().as_deref())
     }
 
+    /// The `codex` OpenConductor runs: Settings › Agents › Codex
+    /// "Codex executable path" when set, else [`Self::cli`].
+    pub(crate) fn executable(&self, settings: &SettingsService) -> Option<PathBuf> {
+        settings.codex_executable_override().or_else(|| self.cli())
+    }
+
     fn get(&self, chat_id: &str) -> Result<Arc<CodexRunner>, String> {
         self.chats
             .lock()
@@ -99,8 +102,11 @@ fn event_json(chat_id: &str, payload: &Payload) -> Value {
 
 /// Absolute path of the `codex` the chat would run, or null.
 #[tauri::command]
-pub async fn codex_cli_path(state: State<'_, CodexChats>) -> Result<Option<String>, String> {
-    Ok(state.cli().map(|p| p.display().to_string()))
+pub async fn codex_cli_path(
+    state: State<'_, CodexChats>,
+    settings: State<'_, SettingsService>,
+) -> Result<Option<String>, String> {
+    Ok(state.executable(&settings).map(|p| p.display().to_string()))
 }
 
 /// Opens the chat (no process yet). Opening an open chat keeps it as is.
@@ -117,16 +123,16 @@ pub async fn codex_open_chat<R: Runtime>(
     if state.chats.lock().unwrap().contains_key(&chat_id) {
         return Ok(());
     }
-    let cli = state.cli().ok_or(
+    let cwd = PathBuf::from(cwd);
+    // Model, effort, personality and provider come from settings, as
+    // Conductor's launch (`Ohe`); "Codex executable path" wins over `PATH`.
+    let mut launch = settings.codex_launch(&cwd)?;
+    launch.executable = state.executable(&settings).ok_or(
         "The Codex CLI was not found. Install it (npm i -g @openai/codex), then sign in with `codex login`.",
     )?;
-    let mut env = settings.launch_env(AgentKind::Codex)?;
     if let Some(path) = state.path() {
-        env.set("PATH", path.to_string_lossy());
+        launch.env.set("PATH", path.to_string_lossy());
     }
-    let cwd = PathBuf::from(cwd);
-    let mut launch = CodexLaunch::new(&cwd, env);
-    launch.executable = cli;
     let config = RunnerConfig {
         launch,
         thread: ThreadOptions {

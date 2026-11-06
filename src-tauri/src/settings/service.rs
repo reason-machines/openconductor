@@ -244,6 +244,30 @@ impl SettingsService {
             .map_err(|e| e.to_string())
     }
 
+    /// A Codex chat's `app-server` launch in `cwd`: provider env plus the
+    /// model, effort, personality and executable from settings
+    /// ([`super::launch::codex_launch`]). `executable` is `codex` unless
+    /// `codex_executable_path` is set; [`Self::codex_executable_override`]
+    /// tells the caller which.
+    pub fn codex_launch(&self, cwd: &Path) -> Result<crate::agent::codex_cli::CodexLaunch, String> {
+        let settings = self.get().map_err(|e| e.to_string())?;
+        super::launch::codex_launch(
+            &settings,
+            cwd,
+            self.store.as_ref(),
+            super::launch::Purpose::Chat,
+        )
+        .map_err(|e| e.to_string())
+    }
+
+    /// `codex_executable_path` when it is set and not blank.
+    pub fn codex_executable_override(&self) -> Option<PathBuf> {
+        let settings = self.get().ok()?;
+        let path = settings.codex_executable_path?;
+        let path = path.trim();
+        (!path.is_empty()).then(|| PathBuf::from(path))
+    }
+
     /// Switches `agent` to `config`, storing `secrets` for it. The settings
     /// change is validated before any secret is written, and secrets are
     /// checked before the file is saved, so a bad request changes neither.

@@ -17,7 +17,9 @@ first command really writes hello.txt in the thread's cwd. Prompts:
                     "permissions: none granted")
   anything else     replies "turn <n>: <prompt>", n counting this thread's turns
 
-Every request it receives is appended to $HOME/codex-fake.jsonl.
+Every request it receives is appended to $HOME/codex-fake.jsonl, after one
+{"launch": {"args", "launcher"}} line: its arguments (the `-c` overrides) and
+$OC_FAKE_CODEX, which names the wrapper that started it.
 Only "codex app-server" is handled; other subcommands exit 2.
 """
 import json
@@ -47,6 +49,8 @@ def note(obj):
 def notify(method, params):
     send({"method": method, "params": params})
 
+
+note({"launch": {"args": sys.argv[1:], "launcher": os.environ.get("OC_FAKE_CODEX", "path")}})
 
 state = {"thread": None, "cwd": None, "turns": 0, "turn": None, "pending": {}, "next_req": 0, "consents": {}}
 
