@@ -131,8 +131,7 @@ export const flows = [
       if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
       // A new, untracked file in the selected workspace's worktree, as an agent would write it.
       writeFileSync(join(ctx.worktree, "e2e-diff.txt"), "one\ntwo\nthree\n");
-      const [reload] = await wd.waitFor("the Changes panel", () => wd.findAll('.oc-diff-toolbar button[title="Reload changes"]').then((ids) => ids.length && ids));
-      await wd.click(reload);
+      // The Changes panel refreshes external edits without a Reload control.
       const rows = await wd.waitFor("e2e-diff.txt in Changed files", async () => {
         const r = await wd.execute(
           "return Array.from(document.querySelectorAll('.oc-change'), (e) => [e.querySelector('.name')?.textContent.trim(), e.querySelector('.oc-count .a')?.textContent.trim()]);",

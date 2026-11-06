@@ -79,10 +79,12 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   keyRef.current = key;
   const loadNow = useCallback(
     (quiet: boolean) => {
-      loadWorkspaceDiff(worktree, target, opts, { turn }).then(
+      return loadWorkspaceDiff(worktree, target, opts, { turn }).then(
         (files) => {
-          loaded.set(key, files);
-          if (keyRef.current === key) setState({ key, load: { state: "ready", files } });
+          const previous = loaded.get(key);
+          const next = previous && JSON.stringify(previous) === JSON.stringify(files) ? previous : files;
+          loaded.set(key, next);
+          if (keyRef.current === key) setState({ key, load: { state: "ready", files: next } });
         },
         (e: unknown) => {
           if (quiet) return;
@@ -94,10 +96,22 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     [key, worktree, target, opts, turn],
   );
   // Loads again behind what is shown; a list never loaded shows "Loading changes…" meanwhile.
-  const refresh = useCallback(() => loadNow(false), [loadNow]);
+  const refresh = useCallback(() => { void loadNow(false); }, [loadNow]);
   useEffect(refresh, [refresh]);
   // After a save from the diff viewer: reload without the loading state, so the open editor stays mounted.
-  const reloadQuietly = useCallback(() => loadNow(true), [loadNow]);
+  const reloadQuietly = useCallback(() => { void loadNow(true); }, [loadNow]);
+  useEffect(() => {
+    if (!worktree || turn) return;
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout>;
+    const schedule = () => {
+      timer = setTimeout(() => {
+        void loadNow(true).finally(() => { if (!stopped) schedule(); });
+      }, 2000);
+    };
+    schedule();
+    return () => { stopped = true; clearTimeout(timer); };
+  }, [worktree, turn, loadNow]);
   useEffect(() => {
     setViewedMap(loadViewed(localStorage, workspaceId));
     setSelectedPath(null);

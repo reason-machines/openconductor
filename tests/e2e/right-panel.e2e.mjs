@@ -114,6 +114,34 @@ test("Changes: sorted flat rows, compressed hierarchy, collapsing counts, filter
   await context.close();
 });
 
+test("Changes: external edits refresh without a Reload button", async () => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES });
+    await page.addInitScript(() => {
+      const invoke = window.__TAURI_INTERNALS__.invoke;
+      window.__diffFiles = [];
+      window.__TAURI_INTERNALS__.invoke = (cmd, args) => cmd === "diff_workspace"
+        ? Promise.resolve({ files: window.__diffFiles })
+        : invoke(cmd, args);
+    });
+    await page.goto(base + "/");
+    await page.getByText("No changes on this branch yet.", { exact: true }).waitFor();
+    assert.equal(await page.locator('.oc-diff-toolbar button[title="Reload changes"]').count(), 0);
+    await page.evaluate(() => {
+      window.__diffFiles = [{ path: "e2e-diff.txt", old_path: null, status: "untracked", binary: false, additions: 3, deletions: 0, hunks: [] }];
+    });
+    const row = page.locator('.oc-change[title="Open e2e-diff.txt"]');
+    await row.waitFor({ timeout: 6000 });
+    assert.equal(await row.locator(".name").textContent(), "e2e-diff.txt");
+    assert.equal(await row.locator(".oc-count .a").textContent(), "+3");
+    if (process.env.OC_DIFF_REFRESH_SCREENSHOT) await page.screenshot({ path: process.env.OC_DIFF_REFRESH_SCREENSHOT });
+  } finally {
+    await context.close();
+  }
+});
+
 test("All files: folders and type icons, chevron on hover, collapse, filter, and files open through Open in", async () => {
   const { context, page, errors } = await open();
   await page.getByRole("tab", { name: "All files" }).click();
