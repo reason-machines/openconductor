@@ -22,6 +22,7 @@
 pub mod agent;
 pub mod agent_binaries;
 pub mod agent_commands;
+pub mod agent_launch;
 pub mod agent_options;
 pub mod app_quit;
 pub mod app_prefs;
@@ -287,7 +288,13 @@ pub fn run() {
             // Conductor sweeps draft-attachments/ dirs older than 30 days at start.
             draft_attachments::sweep_at_startup(&data_dir);
             // Conductor's binary_manager: agent-binaries/ with .meta sha256 files.
-            app.manage(agent_binaries::commands::manager(app.handle(), &data_dir));
+            let binaries = agent_binaries::commands::manager(app.handle(), &data_dir);
+            // Conductor fetches (or re-verifies) both agents at launch, so a
+            // chat rarely waits on a download (agent_launch.rs).
+            for agent in agent_binaries::Agent::ALL {
+                binaries.request_download(agent);
+            }
+            app.manage(binaries.clone());
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
@@ -324,7 +331,7 @@ pub fn run() {
             app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
-            app.manage(codex_chat::CodexChats::default());
+            app.manage(codex_chat::CodexChats::with_binaries(binaries));
             app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
             app.manage(Terminals::new(app.handle().clone()));
@@ -398,6 +405,8 @@ pub fn run() {
             sidebar_workspace_commands::db_set_workspace_pinned,
             sidebar_workspace_commands::db_set_chat_unread,
             sidebar_workspace_commands::db_mark_workspace_read,
+            sidebar_workspace_commands::db_open_chat_tab,
+            sidebar_workspace_commands::db_close_chat_tab,
             sidebar_workspace_commands::db_touch_workspace,
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
@@ -486,9 +495,9 @@ pub fn run() {
             terminal_commands::cancel_shell_command,
             app_prefs::commands::get_app_prefs,
             agent_options::agent_system_binary,
+            agent_launch::agent_executable_status,
             agent_options::agent_config_file,
             agent_options::open_agent_config,
-            agent_options::acp_agent_status,
             app_prefs::commands::set_app_pref,
             app_prefs::commands::record_open_in,
             open_in::commands::open_in_apps,
@@ -516,6 +525,7 @@ pub fn run() {
             pr::commands::pr_list_open,
             pr::commands::gh_issue_list_open,
             pr::commands::pr_git_state,
+            pr::commands::pr_pull_latest_from_target,
             pr::commands::pr_header_state,
             pr::commands::pr_create_prompt,
             pr::commands::pr_template,

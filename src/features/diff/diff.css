@@ -134,3 +134,9 @@
 .oc-file-header .oc-unsaved { width: 8px; height: 8px; flex-shrink: 0; border-radius: 9999px; background: var(--amber); }
 .oc-code-edit { display: contents; }
 .oc-save-error { color: var(--diff-del); text-align: left; }
+
+/* Conductor's "Pull latest from <target>" in the empty Changes panel: a small ghost button, muted text. */
+.oc-pull-latest { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; padding: 4px 8px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); font-size: 12px; line-height: 16px; cursor: pointer; }
+.oc-pull-latest:hover:not(:disabled) { background: var(--hover); color: var(--text); }
+.oc-pull-latest:disabled { opacity: 0.5; cursor: default; }
+.oc-pull-latest-spinner { width: 12px; height: 12px; border-width: 1.5px; }

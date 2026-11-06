@@ -292,15 +292,56 @@ with python over the file; see REA gaps). Conductor's strings are data only.
   `src/keybindings/selectAll.ts`, installed by `KeybindingsProvider`.
 - `git.fixErrors` (⌘⇧X), offset ~2,300,368: already bound (PR #393).
 
-Not bound, because OpenConductor lacks the feature behind them:
+## Bound command: git.pull (pull latest from the target)
 
-- `git.pull` (⌘⇧L, priority HIGH, offset ~2,299,746): Conductor runs a
-  "pull latest from <target>" mutation (`{workspacePath, remoteName,
-  targetBranch}`) when the branch is behind its target, not merged, not
-  conflicting and not in a stack; its button's tooltip is "Pull latest from
-  <target> (<n> commits)". OpenConductor has neither that button nor a backend
-  command that merges the target into the workspace (its header "Pull <n>" is
-  a status about the remote branch). Note `openSidecarLogs` has ⌘⇧L too.
+Read on sven m5 max in the decoded `renderApp-D_fmY7hW.js` and
+`index-BGEQ8YjU.js` (python over the files; see REA gaps). Strings are data.
+
+- Shortcut, renderApp `Wds` @ ~2,299,746: `oi("git.pull", cb, {priority:
+  HIGH})`. `cb` returns false (the key passes on, e.g. to `openSidecarLogs`,
+  also ⌘⇧L) when read-only, a pull is running, the workspace is in a stack or
+  a GitHub stack, no session is selected, there is no repo or intended target,
+  the PR is merged or `mergeStateStatus === "DIRTY"`, or `targetSyncStatus ===
+  0`. Otherwise it mutates `{workspacePath, workspaceHost, localWorkspaceId,
+  sessionId, remoteName, targetBranch: <PR base> ?? intendedTargetBranch}`.
+  It does not look at a running agent or the remote branch.
+- Button, renderApp `Y4s` @ ~2,818,200, rendered only in the Changes panel's
+  empty state for the All changes scope (@ ~2,821,988, variant "text"):
+  lucide `arrow-down` (12 px), muted label "Pull latest from <target> (<n>
+  commits)", "Pulling latest..." with a spinner while running, disabled while
+  read-only or pulling. Hidden in a stack, without a target, session or
+  current branch, on a detached HEAD, for a merged or DIRTY PR, when
+  `targetSyncStatus` is 0, while the agent works, and when the remote branch
+  has commits the workspace lacks (`upstream.branchExists && behind > 0`).
+  Its "icon" variant has the tooltip "Pull latest from <target> (<n>
+  commits)" plus the ⌘⇧L hint, but no call site renders it in this build.
+- Mutation `gitPullLatestFromTarget`, index `aNt` @ ~3,207,600: with
+  uncommitted changes it sends the agent "Commit uncommitted changes, then
+  merge <remote>/<target> into this branch. Then push." (rebase wording when
+  `pull.rebase` is set); else `git fetch <remote>` (error: stderr or "Failed
+  to fetch from remote"), re-checks uncommitted, resolves
+  `refs/remotes/<remote>/<target>` (missing: toast "Target branch <t> does not
+  exist"), compares with `rev-list --left-right --count`: in sync does
+  nothing, only behind runs `git merge --ff-only` and toasts "Pulled latest
+  changes. You're up to date!", diverged sends the agent "Merge
+  <remote>/<target> into this branch. Then push." Failures toast "Pulling
+  latest from remote failed: <message>". Success refreshes the workspace's
+  changes. `targetSyncStatus` is `git rev-list --count HEAD..<remote>/<target>`
+  (index `Hse`).
+
+Ours: `pr_pull_latest_from_target` (src-tauri/src/pr/pull_latest.rs) and
+`targetBehind` / `detached` in `pr_git_state`; rules in
+src/features/pr/pullLatest.ts; button and shared state in
+src/features/pr/usePullLatest.tsx; ⌘⇧L bound at `PRIORITY.HIGH` in
+`WorkspaceView`. e2e: tests/e2e/shortcuts-git-pull.e2e.mjs. Differences:
+no stacks in OpenConductor (that check is absent); the shortcut also waits for
+the git state to load (the remote comes from it); the success toast uses our
+"info" style (no success toast kind); the worktree lock Conductor holds
+around the git steps (`Uc`) is not taken; a null `targetBehind` hides the
+button instead of showing "(undefined commits)".
+
+Still not bound, because OpenConductor lacks the feature behind it:
+
 - `terminal.openLocalhost` (⌘⇧B): the workspace view (priority LOW, offset
   ~7,404,615) and the panel (offset ~7,141,734) open the preview URL in
   Conductor's in-app Browser tab, or a detected localhost URL; false when
@@ -319,6 +360,13 @@ Not bound, because OpenConductor lacks the feature behind them:
 - `rea search` over the decoded JavaScript and the binary on sven m5 max fails
   with `capability_unavailable` / `provider_unavailable`, so the handlers above
   were found with python string search over the decoded chunk.
+- git.pull: the helpers live in `index-BGEQ8YjU.js` under other minified
+  names; they were resolved by hand through the renderApp import list and the
+  index export list (`nDt` = `eo` = `sVt`, `iDt` = `er` = `q9t`, `QOt` = `dA` =
+  `z9t`). `sVe` (the PR target the shortcut uses) and `QO` beyond `cs(t) =
+  t === m$` were not followed further; we read both as the PR's base branch
+  and a detached HEAD. The Mac went offline once mid-read (`device_offline`)
+  and the read was retried.
 
 - `analyze-javascript-application` finds no IPC operations: it does not model
   Tauri `invoke` or `listen`. The registry and event wiring were located by

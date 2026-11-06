@@ -30,6 +30,8 @@ export interface ChangesListProps {
   actions?: (files: FileDiff[]) => ReactNode;
   /** Worktree folder, for the context menu's absolute "Copy path". */
   worktree?: string | null;
+  /** Under the All changes empty state: Conductor's "Pull latest from <target>" button. */
+  emptyAction?: ReactNode;
 }
 
 function copy(text: string) {
@@ -37,7 +39,7 @@ function copy(text: string) {
 }
 
 /** Right panel: scope option, "N files changed" and one row per file. */
-export function ChangesList({ diff, actions, worktree }: ChangesListProps) {
+export function ChangesList({ diff, actions, worktree, emptyAction }: ChangesListProps) {
   const { opts, update, load, files, totals, current } = diff;
   const [menu, setMenu] = useState<{ index: number; x: number; y: number } | null>(null);
   const closeMenu = useCallback(() => setMenu(null), []);
@@ -72,6 +74,7 @@ export function ChangesList({ diff, actions, worktree }: ChangesListProps) {
         <div className="placeholder small">
           <p>{diff.turn ? "No changes in selected turn." : opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>
           {!diff.turn && <p className="muted">Changes the agent makes show up here.</p>}
+          {!diff.turn && opts.scope === "all" && emptyAction}
         </div>
       )}
       {load.state === "ready" && files.length > 0 && (

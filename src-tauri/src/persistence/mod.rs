@@ -207,6 +207,15 @@ pub struct UnreadChatRow {
     pub updated_at: String,
 }
 
+/// An open chat tab of a [`WorkspaceRow`] besides its main chat: a review, a
+/// fork or a "+" chat (`sessions::open_tabs`).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ChatTabRow {
+    pub id: String,
+    pub title: String,
+}
+
 /// `db_list_workspaces` row. `state` is the snake_case schema value.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -231,6 +240,9 @@ pub struct WorkspaceRow {
     pub unread: bool,
     /// The workspace's unread, non-hidden chats (`sessions.unread_count`).
     pub unread_chats: Vec<UnreadChatRow>,
+    /// The workspace's open chat tabs besides its main chat, oldest first:
+    /// they come back after a restart with their unread, as Conductor's do.
+    pub chat_tabs: Vec<ChatTabRow>,
     /// The PR's title and body as last stored (`pr_title`, `pr_description`):
     /// the sidebar label and Create PR's title / description.
     pub pr_title: Option<String>,
@@ -277,6 +289,14 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 updated_at: c.updated_at,
             });
     }
+    let mut tabs: std::collections::HashMap<String, Vec<ChatTabRow>> =
+        std::collections::HashMap::new();
+    for t in sessions::open_tabs(pool).await? {
+        tabs.entry(t.workspace_id).or_default().push(ChatTabRow {
+            id: t.id,
+            title: t.title,
+        });
+    }
     Ok(workspaces::list(pool)
         .await?
         .into_iter()
@@ -296,6 +316,7 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 pinned_at: w.pinned_at,
                 unread: w.unread,
                 unread_chats: unread.remove(&w.local_id).unwrap_or_default(),
+                chat_tabs: tabs.remove(&w.local_id).unwrap_or_default(),
                 pr_title: w.pr_title,
                 pr_description: w.pr_description,
                 number: w.number,

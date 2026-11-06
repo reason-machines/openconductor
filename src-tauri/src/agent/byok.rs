@@ -13,12 +13,23 @@ use std::fmt;
 use serde::{Deserialize, Serialize};
 
 use super::claude::{AnthropicApi, ClaudeLogin};
-use super::claude_cloud::{Bedrock, Foundry, Vertex};
-use super::codex::{CodexGateway, CodexLogin, CursorApi, OpenAiApi, OpencodeLogin};
+use super::codex::{CodexLogin, OpenAiApi};
 use super::env::{AgentKind, LaunchEnv};
 use super::provider::{check_secret, Provider, ProviderError};
 use super::reason::ReasonLogin;
 use super::secret::{SecretStore, SecretString};
+
+/// Provider kinds earlier builds could store and that are gone: Claude Code
+/// on Bedrock, Vertex AI and Foundry, Codex through OpenRouter or Vercel AI
+/// Gateway, and the Cursor and OpenCode agents.
+pub const REMOVED_KINDS: &[&str] = &[
+    "bedrock",
+    "vertex",
+    "foundry",
+    "codex_gateway",
+    "cursor_api",
+    "opencode_login",
+];
 
 /// A configured provider, tagged by its [`Provider::kind`].
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -26,14 +37,8 @@ use super::secret::{SecretStore, SecretString};
 pub enum ProviderConfig {
     ClaudeLogin(ClaudeLogin),
     AnthropicApi(AnthropicApi),
-    Bedrock(Bedrock),
-    Vertex(Vertex),
-    Foundry(Foundry),
     CodexLogin(CodexLogin),
     OpenaiApi(OpenAiApi),
-    CodexGateway(CodexGateway),
-    CursorApi(CursorApi),
-    OpencodeLogin(OpencodeLogin),
     ReasonLogin(ReasonLogin),
 }
 
@@ -42,14 +47,8 @@ impl ProviderConfig {
         match self {
             ProviderConfig::ClaudeLogin(p) => p,
             ProviderConfig::AnthropicApi(p) => p,
-            ProviderConfig::Bedrock(p) => p,
-            ProviderConfig::Vertex(p) => p,
-            ProviderConfig::Foundry(p) => p,
             ProviderConfig::CodexLogin(p) => p,
             ProviderConfig::OpenaiApi(p) => p,
-            ProviderConfig::CodexGateway(p) => p,
-            ProviderConfig::CursorApi(p) => p,
-            ProviderConfig::OpencodeLogin(p) => p,
             ProviderConfig::ReasonLogin(p) => p,
         }
     }
@@ -60,10 +59,31 @@ impl ProviderConfig {
         match agent {
             AgentKind::Claude => ProviderConfig::ClaudeLogin(ClaudeLogin {}),
             AgentKind::Codex => ProviderConfig::CodexLogin(CodexLogin {}),
-            AgentKind::Cursor => ProviderConfig::CursorApi(CursorApi {}),
-            AgentKind::Opencode => ProviderConfig::OpencodeLogin(OpencodeLogin {}),
             AgentKind::Reason => ProviderConfig::ReasonLogin(ReasonLogin {}),
         }
+    }
+
+    /// Reads a stored `[providers.<agent>]` entry. An entry whose `kind` is
+    /// one OpenConductor no longer offers ([`REMOVED_KINDS`]) reads as
+    /// `None`, the agent's own login, with a warning, so an old settings
+    /// file still loads. Any other malformed entry is still an error.
+    pub fn deserialize_stored<'de, D>(d: D) -> Result<Option<ProviderConfig>, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let Some(value) = Option::<serde_json::Value>::deserialize(d)? else {
+            return Ok(None);
+        };
+        let kind = value.get("kind").and_then(serde_json::Value::as_str);
+        if let Some(kind) = kind.filter(|k| REMOVED_KINDS.contains(k)) {
+            eprintln!(
+                "settings: provider kind `{kind}` is no longer supported; using the agent's default provider"
+            );
+            return Ok(None);
+        }
+        serde_json::from_value(value)
+            .map(Some)
+            .map_err(serde::de::Error::custom)
     }
 
     /// The environment to launch the agent with.
@@ -197,7 +217,6 @@ pub fn disconnect(config: &ProviderConfig, store: &dyn SecretStore) -> Result<()
 
 #[cfg(test)]
 mod tests {
-    use super::super::codex::Gateway;
     use super::super::secret::{keys, MemorySecretStore};
     use super::*;
 
@@ -210,14 +229,8 @@ mod tests {
         let all = [
             r#"{"kind":"claude_login"}"#,
             r#"{"kind":"anthropic_api","auth":"auth_token"}"#,
-            r#"{"kind":"bedrock","region":"us-east-1"}"#,
-            r#"{"kind":"vertex","project_id":"p","region":"us-east5"}"#,
-            r#"{"kind":"foundry","endpoint":{"resource":"r"}}"#,
             r#"{"kind":"codex_login"}"#,
             r#"{"kind":"openai_api"}"#,
-            r#"{"kind":"codex_gateway","gateway":"open_router"}"#,
-            r#"{"kind":"cursor_api"}"#,
-            r#"{"kind":"opencode_login"}"#,
             r#"{"kind":"reason_login"}"#,
         ];
         for json in all {
@@ -227,6 +240,28 @@ mod tests {
             assert_eq!(parse(&tag.to_string()), config, "round trip {json}");
         }
         assert!(serde_json::from_str::<ProviderConfig>(r#"{"kind":"nope"}"#).is_err());
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct Slot {
+        #[serde(default, deserialize_with = "ProviderConfig::deserialize_stored")]
+        p: Option<ProviderConfig>,
+    }
+
+    #[test]
+    fn stored_removed_kinds_read_as_the_default_and_others_still_fail() {
+        for kind in REMOVED_KINDS {
+            let json = format!(r#"{{"p":{{"kind":"{kind}","region":"us-east-1"}}}}"#);
+            let slot: Slot = serde_json::from_str(&json).expect(&json);
+            assert_eq!(slot.p, None, "{kind}");
+        }
+        let slot: Slot = serde_json::from_str(r#"{"p":{"kind":"openai_api"}}"#).unwrap();
+        assert_eq!(
+            slot.p,
+            Some(ProviderConfig::OpenaiApi(OpenAiApi::default()))
+        );
+        assert_eq!(serde_json::from_str::<Slot>("{}").unwrap().p, None);
+        assert!(serde_json::from_str::<Slot>(r#"{"p":{"kind":"nope"}}"#).is_err());
     }
 
     #[test]
@@ -257,22 +292,20 @@ mod tests {
     #[test]
     fn connect_status_disconnect_round_trip() {
         let store = MemorySecretStore::new();
-        let config = ProviderConfig::CodexGateway(CodexGateway {
-            gateway: Gateway::OpenRouter,
-        });
+        let config = ProviderConfig::OpenaiApi(OpenAiApi::default());
         let before = status(&config, &store);
         assert!(!before.ready);
         assert!(!before.secrets[0].present);
 
-        let key = SecretString::new("sk-or-v1-abc");
-        let after = connect(&config, &[(keys::OPENROUTER_API_KEY, key)], &store).unwrap();
+        let key = SecretString::new("sk-proj-abc");
+        let after = connect(&config, &[(keys::OPENAI_API_KEY, key)], &store).unwrap();
         assert!(after.ready, "{after:?}");
-        assert_eq!(after.secrets[0].key, keys::OPENROUTER_API_KEY);
+        assert_eq!(after.secrets[0].key, keys::OPENAI_API_KEY);
         assert!(after.secrets[0].present);
         assert!(config.launch_env(&store).is_ok());
 
         disconnect(&config, &store).unwrap();
-        assert_eq!(store.get(keys::OPENROUTER_API_KEY).unwrap(), None);
+        assert_eq!(store.get(keys::OPENAI_API_KEY).unwrap(), None);
         assert!(!status(&config, &store).ready);
     }
 

@@ -27,31 +27,23 @@ pub struct Settings {
     pub schema: String,
     /// Conductor's top-level Claude provider: `custom` routes Claude Code
     /// through an Anthropic API key, anything else (`default`, the legacy
-    /// `openai`) uses the CLI's own login. `bedrock` and `vertex` are
-    /// OpenConductor's, using [`Settings::bedrock_region`] and
-    /// [`Settings::vertex_project_id`]. `[providers.claude]` outranks it in
-    /// the same layer ([`Settings::provider_for`]).
+    /// `openai`, the removed `bedrock` and `vertex`) uses the CLI's own
+    /// login. `[providers.claude]` outranks it in the same layer
+    /// ([`Settings::provider_for`]).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub claude_provider: Option<String>,
     /// Conductor's top-level Codex provider: `custom` (OpenAI API key),
     /// `chatgpt_sign_in` or `default` (both the CLI's own login).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub codex_provider: Option<String>,
-    /// AWS region for `claude_provider = "bedrock"`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub bedrock_region: Option<String>,
-    /// GCP project for `claude_provider = "vertex"`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vertex_project_id: Option<String>,
-    /// Advanced › "Claude Code executable path"; blank means `claude` on `PATH`.
+    /// Settings › Agents "Claude Code executable path"; blank means the
+    /// bundled copy in agent-binaries/ (crate::agent_launch).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub claude_code_executable_path: Option<String>,
-    /// Advanced › "Codex executable path"; blank means `codex` on `PATH`.
+    /// Settings › Agents "Codex executable path"; blank means the bundled
+    /// copy in agent-binaries/ (crate::agent_launch).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub codex_executable_path: Option<String>,
-    /// Advanced › "OpenCode executable path"; blank means `opencode` on `PATH`.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub opencode_executable_path: Option<String>,
     /// Advanced › "SSH private key path" for cloud workspace access; blank
     /// means a generated key.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -85,11 +77,8 @@ impl Default for Settings {
             schema: SCHEMA_URL.to_string(),
             claude_provider: None,
             codex_provider: None,
-            bedrock_region: None,
-            vertex_project_id: None,
             claude_code_executable_path: None,
             codex_executable_path: None,
-            opencode_executable_path: None,
             ssh_key_path: None,
             tool_approvals_enabled: false,
             preview_urls: Vec::new(),
@@ -546,7 +535,8 @@ pub struct Models {
     /// "Default to plan mode in new chats".
     pub default_plan_mode: bool,
     /// Extra models per provider shown in model pickers: Conductor's JSON
-    /// string `{"opencode": ["opencode:<id>", ...], ...}`. Kept as written;
+    /// string `{"pi": ["pi:<id>", ...], ...}`; the removed Cursor and
+    /// OpenCode agents' lists are ignored. Kept as written;
     /// [`Models::visible_models`] parses it the way Conductor does.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub visible_provider_models: Option<String>,
@@ -559,7 +549,7 @@ pub struct Models {
 pub const DEFAULT_MODEL: &str = "opus";
 
 /// Providers `visible_provider_models` can list models for, in Conductor's order.
-pub const VISIBLE_MODEL_PROVIDERS: [&str; 5] = ["claude", "codex", "cursor", "opencode", "pi"];
+pub const VISIBLE_MODEL_PROVIDERS: [&str; 3] = ["claude", "codex", "pi"];
 
 impl Models {
     /// `visible_provider_models` as provider -> model ids, without the
@@ -648,19 +638,26 @@ pub struct CodexModels {
 /// The provider each agent uses: `[providers.claude]`, `[providers.codex]`,
 /// ... with the [`ProviderConfig`] `kind` tag and its non-secret options. A
 /// missing entry means the agent CLI's own login
-/// ([`ProviderConfig::default_for`]).
+/// ([`ProviderConfig::default_for`]), and so does an entry naming a removed
+/// provider kind ([`ProviderConfig::deserialize_stored`]). Tables for the
+/// removed Cursor and OpenCode agents stay in `extra`, unused.
 #[derive(Debug, Clone, PartialEq, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Providers {
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "ProviderConfig::deserialize_stored"
+    )]
     pub claude: Option<ProviderConfig>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "ProviderConfig::deserialize_stored"
+    )]
     pub codex: Option<ProviderConfig>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub cursor: Option<ProviderConfig>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub opencode: Option<ProviderConfig>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "ProviderConfig::deserialize_stored"
+    )]
     pub reason: Option<ProviderConfig>,
     #[serde(flatten)]
     pub extra: toml::Table,
@@ -686,8 +683,6 @@ impl Providers {
         match agent {
             AgentKind::Claude => &self.claude,
             AgentKind::Codex => &self.codex,
-            AgentKind::Cursor => &self.cursor,
-            AgentKind::Opencode => &self.opencode,
             AgentKind::Reason => &self.reason,
         }
     }
@@ -696,8 +691,6 @@ impl Providers {
         match agent {
             AgentKind::Claude => &mut self.claude,
             AgentKind::Codex => &mut self.codex,
-            AgentKind::Cursor => &mut self.cursor,
-            AgentKind::Opencode => &mut self.opencode,
             AgentKind::Reason => &mut self.reason,
         }
     }

@@ -819,6 +819,8 @@
   --status-running: #f59e0b;
   --status-running-text: #451a03;
   --status-task-running: #3b82f6;
+  /* Unread markers: the chat tab's unread dot (Conductor's text-unread: --unread on :root,.light and .dark, the same in every palette). */
+  --unread: #a4847f;
   /* Collaborator names in the transcript. */
   --collab-blue: #2563eb;
   --collab-green: #16a34a;
@@ -914,6 +916,7 @@
   --conductor-tip-fg: #fff;
   --conductor-ring: #bcb6b3;
   --conductor-status-in-progress: #ffdc2e;
+  --unread: #cca694;
   --diff-del: #f85149;
   --diff-mod: #d29922;
   --diff-add-cb: #58a6ff;
@@ -958,6 +961,7 @@
     --conductor-tip-fg: #fff;
     --conductor-ring: #bcb6b3;
     --conductor-status-in-progress: #ffdc2e;
+    --unread: #cca694;
     --diff-del: #f85149;
     --diff-mod: #d29922;
     --diff-add-cb: #58a6ff;
