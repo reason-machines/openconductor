@@ -142,13 +142,22 @@ function Switch({ label, checked, onChange }: { label: string; checked: boolean;
 
 type Drag = { kind: "palette"; model: string } | { kind: "slot"; index: number };
 
+// The favorites last read: the page opens on them (the slots are not busy, then
+// filled, a few frames later) and reads them again behind it.
+let lastFavorites: Favorite[] | null = null;
+
 /** The five slots and the per-agent palette below them. */
 function Loadout({ settings, save }: Props) {
-  const [stored, setStored] = useState<Favorite[] | null>(null);
+  const [stored, setStoredState] = useState<Favorite[] | null>(() => lastFavorites);
+  const setStored = (next: Favorite[]) => {
+    lastFavorites = next;
+    setStoredState(next);
+  };
   const [drag, setDrag] = useState<Drag | null>(null);
   const [dropAt, setDropAt] = useState<number | null>(null);
   useEffect(() => {
     listFavorites().then((rows) => setStored(parseFavorites(rows)), () => setStored([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const slots = displayedLoadout(settings, stored ?? []);
 

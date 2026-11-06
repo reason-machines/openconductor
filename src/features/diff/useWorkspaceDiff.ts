@@ -5,7 +5,8 @@
 // turn can be selected instead of the scope option: then only what that turn
 // changed is shown (its start versus end checkpoint); there only the context
 // menu offers discard, against the "All changes" base (target.ts).
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { keyedCache } from "../../lib/keyedCache.ts";
 import { discardFileChanges, loadWorkspaceDiff, WHOLE_FILE_CONTEXT } from "./api.ts";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { nextUnread, step } from "./nav.ts";
@@ -17,6 +18,17 @@ import { isViewed, loadViewed, pruneViewed, saveViewed, toggleViewed, viewedCoun
 export type DiffLoad = { state: "loading" } | { state: "error"; message: string } | { state: "ready"; files: FileDiff[] };
 
 const OPTIONS_KEY = "openconductor.diff.options";
+
+// The last list loaded per worktree, target, options and turn. A workspace the user
+// comes back to shows it at once and reloads behind it; only a list never loaded shows
+// "Loading changes…" (Conductor's `useFilesChanged`: isLoading only while no data).
+const loaded = keyedCache<FileDiff[]>(64);
+const loadKey = (worktree: string | null, target: DiffTarget, opts: DiffViewOptions, turn: TurnRef | null) =>
+  JSON.stringify([worktree, target.branch, target.remote, opts, turn?.sessionId ?? null, turn?.turnId ?? null]);
+const fromCache = (key: string): DiffLoad => {
+  const files = loaded.get(key);
+  return files ? { state: "ready", files } : { state: "loading" };
+};
 
 function initialOptions(): DiffViewOptions {
   try {
@@ -42,7 +54,6 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   // Rebuilt from primitives so the effects below key on its value, not its identity.
   const target = useMemo<DiffTarget>(() => ({ branch, remote }), [branch, remote]);
   const [opts, setOpts] = useState<DiffViewOptions>(initialOptions);
-  const [load, setLoad] = useState<DiffLoad>({ state: "loading" });
   const [viewed, setViewedMap] = useState<ViewedMap>(() => loadViewed(localStorage, workspaceId));
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   // The file waiting for the discard confirmation and the scope it will be restored from.
@@ -57,22 +68,35 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     if (patch.scope) setTurn(null);
   };
 
-  const refresh = useCallback(() => {
-    setLoad({ state: "loading" });
-    loadWorkspaceDiff(worktree, target, opts, { turn }).then(
-      (files) => setLoad({ state: "ready", files }),
-      (e: unknown) => setLoad({ state: "error", message: String(e) }),
-    );
-  }, [worktree, target, opts, turn]);
-
+  // The list belongs to the key it was loaded for. On a new key (another workspace,
+  // scope or turn) the render shows that key's cached list, or "loading" when there is
+  // none, in the same frame, never the previous key's list.
+  const key = loadKey(worktree, target, opts, turn);
+  const [state, setState] = useState<{ key: string; load: DiffLoad }>(() => ({ key, load: fromCache(key) }));
+  const load = useMemo(() => (state.key === key ? state.load : fromCache(key)), [state, key]);
+  const keyRef = useRef(key);
+  keyRef.current = key;
+  const loadNow = useCallback(
+    (quiet: boolean) => {
+      loadWorkspaceDiff(worktree, target, opts, { turn }).then(
+        (files) => {
+          loaded.set(key, files);
+          if (keyRef.current === key) setState({ key, load: { state: "ready", files } });
+        },
+        (e: unknown) => {
+          if (quiet) return;
+          loaded.delete(key);
+          if (keyRef.current === key) setState({ key, load: { state: "error", message: String(e) } });
+        },
+      );
+    },
+    [key, worktree, target, opts, turn],
+  );
+  // Loads again behind what is shown; a list never loaded shows "Loading changes…" meanwhile.
+  const refresh = useCallback(() => loadNow(false), [loadNow]);
   useEffect(refresh, [refresh]);
   // After a save from the diff viewer: reload without the loading state, so the open editor stays mounted.
-  const reloadQuietly = useCallback(() => {
-    loadWorkspaceDiff(worktree, target, opts, { turn }).then(
-      (files) => setLoad({ state: "ready", files }),
-      () => {},
-    );
-  }, [worktree, target, opts, turn]);
+  const reloadQuietly = useCallback(() => loadNow(true), [loadNow]);
   useEffect(() => {
     setViewedMap(loadViewed(localStorage, workspaceId));
     setSelectedPath(null);

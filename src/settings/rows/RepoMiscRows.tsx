@@ -42,11 +42,20 @@ export interface RepoMiscActions {
   notify: Notify;
 }
 
+// Workspaces folder per repository, last read: the page opens with it in place.
+const workspacesPaths = new Map<string, string>();
+
 export function RepoMiscRows({ repo, actions }: { repo: Repo; actions: RepoMiscActions }) {
-  const [workspaces, setWorkspaces] = useState<string | null>(null);
+  const [workspaces, setWorkspaces] = useState<string | null>(() => workspacesPaths.get(repo.id) ?? null);
   useEffect(() => {
-    setWorkspaces(null);
-    repoWorkspacesPath(repo.id, repo.name).then(setWorkspaces, () => setWorkspaces(null));
+    setWorkspaces(workspacesPaths.get(repo.id) ?? null);
+    repoWorkspacesPath(repo.id, repo.name).then(
+      (path) => {
+        workspacesPaths.set(repo.id, path);
+        setWorkspaces(path);
+      },
+      () => setWorkspaces(null),
+    );
   }, [repo.id, repo.name]);
   return (
     <div className="settings-rows settings-misc">
