@@ -1,11 +1,11 @@
-import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { folderExists, githubGitProtocol, githubRecentRepos, lastCloneDirectory, pickFolder, saveLastCloneDirectory } from "../backend";
 import { cloneRepository, defaultCloneDirectory, type RepositoryDto } from "../workspace/api";
 import {
   appendLog, canClone, cloneButtonLabel, cloneErrorMessage, cloneTargetName, initialLocation, isSelectedRepo, logText,
   recentRepoUrl, urlPlaceholder, validateClone, type GitProtocol, type RecentRepo,
 } from "../state/cloneDialog";
-import { Modal } from "./Dialogs";
+import { DialogFrame } from "./DialogFrame";
 
 // "Clone GitHub repo" (evidence/screens/clone-dialog.md). Recent repos are
 // cached for 2 minutes, like the reference.
@@ -79,22 +79,18 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
     }
   }
 
-  function onUrlKey(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault();
-      if (canClone(url.trim(), location.trim(), pending)) void submit();
-    }
-  }
-
   return (
-    <Modal title="Clone GitHub repo" onClose={onClose}>
+    <DialogFrame kind="dialog" className="clone-project-modal" titleId="clone-project-title" descriptionId="clone-project-description" onClose={onClose}>
+      <div className="project-dialog-header">
+        <h2 id="clone-project-title">Clone GitHub repo</h2>
+        <p id="clone-project-description" className="sr-only">Choose a recent repo or paste a clone URL.</p>
+      </div>
       <form onSubmit={submit} className="modal-body clone-dialog">
-        <p className="sr-only">Clone a GitHub repository and add it as a project.</p>
         <label className="field">
           <span>Repository URL</span>
           <input
             id="git-url" autoFocus autoComplete="off" spellCheck={false} value={url} disabled={pending}
-            placeholder={urlPlaceholder(protocol)} onChange={(e) => setUrl(e.target.value)} onKeyDown={onUrlKey}
+            placeholder={urlPlaceholder(protocol)} onChange={(e) => setUrl(e.target.value)}
           />
         </label>
         {recent && (recent === "loading" || recent.length > 0) && (
@@ -138,12 +134,12 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
         )}
         {error && <div className="clone-error" role="alert">{error}</div>}
         <div className="modal-actions">
-          <button type="submit" className="btn btn-primary" disabled={!canClone(url.trim(), location.trim(), pending)}>
+          <button type="submit" className="btn btn-primary" data-primary-action disabled={!canClone(url.trim(), location.trim(), pending)}>
             {cloneButtonLabel(pending)}
             {!pending && <kbd className="clone-kbd">⌘↵</kbd>}
           </button>
         </div>
       </form>
-    </Modal>
+    </DialogFrame>
   );
 }

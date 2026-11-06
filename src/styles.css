@@ -107,8 +107,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-repo-lead { position: relative; display: flex; flex: none; }
 .sb-repo-initial { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 500; line-height: 1; }
 .sb-repo-chevron { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; visibility: hidden; color: var(--sidebar-muted-foreground); }
-.sb-repo:hover .sb-repo-initial { visibility: hidden; }
-.sb-repo:hover .sb-repo-chevron { visibility: visible; }
+.sb-repo-header:hover .sb-repo-initial { visibility: hidden; }
+.sb-repo-header:hover .sb-repo-chevron { visibility: visible; }
 .sb-repo-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: var(--sidebar-muted-foreground); }
 .sb-repo-count { flex: none; font-family: var(--font-mono); font-size: 11px; line-height: 14px; color: var(--sidebar-muted-foreground); }
 .sb-repo-spacer { width: 36px; flex: none; }

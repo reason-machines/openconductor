@@ -33,6 +33,7 @@ import { buildSearchIndex, type SearchItem } from "./searchIndex";
 import { SettingsSearch } from "./SettingsSearch";
 import type { Settings } from "./types";
 import { useSettings } from "./useSettings";
+import { boolPref } from "./prefs";
 import {
   AgentIcon,
   BackIcon,
@@ -133,9 +134,10 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
   // A Reason workspace as the active organization turns on Conductor's organization view (`I9a` showOrganization).
   const organization = useOrganization().active;
   // The Cloud group shows for a signed-in Reason CLI (Conductor's cloud entitlement, `F` in `L9a`), personal accounts only.
-  const cloud = useCloudSetup().setup?.signedIn === true && !organization;
+  const cloudUI = settings !== null && boolPref(settings, "experimental_cloud_ui");
+  const cloud = useCloudSetup().setup?.signedIn === true && !organization && cloudUI;
   const groups = useMemo(() => settingsGroups(bigTerminal, cloud), [bigTerminal, cloud]);
-  const orgGroups = useMemo(() => (organization ? orgSettingsGroups(bigTerminal) : null), [organization, bigTerminal]);
+  const orgGroups = useMemo(() => (cloudUI && organization ? orgSettingsGroups(bigTerminal) : null), [cloudUI, organization, bigTerminal]);
   const orgEntry = (e: OrgNavEntry) =>
     e.kind === "billing" ? (
       // Conductor's `k9a`: Billing opens the billing portal in the browser; here, the Reason workspace's plan.
