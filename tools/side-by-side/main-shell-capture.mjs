@@ -18,6 +18,7 @@ for (const state of (process.env.SHELL_STATES ?? "home,repo-menu").split(",")) {
       actions: [
         { step_id: "settle", action: "wait_for_timeout", duration_ms: 3000 },
         ...(state === "repo-menu" ? [{ step_id: "menu", action: "click", locator: { kind: "css", selector: '[aria-label="tide-web actions"]' }, timeout_ms: 5000 }] : []),
+        ...(state === "passport" ? [{ step_id: "passport", action: "click", locator: { kind: "css", selector: 'button:has-text("cities visited")' }, timeout_ms: 5000 }] : []),
         { step_id: "final", action: "wait_for_timeout", duration_ms: 500 },
       ],
       capture: { at_end: ["screenshot", "dom", "url"], events: ["console", "page-errors"] },
