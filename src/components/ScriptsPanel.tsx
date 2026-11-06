@@ -16,7 +16,6 @@ import {
   type SetupStatus,
 } from "../scripts/model";
 import * as spotlight from "../spotlight/testingApi";
-import { TerminalPanel } from "../features/terminal/TerminalPanel";
 import {
   EMPTY_VIEW,
   SPOTLIGHT_EMPTY_TEXT,
@@ -35,37 +34,30 @@ import {
 interface Props {
   repo: Repo;
   workspace: Workspace;
-  /** Bumped by ⌘J or a big terminal: selects the Terminal tab. */
-  terminalRequest?: number;
-  /** Reports the tab on screen ("terminal" or another tab), or null once the panel unmounts. */
-  onTabChange?: (tab: string | null) => void;
+  /** Which strip tab this body is for (the strip draws the tabs). */
+  tab: "run" | "setup";
+  /** Reports the setup state, for the dot on the strip's Setup tab. */
+  onSetupState?: (state: SetupStatus["state"]) => void;
+  /** The Run tab's empty state: "Add run script" opens the repository's Scripts settings. */
+  onAddRunScript: () => void;
 }
 
-type ScriptsTab = "setup" | "run" | "terminal";
-
-/** The empty state both the Run and Setup tabs show: one card, same look. */
-function EmptyCard({ children }: { children: string }) {
-  return <div className="scripts-empty">{children}</div>;
-}
+/** Conductor's Run tab text with no run script (copy catalog). */
+export const RUN_EMPTY_TEXT = "Run tests or a development server to test changes in this workspace";
+/** Conductor's Setup tab text before setup has run (copy catalog). */
+const SETUP_EMPTY_TEXT = "Setup script output will appear here after running setup.";
 
 const errorText = (e: unknown) => (typeof e === "string" ? e : e instanceof Error ? e.message : String(e));
 
 /**
- * Run and Setup tabs: start/stop the repository's run scripts and watch setup.
+ * The Run and Setup tab bodies of the right panel's strip: start/stop the
+ * repository's run scripts and watch setup.
  * With the repository's spotlight_testing setting on, the Run task picker also
  * offers Spotlight, which syncs this workspace into the repository root.
  */
-export function ScriptsPanel({ repo, workspace, terminalRequest = 0, onTabChange }: Props) {
+export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScript }: Props) {
   const ref = useMemo(() => workspaceRef(repo, workspace), [repo, workspace]);
   const wsId = workspace.id;
-  const [tab, setTab] = useState<ScriptsTab>("run");
-  useEffect(() => {
-    if (terminalRequest > 0) setTab("terminal");
-  }, [terminalRequest]);
-  useEffect(() => {
-    onTabChange?.(tab);
-  }, [tab, onTabChange]);
-  useEffect(() => () => onTabChange?.(null), [onTabChange]);
   const [config, setConfig] = useState<ScriptsConfig | null>(null);
   const [runs, setRuns] = useState<RunStatus[]>([]);
   const [picked, setPicked] = useState<string | null>(null);
@@ -152,6 +144,10 @@ export function ScriptsPanel({ repo, workspace, terminalRequest = 0, onTabChange
     outRef.current?.scrollTo({ top: outRef.current.scrollHeight });
   }, [runOut, setup.log, spotView.log, tab]);
 
+  useEffect(() => {
+    onSetupState?.(setup.state);
+  }, [onSetupState, setup.state]);
+
   async function act(f: () => Promise<unknown>) {
     setError(null);
     try {
@@ -207,21 +203,57 @@ export function ScriptsPanel({ repo, workspace, terminalRequest = 0, onTabChange
   const shownStatus = runs.find((r) => r.scriptId === shown);
   const setupRunning = setup.state === "running";
 
+  // Conductor's Run tab with no run script: a dashed box offering to add one.
+  const noRunScript = (config !== null || !ref) && tasks.length === 0 && !showSpotlight && runs.length === 0;
+
+  if (tab === "run" && noRunScript) {
+    return (
+      <section className="scripts" aria-label="Run">
+        {error && <div className="scripts-error">{error}</div>}
+        <div className="scripts-empty">
+          <div className="scripts-empty-box">
+            <p>{RUN_EMPTY_TEXT}</p>
+            <button type="button" className="scripts-empty-btn" onClick={onAddRunScript}>
+              Add run script
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="scripts" aria-label="Scripts">
-      <div className="tabs scripts-tabs" role="tablist">
-        <button role="tab" aria-selected={tab === "setup"} className={tab === "setup" ? "active" : ""} onClick={() => setTab("setup")}>
-          Setup <span className={`setup-dot ${setup.state}`} aria-label={SETUP_TEXT[setup.state]} />
-        </button>
-        <button role="tab" aria-selected={tab === "run"} className={tab === "run" ? "active" : ""} onClick={() => setTab("run")}>
-          Run
-        </button>
-        <button role="tab" aria-selected={tab === "terminal"} className={tab === "terminal" ? "active" : ""} onClick={() => setTab("terminal")}>
-          Terminal
-        </button>
-        <div className="scripts-actions">
-          {tab === "terminal" ? null : tab === "run" ? (
-            <>
+    <section className="scripts" aria-label={tab === "run" ? "Run" : "Setup"}>
+      {error && <div className="scripts-error">{error}</div>}
+      {tab === "run" ? (
+        <>
+          <div className="scripts-meta">
+            {showSpotlight ? (
+              <span className={`spotlight-status${spotView.syncing ? " syncing" : ""}`}>
+                {spotMine
+                  ? spotView.status ?? "Running"
+                  : spotView.workspaceId
+                    ? "Syncing another workspace"
+                    : spotLogMine && spotView.status
+                      ? spotView.status
+                      : "Spotlight is off"}
+              </span>
+            ) : shown ? (
+              <code>{scripts.find((s) => s.id === shown)?.command ?? shown}</code>
+            ) : (
+              <span>No run script configured</span>
+            )}
+            {!showSpotlight && exitText(shownStatus) && <span className="muted">{exitText(shownStatus)}</span>}
+            <label className="spotlight-toggle" title={toggleHint ?? SPOTLIGHT_SETTING_DESCRIPTION}>
+              <input
+                type="checkbox"
+                checked={spotEnabled}
+                disabled={toggleHint !== null}
+                onChange={(e) => setSpotlightTesting(e.target.checked)}
+              />
+              {SPOTLIGHT_SETTING_TITLE}
+            </label>
+            <div className="scripts-actions">
               {tasks.length > 1 && (
                 <select aria-label="Run script" value={shown ?? ""} onChange={(e) => setPicked(e.target.value)} disabled={busy}>
                   {tasks.map((t) => (
@@ -250,50 +282,7 @@ export function ScriptsPanel({ repo, workspace, terminalRequest = 0, onTabChange
                   {button.action === "stop" ? "■" : "▶"} {button.label}
                 </button>
               )}
-            </>
-          ) : (
-            <button
-              className={`btn btn-small ${setupRunning ? "btn-stop" : ""}`}
-              disabled={!ref || !config?.setup}
-              title={config?.setup ?? "No setup script is configured"}
-              onClick={() => act(() => (setupRunning ? api.cancelSetup(wsId) : api.startSetup(ref!)))}
-            >
-              {setupRunning ? "Stop setup" : setup.state === "idle" ? "Run setup" : "Rerun setup"}
-            </button>
-          )}
-        </div>
-      </div>
-      {error && <div className="scripts-error">{error}</div>}
-      {tab === "terminal" ? (
-        <TerminalPanel workspaceId={wsId} cwd={repo.path} />
-      ) : tab === "run" ? (
-        <>
-          <div className="scripts-meta">
-            {showSpotlight ? (
-              <span className={`spotlight-status${spotView.syncing ? " syncing" : ""}`}>
-                {spotMine
-                  ? spotView.status ?? "Running"
-                  : spotView.workspaceId
-                    ? "Syncing another workspace"
-                    : spotLogMine && spotView.status
-                      ? spotView.status
-                      : "Spotlight is off"}
-              </span>
-            ) : shown ? (
-              <code>{scripts.find((s) => s.id === shown)?.command ?? shown}</code>
-            ) : (
-              <span>No run script configured</span>
-            )}
-            {!showSpotlight && exitText(shownStatus) && <span className="muted">{exitText(shownStatus)}</span>}
-            <label className="spotlight-toggle" title={toggleHint ?? SPOTLIGHT_SETTING_DESCRIPTION}>
-              <input
-                type="checkbox"
-                checked={spotEnabled}
-                disabled={toggleHint !== null}
-                onChange={(e) => setSpotlightTesting(e.target.checked)}
-              />
-              {SPOTLIGHT_SETTING_TITLE}
-            </label>
+            </div>
           </div>
           {showSpotlight ? (
             <pre ref={outRef} className="scripts-output">
@@ -301,10 +290,8 @@ export function ScriptsPanel({ repo, workspace, terminalRequest = 0, onTabChange
                 ? spotView.log.join("\n")
                 : spotButton.hint ?? SPOTLIGHT_EMPTY_TEXT}
             </pre>
-          ) : runOut ? (
-            <pre ref={outRef} className="scripts-output">{stripAnsi(runOut)}</pre>
           ) : (
-            <EmptyCard>{button.hint && !shown ? button.hint : "Output from the run script appears here."}</EmptyCard>
+            <pre ref={outRef} className="scripts-output">{runOut ? stripAnsi(runOut) : button.hint && !shown ? button.hint : "Output from the run script appears here."}</pre>
           )}
         </>
       ) : (
@@ -312,11 +299,26 @@ export function ScriptsPanel({ repo, workspace, terminalRequest = 0, onTabChange
           <div className="scripts-meta">
             <span>{SETUP_TEXT[setup.state]}</span>
             {setup.last?.logPath && <code title="Setup log file">{setup.last.logPath}</code>}
+            <div className="scripts-actions">
+              <button
+                className={`btn btn-small ${setupRunning ? "btn-stop" : ""}`}
+                disabled={!ref || !config?.setup}
+                title={config?.setup ?? "No setup script is configured"}
+                onClick={() => act(() => (setupRunning ? api.cancelSetup(wsId) : api.startSetup(ref!)))}
+              >
+                {setupRunning ? "Stop setup" : setup.state === "idle" ? "Run setup" : "Rerun setup"}
+              </button>
+            </div>
           </div>
           {setup.log ? (
             <pre ref={outRef} className="scripts-output">{stripAnsi(setup.log)}</pre>
           ) : (
-            <EmptyCard>{config?.setup ? "Setup output appears here after setup runs." : "No setup script is configured for this repository."}</EmptyCard>
+            // The Run tab's dashed card, so both tabs' empty states look alike (#509).
+            <div className="scripts-empty">
+              <div className="scripts-empty-box">
+                <p>{config?.setup ? SETUP_EMPTY_TEXT : "No setup script is configured for this repository."}</p>
+              </div>
+            </div>
           )}
         </>
       )}
