@@ -38,4 +38,20 @@ No product behavior or visual design is changed by the harness patch. Existing C
 - [42298610520](https://github.com/reason-machines/openconductor/actions/runs/42298610520), `2510ee55cec15b365df7a6e304a62f9f823e915c`, failed in the Reason chat step before any chat assertions. The log says `timed out waiting for the undefined row in the sidebar`. `create_workspace` returns `WorkspaceDto.branchName`, not the frontend domain model's `branch`. Both navigation calls now use the IPC field, and seeding asserts the requested branch. All other E2E steps, including App flows, passed in this run.
 - [42298639850](https://github.com/reason-machines/openconductor/actions/runs/42298639850), the same SHA, also failed its first preflight pass. No five-pass proof is claimed. The failure screenshot request waited for WebKit's next paint for five minutes and produced no artifact. The harness now uses the existing `WebDriver.screenshot()` helper, which triggers an invisible repaint and bounds capture at 20 seconds.
 
-Built-app verification of these corrections, the five-pass outcome and the ten-run ledger remain pending. Old screenshots are reference evidence, not proof of this branch. The full-main streak remains **0/10**.
+## Corrected branch proof
+
+The Reason chat step in [42301660569](https://github.com/reason-machines/openconductor/actions/runs/42301660569), `cd10f36f63a28b6ef3f1e88a0f652cb170cb8ed0`, passed against the built Tauri app. Its reset, file restoration, permission, fork, relaunch transcript, Session identity and no-409 assertions passed. The full workflow and the separate five-pass dispatch [42301712680](https://github.com/reason-machines/openconductor/actions/runs/42301712680) were still running when this increment was recorded. Neither counts toward the main streak.
+
+Inspected CI screenshots show the exact `2 changed` reset dialog, the original `e2e` workspace with its post-relaunch follow-up, and the Home permission row. These are current built-app observations, not new Conductor side-by-side parity measurements.
+
+- [Reset dialog](https://api.reasonmachines.com/media/pr-screenshots/ba250b92-1e1a-4ead-b7cc-b7ef61c5886b/39b87e11b363a9cf9f4c514a5dc750b6/reason-chat-reset-dialog.png)
+- [Relaunch follow-up](https://api.reasonmachines.com/media/pr-screenshots/ba250b92-1e1a-4ead-b7cc-b7ef61c5886b/49ec9edecaf4146369e18dd0811ddd0e/reason-chat-relaunch-follow-up.png)
+- [Home permission row](https://api.reasonmachines.com/media/pr-screenshots/ba250b92-1e1a-4ead-b7cc-b7ef61c5886b/10b2dab7adcdf97041376fe251e0cb11/status-needs-permission-home.png)
+
+## Model-picker navigation correction
+
+[42299227806](https://github.com/reason-machines/openconductor/actions/runs/42299227806), `2f3e562f3ded2c49b65f355a7201d75c06c4ff2c`, passed Reason chat and App flows but failed the model-picker step with `timed out waiting for the empty chat; last: null`. Its screenshot, inspected by the runtime owner, showed Home and a collapsed `proj` group. The picker used the same preference-write/reload pattern as the former Reason chat test.
+
+The picker now reloads only to load seeded rows, expands the repository using its role and name, clicks the workspace's titled sidebar button, and waits for `aria-current="page"`. The strict IPC branch assertion, isolated `OPENCONDUCTOR_HOME`, and current Stop button's accessible label are explicit. Every existing model, effort, picker-list and Session configuration assertion remains. Syntax, TypeScript and diff checks passed locally. Built-app verification of this increment remains pending.
+
+The five-pass outcome and ten-run ledger remain pending. The full-main streak remains **0/10**.

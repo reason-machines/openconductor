@@ -53,7 +53,7 @@ mkdirSync(bin);
 writeFileSync(join(bin, "reason"), `#!/bin/sh\nexec python3 "${join(repoRoot, "tools/reason-acp/fake_reason_acp.py")}" "$@"\n`);
 chmodSync(join(bin, "reason"), 0o755);
 
-const env = { ...process.env, HOME: home, PATH: `${bin}:${process.env.PATH}` };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), PATH: `${bin}:${process.env.PATH}` };
 delete env.REASON_CLI;
 delete env.XDG_DATA_HOME;
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
@@ -122,7 +122,7 @@ async function screenshot(name) {
 const CHIP = "[data-testid='composer-model-button']";
 const chipTitle = () => run(`return document.querySelector("${CHIP}")?.title || null;`);
 const chatText = () => run("const el = document.querySelector('.chat-scroll'); return el ? el.innerText : null;");
-const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
+const running = () => run("return !!document.querySelector('.composer button[aria-label^=\"Stop the agent\"]');");
 const menuItems = () => run("return [...document.querySelectorAll('.oc-model-menu .oc-model-list .oc-model-item:not(.oc-model-add) .oc-model-item-name')].map((e) => e.textContent);");
 const checkedItem = () => run("return document.querySelector('.oc-model-menu .oc-model-item[data-selected] .oc-model-item-name')?.textContent ?? null;");
 
@@ -168,8 +168,19 @@ try {
   assert.ok(seeded?.workspace, `seeding failed: ${JSON.stringify(seeded)}`);
   const workspace = seeded.workspace;
   note(`Settings' default model is "${seeded.defaultModel}"`);
-  const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
-  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  assert.equal(workspace.branchName, "picker", "the seeded workspace has the requested branch");
+  await run("location.reload(); return true;");
+  const row = 'button[data-testid="left-sidebar-workspace-item"][title*=" · picker · "]';
+  const rowId = await waitFor("the picker workspace row", async () => {
+    const el = await run("return document.querySelector(arguments[0]);", row);
+    if (el) return el[W3C_ELEMENT] ?? el.ELEMENT;
+    const header = await run(`return [...document.querySelectorAll('.sb-repo-header[role="button"][aria-expanded="false"]')]
+      .find((h) => h.querySelector('.sb-repo-name')?.textContent === 'proj') || null;`);
+    if (header) await wd("POST", `/element/${header[W3C_ELEMENT] ?? header.ELEMENT}/click`, {});
+    return null;
+  });
+  await wd("POST", `/element/${rowId}/click`, {});
+  await waitFor("picker to be the open workspace", () => run("return document.querySelector(arguments[0])?.getAttribute('aria-current') === 'page';", row));
   await waitFor("the empty chat", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   // 1. A new chat: what its first Session will run.
