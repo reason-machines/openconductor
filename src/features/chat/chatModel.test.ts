@@ -51,3 +51,13 @@ test("the New workspace dialog's effort starts from the agent's default effort s
   assert.equal(defaultEffortSetting(s, null), null);
   assert.equal(defaultEffortSetting(withModels({ claude_code: {} }), "claude"), null);
 });
+
+test("Settings › Agents › Reason's default model and effort win for new Reason chats", () => {
+  const s = { ...DEFAULT_SETTINGS, reason: { model: "byok:anthropic:claude-opus-5-5", reasoning_effort: "high" } };
+  assert.deepEqual(defaultChatConfig(s), [
+    { id: "model", value: "byok:anthropic:claude-opus-5-5" },
+    { id: "reasoning_effort", value: "high" },
+  ]);
+  assert.deepEqual(defaultChatConfig({ ...DEFAULT_SETTINGS, reason: { model: "default" } }), [{ id: "model", value: "default" }]);
+  assert.deepEqual(defaultChatConfig({ ...DEFAULT_SETTINGS, reason: { model: null, reasoning_effort: "high" } }), [], "no model: Default models applies");
+});
