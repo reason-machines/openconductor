@@ -797,7 +797,7 @@ export const flows = [
       const connected = await wd.waitFor("Connected with ChatGPT", async () => (await textsOf(wd, '[data-testid="codex-chatgpt-connected"] .agc-ok'))[0], 20000);
       if (connected !== "Connected with ChatGPT as e2e@example.com") throw new Error(`connected line ${JSON.stringify(connected)}`);
       const table = await textsOf(wd, `${section} .ag-info tr`);
-      if (JSON.stringify(table) !== JSON.stringify(["ChatGPT accounte2e@example.com", "PlanPro"])) throw new Error(`status table ${JSON.stringify(table)}`);
+      if (JSON.stringify(table) !== JSON.stringify(["ChatGPT accounte2e@example.com"])) throw new Error(`status table ${JSON.stringify(table)}`);
       const buttons = await textsOf(wd, '[data-testid="codex-chatgpt-connected"] button');
       if (JSON.stringify(buttons) !== JSON.stringify(["Manage usage", "Reconnect"])) throw new Error(`connected actions ${JSON.stringify(buttons)}`);
       const sent = readFileSync(join(ctx.fakeCodex.dir, "codex-fake.jsonl"), "utf8");

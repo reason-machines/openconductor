@@ -19,6 +19,7 @@ import { openUrl } from "../../backend.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
 import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
 import { openAgentSettings } from "./ChatModelPicker.tsx";
+import { thinkingChipText } from "./thinkingChip.ts";
 import "./chat.css";
 
 export interface TranscriptProps {
@@ -389,7 +390,7 @@ function ThinkingRow({ id, text, streaming, group, ctx }: { id: string; text: st
             </div>
             {!open ? (
               <div className="oc-tool-right">
-                <span className="oc-code-chip sans">{text.trim()}</span>
+                <span className="oc-code-chip sans">{thinkingChipText(text)}</span>
               </div>
             ) : null}
           </div>
