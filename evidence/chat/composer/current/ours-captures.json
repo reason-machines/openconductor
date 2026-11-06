@@ -1,0 +1,337 @@
+[
+  {
+    "name": "empty",
+    "image": "evidence/chat/composer/current/ours-empty.png",
+    "evidence_id": "ev_e1f68bee63464ec0978a6a41320c5cbee81d40378fb96bc69212bef64bece6c4",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4427/tools/composer/demo.html?agent=claude"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "focused",
+    "image": "evidence/chat/composer/current/ours-focused.png",
+    "evidence_id": "ev_574a4722118f8cb8ed95f8695c4259c00b54a81a6d0fd88a86fb1f4063674d4f",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4427/tools/composer/demo.html?agent=claude"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "focus",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": ".composer textarea"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "multiline",
+    "image": "evidence/chat/composer/current/ours-multiline.png",
+    "evidence_id": "ev_c8ec8e5aa385d71f56461e1ef184b38889f11b7de5de39ed17aa7632b2777005",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4427/tools/composer/demo.html?agent=claude"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": ".composer textarea"
+          },
+          "value": {
+            "source": "literal",
+            "value": "Review the login redirect.\nKeep the expired-session test.\nThen update the docs."
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "mention",
+    "image": "evidence/chat/composer/current/ours-mention.png",
+    "evidence_id": "ev_7b34fc289f4b299fe9ebbdb8695488e454a130563e2895205d69b3835db7e406",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4427/tools/composer/demo.html?agent=claude"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": ".composer textarea"
+          },
+          "value": {
+            "source": "literal",
+            "value": "@README"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "plus",
+    "image": "evidence/chat/composer/current/ours-plus.png",
+    "evidence_id": "ev_a8a3a141f5d02969f040a4956a66509bcf0beb54c77ceb89b64d6b4c02bfd936",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4427/tools/composer/demo.html?agent=claude"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "add",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[aria-label='Add']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "model",
+    "image": "evidence/chat/composer/current/ours-model.png",
+    "evidence_id": "ev_04dab819a21ffb5efbc57e53263a87daa3c0f6549908fe7f1bfcab4bcf12ce1f",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4427/tools/composer/demo.html?agent=claude"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "model",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[data-testid='composer-model-button']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  }
+]

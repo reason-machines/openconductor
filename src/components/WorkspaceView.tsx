@@ -320,6 +320,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
 
   // Attachments (a review request, revert notes) go to the agent with the message and show by name.
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
+    if (!text.trim() && attached.length === 0) return;
     const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
     agent.submit(runId, cwd, text, mode, attached, repo.path || undefined);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
@@ -616,6 +617,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         draft={draft}
         setDraft={setDraft}
         inputRef={inputRef}
+        workspacePath={cwd}
+        hasAttachments={!planWaiting && attachments.length > 0}
         // Conductor: while a plan waits, the message box asks for changes to it; otherwise its own placeholders.
         placeholder={planWaiting ? "Enter your plan adjustments here..." : undefined}
         queue={queue}
