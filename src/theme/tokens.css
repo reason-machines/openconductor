@@ -963,6 +963,7 @@
 
 /* Derived tokens: overlays of the palette's base colours. */
 :root {
+  --glass-white: #fff;
   --hover: color-mix(in srgb, var(--overlay-base) 5%, transparent);
   --active: color-mix(in srgb, var(--overlay-base) 9%, transparent);
   --popover-hover: color-mix(in srgb, var(--overlay-base) 5%, transparent);
