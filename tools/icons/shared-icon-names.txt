@@ -77,3 +77,4 @@ upload
 sun
 maximize-2
 panel-right
+log-out

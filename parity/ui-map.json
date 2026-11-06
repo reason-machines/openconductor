@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "",
+  "commit": null,
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -34,13 +34,13 @@
  "summary": {
   "total": 983,
   "missing": 710,
-  "wrong": 71,
-  "matches": 202,
+  "wrong": 69,
+  "matches": 204,
   "states": {
    "total": 85,
    "missing": 6,
-   "wrong": 17,
-   "matches": 62
+   "wrong": 15,
+   "matches": 64
   },
   "items": {
    "total": 898,
@@ -162,8 +162,8 @@
    "shell": {
     "total": 198,
     "missing": 175,
-    "wrong": 5,
-    "matches": 18
+    "wrong": 3,
+    "matches": 20
    },
    "terminal-scripts": {
     "total": 25,
@@ -2688,39 +2688,37 @@
   {
    "id": "menu-account",
    "title": "Account / computer menu",
-   "status": "wrong",
-   "why": "diff 6.2% at t24, copy 94%",
+   "status": "matches",
+   "why": "diff 3.9% at t24, copy 100%",
    "team": "shell",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/menu-account.png",
+    "file": "side-by-side/shell-account-01-menu.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 2,
-    "actions_total": 2,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_b5229a7066344a46ad0a3751f1f2a2c6db4f8d1a1beb5b870eeb58c99c4d98fc"
+    "rea_evidence_id": "ev_aa62f54f897e03748d0da2c755bcf4362cf05b8cc8c64cdc79c6ff916e00deac"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/menu-account.png",
+    "file": "side-by-side/shell-account-01-menu.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 3ab1ed7fa: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-account-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/menu-account.jpg",
-    "changed_ratio_t0": 0.9999961890243902,
-    "changed_ratio_t24": 0.06183689024390244,
+    "file": null,
+    "changed_ratio_t0": 0.9999085365853658,
+    "changed_ratio_t24": 0.03921779725609756,
     "rea_evidence_ids": [
-     "ev_02abc861b09059e90f3eb64f9029f3674f5c52d56c97bf52647865257b99110b",
-     "ev_636aa937240d647db278c049a33e7e997bb07ff2a9d73d4253898f3d53b5cddc"
+     "ev_d69ab81575ba9a6f7914ec3f18e487d96c4e80920329b16d021a5285c7414899",
+     "ev_938be68910a99789ca667a7aa2331ad67ade380e364aa520327a7a35066da4a9"
     ]
    },
-   "copy_coverage": 0.938,
-   "copy_missing": [
-    "log out"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "menu-workspace-context",
@@ -2868,35 +2866,35 @@
    "id": "menu-help",
    "title": "Help menu",
    "status": "wrong",
-   "why": "diff 6.2% at t24, copy 96%",
+   "why": "diff 5.8% at t24, copy 94%",
    "team": "shell",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/menu-help.png",
+    "file": "side-by-side/dialogs-menus-01-help-menu.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 2,
-    "actions_total": 2,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_0b97dcdbacdbcdae95dd8d3c7eae4991499706829f104efc8c312cbba96b5ee6"
+    "rea_evidence_id": "ev_bd71f289043dee2aa2089b03fb15d5584ddca1f13a93e8c21b2db28ac33c3079"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/menu-help.png",
+    "file": "side-by-side/dialogs-menus-01-help-menu.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 3ab1ed7fa: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/menu-help.jpg",
-    "changed_ratio_t0": 0.9999971417682927,
-    "changed_ratio_t24": 0.062159870426829265,
+    "file": null,
+    "changed_ratio_t0": 0.9999961890243902,
+    "changed_ratio_t24": 0.057919207317073174,
     "rea_evidence_ids": [
-     "ev_0636eaa35dddd410a9f6190a2ef1fa0b0714b0640502cf29264d2f27fe66d52a",
-     "ev_18a9447190c78e9318f110fd1dc49e011e3cb986f4ab1dffda8f1c12abe1f910"
+     "ev_07d252a2750cd34391b6530f0f44aec5ffd48db84734e178b67cdbc8f5fe11c3",
+     "ev_498b277d27504bac708dec5dd50a134e3535260396b76d85a914e589a7ea1cf7"
     ]
    },
-   "copy_coverage": 0.958,
+   "copy_coverage": 0.938,
    "copy_missing": [
     "discord"
    ]
@@ -2939,39 +2937,37 @@
   {
    "id": "diagnostics-run",
    "title": "Diagnostics after a run",
-   "status": "wrong",
-   "why": "diff 3.6% at t24, copy 83%",
+   "status": "matches",
+   "why": "diff 1.9% at t24, copy 100%",
    "team": "shell",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/diagnostics-run.png",
+    "file": "side-by-side/dialogs-menus-04-diagnostics-run.png",
     "path": "/diagnostics",
     "final_path": "/diagnostics",
     "scenario": "populated",
-    "actions_run": 1,
-    "actions_total": 1,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_9d8367ed6145dab6da04b0081059effa9a6015d36237524bfc244f0ea5321524"
+    "rea_evidence_id": "ev_3a06424acd35f2d5f206003f63c85f17b75fe5327a544ce46acde73f87e5f7cd"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/diagnostics-run.png",
+    "file": "side-by-side/dialogs-menus-04-diagnostics-run.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 3ab1ed7fa: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/diagnostics-run.jpg",
+    "file": null,
     "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.036182355182926826,
+    "changed_ratio_t24": 0.018713795731707318,
     "rea_evidence_ids": [
-     "ev_1e56439b0ef8d21e4851c8a7839c81c32c98226447f739e3fd6b2825bc58a84d",
-     "ev_877c43f40433e9463c7ef525f261f4c939f8d0b47144d3e69bed84ea30af0921"
+     "ev_8a376ac7c0162eefafce076d16539cded2cdfb576749324c451fbe25b7b4a292",
+     "ev_d5133ad283996a3b1383b17e061482d4fdf7b7e453facd2e8cc0f5c97c14df64"
     ]
    },
-   "copy_coverage": 0.833,
-   "copy_missing": [
-    "conductor captured shell env"
-   ]
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "toast-copied-link",

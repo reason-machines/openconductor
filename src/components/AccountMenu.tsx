@@ -8,26 +8,48 @@ import { CheckIcon, ChevronDownIcon, CloudIcon, SettingsIcon, UserIcon } from ".
 import { ConductorIcon } from "./ConductorIcon";
 import { useOrganization } from "../org/useOrganization";
 import { accountMenuModel, type LocalAccount } from "./accountMenuModel";
+import { signOutOfReason } from "../onboarding/reasonSignIn";
+import { signedIn, type ReasonAccount } from "../settings/agents/reasonModes";
 import { endingProps, useMenuPresence } from "./sidebarMotion";
 
 const NO_ACCOUNT: LocalAccount = { name: "", email: null };
 
+const hasBackend = () => isTauri() || "__TAURI_INTERNALS__" in window;
+
 function useLocalAccount(): LocalAccount {
   const [account, setAccount] = useState<LocalAccount>(NO_ACCOUNT);
   useEffect(() => {
-    if (!isTauri()) return;
+    if (!hasBackend()) return;
     invoke<LocalAccount>("local_account").then(setAccount, (err) => console.warn("local account unavailable", err));
   }, []);
   return account;
 }
 
-export function AccountMenu({ onOpenSettings }: { onOpenSettings: () => void }) {
+/** The Reason account this computer is signed in to (`reason status`), read again each time the menu opens. */
+function useReasonAccount(open: boolean): [ReasonAccount | null, (a: ReasonAccount | null) => void] {
+  const [account, setAccount] = useState<ReasonAccount | null>(null);
+  useEffect(() => {
+    if (!hasBackend()) return;
+    let live = true;
+    invoke<ReasonAccount>("reason_account_status").then(
+      (a) => live && setAccount(signedIn(a) ? a : null),
+      () => live && setAccount(null),
+    );
+    return () => {
+      live = false;
+    };
+  }, [open]);
+  return [account, setAccount];
+}
+
+export function AccountMenu({ onOpenSettings, onError }: { onOpenSettings: () => void; onError?: (message: string) => void }) {
   const account = useLocalAccount();
   const { active, organizations, select } = useOrganization();
   // Until Reason answers, the stored choice stands in for the list, so the trigger names it right away.
   const orgs = organizations ?? (active ? [active] : []);
-  const model = accountMenuModel(account, orgs, active?.id ?? null);
   const [open, setOpen] = useState(false);
+  const [reason, setReason] = useReasonAccount(open);
+  const model = accountMenuModel(account, orgs, active?.id ?? null, reason);
   const ref = useRef<HTMLDivElement>(null);
   const close = useCallback(() => setOpen(false), []);
   useEffect(() => {
@@ -102,10 +124,15 @@ export function AccountMenu({ onOpenSettings }: { onOpenSettings: () => void }) 
                 className="sb-account-item"
                 onClick={() => {
                   close();
-                  onOpenSettings();
+                  if (e.id === "settings") return onOpenSettings();
+                  // Conductor's Log out ends its account session; here, this computer's Reason sign-in.
+                  signOutOfReason().then(
+                    () => setReason(null),
+                    (err: unknown) => onError?.(err instanceof Error ? err.message : String(err)),
+                  );
                 }}
               >
-                <span className="sb-account-item-icon"><SettingsIcon size={14} /></span>
+                <span className="sb-account-item-icon">{e.id === "settings" ? <SettingsIcon size={14} /> : <ConductorIcon name="log-out" size={14} />}</span>
                 <span>{e.label}</span>
               </button>
             ),

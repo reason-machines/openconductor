@@ -398,7 +398,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
         </div>
 
         <div className="sb-primary">
-          <AccountMenu onOpenSettings={onOpenSettings} />
+          <AccountMenu onOpenSettings={onOpenSettings} onError={onError} />
           {/* "Dashboard" (Conductor's `Aia` @10,029,038): shown while the Experimental setting is on, above Home. */}
           {dashboardEnabled && (
             <NavRow icon={<LayoutGridIcon size={12} />} label="Dashboard" shortcut="" active={sel.kind === "dashboard"} onClick={() => dispatch({ type: "select", selection: { kind: "dashboard" } })} />

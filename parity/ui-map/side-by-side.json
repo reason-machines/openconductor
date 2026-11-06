@@ -2,16 +2,16 @@
  "states": {
   "menu-help": {
    "lane": "tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "18ecd9590",
+   "openconductor_commit": "3ab1ed7fa",
    "viewport": {
     "width": 1280,
     "height": 820
    },
    "image": "side-by-side/dialogs-menus-01-help-menu.png",
-   "supersedes_oc_png_sha256": "f63354f64d7643320a7ffa67f73409e038b14a79b27f04181ed6149d6a2a1723",
+   "supersedes_oc_png_sha256": "e0b91d1fe5af235d7a6075a5b835c097c53016eca3594675361f086224b389ac",
    "reference": {
-    "evidence_id": "ev_206c7236473ced664261c3424cc551691b13dd9c5405a9cf2d0130602b6038d5",
-    "png_sha256": "7ee2072b620dcb1a703b34c20703c264c5dfb48bb7c60c9dfde20f72e516156a",
+    "evidence_id": "ev_bd71f289043dee2aa2089b03fb15d5584ddca1f13a93e8c21b2db28ac33c3079",
+    "png_sha256": "332d22c8f68922d25e4c06ce641c21e33c7e25b40778fb9dc8a2bb68d5d3a265",
     "final_url": "http://conductor.localhost:4337/?oc_scenario=populated&oc_theme=dark",
     "dom": {
      "texts": [
@@ -22,7 +22,7 @@
       "Tauri + React + Typescript",
       "\\n",
       "\\n \\n \\n",
-      "\\n \\n \\n \\n \\n \\n \\n \\n",
+      "\\n \\n \\n \\n \\n \\n \\n \\n \\n",
       "\\n",
       "\\n",
       "\\n\\n",
@@ -78,8 +78,8 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_14a78857ae8a2c655695fd262bef800ab7eadf0a66a3001585a53d0d354136ec",
-    "png_sha256": "7af7c6d7ef4dabf073b4b2b4b2b942c2bda0648a7b8238afc8ac341899bd7a69",
+    "evidence_id": "ev_b7b4aeabe6f9be2092ba5a95489ee993c58f934d2087cd3b3692a9300775bfa1",
+    "png_sha256": "7b5ac2568d001779b543026889a5ba79934d5bb0bd0e746e3ac8d29e38ad59d8",
     "dom": {
      "texts": [
       "\\n",
@@ -108,6 +108,7 @@
       "D",
       "dotfiles",
       "1",
+      "FREE",
       "Keyboard shortcuts",
       "⌘⌥/",
       "Docs",
@@ -118,28 +119,29 @@
       "Submit a prompt",
       "Diagnostics",
       "Open debug tools",
-      "OpenConductor v0.1.0",
+      "OpenConductor v0.1.0 • Claude Code ... • Codex ...",
       "Open project",
       "Open GitHub project",
       "Quick start",
       "5/103 cities visited",
-      "\\n \\n\\n"
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n"
      ],
      "labels": []
     }
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_05c9327de52c439aa8f1e3635f5b8338b3035039d2d1c5494001118ce2556c95",
-     "changed_pixels": 1049599,
+     "evidence_id": "ev_07d252a2750cd34391b6530f0f44aec5ffd48db84734e178b67cdbc8f5fe11c3",
+     "changed_pixels": 1049596,
      "total_pixels": null,
-     "changed_ratio": 0.9999990472560976
+     "changed_ratio": 0.9999961890243902
     },
     "t24": {
-     "evidence_id": "ev_0ea34b83058775a1903a3f89d4da11e9f44c0ee9ddd202dc1832672e69ed09b7",
-     "changed_pixels": 38372,
+     "evidence_id": "ev_498b277d27504bac708dec5dd50a134e3535260396b76d85a914e589a7ea1cf7",
+     "changed_pixels": 60792,
      "total_pixels": null,
-     "changed_ratio": 0.036558689024390245
+     "changed_ratio": 0.057919207317073174
     }
    }
   },
@@ -350,16 +352,16 @@
   },
   "diagnostics-run": {
    "lane": "tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
-   "openconductor_commit": "18ecd9590",
+   "openconductor_commit": "3ab1ed7fa",
    "viewport": {
     "width": 1280,
     "height": 820
    },
    "image": "side-by-side/dialogs-menus-04-diagnostics-run.png",
-   "supersedes_oc_png_sha256": null,
+   "supersedes_oc_png_sha256": "96c9b570d987471085ea2a7ade0fd332548f811bc0bf459a1769d96b9e89540b",
    "reference": {
-    "evidence_id": "ev_69c70afed279e5f084802443e3e0196d925c9f65e9834fa1f164c86b41e019cd",
-    "png_sha256": "1e5d07c1943f84911d90a826aff25bc1fcac3b86c1d84d8ca2f4d14d369e5557",
+    "evidence_id": "ev_3a06424acd35f2d5f206003f63c85f17b75fe5327a544ce46acde73f87e5f7cd",
+    "png_sha256": "57ff9d118cc04d68c74276265c578ea49943a2673cb335daa2a4c675d0c07db8",
     "final_url": "http://conductor.localhost:4337/diagnostics",
     "dom": {
      "texts": [
@@ -370,7 +372,7 @@
       "Tauri + React + Typescript",
       "\\n",
       "\\n \\n \\n",
-      "\\n \\n \\n \\n \\n \\n \\n \\n",
+      "\\n \\n \\n \\n \\n \\n \\n \\n \\n",
       "\\n",
       "\\n",
       "\\n\\n",
@@ -453,7 +455,7 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_bba3f74a1891aad885e1bf5a74b2783f58898f332cadc054a5e55a94575432ae",
+    "evidence_id": "ev_d2478396178bc03d9ae8eb5f0f7ce083796a5c5842a625fd21d11ea62162a1d3",
     "png_sha256": "e2c576298ed4b0450f759bfabbab1122bc1afb802e5f91b11dc737a016d0e05a",
     "dom": {
      "texts": [
@@ -526,7 +528,8 @@
       "$LANG",
       "$LC_ALL",
       "$TMPDIR",
-      "OpenConductor app env",
+      "OpenConductor captured shell env",
+      "expand",
       "Disk space (root)",
       "System integrity protection (SIP)",
       "Non-zsh default shell env",
@@ -540,16 +543,16 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_53151bbf08b93eeffb411cc7fa7f1d3faa150de70b110953e533e0fb998f5f18",
+     "evidence_id": "ev_8a376ac7c0162eefafce076d16539cded2cdfb576749324c451fbe25b7b4a292",
      "changed_pixels": 1049600,
      "total_pixels": null,
      "changed_ratio": 1
     },
     "t24": {
-     "evidence_id": "ev_52802b54112752981900a151c2e5d06daf7a001be7a7b2f5d863dccb6bfc4328",
-     "changed_pixels": 35632,
+     "evidence_id": "ev_d5133ad283996a3b1383b17e061482d4fdf7b7e453facd2e8cc0f5c97c14df64",
+     "changed_pixels": 19642,
      "total_pixels": null,
-     "changed_ratio": 0.03394817073170732
+     "changed_ratio": 0.018713795731707318
     }
    }
   },
@@ -9957,6 +9960,132 @@
      "changed_pixels": 10511,
      "total_pixels": null,
      "changed_ratio": 0.010014291158536585
+    }
+   }
+  },
+  "menu-account": {
+   "lane": "tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-account-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
+   "openconductor_commit": "3ab1ed7fa",
+   "viewport": {
+    "width": 1280,
+    "height": 820
+   },
+   "image": "side-by-side/shell-account-01-menu.png",
+   "supersedes_oc_png_sha256": "71f6a90f09abaabbf73a5eadd51617a6d99aec831e759fdf9123422bd96dee36",
+   "reference": {
+    "evidence_id": "ev_aa62f54f897e03748d0da2c755bcf4362cf05b8cc8c64cdc79c6ff916e00deac",
+    "png_sha256": "dd065b799fd857e8a037bb003dc78f944ea8f3e9309bcd1afa5503b1eb9e6893",
+    "final_url": "http://conductor.localhost:4337/?oc_scenario=populated&oc_theme=dark",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Tauri + React + Typescript",
+      "\\n",
+      "\\n \\n \\n",
+      "\\n \\n \\n \\n \\n \\n \\n \\n \\n",
+      "\\n",
+      "\\n",
+      "\\n\\n",
+      "\\n",
+      "\\n",
+      "A",
+      "Ada Demo's Mac",
+      "Home",
+      "⌘",
+      "⇧",
+      "H",
+      "Create",
+      "⌘",
+      "N",
+      "Search",
+      "⌘",
+      "K",
+      "My workspaces",
+      "T",
+      "tide-web",
+      "3",
+      "T",
+      "tide-api",
+      "2",
+      "D",
+      "dotfiles",
+      "1",
+      "FREE",
+      "Open project",
+      "Open GitHub project",
+      "Quick start",
+      "5/385 cities visited",
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n",
+      "ada@example.com",
+      "Settings",
+      "Log out"
+     ],
+     "labels": []
+    }
+   },
+   "openconductor": {
+    "evidence_id": "ev_8f94af5e71f1c1f11b281232eacd818191f6e444706eea60608c317fffc34faf",
+    "png_sha256": "1179950fe2825e5336a54d0231cd35b042bc75b922bf9e5c5747268fd015e348",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "OpenConductor",
+      "\\n \\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "A",
+      "Ada Demo's Mac",
+      "ada@example.com",
+      "Settings",
+      "Log out",
+      "Home",
+      "⌘⇧H",
+      "Create",
+      "⌘N",
+      "Routines",
+      "Search",
+      "⌘K",
+      "My workspaces",
+      "T",
+      "tide-web",
+      "3",
+      "T",
+      "tide-api",
+      "2",
+      "D",
+      "dotfiles",
+      "1",
+      "FREE",
+      "Open project",
+      "Open GitHub project",
+      "Quick start",
+      "5/103 cities visited",
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n"
+     ],
+     "labels": []
+    }
+   },
+   "compare": {
+    "t0": {
+     "evidence_id": "ev_d69ab81575ba9a6f7914ec3f18e487d96c4e80920329b16d021a5285c7414899",
+     "changed_pixels": 1049504,
+     "total_pixels": null,
+     "changed_ratio": 0.9999085365853658
+    },
+    "t24": {
+     "evidence_id": "ev_938be68910a99789ca667a7aa2331ad67ade380e364aa520327a7a35066da4a9",
+     "changed_pixels": 41163,
+     "total_pixels": null,
+     "changed_ratio": 0.03921779725609756
     }
    }
   }

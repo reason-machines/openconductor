@@ -8,8 +8,8 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **983** | **710** | **71** | **202** |
-| States (captured screens) | 85 | 6 | 17 | 62 |
+| **All** | **983** | **710** | **69** | **204** |
+| States (captured screens) | 85 | 6 | 15 | 64 |
 | Inventory items | 898 | 704 | 54 | 140 |
 | &nbsp;&nbsp;dialog | 64 | 52 | 5 | 7 |
 | &nbsp;&nbsp;empty-state | 52 | 40 | 0 | 12 |
@@ -36,7 +36,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | onboarding-auth | 23 | 15 | 7 | 1 |
 | routines | 40 | 35 | 0 | 5 |
 | settings | 181 | 46 | 46 | 89 |
-| shell | 198 | 175 | 5 | 18 |
+| shell | 198 | 175 | 3 | 20 |
 | terminal-scripts | 25 | 18 | 0 | 7 |
 | triage | 268 | 268 | 0 | 0 |
 | workspaces | 61 | 33 | 1 | 27 |
@@ -131,14 +131,14 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Create project dialog<br>`dialog-create-project` | matches | workspaces | diff 4.4% at t24, copy 90% | [png](side-by-side/workspaces-dialog-create-project.png) | [png](side-by-side/workspaces-dialog-create-project.png) |  | 4.4% |
 | Rename workspace dialog<br>`dialog-rename-workspace` | matches | workspaces | diff 4.6% at t24, copy 94% | [png](ui-map/ref/dialog-rename-workspace.png) | [png](ui-map/oc/dialog-rename-workspace.png) | [jpg](ui-map/diff/dialog-rename-workspace.jpg) | 4.6% |
 | Keyboard shortcuts dialog<br>`dialog-keyboard-shortcuts` | matches | shell | diff 4.2% at t24, copy 100% | [png](ui-map/ref/dialog-keyboard-shortcuts.png) | [png](ui-map/oc/dialog-keyboard-shortcuts.png) | [jpg](ui-map/diff/dialog-keyboard-shortcuts.jpg) | 4.2% |
-| Account / computer menu<br>`menu-account` | wrong | shell | diff 6.2% at t24, copy 94% | [png](ui-map/ref/menu-account.png) | [png](ui-map/oc/menu-account.png) | [jpg](ui-map/diff/menu-account.jpg) | 6.2% |
+| Account / computer menu<br>`menu-account` | matches | shell | diff 3.9% at t24, copy 100% | [png](side-by-side/shell-account-01-menu.png) | [png](side-by-side/shell-account-01-menu.png) |  | 3.9% |
 | Workspace context menu<br>`menu-workspace-context` | matches | workspaces | diff 4.6% at t24, copy 100% | [png](side-by-side/workspaces-menu-workspace-context.png) | [png](side-by-side/workspaces-menu-workspace-context.png) |  | 4.6% |
 | Workspace context menu > Set status<br>`menu-workspace-status` | matches | workspaces | diff 4.9% at t24, copy 100% | [png](side-by-side/workspaces-menu-workspace-status.png) | [png](side-by-side/workspaces-menu-workspace-status.png) |  | 4.9% |
 | Composer model picker<br>`menu-model-picker` | matches | chat | diff 2.8% at t24, copy 97% | [png](side-by-side/chat-tabs-menu-model-picker.png) | [png](side-by-side/chat-tabs-menu-model-picker.png) |  | 2.8% |
 | Sidebar repo actions menu<br>`menu-repo-actions` | wrong | workspaces | no valid reference render (step-failed), diff 4.3% at t24 | [png](ui-map/ref/menu-repo-actions.png) | [png](ui-map/oc/menu-repo-actions.png) | [jpg](ui-map/diff/menu-repo-actions.jpg) | 4.3% |
-| Help menu<br>`menu-help` | wrong | shell | diff 6.2% at t24, copy 96% | [png](ui-map/ref/menu-help.png) | [png](ui-map/oc/menu-help.png) | [jpg](ui-map/diff/menu-help.jpg) | 6.2% |
+| Help menu<br>`menu-help` | wrong | shell | diff 5.8% at t24, copy 94% | [png](side-by-side/dialogs-menus-01-help-menu.png) | [png](side-by-side/dialogs-menus-01-help-menu.png) |  | 5.8% |
 | Help > Submit a prompt dialog<br>`dialog-submit-prompt` | matches | shell | diff 3.0% at t24, copy 100% | [png](ui-map/ref/dialog-submit-prompt.png) | [png](ui-map/oc/dialog-submit-prompt.png) | [jpg](ui-map/diff/dialog-submit-prompt.jpg) | 3.0% |
-| Diagnostics after a run<br>`diagnostics-run` | wrong | shell | diff 3.6% at t24, copy 83% | [png](ui-map/ref/diagnostics-run.png) | [png](ui-map/oc/diagnostics-run.png) | [jpg](ui-map/diff/diagnostics-run.jpg) | 3.6% |
+| Diagnostics after a run<br>`diagnostics-run` | matches | shell | diff 1.9% at t24, copy 100% | [png](side-by-side/dialogs-menus-04-diagnostics-run.png) | [png](side-by-side/dialogs-menus-04-diagnostics-run.png) |  | 1.9% |
 | Toast: copied link<br>`toast-copied-link` | matches | shell | diff 4.6% at t24, copy 93% | [png](ui-map/ref/toast-copied-link.png) | [png](ui-map/oc/toast-copied-link.png) | [jpg](ui-map/diff/toast-copied-link.jpg) | 4.6% |
 | Chat tab context menu<br>`menu-chat-tab` | matches | chat | diff 3.2% at t24, copy 100% | [png](side-by-side/chat-tabs-menu-chat-tab.png) | [png](side-by-side/chat-tabs-menu-chat-tab.png) |  | 3.2% |
 | Changes file context menu<br>`menu-changes-file` | wrong | shell | diff 8.0% at t24, copy 84% | [png](side-by-side/shell-menus-02-changes-file.png) | [png](side-by-side/shell-menus-02-changes-file.png) |  | 8.0% |
@@ -1238,4 +1238,9 @@ Harness limits that shape the reference (not REA bugs): settings pages behind an
 67. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30, 34, 36, 41, 45, 48, 52, 56, 60, 66): `rea search renderApp-D_fmY7hW.js "Toggle zen mode"` fails `capability_unavailable` / `unsupported_provider` (`selection_reason: target_unsupported`). The palette `m_a` (@10,888,9xx; items @10,909,900-10,918,150), its dialog `h_a` / `qZ` (@2,915,549), the cmdk parts `kI` / `L6` / `ff` / `$o` / `o5` (@2,916,821-2,919,434), the shortcut hint `Ss` (@2,117,989), the group ranking words and comparator (`ua`, `O_a`, @10,896,700), the tab filters (`R_a`, `I_a`), the settings index (`yUi` @10,869,819, `xUi` @10,871,526) and the workspace row `SUi` were read from the chunk by byte offset; the rendered palette was captured with `capture-browser-scenario` (`tools/side-by-side/shell-palette-states.mjs`).
 68. **No locator-scoped read of a capture.** The scenario returns the whole document as one `artifacts.dom.value.text` string (gap 43), with no way to ask for one element's subtree, attributes or text. Conductor's palette items, their order and group headings (`cmdk-group-heading`, `data-value`) were pulled out of that string with a regex outside REA.
 69. **The residual diff cannot be attributed** (gaps 5, 33, 38): after the fix all three palette states score 1.0% at t24, and `compare-web-screenshots` gives only the ratio, so whether the remainder is the different Home wordmark behind the dialog or the palette itself was judged by eye from the composed images, not from a region REA reported.
+
+### Hit while matching the account menu and diagnostics (shell lane, REA 6.8.0, Linux cloud)
+
+70. **No way to give the OpenConductor side of a capture an IPC answer without editing the driver.** `capture-browser-scenario` has no init-script or route-fixture action, so the account menu's side-by-side needed `tools/side-by-side/help-diagnostics.mjs` to inline `local_account` and `reason_account_status` answers (`ocInvoke` in `shell-account-states.mjs`) into the page before load. The Conductor side's `ada@example.com` comes from the tools/screens seed in the same way.
+71. **REA reads only one bundle chunk per question.** Conductor's "Conductor captured shell env" diagnostics row calls `yni`, which `renderApp` imports from `index-BGEQ8YjU.js` as `bJ` → `Bfe` → `Y2t` → `Fde` (@2,821,553) with `cAt`/`uAt`/`yAt`/`K2t`/`hL`/`Wfe` (@2,818,500-3,350,678). With no cross-chunk "go to definition" (gap 53) the alias was resolved from the export list by hand.
 

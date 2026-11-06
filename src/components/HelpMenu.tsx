@@ -6,6 +6,7 @@ import { ArrowUpRightIcon, BookIcon, HelpIcon, KeyboardIcon, MessageIcon, Stetho
 import { Tooltip } from "./Tooltip";
 import { HELP_ITEMS, nextIndex, versionLine, type HelpIcon as HelpIconName, type HelpItem } from "./helpMenuItems";
 import { endingProps, useMenuPresence } from "./sidebarMotion";
+import { useAgentBinaryStatus } from "../features/chat/agentBinaryStore";
 
 function shortcut(commandId: string): string {
   const c = COMMANDS.find((cmd) => cmd.id === commandId);
@@ -32,6 +33,8 @@ interface Props {
 }
 
 export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics }: Props) {
+  const claude = useAgentBinaryStatus("claude");
+  const codex = useAgentBinaryStatus("codex");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -111,7 +114,7 @@ export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDi
               </button>
             );
           })}
-          <div className="sb-help-version">{versionLine(appVersion)}</div>
+          <div className="sb-help-version">{versionLine(appVersion, { claudeCode: claude?.version, codex: codex?.version })}</div>
         </div>
       )}
     </div>

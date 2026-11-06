@@ -49,7 +49,7 @@ export type AccountMenuEntry =
   | { kind: "email"; email: string }
   | { kind: "separator" }
   | { kind: "organization"; organization: OrganizationChoice }
-  | { kind: "item"; id: "settings"; label: string };
+  | { kind: "item"; id: "settings" | "log-out"; label: string };
 
 export interface AccountMenuModel {
   triggerLabel: string;
@@ -72,12 +72,21 @@ export interface OrganizationOption {
  * checked; Conductor marks cloud organizations with a cloud. The trigger
  * names the active organization. "Create organization" / "Upgrade to Pro"
  * appear only when Conductor's cloud account offers them, so neither does
- * here. Its last entry, "Log out", ends the Conductor cloud session; signing
- * out of Reason is Settings › Account's, so it is left out here.
+ * here. Its last entry, after a separator, is "Log out" (`[U, z, G, K, X, te, Z, ae]`,
+ * renderApp @10,008,857), which ends the account session. OpenConductor's account is
+ * Reason's: while this computer is signed in to Reason (`reason`, its email heading the
+ * menu) Log out signs out of it, as Settings › Account's Sign out does; signed out there is
+ * no session to end and no Log out.
  */
-export function accountMenuModel(account: LocalAccount, organizations: readonly OrganizationOption[] = [], activeId: string | null = null): AccountMenuModel {
+export function accountMenuModel(
+  account: LocalAccount,
+  organizations: readonly OrganizationOption[] = [],
+  activeId: string | null = null,
+  reason: { email: string | null } | null = null,
+): AccountMenuModel {
   const entries: AccountMenuEntry[] = [];
-  if (account.email) entries.push({ kind: "email", email: account.email }, { kind: "separator" });
+  const email = reason?.email || account.email;
+  if (email) entries.push({ kind: "email", email }, { kind: "separator" });
   const active = organizations.find((o) => o.id === activeId);
   if (organizations.length > 0) {
     const choices: OrganizationChoice[] = [
@@ -88,6 +97,7 @@ export function accountMenuModel(account: LocalAccount, organizations: readonly 
     entries.push({ kind: "separator" });
   }
   entries.push({ kind: "item", id: "settings", label: "Settings" });
+  if (reason) entries.push({ kind: "separator" }, { kind: "item", id: "log-out", label: "Log out" });
   return {
     triggerLabel: active ? active.name : computerLabel(account.name),
     triggerIcon: personIcon(account.name),

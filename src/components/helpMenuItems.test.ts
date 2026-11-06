@@ -29,8 +29,8 @@ test("the last three items open the prompt dialog, the Diagnostics page and the 
 });
 
 test("version line shows the app version, or ... while unknown", () => {
-  assert.equal(versionLine("0.1.0"), "OpenConductor v0.1.0");
-  assert.equal(versionLine(undefined), "OpenConductor v...");
+  assert.equal(versionLine("0.1.0", { claudeCode: "2.1.3", codex: "0.98.0" }), "OpenConductor v0.1.0 • Claude Code 2.1.3 • Codex 0.98.0");
+  assert.equal(versionLine(undefined), "OpenConductor v... • Claude Code ... • Codex ...");
 });
 
 test("arrow keys wrap around the menu", () => {

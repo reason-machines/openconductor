@@ -23,7 +23,7 @@ test("the menu heads with the email, then Settings; no organization rows for one
   ]);
 });
 
-test("without an email the menu is Settings alone, and never Log out", () => {
+test("without an email or a Reason account the menu is Settings alone, and no Log out", () => {
   assert.deepEqual(accountMenuModel({ name: "", email: null }).entries, [{ kind: "item", id: "settings", label: "Settings" }]);
   const labels = accountMenuModel({ name: "Ada", email: "a@b.c" }).entries.map((e) => (e.kind === "item" ? e.label : e.kind));
   assert.ok(!labels.includes("Log out"));
@@ -47,4 +47,18 @@ test("with a Reason workspace, the menu lists Personal and the workspace; the tr
   assert.equal(org.triggerOrganization, true);
   // A stored workspace Reason no longer lists is not active.
   assert.equal(accountMenuModel({ name: "Ada", email: null }, [tide], "gone").triggerLabel, "Ada's Mac");
+});
+
+test("signed in to Reason: the account's email heads it and Log out comes last after a separator (Conductor's `zna`)", () => {
+  const m = accountMenuModel({ name: "Ada", email: "local@example.com" }, [], null, { email: "ada@example.com" });
+  assert.deepEqual(m.entries, [
+    { kind: "email", email: "ada@example.com" },
+    { kind: "separator" },
+    { kind: "item", id: "settings", label: "Settings" },
+    { kind: "separator" },
+    { kind: "item", id: "log-out", label: "Log out" },
+  ]);
+  assert.equal(accountMenuModel({ name: "", email: "local@example.com" }, [], null, { email: null }).entries[0]?.kind, "email", "falls back to the local email");
+  const withOrg = accountMenuModel({ name: "Ada", email: null }, [{ id: "org_1", name: "Tide Labs" }], null, { email: "a@b.c" });
+  assert.deepEqual(withOrg.entries.map((e) => e.kind).slice(-3), ["item", "separator", "item"]);
 });

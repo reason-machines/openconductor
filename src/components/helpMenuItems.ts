@@ -51,9 +51,13 @@ export const HELP_ITEMS: readonly HelpItem[] = [
   { label: "Open debug tools", action: { kind: "devtools" } },
 ];
 
-/** Version footer; Conductor's reads "Conductor v<app> • Claude Code <v> • Codex <v>", with "..." while unknown. */
-export function versionLine(appVersion: string | undefined, appName = "OpenConductor"): string {
-  return `${appName} v${appVersion ?? "..."}`;
+/**
+ * Version footer, Conductor's `YQo` (renderApp @9,793,117): "<app> v<app> • Claude Code <v> • Codex <v>",
+ * with "..." for any version not known yet. Conductor runs each agent's `--version`; OpenConductor shows
+ * the version of the Claude Code and Codex binaries it downloaded and runs (`get_agent_binary_state`).
+ */
+export function versionLine(appVersion: string | undefined, agents: { claudeCode?: string; codex?: string } = {}, appName = "OpenConductor"): string {
+  return `${appName} v${appVersion ?? "..."} • Claude Code ${agents.claudeCode || "..."} • Codex ${agents.codex || "..."}`;
 }
 
 /** Next focused item for ArrowDown/ArrowUp, wrapping at both ends like Conductor's menu; -1 when nothing is focused. */

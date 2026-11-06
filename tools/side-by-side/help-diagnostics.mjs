@@ -64,9 +64,11 @@ const HELP_STATES = {
 
 // SBS_STATES=<module> swaps in another set of states with the same shape (its default export,
 // built from the `css` helper it is given), e.g. tools/side-by-side/create-composer-states.mjs.
-const STATES = process.env.SBS_STATES
-  ? (await import(path.resolve(process.env.SBS_STATES))).default({ css })
-  : HELP_STATES;
+// It may also export `ocInvoke`: Tauri command results the OpenConductor side answers with
+// (for example `local_account`), handed to the page server as SBS_OC_INVOKE.
+const statesModule = process.env.SBS_STATES ? await import(path.resolve(process.env.SBS_STATES)) : null;
+const STATES = statesModule ? statesModule.default({ css }) : HELP_STATES;
+if (statesModule?.ocInvoke) process.env.SBS_OC_INVOKE = JSON.stringify(statesModule.ocInvoke);
 
 // OpenConductor: dist/ with the sidebar-screens seed, Home (not All workspaces)
 // selected like Conductor's "/", and a Tauri shell that answers every command empty.
@@ -78,6 +80,8 @@ const ocExtra = `(function () {
     metadata: { currentWindow: { label: "main" }, currentWebview: { label: "main" } },
     transformCallback: () => 0,
     async invoke(cmd) {
+      const answers = ${process.env.SBS_OC_INVOKE ?? "{}"};
+      if (cmd in answers) return answers[cmd];
       if (cmd === "execute_shell_command_cancellable" || cmd === "execute_shell_command") return { stdout: "", stderr: "", exitCode: 0, signal: null, cancelled: false, truncated: false };
       throw new Error("not mocked: " + cmd);
     },
