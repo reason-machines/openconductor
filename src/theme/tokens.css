@@ -856,6 +856,34 @@
   --logo-dot: #e8b04b;
   --terminal-preview-bg: #000000;
   --terminal-preview-fg: #4ade80;
+  /* Conductor's own Stone values, fixed in every palette: right-click menus
+     (src/components/menu/contextMenu.css) and Settings > Agents / Default models
+     (src/settings/agents/agents.css) copy Conductor's look whatever palette is chosen. */
+  --conductor-popover: #ffffff;
+  --conductor-popover-fg: #211e1c;
+  --conductor-popover-accent: #14100f0d;
+  --conductor-popover-ring: #211e1c0d;
+  --conductor-accent: #fafaf9;
+  --conductor-accent-fg: #2c2826;
+  --conductor-muted: #fafaf9;
+  --conductor-muted-fg: #8e8885;
+  --conductor-fg: #2c2826;
+  --conductor-bg: #fff;
+  --conductor-border: #eae8e6;
+  --conductor-input: #14100f1a;
+  --conductor-primary: #413030;
+  --conductor-primary-fg: #f3f2f1;
+  --conductor-tip: #fff;
+  --conductor-tip-fg: #413030;
+  --conductor-ring: #2c2826;
+  --conductor-tab-underline: #cca694;
+  --conductor-slot-icon: #c8664a;
+  --conductor-menu-shadow: #0000001a;
+  --conductor-status-backlog: #8e8885;
+  --conductor-status-in-progress: #e0bb00;
+  --conductor-status-canceled: #a5a09c;
+  /* Transparent xterm background (the provider login terminal in Settings > Agents). */
+  --terminal-transparent: #00000000;
   /* Diff code themes (Settings > Appearance > Code theme): each theme's own published palette, used by src/features/diff/codeThemes.ts. */
   --syntax-catppuccin-latte-fg: #4c4f69; --syntax-catppuccin-latte-bg: #eff1f5; --syntax-catppuccin-latte-comment: #8c8fa1; --syntax-catppuccin-latte-keyword: #8839ef; --syntax-catppuccin-latte-string: #40a02b; --syntax-catppuccin-latte-number: #fe640b; --syntax-catppuccin-latte-function: #1e66f5; --syntax-catppuccin-latte-class: #df8e1d; --syntax-catppuccin-latte-tag: #d20f39; --syntax-catppuccin-latte-operator: #04a5e5; --syntax-catppuccin-latte-variable: #4c4f69;
   --syntax-catppuccin-macchiato-fg: #cad3f5; --syntax-catppuccin-macchiato-bg: #24273a; --syntax-catppuccin-macchiato-comment: #8087a2; --syntax-catppuccin-macchiato-keyword: #c6a0f6; --syntax-catppuccin-macchiato-string: #a6da95; --syntax-catppuccin-macchiato-number: #f5a97f; --syntax-catppuccin-macchiato-function: #8aadf4; --syntax-catppuccin-macchiato-class: #eed49f; --syntax-catppuccin-macchiato-tag: #ed8796; --syntax-catppuccin-macchiato-operator: #91d7e3; --syntax-catppuccin-macchiato-variable: #cad3f5;
@@ -868,6 +896,24 @@
 }
 :root[data-theme="dark"] {
   --diff-add: #3fb950;
+  --conductor-popover: #2c2826;
+  --conductor-popover-fg: #eae8e6;
+  --conductor-popover-accent: #ffffff0d;
+  --conductor-popover-ring: #ffffff1a;
+  --conductor-accent: #2c2826;
+  --conductor-accent-fg: #f3f2f1;
+  --conductor-muted: #211e1c;
+  --conductor-muted-fg: #a5a09c;
+  --conductor-fg: #eae8e6;
+  --conductor-bg: #141110;
+  --conductor-border: #ffffff1a;
+  --conductor-input: #fff3;
+  --conductor-primary: #f3f2f1;
+  --conductor-primary-fg: #2c2826;
+  --conductor-tip: #413030;
+  --conductor-tip-fg: #fff;
+  --conductor-ring: #bcb6b3;
+  --conductor-status-in-progress: #ffdc2e;
   --diff-del: #f85149;
   --diff-mod: #d29922;
   --diff-add-cb: #58a6ff;
@@ -894,6 +940,24 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --diff-add: #3fb950;
+    --conductor-popover: #2c2826;
+    --conductor-popover-fg: #eae8e6;
+    --conductor-popover-accent: #ffffff0d;
+    --conductor-popover-ring: #ffffff1a;
+    --conductor-accent: #2c2826;
+    --conductor-accent-fg: #f3f2f1;
+    --conductor-muted: #211e1c;
+    --conductor-muted-fg: #a5a09c;
+    --conductor-fg: #eae8e6;
+    --conductor-bg: #141110;
+    --conductor-border: #ffffff1a;
+    --conductor-input: #fff3;
+    --conductor-primary: #f3f2f1;
+    --conductor-primary-fg: #2c2826;
+    --conductor-tip: #413030;
+    --conductor-tip-fg: #fff;
+    --conductor-ring: #bcb6b3;
+    --conductor-status-in-progress: #ffdc2e;
     --diff-del: #f85149;
     --diff-mod: #d29922;
     --diff-add-cb: #58a6ff;
