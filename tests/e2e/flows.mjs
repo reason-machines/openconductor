@@ -830,6 +830,93 @@ export const flows = [
       if (!ctx.fakeCodex) throw new Error("agents-codex-chatgpt did not set up the stand-in Codex");
     },
   },
+  // Settings › Agents › Reason against tools/reason-acp/fake_reason_acp.py
+  // (set as the Reason executable path, signed out): "Reason account" signs
+  // in from the app with `reason login`'s code, This Mac connects with
+  // `reason connect`, the workspace, model and effort for new chats land in
+  // settings.toml, and the API key reaches `reason` as REASON_API_KEY. Ends
+  // signed in on the Reason account card for the screenshot.
+  {
+    name: "agents-reason",
+    setup(ctx) {
+      const dir = realpathSync(mkdtempSync(join(tmpdir(), "oc-e2e-reason-")));
+      const exe = join(dir, "reason");
+      writeFileSync(exe, `#!/bin/sh\ncd "${dir}" && exec python3 "${resolve("tools/reason-acp/fake_reason_acp.py")}" "$@"\n`);
+      chmodSync(exe, 0o755);
+      writeFileSync(join(dir, "fake-reason-signed-out"), "");
+      ctx.fakeReason = { dir, exe };
+    },
+    teardown(ctx) {
+      if (!ctx.fakeReason) return;
+      // Later runs must not launch the removed stand-in.
+      const file = settingsFile();
+      if (existsSync(file)) writeFileSync(file, readFileSync(file, "utf8").replace(/^reason_executable_path = .*\n/m, ""));
+      rmSync(ctx.fakeReason.dir, { recursive: true, force: true });
+    },
+    async run(wd, ctx) {
+      await openSettingsPage(wd, "Agents");
+      await clickByText(wd, '[role="tab"]', "Reason");
+      const section = 'section[aria-label="Reason"]';
+      const file = settingsFile();
+      const status = async () => (await textsOf(wd, `${section} [data-testid="agent-auth-status"]`))[0] ?? "";
+      const table = () => textsOf(wd, `${section} .ag-info tr`);
+      const cards = await wd.waitFor("the Reason cards", async () => {
+        const c = await textsOf(wd, `${section} button[aria-pressed]`);
+        return c.length === 3 ? c : null;
+      });
+      if (JSON.stringify(cards) !== JSON.stringify(["Reason accountRecommended", "CLI", "API key"])) throw new Error(`Reason Authentication cards ${JSON.stringify(cards)}`);
+      const exeField = `${section} input[aria-label="Reason executable path"]`;
+      await wd.click((await wd.findAll(exeField))[0]);
+      await wd.keys(ctx.fakeReason.exe);
+      await wd.waitFor("reason_executable_path in settings.toml", async () => tomlValue(file, "", "reason_executable_path") === JSON.stringify(ctx.fakeReason.exe));
+      await wd.waitFor("Not signed in", async () => (await status()).includes("Not signed in"), 20000);
+
+      // Reason account: the app runs `reason login`, shows its code and polls until signed in.
+      await clickByText(wd, `${section} button`, "Sign in with Reason");
+      const code = await wd.waitFor("the pairing code", async () => (await textsOf(wd, '[data-testid="reason-login-code"]'))[0], 20000);
+      if (code !== "E2E1-CODE") throw new Error(`pairing code ${JSON.stringify(code)}`);
+      await wd.waitFor("Connected after the sign-in", async () => (await status()).startsWith("Connected"), 20000);
+      const rows = await table();
+      const want = ["Version0.2.692", "Accounte2e@example.com", "WorkspaceWorkspace ws-a", "This MacNot connected"];
+      if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`status table ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
+      await clickByText(wd, `${section} button`, "Connect");
+      await wd.waitFor("This Mac connected", async () => (await table()).includes("This MacConnected"), 20000);
+
+      // New chats: a pinned workspace, model and effort in [reason].
+      const pick = async (label, value) => wd.click((await wd.findAll(`${section} select[aria-label="${label}"] option[value="${value}"]`))[0]);
+      await pick("Workspace for new chats", "ws-b");
+      await wd.waitFor('[reason] workspace = "ws-b"', async () => tomlValue(file, "reason", "workspace") === '"ws-b"');
+      await wd.waitFor("the table follows the pinned workspace", async () => (await table()).includes("WorkspaceWorkspace ws-b"));
+      await wd.waitFor("Reason's models in the select", async () => (await wd.findAll(`${section} select[aria-label="Default Reason model"] option[value="byok:anthropic:claude-opus-5-5"]`)).length === 1, 20000);
+      await pick("Default Reason model", "byok:anthropic:claude-opus-5-5");
+      await wd.waitFor('[reason] model', async () => tomlValue(file, "reason", "model") === '"byok:anthropic:claude-opus-5-5"');
+      await pick("Default Reason effort", "high");
+      await wd.waitFor('[reason] reasoning_effort = "high"', async () => tomlValue(file, "reason", "reasoning_effort") === '"high"');
+
+      // API key: stored in the Keychain, handed to `reason` as REASON_API_KEY (the fake then reports credential api_key).
+      await clickByText(wd, `${section} button[aria-pressed]`, "API key");
+      await wd.waitFor('[providers.reason] kind = "reason_api"', async () => tomlValue(file, "providers.reason", "kind") === '"reason_api"');
+      const keyField = `${section} input[aria-label="Reason API key"]`;
+      await wd.waitFor("the Reason API key field", async () => (await wd.findAll(keyField)).length === 1);
+      await wd.click((await wd.findAll(keyField))[0]);
+      await wd.keys("rsn_e2e_0123456789_dAAA");
+      await clickByText(wd, `${section} button`, "Save");
+      await wd.waitFor("the masked key", async () => (await textsOf(wd, `${section} [data-testid="secret-value"]`))[0] === "••••••••dAAA");
+      await wd.waitFor("Auth API key in the table", async () => (await table()).includes("AuthAPI key"), 20000);
+      const account = await wd.execute("return window.__TAURI_INTERNALS__.invoke('reason_account_status');", []);
+      if (account.credential !== "api_key") throw new Error(`reason status ran without REASON_API_KEY: credential ${account.credential}`);
+      await wd.click((await wd.findAll(`${section} button[aria-label="Remove Reason API key"]`))[0]);
+      await wd.waitFor("the key field after Remove", async () => (await wd.findAll(keyField)).length === 1);
+
+      // Back on the Reason account with the defaults unset, for the screenshot.
+      await clickByText(wd, `${section} button[aria-pressed]`, "Reason accountRecommended");
+      await wd.waitFor("[providers.reason] reason_login", async () => tomlValue(file, "providers.reason", "kind") === '"reason_login"');
+      for (const label of ["Workspace for new chats", "Default Reason model", "Default Reason effort"]) await pick(label, "");
+      await wd.waitFor("[reason] cleared", async () => tomlValue(file, "reason", "workspace") === null && tomlValue(file, "reason", "model") === null);
+      await wd.waitFor("Connected again", async () => (await status()).startsWith("Connected"), 20000);
+      await showRows(wd, `${section} .agk-cards`);
+    },
+  },
   {
     name: "account-tool-approvals",
     async run(wd) {

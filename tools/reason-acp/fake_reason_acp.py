@@ -23,6 +23,13 @@ behaviours the provider has to handle (see src-tauri/src/reason_acp/):
   creates a Session under the taken id.
 * `[--workspace SLUG] whoami` prints the account, the organization and the
   saved workspaces with "[selected]" on the one in use, like `reason whoami`.
+* `status --json`, `login` and `connect`, for Settings › Agents › Reason, in
+  `reason` 0.2.692's formats (evidence/reason-acp/account.md). The account
+  is signed in unless the file `fake-reason-signed-out` is in the working
+  directory; `login` then prints a link and a code and marks the sign-in
+  pending, and the next `status` finds it done (the user used the link).
+  With REASON_API_KEY set the account is signed in with credential
+  `api_key`. `connect` connects this computer (file `fake-reason-connected`).
 * `[--workspace SLUG] session get ID --json` prints the Session and exits 0
   when it is in that workspace, else prints "Reason: Reason request failed
   (404 session_not_found)" to stderr and exits 1.
@@ -366,8 +373,53 @@ def session_get(sid):
                       "reasoning_effort": "high" if effort == "default" else effort}))
 
 
+def marker(name):
+    return os.path.join(HOME, name)
+
+
+def status():
+    key = os.environ.get("REASON_API_KEY")
+    if os.path.exists(marker("fake-reason-login-pending")):
+        for m in ("fake-reason-login-pending", "fake-reason-signed-out"):
+            os.remove(marker(m)) if os.path.exists(marker(m)) else None
+    signed_in = bool(key) or not os.path.exists(marker("fake-reason-signed-out"))
+    ids = {w: f"org-{w}" for w in SAVED}
+    connected = os.path.exists(marker("fake-reason-connected"))
+    print(json.dumps({
+        "version": "0.2.692",
+        "channel": "production",
+        "account": {"id": "u1", "name": "E2E", "email": "e2e@example.com",
+                    "credential": "api_key" if key else "login"} if signed_in else None,
+        "account_error": None,
+        "organization": {"id": ids[WORKSPACE] if WORKSPACE in ids else WORKSPACE,
+                         "name": f"Workspace {WORKSPACE}", "slug": WORKSPACE} if signed_in else None,
+        "workspaces": [{"id": ids[w], "slug": w, "name": f"Workspace {w}", "selected": w == WORKSPACE}
+                       for w in SAVED] if signed_in else [],
+        "mcp": [],
+        "connection": {"workspaces": [{"organization_id": ids[WORKSPACE], "state": "connected",
+                                       "blocked": False}]} if signed_in and connected else None,
+    }))
+
+
+def login():
+    if not os.path.exists(marker("fake-reason-signed-out")):
+        print("Already signed in as e2e@example.com.")
+        return
+    open(marker("fake-reason-login-pending"), "w").close()
+    print("Open this link to sign in to Reason: https://reasonmachines.com/cli/connect?request=e2e-request")
+    print("The page shows the code E2E1-CODE.")
+    print("It finishes on its own once you have; run `reason login` again any time to see where it stands.")
+
+
 if ARGS[:1] == ["whoami"]:
     whoami()
+elif ARGS[:2] == ["status", "--json"]:
+    status()
+elif ARGS[:1] == ["login"]:
+    login()
+elif ARGS[:1] == ["connect"]:
+    open(marker("fake-reason-connected"), "w").close()
+    print("Connected this computer to Reason.")
 elif ARGS[:2] == ["session", "get"]:
     session_get(ARGS[2])
 else:
