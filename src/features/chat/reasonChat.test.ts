@@ -226,6 +226,48 @@ test("Reset chat rewinds the agent: the next prompt opens a new Session that car
   ends.shift()!();
 });
 
+test("a turn that completes with nothing queued asks for attention; one with a follow-up queued does not", async () => {
+  const { onChatAttention } = await import("./attention.ts");
+  const chatId = "attention-1";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const ends = promptsEndOnDemand();
+  const asked: string[] = [];
+  const off = onChatAttention((id) => id === chatId && asked.push(id));
+
+  rc.submitChat(chatId, "/w", "first", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "first prompt");
+  rc.submitChat(chatId, "/w", "second", "queue");
+  ends.shift()!();
+  await until(() => callsOf("reason_prompt", chatId).length === 2, "queued prompt starts");
+  assert.deepEqual(asked, [], "the queued follow-up runs next, so the chat has not settled");
+
+  ends.shift()!();
+  await until(() => asked.length === 1, "attention after the last turn");
+  assert.deepEqual(asked, [chatId]);
+  off();
+});
+
+test("a new permission request asks for attention once, while the turn still runs", async () => {
+  const { onChatAttention } = await import("./attention.ts");
+  const chatId = "attention-perm";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  const ends = promptsEndOnDemand();
+  const asked: string[] = [];
+  const off = onChatAttention((id) => id === chatId && asked.push(id));
+
+  rc.submitChat(chatId, "/w", "permission", "queue");
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "reason_prompt");
+  emit({ chatId, type: "permissionRequest", requestId: "permission-a", title: "t", options: [], kind: "permission", tool: "", input: null });
+  assert.deepEqual(asked, [chatId], "the request is a wait on the user");
+  // The same request again (a re-send) is not a new wait.
+  emit({ chatId, type: "permissionRequest", requestId: "permission-a", title: "t", options: [], kind: "permission", tool: "", input: null });
+  assert.deepEqual(asked, [chatId]);
+  emit({ chatId, type: "permissionResolved", requestId: "permission-a" });
+  ends.shift()!();
+  await until(() => asked.length === 2, "attention when the turn settles");
+  off();
+});
+
 function emitStatus(payload: Record<string, unknown>) {
   emitTo("session-status", payload);
 }

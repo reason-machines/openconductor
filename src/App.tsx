@@ -38,13 +38,15 @@ import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT } from "./features/chat/ChatModelPicker.tsx";
-import { keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
 import { changeZoom } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
 import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { useAutoUnread } from "./state/useAutoUnread";
+import { nextUnreadWorkspace, openNextUnread } from "./state/nextUnread";
 import { createRepoDefault } from "./home/repoFilter";
 import { storedRepoFilter } from "./home/useRepoFilter";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
@@ -75,6 +77,8 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
+  // A chat that finishes or waits on the user while not in view marks its workspace unread.
+  useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
@@ -193,8 +197,11 @@ export default function App() {
   // The composer's model picker ("Add models", "Edit") opens Settings › Default models.
   useEffect(() => {
     const open = (e: Event) => {
-      const page = (e as CustomEvent<{ page?: string }>).detail?.page;
-      const known = USER_PAGES.find((p) => p === page);
+      const detail = (e as CustomEvent<{ page?: string; repoId?: string; section?: string }>).detail;
+      // The right panel's "Add run script" opens the repository's Scripts settings.
+      const section = REPO_SECTIONS.find((s) => s === detail?.section);
+      if (detail?.repoId && section) return navigateSettings({ scope: "repo", repoId: detail.repoId, section });
+      const known = USER_PAGES.find((p) => p === detail?.page);
       if (known) navigateSettings({ scope: "user", page: known });
     };
     window.addEventListener(OPEN_SETTINGS_EVENT, open);
@@ -359,7 +366,13 @@ export default function App() {
         ) : repo && workspace?.status === "archived" ? (
           <ArchivedWorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
         ) : repo && workspace ? (
-          <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
+          <WorkspaceView
+            repo={repo}
+            workspace={workspace}
+            dispatch={dispatch}
+            notify={show}
+            onNextUnread={nextUnreadWorkspace(state, { skipSelected: true }) ? () => void openNextUnread(state, dispatch, { skipSelected: true }) : undefined}
+          />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : (

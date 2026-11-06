@@ -1,0 +1,69 @@
+/* The workspace's right panel as Conductor draws it (REA reference capture
+   evidence/screens/chat--transcript-collapsed-tools--dark.png, 1440x900):
+   pill tabs with the tab's icons at the right end, and under the list a strip
+   with a chevron, Setup, Run, terminal tabs and +. Colours are Conductor's
+   theme tokens (evidence/frontend/css-tokens.json). */
+.ws-right {
+  --rp-pill: #fafaf9; /* --accent */
+  --rp-highlight: #a4847f; /* --border-highlight: the strip's active underline */
+  --rp-secondary: #fafaf9; /* --secondary: the empty state's button */
+  --rp-muted-fg: #8e8885;
+  /* File-type glyph tints, shared with the chat's file badges (chat.css). */
+  --oc-muted-fg: #8e8885;
+  --oc-tint-blue-600: oklch(54.6% .245 262.881); --oc-tint-blue-500: oklch(62.3% .214 259.815); --oc-tint-cyan-400: oklch(78.9% .154 211.53);
+  --oc-tint-cyan-600: oklch(60.9% .126 221.723); --oc-tint-yellow-400: oklch(85.2% .199 91.936); --oc-tint-yellow-600: oklch(68.1% .162 75.834);
+  --oc-tint-orange-600: oklch(64.6% .222 41.116); --oc-tint-orange-700: oklch(55.3% .195 38.402); --oc-tint-red-600: oklch(57.7% .245 27.325);
+  --oc-tint-green-500: oklch(72.3% .219 149.579); --oc-tint-green-600: oklch(62.7% .194 149.214); --oc-tint-gray-600: #766f6b; --oc-tint-documentation: #47423e;
+  /* Conductor's panel sits on --background (#141110 dark), not a lifted panel colour. */
+  --panel: var(--bg);
+  background: var(--bg);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ws-right {
+    --rp-pill: #2c2826; --rp-highlight: #cca694; --rp-secondary: #211e1c; --rp-muted-fg: #a5a09c; --oc-muted-fg: #a5a09c; --oc-tint-documentation: #8e8885;
+  }
+}
+:root[data-theme="dark"] .ws-right {
+  --rp-pill: #2c2826; --rp-highlight: #cca694; --rp-secondary: #211e1c; --rp-muted-fg: #a5a09c; --oc-muted-fg: #a5a09c; --oc-tint-documentation: #8e8885;
+}
+.ws-right.strip-collapsed { grid-template-rows: minmax(0, 1fr) auto; }
+
+/* Tab row: 28 px pills, 13 px labels. */
+.rp-tabs { display: flex; align-items: center; gap: 2px; height: 44px; padding: 0 8px 0 10px; flex: none; }
+.rp-tab { display: inline-flex; align-items: center; height: 28px; padding: 0 9px; border-radius: 6px; color: var(--rp-muted-fg); font-size: 13px; font-weight: 500; white-space: nowrap; }
+.rp-tab:hover { color: var(--text); }
+.rp-tab.active { background: var(--rp-pill); color: var(--text); }
+.rp-tab .tab-count { margin-left: 5px; font-size: 13px; color: var(--rp-muted-fg); }
+.rp-tabs-end { margin-left: auto; display: flex; align-items: center; gap: 2px; }
+.rp-tabs-end .review-button { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; color: var(--accent); font-weight: 500; }
+.rp-icon { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 6px; color: var(--rp-muted-fg); }
+.rp-icon:hover:not(:disabled), .rp-icon.on { background: var(--hover); color: var(--text); }
+.rp-icon:disabled { opacity: 0.4; }
+
+/* The Setup / Run / Terminal strip. */
+.ws-strip { display: flex; flex-direction: column; min-height: 0; border-top: 1px solid var(--border); background: var(--bg); }
+.ws-strip-tabs { display: flex; align-items: stretch; gap: 4px; height: 34px; padding: 0 8px; flex: none; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+.ws-strip.collapsed .ws-strip-tabs { border-bottom: 0; }
+.ws-strip-tabs > .rp-icon { align-self: center; width: 22px; height: 22px; }
+.strip-tab { position: relative; display: inline-flex; align-items: center; gap: 6px; padding: 0 9px; color: var(--rp-muted-fg); font-size: 13px; font-weight: 500; white-space: nowrap; cursor: default; }
+.strip-tab:hover { color: var(--text); }
+.strip-tab.active { color: var(--text); }
+.strip-tab.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--rp-highlight); }
+.strip-tab.term-tab { padding-right: 4px; border-radius: 0; background: none; }
+.strip-tab.term-tab:hover, .strip-tab.term-tab.active { background: none; }
+.strip-tab .term-x { display: inline-flex; padding: 2px; opacity: 0; }
+.strip-tab:hover .term-x, .strip-tab.active .term-x { opacity: 1; }
+.ws-strip-body { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+.ws-strip-body[hidden] { display: none; }
+.ws-strip .scripts { flex: 1; border-top: 0; background: transparent; }
+.ws-strip .terminal-panel { flex: 1; height: auto; min-height: 0; border-top: 0; background: var(--panel); }
+
+/* Run with no run script: Conductor's dashed box. */
+.scripts-empty { flex: 1; min-height: 0; padding: 32px; overflow: auto; }
+.scripts-empty-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 170px; padding: 24px; border: 1px dashed var(--border); border-radius: 8px; text-align: center; }
+.scripts-empty-box p { margin: 0; max-width: 240px; color: var(--rp-muted-fg); font-size: 14px; line-height: 20px; }
+.scripts-empty-btn { height: 32px; padding: 0 12px; border-radius: 6px; background: var(--rp-secondary); color: var(--text); font-size: 14px; font-weight: 500; }
+.scripts-empty-btn:hover { background: var(--rp-pill); }
+.ws-strip .scripts-meta .scripts-actions { margin-left: auto; }
+.ws-right .diff { background: var(--bg); }
+.ws-strip-tabs > .ws-strip-end { margin-left: auto; }
