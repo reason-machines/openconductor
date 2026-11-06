@@ -73,6 +73,15 @@ test("archived workspaces from conductor.db join the palette data after the acti
   assert.deepEqual(nav?.items.map((i) => i.id), ["action:view-archived-workspaces"]);
 });
 
+test("Recent workspaces keeps archived workspaces and drops deleted ones, as Conductor's palette does", () => {
+  const ws = (id: string) => ({ id, name: id, branch: id, createdAt: 5, status: "archived" as const, diff: { added: 0, removed: 0 } });
+  const archived = [{ id: "r2/z", repoId: "r2", name: "zurich", branch: "b-z", createdAt: 5, workspace: ws("r2/z") }];
+  const data = paletteDataFromState(state, ["r2/z", "deleted", "a"], archived);
+  assert.deepEqual(data.recentWorkspaceIds, ["r2/z", "a"]);
+  const recent = buildResults("all", "", data).find((g) => g.heading === "Recent workspaces");
+  assert.deepEqual(recent?.items.map((i) => i.id), ["workspace:r2/z", "workspace:a"]);
+});
+
 test("Go to next unread is listed under Navigation only while a non-archived workspace is unread", () => {
   const ids = (s: AppState) => paletteDataFromState(s, []).actions.map((a) => a.id);
   assert.ok(!ids(state).includes("go-to-next-unread"));

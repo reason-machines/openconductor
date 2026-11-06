@@ -103,3 +103,48 @@ test("Go to next unread: palette entry while something is unread, Cmd+Alt+L open
   assert.equal(await row(page, first).getAttribute("data-unread"), null);
   await page.close();
 });
+
+// parity:sidebar.ws-unread follow-up: Conductor marks a chat unread when its turn
+// ends while the user is not looking at it (applyTurnCompletionTails), shows a
+// "Next unread" button above the composer while another chat is unread (g1o),
+// and keeps a hand mark on the open workspace (manuallyUnreadSessions).
+test("a turn that ends out of view marks its workspace unread; the composer's Next unread opens it", async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(`${base}/?demo=1`);
+  const [first, second] = await page.locator(`${ROW} .sb-ws-name`).allTextContents();
+  const composer = page.locator(".composer textarea");
+  const nextUnread = page.getByRole("button", { name: "Next unread" });
+
+  // A turn that ends while its chat is on screen leaves the workspace read.
+  await row(page, first).click();
+  await composer.fill("stay and watch");
+  await composer.press("Enter");
+  await page.locator(".composer-wrap").getByText(/Stop|Waiting/).first().waitFor({ state: "detached", timeout: 10_000 }).catch(() => {});
+  await page.waitForTimeout(3_500);
+  assert.equal(await row(page, first).getAttribute("data-unread"), null, "watched turn does not mark unread");
+  assert.equal(await nextUnread.count(), 0, "nothing unread: no button");
+
+  // Send, then leave for the second workspace before the stand-in agent answers (2.5 s).
+  await composer.fill("work on this while I look elsewhere");
+  await composer.press("Enter");
+  await row(page, second).click();
+  await page.waitForFunction((label) => {
+    const r = [...document.querySelectorAll('[data-testid="left-sidebar-workspace-item"]')].find((e) => e.querySelector(".sb-ws-name")?.textContent === label);
+    return r?.getAttribute("data-unread") === "true";
+  }, first, { timeout: 10_000 });
+  await nextUnread.waitFor();
+  await shot(page, "3-composer-next-unread");
+
+  // The button opens the unread workspace and clears it; then it is gone.
+  await nextUnread.click();
+  assert.equal(await row(page, first).getAttribute("aria-current"), "page");
+  assert.equal(await row(page, first).getAttribute("data-unread"), null);
+  assert.equal(await nextUnread.count(), 0);
+
+  // A hand mark on the open workspace sticks while it is on screen.
+  await row(page, first).click({ button: "right" });
+  await page.keyboard.press("r");
+  await page.waitForTimeout(300);
+  assert.equal(await row(page, first).getAttribute("data-unread"), "true", "Mark as unread on the open workspace is kept");
+  await page.close();
+});

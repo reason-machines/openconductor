@@ -1,5 +1,7 @@
 import { useSyncExternalStore, type ReactNode } from "react";
 import "./pendingWorkspaceRow.css";
+import { StatusMatrix } from "./StatusMatrix";
+import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { getPendingLaunches, launchesForRepo, subscribePendingLaunches } from "../workspace/pendingLaunches";
 
 /** Pending launch ids of one repository; re-renders when a launch starts or ends. */
@@ -12,14 +14,22 @@ export function usePendingLaunches(repoId: string): string[] {
  * inert "Untitled" row with the setting-up loader, labelled
  * "Creating workspace..." for assistive tech. Conductor's loader is an
  * animated sprite; ours is a spinner of the same 14px size and muted colour.
+ * With the Workspace status matrix on, it is the matrix's setting-up ring.
  */
 export function PendingWorkspaceRow() {
+  const matrix = useStatusMatrix();
   return (
     <div className="sb-ws sb-ws-pending" role="status" aria-label="Creating workspace..." data-testid="left-sidebar-pending-workspace">
       <span className="sb-ws-lead" aria-hidden>
-        <span className="sb-ws-status setting-up">
-          <span className="sb-ws-loader" />
-        </span>
+        {matrix ? (
+          <span className="sb-ws-status" data-matrix>
+            <StatusMatrix status="setting-up" />
+          </span>
+        ) : (
+          <span className="sb-ws-status setting-up">
+            <span className="sb-ws-loader" />
+          </span>
+        )}
       </span>
       <span className="sb-ws-name">Untitled</span>
     </div>

@@ -104,10 +104,15 @@ test("menus: 100ms opacity+scale in and out from the trigger's corner", async ()
     return { name: s.animationName, duration: s.animationDuration, easing: s.animationTimingFunction };
   });
   assert.deepEqual(opening, { name: "sb-popup-in", duration: "0.1s", easing: "cubic-bezier(0.4, 0, 0.2, 1)" });
-  await page.keyboard.press("Escape");
   // Closing: still on screen with data-ending-style, out of the accessibility tree.
-  const closing = await menu.evaluate((el) => ({ ending: el.hasAttribute("data-ending-style"), hidden: el.getAttribute("aria-hidden"), duration: getComputedStyle(el).transitionDuration }));
-  assert.deepEqual(closing, { ending: true, hidden: "true", duration: "0.1s, 0.1s" });
+  // Escape and the read run in one page task, so a slow runner cannot let the 100ms close timer
+  // unmount the menu between them (a detached node reads an empty transition-duration).
+  const closing = await menu.evaluate(async (el) => {
+    (document.activeElement ?? document.body).dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", code: "Escape", bubbles: true, cancelable: true }));
+    await Promise.resolve();
+    return { connected: el.isConnected, ending: el.hasAttribute("data-ending-style"), hidden: el.getAttribute("aria-hidden"), duration: getComputedStyle(el).transitionDuration };
+  });
+  assert.deepEqual(closing, { connected: true, ending: true, hidden: "true", duration: "0.1s, 0.1s" });
   assert.equal(await page.getByRole("menu").count(), 0);
   await page.waitForTimeout(250);
   assert.equal(await page.locator(".sb-menu").count(), 0);

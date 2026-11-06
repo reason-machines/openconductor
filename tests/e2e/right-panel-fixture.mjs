@@ -30,7 +30,7 @@ export const FILES = [
  * Calls the right panel makes are recorded in window.__fake.calls; commands it
  * does not know fail, as in the other e2e fakes, and are listed in window.__fake.unmocked.
  */
-export function fakeBackend({ shell, files }) {
+export function fakeBackend({ shell, files, spotlight = false }) {
   localStorage.setItem("openconductor.shell.v1", JSON.stringify(shell));
   localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shell.selection, collapsed: [] }));
   const settings = {
@@ -86,6 +86,14 @@ export function fakeBackend({ shell, files }) {
           return { state: "idle", log: null, last: null };
         case "run_script_status":
           return { runs: [], history: [] };
+        // The repository's spotlight_testing setting (Settings › Actions); off unless the test turns it on.
+        case "spotlight_testing_get":
+          return { enabled: spotlight, layer: spotlight ? "repo_local" : null, managed: false };
+        case "spotlight_status":
+          return { active: false, workspaceId: null };
+        case "spotlight_start":
+          window.__fake.calls.push({ cmd, ...args });
+          return true;
         case "open_in_apps":
           return [{ id: "finder", name: "Finder", kind: "finder", installed: true }];
         case "open_in_app":
