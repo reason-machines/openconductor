@@ -5,6 +5,9 @@
 //   (`GLe` for Claude, `zLe` for Codex) and the submenu's axis label
 //   ("Effort" for Claude, "Thinking" for Codex),
 // - Fast mode: offered for Opus models and every Codex model (`Kc`).
+// A Reason model id (`byok:anthropic:claude-opus-5-5`, `default` for Auto)
+// offers Reason's own reasoning levels, with no level assumed until one is
+// picked or the Session reports the one it ran on (reasonModels.ts).
 // Pure: no React, no Tauri, so composerModels.test.ts covers it.
 
 import { agentForModel, type ModelAgent } from "../../settings/models.ts";
@@ -73,7 +76,7 @@ interface AgentEfforts {
   levels: string[];
   labels: Record<string, string>;
   axisLabel: string;
-  defaultLevel: string;
+  defaultLevel: string | null;
   models: Record<string, { levels: string[]; labelOverrides?: Record<string, string> }>;
 }
 
@@ -134,6 +137,18 @@ const EFFORTS: Record<ModelAgent, AgentEfforts> = {
   },
 };
 
+/** Reason's `reasoning_effort` values (`reason acp` 0.2.692); its `default` is no level picked. */
+const REASON_EFFORTS: AgentEfforts = {
+  levels: ["minimal", "low", "medium", "high", "xhigh", "max"],
+  labels: { minimal: "Minimal", low: "Low", medium: "Medium", high: "High", xhigh: "Extra high", max: "Max" },
+  axisLabel: "Effort",
+  defaultLevel: null,
+  models: {},
+};
+
+/** A Reason model id rather than a Conductor one. */
+export const isReasonModelId = (model: string): boolean => model === "default" || model.includes(":") || model.includes("/");
+
 export interface EffortOption {
   value: string;
   label: string;
@@ -143,14 +158,15 @@ export interface ModelEfforts {
   /** Submenu title: "Effort" (Claude, Cursor) or "Thinking" (Codex). */
   axisLabel: string;
   options: EffortOption[];
-  defaultLevel: string;
+  /** The level used when none is picked; null when the agent decides (Reason). */
+  defaultLevel: string | null;
 }
 
 /** The effort levels a model offers, in Conductor's order; none for a model without levels. */
 export function modelEfforts(model: string): ModelEfforts | null {
   const agent = agentForModel(model);
-  if (!agent) return null;
-  const table = EFFORTS[agent];
+  if (!agent && !isReasonModelId(model)) return null;
+  const table = agent ? EFFORTS[agent] : REASON_EFFORTS;
   const entry = table.models[model];
   const levels = entry?.levels ?? table.levels;
   if (levels.length === 0) return null;
@@ -158,11 +174,12 @@ export function modelEfforts(model: string): ModelEfforts | null {
   return { axisLabel: table.axisLabel, options: levels.map((value) => ({ value, label: label(value) })), defaultLevel: table.defaultLevel };
 }
 
-/** The effort a model actually runs at: the picked one if it offers it, else its agent's default. */
+/** The effort a model actually runs at: the picked one if it offers it, else its agent's default (none for Reason). */
 export function effectiveEffort(model: string, effort: string | null | undefined): string | null {
   const e = modelEfforts(model);
   if (!e) return null;
   if (effort && e.options.some((o) => o.value === effort)) return effort;
+  if (e.defaultLevel === null) return null;
   return e.options.some((o) => o.value === e.defaultLevel) ? e.defaultLevel : (e.options.at(-1)?.value ?? null);
 }
 
@@ -175,9 +192,9 @@ export function effortLabel(model: string, effort: string | null | undefined): s
 /** `chat.toggleThinking` ("Cycle effort"): the next level, wrapping to the first. */
 export function nextEffort(model: string, effort: string | null | undefined): string | null {
   const e = modelEfforts(model);
+  if (!e) return null;
   const current = effectiveEffort(model, effort);
-  if (!e || current === null) return null;
-  const i = e.options.findIndex((o) => o.value === current);
+  const i = current === null ? -1 : e.options.findIndex((o) => o.value === current);
   return e.options[(i + 1) % e.options.length]!.value;
 }
 
@@ -186,9 +203,9 @@ export function fastModeAvailable(model: string): boolean {
   return model.startsWith("opus") || agentForModel(model) === "codex";
 }
 
-/** The composer's model chip: "Opus 5" and "High", plus "Fast" when on, for the accessible label. */
-export function modelChip(model: string, effort: string | null | undefined, fast = false): { label: string; effort: string | null; accessible: string } {
-  const label = modelDisplayName(model);
+/** The composer's model chip: "Opus 5" (or `name`) and "High", plus "Fast" when on, for the accessible label. */
+export function modelChip(model: string, effort: string | null | undefined, fast = false, name?: string): { label: string; effort: string | null; accessible: string } {
+  const label = name ?? modelDisplayName(model);
   const e = effortLabel(model, effort);
   return { label, effort: e, accessible: [label, e, fast && fastModeAvailable(model) ? "Fast" : null].filter(Boolean).join(" · ") };
 }

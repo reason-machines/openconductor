@@ -2,59 +2,23 @@
    providers and models pages (Tailwind classes read from renderApp-D_fmY7hW.js;
    colours from evidence/frontend/css-tokens.json `:root,.light` and `.dark`). */
 .oc-ag {
-  --ag-accent: #fafaf9;
-  --ag-accent-fg: #2c2826;
-  --ag-muted: #fafaf9;
-  --ag-muted-fg: #8e8885;
-  --ag-fg: #2c2826;
-  --ag-bg: #fff;
-  --ag-border: #eae8e6;
-  --ag-input: #14100f1a;
-  --ag-destructive: #dc2828;
-  --ag-success: #16a249;
-  --ag-primary: #413030;
-  --ag-primary-fg: #f3f2f1;
-  --ag-tip: #fff;
-  --ag-tip-fg: #413030;
-  --ag-ring: #2c2826;
+  --ag-accent: var(--conductor-accent);
+  --ag-accent-fg: var(--conductor-accent-fg);
+  --ag-muted: var(--conductor-muted);
+  --ag-muted-fg: var(--conductor-muted-fg);
+  --ag-fg: var(--conductor-fg);
+  --ag-bg: var(--conductor-bg);
+  --ag-border: var(--conductor-border);
+  --ag-input: var(--conductor-input);
+  --ag-destructive: var(--destructive);
+  --ag-success: var(--success);
+  --ag-primary: var(--conductor-primary);
+  --ag-primary-fg: var(--conductor-primary-fg);
+  --ag-tip: var(--conductor-tip);
+  --ag-tip-fg: var(--conductor-tip-fg);
+  --ag-ring: var(--conductor-ring);
   color: var(--ag-fg);
   font-size: 14px;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .oc-ag {
-    --ag-accent: #2c2826;
-    --ag-accent-fg: #f3f2f1;
-    --ag-muted: #211e1c;
-    --ag-muted-fg: #a5a09c;
-    --ag-fg: #eae8e6;
-    --ag-bg: #141110;
-    --ag-border: #ffffff1a;
-    --ag-input: #fff3;
-    --ag-destructive: #f87272;
-    --ag-success: #4ade80;
-    --ag-primary: #f3f2f1;
-    --ag-primary-fg: #2c2826;
-    --ag-tip: #413030;
-    --ag-tip-fg: #fff;
-    --ag-ring: #bcb6b3;
-  }
-}
-:root[data-theme="dark"] .oc-ag {
-  --ag-accent: #2c2826;
-  --ag-accent-fg: #f3f2f1;
-  --ag-muted: #211e1c;
-  --ag-muted-fg: #a5a09c;
-  --ag-fg: #eae8e6;
-  --ag-bg: #141110;
-  --ag-border: #ffffff1a;
-  --ag-input: #fff3;
-  --ag-destructive: #f87272;
-  --ag-success: #4ade80;
-  --ag-primary: #f3f2f1;
-  --ag-primary-fg: #2c2826;
-  --ag-tip: #413030;
-  --ag-tip-fg: #fff;
-  --ag-ring: #bcb6b3;
 }
 .oc-ag p { margin: 0; }
 
@@ -91,7 +55,7 @@
   background: none; border: 0; border-bottom: 1px solid transparent; cursor: default;
 }
 .ag-tab:hover { color: var(--ag-fg); }
-.ag-tab.on { color: var(--ag-fg); border-bottom-color: #cca694; }
+.ag-tab.on { color: var(--ag-fg); border-bottom-color: var(--conductor-tab-underline); }
 
 /* Buttons (shadcn variants). */
 .ag-btn {
@@ -222,7 +186,7 @@
   font: inherit; font-size: 12px; text-align: left; cursor: default;
 }
 .ag-slot-card:hover { background: var(--ag-accent); }
-.ag-slot-icon { position: absolute; left: 0; right: 0; top: 32px; display: flex; justify-content: center; color: #c8664a; }
+.ag-slot-icon { position: absolute; left: 0; right: 0; top: 32px; display: flex; justify-content: center; color: var(--conductor-slot-icon); }
 .ag-slot-model { position: absolute; left: 12px; right: 12px; bottom: 28px; color: var(--ag-muted-fg); }
 .ag-slot-effort {
   position: absolute; left: 12px; bottom: 10px; font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
@@ -263,7 +227,7 @@
 /* Model menu. */
 .ag-menu {
   position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; width: 240px; max-height: 420px; overflow: auto; padding: 4px;
-  border: 1px solid var(--ag-border); border-radius: 8px; background: var(--ag-bg); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--ag-border); border-radius: 8px; background: var(--ag-bg); box-shadow: 0 8px 24px var(--shadow-25);
 }
 .ag-row-control .ag-menu { left: auto; right: 0; }
 .ag-menu-group + .ag-menu-group { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--ag-border); }

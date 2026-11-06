@@ -31,11 +31,17 @@ export interface ModelPickerProps {
   children?: ReactNode;
   /** Name for a listed entry that is not a Conductor model id (an agent such as Codex). */
   itemLabel?: (choice: ModelChoice) => string | undefined;
+  /** Every model the agent offers (Reason's list), listed before the favourites; none: favourites only, at most five entries. */
+  models?: readonly ModelChoice[];
+  /** The agent's own name for a model id (Reason's "Claude Opus 5.5"), for the chip and the list. */
+  modelName?: (model: string) => string | undefined;
+  /** A line about a model (Reason's "Claude · Subscription"), shown as its tooltip. */
+  modelDescription?: (model: string) => string | undefined;
 }
 
 const same = (a: ModelChoice, b: ModelChoice) => a.model === b.model;
 
-export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel }: ModelPickerProps) {
+export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription }: ModelPickerProps) {
   const [open, setOpen] = useState(false);
   const menu = usePresence(open);
   const [query, setQuery] = useState("");
@@ -46,16 +52,20 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
     const s = effectiveShortcuts(id, overrides)[0];
     return s ? glyphs(s) : "";
   };
-  const chip = modelChip(value.model, value.effort, value.fast);
+  const nameOf = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
+  const chip = modelChip(value.model, value.effort, value.fast, modelName?.(value.model));
   const efforts = modelEfforts(value.model);
   const current = effectiveEffort(value.model, value.effort);
   const showFast = fastSupported && fastModeAvailable(value.model);
   const items = useMemo(() => {
-    const list = [value, ...favorites.filter((f) => !same(f, value))].slice(0, 5);
+    // The agent's models come before the other favourites (the Codex and Claude Code entries).
+    const listed = [value, ...(models ?? []), ...favorites];
+    const unique = listed.filter((f, i) => listed.findIndex((g) => same(f, g)) === i);
+    const list = models ? unique : unique.slice(0, 5);
     const q = query.trim().toLowerCase();
-    const name = (f: ModelChoice) => itemLabel?.(f) ?? modelDisplayName(f.model);
-    return q ? list.filter((f) => name(f).toLowerCase().includes(q) || f.model.includes(q)) : list;
-  }, [favorites, value, query, itemLabel]);
+    const name = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
+    return q ? list.filter((f) => name(f).toLowerCase().includes(q) || f.model.toLowerCase().includes(q)) : list;
+  }, [favorites, value, query, itemLabel, models, modelName]);
 
   useKeybindings({
     "chat.openModelPicker": () => (disabled ? false : setOpen((o) => !o)),
@@ -125,14 +135,14 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                     role="menuitem"
                     className="oc-model-item"
                     data-selected={selected || undefined}
-                    title={itemLabel?.(f) ?? modelDisplayName(f.model)}
+                    title={[nameOf(f), modelDescription?.(f.model)].filter(Boolean).join(" · ")}
                     onClick={() => {
                       if (!selected) onChange(f);
                       setOpen(false);
                     }}
                   >
                     <ModelGlyph model={f.model} />
-                    <span className="oc-model-item-name">{selected && label ? label : (itemLabel?.(f) ?? modelDisplayName(f.model))}</span>
+                    <span className="oc-model-item-name">{selected && label ? label : nameOf(f)}</span>
                     {e ? <span className="oc-model-item-effort">{e}</span> : null}
                     {selected ? <CheckIcon className="oc-model-item-check" /> : null}
                   </button>
