@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "212c4b3",
+  "commit": "87ac6ed",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -214,10 +214,10 @@
    "diff": {
     "file": "ui-map/diff/onboarding-signed-out.jpg",
     "changed_ratio_t0": 0.999969512195122,
-    "changed_ratio_t24": 0.9926381478658537,
+    "changed_ratio_t24": 0.992664824695122,
     "rea_evidence_ids": [
-     "ev_137654a56eadc1f3dab2a9b1fbba0355b91ec8dc8cd79c75a4ccdddf6b0329c7",
-     "ev_03704ce3461f116ac9a19f2bd7a610ceb456c93bc2735eed7a9e993d80ce328b"
+     "ev_c912ccf91766fde8754498db741c6cd790f3b62e6a1a4560aa43be8d646a4a00",
+     "ev_601b3371b080fceebcbc11affb47e8b7dbb1725838a2aba03dd4dca9310c7afa"
     ]
    },
    "copy_coverage": 0.857,
@@ -251,10 +251,10 @@
    "diff": {
     "file": "ui-map/diff/first-run-onboarding.jpg",
     "changed_ratio_t0": 0.9844693216463415,
-    "changed_ratio_t24": 0.9679897103658537,
+    "changed_ratio_t24": 0.9680354420731707,
     "rea_evidence_ids": [
-     "ev_29902e50b10e10a97250ed49b23623b7afbadb5a5a4c5af24c50338a5943ec09",
-     "ev_6a68145040b9c392b058ea48fc1537e9827534505fa0f969c2bdf481f8b78e11"
+     "ev_7229e127d59e09afeda331cf7ebeb7fa97ceada15296bd9b092b615197590d12",
+     "ev_fc1367052822586fc31dbb3a891c4506937acaea58ca485c3f759cc1132c5985"
     ]
    },
    "copy_coverage": 0.071,
@@ -299,7 +299,7 @@
    "id": "home",
    "title": "Home with projects",
    "status": "wrong",
-   "why": "diff 4.3% at t24, copy 79%",
+   "why": "diff 4.2% at t24, copy 79%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -320,11 +320,11 @@
    },
    "diff": {
     "file": "ui-map/diff/home.jpg",
-    "changed_ratio_t0": 0.15724371189024391,
-    "changed_ratio_t24": 0.0426610137195122,
+    "changed_ratio_t0": 0.1571436737804878,
+    "changed_ratio_t24": 0.04248475609756098,
     "rea_evidence_ids": [
-     "ev_a7f83510eb15ee237b8c0843619e4d738a2ada80df5558f1b888a6032916cb52",
-     "ev_eb309a38bbdf0db8488a153e25fd2bf75b5c00e3a0169a86c8b839cbc5e82186"
+     "ev_980e55ca6386513ae2624f3c56a279bbc3beed1acd8e3662338f0be96a0d3b11",
+     "ev_826b135d0798cc94023029d2a81c491305f4bc209a0bc47b709b8d196290425b"
     ]
    },
    "copy_coverage": 0.786,
@@ -359,11 +359,11 @@
    },
    "diff": {
     "file": "ui-map/diff/all-workspaces.jpg",
-    "changed_ratio_t0": 0.0227953506097561,
-    "changed_ratio_t24": 0.011187118902439024,
+    "changed_ratio_t0": 0.022643864329268293,
+    "changed_ratio_t24": 0.011077553353658537,
     "rea_evidence_ids": [
-     "ev_046e5836a91c93529d24498704f03b4774a71c62cfc263ed365f15a1ae401dcd",
-     "ev_a1a0f33f05f5539ca497dc52309dc38ee32606b0315178cadec9d95d0be8d3df"
+     "ev_6e6e343738a578bed33e1fa87331d0d59460b07642dfb2ceeb4f8c7de377f279",
+     "ev_06b2354acf3e6a154244bb353355cff16d70bdf37fa10c673770c2d2af770a77"
     ]
    },
    "copy_coverage": 1.0,
@@ -395,10 +395,10 @@
    "diff": {
     "file": "ui-map/diff/create.jpg",
     "changed_ratio_t0": 0.8686423399390244,
-    "changed_ratio_t24": 0.06891291920731707,
+    "changed_ratio_t24": 0.06850038109756097,
     "rea_evidence_ids": [
-     "ev_e91a19eaee307ef134fb68f4b87c0c14e7d348d5663a5a54f05216189825c332",
-     "ev_683117049fc028597a73b06d119b7c6d53b97c8693668a6c28c5b7f4a38a4ae5"
+     "ev_43f13ae1e15fc5edf4fe94fb6713f0cad40580c1d46049574f4533f3fa0ba68a",
+     "ev_f5926277f3a6243a43fb24b2138c85be0f4243cf05a0347856b54db36e1a77b1"
     ]
    },
    "copy_coverage": 0.81,
@@ -435,10 +435,10 @@
    "diff": {
     "file": "ui-map/diff/create-repo-picker.jpg",
     "changed_ratio_t0": 0.8980535442073171,
-    "changed_ratio_t24": 0.07296398628048781,
+    "changed_ratio_t24": 0.07255144817073171,
     "rea_evidence_ids": [
-     "ev_fbdd98b6744203383f99a79085320b58b198a0bc896c697e4a1266848a3a9ad2",
-     "ev_75704bea123ce825fa34219195e0df7c1ec69016e2f0da646a0875ab1fd7f23a"
+     "ev_e71a40c1751d41eb4ce6d7e398bc4fb260292049ac4c90182f91f783525e4f1f",
+     "ev_a628984f27ae9b399162956ec3fe9a810475bac068ee5be0ad6694afe1e8fcbc"
     ]
    },
    "copy_coverage": 0.818,
@@ -474,11 +474,11 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-chat.jpg",
-    "changed_ratio_t0": 0.19397865853658536,
-    "changed_ratio_t24": 0.04530297256097561,
+    "changed_ratio_t0": 0.19363471798780488,
+    "changed_ratio_t24": 0.04467797256097561,
     "rea_evidence_ids": [
-     "ev_a9bc34a07712c005d75e948f945b72d6356a5c5b8bbba1626ae0731a42a0b0a5",
-     "ev_06e1c46fc2852f918a3f023296a7bccb9cbcfd3d78c48dce6df1c5c5ad46fa3c"
+     "ev_434919162ec18c07d146d585e8afd7d771fd310f0a887ca2ee26acc9f9e78cd4",
+     "ev_f86c2fa6f3edf34253395a2901adddedded7db1c4840a6e53520c3b576d9fafc"
     ]
    },
    "copy_coverage": 0.852,
@@ -493,7 +493,7 @@
    "id": "workspace-new-chat",
    "title": "Workspace: new empty chat",
    "status": "matches",
-   "why": "diff 3.3% at t24, copy 92%",
+   "why": "diff 3.2% at t24, copy 92%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -514,11 +514,11 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-new-chat.jpg",
-    "changed_ratio_t0": 0.15421017530487804,
-    "changed_ratio_t24": 0.032545731707317074,
+    "changed_ratio_t0": 0.15379954268292684,
+    "changed_ratio_t24": 0.031881669207317075,
     "rea_evidence_ids": [
-     "ev_cc074ea2e0c7b472befebc0909a96285f43ae046093e81ea594c87c52d8ab46d",
-     "ev_8b6cfad9a859d3fc9ae9fcad4b6674d59cbc2a98138f63971edcab69052af910"
+     "ev_d7fb13d0607f05a5086c9a06b51d2826fd6996d6f4754ac327106ea7a7383dd6",
+     "ev_1e6ca3631609a6c501ff1aec47c02c83396636f33c5da5e68ea9cb7b14bb810b"
     ]
    },
    "copy_coverage": 0.92,
@@ -552,11 +552,11 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-tool-calls.jpg",
-    "changed_ratio_t0": 0.21150819359756098,
-    "changed_ratio_t24": 0.058275533536585364,
+    "changed_ratio_t0": 0.21117473323170732,
+    "changed_ratio_t24": 0.05764862804878049,
     "rea_evidence_ids": [
-     "ev_975f5a31f8c8a6ad8f967a29a9a988758df1ede19ea4146877ca9e21a89de09c",
-     "ev_f1bf07c007692ff602462fc5b4172556e5c1e797bbf2d277074e3f6d515f8747"
+     "ev_fc53f06ef1f111a9fdf0bee98b761f7e1b870e7346360db8293759d568a59629",
+     "ev_eb30333f22ba68671a4bd030ebb15ceab9e4e606f096bf8a60e3972a5f795529"
     ]
    },
    "copy_coverage": 0.857,
@@ -571,7 +571,7 @@
    "id": "diff-unified",
    "title": "Diff: file, unified",
    "status": "wrong",
-   "why": "diff 11.0% at t24, copy 91%",
+   "why": "diff 10.9% at t24, copy 91%",
    "team": "git-review",
    "reference": {
     "status": "captured",
@@ -592,11 +592,11 @@
    },
    "diff": {
     "file": "ui-map/diff/diff-unified.jpg",
-    "changed_ratio_t0": 0.5093778582317073,
-    "changed_ratio_t24": 0.10952267530487805,
+    "changed_ratio_t0": 0.5092616234756098,
+    "changed_ratio_t24": 0.10926638719512195,
     "rea_evidence_ids": [
-     "ev_8e71f69d1902b6a861282ea7f58c75e14a44518f1f96537f7c5730c498e88bef",
-     "ev_be4ebde7b03630251390d007974f5e7d629e6a3201dd2558dd77451c4d3c9890"
+     "ev_380f362436dddc02ae3b0246ecc6b8eb7342365fcf4909981213cbccefd9fe2a",
+     "ev_9e9e27c573ea769b676a88ee44e21d90dcf981fee9481686165fd581342150d1"
     ]
    },
    "copy_coverage": 0.906,
@@ -610,7 +610,7 @@
    "id": "diff-split",
    "title": "Diff: file, split",
    "status": "wrong",
-   "why": "diff 11.1% at t24, copy 91%",
+   "why": "diff 11.0% at t24, copy 91%",
    "team": "git-review",
    "reference": {
     "status": "captured",
@@ -631,11 +631,11 @@
    },
    "diff": {
     "file": "ui-map/diff/diff-split.jpg",
-    "changed_ratio_t0": 0.5099418826219512,
-    "changed_ratio_t24": 0.11068311737804878,
+    "changed_ratio_t0": 0.5098256478658536,
+    "changed_ratio_t24": 0.11042682926829268,
     "rea_evidence_ids": [
-     "ev_6309fbae31d8d44be8632b84637d552443594255428f61e9da64aa6040ecdd9d",
-     "ev_5e9a9420e36d31784a7b374c7153b500f647324775043da730cb410becff5cfe"
+     "ev_c185442c46bbcbeda1786ad2e60af0c097ecaaf6950c3a22acede4754141b26f",
+     "ev_b573bd0e9fd2401894f1e22ccb6663d9020d801be62f332ff4ce5709cf091fa7"
     ]
    },
    "copy_coverage": 0.906,
@@ -670,11 +670,11 @@
    },
    "diff": {
     "file": "ui-map/diff/diff-entire-file.jpg",
-    "changed_ratio_t0": 0.5025581173780488,
-    "changed_ratio_t24": 0.061928353658536585,
+    "changed_ratio_t0": 0.5024418826219512,
+    "changed_ratio_t24": 0.061672065548780484,
     "rea_evidence_ids": [
-     "ev_05273eae8afb7f486644b952614bba275af891b5e139b9a337940fa139cc4211",
-     "ev_ee62bbe258e0cd13fc4f67a3159a72d599fffe8c04a08e01c43ad00c41001216"
+     "ev_efdfbd9c2aea36513963cf85619bb5dd008c7b011c2669b8a3b6da3f3459e2f4",
+     "ev_6e4cad1186c461465ed76a7a8896317bb6adafb4648c6b867a845772c2cc4dc7"
     ]
    },
    "copy_coverage": 0.906,
@@ -966,10 +966,10 @@
    "diff": {
     "file": "ui-map/diff/login.jpg",
     "changed_ratio_t0": 0.999969512195122,
-    "changed_ratio_t24": 0.9932012195121951,
+    "changed_ratio_t24": 0.9931478658536586,
     "rea_evidence_ids": [
-     "ev_287877af09b55f32efd94de9fcf42c3bc78ae4a4de3b2cb285df8ed2b4f37149",
-     "ev_c2ddfe50d739ad1dc6398ec5bcebb861f385dcae0c24bcb04c716899f0a3c6b8"
+     "ev_ac55c07429e22476854ecdde1a97eef271c93caefad74e1001d4121932e1ca2a",
+     "ev_688f729afa86fbc397d84e95fc699fbf2615f5a7d6310e03099afe01e3bb8adf"
     ]
    },
    "copy_coverage": 0.0,
@@ -1006,8 +1006,8 @@
     "changed_ratio_t0": 0.058445121951219516,
     "changed_ratio_t24": 0.03120236280487805,
     "rea_evidence_ids": [
-     "ev_7b1fffa4063b223aab1d54d815e0960a3d09d2fecb40a4a844ce79514743a9da",
-     "ev_008cb39cdf42dc51ccb4499377c51e6e5898632020c5c6253511b713c2450d76"
+     "ev_0e38bc05cf980ecbb37931f1d2477343a1f2c0769231a8bb7ecadb5a018cd429",
+     "ev_f8d26a212d473f8bcfc9c714bd9a353ff379dfa26e33e8d6ea589ff78125ed73"
     ]
    },
    "copy_coverage": 0.891,
@@ -1136,8 +1136,8 @@
     "changed_ratio_t0": 0.11030487804878049,
     "changed_ratio_t24": 0.04550495426829268,
     "rea_evidence_ids": [
-     "ev_dce3d49967a202302da035cd6d54fcfbd3e0e9b26c184e853b2d0faaaa7b3e40",
-     "ev_67e28388d62db637a97455a5fb2b46c84c23899db98fe739a9f5596d4f870d79"
+     "ev_c7c63d1a33176f687986dbbd885bf21113c05fbd31b13d3001ba3fb621ea3b70",
+     "ev_2612436d1a176ee3efa09b68060c3e2d1919e56e9b3223c79a64d12aa92d7af9"
     ]
    },
    "copy_coverage": 0.792,
@@ -1216,8 +1216,8 @@
     "changed_ratio_t0": 0.07965034298780488,
     "changed_ratio_t24": 0.04201124237804878,
     "rea_evidence_ids": [
-     "ev_76e69f23528670a330f44260f829150de164052e4e64bdb9c54c787567b81a61",
-     "ev_82b513adbe28acb45496b3184710418ae154456d83b088ab7527da81c2fd18e3"
+     "ev_10feafe1be656bf391f951ec855964663ab5659eb37cddcf923e3415f075997f",
+     "ev_d170c2216d11b292e95fcec87fbcd68099c6c092b2e732b823ed29660be4defc"
     ]
    },
    "copy_coverage": 0.921,
@@ -1287,8 +1287,8 @@
     "changed_ratio_t0": 0.19623189786585366,
     "changed_ratio_t24": 0.04945217225609756,
     "rea_evidence_ids": [
-     "ev_491cc904720e6f69d01c9d70183d96609442ad47ba43c1d9c69da17a85124f4e",
-     "ev_81b33b50b375448fe75a37c66f1dff376ed718d2a481eb58df1f7723b3ef3561"
+     "ev_e892ada09aae90970b921b01ab7d5945e8f374918f843236bf99a9eae79e2763",
+     "ev_388b1955c94133f9c561565209de7d066c72d2c687d0eee21d087ad4f19bc527"
     ]
    },
    "copy_coverage": 0.891,
@@ -1328,8 +1328,8 @@
     "changed_ratio_t0": 0.0849171112804878,
     "changed_ratio_t24": 0.04391673018292683,
     "rea_evidence_ids": [
-     "ev_d34c68ef99cc45fe3ea62c49465cd185e197142d5458800fc64a4edeb2b7bcc0",
-     "ev_bf80125226044e36750603c918a8a59690fc2feafb7c8e28ebebac618acef3cc"
+     "ev_4cc53d0ac966593914a2e86f36d7febba93d9af5cb73f52244d6061fd3fb18a3",
+     "ev_f691888859411188f76ca25a0363af6a93f84bd3c75e2288c5332d60368c7e97"
     ]
    },
    "copy_coverage": 0.37,
@@ -1363,8 +1363,8 @@
     "changed_ratio_t0": 0.06297923018292682,
     "changed_ratio_t24": 0.03231993140243902,
     "rea_evidence_ids": [
-     "ev_fae7837bda865fc6208e5837dd8a3d6bba9de16d173a43c4191a29111c76df0b",
-     "ev_8fc33037ce8067efd40c331fb705ecc6163d2ef268a28648dfb1dbfb669823a8"
+     "ev_e06abf92805ad65c986bad541345195d3cd0c9d3cbeb02045345d06fd23f9bf6",
+     "ev_614d37d1da6596f1b6e041ca5c28cc95f3548fe071c08c7ffe95b4910b3ab976"
     ]
    },
    "copy_coverage": 0.946,
@@ -1402,8 +1402,8 @@
     "changed_ratio_t0": 0.10380716463414634,
     "changed_ratio_t24": 0.07026581554878049,
     "rea_evidence_ids": [
-     "ev_e58c8a82ba5d2804c8c8385ef8dac93007e2beb7023e0a4026811febaed2d73e",
-     "ev_65060419d3af75484fd47d5de21ab5a65fe0f5ad3a324c97157faabdc29f79c9"
+     "ev_5f59c4abf40d603fb28259e1f3f7e58b28303b519abe98428e659bebb0b6b2dc",
+     "ev_3b65034da76eed441cc6058320e6afaa2fac8574e15debc2acf0bf204ca6866a"
     ]
    },
    "copy_coverage": 0.881,
@@ -1718,8 +1718,8 @@
     "changed_ratio_t0": 0.09433307926829268,
     "changed_ratio_t24": 0.05978563262195122,
     "rea_evidence_ids": [
-     "ev_b96562d031bd7bfb171b4b36a5ac3e9315efb746f7d19ad05df2783256c76f5c",
-     "ev_f76e13b2f57765767b4450120c69820f922a16522d4e50678d6038912b20fdeb"
+     "ev_770d3456f57772ba97a166223cb2a507928d1c1e1ecae7b6ccaeab02e4a6580e",
+     "ev_1965c0813c0828fe147ce284fae34a8be29a4a1b99c7464a4f2b97d03651c8f0"
     ]
    },
    "copy_coverage": 0.921,
@@ -2046,10 +2046,10 @@
    "diff": {
     "file": "ui-map/diff/palette-all.jpg",
     "changed_ratio_t0": 0.9999866615853659,
-    "changed_ratio_t24": 0.058968178353658536,
+    "changed_ratio_t24": 0.05854611280487805,
     "rea_evidence_ids": [
-     "ev_cc429cdc69e965d54be91b3ee82bef98b5b4a5d555550e9ce8aac056d2352de5",
-     "ev_27e1e0290a4b38e3e8588fe28c2c75358f796a19f0748c29da18e097b0e16388"
+     "ev_73f2c4b58c6e241df82630538afb25695a1a365df384eb8f219845e7891a9099",
+     "ev_6b3af223c0775d32925860cb1f91876058b78c3a0d6744524f82f336d48e7978"
     ]
    },
    "copy_coverage": 0.5,
@@ -2104,10 +2104,10 @@
    "diff": {
     "file": "ui-map/diff/palette-workspaces.jpg",
     "changed_ratio_t0": 0.9999876143292683,
-    "changed_ratio_t24": 0.05633765243902439,
+    "changed_ratio_t24": 0.05592511432926829,
     "rea_evidence_ids": [
-     "ev_f611d2ce03a0de7988efa367d5b0a390250f5c08f28df04db80e5eb45377f92c",
-     "ev_7ebfe9c20c1536f3c0d31d54eed34bb3f8f0e6d0e5d34b36cac7065834481dfd"
+     "ev_8449e6d349e02675f2ee3b8d93d47709dff82fb46cd197ad2e5708b3ea1feb50",
+     "ev_f52d8c351e3eb819deecd63138adac061656b5becd3344cc17a45b561d4db369"
     ]
    },
    "copy_coverage": 0.81,
@@ -2144,10 +2144,10 @@
    "diff": {
     "file": "ui-map/diff/palette-search.jpg",
     "changed_ratio_t0": 0.9999809451219512,
-    "changed_ratio_t24": 0.05928639481707317,
+    "changed_ratio_t24": 0.05889291158536585,
     "rea_evidence_ids": [
-     "ev_974a46975d7d676d7df9b07372e2b1ee1c1a8e9013e548db013ecf0252f095a5",
-     "ev_891da6bb7f072ab9652b06ce591823646439b568ea603b8171a58a8a80a91f56"
+     "ev_712b100439194f1337ca3798b8be3434842b7313588be6f281720040ce5fffc3",
+     "ev_fab7cccdf8663f7a5a2242b5ff4632fef40b687b3f5dc950f76018c44abd2067"
     ]
    },
    "copy_coverage": 0.8,
@@ -2162,7 +2162,7 @@
    "id": "dialog-clone-github",
    "title": "Clone GitHub repo dialog",
    "status": "wrong",
-   "why": "diff 8.5% at t24, copy 80%",
+   "why": "diff 8.4% at t24, copy 80%",
    "team": "git-review",
    "reference": {
     "status": "captured",
@@ -2184,10 +2184,10 @@
    "diff": {
     "file": "ui-map/diff/dialog-clone-github.jpg",
     "changed_ratio_t0": 0.989351181402439,
-    "changed_ratio_t24": 0.0851295731707317,
+    "changed_ratio_t24": 0.0840282012195122,
     "rea_evidence_ids": [
-     "ev_a0671b0e605748542701822f6da900f9968d740a142e3f13183e015feaedccbd",
-     "ev_93a029bc16b211ab8bf3faaaf2122b20e251ef909a20b76d5c42357e0a6e7f8b"
+     "ev_c53196db03be2afc21a5861a880380228a0ecb15f26adbc4fd033873ecb839e6",
+     "ev_4f8bf21112e465b21312e61fe7acb83a9bae44394cd712cf6f94ee0a720dddd6"
     ]
    },
    "copy_coverage": 0.8,
@@ -2202,7 +2202,7 @@
    "id": "dialog-create-project",
    "title": "Create project dialog",
    "status": "wrong",
-   "why": "diff 9.6% at t24, copy 83%",
+   "why": "diff 9.5% at t24, copy 83%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2224,10 +2224,10 @@
    "diff": {
     "file": "ui-map/diff/dialog-create-project.jpg",
     "changed_ratio_t0": 0.9785270579268293,
-    "changed_ratio_t24": 0.09640720274390244,
+    "changed_ratio_t24": 0.0954811356707317,
     "rea_evidence_ids": [
-     "ev_9393d22e66bf7c24ca7b9c476266a5b3c4bc3af825bce716036b9b00bf2b7600",
-     "ev_40704e118143bf85820c8c21cf710e6ca39e8d8c6cdfb4838af6e212b2d1cb73"
+     "ev_8a5dd0f4a582c94aa362d64f1264e15b55ec3f40f14d031c4ca2048cd411a817",
+     "ev_40b6c1dea1152c510bfb229d945e7c67b1548678d8e1e7964248075de0438ff6"
     ]
    },
    "copy_coverage": 0.828,
@@ -2243,7 +2243,7 @@
    "id": "dialog-rename-workspace",
    "title": "Rename workspace dialog",
    "status": "wrong",
-   "why": "diff 5.3% at t24, copy 78%",
+   "why": "diff 5.2% at t24, copy 78%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2265,10 +2265,10 @@
    "diff": {
     "file": "ui-map/diff/dialog-rename-workspace.jpg",
     "changed_ratio_t0": 0.9999904725609756,
-    "changed_ratio_t24": 0.05327267530487805,
+    "changed_ratio_t24": 0.0524657012195122,
     "rea_evidence_ids": [
-     "ev_342c583270432a83b6d49046033970ba2decc0ea7b0773f06a5e3b9b8d53f9c0",
-     "ev_b4572fb4b74fd3da15612618cab38ba5261e78abbf79cbd2c6075a0c638d8625"
+     "ev_8a1776908519ec407a7472fa630b0cc5e8a54a39205283e37fb6d7f1a0c07c04",
+     "ev_14f38454c8a28c8baf72396f986d52246d7f6c3295def67feff82e11f3b2356d"
     ]
    },
    "copy_coverage": 0.778,
@@ -2283,7 +2283,7 @@
    "id": "dialog-keyboard-shortcuts",
    "title": "Keyboard shortcuts dialog",
    "status": "wrong",
-   "why": "diff 5.9% at t24, copy 79%",
+   "why": "diff 5.8% at t24, copy 79%",
    "team": "shell",
    "reference": {
     "status": "captured",
@@ -2304,11 +2304,11 @@
    },
    "diff": {
     "file": "ui-map/diff/dialog-keyboard-shortcuts.jpg",
-    "changed_ratio_t0": 0.3430783155487805,
-    "changed_ratio_t24": 0.05916825457317073,
+    "changed_ratio_t0": 0.34269626524390245,
+    "changed_ratio_t24": 0.058051638719512196,
     "rea_evidence_ids": [
-     "ev_af0c0c6ff64925e59930b48af235a9a6ff8fe34994018c78a55cfbc5f7b309c8",
-     "ev_fa7db0d8c58dac875f65609acddc8a534da0106a555d33b85224703a6c842a0b"
+     "ev_67a51f35dad5a47ca9f13d7aa182be52fbe4c3e8f2aa3c86f448e559820ae187",
+     "ev_d3cc62513cb10d1732fa20e05775c6dfeb295f1dd1c5e28f6e26397f3d4b1cd4"
     ]
    },
    "copy_coverage": 0.786,
@@ -2322,7 +2322,7 @@
    "id": "menu-account",
    "title": "Account / computer menu",
    "status": "wrong",
-   "why": "diff 5.8% at t24, copy 73%",
+   "why": "diff 5.7% at t24, copy 73%",
    "team": "shell",
    "reference": {
     "status": "captured",
@@ -2343,11 +2343,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-account.jpg",
-    "changed_ratio_t0": 0.3359594131097561,
-    "changed_ratio_t24": 0.05768483231707317,
+    "changed_ratio_t0": 0.33557736280487804,
+    "changed_ratio_t24": 0.05656821646341464,
     "rea_evidence_ids": [
-     "ev_d4e509d988e9c07b152f7994229d5b86106fdc2a942b940b06fb49a3853146d7",
-     "ev_ab642475ab81d4fa4150778af6f029f5370f093ec5faa37396b013afbf3dba2f"
+     "ev_eaff9528b70ca7603693a68cd57681909d30efbdd23d7fee039e89d0467461d2",
+     "ev_327714c1926f7bdb13eed3d97531a5dc89454868ce8be69bb66ae0992f3f531a"
     ]
    },
    "copy_coverage": 0.733,
@@ -2362,7 +2362,7 @@
    "id": "menu-workspace-context",
    "title": "Workspace context menu",
    "status": "wrong",
-   "why": "diff 6.1% at t24, copy 83%",
+   "why": "diff 6.0% at t24, copy 83%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2383,11 +2383,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-workspace-context.jpg",
-    "changed_ratio_t0": 0.3558812881097561,
-    "changed_ratio_t24": 0.06141196646341463,
+    "changed_ratio_t0": 0.3554982850609756,
+    "changed_ratio_t24": 0.06039253048780488,
     "rea_evidence_ids": [
-     "ev_bb2cfd4e38b4cb8db3ecd78ec07c271b4d0c2bbc9ceab97233aeee8b092eee19",
-     "ev_9c556fea12fb47ff547d6c23e45db2892dbdc11cb958e3256dcc83f53b7b633b"
+     "ev_dcca1ae6715631b9d52d9df7ffd1a56d3a4e4e9ad5ce0054aeb8565f43ca738e",
+     "ev_3aed48b00610c494507e1a2a6f0b07af1f57f841dcf2a5191388bac484642f0b"
     ]
    },
    "copy_coverage": 0.833,
@@ -2401,7 +2401,7 @@
    "id": "menu-workspace-status",
    "title": "Workspace context menu > Set status",
    "status": "wrong",
-   "why": "diff 7.2% at t24, copy 79%",
+   "why": "diff 7.1% at t24, copy 79%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
@@ -2422,11 +2422,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-workspace-status.jpg",
-    "changed_ratio_t0": 0.3844702743902439,
-    "changed_ratio_t24": 0.07249237804878049,
+    "changed_ratio_t0": 0.3840872713414634,
+    "changed_ratio_t24": 0.07147294207317073,
     "rea_evidence_ids": [
-     "ev_d035f36634fba95cedcb9c531cd3ed5676b548a1e58fc06c0ee5f5fd2c78eaf5",
-     "ev_8f8b7dd82b37a12e1aa1eb39e99bdc8f7c1dea8462fb8dfc1674e77b49e5f159"
+     "ev_93910ba57fb9c712ccff7a88fbc98b727040c295e2a9cd09a767d7fc9d325fbd",
+     "ev_4746b7d3006ffb047758683e1a37c0f854a4fa69b95ad3063a39d1f1839f168e"
     ]
    },
    "copy_coverage": 0.789,
@@ -2441,7 +2441,7 @@
    "id": "menu-model-picker",
    "title": "Composer model picker",
    "status": "wrong",
-   "why": "diff 4.8% at t24, copy 81%",
+   "why": "diff 4.7% at t24, copy 81%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -2462,11 +2462,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-model-picker.jpg",
-    "changed_ratio_t0": 0.21254668445121952,
-    "changed_ratio_t24": 0.04754858993902439,
+    "changed_ratio_t0": 0.212202743902439,
+    "changed_ratio_t24": 0.04692358993902439,
     "rea_evidence_ids": [
-     "ev_d2dd28ca9c7649d18b8bbcc2b97fc2622cc65d91915d8f97fdaff20cc51d5de6",
-     "ev_bdb14a7af7bda3666142ad2220d3c7a42cb2255fe2ad3d48eaacb9dfbb0a5537"
+     "ev_d36b9e03762b7cb9d4266a550f4bddca4a3eaff8288ce4edc144fd695b5721f5",
+     "ev_fcffea2ccf76d0a0092d28c9ee7ca080b3f76375e7b9393903d9759193937fe1"
     ]
    },
    "copy_coverage": 0.812,
@@ -2483,7 +2483,7 @@
    "id": "menu-repo-actions",
    "title": "Sidebar repo actions menu",
    "status": "wrong",
-   "why": "no valid reference render (step-failed), diff 5.7% at t24",
+   "why": "no valid reference render (step-failed), diff 5.6% at t24",
    "team": "workspaces",
    "reference": {
     "status": "step-failed",
@@ -2504,11 +2504,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-repo-actions.jpg",
-    "changed_ratio_t0": 0.32510575457317076,
-    "changed_ratio_t24": 0.056920731707317075,
+    "changed_ratio_t0": 0.3247217987804878,
+    "changed_ratio_t24": 0.055892721036585366,
     "rea_evidence_ids": [
-     "ev_b4d5857852dee25a7e84002018d35949f4fcc4344c132233306e33f3bfec1d15",
-     "ev_eda32fab1a24a1aae0453df858c16b6c1cb105fb18afe22294278dad1edb99dc"
+     "ev_87b89281888991bbf4357064eee6797d3dd031e985f6f9c065c4df66cc081fa8",
+     "ev_1ddbd6e8e290a49fef559bf0754171f06c823f3c4a57c9050ba559b9b6e5f071"
     ]
    },
    "copy_coverage": 0.786,
@@ -2518,7 +2518,7 @@
    "id": "menu-help",
    "title": "Help menu",
    "status": "wrong",
-   "why": "diff 7.2% at t24, copy 70%",
+   "why": "diff 7.1% at t24, copy 70%",
    "team": "shell",
    "reference": {
     "status": "captured",
@@ -2539,11 +2539,11 @@
    },
    "diff": {
     "file": "ui-map/diff/menu-help.jpg",
-    "changed_ratio_t0": 0.38305735518292683,
-    "changed_ratio_t24": 0.07223704268292683,
+    "changed_ratio_t0": 0.3826753048780488,
+    "changed_ratio_t24": 0.0711204268292683,
     "rea_evidence_ids": [
-     "ev_417bf03b33719024611a8f8667376075bf6a6952848524ff79606d3248653e29",
-     "ev_16ffbfe831b1045064d26edb6179f4daaaea1fbd337260177648ab28125a361c"
+     "ev_97300b63fefa2f1368874aca6da7a67f46dc0b528678b5b6dcc2e053515ceb66",
+     "ev_58198e575edf3cbd8331063046c95f78445429f8cf4f2049149892e8243320ed"
     ]
    },
    "copy_coverage": 0.696,
@@ -2561,7 +2561,7 @@
    "id": "toast-copied-link",
    "title": "Toast: copied link",
    "status": "wrong",
-   "why": "diff 6.3% at t24, copy 73%",
+   "why": "diff 6.2% at t24, copy 73%",
    "team": "shell",
    "reference": {
     "status": "captured",
@@ -2582,11 +2582,11 @@
    },
    "diff": {
     "file": "ui-map/diff/toast-copied-link.jpg",
-    "changed_ratio_t0": 0.3437061737804878,
-    "changed_ratio_t24": 0.06298685213414634,
+    "changed_ratio_t0": 0.3433231707317073,
+    "changed_ratio_t24": 0.061967416158536584,
     "rea_evidence_ids": [
-     "ev_dd2c79202c6f5401f907de3fe222c98beb50b0512355185d6afc3e7e526a2188",
-     "ev_290dec97310419738a13f076e3770967d1a372d1bb51d439f346873153bf49ee"
+     "ev_7a230e4bca41a2b764e2bc31ec3d0da47f63ad831fd3c6ef844133c9ab010efc",
+     "ev_fde6bc1dbb5248bc6671d2b66e5d92cb095d67200574ec8c4438936be1871dc7"
     ]
    },
    "copy_coverage": 0.733,
@@ -2656,7 +2656,7 @@
    "reference_screenshot": "ui-map/ref/onboarding-signed-out.png",
    "openconductor_screenshot": "ui-map/oc/onboarding-signed-out.png",
    "diff": "ui-map/diff/onboarding-signed-out.jpg",
-   "changed_ratio_t24": 0.9926381478658537
+   "changed_ratio_t24": 0.992664824695122
   },
   {
    "id": "route:settings",
@@ -3514,7 +3514,7 @@
    "reference_screenshot": "ui-map/ref/first-run-onboarding.png",
    "openconductor_screenshot": "ui-map/oc/first-run-onboarding.png",
    "diff": "ui-map/diff/first-run-onboarding.jpg",
-   "changed_ratio_t24": 0.9679897103658537
+   "changed_ratio_t24": 0.9680354420731707
   },
   {
    "id": "route:new-member-onboarding",
@@ -3543,7 +3543,7 @@
    "kind": "route",
    "name": "/",
    "status": "wrong",
-   "why": "diff 4.3% at t24, copy 79%",
+   "why": "diff 4.2% at t24, copy 79%",
    "team": "shell",
    "component": "Wls",
    "source": {
@@ -3558,7 +3558,7 @@
    "reference_screenshot": "ui-map/ref/home.png",
    "openconductor_screenshot": "ui-map/oc/home.png",
    "diff": "ui-map/diff/home.jpg",
-   "changed_ratio_t24": 0.0426610137195122
+   "changed_ratio_t24": 0.04248475609756098
   },
   {
    "id": "route:repository-repositoryid-workspace-localworkspaceid",
@@ -3580,7 +3580,7 @@
    "reference_screenshot": "ui-map/ref/workspace-chat.png",
    "openconductor_screenshot": "ui-map/oc/workspace-chat.png",
    "diff": "ui-map/diff/workspace-chat.jpg",
-   "changed_ratio_t24": 0.04530297256097561
+   "changed_ratio_t24": 0.04467797256097561
   },
   {
    "id": "route:all-workspaces",
@@ -3602,7 +3602,7 @@
    "reference_screenshot": "ui-map/ref/all-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/all-workspaces.png",
    "diff": "ui-map/diff/all-workspaces.jpg",
-   "changed_ratio_t24": 0.011187118902439024
+   "changed_ratio_t24": 0.011077553353658537
   },
   {
    "id": "route:create",
@@ -3624,7 +3624,7 @@
    "reference_screenshot": "ui-map/ref/create.png",
    "openconductor_screenshot": "ui-map/oc/create.png",
    "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.06891291920731707
+   "changed_ratio_t24": 0.06850038109756097
   },
   {
    "id": "route:team",
@@ -4116,7 +4116,7 @@
    "reference_screenshot": "ui-map/ref/dialog-clone-github.png",
    "openconductor_screenshot": "ui-map/oc/dialog-clone-github.png",
    "diff": "ui-map/diff/dialog-clone-github.jpg",
-   "changed_ratio_t24": 0.0851295731707317,
+   "changed_ratio_t24": 0.0840282012195122,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4142,7 +4142,7 @@
    "reference_screenshot": "ui-map/ref/dialog-create-project.png",
    "openconductor_screenshot": "ui-map/oc/dialog-create-project.png",
    "diff": "ui-map/diff/dialog-create-project.jpg",
-   "changed_ratio_t24": 0.09640720274390244,
+   "changed_ratio_t24": 0.0954811356707317,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4716,7 +4716,7 @@
    "reference_screenshot": "ui-map/ref/create.png",
    "openconductor_screenshot": "ui-map/oc/create.png",
    "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.06891291920731707,
+   "changed_ratio_t24": 0.06850038109756097,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -4914,7 +4914,7 @@
    "reference_screenshot": "ui-map/ref/palette-all.png",
    "openconductor_screenshot": "ui-map/oc/palette-all.png",
    "diff": "ui-map/diff/palette-all.jpg",
-   "changed_ratio_t24": 0.058968178353658536,
+   "changed_ratio_t24": 0.05854611280487805,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -6923,7 +6923,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.05633765243902439,
+   "changed_ratio_t24": 0.05592511432926829,
    "primitive": "DropdownMenuCheckboxItem",
    "dynamic": false
   },
@@ -7615,7 +7615,7 @@
    "reference_screenshot": "ui-map/ref/menu-workspace-context.png",
    "openconductor_screenshot": "ui-map/oc/menu-workspace-context.png",
    "diff": "ui-map/diff/menu-workspace-context.jpg",
-   "changed_ratio_t24": 0.06141196646341463,
+   "changed_ratio_t24": 0.06039253048780488,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -8333,7 +8333,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.05633765243902439,
+   "changed_ratio_t24": 0.05592511432926829,
    "primitive": "DropdownMenuContent",
    "dynamic": true
   },
@@ -9300,7 +9300,7 @@
    "reference_screenshot": "ui-map/ref/palette-workspaces.png",
    "openconductor_screenshot": "ui-map/oc/palette-workspaces.png",
    "diff": "ui-map/diff/palette-workspaces.jpg",
-   "changed_ratio_t24": 0.05633765243902439,
+   "changed_ratio_t24": 0.05592511432926829,
    "primitive": "TabsTrigger",
    "dynamic": false
   },
@@ -10040,7 +10040,7 @@
    "reference_screenshot": "ui-map/ref/create-repo-picker.png",
    "openconductor_screenshot": "ui-map/oc/create-repo-picker.png",
    "diff": "ui-map/diff/create-repo-picker.jpg",
-   "changed_ratio_t24": 0.07296398628048781,
+   "changed_ratio_t24": 0.07255144817073171,
    "primitive": "SelectContent",
    "dynamic": true
   },
@@ -11365,7 +11365,7 @@
    "reference_screenshot": "ui-map/ref/palette-all.png",
    "openconductor_screenshot": "ui-map/oc/palette-all.png",
    "diff": "ui-map/diff/palette-all.jpg",
-   "changed_ratio_t24": 0.058968178353658536,
+   "changed_ratio_t24": 0.05854611280487805,
    "primitive": "E1",
    "dynamic": true
   },
@@ -19095,7 +19095,7 @@
    "reference_screenshot": "ui-map/ref/toast-copied-link.png",
    "openconductor_screenshot": "ui-map/oc/toast-copied-link.png",
    "diff": "ui-map/diff/toast-copied-link.jpg",
-   "changed_ratio_t24": 0.06298685213414634,
+   "changed_ratio_t24": 0.061967416158536584,
    "variant": "success",
    "dynamic": false
   },
