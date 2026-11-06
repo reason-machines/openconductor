@@ -132,6 +132,7 @@
       "[scripts]\n" + (setupScript ? `setup = ${JSON.stringify(setupScript)}\n` : "") + (runScript ? `run = ${JSON.stringify(runScript)}\n` : "");
   saveVfs();
   window.__OC_VFS__ = vfs;
+  const failSettingsWrite = new URLSearchParams(location.search).has("oc_fail_settings_write");
   const enc = new TextEncoder();
   const dec = new TextDecoder();
   function fsPath(args, options) {
@@ -152,6 +153,9 @@
         return Array.from(enc.encode(vfs[p]));
       case "write_text_file":
       case "write_file": {
+        // ?oc_fail_settings_write=1: a repository's .conductor settings file cannot be written (a
+        // read-only checkout), for Settings › Scripts' "Failed to save run script" toasts.
+        if (failSettingsWrite && /\/\.conductor\/settings(\.local)?\.toml$/.test(p)) throw `Permission denied (os error 13): ${p}`;
         const bytes = args instanceof Uint8Array ? args : Array.isArray(args) ? Uint8Array.from(args) : args.data ? Uint8Array.from(args.data) : new Uint8Array();
         vfs[p] = dec.decode(bytes);
         saveVfs();
@@ -437,6 +441,12 @@
   try {
     Object.defineProperty(Navigator.prototype, "platform", { get: () => "MacIntel" });
     Object.defineProperty(Navigator.prototype, "userAgentData", { get: () => undefined });
+    // Conductor sets <html data-platform> from navigator.userAgent when window.__TAURI__ is absent
+    // (renderApp `Hde`), and its macOS-only startup checks (`QQt`, the Xcode license) read that.
+    // Headless Chromium on Linux says "linux"; a capture that needs the macOS path opts in with
+    // ?oc_xcode_license= so every other reference state keeps the user agent it was captured with.
+    if (new URLSearchParams(location.search).has("oc_xcode_license"))
+      Object.defineProperty(Navigator.prototype, "userAgent", { get: () => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)" });
   } catch (e) {}
   // Belt and braces next to the CSP: refuse any cross-origin fetch quickly.
   const realFetch = window.fetch.bind(window);

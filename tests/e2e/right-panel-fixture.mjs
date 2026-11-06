@@ -30,7 +30,7 @@ export const FILES = [
  * Calls the right panel makes are recorded in window.__fake.calls; commands it
  * does not know fail, as in the other e2e fakes, and are listed in window.__fake.unmocked.
  */
-export function fakeBackend({ shell, files, spotlight = false, setupScript = null, runScript = null }) {
+export function fakeBackend({ shell, files, spotlight = false, setupScript = null, runScript = null, xcodeLicense = "accepted", failSettingsWrite = false }) {
   localStorage.setItem("openconductor.shell.v1", JSON.stringify(shell));
   localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shell.selection, collapsed: [] }));
   const settings = {
@@ -104,6 +104,20 @@ export function fakeBackend({ shell, files, spotlight = false, setupScript = nul
         case "spotlight_start":
           window.__fake.calls.push({ cmd, ...args });
           return true;
+        // The startup Xcode license check (src/scripts/xcodeLicense.ts); other shell commands stay unmocked.
+        case "execute_shell_command":
+          if (/xcodebuild -license check/.test(args.request?.command ?? "")) {
+            return xcodeLicense === "unaccepted"
+              ? { stdout: "You have not agreed to the Xcode license agreements. Please run 'sudo xcodebuild -license' from within a Terminal window to review and agree to the Xcode and Apple SDKs license.\n", stderr: "", exitCode: 69 }
+              : { stdout: "", stderr: "", exitCode: 0 };
+          }
+          window.__fake.unmocked.push(cmd);
+          throw new Error(`fake backend: ${cmd} ${args.request?.command} is not mocked`);
+        // Settings › Scripts writes; with failSettingsWrite the repository's settings file is read-only.
+        case "repo_settings_set_local":
+          window.__fake.calls.push({ cmd, key: args.key, value: args.value });
+          if (failSettingsWrite) throw new Error(`Permission denied (os error 13): ${args.repoPath}/.conductor/settings.local.toml`);
+          return {};
         case "open_in_apps":
           return [{ id: "finder", name: "Finder", kind: "finder", installed: true }];
         case "open_in_app":
