@@ -68,6 +68,26 @@ export class WebDriver {
     return value;
   }
 
+  async waitForAppReady(timeoutMs = 30000) {
+    const deadline = Date.now() + timeoutMs;
+    let last;
+    while (Date.now() < deadline) {
+      try {
+        last = await this.execute(
+          'const app = document.querySelector(".app"); return app ? { startup: app.dataset.startup, busy: app.getAttribute("aria-busy") } : null;',
+          [],
+          Math.max(1, deadline - Date.now()),
+        );
+      } catch (error) {
+        last = error instanceof Error ? error.message : String(error);
+      }
+      if (last?.startup === "error") throw new Error("app startup failed: workspace-store loading returned an error");
+      if (last?.startup === "ready" && last.busy === "false") return;
+      await new Promise((resolve) => setTimeout(resolve, Math.max(0, Math.min(250, deadline - Date.now()))));
+    }
+    throw new Error(`timed out waiting for app startup after ${timeoutMs} ms; last: ${JSON.stringify(last)}`);
+  }
+
   async deleteSession() {
     if (!this.sessionId) return;
     await this.#call("DELETE", this.#s("")).catch(() => undefined);

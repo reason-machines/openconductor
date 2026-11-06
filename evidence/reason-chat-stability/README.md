@@ -61,3 +61,19 @@ Dispatch [42301712680](https://github.com/reason-machines/openconductor/actions/
 The Sol reviewer also reproduced unbounded repaint setup/cleanup around the shared screenshot helper. `node --test tests/e2e/webdriver.test.mjs` failed 2 of 3 cases before the fix: stalled setup did not reject and stalled cleanup was not cancelled. After giving setup, screenshot and cleanup one shared deadline, all 3 cases passed. The E2E workflow runs this regression before the Reason chat suite. Successful PNG output and cleanup after errors remain checked. This is mocked transport evidence, not WebKit runtime proof.
 
 The five-pass proof and ten-run ledger remain incomplete. The full-main streak remains **0/10**.
+
+## Startup gate consumption
+
+[Startup readiness #729](https://github.com/reason-machines/openconductor/pull/729) merged as `2ee7b92fa032d4dc9c9f44168382daedff452b90`. The Reason chat and model-picker drivers now wait for the app shell's `data-startup="ready"` and `aria-busy="false"` before seeding or selecting workspaces. `data-startup="error"` fails immediately. The readiness request shares the wait's deadline, so an unresponsive WebDriver cannot hold it indefinitely.
+
+`node --test tests/e2e/webdriver.test.mjs` first failed all three new startup cases because the wait did not exist; all six startup and screenshot cases then passed. These are deterministic transport checks, not reproduction or resolution of the native selection failure. Both driver syntax checks, TypeScript, and `git diff --check` passed. No existing workspace-selection, transcript, Session, model, effort, file-restoration, or no-409 assertion changed. There is no click retry or preference injection.
+
+The same five-pass CI sequence remains required on the containing head. Local native passes remain not run for the reasons above. No new screenshot is supplied for this gate-only change because it changes no UI and the native runtime is unavailable locally.
+
+## Main reconciliation at 2026-11-06 22:59 UTC
+
+Full E2E run [42305622950](https://github.com/reason-machines/openconductor/actions/runs/42305622950) on `98b25f3f28f9071db3998f4be6b79d80d5fca509` remains active. Codex completed successfully. Reason chat, model-picker, Codex, and agent-binary steps passed; later transcript, slash-menu, and App flows must also finish green before the run counts.
+
+Pending main runs `42307119712` (`1dc803d4`), `42307840501` (`24b32f6b`), `42308208468` (`4c1b638d`), and `42308217859` (`2ee7b92f`) were cancelled when newer pushes replaced GitHub's pending concurrency slot. Every cancelled run is recorded as non-green, not skipped from the streak. Run `42308581600` on `5ed536a758fba3bb1aaf8c49dc8b17544df27e13` is the latest pending main run. No manual main dispatch was added.
+
+The green notification for `f3854246` belongs to an older full E2E run, before #714. The failure notification for `623b0936` also predates #714 and failed at the empty-chat wait before picker selection. Neither notification establishes a post-#714 green run.
