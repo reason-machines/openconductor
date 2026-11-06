@@ -1,0 +1,62 @@
+{
+  "reference-first": {
+    "sha256": "5f919272f81d076b2e814b9680d4a3edcc99df8b375b4bfbc500f0c86e9eb407",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Finder"
+  },
+  "reference-next": {
+    "sha256": "00198f997c8bce7e08ae9219f3c331eeb44c017e3d3c76544caaab34c28f0858",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Cursor"
+  },
+  "reference-close": {
+    "sha256": "ac44c7c82a2bf706d9d7ec160fe72ca95a3bd368f95a170a1b4ec511c08882fb",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Close"
+  },
+  "ours-first": {
+    "sha256": "af54188f01c00225ff9647e5bea99d0b372ffca6d411641275d76322b74b9119",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Finder"
+  },
+  "ours-next": {
+    "sha256": "81bf2d969afefbc19183540459e1ebde9c1243fada200eb7338c68f88b8370a1",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Cursor"
+  },
+  "ours-close": {
+    "sha256": "1b4fa53b29cf6ddbf8e67c8d7f2aea5cb95f43d6284447e6bfceb88d303470cb",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Close"
+  }
+}

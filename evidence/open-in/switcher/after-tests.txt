@@ -1,0 +1,43 @@
+bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+(node:22799) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:22811) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:22821) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: holding opens no app, cycling reveals chooser, reverse cycles, release opens exactly once
+ok 1 - holding opens no app, cycling reveals chooser, reverse cycles, release opens exactly once
+  ---
+  duration_ms: 1556.836831
+  type: 'test'
+  ...
+# Subtest: Escape, window blur and the Close tile cancel without opening
+ok 2 - Escape, window blur and the Close tile cancel without opening
+  ---
+  duration_ms: 1369.366648
+  type: 'test'
+  ...
+# Subtest: quick release opens the first app without leaving an overlay; pointer button stays immediate
+ok 3 - quick release opens the first app without leaving an overlay; pointer button stays immediate
+  ---
+  duration_ms: 999.398383
+  type: 'test'
+  ...
+# Subtest: inactive Shift+Command+O keeps opening the numbered menu; chosen app becomes MRU
+ok 4 - inactive Shift+Command+O keeps opening the numbered menu; chosen app becomes MRU
+  ---
+  duration_ms: 1488.735616
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5926.750228
+OPEN_IN_VERIFY_EXIT=0

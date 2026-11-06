@@ -5,6 +5,8 @@
 .palette-backdrop { position: fixed; inset: 0; background: transparent; z-index: 20; }
 .palette { position: absolute; top: calc(50% - 250px); left: 0; right: 0; margin: 0 auto; width: min(672px, calc(100vw - 48px)); max-height: 500px; display: flex; flex-direction: column; background: var(--sidebar-background); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 20px 25px -5px var(--shadow-25), 0 8px 10px -6px var(--shadow-25); overflow: hidden; }
 .palette-search { display: flex; align-items: center; height: 49px; padding: 0 12px; border-bottom: 1px solid var(--border); flex: none; box-sizing: border-box; }
+.palette svg { stroke-width: 1px; }
+.palette svg * { vector-effect: non-scaling-stroke; }
 .palette-search > svg { flex: none; margin-right: 8px; opacity: 0.5; }
 .palette-input { flex: 1; min-width: 0; height: 48px; border: 0; background: transparent; padding: 0; font-size: 14px; line-height: 20px; outline: none; color: inherit; }
 .palette-input::placeholder { color: var(--muted); }

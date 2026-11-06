@@ -1,0 +1,16 @@
+{
+  "source": "Conductor 0.87.6 /Applications/Conductor.app on sven m5 max, decoded embedded frontend",
+  "chunk": "renderApp-D_fmY7hW.js",
+  "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "utf8_character_start": 7408687,
+  "utf8_character_end_exclusive": 7420733,
+  "byte_start": 7451888,
+  "byte_end_exclusive": 7463934,
+  "native_binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+  "icon_css": {
+    "chunk": "renderApp-BYEcFwvt.css",
+    "sha256": "5b876e143b67a7b0f09e3816b12c18bc588b4af7a9a43f04ce77fd5337d9ff04",
+    "offset": 394812,
+    "declaration": ".lucide{stroke-width:1px}.lucide *{vector-effect:non-scaling-stroke}#root{background:var"
+  }
+}

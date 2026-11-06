@@ -1,0 +1,92 @@
+{
+  "reference-first": {
+    "sha256": "c73d2fef38b739c34fb5a410952034eb4fff069954fa0abc1c3bcdb835fa2b4a",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Finder",
+    "closeButton": "<div class=\"flex items-center justify-center rounded-2xl border transition-colors border-foreground/[0.04] bg-muted\" style=\"width: 76px; height: 76px; border-radius: 18px;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x size-9 transition-colors duration-150 text-muted-foreground/60\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></div>"
+  },
+  "reference-next": {
+    "sha256": "651f35e1d18ea67e62719e1579eba85bdf90cc945bbfaaa11e34e27ae833ab70",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Cursor",
+    "closeButton": "<div class=\"flex items-center justify-center rounded-2xl border transition-colors border-foreground/[0.04] bg-muted\" style=\"width: 76px; height: 76px; border-radius: 18px;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x size-9 transition-colors duration-150 text-muted-foreground/60\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></div>"
+  },
+  "reference-close": {
+    "sha256": "616b603f3a99f2923ea24980fecb2224b1616b07799bba02782ca8e9ab0f196d",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Close",
+    "closeButton": "<div class=\"flex items-center justify-center rounded-2xl border transition-colors border-foreground/10 bg-muted\" style=\"width: 76px; height: 76px; border-radius: 18px;\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-x size-9 transition-colors duration-150 text-muted-foreground\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></div>"
+  },
+  "ours-first": {
+    "sha256": "545bc90ec9f4e1305ac229f526f50bdc916151a3f5f1b5b79c1b33b054443793",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Finder",
+    "closeButton": "<span class=\"oi-switcher-close\"><svg width=\"36\" height=\"36\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></span>"
+  },
+  "ours-next": {
+    "sha256": "96fcab823a713d9eb681fe1e2f5f6eedcca6c7fff9d46ffb9b3d98c69e3374f6",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Cursor",
+    "closeButton": "<span class=\"oi-switcher-close\"><svg width=\"36\" height=\"36\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></span>"
+  },
+  "ours-close": {
+    "sha256": "20c645463c035f2c0ca2810df0b060a564c1a05b7413ae0e1bb98c448f9c51da",
+    "box": {
+      "x": 176,
+      "y": 338,
+      "width": 928,
+      "height": 144
+    },
+    "label": "Close",
+    "closeButton": "<span class=\"oi-switcher-close\"><svg width=\"36\" height=\"36\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></span>"
+  },
+  "reference-palette-all": {
+    "evidence_id": "ev_e54eb4c720f6a1dce47d2f676a219c04f8a0038858ddd36b359e194b7b71ee90",
+    "sha256": "79850983defde0dc1c724034b97adf44d7a92e6204bc9073fef0b82c70fd613f"
+  },
+  "reference-palette-search": {
+    "evidence_id": "ev_71f45d09ce78dab969a70e9106a7a351f0b61868db1bcbdc8b60b505bf832946",
+    "sha256": "7c45936cc01d26709277a41becf003b269ca8085af6425f26ca0c9c8d2dcca80"
+  },
+  "reference-palette-no-results": {
+    "evidence_id": "ev_8ff9908f56c1d72db591027a983fd811a07380b4e6a7d9927c2dbdf283390d7c",
+    "sha256": "95ad2bec05fd295684da8f2946ee6dc2bf3d062b6cb30deb366bf4c850f58f9e"
+  },
+  "ours-palette-all": {
+    "evidence_id": "ev_a5bb5e8247a142cbce0dbc8be11eed11ef676725f3cb7a77f178e03795b775e5",
+    "sha256": "2f8260dba43f43ecb75de22f24cc2b72213d66d7a5d094ea3bc3bde264cda99f"
+  },
+  "ours-palette-search": {
+    "evidence_id": "ev_92fdfc94246fd6a6d87737abbe630d431535d27722bce86b6ae2c56c5618f0c1",
+    "sha256": "390ea7a0ed3e261bda6c138d1800d9add0c32d5fcc64246b039ea5ac4691050c"
+  },
+  "ours-palette-no-results": {
+    "evidence_id": "ev_f31a13d087c0b7647635b019db85100d383ef5db81d916d034a27f4b2a551a4b",
+    "sha256": "01c7fc7f626bc9ccbdb7e3e00090332e0c985a972510218876abae32d57105c1"
+  }
+}

@@ -1,0 +1,29 @@
+.oi-switcher {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  padding: 28px 24px;
+  height: 144px;
+  border-radius: 40px;
+  background: color-mix(in srgb, var(--glass-white) 20.2%, transparent);
+  color: var(--text);
+  backdrop-filter: blur(4px) saturate(1.8);
+  -webkit-backdrop-filter: blur(4px) saturate(1.8);
+  box-shadow: 0 4.11px 13.152px var(--shadow-18), inset 0 0 0 1px color-mix(in srgb, var(--glass-white) 15%, transparent), inset 0 1px 0 color-mix(in srgb, var(--glass-white) 25%, transparent);
+  animation: oi-switcher-in 150ms ease-out;
+}
+.oi-switcher svg { stroke-width: 1px; }
+.oi-switcher svg * { vector-effect: non-scaling-stroke; }
+.oi-switcher-grid { display: grid; }
+.oi-switcher-cell { position: relative; display: flex; align-items: center; justify-content: center; width: 110px; height: 88px; }
+.oi-switcher-button { position: relative; display: flex; align-items: center; justify-content: center; width: 88px; height: 88px; border: 0; border-radius: 26px; background: transparent; padding: 0; outline: none; }
+.oi-switcher-highlight { position: absolute; width: 78px; height: 78px; border-radius: 21px; background: color-mix(in srgb, var(--text) 30%, transparent); }
+.oi-switcher-highlight.is-close { width: 84px; height: 84px; }
+.oi-switcher-icon { width: 88px; height: 88px; object-fit: contain; border-radius: 16px; }
+.oi-switcher-close { display: flex; align-items: center; justify-content: center; width: 76px; height: 76px; border-radius: 18px; border: 1px solid color-mix(in srgb, var(--text) 4%, transparent); background: var(--surface-muted); color: color-mix(in srgb, var(--muted) 60%, transparent); }
+.oi-switcher-button[aria-pressed="true"] .oi-switcher-close { border-color: color-mix(in srgb, var(--text) 10%, transparent); color: var(--muted); }
+.oi-switcher-label { position: absolute; bottom: 6px; transform: translateX(-50%); font-size: 12px; font-weight: 400; letter-spacing: -0.01em; white-space: nowrap; pointer-events: none; }
+@keyframes oi-switcher-in { from { opacity: 0; scale: .95; } to { opacity: 1; scale: 1; } }
+@media (prefers-reduced-motion: reduce) { .oi-switcher { animation: none; } }
