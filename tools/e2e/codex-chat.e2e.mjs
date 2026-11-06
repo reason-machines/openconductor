@@ -95,13 +95,13 @@ const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
 let sessionUrl = null;
 
-async function wd(method, path, body) {
+async function wd(method, path, body, timeoutMs = 45000) {
   const res = await fetch(`${sessionUrl ?? base}${path}`, {
     method,
     headers: { "content-type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
     // A hung WebDriver call fails here, naming the call, instead of at the job's step timeout.
-    signal: AbortSignal.timeout(45000),
+    signal: AbortSignal.timeout(timeoutMs),
   }).catch((e) => {
     throw new Error(`${method} ${path}: ${e.message}`);
   });
@@ -136,8 +136,8 @@ async function waitFor(what, fn, timeoutMs = 30000) {
   throw new Error(`timed out waiting for ${what}; last: ${last instanceof Error ? last.message : JSON.stringify(last)}`);
 }
 
-async function screenshot(name) {
-  const png = await wd("GET", "/screenshot");
+async function screenshot(name, timeoutMs) {
+  const png = await wd("GET", "/screenshot", undefined, timeoutMs);
   const file = join(out, `${name}.png`);
   writeFileSync(file, Buffer.from(png, "base64"));
   console.log(`screenshot: ${file}`);
@@ -462,7 +462,8 @@ try {
     assert.ok(launch.args.includes('personality="friendly"'), `${mode.id}: launch args ${JSON.stringify(launch.args)}`);
     assert.deepEqual(launch.keys, mode.keys, `${mode.id}: the API key variables Codex got`);
     assert.equal(launch.account, "chatgpt", `${mode.id}: Codex's own login`);
-    await screenshot(`codex-9-${mode.id}-turn`);
+    // WebKitWebDriver's snapshot of a new chat right after its turn can stall (seen on CI); the picture is evidence, not a check.
+    await screenshot(`codex-9-${mode.id}-turn`, 10000).catch((e) => console.log(`# no screenshot: ${e.message}`));
     pass(`${mode.card}: a new chat's turn renders "turn 1: ${prompt}"; its app-server got ${mode.keys.CODEX_API_KEY ? "the stored key" : "no key"}, the ChatGPT account, the custom path and personality`);
   }
 
