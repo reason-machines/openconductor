@@ -93,7 +93,7 @@ export interface BannerModel {
   failed: boolean;
   /** Bold part. */
   title: string;
-  /** Muted part after it, with its leading space. */
+  /** Muted part after it (4px apart); the MB suffix carries a leading space, "Retrying…" does not, as in Conductor. */
   detail: string;
   /** Shown under "see error" (failed or retrying with an error). */
   error?: string;
@@ -112,7 +112,7 @@ export function bannerModel(s: AgentBinaryStatus, now: number): BannerModel {
   if (retrying) {
     const left = s.nextAttemptUnixMs !== undefined ? ` in ${secondsLeft(s.nextAttemptUnixMs, now)}s` : "";
     const attempt = s.attempt ? ` (attempt ${s.attempt})` : "";
-    return { failed, title, detail: ` Retrying${left}${attempt}`, error, action: "Retry now" };
+    return { failed, title, detail: `Retrying${left}${attempt}`, error, action: "Retry now" };
   }
   const detail =
     s.bytesTotal && s.bytesTotal > 0

@@ -179,7 +179,7 @@ try {
   // 1. Failing download: retrying with a countdown, then failed.
   await invoke("request_agent_binary_download", { agent: "claude" });
   const retrying = await waitFor("the retrying banner", bannerIn("retrying"), 15000, 100);
-  assert.match(retrying.text, /^Downloading Claude Code 2\.1\.284… Retrying in \d+s \(attempt [23]\)/, retrying.text);
+  assert.match(retrying.text, /^Downloading Claude Code 2\.1\.284…\s?Retrying in \d+s \(attempt [23]\)/, retrying.text);
   assert.equal(retrying.action, "Retry now");
   assert.ok(retrying.aboveComposer, "the banner sits right above the composer");
   assert.ok(retrying.pulsing, "pulsing download icon");

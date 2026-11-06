@@ -73,8 +73,8 @@ test("downloading text: version, then MB downloaded / total (Conductor's UAo and
 
 test("retrying text counts down to the next attempt and offers Retry now", () => {
   const m = bannerModel(status({ state: "retrying", nextAttemptUnixMs: 10_000, attempt: 2, error: "HTTP 404" }), 6_200);
-  assert.deepEqual(m, { failed: false, title: "Downloading Claude Code 2.1.284…", detail: " Retrying in 4s (attempt 2)", error: "HTTP 404", action: "Retry now" });
-  assert.equal(bannerModel(status({ state: "retrying", nextAttemptUnixMs: 1_000 }), 5_000).detail, " Retrying in 0s", "never negative; no attempt, no suffix");
+  assert.deepEqual(m, { failed: false, title: "Downloading Claude Code 2.1.284…", detail: "Retrying in 4s (attempt 2)", error: "HTTP 404", action: "Retry now" });
+  assert.equal(bannerModel(status({ state: "retrying", nextAttemptUnixMs: 1_000 }), 5_000).detail, "Retrying in 0s", "never negative; no attempt, no suffix");
 });
 
 test("failed text: Couldn't download, the error behind see error, Retry", () => {
