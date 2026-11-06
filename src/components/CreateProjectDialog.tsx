@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { addRepository, createNewProject, folderExists, lastCloneDirectory, pickFolder, saveLastCloneDirectory, saveRepoScripts } from "../backend";
 import { defaultCloneDirectory } from "../workspace/api";
 import { appendLog, initialLocation, logText } from "../state/cloneDialog";
@@ -9,7 +9,7 @@ import {
 import type { Repo } from "../state/types";
 import { createFirstWorkspace, type FirstWorkspaceResult } from "../home/createFirstWorkspace";
 import { FileCodeIcon, NextMarkIcon } from "./Icons";
-import { useDialogMotion } from "./motion/dialogMotion";
+import { DialogFrame } from "./DialogFrame";
 
 // "Create project" (Home → Quick start), per evidence/screens/create-project.md.
 // gstack stays out of TEMPLATES until the user decides on it.
@@ -34,7 +34,6 @@ const TEMPLATE_ICONS: Record<TemplateId, () => JSX.Element> = {
 };
 
 export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) {
-  const motionRef = useDialogMotion<HTMLDivElement>();
   const [name, setName] = useState(DEFAULT_PROJECT_NAME);
   const [parent, setParent] = useState("");
   const [template, setTemplate] = useState<TemplateId>("empty");
@@ -99,19 +98,11 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
     }
   }
 
-  function onNameKey(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault();
-      if (canCreate(slug, parent.trim(), pending)) void submit();
-    }
-  }
-
   return (
-    <div className="modal-backdrop" ref={motionRef} data-dialog-motion="dialog" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal create-project-modal" role="dialog" aria-modal="true" aria-label="Create project" onKeyDown={(e) => e.key === "Escape" && onClose()}>
+    <DialogFrame kind="dialog" className="create-project-modal" titleId="create-project-title" descriptionId="create-project-description" onClose={onClose}>
       <div className="create-project-header">
-        <h2>Create project</h2>
-        <p className="create-project-subtitle">Create a local folder, private GitHub repo, and first workspace.</p>
+        <h2 id="create-project-title">Create project</h2>
+        <p id="create-project-description" className="create-project-subtitle">Create a local folder, private GitHub repo, and first workspace.</p>
       </div>
       <form onSubmit={submit} className="create-project-dialog">
         <label className="field">
@@ -119,7 +110,7 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
           <input
             id="project-name" autoFocus autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
             placeholder="my-awesome-project" value={name} disabled={pending}
-            onChange={(e) => setName(e.target.value)} onKeyDown={onNameKey}
+            onChange={(e) => setName(e.target.value)}
           />
           {hint?.kind === "creates" && (
             <span className="create-project-hint">Creates folder and repo <code>{hint.slug}</code></span>
@@ -156,13 +147,12 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
         )}
         {error && <div className="clone-error" role="alert">{error}</div>}
         <div className="modal-actions">
-          <button type="submit" className="btn btn-primary" disabled={!canCreate(slug, parent.trim(), pending)}>
+          <button type="submit" className="btn btn-primary" data-primary-action disabled={!canCreate(slug, parent.trim(), pending)}>
             {createButtonLabel(pending)}
             {!pending && <kbd className="clone-kbd">⌘↵</kbd>}
           </button>
         </div>
       </form>
-      </div>
-    </div>
+    </DialogFrame>
   );
 }

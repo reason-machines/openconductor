@@ -1,13 +1,27 @@
 # UI program ledger: OpenConductor vs Conductor, screen by screen
 
+## Current scope, 6 November 2026
+
+The [generated interactive ledger](ledger.html) and [machine-readable map](../ui-map.json) are the current scope-aware evidence queue. Regenerate them with `python3 tools/ui-map/build_map.py`. The records below are historical audits, not current final-review sign-off.
+
+- Local Home, sidebar, workspace and chat, composer, diff and changes, local Settings, Open in, palette, and dialogs remain in scope. Track D repeats fresh native side-by-side review after builders until a pass finds nothing material. Every current main-screen final verdict is unverified.
+- Team, routines, triage, organization and other cloud UI are deferred and excluded from the denominator. Retained code must be hidden behind an Experimental setting that is off by default. The gate is a separate, currently unverified requirement. This scope change does not authorize deleting already merged implementation.
+- Only Reason spans the Mac and a Reason cloud computer in one chat. Claude Code and Codex run locally on the Mac, with no cloud path or credential hand-off.
+- Toast parity requires one verified system covering component, placement, timing and look, plus observable main-flow toasts. Unobservable errors are not missing requirements. Raw extracted strings and assessments remain in the map.
+- The ledger owner exclusively edits aggregate maps, generator, side-by-side records and this ledger. Builders send area evidence and proposed verdicts instead of rewriting shared files.
+- All current program Sessions use GPT-6.1 Sol at xhigh on `openai-codex:42b88e79-2ef2-4e3e-93b1-8c93dcad16a7`, with no paid fallback. Subscription limits pause inference rather than changing source. The older subscription history below is not current configuration.
+- Cloud Team PR [#711](https://github.com/reason-machines/openconductor/pull/711) was closed without merge at `f8e284bc` by the coordinator, [closure record](https://github.com/reason-machines/openconductor/pull/711#issuecomment-6696223606). It was the only open PR returned by the initial reconciliation.
+
+This rescore runs on Reason cloud and reuses checked-in REA captures from the real Conductor 0.87.6 binary, SHA256 `0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d`. It performs no new REA capture and introduces no new REA gap. Existing limitations remain in [REA-GAPS.md](../../tools/ui-map/REA-GAPS.md). Retained Chromium threshold matches do not prove current native parity. No real playground or workspace data is touched.
+
+## Historical program records
+
 One row per node of Sven's UI audit program. A node is done when its side-by-side image
 (real Conductor left, OpenConductor right, same window size; rules in
 [side-by-side/README.md](../side-by-side/README.md)) shows it matching, and that image is linked
 from a merged PR.
 
-The coordinator Session owns this file. Builder Sessions update their own row in the PR that
-changes the node: owner Session id, PR numbers, status and the date of the side-by-side image
-that justifies the status.
+The coordinator's ledger owner maintains this file. Builder Sessions send evidence summaries with their Session id, PR numbers, proposed status and capture identity. The ledger owner integrates them after the relevant merge batch.
 
 ## Columns
 
