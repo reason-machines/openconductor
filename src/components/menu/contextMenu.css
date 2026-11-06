@@ -106,3 +106,7 @@
 .cm-item svg.cm-status-canceled { color: var(--cm-status-canceled); }
 /* Section emoji in Move to section (`flex size-4 shrink-0 items-center justify-center leading-none`). */
 .cm-emoji { display: flex; flex-shrink: 0; align-items: center; justify-content: center; width: 16px; height: 16px; line-height: 1; }
+/* The chat turn footer's dropdown (`Tm` + `Yc` with `gap-2`): its items pass 14px icons
+   (`h-3.5 w-3.5`) in the item's own colour, not the context menu's muted 16px ones. */
+.cm.cm-turn-menu .cm-item svg { width: 14px; height: 14px; }
+.cm.cm-turn-menu .cm-item > svg { color: inherit; }
