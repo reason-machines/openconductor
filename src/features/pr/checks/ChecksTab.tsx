@@ -9,8 +9,9 @@ import { isTauri } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import { openUrl } from "../../../backend";
 import type { Check, ChecksSummary, PrInfo } from "../types";
-import { checkLog, repoFixErrorsPrompt, rerunFailedChecks, type CheckLog } from "./api";
-import { canFixErrors, FIX_ERRORS_MESSAGE, fixErrorsAttachments, type FixErrorsAttachment } from "./fixErrors";
+import { checkLog, rerunFailedChecks, type CheckLog } from "./api";
+import { canFixErrors } from "./fixErrors";
+import type { FixErrors } from "./useFixErrors";
 import { canRerun, checkDuration, checkLink, checkName, checkState, isActionsJob, isFailing, markRerunning, rerunUrls, sortChecks, STATE_LABEL, type CheckState } from "./checks";
 import { DEMO_CHECKS, demoChecksEnabled } from "./demo";
 import "./checks.css";
@@ -20,10 +21,8 @@ interface Props {
   worktree: string | null;
   pr: PrInfo | null;
   refresh: () => Promise<void>;
-  /** Repository id, for its fix-errors prompt. */
-  repoId: string;
-  /** Sends a message with attachments to the workspace's own chat; unset when there is none. */
-  sendToChat?: (text: string, attachments: FixErrorsAttachment[]) => void;
+  /** Fix errors (shared with the `git.fixErrors` shortcut); unset when the workspace has no chat. */
+  fixErrors?: FixErrors;
   /** An archived workspace: Re-run and Fix errors are disabled. */
   readOnly?: boolean;
 }
@@ -56,13 +55,12 @@ function LogView({ log }: { log: LogState }) {
   return <pre className="check-log">{log.log.logs}</pre>;
 }
 
-export function ChecksTab({ worktree, pr, refresh, repoId, sendToChat, readOnly = false }: Props) {
+export function ChecksTab({ worktree, pr, refresh, fixErrors, readOnly = false }: Props) {
   const demo = !isTauri() && demoChecksEnabled();
   const live: ChecksSummary | null = demo ? DEMO_CHECKS : (pr?.status?.checks ?? null);
   // A re-run's optimistic state, dropped when the next lookup arrives.
   const [override, setOverride] = useState<ChecksSummary | null>(null);
   const [rerunning, setRerunning] = useState(false);
-  const [fixing, setFixing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const [logs, setLogs] = useState<Record<string, LogState>>({});
@@ -100,22 +98,6 @@ export function ChecksTab({ worktree, pr, refresh, repoId, sendToChat, readOnly 
     }
   };
 
-  const fixErrors = async () => {
-    if (!sendToChat || (!worktree && !demo)) return;
-    setFixing(true);
-    setError(null);
-    try {
-      // As in Conductor, a log that cannot be fetched is left out rather than failing the request.
-      const fetched = await Promise.all(failing.map((c) => (isActionsJob(c) ? checkLog(worktree ?? "", c).catch(() => null) : Promise.resolve(null))));
-      const custom = await repoFixErrorsPrompt(repoId);
-      sendToChat(FIX_ERRORS_MESSAGE, fixErrorsAttachments(fetched, custom));
-    } catch (e) {
-      setError(`Failed to fix checks: ${e instanceof Error ? e.message : String(e)}`);
-    } finally {
-      setFixing(false);
-    }
-  };
-
   const toggleLog = (c: Check) => {
     const key = c.detailsUrl as string;
     if (open === key) return setOpen(null);
@@ -138,9 +120,9 @@ export function ChecksTab({ worktree, pr, refresh, repoId, sendToChat, readOnly 
               {rerunning ? "Re-running…" : "Re-run"}
             </button>
           )}
-          {sendToChat && canFixErrors(failing) && (
-            <button className="btn btn-small btn-ghost" title="Send the failing logs to the agent" disabled={readOnly || fixing} aria-busy={fixing} onClick={() => void fixErrors()}>
-              {fixing ? "Fixing…" : "Fix errors"}
+          {fixErrors && canFixErrors(failing) && (
+            <button className="btn btn-small btn-ghost" title="Send the failing logs to the agent" disabled={readOnly || fixErrors.fixing} aria-busy={fixErrors.fixing} onClick={() => void fixErrors.run(failing)}>
+              {fixErrors.fixing ? "Fixing…" : "Fix errors"}
             </button>
           )}
         </span>

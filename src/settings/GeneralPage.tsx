@@ -1,17 +1,20 @@
-import { useMemo, useRef, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { openUrl } from "../backend";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
-import { createOverrideStore, currentSendKeyMode, effectiveShortcuts, parseOverrides, SEND_KEY_COMMANDS, type Overrides } from "../keybindings/overrides";
-import { SEND_KEY_PRESETS, type SendKeyMode } from "../keybindings/registry";
+import { currentSendKeyMode, effectiveShortcuts, type Overrides } from "../keybindings/overrides";
+import type { SendKeyMode } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { ButtonRow, Keys, PrefSwitchRow, Select, Toggle } from "./controls";
 import { SyncIcon, VolumeIcon } from "./icons";
-import { overridesRaw, settingsOverrideStorage } from "./keybindingOverrides";
+import { SETTINGS_CHANGED } from "./appearance";
+import { setAppPref } from "./appPrefs";
+import { chooseSendKey } from "./composerSettings";
 import { withField } from "./model";
 import { enumPref, withEnumPref } from "./prefs";
 import { GeneralAppPrefRows } from "./rows/AppPrefRows";
 import { playCompletionSound, SOUND_OPTIONS } from "./sound";
 import type { Settings, SoundType } from "./types";
+import { useSettingsOverrideStore } from "./useSettingsOverrideStore";
 
 interface Props {
   settings: Settings;
@@ -53,7 +56,12 @@ export function GeneralPage({ settings, save }: Props) {
             { value: "queued", label: "Queue" },
             { value: "steering", label: "Steer" },
           ]}
-          onChange={(v) => save(withEnumPref(settings, "default_message_send_mode", v))}
+          onChange={(v) =>
+            // Open chats re-read Follow-up behavior on SETTINGS_CHANGED (useFollowUpMode).
+            void Promise.resolve(save(withEnumPref(settings, "default_message_send_mode", v))).then((ok) => {
+              if (ok !== false) window.dispatchEvent(new Event(SETTINGS_CHANGED));
+            })
+          }
         />
       </Row>
       <Row label="Agent notifications" help="Get notified when an agent finishes working.">
@@ -136,36 +144,17 @@ export function GeneralPage({ settings, save }: Props) {
 
 /**
  * "Send messages with": Conductor's `xAn({messageSendKey})` rewrites the four
- * send commands' keybinding overrides to a preset; a custom mix shows the
- * "Custom" placeholder.
+ * send commands' keybinding overrides to a preset and then stores the legacy
+ * `message_send_key`; a custom mix shows the "Custom" placeholder.
  */
 function SendKeyRow({ settings, save }: Props) {
-  const { overrides, setOverrides } = useKeybindingOverrides();
-  const latest = useRef(settings);
-  latest.current = settings;
-  const saveRef = useRef(save);
-  saveRef.current = save;
-  const store = useMemo(
-    () =>
-      createOverrideStore(
-        settingsOverrideStorage(
-          () => latest.current,
-          async (next) => {
-            const ok = (await saveRef.current(next)) !== false;
-            if (ok) {
-              latest.current = next;
-              setOverrides(parseOverrides(overridesRaw(next)));
-            }
-            return ok;
-          },
-        ),
-      ),
-    [setOverrides],
-  );
+  const { overrides } = useKeybindingOverrides();
+  const store = useSettingsOverrideStore(settings, save);
   const mode = currentSendKeyMode(overrides);
+  // The preset goes to the four send commands, then the legacy `message_send_key` (Conductor's `RQt`).
   const choose = (next: SendKeyMode) =>
-    void store.updateMany(
-      SEND_KEY_COMMANDS.map((commandId) => ({ commandId, shortcuts: next === "enter" ? undefined : SEND_KEY_PRESETS[next][commandId] })),
+    void chooseSendKey(next, store.updateMany, (m) => setAppPref({ key: "message_send_key", value: m })).catch((err) =>
+      console.warn("Failed to update message send key", err),
     );
   return (
     <Row
