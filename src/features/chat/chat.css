@@ -150,7 +150,7 @@
 .chat-turn-changes-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
 .chat-turn-changes-more.revealed { flex-basis: 100%; }
 .chat-turn-chip { flex: 0 1 auto; min-width: 0; }
-.chat-turn-chip.more { padding: 0 4px; tab-size: 4; font-variant-numeric: tabular-nums; }
+.chat-turn-chip.more { gap: 4px; padding: 0 6px; tab-size: 4; font-variant-numeric: tabular-nums; }
 .oc-chip-counts { display: flex; flex: none; align-items: center; gap: 4px; font: 500 10px/12px var(--font-mono); letter-spacing: 0.04em; }
 .oc-chip-counts .a { color: var(--oc-git-green); }
 .oc-chip-counts .d { color: var(--oc-git-red); }
@@ -161,6 +161,7 @@
   .chat-turn-chip.more .oc-chip-counts { display: none; }
 }
 @container turn-footer (width < 480px) {
+  .chat-turn-chip.more { padding: 0 4px; }
   .chat-turn-changes:not(.revealed) { display: none; }
   .chat-turn-changes.revealed { flex-basis: 100%; max-width: none; }
   .chat-turn-chip.more.compact-only { display: inline-flex; }
@@ -247,20 +248,6 @@
 .oc-reset-files input[type="checkbox"]:checked::after { content: ""; position: absolute; left: 4.5px; top: 1.5px; width: 4px; height: 8px; border: solid var(--bg); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
 .oc-reset-count { font-variant-numeric: tabular-nums; }
 .oc-skeleton { display: inline-block; width: 64px; height: 14px; border-radius: 4px; background: var(--muted); opacity: 0.2; animation: pulse 1.4s ease-in-out infinite; }
-
-/* Conductor (`vDo`): the first chips share the footer row and shrink instead of wrapping (flex-1 min-w-0
-   max-w-fit overflow-hidden); revealed chips and "+N more" wrap, on their own line once revealed (basis-full). */
-.chat-turn-changes { display: flex; flex: 1 1 0; align-items: center; gap: 8px; min-width: 0; max-width: fit-content; overflow: hidden; }
-.chat-turn-changes-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
-.chat-turn-changes-more.revealed { flex-basis: 100%; }
-.chat-turn-chip { display: inline-flex; flex: 0 1 auto; min-width: 0; align-items: center; gap: 6px; height: 20px; padding: 0 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); font-size: 12px; line-height: 1; max-width: 240px; }
-.chat-turn-chip:hover { background: var(--hover); }
-.chat-turn-chip .name { font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-.chat-turn-chip .count { flex: none; font-family: var(--font-mono); font-size: 11px; }
-.chat-turn-chip .a { color: var(--diff-add); }
-.chat-turn-chip .d { color: var(--diff-del); }
-.chat-turn-chip.more { color: var(--muted); }
-
 
 /* Conductor's prose for chat text (`xS`: prose prose-sm, with its own overrides). */
 .oc-prose { font-size: 14px; line-height: 1.71429; letter-spacing: -0.01em; color: var(--oc-fg); font-kerning: normal; text-rendering: optimizeLegibility; overflow-wrap: anywhere; text-wrap: pretty; white-space: normal; user-select: text; }

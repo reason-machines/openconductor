@@ -9,7 +9,7 @@ import { useState } from "react";
 import { chipLayout, type TurnRef } from "../diff/turnChangesCache.ts";
 import type { FileChange } from "../diff/types.ts";
 import { useTurnChanges } from "../diff/useTurnChanges.ts";
-import { FileBadge, Lucide } from "./ToolRows.tsx";
+import { FileBadge, FileGlyph } from "./ToolRows.tsx";
 
 /** Conductor's `ID` (showZero, no border): "+N -N" in text-3xs mono. */
 function Counts({ additions, deletions }: { additions: number; deletions: number }) {
@@ -45,7 +45,7 @@ export function TurnChanges({ turn, worktree, onOpenFile }: { turn: TurnRef; wor
           {revealed.map(chip)}
           {more || expanded === 0 ? (
             <button type="button" className={`oc-file-badge chat-turn-chip more${more ? "" : " compact-only"}`} title={more ?? "Show changed files"} aria-label={more ?? "Show changed files"} onClick={() => setExpanded((n) => n + 1)}>
-              <Lucide name="file-diff" className="chat-turn-more-icon" />
+              <span className="chat-turn-more-icon"><FileGlyph path="" /></span>
               <span className="chat-turn-more-compact">{expanded > 0 ? hidden.length : files.length}</span>
               <span className="chat-turn-more-wide">+{hidden.length} more</span>
               <Counts {...hiddenTotals} />
