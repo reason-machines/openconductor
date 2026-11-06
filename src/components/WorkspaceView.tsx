@@ -20,6 +20,8 @@ import { generateWorkspaceNames } from "../workspace/naming";
 import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { canMinimize } from "../features/chat/composerMinimize.ts";
+import { useComposerMinimize } from "../features/chat/useComposerMinimize.ts";
 import { AgentBinaryBanner } from "../features/chat/AgentBinaryBanner.tsx";
 import { binaryAgentFor } from "../features/chat/agentBinaries.ts";
 import { ChatModelPicker } from "../features/chat/ChatModelPicker.tsx";
@@ -416,6 +418,11 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   // (renderApp-D_fmY7hW.js ~7,376,706, priority 100). The fork needs the "Fork chat to new tab"
   // experimental setting and a workspace that is not archived; otherwise the key passes on.
   const chatShown = content === null;
+  // Conductor's minimized composer: one row while a file diff or the PR fills the area and the box is empty.
+  const minimize = useComposerMinimize(
+    !chatShown,
+    canMinimize({ draft, hasAttachments: attachments.length > 0 || attachError !== null, approvalWaiting: (waiting !== undefined && !planWaiting) || approvals.length > 0 || consents.length > 0, planWaiting: planWaiting !== undefined }),
+  );
   useKeybindings(
     {
       "chat.copyTextConcise": () => {
@@ -494,7 +501,12 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   return (
     <section className="chat" aria-label="Chat">
       {tabs}
-      {content}
+      {/* Conductor minimizes the empty composer when the content tab scrolls (onScrollCapture → minimizeIfEmpty). */}
+      {content !== null ? (
+        <div className="chat-content" onScrollCapture={minimize.minimizeIfEmpty}>
+          {content}
+        </div>
+      ) : null}
       <div className="chat-scroll" hidden={content !== null}>
         {review && !review.fork && !review.blank && (
           <div className="review-chat-info muted" role="note">
@@ -627,6 +639,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           setAttachError(cmd.name === "plan" ? "Plan mode is not available in this chat." : `/${cmd.name} is not available for ${who}.`);
           return true;
         }}
+        minimize={minimize}
         attachments={
           attachments.length > 0 || attachError ? (
             <div className="composer-attachments" aria-label="Attachments">

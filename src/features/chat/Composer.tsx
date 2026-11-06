@@ -10,6 +10,8 @@
 // `chat.newLine` inserts a line break, `chat.cancel` stops the agent and
 // `chat.focus` focuses the box. With `onAttachFiles`, files come in through
 // the "+" menu, `chat.addAttachment` (⌘U), pasting files and dropping them.
+// With `minimize`, an empty box shrinks to one row while a content tab is shown
+// (composerMinimize.ts); focus, a click or ⌘L expands it.
 
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
@@ -23,6 +25,7 @@ import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./qu
 import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
 import { SlashMenu } from "./SlashMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
+import type { ComposerMinimize } from "./useComposerMinimize.ts";
 import "./queue.css";
 import "./composer.css";
 
@@ -57,6 +60,8 @@ export interface ComposerProps {
    * a command (the draft is cleared and nothing goes to the agent).
    */
   onCommand?: (text: string) => boolean;
+  /** The one-line state (Conductor's minimized composer over a file diff or the PR). */
+  minimize?: ComposerMinimize;
 }
 
 export function Composer({
@@ -76,7 +81,9 @@ export function Composer({
   controls,
   slashCommands = [],
   onCommand,
+  minimize,
 }: ComposerProps) {
+  const minimized = minimize?.minimized ?? false;
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [focused, setFocused] = useState(false);
@@ -102,7 +109,12 @@ export function Composer({
     if (!box) return;
     box.style.height = "auto";
     box.style.height = `${box.scrollHeight}px`;
-  }, [draft, inputRef]);
+  }, [draft, inputRef, minimized]);
+
+  // Conductor blurs the editor when the box minimizes.
+  useLayoutEffect(() => {
+    if (minimized && document.activeElement === inputRef.current) inputRef.current?.blur();
+  }, [minimized, inputRef]);
 
   const query = focused ? slashQuery(draft, caret) : null;
   const slashMatches = useMemo(() => (query === null || query === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashDismissed, slashCommands]);
@@ -201,7 +213,13 @@ export function Composer({
     // `chat.newLine` (Shift+Enter, or Enter under the ⌘Enter preset) falls through to the textarea.
   }
 
+  // Conductor's `Lm` (composerMinimize.ts focusHintVisible); the open model picker hides it in CSS.
   const showFocusPill = !focused && !hasText && attachments == null && hint("chat.focus") !== "";
+  const focusPill = (inline: boolean) => (
+    <div className={`oc-focus-pill${inline ? " is-inline" : ""}`} aria-hidden>
+      {hint("chat.focus")} to focus
+    </div>
+  );
   const sendLabel = `${queues ? "Queue message" : "Send message"} ${hint("chat.submitMessage")}`;
 
   return (
@@ -212,6 +230,9 @@ export function Composer({
         <form
           className={`composer oc-composer${dragging ? " is-dropping" : ""}`}
           aria-label="composer"
+          data-composer-minimized={minimized || undefined}
+          data-composer-resize-instant={(minimize && !minimize.animate) || undefined}
+          onClick={() => minimize?.expand()}
           onMouseDown={(e) => {
             // Conductor's box is all click target: a click on its padding focuses the message.
             if (e.target === e.currentTarget) {
@@ -247,25 +268,28 @@ export function Composer({
                 setSlashDismissed(null);
               }}
               onSelect={(e) => setCaret(e.currentTarget.selectionStart ?? 0)}
-              onFocus={() => setFocused(true)}
+              onFocus={() => {
+                setFocused(true);
+                minimize?.expand();
+              }}
               onBlur={() => setFocused(false)}
               onKeyDown={onKeyDown}
               onPaste={onPaste}
-              rows={3}
+              rows={minimized ? 1 : 3}
               spellCheck={false}
             />
           </div>
-          {showFocusPill ? (
-            <div className="oc-focus-pill" aria-hidden>
-              {hint("chat.focus")} to focus
-            </div>
-          ) : null}
-          <div className="oc-composer-left">
+          {showFocusPill && !minimized ? focusPill(false) : null}
+          {/* Conductor stops clicks on its controls from reaching the box, so the model picker opens without expanding it. */}
+          <div className="oc-composer-left" onClick={(e) => e.stopPropagation()}>
             {picker}
-            {controls}
+            {controls ? <span className="oc-composer-fade">{controls}</span> : null}
           </div>
-          <div className="oc-composer-right">
-            <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} />
+          <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
+            <span className="oc-composer-fade">
+              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} />
+            </span>
+            {showFocusPill && minimized ? focusPill(true) : null}
             {onAttachFiles ? (
               <input
                 ref={fileInput}

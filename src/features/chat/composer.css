@@ -105,6 +105,53 @@
 }
 /* Hidden while the model picker is open (Conductor hides it while the picker reports open). */
 .oc-composer:has(.oc-model-menu) .oc-focus-pill { display: none; }
+/* Minimized, it sits in the actions row before the send button: whitespace-nowrap, fade-in 150ms. */
+.oc-focus-pill.is-inline { position: static; white-space: nowrap; animation: oc-focus-pill-in 150ms var(--oc-motion-ease) both; }
+@keyframes oc-focus-pill-in { from { opacity: 0; } }
+
+/* Minimized composer (Conductor's [data-composer-minimized], composer `ITo` and hook `gTo`):
+   the box min-h-0 px-4 py-3, the form mb-0, the editor min-h-7 pl-8 pr-32 with its
+   ProseMirror at min-height 1.25rem, the mode controls at bottom-2 left-[7px], the
+   primary actions at right-2 bottom-2; the "+" menu and the access mode fade out.
+   Sizes animate over 200ms cubic-bezier(0.25, 1, 0.5, 1) unless the change was a tab
+   switch ([data-composer-resize-instant]). */
+.composer.oc-composer[data-composer-minimized] { min-height: 0; padding: 12px 16px; }
+.composer.oc-composer:not([data-composer-resize-instant]) {
+  transition: background 200ms cubic-bezier(0.25, 0.1, 0.25, 1), border-color 200ms cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 200ms cubic-bezier(0.25, 0.1, 0.25, 1), min-height 200ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+.oc-composer:not([data-composer-resize-instant]) .oc-composer-input { transition: min-height 200ms cubic-bezier(0.25, 1, 0.5, 1), padding 200ms cubic-bezier(0.25, 1, 0.5, 1), margin-bottom 200ms cubic-bezier(0.25, 1, 0.5, 1); }
+.oc-composer[data-composer-minimized] .oc-composer-input { min-height: 28px; margin-bottom: -4px; padding-left: 32px; padding-right: 128px; }
+.composer.oc-composer[data-composer-minimized] textarea { min-height: 20px; white-space: nowrap; }
+.composer.oc-composer[data-composer-minimized] textarea::placeholder { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.oc-composer[data-composer-minimized] .oc-composer-left { left: 7px; bottom: 8px; }
+.oc-composer[data-composer-minimized] .oc-composer-right { right: 8px; bottom: 8px; }
+/* Conductor's A5 groups: opacity/translate, out in 100ms, back in 125ms after 75ms. */
+.oc-composer-fade { display: flex; align-items: center; opacity: 1; translate: 0 0; }
+.oc-composer:not([data-composer-resize-instant]) .oc-composer-fade { transition: opacity 125ms cubic-bezier(0.25, 1, 0.5, 1) 75ms, translate 125ms cubic-bezier(0.25, 1, 0.5, 1) 75ms; }
+.oc-composer[data-composer-minimized] .oc-composer-fade { opacity: 0; translate: 0 4px; pointer-events: none; transition-duration: 100ms; transition-delay: 0ms; }
+/* The model chip keeps only the agent's mark: label, effort and chevron go to opacity 0 and max-width 0. */
+.oc-model-chip-icon { display: none; }
+.oc-composer[data-composer-minimized] .oc-model-chip-icon { display: flex; }
+.oc-composer[data-composer-minimized] .oc-model-chip-icon .oc-model-glyph { width: 12px; height: 12px; }
+.oc-composer .oc-model-chip-label,
+.oc-composer .oc-model-chip-effort,
+.oc-composer .oc-model-chip-chevron { transition: max-width 200ms cubic-bezier(0.25, 1, 0.5, 1), margin-left 200ms cubic-bezier(0.25, 1, 0.5, 1), opacity 200ms cubic-bezier(0.25, 1, 0.5, 1); }
+.oc-composer[data-composer-minimized] .oc-model-chip-label,
+.oc-composer[data-composer-minimized] .oc-model-chip-effort,
+.oc-composer[data-composer-minimized] .oc-model-chip-chevron { opacity: 0; max-width: 0; overflow: hidden; }
+.oc-composer[data-composer-minimized] .oc-model-chip-label,
+.oc-composer[data-composer-minimized] .oc-model-chip-details { margin-left: -6px; }
+.oc-composer[data-composer-resize-instant] .oc-model-chip-label,
+.oc-composer[data-composer-resize-instant] .oc-model-chip-effort,
+.oc-composer[data-composer-resize-instant] .oc-model-chip-chevron { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .oc-composer .oc-composer-input,
+  .oc-composer .oc-composer-fade,
+  .oc-composer .oc-model-chip-label,
+  .oc-composer .oc-model-chip-effort,
+  .oc-composer .oc-model-chip-chevron { transition: none; }
+  .oc-focus-pill.is-inline { animation: none; }
+}
 
 /* composer-mode-controls: absolute bottom-3 left-3 gap-0.5; composer-primary-actions: absolute right-3 bottom-3 h-7 gap-1.5. */
 .oc-composer-left {
@@ -216,7 +263,7 @@
 .oc-model-chip:hover,
 .oc-model-chip[aria-expanded="true"] { background: var(--oc-c-sidebar-accent); }
 .oc-model-chip:focus-visible { outline: none; box-shadow: inset 0 0 0 1px var(--oc-c-ring); }
-.oc-model-chip-label { max-width: 16rem; overflow: hidden; text-overflow: ellipsis; }
+.oc-model-chip-label { display: inline-block; max-width: 16rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .oc-model-chip-details { display: inline-flex; align-items: center; gap: 6px; }
 .oc-model-chip-effort,
 .oc-model-chip-chevron { color: var(--oc-c-muted-fg); flex-shrink: 0; }
