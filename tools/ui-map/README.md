@@ -2,6 +2,22 @@
 
 Builds [parity/ui-map.md](../../parity/ui-map.md) and [parity/ui-map.json](../../parity/ui-map.json): every Conductor screen, route, panel, dialog, menu, popover, toast, empty state and settings page and row, each with a Conductor reference screenshot, an OpenConductor screenshot from the built app, a REA visual diff and a status (missing / wrong / matches).
 
+## Regenerate (one command)
+
+```bash
+DIST=/path/to/conductor/dist tools/ui-map/regenerate.sh
+```
+
+Runs every step below on current `origin/main`: rebases this branch onto `origin/main` (needs a clean tracked tree; `UIMAP_NO_SYNC=1` skips it), `npm ci` (repo and `tools/screens`), `npx tauri build --debug --no-bundle`, recaptures only the Conductor reference states that are new or whose PNG is missing or differs from `ref-captures.json` (all of them with `UIMAP_RECAPTURE_REF=1`), runs the OpenConductor lane under `xvfb-run` from an empty `oc-captures.json`, compares with REA, and builds the map with `UIMAP_OC_COMMIT` set to the main SHA it was built on. It ends with the `Total / Missing / Wrong / Matches` line for the PR title.
+
+It stops before doing work when `rea`, `tauri-driver`, `xvfb-run`, Chromium, Pillow or the decoded Conductor assets are missing (`compare.mjs` also exits non-zero when `rea` is not runnable or any comparison errors, so a missing REA can no longer score every state 0), and after the lane when it captured nothing. Other env: `REA`, `CHROMIUM`, `TAURI_DRIVER`, `UIMAP_SKIP_BUILD=1`, `UIMAP_WORK`.
+
+On a Linux host without `libwebkit2gtk-4.1-dev` (Reason cloud computers), point `SYSROOT` (default `~/sysroot`) at a sysroot with the webkit2gtk-4.1 packages and an `env.sh` that exports the `PKG_CONFIG_*`, `LIBRARY_PATH` and `RUSTFLAGS` for it. The script sources `env.sh` for the build and runs the lane in `bwrap` with `/usr/lib/x86_64-linux-gnu` overlaid by the system's libraries plus only what the sysroot adds, webkit/javascriptcore and the sysroot's `dri` drivers (WebKit finds its helper processes at that compiled-in path; overlaying the whole sysroot fails with `EGL_BAD_PARAMETER`), with `__EGL_VENDOR_LIBRARY_DIRS`/`LIBGL_DRIVERS_PATH` set to match and `$SYSROOT/root/usr/bin` (WebKitWebDriver) on PATH.
+
+Only `parity/ui-map.md`, `parity/ui-map.json` and `parity/ui-map/{inventory,compare,oc-captures,ref-captures,side-by-side}.json` plus `diff/*.jpg` are tracked; `ref/` and `oc/` PNGs stay local.
+
+## Steps
+
 | Step | Script | Output (parity/ui-map/) |
 |---|---|---|
 | Inventory from Conductor's extracted bundle | `extract_inventory.py --dist .rea-work/dist --out parity/ui-map/inventory.json` | `inventory.json` |
