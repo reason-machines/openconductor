@@ -38,6 +38,7 @@ pub struct ScriptsConfigDto {
     pub setup: Option<String>,
     pub setup_layer: Option<Layer>,
     pub archive: Option<String>,
+    pub archive_layer: Option<Layer>,
     pub run_mode: RunMode,
     pub auto_run_after_setup: bool,
     pub run: Vec<RunScript>,
@@ -50,6 +51,7 @@ impl From<ResolvedScripts> for ScriptsConfigDto {
         Self {
             setup_layer: r.setup.as_ref().map(|s| s.layer),
             setup: r.setup.map(|s| s.value),
+            archive_layer: r.archive.as_ref().map(|s| s.layer),
             archive: r.archive.map(|s| s.value),
             run_mode: r.run_mode,
             auto_run_after_setup: r.auto_run_after_setup,

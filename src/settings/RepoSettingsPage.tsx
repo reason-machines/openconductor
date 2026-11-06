@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
+import { openUrl } from "../backend";
 import type { Repo } from "../state/types";
-import { scriptsConfig } from "../scripts/api";
-import type { ScriptsConfig } from "../scripts/model";
 import { setSpotlightTesting, spotlightTesting } from "../spotlight/testingApi";
-import { SPOTLIGHT_SETTING_DESCRIPTION, SPOTLIGHT_SETTING_TITLE, toggleBlocked, type SpotlightTesting } from "../spotlight/testing";
+import { SPOTLIGHT_DOCS_URL, SPOTLIGHT_SETTING_DESCRIPTION, SPOTLIGHT_SETTING_TITLE, toggleBlocked, type SpotlightTesting } from "../spotlight/testing";
 import { Row } from "./GeneralPage";
 import { errorText } from "./api";
 import type { RepoSection } from "./routes";
@@ -11,6 +10,7 @@ import { RepoActionsRows } from "./rows/PromptRows";
 import { RepoGitRows } from "./rows/RepoGitRows";
 import { RepoEnvironmentPage } from "./RepoEnvironmentPage";
 import { RepoMiscRows, type RepoMiscActions } from "./rows/RepoMiscRows";
+import { RepoScriptsRows } from "./rows/RepoScriptsRows";
 
 interface Props {
   repo: Repo;
@@ -50,43 +50,13 @@ function RepoGit({ repo }: { repo: Repo }) {
 }
 
 function RepoScripts({ repo }: { repo: Repo }) {
-  const [config, setConfig] = useState<ScriptsConfig | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
-    setConfig(null);
-    setError(null);
-    if (!repo.path) return;
-    // Read the repository's own scripts: the "workspace" here is the main checkout.
-    scriptsConfig({
-      workspaceId: "",
-      repositoryId: repo.id,
-      repoRoot: repo.path,
-      workspacePath: repo.path,
-      workspaceName: repo.name,
-      defaultBranch: repo.defaultBranch,
-      targetBranch: null,
-    }).then(setConfig, (e) => setError(errorText(e)));
-  }, [repo.id, repo.path, repo.name, repo.defaultBranch]);
-
-  if (!repo.path) return <p className="muted">This repository has no local checkout yet.</p>;
-  if (error) return <p className="error small" role="alert">{error}</p>;
-  if (!config) return <p className="muted">Loading…</p>;
-  const script = (value: string | null | undefined) => (value ? <pre className="settings-script">{value}</pre> : <span className="muted">None</span>);
-  return (
-    <div className="settings-rows" aria-label="Repository scripts">
-      <Row label="Setup script" help="Runs when a new workspace is created.">
-        {script(config.setup)}
-      </Row>
-      <Row label="Run script" help={`Runs from the Run button. Mode: ${config.runMode}.`}>
-        {config.run.length ? script(config.run.map((r) => r.command).join("\n")) : script(null)}
-      </Row>
-      <Row label="Archive script" help="Runs when a workspace is archived.">
-        {script(config.archive)}
-      </Row>
-    </div>
-  );
+  return <RepoScriptsRows repo={repo} />;
 }
 
+/**
+ * Conductor's Actions tab (registry `Q3a`): "Use spotlight testing" with its
+ * "Learn how" link, then the six prompt rows, all in one row list.
+ */
 function RepoActions({ repo }: { repo: Repo }) {
   const [setting, setSetting] = useState<SpotlightTesting | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -102,7 +72,24 @@ function RepoActions({ repo }: { repo: Repo }) {
   return (
     <>
       <div className="settings-rows">
-        <Row label={SPOTLIGHT_SETTING_TITLE} help={blocked && blocked !== "Loading" ? blocked : SPOTLIGHT_SETTING_DESCRIPTION}>
+        <Row
+          label={SPOTLIGHT_SETTING_TITLE}
+          help={
+            blocked && blocked !== "Loading" ? (
+              blocked
+            ) : (
+              <>
+                {SPOTLIGHT_SETTING_DESCRIPTION}{" "}
+                <button type="button" className="oc-learn-how" onClick={() => void openUrl(SPOTLIGHT_DOCS_URL)}>
+                  Learn how
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M7 7h10v10M7 17 17 7" />
+                  </svg>
+                </button>
+              </>
+            )
+          }
+        >
           <input
             type="checkbox"
             role="switch"
@@ -112,9 +99,9 @@ function RepoActions({ repo }: { repo: Repo }) {
             onChange={(e) => change(e.target.checked)}
           />
         </Row>
+        {repo.path && <RepoActionsRows repoPath={repo.path} />}
       </div>
       {error && <p className="error small" role="alert">{error}</p>}
-      {repo.path && <RepoActionsRows repoPath={repo.path} />}
     </>
   );
 }

@@ -3,6 +3,7 @@
 // "N files changed" header and one row per changed file with its stats and a
 // per-file discard, plus Conductor's file context menu (FileContextMenu.tsx).
 // The selected file opens in DiffViewer.tsx's DiffTab.
+import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useCallback, useState, type ReactNode } from "react";
 import "./diff.css";
 import { RevertIcon } from "./DiscardDialog";
@@ -102,9 +103,11 @@ export function ChangesList({ diff, actions, worktree }: ChangesListProps) {
                 </span>
               </button>
               {diff.canDiscard && (
-                <button className="icon-btn oc-discard" onClick={() => diff.askDiscard(f)} title="Discard changes" aria-label={`Discard changes to ${f.path}`}>
-                  <RevertIcon />
-                </button>
+                <Tooltip content="Discard changes">
+                  <button className="icon-btn oc-discard" onClick={() => diff.askDiscard(f)} aria-label={`Discard changes to ${f.path}`}>
+                    <RevertIcon />
+                  </button>
+                </Tooltip>
               )}
             </div>
           ))}
