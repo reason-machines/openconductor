@@ -17,6 +17,17 @@ The REA ledger above is the obligation list as built from Conductor; it is not r
 | [`../parity/reason-acp/PARITY.md`](../parity/reason-acp/PARITY.md) (`parity.json`, `tools/parity_reason_acp.py`) | Reason agent over ACP: 11 items under `agent.session-run`, `agent.providers`, `agent.message-queue` | `59ac0ba` | 100.0% | not scored (OpenConductor's own items; Conductor has no Reason agent) | none (`acp.signed-in`: [signed-in Mac run](../reason-acp/signed-in-run.md)) |
 | [`../providers/codex-conductor-client.md`](../providers/codex-conductor-client.md), [`../e2e-mac/codex.md`](../e2e-mac/codex.md) | Codex agent over `codex app-server`: 10 sidecar facts under `agent.session-run`, `agent.providers`, `agent.message-queue` | PR #275 | 3 same, 4 differ on purpose or superset, 3 gaps (hand-reviewed, not scored by a checker) | `agent.session-run` (codex slice) now has the sidecar protocol from the Bun bundle that it listed as next evidence. Positive: live turns with the signed-in codex on sven m5 max through the app's commands. Negative: a missing CLI, failed turns and declined requests (runner tests). Cancellation: Stop and "Deny and stop" (GUI e2e) and interrupt (runner tests) | [#340](https://github.com/reason-machines/openconductor/issues/340) |
 
+### Final UI checklist: chat, diff and PR screens (Verifier C)
+
+Sven's four checks for every screen, coordinated by Conductor Rebuild (`dcaa6e78`). Every PR is a draft under the merge hold. Status as of 2026-11-06 ~01:15Z:
+
+| Check | Owner | Status | Evidence |
+|---|---|---|---|
+| Right-click menus match Conductor (chat tabs, messages and turns, Changes rows, diff headers, PR crumbs) | builder [`a940e0ef`](https://reasonmachines.com/agents/a940e0ef-7336-4396-89a2-4a358254c92e) | in progress: inventory from REA's 39 menus and 89 items | `parity/side-by-side/chat-diff-pr/menus/` (pending) |
+| Tooltips with Conductor's text, shortcut hint, delay and placement | builder [`e941c7fb`](https://reasonmachines.com/agents/e941c7fb-b49a-48d5-975a-d36de699d0cd) | in progress. Conductor uses `delayDuration` 0 and 100, and the + tab button shows "New chat, same files" plus the `nav.newTab` key | `parity/side-by-side/chat-diff-pr/tooltips/` (pending) |
+| Animations and transitions (panels, tab switches, popovers, toasts, hover and press) | builder [`b22ed03b`](https://reasonmachines.com/agents/b22ed03b-43aa-4b87-a7bc-9df3910a7890) | in progress. The first builder (`4feafae1`) never started: its Anthropic sign-in had expired | `parity/side-by-side/chat-diff-pr/animations/` (pending) |
+| Alignment sweep (headers, toolbars, tab strips, rows, dialogs) | Verifier C | header actions fixed in a draft PR: Open in, Create PR and Archive went from 24/26px tall on three centre lines to 24px on one, and the title chips now share that centre line. The rest of the sweep (tab strips, composer toolbar, Changes rows, diff header, dialogs) is not started | [`parity/side-by-side/chat-diff-pr/alignment/`](../../parity/side-by-side/chat-diff-pr/alignment/README.md) |
+
 ### Open pull requests scored against a verifier
 
 The records above score main only. An open PR that targets a failing builder obligation is scored here with the same checker (`python3 tools/parity_check.py check --ref <PR head> --out-dir <tmp>`), so the expected change is known before it merges. This is a projection; the record changes only when the PR is on main.

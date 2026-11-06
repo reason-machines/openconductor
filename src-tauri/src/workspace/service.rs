@@ -40,6 +40,8 @@ pub struct CreateWorkspaceRequest {
     pub pr_number: Option<u64>,
     /// User setting `git.worktree_push_auto_setup_remote`.
     pub push_auto_setup_remote: bool,
+    /// The repository's effective `file_include_globs` ("Files to copy").
+    pub file_include_globs: Option<String>,
 }
 
 #[derive(Debug)]
@@ -103,6 +105,15 @@ impl WorkspaceService {
         Ok(info(&id, &root))
     }
 
+    /// Forget one registered repository (no files are touched).
+    pub fn forget_repository(&self, id: &str) -> Result<(), WorkspaceError> {
+        let mut repos = self.repos.lock().expect("registry lock");
+        if repos.remove(id).is_some() {
+            self.save(&repos)?;
+        }
+        Ok(())
+    }
+
     /// Where clones go by default: `<root>/repos`, as Conductor's. Created on
     /// first clone, not here.
     pub fn default_clone_dir(&self) -> PathBuf {
@@ -161,6 +172,7 @@ impl WorkspaceService {
             pr_number: req.pr_number,
             fetch: true,
             push_auto_setup_remote: req.push_auto_setup_remote,
+            file_include_globs: req.file_include_globs.clone(),
             ..Default::default()
         };
         self.manager.create(&root, &opts)

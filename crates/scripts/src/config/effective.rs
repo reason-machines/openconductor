@@ -285,6 +285,10 @@ pub struct EffectiveSettings {
     pub git: GitFlags,
     pub preview_urls: Option<Sourced<Vec<PreviewUrl>>>,
     pub environment_variable_files: Option<Sourced<Vec<String>>>,
+    /// "Files to copy": gitignore-style patterns, one per line, for the
+    /// gitignored files copied into each new workspace (Conductor's
+    /// `file_include_globs`, a string setting; an empty string copies nothing).
+    pub file_include_globs: Option<Sourced<String>>,
     pub env: ResolvedEnv,
     pub warnings: Vec<String>,
 }
@@ -416,6 +420,16 @@ pub fn resolve_effective(layers: &[EffectiveLayer]) -> EffectiveSettings {
     });
     out.environment_variable_files = pick(&ordered, &["environment_variable_files"], w, |v| {
         matches!(v, Value::Array(_) | Value::String(_)).then(|| env_file_entries(v))
+    });
+    // A string, as the reference stores it; an array of patterns is read as one per line.
+    out.file_include_globs = pick(&ordered, &["file_include_globs"], w, |v| match v {
+        Value::String(s) => Some(s.clone()),
+        Value::Array(items) => items
+            .iter()
+            .map(|i| i.as_str())
+            .collect::<Option<Vec<_>>>()
+            .map(|l| l.join("\n")),
+        _ => None,
     });
 
     let mut env = ResolvedEnv::default();
@@ -783,7 +797,7 @@ pub fn is_local_writable(path: &[&str]) -> bool {
                 | "delete_branch_on_archive"
                 | "worktree_push_auto_setup_remote"
         ),
-        ["preview_urls"] | ["environment_variable_files"] => true,
+        ["preview_urls"] | ["environment_variable_files"] | ["file_include_globs"] => true,
         ["environment_variables", name] => valid_name(name),
         ["environment_variables", "local" | "cloud", name] => valid_name(name),
         _ => false,
