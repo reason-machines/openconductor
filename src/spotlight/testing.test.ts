@@ -8,6 +8,7 @@ import {
   SPOTLIGHT_TASK_ID,
   applyEvent,
   runTasks,
+  shownTask,
   spotlightButton,
   toggleBlocked,
   viewFromStatus,
@@ -28,6 +29,21 @@ test("Spotlight is appended after the run scripts only when the setting is on", 
   assert.deepEqual(on.map((t) => t.id), ["dev", "test", SPOTLIGHT_TASK_ID]);
   assert.deepEqual(on.at(-1), { id: SPOTLIGHT_TASK_ID, label: "Spotlight", kind: "spotlight" });
   assert.deepEqual(runTasks([], true).map((t) => t.kind), ["spotlight"]);
+});
+
+test("the shown task: pick, running script, own session, default script, then Spotlight when it is the only task", () => {
+  const none = { picked: null, spotlightEnabled: false, activeScriptId: null, spotlightMine: false, defaultScriptId: null };
+  assert.equal(shownTask(none), null);
+  // Spotlight switched on in Settings › Actions, no run script: the Run tab offers Run Spotlight.
+  assert.equal(shownTask({ ...none, spotlightEnabled: true }), SPOTLIGHT_TASK_ID);
+  // A run script stays the default over Spotlight.
+  assert.equal(shownTask({ ...none, spotlightEnabled: true, defaultScriptId: "dev" }), "dev");
+  assert.equal(shownTask({ ...none, spotlightEnabled: true, defaultScriptId: "dev", picked: SPOTLIGHT_TASK_ID }), SPOTLIGHT_TASK_ID);
+  // A Spotlight pick is dropped once the setting is off.
+  assert.equal(shownTask({ ...none, defaultScriptId: "dev", picked: SPOTLIGHT_TASK_ID }), "dev");
+  assert.equal(shownTask({ ...none, spotlightEnabled: true, defaultScriptId: "dev", activeScriptId: "test" }), "test");
+  assert.equal(shownTask({ ...none, spotlightEnabled: true, defaultScriptId: "dev", spotlightMine: true }), SPOTLIGHT_TASK_ID);
+  assert.equal(shownTask({ ...none, spotlightEnabled: true, picked: "test", spotlightMine: true }), "test");
 });
 
 test("a session's events drive owner, syncing flag, status and log", () => {

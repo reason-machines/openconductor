@@ -39,12 +39,12 @@ after(async () => {
   await new Promise((resolve) => server?.httpServer.close(resolve));
 });
 
-async function open() {
+async function open({ spotlight = false } = {}) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", (err) => errors.push(err.message));
-  await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES });
+  await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES, spotlight });
   await page.goto(base + "/");
   await page.locator(".rp-tabs").waitFor();
   return { context, page, errors };
@@ -190,5 +190,22 @@ test("Add run script opens the repository's Scripts settings", async () => {
   await page.getByRole("button", { name: "Add run script" }).click();
   await page.waitForFunction(() => document.querySelector(".settings .settings-header h1")?.textContent === "Scripts");
   assert.match(new URL(page.url()).pathname, /scripts/);
+  await context.close();
+});
+
+test("Run with spotlight testing on and no run script offers Run Spotlight, which starts it", async () => {
+  // The switch lives in Settings › Actions, so the strip only reads the setting:
+  // Spotlight is then the Run tab's only task (tests/e2e/flows.mjs `checkpoint` drives it for real).
+  const { context, page, errors } = await open({ spotlight: true });
+  const strip = page.locator(".ws-right .ws-strip");
+  await strip.waitFor();
+  assert.equal(await strip.getByRole("tab", { name: "Run" }).getAttribute("aria-selected"), "true");
+  const start = strip.locator(".scripts-actions .btn-primary");
+  await start.waitFor();
+  assert.match(await start.innerText(), /Run Spotlight$/);
+  assert.equal(await strip.locator(".scripts-empty-box").count(), 0);
+  await start.click();
+  await page.waitForFunction(() => window.__fake.calls.some((c) => c.cmd === "spotlight_start"));
+  assert.deepEqual(errors, []);
   await context.close();
 });

@@ -45,6 +45,8 @@ import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
 import { listen } from "@tauri-apps/api/event";
 import { useNavHistory } from "./state/useNavHistory";
+import { useAutoUnread } from "./state/useAutoUnread";
+import { nextUnreadWorkspace, openNextUnread } from "./state/nextUnread";
 import { createRepoDefault } from "./home/repoFilter";
 import { storedRepoFilter } from "./home/useRepoFilter";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
@@ -75,6 +77,8 @@ export default function App() {
     prevState.current = state;
   }, [state]);
   const nav = useNavHistory(state, dispatch);
+  // A chat that finishes or waits on the user while not in view marks its workspace unread.
+  useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
@@ -362,7 +366,13 @@ export default function App() {
         ) : repo && workspace?.status === "archived" ? (
           <ArchivedWorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} />
         ) : repo && workspace ? (
-          <WorkspaceView repo={repo} workspace={workspace} dispatch={dispatch} notify={show} />
+          <WorkspaceView
+            repo={repo}
+            workspace={workspace}
+            dispatch={dispatch}
+            notify={show}
+            onNextUnread={nextUnreadWorkspace(state, { skipSelected: true }) ? () => void openNextUnread(state, dispatch, { skipSelected: true }) : undefined}
+          />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : (

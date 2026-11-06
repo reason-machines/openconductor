@@ -4,6 +4,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
 import { chatStatuses } from "../features/chat/chatRuntime.ts";
+import { stopCodex } from "../features/chat/codexChat.ts";
 import { stopChat } from "../features/chat/reasonChat";
 import { workspaceOfChat, workspaceSessionStatus } from "../state/workspaceSessions";
 import type { ArchiveMode, ArchiveResult, UnarchiveResult } from "./archiveModel.ts";
@@ -58,10 +59,18 @@ export function workspaceAgentStatus(workspaceId: string): string {
   return workspaceSessionStatus(chatStatuses(), workspaceId);
 }
 
-/** "Stop agents and archive": stop the running turn of every chat in the workspace. */
+/**
+ * "Stop agents and archive": stop every chat in the workspace, Reason and
+ * Codex alike, before the backend removes the folder. Conductor's `Z$`
+ * (index-BGEQ8YjU.js @974,867) cancels every session of the workspace,
+ * whatever its agent or status; here a chat that is idle has nothing to stop,
+ * and one waiting on the user (a Codex approval) is cancelled too.
+ */
 export function stopWorkspaceAgents(workspaceId: string): void {
-  for (const [chatId, status] of chatStatuses()) {
-    if (workspaceOfChat(chatId) === workspaceId && (status === "working" || status === "cancelling")) stopChat(chatId);
+  for (const chatId of chatStatuses().keys()) {
+    if (workspaceOfChat(chatId) !== workspaceId) continue;
+    stopChat(chatId);
+    stopCodex(chatId);
   }
 }
 
