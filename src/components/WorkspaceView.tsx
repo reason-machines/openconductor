@@ -74,6 +74,7 @@ import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } fr
 import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
+import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 
 interface Props {
@@ -203,6 +204,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Garry Mode (Conductor's `garry_mode`, "Don't collapse tool calls", toggled with ⌃O): tool
   // groups stay open after the turn ends and tool calls start expanded.
   const garryMode = useAppPrefs().garry_mode;
+  const followUpMode = useFollowUpMode();
 
   useEffect(() => {
     setDraft("");
@@ -522,6 +524,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         inputRef={inputRef}
         queue={queue}
         canSteer={agent.canSteer}
+        followUpMode={followUpMode}
         onSubmit={onSubmit}
         onStop={() => agent.stop(runId)}
         onQueue={(action) => agent.queueAction(runId, action)}
