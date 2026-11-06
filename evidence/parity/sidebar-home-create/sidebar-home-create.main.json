@@ -1,7 +1,7 @@
 {
  "ref": "origin/main",
- "source_files": 545,
- "detector_parity_pct": 91.2,
+ "source_files": 549,
+ "detector_parity_pct": 91.9,
  "areas": {
   "sidebar": {
    "items": 33,
@@ -18,16 +18,16 @@
   },
   "home": {
    "items": 18,
-   "implemented": 14,
-   "partial": 3,
+   "implemented": 15,
+   "partial": 2,
    "missing": 1,
-   "parity_pct": 86.1,
-   "verdict_implemented": 15,
-   "verdict_partial": 2,
+   "parity_pct": 88.9,
+   "verdict_implemented": 17,
+   "verdict_partial": 0,
    "verdict_backend": 0,
    "verdict_missing": 0,
    "verdict_na": 1,
-   "verdict_parity_pct": 94.1
+   "verdict_parity_pct": 100.0
   },
   "create": {
    "items": 17,
@@ -425,7 +425,7 @@
     {
      "pattern": "(onDrop|draggable|dnd|useDrag)",
      "matched": true,
-     "file": "src/components/Sidebar.tsx"
+     "file": "src/components/Dashboard.tsx"
     }
    ],
    "verdict": "implemented",
@@ -830,7 +830,7 @@
     {
      "pattern": "traffic_?lights?_?clearance|traffic-lights-clearance",
      "matched": true,
-     "file": "src/styles.css"
+     "file": "src/components/dashboard.css"
     }
    ],
    "verdict": "implemented",
@@ -993,12 +993,12 @@
    "id": "home.dashboard-routes",
    "area": "home",
    "feature": "Dashboard and all-workspaces routes",
-   "status": "partial",
+   "status": "implemented",
    "detectors": [
     {
      "pattern": "/dashboard",
-     "matched": false,
-     "file": null
+     "matched": true,
+     "file": "crates/openconductor-db/src/app_settings.rs"
     },
     {
      "pattern": "/all-workspaces",
@@ -1006,8 +1006,8 @@
      "file": "src/components/AllWorkspaces.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "/all-workspaces is implemented by #322: the sidebar Home row, nav.home and the palette open AllWorkspaces, and a start path of /all-workspaces opens it. /dashboard is missing: REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest) shows route lta (@11,520,499) and a sidebar 'Dashboard' row (@10,029,038) shown when the dashboard_enabled setting is on (default 'false' in the index chunk's settings defaults); the rebuild has neither the route nor the setting.",
+   "verdict": "implemented",
+   "why": "/all-workspaces is implemented by #322: the sidebar Home row, nav.home and the palette open AllWorkspaces, and a start path of /all-workspaces opens it. /dashboard closed by #403 (d92abbfe): Selection gains {kind:'dashboard', repo?} and startSelection maps a start path of /dashboard[?repo=<id>] to it (src/state/selectors.ts, called with location.search from store.ts); App renders Dashboard for it. The sidebar shows a 'Dashboard' row above Home only while dashboard_enabled is on (useDashboardEnabled; conductor.db settings key dashboard_enabled through app prefs, unset or not 'true' means off), and Settings > Experimental has the 'Dashboard' switch with Conductor's description. When the setting has loaded and is off, Dashboard selects root, as Conductor's lta returns <Navigate to='/' replace> on isSuccess && !enabled (renderApp-D_fmY7hW.js lta @9,906,285, redirect ~@9,908,080; h1 'Dashboard'; 'New workspace' on an empty board; route path '/dashboard' with search {repo?}). The board itself (status columns, Show N more / Show less, Move to drop hint, project tabs with 5 then More) is in src/components/Dashboard.tsx and src/home/dashboard.ts per evidence/screens/dashboard.md. Read as code and bundle text; not run in the desktop app, and drag-and-drop not exercised.",
    "recheck": false
   },
   {
@@ -1022,8 +1022,8 @@
      "file": "src/components/QuickOpenDialog.tsx"
     }
    ],
-   "verdict": "partial",
-   "why": "Re-read with REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest): 'Recent workspaces' is the command palette's All-tab heading with an empty query (m_a @10,909,908), not a Home list. Conductor keeps recentWorkspaceIds (most recent first, cap XOt = 5, recordViewedWorkspace) in its persisted UI store (partialize includes recentWorkspaceIds, index chunk @3,121,897), so the list survives a restart. Ours (src/palette/PaletteHost.tsx) shows the same heading and order but keeps up to 8 ids in React state only, so it is empty after a restart and holds 3 more than Conductor. Re-read on a9e4a48 after #401 (1121ccc): the persistence half is closed. src/palette/recentWorkspaces.ts keeps recentWorkspaceIds with Conductor's recordViewedWorkspace rule (unchanged when already first, else moved to the front, at most 5) and persists it under the same localStorage key workspace-tab-state-v2 in zustand's {state, version} shape; PaletteHost starts from the stored list and saves on every change. Matches index-BGEQ8YjU.js recordViewedWorkspace (@3,122,391), XOt=5 (@3,120,888) and partialize keeping recentWorkspaceIds (@3,125,154); tests/e2e/palette-recents.e2e.mjs covers a reload. Still partial: Conductor's palette maps the stored ids over every workspace, archived included, and drops only ids that no longer resolve (renderApp-D_fmY7hW.js @10,854,949: w.map(...).filter(E_a), E_a = t!==void 0 @10,875,488; the search path alone filters archived, S_a/k_a @10,875,434), so archived workspaces stay under 'Recent workspaces'. Ours drops them twice: paletteDataFromState keeps only ids in the sidebar's known set (src/palette/fromAppState.ts) and the All tab's Recent group filters !w.archived (src/palette/search/model.ts). Open #551 (builder 9afba896) closes this. Not run in the desktop app.",
+   "verdict": "implemented",
+   "why": "Re-read with REA (renderApp-D_fmY7hW.js, sha256 matches the asset manifest): 'Recent workspaces' is the command palette's All-tab heading with an empty query (m_a @10,909,908), not a Home list. Conductor keeps recentWorkspaceIds (most recent first, cap XOt = 5, recordViewedWorkspace) in its persisted UI store (partialize includes recentWorkspaceIds, index chunk @3,121,897), so the list survives a restart. Ours (src/palette/PaletteHost.tsx) shows the same heading and order but keeps up to 8 ids in React state only, so it is empty after a restart and holds 3 more than Conductor. Re-read on a9e4a48 after #401 (1121ccc): the persistence half is closed. src/palette/recentWorkspaces.ts keeps recentWorkspaceIds with Conductor's recordViewedWorkspace rule (unchanged when already first, else moved to the front, at most 5) and persists it under the same localStorage key workspace-tab-state-v2 in zustand's {state, version} shape; PaletteHost starts from the stored list and saves on every change. Matches index-BGEQ8YjU.js recordViewedWorkspace (@3,122,391), XOt=5 (@3,120,888) and partialize keeping recentWorkspaceIds (@3,125,154); tests/e2e/palette-recents.e2e.mjs covers a reload. Still partial: Conductor's palette maps the stored ids over every workspace, archived included, and drops only ids that no longer resolve (renderApp-D_fmY7hW.js @10,854,949: w.map(...).filter(E_a), E_a = t!==void 0 @10,875,488; the search path alone filters archived, S_a/k_a @10,875,434), so archived workspaces stay under 'Recent workspaces'. Ours drops them twice: paletteDataFromState keeps only ids in the sidebar's known set (src/palette/fromAppState.ts) and the All tab's Recent group filters !w.archived (src/palette/search/model.ts). Closed by #551 (4170c2c, re-read on main d92abbfe): paletteDataFromState now keeps every recent id that resolves to a workspace, active (state.repos, archived when status is 'archived') or archived (the conductor.db list PaletteHost loads and passes in), and drops only ids that resolve to nothing; the stored list is left as is, so deleted ids still count toward the cap of 5 as in Conductor (recordViewedWorkspace never prunes). The All tab's empty-query Recent group no longer filters !w.archived. Matches renderApp-D_fmY7hW.js @10,854,949 (Up = w.map(id => $u.find(localId===id)).filter(E_a)), where $u (@10,854,493) is every workspace in both states and only the query paths filter by state (k_a non-archived, S_a archived). Not run in the desktop app.",
    "recheck": false
   },
   {
@@ -1449,6 +1449,6 @@
   }
  ],
  "verdicts_ref": "origin/main",
- "verdicts_verified_at": "2026-11-06 (main 2e728ad0: home.duplicate-repo after #555 (2e728ad0), stays implemented, both add paths keep the backend name; main 4c28914: home.status-overview after #539 (4c28914), status matrix read in Home, sidebar and pending rows; main 1f43a15: sidebar.ws-unread after #443 (1f43a15), stays partial (per-chat unread, plan/question/elicitation waits); main a9e4a48: sidebar.archive after #532 (a9e4a48), home.duplicate-repo after #401 (1121ccc), home.recent re-read after #401 (persistence closed; archived workspaces still dropped from Recent, open #551); main 563981a: create.page after #388 (563981a), create.first-message model/effort note after #388, create.initializing re-read after #388/#399 (unchanged), sidebar.archive: #467 merged into #428's branch after #428 landed, so its fix is not on main; main f6da48f: sidebar.ws-status after #428 (5751628), home.status-overview after #428 and #457 (f6da48f), sidebar.archive re-read (Codex chats now block archive, Stop still skips them and needs_user_permission chats); main 2e13137: sidebar.archive Codex-chat gap in progress via open draft #467, verdict unchanged; main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 94.8
+ "verdicts_verified_at": "2026-11-06 (main d92abbfe: home.recent after #551 (4170c2c), archived workspaces stay in Recent; home.dashboard-routes after #403 (d92abbfe), /dashboard route, sidebar row and Experimental setting; main 2e728ad0: home.duplicate-repo after #555 (2e728ad0), stays implemented, both add paths keep the backend name; main 4c28914: home.status-overview after #539 (4c28914), status matrix read in Home, sidebar and pending rows; main 1f43a15: sidebar.ws-unread after #443 (1f43a15), stays partial (per-chat unread, plan/question/elicitation waits); main a9e4a48: sidebar.archive after #532 (a9e4a48), home.duplicate-repo after #401 (1121ccc), home.recent re-read after #401 (persistence closed; archived workspaces still dropped from Recent, open #551); main 563981a: create.page after #388 (563981a), create.first-message model/effort note after #388, create.initializing re-read after #388/#399 (unchanged), sidebar.archive: #467 merged into #428's branch after #428 landed, so its fix is not on main; main f6da48f: sidebar.ws-status after #428 (5751628), home.status-overview after #428 and #457 (f6da48f), sidebar.archive re-read (Codex chats now block archive, Stop still skips them and needs_user_permission chats); main 2e13137: sidebar.archive Codex-chat gap in progress via open draft #467, verdict unchanged; main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 96.3
 }

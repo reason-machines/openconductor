@@ -7,6 +7,7 @@ import { Row } from "../GeneralPage";
 import { setAppPref, useAppPrefs, type AppPrefUpdate } from "../appPrefs";
 import { effectiveShortcuts } from "../../keybindings/overrides";
 import { glyphs } from "../../keybindings/shortcut";
+import { setDashboardEnabled, useDashboardEnabled } from "../../home/useDashboardEnabled";
 
 function save(update: AppPrefUpdate): void {
   setAppPref(update).catch((err) => console.warn(`could not save ${update.key}`, err));
@@ -117,6 +118,16 @@ export function SidebarResourceUsageRow() {
   return (
     <Row label="Show sidebar resource usage" help="Shows CPU and memory usage in the workspace sidebar footer.">
       <Switch label="Show sidebar resource usage" checked={p.sidebar_resource_usage} onChange={(value) => save({ key: "sidebar_resource_usage", value })} />
+    </Row>
+  );
+}
+
+/** Experimental › Dashboard (Conductor's `dashboard_enabled`): the sidebar's Dashboard row and the /dashboard board. */
+export function DashboardRow() {
+  const dashboard = useDashboardEnabled();
+  return (
+    <Row label="Dashboard" help="Show the dashboard and workspace sidebar.">
+      <Switch label="Dashboard" checked={dashboard.enabled} disabled={!dashboard.ready} onChange={setDashboardEnabled} />
     </Row>
   );
 }
