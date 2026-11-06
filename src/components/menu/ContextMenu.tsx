@@ -193,8 +193,12 @@ export function ContextMenu({ at, onClose, label, className, onKeyDown, children
     if (!el) return;
     const r = el.getBoundingClientRect();
     setPos(place(r.width, r.height, { left: at.x, right: at.x, top: at.y, bottom: at.y }, "context"));
-    el.focus({ preventScroll: true });
   }, [at.x, at.y]);
+  // Focus once placed: the measuring pass is `visibility: hidden`, which can't take focus,
+  // and the menu needs it for arrow keys and the R / P accelerators.
+  useLayoutEffect(() => {
+    if (pos) ref.current?.focus({ preventScroll: true });
+  }, [pos]);
   useEffect(() => () => {
     if (closing.current !== null) window.clearTimeout(closing.current);
   }, []);
@@ -388,8 +392,11 @@ function SubPanel({ trigger, label, className, focusFirst, children }: { trigger
     const r = el.getBoundingClientRect();
     const p = place(r.width, r.height, a, "submenu");
     setPos({ ...p, origin: `${p.left >= a.right - 1 ? 0 : r.width}px ${a.top - p.top}px` });
-    if (focusFirst) items(el)[0]?.focus({ preventScroll: true });
-  }, [trigger, focusFirst]);
+  }, [trigger]);
+  // As in ContextMenu: focus only once visible (the measuring pass is `visibility: hidden`).
+  useLayoutEffect(() => {
+    if (pos && focusFirst && ref.current) items(ref.current)[0]?.focus({ preventScroll: true });
+  }, [pos, focusFirst]);
   const style: React.CSSProperties = pos ? { left: pos.left, top: pos.top, ["--transform-origin" as string]: pos.origin } : { left: 0, top: 0, visibility: "hidden" };
   return createPortal(
     <Panel className={className} label={label} style={style} phase={pos ? phase : "starting"} level={{ openSub, setOpenSub, parentTrigger: trigger }} panelRef={ref}>
