@@ -100,6 +100,10 @@ async function wd(method, path, body) {
     method,
     headers: { "content-type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
+    // A hung WebDriver call fails here, naming the call, instead of at the job's step timeout.
+    signal: AbortSignal.timeout(45000),
+  }).catch((e) => {
+    throw new Error(`${method} ${path}: ${e.message}`);
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`${method} ${path}: ${res.status} ${JSON.stringify(json.value ?? json)}`);
@@ -436,11 +440,15 @@ try {
     pass(`the ${mode.card} card stores ${JSON.stringify(stored)}`);
 
     // Back to the workspace, a new chat on Codex, one turn.
+    console.log(`# ${mode.id}: back to the workspace`);
     await run("document.querySelector('.settings-back').click();");
     await waitFor("the workspace", () => run("return !!document.querySelector('.main-tab-new-button') || null;"));
+    console.log(`# ${mode.id}: new chat`);
     await run("document.querySelector('.main-tab-new-button').click();");
     await waitFor("the new, empty chat", () => chatText().then((t) => t !== null && !/unauth|turn \d+:/.test(t)));
+    console.log(`# ${mode.id}: pick Codex`);
     await pickCodex();
+    console.log(`# ${mode.id}: send the turn`);
     const prompt = `mode ${mode.id}`;
     await send(prompt);
     await waitFor(`"turn 1: ${prompt}"`, () => chatText().then((t) => t.includes(`turn 1: ${prompt}`)));
