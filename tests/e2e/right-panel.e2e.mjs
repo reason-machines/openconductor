@@ -74,7 +74,7 @@ test("Changes: sorted flat rows, compressed hierarchy, collapsing counts, filter
   const { context, page, errors } = await open();
   const changed = page.locator('nav[aria-label="Changed files"]');
   await changed.locator(".oc-change").first().waitFor();
-  assert.deepEqual(await changed.locator(".oc-change .name").allInnerTexts(), ["src/lib/auth.test.ts", "src/lib/auth.ts"]);
+  assert.deepEqual(await changed.locator(".oc-change .name").allTextContents(), ["src/lib/auth.test.ts", "src/lib/auth.ts"]);
   assert.equal(await page.getByRole("button", { name: "Refresh", exact: true }).count(), 0);
   assert.equal(await changed.getByRole("img", { name: "modified", exact: true }).count(), 2);
   await page.getByRole("button", { name: "Show folder hierarchy", exact: true }).click();
@@ -97,7 +97,14 @@ test("Changes: sorted flat rows, compressed hierarchy, collapsing counts, filter
   assert.equal(await changed.locator(".oc-change").count(), 0);
   await page.getByRole("button", { name: "Show flat list", exact: true }).click();
   assert.equal(await changed.locator(".oc-change").count(), 2);
-  await page.getByRole("button", { name: "Changes options", exact: true }).click();
+  const options = page.getByRole("button", { name: "Changes options", exact: true });
+  await options.click();
+  const popup = page.getByRole("menu", { name: "Changes options", exact: true });
+  await popup.waitFor();
+  const popupBounds = await popup.boundingBox();
+  const triggerBounds = await options.boundingBox();
+  assert.ok(popupBounds && triggerBounds);
+  assert.ok(Math.abs(popupBounds.x + popupBounds.width - triggerBounds.x - triggerBounds.width) < 1);
   await page.getByRole("menuitem", { name: /Uncommitted changes/ }).click();
   await page.getByRole("button", { name: "Back to all changes", exact: true }).waitFor();
   await page.waitForFunction(() => window.__fake.calls.some((c) => c.cmd === "diff_workspace" && c.request.scope.kind === "uncommitted"));

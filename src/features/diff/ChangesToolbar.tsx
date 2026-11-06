@@ -32,7 +32,7 @@ export function ChangesToolbar({ diff, view, onViewChange, targetControl }: { di
           </button>
         </Tooltip>
       )}
-      {anchor && <DropdownMenu anchor={anchor} label="Changes options" className="oc-changes-options-menu" onClose={close}>
+      {anchor && <DropdownMenu anchor={anchor} align="end" label="Changes options" className="oc-changes-options-menu" onClose={close}>
         {targetControl && <><div className="oc-changes-target">Target branch {targetControl}</div><MenuSeparator /></>}
         <MenuItem onSelect={() => diff.update({ scope: "all" })}><span className="oc-changes-option-label">All changes</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m20 6-11 11-5-5" /></svg></MenuItem>
         <MenuItem onSelect={() => diff.update({ scope: "uncommitted" })}><span className="oc-changes-option-label">Uncommitted changes<span className="oc-changes-option-detail">{diff.uncommittedPaths.size ? `${diff.uncommittedPaths.size} ${diff.uncommittedPaths.size === 1 ? "file" : "files"} changed` : "No uncommitted changes"}</span></span><span className="cm-shortcut">⌘⌥U</span></MenuItem>

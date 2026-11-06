@@ -70,7 +70,7 @@ async function capture(side, state, steps) {
   fs.writeFileSync(path.join(out, `${side}-${state}.png`), Buffer.from(screenshot.data_base64, "base64"));
   const dom = artifacts.dom?.value?.text ?? artifacts.dom?.value ?? "";
   const domText = typeof dom === "string" ? dom : JSON.stringify(dom);
-  if (!domText.includes("files changed") || !domText.includes("auth.test.ts")) throw new Error(`${side}-${state}: not the populated Changes screen`);
+  if (!domText.includes("files changed") || !domText.includes(state === "collapsed" ? "src / lib" : "auth.test.ts")) throw new Error(`${side}-${state}: not the populated Changes screen`);
   fs.writeFileSync(path.join(out, `${side}-${state}.dom.txt`), domText);
   const artifactPath = path.join(out, `${side}-${state}-artifact.json`);
   fs.writeFileSync(artifactPath, JSON.stringify(screenshot));
@@ -85,7 +85,7 @@ async function prove() {
       const oc = await capture("oc", state, spec.oc);
       const cmp = await run(["compare-web-screenshots", ref.artifactPath, oc.artifactPath, "--channel-threshold", "24", "--format", "json"]);
       const nr = cmp.normalized_result ?? cmp;
-      report[state] = { reference: ref, openconductor: oc, compare: { evidence_id: cmp.evidence_id, changed_pixels: nr.changed_pixels, total_pixels: nr.total_pixels, changed_ratio: nr.changed_ratio } };
+      report[state] = { reference: ref, openconductor: oc, compare: { evidence_id: cmp.evidence_id, changed_pixels: nr.changed_pixels, compared_pixels: nr.compared_pixels, changed_ratio: nr.changed_ratio } };
       console.log(`${state}: t24 ${(nr.changed_ratio * 100).toFixed(2)}%, ref ${ref.evidence_id}, oc ${oc.evidence_id}`);
     } catch (e) { report[state] = { error: String(e) }; console.error(String(e)); }
     fs.writeFileSync(path.join(out, "report.json"), JSON.stringify(report, null, 2) + "\n");

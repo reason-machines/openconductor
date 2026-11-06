@@ -30,7 +30,7 @@ def compare(reference, ours):
     result = subprocess.run([rea, "compare-web-screenshots", str(reference), str(ours), "--channel-threshold", "24", "--format", "json"], check=True, capture_output=True, text=True)
     evidence = json.loads(result.stdout)
     data = evidence.get("normalized_result", evidence)
-    return {"evidence_id": evidence.get("evidence_id"), **{key: data[key] for key in ("changed_pixels", "total_pixels", "changed_ratio")}}
+    return {"evidence_id": evidence.get("evidence_id"), **{key: data[key] for key in ("changed_pixels", "compared_pixels", "changed_ratio")}}
 
 
 for state in ("flat", "tree", "collapsed", "options"):
