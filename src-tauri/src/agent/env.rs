@@ -100,6 +100,11 @@ pub mod vars {
     pub const ANTHROPIC_DEFAULT_OPUS_MODEL: &str = "ANTHROPIC_DEFAULT_OPUS_MODEL";
     pub const ANTHROPIC_DEFAULT_SONNET_MODEL: &str = "ANTHROPIC_DEFAULT_SONNET_MODEL";
     pub const ANTHROPIC_DEFAULT_HAIKU_MODEL: &str = "ANTHROPIC_DEFAULT_HAIKU_MODEL";
+    /// Claude Code's own login handed over in the environment. Not a routing
+    /// variable: the CLI login mode passes it through, as Conductor 0.87.6
+    /// does; a provider that sets its own credential removes it.
+    pub const CLAUDE_CODE_OAUTH_TOKEN: &str = "CLAUDE_CODE_OAUTH_TOKEN";
+    pub const CLAUDE_CODE_OAUTH_SCOPES: &str = "CLAUDE_CODE_OAUTH_SCOPES";
     pub const OPENAI_API_KEY: &str = "OPENAI_API_KEY";
     pub const CODEX_API_KEY: &str = "CODEX_API_KEY";
     /// Never passed to Codex: Conductor 0.87.6 deletes it from every Codex
