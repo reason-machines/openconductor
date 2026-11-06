@@ -723,28 +723,88 @@ fn root_setting_moves_workspaces_archives_and_default_clones() {
 }
 
 #[test]
+fn service_reads_a_registry_without_names_and_bumps_past_workspace_folders() {
+    use super::service::WorkspaceService;
+    let f = fixture();
+    let data = f.tmp.path().join("svc");
+    std::fs::create_dir_all(data.join("workspaces").join("My App")).unwrap();
+    // A registry from before the name column: the name is the folder name.
+    let root = super::git::toplevel(&f.repo).unwrap();
+    std::fs::write(data.join("repositories.tsv"), format!("old\t{}\n", root.display())).unwrap();
+    let svc = WorkspaceService::new(&data).unwrap();
+    assert_eq!(svc.repositories()[0].name, "My App");
+    // `My App` is taken by that project, `My App-v1` would be free but for its
+    // workspaces folder (Conductor's makeRepoNameUnique checks the folder).
+    std::fs::create_dir_all(data.join("workspaces").join("My App-v1")).unwrap();
+    let r = svc.add_repository(&f.repo).unwrap();
+    assert_eq!((r.id.as_str(), r.name.as_str()), ("my-app-v2", "My App-v2"));
+}
+
+#[test]
+fn ensure_repository_twice_on_one_folder_adds_no_project() {
+    use super::service::WorkspaceService;
+    let f = fixture();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
+    // An unregistered folder: the first lookup registers it, the second finds it.
+    let first = svc.ensure_repository(None, &f.repo).unwrap();
+    assert_eq!(svc.repositories().len(), 1);
+    let second = svc.ensure_repository(None, &f.repo).unwrap();
+    assert_eq!((second.id.as_str(), svc.repositories().len()), (first.id.as_str(), 1));
+    // With a `-v1` copy on the folder, lookups by id or by folder add nothing.
+    let copy = svc.add_repository(&f.repo).unwrap();
+    let before = svc.repositories().len();
+    assert_eq!(svc.ensure_repository(Some(&copy.id), &f.repo).unwrap().id, copy.id);
+    assert_eq!(svc.ensure_repository(Some(&copy.id), &f.repo).unwrap().id, copy.id);
+    assert_eq!(svc.ensure_repository(None, &f.repo).unwrap().id, first.id);
+    assert_eq!(svc.ensure_repository(None, &f.repo).unwrap().id, first.id);
+    assert_eq!(svc.repositories().len(), before);
+}
+
+#[test]
 fn service_registers_repositories_and_creates_from_form_fields() {
     use super::service::{CreateWorkspaceRequest, WorkspaceService};
     let f = fixture();
     let data = f.tmp.path().join("svc");
     let svc = WorkspaceService::new(&data).unwrap();
     let r = svc.add_repository(&f.repo).unwrap();
-    assert_eq!((r.id.as_str(), r.default_branch.as_str()), ("my-app", "main"));
-    // Same repo (even via a subdirectory) keeps its id.
+    assert_eq!((r.id.as_str(), r.name.as_str(), r.default_branch.as_str()), ("my-app", "My App", "main"));
+    // Adding the same folder again (even via a subdirectory) is not refused:
+    // as in Conductor it becomes a second project on the same root, `-v1`.
     std::fs::create_dir_all(f.repo.join("sub")).unwrap();
-    assert_eq!(svc.add_repository(&f.repo.join("sub")).unwrap().id, "my-app");
+    let again = svc.add_repository(&f.repo.join("sub")).unwrap();
+    assert_eq!((again.id.as_str(), again.name.as_str(), again.root.as_path()), ("my-app-v1", "My App-v1", r.root.as_path()));
+    assert_eq!(svc.add_repository(&f.repo).unwrap().name, "My App-v2");
 
-    // A second repo with the same folder name gets a distinct id.
+    // Another repo with the same folder name is bumped past both.
     let other = f.tmp.path().join("elsewhere").join("My App");
     std::fs::create_dir_all(&other).unwrap();
     sh(&other, &["init", "-q", "-b", "main"]);
     commit_file(&other, "a.txt", "a\n", "init");
-    assert_eq!(svc.add_repository(&other).unwrap().id, "my-app-v1");
+    let o = svc.add_repository(&other).unwrap();
+    assert_eq!((o.id.as_str(), o.name.as_str()), ("my-app-v3", "My App-v3"));
 
-    // Registry survives a restart.
+    // Registry (ids, roots and names) survives a restart.
     let svc = WorkspaceService::new(&data).unwrap();
-    let ids: Vec<String> = svc.repositories().into_iter().map(|r| r.id).collect();
-    assert_eq!(ids, ["my-app", "my-app-v1"]);
+    let got: Vec<(String, String)> = svc.repositories().into_iter().map(|r| (r.id, r.name)).collect();
+    let want = [("my-app", "My App"), ("my-app-v1", "My App-v1"), ("my-app-v2", "My App-v2"), ("my-app-v3", "My App-v3")];
+    assert_eq!(got, want.map(|(i, n)| (i.to_string(), n.to_string())));
+    assert_eq!(svc.repository_root("my-app-v1").unwrap(), r.root);
+
+    // ensure_repository (Create workspace, branch pickers) never adds a
+    // project: the id it is given, else the first on the folder.
+    let by_id = svc.ensure_repository(Some("my-app-v1"), &f.repo).unwrap();
+    assert_eq!(by_id.id, "my-app-v1");
+    let by_root = svc.ensure_repository(Some("no-such-id"), &f.repo.join("sub")).unwrap();
+    assert_eq!(by_root.id, "my-app");
+    assert_eq!(svc.ensure_repository(None, &f.repo).unwrap().id, "my-app");
+    assert_eq!(svc.repositories().len(), 4);
+    let fresh = f.tmp.path().join("fresh");
+    std::fs::create_dir_all(&fresh).unwrap();
+    sh(&fresh, &["init", "-q", "-b", "main"]);
+    commit_file(&fresh, "a.txt", "a\n", "init");
+    assert_eq!(svc.ensure_repository(None, &fresh).unwrap().id, "fresh");
+    assert_eq!(svc.ensure_repository(None, &fresh).unwrap().id, "fresh");
+    assert_eq!(svc.repositories().len(), 5);
 
     let req = CreateWorkspaceRequest {
         repository_id: "my-app".into(),
@@ -857,6 +917,13 @@ fn clone_repository_streams_progress_and_picks_a_unique_name() {
     let again = svc.clone_repository(&url, &parent, &mut |_| {}).unwrap();
     assert_eq!(again.root, parent.join("My App-v1"));
     assert_eq!(svc.repositories().len(), 2);
+
+    // An empty clone folder still skips names other projects have, so the
+    // folder and the project name stay the same (makeRepoNameUnique).
+    let other = f.tmp.path().join("other-clones");
+    std::fs::create_dir_all(&other).unwrap();
+    let third = svc.clone_repository(&url, &other, &mut |_| {}).unwrap();
+    assert_eq!((third.root, third.name.as_str()), (other.join("My App-v2"), "My App-v2"));
 }
 
 #[test]

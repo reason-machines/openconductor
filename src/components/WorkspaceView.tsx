@@ -325,7 +325,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
     setForking(true);
     try {
       if (!repo.path) throw new Error("Unable to fork chat: workspace not found");
-      const backendRepo = await ensureRepository(repo.path);
+      const backendRepo = await ensureRepository(repo.path, repo.id);
       const taken = repo.workspaces.flatMap((w) => [w.name, w.branch.replace(/^.*\//, "")]);
       const [name] = generateWorkspaceNames(1, taken, Math.random);
       const targetBranch = workspace.targetBranch || backendRepo.defaultBranch;
@@ -697,6 +697,7 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
       {open && (
         <BranchPicker
           base={target.branch}
+          repoId={repo.id}
           repoPath={repo.path}
           defaultBranch={repo.defaultBranch}
           onPick={(b) => {

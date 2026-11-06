@@ -19,7 +19,7 @@ type Props = ComponentProps<typeof ChecksTab> & {
 };
 
 export function PrTab(props: Props) {
-  const { pr, worktree, repoPath, defaultBranch, refresh, target } = props;
+  const { pr, worktree, repoId, repoPath, defaultBranch, refresh, target } = props;
   const demo = !isTauri() && demoChecksEnabled();
   const shown = pr ?? (demo ? DEMO_PR : null);
   if (!shown) {
@@ -33,7 +33,7 @@ export function PrTab(props: Props) {
   }
   return (
     <div className="pr-tab" aria-label="Pull request tab">
-      <PrHeader pr={shown} worktree={demo ? "demo" : worktree} repoPath={repoPath} defaultBranch={defaultBranch} refresh={refresh} target={target} />
+      <PrHeader pr={shown} worktree={demo ? "demo" : worktree} repoId={repoId} repoPath={repoPath} defaultBranch={defaultBranch} refresh={refresh} target={target} />
       <ChecksTab {...props} />
     </div>
   );

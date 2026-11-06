@@ -14,7 +14,6 @@ import { CloneGitHubRepoDialog } from "./components/CloneGitHubRepoDialog";
 import { CreateWorkspaceDialog } from "./components/CreateWorkspaceDialog";
 import { CreateWorkspacePage } from "./components/CreateWorkspacePage";
 import { useAppPrefs } from "./settings/appPrefs";
-import { REPO_EXISTS, findExistingRepo } from "./workspace/repoPicker";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts, type ToastAction } from "./components/Toast";
@@ -231,16 +230,15 @@ export default function App() {
       const outcome = decideOpenProject(path, await inspectProjectFolder(path));
       if (outcome.kind === "error") return show("error", failedToAddMessage(outcome.message));
       if (outcome.kind === "needsGitHubRepo") return setGithubRepo({ path: outcome.path, name: outcome.name, needsGitInit: outcome.needsGitInit });
+      // An already-added folder is not refused: as in Conductor the backend
+      // registers a second project for it, named `<name>-v1`, `-v2`, ...
+      // (evidence/screens/duplicate-repo.md).
       const registered = await addRepository(outcome.path);
-      const existing = findExistingRepo(state.repos, { path: registered.root, remote: outcome.remote });
-      // Adding a hidden repository again unhides it (the backend's record_repository does the same).
-      if (existing?.hidden) return dispatch({ type: "setRepoHidden", repoId: existing.id, hidden: false });
-      if (existing) return show("error", REPO_EXISTS);
-      dispatch({ type: "addRepo", id: registered.id, repo: { name: outcome.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
+      dispatch({ type: "addRepo", id: registered.id, repo: { name: registered.name, path: registered.root, remote: outcome.remote, defaultBranch: registered.defaultBranch } });
     } catch (err) {
       show("error", failedToAddMessage(err));
     }
-  }, [dispatch, show, state.repos]);
+  }, [dispatch, show]);
   const openProject = useCallback(() => void addProject(), [addProject]);
   const addProjectAt = useCallback((path: string) => void addProject(path), [addProject]);
   const [quickOpen, setQuickOpen] = useState(false);
