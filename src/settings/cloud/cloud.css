@@ -1,0 +1,33 @@
+/* Settings › Cloud setup, after Conductor 0.87.6's `Hua`: page `space-y-10`,
+   step `space-y-4` with a `space-y-1` heading (`text-base font-medium`,
+   description `text-sm text-muted-foreground`), title suffix `ml-2 text-sm
+   font-normal text-muted-foreground`, the done mark `text-success`, the
+   not-done mark `text-muted-foreground/50`. */
+.settings .cloud-setup { display: flex; flex-direction: column; gap: 40px; user-select: text; }
+.settings .cloud-setup-header h1 { margin-bottom: 0; }
+.settings .cloud-setup-suffix { margin-left: 8px; font-size: 14px; line-height: 20px; font-weight: 400; color: var(--s-muted); }
+.settings .cloud-docs-link { display: inline-flex; align-items: center; gap: 2px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+.settings .cloud-docs-link:hover { color: var(--s-fg); }
+.settings .cloud-step { display: flex; flex-direction: column; gap: 16px; }
+.settings .cloud-step-head { display: flex; flex-direction: column; gap: 4px; }
+.settings .cloud-step-head h3 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 16px; line-height: 24px; font-weight: 500; }
+.settings .cloud-step-head p { margin: 0; font-size: 14px; line-height: 20px; color: var(--s-muted); }
+.settings .cloud-step-suffix { font-weight: 400; color: var(--s-muted); }
+.settings .cloud-step-mark { flex-shrink: 0; color: var(--s-muted); opacity: 0.5; }
+.settings .cloud-step-mark.done { color: var(--success); opacity: 1; }
+.settings .cloud-step-card { display: flex; flex-direction: column; gap: 20px; }
+.settings .cloud-fit { width: fit-content; }
+.settings .cloud-option { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--s-border); border-radius: 8px; }
+.settings .cloud-option-icon { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; flex-shrink: 0; border-radius: 6px; border: 1px solid var(--s-border); }
+.settings .cloud-option-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.settings .cloud-option-title { display: flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; font-weight: 500; }
+.settings .cloud-option-help { font-size: 13px; line-height: 18px; color: var(--s-muted); }
+.settings .cloud-option-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.settings .cloud-badge { display: inline-flex; align-items: center; padding: 0 6px; border-radius: 4px; background: var(--s-card); color: var(--s-muted); font-size: 11px; line-height: 16px; font-weight: 500; }
+.settings .cloud-all-set { display: flex; flex-direction: column; gap: 12px; animation: cloud-all-set-in 500ms both; }
+.settings .cloud-all-set h3 { margin: 0; font-size: 16px; line-height: 24px; font-weight: 500; }
+@keyframes cloud-all-set-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .settings .cloud-all-set { animation: none; } }
+/* The settings nav's "Cloud" group title carries Conductor's "Legacy" badge (`Qu variant="secondary"`). */
+.settings .settings-group-title .cloud-badge { margin-left: 6px; padding: 0 4px; font-size: 10px; }
+.settings .settings-group-title.with-badge { display: flex; align-items: center; }

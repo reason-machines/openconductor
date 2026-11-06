@@ -458,6 +458,7 @@ pub fn run() {
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
             reason_chat::reason_account_status,
+            reason_chat::reason_cloud_setup,
             reason_chat::reason_login_start,
             reason_chat::reason_connect_computer,
             reason_chat::reason_paths,

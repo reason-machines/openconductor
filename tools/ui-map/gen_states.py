@@ -86,7 +86,11 @@ st("settings-repo-misc-lower", "Settings > tide-web > Misc, scrolled to Remove r
 for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
     path="/settings/organization/"+sec
     st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path), oc_reason="OpenConductor has no organization settings", covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
-st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"), oc_reason="OpenConductor has no cloud settings", covers=[{"kind":"route","name":"/settings/cloud/setup"}])
+# The lane's throwaway HOME has no Reason login, so Settings lists no Cloud group to click: open the page
+# the way create's "Set up cloud" does (the app's open-settings event). Its steps then read signed out.
+st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"),
+   oc=oc_settings(None,[{"exec":"window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'setup-cloud'}}))","after_ms":2500}]),
+   covers=[{"kind":"route","name":"/settings/cloud/setup"},{"kind":"settings-page","name":"setup"}])
 st("settings-search","Settings search", ref("/settings/user/general", actions=[{"fill":["input[placeholder='Search settings']","branch"]}]), oc=oc_settings(None,[{"type":"branch","css":".settings input[type=search], .settings input[placeholder]"}]))
 
 # palette
