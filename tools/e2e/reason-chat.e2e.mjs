@@ -391,7 +391,8 @@ try {
   await screenshot("status-needs-permission-home");
   pass("the Home list shows the workspace's Needs permission status in place of its time");
 
-  await run(`document.querySelector('[data-testid="workspace-status-icon"][data-status="needs-user-permission"]').closest("button").click(); return true;`);
+  // With no workspace open its sidebar group is folded (Conductor's `Dra`), so open it from the Home row.
+  await run(`document.querySelector('[data-testid="home-workspace-status"][data-status="needs-user-permission"]').closest('[role="option"]').click(); return true;`);
   await wd("POST", `/element/${await waitFor("the Allow button", () => find('[data-testid="chat-permission-request"] button[data-kind="allow_once"]'))}/click`, {});
   await waitFor('"permission: allow"', () => chatText().then((t) => t.includes("permission: allow")));
   await turnDone(8);

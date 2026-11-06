@@ -1,0 +1,193 @@
+{
+  "seed": {
+    "repos": [
+      {
+        "id": "r1",
+        "name": "tide-web",
+        "path": "/Users/ada/src/tide-web",
+        "defaultBranch": "main",
+        "workspaces": [
+          {
+            "id": "w1",
+            "name": "lisbon",
+            "branch": "ada/fix-login-redirect",
+            "status": "needs-review",
+            "diff": {
+              "added": 15,
+              "removed": 1
+            },
+            "createdAt": 1762300000000,
+            "path": "/Users/ada/conductor/workspaces/tide-web/lisbon"
+          }
+        ]
+      }
+    ],
+    "selection": {
+      "kind": "workspace",
+      "repoId": "r1",
+      "workspaceId": "w1"
+    },
+    "sidebarVisible": true
+  },
+  "shots": [
+    {
+      "name": "pr-pill--dark",
+      "theme": "dark",
+      "crop": [
+        700,
+        0,
+        740,
+        300
+      ],
+      "conductor": {},
+      "ours": {
+        "storage": {
+          "openconductor.pr.demo": "ready"
+        },
+        "actions": [
+          {
+            "step_id": "rc",
+            "action": "click",
+            "button": "right",
+            "locator": {
+              "kind": "css",
+              "selector": "button.pr-link"
+            },
+            "timeout_ms": 15000
+          }
+        ]
+      }
+    },
+    {
+      "name": "pr-tab-number--dark",
+      "theme": "dark",
+      "crop": [
+        240,
+        30,
+        740,
+        330
+      ],
+      "conductor": {},
+      "ours": {
+        "storage": {
+          "openconductor.pr.demo": "ready"
+        },
+        "actions": [
+          {
+            "step_id": "open_pr",
+            "action": "click",
+            "locator": {
+              "kind": "css",
+              "selector": "button.pr-chip"
+            },
+            "timeout_ms": 15000
+          },
+          {
+            "step_id": "pr_wait",
+            "action": "wait_for_timeout",
+            "duration_ms": 800
+          },
+          {
+            "step_id": "rc",
+            "action": "click",
+            "button": "right",
+            "locator": {
+              "kind": "css",
+              "selector": ".pr-header .pr-number"
+            },
+            "timeout_ms": 15000
+          }
+        ]
+      }
+    },
+    {
+      "name": "chat-link--dark",
+      "theme": "dark",
+      "crop": [
+        256,
+        90,
+        790,
+        280
+      ],
+      "conductor": {
+        "scenario": "chat-link",
+        "actions": [
+          {
+            "step_id": "c_repo",
+            "action": "click",
+            "locator": {
+              "kind": "css",
+              "selector": "text=tide-web"
+            },
+            "timeout_ms": 15000
+          },
+          {
+            "step_id": "c_ws",
+            "action": "click",
+            "locator": {
+              "kind": "css",
+              "selector": "text=Ada/fix login redirect"
+            },
+            "timeout_ms": 15000
+          },
+          {
+            "step_id": "c_wait",
+            "action": "wait_for_timeout",
+            "duration_ms": 1500
+          },
+          {
+            "step_id": "rc",
+            "action": "click",
+            "button": "right",
+            "locator": {
+              "kind": "css",
+              "selector": "a:has-text('session docs')"
+            },
+            "timeout_ms": 15000
+          }
+        ]
+      },
+      "ours": {
+        "actions": [
+          {
+            "step_id": "type",
+            "action": "fill",
+            "locator": {
+              "kind": "css",
+              "selector": ".composer textarea"
+            },
+            "value": {
+              "source": "literal",
+              "value": "[session docs](https://docs.example.com/auth/sessions)"
+            }
+          },
+          {
+            "step_id": "send",
+            "action": "press",
+            "locator": {
+              "kind": "css",
+              "selector": ".composer textarea"
+            },
+            "key": "Enter",
+            "timeout_ms": 15000
+          },
+          {
+            "step_id": "wait_reply",
+            "action": "wait_for_timeout",
+            "duration_ms": 3500
+          },
+          {
+            "step_id": "rc",
+            "action": "click",
+            "button": "right",
+            "locator": {
+              "kind": "css",
+              "selector": ".oc-prose a.md-link"
+            },
+            "timeout_ms": 15000
+          }
+        ]
+      }
+    }
+  ]
+}

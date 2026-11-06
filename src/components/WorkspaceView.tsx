@@ -545,6 +545,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         ) : (
           <Transcript
             transcript={transcript}
+            notify={notify}
             expandToolsByDefault={garryMode}
             dontCollapseToolCalls={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
@@ -1256,7 +1257,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
         </div>
         <div className="ws-actions">
           {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
-          <PrControl pullRequest={pullRequest} actions={prActions} />
+          <PrControl pullRequest={pullRequest} actions={prActions} notify={notify} />
           <button
             className={`btn btn-small btn-icon${rightPanelVisible ? " active" : ""}`}
             title="Toggle right sidebar ⌥⌘B"
@@ -1299,6 +1300,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
                 repoPath={repo.path}
                 defaultBranch={repo.defaultBranch}
                 target={target}
+                notify={notify}
               />
             ) : null
           }
@@ -1310,7 +1312,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
               actions={review.actions}
               pr={pullRequest}
               worktree={workspace.path ?? null}
-              review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
+              review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} disabled={workspace.status === "archived"} />}
               fixErrors={fixErrors}
               readOnly={workspace.status === "archived"}
               notify={notify}

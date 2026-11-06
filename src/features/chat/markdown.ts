@@ -17,7 +17,7 @@
 //
 // No JSX so `markdown.test.ts` can render it with react-dom/server.
 
-import { createElement as h, useEffect, useState, type ReactNode } from "react";
+import { createElement as h, useEffect, useState, type ComponentType, type ReactNode } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
@@ -110,6 +110,8 @@ export interface MarkdownOptions {
   workspacePath?: string;
   /** Opens a file link (its absolute path). */
   onOpenFile?: (path: string) => void;
+  /** Draws links instead of a plain <a> (the transcript passes LinkMenu.tsx's right-click menu). */
+  Link?: ComponentType<{ href?: string; onOpenLink?: (href: string) => void; children?: ReactNode }>;
 }
 
 /** Conductor's `_Xs`: whether an inline-code value looks like a file path. */
@@ -130,7 +132,7 @@ export function resolveWorkspacePath(value: string, workspacePath: string | unde
   return `${root}/${path.replace(/^\.\//, "")}`;
 }
 
-export function markdownComponents({ onOpenLink, workspacePath, onOpenFile }: MarkdownOptions = {}): Components {
+export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link }: MarkdownOptions = {}): Components {
   return {
     // The code component draws its own <pre> for blocks.
     pre: ({ children }) => h("div", { className: "md-pre" }, children),
@@ -146,29 +148,31 @@ export function markdownComponents({ onOpenLink, workspacePath, onOpenFile }: Ma
       return h("button", { type: "button", className: "md-file-link", title: `Open ${file}`, onClick: () => onOpenFile?.(file) }, code);
     },
     a: ({ href, children }) =>
-      h(
-        "a",
-        {
-          href,
-          className: "md-link",
-          target: "_blank",
-          rel: "noreferrer noopener",
-          onClick: (e: { preventDefault: () => void }) => {
-            if (!href || !onOpenLink) return;
-            e.preventDefault();
-            onOpenLink(href);
-          },
-        },
-        children,
-      ),
+      Link
+        ? h(Link, { href, onOpenLink, children })
+        : h(
+            "a",
+            {
+              href,
+              className: "md-link",
+              target: "_blank",
+              rel: "noreferrer noopener",
+              onClick: (e: { preventDefault: () => void }) => {
+                if (!href || !onOpenLink) return;
+                e.preventDefault();
+                onOpenLink(href);
+              },
+            },
+            children,
+          ),
     table: ({ children }) => h("div", { className: "md-table-scroll" }, h("table", null, children)),
   };
 }
 
-export function Markdown({ text, className, onOpenLink, workspacePath, onOpenFile }: { text: string; className?: string } & MarkdownOptions) {
+export function Markdown({ text, className, onOpenLink, workspacePath, onOpenFile, Link }: { text: string; className?: string } & MarkdownOptions) {
   return h(
     "div",
     { className: className ? `md ${className}` : "md" },
-    h(ReactMarkdown, { remarkPlugins, components: markdownComponents({ onOpenLink, workspacePath, onOpenFile }) }, text),
+    h(ReactMarkdown, { remarkPlugins, components: markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link }) }, text),
   );
 }
