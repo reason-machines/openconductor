@@ -59,6 +59,22 @@ st("panel-setup-add","Terminal panel: Setup, no setup script", ref(actions=[{"cl
 st("panel-setup-idle","Terminal panel: Setup, before setup runs", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Setup"}], query={"oc_setup_script":"npm install"}),
    oc_reason="the lane's seeded repositories have no setup script; tools/side-by-side/setup-tab.mjs captures this state",
    covers=[{"kind":"empty-state","name":"No setup script output"}])
+# The Run tab next to it: no run script (the dashed "Add run script" card), and a run script that
+# has not run yet (Conductor's idle "Start Run" view and the strip's run split button).
+RUN_TAB=[{"click":".ws-strip-tabs [role=tab]","text":"Run","after_ms":800}]
+st("panel-run-add","Terminal panel: Run, no run script", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"}]), oc=OPEN_WS+RUN_TAB)
+st("panel-run-idle","Terminal panel: Run, before the run script runs", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"}], query={"oc_run_script":"npm run dev"}),
+   oc_reason="the lane's seeded repositories have no run script; tools/side-by-side/setup-tab.mjs captures this state")
+# Conductor's startup Xcode license check (`HBr` -> `QQt`) when `xcodebuild -license check` says the
+# license is not accepted (?oc_xcode_license=unaccepted makes the harness a macOS user agent and
+# answers the check that way), over the same workspace's Run tab.
+st("toast-xcode-license","Toast: Xcode license is not accepted", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"},{"wait":"text=Xcode license is not accepted"}], query={"oc_xcode_license":"unaccepted"}),
+   oc_reason="the lane's Linux build skips the macOS-only check; tools/side-by-side/setup-tab.mjs captures this state",
+   covers=[{"kind":"toast","name":"Xcode license is not accepted"}])
+# Settings › tide-web › Scripts, Add, Save while the repository's settings file cannot be written
+# (?oc_fail_settings_write=1): Conductor's settings service toasts "Failed to save setting" (index `Sz`).
+st("toast-save-setting-failed","Toast: Failed to save setting (Scripts, read-only settings file)", ref("/settings/repos/repo-tide-web/scripts", actions=[{"click":"button:text-is('Add')"},{"click":"[role=dialog] button:has-text('Save')"},{"wait":"text=Failed to save setting"}], query={"oc_fail_settings_write":"1"}),
+   oc_reason="the lane's settings files are writable; tools/side-by-side/setup-tab.mjs captures this state")
 # Conductor's harness sends the sidecar's toolApproval request for "tallinn" (scenario needs-permission,
 # tools/screens/seed-data.js); OpenConductor gets the same turn from the fake `reason acp` ("tallinn").
 st("needs-permission","Workspace needing permission", ref(scenario="needs-permission", actions=[{"click":"text=tide-api"},{"click":"text=Ada/rate limit headers"},{"wait":"text=Do you want to run this command?"}]),
@@ -105,7 +121,18 @@ st("settings-repo-misc-lower", "Settings > tide-web > Misc, scrolled to Remove r
    covers=[{"kind":"settings-page","name":"repo-misc"}])
 for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
     path="/settings/organization/"+sec
-    st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path), oc_reason="OpenConductor has no organization settings", covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
+    # Conductor renders these only for a member of a cloud organization (`lW`; any other account is
+    # sent to /settings/user/general), so the reference runs with ?oc_org=cloud
+    # (tools/screens/org-fixtures.js). OpenConductor's organization is the signed-in Reason workspace,
+    # which the lane's throwaway HOME has none of; tools/side-by-side/org-settings.mjs scores them.
+    # The Cloud computer page (where /github redirects) shows tide-web twice, so it waits for its own copy.
+    # /github is Conductor's redirect to /computer (`REa`), so that is where its reference lands.
+    r = (ref(path, wait=False, actions=[{"wait":"text=Configure your organization's shared cloud computer."}], query={"oc_org":"cloud"},
+             **({"expect_path":"/settings/organization/computer"} if sec=="github" else {}))
+         if sec in ("github","computer") else ref(path, query={"oc_org":"cloud"}))
+    st("settings-org-"+sec, "Settings > Organization > "+sec, r,
+       oc_reason="the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
+       covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
 # The lane's throwaway HOME has no Reason login, so Settings lists no Cloud group to click: open the page
 # the way create's "Set up cloud" does (the app's open-settings event). Its steps then read signed out.
 st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"),
@@ -143,6 +170,10 @@ st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{
 # Rename chat dialog and the Review button's right-click menu (chat builder 1)
 LISBON=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]
 st("dialog-rename-chat","Rename chat dialog", ref(actions=LISBON+[{"rclick":"[role=tab][aria-label^='Close chat']"},{"click":"[role=menuitem] >> text=Rename chat"}]), oc=OPEN_WS+[{"rclick":".main-tabs [role=tab]","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Rename chat","after_ms":800}])
+# Turn footer "Show message actions" -> Reset chat (Conductor dDo "Reset chat?", renderApp @8,910,893 bytes).
+st("dialog-reset-chat","Reset chat? dialog", ref(actions=LISBON+[{"click":"[aria-label='Show message actions']"},{"click":"[role=menuitem] >> text=Reset chat"}]), oc=OPEN_WS+[{"click":"[aria-label='Show message actions']","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Reset chat","after_ms":800}], covers=[{"kind":"dialog","name":"Reset chat?"}])
+# Model picker searched for a model no agent has (Conductor A7o "No models found", @8,601,078 bytes).
+st("empty-model-search","Model picker, search with no match", ref(actions=LISBON+[{"click":"text=Opus 5 >> nth=-1"},{"fill":["[placeholder='Search models']","zzz"]}]), oc=OPEN_WS+[{"click":".composer .oc-model-chip","after_ms":600},{"type":"zzz","css":"[placeholder='Search models']"}], covers=[{"kind":"empty-state","name":"No models found"}])
 st("menu-review-edit","Review button menu (Edit before sending)", ref(actions=LISBON+[{"rclick":"button:has-text('Review') >> nth=0"}]), oc=OPEN_WS+[{"rclick":".review-button","after_ms":600}], covers=[{"kind":"menu","name":"u6s"}])
 
 # Conductor's reference opens on "/" (Home: wordmark and the Open project / Open GitHub

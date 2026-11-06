@@ -39,6 +39,9 @@ fn only_listed_operations_run() {
         "createSession",
         "inviteMember",
         "writeMemoryFile",
+        "removeMember",
+        "setMemberRole",
+        "updateOrganization",
         "call",
     ] {
         assert!(!OPERATIONS.contains(&op));

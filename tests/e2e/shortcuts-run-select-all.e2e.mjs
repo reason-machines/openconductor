@@ -66,20 +66,21 @@ test("⌘R shows the Run tab and starts the run script, ⌘R again stops it (wor
 
   await press(page, "Meta+r");
   await page.waitForFunction(() => document.querySelector('.ws-strip [role="tab"][aria-selected="true"]')?.textContent?.trim() === "Run");
-  await run.getByRole("button", { name: "■ Stop" }).waitFor();
+  await strip.getByRole("button", { name: "Stop Dev", exact: true }).waitFor();
   await run.locator(".scripts-output", { hasText: "vite --port 55000" }).waitFor();
 
   await press(page, "Meta+r");
-  await run.getByRole("button", { name: "▶ Run" }).waitFor();
-  await run.getByText("stopped", { exact: true }).waitFor();
+  await strip.getByRole("button", { name: "Run Dev", exact: true }).waitFor();
+  // The stopped run keeps its output, as Conductor's run terminal does.
+  await run.locator(".scripts-output", { hasText: "vite --port 55000" }).waitFor();
 
   // ⌘R also works from the collapsed strip: it opens it on the Run tab.
   await strip.getByRole("button", { name: "Hide terminal panel" }).click();
   await press(page, "Meta+r");
   await strip.getByRole("button", { name: "Hide terminal panel" }).waitFor();
-  await run.getByRole("button", { name: "■ Stop" }).waitFor();
+  await strip.getByRole("button", { name: "Stop Dev", exact: true }).waitFor();
   await press(page, "Meta+r");
-  await run.getByRole("button", { name: "▶ Run" }).waitFor();
+  await strip.getByRole("button", { name: "Run Dev", exact: true }).waitFor();
 
   assert.deepEqual(errors, []);
   await context.close();

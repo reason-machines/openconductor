@@ -294,9 +294,11 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .review-chat-info { padding: 8px 16px; font-size: 12px; border-bottom: 1px dashed var(--border); }
 .tab-count { margin-left: 4px; font-size: 11px; color: var(--muted); }
 .chat-scroll[hidden] { display: none; }
-.main-tabs { padding-top: 6px; }
+/* Conductor's chat tab (Q1 @6,943,290) is h-10: a 40px strip whose active tab's 2px underline lies over the
+   strip's bottom border (y 38-39 of the strip), with the title's glyphs at y 15-25. */
+.main-tabs { padding-top: 5px; }
 .main-tab { display: inline-flex; align-items: center; }
-.main-tab > button[role="tab"] { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.main-tab > button[role="tab"] { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-bottom: 10px; margin-bottom: -1px; }
 /* parity:sidebar.ws-unread — Conductor's l8i dot before the chat tab title (size-2 shrink-0 text-unread, gap-2 to the title). */
 .main-tab-unread { display: inline-block; flex-shrink: 0; margin-right: 8px; vertical-align: middle; color: var(--unread); }
 .main-tab-close { margin-left: -6px; padding: 2px 6px; color: var(--muted); border-radius: 4px; font-size: 14px; line-height: 1; }
@@ -612,19 +614,31 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .quit-kbd { margin-left: 8px; opacity: 0.6; font: inherit; }
 
 /* Create project (Home → Quick start), evidence/screens/create-project.md. */
-.modal:has(.create-project-dialog) { width: min(525px, calc(100vw - 48px)); }
-.create-project-subtitle { color: var(--muted); }
-.create-project-hint { font-weight: 400; font-size: 12px; color: var(--muted); }
-.create-project-hint code { padding: 1px 5px; border-radius: 4px; background: var(--hover); color: var(--text); }
+/* Conductor's generic dialog (`nd`) at sm:max-w-[525px]: 24px padding, 6px radius, app background,
+   header 16px above a body that starts 8px lower (mt-2), fields 24px apart (space-y-6). */
+.modal.create-project-modal { width: min(525px, calc(100vw - 48px)); padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; border-radius: 6px; background: var(--bg); font-size: 14px; line-height: 20px; }
+.create-project-header { display: flex; flex-direction: column; gap: 6px; }
+.create-project-header h2 { margin: 0; font-size: 20px; font-weight: 500; line-height: 20px; letter-spacing: -0.025em; }
+.create-project-subtitle { margin: 0; color: var(--muted); }
+.create-project-dialog { margin-top: 8px; display: flex; flex-direction: column; gap: 24px; }
+.create-project-dialog .field { gap: 8px; }
+.create-project-dialog .field > span:first-child { font-size: 14px; line-height: 14px; }
+.create-project-dialog .field input { height: 32px; box-sizing: border-box; padding: 8px 12px; font-size: 14px; line-height: 20px; border-color: var(--input); }
+.create-project-dialog .field input:focus { border-color: var(--accent); }
+.create-project-dialog .btn { height: 32px; padding: 0 12px; font-size: 14px; border-color: var(--input); background: var(--bg); font-weight: 450; }
+.create-project-dialog .btn-primary { background: var(--accent); border-color: var(--accent); font-weight: 500; }
+.create-project-dialog .modal-actions { margin-top: 0; }
+.create-project-hint { font-weight: 400; font-size: 12px; line-height: 16px; color: var(--muted); }
+.create-project-hint code { padding: 2px 4px; border-radius: 4px; background: var(--surface-muted); color: var(--muted); font-size: 12px; }
 .create-project-hint.invalid { color: var(--diff-del); }
 .create-project-templates { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.create-project-templates button { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 8px; border: 1px solid transparent; border-radius: 6px; background: var(--hover); color: inherit; font: inherit; cursor: pointer; }
-.create-project-templates button:hover:not(:disabled) { background: color-mix(in srgb, var(--text) 9%, transparent); }
+.create-project-templates button { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border: 1px solid transparent; border-radius: 4px; background: color-mix(in srgb, var(--surface-muted) 50%, transparent); color: inherit; font: inherit; cursor: pointer; }
+.create-project-templates button:hover:not(:disabled) { background: var(--surface-muted); }
 .create-project-templates button.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 20%, transparent); }
 .create-project-templates button:disabled { cursor: default; opacity: 0.7; }
-.create-project-template-icon { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }
-.create-project-template-label { font-size: 13px; font-weight: 500; }
-.create-project-template-desc { font-size: 10px; font-weight: 400; color: var(--muted); text-align: center; }
+.create-project-template-icon { display: grid; place-items: center; width: 40px; height: 40px; box-sizing: border-box; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); }
+.create-project-template-label { font-size: 14px; font-weight: 500; line-height: 20px; }
+.create-project-template-desc { margin-top: -8px; font-size: 10px; font-weight: 400; line-height: 20px; color: var(--muted); text-align: center; }
 
 /* sidebar: repo menu, hidden repositories and drag to reorder (Conductor's repo list) */
 .sb-menu-sep { height: 1px; margin: 4px 0; background: var(--border); }
@@ -762,6 +776,10 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-account-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 4px; text-align: left; font-size: 13px; color: var(--text); }
 .sb-account-item:hover, .sb-account-item:focus-visible { background: var(--hover); }
 .sb-account-item-icon { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex: none; color: var(--muted); }
+/* Conductor's organization rows (`zna`): label, a cloud mark for cloud organizations, a check on the active one. */
+.sb-account-org-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-account-org-cloud { display: flex; color: var(--muted); }
+.sb-account-org-check { display: flex; margin-left: auto; }
 
 /* sidebar: resource usage pill (Conductor's `vna`: rounded-md border border-sidebar-border text-2xs
    sidebar-muted; gap-1 px-2 py-1, or p-1 when collapsed; size-3 microchip icon). */

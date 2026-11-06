@@ -544,6 +544,126 @@
    ]
   },
   {
+   "id": "panel-run-add",
+   "title": "Terminal panel: Run, no run script",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Run"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": ".ws-strip-tabs [role=tab]",
+     "text": "Run",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "panel-run-idle",
+   "title": "Terminal panel: Run, before the run script runs",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Run"
+     }
+    ],
+    "query": {
+     "oc_run_script": "npm run dev"
+    }
+   },
+   "oc_reason": "the lane's seeded repositories have no run script; tools/side-by-side/setup-tab.mjs captures this state"
+  },
+  {
+   "id": "toast-xcode-license",
+   "title": "Toast: Xcode license is not accepted",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Run"
+     },
+     {
+      "wait": "text=Xcode license is not accepted"
+     }
+    ],
+    "query": {
+     "oc_xcode_license": "unaccepted"
+    }
+   },
+   "oc_reason": "the lane's Linux build skips the macOS-only check; tools/side-by-side/setup-tab.mjs captures this state",
+   "covers": [
+    {
+     "kind": "toast",
+     "name": "Xcode license is not accepted"
+    }
+   ]
+  },
+  {
+   "id": "toast-save-setting-failed",
+   "title": "Toast: Failed to save setting (Scripts, read-only settings file)",
+   "ref": {
+    "path": "/settings/repos/repo-tide-web/scripts",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "button:text-is('Add')"
+     },
+     {
+      "click": "[role=dialog] button:has-text('Save')"
+     },
+     {
+      "wait": "text=Failed to save setting"
+     }
+    ],
+    "query": {
+     "oc_fail_settings_write": "1"
+    }
+   },
+   "oc_reason": "the lane's settings files are writable; tools/side-by-side/setup-tab.mjs captures this state"
+  },
+  {
    "id": "needs-permission",
    "title": "Workspace needing permission",
    "ref": {
@@ -1480,11 +1600,15 @@
     "scenario": "populated",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Configure your organization's shared cloud computer."
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    },
+    "expect_path": "/settings/organization/computer"
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1506,9 +1630,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1530,9 +1657,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1552,11 +1682,14 @@
     "scenario": "populated",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Configure your organization's shared cloud computer."
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1578,9 +1711,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1602,9 +1738,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1626,9 +1765,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1774,6 +1916,150 @@
     {
      "click": "[role=dialog] button, [role=dialog] [role=tab]",
      "text": "Workspaces"
+    }
+   ]
+  },
+  {
+   "id": "palette-workspaces-projects",
+   "title": "Command palette: Workspaces tab, project filter open",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "click": "[role=dialog] >> text=Workspaces"
+     },
+     {
+      "click": "[role=dialog] button:has-text('All projects')"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=dialog] button, [role=dialog] [role=tab]",
+     "text": "Workspaces"
+    },
+    {
+     "click": ".palette .palette-ws-filter",
+     "text": "All projects",
+     "after_ms": 600
+    }
+   ]
+  },
+  {
+   "id": "palette-workspaces-archive-filter",
+   "title": "Command palette: Workspaces tab, archive filter open",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "click": "[role=dialog] >> text=Workspaces"
+     },
+     {
+      "click": "[role=dialog] button:has-text('Hiding archived')"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=dialog] button, [role=dialog] [role=tab]",
+     "text": "Workspaces"
+    },
+    {
+     "click": ".palette .palette-ws-filter",
+     "text": "Hiding archived",
+     "after_ms": 600
+    }
+   ]
+  },
+  {
+   "id": "palette-workspaces-empty",
+   "title": "Command palette: Workspaces tab, no matching workspaces",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "click": "[role=dialog] >> text=Workspaces"
+     },
+     {
+      "fill": [
+       "[role=dialog] input[placeholder]",
+       "zzzz"
+      ]
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=dialog] button, [role=dialog] [role=tab]",
+     "text": "Workspaces"
+    },
+    {
+     "click": ".palette-input",
+     "type": "zzzz",
+     "after_ms": 600
+    }
+   ],
+   "covers": [
+    {
+     "kind": "empty-state",
+     "name": "No matching workspaces"
     }
    ]
   },
@@ -2386,6 +2672,100 @@
      "click": "[role=menu] [role=menuitem]",
      "text": "Rename chat",
      "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "dialog-reset-chat",
+   "title": "Reset chat? dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "[aria-label='Show message actions']"
+     },
+     {
+      "click": "[role=menuitem] >> text=Reset chat"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": "[aria-label='Show message actions']",
+     "after_ms": 600
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Reset chat",
+     "after_ms": 800
+    }
+   ],
+   "covers": [
+    {
+     "kind": "dialog",
+     "name": "Reset chat?"
+    }
+   ]
+  },
+  {
+   "id": "empty-model-search",
+   "title": "Model picker, search with no match",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "text=Opus 5 >> nth=-1"
+     },
+     {
+      "fill": [
+       "[placeholder='Search models']",
+       "zzz"
+      ]
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": ".composer .oc-model-chip",
+     "after_ms": 600
+    },
+    {
+     "type": "zzz",
+     "css": "[placeholder='Search models']"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "empty-state",
+     "name": "No models found"
     }
    ]
   },
