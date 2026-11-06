@@ -1,7 +1,6 @@
 /* Settings › Agents shared kit (kit.tsx). Builds on agents.css (`.oc-ag`
    variables, buttons, cards, status table); colours are theme tokens only. */
-.agk-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
-.agk-header h1 { margin: 0; font-size: 24px; font-weight: 500; line-height: 32px; }
+.settings .settings-header.agk-header { align-items: center; margin-bottom: 32px; }
 
 /* Equal-width auth cards; the column count comes from the option count. */
 .agk-cards { display: grid; gap: 12px; }
@@ -43,3 +42,6 @@
 .agk-split-main:disabled, .agk-split-chevron:disabled { opacity: 0.5; }
 .agk-split-menu { width: 200px; }
 .agk-split-error { position: absolute; top: calc(100% + 4px); right: 0; width: max-content; max-width: 320px; font-size: 12px; }
+
+/* The option rows under a tab's authentication start below a hairline. */
+.settings .settings-rows.agk-rows { padding-top: 24px; border-top: 1px solid var(--ag-border); }

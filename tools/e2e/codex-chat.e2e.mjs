@@ -179,8 +179,9 @@ try {
   await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   const cliPath = await runAsync("const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke('codex_cli_path').then(done, (e) => done('error: ' + e));");
-  assert.equal(cliPath, join(bin, "codex"));
-  pass(`codex_cli_path finds the CLI in ~/.local/bin: ${cliPath}`);
+  // Settings' "Codex executable path" overrides the CLI found on PATH (~/.local/bin).
+  assert.equal(cliPath, custom);
+  pass(`codex_cli_path honours the Codex executable path override: ${cliPath}`);
 
   // Pick Codex in the composer's model picker (Conductor's picker picks the agent too).
   await run("document.querySelector(\"[data-testid='composer-model-button']\").click();");

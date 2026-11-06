@@ -23,6 +23,12 @@ pub struct GitState {
     pub remote: Option<String>,
     /// `None` when the branch tracks nothing.
     pub upstream: Option<UpstreamSync>,
+    /// Commits on the target branch (remote copy preferred) that HEAD does
+    /// not have, the reference's `targetSyncStatus` (`git rev-list --count
+    /// HEAD..<remote>/<target>`); `None` when the target does not resolve.
+    pub target_behind: Option<u32>,
+    /// HEAD is detached (no current branch).
+    pub detached: bool,
 }
 
 /// What `git status --porcelain=v2 --branch` says about the branch.
@@ -33,12 +39,16 @@ pub struct StatusV2 {
     /// `(ahead, behind)`; `None` when the upstream ref does not exist.
     pub ahead_behind: Option<(u32, u32)>,
     pub dirty: bool,
+    /// `# branch.head (detached)`.
+    pub detached: bool,
 }
 
 pub fn parse_status_v2(text: &str) -> StatusV2 {
     let mut s = StatusV2::default();
     for line in text.lines() {
-        if let Some(up) = line.strip_prefix("# branch.upstream ") {
+        if line.trim_end() == "# branch.head (detached)" {
+            s.detached = true;
+        } else if let Some(up) = line.strip_prefix("# branch.upstream ") {
             s.upstream = Some(up.trim().to_string());
         } else if let Some(ab) = line.strip_prefix("# branch.ab ") {
             let mut it = ab.split_whitespace();
@@ -145,10 +155,14 @@ pub fn read_git_state(dir: &Path, target_branch: &str) -> Result<GitState, Strin
             git(dir, &["rev-parse", "--verify", "--quiet", target_branch])
                 .map(|_| target_branch.to_string())
         });
+    let count = |range: String| {
+        git(dir, &["rev-list", "--count", &range]).and_then(|n| n.trim().parse::<u32>().ok())
+    };
     let ahead_of_target = target
-        .and_then(|t| git(dir, &["rev-list", "--count", &format!("{t}..HEAD")]))
-        .and_then(|n| n.trim().parse::<u32>().ok())
+        .as_ref()
+        .and_then(|t| count(format!("{t}..HEAD")))
         .is_some_and(|n| n > 0);
+    let target_behind = target.as_ref().and_then(|t| count(format!("HEAD..{t}")));
     Ok(GitState {
         has_uncommitted: status.dirty,
         has_changes: status.dirty || ahead_of_target,
@@ -156,5 +170,7 @@ pub fn read_git_state(dir: &Path, target_branch: &str) -> Result<GitState, Strin
         can_create_pr,
         remote,
         upstream: upstream_sync(&status),
+        target_behind,
+        detached: status.detached,
     })
 }

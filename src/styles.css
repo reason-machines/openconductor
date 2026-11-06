@@ -292,6 +292,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .main-tabs { padding-top: 6px; }
 .main-tab { display: inline-flex; align-items: center; }
 .main-tab > button[role="tab"] { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* parity:sidebar.ws-unread — Conductor's l8i dot before the chat tab title (size-2 shrink-0 text-unread, gap-2 to the title). */
+.main-tab-unread { display: inline-block; flex-shrink: 0; margin-right: 8px; vertical-align: middle; color: var(--unread); }
 .main-tab-close { margin-left: -6px; padding: 2px 6px; color: var(--muted); border-radius: 4px; font-size: 14px; line-height: 1; }
 .main-tab-close:hover { color: var(--text); background: var(--hover); }
 /* The "+" after the chat tabs (NewChatButton): Conductor's ghost iconXs button and its tooltip. */
