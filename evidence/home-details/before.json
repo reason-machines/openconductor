@@ -1,0 +1,162 @@
+{
+  "dark": {
+    "ref": {
+      "text": "5/385 cities visited",
+      "footer": {
+        "height": 28,
+        "fontSize": "12px",
+        "fontWeight": "450",
+        "lineHeight": "16px",
+        "paddingLeft": "10px",
+        "paddingRight": "10px",
+        "borderRadius": "6px",
+        "color": "rgb(165, 160, 156)"
+      },
+      "icon": {
+        "width": "16px",
+        "height": "16px",
+        "strokeWidth": "1px",
+        "marginRight": "6px"
+      },
+      "cards": [
+        {
+          "label": "Open project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px"
+        },
+        {
+          "label": "Open GitHub project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px"
+        },
+        {
+          "label": "Quick start",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px"
+        }
+      ]
+    },
+    "oc": {
+      "text": "5/103 cities visited",
+      "footer": {
+        "height": 32,
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "normal",
+        "paddingLeft": "12px",
+        "paddingRight": "12px",
+        "borderRadius": "4px",
+        "color": "rgb(165, 160, 156)"
+      },
+      "icon": {
+        "width": "16px",
+        "height": "16px",
+        "strokeWidth": "2px",
+        "marginRight": "0px"
+      },
+      "cards": [
+        {
+          "label": "Open project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "2px"
+        },
+        {
+          "label": "Open GitHub project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "2px"
+        },
+        {
+          "label": "Quick start",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "2px"
+        }
+      ]
+    }
+  },
+  "light": {
+    "ref": {
+      "text": "5/385 cities visited",
+      "footer": {
+        "height": 28,
+        "fontSize": "12px",
+        "fontWeight": "450",
+        "lineHeight": "16px",
+        "paddingLeft": "10px",
+        "paddingRight": "10px",
+        "borderRadius": "6px",
+        "color": "rgb(142, 136, 133)"
+      },
+      "icon": {
+        "width": "16px",
+        "height": "16px",
+        "strokeWidth": "1px",
+        "marginRight": "6px"
+      },
+      "cards": [
+        {
+          "label": "Open project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px"
+        },
+        {
+          "label": "Open GitHub project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px"
+        },
+        {
+          "label": "Quick start",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px"
+        }
+      ]
+    },
+    "oc": {
+      "text": "5/103 cities visited",
+      "footer": {
+        "height": 32,
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "normal",
+        "paddingLeft": "12px",
+        "paddingRight": "12px",
+        "borderRadius": "4px",
+        "color": "rgb(142, 136, 133)"
+      },
+      "icon": {
+        "width": "16px",
+        "height": "16px",
+        "strokeWidth": "2px",
+        "marginRight": "0px"
+      },
+      "cards": [
+        {
+          "label": "Open project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "2px"
+        },
+        {
+          "label": "Open GitHub project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "2px"
+        },
+        {
+          "label": "Quick start",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "2px"
+        }
+      ]
+    }
+  }
+}

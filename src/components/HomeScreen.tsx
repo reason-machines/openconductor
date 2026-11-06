@@ -53,9 +53,9 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOp
       </div>
       <div className={`home-cards-wrap ${hasWorkspaces ? "has-workspaces" : ""}`}>
         <div className="home-cards">
-          <EntryCard icon={<FolderIcon size={16} />} label="Open project" onClick={onOpenProject} />
-          <EntryCard icon={<GlobeIcon size={16} />} label="Open GitHub project" onClick={() => onOpenDialog("clone")} />
-          <EntryCard icon={<FolderPlusIcon size={16} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
+          <EntryCard icon={<FolderIcon size={16} strokeWidth={1} />} label="Open project" onClick={onOpenProject} />
+          <EntryCard icon={<GlobeIcon size={16} strokeWidth={1} />} label="Open GitHub project" onClick={() => onOpenDialog("clone")} />
+          <EntryCard icon={<FolderPlusIcon size={16} strokeWidth={1} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
         </div>
       </div>
       {/* Conductor's `Xrs`: "<n>/<total> cities visited" behind a tickets-plane icon, nothing while no
@@ -63,8 +63,8 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOp
       {cities.length > 0 && (
         <div className="home-footer">
           <button type="button" className="home-cities" title={cities.join(", ")}>
-            <TicketsPlaneIcon size={16} />
-            {`${cities.length}/${CITY_TOTAL} cities visited`}
+            <TicketsPlaneIcon size={16} strokeWidth={1} />
+            {cities.length}/{CITY_TOTAL} cities visited
           </button>
         </div>
       )}
