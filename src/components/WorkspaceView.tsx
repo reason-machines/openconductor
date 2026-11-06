@@ -63,6 +63,8 @@ import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest"
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
+import { fixShortcutApplies } from "../features/pr/checks/fixErrors";
+import { useFixErrors, type FixErrors } from "../features/pr/checks/useFixErrors";
 import { AllFilesTree, FilesToolbarButtons, useFilesToolbar } from "../features/files/AllFilesTree";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
@@ -598,14 +600,13 @@ interface RightPanelProps {
   pr: PullRequest;
   worktree: string | null;
   review: ReactNode;
-  repo: Repo;
-  /** Fix errors: send to the workspace's own chat. */
-  sendToChat: (text: string, attachments: TextAttachment[]) => void;
+  /** Fix errors (shared with the `git.fixErrors` shortcut). */
+  fixErrors: FixErrors;
   readOnly: boolean;
   notify?: ArchiveNotify;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, readOnly, notify }: RightPanelProps) {
+function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, notify }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -647,8 +648,7 @@ function RightPanel({ diff, actions, pr, worktree, review, repo, sendToChat, rea
           worktree={worktree}
           pr={pr.pr}
           refresh={pr.refresh}
-          repoId={repo.id}
-          sendToChat={sendToChat}
+          fixErrors={fixErrors}
           readOnly={readOnly}
         />
       ) : (
@@ -827,6 +827,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     },
     [workspace.id],
   );
+  const fixErrors = useFixErrors({ worktree: workspace.path ?? null, repoId: repo.id, sendToChat, notify });
   const review = useReviewComments(workspace.id, chat, diff.openPath, workspace.path ?? null, notify);
   const [agentWorking, setAgentWorking] = useState(false);
   const archiveOnMerge = useArchiveOnMerge({ repo, workspace, dispatch, agentWorking, notify });
@@ -854,6 +855,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
   const prActions = usePrActions({
     pullRequest,
     repoId: repo.id,
+    repoPath: repo.path,
     worktree: workspace.path ?? null,
     branch: workspace.branch,
     targetBranch: target.branch,
@@ -894,6 +896,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
     },
     "git.mergePR": () => {
       if (mergeShortcutApplies(pullRequest.pr, pullRequest.settings.optionalChecksBlock, prActions.busy === "merging")) void prActions.merge();
+    },
+    "git.fixErrors": () => {
+      const failing = pullRequest.pr?.status?.checks.failing ?? [];
+      if (fixShortcutApplies(failing, fixErrors.fixing, workspace.status === "archived")) void fixErrors.run(failing);
     },
     "git.openInGitHub": prActions.openOnGitHub,
   });
@@ -1000,7 +1006,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
                 pr={pullRequest.pr}
                 refresh={pullRequest.refresh}
                 repoId={repo.id}
-                sendToChat={sendToChat}
+                fixErrors={fixErrors}
                 readOnly={workspace.status === "archived"}
                 repoPath={repo.path}
                 defaultBranch={repo.defaultBranch}
@@ -1017,8 +1023,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
               pr={pullRequest}
               worktree={workspace.path ?? null}
               review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} />}
-              repo={repo}
-              sendToChat={sendToChat}
+              fixErrors={fixErrors}
               readOnly={workspace.status === "archived"}
               notify={notify}
             />
