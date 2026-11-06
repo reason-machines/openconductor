@@ -498,7 +498,6 @@ pub fn run() {
             agent_launch::agent_executable_status,
             agent_options::agent_config_file,
             agent_options::open_agent_config,
-            agent_options::acp_agent_status,
             app_prefs::commands::set_app_pref,
             app_prefs::commands::record_open_in,
             open_in::commands::open_in_apps,
