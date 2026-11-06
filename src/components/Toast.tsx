@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { CloseIcon } from "./Icons";
-import { keepLeaving, TOAST_MS } from "./motion/presence.ts";
+import { entryOnce, keepLeaving, TOAST_MS } from "./motion/presence.ts";
 import { usePresence } from "./motion/usePresence.ts";
 import { toastTimeout, type ToastAction, type ToastItem } from "./toastTiming";
 
 export type { ToastAction, ToastItem };
 
 let nextId = 1;
+const entries = entryOnce(new Set<number>());
 
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -19,7 +20,9 @@ export function useToasts() {
 
 function Toast({ toast, leaving, onDismiss }: { toast: ToastItem; leaving: boolean; onDismiss: () => void }) {
   const [copied, setCopied] = useState(false);
-  const motion = usePresence(!leaving, TOAST_MS, { appear: true });
+  const [appear] = useState(() => entries.pending(toast.id));
+  const motion = usePresence(!leaving, TOAST_MS, { appear });
+  useEffect(() => entries.played(toast.id), [toast.id]);
   useEffect(() => {
     const ms = toastTimeout(toast);
     if (ms === null) return;

@@ -36,6 +36,21 @@ export const POPUP_MS = 100;
 export const TOAST_MS = 400;
 
 /**
+ * Ids of toasts that have played their entry. App.tsx renders a separate
+ * Toaster for the Settings view, so opening or closing Settings remounts every
+ * live toast; a toast slides in once, when it is first shown, not on each remount
+ * (a replayed slide-in covered the controls under the toaster, #545).
+ */
+export function entryOnce<K>(played: Set<K>) {
+  return {
+    /** Whether `key` still has its entry to play. Read during render: no side effect. */
+    pending: (key: K) => !played.has(key),
+    /** Record that `key` has entered (call from an effect). */
+    played: (key: K) => void played.add(key),
+  };
+}
+
+/**
  * The list a toaster renders: the current items in order, plus items removed
  * since the last render kept at their old place with `leaving: true` so they
  * can animate out. Items already leaving stay until `drop` removes them.
