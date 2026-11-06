@@ -17,12 +17,12 @@ import type { CodexPersonality } from "../types";
 import { codexAuthState, providerOf } from "./agentAuth";
 import { useAgentConfigPaths, type AgentTabProps } from "./ClaudeTab";
 import { CODEX_MODES, MANAGE_USAGE_URL, OPENAI_KEY, chatgptStatus, codexModeOf, loginResult, switchSteps, type CodexAccount, type CodexLoginEvent, type CodexMode } from "./codexModes";
-import { CheckIcon, ExternalIcon, KeyIcon, TerminalIcon } from "./icons";
+import { CheckIcon, CodexMark, ExternalIcon, KeyIcon, TerminalIcon } from "./icons";
 import { AuthCards, ConfigFileCard, ExecutablePathRow, LoginButton, SecretRow, StatusLine, type AuthOption } from "./kit";
 import { storedSecret, useAgentStatus } from "./useAgentStatus";
 import "./codexTab.css";
 
-const ICONS = { chatgpt: <ChatGptIcon />, cli: <TerminalIcon size={24} />, apikey: <KeyIcon size={24} /> };
+const ICONS = { chatgpt: <CodexMark size={24} />, cli: <TerminalIcon size={24} />, apikey: <KeyIcon size={24} /> };
 const CODEX_AUTH: readonly AuthOption<CodexMode>[] = CODEX_MODES.map((m) => ({ ...m, icon: ICONS[m.id] }));
 const open = (url: string) => void openUrl(url).catch(() => undefined);
 
@@ -178,16 +178,19 @@ function ChatGptSignIn({ account, onAccount, onError }: { account: CodexAccount 
       </button>
     );
   return (
-    <div className="ag-between" data-testid="codex-chatgpt-connected">
-      <p className="agc-ok">
-        <CheckIcon size={14} />
-        Connected with ChatGPT as {account.email ?? "your account"}
-      </p>
-      <div className="ag-row-2">
+    // Conductor's layout (renderApp offset 10247880): the line and its "Manage usage" link wrap together, and "Reconnect" sits on its own line, left-aligned.
+    <div className="agc-connected" data-testid="codex-chatgpt-connected">
+      <div className="agc-line">
+        <p className="agc-ok">
+          <CheckIcon size={14} />
+          Connected with ChatGPT as {account.email ?? "your account"}
+        </p>
         <button type="button" className="ag-link" onClick={() => open(MANAGE_USAGE_URL)}>
           Manage usage
           <ExternalIcon size={12} />
         </button>
+      </div>
+      <div>
         <button type="button" className="ag-btn ag-outline ag-sm" onClick={start}>
           Reconnect
         </button>
@@ -196,11 +199,3 @@ function ChatGptSignIn({ account, onAccount, onError }: { account: CodexAccount 
   );
 }
 
-/** ChatGPT: a speech bubble in the 24 px stroke grid (not OpenAI's mark). */
-function ChatGptIcon() {
-  return (
-    <svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.5L3 21l2-5.5A8.5 8.5 0 1 1 21 11.5z" />
-    </svg>
-  );
-}

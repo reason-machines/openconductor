@@ -19,6 +19,11 @@ import {
 } from "../workspace/createFrom";
 import { listIssues, listPullRequests } from "../workspace/api";
 import { Tooltip } from "./Tooltip";
+import { ChevronDownIcon } from "./Icons";
+import { ProviderMarks } from "./create/ProviderMarks";
+
+/** The empty trigger's accessible name and tooltip (Conductor's create-from trigger @10,954,391, read as data). */
+export const CREATE_FROM = "Create from";
 
 interface Props {
   value: CreateFrom | null;
@@ -106,9 +111,16 @@ export function CreateFromPicker({ value, branches, repoPath, disabled, shortcut
   return (
     <div className="create-from">
       {/* Conductor's create-from trigger: Tooltip "Create from" with its command's shortcut hint. */}
-      <Tooltip content="Create from" shortcut={shortcut}>
-        <button type="button" className="create-chip create-from-btn" onClick={() => setOpen(!open)} disabled={disabled} aria-expanded={open} aria-label="Create new workspace from PR, branch, or issue">
-          {value ? fromLabel(value) : "Create from..."}
+      {/* Empty, Conductor's trigger is only the Linear and GitHub marks and a chevron, named "Create from";
+          with a choice it shows the choice and is named by it. */}
+      <Tooltip content={CREATE_FROM} shortcut={shortcut}>
+        <button type="button" className="create-chip create-from-btn" onClick={() => setOpen(!open)} disabled={disabled} aria-expanded={open} aria-label={value ? undefined : CREATE_FROM}>
+          {value ? fromLabel(value) : (
+            <>
+              <ProviderMarks />
+              <ChevronDownIcon size={14} />
+            </>
+          )}
         </button>
       </Tooltip>
       {value && (

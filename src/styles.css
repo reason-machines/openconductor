@@ -352,7 +352,10 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* Create composer (Conductor's `Hji` in the dialog `pya` and the /create page `zCa`):
    eyebrow row of chips, a muted card with the editor, model and effort bottom-left,
    Create bottom-right. Dialog: max-w-3xl, borderless, anchored to the top edge. */
-.create-backdrop { place-items: start center; padding-top: clamp(48px, 12vh, 128px); }
+/* Conductor's top-edge-anchored DialogContent (`nd` with topEdgeAnchored, renderApp @1,914,819):
+   top-[max(2rem,calc(50%-250px))] of the window, over `bg-overlay backdrop-blur-xs`
+   (black at 50%, 4px blur) that covers the whole window, sidebar included. */
+.create-backdrop { place-items: start center; padding-top: max(2rem, calc(50vh - 250px)); background: color-mix(in srgb, var(--shadow-color) 50%, transparent); backdrop-filter: blur(4px); }
 .create-dialog { width: min(768px, calc(100vw - 48px)); outline: 0; }
 .create-ws { display: flex; flex-direction: column; min-width: 0; }
 .create-eyebrow { position: relative; display: flex; align-items: center; gap: 8px; min-width: 0; }
@@ -371,8 +374,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .create-chip:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
 .create-chip:disabled { opacity: 0.6; cursor: default; }
 .create-chip[aria-invalid="true"] { color: var(--diff-del); }
-/* Repo trigger `-ml-2 pl-2 pr-1.5`: its text lines up with the card's left edge. */
-.create-eyebrow > select.create-chip:first-child { margin-left: -8px; padding: 0 6px 0 8px; color: var(--text); font-weight: 500; }
 /* Create (`sQo`): Button size `xs` with `bg-foreground text-background`: h-6 px-2 text-xs gap-1.5 rounded-sm,
    `transition-none active:scale-100` (no press scale). */
 .create-split > .btn-small { height: 24px; padding: 0 8px; gap: 6px; border-radius: 4px; border-color: var(--text); background: var(--text); color: var(--bg); font-size: 12px; line-height: 16px; transition: none; }
@@ -385,9 +386,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .create-from-btn { max-width: 260px; }
 .create-from-clear { padding: 0 6px; }
 .create-from-panel { position: absolute; top: 100%; right: 0; width: min(420px, calc(100vw - 64px)); z-index: 20; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow-18); padding: 8px; display: flex; flex-direction: column; gap: 6px; color: var(--text); }
-.create-eyebrow .add-repo-pop { left: 0; right: auto; }
-.create-eyebrow .add-repo > .btn-small { height: 28px; padding: 0 8px; border: 0; background: transparent; color: var(--muted); font-size: 13px; font-weight: 400; }
-.create-eyebrow .add-repo > .btn-small:hover:not(:disabled) { background: var(--hover); color: var(--text); }
 /* Full-screen /create page. */
 .create-page { position: relative; display: flex; flex-direction: column; height: 100%; min-height: 0; background: var(--bg); }
 .create-page-top { position: relative; flex-shrink: 0; height: 36px; }
@@ -557,13 +555,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .scripts-error { padding: 6px 12px; font-size: 12px; color: var(--destructive); }
 
 /* Create workspace: Add repository (Open project / Clone repo) */
-.add-repo { position: relative; display: flex; }
-.add-repo-pop { position: absolute; top: 100%; right: 0; z-index: 25; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow-18); padding: 6px; display: flex; flex-direction: column; gap: 6px; font-weight: 400; }
-.add-repo-menu { min-width: 160px; }
-.add-repo-menu button { text-align: left; padding: 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; cursor: pointer; }
-.add-repo-menu button:hover, .add-repo-menu button:focus-visible { background: var(--hover); outline: 0; }
-.add-repo-clone { width: min(380px, calc(100vw - 64px)); padding: 8px; }
-.add-repo-clone input { min-width: 0; }
 .spotlight-toggle { margin-left: auto; display: inline-flex; gap: 5px; align-items: center; white-space: nowrap; cursor: pointer; }
 .spotlight-toggle input { margin: 0; }
 .spotlight-status.syncing::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--accent); vertical-align: middle; }

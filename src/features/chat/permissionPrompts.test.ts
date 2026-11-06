@@ -1,7 +1,7 @@
 // Run: node --test "src/**/*.test.ts"
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { canSubmit, chooseOption, emptyDrafts, permissionButtons, permissionHeading, questionAnswers, typeOther } from "./permissionPrompts.ts";
+import { canSubmit, chooseOption, emptyDrafts, permissionButtons, permissionHeading, permissionTool, questionAnswers, typeOther } from "./permissionPrompts.ts";
 import type { Question } from "./chatRuntime.ts";
 
 test("the card asks what the tool does, by tool name or ACP kind", () => {
@@ -12,6 +12,14 @@ test("the card asks what the tool does, by tool name or ACP kind", () => {
   assert.equal(permissionHeading("WebFetch"), "Do you want to fetch this page?");
   assert.equal(permissionHeading("Agent"), "Do you want to run this agent?");
   assert.equal(permissionHeading("mcp__linear__x"), "Do you want to run this tool?");
+});
+
+test("the card's tool row: a Reason request's ACP kind and raw input, or a Claude Code tool by name", () => {
+  const command = { command: "pnpm test src/middleware/rate-limit.test.ts", description: "Run the rate limit tests" };
+  assert.deepEqual(permissionTool({ tool: "execute", title: command.command, input: command }), { name: "Bash", input: command });
+  assert.deepEqual(permissionTool({ tool: "Bash", title: "Bash", input: command }), { name: "Bash", input: command });
+  assert.deepEqual(permissionTool({ tool: "execute", title: "rm -rf build", input: null }), { name: "Bash", input: { command: "rm -rf build" } });
+  assert.equal(permissionTool({ tool: "", title: "", input: null }), undefined);
 });
 
 test("buttons: Yes, the alternate approval, other options, then No", () => {

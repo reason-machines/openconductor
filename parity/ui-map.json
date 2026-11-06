@@ -33,27 +33,27 @@
  },
  "summary": {
   "total": 967,
-  "missing": 766,
-  "wrong": 87,
-  "matches": 114,
+  "missing": 764,
+  "wrong": 84,
+  "matches": 119,
   "states": {
    "total": 69,
-   "missing": 18,
-   "wrong": 28,
-   "matches": 23
+   "missing": 17,
+   "wrong": 27,
+   "matches": 25
   },
   "items": {
    "total": 898,
-   "missing": 748,
-   "wrong": 59,
-   "matches": 91
+   "missing": 747,
+   "wrong": 57,
+   "matches": 94
   },
   "items_by_kind": {
    "dialog": {
     "total": 64,
     "missing": 55,
-    "wrong": 5,
-    "matches": 4
+    "wrong": 4,
+    "matches": 5
    },
    "empty-state": {
     "total": 52,
@@ -82,14 +82,14 @@
    "route": {
     "total": 65,
     "missing": 42,
-    "wrong": 10,
-    "matches": 13
+    "wrong": 9,
+    "matches": 14
    },
    "select": {
     "total": 29,
-    "missing": 23,
+    "missing": 22,
     "wrong": 5,
-    "matches": 1
+    "matches": 2
    },
    "settings-page": {
     "total": 29,
@@ -125,9 +125,9 @@
   "by_team": {
    "chat": {
     "total": 57,
-    "missing": 49,
+    "missing": 48,
     "wrong": 7,
-    "matches": 1
+    "matches": 2
    },
    "cloud-org": {
     "total": 83,
@@ -179,9 +179,9 @@
    },
    "workspaces": {
     "total": 56,
-    "missing": 39,
-    "wrong": 10,
-    "matches": 7
+    "missing": 38,
+    "wrong": 7,
+    "matches": 11
    }
   },
   "located_items": 217,
@@ -370,80 +370,75 @@
   {
    "id": "create",
    "title": "Create workspace composer",
-   "status": "wrong",
-   "why": "diff 5.4% at t24, copy 86%",
+   "status": "matches",
+   "why": "diff 0.8% at t24, copy 90%",
    "team": "chat",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/create.png",
+    "file": "side-by-side/create-composer-01-dialog.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 2,
-    "actions_total": 2,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_6eab55a28ed8ecba6945fdde84a265015ce6b4bd84b871b00567de1946b1859e"
+    "rea_evidence_id": "ev_d49b212b4bd1a86269a3b860d9b08cee02b044ea9a2b1e44b34408c298eaae3c"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/create.png",
+    "file": "side-by-side/create-composer-01-dialog.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 5ff712cf9: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/create-composer-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/create.jpg",
-    "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.053726181402439024,
+    "file": null,
+    "changed_ratio_t0": 0.9999971417682927,
+    "changed_ratio_t24": 0.008146913109756097,
     "rea_evidence_ids": [
-     "ev_7bdec9a8628774d95c095547a22347c68443a9b78f49a845b2614414e81ee447",
-     "ev_64d61ce4d2915945c52ca82296680264c6e6e7e2403a82305500ad875f10af06"
+     "ev_538164f527426afe7b2fc4baa26aca0083ae056883543384bc7eb2a820a48177",
+     "ev_618774ca72a1fce0b778ec62829130580ccadb77901901424ed01aa5b6e6071c"
     ]
    },
-   "copy_coverage": 0.864,
+   "copy_coverage": 0.9,
    "copy_missing": [
-    "select repo",
-    "target branch",
-    "composer"
+    "select repo"
    ]
   },
   {
    "id": "create-repo-picker",
    "title": "Create: repo picker open",
-   "status": "wrong",
-   "why": "diff 5.7% at t24, copy 83%",
+   "status": "matches",
+   "why": "diff 1.0% at t24, copy 90%",
    "team": "workspaces",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/create-repo-picker.png",
+    "file": "side-by-side/create-composer-02-repo-picker.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 3,
-    "actions_total": 3,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_289dd0f1117c4785a850d7284b136003101cff2c22eb64278037d79cc149e3c4"
+    "rea_evidence_id": "ev_b7a509d7dc64d79828b233440fa8f9a0e6f19960334eb29663ad401eaf05d62b"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/create-repo-picker.png",
+    "file": "side-by-side/create-composer-02-repo-picker.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 5ff712cf9: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/create-composer-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/create-repo-picker.jpg",
-    "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.05680735518292683,
+    "file": null,
+    "changed_ratio_t0": 0.985813643292683,
+    "changed_ratio_t24": 0.010496379573170731,
     "rea_evidence_ids": [
-     "ev_9d1318520edf6df8bed4cf039714bfc7351f7fc2d0a9e3917377bcea22718683",
-     "ev_17e64cec0dc905429b3a96435d70c4896bd61168bb31d0df978123c319f1e1fe"
+     "ev_e8132208dd930a2ef4d15b565caea6037d0e21d3f8b07bbd0a909267b7b30f0f",
+     "ev_09b6c27b692293906489f27a84bb3167d5456964aa6f7593b26f35ea5073d0d3"
     ]
    },
-   "copy_coverage": 0.826,
+   "copy_coverage": 0.909,
    "copy_missing": [
-    "select repo",
-    "add project",
-    "target branch",
-    "composer"
+    "select repo"
    ]
   },
   {
@@ -528,7 +523,7 @@
    "id": "workspace-tool-calls",
    "title": "Chat: tool calls expanded",
    "status": "wrong",
-   "why": "diff 7.3% at t24, copy 83%",
+   "why": "diff 6.6% at t24, copy 93%",
    "team": "chat",
    "reference": {
     "status": "captured",
@@ -539,7 +534,7 @@
     "actions_run": 4,
     "actions_total": 4,
     "error": null,
-    "rea_evidence_id": "ev_0c9883b387374f67f685cdc7b02353b77e1b11d719bf1bd5e10ae992c225c588"
+    "rea_evidence_id": "ev_ec2657eaeb9c8491396cf9c8bf2968e3b0d0e9261cac4019a1840eae17a3e27f"
    },
    "openconductor": {
     "status": "captured",
@@ -549,20 +544,17 @@
    },
    "diff": {
     "file": "ui-map/diff/workspace-tool-calls.jpg",
-    "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.0734546493902439,
+    "changed_ratio_t0": 0.9999161585365853,
+    "changed_ratio_t24": 0.0660889862804878,
     "rea_evidence_ids": [
-     "ev_3697bc9e1dc4ce6596e4e8c0c0e1012d4600aaf6fa3ecd64003b06d45e2c1436",
-     "ev_703e631e2fa2058d3eef8faf4b0b73c87c972ee9a642b27836d1b20aab1c04b3"
+     "ev_05b1c4dceae73efa2c0b603360c0abda6b6c0db99120f05b28673d1ecce22231",
+     "ev_6903d26297e933b725561399e1eb22a5fc35c292eb623bc3bf501dbd64daf834"
     ]
    },
-   "copy_coverage": 0.828,
+   "copy_coverage": 0.931,
    "copy_missing": [
-    "edit",
     "next unread",
-    "copy final message",
-    "show message actions",
-    "filter files"
+    "archive workspace"
    ]
   },
   {
@@ -685,34 +677,41 @@
   {
    "id": "needs-permission",
    "title": "Workspace needing permission",
-   "status": "missing",
-   "why": "the OpenConductor seed has no workspace with a pending permission request",
+   "status": "wrong",
+   "why": "diff 3.9% at t24, copy 88%",
    "team": "chat",
    "reference": {
     "status": "captured",
     "file": "ui-map/ref/needs-permission.png",
     "path": "/",
     "final_path": "/repository/repo-tide-api/workspace/ws-tallinn",
-    "scenario": "populated",
+    "scenario": "needs-permission",
     "actions_run": 3,
     "actions_total": 3,
     "error": null,
-    "rea_evidence_id": "ev_b4fb5e2422c0e97b120f6a6854afca43a7c6894e71f11458811a65adc683f2f2"
+    "rea_evidence_id": "ev_9904510eaa8d51580a6bc11c40086fc0db29feb1b2e1d892354f6c3a50ce627d"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "the OpenConductor seed has no workspace with a pending permission request",
+    "status": "captured",
+    "file": "ui-map/oc/needs-permission.png",
+    "error": null,
     "note": null
    },
    "diff": {
-    "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "file": "ui-map/diff/needs-permission.jpg",
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.03914729420731707,
+    "rea_evidence_ids": [
+     "ev_b2aa8b5e0db6205263feb176d9e117616d68b5cc88d16a1ab597d70f132ea31a",
+     "ev_02f43fbcf7ab839737cf6a8051820480a521d8dc4a27a710cf77f7b83455b6db"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 0.88,
+   "copy_missing": [
+    "next unread",
+    "archive workspace",
+    "composer"
+   ]
   },
   {
    "id": "route-dashboard",
@@ -2589,21 +2588,21 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_400c6b70898d818ba488c422b23dfd6c20bdbae02dc6aea184e7f81217504b9c"
+    "rea_evidence_id": "ev_1029509199559078fd26f748b3ce8a3cb66069116c334042845a97f7314ed43d"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/shell-menus-01-chat-tab.png",
     "error": null,
-    "note": "side-by-side lane at ffc6b472b: tools/side-by-side/shell-menus.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, ?demo=1) in Chromium"
+    "note": "side-by-side lane at a5291aabf: tools/side-by-side/shell-menus.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, ?demo=1) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 0.9603010670731708,
-    "changed_ratio_t24": 0.06577458079268293,
+    "changed_ratio_t24": 0.0657736280487805,
     "rea_evidence_ids": [
-     "ev_53140011faa02319d8903b54f54abb19064e6ff834c0eb7244e8cfd825bb8630",
-     "ev_6b8afdfc0ed6724c9686dca2fcf1282925c5f3387c2d6c55e9ea1b8b0dce84a7"
+     "ev_a42cfc5cd4072da18e7f8c2081febf42fb408f433f0764e80d24b5ca032b2aef",
+     "ev_3d60a3c6cb252657d8a15bd2e5b1b108186e94c5e1bdd8e2fa034e1d683f481f"
     ]
    },
    "copy_coverage": 0.853,
@@ -2630,21 +2629,21 @@
     "actions_run": null,
     "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_7afeb9f6bbe6834c86ed951468306dd4c876cd10bb07edc85a4120320557fd59"
+    "rea_evidence_id": "ev_d255a075c69201c06937f7d7a9d67172df70ac1da92943c5603d7fdd784133d9"
    },
    "openconductor": {
     "status": "captured",
     "file": "side-by-side/shell-menus-02-changes-file.png",
     "error": null,
-    "note": "side-by-side lane at ffc6b472b: tools/side-by-side/shell-menus.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, ?demo=1) in Chromium"
+    "note": "side-by-side lane at a5291aabf: tools/side-by-side/shell-menus.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, ?demo=1) in Chromium"
    },
    "diff": {
     "file": null,
     "changed_ratio_t0": 0.9849380716463415,
-    "changed_ratio_t24": 0.08045541158536586,
+    "changed_ratio_t24": 0.08045160060975609,
     "rea_evidence_ids": [
-     "ev_c6e8a6c6299bba1ee7fcfe6462bd665261b68b0e33af7ac9c7db5694c0d990f2",
-     "ev_2cbf3d08601227e26e3095a80709be58c997b1be6e843f5841d56a6bf8aacc35"
+     "ev_8dc8b225ceb97a82c5a35341fce93c30e7aea34d200ff3e914aff6cf0600dc1c",
+     "ev_892a70052e9c8cb0906daaf0e0cf5410fcad17accde4ff79591d35116a40b80e"
     ]
    },
    "copy_coverage": 0.844,
@@ -3667,8 +3666,8 @@
    "id": "route:create",
    "kind": "route",
    "name": "/create",
-   "status": "wrong",
-   "why": "diff 5.4% at t24, copy 86%",
+   "status": "matches",
+   "why": "diff 0.8% at t24, copy 90%",
    "team": "workspaces",
    "component": "$Ca",
    "source": {
@@ -3680,10 +3679,10 @@
    "tokens": [],
    "state": "create",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/create.png",
-   "openconductor_screenshot": "ui-map/oc/create.png",
-   "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.053726181402439024
+   "reference_screenshot": "side-by-side/create-composer-01-dialog.png",
+   "openconductor_screenshot": "side-by-side/create-composer-01-dialog.png",
+   "diff": null,
+   "changed_ratio_t24": 0.008146913109756097
   },
   {
    "id": "route:team",
@@ -4757,8 +4756,8 @@
    "id": "dialog:new-workspace",
    "kind": "dialog",
    "name": "New workspace",
-   "status": "wrong",
-   "why": "host state create is wrong",
+   "status": "matches",
+   "why": "on screen in both; state create matches",
    "team": "workspaces",
    "component": "pya",
    "source": {
@@ -4772,10 +4771,10 @@
    "tokens": [],
    "state": "create",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/create.png",
-   "openconductor_screenshot": "ui-map/oc/create.png",
-   "diff": "ui-map/diff/create.jpg",
-   "changed_ratio_t24": 0.053726181402439024,
+   "reference_screenshot": "side-by-side/create-composer-01-dialog.png",
+   "openconductor_screenshot": "side-by-side/create-composer-01-dialog.png",
+   "diff": null,
+   "changed_ratio_t24": 0.008146913109756097,
    "primitive": "DialogTitle",
    "dynamic": false
   },
@@ -5597,7 +5596,7 @@
    "reference_screenshot": "side-by-side/shell-menus-02-changes-file.png",
    "openconductor_screenshot": "side-by-side/shell-menus-02-changes-file.png",
    "diff": null,
-   "changed_ratio_t24": 0.08045541158536586,
+   "changed_ratio_t24": 0.08045160060975609,
    "primitive": "AlertDialogTitle",
    "dynamic": false
   },
@@ -7572,7 +7571,7 @@
    "reference_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "openconductor_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": 0.06577458079268293,
+   "changed_ratio_t24": 0.0657736280487805,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -7648,7 +7647,7 @@
    "reference_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "openconductor_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": 0.06577458079268293,
+   "changed_ratio_t24": 0.0657736280487805,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -7752,7 +7751,7 @@
    "reference_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "openconductor_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": 0.06577458079268293,
+   "changed_ratio_t24": 0.0657736280487805,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -8741,7 +8740,7 @@
    "reference_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "openconductor_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": 0.06577458079268293,
+   "changed_ratio_t24": 0.0657736280487805,
    "primitive": "ContextMenuContent",
    "dynamic": true
   },
@@ -10079,8 +10078,8 @@
    "id": "select:zqo",
    "kind": "select",
    "name": null,
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "matches",
+   "why": "on screen in both; state create-repo-picker matches",
    "team": "workspaces",
    "component": "ZQo",
    "source": {
@@ -10096,10 +10095,10 @@
    ],
    "state": "create-repo-picker",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/create-repo-picker.png",
-   "openconductor_screenshot": "ui-map/oc/create-repo-picker.png",
-   "diff": "ui-map/diff/create-repo-picker.jpg",
-   "changed_ratio_t24": 0.05680735518292683,
+   "reference_screenshot": "side-by-side/create-composer-02-repo-picker.png",
+   "openconductor_screenshot": "side-by-side/create-composer-02-repo-picker.png",
+   "diff": null,
+   "changed_ratio_t24": 0.010496379573170731,
    "primitive": "SelectContent",
    "dynamic": true
   },

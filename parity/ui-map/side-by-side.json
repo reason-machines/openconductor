@@ -553,9 +553,287 @@
     }
    }
   },
+  "create": {
+   "lane": "tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/create-composer-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
+   "openconductor_commit": "5ff712cf9",
+   "viewport": {
+    "width": 1280,
+    "height": 820
+   },
+   "image": "side-by-side/create-composer-01-dialog.png",
+   "supersedes_oc_png_sha256": "cdf87e070e2635fb8a4d2dae546f84ef62593ac22c4fbde636fb27968a0d49dc",
+   "reference": {
+    "evidence_id": "ev_d49b212b4bd1a86269a3b860d9b08cee02b044ea9a2b1e44b34408c298eaae3c",
+    "png_sha256": "1cd6ee912f50b1004bb5d446f58d8f8f23791a25b576ad0b8fa821468a0f88dd",
+    "final_url": "http://conductor.localhost:4337/?oc_scenario=populated&oc_theme=dark",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Tauri + React + Typescript",
+      "\\n",
+      "\\n \\n \\n",
+      "\\n \\n \\n \\n \\n \\n \\n \\n",
+      "\\n",
+      "\\n",
+      "\\n\\n",
+      "\\n",
+      "\\n",
+      "A",
+      "Ada Demo's Mac",
+      "Home",
+      "⌘",
+      "⇧",
+      "H",
+      "Create",
+      "⌘",
+      "N",
+      "Search",
+      "⌘",
+      "K",
+      "My workspaces",
+      "T",
+      "tide-web",
+      "3",
+      "T",
+      "tide-api",
+      "2",
+      "D",
+      "dotfiles",
+      "1",
+      "FREE",
+      "Open project",
+      "Open GitHub project",
+      "Quick start",
+      "5/385 cities visited",
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n",
+      "New workspace",
+      "Draft the first message, then create and send it.",
+      "Select repo",
+      "Opus 5",
+      "High",
+      "Create"
+     ],
+     "labels": []
+    }
+   },
+   "openconductor": {
+    "evidence_id": "ev_420d2f3bd9a706fbe5b7f96456c3519c4b65ff558f5029fb61cd572135c76065",
+    "png_sha256": "8d5247c81ce35b15500c21a1e5cbd7645a8e32cd1d206a6e8f27e7b0fa9ca002",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "OpenConductor",
+      "\\n \\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "My Mac",
+      "Home",
+      "⌘⇧H",
+      "Create",
+      "⌘N",
+      "Search",
+      "⌘K",
+      "My workspaces",
+      "T",
+      "tide-web",
+      "3",
+      "T",
+      "tide-api",
+      "2",
+      "D",
+      "dotfiles",
+      "1",
+      "FREE",
+      "Open project",
+      "Open GitHub project",
+      "Quick start",
+      "5/103 cities visited",
+      "New workspace",
+      "Draft the first message, then create and send it.",
+      "T",
+      "tide-web",
+      "Opus 4.8",
+      "High",
+      "Create",
+      "↵",
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n"
+     ],
+     "labels": []
+    }
+   },
+   "compare": {
+    "t0": {
+     "evidence_id": "ev_538164f527426afe7b2fc4baa26aca0083ae056883543384bc7eb2a820a48177",
+     "changed_pixels": 1049597,
+     "total_pixels": null,
+     "changed_ratio": 0.9999971417682927
+    },
+    "t24": {
+     "evidence_id": "ev_618774ca72a1fce0b778ec62829130580ccadb77901901424ed01aa5b6e6071c",
+     "changed_pixels": 8551,
+     "total_pixels": null,
+     "changed_ratio": 0.008146913109756097
+    }
+   }
+  },
+  "create-repo-picker": {
+   "lane": "tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/create-composer-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
+   "openconductor_commit": "5ff712cf9",
+   "viewport": {
+    "width": 1280,
+    "height": 820
+   },
+   "image": "side-by-side/create-composer-02-repo-picker.png",
+   "supersedes_oc_png_sha256": "b7e24094ba3b0c9ab11a693113aba4673f30e36a14380eb82bdc1387e5cdec7f",
+   "reference": {
+    "evidence_id": "ev_b7a509d7dc64d79828b233440fa8f9a0e6f19960334eb29663ad401eaf05d62b",
+    "png_sha256": "05bb1d48509b7996f41a3954f02f1604bd5894581004947f31a58ffbd36eb41c",
+    "final_url": "http://conductor.localhost:4337/?oc_scenario=populated&oc_theme=dark",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "Tauri + React + Typescript",
+      "\\n",
+      "\\n \\n \\n",
+      "\\n \\n \\n \\n \\n \\n \\n \\n",
+      "\\n",
+      "\\n",
+      "\\n\\n",
+      "\\n",
+      "\\n",
+      "A",
+      "Ada Demo's Mac",
+      "Home",
+      "⌘",
+      "⇧",
+      "H",
+      "Create",
+      "⌘",
+      "N",
+      "Search",
+      "⌘",
+      "K",
+      "My workspaces",
+      "T",
+      "tide-web",
+      "3",
+      "T",
+      "tide-api",
+      "2",
+      "D",
+      "dotfiles",
+      "1",
+      "FREE",
+      "Open project",
+      "Open GitHub project",
+      "Quick start",
+      "5/385 cities visited",
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n",
+      "New workspace",
+      "Draft the first message, then create and send it.",
+      "Select repo",
+      "Opus 5",
+      "High",
+      "Create",
+      "T",
+      "tide-web",
+      "T",
+      "tide-api",
+      "D",
+      "dotfiles",
+      "Add project"
+     ],
+     "labels": []
+    }
+   },
+   "openconductor": {
+    "evidence_id": "ev_b175e1d299d38381cc9afcad24e72a94abdf2e74a68c21aa12115b8a11eab930",
+    "png_sha256": "f63931d6c64661395717dbb007932a1c3fc371447e65e7e8225eaa7e517e7f3d",
+    "dom": {
+     "texts": [
+      "\\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "OpenConductor",
+      "\\n \\n",
+      "\\n",
+      "\\n",
+      "\\n",
+      "My Mac",
+      "Home",
+      "⌘⇧H",
+      "Create",
+      "⌘N",
+      "Search",
+      "⌘K",
+      "My workspaces",
+      "T",
+      "tide-web",
+      "3",
+      "T",
+      "tide-api",
+      "2",
+      "D",
+      "dotfiles",
+      "1",
+      "FREE",
+      "Open project",
+      "Open GitHub project",
+      "Quick start",
+      "5/103 cities visited",
+      "New workspace",
+      "Draft the first message, then create and send it.",
+      "T",
+      "tide-web",
+      "Opus 4.8",
+      "High",
+      "Create",
+      "↵",
+      "\\n \\n\\n",
+      "\\n Press space bar to start a drag.\\n When dragging you can use the arrow keys to move the item around and escape to cancel.\\n Some screen readers may require you to be in focus mode or to use your pass through key\\n",
+      "T",
+      "tide-web",
+      "T",
+      "tide-api",
+      "D",
+      "dotfiles",
+      "Add project"
+     ],
+     "labels": []
+    }
+   },
+   "compare": {
+    "t0": {
+     "evidence_id": "ev_e8132208dd930a2ef4d15b565caea6037d0e21d3f8b07bbd0a909267b7b30f0f",
+     "changed_pixels": 1034710,
+     "total_pixels": null,
+     "changed_ratio": 0.985813643292683
+    },
+    "t24": {
+     "evidence_id": "ev_09b6c27b692293906489f27a84bb3167d5456964aa6f7593b26f35ea5073d0d3",
+     "changed_pixels": 11017,
+     "total_pixels": null,
+     "changed_ratio": 0.010496379573170731
+    }
+   }
+  },
   "menu-chat-tab": {
    "lane": "tools/side-by-side/shell-menus.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, ?demo=1) in Chromium",
-   "openconductor_commit": "ffc6b472b",
+   "openconductor_commit": "a5291aabf",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -563,8 +841,8 @@
    "image": "side-by-side/shell-menus-01-chat-tab.png",
    "supersedes_oc_png_sha256": null,
    "reference": {
-    "evidence_id": "ev_400c6b70898d818ba488c422b23dfd6c20bdbae02dc6aea184e7f81217504b9c",
-    "png_sha256": "b2560ddaa8cc0c38d718483f84f8756f5a5286f5aeed9b26a5adf6a678ab90b8",
+    "evidence_id": "ev_1029509199559078fd26f748b3ce8a3cb66069116c334042845a97f7314ed43d",
+    "png_sha256": "9b0e4224576eaf99334da9920029b12e73fd26946424f2c991ee3cbdce2e4fa1",
     "final_url": "http://conductor.localhost:4357/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=session&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all",
     "dom": {
      "texts": [
@@ -614,7 +892,7 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · 4:48 PM",
+      "8m, 0s · 4:56 PM",
       "auth.ts",
       "+1",
       "-1",
@@ -720,7 +998,7 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_dfc0f8fb723c4d9ae3b5bc066c2615579c47470c9745a8b16237e715191e3057",
+    "evidence_id": "ev_49a54715ef4abe78bd36958c6a7d353ea71c68846b0eba0a90e599ae889382f6",
     "png_sha256": "5aa10269104090137ea737d90f2414fd70e0abf22d0e317255f9046807e3980f",
     "dom": {
      "texts": [
@@ -944,22 +1222,22 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_53140011faa02319d8903b54f54abb19064e6ff834c0eb7244e8cfd825bb8630",
+     "evidence_id": "ev_a42cfc5cd4072da18e7f8c2081febf42fb408f433f0764e80d24b5ca032b2aef",
      "changed_pixels": 1007932,
      "total_pixels": null,
      "changed_ratio": 0.9603010670731708
     },
     "t24": {
-     "evidence_id": "ev_6b8afdfc0ed6724c9686dca2fcf1282925c5f3387c2d6c55e9ea1b8b0dce84a7",
-     "changed_pixels": 69037,
+     "evidence_id": "ev_3d60a3c6cb252657d8a15bd2e5b1b108186e94c5e1bdd8e2fa034e1d683f481f",
+     "changed_pixels": 69036,
      "total_pixels": null,
-     "changed_ratio": 0.06577458079268293
+     "changed_ratio": 0.0657736280487805
     }
    }
   },
   "menu-changes-file": {
    "lane": "tools/side-by-side/shell-menus.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, ?demo=1) in Chromium",
-   "openconductor_commit": "ffc6b472b",
+   "openconductor_commit": "a5291aabf",
    "viewport": {
     "width": 1280,
     "height": 820
@@ -967,8 +1245,8 @@
    "image": "side-by-side/shell-menus-02-changes-file.png",
    "supersedes_oc_png_sha256": null,
    "reference": {
-    "evidence_id": "ev_7afeb9f6bbe6834c86ed951468306dd4c876cd10bb07edc85a4120320557fd59",
-    "png_sha256": "194daf9b00aee138c40cf62152f38aaa610c5d669a9970038b8c0f362ff92c27",
+    "evidence_id": "ev_d255a075c69201c06937f7d7a9d67172df70ac1da92943c5603d7fdd784133d9",
+    "png_sha256": "94e62ff1886ce1b04148ab89d1fa0bf25d93daf1e36546cb84ee2ad5d492684c",
     "final_url": "http://conductor.localhost:4357/repository/repo-tide-web/workspace/ws-lisbon?activeTabType=session&sessionId=sess-lisbon&gitPanelTab=changes&gitDiff=all",
     "dom": {
      "texts": [
@@ -1018,7 +1296,7 @@
       "Tests:",
       "pnpm test src/lib/auth.test.ts",
       "passes (4 tests).",
-      "8m, 0s · 4:49 PM",
+      "8m, 0s · 4:56 PM",
       "auth.ts",
       "+1",
       "-1",
@@ -1120,7 +1398,7 @@
     }
    },
    "openconductor": {
-    "evidence_id": "ev_bfa4c21a2d0287f6faccf74cf768a641b7886be0a950d9165176aafaa05b34a4",
+    "evidence_id": "ev_f7f986d33d356b2bf221ff1ea5deb18631b97aeecc7651763ac205889cca1e13",
     "png_sha256": "48f5306966f26f4ef496be0c50035e8fe154868c2a575435f2bd406134e271b4",
     "dom": {
      "texts": [
@@ -1340,16 +1618,16 @@
    },
    "compare": {
     "t0": {
-     "evidence_id": "ev_c6e8a6c6299bba1ee7fcfe6462bd665261b68b0e33af7ac9c7db5694c0d990f2",
+     "evidence_id": "ev_8dc8b225ceb97a82c5a35341fce93c30e7aea34d200ff3e914aff6cf0600dc1c",
      "changed_pixels": 1033791,
      "total_pixels": null,
      "changed_ratio": 0.9849380716463415
     },
     "t24": {
-     "evidence_id": "ev_2cbf3d08601227e26e3095a80709be58c997b1be6e843f5841d56a6bf8aacc35",
-     "changed_pixels": 84446,
+     "evidence_id": "ev_892a70052e9c8cb0906daaf0e0cf5410fcad17accde4ff79591d35116a40b80e",
+     "changed_pixels": 84442,
      "total_pixels": null,
-     "changed_ratio": 0.08045541158536586
+     "changed_ratio": 0.08045160060975609
     }
    }
   }
