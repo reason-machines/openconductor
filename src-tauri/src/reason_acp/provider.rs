@@ -25,6 +25,12 @@
 //!   sends a [`ProviderEvent::Notice`] instead.
 //! * A prompt can carry attachments, sent as embedded `resource` blocks
 //!   after the text (Reason advertises `embeddedContext`).
+//! * `session/request_permission` (Reason asks before a tool call) is held
+//!   until the app answers it ([`ReasonProvider::answer_permission`]) and
+//!   reported as [`ProviderEvent::PermissionRequested`]; the chat's session
+//!   shows `needs_user_permission` meanwhile, as Conductor's tool approval
+//!   does. Stop and the end of the turn answer what is still open with
+//!   `cancelled`, as ACP requires.
 
 use super::cli::{AgentProcess, LaunchConfig};
 use super::rpc::{CallError, Incoming, Responder, RpcConnection, RpcError};
@@ -48,6 +54,39 @@ pub enum ProviderEvent {
     /// Something the app should tell the user about the chat, e.g. that a
     /// requested model is not offered and Reason's default runs instead.
     Notice(String),
+    /// Reason asks to run a tool (`session/request_permission`); answer with
+    /// [`ReasonProvider::answer_permission`].
+    PermissionRequested(PermissionRequest),
+    /// A permission request was answered or withdrawn.
+    PermissionResolved {
+        request_id: String,
+    },
+}
+
+/// One `session/request_permission`, as the app shows it.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PermissionRequest {
+    /// Provider-made id the answer names.
+    pub request_id: String,
+    /// The tool call's title, e.g. `bash: rm -rf build`.
+    pub title: String,
+    pub options: Vec<PermissionOption>,
+}
+
+/// One choice offered with a permission request.
+#[derive(Debug, Clone, PartialEq)]
+pub struct PermissionOption {
+    pub option_id: String,
+    pub name: String,
+    /// `allow_once`, `allow_always`, `reject_once` or `reject_always`.
+    pub kind: String,
+}
+
+/// A permission request waiting for the app's answer.
+struct PendingPermission {
+    chat: String,
+    rpc_id: Value,
+    out: Responder,
 }
 
 /// A Session config option to set when the chat's Session is created.
@@ -118,6 +157,9 @@ struct Shared {
     by_session: HashMap<String, String>,
     next_turn: u64,
     next_ticket: u64,
+    /// Open permission requests by `request_id`.
+    permissions: HashMap<String, PendingPermission>,
+    next_permission: u64,
 }
 
 struct Agent {
@@ -206,10 +248,18 @@ impl ReasonProvider {
         ticket: Option<u64>,
     ) -> TurnEnd {
         let end = self.run_prompt(chat, text, attachments, ticket);
-        if let Some(t) = ticket {
-            if let Some(c) = self.shared.lock().unwrap().chats.get_mut(chat) {
-                c.pending.remove(&t);
+        let idle = {
+            let mut s = self.shared.lock().unwrap();
+            if let Some(c) = s.chats.get_mut(chat) {
+                if let Some(t) = ticket {
+                    c.pending.remove(&t);
+                }
             }
+            s.chats.get(chat).is_none_or(|c| c.turn.is_none())
+        };
+        // No turn runs any more: nothing can use an answer to what is open.
+        if idle {
+            self.withdraw_permissions(chat);
         }
         (self.sink)(chat, ProviderEvent::TurnEnded(end.clone()));
         end
@@ -301,6 +351,55 @@ impl ReasonProvider {
         let conn = self.agent.lock().unwrap().as_ref().map(|a| a.conn.clone());
         if let (Some(conn), Some(id)) = (conn, session_id) {
             let _ = conn.notify("session/cancel", json!({ "sessionId": id }));
+        }
+        // After session/cancel, so the agent knows the turn is stopping when
+        // its permission request comes back `cancelled`.
+        self.withdraw_permissions(chat);
+    }
+
+    /// Answers the chat's permission request with `option_id`, or as
+    /// `cancelled` when `None`. False when the request is not open (already
+    /// answered, withdrawn, or another chat's).
+    pub fn answer_permission(&self, chat: &str, request_id: &str, option_id: Option<&str>) -> bool {
+        let pending = {
+            let mut s = self.shared.lock().unwrap();
+            match s.permissions.get(request_id) {
+                Some(p) if p.chat == chat => s.permissions.remove(request_id),
+                _ => None,
+            }
+        };
+        let Some(p) = pending else {
+            return false;
+        };
+        let outcome = match option_id {
+            Some(id) => json!({ "outcome": "selected", "optionId": id }),
+            None => json!({ "outcome": "cancelled" }),
+        };
+        let _ = p.out.respond(&p.rpc_id, Ok(json!({ "outcome": outcome })));
+        (self.sink)(
+            chat,
+            ProviderEvent::PermissionResolved {
+                request_id: request_id.into(),
+            },
+        );
+        true
+    }
+
+    /// Answers every open permission request of the chat with `cancelled`.
+    fn withdraw_permissions(&self, chat: &str) {
+        let open: Vec<String> = {
+            let s = self.shared.lock().unwrap();
+            let mut ids: Vec<String> = s
+                .permissions
+                .iter()
+                .filter(|(_, p)| p.chat == chat)
+                .map(|(id, _)| id.clone())
+                .collect();
+            ids.sort();
+            ids
+        };
+        for id in open {
+            self.answer_permission(chat, &id, None);
         }
     }
 
@@ -509,6 +608,36 @@ fn file_uri(path: &Path) -> String {
     out
 }
 
+/// The app's view of `session/request_permission` params: the tool call's
+/// title (else its kind, else "Tool call") and the offered options.
+pub fn permission_request(request_id: String, params: &Value) -> PermissionRequest {
+    let call = &params["toolCall"];
+    let title = [&call["title"], &call["kind"]]
+        .into_iter()
+        .find_map(|v| v.as_str().filter(|t| !t.trim().is_empty()))
+        .unwrap_or("Tool call")
+        .to_string();
+    let options = params["options"]
+        .as_array()
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let options = options
+        .iter()
+        .filter_map(|o| {
+            Some(PermissionOption {
+                option_id: o["optionId"].as_str()?.into(),
+                name: o["name"].as_str().unwrap_or_default().into(),
+                kind: o["kind"].as_str().unwrap_or_default().into(),
+            })
+        })
+        .collect();
+    PermissionRequest {
+        request_id,
+        title,
+        options,
+    }
+}
+
 fn error_text(v: &Value) -> String {
     v["message"]
         .as_str()
@@ -549,6 +678,33 @@ fn updates_handler(shared: Arc<Mutex<Shared>>, sink: Sink) -> super::rpc::Handle
             };
             if let Some((chat, ev)) = routed {
                 sink(&chat, ProviderEvent::Agent(ev));
+            }
+        }
+        Incoming::Request { id, method, params } if method == "session/request_permission" => {
+            let routed = {
+                let mut s = shared.lock().unwrap();
+                let sid = params["sessionId"].as_str().unwrap_or_default();
+                match s.by_session.get(sid).cloned() {
+                    Some(chat) => {
+                        s.next_permission += 1;
+                        let request_id = format!("permission-{}", s.next_permission);
+                        let pending = PendingPermission {
+                            chat: chat.clone(),
+                            rpc_id: id.clone(),
+                            out: out.clone(),
+                        };
+                        s.permissions.insert(request_id.clone(), pending);
+                        Some((chat, permission_request(request_id, &params)))
+                    }
+                    None => None,
+                }
+            };
+            match routed {
+                Some((chat, request)) => sink(&chat, ProviderEvent::PermissionRequested(request)),
+                // No chat to ask: the tool call does not run.
+                None => {
+                    let _ = out.respond(&id, Ok(json!({ "outcome": { "outcome": "cancelled" } })));
+                }
             }
         }
         Incoming::Request { id, method, .. } => {

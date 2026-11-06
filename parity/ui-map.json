@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "64fad43",
+  "commit": "c3c7b31",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -32,20 +32,20 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 962,
-  "missing": 785,
-  "wrong": 154,
+  "total": 963,
+  "missing": 780,
+  "wrong": 160,
   "matches": 23,
   "states": {
-   "total": 64,
+   "total": 65,
    "missing": 21,
-   "wrong": 38,
+   "wrong": 39,
    "matches": 5
   },
   "items": {
    "total": 898,
-   "missing": 764,
-   "wrong": 116,
+   "missing": 759,
+   "wrong": 121,
    "matches": 18
   },
   "items_by_kind": {
@@ -57,8 +57,8 @@
    },
    "empty-state": {
     "total": 52,
-    "missing": 49,
-    "wrong": 2,
+    "missing": 48,
+    "wrong": 3,
     "matches": 1
    },
    "menu": {
@@ -99,8 +99,8 @@
    },
    "settings-row": {
     "total": 121,
-    "missing": 44,
-    "wrong": 66,
+    "missing": 40,
+    "wrong": 70,
     "matches": 11
    },
    "sheet": {
@@ -154,9 +154,9 @@
     "matches": 0
    },
    "settings": {
-    "total": 180,
-    "missing": 59,
-    "wrong": 104,
+    "total": 181,
+    "missing": 54,
+    "wrong": 110,
     "matches": 17
    },
    "shell": {
@@ -1677,7 +1677,7 @@
    "id": "settings-repo-misc",
    "title": "Settings > tide-web > Misc",
    "status": "wrong",
-   "why": "diff 5.1% at t24, copy 58%",
+   "why": "diff 6.4% at t24, copy 92%",
    "team": "settings",
    "reference": {
     "status": "captured",
@@ -1688,7 +1688,7 @@
     "actions_run": 1,
     "actions_total": 1,
     "error": null,
-    "rea_evidence_id": "ev_71c499e2e32fd04650d1b41717573159ed3539c6d0c6b803b3d1d537f94be487"
+    "rea_evidence_id": "ev_a0373e2351be5140140b1aadc875205bbbf25f6d250d50c89b3fe8012e529bb1"
    },
    "openconductor": {
     "status": "captured",
@@ -1697,32 +1697,58 @@
     "note": null
    },
    "diff": {
-    "file": "ui-map/diff/settings-repo-misc.jpg",
-    "changed_ratio_t0": 0.08674828506097561,
-    "changed_ratio_t24": 0.05108231707317073,
+    "file": null,
+    "changed_ratio_t0": 0.09768959603658536,
+    "changed_ratio_t24": 0.06377096036585365,
     "rea_evidence_ids": [
-     "ev_1809f805510f1c711106e110bf42482e86d078cc93ee3c641942108adf90eac1",
-     "ev_4d156e70a0c9408d209dd63380f462ef8312d6cb7962372b89ce3564d9674b7e"
+     "ev_f809e0adc6dc00c9426cb1247296c1e633f207671e748f642bb0819f116cb70e",
+     "ev_f452fa8c07e9da52f337ba55c77ca4d8bf4d1f032ddc7e21df73abfbd81ef21b"
     ]
    },
-   "copy_coverage": 0.579,
+   "copy_coverage": 0.921,
    "copy_missing": [
-    "icon",
-    "shown next to the repository name in the sidebar",
-    "preview urls",
-    "files to copy",
-    "conductor will automatically copy these file paths in each new workspace",
-    "learn more",
-    "no matching gitignored files found",
-    "remove repository",
     "account menu",
     "search settings",
-    "search settings shortcut",
-    "change repository icon",
-    "name",
-    "https://localhost:$conductor_port",
-    "remove preview url",
-    "refresh files to copy preview"
+    "search settings shortcut"
+   ]
+  },
+  {
+   "id": "settings-repo-misc-lower",
+   "title": "Settings > tide-web > Misc, scrolled to Remove repository",
+   "status": "wrong",
+   "why": "diff 6.4% at t24, copy 92%",
+   "team": "settings",
+   "reference": {
+    "status": "captured",
+    "file": "ui-map/ref/settings-repo-misc-lower.png",
+    "path": "/settings/repos/repo-tide-web/misc",
+    "final_path": "/settings/repos/repo-tide-web/misc",
+    "scenario": "populated",
+    "actions_run": 2,
+    "actions_total": 2,
+    "error": null,
+    "rea_evidence_id": "ev_bb00e7834d3665492587821c0285822a83596e6f524212519b355760657a965a"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "ui-map/oc/settings-repo-misc-lower.png",
+    "error": null,
+    "note": null
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.09843464176829268,
+    "changed_ratio_t24": 0.06371379573170732,
+    "rea_evidence_ids": [
+     "ev_b34a7b707378dc02083229751bbcbec87428b43ed19ddb24dfee7d4dfebe5100",
+     "ev_840f0d6cf062cef8a9c8d189b5894ab3d3ba7989f53af73232b9e06dbd5cda86"
+    ]
+   },
+   "copy_coverage": 0.921,
+   "copy_missing": [
+    "account menu",
+    "search settings",
+    "search settings shortcut"
    ]
   },
   {
@@ -3033,7 +3059,7 @@
    "kind": "route",
    "name": "/settings/repos/$repoId/misc",
    "status": "wrong",
-   "why": "diff 5.1% at t24, copy 58%",
+   "why": "diff 6.4% at t24, copy 92%",
    "team": "settings",
    "component": "kEa",
    "source": {
@@ -3048,7 +3074,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
    "diff": null,
-   "changed_ratio_t24": 0.05108231707317073
+   "changed_ratio_t24": 0.06377096036585365
   },
   {
    "id": "route:settings-cloud",
@@ -21063,8 +21089,8 @@
    "id": "empty-state:no-matching-gitignored-files-found",
    "kind": "empty-state",
    "name": "No matching gitignored files found.",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state settings-repo-misc is wrong",
    "team": "settings",
    "component": "Nei",
    "source": {
@@ -21081,7 +21107,7 @@
    "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
    "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
    "diff": null,
-   "changed_ratio_t24": 0.05108231707317073
+   "changed_ratio_t24": 0.06377096036585365
   },
   {
    "id": "empty-state:no-emoji-found",
@@ -24423,7 +24449,7 @@
    "kind": "settings-page",
    "name": "misc",
    "status": "wrong",
-   "why": "diff 5.1% at t24, copy 58%",
+   "why": "diff 6.4% at t24, copy 92%",
    "team": "settings",
    "component": null,
    "source": {
@@ -24431,12 +24457,12 @@
    },
    "copy": [],
    "tokens": [],
-   "state": "settings-repo-misc",
+   "state": "settings-repo-misc-lower",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
-   "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
+   "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
+   "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": null,
-   "changed_ratio_t24": 0.05108231707317073,
+   "changed_ratio_t24": 0.06371379573170732,
    "route": "/settings/repos/$repoId/misc",
    "route_guess": "/settings/repos/$repoId/misc",
    "rows": 6
@@ -24445,8 +24471,8 @@
    "id": "settings-row:misc:icon",
    "kind": "settings-row",
    "name": "Icon",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state settings-repo-misc-lower is wrong",
    "team": "settings",
    "component": null,
    "source": {
@@ -24457,12 +24483,12 @@
     "Shown next to the repository name in the sidebar."
    ],
    "tokens": [],
-   "state": "settings-repo-misc",
+   "state": "settings-repo-misc-lower",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
-   "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
+   "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
+   "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": null,
-   "changed_ratio_t24": 0.05108231707317073,
+   "changed_ratio_t24": 0.06371379573170732,
    "page": "misc",
    "setting_key": null,
    "row_id": "misc:icon",
@@ -24475,7 +24501,7 @@
    "kind": "settings-row",
    "name": "Root path",
    "status": "wrong",
-   "why": "host state settings-repo-misc is wrong",
+   "why": "host state settings-repo-misc-lower is wrong",
    "team": "settings",
    "component": null,
    "source": {
@@ -24486,12 +24512,12 @@
     "Do not move or delete this directory. Instead, remove the repository in Conductor."
    ],
    "tokens": [],
-   "state": "settings-repo-misc",
+   "state": "settings-repo-misc-lower",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
-   "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
+   "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
+   "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": null,
-   "changed_ratio_t24": 0.05108231707317073,
+   "changed_ratio_t24": 0.06371379573170732,
    "page": "misc",
    "setting_key": null,
    "row_id": "misc:root-path",
@@ -24504,7 +24530,7 @@
    "kind": "settings-row",
    "name": "Workspaces path",
    "status": "wrong",
-   "why": "host state settings-repo-misc is wrong",
+   "why": "host state settings-repo-misc-lower is wrong",
    "team": "settings",
    "component": null,
    "source": {
@@ -24515,12 +24541,12 @@
     "Do not move or delete the workspace subdirectories. Instead, archive workspaces in Conductor."
    ],
    "tokens": [],
-   "state": "settings-repo-misc",
+   "state": "settings-repo-misc-lower",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
-   "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
+   "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
+   "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": null,
-   "changed_ratio_t24": 0.05108231707317073,
+   "changed_ratio_t24": 0.06371379573170732,
    "page": "misc",
    "setting_key": null,
    "row_id": "misc:workspaces-path",
@@ -24532,8 +24558,8 @@
    "id": "settings-row:misc:preview-urls",
    "kind": "settings-row",
    "name": "Preview URLs",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state settings-repo-misc-lower is wrong",
    "team": "settings",
    "component": null,
    "source": {
@@ -24544,12 +24570,12 @@
     "Set the terminal panel's Open URLs. The first URL is the default; additional URLs appear in its menu. Supports Conductor variables such as $CONDUCTOR_PORT. Use $((CONDUCTOR_PORT + 1)) through $((CONDUCTOR_PORT + 9)) for other allocated ports. Leave blank to detect a URL from output."
    ],
    "tokens": [],
-   "state": "settings-repo-misc",
+   "state": "settings-repo-misc-lower",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
-   "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
+   "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
+   "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": null,
-   "changed_ratio_t24": 0.05108231707317073,
+   "changed_ratio_t24": 0.06371379573170732,
    "page": "misc",
    "setting_key": null,
    "row_id": "misc:preview-url",
@@ -24561,8 +24587,8 @@
    "id": "settings-row:misc:files-to-copy",
    "kind": "settings-row",
    "name": "Files to copy",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state settings-repo-misc-lower is wrong",
    "team": "settings",
    "component": null,
    "source": {
@@ -24573,12 +24599,12 @@
     "Conductor will automatically copy these file paths in each new workspace."
    ],
    "tokens": [],
-   "state": "settings-repo-misc",
+   "state": "settings-repo-misc-lower",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
-   "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
+   "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
+   "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": null,
-   "changed_ratio_t24": 0.05108231707317073,
+   "changed_ratio_t24": 0.06371379573170732,
    "page": "misc",
    "setting_key": "file_include_globs",
    "row_id": null,
@@ -24590,8 +24616,8 @@
    "id": "settings-row:misc:remove-repository",
    "kind": "settings-row",
    "name": "Remove repository",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state settings-repo-misc-lower is wrong",
    "team": "settings",
    "component": null,
    "source": {
@@ -24602,12 +24628,12 @@
     "Remove this repository and its workspaces from Conductor."
    ],
    "tokens": [],
-   "state": "settings-repo-misc",
+   "state": "settings-repo-misc-lower",
    "state_basis": "settings page state",
-   "reference_screenshot": "ui-map/ref/settings-repo-misc.png",
-   "openconductor_screenshot": "ui-map/oc/settings-repo-misc.png",
+   "reference_screenshot": "ui-map/ref/settings-repo-misc-lower.png",
+   "openconductor_screenshot": "ui-map/oc/settings-repo-misc-lower.png",
    "diff": null,
-   "changed_ratio_t24": 0.05108231707317073,
+   "changed_ratio_t24": 0.06371379573170732,
    "page": "misc",
    "setting_key": null,
    "row_id": "misc:remove-repository",

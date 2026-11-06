@@ -209,6 +209,25 @@ fn preview_urls_parse_tables_and_legacy_strings() {
 }
 
 #[test]
+fn file_include_globs_is_a_string_the_repository_local_file_overrides() {
+    let f = Fixture::new();
+    write(
+        &f.user.join("settings.toml"),
+        "file_include_globs = \".env*\"\n",
+    );
+    write(
+        &f.root.join(".conductor/settings.local.toml"),
+        "file_include_globs = \".env\\n*.local\\n!.keep.local\"\n",
+    );
+    let g = f.load().file_include_globs.unwrap();
+    assert_eq!(
+        (g.value.as_str(), g.layer),
+        (".env\n*.local\n!.keep.local", Layer::RepoLocal)
+    );
+    assert!(is_local_writable(&["file_include_globs"]));
+}
+
+#[test]
 fn dotenv_parsing_matches_the_reference_rules() {
     let vars = parse_dotenv(
         "# comment\n\nexport A=1\nB = two words # trailing\nC=\"x\\ny\\tz\\\"q\"\nD='raw\\n'\n1BAD=no\n=empty\nE=a#b\nF=\n",
