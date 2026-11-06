@@ -81,17 +81,17 @@ test("archived workspaces are listed in the palette, open read-only and can be u
   assert.deepEqual(await filter.locator("option").allTextContents(), ["Hiding archived", "Showing all", "Only archived"]);
   const titles = () => palette.locator(".palette-item .palette-title").allTextContents();
   const archivedTitles = () => palette.locator(".palette-item[data-archived] .palette-title").allTextContents();
-  assert.deepEqual(await archivedTitles(), ["copper-wren", "quiet-harbor"], "newest archived first");
-  assert.ok((await titles()).includes("amber-falcon"), "Showing all keeps active workspaces");
+  assert.deepEqual(await archivedTitles(), ["Copper wren", "Quiet harbor"], "newest archived first, by the sidebar's display name as in Conductor's `SUi`");
+  assert.ok((await titles()).includes("Amber falcon"), "Showing all keeps active workspaces");
   await filter.selectOption("archived");
-  assert.deepEqual(await titles(), ["copper-wren", "quiet-harbor"]);
+  assert.deepEqual(await titles(), ["Copper wren", "Quiet harbor"]);
   await shot(page, "archived-workspaces-palette.png");
   await filter.selectOption("active");
   assert.deepEqual(await archivedTitles(), []);
   await filter.selectOption("archived");
 
   // Opening an archived workspace: read-only, with the banner and Unarchive.
-  await palette.locator(".palette-item", { hasText: "quiet-harbor" }).click();
+  await palette.locator(".palette-item", { hasText: "Quiet harbor" }).click();
   assert.equal(await palette.count(), 0);
   const view = page.locator(".archived-workspace");
   await view.waitFor();
@@ -111,8 +111,8 @@ test("archived workspaces are listed in the palette, open read-only and can be u
   // Unarchive from the palette row's button.
   palette = await openArchivedList(page);
   await palette.getByLabel("Archived workspaces").selectOption("archived");
-  assert.deepEqual(await palette.locator(".palette-item[data-archived] .palette-title").allTextContents(), ["copper-wren"]);
-  const wren = palette.locator(".palette-item", { hasText: "copper-wren" });
+  assert.deepEqual(await palette.locator(".palette-item[data-archived] .palette-title").allTextContents(), ["Copper wren"]);
+  const wren = palette.locator(".palette-item", { hasText: "Copper wren" });
   await wren.hover();
   await wren.getByRole("button", { name: "Unarchive workspace" }).click();
   assert.equal(await palette.count(), 0);

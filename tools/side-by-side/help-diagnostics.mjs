@@ -153,7 +153,10 @@ function compare(name, a, b) {
 function capture(name, url, clicks, settle) {
   const actions = [{ step_id: "settle", action: "wait_for_timeout", duration_ms: 4000 }];
   clicks.forEach((locator, i) => {
-    actions.push({ step_id: `c${i}`, action: "click", locator, timeout_ms: 5000 });
+    // A step is a locator to click, or { press: key } on the body, or { fill: [locator, text] }.
+    if (locator.press) actions.push({ step_id: `c${i}`, action: "press", locator: css("body"), key: locator.press, timeout_ms: 5000 });
+    else if (locator.fill) actions.push({ step_id: `c${i}`, action: "fill", locator: locator.fill[0], value: { source: "literal", value: locator.fill[1] }, timeout_ms: 5000 });
+    else actions.push({ step_id: `c${i}`, action: "click", locator, timeout_ms: 5000 });
     actions.push({ step_id: `p${i}`, action: "wait_for_timeout", duration_ms: 600 });
   });
   actions.push({ step_id: "final", action: "wait_for_timeout", duration_ms: settle ?? 800 });

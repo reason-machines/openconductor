@@ -5,7 +5,11 @@ import type { DialogKind } from "../components/Dialogs";
 import { CommandPalette } from "./CommandPalette.tsx";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
-import { paletteDataFromState, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
+import { paletteDataFromState, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
+import { buildSearchIndex } from "../settings/searchIndex";
+import { settingsGroups } from "../settings/pages";
+import { AGENT_SEARCH_TABS, scrollToRow, searchIcon } from "../settings/SettingsView";
+import { openAgentSettings, openRepoSettingsPage, openSettingsPage } from "../features/chat/ChatModelPicker";
 import type { ResultItem } from "./search/model.ts";
 import { useBoolPref } from "../settings/useBoolPref.ts";
 import { loadRecentWorkspaceIds, recordViewedWorkspace, saveRecentWorkspaceIds } from "./recentWorkspaces.ts";
@@ -21,10 +25,29 @@ interface Props {
   /** Open state lives in App so the sidebar's Search row can open the palette too. */
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** App-level commands the palette's Actions and Navigation items run. */
+  commands: PaletteCommands;
+}
+
+/** What the palette's items do that the app shell owns (each mirrors its keyboard shortcut's handler). */
+export interface PaletteCommands {
+  addProject: () => void;
+  toggleTheme: () => void;
+  toggleLeftSidebar: () => void;
+  toggleRightSidebar: () => void;
+  toggleZenMode: () => void;
+  sendFeedback: () => void;
+  submitPrompt: () => void;
+  showShortcuts: () => void;
+  openChangelog: () => void;
+  openSettings: () => void;
+  openDocs: () => void;
+  quickOpen: () => void;
+  copyUrl: () => void;
 }
 
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
-export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open, onOpenChange }: Props) {
+export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open, onOpenChange, commands }: Props) {
   const [recents, setRecents] = useState<readonly string[]>(loadRecentWorkspaceIds);
   const sel = state.selection;
   const selectedId = sel.kind === "workspace" ? sel.workspaceId : null;
@@ -48,7 +71,15 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
       live = false;
     };
   }, [open, state.repos]);
-  const data = useMemo(() => paletteDataFromState(state, recents, archived), [state, recents, archived]);
+  // Conductor's palette lists the settings pages, and with a query their rows (`yUi`, `xUi`):
+  // the same index as Settings' own search.
+  const hasRepos = state.repos.length > 0;
+  const settingsIndex = useMemo(
+    () => buildSearchIndex({ pages: settingsGroups(false).flatMap((g) => g.pages), agentTabs: AGENT_SEARCH_TABS, hasRepos }),
+    [hasRepos],
+  );
+  const settingEntries = useMemo(() => paletteSettings(settingsIndex), [settingsIndex]);
+  const data = useMemo(() => paletteDataFromState(state, recents, archived, settingEntries), [state, recents, archived, settingEntries]);
   const archivedById = (id: string) => archived.find((a) => a.id === id);
   const showWorkspaceNumbers = useBoolPref("experimental_show_workspace_numbers");
 
@@ -60,9 +91,20 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
   const actions: Record<string, () => void> = {
     "archive-workspace": () => sel.kind === "workspace" && dispatch({ type: "archiveWorkspace", repoId: sel.repoId, workspaceId: sel.workspaceId }),
     "new-workspace": () => (activeRepoId ? onOpenDialog("create") : onOpenProject()),
-    "add-project": () => onOpenProject(),
-    "clone-project": () => onOpenDialog("clone"),
-    "quick-start": () => onOpenDialog("quickstart"),
+    // Conductor opens the sidebar's add-project popover on the next frame (`b_a`, after the dialog closes).
+    "add-project": () => requestAnimationFrame(commands.addProject),
+    "toggle-theme": commands.toggleTheme,
+    "toggle-left-sidebar": commands.toggleLeftSidebar,
+    "toggle-right-sidebar": commands.toggleRightSidebar,
+    "toggle-zen-mode": commands.toggleZenMode,
+    "send-feedback": commands.sendFeedback,
+    "submit-prompt": commands.submitPrompt,
+    "show-shortcuts": commands.showShortcuts,
+    "open-changelog": commands.openChangelog,
+    settings: commands.openSettings,
+    "open-docs": commands.openDocs,
+    "quick-open": commands.quickOpen,
+    "copy-url": commands.copyUrl,
     // Home is the wordmark screen (`root`). Conductor opens /all-workspaces here;
     // Sven's brief for #483 routes it to the wordmark screen instead.
     "go-home": () => dispatch({ type: "select", selection: { kind: "root" } }),
@@ -100,13 +142,40 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
       else if (repo) dispatch({ type: "newWorkspace", repoId: repo.id });
     } else if (item.kind === "action") {
       actions[item.action.id]?.();
+    } else if (item.kind === "setting") {
+      openSetting(item.setting.id);
     }
   }
+
+  // Settings' own search does the same (`wGt`): a repository section opens in the open workspace's repository, else the first.
+  function openSetting(id: string) {
+    const t = settingsIndex.find((i) => i.id === id)?.target;
+    if (!t) return;
+    if (t.scope === "repo") {
+      const repoId = sel.kind === "workspace" ? sel.repoId : state.repos[0]?.id;
+      if (repoId) openRepoSettingsPage(repoId, t.section);
+    } else if (t.providerTab) openAgentSettings(t.providerTab);
+    else openSettingsPage(t.page);
+    if (t.row) scrollToRow(t.row);
+  }
+  const settingIcon = (id: string) => {
+    const item = settingsIndex.find((i) => i.id === id);
+    return item ? searchIcon(item) : null;
+  };
 
   if (!open) return null;
   const unarchive = (id: string) => {
     const a = archivedById(id);
     if (a) dispatch({ type: "unarchiveWorkspace", repoId: a.repoId, workspaceId: a.id });
   };
-  return <CommandPalette data={data} showWorkspaceNumbers={showWorkspaceNumbers} onSelect={onSelect} onUnarchive={unarchive} onClose={() => onOpenChange(false)} />;
+  return (
+    <CommandPalette
+      data={data}
+      showWorkspaceNumbers={showWorkspaceNumbers}
+      onSelect={onSelect}
+      settingIcon={settingIcon}
+      onUnarchive={unarchive}
+      onClose={() => onOpenChange(false)}
+    />
+  );
 }

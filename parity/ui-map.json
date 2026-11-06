@@ -32,21 +32,21 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 973,
+  "total": 974,
   "missing": 747,
-  "wrong": 84,
-  "matches": 142,
+  "wrong": 80,
+  "matches": 147,
   "states": {
-   "total": 75,
+   "total": 76,
    "missing": 13,
-   "wrong": 25,
-   "matches": 37
+   "wrong": 23,
+   "matches": 40
   },
   "items": {
    "total": 898,
    "missing": 734,
-   "wrong": 59,
-   "matches": 105
+   "wrong": 57,
+   "matches": 107
   },
   "items_by_kind": {
    "dialog": {
@@ -58,8 +58,8 @@
    "empty-state": {
     "total": 52,
     "missing": 44,
-    "wrong": 1,
-    "matches": 7
+    "wrong": 0,
+    "matches": 8
    },
    "menu": {
     "total": 39,
@@ -76,8 +76,8 @@
    "popover": {
     "total": 45,
     "missing": 44,
-    "wrong": 1,
-    "matches": 0
+    "wrong": 0,
+    "matches": 1
    },
    "route": {
     "total": 65,
@@ -160,10 +160,10 @@
     "matches": 89
    },
    "shell": {
-    "total": 196,
+    "total": 197,
     "missing": 178,
-    "wrong": 9,
-    "matches": 9
+    "wrong": 5,
+    "matches": 14
    },
    "terminal-scripts": {
     "total": 22,
@@ -184,8 +184,8 @@
     "matches": 13
    }
   },
-  "located_items": 224,
-  "items_with_reference_screenshot": 224
+  "located_items": 225,
+  "items_with_reference_screenshot": 225
  },
  "states": [
   {
@@ -2102,62 +2102,41 @@
   {
    "id": "palette-all",
    "title": "Command palette",
-   "status": "wrong",
-   "why": "diff 7.5% at t24, copy 47%",
+   "status": "matches",
+   "why": "diff 1.0% at t24, copy 90%",
    "team": "shell",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/palette-all.png",
+    "file": "side-by-side/shell-palette-01-all.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 2,
-    "actions_total": 2,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_b60b816337229bcdab7c36039753c1aff0f965bed1e92244752ff71d10fc94bb"
+    "rea_evidence_id": "ev_7b077b4f6dc01e92a75b5d840ad8a6143c6921db3a4475a00e12246a49f5d890"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/palette-all.png",
+    "file": "side-by-side/shell-palette-01-all.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 347acb1d8: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-palette-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/palette-all.jpg",
-    "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.07486375762195122,
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.010330602134146341,
     "rea_evidence_ids": [
-     "ev_101dd7decbb6e7eb765535bef76c4b28b89747deeed575f5f06063d402ff368b",
-     "ev_11a3b472b9d3e17765e771b2ec69e027135ae1a7ddfb0b36c0a2d08f442138b1"
+     "ev_e7f3f20271696480286a753e979306b428814565ee3b5f3e0e9ed1bb73accc36",
+     "ev_a1fc0007a4310be271f7d0a57514fccb5c626fd51be314481d6086c3e4c568e1"
     ]
    },
-   "copy_coverage": 0.468,
+   "copy_coverage": 0.905,
    "copy_missing": [
-    "add project",
-    "toggle theme",
-    "toggle right sidebar",
-    "toggle zen mode",
-    "send feedback",
-    "submit a prompt",
-    "show keyboard shortcuts",
     "check for updates",
-    "open changelog",
     "passport",
-    "go to next unread",
-    "open documentation",
-    "general",
-    "appearance",
-    "default models",
-    "agents",
-    "claude code",
-    "codex",
     "cursor",
-    "opencode",
-    "environment",
-    "scripts",
-    "misc",
-    "experimental",
-    "advanced"
+    "opencode"
    ]
   },
   {
@@ -2200,36 +2179,73 @@
   {
    "id": "palette-search",
    "title": "Command palette: search",
-   "status": "wrong",
-   "why": "diff 10.2% at t24, copy 95%",
+   "status": "matches",
+   "why": "diff 1.0% at t24, copy 92%",
    "team": "shell",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/palette-search.png",
+    "file": "side-by-side/shell-palette-02-search.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 3,
-    "actions_total": 3,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_901004b943dc55851bd427f66e52ebdf6951f2d97d65c646e1007daa0a06d58f"
+    "rea_evidence_id": "ev_660e2d501bd836e238345987b92325e212937786fd67ef248478d110c9b5d7fd"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/palette-search.png",
+    "file": "side-by-side/shell-palette-02-search.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 347acb1d8: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-palette-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/palette-search.jpg",
-    "changed_ratio_t0": 1,
-    "changed_ratio_t24": 0.10211604420731707,
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.010201981707317074,
     "rea_evidence_ids": [
-     "ev_796be66b170dcf686c5211bbe844697c5b12f54a85d40998ad1ce5844478f5d6",
-     "ev_4a15413a5a4c8b1a1b853ee693e0857e0d0c6393c8cecc18e6b963cc9d2a551f"
+     "ev_8fde6d887aa954f08cf62ee376d338f4a85c533c8a6f7244776eb0f4fc810c39",
+     "ev_8cc2006652a6e05785f7dd08e1f6d04c94f5b98659cd0e557f7e51bc235c634e"
     ]
    },
-   "copy_coverage": 0.952,
+   "copy_coverage": 0.929,
+   "copy_missing": [
+    "navigation"
+   ]
+  },
+  {
+   "id": "palette-no-results",
+   "title": "Command palette: no results",
+   "status": "matches",
+   "why": "diff 1.0% at t24, copy 92%",
+   "team": "shell",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/shell-palette-03-no-results.png",
+    "path": "/",
+    "final_path": "/",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_c31fc70b1c87ab35b8c5ef5008bd1044cbba3b9429fbec674ff6a22f980ac6c5"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/shell-palette-03-no-results.png",
+    "error": null,
+    "note": "side-by-side lane at 347acb1d8: tools/side-by-side/help-diagnostics.mjs (SBS_STATES=tools/side-by-side/shell-palette-states.mjs): REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9999980945121951,
+    "changed_ratio_t24": 0.010020960365853659,
+    "rea_evidence_ids": [
+     "ev_9b23209ae6c19d42617882a7612627e8dfcc4a83ca8bad9a7ef6095ff3ece0a3",
+     "ev_099b17b5126ae97628718479e6ae2de2731edf57431142046964aaac30e91123"
+    ]
+   },
+   "copy_coverage": 0.929,
    "copy_missing": [
     "navigation"
    ]
@@ -11610,8 +11626,8 @@
    "id": "popover:kqo",
    "kind": "popover",
    "name": null,
-   "status": "wrong",
-   "why": "OpenConductor shows it in settings-general, settings-account, settings-models, not in the host state; host state palette-all is wrong",
+   "status": "matches",
+   "why": "on screen in both; state palette-all matches",
    "team": "shell",
    "component": "KQo",
    "source": {
@@ -11637,10 +11653,10 @@
    ],
    "state": "palette-all",
    "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/palette-all.png",
-   "openconductor_screenshot": "ui-map/oc/palette-all.png",
-   "diff": "ui-map/diff/palette-all.jpg",
-   "changed_ratio_t24": 0.07486375762195122,
+   "reference_screenshot": "side-by-side/shell-palette-01-all.png",
+   "openconductor_screenshot": "side-by-side/shell-palette-01-all.png",
+   "diff": null,
+   "changed_ratio_t24": 0.010330602134146341,
    "primitive": "E1",
    "dynamic": true
   },
@@ -21462,8 +21478,8 @@
    "id": "empty-state:no-results-found",
    "kind": "empty-state",
    "name": "No results found",
-   "status": "wrong",
-   "why": "not rendered in a reference capture; OpenConductor shows it in palette-search, not in the host state",
+   "status": "matches",
+   "why": "on screen in both; state palette-no-results matches",
    "team": "shell",
    "component": "m_a",
    "source": {
@@ -21475,12 +21491,12 @@
     "No results found"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "palette-no-results",
+   "state_basis": "state covers it",
+   "reference_screenshot": "side-by-side/shell-palette-03-no-results.png",
+   "openconductor_screenshot": "side-by-side/shell-palette-03-no-results.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.010020960365853659
   },
   {
    "id": "empty-state:no-branch-name",

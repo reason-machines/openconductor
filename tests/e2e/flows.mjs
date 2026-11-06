@@ -231,7 +231,7 @@ export const flows = [
   },
   {
     // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
-    // active result. Go to Home leaves the workspace for the wordmark-and-cards
+    // active result. Home leaves the workspace for the wordmark-and-cards
     // Home screen (Conductor opens its /all-workspaces list here; ours follows
     // Sven's brief for #483), and searching the workspace's name brings it back.
     name: "command-palette",
@@ -267,7 +267,8 @@ export const flows = [
       }
 
       await open();
-      await run("Go to Home", "Go to Home");
+      // Conductor's Navigation item is "Home" (`V9t`).
+      await run("Home", "Home");
       const home = () =>
         wd.execute(
           "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), workspace: !!document.querySelector('.workspace') };",
@@ -281,7 +282,16 @@ export const flows = [
       });
 
       await open();
-      await run(name, name);
+      // Workspace rows show the sidebar's display name (Conductor's `SUi`), so pick the row by kind.
+      await wd.keys(name);
+      const activeKind = () => wd.execute("return document.querySelector('.palette-item.active')?.dataset.kind ?? null;", []);
+      await wd.waitFor(`a workspace result for ${JSON.stringify(name)}`, async () => (await wd.findAll('.palette-item[data-kind="workspace"]')).length > 0);
+      for (let i = 0; (await activeKind()) !== "workspace"; i++) {
+        if (i > 20) throw new Error(`could not highlight the workspace result; results ${JSON.stringify(await titles())}`);
+        await wd.keys(DOWN);
+      }
+      await wd.keys(ENTER);
+      await wd.waitFor("the palette to close after Enter", async () => !(await paletteOpen()));
       const back = await wd.waitFor(`the ${name} workspace view`, headerName);
       if (back !== name) throw new Error(`palette opened workspace ${JSON.stringify(back)}, want ${JSON.stringify(name)}`);
     },
@@ -586,7 +596,7 @@ export const flows = [
     // Open project on a folder that is already added is not refused: like
     // Conductor it adds a second project on the same folder, `<name>-v1`
     // (evidence/screens/duplicate-repo.md). Runs from the palette's
-    // "Open project" action, since Home's cards only show at start-up.
+    // "Add project" action and its popover, since Home's cards only show at start-up.
     name: "duplicate-repo",
     async run(wd, ctx) {
       if (!ctx.repo) throw new Error("needs the add-repo flow's repo");
@@ -595,11 +605,15 @@ export const flows = [
       await wd.execute("document.activeElement?.blur();", []);
       await wd.chord(["\uE03D"], "k");
       await wd.waitFor("the command palette", async () => (await wd.findAll('.palette[aria-label="Command palette"]')).length > 0, 10000);
-      await wd.keys("Open project");
-      await wd.waitFor("Open project highlighted", () =>
-        wd.execute("return document.querySelector('.palette-item.active .palette-title')?.textContent.trim() === 'Open project';", []),
+      // Conductor's palette "Add project" opens the sidebar's add-project popover (`g9e.open()`); its Open project runs the picker.
+      await wd.keys("Add project");
+      await wd.waitFor("Add project highlighted", () =>
+        wd.execute("return document.querySelector('.palette-item.active .palette-title')?.textContent.trim() === 'Add project';", []),
       );
       await wd.keys(ENTER);
+      await wd.waitFor("the add-project popover's Open project", () =>
+        wd.execute("const b = [...document.querySelectorAll('.add-menu-item')].find((e) => e.textContent.trim() === 'Open project'); if (!b) return false; b.click(); return true;", []),
+      );
       await wd.waitFor("e2e-demo-v1 in the sidebar", async () => (await textsOf(wd, ".sb-repo-name")).includes("e2e-demo-v1")).catch(async (e) => {
         throw new Error(`${e.message}; sidebar ${JSON.stringify(await textsOf(wd, ".sb-repo-name"))}`);
       });

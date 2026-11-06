@@ -67,3 +67,6 @@ columns-2
 file-text
 circle-dot
 corner-down-left
+sun
+maximize-2
+panel-right

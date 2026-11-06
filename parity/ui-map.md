@@ -8,14 +8,14 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **973** | **747** | **84** | **142** |
-| States (captured screens) | 75 | 13 | 25 | 37 |
-| Inventory items | 898 | 734 | 59 | 105 |
+| **All** | **974** | **747** | **80** | **147** |
+| States (captured screens) | 76 | 13 | 23 | 40 |
+| Inventory items | 898 | 734 | 57 | 107 |
 | &nbsp;&nbsp;dialog | 64 | 54 | 5 | 5 |
-| &nbsp;&nbsp;empty-state | 52 | 44 | 1 | 7 |
+| &nbsp;&nbsp;empty-state | 52 | 44 | 0 | 8 |
 | &nbsp;&nbsp;menu | 39 | 37 | 1 | 1 |
 | &nbsp;&nbsp;menu-item | 89 | 84 | 4 | 1 |
-| &nbsp;&nbsp;popover | 45 | 44 | 1 | 0 |
+| &nbsp;&nbsp;popover | 45 | 44 | 0 | 1 |
 | &nbsp;&nbsp;route | 65 | 39 | 9 | 17 |
 | &nbsp;&nbsp;select | 29 | 22 | 5 | 2 |
 | &nbsp;&nbsp;settings-page | 29 | 14 | 6 | 9 |
@@ -36,12 +36,12 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | onboarding-auth | 23 | 15 | 7 | 1 |
 | routines | 40 | 35 | 0 | 5 |
 | settings | 181 | 46 | 46 | 89 |
-| shell | 196 | 178 | 9 | 9 |
+| shell | 197 | 178 | 5 | 14 |
 | terminal-scripts | 22 | 19 | 0 | 3 |
 | triage | 268 | 268 | 0 | 0 |
 | workspaces | 58 | 38 | 7 | 13 |
 
-224 of 898 items were located in a captured state; 224 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
+225 of 898 items were located in a captured state; 225 have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.
 
 ## How it was measured
 
@@ -116,9 +116,10 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Settings > Organization > prompts<br>`settings-org-prompts` | missing | cloud-org | OpenConductor has no organization settings | [png](ui-map/ref/settings-org-prompts.png) | no-equivalent |  |  |
 | Settings > Cloud setup<br>`settings-cloud-setup` | matches | cloud-org | diff 4.0% at t24, copy 90% | [png](side-by-side/settings-org-01-cloud-setup.png) | [png](side-by-side/settings-org-01-cloud-setup.png) |  | 4.0% |
 | Settings search<br>`settings-search` | matches | settings | diff 3.2% at t24, copy 96% | [png](ui-map/ref/settings-search.png) | [png](ui-map/oc/settings-search.png) | [jpg](ui-map/diff/settings-search.jpg) | 3.2% |
-| Command palette<br>`palette-all` | wrong | shell | diff 7.5% at t24, copy 47% | [png](ui-map/ref/palette-all.png) | [png](ui-map/oc/palette-all.png) | [jpg](ui-map/diff/palette-all.jpg) | 7.5% |
+| Command palette<br>`palette-all` | matches | shell | diff 1.0% at t24, copy 90% | [png](side-by-side/shell-palette-01-all.png) | [png](side-by-side/shell-palette-01-all.png) |  | 1.0% |
 | Command palette: Workspaces tab<br>`palette-workspaces` | wrong | workspaces | diff 15.2% at t24, copy 96% | [png](ui-map/ref/palette-workspaces.png) | [png](ui-map/oc/palette-workspaces.png) | [jpg](ui-map/diff/palette-workspaces.jpg) | 15.2% |
-| Command palette: search<br>`palette-search` | wrong | shell | diff 10.2% at t24, copy 95% | [png](ui-map/ref/palette-search.png) | [png](ui-map/oc/palette-search.png) | [jpg](ui-map/diff/palette-search.jpg) | 10.2% |
+| Command palette: search<br>`palette-search` | matches | shell | diff 1.0% at t24, copy 92% | [png](side-by-side/shell-palette-02-search.png) | [png](side-by-side/shell-palette-02-search.png) |  | 1.0% |
+| Command palette: no results<br>`palette-no-results` | matches | shell | diff 1.0% at t24, copy 92% | [png](side-by-side/shell-palette-03-no-results.png) | [png](side-by-side/shell-palette-03-no-results.png) |  | 1.0% |
 | Clone GitHub repo dialog<br>`dialog-clone-github` | matches | git-review | diff 4.9% at t24, copy 95% | [png](ui-map/ref/dialog-clone-github.png) | [png](ui-map/oc/dialog-clone-github.png) | [jpg](ui-map/diff/dialog-clone-github.jpg) | 4.9% |
 | Create project dialog<br>`dialog-create-project` | wrong | workspaces | diff 6.7% at t24, copy 90% | [png](ui-map/ref/dialog-create-project.png) | [png](ui-map/oc/dialog-create-project.png) | [jpg](ui-map/diff/dialog-create-project.jpg) | 6.7% |
 | Rename workspace dialog<br>`dialog-rename-workspace` | matches | workspaces | diff 4.6% at t24, copy 94% | [png](ui-map/ref/dialog-rename-workspace.png) | [png](ui-map/oc/dialog-rename-workspace.png) | [jpg](ui-map/diff/dialog-rename-workspace.jpg) | 4.6% |
@@ -583,7 +584,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `menu-item:svs~7` | missing | triage |  | `Svs` |  | no literal copy to locate it; not observed in any capture |
 | `menu-item:vho~2` | missing | triage |  | `Vho` |  | no literal copy to locate it; not observed in any capture |
 
-## popover (45: 44 missing, 1 wrong, 0 matches)
+## popover (45: 44 missing, 0 wrong, 1 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -617,7 +618,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `popover:h7o` | missing | triage |  | `H7o` |  | no literal copy to locate it; not observed in any capture |
 | `popover:ukn` | missing | triage |  | `uKn` |  | no literal copy to locate it; not observed in any capture |
 | `popover:kdo` | missing | chat | Fast mode / Input | `kDo` |  | copy not shown in any OpenConductor capture |
-| `popover:kqo` | wrong | shell | Keyboard shortcuts / Docs | `KQo` | [palette-all](ui-map/oc/palette-all.png) | OpenConductor shows it in settings-general, settings-account, settings-models, not in the host state; host state palette-all is wrong |
+| `popover:kqo` | matches | shell | Keyboard shortcuts / Docs | `KQo` | [palette-all](side-by-side/shell-palette-01-all.png) | on screen in both; state palette-all matches |
 | `popover:zqo` | missing | triage |  | `ZQo` |  | no literal copy to locate it; not observed in any capture |
 | `popover:yzo` | missing | triage |  | `yZo` |  | no literal copy to locate it; not observed in any capture |
 | `popover:wra` | missing | triage |  | `wra` |  | no literal copy to locate it; not observed in any capture |
@@ -1039,7 +1040,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `toast:failed-to-unarchive-t-workspacedirectoryname`<br>Failed to unarchive: ${t.workspaceDirectoryName} | missing | workspaces | Failed to unarchive: ${t.workspaceDirectoryName} | `kIa` |  | copy not shown in any OpenConductor capture |
 | `toast:failed-to-start-agents`<br>Failed to start agents | missing | chat | Failed to start agents / Conductor will not work. Please report this error. | `wVi` |  | copy not shown in any OpenConductor capture |
 
-## empty-state (52: 44 missing, 1 wrong, 7 matches)
+## empty-state (52: 44 missing, 0 wrong, 8 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -1084,7 +1085,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `empty-state:no-favicon-detected`<br>No favicon detected | missing | shell | No favicon detected | `pba` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-matching-sections`<br>No matching sections | missing | shell | No matching sections | `Jba` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-matching-workspaces~2`<br>No matching workspaces | missing | workspaces | No matching workspaces | `l_a` |  | copy not shown in any OpenConductor capture |
-| `empty-state:no-results-found`<br>No results found | wrong | shell | No results found | `m_a` |  | not rendered in a reference capture; OpenConductor shows it in palette-search, not in the host state |
+| `empty-state:no-results-found`<br>No results found | matches | shell | No results found | `m_a` | [palette-no-results](side-by-side/shell-palette-03-no-results.png) | on screen in both; state palette-no-results matches |
 | `empty-state:no-branch-name`<br>No branch name | missing | git-review | No branch name | `Y6a` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-issues-found~2`<br>No issues found | missing | shell | No issues found | `X6a` |  | copy not shown in any OpenConductor capture |
 | `empty-state:no-pull-requests-found`<br>No pull requests found | missing | git-review | No pull requests found | `o4a` |  | copy not shown in any OpenConductor capture |
@@ -1195,4 +1196,10 @@ Harness limits that shape the reference (not REA bugs): settings pages behind an
 49. **`capture-browser-scenario` has no pointer move** (as with `hover`, gap 37): a `mouse_move` step fails `invalid_value` at `actions[n].action` (allowed: goto, click, fill, press, select_option, check, uncheck, wait_for, request, wait_for_timeout), so the pointer stays on the last element clicked and its hover colour is in the capture on both sides.
 50. **No IPC trace in a capture.** To find how Conductor reads a repository's setup script (so the harness could seed one), the `tools/screens` mock's own IPC log was needed: REA's scenario result records console and page errors but not the Tauri `invoke` calls the page made.
 51. **No remote-artifact input** (gap 17, again): the decoded frontend lives on sven m5 max; it was packed there and copied with Reason's device copy (`devices_copy_to_cloud`, 23 MB tgz, sha256 `1bbc5bee…`). A first `tar czf` run through `devices_exec` returned before the archive was finished and left a truncated file (`gzip -t`: unexpected end of file); packing in the background and checking with `gzip -t` worked.
+
+### Hit while matching the command palette (shell lane, REA 6.8.0, Linux cloud)
+
+52. **`rea search` still has no route for the decoded `renderApp` chunk** (gaps 17, 25, 30, 34, 36, 41, 45, 48): `rea search renderApp-D_fmY7hW.js "Toggle zen mode"` fails `capability_unavailable` / `unsupported_provider` (`selection_reason: target_unsupported`). The palette `m_a` (@10,888,9xx; items @10,909,900-10,918,150), its dialog `h_a` / `qZ` (@2,915,549), the cmdk parts `kI` / `L6` / `ff` / `$o` / `o5` (@2,916,821-2,919,434), the shortcut hint `Ss` (@2,117,989), the group ranking words and comparator (`ua`, `O_a`, @10,896,700), the tab filters (`R_a`, `I_a`), the settings index (`yUi` @10,869,819, `xUi` @10,871,526) and the workspace row `SUi` were read from the chunk by byte offset; the rendered palette was captured with `capture-browser-scenario` (`tools/side-by-side/shell-palette-states.mjs`).
+53. **No locator-scoped read of a capture.** The scenario returns the whole document as one `artifacts.dom.value.text` string (gap 43), with no way to ask for one element's subtree, attributes or text. Conductor's palette items, their order and group headings (`cmdk-group-heading`, `data-value`) were pulled out of that string with a regex outside REA.
+54. **The residual diff cannot be attributed** (gaps 5, 33, 38): after the fix all three palette states score 1.0% at t24, and `compare-web-screenshots` gives only the ratio, so whether the remainder is the different Home wordmark behind the dialog or the palette itself was judged by eye from the composed images, not from a region REA reported.
 
