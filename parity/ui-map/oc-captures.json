@@ -3,7 +3,7 @@
   "status": "captured",
   "steps": 1,
   "file": "oc/all-workspaces.png",
-  "png_sha256": "fed86088f9f8554836918ec051f5f9bab97b84467f00efee11f8516aaecc2518",
+  "png_sha256": "76f21f350d33850f56e17f2f0093ba022be810db5088db511dbb687ec43ee534",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -21,7 +21,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -37,7 +37,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Longyearbyen",
+    "Warsaw",
     "tide-web"
    ],
    "roles": [
@@ -55,7 +55,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -70,8 +70,8 @@
     "Today",
     "1",
     "T",
-    "Longyearbyen",
-    "now"
+    "Warsaw",
+    "1m"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -79,13 +79,13 @@
     820
    ]
   },
-  "ms": 4083
+  "ms": 10769
  },
  "create": {
   "status": "captured",
   "steps": 1,
   "file": "oc/create.png",
-  "png_sha256": "0ee39546564254d20d70a9493d790c6f814646cbbd0165bec0871a720e2958a5",
+  "png_sha256": "8fee1a06e2a321e50bff13e684fc2a525abba68ca5965ac880fd59a0ff8282af",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -103,7 +103,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -124,7 +124,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -179,7 +179,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -190,21 +190,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -257,13 +257,13 @@
     820
    ]
   },
-  "ms": 4098
+  "ms": 8833
  },
  "create-repo-picker": {
   "status": "captured",
   "steps": 2,
   "file": "oc/create-repo-picker.png",
-  "png_sha256": "76dc314a6a0775179a83143ec901b7297e08ab3a0271e1fdd0d0a34c2443027f",
+  "png_sha256": "4602160027b136c2f1a1e15d676c3f5609b483786ac34c8ed7acdc23b02dbbca",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -281,7 +281,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -302,7 +302,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -358,7 +358,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -369,21 +369,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -438,13 +438,13 @@
     820
    ]
   },
-  "ms": 4657
+  "ms": 10443
  },
  "dialog-clone-github": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-clone-github.png",
-  "png_sha256": "7aca916c6f7e4405cb48b1a1c3b3530210b4b762c5436134058b1022100108b2",
+  "png_sha256": "31ebe4dc451f1c6705736a3eed0fed256d44001719d1483cdccc62967725d752",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -462,7 +462,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -483,7 +483,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -529,7 +529,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -540,21 +540,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -608,13 +608,13 @@
     820
    ]
   },
-  "ms": 7536
+  "ms": 7297
  },
  "dialog-create-project": {
   "status": "captured",
   "steps": 3,
   "file": "oc/dialog-create-project.png",
-  "png_sha256": "13bf1d6eff3bb8d0f5b0e1cd561c97c82496af53710ecfe73556ca0f8f5de5e8",
+  "png_sha256": "5721547a92dcbfa86434ec9492598f8bf1a6eeee983a109bb47ea22d058fdc79",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -632,7 +632,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -653,7 +653,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -700,7 +700,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -711,21 +711,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -786,13 +786,13 @@
     820
    ]
   },
-  "ms": 6717
+  "ms": 7499
  },
  "dialog-keyboard-shortcuts": {
   "status": "captured",
   "steps": 1,
   "file": "oc/dialog-keyboard-shortcuts.png",
-  "png_sha256": "7d3c5176976f8ffc2347aef354fa7afe2fb10fb217f34aa40aafa275b65f4e43",
+  "png_sha256": "f2d12161b7130508cfa06ec1e1ef6e3cda2a8a022887fb4bdcb2e0244f60f700",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -810,7 +810,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -831,7 +831,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -879,7 +879,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -890,21 +890,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "Opus 4.8",
     "High",
     "Opus 4.8",
@@ -959,13 +959,13 @@
     820
    ]
   },
-  "ms": 4922
+  "ms": 6643
  },
  "dialog-rename-workspace": {
   "status": "captured",
   "steps": 2,
   "file": "oc/dialog-rename-workspace.png",
-  "png_sha256": "7ece1ea5df172d704a5d5ca206e18096b140cc8935ed99c5f9fe28b7c447339e",
+  "png_sha256": "3e7d77d7ed537d9234c257f41b3f94fd2541747bfcf6137eb5e101f4051e3927",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -983,7 +983,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1004,7 +1004,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -1029,10 +1029,12 @@
     "Hide terminal panel",
     "New terminal",
     "New terminal",
-    "Run"
+    "Run",
+    "Workspace actions"
    ],
    "roles": [
-    "dialog"
+    "dialog",
+    "menu"
    ],
    "texts": [
     "My Mac",
@@ -1046,7 +1048,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1062,21 +1064,21 @@
     "OK",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -1115,7 +1117,18 @@
     "Setup",
     "Run",
     "Run tests or a development server to test changes in this workspace",
-    "Add run script"
+    "Add run script",
+    "Mark as unread",
+    "R",
+    "Pin",
+    "P",
+    "Set status",
+    "Move to section",
+    "Rename",
+    "Copy link",
+    "⌘⇧C",
+    "Archive",
+    "⌘⇧A"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -1123,13 +1136,13 @@
     820
    ]
   },
-  "ms": 4379
+  "ms": 7229
  },
  "diff-entire-file": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-entire-file.png",
-  "png_sha256": "8b5f9ef6033472ed0dcc810ea75dd85fd0072d4c6a8391ad1779468ed33fc1bb",
+  "png_sha256": "2050988261ef3486a8951e1153c1dcf705c872808882b045d04c7328fac4695c",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1147,7 +1160,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1170,7 +1183,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1225,7 +1238,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1236,13 +1249,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
     "All changes",
     "×",
-    "longyearbyen",
+    "warsaw",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1297,13 +1310,13 @@
     820
    ]
   },
-  "ms": 6824
+  "ms": 9570
  },
  "diff-split": {
   "status": "captured",
   "steps": 3,
   "file": "oc/diff-split.png",
-  "png_sha256": "2d03d367253017d0803f66a2296878d5d84d8ae85a08b7bd29de56c7fa376661",
+  "png_sha256": "baa9fa36bb9bfc673bfdc3ad74ed5719d3b0edd1d4b8fd4c94f269eb9484a3a7",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1321,7 +1334,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1344,7 +1357,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1399,7 +1412,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1410,13 +1423,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
     "All changes",
     "×",
-    "longyearbyen",
+    "warsaw",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1471,13 +1484,13 @@
     820
    ]
   },
-  "ms": 6800
+  "ms": 11855
  },
  "diff-unified": {
   "status": "captured",
   "steps": 2,
   "file": "oc/diff-unified.png",
-  "png_sha256": "c1429f9cc3d0393780556025baad02907699f5e9dddec711042609973e30f19f",
+  "png_sha256": "9f75807083dccd3ebb6030b3a389a6cd199badeadbd73da7289fe47a8314c78a",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1495,7 +1508,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1518,7 +1531,7 @@
     "Workspace tabs",
     "Close All changes tab",
     "Close tab",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "src/lib/auth.ts",
     "Discard changes to src/lib/auth.ts",
@@ -1573,7 +1586,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1584,13 +1597,13 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
     "All changes",
     "×",
-    "longyearbyen",
+    "warsaw",
     "U",
     "src/lib/auth.ts",
     "+",
@@ -1645,13 +1658,13 @@
     820
    ]
   },
-  "ms": 6400
+  "ms": 9944
  },
  "first-run-onboarding": {
   "status": "captured",
   "steps": 0,
   "file": "oc/first-run-onboarding.png",
-  "png_sha256": "623c104ea9ef19cb3c40e0f3667a5e65ceaed20fcf80efbb1c3ce3338893d7a4",
+  "png_sha256": "8ca0a564c57dad3340669d6f8a7c0517ee716ddb8e31a195dd70733967722307",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1674,13 +1687,13 @@
     820
    ]
   },
-  "ms": 3955
+  "ms": 6157
  },
  "home": {
   "status": "captured",
   "steps": 1,
   "file": "oc/home.png",
-  "png_sha256": "fed86088f9f8554836918ec051f5f9bab97b84467f00efee11f8516aaecc2518",
+  "png_sha256": "c4275f4ffbebd8629c79b323552d616c0155b2db7b53769452f7b1e2cfa1125e",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1698,7 +1711,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1714,7 +1727,7 @@
     "Archived workspaces",
     "Workspaces",
     "Today",
-    "Longyearbyen",
+    "Warsaw",
     "tide-web"
    ],
    "roles": [
@@ -1732,7 +1745,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1747,7 +1760,7 @@
     "Today",
     "1",
     "T",
-    "Longyearbyen",
+    "Warsaw",
     "now"
    ],
    "url": "tauri://localhost",
@@ -1756,7 +1769,7 @@
     820
    ]
   },
-  "ms": 4065
+  "ms": 7186
  },
  "home-empty": {
   "status": "captured",
@@ -1802,13 +1815,13 @@
     820
    ]
   },
-  "ms": 4861
+  "ms": 7387
  },
  "login": {
   "status": "captured",
   "steps": 0,
   "file": "oc/login.png",
-  "png_sha256": "623c104ea9ef19cb3c40e0f3667a5e65ceaed20fcf80efbb1c3ce3338893d7a4",
+  "png_sha256": "06b73183f588660c8f9aa86a272eb550a54eaa783b011477fa683be99668fb7d",
   "dom": {
    "labels": [
     "Slide progress"
@@ -1831,13 +1844,13 @@
     820
    ]
   },
-  "ms": 3852
+  "ms": 5324
  },
  "menu-account": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-account.png",
-  "png_sha256": "5d5121ad6a5dc075fa02125c95ebdf46dce934e4ce9830dc56d9927a3f208806",
+  "png_sha256": "9ab404b5d65e2aab1695a8d8cc88884aa503a6dd2febde81a9a4345e82451556",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -1856,7 +1869,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -1877,7 +1890,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -1920,7 +1933,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -1931,21 +1944,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -1992,13 +2005,13 @@
     820
    ]
   },
-  "ms": 4134
+  "ms": 5717
  },
  "menu-help": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-help.png",
-  "png_sha256": "704f4858223ddd401148e14abda99b7c8095b35205224ecff03bf34fb1ec8341",
+  "png_sha256": "1b636c795ebe33cfc390017c99c7c2c9690f59540693853b0cd350febc7fc7c8",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2016,7 +2029,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2038,7 +2051,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2080,7 +2093,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2099,21 +2112,21 @@
     "OpenConductor v0.1.0",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2160,7 +2173,7 @@
     820
    ]
   },
-  "ms": 4093
+  "ms": 8271
  },
  "menu-model-picker": {
   "status": "step-failed",
@@ -2168,7 +2181,7 @@
   "failed_step": 1,
   "error": "timed out waiting for .composer button \"Opus 5\"",
   "file": "oc/menu-model-picker.png",
-  "png_sha256": "426eccc61c3ff5df8165592cb74f9f95e8280dc617fcb97b8906b630e78a2515",
+  "png_sha256": "b675861099466a686ff37f5ca297eaa7d48d80d94012763209dcf9d89a866bda",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2186,7 +2199,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -2208,7 +2221,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2248,7 +2261,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2259,21 +2272,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2320,13 +2333,13 @@
     820
    ]
   },
-  "ms": 13275
+  "ms": 14806
  },
  "menu-repo-actions": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-repo-actions.png",
-  "png_sha256": "770683ac491c8be96b306c86685e587a8abee5b1985c20d12c0d8c25a35317f4",
+  "png_sha256": "d4bed10f85ba1cbf7907e84a37fee9287f9a42d09709aafe4e35518bacaefbfb",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2344,7 +2357,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2365,7 +2378,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2406,10 +2419,12 @@
     "My workspaces",
     "tide-web",
     "Create workspace",
-    "Change icon…",
+    "Create from...",
+    "Configuration",
     "Hide repository",
+    "Remove repository",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2420,21 +2435,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2481,13 +2496,13 @@
     820
    ]
   },
-  "ms": 4357
+  "ms": 6603
  },
  "menu-workspace-context": {
   "status": "captured",
   "steps": 1,
   "file": "oc/menu-workspace-context.png",
-  "png_sha256": "35a0326af842e8a26bb510a2188733f2c40f5180c4e432662066b40c0e11ad3c",
+  "png_sha256": "195696f797f5581ba01603272dade6bf978fbd3ee158431e3cf7466bae14aa50",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2505,17 +2520,15 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
-    "Archive workspace",
     "Create workspace in tide-api",
     "Create workspace",
     "tide-api actions",
     "Create workspace in dotfiles",
     "Create workspace",
     "dotfiles actions",
-    "Workspace actions",
     "Help",
     "Settings",
     "Target branch main",
@@ -2528,7 +2541,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2553,7 +2566,8 @@
     "Hide terminal panel",
     "New terminal",
     "New terminal",
-    "Run"
+    "Run",
+    "Workspace actions"
    ],
    "roles": [
     "menu"
@@ -2570,7 +2584,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2579,6 +2593,62 @@
     "D",
     "dotfiles",
     "No workspaces",
+    "tide-web",
+    "/",
+    "warsaw",
+    "warsaw",
+    "→",
+    "main",
+    "warsaw",
+    "You’re in a new copy of",
+    "tide-web",
+    "called",
+    "warsaw",
+    "Branched",
+    "warsaw",
+    "from",
+    "main",
+    "Created",
+    "warsaw",
+    "⌘L",
+    "to focus",
+    "Opus 4.8",
+    "High",
+    "All files",
+    "Changes",
+    "2",
+    "Checks",
+    "Review",
+    "All changes",
+    "Uncommitted",
+    "0",
+    "/",
+    "2",
+    "viewed",
+    "Refresh",
+    "2",
+    "files",
+    "changed",
+    "+",
+    "5",
+    "-",
+    "0",
+    "README.md",
+    "M",
+    "+",
+    "2",
+    "-",
+    "0",
+    "src/lib/auth.ts",
+    "U",
+    "+",
+    "3",
+    "-",
+    "0",
+    "Setup",
+    "Run",
+    "Run tests or a development server to test changes in this workspace",
+    "Add run script",
     "Mark as unread",
     "R",
     "Pin",
@@ -2589,63 +2659,7 @@
     "Copy link",
     "⌘⇧C",
     "Archive",
-    "⌘⇧A",
-    "tide-web",
-    "/",
-    "longyearbyen",
-    "longyearbyen",
-    "→",
-    "main",
-    "longyearbyen",
-    "You’re in a new copy of",
-    "tide-web",
-    "called",
-    "longyearbyen",
-    "Branched",
-    "longyearbyen",
-    "from",
-    "main",
-    "Created",
-    "longyearbyen",
-    "⌘L",
-    "to focus",
-    "Opus 4.8",
-    "High",
-    "All files",
-    "Changes",
-    "2",
-    "Checks",
-    "Review",
-    "All changes",
-    "Uncommitted",
-    "0",
-    "/",
-    "2",
-    "viewed",
-    "Refresh",
-    "2",
-    "files",
-    "changed",
-    "+",
-    "5",
-    "-",
-    "0",
-    "README.md",
-    "M",
-    "+",
-    "2",
-    "-",
-    "0",
-    "src/lib/auth.ts",
-    "U",
-    "+",
-    "3",
-    "-",
-    "0",
-    "Setup",
-    "Run",
-    "Run tests or a development server to test changes in this workspace",
-    "Add run script"
+    "⌘⇧A"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2653,13 +2667,13 @@
     820
    ]
   },
-  "ms": 4505
+  "ms": 5724
  },
  "menu-workspace-status": {
   "status": "captured",
   "steps": 2,
   "file": "oc/menu-workspace-status.png",
-  "png_sha256": "9bc199de7c85bc15192123a61a5314388825b89b03534facce262e5ca8eb6f0a",
+  "png_sha256": "d6745267d94c1e9f53305b258c20f795a4cd3359f9d457533dcc4b9ec8a30672",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2677,7 +2691,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2686,8 +2700,6 @@
     "Create workspace in dotfiles",
     "Create workspace",
     "dotfiles actions",
-    "Workspace actions",
-    "Set status",
     "Help",
     "Settings",
     "Target branch main",
@@ -2700,7 +2712,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2725,7 +2737,9 @@
     "Hide terminal panel",
     "New terminal",
     "New terminal",
-    "Run"
+    "Run",
+    "Workspace actions",
+    "Set status"
    ],
    "roles": [
     "menu",
@@ -2743,7 +2757,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2752,40 +2766,23 @@
     "D",
     "dotfiles",
     "No workspaces",
-    "Mark as unread",
-    "R",
-    "Pin",
-    "P",
-    "Set status",
-    "Backlog",
-    "In progress",
-    "✓",
-    "In review",
-    "Done",
-    "Canceled",
-    "Move to section",
-    "Rename",
-    "Copy link",
-    "⌘⇧C",
-    "Archive",
-    "⌘⇧A",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -2824,7 +2821,23 @@
     "Setup",
     "Run",
     "Run tests or a development server to test changes in this workspace",
-    "Add run script"
+    "Add run script",
+    "Mark as unread",
+    "R",
+    "Pin",
+    "P",
+    "Set status",
+    "Move to section",
+    "Rename",
+    "Copy link",
+    "⌘⇧C",
+    "Archive",
+    "⌘⇧A",
+    "Backlog",
+    "In progress",
+    "In review",
+    "Done",
+    "Canceled"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -2832,7 +2845,7 @@
     820
    ]
   },
-  "ms": 5063
+  "ms": 6565
  },
  "needs-permission": {
   "status": "no-equivalent",
@@ -2842,7 +2855,7 @@
   "status": "captured",
   "steps": 0,
   "file": "oc/onboarding-signed-out.png",
-  "png_sha256": "29b735017815a3724acd200e703440cf6eab351fd4972d631648a92fcaccd487",
+  "png_sha256": "8706f002859b622c25e1291b3f768c91fe82913b844d292630d9a32bdfb88230",
   "dom": {
    "labels": [
     "Slide progress"
@@ -2865,13 +2878,13 @@
     820
    ]
   },
-  "ms": 3885
+  "ms": 6360
  },
  "palette-all": {
   "status": "captured",
   "steps": 1,
   "file": "oc/palette-all.png",
-  "png_sha256": "fea89f81e387f58cf00a61fc2b7df1006e48f18ab8777888f2cb63ec906227d0",
+  "png_sha256": "e602a67df7aee7bf1ad4ff26084e7fd38f211296e99bdc760f42e12345d5674e",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -2889,7 +2902,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -2910,7 +2923,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -2959,7 +2972,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -2970,21 +2983,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3030,8 +3043,8 @@
     "Actions",
     "Settings",
     "Recent workspaces",
-    "longyearbyen",
-    "tide-web · longyearbyen",
+    "warsaw",
+    "tide-web · warsaw",
     "Workspace actions",
     "Archive workspace",
     "⌘⇧A",
@@ -3056,13 +3069,13 @@
     820
    ]
   },
-  "ms": 5112
+  "ms": 6168
  },
  "palette-search": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-search.png",
-  "png_sha256": "a1778123a27aee3bb314491537470e8ff229692c5c722713b1f603623d7689d3",
+  "png_sha256": "8e6e1322380e1f7820018d1b4668e75eb46543b5f5cfdc076b87bfd4dcb4e6dc",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3080,7 +3093,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3101,7 +3114,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -3146,7 +3159,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -3157,21 +3170,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3224,13 +3237,13 @@
     820
    ]
   },
-  "ms": 5968
+  "ms": 6338
  },
  "palette-workspaces": {
   "status": "captured",
   "steps": 2,
   "file": "oc/palette-workspaces.png",
-  "png_sha256": "67ea4dc506840d7c8ce4c2156f83d110b62ae0b3d1f2bfd13d1b71bb3359b383",
+  "png_sha256": "de78f885d0f877796571a6a6b8f804ebd13c73ffa0ec265448a268dd5412cadd",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -3248,7 +3261,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -3269,7 +3282,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -3316,7 +3329,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -3327,21 +3340,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -3387,8 +3400,8 @@
     "Actions",
     "Settings",
     "Workspaces",
-    "longyearbyen",
-    "tide-web · longyearbyen"
+    "warsaw",
+    "tide-web · warsaw"
    ],
    "url": "tauri://localhost",
    "viewport": [
@@ -3396,7 +3409,7 @@
     820
    ]
   },
-  "ms": 5110
+  "ms": 6005
  },
  "route-cloud-collab-onboarding": {
   "status": "no-equivalent",
@@ -3485,13 +3498,13 @@
     820
    ]
   },
-  "ms": 4969
+  "ms": 9721
  },
  "settings-advanced": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-advanced.png",
-  "png_sha256": "4dd2da9d7f4740e5d5ec3c7db85d22b82d0f80f37cde17d55cb5c5bbd6382cb8",
+  "png_sha256": "3179a7e5249e32f15b904cb7c2430f0f2af78159db3f8723d505104e4786b108",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3577,13 +3590,13 @@
     820
    ]
   },
-  "ms": 4980
+  "ms": 7509
  },
  "settings-appearance": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-appearance.png",
-  "png_sha256": "0b9a96d4bbb23e0f3fe98f311b28a263773ec4ab62633ea7cb11e72743398be0",
+  "png_sha256": "46d0ff38441b2586c839bff025c16bf7b15a3575d16ffa8086dca2f19cb6cf30",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3675,7 +3688,7 @@
     820
    ]
   },
-  "ms": 4984
+  "ms": 10962
  },
  "settings-cloud-setup": {
   "status": "no-equivalent",
@@ -3736,13 +3749,13 @@
     820
    ]
   },
-  "ms": 5468
+  "ms": 6773
  },
  "settings-experimental": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-experimental.png",
-  "png_sha256": "945803ee6b5ca0ac2e45d04ee65804f14ff000fcf084aa2f42b026f3e5b5b7c0",
+  "png_sha256": "c03034a6b31c4c43152005f6dbde132066ea1b2df8531a04760a77d88d596941",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3844,13 +3857,13 @@
     820
    ]
   },
-  "ms": 4973
+  "ms": 8892
  },
  "settings-general": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-general.png",
-  "png_sha256": "35712dd75ba7bc0b02d617f84e243436c634061ff8ab902c35517d27d6f2e38f",
+  "png_sha256": "77169ab6ed1c36b682f8654320540034d5ac3fbd5e2123aa62f9a079a45018b0",
   "dom": {
    "labels": [
     "Settings pages",
@@ -3940,13 +3953,13 @@
     820
    ]
   },
-  "ms": 4953
+  "ms": 7402
  },
  "settings-git": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-git.png",
-  "png_sha256": "c4cffacfade510fc51a9878a225cb4575415b2e1d6e02eacdab625f8632f6c87",
+  "png_sha256": "882455fbb06a52c1692c1241320b0beac0910fbbe205aa75af4eb9163a29dd6a",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4022,7 +4035,7 @@
     820
    ]
   },
-  "ms": 5025
+  "ms": 7183
  },
  "settings-internal": {
   "status": "no-equivalent",
@@ -4859,13 +4872,13 @@
     820
    ]
   },
-  "ms": 4931
+  "ms": 8576
  },
  "settings-models": {
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-models.png",
-  "png_sha256": "a938de44ef6bacaa74ff9bd7367267e4615d6ed859cff960c2f5eaa49f3b02ba",
+  "png_sha256": "43b4f2e403c892e564148477c99c1ffba17420a2f1301891f6aaf4735bf38814",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4873,18 +4886,52 @@
     "tide-web",
     "tide-api",
     "dotfiles",
-    "Default model",
-    "Default effort",
-    "Fast mode",
-    "Codex personality for new chats",
-    "Concise, task-focused, and direct",
+    "Loadout",
+    "Sign in to share a loadout",
+    "Opus 4.8, High",
+    "Change agent",
+    "Claude Code",
+    "Add Fable 5.1 to loadout",
+    "Fable 5.1",
+    "Add Fable 5 to loadout",
+    "Fable 5",
+    "Add Opus 5.5 to loadout",
+    "Opus 5.5",
+    "Add Opus 5 to loadout",
+    "Opus 5",
+    "Add Opus 4.8 1M to loadout",
+    "Opus 4.8 1M",
+    "Add Opus 4.7 1M to loadout",
+    "Opus 4.7 1M",
+    "Add Opus 4.6 1M to loadout",
+    "Opus 4.6 1M",
+    "Add Sonnet 5.5 to loadout",
+    "Sonnet 5.5",
+    "Add Sonnet 5 1M to loadout",
+    "Sonnet 5 1M",
+    "Add Sonnet 4.6 1M to loadout",
+    "Sonnet 4.6 1M",
+    "Add Sonnet 4.6 to loadout",
+    "Sonnet 4.6",
+    "Add Haiku 4.5 to loadout",
+    "Haiku 4.5",
+    "Codex",
+    "Add GPT-5.6 Sol to loadout",
+    "GPT-5.6 Sol",
+    "Add GPT-5.6 Terra to loadout",
+    "GPT-5.6 Terra",
+    "Add GPT-5.6 Luna to loadout",
+    "GPT-5.6 Luna",
+    "Add GPT-5.5 to loadout",
+    "GPT-5.5",
+    "Add GPT-5.4 to loadout",
+    "GPT-5.4",
+    "Cursor",
+    "OpenCode",
+    "Codex personality",
     "Claude output style",
-    "Review model",
-    "Review effort",
-    "Review fast mode",
-    "Default to plan mode in new chats",
-    "OpenCode models",
-    "anthropic/claude-sonnet-4-5"
+    "Review model: Opus 5",
+    "Default to plan mode in new chats"
    ],
    "roles": [],
    "texts": [
@@ -4910,18 +4957,55 @@
     "Experimental",
     "Advanced",
     "Default models",
-    "Default model",
-    "Model for new chats",
-    "Fast",
-    "Codex personality for new chats",
-    "Style to use when a new chat starts with a Codex model",
+    "Loadout",
+    "Choose which models you want to use",
+    "Share",
+    "Opus 4.8",
+    "High",
+    "1",
+    "DEFAULT",
+    "DROP MODEL HERE",
+    "2",
+    "EMPTY",
+    "3",
+    "EMPTY",
+    "4",
+    "EMPTY",
+    "5",
+    "Claude Code",
+    "Fable 5.1",
+    "Fable 5",
+    "Opus 5.5",
+    "Opus 5",
+    "Opus 4.8 1M",
+    "Opus 4.7 1M",
+    "Opus 4.6 1M",
+    "Sonnet 5.5",
+    "Sonnet 5 1M",
+    "Sonnet 4.6 1M",
+    "Sonnet 4.6",
+    "Haiku 4.5",
+    "Codex",
+    "GPT-5.6 Sol",
+    "GPT-5.6 Terra",
+    "GPT-5.6 Luna",
+    "GPT-5.5",
+    "GPT-5.4",
+    "Cursor",
+    "Configure",
+    "Cursor",
+    "OpenCode",
+    "Configure",
+    "OpenCode",
+    "Codex personality",
     "Claude output style",
-    "Choose which output style to apply to new chats. Existing chats do not change.",
+    "Choose which",
+    "output style",
+    "to apply to new chats. Existing chats do not change.",
     "Review model",
-    "Fast",
-    "Default to plan mode in new chats",
-    "OpenCode models",
-    "Models from your OpenCode providers to show in model pickers, as provider/model, comma-separated."
+    "Opus 5",
+    "High",
+    "Default to plan mode in new chats"
    ],
    "url": "tauri://localhost/settings/user/models",
    "viewport": [
@@ -4929,7 +5013,7 @@
     820
    ]
   },
-  "ms": 5117
+  "ms": 9411
  },
  "settings-org-computer": {
   "status": "no-equivalent",
@@ -4967,7 +5051,7 @@
   "status": "captured",
   "steps": 3,
   "file": "oc/settings-providers.png",
-  "png_sha256": "f882361fe490b1e8fbd431818c0b24e581ed323a8f20b075b1557f6733692a04",
+  "png_sha256": "0619ed4c7adfb0ed54993be8e584a7473aa73b78cf94f02dca8b0a4a7565ebfe",
   "dom": {
    "labels": [
     "Settings pages",
@@ -4975,28 +5059,14 @@
     "tide-web",
     "tide-api",
     "dotfiles",
+    "Agents",
     "Claude Code",
-    "Claude Code provider",
     "Use Claude Code with Chrome",
     "Claude Code executable path",
     "/usr/local/bin/claude",
     "Browse for executable",
     "Browse for executable",
-    "Claude settings",
-    "Codex",
-    "Codex provider",
-    "Codex personality for new chats",
-    "Codex executable path",
-    "/usr/local/bin/codex",
-    "Browse for executable",
-    "Browse for executable",
-    "Codex config",
-    "Cursor",
-    "Cursor provider",
-    "Cursor API key",
-    "Not set",
-    "OpenCode",
-    "OpenCode provider"
+    "Claude settings"
    ],
    "roles": [],
    "texts": [
@@ -5023,9 +5093,16 @@
     "Advanced",
     "Agents",
     "Claude Code",
-    "Using Claude Code login",
-    "Provider",
-    "Save",
+    "Codex",
+    "Cursor",
+    "OpenCode",
+    "Authentication",
+    "CLI",
+    "API key",
+    "CLI not authenticated",
+    "Refresh",
+    "Run",
+    "claude /login",
     "Use Claude Code with Chrome",
     "Allow Claude Code to control your Chrome browser. To use this feature, first install the",
     "Claude Code Chrome extension",
@@ -5036,28 +5113,7 @@
     "Override the bundled Claude Code executable with a custom one. Leave empty to use the bundled version (recommended).",
     "Claude settings",
     "~/.claude/settings.json",
-    "Open in",
-    "Codex",
-    "Using ChatGPT (Codex login)",
-    "Provider",
-    "Save",
-    "Codex personality for new chats",
-    "Style to use when a new chat starts with a Codex model",
-    "Codex executable path",
-    "Override the bundled Codex executable with a custom one. Leave empty to use the bundled version (recommended).",
-    "Codex config",
-    "~/.codex/config.toml",
-    "Open in",
-    "Cursor",
-    "Cursor API key: cursor_api_key is not set",
-    "Provider",
-    "Cursor API key",
-    "Save",
-    "OpenCode",
-    "Using OpenCode login",
-    "Provider",
-    "Save",
-    "Advanced"
+    "Open in"
    ],
    "url": "tauri://localhost/settings/user/providers",
    "viewport": [
@@ -5065,13 +5121,13 @@
     820
    ]
   },
-  "ms": 5469
+  "ms": 9029
  },
  "settings-repo-actions": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-actions.png",
-  "png_sha256": "4c5a05eff8725648d6cdfb70be812318441aa5ed0d2831114fd3d7fbc4dcfe60",
+  "png_sha256": "d90304cb6b30cb0feea60cf80c25b8fb513fc3be7a02e9caccac20d81146238a",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5133,7 +5189,7 @@
     820
    ]
   },
-  "ms": 5796
+  "ms": 8251
  },
  "settings-repo-environment": {
   "status": "captured",
@@ -5195,7 +5251,7 @@
     820
    ]
   },
-  "ms": 6030
+  "ms": 7020
  },
  "settings-repo-git": {
   "status": "captured",
@@ -5270,13 +5326,13 @@
     820
    ]
   },
-  "ms": 5464
+  "ms": 7353
  },
  "settings-repo-misc": {
   "status": "captured",
   "steps": 4,
   "file": "oc/settings-repo-misc.png",
-  "png_sha256": "d587bab5ae7b21fbacfb7e0b6389a7126ff4914c3159518fc354674eaa97d245",
+  "png_sha256": "af35e410b811da41ab4f80a52cd7adee6dc0d8e63dbb4e9433f70cfad6256b42",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5285,10 +5341,10 @@
     "tide-api",
     "dotfiles",
     "Change repository icon",
-    "/tmp/oc-uimap-run-463f/repos/tide-web",
+    "/tmp/oc-uimap-run/repos/tide-web",
     "Open in...",
     "Open in...",
-    "/tmp/oc-uimap-run-463f/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web",
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web",
     "Open in...",
     "Open in...",
     "Preview URL name",
@@ -5335,11 +5391,11 @@
     "T",
     "Root path",
     "Do not move or delete this directory. Instead, remove the repository in OpenConductor.",
-    "/tmp/oc-uimap-run-463f/repos/",
+    "/tmp/oc-uimap-run/repos/",
     "tide-web",
     "Workspaces path",
     "Do not move or delete the workspace subdirectories. Instead, archive workspaces in OpenConductor.",
-    "/tmp/oc-uimap-run-463f/home/.local/share/com.reasonmachines.openconductor/workspaces/",
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/",
     "tide-web",
     "Preview URLs",
     "Set the terminal panel's Open URLs. The first URL is the default; additional URLs appear in its menu. Supports OpenConductor variables such as $CONDUCTOR_PORT. Use $((CONDUCTOR_PORT + 1)) through $((CONDUCTOR_PORT + 9)) for other allocated ports. Leave blank to detect a URL from output.",
@@ -5357,13 +5413,13 @@
     820
    ]
   },
-  "ms": 6232
+  "ms": 8500
  },
  "settings-repo-misc-lower": {
   "status": "captured",
   "steps": 5,
   "file": "oc/settings-repo-misc-lower.png",
-  "png_sha256": "2bdb4961de0b34b858ef3ee5e59e167eebd34e28efe25a8f895f192837e17203",
+  "png_sha256": "38d5c59ea767ab2548bbe5102df6eefa8042cfed4bd2416574bb43f82be0297e",
   "dom": {
    "labels": [
     "Settings pages",
@@ -5372,10 +5428,10 @@
     "tide-api",
     "dotfiles",
     "Change repository icon",
-    "/tmp/oc-uimap-run-463f/repos/tide-web",
+    "/tmp/oc-uimap-run/repos/tide-web",
     "Open in...",
     "Open in...",
-    "/tmp/oc-uimap-run-463f/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web",
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/tide-web",
     "Open in...",
     "Open in...",
     "Preview URL name",
@@ -5422,11 +5478,11 @@
     "T",
     "Root path",
     "Do not move or delete this directory. Instead, remove the repository in OpenConductor.",
-    "/tmp/oc-uimap-run-463f/repos/",
+    "/tmp/oc-uimap-run/repos/",
     "tide-web",
     "Workspaces path",
     "Do not move or delete the workspace subdirectories. Instead, archive workspaces in OpenConductor.",
-    "/tmp/oc-uimap-run-463f/home/.local/share/com.reasonmachines.openconductor/workspaces/",
+    "/tmp/oc-uimap-run/home/.local/share/com.reasonmachines.openconductor/workspaces/",
     "tide-web",
     "Preview URLs",
     "Set the terminal panel's Open URLs. The first URL is the default; additional URLs appear in its menu. Supports OpenConductor variables such as $CONDUCTOR_PORT. Use $((CONDUCTOR_PORT + 1)) through $((CONDUCTOR_PORT + 9)) for other allocated ports. Leave blank to detect a URL from output.",
@@ -5444,7 +5500,7 @@
     820
    ]
   },
-  "ms": 7017
+  "ms": 8113
  },
  "settings-repo-scripts": {
   "status": "captured",
@@ -5505,7 +5561,7 @@
     820
    ]
   },
-  "ms": 5492
+  "ms": 7433
  },
  "settings-search": {
   "status": "step-failed",
@@ -5603,7 +5659,7 @@
     820
    ]
   },
-  "ms": 13696
+  "ms": 15292
  },
  "settings-terminal": {
   "status": "step-failed",
@@ -5701,7 +5757,7 @@
     820
    ]
   },
-  "ms": 12736
+  "ms": 14332
  },
  "sidebar-after-archive": {
   "status": "captured",
@@ -5764,13 +5820,13 @@
     820
    ]
   },
-  "ms": 5463
+  "ms": 8043
  },
  "toast-copied-link": {
   "status": "captured",
   "steps": 2,
   "file": "oc/toast-copied-link.png",
-  "png_sha256": "0096432157fe0456124bbf9d192004608562d7c46c5dc68dbdd1390a3c7a696a",
+  "png_sha256": "b5c5284b40cf5810cb177cd4ec90088f45fb87929119f78beff89acae0533adc",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5788,7 +5844,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Create workspace in tide-api",
@@ -5809,7 +5865,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -5852,7 +5908,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -5863,21 +5919,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -5925,13 +5981,13 @@
     820
    ]
   },
-  "ms": 4133
+  "ms": 6729
  },
  "workspace-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-chat.png",
-  "png_sha256": "7182953b9203783bb35cac1e188013017bec7d05d226bf02d1dfe6cffd6d3e71",
+  "png_sha256": "9b0458d18bd8dc09ce0f1c70bcbac233e28cca8762b7cc5f91d5d2ec1f95e011",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -5949,7 +6005,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -5971,7 +6027,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6011,7 +6067,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -6022,21 +6078,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6083,13 +6139,13 @@
     820
    ]
   },
-  "ms": 4964
+  "ms": 13307
  },
  "workspace-new-chat": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-new-chat.png",
-  "png_sha256": "7182953b9203783bb35cac1e188013017bec7d05d226bf02d1dfe6cffd6d3e71",
+  "png_sha256": "9b0458d18bd8dc09ce0f1c70bcbac233e28cca8762b7cc5f91d5d2ec1f95e011",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6107,7 +6163,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6129,7 +6185,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6169,7 +6225,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -6180,21 +6236,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6241,13 +6297,13 @@
     820
    ]
   },
-  "ms": 5331
+  "ms": 8895
  },
  "workspace-tool-calls": {
   "status": "captured",
   "steps": 1,
   "file": "oc/workspace-tool-calls.png",
-  "png_sha256": "7182953b9203783bb35cac1e188013017bec7d05d226bf02d1dfe6cffd6d3e71",
+  "png_sha256": "9b0458d18bd8dc09ce0f1c70bcbac233e28cca8762b7cc5f91d5d2ec1f95e011",
   "dom": {
    "labels": [
     "Resize sidebar",
@@ -6265,7 +6321,7 @@
     "Create workspace in tide-web",
     "Create workspace",
     "tide-web actions",
-    "Longyearbyen · longyearbyen · Local workspace",
+    "Warsaw · warsaw · Local workspace",
     "Local workspace",
     "Switch with Command-1",
     "Archive workspace",
@@ -6287,7 +6343,7 @@
     "Toggle right sidebar ⌥⌘B",
     "Chat",
     "Workspace tabs",
-    "longyearbyen",
+    "warsaw",
     "New chat, same files ⌘T",
     "composer",
     "Ask to make changes, @mention files, run /commands",
@@ -6327,7 +6383,7 @@
     "T",
     "tide-web",
     "1",
-    "Longyearbyen",
+    "Warsaw",
     "+",
     "5",
     "T",
@@ -6338,21 +6394,21 @@
     "No workspaces",
     "tide-web",
     "/",
-    "longyearbyen",
-    "longyearbyen",
+    "warsaw",
+    "warsaw",
     "→",
     "main",
-    "longyearbyen",
+    "warsaw",
     "You’re in a new copy of",
     "tide-web",
     "called",
-    "longyearbyen",
+    "warsaw",
     "Branched",
-    "longyearbyen",
+    "warsaw",
     "from",
     "main",
     "Created",
-    "longyearbyen",
+    "warsaw",
     "⌘L",
     "to focus",
     "Opus 4.8",
@@ -6399,6 +6455,6 @@
     820
    ]
   },
-  "ms": 5340
+  "ms": 10923
  }
 }

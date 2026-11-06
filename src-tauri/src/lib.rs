@@ -45,6 +45,7 @@ mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
 mod sidebar_section_commands;
+pub mod sidebar_transparency;
 mod agent_settings_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
@@ -289,6 +290,8 @@ pub fn run() {
             // Claude sessions load the bundled agent skill (Resources/conductor-skill).
             agent::claude_cli::set_bundled_plugin_dir(&app.path().resource_dir()?);
             let db = db::open(&data_dir)?;
+            // Conductor's `startup_sidebar_transparency_enabled`: read once, before the window exists.
+            let transparent_window = sidebar_transparency::startup_enabled(&db.0);
             app.manage(db::open_cache(&data_dir));
             spotlight_commands::migrate_legacy_setting(&db);
             app.manage(terminal_commands::history_state(&data_dir));
@@ -340,6 +343,10 @@ pub fn run() {
             app.manage(scripts);
             app.manage(spotlight);
             spawn_push_upstream_backfill(app.handle().clone());
+            // tauri.conf.json leaves the main window to us (`"create": false`) so it can be
+            // created transparent when Sidebar transparency was on at launch. Last, so every
+            // managed state exists before the webview loads.
+            sidebar_transparency::create_main_window(app.handle(), transparent_window)?;
             e2e::install(app.handle());
             Ok(())
         })
@@ -482,6 +489,7 @@ pub fn run() {
             app_prefs::commands::client_instance_id,
             app_prefs::commands::graphite_cli_installed,
             resource_usage::commands::get_resource_usage,
+            sidebar_transparency::update_window_vibrancy,
             local_account::local_account,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
