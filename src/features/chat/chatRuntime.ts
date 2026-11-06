@@ -24,7 +24,8 @@
 // `session-status` event, so the sidebar and Home show a workspace's agent
 // from the moment the app starts. A backend that asks the user for
 // permission mid-turn reports it through `PermissionEvents`; the chat lists
-// the request and its status is `needs_user_permission` until it is answered.
+// the request and its status is `needs_user_permission` (a question:
+// `needs_user_input`, `isQuestion`) until it is answered.
 //
 // Pure apart from what it is given: the backend, and the host's `invoke`,
 // `recordTurnChanges` and `localStorage`, so chatRuntime.test.ts runs it with
@@ -58,6 +59,17 @@ export interface PermissionPrompt {
   requestId: string;
   title: string;
   options: PermissionOption[];
+}
+
+/**
+ * Conductor's ACP client asks a request as a question, not a tool approval,
+ * when it offers two or more allow options and no reject option (`cX8` in
+ * conductor-runtime.js @1,641,185): AskUserQuestion's `needs_user_input`,
+ * then `_p`. Every other request is a tool approval (`needs_user_permission`).
+ */
+export function isQuestion(p: PermissionPrompt): boolean {
+  const allows = p.options.filter((o) => o.kind === "allow_once" || o.kind === "allow_always");
+  return allows.length >= 2 && !p.options.some((o) => o.kind === "reject_once" || o.kind === "reject_always");
 }
 
 /** How a backend reports permission requests opening and closing. */
@@ -441,7 +453,13 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     if (!c.permissions.some((r) => r.requestId === requestId)) return;
     c.permissions = c.permissions.filter((r) => r.requestId !== requestId);
     notify(c);
-    if (c.permissions.length === 0) setQueue(c, Q.permissionAnswered(c.queue));
+    syncRequests(c);
+  }
+
+  /** The chat's status follows its open requests (queue.ts `requestsOpen`). */
+  function syncRequests(c: Chat<Config>) {
+    const questions = c.permissions.filter(isQuestion).length;
+    setQueue(c, Q.requestsOpen(c.queue, c.permissions.length - questions, questions));
   }
 
   const permissionEvents: PermissionEvents = {
@@ -449,11 +467,14 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       const c = chats.get(chatId);
       if (!c) return;
       const fresh = !c.permissions.some((r) => r.requestId === request.requestId);
+      const prev = c.queue.status;
       c.permissions = [...c.permissions.filter((r) => r.requestId !== request.requestId), request];
       notify(c);
-      setQueue(c, Q.permissionRequested(c.queue));
-      // A new request is a wait on the user (Conductor's `_p` on needs_user_permission).
-      if (fresh) chatWantsAttention(chatId);
+      syncRequests(c);
+      // A new request is a wait on the user (Conductor's `_p`). A question that
+      // moved the chat into needs_user_input was already signalled by
+      // reportChatStatus (`enteredWait`), so it is not signalled twice.
+      if (fresh && !enteredWait(prev, c.queue.status)) chatWantsAttention(chatId);
     },
     resolved(chatId, requestId) {
       const c = chats.get(chatId);
