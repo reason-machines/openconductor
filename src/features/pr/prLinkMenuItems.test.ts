@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { prLinkMenu, prUrlFor } from "./prLinkMenu.ts";
+import { prLinkMenu, prUrlFor } from "./prLinkMenuItems.ts";
 
 const URL = "https://github.com/acme/web/pull/42";
 

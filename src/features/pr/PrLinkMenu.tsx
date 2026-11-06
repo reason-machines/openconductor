@@ -1,4 +1,4 @@
-// Right-click menu on a PR number (Conductor's `w_i`, items in prLinkMenu.ts):
+// Right-click menu on a PR number (Conductor's `w_i`, items in prLinkMenuItems.ts):
 // the header PR pill and the "#N" on the PR tab. `usePrLinkMenu` gives the
 // trigger's onContextMenu and the menu element to render beside it.
 import { useCallback, useEffect, useState, type MouseEvent } from "react";
@@ -10,7 +10,7 @@ import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { getSettings } from "../../settings/api.ts";
 import { enumPref } from "../../settings/prefs.ts";
 import { copyText } from "../openIn/apps.ts";
-import { prLinkMenu, type PrOpenTarget } from "./prLinkMenu.ts";
+import { prLinkMenu, type PrOpenTarget } from "./prLinkMenuItems.ts";
 
 type Notify = (kind: "info" | "error", message: string) => void;
 
