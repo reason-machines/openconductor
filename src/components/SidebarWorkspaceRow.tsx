@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState, type Dispatch, type MouseEvent, type 
 import type { AppState, Workspace } from "../state/types";
 import type { Action } from "../state/store";
 import { RowStatusIcon } from "./RowStatusIcon";
-import { rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
+import { rowGitStatus, rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
+import { StatusMatrix } from "./StatusMatrix";
+import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { labelTargetBranch, workspaceLabel } from "./sidebarLabel";
 import { useBranchPrefix } from "./useBranchPrefix";
 import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
@@ -75,6 +77,8 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
   const session = useWorkspaceAgentStatus(ws);
   const status = rowStatus({ workspaceState: ws.state, session, pr: ws.pr, hasRemote });
   const statusLabel = rowStatusLabel(status);
+  // Settings › Experimental › Workspace status matrix: the matrix with the PR's status and unread folded in (`hWt`).
+  const matrix = useStatusMatrix();
   return (
     <div className="sb-ws-row">
       <button
@@ -97,12 +101,17 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
             className="sb-ws-status"
             data-testid="workspace-status-icon"
             data-status={status}
-            data-color={rowStatusColor(status)}
-            role="img"
-            aria-label={statusLabel}
+            data-color={matrix ? undefined : rowStatusColor(status)}
+            data-matrix={matrix || undefined}
+            role={matrix ? undefined : "img"}
+            aria-label={matrix ? undefined : statusLabel}
             aria-hidden={hint || undefined}
           >
-            <RowStatusIcon status={status} />
+            {matrix ? (
+              <StatusMatrix status={status} gitStatus={rowGitStatus({ pr: ws.pr, hasRemote })} hasUnread={isWorkspaceUnread(ws)} />
+            ) : (
+              <RowStatusIcon status={status} />
+            )}
           </span>
           {shortcutNumber !== undefined && (
             <span className="sb-ws-hint" aria-label={hintLabel(shortcutNumber)} aria-hidden={!hint} data-state={hint ? "visible" : "hidden"}>

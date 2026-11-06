@@ -302,6 +302,21 @@ function load(): AppState {
     const s = demoState();
     if (params.get("view") === "home") s.selection = { kind: "home" };
     if (params.get("view") === "root") s.selection = { kind: "root" };
+    if (params.get("view") === "dashboard") {
+      // The board's columns: PR workspaces derive in-review / done (Conductor's `XDt`), one is in the backlog.
+      const derived: Record<string, Workspace["derivedStatus"]> = { "quiet-harbor": "in-review", "copper-wren": "in-review", "misty-larch": "done" };
+      s.repos = s.repos.map((r) => ({
+        ...r,
+        workspaces: r.workspaces.map((w, i) => ({
+          ...w,
+          derivedStatus: derived[w.name],
+          manualStatus: w.name === "brisk-otter" ? "backlog" : undefined,
+          updatedAt: Date.now() - (i + 1) * 37 * 60_000,
+        })),
+      }));
+      const repo = params.get("repo");
+      s.selection = repo ? { kind: "dashboard", repo } : { kind: "dashboard" };
+    }
     if (params.get("sidebar") === "0") s.sidebarVisible = false;
     return s;
   }
@@ -310,15 +325,15 @@ function load(): AppState {
     // First run after the switch: keep the selection and layout the old shell state had.
     const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
     const repos = prefs.collapsed.map((id) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed: true }));
-    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname);
+    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname, window.location.search);
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return startSelection(JSON.parse(raw) as AppState, window.location.pathname);
+    if (raw) return startSelection(JSON.parse(raw) as AppState, window.location.pathname, window.location.search);
   } catch {
     /* ignore corrupt state */
   }
-  return startSelection(EMPTY, window.location.pathname);
+  return startSelection(EMPTY, window.location.pathname, window.location.search);
 }
 
 /** UI prefs carried over from the pre-database shell state, as `PREFS_KEY` JSON. */

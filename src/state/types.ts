@@ -80,7 +80,12 @@ export interface Repo {
  * start and when the open workspace goes away. `home` is its `/all-workspaces`
  * route, the workspace list that the sidebar Home row and nav.home open.
  */
-export type Selection = { kind: "root" } | { kind: "home" } | { kind: "workspace"; repoId: string; workspaceId: string };
+export type Selection =
+  | { kind: "root" }
+  | { kind: "home" }
+  /** Conductor's `/dashboard` (Experimental "Dashboard"); `repo` is its `?repo=` project tab. */
+  | { kind: "dashboard"; repo?: string }
+  | { kind: "workspace"; repoId: string; workspaceId: string };
 
 export interface AppState {
   repos: Repo[];

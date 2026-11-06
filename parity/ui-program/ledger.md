@@ -69,5 +69,7 @@ Scope: user Settings (General, Account, Appearance, Agents, Models, Git, Environ
 | Tooltip: Account › Linear Connect, Billing | "Opens settings in your browser", "Opens billing in your browser" (600 ms, top) | No Linear or Billing card (no Conductor account service) | n/a until those cards exist |
 | Right-click: settings nav links | Every page link: one item, copy icon + "Copy link", copies `<scheme>://settings/<path>` (`t9a`, `TGt`) | none yet | open: PR (b) |
 | Right-click: links in row text | "Open link", "Copy link" (`Q$r`, app-wide `X$r`) | none yet | open: PR (b) |
-| Press state | Buttons `transition-transform duration-150 ease-out active:scale-[0.97]` (`REe`) | not compared yet | open: PR (c) |
+| Press state: buttons | `REe`: `transition-transform duration-150 ease-out` (cubic-bezier(0,0,.2,1)), `active:scale-[0.97]`, reduced motion keeps scale 1; ghost hover `bg-sidebar-accent` (#ffffff0d dark), instant | Settings `.btn`: same transition, scale .97 on `:active`, reduced-motion guard; Test button gets the ghost hover. Measured: both at scale 0.97 when `:active` | **matches** ([button-press.png](../side-by-side/settings/button-press.png)) |
+| Transitions: switches, Back | Switch track `transition-colors duration-150`, thumb `transition-transform duration-150` (cubic-bezier(.4,0,.2,1)); Back `transition-colors` 150 ms | Same durations and easing (were `ease`) | **matches** |
+| Transitions: nav links, comboboxes | none (`all 0s`) | none | matches |
 | Alignment | Back: 28 px tall, right edge 6 px inside the 256 px nav; account switcher and "Search settings" above the groups | Back 22 px tall and 40 px further left; no account switcher or search | open: PR (d) |
