@@ -442,7 +442,17 @@ try {
   writeFileSync(join(home, "fake-reason-selected"), "ws-b");
   await launch();
   await waitFor("the app to load again", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
-  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  // The app saves its prefs on every state change, so one that lands between
+  // setItem and the reload (conductor.db rows arriving, say) puts the fork
+  // back. Reload until the page loaded with the first chat selected.
+  for (let attempt = 1; ; attempt++) {
+    await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+    await waitFor("the app to load again", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
+    const selected = await run("try { return JSON.parse(localStorage.getItem('openconductor.shell.prefs.v1')).selection.workspaceId; } catch { return null; }");
+    if (selected === workspace.id) break;
+    assert.ok(attempt < 5, `the relaunched app kept ${selected} selected after ${attempt} reloads`);
+    await sleep(500);
+  }
   await waitFor("the first chat's transcript after the relaunch", () => chatText().then((t) => t && t.includes("turn 5 wrote notes.txt")));
   assert.equal(await run("return localStorage.getItem(arguments[0]);", sessionKey), before, "the chat kept its Session id");
   await send("echo: after relaunch");
