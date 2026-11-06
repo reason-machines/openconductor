@@ -39,6 +39,13 @@
 //!   as Conductor's ACP runner reconciles them (`reconcileSessionConfig`).
 //!   A follow-up that steers a running turn leaves them for the prompt after
 //!   it.
+//! * Reason reports no model in the ACP stream, and with the model option
+//!   "default" (Auto) it picks one per turn. After each turn the provider
+//!   asks `reason session get` which model and effort the Session ran on
+//!   and reports them as [`ProviderEvent::SessionModel`].
+//! * [`ReasonProvider::models`] lists the models Reason offers: the `model`
+//!   option of a `session/new` that is closed again unprompted (Reason keeps
+//!   no Session that never got a prompt).
 //! * A prompt can carry attachments, sent as embedded `resource` blocks
 //!   after the text (Reason advertises `embeddedContext`).
 //! * `session/request_permission` (Reason asks before a tool call) is held
@@ -48,7 +55,7 @@
 //!   does. Stop and the end of the turn answer what is still open with
 //!   `cancelled`, as ACP requires.
 
-use super::cli::{AgentProcess, LaunchConfig, Presence};
+use super::cli::{AgentProcess, LaunchConfig, Presence, RunningModel};
 use super::rpc::{CallError, Incoming, Responder, RpcConnection, RpcError};
 use super::updates::{computer_is_cloud, parse_update, AgentEvent, ReasonError, UpdateContext};
 use serde_json::{json, Value};
@@ -70,16 +77,66 @@ pub enum ProviderEvent {
     /// Something the app should tell the user about the chat, e.g. that a
     /// requested model is not offered and Reason's default runs instead.
     Notice(String),
-    /// Reason asks to run a tool (`session/request_permission`); answer with
-    /// [`ReasonProvider::answer_permission`].
+    /// The agent waits on the user: Reason asks to run a tool
+    /// (`session/request_permission`, answered with
+    /// [`ReasonProvider::answer_permission`]); Claude Code also asks to
+    /// approve a plan or answer questions (`crate::claude_chat::interact`).
     PermissionRequested(PermissionRequest),
-    /// A permission request was answered or withdrawn.
+    /// A request was answered or withdrawn.
     PermissionResolved {
         request_id: String,
     },
+    /// The model and effort the chat's Session ran its last turn on.
+    SessionModel(RunningModel),
 }
 
-/// One `session/request_permission`, as the app shows it.
+/// One model Reason offers (an option of the Session's `model` option).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ModelOption {
+    /// Reason model id, e.g. `byok:anthropic:claude-opus-5-5`; `default` is Auto.
+    pub value: String,
+    /// Reason's name for it, e.g. `Claude Opus 5.5`.
+    pub name: String,
+    /// e.g. `Claude · Subscription`.
+    pub description: Option<String>,
+}
+
+/// The models a new Session offers, and the one it starts on.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ModelList {
+    pub current: String,
+    pub options: Vec<ModelOption>,
+}
+
+/// The `model` option of a Session's `configOptions`.
+pub fn model_list(config_options: &Value) -> Option<ModelList> {
+    let options = config_options.as_array()?;
+    let opt = options.iter().find(|o| o["id"] == "model")?;
+    let list = opt["options"]
+        .as_array()
+        .map(Vec::as_slice)
+        .unwrap_or_default();
+    let options = list
+        .iter()
+        .filter_map(|o| {
+            let value = o["value"].as_str()?.to_string();
+            let name = o["name"].as_str().unwrap_or(&value).to_string();
+            let description = o["description"].as_str().map(str::to_string);
+            Some(ModelOption {
+                value,
+                name,
+                description,
+            })
+        })
+        .collect();
+    let current = opt["currentValue"]
+        .as_str()
+        .unwrap_or("default")
+        .to_string();
+    Some(ModelList { current, options })
+}
+
+/// One request the agent waits on, as the app shows it.
 #[derive(Debug, Clone, PartialEq)]
 pub struct PermissionRequest {
     /// Provider-made id the answer names.
@@ -87,6 +144,38 @@ pub struct PermissionRequest {
     /// The tool call's title, e.g. `bash: rm -rf build`.
     pub title: String,
     pub options: Vec<PermissionOption>,
+    pub ask: Ask,
+}
+
+/// What a request asks of the user. Conductor 0.87.6 (REA-read
+/// `index-BGEQ8YjU.js`, frontend RPC methods `TOOL_APPROVAL`,
+/// `EXIT_PLAN_MODE`, `ASK_USER_QUESTION`) shows each with its own card and
+/// session status: `needs_user_permission`, `needs_plan_response`,
+/// `needs_user_input`.
+#[derive(Debug, Clone, PartialEq)]
+pub enum Ask {
+    /// Run this tool call? `tool` is the tool's name (`Bash`) or ACP kind
+    /// (`execute`), empty when unknown; `input` its arguments, `Null` when
+    /// the agent sent none. Answered with one of the request's options.
+    Tool { tool: String, input: Value },
+    /// Approve this plan, or keep planning.
+    Plan { plan: String },
+    /// Answer these questions.
+    Questions(Vec<Question>),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Question {
+    pub header: String,
+    pub question: String,
+    pub options: Vec<QuestionOption>,
+    pub multi_select: bool,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct QuestionOption {
+    pub label: String,
+    pub description: Option<String>,
 }
 
 /// One choice offered with a permission request.
@@ -283,6 +372,20 @@ impl ReasonProvider {
         );
     }
 
+    /// The models Reason offers new Sessions in the selected workspace.
+    pub fn models(&self) -> Result<ModelList, String> {
+        let workspace = self.launch.whoami(&self.dir).and_then(|w| w.selected);
+        let (conn, _) = self.ensure_agent(workspace.as_deref())?;
+        let base = json!({ "cwd": self.dir, "mcpServers": [] });
+        let v = conn
+            .call("session/new", base, SETUP_TIMEOUT)
+            .map_err(|e| e.to_string())?;
+        if let Some(id) = v["sessionId"].as_str() {
+            let _ = conn.call("session/close", json!({ "sessionId": id }), SETUP_TIMEOUT);
+        }
+        model_list(&v["configOptions"]).ok_or_else(|| "Reason offers no model option".into())
+    }
+
     /// Config options for the chat's Session: set when `session/new`
     /// creates it, or on the open Session before its next prompt.
     pub fn set_config(&self, chat: &str, config: Vec<ConfigChoice>) {
@@ -338,7 +441,35 @@ impl ReasonProvider {
             self.withdraw_permissions(chat);
         }
         (self.sink)(chat, ProviderEvent::TurnEnded(end.clone()));
+        self.report_model(chat);
         end
+    }
+
+    /// Asks Reason, off this thread, which model the chat's Session ran on
+    /// and reports it as [`ProviderEvent::SessionModel`].
+    fn report_model(&self, chat: &str) {
+        let (session_id, workspace) = {
+            let s = self.shared.lock().unwrap();
+            match s.chats.get(chat) {
+                Some(Chat {
+                    session_id: Some(id),
+                    workspace,
+                    ..
+                }) => (id.clone(), workspace.clone()),
+                _ => return,
+            }
+        };
+        let (launch, dir, sink, chat) = (
+            self.launch.clone(),
+            self.dir.clone(),
+            self.sink.clone(),
+            chat.to_string(),
+        );
+        std::thread::spawn(move || {
+            if let Some(m) = launch.session_model(&dir, workspace.as_deref(), &session_id) {
+                sink(&chat, ProviderEvent::SessionModel(m));
+            }
+        });
     }
 
     fn run_prompt(
@@ -868,10 +999,15 @@ pub fn permission_request(request_id: String, params: &Value) -> PermissionReque
             })
         })
         .collect();
+    let ask = Ask::Tool {
+        tool: call["kind"].as_str().unwrap_or_default().into(),
+        input: call.get("rawInput").cloned().unwrap_or(Value::Null),
+    };
     PermissionRequest {
         request_id,
         title,
         options,
+        ask,
     }
 }
 

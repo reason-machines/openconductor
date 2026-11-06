@@ -1,0 +1,789 @@
+{
+ "conductor": {
+  "open-in-app": {
+   "text": "Open in Finder\u2318O",
+   "side": "bottom",
+   "align": "center",
+   "rect": [
+    897.5,
+    35.5,
+    133.6,
+    24
+   ],
+   "trigger": [
+    950,
+    8,
+    29,
+    24
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": "rgb(165, 160, 156)",
+   "hintFont": "12px"
+  },
+  "open-in-menu": {
+   "text": "Open in...",
+   "side": "bottom",
+   "align": "center",
+   "rect": [
+    956.5,
+    35.5,
+    74.5,
+    24
+   ],
+   "trigger": [
+    979,
+    8,
+    30,
+    24
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "new-chat": {
+   "text": "New chat, same files\u2318T",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    383.5,
+    20,
+    169,
+    24
+   ],
+   "trigger": [
+    456,
+    48,
+    24,
+    24
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": "rgb(165, 160, 156)",
+   "hintFont": "12px"
+  },
+  "review": {
+   "text": "Get an AI code review \u2318\u21e7R",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    1203.5,
+    22,
+    183.3,
+    24
+   ],
+   "trigger": [
+    1256,
+    50,
+    78,
+    24
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": "rgb(165, 160, 156)",
+   "hintFont": "12px"
+  },
+  "model": {
+   "text": "Change agent \u2318/",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    278,
+    815,
+    124.9,
+    24
+   ],
+   "trigger": [
+    285,
+    843,
+    111,
+    28
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": "rgb(165, 160, 156)",
+   "hintFont": "12px"
+  },
+  "add": {
+   "text": "Add attachments, link issues, and more",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    846.5,
+    817,
+    254.8,
+    24
+   ],
+   "trigger": [
+    962,
+    845,
+    24,
+    24
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "copy": {
+   "text": "Copy final message",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    339.5,
+    303,
+    134.3,
+    24
+   ],
+   "trigger": [
+    397,
+    331,
+    20,
+    20
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "more-actions": {
+   "text": "More actions",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    384,
+    303,
+    93.1,
+    24
+   ],
+   "trigger": [
+    421,
+    331,
+    20,
+    20
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "discard": {
+   "trigger": [
+    1396,
+    152,
+    24,
+    24
+   ]
+  },
+  "unified": {
+   "text": "Unified view",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    811.5,
+    62,
+    90,
+    24
+   ],
+   "trigger": [
+    843,
+    90,
+    28,
+    28
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "split": {
+   "text": "Split view",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    847.5,
+    62,
+    74.3,
+    24
+   ],
+   "trigger": [
+    871,
+    90,
+    28,
+    28
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "viewed": {
+   "text": "Mark as viewed \u2303V",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    890.5,
+    62,
+    132.3,
+    24
+   ],
+   "trigger": [
+    909,
+    90,
+    96,
+    28
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": "rgb(165, 160, 156)",
+   "hintFont": "12px"
+  },
+  "view-options": {
+   "text": "View options",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    980.5,
+    62,
+    92.8,
+    24
+   ],
+   "trigger": [
+    1013,
+    90,
+    28,
+    28
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  }
+ },
+ "openconductor": {
+  "open-in-app": {
+   "text": "Open in Finder\u2318O",
+   "side": "bottom",
+   "align": "center",
+   "rect": [
+    1182,
+    58,
+    125.7,
+    24
+   ],
+   "trigger": [
+    1231,
+    30,
+    29,
+    24
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "open-in-menu": {
+   "text": "Open in...",
+   "side": "bottom",
+   "align": "center",
+   "rect": [
+    1241.5,
+    58,
+    66,
+    24
+   ],
+   "trigger": [
+    1260,
+    30,
+    30,
+    24
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "review": {
+   "text": "Get an AI code review \u2318\u21e7R",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    1263,
+    47.5,
+    169.2,
+    24
+   ],
+   "trigger": [
+    1353,
+    76,
+    75,
+    22
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "model": {
+   "text": "Change agent \u2318/",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    284,
+    815,
+    118,
+    24
+   ],
+   "trigger": [
+    285,
+    843,
+    116,
+    28
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "add": {
+   "text": "Add attachments and more",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    759,
+    817,
+    165.4,
+    24
+   ],
+   "trigger": [
+    830,
+    845,
+    24,
+    24
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "discard": {
+   "text": "Discard changes",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    1324.5,
+    148.5,
+    107.5,
+    24
+   ],
+   "trigger": [
+    1410,
+    177,
+    22,
+    22
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "stop": {
+   "text": "Cancel \u2318\u21e7\u232b",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    821.5,
+    817,
+    100.9,
+    24
+   ],
+   "trigger": [
+    860,
+    845,
+    24,
+    24
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "copy": {
+   "text": "Copy final message",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    307,
+    234,
+    124.8,
+    24
+   ],
+   "trigger": [
+    359,
+    262,
+    20,
+    20
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "more-actions": {
+   "text": "More actions",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    351.5,
+    234,
+    87.3,
+    24
+   ],
+   "trigger": [
+    385,
+    262,
+    20,
+    20
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "unified": {
+   "text": "Unified view",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    682,
+    82,
+    83.4,
+    24
+   ],
+   "trigger": [
+    710,
+    110,
+    28,
+    20
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "split": {
+   "text": "Split view",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    716.5,
+    82,
+    69.7,
+    24
+   ],
+   "trigger": [
+    738,
+    110,
+    28,
+    20
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "viewed": {
+   "text": "Mark as viewed \u2303V",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    805.5,
+    82,
+    124.4,
+    24
+   ],
+   "trigger": [
+    833,
+    110,
+    70,
+    20
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  },
+  "view-options": {
+   "text": "View options",
+   "side": "top",
+   "align": "center",
+   "rect": [
+    770,
+    81,
+    87,
+    24
+   ],
+   "trigger": [
+    803,
+    109,
+    22,
+    22
+   ],
+   "gap": 4,
+   "bg": "oklab(0.280438 0.00463071 0.00521801 / 0.5)",
+   "color": "rgb(234, 232, 230)",
+   "fontSize": "12px",
+   "lineHeight": "16px",
+   "letterSpacing": "0.025px",
+   "padding": "4px 8px",
+   "radius": "4px",
+   "shadow": "rgba(255, 255, 255, 0.1) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px",
+   "backdrop": "blur(12px)",
+   "transition": "opacity, scale 0.1s cubic-bezier(0.4, 0, 0.2, 1)",
+   "maxWidth": "none",
+   "hintColor": null,
+   "hintFont": null
+  }
+ }
+}

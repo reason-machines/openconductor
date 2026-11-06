@@ -377,7 +377,7 @@ export const flows = [
           "return Array.from(document.querySelectorAll('.oi-menu .oi-row'), (r) => ({ label: r.querySelector('.oi-row-label').textContent, kbd: r.querySelector('.oi-row-kbd')?.textContent ?? null, num: r.querySelector('.oi-row-num')?.textContent ?? null, icon: !!r.querySelector('img') }));",
           [],
         );
-      const main = () => wd.execute("const b = document.querySelector('.ws-header .oi-main'); return b && { label: b.getAttribute('aria-label'), title: b.title, icon: !!b.querySelector('img'), disabled: b.disabled };", []);
+      const main = () => wd.execute("const b = document.querySelector('.ws-header .oi-main'); return b && { label: b.getAttribute('aria-label'), icon: !!b.querySelector('img'), disabled: b.disabled };", []);
       const openMenu = async () => {
         const [chevron] = await wd.findAll(".ws-header .oi-chevron");
         await wd.click(chevron);
@@ -388,7 +388,8 @@ export const flows = [
         const b = await main();
         return b && !b.disabled && b.icon ? b : null;
       });
-      if (button.label !== "Open in Finder" || button.title !== "Open in Finder (⌘O)") throw new Error(`Open button ${JSON.stringify(button)}`);
+      // The "Open in Finder ⌘O" tooltip is checked in the browser lane (parity/side-by-side/chat-diff-pr/tooltips).
+      if (button.label !== "Open in Finder") throw new Error(`Open button ${JSON.stringify(button)}`);
 
       await openMenu();
       const want = [

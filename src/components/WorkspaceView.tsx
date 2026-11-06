@@ -187,6 +187,9 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
   // Codex's snapshots carry its pending approvals and consent requests; the others' carry permission requests.
   const [{ transcript, queue, approvals = [], consents = [], permissions = [] }, setSnapshot] = useState<ChatView>(() => agent.snapshot(runId));
   const [access, setAccess] = useState<CodexAccess>(() => codexAccess(chatId));
+  // The card shows the oldest open request; while it is a plan, the message box asks for changes to it.
+  const waiting = permissions[0];
+  const planWaiting = waiting?.kind === "plan" ? waiting : undefined;
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
   const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
@@ -283,7 +286,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
-  }, [transcript]);
+  }, [transcript, waiting]);
 
   // Attachments (a review request, revert notes) go to the agent with the message and show by name.
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
@@ -496,7 +499,7 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
           onClose={() => setResetTurn(null)}
         />
       ) : null}
-      <PermissionRequests permissions={permissions} onAnswer={(requestId, optionId) => void agent.answerPermission?.(runId, requestId, optionId)} />
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => void agent.answerPermission?.(runId, requestId, answer)} onStop={() => agent.stop(runId)} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
@@ -525,10 +528,12 @@ function ChatPanel({ repo, workspace, dispatch, chatId, review, bridge, tabs, co
         draft={draft}
         setDraft={setDraft}
         inputRef={inputRef}
+        // Conductor: while a plan waits, the message box asks for changes to it; otherwise its own placeholders.
+        placeholder={planWaiting ? "Enter your plan adjustments here..." : undefined}
         queue={queue}
         canSteer={agent.canSteer}
         followUpMode={followUpMode}
-        onSubmit={onSubmit}
+        onSubmit={planWaiting ? (text) => void agent.answerPermission?.(runId, planWaiting.requestId, { kind: "plan", approved: false, feedback: text }) : onSubmit}
         onStop={() => agent.stop(runId)}
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
@@ -685,13 +690,13 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           <button role="tab" aria-selected={active === "diff"} className={active === "diff" ? "active" : ""} onClick={() => onSelect("diff")}>
             All changes
           </button>
-          <button className="main-tab-close" onClick={onCloseDiff} title="Close tab" aria-label="Close All changes tab">
+          <button className="main-tab-close" onClick={onCloseDiff} aria-label="Close All changes tab">
             ×
           </button>
         </span>
       )}
       <span className={`main-tab${active === "chat" ? " active" : ""}`}>
-        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")} title={title}>
+        <button role="tab" aria-selected={active === "chat"} className={active === "chat" ? "active" : ""} onClick={() => onSelect("chat")}>
           {title}
         </button>
       </span>
@@ -700,7 +705,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           <button role="tab" aria-selected={active === "pr"} className={active === "pr" ? "active" : ""} onClick={() => onSelect("pr")}>
             {prTab}
           </button>
-          <button className="main-tab-close" onClick={onClosePr} title="Close tab" aria-label={`Close ${prTab} tab`}>
+          <button className="main-tab-close" onClick={onClosePr} aria-label={`Close ${prTab} tab`}>
             ×
           </button>
         </span>
@@ -710,7 +715,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           <button role="tab" aria-selected={active === r.chatId} className={active === r.chatId ? "active" : ""} onClick={() => onSelect(r.chatId)} title={r.fork || r.blank ? r.title : `Code review on ${r.modelLabel}`}>
             {r.title}
           </button>
-          <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} title="Close tab" aria-label={`Close ${r.title} tab`}>
+          <button className="main-tab-close" onClick={() => onCloseReview(r.chatId)} aria-label={`Close ${r.title} tab`}>
             ×
           </button>
         </span>

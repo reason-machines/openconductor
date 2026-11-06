@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { DiffWorkerPool } from "./features/diff/DiffWorkerPool";
+import { TooltipProvider } from "./components/ui/Tooltip";
 import { KeybindingsProvider } from "./keybindings/KeybindingsProvider";
 import { FirstRunGate } from "./onboarding/FirstRunGate";
 import { migrateLegacySendKey } from "./keybindings/overrides";
@@ -12,6 +13,7 @@ import { installContextMenuGuard } from "./lib/nativeContextMenu";
 import "./fonts.css";
 import "./theme/tokens.css";
 import "./styles.css";
+import "./components/motion/screens.css";
 
 // Conductor's startup migration: a legacy "Send messages with" of ⌘ Enter
 // fills each send command that has no override with the ⌘ Enter preset.
@@ -31,9 +33,11 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <DiffWorkerPool>
       <KeybindingsProvider loadOverrides={loadOverrides}>
-        <FirstRunGate>
-          <App />
-        </FirstRunGate>
+        <TooltipProvider>
+          <FirstRunGate>
+            <App />
+          </FirstRunGate>
+        </TooltipProvider>
       </KeybindingsProvider>
     </DiffWorkerPool>
   </React.StrictMode>,

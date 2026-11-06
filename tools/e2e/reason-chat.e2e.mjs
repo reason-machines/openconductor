@@ -16,7 +16,7 @@
 //   7. "Reset chat" on turn 5   "Reset chat?" says 2 changed; Reset deletes
 //                        turn 6 and restores turn 5's files
 //   8. "permission"      Reason asks session/request_permission: the chat shows
-//                        "Approve tool use", the session is needs_user_permission
+//                        "Do you want to run this command?", the session is needs_user_permission
 //                        in conductor.db, the sidebar row and the Home list show
 //                        "Needs permission"; Allow resumes the turn and the
 //                        status goes back to idle
@@ -127,7 +127,7 @@ async function screenshot(name) {
 }
 
 const chatText = () => run("const el = document.querySelector('.chat-scroll'); return el ? el.innerText : null;");
-const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
+const running = () => run("return !!document.querySelector('.composer button[aria-label^=\"Stop the agent\"]');");
 
 /** What has the keyboard, for failure messages: the composer, a terminal, or another element. */
 const focusedElement = () =>
@@ -251,7 +251,7 @@ try {
   await waitFor('the Bash "sleep" tool row', () =>
     run(`return [...document.querySelectorAll(".chat-tool")].some((r) => /\\bBash\\b/.test(r.innerText) && r.innerText.includes("sleep"));`),
   );
-  await wd("POST", `/element/${await find('.composer button[title="Stop the agent"]')}/click`, {});
+  await wd("POST", `/element/${await find('.composer button[aria-label^="Stop the agent"]')}/click`, {});
   await waitFor('"Interrupted by user"', () => chatText().then((t) => t.includes("Interrupted by user")), 15000);
   await turnDone(4);
   pass('Stop ends the running turn: "Interrupted by user"');
@@ -370,14 +370,17 @@ try {
     throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await sidebarStatus())}`);
   });
   const card = await waitFor("the permission card", () => run(`const c = document.querySelector('[data-testid="chat-permission-request"]'); return c ? c.innerText : null;`));
-  assert.match(card, /Approve tool use/);
+  // Conductor's tool card (`Jpo`): the question for an `execute` tool, the call's title, Reason's options.
+  assert.match(card, /Do you want to run this command\?/);
   assert.match(card, /bash: rm -rf build/);
+  assert.match(card, /Allow/);
+  assert.match(card, /Reject/);
   const storedRows = await waitFor("needs_user_permission in conductor.db", async () => {
     const rows = await storedStatuses();
     return Array.isArray(rows) && rows.some((r) => r.chatId === workspace.id && r.status === "needs_user_permission") && rows;
   });
   await screenshot("status-needs-permission-chat");
-  pass(`Reason's permission request shows "Approve tool use", the sidebar row says Needs permission, conductor.db holds ${JSON.stringify(storedRows)}`);
+  pass(`Reason's permission request shows "Do you want to run this command?", the sidebar row says Needs permission, conductor.db holds ${JSON.stringify(storedRows)}`);
 
   // Sidebar Home opens the wordmark screen (#483); the list is the /all-workspaces route.
   await run(`history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;`);
@@ -386,7 +389,7 @@ try {
   pass("the Home list shows the workspace's Needs permission status in place of its time");
 
   await run(`document.querySelector('[data-testid="workspace-status-icon"][data-status="needs-user-permission"]').closest("button").click(); return true;`);
-  await wd("POST", `/element/${await waitFor("the Allow button", () => find('.chat-permission button[data-kind="allow_once"]'))}/click`, {});
+  await wd("POST", `/element/${await waitFor("the Allow button", () => find('[data-testid="chat-permission-request"] button[data-kind="allow_once"]'))}/click`, {});
   await waitFor('"permission: allow"', () => chatText().then((t) => t.includes("permission: allow")));
   await turnDone(8);
   await waitFor("the sidebar row to leave Needs permission", async () => !needsPermission(await sidebarStatus()));
