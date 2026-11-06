@@ -102,6 +102,8 @@ export interface ChatBackend<Config> {
   listen(deliver: Deliver, permissions: PermissionEvents): Promise<unknown>;
   /** Opens the chat's agent session (a new one, or `sessionId` resumed) before its first prompt. */
   open(chatId: string, cwd: string, sessionId: string | null, config: Config): Promise<void>;
+  /** Applies options picked after the chat opened to its open session (Reason); without it they wait for the next session. */
+  reconfigure?(chatId: string, config: Config): void;
   /**
    * Sends a prompt; steers it into a running turn when `canSteer`. Resolves
    * once the turn ended, with the files it changed; a rejection means the
@@ -162,7 +164,8 @@ export interface ChatRuntime<Config> {
   reset(chatId: string, cwd: string, turnId: string, resetFiles: boolean): Promise<void>;
   /**
    * Session options for the chat's next new session: its first, or the one
-   * after Reset chat. A session that already exists keeps its own. Picked
+   * after Reset chat. A backend with `reconfigure` (Reason) also sets them on
+   * the session the chat has open; others keep that session's own. Picked
    * options are kept across restarts, so a session opened after a reset
    * still runs on them.
    */
@@ -568,6 +571,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       const c = chat(chatId);
       c.config = config;
       c.configured = true;
+      if (c.opened) backend.reconfigure?.(chatId, config);
       try {
         host.storage.setItem(backend.configKey(chatId), JSON.stringify(config));
       } catch (e) {

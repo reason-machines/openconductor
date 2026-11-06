@@ -93,7 +93,9 @@ export const StopCircleIcon = ({ size = 16, ...rest }: IconProps) => (
  * mark in the agent's colour instead (see the PR's remaining differences).
  */
 export function ModelGlyph({ model }: { model: string }) {
-  const agent = model.startsWith("gpt-") ? "codex" : /^(opus|sonnet|haiku|fable)/.test(model) ? "claude" : "other";
+  // A Reason id names the model last: `byok:anthropic:claude-opus-5-5`, `openai/gpt-6.1-sol`.
+  const name = model.split(/[:/]/).at(-1) ?? model;
+  const agent = name.startsWith("gpt-") ? "codex" : /^(claude-)?(opus|sonnet|haiku|fable)/.test(name) ? "claude" : "other";
   return (
     <svg className="oc-model-glyph" data-agent={agent} width={14} height={14} viewBox="0 0 16 16" aria-hidden>
       <path fill="currentColor" d="M8 1.5c.4 3.3 1.6 4.6 5 5-3.4.4-4.6 1.7-5 5-.4-3.3-1.6-4.6-5-5 3.4-.4 4.6-1.7 5-5z" />

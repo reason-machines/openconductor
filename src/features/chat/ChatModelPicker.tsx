@@ -1,15 +1,20 @@
-// The workspace chat's model picker: the chat's model and effort (picked,
-// from the New workspace dialog, or Settings › Default models), a list with
-// that model and the default one, and "Add models" / "Edit" opening
-// Settings › Default models. A pick becomes the chat's Reason Session options
-// (model, reasoning_effort) for the next Session it opens.
+// The workspace chat's model picker. For a Reason chat the chip shows the
+// model its Session runs, as Reason reports it (reasonModels.ts): "Auto"
+// until Reason picks one, then e.g. "Claude Opus 5.5"; before the chat has a
+// Session, the chat's pick (New workspace dialog, Settings › Default models,
+// or this picker) as the Reason model it runs as. The list is Reason's own
+// models (the Session's `model` config option), searchable; until a Reason
+// Session has reported them it falls back to the picked and default models.
+// "Add models" / "Edit" open Settings › Default models. A pick becomes the
+// chat's Reason Session options (model, reasoning_effort): set on its open
+// Session at once, and on the next Session it opens.
 //
 // It also picks the chat's agent, as Conductor's picker does (the model decides
 // the agent): when the CLI agents can run here they are listed as "Codex" and
 // "Claude Code" after the models (chatAgentChoice.ts), and such a chat shows its
 // agent's name on the chip.
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { getSettings } from "../../settings/api";
 import { configureReason } from "./reasonChat.ts";
 import { sessionConfig } from "./chatModel.ts";
@@ -18,6 +23,8 @@ import { agentEntryLabel, agentForPick, pickerState } from "./chatAgentChoice.ts
 import type { ChatAgentId } from "./agentChoice.ts";
 import type { ModelChoice } from "./composerModels.ts";
 import { ModelPicker } from "./ModelPicker.tsx";
+import { reasonModelId } from "../diff/review.ts";
+import { chipModel, modelOptions, reasonModelName, recordModels, sessionModels, subscribeModels } from "./reasonModels.ts";
 
 /** Asks the app shell to open a settings page (App.tsx listens). */
 export const OPEN_SETTINGS_EVENT = "openconductor:open-settings";
@@ -38,9 +45,14 @@ export interface ChatModelPickerProps {
   onAgentChange?: (next: ChatAgentId) => void;
 }
 
+/** A Conductor id as the Reason model it runs as; null for one Reason has no id for (the `opus` alias). */
+const toReasonId = (model: string) => reasonModelId(model);
+
 export function ChatModelPicker({ chatId, disabled = false, agent = "reason", onAgentChange }: ChatModelPickerProps) {
   const [choice, setChoice] = useState<ModelChoice | null>(() => loadModelChoice(chatId));
   const [fallback, setFallback] = useState<ModelChoice | null>(null);
+  const session = useSyncExternalStore(subscribeModels, () => sessionModels(chatId));
+  const options = useSyncExternalStore(subscribeModels, () => modelOptions(chatId), () => []);
 
   useEffect(() => {
     let live = true;
@@ -54,24 +66,36 @@ export function ChatModelPicker({ chatId, disabled = false, agent = "reason", on
     };
   }, [chatId]);
 
-  const reasonModel = choice ?? fallback;
-  if (!reasonModel) return null;
-  const state = pickerState(agent, reasonModel, fallback, !!onAgentChange);
+  const picked = choice ?? fallback;
+  if (!picked) return null;
+  // What the chat runs, as a Reason model id: its Session's model, else its pick.
+  const running = chipModel(picked, session, toReasonId);
+  const reasonList: ModelChoice[] = options.length
+    ? options.map((o) => ({ model: o.value, effort: null }))
+    : [picked, ...(fallback ? [fallback] : [])].map((c) => ({ model: chipModel(c, null, toReasonId).model, effort: null }));
+  const state = pickerState(agent, running, null, !!onAgentChange);
+  const favorites = [...reasonList, ...state.favorites.filter((f) => agentEntryLabel(f))];
   return (
     <ModelPicker
       value={state.value}
       label={state.label}
-      favorites={state.favorites}
-      itemLabel={agentEntryLabel}
+      favorites={favorites}
+      itemLabel={(c) => agentEntryLabel(c) ?? reasonModelName(c.model, options)}
+      itemDetail={(c) => options.find((o) => o.value === c.model)?.description}
+      maxItems={options.length ? Infinity : 5}
       disabled={disabled}
       onOpenSettings={() => openSettingsPage("models")}
       onChange={(next) => {
         const nextAgent = agentForPick(next);
         if (nextAgent !== agent) onAgentChange?.(nextAgent);
         if (nextAgent !== "reason") return;
-        setChoice(next);
-        saveModelChoice(chatId, next);
-        configureReason(chatId, sessionConfig(next.model, next.effort));
+        // A model row carries no effort: keep the chat's.
+        const pick = { ...next, effort: next.effort ?? running.effort };
+        setChoice(pick);
+        saveModelChoice(chatId, pick);
+        // Shown at once; Reason's report (the Session takes it, or a notice says it cannot) replaces it.
+        if (session) recordModels(chatId, { ...session, current: pick.model, effort: pick.effort });
+        configureReason(chatId, sessionConfig(pick.model, pick.effort));
       }}
     />
   );

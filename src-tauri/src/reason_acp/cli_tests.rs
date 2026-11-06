@@ -204,3 +204,20 @@ fn a_workspace_pins_the_agent_and_its_subcommands() {
     assert_eq!(cfg.in_workspace(None).unwrap(), cfg);
     assert!(cfg.in_workspace(Some("--evil")).is_err());
 }
+
+#[test]
+fn session_get_names_the_model_a_session_ran_on() {
+    use super::cli::parse_session_model;
+    let out = r#"{"session_id":"5b852f39","status":"exit","model":"byok:anthropic:claude-haiku-5-5","reasoning_effort":"low"}"#;
+    assert_eq!(
+        parse_session_model(out),
+        Some(("byok:anthropic:claude-haiku-5-5".into(), Some("low".into())))
+    );
+    let enveloped = r#"{"schema_version":1,"ok":true,"data":{"model":"byok:anthropic:claude-opus-5-5"}}"#;
+    assert_eq!(
+        parse_session_model(enveloped),
+        Some(("byok:anthropic:claude-opus-5-5".into(), None))
+    );
+    assert_eq!(parse_session_model(r#"{"model":null}"#), None);
+    assert_eq!(parse_session_model("not json"), None);
+}

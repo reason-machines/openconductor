@@ -414,3 +414,106 @@ fn the_session_store_remembers_each_sessions_workspace() {
     assert_eq!(p.prompt("chat", "echo: two"), TurnEnd::Completed);
     assert_eq!(reply(&log), "turn 2: two");
 }
+
+fn models(log: &Log) -> Vec<super::provider::SessionModels> {
+    let log = log.lock().unwrap();
+    let all = log.iter().filter_map(|(_, ev)| match ev {
+        ProviderEvent::Models(m) => Some(m.clone()),
+        _ => None,
+    });
+    all.collect()
+}
+
+#[test]
+fn the_session_reports_its_models_and_the_one_a_turn_ran_on() {
+    let (p, log, home) = provider("models");
+    p.open_chat("chat", &home, None);
+    assert_eq!(p.prompt("chat", "echo: hi"), TurnEnd::Completed);
+    let seen = models(&log);
+    assert_eq!(seen.len(), 2, "{seen:?}");
+    // session/new: "Auto" until Reason picks a model, with Reason's names.
+    assert_eq!(seen[0].current, "default");
+    let names: Vec<&str> = seen[0].options.iter().map(|o| o.name.as_str()).collect();
+    assert_eq!(names, ["Auto", "Claude Opus 5.5", "Claude Sonnet 5.5", "GPT-5.6-Sol"]);
+    assert_eq!(seen[0].options[1].description.as_deref(), Some("Claude \u{b7} Subscription"));
+    // After the turn: the model it ran on (`reason session get`), same list.
+    assert_eq!(seen[1].current, "byok:anthropic:claude-opus-5-5");
+    assert_eq!(seen[1].options, seen[0].options);
+    let id = started(&log).pop().unwrap();
+    p.shutdown();
+    drop(p);
+
+    // After a restart, session/resume names the model the Session ran on.
+    let (p, log, _) = provider_in(home.clone());
+    p.open_chat("chat", &home, Some(id));
+    assert_eq!(p.prompt("chat", "echo: again"), TurnEnd::Completed);
+    let seen = models(&log);
+    assert_eq!(seen[0].current, "byok:anthropic:claude-opus-5-5");
+    assert_eq!(seen[0].options.len(), 4);
+}
+
+#[test]
+fn a_pick_is_set_on_the_open_session_for_its_next_prompt() {
+    use super::provider::ConfigChoice;
+    let (p, log, home) = provider("models-live");
+    p.open_chat("chat", &home, None);
+    // Nothing is open yet: kept for session/new, nothing sent.
+    let sonnet = || ConfigChoice {
+        id: "model".into(),
+        value: "byok:anthropic:claude-sonnet-5-5".into(),
+    };
+    p.apply_config("chat", vec![sonnet()]);
+    assert!(models(&log).is_empty());
+    assert_eq!(p.prompt("chat", "config"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "model=byok:anthropic:claude-sonnet-5-5 effort=default");
+    assert_eq!(models(&log).last().unwrap().current, "byok:anthropic:claude-sonnet-5-5");
+
+    // Open Session: set now, reported at once, and the next prompt runs on it.
+    log.lock().unwrap().clear();
+    let opus = ConfigChoice {
+        id: "model".into(),
+        value: "byok:anthropic:claude-opus-5-5".into(),
+    };
+    p.apply_config("chat", vec![opus]);
+    assert_eq!(models(&log).last().unwrap().current, "byok:anthropic:claude-opus-5-5");
+    assert_eq!(p.prompt("chat", "config"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "model=byok:anthropic:claude-opus-5-5 effort=default");
+
+    // A value the Session does not offer is not sent; a notice says so.
+    log.lock().unwrap().clear();
+    let unknown = ConfigChoice {
+        id: "model".into(),
+        value: "opus".into(),
+    };
+    p.apply_config("chat", vec![unknown]);
+    let notices = log
+        .lock()
+        .unwrap()
+        .iter()
+        .filter(|(_, e)| matches!(e, ProviderEvent::Notice(n) if n.contains("\"opus\"")))
+        .count();
+    assert_eq!(notices, 1);
+    assert_eq!(models(&log).last().unwrap().current, "byok:anthropic:claude-opus-5-5");
+}
+
+#[test]
+fn session_models_reads_reasons_model_option() {
+    use super::provider::session_models;
+    // The shape reason acp 0.2.692 answers session/new with (trimmed).
+    let options = serde_json::json!([
+        { "id": "model", "name": "Model", "category": "model", "type": "select", "currentValue": "default",
+          "options": [
+            { "value": "default", "name": "Auto", "description": "Your Workspace's default" },
+            { "value": "openai/gpt-6.1-sol", "name": "Reason", "description": "Included with Reason" },
+            { "value": "byok:anthropic:claude-opus-5-5", "name": "Claude Opus 5.5", "description": "Claude \u{b7} Subscription" } ] },
+        { "id": "reasoning_effort", "name": "Reasoning", "category": "thought_level", "type": "select", "currentValue": "high",
+          "options": [ { "value": "default", "name": "Default" }, { "value": "high", "name": "high" } ] }
+    ]);
+    let m = session_models(&options).unwrap();
+    assert_eq!(m.current, "default");
+    assert_eq!(m.effort.as_deref(), Some("high"));
+    assert_eq!(m.options.len(), 3);
+    assert_eq!(m.options[1].name, "Reason");
+    assert!(session_models(&serde_json::json!([])).is_none());
+    assert!(session_models(&serde_json::Value::Null).is_none());
+}

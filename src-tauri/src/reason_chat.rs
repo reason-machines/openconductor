@@ -20,10 +20,15 @@
 //!    before and after the turn ([`crate::turn_checkpoint`]) and the result
 //!    carries `turnChanges`, the files the turn changed (absent when a
 //!    checkpoint was skipped or the turn touched more than 200 files).
+//!    A `models` event reports the Session's models: what it offers and
+//!    what it runs (after each turn, the model the turn ran on).
 //! 3. `reason_cancel(chatId)` for Stop.
 //! 4. `reason_answer_permission(chatId, requestId, optionId?)` answers a
 //!    `permissionRequest` event: with the chosen option, or `cancelled`
 //!    without one. A `permissionResolved` event follows.
+//! 5. `reason_set_config(chatId, config)` when the chat picks another model
+//!    or effort: it is set on the open Session at once (and on the next
+//!    Session the chat opens).
 
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -131,6 +136,28 @@ pub fn reason_open_chat(
     provider.set_config(&chat_id, config.collect());
     state.cwds.lock().unwrap().insert(chat_id, cwd);
     Ok(())
+}
+
+/// Sets the chat's Session options (`model`, `reasoning_effort`): on its
+/// open Session now, else when it opens one.
+#[tauri::command]
+pub async fn reason_set_config(
+    app: AppHandle,
+    state: State<'_, ReasonChats>,
+    chat_id: String,
+    config: Vec<ConfigArg>,
+) -> Result<(), String> {
+    let provider = state.provider(&app)?;
+    let config: Vec<ConfigChoice> = config
+        .into_iter()
+        .map(|c| ConfigChoice {
+            id: c.id,
+            value: c.value,
+        })
+        .collect();
+    tauri::async_runtime::spawn_blocking(move || provider.apply_config(&chat_id, config))
+        .await
+        .map_err(|e| e.to_string())
 }
 
 /// Names one turn's checkpoints: the frontend's `turnCheckpointRef`, the

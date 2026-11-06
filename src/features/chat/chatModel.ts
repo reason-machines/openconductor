@@ -18,7 +18,9 @@ import type { ReasonConfig } from "./reasonChat.ts";
  */
 export function sessionConfig(model: string | null | undefined, effort: string | null | undefined): ReasonConfig[] {
   const config: ReasonConfig[] = [];
-  const id = model?.trim() ? reasonModelId(model.trim()) : null;
+  const m = model?.trim();
+  // `default` is Reason's "Auto", picked from Reason's own list: sent so an open Session goes back to it.
+  const id = m ? (m === "default" ? m : reasonModelId(m)) : null;
   if (id) config.push({ id: "model", value: id });
   const level = reasonEffort(effort);
   if (level) config.push({ id: "reasoning_effort", value: level });

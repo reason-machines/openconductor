@@ -165,3 +165,22 @@ fn a_permission_request_carries_its_title_and_options() {
         ("Tool call", 0)
     );
 }
+
+#[test]
+fn models_carry_the_current_model_and_reasons_names() {
+    use super::provider::{ModelOption, SessionModels};
+    let m = ProviderEvent::Models(SessionModels {
+        current: "byok:anthropic:claude-opus-5-5".into(),
+        effort: Some("high".into()),
+        options: vec![ModelOption {
+            value: "default".into(),
+            name: "Auto".into(),
+            description: Some("Your Workspace's default".into()),
+        }],
+    });
+    assert_eq!(
+        event_json("c", &m),
+        json!({ "chatId": "c", "type": "models", "current": "byok:anthropic:claude-opus-5-5", "effort": "high",
+                "options": [{ "value": "default", "name": "Auto", "description": "Your Workspace's default" }] })
+    );
+}

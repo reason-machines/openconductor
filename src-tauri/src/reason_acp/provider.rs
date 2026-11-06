@@ -30,10 +30,20 @@
 //!   turn as [`TurnEnd::Failed`] even though the prompt says `end_turn`.
 //! * A chat can ask for Session config options (`model`,
 //!   `reasoning_effort`) with [`ReasonProvider::set_config`]. They are set
-//!   with `session/set_config_option` right after `session/new`, only when
+//!   with `session/set_config_option` right after `session/new` (and
+//!   `session/resume`, when they differ from the Session's), only when
 //!   the Session offers the value: Reason resets a value it does not offer
 //!   to its default without an error, so the provider checks first and
 //!   sends a [`ProviderEvent::Notice`] instead.
+//!   [`ReasonProvider::apply_config`] does the same on a Session that is
+//!   already open, as Conductor's `setAcpSessionConfigOption` does for an
+//!   ACP agent's running session.
+//! * The Session's models are reported as [`ProviderEvent::Models`]: the
+//!   `model` config option's offered values and current value, read from
+//!   `session/new`, `session/set_config_option` and `session/resume`, and
+//!   after every turn the model the Session actually ran (`reason session
+//!   get`): a new Session's `model` is `default` ("Auto") until Reason picks
+//!   one for its first turn.
 //! * A prompt can carry attachments, sent as embedded `resource` blocks
 //!   after the text (Reason advertises `embeddedContext`).
 //! * `session/request_permission` (Reason asks before a tool call) is held
@@ -72,6 +82,32 @@ pub enum ProviderEvent {
     PermissionResolved {
         request_id: String,
     },
+    /// The models the chat's Session offers and the one it runs.
+    Models(SessionModels),
+}
+
+/// One value of a Session's `model` config option.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ModelOption {
+    /// Reason's model id, e.g. `byok:anthropic:claude-opus-5-5`, or `default`.
+    pub value: String,
+    /// Reason's name for it, e.g. "Claude Opus 5.5" or "Auto".
+    pub name: String,
+    /// E.g. "Claude · Subscription".
+    pub description: Option<String>,
+}
+
+/// What a chat's Session runs and offers.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SessionModels {
+    /// The model the Session runs: its `model` option's current value, or
+    /// after a turn the model that turn ran on. `default` means Reason has
+    /// not picked one yet.
+    pub current: String,
+    /// Its reasoning effort (`reasoning_effort`), when known.
+    pub effort: Option<String>,
+    /// The models it offers, in Reason's order; empty when not known.
+    pub options: Vec<ModelOption>,
 }
 
 /// One `session/request_permission`, as the app shows it.
@@ -149,6 +185,8 @@ struct Chat {
     on_cloud: bool,
     /// Config options to set when the Session is created.
     config: Vec<ConfigChoice>,
+    /// The Session's latest `configOptions`, as Reason last reported them.
+    config_options: Value,
     /// Prompts announced by `expect_prompt` and not sent yet, with whether
     /// a Stop came for them meanwhile.
     pending: HashMap<u64, bool>,
@@ -273,11 +311,83 @@ impl ReasonProvider {
     }
 
     /// Config options for the chat's Session, applied when `session/new`
-    /// creates it; a chat whose Session already exists keeps its options.
+    /// creates it or `session/resume` reattaches it (only values that
+    /// differ from the Session's own are sent).
     pub fn set_config(&self, chat: &str, config: Vec<ConfigChoice>) {
         if let Some(c) = self.shared.lock().unwrap().chats.get_mut(chat) {
             c.config = config;
         }
+    }
+
+    /// [`Self::set_config`], and when the chat's Session is open in the
+    /// running agent, sets the options on it now (`session/set_config_option`)
+    /// so its next prompt runs with them. A value the Session does not offer
+    /// becomes a [`ProviderEvent::Notice`]; the new models are reported.
+    pub fn apply_config(&self, chat: &str, config: Vec<ConfigChoice>) {
+        self.set_config(chat, config.clone());
+        let (id, open_in, workspace, options) = {
+            let s = self.shared.lock().unwrap();
+            let Some(c) = s.chats.get(chat) else {
+                return;
+            };
+            (
+                c.session_id.clone(),
+                c.open_in,
+                c.workspace.clone(),
+                c.config_options.clone(),
+            )
+        };
+        let (Some(id), Some(open_in)) = (id, open_in) else {
+            return;
+        };
+        let Some((conn, generation)) = self.live_agent(&workspace) else {
+            return;
+        };
+        if generation != open_in {
+            return;
+        }
+        let (options, notices) = set_options(&conn, &id, options, &config);
+        self.report_config(chat, options);
+        for n in notices {
+            (self.sink)(chat, ProviderEvent::Notice(n));
+        }
+    }
+
+    /// Keeps the Session's `configOptions` and reports its models.
+    fn report_config(&self, chat: &str, options: Value) {
+        let models = session_models(&options);
+        if let Some(c) = self.shared.lock().unwrap().chats.get_mut(chat) {
+            c.config_options = options;
+        }
+        if let Some(m) = models {
+            (self.sink)(chat, ProviderEvent::Models(m));
+        }
+    }
+
+    /// After a turn: the model the Session ran, from `reason session get`,
+    /// with the models it offers. Nothing when `reason` cannot say.
+    fn report_model_used(&self, chat: &str) {
+        let (id, workspace, options) = {
+            let s = self.shared.lock().unwrap();
+            let Some(c) = s.chats.get(chat) else {
+                return;
+            };
+            (c.session_id.clone(), c.workspace.clone(), c.config_options.clone())
+        };
+        let Some(id) = id else {
+            return;
+        };
+        let Some((model, effort)) = self.launch.session_model(&self.dir, workspace.as_deref(), &id)
+        else {
+            return;
+        };
+        let known = session_models(&options);
+        let models = SessionModels {
+            current: model,
+            effort: effort.or_else(|| known.as_ref().and_then(|k| k.effort.clone())),
+            options: known.map(|k| k.options).unwrap_or_default(),
+        };
+        (self.sink)(chat, ProviderEvent::Models(models));
     }
 
     /// Sends `text` and blocks until the turn ends; events stream to the
@@ -327,6 +437,9 @@ impl ReasonProvider {
             self.withdraw_permissions(chat);
         }
         (self.sink)(chat, ProviderEvent::TurnEnded(end.clone()));
+        if end != TurnEnd::Superseded {
+            self.report_model_used(chat);
+        }
         end
     }
 
@@ -533,8 +646,21 @@ impl ReasonProvider {
                 let (conn, generation) = self.ensure_agent(workspace.as_deref())?;
                 let mut params = base;
                 params["sessionId"] = json!(id);
-                conn.call("session/resume", params, SETUP_TIMEOUT)
+                let v = conn
+                    .call("session/resume", params, SETUP_TIMEOUT)
                     .map_err(|e| format!("Could not resume the Reason session: {e}"))?;
+                // Reason 0.2.692 answers with the Session's configOptions,
+                // the model it last ran on as `model`'s current value. A
+                // pick made while no agent ran ([`Self::apply_config`]) is
+                // set now; one the Session already has is not sent again.
+                if v["configOptions"].is_array() {
+                    let (options, notices) =
+                        set_options(&conn, &id, v["configOptions"].clone(), &config);
+                    self.report_config(chat, options);
+                    for n in notices {
+                        (self.sink)(chat, ProviderEvent::Notice(n));
+                    }
+                }
                 (conn, generation, id, workspace)
             }
             None => {
@@ -554,17 +680,9 @@ impl ReasonProvider {
                         session_id: id.clone(),
                     },
                 );
-                let (set, mut notices) = plan_config(&v["configOptions"], &config);
-                for choice in set {
-                    let params = json!({ "sessionId": id, "configId": choice.id,
-                        "value": choice.value });
-                    if let Err(e) = conn.call("session/set_config_option", params, SETUP_TIMEOUT) {
-                        notices.push(format!(
-                            "Could not set {} to {}: {e}. Reason's default is used.",
-                            choice.id, choice.value
-                        ));
-                    }
-                }
+                let (options, notices) =
+                    set_options(&conn, &id, v["configOptions"].clone(), &config);
+                self.report_config(chat, options);
                 for n in notices {
                     (self.sink)(chat, ProviderEvent::Notice(n));
                 }
@@ -700,6 +818,64 @@ fn explain(e: ReasonError, cwd: &Path) -> String {
         ),
         _ => e.message,
     }
+}
+
+/// Sets the wanted options the Session offers on Session `id`; returns its
+/// `configOptions` afterwards (each `session/set_config_option` answers with
+/// them) and a notice for each option it could not set.
+fn set_options(
+    conn: &RpcConnection,
+    id: &str,
+    mut options: Value,
+    wanted: &[ConfigChoice],
+) -> (Value, Vec<String>) {
+    let (set, mut notices) = plan_config(&options, wanted);
+    for choice in set {
+        let params = json!({ "sessionId": id, "configId": choice.id, "value": choice.value });
+        match conn.call("session/set_config_option", params, SETUP_TIMEOUT) {
+            Ok(v) if v["configOptions"].is_array() => options = v["configOptions"].clone(),
+            Ok(_) => {}
+            Err(e) => notices.push(format!(
+                "Could not set {} to {}: {e}. Reason's default is used.",
+                choice.id, choice.value
+            )),
+        }
+    }
+    (options, notices)
+}
+
+/// The models a Session's `configOptions` describe: its `model` option
+/// (id `model`, else category `model`) and `reasoning_effort`'s current
+/// value. `None` without a `model` option.
+pub fn session_models(options: &Value) -> Option<SessionModels> {
+    let list = options.as_array()?;
+    let model = list
+        .iter()
+        .find(|o| o["id"] == "model")
+        .or_else(|| list.iter().find(|o| o["category"] == "model"))?;
+    let effort = list
+        .iter()
+        .find(|o| o["id"] == "reasoning_effort")
+        .and_then(|o| o["currentValue"].as_str())
+        .map(str::to_string);
+    let offered = model["options"].as_array().map(Vec::as_slice).unwrap_or_default();
+    Some(SessionModels {
+        current: model["currentValue"].as_str().unwrap_or("default").to_string(),
+        effort,
+        options: offered
+            .iter()
+            .filter_map(|o| {
+                let value = o["value"].as_str()?.to_string();
+                let name = o["name"].as_str().unwrap_or(&value).to_string();
+                let description = o["description"].as_str().map(str::to_string);
+                Some(ModelOption {
+                    value,
+                    name,
+                    description,
+                })
+            })
+            .collect(),
+    })
 }
 
 /// Which wanted options to set, given the `configOptions` a new Session

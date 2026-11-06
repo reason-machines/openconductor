@@ -61,6 +61,25 @@ export function modelDisplayName(model: string): string {
   return DISPLAY_NAMES[model] ?? model;
 }
 
+/** A Reason model id (`byok:anthropic:claude-opus-5-5`, `openai/gpt-6.1-sol`, or `default` for Reason's "Auto"). */
+export function isReasonModelId(model: string): boolean {
+  return model === "default" || model.includes(":") || model.includes("/");
+}
+
+/**
+ * Reason's `reasoning_effort` levels (its ACP `reasoning_effort` option on
+ * reason 0.2.692: default, minimal, low, medium, high, xhigh, max). No
+ * default level: Reason's "default" depends on the model, so an unset effort
+ * shows none instead of guessing.
+ */
+const REASON_EFFORTS: AgentEfforts = {
+  levels: ["minimal", "low", "medium", "high", "xhigh", "max"],
+  labels: { minimal: "Minimal", low: "Low", medium: "Medium", high: "High", xhigh: "Extra high", max: "Max" },
+  axisLabel: "Effort",
+  defaultLevel: null,
+  models: {},
+};
+
 const CLAUDE_ALL = ["low", "medium", "high", "xhigh", "max", "ultracode"];
 const CLAUDE_NO_X = ["low", "medium", "high", "max"];
 const CLAUDE_TO_MAX = ["low", "medium", "high", "xhigh", "max"];
@@ -73,7 +92,8 @@ interface AgentEfforts {
   levels: string[];
   labels: Record<string, string>;
   axisLabel: string;
-  defaultLevel: string;
+  /** The level an unset effort runs at; null when it is not known (Reason). */
+  defaultLevel: string | null;
   models: Record<string, { levels: string[]; labelOverrides?: Record<string, string> }>;
 }
 
@@ -143,14 +163,14 @@ export interface ModelEfforts {
   /** Submenu title: "Effort" (Claude, Cursor) or "Thinking" (Codex). */
   axisLabel: string;
   options: EffortOption[];
-  defaultLevel: string;
+  defaultLevel: string | null;
 }
 
 /** The effort levels a model offers, in Conductor's order; none for a model without levels. */
 export function modelEfforts(model: string): ModelEfforts | null {
   const agent = agentForModel(model);
-  if (!agent) return null;
-  const table = EFFORTS[agent];
+  if (!agent && !isReasonModelId(model)) return null;
+  const table = agent ? EFFORTS[agent] : REASON_EFFORTS;
   const entry = table.models[model];
   const levels = entry?.levels ?? table.levels;
   if (levels.length === 0) return null;
@@ -163,6 +183,7 @@ export function effectiveEffort(model: string, effort: string | null | undefined
   const e = modelEfforts(model);
   if (!e) return null;
   if (effort && e.options.some((o) => o.value === effort)) return effort;
+  if (e.defaultLevel === null) return null;
   return e.options.some((o) => o.value === e.defaultLevel) ? e.defaultLevel : (e.options.at(-1)?.value ?? null);
 }
 
@@ -176,7 +197,8 @@ export function effortLabel(model: string, effort: string | null | undefined): s
 export function nextEffort(model: string, effort: string | null | undefined): string | null {
   const e = modelEfforts(model);
   const current = effectiveEffort(model, effort);
-  if (!e || current === null) return null;
+  if (!e) return null;
+  if (current === null) return e.options[0]?.value ?? null;
   const i = e.options.findIndex((o) => o.value === current);
   return e.options[(i + 1) % e.options.length]!.value;
 }

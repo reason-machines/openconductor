@@ -42,8 +42,12 @@ tool_call_update to completed, with ACP kind, rawInput and _meta.claudeCode.tool
 LISBON_PROMPT, the fixture's user message, is an alias).
 
 session/new reports configOptions `model` and `reasoning_effort` like
-Reason does; session/set_config_option with a value an option does not
-offer resets it to "default" without an error, as Reason does.
+Reason does (model names and descriptions as 0.2.692 gives them);
+session/set_config_option with a value an option does not offer resets it
+to "default" without an error, as Reason does. A Session on "default"
+runs its turns on WORKSPACE_DEFAULT_MODEL: after a turn, session/resume
+reports that model as `model`'s currentValue and `session get` prints it as
+`model`, as reason acp 0.2.692 and `reason session get --json` do.
 """
 import json
 import os
@@ -52,15 +56,38 @@ import threading
 import urllib.parse
 
 OPTIONS = {
-    "model": ("Model", ["default", "byok:anthropic:claude-opus-5-5", "byok:openai-codex:gpt-5.6-sol"]),
+    "model": ("Model", ["default", "byok:anthropic:claude-opus-5-5", "byok:anthropic:claude-sonnet-5-5",
+                        "byok:openai-codex:gpt-5.6-sol"]),
     "reasoning_effort": ("Reasoning", ["default", "low", "medium", "high", "xhigh", "max"]),
 }
+# Names and descriptions as reason acp 0.2.692 gives them.
+MODEL_NAMES = {
+    "default": ("Auto", "Your Workspace's default"),
+    "byok:anthropic:claude-opus-5-5": ("Claude Opus 5.5", "Claude \u00b7 Subscription"),
+    "byok:anthropic:claude-sonnet-5-5": ("Claude Sonnet 5.5", "Claude \u00b7 Subscription"),
+    "byok:openai-codex:gpt-5.6-sol": ("GPT-5.6-Sol", "ChatGPT \u00b7 Subscription"),
+}
+# The model Reason picks for a Session on "Auto" once it runs a turn.
+WORKSPACE_DEFAULT_MODEL = "byok:anthropic:claude-opus-5-5"
+
+
+def option_value(k, v):
+    if k != "model":
+        return {"value": v, "name": "Default" if v == "default" else v}
+    name, description = MODEL_NAMES[v]
+    return {"value": v, "name": name, "description": description}
 
 
 def config_options(config):
-    return [{"id": k, "name": name, "type": "select", "currentValue": config.get(k, "default"),
-             "options": [{"value": v, "name": v} for v in values]}
+    return [{"id": k, "name": name, "category": "model" if k == "model" else "thought_level", "type": "select",
+             "currentValue": config.get(k, "default"), "options": [option_value(k, v) for v in values]}
             for k, (name, values) in OPTIONS.items()]
+
+
+def ran_model(session):
+    """The model a Session ran its last turn on: its pick, else the Workspace default."""
+    picked = session.get("config", {}).get("model", "default")
+    return picked if picked != "default" else WORKSPACE_DEFAULT_MODEL
 
 HOME = os.path.realpath(os.getcwd())
 STATE = os.path.join(HOME, "state.json")
@@ -297,7 +324,10 @@ def handle(msg):
             opened.add(p["sessionId"])
             if session.get("workspace", "ws-a") != WORKSPACE:
                 foreign.add(p["sessionId"])
-            send({"id": rid, "result": {}})
+            config = dict(session.get("config", {}))
+            if session.get("turns", 0) > 0:
+                config["model"] = ran_model(session)
+            send({"id": rid, "result": {"configOptions": config_options(config)}})
         else:
             send({"id": rid, "error": {"code": -32002, "message": "Resource not found"}})
     elif method == "session/list":
@@ -329,7 +359,10 @@ def session_get(sid):
     if session is None or session.get("workspace", "ws-a") != WORKSPACE:
         sys.stderr.write("Reason: Reason request failed (404 session_not_found)\n")
         sys.exit(1)
-    print(json.dumps({"session_id": sid, "status": "exit", "title": session.get("title")}))
+    config = session.get("config", {})
+    print(json.dumps({"session_id": sid, "status": "exit", "title": session.get("title"),
+                      "model": ran_model(session) if session.get("turns", 0) > 0 else None,
+                      "reasoning_effort": config.get("reasoning_effort", "high")}))
 
 
 if ARGS[:1] == ["whoami"]:

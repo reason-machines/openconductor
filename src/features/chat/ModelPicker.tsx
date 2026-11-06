@@ -28,13 +28,17 @@ export interface ModelPickerProps {
   disabled?: boolean;
   /** Extra entries under the favourites (e.g. the agent picker). */
   children?: ReactNode;
-  /** Name for a listed entry that is not a Conductor model id (an agent such as Codex). */
+  /** Name for an entry that is not a Conductor model id (an agent such as Codex, or a Reason model); also names the chip. */
   itemLabel?: (choice: ModelChoice) => string | undefined;
+  /** Second line of detail for a listed entry (a Reason model's account, e.g. "Claude · Subscription"). */
+  itemDetail?: (choice: ModelChoice) => string | null | undefined;
+  /** How many entries are listed before searching; Conductor lists five favourites. */
+  maxItems?: number;
 }
 
 const same = (a: ModelChoice, b: ModelChoice) => a.model === b.model;
 
-export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel }: ModelPickerProps) {
+export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, itemDetail, maxItems = 5 }: ModelPickerProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [effortOpen, setEffortOpen] = useState(false);
@@ -45,15 +49,17 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
     return s ? glyphs(s) : "";
   };
   const chip = modelChip(value.model, value.effort, value.fast);
+  const chipName = label ?? itemLabel?.(value) ?? chip.label;
+  const accessible = label ?? [chipName, chip.effort, value.fast && fastModeAvailable(value.model) ? "Fast" : null].filter(Boolean).join(" · ");
   const efforts = modelEfforts(value.model);
   const current = effectiveEffort(value.model, value.effort);
   const showFast = fastSupported && fastModeAvailable(value.model);
   const items = useMemo(() => {
-    const list = [value, ...favorites.filter((f) => !same(f, value))].slice(0, 5);
+    const all = [value, ...favorites.filter((f) => !same(f, value))];
     const q = query.trim().toLowerCase();
     const name = (f: ModelChoice) => itemLabel?.(f) ?? modelDisplayName(f.model);
-    return q ? list.filter((f) => name(f).toLowerCase().includes(q) || f.model.includes(q)) : list;
-  }, [favorites, value, query, itemLabel]);
+    return q ? all.filter((f) => name(f).toLowerCase().includes(q) || f.model.includes(q)) : all.slice(0, maxItems);
+  }, [favorites, value, query, itemLabel, maxItems]);
 
   useKeybindings({
     "chat.openModelPicker": () => (disabled ? false : setOpen((o) => !o)),
@@ -91,14 +97,14 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
         type="button"
         className="oc-model-chip"
         data-testid="composer-model-button"
-        aria-label={`${label ? "Change model" : "Change agent"} (${label ?? chip.accessible})`}
-        title={label ?? chip.accessible}
+        aria-label={`${label ? "Change model" : "Change agent"} (${accessible})`}
+        title={accessible}
         aria-haspopup="menu"
         aria-expanded={open}
         disabled={disabled}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="oc-model-chip-label">{label ?? chip.label}</span>
+        <span className="oc-model-chip-label">{chipName}</span>
         <span className="oc-model-chip-details">
           {!label && chip.effort ? <span className="oc-model-chip-effort">{chip.effort}</span> : null}
           <ChevronDownIcon className="oc-model-chip-chevron" />
@@ -116,6 +122,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
               {items.map((f) => {
                 const selected = same(f, value);
                 const e = modelChip(f.model, f.effort).effort;
+                const detail = itemDetail?.(f);
                 return (
                   <button
                     key={f.model}
@@ -123,7 +130,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                     role="menuitem"
                     className="oc-model-item"
                     data-selected={selected || undefined}
-                    title={itemLabel?.(f) ?? modelDisplayName(f.model)}
+                    title={[itemLabel?.(f) ?? modelDisplayName(f.model), detail].filter(Boolean).join(" · ")}
                     onClick={() => {
                       if (!selected) onChange(f);
                       setOpen(false);
@@ -131,7 +138,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                   >
                     <ModelGlyph model={f.model} />
                     <span className="oc-model-item-name">{selected && label ? label : (itemLabel?.(f) ?? modelDisplayName(f.model))}</span>
-                    {e ? <span className="oc-model-item-effort">{e}</span> : null}
+                    {e ? <span className="oc-model-item-effort">{e}</span> : detail ? <span className="oc-model-item-effort">{detail}</span> : null}
                     {selected ? <CheckIcon className="oc-model-item-check" /> : null}
                   </button>
                 );

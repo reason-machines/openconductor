@@ -25,6 +25,7 @@ import { listen } from "@tauri-apps/api/event";
 import { applyReasonPayload, type PromptAttachment, type ReasonPayload } from "./reason.ts";
 import { connectStatusStore, createChatRuntime, type ChatBackend, type Deliver } from "./chatRuntime.ts";
 import { desktopHost } from "./desktopHost.ts";
+import { recordModels, type ReasonModelsPayload } from "./reasonModels.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { withGeneralPreferences } from "../../settings/prompts.ts";
 
@@ -54,14 +55,21 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
   configKey,
   parseConfig,
   listen: (deliver, permissions) =>
-    listen<ReasonPayload>(EVENT, ({ payload }) => {
-      if (payload.type === "permissionRequest") {
+    listen<ReasonPayload | ReasonModelsPayload>(EVENT, ({ payload }) => {
+      if (payload.type === "models") {
+        const { chatId, current, effort, options } = payload;
+        recordModels(chatId, { current, effort, options });
+      } else if (payload.type === "permissionRequest") {
         permissions.requested(payload.chatId, { requestId: payload.requestId, title: payload.title, options: payload.options });
       } else if (payload.type === "permissionResolved") permissions.resolved(payload.chatId, payload.requestId);
       else deliver(payload.chatId, (s) => applyReasonPayload(s, payload));
     }),
   async open(chatId, cwd, sessionId, config) {
     await invoke("reason_open_chat", { chatId, cwd, sessionId, config });
+  },
+  // A pick in an open chat is set on its Session now (Conductor's setAcpSessionConfigOption).
+  reconfigure(chatId, config) {
+    invoke("reason_set_config", { chatId, config }).catch((e) => console.warn("reason: options not set", e));
   },
   async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath }) {
     const agentText = firstMessage && repoPath ? await withGeneral(text, repoPath, cwd) : text;
@@ -136,7 +144,7 @@ export const queueAction = reason.queueAction;
  * carrying the kept conversation.
  */
 export const resetReasonChat = reason.reset;
-/** Session options for the chat's next new Session (its first, or the one after Reset chat); kept across restarts. */
+/** Session options for the chat: set on its open Session at once, and on the next one it opens (after Reset chat); kept across restarts. */
 export const configureReason = reason.configure;
 /** The default model's options; a failed lookup leaves Reason's default. */
 export const configureReasonDefault = reason.configureDefault;
