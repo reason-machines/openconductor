@@ -31,6 +31,10 @@ const states = JSON.parse(readFileSync(join(here, "states.json"), "utf8")).state
 const only = process.argv.slice(2);
 const home = join(run, "home");
 const template = join(run, "home.template");
+// The fixture repositories, kept like HOME: a state that archives a workspace (sidebar-after-archive)
+// removes its git worktree from them, which would break every later state on that workspace.
+const repos = join(run, "repos");
+const reposTemplate = join(run, "repos.template");
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const sha256 = (b) => createHash("sha256").update(b).digest("hex");
 const git = (cwd, ...a) => execFileSync("git", a, { cwd, stdio: "pipe" });
@@ -161,6 +165,7 @@ async function seed(wd) {
     await sleep(1500);
   });
   cpSync(home, template, { recursive: true });
+  cpSync(repos, reposTemplate, { recursive: true });
 }
 
 const DOM_TEXT = `
@@ -191,7 +196,7 @@ mkdirSync(join(out, "oc"), { recursive: true });
 let failures = 0;
 try {
   await wd.waitFor("tauri-driver on :4444", async () => (await fetch("http://127.0.0.1:4444/status")).ok, 20000);
-  if (!existsSync(template) || process.env.UIMAP_RESEED) await seed(wd);
+  if (!existsSync(template) || !existsSync(reposTemplate) || process.env.UIMAP_RESEED) await seed(wd);
   for (const st of states) {
     if (only.length && !only.includes(st.id)) continue;
     if (!st.oc) {
@@ -202,7 +207,11 @@ try {
     if (st.oc_fresh) {
       mkdirSync(join(home, ".openconductor"), { recursive: true });
       writeFileSync(join(home, ".openconductor", "settings.toml"), '[general]\ntheme = "dark"\n');
-    } else cpSync(template, home, { recursive: true });
+    } else {
+      cpSync(template, home, { recursive: true });
+      rmSync(repos, { recursive: true, force: true });
+      cpSync(reposTemplate, repos, { recursive: true });
+    }
     if (st.oc_fake_reason) {
       mkdirSync(laneBin, { recursive: true });
       writeFileSync(join(laneBin, "reason"), `#!/bin/sh\nexec python3 "${fakeReason}" "$@"\n`, { mode: 0o755 });
