@@ -1,0 +1,184 @@
+{
+  "item": "claude.signed-in",
+  "result": "blocked: usage limit",
+  "ranOn": {
+    "host": "svemyh macbook m5 max",
+    "macos": "26.4",
+    "arch": "arm64"
+  },
+  "app": {
+    "path": "/Users/sven/oc-claude-e2e/openconductor/src-tauri/target/debug/bundle/macos/OpenConductor.app",
+    "commit": "6431509 (local on the Mac: main 1bc1753 + this branch's commits before rustfmt)"
+  },
+  "driver": "tools/claude-code/run-e2e-mac.sh (in-app driver tools/claude-code/e2e-driver.js through the debug-only seam src-tauri/src/e2e.rs)",
+  "claudeCli": {
+    "path": "/Users/sven/.local/bin/claude",
+    "version": "2.1.318 (Claude Code)",
+    "auth": {
+      "loggedIn": true,
+      "authMethod": "claude.ai",
+      "apiProvider": "firstParty",
+      "subscriptionType": "max"
+    }
+  },
+  "started": "2026-11-05T16:00:49.238Z",
+  "ended": "2026-11-05T16:00:55.340Z",
+  "workspace": {
+    "name": "florence",
+    "branch": "florence"
+  },
+  "agentPicker": {
+    "label": "Claude Code",
+    "emptyStateNote": "Claude Code runs this chat with your signed-in claude CLI."
+  },
+  "claudeSessionIds": [
+    "ea6983d4-6f9d-4aec-9b03-61b52c056916"
+  ],
+  "savedSessions": [
+    {
+      "key": "openconductor.claude.session.claude-e2e-1793894446/florence",
+      "sessionId": "ea6983d4-6f9d-4aec-9b03-61b52c056916"
+    }
+  ],
+  "turns": [
+    {
+      "n": 1,
+      "prompt": "Run `pwd` with the Bash tool, then create a file named claude-check.txt containing the single word local in the current folder. Reply with the pwd output only.",
+      "sentAt": "2026-11-05T16:00:50.218Z",
+      "endedAt": "2026-11-05T16:00:51.711Z",
+      "status": "failed",
+      "error": "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)",
+      "reply": "",
+      "toolRows": []
+    },
+    {
+      "n": 2,
+      "prompt": "What file did you just create, and what does it contain? Answer in one line.",
+      "sentAt": "2026-11-05T16:00:52.214Z",
+      "endedAt": "2026-11-05T16:00:52.514Z",
+      "status": "failed",
+      "error": "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)",
+      "reply": "",
+      "toolRows": []
+    },
+    {
+      "n": 3,
+      "prompt": "Run `sleep 120` with the Bash tool.",
+      "sentAt": "2026-11-05T16:00:53.017Z",
+      "endedAt": "2026-11-05T16:00:54.019Z",
+      "status": "failed",
+      "error": "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)",
+      "stop": {
+        "pressed": false,
+        "reason": "the turn ended before a tool ran"
+      },
+      "reply": "",
+      "toolRows": []
+    },
+    {
+      "n": 4,
+      "prompt": "Reply with the single word ok.",
+      "sentAt": "2026-11-05T16:00:54.402Z",
+      "endedAt": "2026-11-05T16:00:54.838Z",
+      "status": "failed",
+      "error": "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)",
+      "reply": "",
+      "toolRows": []
+    }
+  ],
+  "apiErrors": [
+    {
+      "code": "usage_limit_reached",
+      "status": 429,
+      "message": "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)"
+    },
+    {
+      "code": "usage_limit_reached",
+      "status": 429,
+      "message": "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)"
+    },
+    {
+      "code": "usage_limit_reached",
+      "status": 429,
+      "message": "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)"
+    },
+    {
+      "code": "usage_limit_reached",
+      "status": 429,
+      "message": "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)"
+    }
+  ],
+  "worktreeFile": null,
+  "eventCounts": {
+    "sessionStarted": 1,
+    "error": 4,
+    "turnEnded": 4
+  },
+  "driverError": null,
+  "steps": [
+    {
+      "at": "2026-11-05T16:00:49.238Z",
+      "step": "app loaded",
+      "home": true
+    },
+    {
+      "at": "2026-11-05T16:00:49.325Z",
+      "step": "repo added",
+      "repo": "/Users/sven/oc-claude-e2e/run-2/fixture/claude-e2e-1793894446"
+    },
+    {
+      "at": "2026-11-05T16:00:50.217Z",
+      "step": "workspace created",
+      "name": "florence",
+      "branch": "florence"
+    },
+    {
+      "at": "2026-11-05T16:00:50.218Z",
+      "step": "agent picked",
+      "agent": "claude",
+      "label": "Claude Code"
+    },
+    {
+      "at": "2026-11-05T16:00:50.219Z",
+      "step": "turn 1 sent",
+      "text": "Run `pwd` with the Bash tool, then create a file named claude-check.txt containing the single word local in the current folder. Reply with the pwd output only."
+    },
+    {
+      "at": "2026-11-05T16:00:51.711Z",
+      "step": "turn 1 ended",
+      "status": "failed"
+    },
+    {
+      "at": "2026-11-05T16:00:52.215Z",
+      "step": "turn 2 sent",
+      "text": "What file did you just create, and what does it contain? Answer in one line."
+    },
+    {
+      "at": "2026-11-05T16:00:52.514Z",
+      "step": "turn 2 ended",
+      "status": "failed"
+    },
+    {
+      "at": "2026-11-05T16:00:53.017Z",
+      "step": "turn 3 sent",
+      "text": "Run `sleep 120` with the Bash tool."
+    },
+    {
+      "at": "2026-11-05T16:00:54.019Z",
+      "step": "turn 3 ended",
+      "status": "failed"
+    },
+    {
+      "at": "2026-11-05T16:00:54.402Z",
+      "step": "turn 4 sent",
+      "text": "Reply with the single word ok."
+    },
+    {
+      "at": "2026-11-05T16:00:54.838Z",
+      "step": "turn 4 ended",
+      "status": "failed"
+    }
+  ],
+  "resultNote": "Every step of the app path ran (Open project, Create workspace, agent picker, claude spawned with the signed-in login, session id saved, four turns ended). Each turn failed with the CLI's usage_limit_reached (429) for this login, so no completed reply, tool row, worktree file or Stop of a running tool was observed. Rerun when the login has quota.",
+  "screenshot": "https://api.reasonmachines.com/media/pr-screenshots/50bea920-1058-4e50-a855-cc623b7a259a/20dd700020152e3cfc1bc9475b47b854/efb3635f-8afe-41a0-9b44-12712f2eeb51.png (render of the app's captured DOM and stylesheets in Chrome; the select's live value is not in serialized HTML, so the Claude Code option was marked selected for the render)"
+}

@@ -115,5 +115,15 @@ non-zero.
   workspace notes. Errors show under the composer, as Fork to new tab's do,
   not as a toast.
 
+- A failure after the branch is made (the workspace cannot be created, or
+  `checkpoint_restore` fails) removes what the fork made: the workspace
+  (`delete_workspace`: row, folder, worktree registration) and the branch
+  (`git branch -D`), then shows the error. Before this, the workspace and
+  branch stayed but the sidebar never listed the workspace (found by verifier
+  C on main 95047f91). Conductor restores inside `createWorkspaceWithSetup`
+  (`checkpointId` argument); what it leaves after a failed restore was not
+  read. The setup script cannot fail the fork: `startSetupScript` catches its
+  own errors.
+
 Not built: the tab limit, ⌘⌥↵ / tab context menu, token counts in the hover
 (the Reason connection reports no per-turn usage), workspace notes.

@@ -11,7 +11,11 @@
 //! 2. `codex_prompt(chatId, text, model?, effort?)` for each message; it
 //!    resolves with the prompt's end (`{ outcome, message? }`), which also
 //!    arrives as a `turnEnded` event.
-//! 3. `codex_answer(chatId, requestId, decision)` for an `approval` event.
+//! 3. `codex_answer(chatId, requestId, decision)` for an `approval` event;
+//!    `codex_respond(chatId, requestId, answer)` for a `consent` event (an MCP
+//!    elicitation or a permission request), where `answer` is
+//!    `{action: "accept", content?}`, `{action: "decline"}`,
+//!    `{action: "cancel"}` or `{action: "grant", grantedPermissions, scope}`.
 //! 4. `codex_cancel(chatId)` for Stop; `codex_close_chat(chatId)` ends the
 //!    process (archive, app exit).
 
@@ -26,6 +30,7 @@ use tauri::{AppHandle, Emitter, Runtime, State};
 use crate::agent::codex_cli::{
     find_codex_cli, ApprovalPolicy, CodexLaunch, CodexPolicy, SandboxMode,
 };
+use crate::agent::codex_consent::ConsentAnswer;
 use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
 use crate::agent::codex_wire::{Payload, TurnEnd};
@@ -53,7 +58,7 @@ fn home() -> Option<PathBuf> {
 
 impl CodexChats {
     /// `PATH` from the user's login shell, falling back to the app's own.
-    fn path(&self) -> Option<OsString> {
+    pub(crate) fn path(&self) -> Option<OsString> {
         self.shell_path
             .get_or_init(|| {
                 let shell = std::env::var("SHELL").unwrap_or_else(|_| "/bin/zsh".into());
@@ -64,7 +69,7 @@ impl CodexChats {
             .clone()
     }
 
-    fn cli(&self) -> Option<PathBuf> {
+    pub(crate) fn cli(&self) -> Option<PathBuf> {
         find_codex_cli(self.path().as_deref(), home().as_deref())
     }
 
@@ -137,7 +142,9 @@ pub async fn codex_open_chat<R: Runtime>(
     };
     let chat = chat_id.clone();
     let sink: Sink = Arc::new(move |payload: Payload| {
-        let _ = app.emit(EVENT, event_json(&chat, &payload));
+        let event = event_json(&chat, &payload);
+        crate::e2e::log_event("codex", &event);
+        let _ = app.emit(EVENT, event);
     });
     let runner = Arc::new(CodexRunner::start(config, sink));
     state.chats.lock().unwrap().entry(chat_id).or_insert(runner);
@@ -186,6 +193,18 @@ pub fn codex_answer(
     decision: ApprovalDecision,
 ) -> Result<(), String> {
     state.get(&chat_id)?.answer(request_id, decision);
+    Ok(())
+}
+
+/// Answers a `consent` event; the turn goes on once Codex has the answer.
+#[tauri::command]
+pub fn codex_respond(
+    state: State<'_, CodexChats>,
+    chat_id: String,
+    request_id: RequestId,
+    answer: ConsentAnswer,
+) -> Result<(), String> {
+    state.get(&chat_id)?.respond(request_id, answer);
     Ok(())
 }
 

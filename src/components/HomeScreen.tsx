@@ -7,7 +7,7 @@ import { Wordmark } from "./Wordmark";
 import { activeWorkspaceCount } from "../state/selectors";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs } from "../keybindings/shortcut";
-import { citiesLine } from "../home/citiesLine";
+import { CITY_TOTAL, visitedCities } from "../home/cities";
 
 const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
 
@@ -33,7 +33,7 @@ function EntryCard({ icon, label, onClick }: { icon: ReactNode; label: string; o
 
 export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOpenProject }: Props) {
   const hasWorkspaces = activeWorkspaceCount(repos) > 0;
-  const cities = citiesLine(repos);
+  const cities = visitedCities(repos);
   return (
     <div className="home" data-tauri-drag-region>
       {!sidebarVisible && (
@@ -57,7 +57,13 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOp
           <EntryCard icon={<SparkIcon size={16} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
         </div>
       </div>
-      {cities && <p className="home-cities">{cities}</p>}
+      {cities.length > 0 && (
+        <div className="home-footer">
+          <button type="button" className="home-cities" title={cities.join(", ")}>
+            {`${cities.length}/${CITY_TOTAL} cities visited`}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

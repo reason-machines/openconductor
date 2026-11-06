@@ -5,7 +5,9 @@
 // Pierre `{dark, light}`: the chosen theme on the mode it has a palette for,
 // the default theme on the other. Each of its eight themes has one mode
 // (Catppuccin Latte light, the others dark). The colours below are the themes'
-// own published palettes; the token-to-scope mapping is ours.
+// own published palettes, kept as --syntax-<theme>-<key> in src/theme/tokens.css
+// (Shiki passes var() colours through to the inline styles it emits); the
+// token-to-scope mapping is ours.
 import { PIERRE_THEME } from "./pierre.ts";
 
 export type CodeTheme =
@@ -41,46 +43,53 @@ export interface CodeThemeDef {
   palette: CodePalette;
 }
 
+const PALETTE_KEYS = ["fg", "bg", "comment", "keyword", "string", "number", "function", "class", "tag", "operator", "variable"] as const;
+
+/** A code theme's colours as references to its tokens in src/theme/tokens.css. */
+export function syntaxTokens(theme: Exclude<CodeTheme, "default">): CodePalette {
+  return Object.fromEntries(PALETTE_KEYS.map((k) => [k, `var(--syntax-${theme}-${k})`])) as unknown as CodePalette;
+}
+
 export const CODE_THEMES: Record<Exclude<CodeTheme, "default">, CodeThemeDef> = {
   "catppuccin-latte": {
     label: "Catppuccin Latte",
     mode: "light",
-    palette: { fg: "#4c4f69", bg: "#eff1f5", comment: "#8c8fa1", keyword: "#8839ef", string: "#40a02b", number: "#fe640b", function: "#1e66f5", class: "#df8e1d", tag: "#d20f39", operator: "#04a5e5", variable: "#4c4f69" },
+    palette: syntaxTokens("catppuccin-latte"),
   },
   "catppuccin-macchiato": {
     label: "Catppuccin Macchiato",
     mode: "dark",
-    palette: { fg: "#cad3f5", bg: "#24273a", comment: "#8087a2", keyword: "#c6a0f6", string: "#a6da95", number: "#f5a97f", function: "#8aadf4", class: "#eed49f", tag: "#ed8796", operator: "#91d7e3", variable: "#cad3f5" },
+    palette: syntaxTokens("catppuccin-macchiato"),
   },
   "catppuccin-mocha": {
     label: "Catppuccin Mocha",
     mode: "dark",
-    palette: { fg: "#cdd6f4", bg: "#1e1e2e", comment: "#7f849c", keyword: "#cba6f7", string: "#a6e3a1", number: "#fab387", function: "#89b4fa", class: "#f9e2af", tag: "#f38ba8", operator: "#89dceb", variable: "#cdd6f4" },
+    palette: syntaxTokens("catppuccin-mocha"),
   },
   dracula: {
     label: "Dracula",
     mode: "dark",
-    palette: { fg: "#f8f8f2", bg: "#282a36", comment: "#6272a4", keyword: "#ff79c6", string: "#f1fa8c", number: "#bd93f9", function: "#50fa7b", class: "#8be9fd", tag: "#ff79c6", operator: "#ff79c6", variable: "#f8f8f2" },
+    palette: syntaxTokens("dracula"),
   },
   nord: {
     label: "Nord",
     mode: "dark",
-    palette: { fg: "#d8dee9", bg: "#2e3440", comment: "#616e88", keyword: "#81a1c1", string: "#a3be8c", number: "#b48ead", function: "#88c0d0", class: "#8fbcbb", tag: "#81a1c1", operator: "#81a1c1", variable: "#d8dee9" },
+    palette: syntaxTokens("nord"),
   },
   "tokyo-night": {
     label: "Tokyo Night",
     mode: "dark",
-    palette: { fg: "#a9b1d6", bg: "#1a1b26", comment: "#565f89", keyword: "#bb9af7", string: "#9ece6a", number: "#ff9e64", function: "#7aa2f7", class: "#2ac3de", tag: "#f7768e", operator: "#89ddff", variable: "#c0caf5" },
+    palette: syntaxTokens("tokyo-night"),
   },
   "gruvbox-dark": {
     label: "Gruvbox Dark",
     mode: "dark",
-    palette: { fg: "#ebdbb2", bg: "#282828", comment: "#928374", keyword: "#fb4934", string: "#b8bb26", number: "#d3869b", function: "#8ec07c", class: "#fabd2f", tag: "#83a598", operator: "#fe8019", variable: "#ebdbb2" },
+    palette: syntaxTokens("gruvbox-dark"),
   },
   "solarized-dark": {
     label: "Solarized Dark",
     mode: "dark",
-    palette: { fg: "#839496", bg: "#002b36", comment: "#586e75", keyword: "#859900", string: "#2aa198", number: "#d33682", function: "#268bd2", class: "#b58900", tag: "#268bd2", operator: "#859900", variable: "#839496" },
+    palette: syntaxTokens("solarized-dark"),
   },
 };
 

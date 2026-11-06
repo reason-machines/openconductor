@@ -1,12 +1,10 @@
 // "Add repository" choices in the create-workspace dialog: open a local
 // project or clone one. Strings follow Conductor's copy catalog
 // (evidence/create-workspace/README.md); the URL rules are ours.
-import type { Repo } from "../state/types";
 
 export const CLONE_PLACEHOLDER = "Choose a recent repo or paste a clone URL.";
 export const CLONE_DESTINATION_TITLE = "Choose where to clone the repository";
 export const CLONING = "Cloning repository...";
-export const REPO_EXISTS = "This repository already exists.";
 export const INVALID_CLONE_URL = "Enter a clone URL (https or git@), or owner/name for GitHub.";
 export const FAILED_TO_CLONE = "Failed to clone repository";
 
@@ -58,19 +56,6 @@ function remoteKey(host: string, segments: string[]): string {
   const path = [...segments];
   path[path.length - 1] = path[path.length - 1].replace(/\.git$/i, "");
   return `${host.replace(/^www\./i, "")}/${path.join("/")}`.toLowerCase();
-}
-
-function samePath(a: string, b: string): boolean {
-  const norm = (p: string) => p.replace(/[\\/]+$/, "");
-  return !!a && !!b && norm(a) === norm(b);
-}
-
-/** The sidebar repo a new local folder or clone URL would duplicate, if any. */
-export function findExistingRepo(repos: Repo[], candidate: { path?: string; remote?: string }): Repo | undefined {
-  const key = remoteKeyOf(candidate.remote);
-  return repos.find(
-    (r) => (candidate.path && samePath(r.path, candidate.path)) || (key !== null && remoteKeyOf(r.remote) === key),
-  );
 }
 
 /** `<parent>/<name>`, joined without doubling a trailing slash. */

@@ -143,14 +143,11 @@ on 2026-11-05.
 - Fallback model per agent: claude opus-5-1m, codex gpt-5.6-sol, cursor composer-2.5.
 - Effort levels per agent: claude low..max; codex none, low..max, ultra; cursor low..xhigh.
 
-OpenConductor's Default models page shows only Default model, as a plain select grouped by
-agent, because the only reader is the new-workspace dialog's first chat
-(`src/settings/models.ts` `newChatModel`). No agent launch consumes it yet (the dialog's
-first session is "agent runtime pending"). Divergences: no loadout picker, no per-model
-effort or fast mode; display names are derived from ids (`opus-5-5-1m` is "Opus 5.5 (1M)")
-because the bundle holds no labels for them; our stored default stays `opus` (a Conductor
-alias) rather than Conductor's `opus-5-1m` fallback. Not built: Codex personality, Claude
-output style, Review model, Default to plan mode.
+OpenConductor's Default models page (`src/settings/DefaultModelsPage.tsx`) now follows that
+layout: the Loadout (five slots, slot 1 the default model, palette columns per agent, stored in
+`conductor.db` `favorite_models`), Codex personality, Claude output style, Review model and
+Default to plan mode in new chats, with Conductor's model labels (`lv`). Differences and the
+built-app comparison: [agents-screens/README.md](agents-screens/README.md).
 
 ## Agents
 
@@ -163,20 +160,12 @@ Gateway; a Cursor API key; OpenCode. Its only registry row on this tab is
 `chrome_mode_enabled` ("Use Claude Code with Chrome"); the provider forms are registered
 through another call shape the registry regex does not catch.
 
-OpenConductor's Agents page (`src/settings/AgentsPage.tsx`) shows one card per agent
-(Claude Code, Codex, Cursor, OpenCode) with a provider picker, that provider's options and
-its key fields, built on `connect_provider` / `disconnect_provider` / `provider_status`.
-Keys are write-only: a stored key shows only as stored, and leaving its field blank keeps
-it. Divergences and gaps:
-
-- Conductor's key commands return key values to its frontend (Reveal API key); ours never
-  do, so there is no Reveal.
-- Not built: "Use Claude Code with Chrome", the custom provider, per-provider model
-  overrides (stored ones are kept on save), Conductor's provider search, and validating a
-  key against the backend ("Could not validate this API key.").
-- The Reason agent is ours, not Conductor's, and has nothing to configure, so it has no card.
-- Layout is not compared against Conductor: no screenshot of its providers page exists
-  (native capture blocked, `evidence/providers/README.md`).
+OpenConductor's Agents page (`src/settings/AgentsPage.tsx`) now follows Conductor's tabbed page
+(Claude Code, Codex, Cursor, OpenCode; Authentication cards, status line with Refresh, login
+terminal or API key field), built on `connect_provider` / `disconnect_provider` /
+`provider_status` plus `cli_login_status` for the CLIs' own login. Keys stay write-only. Rows,
+sources, the built-app comparison and the remaining differences:
+[agents-screens/README.md](agents-screens/README.md).
 
 ## Appearance page
 
@@ -603,6 +592,20 @@ Missing consumers: the rebuild has no cloud workspaces (agent cost, Roundhouse),
 no Graphite stack UI (only the toggle and the `gt` check), and no syntax highlighter, so a code theme
 sets only the code view's foreground and background, not token colors. The sidebar flag in localStorage
 (`UiPrefs.sidebarVisible`) is not migrated: the table cannot tell "unset" from "shown".
+
+### Composer send settings (`message_send_key`, `default_message_send_mode`)
+
+Source: plain byte-offset reads of `renderApp-D_fmY7hW.js` and `index-BGEQ8YjU.js` on `sven m5 max`
+(Conductor 0.87.6, 2026-11-06; `rea search` on the bundle has no JavaScript provider, logged in
+`../rea/rea-invocations.tsv` rows `composer_send_*`). Both keys are non-file-backed rows of `conductor.db`'s
+`settings` table: `message_send_key` is a typed app preference (`src-tauri/src/app_prefs`),
+`default_message_send_mode` a table pref overlaid on the General section (`src-tauri/src/settings/table_prefs.rs`,
+`src/settings/prefs.ts`).
+
+| Row (tab General) | Conductor | OpenConductor |
+| --- | --- | --- |
+| "Send messages with" / "Choose which key combination sends messages" | Options `enter` "Enter", `cmd-enter` "⌘ Enter"; shows "Custom" when the four send commands match neither preset (`CQt`); detail "Use <new-line key> for new lines"; reset goes to Enter. Choosing writes the preset to `chat.newLine`, `chat.submitMessage`, `chat.submitOppositeFollowUp`, `chat.question.submit` in `keybinding_overrides_v1`, then the legacy `message_send_key` (`RQt`). At startup a legacy `cmd-enter` fills each send command that has no override with the ⌘ Enter preset (`HUt`). | `SendKeyRow` on the General page; `composerSettings.chooseSendKey`, `overrides.sendKeyPresetUpdates`, `overrides.migrateLegacySendKey` (run by `main.tsx` before the keybindings load). The composer reads the overrides live, so the change applies at once. |
+| "Follow-up behavior" / "Queue messages to send after the agent finishes, or steer the agent mid-turn." | Options `queued` "Queue", `steering` "Steer"; reads `queued` only for that exact value, otherwise `steering` (`qQt`); detail "Use <opposite key> to queue" (or "to steer"). Hidden while the feature-flag setting `queue_messages_disabled` is `"true"` (`P5t`). | Same row and detail on the General page; the `default_message_send_mode` table pref, read live by `useFollowUpMode` (the row announces saves with `SETTINGS_CHANGED`) and passed by the chat view to the one `Composer` that serves Reason, Codex and Claude Code chats. Divergence: always shown, the rebuild has no feature flags. |
 
 ### REA gaps (app preferences slice)
 

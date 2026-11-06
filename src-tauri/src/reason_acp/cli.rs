@@ -10,6 +10,13 @@
 //!
 //! There is one provider: no `--cloud` or `--on`. A Reason Session starts on
 //! this computer and the agent itself moves work to a cloud computer.
+//!
+//! Without `--workspace`, `reason` (0.2.690) uses the workspace selected in
+//! the Reason desktop app, which can change while OpenConductor is closed.
+//! A Session lives in one workspace, so the provider pins each chat's agent
+//! with `--workspace`; [`LaunchConfig::whoami`] and
+//! [`LaunchConfig::session_presence`] say which workspaces there are and
+//! which one has a Session.
 
 use std::collections::VecDeque;
 use std::env;
@@ -18,9 +25,10 @@ use std::fmt;
 use std::io::{self, BufRead, BufReader};
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
-use std::process::{Child, ChildStdin, ChildStdout, Command, Stdio};
-use std::sync::{Arc, Mutex};
+use std::process::{Child, ChildStdin, ChildStdout, Command, Output, Stdio};
+use std::sync::{mpsc, Arc, Mutex};
 use std::thread;
+use std::time::Duration;
 
 /// Folders checked after `PATH`, in order.
 const FALLBACK_DIRS: [&str; 2] = ["/opt/homebrew/bin", "/usr/local/bin"];
@@ -113,15 +121,27 @@ impl LaunchConfig {
         Ok(self)
     }
 
+    /// This configuration in `slug`'s workspace; `None` keeps its own.
+    pub fn in_workspace(&self, slug: Option<&str>) -> Result<Self, LaunchError> {
+        match slug {
+            Some(slug) => self.clone().workspace(slug),
+            None => Ok(self.clone()),
+        }
+    }
+
     pub fn cli(&self) -> &Path {
         &self.cli
     }
 
-    pub fn args(&self) -> Vec<String> {
-        let mut args = Vec::new();
-        if let Some(slug) = &self.workspace {
-            args.extend(["--workspace".into(), slug.clone()]);
+    fn workspace_args(&self) -> Vec<String> {
+        match &self.workspace {
+            Some(slug) => vec!["--workspace".into(), slug.clone()],
+            None => Vec::new(),
         }
+    }
+
+    pub fn args(&self) -> Vec<String> {
+        let mut args = self.workspace_args();
         args.extend(["acp".into(), "-y".into()]);
         if let Some(model) = &self.model {
             args.extend(["--model".into(), model.clone()]);
@@ -139,17 +159,68 @@ impl LaunchConfig {
     /// ("unsafe inherited runtime environment"), and `cargo run`, `cargo
     /// test` and `tauri dev` set `DYLD_FALLBACK_LIBRARY_PATH` on macOS.
     pub fn command(&self, dir: &Path) -> Command {
-        let mut cmd = Command::new(&self.cli);
-        for key in refused_env(env::vars_os()) {
-            cmd.env_remove(key);
-        }
+        let mut cmd = self.base_command(dir);
         cmd.args(self.args())
-            .current_dir(dir)
-            .env("PATH", self.path_env(env::var_os("PATH")))
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped());
         cmd
+    }
+
+    fn base_command(&self, dir: &Path) -> Command {
+        let mut cmd = Command::new(&self.cli);
+        for key in refused_env(env::vars_os()) {
+            cmd.env_remove(key);
+        }
+        cmd.current_dir(dir)
+            .env("PATH", self.path_env(env::var_os("PATH")));
+        cmd
+    }
+
+    /// Runs `reason [--workspace SLUG] ARGS` in `dir` with no input; `None`
+    /// when it cannot start or takes longer than [`SUBCOMMAND_TIMEOUT`].
+    fn run(&self, dir: &Path, args: &[&str], stdout: bool) -> Option<Output> {
+        let mut cmd = self.base_command(dir);
+        cmd.args(self.workspace_args())
+            .args(args)
+            .stdin(Stdio::null())
+            .stdout(if stdout {
+                Stdio::piped()
+            } else {
+                Stdio::null()
+            })
+            .stderr(Stdio::piped());
+        let (tx, rx) = mpsc::channel();
+        thread::spawn(move || {
+            let _ = tx.send(cmd.output());
+        });
+        rx.recv_timeout(SUBCOMMAND_TIMEOUT).ok()?.ok()
+    }
+
+    /// The signed-in workspaces as `reason whoami` lists them; `None` when
+    /// it fails or lists none (e.g. signed in with `REASON_API_KEY`).
+    pub fn whoami(&self, dir: &Path) -> Option<Workspaces> {
+        let out = self.run(dir, &["whoami"], true)?;
+        if !out.status.success() {
+            return None;
+        }
+        let w = parse_whoami(&String::from_utf8_lossy(&out.stdout));
+        (!w.saved.is_empty()).then_some(w)
+    }
+
+    /// Whether `slug`'s workspace has the Session (`reason session get`).
+    pub fn session_presence(&self, dir: &Path, slug: &str, session_id: &str) -> Presence {
+        let Ok(cfg) = self.in_workspace(Some(slug)) else {
+            return Presence::Unknown;
+        };
+        if checked("session", session_id).is_err() {
+            return Presence::Unknown;
+        }
+        match cfg.run(dir, &["session", "get", session_id, "--json"], false) {
+            Some(out) if out.status.success() => Presence::Found,
+            Some(out) if is_not_found(&String::from_utf8_lossy(&out.stderr)) => Presence::Missing,
+            _ => Presence::Unknown,
+        }
     }
 
     fn path_env(&self, current: Option<OsString>) -> OsString {
@@ -164,6 +235,69 @@ impl LaunchConfig {
         }
         env::join_paths(dirs).unwrap_or_default()
     }
+}
+
+/// How long `reason whoami` or `reason session get` may take.
+const SUBCOMMAND_TIMEOUT: Duration = Duration::from_secs(20);
+
+/// The workspaces `reason whoami` lists.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub struct Workspaces {
+    /// The one `reason` uses without `--workspace` (marked `[selected]`).
+    pub selected: Option<String>,
+    /// Every saved workspace's slug, in the order listed.
+    pub saved: Vec<String>,
+}
+
+/// Reads `reason whoami` (0.2.690):
+///
+/// ```text
+/// sven@ara.so
+/// Organization: Reason Engineering
+/// Saved workspaces:
+///   reason-engineering (Reason Engineering) [selected]
+///   reason-experiments (Reason Experiments)
+/// ```
+pub fn parse_whoami(text: &str) -> Workspaces {
+    let mut w = Workspaces::default();
+    let mut in_list = false;
+    for line in text.lines() {
+        if line.trim_end() == "Saved workspaces:" {
+            in_list = true;
+            continue;
+        }
+        if !in_list {
+            continue;
+        }
+        if !line.starts_with("  ") {
+            break;
+        }
+        let Some(slug) = line.split_whitespace().next() else {
+            continue;
+        };
+        if checked("--workspace", slug).is_err() {
+            continue;
+        }
+        if line.trim_end().ends_with("[selected]") {
+            w.selected = Some(slug.to_string());
+        }
+        w.saved.push(slug.to_string());
+    }
+    w
+}
+
+/// What `reason session get` said about a Session in one workspace.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Presence {
+    Found,
+    /// `404 session_not_found`: not in this workspace.
+    Missing,
+    /// It could not tell (offline, timed out, another error).
+    Unknown,
+}
+
+fn is_not_found(stderr: &str) -> bool {
+    stderr.contains("(404 session_not_found)")
 }
 
 /// The inherited variables `reason` refuses to start with.
