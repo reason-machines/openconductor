@@ -91,6 +91,65 @@ restarts on the new root instead of reloading in place, because the
 workspace service reads the root at startup.
 
 
+## Create composer and page (create.page)
+
+REA: the decoded frontend chunks from `/Applications/Conductor.app` on
+"sven m5 max" (`renderApp-D_fmY7hW.js`, read as data with byte offsets).
+
+- Opening create (`g5`, ~7,339,960): when the user setting
+  `experimental_new_workspace_page` is off (and the organization is not a
+  cloud one) it opens dialog `NU`; otherwise it navigates to `/create`.
+- The setting is Settings › Experimental "New workspace page", "Full-screen
+  workspace creation", user scope, default off, search terms "create
+  workspace", "dispatcher", "home page" (~10,697,900). It is stored with
+  `f6({key, value})` in the settings table, not settings.toml.
+- Dialog `pya` (~11,048,900): `max-w-3xl gap-0 border-none bg-transparent p-0
+  shadow-none`, `topEdgeAnchored`, no initial focus on the dialog itself;
+  screen-reader title "New workspace" and description "Draft the first
+  message, then create and send it."; Escape closes it.
+- Route `/create` (`Q7a` -> `$Ca` -> `zCa`, ~11,520,273 and ~11,287,700):
+  `flex h-full flex-col bg-background`; a `pt-9` drag region holding a
+  "Toggle left sidebar" button only while the sidebar is hidden (`UCa`); a
+  scroll area `items-start justify-center px-6 pb-20` with a `max-w-3xl
+  pt-[clamp(3rem,12vh,8rem)]` column; a cloud-only logo; then the composer.
+  The page has a screen-reader `h1` "Create workspace" (`oya`, shown when
+  there is no `closeDialogId`).
+- Composer `oya` -> `Hji` (~11,035,000 and ~9,770,840): placeholder "What do
+  you want to work on?", box `min-h-[216px]`, editor `min-h-[142px]
+  max-h-[312px]`, `eyebrowVariant` "attached" in the dialog (the row joined
+  to the card's top, `rounded-t-lg border px-4 py-2`) and "floating" on the
+  page (`mb-2` above the card). The eyebrow row is the repo picker, the
+  target branch picker, then right-aligned the create-from picker
+  (`l4a`). Bottom-left is the model picker `RNi` (agent, model, effort);
+  bottom-right the attach button and the submit button `sQo`: label
+  "Create", title "Create workspace <key>", key `chat.submitMessage`
+  (`rQo`). Create is enabled once a repository is chosen (`Ws`); the first
+  message is optional. There is no workspace-name field: the workspace
+  takes its placeholder city name.
+- The top tab strip that lists `/create` as a "new" tab (`Bsa`, `Lsa`) only
+  renders for cloud organizations (`A9e`), so it is not built.
+
+Ours: `src/components/CreateWorkspaceComposer.tsx` (shared composer),
+`CreateWorkspaceDialog.tsx` (dialog), `CreateWorkspacePage.tsx` (page),
+`src/workspace/launchModel.ts` (model and effort), the
+`experimental_new_workspace_page` app preference, and `App.tsx` choosing
+the page or the dialog for every create entry point (Cmd+N, the sidebar
+Create row and each repository's +, the palette, the All workspaces
+button). A `/create` start URL opens the page; `?dialog=create` the dialog.
+Choosing a workspace, Back, or creating one leaves the page.
+
+Differences and gaps:
+
+- The repository, branch, model and effort pickers are native selects, not
+  Conductor's searchable menus; the model menu has no favorites.
+- No attach button: the create flow has no attachment path yet.
+- The chosen model and effort go into the create request's `firstSession`,
+  but the chat still starts its agent without them (chat.model-picker owns
+  passing them into the launch).
+- "Create in section" waits on sidebar sections (create.in-section).
+- The workspace-name field and its rarity badge are gone, as in Conductor;
+  rename the workspace afterwards.
+
 ## Initialization log (create.initializing)
 
 REA, decoded `assets/index-BGEQ8YjU.js` (3,493,297 bytes, sha256 `b5b01f33…`, the copy REA extracted from `/Applications/Conductor.app` on "sven m5 max" into `~/code/conductor-rea-work/frontend/dist/assets/`), read as data on 2026-11-05 with byte offsets:
