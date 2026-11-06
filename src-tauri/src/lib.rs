@@ -21,6 +21,7 @@
 
 pub mod agent;
 pub mod agent_binaries;
+pub mod agent_commands;
 pub mod agent_options;
 pub mod app_prefs;
 pub mod bin_source_markers;
@@ -420,6 +421,7 @@ pub fn run() {
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,
+            agent_commands::agent_slash_commands,
             e2e::e2e_report,
             terminal_commands::pty_spawn,
             terminal_commands::pty_write,

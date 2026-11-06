@@ -5,6 +5,7 @@
 // resumes its thread.
 
 import { invoke, isTauri } from "@tauri-apps/api/core";
+import { cachedAgentCommands, linkCodexSkills } from "./slashCompletions.ts";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import * as Q from "./queue.ts";
@@ -171,7 +172,9 @@ async function prompt(c: Chat, text: string): Promise<void> {
       c.opened = true;
     }
     // Resolves with the prompt's end; the `turnEnded` event closes the turn.
-    await invoke("codex_prompt", { chatId, text });
+    // A skill picked in the "/" menu (`$name`) goes to Codex as a skill input item too.
+    const skills = cachedAgentCommands("codex", c.cwd ?? "")?.skills ?? [];
+    await invoke("codex_prompt", { chatId, text: linkCodexSkills(text, skills) });
   } catch (e) {
     // The prompt never reached Codex (no CLI, chat not open), so no event will end it.
     apply(c, failTurn(c.state, turnId, String(e)));

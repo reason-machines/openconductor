@@ -76,7 +76,9 @@ test("All files: folders and type icons, chevron on hover, collapse, filter, and
   const src = page.getByRole("treeitem", { name: "src" });
   assert.equal(await src.getAttribute("aria-expanded"), "false");
   // A file row carries its type glyph; a folder its folder icon, swapped for the chevron on hover.
-  assert.equal(await page.getByRole("treeitem", { name: "package.json" }).locator(".oc-file-glyph").getAttribute("data-tint"), "yellow-600");
+  assert.equal(await page.getByRole("treeitem", { name: "package.json" }).locator(".oc-file-icon").getAttribute("data-icon"), "nodejs");
+  assert.equal(await page.getByRole("treeitem", { name: ".gitignore" }).locator(".oc-file-icon").getAttribute("data-icon"), "git");
+  assert.equal(await src.locator(".oc-file-icon").getAttribute("data-icon"), "folder");
   const chevronShown = () => src.locator(".oc-files-chevron").evaluate((e) => getComputedStyle(e).display !== "none");
   assert.equal(await chevronShown(), false);
   await src.hover();

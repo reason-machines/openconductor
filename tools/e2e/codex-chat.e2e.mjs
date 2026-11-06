@@ -245,7 +245,8 @@ try {
   await waitFor('"turn 2: follow-up"', () => chatText().then((t) => t.includes("turn 2: follow-up")));
   await turnDone(2);
   assert.equal(requests().filter((r) => r.method === "thread/start").length, 1);
-  assert.equal(requests().filter((r) => r.method === "initialize").length, 1);
+  // The "/" menu lists skills from its own short-lived app-server (clientInfo openconductor-commands).
+  assert.equal(requests().filter((r) => r.method === "initialize" && r.params?.clientInfo?.name === "openconductor").length, 1);
   pass('turn 2 reply is "turn 2: follow-up": one app-server and one thread ran both turns');
 
   // 3. Deny and stop.

@@ -26,6 +26,8 @@ export interface AppPrefs {
   sidebar_repo_filter: string | null;
   /** Experimental "Show sidebar resource usage"; off by default. */
   sidebar_resource_usage: boolean;
+  /** Experimental "Dashboard": the sidebar's Dashboard row and the /dashboard board. */
+  dashboard_enabled: boolean;
   /** "Use Claude Code with Chrome" (Settings › Agents › Claude Code): Claude Code chats start with `--chrome`. */
   chrome_mode_enabled: boolean;
 }
@@ -42,6 +44,7 @@ export type AppPrefUpdate =
         | "left_panel_visible"
         | "right_panel_visible"
         | "sidebar_resource_usage"
+        | "dashboard_enabled"
         | "chrome_mode_enabled";
       value: boolean;
     }
@@ -68,6 +71,7 @@ export const DEFAULT_APP_PREFS: AppPrefs = {
   roundhouse_client_user_id: null,
   sidebar_repo_filter: null,
   sidebar_resource_usage: false,
+  dashboard_enabled: false,
   chrome_mode_enabled: false,
 };
 
@@ -79,6 +83,8 @@ export function applyUpdate(prefs: AppPrefs, u: AppPrefUpdate): AppPrefs {
 
 let current: AppPrefs = DEFAULT_APP_PREFS;
 let loaded = false;
+/** True once the database values (or, outside the desktop app, the defaults) are in. */
+let ready = !isTauri();
 const listeners = new Set<() => void>();
 
 function publish(next: AppPrefs): void {
@@ -89,7 +95,9 @@ function publish(next: AppPrefs): void {
 /** Read every preference from the database once; later reads come from the store. */
 export async function loadAppPrefs(): Promise<AppPrefs> {
   if (!isTauri()) return current;
-  publish(await invoke<AppPrefs>("get_app_prefs"));
+  const prefs = await invoke<AppPrefs>("get_app_prefs");
+  ready = true;
+  publish(prefs);
   loaded = true;
   return current;
 }
@@ -116,6 +124,15 @@ export async function recordOpenIn(appId: string, isRemote?: boolean): Promise<A
 
 export function getAppPrefs(): AppPrefs {
   return current;
+}
+
+/**
+ * Whether the stored values have loaded. Like Conductor's `isSuccess` gate, a
+ * screen that redirects on a preference waits for this rather than acting on
+ * the defaults.
+ */
+export function appPrefsReady(): boolean {
+  return ready;
 }
 
 function subscribe(l: () => void): () => void {
