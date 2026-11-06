@@ -275,13 +275,19 @@ function WorkspaceRow({ settings, account, save }: SaveProps & { account: Reason
 /** Model and effort new Reason chats start with (`[reason] model`, `reasoning_effort`). */
 function DefaultModelRows({ settings, save }: SaveProps) {
   const [models, setModels] = useState<ReasonModelOption[]>([]);
+  // Asked again once the executable path settles (it saves per keystroke): the list comes from that `reason`.
+  const exe = settings.reason_executable_path ?? null;
+  const first = useRef(true);
   useEffect(() => {
     let live = true;
-    void reasonModels().then((m) => live && setModels(m));
+    const fresh = !first.current;
+    first.current = false;
+    const timer = setTimeout(() => void reasonModels(fresh).then((m) => live && setModels(m)), fresh ? 400 : 0);
     return () => {
       live = false;
+      clearTimeout(timer);
     };
-  }, []);
+  }, [exe]);
   const model = settings.reason?.model ?? "";
   const effort = settings.reason?.reasoning_effort ?? "";
   const listed = model === "" || models.some((m) => m.value === model);
