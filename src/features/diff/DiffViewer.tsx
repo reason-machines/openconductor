@@ -2,6 +2,7 @@
 // The diff viewer in two places, as in Conductor: the changed-files list in the
 // right panel, and the selected file in an "All changes" tab in the main area.
 // Both read one useWorkspaceDiff state. The list is in ChangesList.tsx.
+import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import type { ReactNode } from "react";
 import "./diff.css";
 import { DiscardDialog } from "./DiscardDialog";
@@ -34,11 +35,13 @@ function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: Di
   return (
     <span className="oc-seg oc-icons" role="group" aria-label="Diff layout">
       {(Object.keys(LAYOUT_ICON) as DiffLayout[]).map((v) => (
-        <button key={v} aria-pressed={v === value} onClick={() => onChange(v)} title={LAYOUT_TITLE[v]} aria-label={LAYOUT_TITLE[v]}>
-          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            {LAYOUT_ICON[v]}
-          </svg>
-        </button>
+        <Tooltip key={v} content={LAYOUT_TITLE[v]}>
+          <button aria-pressed={v === value} onClick={() => onChange(v)} aria-label={LAYOUT_TITLE[v]}>
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              {LAYOUT_ICON[v]}
+            </svg>
+          </button>
+        </Tooltip>
       ))}
     </span>
   );
@@ -106,7 +109,7 @@ function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annot
           }
         />
         {diff.unread >= 0 && diff.unread !== diff.current && (
-          <button className="btn btn-small oc-next-unread" onClick={() => diff.open(diff.unread)} title="Open the next file not marked as viewed">
+          <button className="btn btn-small oc-next-unread" onClick={() => diff.open(diff.unread)}>
             Next unread ›
           </button>
         )}
