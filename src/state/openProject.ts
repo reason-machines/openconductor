@@ -1,6 +1,8 @@
 // Home "Open project": decide what happens to a folder picked in the native
 // picker, from the backend's folder checks (evidence/screens/home.md).
 
+import type { Action } from "./store.ts";
+
 export interface FolderInspection {
   isDir: boolean;
   hasGit: boolean;
@@ -33,4 +35,27 @@ export function decideOpenProject(path: string, f: FolderInspection): OpenProjec
 export function failedToAddMessage(err: unknown): string {
   const detail = err instanceof Error ? err.message : String(err);
   return `Failed to add project: ${detail}`;
+}
+
+/** What `add_repository` returns for a registered project. */
+export interface RegisteredRepo {
+  id: string;
+  name: string;
+  root: string;
+  defaultBranch: string;
+}
+
+/**
+ * The store action for a project the backend just registered, under the
+ * backend's id and name. Conductor's `g2t` names a local project
+ * `makeRepoNameUnique(<folder name>, null)`, so opening an added folder again
+ * gives a second project `<name>-v1` (evidence/screens/duplicate-repo.md);
+ * the folder name alone would show it unbumped.
+ */
+export function addRegisteredRepo(registered: RegisteredRepo, remote: string): Action {
+  return {
+    type: "addRepo",
+    id: registered.id,
+    repo: { name: registered.name, path: registered.root, remote, defaultBranch: registered.defaultBranch },
+  };
 }

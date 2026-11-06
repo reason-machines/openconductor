@@ -722,6 +722,31 @@ fn root_setting_moves_workspaces_archives_and_default_clones() {
     assert!(f.repo.join("README.md").is_file(), "files stay on disk");
 }
 
+/// Open project on a folder that is already added, through the two steps of
+/// the `add_repository` command (register with the service, then
+/// `on_repository_added` writes conductor.db): as Conductor's `g2t`, a second
+/// `repos` row on the same folder named `<name>-v1`, next in display order
+/// (evidence/screens/duplicate-repo.md).
+#[tokio::test]
+async fn open_project_twice_on_one_folder_writes_a_second_repos_row() {
+    use super::service::WorkspaceService;
+    use crate::persistence::{list_repos, record_repository};
+    use crate::persistence_commands::known_repo;
+    let f = fixture();
+    let svc = WorkspaceService::new(f.tmp.path().join("svc")).unwrap();
+    let pool = openconductor_db::open_in_memory().await.unwrap();
+    let mut roots = Vec::new();
+    for _ in 0..2 {
+        let r = svc.add_repository(&f.repo).unwrap();
+        record_repository(&pool, &known_repo(&r)).await.unwrap();
+        roots.push(r.root.display().to_string());
+    }
+    assert_eq!(roots[0], roots[1]);
+    let rows = list_repos(&pool).await.unwrap();
+    let got: Vec<_> = rows.iter().map(|r| (r.id.as_str(), r.name.as_str(), r.root_path.as_str(), r.display_order)).collect();
+    assert_eq!(got, [("my-app", "My App", roots[0].as_str(), 0), ("my-app-v1", "My App-v1", roots[0].as_str(), 1)]);
+}
+
 #[test]
 fn service_reads_a_registry_without_names_and_bumps_past_workspace_folders() {
     use super::service::WorkspaceService;
