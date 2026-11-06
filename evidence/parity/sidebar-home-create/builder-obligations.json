@@ -1,13 +1,13 @@
 {
  "schema": "openconductor.builder-obligations.v1",
  "ref": "origin/main",
- "verdicts_verified_at": "2026-11-06 (main 1f43a15: sidebar.ws-unread after #443 (1f43a15), stays partial (per-chat unread, plan/question/elicitation waits); main a9e4a48: sidebar.archive after #532 (a9e4a48), home.duplicate-repo after #401 (1121ccc), home.recent re-read after #401 (persistence closed; archived workspaces still dropped from Recent, open #551); main 563981a: create.page after #388 (563981a), create.first-message model/effort note after #388, create.initializing re-read after #388/#399 (unchanged), sidebar.archive: #467 merged into #428's branch after #428 landed, so its fix is not on main; main f6da48f: sidebar.ws-status after #428 (5751628), home.status-overview after #428 and #457 (f6da48f), sidebar.archive re-read (Codex chats now block archive, Stop still skips them and needs_user_permission chats); main 2e13137: sidebar.archive Codex-chat gap in progress via open draft #467, verdict unchanged; main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
- "verdict_parity_pct": 94.0,
+ "verdicts_verified_at": "2026-11-06 (main 4c28914: home.status-overview after #539 (4c28914), status matrix read in Home, sidebar and pending rows; main 1f43a15: sidebar.ws-unread after #443 (1f43a15), stays partial (per-chat unread, plan/question/elicitation waits); main a9e4a48: sidebar.archive after #532 (a9e4a48), home.duplicate-repo after #401 (1121ccc), home.recent re-read after #401 (persistence closed; archived workspaces still dropped from Recent, open #551); main 563981a: create.page after #388 (563981a), create.first-message model/effort note after #388, create.initializing re-read after #388/#399 (unchanged), sidebar.archive: #467 merged into #428's branch after #428 landed, so its fix is not on main; main f6da48f: sidebar.ws-status after #428 (5751628), home.status-overview after #428 and #457 (f6da48f), sidebar.archive re-read (Codex chats now block archive, Stop still skips them and needs_user_permission chats); main 2e13137: sidebar.archive Codex-chat gap in progress via open draft #467, verdict unchanged; main 8da9edf: sidebar.transparency and sidebar.ws-numbers re-read after #438 (settings toggles only, not wired); main 1944b98: sidebar.archive re-read (Codex chats neither block nor are stopped, partial), sidebar.archived-view after #437 (1944b98), home.status-overview archive-filter gap recorded; main 2dff30a: sidebar.ws-unread re-read after #431 (93f1846), stays partial; main 9930339: sidebar.footer-usage and sidebar.computer-switcher after #410 (9930339), create.in-section after #419 (d353535); main f6c05d7: sidebar.archive and sidebar.archived-view after #397 (aa32456); main 99edc40: sidebar.add-menu and sidebar.resize-toggle after #423, sidebar.visibility-settings re-read (stale since #332); main 274ac80: sidebar.ws-actions after #400 (be4f789), sidebar.archive and sidebar.archived-view after #391; main 962f017: sidebar.drag-to-section after #412 (93e4881), sidebar.ws-actions re-read against PR #400 head 6e038d3; main 66a892a: sidebar.sections, sidebar.drag-to-section, sidebar.ws-actions, sidebar.ws-name and sidebar.ws-status after #370; main df07012: sidebar.archived-view after #366; main 0f82f19: home.repo-search, sidebar.repo-icon, sidebar.rename, sidebar.ws-actions and sidebar.ws-name after #315; create.number after #305; create.page re-read, #388 not merged; home.first-run and home.org-states confirmed unchanged since #381; home.* re-read on 4d72807 after #322, #343, #350, #354, #379, #381; create.worktree, create.initializing, sidebar.ws-status after #327, #344, #375, #379; sidebar items touched by #283, #288, #293, #312 on 8229113; create.autostart-run after #324 on 7e75c2d; #278 items on 0e2531b; others on 85e00bb with no later change to their code)",
+ "verdict_parity_pct": 94.8,
  "rule": "An obligation closes when a verifier re-reads the item on main and records verdict `implemented`. Builders do not edit verdicts.",
- "open": 7,
+ "open": 6,
  "by_owner": {
   "create-workspace": 1,
-  "home": 3,
+  "home": 2,
   "sidebar": 3
  },
  "obligations": [
@@ -76,27 +76,6 @@
    "evidence": {
     "copy": [
      3459
-    ]
-   },
-   "status": "open"
-  },
-  {
-   "obligation_id": "parity.home.status-overview",
-   "item": "home.status-overview",
-   "area": "home",
-   "owner": "home",
-   "depends_on_builders": [],
-   "feature": "Home list shows each workspace's active session status or its last-activity time (Conductor: needs plan response, needs permission, needs input, working, cancelling, waiting); status-matrix option and mine-vs-all",
-   "verdict": "partial",
-   "gap": "#428 (5751628): a Home row shows homeStatus(ws.state, useWorkspaceAgentStatus(ws)) in place of the last-activity time whenever showsActivityStatus holds (setup and agent statuses, not git or unstarted), as Conductor's vJo/aWt run oWt with the sessions' status and workspace state and no PR; every session status (needs plan response, needs permission, needs input, working, cancelling, waiting) now renders there, an idle row keeps its time. #457 (f6da48f): AllWorkspaces reads listArchivedWorkspaces when the archive filter is not 'Hiding archived' (again after repos change) and homeRows merges them, so 'Only archived' and 'Showing all' list archived workspaces as Conductor's UJo (index @9,863,549) filters one list; an archived row opens the read-only archived view. Still partial: the item's status-matrix option is not built. Settings > Experimental 'Workspace status matrix' (internal_workspace_status_matrix, a user-visible row in Conductor's renderApp near @10,655,600: 'Use the matrix-style workspace status indicator in Home and the sidebar') is stored by #438 (prefs.ts) but no Home or sidebar code reads it. Mine-vs-all ('My workspaces', @10,055,740) exists only for team organizations, which OpenConductor has none of, so it is not counted. Read on f6da48f; not run in the desktop app. As sidebar.ws-status: plan/input/waiting render only when conductor.db holds them.",
-   "done_when": "the gap in `why` is closed and the feature matches the cited evidence end to end",
-   "ledger_obligations": [],
-   "evidence": {
-    "copy": [
-     4796,
-     5007,
-     137,
-     2767
     ]
    },
    "status": "open"
