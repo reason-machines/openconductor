@@ -105,6 +105,21 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   }, [workspaceId]);
 
   const files = useMemo(() => (load.state === "ready" ? load.files : []), [load]);
+  const [uncommitted, setUncommitted] = useState<{ worktree: string | null; paths: Set<string> }>({ worktree: null, paths: new Set() });
+  useEffect(() => {
+    if (load.state !== "ready") return;
+    if (!turn && opts.scope === "uncommitted") {
+      setUncommitted({ worktree, paths: new Set(load.files.map((f) => f.path)) });
+      return;
+    }
+    let active = true;
+    loadWorkspaceDiff(worktree, target, { ...opts, scope: "uncommitted", layout: "unified" }, { contextLines: 0 }).then(
+      (changed) => { if (active) setUncommitted({ worktree, paths: new Set(changed.map((f) => f.path)) }); },
+      () => { if (active) setUncommitted({ worktree, paths: new Set() }); },
+    );
+    return () => { active = false; };
+  }, [load, worktree, target, opts, turn]);
+  const uncommittedPaths = uncommitted.worktree === worktree ? uncommitted.paths : new Set<string>();
   const current = selectedPath === null ? -1 : files.findIndex((f) => f.path === selectedPath);
   const selected = current >= 0 ? files[current] : null;
 
@@ -185,6 +200,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     /** Worktree folder the diff is read from (null while the workspace has none). */
     worktree,
     totals,
+    uncommittedPaths,
     /** Index of the selected file in `files`, or -1. */
     current,
     /** The selected file. */

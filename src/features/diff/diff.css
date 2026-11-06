@@ -63,9 +63,40 @@
 .oc-diff.oc-diff-list, .oc-diff.oc-diff-tab { grid-template-columns: minmax(0, 1fr); }
 .oc-diff.oc-diff-tab { grid-template-rows: minmax(0, 1fr); position: relative; }
 .oc-diff-tab .oc-next-unread { position: absolute; right: 16px; bottom: 12px; margin: 0; }
-.oc-diff-list .oc-changes { border-right: 0; }
-.oc-diff-list .oc-change-row { margin: 0 4px; border-radius: 6px; }
-.oc-diff-list .oc-change { padding: 5px 8px; border-radius: 6px; font-size: 13px; }
+.oc-diff.oc-diff-list { display: flex; flex-direction: column; }
+.oc-diff-list .oc-changes { flex: 1; min-height: 0; border-right: 0; padding: 0 0 8px; }
+.oc-diff-list .oc-changes-header { flex: none; height: 32px; padding: 0 26px 0 20px; border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); font-size: 14px; font-weight: 500; line-height: 1; }
+.oc-diff-list .oc-change-row { position: relative; margin: 0 8px; border-radius: 6px; }
+.oc-diff-list .oc-change { min-height: 32px; padding: 4px 12px; border-radius: 6px; font-size: 14px; gap: 6px; }
+.oc-diff-list .oc-change.viewed { opacity: .5; }
+.oc-diff-list .oc-change .name { align-items: center; }
+.oc-diff-list .oc-count { display: inline-flex; gap: 4px; font-size: 10px; font-weight: 500; line-height: 15px; white-space: nowrap; }
+.oc-diff-list .oc-count .d { margin-left: 0; }
+.oc-diff-list .oc-status { width: 12px; height: 12px; flex: none; }
+.oc-diff-list .oc-status.untracked { color: var(--muted); }
+.oc-change-meta { display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 0 6px; min-width: 40px; flex: none; }
+.oc-change-uncommitted { font-size: 12px; font-weight: 500; color: var(--text); }
+.oc-change-actions { position: absolute; right: 0; top: 0; height: 100%; display: inline-flex; align-items: center; visibility: hidden; }
+.oc-change-row:hover .oc-change-meta, .oc-change-row:focus-within .oc-change-meta { visibility: hidden; }
+.oc-change-row:hover .oc-change-actions, .oc-change-row:focus-within .oc-change-actions { visibility: visible; }
+.oc-change-row:has(.oc-change-actions button:hover) .oc-change { background: transparent; }
+.oc-change-row .oc-change-actions .oc-discard { opacity: 1; margin: 0; }
+.oc-change-rename-arrow { flex: none; margin: 0 8px; color: var(--muted); }
+.oc-change-directory { display: flex; flex: none; align-items: center; gap: 6px; height: 32px; width: 100%; padding-right: 18px; text-align: left; color: var(--muted); }
+.oc-change-directory:hover { background: var(--hover); }
+.oc-change-directory > svg { flex: none; }
+.oc-change-directory .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 12px; }
+.oc-changes-comment-actions { display: flex; flex: none; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 12px; font-size: 12px; }
+.oc-changes-comment-actions:empty { display: none; }
+.rp-tabs-end .oc-changes-tree-toggle, .rp-tabs-end [aria-label="Filter files"] { margin-right: 6px; }
+.rp-tabs-end .oc-changes-options { margin-right: 8px; }
+.rp-tabs-end .oc-changes-scope { display: inline-flex; align-items: center; gap: 4px; width: auto; max-width: 150px; margin-right: 8px; padding: 0 6px; background: var(--active); color: var(--text); font-size: 12px; }
+.oc-changes-options-menu { min-width: 128px; max-width: 320px; }
+.oc-changes-target { display: flex; align-items: center; gap: 8px; padding: 6px 8px; white-space: nowrap; color: var(--muted); font-size: 14px; }
+.oc-changes-target-trigger { display: inline-flex; align-items: center; gap: 6px; padding: 0; color: var(--muted); font-size: 14px; white-space: nowrap; }
+.oc-changes-target-trigger:hover { color: var(--text); }
+.oc-changes-option-label { flex: 1; }
+.oc-changes-option-detail { display: block; color: var(--muted); font-size: 12px; }
 .oc-diff-tab .oc-file { border-radius: 0; border-width: 0 0 1px; margin-bottom: 0; content-visibility: visible; }
 .oc-files { overflow: auto; min-width: 0; padding: 8px 12px 40px; }
 .oc-next-unread { position: sticky; bottom: 12px; display: block; width: fit-content; margin: 0 0 0 auto; box-shadow: 0 2px 8px var(--shadow-15); }
@@ -168,8 +199,7 @@
 /* Conductor's Changes filter row (`W4s`): px-2 pb-2 around a h-7 rounded-md bg-muted px-3 box,
    gap-1.5; size-3 muted search icon, text-sm input, "N of M" text-xs tabular-nums, close button
    -mr-1.5 p-1.5. Opens to 36 px over 180 ms ease-out. */
-.oc-diff.oc-diff-list:has(> .oc-changes-filter) { grid-template-rows: auto auto minmax(0, 1fr); }
-.oc-changes-filter { height: 36px; padding: 0 8px 8px; box-sizing: border-box; overflow: hidden; animation: oc-changes-filter-in 180ms ease-out; }
+.oc-changes-filter { flex: none; height: 36px; padding: 0 8px 8px; box-sizing: border-box; overflow: hidden; animation: oc-changes-filter-in 180ms ease-out; }
 .oc-changes-filter-box { display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: 6px; background: var(--surface-muted); color: var(--muted); }
 .oc-changes-filter-box > svg { flex: none; }
 .oc-changes-filter-box input { flex: 1; min-width: 0; padding: 0; border: 0; outline: none; background: transparent; color: var(--text); font: inherit; font-size: 14px; }

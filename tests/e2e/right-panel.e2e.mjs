@@ -29,14 +29,17 @@ let base;
 before(async () => {
   assert.ok(executablePath, `no Chrome or Chromium found; set CHROME_PATH (tried ${CANDIDATES.join(", ")})`);
   assert.ok(existsSync("dist/index.html"), "dist/ is missing; run `npm run build` first");
-  server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
-  base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  if (process.env.OC_E2E_BASE) base = process.env.OC_E2E_BASE;
+  else {
+    server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
+    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  }
   browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
 });
 
 after(async () => {
   await browser?.close();
-  await new Promise((resolve) => server?.httpServer.close(resolve));
+  if (server) await new Promise((resolve) => server.httpServer.close(resolve));
 });
 
 async function open({ spotlight = false } = {}) {
@@ -63,6 +66,43 @@ test("tabs: All files, Changes with its count, Checks; each tab brings its own i
   assert.equal(await page.getByRole("button", { name: "Collapse folders" }).count(), 0);
   await page.getByRole("tab", { name: "All files" }).click();
   for (const name of ["Collapse folders", "Filter files", "New file"]) await page.getByRole("button", { name, exact: true }).waitFor();
+  assert.deepEqual(errors, []);
+  await context.close();
+});
+
+test("Changes: sorted flat rows, compressed hierarchy, collapsing counts, filtering and scope options", async () => {
+  const { context, page, errors } = await open();
+  const changed = page.locator('nav[aria-label="Changed files"]');
+  await changed.locator(".oc-change").first().waitFor();
+  assert.deepEqual(await changed.locator(".oc-change .name").allInnerTexts(), ["src/lib/auth.test.ts", "src/lib/auth.ts"]);
+  assert.equal(await page.getByRole("button", { name: "Refresh", exact: true }).count(), 0);
+  assert.equal(await changed.getByRole("img", { name: "modified", exact: true }).count(), 2);
+  await page.getByRole("button", { name: "Show folder hierarchy", exact: true }).click();
+  const folder = changed.getByRole("button", { name: "src / lib", exact: true });
+  assert.equal(await folder.getAttribute("aria-expanded"), "true");
+  await folder.click();
+  assert.equal(await folder.getAttribute("aria-expanded"), "false");
+  assert.equal(await changed.locator(".oc-change").count(), 0);
+  assert.match(await folder.innerText(), /\+15/);
+  assert.match(await folder.innerText(), /-1/);
+  await page.getByRole("button", { name: "Filter files", exact: true }).click();
+  const filter = page.getByRole("textbox", { name: "Filter changed files" });
+  await filter.fill("test");
+  assert.equal(await changed.locator(".oc-change").count(), 1);
+  await changed.locator(".oc-change").click();
+  await page.locator(".oc-path-chip").filter({ hasText: "auth.test.ts" }).waitFor();
+  assert.equal(await changed.locator(".oc-change").getAttribute("aria-current"), "true");
+  await filter.press("Escape");
+  assert.equal(await filter.count(), 0);
+  assert.equal(await changed.locator(".oc-change").count(), 0);
+  await page.getByRole("button", { name: "Show flat list", exact: true }).click();
+  assert.equal(await changed.locator(".oc-change").count(), 2);
+  await page.getByRole("button", { name: "Changes options", exact: true }).click();
+  await page.getByRole("menuitem", { name: /Uncommitted changes/ }).click();
+  await page.getByRole("button", { name: "Back to all changes", exact: true }).waitFor();
+  await page.waitForFunction(() => window.__fake.calls.some((c) => c.cmd === "diff_workspace" && c.request.scope.kind === "uncommitted"));
+  await page.getByRole("button", { name: "Back to all changes", exact: true }).click();
+  await page.getByRole("button", { name: "Changes options", exact: true }).waitFor();
   assert.deepEqual(errors, []);
   await context.close();
 });
