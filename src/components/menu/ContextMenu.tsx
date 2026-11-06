@@ -15,6 +15,7 @@
 import { createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { ChevronRightIcon } from "./menuIcons";
+import { placeDropdown, type Rect } from "./dropdownPlacement.ts";
 import "./contextMenu.css";
 
 const COLLISION_PADDING = 5;
@@ -156,6 +157,11 @@ function place(w: number, h: number, a: { left: number; top: number; right: numb
 interface ContextMenuProps {
   /** Viewport point of the right-click; a new point reopens the menu there. */
   at: { x: number; y: number };
+  /**
+   * A dropdown's trigger: the menu opens under it (align start, 4px gap,
+   * dropdownPlacement.ts) instead of at the pointer. Use `DropdownMenu`.
+   */
+  anchor?: Rect;
   onClose: () => void;
   /** Accessible name of the menu. */
   label: string;
@@ -167,11 +173,11 @@ interface ContextMenuProps {
 }
 
 /** A right-click menu at `at`, portalled to <body>. */
-export function ContextMenu({ at, onClose, label, className, onKeyDown, children }: ContextMenuProps) {
+export function ContextMenu({ at, anchor, onClose, label, className, onKeyDown, children }: ContextMenuProps) {
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useEnterPhase();
-  const [pos, setPos] = useState<{ left: number; top: number } | null>(null);
+  const [pos, setPos] = useState<{ left: number; top: number; origin?: string } | null>(null);
   const [openSub, setOpenSub] = useState<string | null>(null);
   const closing = useRef<number | null>(null);
   const onCloseRef = useRef(onClose);
@@ -192,7 +198,13 @@ export function ContextMenu({ at, onClose, label, className, onKeyDown, children
     const el = ref.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
+    if (anchor) {
+      const p = placeDropdown(anchor, { width: r.width, height: r.height }, { width: window.innerWidth, height: window.innerHeight });
+      setPos({ left: p.left, top: p.top, origin: `${p.originX}px ${p.originY}px` });
+      return;
+    }
     setPos(place(r.width, r.height, { left: at.x, right: at.x, top: at.y, bottom: at.y }, "context"));
+    // `anchor` is read once per open, like the pointer.
   }, [at.x, at.y]);
   // Focus once placed: the measuring pass is `visibility: hidden`, which can't take focus,
   // and the menu needs it for arrow keys and the R / P accelerators.
@@ -227,7 +239,7 @@ export function ContextMenu({ at, onClose, label, className, onKeyDown, children
   }, [id, close]);
 
   const style: React.CSSProperties = pos
-    ? { left: pos.left, top: pos.top, ["--transform-origin" as string]: `${at.x - pos.left}px ${at.y - pos.top}px` }
+    ? { left: pos.left, top: pos.top, ["--transform-origin" as string]: pos.origin ?? `${at.x - pos.left}px ${at.y - pos.top}px` }
     : { left: at.x, top: at.y, visibility: "hidden" };
   return createPortal(
     <TreeContext.Provider value={{ id, close }}>
@@ -240,6 +252,11 @@ export function ContextMenu({ at, onClose, label, className, onKeyDown, children
     </TreeContext.Provider>,
     document.body,
   );
+}
+
+/** A dropdown menu under its trigger (Conductor's DropdownMenu `h2` / `Tm`), portalled to <body>. */
+export function DropdownMenu({ anchor, ...props }: Omit<ContextMenuProps, "at" | "anchor"> & { anchor: Rect }) {
+  return <ContextMenu {...props} at={{ x: anchor.left, y: anchor.bottom }} anchor={anchor} />;
 }
 
 /** Closes submenus when the pointer moves onto another item of the same menu. */

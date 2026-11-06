@@ -135,6 +135,13 @@
 .oc-icon-action { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--oc-muted-fg); cursor: pointer; }
 .oc-icon-action:hover, .oc-icon-action[aria-expanded="true"] { background: var(--oc-accent); color: var(--oc-accent-fg); }
 .oc-icon-action-svg { width: 14px; height: 14px; }
+/* Conductor's footer icons are lucide-react with its global `.lucide{stroke-width:1px}` and non-scaling strokes. */
+.oc-turn-footer .oc-icon-action svg { stroke-width: 1px; }
+.oc-turn-footer .oc-icon-action svg * { vector-effect: non-scaling-stroke; }
+/* "Show message actions" (`tt` ghost iconXs + `size-5`): rounded-sm (4px), presses to 97%, accent while open. */
+.oc-turn-menu-trigger { border-radius: 4px; transition: transform 150ms ease-out; }
+.oc-turn-menu-trigger:active { transform: scale(0.97); }
+.oc-turn-menu-trigger[data-popup-open] { background: var(--oc-accent); color: var(--oc-accent-fg); }
 .oc-text-action { font-size: 12px; color: var(--oc-muted-fg); padding: 2px 6px; border-radius: 5px; }
 .oc-text-action:hover { background: var(--oc-accent); color: var(--oc-accent-fg); }
 /* Conductor (`vDo`): the first chips share the footer row and shrink instead of wrapping (flex-1 min-w-0
@@ -201,11 +208,6 @@
 .hljs-emphasis { font-style: italic; }
 .hljs-strong { font-weight: 700; }
 .hljs-link { text-decoration: underline; }
-.chat-turn-menu { position: relative; display: inline-flex; }
-.chat-menu { position: absolute; right: 0; bottom: calc(100% + 4px); transform-origin: bottom right; z-index: 20; min-width: 140px; padding: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 6px 20px var(--shadow-18); }
-.chat-menu-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 5px 8px; border-radius: 5px; font-size: 12.5px; text-align: left; white-space: nowrap; }
-.chat-menu-item:hover:not(:disabled) { background: var(--hover); }
-.chat-menu-item:disabled { opacity: 0.5; cursor: default; }
 
 .oc-reset-files { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .oc-reset-count { font-variant-numeric: tabular-nums; }

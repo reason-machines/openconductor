@@ -523,10 +523,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             expandToolsByDefault={garryMode}
             dontCollapseToolCalls={garryMode}
             onRetry={(prompt) => submit(prompt, "queue")}
-            // Conductor: workspace with a path, not archived; disabled while the agent works.
+            // Conductor: workspace with a path, not archived; disabled while the agent works or a plan waits.
             // Reset chat and turn changes come from turn checkpoints (Reason, Claude Code); Codex turns have none yet.
             onResetChat={reason && agent.reset && workspace.status !== "archived" ? setResetTurn : undefined}
-            resetDisabled={running}
+            resetDisabled={running || planWaiting !== undefined}
             turnFooter={agent.reset ? turnFooter : undefined}
             workspacePath={cwd}
             onOpenFile={openFile ? (path) => openFile(path.startsWith(`${cwd}/`) ? path.slice(cwd.length + 1) : path) : undefined}

@@ -296,21 +296,20 @@ try {
   }
   pass(`turns 5 and 6 each saved start/end checkpoints (${refs.length} refs in the workspace)`);
 
-  // Every finished turn has a More actions menu ("Fork to new tab", "Fork to new workspace"); only
-  // turns before the last also have "Reset chat". Opens the turn's menu with
-  // real clicks, reads its items, and leaves it open.
+  // Every finished turn has a "Show message actions" menu ("Fork to new tab", "Fork to new
+  // workspace"); only turns before the last also have "Reset chat". Opens the turn's menu with
+  // real clicks, reads its items, and leaves it open. The menu is portalled to <body> under its
+  // button (.cm-turn-menu, one open at a time) behind a backdrop, so Escape closes it.
   const openMenu = async (turn) => {
-    // The menu opens upward from its button (.chat-menu: bottom: 100%), so a
-    // turn near the top of the transcript would put it past the scroller's edge.
     await run(`document.querySelector(arguments[0]).scrollIntoView({ block: "center" }); return true;`, turn);
-    await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
+    await wd("POST", `/element/${await find(`${turn} button[aria-label="Show message actions"]`)}/click`, {});
     return waitFor(`${turn}'s menu`, () =>
-      run(`const m = document.querySelector('${turn} .chat-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
+      run(`const m = document.querySelector('.cm-turn-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
     );
   };
   const closeMenu = async (turn) => {
-    await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
-    await waitFor(`${turn}'s menu to close`, () => run(`return !document.querySelector('${turn} .chat-menu');`));
+    await run(`document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })); return true;`);
+    await waitFor(`${turn}'s menu to close`, () => run(`return !document.querySelector('.cm-turn-menu');`));
   };
   const turn5 = `.chat-turn-end[data-turn-id="${id5}"]`;
   const turn6 = `.chat-turn-end[data-turn-id="${id6}"]`;
@@ -321,7 +320,7 @@ try {
   assert.deepEqual(turn5Items, ["Fork to new tab", "Fork to new workspace", "Reset chat"], "turn 5 has both forks and Reset chat");
   pass('the last turn\'s menu has "Fork to new tab" and "Fork to new workspace"; turn 5\'s also has "Reset chat"');
   const resetItem = turn5Items.indexOf("Reset chat") + 1;
-  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]:nth-child(${resetItem})`)}/click`, {});
+  await wd("POST", `/element/${await find(`.cm-turn-menu [role="menuitem"]:nth-child(${resetItem})`)}/click`, {});
   const dialog = await waitFor('"Reset chat?" with "2 changed"', () =>
     run(`const d = document.querySelector('.modal[aria-label="Reset chat?"]'); return d && d.innerText.includes("changed") ? d.innerText : null;`),
   );
@@ -406,7 +405,7 @@ try {
   const forkItems = await openMenu(turn5);
   const forkItem = forkItems.indexOf("Fork to new workspace") + 1;
   assert.ok(forkItem > 0, JSON.stringify(forkItems));
-  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]:nth-child(${forkItem})`)}/click`, {});
+  await wd("POST", `/element/${await find(`.cm-turn-menu [role="menuitem"]:nth-child(${forkItem})`)}/click`, {});
   const worktrees = () =>
     execFileSync("git", ["worktree", "list", "--porcelain"], { cwd: workspace.path, encoding: "utf8" })
       .split("\n\n")
