@@ -225,12 +225,13 @@ pub fn claude_lookup(
                 .and_then(|_| stdin.flush())
                 .map_err(|e| e.to_string())
         });
-    let answer = match sent {
-        Ok(()) => rx
-            .recv_timeout(timeout)
-            .unwrap_or_else(|_| Err("Claude Code did not list its commands in time".into())),
-        Err(e) => Err(e),
-    };
+    // A CLI that already exited fails the write with a broken pipe; its
+    // reader then reports the exit, which is the error worth showing.
+    let answer = rx.recv_timeout(timeout).unwrap_or_else(|_| {
+        Err(sent
+            .err()
+            .unwrap_or_else(|| "Claude Code did not list its commands in time".into()))
+    });
     let _ = child.kill();
     let _ = child.wait();
     answer
