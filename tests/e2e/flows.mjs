@@ -326,9 +326,8 @@ export const flows = [
         const stored = (await invoke("session_statuses", {})).value ?? [];
         if (!stored.some((r) => r.chatId === ws.id && r.status === "needs_user_permission")) throw new Error(`session_statuses ${JSON.stringify(stored)}`);
 
-        // The sidebar's Home row (its title carries the shortcut hint).
-        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
-        if (!opened) throw new Error("no Home row in the sidebar");
+        // The Home list is the /all-workspaces route (sidebar Home opens the wordmark screen, #483).
+        await wd.execute('history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;', []);
         await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
         await waitShown("Needs permission on the Home row", homeIcons, "needs-user-permission", "Needs permission");
         if (process.env.E2E_OUT) {
@@ -970,9 +969,9 @@ export const flows = [
            });`,
           [],
         );
+      // The Home list is the /all-workspaces route (sidebar Home opens the wordmark screen, #483).
       const openHome = async () => {
-        const opened = await wd.execute("const b = Array.from(document.querySelectorAll('.sb-row')).find((e) => e.querySelector('.sb-row-label')?.textContent.trim() === 'Home'); b?.click(); return !!b;", []);
-        if (!opened) throw new Error("no Home row in the sidebar");
+        await wd.execute('history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); return true;', []);
         await wd.waitFor("the Home list", async () => (await wd.findAll(".allws .allws-row")).length > 0);
       };
       const shot = async (name) => {
