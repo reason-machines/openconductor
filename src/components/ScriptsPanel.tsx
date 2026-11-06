@@ -24,6 +24,7 @@ import {
   SPOTLIGHT_TASK_ID,
   applyEvent,
   runTasks,
+  shownTask,
   spotlightButton,
   toggleBlocked,
   viewFromStatus,
@@ -73,10 +74,13 @@ export function ScriptsPanel({ repo, workspace, tab, onSetupState, onAddRunScrip
   const spotEnabled = spotSetting?.enabled === true;
   const spotMine = spotView.workspaceId === wsId;
   const spotLogMine = spotView.logWorkspaceId === wsId;
-  const spotPicked = picked === SPOTLIGHT_TASK_ID && spotEnabled;
-  const shown = spotPicked
-    ? SPOTLIGHT_TASK_ID
-    : (picked !== SPOTLIGHT_TASK_ID ? picked : null) ?? activeRun(runs)?.scriptId ?? (spotMine ? SPOTLIGHT_TASK_ID : null) ?? defaultScript(config)?.id ?? null;
+  const shown = shownTask({
+    picked,
+    spotlightEnabled: spotEnabled,
+    activeScriptId: activeRun(runs)?.scriptId ?? null,
+    spotlightMine: spotMine,
+    defaultScriptId: defaultScript(config)?.id ?? null,
+  });
   const showSpotlight = shown === SPOTLIGHT_TASK_ID;
 
   const refresh = useCallback(async () => {
