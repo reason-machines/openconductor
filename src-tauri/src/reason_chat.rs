@@ -7,7 +7,8 @@
 //!
 //! 1. `reason_open_chat(chatId, cwd, sessionId?, config?)` when a Reason
 //!    chat is shown; pass the Session id saved from its `sessionStarted`
-//!    event so a chat reopened after a restart resumes its Session.
+//!    event so a chat reopened after a restart resumes its Session, in the
+//!    workspace that has it (kept in `reason-session-workspaces.json`).
 //!    `config` (`[{ id, value }]`, e.g. `model`, `reasoning_effort`) is set
 //!    on the Session when it is created; one Reason does not offer comes
 //!    back as a `notice` event.
@@ -30,7 +31,7 @@ use std::sync::{Arc, Mutex};
 
 use serde::Deserialize;
 use serde_json::Value;
-use tauri::{AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::reason_acp::cli::{find_reason_cli, LaunchConfig};
 use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
@@ -58,6 +59,9 @@ pub struct ReasonChats {
     cwds: Mutex<HashMap<String, PathBuf>>,
 }
 
+/// The provider's Session-to-workspace map, in the app data folder.
+const SESSION_STORE: &str = "reason-session-workspaces.json";
+
 fn home() -> Result<PathBuf, String> {
     std::env::var_os("HOME")
         .map(PathBuf::from)
@@ -78,13 +82,24 @@ impl ReasonChats {
         let cli = cli_path()
             .ok_or("The Reason CLI was not found. Install it, then sign in with `reason login`.")?;
         let launch = LaunchConfig::new(cli).map_err(|e| e.to_string())?;
+        let store = app
+            .path()
+            .app_data_dir()
+            .ok()
+            .map(|d| d.join(SESSION_STORE));
         let app = app.clone();
         let sink: Sink = Arc::new(move |chat: &str, ev: ProviderEvent| {
             let event = wire::event_json(chat, &ev);
             crate::e2e::log_event("reason", &event);
             let _ = app.emit(wire::EVENT, event);
         });
-        let provider = Arc::new(ReasonProvider::new(launch, home()?, sink));
+        let mut provider = ReasonProvider::new(launch, home()?, sink);
+        // Each Session's workspace, so a chat resumes there after a restart
+        // even when the Reason desktop app has another workspace selected.
+        if let Some(store) = store {
+            provider = provider.with_session_store(store);
+        }
+        let provider = Arc::new(provider);
         *slot = Some(provider.clone());
         Ok(provider)
     }
