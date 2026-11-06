@@ -69,7 +69,7 @@ import { usePrActions } from "../features/pr/usePrActions";
 import { commitShortcutApplies, createShortcutApplies, mergeShortcutApplies } from "../features/pr/shortcuts";
 import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
-import { useAppPrefs } from "../settings/appPrefs";
+import { getAppPrefs, setAppPref, useAppPrefs } from "../settings/appPrefs";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 
 interface Props {
@@ -744,10 +744,22 @@ function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; ope
 }
 
 export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread }: Props) {
-  // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) shows it,
-  // and ⌘⇧T opens a big terminal while Big terminal mode is on.
+  // Conductor shows no terminal by default: ⌘J (view.toggleTerminalPanel) toggles the
+  // right panel that holds the Terminal tab, and ⌘⇧T opens a big terminal while Big terminal mode is on.
   const [terminalRequest, setTerminalRequest] = useState(0);
-  const showTerminal = () => setTerminalRequest((n) => n + 1);
+  const showTerminal = () => {
+    if (!getAppPrefs().right_panel_visible) setAppPref({ key: "right_panel_visible", value: true }).catch(() => {});
+    setTerminalRequest((n) => n + 1);
+  };
+  // ⌘J hides the panel only while its Terminal tab is the one on screen; otherwise it shows that tab.
+  const terminalTab = useRef<string | null>(null);
+  const setTerminalTab = useCallback((tab: string | null) => {
+    terminalTab.current = tab;
+  }, []);
+  const toggleTerminal = () => {
+    if (getAppPrefs().right_panel_visible && terminalTab.current === "terminal") setAppPref({ key: "right_panel_visible", value: false }).catch(() => {});
+    else showTerminal();
+  };
   const chatBridge = useRef<ShownChatBridge | null>(null);
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
@@ -872,7 +884,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
   const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...(prOpen ? ["pr"] : []), ...reviews.tabs.map((r) => r.chatId)];
   const stepTab = (dir: 1 | -1) => setMainTab((t) => tabOrder[(tabOrder.indexOf(t) + dir + tabOrder.length) % tabOrder.length] ?? "chat");
   useKeybindings({
-    "view.toggleTerminalPanel": showTerminal,
+    "view.toggleTerminalPanel": toggleTerminal,
     "diff.open": () => (diff.current < 0 && diff.files.length > 0 ? diff.open(0) : openDiffTab()),
     "nav.nextTab": () => stepTab(1),
     "nav.previousTab": () => stepTab(-1),
@@ -1010,7 +1022,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread 
               readOnly={workspace.status === "archived"}
               notify={notify}
             />
-            <ScriptsPanel repo={repo} workspace={workspace} terminalRequest={terminalRequest} />
+            <ScriptsPanel repo={repo} workspace={workspace} terminalRequest={terminalRequest} onTabChange={setTerminalTab} />
           </div>
         )}
       </div>
