@@ -66,6 +66,7 @@ import { RUNNING_SETUP } from "../workspace/createFlow";
 import { usePullRequest, type PullRequest } from "../features/pr/usePullRequest";
 import { rowPrOf } from "../features/pr/rowPr";
 import { useArchiveOnMerge, type ArchiveNotify } from "../features/pr/useArchiveOnMerge";
+import { PullLatestButton, usePullLatest } from "../features/pr/usePullLatest.tsx";
 import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { fixShortcutApplies } from "../features/pr/checks/fixErrors";
 import { useFixErrors, type FixErrors } from "../features/pr/checks/useFixErrors";
@@ -649,9 +650,11 @@ interface RightPanelProps {
   fixErrors: FixErrors;
   readOnly: boolean;
   notify?: ArchiveNotify;
+  /** Under the empty Changes list: "Pull latest from <target>" (shared with the `git.pull` shortcut). */
+  emptyAction?: ReactNode;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, notify }: RightPanelProps) {
+function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -687,7 +690,7 @@ function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, 
         </span>
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} worktree={worktree} />
+        <ChangesList diff={diff} actions={actions} worktree={worktree} emptyAction={emptyAction} />
       ) : tab === "checks" ? (
         <ChecksTab
           worktree={worktree}
@@ -970,6 +973,17 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
     addCommentsToChat: review.addAllToChat,
     notify,
   });
+  const pullLatest = usePullLatest({
+    pullRequest,
+    worktree: workspace.path ?? null,
+    targetBranch: target.branch,
+    readOnly: workspace.status === "archived",
+    sendToAgent: chat.send,
+    refreshChanges: diff.refresh,
+    notify,
+  });
+  // Conductor binds git.pull (⌘⇧L) at priority HIGH, over the global openSidecarLogs on the same keys.
+  useKeybindings({ "git.pull": pullLatest.shortcut }, PRIORITY.HIGH);
   loaded.current = review.onLoaded;
   const reviews = useReviewChats(repo, workspace, setMainTab);
   // The workspace's own chat plus its review, fork and new chats count toward Conductor's tab limit.
@@ -1173,6 +1187,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
               fixErrors={fixErrors}
               readOnly={workspace.status === "archived"}
               notify={notify}
+              emptyAction={<PullLatestButton pullLatest={pullLatest} agentWorking={agentWorking} />}
             />
             {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
             <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={repo.path} />
