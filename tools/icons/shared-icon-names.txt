@@ -7,3 +7,4 @@ clipboard-copy
 shield-check
 bot-message-square
 circle-alert
+arrow-up-right

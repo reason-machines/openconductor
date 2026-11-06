@@ -8,15 +8,15 @@ Conductor 0.87.6, chunks `renderApp-D_fmY7hW.js` (`5199d392ef2d`), `index-BGEQ8Y
 
 | | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| **All** | **963** | **777** | **132** | **54** |
-| States (captured screens) | 65 | 21 | 36 | 8 |
-| Inventory items | 898 | 756 | 96 | 46 |
-| &nbsp;&nbsp;dialog | 64 | 56 | 7 | 1 |
+| **All** | **965** | **774** | **132** | **59** |
+| States (captured screens) | 67 | 20 | 36 | 11 |
+| Inventory items | 898 | 754 | 96 | 48 |
+| &nbsp;&nbsp;dialog | 64 | 55 | 7 | 2 |
 | &nbsp;&nbsp;empty-state | 52 | 48 | 3 | 1 |
 | &nbsp;&nbsp;menu | 39 | 39 | 0 | 0 |
 | &nbsp;&nbsp;menu-item | 89 | 88 | 1 | 0 |
 | &nbsp;&nbsp;popover | 45 | 44 | 1 | 0 |
-| &nbsp;&nbsp;route | 65 | 44 | 16 | 5 |
+| &nbsp;&nbsp;route | 65 | 43 | 16 | 6 |
 | &nbsp;&nbsp;select | 29 | 23 | 5 | 1 |
 | &nbsp;&nbsp;settings-page | 29 | 16 | 10 | 3 |
 | &nbsp;&nbsp;settings-row | 121 | 39 | 48 | 34 |
@@ -30,13 +30,13 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 
 | Team | Total | Missing | Wrong | Matches |
 |---|---:|---:|---:|---:|
-| chat | 56 | 51 | 4 | 1 |
+| chat | 55 | 50 | 4 | 1 |
 | cloud-org | 83 | 74 | 4 | 5 |
 | git-review | 35 | 30 | 5 | 0 |
 | onboarding-auth | 23 | 18 | 5 | 0 |
 | routines | 40 | 40 | 0 | 0 |
 | settings | 181 | 49 | 90 | 42 |
-| shell | 191 | 179 | 11 | 1 |
+| shell | 194 | 177 | 11 | 6 |
 | terminal-scripts | 30 | 29 | 1 | 0 |
 | triage | 268 | 268 | 0 | 0 |
 | workspaces | 56 | 39 | 12 | 5 |
@@ -54,6 +54,8 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
   - **wrong**: OpenConductor shows it (its copy is in a capture of the running app) but it is not shown to match: the diff or copy is over the bar, or there is no valid reference render to prove a match.
   - **missing**: OpenConductor has no way to reach the state, shows a different screen there (under 25% of the reference's UI copy), or the item's copy is in no capture of the running app.
 - UI copy means rendered strings that are literals in Conductor's bundle (`ui_strings` in inventory.json), so invented seed data (repo, workspace and user names) never counts. The OpenConductor brand name is normalised to Conductor before matching.
+- **Side-by-side records** ([ui-map/side-by-side.json](ui-map/side-by-side.json)): a builder who fixes a state captures both apps in that state with REA `capture-browser-scenario` (`tools/side-by-side/*.mjs`, Conductor's extracted frontend in the `tools/screens` harness beside OpenConductor's built frontend in Chromium with Tauri IPC mocked) and scores the pair with REA `compare-web-screenshots`, at the map's viewport. The record stands in for both captures of that state, under the same status rules, until the OpenConductor lane captures the state again; its rows link the committed side-by-side image and name the lane in `openconductor.note`.
+
 - Seed data differs between the two sides (the reference harness seeds six workspaces with a transcript; the OpenConductor seed has one real git worktree), so the pixel ratio carries some content difference too. The copy check and the side-by-side images are the better guide to what to fix.
 
 ## States
@@ -78,7 +80,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Routines<br>`route-routines` | missing | routines | OpenConductor has no route or view for /routines | [png](ui-map/ref/route-routines.png) | no-equivalent |  |  |
 | New routine<br>`route-routines-new` | missing | routines | OpenConductor has no route or view for /routines/new | [png](ui-map/ref/route-routines-new.png) | no-equivalent |  |  |
 | Team<br>`route-team` | missing | cloud-org | OpenConductor has no route or view for /team | [png](ui-map/ref/route-team.png) | no-equivalent |  |  |
-| Diagnostics<br>`route-diagnostics` | missing | shell | OpenConductor has no route or view for /diagnostics | [png](ui-map/ref/route-diagnostics.png) | no-equivalent |  |  |
+| Diagnostics<br>`route-diagnostics` | matches | shell | diff 0.7% at t24, copy 100% | [png](side-by-side/dialogs-menus-03-diagnostics.png) | [png](side-by-side/dialogs-menus-03-diagnostics.png) |  | 0.7% |
 | New member onboarding<br>`route-new-member-onboarding` | missing | onboarding-auth | OpenConductor has no route or view for /new-member-onboarding | [png](ui-map/ref/route-new-member-onboarding.png) | no-equivalent |  |  |
 | Cloud collaboration onboarding<br>`route-cloud-collab-onboarding` | missing | onboarding-auth | OpenConductor has no route or view for /cloud-collab-onboarding | [png](ui-map/ref/route-cloud-collab-onboarding.png) | no-equivalent |  |  |
 | Login<br>`login` | missing | onboarding-auth | OpenConductor shows a different screen here (copy 0%, diff 99.3% at t24) | [png](ui-map/ref/login.png) | [png](ui-map/oc/login.png) | [jpg](ui-map/diff/login.jpg) | 99.3% |
@@ -122,11 +124,13 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | Workspace context menu > Set status<br>`menu-workspace-status` | wrong | workspaces | diff 7.5% at t24, copy 79% | [png](ui-map/ref/menu-workspace-status.png) | [png](ui-map/oc/menu-workspace-status.png) | [jpg](ui-map/diff/menu-workspace-status.jpg) | 7.5% |
 | Composer model picker<br>`menu-model-picker` | wrong | chat | diff 6.6% at t24, copy 81% | [png](ui-map/ref/menu-model-picker.png) | [png](ui-map/oc/menu-model-picker.png) | [jpg](ui-map/diff/menu-model-picker.jpg) | 6.6% |
 | Sidebar repo actions menu<br>`menu-repo-actions` | wrong | workspaces | no valid reference render (step-failed), diff 5.5% at t24 | [png](ui-map/ref/menu-repo-actions.png) | [png](ui-map/oc/menu-repo-actions.png) | [jpg](ui-map/diff/menu-repo-actions.jpg) | 5.5% |
-| Help menu<br>`menu-help` | wrong | shell | diff 10.4% at t24, copy 70% | [png](ui-map/ref/menu-help.png) | [png](ui-map/oc/menu-help.png) | [jpg](ui-map/diff/menu-help.jpg) | 10.4% |
+| Help menu<br>`menu-help` | matches | shell | diff 3.7% at t24, copy 93% | [png](side-by-side/dialogs-menus-01-help-menu.png) | [png](side-by-side/dialogs-menus-01-help-menu.png) |  | 3.7% |
+| Help > Submit a prompt dialog<br>`dialog-submit-prompt` | matches | shell | diff 2.4% at t24, copy 100% | [png](side-by-side/dialogs-menus-02-submit-prompt.png) | [png](side-by-side/dialogs-menus-02-submit-prompt.png) |  | 2.4% |
+| Diagnostics after a run<br>`diagnostics-run` | wrong | shell | diff 3.4% at t24, copy 83% | [png](side-by-side/dialogs-menus-04-diagnostics-run.png) | [png](side-by-side/dialogs-menus-04-diagnostics-run.png) |  | 3.4% |
 | Toast: copied link<br>`toast-copied-link` | wrong | shell | diff 5.9% at t24, copy 73% | [png](ui-map/ref/toast-copied-link.png) | [png](ui-map/oc/toast-copied-link.png) | [jpg](ui-map/diff/toast-copied-link.jpg) | 5.9% |
 | Sidebar after archiving a workspace<br>`sidebar-after-archive` | matches | workspaces | diff 4.3% at t24, copy 93% | [png](ui-map/ref/sidebar-after-archive.png) | [png](ui-map/oc/sidebar-after-archive.png) | [jpg](ui-map/diff/sidebar-after-archive.jpg) | 4.3% |
 
-## route (65: 44 missing, 16 wrong, 5 matches)
+## route (65: 43 missing, 16 wrong, 6 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -167,7 +171,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `route:settings-organization-repositories-owner-repo~2`<br>/settings/organization/repositories/$owner/$repo | missing | cloud-org |  | `` |  | no state captures this route |
 | `route:settings-organization-repositories-owner-repo-scripts`<br>/settings/organization/repositories/$owner/$repo/scripts | missing | cloud-org |  | `` |  | no state captures this route |
 | `route:settings-organization-repositories-owner-repo-git`<br>/settings/organization/repositories/$owner/$repo/git | missing | cloud-org |  | `` |  | no state captures this route |
-| `route:diagnostics`<br>/diagnostics | missing | shell |  | `boa` | [route-diagnostics](ui-map/ref/route-diagnostics.png) | OpenConductor has no route or view for /diagnostics |
+| `route:diagnostics`<br>/diagnostics | matches | shell |  | `boa` | [route-diagnostics](side-by-side/dialogs-menus-03-diagnostics.png) | diff 0.7% at t24, copy 100% |
 | `route:cloud-collab-onboarding`<br>/cloud-collab-onboarding | missing | onboarding-auth |  | `eHi` | [route-cloud-collab-onboarding](ui-map/ref/route-cloud-collab-onboarding.png) | OpenConductor has no route or view for /cloud-collab-onboarding |
 | `route:first-run-onboarding`<br>/first-run-onboarding | wrong | onboarding-auth |  | `BCa` | [first-run-onboarding](ui-map/oc/first-run-onboarding.png) | no valid reference render (redirected to /), diff 96.8% at t24 |
 | `route:new-member-onboarding`<br>/new-member-onboarding | missing | onboarding-auth |  | `tHi` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | OpenConductor has no route or view for /new-member-onboarding |
@@ -356,7 +360,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `settings-row:organization-prompts:prompts`<br>organization-prompts › Prompts | missing | cloud-org | Prompts / Custom instructions for the Review, Create PR, and Resolve conflicts b | `` | [settings-org-prompts](ui-map/ref/settings-org-prompts.png) | copy not shown in any OpenConductor capture |
 | `settings-row:organization-mcp-servers:mcps`<br>organization-mcp-servers › MCPs | missing | cloud-org | MCPs / Configure MCP servers for cloud workspaces. | `` |  | copy not shown in any OpenConductor capture |
 
-## dialog (64: 56 missing, 7 wrong, 1 matches)
+## dialog (64: 55 missing, 7 wrong, 2 matches)
 
 | Item | Status | Team | Copy | Component | State | Why |
 |---|---|---|---|---|---|---|
@@ -393,7 +397,7 @@ Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign the
 | `dialog:connect-github`<br>Connect GitHub | missing | onboarding-auth | Connect GitHub | `C5a` | [route-new-member-onboarding](ui-map/ref/route-new-member-onboarding.png) | copy not shown in any OpenConductor capture |
 | `dialog:t5a` | missing | triage |  | `T5a` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:feedback`<br>Feedback | missing | shell | Feedback | `z5a` |  | copy not shown in any OpenConductor capture |
-| `dialog:submit-a-prompt`<br>Submit a prompt | missing | chat | Submit a prompt | `W5a` | [palette-all](ui-map/oc/palette-all.png) | copy not shown in any OpenConductor capture |
+| `dialog:submit-a-prompt`<br>Submit a prompt | matches | shell | Submit a prompt | `W5a` | [dialog-submit-prompt](side-by-side/dialogs-menus-02-submit-prompt.png) | on screen in both; state dialog-submit-prompt matches |
 | `dialog:build-snapshot-logs`<br>Build snapshot logs | missing | shell | Build snapshot logs | `xSa` |  | copy not shown in any OpenConductor capture |
 | `dialog:csa` | missing | triage |  | `CSa` |  | no literal copy to locate it; not observed in any capture |
 | `dialog:psa` | missing | triage |  | `PSa` |  | no literal copy to locate it; not observed in any capture |
@@ -1119,7 +1123,21 @@ Harness limits that shape the reference (not REA bugs): settings pages behind an
 16. **No cross-chunk import resolution.** The paste parser the add sheet calls is `lPt` in `renderApp`, an import (`pl as lPt`) of `Q$e` from `index-BGEQ8YjU.js`; `index` also has an unrelated local `lPt` (a gzip helper). REA gives no export/import map between chunks, so the name had to be resolved by hand from the `export{…}` list; a name search alone points at the wrong function.
 17. **No way to reach a Mac-only artifact from the Linux machine.** Conductor's binary was copied from Sven's Mac with Reason's device copy (`devices_copy_to_cloud`, sha256 `0ba55751…`), then decoded with `tools/extract_tauri_assets.py`; REA has no remote-artifact input.
 
+### Hit while building Settings › Repository › Scripts and Actions (REA 6.8.0)
+
+18. **`capture-browser-scenario` cannot open a context menu.** It has no right-click action (`click` takes no `button`), so the "right-click menus" checklist item was checked with Playwright: on Conductor's Scripts page a right-click on the editors, the Add button and the share link opens no menu and sends no `plugin:menu|*` IPC.
+19. **No dialog or popover state in a scenario's DOM capture.** Base UI portals the Add/Edit run-script dialog outside the page root; the scenario's `dom` artifact has the overlay but the popup had to be measured with a Playwright walk of `[role=dialog]`.
+20. **Minified cross-chunk names still need manual tracing.** `ama` (run scripts) calls `qje`/`bAn`/`cJ`/`Jw`, imported from `index-BGEQ8YjU.js` as `Szt`/`bzt`/`pf`/`lo`; REA's graph gives no import map, so each was resolved by reading the chunk's export list.
+21. **Collapsed content is invisible to a capture.** Conductor's Actions prompt rows are Base UI collapsibles whose panel is unmounted while closed; a REA scenario has no way to expand one before capture short of a `click` on a text locator that also matches the row's description, so the open state was measured with Playwright.
+
 ### Hit while wiring the plan, question and Codex consent attention triggers (parity.sidebar.ws-unread)
 
 25. **`rea search` on an extracted JavaScript chunk now fails as `target_kind_unsupported` from Kuna** (REA 6.8.0, `TMPDIR=/tmp/t npx rea search index-BGEQ8YjU.js "await _p("`). Earlier passes (17 above) saw `capability_unavailable` / `unsupported_provider`; this run routes the file to Kuna, which answers "Kuna decompiles executable images, not databases or archives." with `target_format: javascript`, so REA still has no string-search route for Conductor's frontend. The `_p` call sites (`index-BGEQ8YjU.js` sha256 `b5b01f33…`: `_p` @2,941,190; ExitPlanMode `needs_plan_response` @2,945,001; AskUserQuestion `needs_user_input` @2,945,451; Codex MCP elicitation @2,946,028; Codex permission approval @2,946,583; tool approval @2,947,277) were read as plain text by byte offset.
+
+### Hit while building Help › Submit a prompt, Diagnostics and Open debug tools (shell rows, REA 6.8.0)
+
+26. **`rea search` still has no route for an extracted JavaScript chunk.** `rea search renderApp-D_fmY7hW.js "open_devtools"` fails `capability_unavailable` / `unsupported_provider` with `selection_reason: target_unsupported` (candidates ghidra, hopper, ida, kuna, all native). The Help popover's nine items and their actions (`openDialog(aJ)`, `navigate({to:"/diagnostics"})`, `invoke("open_devtools")`, renderApp @9,789,300-9,792,900), the Diagnostics page (`boa` @10,136,010), its 59 checks (`hoa` @10,128,169), the redaction (`doa`) and the Submit a prompt dialog (`W5a` @11,132,912) were read from the decoded chunk by byte offset. The rendered result of each was then captured from Conductor's own frontend with `capture-browser-scenario`.
+27. **No way to diff a ported table against the original.** REA cannot evaluate or extract a literal array from the bundle (the `hoa()` check list), so the comparison of OpenConductor's `diagnosticChecks()` with Conductor's list ran outside REA: Conductor's own `hoa` source was evaluated in Node with a capturing `dl`. All 59 labels, commands, deadlines and env flags are equal except the one deliberate row ("OpenConductor app env").
+28. **No native capture on sven m5 max.** `devices_computer` refuses with "Computer use needs Accessibility and Screen & System Audio Recording permissions" for the Reason worker, and REA's `observe-native-ui` / `capture-native-ui-scenario` need the same grants (gap 6). So the left half of every new side-by-side image is Conductor's extracted frontend in the `tools/screens` harness, not the native window.
+29. **`compare-web-screenshots` scores only same-size PNGs and gives no regions** (gap 5 still holds). The side-by-side record therefore captures both apps at the map's 1280x820 for scoring and again at 1440x900 for the committed images (`tools/side-by-side/help-diagnostics.mjs`).
 

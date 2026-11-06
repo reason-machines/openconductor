@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent }
 import { openDevtools, openUrl } from "../backend";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
-import { BookIcon, ExternalIcon, HelpIcon, KeyboardIcon, MessageIcon, StethoscopeIcon } from "./Icons";
+import { ArrowUpRightIcon, BookIcon, HelpIcon, KeyboardIcon, MessageIcon, StethoscopeIcon } from "./Icons";
 import { Tooltip } from "./Tooltip";
 import { HELP_ITEMS, nextIndex, versionLine, type HelpIcon as HelpIconName, type HelpItem } from "./helpMenuItems";
 
@@ -103,7 +103,7 @@ export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDi
                 <span className="sb-help-item-main">
                   {item.icon ? <span className="sb-help-icon">{ICONS[item.icon]}</span> : <span className="sb-help-icon" aria-hidden />}
                   <span>{item.label}</span>
-                  {item.external && <span className="sb-help-external"><ExternalIcon size={12} /></span>}
+                  {item.external && <span className="sb-help-external"><ArrowUpRightIcon size={12} /></span>}
                 </span>
                 {keys && <kbd className="sb-help-kbd">{keys}</kbd>}
               </button>

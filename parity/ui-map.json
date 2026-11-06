@@ -32,28 +32,28 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 963,
-  "missing": 777,
+  "total": 965,
+  "missing": 774,
   "wrong": 132,
-  "matches": 54,
+  "matches": 59,
   "states": {
-   "total": 65,
-   "missing": 21,
+   "total": 67,
+   "missing": 20,
    "wrong": 36,
-   "matches": 8
+   "matches": 11
   },
   "items": {
    "total": 898,
-   "missing": 756,
+   "missing": 754,
    "wrong": 96,
-   "matches": 46
+   "matches": 48
   },
   "items_by_kind": {
    "dialog": {
     "total": 64,
-    "missing": 56,
+    "missing": 55,
     "wrong": 7,
-    "matches": 1
+    "matches": 2
    },
    "empty-state": {
     "total": 52,
@@ -81,9 +81,9 @@
    },
    "route": {
     "total": 65,
-    "missing": 44,
+    "missing": 43,
     "wrong": 16,
-    "matches": 5
+    "matches": 6
    },
    "select": {
     "total": 29,
@@ -124,8 +124,8 @@
   },
   "by_team": {
    "chat": {
-    "total": 56,
-    "missing": 51,
+    "total": 55,
+    "missing": 50,
     "wrong": 4,
     "matches": 1
    },
@@ -160,10 +160,10 @@
     "matches": 42
    },
    "shell": {
-    "total": 191,
-    "missing": 179,
+    "total": 194,
+    "missing": 177,
     "wrong": 11,
-    "matches": 1
+    "matches": 6
    },
    "terminal-scripts": {
     "total": 30,
@@ -847,34 +847,37 @@
   {
    "id": "route-diagnostics",
    "title": "Diagnostics",
-   "status": "missing",
-   "why": "OpenConductor has no route or view for /diagnostics",
+   "status": "matches",
+   "why": "diff 0.7% at t24, copy 100%",
    "team": "shell",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/route-diagnostics.png",
+    "file": "side-by-side/dialogs-menus-03-diagnostics.png",
     "path": "/diagnostics",
     "final_path": "/diagnostics",
     "scenario": "populated",
-    "actions_run": 0,
-    "actions_total": 0,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_300724f03614885464d3844d1925d31bb1d5144213a7b96bff435e9c159b10df"
+    "rea_evidence_id": "ev_d2949669a4eb5280a49250c288012f61a433e5e49ef3422210195f358e95b11e"
    },
    "openconductor": {
-    "status": "no-equivalent",
-    "file": null,
-    "error": "OpenConductor has no route or view for /diagnostics",
-    "note": null
+    "status": "captured",
+    "file": "side-by-side/dialogs-menus-03-diagnostics.png",
+    "error": null,
+    "note": "side-by-side lane at 1e8445dc3: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
     "file": null,
-    "changed_ratio_t0": null,
-    "changed_ratio_t24": null,
-    "rea_evidence_ids": []
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.007237995426829269,
+    "rea_evidence_ids": [
+     "ev_32781c449d31c2a9166501600753761378d600ee6b8e027f67869ecc7120c699",
+     "ev_16d1c2a1d9bca032d072d6e61aeec379af7499df030270f210b3a0c956e60321"
+    ]
    },
-   "copy_coverage": null,
-   "copy_missing": null
+   "copy_coverage": 1.0,
+   "copy_missing": []
   },
   {
    "id": "route-new-member-onboarding",
@@ -2510,44 +2513,110 @@
   {
    "id": "menu-help",
    "title": "Help menu",
-   "status": "wrong",
-   "why": "diff 10.4% at t24, copy 70%",
+   "status": "matches",
+   "why": "diff 3.7% at t24, copy 93%",
    "team": "shell",
    "reference": {
     "status": "captured",
-    "file": "ui-map/ref/menu-help.png",
+    "file": "side-by-side/dialogs-menus-01-help-menu.png",
     "path": "/",
     "final_path": "/",
     "scenario": "populated",
-    "actions_run": 2,
-    "actions_total": 2,
+    "actions_run": null,
+    "actions_total": null,
     "error": null,
-    "rea_evidence_id": "ev_1e5fc2dd5345bc98f0576f89e93648979e0ee8c2e1d9f801388203403568b70a"
+    "rea_evidence_id": "ev_206c7236473ced664261c3424cc551691b13dd9c5405a9cf2d0130602b6038d5"
    },
    "openconductor": {
     "status": "captured",
-    "file": "ui-map/oc/menu-help.png",
+    "file": "side-by-side/dialogs-menus-01-help-menu.png",
     "error": null,
-    "note": null
+    "note": "side-by-side lane at 1e8445dc3: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
    },
    "diff": {
-    "file": "ui-map/diff/menu-help.jpg",
+    "file": null,
     "changed_ratio_t0": 0.9999990472560976,
-    "changed_ratio_t24": 0.10447980182926829,
+    "changed_ratio_t24": 0.036558689024390245,
     "rea_evidence_ids": [
-     "ev_a58bbca7397643e982c2649af61db0aa1caf3e1873b2a886b6b05f66b43903ce",
-     "ev_84c7896b9328bc043279cbe65b6d6dbdfd4d623a9d28261427885c3ff488d1f2"
+     "ev_05c9327de52c439aa8f1e3635f5b8338b3035039d2d1c5494001118ce2556c95",
+     "ev_0ea34b83058775a1903a3f89d4da11e9f44c0ee9ddd202dc1832672e69ed09b7"
     ]
    },
-   "copy_coverage": 0.696,
+   "copy_coverage": 0.938,
    "copy_missing": [
-    "open project",
-    "open github project",
-    "quick start",
-    "discord",
-    "submit a prompt",
-    "diagnostics",
-    "open debug tools"
+    "discord"
+   ]
+  },
+  {
+   "id": "dialog-submit-prompt",
+   "title": "Help > Submit a prompt dialog",
+   "status": "matches",
+   "why": "diff 2.4% at t24, copy 100%",
+   "team": "shell",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/dialogs-menus-02-submit-prompt.png",
+    "path": "/",
+    "final_path": "/",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_6b45bfa6e131e4c6a9d43b034bff32afd326ba4083e4c2b7631213bcc03d109e"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/dialogs-menus-02-submit-prompt.png",
+    "error": null,
+    "note": "side-by-side lane at 1e8445dc3: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.024466463414634147,
+    "rea_evidence_ids": [
+     "ev_f9832c500a84f3e8490ae9265eae46102bb46b58cbcb6f2129a00a71bf884a47",
+     "ev_a6cb03cce7cbd65f7e1afb95b5de9de9675163d7bedd2f589f5f455a26d86974"
+    ]
+   },
+   "copy_coverage": 1.0,
+   "copy_missing": []
+  },
+  {
+   "id": "diagnostics-run",
+   "title": "Diagnostics after a run",
+   "status": "wrong",
+   "why": "diff 3.4% at t24, copy 83%",
+   "team": "shell",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/dialogs-menus-04-diagnostics-run.png",
+    "path": "/diagnostics",
+    "final_path": "/diagnostics",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_69c70afed279e5f084802443e3e0196d925c9f65e9834fa1f164c86b41e019cd"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/dialogs-menus-04-diagnostics-run.png",
+    "error": null,
+    "note": "side-by-side lane at 1e8445dc3: tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 1,
+    "changed_ratio_t24": 0.03394817073170732,
+    "rea_evidence_ids": [
+     "ev_53151bbf08b93eeffb411cc7fa7f1d3faa150de70b110953e533e0fb998f5f18",
+     "ev_52802b54112752981900a151c2e5d06daf7a001be7a7b2f5d863dccb6bfc4328"
+    ]
+   },
+   "copy_coverage": 0.833,
+   "copy_missing": [
+    "conductor captured shell env"
    ]
   },
   {
@@ -3447,8 +3516,8 @@
    "id": "route:diagnostics",
    "kind": "route",
    "name": "/diagnostics",
-   "status": "missing",
-   "why": "OpenConductor has no route or view for /diagnostics",
+   "status": "matches",
+   "why": "diff 0.7% at t24, copy 100%",
    "team": "shell",
    "component": "boa",
    "source": {
@@ -3460,10 +3529,10 @@
    "tokens": [],
    "state": "route-diagnostics",
    "state_basis": "route state",
-   "reference_screenshot": "ui-map/ref/route-diagnostics.png",
-   "openconductor_screenshot": null,
+   "reference_screenshot": "side-by-side/dialogs-menus-03-diagnostics.png",
+   "openconductor_screenshot": "side-by-side/dialogs-menus-03-diagnostics.png",
    "diff": null,
-   "changed_ratio_t24": null
+   "changed_ratio_t24": 0.007237995426829269
   },
   {
    "id": "route:cloud-collab-onboarding",
@@ -4889,9 +4958,9 @@
    "id": "dialog:submit-a-prompt",
    "kind": "dialog",
    "name": "Submit a prompt",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
-   "team": "chat",
+   "status": "matches",
+   "why": "on screen in both; state dialog-submit-prompt matches",
+   "team": "shell",
    "component": "W5a",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -4902,12 +4971,12 @@
     "Submit a prompt"
    ],
    "tokens": [],
-   "state": "palette-all",
-   "state_basis": "copy seen in reference capture",
-   "reference_screenshot": "ui-map/ref/palette-all.png",
-   "openconductor_screenshot": "ui-map/oc/palette-all.png",
-   "diff": "ui-map/diff/palette-all.jpg",
-   "changed_ratio_t24": 0.0701124237804878,
+   "state": "dialog-submit-prompt",
+   "state_basis": "state covers it",
+   "reference_screenshot": "side-by-side/dialogs-menus-02-submit-prompt.png",
+   "openconductor_screenshot": "side-by-side/dialogs-menus-02-submit-prompt.png",
+   "diff": null,
+   "changed_ratio_t24": 0.024466463414634147,
    "primitive": "DialogTitle",
    "dynamic": false
   },

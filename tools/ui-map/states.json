@@ -469,7 +469,17 @@
     "scenario": "populated",
     "actions": []
    },
-   "oc_reason": "OpenConductor has no route or view for /diagnostics",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Help"
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Diagnostics",
+     "after_ms": 800
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -1770,7 +1780,8 @@
      "after_ms": 1500
     },
     {
-     "click": ".composer .oc-model-chip"
+     "click": ".composer button",
+     "text": "Opus 5"
     }
    ]
   },
@@ -1818,6 +1829,71 @@
     {
      "click": ".sb-footer-btn",
      "text": "Help"
+    }
+   ]
+  },
+  {
+   "id": "dialog-submit-prompt",
+   "title": "Help > Submit a prompt dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "xpath=//button[@aria-label='Settings']/preceding::button[1]"
+     },
+     {
+      "click": "[role=menuitem] >> text=Submit a prompt"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Help"
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Submit a prompt",
+     "after_ms": 800
+    }
+   ],
+   "covers": [
+    {
+     "kind": "dialog",
+     "name": "Submit a prompt"
+    }
+   ]
+  },
+  {
+   "id": "diagnostics-run",
+   "title": "Diagnostics after a run",
+   "ref": {
+    "path": "/diagnostics",
+    "scenario": "populated",
+    "actions": [
+     {
+      "click": "text=Run environment diagnostics"
+     }
+    ],
+    "final_settle_ms": 4000
+   },
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Help"
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Diagnostics",
+     "after_ms": 800
+    },
+    {
+     "click": ".diag-btn-primary",
+     "after_ms": 4000
     }
    ]
   },
