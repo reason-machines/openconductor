@@ -2077,6 +2077,68 @@
    ]
   },
   {
+   "id": "menu-chat-tab",
+   "title": "Chat tab context menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": "[role=tab][aria-label^='Close chat']"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".main-tabs [role=tab]"
+    }
+   ]
+  },
+  {
+   "id": "menu-changes-file",
+   "title": "Changes file context menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": ".cursor-pointer.mx-2:has-text('auth.test.ts')"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".oc-change-row"
+    }
+   ]
+  },
+  {
    "id": "sidebar-after-archive",
    "title": "Sidebar after archiving a workspace",
    "ref": {

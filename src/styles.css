@@ -705,6 +705,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .rename-ws-branch:has(input:disabled) { opacity: 0.6; }
 .rename-ws-dialog .btn-ghost { background: transparent; border-color: transparent; }
 .rename-ws-dialog .btn-ghost:hover { background: var(--hover); }
+/* Rename chat's title icon: lucide message-square-text at size-5. */
+.rename-chat-icon { width: 20px; height: 20px; flex-shrink: 0; }
 
 /* Sidebar add-repository menu (Conductor's `wra` popover around `Gji`): w-80 rounded-lg p-1
    popover; rows px-2.5 py-2 text-sm rounded-md gap-2 with 16px icons; then a my-1 separator,
