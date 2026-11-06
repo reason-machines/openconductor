@@ -38,7 +38,14 @@ class ScopeReportTest(unittest.TestCase):
             (out / "compare.json").write_text(json.dumps({"results": {"home": {"t24": {"changed_ratio": 0.01}}}}))
             program = root / "parity/ui-program"
             program.mkdir()
-            supplemental = {"source_main_commit": "a" * 40, "records": [{
+            supplemental = {
+                "source_main_commit": "a" * 40,
+                "batch_notes": ["Cancelled E2E is not a pass."],
+                "screen_updates": {
+                    "home": {"area_verdict": "partial", "gap": "Native Home review not run."},
+                    "composer": {"area_verdict": "partial-known-defect", "gap": "Known composition defect; correction unpublished."},
+                },
+                "records": [{
                 "id": "shell-actions-test", "areas": ["home", "sidebar"], "verdict": "partial",
                 "requirement_ids": ["deferred-ui-default-off"],
                 "pr_url": "https://github.com/reason-machines/openconductor/pull/722",
@@ -76,12 +83,24 @@ class ScopeReportTest(unittest.TestCase):
             self.assertEqual(report["supplemental_evidence"], supplemental)
             self.assertEqual(report["main_screens"]["home"]["supplemental_evidence"], ["shell-actions-test"])
             self.assertEqual(report["main_screens"]["home"]["evidence_verdict"], "harness-only")
+            self.assertEqual(report["main_screens"]["home"]["area_verdict"], "partial")
+            self.assertEqual(report["main_screens"]["home"]["gap"], "Native Home review not run.")
+            composer = report["main_screens"]["composer"]
+            self.assertEqual(composer["area_verdict"], "partial-known-defect")
+            self.assertEqual(composer["evidence_verdict"], "unverified")
+            self.assertEqual(composer["counts"]["matches"], 0)
+            self.assertEqual(composer["final_review"], "unverified")
             self.assertIsNone(report["openconductor"]["commit"])
             html = (program / "ledger.html").read_text()
             self.assertIn("a" * 40, html)
             self.assertIn("One crop matches, the area does not.", html)
             self.assertIn("Default palette not checked", html)
-            self.assertIn("Supplemental evidence", (root / "parity/ui-map.md").read_text())
+            self.assertIn("Known composition defect; correction unpublished.", html)
+            self.assertIn("Cancelled E2E is not a pass.", html)
+            markdown = (root / "parity/ui-map.md").read_text()
+            self.assertIn("Supplemental evidence", markdown)
+            self.assertIn("partial-known-defect", markdown)
+            self.assertIn("Cancelled E2E is not a pass.", markdown)
 
     def test_no_reference_does_not_prove_missing_or_wrong(self):
         from scoped_report import annotate
