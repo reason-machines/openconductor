@@ -18,7 +18,7 @@
   "note": "Untrusted third-party data: copy is recorded for matching only."
  },
  "openconductor": {
-  "commit": "2d9ead58",
+  "commit": "9792d08",
   "lane": "debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)",
   "viewport": {
    "width": 1280,
@@ -32,27 +32,27 @@
   "statuses": ", from what the running apps showed:\n  matches  reference rendered and reached, OpenConductor reached the same\n           state, the item's copy is on screen in both, and the whole state\n           differs by at most MATCH_RATIO changed pixels at channel threshold 24.\n  wrong    OpenConductor shows it (copy found in a capture of the running\n           app) but it is not shown to match: the visual diff is over the bar,\n           the copy differs, or no valid reference render exists to prove it.\n  missing  OpenConductor has no way to reach the state, shows a different\n           screen there (under 25% of the reference's UI copy), or the item's\n           copy is in no capture of the running app."
  },
  "summary": {
-  "total": 965,
-  "missing": 764,
-  "wrong": 79,
+  "total": 967,
+  "missing": 759,
+  "wrong": 86,
   "matches": 122,
   "states": {
-   "total": 67,
+   "total": 69,
    "missing": 16,
-   "wrong": 25,
+   "wrong": 27,
    "matches": 26
   },
   "items": {
    "total": 898,
-   "missing": 748,
-   "wrong": 54,
+   "missing": 743,
+   "wrong": 59,
    "matches": 96
   },
   "items_by_kind": {
    "dialog": {
     "total": 64,
-    "missing": 55,
-    "wrong": 4,
+    "missing": 54,
+    "wrong": 5,
     "matches": 5
    },
    "empty-state": {
@@ -63,14 +63,14 @@
    },
    "menu": {
     "total": 39,
-    "missing": 39,
-    "wrong": 0,
+    "missing": 38,
+    "wrong": 1,
     "matches": 0
    },
    "menu-item": {
     "total": 89,
-    "missing": 88,
-    "wrong": 1,
+    "missing": 85,
+    "wrong": 4,
     "matches": 0
    },
    "popover": {
@@ -124,9 +124,9 @@
   },
   "by_team": {
    "chat": {
-    "total": 55,
-    "missing": 49,
-    "wrong": 4,
+    "total": 57,
+    "missing": 48,
+    "wrong": 7,
     "matches": 2
    },
    "cloud-org": {
@@ -161,14 +161,14 @@
    },
    "shell": {
     "total": 194,
-    "missing": 178,
-    "wrong": 7,
+    "missing": 176,
+    "wrong": 9,
     "matches": 9
    },
    "terminal-scripts": {
     "total": 30,
-    "missing": 29,
-    "wrong": 1,
+    "missing": 27,
+    "wrong": 3,
     "matches": 0
    },
    "triage": {
@@ -184,8 +184,8 @@
     "matches": 11
    }
   },
-  "located_items": 213,
-  "items_with_reference_screenshot": 213
+  "located_items": 218,
+  "items_with_reference_screenshot": 218
  },
  "states": [
   {
@@ -2577,6 +2577,88 @@
    "copy_coverage": 0.938,
    "copy_missing": [
     "archive workspace"
+   ]
+  },
+  {
+   "id": "menu-chat-tab",
+   "title": "Chat tab context menu",
+   "status": "wrong",
+   "why": "diff 6.6% at t24, copy 85%",
+   "team": "chat",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/shell-menus-01-chat-tab.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_1029509199559078fd26f748b3ce8a3cb66069116c334042845a97f7314ed43d"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/shell-menus-01-chat-tab.png",
+    "error": null,
+    "note": "side-by-side lane at a5291aabf: tools/side-by-side/shell-menus.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, ?demo=1) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9603010670731708,
+    "changed_ratio_t24": 0.0657736280487805,
+    "rea_evidence_ids": [
+     "ev_a42cfc5cd4072da18e7f8c2081febf42fb408f433f0764e80d24b5ca032b2aef",
+     "ev_3d60a3c6cb252657d8a15bd2e5b1b108186e94c5e1bdd8e2fa034e1d683f481f"
+    ]
+   },
+   "copy_coverage": 0.853,
+   "copy_missing": [
+    "next unread",
+    "run tests or a development server to test changes in this workspace",
+    "add run script",
+    "copy final message",
+    "show message actions"
+   ]
+  },
+  {
+   "id": "menu-changes-file",
+   "title": "Changes file context menu",
+   "status": "wrong",
+   "why": "diff 8.0% at t24, copy 84%",
+   "team": "shell",
+   "reference": {
+    "status": "captured",
+    "file": "side-by-side/shell-menus-02-changes-file.png",
+    "path": "/",
+    "final_path": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "scenario": "populated",
+    "actions_run": null,
+    "actions_total": null,
+    "error": null,
+    "rea_evidence_id": "ev_d255a075c69201c06937f7d7a9d67172df70ac1da92943c5603d7fdd784133d9"
+   },
+   "openconductor": {
+    "status": "captured",
+    "file": "side-by-side/shell-menus-02-changes-file.png",
+    "error": null,
+    "note": "side-by-side lane at a5291aabf: tools/side-by-side/shell-menus.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, ?demo=1) in Chromium"
+   },
+   "diff": {
+    "file": null,
+    "changed_ratio_t0": 0.9849380716463415,
+    "changed_ratio_t24": 0.08045160060975609,
+    "rea_evidence_ids": [
+     "ev_8dc8b225ceb97a82c5a35341fce93c30e7aea34d200ff3e914aff6cf0600dc1c",
+     "ev_892a70052e9c8cb0906daaf0e0cf5410fcad17accde4ff79591d35116a40b80e"
+    ]
+   },
+   "copy_coverage": 0.844,
+   "copy_missing": [
+    "next unread",
+    "run tests or a development server to test changes in this workspace",
+    "add run script",
+    "copy final message",
+    "show message actions"
    ]
   },
   {
@@ -5502,8 +5584,8 @@
    "id": "dialog:discard-changes",
    "kind": "dialog",
    "name": "Discard changes?",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state menu-changes-file is wrong",
    "team": "shell",
    "component": "CSa",
    "source": {
@@ -5515,12 +5597,12 @@
     "Discard changes?"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "menu-changes-file",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/shell-menus-02-changes-file.png",
+   "openconductor_screenshot": "side-by-side/shell-menus-02-changes-file.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.08045160060975609,
    "primitive": "AlertDialogTitle",
    "dynamic": false
   },
@@ -7477,8 +7559,8 @@
    "id": "menu-item:rename-chat",
    "kind": "menu-item",
    "name": "Rename chat",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state menu-chat-tab is wrong",
    "team": "chat",
    "component": "u8i",
    "source": {
@@ -7490,12 +7572,12 @@
     "Rename chat"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "menu-chat-tab",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
+   "openconductor_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.0657736280487805,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -7553,8 +7635,8 @@
    "id": "menu-item:copy-full-transcript",
    "kind": "menu-item",
    "name": "Copy full transcript",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state menu-chat-tab is wrong",
    "team": "terminal-scripts",
    "component": "u8i",
    "source": {
@@ -7566,12 +7648,12 @@
     "Copy full transcript"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "menu-chat-tab",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
+   "openconductor_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.0657736280487805,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -7657,9 +7739,9 @@
    "id": "menu-item:close-others",
    "kind": "menu-item",
    "name": "Close others",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
-   "team": "shell",
+   "status": "wrong",
+   "why": "host state menu-chat-tab is wrong",
+   "team": "chat",
    "component": "u8i",
    "source": {
     "chunk": "renderApp-D_fmY7hW.js",
@@ -7670,12 +7752,12 @@
     "Close others"
    ],
    "tokens": [],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "menu-chat-tab",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
+   "openconductor_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.0657736280487805,
    "primitive": "ContextMenuItem",
    "dynamic": false
   },
@@ -8641,8 +8723,8 @@
    "id": "menu:u8i",
    "kind": "menu",
    "name": null,
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "wrong",
+   "why": "host state menu-chat-tab is wrong",
    "team": "terminal-scripts",
    "component": "u8i",
    "source": {
@@ -8659,12 +8741,12 @@
    "tokens": [
     "--internal"
    ],
-   "state": null,
-   "state_basis": null,
-   "reference_screenshot": null,
-   "openconductor_screenshot": null,
+   "state": "menu-chat-tab",
+   "state_basis": "copy seen in reference capture",
+   "reference_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
+   "openconductor_screenshot": "side-by-side/shell-menus-01-chat-tab.png",
    "diff": null,
-   "changed_ratio_t24": null,
+   "changed_ratio_t24": 0.0657736280487805,
    "primitive": "ContextMenuContent",
    "dynamic": true
   },

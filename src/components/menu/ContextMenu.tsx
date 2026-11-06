@@ -280,11 +280,13 @@ interface ItemProps {
   /** Label takes the free width (`flex-1`), as in the status and section submenus. */
   grow?: boolean;
   checked?: boolean;
+  /** Extra row class, e.g. `cm-app-row` for an Open in app (`X7t`). */
+  className?: string;
   onSelect: () => void;
 }
 
 /** One menu row; selecting it runs `onSelect` and closes the whole menu. */
-export function MenuItem({ icon, children, shortcut, trailing, disabled, destructive, grow, checked, onSelect }: ItemProps) {
+export function MenuItem({ icon, children, shortcut, trailing, disabled, destructive, grow, checked, className, onSelect }: ItemProps) {
   const tree = useContext(TreeContext)!;
   const siblingHover = useSiblingHover(null);
   return (
@@ -293,7 +295,7 @@ export function MenuItem({ icon, children, shortcut, trailing, disabled, destruc
       aria-checked={checked}
       aria-disabled={disabled || undefined}
       tabIndex={-1}
-      className="cm-item"
+      className={className ? `cm-item ${className}` : "cm-item"}
       data-disabled={disabled || undefined}
       data-destructive={destructive || undefined}
       onPointerMove={(e) => {

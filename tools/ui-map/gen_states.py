@@ -116,6 +116,9 @@ HELP_OC={"click":".sb-footer-btn","text":"Help"}
 st("dialog-submit-prompt","Help > Submit a prompt dialog", ref(actions=[HELP_REF,{"click":"[role=menuitem] >> text=Submit a prompt"}]), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Submit a prompt","after_ms":800}], covers=[{"kind":"dialog","name":"Submit a prompt"}])
 st("diagnostics-run","Diagnostics after a run", ref("/diagnostics", wait=False, actions=[{"click":"text=Run environment diagnostics"}], final_settle_ms=4000), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800},{"click":".diag-btn-primary","after_ms":4000}])
 st("toast-copied-link","Toast: copied link", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Copy link"}], final_settle_ms=300), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Copy link","after_ms":200}])
+# Right-click menus inside a workspace (side-by-side records: tools/side-by-side/shell-menus.mjs).
+st("menu-chat-tab","Chat tab context menu", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"rclick":"[role=tab][aria-label^='Close chat']"}]), oc=OPEN_WS+[{"rclick":".main-tabs [role=tab]"}])
+st("menu-changes-file","Changes file context menu", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"rclick":".cursor-pointer.mx-2:has-text('auth.test.ts')"}]), oc=OPEN_WS+[{"rclick":".oc-change-row"}])
 st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Archive"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Archive","after_ms":1000}])
 # Conductor's reference opens on "/" (Home: wordmark and the Open project / Open GitHub
 # project / Quick start cards) and stays there unless its actions open a workspace (Create

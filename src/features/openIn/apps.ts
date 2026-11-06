@@ -64,3 +64,14 @@ export async function copyText(text: string): Promise<void> {
   if (isTauri()) await invoke("plugin:clipboard-manager|write_text", { text });
   else await navigator.clipboard.writeText(text);
 }
+
+/**
+ * Apps Conductor's catalog (`sX`) leaves without `supportsFileOpen`: terminals and
+ * git clients. A file's "Open in" submenu (`Svs`, `pLr`) lists every other app.
+ */
+const FOLDER_ONLY = new Set(["ghostty", "alacritty", "iterm", "wezterm", "warp", "hyper", "terminal", "github-desktop", "sourcetree", "fork", "kaleidoscope"]);
+
+/** Whether a single file can open in the app (Conductor's `pLr`). */
+export function supportsFileOpen(appId: string): boolean {
+  return !FOLDER_ONLY.has(appId);
+}

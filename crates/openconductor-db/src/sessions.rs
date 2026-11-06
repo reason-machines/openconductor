@@ -577,6 +577,18 @@ pub async fn open_tabs(pool: &SqlitePool) -> Result<Vec<OpenTab>> {
     .await?)
 }
 
+/// Each workspace's main chat title, where the user renamed it ("Rename chat" on its tab):
+/// the main chat's session id is the workspace id, and a row that still has the schema's
+/// default `'Untitled'` (or none) was never renamed, so its tab keeps the workspace name.
+pub async fn main_chat_titles(pool: &SqlitePool) -> Result<Vec<(String, String)>> {
+    Ok(sqlx::query_as(
+        "SELECT id, title FROM sessions WHERE id = workspace_id AND title IS NOT NULL \
+         AND trim(title) <> '' AND title <> 'Untitled'",
+    )
+    .fetch_all(pool)
+    .await?)
+}
+
 /// Mark every unread session in a workspace read; returns their ids.
 pub async fn mark_workspace_read(pool: &SqlitePool, workspace_id: &str) -> Result<Vec<String>> {
     let ids: Vec<(String,)> =
