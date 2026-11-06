@@ -56,10 +56,12 @@ export interface DiffTabProps {
   annotations?: (file: FileDiff, anchor: LineAnchor) => ReactNode;
   /** Shown above the file: PR-level and whole-file comments. */
   notes?: (file: FileDiff) => ReactNode;
+  /** Shows a toast (a failed copy of the file). */
+  notify?: (kind: "info" | "error", message: string) => void;
 }
 
 /** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
-export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps) {
+export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps) {
   const { selected, files, load } = diff;
   if (!selected) {
     return (
@@ -71,11 +73,11 @@ export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations,
     );
   }
   const f = files[diff.current];
-  return <OpenFile diff={diff} f={f} selected={selected} onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} notes={notes} />;
+  return <OpenFile diff={diff} f={f} selected={selected} onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} notes={notes} notify={notify} />;
 }
 
 /** The open file, editable in the entire-file layout (EditInViewer.ts). */
-function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annotations, notes }: DiffTabProps & { f: FileDiff; selected: FileDiff }) {
+function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff }) {
   const { opts, update } = diff;
   const edit = useFileEdit(diff.worktree, selected.path, editableContents(selected, opts.layout, opts.ignoreWhitespace), diff.reloadQuietly);
   return (
@@ -95,6 +97,8 @@ function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annot
           anchors={anchors?.(f)}
           annotations={annotations && ((a) => annotations(f, a))}
           loadFull={() => diff.loadFull(f)}
+          loadText={() => diff.loadText(f)}
+          notify={notify}
           onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
           onShowWhitespace={() => update({ ignoreWhitespace: false })}
           edit={edit}

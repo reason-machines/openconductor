@@ -12,6 +12,7 @@ import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { nextUnread, step } from "./nav.ts";
 import { discardScope, type DiffTarget, type DiscardSource } from "./target.ts";
 import type { TurnRef } from "./turnChangesCache.ts";
+import { newFileText } from "./copyFile.ts";
 import { DEFAULT_VIEW_OPTIONS, type DiffScope, type DiffViewOptions, type FileDiff } from "./types.ts";
 import { isViewed, loadViewed, pruneViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
 
@@ -148,6 +149,13 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
       if (!full) throw new Error(`${f.path} has no changes any more.`);
       return full;
     });
+  // The whole file as it is now, for the header's copy button: never the -w
+  // diff, whose context lines are not the file's text.
+  const loadText = (f: FileDiff) =>
+    loadWorkspaceDiff(worktree, target, { ...opts, ignoreWhitespace: false }, { path: f.path, contextLines: WHOLE_FILE_CONTEXT, turn }).then(([full]) => {
+      if (!full) throw new Error(`${f.path} has no changes any more.`);
+      return newFileText(full);
+    });
 
   // parity:diff.discard:ui
   // Revert icons (list row, file header) use the view's scope and are hidden in
@@ -194,6 +202,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     /** Next file not marked viewed after the selected one, or -1. */
     unread,
     loadFull,
+    loadText,
     /** The file waiting for the discard confirmation. */
     discarding: pending?.file ?? null,
     askDiscard,

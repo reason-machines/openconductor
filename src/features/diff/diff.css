@@ -129,6 +129,9 @@
 .oc-file-header .oc-viewed { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 6px; color: var(--muted); }
 .oc-file-header .oc-viewed:hover { background: var(--active); }
 .oc-file-header .oc-viewed[aria-pressed="true"] { color: var(--text); }
+/* "Copy file contents" (FileDiffView.tsx), Conductor's S1e ghost button: size-7, muted icon, accent on hover. */
+.oc-file-header .oc-copy-file { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; padding: 0; border-radius: 6px; color: var(--sidebar-muted-foreground); }
+.oc-file-header .oc-copy-file:hover { background: var(--active); color: var(--text); }
 
 /* Editing in the entire-file view (EditInViewer.ts). Conductor's dot: size-2 rounded-full bg-warning-foreground-secondary. */
 .oc-file-header .oc-unsaved { width: 8px; height: 8px; flex-shrink: 0; border-radius: 9999px; background: var(--amber); }
