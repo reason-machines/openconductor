@@ -42,6 +42,7 @@ that justifies the status.
 | Settings: Organization and Cloud (cloud org only) `settings-org` | unassigned | | missing | seed | n/a |
 | Dialogs and menus `dialogs-menus` | 700983e1 (Help menu, Submit a prompt, Diagnostics) | #631 | wrong | 2026-11-06, 18ecd9590, [dialogs-menus-01](../side-by-side/dialogs-menus-01-help-menu.png) (harness render) | build: unrecorded (700983e1, Opus 5.5 high) |
 | Toasts `toasts` | unassigned | | wrong | seed | n/a |
+| Routines (Reason Loops) `routines` | d369b42f (Reason cloud features) | #685 | wrong | 2026-11-06, [routines-01](../side-by-side/routines-01-list.png), [routines-02](../side-by-side/routines-02-new.png) (harness render: t24 1.7% / 0.9%, does not count as matches; table and saved routine have no reference, the harness has no cloud organization) | build: unrecorded (d369b42f, Opus 5.5 high) |
 
 Settings groups follow Conductor's settings navigation as read from its bundle
 ([evidence/settings/NOTES.md](../../evidence/settings/NOTES.md), "Settings pages"): Personal,

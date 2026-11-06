@@ -184,6 +184,8 @@
 .settings .settings-account-cards { display: flex; flex-direction: column; border-top: 1px solid var(--s-border); }
 .settings .settings-account-card { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--s-border); }
 .settings .settings-account-card-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; border: 1px solid var(--s-border); flex-shrink: 0; }
+.settings .settings-account-signout { display: flex; align-items: center; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--s-border); padding-top: 16px; }
+.settings .settings-account-signout-error { color: var(--destructive); }
 .settings .settings-account-card-title { font-size: 14px; font-weight: 500; }
 .settings .settings-account > .settings-row { border-top: 0; padding-top: 0; }
 .settings .settings-account > .settings-row + .settings-row { border-top: 1px solid var(--s-border); padding-top: 16px; }

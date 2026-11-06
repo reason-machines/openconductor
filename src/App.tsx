@@ -1,6 +1,7 @@
+import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "./state/store";
-import { destroyWorkspaceTerminals } from "./features/terminal/session";
+import { ATTACH_FAILED, destroyWorkspaceTerminals, onAttachFailure } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
@@ -32,6 +33,15 @@ import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
 import { FEEDBACK_URL } from "./components/helpMenuItems";
+import {
+  openInTerminalScript,
+  XCODE_LICENSE_COMMAND,
+  XCODE_LICENSE_DESCRIPTION,
+  XCODE_LICENSE_TITLE,
+  XCODE_LICENSE_TOAST_MS,
+  xcodeLicenseBlocked,
+  type ShellOut,
+} from "./scripts/xcodeLicense";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, quitApp, setQuitHandlerReady, type AppInfo } from "./backend";
 import { chatStatuses } from "./features/chat/chatRuntime";
 import { countRunningAgents, quitDecision } from "./features/quit/quit";
@@ -45,7 +55,9 @@ import { PRIORITY } from "./keybindings/dispatcher";
 import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
-import { OPEN_SETTINGS_EVENT } from "./features/chat/ChatModelPicker.tsx";
+import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatModelPicker.tsx";
+import { RoutinesPage } from "./features/routines/RoutinesPage";
+import { RoutineEditor } from "./features/routines/RoutineEditor";
 import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
 import { changeZoom, rememberSettings } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
@@ -122,6 +134,8 @@ export default function App() {
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // A terminal screen that could not attach (Conductor's "Failed to attach terminal" toast).
+  useEffect(() => onAttachFailure(() => show("error", ATTACH_FAILED)), [show]);
   // Non-fatal initialization issues (Conductor's workspaceError with "View logs"), from every create path.
   useInitIssues(useCallback((message: string, opts: { sticky: true; action?: ToastAction }) => show("error", message, opts), [show]));
   // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
@@ -217,7 +231,8 @@ export default function App() {
       // The right panel's "Add run script" opens the repository's Scripts settings.
       const section = REPO_SECTIONS.find((s) => s === detail?.section);
       if (detail?.repoId && section) return navigateSettings({ scope: "repo", repoId: detail.repoId, section });
-      const known = USER_PAGES.find((p) => p === detail?.page);
+      // Cloud setup (create's "Set up cloud") lives at /settings/cloud/setup, outside the user pages.
+      const known = [...USER_PAGES, "setup-cloud" as const].find((p) => p === detail?.page);
       if (known) navigateSettings({ scope: "user", page: known });
       // A chat's "Open <agent> settings": the Agents page opens on that agent's tab.
       if (known === "providers" && detail?.providerTab) {
@@ -268,6 +283,14 @@ export default function App() {
   }, [dispatch, show]);
   const openProject = useCallback(() => void addProject(), [addProject]);
   const addProjectAt = useCallback((path: string) => void addProject(path), [addProject]);
+  // The create composer's "Add project" (Conductor's `ZQo` opens `Gji`, the sidebar's add menu): a project
+  // opened from there becomes the composer's repository; the GitHub and Quick start items open their dialogs.
+  const createAddActions = {
+    onOpenProject: openProject,
+    onOpenGitHubProject: () => openDialog("clone"),
+    onQuickStart: () => openDialog("quickstart"),
+    onAddProjectAt: addProjectAt,
+  };
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -378,6 +401,24 @@ export default function App() {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
+  // Conductor's startup Xcode license check (`HBr`, src/scripts/xcodeLicense.ts): an unaccepted
+  // license blocks git, so say so for 15 s with "Run for me".
+  useEffect(() => {
+    if (!inTauri()) return;
+    const run = (command: string) => invoke<ShellOut>("execute_shell_command", { request: { command } });
+    appInfo()
+      .then((i) => xcodeLicenseBlocked(i.platform, run))
+      .then((blocked) => {
+        if (!blocked) return;
+        show("error", XCODE_LICENSE_TITLE, {
+          durationMs: XCODE_LICENSE_TOAST_MS,
+          description: XCODE_LICENSE_DESCRIPTION,
+          action: { label: "Run for me", onClick: () => void run(openInTerminalScript(XCODE_LICENSE_COMMAND)).catch(() => {}) },
+        });
+      })
+      .catch(() => {});
+  }, [show]);
+
   // The Toaster sits at the same place (second child of this fragment) in both views, so
   // opening or closing Settings keeps the toasts mounted: their timers keep running and
   // they do not replay their 400ms slide-in over the page that just opened.
@@ -411,6 +452,10 @@ export default function App() {
             },
             notify: (kind, message) => show(kind, message),
           }}
+          onLaunchCloudWorkspace={() => {
+            closeSettings();
+            openDialog("create");
+          }}
         />
         {quitDialog}
         </>
@@ -437,7 +482,7 @@ export default function App() {
             githubUsername={prefix.githubUsername}
             sidebarVisible={isSidebarVisible(state)}
             onClose={() => setCreatePage(null)}
-            onAddRepository={() => void openProject()}
+            addActions={createAddActions}
             onWarning={(message) => show("error", message, { sticky: true })}
             dispatch={dispatch}
           />
@@ -455,6 +500,24 @@ export default function App() {
           />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+        ) : sel.kind === "routines" ? (
+          sel.page ? (
+            <RoutineEditor
+              page={sel.page}
+              repos={state.repos}
+              onNavigate={(page) => dispatch({ type: "select", selection: page ? { kind: "routines", page } : { kind: "routines" } })}
+              onOpenReasonSettings={() => openAgentSettings("reason")}
+              notify={show}
+            />
+          ) : (
+            <RoutinesPage
+              sidebarVisible={isSidebarVisible(state)}
+              onToggleSidebar={() => dispatch({ type: "toggleSidebar" })}
+              onNavigate={(page) => dispatch({ type: "select", selection: page ? { kind: "routines", page } : { kind: "routines" } })}
+              onOpenReasonSettings={() => openAgentSettings("reason")}
+              notify={show}
+            />
+          )
         ) : sel.kind === "dashboard" ? (
           <Dashboard
             repos={state.repos}
@@ -507,10 +570,7 @@ export default function App() {
           prefixSettings={prefix.settings}
           githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
-          onAddRepository={() => {
-            setDialog(null);
-            void openProject();
-          }}
+          addActions={createAddActions}
           onWarning={(message) => show("error", message, { sticky: true })}
           dispatch={dispatch}
         />

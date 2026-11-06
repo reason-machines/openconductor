@@ -28,7 +28,14 @@ const SHARE_SCRIPTS_DOCS = "https://www.conductor.build/docs/reference/scripts/s
 /** Conductor's `x0a`: edits save 2 s after the last keystroke. */
 const SAVE_DEBOUNCE_MS = 2000;
 
-export function RepoScriptsRows({ repo }: { repo: Repo }) {
+type Notify = (kind: "info" | "error", message: string) => void;
+
+/**
+ * Failures are toasts, as Conductor's `ama` and `fGt` raise them (`kt.error`): "Failed to save
+ * script", "Failed to save run script", "Failed to delete run script", "Run script names can't be
+ * empty", "Run script names must be unique". Without a `notify` they show under the rows.
+ */
+export function RepoScriptsRows({ repo, notify }: { repo: Repo; notify?: Notify }) {
   const [config, setConfig] = useState<ScriptsConfig | null>(null);
   const [error, setError] = useState<string | null>(null);
   const load = useCallback(() => {
@@ -59,12 +66,14 @@ export function RepoScriptsRows({ repo }: { repo: Repo }) {
         load();
         return true;
       } catch {
-        setError(failure);
+        if (notify) notify("error", failure);
+        else setError(failure);
         return false;
       }
     },
-    [repo.path, load],
+    [repo.path, load, notify],
   );
+  const fail = useCallback((message: string) => (notify ? notify("error", message) : setError(message)), [notify]);
 
   if (!repo.path) return <p className="muted">This repository has no local checkout yet.</p>;
   const shared = config && (config.setupLayer === "repo_shared" || config.archiveLayer === "repo_shared" || config.run.some((s) => s.layer === "repo_shared"));
@@ -91,7 +100,7 @@ export function RepoScriptsRows({ repo }: { repo: Repo }) {
         />
       </div>
       <div className="settings-rows">
-        <RunScriptsRow scripts={config?.run ?? null} write={write} />
+        <RunScriptsRow scripts={config?.run ?? null} write={write} fail={fail} />
       </div>
       {error && (
         <p className="error small" role="alert">
@@ -214,13 +223,14 @@ type Write = (key: RepoLocalKey, value: unknown, failure: string) => Promise<boo
 type DialogState = { mode: "new" } | { mode: "edit"; script: RunScript };
 
 /** Conductor's `ama`: the Run scripts row, its list and the Add / Edit dialog. */
-function RunScriptsRow({ scripts, write }: { scripts: RunScript[] | null; write: Write }) {
+function RunScriptsRow({ scripts, write, fail }: { scripts: RunScript[] | null; write: Write; fail: (message: string) => void }) {
   const [dialog, setDialog] = useState<DialogState | null>(null);
   const list = scripts ?? [];
   const taken = (except?: string) => new Set(list.filter((s) => s.id !== except).map((s) => s.id.toLowerCase()));
   const save = async (form: ScriptForm, original?: RunScript) => {
     const id = scriptId(form.name);
-    if (id === undefined) return;
+    if (id === undefined) return fail("Run script names can't be empty");
+    if (taken(original?.id).has(id.toLowerCase())) return fail("Run script names must be unique");
     setDialog(null);
     const ok = await write(`scripts.run.${id}`, runEntry(form, original), "Failed to save run script");
     // A rename removes the old local entry (Conductor's `replaceId`).

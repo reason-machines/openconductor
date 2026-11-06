@@ -3,12 +3,13 @@
 // bundle carries the library's CodeView, Virtualizer and Shiki worker pool,
 // and the diff tab passes the options below (REA, renderApp chunk of 0.87.6).
 // Our backend returns parsed hunks, so they are turned back into a git patch
-// for Pierre to parse, and into full file contents for expanding gaps.
-import type { AnnotationSide, CodeViewItem, CodeViewLineScrollTarget, FileContents, FileDiffMetadata, SelectedLineRange } from "@pierre/diffs";
+// for Pierre to parse, and into full file contents for expanding gaps (or,
+// in the diff tab, for a diff Pierre computes from the whole old and new files).
+import { parseDiffFromFile, type AnnotationSide, type CodeViewItem, type CodeViewLineScrollTarget, type FileContents, type FileDiffMetadata, type SelectedLineRange } from "@pierre/diffs";
 import type { CommentSide } from "./comments.ts";
 import type { DiffLayout, DiffLine, FileDiff } from "./types.ts";
 
-/** Pierre themes Conductor defaults to (`{dark:"pierre-dark",light:"pierre-light"}` in its bundle). */
+/** Pierre's own default themes (`Lp` in Conductor's bundle); Conductor replaces them with its own (conductorCodeTheme.ts). */
 export const PIERRE_THEME = { dark: "pierre-dark", light: "pierre-light" } as const;
 /** Spacing Conductor's diff tab gives its CodeView: no top padding, 8 px below and between items. */
 export const CODE_VIEW_LAYOUT = { paddingTop: 0, paddingBottom: 8, gap: 8 } as const;
@@ -57,6 +58,23 @@ export function fullContents(file: FileDiff): { old: string | null; new: string 
     old: created ? null : join(lines.filter((l) => l.kind !== "addition")),
     new: file.status === "deleted" ? null : join(lines.filter((l) => l.kind !== "deletion")),
   };
+}
+
+/**
+ * Pierre's diff of a file loaded with whole-file context, from its old and new
+ * contents rather than a patch, so it is not partial: Pierre knows where the file
+ * ends and counts the unmodified lines on both sides of each change, with no
+ * "More unchanged context may be available" row after the last one. Conductor's
+ * diff tab does the same for a local text file (REA, renderApp 0.87.6: `Gri` with
+ * preferPatchForRemoteDiffs false, then `BVo` parses old and new with `iI`).
+ */
+export function fullDiffMeta(full: FileDiff, ignoreWhitespace: boolean): FileDiffMetadata {
+  const c = fullContents(full);
+  return parseDiffFromFile(
+    c.old === null ? null : { name: full.old_path ?? full.path, contents: c.old },
+    c.new === null ? null : { name: full.path, contents: c.new },
+    ignoreWhitespace ? { ignoreWhitespace: true } : undefined,
+  );
 }
 
 /** What Pierre's `loadDiffFiles` resolves to, from a whole-file-context load. */

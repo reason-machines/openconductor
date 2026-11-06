@@ -40,6 +40,8 @@ use tauri::{AppHandle, Emitter, Manager, State};
 use crate::agent::AgentKind;
 use crate::reason_acp::account::{Account, CommandResult, LoginPrompt};
 use crate::reason_acp::cli::{find_reason_cli, CliEnv, LaunchConfig};
+use crate::reason_acp::cloud::CallError;
+use crate::reason_acp::cloud::CloudSetup;
 use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
 use crate::reason_acp::wire;
 use crate::settings::service::SettingsService;
@@ -166,11 +168,25 @@ pub async fn reason_account_status(app: AppHandle) -> Result<Account, String> {
         .ok_or_else(|| "`reason status` did not answer".into())
 }
 
+/// Settings › Cloud setup: whether the configured `reason` login can run
+/// cloud workspaces (Reason Sessions on Reason cloud computers). Four
+/// `reason call` reads of the Reason HTTP API, run at the same time.
+#[tauri::command]
+pub async fn reason_cloud_setup(app: AppHandle) -> Result<CloudSetup, String> {
+    with_cli(&app, |l, dir| l.cloud_setup(dir)).await
+}
+
 /// Starts signing in from the app: the link to open and the code it shows.
 /// The page polls [`reason_account_status`] until the account appears.
 #[tauri::command]
 pub async fn reason_login_start(app: AppHandle) -> Result<LoginPrompt, String> {
     with_cli(&app, |l, dir| l.login(dir)).await?
+}
+
+/// Settings › Account › Sign out: `reason logout`.
+#[tauri::command]
+pub async fn reason_logout(app: AppHandle) -> Result<CommandResult, String> {
+    with_cli(&app, |l, dir| l.logout(dir)).await
 }
 
 /// Paths Settings › Agents › Reason shows: the installed `reason` ("Use
@@ -191,6 +207,32 @@ pub fn reason_paths() -> ReasonPaths {
             .ok()
             .map(|h| h.join(".config/reason").display().to_string()),
     }
+}
+
+/// One public Reason API operation through `reason call`, in the configured
+/// Workspace: Routines read and change Reason Loops with it. Only the
+/// operations in [`crate::reason_acp::api::OPERATIONS`] run.
+#[tauri::command]
+pub async fn reason_api_call(
+    app: AppHandle,
+    operation: String,
+    input: Value,
+) -> Result<Value, CallError> {
+    let unavailable = |message: String| CallError {
+        code: "reason_unavailable".into(),
+        message,
+    };
+    let (launch, workspace) = configured(&app).map_err(unavailable)?;
+    let launch = launch
+        .in_workspace(workspace.as_deref())
+        .map_err(|e| unavailable(e.to_string()))?;
+    let dir = home().map_err(unavailable)?;
+    tauri::async_runtime::spawn_blocking(move || launch.api_call(&dir, &operation, &input))
+        .await
+        .map_err(|e| CallError {
+            code: "no_answer".into(),
+            message: e.to_string(),
+        })?
 }
 
 /// "Connect" next to "This Mac": `reason connect`.

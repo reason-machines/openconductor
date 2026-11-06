@@ -46,7 +46,8 @@ export function AppIcon({ app, size }: { app: Pick<OpenInApp, "name" | "icon" | 
   );
 }
 
-function useInstalledApps(): OpenInApp[] | null {
+/** Apps the backend offers to open things in; null until loaded. */
+export function useInstalledApps(): OpenInApp[] | null {
   const [apps, setApps] = useState<OpenInApp[] | null>(null);
   useEffect(() => {
     let live = true;

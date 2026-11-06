@@ -38,6 +38,15 @@ test("cloud and organization routes need a cloud org, so they open General", () 
   assert.equal(at("/settings?cloudProjectId=p1"), "/settings/user/general");
 });
 
+test("Cloud setup has its own route, outside /settings/user", () => {
+  assert.equal(at("/settings/cloud/setup"), "/settings/cloud/setup");
+  assert.equal(at("/settings/cloud/setup/"), "/settings/cloud/setup");
+  assert.equal(at("/settings/cloud"), "/settings/cloud/setup");
+  assert.equal(at("/settings/user/setup-cloud"), "/settings/user/general");
+  assert.ok(!(CLOUD_ONLY_ROUTES as readonly string[]).includes("/settings/cloud/setup"));
+  assert.equal(settingsDeepLink({ scope: "user", page: "setup-cloud" }).endsWith("://settings/cloud/setup"), true);
+});
+
 test("/settings/repos opens the last-viewed repository, else the first, else General", () => {
   assert.equal(at("/settings/repos"), "/settings/repos/r1/environment");
   assert.equal(at("/settings/repos", { ...ctx, lastRepoId: "r2" }), "/settings/repos/r2/environment");
@@ -59,7 +68,7 @@ test("the /settings index redirect (?tab=, ?repoId=)", () => {
   assert.equal(at("/settings?tab=appearance"), "/settings/user/appearance");
   assert.equal(at("/settings?tab=providers&providerTab=codex"), "/settings/user/providers");
   assert.equal(at("/settings?tab=organization-prompts"), "/settings/user/general");
-  assert.equal(at("/settings?tab=setup-cloud"), "/settings/user/general");
+  assert.equal(at("/settings?tab=setup-cloud"), "/settings/cloud/setup");
   assert.equal(at("/settings?tab=unknown"), "/settings/user/general");
   assert.equal(at("/settings?tab=repo-r2"), "/settings/repos/r2/misc");
   assert.equal(at("/settings?tab=scripts&repoId=r2"), "/settings/repos/r2/scripts");
@@ -67,7 +76,7 @@ test("the /settings index redirect (?tab=, ?repoId=)", () => {
   assert.equal(at("/settings?tab=actions"), "/settings/repos/r1/actions");
   assert.equal(at("/settings?tab=git"), "/settings/user/git");
   assert.equal(at("/settings?tab=environment"), "/settings/user/environment");
-  for (const tab of Object.keys(TAB_PATHS)) assert.match(at(`/settings?tab=${tab}`) ?? "", /^\/settings\/(user|repos)\//);
+  for (const tab of Object.keys(TAB_PATHS)) assert.match(at(`/settings?tab=${tab}`) ?? "", /^\/settings\/(user|repos|cloud\/setup)/);
 });
 
 test("repo ids are URL-encoded both ways", () => {

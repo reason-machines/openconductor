@@ -42,6 +42,7 @@
   }
   const listeners = new Map(); // eventId -> {event, handler}
   let nextEventId = 1;
+  let sidecarRequestsSent = false;
   function emit(event, payload) {
     for (const [id, l] of listeners) {
       if (l.event === event) runCallback(l.handler, { event, id, payload });
@@ -121,6 +122,10 @@
       localStorage.setItem(VFS_KEY, JSON.stringify(vfs));
     } catch (e) {}
   };
+  // ?oc_setup_script=<command>: tide-web's repository-local settings (.conductor/settings.local.toml in its
+  // main checkout) set scripts.setup, for the terminal panel's Setup tab (tools/side-by-side/setup-tab.mjs).
+  const setupScript = new URLSearchParams(location.search).get("oc_setup_script");
+  if (setupScript) vfs["/Users/demo/code/tide-web/.main/.conductor/settings.local.toml"] = `[scripts]\nsetup = ${JSON.stringify(setupScript)}\n`;
   saveVfs();
   window.__OC_VFS__ = vfs;
   const enc = new TextEncoder();
@@ -291,6 +296,14 @@
       case "plugin:event|listen": {
         const id = nextEventId++;
         listeners.set(id, { event: args.event, handler: args.handler });
+        // Requests the sidecar sends the app unprompted (seed.sidecarRequests,
+        // e.g. a toolApproval), once the app listens for sidecar lines.
+        if (args.event === "rpc_from_sidecar" && seed.sidecarRequests && seed.sidecarRequests.length && !sidecarRequestsSent) {
+          sidecarRequestsSent = true;
+          setTimeout(() => {
+            for (const req of seed.sidecarRequests) emit("rpc_from_sidecar", { line: JSON.stringify(req) });
+          }, 500);
+        }
         return id;
       }
       case "plugin:event|unlisten":

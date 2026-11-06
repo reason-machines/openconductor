@@ -1,5 +1,5 @@
 // Pure state selectors (no React), so node --test can cover them.
-import type { AppState, Repo } from "./types";
+import type { AppState, Repo, Selection } from "./types";
 
 /** Saved state from before the flag existed has no value, which means shown. */
 export const isSidebarVisible = (state: AppState): boolean => state.sidebarVisible !== false;
@@ -27,6 +27,25 @@ export function startSelection(state: AppState, pathname: string, search = ""): 
     const repo = new URLSearchParams(search).get("repo") || undefined;
     return { ...state, selection: repo ? { kind: "dashboard", repo } : { kind: "dashboard" } };
   }
+  const routines = routinesSelection(pathname, search);
+  if (routines) return { ...state, selection: routines };
   if (state.selection?.kind === "workspace") return state;
   return { ...state, selection: { kind: "root" } };
+}
+
+/**
+ * Conductor's `/routines` routes as a selection, with its legacy `/automations` paths
+ * (which redirect to them, renderApp route table): `/routines`, `/routines/new`,
+ * `/routines/new/$suggestionId`, `/routines/$automationId[/fork]`. A Loop needs its
+ * Reason too, so a routine's own path carries `?reason=<id>`; without it the list opens.
+ */
+export function routinesSelection(pathname: string, search = ""): Selection | undefined {
+  const m = /^\/(?:routines|automations)(?:\/(.*?))?\/?$/.exec(pathname);
+  if (!m) return undefined;
+  const parts = (m[1] ?? "").split("/").filter(Boolean).map(decodeURIComponent);
+  if (parts.length === 0) return { kind: "routines" };
+  if (parts[0] === "new") return { kind: "routines", page: parts[1] ? { view: "new", suggestion: parts[1] } : { view: "new" } };
+  const reasonId = new URLSearchParams(search).get("reason");
+  if (!reasonId) return { kind: "routines" };
+  return { kind: "routines", page: { view: parts[1] === "fork" ? "fork" : "edit", reasonId, id: parts[0] } };
 }

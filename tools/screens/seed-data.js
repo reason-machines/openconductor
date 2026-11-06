@@ -262,5 +262,30 @@
   };
 
   const populated = { conductor: sql.join("\n"), vfs, git };
-  window.__OC_SEED_DATA__ = { populated };
+
+  // "needs-permission": populated plus a turn in "tallinn" waiting on a Bash
+  // approval. Conductor keeps tool approvals in memory only (index chunk
+  // `enqueueToolApproval`, fed by the sidecar's `toolApproval` JSON-RPC request,
+  // `Ke.addMethod(la.TOOL_APPROVAL, ...)`), so the mock sends that request once
+  // the app listens on rpc_from_sidecar (tauri-mock.js `sidecarRequests`).
+  // Same turn as tools/reason-acp/fake_reason_acp.py "tallinn".
+  const TALLINN_PROMPT = "Return X-RateLimit-Limit and X-RateLimit-Remaining headers on every API response.";
+  const TALLINN_COMMAND = { command: "pnpm test src/middleware/rate-limit.test.ts", description: "Run the rate limit tests" };
+  const tallinnRow = (id, role, content, ago, extra = {}) =>
+    insert("session_messages", { id, session_id: "sess-tallinn", role, content, created_at: iso(ago), sent_at: iso(ago), turn_id: "u-tallinn-1", model: "claude-opus-4-8", ...extra });
+  const tallinnAssistant = (id, content, ago) =>
+    tallinnRow(id, "assistant", JSON.stringify({ type: "assistant", message: { role: "assistant", model: "claude-opus-4-8", content }, session_id: "claude-demo-2" }), ago, { sdk_message_id: `sdk-${id}` });
+  const needsPermission = {
+    ...populated,
+    conductor: [
+      populated.conductor,
+      tallinnRow("u-tallinn-1", "user", TALLINN_PROMPT, 7),
+      tallinnAssistant("m-tallinn-1", [{ type: "text", text: "I'll add both headers in the rate limit middleware, then run its tests." }], 6),
+      tallinnAssistant("m-tallinn-2", [{ type: "tool_use", id: "tu-tallinn-1", name: "Bash", input: TALLINN_COMMAND }], 6),
+    ].join("\n"),
+    sidecarRequests: [
+      { jsonrpc: "2.0", id: "oc-mock-approval-1", method: "toolApproval", params: { sessionId: "sess-tallinn", toolUseId: "tu-tallinn-1", toolName: "Bash", toolInput: TALLINN_COMMAND } },
+    ],
+  };
+  window.__OC_SEED_DATA__ = { populated, "needs-permission": needsPermission };
 })();
