@@ -1,32 +1,19 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { apiKeyName, authModeOf, claudeAuthState, codexAuthState, configForMode, otherProvider, providerTabFrom } from "./agentAuth.ts";
+import { apiKeyName, authModeOf, claudeAuthState, codexAuthState, configForMode } from "./agentAuth.ts";
 import { displayedLoadout, equip, isEquipped, move, parseFavorites, remove, toRows, withDefault, withReview, builtIn, type Favorite } from "./loadout.ts";
 import { DEFAULT_SETTINGS } from "../types.ts";
-
-test("providerTab opens codex, cursor and opencode; anything else opens Claude Code ($pa)", () => {
-  assert.equal(providerTabFrom("codex"), "codex");
-  assert.equal(providerTabFrom("cursor"), "cursor");
-  assert.equal(providerTabFrom("opencode"), "opencode");
-  assert.equal(providerTabFrom("pi"), "claude");
-  assert.equal(providerTabFrom(null), "claude");
-});
 
 test("the API key card stands for the key-based providers, the CLI card for the rest", () => {
   assert.equal(authModeOf("claude", null), "cli");
   assert.equal(authModeOf("claude", { kind: "claude_login" }), "cli");
   assert.equal(authModeOf("claude", { kind: "anthropic_api" }), "apikey");
-  assert.equal(authModeOf("claude", { kind: "bedrock" }), "cli");
-  assert.equal(otherProvider("claude", { kind: "bedrock" }), "bedrock");
-  assert.equal(otherProvider("claude", { kind: "anthropic_api" }), null);
   assert.equal(authModeOf("codex", { kind: "openai_api" }), "apikey");
-  assert.equal(authModeOf("codex", { kind: "codex_gateway" }), "apikey");
   assert.deepEqual(configForMode("claude", "apikey", { kind: "anthropic_api", base_url: "https://x" }), { kind: "anthropic_api", base_url: "https://x" });
   assert.deepEqual(configForMode("claude", "apikey", { kind: "claude_login" }), { kind: "anthropic_api", auth: "api_key" });
   assert.deepEqual(configForMode("codex", "cli", { kind: "openai_api" }), { kind: "codex_login" });
   assert.equal(apiKeyName("claude", { kind: "anthropic_api", auth: "auth_token" }), "anthropic_auth_token");
-  assert.equal(apiKeyName("codex", { kind: "codex_gateway", gateway: "vercel_ai_gateway" }), "vercel_ai_gateway_api_key");
-  assert.equal(apiKeyName("cursor", null), "cursor_api_key");
+  assert.equal(apiKeyName("codex", { kind: "openai_api" }), "openai_api_key");
 });
 
 test("status line copy and info rows follow Conductor's jpa/Fpa and Yki/Qki", () => {
@@ -74,7 +61,7 @@ test("equip appends at the next slot or replaces an occupied one; five slots at 
 });
 
 test("favorites round-trip as Conductor's favorite_models configuration JSON", () => {
-  const favs: Favorite[] = [builtIn("a", "gpt-5.6-sol", "high", true), { id: "b", type: "acp", acpAgentId: "opencode", modelId: "anthropic/claude" }];
+  const favs: Favorite[] = [builtIn("a", "gpt-5.6-sol", "high", true), { id: "b", type: "acp", acpAgentId: "some-acp-agent", modelId: "anthropic/claude" }];
   const rows = toRows(favs);
   assert.deepEqual(JSON.parse(rows[0].configuration), { type: "built-in", agent: "codex", model: "gpt-5.6-sol", thinkingLevel: "high", fastMode: true });
   assert.deepEqual(parseFavorites(rows), favs);

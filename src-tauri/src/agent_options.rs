@@ -9,8 +9,6 @@
 //!   and `~/.codex/config.toml`, opened in the default app, falling back to
 //!   their folder when the file does not exist yet (Conductor's
 //!   `directoryFallbackPath`).
-//! * [`acp_agent_status`] - whether OpenCode runs, its version, and whether
-//!   it is older than Conductor's `minimumVersion` 1.16.2.
 
 use std::ffi::OsStr;
 use std::os::unix::fs::PermissionsExt;
@@ -19,11 +17,8 @@ use std::process::{Command, Stdio};
 use std::time::{Duration, Instant};
 
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, State};
+use tauri::AppHandle;
 use tauri_plugin_opener::OpenerExt;
-
-use crate::agent::AgentKind;
-use crate::settings::service::SettingsService;
 
 /// The agents with options on Settings › Agents.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
@@ -31,7 +26,6 @@ use crate::settings::service::SettingsService;
 pub enum OptionAgent {
     Claude,
     Codex,
-    Opencode,
 }
 
 impl OptionAgent {
@@ -39,15 +33,6 @@ impl OptionAgent {
         match self {
             OptionAgent::Claude => "claude",
             OptionAgent::Codex => "codex",
-            OptionAgent::Opencode => "opencode",
-        }
-    }
-
-    fn kind(self) -> AgentKind {
-        match self {
-            OptionAgent::Claude => AgentKind::Claude,
-            OptionAgent::Codex => AgentKind::Codex,
-            OptionAgent::Opencode => AgentKind::Opencode,
         }
     }
 
@@ -56,7 +41,6 @@ impl OptionAgent {
         match self {
             OptionAgent::Claude => &[".local/bin", ".claude/local"],
             OptionAgent::Codex => &[".local/bin"],
-            OptionAgent::Opencode => &[".opencode/bin", ".local/bin"],
         }
     }
 }
@@ -119,12 +103,11 @@ pub struct ConfigFile {
 }
 
 /// `~/.claude/settings.json` or `~/.codex/config.toml` under `home`
-/// (Conductor's `kpa` / `Tpa`); OpenCode has no card.
+/// (Conductor's `kpa` / `Tpa`).
 pub fn config_file(agent: OptionAgent, home: &Path) -> Option<ConfigFile> {
     let (dir, file) = match agent {
         OptionAgent::Claude => (".claude", "settings.json"),
         OptionAgent::Codex => (".codex", "config.toml"),
-        OptionAgent::Opencode => return None,
     };
     let dir = home.join(dir);
     Some(ConfigFile {
@@ -160,25 +143,8 @@ pub fn open_agent_config(app: AppHandle, agent: OptionAgent) -> Result<(), Strin
         .map_err(|e| e.to_string())
 }
 
-/// Conductor's OpenCode `minimumVersion`: older versions "can return empty
-/// ACP turns".
-pub const OPENCODE_MINIMUM_VERSION: (u64, u64, u64) = (1, 16, 2);
-
-/// Install state of an ACP agent, the fields Conductor's status line reads
-/// (`isInstalled`, `version`, `isOutdated`, `error`).
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct AcpAgentStatus {
-    pub is_installed: bool,
-    pub version: Option<String>,
-    pub is_outdated: bool,
-    pub error: Option<String>,
-    /// The executable that was checked, for "Open in Finder".
-    pub executable: Option<String>,
-}
-
-/// The first `major.minor.patch` in `text` (`opencode --version` prints
-/// `2.0.5`, other tools prefix a name).
+/// The first `major.minor.patch` in `text` (`claude --version` prints
+/// `2.1.284 (Claude Code)`, `codex --version` prefixes a name).
 pub fn parse_version(text: &str) -> Option<(u64, u64, u64)> {
     text.split(|c: char| !(c.is_ascii_digit() || c == '.'))
         .filter_map(|tok| {
@@ -187,30 +153,6 @@ pub fn parse_version(text: &str) -> Option<(u64, u64, u64)> {
             Some(v)
         })
         .next()
-}
-
-/// Status from a `--version` run: `Ok(stdout)` or `Err(reason)`.
-pub fn status_from_run(executable: Option<&Path>, run: Result<String, String>) -> AcpAgentStatus {
-    let executable = executable.map(|p| p.display().to_string());
-    match run {
-        Ok(out) => {
-            let parsed = parse_version(&out);
-            AcpAgentStatus {
-                is_installed: true,
-                version: parsed.map(|(a, b, c)| format!("{a}.{b}.{c}")),
-                is_outdated: parsed.is_some_and(|v| v < OPENCODE_MINIMUM_VERSION),
-                error: None,
-                executable,
-            }
-        }
-        Err(reason) => AcpAgentStatus {
-            is_installed: executable.is_some(),
-            version: None,
-            is_outdated: false,
-            error: executable.as_ref().map(|_| reason),
-            executable,
-        },
-    }
 }
 
 /// `<exe> --version`, killed after `timeout`.
@@ -240,34 +182,6 @@ pub(crate) fn run_version(exe: &Path, timeout: Duration) -> Result<String, Strin
     } else {
         Err(String::from_utf8_lossy(&out.stderr).trim().to_string())
     }
-}
-
-/// JS: `invoke("acp_agent_status", { agent: "opencode" })`. Checks the
-/// executable OpenConductor would launch: `opencode_executable_path` when
-/// set, else the system binary.
-#[tauri::command]
-pub async fn acp_agent_status(
-    settings: State<'_, SettingsService>,
-    agent: OptionAgent,
-) -> Result<AcpAgentStatus, String> {
-    if agent != OptionAgent::Opencode {
-        return Err("Only OpenCode is an ACP agent.".into());
-    }
-    let configured = settings
-        .get()
-        .ok()
-        .map(|s| s.executable(agent.kind()))
-        .filter(|p| p.is_absolute());
-    let exe = configured.or_else(|| system_binary(agent));
-    tauri::async_runtime::spawn_blocking(move || {
-        let run = match &exe {
-            Some(p) => run_version(p, Duration::from_secs(10)),
-            None => Err("not found".into()),
-        };
-        status_from_run(exe.as_deref(), run)
-    })
-    .await
-    .map_err(|e| e.to_string())
 }
 
 #[cfg(test)]
@@ -317,10 +231,10 @@ mod tests {
             Some(on_path)
         );
         let home = tmp.path().join("home");
-        let installed = exe(&home.join(".opencode/bin"), "opencode");
+        let installed = exe(&home.join(".claude/local"), "claude");
         assert_eq!(
             find_system_binary(
-                OptionAgent::Opencode,
+                OptionAgent::Claude,
                 Some(OsStr::new("relative")),
                 Some(&home)
             ),
@@ -347,7 +261,6 @@ mod tests {
             config_file(OptionAgent::Codex, home).unwrap().file_path,
             "/Users/ada/.codex/config.toml"
         );
-        assert_eq!(config_file(OptionAgent::Opencode, home), None);
     }
 
     #[test]
@@ -365,25 +278,12 @@ mod tests {
     }
 
     #[test]
-    fn versions_parse_and_compare_with_the_minimum() {
-        assert_eq!(parse_version("2.0.5\n"), Some((2, 0, 5)));
-        assert_eq!(parse_version("opencode v1.16.10"), Some((1, 16, 10)));
+    fn versions_parse_from_cli_output() {
+        assert_eq!(parse_version("2.1.284 (Claude Code)\n"), Some((2, 1, 284)));
+        assert_eq!(parse_version("codex-cli 0.156.1"), Some((0, 156, 1)));
         assert_eq!(parse_version("no version"), None);
-        let ok = status_from_run(Some(Path::new("/x/opencode")), Ok("1.16.2".into()));
-        assert!(ok.is_installed && !ok.is_outdated);
-        assert_eq!(ok.version.as_deref(), Some("1.16.2"));
-        let old = status_from_run(Some(Path::new("/x/opencode")), Ok("1.9.0".into()));
-        assert!(old.is_outdated);
-        let missing = status_from_run(None, Err("not found".into()));
-        assert!(!missing.is_installed && missing.error.is_none());
-        let broken = status_from_run(Some(Path::new("/x/opencode")), Err("boom".into()));
-        assert!(broken.is_installed && broken.error.as_deref() == Some("boom"));
-    }
-
-    #[test]
-    fn a_real_version_run_reads_stdout() {
         let tmp = tempdir();
-        let p = exe(tmp.path(), "opencode");
+        let p = exe(tmp.path(), "codex");
         assert_eq!(
             run_version(&p, Duration::from_secs(5)).unwrap().trim(),
             "2.0.5"
@@ -392,8 +292,10 @@ mod tests {
 
     #[test]
     fn agents_parse_from_ipc_names() {
-        let a: OptionAgent = serde_json::from_str(r#""opencode""#).unwrap();
-        assert_eq!(a, OptionAgent::Opencode);
-        assert!(serde_json::from_str::<OptionAgent>(r#""cursor""#).is_err());
+        let a: OptionAgent = serde_json::from_str(r#""codex""#).unwrap();
+        assert_eq!(a, OptionAgent::Codex);
+        for removed in ["opencode", "cursor"] {
+            assert!(serde_json::from_str::<OptionAgent>(&format!("{removed:?}")).is_err());
+        }
     }
 }

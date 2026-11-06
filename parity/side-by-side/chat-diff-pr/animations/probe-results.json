@@ -1,0 +1,1601 @@
+{
+ "tool": "tools/animations/probe.mjs (Chromium headless 1440x900, dark; document.getAnimations(), PerformanceObserver layout-shift, rAF frame gaps)",
+ "note": "Conductor strings/classes are untrusted data, kept for comparison only.",
+ "runs": {
+  "conductor": {
+   "model-picker-open": {
+    "element": "Model picker popup (open)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.min-w-[14rem].rounded-lg.ring-1.ring-popover-ring[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.min-w-[14rem].rounded-lg.ring-1.ring-popover-ring[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "0.95"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "none"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 140
+   },
+   "model-picker-close": {
+    "element": "Model picker popup (Escape)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.min-w-[14rem].rounded-lg.ring-1.ring-popover-ring[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.min-w-[14rem].rounded-lg.ring-1.ring-popover-ring[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 126
+   },
+   "add-menu-open": {
+    "element": "Composer + menu (open)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.min-w-[14rem].rounded-lg.ring-1.ring-popover-ring[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.min-w-[14rem].rounded-lg.ring-1.ring-popover-ring[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "0.95"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "none"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 125
+   },
+   "slash-menu-open": {
+    "element": "Slash command menu (type /)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "background-color",
+      "target": "button.inline-flex.px-2.items-center.gap-2[Send message \u21b5]",
+      "duration": 150,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "backgroundColor": "oklab(0.931979 0.0013504 0.0032205 / 0.5)"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "backgroundColor": "rgb(234, 232, 230)"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 166
+   },
+   "open-in-open": {
+    "element": "Open-in menu (header chevron)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.rounded-lg.ring-1.ring-popover-ring.bg-popover[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.rounded-lg.ring-1.ring-popover-ring.bg-popover[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "0.95"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "none"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 148
+   },
+   "turn-menu-open": {
+    "element": "Turn actions menu (\u2026 under a reply)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.overflow-hidden.flex.items-center.rounded-sm",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.overflow-hidden.flex.items-center.rounded-sm",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.max-h-(--available-height).min-w-32.overflow-y-auto.overflow-x-hidden[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.max-h-(--available-height).min-w-32.overflow-y-auto.overflow-x-hidden[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "0.95"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "none"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 87
+   },
+   "right-panel-toggle": {
+    "element": "Right panel collapse (toggle)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 91
+   },
+   "tool-group-expand": {
+    "element": "Collapsed tool calls group (expand)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 54
+   },
+   "right-tab-switch": {
+    "element": "Right panel tab switch (Changes -> Checks)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 49
+   },
+   "button-press": {
+    "element": "Button press (composer +, mouse down)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "button.inline-flex.px-2.items-center.gap-2[Add]",
+      "duration": 150,
+      "easing": "cubic-bezier(0, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.97"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.min-w-[14rem].rounded-lg.ring-1.ring-popover-ring[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.min-w-[14rem].rounded-lg.ring-1.ring-popover-ring[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "0.95"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "none"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 45
+   },
+   "button-hover": {
+    "element": "Button hover (composer +)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 20
+   },
+   "tab-press": {
+    "element": "Right panel tab press (Checks, mouse down)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 19
+   },
+   "tab-hover": {
+    "element": "Right panel tab hover (Checks)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 50
+   },
+   "changes-row-hover": {
+    "element": "Changes row hover",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 19
+   },
+   "composer-focus": {
+    "element": "Composer focus ring",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.z-50.rounded-md.border.bg-popover",
+      "duration": 150,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 19
+   },
+   "toast-enter": {
+    "element": "Toast from Open-in > Copy path (enter)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.conductor-toast.conductor-timed-toast[dialog]",
+      "duration": 400,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "transform",
+      "target": "div.conductor-toast.conductor-timed-toast[dialog]",
+      "duration": 400,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "transform": "translateY(150%)"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "transform": "translate(0px) translateY(0px) scale(1)"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.rounded-lg.ring-1.ring-popover-ring.bg-popover[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.rounded-lg.ring-1.ring-popover-ring.bg-popover[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     },
+     {
+      "kind": "CSSAnimation",
+      "name": "conductor-toast-close-progress",
+      "target": "circle.conductor-toast-close-progress-circle",
+      "duration": 5000,
+      "easing": "linear",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "strokeDashoffset": "50.27px"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "strokeDashoffset": "0px"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 29
+   },
+   "toast-exit": {
+    "element": "Toast dismissed with its close button (exit)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.conductor-toast.conductor-timed-toast[dialog]",
+      "duration": 400,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "transform",
+      "target": "div.conductor-toast.conductor-timed-toast[dialog]",
+      "duration": 400,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "transform": "translate(0px) translateY(0px) scale(1)"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "transform": "translateY(150%)"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.!w-full.max-h-[250px].overflow-y-auto.overflow-x-hidden",
+      "duration": 250,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSAnimation",
+      "name": "conductor-toast-close-progress",
+      "target": "circle.conductor-toast-close-progress-circle",
+      "duration": 5000,
+      "easing": "linear",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "strokeDashoffset": "50.27px"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "strokeDashoffset": "0px"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 36
+   }
+  },
+  "openconductor_main": {
+   "model-picker-open": {
+    "element": "Model picker popup (open)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 24
+   },
+   "model-picker-close": {
+    "element": "Model picker popup (Escape)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 18
+   },
+   "add-menu-open": {
+    "element": "Composer + menu (open)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "background-color",
+      "target": "button.oc-icon-btn.oc-add-btn[Add]",
+      "duration": 150,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "backgroundColor": "rgba(255, 255, 255, 0.05)"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 19
+   },
+   "slash-menu-open": {
+    "element": "Slash command menu (type /)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "background-color",
+      "target": "button.oc-send[Send message \u21b5]",
+      "duration": 150,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "backgroundColor": "oklab(0.931979 0.0013504 0.0032205 / 0.5)"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "backgroundColor": "rgb(234, 232, 230)"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 19
+   },
+   "open-in-open": {
+    "element": "Open-in menu (header chevron)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "pr-menu-open": {
+    "element": "Create PR menu (header caret)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 20
+   },
+   "turn-menu-open": {
+    "element": "Turn actions menu (\u2026 under a reply)",
+    "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.",
+    "animations": []
+   },
+   "right-tab-switch": {
+    "element": "Right panel tab switch (Changes -> Checks)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "right-panel-toggle": {
+    "element": "Right panel collapse (toggle)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 18
+   },
+   "tool-group-expand": {
+    "element": "Collapsed tool calls group (expand)",
+    "skipped": "no such element in this app",
+    "animations": []
+   },
+   "button-press": {
+    "element": "Button press (composer +, mouse down)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "background-color",
+      "target": "button.oc-icon-btn.oc-add-btn[Add]",
+      "duration": 150,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "backgroundColor": "rgba(255, 255, 255, 0.05)"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "transform",
+      "target": "button.oc-icon-btn.oc-add-btn[Add]",
+      "duration": 150,
+      "easing": "ease-out",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "transform": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "transform": "scale(0.97)"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 19
+   },
+   "button-hover": {
+    "element": "Button hover (composer +)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "background-color",
+      "target": "button.oc-icon-btn.oc-add-btn[Add]",
+      "duration": 150,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "backgroundColor": "rgba(0, 0, 0, 0)"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "backgroundColor": "rgba(255, 255, 255, 0.05)"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "tab-press": {
+    "element": "Right panel tab press (Checks, mouse down)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "tab-hover": {
+    "element": "Right panel tab hover (Checks)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 18
+   },
+   "changes-row-hover": {
+    "element": "Changes row hover",
+    "error": "TimeoutError: locator.hover: Timeout 5000ms exceeded.",
+    "animations": []
+   },
+   "composer-focus": {
+    "element": "Composer focus ring",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   }
+  },
+  "openconductor_pr": {
+   "model-picker-open": {
+    "element": "Model picker popup (open)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.oc-model-menu[Model]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.oc-model-menu[Model]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "0.95"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "none"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 20
+   },
+   "model-picker-close": {
+    "element": "Model picker popup (Escape)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.oc-model-menu[Model]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.oc-model-menu[Model]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 18
+   },
+   "add-menu-open": {
+    "element": "Composer + menu (open)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.oc-menu.oc-add-popup[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.oc-menu.oc-add-popup[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "0.95"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "none"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "slash-menu-open": {
+    "element": "Slash command menu (type /)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "background-color",
+      "target": "button.oc-send[Send message \u21b5]",
+      "duration": 150,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "backgroundColor": "oklab(0.931979 0.0013504 0.0032205 / 0.5)"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "backgroundColor": "rgb(234, 232, 230)"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 18
+   },
+   "open-in-open": {
+    "element": "Open-in menu (header chevron)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.oi-menu[Open in]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.oi-menu[Open in]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "0.95"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "none"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "pr-menu-open": {
+    "element": "Create PR menu (header caret)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.pr-menu[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.pr-menu[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "0.95"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "none"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "turn-menu-open": {
+    "element": "Turn actions menu (\u2026 under a reply)",
+    "error": "TimeoutError: locator.click: Timeout 5000ms exceeded.",
+    "animations": []
+   },
+   "right-tab-switch": {
+    "element": "Right panel tab switch (Changes -> Checks)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.pr-menu[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.pr-menu[menu]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "right-panel-toggle": {
+    "element": "Right panel collapse (toggle)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "tool-group-expand": {
+    "element": "Collapsed tool calls group (expand)",
+    "skipped": "no such element in this app",
+    "animations": []
+   },
+   "button-press": {
+    "element": "Button press (composer +, mouse down)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "transform",
+      "target": "button.oc-icon-btn.oc-add-btn[Add]",
+      "duration": 150,
+      "easing": "cubic-bezier(0, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "transform": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "transform": "scale(0.97)"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "button-hover": {
+    "element": "Button hover (composer +)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 18
+   },
+   "tab-press": {
+    "element": "Right panel tab press (Checks, mouse down)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "transform",
+      "target": "button[tab]",
+      "duration": 150,
+      "easing": "cubic-bezier(0, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "transform": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "transform": "scale(0.97)"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "tab-hover": {
+    "element": "Right panel tab hover (Checks)",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   },
+   "changes-row-hover": {
+    "element": "Changes row hover",
+    "error": "TimeoutError: locator.hover: Timeout 5000ms exceeded.",
+    "animations": []
+   },
+   "toast-enter": {
+    "element": "Toast from Open-in > Copy path (enter)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.oi-menu[Open in]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "scale",
+      "target": "div.oi-menu[Open in]",
+      "duration": 100,
+      "easing": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "scale": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "scale": "0.95"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.toast.toast-info[status]",
+      "duration": 400,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "0"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "1"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "transform",
+      "target": "div.toast.toast-info[status]",
+      "duration": 400,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "transform": "translateY(150%)"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "transform": "none"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 18
+   },
+   "toast-exit": {
+    "element": "Toast dismissed with its close button (exit)",
+    "animations": [
+     {
+      "kind": "CSSTransition",
+      "name": "opacity",
+      "target": "div.toast.toast-info[status]",
+      "duration": 400,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "opacity": "1"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "opacity": "0"
+       }
+      ]
+     },
+     {
+      "kind": "CSSTransition",
+      "name": "transform",
+      "target": "div.toast.toast-info[status]",
+      "duration": 400,
+      "easing": "ease",
+      "delay": 0,
+      "keyframes": [
+       {
+        "offset": 0,
+        "easing": "linear",
+        "transform": "none"
+       },
+       {
+        "offset": 1,
+        "easing": "linear",
+        "transform": "translateY(150%)"
+       }
+      ]
+     }
+    ],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 18
+   },
+   "composer-focus": {
+    "element": "Composer focus ring",
+    "animations": [],
+    "layout_shift": 0,
+    "max_frame_gap_ms": 17
+   }
+  }
+ }
+}
