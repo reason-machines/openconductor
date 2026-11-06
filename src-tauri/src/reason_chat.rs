@@ -39,6 +39,7 @@ use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::agent::AgentKind;
 use crate::reason_acp::account::{Account, CommandResult, LoginPrompt};
+use crate::reason_acp::cloud::CloudSetup;
 use crate::reason_acp::cli::{find_reason_cli, CliEnv, LaunchConfig};
 use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
 use crate::reason_acp::wire;
@@ -164,6 +165,14 @@ pub async fn reason_account_status(app: AppHandle) -> Result<Account, String> {
     with_cli(&app, |l, dir| l.account(dir))
         .await?
         .ok_or_else(|| "`reason status` did not answer".into())
+}
+
+/// Settings › Cloud setup: whether the configured `reason` login can run
+/// cloud workspaces (Reason Sessions on Reason cloud computers). Four
+/// `reason call` reads of the Reason HTTP API, run at the same time.
+#[tauri::command]
+pub async fn reason_cloud_setup(app: AppHandle) -> Result<CloudSetup, String> {
+    with_cli(&app, |l, dir| l.cloud_setup(dir)).await
 }
 
 /// Starts signing in from the app: the link to open and the code it shows.

@@ -1447,11 +1447,28 @@
      }
     ]
    },
-   "oc_reason": "OpenConductor has no cloud settings",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'setup-cloud'}}))",
+     "after_ms": 2500
+    }
+   ],
    "covers": [
     {
      "kind": "route",
      "name": "/settings/cloud/setup"
+    },
+    {
+     "kind": "settings-page",
+     "name": "setup"
     }
    ]
   },
