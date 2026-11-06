@@ -919,7 +919,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify }: Props) {
           {workspace.status !== "archived" && <OpenInButton path={workspace.path ?? null} notify={notify} />}
           <PrControl pullRequest={pullRequest} actions={prActions} />
           <button className="btn btn-small" title="Archive workspace" onClick={() => dispatch({ type: "archiveWorkspace", repoId: repo.id, workspaceId: workspace.id })}>
-            <ArchiveIcon size={14} /> Archive
+            <ArchiveIcon size={12} /> Archive
           </button>
         </div>
       </header>
