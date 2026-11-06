@@ -1,8 +1,5 @@
 //! Agent runner and provider abstraction.
 //!
-//! * [`auth_sources`] - every sign-in found for Claude Code and Codex (CLI
-//!   logins, OpenConductor's Keychain, the login shell), which one a chat
-//!   uses, and what a first launch imports.
 //! * [`byok`] - [`ProviderConfig`], the provider an agent uses as stored in
 //!   settings, and the connect / disconnect / status operations behind the
 //!   providers settings page. Never returns a secret value.
@@ -36,8 +33,6 @@
 //! * [`env`] - [`AgentKind`] and [`LaunchEnv`], the environment an agent
 //!   process is launched with. A launch clears every inherited variable that
 //!   would route the agent elsewhere before setting its own.
-//! * [`handoff`] - handing the active credential to another machine (VM,
-//!   cloud computer, container) over a shell, never on a command line.
 //! * [`keychain`] - the app's [`SecretStore`]: the macOS login Keychain
 //!   ([`keychain::default_store`]), memory on other platforms.
 //! * [`provider`] - the [`Provider`] trait: how an agent CLI is pointed at a
@@ -53,7 +48,6 @@
 //! `evidence/providers/README.md`. The module is tested standalone with
 //! `tools/agent/run-rust-tests.sh`.
 
-pub mod auth_sources;
 pub mod byok;
 pub mod claude;
 pub mod claude_cli;
@@ -69,7 +63,6 @@ pub mod codex_runner;
 pub mod codex_session;
 pub mod codex_wire;
 pub mod env;
-pub mod handoff;
 pub mod keychain;
 pub mod provider;
 pub mod reason;

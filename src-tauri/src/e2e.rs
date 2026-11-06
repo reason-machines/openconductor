@@ -27,26 +27,6 @@ fn out_dir() -> Option<PathBuf> {
     std::env::var_os("OC_E2E_OUT").map(PathBuf::from)
 }
 
-/// Debug build started with `OC_E2E_OUT`: the e2e-only commands may run.
-pub fn enabled() -> bool {
-    out_dir().is_some()
-}
-
-/// Secrets an e2e driver may type into the UI, as a user pastes them:
-/// `OC_E2E_SECRET_<NAME>` from the app's environment. Only these names.
-const E2E_SECRETS: [&str; 3] = ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "CLAUDE_SETUP_TOKEN"];
-
-/// JS: `invoke("e2e_secret", { name })`. Debug builds with `OC_E2E_OUT`
-/// only; the driver types the value into a key field and never reports it.
-#[tauri::command]
-pub fn e2e_secret(name: String) -> Result<String, String> {
-    if !enabled() || !E2E_SECRETS.contains(&name.as_str()) {
-        return Err("not available".into());
-    }
-    std::env::var(format!("OC_E2E_SECRET_{name}"))
-        .map_err(|_| format!("OC_E2E_SECRET_{name} is not set"))
-}
-
 /// Evaluates `$OC_E2E_SCRIPT` in the main window after it loads.
 pub fn install<R: tauri::Runtime>(app: &tauri::AppHandle<R>) {
     if !cfg!(debug_assertions) {

@@ -93,10 +93,12 @@ fn home() -> Option<PathBuf> {
     std::env::var_os("HOME").map(PathBuf::from)
 }
 
+/// "Use system <Agent>": the CLI on the login shell's `PATH`, which an app
+/// opened from Finder does not inherit.
 fn system_binary(agent: OptionAgent) -> Option<PathBuf> {
     find_system_binary(
         agent,
-        std::env::var_os("PATH").as_deref(),
+        crate::agent_launch::login_shell_path().as_deref(),
         home().as_deref(),
     )
 }
@@ -212,7 +214,7 @@ pub fn status_from_run(executable: Option<&Path>, run: Result<String, String>) -
 }
 
 /// `<exe> --version`, killed after `timeout`.
-fn run_version(exe: &Path, timeout: Duration) -> Result<String, String> {
+pub(crate) fn run_version(exe: &Path, timeout: Duration) -> Result<String, String> {
     let mut child = Command::new(exe)
         .arg("--version")
         .stdin(Stdio::null())

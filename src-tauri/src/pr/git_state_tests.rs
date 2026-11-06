@@ -16,12 +16,14 @@ fn status_v2_reads_upstream_ahead_behind_and_dirt() {
         StatusV2 {
             upstream: Some("origin/feat".into()),
             ahead_behind: Some((2, 1)),
-            dirty: true
+            dirty: true,
+            detached: false,
         }
     );
     let clean = parse_status_v2("# branch.oid abc\n# branch.head feat\n");
     assert_eq!(clean, StatusV2::default());
     assert!(parse_status_v2("? new.txt\n").dirty);
+    assert!(parse_status_v2("# branch.oid abc\n# branch.head (detached)\n").detached);
 }
 
 #[test]
@@ -36,6 +38,7 @@ fn upstream_sync_marks_gone_branches_and_divergence() {
         upstream: Some("origin/feat".into()),
         ahead_behind: Some((1, 3)),
         dirty: false,
+        detached: false,
     };
     assert_eq!(
         upstream_sync(&both),
@@ -144,6 +147,10 @@ fn reads_a_real_checkout_against_its_remote() {
         })
     );
 
+    assert_eq!(s.target_behind, Some(0));
+    assert!(!s.detached);
+    assert_eq!(read_git_state(&ws, "nope").unwrap().target_behind, None);
+
     // A feature branch with one commit, not pushed: changes, no upstream.
     git(&ws, &["checkout", "-q", "-b", "feat"]);
     commit(&ws, "b");
@@ -177,6 +184,17 @@ fn reads_a_real_checkout_against_its_remote() {
         ],
     );
     assert!(read_git_state(&ws, "main").unwrap().can_create_pr);
+
+    // main moves on by two commits: the feature branch is two behind its target.
+    git(&ws, &["stash", "-q"]);
+    git(&ws, &["checkout", "-q", "main"]);
+    commit(&ws, "d");
+    commit(&ws, "e");
+    git(&ws, &["update-ref", "refs/remotes/origin/main", "HEAD"]);
+    git(&ws, &["checkout", "-q", "feat"]);
+    assert_eq!(read_git_state(&ws, "main").unwrap().target_behind, Some(2));
+    git(&ws, &["checkout", "-q", "--detach"]);
+    assert!(read_git_state(&ws, "main").unwrap().detached);
     assert!(read_git_state(&root.join("nope"), "main").is_err());
     let _ = std::fs::remove_dir_all(&root);
 }

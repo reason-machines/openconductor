@@ -115,6 +115,45 @@ async fn mark_workspace_read(pool: &SqlitePool, workspace_id: &str) -> Result<()
     clear_legacy_unread(pool, workspace_id).await
 }
 
+/// JS: `invoke("db_open_chat_tab", { chatId, workspaceId, title })`: a review,
+/// fork or "+" chat tab opened (or reopened with Cmd+Shift+T). Its `sessions`
+/// row is written visible, so the tab and its unread come back after a
+/// restart, as Conductor's review chat does (`createSession`, index-BGEQ8YjU.js
+/// `GNt` at 1949:3602; see `sessions::open_tab`).
+#[tauri::command]
+pub async fn db_open_chat_tab(
+    db: State<'_, Db>,
+    chat_id: String,
+    workspace_id: String,
+    title: String,
+) -> Result<(), String> {
+    let now = iso_time::from_millis(now_millis());
+    sessions::open_tab(&db.0, &chat_id, &workspace_id, &title, &now)
+        .await
+        .map_err(|e| e.to_string())
+}
+
+/// JS: `invoke("db_close_chat_tab", { chatId })`: the tab closed, so its row is
+/// hidden (Conductor's `hideSession`, `nie` at 710:2534) and no longer counts
+/// toward the workspace's unread. A chat with no row has nothing to hide.
+#[tauri::command]
+pub async fn db_close_chat_tab(db: State<'_, Db>, chat_id: String) -> Result<(), String> {
+    close_chat_tab(&db.0, &chat_id).await
+}
+
+async fn close_chat_tab(pool: &SqlitePool, chat_id: &str) -> Result<(), String> {
+    match sessions::hide(pool, chat_id).await {
+        Ok(()) | Err(openconductor_db::Error::NotFound) => Ok(()),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+fn now_millis() -> i64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_or(0, |d| d.as_millis() as i64)
+}
+
 /// A workspace with no row has no legacy flag to clear.
 async fn clear_legacy_unread(pool: &SqlitePool, workspace_id: &str) -> Result<(), String> {
     match workspaces::set_unread(pool, workspace_id, false).await {
@@ -417,5 +456,13 @@ mod tests {
         assert!(!r.unread && r.unread_chats.is_empty());
         // A workspace with no row is not an error.
         mark_workspace_read(&pool, "app/none").await.unwrap();
+
+        // A closed tab no longer counts; closing a chat with no row is not an error.
+        close_chat_tab(&pool, "app/oslo:review:1").await.unwrap();
+        set_chat_unread(&pool, "app/oslo:review:1", "app/oslo", true)
+            .await
+            .unwrap();
+        assert!(row(pool.clone()).await.unread_chats.is_empty());
+        close_chat_tab(&pool, "app/oslo:review:none").await.unwrap();
     }
 }

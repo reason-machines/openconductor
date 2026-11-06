@@ -376,6 +376,69 @@ async fn upsert_unread_creates_or_fills_the_chat_row() {
 }
 
 #[tokio::test]
+async fn open_tabs_survive_a_restart_with_their_unread() {
+    const T1: &str = "2026-11-05T10:00:00.000Z";
+    const T2: &str = "2026-11-05T10:00:00.001Z";
+    const T3: &str = "2026-11-05T10:00:00.002Z";
+    let pool = pool().await;
+    sessions::open_tab(&pool, "app/oslo:review:1", "app/oslo", "Review", T1)
+        .await
+        .unwrap();
+    sessions::open_tab(&pool, "app/oslo:chat:2", "app/oslo", UNTITLED, T2)
+        .await
+        .unwrap();
+    sessions::open_tab(&pool, "app/oslo:review:3", "app/oslo", "Review 2", T3)
+        .await
+        .unwrap();
+    sessions::upsert_unread(&pool, "app/oslo:review:1", "app/oslo", true)
+        .await
+        .unwrap();
+    // Not tabs: the main chat, a Claude Code chat, a chat of another workspace's id.
+    sessions::upsert_unread(&pool, "app/oslo", "app/oslo", true)
+        .await
+        .unwrap();
+    sessions::upsert_unread(&pool, "app/oslo:review:1:claude", "app/oslo", true)
+        .await
+        .unwrap();
+    sessions::upsert_unread(&pool, "app/lima:review:9", "app/oslo", true)
+        .await
+        .unwrap();
+    // A closed tab stays closed.
+    sessions::hide(&pool, "app/oslo:review:3").await.unwrap();
+
+    let tabs = sessions::open_tabs(&pool).await.unwrap();
+    let tabs: Vec<_> = tabs
+        .iter()
+        .map(|t| (t.workspace_id.as_str(), t.id.as_str(), t.title.as_str()))
+        .collect();
+    assert_eq!(
+        tabs,
+        [
+            ("app/oslo", "app/oslo:review:1", "Review"),
+            ("app/oslo", "app/oslo:chat:2", UNTITLED),
+        ]
+    );
+    let unread: Vec<_> = sessions::unread_chats(&pool)
+        .await
+        .unwrap()
+        .into_iter()
+        .map(|c| c.id)
+        .collect();
+    assert!(unread.contains(&"app/oslo:review:1".to_string()));
+
+    // Reopening a closed tab shows it again; a row chat_messages::save made
+    // with no workspace gets the tab's.
+    sqlx::query("UPDATE sessions SET workspace_id = NULL WHERE id = 'app/oslo:review:3'")
+        .execute(&pool)
+        .await
+        .unwrap();
+    sessions::open_tab(&pool, "app/oslo:review:3", "app/oslo", "Review 2", T3)
+        .await
+        .unwrap();
+    assert_eq!(sessions::open_tabs(&pool).await.unwrap().len(), 3);
+}
+
+#[tokio::test]
 async fn unread_chats_lists_visible_unread_chats_by_workspace() {
     let pool = pool().await;
     create(&pool, "b", "w1", "2026-11-05T10:00:00Z").await;

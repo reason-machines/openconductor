@@ -78,31 +78,22 @@ macro_rules! claude_provider {
     };
 }
 
-/// Claude Code with a Claude subscription: the CLI's own login (`claude
-/// /login`), or a subscription token from `claude setup-token` when one is
-/// stored (Conductor's "Paste a setup token instead", secret
-/// `claude_code_oauth_token`; evidence/agent-auth/README.md). Clears every
-/// routing variable, so a key in the user's shell never overrides it.
+/// Claude Code with its own login (a Claude subscription signed in through
+/// the CLI). Clears every routing variable so the login is used.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ClaudeLogin {}
 
 impl Provider for ClaudeLogin {
     claude_provider!("claude_login");
-    /// The setup token is optional: without it the CLI's own login is used.
     fn secret_keys(&self) -> Vec<&'static str> {
-        vec![keys::CLAUDE_CODE_OAUTH_TOKEN]
+        Vec::new()
     }
     fn check_options(&self) -> Result<(), ProviderError> {
         Ok(())
     }
-    fn launch_env(&self, store: &dyn SecretStore) -> Result<LaunchEnv, ProviderError> {
-        let mut env = LaunchEnv::cleared_for(AgentKind::Claude);
-        if store.get(keys::CLAUDE_CODE_OAUTH_TOKEN)?.is_some() {
-            let token = require_secret(store, keys::CLAUDE_CODE_OAUTH_TOKEN)?;
-            env.set_secret(vars::CLAUDE_CODE_OAUTH_TOKEN, token);
-        }
-        Ok(env)
+    fn launch_env(&self, _store: &dyn SecretStore) -> Result<LaunchEnv, ProviderError> {
+        Ok(LaunchEnv::cleared_for(AgentKind::Claude))
     }
 }
 
@@ -201,23 +192,7 @@ mod tests {
             .launch_env(&MemorySecretStore::new())
             .unwrap();
         assert_eq!(env.set_vars().count(), 0);
-        assert!(env.is_removed(vars::CLAUDE_CODE_OAUTH_TOKEN));
         assert_clears_all(&env);
-        assert!(ClaudeLogin {}.validate(&MemorySecretStore::new()).is_ok());
-    }
-
-    #[test]
-    fn login_with_a_setup_token_passes_it_as_the_oauth_token() {
-        let store = MemorySecretStore::with(&[(keys::CLAUDE_CODE_OAUTH_TOKEN, "sk-ant-oat01-abc")]);
-        let env = ClaudeLogin {}.launch_env(&store).unwrap();
-        assert_eq!(
-            secret(&env, vars::CLAUDE_CODE_OAUTH_TOKEN),
-            Some("sk-ant-oat01-abc")
-        );
-        assert!(env.is_removed(vars::ANTHROPIC_API_KEY));
-        assert_eq!(env.set_vars().count(), 1);
-        let pasted = MemorySecretStore::with(&[(keys::CLAUDE_CODE_OAUTH_TOKEN, "sk-ant oat")]);
-        assert!(ClaudeLogin {}.validate(&pasted).is_err());
     }
 
     #[test]

@@ -62,7 +62,7 @@ export interface AuthState {
  * Claude Code's status (Conductor's `jpa` message and `Yki` rows: Version,
  * Provider, Login method or Auth, Organization, Email).
  */
-export function claudeAuthState(mode: AuthMode, cli: CliLoginStatus | null, keyStored: boolean, setupToken = false): AuthState {
+export function claudeAuthState(mode: AuthMode, cli: CliLoginStatus | null, keyStored: boolean): AuthState {
   if (mode === "apikey") {
     const rows: InfoRow[] = [];
     if (cli?.version) rows.push({ label: "Version", value: cli.version });
@@ -71,8 +71,6 @@ export function claudeAuthState(mode: AuthMode, cli: CliLoginStatus | null, keyS
   }
   const rows: InfoRow[] = [];
   if (cli?.version) rows.push({ label: "Version", value: cli.version });
-  // A pasted setup token replaces the CLI's own login for chats.
-  if (setupToken) return { authenticated: true, rows: [...rows, { label: "Login method", value: "Setup token" }], notConnectedMessage: "CLI not authenticated" };
   if (cli?.method) rows.push({ label: "Login method", value: cli.method });
   if (cli?.organization) rows.push({ label: "Organization", value: cli.organization });
   if (cli?.email) rows.push({ label: "Email", value: cli.email });
@@ -118,26 +116,3 @@ export function apiKeyName(agent: "claude" | "codex" | "cursor", config: Provide
 }
 
 export const providerOf = (settings: Settings, agent: "claude" | "codex" | "cursor" | "opencode") => settings.providers[agent] ?? null;
-
-/** Keychain key of a pasted `claude setup-token` (Conductor's legacy `claude_code_oauth_token`). */
-export const SETUP_TOKEN_KEY = "claude_code_oauth_token";
-
-/**
- * Cleans a pasted setup token the way Conductor does (`I7r`): takes the value
- * of an `export CLAUDE_CODE_OAUTH_TOKEN=...` line or a `Bearer` line, drops
- * quotes, a `Bearer` / `Authorization:` prefix and all whitespace. Mirrors
- * `normalize_setup_token` in src-tauri/src/agent/auth_sources.rs.
- */
-export function normalizeSetupToken(pasted: string): string {
-  const unbearer = (t: string) => t.replace(/^authorization\s*:\s*bearer\s+/i, "").replace(/^bearer\s+/i, "").trim();
-  const unquote = (t: string) => {
-    const v = t.trim();
-    const q = v[0];
-    return v.length >= 2 && (q === '"' || q === "'" || q === "`") && v.endsWith(q) ? v.slice(1, -1).trim() : v;
-  };
-  const lines = pasted.trim().split(/\r?\n/).map((l) => l.trim()).filter((l) => l !== "");
-  const assigned = lines.find((l) => /^(?:export\s+)?CLAUDE_CODE_OAUTH_TOKEN\s*=/.test(l))?.match(/^(?:export\s+)?CLAUDE_CODE_OAUTH_TOKEN\s*=\s*(.+?);?$/);
-  const bearer = lines.find((l) => /^(?:authorization\s*:\s*)?bearer\s+/i.test(l));
-  const picked = assigned?.[1] ?? bearer ?? pasted;
-  return unbearer(unquote(unbearer(picked))).replace(/\s+/g, "");
-}

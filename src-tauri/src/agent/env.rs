@@ -70,7 +70,6 @@ impl AgentKind {
                 vars::ANTHROPIC_DEFAULT_OPUS_MODEL,
                 vars::ANTHROPIC_DEFAULT_SONNET_MODEL,
                 vars::ANTHROPIC_DEFAULT_HAIKU_MODEL,
-                vars::CLAUDE_CODE_OAUTH_TOKEN,
             ],
             AgentKind::Codex => &[
                 vars::OPENAI_API_KEY,
@@ -113,14 +112,12 @@ pub mod vars {
     pub const ANTHROPIC_DEFAULT_OPUS_MODEL: &str = "ANTHROPIC_DEFAULT_OPUS_MODEL";
     pub const ANTHROPIC_DEFAULT_SONNET_MODEL: &str = "ANTHROPIC_DEFAULT_SONNET_MODEL";
     pub const ANTHROPIC_DEFAULT_HAIKU_MODEL: &str = "ANTHROPIC_DEFAULT_HAIKU_MODEL";
-    /// A Claude subscription token (`claude setup-token`, or a Claude Code
-    /// login's access token handed to another machine).
-    pub const CLAUDE_CODE_OAUTH_TOKEN: &str = "CLAUDE_CODE_OAUTH_TOKEN";
     pub const GOOGLE_APPLICATION_CREDENTIALS: &str = "GOOGLE_APPLICATION_CREDENTIALS";
     pub const OPENAI_API_KEY: &str = "OPENAI_API_KEY";
     pub const CODEX_API_KEY: &str = "CODEX_API_KEY";
-    /// Conductor deletes this from every Codex launch and from the login
-    /// shell's environment (evidence/agent-auth/README.md); so do we.
+    /// Never passed to Codex: Conductor 0.87.6 deletes it from every Codex
+    /// launch environment (`delete this.env.CODEX_ACCESS_TOKEN` in its Codex
+    /// runner) and from the login-shell environment it captures (`Tf8`).
     pub const CODEX_ACCESS_TOKEN: &str = "CODEX_ACCESS_TOKEN";
     pub const OPENAI_BASE_URL: &str = "OPENAI_BASE_URL";
     pub const OPENAI_ORGANIZATION: &str = "OPENAI_ORGANIZATION";
@@ -250,6 +247,7 @@ mod tests {
             assert_eq!(e.removed_vars().count(), agent.routing_vars().len());
         }
         assert!(LaunchEnv::cleared_for(AgentKind::Claude).is_removed(vars::CLAUDE_CODE_USE_FOUNDRY));
+        assert!(LaunchEnv::cleared_for(AgentKind::Codex).is_removed(vars::CODEX_ACCESS_TOKEN));
     }
 
     #[test]

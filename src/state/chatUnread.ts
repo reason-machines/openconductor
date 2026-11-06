@@ -5,10 +5,10 @@
 // non-hidden chats is (renderApp-D_fmY7hW.js `zJo` @9,817,504, `Zji` @9,773,017).
 //
 // Our chats are the workspace's main chat (id = workspace id) and its review
-// chats (`<workspace id>:review:<n>`, features/diff/ReviewButton.tsx). Review
-// tabs live in memory only, so after a restart a stored unread review chat has
-// no tab: it counts as hidden (state/persisted.ts drops it), and so does a review
-// whose tab was closed.
+// chats (`<workspace id>:review:<n>`, features/diff/ReviewButton.tsx). An open
+// review tab is stored in conductor.db and comes back after a restart with its
+// unread, as in Conductor (state/openChat.ts); a review whose tab was closed
+// counts as hidden (state/persisted.ts drops it).
 import type { UnreadChat, Workspace } from "./types.ts";
 
 type HasUnread = { unreadChats?: readonly UnreadChat[] };
