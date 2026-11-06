@@ -88,6 +88,22 @@ jobs:
           name: codex-chat-e2e-screens
           path: ${{ runner.temp }}/e2e-codex
           retention-days: 14
+      # The chat's bundled-binary download banner, against a local stand-in release host.
+      - name: Agent binary download banner e2e
+        if: always()
+        # Normally under a minute.
+        timeout-minutes: 5
+        env:
+          E2E_OUT: ${{ runner.temp }}/e2e-binary
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a node tools/e2e/agent-binary-banner.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agent-binary-banner-e2e-screens
+          path: ${{ runner.temp }}/e2e-binary
+          retention-days: 14
 
   reason-chat:
     name: Reason chat through the built app (ubuntu-22.04)

@@ -1,0 +1,20 @@
+/* Conductor's `YNi` banner variant: rounded-md border border-border bg-muted/40
+   px-3 py-2 text-sm text-muted-foreground, mb-2 above the composer; row
+   flex justify-between gap-2, icon size-4, action Button size xs variant outline
+   (h-6 px-2 text-xs gap-1.5, icon size-3); error <pre> mt-2 max-h-40 text-xs.
+   Same column as the composer (.composer-wrap: px-4, max-w-4xl mx-auto); its
+   8px top padding is the mb-2 gap. */
+.agent-binary-banner { box-sizing: border-box; width: min(896px, calc(100% - 32px)); margin: 0 auto; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; background: color-mix(in srgb, var(--surface-muted) 40%, transparent); color: var(--muted); font-size: 14px; line-height: 20px; }
+.agent-binary-banner-row { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 8px; }
+.agent-binary-banner-main { display: flex; min-width: 0; align-items: center; gap: 6px; }
+.agent-binary-banner-icon { display: inline-flex; flex: none; }
+.agent-binary-banner-icon.is-downloading { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.agent-binary-banner-icon.is-failed { color: var(--destructive); }
+.agent-binary-banner-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.agent-binary-banner-title { font-weight: 500; color: var(--text); }
+.agent-binary-banner-detail { margin-left: 4px; color: var(--muted); }
+.agent-binary-banner-toggle { font-size: 12px; line-height: 16px; color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.agent-binary-banner-toggle:hover { color: var(--text); }
+.agent-binary-banner-action { display: inline-flex; flex: none; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border: 1px solid var(--border); border-radius: 4px; background: var(--panel); color: var(--text); font-size: 12px; line-height: 16px; font-weight: 500; }
+.agent-binary-banner-action:hover { background: var(--hover); }
+.agent-binary-banner-error { margin: 8px 0 0; max-height: 160px; overflow: auto; padding: 6px 8px; border: 1px solid color-mix(in srgb, var(--border) 60%, transparent); border-radius: 4px; background: color-mix(in srgb, var(--bg) 50%, transparent); color: var(--text); font-family: var(--font-mono); font-size: 12px; line-height: 16px; white-space: pre-wrap; word-break: break-all; cursor: text; user-select: text; text-align: left; }
