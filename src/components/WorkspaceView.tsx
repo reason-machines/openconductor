@@ -12,7 +12,7 @@ import { Transcript } from "../features/chat/Transcript.tsx";
 import { configureReason, configureReasonDefault, reasonAvailable, reasonChatConfig } from "../features/chat/reasonChat.ts";
 import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
 import { chatStatuses, subscribeChatStatuses, type ChatSnapshot, type PermissionPrompt } from "../features/chat/chatRuntime.ts";
-import { PermissionRequests } from "../features/chat/PermissionRequests.tsx";
+import { PermissionRequests, ToolApproval, pendingToolApproval } from "../features/chat/PermissionRequests.tsx";
 import { copiedTranscriptMessage, forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
 import { forkToNewWorkspace } from "../features/chat/forkWorkspace.ts";
 import { createWorkspace, ensureRepository } from "../workspace/api";
@@ -208,6 +208,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   // The card shows the oldest open request; while it is a plan, the message box asks for changes to it.
   const waiting = permissions[0];
   const planWaiting = waiting?.kind === "plan" ? waiting : undefined;
+  // Conductor's composer shows the oldest tool approval in place of its editor (`Jpo`).
+  const toolApproval = pendingToolApproval(permissions);
   const [draft, setDraft] = useState("");
   // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
   const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
@@ -587,6 +589,17 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         </div>
       ) : null}
       <AgentBinaryBanner agent={binaryAgentFor(agentId)} />
+      {toolApproval ? (
+        <div className="composer-wrap">
+          <div className="oc-composer-anchor">
+            <div className="composer oc-composer is-approval">
+              <ToolApproval key={toolApproval.requestId} request={toolApproval} onAnswer={(requestId, answer) => void agent.answerPermission?.(runId, requestId, answer)} />
+            </div>
+          </div>
+        </div>
+      ) : null}
+      {/* The composer stays mounted (draft, queue) but hidden while a tool approval takes its place. */}
+      <div className="oc-composer-slot" hidden={toolApproval !== undefined}>
       <Composer
         draft={draft}
         setDraft={setDraft}
@@ -660,6 +673,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           ) : null
         }
       />
+      </div>
     </section>
   );
 }

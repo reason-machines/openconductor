@@ -38,7 +38,8 @@ await p.screenshot({ path: `${OUT}/1-permission.png` });
 // The Home list (the /all-workspaces route; sidebar Home opens the wordmark screen, #483)
 // shows the same workspace with the same status while the chat keeps waiting.
 await p.evaluate(() => { history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); });
-const homeStatus = p.locator('[data-testid="home-workspace-status"][data-status="needs-user-permission"]');
+// The demo seeds another workspace (Slate heron) that already needs permission, so look at this one.
+const homeStatus = p.getByRole("option", { name: /^Amber falcon/ }).locator('[data-testid="home-workspace-status"][data-status="needs-user-permission"]');
 await homeStatus.waitFor();
 assert.equal(await homeStatus.getAttribute("aria-label"), "Needs permission");
 ok("Home shows the waiting workspace as Needs permission");
@@ -87,10 +88,14 @@ await settle("branch");
 assert.match(await lastReply(), /Postgres; Search, Export, Sync/);
 ok("Submit sends every question's answers");
 
-// Stop clears a waiting card.
+// Stop clears a waiting card. A tool approval takes the composer's place (Conductor's
+// `Jpo`), so its Stop button is hidden; ⌘⇧⌫ (chat.cancel, "Cancel agent") still stops.
 await send("permission");
 await card("permission").waitFor();
-await p.locator('.composer button[title="Stop the agent"]').click();
+assert.equal(await p.locator(".composer.oc-composer.is-approval [data-testid=chat-permission-request]").count(), 1);
+assert.equal(await p.locator('.composer textarea').isVisible(), false);
+await p.locator("body").click({ position: { x: 640, y: 120 } });
+await p.keyboard.press("Meta+Shift+Backspace");
 await card("permission").waitFor({ state: "detached" });
 await settle("branch");
 ok("Stop drops the waiting card");

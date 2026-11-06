@@ -8,6 +8,9 @@
 // TAURI_DRIVER (default "tauri-driver"), UIMAP_OUT (default parity/ui-map),
 // UIMAP_RUN (scratch dir for the isolated HOME and fixture repos).
 //
+// States with oc_fake_reason chat with tools/reason-acp/fake_reason_acp.py as
+// `reason` (Conductor's reference turns "lisbon" and "tallinn").
+//
 // Every state starts from a fresh app session on a copy of one seeded HOME:
 // onboarding done, repos tide-web, tide-api and dotfiles added, one workspace
 // in tide-web, theme dark. The app's HOME is pointed at the scratch dir, so
@@ -156,9 +159,14 @@ const labels = Array.from(document.querySelectorAll('[aria-label],[title],[place
 const roles = Array.from(document.querySelectorAll('[role=dialog],[role=menu],[role=listbox],[role=tooltip],[role=alertdialog],[role=status],dialog[open]')).filter(vis).map((e) => e.getAttribute('role') || e.tagName.toLowerCase());
 return { texts, labels, roles, url: location.href, viewport: [innerWidth, innerHeight] };`;
 
+// States with oc_fake_reason get tools/reason-acp/fake_reason_acp.py as `reason`
+// in this folder inside the per-state HOME, first on PATH; other states leave it
+// empty, so they see whatever `reason` the host has, as before.
+const laneBin = join(home, ".oc-lane-bin");
+const fakeReason = join(repoRoot, "tools/reason-acp/fake_reason_acp.py");
 const driver = spawn(process.env.TAURI_DRIVER ?? "tauri-driver", [], {
   stdio: ["ignore", "ignore", "inherit"],
-  env: { ...process.env, HOME: home, XDG_DATA_HOME: join(home, ".local/share"), XDG_CONFIG_HOME: join(home, ".config"), XDG_CACHE_HOME: join(home, ".cache") },
+  env: { ...process.env, HOME: home, XDG_DATA_HOME: join(home, ".local/share"), XDG_CONFIG_HOME: join(home, ".config"), XDG_CACHE_HOME: join(home, ".cache"), PATH: `${laneBin}:${process.env.PATH}` },
 });
 const wd = new WebDriver();
 const manifestPath = join(out, "oc-captures.json");
@@ -179,6 +187,10 @@ try {
       mkdirSync(join(home, ".openconductor"), { recursive: true });
       writeFileSync(join(home, ".openconductor", "settings.toml"), '[general]\ntheme = "dark"\n');
     } else cpSync(template, home, { recursive: true });
+    if (st.oc_fake_reason) {
+      mkdirSync(laneBin, { recursive: true });
+      writeFileSync(join(laneBin, "reason"), `#!/bin/sh\nexec python3 "${fakeReason}" "$@"\n`, { mode: 0o755 });
+    }
     const started = Date.now();
     const rec = { status: "captured", steps: st.oc.length };
     try {

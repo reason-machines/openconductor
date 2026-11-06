@@ -42,6 +42,7 @@
   }
   const listeners = new Map(); // eventId -> {event, handler}
   let nextEventId = 1;
+  let sidecarRequestsSent = false;
   function emit(event, payload) {
     for (const [id, l] of listeners) {
       if (l.event === event) runCallback(l.handler, { event, id, payload });
@@ -291,6 +292,14 @@
       case "plugin:event|listen": {
         const id = nextEventId++;
         listeners.set(id, { event: args.event, handler: args.handler });
+        // Requests the sidecar sends the app unprompted (seed.sidecarRequests,
+        // e.g. a toolApproval), once the app listens for sidecar lines.
+        if (args.event === "rpc_from_sidecar" && seed.sidecarRequests && seed.sidecarRequests.length && !sidecarRequestsSent) {
+          sidecarRequestsSent = true;
+          setTimeout(() => {
+            for (const req of seed.sidecarRequests) emit("rpc_from_sidecar", { line: JSON.stringify(req) });
+          }, 500);
+        }
         return id;
       }
       case "plugin:event|unlisten":
