@@ -1,0 +1,44 @@
+{
+  "reference": {
+    "source": "evidence/screens/onboarding--sign-up-opening-browser--dark.png",
+    "sha256": "fbe4a4c0b898331dd218e401de49a29dd4c019c55d6716da3555e3e8728e7ae3",
+    "viewport": [
+      1440,
+      900
+    ],
+    "crop": [
+      124,
+      592,
+      588,
+      760
+    ]
+  },
+  "before": {
+    "source": "evidence/onboarding-sign-in/before.png",
+    "sha256": "ac7e76b674610af11070b680e9ceab295cd3a87672e935af0eb58fc8301ad110",
+    "viewport": [
+      1280,
+      820
+    ],
+    "crop": [
+      408,
+      442,
+      872,
+      610
+    ]
+  },
+  "after": {
+    "source": "evidence/onboarding-sign-in/after.png",
+    "sha256": "cb650ecb849f0044ef2dff4d5f943d27f16d36c6e80d0c0e6583db389770e6de",
+    "viewport": [
+      1280,
+      820
+    ],
+    "crop": [
+      408,
+      432,
+      872,
+      600
+    ]
+  }
+}
