@@ -226,6 +226,8 @@ try {
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
   await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
+  // ChatModelPicker renders nothing until getSettings() resolves, which can land after the chat text.
+  await waitFor("the model picker chip", () => run("return !!document.querySelector(\"[data-testid='composer-model-button']\") || null;"));
   await run("document.querySelector(\"[data-testid='composer-model-button']\").click();");
   await waitFor("Codex in the model picker", () =>
     run("return [...document.querySelectorAll('.oc-model-menu .oc-model-item')].some((b) => b.textContent.trim() === 'Codex') || null;"),
