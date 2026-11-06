@@ -173,6 +173,26 @@ pub async fn reason_login_start(app: AppHandle) -> Result<LoginPrompt, String> {
     with_cli(&app, |l, dir| l.login(dir)).await?
 }
 
+/// Paths Settings › Agents › Reason shows: the installed `reason` ("Use
+/// system Reason") and the CLI's own config folder (`~/.config/reason`,
+/// where it keeps its login, connection and preferences).
+#[derive(serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReasonPaths {
+    pub system_cli: Option<String>,
+    pub config_dir: Option<String>,
+}
+
+#[tauri::command]
+pub fn reason_paths() -> ReasonPaths {
+    ReasonPaths {
+        system_cli: cli_path().map(|p| p.display().to_string()),
+        config_dir: home()
+            .ok()
+            .map(|h| h.join(".config/reason").display().to_string()),
+    }
+}
+
 /// "Connect" next to "This Mac": `reason connect`.
 #[tauri::command]
 pub async fn reason_connect_computer(app: AppHandle) -> Result<CommandResult, String> {
