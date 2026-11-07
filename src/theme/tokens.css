@@ -350,6 +350,12 @@
   }
 }
 
+:root[data-color-palette="stone"] { --link-elevated: #f3ece7; }
+:root[data-color-palette="stone"][data-theme="dark"] { --link-elevated: #413030; }
+@media (prefers-color-scheme: dark) {
+  :root[data-color-palette="stone"]:not([data-theme="light"]) { --link-elevated: #413030; }
+}
+
 /* Blue: cool greys with a blue accent */
 :root[data-color-palette="blue"] {
   --bg: #ffffff;
@@ -802,6 +808,7 @@
 
 /* Palette-independent tokens. */
 :root {
+  --link-elevated: var(--surface-accent);
   /* Diff and git colours: the same in every palette, they carry meaning. */
   --diff-add: #1a7f37;
   --diff-del: #cf222e;
