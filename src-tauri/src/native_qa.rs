@@ -74,6 +74,14 @@ fn contained_path(root: &Path, path: &Path) -> Result<(), String> {
     reject_symlinks(path)
 }
 
+#[cfg(any(test, all(debug_assertions, target_os = "macos")))]
+fn ordinary_target(dev: bool, bundled_default: bool) -> Result<(), String> {
+    if dev || !bundled_default {
+        return Err("ordinary QA prerequisite requires bundled local index.html assets".into());
+    }
+    Ok(())
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Probe {
     Paths,
@@ -338,6 +346,85 @@ mod app {
         refuse("WebKit QA exited without a receipt");
     }
 
+    pub(crate) fn ordinary_gate(app: &tauri::AppHandle) -> Result<bool, String> {
+        if std::env::var_os("OC_NATIVE_QA_ROOT").is_none() {
+            return Ok(false);
+        }
+        #[cfg(not(all(debug_assertions, target_os = "macos")))]
+        {
+            Err("ordinary QA prerequisite requires a macOS debug bundle".into())
+        }
+        #[cfg(all(debug_assertions, target_os = "macos"))]
+        {
+            let config = app.config();
+            let main = config.app.windows.first().ok_or("QA main window is missing")?;
+            let bundled_default = config.app.windows.len() == 1
+                && main.label == "main"
+                && matches!(&main.url, tauri::WebviewUrl::App(path) if path == Path::new("index.html"))
+                && matches!(&config.build.frontend_dist, Some(tauri::utils::config::FrontendDist::Directory(_)));
+            ordinary_target(tauri::is_dev(), bundled_default)?;
+            validate(app)?;
+            let mut output = receipt(app)?;
+            let mut bootstrap = main.clone();
+            bootstrap.url = tauri::WebviewUrl::External(
+                "about:blank".parse::<tauri::Url>().map_err(|e| e.to_string())?,
+            );
+            bootstrap.visible = false;
+            bootstrap.focus = false;
+            bootstrap.focusable = false;
+            bootstrap.devtools = Some(false);
+            bootstrap.javascript_disabled = true;
+            let window = tauri::WebviewWindowBuilder::from_config(app, &bootstrap)
+                .map_err(|e| e.to_string())?
+                .disable_javascript()
+                .on_navigation(|_| false)
+                .on_new_window(|_, _| tauri::webview::NewWindowResponse::Deny)
+                .build().map_err(|e| e.to_string())?;
+            let visible = window.is_visible().map_err(|e| e.to_string())?;
+            if visible {
+                refuse("ordinary QA prerequisite window is visible");
+            }
+            std::thread::spawn(|| {
+                std::thread::sleep(std::time::Duration::from_secs(10));
+                refuse("ordinary QA prerequisite timed out");
+            });
+            window.with_webview(move |platform| {
+                if objc2::MainThreadMarker::new().is_none() {
+                    refuse("ordinary QA inspection is not on the main thread");
+                }
+                let pointer = platform.inner().cast::<objc2_web_kit::WKWebView>();
+                if pointer.is_null() {
+                    refuse("ordinary QA view is unavailable");
+                }
+                // Tauri keeps this WKWebView alive for its main-thread callback.
+                let persistent = unsafe { (&*pointer).configuration().websiteDataStore().isPersistent() };
+                if persistent {
+                    refuse("ordinary QA datastore is persistent");
+                }
+                output["probe_version"] = "OPENCONDUCTOR_NATIVE_QA_ORDINARY_PREREQUISITE_V1".into();
+                output["webkit_data_store_persistent"] = persistent.into();
+                output["native_window_visible"] = visible.into();
+                output["window_label"] = "main".into();
+                output["bootstrap_url"] = "about:blank".into();
+                output["app_content_admitted"] = false.into();
+                output["ordinary_setup_admitted"] = false.into();
+                output["cache_filesystem_verified"] = false.into();
+                output["javascript_disabled_requested"] = true.into();
+                output["navigation_policy_all_denied"] = true.into();
+                output["new_window_policy_all_denied"] = true.into();
+                output["inspection_after_bootstrap_construction"] = true.into();
+                let mut stdout = std::io::stdout().lock();
+                if serde_json::to_writer(&mut stdout, &output).is_err()
+                    || writeln!(stdout).is_err() || stdout.flush().is_err()
+                {
+                    refuse("cannot write ordinary QA prerequisite receipt");
+                }
+                std::process::exit(0);
+            }).map_err(|e| e.to_string())?;
+            Ok(true)
+        }
+    }
+
     pub(crate) fn guard_builder(builder: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri::Wry> {
         if std::env::var_os("OC_NATIVE_QA_ROOT").is_none() {
             return builder;
@@ -356,7 +443,7 @@ mod app {
 
 #[cfg(not(workspace_std_only))]
 pub(crate) use app::{
-    before_startup, guard_builder, reject_release_request, validate, validate_workspace,
+    before_startup, guard_builder, ordinary_gate, reject_release_request, validate, validate_workspace,
 };
 
 #[cfg(test)]
@@ -377,6 +464,14 @@ mod tests {
     }
     impl Drop for Fixture {
         fn drop(&mut self) { std::fs::remove_dir_all(&self.0).unwrap(); }
+    }
+
+    #[test]
+    fn ordinary_prerequisite_rejects_dev_and_nondefault_targets() {
+        assert!(ordinary_target(false, true).is_ok());
+        assert!(ordinary_target(true, true).is_err());
+        assert!(ordinary_target(false, false).is_err());
+        assert!(ordinary_target(true, false).is_err());
     }
 
     #[test]
