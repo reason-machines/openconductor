@@ -5,6 +5,7 @@ import { canCollapse, foldAgentRows, groupParts, isSummaryOpen, summaryLabel, ty
 import { buildRows, type PartView, type ToolStatus } from "./view.ts";
 import { applyChatEvents, emptyTranscript } from "./reducer.ts";
 import type { Block, ChatEvent, ChatMessage } from "./types.ts";
+import { applyCodexPayload, codexChat, startTurn, type CodexPayload } from "./codex.ts";
 
 const text = (t: string): PartView => ({ kind: "text", text: t, streaming: false });
 const thinking = (t: string): PartView => ({ kind: "thinking", text: t, streaming: false });
@@ -102,6 +103,38 @@ test("a turn's messages fold into one block that collapses across messages", () 
   assert.deepEqual(describe(rows), ["user", '[4 tool calls, 2 messages] "Fixed."', "turn_end"]);
   const agent = rows[1]!;
   assert.ok(agent.kind === "agent" && !agent.running && agent.copyText === "Fixed.");
+});
+
+test("the Codex adapter's one-message turn keeps commentary and tools inline", () => {
+  let state = codexChat("s1");
+  const started = startTurn(state, "make hello.txt");
+  state = started.state;
+  const events = [...started.events];
+  const payloads: CodexPayload[] = [
+    { chatId: "s1", type: "message", itemId: "msg-a", text: "I’ll create `hello.txt` in the workspace, then run `cat hello.txt`.", phase: "commentary" },
+    ...["printf hello > hello.txt", "cat hello.txt"].map((command, i): CodexPayload => ({
+      chatId: "s1", type: "tool", id: `exec-${i}`, kind: "commandExecution", title: command,
+      status: "completed", input: { command }, output: i === 1 ? "hello from codex\n" : null, exitCode: 0,
+    })),
+    { chatId: "s1", type: "message", itemId: "msg-b", text: "hello from codex", phase: "final_answer" },
+    { chatId: "s1", type: "turnEnded", outcome: "completed" },
+  ];
+  for (const payload of payloads) {
+    const step = applyCodexPayload(state, payload);
+    state = step.state;
+    events.push(...step.events);
+  }
+  const transcript = applyChatEvents(emptyTranscript("s1"), events);
+  assert.ok(transcript.ok);
+  assert.equal(transcript.transcript.messages.filter((m) => m.role === "assistant").length, 1);
+  const agent = foldAgentRows(buildRows(transcript.transcript), transcript.transcript.activeTurn).find((r) => r.kind === "agent");
+  assert.ok(agent?.kind === "agent");
+  assert.equal(agent.items.filter((g) => g.kind === "summary").length, 0);
+  assert.deepEqual(agent.items.map((g) => g.kind === "part" && (g.part.kind === "tool" ? g.part.call.name : g.part.text)), [
+    "I’ll create `hello.txt` in the workspace, then run `cat hello.txt`.", "printf hello > hello.txt", "cat hello.txt", "hello from codex",
+  ]);
+  const final = agent.items.at(-1);
+  assert.ok(final?.kind === "part" && final.preview);
 });
 
 test("three tools in one assistant message stay inline before the final text", () => {
