@@ -6,6 +6,7 @@ import type { FocusContext } from "../keybindings/dispatcher.ts";
 import type { Overrides } from "../keybindings/overrides.ts";
 import { resolveCommand } from "../keybindings/resolve.ts";
 import type { KeyEventLike } from "../keybindings/shortcut.ts";
+import type { PaletteTab, ResultItem } from "./search/model.ts";
 
 export const COMMAND_PALETTE_DIALOG_ID = "command-palette-dialog";
 
@@ -44,6 +45,19 @@ export function paletteCommandFor(e: KeyEventLike, overrides: Overrides = {}): P
     default:
       return null;
   }
+}
+
+export function tabSelectionIndex({ from, to, selected, results }: {
+  from: PaletteTab;
+  to: PaletteTab;
+  selected: ResultItem | undefined;
+  results: readonly ResultItem[];
+}): number {
+  if (((from === "all" && to === "projects") || (from === "projects" && to === "all")) && selected?.kind === "project") {
+    const index = results.findIndex((item) => item.id === selected.id);
+    if (index >= 0) return index;
+  }
+  return to === "workspaces" ? -1 : 0;
 }
 
 /** New active index after a movement command; the list wraps around. */
