@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowRightIcon } from "../components/Icons";
-import { Wordmark } from "../components/Wordmark";
+import { AppMark } from "../components/AppMark";
 import type { ReasonAccount } from "../settings/agents/reasonModes";
 import {
   FINISH_IN_BROWSER,
@@ -140,7 +140,7 @@ export function LoginScreen({ onDone, onFailed }: { onDone: () => void; onFailed
       <div className="onb-login-inner" data-tauri-drag-region>
         <div data-tauri-drag-region>
           <div className="onb-wordmark">
-            <Wordmark />
+            <AppMark size={96} />
           </div>
           <p className="onb-login-prompt" data-tauri-drag-region>
             {SIGN_IN_PROMPT}

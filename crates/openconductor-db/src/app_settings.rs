@@ -129,6 +129,8 @@ pub mod keys {
     /// Repository id the sidebar is narrowed to ("Filter by project"); no
     /// row means all projects.
     pub const SIDEBAR_REPO_FILTER: &str = "sidebar_repo_filter";
+    pub const SIDEBAR_SORT_BY: &str = "sidebar_sort_by";
+    pub const SIDEBAR_GROUP_BY: &str = "sidebar_group_by";
     /// Experimental: CPU and memory readout in the sidebar; unset means off.
     pub const SIDEBAR_RESOURCE_USAGE: &str = "sidebar_resource_usage";
     /// Legacy "Send messages with" choice, `enter` or `cmd-enter`; the

@@ -25,8 +25,8 @@ export function sidebarOrder(state: AppState): WorkspaceRef[] {
 }
 
 /** What Cmd+1..9 count: the rows on screen, so collapsed repos are skipped, as the row hints are. */
-export function shortcutOrder(state: AppState): WorkspaceRef[] {
-  return sidebarEntries(state, { visibleOnly: true });
+export function shortcutOrder(state: AppState, collapsedSections: ReadonlySet<string>): WorkspaceRef[] {
+  return sidebarEntries(state, { visibleOnly: true, collapsedSections });
 }
 
 /** The workspace `delta` steps from the selected one, wrapping; first one if none is selected. */

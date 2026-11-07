@@ -114,6 +114,72 @@ test("Changes: sorted flat rows, compressed hierarchy, collapsing counts, filter
   await context.close();
 });
 
+test("Changes: discard confirmation matches the alert layout and Cancel never discards", async () => {
+  const { context, page, errors } = await open();
+  try {
+    await page.locator('.oc-change[title="Open src/lib/auth.test.ts"]').click({ button: "right" });
+    await page.getByRole("menuitem", { name: "Discard changes", exact: true }).click();
+    const dialog = page.getByRole("alertdialog", { name: "Discard file changes?" });
+    await dialog.waitFor({ timeout: 2000 });
+    const metrics = await dialog.evaluate((el) => ({
+      width: el.offsetWidth,
+      padding: getComputedStyle(el).padding,
+      titleSize: getComputedStyle(el.querySelector("h2")).fontSize,
+    }));
+    assert.deepEqual(metrics, { width: 512, padding: "24px", titleSize: "18px" });
+    assert.equal(await dialog.evaluate((el) => document.getElementById(el.getAttribute("aria-describedby"))?.textContent), "Discard all changes to src/lib/auth.test.ts? This action cannot be undone.");
+    assert.equal(await dialog.getByRole("button", { name: "Close", exact: true }).count(), 0);
+    await page.waitForFunction(() => document.activeElement?.textContent === "Cancel");
+    await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await dialog.waitFor({ state: "detached" });
+    assert.deepEqual(await calls(page, "diff_discard_file"), []);
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});
+
+test("Changes: discard shortcut sends the selected file once, blocks dismissal while pending and retries an error", async () => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES });
+    await page.addInitScript(() => {
+      const invoke = window.__TAURI_INTERNALS__.invoke;
+      window.__TAURI_INTERNALS__.invoke = (cmd, args) => {
+        if (cmd !== "diff_discard_file") return invoke(cmd, args);
+        window.__fake.calls.push({ cmd, ...args });
+        return new Promise((resolve, reject) => { window.__finishDiscard = { resolve, reject }; });
+      };
+    });
+    await page.goto(base + "/");
+    await page.locator('.oc-change[title="Open src/lib/auth.test.ts"]').hover();
+    await page.getByRole("button", { name: "Discard changes to src/lib/auth.test.ts", exact: true }).click();
+    const dialog = page.getByRole("alertdialog", { name: "Discard file changes?" });
+    await dialog.waitFor({ timeout: 2000 });
+    await dialog.press("Meta+Enter");
+    await page.waitForFunction(() => window.__fake.calls.some((c) => c.cmd === "diff_discard_file"));
+    assert.equal(await dialog.getByRole("button", { name: "Discarding…", exact: true }).isDisabled(), true);
+    assert.equal(await dialog.getByRole("button", { name: "Cancel", exact: true }).isDisabled(), true);
+    await dialog.press("Meta+Enter");
+    await dialog.press("Escape");
+    assert.equal(await dialog.isVisible(), true);
+    const requests = await calls(page, "diff_discard_file");
+    assert.equal(requests.length, 1);
+    assert.equal(requests[0].repo, WT);
+    assert.equal(requests[0].request.path, "src/lib/auth.test.ts");
+    assert.equal(requests[0].request.scope.kind, "all");
+    await page.evaluate(() => window.__finishDiscard.reject(new Error("fixture refused discard")));
+    await dialog.getByText("Couldn't discard: Error: fixture refused discard", { exact: true }).waitFor();
+    await dialog.getByRole("button", { name: /^Discard / }).click();
+    await page.waitForFunction(() => window.__fake.calls.filter((c) => c.cmd === "diff_discard_file").length === 2);
+    await page.evaluate(() => window.__finishDiscard.resolve());
+    await dialog.waitFor({ state: "detached" });
+  } finally {
+    await context.close();
+  }
+});
+
 test("Changes: external edits refresh without a Reload button", async () => {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
@@ -253,7 +319,7 @@ test("strip: Setup and Run under the list, Run's dashed empty state, chevron and
   await strip.getByRole("button", { name: "New terminal" }).click();
   await strip.locator(".terminal-panel .xterm-rows").waitFor();
   await page.waitForFunction(() => document.querySelector(".ws-strip .terminal-panel .xterm-rows")?.textContent?.includes("lisbon %"));
-  assert.deepEqual(await strip.locator(".ws-strip-tabs [role=tab]").allInnerTexts(), ["Setup", "Run", "Terminal 1"]);
+  assert.deepEqual(await strip.locator(".ws-strip-tabs [role=tab]").allInnerTexts(), ["Setup", "Run", "Terminal"]);
   assert.equal(await page.locator(".workspace > .terminal-panel").count(), 0);
   // Run is still one click away; closing the terminal goes back to it.
   await strip.getByRole("tab", { name: "Run" }).click();

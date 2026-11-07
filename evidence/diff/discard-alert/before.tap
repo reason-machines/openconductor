@@ -1,0 +1,39 @@
+(node:28645) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:28681) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Changes: discard confirmation matches the alert layout and Cancel never discards
+not ok 1 - Changes: discard confirmation matches the alert layout and Cancel never discards
+  ---
+  duration_ms: 3103.854763
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/tests/e2e/right-panel.e2e.mjs:117:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    locator.waitFor: Timeout 2000ms exceeded.
+    Call log:
+      - waiting for getByRole('alertdialog', { name: 'Discard file changes?' }) to be visible
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'TimeoutError'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/tests/e2e/right-panel.e2e.mjs:123:18)
+  ...
+# Subtest: Changes: discard shortcut sends the selected file once, blocks dismissal while pending and retries an error
+not ok 2 - Changes: discard shortcut sends the selected file once, blocks dismissal while pending and retries an error
+  ---
+  duration_ms: 30382.306938
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/tests/e2e/right-panel.e2e.mjs:142:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    locator.click: Timeout 30000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Discard changes to src/lib/auth.test.ts', exact: true })
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'TimeoutError'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/tests/e2e/right-panel.e2e.mjs:156:102)
+  ...

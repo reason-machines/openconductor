@@ -14,6 +14,7 @@
 // as Conductor's `lW` does for a cloud organization.
 
 import { APP_URL_SCHEME } from "../workspace/link.ts";
+import { AGENTS_TABS } from "./agents/kitModel.ts";
 import type { SettingsPage } from "./pages.ts";
 
 /**
@@ -226,6 +227,17 @@ export function keptSearch(search: string): string {
   for (const k of SETTINGS_SEARCH_PARAMS) q.delete(k);
   const s = q.toString();
   return s ? `?${s}` : "";
+}
+
+/** A provider tab remains part of the resolved Agents page, not its redirect input. */
+export function settingsSearch(location: SettingsLocation | null, search: string): string {
+  const kept = new URLSearchParams(keptSearch(search));
+  if (location?.scope === "user" && location.page === "providers") {
+    const tab = AGENTS_TABS.find((value) => value === new URLSearchParams(search).get("providerTab"));
+    if (tab) kept.set("providerTab", tab);
+  }
+  const query = kept.toString();
+  return query ? `?${query}` : "";
 }
 
 /** The canonical path of a location, as Conductor's router shows it. */

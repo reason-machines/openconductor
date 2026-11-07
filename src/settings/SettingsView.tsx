@@ -18,7 +18,8 @@ import { GitPage } from "./GitPage";
 import { KeyBindingsPage } from "./KeyBindingsPage";
 import { BigTerminalPage } from "./BigTerminalPage";
 import { ExperimentalPage } from "./ExperimentalPage";
-import { AGENTS_TABS, AGENTS_TAB_LABEL } from "./agents/kitModel";
+import { AGENTS_TABS, AGENTS_TAB_LABEL, agentsTabFrom } from "./agents/kitModel";
+import { selectProviderTab } from "./providerTab";
 import { CloudCogIcon, CloudSetupPage } from "./cloud/CloudSetupPage";
 import { REASON_PLAN_URL } from "./cloud/cloudSetup";
 import { useCloudSetup } from "./cloud/useCloudSetup";
@@ -163,11 +164,7 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
       if (repoId) onNavigate({ scope: "repo", repoId, section: t.section });
     } else {
       onNavigate({ scope: "user", page: t.page });
-      if (t.providerTab) {
-        const q = new URLSearchParams(window.location.search);
-        q.set("providerTab", t.providerTab);
-        window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}`);
-      }
+      if (t.providerTab) selectProviderTab(agentsTabFrom(t.providerTab));
     }
     if (t.row) scrollToRow(t.row);
   };

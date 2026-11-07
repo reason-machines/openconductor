@@ -1,0 +1,26 @@
+(node:1747) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:1758) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Projects navigates and wraps across two filtered rows without activating on arrows or Ctrl+N/P
+ok 1 - Projects navigates and wraps across two filtered rows without activating on arrows or Ctrl+N/P
+  ---
+  duration_ms: 986.587557
+  type: 'test'
+  ...
+# Subtest: Enter on the second filtered project returns to its last-viewed workspace instead of its first workspace
+ok 2 - Enter on the second filtered project returns to its last-viewed workspace instead of its first workspace
+  ---
+  duration_ms: 1480.157316
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3097.286585

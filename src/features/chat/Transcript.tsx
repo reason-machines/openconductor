@@ -16,6 +16,7 @@ import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBloc
 import { Markdown } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
 import { turnTime } from "./turnTime.ts";
+import { TurnDetails } from "./TurnDetails.tsx";
 import { openUrl } from "../../backend.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
 import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
@@ -205,11 +206,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-      {when ? (
-        <span className="chat-turn-time oc-turn-time" title={turnAgent ? `${turnAgent}\n${when.range}` : when.range}>
-          {when.label}
-        </span>
-      ) : null}
+      {when ? <TurnDetails when={when} agent={turnAgent} /> : null}
       {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
       {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">

@@ -1,0 +1,36 @@
+{
+  "source_pr": 748,
+  "published_source_commit": "e295f98f48b1b131c45ee36d5f71e3fd21f9ced9",
+  "captured_local_commit": "42c5b3d5a0d527303f72ef482ff56009dfdcbd33",
+  "captured_git_tree": "dbdc265ebb4b104c220dc2db0be87c8066b3dbe8",
+  "source_tree_comparison": "git diff HEAD e295f98f48b1b131c45ee36d5f71e3fd21f9ced9 was empty before build/capture; both tree IDs matched",
+  "reference_renderApp_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "reference_recaptured": false,
+  "command": "SHELL_OUT=.oc-tmp/sidebar-group-exact-head GROUP_SIDES=oc node tools/side-by-side/main-shell.mjs --group-check --group-filter-check --group-capture",
+  "build": "npm run build passed immediately before capture, with existing Vite chunk-size/dynamic-import warnings",
+  "viewport": {
+    "width": 1280,
+    "height": 820,
+    "device_scale_factor": 1
+  },
+  "runtime": "Reason Cloud Linux, headless Chromium; invented local-account fixtures and mocked Tauri preference boundary",
+  "themes": [
+    "dark",
+    "light"
+  ],
+  "inspected": "All ten screenshots inspected as cropped contact sheets; dark menu and light expanded screenshot also inspected full-size",
+  "local_rust": "NOT RUN; aes-gcm local-cache gap retained. No new local Rust claim.",
+  "native": "NOT RUN",
+  "semantic_coverage": "PARTIAL; original REA heap-exhaustion/omission gap retained in ../semantic-gap.json",
+  "files_sha256": {
+    "dist/index.html": "8e1dbad744ef9eae59d846af60ee90f4df6855fee31a626bc95bb66e659d8009",
+    "dist/assets/index-B4Cp3LUv.js": "0581e88e672a47664dd8b6a904031bacbe0be33b5cae12229e84779568d554a5",
+    "dist/assets/index-BloN5y6X.js": "0607307d3cc5aa38ad7f516574df697534abec29bf5df03c3b17d18dcd5c3c4c",
+    "dist/assets/index-fMPLLvgl.css": "c1fe53969e958ebeca8662a9de03c1c30b768cdcc79b05fd7a550cc38a5d2407",
+    "tools/side-by-side/main-shell.mjs": "9ef43f1ee6ffd36e7c90da52fdbfd1621724dbf6f46ea54b9cbc701300fefa5d",
+    "tools/side-by-side/sidebar-group-capture.mjs": "fb45e7774786cf75a98d68aab62313cae62aeb821bda17d1a3cf06867cfb9a41",
+    "tools/side-by-side/sidebar-group-filter.check.mjs": "70e245cef59b055a96c9e2204d929ec24936f06c5fae98321c5969430fa7f12c",
+    "tools/side-by-side/sidebar-group-fixture.js": "74d4a9f1705316fecbf45bff6e4d40cdb910e6479458dfd92d1c17582ff9a7e2",
+    "tools/side-by-side/sidebar-group.check.mjs": "dbb356965f6097dd2beb529516e411701e1c965ab6d4f8c1e806055c2dca6727"
+  }
+}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
@@ -9,7 +9,8 @@ import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { keepPr, parsePrefs, prefsOf, reposFromDb, restoreChatTabsOf, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
-import { toggleRepoCollapsed } from "./sidebarOrder";
+import { collapseSidebarGroups, setStatusGroupCollapsed, toggleRepoCollapsed } from "./sidebarOrder";
+import type { SidebarGroupBy } from "../home/sidebarGroupBy";
 import { withActivity } from "./nextUnread";
 import { withChatUnread, withWorkspaceRead } from "./chatUnread";
 import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, reorderSection, sectionOf, sectionsFromDb, withoutWorkspace, type DbNavSection, type NavSection } from "./navigationSections";
@@ -18,6 +19,7 @@ import { archiveWorkspace, deleteWorkspace, emitArchiveEvent, startArchive, star
 import { scriptsConfig, startSetup } from "../scripts/api";
 import { workspaceRef } from "../scripts/model";
 import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
+import { useAppPrefs } from "../settings/appPrefs";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -30,6 +32,8 @@ export type Action =
   | { type: "addRepo"; repo: Omit<Repo, "id" | "workspaces">; id?: string }
   | { type: "removeRepo"; repoId: string }
   | { type: "toggleRepo"; repoId: string }
+  | { type: "setStatusGroupCollapsed"; status: WorkspaceStatusValue; collapsed: boolean }
+  | { type: "collapseSidebarGroups"; groupBy: SidebarGroupBy }
   | { type: "newWorkspace"; repoId: string }
   | {
       type: "addWorkspace";
@@ -136,6 +140,10 @@ export function reducer(state: AppState, action: Action): AppState {
     }
     case "toggleRepo":
       return { ...state, repos: toggleRepoCollapsed(state, action.repoId) };
+    case "setStatusGroupCollapsed":
+      return setStatusGroupCollapsed(state, action.status, action.collapsed);
+    case "collapseSidebarGroups":
+      return collapseSidebarGroups(state, action.groupBy);
     case "newWorkspace": {
       let selection: Selection = state.selection;
       const repos = state.repos.map((r) => {
@@ -329,7 +337,7 @@ function load(): AppState {
     const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
     const placeholder = (id: string, collapsed: boolean) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed });
     const repos = [...prefs.collapsed.map((id) => placeholder(id, true)), ...prefs.expanded.map((id) => placeholder(id, false))];
-    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname, window.location.search);
+    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible, sidebarStatusCollapsed: prefs.sidebarStatusCollapsed }, window.location.pathname, window.location.search);
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -526,7 +534,9 @@ export function useAppStore() {
     },
     [desktop],
   );
-  return [state, dispatch, startup] as const;
+  const { sidebar_sort_by: sidebarSort, sidebar_group_by: sidebarGroupBy, sidebar_repo_filter: sidebarRepoFilter } = useAppPrefs();
+  const viewState = useMemo(() => ({ ...state, sidebarSort, sidebarGroupBy, sidebarRepoFilter }), [state, sidebarSort, sidebarGroupBy, sidebarRepoFilter]);
+  return [viewState, dispatch, startup] as const;
 }
 
 /** Conductor reruns the setup script after an unarchive; a failure shows through the setup watch. */

@@ -27,6 +27,22 @@ test("sidebar order is pinned, then each repo newest first; visibleOnly skips co
   assert.deepEqual(sidebarEntries(state, { visibleOnly: true, pinnedCollapsed: true }).map((e) => e.workspace.id), ["a3", "a1"]);
 });
 
+test("Created sort controls repository and shortcut order without moving pinned or section rows", () => {
+  const sorted: AppState = {
+    selection: { kind: "home" },
+    repos: [{ id: "a", name: "a", path: "/a", defaultBranch: "main", collapsed: false, workspaces: [
+      ws("new", 30, { updatedAt: 40 }), ws("old", 10, { updatedAt: 90 }),
+      ws("section-new", 25, { updatedAt: 35 }), ws("section-old", 5, { updatedAt: 80 }),
+      ws("pinned", 1, { updatedAt: 1, pinnedAt: 3 }),
+    ] }],
+    sections: [{ id: "s", name: "Focus", workspaceIds: ["section-old", "section-new"] }],
+  };
+  assert.deepEqual(sidebarEntries(sorted).map((e) => e.workspace.id), ["pinned", "section-old", "section-new", "old", "new"]);
+  const created: AppState = { ...sorted, sidebarSort: "created" };
+  assert.deepEqual(sidebarEntries(created).map((e) => e.workspace.id), ["pinned", "section-old", "section-new", "new", "old"]);
+  assert.deepEqual(sidebarEntries(created, { visibleOnly: true }).map((e) => e.workspace.id), ["pinned", "section-old", "section-new", "new", "old"]);
+});
+
 test("effective status is manual, then derived, then in-progress", () => {
   assert.equal(effectiveStatus({}), "in-progress");
   assert.equal(effectiveStatus({ derivedStatus: "in-review" }), "in-review");

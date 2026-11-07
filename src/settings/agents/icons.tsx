@@ -2,6 +2,7 @@
 // OpenConductor in the shape and size Conductor uses (lucide-style 24 px grid),
 // not Conductor's brand assets.
 import type { ReactNode } from "react";
+export { ReasonMark } from "../../components/ReasonMark";
 
 const svg = (size: number, children: ReactNode, fill = false) => (
   <svg
@@ -77,16 +78,6 @@ export const GearIcon = ({ size = 16 }: { size?: number }) =>
     <>
       <circle cx="12" cy="12" r="3" />
       <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1" />
-    </>,
-  );
-
-/** Reason: a ringed dot. */
-export const ReasonMark = ({ size = 14 }: { size?: number }) =>
-  svg(
-    size,
-    <>
-      <circle cx="12" cy="12" r="8" />
-      <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none" />
     </>,
   );
 

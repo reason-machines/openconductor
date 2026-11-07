@@ -3,7 +3,7 @@ import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlayIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, FolderPlusIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlayIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { HelpMenu } from "./HelpMenu";
@@ -15,18 +15,23 @@ import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
 import { RepoWorkspaceList } from "./PendingWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
+import { SidebarStatusGroups } from "./SidebarStatusGroups";
 import { isRepoCollapsed, pinnedEntries, repoGroupWorkspaces, sectionEntries, type SidebarSection } from "../state/sidebarOrder";
 import { newId } from "../state/names";
 import { SectionDialog, type SectionDialogMode } from "./SectionDialog";
 import { useSidebarDrag, type WorkspaceRef } from "./useSidebarDrag";
 import { DROP_ATTR, reorderIndicator, reorderToIndex, workspaceDropAction, type DropTarget } from "../state/navigationSections";
-import { ProjectFilterSubmenu } from "./home/ProjectFilterSubmenu";
+import { ProjectFilterSubmenu, SidebarRadioSubmenu } from "./home/ProjectFilterSubmenu";
+import { SIDEBAR_SORT_OPTIONS } from "../home/sidebarSort";
+import { SIDEBAR_GROUP_OPTIONS } from "../home/sidebarGroupBy";
+import { setAppPref } from "../settings/appPrefs";
 import { useRepoFilter } from "../home/useRepoFilter";
 import { useDashboardEnabled } from "../home/useDashboardEnabled";
 import { filterRepoGroups } from "../home/repoFilter";
 import { SidebarAddRepositoryMenu } from "./AddRepositoryMenu";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { AccountMenu } from "./AccountMenu";
+import { AppMark } from "./AppMark";
 import { ResourceUsagePill } from "./ResourceUsagePill";
 import { Tooltip, titleWithShortcut } from "./Tooltip";
 import { ContextMenu, MenuItem as CtxItem, MenuSeparator } from "./menu/ContextMenu";
@@ -55,6 +60,8 @@ export interface NavControls {
 
 interface Props {
   state: AppState;
+  collapsedSections: ReadonlySet<string>;
+  onToggleSection: (id: string) => void;
   dispatch: Dispatch<Action>;
   onOpenDialog: (d: DialogKind, repoId?: string, sectionId?: string) => void;
   onOpenProject: () => void;
@@ -233,7 +240,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
       </div>
       {!collapsed && (
         <div className="sb-ws-list sb-group-list">
-          <SidebarPresence>{entries.map(renderRow)}</SidebarPresence>
+          <SidebarPresence>{entries.map((entry, index) => renderRow(entry, index))}</SidebarPresence>
           {entries.length === 0 && (
             <div className="sb-section-empty">
               <PlusIcon size={14} />
@@ -246,13 +253,11 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
+export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
   const renamingWs = renaming && state.repos.find((r) => r.id === renaming.repoId)?.workspaces.find((w) => w.id === renaming.workspaceId);
-  // Conductor keeps each section's collapse under `section-<id>`; ours lasts for the session.
-  const [collapsedSections, setCollapsedSections] = useState<ReadonlySet<string>>(new Set());
   const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
   // Drag rows onto a section, Pinned or My workspaces, and section headers to reorder (Conductor's `esa`).
   const scrollRoot = useRef<HTMLElement>(null);
@@ -278,12 +283,6 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   });
   const { sections, sectioned } = sectionEntries(state);
   const pinned = pinnedEntries(state, sectioned);
-  const toggleSection = (id: string) =>
-    setCollapsedSections((prev) => {
-      const next = new Set(prev);
-      if (!next.delete(id)) next.add(id);
-      return next;
-    });
   const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
     if (mode.mode === "edit") {
       dispatch({ type: "editSection", sectionId: mode.sectionId, ...value });
@@ -305,11 +304,11 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
       { label: "Delete section", icon: <Trash2Icon />, destructive: true, onSelect: () => dispatch({ type: "deleteSection", sectionId }) },
     ];
   };
-  const row = ({ repoId, workspace }: SidebarSection["entries"][number], listIndex: number) => {
+  const row = ({ repoId, workspace }: SidebarSection["entries"][number], listIndex: number, showRepo = false) => {
     const repo = state.repos.find((r) => r.id === repoId);
     return (
       <SidebarRowMotion key={workspace.id} listIndex={listIndex}>
-        <SidebarWorkspaceRow workspace={workspace} targetBranch={repo?.defaultBranch ?? ""} hasRemote={Boolean(repo?.remote)} {...rows.rowProps(repoId, workspace)} />
+        <SidebarWorkspaceRow workspace={workspace} repoBadge={showRepo ? repo : undefined} targetBranch={repo?.defaultBranch ?? ""} hasRemote={Boolean(repo?.remote)} {...rows.rowProps(repoId, workspace)} />
       </SidebarRowMotion>
     );
   };
@@ -388,6 +387,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
           >
             <SidebarIcon size={16} />
           </button>
+          <span className="sb-app-mark" title="OpenConductor"><AppMark size={14} /></span>
         </div>
         <div className="sb-history">
           <ResourceUsagePill workspaces={usageWorkspaces} />
@@ -419,7 +419,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
       <nav className="repo-list" ref={scrollRoot}>
         {pinned.length > 0 && (
           <SidebarGroup label="Pinned" count={pinned.length} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
-            <SidebarPresence>{pinned.map(row)}</SidebarPresence>
+            <SidebarPresence>{pinned.map((entry, index) => row(entry, index))}</SidebarPresence>
           </SidebarGroup>
         )}
         {/* Always mounted, like Conductor's `sBi` (empty:hidden), so the last section can animate out. */}
@@ -435,7 +435,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
                 isFirst={i === 0}
                 onHeaderPointerDown={(e) => drag.sectionPointerDown(e, group.section.id)}
                 collapsed={collapsedSections.has(group.section.id)}
-                onToggle={() => toggleSection(group.section.id)}
+                onToggle={() => onToggleSection(group.section.id)}
                 menuItems={sectionMenu(group.section.id)}
                 renderRow={row}
               />
@@ -459,9 +459,15 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
             </ContextMenu>
           )}
           <HeaderMenu label="My workspaces" className="sb-section-menu" contextOpen={!!myContext} items={[
-            { label: "Add project…", onSelect: () => requestAnimationFrame(() => setAddMenuOpen(true)) },
-            { label: "New section…", onSelect: () => setSectionDialog({ mode: "create" }) },
+            { key: "group-by", render: (close) => <SidebarRadioSubmenu label="Group by" options={SIDEBAR_GROUP_OPTIONS} selected={state.sidebarGroupBy ?? "repo"} onChange={(value) => {
+              dispatch({ type: "collapseSidebarGroups", groupBy: value });
+              void setAppPref({ key: "sidebar_group_by", value }).catch((err) => console.error("Could not save sidebar grouping", err));
+            }} onClose={close} /> },
             { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
+            { key: "sort-by", render: (close) => <SidebarRadioSubmenu label="Sort by" options={SIDEBAR_SORT_OPTIONS} selected={state.sidebarSort ?? "updated"} onChange={(value) => { void setAppPref({ key: "sidebar_sort_by", value }).catch((err) => console.error("Could not save sidebar sort", err)); }} onClose={close} /> },
+            "-",
+            { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => setSectionDialog({ mode: "create" }) },
+            { label: "Add project…", icon: <FolderPlusIcon />, onSelect: () => requestAnimationFrame(() => setAddMenuOpen(true)) },
           ]} />
           <span ref={addMenuAnchor} className="sb-add-menu-anchor" aria-hidden />
           <SidebarAddRepositoryMenu
@@ -476,7 +482,8 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
           />
         </div>
         {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
-        {!groupCollapsed && (
+        {!groupCollapsed && state.sidebarGroupBy === "status" && <SidebarStatusGroups state={state} dispatch={dispatch} renderRow={(entry, index) => row(entry, index, !repoFilter)} />}
+        {!groupCollapsed && state.sidebarGroupBy !== "status" && (
           <DragDropContext onDragEnd={onRepoDragEnd}>
           <Droppable droppableId="repo-list">
             {(drop, dropState) => (
@@ -532,7 +539,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
             {/* An unfolded group with no rows is empty, with no placeholder line (Conductor's `Dra`). */}
             <RepoWorkspaceList repoId={repo.id} collapsed={folded} isEmpty={repo.workspaces.length === 0} empty={null}>
               <SidebarPresence>
-                {repoGroupWorkspaces(repo.workspaces, sectioned).map((ws, i) => (
+                {repoGroupWorkspaces(repo.workspaces, sectioned, state.sidebarSort).map((ws, i) => (
                   <SidebarRowMotion key={ws.id} listIndex={i}>
                     <SidebarWorkspaceRow workspace={ws} targetBranch={repo.defaultBranch} hasRemote={Boolean(repo.remote)} {...rows.rowProps(repo.id, ws)} />
                   </SidebarRowMotion>

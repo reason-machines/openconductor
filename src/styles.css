@@ -48,6 +48,7 @@ html.sidebar-transparency .settings { background: var(--bg); }
    size-4 icon box, gap-0.5 between rows) above a border-b. */
 .sb-header { position: relative; flex: none; }
 .sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance))); }
+.sb-app-mark { display: inline-flex; margin-left: 6px; color: var(--sidebar-foreground); pointer-events: none; }
 .sb-toggle { display: inline-flex; padding: 0; color: var(--muted); transition: color 150ms cubic-bezier(0, 0, 0.2, 1); } /* Rta: transition-colors duration-150 ease-out */
 .sb-toggle:hover { color: var(--text); }
 .sb-history { position: absolute; top: 8px; right: 14px; z-index: 1; display: flex; align-items: center; gap: 8px; }
@@ -178,9 +179,9 @@ html.sidebar-transparency .settings { background: var(--bg); }
    items px-2.5 py-2 text-sm rounded-md gap-2, 16px icons (or ml-6 indent), 12px muted external arrow;
    version line border-t mt-1 pt-2 px-2.5 pb-1 text-2xs muted. */
 .sb-help { position: relative; display: inline-flex; }
-.sb-help-menu { position: absolute; left: 0; bottom: calc(100% + 4px); z-index: 50; width: 340px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); color: var(--text); box-shadow: 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10); }
-.sb-help-item { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 10px; border-radius: 6px; font-size: 14px; line-height: 20px; text-align: left; color: var(--text); }
-.sb-help-item:hover, .sb-help-item:focus { outline: none; background: var(--hover); }
+.sb-help-menu { position: absolute; left: 0; bottom: calc(100% + 4px); z-index: 50; width: 340px; padding: 4px; border-radius: 8px; background: var(--popover); color: var(--popover-text); box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10); }
+.sb-help-item { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 10px; border-radius: 6px; font-size: 14px; line-height: 20px; text-align: left; color: var(--popover-text); }
+.sb-help-item:hover, .sb-help-item:focus { outline: none; background: var(--popover-hover); }
 .sb-help-item-main { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .sb-help-icon { display: inline-flex; width: 16px; height: 16px; flex: none; }
 .sb-help-external { display: inline-flex; color: var(--muted); }
@@ -235,8 +236,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .ws-header { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 12px; box-sizing: border-box; height: 40px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--border); background: var(--panel); }
 .app.sidebar-hidden .ws-header { padding-left: calc(16px + var(--traffic-lights-clearance)); }
 .ws-title { display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; white-space: nowrap; }
-.ws-number { flex-shrink: 0; height: 24px; padding: 0 6px; border: 0; border-radius: 4px; background: none; font-family: var(--font-mono); font-size: 13px; color: var(--muted); cursor: pointer; }
-.ws-number:hover { background: var(--hover); color: var(--text); }
 /* Header actions row: Conductor's header group is "flex items-center gap-1.5" and its
    buttons use the xs button size (h-6 px-2 text-xs gap-1.5 rounded-sm, icons size-3),
    so Open in, the PR control and Archive share one 24px height and centre line. */

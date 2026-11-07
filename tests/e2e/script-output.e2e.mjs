@@ -21,6 +21,31 @@ after(async () => {
   if (server) await new Promise((resolve) => server.close(resolve));
 });
 
+test("terminal tab labels follow visible order after closing siblings", async () => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+  try {
+    await page.goto(`${base}/?kind=setup`);
+    const add = page.getByRole("button", { name: "New terminal", exact: true });
+    const tabs = page.locator(".term-tab");
+    const labels = () => tabs.locator("span:not(.term-dot)").allTextContents();
+    await add.click();
+    await page.waitForFunction(() => window.__fake.spawns === 1 && document.querySelector(".term-mount .xterm-rows")?.textContent.includes("ada@mac lisbon"));
+    assert.deepEqual(await labels(), ["Terminal"]);
+    assert.equal(await tabs.locator(".term-dot.running").count(), 0);
+    await add.click();
+    await add.click();
+    assert.deepEqual(await labels(), ["Terminal 1", "Terminal 2", "Terminal 3"]);
+    await tabs.nth(1).getByRole("button", { name: "Close terminal" }).click();
+    assert.deepEqual(await labels(), ["Terminal 1", "Terminal 2"]);
+    await tabs.first().getByRole("button", { name: "Close terminal" }).click();
+    assert.deepEqual(await labels(), ["Terminal"]);
+    assert.equal(await page.evaluate(() => window.__fake.spawns), 3);
+    if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/terminal-single.png` });
+  } finally {
+    await page.close();
+  }
+});
+
 test("interactive terminal retains Find after sharing the controller with script output", async () => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
   try {

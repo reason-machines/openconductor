@@ -1,0 +1,224 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: defaults are Conductor's hook defaults
+ok 1 - defaults are Conductor's hook defaults
+  ---
+  duration_ms: 0.669101
+  type: 'test'
+  ...
+# Subtest: an update changes only its key; widths are whole pixels
+ok 2 - an update changes only its key; widths are whole pixels
+  ---
+  duration_ms: 1.139269
+  type: 'test'
+  ...
+# Subtest: the sidebar drags between 192 and 480 pixels
+ok 3 - the sidebar drags between 192 and 480 pixels
+  ---
+  duration_ms: 0.135666
+  type: 'test'
+  ...
+# Subtest: Tab Freak Mode raises the per-workspace tab limit from 5 to 10, counting the chat tab
+ok 4 - Tab Freak Mode raises the per-workspace tab limit from 5 to 10, counting the chat tab
+  ---
+  duration_ms: 0.272175
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: maps rows in database order, marks hidden repos and drops archived workspaces
+ok 5 - maps rows in database order, marks hidden repos and drops archived workspaces
+  ---
+  duration_ms: 2.305999
+  type: 'test'
+  ...
+# Subtest: carries the workspace's target branch from conductor.db
+ok 6 - carries the workspace's target branch from conductor.db
+  ---
+  duration_ms: 0.259442
+  type: 'test'
+  ...
+# Subtest: carries the workspace number from conductor.db
+ok 7 - carries the workspace number from conductor.db
+  ---
+  duration_ms: 0.206963
+  type: 'test'
+  ...
+# Subtest: carries the workspace's intended target branch for the diff
+ok 8 - carries the workspace's intended target branch for the diff
+  ---
+  duration_ms: 0.239912
+  type: 'test'
+  ...
+# Subtest: selection falls back to home when its workspace is gone
+ok 9 - selection falls back to home when its workspace is gone
+  ---
+  duration_ms: 0.209663
+  type: 'test'
+  ...
+# Subtest: prefs round-trip and survive garbage
+ok 10 - prefs round-trip and survive garbage
+  ---
+  duration_ms: 0.368759
+  type: 'test'
+  ...
+# Subtest: sidebar: pin, unread and status columns reach the workspace
+ok 11 - sidebar: pin, unread and status columns reach the workspace
+  ---
+  duration_ms: 0.27514
+  type: 'test'
+  ...
+# Subtest: sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; closed reviews count as hidden
+ok 12 - sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; closed reviews count as hidden
+  ---
+  duration_ms: 0.258017
+  type: 'test'
+  ...
+# Subtest: sidebar: a review tab open at quit comes back after a restart, still unread
+ok 13 - sidebar: a review tab open at quit comes back after a restart, still unread
+  ---
+  duration_ms: 3.053395
+  type: 'test'
+  ...
+# Subtest: sidebar: a user-set workspace name is shown as is
+ok 14 - sidebar: a user-set workspace name is shown as is
+  ---
+  duration_ms: 1.672477
+  type: 'test'
+  ...
+# Subtest: re-reading conductor.db keeps the PR the app last read
+ok 15 - re-reading conductor.db keeps the PR the app last read
+  ---
+  duration_ms: 0.289697
+  type: 'test'
+  ...
+# Subtest: saved browser state drops live session statuses, including the old status: working
+ok 16 - saved browser state drops live session statuses, including the old status: working
+  ---
+  duration_ms: 0.204353
+  type: 'test'
+  ...
+# Subtest: loads updated_at, so Go to next unread picks the most recently active row
+ok 17 - loads updated_at, so Go to next unread picks the most recently active row
+  ---
+  duration_ms: 0.215614
+  type: 'test'
+  ...
+# (node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Status grouping shares the reference's five-group order with keyboard navigation
+ok 18 - Status grouping shares the reference's five-group order with keyboard navigation
+  ---
+  duration_ms: 3.296429
+  type: 'test'
+  ...
+# Subtest: Status groups exclude pinned, sectioned and archived rows without duplicating them
+ok 19 - Status groups exclude pinned, sectioned and archived rows without duplicating them
+  ---
+  duration_ms: 0.417357
+  type: 'test'
+  ...
+# Subtest: Status grouping applies the selected timestamp within groups, across repositories
+ok 20 - Status grouping applies the selected timestamp within groups, across repositories
+  ---
+  duration_ms: 0.343778
+  type: 'test'
+  ...
+# Subtest: Status grouping's project filter does not move Pinned or sections
+ok 21 - Status grouping's project filter does not move Pinned or sections
+  ---
+  duration_ms: 0.357628
+  type: 'test'
+  ...
+# Subtest: all five status headers exist even when empty; default collapse follows the selected row
+ok 22 - all five status headers exist even when empty; default collapse follows the selected row
+  ---
+  duration_ms: 0.512415
+  type: 'test'
+  ...
+# Subtest: an explicit collapse wins over selection, and Project/Status each reset their destination groups
+ok 23 - an explicit collapse wins over selection, and Project/Status each reset their destination groups
+  ---
+  duration_ms: 0.410601
+  type: 'test'
+  ...
+# Subtest: a filtered-out selection cannot open a status group or consume a shortcut number
+ok 24 - a filtered-out selection cannot open a status group or consume a shortcut number
+  ---
+  duration_ms: 0.243038
+  type: 'test'
+  ...
+# Subtest: grouping parses legacy and corrupt values as Project, and typed writes preserve other prefs
+ok 25 - grouping parses legacy and corrupt values as Project, and typed writes preserve other prefs
+  ---
+  duration_ms: 0.189302
+  type: 'test'
+  ...
+# Subtest: manual status collapse persists in desktop UI prefs, accepting only boolean known status keys
+ok 26 - manual status collapse persists in desktop UI prefs, accepting only boolean known status keys
+  ---
+  duration_ms: 0.543398
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pinned workspaces leave their repo group and sort by pin time
+ok 27 - pinned workspaces leave their repo group and sort by pin time
+  ---
+  duration_ms: 2.100767
+  type: 'test'
+  ...
+# Subtest: sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos
+ok 28 - sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos
+  ---
+  duration_ms: 0.476406
+  type: 'test'
+  ...
+# Subtest: Created sort controls repository and shortcut order without moving pinned or section rows
+ok 29 - Created sort controls repository and shortcut order without moving pinned or section rows
+  ---
+  duration_ms: 0.456988
+  type: 'test'
+  ...
+# Subtest: effective status is manual, then derived, then in-progress
+ok 30 - effective status is manual, then derived, then in-progress
+  ---
+  duration_ms: 0.295354
+  type: 'test'
+  ...
+# Subtest: sectioned workspaces sit between Pinned and the repo groups and leave both
+ok 31 - sectioned workspaces sit between Pinned and the repo groups and leave both
+  ---
+  duration_ms: 0.30758
+  type: 'test'
+  ...
+# Subtest: an untoggled repo group is folded unless the open workspace is one of its rows (Conductor's Dra)
+ok 32 - an untoggled repo group is folded unless the open workspace is one of its rows (Conductor's Dra)
+  ---
+  duration_ms: 0.1887
+  type: 'test'
+  ...
+# Subtest: toggling stores the opposite of what the group shows
+ok 33 - toggling stores the opposite of what the group shows
+  ---
+  duration_ms: 0.367251
+  type: 'test'
+  ...
+# Subtest: visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups
+ok 34 - visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups
+  ---
+  duration_ms: 0.189485
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 395.134809
