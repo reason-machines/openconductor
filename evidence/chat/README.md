@@ -20,7 +20,11 @@ Gathered for the chat rendering obligations in issue #139 (`chat.markdown`, `cha
 | Code colours: `.hljs-*` rules map to `--code-*` variables; the default theme takes them from Conductor's palette (`Mr`): dark keyword `red.400`, string `accent.300`, number `blue.400`, function `fuchsia.400`, class `orange.400`, tag `green.400`, comment `gray.500`, fg `gray.100`, bg `gray.950`; light uses the 600/800/900 shades. | `nOr`, `Mr`, `renderApp-BYEcFwvt.css` |
 | Tables are wrapped in a horizontal scroll area. | `uEi` |
 
-OpenConductor: `src/features/chat/markdown.ts` (react-markdown + remark-gfm + remark-breaks + lowlight `common`, inline-code URL plugin, raw HTML escaped), styles in `chat.css`. Not ported: mermaid diagrams, frontmatter cards, `conductor-file://` path links (need the file opener), app deep links.
+OpenConductor's [Markdown renderer](../../src/features/chat/markdown.ts) uses react-markdown, remark-gfm, remark-breaks, lowlight `common`, an inline-code URL plugin, and escaped raw HTML. Styles are in `chat.css`. Inline-code workspace file paths resolve to buttons that call `onOpenFile` with an absolute path inside the workspace. This implements workspace-file links without generating Conductor's `conductor-file://` URLs.
+
+[Mermaid rendering shipped in #779](https://github.com/reason-machines/openconductor/pull/779). The [Mermaid evidence](mermaid.md) records the exact sample, corrected successful REA receipt, separately retained failed receipt, browser checks, and safety limits. Ordinary fenced code retains highlighting and copy behavior. macOS package CI and merged-source browser checks are separate proofs, not package-runtime or native visual parity.
+
+Frontmatter and app deep links remain source-only reference leads from the decoded bundle described under Inputs. The retained REA analysis skipped `renderApp`; it does not demonstrate either interaction. No retained runtime scenario establishes a frontmatter card or a current-main deep-link mismatch. These leads do not prove missing product behavior. Native rendering and native visual parity remain unverified.
 
 ## Tool-call grouping (`chat.tool-calls`), from `index-BGEQ8YjU.js` (REA function nodes with source ranges)
 
