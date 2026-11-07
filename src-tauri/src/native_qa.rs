@@ -352,6 +352,7 @@ mod app {
         }
         #[cfg(not(all(debug_assertions, target_os = "macos")))]
         {
+            let _ = app;
             Err("ordinary QA prerequisite requires a macOS debug bundle".into())
         }
         #[cfg(all(debug_assertions, target_os = "macos"))]
