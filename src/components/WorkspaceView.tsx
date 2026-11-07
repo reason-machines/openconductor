@@ -103,6 +103,7 @@ import { useAppPrefs } from "../settings/appPrefs";
 import { useBoolPref } from "../settings/useBoolPref";
 import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
+import { RepoHeaderMenu } from "./RepoHeaderMenu";
 import { SETUP_SCRIPT_PROMPT } from "../scripts/setupPrompt";
 
 interface Props {
@@ -1234,7 +1235,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region="deep">
         <div className="ws-title">
-          <span className="crumb">{repo.name}</span>
+          <RepoHeaderMenu repo={repo} onError={(message) => notify?.("error", message)} />
           <span className="crumb-sep">/</span>
           <strong>{workspace.name}</strong>
           <span className="chip">

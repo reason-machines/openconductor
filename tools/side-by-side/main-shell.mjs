@@ -69,6 +69,9 @@ http.createServer((req,res)=>{
  if(process.argv.includes('--home-routing-check')) {
   try { await import('./home-routing.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
  }
+ if(process.argv.includes('--header-repo-check')) {
+  try { await import('./header-repo-menu.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
+ }
  if(process.argv.includes('--local-header-check')) {
   try { await import('./local-header-number.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
  }
