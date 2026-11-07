@@ -847,7 +847,9 @@ impl ReasonProvider {
             // Persisted ownership is authoritative, including while offline.
             return Ok(hint);
         }
-        let unknown = || format!("Could not verify this chat's Reason Session {id} workspace. The message was not sent. Reconnect Reason and retry; existing chat history is preserved.");
+        let unknown = || {
+            format!("Could not verify this chat's Reason Session {id} workspace. The message was not sent. Reconnect Reason and retry; existing chat history is preserved.")
+        };
         let Some(signed_in) = self.launch().whoami(&self.dir) else {
             return Err(unknown());
         };
