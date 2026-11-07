@@ -51,6 +51,18 @@ All nine native full-parity verdicts remain unverified. Synthetic WKWebView asse
 
 [PR #747](https://github.com/reason-machines/openconductor/pull/747) merged at `2026-11-07T00:56:46.75571Z` before all exact-head checks passed. The coordinator observed 14/16 successes with both E2E jobs running. Direct readback confirms Codex job `128244199775` completed later at `00:58:03Z`. The ALL-checks gate did not hold. Later success does not make that merge compliant. No post-merge cancellation or rollback is claimed. Future merge requests wait for every exact-head check and workflow to succeed.
 
+## Grouping and Settings evidence, main `70bf6c5e`, 7 November 2026
+
+Conductor Rebuild reconciled three newly merged increments on Reason Cloud. This updates the [canonical evidence manifest](supplemental-evidence.json) and generated JSON, Markdown and HTML, not the retained capture scores.
+
+- [#748 Group by](../../evidence/sidebar-group/README.md) supersedes the historical missing-feature note. Its dark reference and both-theme fixture checks cover status/project grouping, counts/order, badges, filtering and mocked reload/collapse. Semantic coverage remains partial. Shortcut labels do not prove modifier-number activation; browser storage does not prove native database persistence.
+- [#750 Reason defaults](../../evidence/settings/defaults-clear/README.md) retains three failing stale-handler schedules and one passing separate-render control before the correction, then all four passing after. The production-handler test uses invented in-memory IPC, not WebKit dispatch. The conditional defect is proven; attribution of the original #748 timeout remains unproven. Owner-reported 1,310 units and consuming fake-provider E2E are separate checks, not native or real-auth proof.
+- [#751 final-source proof](../../evidence/sidebar-group/exact-head-after/README.md) retains eight REA captures and two filter screenshots inspected/published by the Home owner. Local tree `dbdc265e` equals final #748 head `e295f98f`, not a later consuming-main render or installed app. Its preview stop receipt is actual, with `01:48:58.673Z` only an upper-bound timestamp. Ledger integration read the manifests, not the images, and performed no recapture.
+- Sole E2E owner `acc3b5c5` confirms run `1512/42327005025` on `154ba0da` passed both jobs, eight late steps and `13555962196/results.json` 23/23. Its ordered-main streak is 6/10 after the `1499` cancellation reset. Active `1513/42327550939` is uncounted. This is attributed accounting, not a new independent pass or a native/five-pass/auth promotion.
+- #752 Projects correction remains an unmerged receipt at this source snapshot. Browser sign-in remains the separately owned P0. Neither grants native parity credit. The existing coordinator Page is read-only here; source/data goes to its owner without another Page or status-only patch.
+
+All 24 earlier evidence records remain retained alongside these three additions. Every raw/scoped row, exclusion, capture score, toast-system/main-flow requirement and default-off/native gate distinction is unchanged. The scoped denominator remains 341, with 169 retained matches, 48 wrong, 3 missing and 121 unverified. All nine final native reviews remain unverified. No product/driver edit, Mac launch/input, preview, dependency install, new worker, capture, dispatch/rerun or duplicate watcher occurred in this reconciliation.
+
 ## Historical program records
 
 One row per node of Sven's UI audit program. A node is done when its side-by-side image
