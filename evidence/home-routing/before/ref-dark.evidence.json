@@ -1,0 +1,1142 @@
+{
+  "evidence_id": "ev_b0da51cf425c199e91830c6aafb951c187201572ffb52cc82b7795daf789fb13",
+  "subject": null,
+  "provider": {
+    "id": "rea-playwright-browser-scenario",
+    "name": "REA Playwright browser scenario capture provider",
+    "version": "1"
+  },
+  "analysis_profile": null,
+  "predicate_type": "rea.browser-scenario-capture",
+  "operation": "capture_browser_scenario",
+  "parameters": {
+    "browser": {
+      "mode": "launch",
+      "executable_path": "/usr/bin/chromium",
+      "headless": true
+    },
+    "start_url": {
+      "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+      "query": []
+    },
+    "environment": {
+      "viewport": {
+        "width": 1280,
+        "height": 820,
+        "device_scale_factor": 1
+      },
+      "locale": "en-US",
+      "timezone": "UTC",
+      "color_scheme": "dark",
+      "reduced_motion": "reduce",
+      "service_workers": "block"
+    },
+    "actions": [
+      {
+        "step_id": "settle-root",
+        "action": "wait_for_timeout",
+        "duration_ms": 2000
+      },
+      {
+        "step_id": "sidebar-home",
+        "timeout_ms": 5000,
+        "action": "click",
+        "locator": {
+          "kind": "css",
+          "selector": "div[data-active][title^=\"Home\"]"
+        },
+        "button": "left",
+        "click_count": 1
+      },
+      {
+        "step_id": "settle-list",
+        "action": "wait_for_timeout",
+        "duration_ms": 1000
+      }
+    ],
+    "storage": {
+      "cookies": [],
+      "local_storage": [],
+      "session_storage": []
+    },
+    "secrets": [],
+    "capture": {
+      "after_each_step": [],
+      "at_end": [
+        "screenshot",
+        "dom",
+        "url"
+      ],
+      "events": [
+        "console",
+        "page-errors"
+      ],
+      "network": {
+        "request_body": false,
+        "response_body": false,
+        "header_values": false
+      },
+      "limits": {
+        "max_events": 10000,
+        "max_event_allocation_bytes": 4194304,
+        "max_total_event_allocation_bytes": 16777216,
+        "max_network_transactions": 1024,
+        "max_network_body_bytes": 65536,
+        "max_network_body_allocation_bytes": 1048576,
+        "max_network_header_allocation_bytes": 1048576,
+        "max_network_metadata_allocation_bytes": 1048576
+      }
+    },
+    "scenario_sha256": "4227edc00fe8afa861fba437b42fd9151ef02bb51e8239061c3d747b9f12fe76"
+  },
+  "raw_result": null,
+  "normalized_result": {
+    "browser": {
+      "mode": "launch",
+      "process_ownership": "provider-owned",
+      "cleanup": "terminated-owned-process",
+      "product": "Chromium",
+      "version": "155.0.8059.84"
+    },
+    "scenario": {
+      "start_origin": "http://conductor.localhost:4682",
+      "action_count": 3,
+      "secret_references": [],
+      "network_content": {
+        "request_body": false,
+        "response_body": false,
+        "header_values": false
+      },
+      "event_families": [
+        "console",
+        "page-errors"
+      ],
+      "limits": {
+        "max_events": 10000,
+        "max_event_allocation_bytes": 4194304,
+        "max_total_event_allocation_bytes": 16777216,
+        "max_network_transactions": 1024,
+        "max_network_body_bytes": 65536,
+        "max_network_body_allocation_bytes": 1048576,
+        "max_network_header_allocation_bytes": 1048576,
+        "max_network_metadata_allocation_bytes": 1048576
+      }
+    },
+    "duration_ms": 4423,
+    "steps": [
+      {
+        "step_index": 0,
+        "step_id": "scenario_start",
+        "action": "goto_start",
+        "elapsed_ms": 1069,
+        "before_url": {
+          "url": "about:blank",
+          "origin": null,
+          "query_parameter_names": [],
+          "redacted": false
+        },
+        "after_url": {
+          "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+          "origin": "http://conductor.localhost:4682",
+          "query_parameter_names": [
+            "oc_scenario",
+            "oc_theme",
+            "oc_org"
+          ],
+          "redacted": false
+        },
+        "event_sequence_start": 1,
+        "event_sequence_end": 0,
+        "artifacts": {
+          "screenshot": {
+            "state": "not_requested",
+            "value": {
+              "omitted": "Image saved separately"
+            }
+          },
+          "dom": {
+            "state": "not_requested"
+          },
+          "accessibility": {
+            "state": "not_requested"
+          },
+          "url": {
+            "state": "not_requested"
+          },
+          "history": {
+            "state": "not_requested"
+          },
+          "storage": {
+            "state": "not_requested"
+          }
+        },
+        "completeness": {
+          "status": "complete",
+          "equality_eligible": true,
+          "missing_sections": [],
+          "truncated_sections": []
+        },
+        "status": "completed",
+        "error": null
+      },
+      {
+        "step_index": 1,
+        "step_id": "settle-root",
+        "action": "wait_for_timeout",
+        "elapsed_ms": 2002,
+        "before_url": {
+          "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+          "origin": "http://conductor.localhost:4682",
+          "query_parameter_names": [
+            "oc_scenario",
+            "oc_theme",
+            "oc_org"
+          ],
+          "redacted": false
+        },
+        "after_url": {
+          "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+          "origin": "http://conductor.localhost:4682",
+          "query_parameter_names": [
+            "oc_scenario",
+            "oc_theme",
+            "oc_org"
+          ],
+          "redacted": false
+        },
+        "event_sequence_start": 1,
+        "event_sequence_end": 42,
+        "artifacts": {
+          "screenshot": {
+            "state": "not_requested",
+            "value": {
+              "omitted": "Image saved separately"
+            }
+          },
+          "dom": {
+            "state": "not_requested"
+          },
+          "accessibility": {
+            "state": "not_requested"
+          },
+          "url": {
+            "state": "not_requested"
+          },
+          "history": {
+            "state": "not_requested"
+          },
+          "storage": {
+            "state": "not_requested"
+          }
+        },
+        "completeness": {
+          "status": "complete",
+          "equality_eligible": true,
+          "missing_sections": [],
+          "truncated_sections": []
+        },
+        "status": "completed",
+        "error": null
+      },
+      {
+        "step_index": 2,
+        "step_id": "sidebar-home",
+        "action": "click",
+        "elapsed_ms": 147,
+        "before_url": {
+          "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+          "origin": "http://conductor.localhost:4682",
+          "query_parameter_names": [
+            "oc_scenario",
+            "oc_theme",
+            "oc_org"
+          ],
+          "redacted": false
+        },
+        "after_url": {
+          "url": "http://conductor.localhost:4682/all-workspaces",
+          "origin": "http://conductor.localhost:4682",
+          "query_parameter_names": [],
+          "redacted": false
+        },
+        "event_sequence_start": 43,
+        "event_sequence_end": 48,
+        "artifacts": {
+          "screenshot": {
+            "state": "not_requested",
+            "value": {
+              "omitted": "Image saved separately"
+            }
+          },
+          "dom": {
+            "state": "not_requested"
+          },
+          "accessibility": {
+            "state": "not_requested"
+          },
+          "url": {
+            "state": "not_requested"
+          },
+          "history": {
+            "state": "not_requested"
+          },
+          "storage": {
+            "state": "not_requested"
+          }
+        },
+        "completeness": {
+          "status": "complete",
+          "equality_eligible": true,
+          "missing_sections": [],
+          "truncated_sections": []
+        },
+        "status": "completed",
+        "error": null
+      },
+      {
+        "step_index": 3,
+        "step_id": "settle-list",
+        "action": "wait_for_timeout",
+        "elapsed_ms": 1091,
+        "before_url": {
+          "url": "http://conductor.localhost:4682/all-workspaces",
+          "origin": "http://conductor.localhost:4682",
+          "query_parameter_names": [],
+          "redacted": false
+        },
+        "after_url": {
+          "url": "http://conductor.localhost:4682/all-workspaces",
+          "origin": "http://conductor.localhost:4682",
+          "query_parameter_names": [],
+          "redacted": false
+        },
+        "event_sequence_start": 49,
+        "event_sequence_end": 48,
+        "artifacts": {
+          "screenshot": {
+            "state": "captured",
+            "value": {
+              "omitted": "Image saved separately"
+            }
+          },
+          "dom": {
+            "state": "captured",
+            "value": {
+              "sha256": "277d4e5af11e3ad4edbe20a8649ed20f387ac2d111c9d1f688b83754223e5b01",
+              "bytes": 45819,
+              "text": "<!DOCTYPE html><html lang=\"en\" class=\"dark\" data-platform=\"linux\" data-window-fullscreen=\"false\" data-scaled-native-traffic-lights=\"\" style=\"--code-fg: #eae8e6; --code-bg: #211e1c; --code-comment: #8e8885; --code-keyword: #f87272; --code-string: #ddc1b1; --code-number: #61a6fa; --code-function: #e852ff; --code-class: #fb923c; --code-tag: #4ade80; --code-operator: #f87272; --font-sans: &quot;Geist&quot;, system-ui, sans-serif; --font-mono: &quot;Geist Mono&quot;, monospace; --diffs-font-family: &quot;Geist Mono&quot;, monospace; --file-code-font-variant-ligatures: normal; --webview-zoom: 1;\"><head><style data-href=\"base-ui-disable-scrollbar\" data-precedence=\"base-ui:low\">.base-ui-disable-scrollbar{scrollbar-width:none}.base-ui-disable-scrollbar::-webkit-scrollbar{display:none}</style><meta http-equiv=\"Content-Security-Policy\" content=\"connect-src 'self' data: blob:\"><script>window.__OC_SCENARIO__=\"populated\";</script><script src=\"/__mock/sql-wasm.js\"></script><script src=\"/__mock/seed-data.js\"></script><script src=\"/__mock/seed.js\"></script><script src=\"/__mock/fixtures.js\"></script><script src=\"/__mock/org-fixtures.js\"></script><script src=\"/__mock/sidebar-sort-fixture.js\"></script><script src=\"/__mock/workspace-number-fixture.js\"></script><script src=\"/__mock/tauri-mock.js\"></script>\n        <meta charset=\"UTF-8\">\n        <link rel=\"icon\" type=\"image/svg+xml\" href=\"/vite.svg\">\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n        <title>Tauri + React + Typescript</title>\n        <!-- Anti-flash: paint the themed background before the stylesheet\n             loads. Values mirror `background` in\n             src/client/frontends/desktop/app/src/theme.css, which takes over\n             (same values) once loaded — ThemeProvider no longer applies\n             inline styles for base colors. -->\n        <style>\n            :root {\n                --background: hsl(24 10% 7%);\n            }\n            :root.light {\n                --background: hsl(30 0% 100%);\n            }\n            html {\n                background: var(--background);\n            }\n        </style>\n        <script>\n            // Match ThemeProvider's dark default until it finishes loading the\n            // portable theme setting.\n            var mode = \"dark\";\n            document.documentElement.classList.add(\n                mode === \"light\" ? \"light\" : \"dark\",\n            );\n        </script>\n      <script type=\"module\" crossorigin=\"\" src=\"/assets/index-BGEQ8YjU.js\"></script>\n      <link rel=\"modulepreload\" crossorigin=\"\" href=\"/assets/preload-helper-BXl3LOEh.js\">\n      <link rel=\"modulepreload\" crossorigin=\"\" href=\"/assets/fireAndForget-BNlOYQqH.js\">\n    <link rel=\"modulepreload\" as=\"script\" crossorigin=\"\" href=\"/assets/main-QDHPan6v.js\"><link rel=\"modulepreload\" as=\"script\" crossorigin=\"\" href=\"/assets/renderApp-D_fmY7hW.js\"><link rel=\"modulepreload\" as=\"script\" crossorigin=\"\" href=\"/assets/index-BGEQ8YjU.js\"><link rel=\"stylesheet\" crossorigin=\"\" href=\"/assets/renderApp-BYEcFwvt.css\"><link rel=\"modulepreload\" as=\"script\" crossorigin=\"\" href=\"/assets/html-pp8916En.js\"><link rel=\"modulepreload\" as=\"script\" crossorigin=\"\" href=\"/assets/javascript-wDzz0qaB.js\"><link rel=\"modulepreload\" as=\"script\" crossorigin=\"\" href=\"/assets/css-CLj8gQPS.js\"><style type=\"text/css\" data-rfd-always=\"_r_1j_\"> [data-rfd-drag-handle-context-id=\"_r_1j_\"] { \n          -webkit-touch-callout: none;\n          -webkit-tap-highlight-color: rgba(0,0,0,0);\n          touch-action: manipulation;\n         } [data-rfd-droppable-context-id=\"_r_1j_\"] { overflow-anchor: none; } </style><style type=\"text/css\" data-rfd-dynamic=\"_r_1j_\"> [data-rfd-drag-handle-context-id=\"_r_1j_\"] { \n      cursor: -webkit-grab;\n      cursor: grab;\n     }  </style></head>\n\n    <body>\n        <!-- isolation: isolate creates a new stacking context on #root so\n             body-level portals (Base UI ContextMenu, Menu, etc.) stack above\n             elevated app chrome like the composer / right panel. Required by\n             Base UI's quick-start. -->\n        <div id=\"root\" style=\"isolation: isolate\"><div class=\"contents\"><span class=\"contents\"></span><div class=\"sidebar-vibrancy-passthrough flex h-screen flex-col overflow-hidden bg-background\"><div class=\"group/sidebar-wrapper flex h-full w-full min-h-0 flex-1\" data-state=\"expanded\" style=\"--sidebar-width: 256px;\"><aside data-sidebar=\"sidebar\" data-state=\"expanded\" class=\"relative z-20 h-full shrink-0 overflow-hidden border-r !border-sidebar-border bg-sidebar-background/60 text-sidebar-foreground max-w-[40%] select-none\" style=\"width: var(--sidebar-width);\"><div class=\"flex h-full w-full min-w-0 flex-col overflow-hidden\"><div data-sidebar=\"header\" class=\"shrink-0 relative\"><div class=\"flex h-8 w-full items-center pt-2 pl-[calc(1rem+var(--traffic-lights-clearance)+min(4px,var(--traffic-lights-clearance)))]\" data-tauri-drag-region=\"true\"><button class=\"inline-flex items-center gap-2 whitespace-nowrap ring-offset-background duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none font-450 [&amp;_svg]:shrink-0 text-xs justify-center rounded-sm size-auto cursor-pointer p-0 text-muted-foreground transition-colors hover:bg-transparent hover:text-foreground\" data-sidebar=\"trigger\" aria-label=\"Toggle left sidebar\" title=\"Toggle left sidebar ⌘B\"><svg stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" viewBox=\"0 0 16 16\" class=\"size-4\" height=\"1em\" width=\"1em\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2 1.00073L1 2.00073V14.0007L2 15.0007H14L15 14.0007V2.00073L14 1.00073H2ZM2 14.0007V2.00073H6V14.0007H2ZM7 14.0007V2.00073H14V14.0007H7Z\"></path></svg></button></div><div class=\"absolute top-2 right-3.5 z-10 flex items-center gap-2\"><button class=\"inline-flex px-2 items-center gap-2 whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none hover:bg-sidebar-accent font-450 [&amp;_svg]:shrink-0 text-xs justify-center rounded-sm size-6 text-sidebar-muted-foreground hover:text-sidebar-foreground\" aria-label=\"Go back\" title=\"Go back ⌘[\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-arrow-left size-3\" aria-hidden=\"true\"><path d=\"m12 19-7-7 7-7\"></path><path d=\"M19 12H5\"></path></svg></button><button class=\"inline-flex px-2 items-center gap-2 whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none hover:bg-sidebar-accent font-450 [&amp;_svg]:shrink-0 text-xs justify-center rounded-sm size-6 text-sidebar-muted-foreground hover:text-sidebar-foreground\" aria-label=\"Go forward\" title=\"Go forward ⌘]\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-arrow-right size-3\" aria-hidden=\"true\"><path d=\"M5 12h14\"></path><path d=\"m12 5 7 7-7 7\"></path></svg></button></div><div data-sidebar=\"group\" class=\"min-w-0\"><div class=\"flex flex-col gap-0.5 px-1.5 pt-1.5 pb-1.5 w-full min-w-0 border-b !border-sidebar-border\"><button type=\"button\" tabindex=\"0\" aria-haspopup=\"menu\" id=\"org-switcher-callout-tooltip-trigger\" data-base-ui-tooltip-trigger=\"\" class=\"flex items-center px-1.5 py-1.5 gap-2 w-full min-w-0 rounded-md cursor-pointer hover:bg-sidebar-accent\" aria-label=\"Account menu\" aria-expanded=\"false\"><span class=\"size-4 flex items-center justify-center shrink-0\"><span class=\"relative flex overflow-hidden rounded-full size-4 shrink-0 text-sidebar-muted-foreground\"><span class=\"flex h-full w-full items-center justify-center rounded-full bg-muted text-[10px] font-medium text-muted-foreground\">A</span></span></span><span class=\"truncate font-medium text-sidebar-foreground\">Ada Demo's Mac</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down size-3.5 shrink-0 text-sidebar-muted-foreground\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></button><div data-active=\"true\" title=\"Home ⌘⇧H\" class=\"flex items-center px-1.5 py-1.5 gap-2 hover:bg-sidebar-accent group w-full min-w-0 cursor-pointer rounded-md data-[active=true]:bg-sidebar-accent\"><div class=\"size-4 flex items-center justify-center shrink-0\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-house size-3 text-sidebar-muted-foreground mb-[1px]\" aria-hidden=\"true\"><path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"></path><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"></path></svg></div><span class=\"text-sidebar-muted-foreground\">Home</span><span class=\"ml-auto flex items-center opacity-0 group-hover:opacity-100\"><span class=\"inline-flex items-center ml-auto pl-1\"><span class=\"inline-flex items-center text-xs text-muted-foreground\"><span>⌘</span><span>⇧</span><span>H</span></span></span></span></div><div class=\"flex items-center px-1.5 py-1.5 gap-2 hover:bg-sidebar-accent group w-full min-w-0 cursor-pointer rounded-md\"><div class=\"size-4 flex items-center justify-center shrink-0\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-plus size-3 text-sidebar-muted-foreground mb-[1px]\" aria-hidden=\"true\"><path d=\"M5 12h14\"></path><path d=\"M12 5v14\"></path></svg></div><span class=\"text-sidebar-muted-foreground\">Create</span><span class=\"relative ml-auto flex items-center\"><span class=\"opacity-0 group-hover:opacity-100\"><span class=\"inline-flex items-center ml-auto pl-1\"><span class=\"inline-flex items-center text-xs text-muted-foreground\"><span>⌘</span><span>N</span></span></span></span></span></div><div class=\"flex items-center px-1.5 py-1.5 gap-2 hover:bg-sidebar-accent group w-full min-w-0 cursor-pointer rounded-md\"><div class=\"size-4 flex items-center justify-center shrink-0\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search size-3 text-sidebar-muted-foreground mb-[1px]\" aria-hidden=\"true\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></div><span class=\"text-sidebar-muted-foreground\">Search</span><span class=\"ml-auto flex items-center opacity-0 group-hover:opacity-100\"><span class=\"inline-flex items-center ml-auto pl-1\"><span class=\"inline-flex items-center text-xs text-muted-foreground\"><span>⌘</span><span>K</span></span></span></span></div></div></div></div><div data-sidebar=\"content\" class=\"flex min-h-0 min-w-0 flex-1 flex-col @container\"><div data-sidebar=\"group\" class=\"min-w-0 flex min-h-0 flex-1 flex-col\"><div role=\"presentation\" class=\"min-h-0 overflow-hidden relative z-10 flex-1 w-full min-w-0\" style=\"position: relative; --scroll-area-corner-height: 0px; --scroll-area-corner-width: 0px;\"><div role=\"presentation\" data-id=\"base-ui-_r_17_-viewport\" tabindex=\"-1\" class=\"h-full w-full rounded-[inherit] [&amp;&gt;div]:!block scroll-mask-y base-ui-disable-scrollbar\" data-sidebar-scroll-root=\"\" style=\"overflow: hidden scroll; scroll-behavior: auto; --scroll-area-overflow-x-start: 0px; --scroll-area-overflow-x-end: 0px; --scroll-area-overflow-y-start: 0px; --scroll-area-overflow-y-end: 0px;\"><div role=\"presentation\" class=\"w-full min-w-0 max-w-full overflow-x-clip !block h-full\" style=\"min-width: 0px;\"><div class=\"pl-1.5 pr-1.5 pt-0.5 w-full min-w-0 min-h-full flex flex-col relative\"><div class=\"flex w-full min-w-0 flex-col\"><section class=\"flex w-full min-w-0 flex-col gap-2 empty:hidden pb-3\" aria-label=\"Sections\" data-navigation-sections-section=\"\"></section><section class=\"flex w-full min-w-0 flex-col rounded-md pb-3 min-h-24\" data-workspace-unsectioned-drop=\"\" aria-label=\"My workspaces\"><div class=\"group/section-header relative mt-0.5\"><button type=\"button\" class=\"flex w-full min-w-0 items-center gap-2 rounded-md px-1.5 py-1.5 text-left group-hover/section-header:bg-sidebar-accent group-has-[[data-popup-open]]/section-header:bg-sidebar-accent\" aria-expanded=\"true\" data-context-menu-trigger=\"\"><span class=\"min-w-0 flex-1 truncate text-xs font-semibold text-sidebar-muted-foreground/70\">My workspaces</span><span aria-hidden=\"true\" class=\"w-6 shrink-0\"></span><span class=\"shrink-0 text-sidebar-muted-foreground\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down size-3 opacity-0 group-hover/section-header:opacity-100 group-focus-within/section-header:opacity-100\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button><button class=\"inline-flex px-2 items-center gap-2 whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none hover:bg-sidebar-accent font-450 [&amp;_svg]:shrink-0 text-xs justify-center rounded-sm absolute top-1/2 z-10 size-6 -translate-y-1/2 text-sidebar-muted-foreground opacity-0 group-hover/section-header:opacity-100 group-has-[:focus-visible]/section-header:opacity-100 group-has-[[data-popup-open]]/section-header:opacity-100 data-[popup-open]:opacity-100 hover:text-sidebar-foreground right-[26px]\" aria-label=\"My workspaces actions\" type=\"button\" tabindex=\"0\" aria-haspopup=\"menu\" id=\"base-ui-_r_1f_\" aria-expanded=\"false\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-ellipsis size-3.5\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle></svg></button><span class=\"absolute right-6 top-full\"></span></div><div><div class=\"w-full min-w-0 flex flex-col gap-1\"><div class=\"w-full min-w-0 flex flex-col gap-1\" data-rfd-droppable-id=\"repo-list\" data-rfd-droppable-context-id=\"_r_1j_\"><div data-rfd-draggable-context-id=\"_r_1j_\" data-rfd-draggable-id=\"repo-tide-web\" class=\"\"><div class=\"w-full min-w-0\"><div class=\"group/section-header relative\"><div tabindex=\"0\" role=\"button\" aria-describedby=\"rfd-hidden-text-_r_1j_-hidden-text-_r_1k_\" data-rfd-drag-handle-draggable-id=\"repo-tide-web\" data-rfd-drag-handle-context-id=\"_r_1j_\" draggable=\"false\" class=\"group flex w-full min-w-0 items-center justify-between rounded-md py-1.5 pl-1.5 pr-1.5 mt-0.5 mb-1 hover:bg-sidebar-accent group-hover/section-header:bg-sidebar-accent group-has-[[data-popup-open]]/section-header:bg-sidebar-accent data-[popup-open]:bg-sidebar-accent\" data-context-menu-trigger=\"\"><div class=\"flex min-w-0 flex-1 items-center gap-2 overflow-hidden\"><div class=\"relative shrink-0\"><span class=\"group-hover:invisible\"><div class=\"h-4 w-4 shrink-0 rounded-sm flex items-center justify-center text-[10px] font-medium bg-muted text-muted-foreground\">T</div></span><div class=\"absolute inset-0 flex cursor-pointer items-center justify-center invisible group-hover:visible\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3 text-sidebar-muted-foreground\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></div></div><span class=\"min-w-0 truncate font-sans font-semibold text-sidebar-muted-foreground\">tide-web</span><span class=\"shrink-0 font-mono text-2xs text-sidebar-muted-foreground\">3</span></div><span aria-hidden=\"true\" class=\"w-9 shrink-0\"></span><button class=\"inline-flex px-2 items-center gap-2 whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none hover:bg-sidebar-accent font-450 [&amp;_svg]:shrink-0 text-xs justify-center rounded-sm size-6 shrink-0 text-sidebar-muted-foreground hover:text-foreground\" aria-label=\"Create workspace\" title=\"Create workspace\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-plus size-4\" aria-hidden=\"true\"><path d=\"M5 12h14\"></path><path d=\"M12 5v14\"></path></svg></button></div><button class=\"inline-flex px-2 items-center gap-2 whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none hover:bg-sidebar-accent font-450 [&amp;_svg]:shrink-0 text-xs justify-center rounded-sm absolute top-1/2 z-10 size-6 -translate-y-1/2 text-sidebar-muted-foreground opacity-0 group-hover/section-header:opacity-100 group-has-[:focus-visible]/section-header:opacity-100 group-has-[[data-popup-open]]/section-header:opacity-100 data-[popup-open]:opacity-100 hover:text-sidebar-foreground right-9\" aria-label=\"tide-web actions\" type=\"button\" tabindex=\"0\" aria-haspopup=\"menu\" id=\"base-ui-_r_1u_\" aria-expanded=\"false\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-ellipsis size-3.5\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle></svg></button></div></div></div><div data-rfd-draggable-context-id=\"_r_1j_\" data-rfd-draggable-id=\"repo-tide-api\" class=\"\"><div class=\"w-full min-w-0\"><div class=\"group/section-header relative\"><div tabindex=\"0\" role=\"button\" aria-describedby=\"rfd-hidden-text-_r_1j_-hidden-text-_r_1k_\" data-rfd-drag-handle-draggable-id=\"repo-tide-api\" data-rfd-drag-handle-context-id=\"_r_1j_\" draggable=\"false\" class=\"group flex w-full min-w-0 items-center justify-between rounded-md py-1.5 pl-1.5 pr-1.5 mt-0.5 mb-1 hover:bg-sidebar-accent group-hover/section-header:bg-sidebar-accent group-has-[[data-popup-open]]/section-header:bg-sidebar-accent data-[popup-open]:bg-sidebar-accent\" data-context-menu-trigger=\"\"><div class=\"flex min-w-0 flex-1 items-center gap-2 overflow-hidden\"><div class=\"relative shrink-0\"><span class=\"group-hover:invisible\"><div class=\"h-4 w-4 shrink-0 rounded-sm flex items-center justify-center text-[10px] font-medium bg-muted text-muted-foreground\">T</div></span><div class=\"absolute inset-0 flex cursor-pointer items-center justify-center invisible group-hover:visible\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3 text-sidebar-muted-foreground\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></div></div><span class=\"min-w-0 truncate font-sans font-semibold text-sidebar-muted-foreground\">tide-api</span><span class=\"shrink-0 font-mono text-2xs text-sidebar-muted-foreground\">2</span></div><span aria-hidden=\"true\" class=\"w-9 shrink-0\"></span><button class=\"inline-flex px-2 items-center gap-2 whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none hover:bg-sidebar-accent font-450 [&amp;_svg]:shrink-0 text-xs justify-center rounded-sm size-6 shrink-0 text-sidebar-muted-foreground hover:text-foreground\" aria-label=\"Create workspace\" title=\"Create workspace\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-plus size-4\" aria-hidden=\"true\"><path d=\"M5 12h14\"></path><path d=\"M12 5v14\"></path></svg></button></div><button class=\"inline-flex px-2 items-center gap-2 whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none hover:bg-sidebar-accent font-450 [&amp;_svg]:shrink-0 text-xs justify-center rounded-sm absolute top-1/2 z-10 size-6 -translate-y-1/2 text-sidebar-muted-foreground opacity-0 group-hover/section-header:opacity-100 group-has-[:focus-visible]/section-header:opacity-100 group-has-[[data-popup-open]]/section-header:opacity-100 data-[popup-open]:opacity-100 hover:text-sidebar-foreground right-9\" aria-label=\"tide-api actions\" type=\"button\" tabindex=\"0\" aria-haspopup=\"menu\" id=\"base-ui-_r_29_\" aria-expanded=\"false\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-ellipsis size-3.5\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle></svg></button></div></div></div><div data-rfd-draggable-context-id=\"_r_1j_\" data-rfd-draggable-id=\"repo-dotfiles\" class=\"\"><div class=\"w-full min-w-0\"><div class=\"group/section-header relative\"><div tabindex=\"0\" role=\"button\" aria-describedby=\"rfd-hidden-text-_r_1j_-hidden-text-_r_1k_\" data-rfd-drag-handle-draggable-id=\"repo-dotfiles\" data-rfd-drag-handle-context-id=\"_r_1j_\" draggable=\"false\" class=\"group flex w-full min-w-0 items-center justify-between rounded-md py-1.5 pl-1.5 pr-1.5 mt-0.5 mb-1 hover:bg-sidebar-accent group-hover/section-header:bg-sidebar-accent group-has-[[data-popup-open]]/section-header:bg-sidebar-accent data-[popup-open]:bg-sidebar-accent\" data-context-menu-trigger=\"\"><div class=\"flex min-w-0 flex-1 items-center gap-2 overflow-hidden\"><div class=\"relative shrink-0\"><span class=\"group-hover:invisible\"><div class=\"h-4 w-4 shrink-0 rounded-sm flex items-center justify-center text-[10px] font-medium bg-muted text-muted-foreground\">D</div></span><div class=\"absolute inset-0 flex cursor-pointer items-center justify-center invisible group-hover:visible\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-right size-3 text-sidebar-muted-foreground\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></div></div><span class=\"min-w-0 truncate font-sans font-semibold text-sidebar-muted-foreground\">dotfiles</span><span class=\"shrink-0 font-mono text-2xs text-sidebar-muted-foreground\">1</span></div><span aria-hidden=\"true\" class=\"w-9 shrink-0\"></span><button class=\"inline-flex px-2 items-center gap-2 whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none hover:bg-sidebar-accent font-450 [&amp;_svg]:shrink-0 text-xs justify-center rounded-sm size-6 shrink-0 text-sidebar-muted-foreground hover:text-foreground\" aria-label=\"Create workspace\" title=\"Create workspace\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-plus size-4\" aria-hidden=\"true\"><path d=\"M5 12h14\"></path><path d=\"M12 5v14\"></path></svg></button></div><button class=\"inline-flex px-2 items-center gap-2 whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none hover:bg-sidebar-accent font-450 [&amp;_svg]:shrink-0 text-xs justify-center rounded-sm absolute top-1/2 z-10 size-6 -translate-y-1/2 text-sidebar-muted-foreground opacity-0 group-hover/section-header:opacity-100 group-has-[:focus-visible]/section-header:opacity-100 group-has-[[data-popup-open]]/section-header:opacity-100 data-[popup-open]:opacity-100 hover:text-sidebar-foreground right-9\" aria-label=\"dotfiles actions\" type=\"button\" tabindex=\"0\" aria-haspopup=\"menu\" id=\"base-ui-_r_2k_\" aria-expanded=\"false\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-ellipsis size-3.5\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle></svg></button></div></div></div></div></div></div></section></div></div></div></div></div></div></div><div data-sidebar=\"footer\" class=\"shrink-0\"><div class=\"px-4 py-3 flex justify-between items-center border-t !border-sidebar-border\"><span class=\"flex items-center gap-1.5\"><button type=\"button\" aria-label=\"View pricing\" class=\"shrink-0 cursor-pointer rounded-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2\"><div class=\"inline-flex items-center px-2 py-0.5 text-xs focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 font-mono tracking-wider uppercase border-border bg-transparent border rounded-xs h-4 border-dashed !border-muted-foreground/80 text-muted-foreground/80\">FREE</div></button></span><div class=\"flex items-center gap-5 ml-auto\"><button class=\"text-sidebar-muted-foreground hover:text-foreground\" type=\"button\" tabindex=\"0\" data-base-ui-click-trigger=\"\" id=\"base-ui-_r_2q_\" aria-haspopup=\"dialog\" aria-expanded=\"false\" data-base-ui-tooltip-trigger=\"\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-circle-question-mark h-4 w-4\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3\"></path><path d=\"M12 17h.01\"></path></svg></button><button aria-label=\"Settings\" id=\"base-ui-_r_2t_\" data-base-ui-tooltip-trigger=\"\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-settings h-4 w-4 text-sidebar-muted-foreground hover:text-foreground\" aria-hidden=\"true\"><path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg></button></div></div></div><button type=\"button\" data-sidebar=\"rail\" tabindex=\"-1\" aria-label=\"Resize sidebar\" aria-orientation=\"vertical\" aria-valuemin=\"192\" aria-valuemax=\"480\" aria-valuenow=\"256\" role=\"separator\" class=\"absolute inset-y-0 right-0 z-30 w-2 translate-x-1/2 cursor-col-resize bg-transparent outline-none\"></button></div></aside><main data-sidebar=\"inset\" class=\"min-w-0 flex-1 h-full overflow-hidden\"><div class=\"h-full flex flex-col bg-background\"><div tabindex=\"-1\" class=\"w-full overflow-hidden rounded-md h-full flex flex-col bg-transparent\" cmdk-root=\"\"><label cmdk-label=\"\" for=\"radix-_r_3c_\" id=\"radix-_r_3b_\" style=\"position: absolute; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; border-width: 0px;\"></label><div class=\"relative pt-9\" data-tauri-drag-region=\"true\"><div class=\"mx-auto flex w-full max-w-4xl items-center justify-between px-8 pb-3 pt-1\"><div class=\"group flex min-w-0 items-center gap-2\"><span class=\"flex size-5 shrink-0 items-center justify-center\"><span class=\"relative flex overflow-hidden rounded-full shrink-0 size-4 text-muted-foreground\"><span class=\"flex h-full w-full items-center justify-center rounded-full bg-muted text-[10px] font-medium text-muted-foreground\">A</span></span></span><h1 class=\"min-w-0 truncate text-lg font-medium\">Ada Demo's Mac</h1></div><div class=\"flex shrink-0 items-center gap-3\"><button class=\"inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:shrink-0 bg-foreground text-background hover:bg-foreground/90 font-medium h-7 px-2.5 gap-1.5 rounded-md shrink-0 text-sm\">Create workspace</button></div></div><div class=\"border-b\"><div class=\"mx-auto flex w-full max-w-4xl items-center gap-2 px-8\"><div class=\"flex items-center bg-transparent min-w-0 flex-1 border-b-0 px-2\" cmdk-input-wrapper=\"\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-search mr-2 !h-4 !w-4 shrink-0 opacity-50\" aria-hidden=\"true\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg><input class=\"flex h-11 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground placeholder:text-sm disabled:cursor-not-allowed disabled:opacity-50\" placeholder=\"Search\" cmdk-input=\"\" autocomplete=\"off\" autocorrect=\"off\" spellcheck=\"false\" aria-autocomplete=\"list\" role=\"combobox\" aria-expanded=\"true\" aria-controls=\"radix-_r_3a_\" aria-labelledby=\"radix-_r_3b_\" id=\"radix-_r_3c_\" type=\"text\" value=\"\" style=\"\"></div><div class=\"flex shrink-0 items-center gap-1\"><button type=\"button\" tabindex=\"0\" aria-haspopup=\"menu\" id=\"base-ui-_r_3h_\" class=\"flex h-7 min-w-0 max-w-48 items-center gap-1.5 rounded-md px-2 text-sm text-muted-foreground outline-none hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[popup-open]:bg-accent data-[popup-open]:text-foreground active:scale-[0.98]\" aria-expanded=\"false\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-folder shrink-0 size-4\" aria-hidden=\"true\"><path d=\"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z\"></path></svg><span class=\"truncate\">In all projects</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down size-3 shrink-0\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></button><button type=\"button\" tabindex=\"0\" id=\"base-ui-_r_3j_\" role=\"combobox\" aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-label=\"Archived workspaces\" class=\"flex items-center rounded-md !border-input ring-offset-background hover:bg-accent focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[popup-open]:border-input data-[popup-open]:bg-accent [&amp;&gt;span]:flex-1 [&amp;&gt;span]:truncate [&amp;&gt;span]:text-left h-7 w-auto max-w-48 gap-1.5 border-0 bg-transparent px-2 py-0 text-sm text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[popup-open]:text-foreground active:scale-[0.98]\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-archive shrink-0 size-4\" aria-hidden=\"true\"><rect width=\"20\" height=\"5\" x=\"2\" y=\"3\" rx=\"1\"></rect><path d=\"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8\"></path><path d=\"M10 12h4\"></path></svg><span>Hiding archived</span><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-chevron-down size-3 shrink-0\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"></path></svg></button><input id=\"base-ui-_r_3j_-hidden-input\" tabindex=\"-1\" aria-hidden=\"true\" value=\"active\" style=\"clip-path: inset(50%); overflow: hidden; white-space: nowrap; border: 0px; padding: 0px; width: 1px; height: 1px; margin: -1px; position: fixed; top: 0px; left: 0px;\"></div></div></div></div><div class=\"overflow-x-hidden min-h-0 py-2 scroll-py-2 flex-1 max-h-none overflow-y-scroll mt-1 pt-0\" cmdk-list=\"\" role=\"listbox\" tabindex=\"-1\" aria-label=\"Suggestions\" id=\"radix-_r_3a_\" style=\"--cmdk-list-height: 334.0px;\"><div cmdk-list-sizer=\"\"><div class=\"mx-auto w-full max-w-4xl px-8 pt-2\"><div class=\"px-1 pt-0 pb-1.5 last:pb-0 text-foreground [&amp;_[cmdk-group-heading]]:px-2 [&amp;_[cmdk-group-heading]]:py-1.5 [&amp;_[cmdk-group-heading]]:text-xs [&amp;_[cmdk-group-heading]]:text-muted-foreground mb-4 overflow-visible [&amp;_[cmdk-group-heading]]:sticky [&amp;_[cmdk-group-heading]]:top-0 [&amp;_[cmdk-group-heading]]:z-10 [&amp;_[cmdk-group-heading]]:bg-background\" cmdk-group=\"\" role=\"presentation\" data-value=\"Today5\"><div cmdk-group-heading=\"\" aria-hidden=\"true\" id=\"radix-_r_3n_\"><span class=\"flex items-center gap-2 text-sm font-medium\">Today<span class=\"text-faint\">5</span></span></div><div cmdk-group-items=\"\" role=\"group\" aria-labelledby=\"radix-_r_3n_\"><div data-context-menu-trigger=\"\"><div class=\"relative flex gap-2 select-none items-center outline-none weight-medium data-[disabled=true]:pointer-events-none data-[selected='true']:bg-sidebar-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 group cursor-pointer rounded-md px-2 py-2.5 text-sm hover:bg-sidebar-accent data-[selected=true]:border-border\" id=\"radix-_r_3s_\" cmdk-item=\"\" role=\"option\" aria-disabled=\"false\" aria-selected=\"true\" data-disabled=\"false\" data-selected=\"true\" data-value=\"ws-osaka\"><div class=\"flex w-full min-w-0 items-start gap-2\"><div class=\"min-w-0 flex-1\"><div class=\"flex h-5 min-w-0 items-center gap-2\"><div class=\"flex min-w-0 flex-1 items-center gap-2.5\"><span class=\"shrink-0\" id=\"base-ui-_r_3u_\" data-base-ui-tooltip-trigger=\"\"><div class=\"h-4 w-4 shrink-0 rounded-sm flex items-center justify-center text-[10px] font-medium bg-muted text-muted-foreground\">T</div></span><span class=\"truncate min-w-0 font-450 text-muted-foreground\" title=\"Osaka\">Osaka</span></div><div class=\"grid shrink-0 items-center gap-x-2 grid-cols-[5.5rem_3rem]\"><div class=\"flex justify-end\"></div><div class=\"flex w-12 shrink-0 items-center justify-end\"><span class=\"text-xs text-muted-foreground\">8m</span></div></div></div></div></div></div></div><div data-context-menu-trigger=\"\"><div class=\"relative flex gap-2 select-none items-center outline-none weight-medium data-[disabled=true]:pointer-events-none data-[selected='true']:bg-sidebar-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 group cursor-pointer rounded-md px-2 py-2.5 text-sm hover:bg-sidebar-accent data-[selected=true]:border-border\" id=\"radix-_r_43_\" cmdk-item=\"\" role=\"option\" aria-disabled=\"false\" aria-selected=\"false\" data-disabled=\"false\" data-selected=\"false\" data-value=\"ws-tallinn\"><div class=\"flex w-full min-w-0 items-start gap-2\"><div class=\"min-w-0 flex-1\"><div class=\"flex h-5 min-w-0 items-center gap-2\"><div class=\"flex min-w-0 flex-1 items-center gap-2.5\"><span class=\"shrink-0\" id=\"base-ui-_r_45_\" data-base-ui-tooltip-trigger=\"\"><div class=\"h-4 w-4 shrink-0 rounded-sm flex items-center justify-center text-[10px] font-medium bg-muted text-muted-foreground\">T</div></span><span class=\"truncate min-w-0 font-semibold text-foreground\" title=\"Tallinn\">Tallinn</span></div><div class=\"grid shrink-0 items-center gap-x-2 grid-cols-[5.5rem_3rem]\"><div class=\"flex justify-end\"></div><div class=\"flex w-12 shrink-0 items-center justify-end\"><span class=\"text-xs text-muted-foreground\">11m</span></div></div></div></div></div></div></div><div data-context-menu-trigger=\"\"><div class=\"relative flex gap-2 select-none items-center outline-none weight-medium data-[disabled=true]:pointer-events-none data-[selected='true']:bg-sidebar-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 group cursor-pointer rounded-md px-2 py-2.5 text-sm hover:bg-sidebar-accent data-[selected=true]:border-border\" id=\"radix-_r_4a_\" cmdk-item=\"\" role=\"option\" aria-disabled=\"false\" aria-selected=\"false\" data-disabled=\"false\" data-selected=\"false\" data-value=\"ws-lisbon\"><div class=\"flex w-full min-w-0 items-start gap-2\"><div class=\"min-w-0 flex-1\"><div class=\"flex h-5 min-w-0 items-center gap-2\"><div class=\"flex min-w-0 flex-1 items-center gap-2.5\"><span class=\"shrink-0\" id=\"base-ui-_r_4c_\" data-base-ui-tooltip-trigger=\"\"><div class=\"h-4 w-4 shrink-0 rounded-sm flex items-center justify-center text-[10px] font-medium bg-muted text-muted-foreground\">T</div></span><span class=\"truncate min-w-0 font-450 text-muted-foreground\" title=\"Lisbon\">Lisbon</span></div><div class=\"grid shrink-0 items-center gap-x-2 grid-cols-[5.5rem_3rem]\"><div class=\"flex justify-end\"></div><div class=\"flex w-12 shrink-0 items-center justify-end\"><span class=\"text-xs text-muted-foreground\">17m</span></div></div></div></div></div></div></div><div data-context-menu-trigger=\"\"><div class=\"relative flex gap-2 select-none items-center outline-none weight-medium data-[disabled=true]:pointer-events-none data-[selected='true']:bg-sidebar-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 group cursor-pointer rounded-md px-2 py-2.5 text-sm hover:bg-sidebar-accent data-[selected=true]:border-border\" id=\"radix-_r_4h_\" cmdk-item=\"\" role=\"option\" aria-disabled=\"false\" aria-selected=\"false\" data-disabled=\"false\" data-selected=\"false\" data-value=\"ws-quito\"><div class=\"flex w-full min-w-0 items-start gap-2\"><div class=\"min-w-0 flex-1\"><div class=\"flex h-5 min-w-0 items-center gap-2\"><div class=\"flex min-w-0 flex-1 items-center gap-2.5\"><span class=\"shrink-0\" id=\"base-ui-_r_4j_\" data-base-ui-tooltip-trigger=\"\"><div class=\"h-4 w-4 shrink-0 rounded-sm flex items-center justify-center text-[10px] font-medium bg-muted text-muted-foreground\">T</div></span><span class=\"truncate min-w-0 font-semibold text-foreground\" title=\"Add search to settings\">Add search to settings</span></div><div class=\"grid shrink-0 items-center gap-x-2 grid-cols-[5.5rem_3rem]\"><div class=\"flex justify-end\"></div><div class=\"flex w-12 shrink-0 items-center justify-end\"><span class=\"text-xs text-muted-foreground\">2h</span></div></div></div></div></div></div></div><div data-context-menu-trigger=\"\"><div class=\"relative flex gap-2 select-none items-center outline-none weight-medium data-[disabled=true]:pointer-events-none data-[selected='true']:bg-sidebar-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 group cursor-pointer rounded-md px-2 py-2.5 text-sm hover:bg-sidebar-accent data-[selected=true]:border-border\" id=\"radix-_r_4o_\" cmdk-item=\"\" role=\"option\" aria-disabled=\"false\" aria-selected=\"false\" data-disabled=\"false\" data-selected=\"false\" data-value=\"ws-bergen\"><div class=\"flex w-full min-w-0 items-start gap-2\"><div class=\"min-w-0 flex-1\"><div class=\"flex h-5 min-w-0 items-center gap-2\"><div class=\"flex min-w-0 flex-1 items-center gap-2.5\"><span class=\"shrink-0\" id=\"base-ui-_r_4q_\" data-base-ui-tooltip-trigger=\"\"><div class=\"h-4 w-4 shrink-0 rounded-sm flex items-center justify-center text-[10px] font-medium bg-muted text-muted-foreground\">D</div></span><span class=\"truncate min-w-0 font-450 text-muted-foreground\" title=\"Bergen\">Bergen</span></div><div class=\"grid shrink-0 items-center gap-x-2 grid-cols-[5.5rem_3rem]\"><div class=\"flex justify-end\"></div><div class=\"flex w-12 shrink-0 items-center justify-end\"><span class=\"text-xs text-muted-foreground\">5h</span></div></div></div></div></div></div></div></div></div><div class=\"px-1 pt-0 pb-1.5 last:pb-0 text-foreground [&amp;_[cmdk-group-heading]]:px-2 [&amp;_[cmdk-group-heading]]:py-1.5 [&amp;_[cmdk-group-heading]]:text-xs [&amp;_[cmdk-group-heading]]:text-muted-foreground mb-4 overflow-visible [&amp;_[cmdk-group-heading]]:sticky [&amp;_[cmdk-group-heading]]:top-0 [&amp;_[cmdk-group-heading]]:z-10 [&amp;_[cmdk-group-heading]]:bg-background\" cmdk-group=\"\" role=\"presentation\" data-value=\"Yesterday1\"><div cmdk-group-heading=\"\" aria-hidden=\"true\" id=\"radix-_r_4s_\"><span class=\"flex items-center gap-2 text-sm font-medium\">Yesterday<span class=\"text-faint\">1</span></span></div><div cmdk-group-items=\"\" role=\"group\" aria-labelledby=\"radix-_r_4s_\"><div data-context-menu-trigger=\"\"><div class=\"relative flex gap-2 select-none items-center outline-none weight-medium data-[disabled=true]:pointer-events-none data-[selected='true']:bg-sidebar-accent data-[selected=true]:text-accent-foreground data-[disabled=true]:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 group cursor-pointer rounded-md px-2 py-2.5 text-sm hover:bg-sidebar-accent data-[selected=true]:border-border\" id=\"radix-_r_51_\" cmdk-item=\"\" role=\"option\" aria-disabled=\"false\" aria-selected=\"false\" data-disabled=\"false\" data-selected=\"false\" data-value=\"ws-accra\"><div class=\"flex w-full min-w-0 items-start gap-2\"><div class=\"min-w-0 flex-1\"><div class=\"flex h-5 min-w-0 items-center gap-2\"><div class=\"flex min-w-0 flex-1 items-center gap-2.5\"><span class=\"shrink-0\" id=\"base-ui-_r_53_\" data-base-ui-tooltip-trigger=\"\"><div class=\"h-4 w-4 shrink-0 rounded-sm flex items-center justify-center text-[10px] font-medium bg-muted text-muted-foreground\">T</div></span><span class=\"truncate min-w-0 font-450 text-muted-foreground\" title=\"Cursor pagination for /events\">Cursor pagination for /events</span></div><div class=\"grid shrink-0 items-center gap-x-2 grid-cols-[5.5rem_3rem]\"><div class=\"flex justify-end\"></div><div class=\"flex w-12 shrink-0 items-center justify-end\"><span class=\"text-xs text-muted-foreground\">1d</span></div></div></div></div></div></div></div></div></div></div></div></div></div></div></main></div></div></div></div>\n    \n\n<script type=\"text/javascript\" crossorigin=\"anonymous\" src=\"https://us-assets.i.posthog.com/array/phc_K0TwwGfxKutg3yItJ11BlEdt2gYJFtj8LHGiCcnQiGo/config.js\"></script><div id=\"rfd-announcement-_r_1j_\" aria-live=\"assertive\" aria-atomic=\"true\" style=\"position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); clip-path: inset(100%);\"></div><div id=\"rfd-hidden-text-_r_1j_-hidden-text-_r_1k_\" style=\"display: none;\">\n  Press space bar to start a drag.\n  When dragging you can use the arrow keys to move the item around and escape to cancel.\n  Some screen readers may require you to be in focus mode or to use your pass through key\n</div><div id=\"_r_9_\" data-base-ui-portal=\"\"><div tabindex=\"-1\" role=\"region\" aria-live=\"polite\" aria-atomic=\"false\" aria-relevant=\"additions text\" aria-label=\"Notifications alt+T\" data-conductor-toast-viewport=\"\" data-y-position=\"bottom\" data-x-position=\"right\" data-expanded=\"false\" data-keyboard-collapsed=\"false\" class=\"conductor-toast-viewport pointer-events-auto dark\" style=\"--conductor-toast-gap: 14px; --conductor-toast-default-duration: 5000ms; --conductor-toast-offset-top: 24px; --conductor-toast-offset-right: 24px; --conductor-toast-offset-bottom: 24px; --conductor-toast-offset-left: 24px; --conductor-toast-mobile-offset-top: 16px; --conductor-toast-mobile-offset-right: 16px; --conductor-toast-mobile-offset-bottom: 16px; --conductor-toast-mobile-offset-left: 16px;\"></div></div></body></html>"
+            }
+          },
+          "accessibility": {
+            "state": "not_requested"
+          },
+          "url": {
+            "state": "captured",
+            "value": {
+              "url": "http://conductor.localhost:4682/all-workspaces",
+              "origin": "http://conductor.localhost:4682",
+              "query_parameter_names": [],
+              "redacted": false
+            }
+          },
+          "history": {
+            "state": "not_requested"
+          },
+          "storage": {
+            "state": "not_requested"
+          }
+        },
+        "completeness": {
+          "status": "complete",
+          "equality_eligible": true,
+          "missing_sections": [],
+          "truncated_sections": []
+        },
+        "status": "completed",
+        "error": null
+      }
+    ],
+    "events": {
+      "retained": 48,
+      "dropped": 0,
+      "items": [
+        {
+          "sequence": 1,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 2,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 3,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 4,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 5,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 6,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 7,
+          "step_index": 1,
+          "kind": "console",
+          "level": "warning",
+          "text": "[oc-mock] refused plugin:http GET https://app.conductor.build/v1/me",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 8,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "[user-service] Failed to validate cached user data; keeping cached auth: NativeHttpTransportError: network disabled in the screenshot harness\n    at Adt (http://conductor.localhost:4682/assets/index-BGEQ8YjU.js:1227:14529)\n    at async bj (http://conductor.localhost:4682/assets/index-BGEQ8YjU.js:549:56815)\n    at async AVe.validateTokenUncached (http://conductor.localhost:4682/assets/index-BGEQ8YjU.js:549:75851)",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 9,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 10,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 11,
+          "step_index": 1,
+          "kind": "console",
+          "level": "log",
+          "text": "[sessions-service] Reset 2 working sessions to idle (startup, local only)",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 12,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+          "url": {
+            "url": "https://us-assets.i.posthog.com/array/phc_K0TwwGfxKutg3yItJ11BlEdt2gYJFtj8LHGiCcnQiGo/config.js",
+            "origin": "https://us-assets.i.posthog.com",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 13,
+          "step_index": 1,
+          "kind": "console",
+          "level": "warning",
+          "text": "[oc-mock] refused plugin:http GET https://app.conductor.build/api/me/provider-api-keys?credentials=all&include=bedrock_credentials,claude_oauth_auth,claude_user_managed,codex_chatgpt_auth,codex_chatgpt_oauth,codex_user_managed,cursor_login_auth,openrouter_api_key,vercel_ai_gateway_api_key&organizationId=org_demo_0001",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 14,
+          "step_index": 1,
+          "kind": "console",
+          "level": "warning",
+          "text": "[oc-mock] refused plugin:http GET https://statuspage.incident.io/conductor/api/v1/summary",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 15,
+          "step_index": 1,
+          "kind": "console",
+          "level": "warning",
+          "text": "[oc-mock] refused plugin:http GET https://api.conductor.build/announcements/current?appVersion=0.87.6",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 16,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Unhandled promise rejection: TypeError: Cannot destructure property 'update' of '(intermediate value)' as it is null.\n    at Aaa (http://conductor.localhost:4682/assets/renderApp-D_fmY7hW.js:2898:45193)\n    --- promise created at ---\nError\n    at Promise.fireAndForget (http://conductor.localhost:4682/assets/fireAndForget-BNlOYQqH.js:5:143)\n    at http://conductor.localhost:4682/assets/renderApp-D_fmY7hW.js:2935:97749",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 17,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 18,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 19,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 20,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 21,
+          "step_index": 1,
+          "kind": "console",
+          "level": "warning",
+          "text": "Primary WASM load failed from https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.73.0/dist/dotlottie-player.wasm: blocked by screenshot harness: cdn.jsdelivr.net",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 22,
+          "step_index": 1,
+          "kind": "console",
+          "level": "warning",
+          "text": "Attempting to load WASM from backup URL: https://unpkg.com/@lottiefiles/dotlottie-web@0.73.0/dist/dotlottie-player.wasm",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 23,
+          "step_index": 1,
+          "kind": "console",
+          "level": "warning",
+          "text": "Backup WASM load failed from https://unpkg.com/@lottiefiles/dotlottie-web@0.73.0/dist/dotlottie-player.wasm: blocked by screenshot harness: unpkg.com",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 24,
+          "step_index": 1,
+          "kind": "console",
+          "level": "warning",
+          "text": "Retrying WASM load with buffered instantiation",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 25,
+          "step_index": 1,
+          "kind": "console",
+          "level": "warning",
+          "text": "Buffered WASM load from https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.73.0/dist/dotlottie-player.wasm failed: blocked by screenshot harness: cdn.jsdelivr.net",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 26,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Primary WASM URL failed: blocked by screenshot harness: cdn.jsdelivr.net",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 27,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 28,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 29,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Backup WASM URL failed: blocked by screenshot harness: unpkg.com",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 30,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 31,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 32,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Buffered fallback failed: blocked by screenshot harness: unpkg.com",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 33,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 34,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 35,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "[dotlottie-web] Initialization failed: Error: WASM loading failed from all sources.\n    at http://conductor.localhost:4682/assets/renderApp-D_fmY7hW.js:1582:234725",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 36,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 37,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 38,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+          "url": {
+            "url": "https://github.com/ada-demo.png?size=64",
+            "origin": "https://github.com",
+            "query_parameter_names": [
+              "size"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 39,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+          "url": {
+            "url": "https://github.com/tide-labs.png?size=64",
+            "origin": "https://github.com",
+            "query_parameter_names": [
+              "size"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 40,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 41,
+          "step_index": 1,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 42,
+          "step_index": 1,
+          "kind": "console",
+          "level": "warning",
+          "text": "[oc-mock] refused plugin:http GET https://app.conductor.build/api/me/provider-api-keys?credentials=all&include=bedrock_credentials,claude_oauth_auth,claude_user_managed,codex_chatgpt_auth,codex_chatgpt_oauth,codex_user_managed,cursor_login_auth,openrouter_api_key,vercel_ai_gateway_api_key&organizationId=org_demo_0001",
+          "url": {
+            "url": "http://conductor.localhost:4682/assets/index-BGEQ8YjU.js",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 43,
+          "step_index": 2,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 44,
+          "step_index": 2,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 45,
+          "step_index": 2,
+          "kind": "console",
+          "level": "error",
+          "text": "Connecting to 'https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0' violates the following Content Security Policy directive: \"connect-src 'self' data: blob:\". The action has been blocked.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 46,
+          "step_index": 2,
+          "kind": "console",
+          "level": "error",
+          "text": "Fetch API cannot load https://o4511741957111808.ingest.us.sentry.io/api/4511791983820800/envelope/?sentry_version=7&sentry_key=21b8b37d86ff05f5ccbc8bd8beb394f7&sentry_client=sentry.javascript.react%2F10.69.0. Refused to connect because it violates the document's Content Security Policy.",
+          "url": {
+            "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local",
+            "origin": "http://conductor.localhost:4682",
+            "query_parameter_names": [
+              "oc_scenario",
+              "oc_theme",
+              "oc_org"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 47,
+          "step_index": 2,
+          "kind": "console",
+          "level": "error",
+          "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+          "url": {
+            "url": "https://github.com/tide-labs.png?size=64",
+            "origin": "https://github.com",
+            "query_parameter_names": [
+              "size"
+            ],
+            "redacted": false
+          }
+        },
+        {
+          "sequence": 48,
+          "step_index": 2,
+          "kind": "console",
+          "level": "error",
+          "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+          "url": {
+            "url": "https://github.com/ada-demo.png?size=64",
+            "origin": "https://github.com",
+            "query_parameter_names": [
+              "size"
+            ],
+            "redacted": false
+          }
+        }
+      ],
+      "omissions": {
+        "by_kind": [],
+        "network_transactions": [],
+        "network_transaction_range": null
+      }
+    },
+    "completeness": {
+      "status": "complete",
+      "equality_eligible": true,
+      "missing_sections": [],
+      "truncated_sections": []
+    },
+    "limitations": [
+      "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+      "Network content is retained only when selected; Playwright response-body bytes are API results and are not guaranteed to match wire bytes.",
+      "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+      "Network content reads settle within 5 seconds each and the observer does not request bodies from unfinished responses.",
+      "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+      "Storage values are hashed only after declared-secret redaction."
+    ]
+  },
+  "confidence": "observed",
+  "authority": "controlled-replay",
+  "environment": {
+    "id": "Chromium@155.0.8059.84",
+    "platform": "unknown",
+    "architecture": "unknown",
+    "isolation": "process"
+  },
+  "limitations": [
+    "Artifact identity is unavailable for this observation.",
+    "Event sequence records provider receipt order; simultaneous browser causality is not inferred.",
+    "Network content is retained only when selected; Playwright response-body bytes are API results and are not guaranteed to match wire bytes.",
+    "Request bytes are limited to what Playwright exposes; not_exposed does not establish body absence or multipart file coverage.",
+    "Network content reads settle within 5 seconds each and the observer does not request bodies from unfinished responses.",
+    "Playwright scenario events do not expose request initiator stacks; receipt order does not prove causality.",
+    "Storage values are hashed only after declared-secret redaction.",
+    "Browser host platform and architecture were not observed."
+  ],
+  "relationship_coverage": null,
+  "locations": [],
+  "evidence_links": []
+}

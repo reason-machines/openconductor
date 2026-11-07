@@ -243,10 +243,7 @@ export const flows = [
     },
   },
   {
-    // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
-    // active result. Home leaves the workspace for the wordmark-and-cards
-    // Home screen (Conductor opens its /all-workspaces list here; ours follows
-    // Sven's brief for #483), and searching the workspace's name brings it back.
+    // Home opens the workspace list; searching the workspace's name brings it back.
     name: "command-palette",
     async run(wd) {
       const META = "\uE03D";
@@ -284,12 +281,12 @@ export const flows = [
       await run("Home", "Home");
       const home = () =>
         wd.execute(
-          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), workspace: !!document.querySelector('.workspace') };",
+          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), search: !!document.querySelector('.allws input[placeholder=\"Search\"]'), activeHome: !!document.querySelector('.sb-row[data-active=\"true\"][title^=\"Home\"]'), workspace: !!document.querySelector('.workspace') };",
           [],
         );
-      await wd.waitFor("the Home screen with its entry cards", async () => {
+      await wd.waitFor("the Home workspace list with search and active sidebar Home", async () => {
         const h = await home();
-        return h.cards === 3 && !h.list && !h.workspace;
+        return h.cards === 0 && h.list && h.search && h.activeHome && !h.workspace;
       }).catch(async (e) => {
         throw new Error(`${e.message}; saw ${JSON.stringify(await home())}`);
       });
