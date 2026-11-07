@@ -220,9 +220,11 @@ function DefaultModelRows({ settings, setDefault }: ReasonDefaultProps) {
   const [models, setModels] = useState<ReasonModelOption[]>([]);
   // Asked again once the executable path settles (it saves per keystroke): the list comes from that `reason`.
   const exe = settings.reason_executable_path ?? null;
+  const workspace = settings.reason?.workspace ?? null;
   const first = useRef(true);
   useEffect(() => {
     let live = true;
+    setModels([]);
     const fresh = !first.current;
     first.current = false;
     const timer = setTimeout(() => void reasonModels(fresh).then((m) => live && setModels(m)), fresh ? 400 : 0);
@@ -230,7 +232,7 @@ function DefaultModelRows({ settings, setDefault }: ReasonDefaultProps) {
       live = false;
       clearTimeout(timer);
     };
-  }, [exe]);
+  }, [exe, workspace]);
   const model = settings.reason?.model ?? "";
   const effort = settings.reason?.reasoning_effort ?? "";
   const listed = model === "" || models.some((m) => m.value === model);

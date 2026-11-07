@@ -157,9 +157,9 @@ try {
   const seeded = await runAsync(
     `const done = arguments[arguments.length - 1];
      const invoke = window.__TAURI_INTERNALS__.invoke;
-     // The same Settings default model as reason-chat.e2e.mjs, so the chat runs Reason.
+     // The same explicit Reason workspace and default model as reason-chat.e2e.mjs.
      invoke("get_settings")
-       .then((s) => invoke("update_settings", { settings: { ...s, models: { ...s.models, default: "opus-5-5-1m" } } }))
+       .then((s) => invoke("update_settings", { settings: { ...s, reason: { ...s.reason, workspace: "ws-a" }, models: { ...s.models, default: "opus-5-5-1m" } } }))
        .then(() => invoke("add_repository", { path: arguments[0] }))
        .then((repo) => invoke("create_workspace", { repositoryId: repo.id, branchName: "lisbon", directoryName: "lisbon", baseBranch: null, existingBranch: false, prNumber: null }))
        .then((created) => done({ workspace: created.workspace }), (err) => done({ error: String(err) }));`,
