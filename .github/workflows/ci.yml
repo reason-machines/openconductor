@@ -28,6 +28,8 @@ jobs:
         run: npm run lint:colors
       - name: Frontend unit tests
         run: node --test "src/**/*.test.ts"
+      - name: Native QA isolation verifier tests (no GUI)
+        run: python3 -m unittest tools/test_native_qa.py -v
       - run: npm run build
 
   app:
