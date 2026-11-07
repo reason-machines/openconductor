@@ -1,0 +1,82 @@
+[
+  {
+    "side": "ref",
+    "theme": "dark",
+    "geometry": {
+      "width": 120,
+      "height": 32,
+      "fontSize": "14px",
+      "lineHeight": "20px"
+    },
+    "updatedOrder": [
+      "osaka",
+      "lisbon",
+      "quito"
+    ],
+    "createdOrder": [
+      "lisbon",
+      "quito",
+      "osaka"
+    ]
+  },
+  {
+    "side": "oc",
+    "theme": "dark",
+    "geometry": {
+      "width": 120,
+      "height": 32,
+      "fontSize": "14px",
+      "lineHeight": "20px"
+    },
+    "updatedOrder": [
+      "osaka",
+      "lisbon",
+      "quito"
+    ],
+    "createdOrder": [
+      "lisbon",
+      "quito",
+      "osaka"
+    ]
+  },
+  {
+    "side": "ref",
+    "theme": "light",
+    "geometry": {
+      "width": 120,
+      "height": 32,
+      "fontSize": "14px",
+      "lineHeight": "20px"
+    },
+    "updatedOrder": [
+      "osaka",
+      "lisbon",
+      "quito"
+    ],
+    "createdOrder": [
+      "lisbon",
+      "quito",
+      "osaka"
+    ]
+  },
+  {
+    "side": "oc",
+    "theme": "light",
+    "geometry": {
+      "width": 120,
+      "height": 32,
+      "fontSize": "14px",
+      "lineHeight": "20px"
+    },
+    "updatedOrder": [
+      "osaka",
+      "lisbon",
+      "quito"
+    ],
+    "createdOrder": [
+      "lisbon",
+      "quito",
+      "osaka"
+    ]
+  }
+]

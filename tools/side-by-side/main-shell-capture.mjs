@@ -20,7 +20,7 @@ for (const state of (process.env.SHELL_STATES ?? "home,repo-menu").split(",")) {
         ...(state === "repo-menu" ? [{ step_id: "menu", action: "click", locator: { kind: "css", selector: '[aria-label="tide-web actions"]' }, timeout_ms: 5000 }] : []),
         ...(state === "sidebar-sort" ? [
           { step_id: "header-menu", action: "click", locator: { kind: "css", selector: 'button[aria-label="My workspaces actions"]' }, timeout_ms: 5000 },
-          { step_id: "sort-menu", action: "click", locator: { kind: "css", selector: '[role="menuitem"]:text-is("Sort by")' }, timeout_ms: 5000 },
+          { step_id: "sort-menu", action: "click", locator: { kind: "css", selector: '[role="menuitem"]:has-text("Sort by")' }, timeout_ms: 5000 },
         ] : []),
         ...(state === "passport" ? [{ step_id: "passport", action: "click", locator: { kind: "css", selector: 'button:has-text("cities visited")' }, timeout_ms: 5000 }] : []),
         { step_id: "final", action: "wait_for_timeout", duration_ms: 500 },
@@ -39,7 +39,10 @@ for (const state of (process.env.SHELL_STATES ?? "home,repo-menu").split(",")) {
     });
     const ev = JSON.parse(raw);
     const art = ev.normalized_result?.steps?.at(-1)?.artifacts;
-    if (art?.screenshot?.state !== "captured") throw new Error(`${name}: screenshot not captured`);
+    if (art?.screenshot?.state !== "captured") {
+      fs.writeFileSync(path.join(out, `${name}.failure.json`), JSON.stringify(ev, null, 2));
+      throw new Error(`${name}: screenshot not captured; inspect ${name}.failure.json`);
+    }
     const png = Buffer.from(art.screenshot.value.data_base64, "base64");
     fs.writeFileSync(path.join(out, `${name}.png`), png);
     captures[name] = { evidence_id: ev.evidence_id, sha256: createHash("sha256").update(png).digest("hex"), dom: art.dom, url: art.url };
