@@ -1,0 +1,113 @@
+{
+  "viewport": {
+    "width": 1280,
+    "height": 820
+  },
+  "captures": {
+    "dark": {
+      "evidence_id": "ev_6996f662601daf57e1aa6e96746851ad26a2aced25717b6b8a483f75a7d49b89"
+    },
+    "light": {
+      "evidence_id": "ev_5abd705b0ffa23dd7f426462e602d9b5bb975f093abe45cc6bdd8969e6b8523e"
+    }
+  },
+  "geometry": {
+    "heading": {
+      "rect": {
+        "x": 289,
+        "y": 627,
+        "width": 227.78125,
+        "height": 20,
+        "top": 627,
+        "right": 516.78125,
+        "bottom": 647,
+        "left": 289
+      },
+      "class": "text-sm font-medium",
+      "font": "",
+      "fontWeight": "500",
+      "lineHeight": "20px",
+      "padding": "0px",
+      "gap": "normal",
+      "text": "Do you want to run this command?"
+    },
+    "card": {
+      "rect": {
+        "x": 273,
+        "y": 615,
+        "width": 648,
+        "height": 188,
+        "top": 615,
+        "right": 921,
+        "bottom": 803,
+        "left": 273
+      },
+      "class": "overflow-y-auto rounded-lg bg-composer-background px-4 py-3",
+      "font": "",
+      "fontWeight": "400",
+      "lineHeight": "20px",
+      "padding": "12px 16px",
+      "gap": "normal",
+      "text": "Do you want to run this command?\nRun the rate limit tests\npnpm test src/middleware/rate-limit.test.ts\nYes\nNo\n⌫"
+    },
+    "content": {
+      "rect": {
+        "x": 289,
+        "y": 627,
+        "width": 616,
+        "height": 164,
+        "top": 627,
+        "right": 905,
+        "bottom": 791,
+        "left": 289
+      },
+      "class": "flex flex-col gap-4",
+      "font": "",
+      "fontWeight": "400",
+      "lineHeight": "20px",
+      "padding": "0px",
+      "gap": "16px",
+      "text": "Do you want to run this command?\nRun the rate limit tests\npnpm test src/middleware/rate-limit.test.ts\nYes\nNo\n⌫"
+    },
+    "buttons": [
+      {
+        "rect": {
+          "x": 289,
+          "y": 711,
+          "width": 616,
+          "height": 36,
+          "top": 711,
+          "right": 905,
+          "bottom": 747,
+          "left": 289
+        },
+        "class": "inline-flex items-center whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 border !border-input bg-background hover:bg-accent hover:text-accent-foreground font-450 gap-1.5 rounded-md h-9 justify-between px-4 text-sm",
+        "font": "",
+        "fontWeight": "450",
+        "lineHeight": "20px",
+        "padding": "0px 16px",
+        "gap": "6px",
+        "text": "Yes"
+      },
+      {
+        "rect": {
+          "x": 289,
+          "y": 755,
+          "width": 616,
+          "height": 36,
+          "top": 755,
+          "right": 905,
+          "bottom": 791,
+          "left": 289
+        },
+        "class": "inline-flex items-center whitespace-nowrap ring-offset-background transition-transform duration-150 ease-out will-change-transform active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:outline-none focus-visible:ring-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 border !border-input bg-background hover:bg-accent hover:text-accent-foreground font-450 gap-1.5 rounded-md h-9 justify-between px-4 text-sm",
+        "font": "",
+        "fontWeight": "450",
+        "lineHeight": "20px",
+        "padding": "0px 16px",
+        "gap": "6px",
+        "text": "No\n⌫"
+      }
+    ]
+  }
+}

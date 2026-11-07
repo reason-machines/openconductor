@@ -56,3 +56,23 @@ REA=/path/to/rea python3 tools/settings/review.py
 The command runs REA at channel tolerances 0 and 24, writes pairs and a portable HTML review into `evidence/settings/local-pages`, and creates `.oc-tmp/settings-review.html` for `app_show`. It does not edit the aggregate UI map. Scenario files and raw DOM captures stay in `.oc-tmp/settings-captures`.
 
 A low changed-pixel ratio at tolerance 24 does not prove exact colours, matching backend state, or functional completeness. Inspect both screenshots and their limitations.
+
+## Check the terminal font slider
+
+Build first. Start one of these foreground commands through the preview tool on port 51749. Each command exits after its browser checks and REA capture; stop that preview before starting the next lane.
+
+Reference, using the verified extracted frontend and the small `tools/screens` dependencies:
+
+```bash
+PORT=51749 DIST=/path/to/verified/conductor/dist SLIDER_LANE=reference \
+  node --input-type=module -e "await import('./tools/settings/reference.mjs'); await import('./tools/settings/check-terminal-slider.mjs').then(()=>process.exit(0),e=>{console.error(e);process.exit(1)})"
+```
+
+Built OpenConductor, with invented IPC data:
+
+```bash
+PORT=51749 SLIDER_LANE=after \
+  node --input-type=module -e "await import('./tools/settings/fixture.mjs'); await import('./tools/settings/check-terminal-slider.mjs').then(()=>process.exit(0),e=>{console.error(e);process.exit(1)})"
+```
+
+Set `REA` to the installed REA executable if it is not `/home/runner/rea/node_modules/.bin/rea`. `SLIDER_OUT` changes the evidence directory. The driver checks Page Up/Down, Home/End, arrow steps, bounds, the 6px track, the opaque 16px thumb and in-memory IPC updates. Before the correction, `SLIDER_LANE=before` records the same check failing on Page Up. This does not test native rendering, real persistence or authentication.

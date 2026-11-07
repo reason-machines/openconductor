@@ -3,7 +3,7 @@ import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
 import type { AppInfo } from "../backend";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlayIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, FolderPlusIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlayIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { HelpMenu } from "./HelpMenu";
@@ -20,7 +20,9 @@ import { newId } from "../state/names";
 import { SectionDialog, type SectionDialogMode } from "./SectionDialog";
 import { useSidebarDrag, type WorkspaceRef } from "./useSidebarDrag";
 import { DROP_ATTR, reorderIndicator, reorderToIndex, workspaceDropAction, type DropTarget } from "../state/navigationSections";
-import { ProjectFilterSubmenu } from "./home/ProjectFilterSubmenu";
+import { ProjectFilterSubmenu, SidebarRadioSubmenu } from "./home/ProjectFilterSubmenu";
+import { SIDEBAR_SORT_OPTIONS } from "../home/sidebarSort";
+import { setAppPref } from "../settings/appPrefs";
 import { useRepoFilter } from "../home/useRepoFilter";
 import { useDashboardEnabled } from "../home/useDashboardEnabled";
 import { filterRepoGroups } from "../home/repoFilter";
@@ -459,9 +461,11 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
             </ContextMenu>
           )}
           <HeaderMenu label="My workspaces" className="sb-section-menu" contextOpen={!!myContext} items={[
-            { label: "Add project…", onSelect: () => requestAnimationFrame(() => setAddMenuOpen(true)) },
-            { label: "New section…", onSelect: () => setSectionDialog({ mode: "create" }) },
             { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
+            { key: "sort-by", render: (close) => <SidebarRadioSubmenu label="Sort by" options={SIDEBAR_SORT_OPTIONS} selected={state.sidebarSort ?? "updated"} onChange={(value) => { void setAppPref({ key: "sidebar_sort_by", value }).catch((err) => console.error("Could not save sidebar sort", err)); }} onClose={close} /> },
+            "-",
+            { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => setSectionDialog({ mode: "create" }) },
+            { label: "Add project…", icon: <FolderPlusIcon />, onSelect: () => requestAnimationFrame(() => setAddMenuOpen(true)) },
           ]} />
           <span ref={addMenuAnchor} className="sb-add-menu-anchor" aria-hidden />
           <SidebarAddRepositoryMenu
@@ -532,7 +536,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
             {/* An unfolded group with no rows is empty, with no placeholder line (Conductor's `Dra`). */}
             <RepoWorkspaceList repoId={repo.id} collapsed={folded} isEmpty={repo.workspaces.length === 0} empty={null}>
               <SidebarPresence>
-                {repoGroupWorkspaces(repo.workspaces, sectioned).map((ws, i) => (
+                {repoGroupWorkspaces(repo.workspaces, sectioned, state.sidebarSort).map((ws, i) => (
                   <SidebarRowMotion key={ws.id} listIndex={i}>
                     <SidebarWorkspaceRow workspace={ws} targetBranch={repo.defaultBranch} hasRemote={Boolean(repo.remote)} {...rows.rowProps(repo.id, ws)} />
                   </SidebarRowMotion>

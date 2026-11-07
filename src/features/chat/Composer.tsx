@@ -146,7 +146,7 @@ export function Composer({
 
   function pickFile(file: FileMatch) {
     const box = inputRef.current;
-    if (!box) return;
+    if (!box || box.composing()) return;
     const current = box.selection();
     const range = fileMentionQuery(current.text, current.start, current.end);
     if (!range || `${range.start}:${range.query}` !== mentionKey) return;
@@ -155,12 +155,14 @@ export function Composer({
   }
 
   function pickCommand(command: SlashCommand) {
+    if (inputRef.current?.composing()) return;
     const next = completeInsert(selection.text, command.insert ?? `/${command.name}`);
     inputRef.current?.replaceText(next);
     setSlashIndex(0);
   }
 
   function submit(opposite: boolean) {
+    if (inputRef.current?.composing()) return;
     const text = composerPrompt(draft).trim();
     if (!text && !hasAttachments) return;
     if (text.startsWith("/") && onCommand?.(text)) {

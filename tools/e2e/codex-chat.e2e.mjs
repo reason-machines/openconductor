@@ -169,6 +169,9 @@ async function send(text) {
 
 /** Picks Codex in the composer's model picker (Conductor's picker picks the agent too). */
 async function pickCodex(shot) {
+  await waitFor("the composer model picker", () =>
+    run("const b = document.querySelector(\"[data-testid='composer-model-button']\"); return !!b && !b.disabled;"),
+  );
   await run("document.querySelector(\"[data-testid='composer-model-button']\").click();");
   await waitFor("Codex in the model picker", () =>
     run("return [...document.querySelectorAll('.oc-model-menu .oc-model-item')].some((b) => b.textContent.trim() === 'Codex') || null;"),

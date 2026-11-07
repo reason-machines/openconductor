@@ -1,0 +1,91 @@
+{
+  "main": "f16d9338ae254955baca8f67baee1652eeb055af",
+  "scope": "real ToolApproval component, synthetic permission input, no agent or native runtime",
+  "captures": {
+    "dark": {
+      "evidence_id": "ev_0a8482c90921dff97b56ee8e43be11e7ca3918d4f941177590f9eec1c824c1aa"
+    },
+    "light": {
+      "evidence_id": "ev_512862ad2f2bad6c63fcbb333e284e5f8057c66c973607ca92e56f7c4218be60"
+    }
+  },
+  "checks": [
+    "Yes returns allow",
+    "No returns deny",
+    "Enter returns allow",
+    "Backspace returns deny",
+    "No page errors"
+  ],
+  "geometry": {
+    "card": {
+      "rect": {
+        "x": 25,
+        "y": 25,
+        "width": 648,
+        "height": 188,
+        "top": 25,
+        "right": 673,
+        "bottom": 213,
+        "left": 25
+      },
+      "fontWeight": "400",
+      "lineHeight": "normal",
+      "padding": "12px 16px",
+      "gap": "16px",
+      "text": "Do you want to run this command?\nRun the rate limit tests\npnpm test src/middleware/rate-limit.test.ts\nYes\n↵\nNo\n⌫"
+    },
+    "heading": {
+      "rect": {
+        "x": 41,
+        "y": 37,
+        "width": 616,
+        "height": 20,
+        "top": 37,
+        "right": 657,
+        "bottom": 57,
+        "left": 41
+      },
+      "fontWeight": "500",
+      "lineHeight": "20px",
+      "padding": "0px",
+      "gap": "normal",
+      "text": "Do you want to run this command?"
+    },
+    "buttons": [
+      {
+        "rect": {
+          "x": 41,
+          "y": 121,
+          "width": 616,
+          "height": 36,
+          "top": 121,
+          "right": 657,
+          "bottom": 157,
+          "left": 41
+        },
+        "fontWeight": "400",
+        "lineHeight": "normal",
+        "padding": "6px 16px",
+        "gap": "10px",
+        "text": "Yes\n↵"
+      },
+      {
+        "rect": {
+          "x": 41,
+          "y": 165,
+          "width": 616,
+          "height": 36,
+          "top": 165,
+          "right": 657,
+          "bottom": 201,
+          "left": 41
+        },
+        "fontWeight": "400",
+        "lineHeight": "normal",
+        "padding": "6px 16px",
+        "gap": "10px",
+        "text": "No\n⌫"
+      }
+    ]
+  }
+}

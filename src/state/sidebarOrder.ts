@@ -7,7 +7,7 @@
 // leaves both (renderApp `nra`: Pinned and My workspaces filter out
 // `sectionedWorkspaceIds`).
 import type { AppState, Repo, Selection, Workspace } from "./types.ts";
-import { byRecentActivity } from "../components/sidebarLabel.ts";
+import { sortSidebarWorkspaces, type SidebarSort } from "../home/sidebarSort.ts";
 import { projectSections, type NavSection } from "./navigationSections.ts";
 
 export interface SidebarEntry {
@@ -48,9 +48,9 @@ export function pinnedEntries(state: AppState, sectioned: ReadonlySet<string> = 
     .sort((a, b) => (a.workspace.pinnedAt ?? 0) - (b.workspace.pinnedAt ?? 0));
 }
 
-/** A repository group's rows: unpinned workspaces outside sections, newest activity first. */
-export function repoGroupWorkspaces(workspaces: readonly Workspace[], sectioned: ReadonlySet<string> = new Set()): Workspace[] {
-  return byRecentActivity(workspaces.filter((w) => !isPinned(w) && !sectioned.has(w.id)));
+/** Unpinned workspaces outside sections, in the selected timestamp order. */
+export function repoGroupWorkspaces(workspaces: readonly Workspace[], sectioned: ReadonlySet<string> = new Set(), sort: SidebarSort = "updated"): Workspace[] {
+  return sortSidebarWorkspaces(workspaces.filter((w) => !isPinned(w) && !sectioned.has(w.id)), sort);
 }
 
 /**
@@ -87,7 +87,7 @@ export function sidebarEntries(
   const pinned = visibleOnly && pinnedCollapsed ? [] : pinnedEntries(state, sectioned);
   const inSections = sections.flatMap((s) => (visibleOnly && collapsedSections.has(s.section.id) ? [] : s.entries));
   const grouped = state.repos.flatMap((r) =>
-    visibleOnly && isRepoCollapsed(r, state.selection, sectioned) ? [] : repoGroupWorkspaces(r.workspaces, sectioned).map((workspace) => ({ repoId: r.id, workspace })),
+    visibleOnly && isRepoCollapsed(r, state.selection, sectioned) ? [] : repoGroupWorkspaces(r.workspaces, sectioned, state.sidebarSort).map((workspace) => ({ repoId: r.id, workspace })),
   );
   return [...pinned, ...inSections, ...grouped];
 }

@@ -77,3 +77,13 @@ Full E2E run [42305622950](https://github.com/reason-machines/openconductor/acti
 Pending main runs `42307119712` (`1dc803d4`), `42307840501` (`24b32f6b`), `42308208468` (`4c1b638d`), and `42308217859` (`2ee7b92f`) were cancelled when newer pushes replaced GitHub's pending concurrency slot. Every cancelled run is recorded as non-green, not skipped from the streak. Run `42308581600` on `5ed536a758fba3bb1aaf8c49dc8b17544df27e13` is the latest pending main run. No manual main dispatch was added.
 
 The green notification for `f3854246` belongs to an older full E2E run, before #714. The failure notification for `623b0936` also predates #714 and failed at the empty-chat wait before picker selection. Neither notification establishes a post-#714 green run.
+
+## Codex new-chat picker readiness
+
+Main E2E [42312516137](https://github.com/reason-machines/openconductor/actions/runs/42312516137), exact head `f16d9338ae254955baca8f67baee1652eeb055af`, failed in its Codex job after Settings back and New chat. The Reason job passed the same Codex suite. The failing driver saw the empty-chat text but dereferenced a missing `composer-model-button`.
+
+`ChatModelPicker` returns no control until the new chat has a saved choice or its asynchronous `getSettings()` fallback resolves. The empty transcript is therefore not picker readiness. `pickCodex()` now waits for the model button to exist and be enabled before clicking. Every existing menu, chip, access, authentication, transport, and reply assertion remains unchanged. No application or shared WebDriver code changed.
+
+A controlled browser fixture mounted the real `ChatModelPicker`, held its settings IPC response, and executed the actual driver function extracted without changes from the script. Before the fix it reproduced `Cannot read properties of null (reading 'click')` while empty-chat text was present. After the fix, six fresh-chat probes passed after releasing settings; the Codex chip and access menu were asserted. With settings never released, the corrected driver failed at the named picker readiness timeout. This is browser-component evidence, not a complete built-app run or five-pass relaunch proof.
+
+Local checks passed: `node --check tools/e2e/codex-chat.e2e.mjs`, all six tests in `node --test tests/e2e/webdriver.test.mjs`, `npm run typecheck`, and `git diff --check`. Built-app CI on the corrective head remains pending. No UI changed, so no new app screenshot is required. Full-main streak remains **0/10**; native macOS, real authentication, and real IME composition remain separate gaps.

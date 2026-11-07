@@ -1,0 +1,11 @@
+{
+  "evidence_id": "ev_f21aece92238b6bf1d63e1b52fe85462e7bce7f9f9fac2e6c9af470be2bb1942",
+  "source": {
+    "commit": "d29a076f6725de7cc9ae92ed6596839525306bf6",
+    "sourceHash": "028800c85b6c08ccdafc4be6c072069337e4abfc7cc6e9d4a9c07d7f6d1a1cf4"
+  },
+  "url": "http://localhost:51749/settings/user/appearance?oc_scenario=populated&oc_theme=dark",
+  "screenshot": "before.png",
+  "sha256": "ab6b9d384bdfacc059062dda0fd5ea32aef500cdc47112e9e2926b7f62615bad",
+  "issues": []
+}

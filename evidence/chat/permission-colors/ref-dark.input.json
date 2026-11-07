@@ -1,0 +1,75 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://conductor.localhost:4537/?oc_scenario=needs-permission&oc_theme=dark"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark",
+    "locale": "en-US",
+    "timezone": "UTC"
+  },
+  "actions": [
+    {
+      "step_id": "load",
+      "action": "wait_for_timeout",
+      "duration_ms": 2500
+    },
+    {
+      "step_id": "click0",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "text=tide-api"
+      },
+      "timeout_ms": 10000
+    },
+    {
+      "step_id": "settle0",
+      "action": "wait_for_timeout",
+      "duration_ms": 500
+    },
+    {
+      "step_id": "click1",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "text=Ada/rate limit headers"
+      },
+      "timeout_ms": 10000
+    },
+    {
+      "step_id": "settle1",
+      "action": "wait_for_timeout",
+      "duration_ms": 500
+    },
+    {
+      "step_id": "approval",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "text=Do you want to run this command?"
+      },
+      "state": "visible",
+      "timeout_ms": 10000
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "url"
+    ],
+    "events": [
+      "console",
+      "page-errors"
+    ]
+  }
+}

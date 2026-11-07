@@ -2,7 +2,8 @@
    `MDo`, `PDo`, `TDo`, tool rows `Mu`; evidence/chat/README.md). Sizes are
    Conductor's Tailwind classes in px (text-sm 14/20, text-xs 12/16 +0.01em,
    spacing 4px steps); colours are its theme tokens (evidence/frontend/css-tokens.json). */
-.transcript {
+.transcript,
+.prompt-approval {
   --oc-fg: var(--text); --oc-muted-fg: var(--muted); --oc-muted: var(--surface-muted); --oc-accent: var(--surface-accent); --oc-accent-fg: var(--surface-accent-text);
   --oc-highlight: var(--highlight); --oc-highlight-fg: var(--highlight-text); --oc-border: var(--border); --oc-input: var(--input); --oc-bg: var(--bg);
   --oc-git-green: var(--success); --oc-git-red: var(--destructive); --oc-destructive: var(--destructive); --oc-link-fg: var(--emphasis);
@@ -10,8 +11,8 @@
   --oc-tint-cyan-600: var(--tint-cyan-600); --oc-tint-yellow-400: var(--tint-yellow-400); --oc-tint-yellow-600: var(--tint-yellow-600);
   --oc-tint-orange-600: var(--tint-orange-600); --oc-tint-orange-700: var(--tint-orange-700); --oc-tint-red-600: var(--tint-red-600);
   --oc-tint-green-500: var(--tint-green-500); --oc-tint-green-600: var(--tint-green-600); --oc-tint-gray-600: var(--tint-gray); --oc-tint-documentation: var(--tint-doc);
-  display: flex; flex-direction: column; color: var(--oc-fg);
 }
+.transcript { display: flex; flex-direction: column; color: var(--oc-fg); }
 
 /* The scroll area is the list: no padding of its own, turns centre at max-w-4xl.
    The first turn sits 16px below the tab bar (Virtuoso's top offset). */

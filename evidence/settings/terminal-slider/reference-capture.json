@@ -1,0 +1,10 @@
+{
+  "evidence_id": "ev_b0be6f7efe7a50cff5193678c2c18a570cb92514428ce659d018ff4e736b733c",
+  "source": {
+    "indexSha256": "48b778fa0c04f73e55a744c99873cf8cafe942ba7613f24c533b0963b1cf411b"
+  },
+  "url": "http://conductor.localhost:51749/settings/user/appearance?oc_scenario=populated&oc_theme=dark",
+  "screenshot": "reference.png",
+  "sha256": "0ac3e56b92ac8b84698b2c6b0fffccafd5ebb7b8391c2054c8e07915c8a33694",
+  "issues": []
+}
