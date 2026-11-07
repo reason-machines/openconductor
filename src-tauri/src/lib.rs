@@ -74,6 +74,7 @@ pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
 mod native_qa;
+mod native_qa_cache;
 pub mod open_in;
 pub mod project;
 pub mod quick_open;

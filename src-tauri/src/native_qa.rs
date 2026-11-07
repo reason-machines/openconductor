@@ -86,6 +86,18 @@ fn ordinary_target(dev: bool, bundled_default: bool) -> Result<(), String> {
 enum Probe {
     Paths,
     Webkit,
+    StorageWrite,
+    StorageRead,
+}
+
+fn supported_probe(probe: Option<Probe>, debug: bool, macos: bool) -> Result<(), String> {
+    if let Some(probe) = probe {
+        require_debug(debug)?;
+        if probe != Probe::Paths && !macos {
+            return Err("WebKit/storage QA requires macOS".into());
+        }
+    }
+    Ok(())
 }
 
 fn probe_request(args: impl IntoIterator<Item = impl AsRef<std::ffi::OsStr>>) -> Result<Option<Probe>, String> {
@@ -95,6 +107,10 @@ fn probe_request(args: impl IntoIterator<Item = impl AsRef<std::ffi::OsStr>>) ->
             Some(Probe::Paths)
         } else if arg.as_ref() == "--oc-qa-webkit" {
             Some(Probe::Webkit)
+        } else if arg.as_ref() == "--oc-qa-storage-write" {
+            Some(Probe::StorageWrite)
+        } else if arg.as_ref() == "--oc-qa-storage-read" {
+            Some(Probe::StorageRead)
         } else {
             None
         };
@@ -226,9 +242,8 @@ mod app {
         {
             refuse("native QA requires a debug build");
         }
-        if probe == Some(Probe::Webkit) && !cfg!(target_os = "macos") {
-            refuse("WebKit QA requires macOS");
-        }
+        supported_probe(probe, cfg!(debug_assertions), cfg!(target_os = "macos"))
+            .unwrap_or_else(|error| refuse(&error));
     }
 
     fn refuse(error: &str) -> ! {
@@ -238,6 +253,8 @@ mod app {
 
     pub(crate) fn before_startup(context: tauri::Context<tauri::Wry>) -> tauri::Context<tauri::Wry> {
         let probe = probe_request(std::env::args_os()).unwrap_or_else(|error| refuse(&error));
+        supported_probe(probe, cfg!(debug_assertions), cfg!(target_os = "macos"))
+            .unwrap_or_else(|error| refuse(&error));
         if !requires_guard(
             &context.config().identifier,
             std::env::var_os("OC_NATIVE_QA_ROOT").is_some(),
@@ -251,6 +268,11 @@ mod app {
         #[cfg(all(debug_assertions, target_os = "macos"))]
         if probe == Some(Probe::Webkit) {
             webkit_probe(context);
+        }
+        match probe {
+            Some(Probe::StorageWrite) => crate::native_qa_cache::run(context, crate::native_qa_cache::Phase::Write),
+            Some(Probe::StorageRead) => crate::native_qa_cache::run(context, crate::native_qa_cache::Phase::Read),
+            _ => {}
         }
         if probe == Some(Probe::Paths) {
             // build() exposes the real resolver; run() would execute window creation and setup.
@@ -483,6 +505,26 @@ mod tests {
         assert!(probe_request(["--oc-qa-paths", "--oc-qa-webkit"]).is_err());
         assert!(probe_request(["--oc-qa-webkit", "--oc-qa-webkit"]).is_err());
         assert_eq!(probe_request(["--oc-qa-webkit-extra"]).unwrap(), None);
+        assert_eq!(probe_request(["--oc-qa-storage-write"]).unwrap(), Some(Probe::StorageWrite));
+        assert_eq!(probe_request(["--oc-qa-storage-read"]).unwrap(), Some(Probe::StorageRead));
+        let flags = ["--oc-qa-paths", "--oc-qa-webkit", "--oc-qa-storage-write", "--oc-qa-storage-read"];
+        for left in flags {
+            for right in flags {
+                assert!(probe_request([left, right]).is_err(), "accepted {left} + {right}");
+            }
+        }
+        assert_eq!(probe_request(["--oc-qa-storage-read-extra"]).unwrap(), None);
+    }
+
+    #[test]
+    fn probes_fail_closed_on_release_and_unsupported_platforms() {
+        for probe in [Probe::Paths, Probe::Webkit, Probe::StorageWrite, Probe::StorageRead] {
+            assert!(supported_probe(Some(probe), false, true).is_err());
+            assert!(supported_probe(Some(probe), false, false).is_err());
+            assert!(supported_probe(Some(probe), true, true).is_ok());
+            assert_eq!(supported_probe(Some(probe), true, false).is_ok(), probe == Probe::Paths);
+        }
+        assert!(supported_probe(None, false, false).is_ok());
     }
 
     #[test]
