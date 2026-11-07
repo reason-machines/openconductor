@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { createBranchHeaderController, sanitizeHeaderBranch } from "./workspaceBranchHeader.ts";
+import { createBranchHeaderController, sanitizeHeaderBranch } from "./branchHeaderController.ts";
 
 function deferred() {
   let resolve = () => {};

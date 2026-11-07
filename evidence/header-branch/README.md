@@ -36,6 +36,12 @@ Type System Discipline shaped the choice to reuse the typed workspace and existi
 - Reference regeneration passed artifact/alias checks and byte-matched the committed JSON; `git diff --check` passed.
 - `npm run typecheck`: failed only because this checkout's existing dependency directory lacks `mermaid` and `dompurify`; [exact output](typecheck.txt) is retained. No dependencies were installed and no type-check suppression or declaration stub was added. A clean CI install is required for the full-project verdict.
 
+## Case-insensitive build correction
+
+The first published head `a19adaed` failed the macOS build because TypeScript resolved `./WorkspaceBranchHeader` to the lower-case controller `workspaceBranchHeader.ts` before the TSX component on a case-insensitive filesystem. CI reported TS1149/TS1261, a missing component export, and the resulting untyped callback. Renaming the controller to `branchHeaderController.ts` and updating its two imports removes the ambiguity without changing behavior.
+
+A local TypeScript `resolveModuleName` check with a case-insensitive `fileExists` host selected `WorkspaceBranchHeader.ts` before the rename and the correct `WorkspaceBranchHeader.tsx` afterward. The same 23 focused tests and whitespace checks passed after the rename. Local full typecheck still reports only the two missing dependency modules recorded above; the macOS workflow must verify the actual platform build.
+
 ## Verification limits and acceptance
 
 No browser, native app, preview server, full build or workflow dispatch was started in this source-only lane. No screenshot is available because browser/native admission belongs to the existing serialized owners. Source and handler checks cannot verify native focus, clipboard permissions, real Git mutation, or pixel parity.

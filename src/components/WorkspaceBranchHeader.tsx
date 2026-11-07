@@ -7,7 +7,7 @@ import { renameWorkspaceBranch } from "../workspace/api";
 import { BranchIcon } from "./Icons";
 import { ContextMenu, MenuItem } from "./menu/ContextMenu";
 import { CopyIcon, PencilIcon } from "./menu/menuIcons";
-import { createBranchHeaderController } from "./workspaceBranchHeader";
+import { createBranchHeaderController } from "./branchHeaderController";
 import "./workspaceBranchHeader.css";
 
 interface Props {
