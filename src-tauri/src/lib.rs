@@ -625,7 +625,7 @@ pub fn run() {
                 }
                 // Run scripts lead their own process groups; do not orphan them.
                 if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
-                    scripts.runs.stop_all();
+                    scripts.shutdown();
                 }
                 if let Some(shell) = app.try_state::<ShellCommands>() {
                     shell.0.cancel_all();

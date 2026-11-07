@@ -83,6 +83,87 @@ fn starting_twice_is_a_no_op_and_cancel_wins() {
 }
 
 #[test]
+fn interrupt_all_waits_for_callbacks_and_stops_process_groups() {
+    let tmp = tempfile::tempdir().unwrap();
+    let mgr = SetupManager::new(tmp.path().join("logs"));
+    let (tx, rx) = mpsc::channel();
+    let s = spec(tmp.path(), "sleep 30 & echo child=$!; echo ready; wait");
+    mgr.start(
+        "w1",
+        &s,
+        None,
+        Box::new(move |outcome| {
+            thread::sleep(Duration::from_millis(50));
+            tx.send(outcome).unwrap();
+        }),
+    )
+    .unwrap();
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !mgr.log("w1").unwrap_or_default().contains("ready") {
+        assert!(Instant::now() < deadline);
+        thread::sleep(Duration::from_millis(10));
+    }
+    let log = mgr.log("w1").unwrap();
+    let child: u32 = log
+        .lines()
+        .find_map(|line| line.strip_prefix("child="))
+        .unwrap()
+        .parse()
+        .unwrap();
+    mgr.interrupt_all();
+    let outcome = rx
+        .try_recv()
+        .expect("callback finished before shutdown returned");
+    assert_eq!(
+        (outcome.state, outcome.exit_code),
+        (SetupState::Failed, Some(1))
+    );
+    assert!(outcome.log.contains("ready"));
+    assert!(outcome.log.contains(INTERRUPTED));
+    assert_eq!(fs::read_to_string(&outcome.log_path).unwrap(), outcome.log);
+    let status = std::process::Command::new("ps")
+        .args(["-o", "stat=", "-p", &child.to_string()])
+        .output()
+        .unwrap();
+    let status = String::from_utf8_lossy(&status.stdout);
+    assert!(
+        status.trim().is_empty() || status.trim().starts_with('Z'),
+        "child still alive: {status}"
+    );
+    mgr.interrupt_all();
+    assert!(rx.try_recv().is_err(), "callback only once");
+    assert!(!mgr
+        .start("w2", &s, None, Box::new(|_| panic!("closed")))
+        .unwrap());
+}
+
+#[test]
+fn interruption_wins_over_a_zero_exit_and_keeps_completed_work() {
+    let tmp = tempfile::tempdir().unwrap();
+    let mgr = SetupManager::new(tmp.path().join("logs"));
+    let completed = run(&mgr, "completed", &spec(tmp.path(), "echo done"));
+    let (tx, rx) = mpsc::channel();
+    mgr.start(
+        "active",
+        &spec(
+            tmp.path(),
+            "trap 'exit 0' TERM; echo ready; while :; do sleep 0.1; done",
+        ),
+        None,
+        Box::new(move |outcome| tx.send(outcome).unwrap()),
+    )
+    .unwrap();
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !mgr.log("active").unwrap_or_default().contains("ready") {
+        assert!(Instant::now() < deadline);
+        thread::sleep(Duration::from_millis(10));
+    }
+    mgr.interrupt_all();
+    assert_eq!(rx.try_recv().unwrap().state, SetupState::Failed);
+    assert_eq!(mgr.outcome("completed"), Some(completed));
+}
+
+#[test]
 fn spawn_failure_and_interruption_are_failures() {
     let tmp = tempfile::tempdir().unwrap();
     let mgr = SetupManager::new(tmp.path());
