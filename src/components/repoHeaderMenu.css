@@ -1,0 +1,5 @@
+.ws-repo-trigger { display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 192px; flex-shrink: 1; padding: 2px 4px; border: 0; border-radius: 4px; background: transparent; color: var(--muted-foreground); cursor: pointer; font: inherit; font-size: 14px; font-weight: 500; line-height: 20px; transition: color 150ms, background-color 150ms; }
+.ws-repo-trigger:hover, .ws-repo-trigger[data-popup-open] { color: var(--foreground); background: var(--hover); }
+.ws-repo-trigger:focus-visible { outline: 1px solid var(--ring); outline-offset: 2px; }
+.ws-repo-trigger > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.ws-repo-trigger .repo-icon, .ws-repo-trigger .sb-repo-initial { flex-shrink: 0; }
