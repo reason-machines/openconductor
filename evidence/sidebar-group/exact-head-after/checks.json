@@ -1,0 +1,54 @@
+[
+  {
+    "theme": "dark",
+    "statusOrder": [
+      "done",
+      "in-review",
+      "in-progress",
+      "backlog",
+      "canceled"
+    ],
+    "counts": [
+      1,
+      1,
+      4,
+      0,
+      0
+    ],
+    "expandedOrder": [
+      "Ada/dark mode tokens",
+      "Ada/rate limit headers",
+      "Ada/fix login redirect",
+      "Ada/zsh prompt"
+    ],
+    "projectReset": "collapsed",
+    "keyboard": "passed",
+    "preferenceReload": "passed (mocked native preference boundary)"
+  },
+  {
+    "theme": "light",
+    "statusOrder": [
+      "done",
+      "in-review",
+      "in-progress",
+      "backlog",
+      "canceled"
+    ],
+    "counts": [
+      1,
+      1,
+      4,
+      0,
+      0
+    ],
+    "expandedOrder": [
+      "Ada/dark mode tokens",
+      "Ada/rate limit headers",
+      "Ada/fix login redirect",
+      "Ada/zsh prompt"
+    ],
+    "projectReset": "collapsed",
+    "keyboard": "passed",
+    "preferenceReload": "passed (mocked native preference boundary)"
+  }
+]

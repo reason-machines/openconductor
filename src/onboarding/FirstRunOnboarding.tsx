@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { ArrowRightIcon } from "../components/Icons";
-import { Wordmark } from "../components/Wordmark";
+import { AppMark } from "../components/AppMark";
 import { CONTINUE_LABEL, EXIT_LABEL, nextSlideId, SLIDES, type Slide } from "./firstRun";
 import { SignUp, useReasonAccount, type SignUpProps } from "./SignIn";
 import "./onboarding.css";
@@ -67,7 +67,7 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
     <div className="onb" data-tauri-drag-region>
       <div className="onb-inner">
         <div className="onb-wordmark">
-          <Wordmark />
+          <AppMark size={96} />
         </div>
         <div className="onb-grid" data-tauri-drag-region>
           <div className="onb-left" data-tauri-drag-region>

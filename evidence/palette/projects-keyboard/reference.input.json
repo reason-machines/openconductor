@@ -1,0 +1,232 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://127.0.0.1:4518/__reference/"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark",
+    "locale": "en-US",
+    "timezone": "UTC"
+  },
+  "actions": [
+    {
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "text=Home"
+      },
+      "state": "visible",
+      "timeout_ms": 15000,
+      "step_id": "step-0"
+    },
+    {
+      "action": "wait_for_timeout",
+      "duration_ms": 800,
+      "step_id": "step-1"
+    },
+    {
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "key": "Meta+k",
+      "step_id": "step-2"
+    },
+    {
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=tab]:has-text(\"Projects\")"
+      },
+      "step_id": "step-3"
+    },
+    {
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=dialog] input[placeholder]"
+      },
+      "key": "Escape",
+      "step_id": "step-4"
+    },
+    {
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "key": "Meta+k",
+      "step_id": "step-5"
+    },
+    {
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=tab]:has-text(\"Workspaces\")"
+      },
+      "step_id": "step-6"
+    },
+    {
+      "action": "fill",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=dialog] input[placeholder]"
+      },
+      "value": {
+        "source": "literal",
+        "value": "pagination"
+      },
+      "step_id": "step-7"
+    },
+    {
+      "action": "wait_for_timeout",
+      "duration_ms": 300,
+      "step_id": "step-8"
+    },
+    {
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=dialog] input[placeholder]"
+      },
+      "key": "ArrowDown",
+      "step_id": "step-9"
+    },
+    {
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=option][aria-selected=true]"
+      },
+      "state": "visible",
+      "timeout_ms": 6000,
+      "step_id": "step-10"
+    },
+    {
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=dialog] input[placeholder]"
+      },
+      "key": "Enter",
+      "step_id": "step-11"
+    },
+    {
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=dialog] input[placeholder]"
+      },
+      "state": "hidden",
+      "timeout_ms": 6000,
+      "step_id": "step-12"
+    },
+    {
+      "action": "wait_for_timeout",
+      "duration_ms": 700,
+      "step_id": "step-13"
+    },
+    {
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "key": "Meta+k",
+      "step_id": "step-14"
+    },
+    {
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=tab]:has-text(\"Projects\")"
+      },
+      "step_id": "step-15"
+    },
+    {
+      "action": "fill",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=dialog] input[placeholder]"
+      },
+      "value": {
+        "source": "literal",
+        "value": "tide"
+      },
+      "step_id": "step-16"
+    },
+    {
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=option][aria-selected=true]:has-text(\"tide-web\")"
+      },
+      "state": "visible",
+      "timeout_ms": 6000,
+      "step_id": "step-17"
+    },
+    {
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=dialog] input[placeholder]"
+      },
+      "key": "ArrowDown",
+      "step_id": "step-18"
+    },
+    {
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=option][aria-selected=true]:has-text(\"tide-api\")"
+      },
+      "state": "visible",
+      "timeout_ms": 6000,
+      "step_id": "step-19"
+    },
+    {
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=dialog] input[placeholder]"
+      },
+      "key": "Enter",
+      "step_id": "step-20"
+    },
+    {
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=dialog] input[placeholder]"
+      },
+      "state": "hidden",
+      "timeout_ms": 6000,
+      "step_id": "step-21"
+    },
+    {
+      "action": "wait_for_timeout",
+      "duration_ms": 800,
+      "step_id": "step-22"
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "url",
+      "dom"
+    ],
+    "events": [
+      "page-errors"
+    ]
+  }
+}

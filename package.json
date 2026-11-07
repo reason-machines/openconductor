@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run check:branding && tsc --noEmit && vite build",
+    "check:branding": "node scripts/check-app-brand.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint:colors": "node --test scripts/check-colors.test.mjs && node scripts/check-colors.mjs",

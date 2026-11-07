@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Wordmark } from "../components/Wordmark";
+import { AppMark } from "../components/AppMark";
 import type { ReasonAccount } from "../settings/agents/reasonModes";
 import { ReasonSignInControls } from "./ReasonSignInControls";
 import {
@@ -61,8 +61,12 @@ export function LoginScreen({ onDone, onFailed }: { onDone: () => void; onFailed
     <div className="onb-login" data-tauri-drag-region>
       <div className="onb-login-inner" data-tauri-drag-region>
         <div data-tauri-drag-region>
-          <div className="onb-wordmark"><Wordmark /></div>
-          <p className="onb-login-prompt" data-tauri-drag-region>{SIGN_IN_PROMPT}</p>
+          <div className="onb-wordmark">
+            <AppMark size={96} />
+          </div>
+          <p className="onb-login-prompt" data-tauri-drag-region>
+            {SIGN_IN_PROMPT}
+          </p>
         </div>
         <SignUp onSignedIn={onDone} onFailed={onFailed} onSkip={onDone} />
       </div>
