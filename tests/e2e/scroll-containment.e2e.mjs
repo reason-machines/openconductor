@@ -22,9 +22,9 @@ after(async () => {
   await browser?.close();
   if (server) await new Promise((resolve) => server.httpServer.close(resolve));
 });
-async function open() {
+async function open(zoom = 1) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES });
+  await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES, zoom });
   await page.goto(base);
   await page.locator(".rp-tabs").waitFor();
   return page;
@@ -63,6 +63,35 @@ test("wheel over fixed chrome, headers, tabs, composer and footer leaves them fi
   } finally { await page.close(); }
 });
 
+test("settings zoom and resize retain containment and reachable fixed tabs", async () => {
+  for (const zoom of [0.8, 1, 1.2]) {
+    const page = await open(zoom);
+    try {
+      assert.equal(await page.evaluate(() => Number(getComputedStyle(document.documentElement).zoom)), zoom);
+      for (const viewport of [{ width: 1440, height: 900 }, { width: 1200, height: 800 }]) {
+        await page.setViewportSize(viewport);
+        await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+        const bounds = await page.locator(".app").boundingBox();
+        assert.ok(bounds && Math.abs(bounds.width - viewport.width) < 2 && Math.abs(bounds.height - viewport.height) < 2, "shell fills the viewport without relying on clipping");
+        const composer = await page.locator(".composer").boundingBox();
+        assert.ok(composer && composer.y >= 0 && composer.y + composer.height <= viewport.height + 1, "composer remains fully visible");
+        const before = await positions(page);
+        await wheel(page, ".ws-header", -1200);
+        await wheel(page, ".rp-tabs", 1200);
+        assert.deepEqual(await positions(page), before, `fixed at ${zoom} / ${viewport.width}`);
+        const visible = await page.locator(".rp-tab-buttons").evaluate((group) => {
+          const owner = group.getBoundingClientRect();
+          return [...group.children].every((el) => {
+            const b = el.getBoundingClientRect();
+            return b.left >= owner.left - 1 && b.right <= owner.right + 1 && b.top >= owner.top - 1 && b.bottom <= owner.bottom + 1;
+          });
+        });
+        assert.equal(visible, true, `all tabs reachable at ${zoom} / ${viewport.width}`);
+      }
+    } finally { await page.close(); }
+  }
+});
+
 test("real content panes scroll while their boundary cannot chain to the document", async () => {
   const page = await open();
   try {
@@ -92,5 +121,14 @@ test("real content panes scroll while their boundary cannot chain to the documen
     }
     await page.getByRole("tab", { name: /^Changes/ }).click();
     assert.equal((await policy(page, ".oc-changes")).overscrollY, "contain");
+    await page.getByRole("button", { name: "New terminal", exact: true }).click();
+    await page.locator(".term-body .xterm-scrollable-element").waitFor();
+    assert.equal((await policy(page, ".term-body .xterm-scrollable-element")).overscrollY, "contain");
+    await page.getByRole("button", { name: "Settings", exact: true }).click();
+    await page.locator(".settings-page").waitFor();
+    assert.equal((await policy(page, ".settings-page")).overflowY, "auto");
+    assert.equal((await policy(page, ".settings-page")).overscrollY, "contain");
+    await wheel(page, ".settings-nav-top", -1800);
+    assert.deepEqual(await page.evaluate(() => [scrollX, scrollY]), [0, 0]);
   } finally { await page.close(); }
 });

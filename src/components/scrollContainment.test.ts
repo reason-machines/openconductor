@@ -17,7 +17,7 @@ test("the document cannot scroll or rubber-band behind the application", () => {
 });
 
 test("content panes contain scroll chaining without disabling local bounce", () => {
-  for (const selector of [".repo-list", ".chat-scroll", ".oc-files", ".oc-changes", ".oc-code-view", ".checks", ".settings-page", ".settings-sheet-body", ".term-body .xterm-viewport", ".script-output .xterm-viewport"]) {
+  for (const selector of [".repo-list", ".chat-scroll", ".oc-files", ".oc-changes", ".oc-code-view", ".checks", ".settings-page", ".settings-sheet-body", ".term-body .xterm-scrollable-element", ".script-output .xterm-scrollable-element"]) {
     assert.match(declarations(selector), /overscroll-behavior:\s*contain\s*;/, selector);
   }
 });

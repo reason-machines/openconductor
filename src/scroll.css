@@ -21,10 +21,10 @@ body {
   overscroll-behavior: contain;
 }
 
-/* xterm owns its viewport overflow; do not turn the terminal wrapper into a
-   second scroller or override xterm's scrollback sizing. */
-.term-body .xterm-viewport,
-.script-output .xterm-viewport {
+/* xterm 6 owns its scrollable element; do not turn the terminal wrapper into
+   a second scroller or override xterm's scrollback sizing. */
+.term-body .xterm-scrollable-element,
+.script-output .xterm-scrollable-element {
   overscroll-behavior: contain;
 }
 
@@ -33,6 +33,26 @@ body {
 .ws-strip-tabs {
   overflow: hidden;
   overscroll-behavior: none;
+}
+
+/* A fixed strip must wrap rather than hide controls that previously depended
+   on horizontal scrolling in a narrow pane. */
+.rp-tabs {
+  flex-wrap: wrap;
+  height: auto;
+  min-height: 44px;
+}
+.rp-tabs > .rp-tab-buttons {
+  flex-basis: max-content;
+  flex-wrap: wrap;
+}
+.ws-strip-tabs {
+  flex-wrap: wrap;
+  height: auto;
+  min-height: 34px;
+}
+.ws-strip-tabs > .strip-tab {
+  min-height: 34px;
 }
 
 /* Nested editors, previews and menus must not chain into their fixed owner. */
@@ -48,7 +68,7 @@ body {
 .settings-terminal-preview,
 .settings-misc-files-list,
 .oc-model-list,
-.oc-file-mention-list,
+.oc-suggest,
 .qo-list,
 .cf-list,
 .create-page-scroll,
