@@ -1,0 +1,22 @@
+{
+  "source_commit": "af9f632ab2d766b7b6d303a01be2a952afe2c01b",
+  "build_index_sha256": "4af3fcabf287676985d6c4c97ad96223edc0169973158567f05a2635744670dd",
+  "discard-dialog": {
+    "reference": {
+      "evidence_id": "ev_cd6c2860197ba395ca1a610e7c0a7e9392e26d0e8e6f17b4f615a4f380f7040b",
+      "png_sha256": "4c3627b4914559f0270852e6ac3d048a7730c95b0374236b383529e7bdc13196",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/discard-after/ref-discard-dialog-artifact.json"
+    },
+    "openconductor": {
+      "evidence_id": "ev_e06c9f090f9f7a360b9ffe61ca8fcdddbc43a4c19586ca5e2a15d4e2813a73ab",
+      "png_sha256": "b0a39b43e9b296bc47c81d3e72a300f4817d8713c320290adaa5b35b3ac1315c",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/discard-after/oc-discard-dialog-artifact.json"
+    },
+    "compare": {
+      "evidence_id": "ev_80ead163591f507dc41afc1f82e44a39d95d0863fe1e50e5884c8a5751256a4f",
+      "changed_pixels": 28859,
+      "compared_pixels": 1049600,
+      "changed_ratio": 0.027495236280487806
+    }
+  }
+}

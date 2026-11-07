@@ -1,0 +1,40 @@
+{
+  "source_commit": "af9f632ab2d766b7b6d303a01be2a952afe2c01b",
+  "build_index_sha256": "8595f56c35086ef92de8a64c745a5c294ecbfc3e844b663fb0a0e57d437d6a8c",
+  "changes-file-menu": {
+    "reference": {
+      "evidence_id": "ev_b3bdf85a55ac574f4ebea2d9a37eef3f6595c4e62699c3d1dede17d2d7ca06d5",
+      "png_sha256": "130206dc79b92cc8d2ff7b848306c0a034405968e3a6877bb93ad6329eefb7c3",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/changes-context-current/ref-changes-file-menu-artifact.json"
+    },
+    "openconductor": {
+      "evidence_id": "ev_dedff909016493a6ee474442875efb482b5a9071efcd1a95e82154bf65e66db7",
+      "png_sha256": "757703464b6855bd7455211090678f4eda997fe3c48bcb67c0e749a0a2ec29e0",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/changes-context-current/oc-changes-file-menu-artifact.json"
+    },
+    "compare": {
+      "evidence_id": "ev_0d00ba108764b5dfe3e4d58e15b09fd35dc1511b2957eef72aec946445bf0ae6",
+      "changed_pixels": 57515,
+      "compared_pixels": 1049600,
+      "changed_ratio": 0.054797065548780485
+    }
+  },
+  "discard-dialog": {
+    "reference": {
+      "evidence_id": "ev_3d66bf571c80c7039a673c17581a65ba64fa96118f2fa690f413c8bf6a684c7b",
+      "png_sha256": "9f645a7802f72b83d8a5763a2aece41a71509a057abef476f6756997ded3a909",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/changes-context-current/ref-discard-dialog-artifact.json"
+    },
+    "openconductor": {
+      "evidence_id": "ev_d5a9a0cbc6b86022b47fe9d707581b79c9b5ffceab4c4f923f23b862caffbede",
+      "png_sha256": "16e47505ff7777ddd0acb5c572d69bcd6350d8387f4d34c5c64f7153c8bb915c",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/changes-context-current/oc-discard-dialog-artifact.json"
+    },
+    "compare": {
+      "evidence_id": "ev_544d9c8ec305b629013663ad80ceefb6c7da066a9a0d528a85e8a89a46dce839",
+      "changed_pixels": 49906,
+      "compared_pixels": 1049600,
+      "changed_ratio": 0.04754763719512195
+    }
+  }
+}
