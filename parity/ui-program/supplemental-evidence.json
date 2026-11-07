@@ -1,5 +1,5 @@
 {
-  "source_main_commit": "a988e5a820e35ce41eb82856f8a1e7d20cd18594",
+  "source_main_commit": "e9cfaed4a97a66bb495ca5a8b8f49aa6f0238094",
   "records": [
     {
       "id": "shell-actions-722",
@@ -354,14 +354,35 @@
       "merge_commit": "bb0fdcf7adf269a5ec9265dd98271777be20c0bb",
       "evidence_path": "evidence/chat/composer/mentions/README.md",
       "lane": "Retained REA reference, bounded area browser evidence and separate owner-reported delivery/consumption checks. No new capture or native action by ledger integration.",
-      "summary": "Merged #739 fixes the historical #735 Send-click composition defect. Owner reports unchanged-main failure before, 13 browser groups repeated three times green after, 1,293 units and all 17 exact-head checks/five workflows passed. Package 42315706180 passed signing and 39/39 contract checks.",
+      "summary": "Merged #739 fixes the historical #735 Send-click composition defect. Owner reports unchanged-main failure before, 13 browser groups repeated three times green after, 1,293 units and all 17 exact-head checks/five workflows passed. Package 42315706180 passed signing and 39/39 contract checks. Separately, runtime owner d8e894e9 reports a local debug rebuild on source 50265ba2 passed 10/10 synthetic WKWebView composition checks and 23/23 total assertions. Exact-window screenshot capture failed. No real macOS IME or native visual-parity credit is claimed.",
+      "synthetic_wkwebview_proof": {
+        "owner_session": "d8e894e9-2c63-4ec3-9a11-f28722af996d",
+        "source_message": "46ab09ef-5d0e-4f76-9138-91206ba98a29",
+        "ended_at": "2026-11-07T00:40:15.127Z",
+        "computer": "sven m5 max",
+        "source_commit": "50265ba211c5506a50180ad3f5dfa535183e1e98",
+        "binary_kind": "Locally rebuilt, ad-hoc-signed debug binary; not a downloaded CI artifact",
+        "binary_sha256": "d336711a992fc25e03c51299c4b949cfad20a7a6029ca2d49314087a4ae3c525",
+        "archive_sha256": "027471391e1739e335c33c16bb13409dcfc294070d6ac31dd2e09dad7ae2a9ea",
+        "evidence_page": "https://reasonmachines.com/agents/d8e894e9-2c63-4ec3-9a11-f28722af996d?page=339835bf-57c3-46f5-825d-97167f31613f",
+        "composition_assertions": {"passed": 10, "total": 10},
+        "total_assertions": {"passed": 23, "total": 23},
+        "behavior": "Synthetic composition blocked Enter, Send, file and slash suggestions. Post-composition /clear stayed local without agent delivery.",
+        "isolation": "Owner reports isolation and own-AppHandle nonce gates passed, zero sessions/messages/PTYs, owned app37126/helper37145 exited, no residual handles/IP descriptors and stable54473 start/executable/file identity/hash unchanged. Continuation read-only checks confirmed both owned PIDs absent and stable identity unchanged.",
+        "screenshot": {"status": "failed", "error": "could not create image from window", "capture_acknowledgements": 2, "image_passes": 0},
+        "not_run": ["real macOS IME", "native visual parity", "signed-in ACP", "real-data cleanup", "#740 terminal labels/status/selected-worktree cwd", "#741 slider rendering/drag/persistence", "#742 colors/actions"],
+        "verification": "Attributed runtime-owner report only; ledger integration did not rerun, reopen the archive or inspect an image. Earlier 8467 proof remains separate."
+      },
       "provenance": {
         "owner_session": "3cf126be-0f20-4570-aea9-763c05ccb845",
         "source_message": "ffa498f7-7402-4e63-8b4e-c55f8188e67a",
         "verification": "Merge identity confirmed in fetched main. Area behavior/captures and package checks are attributed to the existing owner, not rerun by ledger integration."
       },
       "limits": [
-        "Synthetic browser composition is not real IME or native WebKit proof. No passed result from the bounded scratch continuation is reported. Full integration, persistence and signed-in delivery remain unverified."
+        "The 10/10 composition and 23/23 total assertions cover synthetic WKWebView events on source 50265ba211c5506a50180ad3f5dfa535183e1e98 only. This is a local debug rebuild, not the downloaded package or a real macOS IME test. Two capture acknowledgements are not image passes.",
+        "Exact-window screenshot capture FAILED: could not create image from window. Native visual parity, full integration, persistence and signed-in delivery remain unverified. All nine native final-review verdicts stay unverified.",
+        "Source 50265ba2 predates #740 merge 667ac60f. Terminal labels/status/selected-worktree cwd, #741 slider rendering/drag/persistence and #742 colors/actions were NOT RUN. No Conductor/REA behavior claim or E2E/five-pass promotion follows from these assertions.",
+        "Owner reports binary SHA256 d336711a992fc25e03c51299c4b949cfad20a7a6029ca2d49314087a4ae3c525 and archive SHA256 027471391e1739e335c33c16bb13409dcfc294070d6ac31dd2e09dad7ae2a9ea. The exact evidence Page and owner attribution are retained in synthetic_wkwebview_proof."
       ]
     },
     {
@@ -381,7 +402,7 @@
         "verification": "Merge identity confirmed in fetched main. Area behavior/captures and package checks are attributed to the existing owner, not rerun by ledger integration."
       },
       "limits": [
-        "#740 native Terminal/scripts/Find is NOT RUN. Older 45/45 scratch assertions and 10/10 host checks cover source 8467 only, without screenshot/native parity or verified selected-worktree cwd. Exact-merge E2E 42317638688 was cancelled, not passed."
+        "#740 native Terminal/scripts/Find is NOT RUN. Older 45/45 scratch assertions and 10/10 host checks cover source 8467 only, without screenshot/native parity or verified selected-worktree cwd. The later #739 synthetic WKWebView run used 50265ba2, one commit before #740 merge 667ac60f, and was a local debug rebuild, not package 42317638694. It provides no #740 labels/status/cwd proof. Exact-merge E2E 42317638688 was cancelled, not passed."
       ]
     },
     {
@@ -421,7 +442,7 @@
         "verification": "Merge identity confirmed in fetched main. Area behavior/captures and package checks are attributed to the existing owner, not rerun by ledger integration."
       },
       "limits": [
-        "Not a match for the entire retained needs-permission state; its wrong score remains. Native installed rendering and real permission round trip are NOT RUN. Older 8467 scratch assertions do not exercise this correction."
+        "Not a match for the entire retained needs-permission state; its wrong score remains. Native installed rendering and real permission round trip are NOT RUN. Older 8467 scratch assertions do not exercise this correction. The #739 synthetic WKWebView run on 50265ba2 did not exercise #742 colors/actions despite containing the source, so it adds no native or screenshot proof here."
       ]
     },
     {
@@ -512,17 +533,18 @@
       ]
     }
   ],
-  "reconciled_at": "2026-11-07T00:44:00Z",
+  "reconciled_at": "2026-11-07T01:03:35Z",
   "provenance": "Merged source and committed area manifests reconciled on Reason Cloud. Area checks, artifact inspection and native limits are attributed to their existing owners; no CI or native verification was rerun by ledger integration.",
   "batch_notes": [
-    "Reconciled on Reason Cloud against main a988e5a8, not a new capture identity. Existing captures, raw/scoped scores, 341-entry denominator and all nine native final-review verdicts remain unchanged.",
+    "Reconciled on Reason Cloud against main e9cfaed4, not a new capture identity. Existing captures, raw/scoped scores, 341-entry denominator and all nine native final-review verdicts remain unchanged. The later #739 runtime-owner receipt adds bounded synthetic WKWebView assertions only.",
     "Merged #738–#745 and proof-only #746 have separate browser/test/package/native limits. No Mac action, new capture, preview, CI dispatch, duplicate watcher or builder was performed by ledger integration.",
     "Sole E2E owner acc3b5c5 confirms main 50265ba2 / 42317008433 completed success at 2026-11-07T00:29:22Z, both jobs and 23/23 App flows. Reported streak stays 0/10 because newer run-number 1496 / 42317638688 was cancelled. Successor 1497 / 42317956702 at a170cfbc was in progress at the owner snapshot, not a pass.",
     "Five consecutive local built-app passes, real-auth Mac-to-cloud behavior, real macOS IME and all nine installed-app side-by-side reviews remain unverified. Fake-provider CI and package signing cannot substitute.",
     "#744 consuming workflows are complete. #746 consuming workflows remain with Home and #738 main E2E with acc3b5c5. These are timestamped observations, not an independently refreshed global CI view.",
     "Native source pin 8467a7d9 came from a driver note, not independently verified human input. Temporary coordinator holds are not an immutable human source freeze. This cloud-only reconciliation launches nothing on the Mac, inputs nothing into stable PID 54473 and performs no agent/credential operation.",
     "Group by is missing with a partial REA graph gap. Invalid initial Help light/Projects fixtures stay excluded. #738 skipped-browser proof and country-map/tooltip/small-window/touch remain unverified.",
-    "#728/#736 deliveries remain historical. #711 stays closed unmerged. Existing program check-in and exclusive area proof owners are reused; no new monitoring."
+    "#728/#736 deliveries remain historical. #711 stays closed unmerged. Existing program check-in and exclusive area proof owners are reused; no new monitoring.",
+    "Ledger PR #747 merged prematurely at 2026-11-07T00:56:46.75571Z before all exact-head checks succeeded. Coordinator observed 14/16 successes and two E2E jobs running; direct readback confirms Codex completed later at 00:58:03Z. The ALL-checks merge gate did not hold. Later green checks cannot undo this violation. No cancellation or rollback is claimed after merge."
   ],
   "screen_updates": {
     "home": {
@@ -539,7 +561,7 @@
     },
     "composer": {
       "area_verdict": "partial-known-defect",
-      "gap": "#735 historical Send-click composition defect has a merged #739 fix-forward with synthetic browser regression proof. Native WebKit/real IME, full integration, persistence and signed-in delivery remain unverified. No passed scratch continuation is reported."
+      "gap": "#735 historical Send-click composition defect has a merged #739 fix-forward with browser regression proof. Runtime owner reports 10/10 synthetic WKWebView composition checks and 23/23 total assertions passed on a local 50265ba2 debug rebuild. Screenshot capture failed. Real macOS IME, native visual parity, full integration, persistence and signed-in delivery remain unverified."
     },
     "diff-changes": {
       "area_verdict": "partial",
