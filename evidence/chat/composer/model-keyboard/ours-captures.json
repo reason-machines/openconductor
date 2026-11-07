@@ -1,0 +1,227 @@
+[
+  {
+    "name": "model-search",
+    "image": "evidence/chat/composer/model-keyboard/ours-model-search.png",
+    "evidence_id": "ev_7781c32b7b8c369f18756b9d63e67f719b9f9c417997996de1a3fc448e519f86",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4437/tools/composer/demo.html?agent=claude&model-search-checks=1"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "model",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[data-testid='composer-model-button']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": "input[aria-label='Search models']"
+          },
+          "value": {
+            "source": "literal",
+            "value": "sonnet"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "model-search-enter",
+    "image": "evidence/chat/composer/model-keyboard/ours-model-search-enter.png",
+    "evidence_id": "ev_c52a2bee0897ee4390b128a1e9e27d4ad803ccde2679a3b1b9bec0f91acfea8f",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4437/tools/composer/demo.html?agent=claude&model-search-checks=1"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "model",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[data-testid='composer-model-button']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": "input[aria-label='Search models']"
+          },
+          "value": {
+            "source": "literal",
+            "value": "sonnet"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "enter",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": "input[aria-label='Search models']"
+          },
+          "key": "Enter"
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "model-search-escape",
+    "image": "evidence/chat/composer/model-keyboard/ours-model-search-escape.png",
+    "evidence_id": "ev_27690d22fd287e503d179db2200218b05e2cc9d0ed2ad77470e7627683a5032b",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4437/tools/composer/demo.html?agent=claude&model-search-checks=1"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "model",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[data-testid='composer-model-button']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": "input[aria-label='Search models']"
+          },
+          "value": {
+            "source": "literal",
+            "value": "sonnet"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "escape",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": "input[aria-label='Search models']"
+          },
+          "key": "Escape"
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  }
+]
