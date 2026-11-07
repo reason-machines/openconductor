@@ -16,6 +16,7 @@ export interface ComposerEditorHandle {
   blur(): void;
   visible(): boolean;
   focused(): boolean;
+  composing(): boolean;
   selection(): ComposerSelection;
   replaceText(text: string): void;
   insertFile(range: { start: number; end: number }, file: { path: string; label: string; directory: boolean }): void;
@@ -131,6 +132,7 @@ export function ComposerEditor(props: Props) {
       blur: () => { editor.view.dom.blur(); },
       visible: () => editor.view.dom.offsetParent !== null,
       focused: () => editor.isFocused,
+      composing: () => editor.view.composing,
       selection: () => snapshot(editor),
       replaceText: (text) => {
         editor.chain().focus().setTextSelection({ from: 1, to: editor.state.doc.content.size - 1 }).insertContent(inlineContent([{ kind: "text", text }])).run();
