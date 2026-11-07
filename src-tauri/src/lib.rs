@@ -445,6 +445,7 @@ pub fn run() {
             sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
+            diff::commands::diff_branch_commits,
             diff::commands::diff_discard_file,
             diff::commands::diff_write_file,
             checkpoint_commands::checkpoint_save,

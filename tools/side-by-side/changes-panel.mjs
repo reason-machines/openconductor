@@ -48,6 +48,9 @@ const specs = {
   "collapsed-return": { ref: [click('[aria-label="Show folder hierarchy"]'), settle, click('button:has-text("src / lib")'), click('button:has-text("All files")'), settle, click('button:has-text("Changes")')], oc: [click('[aria-label="Show folder hierarchy"]'), settle, click('button:has-text("src / lib")'), click('role=tab[name="All files"]'), settle, click('role=tab[name="Changes 2"]')] },
   "filter-return": { ref: [click('[aria-label="Show folder hierarchy"]'), click('[aria-label="Filter files"]'), { action: "fill", locator: { kind: "css", selector: 'input[placeholder="Filter files"]' }, value: { source: "literal", value: "test" }, timeout_ms: 5000 }, click('text=Ada/dark mode tokens'), settle, click('text=Ada/fix login redirect')], oc: [click('[aria-label="Show folder hierarchy"]'), click('[aria-label="Filter files"]'), { action: "fill", locator: { kind: "css", selector: 'input[aria-label="Filter changed files"]' }, value: { source: "literal", value: "test" }, timeout_ms: 5000 }, click('[data-testid="left-sidebar-workspace-item"]:has-text("osaka")'), settle, click('[data-testid="left-sidebar-workspace-item"]:has-text("lisbon")')] },
   options: { ref: [click('button:has(svg.lucide-ellipsis-vertical)')], oc: [click('[aria-label="Changes options"]')] },
+  "history-options": { ref: [click('button:has(svg.lucide-ellipsis-vertical)')], oc: [click('[aria-label="Changes options"]')] },
+  "history-selected": { ref: [click('button:has(svg.lucide-ellipsis-vertical)'), click('text=Fix expired session redirect')], oc: [click('[aria-label="Changes options"]'), click('text=Fix expired session redirect')] },
+  "history-back": { ref: [click('button:has(svg.lucide-ellipsis-vertical)'), click('text=Fix expired session redirect'), settle, click('button:has-text("abcdef1")')], oc: [click('[aria-label="Changes options"]'), click('text=Fix expired session redirect'), settle, click('[aria-label="Back to all changes"]')] },
   "diff-unified": { ref: [click('text=auth.ts >> nth=-1')], oc: [click("button.oc-change[title='Open src/lib/auth.ts']")] },
   "diff-split": { ref: [click('text=auth.ts >> nth=-1'), settle, click("role=button[name='Split view']")], oc: [click("button.oc-change[title='Open src/lib/auth.ts']"), settle, click("role=button[name='Split view']")] },
   "diff-entire-file": { ref: [click('text=auth.ts >> nth=-1'), settle, click("role=button[name='Entire file']")], oc: [click("button.oc-change[title='Open src/lib/auth.ts']"), settle, click("role=button[name='Entire file']")] },
@@ -58,7 +61,7 @@ async function capture(side, state, steps) {
   const actions = [{ action: "wait_for_timeout", duration_ms: 5000 }, ...(side === "ref" ? refStart : []), ready, ...steps, settle].map((a, i) => ({ step_id: `s${i}`, ...a }));
   const input = {
     browser: { mode: "launch", executable_path: "/usr/bin/chromium", headless: true },
-    start_url: { url: side === "ref" ? reference : `http://localhost:${port}/?oc_scenario=populated&oc_theme=dark` },
+    start_url: { url: (side === "ref" ? reference : `http://localhost:${port}/?oc_scenario=populated&oc_theme=dark`) + (state.startsWith("history-") ? "&oc_commit_history=1" : "") },
     environment: { viewport: { width: 1280, height: 820, device_scale_factor: 1 }, color_scheme: "dark", locale: "en-US", timezone: "UTC" },
     actions,
     capture: { at_end: ["screenshot", "dom"], events: ["page-errors"] },
@@ -75,7 +78,7 @@ async function capture(side, state, steps) {
   fs.writeFileSync(path.join(out, `${side}-${state}.png`), Buffer.from(screenshot.data_base64, "base64"));
   const dom = artifacts.dom?.value?.text ?? artifacts.dom?.value ?? "";
   const domText = typeof dom === "string" ? dom : JSON.stringify(dom);
-  if (!domText.includes("files changed") || !domText.includes(state.startsWith("collapsed") ? "src / lib" : "auth.test.ts")) throw new Error(`${side}-${state}: not the populated Changes screen`);
+  if (!domText.includes(state === "history-selected" ? "abcdef1" : "files changed") || !domText.includes(state.startsWith("collapsed") ? "src / lib" : state === "history-selected" ? "auth.ts" : "auth.test.ts")) throw new Error(`${side}-${state}: not the populated Changes screen`);
   fs.writeFileSync(path.join(out, `${side}-${state}.dom.txt`), domText);
   const artifactPath = path.join(out, `${side}-${state}-artifact.json`);
   fs.writeFileSync(artifactPath, JSON.stringify(screenshot));
