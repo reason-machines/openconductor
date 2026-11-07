@@ -1,0 +1,21 @@
+{
+  "first": {
+    "state": "stopped",
+    "stopped": [
+      {
+        "server_id": "6af717b5-ca7d-47ff-84b5-50fb403f4f5d",
+        "port": 4682
+      }
+    ]
+  },
+  "final": {
+    "state": "stopped",
+    "stopped": [
+      {
+        "server_id": "31f2d405-f1be-4dfb-99c6-8fd66c314de6",
+        "port": 4682
+      }
+    ],
+    "guidance": "Each stopped server's process group has ended on the computer, so its port is free for preview_start."
+  }
+}

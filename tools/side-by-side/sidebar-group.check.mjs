@@ -46,7 +46,9 @@ try {
     const trigger = page.getByRole('menuitem', { name: 'Group by', exact: true });
     await trigger.focus();
     await page.keyboard.press('ArrowRight');
-    await page.waitForFunction(() => document.activeElement?.textContent === 'Status');
+    await page.waitForFunction(() => document.activeElement?.textContent === 'Project');
+    await page.keyboard.press('ArrowUp');
+    assert.equal(await page.locator(':focus').innerText(), 'Status');
     await page.keyboard.press('ArrowDown');
     assert.equal(await page.locator(':focus').innerText(), 'Project');
     await page.keyboard.press('ArrowLeft');

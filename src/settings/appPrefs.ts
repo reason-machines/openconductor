@@ -110,7 +110,15 @@ function browserSidebarGroupBy(): SidebarGroupBy {
   }
 }
 
-let current: AppPrefs = { ...DEFAULT_APP_PREFS, sidebar_sort_by: browserSidebarSort(), sidebar_group_by: browserSidebarGroupBy() };
+function browserRepoFilter(): string | null {
+  try {
+    return localStorage.getItem("openconductor.sidebar_repo_filter") || null;
+  } catch {
+    return null;
+  }
+}
+
+let current: AppPrefs = { ...DEFAULT_APP_PREFS, sidebar_sort_by: browserSidebarSort(), sidebar_group_by: browserSidebarGroupBy(), sidebar_repo_filter: browserRepoFilter() };
 let loaded = false;
 /** True once the database values (or, outside the desktop app, the defaults) are in. */
 let ready = !isTauri();
@@ -135,8 +143,11 @@ export async function loadAppPrefs(): Promise<AppPrefs> {
 export async function setAppPref(update: AppPrefUpdate): Promise<AppPrefs> {
   publish(applyUpdate(current, update));
   if (!isTauri()) {
-    if (update.key === "sidebar_sort_by" || update.key === "sidebar_group_by") {
-      try { localStorage.setItem(`openconductor.${update.key}`, update.value); } catch { /* Session-only when storage is unavailable. */ }
+    if (update.key === "sidebar_sort_by" || update.key === "sidebar_group_by" || update.key === "sidebar_repo_filter") {
+      try {
+        if (update.value === null) localStorage.removeItem(`openconductor.${update.key}`);
+        else localStorage.setItem(`openconductor.${update.key}`, update.value);
+      } catch { /* Session-only when storage is unavailable. */ }
     }
     return current;
   }

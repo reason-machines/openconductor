@@ -52,6 +52,9 @@ http.createServer((req,res)=>{
  if(process.argv.includes('--group-check')) {
   try { await import('./sidebar-group.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
  }
+ if(process.argv.includes('--group-filter-check')) {
+  try { await import('./sidebar-group-filter.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
+ }
  if(process.argv.includes('--sort-check')) {
   try { await import('./sidebar-sort.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
  }
