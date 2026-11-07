@@ -1,0 +1,87 @@
+{
+  "reference_asset": "renderApp-D_fmY7hW.js",
+  "reference_asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "runtime": "REA6.8.0 capture-browser-scenario, Chromium155.0.8059.84, mocked Tauri IPC",
+  "viewport": [
+    1280,
+    820
+  ],
+  "theme": "dark",
+  "palette": "Stone",
+  "tested_base": "154ba0da",
+  "delivery_base_after_capture": "70bf6c5e",
+  "source_files_sha256": {
+    "src/palette/PaletteHost.tsx": "142ed980ccd64a373e35ee0753ac903c06a59205c3922a509e5c8128425f8439",
+    "src/palette/projectWorkspace.ts": "96b1f8c0ceac597c75b9cbd182474f05e73aea79419a844aa9bb3463b8779c7a"
+  },
+  "records": {
+    "reference": {
+      "evidence_id": "ev_edb999b0fcb60b5e5500c91977b3c3c95802b180b0c758b08bfa9d41f5a38f52",
+      "steps_complete": true,
+      "step_count": 24,
+      "url": {
+        "url": "http://127.0.0.1:4518/repository/repo-tide-api/workspace/ws-accra?activeTabType=session&sessionId=sess-accra",
+        "origin": "http://127.0.0.1:4518",
+        "query_parameter_names": [
+          "activeTabType",
+          "sessionId"
+        ],
+        "redacted": false
+      },
+      "header_strong": null,
+      "capture_sha256": "6d6a60aec18feb227b108c5f5f68758c00eb269827668f10c1db2eebbde50a04",
+      "screenshot_sha256": "1136215d6abfca936cec3649c58c83b5f0e362d49cb2776deee1c2148cf313f7"
+    },
+    "before": {
+      "evidence_id": "ev_0986412e7a37691f5218d7c7b484f11b567eb7083b90305eebdbc6b151ba35ff",
+      "steps_complete": true,
+      "step_count": 24,
+      "url": {
+        "url": "http://127.0.0.1:4518/?home=1",
+        "origin": "http://127.0.0.1:4518",
+        "query_parameter_names": [
+          "home"
+        ],
+        "redacted": false
+      },
+      "header_strong": "tallinn",
+      "capture_sha256": "a29b92646a30af29ffe9b0e4bfc7a9bd0d743e15a78bfa456680798d353346c2",
+      "screenshot_sha256": "715df6437401115d7edcbce7093c35e9f47ee941b582ae9eebf52891b072b818"
+    },
+    "after": {
+      "evidence_id": "ev_379ee2d9177ee22afceff66307060cd66667c9b457f599a11a7fffc3b2e00ff9",
+      "steps_complete": true,
+      "step_count": 24,
+      "url": {
+        "url": "http://127.0.0.1:4518/?home=1",
+        "origin": "http://127.0.0.1:4518",
+        "query_parameter_names": [
+          "home"
+        ],
+        "redacted": false
+      },
+      "header_strong": "accra",
+      "capture_sha256": "ffd9f1531124783b99773c69b60033900d65cbf7d7c84d6080faeb1046b71f76",
+      "screenshot_sha256": "09b7596f3db9301fb66e1ed4fffa057b1533b4619c6979f709661028d5118533"
+    },
+    "reference-navigation": {
+      "evidence_id": "ev_4d24c462a402d35559f0bb6fbfb125dc2d1816604baab637ba3941c66b3a2263",
+      "steps_complete": true,
+      "step_count": 19,
+      "capture_sha256": "feaf31daa4f399f3489e61777070a99afc8d55601317788fab32f245dbfddb79"
+    },
+    "ours-navigation": {
+      "evidence_id": "ev_93c663784ec440890d6b90dda896f28849ee6b7966f022f42e46686c109d610f",
+      "steps_complete": true,
+      "step_count": 19,
+      "capture_sha256": "dde0fd558356697744f99139c854bbe16f36901c3825025463dfd96c502a7740"
+    }
+  },
+  "checks": {
+    "reference_returns_last_viewed_accra": true,
+    "before_opens_wrong_tallinn": true,
+    "after_returns_accra": true,
+    "both_navigation_scenarios_complete": true,
+    "all_final_activation_steps_complete": true
+  }
+}
