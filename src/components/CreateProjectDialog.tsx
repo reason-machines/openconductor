@@ -60,7 +60,7 @@ export function CreateProjectDialog({ onClose, onRepoAdded, onCreated }: Props) 
   const hint = nameHint(name);
 
   async function browse() {
-    const picked = await pickFolder("Choose where to create the project");
+    const picked = await pickFolder("Choose where to create the project", parent);
     if (picked) setParent(picked);
   }
 

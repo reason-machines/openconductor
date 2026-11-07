@@ -1,0 +1,224 @@
+(node:16872) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:16900) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: create: Browse uses the loaded folder and preserves it on Cancel
+not ok 1 - create: Browse uses the loaded folder and preserves it on Cancel
+  ---
+  duration_ms: 8251.712986
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:14:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    -   defaultPath: '/Users/demo/conductor/repos',
+        directory: true,
+        multiple: false,
+        title: 'Choose where to create the project'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    directory: true
+    multiple: false
+    title: 'Choose where to create the project'
+    defaultPath: '/Users/demo/conductor/repos'
+  actual:
+    directory: true
+    multiple: false
+    title: 'Choose where to create the project'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:26:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: create: Browse uses the edited folder and preserves it on Cancel
+not ok 2 - create: Browse uses the edited folder and preserves it on Cancel
+  ---
+  duration_ms: 1365.273714
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:14:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    -   defaultPath: '/Users/demo/Code/with spaces',
+        directory: true,
+        multiple: false,
+        title: 'Choose where to create the project'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    directory: true
+    multiple: false
+    title: 'Choose where to create the project'
+    defaultPath: '/Users/demo/Code/with spaces'
+  actual:
+    directory: true
+    multiple: false
+    title: 'Choose where to create the project'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:26:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: create: Browse uses the edited folder and accepts the selection
+not ok 3 - create: Browse uses the edited folder and accepts the selection
+  ---
+  duration_ms: 1666.594122
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:14:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    -   defaultPath: '/Users/demo/Code/with spaces',
+        directory: true,
+        multiple: false,
+        title: 'Choose where to create the project'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    directory: true
+    multiple: false
+    title: 'Choose where to create the project'
+    defaultPath: '/Users/demo/Code/with spaces'
+  actual:
+    directory: true
+    multiple: false
+    title: 'Choose where to create the project'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:26:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clone: Browse uses the loaded folder and preserves it on Cancel
+not ok 4 - clone: Browse uses the loaded folder and preserves it on Cancel
+  ---
+  duration_ms: 1603.409857
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:14:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    -   defaultPath: '/Users/demo/conductor/repos',
+        directory: true,
+        multiple: false,
+        title: 'Choose where to clone the repository'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    directory: true
+    multiple: false
+    title: 'Choose where to clone the repository'
+    defaultPath: '/Users/demo/conductor/repos'
+  actual:
+    directory: true
+    multiple: false
+    title: 'Choose where to clone the repository'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:26:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clone: Browse uses the edited folder and preserves it on Cancel
+not ok 5 - clone: Browse uses the edited folder and preserves it on Cancel
+  ---
+  duration_ms: 1033.39497
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:14:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    -   defaultPath: '/Users/demo/Code/with spaces',
+        directory: true,
+        multiple: false,
+        title: 'Choose where to clone the repository'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    directory: true
+    multiple: false
+    title: 'Choose where to clone the repository'
+    defaultPath: '/Users/demo/Code/with spaces'
+  actual:
+    directory: true
+    multiple: false
+    title: 'Choose where to clone the repository'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:26:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clone: Browse uses the edited folder and accepts the selection
+not ok 6 - clone: Browse uses the edited folder and accepts the selection
+  ---
+  duration_ms: 1061.730581
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:14:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    -   defaultPath: '/Users/demo/Code/with spaces',
+        directory: true,
+        multiple: false,
+        title: 'Choose where to clone the repository'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    directory: true
+    multiple: false
+    title: 'Choose where to clone the repository'
+    defaultPath: '/Users/demo/Code/with spaces'
+  actual:
+    directory: true
+    multiple: false
+    title: 'Choose where to clone the repository'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/tests/e2e/dialog-picker.e2e.mjs:26:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16011.07688
