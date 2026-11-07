@@ -109,7 +109,21 @@ test("real content panes scroll while their boundary cannot chain to the documen
       });
       const before = await positions(page);
       await wheel(page, selector, 600);
-      await page.waitForFunction((s) => document.querySelector(s).scrollTop > 0, selector);
+      try {
+        await page.waitForFunction((s) => document.querySelector(s).scrollTop > 0, selector);
+      } catch (cause) {
+        const state = await page.locator(selector).first().evaluate((el) => {
+          const box = el.getBoundingClientRect();
+          const hit = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2);
+          return {
+            scrollTop: el.scrollTop, scrollHeight: el.scrollHeight, clientHeight: el.clientHeight,
+            bounds: { x: box.x, y: box.y, width: box.width, height: box.height },
+            hit: hit?.className, hitInsidePane: !!hit && el.contains(hit),
+            overflowY: getComputedStyle(el).overflowY, documentScroll: [scrollX, scrollY],
+          };
+        });
+        throw new Error(`${selector} did not scroll after wheel: ${JSON.stringify(state)}; ${cause.message}`, { cause });
+      }
       assert.deepEqual(await positions(page), before, selector + " content scroll must not move chrome");
       await page.locator(selector).first().evaluate((el) => { el.scrollTop = el.scrollHeight; });
       await wheel(page, selector, 1800);
