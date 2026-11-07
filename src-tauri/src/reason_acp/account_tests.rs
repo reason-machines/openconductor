@@ -73,6 +73,11 @@ fn status_keeps_an_account_error() {
     let a = parse_status(r#"{"version":"1","account":null,"account_error":"401 invalid api key"}"#)
         .unwrap();
     assert_eq!(a.error.as_deref(), Some("401 invalid api key"));
+    let stale = parse_status(
+        r#"{"account":{"email":"fixture@example.invalid"},"account_error":"expired login"}"#,
+    )
+    .unwrap();
+    assert!(!stale.signed_in());
 }
 
 #[test]
@@ -91,6 +96,27 @@ fn login_reads_link_and_code() {
     let done = parse_login("Signed in as ada@example.com");
     assert_eq!((done.url, done.code), (None, None));
     assert_eq!(done.message, "Signed in as ada@example.com");
+}
+
+#[test]
+fn login_retains_a_link_returned_after_a_device_long_poll() {
+    use super::cli::LaunchConfig;
+    use super::test_exe::write_executable;
+    let dir = std::env::temp_dir().join(format!("reason-login-long-poll-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let dir = dir.canonicalize().unwrap();
+    let cli = dir.join("reason");
+    write_executable(
+        &cli,
+        "#!/bin/sh\nsleep 21\nprintf '%s\\n' 'Open this link to sign in to Reason: https://reasonmachines.com/cli/connect?request=test-long-poll' 'The page shows the code TEST-CODE.'\n",
+        0o755,
+    );
+    let result = LaunchConfig::new(&cli).unwrap().login(&dir);
+    let _ = std::fs::remove_dir_all(&dir);
+    assert!(
+        result.is_ok(),
+        "a supported device long poll lost its URL: {result:?}"
+    );
 }
 
 /// Settings › Account › Sign out runs `reason logout` and reports its outcome.
