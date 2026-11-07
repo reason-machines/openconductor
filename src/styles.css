@@ -13,7 +13,9 @@
 }
 
 * { box-sizing: border-box; }
-html, body, #root { margin: 0; height: 100%; }
+html, body, #root { margin: 0; height: 100%; min-height: 0; }
+body, #root { display: flex; flex-direction: column; }
+#root { flex: 1; min-width: 0; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 input, textarea { font: inherit; color: inherit; }
 code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover); padding: 1px 4px; border-radius: 4px; }
@@ -24,7 +26,8 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .del { color: var(--diff-del); }
 
 /* The sidebar is `--sidebar-width` wide but never more than 40% of the window (Conductor's aside: max-w-[40%]). */
-.app { display: grid; grid-template-columns: min(var(--sidebar-width), 40%) 1fr; height: 100vh; overflow: hidden; background: var(--bg); }
+/* Inherit the zoom-adjusted root height: viewport units are scaled again by CSS zoom. */
+.app { display: grid; grid-template-columns: min(var(--sidebar-width), 40%) 1fr; height: 100%; min-height: 0; flex: 1; overflow: hidden; background: var(--bg); }
 .app.sidebar-hidden { grid-template-columns: 1fr; }
 .app { position: relative; }
 /* Experimental "Sidebar transparency": Conductor's rule (renderApp-BYEcFwvt.css) clears html, body, #root and its
@@ -456,7 +459,7 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .qo-hint { border-top: 1px solid var(--border); padding: 6px 12px; color: var(--muted); font-size: 11px; }
 
 /* Settings */
-.settings { display: grid; grid-template-columns: 256px 1fr; height: 100vh; overflow: hidden; }
+.settings { display: grid; grid-template-columns: 256px 1fr; height: 100%; min-height: 0; flex: 1; overflow: hidden; }
 .settings-nav { background: var(--sidebar); border-right: 1px solid var(--border); padding: 8px; overflow-y: auto; }
 .settings-group { margin-top: 12px; display: flex; flex-direction: column; gap: 1px; }
 .settings-group-title { color: var(--muted); font-size: 11px; font-weight: 500; padding: 4px 8px; }
