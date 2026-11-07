@@ -40,6 +40,20 @@ test("usage absence, explicit zero and partial counts remain distinct", () => {
   }
 });
 
+test("an empty successful Reason turn is a retryable failure, not a timestamp-only reply", () => {
+  const { rows } = run([
+    { prompt: "sda" }, { type: "text", text: "" }, { type: "text", text: " \n" },
+    { type: "usage", usage: { outputTokens: 0 } },
+    { type: "turnEnded", end: { outcome: "completed" } },
+  ]);
+  assert.equal(rows.filter((r) => r.kind === "assistant").length, 0);
+  const end = rows.find((r) => r.kind === "turn_end");
+  assert.ok(end?.kind === "turn_end");
+  assert.equal(end.status, "failed");
+  assert.match(end.error ?? "", /no reply/i);
+  assert.equal(end.retryPrompt, "sda");
+});
+
 const CHAT = "repo/tokyo";
 const HOME = "/Users/sven/conductor/workspaces/repo/tokyo";
 const CLOUD = "/home/runner/.reason/workspace/sessions/child-1/repo";

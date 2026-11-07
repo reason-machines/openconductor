@@ -193,16 +193,15 @@ type SaveProps = { settings: Settings; save: AgentTabProps["save"] };
 type SetReasonDefault = (key: Parameters<typeof withReason>[1], value: string) => void;
 type ReasonDefaultProps = { settings: Settings; setDefault: SetReasonDefault };
 
-/** The workspace `--workspace` pins new Reason chats to; the default follows the Reason app. */
+/** New chats require an explicit workspace; CLI selection is independent. */
 function WorkspaceRow({ settings, account, setDefault }: ReasonDefaultProps & { account: ReasonAccount | null }) {
   const pinned = settings.reason?.workspace ?? "";
   const workspaces = account?.workspaces ?? [];
-  const selected = workspaces.find((w) => w.selected);
   const known = pinned === "" || workspaces.some((w) => w.slug === pinned);
   return (
     <Row label="Workspace for new chats" help="New Reason chats open their Session in this workspace. Existing chats stay in theirs.">
       <select aria-label="Workspace for new chats" className="oc-agent-select-180" value={pinned} onChange={(e) => setDefault("workspace", e.target.value)}>
-        <option value="">{selected ? `Reason app's (${selected.name})` : "Reason app's selection"}</option>
+        <option value="" disabled>Choose a workspace</option>
         {!known && <option value={pinned}>{pinned}</option>}
         {workspaces.map((w) => (
           <option key={w.slug} value={w.slug}>
@@ -210,6 +209,7 @@ function WorkspaceRow({ settings, account, setDefault }: ReasonDefaultProps & { 
           </option>
         ))}
       </select>
+      {pinned === "" && <span className="ag-detail" role="alert">Choose a workspace before starting a new Reason chat.</span>}
       {activeWorkspace(settings, account) === null && pinned !== "" && account && <span className="ag-detail" role="alert">Not signed in to {pinned}</span>}
     </Row>
   );
@@ -220,9 +220,11 @@ function DefaultModelRows({ settings, setDefault }: ReasonDefaultProps) {
   const [models, setModels] = useState<ReasonModelOption[]>([]);
   // Asked again once the executable path settles (it saves per keystroke): the list comes from that `reason`.
   const exe = settings.reason_executable_path ?? null;
+  const workspace = settings.reason?.workspace ?? null;
   const first = useRef(true);
   useEffect(() => {
     let live = true;
+    setModels([]);
     const fresh = !first.current;
     first.current = false;
     const timer = setTimeout(() => void reasonModels(fresh).then((m) => live && setModels(m)), fresh ? 400 : 0);
@@ -230,7 +232,7 @@ function DefaultModelRows({ settings, setDefault }: ReasonDefaultProps) {
       live = false;
       clearTimeout(timer);
     };
-  }, [exe]);
+  }, [exe, workspace]);
   const model = settings.reason?.model ?? "";
   const effort = settings.reason?.reasoning_effort ?? "";
   const listed = model === "" || models.some((m) => m.value === model);
