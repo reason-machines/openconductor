@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "Exact Request -> Response sample renders inert accessible SVG",
+    "Existing diagram updates colors on light/dark theme changes",
+    "Rendered diagram preserves source and code-copy payload",
+    "Directives, frontmatter, HTML, images, actions, malformed/partial and oversized input fall back to readable code",
+    "Rapid source changes never publish stale SVG; ordinary highlighted fences and copy still work",
+    "SVG boundary strips active tags, CSS, handlers and external paint URLs",
+    "Zero page errors and zero external HTTP requests during all parsing/rendering cases"
+  ],
+  "errors": [],
+  "external": []
+}
