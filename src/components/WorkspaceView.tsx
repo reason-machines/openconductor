@@ -64,7 +64,8 @@ import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
 import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
-import { attachmentPath, promptText, randomDir, rejectReason, restoreComposerAttachments, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
+import type { ComposerAttachment } from "../features/chat/composerAttachments.ts";
+import { composerSessionFor } from "../features/chat/composerSession.ts";
 import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
 
 /** Sends a message with attached text files from the chat shown (Fix errors). */
@@ -132,9 +133,6 @@ interface Props {
 const COMPOSER_AGENT: Record<ChatAgentId, ComposerAgent> = { reason: "acp", codex: "codex", claude: "claude" };
 /** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
-
-/** Wait after the last keystroke before the composer draft is saved. */
-const DRAFT_SAVE_DELAY_MS = 300;
 
 /** Queues the Create-workspace dialog's first message for the new workspace's chat. */
 export function seedTranscript(workspaceId: string, text: string) {
@@ -223,10 +221,13 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const planWaiting = waiting?.kind === "plan" ? waiting : undefined;
   // Conductor's composer shows the oldest tool approval in place of its editor (`Jpo`).
   const toolApproval = pendingToolApproval(permissions);
-  const [draft, setDraft] = useState("");
-  // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
-  const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
-  const [attachError, setAttachError] = useState<string | null>(null);
+  const session = useMemo(() => composerSessionFor(chatId, composerDrafts()), [chatId]);
+  const { draft, attachments, error: attachError } = useSyncExternalStore(session.subscribe, session.snapshot);
+  const { setDraft, setAttachments } = session;
+  useEffect(() => {
+    void session.connect();
+    return () => session.disconnect();
+  }, [session]);
   /** The turn whose "Reset chat?" dialog is open. */
   const [resetTurn, setResetTurn] = useState<string | null>(null);
   /** A "Fork to new tab" is reading the chat's options. */
@@ -248,9 +249,6 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const followUpMode = useFollowUpMode();
 
   useEffect(() => {
-    setDraft("");
-    setAttachments([]);
-    setAttachError(null);
     setAccess(codexAccess(chatId));
   }, [chatId]);
 
@@ -279,48 +277,6 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     saveAgent(chatId, next);
     setPicked((p) => ({ ...p, [chatId]: next }));
   }
-
-  // The draft is kept between launches (`composer-drafts`, keyed by the chat
-  // session, which is the workspace): loaded when the workspace opens, saved
-  // after typing pauses and when the workspace changes; an empty draft is
-  // removed.
-  const draftLoadedFor = useRef<string | null>(null);
-  const pendingDraft = useRef<{ id: string; text: string; attachments: ComposerAttachment[] } | null>(null);
-  const flushDraft = useCallback(() => {
-    const p = pendingDraft.current;
-    pendingDraft.current = null;
-    if (p) void (p.text === "" && p.attachments.length === 0 ? composerDrafts().clear(p.id) : composerDrafts().save(p.id, p.text, p.attachments));
-  }, []);
-  useEffect(() => {
-    let live = true;
-    draftLoadedFor.current = null;
-    const id = workspace.id;
-    composerDrafts()
-      .load(id)
-      .then(
-        (saved) => {
-          if (!live) return;
-          draftLoadedFor.current = id;
-          const message = typeof saved === "string" ? saved : saved.message;
-          const restored = restoreComposerAttachments(typeof saved === "string" ? [] : saved.attachments);
-          if (message) setDraft((d) => (d === "" ? message : d));
-          setAttachments((current) => current.length === 0 ? restored : current);
-        },
-        () => {
-          if (live) draftLoadedFor.current = id;
-        },
-      );
-    return () => {
-      live = false;
-      flushDraft();
-    };
-  }, [workspace.id, flushDraft]);
-  useEffect(() => {
-    if (draftLoadedFor.current !== workspace.id) return;
-    pendingDraft.current = { id: workspace.id, text: draft, attachments };
-    const timer = setTimeout(flushDraft, DRAFT_SAVE_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [draft, attachments, workspace.id, flushDraft]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
@@ -477,47 +433,21 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
 
   /** Stages each file (Conductor's draft attachments); it reaches the workspace when the message is sent. */
   async function attachFiles(files: File[]) {
-    setAttachError(null);
-    for (const file of files) {
-      const why = rejectReason(file);
-      if (why) {
-        setAttachError(why);
-        continue;
-      }
-      try {
-        const bytes = new Uint8Array(await file.arrayBuffer());
-        const relativePath = attachmentPath(file.name, randomDir());
-        if (reason) await draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data: bytes });
-        const a: ComposerAttachment = { name: relativePath, label: file.name, text: promptText(bytes, relativePath), ...(reason ? { staged: relativePath } : {}) };
-        setAttachments((list) => addAttachment(list, a));
-      } catch (e) {
-        setAttachError(`Failed to attach ${file.name}: ${e instanceof Error ? e.message : String(e)}`);
-      }
-    }
+    await session.attach(files, reason ? (relativePath, data) => draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data }) : undefined);
   }
 
   function removeAttachment(a: ComposerAttachment) {
+    if (session.sending) return;
     setAttachments((list) => list.filter((x) => x.name !== a.name));
     if (a.staged) draftAttachmentsApi.remove({ localWorkspaceId: workspace.id, relativePath: a.staged }).catch((e) => console.warn("chat: staged attachment not removed", e));
   }
 
-  /** Copies staged files into the workspace (`.context/attachments/…`), then sends. */
+  /** Copies every staged file before delivering any part of the message. */
   async function onSubmit(text: string, mode: SendMode) {
-    const sending = attachments;
-    setAttachments([]);
-    setAttachError(null);
-    const failed: string[] = [];
-    for (const a of sending) {
-      if (!a.staged) continue;
-      try {
-        await draftAttachmentsApi.uploadToWorkspace({ localWorkspaceId: workspace.id, relativePath: a.staged, workspacePath: cwd });
-      } catch (e) {
-        console.warn("chat: attachment not copied into the workspace", e);
-        failed.push(a.label ?? a.name);
-      }
-    }
-    if (failed.length > 0) setAttachError(`Not copied into the workspace (sent inline only): ${failed.join(", ")}`);
-    submit(text, mode, sending.map(({ name, text }) => ({ name, text })));
+    await session.send(
+      (relativePath) => draftAttachmentsApi.uploadToWorkspace({ localWorkspaceId: workspace.id, relativePath, workspacePath: cwd }),
+      (sending) => submit(text, mode, sending.map(({ name, text }) => ({ name, text }))),
+    );
   }
 
   return (
@@ -623,6 +553,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       <Composer
         key={chatId}
         draft={draft}
+        clearOnSubmit={planWaiting !== undefined}
         setDraft={setDraft}
         inputRef={inputRef}
         workspacePath={cwd}
