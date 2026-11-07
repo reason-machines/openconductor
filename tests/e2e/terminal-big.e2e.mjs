@@ -116,7 +116,7 @@ function fakeBackend(shellState) {
         case "pty_clear_history":
           return;
         case "pty_kill":
-          window.__fake.kills.push(args.args.id);
+          window.__fake.kills.push(args.id);
           return;
         case "app_info":
           return { name: "OpenConductor", version: "0.1.0", platform: "macos" };
