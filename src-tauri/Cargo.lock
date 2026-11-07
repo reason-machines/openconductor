@@ -3379,6 +3379,8 @@ dependencies = [
  "libc",
  "notify",
  "nucleo-matcher",
+ "objc2",
+ "objc2-web-kit",
  "oc-scripts",
  "openconductor-db",
  "plist",

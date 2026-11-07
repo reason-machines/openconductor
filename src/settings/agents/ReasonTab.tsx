@@ -210,7 +210,7 @@ function WorkspaceRow({ settings, account, setDefault }: ReasonDefaultProps & { 
           </option>
         ))}
       </select>
-      {activeWorkspace(settings, account) === null && pinned !== "" && workspaces.length > 0 && <span className="ag-detail">Not signed in to {pinned}</span>}
+      {activeWorkspace(settings, account) === null && pinned !== "" && account && <span className="ag-detail" role="alert">Not signed in to {pinned}</span>}
     </Row>
   );
 }
