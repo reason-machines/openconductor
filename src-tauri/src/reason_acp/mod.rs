@@ -26,6 +26,7 @@ pub mod account;
 pub mod api;
 pub mod cli;
 pub mod cloud;
+pub mod login;
 pub mod provider;
 pub mod rpc;
 pub mod updates;
@@ -39,6 +40,8 @@ mod api_tests;
 mod cli_tests;
 #[cfg(test)]
 mod cloud_tests;
+#[cfg(test)]
+mod login_tests;
 #[cfg(test)]
 mod provider_tests;
 // Mounted here as well as at the crate root because tools/reason-acp/run-rust-tests.sh
