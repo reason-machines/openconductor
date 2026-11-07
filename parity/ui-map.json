@@ -32060,7 +32060,7 @@
   }
  ],
  "supplemental_evidence": {
-  "source_main_commit": "9443720f9c6ea802316192321da5b76f4931447a",
+  "source_main_commit": "dff4e7b0e2ba93db912a1eac0d4461521bccea9f",
   "records": [
    {
     "id": "shell-actions-722",
@@ -32766,11 +32766,61 @@
      "REA exit0/evidenceID was insufficient when earlier actions failed; final checks require every step completed. Superseded incomplete captures and initial inaccessible-preview execution context remain recorded gaps. The owned port4518 preview has an actual stopped receipt; no new preview/capture here.",
      "Consuming main1518/run42329855067 at9443720f remains with the sole E2E owner and is not counted while active. Package/signature checks are not native execution or real-auth proof."
     ]
+   },
+   {
+    "id": "sidebar-shortcuts-757",
+    "areas": [
+     "sidebar"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/757",
+    "merge_commit": "0c088d05b9bd2795d02b5703238d00389d64b21b",
+    "evidence_path": "evidence/sidebar-shortcuts/README.md",
+    "capture_manifests": [
+     "evidence/sidebar-shortcuts/identity.json",
+     "evidence/sidebar-shortcuts/activation-checks.json",
+     "evidence/sidebar-shortcuts/activation-failure.json"
+    ],
+    "lane": "OpenConductor cloud Chromium with invented local-account state, mock preferences/backend and actual CDP Meta+number input. Retained REA-decoded Conductor numbering evidence; no fresh reference capture or native run.",
+    "summary": "With Focus collapsed, Meta+2 selected hidden Lisbon instead of visible Osaka before the fix. Sharing the existing immutable collapsed-section set between Sidebar and PaletteHost corrects visible-row activation. The owner reports six failing cases and six passing controls before the fix. Afterward,44 focused tests,1325 full units, build and color checks passed. The browser proof covers42 contexts and162 actual-key activations across dark/light, Project/Status, three project filters and section collapse/re-expansion. Out-of-range Meta+9 is unchanged. All five workflows consuming exact main0c088d05 passed per their existing owners, including both E2E1529 jobs and23/23 App flows. No whole-state score or native parity is promoted.",
+    "provenance": {
+     "owner_session": "27102e36-8b7f-4f1b-9ada-1e0503d3fede",
+     "source_message": "4d33d736-2db5-4f85-9190-3fe92e6f3109",
+     "consuming_non_e2e_receipt": "3e978352-a545-40a6-b130-ee15c34ac7e1",
+     "e2e_owner_session": "acc3b5c5-8a01-407e-b474-42e914e3cf90",
+     "consuming_e2e_receipt": "78740a54-d82f-4c36-bf19-f3a076c5d180",
+     "published_head": "9640f31a50f7479f31b4f7a782acb4451ef64b42",
+     "tested_product_commit": "6b8838ccc1f70c4cb05e6028f6db76eb8ec0ca68",
+     "consuming_ci_run": "42332253884",
+     "consuming_keybindings_run": "42332253775",
+     "consuming_workspace_run": "42332253804",
+     "consuming_package_run": "42332253987",
+     "package_artifact": "13557907526",
+     "package_bytes": 57457535,
+     "consuming_e2e_run": "42332253868",
+     "consuming_e2e_jobs": [
+      "128281188754",
+      "128281189131"
+     ],
+     "consuming_e2e_artifact": "13558368120",
+     "consuming_e2e_completed_at": "2026-11-07T03:14:30Z",
+     "verification": "Merged source, committed manifests, tracked source-file hashes and stop receipts reconciled on Reason Cloud. Runtime assertions, tests, screenshot inspection, package/signature checks and terminal E2E artifact inspection remain attributed to the existing owners, not rerun or independently recounted by ledger integration. Built dist assets are not independently verified."
+    },
+    "limits": [
+     "Conductor section-specific collapse-to-number activation has no retained runtime semantic trace. Grounding reuses the earlier decoded numbering evidence; no new REA capture or native reference observation. Semantic coverage stays partial.",
+     "The before viewport is1200x601; the after viewport is1280x820. These screenshots prove bounded functional behavior, not pixel-distance or full-screen visual parity; ledger integration did not inspect images.",
+     "The collapse set is session-local and resets on app reload. Real database persistence, remapped modifiers, Pinned/My-workspaces container collapse, macOS key interception, installed-app behavior, real agents/auth and actual IME NOT RUN. All nine final native reviews remain unverified.",
+     "Initial broad browser driver snapshotted exiting filter rows and failed target5, Tallinn, after only four rows remained. The retained failure and corrected rendered-row wait are harness evidence, not a second product fix. All four owned previews have actual stopped receipts; no new preview or capture here.",
+     "The39/39 package checks and ad-hoc hardened-runtime signature are owner-reported package contracts, not archive reopening, installation or native execution. Fake-provider Ubuntu E2E does not establish real-auth Mac/cloud behavior, five local consecutive passes or native parity."
+    ]
    }
   ],
-  "reconciled_at": "2026-11-07T02:45:20Z",
+  "reconciled_at": "2026-11-07T03:25:06Z",
   "provenance": "Merged source and committed area manifests reconciled on Reason Cloud. Area checks, artifact inspection and native limits are attributed to their existing owners; no CI or native verification was rerun by ledger integration.",
   "batch_notes": [
+   "Current reconciliation against main dff4e7b0 adds merged #757 visible-row numbered activation proof once, alongside all29 unchanged earlier records. Only the sidebar supplemental gap is narrowed; every raw/scoped row, exclusion, capture identity/score, toast-system/main-flow requirement, default-off gate and all nine native final-review verdicts are unchanged. Earlier observation windows below remain historical.",
+   "Sole E2E owner acc3b5c5 terminal receipt6fff86a2 confirms the ten-green target through1523/42331214654 at9443720f:1500,1502,1504,1507,1509,1512,1513,1515,1518,1523 after1499 cancellation. The owner validated20/20 jobs and230/230 flows. This records the owner's completed accounting, not a new recount. #757 consuming1529 separately passed both jobs and23/23 flows per receipt78740a54. Neither extends or independently recomputes that historical ten-run milestone. #754 consuming1530/42332257717 remains with its sole owner, active at the last receipt and not promoted from partial CI.",
+   "#757 supersedes only the untested default Meta+number visible-row path for the exercised synthetic browser contexts. Remapped modifiers, Pinned/My-workspaces container collapse, reload/native persistence, reference light/pixel parity and native full review stay unverified. Five-pass local failure, original #748 timing/causality, real-auth and actual IME remain separate gaps. Existing coordinator Page is read-only here; source/data goes to its owner with no duplicate Page, worker, preview, install, dispatch/rerun or E2E watcher.",
    "Current reconciliation against main9443720f adds merged #752 filtered multi-row Projects navigation/activation proof to the existing28 records. Earlier #748/#750/#751 and bounded native #741/#742 receipts are unchanged. Every raw/scoped row, exclusion and capture score is retained; all nine final native reviews and both system requirements remain unverified.",
    "Sole E2E owner acc3b5c5 reports full ordered-main streak8/10:1500,1502,1504,1507,1509,1512,1513,1515 after1499 cancellation. Owner receipt c1f09751 confirms1515/run42329391407 at70bf6c5e completed02:38:04Z, both jobs and artifact13556254121/results.json23/23 including agents-reason. Automatic1518/run42329855067 at9443720f is active and not counted; delayed pull_request1501/42320678170 remains excluded. This is attributed owner accounting, not an independent rescore or native/five-pass/auth promotion.",
    "#752 supersedes only the single-result/untested filtered-navigation limitation: initial unfiltered focus, fallback runtime, final-published-head render and native palette review remain unverified. Browser sign-in P0 stays with f7006ba7 and sole Mac proof owner d8e894e9; no completion or native-verdict credit. The coordinator owns the existing Page; this Session supplies source/data without publishing or copying it.",
@@ -32792,7 +32842,7 @@
    },
    "sidebar": {
     "area_verdict": "partial",
-    "gap": "Sort and merged #748 Group by have bounded dark/light fixture proof; #751 attests the final #748 source tree. Counts, filtering and mocked reload/collapse passed. Modifier-number activation, real database persistence, reference light/pixel parity and whole-menu/native review remain unverified. REA semantic graph coverage remains partial."
+    "gap": "Sort and merged #748 Group by have bounded dark/light fixture proof; #751 attests the final #748 source tree. #757 adds42 synthetic browser contexts with162 default Meta+number activations, covering visible rows after custom/status section collapse and filtering. Session-local collapse resets on reload. Remapped modifiers, Pinned/My-workspaces container collapse, real database persistence, reference light/pixel parity and whole-menu/native review remain unverified. REA semantic graph coverage remains partial."
    },
    "workspace-chat": {
     "area_verdict": "partial",
@@ -33094,13 +33144,14 @@
     "all-workspaces",
     "sidebar-after-archive"
    ],
-   "gap": "Sort and merged #748 Group by have bounded dark/light fixture proof; #751 attests the final #748 source tree. Counts, filtering and mocked reload/collapse passed. Modifier-number activation, real database persistence, reference light/pixel parity and whole-menu/native review remain unverified. REA semantic graph coverage remains partial.",
+   "gap": "Sort and merged #748 Group by have bounded dark/light fixture proof; #751 attests the final #748 source tree. #757 adds42 synthetic browser contexts with162 default Meta+number activations, covering visible rows after custom/status section collapse and filtering. Session-local collapse resets on reload. Remapped modifiers, Pinned/My-workspaces container collapse, real database persistence, reference light/pixel parity and whole-menu/native review remain unverified. REA semantic graph coverage remains partial.",
    "supplemental_evidence": [
     "shell-actions-722",
     "home-details-730",
     "sidebar-sort-744-746",
     "sidebar-group-748",
-    "sidebar-group-final-source-751"
+    "sidebar-group-final-source-751",
+    "sidebar-shortcuts-757"
    ],
    "area_verdict": "partial"
   },
