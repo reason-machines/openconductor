@@ -279,7 +279,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                             <span className="palette-icon" aria-hidden>
                               {actionIcon?.(item.action.id) ?? (item.action.icon && <ConductorIcon name={ICONS[item.action.icon]} size={16} />)}
                             </span>
-                            <span className="palette-title">{item.action.title}</span>
+                            <span className={item.action.group === "open-in" ? "palette-title palette-open-in-title" : "palette-title"}>{item.action.title}</span>
                             <Shortcut keys={shortcutsFor(item, overrides)} />
                           </>
                         ) : (
