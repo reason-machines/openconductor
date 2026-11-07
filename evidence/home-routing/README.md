@@ -42,6 +42,12 @@ For the REA reference captures, add `--home-routing-capture`. The server and dri
 - `git diff --check` passed.
 - The existing `shortcuts-workspace.e2e.mjs` nav.home case now requires the actual workspace list/search, active Home row and absent entry-card wordmark instead of only an absent workspace header. This suite was not run locally in its native/built-app environment; its CI result must be tracked separately.
 
+## CI follow-up
+
+Exact-head run [42404855915](https://github.com/reason-machines/openconductor/actions/runs/42404855915), Reason job `128500245045`, failed its command-palette flow at log line 3464. The old assertion expected three entry cards after Home and observed `{"list":true,"workspace":false,"cards":0}`. Open-in then timed out because the aborted command-palette flow had not reopened a workspace. Earlier Reason/model-picker/Codex/banner/transcript/slash steps passed. This is an obsolete test contract, not a retry justification.
+
+The app-flow assertion now requires the workspace list, its Search input, active sidebar Home, zero entry cards and no workspace. Its existing follow-on search must still reopen the same workspace. `HOME_APP_FLOW=1 HOME_FLOW_ONLY=1` on the supported driver replays this actual exported `command-palette` flow through a Chromium transport adapter. Both dark/light replays passed, including keyboard search/Enter and return to the workspace. [Replay results](ci-followup/checks.json) retain the two verdicts. The first adapter launch lacked the required populated/local fixture query and timed out before the flow; the corrected launch supplied both. These replays are Chromium proof, not the full built-app suite. `node --check` on both changed scripts and `git diff --check` passed. Exact-head CI must be observed again after publication.
+
 ## Limits and next increment
 
 This proves Home's selected-screen behavior in Chromium, not full Home pixel parity. The browser address bar in OpenConductor remains `/` because shell selection is internal; Conductor changes to `/all-workspaces`. URL/history synchronization remains an explicit gap. Titles, workspace fixture labels, row icons, some spacing and other whole-list details differ in the retained screenshots; no pixel-distance score is asserted or normalized.
