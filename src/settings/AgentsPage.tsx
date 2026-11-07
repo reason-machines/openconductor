@@ -4,7 +4,8 @@ import { ClaudeTab, type AgentTabProps } from "./agents/ClaudeTab";
 import { CodexTab } from "./agents/CodexTab";
 import { ReasonTab } from "./agents/ReasonTab";
 import { AgentMark, ReasonMark } from "./agents/icons";
-import { AGENTS_TABS, AGENTS_TAB_LABEL, AgentTabRow, AgentsHeader, agentsTabFrom, type AgentsTab, type TabSpec } from "./agents/kit";
+import { AGENTS_TABS, AGENTS_TAB_LABEL, AgentTabRow, AgentsHeader, type AgentsTab, type TabSpec } from "./agents/kit";
+import { selectProviderTab, useProviderTab } from "./providerTab";
 import "./agents/agents.css";
 
 const TABS: readonly TabSpec<AgentsTab>[] = AGENTS_TABS.map((id) => ({
@@ -21,21 +22,15 @@ const TABS: readonly TabSpec<AgentsTab>[] = AGENTS_TABS.map((id) => ({
  * in src/settings/agents/<Agent>Tab.tsx and is built from agents/kit.tsx.
  */
 export function AgentsPage(props: AgentTabProps) {
-  const [tab, setTab] = useState<AgentsTab>(() => agentsTabFrom(new URLSearchParams(window.location.search).get("providerTab")));
+  const tab = useProviderTab();
   const [settingsPath, setSettingsPath] = useState<string | null>(null);
   useEffect(() => {
     settingsFilePath().then(setSettingsPath, () => setSettingsPath(null));
   }, []);
-  const select = (next: AgentsTab) => {
-    setTab(next);
-    const q = new URLSearchParams(window.location.search);
-    q.set("providerTab", next);
-    window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}`);
-  };
   return (
     <div className="oc-ag ag-page">
       <AgentsHeader settingsPath={settingsPath} />
-      <AgentTabRow tabs={TABS} value={tab} onChange={select} />
+      <AgentTabRow tabs={TABS} value={tab} onChange={selectProviderTab} />
       <section role="tabpanel" aria-label={AGENTS_TAB_LABEL[tab]}>
         {tab === "reason" && <ReasonTab {...props} />}
         {tab === "claude" && <ClaudeTab {...props} />}

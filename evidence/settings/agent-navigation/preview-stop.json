@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-11-07T18:13:24.960Z",
+  "receipt": {
+    "state": "stopped",
+    "stopped": [
+      {
+        "server_id": "78e07b5a-28a2-4296-89e6-f4f3e04b3da1",
+        "port": 51749
+      }
+    ],
+    "guidance": "Each stopped server's process group has ended on the computer, so its port is free for preview_start."
+  },
+  "prior": [
+    {
+      "state": "stopped",
+      "stopped": [
+        {
+          "server_id": "009aa77b-788e-4235-8cd6-da9ba576f583",
+          "port": 51749
+        }
+      ],
+      "guidance": "Each stopped server's process group has ended on the computer, so its port is free for preview_start."
+    },
+    {
+      "state": "stopped",
+      "stopped": [
+        {
+          "server_id": "4aa2914f-1bd5-41af-91dd-c00126a92bb9",
+          "port": 51749
+        }
+      ],
+      "guidance": "Each stopped server's process group has ended on the computer, so its port is free for preview_start."
+    }
+  ]
+}

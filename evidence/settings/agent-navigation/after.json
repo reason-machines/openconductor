@@ -1,0 +1,22 @@
+[
+  {
+    "scenario": "canonical-url",
+    "status": "PASS",
+    "observed": {
+      "pathname": "/settings/user/providers",
+      "search": "?providerTab=codex",
+      "selected": "Codex",
+      "panel": "Codex"
+    }
+  },
+  {
+    "scenario": "mounted-search",
+    "status": "PASS",
+    "observed": {
+      "pathname": "/settings/user/providers",
+      "search": "?providerTab=claude",
+      "selected": "Claude Code",
+      "panel": "Claude Code"
+    }
+  }
+]

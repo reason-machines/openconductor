@@ -1,0 +1,118 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: provider selections notify an already-subscribed tab and preserve other URL state
+ok 1 - provider selections notify an already-subscribed tab and preserve other URL state
+  ---
+  duration_ms: 20.275214
+  type: 'test'
+  ...
+# Subtest: browser history also notifies provider tab subscribers
+ok 2 - browser history also notifies provider tab subscribers
+  ---
+  duration_ms: 0.360905
+  type: 'test'
+  ...
+# Subtest: obsolete or missing provider names use Reason
+ok 3 - obsolete or missing provider names use Reason
+  ---
+  duration_ms: 0.418079
+  type: 'test'
+  ...
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: non-settings paths open no settings
+ok 4 - non-settings paths open no settings
+  ---
+  duration_ms: 0.903744
+  type: 'test'
+  ...
+# Subtest: /settings and /settings/user open General
+ok 5 - /settings and /settings/user open General
+  ---
+  duration_ms: 0.355561
+  type: 'test'
+  ...
+# Subtest: every built user page has its own route
+ok 6 - every built user page has its own route
+  ---
+  duration_ms: 0.39618
+  type: 'test'
+  ...
+# Subtest: unknown and gated user tabs open General
+ok 7 - unknown and gated user tabs open General
+  ---
+  duration_ms: 0.176147
+  type: 'test'
+  ...
+# Subtest: cloud and organization routes need a cloud org, so they open General
+ok 8 - cloud and organization routes need a cloud org, so they open General
+  ---
+  duration_ms: 0.543116
+  type: 'test'
+  ...
+# Subtest: with a Reason workspace active, the organization pages open (Conductor's PI routes)
+ok 9 - with a Reason workspace active, the organization pages open (Conductor's PI routes)
+  ---
+  duration_ms: 0.465194
+  type: 'test'
+  ...
+# Subtest: opted-in Cloud setup has its own route, outside /settings/user
+ok 10 - opted-in Cloud setup has its own route, outside /settings/user
+  ---
+  duration_ms: 0.26694
+  type: 'test'
+  ...
+# Subtest: /settings/repos opens the last-viewed repository, else the first, else General
+ok 11 - /settings/repos opens the last-viewed repository, else the first, else General
+  ---
+  duration_ms: 0.232245
+  type: 'test'
+  ...
+# Subtest: repository sections
+ok 12 - repository sections
+  ---
+  duration_ms: 0.421721
+  type: 'test'
+  ...
+# Subtest: the /settings index redirect (?tab=, ?repoId=)
+ok 13 - the /settings index redirect (?tab=, ?repoId=)
+  ---
+  duration_ms: 1.082586
+  type: 'test'
+  ...
+# Subtest: repo ids are URL-encoded both ways
+ok 14 - repo ids are URL-encoded both ways
+  ---
+  duration_ms: 0.2073
+  type: 'test'
+  ...
+# Subtest: a resolved URL keeps unrelated search parameters only
+ok 15 - a resolved URL keeps unrelated search parameters only
+  ---
+  duration_ms: 0.158403
+  type: 'test'
+  ...
+# Subtest: resolved Agents URLs retain only a supported provider tab
+ok 16 - resolved Agents URLs retain only a supported provider tab
+  ---
+  duration_ms: 0.269001
+  type: 'test'
+  ...
+# Subtest: Copy link on a settings page copies its deep link (Conductor's TGt)
+ok 17 - Copy link on a settings page copies its deep link (Conductor's TGt)
+  ---
+  duration_ms: 0.077643
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 971.446228
