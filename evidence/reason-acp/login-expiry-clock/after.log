@@ -1,0 +1,11 @@
+   Compiling reason-acp-harness v0.0.0 (/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.qa/login-harness)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.66s
+     Running unittests /home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/src-tauri/src/reason_acp/mod.rs (target/debug/deps/reason_acp_harness-1749bea36301ec61)
+
+running 1 test
+test login_tests::expired_app_wait_can_be_retried_without_a_stale_attempt_cancelling_it ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 74 filtered out; finished in 0.26s
+
+    Checking reason-acp-harness v0.0.0 (/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/.qa/login-harness)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.70s
