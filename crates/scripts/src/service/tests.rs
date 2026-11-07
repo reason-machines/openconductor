@@ -55,6 +55,138 @@ fn wait_for(what: &str, mut f: impl FnMut() -> bool) {
 }
 
 #[test]
+fn shutdown_interrupts_active_setup() {
+    let f = fixture("[scripts]\nsetup = \"echo ready; sleep 30\"\n");
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    wait_for("setup output", || {
+        f.svc.setup.log("w1").unwrap_or_default().contains("ready")
+    });
+    f.svc.shutdown();
+    let state = f.svc.setup.state("w1");
+    f.svc.setup.cancel("w1");
+    assert_eq!(state, SetupState::Failed);
+    let outcome = f.svc.setup.outcome("w1").unwrap();
+    assert!(outcome.log.contains("ready"));
+    assert!(outcome.log.contains("interrupted"));
+    assert_eq!(fs::read_to_string(&outcome.log_path).unwrap(), outcome.log);
+    f.svc.shutdown();
+    assert_eq!(
+        f.events
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|e| matches!(e, ScriptEvent::SetupFinished(_)))
+            .count(),
+        1
+    );
+    assert!(!f.svc.start_setup(&f.ws).unwrap());
+}
+
+#[test]
+fn shutdown_discards_queued_runs_and_blocks_auto_run() {
+    let f = fixture(
+        r#"
+[scripts]
+setup = "echo ready; sleep 30"
+auto_run_after_setup = true
+[scripts.run.dev]
+command = "echo must-not-run"
+default = true
+"#,
+    );
+    let calls = spotlight_hook(&f, Some(Ok(())));
+    assert!(f.svc.start_setup(&f.ws).unwrap());
+    wait_for("setup output", || {
+        f.svc.setup.log("w1").unwrap_or_default().contains("ready")
+    });
+    f.svc.start_run(&f.ws, None).unwrap();
+    assert_eq!(f.svc.runs.state("w1", "dev"), RunState::WaitingForSetup);
+    f.svc.shutdown();
+    assert_eq!(f.svc.runs.state("w1", "dev"), RunState::Stopped);
+    assert_eq!(f.svc.runs.output("w1", "dev"), None);
+    assert!(calls.lock().unwrap().is_empty());
+    assert!(f
+        .svc
+        .start_run(&f.ws, None)
+        .unwrap_err()
+        .contains("shutting down"));
+}
+
+#[test]
+fn shutdown_blocks_auto_run_without_a_setup_script() {
+    let f = fixture(AUTO_RUN_DEV);
+    let calls = spotlight_hook(&f, Some(Ok(())));
+    f.svc.shutdown();
+    assert!(!f.svc.start_setup(&f.ws).unwrap());
+    assert!(calls.lock().unwrap().is_empty());
+    assert_eq!(f.svc.runs.output("w1", "dev"), None);
+}
+
+#[test]
+fn shutdown_waits_for_in_flight_completion_without_starting_a_queued_run() {
+    let mut f = fixture(
+        r#"
+[scripts]
+setup = "echo ready"
+auto_run_after_setup = true
+[scripts.run.dev]
+command = "echo must-not-run"
+default = true
+"#,
+    );
+    let (entered_tx, entered_rx) = std::sync::mpsc::channel();
+    let release = Arc::new(std::sync::Barrier::new(2));
+    let release_callback = release.clone();
+    let events = f.svc.events.clone();
+    f.svc.events = Arc::new(move |event| {
+        if matches!(event, ScriptEvent::SetupFinished(_)) {
+            entered_tx.send(()).unwrap();
+            release_callback.wait();
+        }
+        events(event);
+    });
+    // Queue before completion, independently of the fast setup process.
+    let spec = f
+        .svc
+        .spec(
+            &f.ws,
+            ScriptKind::Run,
+            "echo must-not-run".into(),
+            f.ws.workspace_path.clone(),
+        )
+        .unwrap();
+    f.svc
+        .runs
+        .start(
+            RunRequest {
+                workspace_id: "w1".into(),
+                repo_id: "r1".into(),
+                script_id: "dev".into(),
+                spec,
+                concurrent: true,
+                sink: None,
+            },
+            SetupState::Running,
+        )
+        .unwrap();
+    f.svc.start_setup(&f.ws).unwrap();
+    entered_rx.recv_timeout(Duration::from_secs(5)).unwrap();
+    let svc = f.svc.clone();
+    let shutdown = thread::spawn(move || svc.shutdown());
+    wait_for("shutdown admission closed", || {
+        *f.svc.shutting_down.lock().unwrap()
+    });
+    assert!(
+        !shutdown.is_finished(),
+        "shutdown must await completion callback"
+    );
+    release.wait();
+    shutdown.join().unwrap();
+    assert_eq!(f.svc.runs.state("w1", "dev"), RunState::Stopped);
+    assert_eq!(f.svc.runs.output("w1", "dev"), None);
+}
+
+#[test]
 fn setup_streams_output_then_auto_runs_the_default_script() {
     let f = fixture(
         r#"
@@ -92,7 +224,7 @@ fn run_uses_cwd_args_and_errors_without_scripts() {
     });
     let out = f.svc.runs.output("w1", "test").unwrap();
     let sub = f.ws.workspace_path.join("sub"); // logical $PWD, not the canonical path
-    assert_eq!(out, format!("{}\na b\n", sub.display()));
+    assert_eq!(out, format!("{}\r\na b\r\n", sub.display()));
     assert!(f.svc.start_run(&f.ws, Some("missing")).is_err());
     assert!(!f.svc.start_setup(&f.ws).unwrap(), "no setup script");
 }
@@ -101,7 +233,7 @@ fn run_uses_cwd_args_and_errors_without_scripts() {
 fn archive_runs_to_completion_with_the_workspace_id() {
     let f = fixture("[scripts]\narchive = \"echo bye $CONDUCTOR_WORKSPACE_ID; exit 4\"\n");
     let (code, out) = f.svc.run_archive(&f.ws).unwrap().unwrap();
-    assert_eq!((code, out.as_str()), (Some(4), "bye w1\n"));
+    assert_eq!((code, out.as_str()), (Some(4), "bye w1\r\n"));
     let none = fixture("");
     assert_eq!(none.svc.run_archive(&none.ws).unwrap(), None);
     assert!(Path::new(&f.ws.workspace_path).exists());

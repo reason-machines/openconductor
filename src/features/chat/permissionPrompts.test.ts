@@ -14,6 +14,14 @@ test("the card asks what the tool does, by tool name or ACP kind", () => {
   assert.equal(permissionHeading("mcp__linear__x"), "Do you want to run this tool?");
 });
 
+test("the local-command permission identifies the Mac without relabeling other commands or MCP tools", () => {
+  assert.equal(permissionHeading("mcp__conductor__RunLocalCommand"), "Do you want to run this command on your Mac?");
+  assert.equal(permissionHeading("Bash"), "Do you want to run this command?");
+  assert.equal(permissionHeading("BashOutput"), "Do you want to run this command?");
+  assert.equal(permissionHeading("execute"), "Do you want to run this command?");
+  assert.equal(permissionHeading("mcp__other__RunLocalCommand"), "Do you want to run this tool?");
+});
+
 test("the card's tool row: a Reason request's ACP kind and raw input, or a Claude Code tool by name", () => {
   const command = { command: "pnpm test src/middleware/rate-limit.test.ts", description: "Run the rate limit tests" };
   assert.deepEqual(permissionTool({ tool: "execute", title: command.command, input: command }), { name: "Bash", input: command });

@@ -67,4 +67,4 @@ The harness records its then-current local source commit, tracked-diff digest, a
 
 Published reference and OpenConductor screenshots are linked in `media.json`. Full-frame comparison ratios include different chat/sidebar fixtures and clocks; they are not a focused parity score or acceptance threshold.
 
-Remaining observed visual gap: the reference selected-commit chip uses its warm accent; OpenConductor uses its current app accent, which is neutral in this fixture. Native typography, native command execution, and native side-by-side parity were not exercised. No all-screen or native parity conclusion follows from this focused implementation.
+The selected-commit chip's colour mismatch is corrected in the [source-only historical-chip follow-up](historical-chip/README.md), including the grouped-selector search correction and normal/hover cascade. Its after-browser proof remains unrun. Native typography, native command execution, and native side-by-side parity were not exercised. No all-screen or native parity conclusion follows from this focused implementation.

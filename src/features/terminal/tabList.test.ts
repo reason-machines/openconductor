@@ -16,6 +16,16 @@ import { emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs.
 
 const run = (actions: TabsAction[], s: TabsState = emptyTabs()) => actions.reduce(tabsReducer, s);
 
+test("center placement survives saving and reopening without moving panel tabs", () => {
+  const state = run([{ type: "open", id: "p" }, { type: "open", id: "c", placement: "center" }]);
+  const saved = savedWorkspace(state, () => "/repo");
+  assert.ok(saved);
+  const list: TabList = { workspaces: { w: saved }, lastTabKind: "terminal" };
+  const reopened = decodeTabList(encodeTabList(list)).workspaces.w;
+  assert.equal(reopened.tabs.find((t) => t.id === "c")?.placement, "center");
+  assert.equal(reopened.tabs.find((t) => t.id === "p")?.placement, undefined);
+});
+
 /** An async store whose writes can be held, failed, and inspected. */
 function memory(init: Record<string, string> = {}) {
   const data: Record<string, string> = { ...init };
