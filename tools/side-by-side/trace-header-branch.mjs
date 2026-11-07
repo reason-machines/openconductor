@@ -29,7 +29,7 @@ for (const { rendererName, exportName, indexName } of aliases) {
   const exports = files[index].slice(files[index].lastIndexOf('export{'));
   assert.ok(exports.includes(`${indexName} as ${exportName}`), `missing index export ${exportName}`);
 }
-const excerpts = [[renderer, 'ACi'], [renderer, 'bro'], [index, 'cs'], [index, 'pOe'], [index, 'aVt'], [index, 'wNt'], [index, 'SNt']].map(([file, name]) => {
+const excerpts = [[renderer, 'ACi'], [renderer, 'yoo'], [renderer, 'bro'], [index, 'cs'], [index, 'pOe'], [index, 'aVt'], [index, 'wNt'], [index, 'SNt']].map(([file, name]) => {
   const source = files[file];
   const needle = `function ${name}(`;
   const offset = source.indexOf(needle);
@@ -46,6 +46,6 @@ console.log(JSON.stringify({
   artifacts: identities,
   aliases,
   excerpts,
-  conclusion: 'The non-archived local header branch supports inline rename and a Copy/Rename context menu; rename sanitizes the full branch and uses the existing user-initiated branch mutation.',
+  conclusion: 'ACi renders the static yoo span for an archived local workspace, without branch edit or menu handlers. The non-archived bro header supports inline rename and a Copy/Rename context menu; rename sanitizes the full branch and uses the existing user-initiated branch mutation.',
   gaps: ['No browser or native branch-edit scenario was run.', 'Static control flow does not establish successful Git mutation or native clipboard behavior.', 'No new REA analysis was attempted; the retained REA graph and matching decoded artifacts supply bounded provenance.'],
 }, null, 2));
