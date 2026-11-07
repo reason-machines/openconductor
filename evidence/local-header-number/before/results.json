@@ -1,0 +1,18 @@
+[
+  {
+    "side": "ref",
+    "theme": "dark",
+    "settings": "true",
+    "workspaceNumber": 1,
+    "badgeCount": 0,
+    "route": "/repository/repo-tide-web/workspace/ws-lisbon"
+  },
+  {
+    "side": "oc",
+    "theme": "dark",
+    "settings": true,
+    "workspaceNumber": 1,
+    "badgeCount": 1,
+    "route": "/"
+  }
+]
