@@ -1,0 +1,23 @@
+[
+  {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/fdd5d766-5f39-44c9-96a0-8787be302957/021e89c8403df4e5a9472c54721e5df0/before.png",
+    "markdown": "![Before: shortcut 2 labels Osaka but opens hidden Lisbon](https://api.reasonmachines.com/media/pr-screenshots/fdd5d766-5f39-44c9-96a0-8787be302957/021e89c8403df4e5a9472c54721e5df0/before.png#w=1200&h=601)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  },
+  {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/fdd5d766-5f39-44c9-96a0-8787be302957/cba65d5a893baa23f58fbe91ccb69b72/after-dark.png",
+    "markdown": "![After: shortcut 2 opens visible Osaka, dark](https://api.reasonmachines.com/media/pr-screenshots/fdd5d766-5f39-44c9-96a0-8787be302957/cba65d5a893baa23f58fbe91ccb69b72/after-dark.png#w=1280&h=820)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  },
+  {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/fdd5d766-5f39-44c9-96a0-8787be302957/70e853c13605dfad2580e09bf79e5060/after-light.png",
+    "markdown": "![After: shortcut 2 opens visible Osaka, light](https://api.reasonmachines.com/media/pr-screenshots/fdd5d766-5f39-44c9-96a0-8787be302957/70e853c13605dfad2580e09bf79e5060/after-light.png#w=1280&h=820)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  }
+]
