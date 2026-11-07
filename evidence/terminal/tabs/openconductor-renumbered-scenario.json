@@ -1,0 +1,123 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://localhost:4404/?kind=setup&palette=stone"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark",
+    "locale": "en-US",
+    "timezone": "UTC"
+  },
+  "actions": [
+    {
+      "step_id": "loaded",
+      "action": "wait_for_timeout",
+      "duration_ms": 2000
+    },
+    {
+      "step_id": "terminal-one",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "button[aria-label='New terminal']"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "terminal-one-settled",
+      "action": "wait_for_timeout",
+      "duration_ms": 350
+    },
+    {
+      "step_id": "terminal-two",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "button[aria-label='New terminal']"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "terminal-two-settled",
+      "action": "wait_for_timeout",
+      "duration_ms": 350
+    },
+    {
+      "step_id": "terminal-three",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "button[aria-label='New terminal']"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "terminal-three-settled",
+      "action": "wait_for_timeout",
+      "duration_ms": 350
+    },
+    {
+      "step_id": "close-middle",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": ".term-tab:nth-of-type(2) button[aria-label='Close terminal']"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "close-middle-settled",
+      "action": "wait_for_timeout",
+      "duration_ms": 350
+    },
+    {
+      "step_id": "screen",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": ".xterm-rows:visible >> nth=0"
+      },
+      "state": "visible",
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "focus-screen",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": ".xterm-screen:visible >> nth=0"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "focus-screen-settled",
+      "action": "wait_for_timeout",
+      "duration_ms": 350
+    },
+    {
+      "step_id": "settled",
+      "action": "wait_for_timeout",
+      "duration_ms": 400
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "dom",
+      "url"
+    ],
+    "events": [
+      "console",
+      "page-errors"
+    ]
+  }
+}

@@ -253,7 +253,7 @@ test("strip: Setup and Run under the list, Run's dashed empty state, chevron and
   await strip.getByRole("button", { name: "New terminal" }).click();
   await strip.locator(".terminal-panel .xterm-rows").waitFor();
   await page.waitForFunction(() => document.querySelector(".ws-strip .terminal-panel .xterm-rows")?.textContent?.includes("lisbon %"));
-  assert.deepEqual(await strip.locator(".ws-strip-tabs [role=tab]").allInnerTexts(), ["Setup", "Run", "Terminal 1"]);
+  assert.deepEqual(await strip.locator(".ws-strip-tabs [role=tab]").allInnerTexts(), ["Setup", "Run", "Terminal"]);
   assert.equal(await page.locator(".workspace > .terminal-panel").count(), 0);
   // Run is still one click away; closing the terminal goes back to it.
   await strip.getByRole("tab", { name: "Run" }).click();

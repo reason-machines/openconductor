@@ -108,7 +108,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
         <button type="button" role="tab" aria-selected={open && view === "run"} className={`strip-tab${open && view === "run" ? " active" : ""}`} onClick={() => show("run")}>
           Run
         </button>
-        {terms.tabs.map((t) => {
+        {terms.tabs.map((t, index) => {
           const selected = open && view === "terminal" && t.id === terms.activeId;
           return (
             <div
@@ -122,8 +122,8 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
                 show("terminal");
               }}
             >
-              <span className={`term-dot ${t.status}`} />
-              <span>{tabLabel(t.title, t.runningProgram)}</span>
+              {t.status !== "running" && <span className={`term-dot ${t.status}`} />}
+              <span>{tabLabel(terms.tabs.length === 1 ? "Terminal" : `Terminal ${index + 1}`, t.runningProgram)}</span>
               <button
                 type="button"
                 className="term-x"
