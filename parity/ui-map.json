@@ -32502,7 +32502,7 @@
      "verification": "Merge identity confirmed in fetched main. Area behavior/captures and package checks are attributed to the existing owner, not rerun by ledger integration."
     },
     "limits": [
-     "Native slider rendering/keyboard/pointer, filesystem persistence and live auth are NOT RUN. Direct E2E 42316037241 was cancelled. Pre-#743 containing 42316328825 failed its embedded Codex picker step despite independent Codex/App-flow success. Mocked IPC values are not desktop persistence."
+     "At the original browser-proof snapshot, native slider rendering/keyboard/pointer, filesystem persistence and live auth were NOT RUN. Later bounded native-controls-741-742 adds only synthetic keyboard, computed geometry and shutdown scratch-TOML proof; physical keyboard, pointer drag and restart persistence remain NOT RUN. Direct E2E 42316037241 was cancelled. Pre-#743 containing 42316328825 failed its embedded Codex picker step despite independent Codex/App-flow success. Mocked IPC values are not desktop persistence."
     ]
    },
    {
@@ -32522,7 +32522,7 @@
      "verification": "Merge identity confirmed in fetched main. Area behavior/captures and package checks are attributed to the existing owner, not rerun by ledger integration."
     },
     "limits": [
-     "Not a match for the entire retained needs-permission state; its wrong score remains. Native installed rendering and real permission round trip are NOT RUN. Older 8467 scratch assertions do not exercise this correction. The #739 synthetic WKWebView run on 50265ba2 did not exercise #742 colors/actions despite containing the source, so it adds no native or screenshot proof here."
+     "Not a match for the entire retained needs-permission state; its wrong score remains. The original snapshot had no native rendering proof. Later native-controls-741-742 adds computed tokens and synthetic dismissal on the no-provider/stale-request false path, not visual parity or a real permission round trip. Older 8467 scratch assertions do not exercise this correction. The #739 synthetic WKWebView run on 50265ba2 did not exercise #742 colors/actions despite containing the source, so it adds no native or screenshot proof here."
     ]
    },
    {
@@ -32685,11 +32685,13 @@
      "evidence/sidebar-group/exact-head-after/filter-checks.json"
     ],
     "lane": "Evidence-only final #748 source proof in Linux Chromium, dark/light1280x820, invented fixture storage and mocked native boundary; retained dark reference reused",
-    "summary": "Owner reports both existing assertion drivers passed, eight REA captures plus two filter screenshots inspected/published, and35 focused tests/build/hash/inventory passed. Captured local42c5b3d5 tree dbdc265e equals published #748 e295f98f. This closes final #748 source coverage, not a later consuming-main render. #751 merged after16 checks/four PR workflows passed. Four of five consuming70bf6c5e workflows passed per owner; E2E1513/run42327550939 remains active and uncounted at that receipt. Package42327551133/artifact13556495038 passed39/39/signature checks; not installed.",
+    "summary": "Owner reports both existing assertion drivers passed, eight REA captures plus two filter screenshots inspected/published, and35 focused tests/build/hash/inventory passed. Captured local42c5b3d5 tree dbdc265e equals published #748 e295f98f. This closes final #748 source coverage, not a later consuming-main render. #751 merged after16 checks/four PR workflows passed. Sole E2E owner subsequently confirms consuming1513/run42327550939 on70bf6c5e completed success: both jobs128267531278/128267531535, eight late suites and artifact13556900481/results.json23/23 including agents-reason. Home owner closes all five consuming workflows. Package42327551133/artifact13556495038 passed39/39/signature checks; not installed.",
     "provenance": {
      "owner_session": "27102e36-8b7f-4f1b-9ada-1e0503d3fede",
      "source_message": "ce578cec-a5ac-4b58-afaf-0dc017d2f91d",
-     "consuming_receipt": "f63bf952-9204-4331-9e0f-e5f10e909459",
+     "consuming_receipt": "f9125e39-3f27-4503-9f10-bc8738291b95",
+     "e2e_owner_message": "1fd7abee-f021-4bb2-ad2f-1a025ea3e1a6",
+     "previous_consuming_receipt": "f63bf952-9204-4331-9e0f-e5f10e909459",
      "published_head": "a5ca4dd828f9cc3f360037df29375e40b5eaa0a7",
      "verification": "Merge and retained manifest identities reconciled from main. Screenshot inspection and runtime/CI/package results remain owner-attributed; ledger integration did not view the images or rerun the proof."
     },
@@ -32698,13 +32700,44 @@
      "preview-lifecycle.json records server f338248e-16db-46db-885e-556e9fba50c8/4682 stopped, started01:46:40.997Z and stop recorded01:48:58.673Z. The latter is an upper bound, not exact stop time. No new preview or shutdown here.",
      "REA semantic PARTIAL; local Rust cache check NOT RUN; native installation/exact-build/WebKit, real auth, modifier-number activation, reference-light/pixel parity and real database persistence remain unverified. No score or native promotion."
     ]
+   },
+   {
+    "id": "native-controls-741-742",
+    "areas": [
+     "settings",
+     "workspace-chat",
+     "dialogs"
+    ],
+    "verdict": "runtime-only",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/741",
+    "merge_commit": "f9c992c3225506d2e4bd55925747c3ef6be73f15",
+    "evidence_path": "evidence/settings/terminal-slider/README.md",
+    "runtime_report_url": "https://reasonmachines.com/agents/d8e894e9-2c63-4ec3-9a11-f28722af996d?page=35fcabfb-811f-4210-b4a4-61c67f0b99d8",
+    "source_commit": "154ba0dab2c9f2c1af622d3e6cacb17c4f09194a",
+    "lane": "Owner-reported locally built ad-hoc debug app on authorized sven m5 max, native WKWebView synthetic DOM events and scratch filesystem; no agents or credentials",
+    "summary": "Owner reports #741 synthetic PageUp12 to20, PageDown20 to10,1px arrows/bounds passed,6px track/16px opaque thumb computed, terminal_font_size12 written to scratch TOML and read after shutdown. #742 dark/light computed muted tokens and synthetic Yes/No dismissal passed in the native app through the no-provider/stale-request false path; final driver30/30. Four sequential owned apps/helpers exited with no scratch handles/IP sockets, and stable PID54473 identity/binary unchanged per owner. Earlier partial attempts remain partial, not a combined green suite.",
+    "provenance": {
+     "owner_session": "d8e894e9-2c63-4ec3-9a11-f28722af996d",
+     "source_message": "ba56060e-fdb0-4e12-a3b1-b85b7f97c134",
+     "corroborating_owner_message": "57a9ebc6-a9aa-4533-aa3d-e771a73277f8",
+     "permission_owner_comment": "https://github.com/reason-machines/openconductor/pull/742#issuecomment-6701071210",
+     "binary_sha256": "6ea779fce19dde74929990cf6d0816184fbd4633445ea6f7977013f39b92fd87",
+     "archive_sha256": "e04a65a977e2cf7c32b53b574f10ffd3e5fd4aa4a0e52b033b9d1577529ffe3e",
+     "verification": "Attributed native-owner receipt;2,629 source-file hashes unchanged per owner. Source ancestry checked on Cloud, but archive, image, running app and native filesystem were not independently inspected or rerun by ledger integration."
+    },
+    "limits": [
+     "Exact-window screenshot FAILED with could not create image from window. Nine surfaces reached in DOM across partial runs do not establish visual or final side-by-side acceptance. All nine final native reviews remain unverified.",
+     "#741 pointer drag, physical keyboard and restart persistence NOT RUN. Shutdown TOML readback is not restart persistence or real-user filesystem verification.",
+     "#742 is not an active-agent permission round trip. Outbound option payload mapping was not observed. One local synthetic chat/message is not real provider/auth proof.",
+     "#739 was not rerun; real macOS IME and #740 terminal tabs/selected-worktree cwd NOT RUN. No agents, credentials, network, CI, real-data cleanup or new native launch/driver was requested by ledger integration."
+    ]
    }
   ],
   "reconciled_at": "2026-11-07T02:25:21Z",
   "provenance": "Merged source and committed area manifests reconciled on Reason Cloud. Area checks, artifact inspection and native limits are attributed to their existing owners; no CI or native verification was rerun by ledger integration.",
   "batch_notes": [
-   "Current reconciliation against main70bf6c5e integrates merged #748 Group by, #750 stale-handler correction and #751 final #748 source proof once. Existing24 records, every raw/scoped row and capture score remain retained; all nine final native reviews and both system requirements remain unverified.",
-   "Sole E2E owner acc3b5c5 reports full ordered-main streak6/10:1500,1502,1504,1507,1509,1512 after1499 cancellation. Each completed pass includes both built-app jobs and23/23 App flows. Active1513 is not counted; delayed pull_request1501/42320678170 is excluded. This is attributed owner accounting, not an independent rescore or native/five-pass/auth promotion.",
+   "Current reconciliation against main70bf6c5e integrates merged #748 Group by, #750 stale-handler correction, #751 final #748 source proof and one bounded native #741/#742 owner receipt. Existing24 records, every raw/scoped row and capture score remain retained; all nine final native reviews and both system requirements remain unverified.",
+   "Sole E2E owner acc3b5c5 reports full ordered-main streak7/10:1500,1502,1504,1507,1509,1512,1513 after1499 cancellation. Each completed pass includes both built-app jobs and23/23 App flows. Active1515/run42329391407 is not counted; delayed pull_request1501/42320678170 is excluded. This is attributed owner accounting, not an independent rescore or native/five-pass/auth promotion.",
    "#752 multi-row Projects correction is still an unmerged owner receipt at this source snapshot and is not integrated here. Browser sign-in P0 stays with f7006ba7 and sole Mac proof owner d8e894e9; no completion or native-verdict credit. The coordinator owns the existing Page; this Session supplies source/data without publishing or copying it.",
    "Earlier notes below retain their e9cfaed4 observation windows. New merged evidence supersedes only the stated gaps, not excluded fixtures, raw assessments or native verdicts. No builder changes, Mac input, preview, capture, dependency install, new worker, CI dispatch/rerun or duplicate watcher occurs in this reconciliation.",
    "Reconciled on Reason Cloud against main e9cfaed4, not a new capture identity. Existing captures, raw/scoped scores, 341-entry denominator and all nine native final-review verdicts remain unchanged. The later #739 runtime-owner receipt adds bounded synthetic WKWebView assertions only.",
@@ -32728,7 +32761,7 @@
    },
    "workspace-chat": {
     "area_verdict": "partial",
-    "gap": "Turn-footer, startup/picker readiness, terminal/Find/label fixtures and built-app E2E are separate proof. Permission-token correction does not close the retained wrong state. Older 8467 scratch assertions do not verify newer changes. Real-auth, selected-worktree cwd and native review remain unverified."
+    "gap": "Turn-footer, startup/picker readiness, terminal/Find/label fixtures and built-app E2E remain separate proof. Owner-reported #742 native computed tokens/synthetic dismissal use a no-provider false path, not active-agent permission delivery or visual parity. The retained wrong state, outbound payload mapping, real auth, selected-worktree cwd and native final review remain unverified."
    },
    "composer": {
     "area_verdict": "partial-known-defect",
@@ -32740,7 +32773,7 @@
    },
    "settings": {
     "area_verdict": "partial",
-    "gap": "Local-page/#741 slider browser proof and #750 deterministic stale-handler before/after proof are separate. Sole owner reports consuming #750 fake-provider E2E passed23/23; original #748 WebKit timing causality remains unproven. Native slider/pointer, filesystem persistence, font/dropdown variants, real auth and native default-off gate remain unverified. Browser sign-in P0 remains separately owned, not completed here."
+    "gap": "Local-page/#741 slider browser proof and #750 deterministic stale-handler before/after proof are separate. Sole owner reports consuming #750 fake-provider E2E passed23/23; original #748 WebKit timing causality remains unproven. Owner reports #741 native synthetic keys/computed geometry and scratch-TOML write/read after shutdown passed; physical keys, drag, restart persistence and visual parity remain unverified. Font/dropdown variants, real auth and native default-off gate remain unverified. Browser sign-in P0 remains separately owned, not completed here."
    },
    "open-in": {
     "area_verdict": "partial",
@@ -33054,7 +33087,7 @@
     "needs-permission",
     "menu-chat-tab"
    ],
-   "gap": "Turn-footer, startup/picker readiness, terminal/Find/label fixtures and built-app E2E are separate proof. Permission-token correction does not close the retained wrong state. Older 8467 scratch assertions do not verify newer changes. Real-auth, selected-worktree cwd and native review remain unverified.",
+   "gap": "Turn-footer, startup/picker readiness, terminal/Find/label fixtures and built-app E2E remain separate proof. Owner-reported #742 native computed tokens/synthetic dismissal use a no-provider false path, not active-agent permission delivery or visual parity. The retained wrong state, outbound payload mapping, real auth, selected-worktree cwd and native final review remain unverified.",
    "supplemental_evidence": [
     "turn-changes-718",
     "reason-runtime-715",
@@ -33062,7 +33095,8 @@
     "chat-startup-729-732",
     "terminal-tabs-740",
     "permission-colors-742",
-    "picker-readiness-743"
+    "picker-readiness-743",
+    "native-controls-741-742"
    ],
    "area_verdict": "partial"
   },
@@ -33150,13 +33184,14 @@
     "settings-repo-misc-lower",
     "settings-search"
    ],
-   "gap": "Local-page/#741 slider browser proof and #750 deterministic stale-handler before/after proof are separate. Sole owner reports consuming #750 fake-provider E2E passed23/23; original #748 WebKit timing causality remains unproven. Native slider/pointer, filesystem persistence, font/dropdown variants, real auth and native default-off gate remain unverified. Browser sign-in P0 remains separately owned, not completed here.",
+   "gap": "Local-page/#741 slider browser proof and #750 deterministic stale-handler before/after proof are separate. Sole owner reports consuming #750 fake-provider E2E passed23/23; original #748 WebKit timing causality remains unproven. Owner reports #741 native synthetic keys/computed geometry and scratch-TOML write/read after shutdown passed; physical keys, drag, restart persistence and visual parity remain unverified. Font/dropdown variants, real auth and native default-off gate remain unverified. Browser sign-in P0 remains separately owned, not completed here.",
    "supplemental_evidence": [
     "cloud-ui-gate-723",
     "reason-runtime-715",
     "local-settings-716",
     "terminal-slider-741",
-    "reason-defaults-clear-750"
+    "reason-defaults-clear-750",
+    "native-controls-741-742"
    ],
    "area_verdict": "partial"
   },
@@ -33235,7 +33270,8 @@
     "onboarding-lifecycle-731",
     "linked-directory-733",
     "help-popover-745",
-    "discard-alert-738"
+    "discard-alert-738",
+    "native-controls-741-742"
    ],
    "area_verdict": "partial"
   }
