@@ -1,0 +1,58 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Projects returns the last-viewed workspace in that project, not its first or newest row
+ok 1 - Projects returns the last-viewed workspace in that project, not its first or newest row
+  ---
+  duration_ms: 0.666766
+  type: 'test'
+  ...
+# Subtest: Projects without a surviving recent visit opens the most recently updated workspace
+ok 2 - Projects without a surviving recent visit opens the most recently updated workspace
+  ---
+  duration_ms: 2.283341
+  type: 'test'
+  ...
+# Subtest: Projects preserves source order on a recency tie and has no target for an empty project
+ok 3 - Projects preserves source order on a recency tie and has no target for an empty project
+  ---
+  duration_ms: 0.137512
+  type: 'test'
+  ...
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: arrows, Enter and Escape drive the list
+ok 4 - arrows, Enter and Escape drive the list
+  ---
+  duration_ms: 0.793016
+  type: 'test'
+  ...
+# Subtest: Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+ok 5 - Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+  ---
+  duration_ms: 0.904039
+  type: 'test'
+  ...
+# Subtest: rebinding the palette toggle changes what closes it
+ok 6 - rebinding the palette toggle changes what closes it
+  ---
+  duration_ms: 0.208145
+  type: 'test'
+  ...
+# Subtest: active row wraps and clamps
+ok 7 - active row wraps and clamps
+  ---
+  duration_ms: 0.139491
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 244.761756
