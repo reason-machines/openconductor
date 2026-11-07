@@ -106,6 +106,8 @@ test("sections: create, move in and out, edit, delete", async () => {
   await row(page, "Quiet harbor").click({ button: "right" });
   await rowMenu(page).getByRole("menuitem", { name: "Pin" }).click();
   await page.locator(".sb-group", { hasText: "Pinned" }).waitFor();
+  await settled(() => row(page, "Quiet harbor").count(), 1);
+  assert.equal(await row(page, "Quiet harbor").getAttribute("data-pinned"), "true");
   await openMoveMenu(page, "Quiet harbor");
   await moveMenu(page).getByRole("menuitemradio", { name: "Focus" }).click();
   await settled(() => rowsIn(focus), ["Quiet harbor"]);
