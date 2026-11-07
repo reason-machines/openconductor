@@ -36,9 +36,10 @@ export function targetBranch({ prBase, prMerged, intended, fallback }: TargetInp
 }
 
 /** The `scope` of a `diff_workspace` / `diff_discard_file` request (Rust `diff::git::Scope`). */
-export type ScopeRequest = { kind: "all"; base: string; remote: string | null } | { kind: "uncommitted" };
+export type ScopeRequest = { kind: "all"; base: string; remote: string | null } | { kind: "uncommitted" } | { kind: "commit"; hash: string };
 
 export function scopeRequest(scope: DiffScope, target: DiffTarget): ScopeRequest {
+  if (typeof scope === "object") return { kind: "commit", hash: scope.commitHash };
   return scope === "all" ? { kind: "all", base: target.branch, remote: target.remote } : { kind: "uncommitted" };
 }
 
@@ -54,7 +55,7 @@ export type DiscardSource = "menu" | "view";
  */
 export function discardScope(source: DiscardSource, view: DiffScope, inTurn: boolean): DiffScope | null {
   if (source === "menu") return "all";
-  return inTurn ? null : view;
+  return inTurn || typeof view === "object" ? null : view;
 }
 
 /** Right-panel tab and changes scope after Cmd+Alt+U: Uncommitted, or back to All changes if already there. */

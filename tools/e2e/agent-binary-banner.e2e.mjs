@@ -53,7 +53,14 @@ git("-c", "user.name=e2e", "-c", "user.email=e2e@example.com", "commit", "-q", "
 const MiB = 1024 * 1024;
 const payload = Buffer.alloc(3 * MiB, 7);
 let mode = "fail";
+const fixtureRequests = [];
 const server = createServer((req, res) => {
+  const request = { path: req.url, mode, status: null, finished: false };
+  fixtureRequests.push(request);
+  res.on("finish", () => {
+    request.status = res.statusCode;
+    request.finished = true;
+  });
   if (req.url !== "/claude" || mode === "fail") {
     res.writeHead(404).end("not here");
     return;
@@ -214,6 +221,7 @@ try {
 
   const failed = await waitFor("the failed banner", bannerIn("failed"), 30000);
   assert.match(failed.text, /^Couldn't download Claude Code\. see error$/, failed.text);
+  assert.ok(fixtureRequests.some((r) => r.mode === "fail" && r.status === 404 && r.finished), "the local fixture answered the failed download with HTTP 404");
   assert.equal(failed.action, "Retry");
   assert.ok(failed.alert, "destructive alert icon");
   assert.ok(await click(".agent-binary-banner-toggle"));
@@ -269,7 +277,16 @@ try {
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {
   console.error(`not ok - ${e instanceof Error ? e.stack : e}`);
-  if (sessionUrl) await screenshot("binary-failure").catch(() => {});
+  if (sessionUrl) {
+    await screenshot("binary-failure").catch(() => {});
+    const diagnostics = {
+      banner: await banner().catch((error) => ({ error: String(error) })),
+      backend: await invoke("get_agent_binary_state").catch((error) => ({ error: String(error) })),
+      fixtureRequests,
+    };
+    writeFileSync(join(out, "binary-failure.json"), JSON.stringify(diagnostics, null, 2));
+    console.error(`binary failure diagnostics: ${JSON.stringify(diagnostics)}`);
+  }
   process.exitCode = 1;
 } finally {
   if (sessionUrl) await wd("DELETE", "").catch(() => {});

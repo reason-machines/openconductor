@@ -37,6 +37,8 @@ Run the comparison through `preview_start` on port 4682 with `SHELL_OUT=<output>
 
 On the fresh main-based publication checkout, focused URL tests passed 2/2, `npm run build` passed (branding, TypeScript and Vite), `npm run lint:colors` passed, both browser drivers passed `node --check`, and `git diff --check` passed. The main-shell flag insertion was adapted because the unrelated Home-routing flag is absent on this base. No Home-routing or E2E follow-up commit was imported. New production files and the WorkspaceView replacement match the transferred Git blob identities. Full unit suite and browser comparison were not rerun here; the preview slot belongs to another owner. Original patch checksum/provenance was not re-established through retained-message transfer because evidence hashes were redacted. Published screenshots in `media.json` were viewed and uploaded by the parent.
 
+Main advanced while this PR opened, producing an adjacent-flag conflict in `main-shell.mjs`. The publication branch merged current main and preserved both its Home-routing flags and this header flag. No parent feature commit was cherry-picked. The merged-main checkout passed the focused 2/2 tests, production build (including branding and TypeScript), driver syntax and staged diff checks again. Earlier lint results predate that base merge.
+
 ## Limits
 
 Native Conductor/OpenConductor, WebKit, real DB persistence and real external-browser launching were not run. No Mac input, launch, build, app replacement, process stop or data change occurred. Whole-header layout remains different outside this focused menu, including workspace/branch presentation and target-branch placement. No pixel-parity claim is made.

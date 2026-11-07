@@ -74,10 +74,35 @@ fn contained_path(root: &Path, path: &Path) -> Result<(), String> {
     reject_symlinks(path)
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Probe {
+    Paths,
+    Webkit,
+}
+
+fn probe_request(args: impl IntoIterator<Item = impl AsRef<std::ffi::OsStr>>) -> Result<Option<Probe>, String> {
+    let mut probe = None;
+    for arg in args {
+        let requested = if arg.as_ref() == "--oc-qa-paths" {
+            Some(Probe::Paths)
+        } else if arg.as_ref() == "--oc-qa-webkit" {
+            Some(Probe::Webkit)
+        } else {
+            None
+        };
+        if let Some(requested) = requested {
+            if probe.is_some() {
+                return Err("native QA accepts exactly one probe flag".into());
+            }
+            probe = Some(requested);
+        }
+    }
+    Ok(probe)
+}
+
 #[cfg(not(workspace_std_only))]
 mod app {
     use super::*;
-    use std::ffi::OsStr;
     use std::io::Write;
     use tauri::Manager;
 
@@ -187,11 +212,14 @@ mod app {
     }
 
     pub(crate) fn reject_release_request() {
+        let probe = probe_request(std::env::args_os()).unwrap_or_else(|error| refuse(&error));
         if !cfg!(debug_assertions)
-            && (std::env::args_os().any(|arg| arg == OsStr::new("--oc-qa-paths"))
-                || std::env::var_os("OC_NATIVE_QA_ROOT").is_some())
+            && (probe.is_some() || std::env::var_os("OC_NATIVE_QA_ROOT").is_some())
         {
             refuse("native QA requires a debug build");
+        }
+        if probe == Some(Probe::Webkit) && !cfg!(target_os = "macos") {
+            refuse("WebKit QA requires macOS");
         }
     }
 
@@ -201,18 +229,22 @@ mod app {
     }
 
     pub(crate) fn before_startup(context: tauri::Context<tauri::Wry>) -> tauri::Context<tauri::Wry> {
-        let probe = std::env::args_os().any(|arg| arg == OsStr::new("--oc-qa-paths"));
+        let probe = probe_request(std::env::args_os()).unwrap_or_else(|error| refuse(&error));
         if !requires_guard(
             &context.config().identifier,
             std::env::var_os("OC_NATIVE_QA_ROOT").is_some(),
-            probe,
+            probe.is_some(),
         ) {
             return context;
         }
         if let Err(error) = check_config(context.config()) {
             refuse(&error);
         }
-        if probe {
+        #[cfg(all(debug_assertions, target_os = "macos"))]
+        if probe == Some(Probe::Webkit) {
+            webkit_probe(context);
+        }
+        if probe == Some(Probe::Paths) {
             // build() exposes the real resolver; run() would execute window creation and setup.
             let builder = tauri::Builder::default();
             #[cfg(target_os = "macos")]
@@ -234,6 +266,76 @@ mod app {
             std::process::exit(0);
         }
         context
+    }
+
+    #[cfg(all(debug_assertions, target_os = "macos"))]
+    fn webkit_probe(context: tauri::Context<tauri::Wry>) -> ! {
+        // Wry 0.57.1 navigates during construction. Public with_webview runs later:
+        // this observes after an inert about:blank bootstrap, NOT before all navigation.
+        std::thread::spawn(|| {
+            std::thread::sleep(std::time::Duration::from_secs(10));
+            refuse("WebKit QA timed out");
+        });
+        let app = tauri::Builder::default()
+            .enable_macos_default_menu(false)
+            .setup(|app| {
+                validate(app.handle()).map_err(std::io::Error::other)?;
+                let mut output = receipt(app.handle()).map_err(std::io::Error::other)?;
+                let mut config = app.config().app.windows[0].clone();
+                config.label = "native-qa-webkit".into();
+                config.url = tauri::WebviewUrl::External("about:blank".parse()?);
+                config.visible = false;
+                config.focus = false;
+                config.focusable = false;
+                config.devtools = Some(false);
+                config.javascript_disabled = true;
+                // WindowConfig has no initialization_scripts field in tauri-utils 2.10.2.
+                // No application/plugin scripts are added; Tauri still injects core scripts.
+                let window = tauri::WebviewWindowBuilder::from_config(app.handle(), &config)?
+                    .disable_javascript()
+                    .on_navigation(|_| false)
+                    .on_new_window(|_, _| tauri::webview::NewWindowResponse::Deny)
+                    .build()?;
+                let visible = window.is_visible()?;
+                if visible {
+                    refuse("WebKit QA window is visible");
+                }
+                window.with_webview(move |platform| {
+                    if objc2::MainThreadMarker::new().is_none() {
+                        refuse("WebKit QA inspection is not on the main thread");
+                    }
+                    let pointer = platform.inner().cast::<objc2_web_kit::WKWebView>();
+                    if pointer.is_null() {
+                        refuse("WebKit QA view is unavailable");
+                    }
+                    // Tauri guarantees a live WKWebView for the duration of this main-thread callback.
+                    let persistent = unsafe { (&*pointer).configuration().websiteDataStore().isPersistent() };
+                    if persistent {
+                        refuse("WebKit QA datastore is persistent");
+                    }
+                    output["probe_version"] = "OPENCONDUCTOR_NATIVE_QA_WEBKIT_V1".into();
+                    output["webkit_data_store_persistent"] = persistent.into();
+                    output["native_window_visible"] = visible.into();
+                    output["bootstrap_url"] = "about:blank".into();
+                    output["javascript_disabled_requested"] = true.into();
+                    output["navigation_policy_all_denied"] = true.into();
+                    output["new_window_policy_all_denied"] = true.into();
+                    output["inspection_after_bootstrap_construction"] = true.into();
+                    let mut stdout = std::io::stdout().lock();
+                    if serde_json::to_writer(&mut stdout, &output).is_err()
+                        || writeln!(stdout).is_err()
+                        || stdout.flush().is_err()
+                    {
+                        refuse("cannot write WebKit QA receipt");
+                    }
+                    std::process::exit(0);
+                })?;
+                Ok(())
+            })
+            .build(context)
+            .unwrap_or_else(|error| refuse(&error.to_string()));
+        app.run(|_, _| {});
+        refuse("WebKit QA exited without a receipt");
     }
 
     pub(crate) fn guard_builder(builder: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri::Wry> {
@@ -275,6 +377,16 @@ mod tests {
     }
     impl Drop for Fixture {
         fn drop(&mut self) { std::fs::remove_dir_all(&self.0).unwrap(); }
+    }
+
+    #[test]
+    fn probe_flags_are_distinct_and_cannot_be_combined_or_repeated() {
+        assert_eq!(probe_request(["app"]).unwrap(), None);
+        assert_eq!(probe_request(["app", "--oc-qa-paths"]).unwrap(), Some(Probe::Paths));
+        assert_eq!(probe_request(["app", "--oc-qa-webkit"]).unwrap(), Some(Probe::Webkit));
+        assert!(probe_request(["--oc-qa-paths", "--oc-qa-webkit"]).is_err());
+        assert!(probe_request(["--oc-qa-webkit", "--oc-qa-webkit"]).is_err());
+        assert_eq!(probe_request(["--oc-qa-webkit-extra"]).unwrap(), None);
     }
 
     #[test]

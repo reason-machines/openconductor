@@ -405,7 +405,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           {dashboardEnabled && (
             <NavRow icon={<LayoutGridIcon size={12} />} label="Dashboard" shortcut="" active={sel.kind === "dashboard"} onClick={() => dispatch({ type: "select", selection: { kind: "dashboard" } })} />
           )}
-          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} title={titleWithShortcut("Home", hint("nav.home"))} active={sel.kind === "root"} onClick={() => dispatch({ type: "select", selection: { kind: "root" } })} />
+          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} title={titleWithShortcut("Home", hint("nav.home"))} active={sel.kind === "home"} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
           {/* "Routines" (Conductor's `uy` row after Create, active on /routines*): Conductor shows it for a cloud
               organization; ours runs on Reason Loops, so it shows once Reason is signed in. */}

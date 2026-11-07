@@ -54,6 +54,8 @@ pub struct LoginOptions {
     pub poll_interval: Duration,
     /// Only the isolated test harness can opt in. Production accepts Reason HTTPS links.
     pub allow_loopback: bool,
+    #[cfg(test)]
+    pub clock: Option<Arc<dyn Fn() -> Instant + Send + Sync>>,
 }
 
 impl Default for LoginOptions {
@@ -64,7 +66,19 @@ impl Default for LoginOptions {
             timeout: Duration::from_secs(10 * 60),
             poll_interval: Duration::from_secs(1),
             allow_loopback: false,
+            #[cfg(test)]
+            clock: None,
         }
+    }
+}
+
+impl LoginOptions {
+    fn now(&self) -> Instant {
+        #[cfg(test)]
+        if let Some(clock) = &self.clock {
+            return clock();
+        }
+        Instant::now()
     }
 }
 
@@ -245,7 +259,7 @@ fn pairing(
     options: &LoginOptions,
     waiting: impl FnOnce(BrowserPrompt),
 ) -> LoginState {
-    let deadline = Instant::now() + options.timeout;
+    let deadline = options.now() + options.timeout;
     let Some(initial) = account(launch, dir, cancelled, options.status_timeout) else {
         return if cancelled.load(Ordering::SeqCst) {
             LoginState::Cancelled
@@ -277,7 +291,7 @@ fn pairing(
         url,
         code: prompt.code,
     });
-    while Instant::now() < deadline {
+    while options.now() < deadline {
         if cancelled.load(Ordering::SeqCst) {
             return LoginState::Cancelled;
         }
@@ -287,7 +301,7 @@ fn pairing(
             cancelled,
             options
                 .status_timeout
-                .min(deadline.saturating_duration_since(Instant::now())),
+                .min(deadline.saturating_duration_since(options.now())),
         ) {
             Some(account) if account.signed_in() => return LoginState::Connected { account },
             Some(account) if account.error.is_some() => {
@@ -298,7 +312,7 @@ fn pairing(
             _ => {}
         }
         let until = Instant::now() + options.poll_interval;
-        while Instant::now() < until && Instant::now() < deadline {
+        while Instant::now() < until && options.now() < deadline {
             if cancelled.load(Ordering::SeqCst) {
                 return LoginState::Cancelled;
             }

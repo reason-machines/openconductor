@@ -107,9 +107,7 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
     "open-docs": commands.openDocs,
     "quick-open": commands.quickOpen,
     "copy-url": commands.copyUrl,
-    // Home is the wordmark screen (`root`). Conductor opens /all-workspaces here;
-    // Sven's brief for #483 routes it to the wordmark screen instead.
-    "go-home": () => dispatch({ type: "select", selection: { kind: "root" } }),
+    "go-home": () => dispatch({ type: "select", selection: { kind: "home" } }),
     "next-workspace": () => go(stepWorkspace(state, 1)),
     "previous-workspace": () => go(stepWorkspace(state, -1)),
     "go-to-next-unread": () => void goUnread(false),
