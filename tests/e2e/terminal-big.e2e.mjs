@@ -216,6 +216,17 @@ test("Big terminal mode: ⌘⇧T does nothing while off; on, it opens a tab runn
   await page.getByRole("button", { name: "Hide terminal panel" }).click();
   await page.locator(".ws-strip.collapsed").waitFor();
   await page.evaluate(() => document.activeElement?.blur());
+  await page.evaluate(() => {
+    window.__fake.focusEvents = [];
+    document.addEventListener("focusin", (event) => {
+      window.__fake.focusEvents.push({
+        tag: event.target.tagName,
+        className: event.target.className,
+        center: Boolean(event.target.closest(".center-terminal")),
+      });
+      if (window.__fake.focusEvents.length > 10) window.__fake.focusEvents.shift();
+    });
+  });
   await page.keyboard.press("Meta+Shift+t");
   await page.waitForFunction(() => window.__fake.spawns.length === 4);
   assert.equal((await spawns(page))[3], 'codex -c model_reasoning_effort="high" --ask-for-approval never --sandbox danger-full-access');
@@ -223,7 +234,24 @@ test("Big terminal mode: ⌘⇧T does nothing while off; on, it opens a tab runn
   assert.equal(await page.locator(".ws-strip .term-tab").count(), 2);
   assert.equal(await page.locator(".ws-strip.collapsed").count(), 1, "opening a center tab does not reopen the right strip");
   assert.equal(await centerTabs.getByRole("tab", { name: /^Terminal/ }).count(), 2);
-  await page.waitForFunction(() => document.activeElement?.closest(".center-terminal .term-mount"));
+  try {
+    await page.waitForFunction(() => document.activeElement?.closest(".center-terminal .term-mount"));
+  } catch (error) {
+    const focus = await page.evaluate(() => ({
+      active: document.activeElement?.outerHTML.slice(0, 500),
+      events: window.__fake.focusEvents,
+      terminals: [...document.querySelectorAll(".term-mount")].map((mount) => ({
+        center: Boolean(mount.closest(".center-terminal")),
+        textareas: [...mount.querySelectorAll("textarea")].map((textarea) => ({
+          connected: textarea.isConnected,
+          disabled: textarea.disabled,
+          tabIndex: textarea.tabIndex,
+          rect: textarea.getBoundingClientRect().toJSON(),
+        })),
+      })),
+    }));
+    throw new Error(`New center terminal did not take keyboard focus: ${JSON.stringify({ focus, errors })}`, { cause: error });
+  }
   assert.ok(await page.evaluate(() => window.__fake.spawns.every((s) => s.cwd === "/repo/.worktrees/lisbon")));
   if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/big-terminal-shortcut.png` });
   // Close it again so the tabs below stay under the per-workspace tab limit.
