@@ -1329,8 +1329,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
               notify={notify}
               emptyAction={<PullLatestButton pullLatest={pullLatest} agentWorking={agentWorking} />}
             />
-            {/* Until workspaces carry their worktree path, terminals open in the repository checkout. */}
-            <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={repo.path} onAskSetupAgent={workspace.status === "archived" ? undefined : askSetupAgent} />
+            <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={workspace.path ?? repo.path} onAskSetupAgent={workspace.status === "archived" ? undefined : askSetupAgent} />
           </div>
         )}
       </div>

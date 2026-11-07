@@ -63,6 +63,7 @@ function fakeBackend({ repo, workspace }) {
   const gate = new Promise((r) => (release = r));
   window.__releasePty = () => release();
   window.__ptyInput = "";
+  window.__ptySpawns = [];
   window.isTauri = true;
   window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener() {} };
   window.__TAURI_INTERNALS__ = {
@@ -83,6 +84,7 @@ function fakeBackend({ repo, workspace }) {
           return [{ id: workspace.id, repositoryId: repo.id, directoryName: workspace.name, workspaceName: workspace.name, branch: workspace.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: workspace.path, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" }];
         case "pty_spawn": {
           const a = args.args;
+          window.__ptySpawns.push({ id: a.id, cwd: a.cwd });
           setTimeout(() => {
             emit({ kind: "ready", id: a.id, pid: 42 });
             emit({ kind: "data", id: a.id, data: b64(`${a.cwd}$ `) });
@@ -116,10 +118,28 @@ const focusedIn = (page) =>
     return a ? a.tagName.toLowerCase() : "none";
   });
 
-async function open(page) {
-  await page.addInitScript(fakeBackend, { repo: REPO, workspace: WORKSPACE });
+async function open(page, workspace = WORKSPACE) {
+  await page.addInitScript(fakeBackend, { repo: REPO, workspace });
   await page.goto(base + "/");
   await page.locator(".composer [contenteditable=true]").waitFor();
+}
+
+for (const path of ["/worktrees/lisbon", "/repo", null]) {
+  test(`new terminal tabs use selected workspace cwd (${path ?? "repository fallback"})`, async () => {
+    const page = await browser.newPage();
+    try {
+      await open(page, { ...WORKSPACE, path });
+      await page.locator(".ws-strip[data-terminals-ready]").waitFor();
+      await page.evaluate(() => window.__releasePty());
+      for (let count = 1; count <= 2; count++) {
+        await page.getByRole("button", { name: "New terminal" }).click();
+        await page.waitForFunction((n) => window.__ptySpawns.length === n, count);
+        assert.deepEqual(await page.evaluate(() => window.__ptySpawns.map((s) => s.cwd)), Array(count).fill(path ?? REPO.path));
+      }
+    } finally {
+      await page.close();
+    }
+  });
 }
 
 test("no terminal opens with the workspace, so the chat box keeps every key", async () => {
