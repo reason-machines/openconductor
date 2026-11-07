@@ -32,14 +32,17 @@ let base;
 before(async () => {
   assert.ok(executablePath, `no Chrome or Chromium found; set CHROME_PATH (tried ${CANDIDATES.join(", ")})`);
   assert.ok(existsSync("dist/index.html"), "dist/ is missing; run `npm run build` first");
-  server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
-  base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  if (process.env.OC_E2E_BASE) base = process.env.OC_E2E_BASE;
+  else {
+    server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
+    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  }
   browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
 });
 
 after(async () => {
   await browser?.close();
-  await new Promise((resolve) => server?.httpServer.close(resolve));
+  if (server) await new Promise((resolve) => server.httpServer.close(resolve));
 });
 
 async function open() {
@@ -138,11 +141,12 @@ test("⌘W inside the terminal closes the terminal tab, not the chat tab", async
 
   await showTerminalPanel(page);
   const termTabs = page.locator(".ws-strip .ws-strip-tabs [role=tab]");
-  await page.waitForFunction(() => [...document.querySelectorAll(".ws-strip .ws-strip-tabs [role=tab]")].some((t) => t.textContent.includes("Terminal 1")));
+  await page.locator(".ws-strip .term-tab").waitFor();
+  assert.deepEqual(await termTabs.allInnerTexts(), ["Setup", "Run", "Terminal"]);
   await page.locator(".terminal-panel .xterm-helper-textarea").first().focus();
   await page.keyboard.press("Meta+w");
-  await page.waitForFunction(() => ![...document.querySelectorAll(".ws-strip .ws-strip-tabs [role=tab]")].some((t) => t.textContent.includes("Terminal 1")), null, { timeout: 3000 });
-  assert.ok(!(await termTabs.allInnerTexts()).some((t) => t.includes("Terminal 1")), "the terminal tab is closed");
+  await page.locator(".ws-strip .term-tab").waitFor({ state: "detached", timeout: 3000 });
+  assert.deepEqual(await termTabs.allInnerTexts(), ["Setup", "Run"], "the terminal tab is closed");
   // The chat tab is untouched.
   await expectTabs(page, ["lisbon", "Untitled"], "Untitled");
   assert.deepEqual(errors, []);
