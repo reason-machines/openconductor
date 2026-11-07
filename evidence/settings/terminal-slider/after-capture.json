@@ -1,0 +1,11 @@
+{
+  "evidence_id": "ev_6d6089b2492a8db78bc6aa6e84f8b189d323a3f7eda8014a5910153941a7acb0",
+  "source": {
+    "commit": "0b11e129a980833899262f41f54e48edbba5a8da",
+    "sourceHash": "8e21222b244c5b863ac8c8eed93d4c7683a09125f4838a5cc7026db7804df7e4"
+  },
+  "url": "http://localhost:51749/settings/user/appearance?oc_scenario=populated&oc_theme=dark",
+  "screenshot": "after.png",
+  "sha256": "ad5348e5503b02d8ee1605dab071dae63d9417032762eaff0bb3b6c56a68fc97",
+  "issues": []
+}
