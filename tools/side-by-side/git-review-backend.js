@@ -96,6 +96,11 @@
     transformCallback: () => ++cb,
     async invoke(cmd, args) {
       switch (cmd) {
+        case "local_storage_get_entry":
+          return localStorage.getItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`);
+        case "local_storage_set_entry":
+          localStorage.setItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`, args.args.content);
+          return { success: true };
         case "plugin:event|listen":
           return 1;
         case "plugin:event|unlisten":
