@@ -195,6 +195,44 @@ fn clean_merge_commit_uses_git_show_changed_file_membership() {
 }
 
 #[test]
+fn resolved_merge_contents_compare_with_first_parent() {
+    let r = repo();
+    write(&r, "f.txt", "base\n");
+    commit(&r, "base");
+    sh(&r, &["checkout", "-qb", "feature"]);
+    write(&r, "f.txt", "feature\n");
+    commit(&r, "feature");
+    sh(&r, &["checkout", "-q", "main"]);
+    write(&r, "f.txt", "main\n");
+    commit(&r, "main");
+    let parent = oid(&r, "HEAD");
+    assert_ne!(
+        super::git::git_exit_code(&r, &["merge", "feature"]).unwrap(),
+        0
+    );
+    write(&r, "f.txt", "resolved\n");
+    commit(&r, "resolved merge");
+    let result = workspace_diff(
+        &r,
+        &req(Scope::Commit {
+            hash: oid(&r, "HEAD"),
+        }),
+    )
+    .unwrap();
+    assert_eq!(result.base_commit, parent);
+    assert_eq!(result.files.len(), 1);
+    let lines = &result.files[0].hunks[0].lines;
+    assert!(lines
+        .iter()
+        .any(|l| l.text == "main" && l.kind == super::LineKind::Deletion));
+    assert!(lines
+        .iter()
+        .any(|l| l.text == "resolved" && l.kind == super::LineKind::Addition));
+    assert!(!lines.iter().any(|l| l.text == "feature"));
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
 fn commit_diff_preserves_whitespace_counts_and_rename_and_handles_root() {
     let r = repo();
     write(&r, "original.txt", "line one\nline two\n");

@@ -100,7 +100,7 @@
 .oc-changes-target { display: flex; align-items: center; gap: 8px; padding: 6px 8px; white-space: nowrap; color: var(--muted); font-size: 14px; }
 .oc-changes-target-trigger { display: inline-flex; align-items: center; gap: 6px; padding: 0; color: var(--muted); font-size: 14px; white-space: nowrap; }
 .oc-changes-target-trigger:hover { color: var(--text); }
-.oc-changes-option-label { flex: 1; }
+.oc-changes-option-label { flex: 1; min-width: 0; }
 .oc-changes-option-detail { display: block; color: var(--muted); font-size: 12px; }
 .oc-diff-tab .oc-file { border-radius: 0; border-width: 0 0 1px; margin-bottom: 0; content-visibility: visible; }
 .oc-files { overflow: auto; min-width: 0; padding: 8px 12px 40px; }
