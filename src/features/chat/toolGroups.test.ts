@@ -9,7 +9,7 @@ import type { Block, ChatEvent, ChatMessage } from "./types.ts";
 const text = (t: string): PartView => ({ kind: "text", text: t, streaming: false });
 const thinking = (t: string): PartView => ({ kind: "thinking", text: t, streaming: false });
 const tool = (id: string, name: string, status: ToolStatus = "done"): PartView => ({ kind: "tool", call: { id, name, input: {}, tool: { name, input: {} }, status } });
-const keyed = (parts: PartView[]) => parts.map((part, i) => ({ key: `k${i}`, part }));
+const keyed = (parts: PartView[]) => parts.map((part, i) => ({ key: `k${i}`, messageKey: `m${i}`, part }));
 const shape = (parts: PartView[], hasFinal = true) =>
   groupParts(keyed(parts), "m1", hasFinal).map((g) => (g.kind === "summary" ? `[${summaryLabel(g.summary)}]` : g.part.kind === "tool" ? g.part.call.name : `"${g.part.text}"`));
 
@@ -102,6 +102,62 @@ test("a turn's messages fold into one block that collapses across messages", () 
   assert.deepEqual(describe(rows), ["user", '[4 tool calls, 2 messages] "Fixed."', "turn_end"]);
   const agent = rows[1]!;
   assert.ok(agent.kind === "agent" && !agent.running && agent.copyText === "Fixed.");
+});
+
+test("three tools in one assistant message stay inline before the final text", () => {
+  const rows = fold([
+    m("a1", "assistant", [use("a", "Read"), use("b", "Read"), use("c", "Read")]),
+    m("r1", "user", [result("a"), result("b"), result("c")]),
+    m("a2", "assistant", [said("Done.")]),
+    done("t1"),
+  ]);
+  assert.deepEqual(describe(rows), ['Read Read Read "Done."', "turn_end"]);
+});
+
+test("three tools across two assistant messages stay inline before the final text", () => {
+  const rows = fold([
+    m("a1", "assistant", [use("a", "Read"), use("b", "Read")]),
+    m("r1", "user", [result("a"), result("b")]),
+    m("a2", "assistant", [use("c", "Read")]),
+    m("r2", "user", [result("c")]),
+    m("a3", "assistant", [said("Done.")]),
+    done("t1"),
+  ]);
+  assert.deepEqual(describe(rows), ['Read Read Read "Done."', "turn_end"]);
+});
+
+test("empty assistant messages do not bring a two-message batch to the threshold", () => {
+  const rows = fold([
+    m("a1", "assistant", [use("a", "Read"), use("b", "Read")]),
+    m("r1", "user", [result("a"), result("b")]),
+    m("empty", "assistant", [said("  ")]),
+    m("a2", "assistant", [use("c", "Read")]),
+    m("r2", "user", [result("c")]),
+    m("a3", "assistant", [said("Done.")]),
+    done("t1"),
+  ]);
+  assert.deepEqual(describe(rows), ['Read Read Read "Done."', "turn_end"]);
+  const agent = rows[0]!;
+  assert.equal(agent.kind, "agent");
+  if (agent.kind === "agent") {
+    assert.deepEqual(agent.items.map((g) => g.kind === "part" && g.key), ["a", "b", "c", "a3:0"]);
+    const final = agent.items.at(-1);
+    assert.ok(final?.kind === "part" && final.preview);
+  }
+});
+
+test("three separate visible assistant messages collapse before the final text", () => {
+  const rows = fold([
+    m("a1", "assistant", [use("a", "Read")]),
+    m("r1", "user", [result("a")]),
+    m("a2", "assistant", [use("b", "Read")]),
+    m("r2", "user", [result("b")]),
+    m("a3", "assistant", [use("c", "Read")]),
+    m("r3", "user", [result("c")]),
+    m("a4", "assistant", [said("Done.")]),
+    done("t1"),
+  ]);
+  assert.deepEqual(describe(rows), ['[3 tool calls] "Done."', "turn_end"]);
 });
 
 test("a running turn is one block marked running, so the view keeps it open", () => {
