@@ -15,6 +15,7 @@ import { useBoolPref } from "../settings/useBoolPref.ts";
 import { loadRecentWorkspaceIds, recordViewedWorkspace, saveRecentWorkspaceIds } from "./recentWorkspaces.ts";
 import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { openNextUnread } from "../state/nextUnread.ts";
+import { preferredProjectWorkspace } from "./projectWorkspace.ts";
 
 interface Props {
   state: AppState;
@@ -137,8 +138,8 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
       go(ref);
     } else if (item.kind === "project") {
       const repo = state.repos.find((r) => r.id === item.project.id);
-      const first = repo?.workspaces[0];
-      if (repo && first) go({ repoId: repo.id, workspace: first });
+      const target = repo && preferredProjectWorkspace(repo, recents);
+      if (repo && target) go({ repoId: repo.id, workspace: target });
       else if (repo) dispatch({ type: "newWorkspace", repoId: repo.id });
     } else if (item.kind === "action") {
       actions[item.action.id]?.();

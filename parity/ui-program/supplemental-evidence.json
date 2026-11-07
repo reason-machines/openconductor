@@ -1,5 +1,5 @@
 {
-  "source_main_commit": "70bf6c5e55ff3dfcbead90ad370a16538a192e3c",
+  "source_main_commit": "9443720f9c6ea802316192321da5b76f4931447a",
   "records": [
     {
       "id": "shell-actions-722",
@@ -628,14 +628,45 @@
         "#742 is not an active-agent permission round trip. Outbound option payload mapping was not observed. One local synthetic chat/message is not real provider/auth proof.",
         "#739 was not rerun; real macOS IME and #740 terminal tabs/selected-worktree cwd NOT RUN. No agents, credentials, network, CI, real-data cleanup or new native launch/driver was requested by ledger integration."
       ]
+    },
+    {
+      "id": "projects-keyboard-752",
+      "areas": ["palette"],
+      "verdict": "partial",
+      "pr_url": "https://github.com/reason-machines/openconductor/pull/752",
+      "merge_commit": "9443720f9c6ea802316192321da5b76f4931447a",
+      "evidence_path": "evidence/palette/projects-keyboard/README.md",
+      "capture_manifests": ["evidence/palette/projects-keyboard/checks.json"],
+      "lane": "REA6.8.0 Chromium155 decoded Conductor0.87.6 and OpenConductor frontend, invented three-project/six-workspace fixture with mocked Tauri IPC, dark Stone1280x820",
+      "summary": "Merged Projects correction prefers a surviving recent visit, then newest updatedAt, instead of the first workspace. Retained REA scenarios exercise two filtered rows with ArrowDown/Up and Ctrl+N/P including wrapping; all final steps completed on both apps. After visiting Accra and activating the second tide project, reference returns ws-accra, before OpenConductor opens Tallinn, and after opens Accra. The owner reports two built-app checks, seven focused and1313 full units/build/colors passed. All16 published-head checks passed. Coordinator and area owner report consuming macOS package42329855108 passed39/39 and signature verification; no install or native run is claimed.",
+      "provenance": {
+        "owner_session": "15faf4d8-d257-49ef-874d-8008c5c78aaf",
+        "source_message": "3e1f2dfb-5c02-4004-ab5c-5e875c64f119",
+        "merge_package_receipt": "104eb988-f987-4121-b697-885fcbaecb9f",
+        "package_owner_receipt": "20ed657e-9389-4ea8-9b79-b1619183019c",
+        "package_run": "42329855108",
+        "package_job": "128273636668",
+        "package_artifact": "13556398463",
+        "package_bytes": 57454302,
+        "published_head": "26933b02e9ab0a35e09fdac777e6d7f405d305f4",
+        "tested_base": "154ba0dab2c9f2c1af622d3e6cacb17c4f09194a",
+        "verification": "Merge identity and committed README/checks/source-file hashes reconciled on Reason Cloud. Runtime assertions, image inspection, package checks and test results are owner-attributed, not rerun by ledger integration. Captures predate the final published head."
+      },
+      "limits": [
+        "Captures use154ba0da plus the two source-file changes whose hashes are retained. Sync to70bf6c5e followed capture and added only sidebar evidence. These are not final-published-head, current-main or native-package screenshots. No whole-screen pixel parity claim.",
+        "The reference runtime scenario exercises the last-viewed path. Newest-workspace fallback, missing/stale recent IDs and empty projects have only bounded unit/source evidence, not reference runtime coverage. Initial unfiltered Projects focus remains a separate gap.",
+        "Native behavior, real agent/auth, clipboard, IME, Home/End, modifier-number activation, platform key interception and external launches NOT RUN. Invalid initial Help/Projects fixtures stay excluded. All nine final native reviews remain unverified.",
+        "REA exit0/evidenceID was insufficient when earlier actions failed; final checks require every step completed. Superseded incomplete captures and initial inaccessible-preview execution context remain recorded gaps. The owned port4518 preview has an actual stopped receipt; no new preview/capture here.",
+        "Consuming main1518/run42329855067 at9443720f remains with the sole E2E owner and is not counted while active. Package/signature checks are not native execution or real-auth proof."
+      ]
     }
   ],
-  "reconciled_at": "2026-11-07T02:25:21Z",
+  "reconciled_at": "2026-11-07T02:45:20Z",
   "provenance": "Merged source and committed area manifests reconciled on Reason Cloud. Area checks, artifact inspection and native limits are attributed to their existing owners; no CI or native verification was rerun by ledger integration.",
   "batch_notes": [
-    "Current reconciliation against main70bf6c5e integrates merged #748 Group by, #750 stale-handler correction, #751 final #748 source proof and one bounded native #741/#742 owner receipt. Existing24 records, every raw/scoped row and capture score remain retained; all nine final native reviews and both system requirements remain unverified.",
-    "Sole E2E owner acc3b5c5 reports full ordered-main streak7/10:1500,1502,1504,1507,1509,1512,1513 after1499 cancellation. Each completed pass includes both built-app jobs and23/23 App flows. Active1515/run42329391407 is not counted; delayed pull_request1501/42320678170 is excluded. This is attributed owner accounting, not an independent rescore or native/five-pass/auth promotion.",
-    "#752 multi-row Projects correction is still an unmerged owner receipt at this source snapshot and is not integrated here. Browser sign-in P0 stays with f7006ba7 and sole Mac proof owner d8e894e9; no completion or native-verdict credit. The coordinator owns the existing Page; this Session supplies source/data without publishing or copying it.",
+    "Current reconciliation against main9443720f adds merged #752 filtered multi-row Projects navigation/activation proof to the existing28 records. Earlier #748/#750/#751 and bounded native #741/#742 receipts are unchanged. Every raw/scoped row, exclusion and capture score is retained; all nine final native reviews and both system requirements remain unverified.",
+    "Sole E2E owner acc3b5c5 reports full ordered-main streak8/10:1500,1502,1504,1507,1509,1512,1513,1515 after1499 cancellation. Owner receipt c1f09751 confirms1515/run42329391407 at70bf6c5e completed02:38:04Z, both jobs and artifact13556254121/results.json23/23 including agents-reason. Automatic1518/run42329855067 at9443720f is active and not counted; delayed pull_request1501/42320678170 remains excluded. This is attributed owner accounting, not an independent rescore or native/five-pass/auth promotion.",
+    "#752 supersedes only the single-result/untested filtered-navigation limitation: initial unfiltered focus, fallback runtime, final-published-head render and native palette review remain unverified. Browser sign-in P0 stays with f7006ba7 and sole Mac proof owner d8e894e9; no completion or native-verdict credit. The coordinator owns the existing Page; this Session supplies source/data without publishing or copying it.",
     "Earlier notes below retain their e9cfaed4 observation windows. New merged evidence supersedes only the stated gaps, not excluded fixtures, raw assessments or native verdicts. No builder changes, Mac input, preview, capture, dependency install, new worker, CI dispatch/rerun or duplicate watcher occurs in this reconciliation.",
     "Reconciled on Reason Cloud against main e9cfaed4, not a new capture identity. Existing captures, raw/scoped scores, 341-entry denominator and all nine native final-review verdicts remain unchanged. The later #739 runtime-owner receipt adds bounded synthetic WKWebView assertions only.",
     "Merged #738–#745 and proof-only #746 have separate browser/test/package/native limits. No Mac action, new capture, preview, CI dispatch, duplicate watcher or builder was performed by ledger integration.",
@@ -678,7 +709,7 @@
     },
     "palette": {
       "area_verdict": "partial",
-      "gap": "Retained states, icon/menu proof, supplementary corrected light samples and one-result Projects selection are not full keyboard/action/native review. Invalid initial fixtures stay excluded. Wrapping/activation, clipboard/external launches remain unverified."
+      "gap": "Merged #752 adds filtered two-row Projects ArrowUp/Down/CtrlN/P wrapping and last-viewed Enter activation in REA Chromium fixtures. Captures predate the final published head. Initial unfiltered focus, fallback reference-runtime behavior, Home/End, modifier-number actions, clipboard/external launches and native final review remain unverified. Invalid initial fixtures stay excluded; retained state scores are unchanged."
     },
     "dialogs": {
       "area_verdict": "partial",
