@@ -64,7 +64,7 @@ import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
 import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
-import { attachmentPath, promptText, randomDir, rejectReason, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
+import { attachmentPath, promptText, randomDir, rejectReason, restoreComposerAttachments, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
 import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
 
 /** Sends a message with attached text files from the chat shown (Fix errors). */
@@ -283,11 +283,11 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   // after typing pauses and when the workspace changes; an empty draft is
   // removed.
   const draftLoadedFor = useRef<string | null>(null);
-  const pendingDraft = useRef<{ id: string; text: string } | null>(null);
+  const pendingDraft = useRef<{ id: string; text: string; attachments: ComposerAttachment[] } | null>(null);
   const flushDraft = useCallback(() => {
     const p = pendingDraft.current;
     pendingDraft.current = null;
-    if (p) void (p.text === "" ? composerDrafts().clear(p.id) : composerDrafts().save(p.id, p.text));
+    if (p) void (p.text === "" && p.attachments.length === 0 ? composerDrafts().clear(p.id) : composerDrafts().save(p.id, p.text, p.attachments));
   }, []);
   useEffect(() => {
     let live = true;
@@ -299,7 +299,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         (saved) => {
           if (!live) return;
           draftLoadedFor.current = id;
-          if (saved) setDraft((d) => (d === "" ? saved : d));
+          const message = typeof saved === "string" ? saved : saved.message;
+          const restored = restoreComposerAttachments(typeof saved === "string" ? [] : saved.attachments);
+          if (message) setDraft((d) => (d === "" ? message : d));
+          setAttachments((current) => current.length === 0 ? restored : current);
         },
         () => {
           if (live) draftLoadedFor.current = id;
@@ -312,10 +315,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   }, [workspace.id, flushDraft]);
   useEffect(() => {
     if (draftLoadedFor.current !== workspace.id) return;
-    pendingDraft.current = { id: workspace.id, text: draft };
+    pendingDraft.current = { id: workspace.id, text: draft, attachments };
     const timer = setTimeout(flushDraft, DRAFT_SAVE_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [draft, workspace.id, flushDraft]);
+  }, [draft, attachments, workspace.id, flushDraft]);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
