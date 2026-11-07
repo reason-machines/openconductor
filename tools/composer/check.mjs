@@ -78,9 +78,14 @@ try {
   await editor.dispatchEvent("compositionstart", { data: "" });
   await editor.dispatchEvent("keydown", { key: "Enter", code: "Enter", isComposing: true, keyCode: 229 });
   assert.equal(await result(), beforeComposition);
+  await page.locator(".oc-send").click();
+  assert.equal(await result(), beforeComposition, "Send must not submit an uncommitted composition");
   await editor.dispatchEvent("compositionend", { data: "composition" });
   assert.equal(await editor.textContent(), "composition");
-  checks.push("Synthetic composition Enter is not submitted (not a real IME test)");
+  await page.locator(".oc-send").click();
+  assert.deepEqual(JSON.parse(await result()), { text: "composition", mode: "queue", files: [] });
+  assert.equal(await editor.textContent(), "");
+  checks.push("Synthetic composition blocks Enter and Send until compositionend, then Send works (not a real IME test)");
 
   await editor.fill("@src");
   const options = page.getByRole("option");
@@ -111,7 +116,8 @@ try {
   assert.equal(await page.locator(".composer").evaluate((element) => element.getBoundingClientRect().height), 152);
   checks.push("Multiline input scrolls at 188px and shrinks back to the 152px box");
 
-  await editor.fill("");
+  await editor.press("Control+a");
+  await editor.press("Backspace");
   const file = path.join(temp, "notes.txt");
   fs.writeFileSync(file, "Disposable composer attachment test\n");
   await page.locator('input[type="file"]').setInputFiles(file);
@@ -149,6 +155,31 @@ try {
   await editor.press("Enter");
   assert.equal(JSON.parse(await result()).text, "@README.md\n\nReview note");
   checks.push("Draft restoration resets editor history and external review-note insertion preserves the chip");
+
+  await open();
+  await editor.fill("@README");
+  const composingFile = page.getByRole("option", { name: "README.md" });
+  await composingFile.waitFor();
+  await editor.dispatchEvent("compositionstart", { data: "" });
+  await composingFile.click();
+  assert.equal(await page.locator(".oc-file-chip").count(), 0);
+  assert.equal(await editor.textContent(), "@README");
+  await editor.dispatchEvent("compositionend", { data: "@README" });
+  await composingFile.click();
+  assert.equal(await page.locator(".oc-file-chip").textContent(), "README.md");
+
+  await open();
+  await editor.fill("/");
+  const composingCommand = page.getByRole("listbox", { name: "Slash commands" }).getByRole("option").first();
+  await composingCommand.waitFor();
+  const commandName = await composingCommand.locator(".oc-suggest-name").textContent();
+  await editor.dispatchEvent("compositionstart", { data: "" });
+  await composingCommand.click();
+  assert.equal(await editor.textContent(), "/");
+  await editor.dispatchEvent("compositionend", { data: "/" });
+  await composingCommand.click();
+  assert.equal((await editor.textContent()).trim(), `/${commandName}`);
+  checks.push("Synthetic composition blocks file and command picks until compositionend (not a real IME test)");
 
   const report = { passed: checks.length, checks };
   const output = process.env.OUTPUT ?? "evidence/chat/composer/current";
