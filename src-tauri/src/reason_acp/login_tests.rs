@@ -77,6 +77,45 @@ fn one_pairing_is_shared_until_approved_and_returns_account_and_workspace() {
 }
 
 #[test]
+fn built_app_fake_waits_for_explicit_approval_before_connecting() {
+    let root = std::env::var("REASON_ACP_REPO_ROOT")
+        .unwrap_or_else(|_| concat!(env!("CARGO_MANIFEST_DIR"), "/..").into());
+    let fake = PathBuf::from(root).join("tools/reason-acp/fake_reason_acp.py");
+    let (dir, launch) = fixture(&format!("exec python3 \"{}\" \"$@\"", fake.display()));
+    std::fs::write(dir.join("fake-reason-signed-out"), "").unwrap();
+    std::fs::write(dir.join("fake-reason-require-approval"), "").unwrap();
+    let service = service(Duration::from_secs(5));
+    service.start(launch, dir.clone());
+    let state = wait(&service, |state| {
+        matches!(state, LoginState::Waiting { .. })
+    });
+    let LoginState::Waiting { prompt, .. } = &state else {
+        unreachable!()
+    };
+    assert_eq!(prompt.code.as_deref(), Some("E2E1-CODE"));
+    assert_eq!(
+        prompt.url,
+        "https://reasonmachines.com/cli/connect?request=e2e-request"
+    );
+    std::thread::sleep(Duration::from_millis(120));
+    assert_eq!(
+        service.snapshot(),
+        state,
+        "status reads cannot approve pairing"
+    );
+    std::fs::remove_file(dir.join("fake-reason-signed-out")).unwrap();
+    let LoginState::Connected { account } = wait(&service, |state| {
+        matches!(state, LoginState::Connected { .. })
+    }) else {
+        unreachable!()
+    };
+    assert_eq!(account.email.as_deref(), Some("e2e@example.com"));
+    assert_eq!(account.workspaces[0].slug, "ws-a");
+    drop(service);
+    std::fs::remove_dir_all(dir).unwrap();
+}
+
+#[test]
 fn refresh_reads_existing_account_on_fresh_app_and_clears_external_expiry() {
     let (dir, launch) = fixture(&format!("{STATUS}\necho unexpected >> mutation\nexit 1"));
     std::fs::write(dir.join("approved"), "existing valid login").unwrap();

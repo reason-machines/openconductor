@@ -63,7 +63,7 @@ Run the module suite and clippy.
 REASON_ACP_HARNESS_DIR=/tmp/openconductor-reason-tests bash tools/reason-acp/run-rust-tests.sh
 ```
 
-On this cloud computer, all 74 Rust tests and clippy passed. The nine lifecycle tests exercise one shared attempt, approved account and workspace, existing login preservation, cancel and late-result protection, stopped polling, timeout and retry, stale cancel, foreground process termination and reaping, production versus fake URL validation, existing-account discovery on a fresh app, external expiry, explicit sign-out reset, and slow-refresh/reset protection. The delayed-link regression also passed.
+On this cloud computer, all 75 Rust tests and clippy passed. The nine lifecycle tests exercise one shared attempt, approved account and workspace, existing login preservation, cancel and late-result protection, stopped polling, timeout and retry, stale cancel, foreground process termination and reaping, production versus fake URL validation, existing-account discovery on a fresh app, external expiry, explicit sign-out reset, and slow-refresh/reset protection. The delayed-link regression also passed.
 
 The fresh-app saved-account regression failed against the old snapshot-only status method, then passed after the canonical refresh fix. Refresh never launches login or logout.
 
@@ -75,4 +75,6 @@ The shared frontend has passed 22 synthetic UI cases across the actual onboardin
 
 The integrated frontend passed `npm run typecheck`, `npm run build`, all 1,311 tests from `node --test "src/**/*.test.ts"`, and `npm run lint:colors` on this cloud computer. The combined browser suites and exact-head CI are checked again after the final test increment.
 
-The native signed-out preflight receipt is [recorded separately](native-macos-preflight.json). Native fresh-account browser approval, a real Reason turn, and the containing main-branch package are not proved by the synthetic or preflight results. The sole native driver owns those remaining observations.
+The built-app flow fixture previously approved pairing from the first `status` read. The shared Rust lifecycle could reach Connected before WebDriver observed the confirmation code. `built_app_fake_waits_for_explicit_approval_before_connecting` failed before the fixture correction with `status reads cannot approve pairing`, then passed afterwards. The built-app flow now opts into explicit synthetic approval, asserts the confirmation code and waiting state, and only then removes its isolated signed-out marker. Existing ACP fixtures retain their default behavior. No production authentication or timeout was weakened.
+
+The native signed-out preflight receipt is [recorded separately](native-macos-preflight.json). The [later built-app receipt](native-macos-3992181-preapproval.json) reports a successful build, 39 bundle checks, and genuine CLI 0.2.701 pairing reaching browser-approval waiting on the isolated Mac. Browser access was unavailable and its Chrome access card awaits the person. Screenshot capture failed for the exact owned window; no native image or visual claim is attached. Native browser approval, Connected account/workspace, a real Reason turn, and the containing main-branch package remain unverified. The sole native driver owns those remaining observations.

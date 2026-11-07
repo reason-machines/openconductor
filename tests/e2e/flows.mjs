@@ -878,6 +878,7 @@ export const flows = [
       writeFileSync(exe, `#!/bin/sh\ncd "${dir}" && exec python3 "${resolve("tools/reason-acp/fake_reason_acp.py")}" "$@"\n`);
       chmodSync(exe, 0o755);
       writeFileSync(join(dir, "fake-reason-signed-out"), "");
+      writeFileSync(join(dir, "fake-reason-require-approval"), "");
       ctx.fakeReason = { dir, exe };
     },
     teardown(ctx) {
@@ -909,6 +910,10 @@ export const flows = [
       await clickByText(wd, `${section} button`, "Sign in with Reason");
       const code = await wd.waitFor("the pairing code", async () => (await textsOf(wd, '[data-testid="reason-login-code"]'))[0], 20000);
       if (code !== "E2E1-CODE") throw new Error(`pairing code ${JSON.stringify(code)}`);
+      await wd.waitFor("waiting for browser approval", async () => (await textsOf(wd, '[data-testid="reason-login-waiting"]'))[0]?.includes("Finish signing in in the browser window."));
+      const pending = await wd.execute("return window.__TAURI_INTERNALS__.invoke('reason_login_status');", []);
+      if (pending.state !== "waiting") throw new Error(`pairing approved without browser approval: ${pending.state}`);
+      rmSync(join(ctx.fakeReason.dir, "fake-reason-signed-out"));
       await wd.waitFor("Connected after the sign-in", async () => (await status()).startsWith("Connected"), 20000);
       const rows = await table();
       const want = ["Version0.2.692", "Accounte2e@example.com", "WorkspaceWorkspace ws-a", "This MacNot connected"];
