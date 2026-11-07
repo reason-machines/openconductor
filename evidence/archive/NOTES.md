@@ -20,6 +20,31 @@ bash tools/archive/run-rust-tests.sh          # 19 Rust tests + clippy, no Tauri
 node --test src/workspace/archiveModel.test.ts  # 13 frontend tests
 ```
 
+## Deleted-branch name audit (2026-11-07)
+
+Re-read the retained decoded Conductor 0.87.6 chunk, SHA-256
+`b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3`.
+`RWt` (offset 3,307,223) passes the stored branch to `aWt` (3,290,358),
+which calls `makeBranchNameUnique`; the service forwards it unchanged to
+`CYe` (980,998). `CYe` tries that name first and calls `hf` only when it
+is taken. Thus a deleted branch with an available name is recreated under
+that name, not automatically suffixed with `-v1`.
+
+OpenConductor's allocator previously incremented before its first lookup.
+The focused real-Git regression
+`restore_of_a_deleted_branch_reuses_its_available_name` failed with
+actual `sven/ws-v1`, expected `sven/ws`; after starting the lookup at the
+original name, all 24 archive harness tests passed. The existing collision
+test still restores onto `sven/ws-v2` when the original and `-v1` are taken;
+the flow test verifies the restored branch persisted on the database row,
+checkpoint work recovered, and archive record removed.
+
+The older per-behaviour table and gaps below predate the restore dialog,
+include-file copy and directory-conflict actions now present in source;
+they are historical, not current missing-feature claims. This audit is
+retained-source evidence and cloud harness verification, not a fresh
+Conductor runtime capture or native OpenConductor acceptance.
+
 ## Reference flow
 
 `archiveWorkspace({localWorkspaceId, mode = "safe", stopRunningAgents = false})`
