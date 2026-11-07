@@ -54,6 +54,11 @@ export function fakeBackend({ shell, files, spotlight = false, setupScript = nul
     transformCallback: (f) => ((cbs[++cb] = f), cb),
     async invoke(cmd, args) {
       switch (cmd) {
+        case "local_storage_get_entry":
+          return localStorage.getItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`);
+        case "local_storage_set_entry":
+          localStorage.setItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`, args.args.content);
+          return { success: true };
         case "plugin:event|listen":
           if (args.event === "pty-event") ptyHandler = args.handler;
           return 1;

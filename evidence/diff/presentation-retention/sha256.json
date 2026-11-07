@@ -1,0 +1,31 @@
+{
+  "source_content_commit": "a7978f063f063f9501957bb36a063b811ca162f0",
+  "capture_started_at_head": "1730f722ccd1b91393d9c094f98e322978da9eff",
+  "build_index_sha256": "030063f30928cd7e4d5a417bb6c252ea7862837b0899a008edb0dc0ea308d374",
+  "files": {
+    "README.md": "2bd231868f5def998810835b6782c6571d6a0961cce73242991b427ef2e3aeec",
+    "before-collapsed-return.png": "65095ae6e2670a612b941156ef5de7b8fc2c4fc8ee3058c4bf0346982155d388",
+    "browser-after.tap": "bb054b1ed98f63542941a64bd6cc42c3806532310311322e6e69ad7047a223d6",
+    "browser-before.tap": "01d44d93c1a1b6440a9c173fc2e6aac2924cb8b1ec1deb77eeec84ce2f24b398",
+    "build-after.txt": "75fe0bf314c47acffce0ab5f9adc7ac6e9b614b4c65cd3174cc341740bf0d7e6",
+    "capture-report.json": "4aec53fbb5a9b75fee5735bbee6d924381a3ee697d21b176bd6698cba5b3e175",
+    "collapse-comparison.png": "8f5e72c3b4df43f6669ff80b27c254bb3d7ab0e0a0b60c8a96d5d0e914136f56",
+    "colors-after.txt": "396bdda772fdec2223799757c69a0892a71d770ce628809acb60bbcf214b2951",
+    "frontend-after.tap": "0dbebc5356551316f8465bad75d674b02440d4302ceb0c59aae561c9646c812e",
+    "oc-collapsed-return-input.json": "19c4e6aa27b70f91a4dfe5f9411b81a41b65ab53a453eb5395a197167b85af78",
+    "oc-collapsed-return.dom.txt": "eb7ba5705e849c2c068cc778e4889671e45ff2418878ef5b6b1703a2be0b2497",
+    "oc-collapsed-return.png": "c74a7ae59106e601064825cb8390b1dd6cdbfd4d4a83a22f738d7449d64e1745",
+    "oc-filter-return-input.json": "ef20f25960261178ca8b46c68fc072a05bdea824f990ca483f13a31dfbbec56a",
+    "oc-filter-return.dom.txt": "2f6d62ab6f5f20c0f2c2f67ad6f2adf6b0c76ae3f66c80834e206d977ec1bea2",
+    "oc-filter-return.png": "3e2392482a8cbb0fc4d49104075d5cf35a3e883162c98498f78ee751aadf566e",
+    "ref-collapsed-return-input.json": "a03e5026ebbd07af6db64c6844df1094066f86a2b43a630fc5aaadee1728ca72",
+    "ref-collapsed-return.dom.txt": "f8cf89aa9e9a4b0ccf980aaa44a264cefd42c0396440076dbac51cce1f236a8f",
+    "ref-collapsed-return.png": "49f64c9fa380290e640490fd849fe422baab480de71579fd83b72025a7d02693",
+    "ref-filter-return-input.json": "8d90629a507067899b87dea0ae038884a610814b1d446438484c35a765eb9c2e",
+    "ref-filter-return.dom.txt": "01d3d0a39434b9512c515de6b04971de4abd2dc16352d8853a239a60c9282ffa",
+    "ref-filter-return.png": "891c6be265e376c8c9731cea86dcee9a3ef7f52897e88f9747347dd706797f86",
+    "review-before.tap": "470970501da7045ea3de379456d4cb16731e5772df70ef367e40d2a5ed6f1916",
+    "review.html": "879023fffb2a2307a28b9c60f728b97a3999ca1e293cf034229312f34d4fecb2",
+    "storage-after.tap": "2761ae94a052d7a4da7f13cbab6ea14a421b87f8eef29d080a82a707650b7a8f"
+  }
+}
