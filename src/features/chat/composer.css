@@ -345,6 +345,7 @@
 .oc-model-row { padding: 6px 8px; }
 .oc-model-item:hover,
 .oc-model-item[data-selected],
+.oc-model-item[data-highlighted],
 .oc-model-item:focus-visible,
 .oc-model-row:hover,
 .oc-model-row:focus-visible,

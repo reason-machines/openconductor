@@ -64,7 +64,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
 
   const update = (patch: Partial<DiffViewOptions>) => {
     const next = { ...opts, ...patch };
-    localStorage.setItem(OPTIONS_KEY, JSON.stringify(next));
+    localStorage.setItem(OPTIONS_KEY, JSON.stringify({ ...next, scope: typeof next.scope === "object" ? "all" : next.scope }));
     setOpts(next);
     if (patch.scope) setTurn(null);
   };
@@ -116,6 +116,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     setViewedMap(loadViewed(localStorage, workspaceId));
     setSelectedPath(null);
     setTurn(null);
+    setOpts((current) => typeof current.scope === "object" ? { ...current, scope: "all" } : current);
   }, [workspaceId]);
 
   const files = useMemo(() => (load.state === "ready" ? load.files : []), [load]);
@@ -213,6 +214,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     reloadQuietly,
     /** Worktree folder the diff is read from (null while the workspace has none). */
     worktree,
+    target,
     totals,
     uncommittedPaths,
     /** Index of the selected file in `files`, or -1. */

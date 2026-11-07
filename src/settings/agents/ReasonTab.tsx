@@ -193,16 +193,15 @@ type SaveProps = { settings: Settings; save: AgentTabProps["save"] };
 type SetReasonDefault = (key: Parameters<typeof withReason>[1], value: string) => void;
 type ReasonDefaultProps = { settings: Settings; setDefault: SetReasonDefault };
 
-/** The workspace `--workspace` pins new Reason chats to; the default follows the Reason app. */
+/** New chats require an explicit workspace; CLI selection is independent. */
 function WorkspaceRow({ settings, account, setDefault }: ReasonDefaultProps & { account: ReasonAccount | null }) {
   const pinned = settings.reason?.workspace ?? "";
   const workspaces = account?.workspaces ?? [];
-  const selected = workspaces.find((w) => w.selected);
   const known = pinned === "" || workspaces.some((w) => w.slug === pinned);
   return (
     <Row label="Workspace for new chats" help="New Reason chats open their Session in this workspace. Existing chats stay in theirs.">
       <select aria-label="Workspace for new chats" className="oc-agent-select-180" value={pinned} onChange={(e) => setDefault("workspace", e.target.value)}>
-        <option value="">{selected ? `Reason app's (${selected.name})` : "Reason app's selection"}</option>
+        <option value="" disabled>Choose a workspace</option>
         {!known && <option value={pinned}>{pinned}</option>}
         {workspaces.map((w) => (
           <option key={w.slug} value={w.slug}>
@@ -210,7 +209,8 @@ function WorkspaceRow({ settings, account, setDefault }: ReasonDefaultProps & { 
           </option>
         ))}
       </select>
-      {activeWorkspace(settings, account) === null && pinned !== "" && workspaces.length > 0 && <span className="ag-detail">Not signed in to {pinned}</span>}
+      {pinned === "" && <span className="ag-detail" role="alert">Choose a workspace before starting a new Reason chat.</span>}
+      {activeWorkspace(settings, account) === null && pinned !== "" && account && <span className="ag-detail" role="alert">Not signed in to {pinned}</span>}
     </Row>
   );
 }

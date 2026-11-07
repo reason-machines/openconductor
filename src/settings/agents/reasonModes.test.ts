@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { DEFAULT_SETTINGS, type Settings } from "../types.ts";
-import { reasonModeOf, reasonProviderFor, reasonStatus, withReason, type ReasonAccount } from "./reasonModes.ts";
+import { reasonModeOf, reasonProviderFor, reasonStatus, activeWorkspace, withReason, type ReasonAccount } from "./reasonModes.ts";
 
 const account: ReasonAccount = {
   version: "0.2.692",
@@ -33,7 +33,7 @@ test("signed in: Version, Account, Workspace and This Mac; a pinned workspace wi
     { label: "Workspace", value: "Reason Tests" },
     { label: "This Mac", value: "Connected" },
   ]);
-  assert.equal(reasonStatus("account", account, DEFAULT_SETTINGS, false).rows[2].value, "Reason Engineering");
+  assert.equal(reasonStatus("account", account, DEFAULT_SETTINGS, false).rows[2].value, "Not selected");
 });
 
 test("signed out or keyless shows only the version and says what to do", () => {
@@ -54,6 +54,15 @@ test("expired credentials never show a stale identity as connected", () => {
   assert.deepEqual(status.rows, [{ label: "Version", value: "0.2.692" }]);
   assert.equal(status.notConnectedMessage, "Your sign-in has expired.");
   assert.equal(reasonStatus("account", { ...account, name: "", email: " " }, DEFAULT_SETTINGS, false).connected, false);
+});
+
+test("an unavailable pinned workspace never falls back to the account selection", () => {
+  const settings = withReason(DEFAULT_SETTINGS, "workspace", "removed-workspace");
+  assert.equal(activeWorkspace(settings, account), null);
+  assert.equal(reasonStatus("account", account, settings, false).rows.find((row) => row.label === "Workspace")?.value, "removed-workspace (unavailable)");
+  assert.equal(activeWorkspace(settings, { ...account, workspaces: [] }), null);
+  assert.equal(activeWorkspace(DEFAULT_SETTINGS, account), null);
+  assert.equal(activeWorkspace(withReason(DEFAULT_SETTINGS, "workspace", ""), account), null);
 });
 
 test("an empty option unsets the key", () => {

@@ -19,14 +19,19 @@ fn fixture(body: &str) -> (PathBuf, LaunchConfig) {
     (dir, LaunchConfig::new(cli).unwrap())
 }
 
-fn service(timeout: Duration) -> LoginService {
-    LoginService::with_options(LoginOptions {
+fn options(timeout: Duration) -> LoginOptions {
+    LoginOptions {
         startup_timeout: Duration::from_millis(500),
         status_timeout: Duration::from_millis(300),
         timeout,
         poll_interval: Duration::from_millis(20),
         allow_loopback: false,
-    })
+        clock: None,
+    }
+}
+
+fn service(timeout: Duration) -> LoginService {
+    LoginService::with_options(options(timeout))
 }
 
 fn wait(service: &LoginService, matches: impl Fn(&LoginState) -> bool) -> LoginState {
@@ -201,17 +206,34 @@ fn cancel_stops_polling_ignores_late_approval_and_retry_reads_existing_login() {
 #[test]
 fn expired_app_wait_can_be_retried_without_a_stale_attempt_cancelling_it() {
     let (dir, launch) = fixture(&format!("{STATUS}\n{LINK}"));
-    let service = service(Duration::from_millis(150));
+    let clock = std::sync::Arc::new(std::sync::Mutex::new(Instant::now()));
+    let now = clock.clone();
+    let service = LoginService::with_options(LoginOptions {
+        clock: Some(std::sync::Arc::new(move || *now.lock().unwrap())),
+        ..options(Duration::from_millis(150))
+    });
     let LoginState::Starting { attempt_id: old } = service.start(launch.clone(), dir.clone())
     else {
         unreachable!()
     };
+    wait(&service, |state| {
+        matches!(state, LoginState::Waiting { .. })
+    });
+    *clock.lock().unwrap() += Duration::from_millis(150);
     wait(&service, |state| matches!(state, LoginState::TimedOut));
-    service.start(launch, dir.clone());
+    let LoginState::Starting { attempt_id: new } = service.start(launch, dir.clone()) else {
+        unreachable!()
+    };
+    assert_ne!(new, old);
+    std::thread::sleep(Duration::from_millis(200));
     let retry = wait(&service, |state| {
         matches!(state, LoginState::Waiting { .. })
     });
     assert_eq!(service.cancel(&old), retry);
+    assert_eq!(service.snapshot(), retry);
+    *clock.lock().unwrap() += Duration::from_millis(150);
+    wait(&service, |state| matches!(state, LoginState::TimedOut));
+    drop(service);
     let _ = std::fs::remove_dir_all(dir);
 }
 

@@ -386,6 +386,8 @@ def handle(msg):
 
 
 def whoami():
+    if os.path.exists(os.path.join(HOME, "fake-reason-discovery-offline")):
+        sys.exit(1)
     print("e2e@example.com")
     print(f"Organization: Workspace {WORKSPACE}")
     print("Saved workspaces:")
@@ -394,6 +396,8 @@ def whoami():
 
 
 def session_get(sid):
+    if os.path.exists(os.path.join(HOME, "fake-reason-discovery-offline")):
+        sys.exit(1)
     session = load()["sessions"].get(sid)
     if session is None or session.get("workspace", "ws-a") != WORKSPACE:
         sys.stderr.write("Reason: Reason request failed (404 session_not_found)\n")

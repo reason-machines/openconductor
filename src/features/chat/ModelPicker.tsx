@@ -49,9 +49,13 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
   const [open, setOpen] = useState(false);
   const menu = usePresence(open);
   const [query, setQuery] = useState("");
+  const [searchIndex, setSearchIndex] = useState(0);
   const [effortOpen, setEffortOpen] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
   const search = useRef<HTMLInputElement>(null);
+  const effortTrigger = useRef<HTMLButtonElement>(null);
+  const effortMenu = useRef<HTMLDivElement>(null);
+  const focusEffortOnOpen = useRef(false);
   const { overrides } = useKeybindingOverrides();
   const hint = (id: string) => {
     const s = effectiveShortcuts(id, overrides)[0];
@@ -85,6 +89,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
   useEffect(() => {
     if (!open) {
       setQuery("");
+      setSearchIndex(0);
       setEffortOpen(false);
       return;
     }
@@ -93,15 +98,62 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
     return () => document.removeEventListener("mousedown", close);
   }, [open]);
 
+  useEffect(() => {
+    if (effortOpen && focusEffortOnOpen.current) {
+      effortMenu.current?.querySelector<HTMLButtonElement>("button")?.focus();
+      focusEffortOnOpen.current = false;
+    }
+  }, [effortOpen]);
+
+  const onEffortTriggerKey = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.defaultPrevented || e.nativeEvent.isComposing || disabled) return;
+    if (e.key !== "ArrowRight" && e.key !== "Enter") return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (effortOpen) effortMenu.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    else {
+      focusEffortOnOpen.current = true;
+      setEffortOpen(true);
+    }
+  };
+
+  const onEffortOptionKey = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (e.defaultPrevented || e.nativeEvent.isComposing || disabled || !efforts) return;
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "ArrowLeft" && e.key !== "Enter") return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      const next = (index + (e.key === "ArrowDown" ? 1 : -1) + efforts.options.length) % efforts.options.length;
+      effortMenu.current?.querySelectorAll<HTMLButtonElement>("button")[next]?.focus();
+    } else {
+      if (e.key === "Enter") onChange({ ...value, effort: efforts.options[index].value });
+      setEffortOpen(false);
+      effortTrigger.current?.focus();
+    }
+  };
+
   const onMenuKey = (e: KeyboardEvent) => {
     if (e.defaultPrevented || e.nativeEvent.isComposing) return;
-    if (e.target === search.current && e.key === "Enter") {
+    const resultIndex = e.target instanceof HTMLButtonElement ? e.target.dataset.modelResult : undefined;
+    const inSearch = e.target === search.current || (query.trim() !== "" && resultIndex !== undefined);
+    if (query.trim() && inSearch && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
       e.stopPropagation();
-      const match = query.trim() ? items[0] : undefined;
+      if (items.length && !disabled) {
+        const index = resultIndex === undefined ? 0 : Number(resultIndex);
+        const next = (index + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+        root.current?.querySelector<HTMLButtonElement>(`[data-model-result="${next}"]`)?.focus();
+      }
+      return;
+    }
+    if (inSearch && e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      const match = query.trim() ? items[resultIndex === undefined ? 0 : Number(resultIndex)] : undefined;
       if (match && !disabled) {
         if (!same(match, value)) onChange(match);
         setQuery("");
+        search.current?.focus();
       }
       return;
     }
@@ -144,11 +196,11 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
           <div className="oc-model-menu-inner">
             <div className="oc-model-search">
               <SearchSmallIcon />
-              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => setQuery(e.target.value)} />
+              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => { setQuery(e.target.value); setSearchIndex(0); }} />
             </div>
             <div className="oc-model-list">
               {items.length === 0 ? <div className="oc-model-empty">No models found</div> : null}
-              {items.map((f) => {
+              {items.map((f, index) => {
                 const selected = same(f, value);
                 const e = modelChip(f.model, f.effort).effort;
                 return (
@@ -158,6 +210,9 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                     role="menuitem"
                     className="oc-model-item"
                     data-selected={selected || undefined}
+                    data-model-result={index}
+                    data-highlighted={query.trim() !== "" && index === searchIndex || undefined}
+                    onFocus={() => setSearchIndex(index)}
                     title={[nameOf(f), modelDescription?.(f.model)].filter(Boolean).join(" · ")}
                     onClick={() => {
                       if (!selected) onChange(f);
@@ -193,20 +248,21 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
             {efforts || showFast ? <div className="oc-model-sep" /> : null}
             {efforts ? (
               <div className="oc-model-sub" onMouseEnter={() => setEffortOpen(true)} onMouseLeave={() => setEffortOpen(false)}>
-                <button type="button" role="menuitem" className="oc-model-row" aria-haspopup="menu" aria-expanded={effortOpen} data-highlighted={effortOpen || undefined} onClick={() => setEffortOpen(true)}>
+                <button ref={effortTrigger} type="button" role="menuitem" className="oc-model-row" aria-haspopup="menu" aria-expanded={effortOpen} data-highlighted={effortOpen || undefined} onKeyDown={onEffortTriggerKey} onClick={() => setEffortOpen(true)}>
                   <span>{efforts.axisLabel}</span>
                   <span className="oc-model-row-value">{efforts.options.find((o) => o.value === current)?.label}</span>
                   <ChevronRightIcon className="oc-model-row-chevron" />
                 </button>
                 {effortOpen ? (
-                  <div className="oc-model-submenu" role="menu" aria-label={efforts.axisLabel}>
-                    {efforts.options.map((o) => (
+                  <div ref={effortMenu} className="oc-model-submenu" role="menu" aria-label={efforts.axisLabel}>
+                    {efforts.options.map((o, index) => (
                       <button
                         key={o.value}
                         type="button"
                         role="menuitem"
                         className="oc-model-row"
                         data-selected={o.value === current || undefined}
+                        onKeyDown={(e) => onEffortOptionKey(e, index)}
                         onClick={() => {
                           onChange({ ...value, effort: o.value });
                           setOpen(false);

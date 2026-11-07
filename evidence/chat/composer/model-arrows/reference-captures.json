@@ -1,0 +1,424 @@
+[
+  {
+    "name": "model-arrow-down",
+    "image": "evidence/chat/composer/model-arrows/reference-model-arrow-down.png",
+    "evidence_id": "ev_68b36073648256ffa579b060bdbb6887d6cab2df8582ced667f5ba898e65788e",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4458/?oc_scenario=populated&oc_mention_files=1"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "repo",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=tide-web"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "workspace",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=Ada/fix login redirect"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "open",
+          "action": "wait_for_timeout",
+          "duration_ms": 1200
+        },
+        {
+          "step_id": "model",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[aria-label^='Change agent']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": "input[aria-label='Search models']"
+          },
+          "value": {
+            "source": "literal",
+            "value": "sonnet"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "down",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": ":focus"
+          },
+          "key": "ArrowDown"
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "model-arrow-up",
+    "image": "evidence/chat/composer/model-arrows/reference-model-arrow-up.png",
+    "evidence_id": "ev_823b38094961d09d8c80d6cf225934d643253af7fe1993e333a0391740d2db5b",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4458/?oc_scenario=populated&oc_mention_files=1"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "repo",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=tide-web"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "workspace",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=Ada/fix login redirect"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "open",
+          "action": "wait_for_timeout",
+          "duration_ms": 1200
+        },
+        {
+          "step_id": "model",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[aria-label^='Change agent']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": "input[aria-label='Search models']"
+          },
+          "value": {
+            "source": "literal",
+            "value": "sonnet"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "down",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": ":focus"
+          },
+          "key": "ArrowDown"
+        },
+        {
+          "step_id": "up",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": ":focus"
+          },
+          "key": "ArrowUp"
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "model-arrow-enter",
+    "image": "evidence/chat/composer/model-arrows/reference-model-arrow-enter.png",
+    "evidence_id": "ev_31898d31e260b4d022c823353b073892def05ada254d1f9c44e338b1fd7918fe",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4458/?oc_scenario=populated&oc_mention_files=1"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "repo",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=tide-web"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "workspace",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=Ada/fix login redirect"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "open",
+          "action": "wait_for_timeout",
+          "duration_ms": 1200
+        },
+        {
+          "step_id": "model",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[aria-label^='Change agent']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": "input[aria-label='Search models']"
+          },
+          "value": {
+            "source": "literal",
+            "value": "sonnet"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "down",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": ":focus"
+          },
+          "key": "ArrowDown"
+        },
+        {
+          "step_id": "choose",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": ":focus"
+          },
+          "key": "Enter"
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "model-arrow-wrap",
+    "image": "evidence/chat/composer/model-arrows/reference-model-arrow-wrap.png",
+    "evidence_id": "ev_4c9e75f6c75f3f06e5020022bb1e4f15cf9a99def6c8337ae4cd913012a12628",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4458/?oc_scenario=populated&oc_mention_files=1"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "repo",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=tide-web"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "workspace",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "text=Ada/fix login redirect"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "open",
+          "action": "wait_for_timeout",
+          "duration_ms": 1200
+        },
+        {
+          "step_id": "model",
+          "action": "click",
+          "locator": {
+            "kind": "css",
+            "selector": "[aria-label^='Change agent']"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": "input[aria-label='Search models']"
+          },
+          "value": {
+            "source": "literal",
+            "value": "sonnet"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "wrap",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": ":focus"
+          },
+          "key": "ArrowUp"
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  }
+]

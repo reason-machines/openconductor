@@ -1,0 +1,24 @@
+[
+  {
+    "scenario": "anchor-press",
+    "status": "PASS"
+  },
+  {
+    "scenario": "outside-press",
+    "status": "PASS",
+    "query": "",
+    "clearVisible": false
+  },
+  {
+    "scenario": "clear-control",
+    "status": "PASS"
+  },
+  {
+    "scenario": "result-selection",
+    "status": "PASS"
+  },
+  {
+    "scenario": "escape",
+    "status": "PASS"
+  }
+]

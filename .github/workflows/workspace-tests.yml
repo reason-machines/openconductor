@@ -21,3 +21,9 @@ jobs:
       - name: Run tests
         # From the repo root so the busy-state test can compare with evidence/scripts/bin/git-busy-check.sh.
         run: '"$RUNNER_TEMP/workspace-tests"'
+      - name: Native QA pure startup and storage boundaries (no GUI)
+        run: |
+          rustc --edition 2021 -D warnings --cfg workspace_std_only --test src-tauri/src/native_qa.rs -o "$RUNNER_TEMP/native-qa-tests"
+          "$RUNNER_TEMP/native-qa-tests"
+          rustc --edition 2021 -D warnings --cfg workspace_std_only --test src-tauri/src/native_qa_cache.rs -o "$RUNNER_TEMP/native-qa-cache-tests"
+          "$RUNNER_TEMP/native-qa-cache-tests"

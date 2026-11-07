@@ -21,6 +21,14 @@ test("a workspace without a stored target falls back to the repo default", () =>
   assert.equal(targetBranch({ prBase: null, prMerged: false, intended: "  ", fallback: "trunk" }), "trunk");
 });
 
+test("commit scope sends the exact selected hash, never the target branch", () => {
+  const scope = { type: "commit", commitHash: "abcdef1234567890" } as const;
+  assert.deepEqual(scopeRequest(scope, target("develop")), { kind: "commit", hash: scope.commitHash });
+  assert.equal(discardScope("view", scope, false), null);
+  assert.equal(discardScope("menu", scope, false), "all");
+  assert.deepEqual(showUncommittedChanges("changes", scope, false), { tab: "changes", scope: "uncommitted" });
+});
+
 test("Uncommitted sends no target", () => {
   assert.deepEqual(scopeRequest("uncommitted", target("develop")), { kind: "uncommitted" });
 });

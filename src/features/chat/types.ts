@@ -30,6 +30,11 @@ export interface ToolResultBlock {
 
 export type Block = TextBlock | ThinkingBlock | ToolUseBlock | ToolResultBlock;
 
+export interface TokenUsage {
+  inputTokens?: number;
+  outputTokens?: number;
+}
+
 export interface ChatMessage {
   id: string;
   sessionId: string;
@@ -38,6 +43,7 @@ export interface ChatMessage {
   /** RFC 3339 UTC timestamp, millisecond precision. */
   createdAt: string;
   model?: string;
+  usage?: TokenUsage;
   cancelledAt?: string;
   /** Another session sent this message (e.g. a child session's report); never the user's own input. */
   senderSessionId?: string;

@@ -20,6 +20,8 @@ export function paletteCommandFor(e: KeyEventLike, overrides: Overrides = {}): P
   if (plain && !e.shiftKey) {
     if (e.key === "ArrowDown") return "next-item";
     if (e.key === "ArrowUp") return "prev-item";
+    if (e.key === "Home") return "first-item";
+    if (e.key === "End") return "last-item";
     if (e.key === "Enter") return "select";
     if (e.key === "Escape") return "close";
   }

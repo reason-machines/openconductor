@@ -1,8 +1,10 @@
 import { Popover } from "@base-ui/react/popover";
+import type { TokenUsage } from "./types.ts";
 import type { TurnTimeView } from "./turnTime.ts";
 import "./turnDetails.css";
 
-export function TurnDetails({ when, agent }: { when: TurnTimeView; agent?: string }) {
+export function TurnDetails({ when, agent, usage }: { when: TurnTimeView; agent?: string; usage?: TokenUsage }) {
+  const hasUsage = (usage?.inputTokens ?? 0) > 0 || (usage?.outputTokens ?? 0) > 0;
   return (
     <Popover.Root>
       <Popover.Trigger className="chat-turn-time oc-turn-time" openOnHover delay={300}>
@@ -14,6 +16,12 @@ export function TurnDetails({ when, agent }: { when: TurnTimeView; agent?: strin
             <div className="chat-turn-details-content">
               {agent ? <span className="chat-turn-details-agent">{agent}</span> : null}
               <span>{when.range}</span>
+              {hasUsage ? (
+                <dl className="chat-turn-details-usage">
+                  <div><dt>Input</dt><dd>{usage?.inputTokens?.toLocaleString() ?? "—"}</dd></div>
+                  <div><dt>Output</dt><dd>{usage?.outputTokens?.toLocaleString() ?? "—"}</dd></div>
+                </dl>
+              ) : null}
             </div>
           </Popover.Popup>
         </Popover.Positioner>

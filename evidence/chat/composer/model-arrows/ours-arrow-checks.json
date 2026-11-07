@@ -1,0 +1,17 @@
+{
+  "reference": false,
+  "checks": [
+    {
+      "name": "ArrowDown focuses the second search match and ArrowUp returns to the first",
+      "passed": true
+    },
+    {
+      "name": "Search-result arrows wrap in both directions",
+      "passed": true
+    },
+    {
+      "name": "Enter chooses the arrow-focused result, clears search, and keeps the menu open",
+      "passed": true
+    }
+  ]
+}
