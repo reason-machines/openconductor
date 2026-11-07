@@ -13,7 +13,7 @@
 // Not read from Conductor: its file-name sanitizer (`tvt`); the rule below is
 // our own. Pure: no Tauri, no React.
 
-import { ATTACHMENTS_DIR } from "../draft-attachments/staging.ts";
+import { ATTACHMENTS_DIR, isStagedRelativePath } from "../draft-attachments/staging.ts";
 import type { TextAttachment } from "../diff/chatAttachment.ts";
 
 /** Largest file the composer takes. */
@@ -27,6 +27,23 @@ export interface ComposerAttachment extends TextAttachment {
   label?: string;
   /** A staged file: its workspace-relative path (`.context/attachments/…`), which is also its `name`. */
   staged?: string;
+}
+
+/** Restores valid chip metadata without treating persisted JSON as trusted file paths. */
+export function restoreComposerAttachments(values: readonly unknown[]): ComposerAttachment[] {
+  return values.flatMap((value) => {
+    if (!value || typeof value !== "object" || !("name" in value) || typeof value.name !== "string" || value.name === "" || !("text" in value) || typeof value.text !== "string") return [];
+    const label = "label" in value ? value.label : undefined;
+    const staged = "staged" in value ? value.staged : undefined;
+    if (label !== undefined && typeof label !== "string") return [];
+    if (staged !== undefined && (typeof staged !== "string" || staged !== value.name || !isStagedRelativePath(staged) || staged.split("/").some((part) => part === ".." || part === "." || part === ""))) return [];
+    return [{
+      name: value.name,
+      text: value.text,
+      ...(label !== undefined ? { label } : {}),
+      ...(staged !== undefined ? { staged } : {}),
+    }];
+  });
 }
 
 /** A file name safe as one path component: no separators, control characters or leading dots. */
