@@ -1,0 +1,200 @@
+(node:154) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:161) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: date buckets count whole days back from local midnight
+ok 1 - date buckets count whole days back from local midnight
+  ---
+  duration_ms: 0.958404
+  type: 'test'
+  ...
+# Subtest: row time is date-fns formatDistance, shortened like Conductor
+ok 2 - row time is date-fns formatDistance, shortened like Conductor
+  ---
+  duration_ms: 0.219964
+  type: 'test'
+  ...
+# Subtest: search needs every word somewhere and highlights each field
+ok 3 - search needs every word somewhere and highlights each field
+  ---
+  duration_ms: 6.523868
+  type: 'test'
+  ...
+# Subtest: search matches workspace numbers as 12, w12 and w-12
+ok 4 - search matches workspace numbers as 12, w12 and w-12
+  ---
+  duration_ms: 0.418573
+  type: 'test'
+  ...
+# Subtest: rows hide archived by default, filter by project, and sort newest first
+ok 5 - rows hide archived by default, filter by project, and sort newest first
+  ---
+  duration_ms: 10.377701
+  type: 'test'
+  ...
+# Subtest: row titles follow the sidebar display-name rule
+ok 6 - row titles follow the sidebar display-name rule
+  ---
+  duration_ms: 0.199754
+  type: 'test'
+  ...
+# Subtest: groups come in Conductor's order and skip empty days
+ok 7 - groups come in Conductor's order and skip empty days
+  ---
+  duration_ms: 0.26821
+  type: 'test'
+  ...
+# Subtest: project filter shows only with two or more projects that have workspaces
+ok 8 - project filter shows only with two or more projects that have workspaces
+  ---
+  duration_ms: 0.255563
+  type: 'test'
+  ...
+# Subtest: empty list offers Create with no workspaces, Clear filters when filtered
+ok 9 - empty list offers Create with no workspaces, Clear filters when filtered
+  ---
+  duration_ms: 0.324227
+  type: 'test'
+  ...
+# Subtest: saved filters drop unknown projects and bad values
+ok 10 - saved filters drop unknown projects and bad values
+  ---
+  duration_ms: 1.677351
+  type: 'test'
+  ...
+# Subtest: archived workspaces from conductor.db show under Only archived and Showing all
+ok 11 - archived workspaces from conductor.db show under Only archived and Showing all
+  ---
+  duration_ms: 0.868279
+  type: 'test'
+  ...
+# Subtest: archived rows of closed repositories, or already in the state, are not listed twice
+ok 12 - archived rows of closed repositories, or already in the state, are not listed twice
+  ---
+  duration_ms: 0.148725
+  type: 'test'
+  ...
+# (node:162) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: repo; filter=all; Focus=expanded: numbers target their labelled row
+ok 13 - repo; filter=all; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 2.328012
+  type: 'test'
+  ...
+# Subtest: repo; filter=all; Focus=collapsed: numbers target their labelled row
+ok 14 - repo; filter=all; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.366733
+  type: 'test'
+  ...
+# Subtest: repo; filter=alpha; Focus=expanded: numbers target their labelled row
+ok 15 - repo; filter=alpha; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.312955
+  type: 'test'
+  ...
+# Subtest: repo; filter=alpha; Focus=collapsed: numbers target their labelled row
+ok 16 - repo; filter=alpha; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.136145
+  type: 'test'
+  ...
+# Subtest: repo; filter=beta; Focus=expanded: numbers target their labelled row
+ok 17 - repo; filter=beta; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.178525
+  type: 'test'
+  ...
+# Subtest: repo; filter=beta; Focus=collapsed: numbers target their labelled row
+ok 18 - repo; filter=beta; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.116957
+  type: 'test'
+  ...
+# Subtest: status; filter=all; Focus=expanded: numbers target their labelled row
+ok 19 - status; filter=all; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.405518
+  type: 'test'
+  ...
+# Subtest: status; filter=all; Focus=collapsed: numbers target their labelled row
+ok 20 - status; filter=all; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.18065
+  type: 'test'
+  ...
+# Subtest: status; filter=alpha; Focus=expanded: numbers target their labelled row
+ok 21 - status; filter=alpha; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.316409
+  type: 'test'
+  ...
+# Subtest: status; filter=alpha; Focus=collapsed: numbers target their labelled row
+ok 22 - status; filter=alpha; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.331797
+  type: 'test'
+  ...
+# Subtest: status; filter=beta; Focus=expanded: numbers target their labelled row
+ok 23 - status; filter=beta; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 1.202421
+  type: 'test'
+  ...
+# Subtest: status; filter=beta; Focus=collapsed: numbers target their labelled row
+ok 24 - status; filter=beta; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.098294
+  type: 'test'
+  ...
+# (node:168) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a numbered workspace reads W-<n>; one from before numbering has no label
+ok 25 - a numbered workspace reads W-<n>; one from before numbering has no label
+  ---
+  duration_ms: 0.580141
+  type: 'test'
+  ...
+# (node:185) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a local workspace link is <scheme>://workspace?id=<id>, as Conductor's $$ builds it
+ok 26 - a local workspace link is <scheme>://workspace?id=<id>, as Conductor's $$ builds it
+  ---
+  duration_ms: 0.73181
+  type: 'test'
+  ...
+# Subtest: the id is query-encoded
+ok 27 - the id is query-encoded
+  ---
+  duration_ms: 0.115669
+  type: 'test'
+  ...
+# Subtest: copying writes the link and reports Copied link
+ok 28 - copying writes the link and reports Copied link
+  ---
+  duration_ms: 1.153514
+  type: 'test'
+  ...
+# Subtest: a refused or missing clipboard reports Failed to copy link
+ok 29 - a refused or missing clipboard reports Failed to copy link
+  ---
+  duration_ms: 0.418801
+  type: 'test'
+  ...
+# Subtest: a chat tab's Copy link names the chat as its session
+ok 30 - a chat tab's Copy link names the chat as its session
+  ---
+  duration_ms: 0.241325
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 312.479309
