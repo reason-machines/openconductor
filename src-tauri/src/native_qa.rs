@@ -242,7 +242,7 @@ mod app {
         }
         // Tauri 2.12.5 initializes plugins in registration order, before app setup.
         builder.plugin(
-            tauri::plugin::Builder::new("native-qa-guard")
+            tauri::plugin::Builder::<tauri::Wry, ()>::new("native-qa-guard")
                 .setup(|app, _| {
                     validate(app).map_err(std::io::Error::other)?;
                     Ok(())
