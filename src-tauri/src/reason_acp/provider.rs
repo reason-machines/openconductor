@@ -22,10 +22,10 @@
 //!   and the next prompt then fails `409 client_session_id_conflict`: it
 //!   tries to create a Session under the taken id. So the provider runs one
 //!   agent per workspace (`reason --workspace SLUG acp`), remembers each
-//!   Session's workspace ([`ReasonProvider::with_session_store`]), and
-//!   before resuming checks with `reason session get` which signed-in
-//!   workspace has the Session. A Session none has fails the turn with a
-//!   message saying so; nothing is sent.
+//!   Session's workspace ([`ReasonProvider::with_session_store`]). Legacy
+//!   Sessions without a binding are located with `reason session get`;
+//!   unknown ownership fails before resume. New chats require the workspace
+//!   chosen in Settings, independently of the CLI's selection.
 //! * An error Reason sends as reply text (see [`super::updates`]) ends the
 //!   turn as [`TurnEnd::Failed`] even though the prompt says `end_turn`.
 //! * A chat can ask for Session config options (`model`,
@@ -309,18 +309,27 @@ impl SessionWorkspaces {
         self.by_session.get(session_id).cloned()
     }
 
-    fn set(&mut self, session_id: &str, workspace: &str) {
+    fn set(&mut self, session_id: &str, workspace: &str) -> Result<(), String> {
         if self.get(session_id).as_deref() == Some(workspace) {
-            return;
+            return Ok(());
         }
-        self.by_session.insert(session_id.into(), workspace.into());
+        let mut saved = self.by_session.clone();
+        saved.insert(session_id.into(), workspace.into());
         if let Some(path) = &self.path {
-            if let Some(dir) = path.parent() {
-                let _ = std::fs::create_dir_all(dir);
-            }
-            let text = serde_json::to_string_pretty(&self.by_session).unwrap_or_default();
-            let _ = std::fs::write(path, text);
+            let persist = || -> Result<(), Box<dyn std::error::Error>> {
+                if let Some(dir) = path.parent() {
+                    std::fs::create_dir_all(dir)?;
+                }
+                let text = serde_json::to_vec_pretty(&saved)?;
+                let temp = path.with_extension("json.tmp");
+                std::fs::write(&temp, text)?;
+                std::fs::rename(temp, path)?;
+                Ok(())
+            };
+            persist().map_err(|e| format!("Could not save this Reason Session's workspace: {e}. The message was not sent; retry after fixing app storage."))?;
         }
+        self.by_session = saved;
+        Ok(())
     }
 }
 
@@ -331,7 +340,7 @@ pub struct ReasonProvider {
     /// before the next prompt when no turn runs.
     stale: Mutex<bool>,
     /// Settings › Agents › Reason's workspace for new Sessions; `None`
-    /// follows the Reason desktop app's selection.
+    /// requires a selection before creating a Session.
     new_workspace: Mutex<Option<String>>,
     /// Folder the agent process runs in (the user's home folder).
     dir: PathBuf,
@@ -405,11 +414,13 @@ impl ReasonProvider {
         }
     }
 
-    /// The workspace a new Session opens in: the pinned one, else the one
-    /// selected in the Reason desktop app.
-    fn workspace_for_new(&self) -> Option<String> {
-        let pinned = self.new_workspace.lock().unwrap().clone();
-        pinned.or_else(|| self.launch().whoami(&self.dir).and_then(|w| w.selected))
+    fn workspace_for_new(&self) -> Result<String, String> {
+        self.new_workspace
+            .lock()
+            .unwrap()
+            .clone()
+            .filter(|w| !w.trim().is_empty())
+            .ok_or_else(|| "Choose a workspace in Settings › Agents › Reason before starting a new chat. The message was not sent.".into())
     }
 
     /// Registers a chat working in `cwd`, with its stored Session id when
@@ -436,8 +447,8 @@ impl ReasonProvider {
     /// The models Reason offers new Sessions in the selected workspace.
     pub fn models(&self) -> Result<ModelList, String> {
         self.restart_if_stale();
-        let workspace = self.workspace_for_new();
-        let (conn, _) = self.ensure_agent(workspace.as_deref())?;
+        let workspace = self.workspace_for_new()?;
+        let (conn, _) = self.ensure_agent(Some(&workspace))?;
         let base = json!({ "cwd": self.dir, "mcpServers": [] });
         let v = conn
             .call("session/new", base, SETUP_TIMEOUT)
@@ -744,15 +755,14 @@ impl ReasonProvider {
                 (conn, generation, id, workspace, v["configOptions"].clone())
             }
             None => {
-                // A new Session opens in the pinned or selected workspace.
-                let workspace = self.workspace_for_new();
+                let workspace = Some(self.workspace_for_new()?);
                 let (conn, generation) = self.ensure_agent(workspace.as_deref())?;
                 let v = conn
                     .call("session/new", base, SETUP_TIMEOUT)
                     .map_err(|e| e.to_string())?;
                 let id = v["sessionId"].as_str().ok_or("no sessionId")?.to_string();
                 if let Some(w) = &workspace {
-                    self.workspaces.lock().unwrap().set(&id, w);
+                    self.workspaces.lock().unwrap().set(&id, w)?;
                 }
                 (self.sink)(
                     chat,
@@ -827,24 +837,21 @@ impl ReasonProvider {
         }
     }
 
-    /// The workspace that has Session `id`: `hint` (where it was created)
-    /// when `reason session get` finds it there, else the first signed-in
-    /// workspace that has it, the selected one first. When `reason` cannot
-    /// tell (offline, no `whoami`), the best guess, as before this check.
+    /// The persisted workspace for Session `id`, or a signed-in workspace
+    /// that demonstrably has a legacy Session without a binding. Unknown ownership never falls back to the
+    /// CLI's current selection.
     /// A Session no signed-in workspace has is an error: resuming it would
     /// end in `409 client_session_id_conflict`.
     fn locate(&self, id: &str, hint: Option<String>) -> Result<Option<String>, String> {
-        let mut unsure = None;
-        if let Some(w) = &hint {
-            match self.launch().session_presence(&self.dir, w, id) {
-                Presence::Found => return Ok(hint),
-                Presence::Unknown => unsure = hint.clone(),
-                Presence::Missing => {}
-            }
-        }
-        let Some(signed_in) = self.launch().whoami(&self.dir) else {
+        if hint.is_some() {
+            // Persisted ownership is authoritative, including while offline.
             return Ok(hint);
+        }
+        let unknown = || format!("Could not verify this chat's Reason Session {id} workspace. The message was not sent. Reconnect Reason and retry; existing chat history is preserved.");
+        let Some(signed_in) = self.launch().whoami(&self.dir) else {
+            return Err(unknown());
         };
+        let mut unsure = false;
         let mut order: Vec<&String> = signed_in.selected.iter().collect();
         order.extend(
             signed_in
@@ -855,17 +862,15 @@ impl ReasonProvider {
         for w in order.into_iter().filter(|w| Some(*w) != hint.as_ref()) {
             match self.launch().session_presence(&self.dir, w, id) {
                 Presence::Found => {
-                    self.workspaces.lock().unwrap().set(id, w);
+                    self.workspaces.lock().unwrap().set(id, w)?;
                     return Ok(Some(w.clone()));
                 }
-                Presence::Unknown => {
-                    unsure.get_or_insert_with(|| w.clone());
-                }
+                Presence::Unknown => unsure = true,
                 Presence::Missing => {}
             }
         }
-        if unsure.is_some() {
-            return Ok(unsure);
+        if unsure {
+            return Err(unknown());
         }
         Err(format!(
             "This chat's Reason Session {id} is not in any workspace the Reason CLI is \

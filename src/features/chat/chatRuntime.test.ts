@@ -98,11 +98,27 @@ test("a queued message is prompted once the running turn ends", async () => {
   assert.deepEqual(userTexts(rt, "c1"), ["first", "second"]);
   assert.ok(seen.includes("working"));
 
+  f.emit({ chatId: "c1", type: "text", text: "Second answer" });
   f.emit({ chatId: "c1", type: "turnEnded", end: { outcome: "completed" } });
   f.prompts[1]!.end();
   await settle();
   assert.equal(rt.snapshot("c1").queue.status, "idle");
   assert.equal(rt.snapshot("c1").transcript.activeTurn, null);
+});
+
+test("an empty Reason completion fails the queue visibly and preserves the prompt for retry", async () => {
+  const f = fakeBackend();
+  const rt = createChatRuntime(f.backend, fakeHost().host);
+  rt.submit("empty-reply", "/ws", "sda", "queue");
+  await settle();
+  f.emit({ chatId: "empty-reply", type: "turnEnded", end: { outcome: "completed" } });
+  f.prompts[0]!.end();
+  await settle();
+  const snap = rt.snapshot("empty-reply");
+  assert.equal(snap.queue.status, "error");
+  assert.match(Object.values(snap.transcript.turns)[0]?.error ?? "", /no reply/i);
+  assert.deepEqual(userTexts(rt, "empty-reply"), ["sda"]);
+  assert.equal(snap.transcript.messages.filter((m) => m.role === "assistant").length, 0);
 });
 
 test("a pick in a chat whose session is open goes to that session; before it opens, open carries it", async () => {
@@ -146,6 +162,7 @@ test("a steered follow-up goes to the backend while the turn runs", async () => 
   // The earlier prompt ends superseded; the steered turn keeps the session working.
   f.emit({ chatId: "c1", type: "turnEnded", end: { outcome: "superseded" } });
   assert.equal(rt.snapshot("c1").queue.status, "working");
+  f.emit({ chatId: "c1", type: "text", text: "Follow-up answer" });
   f.emit({ chatId: "c1", type: "turnEnded", end: { outcome: "completed" } });
   assert.equal(rt.snapshot("c1").queue.status, "idle");
 });
@@ -239,6 +256,7 @@ test("chat statuses span runtimes, and a hidden chat drops out", async () => {
   assert.equal(chatStatuses().get("status-b"), "working");
   assert.equal(changes, 2);
 
+  b.emit({ chatId: "status-b", type: "text", text: "Done" });
   b.emit({ chatId: "status-b", type: "turnEnded", end: { outcome: "completed" } });
   assert.equal(chatStatuses().get("status-b"), "idle");
   hideChat("status-b");
