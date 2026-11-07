@@ -78,8 +78,7 @@ export function ChatEmptyState({ repoName, directoryName, state, branch, branche
 function TranscriptChip({ chat, onAttach }: { chat: OtherChat; onAttach: (c: OtherChat) => void }) {
   return (
     <button type="button" className="oc-transcript-chip" title={chat.title} onClick={() => onAttach(chat)}>
-      {/* Conductor's agent logo; ModelGlyph draws the agent's mark from a model id. */}
-      <ModelGlyph model={chat.agent === "codex" ? "gpt-" : "opus"} />
+      <ModelGlyph model={chat.agent === "codex" ? "gpt-" : "opus"} agent={chat.agent} />
       <span>{chat.title}</span>
     </button>
   );

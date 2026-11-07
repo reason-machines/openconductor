@@ -48,6 +48,7 @@ html.sidebar-transparency .settings { background: var(--bg); }
    size-4 icon box, gap-0.5 between rows) above a border-b. */
 .sb-header { position: relative; flex: none; }
 .sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance))); }
+.sb-app-mark { display: inline-flex; margin-left: 6px; color: var(--sidebar-foreground); pointer-events: none; }
 .sb-toggle { display: inline-flex; padding: 0; color: var(--muted); transition: color 150ms cubic-bezier(0, 0, 0.2, 1); } /* Rta: transition-colors duration-150 ease-out */
 .sb-toggle:hover { color: var(--text); }
 .sb-history { position: absolute; top: 8px; right: 14px; z-index: 1; display: flex; align-items: center; gap: 8px; }

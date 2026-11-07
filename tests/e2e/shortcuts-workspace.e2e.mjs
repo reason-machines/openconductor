@@ -172,10 +172,14 @@ test("⌘, opens Settings and Escape returns to the workspace (openSettings, set
   await context.close();
 });
 
-test("⌘⇧H goes Home (nav.home)", async () => {
+test("⌘⇧H opens the Home workspace list (nav.home)", async () => {
   const { context, page, errors } = await open();
   await press(page, "Meta+Shift+h");
   await page.locator(".ws-header").waitFor({ state: "detached" });
+  await page.getByRole("listbox", { name: "Workspaces", exact: true }).waitFor();
+  assert.equal(await page.getByRole("textbox", { name: "Search workspaces", exact: true }).isVisible(), true);
+  assert.equal(await page.locator('.sb-row[data-active="true"] .sb-row-label').innerText(), "Home");
+  assert.equal(await page.locator(".home-wordmark").count(), 0);
   assert.deepEqual(errors, []);
   await context.close();
 });

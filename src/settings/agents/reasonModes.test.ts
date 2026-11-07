@@ -41,10 +41,19 @@ test("signed out or keyless shows only the version and says what to do", () => {
   const st = reasonStatus("cli", out, DEFAULT_SETTINGS, false);
   assert.equal(st.connected, false);
   assert.deepEqual(st.rows, [{ label: "Version", value: "0.2.692" }]);
-  assert.match(st.notConnectedMessage, /reason login/);
+  assert.match(st.notConnectedMessage, /Sign in with your Reason account/);
+  assert.doesNotMatch(st.notConnectedMessage, /run|terminal/i);
   assert.equal(reasonStatus("apikey", account, DEFAULT_SETTINGS, false).connected, false);
   assert.equal(reasonStatus("apikey", account, DEFAULT_SETTINGS, true).rows[2].value, "API key");
   assert.match(reasonStatus("account", null, DEFAULT_SETTINGS, false).notConnectedMessage, /not installed/);
+});
+
+test("expired credentials never show a stale identity as connected", () => {
+  const status = reasonStatus("account", { ...account, error: "Your sign-in has expired." }, DEFAULT_SETTINGS, false);
+  assert.equal(status.connected, false);
+  assert.deepEqual(status.rows, [{ label: "Version", value: "0.2.692" }]);
+  assert.equal(status.notConnectedMessage, "Your sign-in has expired.");
+  assert.equal(reasonStatus("account", { ...account, name: "", email: " " }, DEFAULT_SETTINGS, false).connected, false);
 });
 
 test("an empty option unsets the key", () => {

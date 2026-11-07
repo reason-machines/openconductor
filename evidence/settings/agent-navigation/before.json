@@ -1,0 +1,24 @@
+[
+  {
+    "scenario": "canonical-url",
+    "status": "FAIL",
+    "error": "canonical URL retains the selected provider\n\nnull !== 'codex'\n",
+    "observed": {
+      "pathname": "/settings/user/providers",
+      "search": "",
+      "selected": "Codex",
+      "panel": "Codex"
+    }
+  },
+  {
+    "scenario": "mounted-search",
+    "status": "FAIL",
+    "error": "visible tab follows navigation\n+ actual - expected\n\n+ 'Codex'\n- 'Claude Code'\n",
+    "observed": {
+      "pathname": "/settings/user/providers",
+      "search": "?providerTab=claude",
+      "selected": "Codex",
+      "panel": "Codex"
+    }
+  }
+]

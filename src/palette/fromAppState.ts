@@ -65,7 +65,7 @@ export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   // Navigation. Go to next unread comes first, only while something is unread (renderApp @10,916,846).
   { id: "go-to-next-unread", title: "Go to next unread", group: "navigation", bindingId: "chat.nextAttention", icon: "chevron-right", keywords: ["go", "to", "next", "unread", "attention", "chat", "session"] },
   { id: "settings", title: "Settings", group: "navigation", hint: "⌘,", icon: "settings", keywords: ["settings", "preferences", "config"] },
-  // Conductor's `V9t` ("Home", nav.home); it opens /all-workspaces there, the wordmark screen here (#483).
+  // Conductor's `V9t` ("Home", nav.home) opens the /all-workspaces list.
   { id: "go-home", title: "Home", group: "navigation", bindingId: "nav.home", icon: "home", keywords: ["home", "history", "all", "workspaces", "activity"] },
   // Conductor: opens the Workspaces tab with archived workspaces shown, only while a workspace is open.
   { id: VIEW_ARCHIVED_ACTION, title: VIEW_ARCHIVED_LABEL, group: "navigation", icon: "archive", keywords: ["archive", "archived", "workspaces", "view", "show"] },

@@ -65,6 +65,10 @@ http.createServer((req,res)=>{
  if(process.argv.includes('--passport-check')) {
   try { await import('./passport.check.mjs'); } catch(e) { console.error(e); return; }
  }
+ if(process.argv.includes('--home-routing-capture')) await import('./home-routing-capture.mjs');
+ if(process.argv.includes('--home-routing-check')) {
+  try { await import('./home-routing.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
+ }
  if(process.argv.includes('--local-header-check')) {
   try { await import('./local-header-number.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
  }

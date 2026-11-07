@@ -1,0 +1,21 @@
+{
+  "checks": [
+    "dark: click exposes existing agent and exact time range",
+    "dark: Escape closes and restores timestamp focus",
+    "dark: Enter opens details from keyboard focus",
+    "dark: Space opens details from keyboard focus",
+    "dark: hover opens, allows popup inspection, and closes on leave",
+    "dark: outside click dismisses details",
+    "light: click exposes existing agent and exact time range",
+    "light: Escape closes and restores timestamp focus",
+    "light: Enter opens details from keyboard focus",
+    "light: Space opens details from keyboard focus",
+    "light: hover opens, allows popup inspection, and closes on leave",
+    "light: outside click dismisses details",
+    "missing agent still exposes time without a fabricated model",
+    "running turn has no completed-turn timestamp",
+    "cancelled turn keeps both its timestamp details and interruption badge",
+    "no page errors"
+  ],
+  "errors": []
+}
