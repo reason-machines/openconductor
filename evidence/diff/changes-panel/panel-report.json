@@ -1,0 +1,49 @@
+{
+  "rectangle": {
+    "x": 938,
+    "y": 40,
+    "width": 342,
+    "height": 370
+  },
+  "channel_threshold": 24,
+  "states": {
+    "flat": {
+      "after": {
+        "evidence_id": "ev_e86c99ca4fd0cd2d1369b2304c18175fa87cd36cbedb8102e5431671c0df690d",
+        "changed_pixels": 3491,
+        "compared_pixels": 126540,
+        "changed_ratio": 0.027588114430219694
+      },
+      "before": {
+        "evidence_id": "ev_b81cddae27a2a9b37af1b19dcfe49b4e25a2b7c2a72708e9f4224c4e8c4aebe8",
+        "changed_pixels": 5672,
+        "compared_pixels": 126540,
+        "changed_ratio": 0.04482377113956061
+      }
+    },
+    "tree": {
+      "after": {
+        "evidence_id": "ev_46b629f335e26b1c775473ab070007a62b4195c38bc952ec33dd06b0cbee7e9c",
+        "changed_pixels": 3290,
+        "compared_pixels": 126540,
+        "changed_ratio": 0.025999683894420738
+      }
+    },
+    "collapsed": {
+      "after": {
+        "evidence_id": "ev_f51ff899a948ebed4a3695b3cc809a563e51412626f56f170aa7cf6088213869",
+        "changed_pixels": 2367,
+        "compared_pixels": 126540,
+        "changed_ratio": 0.018705547652916075
+      }
+    },
+    "options": {
+      "after": {
+        "evidence_id": "ev_dc3a346ec3a3d0645e0fa8182fc022c0176cd6b060cb6aed922031ea8e2e9f71",
+        "changed_pixels": 6616,
+        "compared_pixels": 126540,
+        "changed_ratio": 0.0522838628101786
+      }
+    }
+  }
+}

@@ -1,9 +1,3 @@
-// The workspace header's Open button (Conductor's `P9` with `showLabel: false`,
-// renderApp chunk, REA-extracted and read as data): a split button whose left
-// half opens the workspace folder in the default app (⌘O) and whose chevron
-// opens the "Open in" menu (⌘⇧O). The menu lists the installed apps in
-// Conductor's catalog order with their icons, the default app's ⌘O hint and
-// number keys 1-9, then "Copy path" (`bvs`, rows `X7t`).
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
@@ -14,6 +8,7 @@ import { glyphs } from "../../keybindings/shortcut.ts";
 import { ChevronDownIcon, CodeIcon, CopyIcon, FolderIcon, TerminalIcon } from "../../components/Icons";
 import { recordOpenIn, useAppPrefs } from "../../settings/appPrefs";
 import { COPY_PATH_TOAST, NUMBERED_ROWS, copyText, defaultAppId, loadOpenInApps, openInApp, rowNumbers, type OpenInApp } from "./apps";
+import { AppSwitcher } from "./AppSwitcher.tsx";
 import "./openIn.css";
 
 type Notify = (kind: "info" | "error", message: string) => void;
@@ -69,7 +64,8 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
   const split = variant === "split";
   const installed = useInstalledApps();
   const apps = installed ?? [];
-  const defaultId = defaultAppId(apps, useAppPrefs().default_open_in);
+  const prefs = useAppPrefs();
+  const defaultId = defaultAppId(apps, prefs.default_open_in);
   const defaultApp = apps.find((a) => a.id === defaultId);
   const [open, setOpen] = useState(false);
   const presence = usePresence(open);
@@ -105,7 +101,6 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
   const numbers = rowNumbers(apps.length);
 
   useKeybindings({
-    "workspace.openInApp": split && path && defaultId ? () => void openIn(defaultId) : undefined,
     "workspace.openInMenu": split && path ? () => setOpen(true) : undefined,
   });
   // 1-9 pick a row while the menu is open (Conductor's `cJe`).
@@ -148,6 +143,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
   const mainLabel = defaultApp ? `Open in ${defaultApp.name}` : "Open in...";
   return (
     <div className={split ? "oi" : "oi oi-icon"} ref={wrap} data-testid={split ? "open-in" : undefined}>
+      {split && path && <AppSwitcher key={path} apps={apps} mru={prefs.open_in_mru_order} onOpen={(appId) => void openIn(appId)} />}
       {/* Conductor's yvs: "Open in <app>" and the workspace.openInApp hint; no tooltip without a default app. */}
       {split && (
         <Tooltip

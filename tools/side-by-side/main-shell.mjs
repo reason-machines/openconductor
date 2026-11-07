@@ -45,5 +45,8 @@ http.createServer((req,res)=>{
  if(process.argv.includes('--home-check')) {
   try { await import('./home-details.check.mjs'); } catch(e) { console.error(e); return; }
  }
+ if(process.argv.includes('--passport-check')) {
+  try { await import('./passport.check.mjs'); } catch(e) { console.error(e); return; }
+ }
  if(process.argv.includes('--capture')) await import('./main-shell-capture.mjs');
 });

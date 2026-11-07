@@ -23,7 +23,7 @@ export interface DropdownPlacement {
  * Align start under `anchor`; flips to the top when the bottom does not fit and
  * the top does, and shifts along the edge to stay in the viewport.
  */
-export function placeDropdown(anchor: Rect, size: { width: number; height: number }, viewport: { width: number; height: number }, sideOffset = 4): DropdownPlacement {
+export function placeDropdown(anchor: Rect, size: { width: number; height: number }, viewport: { width: number; height: number }, sideOffset = 4, align: "start" | "end" = "start"): DropdownPlacement {
   let side: "bottom" | "top" = "bottom";
   let top = anchor.bottom + sideOffset;
   if (top + size.height > viewport.height) {
@@ -34,7 +34,8 @@ export function placeDropdown(anchor: Rect, size: { width: number; height: numbe
     }
   }
   if (side === "bottom") top = Math.max(0, Math.min(top, viewport.height - size.height));
-  const left = Math.max(0, Math.min(anchor.left, viewport.width - size.width));
+  const alignedLeft = align === "end" ? anchor.right - size.width : anchor.left;
+  const left = Math.max(0, Math.min(alignedLeft, viewport.width - size.width));
   const originX = (anchor.left + anchor.right) / 2 - left;
   const originY = side === "bottom" ? -sideOffset : size.height + sideOffset;
   return { left, top, side, originX, originY };

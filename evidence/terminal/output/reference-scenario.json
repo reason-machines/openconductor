@@ -1,0 +1,104 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://conductor.localhost:4398/?oc_scenario=populated&oc_theme=dark&oc_setup_script=npm%20install&oc_run_script=npm%20run%20dev&oc_script_output=1"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark",
+    "locale": "en-US",
+    "timezone": "UTC"
+  },
+  "actions": [
+    {
+      "step_id": "loaded",
+      "action": "wait_for_timeout",
+      "duration_ms": 2500
+    },
+    {
+      "step_id": "click-0",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "text=tide-web"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "settle-0",
+      "action": "wait_for_timeout",
+      "duration_ms": 800
+    },
+    {
+      "step_id": "click-1",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "text=Ada/dark mode tokens"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "settle-1",
+      "action": "wait_for_timeout",
+      "duration_ms": 800
+    },
+    {
+      "step_id": "click-2",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=tab] >> text=Setup"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "settle-2",
+      "action": "wait_for_timeout",
+      "duration_ms": 800
+    },
+    {
+      "step_id": "click-3",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "button:text-is('Run setup')"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "settle-3",
+      "action": "wait_for_timeout",
+      "duration_ms": 800
+    },
+    {
+      "step_id": "output",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": ".xterm-rows"
+      },
+      "state": "visible",
+      "timeout_ms": 5000
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "dom",
+      "url"
+    ],
+    "events": [
+      "console",
+      "page-errors"
+    ]
+  }
+}

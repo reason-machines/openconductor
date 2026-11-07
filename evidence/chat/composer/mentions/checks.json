@@ -1,0 +1,17 @@
+{
+  "passed": 12,
+  "checks": [
+    "Enter picks an atomic chip before a second Enter submits its readable path",
+    "Undo after Send cannot resurrect a sent draft",
+    "Picking, undo/redo and whole-chip backspace are atomic",
+    "Same-app copy/paste and cut preserve atoms",
+    "External rich clipboard input uses literal plain text and preserves newlines",
+    "Synthetic composition Enter is not submitted (not a real IME test)",
+    "ArrowDown and Tab pick a ranked result",
+    "Email text does not open mentions, Escape dismisses, slash menu still works",
+    "Multiline input scrolls at 188px and shrinks back to the 152px box",
+    "An attachment with empty text enables Send and is delivered, then cleared",
+    "Working state shows Stop, attachment-only queued follow-up shows Queue, Stop returns idle",
+    "Draft restoration resets editor history and external review-note insertion preserves the chip"
+  ]
+}

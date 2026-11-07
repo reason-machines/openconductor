@@ -8,17 +8,24 @@ const [target = "ours", ...only] = process.argv.slice(2);
 const reference = target === "reference";
 const port = process.env.PORT ?? (reference ? "4428" : "4427");
 const rea = process.env.REA ?? "/home/runner/rea/node_modules/.bin/rea";
-const output = "evidence/chat/composer/current";
+const output = process.env.OUTPUT ?? "evidence/chat/composer/current";
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), "oc-composer-"));
 const click = (selector, step_id) => ({ step_id, action: "click", locator: { kind: "css", selector }, timeout_ms: 5000 });
 const wait = (duration_ms, step_id) => ({ step_id, action: "wait_for_timeout", duration_ms });
-const editor = reference ? "[contenteditable=true]" : ".composer textarea";
+const editor = process.env.EDITOR_SELECTOR ?? (reference ? "[contenteditable=true]" : ".composer [contenteditable=true]");
 const fill = (value) => ({ step_id: "type", action: "fill", locator: { kind: "css", selector: editor }, value: { source: "literal", value }, timeout_ms: 5000 });
 const cases = {
   empty: reference ? [click("text=2 files changed", "blur")] : [],
   focused: [click(editor, "focus")],
   multiline: [fill("Review the login redirect.\nKeep the expired-session test.\nThen update the docs.")],
   mention: [fill("@README")],
+  chip: [fill("@README"), wait(600, "suggestions"), { step_id: "pick", action: "press", locator: { kind: "css", selector: editor }, key: "Enter" }],
+  terminal: [fill("@terminal")],
+  directory: [fill("@add")],
+  "terminal-picked": [fill("@terminal"), wait(600, "suggestions"), { step_id: "pick", action: "press", locator: { kind: "css", selector: editor }, key: "Enter" }],
+  "directory-dialog": [fill("@add"), wait(600, "suggestions"), { step_id: "pick", action: "press", locator: { kind: "css", selector: editor }, key: "Enter" }],
+  "link-workspaces": [click("[aria-label='Add']", "add"), click("text=Link workspaces", "link")],
+  "link-issue": [click("[aria-label='Add']", "add"), click("text=Link issue", "link")],
   plus: [click("[aria-label='Add']", "add")],
   model: [click(reference ? "[aria-label^='Change agent']" : "[data-testid='composer-model-button']", "model")],
 };

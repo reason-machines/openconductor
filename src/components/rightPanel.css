@@ -29,14 +29,16 @@
 /* Tab row: 28 px pills, 13 px labels. */
 /* At a third of a narrow window the row is wider than the panel; it scrolls sideways inside the
    panel (Conductor's tab list is a horizontal scroll area) instead of spilling past the window. */
-.rp-tabs { display: flex; align-items: center; gap: 2px; height: 44px; padding: 0 8px 0 10px; flex: none; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.rp-tabs { display: flex; align-items: center; gap: 4px; height: 44px; padding: 0 8px; flex: none; min-width: 0; overflow: hidden; }
 .rp-tabs > * { flex: none; }
+.rp-tabs > .rp-tab-buttons { display: flex; align-items: center; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.rp-tab-buttons > * { flex: none; }
 .rp-tab { display: inline-flex; align-items: center; height: 28px; padding: 0 9px; border-radius: 6px; color: var(--rp-muted-fg); font-size: 13px; font-weight: 500; white-space: nowrap; }
 .rp-tab:hover { color: var(--text); }
 .rp-tab.active { background: var(--rp-pill); color: var(--text); }
 .rp-tab .tab-count { margin-left: 5px; font-size: 13px; color: var(--rp-muted-fg); }
-.rp-tabs-end { margin-left: auto; display: flex; align-items: center; gap: 2px; }
-.rp-tabs-end .review-button { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; color: var(--accent); font-weight: 500; }
+.rp-tabs-end { margin-left: auto; display: flex; align-items: center; }
+.rp-tabs-end .review-button { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; margin-right: 6px; border: 0; background: transparent; border-radius: 4px; color: var(--accent); font-weight: 450; }
 .rp-icon { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 6px; color: var(--rp-muted-fg); }
 .rp-icon:hover:not(:disabled), .rp-icon.on { background: var(--hover); color: var(--text); }
 .rp-icon:disabled { opacity: 0.4; }

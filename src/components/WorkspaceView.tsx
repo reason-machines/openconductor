@@ -26,6 +26,8 @@ import { generateWorkspaceNames } from "../workspace/naming";
 import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import type { ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
+import { appendComposerText } from "../features/chat/composerDocument.ts";
 import { canMinimize } from "../features/chat/composerMinimize.ts";
 import { useComposerMinimize } from "../features/chat/useComposerMinimize.ts";
 import { AgentBinaryBanner } from "../features/chat/AgentBinaryBanner.tsx";
@@ -51,6 +53,8 @@ import { invoke } from "@tauri-apps/api/core";
 import { TurnChanges } from "../features/chat/TurnChanges.tsx";
 import type { TurnRef } from "../features/diff/turnChangesCache.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
+import { ChangesToolbar } from "../features/diff/ChangesToolbar.tsx";
+import type { ChangesView } from "../features/diff/changesTree.ts";
 import { filterActive, filterToggleShown, toggleFilter } from "../features/diff/changesFilter";
 import { SearchIcon } from "../features/files/panelIcons";
 import { Tooltip } from "./ui/Tooltip.tsx";
@@ -229,7 +233,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   /** The turn footer hover's "Opus 5.5 via Reason". */
   const [turnAgent, setTurnAgent] = useState<string | undefined>(undefined);
   const endRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<ComposerEditorHandle>(null);
   const running = transcript.activeTurn !== null;
   // Only the workspace's own chat counts as the agent working; a review chat does not.
   useEffect(() => {
@@ -456,7 +460,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   // The diff viewer adds review comments to the composer of the chat shown; the PR control sends.
   bridge.current = {
     insert: (text) => {
-      setDraft((d) => (d.trim() ? `${d.trimEnd()}\n\n${text}` : text));
+      setDraft((d) => appendComposerText(d, text));
       inputRef.current?.focus();
     },
     send: (text) => submit(text, "queue"),
@@ -614,6 +618,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       {/* The composer stays mounted (draft, queue) but hidden while a tool approval takes its place. */}
       <div className="oc-composer-slot" hidden={toolApproval !== undefined}>
       <Composer
+        key={chatId}
         draft={draft}
         setDraft={setDraft}
         inputRef={inputRef}
@@ -705,9 +710,10 @@ interface RightPanelProps {
   notify?: ArchiveNotify;
   /** Under the empty Changes list: "Pull latest from <target>" (shared with the `git.pull` shortcut). */
   emptyAction?: ReactNode;
+  targetControl?: ReactNode;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction }: RightPanelProps) {
+function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -724,6 +730,8 @@ function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, 
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
   const files = useFilesToolbar();
+  const [changesView, setChangesView] = useState<ChangesView>("flat");
+  useEffect(() => setChangesView("flat"), [worktree]);
   // parity:diff.changes-list:ui Conductor's "Filter files" (changesFilter.ts): the toggle sits after Review, the row in ChangesList.
   const [changesFilter, setChangesFilter] = useState({ open: false, query: "" });
   useEffect(() => setChangesFilter({ open: false, query: "" }), [worktree]);
@@ -742,9 +750,11 @@ function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, 
     <section className="diff" aria-label="Changes">
       {/* Conductor's right panel: All files, Changes N, Checks, then the tab's own icons at the right end. */}
       <div className="rp-tabs" role="tablist">
-        {tabButton("files", "All files")}
-        {tabButton("changes", <>Changes {count ? <span className="tab-count">{count}</span> : null}</>)}
-        {tabButton("checks", <>Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}</>)}
+        <div className="rp-tab-buttons">
+          {tabButton("files", "All files")}
+          {tabButton("changes", <>Changes {count ? <span className="tab-count">{count}</span> : null}</>)}
+          {tabButton("checks", <>Checks {checksStatus ? <span className={`checks-dot ${checksStatus}`} aria-label={checksStatus} /> : null}</>)}
+        </div>
         <span className="rp-tabs-end">
           {tab === "files" && <FilesToolbarButtons toolbar={files} />}
           {/* Conductor shows Review only while the workspace has changes. */}
@@ -762,10 +772,11 @@ function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, 
               </button>
             </Tooltip>
           )}
+          {tab === "changes" && <ChangesToolbar diff={diff} view={changesView} onViewChange={setChangesView} targetControl={targetControl} />}
         </span>
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} worktree={worktree} emptyAction={emptyAction} filter={filter} notify={notify} />
+        <ChangesList diff={diff} actions={actions} worktree={worktree} emptyAction={emptyAction} filter={filter} notify={notify} view={changesView} />
       ) : tab === "checks" ? (
         <ChecksTab
           worktree={worktree}
@@ -875,18 +886,18 @@ function ChatTabUnreadDot() {
 }
 
 /** "→ <target>" in the workspace header: the target branch picker (Conductor's `sxi`). */
-function TargetChip({ target, open, setOpen, repo }: { target: TargetBranch; open: boolean; setOpen: (v: boolean) => void; repo: Repo }) {
+function TargetChip({ target, open, setOpen, repo, variant = "header" }: { target: TargetBranch; open: boolean; setOpen: (v: boolean) => void; repo: Repo; variant?: "header" | "menu" }) {
   const disabled = target.disabledReason !== null || target.changing;
   return (
     <span className="pr-base-anchor target-chip">
       <button
-        className="chip"
+        className={variant === "menu" ? "oc-changes-target-trigger" : "chip"}
         disabled={disabled}
         aria-label={`Target branch ${target.branch}`}
         title={target.disabledReason ?? target.error ?? "Target branch"}
         onClick={() => setOpen(!open)}
       >
-        → {target.branch}
+        {variant === "menu" ? <>{TARGET_REMOTE}/{target.branch}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="m8 9 4-4 4 4m-8 6 4 4 4-4" /></svg></> : <>→ {target.branch}</>}
       </button>
       {open && (
         <BranchPicker
@@ -924,10 +935,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
   const [mainTab, setMainTab] = useState<MainTab>("chat");
   const [prOpen, setPrOpen] = useState(false);
   const [pickingTarget, setPickingTarget] = useState(false);
+  const [pickingChangesTarget, setPickingChangesTarget] = useState(false);
   useEffect(() => {
     setDiffOpen(false);
     setPrOpen(false);
     setPickingTarget(false);
+    setPickingChangesTarget(false);
     // Go to next unread or a row click may have asked for one of its chats (state/openChat.ts).
     setMainTab(tabOfChat(workspace.id, takeChatRequest(workspace.id)));
     return onChatRequest((id) => {
@@ -1313,6 +1326,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
             <RightPanel
               diff={diff}
               actions={review.actions}
+              targetControl={<TargetChip target={target} open={pickingChangesTarget} setOpen={setPickingChangesTarget} repo={repo} variant="menu" />}
               pr={pullRequest}
               worktree={workspace.path ?? null}
               review={<ReviewButton onReview={() => void reviews.start()} onEdit={() => void reviews.start(true)} error={reviews.error} disabled={workspace.status === "archived"} />}

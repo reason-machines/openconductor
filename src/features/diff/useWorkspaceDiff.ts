@@ -79,10 +79,12 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   keyRef.current = key;
   const loadNow = useCallback(
     (quiet: boolean) => {
-      loadWorkspaceDiff(worktree, target, opts, { turn }).then(
+      return loadWorkspaceDiff(worktree, target, opts, { turn }).then(
         (files) => {
-          loaded.set(key, files);
-          if (keyRef.current === key) setState({ key, load: { state: "ready", files } });
+          const previous = loaded.get(key);
+          const next = previous && JSON.stringify(previous) === JSON.stringify(files) ? previous : files;
+          loaded.set(key, next);
+          if (keyRef.current === key) setState({ key, load: { state: "ready", files: next } });
         },
         (e: unknown) => {
           if (quiet) return;
@@ -94,10 +96,22 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     [key, worktree, target, opts, turn],
   );
   // Loads again behind what is shown; a list never loaded shows "Loading changes…" meanwhile.
-  const refresh = useCallback(() => loadNow(false), [loadNow]);
+  const refresh = useCallback(() => { void loadNow(false); }, [loadNow]);
   useEffect(refresh, [refresh]);
   // After a save from the diff viewer: reload without the loading state, so the open editor stays mounted.
-  const reloadQuietly = useCallback(() => loadNow(true), [loadNow]);
+  const reloadQuietly = useCallback(() => { void loadNow(true); }, [loadNow]);
+  useEffect(() => {
+    if (!worktree || turn) return;
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout>;
+    const schedule = () => {
+      timer = setTimeout(() => {
+        void loadNow(true).finally(() => { if (!stopped) schedule(); });
+      }, 2000);
+    };
+    schedule();
+    return () => { stopped = true; clearTimeout(timer); };
+  }, [worktree, turn, loadNow]);
   useEffect(() => {
     setViewedMap(loadViewed(localStorage, workspaceId));
     setSelectedPath(null);
@@ -105,6 +119,21 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   }, [workspaceId]);
 
   const files = useMemo(() => (load.state === "ready" ? load.files : []), [load]);
+  const [uncommitted, setUncommitted] = useState<{ worktree: string | null; paths: Set<string> }>({ worktree: null, paths: new Set() });
+  useEffect(() => {
+    if (load.state !== "ready") return;
+    if (!turn && opts.scope === "uncommitted") {
+      setUncommitted({ worktree, paths: new Set(load.files.map((f) => f.path)) });
+      return;
+    }
+    let active = true;
+    loadWorkspaceDiff(worktree, target, { ...opts, scope: "uncommitted", layout: "unified" }, { contextLines: 0 }).then(
+      (changed) => { if (active) setUncommitted({ worktree, paths: new Set(changed.map((f) => f.path)) }); },
+      () => { if (active) setUncommitted({ worktree, paths: new Set() }); },
+    );
+    return () => { active = false; };
+  }, [load, worktree, target, opts, turn]);
+  const uncommittedPaths = uncommitted.worktree === worktree ? uncommitted.paths : new Set<string>();
   const current = selectedPath === null ? -1 : files.findIndex((f) => f.path === selectedPath);
   const selected = current >= 0 ? files[current] : null;
 
@@ -185,6 +214,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     /** Worktree folder the diff is read from (null while the workspace has none). */
     worktree,
     totals,
+    uncommittedPaths,
     /** Index of the selected file in `files`, or -1. */
     current,
     /** The selected file. */

@@ -150,7 +150,7 @@ const signInNotice = () => run("const n = document.querySelector('[data-testid=\
 const chip = () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.textContent ?? null;");
 
 async function send(text) {
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 

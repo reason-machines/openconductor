@@ -406,6 +406,7 @@ const SELF_HEADED: readonly SettingsPage[] = ["environment", "providers", "setup
 
 /** Conductor's `_Sa` page headers: a description under the title where it has one. */
 const PAGE_HEADERS: Partial<Record<SettingsPage, { description: ReactNode }>> = {
+  terminal: { description: "Configure big terminal mode behavior (⌘⇧T)." },
   experimental: {
     description: (
       <>

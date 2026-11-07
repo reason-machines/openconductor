@@ -51,12 +51,12 @@ export function SignUp({ onSignedIn, onFailed, onSkip }: SignUpProps) {
   const [code, setCode] = useState<string | null>(null);
   const [startError, setStartError] = useState(false);
   const live = useRef(true);
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    live.current = true;
+    return () => {
       live.current = false;
-    },
-    [],
-  );
+    };
+  }, []);
 
   // While the browser sign-in runs, poll `reason status` until an account appears.
   useEffect(() => {

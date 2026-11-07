@@ -329,6 +329,10 @@ def main():
         states=list(states.values()),
         items=items,
     )
+    supplemental_path = os.path.join(ROOT, "parity/ui-program/supplemental-evidence.json")
+    if os.path.isfile(supplemental_path):
+        with open(supplemental_path) as f:
+            doc["supplemental_evidence"] = json.load(f)
     rescore(doc)
     with open(os.path.join(ROOT, "parity/ui-map.json"), "w") as f:
         json.dump(doc, f, indent=1, ensure_ascii=False)
@@ -366,7 +370,14 @@ def write_md(doc):
     L.append("\n## Main-screen verdicts\n")
     for screen in doc["main_screens"].values():
         L.append("- **%s**: %s in retained evidence (%d/%d state matches); final review **%s**. %s" % (screen["title"], screen["evidence_verdict"], screen["counts"]["matches"], screen["counts"]["total"], screen["final_review"], screen["gap"]))
-    L.append("\n### By owning team\n")
+    supplemental = doc.get("supplemental_evidence", {})
+    if supplemental:
+        L.append("\n## Supplemental evidence\n")
+        L.append("Ledger reconciled against main `%s`. This is not a new capture identity. Supplemental crops do not replace full-state scores, change the denominator, or sign off native parity.\n" % supplemental["source_main_commit"])
+        for record in supplemental["records"]:
+            L.append("- **%s (%s)**: %s [Merged PR](%s), [evidence](../%s). Lane: %s" % (record["id"], record["verdict"], record["summary"], record["pr_url"], record["evidence_path"], record["lane"]))
+            L.extend("  - " + limit for limit in record["limits"])
+    L.append("\n## By owning team\n")
     L.append("Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign there and regenerate). Counts include states and items.\n")
     L.append("| Team | Total | Missing | Wrong | Matches | Unverified |\n|---|---:|---:|---:|---:|---:|")
     for t, v in s["by_team"].items():

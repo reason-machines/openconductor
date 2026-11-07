@@ -1,4 +1,6 @@
 import { executablePaths } from "./agentSettings";
+import { ConductorIcon } from "../components/ConductorIcon";
+import { TerminalPresetIcon } from "./TerminalPresetIcon";
 import { useEffect, useState } from "react";
 import type { Settings } from "./types";
 import {
@@ -36,8 +38,7 @@ export function BigTerminalPage({ settings, save }: Props) {
   };
 
   return (
-    <div className="settings-section">
-      <p className="muted small">Configure big terminal mode behavior (⌘⇧T).</p>
+    <div className="settings-big-terminal">
       <div className="settings-rows big-terminal">
         <div className="settings-row big-terminal-head">
           <div>
@@ -56,6 +57,7 @@ export function BigTerminalPage({ settings, save }: Props) {
             return (
               <label key={o.value} className={`preset-option${preset === o.value ? " selected" : ""}`}>
                 <input type="radio" name="big-terminal-preset" className="sr-only" value={o.value} checked={preset === o.value} onChange={() => write({ preset: o.value, customCommands })} />
+                <span className="preset-icon"><TerminalPresetIcon preset={o.value} /></span>
                 <span className="preset-label">{o.label}</span>
                 {command && <span className="preset-command">{command}</span>}
               </label>
@@ -71,8 +73,9 @@ export function BigTerminalPage({ settings, save }: Props) {
               onDelete={() => write(afterDelete({ preset, customCommands }, c.id))}
             />
           ))}
-          <button type="button" className="btn btn-small preset-add" onClick={add}>
-            + Add custom command
+          <button type="button" className="preset-add" onClick={add}>
+            <ConductorIcon name="plus" size={14} />
+            Add custom command
           </button>
         </div>
       </div>
@@ -91,11 +94,12 @@ function CustomRow(props: { custom: CustomCommand; selected: boolean; onSelect: 
     <div className={`preset-option custom${selected ? " selected" : ""}`}>
       <label className="preset-custom-head">
         <input type="radio" name="big-terminal-preset" className="sr-only" value={customPreset(custom.id)} checked={selected} onChange={props.onSelect} />
+        <span className="preset-icon"><ConductorIcon name="terminal" size={16} /></span>
         <span className="preset-command left">{custom.command || "No command set"}</span>
       </label>
       {selected && (
         <button type="button" className="term-icon" aria-label="Delete custom command" title="Delete custom command" onClick={props.onDelete}>
-          ×
+          <ConductorIcon name="trash-2" size={14} />
         </button>
       )}
       {selected && (

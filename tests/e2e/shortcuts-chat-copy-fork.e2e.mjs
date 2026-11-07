@@ -55,7 +55,7 @@ async function openDemo({ forkSetting = false } = {}) {
 
 /** Send `text` from the composer and wait for the stand-in agent's answer. */
 async function send(page, text) {
-  const composer = page.locator(".chat textarea").first();
+  const composer = page.locator(".chat [contenteditable=true]").first();
   await composer.fill(text);
   await composer.press("Enter");
   await page.locator(".chat-scroll", { hasText: `“${text}” was not sent` }).waitFor();
@@ -87,7 +87,7 @@ test("⌥⌘C copies the chat on screen as the concise transcript (chat.copyText
 
   // After a turn, from inside the composer too: the transcript goes to the clipboard.
   await send(page, "Explain the router");
-  await page.locator(".chat textarea").first().focus();
+  await page.locator(".chat [contenteditable=true]").first().focus();
   await page.keyboard.press("Meta+Alt+KeyC");
   await page.locator(".toast", { hasText: 'Copied concise transcript of "amber-falcon"' }).waitFor();
   const copied = await page.evaluate(() => navigator.clipboard.readText());

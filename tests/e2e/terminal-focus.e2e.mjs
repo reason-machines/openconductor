@@ -119,13 +119,13 @@ const focusedIn = (page) =>
 async function open(page) {
   await page.addInitScript(fakeBackend, { repo: REPO, workspace: WORKSPACE });
   await page.goto(base + "/");
-  await page.locator(".composer textarea").waitFor();
+  await page.locator(".composer [contenteditable=true]").waitFor();
 }
 
 test("no terminal opens with the workspace, so the chat box keeps every key", async () => {
   const page = await browser.newPage();
   await open(page);
-  const box = page.locator(".composer textarea");
+  const box = page.locator(".composer [contenteditable=true]");
   await box.click();
   await page.keyboard.type("lo");
   // Terminals live in the right panel's strip, which opens on Run; nothing spawns a shell by itself.
@@ -135,7 +135,7 @@ test("no terminal opens with the workspace, so the chat box keeps every key", as
   await page.keyboard.type("cal");
   assert.equal(await page.locator(".terminal-panel").count(), 0, "no terminal is shown");
   assert.equal(await focusedIn(page), "composer", "focus stays in the chat box");
-  assert.equal(await box.inputValue(), "local", "every key went to the chat box");
+  assert.equal(await box.textContent(), "local", "every key went to the chat box");
   assert.equal(await page.evaluate(() => window.__ptyInput), "", "no key reached a shell");
   assert.equal(await page.locator('.composer button[type="submit"]').isEnabled(), true, "Send is enabled");
   await page.close();
@@ -159,7 +159,7 @@ test("a tab the user opens takes the keyboard", async () => {
   await page.evaluate(() => window.__releasePty());
   await showTerminalPanel(page);
   await page.locator(".term-tab").first().waitFor();
-  await page.locator(".composer textarea").click();
+  await page.locator(".composer [contenteditable=true]").click();
   await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   await page.waitForFunction(() => document.activeElement?.closest(".terminal-panel .term-mount"));

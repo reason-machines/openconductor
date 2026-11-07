@@ -234,7 +234,7 @@ try {
   );
   await run("[...document.querySelectorAll('.oc-model-menu .oc-model-item')].find((b) => b.textContent.trim() === 'Codex').click();");
   await waitFor("Codex on the picker chip", () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title === 'Codex' || null;"));
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text: "which codex is this" });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text: "which codex is this" });
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
   await waitFor("the reply", () => chatText().then((t) => t && t.includes("turn 1: which codex is this")));
   await screenshot("agent-binaries-1-codex-chat");

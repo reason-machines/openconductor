@@ -69,7 +69,7 @@
   overflow-y: auto;
 }
 /* ProseMirror: font-weight 350, min-height 3rem; text-sm (14px/20px); placeholder text-faint. */
-.composer.oc-composer textarea {
+.composer.oc-composer .tiptap {
   display: block;
   width: 100%;
   min-height: 48px;
@@ -87,7 +87,11 @@
   letter-spacing: 0;
   cursor: text;
 }
-.composer.oc-composer textarea::placeholder { color: var(--oc-c-faint); opacity: 1; }
+.composer.oc-composer .tiptap p { margin: 0; min-height: 1em; }
+.composer.oc-composer .tiptap[data-empty="true"]::before { content: attr(data-placeholder); color: var(--oc-c-faint); pointer-events: none; position: absolute; }
+.oc-file-chip { box-sizing: border-box; height: 20px; display: inline-flex; vertical-align: baseline; align-items: center; gap: 8px; padding: 0 6px; border: 1px solid var(--oc-c-border); border-radius: 3px; background: var(--bg); font-size: 14px; line-height: 18px; white-space: nowrap; user-select: all; }
+.oc-file-chip img { display: inline-block; flex: none; }
+.oc-file-chip.ProseMirror-selectednode { outline: 1px solid var(--oc-c-ring); }
 
 /* "⌘L to focus": absolute top-2 right-1 text-xs text-faint bg-muted rounded-full px-2 py-1. */
 .oc-focus-pill {
@@ -121,8 +125,8 @@
 }
 .oc-composer:not([data-composer-resize-instant]) .oc-composer-input { transition: min-height 200ms cubic-bezier(0.25, 1, 0.5, 1), padding 200ms cubic-bezier(0.25, 1, 0.5, 1), margin-bottom 200ms cubic-bezier(0.25, 1, 0.5, 1); }
 .oc-composer[data-composer-minimized] .oc-composer-input { min-height: 28px; margin-bottom: -4px; padding-left: 32px; padding-right: 128px; }
-.composer.oc-composer[data-composer-minimized] textarea { min-height: 20px; white-space: nowrap; }
-.composer.oc-composer[data-composer-minimized] textarea::placeholder { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.composer.oc-composer[data-composer-minimized] .tiptap { min-height: 20px; white-space: nowrap; }
+.composer.oc-composer[data-composer-minimized] .tiptap::before { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .oc-composer[data-composer-minimized] .oc-composer-left { left: 7px; bottom: 8px; }
 .oc-composer[data-composer-minimized] .oc-composer-right { right: 8px; bottom: 8px; }
 /* Conductor's A5 groups: opacity/translate, out in 100ms, back in 125ms after 75ms. */

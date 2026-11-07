@@ -215,7 +215,7 @@ test("Big terminal mode: ⌘⇧T does nothing while off; on, it opens a tab runn
   // A custom command: added selected with "No command set", saved on Enter.
   await page.getByRole("button", { name: "Settings" }).click();
   await nav.getByRole("button", { name: "Big terminal" }).click();
-  await page.getByRole("button", { name: "+ Add custom command" }).click();
+  await page.getByRole("button", { name: "Add custom command" }).click();
   await page.waitForFunction(() => window.__fake.saves.at(-1)?.terminal?.big_terminal_custom_commands?.length === 1);
   const added = (await lastSave(page)).terminal;
   assert.equal(added.big_terminal_preset, `custom:${added.big_terminal_custom_commands[0].id}`);

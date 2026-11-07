@@ -163,12 +163,15 @@ const requests = () =>
     .map((l) => JSON.parse(l));
 
 async function send(text) {
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
 /** Picks Codex in the composer's model picker (Conductor's picker picks the agent too). */
 async function pickCodex(shot) {
+  await waitFor("the composer model picker", () =>
+    run("const b = document.querySelector(\"[data-testid='composer-model-button']\"); return !!b && !b.disabled;"),
+  );
   await run("document.querySelector(\"[data-testid='composer-model-button']\").click();");
   await waitFor("Codex in the model picker", () =>
     run("return [...document.querySelectorAll('.oc-model-menu .oc-model-item')].some((b) => b.textContent.trim() === 'Codex') || null;"),
