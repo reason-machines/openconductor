@@ -71,4 +71,8 @@ Rust formatting passed. The system Rust installation did not include rustfmt or 
 
 A full Linux `cargo check --manifest-path src-tauri/Cargo.toml --lib` failed before compiling app code because the cloud host lacks `glib-2.0` and `gobject-2.0` development libraries. macOS package CI must check Tauri integration.
 
-Fake-server browser E2E, native fresh-account browser approval, the Reason turn, and package-macos results will be recorded separately. They have not passed on the evidence above.
+The shared frontend has passed 22 synthetic UI cases across the actual onboarding, Settings and chat entry components. A separate approval-gated HTTP server and fake CLI drive the production Rust lifecycle through 17 browser cases, including real-time 21-second URL waits for fresh and existing-pending sign-ins. All six server/CLI boundary tests passed. See [the runnable fake-server contract and viewed evidence](../../../tools/reason-pairing/README.md).
+
+The integrated frontend passed `npm run typecheck`, `npm run build`, all 1,311 tests from `node --test "src/**/*.test.ts"`, and `npm run lint:colors` on this cloud computer. The combined browser suites and exact-head CI are checked again after the final test increment.
+
+The native signed-out preflight receipt is [recorded separately](native-macos-preflight.json). Native fresh-account browser approval, a real Reason turn, and the containing main-branch package are not proved by the synthetic or preflight results. The sole native driver owns those remaining observations.

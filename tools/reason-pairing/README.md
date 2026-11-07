@@ -10,13 +10,15 @@ REASON_PAIRING_EVIDENCE=e2e-artifacts/reason-pairing \
   node --test tests/e2e/reason-pairing.e2e.mjs
 ```
 
-Set `CHROME_PATH` if Chromium is not in a standard location. `TEST_BASE_URL` can reuse an existing Vite server. Otherwise the test starts Vite on an ephemeral loopback port and closes it afterward. The dedicated `reason-pairing.yml` CI workflow installs its own browser and uploads screenshots.
+Set `CHROME_PATH` if Chromium is not in a standard location. `TEST_BASE_URL` can reuse an existing Vite server. `TEST_VITE_HOST` and `TEST_VITE_PORT` configure the test-owned Vite listener with strict port binding for a foreground preview runner. Otherwise the test starts Vite on an ephemeral loopback port and closes it afterward. The dedicated `reason-pairing.yml` CI workflow installs its own browser and uploads screenshots.
 
 ## What runs
 
 `rust-bridge.mjs` generates a temporary Rust executable that imports the production `cli.rs`, `account.rs`, and `login.rs`. Fixture IPC calls its real `LoginService` and `LaunchConfig`. Rust launches the absolute path of `fake-reason.py`; it never resolves or launches an installed Reason CLI. The temporary bridge alone enables `LoginOptions.allow_loopback` and short test deadlines.
 
 Chromium renders the production `ReasonSignInControls` settings and chat variants and the production onboarding `SignUp`. The fixture substitutes only Tauri IPC transport and the browser opener. The emitted URL opens as a real second Chromium page. That page posts an explicit fixture account and workspace choice to the fake HTTP server.
+
+`OC_PAIRING_FIXTURE_LOGIN_DELAY_MS` asks the server to hold its login HTTP response for that real duration. The fake executable waits on HTTP, rather than sleeping before the request.
 
 The fake executable starts a detached finisher that polls this server. It completes only after explicit browser approval. Status reads never approve a pending request or materialize credentials. The server protocol is deliberately test-only, not a copy of Reason's production OAuth endpoints.
 
@@ -37,7 +39,8 @@ The server owns each request's `pending`, `approved`, `cancelled`, or `expired` 
 - Existing login on initial mount without another pairing or browser open.
 - External credential expiry observed after a fresh frontend mount.
 - Approval racing cancellation preserves the saved CLI account without global logout.
-- A delayed CLI response remains cancellable before a URL appears.
+- A delayed HTTP login response remains cancellable before a URL appears.
+- Fresh and already-pending requests each wait a real 21 seconds for the HTTP response before emitting the browser URL, with a 60-second Rust deadline and an explicit elapsed-at-least-20-seconds assertion.
 - Browser opener failure is visible, and explicit reopen preserves the attempt.
 
 ## Boundaries and limits
@@ -50,10 +53,14 @@ This is real Rust process-launch and lifecycle coverage with real React controls
 
 ## Viewed browser evidence
 
-These screenshots came from the passing fake-server E2E before the saved-account refresh extension. They show synthetic identities only. The images were opened and inspected before publication.
+These screenshots came from the final passing 17-case fake-server run. They show synthetic identities only. The connected images are the fresh and already-pending real 21-second HTTP cases. The images were opened and inspected before publication.
 
-![Fake-server E2E waiting for browser approval; not native or real Reason sign-in](https://api.reasonmachines.com/media/pr-screenshots/ed2069a5-6a2b-4607-b33a-548d6832a3fd/c2de8f73d65d6c75badffd907b7ebf38/settings-waiting-strict-true.png#w=1280&h=820)
+![Fake-server E2E waiting for approval; not native or real Reason sign-in](https://api.reasonmachines.com/media/pr-screenshots/ed2069a5-6a2b-4607-b33a-548d6832a3fd/49c5ca810b55bf6c27694de7f930ebe2/settings-waiting-strict-true.png#w=1280&h=820)
 
-![Fake-server E2E connected account and workspace; not native or real Reason sign-in](https://api.reasonmachines.com/media/pr-screenshots/ed2069a5-6a2b-4607-b33a-548d6832a3fd/546145c7f3330521f98f433915071c63/settings-connected-strict-true.png#w=1280&h=820)
+![Fresh fake pairing connected after an actual 21-second HTTP wait; no real sign-in](https://api.reasonmachines.com/media/pr-screenshots/ed2069a5-6a2b-4607-b33a-548d6832a3fd/fc4f24069ee7337a511db09e89914281/fresh-21-second-http.png#w=1280&h=820)
 
-![Fake browser approval page; no real credentials](https://api.reasonmachines.com/media/pr-screenshots/ed2069a5-6a2b-4607-b33a-548d6832a3fd/26f86f63a87e1321cf357c4cbff7e040/settings-waiting-strict-true-approval.png#w=1280&h=820)
+![Existing-pending fake pairing connected after an actual 21-second HTTP wait; no real sign-in](https://api.reasonmachines.com/media/pr-screenshots/ed2069a5-6a2b-4607-b33a-548d6832a3fd/fc4f24069ee7337a511db09e89914281/pending-21-second-http.png#w=1280&h=820)
+
+## Verification receipt
+
+[verification.json](verification.json) records 17 browser E2E passes, six server/CLI passes, the exact imported source commits, static checks, configuration, and limits.

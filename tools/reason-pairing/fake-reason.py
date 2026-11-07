@@ -21,7 +21,7 @@ transport = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 def request(path, body=None):
     data = None if body is None else json.dumps(body).encode()
     req = urllib.request.Request(origin + path, data=data, headers={"Content-Type": "application/json"})
-    with transport.open(req, timeout=5) as response:
+    with transport.open(req, timeout=35 if path.endswith("/login") else 5) as response:
         return json.load(response)
 
 
@@ -44,10 +44,8 @@ if args[:1] == ["__fixture_finish"] and len(args) == 2:
 if args == ["status", "--json"]:
     print(json.dumps(request(prefix + "/status")))
 elif args == ["login"]:
-    delay = float(os.environ.get("OC_PAIRING_FIXTURE_LOGIN_DELAY_MS", "0")) / 1000
-    if delay:
-        time.sleep(delay)
-    pairing = request(prefix + "/login", {"workspace": workspace})
+    delay = int(os.environ.get("OC_PAIRING_FIXTURE_LOGIN_DELAY_MS", "0"))
+    pairing = request(prefix + "/login", {"workspace": workspace, "responseDelayMs": delay})
     if pairing["state"] != "connected":
         pairing = request("/pairings/" + pairing["id"] + "/poll", {})
     if pairing["state"] == "connected":
