@@ -35,6 +35,22 @@ Reconciled against main `a988e5a820e35ce41eb82856f8a1e7d20cd18594`. The [canonic
 
 The 341-entry scoped denominator, 169 retained matches, 48 wrong, 3 missing, 121 unverified and all nine native final-review verdicts are unchanged. Existing capture rows are not rescored. The earlier native source pin came from a driver note and its hold from the coordinator, not an independently verified immutable human ban. This Cloud-only batch performs no Mac launch/input, agent/credential operation, new preview, capture, CI dispatch or duplicate monitoring.
 
+## Bounded synthetic WKWebView receipt, 7 November 2026
+
+Conductor Rebuild reconciled the later [runtime-owner proof](https://reasonmachines.com/agents/d8e894e9-2c63-4ec3-9a11-f28722af996d?page=339835bf-57c3-46f5-825d-97167f31613f) against main `e9cfaed4a97a66bb495ca5a8b8f49aa6f0238094`. This adds no capture, score change or native final-review pass. The evidence is the owner's completed run, not a rerun by ledger integration.
+
+- Runtime owner `d8e894e9` reports 10/10 synthetic WKWebView composition checks and 23/23 total assertions passed on Sven's Mac. The run ended at `2026-11-07T00:40:15.127Z` on source `50265ba211c5506a50180ad3f5dfa535183e1e98`, containing merged #739. Enter, Send, file and slash-suggestion blocking passed during synthetic composition. Post-composition `/clear` stayed local without agent delivery.
+- The binary was a local debug rebuild with an ad-hoc signature, not a downloaded CI artifact. Its SHA256 is `d336711a992fc25e03c51299c4b949cfad20a7a6029ca2d49314087a4ae3c525`. The owner's retained archive SHA256 is `027471391e1739e335c33c16bb13409dcfc294070d6ac31dd2e09dad7ae2a9ea`. Ledger integration did not reopen the archive or inspect an image.
+- Isolation and own-AppHandle nonce gates passed per owner, with zero sessions, messages or PTYs. Owned app `37126` and helper `37145` exited. The owner reports no residual handles or IP descriptors, and stable `54473` identity/hash unchanged before and after. Its later read-only audit confirmed both owned PIDs absent and the stable identity unchanged.
+- Exact-window screenshot capture **failed** with `could not create image from window`. Two capture acknowledgements are not image passes. Real macOS IME, native visual parity, signed-in ACP and real-data cleanup were NOT RUN. No new Conductor/REA behavior is inferred.
+- This source predates #740 merge `667ac60f` by one commit. Terminal labels/status, selected-worktree cwd, #741 slider rendering/drag/persistence and #742 colors/actions were NOT RUN. Containing #742 source does not prove its behavior. Earlier `8467` assertions and each package remain separate evidence.
+
+All nine native full-parity verdicts remain unverified. Synthetic WKWebView assertions do not change the ten-run E2E streak, five-pass local verdict or real-auth verdict. Existing owners retain those checks. Ledger integration performed no Mac launch/input, new capture, preview or dispatch.
+
+### Ledger #747 merge-gate gap
+
+[PR #747](https://github.com/reason-machines/openconductor/pull/747) merged at `2026-11-07T00:56:46.75571Z` before all exact-head checks passed. The coordinator observed 14/16 successes with both E2E jobs running. Direct readback confirms Codex job `128244199775` completed later at `00:58:03Z`. The ALL-checks gate did not hold. Later success does not make that merge compliant. No post-merge cancellation or rollback is claimed. Future merge requests wait for every exact-head check and workflow to succeed.
+
 ## Historical program records
 
 One row per node of Sven's UI audit program. A node is done when its side-by-side image
