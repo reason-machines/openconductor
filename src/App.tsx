@@ -59,7 +59,9 @@ import { USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatModelPicker.tsx";
 import { RoutinesPage } from "./features/routines/RoutinesPage";
 import { RoutineEditor } from "./features/routines/RoutineEditor";
-import { REPO_SECTIONS, cloudSettingsLocation, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { REPO_SECTIONS, cloudSettingsLocation, keptSearch, resolveSettingsUrl, settingsPath, settingsSearch, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { agentsTabFrom } from "./settings/agents/kitModel";
+import { selectProviderTab } from "./settings/providerTab";
 import { ORGANIZATION_EVENT, storedOrganization } from "./org/organization";
 import { changeZoom, rememberSettings, toggleTheme } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
@@ -233,7 +235,7 @@ export default function App() {
   const navigateSettings = useCallback((loc: SettingsLocation | null) => {
     const target = loc ? cloudSettingsLocation(loc, cloudUI === true) : null;
     setSettingsLocation(target);
-    const search = keptSearch(window.location.search);
+    const search = settingsSearch(target, window.location.search);
     window.history.replaceState(window.history.state, "", (target ? settingsPath(target) : "/") + search);
   }, [cloudUI]);
   useEffect(() => {
@@ -265,11 +267,7 @@ export default function App() {
       const known = [...USER_PAGES, "setup-cloud" as const].find((p) => p === detail?.page);
       if (known) navigateSettings({ scope: "user", page: known });
       // A chat's "Open <agent> settings": the Agents page opens on that agent's tab.
-      if (known === "providers" && detail?.providerTab) {
-        const q = new URLSearchParams(window.location.search);
-        q.set("providerTab", detail.providerTab);
-        window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}`);
-      }
+      if (known === "providers" && detail?.providerTab) selectProviderTab(agentsTabFrom(detail.providerTab));
     };
     window.addEventListener(OPEN_SETTINGS_EVENT, open);
     return () => window.removeEventListener(OPEN_SETTINGS_EVENT, open);
