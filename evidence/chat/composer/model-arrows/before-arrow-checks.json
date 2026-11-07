@@ -1,0 +1,20 @@
+{
+  "reference": false,
+  "checks": [
+    {
+      "name": "ArrowDown focuses the second search match and ArrowUp returns to the first",
+      "passed": false,
+      "error": "page.waitForFunction: Timeout 1500ms exceeded."
+    },
+    {
+      "name": "Search-result arrows wrap in both directions",
+      "passed": false,
+      "error": "page.waitForFunction: Timeout 1500ms exceeded."
+    },
+    {
+      "name": "Enter chooses the arrow-focused result, clears search, and keeps the menu open",
+      "passed": false,
+      "error": "page.waitForFunction: Timeout 1500ms exceeded."
+    }
+  ]
+}
