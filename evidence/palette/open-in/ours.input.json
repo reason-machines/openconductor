@@ -1,0 +1,79 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://127.0.0.1:4518/"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark",
+    "locale": "en-US",
+    "timezone": "UTC"
+  },
+  "actions": [
+    {
+      "step_id": "ready",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": ".oi-chevron"
+      },
+      "state": "visible",
+      "timeout_ms": 20000
+    },
+    {
+      "step_id": "open",
+      "action": "press",
+      "locator": {
+        "kind": "css",
+        "selector": "body"
+      },
+      "key": "Meta+k"
+    },
+    {
+      "step_id": "query",
+      "action": "fill",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=dialog] input[placeholder]"
+      },
+      "value": {
+        "source": "literal",
+        "value": "VS Code"
+      }
+    },
+    {
+      "step_id": "row",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": ".palette-item >> text=VS Code"
+      },
+      "state": "visible",
+      "timeout_ms": 10000
+    },
+    {
+      "step_id": "settle",
+      "action": "wait_for_timeout",
+      "duration_ms": 500
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "url",
+      "dom"
+    ],
+    "events": [
+      "console",
+      "page-errors"
+    ]
+  }
+}

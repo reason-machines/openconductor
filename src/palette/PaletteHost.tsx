@@ -16,6 +16,10 @@ import { loadRecentWorkspaceIds, recordViewedWorkspace, saveRecentWorkspaceIds }
 import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { openNextUnread } from "../state/nextUnread.ts";
 import { preferredProjectWorkspace } from "./projectWorkspace.ts";
+import { AppIcon, useInstalledApps } from "../features/openIn/OpenInButton.tsx";
+import { openInApp } from "../features/openIn/apps.ts";
+import { recordOpenIn, useAppPrefs } from "../settings/appPrefs.ts";
+import { Toaster, useToasts } from "../components/Toast";
 
 interface Props {
   state: AppState;
@@ -81,7 +85,10 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
     [hasRepos],
   );
   const settingEntries = useMemo(() => paletteSettings(settingsIndex), [settingsIndex]);
-  const data = useMemo(() => paletteDataFromState(state, recents, archived, settingEntries), [state, recents, archived, settingEntries]);
+  const apps = useInstalledApps();
+  const prefs = useAppPrefs();
+  const { toasts, show, dismiss } = useToasts();
+  const data = useMemo(() => paletteDataFromState(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in), [state, recents, archived, settingEntries, apps, prefs.default_open_in]);
   const archivedById = (id: string) => archived.find((a) => a.id === id);
   const showWorkspaceNumbers = useBoolPref("experimental_show_workspace_numbers");
 
@@ -141,7 +148,12 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
       if (repo && target) go({ repoId: repo.id, workspace: target });
       else if (repo) dispatch({ type: "newWorkspace", repoId: repo.id });
     } else if (item.kind === "action") {
-      actions[item.action.id]?.();
+      const app = apps?.find((a) => item.action.id === `open-in-${a.id}`);
+      const workspace = state.repos.flatMap((r) => r.workspaces).find((w) => w.id === selectedId);
+      if (app && workspace?.path && workspace.status !== "archived") {
+        void recordOpenIn(app.id, false).catch((err) => console.warn("could not save the default app", err));
+        void openInApp(app.id, workspace.path).catch((err) => show("error", `Failed to open in ${app.name}: ${String(err)}`));
+      } else actions[item.action.id]?.();
     } else if (item.kind === "setting") {
       openSetting(item.setting.id);
     }
@@ -163,16 +175,22 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
     return item ? searchIcon(item) : null;
   };
 
-  if (!open) return null;
   return (
-    <CommandPalette
+    <>
+      <Toaster toasts={toasts} dismiss={dismiss} />
+      {open && <CommandPalette
       data={data}
       repos={state.repos}
       archived={archived}
       showWorkspaceNumbers={showWorkspaceNumbers}
       onSelect={onSelect}
       settingIcon={settingIcon}
+      actionIcon={(id) => {
+        const app = apps?.find((a) => id === `open-in-${a.id}`);
+        return app ? <AppIcon app={{ ...app, icon: null }} size={14} /> : null;
+      }}
       onClose={() => onOpenChange(false)}
-    />
+      />}
+    </>
   );
 }

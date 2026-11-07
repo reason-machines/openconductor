@@ -74,6 +74,7 @@ pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
 mod native_qa;
+mod native_qa_cache;
 pub mod open_in;
 pub mod project;
 pub mod quick_open;
@@ -306,6 +307,9 @@ pub fn run() {
         .plugin(updater_plugin())
         .setup(|app| {
             native_qa::validate(app.handle()).map_err(std::io::Error::other)?;
+            if native_qa::ordinary_gate(app.handle()).map_err(std::io::Error::other)? {
+                return Ok(());
+            }
             let data_dir = app.path().app_data_dir()?;
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);

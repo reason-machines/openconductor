@@ -28,8 +28,12 @@ jobs:
         run: npm run lint:colors
       - name: Frontend unit tests
         run: node --test "src/**/*.test.ts"
+      - name: Window fill across interface zoom and resize
+        run: node --test tests/e2e/window-fill.e2e.mjs
       - name: Native QA isolation verifier tests (no GUI)
-        run: python3 -W error::ResourceWarning -m unittest tools/test_native_qa.py tools/test_native_qa_webkit.py -v
+        run: python3 -W error::ResourceWarning -m unittest tools/test_native_qa.py tools/test_native_qa_webkit.py tools/test_native_qa_ordinary.py tools/test_native_qa_cache.py -v
+      - name: Synthetic storage payload fixture tests (no WebKit)
+        run: node --test tools/test_native_qa_storage.mjs
       - run: npm run build
 
   app:

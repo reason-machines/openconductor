@@ -163,6 +163,7 @@ try {
     `const done = arguments[arguments.length - 1];
      const invoke = window.__TAURI_INTERNALS__.invoke;
      invoke("get_settings")
+       .then((s) => invoke("update_settings", { settings: { ...s, reason: { ...s.reason, workspace: "ws-a" } } }).then(() => s))
        .then((s) => invoke("add_repository", { path: arguments[0] }).then((repo) => ({ s, repo })))
        .then(({ s, repo }) => invoke("create_workspace", { repositoryId: repo.id, branchName: "picker", directoryName: "picker", baseBranch: null, existingBranch: false, prNumber: null })
          .then((created) => done({ workspace: created.workspace, defaultModel: s.models.default })))

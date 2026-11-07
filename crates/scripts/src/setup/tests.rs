@@ -44,10 +44,10 @@ fn success_saves_the_log_and_completes() {
     assert_eq!(out.log_path, tmp.path().join("logs/conductor-setup-w1.log"));
     assert_eq!(
         fs::read_to_string(&out.log_path).unwrap(),
-        "installing\nwarn\n"
+        "installing\r\nwarn\r\n"
     );
     assert_eq!(mgr.state("w1"), SetupState::Completed);
-    assert_eq!(mgr.log("w1").as_deref(), Some("installing\nwarn\n"));
+    assert_eq!(mgr.log("w1").as_deref(), Some("installing\r\nwarn\r\n"));
 }
 
 #[test]
@@ -80,6 +80,18 @@ fn starting_twice_is_a_no_op_and_cancel_wins() {
     assert_eq!(out.state, SetupState::Cancelled);
     assert!(out.log.contains("begin"));
     assert_eq!(mgr.state("w1"), SetupState::Cancelled);
+    let workspace = tmp.path().join("selected-worktree");
+    fs::create_dir(&workspace).unwrap();
+    let mut rerun = spec(
+        tmp.path(),
+        "test -t 0 && test -t 1 && test -t 2 && printf 'fresh:%s\\n' \"$PWD\"",
+    );
+    rerun.cwd = workspace.clone();
+    let out = run(&mgr, "w1", &rerun);
+    assert_eq!((out.state, out.exit_code), (SetupState::Completed, Some(0)));
+    assert_eq!(out.log, format!("fresh:{}\r\n", workspace.display()));
+    assert_eq!(fs::read_to_string(&out.log_path).unwrap(), out.log);
+    assert!(!rerun.script_path.exists(), "rerun script is removed");
 }
 
 #[test]

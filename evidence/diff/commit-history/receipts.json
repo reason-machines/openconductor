@@ -1,0 +1,63 @@
+{
+  "boundary": "Actual extracted reference plus built OpenConductor, Chromium with synthetic fixtures; not native proof",
+  "menu_and_back_build": {
+    "source_commit": "ebbbe16abaa92736ecf6bc823a18dc77eb09bd69",
+    "source_dirty": true,
+    "source_diff_sha256": "447280857a9fbea994f25f08a04ca262bb4dce2cfe1270527043d24f7b00e35a",
+    "build_index_sha256": "c099431d78c3cc41702eb89eaa6c9bb579b7873b7d3a711f202489820c695135"
+  },
+  "selected_final_build": {
+    "source_commit": "ebbbe16abaa92736ecf6bc823a18dc77eb09bd69",
+    "source_dirty": true,
+    "source_diff_sha256": "23e53a63ce293e1edd67ba49d4a98c7cb6f242597a76c4eb44f779eb449657e2",
+    "build_index_sha256": "69cb9cb7542f666bdd11176c01928b941fa957574f52b606014912002a513118"
+  },
+  "history-options": {
+    "reference": {
+      "evidence_id": "ev_0ce077eb7bffc34694e8173f75025dc126d0a204c71cb161706cfff78891ae33",
+      "png_sha256": "2aed36cf345e1a7b127a39de7f41febeca6bc74e4ebc0a9162371507bbfe890b"
+    },
+    "openconductor": {
+      "evidence_id": "ev_29664864f57ffb717ea10c71830e1ac7f1eeaf0675386486dd85abc053e18285",
+      "png_sha256": "f8475127ecd03f0adc8266e944202de5319ea9139ae3c1aec990cceeb3806460"
+    },
+    "compare": {
+      "evidence_id": "ev_44f93138a331bc4f52788b706b7c55069949d117c991e3d828a8cf42b5885cc7",
+      "changed_pixels": 60692,
+      "compared_pixels": 1049600,
+      "changed_ratio": 0.05782393292682927
+    }
+  },
+  "history-selected": {
+    "reference": {
+      "evidence_id": "ev_7aa585a100f65cbb344ced305ef84bbe3655120446f8a5e5b35014a54bf20d65",
+      "png_sha256": "1d1b04470af035a2090aced176ecba894e8654b7d0814a1501317dc72150aeba"
+    },
+    "openconductor": {
+      "evidence_id": "ev_f5feb0f8d73dd83b1e78528f31bd1bc2636544a1a576900edc183a054fdb9721",
+      "png_sha256": "e4068c7cde3d8d098a0223afa4b3e3b5d46a2a26705e3013cdc8d8d6590f02eb"
+    },
+    "compare": {
+      "evidence_id": "ev_6c8c56a04883576e19621d58122a4cd640fa02e6bf01f289954c5e3bffaff4fb",
+      "changed_pixels": 52370,
+      "compared_pixels": 1049600,
+      "changed_ratio": 0.04989519817073171
+    }
+  },
+  "history-back": {
+    "reference": {
+      "evidence_id": "ev_0106ba3685273d4c6dffa8f6edc6440c71ebebe737bb3faa4d68efad2fad9689",
+      "png_sha256": "7318cfc4a9708843b5eec0d01a0d7dcaee40cfada4a2467152450190cca4c190"
+    },
+    "openconductor": {
+      "evidence_id": "ev_37ebc4d8c36276d9242c378d002d976cb8434e012dc9b4e07ab79ca918a1ddca",
+      "png_sha256": "cf6946a33786eadb5237e95672a8e502b2cc94ed39f7f07d094b785512bf656a"
+    },
+    "compare": {
+      "evidence_id": "ev_cd91ce58b9a4bbfb8adcf971e10bf5eb6de3b47dae5282965374d14c44c507fa",
+      "changed_pixels": 53219,
+      "compared_pixels": 1049600,
+      "changed_ratio": 0.05070407774390244
+    }
+  }
+}

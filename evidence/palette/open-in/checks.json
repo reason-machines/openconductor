@@ -1,0 +1,22 @@
+{
+  "reference": {
+    "evidence_id": "ev_e9e0b958af9e23951c7ec6ce72a69a727812f30f417661298a7db68c4da48bbd",
+    "steps": 7
+  },
+  "ours": {
+    "evidence_id": "ev_f483a7c10d8f8c7556f3f8c62b281a648fd7e0b01b845469afc0a59c6da687d0",
+    "steps": 6
+  },
+  "activation": [
+    {
+      "cmd": "record_open_in",
+      "appId": "vscode",
+      "isRemote": false
+    },
+    {
+      "cmd": "open_in_app",
+      "appId": "vscode",
+      "path": "/Users/demo/code/tide-web/lisbon"
+    }
+  ]
+}
