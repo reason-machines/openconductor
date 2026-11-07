@@ -132,6 +132,52 @@ test("initialize subscribes, hydrates, then retries each failed download once", 
   assert.equal(f.calls.at(-1), "request:codex");
 });
 
+for (const state of ["retrying", "failed", "ready"] as const) {
+  test(`a delayed started snapshot cannot overwrite live ${state} progress`, async () => {
+    const f = fakeBridge([]);
+    let resolveSnapshot: (initial: unknown[]) => void = () => assert.fail("getState has not started");
+    let snapshotRequested: () => void = () => undefined;
+    const requested = new Promise<void>((resolve) => { snapshotRequested = resolve; });
+    f.bridge.getState = () => {
+      snapshotRequested();
+      return new Promise<unknown[]>((resolve) => { resolveSnapshot = resolve; });
+    };
+    const store = createAgentBinaryStore(f.bridge);
+    const initialized = store.initialize();
+    await requested;
+    f.emit(status({ state, error: state === "ready" ? undefined : "HTTP 404", attempt: 3 }));
+    resolveSnapshot([
+      status({ state: "started", attempt: 1 }),
+      status({ agent: "codex", state: "ready", version: "0.156.1" }),
+    ]);
+    await initialized;
+
+    assert.equal(store.getStatus("claude")?.state, state);
+    assert.equal(store.getStatus("claude")?.attempt, 3);
+    assert.equal(store.getStatus("codex")?.state, "ready", "unobserved agents still hydrate");
+    assert.deepEqual(f.calls, state === "failed" ? ["listen", "request:claude"] : ["listen"]);
+    const current = store.getStatus("claude");
+    assert.ok(current);
+    const banner = bannerModel(current, 0);
+    if (state === "failed") assert.equal(banner.action, "Retry");
+    if (state === "retrying") assert.equal(banner.action, "Retry now");
+  });
+}
+
+test("hydration can advance progress received before the snapshot was requested", async () => {
+  const f = fakeBridge([status({ state: "ready" })]);
+  const listen = f.bridge.listen;
+  f.bridge.listen = async (onStatus) => {
+    const unlisten = await listen(onStatus);
+    f.emit(status({ state: "started" }));
+    return unlisten;
+  };
+  const store = createAgentBinaryStore(f.bridge);
+  await store.initialize();
+  assert.equal(store.getStatus("claude")?.state, "ready");
+  assert.deepEqual(f.calls, ["listen", "getState"]);
+});
+
 test("a bridge that fails to listen or hydrate still retries what it knows and logs", async () => {
   const logged: string[] = [];
   const store = createAgentBinaryStore(
