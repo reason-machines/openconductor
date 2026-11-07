@@ -62,7 +62,7 @@ test("New workspace: pending creation blocks Escape and backdrop dismissal, fail
   const page = await open();
   try {
     const dialog = page.getByRole("dialog", { name: "New workspace", exact: true });
-    await page.getByRole("button", { name: "Create workspace", exact: true }).click();
+    await dialog.getByRole("group", { name: "Create workspace", exact: true }).getByRole("button", { name: "Create", exact: true }).click();
     await page.waitForFunction(() => document.documentElement.dataset.createPending === "true");
     assert.equal(await dialog.getByRole("form", { name: "composer" }).getAttribute("aria-busy"), "true");
     assert.equal(await page.getByRole("textbox", { name: "First message" }).isDisabled(), true);
