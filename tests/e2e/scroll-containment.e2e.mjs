@@ -25,6 +25,20 @@ after(async () => {
 async function open(zoom = 1) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES, zoom });
+  await page.addInitScript(() => {
+    window.__scrollDelivery = [];
+    const record = (event) => {
+      const pane = event.target?.closest?.(".repo-list, .chat-scroll, .oc-files, .settings-page");
+      window.__scrollDelivery.push({
+        type: event.type, at: performance.now(), trusted: event.isTrusted,
+        target: event.target?.className, deltaY: event.deltaY,
+        pane: pane?.className, top: pane?.scrollTop, prevented: event.defaultPrevented,
+      });
+      if (window.__scrollDelivery.length > 50) window.__scrollDelivery.shift();
+    };
+    document.addEventListener("wheel", record, { capture: true, passive: true });
+    document.addEventListener("scroll", record, { capture: true, passive: true });
+  });
   await page.goto(base);
   await page.locator(".rp-tabs").waitFor();
   return page;
@@ -108,25 +122,6 @@ test("real content panes scroll while their boundary cannot chain to the documen
         el.scrollTop = 0;
       });
       const before = await positions(page);
-      await page.evaluate((selector) => {
-        window.__scrollDelivery = [];
-        const record = (event) => {
-          const pane = document.querySelector(selector);
-          window.__scrollDelivery.push({
-            type: event.type, at: performance.now(), trusted: event.isTrusted,
-            target: event.target?.className, deltaY: event.deltaY,
-            inPane: pane.contains(event.target), top: pane.scrollTop,
-            prevented: event.defaultPrevented,
-          });
-          if (window.__scrollDelivery.length > 50) window.__scrollDelivery.shift();
-        };
-        document.addEventListener("wheel", record, { capture: true, passive: true });
-        document.addEventListener("scroll", record, { capture: true, passive: true });
-        window.__stopScrollDelivery = () => {
-          document.removeEventListener("wheel", record, true);
-          document.removeEventListener("scroll", record, true);
-        };
-      }, selector);
       await wheel(page, selector, 600);
       try {
         await page.waitForFunction((s) => document.querySelector(s).scrollTop > 0, selector);
@@ -143,8 +138,6 @@ test("real content panes scroll while their boundary cannot chain to the documen
         });
         const delivery = await page.evaluate(() => ({ events: window.__scrollDelivery, userAgent: navigator.userAgent }));
         throw new Error(`${selector} did not scroll after wheel: ${JSON.stringify(state)}; delivery: ${JSON.stringify(delivery)}; ${cause.message}`, { cause });
-      } finally {
-        await page.evaluate(() => window.__stopScrollDelivery());
       }
       assert.deepEqual(await positions(page), before, selector + " content scroll must not move chrome");
       await page.locator(selector).first().evaluate((el) => { el.scrollTop = el.scrollHeight; });
