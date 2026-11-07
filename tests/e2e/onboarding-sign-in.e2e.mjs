@@ -9,7 +9,7 @@ let browser;
 let server;
 before(async () => {
   if (!base) {
-    server = await createServer({ server: { host: "127.0.0.1", port: 0 }, logLevel: "error" });
+    server = await createServer({ server: { host: process.env.TEST_VITE_HOST ?? "127.0.0.1", port: Number(process.env.TEST_VITE_PORT ?? 0), strictPort: true }, logLevel: "error" });
     await server.listen();
     base = server.resolvedUrls.local[0].replace(/\/$/, "");
   }
@@ -17,11 +17,26 @@ before(async () => {
 });
 after(async () => { await browser?.close(); await server?.close(); });
 
-async function open(query) {
-  const page = await browser.newPage({ viewport: { width: 1280, height: 820 }, reducedMotion: "reduce" });
+async function open(query, label = "Sign up") {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
   await page.goto(`${base}/tools/onboarding/index.html?${query}`);
-  await page.getByRole("button", { name: "Sign up", exact: true }).waitFor();
+  await page.getByRole("button", { name: label, exact: true }).waitFor();
   return page;
+}
+
+async function calls(page) {
+  return JSON.parse(await page.getByTestId("calls").textContent());
+}
+
+async function expectCalls(page, expected) {
+  await page.waitForFunction((values) => {
+    const output = document.querySelector('[data-testid="calls"]');
+    if (!output) return false;
+    const actual = JSON.parse(output.textContent);
+    return Object.entries(values).every(([key, value]) => actual[key] === value);
+  }, expected);
+  const actual = await calls(page);
+  for (const [key, value] of Object.entries(expected)) assert.equal(actual[key], value);
 }
 
 async function capture(page, name) {
@@ -32,59 +47,156 @@ async function capture(page, name) {
 
 for (const strict of ["0", "1"]) {
   const mode = strict === "1" ? "StrictMode" : "production lifecycle";
-  test(`${mode}: browser handoff displays its synthetic confirmation code`, async () => {
+  test(`${mode}: browser handoff opens once and displays its synthetic confirmation code`, async () => {
     const page = await open(`strict=${strict}`);
     try {
       await page.getByRole("button", { name: "Sign up", exact: true }).click();
-      await page.getByText("TEST-CODE", { exact: true }).waitFor({ timeout: 1500 });
-      assert.match(await page.locator(".onb-signin").getByRole("status").innerText(), /Finish signing in in the browser window/);
+      await page.getByTestId("reason-login-code").waitFor();
+      assert.match(await page.getByTestId("reason-login-waiting").getByRole("status").innerText(), /Finish signing in in the browser window/);
+      await expectCalls(page, { opens: 1 });
+      assert.doesNotMatch(await page.locator(".onb-signin").innerText(), /terminal|run reason login/i);
     } finally { await capture(page, `code-strict-${strict}`); await page.close(); }
   });
 
-  test(`${mode}: completed account polling leaves sign-in exactly once`, async () => {
+  test(`${mode}: completed polling reports account and workspace exactly once`, async () => {
     const page = await open(`strict=${strict}`);
     try {
       await page.getByRole("button", { name: "Sign up", exact: true }).click();
-      await page.getByRole("button", { name: "Opening browser...", exact: true }).waitFor();
+      await page.getByTestId("reason-login-code").waitFor();
       await page.getByRole("button", { name: "Resolve synthetic account", exact: true }).click();
-      await page.waitForFunction(() => document.querySelector('[data-testid="events"]')?.textContent === '["done"]', null, { timeout: 3500 });
-      await page.getByRole("button", { name: "Sign up", exact: true }).waitFor();
-      assert.equal(await page.getByTestId("events").textContent(), '["done"]');
+      await page.getByTestId("reason-login-connected").waitFor({ timeout: 3500 });
+      await page.waitForFunction(() => document.querySelector('[data-testid="events"]')?.textContent === '["done"]');
+      assert.match(await page.getByTestId("reason-login-connected").innerText(), /fixture@example.invalid/);
+      assert.match(await page.getByTestId("reason-login-connected").innerText(), /Fixture workspace/);
+      await expectCalls(page, { opens: 1 });
     } finally { await page.close(); }
   });
 
-  test(`${mode}: failed start shows inline failure and permits a successful retry`, async () => {
+  test(`${mode}: failed start shows failure and retries without terminal instructions`, async () => {
     const page = await open(`strict=${strict}&start=retry`);
     try {
       await page.getByRole("button", { name: "Sign up", exact: true }).click();
-      await page.getByRole("alert").waitFor({ timeout: 1500 });
+      await page.getByRole("alert").waitFor();
       assert.match(await page.getByRole("alert").innerText(), /Couldn't start sign-in/);
-      await page.getByRole("button", { name: "Sign up", exact: true }).click();
-      await page.getByText("TEST-CODE", { exact: true }).waitFor({ timeout: 1500 });
+      assert.doesNotMatch(await page.getByRole("alert").innerText(), /terminal|run reason login/i);
+      await page.getByRole("button", { name: "Retry sign-in", exact: true }).click();
+      await page.getByTestId("reason-login-code").waitFor();
       assert.equal(await page.getByRole("alert").count(), 0);
+      await expectCalls(page, { attempts: 2 });
     } finally { await capture(page, `retry-strict-${strict}`); await page.close(); }
   });
 
-  test(`${mode}: already signed-in start resolves once`, async () => {
+  test(`${mode}: already signed-in start completes without opening the browser`, async () => {
     const page = await open(`strict=${strict}&start=already-signed-in`);
     try {
       await page.getByRole("button", { name: "Sign up", exact: true }).click();
-      await page.waitForFunction(() => document.querySelector('[data-testid="events"]')?.textContent === '["done"]', null, { timeout: 1500 });
+      await page.waitForFunction(() => document.querySelector('[data-testid="events"]')?.textContent === '["done"]');
+      await expectCalls(page, { opens: 0 });
+      assert.equal(await page.getByTestId("reason-login-connected").count(), 1);
+    } finally { await page.close(); }
+  });
+
+  test(`${mode}: failed default-browser opening offers explicit reopen`, async () => {
+    const page = await open(`strict=${strict}&opener=failed`);
+    try {
+      await page.getByRole("button", { name: "Sign up", exact: true }).click();
+      await page.getByRole("alert").waitFor();
+      assert.match(await page.getByRole("alert").innerText(), /Couldn't open your default browser/);
+      await page.getByRole("button", { name: "Open the sign-in page again", exact: true }).click();
+      await page.waitForFunction(() => !document.querySelector('[role="alert"]'));
+      await expectCalls(page, { opens: 2 });
+      await expectCalls(page, { attempts: 1 });
+    } finally { await page.close(); }
+  });
+
+  test(`${mode}: cancel stops polling and ignores later account approval`, async () => {
+    const page = await open(`strict=${strict}`);
+    try {
+      await page.getByRole("button", { name: "Sign up", exact: true }).click();
+      await page.getByTestId("reason-login-code").waitFor();
+      await page.getByRole("button", { name: "Cancel", exact: true }).click();
+      await page.getByRole("button", { name: "Retry sign-in", exact: true }).waitFor();
+      assert.match(await page.locator(".onb-signin").innerText(), /Close the browser page/);
+      await expectCalls(page, { cancels: 1 });
+      const stopped = (await calls(page)).statusReads;
+      await page.getByRole("button", { name: "Resolve synthetic account", exact: true }).click();
+      await page.waitForTimeout(1200);
+      assert.equal((await calls(page)).statusReads, stopped);
+      assert.equal(await page.getByTestId("reason-login-connected").count(), 0);
+      assert.equal(await page.getByTestId("events").textContent(), "[]");
+    } finally { await page.close(); }
+  });
+
+  test(`${mode}: timeout ends waiting and retry creates another attempt`, async () => {
+    const page = await open(`strict=${strict}&start=timed-out`);
+    try {
+      await page.getByRole("button", { name: "Sign up", exact: true }).click();
+      await page.getByRole("button", { name: "Retry sign-in", exact: true }).waitFor({ timeout: 4500 });
+      assert.match(await page.locator(".onb-signin").innerText(), /Sign-in timed out/);
+      await page.getByRole("button", { name: "Retry sign-in", exact: true }).click();
+      await page.getByTestId("reason-login-code").waitFor();
+      await expectCalls(page, { attempts: 2 });
+      await expectCalls(page, { opens: 2 });
+    } finally { await page.close(); }
+  });
+
+  test(`${mode}: one attempt survives onboarding, settings, chat and remount`, async () => {
+    const page = await open(`strict=${strict}`);
+    try {
+      await page.getByRole("button", { name: "Sign up", exact: true }).click();
+      await page.getByTestId("reason-login-code").waitFor();
+      for (const entry of ["Show Settings sign-in", "Show Chat sign-in", "Show onboarding"]) {
+        await page.getByRole("button", { name: entry, exact: true }).click();
+        await page.getByTestId("reason-login-code").waitFor();
+      }
+      await page.getByRole("button", { name: "Hide sign-up", exact: true }).click();
+      await page.getByRole("button", { name: "Show sign-up", exact: true }).click();
+      await page.getByTestId("reason-login-code").waitFor();
+      await expectCalls(page, { attempts: 1 });
+      await expectCalls(page, { opens: 1 });
+    } finally { await page.close(); }
+  });
+
+  test(`${mode}: a stale connected store never auto-completes a new mount`, async () => {
+    const page = await open(`strict=${strict}&start=already-signed-in`);
+    try {
+      await page.getByRole("button", { name: "Sign up", exact: true }).click();
+      await page.getByTestId("reason-login-connected").waitFor();
+      await page.waitForFunction(() => document.querySelector('[data-testid="events"]')?.textContent === '["done"]');
+      await page.getByRole("button", { name: "Hide sign-up", exact: true }).click();
+      await page.getByRole("button", { name: "Expire synthetic account", exact: true }).click();
+      await page.getByRole("button", { name: "Show sign-up", exact: true }).click();
+      await page.getByRole("button", { name: "Sign up", exact: true }).waitFor();
       assert.equal(await page.getByTestId("events").textContent(), '["done"]');
+      assert.equal(await page.getByTestId("reason-login-connected").count(), 0);
+    } finally { await page.close(); }
+  });
+
+  test(`${mode}: starting can be cancelled before a browser URL appears`, async () => {
+    const page = await open(`strict=${strict}&start=delayed`);
+    try {
+      await page.getByRole("button", { name: "Sign up", exact: true }).click();
+      await page.getByRole("button", { name: "Cancel", exact: true }).click();
+      await page.getByRole("button", { name: "Retry sign-in", exact: true }).waitFor();
+      await page.getByRole("button", { name: "Resolve delayed start", exact: true }).click();
+      await expectCalls(page, { opens: 0 });
+      await expectCalls(page, { cancels: 1 });
+      assert.equal(await page.getByTestId("reason-login-waiting").count(), 0);
     } finally { await page.close(); }
   });
 }
 
-test("unmounted sign-up ignores a late login result", async () => {
-  const page = await open("start=delayed");
-  await page.getByRole("button", { name: "Sign up", exact: true }).click();
-  await page.getByRole("button", { name: "Opening browser...", exact: true }).waitFor();
-  await page.getByRole("button", { name: "Hide sign-up", exact: true }).click();
-  await page.getByRole("button", { name: "Resolve synthetic account", exact: true }).click();
-  await page.getByRole("button", { name: "Resolve delayed start", exact: true }).click();
-  await page.getByRole("button", { name: "Show sign-up", exact: true }).click();
-  await page.getByRole("button", { name: "Sign up", exact: true }).waitFor();
-  assert.equal(await page.getByTestId("events").textContent(), "[]");
-  assert.equal(await page.locator(".onb-signin").getByRole("status").count(), 0);
-  await page.close();
-});
+for (const surface of ["settings", "chat"]) {
+  test(`${surface}: direct browser sign-in shows the connected account and workspace`, async () => {
+    const page = await open(`surface=${surface}`, "Sign in with Reason");
+    try {
+      await page.getByRole("button", { name: "Sign in with Reason", exact: true }).click();
+      await page.getByTestId("reason-login-code").waitFor();
+      await expectCalls(page, { opens: 1 });
+      await page.getByRole("button", { name: "Resolve synthetic account", exact: true }).click();
+      await page.getByText("fixture@example.invalid", { exact: surface === "settings" }).waitFor({ timeout: 3500 });
+      assert.match(await page.locator("main").innerText(), /Fixture workspace/);
+      assert.doesNotMatch(await page.locator("main").innerText(), /terminal|run reason login/i);
+    } finally { await capture(page, `${surface}-connected`); await page.close(); }
+  });
+}
