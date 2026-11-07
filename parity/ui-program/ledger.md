@@ -64,6 +64,18 @@ Conductor Rebuild reconciled three newly merged increments on Reason Cloud. This
 
 All 24 earlier evidence records remain retained alongside three merged increments and one bounded native receipt. Every raw/scoped row, exclusion, capture score, toast-system/main-flow requirement and default-off/native gate distinction is unchanged. The scoped denominator remains 341, with 169 retained matches, 48 wrong, 3 missing and 121 unverified. All nine final native reviews remain unverified. No product/driver edit, Mac launch/input, preview, dependency install, new worker, capture, dispatch/rerun or duplicate watcher occurred in this reconciliation.
 
+## Visible-row shortcut evidence, main `dff4e7b0`, 7 November 2026
+
+Conductor Rebuild reconciled merged [#757](https://github.com/reason-machines/openconductor/pull/757) on Reason Cloud. The [retained sidebar proof](../../evidence/sidebar-shortcuts/README.md) and [canonical manifest](supplemental-evidence.json) add one unique supplemental record; all 29 earlier records stay unchanged.
+
+- The owner reproduced Meta+2 selecting hidden Lisbon instead of visible Osaka after custom Focus collapse. Six collapsed-section cases failed before, while six controls passed. The correction shares the existing session-local collapsed-section set. The owner reports 44 focused and 1,325 full units plus build/color checks passed after.
+- Committed metadata retains 42 actual-key browser contexts and 162 activations across dark/light, Project/Status, three project filters and custom/status collapse. Out-of-range Meta+9 remains a no-op. The earlier animation-related driver failure and its corrected wait stay distinct from the product fix. Source hashes and actual preview-stop receipts are checked here; runtime assertions and image inspection remain owner-attributed.
+- Home owner `27102e36` reports all four non-E2E consuming workflows passed on `0c088d05`, including package 39/39 and signature verification. Sole E2E owner `acc3b5c5` confirms [1529/42332253868](https://github.com/reason-machines/openconductor/actions/runs/42332253868), both jobs, late suites and artifact `13558368120/results.json` passed 23/23. Neither packaging nor fake-provider Ubuntu E2E proves native installation or real-auth behavior.
+- The same E2E owner delivered the historical ten-green target through 1523, with 20/20 jobs and 230/230 flows validated by that owner. This integration does not recount or extend it. #754 consuming 1530 remains with its existing owner; no partial runtime result is promoted.
+- Grounding reuses retained REA-decoded numbering evidence, not a fresh section-specific reference runtime capture. Before and after viewports differ; no pixel-distance match is claimed. Remapped modifiers, Pinned/My-workspaces container collapse, persisted native collapse, real authentication, actual IME and native side-by-side acceptance remain unverified. Five-pass failure and original #748 timing/causality remain separate gaps.
+
+The 341-entry denominator, 169 retained matches, 48 wrong, 3 missing and 121 unverified are unchanged. Every raw/scoped row, exclusion, capture identity/score, observable main-flow toast/system requirement, default-off/native gate distinction and all nine unverified native verdicts are retained. No product/driver edit, Mac input, new capture, preview, dependency install, worker, dispatch/rerun or duplicate E2E watcher occurred. The parent-owned Page is read-only here; canonical source/data is sent to its owner.
+
 ## Historical program records
 
 One row per node of Sven's UI audit program. A node is done when its side-by-side image
