@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
@@ -18,6 +18,7 @@ import { archiveWorkspace, deleteWorkspace, emitArchiveEvent, startArchive, star
 import { scriptsConfig, startSetup } from "../scripts/api";
 import { workspaceRef } from "../scripts/model";
 import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
+import { useAppPrefs } from "../settings/appPrefs";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -526,7 +527,9 @@ export function useAppStore() {
     },
     [desktop],
   );
-  return [state, dispatch, startup] as const;
+  const { sidebar_sort_by: sidebarSort } = useAppPrefs();
+  const viewState = useMemo(() => ({ ...state, sidebarSort }), [state, sidebarSort]);
+  return [viewState, dispatch, startup] as const;
 }
 
 /** Conductor reruns the setup script after an unarchive; a failure shows through the setup watch. */

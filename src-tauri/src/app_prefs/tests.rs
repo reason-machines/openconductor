@@ -233,6 +233,43 @@ fn sidebar_repo_filter_is_a_raw_id_and_all_projects_deletes_it() {
 }
 
 #[test]
+fn sidebar_sort_decodes_defaults_and_round_trips_through_sqlite() {
+    assert_eq!(
+        AppPrefs::from_rows(&HashMap::new()).sidebar_sort_by,
+        SidebarSort::Updated
+    );
+    assert_eq!(
+        AppPrefs::from_rows(&rows(&[("sidebar_sort_by", "unknown")])).sidebar_sort_by,
+        SidebarSort::Updated
+    );
+    assert!(serde_json::from_str::<AppPrefUpdate>(
+        r#"{"key":"sidebar_sort_by","value":"unknown"}"#
+    )
+    .is_err());
+    tauri::async_runtime::block_on(async {
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        for (value, expected) in [
+            ("created", SidebarSort::Created),
+            ("updated", SidebarSort::Updated),
+        ] {
+            let update: AppPrefUpdate =
+                serde_json::from_str(&format!(r#"{{"key":"sidebar_sort_by","value":"{value}"}}"#))
+                    .unwrap();
+            let Write::Set(key, stored) = update.encode().unwrap() else {
+                panic!("sort must store its value")
+            };
+            openconductor_db::app_settings::set(&pool, key, &stored)
+                .await
+                .unwrap();
+            assert_eq!(
+                commands::load(&pool).await.unwrap().sidebar_sort_by,
+                expected
+            );
+        }
+    });
+}
+
+#[test]
 fn sidebar_resource_usage_is_an_off_by_default_flag() {
     // `Te("sidebar_resource_usage", !1)` and setter `v6t` (index-BGEQ8YjU.js):
     // a boolean written as "true" / "false", false when unset.

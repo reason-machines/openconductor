@@ -1,6 +1,7 @@
 import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
 import type { RowPr, SessionStatus } from "./rowStatus.ts";
 import type { NavSection } from "./navigationSections.ts";
+import type { SidebarSort } from "../home/sidebarSort.ts";
 
 /** The workspace's lifecycle in this shell; what its agent is doing is `sessionStatus`. */
 export type WorkspaceStatus = "idle" | "needs-review" | "archived";
@@ -114,6 +115,7 @@ export type RoutinesPage =
   | { view: "fork"; reasonId: string; id: string };
 
 export interface AppState {
+  sidebarSort?: SidebarSort;
   repos: Repo[];
   selection: Selection;
   /** Left sidebar shown; absent in older saved state, which means shown. */
