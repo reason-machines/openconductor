@@ -1,14 +1,9 @@
-// Settings › Agents › Reason, the first tab: Authentication ("Reason account"
-// signs in from the app with `reason login`'s link and code, "CLI" is
-// `reason login` in a terminal, "API key" is REASON_API_KEY from the
-// Keychain), the status line and table (Version, Account, Workspace, This
-// Mac with Connect), then the workspace, model and effort new Reason chats
-// start with, the `reason` executable path and the ~/.config/reason card.
-// Laid out like the Claude Code and Codex tabs (Conductor has no Reason tab);
-// the CLI facts are in evidence/reason-acp/account.md. Rules: reasonModes.ts.
+// Settings > Agents > Reason uses the shared browser sign-in lifecycle.
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { inTauri, openUrl } from "../../backend";
+import { inTauri } from "../../backend";
+import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
+import { useReasonSignIn } from "../../onboarding/reasonSignIn";
 import { FolderIcon } from "../../components/Icons";
 import { reasonModels } from "../../features/chat/reasonChat";
 import type { ReasonModelOption } from "../../features/chat/reasonModels";
@@ -16,8 +11,8 @@ import { Row } from "../GeneralPage";
 import { connectProvider, disconnectProvider, errorText, revealProviderSecret } from "../api";
 import type { Settings } from "../types";
 import type { AgentTabProps } from "./ClaudeTab";
-import { CloseIcon, ExternalIcon, KeyIcon, ReasonMark, TerminalIcon } from "./icons";
-import { AuthCards, ConfigFileCard, LoginButton, SecretRow, StatusLine, type AuthOption } from "./kit";
+import { CloseIcon, KeyIcon, ReasonMark, TerminalIcon } from "./icons";
+import { AuthCards, ConfigFileCard, SecretRow, StatusLine, type AuthOption } from "./kit";
 import {
   REASON_EFFORT_OPTIONS,
   REASON_KEY,
@@ -27,9 +22,7 @@ import {
   reasonModeOf,
   reasonProviderFor,
   reasonStatus,
-  signedIn,
   withReason,
-  type LoginPrompt,
   type ReasonAccount,
   type ReasonMode,
 } from "./reasonModes";
@@ -39,9 +32,6 @@ import type { ProviderStatus } from "../types";
 
 const ICONS: Record<ReasonMode, JSX.Element> = { account: <ReasonMark size={24} />, cli: <TerminalIcon size={24} />, apikey: <KeyIcon size={24} /> };
 const REASON_AUTH: readonly AuthOption<ReasonMode>[] = REASON_MODES.map((m) => ({ ...m, icon: ICONS[m.id] }));
-/** How often the "Reason account" card asks `reason status` while the browser sign-in is open. */
-const POLL_MS = 2000;
-const open = (url: string) => void openUrl(url).catch(() => undefined);
 
 interface ReasonPaths {
   systemCli: string | null;
@@ -74,7 +64,7 @@ function useReasonStatus(storedKey: string) {
     refresh();
     return () => { requests.current++; };
   }, [refresh, storedKey]);
-  return { account, setAccount, provider, setProvider, loading, error, refresh };
+  return { account, provider, setProvider, loading, error, refresh };
 }
 
 export function ReasonTab({ settings, save, reload }: AgentTabProps) {
@@ -86,10 +76,13 @@ export function ReasonTab({ settings, save, reload }: AgentTabProps) {
     void save(next);
   };
   const storedMode = reasonModeOf(settings);
-  const { account, setAccount, provider, setProvider, loading, error, refresh } = useReasonStatus(JSON.stringify([settings.providers.reason ?? null, settings.reason_executable_path ?? null]));
+  const { state: loginState, statusError, refresh: refreshSignIn } = useReasonSignIn();
+  const { account: keyAccount, provider, setProvider, loading, error, refresh: refreshProvider } = useReasonStatus(JSON.stringify([settings.providers.reason ?? null, settings.reason_executable_path ?? null]));
+  const refresh = () => { refreshProvider(); void refreshSignIn(); };
   const [pending, setPending] = useState<ReasonMode | null>(null);
   const [actionError, setActionError] = useState<string>();
   const mode = pending ?? storedMode;
+  const account = loginState.state === "connected" ? loginState.account : mode === "apikey" ? keyAccount : null;
   useEffect(() => {
     if (pending === storedMode) setPending(null);
   }, [pending, storedMode]);
@@ -121,14 +114,13 @@ export function ReasonTab({ settings, save, reload }: AgentTabProps) {
       <StatusLine
         connected={status.connected}
         rows={status.rows}
-        checking={loading && !account}
+        checking={(loading || loginState.state === "checking") && !account}
         refreshing={loading}
         onRefresh={refresh}
-        notConnectedMessage={status.notConnectedMessage}
-        detail={actionError ?? error}
+        notConnectedMessage={mode === "apikey" ? status.notConnectedMessage : "Not signed in. Sign in with your Reason account."}
+        detail={actionError ?? statusError ?? error}
       />
-      {mode === "account" && !status.connected && <AccountSignIn onAccount={setAccount} onError={setActionError} />}
-      {mode === "cli" && !status.connected && <LoginButton command="reason login" label="reason login" onDone={refresh} />}
+      {mode !== "apikey" && !status.connected && <ReasonSignInControls workspace={settings.reason?.workspace ?? undefined} />}
       {mode === "apikey" && (
         <SecretRow
           label="Reason API key"
@@ -163,79 +155,6 @@ export function ReasonTab({ settings, save, reload }: AgentTabProps) {
       </div>
       <ConfigFileCard title="Reason config" displayPath="~/.config/reason" path={paths?.configDir ?? null} />
     </div>
-  );
-}
-
-/**
- * "Reason account": `reason login` without a terminal prints a link and a
- * code and finishes on its own once the link is used; the code is shown to
- * compare with the page, the link opens in the browser, and `reason status`
- * is polled until an account appears.
- */
-function AccountSignIn({ onAccount, onError }: { onAccount: (a: ReasonAccount) => void; onError: (e?: string) => void }) {
-  const [prompt, setPrompt] = useState<LoginPrompt | null>(null);
-  const [starting, setStarting] = useState(false);
-  const stop = useRef(false);
-  useEffect(() => {
-    if (!prompt) return;
-    stop.current = false;
-    const id = window.setInterval(() => {
-      invoke<ReasonAccount>("reason_account_status").then(
-        (a) => {
-          if (!stop.current && signedIn(a)) {
-            stop.current = true;
-            setPrompt(null);
-            onAccount(a);
-          }
-        },
-        () => undefined,
-      );
-    }, POLL_MS);
-    return () => {
-      stop.current = true;
-      window.clearInterval(id);
-    };
-  }, [prompt, onAccount]);
-
-  const start = () => {
-    onError(undefined);
-    setStarting(true);
-    invoke<LoginPrompt>("reason_login_start")
-      .then((p) => {
-        if (!p.url) return onError(p.message || "reason login gave no sign-in link");
-        setPrompt(p);
-        open(p.url);
-      }, (e) => onError(errorText(e)))
-      .finally(() => setStarting(false));
-  };
-
-  if (prompt)
-    return (
-      <div className="ag-stack-2" data-testid="reason-login-waiting">
-        <div className="ag-between">
-          <p className="ag-row-2 ag-muted ag-text-sm">
-            <span className="ag-spinner" />
-            Finish signing in to Reason in your browser.
-          </p>
-          <button type="button" className="ag-btn ag-outline ag-sm" onClick={() => setPrompt(null)}>
-            Cancel
-          </button>
-        </div>
-        {prompt.code && (
-          <p className="ag-text-sm">
-            The page shows the code <span className="agk-mono ag-medium" data-testid="reason-login-code">{prompt.code}</span>
-          </p>
-        )}
-        <button type="button" className="ag-link" onClick={() => prompt.url && open(prompt.url)}>
-          Open the sign-in page again
-          <ExternalIcon size={12} />
-        </button>
-      </div>
-    );
-  return (
-    <button type="button" className="ag-btn ag-primary ag-sm" disabled={!inTauri() || starting} onClick={start}>
-      Sign in with Reason
-    </button>
   );
 }
 

@@ -351,6 +351,7 @@ pub fn run() {
             app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
+            app.manage(reason_acp::login::LoginService::default());
             app.manage(codex_chat::CodexChats::with_binaries(binaries));
             app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
@@ -460,6 +461,8 @@ pub fn run() {
             reason_chat::reason_account_status,
             reason_chat::reason_cloud_setup,
             reason_chat::reason_login_start,
+            reason_chat::reason_login_status,
+            reason_chat::reason_login_cancel,
             reason_chat::reason_logout,
             reason_chat::reason_connect_computer,
             reason_chat::reason_api_call,

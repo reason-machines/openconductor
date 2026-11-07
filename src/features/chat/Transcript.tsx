@@ -5,6 +5,7 @@
 // markdown) and, once finished, its footer.
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
+import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
 import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
@@ -227,16 +228,16 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   );
 }
 
-/** "Authentication required" under a turn its agent refused for want of a login, with a link to that agent's tab. */
+/** Reason signs in directly; local agents keep their Settings authentication flow. */
 function SignInNotice({ agent }: { agent: ChatAgentId }) {
   const copy = signInCopy(agent);
   return (
     <div className="chat-sign-in" data-testid="chat-sign-in" data-agent={agent}>
       <span className="chat-sign-in-badge">{copy.badge}</span>
       <p>{copy.text}</p>
-      <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>
-        {copy.action}
-      </button>
+      {agent === "reason" ? <ReasonSignInControls variant="chat" /> : (
+        <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>{copy.action}</button>
+      )}
     </div>
   );
 }

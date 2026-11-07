@@ -1,0 +1,73 @@
+name: Reason browser pairing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/onboarding/**"
+      - "src/settings/agents/ReasonTab.tsx"
+      - "src/settings/agents/reasonModes.ts"
+      - "src/features/chat/Transcript.tsx"
+      - "src/features/chat/agentSignIn.ts"
+      - "src/backend.ts"
+      - "src-tauri/src/reason_acp/**"
+      - "src-tauri/src/reason_chat.rs"
+      - "tools/reason-pairing/**"
+      - "tests/e2e/reason-pairing.e2e.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/reason-pairing.yml"
+  pull_request:
+    paths:
+      - "src/onboarding/**"
+      - "src/settings/agents/ReasonTab.tsx"
+      - "src/settings/agents/reasonModes.ts"
+      - "src/features/chat/Transcript.tsx"
+      - "src/features/chat/agentSignIn.ts"
+      - "src/backend.ts"
+      - "src-tauri/src/reason_acp/**"
+      - "src-tauri/src/reason_chat.rs"
+      - "tools/reason-pairing/**"
+      - "tests/e2e/reason-pairing.e2e.mjs"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/reason-pairing.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reason-pairing-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pairing:
+    name: Fake browser approval through production Rust and React
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: dtolnay/rust-toolchain@stable
+      - run: npm ci
+      - run: npx playwright-core install --with-deps chromium
+      - name: Check fake server and executable boundaries
+        run: node --test tools/reason-pairing/server.test.mjs
+      - name: Browser pairing E2E
+        env:
+          REASON_PAIRING_EVIDENCE: ${{ runner.temp }}/reason-pairing
+        run: |
+          export CHROME_PATH="$(node --input-type=module -e 'import {chromium} from "playwright-core"; console.log(chromium.executablePath())')"
+          node --test tests/e2e/reason-pairing.e2e.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reason-pairing-browser-evidence
+          path: ${{ runner.temp }}/reason-pairing
+          retention-days: 14
