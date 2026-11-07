@@ -224,7 +224,7 @@ fn run_uses_cwd_args_and_errors_without_scripts() {
     });
     let out = f.svc.runs.output("w1", "test").unwrap();
     let sub = f.ws.workspace_path.join("sub"); // logical $PWD, not the canonical path
-    assert_eq!(out, format!("{}\na b\n", sub.display()));
+    assert_eq!(out, format!("{}\r\na b\r\n", sub.display()));
     assert!(f.svc.start_run(&f.ws, Some("missing")).is_err());
     assert!(!f.svc.start_setup(&f.ws).unwrap(), "no setup script");
 }
@@ -233,7 +233,7 @@ fn run_uses_cwd_args_and_errors_without_scripts() {
 fn archive_runs_to_completion_with_the_workspace_id() {
     let f = fixture("[scripts]\narchive = \"echo bye $CONDUCTOR_WORKSPACE_ID; exit 4\"\n");
     let (code, out) = f.svc.run_archive(&f.ws).unwrap().unwrap();
-    assert_eq!((code, out.as_str()), (Some(4), "bye w1\n"));
+    assert_eq!((code, out.as_str()), (Some(4), "bye w1\r\n"));
     let none = fixture("");
     assert_eq!(none.svc.run_archive(&none.ws).unwrap(), None);
     assert!(Path::new(&f.ws.workspace_path).exists());

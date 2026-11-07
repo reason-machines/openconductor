@@ -48,7 +48,7 @@ fn runs_to_exit_and_keeps_output() {
     )
     .unwrap();
     wait_for("exit", || m.state("w1", "test") == RunState::Stopped);
-    assert_eq!(m.output("w1", "test").as_deref(), Some("done\n"));
+    assert_eq!(m.output("w1", "test").as_deref(), Some("done\r\n"));
     assert_eq!(m.statuses("w1")[0].exit, Some((Some(2), None)));
 }
 
@@ -74,6 +74,36 @@ fn starting_a_script_stops_the_workspaces_other_run() {
     assert_eq!(m.history("w1"), ["test", "dev"]);
     assert!(m.stop("w1", Some("test")));
     assert!(!m.stop("w1", Some("test")), "nothing left to stop");
+}
+
+#[test]
+fn rerun_of_the_same_script_replaces_the_pty_and_transcript() {
+    let tmp = tempfile::tempdir().unwrap();
+    let m = RunManager::default();
+    m.start(
+        req(tmp.path(), "w1", "r", "dev", LONG, true),
+        SetupState::Idle,
+    )
+    .unwrap();
+    wait_for("first run", || {
+        m.output("w1", "dev").unwrap_or_default().contains("up")
+    });
+    m.start(
+        req(
+            tmp.path(),
+            "w1",
+            "r",
+            "dev",
+            "test -t 0 && test -t 1 && test -t 2 && echo fresh",
+            true,
+        ),
+        SetupState::Idle,
+    )
+    .unwrap();
+    wait_for("rerun exit", || m.state("w1", "dev") == RunState::Stopped);
+    assert_eq!(m.output("w1", "dev").as_deref(), Some("fresh\r\n"));
+    assert_eq!(m.statuses("w1")[0].exit, Some((Some(0), None)));
+    assert_eq!(m.history("w1"), ["dev"]);
 }
 
 #[test]
@@ -186,7 +216,7 @@ fn latest_is_the_newest_run_with_its_state_and_output() {
     let first = m.latest("w1").unwrap();
     assert_eq!(first.script_id, "test");
     assert_eq!(first.state, RunState::Stopped);
-    assert_eq!(first.output.as_deref(), Some("old\n"));
+    assert_eq!(first.output.as_deref(), Some("old\r\n"));
 
     m.start(
         req(tmp.path(), "w1", "r", "dev", LONG, true),
@@ -199,7 +229,7 @@ fn latest_is_the_newest_run_with_its_state_and_output() {
     let live = m.latest("w1").unwrap();
     assert_eq!(live.script_id, "dev");
     assert_eq!(live.state, RunState::Running);
-    assert_eq!(live.output.as_deref(), Some("up\n"));
+    assert_eq!(live.output.as_deref(), Some("up\r\n"));
     assert!(live.started_at >= first.started_at);
     assert_eq!(m.latest("w2"), None, "other workspaces are not mixed in");
     m.stop_all();

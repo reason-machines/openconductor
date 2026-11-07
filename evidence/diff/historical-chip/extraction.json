@@ -1,0 +1,17 @@
+{
+  "binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+  "assets": [
+    {
+      "key": "/assets/renderApp-BYEcFwvt.css",
+      "sha256": "5b876e143b67a7b0f09e3816b12c18bc588b4af7a9a43f04ce77fd5337d9ff04",
+      "bytes": 420010,
+      "table_offset": "0x308f0b0"
+    },
+    {
+      "key": "/assets/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457,
+      "table_offset": "0x3096db0"
+    }
+  ]
+}

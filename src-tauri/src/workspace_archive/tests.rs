@@ -485,6 +485,31 @@ fn restore_to_new_branch_skips_taken_names_and_keeps_the_work() {
 }
 
 #[test]
+fn restore_of_a_deleted_branch_reuses_its_available_name() {
+    let f = Fixture::new("restore-deleted-name");
+    write(f.ws(), "wip.txt", "unsaved\n");
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    teardown(&f.target, &p, true, None);
+    assert!(!f.branch_exists("sven/ws"));
+
+    let branch = create_restore_branch(&f.target, p.archive_commit.as_deref()).unwrap();
+    assert_eq!(branch, "sven/ws");
+    assert_eq!(
+        g(f.repo(), &["rev-parse", &branch]),
+        p.archive_commit.as_deref().unwrap()
+    );
+    let mut target = f.target.clone();
+    target.branch = branch;
+    let restored = restore(&target, p.archive_commit.as_deref(), None, true).unwrap();
+    assert!(restored.recreated_branch && restored.restored_changes);
+    assert_eq!(g(f.ws(), &["branch", "--show-current"]), "sven/ws");
+    assert_eq!(
+        fs::read_to_string(f.ws().join("wip.txt")).unwrap(),
+        "unsaved\n"
+    );
+}
+
+#[test]
 fn restore_to_new_branch_of_a_deleted_branch_without_commit_refuses() {
     let f = Fixture::new("restore-new-branch-old");
     let p = prepare(&f.target, ArchiveMode::Safe).unwrap();

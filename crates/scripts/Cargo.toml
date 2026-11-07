@@ -12,6 +12,7 @@ toml = { version = "0.8", features = ["preserve_order"] }
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
+rustix-openpty = "=0.2.0"
 
 [dev-dependencies]
 tempfile = "3"

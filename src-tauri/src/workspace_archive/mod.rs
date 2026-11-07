@@ -506,7 +506,7 @@ pub fn unique_branch_name(repo_root: &Path, branch: &str) -> Result<String, Stri
                 .map(|out| out.lines().any(|r| r.splitn(4, '/').nth(3) == Some(b)))
                 .unwrap_or(false)
     };
-    let mut name = next_branch_name(branch);
+    let mut name = branch.to_string();
     for _ in 0..1000 {
         if !taken(&name) {
             return Ok(name);
