@@ -1,0 +1,114 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Reason defaults keep all clears with same-render handlers and delayed settings IPC
+ok 1 - Reason defaults keep all clears with same-render handlers and delayed settings IPC
+  ---
+  duration_ms: 362.283865
+  type: 'test'
+  ...
+# Subtest: Reason defaults keep all clears with older-reply handlers and delayed settings IPC
+ok 2 - Reason defaults keep all clears with older-reply handlers and delayed settings IPC
+  ---
+  duration_ms: 370.643034
+  type: 'test'
+  ...
+# Subtest: Reason defaults keep all clears with partial-render handlers and delayed settings IPC
+ok 3 - Reason defaults keep all clears with partial-render handlers and delayed settings IPC
+  ---
+  duration_ms: 358.061027
+  type: 'test'
+  ...
+# Subtest: Reason defaults keep all clears with separate-renders handlers and delayed settings IPC
+ok 4 - Reason defaults keep all clears with separate-renders handlers and delayed settings IPC
+  ---
+  duration_ms: 329.944896
+  type: 'test'
+  ...
+# (node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: each card maps to a provider and back
+ok 5 - each card maps to a provider and back
+  ---
+  duration_ms: 0.694823
+  type: 'test'
+  ...
+# Subtest: signed in: Version, Account, Workspace and This Mac; a pinned workspace wins
+ok 6 - signed in: Version, Account, Workspace and This Mac; a pinned workspace wins
+  ---
+  duration_ms: 1.20283
+  type: 'test'
+  ...
+# Subtest: signed out or keyless shows only the version and says what to do
+ok 7 - signed out or keyless shows only the version and says what to do
+  ---
+  duration_ms: 0.281676
+  type: 'test'
+  ...
+# Subtest: an empty option unsets the key
+ok 8 - an empty option unsets the key
+  ---
+  duration_ms: 0.121661
+  type: 'test'
+  ...
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: withField changes one field and keeps everything else, unknown keys included
+ok 9 - withField changes one field and keeps everything else, unknown keys included
+  ---
+  duration_ms: 1.757292
+  type: 'test'
+  ...
+# Subtest: blank text inputs become null
+ok 10 - blank text inputs become null
+  ---
+  duration_ms: 0.128438
+  type: 'test'
+  ...
+# Subtest: branch prefix rules match the backend's
+ok 11 - branch prefix rules match the backend's
+  ---
+  duration_ms: 0.336741
+  type: 'test'
+  ...
+# Subtest: branch preview is the branch the Create-workspace flow would make
+ok 12 - branch preview is the branch the Create-workspace flow would make
+  ---
+  duration_ms: 0.408439
+  type: 'test'
+  ...
+# Subtest: custom prefixes drop the trailing slash the backend refuses
+ok 13 - custom prefixes drop the trailing slash the backend refuses
+  ---
+  duration_ms: 4.812541
+  type: 'test'
+  ...
+# Subtest: base URLs must be http(s) when set
+ok 14 - base URLs must be http(s) when set
+  ---
+  duration_ms: 0.252529
+  type: 'test'
+  ...
+# Subtest: C1 control characters are refused like the backend's char::is_control
+ok 15 - C1 control characters are refused like the backend's char::is_control
+  ---
+  duration_ms: 0.11362
+  type: 'test'
+  ...
+# Subtest: providers default to none configured, so every agent uses its CLI login
+ok 16 - providers default to none configured, so every agent uses its CLI login
+  ---
+  duration_ms: 0.099276
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1752.186256

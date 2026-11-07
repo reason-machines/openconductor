@@ -78,6 +78,13 @@ function useReasonStatus(storedKey: string) {
 }
 
 export function ReasonTab({ settings, save, reload }: AgentTabProps) {
+  const latestSettings = useRef(settings);
+  latestSettings.current = settings;
+  const setDefault: SetReasonDefault = (key, value) => {
+    const next = withReason(latestSettings.current, key, value);
+    latestSettings.current = next;
+    void save(next);
+  };
   const storedMode = reasonModeOf(settings);
   const { account, setAccount, provider, setProvider, loading, error, refresh } = useReasonStatus(JSON.stringify([settings.providers.reason ?? null, settings.reason_executable_path ?? null]));
   const [pending, setPending] = useState<ReasonMode | null>(null);
@@ -146,8 +153,8 @@ export function ReasonTab({ settings, save, reload }: AgentTabProps) {
       )}
       {status.connected && account?.computerConnected === false && <ConnectComputer onDone={refresh} />}
       <div className="settings-rows agk-rows">
-        <WorkspaceRow settings={settings} account={account} save={save} />
-        <DefaultModelRows settings={settings} save={save} />
+        <WorkspaceRow settings={settings} account={account} setDefault={setDefault} />
+        <DefaultModelRows settings={settings} setDefault={setDefault} />
         <ReasonExecutableRow settings={settings} save={async (next) => {
           const saved = await save(next);
           if (saved !== false) refresh();
@@ -264,16 +271,18 @@ function ConnectComputer({ onDone }: { onDone: () => void }) {
 }
 
 type SaveProps = { settings: Settings; save: AgentTabProps["save"] };
+type SetReasonDefault = (key: Parameters<typeof withReason>[1], value: string) => void;
+type ReasonDefaultProps = { settings: Settings; setDefault: SetReasonDefault };
 
 /** The workspace `--workspace` pins new Reason chats to; the default follows the Reason app. */
-function WorkspaceRow({ settings, account, save }: SaveProps & { account: ReasonAccount | null }) {
+function WorkspaceRow({ settings, account, setDefault }: ReasonDefaultProps & { account: ReasonAccount | null }) {
   const pinned = settings.reason?.workspace ?? "";
   const workspaces = account?.workspaces ?? [];
   const selected = workspaces.find((w) => w.selected);
   const known = pinned === "" || workspaces.some((w) => w.slug === pinned);
   return (
     <Row label="Workspace for new chats" help="New Reason chats open their Session in this workspace. Existing chats stay in theirs.">
-      <select aria-label="Workspace for new chats" className="oc-agent-select-180" value={pinned} onChange={(e) => void save(withReason(settings, "workspace", e.target.value))}>
+      <select aria-label="Workspace for new chats" className="oc-agent-select-180" value={pinned} onChange={(e) => setDefault("workspace", e.target.value)}>
         <option value="">{selected ? `Reason app's (${selected.name})` : "Reason app's selection"}</option>
         {!known && <option value={pinned}>{pinned}</option>}
         {workspaces.map((w) => (
@@ -288,7 +297,7 @@ function WorkspaceRow({ settings, account, save }: SaveProps & { account: Reason
 }
 
 /** Model and effort new Reason chats start with (`[reason] model`, `reasoning_effort`). */
-function DefaultModelRows({ settings, save }: SaveProps) {
+function DefaultModelRows({ settings, setDefault }: ReasonDefaultProps) {
   const [models, setModels] = useState<ReasonModelOption[]>([]);
   // Asked again once the executable path settles (it saves per keystroke): the list comes from that `reason`.
   const exe = settings.reason_executable_path ?? null;
@@ -309,7 +318,7 @@ function DefaultModelRows({ settings, save }: SaveProps) {
   return (
     <>
       <Row label="Default model" help="The model new Reason chats start on. You can change it per chat in the composer.">
-        <select aria-label="Default Reason model" className="oc-agent-select-180" value={model} onChange={(e) => void save(withReason(settings, "model", e.target.value))}>
+        <select aria-label="Default Reason model" className="oc-agent-select-180" value={model} onChange={(e) => setDefault("model", e.target.value)}>
           <option value="">Default models setting</option>
           {!listed && <option value={model}>{model}</option>}
           {models.map((m) => (
@@ -320,7 +329,7 @@ function DefaultModelRows({ settings, save }: SaveProps) {
         </select>
       </Row>
       <Row label="Default effort" help="Reasoning effort for new Reason chats.">
-        <select aria-label="Default Reason effort" className="oc-agent-select-180" value={effort} onChange={(e) => void save(withReason(settings, "reasoning_effort", e.target.value))}>
+        <select aria-label="Default Reason effort" className="oc-agent-select-180" value={effort} onChange={(e) => setDefault("reasoning_effort", e.target.value)}>
           {REASON_EFFORT_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
               {o.label}

@@ -1,0 +1,65 @@
+{
+  "author": "Conductor Rebuild",
+  "date": "2026-11-07",
+  "branch": "reason/openconductor-sol-settin-49e3976d",
+  "source_refs": {
+    "failing": "7cf9cded4cca4d0c94a55d42e5e681312a89255f",
+    "initial_assigned": "840f1f9172742724fec6b05f759add07323a9d57",
+    "main_at_integration": "afc91be9a68d35790c5abfe2d2cfbf929717d4ed"
+  },
+  "source_blobs": {
+    "failing": {
+      "src/settings/useSettings.ts": "abc1f7b2421bc6e395a3b2d4584b261a0e43c228",
+      "src/settings/agents/ReasonTab.tsx": "337cd7bd0566a0111a325cddbb01edfb3829376d",
+      "src/settings/agents/reasonModes.ts": "6f9a411637692bf17745dec1235ce266c809ae39",
+      "src/settings/api.ts": "bcaf983de1165c90a7541a6f0a83dd99478bc96f",
+      "tests/e2e/flows.mjs": "9e016d0e0cf4033eca26f084a5f8ae52462e2cf2"
+    },
+    "initial_assigned": {
+      "src/settings/useSettings.ts": "abc1f7b2421bc6e395a3b2d4584b261a0e43c228",
+      "src/settings/agents/ReasonTab.tsx": "337cd7bd0566a0111a325cddbb01edfb3829376d",
+      "src/settings/agents/reasonModes.ts": "6f9a411637692bf17745dec1235ce266c809ae39",
+      "src/settings/api.ts": "bcaf983de1165c90a7541a6f0a83dd99478bc96f",
+      "tests/e2e/flows.mjs": "9e016d0e0cf4033eca26f084a5f8ae52462e2cf2"
+    },
+    "main_at_integration": {
+      "src/settings/useSettings.ts": "abc1f7b2421bc6e395a3b2d4584b261a0e43c228",
+      "src/settings/agents/ReasonTab.tsx": "337cd7bd0566a0111a325cddbb01edfb3829376d",
+      "src/settings/agents/reasonModes.ts": "6f9a411637692bf17745dec1235ce266c809ae39",
+      "src/settings/api.ts": "bcaf983de1165c90a7541a6f0a83dd99478bc96f",
+      "tests/e2e/flows.mjs": "9e016d0e0cf4033eca26f084a5f8ae52462e2cf2"
+    }
+  },
+  "failing_run": 42320999768,
+  "failing_job": 128245257468,
+  "artifact": 13553935520,
+  "assertion": "timed out waiting for [reason] cleared",
+  "test_commit": "48d57432",
+  "before": {
+    "passed": 1,
+    "failed": 3,
+    "source": "before.tap"
+  },
+  "after": {
+    "passed": 16,
+    "failed": 0,
+    "source": "after.tap"
+  },
+  "full_tests": {
+    "passed": 1310,
+    "failed": 0
+  },
+  "existing_preview_stop": {
+    "server_id": "14af8e86-bb8b-49be-aa3f-f7e5bfc76993",
+    "port": 51749,
+    "state": "stopped",
+    "receipt": "Each stopped server\u2019s process group has ended on the computer, so its port is free for preview_start.",
+    "scope": "prior bounded preview; no new preview started in this continuation"
+  },
+  "limits": [
+    "SSR callbacks are invoked directly; no browser/WebKit event dispatch.",
+    "IPC is invented in-memory storage; no Rust or real filesystem persistence.",
+    "Conditional stale-handler bug proven, original E2E dispatch/timing cause remains unverified.",
+    "No native rendering, pointer, authentication or parity credit."
+  ]
+}
