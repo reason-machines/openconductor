@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "author": "Conductor Rebuild",
+  "observedAtUtc": "2026-11-07T18:06:00Z/2026-11-07T18:10:17Z",
+  "host": "sven m5 max",
+  "pullRequest": 753,
+  "outcome": "PARTIAL: actual native UI reaches browser approval waiting; browser approval and inference await Chrome access",
+  "artifact": {
+    "source": "3992181323b963eebee5ad383672e615dac65368",
+    "comparedPrHead": "79d31a3cad22612c10b639a345e3d53c774eb351",
+    "sourceComparison": "PASS: sole src/src-tauri/crates/package change is src-tauri/src/reason_acp/login_tests.rs, a test-only addition; production runtime sources unchanged",
+    "binarySha256": "0fbea18d822bc364c5ee5d0184b5741e8385087c5ed4efe5b6e90fec1836879b",
+    "trackedSourceChanges": false,
+    "newBuildRun": false,
+    "buildProvenance": "Retained prior native package and build receipt; verified binary hash and clean source HEAD in this run"
+  },
+  "isolation": {
+    "freshCanonicalHome": true,
+    "homeMode": "0700",
+    "separateKeychain": true,
+    "keychainMode": "0600",
+    "defaultAndSearchKeychainListsUnchanged": true,
+    "explicitCliTestVariables": [
+      "REASON_TEST_ACCOUNT_ROOT",
+      "REASON_TEST_KEYCHAIN_PATH",
+      "REASON_TEST_REFUSE_REAL_ACCOUNT"
+    ],
+    "appEnvironment": [
+      "HOME",
+      "CFFIXED_USER_HOME",
+      "OPENCONDUCTOR_HOME",
+      "XDG_CONFIG_HOME",
+      "XDG_CACHE_HOME",
+      "XDG_DATA_HOME",
+      "TMPDIR",
+      "OC_E2E_OUT"
+    ],
+    "initialReasonStatus": {
+      "exitCode": 0,
+      "account": null,
+      "account_error": null,
+      "organization": null,
+      "workspaces": [],
+      "connection": null,
+      "installation": null
+    },
+    "appDatabaseFoundInsideFreshHome": true,
+    "fullFileOrKeychainTrace": "NOT RUN",
+    "existingCredentialCopyOrLogout": false,
+    "installedAppReplacement": false
+  },
+  "cli": {
+    "version": "0.2.707",
+    "sha256": "56b4f847eb7478d764fb7f5284f22010fcde701184034fbcca4560d934c01237"
+  },
+  "nativeInteraction": {
+    "method": "Actual native computer-use clicks against exact owned app PID 8268; no injected controller or webview DOM driver",
+    "screenLock": "Device reported unlocked; ioreg CGSSessionScreenIsLocked absent",
+    "steps": [
+      {
+        "control": "Continue without signing in",
+        "result": "PASS: fresh onboarding opens empty Home"
+      },
+      {
+        "control": "Settings then Agents",
+        "result": "PASS: Reason selected, Not signed in, installed Reason executable resolved"
+      },
+      {
+        "control": "Sign in with Reason",
+        "result": "PASS: Preparing Reason sign-in then Finish signing in in the browser window; confirmation code, Cancel and reopen controls present; no terminal sign-in"
+      },
+      {
+        "control": "Cancel",
+        "result": "PASS: Not signed in, Retry sign-in, cancellation explanation; code no longer shown"
+      }
+    ],
+    "browserOpened": "UNVERIFIED: app reached waiting without visible opener error; no approval page observable with connected browser tools",
+    "browserAccess": "Machine-browser user_tabs empty; personal Chrome has no connected profile; Chrome request_access card awaiting user",
+    "connected": "NOT RUN",
+    "workspaceSelection": "NOT RUN: Reason Tests not selected",
+    "reasonTurn": "NOT RUN",
+    "ownedPid": 8268,
+    "ownedAppStopped": true,
+    "nativeSlotReleased": true
+  },
+  "capture": {
+    "file": "cancelled.jpg",
+    "method": "Exact native computer-use result image, saved unchanged after viewing",
+    "scope": "Cancellation state only, not a successful sign-in screenshot",
+    "secretsExported": false,
+    "pairingScreenshotExported": false,
+    "shellCapture": "FAILED: screencapture could not create image even for on-screen owned CGWindow 66562; native provider image used instead"
+  },
+  "conductorClaims": "None; this is OpenConductor Reason integration, not a claim about Conductor account behavior"
+}
