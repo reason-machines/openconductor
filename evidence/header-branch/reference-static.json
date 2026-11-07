@@ -32,6 +32,13 @@
     },
     {
       "file": "renderApp-D_fmY7hW.js",
+      "name": "yoo",
+      "utf16Offset": 7259715,
+      "utf8Offset": 7302745,
+      "excerpt": "function yoo(t){const e=ne.c(8),{localWorkspaceId:n}=t;let i;e[0]!==n?(i={localWorkspaceId:n},e[0]=n,e[1]=i):i=e[1];const{data:r}=Ms(i),o=pI(r??void 0),a=mI();let c;e[2]!==a||e[3]!==o||e[4]!==r?(c=o?zce({branch:o,branchPrefix:a}):r?.placeholderBranchName?zce({branch:r.placeholderBranchName,branchPrefix:a}):void 0,e[2]=a,e[3]=o,e[4]=r,e[5]=c):c=e[5];const u=c;if(!u)return null;let d;return e[6]!==u?(d=p.jsx(\"span\",{className:\"min-w-0 truncate text-sm font-medium text-muted-foreground\",title:u,children:u}),e[6]=u,e[7]=d):d=e[7],d}"
+    },
+    {
+      "file": "renderApp-D_fmY7hW.js",
       "name": "bro",
       "utf16Offset": 7163198,
       "utf8Offset": 7206225,
@@ -73,7 +80,7 @@
       "excerpt": "function SNt(t){const{localWorkspaceId:e,branchName:s,oldBranchName:n,source:r}=t;await Xpe({localWorkspaceId:e,branchName:s,oldBranchName:n,source:r===void 0?\"user\":r})}"
     }
   ],
-  "conclusion": "The non-archived local header branch supports inline rename and a Copy/Rename context menu; rename sanitizes the full branch and uses the existing user-initiated branch mutation.",
+  "conclusion": "ACi renders the static yoo span for an archived local workspace, without branch edit or menu handlers. The non-archived bro header supports inline rename and a Copy/Rename context menu; rename sanitizes the full branch and uses the existing user-initiated branch mutation.",
   "gaps": [
     "No browser or native branch-edit scenario was run.",
     "Static control flow does not establish successful Git mutation or native clipboard behavior.",
