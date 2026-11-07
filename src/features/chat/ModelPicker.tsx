@@ -49,6 +49,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
   const [open, setOpen] = useState(false);
   const menu = usePresence(open);
   const [query, setQuery] = useState("");
+  const [searchIndex, setSearchIndex] = useState(0);
   const [effortOpen, setEffortOpen] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
   const search = useRef<HTMLInputElement>(null);
@@ -85,6 +86,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
   useEffect(() => {
     if (!open) {
       setQuery("");
+      setSearchIndex(0);
       setEffortOpen(false);
       return;
     }
@@ -95,13 +97,26 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
 
   const onMenuKey = (e: KeyboardEvent) => {
     if (e.defaultPrevented || e.nativeEvent.isComposing) return;
-    if (e.target === search.current && e.key === "Enter") {
+    const resultIndex = e.target instanceof HTMLButtonElement ? e.target.dataset.modelResult : undefined;
+    const inSearch = e.target === search.current || (query.trim() !== "" && resultIndex !== undefined);
+    if (query.trim() && inSearch && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
       e.stopPropagation();
-      const match = query.trim() ? items[0] : undefined;
+      if (items.length && !disabled) {
+        const index = resultIndex === undefined ? 0 : Number(resultIndex);
+        const next = (index + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+        root.current?.querySelector<HTMLButtonElement>(`[data-model-result="${next}"]`)?.focus();
+      }
+      return;
+    }
+    if (inSearch && e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      const match = query.trim() ? items[resultIndex === undefined ? 0 : Number(resultIndex)] : undefined;
       if (match && !disabled) {
         if (!same(match, value)) onChange(match);
         setQuery("");
+        search.current?.focus();
       }
       return;
     }
@@ -144,11 +159,11 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
           <div className="oc-model-menu-inner">
             <div className="oc-model-search">
               <SearchSmallIcon />
-              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => setQuery(e.target.value)} />
+              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => { setQuery(e.target.value); setSearchIndex(0); }} />
             </div>
             <div className="oc-model-list">
               {items.length === 0 ? <div className="oc-model-empty">No models found</div> : null}
-              {items.map((f) => {
+              {items.map((f, index) => {
                 const selected = same(f, value);
                 const e = modelChip(f.model, f.effort).effort;
                 return (
@@ -158,6 +173,9 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                     role="menuitem"
                     className="oc-model-item"
                     data-selected={selected || undefined}
+                    data-model-result={index}
+                    data-highlighted={query.trim() !== "" && index === searchIndex || undefined}
+                    onFocus={() => setSearchIndex(index)}
                     title={[nameOf(f), modelDescription?.(f.model)].filter(Boolean).join(" · ")}
                     onClick={() => {
                       if (!selected) onChange(f);
