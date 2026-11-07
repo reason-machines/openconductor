@@ -52,7 +52,7 @@ test("cancelled and expired requests cannot later approve and retry has a fresh 
   }, { ttlMs: 25, now: () => time });
 });
 
-test("fake executable stays signed out until browser approval, then its detached finisher completes", () => withFixture(async ({ origin, completions }) => {
+test("fake executable stays signed out until browser approval, then its detached finisher completes", () => withFixture(async ({ origin, notifications }) => {
   const env = { PATH: process.env.PATH, OC_PAIRING_FIXTURE_ORIGIN: origin, OC_PAIRING_FIXTURE_CLIENT: "cli" };
   const cli = async (...args) => (await execute("python3", [fake, ...args], { env })).stdout;
   assert.equal(JSON.parse(await cli("status", "--json")).account, null);
@@ -62,7 +62,7 @@ test("fake executable stays signed out until browser approval, then its detached
   assert.equal(JSON.parse(await cli("status", "--json")).account, null);
   await cli("login");
   assert.equal(JSON.parse(await cli("status", "--json")).account, null);
-  const finished = once(completions, "completed", { signal: AbortSignal.timeout(5000) });
+  const finished = once(notifications, "completed", { signal: AbortSignal.timeout(5000) });
   await post(origin, `/pairings/${id}/approve`, { account: "sam", workspace: "ws-beta" });
   assert.deepEqual(await finished, ["cli"]);
   assert.equal(JSON.parse(await cli("status", "--json")).account.email, "sam@example.invalid");

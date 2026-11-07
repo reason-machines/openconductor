@@ -27,7 +27,7 @@ before(async () => {
   binary = await buildRustBridge(resolve("."), join(temporary, "rust"));
   pairing = await startPairingServer();
   if (!base) {
-    vite = await createServer({ server: { host: "127.0.0.1", port: 0 }, logLevel: "error" });
+    vite = await createServer({ server: { host: process.env.TEST_VITE_HOST ?? "127.0.0.1", port: Number(process.env.TEST_VITE_PORT ?? 0), strictPort: true }, logLevel: "error" });
     await vite.listen();
     base = vite.resolvedUrls.local[0].replace(/\/$/, "");
   }
@@ -40,10 +40,11 @@ after(async () => {
   if (temporary) await rm(temporary, { recursive: true, force: true });
 });
 
-async function fixture({ entry = "settings", strict = true, workspace, timeoutMs, loginDelayMs, existing = false, failOpen = false } = {}) {
+async function fixture({ entry = "settings", strict = true, workspace, timeoutMs, loginDelayMs, existing = false, pending = false, failOpen = false, stateTimeoutMs = 10_000 } = {}) {
   const client = randomUUID();
   const home = join(temporary, client);
   await mkdir(home);
+  if (pending) await post(`/clients/${client}/login`);
   if (existing) {
     const pending = await (await post(`/clients/${client}/login`)).json();
     await post(`/pairings/${pending.id}/approve`, { account: "sam", workspace: "ws-beta" });
@@ -82,7 +83,7 @@ async function fixture({ entry = "settings", strict = true, workspace, timeoutMs
     page, client, bridge, opened, errors,
     async state() { return JSON.parse(await page.getByTestId("login-state").textContent()); },
     async waitState(state) {
-      await page.waitForFunction((wanted) => JSON.parse(document.querySelector('[data-testid="login-state"]').textContent).state === wanted, state, { timeout: 10_000 });
+      await page.waitForFunction((wanted) => JSON.parse(document.querySelector('[data-testid="login-state"]').textContent).state === wanted, state, { timeout: stateTimeoutMs });
       return this.state();
     },
     async start() {
@@ -236,7 +237,7 @@ test("approval racing cancellation preserves the saved CLI account without globa
   const f = await fixture();
   try {
     const waiting = await f.start();
-    const finished = once(pairing.completions, "completed", { signal: AbortSignal.timeout(5000) });
+    const finished = once(pairing.notifications, "completed", { signal: AbortSignal.timeout(5000) });
     const [, cancelled] = await Promise.all([f.approve(), f.bridge.invoke("reason_login_cancel", { attemptId: waiting.attemptId })]);
     assert.deepEqual(await finished, [f.client]);
     assert.ok(["cancelled", "connected"].includes(cancelled.state));
@@ -255,15 +256,44 @@ test("approval racing cancellation preserves the saved CLI account without globa
 test("delayed CLI URL keeps starting visible and does not block cancel", async () => {
   const f = await fixture({ loginDelayMs: 4000 });
   try {
+    const login = once(pairing.notifications, "login", { signal: AbortSignal.timeout(5000) });
     await f.page.getByRole("button", { name: "Sign in with Reason", exact: true }).click();
+    assert.deepEqual(await login, [f.client]);
     await f.waitState("starting");
     await f.page.getByText("Preparing Reason sign-in...", { exact: true }).waitFor();
     await f.page.getByRole("button", { name: "Cancel", exact: true }).click();
     await f.waitState("cancelled");
     assert.equal(f.opened.length, 0);
-    assert.equal(pairing.events.filter((e) => e.client === f.client && e.type === "created").length, 0);
+    assert.equal(pairing.events.filter((e) => e.client === f.client && e.type === "created").length, 1);
+    assert.equal(pairing.events.filter((e) => e.client === f.client && e.type === "logout").length, 0);
   } finally { await f.close(); }
 });
+
+for (const pending of [false, true]) {
+  test(`${pending ? "existing pending" : "fresh"} pairing survives a real 21-second HTTP wait before its browser URL`, { timeout: 90_000 }, async () => {
+    const f = await fixture({ pending, loginDelayMs: 21_000, timeoutMs: 60_000, stateTimeoutMs: 30_000 });
+    try {
+      const login = once(pairing.notifications, "login", { signal: AbortSignal.timeout(5000) });
+      const started = Date.now();
+      const start = f.start();
+      await f.waitState("starting");
+      assert.deepEqual(await login, [f.client]);
+      assert.equal([...pairing.pairings.values()].find((request) => request.client === f.client)?.state, "pending");
+      assert.equal((await f.bridge.invoke("reason_account_status")).email, null);
+      await start;
+      assert.ok(Date.now() - started >= 20_000, "the test must exercise the actual twenty-second boundary");
+      const waiting = await f.state();
+      const requestId = new URL(waiting.prompt.url).searchParams.get("request");
+      const remote = await (await fetch(pairing.origin + `/pairings/${requestId}`)).json();
+      assert.equal(remote.state, "pending");
+      assert.equal(pairing.events.filter((e) => e.client === f.client && e.type === "created").length, 1, "retry reuses an existing remote pairing");
+      await f.approve();
+      await f.waitState("connected");
+      assert.equal(f.opened.length, 1);
+      await f.capture(`${pending ? "pending" : "fresh"}-21-second-http`);
+    } finally { await f.close(); }
+  });
+}
 
 test("browser opener failure is visible and explicit reopen preserves the pending attempt", async () => {
   const f = await fixture({ failOpen: true });

@@ -16,7 +16,7 @@ export async function startPairingServer({ ttlMs = 60_000, now = Date.now } = {}
   const clients = new Map();
   const pairings = new Map();
   const events = [];
-  const completions = new EventEmitter();
+  const notifications = new EventEmitter();
   let origin;
   const client = (id) => {
     if (!id || !/^[a-zA-Z0-9-]+$/.test(id)) throw new Error("Invalid fixture client");
@@ -62,6 +62,7 @@ export async function startPairingServer({ ttlMs = 60_000, now = Date.now } = {}
         const [, id, action] = clientRoute;
         const entry = client(id);
         events.push({ type: action, client: id });
+        notifications.emit(action, id);
         if (action === "status" && request.method === "GET") return json(response, 200, status(entry));
         if (action === "logout" && request.method === "POST") {
           entry.account = null;
@@ -70,6 +71,8 @@ export async function startPairingServer({ ttlMs = 60_000, now = Date.now } = {}
           return json(response, 200, { ok: true });
         }
         if (action === "login" && request.method === "POST") {
+          const delay = body.responseDelayMs ?? 0;
+          if (!Number.isInteger(delay) || delay < 0 || delay > 30_000) return json(response, 400, { error: "Invalid fixture response delay" });
           if (entry.account) return json(response, 200, { state: "connected", account: status(entry) });
           let pairing = pairings.get(entry.pending);
           if (!pairing || ["cancelled", "expired"].includes(view(pairing).state)) {
@@ -79,6 +82,7 @@ export async function startPairingServer({ ttlMs = 60_000, now = Date.now } = {}
             entry.pending = id;
             events.push({ type: "created", client: pairing.client, pairing: id });
           }
+          if (delay) await new Promise((resolve) => { setTimeout(resolve, delay).unref(); });
           return json(response, 200, view(pairing));
         }
       }
@@ -96,7 +100,7 @@ export async function startPairingServer({ ttlMs = 60_000, now = Date.now } = {}
             const entry = client(pairing.client);
             const firstCompletion = entry.account === null;
             entry.account = { ...selected, workspace: pairing.selection.workspace };
-            if (firstCompletion) completions.emit("completed", pairing.client);
+            if (firstCompletion) notifications.emit("completed", pairing.client);
             return json(response, 200, { state: "connected", account: status(entry) });
           }
           return json(response, 200, current);
@@ -119,5 +123,5 @@ export async function startPairingServer({ ttlMs = 60_000, now = Date.now } = {}
   });
   await new Promise((resolve, reject) => { server.once("error", reject); server.listen(0, "127.0.0.1", resolve); });
   origin = `http://127.0.0.1:${server.address().port}`;
-  return { origin, events, pairings, completions, close: () => new Promise((resolve) => { server.closeAllConnections(); server.close(resolve); }) };
+  return { origin, events, pairings, notifications, close: () => new Promise((resolve) => { server.closeAllConnections(); server.close(resolve); }) };
 }
