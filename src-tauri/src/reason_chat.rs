@@ -195,8 +195,16 @@ pub fn reason_login_start(
 }
 
 #[tauri::command]
-pub fn reason_login_status(login: State<'_, LoginService>) -> LoginState {
-    login.snapshot()
+pub async fn reason_login_status(app: AppHandle) -> Result<LoginState, String> {
+    let state = app.state::<LoginService>().snapshot();
+    if !matches!(state, LoginState::Idle | LoginState::Connected { .. }) {
+        return Ok(state);
+    }
+    let (launch, _) = configured(&app)?;
+    let dir = home()?;
+    tauri::async_runtime::spawn_blocking(move || app.state::<LoginService>().refresh(&launch, &dir))
+        .await
+        .map_err(|error| error.to_string())?
 }
 
 #[tauri::command]

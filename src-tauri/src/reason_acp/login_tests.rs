@@ -77,6 +77,40 @@ fn one_pairing_is_shared_until_approved_and_returns_account_and_workspace() {
 }
 
 #[test]
+fn refresh_reads_existing_account_on_fresh_app_and_clears_external_expiry() {
+    let (dir, launch) = fixture(&format!("{STATUS}\necho unexpected >> mutation\nexit 1"));
+    std::fs::write(dir.join("approved"), "existing valid login").unwrap();
+    let service = service(Duration::from_secs(2));
+    assert!(matches!(
+        service.refresh(&launch, &dir).unwrap(),
+        LoginState::Connected { .. }
+    ));
+    std::fs::remove_file(dir.join("approved")).unwrap();
+    assert_eq!(service.refresh(&launch, &dir).unwrap(), LoginState::Idle);
+    assert!(!dir.join("mutation").exists());
+    let _ = std::fs::remove_dir_all(dir);
+}
+
+#[test]
+fn account_refresh_cannot_restore_a_snapshot_after_explicit_reset() {
+    let (dir, launch) = fixture("touch refresh.started\nwhile [ ! -f release ]; do sleep 0.01; done\necho '{\"account\":{\"email\":\"fixture@example.invalid\"}}'");
+    let service = std::sync::Arc::new(service(Duration::from_secs(2)));
+    let refreshing = service.clone();
+    let cwd = dir.clone();
+    let reader = std::thread::spawn(move || refreshing.refresh(&launch, &cwd));
+    let deadline = Instant::now() + Duration::from_secs(2);
+    while !dir.join("refresh.started").exists() {
+        assert!(Instant::now() < deadline);
+        std::thread::sleep(Duration::from_millis(5));
+    }
+    service.reset();
+    std::fs::write(dir.join("release"), "").unwrap();
+    assert_eq!(reader.join().unwrap().unwrap(), LoginState::Idle);
+    assert_eq!(service.snapshot(), LoginState::Idle);
+    let _ = std::fs::remove_dir_all(dir);
+}
+
+#[test]
 fn existing_login_never_launches_login_or_logout_and_cancel_does_not_delete_it() {
     let (dir, launch) = fixture(&format!("{STATUS}\necho unexpected >> mutation\nexit 1"));
     std::fs::write(dir.join("approved"), "existing valid login").unwrap();
@@ -113,6 +147,10 @@ fn cancel_stops_polling_ignores_late_approval_and_retry_reads_existing_login() {
     std::fs::write(dir.join("approved"), "").unwrap();
     std::thread::sleep(Duration::from_millis(80));
     assert_eq!(service.snapshot(), LoginState::Cancelled);
+    assert_eq!(
+        service.refresh(&launch, &dir).unwrap(),
+        LoginState::Cancelled
+    );
     assert_eq!(std::fs::read_to_string(dir.join("calls")).unwrap(), calls);
     service.start(launch, dir.clone());
     wait(&service, |state| {

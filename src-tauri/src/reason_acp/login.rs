@@ -108,6 +108,37 @@ impl LoginService {
         self.inner.lock().unwrap().state.clone()
     }
 
+    pub fn refresh(&self, launch: &LaunchConfig, dir: &Path) -> Result<LoginState, String> {
+        let (generation, previous) = {
+            let inner = self.inner.lock().unwrap();
+            if !matches!(inner.state, LoginState::Idle | LoginState::Connected { .. }) {
+                return Ok(inner.state.clone());
+            }
+            (inner.next, inner.state.clone())
+        };
+        let account = account(
+            launch,
+            dir,
+            &AtomicBool::new(false),
+            self.options.status_timeout,
+        );
+        let mut inner = self.inner.lock().unwrap();
+        if inner.next != generation || inner.state != previous {
+            return Ok(inner.state.clone());
+        }
+        let Some(account) = account else {
+            return Err("Couldn't check Reason sign-in. Try refreshing.".into());
+        };
+        inner.state = if account.signed_in() {
+            LoginState::Connected { account }
+        } else if account.error.is_some() {
+            failed("Your Reason sign-in couldn't be verified. Try again.")
+        } else {
+            LoginState::Idle
+        };
+        Ok(inner.state.clone())
+    }
+
     pub fn start(&self, launch: LaunchConfig, dir: PathBuf) -> LoginState {
         let mut worker = self.worker.lock().unwrap();
         let inner = self.inner.lock().unwrap();
@@ -169,6 +200,7 @@ impl LoginService {
             if let Some(attempt) = inner.attempt.take() {
                 attempt.cancelled.store(true, Ordering::SeqCst);
             }
+            inner.next += 1;
             inner.state = LoginState::Idle;
         }
         if let Some(worker) = worker.take() {
