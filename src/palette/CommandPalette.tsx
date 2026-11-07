@@ -36,6 +36,7 @@ export interface CommandPaletteProps {
   onSelect: (item: ResultItem) => void;
   /** A settings result's icon (its page's, as in Settings' own search). */
   settingIcon?: (settingId: string) => ReactNode;
+  actionIcon?: (actionId: string) => ReactNode;
   onClose: () => void;
 }
 
@@ -110,7 +111,7 @@ function ResultWorkspaceRow({ item, showNumber }: { item: Extract<ResultItem, { 
   );
 }
 
-export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, onClose }: CommandPaletteProps) {
+export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, actionIcon, onClose }: CommandPaletteProps) {
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
@@ -276,9 +277,9 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                         ) : item.kind === "action" ? (
                           <>
                             <span className="palette-icon" aria-hidden>
-                              {item.action.icon && <ConductorIcon name={ICONS[item.action.icon]} size={16} />}
+                              {actionIcon?.(item.action.id) ?? (item.action.icon && <ConductorIcon name={ICONS[item.action.icon]} size={16} />)}
                             </span>
-                            <span className="palette-title">{item.action.title}</span>
+                            <span className={item.action.group === "open-in" ? "palette-title palette-open-in-title" : "palette-title"}>{item.action.title}</span>
                             <Shortcut keys={shortcutsFor(item, overrides)} />
                           </>
                         ) : (
