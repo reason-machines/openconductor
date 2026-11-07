@@ -1,0 +1,26 @@
+{
+  "reference_asset": "renderApp-D_fmY7hW.js",
+  "reference_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "rea_static_evidence_id": "ev_80462e2fd26b0ef097493b26e04d5fb1bbe05ce141ca11123de7d522cefb777e",
+  "rea_static_confidence": "derived",
+  "rea_static_sha256": "2961348cd1a485ffab069ece2425058f005ccf31d13e2bc42c3ad54d6597849e",
+  "reference_behavior": {
+    "projects_initial_selected": [],
+    "enter_kept_dialog_open": true,
+    "end_selected": "Ddotfiles",
+    "home_selected": "tide-web"
+  },
+  "behavior_surface": "Open Browser Use scoped CDP input on extracted Conductor frontend, fresh fake fixture; no native launch",
+  "screenshot_limit": "Temporary middleware intercepted reference CSS. Screenshot is unstyled and not visual parity evidence.",
+  "checks": {
+    "focused_before": "5 pass, 2 fail (Home/End expected first-item/last-item received null)",
+    "focused_after": "7 pass, 0 fail",
+    "all_unit": "1340 pass, 0 fail; test-concurrency=2",
+    "typecheck": "passed",
+    "lint_colors": "passed",
+    "build": "inconclusive: 120s timeout at Vite transforming before fix"
+  },
+  "rea_runtime_gap": "First scenario startup timeout after4s. Changed startup allowance20s; both reference scenarios then reached70s subprocess deadline. Neither counted as completed Evidence; direct OBU behavior used instead.",
+  "native_behavior": "NOT RUN",
+  "initial_focus_change": "NOT INCLUDED"
+}

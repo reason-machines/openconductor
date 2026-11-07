@@ -75,9 +75,9 @@ fn remove(repo: &Path, path: &str) -> Result<(), DiffError> {
 /// Discard every change to one file relative to the scope's base.
 pub fn discard_file(repo: &Path, req: &DiscardRequest) -> Result<(), DiffError> {
     // As in the reference app, the per-turn view has no discard yet.
-    if matches!(req.scope, Scope::Turn { .. }) {
+    if matches!(req.scope, Scope::Turn { .. } | Scope::Commit { .. }) {
         return Err(DiffError::Unsupported(
-            "discarding changes from a single turn",
+            "discarding changes from a historical view",
         ));
     }
     let path = checked(&req.path)?;

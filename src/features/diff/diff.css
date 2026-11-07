@@ -92,7 +92,10 @@
 .rp-tabs-end .oc-changes-tree-toggle, .rp-tabs-end [aria-label="Filter files"] { margin-right: 6px; }
 .rp-tabs-end .oc-changes-options { margin-right: 8px; }
 .rp-tabs-end .oc-changes-scope { display: inline-flex; align-items: center; gap: 4px; width: auto; max-width: 150px; margin-right: 8px; padding: 0 6px; background: var(--active); color: var(--text); font-size: 12px; }
-.oc-changes-options-menu { width: 220px; min-width: 220px; max-width: 320px; }
+.oc-changes-options-menu { width: max-content; min-width: 220px; max-width: 320px; max-height: 80vh; overflow-y: auto; overflow-x: hidden; }
+.oc-changes-commit-message { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-changes-commit-message + .oc-changes-option-detail { line-height: 16px; }
+.rp-tabs-end .oc-changes-historical-scope { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); }
 .oc-changes-options-menu .cm-shortcut { padding-left: 8px; letter-spacing: 0; }
 .oc-changes-target { display: flex; align-items: center; gap: 8px; padding: 6px 8px; white-space: nowrap; color: var(--muted); font-size: 14px; }
 .oc-changes-target-trigger { display: inline-flex; align-items: center; gap: 6px; padding: 0; color: var(--muted); font-size: 14px; white-space: nowrap; }

@@ -45,6 +45,23 @@ async function capture(page, name) {
   await page.screenshot({ path: `${process.env.SIGN_IN_EVIDENCE}/${name}.png` });
 }
 
+test("Settings preserves an unavailable pinned workspace instead of showing the account default", async () => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  try {
+    await page.goto(`${base}/tools/onboarding/index.html?surface=settings&account=connected&workspace=removed-workspace`);
+    const workspace = page.getByRole("combobox", { name: "Workspace for new chats" });
+    await workspace.waitFor();
+    assert.equal(await workspace.inputValue(), "removed-workspace");
+    await page.getByRole("alert").filter({ hasText: "Not signed in to removed-workspace" }).waitFor();
+    assert.match(await page.getByTestId("reason-tab").innerText(), /removed-workspace \(unavailable\)/);
+    await capture(page, "unavailable-pinned-workspace");
+    await workspace.selectOption("");
+    assert.equal(await workspace.inputValue(), "");
+    assert.equal(await page.getByRole("alert").filter({ hasText: "Not signed in to" }).count(), 0);
+    assert.doesNotMatch(await page.getByTestId("reason-tab").innerText(), /\(unavailable\)/);
+  } finally { await page.close(); }
+});
+
 for (const strict of ["0", "1"]) {
   const mode = strict === "1" ? "StrictMode" : "production lifecycle";
   test(`${mode}: browser handoff opens once and displays its synthetic confirmation code`, async () => {

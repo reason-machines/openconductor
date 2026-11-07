@@ -157,7 +157,13 @@ export function createAgentBinaryStore(bridge: BinaryBridge, log: (msg: string, 
       log("Failed to subscribe to agent_binary_progress:", e);
     }
     try {
-      for (const raw of await bridge.getState()) apply(raw);
+      const beforeHydration = statuses;
+      for (const raw of await bridge.getState()) {
+        if (!raw) continue;
+        const status = toStatus(raw as Record<string, unknown>);
+        const key = statusKey(status.agent, status.kind);
+        if (statuses[key] === beforeHydration[key]) apply(status);
+      }
     } catch (e) {
       log("Failed to hydrate agent binary state:", e);
     }
