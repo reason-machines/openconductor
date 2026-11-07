@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type Dispatch, type MouseEvent, type PointerEvent } from "react";
-import type { AppState, Workspace } from "../state/types";
+import type { AppState, Repo, Workspace } from "../state/types";
+import { RepoIcon } from "./RepoIcon";
 import type { Action } from "../state/store";
 import { RowStatusIcon } from "./RowStatusIcon";
 import { rowGitStatus, rowStatus, rowStatusColor, rowStatusLabel } from "../state/rowStatus";
@@ -28,6 +29,7 @@ import { glyphs } from "../keybindings/shortcut";
 
 interface Props {
   workspace: Workspace;
+  repoBadge?: Repo;
   /** Branch the row's diff stat is counted against. */
   targetBranch: string;
   /** The repo has a remote: a workspace without a PR shows "Ready" (branch) rather than "Local workspace". */
@@ -60,7 +62,7 @@ const ARCHIVE_SHORTCUT = ARCHIVE_COMMAND ? glyphs(ARCHIVE_COMMAND.key) : undefin
  * One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat,
  * and the Archive button that replaces the diff stat while the row is hovered.
  */
-export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix, onPointerDown, onArchive }: Props) {
+export function SidebarWorkspaceRow({ workspace: ws, repoBadge, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix, onPointerDown, onArchive }: Props) {
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({
     name: ws.name,
@@ -96,6 +98,7 @@ export function SidebarWorkspaceRow({ workspace: ws, targetBranch, hasRemote, ac
         onPointerDown={onPointerDown}
         title={`${label} · ${ws.branch} · ${statusLabel}`}
       >
+        {repoBadge && <span className="sb-ws-repo"><RepoIcon repo={repoBadge} /></span>}
         <span className="sb-ws-lead" data-testid="workspace-leading-visual" data-hint={hint || undefined}>
           <span
             className="sb-ws-status"

@@ -1,0 +1,12 @@
+{
+  "server_id": "35b5a463-4d7f-489b-97f8-ad9d0f8ad999",
+  "port": 4682,
+  "state": "running",
+  "exit_code": null,
+  "reason_code": null,
+  "started_at": "2026-11-07T01:18:31.559Z",
+  "expires_at": "2026-11-07T13:18:31.732Z",
+  "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:27875) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nShell comparison preview on 4682\nlocator.click: Error: strict mode violation: locator('[data-status-group=\"in-progress\"]').getByRole('button') resolved to 3 elements:\n    1) <button type=\"button\" aria-expanded=\"true\" class=\"sb-status-header\">…</button> aka getByRole('button', { name: 'In progress' })\n    2) <button type=\"button\" class=\"sb-ws\" data-testid=\"left-sidebar-workspace-item\" title=\"Ada/dark mode tokens · ada/dark-mode-tokens · Ready\">…</button> aka getByRole('button', { name: 'Ready Ada/dark mode tokens' })\n    3) <button type=\"button\" class=\"sb-ws\" data-testid=\"left-sidebar-workspace-item\" title=\"Ada/fix login redirect · ada/fix-login-redirect · Ready\">…</button> aka getByRole('button', { name: 'Ready Ada/fix login redirect' })\n\nCall log:\n  - waiting for locator('[data-status-group=\"in-progress\"]').getByRole('button')\n\n    at /home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/tools/side-by-side/sidebar-group-filter.check.mjs:34:40 {\n  log: [\n    `  - waiting for locator('[data-status-group=\"in-progress\"]').getByRole('button')`\n  ]\n}\n",
+  "listening": true,
+  "preview_link": "https://reasonmachines.com/agents/27102e36-8b7f-4f1b-9ada-1e0503d3fede/preview?port=4682"
+}

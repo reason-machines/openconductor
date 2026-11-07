@@ -12,6 +12,7 @@ for(const f of ['sql-wasm.js','sql-wasm.wasm']) mock['/__mock/'+f] = path.join(r
 for(const f of ['conductor.schema.sql','cache.schema.sql']) mock['/__mock/'+f] = path.join(root,'evidence/sqlite',f);
 mock["/__mock/sidebar-sort-fixture.js"] = path.join(root, "tools/side-by-side/sidebar-sort-fixture.js");
 const sidebarSortFixture = fs.readFileSync(mock["/__mock/sidebar-sort-fixture.js"], "utf8");
+const sidebarGroupFixture = fs.readFileSync(path.join(root, 'tools/side-by-side/sidebar-group-fixture.js'), 'utf8');
 const seed = fs.readFileSync(path.join(root,'tools/sidebar-screens/seed.js'),'utf8');
 const extra = `(() => {
  const theme = new URLSearchParams(location.search).get('oc_theme') || 'dark';
@@ -36,7 +37,7 @@ http.createServer((req,res)=>{
  if(!file.startsWith(root)||!fs.existsSync(file)||fs.statSync(file).isDirectory())file=path.join(dir,'index.html');
  let body=fs.readFileSync(file);
  if(file.endsWith('index.html')){
-  const inject=reference?`<meta http-equiv="Content-Security-Policy" content="connect-src 'self' data: blob:"><script>window.__OC_SCENARIO__=${JSON.stringify(url.searchParams.get('oc_scenario')||'signed-in')};</script>`+['sql-wasm.js','seed-data.js','seed.js','fixtures.js','org-fixtures.js','sidebar-sort-fixture.js','tauri-mock.js'].map(f=>`<script src="/__mock/${f}"></script>`).join(''):`<script>${seed}</script><script>${sidebarSortFixture}</script><script>${extra}</script>`;
+  const inject=reference?`<meta http-equiv="Content-Security-Policy" content="connect-src 'self' data: blob:"><script>window.__OC_SCENARIO__=${JSON.stringify(url.searchParams.get('oc_scenario')||'signed-in')};</script>`+['sql-wasm.js','seed-data.js','seed.js','fixtures.js','org-fixtures.js','sidebar-sort-fixture.js','tauri-mock.js'].map(f=>`<script src="/__mock/${f}"></script>`).join(''):`<script>${seed}</script><script>${sidebarSortFixture}</script><script>${sidebarGroupFixture}</script><script>${extra}</script>`;
   body=body.toString().replace('<head>','<head>'+inject);
  }
  res.writeHead(200,{'content-type':mime[path.extname(file)]||'application/octet-stream','cache-control':'no-store'});res.end(body);
@@ -48,11 +49,18 @@ http.createServer((req,res)=>{
  if(process.argv.includes('--home-check')) {
   try { await import('./home-details.check.mjs'); } catch(e) { console.error(e); return; }
  }
+ if(process.argv.includes('--group-check')) {
+  try { await import('./sidebar-group.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
+ }
+ if(process.argv.includes('--group-filter-check')) {
+  try { await import('./sidebar-group-filter.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
+ }
  if(process.argv.includes('--sort-check')) {
   try { await import('./sidebar-sort.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
  }
  if(process.argv.includes('--passport-check')) {
   try { await import('./passport.check.mjs'); } catch(e) { console.error(e); return; }
  }
+ if(process.argv.includes('--group-capture')) await import('./sidebar-group-capture.mjs');
  if(process.argv.includes('--capture')) await import('./main-shell-capture.mjs');
 });

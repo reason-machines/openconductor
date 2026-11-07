@@ -1,0 +1,46 @@
+{
+  "application_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "trace_evidence_id": "ev_3a0819e5f0cca66bde2e50224b94a2dce483f2565b1d6420240b224bab4fca77",
+  "recovered_resource": "application.normalized_result.semantic_graph.evidence_contexts",
+  "renderApp_contexts": [
+    {
+      "authority": "unknown",
+      "state": "unknown",
+      "confidence": "unknown",
+      "artifact": {
+        "available": true,
+        "artifact_id": "art_5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+      },
+      "extractor": {
+        "name": "rea-javascript-semantic-analysis",
+        "version": "1",
+        "operation": "analyze_javascript_application",
+        "executable_sha256": null
+      },
+      "coverage": {
+        "status": "partial",
+        "truncated": false,
+        "omitted_count": null,
+        "limits": [
+          {
+            "name": "javascript_analysis_worker_heap_limit_bytes",
+            "value": 1098907648,
+            "unit": "bytes"
+          },
+          {
+            "name": "javascript_analysis_worker_timeout_ms",
+            "value": 300000,
+            "unit": "milliseconds"
+          }
+        ]
+      },
+      "limitations": [
+        "assets/renderApp-D_fmY7hW.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing assets/renderApp-D_fmY7hW.js during static"
+      ],
+      "evidence_ids": [],
+      "context_id": "jsrg_evidence_9fac6752993dec771856af87572e613ceec152d1f2e24a361453880696d941bd"
+    }
+  ],
+  "meaning": "Partial coverage; no-match does not establish feature absence."
+}

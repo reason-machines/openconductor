@@ -3,6 +3,7 @@
 // localStorage keeps only UI preferences (selection, sidebar visibility, collapsed repos).
 import type { AppState, Repo, Selection, UnreadChat, Workspace } from "./types";
 import { isWorkspaceStatus } from "./workspaceStatus.ts";
+import { parseStatusCollapsed } from "../home/sidebarGroupBy.ts";
 import { restoreChatTabs, type StoredChatTab } from "./openChat.ts";
 
 export interface DbRepoRow {
@@ -63,6 +64,7 @@ export interface UiPrefs {
   collapsed: string[];
   /** Repository groups unfolded by hand; the others follow the open workspace (isRepoCollapsed). */
   expanded: string[];
+  sidebarStatusCollapsed?: AppState["sidebarStatusCollapsed"];
 }
 
 /** Rows that are not in the sidebar: archived, being archived, or deleted. */
@@ -175,6 +177,7 @@ export function prefsOf(state: AppState): UiPrefs {
     sidebarVisible: state.sidebarVisible,
     collapsed: state.repos.filter((r) => r.collapsed === true).map((r) => r.id),
     expanded: state.repos.filter((r) => r.collapsed === false).map((r) => r.id),
+    ...(state.sidebarStatusCollapsed ? { sidebarStatusCollapsed: state.sidebarStatusCollapsed } : {}),
   };
 }
 
@@ -184,11 +187,13 @@ export function parsePrefs(raw: string | null): UiPrefs {
   if (!raw) return fallback;
   try {
     const p = JSON.parse(raw) as Partial<UiPrefs>;
+    const sidebarStatusCollapsed = parseStatusCollapsed(p.sidebarStatusCollapsed);
     return {
       selection: p.selection?.kind === "workspace" || p.selection?.kind === "home" || p.selection?.kind === "root" ? p.selection : fallback.selection,
       sidebarVisible: typeof p.sidebarVisible === "boolean" ? p.sidebarVisible : undefined,
       collapsed: ids(p.collapsed),
       expanded: ids(p.expanded),
+      ...(sidebarStatusCollapsed ? { sidebarStatusCollapsed } : {}),
     };
   } catch {
     return fallback;

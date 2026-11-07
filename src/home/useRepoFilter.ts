@@ -1,5 +1,5 @@
 import { isTauri } from "@tauri-apps/api/core";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { setAppPref, useAppPrefs } from "../settings/appPrefs";
 import type { Repo } from "../state/types";
 import { REPO_FILTER_SETTING, reconcileRepoFilter, type RepoFilter } from "./repoFilter";
@@ -27,15 +27,6 @@ export function storedRepoFilter(desktopPref: string | null | undefined): RepoFi
   return isTauri() ? (desktopPref ?? undefined) : readLocal();
 }
 
-function writeLocal(filter: RepoFilter) {
-  try {
-    if (filter === undefined) localStorage.removeItem(STORAGE_KEY);
-    else localStorage.setItem(STORAGE_KEY, filter);
-  } catch {
-    /* storage unavailable: the filter lasts for this session only */
-  }
-}
-
 function writeSetting(filter: RepoFilter) {
   setAppPref({ key: "sidebar_repo_filter", value: filter ?? null }).catch((err) =>
     console.error("conductor.db: could not save the project filter", err),
@@ -47,21 +38,8 @@ function writeSetting(filter: RepoFilter) {
  * without the filtered repository (as Conductor's `hBi` effect does).
  */
 export function useRepoFilter(repos: readonly Pick<Repo, "id">[], loaded: boolean): [RepoFilter, (next: RepoFilter) => void] {
-  const desktop = isTauri();
-  const stored = useAppPrefs().sidebar_repo_filter ?? undefined;
-  const [local, setLocal] = useState<RepoFilter>(readLocal);
-  const filter = desktop ? stored : local;
-  const setFilter = useCallback(
-    (next: RepoFilter) => {
-      if (desktop) {
-        writeSetting(next);
-      } else {
-        writeLocal(next);
-        setLocal(next);
-      }
-    },
-    [desktop],
-  );
+  const filter = useAppPrefs().sidebar_repo_filter ?? undefined;
+  const setFilter = useCallback((next: RepoFilter) => writeSetting(next), []);
   const reconciled = reconcileRepoFilter(filter, repos, loaded);
   useEffect(() => {
     if (reconciled !== filter) setFilter(reconciled);
