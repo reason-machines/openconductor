@@ -1,0 +1,32 @@
+[
+  {
+    "theme": "dark",
+    "side": "ref",
+    "interactive": true,
+    "items": [
+      "Repository settings",
+      "Open on GitHub"
+    ],
+    "settingsOpened": true
+  },
+  {
+    "theme": "dark",
+    "side": "oc",
+    "interactive": false
+  },
+  {
+    "theme": "light",
+    "side": "ref",
+    "interactive": true,
+    "items": [
+      "Repository settings",
+      "Open on GitHub"
+    ],
+    "settingsOpened": true
+  },
+  {
+    "theme": "light",
+    "side": "oc",
+    "interactive": false
+  }
+]

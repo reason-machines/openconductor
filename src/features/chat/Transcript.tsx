@@ -207,7 +207,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-      {when ? <TurnDetails when={when} agent={turnAgent} /> : null}
+      {when ? <TurnDetails when={when} agent={turnAgent} usage={row.usage} /> : null}
       {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
       {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">
@@ -297,12 +297,12 @@ function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
         </div>
       ) : null}
       {block.items.map((item) => {
-        if (item.kind === "part") return <Part key={item.key} part={item.part} preview={item.preview === true} ctx={ctx} />;
+        if (item.kind === "part") return <Part key={item.key} partKey={item.key} part={item.part} preview={item.preview === true} ctx={ctx} />;
         const open = ctx.summaries.isOpen(item.summary.id, block.running);
         return (
           <Fragment key={item.summary.id}>
             <SummaryRow summary={item.summary} open={open} onToggle={block.running ? undefined : () => ctx.summaries.toggle(item.summary.id, open)} />
-            {open ? item.parts.map((p) => <Part key={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
+            {open ? item.parts.map((p) => <Part key={p.key} partKey={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
           </Fragment>
         );
       })}
@@ -332,7 +332,7 @@ function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: b
 }
 
 /** `preview`: the turn's final text; Conductor mutes every other text (`ROo` `muted: !isPreviewMessage`). */
-function Part({ part, preview = false, group, ctx }: { part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
+function Part({ partKey, part, preview = false, group, ctx }: { partKey: string; part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
   switch (part.kind) {
     case "text":
       return (
@@ -352,7 +352,7 @@ function Part({ part, preview = false, group, ctx }: { part: PartView; preview?:
         </div>
       );
     case "thinking":
-      return <ThinkingRow id={`thinking:${part.text.slice(0, 32)}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
+      return <ThinkingRow id={`thinking:${partKey}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
     case "tool": {
       const { call } = part;
       return (

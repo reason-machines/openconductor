@@ -1,0 +1,52 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://localhost:4404/?kind=setup&palette=stone&setupState=running"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark",
+    "locale": "en-US",
+    "timezone": "UTC"
+  },
+  "actions": [
+    {
+      "step_id": "loaded",
+      "action": "wait_for_timeout",
+      "duration_ms": 1800
+    },
+    {
+      "step_id": "setup",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=tab] >> text=Setup"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "settled",
+      "action": "wait_for_timeout",
+      "duration_ms": 1800
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "dom",
+      "url"
+    ],
+    "events": [
+      "console",
+      "page-errors"
+    ]
+  }
+}

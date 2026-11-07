@@ -14,7 +14,7 @@
 //   message.
 // Pure: no Tauri, no React, so `reason.test.ts` covers it.
 
-import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
+import type { Block, ChatEvent, ChatMessage, TokenUsage, TurnStatus } from "./types.ts";
 import type { PermissionOption, PermissionPrompt, Question } from "./chatRuntime.ts";
 
 export interface ReasonPath {
@@ -52,6 +52,7 @@ export type ReasonPayload = { chatId: string } & (
   | { type: "error"; code: string | null; status: number | null; message: string }
   | ReasonTool
   | { type: "turnEnded"; end: ReasonTurnEnd }
+  | { type: "usage"; usage: TokenUsage }
   | PermissionRequestPayload
   | { type: "permissionResolved"; requestId: string }
   | { type: "sessionModel"; model: string; effort: string | null }
@@ -238,6 +239,14 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
       return { state, events: [], sessionId: p.sessionId };
     case "turnEnded":
       return closeOldest(state, p.end, now);
+    case "usage": {
+      const turn = state.open[0];
+      if (!turn) return { state, events: [] };
+      const prev = turn.assistant ?? message(state, turn.turnId, `${turn.turnId}:assistant`, "assistant", [], now);
+      const assistant = { ...prev, usage: p.usage };
+      const open = [{ ...turn, assistant }, ...state.open.slice(1)];
+      return { state: { ...state, open }, events: [{ type: "upsert", message: assistant }] };
+    }
     case "notice": {
       const turn = state.open[state.open.length - 1];
       const id = `${state.chatId}:n${state.next}`;

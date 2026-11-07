@@ -18,6 +18,54 @@ fn result(is_error: bool, text: &str) -> ClaudeEvent {
     )
 }
 
+#[test]
+fn completed_turn_usage_survives_sdk_result_to_wire() {
+    let mut mapper = TurnMapper::new(CWD, None);
+    let result = ClaudeEvent::parse(include_str!(
+        "../../../evidence/chat/usage/claude-result.json"
+    ))
+    .unwrap();
+    let wire: Vec<_> = mapper
+        .map(&result)
+        .iter()
+        .map(|event| crate::reason_acp::wire::event_json("usage-chat", event))
+        .collect();
+    let expected: Vec<Value> = serde_json::from_str(include_str!(
+        "../../../evidence/chat/usage/claude-wire.json"
+    ))
+    .unwrap();
+    assert_eq!(wire, expected);
+}
+
+#[test]
+fn completed_turn_usage_missing_zero_partial_and_invalid_counts() {
+    for (raw, expected) in [
+        (json!(null), None),
+        (json!({}), None),
+        (json!({"input_tokens": -1, "output_tokens": "2400"}), None),
+        (json!({"input_tokens": 1.5}), None),
+        (json!({"cache_read_input_tokens": 100}), None),
+        (
+            json!({"input_tokens": 0, "output_tokens": 0}),
+            Some(json!({"inputTokens": 0, "outputTokens": 0})),
+        ),
+        (
+            json!({"output_tokens": 2400}),
+            Some(json!({"outputTokens": 2400})),
+        ),
+    ] {
+        let mut mapper = TurnMapper::new(CWD, None);
+        let result = ev(json!({"type": "result", "session_id": "s1", "usage": raw}));
+        let wire: Vec<_> = mapper
+            .map(&result)
+            .iter()
+            .map(|event| crate::reason_acp::wire::event_json("c", event))
+            .filter(|event| event["type"] == "usage")
+            .collect();
+        assert_eq!(wire.first().map(|event| event["usage"].clone()), expected);
+    }
+}
+
 fn texts(out: &[ProviderEvent]) -> Vec<String> {
     out.iter()
         .filter_map(|e| match e {

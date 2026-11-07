@@ -53,6 +53,9 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
   const [effortOpen, setEffortOpen] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
   const search = useRef<HTMLInputElement>(null);
+  const effortTrigger = useRef<HTMLButtonElement>(null);
+  const effortMenu = useRef<HTMLDivElement>(null);
+  const focusEffortOnOpen = useRef(false);
   const { overrides } = useKeybindingOverrides();
   const hint = (id: string) => {
     const s = effectiveShortcuts(id, overrides)[0];
@@ -94,6 +97,40 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
   }, [open]);
+
+  useEffect(() => {
+    if (effortOpen && focusEffortOnOpen.current) {
+      effortMenu.current?.querySelector<HTMLButtonElement>("button")?.focus();
+      focusEffortOnOpen.current = false;
+    }
+  }, [effortOpen]);
+
+  const onEffortTriggerKey = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.defaultPrevented || e.nativeEvent.isComposing || disabled) return;
+    if (e.key !== "ArrowRight" && e.key !== "Enter") return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (effortOpen) effortMenu.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    else {
+      focusEffortOnOpen.current = true;
+      setEffortOpen(true);
+    }
+  };
+
+  const onEffortOptionKey = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (e.defaultPrevented || e.nativeEvent.isComposing || disabled || !efforts) return;
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "ArrowLeft" && e.key !== "Enter") return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      const next = (index + (e.key === "ArrowDown" ? 1 : -1) + efforts.options.length) % efforts.options.length;
+      effortMenu.current?.querySelectorAll<HTMLButtonElement>("button")[next]?.focus();
+    } else {
+      if (e.key === "Enter") onChange({ ...value, effort: efforts.options[index].value });
+      setEffortOpen(false);
+      effortTrigger.current?.focus();
+    }
+  };
 
   const onMenuKey = (e: KeyboardEvent) => {
     if (e.defaultPrevented || e.nativeEvent.isComposing) return;
@@ -211,20 +248,21 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
             {efforts || showFast ? <div className="oc-model-sep" /> : null}
             {efforts ? (
               <div className="oc-model-sub" onMouseEnter={() => setEffortOpen(true)} onMouseLeave={() => setEffortOpen(false)}>
-                <button type="button" role="menuitem" className="oc-model-row" aria-haspopup="menu" aria-expanded={effortOpen} data-highlighted={effortOpen || undefined} onClick={() => setEffortOpen(true)}>
+                <button ref={effortTrigger} type="button" role="menuitem" className="oc-model-row" aria-haspopup="menu" aria-expanded={effortOpen} data-highlighted={effortOpen || undefined} onKeyDown={onEffortTriggerKey} onClick={() => setEffortOpen(true)}>
                   <span>{efforts.axisLabel}</span>
                   <span className="oc-model-row-value">{efforts.options.find((o) => o.value === current)?.label}</span>
                   <ChevronRightIcon className="oc-model-row-chevron" />
                 </button>
                 {effortOpen ? (
-                  <div className="oc-model-submenu" role="menu" aria-label={efforts.axisLabel}>
-                    {efforts.options.map((o) => (
+                  <div ref={effortMenu} className="oc-model-submenu" role="menu" aria-label={efforts.axisLabel}>
+                    {efforts.options.map((o, index) => (
                       <button
                         key={o.value}
                         type="button"
                         role="menuitem"
                         className="oc-model-row"
                         data-selected={o.value === current || undefined}
+                        onKeyDown={(e) => onEffortOptionKey(e, index)}
                         onClick={() => {
                           onChange({ ...value, effort: o.value });
                           setOpen(false);

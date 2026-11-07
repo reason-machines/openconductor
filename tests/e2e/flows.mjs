@@ -218,12 +218,12 @@ export const flows = [
     },
   },
   {
-    // The workspace's terminal panel (shown with ⌘J) runs a real login shell in the repository
-    // checkout. The typed line never contains "42", so seeing oc-term-42 proves
+    // The workspace's terminal panel (shown with ⌘J) runs a real login shell in its
+    // worktree. The typed line never contains "42", so seeing oc-term-42 proves
     // the shell evaluated it, and pwd shows where the shell started.
     name: "terminal",
     async run(wd, ctx) {
-      if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
       const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
       // Conductor's workspace opens on the right panel's Run tab with no terminal; + (New terminal) in that strip opens one.
       if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal by default");
@@ -232,7 +232,7 @@ export const flows = [
       const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
       await wd.click(screen);
       await wd.keys("echo oc-term-$((6*7)); pwd\uE007");
-      const cwds = [...new Set([ctx.repo, realpathSync(ctx.repo)])];
+      const cwds = [...new Set([ctx.worktree, realpathSync(ctx.worktree)])];
       const text = await wd.waitFor("the shell's output", async () => {
         const t = ((await rows()) ?? "").replace(/\u00a0/g, " ");
         return t.includes("oc-term-42") && cwds.some((c) => t.includes(c)) && t;
@@ -243,10 +243,7 @@ export const flows = [
     },
   },
   {
-    // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
-    // active result. Home leaves the workspace for the wordmark-and-cards
-    // Home screen (Conductor opens its /all-workspaces list here; ours follows
-    // Sven's brief for #483), and searching the workspace's name brings it back.
+    // Home opens the workspace list; searching the workspace's name brings it back.
     name: "command-palette",
     async run(wd) {
       const META = "\uE03D";
@@ -284,12 +281,12 @@ export const flows = [
       await run("Home", "Home");
       const home = () =>
         wd.execute(
-          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), workspace: !!document.querySelector('.workspace') };",
+          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), search: !!document.querySelector('.allws input[placeholder=\"Search\"]'), activeHome: !!document.querySelector('.sb-row[data-active=\"true\"][title^=\"Home\"]'), workspace: !!document.querySelector('.workspace') };",
           [],
         );
-      await wd.waitFor("the Home screen with its entry cards", async () => {
+      await wd.waitFor("the Home workspace list with search and active sidebar Home", async () => {
         const h = await home();
-        return h.cards === 3 && !h.list && !h.workspace;
+        return h.cards === 0 && h.list && h.search && h.activeHome && !h.workspace;
       }).catch(async (e) => {
         throw new Error(`${e.message}; saw ${JSON.stringify(await home())}`);
       });

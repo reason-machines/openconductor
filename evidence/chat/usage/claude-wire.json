@@ -1,0 +1,17 @@
+[
+  {
+    "chatId": "usage-chat",
+    "type": "usage",
+    "usage": {
+      "inputTokens": 18200,
+      "outputTokens": 2400
+    }
+  },
+  {
+    "chatId": "usage-chat",
+    "type": "turnEnded",
+    "end": {
+      "outcome": "completed"
+    }
+  }
+]

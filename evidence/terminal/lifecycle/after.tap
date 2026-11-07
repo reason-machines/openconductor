@@ -1,0 +1,78 @@
+(node:12921) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:12933) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: terminal tab labels follow visible order after closing siblings
+ok 1 - terminal tab labels follow visible order after closing siblings
+  ---
+  duration_ms: 5834.896676
+  type: 'test'
+  ...
+# Subtest: terminal lifecycle indicates starting and a muted normal exit with its code
+ok 2 - terminal lifecycle indicates starting and a muted normal exit with its code
+  ---
+  duration_ms: 3510.750184
+  type: 'test'
+  ...
+# Subtest: interactive terminal retains Find after sharing the controller with script output
+ok 3 - interactive terminal retains Find after sharing the controller with script output
+  ---
+  duration_ms: 3903.039194
+  type: 'test'
+  ...
+# Subtest: setup output supports Find without sending terminal input
+ok 4 - setup output supports Find without sending terminal input
+  ---
+  duration_ms: 4249.0025
+  type: 'test'
+  ...
+# Subtest: setup output renders terminal colors and carriage-return updates without a shell
+ok 5 - setup output renders terminal colors and carriage-return updates without a shell
+  ---
+  duration_ms: 1779.928502
+  type: 'test'
+  ...
+# Subtest: run output supports Find without sending terminal input
+ok 6 - run output supports Find without sending terminal input
+  ---
+  duration_ms: 2036.945611
+  type: 'test'
+  ...
+# Subtest: run output renders terminal colors and carriage-return updates without a shell
+ok 7 - run output renders terminal colors and carriage-return updates without a shell
+  ---
+  duration_ms: 1461.615842
+  type: 'test'
+  ...
+# (node:12934) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: terminal tabs and their screens come back after a relaunch, in a new shell
+ok 8 - terminal tabs and their screens come back after a relaunch, in a new shell
+  ---
+  duration_ms: 12616.283878
+  type: 'test'
+  ...
+# Subtest: a tab list saved in the webview's localStorage by an earlier build moves to the backend
+ok 9 - a tab list saved in the webview's localStorage by an earlier build moves to the backend
+  ---
+  duration_ms: 3652.463523
+  type: 'test'
+  ...
+# (node:12935) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the tab shows the running program from the shell's marks, and the marks never reach the screen
+ok 10 - the tab shows the running program from the shell's marks, and the marks never reach the screen
+  ---
+  duration_ms: 6299.794285
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 24232.897453

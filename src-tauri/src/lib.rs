@@ -306,6 +306,9 @@ pub fn run() {
         .plugin(updater_plugin())
         .setup(|app| {
             native_qa::validate(app.handle()).map_err(std::io::Error::other)?;
+            if native_qa::ordinary_gate(app.handle()).map_err(std::io::Error::other)? {
+                return Ok(());
+            }
             let data_dir = app.path().app_data_dir()?;
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
@@ -445,6 +448,7 @@ pub fn run() {
             sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
+            diff::commands::diff_branch_commits,
             diff::commands::diff_discard_file,
             diff::commands::diff_write_file,
             checkpoint_commands::checkpoint_save,
