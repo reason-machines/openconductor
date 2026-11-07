@@ -31,6 +31,7 @@ import { filterRepoGroups } from "../home/repoFilter";
 import { SidebarAddRepositoryMenu } from "./AddRepositoryMenu";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { AccountMenu } from "./AccountMenu";
+import { AppMark } from "./AppMark";
 import { ResourceUsagePill } from "./ResourceUsagePill";
 import { Tooltip, titleWithShortcut } from "./Tooltip";
 import { ContextMenu, MenuItem as CtxItem, MenuSeparator } from "./menu/ContextMenu";
@@ -386,6 +387,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           >
             <SidebarIcon size={16} />
           </button>
+          <span className="sb-app-mark" title="OpenConductor"><AppMark size={14} /></span>
         </div>
         <div className="sb-history">
           <ResourceUsagePill workspaces={usageWorkspaces} />
