@@ -542,7 +542,6 @@ export default function App() {
             workspace={workspace}
             dispatch={dispatch}
             notify={show}
-            onCopyLink={() => copyLink(workspace.id)}
             hasNextUnread={(selectedChatId) => nextUnreadChat(state, { skipSelected: true, selectedChatId }) !== undefined}
             onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />

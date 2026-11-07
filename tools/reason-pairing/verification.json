@@ -1,0 +1,30 @@
+{
+  "environment": "Reason cloud Linux, isolated headless Chromium",
+  "backendSource": "e108d8ab1293703e9fd3d14bf3660f8a48127d6a",
+  "frontendSourceCommits": [
+    "550147835582f0a11cb34c510dbb0a7ed4b6d491",
+    "2d53bdf6b02d022a93fd6fa82a28d533854f4731"
+  ],
+  "checks": [
+    { "command": "node --test tools/reason-pairing/server.test.mjs", "result": "passed", "passed": 6, "failed": 0, "skipped": 0 },
+    { "command": "REASON_PAIRING_EVIDENCE=e2e-artifacts/reason-pairing node --test tests/e2e/reason-pairing.e2e.mjs", "result": "passed", "passed": 17, "failed": 0, "skipped": 0 },
+    { "command": "npm run typecheck", "result": "passed" },
+    { "command": "TEST_VITE_HOST=0.0.0.0 TEST_VITE_PORT=54487 node --test --test-name-pattern=\"existing login connects\" tests/e2e/reason-pairing.e2e.mjs", "result": "passed", "passed": 1, "coverage": "Strict test-owned host and fixed-port listener, filtered existing-login case only" },
+    { "command": "npx tsc --noEmit --project e2e-artifacts/pairing-tsconfig.json", "result": "passed", "config": { "extends": "../tsconfig.json", "include": ["../tools/reason-pairing/fixture.tsx"], "exclude": [] } },
+    { "command": "python3 -m py_compile tools/reason-pairing/fake-reason.py", "result": "passed" },
+    { "command": "node --check tools/reason-pairing/rust-bridge.mjs", "result": "passed" },
+    { "command": "git diff --check", "result": "passed" }
+  ],
+  "longHttpWaitCases": {
+    "fresh": "passed",
+    "existingPending": "passed",
+    "actualServerResponseDelayMs": 21000,
+    "assertedMinimumElapsedMs": 20000,
+    "rustStartupAndOverallDeadlineMs": 60000,
+    "scaledClock": false
+  },
+  "nativeTauriOrMacOS": "not run by this owner",
+  "realReasonSignInOrInference": "not run",
+  "productionPairingWireProtocol": "not reproduced; fake server protocol is test-only",
+  "cancelLimit": "Stops owned foreground process and app polling, not remote pairing or detached finisher; late approval can still save the fake CLI account."
+}

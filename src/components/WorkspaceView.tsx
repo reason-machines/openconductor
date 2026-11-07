@@ -54,7 +54,7 @@ import { TurnChanges } from "../features/chat/TurnChanges.tsx";
 import type { TurnRef } from "../features/diff/turnChangesCache.ts";
 import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffViewer";
 import { ChangesToolbar } from "../features/diff/ChangesToolbar.tsx";
-import type { ChangesView } from "../features/diff/changesTree.ts";
+import { useChangesPresentation } from "../features/diff/useChangesPresentation.ts";
 import { filterActive, filterToggleShown, toggleFilter } from "../features/diff/changesFilter";
 import { SearchIcon } from "../features/files/panelIcons";
 import { Tooltip } from "./ui/Tooltip.tsx";
@@ -101,7 +101,6 @@ import type { PrLookup } from "../features/pr/types";
 import { composerDrafts } from "../lib/local-storage";
 import { useAppPrefs } from "../settings/appPrefs";
 import { useBoolPref } from "../settings/useBoolPref";
-import { workspaceNumberLabel } from "../state/workspaceNumber";
 import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 import { SETUP_SCRIPT_PROMPT } from "../scripts/setupPrompt";
@@ -111,8 +110,6 @@ interface Props {
   workspace: Workspace;
   dispatch: Dispatch<Action>;
   notify?: ArchiveNotify;
-  /** Copy link (`XV`), which the header's W-<n> badge runs. */
-  onCopyLink?: () => void;
   /** Opens the next unread chat (the composer's "Next unread" button). */
   onNextUnread?: () => void;
   /** Whether a chat other than `selectedChatId` is unread: the button shows only then. */
@@ -699,6 +696,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
 }
 
 interface RightPanelProps {
+  workspaceId: string;
   diff: WorkspaceDiff;
   actions: () => ReactNode;
   pr: PullRequest;
@@ -713,7 +711,7 @@ interface RightPanelProps {
   targetControl?: ReactNode;
 }
 
-function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl }: RightPanelProps) {
+function RightPanel({ workspaceId, diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl }: RightPanelProps) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -730,17 +728,19 @@ function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, 
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
   const files = useFilesToolbar();
-  const [changesView, setChangesView] = useState<ChangesView>("flat");
-  useEffect(() => setChangesView("flat"), [worktree]);
-  // parity:diff.changes-list:ui Conductor's "Filter files" (changesFilter.ts): the toggle sits after Review, the row in ChangesList.
-  const [changesFilter, setChangesFilter] = useState({ open: false, query: "" });
-  useEffect(() => setChangesFilter({ open: false, query: "" }), [worktree]);
-  const filterOn = filterActive(changesFilter.open, changesFilter.query);
+  const { presentation, update: updatePresentation } = useChangesPresentation(workspaceId);
+  const [filterOpen, setFilterOpen] = useState(false);
+  useEffect(() => setFilterOpen(false), [workspaceId]);
+  const filterOn = filterActive(filterOpen, presentation.filePathFilter);
   const filter = {
-    ...changesFilter,
-    setQuery: (query: string) => setChangesFilter({ open: true, query }),
-    close: () => setChangesFilter({ open: false, query: "" }),
+    open: filterOpen,
+    query: presentation.filePathFilter,
+    setQuery: (query: string) => updatePresentation({ filePathFilter: query }),
+    close: () => { setFilterOpen(false); updatePresentation({ filePathFilter: "" }); },
   };
+  const toggleDirectory = (path: string) => updatePresentation((previous) => ({
+    collapsedDirectoryPaths: previous.collapsedDirectoryPaths.includes(path) ? previous.collapsedDirectoryPaths.filter((entry) => entry !== path) : [...previous.collapsedDirectoryPaths, path],
+  }));
   const tabButton = (id: typeof tab, label: ReactNode) => (
     <button type="button" role="tab" aria-selected={tab === id} className={`rp-tab${tab === id ? " active" : ""}`} onClick={() => setTab(id)}>
       {label}
@@ -766,17 +766,17 @@ function RightPanel({ diff, actions, pr, worktree, review, fixErrors, readOnly, 
                 className={`rp-icon${filterOn ? " on" : ""}`}
                 aria-label="Filter files"
                 aria-pressed={filterOn}
-                onClick={() => setChangesFilter((f) => toggleFilter(f.open, f.query))}
+                onClick={() => { const next = toggleFilter(filterOpen, presentation.filePathFilter); setFilterOpen(next.open); updatePresentation({ filePathFilter: next.query }); }}
               >
                 <SearchIcon size={12} />
               </button>
             </Tooltip>
           )}
-          {tab === "changes" && <ChangesToolbar diff={diff} view={changesView} onViewChange={setChangesView} targetControl={targetControl} />}
+          {tab === "changes" && <ChangesToolbar diff={diff} view={presentation.diffFileListMode} onViewChange={(view) => updatePresentation({ diffFileListMode: view })} targetControl={targetControl} />}
         </span>
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} worktree={worktree} emptyAction={emptyAction} filter={filter} notify={notify} view={changesView} />
+        <ChangesList diff={diff} actions={actions} worktree={worktree} emptyAction={emptyAction} filter={filter} notify={notify} view={presentation.diffFileListMode} collapsed={new Set(presentation.collapsedDirectoryPaths)} toggleDirectory={toggleDirectory} />
       ) : tab === "checks" ? (
         <ChecksTab
           worktree={worktree}
@@ -921,7 +921,7 @@ function TargetChip({ target, open, setOpen, repo, variant = "header" }: { targe
   );
 }
 
-export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, onNextUnread, hasNextUnread }: Props) {
+export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread, hasNextUnread }: Props) {
   // The right panel's Setup / Run / Terminal strip: open on Run, like Conductor.
   // ⌘J (view.toggleTerminalPanel) hides or shows it; ⌘⇧T opens a big terminal
   // in it while Big terminal mode is on.
@@ -1230,8 +1230,6 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
   // Shown unless "right_panel_visible" is false (⌥⌘B / zen mode, bound in App).
   const prefs = useAppPrefs();
   const rightPanelVisible = prefs.right_panel_visible;
-  const showNumbers = useBoolPref("experimental_show_workspace_numbers");
-  const numberLabel = showNumbers ? workspaceNumberLabel(workspace.number) : null;
   return (
     <div className="workspace">
       <header className="ws-header" data-tauri-drag-region="deep">
@@ -1239,12 +1237,6 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
           <span className="crumb">{repo.name}</span>
           <span className="crumb-sep">/</span>
           <strong>{workspace.name}</strong>
-          {/* "Show workspace numbers": Conductor's header badge (`Plo`), a W-<n> button whose click is Copy link. */}
-          {numberLabel && (
-            <button type="button" className="ws-number" title="Copy link" aria-label={`Copy link to ${numberLabel}`} onClick={onCopyLink} disabled={!onCopyLink}>
-              {numberLabel}
-            </button>
-          )}
           <span className="chip">
             <BranchIcon size={12} /> {workspace.branch}
           </span>
@@ -1324,6 +1316,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onCopyLink, o
         {rightPanelVisible && (
           <div className={`ws-right${stripOpen ? "" : " strip-collapsed"}`}>
             <RightPanel
+              workspaceId={workspace.id}
               diff={diff}
               actions={review.actions}
               targetControl={<TargetChip target={target} open={pickingChangesTarget} setOpen={setPickingChangesTarget} repo={repo} variant="menu" />}

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { ArrowRightIcon } from "../components/Icons";
-import { Wordmark } from "../components/Wordmark";
+import { AppMark } from "../components/AppMark";
 import { CONTINUE_LABEL, EXIT_LABEL, nextSlideId, SLIDES, type Slide } from "./firstRun";
 import { SignUp, useReasonAccount, type SignUpProps } from "./SignIn";
 import "./onboarding.css";
@@ -25,7 +25,7 @@ const TICK_MS = 100;
  * the account).
  */
 export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue: () => void; busy: boolean; onFailed: SignUpProps["onFailed"] }) {
-  const [account, setAccount] = useReasonAccount();
+  const account = useReasonAccount();
   // wBi: once signed in, finish without waiting for Continue (once).
   const advanced = useRef(false);
   useEffect(() => {
@@ -67,7 +67,7 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
     <div className="onb" data-tauri-drag-region>
       <div className="onb-inner">
         <div className="onb-wordmark">
-          <Wordmark />
+          <AppMark size={96} />
         </div>
         <div className="onb-grid" data-tauri-drag-region>
           <div className="onb-left" data-tauri-drag-region>
@@ -94,7 +94,7 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
                   </span>
                 </button>
               ) : (
-                <SignUp onSignedIn={setAccount} onFailed={onFailed} onSkip={onContinue} />
+                <SignUp onFailed={onFailed} onSkip={onContinue} />
               )}
             </div>
           </div>

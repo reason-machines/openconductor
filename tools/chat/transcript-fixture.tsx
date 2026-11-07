@@ -73,7 +73,7 @@ function Fixture() {
             workspacePath={LISBON.workspacePath}
             turnFooter={turnFooter}
             expandToolsByDefault={params.get("open") === "1"}
-            turnAgent={turnAgentLabel("byok:anthropic:claude-opus-5-5", "Reason")}
+            turnAgent={params.has("noAgent") ? undefined : turnAgentLabel("byok:anthropic:claude-opus-5-5", "Reason")}
             onResetChat={() => undefined}
             onForkToNewTab={(turnId) => (fork ? setForked(forkTranscript(r.transcript, turnId)) : undefined)}
             onForkToNewWorkspace={(turnId) => (fork ? setForked(forkTranscript(r.transcript, turnId)) : undefined)}

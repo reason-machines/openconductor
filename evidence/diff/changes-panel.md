@@ -90,7 +90,7 @@ The follow-up also passed `npm run build` (including typechecking), `npm run lin
 
 - These are Chromium browser fixtures. No native Tauri/WebKit window, real git mutation, real external Open in launch or deployed desktop installation was verified by this slice.
 - The source's commit-history choices in Options are not implemented. The matching fixture has no commit-history entries.
-- The source persists view/collapse state by workspace route. This slice keeps the current panel state in memory and resets it on a worktree change.
+- The original slice kept view/collapse state only in memory. The [2026-11-07 presentation-retention follow-up](presentation-retention/README.md) closes that browser-observed gap using the existing workspace route-state storage. Native persistence verification remains separate.
 - The first new capture driver omitted `oc_scenario=populated` on OpenConductor and captured Home. Its comparison is invalid and excluded from the verdict. The corrected baseline shows the actual Changes panel.
 - The first external-base E2E invocation mistakenly injected the page fixture on `/__e2e/`. It timed out waiting for the panel and was stopped. The route exclusion is fixed; only the subsequent complete run counts.
 - Existing REA limitations still apply. Static JavaScript search/large-bundle semantic coverage is incomplete, so bounded decoded-text reads supplement the retained analysis. See [REA gaps](../../tools/ui-map/REA-GAPS.md), especially the earlier JS search and browser capture entries. This pass encountered no new REA capability failure.

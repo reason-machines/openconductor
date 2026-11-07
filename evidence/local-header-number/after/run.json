@@ -1,0 +1,14 @@
+[
+  {
+    "server_id": "6eaccbf0-b7e1-4a22-b087-c496a4375ee5",
+    "port": 4682,
+    "state": "running",
+    "exit_code": null,
+    "reason_code": null,
+    "started_at": "2026-11-07T18:10:55.745Z",
+    "expires_at": "2026-11-08T06:10:55.872Z",
+    "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:20402) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nShell comparison preview on 4682\nPASS local headers omit remote-only number badge in dark/light despite enabled setting and numbered workspaces\n",
+    "listening": true,
+    "preview_link": "https://reasonmachines.com/agents/27102e36-8b7f-4f1b-9ada-1e0503d3fede/preview?port=4682"
+  }
+]

@@ -1,18 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2A2F45"/>
-      <stop offset="1" stop-color="#12141D"/>
-    </linearGradient>
-  </defs>
-  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#bg)"/>
-  <g fill="none" stroke-width="46" stroke-linecap="round">
-    <path d="M512 742 V 330" stroke="#7DD3C0"/>
-    <path d="M512 640 C 512 540 352 560 352 440 V 330" stroke="#F5B85A"/>
-    <path d="M512 640 C 512 540 672 560 672 440 V 330" stroke="#EF7A6B"/>
-  </g>
-  <circle cx="352" cy="300" r="42" fill="#F5B85A"/>
-  <circle cx="512" cy="300" r="42" fill="#7DD3C0"/>
-  <circle cx="672" cy="300" r="42" fill="#EF7A6B"/>
-  <circle cx="512" cy="760" r="54" fill="#E8EAF2"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><path d="M276.28 0L747.72 0C827.27 0 867.05 0 909.87 13.54C956.62 30.56 993.44 67.38 1010.46 114.13C1024 156.95 1024 196.73 1024 276.28L1024 747.72C1024 827.27 1024 867.05 1010.46 909.87C993.44 956.62 956.62 993.44 909.87 1010.46C867.05 1024 827.27 1024 747.72 1024L276.28 1024C196.73 1024 156.95 1024 114.13 1010.46C67.38 993.44 30.56 956.62 13.54 909.87C0 867.05 0 827.27 0 747.72L0 276.28C0 196.73 0 156.95 13.54 114.13C30.56 67.38 67.38 30.56 114.13 13.54C156.95 0 196.73 0 276.28 0Z" fill="#14120b"/><g transform="translate(169.53 169.53) scale(6.84950)"><path d="M95 43.1Q99 50 95 56.9L78.5 85.5Q74.5 92.4 66.5 92.4L33.5 92.4Q25.5 92.4 21.5 85.5L5 56.9Q1 50 5 43.1L21.5 14.5Q25.5 7.6 33.5 7.6L66.5 7.6Q74.5 7.6 78.5 14.5Z" fill="#f4f3ef"/><g fill="none" stroke="#14120b" stroke-width="9" stroke-linecap="round"><path d="M 53.25 29.5 L 53.25 50.5"/><path d="M 70.75 29.5 L 70.75 50.5"/></g></g></svg>
