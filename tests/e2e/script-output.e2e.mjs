@@ -46,6 +46,41 @@ test("terminal tab labels follow visible order after closing siblings", async ()
   }
 });
 
+test("terminal lifecycle indicates starting and a muted normal exit with its code", async () => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+  try {
+    await page.goto(`${base}/?kind=setup`);
+    await page.evaluate(() => window.__scriptOutputTest.holdTerminal());
+    await page.getByRole("button", { name: "New terminal", exact: true }).click();
+    const tab = page.locator(".term-tab");
+    const starting = tab.getByRole("img", { name: "Starting", exact: true });
+    await starting.waitFor({ timeout: 3000 });
+    assert.equal(await starting.locator("circle").count(), 3);
+    await page.evaluate(() => window.__scriptOutputTest.terminalReady());
+    await page.waitForFunction(() => !document.querySelector(".term-tab .term-starting"));
+    assert.equal(await tab.getByRole("img").count(), 0);
+    for (const code of [0, 7]) {
+      await page.evaluate((value) => window.__scriptOutputTest.terminalExit(value), code);
+      const exited = tab.getByRole("img", { name: `Exited (code ${code})`, exact: true });
+      await exited.waitFor({ timeout: 3000 });
+      assert.equal(await exited.locator("title").textContent(), `Exited (code ${code})`);
+      const actual = await exited.evaluate((el) => getComputedStyle(el).color);
+      const expected = await exited.evaluate((el) => {
+        const probe = document.createElement("span");
+        probe.style.color = "var(--muted)";
+        el.append(probe);
+        const color = getComputedStyle(probe).color;
+        probe.remove();
+        return color;
+      });
+      assert.equal(actual, expected);
+    }
+    if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/terminal-exited.png` });
+  } finally {
+    await page.close();
+  }
+});
+
 test("interactive terminal retains Find after sharing the controller with script output", async () => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
   try {
