@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "author": "Conductor Rebuild",
+  "observationDateUtc": "2026-11-07",
+  "host": "sven m5 max",
+  "scope": "P0 native browser sign-in preflight only; no app or pairing launch",
+  "cli": {
+    "reportedVersion": "0.2.701",
+    "resolvedPath": "~/Library/Application Support/Reason/CLI/versions/0.2.701/reason",
+    "sha256": "6db6ba89b6da3456ebc14fcd15ae964e2c8bcd3fba2655c2041855ca65d6ab55",
+    "retainedInstalledVersions": ["0.2.700", "0.2.701"],
+    "historical069xBehavior": "NOT RUN; no 0.2.69x artifact in the canonical installed versions directory",
+    "versionCommand": {"argv": ["--version"], "exitCode": 0},
+    "helpCommand": {"argv": ["login", "--help"], "exitCode": 0},
+    "observedHelpContract": {
+      "defaultFlow": "Short-lived browser pairing; non-TTY prints a link and returns; background completion after approval",
+      "workspace": "--workspace SLUG|ID; --switch opens a new account/workspace choice",
+      "globalNonInteractiveFlag": true,
+      "jsonLoginOutputDocumented": false,
+      "jsonHelpOutputDocumented": true,
+      "legacyLoopbackUsed": false
+    }
+  },
+  "stableApp": {
+    "pid": 54473,
+    "processStartObserved": "Fri Nov 6 13:30:52 2026",
+    "executable": "~/OpenConductor-ci-8e847380/OpenConductor.app/Contents/MacOS/openconductor",
+    "sha256": "046cd331d9fef97944879164603964f3447234a843511c854aa275ebbce994e3",
+    "bundleIdentifier": "com.reasonmachines.openconductor",
+    "version": "0.1.0",
+    "identityAndBinaryUnchanged": true,
+    "reasonExecutablesInBundleContents": [],
+    "observedProcessEnvironment": {
+      "home": "Real account home; not changed",
+      "pathStartsWithHomeLocalBin": true,
+      "pathContainsHomebrewAndUsrLocalBin": true,
+      "launchctlPathAndHomeUnset": true,
+      "fullEnvironmentCapturedOrExported": false
+    }
+  },
+  "isolatedFixture": {
+    "canonicalPrivateRootMode": "0700",
+    "keychainMode": "0600",
+    "keychainOwnedRegularSingleLinkFile": true,
+    "defaultKeychainUnchanged": true,
+    "searchKeychainListUnchanged": true,
+    "testVariables": ["REASON_TEST_ACCOUNT_ROOT", "REASON_TEST_KEYCHAIN_PATH", "REASON_TEST_REFUSE_REAL_ACCOUNT"],
+    "scrubbedEnvironment": true,
+    "existingCredentialContentsReadOrExportedByDriver": false,
+    "credentialCopyingOrLogout": false,
+    "fullFilesystemSyscallTrace": "NOT RUN"
+  },
+  "runtimeChecks": [
+    {
+      "name": "Refuse real account home as test root",
+      "command": "reason status --json with test root set to the real account home",
+      "result": "PASS",
+      "elapsedSeconds": 0.151,
+      "exitCode": 1,
+      "diagnostic": "REASON_TEST_ACCOUNT_ROOT must be a canonical owned mode0700 directory, not the real account home"
+    },
+    {
+      "name": "Initial isolated status before fixture provisioning completed",
+      "result": "TIMED OUT",
+      "elapsedSeconds": 15.012,
+      "observation": "Fresh-root lifecycle recorded service.install_started. This was before status returned and is not evidence of a login/pairing hang."
+    },
+    {
+      "name": "Correctly provisioned isolated status",
+      "command": "reason status --json",
+      "result": "PASS",
+      "elapsedSeconds": 1.236,
+      "exitCode": 0,
+      "observation": "Fresh-root lifecycle recorded service.install_completed."
+    },
+    {
+      "name": "Post-install signed-out confirmation",
+      "command": "reason status --json",
+      "result": "PASS",
+      "elapsedSeconds": 2.364,
+      "exitCode": 0,
+      "account": null,
+      "account_error": null,
+      "organization": null,
+      "workspaces": [],
+      "connection": null,
+      "installation": null
+    },
+    {
+      "name": "Preflight residual handles under isolated root",
+      "result": "PASS",
+      "lsofExitCode": 1,
+      "openHandles": []
+    }
+  ],
+  "notRun": [
+    "Manual CLI login or pending-login timing",
+    "Native Sign in in integrated PR #753 app",
+    "Browser approval in Reason Tests",
+    "Connected account/workspace UI",
+    "Actual Reason turn",
+    "Native screenshot or recording for this P0 flow"
+  ],
+  "originalMacFailureRootCause": "UNKNOWN. Synthetic deadline regression is not proof of the original Mac cause. Missing PATH is not established by current app environment.",
+  "handoff": "Implementation owner f7006ba7 must provide the exact integrated source/bundle before dependent native auth proof. Intermediate PR #753 was not launched.",
+  "completed739SyntheticProofRepeated": false
+}

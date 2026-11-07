@@ -25,7 +25,7 @@ const TICK_MS = 100;
  * the account).
  */
 export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue: () => void; busy: boolean; onFailed: SignUpProps["onFailed"] }) {
-  const [account, setAccount] = useReasonAccount();
+  const account = useReasonAccount();
   // wBi: once signed in, finish without waiting for Continue (once).
   const advanced = useRef(false);
   useEffect(() => {
@@ -94,7 +94,7 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
                   </span>
                 </button>
               ) : (
-                <SignUp onSignedIn={setAccount} onFailed={onFailed} onSkip={onContinue} />
+                <SignUp onFailed={onFailed} onSkip={onContinue} />
               )}
             </div>
           </div>
