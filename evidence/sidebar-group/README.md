@@ -57,3 +57,7 @@ On this product tree, the same 35 focused tests and all 1,306 frontend tests pas
 All owned previews were stopped. The final run server `c587a123-c7c7-47a6-bba1-23032aab1f35` on port 4682 started at 01:20:09Z and stopped before 01:21Z, within the ten-minute allocation. `preview-stop.json` retains its actual stop receipt and both prior driver-attempt stop receipts. No native launch/input, real repository/data mutation, agent execution or CI dispatch occurred.
 
 Reference light-theme, whole-menu geometry, country-map rendering, tooltip pixels, touch/small-window and exact native/WebKit build behavior remain gaps. Local Rust execution is unavailable; the initial-head CI test result above is separate. Packaging success is not installation or behavioral verification. No Conductor cloud/team/routines/triage/org/cloud-workspace UI is added.
+
+## Final source after-proof
+
+[The final #748 source proof](exact-head-after/README.md) reruns the unchanged Group by and filter drivers, with eight new REA captures and two filter screenshots in both themes. The captured local tree is identical to published head `e295f98f`. That record includes inspected screenshots, hashes, assertion results, published media, and the actual bounded-preview stop receipt. It supersedes the initial-source screenshots for final-source coverage, without promoting native or semantic verdicts.
