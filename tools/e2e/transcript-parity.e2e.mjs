@@ -202,8 +202,8 @@ try {
   assert.equal(inline.summaries, 0, "one ACP assistant message is below the three-message threshold");
   assert.equal(inline.grouped, 0, "commentary and tools remain outside summary groups");
   assert.deepEqual(inline.texts, [
-    "I'll look at how the login route decides where to send a signed-in user.",
-    "Found it. redirectTo treats any session object as signed in, including an expired one, while the dashboard loader rejects expired sessions and sends the user back to /login. I'll check expiresAt before redirecting.",
+    "I’ll look at how the login route decides where to send a signed-in user.",
+    "Found it. redirectTo treats any session object as signed in, including an expired one, while the dashboard loader rejects expired sessions and sends the user back to /login. I’ll check expiresAt before redirecting.",
     "Fixed. Expired sessions now go straight to /login instead of looping. src/lib/auth.ts: only redirect to the dashboard when the session has not expired. Tests: pnpm test src/lib/auth.test.ts passes (4 tests).",
   ], "exact commentary and final reply remain visible in order");
   assert.deepEqual(inline.code, ["redirectTo", "/login", "expiresAt", "/login", "src/lib/auth.ts", "pnpm test src/lib/auth.test.ts"], "commentary and final reply retain Markdown code spans");
