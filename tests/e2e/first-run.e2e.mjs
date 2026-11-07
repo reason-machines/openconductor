@@ -132,10 +132,10 @@ test("signed out of Reason, the onboarding offers Sign up and Privacy like Condu
   assert.equal((await signUp.textContent()).trim(), "Sign up");
   assert.equal(await page.getByRole("button", { name: "Privacy", exact: true }).count(), 1);
   assert.equal(await page.getByRole("button", { name: "Continue", exact: true }).count(), 0, "Continue waits for an account");
-  // The browser preview has no Reason CLI: Sign up cannot start and says so.
-  await signUp.click();
-  await page.getByRole("alert").filter({ hasText: "Couldn't start sign-in." }).waitFor();
-  assert.equal((await signUp.textContent()).trim(), "Sign up");
+  // The browser preview leaves sign-in to the desktop app.
+  assert.equal(await signUp.isDisabled(), true, "Sign up is unavailable outside the desktop app");
+  await page.getByText("Reason sign-in runs in the desktop app.", { exact: true }).waitFor();
+  assert.equal(await page.getByRole("alert").count(), 0, "an unavailable action is not a failed sign-in");
   await shot(page, "first-run-signed-out--dark");
   await page.getByRole("button", { name: "Continue without signing in" }).click();
   await page.locator(".home").waitFor();
