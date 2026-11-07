@@ -14,6 +14,8 @@ import { glyphs } from "../../keybindings/shortcut.ts";
 import { effectiveEffort, fastModeAvailable, modelChip, modelDisplayName, modelEfforts, nextEffort, type ModelChoice } from "./composerModels.ts";
 import { ArrowUpRightIcon, CheckIcon, ChevronDownIcon, ChevronRightIcon, ModelGlyph, PlusSmallIcon, SearchSmallIcon, SettingsSmallIcon } from "./composerIcons.tsx";
 
+import type { ChatAgentId } from "./agentChoice";
+
 export type { ModelChoice };
 
 export interface ModelPickerProps {
@@ -38,11 +40,12 @@ export interface ModelPickerProps {
   modelName?: (model: string) => string | undefined;
   /** A line about a model (Reason's "Claude · Subscription"), shown as its tooltip. */
   modelDescription?: (model: string) => string | undefined;
+  itemAgent?: (choice: ModelChoice) => ChatAgentId;
 }
 
 const same = (a: ModelChoice, b: ModelChoice) => a.model === b.model;
 
-export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription }: ModelPickerProps) {
+export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription, itemAgent }: ModelPickerProps) {
   const [open, setOpen] = useState(false);
   const menu = usePresence(open);
   const [query, setQuery] = useState("");
@@ -114,7 +117,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
         >
           {/* Conductor's `composer-compact-model-icon`: shown only while the composer is minimized. */}
           <span className="oc-model-chip-icon" aria-hidden>
-            <ModelGlyph model={value.model} />
+            <ModelGlyph model={value.model} agent={itemAgent?.(value)} />
           </span>
           <span className="oc-model-chip-label">{label ?? chip.label}</span>
           <span className="oc-model-chip-details">
@@ -148,7 +151,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                       setOpen(false);
                     }}
                   >
-                    <ModelGlyph model={f.model} />
+                    <ModelGlyph model={f.model} agent={itemAgent?.(f)} />
                     <span className="oc-model-item-name">{selected && label ? label : nameOf(f)}</span>
                     {e ? <span className="oc-model-item-effort">{e}</span> : null}
                     {selected ? <CheckIcon className="oc-model-item-check" /> : null}

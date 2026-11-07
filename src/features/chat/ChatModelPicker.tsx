@@ -96,6 +96,7 @@ export function ChatModelPicker({ chatId, disabled = false, agent = "reason", on
       modelName={(m) => reasonModelName(m, models)}
       modelDescription={(m) => models.find((o) => o.value === m)?.description}
       itemLabel={agentEntryLabel}
+      itemAgent={agentForPick}
       disabled={disabled}
       onOpenSettings={() => openSettingsPage("models")}
       onChange={(next) => {

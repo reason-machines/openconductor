@@ -19,6 +19,7 @@ await build({
   platform: "node",
   format: "cjs",
   packages: "external",
+  loader: { ".svg": "text" },
   outfile: bundle,
   banner: { js: "globalThis.localStorage = { getItem() { return null; }, setItem() {}, removeItem() {} };" },
   plugins: [{
