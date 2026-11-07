@@ -74,6 +74,10 @@ pub enum ProviderEvent {
     },
     Agent(AgentEvent),
     TurnEnded(TurnEnd),
+    Usage {
+        input_tokens: Option<u64>,
+        output_tokens: Option<u64>,
+    },
     /// Something the app should tell the user about the chat, e.g. that a
     /// requested model is not offered and Reason's default runs instead.
     Notice(String),

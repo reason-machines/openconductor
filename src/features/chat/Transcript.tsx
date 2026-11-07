@@ -207,7 +207,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-      {when ? <TurnDetails when={when} agent={turnAgent} /> : null}
+      {when ? <TurnDetails when={when} agent={turnAgent} usage={row.usage} /> : null}
       {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
       {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">

@@ -9,11 +9,23 @@ fn msg(id: &str, role: Role, blocks: Vec<Block>) -> ChatMessage {
         role,
         created_at: "2026-11-05T10:00:00.000Z".into(),
         model: None,
+        usage: None,
         cancelled_at: None,
         sender_session_id: None,
         sender_api_key_name: None,
         blocks,
     }
+}
+
+#[test]
+fn optional_usage_survives_message_json_without_inventing_missing_counts() {
+    let original = msg("a", Role::Assistant, vec![Block::text("Done")]);
+    let mut json = serde_json::to_value(&original).unwrap();
+    assert!(json.get("usage").is_none());
+    json["usage"] = json!({"outputTokens": 2400});
+    let parsed: ChatMessage = serde_json::from_value(json.clone()).unwrap();
+    assert_eq!(parsed.usage.as_ref().unwrap().input_tokens, None);
+    assert_eq!(serde_json::to_value(parsed).unwrap(), json);
 }
 
 fn delta(message_id: &str, block_index: usize, text: &str) -> ChatEvent {
