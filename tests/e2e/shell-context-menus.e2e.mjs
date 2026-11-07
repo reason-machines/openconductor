@@ -193,3 +193,44 @@ test("the PR badge's menu opens the PR on each site and copies its link and numb
   assert.deepEqual(errors, []);
   await context.close();
 });
+
+test("local header branch: inline Enter/blur rename, Escape cancellation and full-branch copy", async () => {
+  const { context, page, errors } = await openDemo();
+  const header = page.locator(".ws-header");
+  const branch = header.getByRole("button", { name: "Rename branch", exact: true });
+  const input = header.getByRole("textbox", { name: "Branch name", exact: true });
+  const title = await header.locator(".ws-title > strong").textContent();
+
+  await branch.click();
+  assert.equal(await input.inputValue(), "amber-falcon");
+  await input.fill("demo/renamed branch");
+  await input.press("Enter");
+  await page.waitForFunction(() => document.querySelector('.ws-header [aria-label="Rename branch"]')?.textContent?.includes("demo/renamed-branch"));
+  assert.equal(await header.locator(".ws-title > strong").textContent(), title, "branch editing must not rename the workspace");
+
+  await branch.click();
+  await input.fill("demo/cancelled");
+  await input.press("Escape");
+  await branch.waitFor();
+  assert.ok((await branch.textContent()).includes("demo/renamed-branch"));
+
+  await branch.click();
+  await input.fill("demo/blurred");
+  await header.locator(".ws-title > strong").click();
+  await page.waitForFunction(() => document.querySelector('.ws-header [aria-label="Rename branch"]')?.textContent?.includes("demo/blurred"));
+
+  await branch.click({ button: "right" });
+  const menu = page.getByRole("menu", { name: "Branch actions", exact: true });
+  await menu.waitFor();
+  assert.deepEqual(clean(await items(menu)), ["Copy C", "Rename R"]);
+  await menu.getByRole("menuitem", { name: "Copy C", exact: true }).click();
+  assert.equal(await page.evaluate(() => navigator.clipboard.readText()), "demo/blurred");
+
+  await branch.click({ button: "right" });
+  await menu.getByRole("menuitem", { name: "Rename R", exact: true }).click();
+  assert.equal(await input.inputValue(), "demo/blurred");
+  await input.press("Escape");
+  assert.equal(await header.locator(".ws-title > strong").textContent(), title);
+  assert.deepEqual(errors, []);
+  await context.close();
+});

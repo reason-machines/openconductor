@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type MouseEvent as ReactMouseEvent, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
 import type { Action } from "../state/store";
-import { BranchIcon, ChevronIcon, RightSidebarIcon } from "./Icons";
+import { ChevronIcon, RightSidebarIcon } from "./Icons";
 import { toggleRightPanel } from "./panelPrefs";
 import { clearManuallyUnread, markManuallyUnread, readOnView, setSelectedChat, setShownChat } from "../state/autoUnread";
 import { isChatUnread } from "../state/chatUnread";
@@ -104,6 +104,7 @@ import { useBoolPref } from "../settings/useBoolPref";
 import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 import { RepoHeaderMenu } from "./RepoHeaderMenu";
+import { WorkspaceBranchHeader } from "./WorkspaceBranchHeader";
 import { SETUP_SCRIPT_PROMPT } from "../scripts/setupPrompt";
 
 interface Props {
@@ -1238,9 +1239,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
           <RepoHeaderMenu repo={repo} onError={(message) => notify?.("error", message)} />
           <span className="crumb-sep">/</span>
           <strong>{workspace.name}</strong>
-          <span className="chip">
-            <BranchIcon size={12} /> {workspace.branch}
-          </span>
+          <WorkspaceBranchHeader repoId={repo.id} workspace={workspace} dispatch={dispatch} onError={(message) => notify?.("error", message)} />
           <TargetChip target={target} open={pickingTarget} setOpen={setPickingTarget} repo={repo} />
           {prNumber !== null && (
             <button
