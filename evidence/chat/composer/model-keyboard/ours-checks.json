@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "name": "Enter selects the first search result without sending the chat",
+      "passed": true
+    },
+    {
+      "name": "Enter with no matches does not send or close the menu",
+      "passed": true
+    },
+    {
+      "name": "Enter with an empty search does not send or close the menu",
+      "passed": true
+    },
+    {
+      "name": "Escape clears search before a second Escape closes the menu",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "name": "Enter selects the first search result without sending the chat",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\n'sonnet' !== ''\n"
+    },
+    {
+      "name": "Enter with no matches does not send or close the menu",
+      "passed": false,
+      "error": "Model search must not submit the chat draft\n+ actual - expected\n\n+ '{\"text\":\"Keep this unsent draft\",\"mode\":\"queue\",\"files\":[]}'\n- ''\n"
+    },
+    {
+      "name": "Enter with an empty search does not send or close the menu",
+      "passed": false,
+      "error": "Model search must not submit the chat draft\n+ actual - expected\n\n+ '{\"text\":\"Keep this unsent draft\",\"mode\":\"queue\",\"files\":[]}'\n- ''\n"
+    },
+    {
+      "name": "Escape clears search before a second Escape closes the menu",
+      "passed": false,
+      "error": "page.waitForFunction: Timeout 2000ms exceeded."
+    }
+  ]
+}

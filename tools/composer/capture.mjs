@@ -28,6 +28,9 @@ const cases = {
   "link-issue": [click("[aria-label='Add']", "add"), click("text=Link issue", "link")],
   plus: [click("[aria-label='Add']", "add")],
   model: [click(reference ? "[aria-label^='Change agent']" : "[data-testid='composer-model-button']", "model")],
+  "model-search": [click(reference ? "[aria-label^='Change agent']" : "[data-testid='composer-model-button']", "model"), { ...fill("sonnet"), locator: { kind: "css", selector: "input[aria-label='Search models']" } }],
+  "model-search-enter": [click(reference ? "[aria-label^='Change agent']" : "[data-testid='composer-model-button']", "model"), { ...fill("sonnet"), locator: { kind: "css", selector: "input[aria-label='Search models']" } }, { step_id: "enter", action: "press", locator: { kind: "css", selector: "input[aria-label='Search models']" }, key: "Enter" }],
+  "model-search-escape": [click(reference ? "[aria-label^='Change agent']" : "[data-testid='composer-model-button']", "model"), { ...fill("sonnet"), locator: { kind: "css", selector: "input[aria-label='Search models']" } }, { step_id: "escape", action: "press", locator: { kind: "css", selector: "input[aria-label='Search models']" }, key: "Escape" }],
 };
 function screenshot(value) {
   if (!value || typeof value !== "object") return;
@@ -41,7 +44,7 @@ try {
   for (const [name, actions] of Object.entries(cases).filter(([name]) => only.length === 0 || only.includes(name))) {
     const input = {
       browser: { mode: "launch", executable_path: process.env.CHROMIUM ?? "/usr/bin/chromium", headless: true },
-      start_url: { url: `http://localhost:${port}/${reference ? "?oc_scenario=populated&oc_mention_files=1" : "tools/composer/demo.html?agent=claude"}` },
+      start_url: { url: `http://localhost:${port}/${reference ? "?oc_scenario=populated&oc_mention_files=1" : `tools/composer/demo.html?agent=claude${name.startsWith("model-search") ? "&model-search-checks=1" : ""}`}` },
       environment: { viewport: { width: 1440, height: 900, device_scale_factor: 1 }, color_scheme: "dark", locale: "en-US", timezone: "UTC" },
       actions: [wait(1800, "settle"), ...(reference ? [click("text=tide-web", "repo"), click("text=Ada/fix login redirect", "workspace"), wait(1200, "open")] : []), ...actions, wait(600, "final")],
       capture: { at_end: ["screenshot", "url"], events: ["console", "page-errors"] },

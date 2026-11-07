@@ -51,6 +51,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
   const [query, setQuery] = useState("");
   const [effortOpen, setEffortOpen] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
+  const search = useRef<HTMLInputElement>(null);
   const { overrides } = useKeybindingOverrides();
   const hint = (id: string) => {
     const s = effectiveShortcuts(id, overrides)[0];
@@ -93,10 +94,22 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
   }, [open]);
 
   const onMenuKey = (e: KeyboardEvent) => {
+    if (e.defaultPrevented || e.nativeEvent.isComposing) return;
+    if (e.target === search.current && e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      const match = query.trim() ? items[0] : undefined;
+      if (match && !disabled) {
+        if (!same(match, value)) onChange(match);
+        setQuery("");
+      }
+      return;
+    }
     if (e.key === "Escape") {
       e.preventDefault();
       e.stopPropagation();
       if (effortOpen) setEffortOpen(false);
+      else if (e.target === search.current && query !== "") setQuery("");
       else setOpen(false);
     }
   };
@@ -131,7 +144,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
           <div className="oc-model-menu-inner">
             <div className="oc-model-search">
               <SearchSmallIcon />
-              <input aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => setQuery(e.target.value)} />
+              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => setQuery(e.target.value)} />
             </div>
             <div className="oc-model-list">
               {items.length === 0 ? <div className="oc-model-empty">No models found</div> : null}
