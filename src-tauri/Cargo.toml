@@ -63,6 +63,7 @@ oc-scripts = { path = "../crates/scripts" }
 openconductor-db = { path = "../crates/openconductor-db" }
 
 [dev-dependencies]
+sqlx = { version = "0.8.6", default-features = false, features = ["sqlite", "runtime-tokio"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 # MockRuntime and get_ipc_response for command tests (no extra crates).
 tauri = { version = "2", features = ["test"] }
