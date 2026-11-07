@@ -10,6 +10,8 @@ const mime = {'.html':'text/html', '.js':'text/javascript', '.mjs':'text/javascr
 const mock = Object.fromEntries(['fixtures.js','seed-data.js','seed.js','org-fixtures.js','tauri-mock.js'].map(f=>['/__mock/'+f,path.join(root,'tools/screens',f)]));
 for(const f of ['sql-wasm.js','sql-wasm.wasm']) mock['/__mock/'+f] = path.join(root,'tools/screens/node_modules/sql.js/dist',f);
 for(const f of ['conductor.schema.sql','cache.schema.sql']) mock['/__mock/'+f] = path.join(root,'evidence/sqlite',f);
+mock["/__mock/sidebar-sort-fixture.js"] = path.join(root, "tools/side-by-side/sidebar-sort-fixture.js");
+const sidebarSortFixture = fs.readFileSync(mock["/__mock/sidebar-sort-fixture.js"], "utf8");
 const seed = fs.readFileSync(path.join(root,'tools/sidebar-screens/seed.js'),'utf8');
 const extra = `(() => {
  const theme = new URLSearchParams(location.search).get('oc_theme') || 'dark';
@@ -22,6 +24,7 @@ const extra = `(() => {
  if(cmd==='execute_shell_command_cancellable'||cmd==='execute_shell_command') return {stdout:'',stderr:'',exitCode:0,signal:null,cancelled:false,truncated:false};
  throw new Error('not mocked: '+cmd);
  }};
+ window.__OC_SORT_FIXTURE__?.();
 })();`;
 http.createServer((req,res)=>{
  const url=new URL(req.url,'http://localhost');
@@ -33,7 +36,7 @@ http.createServer((req,res)=>{
  if(!file.startsWith(root)||!fs.existsSync(file)||fs.statSync(file).isDirectory())file=path.join(dir,'index.html');
  let body=fs.readFileSync(file);
  if(file.endsWith('index.html')){
-  const inject=reference?`<meta http-equiv="Content-Security-Policy" content="connect-src 'self' data: blob:"><script>window.__OC_SCENARIO__=${JSON.stringify(url.searchParams.get('oc_scenario')||'signed-in')};</script>`+['sql-wasm.js','seed-data.js','seed.js','fixtures.js','org-fixtures.js','tauri-mock.js'].map(f=>`<script src="/__mock/${f}"></script>`).join(''):`<script>${seed}</script><script>${extra}</script>`;
+  const inject=reference?`<meta http-equiv="Content-Security-Policy" content="connect-src 'self' data: blob:"><script>window.__OC_SCENARIO__=${JSON.stringify(url.searchParams.get('oc_scenario')||'signed-in')};</script>`+['sql-wasm.js','seed-data.js','seed.js','fixtures.js','org-fixtures.js','sidebar-sort-fixture.js','tauri-mock.js'].map(f=>`<script src="/__mock/${f}"></script>`).join(''):`<script>${seed}</script><script>${sidebarSortFixture}</script><script>${extra}</script>`;
   body=body.toString().replace('<head>','<head>'+inject);
  }
  res.writeHead(200,{'content-type':mime[path.extname(file)]||'application/octet-stream','cache-control':'no-store'});res.end(body);
@@ -44,6 +47,9 @@ http.createServer((req,res)=>{
  }
  if(process.argv.includes('--home-check')) {
   try { await import('./home-details.check.mjs'); } catch(e) { console.error(e); return; }
+ }
+ if(process.argv.includes('--sort-check')) {
+  try { await import('./sidebar-sort.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
  }
  if(process.argv.includes('--passport-check')) {
   try { await import('./passport.check.mjs'); } catch(e) { console.error(e); return; }

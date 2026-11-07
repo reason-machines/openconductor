@@ -38,6 +38,22 @@ impl MessageSendKey {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum SidebarSort {
+    Updated,
+    Created,
+}
+
+impl SidebarSort {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Updated => "updated",
+            Self::Created => "created",
+        }
+    }
+}
+
 /// Every app preference, decoded. Field names are the table keys.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct AppPrefs {
@@ -62,6 +78,7 @@ pub struct AppPrefs {
     /// The sidebar's "Filter by project" repository id; `None` is all
     /// projects.
     pub sidebar_repo_filter: Option<String>,
+    pub sidebar_sort_by: SidebarSort,
     /// Experimental "Show sidebar resource usage" (the reference's
     /// `Te("sidebar_resource_usage", !1)`): off unless the row says `"true"`.
     pub sidebar_resource_usage: bool,
@@ -154,6 +171,10 @@ impl AppPrefs {
             last_seen_announcement: text(rows, keys::LAST_SEEN_ANNOUNCEMENT),
             roundhouse_client_user_id: text(rows, keys::ROUNDHOUSE_CLIENT_USER_ID),
             sidebar_repo_filter: text(rows, keys::SIDEBAR_REPO_FILTER),
+            sidebar_sort_by: match rows.get(keys::SIDEBAR_SORT_BY).map(String::as_str) {
+                Some("created") => SidebarSort::Created,
+                _ => SidebarSort::Updated,
+            },
             sidebar_resource_usage: flag(rows, keys::SIDEBAR_RESOURCE_USAGE, false),
             message_send_key: match rows.get(keys::MESSAGE_SEND_KEY).map(String::as_str) {
                 Some("cmd-enter") => MessageSendKey::CmdEnter,
@@ -189,6 +210,7 @@ pub enum AppPrefUpdate {
     /// A repository id narrows the sidebar; `null` ("All projects") deletes
     /// the row (the reference's `z6t`).
     SidebarRepoFilter(Option<String>),
+    SidebarSortBy(SidebarSort),
     /// Written as `"true"` / `"false"` (the reference's `v6t`).
     SidebarResourceUsage(bool),
     /// Written as `enter` / `cmd-enter` after the send-key overrides.
@@ -242,6 +264,7 @@ impl AppPrefUpdate {
             }
             SidebarRepoFilter(Some(id)) => Ok(Write::Set(keys::SIDEBAR_REPO_FILTER, id.clone())),
             SidebarRepoFilter(None) => Ok(Write::Delete(keys::SIDEBAR_REPO_FILTER)),
+            SidebarSortBy(sort) => Ok(Write::Set(keys::SIDEBAR_SORT_BY, sort.as_str().into())),
             SidebarResourceUsage(v) => b(keys::SIDEBAR_RESOURCE_USAGE, *v),
             MessageSendKey(k) => Ok(Write::Set(keys::MESSAGE_SEND_KEY, k.as_str().into())),
             DashboardEnabled(v) => b(keys::DASHBOARD_ENABLED, *v),

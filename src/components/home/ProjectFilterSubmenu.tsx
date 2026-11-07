@@ -14,18 +14,25 @@ interface Props {
 }
 
 const CheckMark = () => (
-  <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M20 6 9 17l-5-5" />
+  <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <path d="M20 6 9 17l-5-5" vectorEffect="non-scaling-stroke" />
   </svg>
 );
 
-/**
- * "Filter by project" submenu for the sidebar section header menu (Conductor's
- * `pra`/`TEt`, renderApp-D_fmY7hW.js @10018210): a trigger row with a right
- * chevron that opens "All projects" and each repository as radio items, the
- * chosen one checked. Renders nothing with one repository or none.
- */
 export function ProjectFilterSubmenu({ repos, filter, onChange, onClose }: Props) {
+  const options = projectFilterOptions(repos);
+  return options && <SidebarRadioSubmenu label={FILTER_BY_PROJECT} options={options} selected={filterToValue(filter)} onChange={(value) => onChange(valueToFilter(value))} onClose={onClose} />;
+}
+
+interface RadioProps<T extends string> {
+  label: string;
+  options: readonly { value: T; label: string }[];
+  selected: T;
+  onChange: (value: T) => void;
+  onClose?: () => void;
+}
+
+export function SidebarRadioSubmenu<T extends string>({ label, options, selected, onChange, onClose }: RadioProps<T>) {
   const [at, setAt] = useState<{ x: number; y: number } | null>(null);
   const open = at !== null;
   const popupRef = useRef<HTMLDivElement>(null);
@@ -50,10 +57,6 @@ export function ProjectFilterSubmenu({ repos, filter, onChange, onClose }: Props
     el.addEventListener("mousedown", stop);
     return () => el.removeEventListener("mousedown", stop);
   }, [open]);
-  const options = projectFilterOptions(repos);
-  if (!options) return null;
-  const selected = filterToValue(filter);
-
   const focusItem = (index: number) => {
     const items = popupRef.current?.querySelectorAll<HTMLElement>('[role="menuitemradio"]');
     if (!items?.length) return;
@@ -96,11 +99,11 @@ export function ProjectFilterSubmenu({ repos, filter, onChange, onClose }: Props
         onClick={() => setOpen(true)}
         onKeyDown={onTriggerKey}
       >
-        <span>{FILTER_BY_PROJECT}</span>
+        <span>{label}</span>
         <ChevronIcon size={16} />
       </button>
       {at && createPortal(
-        <div ref={popupRef} className="sb-menu pf-popup" role="menu" aria-label={FILTER_BY_PROJECT} style={{ position: "fixed", left: at.x, top: at.y - 5 }} onKeyDown={onPopupKey}>
+        <div ref={popupRef} className="sb-actions-popup pf-popup" role="menu" aria-label={label} style={{ position: "fixed", left: at.x, top: at.y - 5 }} onKeyDown={onPopupKey}>
           {options.map((o) => {
             const checked = o.value === selected;
             return (
@@ -109,10 +112,10 @@ export function ProjectFilterSubmenu({ repos, filter, onChange, onClose }: Props
                 type="button"
                 role="menuitemradio"
                 aria-checked={checked}
-                className="sb-menu-item pf-item"
+                className="sb-actions-item pf-item"
                 onClick={() => {
                   setOpen(false);
-                  onChange(valueToFilter(o.value));
+                  onChange(o.value);
                   onClose?.();
                 }}
               >

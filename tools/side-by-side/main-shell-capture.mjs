@@ -13,11 +13,15 @@ for (const state of (process.env.SHELL_STATES ?? "home,repo-menu").split(",")) {
     const name = `${side}-${state}${theme === "dark" ? "" : `-${theme}`}`;
     const input = {
       browser: { mode: "launch", executable_path: process.env.CHROMIUM ?? "/usr/bin/chromium", headless: true },
-      start_url: { url: `http://${side === "ref" ? "conductor.localhost" : "localhost"}:4682/?oc_scenario=populated&oc_theme=${theme}` },
+      start_url: { url: `http://${side === "ref" ? "conductor.localhost" : "localhost"}:4682/?oc_scenario=populated&oc_theme=${theme}${state === "sidebar-sort" ? "&oc_org=local&oc_sort_fixture=1" : ""}` },
       environment: { viewport: { width: 1280, height: 820, device_scale_factor: 1 }, color_scheme: theme, locale: "en-US", timezone: "UTC" },
       actions: [
         { step_id: "settle", action: "wait_for_timeout", duration_ms: 3000 },
         ...(state === "repo-menu" ? [{ step_id: "menu", action: "click", locator: { kind: "css", selector: '[aria-label="tide-web actions"]' }, timeout_ms: 5000 }] : []),
+        ...(state === "sidebar-sort" ? [
+          { step_id: "header-menu", action: "click", locator: { kind: "css", selector: 'button[aria-label="My workspaces actions"]' }, timeout_ms: 5000 },
+          { step_id: "sort-menu", action: "click", locator: { kind: "css", selector: '[role="menuitem"]:text-is("Sort by")' }, timeout_ms: 5000 },
+        ] : []),
         ...(state === "passport" ? [{ step_id: "passport", action: "click", locator: { kind: "css", selector: 'button:has-text("cities visited")' }, timeout_ms: 5000 }] : []),
         { step_id: "final", action: "wait_for_timeout", duration_ms: 500 },
       ],
