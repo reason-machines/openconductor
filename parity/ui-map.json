@@ -32060,7 +32060,7 @@
   }
  ],
  "supplemental_evidence": {
-  "source_main_commit": "e9cfaed4a97a66bb495ca5a8b8f49aa6f0238094",
+  "source_main_commit": "9443720f9c6ea802316192321da5b76f4931447a",
   "records": [
    {
     "id": "shell-actions-722",
@@ -32502,7 +32502,7 @@
      "verification": "Merge identity confirmed in fetched main. Area behavior/captures and package checks are attributed to the existing owner, not rerun by ledger integration."
     },
     "limits": [
-     "Native slider rendering/keyboard/pointer, filesystem persistence and live auth are NOT RUN. Direct E2E 42316037241 was cancelled. Pre-#743 containing 42316328825 failed its embedded Codex picker step despite independent Codex/App-flow success. Mocked IPC values are not desktop persistence."
+     "At the original browser-proof snapshot, native slider rendering/keyboard/pointer, filesystem persistence and live auth were NOT RUN. Later bounded native-controls-741-742 adds only synthetic keyboard, computed geometry and shutdown scratch-TOML proof; physical keyboard, pointer drag and restart persistence remain NOT RUN. Direct E2E 42316037241 was cancelled. Pre-#743 containing 42316328825 failed its embedded Codex picker step despite independent Codex/App-flow success. Mocked IPC values are not desktop persistence."
     ]
    },
    {
@@ -32522,7 +32522,7 @@
      "verification": "Merge identity confirmed in fetched main. Area behavior/captures and package checks are attributed to the existing owner, not rerun by ledger integration."
     },
     "limits": [
-     "Not a match for the entire retained needs-permission state; its wrong score remains. Native installed rendering and real permission round trip are NOT RUN. Older 8467 scratch assertions do not exercise this correction. The #739 synthetic WKWebView run on 50265ba2 did not exercise #742 colors/actions despite containing the source, so it adds no native or screenshot proof here."
+     "Not a match for the entire retained needs-permission state; its wrong score remains. The original snapshot had no native rendering proof. Later native-controls-741-742 adds computed tokens and synthetic dismissal on the no-provider/stale-request false path, not visual parity or a real permission round trip. Older 8467 scratch assertions do not exercise this correction. The #739 synthetic WKWebView run on 50265ba2 did not exercise #742 colors/actions despite containing the source, so it adds no native or screenshot proof here."
     ]
    },
    {
@@ -32609,20 +32609,179 @@
      "verification": "Merge identity confirmed in fetched main. Area behavior/captures and package checks are attributed to the existing owner, not rerun by ledger integration."
     },
     "limits": [
-     "Containing E2E 42317956702 remains in progress at the latest sole-owner snapshot; acc3b5c5 owns that result/streak. Native side-by-side, installed behavior, real-data destructive discard and older skipped wider-browser test remain unverified. Retained split/file-menu scores unchanged."
+     "The earlier owner snapshot left containing E2E 42317956702 in progress. Sole owner acc3b5c5 subsequently reports both jobs, eight late steps and artifact13551958623/results.json23/23 passed. Later1499 cancellation resets the streak; this historical result earns no new pass. Native side-by-side, installed behavior, real-data destructive discard and older skipped wider-browser test remain unverified. Retained split/file-menu scores unchanged."
+    ]
+   },
+   {
+    "id": "sidebar-group-748",
+    "areas": [
+     "home",
+     "sidebar"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/748",
+    "merge_commit": "afc91be9a68d35790c5abfe2d2cfbf929717d4ed",
+    "evidence_path": "evidence/sidebar-group/README.md",
+    "capture_manifests": [
+     "evidence/sidebar-group/captures.json",
+     "evidence/sidebar-group/browser-checks.json",
+     "evidence/sidebar-group/filter-checks.json"
+    ],
+    "lane": "Retained REA dark Chromium reference and both-theme OpenConductor fixtures with invented personal-account data and mocked Tauri preferences; no new capture by ledger integration",
+    "summary": "Group by Status/Project is implemented, superseding the prior missing-feature note. Owner reports five status groups, counts/order, project badges, checked state, filtering and reload/collapse assertions passed. Both-theme DOM shortcut numbers are verified, not modifier-number activation. All20 exact-head checks/six PR workflows and six consuming afc91be9 workflows passed per Home owner. Sole E2E owner confirms1509/run42324906351 both jobs and artifact13554729151/results.json23/23 passed. Package artifact13555120987 passed39/39/signature checks per owner; archive not reopened here.",
+    "provenance": {
+     "owner_session": "27102e36-8b7f-4f1b-9ada-1e0503d3fede",
+     "source_message": "e50f7b35-1ef2-4635-9684-574f19d9c478",
+     "verification": "Merge identity and committed evidence read from fetched main. Capture inspection, runtime assertions, CI/artifacts and package logs are attributed to their existing owners, not rerun or independently inspected here. Follow-through is closed."
+    },
+    "limits": [
+     "REA semantic graph remains partial after renderApp heap exhaustion; zero seed matches are not feature absence. Static traces are not executed runtime proof.",
+     "Initial-source proof is separate from #751's final #748 tree proof. Reference light theme, pixel parity, tooltip/small-window/touch/country-map coverage and modifier-number activation remain unverified.",
+     "Browser storage/mocked Tauri is not conductor.db persistence. Local Rust aes-gcm cache check was not run; native exact-build/install/WebKit, real providers/auth and nine-screen parity remain unverified.",
+     "Initial head7cf9cded failure42320999768/job128245257468 waited for [reason] cleared. Later green heads do not prove that timeout's cause; #750 proves only the separately constructed stale-handler defect."
+    ]
+   },
+   {
+    "id": "reason-defaults-clear-750",
+    "areas": [
+     "settings"
+    ],
+    "verdict": "runtime-only",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/750",
+    "merge_commit": "154ba0dab2c9f2c1af622d3e6cacb17c4f09194a",
+    "evidence_path": "evidence/settings/defaults-clear/README.md",
+    "capture_manifests": [
+     "evidence/settings/defaults-clear/provenance.json"
+    ],
+    "lane": "Production React server-rendered callbacks and actual Settings hook, in-memory invented IPC, deterministic write-completion gates; no browser or native event dispatch",
+    "summary": "Retained before.tap proves three stale-handler schedules fail while the separate-render control passes. All four pass after ReasonTab composes requests through its latest Settings reference, retaining save(Settings) and the E2E assertions. Owner reports16 focused and1310 full units/build/colors passed, followed by16 exact-head checks/four PR workflows. Sole E2E owner confirms consuming1512/run42327005025 on154ba0da passed both jobs, eight late steps and artifact13555962196/results.json23/23 including agents-reason. Package42327005084/artifact13556166358 passed39/39 per Settings owner, without archive download or native launch.",
+    "provenance": {
+     "owner_session": "49e3976d-9553-42d8-8101-2504177fbb97",
+     "source_message": "9ef4360f-0493-4cae-b0b8-992cb24b6e87",
+     "merge_receipt": "ffac5774-12e4-4c75-a8d0-d6670364ce5d",
+     "e2e_owner_message": "c4d73dae-f1d5-44af-a61f-d70d16326bd6",
+     "verification": "Merge identity and retained provenance/TAP/README reconciled on Reason Cloud. Tests, consuming jobs/artifact and package checks attributed to existing owners; not rerun here. This is an OpenConductor finding, not new Conductor behavior evidence."
+    },
+    "limits": [
+     "The conditional stale-handler defect and correction are deterministic. The original #748 WebKit timeout's dispatch schedule/payload cause remains unproven; passing consuming CI does not establish that attribution.",
+     "Callbacks are invoked directly and IPC is in-memory. WebKit input dispatch, effects/provider transitions, Rust/filesystem persistence, native rendering/pointer and real authentication are unverified.",
+     "No new screenshot was taken for this nonvisual request-composition fix. Package metadata/signing is not installed-binary or native parity proof. All nine native verdicts remain unverified."
+    ]
+   },
+   {
+    "id": "sidebar-group-final-source-751",
+    "areas": [
+     "home",
+     "sidebar"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/751",
+    "merge_commit": "70bf6c5e55ff3dfcbead90ad370a16538a192e3c",
+    "evidence_path": "evidence/sidebar-group/exact-head-after/README.md",
+    "capture_manifests": [
+     "evidence/sidebar-group/exact-head-after/provenance.json",
+     "evidence/sidebar-group/exact-head-after/captures.json",
+     "evidence/sidebar-group/exact-head-after/checks.json",
+     "evidence/sidebar-group/exact-head-after/filter-checks.json"
+    ],
+    "lane": "Evidence-only final #748 source proof in Linux Chromium, dark/light1280x820, invented fixture storage and mocked native boundary; retained dark reference reused",
+    "summary": "Owner reports both existing assertion drivers passed, eight REA captures plus two filter screenshots inspected/published, and35 focused tests/build/hash/inventory passed. Captured local42c5b3d5 tree dbdc265e equals published #748 e295f98f. This closes final #748 source coverage, not a later consuming-main render. #751 merged after16 checks/four PR workflows passed. Sole E2E owner subsequently confirms consuming1513/run42327550939 on70bf6c5e completed success: both jobs128267531278/128267531535, eight late suites and artifact13556900481/results.json23/23 including agents-reason. Home owner closes all five consuming workflows. Package42327551133/artifact13556495038 passed39/39/signature checks; not installed.",
+    "provenance": {
+     "owner_session": "27102e36-8b7f-4f1b-9ada-1e0503d3fede",
+     "source_message": "ce578cec-a5ac-4b58-afaf-0dc017d2f91d",
+     "consuming_receipt": "f9125e39-3f27-4503-9f10-bc8738291b95",
+     "e2e_owner_message": "1fd7abee-f021-4bb2-ad2f-1a025ea3e1a6",
+     "previous_consuming_receipt": "f63bf952-9204-4331-9e0f-e5f10e909459",
+     "published_head": "a5ca4dd828f9cc3f360037df29375e40b5eaa0a7",
+     "verification": "Merge and retained manifest identities reconciled from main. Screenshot inspection and runtime/CI/package results remain owner-attributed; ledger integration did not view the images or rerun the proof."
+    },
+    "limits": [
+     "Eight REA screenshot hashes and two filter PNGs were checked/inspected by the owner, not here. Reference was reused without recapture. Final #748 tree identity does not attest a later package's rendered identity or pixel-exact parity.",
+     "preview-lifecycle.json records server f338248e-16db-46db-885e-556e9fba50c8/4682 stopped, started01:46:40.997Z and stop recorded01:48:58.673Z. The latter is an upper bound, not exact stop time. No new preview or shutdown here.",
+     "REA semantic PARTIAL; local Rust cache check NOT RUN; native installation/exact-build/WebKit, real auth, modifier-number activation, reference-light/pixel parity and real database persistence remain unverified. No score or native promotion."
+    ]
+   },
+   {
+    "id": "native-controls-741-742",
+    "areas": [
+     "settings",
+     "workspace-chat",
+     "dialogs"
+    ],
+    "verdict": "runtime-only",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/741",
+    "merge_commit": "f9c992c3225506d2e4bd55925747c3ef6be73f15",
+    "evidence_path": "evidence/settings/terminal-slider/README.md",
+    "runtime_report_url": "https://reasonmachines.com/agents/d8e894e9-2c63-4ec3-9a11-f28722af996d?page=35fcabfb-811f-4210-b4a4-61c67f0b99d8",
+    "source_commit": "154ba0dab2c9f2c1af622d3e6cacb17c4f09194a",
+    "lane": "Owner-reported locally built ad-hoc debug app on authorized sven m5 max, native WKWebView synthetic DOM events and scratch filesystem; no agents or credentials",
+    "summary": "Owner reports #741 synthetic PageUp12 to20, PageDown20 to10,1px arrows/bounds passed,6px track/16px opaque thumb computed, terminal_font_size12 written to scratch TOML and read after shutdown. #742 dark/light computed muted tokens and synthetic Yes/No dismissal passed in the native app through the no-provider/stale-request false path; final driver30/30. Four sequential owned apps/helpers exited with no scratch handles/IP sockets, and stable PID54473 identity/binary unchanged per owner. Earlier partial attempts remain partial, not a combined green suite.",
+    "provenance": {
+     "owner_session": "d8e894e9-2c63-4ec3-9a11-f28722af996d",
+     "source_message": "ba56060e-fdb0-4e12-a3b1-b85b7f97c134",
+     "corroborating_owner_message": "57a9ebc6-a9aa-4533-aa3d-e771a73277f8",
+     "permission_owner_comment": "https://github.com/reason-machines/openconductor/pull/742#issuecomment-6701071210",
+     "binary_sha256": "6ea779fce19dde74929990cf6d0816184fbd4633445ea6f7977013f39b92fd87",
+     "archive_sha256": "e04a65a977e2cf7c32b53b574f10ffd3e5fd4aa4a0e52b033b9d1577529ffe3e",
+     "verification": "Attributed native-owner receipt;2,629 source-file hashes unchanged per owner. Source ancestry checked on Cloud, but archive, image, running app and native filesystem were not independently inspected or rerun by ledger integration."
+    },
+    "limits": [
+     "Exact-window screenshot FAILED with could not create image from window. Nine surfaces reached in DOM across partial runs do not establish visual or final side-by-side acceptance. All nine final native reviews remain unverified.",
+     "#741 pointer drag, physical keyboard and restart persistence NOT RUN. Shutdown TOML readback is not restart persistence or real-user filesystem verification.",
+     "#742 is not an active-agent permission round trip. Outbound option payload mapping was not observed. One local synthetic chat/message is not real provider/auth proof.",
+     "#739 was not rerun; real macOS IME and #740 terminal tabs/selected-worktree cwd NOT RUN. No agents, credentials, network, CI, real-data cleanup or new native launch/driver was requested by ledger integration."
+    ]
+   },
+   {
+    "id": "projects-keyboard-752",
+    "areas": [
+     "palette"
+    ],
+    "verdict": "partial",
+    "pr_url": "https://github.com/reason-machines/openconductor/pull/752",
+    "merge_commit": "9443720f9c6ea802316192321da5b76f4931447a",
+    "evidence_path": "evidence/palette/projects-keyboard/README.md",
+    "capture_manifests": [
+     "evidence/palette/projects-keyboard/checks.json"
+    ],
+    "lane": "REA6.8.0 Chromium155 decoded Conductor0.87.6 and OpenConductor frontend, invented three-project/six-workspace fixture with mocked Tauri IPC, dark Stone1280x820",
+    "summary": "Merged Projects correction prefers a surviving recent visit, then newest updatedAt, instead of the first workspace. Retained REA scenarios exercise two filtered rows with ArrowDown/Up and Ctrl+N/P including wrapping; all final steps completed on both apps. After visiting Accra and activating the second tide project, reference returns ws-accra, before OpenConductor opens Tallinn, and after opens Accra. The owner reports two built-app checks, seven focused and1313 full units/build/colors passed. All16 published-head checks passed. Coordinator and area owner report consuming macOS package42329855108 passed39/39 and signature verification; no install or native run is claimed.",
+    "provenance": {
+     "owner_session": "15faf4d8-d257-49ef-874d-8008c5c78aaf",
+     "source_message": "3e1f2dfb-5c02-4004-ab5c-5e875c64f119",
+     "merge_package_receipt": "104eb988-f987-4121-b697-885fcbaecb9f",
+     "package_owner_receipt": "20ed657e-9389-4ea8-9b79-b1619183019c",
+     "package_run": "42329855108",
+     "package_job": "128273636668",
+     "package_artifact": "13556398463",
+     "package_bytes": 57454302,
+     "published_head": "26933b02e9ab0a35e09fdac777e6d7f405d305f4",
+     "tested_base": "154ba0dab2c9f2c1af622d3e6cacb17c4f09194a",
+     "verification": "Merge identity and committed README/checks/source-file hashes reconciled on Reason Cloud. Runtime assertions, image inspection, package checks and test results are owner-attributed, not rerun by ledger integration. Captures predate the final published head."
+    },
+    "limits": [
+     "Captures use154ba0da plus the two source-file changes whose hashes are retained. Sync to70bf6c5e followed capture and added only sidebar evidence. These are not final-published-head, current-main or native-package screenshots. No whole-screen pixel parity claim.",
+     "The reference runtime scenario exercises the last-viewed path. Newest-workspace fallback, missing/stale recent IDs and empty projects have only bounded unit/source evidence, not reference runtime coverage. Initial unfiltered Projects focus remains a separate gap.",
+     "Native behavior, real agent/auth, clipboard, IME, Home/End, modifier-number activation, platform key interception and external launches NOT RUN. Invalid initial Help/Projects fixtures stay excluded. All nine final native reviews remain unverified.",
+     "REA exit0/evidenceID was insufficient when earlier actions failed; final checks require every step completed. Superseded incomplete captures and initial inaccessible-preview execution context remain recorded gaps. The owned port4518 preview has an actual stopped receipt; no new preview/capture here.",
+     "Consuming main1518/run42329855067 at9443720f remains with the sole E2E owner and is not counted while active. Package/signature checks are not native execution or real-auth proof."
     ]
    }
   ],
-  "reconciled_at": "2026-11-07T01:03:35Z",
+  "reconciled_at": "2026-11-07T02:45:20Z",
   "provenance": "Merged source and committed area manifests reconciled on Reason Cloud. Area checks, artifact inspection and native limits are attributed to their existing owners; no CI or native verification was rerun by ledger integration.",
   "batch_notes": [
+   "Current reconciliation against main9443720f adds merged #752 filtered multi-row Projects navigation/activation proof to the existing28 records. Earlier #748/#750/#751 and bounded native #741/#742 receipts are unchanged. Every raw/scoped row, exclusion and capture score is retained; all nine final native reviews and both system requirements remain unverified.",
+   "Sole E2E owner acc3b5c5 reports full ordered-main streak8/10:1500,1502,1504,1507,1509,1512,1513,1515 after1499 cancellation. Owner receipt c1f09751 confirms1515/run42329391407 at70bf6c5e completed02:38:04Z, both jobs and artifact13556254121/results.json23/23 including agents-reason. Automatic1518/run42329855067 at9443720f is active and not counted; delayed pull_request1501/42320678170 remains excluded. This is attributed owner accounting, not an independent rescore or native/five-pass/auth promotion.",
+   "#752 supersedes only the single-result/untested filtered-navigation limitation: initial unfiltered focus, fallback runtime, final-published-head render and native palette review remain unverified. Browser sign-in P0 stays with f7006ba7 and sole Mac proof owner d8e894e9; no completion or native-verdict credit. The coordinator owns the existing Page; this Session supplies source/data without publishing or copying it.",
+   "Earlier notes below retain their e9cfaed4 observation windows. New merged evidence supersedes only the stated gaps, not excluded fixtures, raw assessments or native verdicts. No builder changes, Mac input, preview, capture, dependency install, new worker, CI dispatch/rerun or duplicate watcher occurs in this reconciliation.",
    "Reconciled on Reason Cloud against main e9cfaed4, not a new capture identity. Existing captures, raw/scoped scores, 341-entry denominator and all nine native final-review verdicts remain unchanged. The later #739 runtime-owner receipt adds bounded synthetic WKWebView assertions only.",
    "Merged #738–#745 and proof-only #746 have separate browser/test/package/native limits. No Mac action, new capture, preview, CI dispatch, duplicate watcher or builder was performed by ledger integration.",
    "Sole E2E owner acc3b5c5 confirms main 50265ba2 / 42317008433 completed success at 2026-11-07T00:29:22Z, both jobs and 23/23 App flows. Reported streak stays 0/10 because newer run-number 1496 / 42317638688 was cancelled. Successor 1497 / 42317956702 at a170cfbc was in progress at the owner snapshot, not a pass.",
    "Five consecutive local built-app passes, real-auth Mac-to-cloud behavior, real macOS IME and all nine installed-app side-by-side reviews remain unverified. Fake-provider CI and package signing cannot substitute.",
    "#744 consuming workflows are complete. #746 consuming workflows remain with Home and #738 main E2E with acc3b5c5. These are timestamped observations, not an independently refreshed global CI view.",
    "Native source pin 8467a7d9 came from a driver note, not independently verified human input. Temporary coordinator holds are not an immutable human source freeze. This cloud-only reconciliation launches nothing on the Mac, inputs nothing into stable PID 54473 and performs no agent/credential operation.",
-   "Group by is missing with a partial REA graph gap. Invalid initial Help light/Projects fixtures stay excluded. #738 skipped-browser proof and country-map/tooltip/small-window/touch remain unverified.",
+   "Historical e9cfaed4 snapshot recorded Group by missing with a partial REA graph gap. Merged #748/#751 now supersede feature absence, not the partial semantic-coverage verdict. Invalid initial Help light/Projects fixtures stay excluded. #738 skipped-browser proof and country-map/tooltip/small-window/touch remain unverified.",
    "#728/#736 deliveries remain historical. #711 stays closed unmerged. Existing program check-in and exclusive area proof owners are reused; no new monitoring.",
    "Ledger PR #747 merged prematurely at 2026-11-07T00:56:46.75571Z before all exact-head checks succeeded. Coordinator observed 14/16 successes and two E2E jobs running; direct readback confirms Codex completed later at 00:58:03Z. The ALL-checks merge gate did not hold. Later green checks cannot undo this violation. No cancellation or rollback is claimed after merge."
   ],
@@ -32633,11 +32792,11 @@
    },
    "sidebar": {
     "area_verdict": "partial",
-    "gap": "Updated/Created ordering, checked states and settled radio geometry have dark/light local-account browser proof. OpenConductor keyboard/mocked reload persistence passed. Group by is missing with partial REA graph evidence; whole-menu/native review remains incomplete."
+    "gap": "Sort and merged #748 Group by have bounded dark/light fixture proof; #751 attests the final #748 source tree. Counts, filtering and mocked reload/collapse passed. Modifier-number activation, real database persistence, reference light/pixel parity and whole-menu/native review remain unverified. REA semantic graph coverage remains partial."
    },
    "workspace-chat": {
     "area_verdict": "partial",
-    "gap": "Turn-footer, startup/picker readiness, terminal/Find/label fixtures and built-app E2E are separate proof. Permission-token correction does not close the retained wrong state. Older 8467 scratch assertions do not verify newer changes. Real-auth, selected-worktree cwd and native review remain unverified."
+    "gap": "Turn-footer, startup/picker readiness, terminal/Find/label fixtures and built-app E2E remain separate proof. Owner-reported #742 native computed tokens/synthetic dismissal use a no-provider false path, not active-agent permission delivery or visual parity. The retained wrong state, outbound payload mapping, real auth, selected-worktree cwd and native final review remain unverified."
    },
    "composer": {
     "area_verdict": "partial-known-defect",
@@ -32649,7 +32808,7 @@
    },
    "settings": {
     "area_verdict": "partial",
-    "gap": "Local-page and #741 slider keyboard/geometry browser proof passed. Containing E2E 42317008433 passed. Native slider rendering/pointer, filesystem persistence, dropdown/font variants and real auth remain unverified. Native default-off gate proof remains unverified."
+    "gap": "Local-page/#741 slider browser proof and #750 deterministic stale-handler before/after proof are separate. Sole owner reports consuming #750 fake-provider E2E passed23/23; original #748 WebKit timing causality remains unproven. Owner reports #741 native synthetic keys/computed geometry and scratch-TOML write/read after shutdown passed; physical keys, drag, restart persistence and visual parity remain unverified. Font/dropdown variants, real auth and native default-off gate remain unverified. Browser sign-in P0 remains separately owned, not completed here."
    },
    "open-in": {
     "area_verdict": "partial",
@@ -32657,7 +32816,7 @@
    },
    "palette": {
     "area_verdict": "partial",
-    "gap": "Retained states, icon/menu proof, supplementary corrected light samples and one-result Projects selection are not full keyboard/action/native review. Invalid initial fixtures stay excluded. Wrapping/activation, clipboard/external launches remain unverified."
+    "gap": "Merged #752 adds filtered two-row Projects ArrowUp/Down/CtrlN/P wrapping and last-viewed Enter activation in REA Chromium fixtures. Captures predate the final published head. Initial unfiltered focus, fallback reference-runtime behavior, Home/End, modifier-number actions, clipboard/external launches and native final review remain unverified. Invalid initial fixtures stay excluded; retained state scores are unchanged."
    },
    "dialogs": {
     "area_verdict": "partial",
@@ -32914,7 +33073,9 @@
     "shell-actions-722",
     "home-details-730",
     "passport-734",
-    "sidebar-sort-744-746"
+    "sidebar-sort-744-746",
+    "sidebar-group-748",
+    "sidebar-group-final-source-751"
    ],
    "area_verdict": "partial"
   },
@@ -32933,11 +33094,13 @@
     "all-workspaces",
     "sidebar-after-archive"
    ],
-   "gap": "Updated/Created ordering, checked states and settled radio geometry have dark/light local-account browser proof. OpenConductor keyboard/mocked reload persistence passed. Group by is missing with partial REA graph evidence; whole-menu/native review remains incomplete.",
+   "gap": "Sort and merged #748 Group by have bounded dark/light fixture proof; #751 attests the final #748 source tree. Counts, filtering and mocked reload/collapse passed. Modifier-number activation, real database persistence, reference light/pixel parity and whole-menu/native review remain unverified. REA semantic graph coverage remains partial.",
    "supplemental_evidence": [
     "shell-actions-722",
     "home-details-730",
-    "sidebar-sort-744-746"
+    "sidebar-sort-744-746",
+    "sidebar-group-748",
+    "sidebar-group-final-source-751"
    ],
    "area_verdict": "partial"
   },
@@ -32959,7 +33122,7 @@
     "needs-permission",
     "menu-chat-tab"
    ],
-   "gap": "Turn-footer, startup/picker readiness, terminal/Find/label fixtures and built-app E2E are separate proof. Permission-token correction does not close the retained wrong state. Older 8467 scratch assertions do not verify newer changes. Real-auth, selected-worktree cwd and native review remain unverified.",
+   "gap": "Turn-footer, startup/picker readiness, terminal/Find/label fixtures and built-app E2E remain separate proof. Owner-reported #742 native computed tokens/synthetic dismissal use a no-provider false path, not active-agent permission delivery or visual parity. The retained wrong state, outbound payload mapping, real auth, selected-worktree cwd and native final review remain unverified.",
    "supplemental_evidence": [
     "turn-changes-718",
     "reason-runtime-715",
@@ -32967,7 +33130,8 @@
     "chat-startup-729-732",
     "terminal-tabs-740",
     "permission-colors-742",
-    "picker-readiness-743"
+    "picker-readiness-743",
+    "native-controls-741-742"
    ],
    "area_verdict": "partial"
   },
@@ -33055,12 +33219,14 @@
     "settings-repo-misc-lower",
     "settings-search"
    ],
-   "gap": "Local-page and #741 slider keyboard/geometry browser proof passed. Containing E2E 42317008433 passed. Native slider rendering/pointer, filesystem persistence, dropdown/font variants and real auth remain unverified. Native default-off gate proof remains unverified.",
+   "gap": "Local-page/#741 slider browser proof and #750 deterministic stale-handler before/after proof are separate. Sole owner reports consuming #750 fake-provider E2E passed23/23; original #748 WebKit timing causality remains unproven. Owner reports #741 native synthetic keys/computed geometry and scratch-TOML write/read after shutdown passed; physical keys, drag, restart persistence and visual parity remain unverified. Font/dropdown variants, real auth and native default-off gate remain unverified. Browser sign-in P0 remains separately owned, not completed here.",
    "supplemental_evidence": [
     "cloud-ui-gate-723",
     "reason-runtime-715",
     "local-settings-716",
-    "terminal-slider-741"
+    "terminal-slider-741",
+    "reason-defaults-clear-750",
+    "native-controls-741-742"
    ],
    "area_verdict": "partial"
   },
@@ -33103,10 +33269,11 @@
     "palette-search",
     "palette-no-results"
    ],
-   "gap": "Retained states, icon/menu proof, supplementary corrected light samples and one-result Projects selection are not full keyboard/action/native review. Invalid initial fixtures stay excluded. Wrapping/activation, clipboard/external launches remain unverified.",
+   "gap": "Merged #752 adds filtered two-row Projects ArrowUp/Down/CtrlN/P wrapping and last-viewed Enter activation in REA Chromium fixtures. Captures predate the final published head. Initial unfiltered focus, fallback reference-runtime behavior, Home/End, modifier-number actions, clipboard/external launches and native final review remain unverified. Invalid initial fixtures stay excluded; retained state scores are unchanged.",
    "supplemental_evidence": [
     "open-in-switcher-727",
-    "help-popover-745"
+    "help-popover-745",
+    "projects-keyboard-752"
    ],
    "area_verdict": "partial"
   },
@@ -33139,7 +33306,8 @@
     "onboarding-lifecycle-731",
     "linked-directory-733",
     "help-popover-745",
-    "discard-alert-738"
+    "discard-alert-738",
+    "native-controls-741-742"
    ],
    "area_verdict": "partial"
   }
