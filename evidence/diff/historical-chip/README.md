@@ -54,6 +54,6 @@ npm run lint:colors
 git diff --check
 ```
 
-[The focused source suite](unit-after.tap) passed 40 tests, with zero failures or skips. [Colour lint](colors-after.txt) passed. These are stylesheet and token contract checks, not a browser's computed-style engine.
+[The focused source suite](unit-after.tap) passed 40 tests, with zero failures or skips. [Colour lint](colors-after.txt) passed. These are stylesheet and token contract checks, not a browser's computed-style engine. The style tests also pin the retained pure-merger result's surviving link classes and removal of the muted and generic ghost classes. They do not rerun the shipped merger in CI.
 
 No install, build, typecheck, browser test, screenshot, package inspection, or native test ran for this correction under the source-only assignment. The existing commit-history screenshots predate this correction and are not after evidence. Exact-head workflows and consuming-main package acceptance remain required before merge and delivery acceptance.

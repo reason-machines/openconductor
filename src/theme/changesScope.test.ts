@@ -4,6 +4,10 @@ import { test } from "node:test";
 
 const styles = readFileSync(new URL("../features/diff/diff.css", import.meta.url), "utf8");
 const tokens = readFileSync(new URL("./tokens.css", import.meta.url), "utf8");
+const reference: unknown = JSON.parse(readFileSync(new URL("../../evidence/diff/historical-chip/class-merge-result.json", import.meta.url), "utf8"));
+assert.ok(typeof reference === "object" && reference !== null && "final" in reference);
+assert.ok(typeof reference.final === "string");
+const referenceClasses = new Set(reference.final.split(/\s+/));
 
 function declarations(css: string, selector: string): Map<string, string> {
   const values = new Map<string, string>();
@@ -15,6 +19,11 @@ function declarations(css: string, selector: string): Map<string, string> {
 }
 
 test("historical scope uses the reference link fill, text and 40% border instead of action accent", () => {
+  assert.ok(referenceClasses.has("bg-link"));
+  assert.ok(referenceClasses.has("text-link-foreground"));
+  assert.ok(referenceClasses.has("border-link-foreground/40"));
+  assert.ok(!referenceClasses.has("text-muted-foreground"));
+  assert.ok(!referenceClasses.has("text-foreground/90"));
   const chip = declarations(styles, ".rp-tabs-end .oc-changes-historical-scope");
   assert.equal(chip.get("background"), "var(--highlight)");
   assert.equal(chip.get("color"), "var(--emphasis)");
@@ -22,6 +31,10 @@ test("historical scope uses the reference link fill, text and 40% border instead
 });
 
 test("historical scope hover outranks generic icon hover without changing its link text", () => {
+  assert.ok(referenceClasses.has("hover:bg-link-elevated"));
+  assert.ok(referenceClasses.has("hover:text-link-foreground-elevated"));
+  assert.ok(!referenceClasses.has("hover:bg-sidebar-accent"));
+  assert.ok(!referenceClasses.has("hover:text-accent-foreground"));
   const hover = declarations(styles, ".rp-tabs-end .oc-changes-historical-scope:hover:not(:disabled)");
   assert.equal(hover.get("background"), "var(--link-elevated)");
   assert.equal(hover.get("color"), "var(--emphasis)");
