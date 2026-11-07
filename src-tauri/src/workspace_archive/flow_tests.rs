@@ -266,21 +266,21 @@ async fn unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready(
     assert!(!e.f.ws().exists());
     assert_eq!(e.row().await.state, WorkspaceState::Archived);
 
-    // "Restore to new branch": `sven/ws-v1` at the archive commit, stored on the row.
+    // "Restore to new branch": reuse the now-free name at the archive commit.
     let r = e.unarchive_with(true).await.unwrap();
     assert!(
         r.restored && r.recreated_branch && r.restored_changes && r.scenario.is_none(),
         "{r:?}"
     );
-    assert_eq!(r.branch.as_deref(), Some("sven/ws-v1"));
+    assert_eq!(r.branch.as_deref(), Some("sven/ws"));
     assert!(r.notices.is_empty());
     assert_eq!(
         fs::read_to_string(e.f.ws().join("wip.txt")).unwrap(),
         "unsaved\n"
     );
-    assert_eq!(g(e.f.ws(), &["branch", "--show-current"]), "sven/ws-v1");
+    assert_eq!(g(e.f.ws(), &["branch", "--show-current"]), "sven/ws");
     assert_eq!(e.row().await.state, WorkspaceState::Ready);
-    assert_eq!(e.row().await.branch.as_deref(), Some("sven/ws-v1"));
+    assert_eq!(e.row().await.branch.as_deref(), Some("sven/ws"));
     assert!(!record.exists());
 
     // A directory in the way leaves the row archived.

@@ -74,7 +74,11 @@ interface AttachedSend {
 /** `forkToTab`: the shown chat's "Fork to new tab", with its composer draft (the tab menu's item). */
 type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend & { forkToTab?: () => void };
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
-import { openBigTab } from "../features/terminal/session";
+import { closeTab, getTabs, onCenterTabOpened, openBigTab, subscribeTabs } from "../features/terminal/session";
+import { TerminalHost } from "../features/terminal/TerminalPanel";
+import { terminalTabs, type TerminalTab } from "../features/terminal/tabs";
+import { tabLabel } from "../features/terminal/shellIntegration";
+import "../features/terminal/centerTerminal.css";
 import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { PRIORITY } from "../keybindings/dispatcher.ts";
@@ -142,8 +146,6 @@ interface ChatPanelProps extends Props {
   /** Set for a review chat. */
   review?: ReviewTab;
   bridge: MutableRefObject<ShownChatBridge | null>;
-  /** The main area's tab strip. */
-  tabs: ReactNode;
   /** Shown instead of the transcript while another tab (the diff) is active; the composer stays. */
   content: ReactNode | null;
   /** The agent started or finished a turn. */
@@ -195,7 +197,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
 /** What the chat panel shows: Codex's approvals and consent requests, or the permission requests of Reason and Claude Code. */
 type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly PermissionPrompt[]; approvals?: CodexApproval[]; consents?: CodexConsent[] };
 
-function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, tabs, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const main = chatId === workspace.id;
@@ -516,7 +518,6 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
 
   return (
     <section className="chat" aria-label="Chat">
-      {tabs}
       {/* Conductor minimizes the empty composer when the content tab scrolls (onScrollCapture → minimizeIfEmpty). */}
       {content !== null ? (
         <div className="chat-content" onScrollCapture={minimize.minimizeIfEmpty}>
@@ -809,6 +810,8 @@ interface MainTabsProps {
   prTab: string | null;
   onClosePr: () => void;
   reviews: ReviewTab[];
+  terminals: TerminalTab[];
+  onCloseTerminal: (id: string) => void;
   onSelect: (t: MainTab) => void;
   onCloseDiff: () => void;
   onCloseReview: (chatId: string) => void;
@@ -823,7 +826,7 @@ interface MainTabsProps {
   newChat: ReactNode;
 }
 
-function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, chatMenu, newChat }: MainTabsProps) {
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, terminals, onCloseTerminal, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, chatMenu, newChat }: MainTabsProps) {
   const [menu, setMenu] = useState<{ chatId: string; title: string; x: number; y: number } | null>(null);
   const openMenu = (chatId: string, tabTitle: string) => (e: ReactMouseEvent) => {
     e.preventDefault();
@@ -872,6 +875,16 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, onSelect
           </button>
         </span>
       ))}
+      {terminals.map((terminal, index) => {
+        const id = `terminal:${terminal.id}`;
+        const label = tabLabel(terminals.length === 1 ? "Terminal" : `Terminal ${index + 1}`, terminal.runningProgram);
+        return (
+          <span key={id} className={`main-tab${active === id ? " active" : ""}`}>
+            <button role="tab" aria-selected={active === id} className={active === id ? "active" : ""} onClick={() => onSelect(id)}>{label}</button>
+            <button className="main-tab-close" onClick={() => onCloseTerminal(terminal.id)} aria-label={`Close ${label} tab`}>×</button>
+          </span>
+        );
+      })}
       {newChat}
     </div>
   );
@@ -924,8 +937,7 @@ function TargetChip({ target, open, setOpen, repo, variant = "header" }: { targe
 
 export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread, hasNextUnread }: Props) {
   // The right panel's Setup / Run / Terminal strip: open on Run, like Conductor.
-  // ⌘J (view.toggleTerminalPanel) hides or shows it; ⌘⇧T opens a big terminal
-  // in it while Big terminal mode is on.
+  // ⌘J hides or shows the right panel; Big terminals live in the center.
   const [stripOpen, setStripOpen] = useState(true);
   const [stripView, setStripView] = useState<StripView>("run");
   useEffect(() => setStripView("run"), [workspace.id]);
@@ -934,6 +946,15 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
   const [diffOpen, setDiffOpen] = useState(false);
   const [mainTab, setMainTab] = useState<MainTab>("chat");
+  const terminals = useSyncExternalStore(subscribeTabs, () => getTabs(workspace.id));
+  const centerTerminals = terminalTabs(terminals, "center");
+  const centerTerminal = centerTerminals.find((tab) => `terminal:${tab.id}` === mainTab);
+  useEffect(() => onCenterTabOpened((workspaceId, id) => {
+    if (workspaceId === workspace.id) setMainTab(`terminal:${id}`);
+  }), [workspace.id]);
+  useEffect(() => {
+    if (mainTab.startsWith("terminal:") && !centerTerminal) setMainTab("chat");
+  }, [mainTab, centerTerminal]);
   const [prOpen, setPrOpen] = useState(false);
   const [pickingTarget, setPickingTarget] = useState(false);
   const [pickingChangesTarget, setPickingChangesTarget] = useState(false);
@@ -1073,7 +1094,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   const canReview = diff.load.state === "ready" && diff.files.length > 0;
 
   // Cycles All changes, the workspace chat and review chats in strip order.
-  const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...(prOpen ? ["pr"] : []), ...reviews.tabs.map((r) => r.chatId)];
+  const tabOrder = [...(diffOpen ? ["diff"] : []), "chat", ...(prOpen ? ["pr"] : []), ...reviews.tabs.map((r) => r.chatId), ...centerTerminals.map((t) => `terminal:${t.id}`)];
   const stepTab = (dir: 1 | -1) => setMainTab((t) => tabOrder[(tabOrder.indexOf(t) + dir + tabOrder.length) % tabOrder.length] ?? "chat");
   useKeybindings({
     "view.toggleTerminalPanel": () => setStripOpen((v) => !v),
@@ -1106,13 +1127,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
       },
       "terminal.newBigTab": () => {
         const big = bigTabRequest();
-        if (!big || !repo.path) return false;
-        void openBigTab(workspace.id, repo.path, big)
-          .catch(() => {})
-          .finally(() => {
-            setStripView("terminal");
-            setStripOpen(true);
-          });
+        const cwd = workspace.path ?? repo.path;
+        if (!big || !cwd) return false;
+        void openBigTab(workspace.id, cwd, big).catch((error) => notify?.("error", String(error)));
         return true;
       },
     },
@@ -1121,11 +1138,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   const showDiff = diffOpen && mainTab === "diff";
   const showPr = prOpen && mainTab === "pr";
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
-  const activeTab = showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
+  const activeTab = centerTerminal ? `terminal:${centerTerminal.id}` : showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const prNumber = pullRequest.pr?.number ?? null;
   const [prMenu, setPrMenu] = useState<{ x: number; y: number } | null>(null);
   useEffect(() => {
-    if (activeTab !== "diff" && activeTab !== "pr") recordViewedChat(workspace.id, activeTab);
+    if (activeTab !== "diff" && activeTab !== "pr" && !activeTab.startsWith("terminal:")) recordViewedChat(workspace.id, activeTab);
   }, [workspace.id, activeTab]);
   // ⌘W closes the tab on screen and ⌘⇧T reopens the last closed one, as Conductor's workspace
   // view does. The workspace's own chat has no close button here, so ⌘W leaves it. Inside a
@@ -1135,6 +1152,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
       "nav.closeTab": () => {
         if (activeTab === "diff") closeDiffTab();
         else if (activeTab === "pr") closePrTab();
+        else if (centerTerminal) closeTab(workspace.id, centerTerminal.id);
         else if (activeTab !== "chat") closeReview(activeTab);
       },
       "nav.reopenTab": () => {
@@ -1148,7 +1166,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   shownChat.current = activeReview?.chatId ?? workspace.id;
   // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
   // skips it while the window has focus, and an unread workspace shown that way is read.
-  const transcriptShown = showDiff || showPr ? null : shownChat.current;
+  const transcriptShown = showDiff || showPr || centerTerminal ? null : shownChat.current;
   const focused = useWindowFocused();
   useEffect(() => {
     setShownChat(transcriptShown);
@@ -1157,9 +1175,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   // The selected chat tab (Conductor's selectedSessionId): the row menu's "Mark as unread" marks it.
   const selectedChat = shownChat.current;
   useEffect(() => {
-    setSelectedChat(selectedChat);
+    setSelectedChat(centerTerminal ? null : selectedChat);
     return () => setSelectedChat(null);
-  }, [selectedChat]);
+  }, [selectedChat, centerTerminal]);
   // Showing a chat (again) drops its hand mark (yIo's mount effect).
   useEffect(() => clearManuallyUnread(selectedChat), [selectedChat]);
   useEffect(() => {
@@ -1279,6 +1297,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
         </div>
       </header>
       <div className={`ws-split${rightPanelVisible ? "" : " right-hidden"}`}>
+        <div className="ws-main">
+          <MainTabs title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
+          <div className="ws-chat-host" hidden={centerTerminal !== undefined}>
         <ChatPanel
           repo={repo}
           workspace={workspace}
@@ -1294,7 +1315,6 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
           onNextUnread={!prBase?.merged && hasNextUnread?.(selectedChat) ? onNextUnread : undefined}
           forkToNewTab={reviews.fork}
           chatTabs={[{ chatId: workspace.id, title: workspace.chatTitle ?? workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
-          tabs={<MainTabs title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />}
           content={
             showDiff ? (
               <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />
@@ -1314,6 +1334,13 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
             ) : null
           }
         />
+          </div>
+          {centerTerminal && (
+            <section className="center-terminal terminal-panel" aria-label="Center terminal">
+              <TerminalHost key={centerTerminal.id} id={centerTerminal.id} />
+            </section>
+          )}
+        </div>
         {rightPanelVisible && (
           <div className={`ws-right${stripOpen ? "" : " strip-collapsed"}`}>
             <RightPanel

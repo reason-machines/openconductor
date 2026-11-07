@@ -1,0 +1,5 @@
+{
+  "boundary": "Isolated pure class-name merge only; no app, DOM, browser or native execution",
+  "chip": "gap-1 mr-2 min-w-0 shrink w-auto px-1.5 overflow-hidden bg-link text-link-foreground border border-link-foreground/40 hover:bg-link-elevated hover:text-link-foreground-elevated",
+  "final": "font-450 h-6 [&_svg]:shrink-0 text-xs justify-center rounded-sm gap-1 mr-2 min-w-0 shrink w-auto px-1.5 overflow-hidden bg-link text-link-foreground border border-link-foreground/40 hover:bg-link-elevated hover:text-link-foreground-elevated"
+}

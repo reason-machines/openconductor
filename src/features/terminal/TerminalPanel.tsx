@@ -3,11 +3,7 @@ import "@xterm/xterm/css/xterm.css";
 import { attachTab } from "./session";
 import { FindBar, useTerminalFind } from "./FindBar";
 
-/**
- * One terminal tab's screen. The terminal tabs themselves sit in the right
- * panel's Setup / Run / Terminal strip (src/components/PanelStrip.tsx), as in
- * Conductor; there is no separate terminal panel under the workspace.
- */
+/** One PTY screen, mounted in either the right panel or a center workspace tab. */
 export function TerminalHost({ id }: { id: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const find = useTerminalFind(id);
