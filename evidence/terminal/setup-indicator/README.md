@@ -1,6 +1,6 @@
 # Setup tab indicator and label order
 
-Conductor Rebuild, terminal/scripts lane. This is a separate increment from terminal lifecycle PR #770; publication waits for that main-based increment to merge, rather than stacking on it.
+Conductor Rebuild, terminal/scripts lane. This is a separate increment restored after terminal lifecycle PR #770 merged. It targets main directly, rather than stacking on #770.
 
 ## Reference and change
 
@@ -14,6 +14,10 @@ OpenConductor previously rendered a 7px colored dot **after** Setup for every no
 - **Passed after:** `E2E_BASE=http://localhost:4404 node --test tests/e2e/script-output.e2e.mjs`: all eight cases, including idle/start/stop/rerun/completed/failed/cancelled, order, computed 10px size and no spinner border, existing labels, lifecycle, terminal Find and Setup/Run output. [after.tap](after.tap).
 - **Passed:** `npm run build` (TypeScript and Vite), `node --test src/features/terminal/*.test.ts src/scripts/*.test.ts` (81 tests), `npm run lint:colors`, `node --check tools/terminal/setup-indicator-capture.mjs`, `git diff --check`.
 - **Partial visual proof:** six REA screenshots with synthetic IPC; the original UI's canvas appears before Setup while running and is absent after success/failure. [captures.json](captures.json) retains Evidence IDs and image hashes. OpenConductor's running glyph and finished state were viewed. The reference canvas glyph pixels are partly blank in this headless environment, so exact animation/sprite parity is **not verified**.
+
+## Refreshed after #770 merged
+
+On main `58e59cd7` containing #770, build, 81 focused unit tests, color lint, capture syntax and diff checks passed again. The supported Cloud preview ran all eight browser cases successfully; [refreshed-after.tap](refreshed-after.tap) and refreshed running/finished screenshots retain this check. Screenshots use the synthetic IPC fixture; unrelated GitHub comments errors in the fixture do not establish a production defect. The preview was stopped after verification.
 
 ## Capture and tool gaps
 
