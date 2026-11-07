@@ -169,11 +169,23 @@ test("read/write rejection releases pending admission and failed copy releases s
   a.disconnect();
 });
 
+test("existing fork and transcript error actions use the originating chat's error setter", async () => {
+  const store = storage(); const a = new ComposerSession("a", store); const b = new ComposerSession("b", store);
+  await a.connect(); a.disconnect(); await b.connect();
+  const setAttachError = a.setError;
+  setAttachError("Unable to fork chat");
+  assert.equal(a.snapshot().error, "Unable to fork chat");
+  assert.equal(b.snapshot().error, null);
+  setAttachError(null); assert.equal(a.snapshot().error, null);
+  b.disconnect();
+});
+
 test("React uses the tested session owner, chat identity, and workspace-native staging identity", () => {
   const workspace = readFileSync(new URL("../../components/WorkspaceView.tsx", import.meta.url), "utf8");
   const composer = readFileSync(new URL("./Composer.tsx", import.meta.url), "utf8");
   assert.match(workspace, /composerSessionFor\(chatId, composerDrafts\(\)\)/);
   assert.match(workspace, /useSyncExternalStore\(session.subscribe, session.snapshot\)/);
+  assert.match(workspace, /const setAttachError = session.setError;/);
   assert.match(workspace, /session\.attach\(files/); assert.match(workspace, /await session\.send\(/);
   assert.match(workspace, /draftWorkspaceId: workspace.id/); assert.match(workspace, /localWorkspaceId: workspace.id/);
   assert.match(workspace, /clearOnSubmit=\{planWaiting !== undefined\}/);

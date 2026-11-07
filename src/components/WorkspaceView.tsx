@@ -224,6 +224,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const session = useMemo(() => composerSessionFor(chatId, composerDrafts()), [chatId]);
   const { draft, attachments, error: attachError } = useSyncExternalStore(session.subscribe, session.snapshot);
   const { setDraft, setAttachments } = session;
+  const setAttachError = session.setError;
   useEffect(() => {
     void session.connect();
     return () => session.disconnect();

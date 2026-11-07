@@ -81,6 +81,8 @@ export class ComposerSession {
     this.flush();
   }
 
+  setError = (error: string | null) => this.publish({ error });
+
   setDraft = (update: Update<string>) => {
     this.textEdited = true;
     this.publish({ draft: typeof update === "function" ? update(this.state.draft) : update });
