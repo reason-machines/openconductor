@@ -1,0 +1,60 @@
+{
+  "reference-starting": {
+    "evidence_id": "ev_91c7ea8fc3ecf7fc29fc6b2e6a51482f7ce39ed384ebc88bfd9e734a471f38c0",
+    "sha256": "5cc76408e1fb1b6ee4d65e29019b6fe0600b7022ccfb2b472e5e31e8ea98f0f6",
+    "url": {
+      "url": "http://conductor.localhost:4404/repository/repo-tide-web/workspace/ws-osaka?activeTabType=session&sessionId=sess-osaka",
+      "origin": "http://conductor.localhost:4404",
+      "query_parameter_names": [
+        "activeTabType",
+        "sessionId"
+      ],
+      "redacted": false
+    },
+    "issues": []
+  },
+  "reference-exited": {
+    "evidence_id": "ev_62d307ff7b1a315581f8083897d0a889dadce9ed9db6503649ceccfe139ee736",
+    "sha256": "0cc94845f003f50f84aca1b201bb2b922796509088c19f4b288d4b0d95079dce",
+    "url": {
+      "url": "http://conductor.localhost:4404/repository/repo-tide-web/workspace/ws-osaka?activeTabType=session&sessionId=sess-osaka",
+      "origin": "http://conductor.localhost:4404",
+      "query_parameter_names": [
+        "activeTabType",
+        "sessionId"
+      ],
+      "redacted": false
+    },
+    "issues": []
+  },
+  "openconductor-starting": {
+    "evidence_id": "ev_e8b1ba307f3b72daacadd5621519956a8fdbad5530cd94c35140da0d3fe8c375",
+    "sha256": "6c771252dcb5a4fca35568eb51f41d6eaa48b9bbc11277419b6ca5310f18afcd",
+    "url": {
+      "url": "http://localhost:4404/?kind=setup&palette=stone&terminalLifecycle=starting",
+      "origin": "http://localhost:4404",
+      "query_parameter_names": [
+        "kind",
+        "palette",
+        "terminalLifecycle"
+      ],
+      "redacted": false
+    },
+    "issues": []
+  },
+  "openconductor-exited": {
+    "evidence_id": "ev_0c17b2f1242e0e668a8d8495853f50c9ad73db8c1d5bf7ca9b14ac5db00a57e4",
+    "sha256": "3ca4d7e44828438bfba3fbdb8ed92a4e5ab0c77776eaa66722fca952a4da06c4",
+    "url": {
+      "url": "http://localhost:4404/?kind=setup&palette=stone&terminalLifecycle=exited",
+      "origin": "http://localhost:4404",
+      "query_parameter_names": [
+        "kind",
+        "palette",
+        "terminalLifecycle"
+      ],
+      "redacted": false
+    },
+    "issues": []
+  }
+}

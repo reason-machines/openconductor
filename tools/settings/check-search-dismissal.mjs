@@ -1,0 +1,51 @@
+import assert from "node:assert/strict";
+import { mkdir, writeFile } from "node:fs/promises";
+import { chromium } from "playwright-core";
+
+const lane = process.env.SEARCH_LANE ?? "after";
+const base = process.env.SEARCH_BASE ?? "http://localhost:51749";
+const out = process.env.SEARCH_OUT ?? "evidence/settings/search-dismissal";
+await mkdir(out, { recursive: true });
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM ?? "/usr/bin/chromium", args: ["--no-sandbox"] });
+const results = [];
+try {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+  await page.goto(`${base}/settings/user/general?oc_scenario=populated&oc_theme=dark`);
+  const input = page.getByPlaceholder("Search settings", { exact: true });
+  await input.waitFor();
+  await input.fill("Theme");
+  const clear = page.getByRole("button", { name: "Clear settings search", exact: true });
+  await clear.waitFor();
+  await input.click();
+  assert.equal(await input.inputValue(), "Theme", "clicking the search anchor preserves the query");
+  results.push({ scenario: "anchor-press", status: "PASS" });
+  await page.screenshot({ path: `${out}/${lane}-open.png` });
+  await page.mouse.click(700, 200);
+  await page.screenshot({ path: `${out}/${lane}-outside.png` });
+  const query = await input.inputValue();
+  const visible = await clear.isVisible();
+  results.push({ scenario: "outside-press", status: query === "" && !visible ? "PASS" : "FAIL", query, clearVisible: visible });
+  await input.fill("Theme");
+  await clear.waitFor();
+  await clear.click();
+  assert.equal(await input.inputValue(), "", "clear control remains usable");
+  results.push({ scenario: "clear-control", status: "PASS" });
+  await input.fill("Theme");
+  await clear.waitFor();
+  const result = page.locator('[data-result-index="0"]');
+  await result.click();
+  await page.waitForURL(/\/settings\/user\/appearance/);
+  assert.equal(await input.inputValue(), "", "selecting a result navigates and clears search");
+  results.push({ scenario: "result-selection", status: "PASS" });
+  await input.fill("Theme");
+  await clear.waitFor();
+  await input.press("Escape");
+  assert.equal(await input.inputValue(), "", "Escape clears search without closing Settings");
+  assert.match(page.url(), /\/settings\/user\/appearance/);
+  results.push({ scenario: "escape", status: "PASS" });
+} finally {
+  await browser.close();
+  await writeFile(`${out}/${lane}.json`, JSON.stringify(results, null, 2) + "\n");
+  console.log(JSON.stringify(results, null, 2));
+}
+assert.ok(results.every(r => r.status === "PASS"), "all Settings search dismissal behaviors pass");

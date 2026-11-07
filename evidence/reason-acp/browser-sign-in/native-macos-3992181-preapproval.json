@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "author": "Conductor Rebuild",
+  "observedAtUtc": "2026-11-07T03:09:52Z",
+  "host": "sven m5 max",
+  "pullRequest": 753,
+  "outcome": "PARTIAL: real built-app sign-in reached browser approval waiting; browser access required",
+  "artifact": {
+    "source": "3992181323b963eebee5ad383672e615dac65368",
+    "laterHeadCompared": "5b9d9644accebd806610f3f63989a7e9fcd4b9de",
+    "productionSourceComparison": "PASS: git diff --name-only SOURCE LATER_HEAD -- src src-tauri crates package.json package-lock.json returned no differences",
+    "trackedScratchSourceUnmodified": true,
+    "build": "scripts/package-macos.sh --identity -",
+    "buildEnvironment": {"CARGO_PROFILE_DEV_DEBUG": "0", "CARGO_INCREMENTAL": "0"},
+    "buildExitCode": 0,
+    "buildElapsedSeconds": 203.92,
+    "profile": "debug",
+    "binarySha256": "0fbea18d822bc364c5ee5d0184b5741e8385087c5ed4efe5b6e90fec1836879b",
+    "bundleCheck": "PASS: 39/39 checks; ad-hoc signature, hardened runtime and bundle contents",
+    "bundleCheckCommand": "python3 tools/check_macos_bundle.py APP --signing adhoc --report bundle-check.json"
+  },
+  "isolation": {
+    "home": "private scratch fixture, not the real account HOME",
+    "reasonCliVersion": "0.2.701",
+    "reasonCliSha256": "6db6ba89b6da3456ebc14fcd15ae964e2c8bcd3fba2655c2041855ca65d6ab55",
+    "cliEnvironment": ["REASON_TEST_ACCOUNT_ROOT", "REASON_TEST_KEYCHAIN_PATH", "REASON_TEST_REFUSE_REAL_ACCOUNT"],
+    "keychain": "retained private owned regular single-link 0600 keychain under canonical owned 0700 test root",
+    "appData": "PASS: app conductor.db/cache.db handles observed under isolated HOME/Library/Application Support/com.reasonmachines.openconductor; no real OpenConductor data handles observed",
+    "providerSecretStore": "debug e2e in-memory store",
+    "agentManifest": "empty local manifest",
+    "realCredentialCopyingOrLogout": false,
+    "driverInvokedClaudeOrCodex": false,
+    "terminalLoginOrLoopbackUsed": false,
+    "networkScope": "genuine Reason sign-in network authorized for this test; no synthetic network-denial policy used",
+    "fullFilesystemOrExecTrace": "NOT RUN"
+  },
+  "nativeInteraction": {
+    "method": "actual compiled Tauri app, own AppHandle/main WKWebView, existing debug OC_E2E_SCRIPT seam; observed DOM controls clicked programmatically",
+    "inputLimit": "not a physical mouse, keyboard or IME proof",
+    "targeting": "unique process and own webview only; no provider/app-name input or global typing",
+    "activeOwnedPid": 88621,
+    "boundedOwnedLifetimeSeconds": 1200,
+    "ownedStartedAtUtc": "2026-11-07T03:05:40Z",
+    "observerOnlyPriorPids": [70184, 77410],
+    "priorProcessShutdown": "PASS: both observer/controller pre-auth processes absent before the final process was launched; no sign-in had started",
+    "driverRepair": "The standalone controller initially parsed the fs plugin binary response as JSON. Corrected only the disposable driver to decode ArrayBuffer before JSON parsing. Production source and signed app binary were unchanged.",
+    "steps": [
+      {"control": "Continue without signing in", "result": "PASS: fresh signed-out onboarding to empty Home"},
+      {"control": "Settings", "result": "PASS: /settings/user/general"},
+      {"control": "Agents", "result": "PASS: /settings/user/providers; Reason selected by default; real 0.2.701 executable resolved; Not signed in"},
+      {"control": "Sign in with Reason", "result": "PASS, bounded: real CLI pairing prompt accepted; state waiting; Finish signing in in the browser window; code displayed but redacted from retained receipt; Cancel and Open the sign-in page again available; no browser-open error shown"}
+    ],
+    "browserOpened": "UNVERIFIED: application dispatched its default-browser opener without a displayed error; no pairing page was observable through the available browser provider",
+    "browserReadChecks": [
+      {"browser": "machine", "operation": "user_tabs before and after sign-in click", "result": "empty"},
+      {"browser": "user_chrome", "operation": "user_tabs", "result": "No Chrome profile on this Mac is connected to Reason"}
+    ],
+    "accessHandoff": "Chrome connection card surfaced; awaiting user. No fabricated approval, cookies or auth storage. No pairing URL/code/token exported."
+  },
+  "capture": {
+    "result": "FAILED",
+    "target": "CGWindow 54643 belonging to exact owned PID 88621, 1280x820, on-screen",
+    "command": "screencapture -x -l OWN_WINDOW native-settings.png",
+    "exitCode": 1,
+    "error": "could not create image from window",
+    "computerProviderLimit": "window catalog exposed a single OpenConductor target while the stable and isolated processes both existed; no ambiguous target was used for input or capture",
+    "imageInspectedOrPublished": false,
+    "visualParityClaim": false
+  },
+  "preservation": {
+    "stablePid": 54473,
+    "stableProcessStart": "Fri Nov 6 13:30:52 2026",
+    "stableIdentityUnchanged": true,
+    "stableBinarySha256": "046cd331d9fef97944879164603964f3447234a843511c854aa275ebbce994e3",
+    "installedAppOrOriginalScratchTreesReplaced": false,
+    "realPlaygroundOrBergenTouched": false,
+    "removedDeviceProbed": false,
+    "completed739SyntheticWorkRepeated": false,
+    "activeOwnedShutdown": "PENDING: retained only for browser handoff; supervisor enforces 1200-second lifetime and writes shutdown receipt"
+  },
+  "notRun": [
+    "Browser sign-in and approval in Reason Tests",
+    "Connected account and workspace UI",
+    "Actual Reason turn",
+    "Onboarding/chat signed-in entry-surface checks",
+    "Screenshot or recording of the P0 flow",
+    "Historical 0.2.69x original failure reproduction"
+  ],
+  "originalFailureRootCause": "UNKNOWN: successful pending pairing on 0.2.701 does not establish the original 0.2.69x failure cause",
+  "completion": "NOT COMPLETE: awaiting Chrome connection/browser approval, followed by Connected-state and real-turn verification"
+}

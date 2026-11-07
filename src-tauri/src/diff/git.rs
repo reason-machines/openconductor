@@ -27,11 +27,17 @@ pub enum Scope {
     },
     /// Working tree versus HEAD.
     Uncommitted,
+    Commit {
+        hash: String,
+    },
     /// What one agent turn changed: the turn's start checkpoint versus its
     /// end checkpoint (`refs/conductor-checkpoints/session-<s>-turn-<t>-start`
     /// and `-end`, see [`turn_checkpoint_id`]). Both snapshots hold the full
     /// working tree, untracked files included, so nothing else is added.
-    Turn { session_id: String, turn_id: String },
+    Turn {
+        session_id: String,
+        turn_id: String,
+    },
 }
 
 /// Ref namespace of workspace checkpoints (same as `crate::checkpoint`,
@@ -218,6 +224,7 @@ pub(super) fn base_commit(repo: &Path, scope: &Scope) -> Result<String, DiffErro
     }
     match scope {
         Scope::Uncommitted => Ok(head.trim().to_string()),
+        Scope::Commit { hash } => Ok(commit_refs(repo, hash)?.0),
         Scope::All { base, remote } => {
             let target = target_ref(repo, base, remote.as_deref())?;
             Ok(git(repo, &["merge-base", "HEAD", &target], &[0])?
@@ -284,6 +291,32 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
     } = &req.scope
     {
         return turn_diff(repo, session_id, turn_id, req);
+    }
+    if let Scope::Commit { hash } = &req.scope {
+        let (base, commit) = commit_refs(repo, hash)?;
+        let names = git(
+            repo,
+            &["show", &commit, "--format=", "--name-only", "-z"],
+            &[0],
+        )?;
+        let paths: std::collections::HashSet<&str> =
+            names.split('\0').filter(|p| !p.is_empty()).collect();
+        let mut files = revision_diff(repo, &base, &commit, req, false)?;
+        files.retain(|file| paths.contains(file.path.as_str()));
+        if req.ignore_whitespace {
+            let mut hunks: std::collections::HashMap<String, Vec<_>> =
+                revision_diff(repo, &base, &commit, req, true)?
+                    .into_iter()
+                    .map(|f| (f.path, f.hunks))
+                    .collect();
+            for file in &mut files {
+                file.hunks = hunks.remove(&file.path).unwrap_or_default();
+            }
+        }
+        return Ok(WorkspaceDiff {
+            base_commit: base,
+            files,
+        });
     }
     if let Some(op) = operation_in_progress(repo)? {
         return Err(DiffError::OperationInProgress(op));
@@ -369,6 +402,91 @@ fn turn_diff(
         base_commit: start,
         files,
     })
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq, Eq)]
+pub struct BranchCommit {
+    pub hash: String,
+    pub message: String,
+    pub author: String,
+    pub date: i64,
+}
+
+pub fn branch_commits(
+    repo: &Path,
+    base: &str,
+    remote: Option<&str>,
+) -> Result<Vec<BranchCommit>, DiffError> {
+    if git(repo, &["rev-parse", "--verify", "--quiet", "HEAD"], &[0, 1])?
+        .trim()
+        .is_empty()
+    {
+        return Ok(Vec::new());
+    }
+    let target = target_ref(repo, base, remote)?;
+    let range = format!("{target}..HEAD");
+    let output = git(
+        repo,
+        &["log", "--format=%H%x00%s%x00%an%x00%at", &range, "--"],
+        &[0],
+    )?;
+    Ok(output
+        .lines()
+        .filter_map(|line| {
+            let mut fields = line.split('\0');
+            Some(BranchCommit {
+                hash: fields.next()?.to_string(),
+                message: fields.next()?.to_string(),
+                author: fields.next()?.to_string(),
+                date: fields.next()?.parse::<i64>().ok()?.checked_mul(1000)?,
+            })
+        })
+        .collect())
+}
+
+fn commit_refs(repo: &Path, hash: &str) -> Result<(String, String), DiffError> {
+    if !(7..=64).contains(&hash.len()) || !hash.bytes().all(|c| c.is_ascii_hexdigit()) {
+        return Err(DiffError::Unsupported("an invalid commit hash"));
+    }
+    let revision = format!("{hash}^{{commit}}");
+    let commit = git(repo, &["rev-parse", "--verify", &revision], &[0])?
+        .trim()
+        .to_string();
+    let parent = format!("{commit}^");
+    let base = git(
+        repo,
+        &["rev-parse", "--verify", "--quiet", &parent],
+        &[0, 1],
+    )?;
+    Ok((
+        if base.trim().is_empty() {
+            EMPTY_TREE.to_string()
+        } else {
+            base.trim().to_string()
+        },
+        commit,
+    ))
+}
+
+fn revision_diff(
+    repo: &Path,
+    base: &str,
+    commit: &str,
+    req: &DiffRequest,
+    whitespace: bool,
+) -> Result<Vec<FileDiff>, DiffError> {
+    let context = req.context_lines.map(|n| format!("-U{n}"));
+    let mut args = vec!["diff"];
+    args.extend(DIFF_FLAGS);
+    if whitespace {
+        args.push("-w");
+    }
+    args.extend(context.as_deref());
+    args.extend([base, commit, "--"]);
+    args.extend(req.path.as_deref());
+    let mut files = parse_unified(&git(repo, &args, &[0])?).map_err(DiffError::Parse)?;
+    files.sort_by(|a, b| a.path.cmp(&b.path));
+    Ok(files)
 }
 
 /// The changes list: every changed file with its counts, without hunks.

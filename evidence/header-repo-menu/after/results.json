@@ -1,0 +1,56 @@
+[
+  {
+    "theme": "dark",
+    "side": "ref",
+    "interactive": true,
+    "items": [
+      "Repository settings",
+      "Open on GitHub"
+    ],
+    "escapeClosed": true,
+    "focusReturned": false,
+    "settingsOpened": true
+  },
+  {
+    "theme": "dark",
+    "side": "oc",
+    "interactive": true,
+    "items": [
+      "Repository settings",
+      "Open on GitHub"
+    ],
+    "escapeClosed": true,
+    "focusReturned": true,
+    "githubRequests": [
+      "https://github.com/tide-labs/tide-web"
+    ],
+    "settingsOpened": true
+  },
+  {
+    "theme": "light",
+    "side": "ref",
+    "interactive": true,
+    "items": [
+      "Repository settings",
+      "Open on GitHub"
+    ],
+    "escapeClosed": true,
+    "focusReturned": false,
+    "settingsOpened": true
+  },
+  {
+    "theme": "light",
+    "side": "oc",
+    "interactive": true,
+    "items": [
+      "Repository settings",
+      "Open on GitHub"
+    ],
+    "escapeClosed": true,
+    "focusReturned": true,
+    "githubRequests": [
+      "https://github.com/tide-labs/tide-web"
+    ],
+    "settingsOpened": true
+  }
+]

@@ -28,6 +28,8 @@ behaviours the provider has to handle (see src-tauri/src/reason_acp/):
   is signed in unless the file `fake-reason-signed-out` is in the working
   directory; `login` then prints a link and a code and marks the sign-in
   pending, and the next `status` finds it done (the user used the link).
+  With `fake-reason-require-approval`, status stays signed out until the
+  test removes `fake-reason-signed-out` to simulate explicit approval.
   With REASON_API_KEY set the account is signed in with credential
   `api_key`. `connect` connects this computer (file `fake-reason-connected`).
 * `[--workspace SLUG] call OPERATION --input-file -` answers the public API
@@ -384,6 +386,8 @@ def handle(msg):
 
 
 def whoami():
+    if os.path.exists(os.path.join(HOME, "fake-reason-discovery-offline")):
+        sys.exit(1)
     print("e2e@example.com")
     print(f"Organization: Workspace {WORKSPACE}")
     print("Saved workspaces:")
@@ -392,6 +396,8 @@ def whoami():
 
 
 def session_get(sid):
+    if os.path.exists(os.path.join(HOME, "fake-reason-discovery-offline")):
+        sys.exit(1)
     session = load()["sessions"].get(sid)
     if session is None or session.get("workspace", "ws-a") != WORKSPACE:
         sys.stderr.write("Reason: Reason request failed (404 session_not_found)\n")
@@ -412,7 +418,8 @@ def marker(name):
 
 def status():
     key = os.environ.get("REASON_API_KEY")
-    if os.path.exists(marker("fake-reason-login-pending")):
+    if (os.path.exists(marker("fake-reason-login-pending"))
+            and not os.path.exists(marker("fake-reason-require-approval"))):
         for m in ("fake-reason-login-pending", "fake-reason-signed-out"):
             os.remove(marker(m)) if os.path.exists(marker(m)) else None
     signed_in = bool(key) or not os.path.exists(marker("fake-reason-signed-out"))

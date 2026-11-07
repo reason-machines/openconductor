@@ -73,6 +73,8 @@ pub mod menu;
 pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
+mod native_qa;
+mod native_qa_cache;
 pub mod open_in;
 pub mod project;
 pub mod quick_open;
@@ -269,7 +271,9 @@ fn updater_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R, tauri_pl
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let builder = tauri::Builder::default();
+    native_qa::reject_release_request();
+    let context = native_qa::before_startup(tauri::generate_context!());
+    let builder = native_qa::guard_builder(tauri::Builder::default());
     // Conductor is macOS-only; elsewhere keep Tauri's no-menu default.
     #[cfg(target_os = "macos")]
     let builder = builder.menu(menu::build);
@@ -302,6 +306,10 @@ pub fn run() {
         .plugin(tauri_plugin_sql::Builder::new().build())
         .plugin(updater_plugin())
         .setup(|app| {
+            native_qa::validate(app.handle()).map_err(std::io::Error::other)?;
+            if native_qa::ordinary_gate(app.handle()).map_err(std::io::Error::other)? {
+                return Ok(());
+            }
             let data_dir = app.path().app_data_dir()?;
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
@@ -340,6 +348,7 @@ pub fn run() {
             let mut workspaces = workspace::service::WorkspaceService::new(data_dir)?;
             // Settings › Advanced › root directory (`conductor_root_path`).
             if let Some(root) = root_path_commands::root_from_settings(&db) {
+                native_qa::validate_workspace(&root).map_err(std::io::Error::other)?;
                 workspaces = workspaces.with_root(root);
             }
             // Deletes workspaces left initializing, imports pre-database repositories.
@@ -351,6 +360,7 @@ pub fn run() {
             app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
+            app.manage(reason_acp::login::LoginService::default());
             app.manage(codex_chat::CodexChats::with_binaries(binaries));
             app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
@@ -439,6 +449,7 @@ pub fn run() {
             sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
+            diff::commands::diff_branch_commits,
             diff::commands::diff_discard_file,
             diff::commands::diff_write_file,
             checkpoint_commands::checkpoint_save,
@@ -460,6 +471,8 @@ pub fn run() {
             reason_chat::reason_account_status,
             reason_chat::reason_cloud_setup,
             reason_chat::reason_login_start,
+            reason_chat::reason_login_status,
+            reason_chat::reason_login_cancel,
             reason_chat::reason_logout,
             reason_chat::reason_connect_computer,
             reason_chat::reason_api_call,
@@ -598,7 +611,7 @@ pub fn run() {
             agent_binaries::commands::request_agent_binary_download,
             agent_binaries::commands::cancel_agent_binary_download,
         ])
-        .build(tauri::generate_context!())
+        .build(context)
         .expect("error while building OpenConductor")
         .run(|app, event| {
             // Shells and their children must not outlive the app.

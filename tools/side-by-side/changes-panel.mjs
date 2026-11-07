@@ -7,7 +7,8 @@ import path from "node:path";
 const root = process.cwd();
 const port = Number(process.env.PORT ?? 4398);
 const out = path.resolve(process.argv[2] ?? ".oc-tmp/changes-panel");
-const reference = process.env.REF_URL ?? "http://conductor.localhost:4397/?oc_scenario=populated&oc_theme=dark";
+const refPort = process.env.REF_PORT ?? "4397";
+const reference = process.env.REF_URL ?? `http://conductor.localhost:${refPort}/?oc_scenario=populated&oc_theme=dark`;
 const rea = process.env.REA ?? "rea";
 const seed = fs.readFileSync("tools/sidebar-screens/seed.js", "utf8");
 const backend = fs.readFileSync("tools/side-by-side/git-review-backend.js", "utf8");
@@ -44,7 +45,12 @@ const specs = {
   "discard-dialog": { ref: [{ ...click('.cursor-pointer.mx-2:has-text("auth.test.ts")'), button: "right" }, settle, click('role=menuitem[name="Discard changes"]')], oc: [{ ...click('button.oc-change[title="Open src/lib/auth.test.ts"]'), button: "right" }, settle, click('role=menuitem[name="Discard changes"]')] },
   tree: { ref: [click('[aria-label="Show folder hierarchy"]')], oc: [click('[aria-label="Show folder hierarchy"]')] },
   collapsed: { ref: [click('[aria-label="Show folder hierarchy"]'), settle, click('button:has-text("src / lib")')], oc: [click('[aria-label="Show folder hierarchy"]'), settle, click('button:has-text("src / lib")')] },
+  "collapsed-return": { ref: [click('[aria-label="Show folder hierarchy"]'), settle, click('button:has-text("src / lib")'), click('button:has-text("All files")'), settle, click('button:has-text("Changes")')], oc: [click('[aria-label="Show folder hierarchy"]'), settle, click('button:has-text("src / lib")'), click('role=tab[name="All files"]'), settle, click('role=tab[name="Changes 2"]')] },
+  "filter-return": { ref: [click('[aria-label="Show folder hierarchy"]'), click('[aria-label="Filter files"]'), { action: "fill", locator: { kind: "css", selector: 'input[placeholder="Filter files"]' }, value: { source: "literal", value: "test" }, timeout_ms: 5000 }, click('text=Ada/dark mode tokens'), settle, click('text=Ada/fix login redirect')], oc: [click('[aria-label="Show folder hierarchy"]'), click('[aria-label="Filter files"]'), { action: "fill", locator: { kind: "css", selector: 'input[aria-label="Filter changed files"]' }, value: { source: "literal", value: "test" }, timeout_ms: 5000 }, click('[data-testid="left-sidebar-workspace-item"]:has-text("osaka")'), settle, click('[data-testid="left-sidebar-workspace-item"]:has-text("lisbon")')] },
   options: { ref: [click('button:has(svg.lucide-ellipsis-vertical)')], oc: [click('[aria-label="Changes options"]')] },
+  "history-options": { ref: [click('button:has(svg.lucide-ellipsis-vertical)')], oc: [click('[aria-label="Changes options"]')] },
+  "history-selected": { ref: [click('button:has(svg.lucide-ellipsis-vertical)'), click('text=Fix expired session redirect')], oc: [click('[aria-label="Changes options"]'), click('text=Fix expired session redirect')] },
+  "history-back": { ref: [click('button:has(svg.lucide-ellipsis-vertical)'), click('text=Fix expired session redirect'), settle, click('button:has-text("abcdef1")')], oc: [click('[aria-label="Changes options"]'), click('text=Fix expired session redirect'), settle, click('[aria-label="Back to all changes"]')] },
   "diff-unified": { ref: [click('text=auth.ts >> nth=-1')], oc: [click("button.oc-change[title='Open src/lib/auth.ts']")] },
   "diff-split": { ref: [click('text=auth.ts >> nth=-1'), settle, click("role=button[name='Split view']")], oc: [click("button.oc-change[title='Open src/lib/auth.ts']"), settle, click("role=button[name='Split view']")] },
   "diff-entire-file": { ref: [click('text=auth.ts >> nth=-1'), settle, click("role=button[name='Entire file']")], oc: [click("button.oc-change[title='Open src/lib/auth.ts']"), settle, click("role=button[name='Entire file']")] },
@@ -52,10 +58,11 @@ const specs = {
 
 async function capture(side, state, steps) {
   const ready = { action: "wait_for", locator: { kind: "css", selector: "text=2 files changed" }, state: "visible", timeout_ms: 10000 };
-  const actions = [{ action: "wait_for_timeout", duration_ms: 5000 }, ...(side === "ref" ? refStart : []), ready, ...steps, settle].map((a, i) => ({ step_id: `s${i}`, ...a }));
+  const selectedReady = state === "history-selected" ? [{ action: "wait_for", locator: { kind: "css", selector: side === "ref" ? '.cursor-pointer.mx-2:has-text("auth.ts")' : 'button.oc-change[title="Open src/lib/auth.ts"]' }, state: "visible", timeout_ms: 5000 }] : [];
+  const actions = [{ action: "wait_for_timeout", duration_ms: 5000 }, ...(side === "ref" ? refStart : []), ready, ...steps, settle, ...selectedReady].map((a, i) => ({ step_id: `s${i}`, ...a }));
   const input = {
     browser: { mode: "launch", executable_path: "/usr/bin/chromium", headless: true },
-    start_url: { url: side === "ref" ? reference : `http://localhost:${port}/?oc_scenario=populated&oc_theme=dark` },
+    start_url: { url: (side === "ref" ? reference : `http://localhost:${port}/?oc_scenario=populated&oc_theme=dark`) + (state.startsWith("history-") ? "&oc_commit_history=1" : "") },
     environment: { viewport: { width: 1280, height: 820, device_scale_factor: 1 }, color_scheme: "dark", locale: "en-US", timezone: "UTC" },
     actions,
     capture: { at_end: ["screenshot", "dom"], events: ["page-errors"] },
@@ -72,14 +79,17 @@ async function capture(side, state, steps) {
   fs.writeFileSync(path.join(out, `${side}-${state}.png`), Buffer.from(screenshot.data_base64, "base64"));
   const dom = artifacts.dom?.value?.text ?? artifacts.dom?.value ?? "";
   const domText = typeof dom === "string" ? dom : JSON.stringify(dom);
-  if (!domText.includes("files changed") || !domText.includes(state === "collapsed" ? "src / lib" : "auth.test.ts")) throw new Error(`${side}-${state}: not the populated Changes screen`);
+  if (!domText.includes(state === "history-selected" ? "abcdef1" : "files changed") || !domText.includes(state.startsWith("collapsed") ? "src / lib" : state === "history-selected" ? "auth.ts" : "auth.test.ts")) throw new Error(`${side}-${state}: not the populated Changes screen`);
+  if (state === "history-options" && (!domText.includes("Fix expired session redirect") || !domText.includes("1234567"))) throw new Error(`${side}-${state}: missing commit history rows`);
+  if (state === "history-selected" && !domText.includes("abcdef1")) throw new Error(`${side}-${state}: missing selected hash`);
   fs.writeFileSync(path.join(out, `${side}-${state}.dom.txt`), domText);
   const artifactPath = path.join(out, `${side}-${state}-artifact.json`);
   fs.writeFileSync(artifactPath, JSON.stringify(screenshot));
   return { evidence_id: ev.evidence_id, png_sha256: createHash("sha256").update(Buffer.from(screenshot.data_base64, "base64")).digest("hex"), artifactPath };
 }
 async function prove() {
-  const report = { source_commit: spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).stdout.trim(), build_index_sha256: createHash("sha256").update(fs.readFileSync("dist/index.html")).digest("hex") };
+  const sourceDiff = spawnSync("git", ["diff", "HEAD", "--binary"], { encoding: "utf8" }).stdout;
+  const report = { source_commit: spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).stdout.trim(), source_dirty: sourceDiff.length > 0, source_diff_sha256: createHash("sha256").update(sourceDiff).digest("hex"), build_index_sha256: createHash("sha256").update(fs.readFileSync("dist/index.html")).digest("hex") };
   for (const [state, spec] of Object.entries(specs)) {
     if (process.env.STATES && !process.env.STATES.split(",").includes(state)) continue;
     try {
@@ -95,7 +105,7 @@ async function prove() {
   console.log("Changes panel proof finished");
 }
 const refServer = spawn(process.execPath, ["tools/screens/server.mjs"], {
-  env: { ...process.env, DIST: process.env.DIST_REF ?? "/home/runner/conductor-ref/dist", PORT: "4397", HOST: "127.0.0.1" },
+  env: { ...process.env, DIST: process.env.DIST_REF ?? "/home/runner/conductor-ref/dist", PORT: refPort, HOST: "127.0.0.1" },
   stdio: "inherit",
 });
 process.on("exit", () => refServer.kill());

@@ -5,6 +5,7 @@
 // markdown) and, once finished, its footer.
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
+import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
 import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
@@ -206,7 +207,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-      {when ? <TurnDetails when={when} agent={turnAgent} /> : null}
+      {when ? <TurnDetails when={when} agent={turnAgent} usage={row.usage} /> : null}
       {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
       {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">
@@ -224,16 +225,16 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   );
 }
 
-/** "Authentication required" under a turn its agent refused for want of a login, with a link to that agent's tab. */
+/** Reason signs in directly; local agents keep their Settings authentication flow. */
 function SignInNotice({ agent }: { agent: ChatAgentId }) {
   const copy = signInCopy(agent);
   return (
     <div className="chat-sign-in" data-testid="chat-sign-in" data-agent={agent}>
       <span className="chat-sign-in-badge">{copy.badge}</span>
       <p>{copy.text}</p>
-      <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>
-        {copy.action}
-      </button>
+      {agent === "reason" ? <ReasonSignInControls variant="chat" /> : (
+        <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>{copy.action}</button>
+      )}
     </div>
   );
 }
@@ -296,12 +297,12 @@ function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
         </div>
       ) : null}
       {block.items.map((item) => {
-        if (item.kind === "part") return <Part key={item.key} part={item.part} preview={item.preview === true} ctx={ctx} />;
+        if (item.kind === "part") return <Part key={item.key} partKey={item.key} part={item.part} preview={item.preview === true} ctx={ctx} />;
         const open = ctx.summaries.isOpen(item.summary.id, block.running);
         return (
           <Fragment key={item.summary.id}>
             <SummaryRow summary={item.summary} open={open} onToggle={block.running ? undefined : () => ctx.summaries.toggle(item.summary.id, open)} />
-            {open ? item.parts.map((p) => <Part key={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
+            {open ? item.parts.map((p) => <Part key={p.key} partKey={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
           </Fragment>
         );
       })}
@@ -331,7 +332,7 @@ function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: b
 }
 
 /** `preview`: the turn's final text; Conductor mutes every other text (`ROo` `muted: !isPreviewMessage`). */
-function Part({ part, preview = false, group, ctx }: { part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
+function Part({ partKey, part, preview = false, group, ctx }: { partKey: string; part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
   switch (part.kind) {
     case "text":
       return (
@@ -351,7 +352,7 @@ function Part({ part, preview = false, group, ctx }: { part: PartView; preview?:
         </div>
       );
     case "thinking":
-      return <ThinkingRow id={`thinking:${part.text.slice(0, 32)}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
+      return <ThinkingRow id={`thinking:${partKey}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
     case "tool": {
       const { call } = part;
       return (

@@ -1,4 +1,4 @@
-use super::git::{list_changes, workspace_diff, DiffError, DiffRequest, Scope};
+use super::git::{branch_commits, list_changes, workspace_diff, DiffError, DiffRequest, Scope};
 use super::FileStatus;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -83,6 +83,190 @@ fn changed(r: &Path, scope: Scope) -> Vec<String> {
         .into_iter()
         .map(|c| c.path)
         .collect()
+}
+
+fn oid(r: &Path, revision: &str) -> String {
+    super::git::git(r, &["rev-parse", revision], &[0])
+        .unwrap()
+        .trim()
+        .to_string()
+}
+
+#[test]
+fn commit_history_excludes_target_and_respects_remote_target() {
+    let r = repo();
+    write(&r, "base.txt", "base\n");
+    commit(&r, "base");
+    sh(&r, &["checkout", "-qb", "feature"]);
+    write(&r, "one.txt", "one\n");
+    commit(&r, "one | subject");
+    let first = oid(&r, "HEAD");
+    sh(&r, &["update-ref", "refs/remotes/origin/main", &first]);
+    write(&r, "two.txt", "two\n");
+    commit(&r, "two");
+    let history = branch_commits(&r, "main", None).unwrap();
+    assert_eq!(
+        history
+            .iter()
+            .map(|c| c.message.as_str())
+            .collect::<Vec<_>>(),
+        ["two", "one | subject"]
+    );
+    assert_eq!(history[1].hash, first);
+    assert_eq!(
+        history[1].author,
+        super::git::git(&r, &["show", "-s", "--format=%an", &first], &[0])
+            .unwrap()
+            .trim()
+    );
+    assert!(history[1].date > 0);
+    let remote = branch_commits(&r, "main", Some("origin")).unwrap();
+    assert_eq!(remote.len(), 1);
+    assert_eq!(remote[0].message, "two");
+    assert_eq!(
+        branch_commits(&r, "main", Some("missing")).unwrap(),
+        history
+    );
+    sh(&r, &["checkout", "-q", "main"]);
+    assert!(branch_commits(&r, "main", None).unwrap().is_empty());
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
+fn selected_commit_is_parent_to_commit_not_head_or_worktree() {
+    let r = repo();
+    write(&r, "f.txt", "base\n");
+    commit(&r, "base");
+    let parent = oid(&r, "HEAD");
+    write(&r, "f.txt", "selected\n");
+    commit(&r, "selected");
+    let selected = oid(&r, "HEAD");
+    write(&r, "f.txt", "later\n");
+    write(&r, "later.txt", "later\n");
+    commit(&r, "later");
+    write(&r, "f.txt", "dirty\n");
+    sh(&r, &["add", "f.txt"]);
+    write(&r, "untracked.txt", "untracked\n");
+    let scope = Scope::Commit { hash: selected };
+    let result = workspace_diff(&r, &req(scope.clone())).unwrap();
+    assert_eq!(result.base_commit, parent);
+    assert_eq!(result.files.len(), 1);
+    let lines = &result.files[0].hunks[0].lines;
+    assert!(lines.iter().any(|l| l.text == "selected"));
+    assert!(!lines.iter().any(|l| l.text == "dirty" || l.text == "later"));
+    let mut request = req(scope.clone());
+    request.path = Some("later.txt".into());
+    assert!(workspace_diff(&r, &request).unwrap().files.is_empty());
+    let before = fs::read(r.join("f.txt")).unwrap();
+    assert!(super::discard::discard_file(
+        &r,
+        &super::discard::DiscardRequest {
+            scope,
+            path: "f.txt".into(),
+            old_path: None
+        }
+    )
+    .is_err());
+    assert_eq!(fs::read(r.join("f.txt")).unwrap(), before);
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
+fn clean_merge_commit_uses_git_show_changed_file_membership() {
+    let r = repo();
+    write(&r, "base.txt", "base\n");
+    commit(&r, "base");
+    sh(&r, &["checkout", "-qb", "feature"]);
+    write(&r, "feature.txt", "feature\n");
+    commit(&r, "feature");
+    sh(&r, &["checkout", "-q", "main"]);
+    write(&r, "main.txt", "main\n");
+    commit(&r, "main");
+    sh(&r, &["merge", "--no-ff", "-m", "merge", "feature"]);
+    let result = workspace_diff(
+        &r,
+        &req(Scope::Commit {
+            hash: oid(&r, "HEAD"),
+        }),
+    )
+    .unwrap();
+    assert!(result.files.is_empty());
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
+fn resolved_merge_contents_compare_with_first_parent() {
+    let r = repo();
+    write(&r, "f.txt", "base\n");
+    commit(&r, "base");
+    sh(&r, &["checkout", "-qb", "feature"]);
+    write(&r, "f.txt", "feature\n");
+    commit(&r, "feature");
+    sh(&r, &["checkout", "-q", "main"]);
+    write(&r, "f.txt", "main\n");
+    commit(&r, "main");
+    let parent = oid(&r, "HEAD");
+    assert_ne!(
+        super::git::git_exit_code(&r, &["merge", "feature"]).unwrap(),
+        0
+    );
+    write(&r, "f.txt", "resolved\n");
+    commit(&r, "resolved merge");
+    let result = workspace_diff(
+        &r,
+        &req(Scope::Commit {
+            hash: oid(&r, "HEAD"),
+        }),
+    )
+    .unwrap();
+    assert_eq!(result.base_commit, parent);
+    assert_eq!(result.files.len(), 1);
+    let lines = &result.files[0].hunks[0].lines;
+    assert!(lines
+        .iter()
+        .any(|l| l.text == "main" && l.kind == super::LineKind::Deletion));
+    assert!(lines
+        .iter()
+        .any(|l| l.text == "resolved" && l.kind == super::LineKind::Addition));
+    assert!(!lines.iter().any(|l| l.text == "feature"));
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
+fn commit_diff_preserves_whitespace_counts_and_rename_and_handles_root() {
+    let r = repo();
+    write(&r, "original.txt", "line one\nline two\n");
+    commit(&r, "root");
+    let root = oid(&r, "HEAD");
+    assert_eq!(
+        workspace_diff(&r, &req(Scope::Commit { hash: root }))
+            .unwrap()
+            .files[0]
+            .status,
+        FileStatus::Added
+    );
+    sh(&r, &["mv", "original.txt", "renamed.txt"]);
+    write(&r, "space.txt", "a b\n");
+    commit(&r, "rename");
+    let rename = oid(&r, "HEAD");
+    let result = workspace_diff(&r, &req(Scope::Commit { hash: rename })).unwrap();
+    assert!(result
+        .files
+        .iter()
+        .any(|f| f.status == FileStatus::Renamed && f.old_path.as_deref() == Some("original.txt")));
+    write(&r, "space.txt", "a  b\n");
+    commit(&r, "whitespace");
+    let mut request = req(Scope::Commit {
+        hash: oid(&r, "HEAD"),
+    });
+    request.ignore_whitespace = true;
+    let result = workspace_diff(&r, &request).unwrap();
+    assert_eq!(result.files[0].additions, 1);
+    assert!(result.files[0].hunks.is_empty());
+    for hash in ["--help", "HEAD", "abcdefg", "0000000"] {
+        assert!(workspace_diff(&r, &req(Scope::Commit { hash: hash.into() })).is_err());
+    }
+    fs::remove_dir_all(r).unwrap();
 }
 
 // parity:diff.changes-list:test

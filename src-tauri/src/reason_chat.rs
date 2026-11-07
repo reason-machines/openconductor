@@ -38,10 +38,11 @@ use serde_json::Value;
 use tauri::{AppHandle, Emitter, Manager, State};
 
 use crate::agent::AgentKind;
-use crate::reason_acp::account::{Account, CommandResult, LoginPrompt};
+use crate::reason_acp::account::{Account, CommandResult};
 use crate::reason_acp::cli::{find_reason_cli, CliEnv, LaunchConfig};
 use crate::reason_acp::cloud::CallError;
 use crate::reason_acp::cloud::CloudSetup;
+use crate::reason_acp::login::{LoginService, LoginState};
 use crate::reason_acp::provider::{Attachment, ConfigChoice, ProviderEvent, ReasonProvider, Sink};
 use crate::reason_acp::wire;
 use crate::settings::service::SettingsService;
@@ -118,8 +119,8 @@ impl ReasonChats {
         let store = app
             .path()
             .app_data_dir()
-            .ok()
-            .map(|d| d.join(SESSION_STORE));
+            .map_err(|e| format!("Could not locate the Reason Session workspace store: {e}"))?
+            .join(SESSION_STORE);
         let app = app.clone();
         let sink: Sink = Arc::new(move |chat: &str, ev: ProviderEvent| {
             let event = wire::event_json(chat, &ev);
@@ -130,9 +131,7 @@ impl ReasonChats {
         provider.reconfigure_workspace(workspace);
         // Each Session's workspace, so a chat resumes there after a restart
         // even when the Reason desktop app has another workspace selected.
-        if let Some(store) = store {
-            provider = provider.with_session_store(store);
-        }
+        provider = provider.with_session_store(store);
         let provider = Arc::new(provider);
         *slot = Some(provider.clone());
         Ok(provider)
@@ -176,16 +175,48 @@ pub async fn reason_cloud_setup(app: AppHandle) -> Result<CloudSetup, String> {
     with_cli(&app, |l, dir| l.cloud_setup(dir)).await
 }
 
-/// Starts signing in from the app: the link to open and the code it shows.
-/// The page polls [`reason_account_status`] until the account appears.
+/// Joins or starts the app-wide browser pairing. No terminal is opened.
 #[tauri::command]
-pub async fn reason_login_start(app: AppHandle) -> Result<LoginPrompt, String> {
-    with_cli(&app, |l, dir| l.login(dir)).await?
+pub fn reason_login_start(
+    app: AppHandle,
+    login: State<'_, LoginService>,
+    workspace: Option<String>,
+) -> Result<LoginState, String> {
+    let (launch, configured_workspace) = configured(&app)?;
+    let workspace = workspace
+        .filter(|value| !value.trim().is_empty())
+        .or(configured_workspace);
+    let launch = launch
+        .in_workspace(workspace.as_deref())
+        .map_err(|error| error.to_string())?;
+    Ok(login.start(launch, home()?))
+}
+
+#[tauri::command]
+pub async fn reason_login_status(app: AppHandle) -> Result<LoginState, String> {
+    let state = app.state::<LoginService>().snapshot();
+    if !matches!(state, LoginState::Idle | LoginState::Connected { .. }) {
+        return Ok(state);
+    }
+    let (launch, _) = configured(&app)?;
+    let dir = home()?;
+    tauri::async_runtime::spawn_blocking(move || app.state::<LoginService>().refresh(&launch, &dir))
+        .await
+        .map_err(|error| error.to_string())?
+}
+
+#[tauri::command]
+pub fn reason_login_cancel(login: State<'_, LoginService>, attempt_id: String) -> LoginState {
+    login.cancel(&attempt_id)
 }
 
 /// Settings › Account › Sign out: `reason logout`.
 #[tauri::command]
-pub async fn reason_logout(app: AppHandle) -> Result<CommandResult, String> {
+pub async fn reason_logout(
+    app: AppHandle,
+    login: State<'_, LoginService>,
+) -> Result<CommandResult, String> {
+    login.reset();
     with_cli(&app, |l, dir| l.logout(dir)).await
 }
 

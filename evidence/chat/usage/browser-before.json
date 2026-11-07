@@ -1,0 +1,6 @@
+{
+  "message": "TimeoutError: locator.click: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator('.oc-turn-time').first()\n",
+  "errors": [
+    "Cannot read properties of undefined (reading 'state')"
+  ]
+}

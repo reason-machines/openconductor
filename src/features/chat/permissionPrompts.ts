@@ -34,6 +34,8 @@ export function permissionHeading(tool: string): string {
     case "BashOutput":
     case "execute":
       return "Do you want to run this command?";
+    case "mcp__conductor__RunLocalCommand":
+      return "Do you want to run this command on your Mac?";
     case "Write":
     case "Edit":
     case "MultiEdit":

@@ -1,0 +1,74 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://localhost:4392/tools/dialogs/index.html?dialog=clone&reference=1"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark",
+    "locale": "en-US",
+    "timezone": "UTC"
+  },
+  "actions": [
+    {
+      "step_id": "s0",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=\"dialog\"] input[placeholder=\"Enter path or click to select\"]"
+      },
+      "state": "visible",
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "s1",
+      "action": "fill",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=\"dialog\"] input[placeholder=\"Enter path or click to select\"]"
+      },
+      "value": {
+        "source": "literal",
+        "value": "/Users/demo/Code/with spaces"
+      }
+    },
+    {
+      "step_id": "s2",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=\"dialog\"] button:has-text(\"Browse\")"
+      },
+      "timeout_ms": 15000
+    },
+    {
+      "step_id": "s3",
+      "action": "wait_for",
+      "locator": {
+        "kind": "css",
+        "selector": "html[data-picker-request]"
+      },
+      "state": "visible",
+      "timeout_ms": 15000
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "dom",
+      "url"
+    ],
+    "events": [
+      "console",
+      "page-errors"
+    ]
+  }
+}

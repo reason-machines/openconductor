@@ -5,6 +5,16 @@ import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer
 import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
 import { buildRows, isToolExpanded, type RowView } from "./view.ts";
 
+test("turn usage sums distinct result messages only, replayed upserts replace rather than add", () => {
+  const base = { sessionId: "s1", turnId: "t1", role: "assistant" as const, createdAt: "2026-11-05T10:00:00.000Z", blocks: [] };
+  const first = { ...base, id: "a1", usage: { inputTokens: 100, outputTokens: 20 } };
+  const second = { ...base, id: "a2", usage: { inputTokens: 200, outputTokens: 30 } };
+  const third = { ...base, turnId: "t2", id: "a3", usage: { outputTokens: 7 } };
+  const result = applyChatEvents(emptyTranscript("s1"), [first, second, first, third, second].map((message) => ({ type: "upsert", message })));
+  assert.ok(result.ok);
+  assert.deepEqual(buildRows(result.transcript).filter((r) => r.kind === "turn_end").map((r) => r.usage), [{ inputTokens: 300, outputTokens: 50 }, { outputTokens: 7 }]);
+});
+
 const msg = (id: string, role: ChatMessage["role"], blocks: Block[], extra: Partial<ChatMessage> = {}): ChatMessage => ({
   id,
   sessionId: "s1",

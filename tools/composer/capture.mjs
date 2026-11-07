@@ -14,7 +14,15 @@ const click = (selector, step_id) => ({ step_id, action: "click", locator: { kin
 const wait = (duration_ms, step_id) => ({ step_id, action: "wait_for_timeout", duration_ms });
 const editor = process.env.EDITOR_SELECTOR ?? (reference ? "[contenteditable=true]" : ".composer [contenteditable=true]");
 const fill = (value) => ({ step_id: "type", action: "fill", locator: { kind: "css", selector: editor }, value: { source: "literal", value }, timeout_ms: 5000 });
+const modelButton = reference ? "[aria-label^='Change agent']" : "[data-testid='composer-model-button']";
+const searchModels = "input[aria-label='Search models']";
+const arrow = (key, step_id) => ({ step_id, action: "press", locator: { kind: "css", selector: ":focus" }, key });
+const modelSearch = [click(modelButton, "model"), { ...fill("sonnet"), locator: { kind: "css", selector: searchModels } }];
 const cases = {
+  "model-arrow-down": [...modelSearch, arrow("ArrowDown", "down")],
+  "model-arrow-up": [...modelSearch, arrow("ArrowDown", "down"), arrow("ArrowUp", "up")],
+  "model-arrow-enter": [...modelSearch, arrow("ArrowDown", "down"), arrow("Enter", "choose")],
+  "model-arrow-wrap": [...modelSearch, arrow("ArrowUp", "wrap")],
   empty: reference ? [click("text=2 files changed", "blur")] : [],
   focused: [click(editor, "focus")],
   multiline: [fill("Review the login redirect.\nKeep the expired-session test.\nThen update the docs.")],
@@ -28,6 +36,9 @@ const cases = {
   "link-issue": [click("[aria-label='Add']", "add"), click("text=Link issue", "link")],
   plus: [click("[aria-label='Add']", "add")],
   model: [click(reference ? "[aria-label^='Change agent']" : "[data-testid='composer-model-button']", "model")],
+  "model-search": [click(reference ? "[aria-label^='Change agent']" : "[data-testid='composer-model-button']", "model"), { ...fill("sonnet"), locator: { kind: "css", selector: "input[aria-label='Search models']" } }],
+  "model-search-enter": [click(reference ? "[aria-label^='Change agent']" : "[data-testid='composer-model-button']", "model"), { ...fill("sonnet"), locator: { kind: "css", selector: "input[aria-label='Search models']" } }, { step_id: "enter", action: "press", locator: { kind: "css", selector: "input[aria-label='Search models']" }, key: "Enter" }],
+  "model-search-escape": [click(reference ? "[aria-label^='Change agent']" : "[data-testid='composer-model-button']", "model"), { ...fill("sonnet"), locator: { kind: "css", selector: "input[aria-label='Search models']" } }, { step_id: "escape", action: "press", locator: { kind: "css", selector: "input[aria-label='Search models']" }, key: "Escape" }],
 };
 function screenshot(value) {
   if (!value || typeof value !== "object") return;
@@ -41,7 +52,7 @@ try {
   for (const [name, actions] of Object.entries(cases).filter(([name]) => only.length === 0 || only.includes(name))) {
     const input = {
       browser: { mode: "launch", executable_path: process.env.CHROMIUM ?? "/usr/bin/chromium", headless: true },
-      start_url: { url: `http://localhost:${port}/${reference ? "?oc_scenario=populated&oc_mention_files=1" : "tools/composer/demo.html?agent=claude"}` },
+      start_url: { url: `http://localhost:${port}/${reference ? "?oc_scenario=populated&oc_mention_files=1" : `tools/composer/demo.html?agent=claude${name.startsWith("model-arrow") ? "&model-arrow-checks=1" : name.startsWith("model-search") ? "&model-search-checks=1" : ""}`}` },
       environment: { viewport: { width: 1440, height: 900, device_scale_factor: 1 }, color_scheme: "dark", locale: "en-US", timezone: "UTC" },
       actions: [wait(1800, "settle"), ...(reference ? [click("text=tide-web", "repo"), click("text=Ada/fix login redirect", "workspace"), wait(1200, "open")] : []), ...actions, wait(600, "final")],
       capture: { at_end: ["screenshot", "url"], events: ["console", "page-errors"] },

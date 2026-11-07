@@ -10,7 +10,7 @@
 use std::path::PathBuf;
 
 use super::discard::{discard_file, DiscardRequest};
-use super::git::{workspace_diff, DiffRequest, WorkspaceDiff};
+use super::git::{branch_commits, workspace_diff, BranchCommit, DiffRequest, WorkspaceDiff};
 use super::write_file::{write_file, WriteFileRequest};
 
 fn worktree(repo: String) -> Result<PathBuf, String> {
@@ -30,6 +30,20 @@ pub async fn diff_workspace(repo: String, request: DiffRequest) -> Result<Worksp
     })
     .await
     .map_err(|e| format!("diff task failed: {e}"))?
+}
+
+#[tauri::command]
+pub async fn diff_branch_commits(
+    repo: String,
+    base: String,
+    remote: Option<String>,
+) -> Result<Vec<BranchCommit>, String> {
+    let repo = worktree(repo)?;
+    tauri::async_runtime::spawn_blocking(move || {
+        branch_commits(&repo, &base, remote.as_deref()).map_err(|e| e.to_string())
+    })
+    .await
+    .map_err(|e| format!("commit history task failed: {e}"))?
 }
 
 /// `invoke("diff_discard_file", { repo, request })`: discard one file's changes.

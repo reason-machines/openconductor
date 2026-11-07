@@ -13,7 +13,7 @@ use serde_json::Value;
 
 use super::cli::LaunchConfig;
 
-/// How long `reason status --json` and `reason login` may take.
+/// How long `reason status --json` may take.
 const STATUS_TIMEOUT: Duration = Duration::from_secs(20);
 /// `reason connect` installs and starts the background connection.
 const CONNECT_TIMEOUT: Duration = Duration::from_secs(120);
@@ -48,7 +48,7 @@ pub struct Account {
 
 impl Account {
     pub fn signed_in(&self) -> bool {
-        self.email.is_some() || self.name.is_some()
+        self.error.is_none() && (self.email.is_some() || self.name.is_some())
     }
 }
 
@@ -120,7 +120,11 @@ pub struct LoginPrompt {
 pub fn parse_login(out: &str) -> LoginPrompt {
     let url = out
         .split_whitespace()
-        .find(|w| w.starts_with("https://"))
+        .find(|w| {
+            w.starts_with("https://")
+                || w.starts_with("http://127.0.0.1:")
+                || w.starts_with("http://localhost:")
+        })
         .map(|w| w.trim_end_matches(['.', ',', ')']).to_string());
     let code = out.split("the code ").nth(1).and_then(|rest| {
         let code: String = rest
@@ -166,14 +170,13 @@ impl LaunchConfig {
     /// Starts a browser sign-in: `reason login` without a terminal prints
     /// a link and a code and finishes on its own once the link was used.
     pub fn login(&self, dir: &Path) -> Result<LoginPrompt, String> {
-        let out = self
-            .run_for(dir, &["login"], true, STATUS_TIMEOUT)
-            .ok_or("`reason login` did not answer")?;
-        let prompt = parse_login(&output_text(&out));
-        if !out.status.success() && prompt.url.is_none() {
-            return Err(prompt.message);
-        }
-        Ok(prompt)
+        super::login::login_prompt(
+            self,
+            dir,
+            &std::sync::atomic::AtomicBool::new(false),
+            super::login::LOGIN_TIMEOUT,
+        )
+        .map_err(|_| "Reason could not start browser sign-in. Try again.".into())
     }
 
     /// `reason logout`: signs this computer out of Reason (Settings ›
