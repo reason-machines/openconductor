@@ -1,18 +1,65 @@
 {
-  "first": {
+  "recorded_at": "2026-11-07T01:20:48.728Z",
+  "tested_local_head": "0704b6fea8d09941b739f232583a4aac34b0eb8c",
+  "published_equivalent_head": "8f73c35e8463c3230de360f03ba982ebdeec14d7",
+  "second_stop": {
     "state": "stopped",
     "stopped": [
       {
-        "server_id": "6af717b5-ca7d-47ff-84b5-50fb403f4f5d",
+        "server_id": "2dc5f280-0f45-42fc-b5aa-d1d2fd0f1fc6",
         "port": 4682
       }
-    ]
+    ],
+    "guidance": "Each stopped server's process group has ended on the computer, so its port is free for preview_start."
   },
-  "final": {
+  "final_run": {
+    "server_id": "c587a123-c7c7-47a6-bba1-23032aab1f35",
+    "port": 4682,
+    "state": "running",
+    "exit_code": null,
+    "reason_code": null,
+    "started_at": "2026-11-07T01:20:09.213Z",
+    "expires_at": "2026-11-07T13:20:09.354Z",
+    "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:2746) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nShell comparison preview on 4682\nPASS Group by dark/light filter rows/counts, keyboard-number projection, collapse/filter/grouping reload and All projects restoration\n",
+    "listening": true,
+    "preview_link": "https://reasonmachines.com/agents/27102e36-8b7f-4f1b-9ada-1e0503d3fede/preview?port=4682"
+  },
+  "final_stop": {
     "state": "stopped",
     "stopped": [
       {
-        "server_id": "31f2d405-f1be-4dfb-99c6-8fd66c314de6",
+        "server_id": "c587a123-c7c7-47a6-bba1-23032aab1f35",
+        "port": 4682
+      }
+    ],
+    "guidance": "Each stopped server's process group has ended on the computer, so its port is free for preview_start."
+  },
+  "earlier_grouping_proof": {
+    "first": {
+      "state": "stopped",
+      "stopped": [
+        {
+          "server_id": "6af717b5-ca7d-47ff-84b5-50fb403f4f5d",
+          "port": 4682
+        }
+      ]
+    },
+    "final": {
+      "state": "stopped",
+      "stopped": [
+        {
+          "server_id": "31f2d405-f1be-4dfb-99c6-8fd66c314de6",
+          "port": 4682
+        }
+      ],
+      "guidance": "Each stopped server's process group has ended on the computer, so its port is free for preview_start."
+    }
+  },
+  "first_stop": {
+    "state": "stopped",
+    "stopped": [
+      {
+        "server_id": "35b5a463-4d7f-489b-97f8-ad9d0f8ad999",
         "port": 4682
       }
     ],
