@@ -11,7 +11,7 @@ export function scriptOutputBackend({ output, kind = "setup", running = false, p
   let terminalId;
   const lifecycle = new URLSearchParams(location.search).get("terminalLifecycle");
   let holdTerminal = lifecycle === "starting";
-  let state = running ? "running" : kind === "setup" ? "completed" : "stopped";
+  let state = new URLSearchParams(location.search).get("setupState") ?? (running ? "running" : kind === "setup" ? "completed" : "stopped");
   window.__TAURI_INTERNALS__.transformCallback = (f, once) => {
     const id = transformCallback(f, once);
     callbacks.set(id, f);
@@ -26,8 +26,8 @@ export function scriptOutputBackend({ output, kind = "setup", running = false, p
     terminalExit(exitCode) {
       callbacks.get(terminalListener)?.({ event: "pty-event", payload: { kind: "exit", id: terminalId, exitCode, signal: null } });
     },
-    finish() {
-      state = "completed";
+    finish(next = "completed") {
+      state = next;
       callbacks.get(listener)?.({ event: "scripts://event", payload: { type: "setupFinished", workspaceId: "w1", state, exitCode: 0, logPath: "/synthetic/setup.log", log: output } });
     },
     emit(chunk) {
@@ -47,7 +47,7 @@ export function scriptOutputBackend({ output, kind = "setup", running = false, p
       if (holdTerminal) return terminalId;
       if (lifecycle === "exited") setTimeout(() => window.__scriptOutputTest.terminalExit(0), 700);
     }
-    if (cmd === "setup_script_status") return { state: kind === "setup" ? state : "idle", log: kind === "setup" ? output : null, last: null };
+    if (cmd === "setup_script_status") return { state: kind === "setup" ? state : "idle", log: kind === "setup" && state !== "idle" ? output : null, last: null };
     if (cmd === "setup_script_start") { state = "running"; output = ""; return true; }
     if (cmd === "setup_script_cancel") { state = "cancelled"; return; }
     if (cmd === "run_script_status") return { runs: kind === "run" ? [{ workspaceId: "w1", scriptId: "run", state, exit: [0, null] }] : [], history: [] };

@@ -44,7 +44,11 @@ if (params.get("reference") === "1") {
   document.documentElement.dataset.colorPalette = "stone";
   Reflect.set(window, "isTauri", true);
   Reflect.set(window, "__TAURI_INTERNALS__", {
-    async invoke(command: string) {
+    async invoke(command: string, args?: { options?: unknown }) {
+      if (command === "plugin:dialog|open") {
+        document.documentElement.dataset.pickerRequest = JSON.stringify(args?.options);
+        return params.get("pickerResult");
+      }
       if (command === "github_recent_repos") return [];
       if (command === "github_git_protocol") return "https";
       if (command === "default_clone_directory") return "/Users/demo/conductor/repos";

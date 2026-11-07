@@ -102,8 +102,14 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
           {open ? <ChevronDownIcon /> : <ChevronRightIcon />}
         </button>
         <button type="button" role="tab" aria-selected={open && view === "setup"} className={`strip-tab${open && view === "setup" ? " active" : ""}`} onClick={() => show("setup")}>
+          {setupState === "running" && (
+            <svg className="setup-working" width={10} height={10} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <circle cx="3" cy="8" r="1.5" />
+              <circle cx="8" cy="8" r="1.5" />
+              <circle cx="13" cy="8" r="1.5" />
+            </svg>
+          )}
           Setup
-          {setupState !== "idle" && <span className={`setup-dot ${setupState}`} aria-label={setupState} />}
         </button>
         <button type="button" role="tab" aria-selected={open && view === "run"} className={`strip-tab${open && view === "run" ? " active" : ""}`} onClick={() => show("run")}>
           Run

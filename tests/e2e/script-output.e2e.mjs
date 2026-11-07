@@ -21,6 +21,43 @@ after(async () => {
   if (server) await new Promise((resolve) => server.close(resolve));
 });
 
+test("Setup tab shows its working indicator before the label only while running", async () => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+  try {
+    await page.goto(`${base}/?kind=setup&setupState=idle`);
+    const tab = page.getByRole("tab", { name: /^Setup/ });
+    await tab.click();
+    const indicators = tab.locator("svg, .setup-dot");
+    await page.getByRole("button", { name: "Run setup", exact: true }).waitFor();
+    assert.equal(await indicators.count(), 0);
+    await page.getByRole("button", { name: "Run setup", exact: true }).click();
+    await page.getByRole("button", { name: "Stop setup", exact: true }).waitFor();
+    assert.equal(await indicators.locator("circle").count(), 3);
+    assert.equal(await tab.evaluate((el) => el.firstElementChild?.tagName.toLowerCase()), "svg");
+    assert.equal(await indicators.getAttribute("width"), "10");
+    assert.deepEqual(await indicators.evaluate((el) => {
+      const style = getComputedStyle(el);
+      return { width: style.width, border: style.borderTopWidth };
+    }), { width: "10px", border: "0px" });
+    if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/setup-running.png` });
+    await page.getByRole("button", { name: "Stop setup", exact: true }).click();
+    await page.getByRole("button", { name: "Rerun setup", exact: true }).waitFor();
+    await indicators.waitFor({ state: "detached" });
+    assert.equal(await indicators.count(), 0);
+    for (const state of ["completed", "failed", "cancelled"]) {
+      await page.getByRole("button", { name: "Rerun setup", exact: true }).click();
+      await page.getByRole("button", { name: "Stop setup", exact: true }).waitFor();
+      await page.evaluate((value) => window.__scriptOutputTest.finish(value), state);
+      await page.getByRole("button", { name: "Rerun setup", exact: true }).waitFor();
+      await indicators.waitFor({ state: "detached" });
+      assert.equal(await indicators.count(), 0, `${state} has no indicator`);
+    }
+    if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/setup-finished.png` });
+  } finally {
+    await page.close();
+  }
+});
+
 test("terminal tab labels follow visible order after closing siblings", async () => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
   try {

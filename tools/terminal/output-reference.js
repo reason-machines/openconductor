@@ -2,6 +2,7 @@
   if (!new URLSearchParams(location.search).has("oc_script_output")) return;
   const invoke = window.__TAURI_INTERNALS__.invoke;
   const lifecycle = new URLSearchParams(location.search).get("oc_terminal_lifecycle");
+  const setupState = new URLSearchParams(location.search).get("oc_setup_state");
   const output = "\x1b[32mDependencies installed\x1b[0m\r\nProgress 10%\r\x1b[2KProgress 100%\r\n\x1b[34mReady on localhost:55000\x1b[0m\r\n";
   window.__TAURI_INTERNALS__.invoke = async function (cmd, args, options) {
     if ((cmd === "plugin:fs|stat" || cmd === "plugin:fs|lstat") && /^\/Users\/demo\/code\/tide-web\/(osaka|lisbon)$/.test(args.path)) {
@@ -10,7 +11,9 @@
     if (cmd === "pty_spawn") {
       const id = args.args.id;
       if (lifecycle === "starting") return new Promise(() => {});
-      if (lifecycle === "exited") setTimeout(() => window.__OC_EMIT__("pty-exit", { type: "pty.exit", id, exitCode: 0 }), 700);
+      if (lifecycle === "exited" || setupState === "completed" || setupState === "failed") {
+        setTimeout(() => window.__OC_EMIT__("pty-exit", { type: "pty.exit", id, exitCode: setupState === "failed" ? 7 : 0 }), 700);
+      }
       setTimeout(() => window.__OC_EMIT__("pty-ready", { type: "pty.ready", id, pid: 12345 }), 20);
       setTimeout(() => window.__OC_EMIT__("pty-data", { type: "pty.data", id, data: btoa(output), byteLength: output.length }), 200);
       return null;

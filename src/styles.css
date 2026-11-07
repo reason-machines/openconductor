@@ -512,11 +512,11 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .term-icon:disabled { opacity: 0.4; }
 .term-spacer { flex: 1; }
 .term-dot { flex-shrink: 0; color: var(--muted); }
-.term-starting { flex-shrink: 0; color: var(--muted); }
-.term-starting circle { animation: sb-ws-dot 1.2s ease-in-out infinite; opacity: 0.35; }
-.term-starting circle:nth-child(2) { animation-delay: 0.2s; }
-.term-starting circle:nth-child(3) { animation-delay: 0.4s; }
-@media (prefers-reduced-motion: reduce) { .term-starting circle { animation: none; opacity: 0.8; } }
+.term-starting, .setup-working { flex-shrink: 0; color: var(--muted); }
+.term-starting circle, .setup-working circle { animation: sb-ws-dot 1.2s ease-in-out infinite; opacity: 0.35; }
+.term-starting circle:nth-child(2), .setup-working circle:nth-child(2) { animation-delay: 0.2s; }
+.term-starting circle:nth-child(3), .setup-working circle:nth-child(3) { animation-delay: 0.4s; }
+@media (prefers-reduced-motion: reduce) { .term-starting circle, .setup-working circle { animation: none; opacity: 0.8; } }
 .term-body { position: relative; flex: 1; min-height: 0; padding: 4px 0 0 8px; overflow: hidden; }
 .term-mount { height: 100%; }
 /* Find in terminal: the reference's floating bar (top-2 right-4, w-96, rounded-lg, shadow-lg). */
@@ -574,10 +574,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .scripts-actions .btn { color: var(--text); padding: 4px 10px; border: 1px solid var(--border); }
 .scripts-actions .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
 .scripts-actions .btn-stop { background: var(--destructive); border-color: var(--destructive); color: var(--on-solid); }
-.setup-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-left: 4px; background: var(--border); vertical-align: middle; }
-.setup-dot.running { background: var(--amber); }
-.setup-dot.completed { background: var(--success); }
-.setup-dot.failed { background: var(--destructive); }
 .scripts-meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; padding: 6px 12px; font-size: 12px; color: var(--muted); }
 /* The command shrinks first; in a narrow panel the controls wrap onto a second row instead of being clipped. */
 .scripts-meta code { flex: 1 1 0; min-width: 80px; max-width: max-content; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

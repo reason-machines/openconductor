@@ -1,0 +1,232 @@
+{
+  "base": "97c34f69e",
+  "localHeadBeforeCommit": "76f86bedc9ca441b938a85e42aed5b1dbae6249c",
+  "sourceHashes": {
+    "src/components/Sidebar.tsx": "4b48ae9290d02850dfbb6d50eb1a80f6a758fb5a76d5806946fc552d384dfe39",
+    "src/palette/PaletteHost.tsx": "29e02defc3f7ed61f444fd23c29d326f42d187ed3dce0df87085e8f7a9ba40c8",
+    "tests/e2e/shortcuts-workspace.e2e.mjs": "8eb5375fa8f7e1b60fa92efdabdadff284ba5d6575f02681fea48ff846d86149",
+    "tools/side-by-side/home-routing.check.mjs": "2c25c3bf669108916a623cc208fb5c170329101de6965508175914730c50d6fd"
+  },
+  "before": [
+    {
+      "side": "ref",
+      "theme": "dark",
+      "trigger": "sidebar",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "ref",
+      "theme": "dark",
+      "trigger": "shortcut",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "ref",
+      "theme": "dark",
+      "trigger": "palette",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "ref",
+      "theme": "light",
+      "trigger": "sidebar",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "ref",
+      "theme": "light",
+      "trigger": "shortcut",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "ref",
+      "theme": "light",
+      "trigger": "palette",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "oc",
+      "theme": "dark",
+      "trigger": "sidebar",
+      "rootActive": true,
+      "listVisible": false,
+      "homeActive": true,
+      "route": "/"
+    },
+    {
+      "side": "oc",
+      "theme": "dark",
+      "trigger": "shortcut",
+      "rootActive": true,
+      "listVisible": false,
+      "homeActive": true,
+      "route": "/"
+    },
+    {
+      "side": "oc",
+      "theme": "dark",
+      "trigger": "palette",
+      "rootActive": true,
+      "listVisible": false,
+      "homeActive": true,
+      "route": "/"
+    },
+    {
+      "side": "oc",
+      "theme": "light",
+      "trigger": "sidebar",
+      "rootActive": true,
+      "listVisible": false,
+      "homeActive": true,
+      "route": "/"
+    },
+    {
+      "side": "oc",
+      "theme": "light",
+      "trigger": "shortcut",
+      "rootActive": true,
+      "listVisible": false,
+      "homeActive": true,
+      "route": "/"
+    },
+    {
+      "side": "oc",
+      "theme": "light",
+      "trigger": "palette",
+      "rootActive": true,
+      "listVisible": false,
+      "homeActive": true,
+      "route": "/"
+    }
+  ],
+  "after": [
+    {
+      "side": "ref",
+      "theme": "dark",
+      "trigger": "sidebar",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "ref",
+      "theme": "dark",
+      "trigger": "shortcut",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "ref",
+      "theme": "dark",
+      "trigger": "palette",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "ref",
+      "theme": "light",
+      "trigger": "sidebar",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "ref",
+      "theme": "light",
+      "trigger": "shortcut",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "ref",
+      "theme": "light",
+      "trigger": "palette",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/all-workspaces"
+    },
+    {
+      "side": "oc",
+      "theme": "dark",
+      "trigger": "sidebar",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/"
+    },
+    {
+      "side": "oc",
+      "theme": "dark",
+      "trigger": "shortcut",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/"
+    },
+    {
+      "side": "oc",
+      "theme": "dark",
+      "trigger": "palette",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/"
+    },
+    {
+      "side": "oc",
+      "theme": "light",
+      "trigger": "sidebar",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/"
+    },
+    {
+      "side": "oc",
+      "theme": "light",
+      "trigger": "shortcut",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/"
+    },
+    {
+      "side": "oc",
+      "theme": "light",
+      "trigger": "palette",
+      "rootActive": false,
+      "listVisible": true,
+      "homeActive": true,
+      "route": "/"
+    }
+  ],
+  "scope": "Chromium extracted frontend with synthetic fixtures, not native app",
+  "native": "NOT RUN"
+}

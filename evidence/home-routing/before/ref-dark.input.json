@@ -1,0 +1,52 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark",
+    "locale": "en-US",
+    "timezone": "UTC"
+  },
+  "actions": [
+    {
+      "step_id": "settle-root",
+      "action": "wait_for_timeout",
+      "duration_ms": 2000
+    },
+    {
+      "step_id": "sidebar-home",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "div[data-active][title^=\"Home\"]"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "settle-list",
+      "action": "wait_for_timeout",
+      "duration_ms": 1000
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "dom",
+      "url"
+    ],
+    "events": [
+      "console",
+      "page-errors"
+    ]
+  }
+}
