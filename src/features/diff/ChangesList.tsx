@@ -62,7 +62,7 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
     <div className="oc-diff oc-diff-list">
       {load.state === "loading" && <div className="placeholder small">Loading changes…</div>}
       {load.state === "error" && <div className="placeholder small"><p className="error">Couldn't load changes.</p><p className="muted">{load.message}</p><button className="btn btn-small" onClick={diff.refresh}>Try again</button></div>}
-      {load.state === "ready" && files.length === 0 && <div className="placeholder small"><p>{diff.turn ? "No changes in selected turn." : opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>{!diff.turn && <p className="muted">Changes the agent makes show up here.</p>}{!diff.turn && opts.scope === "all" && emptyAction}</div>}
+      {load.state === "ready" && files.length === 0 && <div className="placeholder small"><p>{diff.turn ? "No changes in selected turn." : typeof opts.scope === "object" ? "No changes in selected commit." : opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>{!diff.turn && typeof opts.scope !== "object" && <p className="muted">Changes the agent makes show up here.</p>}{!diff.turn && opts.scope === "all" && emptyAction}</div>}
       {load.state === "ready" && files.length > 0 && filter && filtering && <ChangesFilterRow filter={filter} matchCount={shown.length} totalCount={files.length} />}
       {load.state === "ready" && files.length > 0 && <>
         <div className="oc-changes-header"><span>{files.length} {files.length === 1 ? "file" : "files"} changed</span><ChangeCounts additions={totals.a} deletions={totals.d} showZero /></div>
