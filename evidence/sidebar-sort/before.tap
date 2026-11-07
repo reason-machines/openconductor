@@ -1,0 +1,101 @@
+(node:80) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pinned workspaces leave their repo group and sort by pin time
+ok 1 - pinned workspaces leave their repo group and sort by pin time
+  ---
+  duration_ms: 1.946491
+  type: 'test'
+  ...
+# Subtest: sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos
+ok 2 - sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos
+  ---
+  duration_ms: 0.394775
+  type: 'test'
+  ...
+# Subtest: Created sort controls repository and shortcut order without moving pinned or section rows
+not ok 3 - Created sort controls repository and shortcut order without moving pinned or section rows
+  ---
+  duration_ms: 1.330316
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/.oc-tmp/sort-baseline/src/state/sidebarOrder.test.ts:30:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'pinned',
+        'section-old',
+        'section-new',
+    +   'old',
+        'new',
+    -   'old'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'pinned'
+    1: 'section-old'
+    2: 'section-new'
+    3: 'new'
+    4: 'old'
+  actual:
+    0: 'pinned'
+    1: 'section-old'
+    2: 'section-new'
+    3: 'old'
+    4: 'new'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/.oc-tmp/sort-baseline/src/state/sidebarOrder.test.ts:42:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: effective status is manual, then derived, then in-progress
+ok 4 - effective status is manual, then derived, then in-progress
+  ---
+  duration_ms: 0.240862
+  type: 'test'
+  ...
+# Subtest: sectioned workspaces sit between Pinned and the repo groups and leave both
+ok 5 - sectioned workspaces sit between Pinned and the repo groups and leave both
+  ---
+  duration_ms: 0.364978
+  type: 'test'
+  ...
+# Subtest: an untoggled repo group is folded unless the open workspace is one of its rows (Conductor's Dra)
+ok 6 - an untoggled repo group is folded unless the open workspace is one of its rows (Conductor's Dra)
+  ---
+  duration_ms: 0.222682
+  type: 'test'
+  ...
+# Subtest: toggling stores the opposite of what the group shows
+ok 7 - toggling stores the opposite of what the group shows
+  ---
+  duration_ms: 0.227267
+  type: 'test'
+  ...
+# Subtest: visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups
+ok 8 - visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups
+  ---
+  duration_ms: 0.206723
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 172.451533

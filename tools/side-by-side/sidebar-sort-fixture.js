@@ -20,7 +20,7 @@
   const seed = window.__OC_SEED__;
   if (seed) window.__OC_SEED__ = (scenario) => {
     const data = seed(scenario);
-    data.conductor += Object.entries(created).map(([id, date]) => `UPDATE workspaces SET created_at='${date}' WHERE id='${id}';`).join('\n');
+    data.conductor += Object.entries(created).map(([id, date]) => `UPDATE workspaces SET created_at='${date}' WHERE local_id='${id}';`).join('\n');
     return data;
   };
   if (location.hostname === 'localhost') {

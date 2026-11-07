@@ -1,0 +1,180 @@
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: sort preference defaults to Updated and only accepts Created
+ok 1 - sort preference defaults to Updated and only accepts Created
+  ---
+  duration_ms: 0.676182
+  type: 'test'
+  ...
+# Subtest: Created ignores later activity; Updated falls back to creation and preserves equal-time order
+ok 2 - Created ignores later activity; Updated falls back to creation and preserves equal-time order
+  ---
+  duration_ms: 1.176235
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: sidebar order spans repos in order, newest first inside a repo, as the sidebar shows them
+ok 3 - sidebar order spans repos in order, newest first inside a repo, as the sidebar shows them
+  ---
+  duration_ms: 2.094644
+  type: 'test'
+  ...
+# Subtest: Cmd+1..9 order puts Pinned first and skips collapsed repos
+ok 4 - Cmd+1..9 order puts Pinned first and skips collapsed repos
+  ---
+  duration_ms: 0.370512
+  type: 'test'
+  ...
+# Subtest: stepping wraps and starts at the ends when nothing is selected
+ok 5 - stepping wraps and starts at the ends when nothing is selected
+  ---
+  duration_ms: 0.347062
+  type: 'test'
+  ...
+# Subtest: recents drop unknown ids and outrank creation time in the Workspaces tab
+ok 6 - recents drop unknown ids and outrank creation time in the Workspaces tab
+  ---
+  duration_ms: 0.83441
+  type: 'test'
+  ...
+# Subtest: workspace actions appear only with a workspace selected
+ok 7 - workspace actions appear only with a workspace selected
+  ---
+  duration_ms: 0.610017
+  type: 'test'
+  ...
+# Subtest: palette workspace entries carry workspaces.number for the W-<n> column
+ok 8 - palette workspace entries carry workspaces.number for the W-<n> column
+  ---
+  duration_ms: 0.279104
+  type: 'test'
+  ...
+# Subtest: archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action
+ok 9 - archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action
+  ---
+  duration_ms: 1.582866
+  type: 'test'
+  ...
+# Subtest: Recent workspaces keeps archived workspaces and drops deleted ones, as Conductor's palette does
+ok 10 - Recent workspaces keeps archived workspaces and drops deleted ones, as Conductor's palette does
+  ---
+  duration_ms: 1.381977
+  type: 'test'
+  ...
+# Subtest: Go to next unread is listed under Navigation only while a chat of a non-archived workspace is unread
+ok 11 - Go to next unread is listed under Navigation only while a chat of a non-archived workspace is unread
+  ---
+  duration_ms: 0.671818
+  type: 'test'
+  ...
+# Subtest: the All tab lists Conductor's Actions and Navigation commands in its order, with their shortcuts
+ok 12 - the All tab lists Conductor's Actions and Navigation commands in its order, with their shortcuts
+  ---
+  duration_ms: 0.450596
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is listed only while a workspace is open, as Conductor's `Xt &&`
+ok 13 - View archived workspaces is listed only while a workspace is open, as Conductor's `Xt &&`
+  ---
+  duration_ms: 0.225027
+  type: 'test'
+  ...
+# Subtest: workspace rows carry the sidebar's display name, last activity and unread
+ok 14 - workspace rows carry the sidebar's display name, last activity and unread
+  ---
+  duration_ms: 0.163916
+  type: 'test'
+  ...
+# Subtest: settings pages are listed with no query and their rows join once there is one (Conductor's `[...We, ...query ? He : []]`)
+ok 15 - settings pages are listed with no query and their rows join once there is one (Conductor's `[...We, ...query ? He : []]`)
+  ---
+  duration_ms: 2.05756
+  type: 'test'
+  ...
+# (node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: defaults are Conductor's hook defaults
+ok 16 - defaults are Conductor's hook defaults
+  ---
+  duration_ms: 0.658747
+  type: 'test'
+  ...
+# Subtest: an update changes only its key; widths are whole pixels
+ok 17 - an update changes only its key; widths are whole pixels
+  ---
+  duration_ms: 1.163233
+  type: 'test'
+  ...
+# Subtest: the sidebar drags between 192 and 480 pixels
+ok 18 - the sidebar drags between 192 and 480 pixels
+  ---
+  duration_ms: 0.141658
+  type: 'test'
+  ...
+# Subtest: Tab Freak Mode raises the per-workspace tab limit from 5 to 10, counting the chat tab
+ok 19 - Tab Freak Mode raises the per-workspace tab limit from 5 to 10, counting the chat tab
+  ---
+  duration_ms: 0.269675
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pinned workspaces leave their repo group and sort by pin time
+ok 20 - pinned workspaces leave their repo group and sort by pin time
+  ---
+  duration_ms: 1.971242
+  type: 'test'
+  ...
+# Subtest: sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos
+ok 21 - sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos
+  ---
+  duration_ms: 0.463951
+  type: 'test'
+  ...
+# Subtest: Created sort controls repository and shortcut order without moving pinned or section rows
+ok 22 - Created sort controls repository and shortcut order without moving pinned or section rows
+  ---
+  duration_ms: 0.394269
+  type: 'test'
+  ...
+# Subtest: effective status is manual, then derived, then in-progress
+ok 23 - effective status is manual, then derived, then in-progress
+  ---
+  duration_ms: 0.250805
+  type: 'test'
+  ...
+# Subtest: sectioned workspaces sit between Pinned and the repo groups and leave both
+ok 24 - sectioned workspaces sit between Pinned and the repo groups and leave both
+  ---
+  duration_ms: 0.270704
+  type: 'test'
+  ...
+# Subtest: an untoggled repo group is folded unless the open workspace is one of its rows (Conductor's Dra)
+ok 25 - an untoggled repo group is folded unless the open workspace is one of its rows (Conductor's Dra)
+  ---
+  duration_ms: 0.169917
+  type: 'test'
+  ...
+# Subtest: toggling stores the opposite of what the group shows
+ok 26 - toggling stores the opposite of what the group shows
+  ---
+  duration_ms: 0.267982
+  type: 'test'
+  ...
+# Subtest: visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups
+ok 27 - visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups
+  ---
+  duration_ms: 0.181092
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 607.786007

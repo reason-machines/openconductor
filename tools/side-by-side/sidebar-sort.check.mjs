@@ -31,6 +31,12 @@ try {
       const created = page.getByRole('menuitemradio', { name: 'Created', exact: true });
       await created.waitFor();
       assert.equal(await updated.getAttribute('aria-checked'), 'true', `${side} ${theme} default Updated`);
+      await page.waitForFunction(() => {
+        const item = document.querySelector('[role="menuitemradio"]');
+        if (!item) return false;
+        const rect = item.getBoundingClientRect();
+        return Math.abs(rect.width - item.offsetWidth) < 0.001 && Math.abs(rect.height - item.offsetHeight) < 0.001;
+      });
       const geometry = await updated.evaluate((element) => {
         const r = element.getBoundingClientRect();
         const style = getComputedStyle(element);
@@ -51,6 +57,7 @@ try {
         await sort.focus();
         await page.keyboard.press('ArrowRight');
         await updated.waitFor();
+        await page.waitForFunction(() => document.activeElement?.textContent === 'Updated');
         assert.equal(await page.locator(':focus').innerText(), 'Updated');
         await page.keyboard.press('ArrowDown');
         assert.equal(await page.locator(':focus').innerText(), 'Created');
