@@ -1,0 +1,14 @@
+[
+  {
+    "server_id": "87c8bdd7-14cc-49c7-a326-8e3e095f2f96",
+    "port": 4682,
+    "state": "running",
+    "exit_code": null,
+    "reason_code": null,
+    "started_at": "2026-11-07T18:05:57.250Z",
+    "expires_at": "2026-11-08T06:05:57.372Z",
+    "output": "bash: cannot set terminal process group (-1): Inappropriate ioctl for device\nbash: no job control in this shell\n(node:29073) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\nShell comparison preview on 4682\nAssertionError [ERR_ASSERTION]: oc/dark: local header must not render the remote-only workspace-number badge\n\n1 !== 0\n\n    at file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/tools/side-by-side/local-header-number.check.mjs:41:16 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 1,\n  expected: 0,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n",
+    "listening": true,
+    "preview_link": "https://reasonmachines.com/agents/27102e36-8b7f-4f1b-9ada-1e0503d3fede/preview?port=4682"
+  }
+]

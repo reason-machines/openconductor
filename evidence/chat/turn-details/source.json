@@ -1,0 +1,12 @@
+{
+  "source": "fcc96920d19b94d1bfc8bd1708fb45b07bb51cfb",
+  "baseMain": "810e40fc",
+  "surface": "Chromium, actual Transcript component, synthetic Lisbon turn; not native macOS",
+  "hashes": {
+    "src/features/chat/Transcript.tsx": "8489ae46dc68c5ad7b2e91bc3b62f0ef7ac371b7b69e382ec400c7fe1ee31193",
+    "src/features/chat/TurnDetails.tsx": "d6ef55a97a1a175ba13ea1d1d978c2b1af65acbb128a2c33e36c2501aa4a479e",
+    "src/features/chat/turnDetails.css": "cb56f1ff162da1c50f20295c1b72bde65d41323c4d94b0c48927e488797f5062",
+    "tools/chat/transcript-fixture.tsx": "93d7db45ed589a269f2b4289e73365d2706b23fc9035bcad35192578bfb66095",
+    "tools/chat/turn-details.browser.mjs": "5a62b7f49e7f90375b03565d04e8a7a6cc1142baac0a3cbf56bf343d8661c8e2"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "source_commit": "1730f722ccd1b91393d9c094f98e322978da9eff",
+  "build_index_sha256": "030063f30928cd7e4d5a417bb6c252ea7862837b0899a008edb0dc0ea308d374",
+  "collapsed-return": {
+    "reference": {
+      "evidence_id": "ev_e1d76350532ed90c63ec52bd0fe57e0d377d69758a3be1b3b68a8133c59cbb75",
+      "png_sha256": "49f64c9fa380290e640490fd849fe422baab480de71579fd83b72025a7d02693",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/changes-persistence-verified/ref-collapsed-return-artifact.json"
+    },
+    "openconductor": {
+      "evidence_id": "ev_a8befc6f936e1e5eedf360fc01addedac41fef47809c80b9fc5900b9bf579d50",
+      "png_sha256": "c74a7ae59106e601064825cb8390b1dd6cdbfd4d4a83a22f738d7449d64e1745",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/changes-persistence-verified/oc-collapsed-return-artifact.json"
+    },
+    "compare": {
+      "evidence_id": "ev_819d9a210fc2a5f9c3c0c632f8f9ca2ea29b54cee80ba4fd8b224c3f5c4d5258",
+      "changed_pixels": 51972,
+      "compared_pixels": 1049600,
+      "changed_ratio": 0.049516006097560974
+    }
+  },
+  "filter-return": {
+    "reference": {
+      "evidence_id": "ev_60626a14ee17e51c5551b909e35bea2925a3e651ea841e3005538abecae8a4d9",
+      "png_sha256": "891c6be265e376c8c9731cea86dcee9a3ef7f52897e88f9747347dd706797f86",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/changes-persistence-verified/ref-filter-return-artifact.json"
+    },
+    "openconductor": {
+      "evidence_id": "ev_7e4c7b070d8b3d7ef9ba5bc222255bb30b6c4263fe34e4a34ff51e3a87f2ac1a",
+      "png_sha256": "3e2392482a8cbb0fc4d49104075d5cf35a3e883162c98498f78ee751aadf566e",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/changes-persistence-verified/oc-filter-return-artifact.json"
+    },
+    "compare": {
+      "evidence_id": "ev_7343502e32915623c8dff948caff512f94c72defed693747545628d0b909a2cf",
+      "changed_pixels": 52932,
+      "compared_pixels": 1049600,
+      "changed_ratio": 0.05043064024390244
+    }
+  }
+}

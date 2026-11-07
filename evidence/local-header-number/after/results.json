@@ -1,0 +1,42 @@
+[
+  {
+    "side": "ref",
+    "theme": "dark",
+    "settings": "true",
+    "workspaceNumber": 1,
+    "badgeCount": 0,
+    "route": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "homeNumbers": "visible",
+    "paletteNumbers": "visible"
+  },
+  {
+    "side": "oc",
+    "theme": "dark",
+    "settings": true,
+    "workspaceNumber": 1,
+    "badgeCount": 0,
+    "route": "/",
+    "homeNumbers": "visible",
+    "paletteNumbers": "visible"
+  },
+  {
+    "side": "ref",
+    "theme": "light",
+    "settings": "true",
+    "workspaceNumber": 1,
+    "badgeCount": 0,
+    "route": "/repository/repo-tide-web/workspace/ws-lisbon",
+    "homeNumbers": "visible",
+    "paletteNumbers": "visible"
+  },
+  {
+    "side": "oc",
+    "theme": "light",
+    "settings": true,
+    "workspaceNumber": 1,
+    "badgeCount": 0,
+    "route": "/",
+    "homeNumbers": "visible",
+    "paletteNumbers": "visible"
+  }
+]

@@ -19,6 +19,7 @@ import { preferredProjectWorkspace } from "./projectWorkspace.ts";
 
 interface Props {
   state: AppState;
+  collapsedSections: ReadonlySet<string>;
   dispatch: Dispatch<Action>;
   onOpenDialog: (kind: DialogKind) => void;
   /** Native folder picker flow for adding a project. */
@@ -48,7 +49,7 @@ export interface PaletteCommands {
 }
 
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
-export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open, onOpenChange, commands }: Props) {
+export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, onOpenProject, open, onOpenChange, commands }: Props) {
   const [recents, setRecents] = useState<readonly string[]>(loadRecentWorkspaceIds);
   const sel = state.selection;
   const selectedId = sel.kind === "workspace" ? sel.workspaceId : null;
@@ -125,7 +126,7 @@ export function PaletteHost({ state, dispatch, onOpenDialog, onOpenProject, open
     // live only while a workspace is open, and it keeps the key even when nothing is unread.
     "chat.nextAttention": () => void (sel.kind === "workspace" && goUnread(true)),
   };
-  for (let i = 1; i <= 9; i++) handlers[`workspace.switchTo${i}`] = () => go(shortcutOrder(state)[i - 1]);
+  for (let i = 1; i <= 9; i++) handlers[`workspace.switchTo${i}`] = () => go(shortcutOrder(state, collapsedSections)[i - 1]);
   useKeybindings(handlers);
 
   function onSelect(item: ResultItem) {

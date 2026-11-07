@@ -31,6 +31,7 @@ import { filterRepoGroups } from "../home/repoFilter";
 import { SidebarAddRepositoryMenu } from "./AddRepositoryMenu";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { AccountMenu } from "./AccountMenu";
+import { AppMark } from "./AppMark";
 import { ResourceUsagePill } from "./ResourceUsagePill";
 import { Tooltip, titleWithShortcut } from "./Tooltip";
 import { ContextMenu, MenuItem as CtxItem, MenuSeparator } from "./menu/ContextMenu";
@@ -59,6 +60,8 @@ export interface NavControls {
 
 interface Props {
   state: AppState;
+  collapsedSections: ReadonlySet<string>;
+  onToggleSection: (id: string) => void;
   dispatch: Dispatch<Action>;
   onOpenDialog: (d: DialogKind, repoId?: string, sectionId?: string) => void;
   onOpenProject: () => void;
@@ -250,13 +253,11 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
+export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
   const renamingWs = renaming && state.repos.find((r) => r.id === renaming.repoId)?.workspaces.find((w) => w.id === renaming.workspaceId);
-  // Conductor keeps each section's collapse under `section-<id>`; ours lasts for the session.
-  const [collapsedSections, setCollapsedSections] = useState<ReadonlySet<string>>(new Set());
   const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
   // Drag rows onto a section, Pinned or My workspaces, and section headers to reorder (Conductor's `esa`).
   const scrollRoot = useRef<HTMLElement>(null);
@@ -282,12 +283,6 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
   });
   const { sections, sectioned } = sectionEntries(state);
   const pinned = pinnedEntries(state, sectioned);
-  const toggleSection = (id: string) =>
-    setCollapsedSections((prev) => {
-      const next = new Set(prev);
-      if (!next.delete(id)) next.add(id);
-      return next;
-    });
   const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
     if (mode.mode === "edit") {
       dispatch({ type: "editSection", sectionId: mode.sectionId, ...value });
@@ -392,6 +387,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
           >
             <SidebarIcon size={16} />
           </button>
+          <span className="sb-app-mark" title="OpenConductor"><AppMark size={14} /></span>
         </div>
         <div className="sb-history">
           <ResourceUsagePill workspaces={usageWorkspaces} />
@@ -439,7 +435,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
                 isFirst={i === 0}
                 onHeaderPointerDown={(e) => drag.sectionPointerDown(e, group.section.id)}
                 collapsed={collapsedSections.has(group.section.id)}
-                onToggle={() => toggleSection(group.section.id)}
+                onToggle={() => onToggleSection(group.section.id)}
                 menuItems={sectionMenu(group.section.id)}
                 renderRow={row}
               />

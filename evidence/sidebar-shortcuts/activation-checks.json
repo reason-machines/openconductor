@@ -1,0 +1,1238 @@
+[
+  {
+    "theme": "dark",
+    "group": "repo",
+    "filter": "All projects",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 6
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "repo",
+    "filter": "All projects",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 2
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "repo",
+    "filter": "All projects",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 6
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "repo",
+    "filter": "tide-web",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "repo",
+    "filter": "tide-web",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 2
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "repo",
+    "filter": "tide-web",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "repo",
+    "filter": "tide-api",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "repo",
+    "filter": "tide-api",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 3
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "repo",
+    "filter": "tide-api",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "All projects",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 6
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "All projects",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 2
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "All projects",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 6
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "All projects",
+    "context": "status-group-collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-accra"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "tide-web",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "tide-web",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 2
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "tide-web",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "tide-web",
+    "context": "status-group-collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-accra"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "tide-api",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "tide-api",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 2
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "tide-api",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "dark",
+    "group": "status",
+    "filter": "tide-api",
+    "context": "status-group-collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-accra"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "repo",
+    "filter": "All projects",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 6
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "repo",
+    "filter": "All projects",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 2
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "repo",
+    "filter": "All projects",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 6
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "repo",
+    "filter": "tide-web",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "repo",
+    "filter": "tide-web",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 2
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "repo",
+    "filter": "tide-web",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "repo",
+    "filter": "tide-api",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "repo",
+    "filter": "tide-api",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 3
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "repo",
+    "filter": "tide-api",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "All projects",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 6
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "All projects",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 2
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "All projects",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 5
+      },
+      {
+        "title": "Ada/zsh prompt · ada/zsh-prompt · Ready",
+        "number": 6
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-dotfiles",
+      "workspaceId": "ws-bergen"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "All projects",
+    "context": "status-group-collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-accra"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "tide-web",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "tide-web",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 2
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "tide-web",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "tide-web",
+    "context": "status-group-collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-accra"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "tide-api",
+    "context": "expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "tide-api",
+    "context": "collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 2
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "tide-api",
+    "context": "re-expanded",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      },
+      {
+        "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+        "number": 4
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-tallinn"
+    },
+    "outOfRange": "unchanged"
+  },
+  {
+    "theme": "light",
+    "group": "status",
+    "filter": "tide-api",
+    "context": "status-group-collapsed",
+    "targets": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": 1
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": 2
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": 3
+      }
+    ],
+    "selected": {
+      "kind": "workspace",
+      "repoId": "repo-tide-api",
+      "workspaceId": "ws-accra"
+    },
+    "outOfRange": "unchanged"
+  }
+]

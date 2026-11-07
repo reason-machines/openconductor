@@ -42,12 +42,12 @@ after(async () => {
   if (server) await new Promise((resolve) => server.httpServer.close(resolve));
 });
 
-async function open({ spotlight = false } = {}) {
+async function open({ spotlight = false, shell = SHELL } = {}) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", (err) => errors.push(err.message));
-  await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES, spotlight });
+  await page.addInitScript(fakeBackend, { shell, files: FILES, spotlight });
   await page.goto(base + "/");
   await page.locator(".rp-tabs").waitFor();
   return { context, page, errors };
@@ -112,6 +112,46 @@ test("Changes: sorted flat rows, compressed hierarchy, collapsing counts, filter
   await page.getByRole("button", { name: "Changes options", exact: true }).waitFor();
   assert.deepEqual(errors, []);
   await context.close();
+});
+
+test("Changes: each workspace retains its hierarchy, collapsed folders and filter after leaving and reloading", async () => {
+  const shell = structuredClone(SHELL);
+  shell.repos[0].workspaces.push({ id: "w2", name: "porto", branch: "ada/porto", path: WT + "-porto" });
+  const { context, page, errors } = await open({ shell });
+  try {
+    const changed = page.locator('nav[aria-label="Changed files"]');
+    await changed.locator(".oc-change").first().waitFor();
+    await page.getByRole("button", { name: "Show folder hierarchy", exact: true }).click();
+    const folder = changed.getByRole("button", { name: "src / lib", exact: true });
+    await folder.click();
+    await page.getByRole("tab", { name: "All files", exact: true }).click();
+    await page.getByRole("tab", { name: "Changes 2", exact: true }).click();
+    assert.equal(await folder.getAttribute("aria-expanded"), "false", "collapsed folders survive a panel-tab switch");
+    await page.getByRole("button", { name: "Filter files", exact: true }).click();
+    await page.getByRole("textbox", { name: "Filter changed files" }).fill("test");
+    const workspace = (name) => page.locator('[data-testid="left-sidebar-workspace-item"]').filter({ has: page.locator(".sb-ws-name", { hasText: name }) });
+    await workspace("porto").click();
+    await page.getByRole("button", { name: "Show folder hierarchy", exact: true }).waitFor();
+    assert.equal(await page.getByRole("textbox", { name: "Filter changed files" }).count(), 0);
+    await workspace("lisbon").click();
+    await page.getByRole("button", { name: "Show flat list", exact: true }).waitFor();
+    assert.equal(await page.getByRole("textbox", { name: "Filter changed files" }).inputValue(), "test");
+    assert.equal(await changed.locator(".oc-change").count(), 1);
+    await page.reload();
+    await page.getByRole("button", { name: "Show flat list", exact: true }).waitFor();
+    const filter = page.getByRole("textbox", { name: "Filter changed files" });
+    assert.equal(await filter.inputValue(), "test", "the filter survives a reload");
+    assert.equal(await changed.locator(".oc-change").count(), 1);
+    await filter.press("Escape");
+    assert.equal(await folder.getAttribute("aria-expanded"), "false", "filtering does not overwrite collapsed folders");
+    await page.reload();
+    await folder.waitFor();
+    assert.equal(await folder.getAttribute("aria-expanded"), "false");
+    assert.equal(await page.getByRole("textbox", { name: "Filter changed files" }).count(), 0, "clearing the filter is persisted");
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
 });
 
 test("Changes: discard confirmation matches the alert layout and Cancel never discards", async () => {

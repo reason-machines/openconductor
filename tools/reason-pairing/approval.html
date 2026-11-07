@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fake Reason pairing approval</title>
+  <style>
+    :root { color-scheme: light dark; font: 16px/1.5 system-ui, sans-serif; }
+    body { max-width: 36rem; margin: 10vh auto; padding: 2rem; }
+    label { display: block; margin-top: 1.5rem; }
+    select { display: block; width: 100%; padding: .6rem; }
+    button { margin: 1.5rem .5rem 0 0; padding: .7rem 1.1rem; }
+    code { font-size: 1.4rem; }
+  </style>
+</head>
+<body>
+  <h1>Approve fixture sign-in</h1>
+  <p>This is a local test server. It cannot sign in to Reason or issue real credentials.</p>
+  <p>Compare this code with OpenConductor.</p>
+  <code id="code"></code>
+  <form>
+    <label>Fixture account<select name="account" aria-label="Fixture account"></select></label>
+    <label>Fixture workspace<select name="workspace" aria-label="Fixture workspace"></select></label>
+    <button type="submit">Approve fixture sign-in</button>
+    <button type="button" id="cancel">Cancel fixture sign-in</button>
+  </form>
+  <p role="status">Loading fixture request...</p>
+  <script>
+    const requestId = new URLSearchParams(location.search).get("request");
+    const endpoint = `/pairings/${encodeURIComponent(requestId)}`;
+    const form = document.querySelector("form");
+    const status = document.querySelector('[role="status"]');
+    async function load() {
+      const [options, pairing] = await Promise.all([fetch("/fixture/options").then(r => r.json()), fetch(endpoint).then(r => r.json())]);
+      if (!pairing.id) throw new Error(pairing.error);
+      document.querySelector("#code").textContent = pairing.code;
+      for (const account of options.accounts) form.account.add(new Option(`${account.name} (${account.email})`, account.id));
+      for (const workspace of options.workspaces) form.workspace.add(new Option(workspace.name, workspace.slug));
+      if (pairing.workspaceHint) form.workspace.value = pairing.workspaceHint;
+      status.textContent = pairing.state === "pending" ? "Waiting for your approval" : `Pairing is ${pairing.state}`;
+    }
+    async function decide(action) {
+      const response = await fetch(`${endpoint}/${action}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ account: form.account.value, workspace: form.workspace.value }) });
+      const pairing = await response.json();
+      if (!response.ok) throw new Error(pairing.error);
+      status.textContent = action === "approve" ? "Fixture approved. Return to OpenConductor." : "Fixture sign-in cancelled.";
+      for (const control of form.elements) control.disabled = true;
+    }
+    form.addEventListener("submit", event => { event.preventDefault(); decide("approve").catch(error => { status.textContent = error.message; }); });
+    document.querySelector("#cancel").addEventListener("click", () => decide("cancel").catch(error => { status.textContent = error.message; }));
+    load().catch(error => { status.textContent = error.message; });
+  </script>
+</body>
+</html>

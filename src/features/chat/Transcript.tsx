@@ -5,6 +5,7 @@
 // markdown) and, once finished, its footer.
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
+import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
 import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
@@ -16,6 +17,7 @@ import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBloc
 import { Markdown } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
 import { turnTime } from "./turnTime.ts";
+import { TurnDetails } from "./TurnDetails.tsx";
 import { openUrl } from "../../backend.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
 import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
@@ -205,11 +207,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-      {when ? (
-        <span className="chat-turn-time oc-turn-time" title={turnAgent ? `${turnAgent}\n${when.range}` : when.range}>
-          {when.label}
-        </span>
-      ) : null}
+      {when ? <TurnDetails when={when} agent={turnAgent} /> : null}
       {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
       {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">
@@ -227,16 +225,16 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   );
 }
 
-/** "Authentication required" under a turn its agent refused for want of a login, with a link to that agent's tab. */
+/** Reason signs in directly; local agents keep their Settings authentication flow. */
 function SignInNotice({ agent }: { agent: ChatAgentId }) {
   const copy = signInCopy(agent);
   return (
     <div className="chat-sign-in" data-testid="chat-sign-in" data-agent={agent}>
       <span className="chat-sign-in-badge">{copy.badge}</span>
       <p>{copy.text}</p>
-      <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>
-        {copy.action}
-      </button>
+      {agent === "reason" ? <ReasonSignInControls variant="chat" /> : (
+        <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>{copy.action}</button>
+      )}
     </div>
   );
 }

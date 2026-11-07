@@ -1,0 +1,6 @@
+bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+(node:22618) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Shell comparison preview on 4682
+PASS 42 actual Meta+number contexts: dark/light, Project/Status, all/tide-web/tide-api, expanded/collapsed/re-expanded; out-of-range unchanged
