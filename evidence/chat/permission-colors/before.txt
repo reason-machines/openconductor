@@ -1,0 +1,1 @@
+AssertionError [ERR_ASSERTION]: dark: approval tool chip has a muted surface token

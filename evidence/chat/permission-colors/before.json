@@ -1,0 +1,11 @@
+{
+  "checks": [],
+  "themes": {
+    "dark": {
+      "muted": "",
+      "foreground": "",
+      "color": "rgb(250, 250, 250)",
+      "background": "rgba(0, 0, 0, 0)"
+    }
+  }
+}
