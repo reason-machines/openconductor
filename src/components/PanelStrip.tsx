@@ -110,6 +110,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
         </button>
         {terms.tabs.map((t, index) => {
           const selected = open && view === "terminal" && t.id === terms.activeId;
+          const exitLabel = t.exitCode === undefined ? "Exited" : `Exited (code ${t.exitCode})`;
           return (
             <div
               key={t.id}
@@ -122,7 +123,19 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
                 show("terminal");
               }}
             >
-              {t.status !== "running" && <span className={`term-dot ${t.status}`} />}
+              {t.status === "starting" ? (
+                <svg className="term-starting" width={10} height={10} viewBox="0 0 16 16" fill="currentColor" role="img" aria-label="Starting">
+                  <title>Starting</title>
+                  <circle cx="3" cy="8" r="1.5" />
+                  <circle cx="8" cy="8" r="1.5" />
+                  <circle cx="13" cy="8" r="1.5" />
+                </svg>
+              ) : t.status === "exited" ? (
+                <svg className="term-dot exited" width={10} height={10} viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth={2} role="img" aria-label={exitLabel}>
+                  <title>{exitLabel}</title>
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
+              ) : null}
               <span>{tabLabel(terms.tabs.length === 1 ? "Terminal" : `Terminal ${index + 1}`, t.runningProgram)}</span>
               <button
                 type="button"
