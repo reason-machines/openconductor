@@ -38,6 +38,7 @@
         onboarding_step: 0, first_time_onboarding_step: 999, last_clone_directory: null,
         last_seen_announcement: null, roundhouse_client_user_id: null, sidebar_repo_filter: null,
         sidebar_sort_by: localStorage.getItem('openconductor.sidebar_sort_by') || 'updated',
+        sidebar_group_by: localStorage.getItem('openconductor.sidebar_group_by') || 'repo',
         sidebar_resource_usage: false, message_send_key: 'enter', dashboard_enabled: false, chrome_mode_enabled: false,
       };
       window.__TAURI_INTERNALS__.invoke = async (cmd, args) => {

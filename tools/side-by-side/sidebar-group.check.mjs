@@ -1,0 +1,68 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { chromium } from 'playwright-core';
+
+const output = path.resolve(process.env.SHELL_OUT ?? '.oc-tmp/sidebar-group');
+fs.mkdirSync(output, { recursive: true });
+const browser = await chromium.launch({ executablePath: process.env.CHROMIUM ?? '/usr/bin/chromium', headless: true, args: ['--no-sandbox'] });
+const results = [];
+try {
+  for (const theme of ['dark', 'light']) {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 820 }, colorScheme: theme });
+    await page.goto(`http://localhost:4682/?oc_scenario=populated&oc_theme=${theme}&oc_org=local&oc_sort_fixture=1&oc_group_fixture=1`);
+    const header = page.getByRole('button', { name: 'My workspaces actions', exact: true });
+    await header.waitFor();
+    const groupMenu = async () => { await header.click(); await page.getByRole('menuitem', { name: 'Group by', exact: true }).click(); };
+    await groupMenu();
+    const status = page.getByRole('menuitemradio', { name: 'Status', exact: true });
+    const project = page.getByRole('menuitemradio', { name: 'Project', exact: true });
+    assert.equal(await project.getAttribute('aria-checked'), 'true');
+    await status.click();
+    const groups = page.locator('[data-status-group]');
+    await groups.first().waitFor();
+    assert.deepEqual(await groups.locator('.sb-status-label').allTextContents(), ['Done', 'In review', 'In progress', 'Backlog', 'Canceled']);
+    assert.deepEqual(await groups.locator('.sb-status-count').allTextContents(), ['1', '1', '4']);
+    assert.equal(await page.getByTestId('left-sidebar-workspace-item').count(), 0);
+    await page.screenshot({ path: path.join(output, `oc-status-${theme}.png`) });
+    const progress = page.getByRole('button', { name: 'In progress 4', exact: true });
+    await progress.click();
+    const rows = page.getByTestId('left-sidebar-workspace-item');
+    assert.equal(await rows.count(), 4);
+    assert.equal(await page.locator('.sb-ws-repo').count(), 4);
+    const order = await rows.locator('.sb-ws-name').allTextContents();
+    assert.match(order[0], /dark mode tokens/i);
+    assert.match(order[1], /rate limit headers/i);
+    assert.match(order[2], /login redirect/i);
+    assert.match(order[3], /zsh prompt/i);
+    await page.screenshot({ path: path.join(output, `oc-expanded-${theme}.png`) });
+    await groupMenu();
+    assert.equal(await status.getAttribute('aria-checked'), 'true');
+    await project.click();
+    await page.waitForFunction(() => !document.querySelector('[data-status-group]'));
+    assert.equal(await rows.count(), 0);
+    assert.deepEqual(await page.locator('.sb-repo-header').evaluateAll((headers) => headers.map((h) => h.getAttribute('aria-expanded'))), ['false', 'false', 'false']);
+    await header.click();
+    const trigger = page.getByRole('menuitem', { name: 'Group by', exact: true });
+    await trigger.focus();
+    await page.keyboard.press('ArrowRight');
+    await page.waitForFunction(() => document.activeElement?.textContent === 'Status');
+    await page.keyboard.press('ArrowDown');
+    assert.equal(await page.locator(':focus').innerText(), 'Project');
+    await page.keyboard.press('ArrowLeft');
+    assert.equal(await page.locator(':focus').innerText(), 'Group by');
+    await page.keyboard.press('ArrowRight');
+    await status.click();
+    await page.reload();
+    await header.waitFor();
+    await groups.first().waitFor();
+    await groupMenu();
+    assert.equal(await status.getAttribute('aria-checked'), 'true');
+    results.push({ theme, statusOrder: ['done', 'in-review', 'in-progress', 'backlog', 'canceled'], counts: [1, 1, 4, 0, 0], expandedOrder: order, projectReset: 'collapsed', keyboard: 'passed', preferenceReload: 'passed (mocked native preference boundary)' });
+    await page.close();
+  }
+  fs.writeFileSync(path.join(output, 'checks.json'), JSON.stringify(results, null, 2));
+  console.log('PASS Group by dark/light status order/counts, cross-project rows, Project reset, keyboard and mocked preference reload');
+} finally {
+  await browser.close();
+}

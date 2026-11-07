@@ -1,0 +1,16 @@
+.sb-status-groups { display: flex; flex-direction: column; gap: 4px; }
+.sb-status-header { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; padding: 6px; margin: 2px 0 4px; border-radius: 6px; text-align: left; cursor: pointer; }
+.sb-status-header:hover { background: var(--sidebar-accent); }
+.sb-status-header:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.sb-status-glyph { display: flex; align-items: center; justify-content: center; flex: none; width: 16px; height: 16px; margin-bottom: 1px; }
+.sb-status-glyph svg { width: 12px; height: 12px; }
+.sb-status-glyph .cm-status-backlog { color: var(--conductor-status-backlog); }
+.sb-status-glyph .cm-status-in-progress { color: var(--conductor-status-in-progress); }
+.sb-status-glyph .cm-status-in-review { color: var(--status-in-review); }
+.sb-status-glyph .cm-status-done { color: var(--status-done); }
+.sb-status-glyph .cm-status-canceled { color: var(--conductor-status-canceled); }
+.sb-status-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.sb-status-count { flex: none; font-family: var(--font-mono); font-size: 11px; line-height: 14px; }
+.sb-status-chevron { display: flex; flex: none; opacity: 0; color: var(--sidebar-muted-foreground); }
+.sb-status-header:hover .sb-status-chevron, .sb-status-header:focus-visible .sb-status-chevron { opacity: 1; }
+.sb-ws-repo { display: flex; flex: none; width: 16px; height: 16px; }

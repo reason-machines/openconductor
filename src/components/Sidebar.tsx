@@ -15,6 +15,7 @@ import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
 import { RepoWorkspaceList } from "./PendingWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
+import { SidebarStatusGroups } from "./SidebarStatusGroups";
 import { isRepoCollapsed, pinnedEntries, repoGroupWorkspaces, sectionEntries, type SidebarSection } from "../state/sidebarOrder";
 import { newId } from "../state/names";
 import { SectionDialog, type SectionDialogMode } from "./SectionDialog";
@@ -22,6 +23,7 @@ import { useSidebarDrag, type WorkspaceRef } from "./useSidebarDrag";
 import { DROP_ATTR, reorderIndicator, reorderToIndex, workspaceDropAction, type DropTarget } from "../state/navigationSections";
 import { ProjectFilterSubmenu, SidebarRadioSubmenu } from "./home/ProjectFilterSubmenu";
 import { SIDEBAR_SORT_OPTIONS } from "../home/sidebarSort";
+import { SIDEBAR_GROUP_OPTIONS } from "../home/sidebarGroupBy";
 import { setAppPref } from "../settings/appPrefs";
 import { useRepoFilter } from "../home/useRepoFilter";
 import { useDashboardEnabled } from "../home/useDashboardEnabled";
@@ -235,7 +237,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
       </div>
       {!collapsed && (
         <div className="sb-ws-list sb-group-list">
-          <SidebarPresence>{entries.map(renderRow)}</SidebarPresence>
+          <SidebarPresence>{entries.map((entry, index) => renderRow(entry, index))}</SidebarPresence>
           {entries.length === 0 && (
             <div className="sb-section-empty">
               <PlusIcon size={14} />
@@ -307,11 +309,11 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
       { label: "Delete section", icon: <Trash2Icon />, destructive: true, onSelect: () => dispatch({ type: "deleteSection", sectionId }) },
     ];
   };
-  const row = ({ repoId, workspace }: SidebarSection["entries"][number], listIndex: number) => {
+  const row = ({ repoId, workspace }: SidebarSection["entries"][number], listIndex: number, showRepo = false) => {
     const repo = state.repos.find((r) => r.id === repoId);
     return (
       <SidebarRowMotion key={workspace.id} listIndex={listIndex}>
-        <SidebarWorkspaceRow workspace={workspace} targetBranch={repo?.defaultBranch ?? ""} hasRemote={Boolean(repo?.remote)} {...rows.rowProps(repoId, workspace)} />
+        <SidebarWorkspaceRow workspace={workspace} repoBadge={showRepo ? repo : undefined} targetBranch={repo?.defaultBranch ?? ""} hasRemote={Boolean(repo?.remote)} {...rows.rowProps(repoId, workspace)} />
       </SidebarRowMotion>
     );
   };
@@ -421,7 +423,7 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
       <nav className="repo-list" ref={scrollRoot}>
         {pinned.length > 0 && (
           <SidebarGroup label="Pinned" count={pinned.length} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
-            <SidebarPresence>{pinned.map(row)}</SidebarPresence>
+            <SidebarPresence>{pinned.map((entry, index) => row(entry, index))}</SidebarPresence>
           </SidebarGroup>
         )}
         {/* Always mounted, like Conductor's `sBi` (empty:hidden), so the last section can animate out. */}
@@ -461,6 +463,10 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
             </ContextMenu>
           )}
           <HeaderMenu label="My workspaces" className="sb-section-menu" contextOpen={!!myContext} items={[
+            { key: "group-by", render: (close) => <SidebarRadioSubmenu label="Group by" options={SIDEBAR_GROUP_OPTIONS} selected={state.sidebarGroupBy ?? "repo"} onChange={(value) => {
+              dispatch({ type: "collapseSidebarGroups", groupBy: value });
+              void setAppPref({ key: "sidebar_group_by", value }).catch((err) => console.error("Could not save sidebar grouping", err));
+            }} onClose={close} /> },
             { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
             { key: "sort-by", render: (close) => <SidebarRadioSubmenu label="Sort by" options={SIDEBAR_SORT_OPTIONS} selected={state.sidebarSort ?? "updated"} onChange={(value) => { void setAppPref({ key: "sidebar_sort_by", value }).catch((err) => console.error("Could not save sidebar sort", err)); }} onClose={close} /> },
             "-",
@@ -480,7 +486,8 @@ export function Sidebar({ state, dispatch, onOpenDialog, onOpenProject, onAddPro
           />
         </div>
         {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
-        {!groupCollapsed && (
+        {!groupCollapsed && state.sidebarGroupBy === "status" && <SidebarStatusGroups state={state} dispatch={dispatch} renderRow={(entry, index) => row(entry, index, !repoFilter)} />}
+        {!groupCollapsed && state.sidebarGroupBy !== "status" && (
           <DragDropContext onDragEnd={onRepoDragEnd}>
           <Droppable droppableId="repo-list">
             {(drop, dropState) => (

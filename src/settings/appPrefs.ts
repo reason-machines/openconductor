@@ -5,6 +5,7 @@ import { invoke, isTauri } from "@tauri-apps/api/core";
 import { useSyncExternalStore } from "react";
 import type { SendKeyMode } from "../keybindings/registry.ts";
 import { parseSidebarSort, type SidebarSort } from "../home/sidebarSort.ts";
+import { parseSidebarGroupBy, type SidebarGroupBy } from "../home/sidebarGroupBy.ts";
 
 /** Field names are the settings-table keys (see `AppPrefs` in app_prefs/mod.rs). */
 export interface AppPrefs {
@@ -27,6 +28,7 @@ export interface AppPrefs {
   /** The sidebar's "Filter by project" repository id; null is all projects. */
   sidebar_repo_filter: string | null;
   sidebar_sort_by: SidebarSort;
+  sidebar_group_by: SidebarGroupBy;
   /** Experimental "Show sidebar resource usage"; off by default. */
   sidebar_resource_usage: boolean;
   /** Legacy "Send messages with" choice; the keybinding overrides hold the live keys. */
@@ -57,7 +59,8 @@ export type AppPrefUpdate =
   | { key: "last_clone_directory" | "last_seen_announcement"; value: string }
   | { key: "roundhouse_client_user_id" | "sidebar_repo_filter"; value: string | null }
   | { key: "message_send_key"; value: SendKeyMode }
-  | { key: "sidebar_sort_by"; value: SidebarSort };
+  | { key: "sidebar_sort_by"; value: SidebarSort }
+  | { key: "sidebar_group_by"; value: SidebarGroupBy };
 
 /** What the table reads as when it has no rows (Conductor's hook defaults). */
 export const DEFAULT_APP_PREFS: AppPrefs = {
@@ -78,6 +81,7 @@ export const DEFAULT_APP_PREFS: AppPrefs = {
   roundhouse_client_user_id: null,
   sidebar_repo_filter: null,
   sidebar_sort_by: "updated",
+  sidebar_group_by: "repo",
   sidebar_resource_usage: false,
   message_send_key: "enter",
   dashboard_enabled: false,
@@ -98,7 +102,15 @@ function browserSidebarSort(): SidebarSort {
   }
 }
 
-let current: AppPrefs = { ...DEFAULT_APP_PREFS, sidebar_sort_by: browserSidebarSort() };
+function browserSidebarGroupBy(): SidebarGroupBy {
+  try {
+    return parseSidebarGroupBy(localStorage.getItem("openconductor.sidebar_group_by"));
+  } catch {
+    return "repo";
+  }
+}
+
+let current: AppPrefs = { ...DEFAULT_APP_PREFS, sidebar_sort_by: browserSidebarSort(), sidebar_group_by: browserSidebarGroupBy() };
 let loaded = false;
 /** True once the database values (or, outside the desktop app, the defaults) are in. */
 let ready = !isTauri();
@@ -123,8 +135,8 @@ export async function loadAppPrefs(): Promise<AppPrefs> {
 export async function setAppPref(update: AppPrefUpdate): Promise<AppPrefs> {
   publish(applyUpdate(current, update));
   if (!isTauri()) {
-    if (update.key === "sidebar_sort_by") {
-      try { localStorage.setItem("openconductor.sidebar_sort_by", update.value); } catch { /* Session-only when storage is unavailable. */ }
+    if (update.key === "sidebar_sort_by" || update.key === "sidebar_group_by") {
+      try { localStorage.setItem(`openconductor.${update.key}`, update.value); } catch { /* Session-only when storage is unavailable. */ }
     }
     return current;
   }

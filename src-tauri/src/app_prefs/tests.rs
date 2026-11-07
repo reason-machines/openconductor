@@ -270,6 +270,42 @@ fn sidebar_sort_decodes_defaults_and_round_trips_through_sqlite() {
 }
 
 #[test]
+fn sidebar_grouping_decodes_legacy_and_round_trips_through_sqlite() {
+    for value in ["section", "repo", "unknown"] {
+        assert_eq!(
+            AppPrefs::from_rows(&rows(&[("sidebar_group_by", value)])).sidebar_group_by,
+            SidebarGroupBy::Repo
+        );
+    }
+    assert_eq!(
+        AppPrefs::from_rows(&HashMap::new()).sidebar_group_by,
+        SidebarGroupBy::Repo
+    );
+    assert!(
+        serde_json::from_str::<AppPrefUpdate>(r#"{"key":"sidebar_group_by","value":"section"}"#)
+            .is_err()
+    );
+    tauri::async_runtime::block_on(async {
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        for (value, expected) in [
+            ("status", SidebarGroupBy::Status),
+            ("repo", SidebarGroupBy::Repo),
+        ] {
+            let update: AppPrefUpdate =
+                serde_json::from_str(&format!(r#"{{"key":"sidebar_group_by","value":"{value}"}}"#))
+                    .unwrap();
+            let Write::Set(key, stored) = update.encode().unwrap() else {
+                panic!("grouping must store its value")
+            };
+            openconductor_db::app_settings::set(&pool, key, &stored)
+                .await
+                .unwrap();
+            assert_eq!(commands::load(&pool).await.unwrap().sidebar_group_by, expected);
+        }
+    });
+}
+
+#[test]
 fn sidebar_resource_usage_is_an_off_by_default_flag() {
     // `Te("sidebar_resource_usage", !1)` and setter `v6t` (index-BGEQ8YjU.js):
     // a boolean written as "true" / "false", false when unset.
