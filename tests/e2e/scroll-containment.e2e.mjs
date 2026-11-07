@@ -108,6 +108,25 @@ test("real content panes scroll while their boundary cannot chain to the documen
         el.scrollTop = 0;
       });
       const before = await positions(page);
+      await page.evaluate((selector) => {
+        window.__scrollDelivery = [];
+        const record = (event) => {
+          const pane = document.querySelector(selector);
+          window.__scrollDelivery.push({
+            type: event.type, at: performance.now(), trusted: event.isTrusted,
+            target: event.target?.className, deltaY: event.deltaY,
+            inPane: pane.contains(event.target), top: pane.scrollTop,
+            prevented: event.defaultPrevented,
+          });
+          if (window.__scrollDelivery.length > 50) window.__scrollDelivery.shift();
+        };
+        document.addEventListener("wheel", record, { capture: true, passive: true });
+        document.addEventListener("scroll", record, { capture: true, passive: true });
+        window.__stopScrollDelivery = () => {
+          document.removeEventListener("wheel", record, true);
+          document.removeEventListener("scroll", record, true);
+        };
+      }, selector);
       await wheel(page, selector, 600);
       try {
         await page.waitForFunction((s) => document.querySelector(s).scrollTop > 0, selector);
@@ -122,7 +141,10 @@ test("real content panes scroll while their boundary cannot chain to the documen
             overflowY: getComputedStyle(el).overflowY, documentScroll: [scrollX, scrollY],
           };
         });
-        throw new Error(`${selector} did not scroll after wheel: ${JSON.stringify(state)}; ${cause.message}`, { cause });
+        const delivery = await page.evaluate(() => ({ events: window.__scrollDelivery, userAgent: navigator.userAgent }));
+        throw new Error(`${selector} did not scroll after wheel: ${JSON.stringify(state)}; delivery: ${JSON.stringify(delivery)}; ${cause.message}`, { cause });
+      } finally {
+        await page.evaluate(() => window.__stopScrollDelivery());
       }
       assert.deepEqual(await positions(page), before, selector + " content scroll must not move chrome");
       await page.locator(selector).first().evaluate((el) => { el.scrollTop = el.scrollHeight; });
@@ -143,6 +165,27 @@ test("real content panes scroll while their boundary cannot chain to the documen
     assert.equal((await policy(page, ".settings-page")).overflowY, "auto");
     assert.equal((await policy(page, ".settings-page")).overscrollY, "contain");
     await wheel(page, ".settings-nav-top", -1800);
+    assert.deepEqual(await page.evaluate(() => [scrollX, scrollY]), [0, 0]);
+  } finally { await page.close(); }
+});
+
+test("the settings body scrolls with a real wheel without moving the document", async () => {
+  const page = await open();
+  try {
+    await page.setViewportSize({ width: 1200, height: 500 });
+    await page.getByRole("button", { name: "Settings", exact: true }).click();
+    const pane = page.locator(".settings-page");
+    await pane.waitFor();
+    assert.equal(await pane.evaluate((el) => el.scrollHeight > el.clientHeight), true, "real settings content overflows");
+    await pane.evaluate((el) => { el.scrollTop = 0; });
+    await wheel(page, ".settings-page", 600);
+    await page.waitForFunction(() => document.querySelector(".settings-page").scrollTop > 0);
+    assert.deepEqual(await page.evaluate(() => [scrollX, scrollY]), [0, 0]);
+    await pane.evaluate((el) => { el.scrollTop = el.scrollHeight; });
+    await wheel(page, ".settings-page", 1800);
+    assert.deepEqual(await page.evaluate(() => [scrollX, scrollY]), [0, 0]);
+    await pane.evaluate((el) => { el.scrollTop = 0; });
+    await wheel(page, ".settings-page", -1800);
     assert.deepEqual(await page.evaluate(() => [scrollX, scrollY]), [0, 0]);
   } finally { await page.close(); }
 });
