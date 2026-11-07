@@ -24,6 +24,17 @@ This rescore runs on Reason cloud and reuses checked-in REA captures from the re
 
 The [supplemental manifest](supplemental-evidence.json) records these merges separately from the retained whole-state map. The generator includes it in JSON, Markdown and HTML without replacing state scores. The scoped totals remain 341 entries: 169 retained matches, 48 observed wrong, 3 observed missing and 121 unverified. All nine native final-review verdicts remain unverified. No new captures or REA gaps were introduced by this integration.
 
+## Merge batch, 7 November 2026
+
+Reconciled against main `a988e5a820e35ce41eb82856f8a1e7d20cd18594`. The [canonical evidence manifest](supplemental-evidence.json) and [generated ledger](ledger.html) now include merged #738–#745 and proof-only #746. This is a source reconciliation, not a new capture identity.
+
+- #739 publishes the bounded composition fix-forward for the historical #735 Send-click defect. Synthetic composition does not establish real macOS IME safety.
+- #740 terminal labels, #741 slider, #742 permission tokens, #738 discard alert and #745 Help styling have separate browser, source and packaging evidence. Native behavior and each retained area gap remain unverified.
+- #744 consuming main passed all six workflows, including both E2E jobs. #746 publishes 18 proof-only files and fixture/driver corrections without repeating the product change. Its captures remain the original bounded #744 run. Group by is missing, with a partial REA semantic-graph trace rather than runtime proof.
+- Sole E2E owner `acc3b5c5` confirms run `42317008433` on `50265ba2` passed both jobs and 23/23 App flows. The reported streak remains 0/10 because the newer run-number `42317638688` was cancelled. Later consuming results stay with that owner; no pending snapshot is treated as a pass.
+
+The 341-entry scoped denominator, 169 retained matches, 48 wrong, 3 missing, 121 unverified and all nine native final-review verdicts are unchanged. Existing capture rows are not rescored. The earlier native source pin came from a driver note and its hold from the coordinator, not an independently verified immutable human ban. This Cloud-only batch performs no Mac launch/input, agent/credential operation, new preview, capture, CI dispatch or duplicate monitoring.
+
 ## Historical program records
 
 One row per node of Sven's UI audit program. A node is done when its side-by-side image
