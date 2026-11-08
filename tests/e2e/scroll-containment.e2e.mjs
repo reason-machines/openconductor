@@ -155,7 +155,7 @@ test("real content panes scroll while their boundary cannot chain to the documen
       // Deliberately overflow the real pane without invoking a provider or a terminal.
       await page.locator(selector).first().evaluate((el) => {
         const filler = document.createElement("div");
-        filler.style.cssText = "height:3000px;min-height:3000px;flex:none";
+        filler.style.cssText = "height:3000px;min-height:3000px;flex:none;background:currentColor";
         filler.dataset.scrollFixture = "";
         performance.mark(`scroll-fixture-append:${el.className}`);
         el.append(filler);
