@@ -138,13 +138,13 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-ws-archive button { display: flex; align-items: center; justify-content: center; padding: 0; border: 0; background: none; color: var(--sidebar-muted-foreground); cursor: pointer; transition: color 150ms; }
 .sb-ws-archive button:hover { color: var(--sidebar-foreground); }
 .sb-ws-status { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-right: 2px; flex: none; color: var(--sidebar-muted-foreground); }
-/* Row status colours: Conductor's dWt (destructive, purple, in-progress, git green, highlight, checks pending). */
-.sb-ws-status[data-color="destructive"] { color: var(--diff-del); }
-.sb-ws-status[data-color="merged"] { color: var(--status-merged); }
-.sb-ws-status[data-color="in-progress"] { color: var(--status-in-progress); }
-.sb-ws-status[data-color="ready"] { color: var(--diff-add); }
-.sb-ws-status[data-color="conflict"] { color: var(--status-in-progress); opacity: 0.8; }
-.sb-ws-status[data-color="checks-pending"] { color: var(--status-in-progress); }
+/* REA dWt, renderApp 5199d392… + CSS 5b876e14…; evidence/sidebar-pr-icons/README.md. */
+.sb-ws-status[data-color="destructive"] { color: var(--destructive); }
+.sb-ws-status[data-color="merged"] { color: var(--status-row-merged); }
+.sb-ws-status[data-color="in-progress"] { color: var(--conductor-status-in-progress); }
+.sb-ws-status[data-color="ready"] { color: var(--success); }
+.sb-ws-status[data-color="conflict"] { color: var(--status-row-conflict); }
+.sb-ws-status[data-color="checks-pending"] { color: var(--diff-mod); }
 /* Workspace status matrix: the matrix colours itself and otherwise takes the row's colour (Conductor's text-sidebar-foreground). */
 .sb-ws-status[data-matrix] { color: inherit; }
 .sb-ws-loader circle { animation: sb-ws-dot 1.2s ease-in-out infinite; opacity: 0.35; }
