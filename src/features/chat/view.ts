@@ -56,6 +56,7 @@ export type RowView =
       startedAt?: string;
       endedAt?: string;
       usage?: TokenUsage;
+      model?: string;
     };
 
 interface ToolResult {
@@ -116,6 +117,8 @@ function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[],
     if (text.length > 0) finalText = text;
   }
   const prompt = turnMessages.find((m) => messageOrigin(m).kind === "user" && plainText(m).length > 0);
+  const model = turnMessages.find((m) => m.role === "assistant" && m.model)?.model
+    ?? turnMessages.find((m) => messageOrigin(m).kind === "user")?.model;
   const canRetry = state?.status === "failed" || state?.status === "cancelled";
   let usage: TokenUsage | undefined;
   for (const m of turnMessages) {
@@ -133,6 +136,7 @@ function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[],
     ...(finalText !== undefined ? { finalText } : {}),
     ...(canRetry && prompt ? { retryPrompt: plainText(prompt) } : {}),
     ...(usage ? { usage } : {}),
+    ...(model ? { model } : {}),
     canReset: !isLastTurn && turnMessages.some((m) => m.role === "assistant"),
     ...(state?.startedAt !== undefined ? { startedAt: state.startedAt } : {}),
     ...(state?.endedAt !== undefined ? { endedAt: state.endedAt } : {}),

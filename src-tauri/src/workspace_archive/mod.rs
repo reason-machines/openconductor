@@ -589,6 +589,12 @@ pub fn restore(
         branch.as_ref(),
     ];
     git(&t.repo_root, add)?;
+    let include_source = crate::settings::effective::resolve(&t.repo_root, Some(path)).map(|settings| {
+        crate::workspace::files_to_copy::resolve_source(
+            &t.repo_root,
+            settings.file_include_globs.as_ref().map(|globs| globs.value.as_str()),
+        )
+    });
 
     let mut notices = Vec::new();
     let mut restored_changes = false;
@@ -604,10 +610,11 @@ pub fn restore(
     // here they come after the checkpoint restore, which cleans untracked
     // files, and `copy_files` never overwrites what the checkpoint put back.
     // A failure is a toast; the workspace is restored anyway.
-    let source = crate::workspace::files_to_copy::resolve_source(&t.repo_root, None);
-    if let Err(e) = crate::workspace::files_to_copy::files_to_copy(&t.repo_root, &source)
-        .and_then(|files| crate::workspace::files_to_copy::copy_files(&t.repo_root, path, &files))
-    {
+    if let Err(e) = include_source.and_then(|source| {
+        crate::workspace::files_to_copy::files_to_copy(&t.repo_root, &source)
+            .and_then(|files| crate::workspace::files_to_copy::copy_files(&t.repo_root, path, &files))
+            .map_err(|e| e.to_string())
+    }) {
         notices.push(Notice::error(format!("Couldn't copy gitignored files: {e}")));
     }
     if let Some(root) = root_dir {
