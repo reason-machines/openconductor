@@ -146,6 +146,7 @@ test("settings zoom and resize retain containment and reachable fixed tabs", asy
 
 test("real content panes scroll while their boundary cannot chain to the document", async () => {
   const page = await open(1, true);
+  let primaryError;
   try {
     await page.getByRole("tab", { name: "All files", exact: true }).click();
     for (const selector of [".repo-list", ".chat-scroll", ".oc-files"]) {
@@ -176,6 +177,20 @@ test("real content panes scroll while their boundary cannot chain to the documen
           };
         });
         const delivery = await page.evaluate(() => ({ events: window.__scrollDelivery, userAgent: navigator.userAgent }));
+        let session;
+        try {
+          session = await page.context().newCDPSession(page);
+          const { root } = await session.send("DOM.getDocument");
+          delivery.nodes = {};
+          for (const pane of [".repo-list", ".chat-scroll", ".oc-files"]) {
+            const { nodeId } = await session.send("DOM.querySelector", { nodeId: root.nodeId, selector: pane });
+            delivery.nodes[pane] = nodeId ? (await session.send("DOM.describeNode", { nodeId })).node : null;
+          }
+        } catch (error) {
+          delivery.nodeCaptureError = error.message;
+        } finally {
+          try { await session?.detach(); } catch (error) { delivery.nodeDetachError = error.message; }
+        }
         throw new Error(`${selector} did not scroll after wheel: ${JSON.stringify(state)}; delivery: ${JSON.stringify(delivery)}; ${cause.message}`, { cause });
       }
       assert.deepEqual(await positions(page), before, selector + " content scroll must not move chrome");
@@ -198,9 +213,17 @@ test("real content panes scroll while their boundary cannot chain to the documen
     assert.equal((await policy(page, ".settings-page")).overscrollY, "contain");
     await wheel(page, ".settings-nav-top", -1800);
     assert.deepEqual(await page.evaluate(() => [scrollX, scrollY]), [0, 0]);
+  } catch (error) {
+    primaryError = error;
+    throw error;
   } finally {
-    await browser.stopTracing();
-    await page.close();
+    const cleanupErrors = [];
+    try { await browser.stopTracing(); } catch (error) { cleanupErrors.push(error); }
+    try { await page.close(); } catch (error) { cleanupErrors.push(error); }
+    if (cleanupErrors.length) {
+      if (!primaryError) throw cleanupErrors[0];
+      console.error("Scroll diagnostic cleanup failed:", ...cleanupErrors.map((error) => error.message));
+    }
   }
 });
 
