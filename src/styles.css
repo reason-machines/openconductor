@@ -53,7 +53,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-header { position: relative; flex: none; }
 .sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 var(--sidebar-toggle-inset); }
 .workspace-sidebar-toggle { position: absolute; top: 12px; left: var(--sidebar-toggle-inset); z-index: 2; }
-.sb-app-mark { display: inline-flex; margin-left: 6px; color: var(--sidebar-foreground); pointer-events: none; }
 .sb-toggle { display: inline-flex; padding: 0; color: var(--muted); transition: color 150ms cubic-bezier(0, 0, 0.2, 1); } /* Rta: transition-colors duration-150 ease-out */
 .sb-toggle:hover { color: var(--text); }
 .sb-history { position: absolute; top: 8px; right: 14px; z-index: 1; display: flex; align-items: center; gap: 8px; }
@@ -149,11 +148,10 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-ws-status[data-color="checks-pending"] { color: var(--status-in-progress); }
 /* Workspace status matrix: the matrix colours itself and otherwise takes the row's colour (Conductor's text-sidebar-foreground). */
 .sb-ws-status[data-matrix] { color: inherit; }
-.sb-ws-loader circle { animation: sb-ws-dot 1.2s ease-in-out infinite; opacity: 0.35; }
-.sb-ws-loader circle:nth-child(2) { animation-delay: 0.2s; }
-.sb-ws-loader circle:nth-child(3) { animation-delay: 0.4s; }
+.sb-ws-loader { animation: sb-ws-spin 1s linear infinite; transform-origin: center; }
+@keyframes sb-ws-spin { to { transform: rotate(360deg); } }
 @keyframes sb-ws-dot { 0%, 100% { opacity: 0.35; } 40% { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .sb-ws-loader circle { animation: none; opacity: 0.8; } }
+@media (prefers-reduced-motion: reduce) { .sb-ws-loader { animation: none; } }
 .sb-ws-name { flex: 1; min-width: 0; margin-right: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 450; color: var(--sidebar-muted-foreground); }
 /* Conductor's title line is title, gap-1.5, a flex-1 spacer, gap-1.5, then the diff stat or a size-3 slot for the
    hover archive button: a title truncates 12px before the diff stat, or 24px before the row's right padding. */
@@ -170,12 +168,7 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* Sidebar footer, after Conductor's `Nna`: px-4 py-3 flex justify-between border-t border-sidebar-border;
    actions are flex gap-5 ml-auto; each icon is text-sidebar-muted-foreground hover:text-foreground. */
 .sb-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--sidebar-border); }
-/* Conductor's Badge `tip-outline` + `h-4 border-dashed !border-muted-foreground/80 text-muted-foreground/80`. */
-/* Conductor's plan badge button: shrink-0 cursor-pointer rounded-xs, ring on keyboard focus only. */
-.sb-plan-btn { display: inline-flex; flex-shrink: 0; padding: 0; border: 0; border-radius: 2px; background: none; cursor: pointer; }
-.sb-plan-btn:focus { outline: none; }
-.sb-plan-btn:focus-visible { box-shadow: 0 0 0 2px var(--sidebar-background), 0 0 0 4px var(--ring); }
-.sb-plan-badge { display: inline-flex; align-items: center; flex-shrink: 0; height: 16px; padding: 0 8px; border: 1px dashed color-mix(in srgb, var(--sidebar-muted-foreground) 80%, transparent); border-radius: 2px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: color-mix(in srgb, var(--sidebar-muted-foreground) 80%, transparent); user-select: none; }
+.sb-reason-tag { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; height: 20px; font-size: 12px; font-weight: 500; color: var(--sidebar-muted-foreground); user-select: none; }
 /* Conductor's footer line is 20px tall (its plan badge button), so the 16px icons centre 10px below the padding. */
 .sb-footer-actions { position: relative; display: flex; align-items: center; gap: 20px; min-height: 20px; margin-left: auto; }
 .sb-footer-btn { display: inline-flex; padding: 0; color: var(--sidebar-muted-foreground); }

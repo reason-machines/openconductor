@@ -82,13 +82,10 @@ function draw(n: Node, key: number): ReactNode {
   }
 }
 
-/** Three dots that pulse in turn: the agent is working, setting up or waiting. */
 function Loader({ size }: { size: number }) {
   return (
-    <svg className="sb-ws-loader" width={size} height={size} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <circle cx="3" cy="8" r="1.5" />
-      <circle cx="8" cy="8" r="1.5" />
-      <circle cx="13" cy="8" r="1.5" />
+    <svg className="sb-ws-loader" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 2a10 10 0 1 0 10 10" />
     </svg>
   );
 }

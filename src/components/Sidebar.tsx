@@ -7,8 +7,6 @@ import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, FolderPlus
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { HelpMenu } from "./HelpMenu";
-import { PRICING_URL } from "./helpMenuItems";
-import { openUrl } from "../backend";
 import { RepoIcon } from "./RepoIcon";
 import { RenameWorkspaceDialog } from "./RenameWorkspaceDialog";
 import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
@@ -389,7 +387,6 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           >
             <SidebarIcon size={16} />
           </button>
-          <span className="sb-app-mark" title="OpenConductor"><AppMark size={14} /></span>
         </div>
         <div className="sb-history">
           <ResourceUsagePill workspaces={usageWorkspaces} />
@@ -579,12 +576,10 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
 
       {/* Footer, after Conductor's `Nna`: px-4 py-3, top border, help and settings icons (h-4 w-4, stroke 1.5) gap-5 at the right. */}
       <div className="sb-footer">
-        {/* Conductor's `Nna` shows the account's plan; with no paid entitlement that is a dashed "FREE" badge
-            inside a button labelled "View pricing" that opens its pricing page. OpenConductor has no paid plans,
-            so the same button opens the project page. */}
-        <button type="button" className="sb-plan-btn" aria-label="View pricing" onClick={() => void openUrl(PRICING_URL)}>
-          <span className="sb-plan-badge">FREE</span>
-        </button>
+        <span className="sb-reason-tag">
+          <AppMark size={14} />
+          <span>Reason</span>
+        </span>
         <div className="sb-footer-actions">
           <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
           {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}
