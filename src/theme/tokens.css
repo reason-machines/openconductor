@@ -820,6 +820,9 @@
   --amber: #c98a1b;
   /* Workspace and task status. */
   --status-merged: #a855f7;
+  /* Sidebar PR glyphs: REA CSS 5b876e14…, text-purple-500 / text-highlight-muted. */
+  --status-row-merged: oklch(62.7% .265 303.9);
+  --status-row-conflict: #cca694;
   --status-in-progress: #d29922;
   --status-in-review: #16a249;
   --status-done: #cca694;
@@ -906,6 +909,7 @@
   --conductor-fg: #eae8e6;
   --conductor-border: #ffffff1a;
   --conductor-status-in-progress: #ffdc2e;
+  --status-row-conflict: #ddc1b1;
   --unread: #cca694;
   --diff-del: #f85149;
   --diff-mod: #d29922;
@@ -942,6 +946,7 @@
     --conductor-fg: #eae8e6;
     --conductor-border: #ffffff1a;
     --conductor-status-in-progress: #ffdc2e;
+    --status-row-conflict: #ddc1b1;
     --unread: #cca694;
     --diff-del: #f85149;
     --diff-mod: #d29922;
