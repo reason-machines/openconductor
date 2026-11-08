@@ -1,0 +1,8 @@
+(node:124) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> openconductor@0.1.0 typecheck
+> tsc --noEmit
+
+src/components/WorkspaceView.tsx(315,23): error TS2552: Cannot find name 'attachmentPath'. Did you mean 'attachments'?
+src/components/WorkspaceView.tsx(315,49): error TS2304: Cannot find name 'randomDir'.
