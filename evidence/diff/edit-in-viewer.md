@@ -61,9 +61,19 @@ error boundary whose fallback reads "Failed to open editor".
 - `src-tauri/src/diff/write_file.rs`: `diff_write_file` writes through a temp
   file and rename, keeps the file mode, and refuses paths outside the worktree
   and symlinks.
-- Gap: only the "Entire file" layout is editable, because that is where our
-  item has the file's full text. Conductor can also edit in the unified and
-  split layouts. Editing is off while whitespace changes are hidden, because
-  a `-w` diff's context lines aren't the file's own text. Drafts live in
-  memory, not in Conductor's persisted draft store. Comment anchors are not
-  moved with edited lines (Conductor remaps them and saves the new lines).
+- Unified and split layouts now wait for the existing whole-file-context load
+  before enabling Pierre's diff-item editor. The item starts from the complete
+  draft and unchanged old side, never the visible patch alone. Switching layouts
+  remounts the appropriate editor type without dropping the retained draft while
+  the next full-content load is pending. Historical commits and turns stay read-only.
+- Editing remains off while whitespace changes are hidden, because a `-w`
+  diff's context lines aren't the file's own text. Drafts live in memory, not
+  in Conductor's persisted draft store. Comment anchors are not moved with
+  edited lines (Conductor remaps them and saves the new lines).
+- Source regression: `node --experimental-strip-types --test
+  src/features/diff/EditInViewer.test.ts` failed both new unified/split cases
+  before the change. After the change it covers complete text, untouched
+  prefix/suffix, missing final newline, renamed and added files, annotation
+  retention and rejection of partial documents. This is source/unit proof,
+  not a mounted edit/save or layout-switch receipt. Browser and native
+  acceptance, including draft retention across layout switches, remain NOT RUN.

@@ -3,9 +3,11 @@
 import { fullContents } from "./pierre.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
 
-/** Only text files with their whole contents loaded, and not deleted, can be edited. */
-export function editableContents(file: FileDiff, layout: DiffLayout, ignoreWhitespace: boolean): string | null {
+/** Text to edit, only after the layout's whole-file-context load has completed. */
+export function editableContents(file: FileDiff, layout: DiffLayout, ignoreWhitespace: boolean, full: FileDiff | null = null): string | null {
   // A -w diff prints whitespace-only changes as context, so its text is not the file's.
-  if (layout !== "file" || ignoreWhitespace || file.binary || file.status === "deleted" || file.hunks.length === 0) return null;
-  return fullContents(file).new;
+  if (ignoreWhitespace || file.binary || file.status === "deleted" || file.hunks.length === 0) return null;
+  const complete = layout === "file" ? file : full;
+  if (!complete || complete.path !== file.path || complete.binary || complete.status === "deleted") return null;
+  return fullContents(complete).new;
 }
