@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type MouseEvent as ReactMouseEvent, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
-import type { Action } from "../state/store";
+import { loadReposFromDb, type Action } from "../state/store";
+import { LinkedDirectoryPicker } from "../features/chat/LinkedDirectoryPicker.tsx";
+import { mutateWorkspaceLinks, type LinkMutation } from "../features/chat/workspaceLinks.ts";
 import { ChevronIcon, RightSidebarIcon } from "./Icons";
 import { toggleRightPanel } from "./panelPrefs";
 import { clearManuallyUnread, markManuallyUnread, readOnView, setSelectedChat, setShownChat } from "../state/autoUnread";
@@ -202,6 +204,28 @@ type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly Per
 function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
+  const [linkRepos, setLinkRepos] = useState<Repo[] | null>(null);
+  const linkRequest = useRef(0);
+  useEffect(() => {
+    linkRequest.current++;
+    setLinkRepos(null);
+    return () => { linkRequest.current++; };
+  }, [workspace.id]);
+  const linkWorkspace = linkRepos?.flatMap((r) => r.workspaces).find((w) => w.id === workspace.id);
+  async function openLinks() {
+    const request = ++linkRequest.current;
+    try {
+      const repos = await loadReposFromDb();
+      if (request === linkRequest.current) setLinkRepos(repos);
+    } catch (e) { if (request === linkRequest.current) setAttachError(String(e)); }
+  }
+  async function mutateLink(mutation: LinkMutation) {
+    const request = linkRequest.current;
+    await invoke("workspace_set_link", { ...mutation });
+    const repos = await loadReposFromDb();
+    if (request === linkRequest.current) setLinkRepos(repos);
+    dispatch({ type: "hydrate", repos });
+  }
   const main = chatId === workspace.id;
   const [picked, setPicked] = useState<Record<string, ChatAgentId>>({});
   const agentId: ChatAgentId = reason ? (picked[chatId] ?? savedAgent(chatId)) : "reason";
@@ -272,7 +296,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      agent.submit(runId, cwd, first, "queue", [], repo.path || undefined);
+      agent.submit(runId, cwd, first, "queue", [], repo.path || undefined, workspace.id);
     }
     return unsubscribe;
   }, [chatId, agentId]);
@@ -290,7 +314,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
     if (!text.trim() && attached.length === 0) return;
     const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
-    agent.submit(runId, cwd, text, mode, attached, repo.path || undefined);
+    agent.submit(runId, cwd, text, mode, attached, repo.path || undefined, workspace.id);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
@@ -565,6 +589,17 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           </button>
         </div>
       ) : null}
+      {linkRepos ? <LinkedDirectoryPicker
+        key={workspace.id}
+        repos={linkRepos}
+        repositoryId={repo.id}
+        excludedPaths={[cwd]}
+        linkedWorkspaceIds={linkWorkspace?.linkedWorkspaceIds}
+        linkedDirectoryPaths={linkWorkspace?.linkedDirectoryPaths}
+        onChoose={(selection) => mutateWorkspaceLinks({ workspaceId: workspace.id, selection, linkedWorkspaceIds: linkWorkspace?.linkedWorkspaceIds ?? [], mutate: mutateLink })}
+        onRemoveDirectory={(path) => mutateLink({ workspaceId: workspace.id, kind: "directory", value: path, linked: false })}
+        onClose={() => { linkRequest.current++; setLinkRepos(null); }}
+      /> : null}
       <AgentBinaryBanner agent={binaryAgentFor(agentId)} />
       {toolApproval ? (
         <div className="composer-wrap">
@@ -594,6 +629,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         onStop={() => agent.stop(runId)}
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
+        onLinkWorkspaces={() => void openLinks()}
         controls={
           // Codex's access mode; the agent itself is picked in the model picker.
           codex ? (
@@ -629,6 +665,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           // Conductor's built-in effects are not wired here yet; the agent's own commands and skills go to the agent as typed.
           const cmd = parseSlashCommand(text, isKnownCommand);
           if (!cmd || slashCommands.some((c) => c.name === cmd.name && (c.effect === "agent" || c.effect === "skill"))) return false;
+          if (slashCommands.some((c) => c.name === cmd.name && c.effect === "pick_linked_directory")) { void openLinks(); return true; }
           const who = agentId === "reason" ? "Reason" : AGENT_NAMES[COMPOSER_AGENT[agentId]];
           setAttachError(cmd.name === "plan" ? "Plan mode is not available in this chat." : `/${cmd.name} is not available for ${who}.`);
           return true;

@@ -56,6 +56,7 @@ pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
+mod workspace_links;
 pub mod recent_local_repos;
 mod workspace_file;
 
@@ -433,6 +434,7 @@ pub fn run() {
             workspace_archive_commands::clear_unarchive_conflict,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
+            workspace_links::workspace_set_link,
             persistence_commands::db_repo_prompt,
             onboarding_commands::db_first_run_onboarding_step,
             onboarding_commands::db_finish_first_run_onboarding,

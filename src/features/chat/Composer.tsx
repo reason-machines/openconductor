@@ -59,6 +59,7 @@ export interface ComposerProps {
   workspacePath?: string;
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
+  onLinkWorkspaces?: () => void;
   /** The model picker (or another agent's picker), at the box's bottom left. */
   picker?: ReactNode;
   /** More pickers after it (an agent's access mode), in the same row. */
@@ -90,6 +91,7 @@ export function Composer({
   hasAttachments = false,
   workspacePath,
   onAttachFiles,
+  onLinkWorkspaces,
   picker,
   controls,
   slashCommands = [],
@@ -336,7 +338,7 @@ export function Composer({
           </div>
           <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
             <span className="oc-composer-fade">
-              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} />
+              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
             </span>
             {showFocusPill && minimized ? focusPill(true) : null}
             {onAttachFiles ? (
@@ -381,12 +383,11 @@ export function Composer({
   );
 }
 
-/** Conductor's "+" button (`a7i`): "Add attachments and more"; this build offers Add attachment. */
-function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: () => void }) {
+function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
-  if (!onAddAttachment) return null;
+  if (!onAddAttachment && !onLinkWorkspaces) return null;
   return (
     <span
       className="oc-add-menu"
@@ -408,7 +409,7 @@ function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: ()
       </Tooltip>
       {popup.mounted ? (
         <div className="oc-menu oc-add-popup" role="menu" data-motion="popup" {...popup.attrs}>
-          <button
+          {onAddAttachment ? <button
             type="button"
             role="menuitem"
             className="oc-menu-item"
@@ -420,7 +421,10 @@ function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: ()
             <PaperclipIcon size={16} />
             <span className="oc-menu-item-label">Add attachment</span>
             <span className="oc-kbd-hint">{hint}</span>
-          </button>
+          </button> : null}
+          {onLinkWorkspaces ? <button type="button" role="menuitem" className="oc-menu-item" onClick={() => { setOpen(false); onLinkWorkspaces(); }}>
+            <PlusIcon size={16} /><span className="oc-menu-item-label">Link workspaces</span>
+          </button> : null}
         </div>
       ) : null}
     </span>

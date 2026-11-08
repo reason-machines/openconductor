@@ -32,6 +32,8 @@ export interface DbWorkspaceRow {
   derivedStatus: string | null;
   manualStatus: string | null;
   workspacePath: string | null;
+  linkedWorkspaceIds?: string[];
+  linkedDirectoryPaths?: string[];
   /** `intended_target_branch`; absent from rows of an older backend. */
   intendedTargetBranch?: string | null;
   pinnedAt: string | null;
@@ -89,6 +91,8 @@ export function workspaceFromRow(w: DbWorkspaceRow): Workspace {
     createdAt: sqliteTime(w.createdAt),
     updatedAt: w.updatedAt ? sqliteTime(w.updatedAt) : undefined,
     path: w.workspacePath ?? undefined,
+    linkedWorkspaceIds: w.linkedWorkspaceIds ?? [],
+    linkedDirectoryPaths: w.linkedDirectoryPaths ?? [],
     placeholderBranchName: w.placeholderBranchName,
     targetBranch: w.intendedTargetBranch ?? null,
     /* sidebar: pin, unread and status columns */
