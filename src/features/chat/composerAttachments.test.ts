@@ -1,7 +1,7 @@
 // Run: node --test "src/**/*.test.ts"
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { attachmentPath, inlineText, MAX_ATTACHMENT_BYTES, MAX_INLINE_TEXT_BYTES, promptText, randomDir, rejectReason, safeFileName } from "./composerAttachments.ts";
+import { attachmentPath, inlineText, MAX_ATTACHMENT_BYTES, MAX_INLINE_TEXT_BYTES, promptText, randomDir, rejectReason, restoreComposerAttachments, safeFileName } from "./composerAttachments.ts";
 
 test("an attached file goes to .context/attachments/<random 6>/<name> in the workspace", () => {
   assert.equal(attachmentPath("notes.md", "a1b2c3"), ".context/attachments/a1b2c3/notes.md");
@@ -29,6 +29,22 @@ test("UTF-8 text goes inline; binary and oversized files are pointed at by path"
   assert.match(png, /3 bytes/);
   assert.match(png, /\.context\/attachments\/abcdef\/shot\.png/);
   assert.equal(promptText(enc.encode("plain"), "x"), "plain");
+});
+
+test("persisted attachment chips retain display, inline content and staged IDs", () => {
+  const path = ".context/attachments/abc123/notes.txt";
+  const chip = { name: path, text: "saved content", label: "notes.txt", staged: path };
+  assert.deepEqual(restoreComposerAttachments([chip, { name: "review", text: "comment" }]), [chip, { name: "review", text: "comment" }]);
+});
+
+test("malformed persisted chips and unsafe staged paths are not restored", () => {
+  const path = ".context/attachments/abc123/notes.txt";
+  assert.deepEqual(restoreComposerAttachments([
+    null, 42, {}, { name: path }, { name: "", text: "x" }, { name: path, text: 7 },
+    { name: path, text: "x", label: false }, { name: path, text: "x", staged: false },
+    { name: path, text: "x", staged: "/tmp/other" },
+    { name: ".context/attachments/../../secret", text: "x", staged: ".context/attachments/../../secret" },
+  ]), []);
 });
 
 test("files over the size limit are refused with a reason", () => {

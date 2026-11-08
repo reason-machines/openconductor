@@ -35,6 +35,8 @@ jobs:
       - name: Synthetic storage payload fixture tests (no WebKit)
         run: node --test tools/test_native_qa_storage.mjs
       - run: npm run build
+      - name: Fixed chrome and contained pane scrolling
+        run: node --test tests/e2e/scroll-containment.e2e.mjs
 
   app:
     name: Tauri app check, test, clippy (${{ matrix.os }})

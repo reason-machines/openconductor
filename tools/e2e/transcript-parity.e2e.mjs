@@ -7,11 +7,12 @@
 // fixture's own user message) replays tools/screens/seed-data.js 'lisbon':
 // text, Grep, Read, text, Edit, Bash, text, each tool with its provider name
 // and raw input. The screenshots are compared with Conductor's by eye; only
-// stable facts are asserted (the turn ends, the tool summary exists).
+// stable facts are asserted: this ACP turn is one message, so its commentary,
+// four tools and final reply stay inline below the three-message threshold.
+// Distinct-message summary coverage lives in toolGroups.test.ts.
 //
 // Writes to E2E_OUT:
-//   transcript-collapsed.png  the finished turn as it first shows
-//   transcript-expanded.png   after clicking the "Expand ..." tool summary
+//   transcript-inline.png     the finished single-message ACP turn
 //   transcript-rects.json     getBoundingClientRect of the first user bubble
 //                             (.chat-msg.chat-user) and of .transcript
 //
@@ -177,7 +178,7 @@ try {
   await waitFor("the turn to end", async () => !(await running()), 30000);
   pass("the lisbon turn ended with its final reply");
   await sleep(500); // let the end-of-turn layout settle before the screenshot
-  await screenshot("transcript-collapsed");
+  await screenshot("transcript-inline");
 
   const rects = await run(`
     const rect = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; };
@@ -189,14 +190,25 @@ try {
   writeFileSync(join(out, "transcript-rects.json"), JSON.stringify(rects, null, 2) + "\n");
   console.log(`rects: ${JSON.stringify(rects)}`);
 
-  // The collapsed tool summary, e.g. "Expand 4 tool calls, 2 messages".
-  const summary = await waitFor("the tool summary button", () =>
-    run(`const b = document.querySelector('button[aria-label^="Expand"]'); return b ? b.getAttribute('aria-label') : null;`),
-  );
-  pass(`the turn has a tool summary: "${summary}"`);
-  await wd("POST", `/element/${await find('button[aria-label^="Expand"]')}/click`, {});
-  await sleep(500);
-  await screenshot("transcript-expanded");
+  const inline = await run(`
+    const chat = document.querySelector('.chat-scroll');
+    return {
+      summaries: chat.querySelectorAll('.chat-tool-summary-row').length,
+      grouped: chat.querySelectorAll('[data-tool-group]').length,
+      texts: [...chat.querySelectorAll('.chat-assistant .chat-text')].map((e) => e.innerText.trim().replace(/\\s+/g, ' ')),
+      code: [...chat.querySelectorAll('.chat-assistant .chat-text code')].map((e) => e.textContent),
+      tools: [...chat.querySelectorAll('.chat-tool[data-tool-input]')].map((e) => JSON.parse(e.getAttribute('data-tool-input')).toolName),
+    };`);
+  assert.equal(inline.summaries, 0, "one ACP assistant message is below the three-message threshold");
+  assert.equal(inline.grouped, 0, "commentary and tools remain outside summary groups");
+  assert.deepEqual(inline.texts, [
+    "I’ll look at how the login route decides where to send a signed-in user.",
+    "Found it. redirectTo treats any session object as signed in, including an expired one, while the dashboard loader rejects expired sessions and sends the user back to /login. I’ll check expiresAt before redirecting.",
+    "Fixed. Expired sessions now go straight to /login instead of looping. src/lib/auth.ts: only redirect to the dashboard when the session has not expired. Tests: pnpm test src/lib/auth.test.ts passes (4 tests).",
+  ], "exact commentary and final reply remain visible in order");
+  assert.deepEqual(inline.code, ["redirectTo", "/login", "expiresAt", "/login", "src/lib/auth.ts", "pnpm test src/lib/auth.test.ts"], "commentary and final reply retain Markdown code spans");
+  assert.deepEqual(inline.tools, ["Grep", "Read", "Edit", "Bash"], "all four provider tool calls remain visible in order");
+  pass("the one-message ACP turn keeps exact Markdown commentary, four tools and final reply inline");
 
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {

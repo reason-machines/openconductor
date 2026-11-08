@@ -10,14 +10,19 @@ import { COMPOSER_DRAFTS } from "./subsystems.ts";
 
 export type StoredDraft = string | { message: string; attachments: unknown[] };
 
-/** The draft text of a stored value, or undefined when it is not a draft. */
-export function draftMessage(value: unknown): string | undefined {
+/** Parses the storage envelope; attachment contents are validated by their consumer. */
+export function storedDraft(value: unknown): StoredDraft | undefined {
   if (typeof value === "string") return value;
-  if (value && typeof value === "object" && typeof (value as { message?: unknown }).message === "string") {
-    const attachments = (value as { attachments?: unknown }).attachments;
-    if (Array.isArray(attachments)) return (value as { message: string }).message;
+  if (value && typeof value === "object" && "message" in value && typeof value.message === "string" && "attachments" in value && Array.isArray(value.attachments)) {
+    return { message: value.message, attachments: value.attachments };
   }
   return undefined;
+}
+
+/** The draft text of a stored value, or undefined when it is not a draft. */
+export function draftMessage(value: unknown): string | undefined {
+  const draft = storedDraft(value);
+  return typeof draft === "string" ? draft : draft?.message;
 }
 
 export class ComposerDrafts {
@@ -37,31 +42,32 @@ export class ComposerDrafts {
     return next;
   }
 
-  /** The saved draft text for a session ("" when there is none or it is unreadable). */
-  load(sessionId: string): Promise<string> {
+  /** The saved draft, including attachments ("" when missing or unreadable). */
+  load(sessionId: string): Promise<StoredDraft> {
     return this.run(async () => {
       const value = await this.client.getEntry({ subsystem: COMPOSER_DRAFTS.name, id: sessionId });
       if (value === undefined) return "";
-      const message = draftMessage(value);
-      if (message === undefined) {
+      const draft = storedDraft(value);
+      if (draft === undefined) {
         this.log(`[composer-drafts] Dropping unparseable persisted composer draft for ${sessionId}`);
         return "";
       }
       this.lastSerialized.set(sessionId, JSON.stringify(value));
-      return message;
+      return draft;
     });
   }
 
-  /** Saves the draft text; resolves false when the store refused it. */
-  save(sessionId: string, message: string): Promise<boolean> {
+  /** Saves text and attachment metadata together; false when the store refused it. */
+  save(sessionId: string, message: string, attachments: readonly unknown[] = []): Promise<boolean> {
+    const content: StoredDraft = attachments.length ? { message, attachments: [...attachments] } : message;
     return this.run(async () => {
-      const serialized = JSON.stringify(message);
+      const serialized = JSON.stringify(content);
       if (this.lastSerialized.get(sessionId) === serialized) return true;
       const r = await this.client.setEntry({
         subsystem: COMPOSER_DRAFTS.name,
         sizeLimit: COMPOSER_DRAFTS.sizeLimit,
         id: sessionId,
-        content: message,
+        content,
       });
       if (!r.success) {
         this.log(`[composer-drafts] Failed to persist composer draft for session ${sessionId}: ${r.reason}`);

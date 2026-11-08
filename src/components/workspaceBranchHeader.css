@@ -1,0 +1,10 @@
+.ws-branch-input {
+  min-width: 1ch;
+  max-width: 32ch;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}

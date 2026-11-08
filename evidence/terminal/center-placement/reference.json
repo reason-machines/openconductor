@@ -1,0 +1,31 @@
+{
+  "subject": "Conductor 0.87.6 Big terminal placement",
+  "scope": "Inert snippets read from retained real-app REA extraction on sven m5 max; no native or browser execution",
+  "read_at": "2026-11-07T22:24:00Z",
+  "render_chunk": {
+    "path": "assets/renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "index_chunk": {
+    "path": "assets/index-BGEQ8YjU.js",
+    "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "source_links": [
+    "../NOTES.md: Big terminal mode row and REA gaps",
+    "../setup-indicator/reference-source.json: retained extraction REA parent ev_9063647c834e461fb91d4e8a92089ad133c9c9e30742d4570f5bb2280ab99fcf"
+  ],
+  "snippets": [
+    {"file":"render","char":58578,"text":"ic as Hii,id as q3,ie as Axr"},
+    {"file":"index","char":3484957,"text":"H5t as ic,zc as id,Ju as ie"},
+    {"file":"index","char":2804681,"byte":2805157,"text":"createTerminalWithCommand:({localWorkspaceId:t,command:e,cwd:s,hostKind:n})=>{const r=Gr.getState().createTerminal({localWorkspaceId:t,cwd:s,hostKind:n});return Gr.setState(i=>{const o=new Map(i.terminals);return o.set(r.id,{...r,initialCommand:e,initialCommandRan:!1}),{terminals:o}}),r}"},
+    {"file":"render","char":7389618,"byte":7432819,"text":"const ye=X({hostKind:ge}),xe=ye?q3.createTerminalWithCommand({localWorkspaceId:n,command:ye,hostKind:ge}):q3.createTerminal({localWorkspaceId:n,hostKind:ge});L.navigateToTerminalTab(xe.id)"},
+    {"file":"render","char":7390308,"byte":7433509,"text":"se=()=>r?(J({hostKind:i?\"cloud\":void 0}),!0):!1"},
+    {"file":"render","char":2148493,"byte":2148893,"text":"c=(k,I)=>{n({from:sA,search:R=>({...R,activeTabType:\"terminal\",sessionId:void 0,terminalTabId:k}),replace:I?.replace??!1}).fireAndForget()}"},
+    {"file":"render","char":9657778,"byte":9703448,"text":"p.jsx(d1e,{autoFocus:!0,initialCommand:m,panelKind:\"main\",terminalId:n,cwd:v,isArchiving:c,persistence:q3,localWorkspaceId:i,workspaceHost:o.host})"}
+  ],
+  "interpretation": "Enabled terminal.newBigTab resolves the preset, creates a terminal in q3 (index zc, distinct from the right-panel Ns store), navigates activeTabType to terminal, and renders the same terminal id with panelKind main. Disabled mode returns false. Local workspace cwd comes from its visible path. Static source establishes placement and command routing, not native execution or pixel parity.",
+  "rea_gaps": [
+    "Retained REA JavaScript graph does not join minified cross-chunk aliases; import/export joins were rechecked by bounded source reads.",
+    "No fresh REA semantic run, native launch, process capture, or browser scenario in this extraction pass."
+  ]
+}

@@ -4,7 +4,7 @@
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::sync::{Arc, OnceLock};
+use std::sync::{Arc, Mutex, OnceLock};
 use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
@@ -83,6 +83,7 @@ pub struct ScriptService {
     counter: Arc<AtomicU64>,
     auto_run_spotlight: Arc<OnceLock<AutoRunSpotlight>>,
     settings_env: Arc<OnceLock<SettingsEnv>>,
+    shutting_down: Arc<Mutex<bool>>,
 }
 
 impl ScriptService {
@@ -98,7 +99,15 @@ impl ScriptService {
             counter: Arc::default(),
             auto_run_spotlight: Arc::default(),
             settings_env: Arc::default(),
+            shutting_down: Arc::default(),
         }
+    }
+
+    /// Prevent follow-on runs, stop run scripts, and finish interrupted setup callbacks.
+    pub fn shutdown(&self) {
+        *self.shutting_down.lock().unwrap_or_else(|e| e.into_inner()) = true;
+        self.setup.interrupt_all();
+        self.runs.stop_all();
     }
 
     /// Use this environment instead of capturing the login shell (tests).
@@ -192,8 +201,13 @@ impl ScriptService {
             (this.events)(ScriptEvent::SetupFinished(outcome));
             // A run queued while setup ran starts instead of the auto-run, as
             // in the reference; a queued run that fails to start counts too.
-            if !matches!(this.runs.setup_finished(&ws2.workspace_id), Ok(false)) {
-                return;
+            {
+                let shutting_down = this.shutting_down.lock().unwrap_or_else(|e| e.into_inner());
+                if *shutting_down
+                    || !matches!(this.runs.setup_finished(&ws2.workspace_id), Ok(false))
+                {
+                    return;
+                }
             }
             if let Ok(cfg) = this.config(&ws2) {
                 this.after_setup(&ws2, &cfg, state);
@@ -217,10 +231,15 @@ impl ScriptService {
         ) {
             return;
         }
+        let shutting_down = self.shutting_down.lock().unwrap_or_else(|e| e.into_inner());
+        if *shutting_down {
+            return;
+        }
         let spotlight = self
             .auto_run_spotlight
             .get()
             .and_then(|hook| hook(self, ws, &self.settings_paths(ws)));
+        drop(shutting_down);
         match spotlight {
             None => {
                 let _ = self.start_run(ws, None);
@@ -255,6 +274,10 @@ impl ScriptService {
             concurrent: cfg.run_mode == RunMode::Concurrent,
             sink: Some(self.sink(ws, "run", &script.id)),
         };
+        let shutting_down = self.shutting_down.lock().unwrap_or_else(|e| e.into_inner());
+        if *shutting_down {
+            return Err("Script service is shutting down.".into());
+        }
         self.runs
             .start(req, self.setup.state(&ws.workspace_id))
             .map_err(|e| e.to_string())?;
