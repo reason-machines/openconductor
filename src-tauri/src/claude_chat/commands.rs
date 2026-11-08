@@ -111,6 +111,8 @@ pub async fn claude_prompt(
 ) -> Result<Value, String> {
     let runner = state.runner(&app);
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
+    // Stop also covers the database lookup before dispatch.
+    runner.expect_prompt(&chat_id);
     let directories = if let Some(id) = workspace_id {
         let db = app.state::<crate::db::Db>();
         let source = openconductor_db::workspaces::get(&db.0, &id).await.map_err(|e| e.to_string())?
@@ -126,9 +128,6 @@ pub async fn claude_prompt(
         }
         paths
     } else { Vec::new() };
-    // Announced before the start checkpoint, so a Stop while it is saved
-    // still stops this prompt.
-    runner.expect_prompt(&chat_id);
     let (end, changes) = tauri::async_runtime::spawn_blocking(move || {
         let target = match (&cwd, &turn) {
             (Some(workspace), Some(turn)) => Some(TurnTarget {
