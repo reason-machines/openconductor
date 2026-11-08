@@ -15,6 +15,8 @@ import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
 import { RepoWorkspaceList } from "./PendingWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
+import { useBuiltinSectionCollapse } from "../state/useCustomSectionCollapse";
+import { MAIN_COLLAPSE_KEY, PINNED_COLLAPSE_KEY } from "../state/customSectionCollapse";
 import { SidebarStatusGroups } from "./SidebarStatusGroups";
 import { isRepoCollapsed, pinnedEntries, repoGroupWorkspaces, sectionEntries, type SidebarSection } from "../state/sidebarOrder";
 import { newId } from "../state/names";
@@ -315,8 +317,8 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
   const sel = state.selection;
   const dashboardEnabled = useDashboardEnabled().enabled;
   const routinesAvailable = useRoutinesAvailable();
-  // Conductor persists this per collapse key; ours lasts for the session.
-  const [groupCollapsed, setGroupCollapsed] = useState(false);
+  const [builtinCollapsed, toggleBuiltin] = useBuiltinSectionCollapse();
+  const groupCollapsed = builtinCollapsed.has(MAIN_COLLAPSE_KEY);
   // Conductor keeps "show hidden repositories" in component state, so it resets on reload.
   const [showHidden, setShowHidden] = useState(false);
   const [repoContext, setRepoContext] = useState<{ repoId: string; x: number; y: number } | null>(null);
@@ -418,7 +420,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
 
       <nav className="repo-list" ref={scrollRoot}>
         {pinned.length > 0 && (
-          <SidebarGroup label="Pinned" count={pinned.length} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
+          <SidebarGroup label="Pinned" count={pinned.length} collapsed={builtinCollapsed.has(PINNED_COLLAPSE_KEY)} onToggle={() => toggleBuiltin(PINNED_COLLAPSE_KEY)} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
             <SidebarPresence>{pinned.map((entry, index) => row(entry, index))}</SidebarPresence>
           </SidebarGroup>
         )}
@@ -446,7 +448,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
         <section className="sb-my-workspaces" aria-label="My workspaces" data-drop-target={dropTarget?.type === "unsectioned" || undefined} {...{ [DROP_ATTR.unsectioned]: "" }}>
         {/* "My workspaces" section header (Conductor's `lBi`): label, hover chevron, "..." menu with Add project. */}
         <div className="sb-section-header" onContextMenu={(e) => { e.preventDefault(); setMyContext({ x: e.clientX, y: e.clientY }); }}>
-          <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => setGroupCollapsed(!groupCollapsed)}>
+          <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => toggleBuiltin(MAIN_COLLAPSE_KEY)}>
             <span className="sb-section-label">My workspaces</span>
             <span className="sb-section-spacer" aria-hidden />
             <span className="sb-section-chevron" data-collapsed={groupCollapsed || undefined}>

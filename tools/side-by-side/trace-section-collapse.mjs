@@ -21,6 +21,8 @@ const renderer = 'renderApp-D_fmY7hW.js';
 const index = 'index-BGEQ8YjU.js';
 const selections = [
   [renderer, 'custom-section-key', 'const v=Iea(_),x=Cea(n.id);', ',I=rZe()'],
+  [renderer, 'pinned-key', 'x={defaultCollapsed:!1},e[9]=x):x=e[9];const[w,E]=aW("navigation-section-pinned",', '),k=kFi()'],
+  [renderer, 'main-key', 'h={defaultCollapsed:!1},e[0]=h):h=e[0];const[m,g]=aW("navigation-section-main",', ');let _'],
   [renderer, 'collapse-route', 'const ZFi=IX(vo(),hSe()),gWt=', ';function Oia'],
   [renderer, 'collapse-hook', 'function aW(', 'function tBi'],
   [renderer, 'route-store', 'const DGe=bf()', 'function Gde'],
@@ -42,6 +44,6 @@ console.log(JSON.stringify({
   analysis: 'retained-static-artifact; target JavaScript never evaluated',
   artifacts: Object.fromEntries(inputs.map(([name]) => [name, files[name].sha256])),
   excerpts,
-  conclusion: 'Custom section keys are included in a serialized routeStates store, loaded and merged during persisted-store initialization.',
-  gaps: ['No custom-section collapse/reload native scenario was exercised.', 'Static control flow does not prove successful backend I/O or hydration ordering on a running app.', 'REA MCP operations unavailable in this Session; reused the retained REA graph and matching decoded artifacts.'],
+  conclusion: 'Custom sections and built-in navigation-section-pinned/main keys use the same serialized routeStates store, loaded and merged during persisted-store initialization.',
+  gaps: ['No custom-section or built-in collapse/reload native scenario was exercised.', 'Static control flow does not prove successful backend I/O or hydration ordering on a running app.', 'REA MCP operations unavailable in this Session; reused the retained REA graph and matching decoded artifacts.'],
 }, null, 2));
