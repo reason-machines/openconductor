@@ -45,6 +45,37 @@ they are historical, not current missing-feature claims. This audit is
 retained-source evidence and cloud harness verification, not a fresh
 Conductor runtime capture or native OpenConductor acceptance.
 
+## NULL-branch restore correction (2026-11-07)
+
+The preceding retained-source audit found `RWt` at character 3,307,229 in
+`index-BGEQ8YjU.js` uses the stored branch with a nullish directory-name
+fallback before creating a new restore branch. This is inherited static
+REA/extracted-source evidence, not a new native observation. The chunk's
+SHA-256 is `b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3`.
+
+`target_of` had collapsed a NULL database branch to an empty string, so
+`create_restore_branch` rejected a recoverable archive even with a saved
+commit. `unarchive_workspace` now preserves that distinction for its
+new-branch path: only a NULL branch uses the directory name. Explicitly
+empty metadata and ordinary unarchive keep their existing refusal behavior.
+
+The disposable Git/in-memory SQLite flow regressions initially reported
+27 passing and two failing tests. Both NULL-branch recovery and name
+collision cases failed with `Cannot rehydrate workspace without branch
+information`. After the four-line flow fix, all 29 archive tests pass.
+The tests also cover checkpoint recovery, persisted branch/state, archive
+record removal, absent/invalid commits leaving the archive intact, empty
+branches and unarchive without the new-branch option.
+
+Command: `ARCHIVE_HARNESS_DIR="$PWD/.archive-harness" CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0 bash tools/archive/run-rust-tests.sh`.
+The harness enables rustix's std feature to match the app/script-test
+feature graph; without it the script library fails to compile before any
+archive test runs. It also has a test-only sqlx dependency for seeding NULL
+metadata. Local Clippy and rustfmt are unavailable; component installation
+was refused by the read-only toolchain. Native archive/restore acceptance
+remains **NOT RUN**, including this NULL-branch case. No real user data or
+native/browser runtime was used.
+
 ## Reference flow
 
 `archiveWorkspace({localWorkspaceId, mode = "safe", stopRunningAgents = false})`

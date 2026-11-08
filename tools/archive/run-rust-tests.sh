@@ -33,6 +33,11 @@ oc-scripts = { path = "$repo_root/crates/scripts" }
 openconductor-db = { path = "$repo_root/crates/openconductor-db" }
 tauri = { path = "tauri" }
 
+[dev-dependencies]
+sqlx = { version = "0.8.6", default-features = false, features = ["sqlite", "runtime-tokio"] }
+# Match the std-enabled rustix used by the app and oc-scripts' test graph.
+rustix = { version = "1", features = ["std"] }
+
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(workspace_std_only)'] }
 
