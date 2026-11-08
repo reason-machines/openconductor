@@ -1,8 +1,5 @@
-// The right panel's All files tab (Conductor's tab strip: All files, Changes,
-// Checks). Conductor opens a picked file in an in-app editor; OpenConductor
-// has no in-app file viewer, so a file opens through Open in: the default app
-// from the workspace header's Open button (Finder reveals it, a terminal opens
-// its folder; src-tauri/src/open_in).
+// The right panel's All files tab (All files, Changes, Checks).
+// Markdown opens internally when a viewer is supplied; other files retain Open in.
 //
 // The tab's toolbar (collapse all folders, filter, new file) sits in the
 // panel's tab row; `useFilesToolbar` carries its clicks to the tree.
@@ -83,7 +80,7 @@ async function createFile(worktree: string, path: string): Promise<void> {
 
 const errorText = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
-export function AllFilesTree({ worktree, notify, toolbar }: { worktree: string | null; notify?: Notify; toolbar: FilesToolbar }) {
+export function AllFilesTree({ worktree, notify, toolbar, onOpenFile }: { worktree: string | null; notify?: Notify; toolbar: FilesToolbar; onOpenFile?: (path: string) => boolean }) {
   // The list belongs to the worktree it was read from; another worktree shows its own
   // cached list (or "Loading files...") in the same frame, never this one's.
   const [state, setState] = useState<{ worktree: string | null; load: Load }>(() => ({ worktree, load: fromCache(worktree) }));
@@ -162,6 +159,7 @@ export function AllFilesTree({ worktree, notify, toolbar }: { worktree: string |
   };
 
   const open = async (rel: string) => {
+    if (worktree && onOpenFile?.(rel)) return;
     if (!worktree || !app) return notify?.("error", "No app to open files in");
     void recordOpenIn(app.id, false).catch((err) => console.warn("could not save the default app", err));
     try {
@@ -267,7 +265,7 @@ export function AllFilesTree({ worktree, notify, toolbar }: { worktree: string |
         className="oc-files-row file"
         style={{ paddingLeft: 8 + r.depth * 20 }}
         onClick={() => void open(r.path)}
-        title={app ? `Open ${r.path} in ${app.name}` : r.path}
+        title={`Open ${r.path}`}
       >
         <span className="oc-files-icon">
           <FileTypeIcon path={r.path} />

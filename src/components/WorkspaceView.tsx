@@ -94,6 +94,8 @@ import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { fixShortcutApplies } from "../features/pr/checks/fixErrors";
 import { useFixErrors, type FixErrors } from "../features/pr/checks/useFixErrors";
 import { AllFilesTree, FilesToolbarButtons, useFilesToolbar } from "../features/files/AllFilesTree";
+import { MarkdownFileView } from "../features/files/MarkdownFileView";
+import { isMarkdownFile } from "../features/files/fileView";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
 import { BranchPicker } from "../features/pr/edit/BranchPicker";
@@ -717,7 +719,7 @@ interface RightPanelProps {
   targetControl?: ReactNode;
 }
 
-function RightPanel({ workspaceId, diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl }: RightPanelProps) {
+function RightPanel({ workspaceId, diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl, onOpenFile }: RightPanelProps & { onOpenFile: (path: string) => boolean }) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -792,7 +794,7 @@ function RightPanel({ workspaceId, diff, actions, pr, worktree, review, fixError
           readOnly={readOnly}
         />
       ) : (
-        <AllFilesTree worktree={worktree} notify={notify} toolbar={files} />
+        <AllFilesTree worktree={worktree} notify={notify} toolbar={files} onOpenFile={onOpenFile} />
       )}
     </section>
   );
@@ -828,9 +830,10 @@ interface MainTabsProps {
   chatMenu: (chatId: string, title: string) => Omit<ChatTabMenuActions, "toggleRead">;
   /** The "+" after the chat tabs (NewChatButton). */
   newChat: ReactNode;
+  fileTab: ReactNode;
 }
 
-function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, terminals, onCloseTerminal, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, chatMenu, newChat }: MainTabsProps) {
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, terminals, onCloseTerminal, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, chatMenu, newChat, fileTab }: MainTabsProps) {
   const [menu, setMenu] = useState<{ chatId: string; title: string; x: number; y: number } | null>(null);
   const openMenu = (chatId: string, tabTitle: string) => (e: ReactMouseEvent) => {
     e.preventDefault();
@@ -889,6 +892,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, terminal
           </span>
         );
       })}
+      {fileTab}
       {newChat}
     </div>
   );
@@ -959,6 +963,15 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   useEffect(() => {
     if (mainTab.startsWith("terminal:") && !centerTerminal) setMainTab("chat");
   }, [mainTab, centerTerminal]);
+  const [fileTarget, setFileTarget] = useState<{ path: string; workspaceId: string } | null>(null);
+  useEffect(() => setFileTarget(null), [workspace.id]);
+  const openMarkdown = (path: string) => {
+    if (!workspace.path || !isMarkdownFile(path)) return false;
+    setFileTarget({ path, workspaceId: workspace.id });
+    setMainTab("file");
+    return true;
+  };
+  const closeFile = () => { setFileTarget(null); setMainTab("chat"); };
   const [prOpen, setPrOpen] = useState(false);
   const [pickingTarget, setPickingTarget] = useState(false);
   const [pickingChangesTarget, setPickingChangesTarget] = useState(false);
@@ -1142,11 +1155,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   const showDiff = diffOpen && mainTab === "diff";
   const showPr = prOpen && mainTab === "pr";
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
-  const activeTab = centerTerminal ? `terminal:${centerTerminal.id}` : showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
+  const showFile = mainTab === "file" && fileTarget !== null && fileTarget.workspaceId === workspace.id && workspace.path !== undefined;
+  const activeTab = showFile ? "file" : centerTerminal ? `terminal:${centerTerminal.id}` : showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const prNumber = pullRequest.pr?.number ?? null;
   const [prMenu, setPrMenu] = useState<{ x: number; y: number } | null>(null);
   useEffect(() => {
-    if (activeTab !== "diff" && activeTab !== "pr" && !activeTab.startsWith("terminal:")) recordViewedChat(workspace.id, activeTab);
+    if (activeTab !== "diff" && activeTab !== "pr" && activeTab !== "file" && !activeTab.startsWith("terminal:")) recordViewedChat(workspace.id, activeTab);
   }, [workspace.id, activeTab]);
   // ⌘W closes the tab on screen and ⌘⇧T reopens the last closed one, as Conductor's workspace
   // view does. The workspace's own chat has no close button here, so ⌘W leaves it. Inside a
@@ -1154,7 +1168,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   useKeybindings(
     {
       "nav.closeTab": () => {
-        if (activeTab === "diff") closeDiffTab();
+        if (activeTab === "file") closeFile();
+        else if (activeTab === "diff") closeDiffTab();
         else if (activeTab === "pr") closePrTab();
         else if (centerTerminal) closeTab(workspace.id, centerTerminal.id);
         else if (activeTab !== "chat") closeReview(activeTab);
@@ -1170,7 +1185,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   shownChat.current = activeReview?.chatId ?? workspace.id;
   // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
   // skips it while the window has focus, and an unread workspace shown that way is read.
-  const transcriptShown = showDiff || showPr || centerTerminal ? null : shownChat.current;
+  const transcriptShown = showDiff || showPr || centerTerminal || showFile ? null : shownChat.current;
   const focused = useWindowFocused();
   useEffect(() => {
     setShownChat(transcriptShown);
@@ -1300,7 +1315,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
       </header>
       <div className={`ws-split${rightPanelVisible ? "" : " right-hidden"}`}>
         <div className="ws-main">
-          <MainTabs title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
+          <MainTabs fileTab={fileTarget?.workspaceId === workspace.id ? <span className={`main-tab${showFile ? " active" : ""}`}><button role="tab" aria-selected={showFile} onClick={() => setMainTab("file")}>{fileTarget.path.split("/").pop()}</button><button className="main-tab-close" aria-label={`Close ${fileTarget.path} tab`} onClick={closeFile}>×</button></span> : null} title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
           <div className="ws-chat-host" hidden={centerTerminal !== undefined}>
         <ChatPanel
           repo={repo}
@@ -1318,7 +1333,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
           forkToNewTab={reviews.fork}
           chatTabs={[{ chatId: workspace.id, title: workspace.chatTitle ?? workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
           content={
-            showDiff ? (
+            showFile && fileTarget && workspace.path ? (
+              <MarkdownFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} />
+            ) : showDiff ? (
               <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />
             ) : showPr ? (
               <PrTab
@@ -1346,6 +1363,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
         {rightPanelVisible && (
           <div className={`ws-right${stripOpen ? "" : " strip-collapsed"}`}>
             <RightPanel
+              onOpenFile={openMarkdown}
               workspaceId={workspace.id}
               diff={diff}
               actions={review.actions}
