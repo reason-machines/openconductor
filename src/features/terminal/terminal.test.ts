@@ -44,10 +44,31 @@ test("opening tabs numbers them, selects the new one and stops at the limit", ()
   assert.equal(full.tabs.length, MAX_TABS);
 });
 
-test("closing the active tab selects its neighbour; numbers are not reused", () => {
+test("closing a panel terminal selects its predecessor or first remaining terminal", () => {
+  const opened = run([
+    { type: "open", id: "a" },
+    { type: "open", id: "center", placement: "center" },
+    { type: "open", id: "b" },
+    { type: "open", id: "c" },
+  ]);
+  for (const [selected, closed, expected] of [
+    ["b", "b", "a"],
+    ["a", "a", "b"],
+    ["c", "c", "b"],
+    ["b", "a", "b"],
+    ["b", "c", "b"],
+    ["b", "center", "b"],
+  ]) {
+    const state = run([{ type: "select", id: selected }, { type: "close", id: closed }], opened);
+    assert.equal(state.activeId, expected, `selected ${selected}, closed ${closed}`);
+    assert.deepEqual(state.tabs.map((tab) => tab.id), opened.tabs.filter((tab) => tab.id !== closed).map((tab) => tab.id));
+  }
+});
+
+test("closing the active tab selects its predecessor; numbers are not reused", () => {
   const opened = run(["a", "b", "c"].map((id) => ({ type: "open", id }) as const));
   let s = run([{ type: "select", id: "b" }, { type: "close", id: "b" }], opened);
-  assert.equal(s.activeId, "c");
+  assert.equal(s.activeId, "a");
   s = run([{ type: "close", id: "c" }], s);
   assert.equal(s.activeId, "a");
   s = run([{ type: "close", id: "a" }, { type: "open", id: "d" }], s);
