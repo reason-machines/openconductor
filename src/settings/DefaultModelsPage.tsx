@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type DragEvent, type ReactNode } from "react";
-import { AGENT_DEFAULT_MODEL, AGENT_LABEL, MODEL_PALETTE, modelLabel, storedModel, type ModelAgent } from "./models";
+import { AGENT_DEFAULT_MODEL, MODEL_PALETTE, modelLabel, storedModel } from "./models";
 import { CLAUDE_OUTPUT_STYLES, CODEX_PERSONALITIES, levelLabel } from "./agentSettings";
 import { withAgentModel } from "./agentSettings";
-import type { ClaudePersonality, CodexPersonality, Settings } from "./types";
+import type { AgentKind, ClaudePersonality, CodexPersonality, Settings } from "./types";
 import { listFavorites, openExternal, replaceFavorites } from "./agents/api";
 import {
   builtIn,
@@ -21,7 +21,12 @@ import {
   type BuiltInFavorite,
   type Favorite,
 } from "./agents/loadout";
-import { AgentMark, CheckIcon, ChevronDownIcon, CloseIcon, ExternalIcon, GripIcon } from "./agents/icons";
+import { AgentMark, ReasonMark, CheckIcon, ChevronDownIcon, CloseIcon, ExternalIcon, GripIcon } from "./agents/icons";
+import { LOADOUT_COLUMNS, LOADOUT_LABEL, REASON_POPULAR, loadoutModelLabel, otherReasonModels } from "./reasonPalette";
+import { readReasonStatus, useReasonSignIn } from "../onboarding/reasonSignIn";
+import { reasonModels } from "../features/chat/reasonChat";
+import { reasonModelName, type ReasonModelOption } from "../features/chat/reasonModels";
+import { signedIn } from "./agents/reasonModes";
 import "./agents/agents.css";
 
 interface Props {
@@ -32,8 +37,11 @@ interface Props {
 /** Conductor's review model when none is chosen (index `pZ`; features/diff/review.ts). */
 const REVIEW_FALLBACK = AGENT_DEFAULT_MODEL.claude;
 
-/** The palette columns, in Conductor's order (`P3a`) without its Cursor and OpenCode columns. */
-const COLUMNS = Object.keys(MODEL_PALETTE) as ModelAgent[];
+const loadoutLabel = (model: string) => loadoutModelLabel(model) ?? (model.includes(":") || model.includes("/") || model === "default" ? reasonModelName(model, []) : modelLabel(model));
+
+function LoadoutMark({ agent, size }: { agent: AgentKind; size: number }) {
+  return agent === "reason" ? <ReasonMark size={size} /> : <AgentMark agent={agent} size={size} />;
+}
 
 /**
  * Settings › Default models (Conductor's `models` tab, `$3a`): the Loadout
@@ -99,8 +107,8 @@ export function DefaultModelsPage({ settings, save }: Props) {
           value={review}
           onChange={(f) => save(withReview(settings, f))}
           trigger={(open) => (
-            <button type="button" className="ag-picker-trigger" aria-label={`Review model: ${modelLabel(review.model)}`} onClick={open}>
-              <span className="ag-medium">{modelLabel(review.model)}</span>
+            <button type="button" className="ag-picker-trigger" aria-label={`Review model: ${loadoutLabel(review.model)}`} onClick={open}>
+              <span className="ag-medium">{loadoutLabel(review.model)}</span>
               {review.thinkingLevel && <span className="ag-muted">{levelLabel(review.thinkingLevel)}</span>}
               <ChevronDownIcon size={12} />
             </button>
@@ -153,6 +161,23 @@ function Loadout({ settings, save }: Props) {
     lastFavorites = next;
     setStoredState(next);
   };
+  const { state: reasonSignIn } = useReasonSignIn();
+  const [keyConnected, setKeyConnected] = useState(false);
+  const connected = settings.providers.reason?.kind === "reason_api" ? keyConnected : reasonSignIn.state === "connected";
+  const [catalog, setCatalog] = useState<ReasonModelOption[]>([]);
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    let live = true;
+    setKeyConnected(false);
+    if (settings.providers.reason?.kind === "reason_api") void readReasonStatus().then(({ account }) => { if (live) setKeyConnected(signedIn(account)); });
+    return () => { live = false; };
+  }, [settings.providers.reason, settings.reason_executable_path]);
+  useEffect(() => {
+    let live = true;
+    setCatalog([]);
+    if (connected) void reasonModels(true).then((models) => { if (live) setCatalog(models); });
+    return () => { live = false; };
+  }, [connected, settings.reason?.workspace, settings.reason_executable_path]);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [dropAt, setDropAt] = useState<number | null>(null);
   useEffect(() => {
@@ -228,17 +253,18 @@ function Loadout({ settings, save }: Props) {
         })}
       </div>
       <div className="ag-palette">
-        {COLUMNS.map((agent) => {
-          const label = AGENT_LABEL[agent];
+        {LOADOUT_COLUMNS.map((agent) => {
+          const label = LOADOUT_LABEL[agent];
+          const models = agent === "reason" ? REASON_POPULAR.map((m) => m.value) : MODEL_PALETTE[agent];
           return (
             <section key={agent} className="ag-palette-col" aria-label={label}>
               <span className="ag-palette-head">
-                <AgentMark agent={agent} size={14} />
+                <LoadoutMark agent={agent} size={14} />
                 {label}
               </span>
               <div className="ag-palette-list">
-                {MODEL_PALETTE[agent].map((model) => {
-                    const name = modelLabel(model);
+                {models.map((model) => {
+                    const name = loadoutLabel(model);
                     return (
                       <button
                         key={model}
@@ -267,6 +293,20 @@ function Loadout({ settings, save }: Props) {
                     );
                   })}
               </div>
+              {agent === "reason" && connected && (
+                <div className="ag-reason-search">
+                  <input className="ag-reason-search-input" type="search" aria-label="Search other Reason models" placeholder="Search other models…" value={search} onChange={(e) => setSearch(e.target.value)} />
+                  <div className="ag-palette-list ag-reason-results">
+                    {otherReasonModels(connected, catalog, search).map((model) => (
+                      <button key={model.value} type="button" className="ag-palette-item" aria-label={`Add ${model.name} to loadout`} title={model.name} onClick={() => add(model.value)}>
+                        <span className="ag-truncate">{model.name}</span>
+                        {isEquipped(slots, model.value) && <CheckIcon size={12} />}
+                      </button>
+                    ))}
+                    {search.trim() && otherReasonModels(connected, catalog, search).length === 0 && <span className="ag-muted ag-text-sm">No matching models</span>}
+                  </div>
+                </div>
+              )}
             </section>
           );
         })}
@@ -285,7 +325,7 @@ function SlotCard(props: {
   onDragEnd: () => void;
 }) {
   const { fav, index, onChange, onDelete, onDragStart, onDragEnd } = props;
-  const name = fav.type === "built-in" ? modelLabel(fav.model) : fav.modelId;
+  const name = fav.type === "built-in" ? loadoutLabel(fav.model) : fav.modelId;
   const effort = fav.type === "built-in" && fav.thinkingLevel ? levelLabel(fav.thinkingLevel) : undefined;
   return (
     <div
@@ -304,7 +344,7 @@ function SlotCard(props: {
         trigger={(open) => (
           <button type="button" className="ag-slot-card" aria-label={[name, effort].filter(Boolean).join(", ")} title="Change agent" onClick={open}>
             <span className="ag-slot-icon">
-              {fav.type === "built-in" && <AgentMark agent={fav.agent} size={28} />}
+              {fav.type === "built-in" && <LoadoutMark agent={fav.agent} size={28} />}
             </span>
             <span className="ag-slot-model ag-truncate">{name}</span>
             <span className="ag-slot-effort">{effort}</span>
@@ -355,13 +395,13 @@ function ModelPicker({
       {trigger(() => setOpen(!open))}
       {open && (
         <div className="ag-menu" role="menu">
-          {(Object.keys(MODEL_PALETTE) as ModelAgent[]).map((a) => (
+          {LOADOUT_COLUMNS.map((a) => (
             <div key={a} className="ag-menu-group">
               <div className="ag-menu-head">
-                <AgentMark agent={a} size={12} />
-                {AGENT_LABEL[a]}
+                <LoadoutMark agent={a} size={12} />
+                {LOADOUT_LABEL[a]}
               </div>
-              {MODEL_PALETTE[a].map((model) => (
+              {(a === "reason" ? REASON_POPULAR.map((m) => m.value) : MODEL_PALETTE[a]).map((model) => (
                 <button
                   key={model}
                   type="button"
@@ -373,7 +413,7 @@ function ModelPicker({
                     setOpen(false);
                   }}
                 >
-                  <span className="ag-grow ag-truncate">{modelLabel(model)}</span>
+                  <span className="ag-grow ag-truncate">{loadoutLabel(model)}</span>
                   {value?.model === model && <CheckIcon size={12} />}
                 </button>
               ))}

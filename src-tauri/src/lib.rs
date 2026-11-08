@@ -570,6 +570,7 @@ pub fn run() {
             settings::commands::update_settings,
             settings::commands::get_repo_settings,
             settings::commands::provider_status,
+            settings::commands::initialize_default_runtime,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
             settings::commands::reveal_provider_secret,
