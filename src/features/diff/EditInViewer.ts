@@ -5,8 +5,7 @@
 // with `edit: true` inside Pierre's EditProvider, every change becomes a draft
 // kept per file, the editor.saveFile shortcut (Cmd+S) writes the editor's text
 // to the worktree, and an "Unsaved changes" dot shows while the draft differs
-// from what is on disk. Here the entire-file layout is the editable one: its
-// item holds the file's full text.
+// from what is on disk. Every editable layout starts from complete file text.
 import { useCallback, useMemo, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { Editor } from "@pierre/diffs/edit";
@@ -64,11 +63,11 @@ export function useFileEdit(worktree: string | null, path: string, onDisk: strin
   if (seen.current.key !== key) {
     seen.current = { key, onDisk, generation: generation + 1 };
     saved.current = null;
-  } else if (seen.current.onDisk !== onDisk) {
+  } else if (onDisk !== null && seen.current.onDisk !== onDisk) {
     const ours = saved.current?.key === key && saved.current.text === onDisk;
     // Changed on disk by someone else (the agent, a discard): the draft is dropped, as Conductor
     // remounts its editor when saved content changes under it with no draft pending.
-    if (!ours && onDisk !== null) {
+    if (!ours && seen.current.onDisk !== null) {
       drafts.delete(key);
       generation += 1;
     }
