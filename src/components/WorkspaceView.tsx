@@ -13,6 +13,7 @@ import { configureReason, configureReasonDefault, reasonAvailable, reasonChatCon
 import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
 import { chatStatuses, subscribeChatStatuses, type ChatSnapshot, type PermissionPrompt } from "../features/chat/chatRuntime.ts";
 import { PermissionRequests, ToolApproval, pendingToolApproval } from "../features/chat/PermissionRequests.tsx";
+import { handoffPlan } from "../features/chat/planHandoff.ts";
 import { completeTranscript, copiedTranscriptMessage, forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
 import { ChatTabMenu, type ChatTabMenuActions } from "./ChatTabMenu";
 import { RenameChatDialog } from "./RenameChatDialog";
@@ -348,6 +349,29 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     };
   }, [chatId, agentId]);
 
+  async function handoffPlanToTab(requestId: string, plan: string) {
+    const config = agentId === "reason" ? defaultChatConfig(await getSettings()) : [];
+    const answer = agent.answerPermission;
+    if (!answer) throw new Error("This agent cannot answer plan requests.");
+    await handoffPlan({
+      plan,
+      attachmentPath: attachmentPath("plan.md", randomDir()),
+      isPending: () => agent.snapshot(runId).permissions.some((p) => p.kind === "plan" && p.requestId === requestId),
+      stage: async (attachment) => {
+        await draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath: attachment.name, data: new TextEncoder().encode(attachment.text) });
+      },
+      openDraft: (draft) => {
+        const id = forkToNewTab("Implement plan", config, draft);
+        saveAgent(id, agentId);
+      },
+      reject: () => answer(runId, requestId, { kind: "plan", approved: false }),
+      stop: () => agent.stop(runId),
+    }).catch((error: unknown) => {
+      notify?.("error", `Failed to hand off plan: ${error instanceof Error ? error.message : String(error)}`);
+      throw error;
+    });
+  }
+
   /**
    * Conductor's "Fork to new tab" (`y9t`): a new tab in this workspace on this
    * chat's options, with the conversation up to `turnId` (all of it when
@@ -583,7 +607,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           onClose={() => setResetTurn(null)}
         />
       ) : null}
-      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => void agent.answerPermission?.(runId, requestId, answer)} onStop={() => agent.stop(runId)} />
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => void agent.answerPermission?.(runId, requestId, answer)} onStop={() => agent.stop(runId)} onHandoffPlan={handoffPlanToTab} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
