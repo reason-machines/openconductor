@@ -76,6 +76,45 @@ was refused by the read-only toolchain. Native archive/restore acceptance
 remains **NOT RUN**, including this NULL-branch case. No real user data or
 native/browser runtime was used.
 
+## Restore include-setting correction (2026-11-08)
+
+Source reconciliation against main `557230c244d1957751082f683e4ffbc87ad14e97`
+found `restore` always passed `None` to `files_to_copy::resolve_source`.
+Without `.worktreeinclude`, custom and explicitly empty `file_include_globs`
+were therefore ignored and `.env*` was copied instead.
+
+The retained decoded `index-BGEQ8YjU.js` was rehashed to
+`b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3`.
+Decoded character offsets: `PY` 3,304,884 calls `iWt` 3,289,007;
+`iWt` reads `getSettingForWorkspaceV2("file_include_globs", ...)` with
+both main-worktree and newly restored workspace paths, then passes that
+value to `bfe` 3,275,176. `Sfe` 3,274,131 returns no include files when
+the resolved include text is empty. These are retained REA/extracted-source
+observations, not newly observed native execution. Existing JavaScript
+search/semantic-trace limitations above remain unchanged.
+
+Restore now resolves effective settings after adding the worktree, before
+checkpoint recovery, and supplies the optional include text to the existing
+selector. Unset settings retain the default; explicit empty settings copy
+nothing; `.worktreeinclude` keeps precedence. Settings-read errors produce
+the existing nonfatal copy warning instead of copying default files.
+Copying still occurs after checkpoint recovery so checkpoint cleanup cannot
+remove the included files.
+
+Disposable Git regression first failed with `env copied: left true, right
+false` for custom and explicitly empty settings. Added coverage also checks
+unset defaults, `.worktreeinclude` precedence, restored workspace-shared
+settings, and malformed settings without unintended default copying. The
+harness uses the real `oc_scripts::config::load_effective` resolver with
+fixture-local user/home paths; the Tauri wrapper remains stubbed in this
+Linux harness. The workspace-shared fixture uses repository-shared settings
+because repository-local settings correctly outrank workspace-shared ones.
+
+No real data, credentials, native/browser runtime, install, extraction,
+preview or workflow dispatch was used. Current-build native acceptance
+remains **NOT RUN**. Harness command and final results are recorded in the
+pull request; local Clippy remains unavailable.
+
 ## Reference flow
 
 `archiveWorkspace({localWorkspaceId, mode = "safe", stopRunningAgents = false})`
