@@ -9,5 +9,5 @@
 .markdown-file-preview h1 { font-size: 2em; line-height: 1.2; }
 .markdown-file-preview h2 { font-size: 1.5em; }
 .markdown-file-preview p { line-height: 1.7; }
-.markdown-file-preview.tufte { font-family: "et-book", Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+.markdown-file-preview.tufte { font-family: Georgia, "Times New Roman", serif; }
 .markdown-file-preview.tufte h1 { font-weight: 400; font-style: italic; }
