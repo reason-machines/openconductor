@@ -251,6 +251,7 @@ async fn a_second_archive_while_one_runs_returns_at_once() {
 #[tokio::test]
 async fn unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready() {
     let e = env("flow-unarchive", "").await;
+    assert!(!e.f.ws().join(".context").exists());
     write(e.f.ws(), "wip.txt", "unsaved\n");
     // Not archived yet: nothing to do.
     assert!(!e.unarchive().await.unwrap().restored);
@@ -277,6 +278,14 @@ async fn unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready(
     assert_eq!(
         fs::read_to_string(e.f.ws().join("wip.txt")).unwrap(),
         "unsaved\n"
+    );
+    assert_eq!(
+        fs::read_to_string(e.f.ws().join(".context/todos.md")).unwrap(),
+        ""
+    );
+    assert_eq!(
+        g(e.f.ws(), &["check-ignore", ".context/todos.md"]),
+        ".context/todos.md"
     );
     assert_eq!(g(e.f.ws(), &["branch", "--show-current"]), "sven/ws");
     assert_eq!(e.row().await.state, WorkspaceState::Ready);

@@ -617,21 +617,22 @@ pub fn restore(
     }) {
         notices.push(Notice::error(format!("Couldn't copy gitignored files: {e}")));
     }
-    if let Some(root) = root_dir {
-        let saved = root
-            .join(ARCHIVED_CONTEXTS_DIR)
+    let saved_context = root_dir.map(|root| {
+        root.join(ARCHIVED_CONTEXTS_DIR)
             .join(&t.repo_name)
-            .join(&t.directory_name);
+            .join(&t.directory_name)
+    });
+    if let Some(saved) = saved_context.filter(|saved| saved.exists()) {
         let dest = path.join(CONTEXT_FOLDER);
         // The archived copy wins over one the checkpoint brought back
         // (Conductor git-excludes `.context`, so its checkpoints never hold
         // it). Conductor only logs a failure here.
-        if saved.exists() {
-            if dest.exists() {
-                let _ = std::fs::remove_dir_all(&dest);
-            }
-            let _ = std::fs::rename(&saved, &dest);
+        if dest.exists() {
+            let _ = std::fs::remove_dir_all(&dest);
         }
+        let _ = std::fs::rename(&saved, &dest);
+    } else {
+        create_context_folder(path)?;
     }
     Ok(Restored {
         branch: branch.to_string(),
@@ -639,6 +640,50 @@ pub fn restore(
         restored_changes,
         notices,
     })
+}
+
+fn create_context_folder(workspace: &Path) -> Result<(), String> {
+    use std::io::Write;
+
+    let exclude = PathBuf::from(git(workspace, ["rev-parse", "--git-path", "info/exclude"])?);
+    let exclude = if exclude.is_absolute() {
+        exclude
+    } else {
+        workspace.join(exclude)
+    };
+    let contents = match std::fs::read_to_string(&exclude) {
+        Ok(contents) => contents,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => String::new(),
+        Err(e) => return Err(format!("{}: {e}", exclude.display())),
+    };
+    if !contents.lines().any(|line| line == "/.context/") {
+        if let Some(parent) = exclude.parent() {
+            std::fs::create_dir_all(parent).map_err(|e| format!("{}: {e}", parent.display()))?;
+        }
+        let mut file = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&exclude)
+            .map_err(|e| format!("{}: {e}", exclude.display()))?;
+        let separator = if contents.is_empty() || contents.ends_with('\n') {
+            ""
+        } else {
+            "\n"
+        };
+        writeln!(file, "{separator}/.context/").map_err(|e| format!("{}: {e}", exclude.display()))?;
+    }
+    let context = workspace.join(CONTEXT_FOLDER);
+    std::fs::create_dir_all(&context).map_err(|e| format!("{}: {e}", context.display()))?;
+    let todos = context.join("todos.md");
+    match std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&todos)
+    {
+        Ok(_) => Ok(()),
+        Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => Ok(()),
+        Err(e) => Err(format!("{}: {e}", todos.display())),
+    }
 }
 
 /// `git worktree prune` after a workspace folder was deleted.
