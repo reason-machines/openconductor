@@ -5,13 +5,17 @@ import { useDialogMotion } from "../../components/motion/dialogMotion";
 import type { Repo } from "../../state/types";
 import { linkedDirectoryGroups } from "./linkedDirectories.ts";
 import { chooseLinkedDirectory, localLinkedDirectoryServices, type LinkedDirectoryServices } from "./linkedDirectoryApi.ts";
+import type { LinkSelection } from "./workspaceLinks.ts";
 import "./linkedDirectoryPicker.css";
 
 export interface LinkedDirectoryPickerProps {
   repos: readonly Repo[];
   repositoryId: string;
   excludedPaths?: readonly string[];
-  onChoose: (path: string) => void;
+  linkedWorkspaceIds?: readonly string[];
+  linkedDirectoryPaths?: readonly string[];
+  onChoose: (selection: LinkSelection) => Promise<void>;
+  onRemoveDirectory: (path: string) => Promise<void>;
   onClose: () => void;
   services?: LinkedDirectoryServices;
 }
@@ -26,7 +30,7 @@ function WorkspaceFolderIcon() {
   </svg>;
 }
 
-export function LinkedDirectoryPicker({ repos, repositoryId, excludedPaths = NO_PATHS, onChoose, onClose, services = localLinkedDirectoryServices }: LinkedDirectoryPickerProps) {
+export function LinkedDirectoryPicker({ repos, repositoryId, excludedPaths = NO_PATHS, linkedWorkspaceIds = NO_PATHS, linkedDirectoryPaths = NO_PATHS, onChoose, onRemoveDirectory, onClose, services = localLinkedDirectoryServices }: LinkedDirectoryPickerProps) {
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(0);
   const [selection, setSelection] = useState<SelectionState>({ kind: "idle" });
@@ -39,7 +43,7 @@ export function LinkedDirectoryPicker({ repos, repositoryId, excludedPaths = NO_
   const id = useId();
   const groups = useMemo(() => linkedDirectoryGroups({ repos, repositoryId, query, excludedPaths }), [repos, repositoryId, query, excludedPaths]);
   const rows = groups.flatMap((group) => group.workspaces);
-  const activeIndex = Math.min(focused, rows.length);
+  const activeIndex = Math.min(focused, rows.length + linkedDirectoryPaths.length);
 
   useEffect(() => {
     pending.current = false;
@@ -55,17 +59,24 @@ export function LinkedDirectoryPicker({ repos, repositoryId, excludedPaths = NO_
     onClose();
   }
 
-  async function choose(path?: string) {
+  async function choose(selection?: LinkSelection) {
     if (pending.current) return;
     pending.current = true;
     const revision = ++request.current;
     setSelection({ kind: "checking" });
     try {
-      const chosen = await chooseLinkedDirectory({ path, excludedPaths, services });
+      if (selection?.kind === "workspace") {
+        await onChoose(selection);
+      } else if (selection?.kind === "directory") {
+        await onRemoveDirectory(selection.path);
+      } else {
+        const chosen = await chooseLinkedDirectory({ excludedPaths: [...excludedPaths, ...linkedDirectoryPaths], services });
+        if (revision !== request.current) return;
+        if (chosen !== null) await onChoose({ kind: "directory", path: chosen });
+      }
       if (revision !== request.current) return;
       setSelection({ kind: "idle" });
-      if (chosen !== null) onChoose(chosen);
-      else input.current?.focus();
+      input.current?.focus();
     } catch (error) {
       if (revision === request.current) {
         setSelection({ kind: "error", message: error instanceof Error ? error.message : String(error) });
@@ -81,10 +92,13 @@ export function LinkedDirectoryPicker({ repos, repositoryId, excludedPaths = NO_
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
       const delta = event.key === "ArrowDown" ? 1 : -1;
-      setFocused((activeIndex + delta + rows.length + 1) % (rows.length + 1));
+      const count = rows.length + linkedDirectoryPaths.length + 1;
+      setFocused((activeIndex + delta + count) % count);
     } else if (event.key === "Enter") {
       event.preventDefault();
-      void choose(activeIndex === 0 ? undefined : rows[activeIndex - 1]?.path);
+      const directory = linkedDirectoryPaths[activeIndex - 1];
+      const workspace = rows[activeIndex - linkedDirectoryPaths.length - 1];
+      void choose(activeIndex === 0 ? undefined : directory !== undefined ? { kind: "directory", path: directory } : workspace ? { kind: "workspace", id: workspace.id } : undefined);
     }
   }
 
@@ -106,20 +120,27 @@ export function LinkedDirectoryPicker({ repos, repositoryId, excludedPaths = NO_
                   <span className="linked-directory-hint"><ConductorIcon name="corner-down-left" size={12} strokeWidth={1} /></span>
                 </div>
               </div>
+              {linkedDirectoryPaths.map((path) => {
+                const rowIndex = ++index;
+                return <div key={path} role="option" id={`${id}-${rowIndex}`} data-row-index={rowIndex} aria-selected={activeIndex === rowIndex} aria-disabled={selection.kind === "checking"} className="linked-directory-row" onMouseMove={() => setFocused(rowIndex)} onMouseDown={(event) => event.preventDefault()} onClick={() => void choose({ kind: "directory", path })}>
+                  <ConductorIcon name="folder-open" size={16} /><span className="linked-directory-label">{path}</span><span className="linked-directory-spacer" /><span>Unlink</span>
+                </div>;
+              })}
               {groups.map((group) => (
                 <div role="group" aria-labelledby={`${id}-group-${group.id}`} key={group.id}>
                   <div className="linked-directory-heading" id={`${id}-group-${group.id}`}>{group.name}</div>
                   {group.workspaces.map((workspace) => {
                     const rowIndex = ++index;
-                    return <div key={workspace.id} role="option" id={`${id}-${rowIndex}`} data-row-index={rowIndex} aria-selected={activeIndex === rowIndex} aria-disabled={selection.kind === "checking"} className="linked-directory-row" onMouseMove={() => setFocused(rowIndex)} onMouseDown={(event) => event.preventDefault()} onClick={() => void choose(workspace.path)}>
+                    return <div key={workspace.id} role="option" id={`${id}-${rowIndex}`} data-row-index={rowIndex} aria-selected={activeIndex === rowIndex} aria-disabled={selection.kind === "checking"} className="linked-directory-row" onMouseMove={() => setFocused(rowIndex)} onMouseDown={(event) => event.preventDefault()} onClick={() => void choose({ kind: "workspace", id: workspace.id })}>
                       <WorkspaceFolderIcon />
                       <span className="linked-directory-label">{workspace.label}</span><span className="linked-directory-detail">{workspace.directoryName}</span><span className="linked-directory-spacer" />
-                      <span className="linked-directory-hint">Link <ConductorIcon name="corner-down-left" size={12} strokeWidth={1} /></span>
+                      <span className="linked-directory-hint">{linkedWorkspaceIds.includes(workspace.id) ? "Unlink" : "Link"} <ConductorIcon name="corner-down-left" size={12} strokeWidth={1} /></span>
                     </div>;
                   })}
                 </div>
               ))}
             </div>
+            <div className="linked-directory-status" role="note">Saved links apply when a new Claude Code process starts. Changes to live sessions and directory access through Codex or Reason are not supported yet.</div>
             {selection.kind === "error" ? <div className="linked-directory-status" role="alert">{selection.message}</div> : null}
             {selection.kind === "checking" ? <div className="linked-directory-status" role="status">Checking directory...</div> : null}
           </Dialog.Popup>

@@ -165,6 +165,7 @@ export interface PromptRequest {
   firstMessage: boolean;
   /** Repository the chat's workspace belongs to, if known. */
   repoPath: string | null;
+  workspaceId?: string;
 }
 
 /** An agent the runtime runs chats on. */
@@ -231,7 +232,7 @@ export interface ChatRuntime<Config> {
    * goes to the backend with each prompt. Attachments go as embedded files
    * and show by name.
    */
-  submit(chatId: string, cwd: string, text: string, mode: Q.SendMode, attachments?: readonly PromptAttachment[], repoPath?: string): void;
+  submit(chatId: string, cwd: string, text: string, mode: Q.SendMode, attachments?: readonly PromptAttachment[], repoPath?: string, workspaceId?: string): void;
   /** Stop. A second Stop while the first is pending asks the backend to stop hard. */
   stop(chatId: string): void;
   queueAction(chatId: string, action: QueueAction): void;
@@ -273,6 +274,7 @@ interface Chat<Config> {
   cwd: string | null;
   /** Repository the chat's workspace belongs to. */
   repoPath: string | null;
+  workspaceId?: string;
   opened: boolean;
   /** Options the chat's session runs on: `open` passes them, `configure` updates an open one; the first prompt waits for them. */
   config: Config | Promise<Config>;
@@ -612,7 +614,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       // changed. Resolves after the turn ended; a rejection means the turn
       // never started (no CLI, no process), so no event will end it.
       const turn = turnCheckpointRef(chatId, turnId);
-      const end = await backend.prompt({ chatId, cwd, text, attachments: carried ? [carried, ...attachments] : attachments, turn, firstMessage, repoPath: c.repoPath });
+      const end = await backend.prompt({ chatId, cwd, text, attachments: carried ? [carried, ...attachments] : attachments, turn, firstMessage, repoPath: c.repoPath, workspaceId: c.workspaceId });
       if (end.turnChanges) host.recordTurnChanges(turn, end.turnChanges);
     } catch (e) {
       c.unsent.delete(turnId);
@@ -629,10 +631,11 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       c.listeners.add(fn);
       return () => c.listeners.delete(fn);
     },
-    submit(chatId, cwd, text, mode, attachments = [], repoPath) {
+    submit(chatId, cwd, text, mode, attachments = [], repoPath, workspaceId) {
       const c = chat(chatId);
       c.cwd = cwd;
       if (repoPath) c.repoPath = repoPath;
+      if (workspaceId) c.workspaceId = workspaceId;
       setQueue(c, Q.submit(c.queue, text, mode, new Date(), attachments));
     },
     stop(chatId) {

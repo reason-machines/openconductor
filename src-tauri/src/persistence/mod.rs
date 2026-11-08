@@ -232,6 +232,8 @@ pub struct WorkspaceRow {
     pub derived_status: Option<String>,
     pub manual_status: Option<String>,
     pub workspace_path: Option<String>,
+    pub linked_workspace_ids: Vec<String>,
+    pub linked_directory_paths: Vec<String>,
     /// `intended_target_branch`: the branch the work merges into; "All changes" diffs against it.
     pub intended_target_branch: Option<String>,
     pub pinned_at: Option<String>,
@@ -304,12 +306,14 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
         .await?
         .into_iter()
         .collect();
-    Ok(workspaces::list(pool)
+    workspaces::list(pool)
         .await?
         .into_iter()
         .map(|w| {
             let w = w.workspace;
-            WorkspaceRow {
+            Ok(WorkspaceRow {
+                linked_workspace_ids: decode_links(w.linked_workspace_ids.as_deref())?,
+                linked_directory_paths: decode_links(w.linked_directory_paths.as_deref())?,
                 directory_name: w.directory_name.unwrap_or_default(),
                 workspace_name: w.workspace_name,
                 user_set_workspace_name: w.user_set_workspace_name,
@@ -334,9 +338,15 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 updated_at: w.updated_at,
                 repository_id: w.repository_id,
                 id: w.local_id,
-            }
+            })
         })
-        .collect())
+        .collect::<Result<Vec<_>>>()
+}
+
+fn decode_links(raw: Option<&str>) -> Result<Vec<String>> {
+    raw.map(serde_json::from_str).transpose()
+        .map(|links| links.unwrap_or_default())
+        .map_err(|e| openconductor_db::Error::InvalidWorkspaceLink(format!("Invalid saved workspace links: {e}")))
 }
 
 fn state_name(s: WorkspaceState) -> &'static str {

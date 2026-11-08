@@ -39,6 +39,7 @@ pub type Launcher =
 const STDERR_TAIL: usize = 20;
 
 struct Live {
+    directories: Vec<PathBuf>,
     session: Arc<Mutex<ClaudeSession>>,
     state: Arc<Mutex<TurnState>>,
 }
@@ -121,7 +122,12 @@ impl ClaudeRunner {
     }
 
     /// Sends `text` as the chat's next turn and waits for that turn to end.
+    #[cfg(test)]
     pub fn prompt(&self, chat_id: &str, text: &str) -> TurnEnd {
+        self.prompt_with_directories(chat_id, text, &[])
+    }
+
+    pub fn prompt_with_directories(&self, chat_id: &str, text: &str, directories: &[PathBuf]) -> TurnEnd {
         let rx = {
             let mut chats = self.chats.lock().unwrap();
             let Some(chat) = chats.get_mut(chat_id) else {
@@ -133,7 +139,7 @@ impl ClaudeRunner {
                 (self.sink)(chat_id, ProviderEvent::TurnEnded(end.clone()));
                 return end;
             }
-            if let Err(e) = self.ensure_live(chat_id, chat) {
+            if let Err(e) = self.ensure_live(chat_id, chat, directories) {
                 return self.fail_now(chat_id, e);
             }
             let live = chat.live.as_ref().unwrap();
@@ -259,10 +265,13 @@ impl ClaudeRunner {
         end
     }
 
-    fn ensure_live(&self, chat_id: &str, chat: &mut Chat) -> Result<(), String> {
+    fn ensure_live(&self, chat_id: &str, chat: &mut Chat, directories: &[PathBuf]) -> Result<(), String> {
         if let Some(live) = &chat.live {
             let st = live.state.lock().unwrap();
             if st.alive {
+                if live.directories != directories {
+                    return Err("Linked directories changed. Start a new Claude Code chat to apply them; live-session directory changes are not supported yet.".into());
+                }
                 return Ok(());
             }
             // The process exited: resume its session in a new one.
@@ -271,7 +280,8 @@ impl ClaudeRunner {
             }
         }
         chat.live = None;
-        let launch = (self.launcher)(&chat.cwd, chat.resume.clone())?;
+        let mut launch = (self.launcher)(&chat.cwd, chat.resume.clone())?;
+        launch.add_dirs = directories.to_vec();
         let mut session = ClaudeSession::spawn(&launch)
             .map_err(|e| format!("Could not start Claude Code: {e}"))?;
         let events = session.take_events();
@@ -291,7 +301,7 @@ impl ClaudeRunner {
             state.clone(),
             self.sink.clone(),
         );
-        chat.live = Some(Live { session, state });
+        chat.live = Some(Live { directories: directories.to_vec(), session, state });
         Ok(())
     }
 }

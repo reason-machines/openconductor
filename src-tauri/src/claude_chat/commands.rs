@@ -107,9 +107,25 @@ pub async fn claude_prompt(
     chat_id: String,
     text: String,
     turn: Option<TurnArg>,
+    workspace_id: Option<String>,
 ) -> Result<Value, String> {
     let runner = state.runner(&app);
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
+    let directories = if let Some(id) = workspace_id {
+        let db = app.state::<crate::db::Db>();
+        let source = openconductor_db::workspaces::get(&db.0, &id).await.map_err(|e| e.to_string())?
+            .ok_or_else(|| "The source workspace no longer exists.".to_string())?;
+        let expected = source.workspace.workspace_path.or(source.root_path).map(PathBuf::from);
+        if expected.is_none() || expected != cwd {
+            return Err("The chat folder does not match the source workspace.".into());
+        }
+        let paths = openconductor_db::workspace_links::resolve(&db.0, &id).await.map_err(|e| e.to_string())?;
+        let paths: Vec<PathBuf> = paths.into_iter().map(PathBuf::from).collect();
+        if paths.iter().any(|path| !path.is_absolute()) {
+            return Err("Saved workspace links contain a non-local directory.".into());
+        }
+        paths
+    } else { Vec::new() };
     // Announced before the start checkpoint, so a Stop while it is saved
     // still stops this prompt.
     runner.expect_prompt(&chat_id);
@@ -122,7 +138,7 @@ pub async fn claude_prompt(
             }),
             _ => None,
         };
-        around_turn(target, || runner.prompt(&chat_id, &text))
+        around_turn(target, || runner.prompt_with_directories(&chat_id, &text, &directories))
     })
     .await
     .map_err(|e| e.to_string())?;
