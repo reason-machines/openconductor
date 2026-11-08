@@ -2,7 +2,7 @@
 // momentum/rubber-banding; that requires the separate macOS recording pass.
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync } from "node:fs";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
 import { FILES, SHELL, fakeBackend } from "./right-panel-fixture.mjs";
@@ -17,24 +17,61 @@ before(async () => {
   const executablePath = [process.env.CHROME_PATH, "/usr/bin/google-chrome", "/usr/bin/chromium", "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"].find((p) => p && existsSync(p));
   assert.ok(executablePath, "Chrome is required");
   browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
+  console.log(`Scroll browser: ${browser.version()} (${executablePath})`);
 });
 after(async () => {
   await browser?.close();
   if (server) await new Promise((resolve) => server.httpServer.close(resolve));
 });
-async function open(zoom = 1) {
+async function open(zoom = 1, trace = false) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  if (trace) {
+    mkdirSync("test-results", { recursive: true });
+    await browser.startTracing(page, { path: "test-results/scroll-input.json",
+      categories: ["input", "cc", "latencyInfo", "disabled-by-default-input"] });
+  }
   await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES, zoom });
   await page.addInitScript(() => {
     window.__scrollDelivery = [];
+    const ids = new WeakMap();
+    let nextId = 0;
+    const sample = () => [...document.querySelectorAll(".repo-list, .chat-scroll, .oc-files")].map((el) => {
+      if (!ids.has(el)) ids.set(el, ++nextId);
+      const b = el.getBoundingClientRect();
+      return { id: ids.get(el), pane: el.className, connected: el.isConnected,
+        hidden: el.hidden, display: getComputedStyle(el).display, top: el.scrollTop,
+        height: el.scrollHeight, client: el.clientHeight, rect: [b.x, b.y, b.width, b.height],
+        filler: !!el.querySelector("[data-scroll-fixture]") };
+    });
+    const push = (entry) => {
+      window.__scrollDelivery.push({ at: performance.now(), ...entry });
+      if (window.__scrollDelivery.length > 100) window.__scrollDelivery.shift();
+    };
+    for (const method of ["scrollIntoView", "scrollTo", "scrollBy"]) {
+      const original = Element.prototype[method];
+      Element.prototype[method] = function (...args) {
+        push({ type: method, target: this.className, args, stack: new Error().stack });
+        return original.apply(this, args);
+      };
+    }
+    const scrollTop = Object.getOwnPropertyDescriptor(Element.prototype, "scrollTop");
+    Object.defineProperty(Element.prototype, "scrollTop", { ...scrollTop, set(value) {
+      push({ type: "set-scrollTop", target: this.className, value, stack: new Error().stack });
+      scrollTop.set.call(this, value);
+    } });
     const record = (event) => {
       const pane = event.target?.closest?.(".repo-list, .chat-scroll, .oc-files, .settings-page");
       window.__scrollDelivery.push({
         type: event.type, at: performance.now(), trusted: event.isTrusted,
         target: event.target?.className, deltaY: event.deltaY,
         pane: pane?.className, top: pane?.scrollTop, prevented: event.defaultPrevented,
+        cancelable: event.cancelable, x: event.clientX, y: event.clientY,
       });
-      if (window.__scrollDelivery.length > 50) window.__scrollDelivery.shift();
+      if (event.type === "wheel") setTimeout(() => {
+        window.__scrollDelivery.push({ type: "after-wheel", at: performance.now(),
+          prevented: event.defaultPrevented, connected: event.target?.isConnected, panes: sample() });
+      }, 0);
+      if (window.__scrollDelivery.length > 100) window.__scrollDelivery.shift();
     };
     document.addEventListener("wheel", record, { capture: true, passive: true });
     document.addEventListener("scroll", record, { capture: true, passive: true });
@@ -107,7 +144,7 @@ test("settings zoom and resize retain containment and reachable fixed tabs", asy
 });
 
 test("real content panes scroll while their boundary cannot chain to the document", async () => {
-  const page = await open();
+  const page = await open(1, true);
   try {
     await page.getByRole("tab", { name: "All files", exact: true }).click();
     for (const selector of [".repo-list", ".chat-scroll", ".oc-files"]) {
@@ -159,7 +196,10 @@ test("real content panes scroll while their boundary cannot chain to the documen
     assert.equal((await policy(page, ".settings-page")).overscrollY, "contain");
     await wheel(page, ".settings-nav-top", -1800);
     assert.deepEqual(await page.evaluate(() => [scrollX, scrollY]), [0, 0]);
-  } finally { await page.close(); }
+  } finally {
+    await browser.stopTracing();
+    await page.close();
+  }
 });
 
 test("the settings body scrolls with a real wheel without moving the document", async () => {
