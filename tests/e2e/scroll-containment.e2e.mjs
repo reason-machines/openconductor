@@ -28,7 +28,8 @@ async function open(zoom = 1, trace = false) {
   if (trace) {
     mkdirSync("test-results", { recursive: true });
     await browser.startTracing(page, { path: "test-results/scroll-input.json",
-      categories: ["input", "cc", "latencyInfo", "disabled-by-default-input"] });
+      categories: ["input", "cc", "latencyInfo", "disabled-by-default-input",
+        "blink.user_timing", "disabled-by-default-cc.debug", "disabled-by-default-devtools.timeline.layers"] });
   }
   await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES, zoom });
   await page.addInitScript(() => {
@@ -155,6 +156,7 @@ test("real content panes scroll while their boundary cannot chain to the documen
         const filler = document.createElement("div");
         filler.style.cssText = "height:3000px;min-height:3000px;flex:none";
         filler.dataset.scrollFixture = "";
+        performance.mark(`scroll-fixture-append:${el.className}`);
         el.append(filler);
         el.scrollTop = 0;
       });
