@@ -51,7 +51,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
    size-4 icon box, gap-0.5 between rows) above a border-b. */
 .sb-header { position: relative; flex: none; }
 .sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance))); }
-.sb-app-mark { display: inline-flex; margin-left: 6px; color: var(--sidebar-foreground); pointer-events: none; }
 .sb-toggle { display: inline-flex; padding: 0; color: var(--muted); transition: color 150ms cubic-bezier(0, 0, 0.2, 1); } /* Rta: transition-colors duration-150 ease-out */
 .sb-toggle:hover { color: var(--text); }
 .sb-history { position: absolute; top: 8px; right: 14px; z-index: 1; display: flex; align-items: center; gap: 8px; }
@@ -168,12 +167,7 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* Sidebar footer, after Conductor's `Nna`: px-4 py-3 flex justify-between border-t border-sidebar-border;
    actions are flex gap-5 ml-auto; each icon is text-sidebar-muted-foreground hover:text-foreground. */
 .sb-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--sidebar-border); }
-/* Conductor's Badge `tip-outline` + `h-4 border-dashed !border-muted-foreground/80 text-muted-foreground/80`. */
-/* Conductor's plan badge button: shrink-0 cursor-pointer rounded-xs, ring on keyboard focus only. */
-.sb-plan-btn { display: inline-flex; flex-shrink: 0; padding: 0; border: 0; border-radius: 2px; background: none; cursor: pointer; }
-.sb-plan-btn:focus { outline: none; }
-.sb-plan-btn:focus-visible { box-shadow: 0 0 0 2px var(--sidebar-background), 0 0 0 4px var(--ring); }
-.sb-plan-badge { display: inline-flex; align-items: center; flex-shrink: 0; height: 16px; padding: 0 8px; border: 1px dashed color-mix(in srgb, var(--sidebar-muted-foreground) 80%, transparent); border-radius: 2px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: color-mix(in srgb, var(--sidebar-muted-foreground) 80%, transparent); user-select: none; }
+.sb-reason-tag { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; height: 20px; font-size: 12px; font-weight: 500; color: var(--sidebar-muted-foreground); user-select: none; }
 /* Conductor's footer line is 20px tall (its plan badge button), so the 16px icons centre 10px below the padding. */
 .sb-footer-actions { position: relative; display: flex; align-items: center; gap: 20px; min-height: 20px; margin-left: auto; }
 .sb-footer-btn { display: inline-flex; padding: 0; color: var(--sidebar-muted-foreground); }
