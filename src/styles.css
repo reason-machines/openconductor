@@ -5,6 +5,9 @@
   --sidebar-width: 256px;
   /* Left inset that clears the macOS traffic lights when the sidebar is hidden. */
   --traffic-lights-clearance: 66px;
+  /* Conductor renderer header inset: 86px at zoom 1, shared in both sidebar states.
+     Source anchors and native capture gap: evidence/sidebar-titlebar-toggle/README.md. */
+  --sidebar-toggle-inset: calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance)));
   font-family: var(--font-sans);
   font-size: 13px;
   color: var(--text);
@@ -50,7 +53,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
    then the computer switcher and Home / Create / Search rows (px-1.5 py-1.5 gap-2 rounded-md,
    size-4 icon box, gap-0.5 between rows) above a border-b. */
 .sb-header { position: relative; flex: none; }
-.sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance))); }
+.sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 var(--sidebar-toggle-inset); }
+.workspace-sidebar-toggle { position: absolute; top: 12px; left: var(--sidebar-toggle-inset); z-index: 2; }
 .sb-toggle { display: inline-flex; padding: 0; color: var(--muted); transition: color 150ms cubic-bezier(0, 0, 0.2, 1); } /* Rta: transition-colors duration-150 ease-out */
 .sb-toggle:hover { color: var(--text); }
 .sb-history { position: absolute; top: 8px; right: 14px; z-index: 1; display: flex; align-items: center; gap: 8px; }
@@ -230,7 +234,7 @@ html.sidebar-transparency .settings { background: var(--bg); }
    centre line as the sidebar's toggle row (h-8 pt-2). With the sidebar hidden, its content clears the
    traffic lights (Conductor's ml-[var(--traffic-lights-clearance)]). */
 .ws-header { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 12px; box-sizing: border-box; height: 40px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--border); background: var(--panel); }
-.app.sidebar-hidden .ws-header { padding-left: calc(16px + var(--traffic-lights-clearance)); }
+.app.sidebar-hidden .ws-header { padding-left: calc(var(--sidebar-toggle-inset) + 16px + 12px); }
 .ws-title { display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; white-space: nowrap; }
 /* Header actions row: Conductor's header group is "flex items-center gap-1.5" and its
    buttons use the xs button size (h-6 px-2 text-xs gap-1.5 rounded-sm, icons size-3),
