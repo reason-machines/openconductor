@@ -146,11 +146,10 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-ws-status[data-color="checks-pending"] { color: var(--status-in-progress); }
 /* Workspace status matrix: the matrix colours itself and otherwise takes the row's colour (Conductor's text-sidebar-foreground). */
 .sb-ws-status[data-matrix] { color: inherit; }
-.sb-ws-loader circle { animation: sb-ws-dot 1.2s ease-in-out infinite; opacity: 0.35; }
-.sb-ws-loader circle:nth-child(2) { animation-delay: 0.2s; }
-.sb-ws-loader circle:nth-child(3) { animation-delay: 0.4s; }
+.sb-ws-loader { animation: sb-ws-spin 1s linear infinite; transform-origin: center; }
+@keyframes sb-ws-spin { to { transform: rotate(360deg); } }
 @keyframes sb-ws-dot { 0%, 100% { opacity: 0.35; } 40% { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .sb-ws-loader circle { animation: none; opacity: 0.8; } }
+@media (prefers-reduced-motion: reduce) { .sb-ws-loader { animation: none; } }
 .sb-ws-name { flex: 1; min-width: 0; margin-right: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 450; color: var(--sidebar-muted-foreground); }
 /* Conductor's title line is title, gap-1.5, a flex-1 spacer, gap-1.5, then the diff stat or a size-3 slot for the
    hover archive button: a title truncates 12px before the diff stat, or 24px before the row's right padding. */
