@@ -395,6 +395,35 @@ fn unarchive_brings_back_the_worktree_its_uncommitted_work_and_context() {
 }
 
 #[test]
+fn restore_without_saved_context_preserves_checkpoint_todos_and_existing_excludes() {
+    let f = Fixture::new("restore-context-fallback");
+    write(f.ws(), ".context/todos.md", "keep these todos\n");
+    let exclude = f.repo().join(".git/info/exclude");
+    fs::write(&exclude, "root-only.secret").unwrap();
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    assert!(teardown(&f.target, &p, false, None).is_empty());
+
+    let r = restore(&f.target, p.archive_commit.as_deref(), None, false).unwrap();
+    assert!(r.restored_changes && r.notices.is_empty());
+    assert_eq!(
+        fs::read_to_string(f.ws().join(".context/todos.md")).unwrap(),
+        "keep these todos\n"
+    );
+    assert_eq!(
+        g(f.ws(), &["check-ignore", ".context/todos.md"]),
+        ".context/todos.md"
+    );
+    let contents = fs::read_to_string(&exclude).unwrap();
+    assert_eq!(contents, "root-only.secret\n/.context/\n");
+    create_context_folder(f.ws()).unwrap();
+    assert_eq!(fs::read_to_string(&exclude).unwrap(), contents);
+    assert_eq!(
+        fs::read_to_string(f.ws().join(".context/todos.md")).unwrap(),
+        "keep these todos\n"
+    );
+}
+
+#[test]
 fn restore_scenarios_follow_conductors_cwt() {
     let f = Fixture::new("restore-scenarios");
     write(f.ws(), "wip.txt", "unsaved\n");
