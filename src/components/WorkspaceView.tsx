@@ -16,7 +16,7 @@ import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../feature
 import { chatStatuses, subscribeChatStatuses, type ChatSnapshot, type PermissionPrompt } from "../features/chat/chatRuntime.ts";
 import { PermissionRequests, ToolApproval, pendingToolApproval } from "../features/chat/PermissionRequests.tsx";
 import { handoffPlan } from "../features/chat/planHandoff.ts";
-import { completeTranscript, copiedTranscriptMessage, forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
+import { completeTranscript, copiedTranscriptMessage, forkAttachmentName, forkTranscript } from "../features/chat/fork.ts";
 import { ChatTabMenu, type ChatTabMenuActions } from "./ChatTabMenu";
 import { RenameChatDialog } from "./RenameChatDialog";
 import { PrBadgeMenu } from "../features/pr/PrBadgeMenu";
@@ -260,8 +260,6 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const [resetTurn, setResetTurn] = useState<string | null>(null);
   /** A "Fork to new tab" is reading the chat's options. */
   const [forking, setForking] = useState(false);
-  /** The turn footer hover's "Opus 5.5 via Reason". */
-  const [turnAgent, setTurnAgent] = useState<string | undefined>(undefined);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<ComposerEditorHandle>(null);
   const running = transcript.activeTurn !== null;
@@ -318,19 +316,6 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
-
-  // The chat's model, for the turn footer hover. A Codex or Claude Code chat names only its agent.
-  useEffect(() => {
-    let live = true;
-    setTurnAgent(agent.label);
-    if (agentId === "reason")
-      void reasonChatConfig(chatId).then((config) => {
-        if (live) setTurnAgent(turnAgentLabel(config.find((o) => o.id === "model")?.value, "Reason"));
-      });
-    return () => {
-      live = false;
-    };
-  }, [chatId, agentId]);
 
   async function handoffPlanToTab(requestId: string, plan: string) {
     const config = agentId === "reason" ? defaultChatConfig(await getSettings()) : [];
@@ -551,7 +536,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             // end checkpoint under the Reason chat id, so Codex and Claude Code chats do not offer it yet.
             onForkToNewWorkspace={reason && agentId === "reason" && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
             forkDisabled={forking}
-            turnAgent={turnAgent}
+            turnAgent={agent.label}
             chatAgent={agentId}
           />
         )}

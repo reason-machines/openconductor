@@ -18,6 +18,7 @@ import { Markdown } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
 import { turnTime } from "./turnTime.ts";
 import { TurnDetails } from "./TurnDetails.tsx";
+import { turnAgentLabel } from "./fork.ts";
 import { openUrl } from "../../backend.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
 import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
@@ -41,7 +42,7 @@ export interface TranscriptProps {
   onForkToNewWorkspace?: (turnId: string) => void;
   /** The fork items are shown but disabled, e.g. while a fork is being made. */
   forkDisabled?: boolean;
-  /** The footer hover's first line, "Opus 5.5 via Reason" (Conductor's `kDo`). */
+  /** Agent name only; the footer combines it with the turn's historical message model. */
   turnAgent?: string;
   /** The chat's agent: a turn that failed because it is not signed in links to its Settings › Agents tab. */
   chatAgent?: ChatAgentId;
@@ -207,7 +208,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-      {when ? <TurnDetails when={when} agent={turnAgent} usage={row.usage} /> : null}
+      {when ? <TurnDetails when={when} agent={turnAgent ? turnAgentLabel(row.model, turnAgent) : undefined} usage={row.usage} /> : null}
       {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
       {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">
