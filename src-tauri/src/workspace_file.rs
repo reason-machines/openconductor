@@ -60,15 +60,31 @@ fn open_confined(_repo: &Path, _relative: &Path) -> Result<std::fs::File, String
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::atomic::{AtomicU64, Ordering};
+
+    static NEXT_FIXTURE: AtomicU64 = AtomicU64::new(0);
     struct Fixture(std::path::PathBuf);
     impl Fixture {
         fn new() -> Self {
-            let path = std::env::temp_dir().join(format!("oc-markdown-{}-{}", std::process::id(), std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).unwrap().as_nanos()));
-            std::fs::create_dir_all(&path).unwrap();
-            Self(path)
+            loop {
+                let id = NEXT_FIXTURE.fetch_add(1, Ordering::Relaxed);
+                let path = std::env::temp_dir().join(format!("oc-markdown-{}-{id}", std::process::id()));
+                match std::fs::create_dir(&path) {
+                    Ok(()) => return Self(path),
+                    Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
+                    Err(error) => panic!("Create test fixture: {error}"),
+                }
+            }
         }
     }
     impl Drop for Fixture { fn drop(&mut self) { let _ = std::fs::remove_dir_all(&self.0); } }
+    #[test]
+    fn parallel_fixtures_own_distinct_directories() {
+        let fixtures: Vec<_> = (0..32).map(|_| std::thread::spawn(Fixture::new)).collect();
+        let fixtures: Vec<_> = fixtures.into_iter().map(|thread| thread.join().unwrap()).collect();
+        let paths: std::collections::HashSet<_> = fixtures.iter().map(|fixture| &fixture.0).collect();
+        assert_eq!(paths.len(), fixtures.len());
+    }
     #[test]
     fn reads_nested_markdown_and_mdx_without_executing_it() {
         let f = Fixture::new();
