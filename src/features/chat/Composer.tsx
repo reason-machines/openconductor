@@ -49,6 +49,8 @@ export interface ComposerProps {
   canSteer: boolean;
   followUpMode?: FollowUpMode;
   onSubmit: (text: string, mode: SendMode) => void;
+  /** False when the owner clears only after asynchronous delivery succeeds. */
+  clearOnSubmit?: boolean;
   onStop: () => void;
   onQueue: (action: QueueAction) => void;
   /** Files going out with the next message, shown above the message box. */
@@ -81,6 +83,7 @@ export function Composer({
   canSteer,
   followUpMode = "steering",
   onSubmit,
+  clearOnSubmit = true,
   onStop,
   onQueue,
   attachments,
@@ -170,7 +173,7 @@ export function Composer({
       return;
     }
     onSubmit(text, working ? mode(opposite) : "queue");
-    setDraft("");
+    if (clearOnSubmit) setDraft("");
   }
 
   useKeybindings({

@@ -45,6 +45,76 @@ they are historical, not current missing-feature claims. This audit is
 retained-source evidence and cloud harness verification, not a fresh
 Conductor runtime capture or native OpenConductor acceptance.
 
+## NULL-branch restore correction (2026-11-07)
+
+The preceding retained-source audit found `RWt` at character 3,307,229 in
+`index-BGEQ8YjU.js` uses the stored branch with a nullish directory-name
+fallback before creating a new restore branch. This is inherited static
+REA/extracted-source evidence, not a new native observation. The chunk's
+SHA-256 is `b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3`.
+
+`target_of` had collapsed a NULL database branch to an empty string, so
+`create_restore_branch` rejected a recoverable archive even with a saved
+commit. `unarchive_workspace` now preserves that distinction for its
+new-branch path: only a NULL branch uses the directory name. Explicitly
+empty metadata and ordinary unarchive keep their existing refusal behavior.
+
+The disposable Git/in-memory SQLite flow regressions initially reported
+27 passing and two failing tests. Both NULL-branch recovery and name
+collision cases failed with `Cannot rehydrate workspace without branch
+information`. After the four-line flow fix, all 29 archive tests pass.
+The tests also cover checkpoint recovery, persisted branch/state, archive
+record removal, absent/invalid commits leaving the archive intact, empty
+branches and unarchive without the new-branch option.
+
+Command: `ARCHIVE_HARNESS_DIR="$PWD/.archive-harness" CARGO_PROFILE_DEV_DEBUG=0 CARGO_PROFILE_TEST_DEBUG=0 bash tools/archive/run-rust-tests.sh`.
+The harness enables rustix's std feature to match the app/script-test
+feature graph; without it the script library fails to compile before any
+archive test runs. It also has a test-only sqlx dependency for seeding NULL
+metadata. Local Clippy and rustfmt are unavailable; component installation
+was refused by the read-only toolchain. Native archive/restore acceptance
+remains **NOT RUN**, including this NULL-branch case. No real user data or
+native/browser runtime was used.
+
+## Restore include-setting correction (2026-11-08)
+
+Source reconciliation against main `557230c244d1957751082f683e4ffbc87ad14e97`
+found `restore` always passed `None` to `files_to_copy::resolve_source`.
+Without `.worktreeinclude`, custom and explicitly empty `file_include_globs`
+were therefore ignored and `.env*` was copied instead.
+
+The retained decoded `index-BGEQ8YjU.js` was rehashed to
+`b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3`.
+Decoded character offsets: `PY` 3,304,884 calls `iWt` 3,289,007;
+`iWt` reads `getSettingForWorkspaceV2("file_include_globs", ...)` with
+both main-worktree and newly restored workspace paths, then passes that
+value to `bfe` 3,275,176. `Sfe` 3,274,131 returns no include files when
+the resolved include text is empty. These are retained REA/extracted-source
+observations, not newly observed native execution. Existing JavaScript
+search/semantic-trace limitations above remain unchanged.
+
+Restore now resolves effective settings after adding the worktree, before
+checkpoint recovery, and supplies the optional include text to the existing
+selector. Unset settings retain the default; explicit empty settings copy
+nothing; `.worktreeinclude` keeps precedence. Settings-read errors produce
+the existing nonfatal copy warning instead of copying default files.
+Copying still occurs after checkpoint recovery so checkpoint cleanup cannot
+remove the included files.
+
+Disposable Git regression first failed with `env copied: left true, right
+false` for custom and explicitly empty settings. Added coverage also checks
+unset defaults, `.worktreeinclude` precedence, restored workspace-shared
+settings, and malformed settings without unintended default copying. The
+harness uses the real `oc_scripts::config::load_effective` resolver with
+fixture-local user/home paths; the Tauri wrapper remains stubbed in this
+Linux harness. The workspace-shared fixture uses repository-shared settings
+because repository-local settings correctly outrank workspace-shared ones.
+
+No real data, credentials, native/browser runtime, install, extraction,
+preview or workflow dispatch was used. Current-build native acceptance
+remains **NOT RUN**. Harness command and final results are recorded in the
+pull request; local Clippy remains unavailable.
+
 ## Reference flow
 
 `archiveWorkspace({localWorkspaceId, mode = "safe", stopRunningAgents = false})`

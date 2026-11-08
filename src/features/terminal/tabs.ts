@@ -69,8 +69,7 @@ export function tabsReducer(s: TabsState, a: TabsAction): TabsState {
       const i = terminalTabs(s, "panel").findIndex((t) => t.id === a.id);
       const tabs = s.tabs.filter((t) => t.id !== a.id);
       const panel = tabs.filter((t) => t.placement !== "center");
-      // Closing the active panel tab selects its right neighbour, else its left one.
-      const activeId = s.activeId !== a.id ? s.activeId : (panel[i] ?? panel[i - 1])?.id ?? null;
+      const activeId = s.activeId !== a.id ? s.activeId : panel[Math.max(0, i - 1)]?.id ?? null;
       return { ...s, tabs, activeId };
     }
     case "select":
