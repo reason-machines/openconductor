@@ -5,6 +5,8 @@
   --sidebar-width: 256px;
   /* Left inset that clears the macOS traffic lights when the sidebar is hidden. */
   --traffic-lights-clearance: 66px;
+  /* Conductor renderer header inset: 86px at zoom 1, shared in both sidebar states.
+     Source anchors and native capture gap: evidence/sidebar-titlebar-toggle/README.md. */
   --sidebar-toggle-inset: calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance)));
   font-family: var(--font-sans);
   font-size: 13px;

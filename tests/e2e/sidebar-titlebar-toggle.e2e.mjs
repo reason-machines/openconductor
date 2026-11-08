@@ -6,6 +6,9 @@ import { preview } from "vite";
 import { FILES, SHELL, fakeBackend } from "./right-panel-fixture.mjs";
 
 const executablePath = [process.env.CHROME_PATH, "/usr/bin/chromium", "/usr/bin/google-chrome", "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"].find((path) => path && existsSync(path));
+// Conservative zoom-1 native traffic-light bound, not a browser-rendered control.
+// Conductor's REA-derived header inset is 86px; see the accompanying evidence.
+const trafficLightRegionRight = 70;
 let server;
 let browser;
 let base = process.env.OC_TEST_BASE_URL;
@@ -37,7 +40,8 @@ for (const archived of [false, true]) {
       await toggle.waitFor();
       assert.equal(await toggle.count(), 1);
       const expanded = await toggle.boundingBox();
-      assert.equal(expanded.x, 86, "toggle clears native traffic lights by the reference inset");
+      assert.equal(expanded.x, 86, "expanded toggle uses Conductor's REA-derived header inset");
+      assert.ok(expanded.x > trafficLightRegionRight, "expanded toggle clears the native traffic-light region");
       assert.equal(expanded.y, 12);
       if (process.env.OC_TOGGLE_SCREENSHOT_DIR && !archived) await page.screenshot({ path: `${process.env.OC_TOGGLE_SCREENSHOT_DIR}/toggle-expanded.png` });
       await page.keyboard.press("Meta+b");
@@ -45,6 +49,8 @@ for (const archived of [false, true]) {
       assert.equal(await toggle.count(), 1, "a visible toggle must survive collapse");
       assert.ok(await toggle.isVisible());
       const collapsed = await toggle.boundingBox();
+      assert.equal(collapsed.x, 86, "collapsed toggle uses Conductor's REA-derived header inset");
+      assert.ok(collapsed.x > trafficLightRegionRight, "collapsed toggle clears the native traffic-light region");
       assert.equal(collapsed.x, expanded.x);
       assert.equal(collapsed.y, expanded.y);
       if (process.env.OC_TOGGLE_SCREENSHOT_DIR && !archived) await page.screenshot({ path: `${process.env.OC_TOGGLE_SCREENSHOT_DIR}/toggle-collapsed.png` });
