@@ -1,6 +1,6 @@
 # Restore dialog pending dismissal
 
-Conductor Rebuild, 2026-11-10. Candidate scope: permit the restore dialog's close request while restoring, without enabling its buttons, changing other confirmations, or cancelling the restore operation. No production correction has been made.
+Conductor Rebuild, 2026-11-10. Scope: permit the restore dialog's close request while restoring, without enabling its buttons, changing other confirmations, or cancelling the restore operation.
 
 ## Retained real-app source
 
@@ -26,14 +26,15 @@ The immediate Escape path and imported close-action chain therefore contain no p
 
 ## OpenConductor boundary
 
-`ConfirmationDialog` currently guards every frame close request while pending. `RestoreWorkspaceDialog` has no way to opt out. Its already-dispatched restore is owned by the store, not the dialog lifecycle; closing the dialog does not cancel that operation.
+`ConfirmationDialog` previously guarded every frame-close request while pending. It now exposes `dismissWhilePending`, defaulting to false, with only `RestoreWorkspaceDialog` opting in. The already-dispatched restore is owned by the store, not the dialog lifecycle; this correction changes no cancellation or backend code.
 
-The proposed correction is restore-only. Cancel and Restore stay disabled during the request. The existing pending label, shortcut hint, outside-click protection, removal dialog guard, and backend operation stay unchanged.
+Cancel and Restore stay disabled during the request. The existing pending label, shortcut hint, outside-click protection, removal dialog guard, and backend operation stay unchanged.
 
 ## Verification status
 
 - Source comparison: complete for the immediate restore wrappers, primitive Escape path, and imported global close action. These are retained-source facts, not new app observations.
-- Source-handler diagnostic: failed as expected with `0 !== 1` when the current frame-close closure was invoked with pending true and dismissal allowed. This reads/evaluates the checked-in closure, not a replacement implementation. It is not an actual Escape regression or proof of a reference mismatch.
-- Behavioral regression: added to `tests/e2e/dialogs.e2e.mjs` after the #852 owner explicitly released that file. The new case uses real Escape keypresses against the existing fixture's actual production restore component. It checks disabled buttons, inert outside clicks, exactly one new-branch dispatch, and Escape dismissal without another action. Imports, setup, helpers, fixture, and server are unchanged. Automatic CI RED has not been observed yet; production remains unchanged.
+- Source-handler RED: `node evidence/dialogs/restore-pending-dismissal/check-boundary.mjs 14dc5aa8` fails with `0 !== 1` for pending true and dismissal allowed. The script evaluates the actual production frame-close closure from that baseline, not a replacement handler.
+- Source-handler GREEN: `node evidence/dialogs/restore-pending-dismissal/check-boundary.mjs` passes all four pending/dismissal combinations after the restore-only correction. This proves only the callback boundary, not React mounting, browser Escape, or native behavior.
+- Behavioral regression: added to `tests/e2e/dialogs.e2e.mjs` after the #852 owner explicitly released that file. The new case uses real Escape keypresses against the existing fixture's actual production restore component. It checks disabled buttons, inert outside clicks, exactly one new-branch dispatch, and Escape dismissal without another action. Imports, setup, helpers, fixture, and server are unchanged. A real browser Escape RED has not been observed. The cheaper actual source-handler RED/GREEN above supports the correction; inherited server-port hook failures must not be reported as behavioral failures.
 - Local runtime, installation, compilation, browser capture, Mac/native restore: not run. This lane is source-only; behavioral RED/GREEN will use normal automatic PR CI.
 - Working-loader animation fidelity remains an unrelated evidence gap. No guessed spinner or asset substitution is included.
