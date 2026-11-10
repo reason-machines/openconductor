@@ -311,6 +311,9 @@ try {
   // 4. Stop a running turn.
   await send("slow");
   await waitFor("the Stop button", running);
+  await waitFor("the slow turn to reach Codex", () =>
+    requests().find((r) => r.method === "turn/start" && r.params.threadId === "th-e2e-1" && r.params.input.some((i) => i.type === "text" && i.text === "slow")),
+  );
   await wd("POST", `/element/${await find('.composer button[aria-label^="Stop the agent"]')}/click`, {});
   await waitFor('a second "Interrupted by user"', () => chatText().then((t) => (t.match(/Interrupted by user/g) ?? []).length === 2), 20000);
   await turnDone(4);

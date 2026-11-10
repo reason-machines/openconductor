@@ -41,7 +41,7 @@ after(async () => {
 
 const ROW = '[data-testid="left-sidebar-workspace-item"]';
 
-test("changes requested offers Add all comments to chat only while a diff comment is unsent", async () => {
+test("changes requested offers Add all comments to chat only while a diff comment is unsent", async (t) => {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.addInitScript(() => localStorage.setItem("openconductor.pr.demo", "changes"));
   await page.goto(`${base}/?demo=1`);
@@ -57,6 +57,35 @@ test("changes requested offers Add all comments to chat only while a diff commen
   await page.getByText('return new Response("ready");').waitFor();
   const line = page.getByText('return new Response("ready");');
   const box = await line.boundingBox();
+  if (box === null) {
+    try {
+      const snapshot = await line.evaluateAll((matches) => {
+        const describe = (element) => {
+          const style = getComputedStyle(element);
+          return {
+            tag: element.tagName, id: element.id.slice(0, 200), classes: element.getAttribute("class")?.slice(0, 200),
+            isConnected: element.isConnected, hidden: element.hasAttribute("hidden"), ariaHidden: element.getAttribute("aria-hidden")?.slice(0, 200),
+            display: style.display, visibility: style.visibility, opacity: style.opacity, contentVisibility: style.contentVisibility,
+            overflowX: style.overflowX, overflowY: style.overflowY,
+            rect: element.getBoundingClientRect().toJSON(),
+            clientRects: Array.from(element.getClientRects()).slice(0, 4).map((rect) => rect.toJSON()),
+          };
+        };
+        return {
+          matchCount: matches.length,
+          matches: matches.slice(0, 4).map((element) => {
+            const ancestors = [];
+            for (let parent = element.parentElement; parent && ancestors.length < 6; parent = parent.parentElement) ancestors.push(describe(parent));
+            return { ...describe(element), ancestors };
+          }),
+          viewport: { width: innerWidth, height: innerHeight, devicePixelRatio, scrollX, scrollY, visibilityState: document.visibilityState },
+        };
+      });
+      t.diagnostic(`[pending-comment-geometry] ${JSON.stringify(snapshot)}`);
+    } catch (diagnosticError) {
+      try { t.diagnostic(`[pending-comment-geometry] ${JSON.stringify({ captureError: String(diagnosticError).slice(0, 2000) })}`); } catch {}
+    }
+  }
   await page.mouse.click(box.x - 18, box.y + box.height / 2);
   const note = page.getByPlaceholder(/^Leave a comment/);
   await note.fill("Return 204 here, the reviewer asked for no body.");

@@ -42,10 +42,17 @@ pub async fn open_in_apps() -> Result<Vec<OpenInApp>, String> {
 /// Runs a program; a failure is its stderr, else stdout, else the exit code
 /// (Conductor's `wBt`).
 fn run(program: &str, args: &[String]) -> Result<(), String> {
-    let out = Command::new(program)
-        .args(args)
-        .output()
-        .map_err(|e| format!("{program}: {e}"))?;
+    let mut command = Command::new(program);
+    command.args(args);
+    if program == "wezterm" {
+        let path = std::env::var_os("PATH");
+        let home = std::env::var_os("HOME");
+        command.env(
+            "PATH",
+            super::wezterm_search_path(path.as_deref(), home.as_deref())?,
+        );
+    }
+    let out = command.output().map_err(|e| format!("{program}: {e}"))?;
     if out.status.success() {
         return Ok(());
     }
@@ -73,26 +80,7 @@ pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
     let dir = target.to_path_buf();
     tauri::async_runtime::spawn_blocking(move || {
         if cfg!(target_os = "macos") {
-            let (program, args) = if is_file {
-                super::macos_open_file_command(app, &dir)
-            } else {
-                super::macos_open_command(app, &dir)
-            };
-            // Xcode without its command line tools: open the folder in the app.
-            run(&program, &args).or_else(|e| {
-                if app.id == "xcode" {
-                    run(
-                        "open",
-                        &[
-                            "-a".into(),
-                            "Xcode".into(),
-                            dir.to_string_lossy().into_owned(),
-                        ],
-                    )
-                } else {
-                    Err(e)
-                }
-            })
+            super::run_macos_open(app, &dir, is_file, run)
         } else if app.id == "finder" {
             // Conductor's Linux branch hands the folder to the desktop's file manager.
             let folder = match dir.parent() {
