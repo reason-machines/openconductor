@@ -65,11 +65,34 @@ class CompletedProbe:
     stderr: str
     policy_version: str = POLICY_VERSION
     policy_sha256: str = POLICY_SHA256
+    policy_parameters: tuple[tuple[str, str], ...] = ()
 
     @property
     def policy_receipt(self):
         return {"version": self.policy_version, "sha256": self.policy_sha256,
+                "parameters": dict(self.policy_parameters),
                 "scope": "requested host process-family policy; not whole-app/helper admission"}
+
+
+def _staged_info(path, *, directory=False):
+    info = path.lstat()
+    if stat.S_ISLNK(info.st_mode):
+        raise ValueError("QA staging must not contain symlink aliases")
+    expected_type = stat.S_ISDIR if directory else stat.S_ISREG
+    if info.st_uid != os.geteuid() or not expected_type(info.st_mode):
+        raise ValueError("QA staging contains an unowned or unsupported filesystem object")
+    if not directory and info.st_nlink != 1:
+        raise ValueError("QA staging must not contain hard-link aliases")
+    return info
+
+
+def _validate_parents(root, path):
+    for parent in reversed(path.relative_to(root).parents):
+        _staged_info(root / parent, directory=True)
+
+
+def _raise_walk_error(error):
+    raise error
 
 
 def _validate(spec):
@@ -77,33 +100,30 @@ def _validate(spec):
     executable = Path(spec.executable)
     if not root.is_absolute() or root != root.resolve(strict=True):
         raise ValueError("QA root must be canonical without symlinks")
-    info = root.stat()
-    if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) != 0o700:
+    info = _staged_info(root, directory=True)
+    if stat.S_IMODE(info.st_mode) != 0o700:
         raise ValueError("QA root must be an owned directory with mode 0700")
     if (not executable.is_absolute() or executable != executable.resolve(strict=True)
             or not executable.is_relative_to(root) or executable == root):
         raise ValueError("QA executable must be canonical and staged inside the QA root")
-    info = executable.stat()
-    if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or not info.st_mode & stat.S_IXUSR:
+    _validate_parents(root, executable)
+    info = _staged_info(executable)
+    if not info.st_mode & stat.S_IXUSR:
         raise ValueError("QA executable must be an owned executable file")
     if any(executable.is_relative_to(root / name) for name in DATA_DIRECTORIES):
         raise ValueError("QA executable must not be staged in a mutable data directory")
-    for directory, directories, files in os.walk(root, followlinks=False):
-        for name in directories + files:
-            path = Path(directory) / name
-            info = path.lstat()
-            if stat.S_ISLNK(info.st_mode):
-                raise ValueError("QA staging must not contain symlink aliases")
-            if stat.S_ISREG(info.st_mode) and info.st_nlink != 1:
-                raise ValueError("QA staging must not contain hard-link aliases")
-            if info.st_uid != os.getuid() or not (stat.S_ISDIR(info.st_mode) or stat.S_ISREG(info.st_mode)):
-                raise ValueError("QA staging contains an unowned or unsupported filesystem object")
     for relative in MUTABLE_FILES.values():
         path = root / relative
-        if path.exists():
-            info = path.stat()
-            if not stat.S_ISREG(info.st_mode) or stat.S_IMODE(info.st_mode) != 0o600:
-                raise ValueError("mutable QA files must be regular files with mode 0600")
+        _validate_parents(root, path)
+        info = _staged_info(path)
+        if stat.S_IMODE(info.st_mode) != 0o600:
+            raise ValueError("mutable QA files must be regular files with mode 0600")
+    for directory, directories, files in os.walk(root, followlinks=False, onerror=_raise_walk_error):
+        _staged_info(Path(directory), directory=True)
+        for name in directories:
+            _staged_info(Path(directory) / name, directory=True)
+        for name in files:
+            _staged_info(Path(directory) / name)
     if not isinstance(spec.probe, Probe):
         raise ValueError("unsupported QA probe")
     storage = spec.probe in (Probe.STORAGE_WRITE, Probe.STORAGE_READ)
@@ -117,15 +137,18 @@ def _validate(spec):
     return timeout
 
 
+def _policy_parameters(spec):
+    return {"QA_ROOT": str(spec.root), "QA_EXECUTABLE": str(spec.executable),
+            **{key: str(spec.root / relative) for key, relative in MUTABLE_FILES.items()}}
+
+
 def _sandbox_command(spec):
     if sys.platform != "darwin":
         raise ValueError("native QA confinement is supported on macOS only; no unconfined fallback")
     if not SANDBOX_EXEC.is_file() or not os.access(SANDBOX_EXEC, os.X_OK):
         raise ValueError("native QA sandbox enforcement backend is unavailable")
-    parameters = {"QA_ROOT": str(spec.root), "QA_EXECUTABLE": str(spec.executable)}
-    parameters.update({key: str(spec.root / relative) for key, relative in MUTABLE_FILES.items()})
     command = [str(SANDBOX_EXEC)]
-    for key, value in parameters.items():
+    for key, value in _policy_parameters(spec).items():
         command.extend(["-D", f"{key}={value}"])
     return [*command, "-p", POLICY, str(spec.executable), *spec.probe.arguments]
 
@@ -146,7 +169,8 @@ def run_probe(spec):
                                close_fds=True, start_new_session=True)
     try:
         stdout, stderr = process.communicate(timeout=timeout)
-        return CompletedProbe(process.pid, process.returncode, stdout, stderr)
+        return CompletedProbe(process.pid, process.returncode, stdout, stderr,
+                              policy_parameters=tuple(_policy_parameters(spec).items()))
     finally:
         try:
             os.killpg(process.pid, signal.SIGKILL)

@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from tools.test_native_qa_runner import portable_transport
+from tools.test_native_qa_runner import portable_transport, stage_fixed_files
 
 from tools import native_qa as qa
 from tools import native_qa_cache as cache
@@ -25,6 +25,7 @@ class NativeQaStdinTests(unittest.TestCase):
         self.root = self.parent / "fresh"
         with patch.object(qa.subprocess, "check_output", side_effect=["d" * 40 + "\n", b""]):
             self.manifest = qa.prepare(self.root)
+        stage_fixed_files(self.root)
         self.app = self.root / "QA.app"
         (self.app / "Contents/MacOS").mkdir(parents=True)
         (self.app / "Contents/Info.plist").write_bytes(plistlib.dumps({

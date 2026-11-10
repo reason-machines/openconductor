@@ -53,4 +53,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Compile and exercise only synthetic process-family sentinels
-        run: python3 -W error::ResourceWarning -m unittest tools.test_native_qa_runner.NativeSentinelTests -v
+        run: >-
+          python3 -W error::ResourceWarning -c
+          'from tools.test_native_qa_runner import run_native_sentinel_suite;
+          raise SystemExit(run_native_sentinel_suite())'
