@@ -116,11 +116,44 @@ test("Projects, Actions and Settings tabs", () => {
   assert.deepEqual(ids("projects", "nothing"), []);
 });
 
-test("Workspaces tab archive filter: hiding archived by default, showing all, only archived; other tabs never list them", () => {
+test("Workspaces tab archive filter stays independent from archived matches in All search", () => {
   const ws = (f?: Parameters<typeof buildResults>[3]) => buildResults("workspaces", "", data, f)[0].items.map((i) => i.id.split(":")[1]);
   assert.deepEqual(ws(), ["w2", "w3", "w1"]);
   assert.deepEqual(ws("active"), ["w2", "w3", "w1"]);
   assert.deepEqual(ws("all"), ["w2", "w3", "w1", "w4"]);
   assert.deepEqual(ws("archived"), ["w4"]);
-  assert.ok(!ids("all", "lima").some((g) => g.includes("w4")));
+  assert.deepEqual(ids("all", "lima"), ["Workspaces: w4"]);
+});
+
+test("All search appends matching archived workspaces after active matches", () => {
+  const mixed: PaletteData = {
+    ...data,
+    workspaces: [
+      ws("archived-new", "target-new", 100, { archived: true }),
+      ws("active-old", "target-old", 10),
+      ws("archived-old", "target-old", 15, { archived: true }),
+      ws("active-new", "target-new", 20),
+      ws("unmatched", "other", 200, { archived: true }),
+    ],
+    recentWorkspaceIds: [],
+  };
+  const matches = buildResults("all", "target", mixed).find((g) => g.id === "workspaces")?.items;
+  assert.deepEqual(matches?.map((item) => item.id), ["workspace:active-new", "workspace:active-old", "workspace:archived-new", "workspace:archived-old"]);
+  assert.ok(!buildResults("all", "", mixed).some((g) => g.id === "workspaces"), "empty-query results must not become the full archived list");
+});
+
+test("All search caps active and archived workspace matches separately", () => {
+  const many: PaletteData = {
+    ...data,
+    workspaces: Array.from({ length: 60 }, (_, i) => [
+      ws(`active-${i}`, `target-${i}`, i),
+      ws(`archived-${i}`, `target-${i}`, 1000 + i, { archived: true }),
+    ]).flat(),
+    recentWorkspaceIds: [],
+  };
+  const matches = buildResults("all", "target", many).find((g) => g.id === "workspaces")?.items ?? [];
+  assert.deepEqual(matches.map((item) => item.id), [
+    ...Array.from({ length: 50 }, (_, i) => `workspace:active-${59 - i}`),
+    ...Array.from({ length: 50 }, (_, i) => `workspace:archived-${59 - i}`),
+  ]);
 });
