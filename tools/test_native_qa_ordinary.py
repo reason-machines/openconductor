@@ -9,18 +9,21 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from tools.test_native_qa_runner import portable_transport
+
 from tools import native_qa_ordinary as gate
 
 
 class OrdinaryQaTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(portable_transport())
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         parent = Path(self.tmp.name).resolve()
         self.root = parent / "fresh"
         with patch.object(gate.wk.qa.subprocess, "check_output", side_effect=["a" * 40 + "\n", b""]):
             self.manifest = gate.wk.qa.prepare(self.root)
-        self.app = parent / "QA.app"
+        self.app = self.root / "QA.app"
         (self.app / "Contents/MacOS").mkdir(parents=True)
         (self.app / "Contents/Info.plist").write_bytes(plistlib.dumps({
             "CFBundleIdentifier": self.manifest["identifier"], "CFBundleExecutable": "fixture",

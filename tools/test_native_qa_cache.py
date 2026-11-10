@@ -9,11 +9,14 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+from tools.test_native_qa_runner import portable_transport
+
 from tools import native_qa_cache as stage
 
 
 class CacheStageTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(portable_transport())
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         parent = Path(self.tmp.name).resolve()
@@ -21,7 +24,7 @@ class CacheStageTests(unittest.TestCase):
         qa = stage.ordinary.wk.qa
         with patch.object(qa.subprocess, "check_output", side_effect=["c" * 40 + "\n", b""]):
             self.manifest = qa.prepare(self.root)
-        self.app = parent / "QA.app"
+        self.app = self.root / "QA.app"
         (self.app / "Contents/MacOS").mkdir(parents=True)
         (self.app / "Contents/Info.plist").write_bytes(plistlib.dumps({
             "CFBundleIdentifier": self.manifest["identifier"], "CFBundleExecutable": "fixture",
