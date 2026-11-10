@@ -1,10 +1,20 @@
 // Run: node --test "src/**/*.test.ts"
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { fileFingerprint, isViewed, loadViewed, pruneViewed, saveViewed, toggleViewed, viewedCount } from "./viewed.ts";
-import type { FileDiff } from "./types.ts";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { resolve } from "node:path";
+import { runInNewContext } from "node:vm";
+import { keyedCache } from "../../lib/keyedCache.ts";
+import * as navigation from "./nav.ts";
+import { discardScope } from "./target.ts";
+import * as viewed from "./viewed.ts";
+import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
+import { isViewed, loadViewed, pruneViewed, saveViewed, setViewed, toggleViewed, viewedCount } from "./viewed.ts";
+import { readCachedTurnChanges } from "./turnChangesCache.ts";
+import { DEFAULT_VIEW_OPTIONS, type DiffViewOptions, type FileDiff } from "./types.ts";
 
-function file(path: string, text: string): FileDiff {
+function file(path: string, text: string, modified = 1000): FileDiff & { last_modified_time: number } {
   return {
     path,
     old_path: null,
@@ -12,6 +22,7 @@ function file(path: string, text: string): FileDiff {
     binary: false,
     additions: 1,
     deletions: 0,
+    last_modified_time: modified,
     hunks: [{ old_start: 1, old_lines: 0, new_start: 1, new_lines: 1, section: "", lines: [{ kind: "addition", old_line: null, new_line: 1, text }] }],
   };
 }
@@ -25,8 +36,7 @@ test("toggling marks and unmarks a file", () => {
 
 test("a viewed file that changes again is no longer viewed", () => {
   const before = file("a.ts", "x");
-  const after = file("a.ts", "y");
-  assert.notEqual(fileFingerprint(before), fileFingerprint(after));
+  const after = file("a.ts", "y", Date.now() + 1000);
   assert.equal(isViewed(toggleViewed({}, before), after), false);
 });
 
@@ -35,7 +45,7 @@ test("prune drops files that left the diff; count only counts current marks", ()
   const b = file("b.ts", "x");
   const m = toggleViewed(toggleViewed({}, a), b);
   assert.deepEqual(Object.keys(pruneViewed(m, [a])), ["a.ts"]);
-  assert.equal(viewedCount(m, [a, file("b.ts", "changed")]), 1);
+  assert.equal(viewedCount(m, [a, file("b.ts", "changed", Date.now() + 1000)]), 1);
 });
 
 test("load and save round-trip through storage and survive corrupt data", () => {
@@ -47,4 +57,253 @@ test("load and save round-trip through storage and survive corrupt data", () => 
   assert.deepEqual(loadViewed(storage, "other"), {});
   store.set("openconductor.diff.viewed.bad", "{not json");
   assert.deepEqual(loadViewed(storage, "bad"), {});
+});
+
+test("viewed time compares equal, older and newer modification times, including zero and absent metadata", (t) => {
+  t.mock.method(Date, "now", () => 2000);
+  const marked = setViewed({}, file("a.ts", "x", 2000), true);
+  assert.deepEqual(marked, { "a.ts": 2000 });
+  assert.equal(isViewed(marked, file("a.ts", "x", 2000)), true);
+  assert.equal(isViewed(marked, file("a.ts", "x", 1999)), true);
+  assert.equal(isViewed(marked, file("a.ts", "x", 2001)), false);
+  assert.equal(isViewed(marked, { ...file("a.ts", "x"), last_modified_time: undefined }), false);
+  assert.equal(isViewed({}, file("a.ts", "x", 0)), false);
+  assert.equal(isViewed(marked, file("a.ts", "x", 0)), true);
+  assert.equal(isViewed(setViewed({}, file("deleted.ts", "", 0), true), file("deleted.ts", "", 0)), true);
+});
+
+test("a same-content rewrite invalidates a mark but diff-only hunk changes do not", (t) => {
+  t.mock.method(Date, "now", () => 2000);
+  const before = file("a.ts", "original", 1000);
+  const marked = setViewed({}, before, true);
+  assert.equal(isViewed(marked, file("a.ts", "original", 2001)), false);
+  assert.equal(isViewed(marked, { ...file("a.ts", "different diff context", 1000), hunks: [] }), true);
+});
+
+test("viewed storage discards legacy fingerprints and nonfinite values but preserves numeric zero", () => {
+  const storage = { getItem: () => '{"legacy":"1234abcd","current":2000,"zero":0,"overflow":1e400,"empty":null}' };
+  assert.deepEqual(loadViewed(storage, "fixture"), { current: 2000, zero: 0 });
+});
+
+test("cached turn data keeps optional timestamps without filling absent historical metadata", async (t) => {
+  t.mock.method(Date, "now", () => 2000);
+  const withMetadata = file("cached.ts", "x", 1000);
+  const withoutMetadata = { ...file("fresh.ts", "x"), last_modified_time: undefined };
+  const files = [withMetadata, withoutMetadata];
+  const cached = await readCachedTurnChanges({ getEntry: async () => files }, { sessionId: "s", turnId: "t" });
+  assert.equal(cached, files);
+  assert.equal(isViewed(setViewed({}, withMetadata, true), withMetadata), true);
+  assert.equal(isViewed(setViewed({}, withoutMetadata, true), withoutMetadata), false);
+});
+
+const dependencies = createRequire(import.meta.url);
+const React = dependencies("react");
+const { act, create } = dependencies("react-test-renderer");
+const ts = dependencies("typescript");
+const sourcePath = resolve("src/features/diff/useWorkspaceDiff.ts");
+const javascript = ts.transpileModule(readFileSync(sourcePath, "utf8"), {
+  fileName: sourcePath,
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+}).outputText;
+
+function navigationFile(path: string): FileDiff {
+  return { path, old_path: null, status: "modified", binary: false, additions: 0, deletions: 0, hunks: [], ...{ last_modified_time: 1000 } };
+}
+
+async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = []) {
+  let loadedFiles = files;
+  let whitespaceFiles: FileDiff[] | undefined;
+  const storage = new Map<string, string>();
+  const localStorage = {
+    getItem: (key: string) => storage.get(key) ?? null,
+    setItem: (key: string, value: string) => { storage.set(key, value); },
+  };
+  viewed.saveViewed(localStorage, "fixture", initiallyViewed.reduce((map, f) => viewed.setViewed(map, f, true), {}));
+  const handlers: Record<string, () => unknown> = {};
+  const boundaries: Record<string, object> = {
+    react: React,
+    "../../lib/keyedCache.ts": { keyedCache },
+    "./api.ts": {
+      WHOLE_FILE_CONTEXT: 1000000,
+      loadWorkspaceDiff: async (_worktree: unknown, _target: unknown, options: DiffViewOptions) =>
+        options.ignoreWhitespace && whitespaceFiles ? whitespaceFiles : loadedFiles,
+      discardFileChanges: () => { throw new Error("Unexpected discard"); },
+    },
+    "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: (next: typeof handlers) => Object.assign(handlers, next) },
+    "./nav.ts": navigation,
+    "./target.ts": { discardScope },
+    "./copyFile.ts": { newFileText: () => { throw new Error("Unexpected contents load"); } },
+    "./types.ts": { DEFAULT_VIEW_OPTIONS },
+    "./viewed.ts": viewed,
+  };
+  const module = { exports: {} };
+  const evaluate = runInNewContext(`(function(require, module, exports) { ${javascript}\n})`, { localStorage });
+  evaluate((name: string) => {
+    assert.ok(Object.prototype.hasOwnProperty.call(boundaries, name), `Unexpected dependency: ${name}`);
+    return boundaries[name];
+  }, module, module.exports);
+  assert.ok("useWorkspaceDiff" in module.exports && typeof module.exports.useWorkspaceDiff === "function");
+  const useWorkspaceDiff = module.exports.useWorkspaceDiff;
+  let current: WorkspaceDiff | undefined;
+  function Probe() {
+    current = useWorkspaceDiff({ workspaceId: "fixture", worktree: null, target: { branch: "main", remote: "origin" } });
+    return null;
+  }
+  let renderer: ReturnType<typeof create>;
+  await act(async () => { renderer = create(React.createElement(Probe)); });
+  const state = () => { assert.ok(current); return current; };
+  assert.equal(state().load.state, "ready");
+  return {
+    state,
+    open(index: number) { act(() => state().open(index)); },
+    keyboard() { act(() => { handlers["diff.toggleViewed"](); }); },
+    header() {
+      const selected = state().selected;
+      assert.ok(selected);
+      act(() => state().toggleViewed(selected));
+    },
+    toggle(f: FileDiff) { act(() => state().toggleViewed(f)); },
+    async reload(next: FileDiff[]) {
+      loadedFiles = next;
+      await act(async () => { state().refresh(); });
+    },
+    async ignoreWhitespace(next: FileDiff[]) {
+      whitespaceFiles = next;
+      await act(async () => { state().update({ ignoreWhitespace: true }); });
+    },
+    close() { act(() => renderer.unmount()); },
+  };
+}
+
+for (const action of ["header", "keyboard"] as const) {
+  test(`actual viewed ${action} callback marks the selected file and advances`, async () => {
+    const files = [navigationFile("a.ts"), navigationFile("b.ts"), navigationFile("c.ts")];
+    const view = await fixture(files);
+    try {
+      view.open(0);
+      view[action]();
+      assert.equal(view.state().isViewed(files[0]), true);
+      assert.equal(view.state().selected?.path, "b.ts");
+    } finally { view.close(); }
+  });
+
+  test(`actual viewed ${action} callback unmarks without navigating`, async () => {
+    const files = [navigationFile("a.ts"), navigationFile("b.ts")];
+    const view = await fixture(files, [files[0]]);
+    try {
+      view.open(0);
+      view[action]();
+      assert.equal(view.state().isViewed(files[0]), false);
+      assert.equal(view.state().selected?.path, "a.ts");
+    } finally { view.close(); }
+  });
+}
+
+test("actual viewed callback steps back when marking the last unviewed file with another unviewed file remaining", async () => {
+  const files = [navigationFile("a.ts"), navigationFile("b.ts"), navigationFile("c.ts")];
+  const view = await fixture(files, [files[2]]);
+  try {
+    view.open(1);
+    view.header();
+    assert.equal(view.state().isViewed(files[1]), true);
+    assert.equal(view.state().selected?.path, "a.ts");
+  } finally { view.close(); }
+});
+
+test("actual viewed callback advances to the next file when marking the only remaining unviewed file", async () => {
+  const files = [navigationFile("a.ts"), navigationFile("b.ts"), navigationFile("c.ts")];
+  const view = await fixture(files, [files[1], files[2]]);
+  try {
+    view.open(0);
+    view.keyboard();
+    assert.equal(view.state().viewedCount, 3);
+    assert.equal(view.state().selected?.path, "b.ts");
+  } finally { view.close(); }
+});
+
+test("actual viewed callback wraps next-file navigation after the last remaining unviewed file", async () => {
+  const files = [navigationFile("a.ts"), navigationFile("b.ts"), navigationFile("c.ts")];
+  const view = await fixture(files, [files[0], files[1]]);
+  try {
+    view.open(2);
+    view.header();
+    assert.equal(view.state().viewedCount, 3);
+    assert.equal(view.state().selected?.path, "a.ts");
+  } finally { view.close(); }
+});
+
+test("actual viewed callback marks a singleton without losing its selection", async () => {
+  const files = [navigationFile("a.ts")];
+  const view = await fixture(files);
+  try {
+    view.open(0);
+    view.keyboard();
+    assert.equal(view.state().isViewed(files[0]), true);
+    assert.equal(view.state().selected?.path, "a.ts");
+  } finally { view.close(); }
+});
+
+test("actual viewed hook invalidates a same-content rewrite after the load array changes", async (t) => {
+  t.mock.method(Date, "now", () => 2000);
+  const before = file("a.ts", "unchanged content", 1000);
+  const view = await fixture([before]);
+  try {
+    view.open(0);
+    view.header();
+    assert.equal(view.state().isViewed(before), true);
+    await view.reload([file("a.ts", "unchanged content", 2001)]);
+    assert.equal(view.state().selected?.path, "a.ts");
+    assert.equal(view.state().viewedCount, 0);
+    const selected = view.state().selected;
+    assert.ok(selected);
+    assert.equal(view.state().isViewed(selected), false);
+  } finally { view.close(); }
+});
+
+test("actual viewed hook preserves a mark across diff-option-only hunk changes", async (t) => {
+  t.mock.method(Date, "now", () => 2000);
+  const before = file("a.ts", "visible whitespace", 1000);
+  const view = await fixture([before]);
+  try {
+    view.open(0);
+    view.keyboard();
+    await view.ignoreWhitespace([{ ...before, hunks: [] }]);
+    assert.equal(view.state().opts.ignoreWhitespace, true);
+    assert.deepEqual(view.state().selected?.hunks, []);
+    assert.equal(view.state().selected?.path, "a.ts");
+    assert.equal(view.state().viewedCount, 1);
+    const selected = view.state().selected;
+    assert.ok(selected);
+    assert.equal(view.state().isViewed(selected), true);
+  } finally { view.close(); }
+});
+
+test("actual viewed hook leaves fresh historical metadata absent and accepts cached numeric metadata", async (t) => {
+  t.mock.method(Date, "now", () => 2000);
+  const before = file("a.ts", "x", 1000);
+  const view = await fixture([before], [before]);
+  try {
+    view.open(0);
+    await view.reload([{ ...before, last_modified_time: undefined }]);
+    assert.equal(view.state().viewedCount, 0);
+    await view.reload([{ ...before, last_modified_time: 1000 }]);
+    assert.equal(view.state().viewedCount, 1);
+    assert.equal(view.state().selected?.path, "a.ts");
+  } finally { view.close(); }
+});
+
+test("actual viewed callbacks leave empty, unselected and missing files alone", async () => {
+  for (const files of [[], [navigationFile("a.ts")]]) {
+    const view = await fixture(files);
+    try {
+      view.keyboard();
+      assert.equal(view.state().selected, null);
+      assert.equal(view.state().viewedCount, 0);
+      if (files.length) view.open(0);
+      const before = view.state().selected?.path;
+      view.toggle(navigationFile("missing.ts"));
+      assert.equal(view.state().selected?.path, before);
+      assert.equal(view.state().viewedCount, 0);
+    } finally { view.close(); }
+  }
 });

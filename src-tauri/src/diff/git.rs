@@ -333,10 +333,28 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
             f.hunks = hunks.remove(&f.path).unwrap_or_default();
         }
     }
+    for file in &mut files {
+        file.last_modified_time = worktree_modified_time(repo, file);
+    }
     Ok(WorkspaceDiff {
         base_commit: base,
         files,
     })
+}
+
+pub(super) fn worktree_modified_time(repo: &Path, file: &FileDiff) -> Option<i64> {
+    if file.status == FileStatus::Deleted {
+        return Some(0);
+    }
+    let modified = std::fs::symlink_metadata(repo.join(&file.path))
+        .ok()?
+        .modified()
+        .ok()?;
+    let nanos = match modified.duration_since(std::time::UNIX_EPOCH) {
+        Ok(duration) => i128::try_from(duration.as_nanos()).ok()?,
+        Err(error) => -i128::try_from(error.duration().as_nanos()).ok()?,
+    };
+    i64::try_from((nanos + 500_000).div_euclid(1_000_000)).ok()
 }
 
 /// Tracked changes against `base` plus untracked files, sorted by path.
