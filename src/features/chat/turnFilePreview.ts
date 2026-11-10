@@ -1,4 +1,4 @@
-import { createElement as h, Fragment, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { createElement as h, Fragment, useEffect, useLayoutEffect, useRef, useState, type MouseEvent, type PointerEvent, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { loadWorkspaceDiff } from "../diff/api.ts";
 import type { TurnRef } from "../diff/turnChangesCache.ts";
@@ -128,8 +128,8 @@ export function TurnFilePreview({ file, turn, worktree, onOpenFile, children }: 
     h("button", {
       ref: trigger, type: "button", className: "oc-file-badge filebadge chat-turn-chip",
       title: eligible ? undefined : "Open to view preview",
-      onClick: (event) => { event.stopPropagation(); onOpenFile(path); },
-      onPointerEnter: (event) => { if (event.pointerType !== "touch") enter(); },
+      onClick: (event: MouseEvent<HTMLButtonElement>) => { event.stopPropagation(); onOpenFile(path); },
+      onPointerEnter: (event: PointerEvent<HTMLButtonElement>) => { if (event.pointerType !== "touch") enter(); },
       onPointerLeave: leave,
     }, h(FileGlyph, { path }), h("span", { className: "oc-file-badge-name" }, baseName(path)), children),
     preview.kind === "closed" ? null : createPortal(h("div", {
