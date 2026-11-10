@@ -1,5 +1,4 @@
 """Synthetic receipt policy controls; no service authentication or runner execution."""
-import copy
 from dataclasses import replace
 import hashlib
 import importlib
@@ -225,6 +224,15 @@ class ReceiptPolicyTests(unittest.TestCase):
                 self.set_payload(buffer.getvalue())
                 self.consume()
 
+    def test_nul_truncated_zip_member_name_refuses(self):
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w") as output:
+            output.writestr("receipt.jsonX", documents()[0])
+            output.writestr("build.json", canonical(documents()[1]))
+        self.set_payload(buffer.getvalue().replace(b"receipt.jsonX", b"receipt.json\0"))
+        with self.assertRaises(ValueError):
+            self.consume()
+
     def test_duplicate_zip_members_refuse(self):
         with self.assertWarns(UserWarning):
             payload = archive(extra=(("receipt.json", documents()[0]),))
@@ -389,6 +397,7 @@ class ProducerTests(unittest.TestCase):
         self.verify.side_effect = subprocess.CalledProcessError(1, "mock codesign")
         with self.assertRaises(subprocess.CalledProcessError):
             self.emit()
+        self.assertFalse((self.output / "build.json").exists())
 
 
 class WorkflowContractTests(unittest.TestCase):
@@ -428,7 +437,7 @@ class WorkflowContractTests(unittest.TestCase):
         self.assertLess(source.index(" preflight "), source.index("xcrun clang"))
         self.assertLess(source.index('tools/native_qa_vm_signing.py "$app"'), source.index(" emit "))
         self.assertIn('[[ $identity == - ]]', source)
-        self.assertNotIn('"$app/Contents/MacOS/OpenConductorQAVMRunner"\n', source)
+        self.assertNotRegex(source, r'(?m)^\s*"\$app/Contents/MacOS/OpenConductorQAVMRunner"(?:\s|$)')
         self.assertNotIn("open -a", source)
 
 
