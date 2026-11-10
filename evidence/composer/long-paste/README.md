@@ -28,7 +28,13 @@ The exclusive five-file lease permits only Composer imports, the existing `useBo
 
 The first published increment adds the mounted regression and this evidence note only; product code is unchanged. Normal automatic hosted `npm run test:e2e` must establish baseline RED before the product change. The new test mounts the existing demo application in Chromium and uses clipboard writes plus real paste key presses, not a copied handler or source-string assertion. It asserts conversion above either threshold, one attachment and no duplicate text or replacement of the existing draft; disabled preference, exact lower boundaries, ordinary paste/Undo, and recognized metadata precedence remain controls.
 
-- Passed: retained renderer and bounded-span hashes; source comparison; JavaScript syntax and whitespace checks on the first increment.
-- Pending: hosted baseline RED, unchanged mounted regression GREEN, focused pure tests after implementation, exact-head CI, merged-main behavior, and automatic package proof.
+### Baseline RED retained before the product correction
+
+At published head `24a1650c09d4787ac5e2eca9e6918d87cbb97f9b`, [automatic hosted E2E job 129815207181](https://github.com/reason-machines/openconductor/actions/runs/42811907292/job/129815207181) failed exactly the two conversion cases. The 5001-code-unit paste reported editor length 5016 and zero attachments; the 91-line paste reported editor length 288 and zero attachments. Both timed out waiting for the attachment chip. Disabled preference, exact lower boundaries/ordinary Undo, recognized metadata precedence, and the neighboring paste Undo/Redo test passed. These results establish missing mounted conversion, not a setup failure.
+
+The correction reads the existing boolean preference in Composer, classifies the paste at form capture, and passes exactly one raw text File to the existing attachment callback while preventing duplicate editor insertion. Ordinary files (except the retained image/table case), recognized reference metadata, and valid OpenConductor atomic clipboard data remain on their existing paths. The original four mounted regression tests are unchanged. An additional event-dispatched mounted control covers file/image-table/custom-atom precedence; it is synthetic DOM input, not native clipboard proof.
+
+- Passed: retained renderer and bounded-span hashes; source comparison; JavaScript syntax and whitespace checks; all seven focused pure long-paste tests (thresholds, UTF-16 units, unnormalized content, local filename, disabled setting, ordinary files/images, valid/invalid custom atom payloads).
+- Pending: unchanged mounted regression GREEN, additional mounted precedence controls, exact-head CI, merged-main behavior, and automatic package proof.
 - Not run: local app/browser/native runtime, installation, build, workflow dispatch/rerun, reference acquisition, native/WebKit clipboard behavior, attachment delivery to a real agent, or OS clipboard/native parity.
 - No screenshot: no local browser admission is held. Hosted behavioral results will be retained separately from visual/native acceptance; no screenshot or native parity is claimed.

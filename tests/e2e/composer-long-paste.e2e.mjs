@@ -110,3 +110,39 @@ test("recognized reference clipboard metadata takes precedence over the long-tex
     }
   });
 });
+
+test("mounted paste capture preserves files and atoms, except the retained image/table long-text case", { timeout: 30_000 }, async () => {
+  await composer(true, async ({ page, input }) => {
+    const text = "x".repeat(5001);
+    for (const [type, html, converted] of [
+      ["text/plain", "", false],
+      ["image/png", "", false],
+      ["text/plain", "<table><tr><td>cell</td></tr></table>", false],
+      ["image/png", "<table><tr><td>cell</td></tr></table>", true],
+    ]) {
+      await input.fill("keep");
+      await input.evaluate((node, data) => {
+        const clipboardData = new DataTransfer();
+        clipboardData.items.add(new File(["fixture"], "clipboard-file.txt", { type: data.type }));
+        clipboardData.setData("text/plain", data.text);
+        if (data.html) clipboardData.setData("text/html", data.html);
+        node.dispatchEvent(new ClipboardEvent("paste", { clipboardData, bubbles: true, cancelable: true }));
+      }, { type, html, text });
+      const chip = page.locator(".chat .composer-attachment");
+      await chip.waitFor();
+      assert.equal(await chip.count(), 1);
+      assert.match(await chip.textContent(), converted ? /^pasted_text_/ : /^clipboard-file\.txt/);
+      assert.equal(await input.textContent(), "keep");
+      await chip.getByRole("button", { name: /^Remove / }).click();
+    }
+    await input.fill("");
+    await input.evaluate((node, text) => {
+      const clipboardData = new DataTransfer();
+      clipboardData.setData("text/plain", text);
+      clipboardData.setData("application/x-openconductor-composer+json", JSON.stringify([{ kind: "text", text: "atomic content" }]));
+      node.dispatchEvent(new ClipboardEvent("paste", { clipboardData, bubbles: true, cancelable: true }));
+    }, text);
+    assert.equal(await input.textContent(), "atomic content");
+    assert.equal(await page.locator(".chat .composer-attachment").count(), 0);
+  });
+});

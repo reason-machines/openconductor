@@ -1,7 +1,8 @@
 // Run: node --test "src/**/*.test.ts"
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createElement } from "react";
+import { createRequire } from "node:module";
+import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Markdown, highlight, languageOf, MAX_HIGHLIGHT_CHARS } from "./markdown.ts";
 
@@ -75,6 +76,96 @@ test("raw HTML is escaped, never rendered", () => {
 test("javascript: links are neutralised", () => {
   const html = render("[click](javascript:alert(1))");
   assert.doesNotMatch(html, /javascript:/);
+});
+
+test("plain workspace paths render as file buttons without backticks", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, { text: "See src/lib/auth.ts.", workspacePath: "/repo" }));
+  assert.match(html, /See <button type="button" class="md-file-link" title="Open \/repo\/src\/lib\/auth.ts">src\/lib\/auth.ts<\/button>\./);
+  assert.doesNotMatch(html, /<code/);
+});
+
+test("plain file buttons invoke onOpenFile rather than the external link callback", () => {
+  const opened: string[] = [];
+  const external: string[] = [];
+  const { create }: { create: (element: ReactElement) => {
+    root: { findAllByType: (type: "button") => Array<{ props: { className?: string; onClick: () => void } }> };
+    unmount: () => void;
+  } } = createRequire(import.meta.url)("react-test-renderer");
+  const renderer = create(createElement(Markdown, {
+    text: "See src/lib/auth.ts.", workspacePath: "/repo",
+    onOpenFile: (path) => opened.push(path), onOpenLink: (href) => external.push(href),
+  }));
+  try {
+    const buttons = renderer.root.findAllByType("button").filter((button) => button.props.className === "md-file-link");
+    assert.equal(buttons.length, 1);
+    buttons[0].props.onClick();
+    assert.deepEqual(opened, ["/repo/src/lib/auth.ts"]);
+    assert.deepEqual(external, []);
+  } finally {
+    renderer.unmount();
+  }
+});
+
+test("plain file paths keep punctuation and multiple targets in order", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "See (src/lib/auth.ts), ./src/main.ts:12:3; /repo/tests/auth.test.ts.", workspacePath: "/repo",
+  }));
+  assert.deepEqual([...html.matchAll(/title="Open ([^"]+)"/g)].map((match) => match[1]), [
+    "/repo/src/lib/auth.ts", "/repo/src/main.ts", "/repo/tests/auth.test.ts",
+  ]);
+  assert.match(html, /auth\.ts<\/button>\), /);
+  assert.match(html, /main\.ts:12:3<\/button>; /);
+  assert.match(html, /auth\.test\.ts<\/button>\./);
+});
+
+test("plain paths normalize dot segments before workspace containment", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "src/lib/../auth.ts /repo/src/./main.ts /repo/src/../../outside.ts ../escape.ts /repo-other/file.ts /repo/.",
+    workspacePath: "/repo/./",
+  }));
+  assert.deepEqual([...html.matchAll(/title="Open ([^"]+)"/g)].map((match) => match[1]), ["/repo/src/auth.ts", "/repo/src/main.ts"]);
+  assert.match(html, /\/repo\/src\/\.\.\/\.\.\/outside\.ts/);
+  assert.match(html, /\.\.\/escape\.ts/);
+  assert.match(html, /\/repo-other\/file\.ts/);
+});
+
+test("plain paths stay text without an absolute workspace folder", () => {
+  for (const workspacePath of [undefined, "repo"]) {
+    const html = renderToStaticMarkup(createElement(Markdown, { text: "See src/lib/auth.ts.", workspacePath }));
+    assert.doesNotMatch(html, /<button|<a /);
+    assert.match(html, /See src\/lib\/auth\.ts\./);
+  }
+});
+
+test("plain path recognition does not rewrite URLs, explicit links or their nested labels", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "https://example.com/src/auth.ts [src/lib/auth.ts](https://example.com) [**src/main.ts**](https://example.org) [src/ref.ts][ref]\n\n[ref]: https://example.net",
+    workspacePath: "/repo",
+  }));
+  assert.doesNotMatch(html, /md-file-link/);
+  assert.equal((html.match(/<a /g) ?? []).length, 4);
+  assert.match(html, /href="https:\/\/example\.com\/src\/auth\.ts"/);
+  assert.match(html, /<strong>src\/main\.ts<\/strong>/);
+});
+
+test("code paths retain code chips and fenced paths never become buttons", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "`src/lib/auth.ts`\n\n```text\nsrc/main.ts\n```", workspacePath: "/repo",
+  }));
+  assert.equal((html.match(/md-file-link/g) ?? []).length, 1);
+  assert.match(html, /<button[^>]+title="Open \/repo\/src\/lib\/auth\.ts"><code class="md-code">src\/lib\/auth\.ts<\/code><\/button>/);
+  assert.match(html, /class="md-code-block"/);
+  assert.match(html, /<code[^>]*>src\/main\.ts<\/code>/);
+});
+
+test("a custom external-link component does not intercept plain file buttons", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "src/lib/auth.ts [docs](https://example.com)", workspacePath: "/repo",
+    Link: ({ href, children }) => createElement("a", { href, "data-custom-link": true }, children),
+  }));
+  assert.match(html, /class="md-file-link"/);
+  assert.equal((html.match(/data-custom-link/g) ?? []).length, 1);
+  assert.match(html, /href="https:\/\/example\.com"/);
 });
 
 test("languageOf reads the first language- class", () => {

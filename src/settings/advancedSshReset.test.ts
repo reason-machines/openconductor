@@ -23,33 +23,45 @@ test("saved custom SSH key exposes reset and clears only the SSH override on act
   } finally { view.close(); }
 });
 
-test("auto-generated SSH key state has no reset action and saves nothing", () => {
+test("auto-generated SSH key state has no reset until an edit saves an override", () => {
   for (const value of [null, ""]) {
     const view = mount(value);
     try {
       assert.equal(view.input().props.value, "");
       assert.equal(view.reset().length, 0);
       assert.equal(view.saved.length, 0);
-      act(() => view.input().props.onChange({ target: { value: "synthetic-unsaved-key" } }));
-      assert.equal(view.input().props.value, "synthetic-unsaved-key");
-      assert.equal(view.reset().length, 0, "an unsaved draft is not a saved SSH override");
-      assert.equal(view.saved.length, 0);
+      act(() => view.input().props.onChange({ target: { value: "synthetic-edited-key" } }));
+      assert.equal(view.input().props.value, "synthetic-edited-key");
+      assert.equal(view.reset().length, 1, "the accepted edit is now a saved SSH override");
+      assert.deepEqual(view.saved, [{ ...view.initial, ssh_key_path: "synthetic-edited-key" }]);
+      act(() => view.reset()[0].props.onClick());
+      assert.deepEqual(view.saved[1], { ...view.initial, ssh_key_path: null });
+      assert.equal(view.input().props.value, "");
+      assert.equal(view.reset().length, 0);
+      act(() => view.input().props.onBlur());
+      assert.equal(view.saved.length, 2, "blur after reset must not restore the edited path");
     } finally { view.close(); }
   }
 });
 
-test("manual SSH path edits keep blur and Enter save cadence", () => {
+test("manual SSH path edits save raw values on change without duplicate blur or Enter saves", () => {
   const view = mount("synthetic-original-key");
   try {
     act(() => view.input().props.onChange({ target: { value: "  synthetic-edited-key  " } }));
-    assert.equal(view.saved.length, 0);
+    assert.deepEqual(view.saved, [{ ...view.initial, ssh_key_path: "  synthetic-edited-key  " }]);
+    assert.equal(view.input().props.value, "  synthetic-edited-key  ");
     act(() => view.input().props.onBlur());
-    assert.deepEqual(view.saved, [{ ...view.initial, ssh_key_path: "synthetic-edited-key" }]);
-    act(() => view.input().props.onChange({ target: { value: "synthetic-enter-key" } }));
     assert.equal(view.saved.length, 1);
-    act(() => view.input().props.onKeyDown({ key: "Enter", currentTarget: { blur: () => view.input().props.onBlur() } }));
+    act(() => view.input().props.onChange({ target: { value: "synthetic-enter-key" } }));
     assert.deepEqual(view.saved[1], { ...view.initial, ssh_key_path: "synthetic-enter-key" });
+    act(() => view.input().props.onKeyDown({ key: "Enter", currentTarget: { blur: () => view.input().props.onBlur() } }));
     assert.equal(view.saved.length, 2);
+    act(() => view.input().props.onChange({ target: { value: "" } }));
+    assert.deepEqual(view.saved[2], { ...view.initial, ssh_key_path: "" });
+    assert.equal(view.input().props.value, "");
+    assert.equal(view.reset().length, 0);
+    act(() => view.input().props.onBlur());
+    assert.equal(view.saved.length, 3, "blur after clearing must not save again");
   } finally { view.close(); }
 });
 

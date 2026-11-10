@@ -14,7 +14,7 @@
 // (composerMinimize.ts); focus, a click or ⌘L expands it.
 
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
@@ -29,6 +29,8 @@ import type { FileMatch } from "../../spotlight/quickOpen";
 import { fileMentionQuery, mentionItems, type MentionItem } from "./fileMentions.ts";
 import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
 import { composerPrompt } from "./composerDocument.ts";
+import { longPasteAttachment } from "./composerLongPaste.ts";
+import { useBoolPref } from "../../settings/useBoolPref.ts";
 import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type UserPrompt } from "./userContent.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
@@ -101,6 +103,7 @@ export function Composer({
   onCommand,
   minimize,
 }: ComposerProps) {
+  const autoConvertLongText = useBoolPref("auto_convert_long_text");
   const minimized = minimize?.minimized ?? false;
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -211,6 +214,14 @@ export function Composer({
     onAttachFiles(files);
     return true;
   };
+  function onPasteCapture(event: ClipboardEvent<HTMLFormElement>) {
+    if (!onAttachFiles || event.defaultPrevented) return;
+    const file = longPasteAttachment(event.clipboardData, autoConvertLongText);
+    if (!file) return;
+    event.preventDefault();
+    event.stopPropagation();
+    onAttachFiles([file]);
+  }
   const hasFiles = (e: DragEvent) => onAttachFiles !== undefined && Array.from(e.dataTransfer?.types ?? []).includes("Files");
   const queueRef = useRef<HTMLOListElement>(null);
 
@@ -300,6 +311,7 @@ export function Composer({
         <form
           className={`composer oc-composer${dragging ? " is-dropping" : ""}`}
           aria-label="composer"
+          onPasteCapture={onPasteCapture}
           data-composer-minimized={minimized || undefined}
           data-composer-resize-instant={(minimize && !minimize.animate) || undefined}
           onClick={() => minimize?.expand()}
