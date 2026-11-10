@@ -87,21 +87,50 @@ test("disabled conversion and exact lower boundaries retain ordinary editor past
     await input.evaluate((node) => {
       const phases = [];
       node.longPasteHistory = phases;
-      for (const type of ["beforeinput", "input", "paste", "keydown", "keyup"]) {
-        node.addEventListener(type, (event) => phases.push({
-          phase: type,
+      const record = (event, stage) => {
+        const selection = document.getSelection();
+        phases.push({
+          phase: event.type,
+          stage,
           key: event.key,
           inputType: event.inputType,
+          defaultPrevented: event.defaultPrevented,
+          selectionLength: selection ? selection.toString().length : null,
+          selectionCollapsed: selection?.isCollapsed ?? null,
           textLength: node.textContent.length,
           empty: node.dataset.empty,
           focused: node === document.activeElement,
-        }));
+        });
+      };
+      for (const type of ["beforeinput", "input", "paste", "keydown", "keyup"]) {
+        node.addEventListener(type, (event) => record(event, "capture"), { capture: true, passive: true });
+        node.addEventListener(type, (event) => record(event, "bubble"), { passive: true });
+        document.addEventListener(type, (event) => {
+          if (node.contains(event.target)) record(event, "document");
+        }, { passive: true });
       }
+      document.addEventListener("selectionchange", (event) => {
+        const selection = document.getSelection();
+        if (node === document.activeElement || node.contains(selection?.anchorNode) || node.contains(selection?.focusNode)) {
+          record(event, "document");
+        }
+      }, { passive: true });
     });
     for (const text of ["x".repeat(5000), Array(90).fill("row").join("\n"), "ordinary paste"]) {
       await input.fill("");
-      const clearedLength = (await input.textContent()).length;
-      console.log(JSON.stringify({ longPasteSharedHistory: "after-fill", nextPasteLength: text.length, textLength: clearedLength }));
+      const afterFill = await input.evaluate((node) => {
+        const selection = document.getSelection();
+        return {
+          textLength: node.textContent.length,
+          selectionLength: selection ? selection.toString().length : null,
+          selectionCollapsed: selection?.isCollapsed ?? null,
+          empty: node.dataset.empty,
+          focused: node === document.activeElement,
+          events: node.longPasteHistory,
+        };
+      });
+      const clearedLength = afterFill.textLength;
+      console.log(JSON.stringify({ longPasteSharedHistory: "after-fill", nextPasteLength: text.length, ...afterFill }));
       assert.equal(clearedLength, 0, "the shared fixture must be empty before each paste");
       await paste(text);
       assert.equal(await input.innerText(), text);

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { DEFAULT_SETTINGS } from "../../settings/types.ts";
 import { choiceFromReasonConfig, conductorModelId, copyModelChoice, defaultModelChoice, initializeLoadoutChoice, localModelOptions, loadModelChoice, saveModelChoice } from "./chatModelChoice.ts";
+import { agentForPick, CLAUDE_ENTRY, CODEX_ENTRY, pickerState } from "./chatAgentChoice.ts";
 
 function memory(): Storage {
   const m = new Map<string, string>();
@@ -44,6 +45,20 @@ test("new chats seed only physical slot1 and preserve model/agent/effort across 
   assert.equal(loadModelChoice("new", store)?.model, "live-dynamic-codex", "existing chats are not reseeded");
   initializeLoadoutChoice("hole", [null, second, null, null, null], store);
   assert.deepEqual(loadModelChoice("hole", store), { agent: "reason", model: "default", effort: null });
+});
+
+test("agent-only picker choices preserve the named chip and leave runtime model selection unset", () => {
+  for (const [entry, label] of [[CODEX_ENTRY, "Codex"], [CLAUDE_ENTRY, "Claude Code"]] as const) {
+    const store = memory();
+    saveModelChoice("agent-only", entry, store);
+    const saved = loadModelChoice("agent-only", store);
+    assert.ok(saved);
+    assert.deepEqual(saved, entry);
+    const agent = agentForPick(saved);
+    assert.equal(pickerState(agent, saved, null, true).label, label);
+    assert.deepEqual(localModelOptions("agent-only", "codex", store), {});
+    assert.deepEqual(localModelOptions("agent-only", "claude", store), {});
+  }
 });
 
 test("an explicit dynamic local model without effort does not acquire an inferred level", () => {

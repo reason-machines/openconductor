@@ -102,7 +102,7 @@ export function ChatModelPicker({ chatId, disabled = false, agent = "reason", on
         const nextAgent = agentForPick(next);
         if (nextAgent !== agent && !onAgentChange) return;
         // An effort change for Auto's running model keeps the chat on Auto; a loadout pick is explicit.
-        const pick = nextAgent === "reason" && !slots.includes(next) && pickedAuto && running && next.model === running.model ? { ...next, model: AUTO } : { ...next, agent: nextAgent };
+        const pick = nextAgent === "reason" && !slots.includes(next) && pickedAuto && running && next.model === running.model ? { ...next, model: AUTO } : next;
         setChoice(pick);
         setRunning(null);
         saveModelChoice(chatId, pick);
