@@ -2,6 +2,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { agentEntryLabel, agentForPick, CLAUDE_ENTRY, CODEX_ENTRY, pickerState } from "./chatAgentChoice.ts";
+import type { ModelChoice } from "./composerModels.ts";
 
 const opus = { model: "opus-5-5-1m", effort: "high" };
 const fallback = { model: "opus-5-1m", effort: "high" };
@@ -25,6 +26,19 @@ test("a Claude Code chat shows Claude Code on the chip and lists the Reason mode
 
 test("while a turn runs (agents locked) a CLI chat lists only the Reason models", () => {
   assert.deepEqual(pickerState("claude", opus, fallback, false), { value: CLAUDE_ENTRY, label: "Claude Code", favorites: [opus, fallback] });
+});
+
+test("loadout entries retain explicit agents and hide unavailable agent switches", () => {
+  const reason: ModelChoice = { agent: "reason", model: "shared-id", effort: "high" };
+  const claude: ModelChoice = { ...reason, agent: "claude" };
+  const codex: ModelChoice = { ...reason, agent: "codex" };
+  const loadout = [claude, reason, codex];
+  assert.deepEqual(pickerState("reason", reason, null, false, loadout).favorites, [reason]);
+  assert.deepEqual(pickerState("reason", reason, null, true, loadout).favorites.slice(0, 3), loadout);
+  assert.deepEqual(pickerState("claude", claude, null, false, loadout).favorites, [claude, claude]);
+  assert.equal(agentForPick(reason), "reason");
+  assert.equal(agentForPick(claude), "claude");
+  assert.equal(agentForPick(codex), "codex");
 });
 
 test("picking an entry picks its agent; a GPT or Claude model stays a Reason chat", () => {

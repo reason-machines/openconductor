@@ -79,7 +79,9 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
   }, [favorites, value, query, itemLabel, models, modelName]);
 
   const selectSlot = (index: number) => {
-    if (disabled) return false;
+    const focused = document.activeElement;
+    const composer = root.current?.closest(".composer, .create-card");
+    if (disabled || (!open && !composer?.contains(focused))) return false;
     selectLoadoutSlot(loadout, index, onChange);
     return true;
   };

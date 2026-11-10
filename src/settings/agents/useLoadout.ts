@@ -12,7 +12,7 @@ export function useLoadout(): { settings: Settings; slots: LoadoutSlot[] } | nul
     const refresh = async () => {
       const request = ++version;
       try {
-        const [settings, rows] = await Promise.all([getSettings(), listFavorites()]);
+        const [settings, rows] = await Promise.all([getSettings(), listFavorites().catch(() => [])]);
         if (live && request === version) setLoadout({ settings, slots: loadoutSlots(settings, parseFavorites(rows)) });
       } catch (e) {
         console.warn("composer: loadout unavailable", e);

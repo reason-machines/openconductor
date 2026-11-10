@@ -148,7 +148,7 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
    */
   const newChat = useCallback(async (): Promise<string | undefined> => {
     try {
-      const [settings, rows] = await Promise.all([getSettings(), listFavorites()]);
+      const [settings, rows] = await Promise.all([getSettings(), listFavorites().catch(() => [])]);
       const chatId = newChatId(workspace.id, Date.now(), ++seq);
       const choice = initializeLoadoutChoice(chatId, loadoutSlots(settings, parseFavorites(rows)));
       configureReasonDefault(chatId, Promise.resolve(sessionConfig(choice.model, choice.effort)));
