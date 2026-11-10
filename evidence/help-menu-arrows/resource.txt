@@ -1,0 +1,9 @@
+HELP423-BUILTIN-01 target: Reason Cloud Linux; computer 5e65c154-305a-5bf6-b34c-990953472401 (312)
+MemAvailable_KiB=23181788 DiskAvailable_KiB=4904136
+RED: nice15; CPU3s; wall30s; no installs/deps/app/browser/native
+RED exit=1
+GREEN target: same Reason Cloud Linux computer 5e65c154-305a-5bf6-b34c-990953472401 (312)
+MemAvailable_KiB=23133120 DiskAvailable_KiB=4904004
+GREEN: nice15; CPU3s; wall30s; same exact unit command
+GREEN exit=0
+HELP423-BUILTIN-01 RELEASED: both admitted foreground runs complete; no further local runtime admitted or active.
