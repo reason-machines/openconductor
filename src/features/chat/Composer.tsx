@@ -148,7 +148,7 @@ export function Composer({
     return () => { live = false; };
   }, [workspacePath, mentionQuery]);
   const fileMatches = files && files.workspacePath === workspacePath && files.query === mentionQuery ? files.matches : [];
-  const mentionMatches = mentionItems(mentionQuery ?? "", fileMatches, !!onAttachTerminalOutput);
+  const mentionMatches = mentionItems(mentionQuery ?? "", fileMatches, !!onAttachTerminalOutput, !!onLinkWorkspaces);
   const mentionOpen = mention !== null && mentionQuery !== undefined && mentionMatches.length > 0;
   const mentionFocus = Math.min(mentionIndex, Math.max(0, mentionMatches.length - 1));
 
@@ -158,6 +158,12 @@ export function Composer({
     const current = box.selection();
     const range = fileMentionQuery(current.text, current.start, current.end);
     if (!range || `${range.start}:${range.query}` !== mentionKey) return;
+    if (item.kind === "add-directory") {
+      if (!onLinkWorkspaces || !box.deleteRange(range)) return;
+      setMentionDismissed(mentionKey);
+      onLinkWorkspaces();
+      return;
+    }
     if (item.kind === "terminal") {
       if (!onAttachTerminalOutput || !box.deleteRange(range)) return;
       setMentionDismissed(mentionKey);
