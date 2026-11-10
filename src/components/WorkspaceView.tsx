@@ -1369,9 +1369,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
       </div>
       {renaming && (
         <RenameChatDialog
+          key={renaming.chatId}
           currentTitle={renaming.title}
           onRename={(title) => renameChat(renaming.chatId, title)}
-          onClose={() => setRenaming(null)}
+          onClose={() => setRenaming((current) => current?.chatId === renaming.chatId ? null : current)}
           onError={(message) => notify?.("error", `Failed to rename chat: ${message}`)}
         />
       )}
