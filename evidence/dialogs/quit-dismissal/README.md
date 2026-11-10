@@ -21,7 +21,9 @@ Fetched default main was `d7d316031d97acaff81ebd08ad0884a70c4e57e0`. The assigne
 - `src/features/quit/QuitDialog.tsx`: `8ce801d9f6f2ea0afa0f38726f98e8308ea5c1be`.
 - `tests/e2e/quit.e2e.mjs`: `87a78858b883f1e3d1f7f60005bf5677dd4fe102`.
 
-Quit delegates to generic `Modal`. Its outer backdrop calls `onClose` on matching-target mouse-down, contradicting the reference chain above. The intended correction adds an optional `disablePointerDismissal` boolean to Modal, defaulting to false, and enables it only for Quit. The existing matching-target handler gains this condition. Other Modal callers, including those with alert motion, keep their current default. No other component behavior changes.
+Before the correction, Quit delegates to generic `Modal`, whose outer backdrop calls `onClose` on matching-target mouse-down, contradicting the reference chain above. The correction adds an optional `disablePointerDismissal` boolean to Modal, defaulting to false, and enables it only for Quit. Only the existing matching-target handler gains this condition. Other Modal callers, including those with alert motion, keep their current default. No other component behavior changes.
+
+Before the production edit, fetched main `314aef7f20d0bacc08450b38d2af409048e9c0e5` retained exactly the same three baseline blobs listed above. The published regression-only head `7a1c74f9283a5e1ae8a0e7bdefc52ef76c033d4c` was reconciled into the assigned branch without changing its tree. The six-case Quit test file remains byte-identical to that RED head.
 
 This four-file boundary excludes #916's onboarding, installer, pairing, transcript, and chat-continuation work. The historical #903 and #911 composer failures remain separate and unresolved by this change.
 
@@ -31,7 +33,9 @@ Two cases extend the existing `tests/e2e/quit.e2e.mjs` suite. They open actual Q
 
 The unchanged Keybindings workflow builds the app and runs `npm run test:e2e`, which expands to `node --test tests/e2e/*.e2e.mjs`. No workflow, dependencies, startup fixture, or shared harness is changed. The browser fallback quit event is counted. No native process is quit and no real workspace data is used.
 
-- Regression-only checkpoint: automatic hosted RED is pending. Production remains unchanged at this checkpoint.
-- Local source hygiene: `git diff --check` and the staged equivalent are recorded at publication. These are not behavioral checks.
+- **Hosted RED verified:** [automatic Keybindings run 42851876175, job 129954452475](https://github.com/reason-machines/openconductor/actions/runs/42851876175/job/129954452475), published head `7a1c74f9283a5e1ae8a0e7bdefc52ef76c033d4c`. Both new cases failed at `tests/e2e/quit.e2e.mjs:104` with `outside pointer input must not dismiss Quit confirmation`, actual dialog count `0`, expected `1`. All four prior Quit cases passed.
+- The same job's third failure was the separate composer case `disabled conversion and exact lower boundaries retain ordinary editor paste`. Its evidence was routed to the existing composer owner. This correction does not change composer code or tests and makes no claim about that failure's cause or resolution.
+- **Hosted GREEN pending:** the same six unchanged Quit cases must pass on the correction's published head. Full-suite and merged-main results remain separate from this scoped behavior proof.
+- Local source hygiene: `git diff --check`, the staged equivalent, and `git diff --exit-code 7a1c74f9 -- tests/e2e/quit.e2e.mjs` are recorded at publication. These are not behavioral checks.
 - Local Node, tests, typecheck, build, dependency installation, browser, app, native interaction, and screenshots: not run under the existing capacity policy and #847 FULL STOP. The existing hosted suite does not retain screenshots of these cases, so no fresh screenshot is supplied.
 - Hosted Chrome, when it runs, cannot establish native WebKit, installed macOS behavior, filesystem persistence, or final side-by-side acceptance. Those remain unverified.
