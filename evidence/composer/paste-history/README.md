@@ -20,11 +20,12 @@ This source establishes history boundaries before and after a paste. It does not
 
 On main `fc521bdf`, `src/features/chat/ComposerEditor.tsx` handles clipboard files first. Its remaining paste path synchronizes the selection, decodes custom mention parts or normalizes plain text, then calls `editor.commands.insertContent`. It does not close undo history around that insertion. Existing file-mention insertion and range deletion already use `closeHistory` on either side.
 
-The intended fix uses that same primitive around only the existing text/custom-content insertion. It does not replace the clipboard decoder, change attachment precedence, mutate Composer props, or add a native adapter.
+The fix uses that same primitive around only the existing text/custom-content insertion. It does not replace the clipboard decoder, change attachment precedence, mutate Composer props, or add a native adapter.
 
 ## Verification status
 
 - Passed. Retained renderer hash and the complete source controls above were checked. `git diff --check` passed after normal integration of main into the assigned branch.
-- Not run. The new behavioral regression and fixed behavior. Product implementation is unchanged at this source checkpoint.
+- Failed as intended before the fix. [Hosted job 129707588628](https://github.com/reason-machines/openconductor/actions/runs/42780038181/job/129707588628) at published head `1f5f8f0dfe760394b8bebf2e53469c5ab44a99fb` ran `npm run test:e2e`. The real Chromium test reached `before pasted after`; its first Undo produced the empty string instead of `before pasted `. It was the only failing case: 182 passed, 1 failed, 1 skipped.
+- Pending. The same unchanged browser assertions against the two-dispatch fix. They require three separate Undo states and their three Redo counterparts. This test covers plain-text paste; structured-mention paste uses the same insertion boundary but has not been exercised by this regression.
 - Not run. Local Node, installs, builds, browsers, native app, provider, signed-in, or macOS clipboard checks. No local runtime admission is held.
-- No new screenshot. This checkpoint is source evidence, not a visible behavior change or runtime acceptance.
+- No new screenshot. The existing hosted workflow retains scroll diagnostics, not composer screenshots. Browser behavior is evidenced by the real clipboard/key assertions and hosted log; native acceptance remains separate.
