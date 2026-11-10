@@ -120,7 +120,13 @@ export function AppearancePage({ settings, save }: Props) {
               spellCheck={false}
               autoComplete="off"
               value={custom}
-              onChange={(e) => setCustom(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setCustom(value);
+                if (monoFontError(value) === null && value.trim() !== saved) {
+                  save(withAppearance(settings, "mono_font", value.trim()));
+                }
+              }}
               onBlur={commitCustom}
               onKeyDown={(e) => e.key === "Enter" && commitCustom()}
             />
