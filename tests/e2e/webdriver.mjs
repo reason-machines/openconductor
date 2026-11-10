@@ -36,19 +36,31 @@ return "target " + describe(el) + " at " + Math.round(x) + "," + Math.round(y) +
 const REPAINT_STOP = `clearInterval(window.__ocE2eRepaint); document.getElementById("__oc_e2e_repaint")?.remove();`;
 
 export class WebDriver {
-  constructor(base = "http://127.0.0.1:4444") {
+  constructor(base = "http://127.0.0.1:4444", requestTimeoutMs = 30000) {
     this.base = base;
+    this.requestTimeoutMs = requestTimeoutMs;
     this.sessionId = null;
   }
 
-  async #call(method, path, body, timeoutMs) {
-    const res = await fetch(this.base + path, {
-      method,
-      headers: { "content-type": "application/json" },
-      body: body === undefined ? undefined : JSON.stringify(body),
-      signal: timeoutMs === undefined ? undefined : AbortSignal.timeout(timeoutMs),
-    });
-    const json = await res.json().catch(() => ({}));
+  async #call(method, path, body, timeoutMs = this.requestTimeoutMs) {
+    let res;
+    let json;
+    try {
+      res = await fetch(this.base + path, {
+        method,
+        headers: { "content-type": "application/json" },
+        body: body === undefined ? undefined : JSON.stringify(body),
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      json = await res.json();
+    } catch (cause) {
+      const detail = cause?.name === "TimeoutError"
+        ? `timed out after ${timeoutMs} ms`
+        : `transport failed: ${cause?.message ?? cause}`;
+      const error = new Error(`${method} ${path} ${detail}`, { cause });
+      error.name = cause?.name ?? "Error";
+      throw error;
+    }
     if (!res.ok || json?.value?.error) {
       const err = json?.value ?? {};
       throw new Error(`${method} ${path} -> ${res.status} ${err.error ?? ""}: ${err.message ?? ""}`);
