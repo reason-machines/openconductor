@@ -20,10 +20,15 @@ const catalog = [
   { agent: "codex", id: "live-codex-model", name: "Live Codex", efforts: ["medium", "xhigh"], defaultEffort: "xhigh" },
 ];
 
-async function fixture(initial: FavoriteRow[] = []) {
+async function fixture(initial: FavoriteRow[] = [], options: { deferredRead?: boolean; failedRead?: boolean; initialized?: boolean } = {}) {
   let rows = initial;
-  let settings = { ...DEFAULT_SETTINGS, models: { ...DEFAULT_SETTINGS.models, default_initialized: false } };
+  let settings = { ...DEFAULT_SETTINGS, models: { ...DEFAULT_SETTINGS.models, default_initialized: options.initialized ?? false } };
   let failWrite = false;
+  const focuses: string[] = [];
+  let releaseRead = () => {};
+  const readReady = options.deferredRead ? new Promise<void>((resolve) => { releaseRead = resolve; }) : Promise.resolve();
+  let deferWrites = 0;
+  const writeRequests: { resolve: () => void; reject: () => void }[] = [];
   const listeners = new Map<string, Set<(event: unknown) => void>>();
   const document = {
     activeElement: null as unknown,
@@ -37,7 +42,17 @@ async function fixture(initial: FavoriteRow[] = []) {
   })((name: string) => {
     if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
     if (name === "./agents/loadout") return loadout;
-    if (name === "./agents/api") return { listFavorites: async () => rows, replaceFavorites: async (next: FavoriteRow[]) => { if (failWrite) throw new Error("storage offline"); rows = next; } };
+    if (name === "./agents/api") return {
+      listFavorites: async () => { await readReady; if (options.failedRead) throw new Error("read offline"); return rows; },
+      replaceFavorites: async (next: FavoriteRow[]) => {
+        if (deferWrites > 0) {
+          deferWrites -= 1;
+          await new Promise<void>((resolve, reject) => writeRequests.push({ resolve, reject: () => reject(new Error("first write failed")) }));
+        }
+        if (failWrite) throw new Error("storage offline");
+        rows = next;
+      },
+    };
     if (name === "./agents/icons") return new Proxy({}, { get: () => mark });
     if (name === "./agentSettings") return { levelLabel: (level: string) => level.toUpperCase() };
     if (name === "./reasonPalette") return { LOADOUT_COLUMNS: ["reason", "claude", "codex"], LOADOUT_LABEL: { reason: "Reason Machines", claude: "Claude Code", codex: "Codex" } };
@@ -46,9 +61,9 @@ async function fixture(initial: FavoriteRow[] = []) {
   let renderer: ReturnType<typeof create>;
   const props = () => ({ settings, models: catalog, errors: {}, loading: false, refresh() {}, async save(next: typeof settings) { settings = next; renderer.update(React.createElement(module.exports.ModelLoadout, props())); return true; } });
   await act(async () => {
-    renderer = create(React.createElement(module.exports.ModelLoadout, props()), { createNodeMock: () => ({ focus() {}, contains: (target: unknown) => target === "insideSlots", getBoundingClientRect: () => ({ left: 0, right: 500, top: 0, bottom: 100 }), querySelector: () => null, querySelectorAll: () => [] }) });
+    renderer = create(React.createElement(module.exports.ModelLoadout, props()), { createNodeMock: (element: { props: { "aria-label"?: string } }) => ({ focus() { focuses.push(element.props["aria-label"] ?? "host"); }, contains: (target: unknown) => target === "insideSlots", getBoundingClientRect: () => ({ left: 0, right: 500, top: 0, bottom: 100 }), querySelector: () => null, querySelectorAll: () => [] }) });
   });
-  const event = (extra = {}) => ({ preventDefault() {}, stopPropagation() {}, currentTarget: { focus() {}, getBoundingClientRect: () => ({ left: 0, bottom: 100 }) }, dataTransfer: { effectAllowed: "", dropEffect: "", setData() {} }, ...extra });
+  const event = (extra = {}) => ({ preventDefault() {}, stopPropagation() {}, currentTarget: { focus() { focuses.push("anchor"); }, getBoundingClientRect: () => ({ left: 0, bottom: 100 }) }, dataTransfer: { effectAllowed: "", dropEffect: "", setData() {} }, ...extra });
   const slot = (number: number) => renderer.root.findByProps({ "data-loadout-slot": number });
   const card = (number: number) => slot(number).findAllByType("button")[0];
   const palette = (name: string) => renderer.root.findByProps({ "aria-label": `Add ${name} to loadout` });
@@ -58,6 +73,12 @@ async function fixture(initial: FavoriteRow[] = []) {
     settings: () => settings,
     modelIds: () => rows.map((row) => JSON.parse(row.configuration).model),
     failWrite() { failWrite = true; },
+    focuses,
+    deferWrite() { deferWrites += 1; },
+    async releaseRead() { await act(async () => releaseRead()); },
+    async rejectWrite(index: number) { await act(async () => writeRequests[index].reject()); },
+    remove: (number: number) => renderer.root.findByProps({ "aria-label": `Remove model from slot ${number}` }),
+    effort: (value: string) => renderer.root.findAll((node: { type: unknown; props: { role?: string }; children: unknown[] }) => node.type === "button" && node.props.role === "menuitemradio" && node.children.filter((child) => typeof child === "string").join("") === `Effort: ${value}`)[0],
     async action(action: () => void) { await act(async () => { action(); }); },
     async documentEvent(type: string, extra = {}) { await act(async () => { for (const handler of listeners.get(type) ?? []) handler(event(extra)); }); },
     menuItem: (text: string) => renderer.root.findAll((node: { type: unknown; props: { role?: string }; children: unknown[] }) => node.type === "button" && node.props.role === "menuitem" && node.children.join("") === text)[0],
@@ -122,7 +143,7 @@ test("mounted keyboard Enter, arrows, Enter picks up a catalog card and fills th
   } finally { await f.close(); }
 });
 
-test("mounted dragging a slot outside the slot row clears it, while Escape preserves it", async () => {
+test("mounted confirmed drop outside the row clears the slot, while canceled dragend preserves it", async () => {
   const f = await fixture();
   try {
     await f.action(() => f.palette("Live Reason").props.onClick());
@@ -131,7 +152,7 @@ test("mounted dragging a slot outside the slot row clears it, while Escape prese
     await f.action(() => f.card(1).props.onDragEnd(f.event({ clientX: 600, clientY: 200 })));
     assert.equal(f.rows().length, 1);
     await f.action(() => f.card(1).props.onDragStart(f.event()));
-    await f.action(() => f.card(1).props.onDragEnd(f.event({ clientX: 600, clientY: 200 })));
+    await f.documentEvent("drop", { target: "outsideSlots" });
     assert.equal(f.rows().length, 0);
   } finally { await f.close(); }
 });
@@ -144,5 +165,61 @@ test("mounted failed persistence restores the previous slots and shows the failu
     assert.equal(f.rows().length, 0);
     assert.match(f.card(1).props["aria-label"], /Empty/);
     assert.match(f.alerts()[0].children.join(""), /storage offline/);
+  } finally { await f.close(); }
+});
+
+for (const failedRead of [false, true]) {
+  test(`mounted ${failedRead ? "failed" : "pending"} saved-loadout read cannot erase existing slots`, async () => {
+    const initial = [{ id: "persisted", configuration: JSON.stringify({ type: "built-in", agent: "codex", model: "live-codex-model", slot: 4, thinkingLevel: "xhigh", fastMode: false }) }];
+    const f = await fixture(initial, { deferredRead: !failedRead, failedRead, initialized: true });
+    try {
+      assert.equal(f.palette("Live Reason").props.disabled, true);
+      assert.equal(f.remove(1).props.disabled, true);
+      await f.action(() => f.remove(1).props.onClick());
+      await f.action(() => f.palette("Live Reason").props.onClick());
+      assert.deepEqual(f.rows(), initial, "mutation boundary guards even a stale event handler");
+      if (!failedRead) {
+        await f.releaseRead();
+        assert.match(f.card(5).props["aria-label"], /Live Codex/);
+      } else assert.match(f.alerts()[0].children.join(""), /read offline/);
+    } finally { await f.close(); }
+  });
+}
+
+for (const bothFail of [false, true]) {
+  test(`mounted overlapping writes keep rendered and stored slots consistent when ${bothFail ? "both fail" : "the earlier write fails"}`, async () => {
+    const f = await fixture();
+    try {
+      f.deferWrite();
+      await f.action(() => f.palette("Live Reason").props.onClick());
+      await f.action(() => f.palette("Live Claude").props.onClick());
+      if (bothFail) f.failWrite();
+      await f.rejectWrite(0);
+      if (bothFail) {
+        assert.deepEqual(f.rows(), []);
+        assert.match(f.card(1).props["aria-label"], /Empty/);
+        assert.match(f.card(2).props["aria-label"], /Empty/);
+        assert.equal(f.settings().models.default_initialized, false);
+      } else {
+        assert.deepEqual(f.modelIds(), ["live/reason-model", "live-claude-model"]);
+        assert.match(f.card(1).props["aria-label"], /Live Reason/);
+        assert.match(f.card(2).props["aria-label"], /Live Claude/);
+        assert.equal(f.settings().models.default, "live/reason-model");
+      }
+    } finally { await f.close(); }
+  });
+}
+
+test("mounted effort activation and Escape restore focus to the slot anchor", async () => {
+  const f = await fixture();
+  try {
+    await f.action(() => f.palette("Live Reason").props.onClick());
+    await f.action(() => f.card(1).props.onContextMenu(f.event()));
+    await f.action(() => f.effort("LOW").props.onClick());
+    assert.equal(f.focuses.at(-1), "anchor");
+    assert.equal(JSON.parse(f.rows()[0].configuration).thinkingLevel, "low");
+    await f.action(() => f.card(1).props.onKeyDown(f.event({ key: "Enter" })));
+    await f.documentEvent("keydown", { key: "Escape" });
+    assert.match(f.focuses.at(-1) ?? "", /Slot 1/);
   } finally { await f.close(); }
 });

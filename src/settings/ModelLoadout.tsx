@@ -26,6 +26,8 @@ export function LoadoutMark({ agent, size }: { agent: AgentKind; size: number })
 
 export function ModelLoadout({ settings, save, models, errors, loading, refresh }: Props) {
   const [stored, setStored] = useState<Favorite[] | null>(null);
+  const [readRevision, setReadRevision] = useState(0);
+  const [readError, setReadError] = useState<string | null>(null);
   const [pickup, setPickup] = useState<Pickup | null>(null);
   const [dropAt, setDropAt] = useState<number | null>(null);
   const [menu, setMenu] = useState<Menu | null>(null);
@@ -34,7 +36,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
   const [saving, setSaving] = useState(false);
   const slotsRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const nativeDrag = useRef<{ source: Source; accepted: boolean; canceled: boolean } | null>(null);
+  const nativeDrag = useRef<{ source: Source; canceled: boolean } | null>(null);
   const writes = useRef(Promise.resolve());
   const revision = useRef(0);
   const pendingWrites = useRef(0);
@@ -47,6 +49,8 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
 
   useEffect(() => {
     let live = true;
+    setStored(null);
+    setReadError(null);
     void listFavorites().then((rows) => {
       if (live) {
         const favorites = parseFavorites(rows);
@@ -54,10 +58,10 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
         setStored(favorites);
       }
     }, (e: unknown) => {
-      if (live) setError(`Could not read the saved loadout: ${String(e)}`);
+      if (live) setReadError(`Could not read the saved loadout: ${String(e)}`);
     });
     return () => { live = false; };
-  }, []);
+  }, [readRevision]);
 
   const label = (favorite: Favorite) => favorite.type === "built-in"
     ? models.find((model) => model.agent === favorite.agent && model.id === favorite.model)?.name ?? favorite.model
@@ -67,6 +71,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
   const nextFree = () => { const index = slotsValue.current.findIndex((slot) => slot === null); return index < 0 ? 0 : index; };
 
   const commit = (next: (Favorite | null)[], message: string) => {
+    if (stored === null) return;
     const changedAt = ++revision.current;
     pendingWrites.current += 1;
     slotsValue.current = next;
@@ -110,9 +115,8 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
     };
     const outsideDrop = (event: globalThis.DragEvent) => {
       const drag = nativeDrag.current;
-      if (!drag || slotsRef.current?.contains(event.target as Node)) return;
+      if (!drag || drag.canceled || slotsRef.current?.contains(event.target as Node)) return;
       event.preventDefault();
-      drag.accepted = true;
       if (drag.source.kind === "slot") clear(drag.source.index);
       setDropAt(null);
     };
@@ -131,25 +135,23 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
     if (stored === null) { event.preventDefault(); return; }
     setMenu(null);
     setPickup(null);
-    nativeDrag.current = { source, accepted: false, canceled: false };
+    nativeDrag.current = { source, canceled: false };
     event.dataTransfer.effectAllowed = source.kind === "slot" ? "move" : "copy";
     event.dataTransfer.setData("text/plain", sourceLabel(source));
   };
-  const endDrag = (event: DragEvent) => {
-    const drag = nativeDrag.current;
-    const bounds = slotsRef.current?.getBoundingClientRect();
-    if (drag && bounds && !drag.accepted && !drag.canceled && drag.source.kind === "slot" &&
-        (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) clear(drag.source.index);
+  const endDrag = () => {
     nativeDrag.current = null;
     setDropAt(null);
   };
   const openMenu = (event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>, source: Source) => {
     event.preventDefault();
+    if (stored === null) return;
     const anchor = event.currentTarget;
     const rect = anchor.getBoundingClientRect();
     setMenu({ source, anchor, x: Math.min(rect.left, window.innerWidth - 248), y: Math.min(rect.bottom + 4, window.innerHeight - 280) });
   };
   const keyDown = (event: KeyboardEvent<HTMLButtonElement>, source: Source) => {
+    if (stored === null) { event.preventDefault(); return; }
     if (event.key === "ContextMenu" || (event.shiftKey && event.key === "F10")) { openMenu(event, source); return; }
     if (pickup && ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) {
       event.preventDefault();
@@ -193,7 +195,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
               onDrop={(event) => {
                 event.preventDefault();
                 const drag = nativeDrag.current;
-                if (drag) { drag.accepted = true; drop(drag.source, index); }
+                if (drag) drop(drag.source, index);
               }}>
               <button type="button" ref={(node) => { cardRefs.current[index] = node; }}
                 className={slot ? "ag-slot-card" : "ag-slot-empty"}
@@ -213,13 +215,14 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
                 <span className="ag-slot-num">{index + 1}</span>
                 {slot && index === 0 && <span className="ag-default-badge">DEFAULT</span>}
               </button>
-              {slot && <button type="button" className="ag-slot-delete" aria-label={`Remove model from slot ${index + 1}`} onClick={() => clear(index)}><CloseIcon size={14} /></button>}
+              {slot && <button type="button" disabled={stored === null} className="ag-slot-delete" aria-label={`Remove model from slot ${index + 1}`} onClick={() => clear(index)}><CloseIcon size={14} /></button>}
             </div>
           );
         })}
       </div>
       <p id="loadout-keyboard-help" className="ag-sr-only">Press Enter to pick up a model, arrow keys to choose a slot, and Enter to drop. Press Escape to cancel. Right-click for slot actions.</p>
       <span className="ag-sr-only" role="status" aria-live="polite">{notice}{saving ? " Saving." : ""}</span>
+      {readError && <p role="alert" className="error small">{readError} <button type="button" className="ag-inline-link" onClick={() => setReadRevision((value) => value + 1)}>Retry saved loadout</button></p>}
       {error && <p role="alert" className="error small">{error}</p>}
       <div className="ag-palette">
         {LOADOUT_COLUMNS.map((agent) => <section key={agent} className="ag-palette-col" aria-label={LOADOUT_LABEL[agent]}>
@@ -255,6 +258,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
             return model?.efforts?.map((effort) => <button key={effort} type="button" role="menuitemradio" aria-checked={slot.thinkingLevel === effort} className="ag-menu-item" onClick={() => {
               commit(equipSlot(slots, { ...slot, thinkingLevel: effort }, menu.source.kind === "slot" ? menu.source.index : 0), `Effort set to ${levelLabel(effort)}.`);
               setMenu(null);
+              menu.anchor.focus();
             }}>Effort: {levelLabel(effort)}{slot.thinkingLevel === effort && <CheckIcon size={12} />}</button>);
           })()}
           <button type="button" role="menuitem" className="ag-menu-item" onClick={() => { if (menu.source.kind === "slot") clear(menu.source.index); setMenu(null); menu.anchor.focus(); }}>Remove</button>
