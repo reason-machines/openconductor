@@ -1,0 +1,203 @@
+Hosted baseline RED — Conductor Rebuild
+Head: 49c8ff2003378164ec0f9551a934a78fe5ba551a
+Run: 42776616979; job: 129696492459
+Command: node --test "src/**/*.test.ts"
+Source: https://github.com/reason-machines/openconductor/actions/runs/42776616979/job/129696492459
+Excerpt from hosted log beginning at line 738; trailing whitespace trimmed. The large source echo after the final import assertion is omitted.
+
+2026-11-10T07:38:04.9900603Z   duration_ms: 1.11881
+2026-11-10T07:38:04.9901291Z   type: 'test'
+2026-11-10T07:38:04.9901808Z   ...
+2026-11-10T07:38:04.9902989Z # (node:2566) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+2026-11-10T07:38:04.9904435Z # (Use `node --trace-warnings ...` to show where the warning was created)
+2026-11-10T07:38:04.9905693Z # Subtest: actual Sidebar navigation expressions retain default shortcut hints
+2026-11-10T07:38:04.9906900Z ok 96 - actual Sidebar navigation expressions retain default shortcut hints
+2026-11-10T07:38:04.9907700Z   ---
+2026-11-10T07:38:04.9908180Z   duration_ms: 3.20072
+2026-11-10T07:38:04.9908681Z   type: 'test'
+2026-11-10T07:38:04.9909143Z   ...
+2026-11-10T07:38:04.9910089Z # Subtest: actual Sidebar Home expression displays primary and additional saved replacements
+2026-11-10T07:38:04.9911721Z not ok 97 - actual Sidebar Home expression displays primary and additional saved replacements
+2026-11-10T07:38:04.9912653Z   ---
+2026-11-10T07:38:04.9913135Z   duration_ms: 1.894059
+2026-11-10T07:38:04.9913653Z   type: 'test'
+2026-11-10T07:38:04.9914986Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:67:3'
+2026-11-10T07:38:04.9916138Z   failureType: 'testCodeFailure'
+2026-11-10T07:38:04.9916729Z   error: |-
+2026-11-10T07:38:04.9917296Z     Expected values to be strictly deep-equal:
+2026-11-10T07:38:04.9917941Z     + actual - expected
+2026-11-10T07:38:04.9918426Z
+2026-11-10T07:38:04.9918856Z       [
+2026-11-10T07:38:04.9919548Z     +   '⌘⇧H'
+2026-11-10T07:38:04.9920053Z     -   '⌘⇧Y',
+2026-11-10T07:38:04.9920901Z     -   '⌘J'
+2026-11-10T07:38:04.9922243Z       ]
+2026-11-10T07:38:04.9922684Z
+2026-11-10T07:38:04.9923141Z   code: 'ERR_ASSERTION'
+2026-11-10T07:38:04.9923667Z   name: 'AssertionError'
+2026-11-10T07:38:04.9924179Z   expected:
+2026-11-10T07:38:04.9924705Z     0: '⌘⇧Y'
+2026-11-10T07:38:04.9925189Z     1: '⌘J'
+2026-11-10T07:38:04.9925631Z   actual:
+2026-11-10T07:38:04.9926116Z     0: '⌘⇧H'
+2026-11-10T07:38:04.9926588Z   operator: 'deepStrictEqual'
+2026-11-10T07:38:04.9927145Z   stack: |-
+2026-11-10T07:38:04.9928363Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:68:12)
+2026-11-10T07:38:04.9929690Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-10T07:38:04.9930468Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-10T07:38:04.9931601Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-10T07:38:04.9932562Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-10T07:38:04.9933382Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-10T07:38:04.9934359Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-10T07:38:04.9935179Z   ...
+2026-11-10T07:38:04.9936158Z # Subtest: actual Sidebar Create expression displays primary and additional saved replacements
+2026-11-10T07:38:04.9937603Z not ok 98 - actual Sidebar Create expression displays primary and additional saved replacements
+2026-11-10T07:38:04.9938507Z   ---
+2026-11-10T07:38:04.9938984Z   duration_ms: 0.766371
+2026-11-10T07:38:04.9939494Z   type: 'test'
+2026-11-10T07:38:04.9940531Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:67:3'
+2026-11-10T07:38:04.9941842Z   failureType: 'testCodeFailure'
+2026-11-10T07:38:04.9942399Z   error: |-
+2026-11-10T07:38:04.9942969Z     Expected values to be strictly deep-equal:
+2026-11-10T07:38:04.9943619Z     + actual - expected
+2026-11-10T07:38:04.9944106Z
+2026-11-10T07:38:04.9944538Z       [
+2026-11-10T07:38:04.9945042Z     +   '⌘N'
+2026-11-10T07:38:04.9945536Z     -   '⌘⇧Y',
+2026-11-10T07:38:04.9946030Z     -   '⌘J'
+2026-11-10T07:38:04.9946469Z       ]
+2026-11-10T07:38:04.9946903Z
+2026-11-10T07:38:04.9947345Z   code: 'ERR_ASSERTION'
+2026-11-10T07:38:04.9947870Z   name: 'AssertionError'
+2026-11-10T07:38:04.9948382Z   expected:
+2026-11-10T07:38:04.9948876Z     0: '⌘⇧Y'
+2026-11-10T07:38:04.9949354Z     1: '⌘J'
+2026-11-10T07:38:04.9949791Z   actual:
+2026-11-10T07:38:04.9950273Z     0: '⌘N'
+2026-11-10T07:38:04.9950742Z   operator: 'deepStrictEqual'
+2026-11-10T07:38:04.9951632Z   stack: |-
+2026-11-10T07:38:04.9952839Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:68:12)
+2026-11-10T07:38:04.9954151Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-10T07:38:04.9954927Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-10T07:38:04.9955846Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-10T07:38:04.9956811Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-10T07:38:04.9957627Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-10T07:38:04.9958660Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-10T07:38:04.9959471Z   ...
+2026-11-10T07:38:04.9960439Z # Subtest: actual Sidebar Search expression displays primary and additional saved replacements
+2026-11-10T07:38:04.9962296Z not ok 99 - actual Sidebar Search expression displays primary and additional saved replacements
+2026-11-10T07:38:04.9963248Z   ---
+2026-11-10T07:38:04.9963702Z   duration_ms: 0.560167
+2026-11-10T07:38:04.9964213Z   type: 'test'
+2026-11-10T07:38:04.9965251Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:67:3'
+2026-11-10T07:38:04.9966362Z   failureType: 'testCodeFailure'
+2026-11-10T07:38:04.9966923Z   error: |-
+2026-11-10T07:38:04.9967477Z     Expected values to be strictly deep-equal:
+2026-11-10T07:38:04.9968325Z     + actual - expected
+2026-11-10T07:38:04.9968827Z
+2026-11-10T07:38:04.9969252Z       [
+2026-11-10T07:38:04.9969752Z     +   '⌘K'
+2026-11-10T07:38:04.9970257Z     -   '⌘⇧Y',
+2026-11-10T07:38:04.9970746Z     -   '⌘J'
+2026-11-10T07:38:04.9971400Z       ]
+2026-11-10T07:38:04.9971833Z
+2026-11-10T07:38:04.9972293Z   code: 'ERR_ASSERTION'
+2026-11-10T07:38:04.9972835Z   name: 'AssertionError'
+2026-11-10T07:38:04.9973368Z   expected:
+2026-11-10T07:38:04.9973911Z     0: '⌘⇧Y'
+2026-11-10T07:38:04.9974399Z     1: '⌘J'
+2026-11-10T07:38:04.9974836Z   actual:
+2026-11-10T07:38:04.9975319Z     0: '⌘K'
+2026-11-10T07:38:04.9975789Z   operator: 'deepStrictEqual'
+2026-11-10T07:38:04.9976396Z   stack: |-
+2026-11-10T07:38:04.9977600Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:68:12)
+2026-11-10T07:38:04.9978934Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-10T07:38:04.9979735Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-10T07:38:04.9980652Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-10T07:38:04.9981820Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-10T07:38:04.9982639Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-10T07:38:04.9983579Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-10T07:38:04.9984385Z   ...
+2026-11-10T07:38:04.9985376Z # Subtest: actual Sidebar navigation expressions follow changed snapshots and reset to defaults
+2026-11-10T07:38:04.9986849Z not ok 100 - actual Sidebar navigation expressions follow changed snapshots and reset to defaults
+2026-11-10T07:38:04.9987763Z   ---
+2026-11-10T07:38:04.9988210Z   duration_ms: 1.732878
+2026-11-10T07:38:04.9988716Z   type: 'test'
+2026-11-10T07:38:04.9989751Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:72:1'
+2026-11-10T07:38:04.9990858Z   failureType: 'testCodeFailure'
+2026-11-10T07:38:04.9991669Z   error: |-
+2026-11-10T07:38:04.9992238Z     Expected values to be strictly deep-equal:
+2026-11-10T07:38:04.9992870Z     + actual - expected
+2026-11-10T07:38:04.9993351Z
+2026-11-10T07:38:04.9993784Z       [
+2026-11-10T07:38:04.9994294Z     +   '⌘⇧H'
+2026-11-10T07:38:04.9994785Z     -   '⌘⇧Y',
+2026-11-10T07:38:04.9995285Z     -   '⌘J'
+2026-11-10T07:38:04.9995726Z       ]
+2026-11-10T07:38:04.9996140Z
+2026-11-10T07:38:04.9996587Z   code: 'ERR_ASSERTION'
+2026-11-10T07:38:04.9997116Z   name: 'AssertionError'
+2026-11-10T07:38:04.9997617Z   expected:
+2026-11-10T07:38:04.9998101Z     0: '⌘⇧Y'
+2026-11-10T07:38:04.9998594Z     1: '⌘J'
+2026-11-10T07:38:04.9999032Z   actual:
+2026-11-10T07:38:04.9999512Z     0: '⌘⇧H'
+2026-11-10T07:38:04.9999995Z   operator: 'deepStrictEqual'
+2026-11-10T07:38:05.0000534Z   stack: |-
+2026-11-10T07:38:05.0001921Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:74:12)
+2026-11-10T07:38:05.0003282Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-10T07:38:05.0004067Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-10T07:38:05.0004998Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-10T07:38:05.0006014Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-10T07:38:05.0006833Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-10T07:38:05.0007995Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-10T07:38:05.0008831Z   ...
+2026-11-10T07:38:05.0009896Z # Subtest: actual Sidebar Home title uses the effective primary key without adding Create or Search titles
+2026-11-10T07:38:05.0011691Z not ok 101 - actual Sidebar Home title uses the effective primary key without adding Create or Search titles
+2026-11-10T07:38:05.0012679Z   ---
+2026-11-10T07:38:05.0013153Z   duration_ms: 0.499222
+2026-11-10T07:38:05.0013736Z   type: 'test'
+2026-11-10T07:38:05.0015078Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:80:1'
+2026-11-10T07:38:05.0016219Z   failureType: 'testCodeFailure'
+2026-11-10T07:38:05.0016786Z   error: |-
+2026-11-10T07:38:05.0017333Z     Expected values to be strictly equal:
+2026-11-10T07:38:05.0017962Z     + actual - expected
+2026-11-10T07:38:05.0018459Z
+2026-11-10T07:38:05.0018976Z     + 'Home ⌘⇧H'
+2026-11-10T07:38:05.0019505Z     - 'Home ⌘⇧Y'
+2026-11-10T07:38:05.0019985Z               ^
+2026-11-10T07:38:05.0020525Z
+2026-11-10T07:38:05.0021215Z   code: 'ERR_ASSERTION'
+2026-11-10T07:38:05.0021787Z   name: 'AssertionError'
+2026-11-10T07:38:05.0022397Z   expected: 'Home ⌘⇧Y'
+2026-11-10T07:38:05.0022962Z   actual: 'Home ⌘⇧H'
+2026-11-10T07:38:05.0023462Z   operator: 'strictEqual'
+2026-11-10T07:38:05.0023978Z   stack: |-
+2026-11-10T07:38:05.0025245Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:81:10)
+2026-11-10T07:38:05.0026586Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-10T07:38:05.0027364Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-10T07:38:05.0028288Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-10T07:38:05.0029230Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-10T07:38:05.0030031Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-10T07:38:05.0030983Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-10T07:38:05.0032012Z   ...
+2026-11-10T07:38:05.0032916Z # Subtest: Sidebar reads the live provider snapshot used by its navigation expressions
+2026-11-10T07:38:05.0034210Z not ok 102 - Sidebar reads the live provider snapshot used by its navigation expressions
+2026-11-10T07:38:05.0035046Z   ---
+2026-11-10T07:38:05.0035501Z   duration_ms: 2.082922
+2026-11-10T07:38:05.0035997Z   type: 'test'
+2026-11-10T07:38:05.0037025Z   location: '/home/runner/work/openconductor/openconductor/src/components/sidebarShortcutHints.test.ts:88:1'
+2026-11-10T07:38:05.0038149Z   failureType: 'testCodeFailure'
+2026-11-10T07:38:05.0038764Z   error: |-
+2026-11-10T07:38:05.0040156Z     The input did not match the regular expression /import\s*\{[^}]*\buseKeybindingOverrides\b[^}]*\}\s*from\s*["']\.\.\/keybindings\/KeybindingsProvider["']/. Input:
+
+Exact summary retained from the same hosted job:
+2026-11-10T07:38:22.3598448Z # tests 1626
+2026-11-10T07:38:22.3598657Z # suites 0
+2026-11-10T07:38:22.3598852Z # pass 1620
+2026-11-10T07:38:22.3599043Z # fail 6
+2026-11-10T07:38:22.3599230Z # cancelled 0
+2026-11-10T07:38:22.3599427Z # skipped 0
+2026-11-10T07:38:22.3599617Z # todo 0
+2026-11-10T07:38:22.3600080Z # duration_ms 19376.322067
+2026-11-10T07:38:22.3720944Z ##[error]Process completed with exit code 1.
