@@ -2,8 +2,8 @@
 // Conductor does (evidence/chat/README.md, `_jt` / `Ntt` / `mjt` / `yjt` in its
 // index chunk):
 //
-// - The turn's final text (its last non-empty text part) is a "preview" item:
-//   it always shows and is never collapsed.
+// - Plan/question messages are protected previews and always stay inline.
+//   The final non-empty text is a preview unless a later request supersedes it.
 // - The other items are batched between previews. A batch from 3 or more
 //   visible messages becomes one summary row; shorter batches stay as they are.
 // - A summary counts tool calls and other messages (text or thinking with
@@ -33,7 +33,7 @@ export interface KeyedPart {
   part: PartView;
 }
 
-/** `preview`: the turn's final text, which Conductor draws in full colour; other text is muted. */
+/** `preview`: protected plan/question messages or the final text, drawn in full colour. */
 export type GroupedPart = ({ kind: "part"; preview?: boolean } & KeyedPart) | { kind: "summary"; summary: ToolSummary; parts: KeyedPart[] };
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
@@ -50,11 +50,12 @@ function visible(part: PartView): boolean {
   return part.kind === "tool" || part.text.trim().length > 0;
 }
 
-/** Index of the turn's final text part, or -1. */
-function previewIndex(parts: KeyedPart[]): number {
+/** Index of the final text, unless a later protected message supersedes it. */
+function previewIndex(parts: KeyedPart[], protectedMessages: Set<string>): number {
   for (let i = parts.length - 1; i >= 0; i--) {
-    const p = parts[i]!.part;
-    if (p.kind === "text" && p.text.trim()) return i;
+    const { part, messageKey } = parts[i]!;
+    if (protectedMessages.has(messageKey)) return -1;
+    if (part.kind === "text" && part.text.trim()) return i;
   }
   return -1;
 }
@@ -80,7 +81,10 @@ function summarize(id: string, batch: KeyedPart[]): ToolSummary | undefined {
  */
 export function groupParts(parts: KeyedPart[], keyPrefix: string, hasFinalText = true): GroupedPart[] {
   const items = parts.filter((p) => visible(p.part));
-  const preview = hasFinalText ? previewIndex(items) : -1;
+  const protectedMessages = new Set(items
+    .filter(({ part }) => part.kind === "tool" && (part.call.name === "ExitPlanMode" || part.call.name === "AskUserQuestion"))
+    .map(({ messageKey }) => messageKey));
+  const preview = hasFinalText ? previewIndex(items, protectedMessages) : -1;
   const out: GroupedPart[] = [];
   let batch: KeyedPart[] = [];
   let batchStart = 0;
@@ -93,7 +97,7 @@ export function groupParts(parts: KeyedPart[], keyPrefix: string, hasFinalText =
     batch = [];
   };
   items.forEach((part, i) => {
-    if (i === preview) {
+    if (i === preview || protectedMessages.has(part.messageKey)) {
       flush();
       out.push({ kind: "part", ...part, preview: true });
       return;
