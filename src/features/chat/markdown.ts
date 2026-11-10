@@ -152,16 +152,8 @@ export function looksLikePath(value: string): boolean {
   return path.startsWith("/") || path.startsWith("./") || (path.includes("/") && /\.[a-zA-Z0-9]{1,10}$/.test(path));
 }
 
-/** The absolute path an inline-code path names in the workspace, or undefined when it is outside it. */
+/** A normalized absolute file target strictly below the workspace, or undefined. */
 export function resolveWorkspacePath(value: string, workspacePath: string | undefined): string | undefined {
-  if (!workspacePath || !looksLikePath(value)) return undefined;
-  const root = workspacePath.replace(/\/$/, "");
-  const path = value.replace(/:\d+(:\d+)?$/, "");
-  if (path.startsWith("/")) return path.startsWith(`${root}/`) ? path : undefined;
-  return `${root}/${path.replace(/^\.\//, "")}`;
-}
-
-function resolvePlainWorkspacePath(value: string, workspacePath: string | undefined): string | undefined {
   if (!workspacePath?.startsWith("/") || !looksLikePath(value) || /[\\\u0000]/.test(workspacePath)) return undefined;
   const normalize = (path: string) => {
     const segments: string[] = [];
@@ -199,7 +191,7 @@ export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link
     a: ({ href, children, node }) => {
       const path = node?.properties["data-plain-file-path"];
       if (typeof path === "string") {
-        const file = resolvePlainWorkspacePath(path, workspacePath);
+        const file = resolveWorkspacePath(path, workspacePath);
         return file === undefined
           ? h(Fragment, null, children)
           : h("button", { type: "button", className: "md-file-link", title: `Open ${file}`, onClick: () => onOpenFile?.(file) }, children);

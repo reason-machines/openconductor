@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { createRequire } from "node:module";
 import { createElement, type ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { Markdown, highlight, languageOf, MAX_HIGHLIGHT_CHARS } from "./markdown.ts";
+import { Markdown, highlight, languageOf, MAX_HIGHLIGHT_CHARS, resolveWorkspacePath } from "./markdown.ts";
 
 const render = (text: string) => renderToStaticMarkup(createElement(Markdown, { text }));
 
@@ -156,6 +156,82 @@ test("code paths retain code chips and fenced paths never become buttons", () =>
   assert.match(html, /<button[^>]+title="Open \/repo\/src\/lib\/auth\.ts"><code class="md-code">src\/lib\/auth\.ts<\/code><\/button>/);
   assert.match(html, /class="md-code-block"/);
   assert.match(html, /<code[^>]*>src\/main\.ts<\/code>/);
+});
+
+test("inline-code paths outside the normalized workspace remain code chips", () => {
+  for (const path of ["../secret.txt", "./../secret.txt", "src/../../secret.txt", "/repo/../secret.txt", "/repo/src/../../secret.txt", "/repo-other/secret.txt"]) {
+    const html = renderToStaticMarkup(createElement(Markdown, { text: `See \`${path}\`.`, workspacePath: "/repo" }));
+    assert.doesNotMatch(html, /md-file-link|<button|<a /, path);
+    assert.ok(html.includes(`<code class="md-code">${path}</code>`), path);
+  }
+});
+
+test("inline-code workspace roots are not file buttons", () => {
+  for (const path of ["./", "/repo", "/repo/", "/repo/.", "./src/..", "/repo/src/.."]) {
+    const html = renderToStaticMarkup(createElement(Markdown, { text: `\`${path}\``, workspacePath: "/repo" }));
+    assert.doesNotMatch(html, /md-file-link|<button|<a /, path);
+    assert.ok(html.includes(`<code class="md-code">${path}</code>`), path);
+  }
+});
+
+test("inline-code file titles use normalized contained absolute targets", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "`src/lib/../auth.ts` `./src/./main.ts:12:3` `/repo/src//auth.ts` `src/../../repo/tests/auth.test.ts`",
+    workspacePath: "/repo/./src/..//",
+  }));
+  assert.deepEqual([...html.matchAll(/title="Open ([^"]+)"/g)].map((match) => match[1]), [
+    "/repo/src/auth.ts", "/repo/src/main.ts", "/repo/src/auth.ts", "/repo/tests/auth.test.ts",
+  ]);
+  assert.equal((html.match(/<code class="md-code">/g) ?? []).length, 4);
+  assert.match(html, /<code class="md-code">\.\/src\/\.\/main\.ts:12:3<\/code>/);
+});
+
+test("inline-code callbacks open only normalized contained files", () => {
+  const opened: string[] = [];
+  const external: string[] = [];
+  const { create }: { create: (element: ReactElement) => {
+    root: { findAllByType: (type: "button") => Array<{ props: { className?: string; title?: string; onClick: () => void } }> };
+    unmount: () => void;
+  } } = createRequire(import.meta.url)("react-test-renderer");
+  const renderer = create(createElement(Markdown, {
+    text: "`src/lib/../auth.ts:12:3` `/repo/src/./main.ts` `../secret.txt` `/repo/../secret.txt` `./`",
+    workspacePath: "/repo",
+    onOpenFile: (path) => opened.push(path), onOpenLink: (href) => external.push(href),
+  }));
+  try {
+    const buttons = renderer.root.findAllByType("button").filter((button) => button.props.className === "md-file-link");
+    assert.deepEqual(buttons.map((button) => button.props.title), ["Open /repo/src/auth.ts", "Open /repo/src/main.ts"]);
+    for (const button of buttons) button.props.onClick();
+    assert.deepEqual(opened, ["/repo/src/auth.ts", "/repo/src/main.ts"]);
+    assert.deepEqual(external, []);
+  } finally {
+    renderer.unmount();
+  }
+});
+
+test("workspace path resolution rejects missing context and root targets", () => {
+  for (const workspacePath of [undefined, "repo"]) {
+    assert.equal(resolveWorkspacePath("src/auth.ts", workspacePath), undefined);
+  }
+  assert.equal(resolveWorkspacePath("./", "/"), undefined);
+  assert.equal(resolveWorkspacePath("/repo/../secret.txt", "/repo"), undefined);
+  assert.equal(resolveWorkspacePath("/repo-other/auth.ts", "/repo"), undefined);
+  assert.equal(resolveWorkspacePath("./src/../auth.ts", "/"), "/auth.ts");
+  assert.equal(resolveWorkspacePath("./src/../auth.ts", "/repo/./"), "/repo/auth.ts");
+});
+
+test("inline containment preserves URLs, explicit links, fences and missing-workspace code", () => {
+  const text = "`https://example.com/src/auth.ts` [src/auth.ts](https://example.org)\n\n```text\n../secret.txt\n```";
+  const html = renderToStaticMarkup(createElement(Markdown, { text, workspacePath: "/repo" }));
+  assert.doesNotMatch(html, /md-file-link/);
+  assert.equal((html.match(/<a /g) ?? []).length, 2);
+  assert.match(html, /href="https:\/\/example\.com\/src\/auth\.ts"/);
+  assert.match(html, /href="https:\/\/example\.org"/);
+  assert.match(html, /class="md-code-block"/);
+  assert.match(html, /<code[^>]*>\.\.\/secret\.txt<\/code>/);
+  const noWorkspace = render("`src/lib/../auth.ts`");
+  assert.doesNotMatch(noWorkspace, /md-file-link|<button|<a /);
+  assert.match(noWorkspace, /<code class="md-code">src\/lib\/\.\.\/auth\.ts<\/code>/);
 });
 
 test("a custom external-link component does not intercept plain file buttons", () => {
