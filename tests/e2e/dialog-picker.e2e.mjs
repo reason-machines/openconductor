@@ -1,20 +1,21 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { chromium } from "playwright-core";
-import { createServer } from "vite";
+import { startViteFixture } from "./vite-fixture-server.mjs";
 
 let base = process.env.DIALOGS_URL;
 let browser;
 let server;
 before(async () => {
   if (!base) {
-    server = await createServer({ server: { host: "127.0.0.1", port: 0 }, logLevel: "error" });
-    await server.listen();
-    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+    server = await startViteFixture();
+    base = server.base;
   }
   browser = await chromium.launch({ executablePath: process.env.CHROME_PATH ?? "/usr/bin/chromium", args: ["--no-sandbox"] });
 });
-after(async () => { await browser?.close(); await server?.close(); });
+after(async () => {
+  try { await browser?.close(); } finally { await server?.close(); }
+});
 
 for (const [dialog, title] of [["create", "Choose where to create the project"], ["clone", "Choose where to clone the repository"]]) {
   for (const mode of ["initial", "cancel", "select"]) {
