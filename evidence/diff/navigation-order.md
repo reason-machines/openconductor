@@ -73,7 +73,7 @@ navigation, without undoing those fixes.
 ## Bounded design
 
 Only the existing hook, its actual-hook test file and this evidence note are
-leased. The planned correction reads the existing shared presentation snapshot
+leased. The correction reads the existing shared presentation snapshot
 and derives a separate navigation sequence with the existing tree and filter
 functions. Public `files`, raw indices, path selection, load/cache keys and
 network loading stay unchanged. A destination is mapped by path back into that
@@ -113,12 +113,25 @@ The ordinary hosted command is:
 node --experimental-strip-types --test src/features/diff/*.test.ts
 ```
 
-Hosted RED is pending at this regression-only checkpoint. No test pass is
-claimed. Capacity restrictions prohibit local tests, builds and dependency
-installation, so no local executable regression or typecheck ran. Local
-`git diff --check` is the only source whitespace check. There are no new
-workflow dispatches, reruns or observers. The ready PR's normal automatic CI
-owns RED and later same-assertion GREEN.
+Hosted RED is verified at published head
+`f18948d8d925d6a896d2aaaf0f2e3930d2329d94`. The automatic
+[Diff frontend job](https://github.com/reason-machines/openconductor/actions/runs/42830853640/job/129880156798)
+ran 195 tests. All 188 previous tests passed and exactly the seven new cases
+failed. Next selected `b.ts` instead of `c.ts`; both mark entry points made the
+same wrong choice; backward fallback selected viewed `b.ts` instead of `a.ts`;
+tree navigation selected `root.ts` instead of `dir/item10.ts`; both filter cases
+selected `b.drop` instead of `c.keep`. These are assertion failures in the actual
+production hook, not setup or dependency failures.
+
+The production correction adds one presentation-derived navigation array and
+steps by path through it. The direction calculation uses that same pre-mark
+snapshot. No regression assertion or fixture was changed after RED. Hosted
+same-assertion GREEN is pending, not claimed.
+
+Capacity restrictions prohibit local tests, builds and dependency installation,
+so no local executable regression or typecheck ran. Local `git diff --check` is
+the only source whitespace check. There are no new workflow dispatches, reruns
+or observers. The ready PR's normal automatic CI owns RED and later GREEN.
 
 No app, browser, native execution, screenshots or fresh REA acquisition ran.
 There is no screenshot because native admission remains stopped. Packaging
