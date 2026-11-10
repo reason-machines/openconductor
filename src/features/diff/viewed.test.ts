@@ -115,7 +115,7 @@ function navigationFile(path: string): FileDiff {
   return { path, old_path: null, status: "modified", binary: false, additions: 0, deletions: 0, hunks: [], ...{ last_modified_time: 1000 } };
 }
 
-async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], initialPresentation: Partial<ChangesPresentation> = {}) {
+async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], initialPresentation: Partial<ChangesPresentation> = {}, renderTab = false) {
   let presentation: ChangesPresentation = { diffFileListMode: "flat", filePathFilter: "", collapsedDirectoryPaths: [], ...initialPresentation };
   let loadCalls = 0;
   let openCalls = 0;
@@ -157,10 +157,50 @@ async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], init
   }, module, module.exports);
   assert.ok("useWorkspaceDiff" in module.exports && typeof module.exports.useWorkspaceDiff === "function");
   const useWorkspaceDiff = module.exports.useWorkspaceDiff;
+  let previewMounts = 0;
+  let previewUnmounts = 0;
+  function FilePreview({ file }: { file: FileDiff }) {
+    const [text, setText] = React.useState("");
+    React.useEffect(() => {
+      previewMounts++;
+      return () => { previewUnmounts++; };
+    }, []);
+    return React.createElement("textarea", {
+      "data-file-preview": file.path,
+      value: text,
+      onChange: (event: { target: { value: string } }) => setText(event.target.value),
+    });
+  }
+  const tabModule = { exports: {} };
+  if (renderTab) {
+    const tabPath = resolve("src/features/diff/DiffViewer.tsx");
+    const tabJavascript = ts.transpileModule(readFileSync(tabPath, "utf8"), {
+      fileName: tabPath,
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+    }).outputText;
+    const unexpected = () => { throw new Error("Unexpected DiffTab boundary call"); };
+    const tabBoundaries: Record<string, object> = {
+      "../../components/ui/Tooltip.tsx": { Tooltip: unexpected },
+      "../../components/ConductorIcon": { ConductorIcon: unexpected },
+      "./diff.css": {},
+      "./DiscardDialog": { DiscardDialog: unexpected },
+      "./Whitespace": { ViewOptionsMenu: unexpected },
+      "./FileDiffView": { FileDiffView: FilePreview },
+      "./EditInViewer.ts": { editableContents: () => null, useFileEdit: () => undefined },
+      "./ChangesList": { ChangesList: unexpected },
+    };
+    const evaluateTab = runInNewContext(`(function(require, module, exports) { ${tabJavascript}\n})`);
+    evaluateTab((name: string) => {
+      if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      assert.ok(Object.prototype.hasOwnProperty.call(tabBoundaries, name), `Unexpected DiffTab dependency: ${name}`);
+      return tabBoundaries[name];
+    }, tabModule, tabModule.exports);
+    assert.ok("DiffTab" in tabModule.exports && typeof tabModule.exports.DiffTab === "function");
+  }
   let current: WorkspaceDiff | undefined;
   function Probe() {
     current = useWorkspaceDiff({ workspaceId: "fixture", worktree: null, target: { branch: "main", remote: "origin" }, onOpen: () => { openCalls++; } });
-    return null;
+    return renderTab && "DiffTab" in tabModule.exports ? React.createElement(tabModule.exports.DiffTab, { diff: current }) : null;
   }
   let renderer: ReturnType<typeof create>;
   await act(async () => { renderer = create(React.createElement(Probe)); });
@@ -173,6 +213,24 @@ async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], init
     previous() { act(() => { handlers["diff.previousFile"](); }); },
     loadCalls: () => loadCalls,
     openCalls: () => openCalls,
+    noMatchMessages: () => renderer.root.findAllByType("p").filter((node: { children: unknown[] }) => node.children.join("") === "No files match this filter").length,
+    previews: () => renderer.root.findAllByType("textarea").length,
+    visiblePreviews: () => renderer.root.findAllByType("textarea").filter((node: { parent: unknown }) => {
+      let ancestor = node.parent;
+      while (ancestor !== null && typeof ancestor === "object" && "props" in ancestor && "parent" in ancestor) {
+        const props = ancestor.props;
+        if (props !== null && typeof props === "object") {
+          if ("hidden" in props && props.hidden === true) return false;
+          if ("style" in props && props.style !== null && typeof props.style === "object" && "display" in props.style && props.style.display === "none") return false;
+        }
+        ancestor = ancestor.parent;
+      }
+      return true;
+    }).length,
+    previewMounts: () => previewMounts,
+    previewUnmounts: () => previewUnmounts,
+    previewValue: () => renderer.root.findByType("textarea").props.value,
+    writePreview(text: string) { act(() => renderer.root.findByType("textarea").props.onChange({ target: { value: text } })); },
     present(change: Partial<ChangesPresentation>) {
       presentation = { ...presentation, ...change };
       act(() => { renderer.update(React.createElement(Probe)); });
@@ -547,6 +605,87 @@ test("actual selection redirects to a renamed file matched by its old path", asy
     assert.equal(view.state().files, files);
     assert.equal(view.loadCalls(), calls);
     assert.equal(view.openCalls(), opens);
+  } finally { view.close(); }
+});
+
+for (const mode of ["flat", "tree"] as const) {
+  test(`actual DiffTab hides a no-match ${mode} view while retaining mounted file state and selection`, async () => {
+    const files = [navigationFile("dir/a.keep"), navigationFile("b.drop")];
+    const view = await fixture(files, [files[0]], { diffFileListMode: mode }, true);
+    try {
+      view.open(1);
+      view.writePreview("unsaved preview state");
+      const loads = view.loadCalls();
+      assert.equal(view.visiblePreviews(), 1);
+      view.present({ filePathFilter: "zzzz-no-match" });
+      assert.equal(view.noMatchMessages(), 1, "the main Diff tab must explain the no-match filter");
+      assert.equal(view.visiblePreviews(), 0, "the excluded selected file must not remain visible");
+      assert.equal(view.previews(), 1, "the file view must stay mounted while filtered out");
+      assert.equal(view.previewMounts(), 1);
+      assert.equal(view.previewUnmounts(), 0);
+      assert.equal(view.previewValue(), "unsaved preview state");
+      assert.equal(view.state().selected, files[1]);
+      assert.equal(view.state().current, 1);
+      assert.equal(view.state().isViewed(files[0]), true);
+      view.next();
+      view.previous();
+      assert.equal(view.state().selected, files[1]);
+      assert.equal(view.openCalls(), 1, "filtering and inert navigation must not open a tab");
+      view.present({ filePathFilter: "" });
+      assert.equal(view.noMatchMessages(), 0);
+      assert.equal(view.visiblePreviews(), 1);
+      assert.equal(view.previewValue(), "unsaved preview state");
+      assert.equal(view.previewMounts(), 1);
+      assert.equal(view.previewUnmounts(), 0);
+      assert.equal(view.state().selected, files[1]);
+      assert.equal(view.loadCalls(), loads, "filter changes must not reload files");
+      assert.equal(view.openCalls(), 1);
+    } finally { view.close(); }
+  });
+}
+
+test("actual DiffTab explains no matches without selecting or opening an initially unselected file", async () => {
+  const files = [navigationFile("a.ts")];
+  const view = await fixture(files, [], { filePathFilter: "zzzz-no-match" }, true);
+  try {
+    assert.equal(view.noMatchMessages(), 1);
+    assert.equal(view.previews(), 0);
+    assert.equal(view.state().selected, null);
+    assert.equal(view.openCalls(), 0);
+    view.present({ filePathFilter: "" });
+    assert.equal(view.noMatchMessages(), 0);
+    assert.equal(view.state().selected, null);
+    assert.equal(view.openCalls(), 0);
+  } finally { view.close(); }
+});
+
+test("actual DiffTab keeps a truly empty loaded list distinct from no matching files", async () => {
+  const view = await fixture([], [], { filePathFilter: "zzzz-no-match" }, true);
+  try {
+    assert.equal(view.noMatchMessages(), 0);
+    assert.equal(view.previews(), 0);
+    assert.equal(view.state().load.state, "ready");
+    assert.equal(view.state().selected, null);
+    assert.equal(view.openCalls(), 0);
+  } finally { view.close(); }
+});
+
+test("actual DiffTab retains a matching renamed file and hides no content for an old-path match", async () => {
+  const renamed = { ...navigationFile("new-name.ts"), old_path: "old-name.ts", status: "renamed" as const };
+  const view = await fixture([renamed], [], {}, true);
+  try {
+    view.open(0);
+    view.writePreview("retained preview state");
+    const loads = view.loadCalls();
+    view.present({ filePathFilter: "old-name" });
+    assert.equal(view.noMatchMessages(), 0);
+    assert.equal(view.visiblePreviews(), 1);
+    assert.equal(view.state().selected, renamed);
+    assert.equal(view.previewValue(), "retained preview state");
+    assert.equal(view.previewMounts(), 1);
+    assert.equal(view.previewUnmounts(), 0);
+    assert.equal(view.loadCalls(), loads);
+    assert.equal(view.openCalls(), 1);
   } finally { view.close(); }
 });
 
