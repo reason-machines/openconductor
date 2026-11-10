@@ -32,12 +32,20 @@ The five cases require natural exit 0 and 7 to restore Run, remove busy-only Ope
 
 `ordinary_run_exit_emits_its_committed_status_and_keeps_output` uses the existing service API, event serialization and real process runner. It expects one final event with the committed stopped status and retained transcript. Existing runner tests already check natural exit and output; existing service tests check setup completion, queued precedence and auto-run gates. None previously asserts the completion-to-panel handoff.
 
-At this checkpoint production code is unchanged. Normal fresh-PR automatic CI will determine whether the source candidate reproduces. No local RED or GREEN is claimed.
+At regression checkpoint `1c850913dd1b59c87174abcd99b3b7ea451536f6`, production code was unchanged. The ordinary [hosted CI run](https://github.com/reason-machines/openconductor/actions/runs/42778417315/job/129702300214) passed TypeScript typecheck and color lint, then ran 1,628 frontend tests. Exactly three failed: exit 0 and exit 7 with `natural completion returns the real split button to Run`, and the explicitly picked Test task failing to return to Run. Both completion controls passed. This is actual-component behavioral RED, not a missing-type compile error. All five component tests remain unchanged for GREEN.
+
+The scripts crate checkpoint stopped at one multiline `assert_eq!` rustfmt difference, so no Rust behavioral RED is credited. The formatting-only correction follows the exact hosted diff without changing the assertion.
+
+## Minimal correction
+
+The existing `RunRequest` now supplies a required `on_finished(RunStatus)` callback. The existing natural-exit worker invokes it only after its current-process identity guard commits the stopped status, transcript and exit, and after dropping the manager lock. Failed launch behavior and the existing replacement guard are unchanged.
+
+The service forwards this existing status as `RunFinished` through its existing event sink. The TypeScript union mirrors that serialized shape. The mounted panel responds through its existing refresh path, so an event never directly overwrites a newer authoritative run status. No new store, polling loop, global subscriber, Tauri command or API adapter is added. A runner regression reads status and transcript from inside the callback, which requires the lock to have been released. All existing request constructors supply the callback; the tests that do not observe completion use an inert callback.
 
 ## Checks and limits
 
 - Passed before edits: clean working tree and `git diff --exit-code origin/main HEAD` after a normal main merge.
 - Passed: fresh retained `nro` identity and bounded callback-range hash checks, read-only current-main source comparison.
 - Not run locally: `node --test src/scripts/runCompletion.test.ts`, Rust tests, transpilation, typecheck, build, install, app, server, browser, native or provider execution. Capacity admission has not been granted.
-- Hosted RED and GREEN results must be recorded separately with their exact heads. No result is inferred from source text or a compiler error against a missing future API.
+- Hosted behavioral RED passed its reproduction gate at `1c850913` as recorded above. Hosted GREEN on the correction is pending. No result is inferred from source text or a compiler error against a missing future API.
 - No new screenshot is available because browser and app execution are outside the admitted work. Component/IPC intent is not terminal drawing, real process-to-webview delivery, native behavior, installed-package acceptance or visual parity.

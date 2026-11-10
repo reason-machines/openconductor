@@ -191,7 +191,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
         if (e.workspaceId !== wsId) return;
         if (e.type === "output" && e.kind === "run" && e.scriptId === shown) setRunOut((b) => appendOutput(b, e.chunk));
         if (e.type === "output" && e.kind === "setup") setSetup((s) => ({ ...s, state: "running", log: appendOutput(s.log ?? "", e.chunk) }));
-        if (e.type === "setupFinished") refresh().catch(() => {});
+        if (e.type === "setupFinished" || e.type === "runFinished") refresh().catch(() => {});
       })
       .then((f) => (off = f));
     return () => off?.();

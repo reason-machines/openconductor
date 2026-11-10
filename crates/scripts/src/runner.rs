@@ -44,6 +44,7 @@ pub struct RunRequest {
     /// `run_mode = "concurrent"`.
     pub concurrent: bool,
     pub sink: Option<OutputSink>,
+    pub on_finished: Arc<dyn Fn(RunStatus) + Send + Sync>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -137,6 +138,7 @@ impl RunManager {
             inner.last_exit.remove(&key);
         }
         let this = self.clone();
+        let on_finished = req.on_finished;
         thread::spawn(move || loop {
             let exit = process.lock().unwrap_or_else(|e| e.into_inner()).try_wait();
             if let Ok(None) = exit {
@@ -159,8 +161,16 @@ impl RunManager {
                 inner.states.insert(key.clone(), RunState::Stopped);
                 inner.last_output.insert(key.clone(), output);
                 if let Ok(Some(exit)) = exit {
-                    inner.last_exit.insert(key, exit);
+                    inner.last_exit.insert(key.clone(), exit);
                 }
+                let status = RunStatus {
+                    workspace_id: key.0.clone(),
+                    script_id: key.1.clone(),
+                    state: RunState::Stopped,
+                    exit: inner.last_exit.get(&key).map(|e| (e.code, e.signal)),
+                };
+                drop(inner);
+                on_finished(status);
             }
             return;
         });

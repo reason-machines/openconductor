@@ -165,6 +165,7 @@ default = true
                 spec,
                 concurrent: true,
                 sink: None,
+                on_finished: Arc::new(|_| {}),
             },
             SetupState::Running,
         )
@@ -237,7 +238,10 @@ fn ordinary_run_exit_emits_its_committed_status_and_keeps_output() {
     assert_eq!(finished[0]["state"], "stopped");
     assert_eq!(finished[0]["exit"], serde_json::json!([7, null]));
     assert_eq!(f.svc.runs.state("w1", "dev"), RunState::Stopped);
-    assert_eq!(f.svc.runs.output("w1", "dev").as_deref(), Some("finished\r\n"));
+    assert_eq!(
+        f.svc.runs.output("w1", "dev").as_deref(),
+        Some("finished\r\n")
+    );
 }
 
 #[test]

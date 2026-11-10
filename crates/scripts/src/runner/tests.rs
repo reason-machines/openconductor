@@ -25,6 +25,7 @@ fn req(dir: &Path, ws: &str, repo: &str, id: &str, script: &str, concurrent: boo
         },
         concurrent,
         sink: None,
+        on_finished: Arc::new(|_| {}),
     }
 }
 
@@ -50,6 +51,26 @@ fn runs_to_exit_and_keeps_output() {
     wait_for("exit", || m.state("w1", "test") == RunState::Stopped);
     assert_eq!(m.output("w1", "test").as_deref(), Some("done\r\n"));
     assert_eq!(m.statuses("w1")[0].exit, Some((Some(2), None)));
+}
+
+#[test]
+fn completion_callback_reads_the_committed_status_and_output() {
+    let tmp = tempfile::tempdir().unwrap();
+    let m = RunManager::default();
+    let (tx, rx) = std::sync::mpsc::channel();
+    let observer = m.clone();
+    let mut request = req(tmp.path(), "w1", "r", "dev", "echo finished", true);
+    request.on_finished = Arc::new(move |status| {
+        let current = observer.statuses("w1");
+        let output = observer.output("w1", "dev");
+        tx.send((status, current, output)).unwrap();
+    });
+    m.start(request, SetupState::Completed).unwrap();
+    let (status, current, output) = rx.recv_timeout(Duration::from_secs(10)).unwrap();
+    assert_eq!(status.state, RunState::Stopped);
+    assert_eq!(status.exit, Some((Some(0), None)));
+    assert_eq!(current, [status]);
+    assert_eq!(output.as_deref(), Some("finished\r\n"));
 }
 
 #[test]
