@@ -8,7 +8,9 @@ Checked default main `8f88db182e0ea7ed20e0b612a6e111ba7f70dcc0`. `ToolRows.tsx` 
 
 The correction is one WriteRow FileBadge prop, `hoverContent={<DiffBlock oldText="" newText={shown} />}`. It adds no provider guard, new helper, CSS, dependency, or handler. Shell state, navigation, line count, body disclosure, and the separate error row stay unchanged.
 
-The prior writeRows fixture forbids ancestor hover handlers. Its obsolete prohibition must be replaced only after hosted RED. Two additional Write-negative controls in multiEditHover.test.ts conflict with the retained Write branch, including the projected Codex Write. Their narrow test-only reconciliation was requested from the ledger; no provider branch will be added to preserve an obsolete expectation.
+After hosted RED, the prior writeRows fixture's ancestor-handler prohibition is replaced by a no-immediate-preview assertion. Shell, body, navigation, and disclosure controls are preserved. The ledger also cleared removing Write from the Read/Edit no-hover matrix and expecting only the projected Codex Write to preview its selected raw content. Edit/Write/Bash projection, body, and no-MultiEdit assertions remain. No provider branch is added to preserve an obsolete expectation.
+
+Revalidated default main `bd2d42c2a75bc2013cd447e78f07db01e25782dc` before correction. ToolRows remains blob `e7ae5357f492d9de081081028808834d62daf43b`; WriteRow remains SHA-256 `52fc94eacabf7ce96ac6a0284d952470e6640510162f68ce3dfce5f05c366112`; the shared FileBadge/FileBadgeHover remains SHA-256 `86838bc7a5720c9367d2671adf833ddef4b15de4872ea774309cf916350619e1`. The correction changes only the private WriteRow badge prop. All other ToolRows bytes are unchanged.
 
 ## Retained shipped-artifact evidence
 
@@ -26,9 +28,13 @@ The fixture covers 149/150ms opening; exact empty and 1,999/2,000/2,001-unit val
 
 Locked fixture: 14,741 bytes; SHA-256 `f7e9c8ecc1a9956a98aee61a5d5622c179a96e3b7183f6634aacfa01a5e44fc7`. The same fixture bytes must remain unchanged through correction GREEN.
 
-Hosted RED has not run at this checkpoint. No production source or existing fixture is changed in the RED publication. Hosted GREEN, exact-head merge checks, and consuming-main/package verification are not yet run.
+## Hosted RED and correction checkpoint
 
-Passed on Reason Cloud: Python static audit of held original bytes and current main, plus `git diff --check`. No local Node, tests, typecheck, build, install, runtime, browser, native, provider, acquisition, manual dispatch/rerun, or new observer was run. No screenshot exists under these restrictions. Package success, when checked later, is not runtime deployment proof.
+The tests-only ready PR head `7d61154b305a0855759ce7f68455fe5e7768ab39` ran the ordinary automatic [CI workflow](https://github.com/reason-machines/openconductor/actions/runs/42906372619). No production source or existing fixture changed for RED. `node --test "src/**/*.test.ts"` reported 1,995 tests, 1,986 passed, and nine failed in both the [unit job](https://github.com/reason-machines/openconductor/actions/runs/42906372619/job/130145294986) and [frontend job](https://github.com/reason-machines/openconductor/actions/runs/42906372619/job/130145294961). All nine failures are the intended new Write-hover cases. Each expected one selected-content preview but observed zero. Focus/touch and missing-path negative controls passed. Typecheck passed before the frontend job reached the intended failing regression step; that job did not reach build. The other 21 checks passed.
+
+The correction adds only `hoverContent={<DiffBlock oldText="" newText={shown} />}` to the private WriteRow right FileBadge and reconciles the cleared obsolete assertions. The locked new regression fixture is byte-identical. Hosted GREEN, exact correction-head checks, merge, and consuming-main/package verification are pending, not claimed.
+
+Passed on Reason Cloud: Python static audit of held original bytes and refreshed current main, fixture-hash verification, exact product-diff/shared-helper checks, and `git diff --check`. No local Node, tests, typecheck, build, install, runtime, browser, native, provider, acquisition, manual dispatch/rerun, or new observer was run. No screenshot exists under these restrictions. Package success, when checked later, is not runtime deployment proof.
 
 ## Reproducible static receipt
 

@@ -187,10 +187,9 @@ test("plain FileBadge keeps path tooltip, children and navigation without a hove
   } finally { await view.close(); }
 });
 
-test("Read, Write and Edit badges do not acquire the opt-in aggregate hover", async () => {
+test("Read and Edit badges do not acquire the opt-in aggregate hover", async () => {
   for (const tool of [
     { name: "Read", input: { file_path: path } },
-    { name: "Write", input: { file_path: path, content: "written" } },
     { name: "Edit", input: { file_path: path, old_string: "old", new_string: "new" } },
   ]) {
     const view = await fixture({ tool });
@@ -202,7 +201,7 @@ test("Read, Write and Edit badges do not acquire the opt-in aggregate hover", as
   }
 });
 
-test("native Codex file_change projection remains Edit/Write/Bash with no aggregate hover", async () => {
+test("native Codex file_change projection remains Edit/Write/Bash with a selected Write preview only", async () => {
   const projected = tools.conductorTools("file_change", { changes: [
     { path, kind: "update", diff: "@@ -1 +1 @@\n-old\n+new" },
     { path, kind: "add", diff: "@@ -0,0 +1 @@\n+created" },
@@ -215,7 +214,8 @@ test("native Codex file_change projection remains Edit/Write/Bash with no aggreg
       for (const badge of view.all((node) => hasClass(node, "oc-file-badge"))) {
         await view.event(badge, "onPointerEnter", { pointerType: "mouse" }); await view.tick(1000);
       }
-      assert.equal(view.preview().length, 0);
+      assert.equal(view.preview().length, tool.name === "Write" ? 1 : 0);
+      if (tool.name === "Write") assert.equal(text(view.preview()[0]!), `+${String(tool.input.content).substring(0, 2000)}`);
       assert.equal(view.all((node) => hasClass(node, "oc-multi-edit-list")).length, 0);
       assert.equal(view.all((node) => hasClass(node, "oc-tool-content")).length, 1);
     } finally { await view.close(); }
