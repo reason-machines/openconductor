@@ -100,7 +100,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const config = configState.key === configKey ? configState.config : (configs.get(configKey) ?? null);
   const [runs, setRuns] = useState<RunStatus[]>([]);
   const [picked, setPicked] = useState<string | null>(null);
-  const [runOut, setRunOut] = useState("");
+  const [runOutputState, setRunOutputState] = useState({ key: "", text: "" });
   const [setup, setSetup] = useState<SetupStatus>({ state: "idle", log: null, last: null });
   const [error, setError] = useState<string | null>(null);
   const [configError, setConfigError] = useState<string | null>(null);
@@ -111,7 +111,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const [spotPending, setSpotPending] = useState<"starting" | "stopping" | null>(null);
   const repoSettings = useRepoSettings(repo.path || undefined, workspace.path);
   const [previewEnv, setPreviewEnv] = useState<PreviewEnv>({});
-  const [detectedUrl, setDetectedUrl] = useState<string | null>(null);
+  const [detectedPreview, setDetectedPreview] = useState<{ key: string; url: string | null }>({ key: "", url: null });
 
   const repoRoot = repo.path;
   const spotEnabled = spotSetting?.enabled === true;
@@ -135,6 +135,9 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     workspaceActiveRunTaskIsBusy: activeScript !== null || spotMine,
   });
   const showSpotlight = shown === SPOTLIGHT_TASK_ID;
+  const outputKey = JSON.stringify([wsId, shown]);
+  const runOut = runOutputState.key === outputKey ? runOutputState.text : "";
+  const detectedUrl = detectedPreview.key === outputKey ? detectedPreview.url : null;
 
   const refresh = useCallback(async () => {
     const [status, setupState] = await Promise.all([api.runStatus(wsId), api.setupStatus(wsId)]);
@@ -190,22 +193,32 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   }, [repoRoot]);
 
   useEffect(() => {
-    if (!shown) return setRunOut("");
-    api.runOutput(wsId, shown).then((o) => setRunOut(o ?? ""), () => {});
-  }, [wsId, shown, runs]);
+    if (!shown) return setRunOutputState({ key: outputKey, text: "" });
+    let disposed = false;
+    api.runOutput(wsId, shown).then((o) => {
+      if (!disposed) setRunOutputState({ key: outputKey, text: o ?? "" });
+    }, () => {});
+    return () => { disposed = true; };
+  }, [wsId, shown, runs, outputKey]);
 
   useEffect(() => {
     let off: (() => void) | undefined;
+    let disposed = false;
     api
       .onScriptEvent((e) => {
-        if (e.workspaceId !== wsId) return;
-        if (e.type === "output" && e.kind === "run" && e.scriptId === shown) setRunOut((b) => appendOutput(b, e.chunk));
+        if (disposed || e.workspaceId !== wsId) return;
+        if (e.type === "output" && e.kind === "run" && e.scriptId === shown) {
+          setRunOutputState((previous) => ({ key: outputKey, text: appendOutput(previous.key === outputKey ? previous.text : "", e.chunk) }));
+        }
         if (e.type === "output" && e.kind === "setup") setSetup((s) => ({ ...s, state: "running", log: appendOutput(s.log ?? "", e.chunk) }));
         if (e.type === "setupFinished" || e.type === "runStarted" || e.type === "runFinished") refresh().catch(() => {});
       })
-      .then((f) => (off = f));
-    return () => off?.();
-  }, [wsId, shown, refresh]);
+      .then((f) => (disposed ? f() : (off = f)));
+    return () => {
+      disposed = true;
+      off?.();
+    };
+  }, [wsId, shown, refresh, outputKey]);
 
   useEffect(() => {
     onSetupState?.(setup.state);
@@ -260,11 +273,11 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   // Conductor's run-tab URL (`ea`): found in the run output while the task runs, kept until it stops.
   const runBusy = !showSpotlight && busy;
   useEffect(() => {
-    if (!runBusy) setDetectedUrl(null);
-  }, [runBusy, shown, wsId]);
+    if (!runBusy) setDetectedPreview({ key: outputKey, url: null });
+  }, [runBusy, outputKey]);
   useEffect(() => {
-    if (runBusy && detectedUrl === null) setDetectedUrl(detectLocalhostUrl(runOut));
-  }, [runBusy, detectedUrl, runOut]);
+    if (runBusy && detectedUrl === null) setDetectedPreview({ key: outputKey, url: detectLocalhostUrl(runOut) });
+  }, [runBusy, detectedUrl, runOut, outputKey]);
   // The Open button (`id`): while the run task runs, with a preview URL or one found in its output.
   const previews = runBusy ? previewOptions(repoSettings?.previewUrls?.value, detectedUrl, previewEnv) : [];
   // In-app browser preview is an experimental setting in Conductor, off by default; with it off
