@@ -114,6 +114,7 @@ Diagnostics omit record contents. Keep the original capture, including refused
 records; this tool does not copy, repair, truncate or delete it.
 
 This bounds each read and parse, not the total capture size or execution time.
+Nesting refusals follow the active JSON parser's capacity, not a fixed depth.
 An empty capture has zero records; scalars and arrays are valid JSON values.
 Neither result establishes an event schema, sequence continuity, attribution,
 helper coverage or prevention. The historical raw records were not retained, so

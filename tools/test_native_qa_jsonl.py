@@ -1,10 +1,12 @@
 import contextlib
 import io
+import json
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 from tools import native_qa_jsonl as framing
 
@@ -64,8 +66,17 @@ class FramingTests(unittest.TestCase):
                 self.assert_refused(b'{"x":' + value + b'}\n', "non-JSON numeric constant")
 
     def test_nesting_failure_is_a_refusal(self):
-        self.assert_refused(b'[' * 2000 + b'0' + b']' * 2000 + b'\n',
-                            "JSON nesting exceeds parser limit", limit=5000)
+        with mock.patch.object(framing.json, "loads", side_effect=RecursionError("CANARY")):
+            self.assert_refused(b'{}\n', "JSON nesting exceeds parser limit")
+
+    def test_deep_record_uses_current_parser_capacity(self):
+        payload = b'[' * 2000 + b'0' + b']' * 2000 + b'\n'
+        try:
+            json.loads(payload)
+        except RecursionError:
+            self.assert_refused(payload, "JSON nesting exceeds parser limit", limit=5000)
+        else:
+            self.assertEqual(framing.validate_jsonl(io.BytesIO(payload), 5000), 1)
 
     def test_exact_limit_includes_delimiter(self):
         self.assertEqual(framing.validate_jsonl(io.BytesIO(b'{}\n{}\n'), 3), 2)
