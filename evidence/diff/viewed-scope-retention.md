@@ -110,9 +110,26 @@ and the hook fixture initialized successfully. All other cases passed.
 
 The correction stores the already updated workspace map without pruning it
 against the current file list. It removes the unused pruning helper and its
-import. The test file is byte-identical to the failing-before checkpoint,
-Git blob `ce186605eab5c9b6286ef728c451030024cf42d6`. Hosted passing-after and
-all exact-head checks are pending.
+import. At the first correction head
+`64228931673f0e62ba4abd52e83b5b750977528c`, the test file was byte-identical to
+the failing-before checkpoint, Git blob
+`ce186605eab5c9b6286ef728c451030024cf42d6`.
+
+## Hosted fixture correction
+
+The first correction head passed the Diff frontend job, but full CI exposed
+`TS2322` at `viewed.test.ts:423`: the commit-scope fixture omitted the required
+`type: "commit"` discriminant. The frontend, both Tauri builds, Keybindings,
+and both built-app E2E jobs failed at that same compiler error. E2E follow-on
+launches could not find the app binary because its build had failed; they
+were not evidence of separate application regressions.
+
+The follow-up changes only that fixture object to the actual `DiffScope`
+commit variant. All eight regression case names, actions, assertions and
+other fixture boundaries remain unchanged; the final test file is therefore
+not byte-identical to the original failing-before checkpoint. No cast or
+compiler suppression is added. Automatic hosted verification of this
+corrected fixture and the exact-head workflows is pending.
 
 ## Verification limits
 

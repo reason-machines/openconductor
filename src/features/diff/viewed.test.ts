@@ -420,7 +420,7 @@ test("actual navigation responds to presentation and timestamp changes without r
   } finally { view.close(); }
 });
 
-const subsetScopes: DiffScope[] = ["uncommitted", { commitHash: "fixture-commit" }];
+const subsetScopes: DiffScope[] = ["uncommitted", { type: "commit", commitHash: "fixture-commit" }];
 for (const scope of subsetScopes) {
   for (const action of ["header", "keyboard"] as const) {
     for (const wasViewed of [false, true]) {
