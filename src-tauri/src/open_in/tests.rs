@@ -258,6 +258,161 @@ fn a_file_opens_in_editors_is_revealed_in_finder_and_gives_terminals_its_folder(
 }
 
 #[test]
+fn wezterm_activates_after_spawn_or_starts_with_cwd_after_failure() {
+    let app = find("wezterm").unwrap();
+    let dir = Path::new("/Users/me/workspaces/app with spaces");
+    for spawn_succeeds in [true, false] {
+        let mut calls = Vec::new();
+        let result = run_macos_open(app, dir, false, |program, args| {
+            calls.push((program.to_string(), args.to_vec()));
+            if calls.len() == 1 && !spawn_succeeds {
+                Err("no running mux".into())
+            } else {
+                Ok(())
+            }
+        });
+        assert_eq!(result, Ok(()));
+        assert_eq!(calls.len(), 2);
+        assert_eq!(calls[0], macos_open_command(app, dir));
+        let mut expected = vec!["-a".to_string(), "WezTerm".into()];
+        if !spawn_succeeds {
+            expected.extend([
+                "--args".into(),
+                "start".into(),
+                "--cwd".into(),
+                dir.to_string_lossy().into_owned(),
+            ]);
+        }
+        assert_eq!(calls[1], ("open".into(), expected));
+    }
+}
+
+#[test]
+fn wezterm_file_fallback_uses_the_files_parent_directory() {
+    let file = Path::new("/Users/me/workspaces/app with spaces/src/main.rs");
+    let mut calls = Vec::new();
+    let result = run_macos_open(find("wezterm").unwrap(), file, true, |program, args| {
+        calls.push((program.to_string(), args.to_vec()));
+        if calls.len() == 1 {
+            Err("wezterm CLI unavailable".into())
+        } else {
+            Ok(())
+        }
+    });
+    assert_eq!(result, Ok(()));
+    let dir = "/Users/me/workspaces/app with spaces/src".to_string();
+    assert_eq!(
+        calls,
+        vec![
+            (
+                "wezterm".into(),
+                vec!["cli".into(), "spawn".into(), "--cwd".into(), dir.clone()],
+            ),
+            (
+                "open".into(),
+                vec![
+                    "-a".into(),
+                    "WezTerm".into(),
+                    "--args".into(),
+                    "start".into(),
+                    "--cwd".into(),
+                    dir,
+                ],
+            ),
+        ]
+    );
+}
+
+#[test]
+fn wezterm_does_not_start_again_when_activation_fails() {
+    let mut calls = 0;
+    let result = run_macos_open(
+        find("wezterm").unwrap(),
+        Path::new("/workspace"),
+        false,
+        |_, _| {
+            calls += 1;
+            if calls == 1 {
+                Ok(())
+            } else {
+                Err("activation failed".into())
+            }
+        },
+    );
+    assert_eq!(calls, 2);
+    assert_eq!(result, Err("activation failed".into()));
+}
+
+#[test]
+fn wezterm_returns_the_start_error_after_spawn_failure() {
+    let mut calls = 0;
+    let result = run_macos_open(
+        find("wezterm").unwrap(),
+        Path::new("/workspace"),
+        false,
+        |_, _| {
+            calls += 1;
+            if calls == 1 {
+                Err("spawn failed".into())
+            } else {
+                Err("start failed".into())
+            }
+        },
+    );
+    assert_eq!(calls, 2);
+    assert_eq!(result, Err("start failed".into()));
+}
+
+#[test]
+fn wezterm_cli_path_preserves_existing_priority_and_adds_both_bundles() {
+    let path = wezterm_search_path(
+        Some(std::ffi::OsStr::new("/custom/bin:/usr/bin")),
+        Some(std::ffi::OsStr::new("/Users/me with spaces")),
+    )
+    .unwrap();
+    assert_eq!(
+        std::env::split_paths(&path).collect::<Vec<_>>(),
+        vec![
+            PathBuf::from("/custom/bin"),
+            PathBuf::from("/usr/bin"),
+            PathBuf::from("/Applications/WezTerm.app/Contents/MacOS"),
+            PathBuf::from("/Users/me with spaces/Applications/WezTerm.app/Contents/MacOS"),
+        ]
+    );
+    assert_eq!(
+        std::env::split_paths(&wezterm_search_path(None, None).unwrap()).collect::<Vec<_>>(),
+        vec![PathBuf::from("/Applications/WezTerm.app/Contents/MacOS")]
+    );
+}
+
+#[test]
+fn macos_open_preserves_xcode_fallback_and_other_app_errors() {
+    let dir = Path::new("/workspace");
+    for id in ["xcode", "vscode"] {
+        let mut calls = Vec::new();
+        let result = run_macos_open(find(id).unwrap(), dir, false, |program, args| {
+            calls.push((program.to_string(), args.to_vec()));
+            Err("launch failed".into())
+        });
+        assert_eq!(result, Err("launch failed".into()));
+        if id == "xcode" {
+            assert_eq!(
+                calls,
+                vec![
+                    ("xed".into(), vec!["/workspace".into()]),
+                    (
+                        "open".into(),
+                        vec!["-a".into(), "Xcode".into(), "/workspace".into()],
+                    ),
+                ]
+            );
+        } else {
+            assert_eq!(calls.len(), 1);
+        }
+    }
+}
+
+#[test]
 fn catalog_ids_are_unique() {
     let mut ids: Vec<_> = CATALOG.iter().map(|a| a.id).collect();
     ids.sort();
