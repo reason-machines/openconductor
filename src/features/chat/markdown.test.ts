@@ -118,6 +118,103 @@ test("plain file paths keep punctuation and multiple targets in order", () => {
   assert.match(html, /auth\.test\.ts<\/button>\./);
 });
 
+test("comma-adjacent bare relative paths keep both targets and the comma", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "src/a.ts,src/b.ts", workspacePath: "/repo",
+  }));
+  assert.deepEqual([...html.matchAll(/title="Open ([^"]+)"/g)].map((match) => match[1]), [
+    "/repo/src/a.ts", "/repo/src/b.ts",
+  ]);
+  assert.match(html, /src\/a\.ts<\/button>,<button[^>]+>src\/b\.ts<\/button>/);
+});
+
+test("a colon before a bare relative path stays text beside its file button", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "files:src/a.ts", workspacePath: "/repo",
+  }));
+  assert.deepEqual([...html.matchAll(/title="Open ([^"]+)"/g)].map((match) => match[1]), ["/repo/src/a.ts"]);
+  assert.match(html, /files:<button[^>]+>src\/a\.ts<\/button>/);
+});
+
+test("punctuation-adjacent file buttons invoke ordered file callbacks only", () => {
+  const opened: string[] = [];
+  const external: string[] = [];
+  const { create }: { create: (element: ReactElement) => {
+    root: { findAllByType: (type: "button") => Array<{ props: { className?: string; title?: string; onClick: () => void } }> };
+    unmount: () => void;
+  } } = createRequire(import.meta.url)("react-test-renderer");
+  const renderer = create(createElement(Markdown, {
+    text: "src/a.ts,src/b.ts", workspacePath: "/repo",
+    onOpenFile: (path) => opened.push(path), onOpenLink: (href) => external.push(href),
+  }));
+  try {
+    const buttons = renderer.root.findAllByType("button").filter((button) => button.props.className === "md-file-link");
+    assert.deepEqual(buttons.map((button) => button.props.title), ["Open /repo/src/a.ts", "Open /repo/src/b.ts"]);
+    for (const button of buttons) button.props.onClick();
+    assert.deepEqual(opened, ["/repo/src/a.ts", "/repo/src/b.ts"]);
+    assert.deepEqual(external, []);
+  } finally {
+    renderer.unmount();
+  }
+});
+
+test("space and parenthesis delimiters retain ordinary relative file targets", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "src/a.ts src/b.ts (src/c.ts)", workspacePath: "/repo",
+  }));
+  assert.deepEqual([...html.matchAll(/title="Open ([^"]+)"/g)].map((match) => match[1]), [
+    "/repo/src/a.ts", "/repo/src/b.ts", "/repo/src/c.ts",
+  ]);
+  assert.match(html, /<\/button> <button/);
+  assert.match(html, /\(<button[^>]+>src\/c\.ts<\/button>\)/);
+});
+
+test("punctuation does not widen absolute or dot-prefixed path recognition", () => {
+  for (const prefix of [",", "files:"]) {
+    for (const path of ["/repo/src/a.ts", "./src/a.ts", "../src/a.ts", "/outside/a.ts"]) {
+      const html = renderToStaticMarkup(createElement(Markdown, { text: `${prefix}${path}`, workspacePath: "/repo" }));
+      assert.doesNotMatch(html, /md-file-link|<button/, `${prefix}${path}`);
+      assert.ok(html.includes(`${prefix}${path}`));
+    }
+  }
+});
+
+test("punctuation-adjacent URL and explicit-link labels are not file buttons", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "https://example.com/src/a.ts,src/b.ts [src/a.ts,src/b.ts](https://example.org) [**files:src/c.ts**](https://example.net) [src/d.ts,src/e.ts][ref]\n\n[ref]: https://example.edu",
+    workspacePath: "/repo",
+  }));
+  assert.doesNotMatch(html, /md-file-link/);
+  assert.equal((html.match(/<a /g) ?? []).length, 4);
+  assert.match(html, /href="https:\/\/example\.com\/src\/a\.ts,src\/b\.ts"/);
+  assert.match(html, /<strong>files:src\/c\.ts<\/strong>/);
+});
+
+test("punctuation recognition leaves inline code and fenced paths on their code surfaces", () => {
+  const html = renderToStaticMarkup(createElement(Markdown, {
+    text: "`src/a.ts`\n\n```text\nsrc/b.ts,src/c.ts\n```", workspacePath: "/repo",
+  }));
+  assert.equal((html.match(/md-file-link/g) ?? []).length, 1);
+  assert.match(html, /<button[^>]+title="Open \/repo\/src\/a\.ts"><code class="md-code">src\/a\.ts<\/code><\/button>/);
+  assert.match(html, /<code[^>]*>src\/b\.ts,src\/c\.ts<\/code>/);
+});
+
+test("punctuation-adjacent paths remain text without an absolute workspace", () => {
+  for (const workspacePath of [undefined, "repo"]) {
+    const html = renderToStaticMarkup(createElement(Markdown, { text: "src/a.ts,src/b.ts files:src/c.ts", workspacePath }));
+    assert.doesNotMatch(html, /<button|<a /);
+    assert.match(html, /src\/a\.ts,src\/b\.ts files:src\/c\.ts/);
+  }
+});
+
+test("punctuation-adjacent paths still reject traversal and workspace roots", () => {
+  for (const path of ["src/../../escape.ts", "src/..", "src/../.", "src/../../repo"]) {
+    const html = renderToStaticMarkup(createElement(Markdown, { text: `files:${path}`, workspacePath: "/repo" }));
+    assert.doesNotMatch(html, /md-file-link|<button|<a /, path);
+    assert.ok(html.includes(`files:${path}`));
+  }
+});
+
 test("plain paths normalize dot segments before workspace containment", () => {
   const html = renderToStaticMarkup(createElement(Markdown, {
     text: "src/lib/../auth.ts /repo/src/./main.ts /repo/src/../../outside.ts ../escape.ts /repo-other/file.ts /repo/.",
