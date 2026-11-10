@@ -77,7 +77,7 @@ function fixture() {
       const relative = resolve(dirname(path), name).slice(process.cwd().length + 1).replace(/\\/g, "/").replace(/\.tsx?$/, "");
       return Object.prototype.hasOwnProperty.call(boundaries, relative) ? boundaries[relative] : load(relative);
     };
-    runInNewContext(`(function(require,module,exports){${outputText}\n})`, { console }, { filename: path })(require, module, module.exports);
+    runInNewContext(`(function(require,module,exports){${outputText}\n})`, { console, TextEncoder }, { filename: path })(require, module, module.exports);
     return module.exports;
   }
   const { PanelStrip: Strip } = load("src/components/PanelStrip");

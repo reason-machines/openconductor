@@ -41,6 +41,12 @@ The direct center controls do not claim a whole `WorkspaceView` render, native P
 
 Normal hosted CI discovers the file through `node --test "src/**/*.test.ts"`. The focused command, once prerequisites and capacity are admitted, is `node --test src/features/terminal/startingBody.test.ts`. An isolated dependency prefix can be selected with `TERMINAL_SSR_DEPS` without changing product code.
 
+## Hosted CI fixture correction
+
+On published head `1aa343f1983e503459bce4efe65ae60df063b04a`, [frontend unit CI](https://github.com/reason-machines/openconductor/actions/runs/42767065783/job/129665935304) discovered all nine new cases. Each failed before rendering with `TextEncoder is not defined` when the real `shellIntegration` module initialized its encoder. The VM fixture supplied only `console` and omitted Node's `TextEncoder` global. This is a fixture failure, not a failing assertion about terminal presentation.
+
+The correction supplies Node's actual `TextEncoder` to the VM. All component sources, reducer transitions, nine test bodies, and assertions stay unchanged. Hosted CI passed `npm run typecheck` and `npm run lint:colors` on the first head. The frontend build job failed at its duplicate unit-test step and skipped the build. The corrected head still needs CI; no local execution or product RED then GREEN result is claimed.
+
 ## Verification at source preparation
 
 - Passed: `git diff --check` on the prepared production diff.
