@@ -62,8 +62,22 @@ unmark/stay, the previous-file fallback, the last remaining unviewed file,
 wraparound, singleton and empty/unselected/missing-file guards. The four existing
 viewed tests and all selection/pointer assertions remain unchanged.
 
-At the initial published checkpoint production is unchanged. Hosted RED and
-subsequent same-assertion GREEN results are pending, not claimed.
+Hosted RED is verified at published head
+`67238bd4597c050205cad4b494bd6fbf31ac1709`: the
+[Diff frontend job](https://github.com/reason-machines/openconductor/actions/runs/42799617905/job/129773505107)
+ran 174 tests, passed 169 and failed exactly the five new navigation assertions
+(header/keyboard advance, previous fallback, final-unviewed advance, wraparound).
+The mark itself succeeded; the selected path stayed unchanged. All four new
+unmark/guard cases and all 165 previous diff tests passed.
+The [full frontend job](https://github.com/reason-machines/openconductor/actions/runs/42799617886/job/129773505910)
+also failed exactly those five cases. The hosted typecheck passed; its enclosing
+build job then failed at the same frontend tests before the build step.
+
+The minimal correction adds one shared production callback and uses it for both
+entry points. It guards a missing file, toggles the canonical current file,
+returns on unmark, and otherwise uses existing `open(step(...))` with the
+reference's direction condition. No test assertions were changed after RED.
+The hosted same-assertion GREEN result is pending, not claimed.
 
 Ordinary hosted command (unchanged workflow):
 
