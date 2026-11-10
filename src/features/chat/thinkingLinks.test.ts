@@ -5,6 +5,7 @@ import { test } from "node:test";
 import { runInNewContext } from "node:vm";
 import React from "react";
 import ts from "typescript";
+import type { TranscriptProps } from "./Transcript.tsx";
 import { Markdown } from "./markdown.ts";
 import { applyChatEvents, emptyTranscript } from "./reducer.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
@@ -51,7 +52,7 @@ async function fixture({ text, streaming = false, assistantText }: { text: strin
       }
     },
   }, { filename: "LinkMenu.tsx" });
-  const production: Record<string, unknown> = {};
+  const production: { Transcript?: React.ComponentType<TranscriptProps> } = {};
   const compiled = ts.transpileModule(transcriptStatements(), {
     fileName: "Transcript.tsx",
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022 },
@@ -75,6 +76,9 @@ async function fixture({ text, streaming = false, assistantText }: { text: strin
     MessageActions: unexpected("MessageActions"),
     reportLabel: unexpected("reportLabel"),
   }, { filename: "Transcript.tsx" });
+  assert.equal(typeof production.Transcript, "function");
+  assert.ok(production.Transcript);
+  const ProductionTranscript = production.Transcript;
 
   function transcript(thinking: string, running: boolean) {
     const result = applyChatEvents(emptyTranscript("thinking-links"), [
@@ -90,7 +94,7 @@ async function fixture({ text, streaming = false, assistantText }: { text: strin
   }
   const props = (thinking: string, running: boolean) => ({ transcript: transcript(thinking, running), now: () => Date.parse("2026-11-10T00:00:00Z") });
   let renderer: ReturnType<typeof create>;
-  await act(async () => { renderer = create(React.createElement(Reflect.get(production, "Transcript"), props(text, streaming))); });
+  await act(async () => { renderer = create(React.createElement(ProductionTranscript, props(text, streaming))); });
   const all = (predicate: (node: Node) => boolean): Node[] => renderer.root.findAll((node: Node) => typeof node.type === "string" && predicate(node));
   return {
     opened, copied, all,
@@ -107,7 +111,7 @@ async function fixture({ text, streaming = false, assistantText }: { text: strin
       await this.event(trigger[0]!, "onClick");
     },
     async update(thinking: string, running: boolean) {
-      await act(async () => { renderer.update(React.createElement(Reflect.get(production, "Transcript"), props(thinking, running))); });
+      await act(async () => { renderer.update(React.createElement(ProductionTranscript, props(thinking, running))); });
     },
     async close() { await act(async () => { renderer.unmount(); }); },
   };

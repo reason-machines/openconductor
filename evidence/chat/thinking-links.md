@@ -169,7 +169,7 @@ The first milestone changes only this note and NEW `src/features/chat/thinkingLi
 
 The seven tests cover HTTP and HTTPS opener interception, exact href preservation, both link context actions with isolated clipboard callbacks, completion after streaming, collapse/reopen, unchanged ordinary assistant links, Markdown formatting, escaped HTML and the existing code-copy control. The five Thinking-link cases are expected to fail before correction; the two preservation cases are expected to pass. Those are expectations, not observed hosted results yet.
 
-Locked regression SHA-256: `05d91d2abcd6fdd21c8707692a9ed19b5a92b59354b87d79ec9d9a06164e73a9`. Keep every assertion and all fixture bytes unchanged for GREEN after the intended hosted failures are established.
+Candidate regression SHA-256: `ccb50adaa7a013e04c869f748b3ceef286ebbe141b6eb6c069e920fbeeb50b49`. The first hosted attempt found a fixture-only TypeScript error: `Reflect.get` returned `unknown` at the two `React.createElement` call sites. The fixture now declares the extracted component with the actual production `TranscriptProps` type and checks that it was extracted. A Python comparison against the prior committed fixture confirmed all seven test bodies, inputs and behavioral assertions are byte-identical. The earlier `05d91d2a…` candidate was not a valid RED milestone. Once the intended hosted failures are established, keep every assertion and all fixture bytes unchanged for GREEN.
 
 The ledger reserved `Transcript.tsx` to #952's existing owner. Only after #952 merges and current main is revalidated may this lane add the existing `openUrl` and `LinkWithMenu` props to ThinkingRow's existing Markdown call. No import, shared helper, user-copy, UserText, SentUserContent, provider, persistence, ComposerEditor or FullMessageCopy/status work is part of this change. The PR targets main directly, never #952's branch. There is no additional approval gate after that file handoff and the proof.
 
@@ -177,7 +177,8 @@ The ledger reserved `Transcript.tsx` to #952's existing owner. Only after #952 m
 
 - **Passed:** `python3 .rea-work/assistant-affordance/audit_assistant_affordance.py 385bdea15dc8861f3f3c9c3e42405eb8acfe180b`. Both full asset identities, 15 locked spans, and all 15 source-chain/current-main assertions passed. The audit reads bytes and Git blobs without evaluating target JavaScript.
 - **Passed:** `git diff --check` and exact test-only scope review before publication.
-- **Pending:** automatic hosted frontend typecheck and seven-test RED. No failing-before behavioral result is claimed yet.
+- **Failed (fixture, not accepted RED):** at #955 head `25abe6b44ea64b11fd62879bebd33486bd91f8d9`, Frontend typecheck + build and the keybindings workflow's build failed with TS2769 at fixture lines 93 and 110. Keybindings' 90 logic tests passed. The only correction is the extracted component's fixture type and presence check; product code and seven test bodies remain unchanged.
+- **Pending:** automatic hosted frontend typecheck and seven-test RED on the corrected candidate. No valid failing-before behavioral result is claimed yet.
 - **Not run locally:** Node, unit/component tests, typecheck, build, installation, browser/application execution, native execution or provider activity. No manual workflow dispatch/rerun or duplicate CI observer was started.
 - **Acceptance gaps:** native/default-browser behavior, native clipboard, visual parity and provider acceptance remain unverified. No product screenshot exists because browser/native runtime acquisition is not admitted. The separately displayed report is a source-analysis page, not UI acceptance evidence.
 
