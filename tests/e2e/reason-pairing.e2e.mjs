@@ -89,7 +89,7 @@ async function fixture({ entry = "settings", strict = true, workspace, timeoutMs
       return this.state();
     },
     async start() {
-      await page.getByRole("button", { name: entry === "onboarding" ? "Sign up" : "Sign in with Reason", exact: true }).click();
+      await page.getByRole("button", { name: entry === "onboarding" ? "Sign up" : entry === "chat" ? "Sign in to Reason" : "Sign in with Reason", exact: true }).click();
       await this.waitState("waiting");
       await page.waitForFunction(() => Boolean(document.querySelector('[data-testid="reason-login-code"]')), null, { timeout: 5000 });
       for (let i = 0; i < 50 && !opened.length; i++) await new Promise((resolve) => setTimeout(resolve, 20));
@@ -133,6 +133,10 @@ for (const entry of ["settings", "onboarding", "chat"]) {
         assert.equal(connected.account.email, "sam@example.invalid");
         assert.equal(connected.account.workspaces.find((w) => w.selected).slug, "ws-beta");
         await f.page.getByTestId("reason-login-connected").getByText("Connected as sam@example.invalid.", { exact: true }).waitFor();
+        if (entry === "chat") {
+          await f.page.getByTestId("chat-reply").getByText("Reason (sam@example.invalid): hello back", { exact: true }).waitFor();
+          assert.equal(await f.page.getByTestId("chat-send-count").textContent(), "1", "pending message sends once in the same chat");
+        }
         if (entry === "onboarding") assert.equal(await f.page.getByTestId("onboarding-completion-count").textContent(), "1");
         assert.equal(f.opened.length, 1);
         await f.capture(`${entry}-connected-strict-${strict}`);
@@ -157,6 +161,26 @@ test("all entry points share one attempt across switches and control remounts", 
     await f.approve("alex", "ws-alpha");
     const connected = await f.waitState("connected");
     assert.equal(connected.account.email, "alex@example.invalid");
+  } finally { await f.close(); }
+});
+
+test("chat: signed-out send shows the card, Try again after cancel, and the reply arrives after pairing", async () => {
+  const f = await fixture({ entry: "chat" });
+  try {
+    await f.page.getByTestId("chat-sign-in").getByText("Sign in to Reason to use this agent.", { exact: false }).waitFor();
+    await f.start();
+    await f.page.getByRole("button", { name: "Cancel", exact: true }).click();
+    await f.waitState("cancelled");
+    assert.equal(await f.page.getByTestId("chat-send-count").textContent(), "0");
+    await f.page.getByRole("button", { name: "Try again", exact: true }).click();
+    await f.waitState("waiting");
+    for (let i = 0; i < 50 && f.opened.length < 2; i++) await new Promise((r) => setTimeout(r, 20));
+    await f.capture("chat-card-waiting");
+    await f.approve();
+    await f.waitState("connected");
+    await f.page.getByTestId("chat-reply").waitFor();
+    assert.equal(await f.page.getByTestId("chat-send-count").textContent(), "1");
+    await f.capture("chat-reply-after-sign-in");
   } finally { await f.close(); }
 });
 
