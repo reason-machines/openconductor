@@ -7,6 +7,7 @@ import { register } from "node:module";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { submittedUserPrompt } from "./userContent.ts";
+import type { CodexPayload } from "./codex.ts";
 import { writeComposerDraft } from "./composerDocument.ts";
 
 // Some chat imports omit `.ts` (Vite resolves them); resolve those here.
@@ -105,12 +106,12 @@ test("Codex adapter keeps V1 separate from exact inline attachment text through 
   assert.deepEqual(codex.codexSnapshot(chatId).transcript.messages[0]?.userContent, first.userContent);
   assert.deepEqual(codex.codexSnapshot(chatId).queue.items[0]?.userContent, second.userContent);
   const firstEnd = prompts.get(chatId);
-  emit({ chatId, type: "turnEnded", end: { outcome: "completed" } });
+  emit({ chatId, type: "turnEnded", outcome: "completed" } satisfies CodexPayload);
   firstEnd?.();
   await until(() => (promptTexts.get(chatId)?.length ?? 0) === 2, "queued rich prompt");
   assert.equal(promptTexts.get(chatId)?.[1], second.text);
   assert.deepEqual(codex.codexSnapshot(chatId).transcript.messages.filter((m) => m.role === "user").map((m) => m.userContent), [first.userContent, second.userContent]);
-  emit({ chatId, type: "turnEnded", end: { outcome: "completed" } });
+  emit({ chatId, type: "turnEnded", outcome: "completed" } satisfies CodexPayload);
   prompts.get(chatId)?.();
 });
 

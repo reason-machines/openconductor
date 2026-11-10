@@ -1349,7 +1349,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
           </div>
           {centerTerminal && (
             <section className="center-terminal terminal-panel" aria-label="Center terminal">
-              <TerminalHost key={centerTerminal.id} id={centerTerminal.id} />
+              <TerminalHost key={centerTerminal.id} id={centerTerminal.id} status={centerTerminal.status} />
             </section>
           )}
         </div>

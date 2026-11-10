@@ -69,7 +69,14 @@ fn malformed_optional_user_content_never_discards_the_message() {
         assert_eq!(parsed, original);
     }
     let mut value = base.clone();
-    for path in ["a\0b", "https://example.test/a", "file:///tmp/a", "//host/a", "a/../b", "a/./b"] {
+    for path in [
+        "a\0b",
+        "https://example.test/a",
+        "file:///tmp/a",
+        "//host/a",
+        "a/../b",
+        "a/./b",
+    ] {
         value["userContent"] = json!({"version": 1, "parts": [{"kind": "file", "path": path, "label": "x", "directory": false}], "attachments": []});
         let parsed: ChatMessage = serde_json::from_value(value.clone()).unwrap();
         assert_eq!(parsed, original);

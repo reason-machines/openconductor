@@ -81,7 +81,7 @@ test("actual submit snapshots atoms before asynchronous copy; later draft edits 
   const actualHost = hostSubmit(session, () => pending, (input, mode, attachments) => deliveries.push({ input, mode, attachments }));
   let sent: Promise<void> | undefined;
   composerSubmit(session, (...args) => { sent = actualHost(...args); })(false);
-  assert.deepEqual(deliveries, [], "no partial sent row before the copy completes");
+  assert.equal(deliveries.length, 0, "no partial sent row before the copy completes");
   session.setDraft("a later draft");
   copied();
   await sent;
@@ -109,7 +109,7 @@ test("actual host generation invalidation sends nothing and previously copied pa
   const send = actualHost({ text: "send" }, "queue");
   session.disconnect();
   copied(); await send;
-  assert.deepEqual(deliveries, []);
+  assert.equal(deliveries.length, 0);
   await session.connect();
   await hostSubmit(session, async () => assert.fail("already copied attachment"), (input) => deliveries.push(input))({ text: "send" }, "queue");
   assert.deepEqual(deliveries, [{ text: "send" }]);

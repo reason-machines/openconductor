@@ -40,9 +40,22 @@ not claimed. Directory chips are intentionally inert.
 
 ## Verification state
 
-Source-only pass: `git diff --check` PASSED. Behavioral tests, typecheck, Rust formatting/tests,
-Vite/Playwright, native/provider execution, packaging and installed-app acceptance NOT RUN.
-The ledger has not admitted their CPU/dependency/runtime use. No screenshot exists yet.
+Initial source-only pass: `git diff --check` PASSED. Subsequently the ledger-admitted focused
+`userContent.test.ts`, `queue.test.ts`, and `composerSubmit.test.ts` run PASSED 33/33, exit 0,
+TAP duration 20.179s. Actual guards: MemAvailable 26580320KiB; filesystem available 17694056KiB.
+The command used heap512/nice15/CPU6s/inner wall45s and concurrency1, with zero installs.
+That lease is released; no additional local check was inferred from it.
+
+New ready main PR #877 was created at published head `d69c4af2c63de9742f5e5cdc832319da2b7a0cdb`;
+merged #863 was not adopted. The initial hosted CI ran and failed on test assertion typing,
+three old retry scalar expectations, an invalid new Codex fixture event, and rustfmt. Source
+corrections preserve the assertions and use the typed Codex payload plus exact hosted formatter
+output. Local reruns/typecheck/Rust format or tests/browser/native/provider execution remain
+NOT RUN. No screenshot exists yet. The local main integration `5c1b52a7` contains the merged
+Stop barrier `e411fc1f9bb2a3ea8c9c3c67741384721702a408` without conflicts.
+
+The group-scoped queue editor selector is migrated under its narrow source lease; two
+pre-existing Composer focus expectations that still say `TEXTAREA` are deliberately unchanged.
 
 Focused commands prepared for separate sequential admission:
 

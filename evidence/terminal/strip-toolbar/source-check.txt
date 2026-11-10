@@ -1,0 +1,7 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+BEFORE e1687ee85a989d91a40f48932267d08b1a513a7f: FAILED: right-panel strip must not expose an extra Clear scrollback button
+
+true !== false
+
+AFTER: PASSED: no extra Clear scrollback toolbar button in PanelStrip source
