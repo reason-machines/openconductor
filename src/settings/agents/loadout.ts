@@ -27,7 +27,8 @@ export interface AcpFavorite {
   acpAgentId: string;
   modelId: string;
 }
-export type Favorite = BuiltInFavorite | AcpFavorite;
+export type Favorite = (BuiltInFavorite | AcpFavorite) & { slot?: number };
+export type LoadoutSlot = Favorite | null;
 
 /** Conductor's built-in default effort per agent (`Uv.<agent>.defaultLevel`). */
 export const DEFAULT_EFFORT: Record<AgentKind, string | undefined> = { reason: undefined, claude: "high", codex: "medium" };
@@ -52,13 +53,16 @@ export function parseFavorites(rows: readonly FavoriteRow[]): Favorite[] {
       continue;
     }
     if (!isObj(c)) continue;
+    const position = Number.isInteger(c.slot) && Number(c.slot) >= 0 && Number(c.slot) < LOADOUT_SLOTS ? { slot: Number(c.slot) } : {};
     if (c.type === "acp" && typeof c.acpAgentId === "string" && typeof c.modelId === "string") {
-      out.push({ id: row.id, type: "acp", acpAgentId: c.acpAgentId, modelId: c.modelId });
+      out.push({ id: row.id, type: "acp", acpAgentId: c.acpAgentId, modelId: c.modelId, ...position });
     } else if (c.type === "built-in" && typeof c.model === "string") {
-      const agent = isReasonModel(c.model) ? "reason" : agentForModel(c.model);
+      if (c.agent !== undefined && !isAgent(c.agent)) continue;
+      const agent = isAgent(c.agent) ? c.agent : isReasonModel(c.model) ? "reason" : agentForModel(c.model);
       if (!agent) continue;
       out.push({
         id: row.id,
+        ...position,
         type: "built-in",
         agent,
         model: c.model,
@@ -75,8 +79,8 @@ export function toRows(favorites: readonly Favorite[]): FavoriteRow[] {
 }
 
 /** The effort the settings give `model` for new chats (or reviews). */
-export function settingsEffort(settings: Settings, model: string, purpose: "default" | "review" = "default"): string | undefined {
-  const agent = isReasonModel(model) ? "reason" : agentForModel(model) ?? "claude";
+export function settingsEffort(settings: Settings, model: string, purpose: "default" | "review" = "default", explicitAgent?: AgentKind): string | undefined {
+  const agent = explicitAgent ?? (isReasonModel(model) ? "reason" : agentForModel(model) ?? "claude");
   if (agent === "reason") return settings.reason?.reasoning_effort ?? undefined;
   if (agent === "claude") {
     const c = settings.models.claude_code;
@@ -87,8 +91,10 @@ export function settingsEffort(settings: Settings, model: string, purpose: "defa
   return undefined;
 }
 
-export function builtIn(id: string, model: string, thinkingLevel?: string, fastMode = false): BuiltInFavorite {
-  const agent = isReasonModel(model) ? "reason" : agentForModel(model) ?? "claude";
+const isAgent = (value: unknown): value is AgentKind => value === "reason" || value === "claude" || value === "codex";
+
+export function builtIn(id: string, model: string, thinkingLevel?: string, fastMode = false, explicitAgent?: AgentKind): BuiltInFavorite {
+  const agent = explicitAgent ?? (isReasonModel(model) ? "reason" : agentForModel(model) ?? "claude");
   const level = thinkingLevel ?? DEFAULT_EFFORT[agent];
   return { id, type: "built-in", agent, model, ...(level ? { thinkingLevel: level } : {}), fastMode };
 }
@@ -96,8 +102,7 @@ export function builtIn(id: string, model: string, thinkingLevel?: string, fastM
 /** Slot 1 as the settings describe it: the default model (a removed Cursor id reads as the default) with its effort and fast mode. */
 export function defaultFavorite(settings: Settings, id = "default"): BuiltInFavorite {
   const model = storedModel(settings.models.default || AGENT_DEFAULT_MODEL.claude);
-  const fav = builtIn(id, model, settingsEffort(settings, model), settings.models.default_fast_mode === true);
-  return settings.models.default_agent ? { ...fav, agent: settings.models.default_agent } : fav;
+  return builtIn(id, model, settingsEffort(settings, model, "default", settings.models.default_agent), settings.models.default_fast_mode === true, settings.models.default_agent);
 }
 
 /**
@@ -109,6 +114,51 @@ export function displayedLoadout(settings: Settings, stored: readonly Favorite[]
   if (settings.models.default_initialized === false && stored.length === 0) return [];
   if (stored.length === 0) return [defaultFavorite(settings)];
   return stored.map((f, i) => (i === 0 ? defaultFavorite(settings, f.id) : f));
+}
+
+/** Five physical positions. Legacy compact rows keep their order and settings-derived default. */
+export function loadoutSlots(settings: Settings, stored: readonly Favorite[]): LoadoutSlot[] {
+  const slots: LoadoutSlot[] = Array(LOADOUT_SLOTS).fill(null);
+  const positioned = stored.some((f) => f.slot !== undefined);
+  const favorites = positioned ? stored : displayedLoadout(settings, stored);
+  favorites.forEach((f, index) => {
+    const slot = positioned ? f.slot : index;
+    if (slot === undefined || !validSlot(slot) || slots[slot]) return;
+    const { slot: _position, ...favorite } = f;
+    slots[slot] = favorite;
+  });
+  return slots;
+}
+
+const validSlot = (index: number) => Number.isInteger(index) && index >= 0 && index < LOADOUT_SLOTS;
+const physicalSlots = (slots: readonly LoadoutSlot[]): LoadoutSlot[] => Array.from({ length: LOADOUT_SLOTS }, (_, i) => slots[i] ?? null);
+
+export function equipSlot(slots: readonly LoadoutSlot[], fav: Favorite, index: number): LoadoutSlot[] {
+  const next = physicalSlots(slots);
+  if (validSlot(index)) next[index] = { ...fav, id: next[index]?.id ?? fav.id };
+  return next;
+}
+
+export function moveSlot(slots: readonly LoadoutSlot[], from: number, to: number): LoadoutSlot[] {
+  const next = physicalSlots(slots);
+  if (validSlot(from) && validSlot(to)) next.splice(to, 0, next.splice(from, 1)[0]);
+  return next;
+}
+
+export function clearSlot(slots: readonly LoadoutSlot[], index: number): LoadoutSlot[] {
+  const next = physicalSlots(slots);
+  if (validSlot(index)) next[index] = null;
+  return next;
+}
+
+/** Slot metadata lives in configuration JSON; no database schema migration is needed. */
+export function slotsToRows(slots: readonly LoadoutSlot[]): FavoriteRow[] {
+  return physicalSlots(slots).flatMap((favorite, slot) => favorite ? toRows([{ ...favorite, slot }]) : []);
+}
+
+export function withLoadoutDefault(settings: Settings, slots: readonly LoadoutSlot[]): Settings {
+  const first = slots[0];
+  return first?.type === "built-in" ? withDefault(settings, first) : { ...settings, models: { ...settings.models, default_initialized: false } };
 }
 
 /** Puts `fav` in slot `index`: replaces an occupied slot, appends at the next free one. */
