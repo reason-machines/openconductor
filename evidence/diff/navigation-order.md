@@ -141,13 +141,32 @@ four-label Focus menu assertion in `sidebar-sections.e2e.mjs`. Neither cause is
 established. Their existing owners retain diagnosis. No assertion was weakened
 and this receipt does not classify either failure as unrelated or flaky.
 
-The branch now incorporates main
+Published head `6c5f12352f17ca6f487375f81080562b1fa9f51b` incorporates main
 `75a1196dd92f9303474067296e5d64500078180c`, including #906's diagnostic-only paste
 coverage. Its composer test matches main blob
-`6e9419aa7323a3b930e3e11be64fd5c9da40b25c`. The Diff hook and regression blobs
-are unchanged by this merge. This is a new diagnostic input, not a repair or
-clearance of the historical failures. New exact-head automatic results remain
-pending. #909's separate Focus diagnostic is not included in this main pin.
+`6e9419aa7323a3b930e3e11be64fd5c9da40b25c`. The Diff frontend and both OS Rust
+checks passed. The automatic
+[Keybindings job](https://github.com/reason-machines/openconductor/actions/runs/42835101427/job/129895096019)
+failed one subtest, with 201 passed, one failed and one skipped. Its new immediate
+post-fill precondition observed lengths `0, 0, 270` before the three paste inputs.
+The third iteration failed `270 !== 0` at line 105, before the short paste and final
+Undo. All three isolated text, no-attachment, Undo and Redo controls passed. The
+Focus menu assertion did not fail in that run. This establishes a nonempty shared
+fixture at the observation point, not its cause or a product threshold defect.
+The existing composer owner retains causal diagnosis. The original assertions
+remain unchanged.
+
+The branch now also incorporates main
+`1771b07d72c7cbb44e9d4617a0d18d59b75b57b2`, including #909's diagnostic-only Focus
+coverage. The Focus test matches main blob
+`ded6aaa77027c24be8d33298958c9d406977ac13`. Both scoped #909 diagnostic paths are
+byte-identical to its checked PR head `9f3cf0fe20791bfc380dbc00666f63a76fccc2ad`.
+The immediate query and exact four-label assertion remain intact. The Diff hook
+remains blob `ece91c83a54945925b98fee9de026612c71020d5`; the regression remains
+blob `30bd102e8b7726f54a1741a95a22f044dbcfbd1d`, byte-identical to RED. Neither main
+integration is a repair or clearance of historical failures. New exact-head
+automatic checks are required before merge. There is no additional diagnostic
+writer, consumer observer or runtime admission.
 
 Capacity restrictions prohibit local tests, builds and dependency installation,
 so no local executable regression or typecheck ran. Local `git diff --check` is
