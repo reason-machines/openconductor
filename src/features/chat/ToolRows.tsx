@@ -5,7 +5,7 @@
 // below; collapsed is the default and the right-hand part hides while open,
 // except for rows whose right part is a file badge.
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { FILE_GLYPHS, LUCIDE, type IconNode } from "./toolIconData.ts";
 import {
   askUserState,
@@ -168,8 +168,8 @@ export function FileGlyph({ path }: { path: string }) {
   );
 }
 
-export function FileBadge({ path, onOpen, children, className }: { path: string; onOpen?: (path: string) => void; children?: ReactNode; className?: string }) {
-  return (
+export function FileBadge({ path, onOpen, children, className, hoverContent }: { path: string; onOpen?: (path: string) => void; children?: ReactNode; className?: string; hoverContent?: ReactNode }) {
+  const button = (
     <button
       type="button"
       className={`oc-file-badge filebadge${className ? ` ${className}` : ""}`}
@@ -183,6 +183,82 @@ export function FileBadge({ path, onOpen, children, className }: { path: string;
       <span className="oc-file-badge-name">{baseName(path)}</span>
       {children}
     </button>
+  );
+  return hoverContent ? <FileBadgeHover content={hoverContent}>{button}</FileBadgeHover> : button;
+}
+
+function FileBadgeHover({ content, children }: { content: ReactNode; children: ReactNode }) {
+  const anchor = useRef<HTMLSpanElement>(null);
+  const card = useRef<HTMLDivElement>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [at, setAt] = useState<{ left: number; top: number } | null>(null);
+  const open = at !== null;
+  function clearTimer() {
+    if (timer.current !== null) clearTimeout(timer.current);
+    timer.current = null;
+  }
+  function close() {
+    clearTimer();
+    setAt(null);
+  }
+  function enter() {
+    clearTimer();
+    if (open) return;
+    timer.current = setTimeout(() => {
+      timer.current = null;
+      const rect = anchor.current?.getBoundingClientRect();
+      if (rect) setAt({ left: rect.left, top: rect.top - 8 });
+    }, 150);
+  }
+  function leave() {
+    clearTimer();
+    if (open) timer.current = setTimeout(close, 100);
+  }
+  useEffect(() => () => clearTimer(), []);
+  useEffect(() => {
+    if (!open || !anchor.current || !card.current) return;
+    const trigger = anchor.current.getBoundingClientRect();
+    const popup = card.current.getBoundingClientRect();
+    setAt({
+      left: Math.max(16, Math.min(trigger.left, window.innerWidth - popup.width - 16)),
+      top: Math.max(16, Math.min(trigger.top - popup.height - 8, window.innerHeight - popup.height - 16)),
+    });
+    const key = (event: KeyboardEvent) => { if (event.key === "Escape") close(); };
+    const scroll = (event: Event) => {
+      if (event.target instanceof Node && card.current?.contains(event.target)) return;
+      close();
+    };
+    window.addEventListener("keydown", key);
+    window.addEventListener("resize", close);
+    window.addEventListener("scroll", scroll, true);
+    return () => {
+      window.removeEventListener("keydown", key);
+      window.removeEventListener("resize", close);
+      window.removeEventListener("scroll", scroll, true);
+    };
+  }, [open]);
+  return (
+    <span
+      ref={anchor}
+      style={{ display: "inline-flex", minWidth: 0, maxWidth: "100%" }}
+      onPointerEnter={(event) => { if (event.pointerType !== "touch") enter(); }}
+      onPointerLeave={leave}
+    >
+      {children}
+      {at ? (
+        <div
+          ref={card}
+          role="region"
+          aria-label="File change preview"
+          style={{ position: "fixed", left: at.left, top: at.top, zIndex: 1000, width: "28rem", maxWidth: "calc(100vw - 32px)", maxHeight: "min(20rem, calc(100vh - 32px))", overflow: "auto", border: "1px solid var(--oc-border)", borderRadius: 6, background: "var(--oc-bg)", color: "var(--oc-fg)", whiteSpace: "normal" }}
+          onPointerEnter={clearTimer}
+          onPointerLeave={leave}
+          onClick={(event) => event.stopPropagation()}
+        >
+          {content}
+        </div>
+      ) : null}
+    </span>
   );
 }
 
@@ -455,7 +531,7 @@ function MultiEditRow({ input, onOpenFile, ...shell }: ShellBase & { input: Reco
       left={<span>{`${edits.length} ${edits.length === 1 ? "edit" : "edits"}`}</span>}
       right={
         <div className="oc-tool-right-row">
-          {path ? <FileBadge path={path} onOpen={onOpenFile} /> : null}
+          {path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={<DiffBlock oldText={edits.map((edit) => stripMarkers(s(edit.old_string))).join("\n")} newText={edits.map((edit) => stripMarkers(s(edit.new_string))).join("\n")} />} /> : null}
           <LineCounts {...totals} />
         </div>
       }
