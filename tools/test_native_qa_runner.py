@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import plistlib
 import stat
 import subprocess
 import sys
@@ -137,6 +138,8 @@ class RunnerContractTests(unittest.TestCase):
         for forbidden in ("(allow default)", "(import", "(allow mach", "(allow network", "file-write*", "file-write-create"):
             self.assertNotIn(forbidden, runner.POLICY)
         self.assertEqual(runner.POLICY.count("(allow file-write-data"), len(runner.MUTABLE_FILES))
+        self.assertIn('(literal "/")', runner.POLICY)
+        self.assertNotIn('(subpath "/")', runner.POLICY)
         with patch.object(runner.sys, "platform", "darwin"), patch.object(runner.Path, "is_file", return_value=True), patch.object(runner.os, "access", return_value=True):
             command = runner._sandbox_command(self.spec())
         self.assertEqual(command[command.index("-p") + 1], runner.POLICY)
@@ -189,6 +192,13 @@ int main(int argc, char **argv) {
     int length = snprintf(pid, sizeof(pid), "%d\n", getpid());
     if (write(marker, pid, (size_t)length) != length) return 82;
     close(marker);
+    int read_fd = open("../sibling/read", O_RDONLY);
+    int outside_read = read_fd >= 0 ? 0 : errno;
+    if (read_fd >= 0) {
+        char byte;
+        outside_read = read(read_fd, &byte, 1) == 1 ? 0 : errno;
+        close(read_fd);
+    }
     int outside = write_path("../sibling/direct");
     int traversal = write_path("data/../../sibling/traversal");
     int prefix = write_path("../root-sibling/prefix");
@@ -238,10 +248,10 @@ int main(int argc, char **argv) {
         local = state >= 0 && read(state, data, 7) == 7 && strcmp(data, "changed") == 0 ? 0 : 87;
         if (state >= 0) close(state);
     } else return 88;
-    printf("{\"pid\":%d,\"completed\":true,\"outside\":%d,\"traversal\":%d,\"prefix\":%d,"
+    printf("{\"pid\":%d,\"completed\":true,\"outside_read\":%d,\"outside\":%d,\"traversal\":%d,\"prefix\":%d,"
            "\"alias_file\":%d,\"alias_dir\":%d,\"hard_alias\":%d,\"symlink_create\":%d,\"hardlink_create\":%d,"
            "\"mmap_open\":%d,\"mmap\":%d,\"msync\":%d,\"inherited_fd\":%d,\"child\":%d,\"local\":%d,\"stdin_empty\":%s}\n",
-           getpid(), outside, traversal, prefix, alias_file, alias_dir, hard_alias, symlink_create, hardlink_create,
+           getpid(), outside_read, outside, traversal, prefix, alias_file, alias_dir, hard_alias, symlink_create, hardlink_create,
            map_open, mapped, flushed, inherited, child_errno, local, stdin_empty ? "true" : "false");
     return 0;
 }
@@ -277,13 +287,15 @@ class NativeSentinelTests(unittest.TestCase):
                                 env={"PATH": "/usr/bin:/bin", "HOME": str(self.parent), "TMPDIR": str(self.parent)})
         self.assertEqual(result.returncode, 0, result.stderr)
         self.reset_canaries()
-        print(json.dumps({"macos": platform.mac_ver()[0], "build": os.uname().release,
-                          "architecture": platform.machine(), "policy_version": runner.POLICY_VERSION,
+        system = plistlib.loads(Path("/System/Library/CoreServices/SystemVersion.plist").read_bytes())
+        print(json.dumps({"macos": platform.mac_ver()[0], "build": system["ProductBuildVersion"],
+                          "kernel": os.uname().release, "architecture": platform.machine(),
+                          "policy_version": runner.POLICY_VERSION,
                           "policy_sha256": runner.POLICY_SHA256,
                           "sentinel_sha256": hashlib.sha256(self.exe.read_bytes()).hexdigest()}), flush=True)
 
     def reset_canaries(self):
-        for name in ("direct", "traversal", "alias", "alias-file", "hardlink", "mapped", "child", "fd"):
+        for name in ("direct", "traversal", "alias", "alias-file", "hardlink", "mapped", "child", "fd", "read"):
             (self.sibling / name).write_bytes(b"original-canary")
         (self.prefix / "prefix").write_bytes(b"original-canary")
 
@@ -311,7 +323,9 @@ class NativeSentinelTests(unittest.TestCase):
                 path.unlink()
 
     def observe(self, result):
-        self.assertEqual(result.returncode, 0, result.stderr)
+        marker = (self.root / "tmp/confinement-startup").read_text().strip()
+        self.assertEqual(result.returncode, 0,
+                         f"stdout={result.stdout!r} stderr={result.stderr!r} startup_marker={marker!r}")
         observed = json.loads(result.stdout)
         self.assertIs(observed["completed"], True)
         self.assertEqual(observed["local"], 0)
@@ -321,7 +335,7 @@ class NativeSentinelTests(unittest.TestCase):
 
     def assert_denials(self, observed, aliases=False):
         denied = (errno.EPERM, errno.EACCES)
-        for key in ("outside", "traversal", "prefix", "child", "symlink_create", "hardlink_create"):
+        for key in ("outside_read", "outside", "traversal", "prefix", "child", "symlink_create", "hardlink_create"):
             self.assertIn(observed[key], denied, key)
         if aliases:
             for key in ("alias_file", "alias_dir", "hard_alias"):
@@ -351,10 +365,13 @@ class NativeSentinelTests(unittest.TestCase):
                                          env={"OC_NATIVE_QA_ROOT": str(self.root)}, pass_fds=(43,),
                                          stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=10)
                 observed = self.observe(control)
-                for key in ("outside", "traversal", "prefix", "alias_file", "alias_dir", "hard_alias",
+                for key in ("outside_read", "outside", "traversal", "prefix", "alias_file", "alias_dir", "hard_alias",
                             "symlink_create", "hardlink_create", "mmap_open", "mmap", "msync", "inherited_fd", "child"):
                     self.assertEqual(observed[key], 0, f"unconfined control did not exercise {key}")
-                self.assertTrue(all(path.read_bytes() != b"original-canary" for path in self.sibling.iterdir()))
+                self.assertTrue(all(path.read_bytes() != b"original-canary" for path in self.sibling.iterdir()
+                                    if path.name != "read"))
+                self.assertEqual((self.sibling / "read").read_bytes(), b"original-canary")
+                self.assertNotEqual((self.prefix / "prefix").read_bytes(), b"original-canary")
                 for path in aliases:
                     path.unlink()
                 self.remove_created_links()
@@ -362,6 +379,7 @@ class NativeSentinelTests(unittest.TestCase):
                 before = self.snapshot()
                 pids = []
                 for phase in (runner.Probe.STORAGE_WRITE, runner.Probe.STORAGE_READ):
+                    (self.root / "tmp/confinement-startup").write_text("pending")
                     result = runner.run_probe(runner.LaunchSpec(self.root, self.exe, phase, token="a" * 32))
                     observed = self.observe(result)
                     self.assertEqual(observed["pid"], result.pid)

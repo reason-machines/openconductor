@@ -37,7 +37,9 @@ The policy starts with `deny default` and imports no base profile. Paths reach
 `sandbox-exec` through `-D` parameters, never interpolated policy text. Fork is
 allowed separately from exec, which is restricted to the exact staged
 executable. Read and executable mapping permissions cover staged code and the
-specified system library trees. There are no Mach, XPC, or network allow rules.
+specified system library trees. Exact `file-read-data` and `file-read-metadata`
+permissions on the literal root node `/` support dynamic-loader path resolution;
+there is no `/` subtree allowance. There are no Mach, XPC, or network allow rules.
 No network or service lookup is exercised by the sentinel.
 
 Code, configuration, and directory entries remain read-only. Only
@@ -84,7 +86,8 @@ fork plus exec. A fresh startup marker and completion record distinguish a
 working sentinel from startup failure. All target bytes are synthetic.
 
 The accepted-runner test then requires explicit denial errnos, a real reaped
-fork-and-exec child, closed FD 43, disconnected stdin, in-root data writes, and
+fork-and-exec child, outside-content read denial, closed FD 43, disconnected stdin,
+in-root data writes, and
 successful state reads after a distinct-process relaunch. The parent compares
 outside bytes, inode, size, mode, link count, mtime, and ctime. Mmap open, mapping,
 and flush outcomes are reported separately; an open denial is not a claim that
