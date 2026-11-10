@@ -1,0 +1,26 @@
+{
+  "assigned_branch": "reason/openconductor-publish-he-423055dd",
+  "prior_pr": "https://github.com/reason-machines/openconductor/pull/781",
+  "prior_pr_state_observed": "closed and merged; no open PR on assigned branch; initial worktree clean",
+  "incorporated_main": "6725aad442a4423b710123bd958478b50117faf6",
+  "ordinary_merge_commit": "10a6666bfb477cb27ab06385052a1026cf475e79",
+  "conflict": "Only WorkspaceView.tsx WorkspaceBranchHeader import; old #781 squash ancestry",
+  "clearance": {
+    "coordinator_receipt_prefix": "6353dbe9",
+    "home_owner_message": "4ced948f-b811-45c4-8adf-99de18f92b9b",
+    "ledger_direct_message": "072e497d-b4e3-406b-ae0e-352ebc6d6f5c",
+    "scope": "Merge-only; preserve exact merging main WorkspaceView verbatim, no semantic product edit"
+  },
+  "workspace_view_git_blob_both_main_and_resolution": "64f1cbb537b5a4e7d070b7cbd24a08df0a3a0358",
+  "verification": [
+    "MERGE_HEAD equals the exact incorporated_main before resolving",
+    "git hash-object src/components/WorkspaceView.tsx equals git rev-parse 6725aad:src/components/WorkspaceView.tsx",
+    "git diff --exit-code 6725aad -- src/components/WorkspaceView.tsx passed",
+    "git diff --cached --exit-code 6725aad passed before merge commit; the entire staged tree matched main",
+    "git merge-base --is-ancestor 6725aad HEAD passed after ordinary merge",
+    "No unmerged paths remained; only the reserved HelpMenu hunk and new test/evidence were uncommitted"
+  ],
+  "merge_only_lease": "RELEASED immediately to ledger and Home owner after merge proof",
+  "runtime": "No rerun of the released RED/GREEN test pair and no broader runtime during this merge",
+  "strategy": "Normal merge on assigned branch; no reset, branch switch, history rewrite, stacked PR or ours strategy"
+}

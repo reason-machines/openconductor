@@ -4,7 +4,7 @@ import { scrollbackBytesFromMegabytes, scrollbackLimitBytes, scrollbackLimitMega
 import { withTopLevel } from "./agentSettings";
 import { PrefSwitchRow, Toggle } from "./controls";
 import { Row } from "./GeneralPage";
-import { FolderIcon } from "./icons";
+import { CloseIcon, FolderIcon } from "./icons";
 import { RootPathRow } from "./RootPathRow";
 import { ExecutablePathRow } from "./rows/AgentOptionRows";
 import type { Settings } from "./types";
@@ -115,11 +115,12 @@ function PathRow({
     }
   };
   const field = (
-    <span className="settings-field-wrap">
-      <input
-        type="text"
-        aria-label={label}
-        className="settings-field mono"
+    <div className="oc-agent-exec-controls">
+      <span className="settings-field-wrap oc-agent-exec-field">
+        <input
+          type="text"
+          aria-label={label}
+          className="settings-field mono"
           placeholder={placeholder}
           autoComplete="off"
           spellCheck={false}
@@ -134,6 +135,21 @@ function PathRow({
           <FolderIcon size={14} />
         </button>
       </span>
+      {value && (
+        <button
+          type="button"
+          className="oc-agent-icon-btn"
+          title="Reset to auto-generated key"
+          aria-label="Reset to auto-generated key"
+          onClick={() => {
+            setText("");
+            onSave("");
+          }}
+        >
+          <CloseIcon size={14} />
+        </button>
+      )}
+    </div>
   );
   if (plain)
     return (

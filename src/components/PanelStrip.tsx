@@ -177,7 +177,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
       </div>
       {showTerminal && (
         <section className="terminal-panel" aria-label="Terminal">
-          <TerminalHost key={activeTerm.id} id={activeTerm.id} />
+          <TerminalHost key={activeTerm.id} id={activeTerm.id} status={activeTerm.status} />
         </section>
       )}
     </section>
