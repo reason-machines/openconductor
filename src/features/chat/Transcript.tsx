@@ -24,6 +24,8 @@ import type { ChatAgentId } from "./agentChoice.ts";
 import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
 import { openAgentSettings } from "./ChatModelPicker.tsx";
 import { thinkingChipText } from "./thinkingChip.ts";
+import { SentUserContent } from "./SentUserContent.tsx";
+import type { UserPrompt } from "./userContent.ts";
 import "./chat.css";
 
 export interface TranscriptProps {
@@ -33,7 +35,7 @@ export interface TranscriptProps {
   /** "Don't collapse tool calls" setting: summary rows stay open. */
   dontCollapseToolCalls?: boolean;
   /** Sends a failed or cancelled turn's prompt again. */
-  onRetry?: (prompt: string, turnId: string) => void;
+  onRetry?: (prompt: UserPrompt, turnId: string) => void;
   /** Opens "Reset chat?" for a turn that can be reset. */
   onResetChat?: (turnId: string) => void;
   /** "Fork to new tab" in every finished turn's More actions menu. */
@@ -159,7 +161,7 @@ interface RowContext {
     isOpen: (summaryId: string, turnRunning: boolean) => boolean;
     toggle: (summaryId: string, open: boolean) => void;
   };
-  onRetry?: (prompt: string, turnId: string) => void;
+  onRetry?: (prompt: UserPrompt, turnId: string) => void;
   onResetChat?: (turnId: string) => void;
   resetDisabled: boolean;
   turnFooter?: (turnId: string) => ReactNode;
@@ -180,7 +182,7 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
         <div className="chat-msg chat-user oc-msg-user" data-message-role="user">
           <div className="oc-user-col">
             <div className="chat-bubble oc-bubble">
-              <div className="oc-user-text">{row.text}</div>
+              <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : row.text}</div>
               <MessageActions text={row.text} />
             </div>
             {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
