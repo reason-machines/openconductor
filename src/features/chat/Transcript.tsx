@@ -6,7 +6,7 @@
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
-import { Fragment, useMemo, useState, type ReactNode } from "react";
+import { Fragment, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
 import { turnMenuItems, TURN_MENU_TOOLTIP, TURN_MENU_TRIGGER_LABEL, type TurnMenuItem } from "./turnMenu.ts";
@@ -16,7 +16,7 @@ import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./v
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
 import { Markdown } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
-import { turnTime } from "./turnTime.ts";
+import { turnDayClock, turnTime } from "./turnTime.ts";
 import { TurnDetails } from "./TurnDetails.tsx";
 import { turnAgentLabel } from "./fork.ts";
 import { openUrl } from "../../backend.ts";
@@ -78,6 +78,8 @@ export function Transcript({
   chatAgent,
   notify,
 }: TranscriptProps) {
+  const clock = useMemo(() => turnDayClock(now), [now]);
+  const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const turns = useMemo(() => groupTurns(rows), [rows]);
   const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
@@ -96,7 +98,7 @@ export function Transcript({
     turnFooter,
     workspacePath,
     onOpenFile,
-    now,
+    now: () => day,
     onForkToNewTab,
     onForkToNewWorkspace,
     forkDisabled,
