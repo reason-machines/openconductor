@@ -94,8 +94,31 @@ Ordinary automatic hosted workflow command:
 node --experimental-strip-types --test src/features/diff/*.test.ts
 ```
 
-This first checkpoint changes only the regression and evidence. Production is
-unchanged pending hosted failing-before results. Local tests, dependency
-installation, typecheck, build, browser, app, native execution, and screenshots
-are not admitted and were not run. No rerun, dispatch, acquisition, or additional
+## Hosted failing-before result
+
+The first published head `2fd55a5aaf2bb59418473970b072480042e45f66` changed
+only the regression and evidence. The automatic
+[Diff frontend job 130059816452](https://github.com/reason-machines/openconductor/actions/runs/42881835638/job/130059816452)
+ran the command above and failed exactly the ten intended saved-body cases.
+The log records `expected: 1`, `actual: 0` for the missing confirmation.
+Failures are Cancel tests 47 through 50 and 56, and Escape tests 57 through
+60 and 66, log lines 447 through 752. All ten neighboring controls passed.
+The complete Diff suite reported 221 tests, 211 passed, 10 failed, and none
+skipped. The six existing Delete regressions also passed.
+
+## Minimal correction checkpoint
+
+`Composer.cancel` now compares a saved body exactly against its initial value.
+An empty initial value identifies a new composer in the existing API, for
+which trimmed-empty drafts still dismiss without confirmation. Existing
+saved comments have nonblank bodies, enforced by the unchanged add and edit
+boundaries. No new component prop, store state, dialog, or save behavior is
+introduced.
+
+`commentCancel.test.ts` remains byte-identical to the failing-before head,
+Git blob `40f185fd525d66bf1ba4222c71abf7db6e6846b2`. Hosted passing-after
+execution is pending. Local `git diff --check`, source-only diff review, and
+unchanged-regression comparison passed. Local tests, dependency installation,
+typecheck, build, browser, app, native execution, and screenshots are not
+admitted and were not run. No rerun, dispatch, acquisition, or additional
 observer was started. #847 FULL STOP remains intact.

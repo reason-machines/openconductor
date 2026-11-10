@@ -71,7 +71,8 @@ const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
 function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }: { initial?: string; placeholder?: string; submitLabel: string; onSubmit: (body: string) => void; onCancel: () => void }) {
   const [text, setText] = useState(initial);
   const cancel = () => {
-    if (text.trim() && text.trim() !== initial.trim() && !window.confirm("Discard this comment? What you wrote will be lost.")) return;
+    const dirty = initial === "" ? text.trim() !== "" : text !== initial;
+    if (dirty && !window.confirm("Discard this comment? What you wrote will be lost.")) return;
     onCancel();
   };
   const submit = () => {
