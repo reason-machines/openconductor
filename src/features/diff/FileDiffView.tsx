@@ -165,6 +165,7 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
       onLineSelectionEnd: clickable
         ? (r: SelectedLineRange | null) => {
             if (r) latest.current.onLineClick?.(rangeOf(r, wholeFile ? fileSide : fromPierreSide(r.side)));
+            else setSelection(null);
           }
         : undefined,
       diffStyle: layout === "split" ? "split" : "unified",

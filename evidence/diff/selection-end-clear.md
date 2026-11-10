@@ -61,8 +61,9 @@ React 18.3.1, react-test-renderer 18.3.1 and TypeScript are existing dependencie
 No workflow, fixture infrastructure, dependency or compiler setting changes are
 needed.
 
-- Hosted failing-before evidence: pending the regression-only checkpoint.
-- Hosted passing-after evidence: not run; production remains unchanged at this checkpoint.
+- Hosted failing-before evidence: [Diff run 42781985285, job 129713952114](https://github.com/reason-machines/openconductor/actions/runs/42781985285/job/129713952114) at regression-only head `4d83b8c0415a402149ffd9e3e18cf631fb97a126` completed with 161 passing and four failing tests. Tests 124–127 failed because `selectedLines` retained the previous range instead of becoming null. The non-null callback case and all four #881 pointer-cancel cases passed.
+- The fix adds only `else setSelection(null)` in the existing comment-enabled selection-end callback. The test assertions are unchanged from the failing checkpoint.
+- Hosted passing-after evidence: pending the ordinary CI run for the production fix.
 - Local Node, dependency installation, typecheck and build: not run under the serialized capacity restriction.
 - Native pointer propagation, Pierre DOM highlighting, mounted browser acceptance and screenshots: not run.
 - #855 and #866 mounted refresh, real save IPC and native acceptance: not run here and remain with their existing owners.
