@@ -1,6 +1,6 @@
 # Restore an archived workspace directly from Home
 
-Conductor Rebuild, 2026-11-10. Regression-only checkpoint: product implementation and hosted RED/GREEN results are pending. PR #849 merged separately after all 21 checks passed; its source lease was released before this unit began.
+Conductor Rebuild, 2026-11-10. Hosted RED is recorded in [the exact-head receipt](hosted-red.md). The reserved product fix now adds the Home row control; hosted GREEN remains pending. PR #849 merged separately after all 21 checks passed; its source lease was released before this unit began.
 
 ## Retained reference
 
@@ -18,13 +18,17 @@ Only OpenConductor's local Home list is in scope. No cloud UI, permission model,
 
 The same suite mounts production `AllWorkspaces` through `tools/home-unarchive/index.html` using the existing, unmodified Vite fixture helper. Its dispatch records actions without restoring files; real archive events control completion. The controlled cases cover click/Enter, no bubbling or row navigation, per-row pending, duplicate suppression, unrelated workspace/repository events, retry after failure, a no-restore completion, and independent row-name navigation. This fixture is not a backend or native restoration substitute.
 
-The ordinary Keybindings workflow already runs `npm run test:e2e`, which includes this file. No local test, build, install, browser or native runtime is admitted for this source-only unit. Hosted RED must be observed before the reserved product fix; the same assertions must then pass. This regression-only checkpoint must not merge.
+The ordinary Keybindings workflow already runs `npm run test:e2e`, which includes this file. Its regression-only head exposed five direct missing-button failures, while the independent row-opening control passed. Only after that RED did the product fix replace the passive mark with a tooltip-wrapped button. It dispatches the existing restore action, prevents click and Enter propagation/default behavior, suppresses duplicate activation synchronously, and settles pending only on a matching repository/workspace terminal event. The icon uses the retained archive and rotate-ccw geometry, switching on row hover or button focus. All interaction assertions and controlled fixture inputs are unchanged.
+
+No local test, build, install, browser or native runtime is admitted for this source-only unit. The same assertions must pass on the fixed head before merge.
 
 ## Checks and limits
 
 - **Passed earlier:** all 11 retained excerpt byte lengths and SHA-256 digests; see `verify-reference.mjs`.
 - **Historical rendered RED:** `node --experimental-strip-types --test evidence/home-unarchive/render-probe.mjs` recorded two passing controls and one missing-button failure in `render-red.tap`. Its source digest is retained in the output. It was not rerun on the current main head and is not mounted behavior proof.
-- **Pending:** automatic exact-head hosted regression results and product implementation.
+- **Passed:** source diff whitespace checks and exact equality of the interaction test and controlled fixture against the regression checkpoint.
+- **Failed before the fix:** five direct Unarchive cases timed out on the absent button at published head `4d799fa4456369779ba34641be76987d536e6781`; their parent group also failed. Existing archive controls and independent row opening passed. See [hosted RED](hosted-red.md).
+- **Pending:** automatic exact-head hosted results with the product fix.
 - **Not run locally:** new interaction cases, semantic fixture typecheck, application build, install, browser/native interaction, worktree/setup/persistence, tooltip/layout, side-by-side acceptance, and screenshots.
 
 There are no screenshots because local browser/native execution is not admitted and the existing hosted workflow does not retain Home screenshots. `SCREENSHOT_DIR` continues to support captures when a later authorized acceptance run supplies it.

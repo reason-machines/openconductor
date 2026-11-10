@@ -41,9 +41,10 @@ function renderHome(archiveFilter) {
     "../settings/useBoolPref": { useBoolPref: () => false },
     "../keybindings/overrides": { effectiveShortcuts: () => [] },
     "../keybindings/shortcut": { glyphs: () => "" },
-    "../workspace/archive": { listArchivedWorkspaces: unexpectedIo },
+    "../workspace/archive": { listArchivedWorkspaces: unexpectedIo, onArchiveEvent: unexpectedIo },
     "./Icons": { ArchiveIcon: () => null, ChevronDownIcon: () => null, FolderIcon: () => null, SearchIcon: () => null, SidebarIcon: () => null },
     "./RepoIcon": { RepoIcon: () => null },
+    "./Tooltip": { Tooltip: ({ children }) => children },
     "./RowStatusIcon": { RowStatusIcon: () => null },
     "./StatusMatrix": { StatusMatrix: () => null },
   };
