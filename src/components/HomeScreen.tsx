@@ -5,11 +5,10 @@ import type { DialogKind } from "./Dialogs";
 import { FolderIcon, FolderPlusIcon, GlobeIcon, SidebarIcon } from "./Icons";
 import { Wordmark } from "./Wordmark";
 import { activeWorkspaceCount } from "../state/selectors";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs } from "../keybindings/shortcut";
 import { PassportButton } from "../home/PassportDialog";
-
-const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
 
 // Layout follows evidence/screens/home.md (Conductor's `Gls`): wordmark, three entry
 // cards, the "cities visited" line, and a sidebar toggle only while the sidebar is
@@ -33,6 +32,8 @@ function EntryCard({ icon, label, onClick }: { icon: ReactNode; label: string; o
 }
 
 export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOpenProject }: Props) {
+  const { overrides } = useKeybindingOverrides();
+  const sidebarHint = effectiveShortcuts("view.toggleLeftSidebar", overrides).map(glyphs).join(" or ");
   const hasWorkspaces = activeWorkspaceCount(repos) > 0;
   return (
     <div className="home" data-tauri-drag-region>
@@ -40,7 +41,7 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOp
         <button
           type="button"
           className="home-sidebar-toggle"
-          title={`Toggle left sidebar (${TOGGLE_LEFT_SIDEBAR_HINT})`}
+          title={`Toggle left sidebar (${sidebarHint})`}
           aria-label="Toggle left sidebar"
           onClick={() => dispatch({ type: "toggleSidebar" })}
         >
