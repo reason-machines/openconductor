@@ -81,6 +81,33 @@ test("search matches workspace numbers as 12, w12 and w-12", () => {
   assert.equal(matchWorkspace("13", fields), undefined);
 });
 
+test("Home search finds a known pull request number and combines it with text and filters", () => {
+  const pullRequest = {
+    number: 4321,
+    isMerged: false,
+    isDraft: false,
+    inMergeQueue: false,
+    mergeState: "CLEAN",
+    checks: null,
+    failingChecks: 0,
+    viewerCanMerge: true,
+  };
+  const repos = [
+    repo("tide-web", [
+      ws("osaka", { prTitle: "Fix login", pr: pullRequest }),
+      ws("lisbon", { prTitle: "Fix login", pr: { ...pullRequest, number: 4322 } }),
+      ws("quito"),
+      ws("bergen", { pr: null }),
+    ]),
+  ];
+  for (const query of ["#4321", "4321", "login #4321", "tide-web #4321"]) {
+    assert.deepEqual(homeRows(repos, DEFAULT_FILTERS, query).map((r) => r.workspace.id), ["osaka"], query);
+  }
+  assert.deepEqual(homeRows(repos, DEFAULT_FILTERS, "#4329"), []);
+  assert.deepEqual(homeRows(repos, DEFAULT_FILTERS, "api #4321"), []);
+  assert.deepEqual(homeRows(repos, { projects: ["tide-api"], archiveFilter: "active" }, "#4321"), []);
+});
+
 test("rows hide archived by default, filter by project, and sort newest first", () => {
   const repos = [
     repo("tide-web", [ws("osaka", { updatedAt: NOW - 8 * MIN }), ws("old", { status: "archived" })]),
