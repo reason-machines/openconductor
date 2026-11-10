@@ -7,6 +7,7 @@ import { createServer as createViteServer } from "vite";
 export async function startViteFixture({
   host = process.env.TEST_VITE_HOST ?? "127.0.0.1",
   port = Number(process.env.TEST_VITE_PORT ?? 0),
+  diagnostic,
 } = {}) {
   if (!Number.isInteger(port) || port < 0 || port > 65535) {
     throw new RangeError("Fixture port must be an integer from 0 to 65535");
@@ -16,21 +17,34 @@ export async function startViteFixture({
   const cacheDir = await mkdtemp(join(tmpdir(), "openconductor-vite-fixture-"));
   let vite;
   let closing;
-  const close = () => closing ??= (async () => {
-    const stopped = new Promise((resolve, reject) => {
-      http.close((error) => {
-        if (error && error.code !== "ERR_SERVER_NOT_RUNNING") reject(error);
-        else resolve();
+  const close = () => {
+    diagnostic?.(`close requested ${cacheDir}: ${JSON.stringify({
+      listening: http.listening,
+      hmrClients: vite?.ws.clients.size ?? 0,
+      pendingRequests: vite ? [...vite._pendingRequests.keys()] : [],
+    })}`);
+    return closing ??= (async () => {
+      const stopped = new Promise((resolve, reject) => {
+        diagnostic?.(`HTTP close ${cacheDir}: started`);
+        http.close((error) => {
+          diagnostic?.(`HTTP close ${cacheDir}: ${error?.code ?? "completed"}`);
+          if (error && error.code !== "ERR_SERVER_NOT_RUNNING") reject(error);
+          else resolve();
+        });
+        http.closeAllConnections();
       });
-      http.closeAllConnections();
-    });
-    const results = await Promise.allSettled([stopped, (async () => {
-      await vite?.close();
-      await rm(cacheDir, { recursive: true, force: true });
-    })()]);
-    const errors = results.filter((result) => result.status === "rejected").map((result) => result.reason);
-    if (errors.length) throw new AggregateError(errors, "Failed to close Vite fixture");
-  })();
+      const results = await Promise.allSettled([stopped, (async () => {
+        diagnostic?.(`Vite close ${cacheDir}: started`);
+        await vite?.close();
+        diagnostic?.(`Vite close ${cacheDir}: completed`);
+        diagnostic?.(`cache removal ${cacheDir}: started`);
+        await rm(cacheDir, { recursive: true, force: true });
+        diagnostic?.(`cache removal ${cacheDir}: completed`);
+      })()]);
+      const errors = results.filter((result) => result.status === "rejected").map((result) => result.reason);
+      if (errors.length) throw new AggregateError(errors, "Failed to close Vite fixture");
+    })();
+  };
 
   try {
     // Vite 5 maps its own port: 0 to 5173. Keep the OS-allocated listener instead.

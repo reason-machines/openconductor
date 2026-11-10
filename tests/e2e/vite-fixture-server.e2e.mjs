@@ -52,7 +52,7 @@ test("concurrent Vite fixtures own ephemeral HTTP and same-origin HMR listeners"
   process.env.TAURI_DEV_HOST = "192.0.2.1";
   const started = await Promise.allSettled(
     ["127.0.0.1", "0.0.0.0"].map(async (host) => {
-      const fixture = await step(`start ${host}`, () => startViteFixture({ host, port: 0 }));
+      const fixture = await step(`start ${host}`, () => startViteFixture({ host, port: 0, diagnostic: (message) => t.diagnostic(message) }));
       fixtures.push(fixture);
       return fixture;
     }),
@@ -89,7 +89,7 @@ test("concurrent Vite fixtures own ephemeral HTTP and same-origin HMR listeners"
   }
 
   // Explicit ports remain strict, and a failed bind must not disturb a live fixture.
-  await step("occupied-port rejection", () => assert.rejects(startViteFixture({ host: "127.0.0.1", port: ports[0] }), { code: "EADDRINUSE" }));
+  await step("occupied-port rejection", () => assert.rejects(startViteFixture({ host: "127.0.0.1", port: ports[0], diagnostic: (message) => t.diagnostic(message) }), { code: "EADDRINUSE" }));
   assert.equal((await step("live fixture after failed bind", () => fetch(fixtures[0].base + "/tools/dialogs/index.html"))).status, 200);
   const socketClosed = sockets.map((socket) => once(socket, "close"));
   await step("idempotent fixture close", () => Promise.all(fixtures.flatMap((fixture) => [fixture.close(), fixture.close()])));
@@ -105,10 +105,10 @@ test("concurrent Vite fixtures own ephemeral HTTP and same-origin HMR listeners"
   try {
     process.env.TEST_VITE_HOST = "127.0.0.1";
     process.env.TEST_VITE_PORT = String(ports[0]);
-    const overridden = await step("environment override fixture", () => startViteFixture());
+    const overridden = await step("environment override fixture", () => startViteFixture({ diagnostic: (message) => t.diagnostic(message) }));
     fixtures.push(overridden);
     assert.equal(overridden.base, `http://127.0.0.1:${ports[0]}`);
-    await step("environment override occupied-port rejection", () => assert.rejects(startViteFixture(), { code: "EADDRINUSE" }));
+    await step("environment override occupied-port rejection", () => assert.rejects(startViteFixture({ diagnostic: (message) => t.diagnostic(message) }), { code: "EADDRINUSE" }));
   } finally {
     if (previousTestHost === undefined) delete process.env.TEST_VITE_HOST;
     else process.env.TEST_VITE_HOST = previousTestHost;
