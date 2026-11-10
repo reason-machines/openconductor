@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { Toaster, useToasts } from "../components/Toast";
+import { Toaster, useToasts, type ToastItem } from "../components/Toast";
 import { getSettings } from "../settings/api";
 import { applyAppearance } from "../settings/appearance";
 import { countRepos, finishFirstRun, readFirstRunStep } from "./api";
@@ -17,6 +17,11 @@ interface Loaded {
   repoCount: number | undefined;
 }
 
+type CliSetup =
+  | { status: "installing" }
+  | { status: "ready"; warning?: string }
+  | { status: "error"; message: string };
+
 /**
  * The startup part of Conductor's auth guard (renderApp `Bxa`): read the
  * onboarding step and the repositories, show a loader until both are known,
@@ -33,16 +38,16 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [path, setPath] = useState(window.location.pathname);
   const [busy, setBusy] = useState(false);
-  const [cli, setCli] = useState<"installing" | "ready" | { error: string }>("installing");
+  const [cli, setCli] = useState<CliSetup>({ status: "installing" });
   const [installAttempt, retryInstall] = useState(0);
 
   useEffect(() => {
     if (demo) return;
     let live = true;
-    setCli("installing");
+    setCli({ status: "installing" });
     void ensureReasonCli().then(
-      () => { if (live) setCli("ready"); },
-      (error: unknown) => { if (live) setCli({ error: error instanceof Error ? error.message : String(error) }); },
+      (result) => { if (live) setCli({ status: "ready", warning: result?.warning }); },
+      (error: unknown) => { if (live) setCli({ status: "error", message: error instanceof Error ? error.message : String(error) }); },
     );
     return () => { live = false; };
   }, [demo, installAttempt]);
@@ -94,33 +99,37 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
   const onFailed = useCallback((title: string, description: string) => show("error", title, { description }), [show]);
 
   if (demo) return <>{children}</>;
-  if (cli !== "ready") return (
+  if (cli.status !== "ready") return (
     <div className="onb-login" data-testid="reason-cli-setup">
       <div className="onb-login-inner">
         <h1>Setting up OpenConductor</h1>
         <p className="onb-note" role="status">Installing or updating the Reason CLI. This is included for every agent; signing in is optional.</p>
-        {typeof cli === "object" && <>
-          <p className="onb-error" role="alert">{cli.error}</p>
+        {cli.status === "error" && <>
+          <p className="onb-error" role="alert">{cli.message}</p>
           <button type="button" className="onb-btn" onClick={() => retryInstall((attempt) => attempt + 1)}>Retry setup</button>
         </>}
       </div>
     </div>
   );
+  const shownToasts: ToastItem[] = cli.warning
+    ? [{ id: 0, kind: "info", message: cli.warning, sticky: true }, ...toasts]
+    : toasts;
+  const toaster = <Toaster toasts={shownToasts} dismiss={(id) => { if (id === 0) setCli({ status: "ready" }); else dismiss(id); }} />;
   if (path === LOGIN_ROUTE)
     return (
       <>
         <LoginScreen onDone={goHome} onFailed={onFailed} />
-        <Toaster toasts={toasts} dismiss={dismiss} />
+        {toaster}
       </>
     );
   const view = firstRunView({ loaded: loaded !== null, step: loaded?.step ?? NaN, repoCount: loaded?.repoCount, path });
-  if (view === "app") return <>{children}</>;
+  if (view === "app") return <>{children}{toaster}</>;
   if (view === "loading") return <StartupLoader />;
   return (
     <>
       <FirstRunOnboarding onContinue={onContinue} busy={busy} onFailed={onFailed} />
       {view === "onboarding-route" && <ExitOnboardingButton onExit={goHome} />}
-      <Toaster toasts={toasts} dismiss={dismiss} />
+      {toaster}
     </>
   );
 }

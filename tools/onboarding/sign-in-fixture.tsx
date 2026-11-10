@@ -1,6 +1,7 @@
 import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { LoginScreen } from "../../src/onboarding/SignIn";
+import { FirstRunGate } from "../../src/onboarding/FirstRunGate";
 import type { ReasonLoginState } from "../../src/onboarding/reasonSignIn";
 import { ReasonTab } from "../../src/settings/agents/ReasonTab";
 import { DEFAULT_SETTINGS, type Settings } from "../../src/settings/types";
@@ -34,6 +35,12 @@ const transcript: ChatTranscript = {
 Reflect.set(window, "isTauri", true);
 Reflect.set(window, "__TAURI_INTERNALS__", {
   async invoke(command: string, args?: Record<string, unknown>) {
+    if (command === "reason_cli_ensure_current") return {
+      path: "/fixture/bin/reason", version: "0.2.728",
+      warning: params.get("setup") === "working-cli-warning" ? "The Reason CLI update could not be verified. Using the installed CLI." : undefined,
+    };
+    if (command === "db_first_run_onboarding_step") return "999";
+    if (command === "db_list_repos") return [];
     if (command === "get_settings") return settings;
     if (command === "update_settings") return settings = args?.settings as Settings;
     if (command === "initialize_default_runtime") return null;
@@ -72,8 +79,8 @@ Reflect.set(window, "__TAURI_INTERNALS__", {
 document.documentElement.dataset.theme = params.get("theme") === "light" ? "light" : "dark";
 document.documentElement.dataset.colorPalette = "stone";
 
-type View = "onboarding" | "settings" | "chat";
-const initialView: View = params.get("surface") === "settings" ? "settings" : params.get("surface") === "chat" ? "chat" : "onboarding";
+type View = "onboarding" | "settings" | "chat" | "startup";
+const initialView: View = params.get("surface") === "startup" ? "startup" : params.get("surface") === "settings" ? "settings" : params.get("surface") === "chat" ? "chat" : "onboarding";
 
 function Fixture() {
   const [visible, setVisible] = useState(true);
@@ -84,7 +91,7 @@ function Fixture() {
   useEffect(() => { const timer = setInterval(() => redraw((old) => old + 1), 100); return () => clearInterval(timer); }, []);
   const record = (event: string) => setEvents((old) => [...old, event]);
   return <>
-    {visible && (view === "onboarding" ? <LoginScreen onDone={() => record("done")} onFailed={(title) => record(title)} /> : (
+    {visible && (view === "startup" ? <FirstRunGate><main className="oc-ag" data-testid="startup-home" style={{ maxWidth: 780, margin: "48px auto", padding: 24 }}><h1>Home</h1><p>The existing working CLI is available. No account is required.</p></main></FirstRunGate> : view === "onboarding" ? <LoginScreen onDone={() => record("done")} onFailed={(title) => record(title)} /> : (
       <main className="oc-ag" style={{ maxWidth: 780, margin: "48px auto 190px", padding: 24 }}>
         <h1>{view === "settings" ? "Reason settings" : "Reason chat"}</h1>
         {view === "settings" ? <ReasonTab settings={savedSettings} save={async (next) => { settings = next; setSettings(next); return true; }} reload={() => undefined} /> : <Transcript transcript={transcript} chatAgent="reason" />}

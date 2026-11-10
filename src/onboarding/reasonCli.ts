@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
 
-export interface InstalledReasonCli { path: string; version: string }
+export interface InstalledReasonCli { path: string; version: string; warning?: string }
 let ready: Promise<InstalledReasonCli | null> | undefined;
 
 /** One current-version check per app launch, shared by onboarding and sign-in. */

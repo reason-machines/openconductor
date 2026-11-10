@@ -11,6 +11,8 @@ struct Fake {
     installed: Option<Version>,
     activated: Option<Version>,
     failure: Option<String>,
+    remove_on_failure: bool,
+    version_error: Option<String>,
     installs: usize,
     checks: usize,
 }
@@ -22,6 +24,8 @@ impl Fake {
             installed: installed.map(v),
             activated: Some(v("0.2.728")),
             failure: None,
+            remove_on_failure: false,
+            version_error: None,
             installs: 0,
             checks: 0,
         }
@@ -35,6 +39,9 @@ impl InstallOperations for Fake {
     fn version(&mut self, cli: &Path) -> Result<Version, String> {
         assert_eq!(cli, Path::new("/test/home/.local/bin/reason"));
         self.checks += 1;
+        if let Some(error) = &self.version_error {
+            return Err(error.clone());
+        }
         self.installed.clone().ok_or_else(|| "missing".into())
     }
     fn install(&mut self, directory: &Path, version: &Version) -> Result<(), String> {
@@ -42,6 +49,9 @@ impl InstallOperations for Fake {
         assert_eq!(version, &v("0.2.728"));
         self.installs += 1;
         if let Some(error) = &self.failure {
+            if self.remove_on_failure {
+                self.installed = None;
+            }
             return Err(error.clone());
         }
         self.installed = self.activated.clone();
@@ -61,7 +71,8 @@ fn missing_cli_is_installed_and_its_actual_version_is_verified() {
         result,
         InstalledCli {
             path: "/test/home/.local/bin/reason".into(),
-            version: "0.2.728".into()
+            version: "0.2.728".into(),
+            warning: None,
         }
     );
     assert_eq!(fake.installs, 1);
@@ -97,20 +108,77 @@ fn installer_failure_is_not_reported_as_success_and_can_be_retried() {
     assert_eq!(fake.installs, 2);
 }
 
+fn assert_degraded(result: InstalledCli, version: &str, cause: &str) {
+    let result = serde_json::to_value(result).unwrap();
+    assert_eq!(result["path"], "/test/home/.local/bin/reason");
+    assert_eq!(result["version"], version);
+    let warning = result["warning"].as_str().unwrap();
+    assert!(warning.contains("update could not be verified"), "{warning}");
+    assert!(warning.contains(cause), "{warning}");
+}
+
 #[test]
-fn success_exit_without_current_activation_is_a_failure() {
+fn working_cli_remains_available_when_release_lookup_is_offline() {
+    let mut fake = Fake::new(Some("0.2.9"));
+    fake.latest = Err("offline".into());
+    assert_degraded(ensure(&mut fake).unwrap(), "0.2.9", "offline");
+    assert_eq!(fake.installs, 0);
+    assert_eq!(fake.checks, 1);
+}
+
+#[test]
+fn failed_update_reprobes_the_working_previous_cli() {
+    let mut fake = Fake::new(Some("0.2.9"));
+    fake.failure = Some("download failed".into());
+    assert_degraded(ensure(&mut fake).unwrap(), "0.2.9", "download failed");
+    assert_eq!(fake.installs, 1);
+    assert_eq!(fake.checks, 2);
+    fake.failure = None;
+    let result = serde_json::to_value(ensure(&mut fake).unwrap()).unwrap();
+    assert_eq!(result["version"], "0.2.728");
+    assert!(result.get("warning").is_none());
+    assert_eq!(fake.installs, 2);
+}
+
+#[test]
+fn partial_failed_update_cannot_reuse_a_previously_working_probe() {
+    let mut fake = Fake::new(Some("0.2.9"));
+    fake.failure = Some("partial installation failed".into());
+    fake.remove_on_failure = true;
+    assert_eq!(ensure(&mut fake).unwrap_err(), "partial installation failed");
+    assert_eq!(fake.checks, 2);
+}
+
+#[test]
+fn success_exit_without_current_activation_warns_only_if_cli_still_works() {
     let mut fake = Fake::new(Some("0.2.1"));
     fake.activated = Some(v("0.2.2"));
-    assert!(ensure(&mut fake).unwrap_err().contains("did not activate"));
+    assert_degraded(ensure(&mut fake).unwrap(), "0.2.2", "did not activate");
+    assert_eq!(fake.checks, 3);
     fake.activated = None;
     assert!(ensure(&mut fake).unwrap_err().contains("did not answer"));
 }
 
 #[test]
-fn manifest_failure_does_not_install_or_claim_current() {
+fn offline_release_with_missing_or_broken_cli_still_rejects() {
+    for installed in [None, Some("0.2.728")] {
+        let mut fake = Fake::new(installed);
+        fake.latest = Err("offline".into());
+        if installed.is_some() {
+            fake.version_error = Some("invalid version".into());
+        }
+        assert_eq!(ensure(&mut fake).unwrap_err(), "offline");
+        assert_eq!(fake.installs, 0);
+        assert_eq!(fake.checks, 1);
+    }
+}
+
+#[test]
+fn healthy_current_cli_has_no_warning_or_reinstallation() {
     let mut fake = Fake::new(Some("0.2.728"));
-    fake.latest = Err("offline".into());
-    assert_eq!(ensure(&mut fake).unwrap_err(), "offline");
+    let result = serde_json::to_value(ensure(&mut fake).unwrap()).unwrap();
+    assert_eq!(result["version"], "0.2.728");
+    assert!(result.get("warning").is_none());
     assert_eq!(fake.installs, 0);
 }
 
@@ -149,6 +217,7 @@ fn overlapping_requests_share_one_install_and_one_failure() {
                             Ok(InstalledCli {
                                 path: "/cli".into(),
                                 version: "0.2.728".into(),
+                                warning: None,
                             })
                         }
                     })

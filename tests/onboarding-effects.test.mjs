@@ -22,7 +22,7 @@ const deferred = () => {
   return { promise, resolve, reject };
 };
 
-async function fixture({ initial = { state: "idle" }, surface = "gate", installing = false, path = "/", step = null, repoCount = 0 } = {}) {
+async function fixture({ initial = { state: "idle" }, surface = "gate", installing = false, path = "/", step = null, repoCount = 0, cliWarning } = {}) {
   const installation = installing ? deferred() : null;
   const requests = [], opens = [], remembered = [], callbacks = [], timers = new Map(), intervals = new Map();
   const errors = [], navigations = [], writes = [], modules = new Map();
@@ -36,7 +36,7 @@ async function fixture({ initial = { state: "idle" }, surface = "gate", installi
   const boundaries = {
     "@tauri-apps/api/core": { async invoke(command, args) {
       requests.push({ command, args });
-      if (command === "reason_cli_ensure_current") return installation ? installation.promise : { path: "/fixture/bin/reason", version: "fixture" };
+      if (command === "reason_cli_ensure_current") return installation ? installation.promise : { path: "/fixture/bin/reason", version: "fixture", warning: cliWarning };
       if (command === "reason_login_status") return read ? read.promise : status;
       if (command === "reason_login_start") return status = waiting;
       if (command === "reason_login_cancel") return status = { state: "cancelled" };
@@ -251,6 +251,20 @@ for (const [step, repoCount] of [["999", 0], [null, 1]]) {
     } finally { await f.close(); }
   });
 }
+
+test("existing working CLI with an update warning opens Home and leaves sign-in optional", async () => {
+  const warning = "The Reason CLI update could not be verified. Using the installed CLI.";
+  const f = await fixture({ step: "999", cliWarning: warning });
+  try {
+    assert.equal(f.count("home"), 1);
+    assert.equal(f.count("reason-cli-setup"), 0);
+    assert.ok(f.text().includes(warning), "degraded startup is visible, not reported as current");
+    assert.equal(f.writes.length, 0);
+    assert.equal(f.requests.some((r) => r.command === "reason_login_start"), false);
+    await act(async () => { f.root.root.findByProps({ "aria-label": "Dismiss" }).props.onClick(); });
+    assert.equal(f.count("home"), 1, "dismissing the warning does not reopen setup");
+  } finally { await f.close(); }
+});
 
 for (const [path, step] of [["/", "999"], ["/login", null]]) {
   test(`CLI setup also gates ${path} with completed-step ${step}`, async () => {

@@ -34,7 +34,21 @@ The hosted frontend job passed TypeScript, source tests, and production build, t
 - **Passed:** `REACT_EFFECTS_DEPS=node_modules node --test tests/onboarding-effects.test.mjs`: 17/17. New regressions cover both an explicit completed step and an existing repository with an unset step. A successful CLI check reaches Home without sign-in, onboarding writes, or navigation.
 - **Passed:** `npm run build` on the integrated source before this test-only correction, including TypeScript and branding. Only existing large-chunk warnings were emitted.
 - **Partial:** a full local browser suite attempt was stopped after profiler/paste assertions and a dialog navigation timeout failed under shared-cloud contention. It is not a full-suite pass. The unchanged isolated scroll suite passed afterward. A redundant full source-suite attempt timed out at 90 seconds and is not counted as a fresh pass. Exact corrective-head hosted checks remain required.
-- **Remaining product correction:** an existing working managed CLI still blocks on a failed release check in the current backend. A separately tested warning fallback is in progress; this fixture pass does not prove offline startup.
+## Existing working CLI is not trapped by update failure
+
+The release check still runs on each installer request. If checking or applying an update fails, the backend probes the managed executable again. Only a successful actual-version probe can return the usable path/version with an optional `warning`; missing, broken, or removed executables still reject. A pre-install successful probe cannot mask damage from a partial failed install. Healthy current/newer installations retain the existing no-reinstall/no-downgrade behavior and omit the warning.
+
+The startup gate renders that warning as a persistent dismissible info toast beside the normal app, onboarding, or login surface. It does not claim the installed version is current and does not require an account. The local-agent and Settings executable-override boundaries are unchanged.
+
+- **Failed before frontend correction:** `REACT_EFFECTS_DEPS=node_modules node --test --test-name-pattern='existing working CLI with an update warning' tests/onboarding-effects.test.mjs` failed `degraded startup is visible, not reported as current`.
+- **Passed after frontend correction:** `REACT_EFFECTS_DEPS=node_modules node --test tests/onboarding-effects.test.mjs`: 18/18, including warning visibility, Home remaining mounted, no sign-in, and dismiss without reopening setup.
+- **Passed:** `REASON_ACP_HARNESS_DIR="$TMPDIR/reason-acp-working-cli" bash tools/reason-acp/run-rust-tests.sh`: all 101 tests, including 21 installer tests. The installer owner reproduced offline/update-failure rejections before correction. Integrated tests cover offline release lookup, failed update with fresh reprobe, damaged partial install, missing/broken CLI, and healthy-current omission of warnings. Clippy was not available locally; hosted clippy remains required.
+- **Passed:** final `npm run build`, including branding, TypeScript and Vite. A preceding standalone typecheck timed out under contention; the subsequent complete build's TypeScript check passed.
+- **Passed:** the rendered onboarding/sign-in fixture suite `TEST_BASE_URL=http://127.0.0.1:5197 node --test tests/e2e/onboarding-sign-in.e2e.mjs`: 24/24 in the supported preview-server namespace. The new test uses the actual startup gate, verifies Home plus the warning, no onboarding/sign-in attempt, and safe dismissal. All account/CLI values are synthetic IPC.
+- **Passed:** the 77 selected chat/auth/first-run/startup/WebDriver/terminal-flow tests with `node --experimental-strip-types --test --test-concurrency=2` on the relevant test files.
+- **Passed:** all four unchanged scroll tests rerun against the final frontend production build.
+
+![Synthetic browser fixture: Home remains usable with an installed CLI update warning; not native proof](https://api.reasonmachines.com/media/pr-screenshots/c67057f3-0a44-4310-ada7-124229eb11df/a605f4124bc425ee055da9fa59b15447/working-cli-update-warning.png#w=1280&h=900)
 
 ## Unmet acceptance proof
 

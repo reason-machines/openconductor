@@ -17,11 +17,13 @@ const OUTPUT_LIMIT: u64 = 1024 * 1024;
 type InstallResult = Result<InstalledCli, String>;
 type Flight = OnceLock<InstallResult>;
 
-/// The verified official installation, not a Settings executable override.
+/// The probed managed CLI, not a Settings executable override.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct InstalledCli {
     pub path: String,
     pub version: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub warning: Option<String>,
 }
 
 /// Overlapping requests share their result; a later request checks releases again.
@@ -95,17 +97,32 @@ fn ensure_with(home: &Path, ops: &mut impl InstallOperations) -> InstallResult {
         return Err("Reason installation needs an absolute home folder".into());
     }
     let path = home.join(".local/bin/reason");
+    let (version, warning) = match ensure_latest(&path, ops) {
+        Ok(version) => (version, None),
+        Err(error) => {
+            let version = ops.version(&path).map_err(|_| error.clone())?;
+            (
+                version,
+                Some(format!("Reason CLI update could not be verified: {error}")),
+            )
+        }
+    };
+    Ok(InstalledCli {
+        path: path.display().to_string(),
+        version: version.text(),
+        warning,
+    })
+}
+
+fn ensure_latest(path: &Path, ops: &mut impl InstallOperations) -> Result<Version, String> {
     let latest = ops.latest()?;
-    if let Ok(version) = ops.version(&path) {
+    if let Ok(version) = ops.version(path) {
         if version >= latest {
-            return Ok(InstalledCli {
-                path: path.display().to_string(),
-                version: version.text(),
-            });
+            return Ok(version);
         }
     }
     ops.install(path.parent().unwrap(), &latest)?;
-    let version = ops.version(&path).map_err(|_| {
+    let version = ops.version(path).map_err(|_| {
         "Reason installed, but its CLI did not answer. Retry the installation.".to_string()
     })?;
     if version < latest {
@@ -113,10 +130,7 @@ fn ensure_with(home: &Path, ops: &mut impl InstallOperations) -> InstallResult {
             "Reason installation did not activate the current CLI. Retry the installation.".into(),
         );
     }
-    Ok(InstalledCli {
-        path: path.display().to_string(),
-        version: version.text(),
-    })
+    Ok(version)
 }
 
 struct NativeInstaller<'a> {

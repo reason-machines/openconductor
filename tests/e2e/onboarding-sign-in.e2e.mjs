@@ -46,6 +46,22 @@ async function capture(page, name) {
   await page.screenshot({ path: `${process.env.SIGN_IN_EVIDENCE}/${name}.png` });
 }
 
+test("completed onboarding with a working CLI opens Home despite an update warning", async () => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+  try {
+    await page.goto(`${base}/tools/onboarding/index.html?surface=startup&setup=working-cli-warning`);
+    await page.getByTestId("startup-home").waitFor();
+    await page.getByRole("status").filter({ hasText: "The Reason CLI update could not be verified. Using the installed CLI." }).waitFor();
+    assert.equal(await page.getByTestId("reason-cli-setup").count(), 0);
+    assert.equal(await page.locator(".onb").count(), 0);
+    await expectCalls(page, { attempts: 0, opens: 0 });
+    await capture(page, "working-cli-update-warning");
+    await page.getByRole("button", { name: "Dismiss", exact: true }).click();
+    await page.getByRole("status").filter({ hasText: "The Reason CLI update could not be verified." }).waitFor({ state: "detached" });
+    assert.equal(await page.getByTestId("startup-home").isVisible(), true);
+  } finally { await page.close(); }
+});
+
 test("Settings preserves an unavailable pinned workspace instead of showing the account default", async () => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
   try {
