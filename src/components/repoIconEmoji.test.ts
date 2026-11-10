@@ -58,7 +58,9 @@ function fixture(icon: string | null = null) {
     options,
     status: () => renderer.root.findAllByProps({ role: "status" }),
     query(value: string) {
-      act(() => renderer.root.findByProps({ placeholder: "Search emoji" }).props.onChange({ target: { value } }));
+      const input = renderer.root.findByType("input");
+      assert.equal(input.props.placeholder, "Search emoji");
+      act(() => input.props.onChange({ target: { value } }));
     },
     click(label: string) { act(() => renderer.root.findByProps({ "aria-label": label }).props.onClick()); },
     close() { act(() => renderer.unmount()); },

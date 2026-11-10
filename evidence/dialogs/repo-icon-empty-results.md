@@ -17,7 +17,7 @@ These are static declarations from identity-bound retained source. Generic combo
 
 ## Current-main discrepancy
 
-At fetched main `bd2d42c2a75bc2013cd447e78f07db01e25782dc`, `RepoIconDialog.tsx` calls `searchEmoji(query)` and maps its results into the emoji grid. A query matching no entries leaves a blank grid with no message. The existing search helper trims and lowercases the query and uses the existing authored subset.
+At fetched main `bd2d42c2a75bc2013cd447e78f07db01e25782dc`, rechecked at `5de7c4e4bb136c971965e3b5592cd17d8a6d72a3`, `RepoIconDialog.tsx` calls `searchEmoji(query)` and maps its results into the emoji grid. A query matching no entries leaves a blank grid with no message. The existing search helper trims and lowercases the query and uses the existing authored subset.
 
 The ledger cleared `REPO-ICON-EMPTY-6013-01` for only `RepoIconDialog.tsx`'s EmojiTab message, the adjacent new regression, and this evidence file. Search normalization, catalog entries, selection, clearing, tabs, shared Modal, styling, onboarding, and provider paths remain unchanged.
 
@@ -29,4 +29,10 @@ The regression compiles the actual `RepoIconDialog.tsx` and mounts it with React
 
 The checks cover the empty message without persistence or dismissal, removal of that message when a query matches or is cleared, preserved selection, and preserved clearing of an existing emoji with no results. They do not exercise a browser, backend, installed app, or real repository.
 
-Local `git diff --check` passed. Local dependencies are absent. No local installation, component execution, typecheck, build, browser, native launch, or manual workflow dispatch ran. Hosted RED and GREEN results will be recorded here as they arrive. There is no screenshot because browser and native execution are not admitted for this unit.
+Local `git diff --check` passed. Local dependencies are absent. No local installation, component execution, typecheck, build, browser, native launch, or manual workflow dispatch ran. There is no screenshot because browser and native execution are not admitted for this unit.
+
+## Hosted fixture correction
+
+The first automatic hosted run at PR head `9ae104e572d2cf3451b04caab212744bad4e4916` failed all four new component tests with `query.trim is not a function`. Both frontend jobs failed at their unit-test step, before typecheck/build ran. This is not the intended missing-message RED evidence.
+
+The fixture's `findByProps({ placeholder: "Search emoji" })` matched the composite `SearchBar` first. That component takes a string callback, so sending it a synthetic event incorrectly put an object into query state. The corrected fixture selects the actual host `input`, asserts its placeholder, and invokes that input's event handler. All original behavioral assertions remain unchanged. Production remains unchanged while the next automatic hosted run establishes the intended failure. Hosted RED and GREEN results will be recorded here as they arrive.
