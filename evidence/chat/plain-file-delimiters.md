@@ -52,10 +52,13 @@ callback. Six control cases cover spaces/parentheses, unchanged absolute and
 dot-prefixed boundaries, URLs/explicit links, inline code/fences, missing
 workspace context, and traversal/root rejection.
 
-The fixture-only commit leaves the production recognizer unchanged. Automatic
-hosted CI must establish actual RED before the minimal recognizer correction.
-The same test bytes must then establish GREEN. No tests, build, dependency
-installation or product runtime were run locally.
+The fixture-only commit left the production recognizer unchanged and established
+actual RED in automatic hosted CI before the correction. The correction admits
+non-path punctuation before bare-relative paths. Its added prefix alternative
+excludes slash and dot-prefix starts, so absolute and dot-prefixed paths keep
+their existing delimiter rule. Path characters, the visitor, resolver and
+callbacks are unchanged. The same test bytes must establish GREEN. No tests,
+build, dependency installation or product runtime were run locally.
 
 ## Scope and limits
 
@@ -73,4 +76,25 @@ changed. No screenshot exists because browser/native execution is excluded.
 
 ## Hosted execution receipt
 
-Pending fixture-only automatic hosted run. No RED or GREEN is claimed yet.
+Fixture-only published head `2eaa8808cb9d925301a9b43081dabe854d3bdd7a`
+ran [automatic CI 42863430032](https://github.com/reason-machines/openconductor/actions/runs/42863430032).
+The [frontend unit job](https://github.com/reason-machines/openconductor/actions/runs/42863430032/job/129995326332)
+ran `node --test "src/**/*.test.ts"` and reported 1,830 tests, 1,827 passed and
+exactly three failed. All failures are the intended new regressions:
+
+- Test 378, `comma-adjacent bare relative paths keep both targets and the comma`,
+  expected both targets but received only `/repo/src/a.ts`.
+- Test 379, `a colon before a bare relative path stays text beside its file button`,
+  expected `/repo/src/a.ts` but received no targets.
+- Test 380, `punctuation-adjacent file buttons invoke ordered file callbacks only`,
+  expected both button titles but received only `Open /repo/src/a.ts`.
+  This RED fails before callback invocation. It is not a callback execution result.
+
+All six new controls, tests 381 through 386, passed. The separate
+[typecheck/build job](https://github.com/reason-machines/openconductor/actions/runs/42863430032/job/129995326811)
+passed `npm run typecheck` and failed at its duplicate frontend unit step.
+Build and later checks in that job were skipped, not passed.
+
+The nine cases remain byte-identical to fixture-only test blob
+`f80173b0d77b6d524b3ee4ee6229cf8ef5e5aeb3`. Hosted GREEN after the production
+correction is pending. No local test or build result is claimed.
