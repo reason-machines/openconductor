@@ -22,12 +22,13 @@ const deferred = () => {
   return { promise, resolve, reject };
 };
 
-async function fixture({ initial = { state: "idle" }, surface = "gate" } = {}) {
+async function fixture({ initial = { state: "idle" }, surface = "gate", installing = false, path = "/", step = null, repoCount = 0, cliWarning, checking = false } = {}) {
+  const installation = installing ? deferred() : null;
   const requests = [], opens = [], remembered = [], callbacks = [], timers = new Map(), intervals = new Map();
   const errors = [], navigations = [], writes = [], modules = new Map();
-  let status = initial, read, sequence = 0, root;
+  let status = initial, read = checking ? deferred() : undefined, sequence = 0, root;
   const window = {
-    location: { pathname: "/", search: "" },
+    location: { pathname: path, search: "" },
     history: { state: null, replaceState(_state, _unused, url) { navigations.push(url); } },
     setInterval(callback) { const id = ++sequence; intervals.set(id, callback); return id; },
     clearInterval(id) { intervals.delete(id); },
@@ -35,6 +36,7 @@ async function fixture({ initial = { state: "idle" }, surface = "gate" } = {}) {
   const boundaries = {
     "@tauri-apps/api/core": { async invoke(command, args) {
       requests.push({ command, args });
+      if (command === "reason_cli_ensure_current") return installation ? installation.promise : { path: "/fixture/bin/reason", version: "fixture", warning: cliWarning };
       if (command === "reason_login_status") return read ? read.promise : status;
       if (command === "reason_login_start") return status = waiting;
       if (command === "reason_login_cancel") return status = { state: "cancelled" };
@@ -45,8 +47,8 @@ async function fixture({ initial = { state: "idle" }, surface = "gate" } = {}) {
     "src/settings/api": { async getSettings() { return {}; } },
     "src/settings/appearance": { applyAppearance() {} },
     "src/onboarding/api": {
-      async readFirstRunStep() { return null; }, async countRepos() { return 0; },
-      finishFirstRun() { const result = deferred(); writes.push(result); return result.promise; },
+      async readFirstRunStep() { return step; }, async countRepos() { return repoCount; },
+      finishFirstRun(agent) { const result = deferred(); result.agent = agent; writes.push(result); return result.promise; },
     },
     "src/keybindings/KeybindingsProvider": { useKeybindings() {} },
     "src/components/AppMark": { AppMark: () => null },
@@ -65,7 +67,7 @@ async function fixture({ initial = { state: "idle" }, surface = "gate" } = {}) {
     modules.set(file, module);
     let source = readFileSync(path, "utf8");
     const mutations = {
-      "advance-before-save": ["src/onboarding/FirstRunGate", "finishFirstRun().then(", "(finishFirstRun(), Promise.resolve()).then("],
+      "advance-before-save": ["src/onboarding/FirstRunGate", "finishFirstRun(agent).then(", "(finishFirstRun(agent), Promise.resolve()).then("],
       "skip-validation": ["src/onboarding/reasonSignIn", "if (!signedIn(account)) return", "if (false) return"],
       "repeat-callback": ["src/onboarding/SignIn", "if (!account || connectedNotified.current) return;", "if (!account) return;"],
     };
@@ -94,24 +96,30 @@ async function fixture({ initial = { state: "idle" }, surface = "gate" } = {}) {
     return module.exports;
   }
   const { FirstRunGate } = load("src/onboarding/FirstRunGate");
+  // Stands in for the app shell's sidebar footer, where the CLI status lives once Home is up.
+  const { ReasonCliStatus } = load("src/onboarding/ReasonCliStatus");
   const api = load("src/onboarding/reasonSignIn");
   const { LoginScreen } = load("src/onboarding/SignIn");
+  const { ReasonSignInControls } = load("src/onboarding/ReasonSignInControls");
   const onDone = () => { callbacks.push("done"); };
   const onFailed = (title, description) => { callbacks.push({ title, description }); };
   const element = () => surface === "gate"
-    ? React.createElement(FirstRunGate, {}, React.createElement("main", { "data-testid": "home" }, "Home"))
-    : React.createElement(LoginScreen, { onDone, onFailed });
+    ? React.createElement(FirstRunGate, {}, React.createElement("main", { "data-testid": "home" }, "Home", React.createElement("footer", {}, React.createElement(ReasonCliStatus))))
+    : surface === "controls"
+      ? React.createElement(ReasonSignInControls, { label: "Sign in to Reason", onSignedIn: onDone })
+      : React.createElement(LoginScreen, { onDone, onFailed });
   await act(async () => { root = create(element()); });
   const all = (predicate) => root.root.findAll(predicate);
   const text = () => JSON.stringify(root.toJSON());
   return {
-    requests, opens, remembered, callbacks, writes, errors, navigations, timers, intervals, root, api, text,
+    requests, opens, remembered, callbacks, writes, errors, navigations, timers, intervals, root, api, text, installation,
     count(id) { return all((node) => node.props["data-testid"] === id).length; },
     button(label) {
       const result = all((node) => node.type === "button" && node.children.filter((x) => typeof x === "string").join("") === label);
       assert.equal(result.length, 1, `One ${label} button`);
       return result[0];
     },
+    async selectAgent(agent) { await act(async () => { root.root.findByProps({ type: "radio", value: agent }).props.onChange(); }); },
     async click(label) { const button = this.button(label); assert.notEqual(button.props.disabled, true, `${label} is enabled`); await act(async () => { button.props.onClick(); }); },
     async publish(next) { status = next; await act(async () => { await api.refreshReasonSignIn(); }); },
     async rerender() { await act(async () => { root.update(element()); }); },
@@ -129,7 +137,9 @@ test("actual onboarding effect waits for validated account and durable finish be
     assert.equal(f.writes.length, 0, "browser handoff is not completion");
     assert.equal(f.opens.length, 1);
     await f.publish({ state: "connected", account });
-    assert.equal(f.writes.length, 1, "actual account effect calls persistence");
+    assert.equal(f.writes.length, 0, "sign-in is separate from choosing an agent");
+    await f.click("Continue");
+    assert.equal(f.writes.length, 1, "explicit Continue calls persistence");
     assert.equal(f.count("home"), 0, "Home waits for persistence");
     assert.equal(f.button("Continue").props.disabled, true);
     await f.rerender();
@@ -146,6 +156,8 @@ test("actual onboarding effect waits for validated account and durable finish be
 test("rejected onboarding persistence remains visible and manual Continue retries successfully", async () => {
   const f = await fixture({ initial: { state: "connected", account } });
   try {
+    assert.equal(f.writes.length, 0);
+    await f.click("Continue");
     assert.equal(f.writes.length, 1);
     await act(async () => { f.writes[0].reject(new Error("Synthetic persistence failure")); });
     assert.equal(f.count("home"), 0);
@@ -206,6 +218,125 @@ test("unmount before account result suppresses the completion callback", async (
   assert.equal(f.writes.length, 0);
   assert.deepEqual(f.callbacks, []);
   assert.deepEqual(f.navigations, []);
+});
+
+for (const agent of ["claude", "codex", "reason"]) {
+  test(`${agent} onboarding starts CLI setup and saves its explicit choice without sign-in`, async () => {
+    const f = await fixture({ installing: true });
+    try {
+      assert.match(f.text(), /Installing or updating the Reason CLI/);
+      assert.equal(f.writes.length, 0);
+      await act(async () => { f.installation.resolve({ path: "/fixture/bin/reason", version: "fixture" }); });
+      await f.selectAgent(agent);
+      await f.click("Continue without signing in");
+      assert.equal(f.requests.filter((r) => r.command === "reason_cli_ensure_current").length, 1);
+      assert.equal(f.requests.filter((r) => r.command === "reason_login_start").length, 0);
+      assert.equal(f.writes[0].agent, agent);
+      await act(async () => { f.writes[0].resolve(); });
+      assert.equal(f.count("home"), 1);
+    } finally { await f.close(); }
+  });
+}
+
+for (const [step, repoCount] of [["999", 0], [null, 1]]) {
+  test(`existing user with working CLI reaches Home without onboarding or sign-in: step ${step}, repos ${repoCount}`, async () => {
+    const f = await fixture({ step, repoCount });
+    try {
+      assert.equal(f.count("home"), 1);
+      assert.equal(f.count("reason-cli-setup"), 0);
+      assert.equal(f.writes.length, 0, "completed onboarding is not written again");
+      assert.deepEqual(f.navigations, []);
+      assert.equal(f.requests.filter((r) => r.command === "reason_cli_ensure_current").length, 1);
+      assert.equal(f.requests.some((r) => r.command === "reason_login_start"), false);
+      await f.rerender();
+      assert.equal(f.count("home"), 1);
+    } finally { await f.close(); }
+  });
+}
+
+test("existing working CLI with an update warning opens Home and leaves sign-in optional", async () => {
+  const warning = "The Reason CLI update could not be verified. Using the installed CLI.";
+  const f = await fixture({ step: "999", cliWarning: warning });
+  try {
+    assert.equal(f.count("home"), 1);
+    assert.equal(f.count("reason-cli-setup"), 0);
+    assert.ok(f.text().includes(warning), "degraded startup is visible, not reported as current");
+    assert.equal(f.writes.length, 0);
+    assert.equal(f.requests.some((r) => r.command === "reason_login_start"), false);
+    await act(async () => { f.root.root.findByProps({ "aria-label": "Dismiss" }).props.onClick(); });
+    assert.equal(f.count("home"), 1, "dismissing the warning does not reopen setup");
+  } finally { await f.close(); }
+});
+
+for (const [path, step] of [["/", "999"], ["/login", null]]) {
+  test(`CLI setup never gates ${path} with completed-step ${step}`, async () => {
+    const f = await fixture({ path, step, installing: true });
+    try {
+      assert.match(f.text(), /Installing or updating the Reason CLI/);
+      assert.equal(f.count("home"), path === "/" ? 1 : 0);
+      if (path === "/login") assert.equal(f.button("Continue without signing in").props.disabled, false);
+      await act(async () => { f.installation.resolve({ path: "/fixture/bin/reason", version: "fixture" }); });
+      assert.equal(f.count("reason-cli-setup"), 0);
+      assert.equal(f.count("home"), path === "/" ? 1 : 0);
+    } finally { await f.close(); }
+  });
+}
+
+for (const agent of ["claude", "codex", "reason"]) {
+  test(`slow CLI setup and pending sign-in never block ${agent} onboarding`, async () => {
+    const f = await fixture({ installing: true, checking: true });
+    try {
+      assert.equal(f.requests.filter((r) => r.command === "reason_cli_ensure_current").length, 1);
+      assert.equal(f.button("Sign up").props.disabled, false);
+      await f.selectAgent(agent);
+      await f.click("Continue without signing in");
+      assert.equal(f.writes[0].agent, agent);
+      await act(async () => { f.writes[0].resolve(); });
+      assert.equal(f.count("home"), 1, "Home opens while the CLI and account checks remain unresolved");
+      assert.equal(f.requests.some((r) => r.command === "reason_login_start"), false);
+      assert.match(f.text(), /Installing or updating the Reason CLI/);
+    } finally { await f.close(); }
+  });
+}
+
+for (const [step, repoCount] of [["999", 0], [null, 1]]) {
+  test(`slow CLI setup never blocks an existing user's Home: step ${step}, repos ${repoCount}`, async () => {
+    const f = await fixture({ installing: true, step, repoCount });
+    try {
+      assert.equal(f.count("home"), 1);
+      assert.equal(f.requests.filter((r) => r.command === "reason_cli_ensure_current").length, 1);
+      await act(async () => { f.installation.reject(new Error("Synthetic unavailable download")); });
+      assert.equal(f.count("home"), 1, "failed installation does not replace the app");
+      assert.match(f.text(), /Synthetic unavailable download/);
+      assert.equal(f.button("Retry setup").props.disabled, undefined);
+      assert.equal(f.requests.some((r) => r.command === "reason_login_start"), false);
+    } finally { await f.close(); }
+  });
+}
+
+test("only the clicked inline sign-in resumes once after validated pairing", async () => {
+  const f = await fixture({ surface: "controls" });
+  try {
+    await f.click("Sign in to Reason");
+    assert.deepEqual(f.callbacks, []);
+    await f.publish({ state: "connected", account });
+    assert.deepEqual(f.callbacks, ["done"]);
+    await f.rerender();
+    await f.publish({ state: "connected", account: { ...account } });
+    assert.deepEqual(f.callbacks, ["done"]);
+  } finally { await f.close(); }
+});
+
+test("background sign-in and cancelled inline pairing never send a continuation", async () => {
+  const existing = await fixture({ surface: "controls", initial: { state: "connected", account } });
+  try { assert.deepEqual(existing.callbacks, []); } finally { await existing.close(); }
+  const cancelled = await fixture({ surface: "controls" });
+  try {
+    await cancelled.click("Sign in to Reason");
+    await cancelled.click("Cancel");
+    await cancelled.publish({ state: "connected", account });
+    assert.deepEqual(cancelled.callbacks, []);
+  } finally { await cancelled.close(); }
 });
 
 test("actual SignUp failure callback and retry do not report success before validated completion", async () => {

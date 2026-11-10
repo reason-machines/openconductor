@@ -11,7 +11,8 @@ import { chatTabStatus, chatTabUnreadDot } from "../state/chatTabUnread";
 import { onChatRequest, takeChatRequest } from "../state/openChat";
 import { useWindowFocused } from "../state/useAutoUnread";
 import { Transcript } from "../features/chat/Transcript.tsx";
-import { configureReason, configureReasonDefault, reasonAvailable, reasonChatConfig } from "../features/chat/reasonChat.ts";
+import { configureReason, configureReasonDefault, reasonAvailable, reasonChatConfig, retryReasonAuth } from "../features/chat/reasonChat.ts";
+import { isSignInFailure } from "../features/chat/agentSignIn.ts";
 import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
 import { chatStatuses, subscribeChatStatuses, type ChatSnapshot, type PermissionPrompt } from "../features/chat/chatRuntime.ts";
 import { PermissionRequests, ToolApproval, pendingToolApproval } from "../features/chat/PermissionRequests.tsx";
@@ -538,7 +539,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             notify={notify}
             expandToolsByDefault={garryMode}
             dontCollapseToolCalls={garryMode}
-            onRetry={(prompt) => submit(prompt, "queue")}
+            onRetry={(prompt, turnId) => {
+              if (agentId === "reason" && isSignInFailure("reason", transcript.turns[turnId]?.error)) retryReasonAuth(runId, cwd, prompt, turnId);
+              else submit(prompt, "queue");
+            }}
             // Conductor: workspace with a path, not archived; disabled while the agent works or a plan waits.
             // Reset chat and turn changes come from turn checkpoints (Reason, Claude Code); Codex turns have none yet.
             onResetChat={reason && agent.reset && workspace.status !== "archived" ? setResetTurn : undefined}

@@ -139,6 +139,14 @@ export function startTurn(state: ReasonChatState, text: string, now = new Date()
   };
 }
 
+/** Reopens a failed, undelivered user message without adding or replacing it. */
+export function restartUnsentTurn(state: ReasonChatState, user: ChatMessage, now = new Date()): Step {
+  return {
+    state: { ...state, open: [...state.open, { turnId: user.turnId, user, assistant: null }] },
+    events: [{ type: "turn_status", sessionId: state.chatId, turnId: user.turnId, status: "running", at: now.toISOString() }],
+  };
+}
+
 /** The newest turn's id: the one `startTurn` just opened. */
 export function newestTurn(state: ReasonChatState): string | undefined {
   return state.open[state.open.length - 1]?.turnId;
