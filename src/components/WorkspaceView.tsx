@@ -69,6 +69,7 @@ import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type Re
 import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
 import { attachmentPath, randomDir, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
 import { composerSessionFor } from "../features/chat/composerSession.ts";
+import { terminalOutputFiles, terminalOutputRequest } from "../features/chat/composerTerminal.ts";
 import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
 
 /** Sends a message with attached text files from the chat shown (Fix errors). */
@@ -472,6 +473,13 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     await session.attach(files, reason ? (relativePath, data) => draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data }) : undefined);
   }
 
+  async function attachTerminalOutput() {
+    await session.attach(
+      () => invoke<unknown>("get_terminal_output", { request: terminalOutputRequest(workspace.id, getTabs(workspace.id)) }).then((output) => terminalOutputFiles(output)),
+      reason ? (relativePath, data) => draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data }) : undefined,
+    );
+  }
+
   function removeAttachment(a: ComposerAttachment) {
     if (session.sending) return;
     setAttachments((list) => list.filter((x) => x.name !== a.name));
@@ -615,6 +623,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
         onLinkWorkspaces={() => void openLinks()}
+        onAttachTerminalOutput={() => void attachTerminalOutput()}
         controls={
           // Codex's access mode; the agent itself is picked in the model picker.
           codex ? (

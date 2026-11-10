@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { fileMentionQuery, insertFileMention, mentionHighlights } from "./fileMentions.ts";
+import { fileMentionQuery, insertFileMention, mentionHighlights, mentionItems } from "./fileMentions.ts";
 
 test("file highlights preserve emoji in basenames and directories with UTF-16 match offsets", () => {
   assert.deepEqual(mentionHighlights("📄.md", [0, 1, 3]), [{ text: "📄", matched: true }, { text: ".", matched: false }, { text: "m", matched: true }, { text: "d", matched: false }]);
@@ -26,6 +26,20 @@ test("mentions replace the whole token when the caret is in its middle", () => {
 test("picking preserves surrounding text and adds a separating space", () => {
   assert.deepEqual(insertFileMention("@auth", { start: 0, end: 5, query: "auth" }, "src/lib/auth.ts"), { text: "@src/lib/auth.ts ", caret: 17 });
   assert.deepEqual(insertFileMention("Fix @a\nthen test", { start: 4, end: 6, query: "a" }, "a.ts"), { text: "Fix @a.ts \nthen test", caret: 10 });
+});
+
+test("mention tokens stop before existing file atoms", () => {
+  assert.deepEqual(fileMentionQuery("@terminal\ufffc after", 9), { start: 0, end: 9, query: "terminal" });
+  assert.equal(fileMentionQuery("@term\ufffcinal", 10), null);
+  assert.deepEqual(fileMentionQuery("\ufffc before\n@terminal tail", 18), { start: 9, end: 18, query: "terminal" });
+});
+
+test("terminal suggestions are independent of file results and preserve file identities", () => {
+  const file = { file: { name: "terminal.ts", path: "/work/terminal.ts", is_directory: false }, score: 1, match_indices: [0], relative_path: "terminal.ts" };
+  assert.deepEqual(mentionItems("terminal", [], true), [{ kind: "terminal" }]);
+  assert.deepEqual(mentionItems("trm", [file], true), [{ kind: "terminal" }, { kind: "file", match: file }]);
+  assert.deepEqual(mentionItems("other", [file], true), [{ kind: "file", match: file }]);
+  assert.deepEqual(mentionItems("", [], false), []);
 });
 
 test("paths with spaces are quoted, Unicode paths and later mentions remain intact", () => {
