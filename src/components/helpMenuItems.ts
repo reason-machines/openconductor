@@ -21,6 +21,7 @@ export type HelpIcon = "keyboard" | "book" | "message" | "stethoscope";
 
 export type HelpAction =
   | { kind: "shortcuts" }
+  | { kind: "feedback" }
   | { kind: "url"; url: string }
   /** Conductor's `aJ` dialog. */
   | { kind: "submitPrompt" }
@@ -45,7 +46,7 @@ export const HELP_ITEMS: readonly HelpItem[] = [
   { label: "Docs", icon: "book", external: true, action: { kind: "url", url: DOCS_URL } },
   { label: "Best practices", external: true, action: { kind: "url", url: `${REPO_URL}/tree/main/docs` } },
   { label: "Changelog", external: true, action: { kind: "url", url: CHANGELOG_URL } },
-  { label: "Send feedback", icon: "message", commandId: "sendFeedback", action: { kind: "url", url: FEEDBACK_URL } },
+  { label: "Send feedback", icon: "message", commandId: "sendFeedback", action: { kind: "feedback" } },
   { label: "Submit a prompt", action: { kind: "submitPrompt" } },
   { label: "Diagnostics", icon: "stethoscope", action: { kind: "diagnostics" } },
   { label: "Open debug tools", action: { kind: "devtools" } },

@@ -70,6 +70,7 @@ interface Props {
   onAddProjectAt?: (path: string) => void;
   onOpenSettings: () => void;
   onOpenShortcuts: () => void;
+  onSendFeedback: () => void;
   /** Help › Submit a prompt and Help › Diagnostics. */
   onSubmitPrompt: () => void;
   onOpenDiagnostics: () => void;
@@ -254,7 +255,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
+export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSendFeedback, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
@@ -583,7 +584,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
         </span>
         <ReasonCliStatus />
         <div className="sb-footer-actions">
-          <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
+          <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSendFeedback={onSendFeedback} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
           {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}
           <Tooltip content="Settings" shortcut={hint("openSettings")}>
             <button type="button" className="sb-footer-btn" aria-label="Settings" onClick={onOpenSettings}>
