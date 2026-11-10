@@ -21,7 +21,7 @@ The complete `uDo`/`dDo` props path supplies neither override nor prevention han
 
 ## OpenConductor mismatch
 
-Baseline main `4988e47` gives `autoFocus` to destructive Reset in `src/features/chat/ResetChatDialog.tsx`; Cancel lacks it. The eventual production correction moves that attribute to Cancel in the same button pair. No other component or callback needs to change.
+Baseline main `4988e47` gives `autoFocus` to destructive Reset in `src/features/chat/ResetChatDialog.tsx`; Cancel lacks it. The production correction moves that attribute to Cancel in the same button pair. No other component or callback changes.
 
 ## Mounted regression and execution boundary
 
@@ -36,7 +36,8 @@ This verifies the mounted initial-focus declaration and real callback/state cont
 
 The unchanged `.github/workflows/ci.yml` discovers the new file through `node --test "src/**/*.test.ts"` in both frontend test jobs. No workflow, dependency, or shared harness edit is needed. `RESET_CHAT_FOCUS_SOURCE_ROOT` can point the isolated regression at another source tree while dependencies remain resolved from this test's checkout.
 
-- Regression-only checkpoint: published before the production attribute move so ordinary hosted PR CI can reproduce the failure without local test admission. Hosted results pending; no failure or pass is claimed yet.
+- Hosted before-fix result: regression-only head `0a01e7e667913fa2da6ee5883404b970d2a2666f`, [CI run 42823360922, frontend-unit job 129854234020](https://github.com/reason-machines/openconductor/actions/runs/42823360922/job/129854234020), log lines 3061–3144. The sole failing case was the intended autofocus assertion: actual `oc-alert-btn oc-alert-destructive`, expected `oc-alert-btn oc-alert-cancel`. All six explicit click/Meta+Enter/Ctrl+Enter payload cases passed. The second frontend job failed at the same unit-test step, after typecheck; no local workload was used to reproduce this.
+- Corrected checkpoint: only the production attribute moves from Reset to Cancel; the entire regression remains unchanged. Automatic exact-head CI is pending; the correction is not yet a verified pass.
 - Local test/typecheck/build execution: not run; shared-cloud capacity admission was explicitly withheld.
 - Source/diff hygiene: checked separately at commit.
 - Browser, app, native/install, screenshots, focus containment/return, pointer dismissal, and installed behavior: not run. #847 FULL STOP remains intact; no visual parity claim.
