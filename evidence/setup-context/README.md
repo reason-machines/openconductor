@@ -1,6 +1,6 @@
 # Setup workspace context
 
-Conductor Rebuild owns `SETUP-CONTEXT-1F-02`. The ledger cleared exactly `src/components/ScriptsPanel.tsx`, `src/scripts/setupContext.test.ts`, and this note. The initial comparison uses main `0244d800782a3eaf811aac53fedc8a536218fb2b`.
+Conductor Rebuild owns `SETUP-CONTEXT-1F-02`. The ledger cleared exactly `src/components/ScriptsPanel.tsx`, `src/scripts/setupContext.test.ts`, and this note. The initial comparison used main `0244d800782a3eaf811aac53fedc8a536218fb2b`. Before the correction, current main `203ba7e184ae4ad06cdddea2d579faadfe715846` was fetched, compared, and merged into the working branch. The component, scripts API, model, backend Setup status lookup, and #945 regression remain unchanged between those two main commits.
 
 ## Retained reference chain
 
@@ -25,9 +25,9 @@ The index's historical REA `inspect_artifact` evidence is `ev_c1be98e2e349f123aa
 
 ## Current source mismatch
 
-The current backend already looks up Setup state, log, and outcome by workspace ID in `SetupManager`; the scripts bridge sends that ID to `setup_script_status`. `ScriptsPanel` loses that identity by keeping one unkeyed `SetupStatus` and one unkeyed pending action. Switching workspaces can therefore display the old transcript and status before the new read completes. The first new-workspace output event can append to the old log. A deferred shared refresh can also replace the newly displayed workspace's Setup and Run status after the switch.
+At inspected main `203ba7e1`, the backend already looks up Setup state, log, and outcome by workspace ID in `SetupManager`; the scripts bridge sends that ID to `setup_script_status`. The main version of `ScriptsPanel` loses that identity by keeping one unkeyed `SetupStatus` and one unkeyed pending action. Switching workspaces can therefore display the old transcript and status before the new read completes. The first new-workspace output event can append to the old log. A deferred shared refresh can also replace the newly displayed workspace's Setup and Run status after the switch.
 
-The intended correction keys only Setup snapshots and pending actions, initializes streamed output from the matching workspace snapshot, and rejects an obsolete workspace refresh before its existing `setRuns` and Setup update. The existing Run output and preview isolation from #945, `runCompletion.test.ts`, the scripts backend, and the shared model remain unchanged.
+The correction keeps the workspace ID beside the Setup snapshot and pending action. The view reads only its matching snapshot, with an idle fallback until its status arrives. Streamed output starts from that workspace's snapshot, not the previously displayed log. A shared refresh rejects another workspace's result before its existing `setRuns` and Setup update. Each Setup request clears only itself when it completes, and a late Setup error is displayed only in its originating workspace. The existing Run output and preview isolation from #945, `runCompletion.test.ts`, the scripts backend, and the shared model remain unchanged.
 
 Model the Domain keeps workspace identity beside the snapshot it identifies. Fix Root Causes rejects the stale asynchronous producer instead of only hiding its resulting text.
 
@@ -42,11 +42,13 @@ The four cases assert that:
 3. A late old-workspace shared refresh cannot replace the new Setup transcript or Run status.
 4. A pending start belongs to its workspace and request. Completing an old request cannot clear the new workspace's pending action.
 
-The first published checkpoint contains only the regression and this note. Production code is unchanged. Ordinary automatic hosted CI runs `node --test "src/**/*.test.ts"`. The intended failing results must be observed before the production correction is applied, and the regression assertions must remain unchanged afterward.
+The first published checkpoint contained only the regression and this note, with production code unchanged. Ordinary automatic hosted CI ran `node --test "src/**/*.test.ts"`. The four intended failures below were observed before the production correction was applied. The regression assertions remain unchanged afterward.
 
-- Passed locally: `git diff --check`.
+- **Intended RED confirmed at published head `67deab09f90f3607ab3cf4558d797e3fc4769740`:** ordinary automatic hosted [frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/42919479574/job/130190409766) ran `node --test "src/**/*.test.ts"`: 2,033 tests, 2,029 passed, exactly four failed. All failures are the new Setup behavioral assertions: the new workspace displayed `A transcript`; its first output became `A transcript\nB streamed output`; an obsolete read replaced `B complete` with `obsolete A response`; and A's deferred start disabled B's Run setup button. There was no fixture or import failure.
+- The [typecheck + build job](https://github.com/reason-machines/openconductor/actions/runs/42919479574/job/130190409824) passed `npm run typecheck` and failed on the same four unit tests. Its build step did not run.
+- Passed locally: `git diff --check` and byte-identical regression-file verification against the test-only checkpoint. SHA-256 of the unchanged `setupContext.test.ts`: `283dfb3c11c028f33bd8df4adfda0f067f3628b41c4f928f75bb497c36985e3b`.
 - Not run locally: Node tests, dependency installs, TypeScript, build, browser, native, or app runtime checks. These remain prohibited by the program's current resource and native-runtime stops.
-- Pending: the ordinary automatic hosted regression result.
+- Pending: ordinary automatic hosted GREEN on the production correction, with all four regression assertions unchanged. No manual dispatch or duplicate observer.
 - No screenshot was captured. This change has no new styling, and browser or native execution is not admitted. Component output and callback assertions are not a screenshot or native acceptance.
 
 The #847 and #916 stops remain in force. No protected data, agent credentials, provider configuration, installed application, or acquisition destination is touched.

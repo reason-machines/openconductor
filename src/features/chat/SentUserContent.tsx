@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import type { SentUserContentV1 } from "./userContent.ts";
 import { sentFileTarget } from "./userContent.ts";
+import { UserText } from "./UserText.tsx";
 
 interface Props {
   content: SentUserContentV1;
@@ -14,7 +15,7 @@ export function SentUserContent({ content, workspacePath, onOpenFile }: Props) {
     : <span className="oc-sent-file-chip" title={path}>{label}</span>;
   return (
     <>
-      {content.parts.map((part, index) => <Fragment key={index}>{part.kind === "text" ? part.text : chip(part.label, part.path, sentFileTarget(workspacePath, part))}</Fragment>)}
+      {content.parts.map((part, index) => <Fragment key={index}>{part.kind === "text" ? <UserText text={part.text} /> : chip(part.label, part.path, sentFileTarget(workspacePath, part))}</Fragment>)}
       {content.attachments.map((attachment, index) => (
         <Fragment key={`attachment:${index}`}>
           {"\n\n"}

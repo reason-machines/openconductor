@@ -55,7 +55,8 @@ function SummaryTransition({ summaryToggles, ...props }) {
 }
 exports.SummaryTransition = SummaryTransition;
 `;
-const compiled = ts.transpileModule(`${selected}\n${toolDefault}\n${transition}`, {
+const userText = statements("./UserText.tsx", ["trimUserUrl", "isOrdinaryUserUrl", "UserText"]);
+const compiled = ts.transpileModule(`${selected}\n${toolDefault}\n${userText}\n${transition}`, {
   fileName: "Transcript.tsx",
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022 },
   reportDiagnostics: true,
@@ -69,6 +70,7 @@ const renderers: {
 const unexpected = (name: string) => () => { throw new Error(`Unexercised leaf reached: ${name}`); };
 runInNewContext(compiled.outputText, {
   exports: renderers,
+  URL,
   require(name: string) { assert.equal(name, "react/jsx-runtime"); return localRequire(name); },
   React,
   Fragment: React.Fragment,
