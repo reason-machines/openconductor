@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNod
 import { effectiveShortcuts, type Overrides } from "../keybindings/overrides.ts";
 import { glyphs } from "../keybindings/shortcut.ts";
 import { buildResults, cycleTab, emptyText, placeholderFor, TABS, type PaletteData, type PaletteIcon, type PaletteTab, type ResultItem } from "./search/model.ts";
-import { COMMAND_PALETTE_DIALOG_ID, moveActive, paletteCommandFor } from "./state.ts";
+import { COMMAND_PALETTE_DIALOG_ID, moveActive, paletteCommandFor, tabSelectionIndex } from "./state.ts";
 import { workspaceNumberLabel } from "../state/workspaceNumber.ts";
 import { VIEW_ARCHIVED_ACTION } from "./fromAppState.ts";
 import type { ArchiveFilter, ArchivedWorkspace } from "../workspace/archivedList.ts";
@@ -36,6 +36,7 @@ export interface CommandPaletteProps {
   onSelect: (item: ResultItem) => void;
   /** A settings result's icon (its page's, as in Settings' own search). */
   settingIcon?: (settingId: string) => ReactNode;
+  actionIcon?: (actionId: string) => ReactNode;
   onClose: () => void;
 }
 
@@ -110,10 +111,10 @@ function ResultWorkspaceRow({ item, showNumber }: { item: Extract<ResultItem, { 
   );
 }
 
-export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, onClose }: CommandPaletteProps) {
+export function CommandPalette({ data, overrides = {}, showProjects = true, initialTab = "all", initialArchiveFilter, repos = [], archived = [], showWorkspaceNumbers = false, onSelect, settingIcon, actionIcon, onClose }: CommandPaletteProps) {
   const [tab, setTab] = useState<PaletteTab>(initialTab);
   const [query, setQuery] = useState("");
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(initialTab === "workspaces" ? -1 : 0);
   const [filters, setFiltersState] = useState<HomeFilters>(() => {
     const saved = loadFilters(new Set(repos.map((r) => r.id)));
     return initialArchiveFilter ? { ...saved, archiveFilter: initialArchiveFilter } : saved;
@@ -133,8 +134,16 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     [tab, wsRows, groups],
   );
 
-  // Conductor (cmdk): the Workspaces tab opens with no row highlighted; typing highlights the first.
-  useEffect(() => setActive(tab === "workspaces" ? -1 : 0), [tab]);
+  function changeTab(next: PaletteTab) {
+    if (next === tab) return;
+    setActive(tabSelectionIndex({
+      from: tab,
+      to: next,
+      selected: flat[active],
+      results: next === "workspaces" ? [] : buildResults(next, query, data).flatMap((group) => group.items),
+    }));
+    setTab(next);
+  }
   const typed = useRef(false);
   useEffect(() => {
     if (typed.current) setActive(0);
@@ -148,7 +157,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     if (!item) return;
     // Conductor: switch to the Workspaces tab showing archived ones too, and stay open.
     if (item.kind === "action" && item.action.id === VIEW_ARCHIVED_ACTION) {
-      setTab("workspaces");
+      changeTab("workspaces");
       setFiltersState({ ...filters, archiveFilter: "all" });
       setQuery("");
       return;
@@ -164,7 +173,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     e.stopPropagation();
     if (cmd === "close") onClose();
     else if (cmd === "select") choose(flat[active]);
-    else if (cmd === "next-tab" || cmd === "prev-tab") setTab((t) => cycleTab(t, cmd === "next-tab" ? 1 : -1, showProjects));
+    else if (cmd === "next-tab" || cmd === "prev-tab") changeTab(cycleTab(tab, cmd === "next-tab" ? 1 : -1, showProjects));
     else setActive((a) => moveActive(a, flat.length, cmd));
   }
 
@@ -202,7 +211,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                 aria-selected={t.value === tab}
                 className={t.value === tab ? "palette-tab active" : "palette-tab"}
                 onMouseDown={(e) => e.preventDefault()}
-                onClick={() => setTab(t.value)}
+                onClick={() => changeTab(t.value)}
               >
                 {t.label}
               </button>
@@ -276,9 +285,9 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
                         ) : item.kind === "action" ? (
                           <>
                             <span className="palette-icon" aria-hidden>
-                              {item.action.icon && <ConductorIcon name={ICONS[item.action.icon]} size={16} />}
+                              {actionIcon?.(item.action.id) ?? (item.action.icon && <ConductorIcon name={ICONS[item.action.icon]} size={16} />)}
                             </span>
-                            <span className="palette-title">{item.action.title}</span>
+                            <span className={item.action.group === "open-in" ? "palette-title palette-open-in-title" : "palette-title"}>{item.action.title}</span>
                             <Shortcut keys={shortcutsFor(item, overrides)} />
                           </>
                         ) : (

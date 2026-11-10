@@ -68,7 +68,7 @@ re-check a claim; the code itself is not copied here.
 | Run-script entries (ids, merge, args, cwd, hide, availability, legacy `run`/`tasks`) | `crates/scripts/src/config/run.rs` |
 | `CONDUCTOR_*` env per script kind, `$VAR` cwd expansion | `crates/scripts/src/env.rs` |
 | Ten-port blocks from 55000 | `crates/scripts/src/ports.rs` |
-| Script file, zsh/bash, process group, TERM then KILL | `crates/scripts/src/launch.rs` |
+| Script file, zsh/bash, 80x24 controlling PTY, process group, TERM then KILL | `crates/scripts/src/launch.rs` |
 | Login-shell env capture | `crates/scripts/src/shell_env.rs` |
 | Setup lifecycle and `conductor-setup-<id>.log` | `crates/scripts/src/setup.rs` |
 | Run states, waiting for setup, nonconcurrent, history, auto-run rule | `crates/scripts/src/runner.rs` |
@@ -76,11 +76,16 @@ re-check a claim; the code itself is not copied here.
 | Tauri commands and the `scripts://event` event | `src-tauri/src/scripts.rs` |
 | Run and Setup panel | `src/components/ScriptsPanel.tsx`, `src/scripts/` |
 
+## PTY implementation checks
+
+Standalone script process tests cover TTY stdin/stdout/stderr, an 80x24 `/dev/tty`, cwd/environment, stop escalation, same-script restart and Setup cancel/rerun. The existing Setup Run/Stop/Rerun commands use this launcher without a new UI adapter. Transcripts retain raw PTY bytes, including CRLF.
+
+Native macOS Setup controls and rendered output remain unverified under the sole-executor isolation gate. No capture was run for this change. The exact reference stop signal remains unknown.
+
 ## Not done yet
 
 - Scripts settings page (`/settings/organization/repositories/$owner/$repo/scripts`): edit setup and run scripts, add, rename, hide and delete run scripts, script scope (local or shared file), import, managed-key locks in the UI.
 - The create-workspace dialog starts setup (`scripts_config`, then `setup_script_start`) after `create_workspace` (see `evidence/create-workspace/README.md`); `workspaces.state` is not persisted, so `setting_up` exists only in the UI. The full archive (`archive_workspace`, `evidence/archive/NOTES.md`) runs the archive script through `ScriptService::run_archive` before removing the worktree. `src-tauri/src/workspace/scripts.rs` duplicates part of this crate and should delegate to it.
 - `workspaces.setup_log_path` is not persisted yet (no database layer is wired to this crate).
 - Shared environment variables (`environment_variables` settings) are not passed to scripts.
-- Output is a pipe, not a PTY; scripts that check for a TTY print less color than in the reference.
 - "Detecting setup script" is the create dialog's `scripts_config` call; run script detection is not implemented.

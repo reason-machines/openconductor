@@ -395,6 +395,35 @@ fn unarchive_brings_back_the_worktree_its_uncommitted_work_and_context() {
 }
 
 #[test]
+fn restore_without_saved_context_preserves_checkpoint_todos_and_existing_excludes() {
+    let f = Fixture::new("restore-context-fallback");
+    write(f.ws(), ".context/todos.md", "keep these todos\n");
+    let exclude = f.repo().join(".git/info/exclude");
+    fs::write(&exclude, "root-only.secret").unwrap();
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    assert!(teardown(&f.target, &p, false, None).is_empty());
+
+    let r = restore(&f.target, p.archive_commit.as_deref(), None, false).unwrap();
+    assert!(r.restored_changes && r.notices.is_empty());
+    assert_eq!(
+        fs::read_to_string(f.ws().join(".context/todos.md")).unwrap(),
+        "keep these todos\n"
+    );
+    assert_eq!(
+        g(f.ws(), &["check-ignore", ".context/todos.md"]),
+        ".context/todos.md"
+    );
+    let contents = fs::read_to_string(&exclude).unwrap();
+    assert_eq!(contents, "root-only.secret\n/.context/\n");
+    create_context_folder(f.ws()).unwrap();
+    assert_eq!(fs::read_to_string(&exclude).unwrap(), contents);
+    assert_eq!(
+        fs::read_to_string(f.ws().join(".context/todos.md")).unwrap(),
+        "keep these todos\n"
+    );
+}
+
+#[test]
 fn restore_scenarios_follow_conductors_cwt() {
     let f = Fixture::new("restore-scenarios");
     write(f.ws(), "wip.txt", "unsaved\n");
@@ -485,6 +514,31 @@ fn restore_to_new_branch_skips_taken_names_and_keeps_the_work() {
 }
 
 #[test]
+fn restore_of_a_deleted_branch_reuses_its_available_name() {
+    let f = Fixture::new("restore-deleted-name");
+    write(f.ws(), "wip.txt", "unsaved\n");
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    teardown(&f.target, &p, true, None);
+    assert!(!f.branch_exists("sven/ws"));
+
+    let branch = create_restore_branch(&f.target, p.archive_commit.as_deref()).unwrap();
+    assert_eq!(branch, "sven/ws");
+    assert_eq!(
+        g(f.repo(), &["rev-parse", &branch]),
+        p.archive_commit.as_deref().unwrap()
+    );
+    let mut target = f.target.clone();
+    target.branch = branch;
+    let restored = restore(&target, p.archive_commit.as_deref(), None, true).unwrap();
+    assert!(restored.recreated_branch && restored.restored_changes);
+    assert_eq!(g(f.ws(), &["branch", "--show-current"]), "sven/ws");
+    assert_eq!(
+        fs::read_to_string(f.ws().join("wip.txt")).unwrap(),
+        "unsaved\n"
+    );
+}
+
+#[test]
 fn restore_to_new_branch_of_a_deleted_branch_without_commit_refuses() {
     let f = Fixture::new("restore-new-branch-old");
     let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
@@ -507,6 +561,101 @@ fn unarchive_copies_the_gitignored_include_files_back() {
         fs::read_to_string(f.ws().join(".env")).unwrap(),
         "SECRET_NAME=x\n"
     );
+}
+
+fn restore_with_include_settings(
+    tag: &str,
+    repository_settings: &str,
+    workspace_settings: Option<&str>,
+    worktreeinclude: Option<&str>,
+    expected_env: bool,
+    expected_local: bool,
+) {
+    let f = Fixture::new(tag);
+    write(f.repo(), ".gitignore", ".env.fixture\nconfig.local\n");
+    let repository_layer = if workspace_settings.is_some() {
+        ".conductor/settings.toml"
+    } else {
+        ".conductor/settings.local.toml"
+    };
+    write(f.repo(), repository_layer, repository_settings);
+    if let Some(settings) = workspace_settings {
+        write(f.ws(), ".conductor/settings.toml", settings);
+        g(f.ws(), &["add", ".conductor/settings.toml"]);
+        g(f.ws(), &["commit", "-qm", "workspace include rules"]);
+    }
+    if let Some(patterns) = worktreeinclude {
+        write(f.repo(), ".worktreeinclude", patterns);
+    }
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    teardown(&f.target, &p, false, None);
+    // Root-only ignored files cannot be recovered from the workspace checkpoint.
+    write(f.repo(), ".env.fixture", "synthetic-env\n");
+    write(f.repo(), "config.local", "synthetic-config\n");
+    let result = restore(&f.target, p.archive_commit.as_deref(), None, false).unwrap();
+    assert!(result.notices.is_empty(), "{result:?}");
+    assert_eq!(f.ws().join(".env.fixture").exists(), expected_env, "env copied");
+    assert_eq!(
+        f.ws().join("config.local").exists(),
+        expected_local,
+        "custom include copied"
+    );
+    if expected_env {
+        assert_eq!(fs::read_to_string(f.ws().join(".env.fixture")).unwrap(), "synthetic-env\n");
+    }
+    if expected_local {
+        assert_eq!(fs::read_to_string(f.ws().join("config.local")).unwrap(), "synthetic-config\n");
+    }
+}
+
+#[test]
+fn unarchive_honors_custom_include_settings() {
+    restore_with_include_settings(
+        "include-custom", "file_include_globs = '*.local'\n", None, None, false, true,
+    );
+}
+
+#[test]
+fn unarchive_honors_explicitly_empty_include_settings() {
+    restore_with_include_settings(
+        "include-empty", "file_include_globs = ''\n", None, None, false, false,
+    );
+}
+
+#[test]
+fn unarchive_uses_default_only_when_include_settings_are_unset() {
+    restore_with_include_settings("include-default", "", None, None, true, false);
+}
+
+#[test]
+fn unarchive_worktreeinclude_overrides_empty_settings() {
+    restore_with_include_settings(
+        "include-file", "file_include_globs = ''\n", None, Some("config.local\n"), false, true,
+    );
+}
+
+#[test]
+fn unarchive_reads_restored_workspace_include_settings() {
+    restore_with_include_settings(
+        "include-workspace",
+        "file_include_globs = ''\n",
+        Some("file_include_globs = '*.local'\n"),
+        None, false, true,
+    );
+}
+
+#[test]
+fn unarchive_reports_unreadable_include_settings_without_copying_defaults() {
+    let f = Fixture::new("include-invalid");
+    write(f.repo(), ".gitignore", ".env.fixture\n");
+    write(f.repo(), ".conductor/settings.local.toml", "file_include_globs = [\n");
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    teardown(&f.target, &p, false, None);
+    write(f.repo(), ".env.fixture", "synthetic-env\n");
+    let result = restore(&f.target, p.archive_commit.as_deref(), None, false).unwrap();
+    assert!(!f.ws().join(".env.fixture").exists());
+    assert!(result.notices.iter().any(|notice| notice.message.starts_with("Couldn't copy gitignored files:")));
+    assert_eq!(g(f.ws(), &["branch", "--show-current"]), "sven/ws");
 }
 
 #[test]

@@ -18,6 +18,7 @@
 // No JSX so `markdown.test.ts` can render it with react-dom/server.
 
 import { createElement as h, useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { MermaidBlock } from "./mermaid.ts";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
@@ -139,7 +140,10 @@ export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link
     code: ({ className, children }) => {
       const text = childText(children);
       const language = languageOf(className);
-      if (text.includes("\n")) return h(CodeBlock, { language, content: text });
+      if (text.includes("\n")) {
+        const code = h(CodeBlock, { language, content: text });
+        return language === "mermaid" ? h(MermaidBlock, { content: text, children: code }) : code;
+      }
       const spans = highlight(language, text);
       if (spans) return h("code", { className: `md-code hljs${className ? ` ${className}` : ""}` }, spans);
       const code = h("code", { className: className ? `md-code ${className}` : "md-code" }, children);

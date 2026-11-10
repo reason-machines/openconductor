@@ -34,8 +34,14 @@ export interface FileDiff extends FileChange {
   hunks: Hunk[];
 }
 
-/** Which changes the viewer shows: the whole branch versus its base, or only uncommitted work. */
-export type DiffScope = "all" | "uncommitted";
+export type DiffScope = "all" | "uncommitted" | { type: "commit"; commitHash: string };
+
+export interface BranchCommit {
+  hash: string;
+  message: string;
+  author: string;
+  date: number;
+}
 /** "file" shows each changed file whole, as it is now. */
 export type DiffLayout = "unified" | "split" | "file";
 

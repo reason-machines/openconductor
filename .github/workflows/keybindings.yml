@@ -29,3 +29,11 @@ jobs:
         run: npm run build
       - name: End-to-end shortcuts (real key presses in the runner's Chrome)
         run: npm run test:e2e
+      - name: Retain scroll input diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scroll-input-${{ github.sha }}
+          path: test-results/scroll-input.json
+          if-no-files-found: ignore
+          retention-days: 7

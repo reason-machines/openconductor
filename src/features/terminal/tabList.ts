@@ -5,7 +5,7 @@
 // (index-BGEQ8YjU.js bytes 2806549-2809900; see evidence/terminal/local-storage-terminal.md).
 // Pure pieces plus a store that keeps the whole list in memory and writes it
 // whole after each change, one write at a time, as zustand's persist does.
-import type { TabsState } from "./tabs.ts";
+import type { TabsState, TerminalPlacement } from "./tabs.ts";
 
 /** The reference's store name for the terminal panel's tabs. */
 export const TABS_STORAGE_KEY = "terminal-panel-tabs-v1";
@@ -20,6 +20,7 @@ const DEFAULT_LAST_TAB_KIND = "spotlight";
 export interface SavedTab {
   id: string;
   title: string;
+  placement?: TerminalPlacement;
   /** Where the tab's shell was when saved; the reference keeps it optional. */
   cwd?: string;
 }
@@ -44,6 +45,7 @@ interface StoredTerminal {
   localWorkspaceId: string;
   startingCommandRan: boolean;
   title?: string;
+  placement?: TerminalPlacement;
 }
 
 const isStr = (v: unknown): v is string => typeof v === "string";
@@ -63,7 +65,7 @@ export function encodeTabList(list: TabList): string {
   const titleCounters: [string, number][] = [];
   for (const [ws, w] of Object.entries(list.workspaces)) {
     for (const t of w.tabs) {
-      terminals.push({ id: t.id, ...(t.cwd === undefined ? {} : { cwd: t.cwd }), localWorkspaceId: ws, startingCommandRan: false, title: t.title });
+      terminals.push({ id: t.id, ...(t.cwd === undefined ? {} : { cwd: t.cwd }), localWorkspaceId: ws, startingCommandRan: false, title: t.title, ...(t.placement === "center" ? { placement: t.placement } : {}) });
     }
     workspaceTerminals.push([ws, w.tabs.map((t) => t.id)]);
     if (w.activeId !== null) activeTabPerWorkspace.push([ws, w.activeId]);
@@ -103,6 +105,7 @@ export function decodeTabList(text: string | null): TabList {
       localWorkspaceId: ws,
       startingCommandRan: t.startingCommandRan === true,
       title: isStr(t.title) ? t.title : undefined,
+      ...(t.placement === "center" ? { placement: t.placement } : {}),
     });
   }
   const counters = new Map(pairs(state.titleCounters).filter((p): p is [string, number] => isStr(p[0]) && Number.isInteger(p[1]) && (p[1] as number) > 0));
@@ -114,11 +117,12 @@ export function decodeTabList(text: string | null): TabList {
       .filter((id): id is string => isStr(id) && terminals.has(id))
       .map((id, i) => {
         const t = terminals.get(id)!;
-        return { id, title: t.title ?? `Terminal ${i + 1}`, ...(t.cwd === undefined ? {} : { cwd: t.cwd }) };
+        return { id, title: t.title ?? `Terminal ${i + 1}`, ...(t.cwd === undefined ? {} : { cwd: t.cwd }), ...(t.placement === "center" ? { placement: t.placement } : {}) };
       });
     if (tabs.length === 0) continue;
     const want = active.get(ws);
-    const activeId = want !== undefined && tabs.some((t) => t.id === want) ? want : tabs[0].id;
+    const panel = tabs.filter((t) => t.placement !== "center");
+    const activeId = want !== undefined && panel.some((t) => t.id === want) ? want : panel[0]?.id ?? null;
     workspaces[ws] = { tabs, activeId, next: counters.get(ws) ?? tabs.length + 1 };
   }
   return { workspaces, lastTabKind: isStr(state.lastTabKind) ? state.lastTabKind : DEFAULT_LAST_TAB_KIND };
@@ -151,7 +155,7 @@ export function decodeLegacyTabList(text: string | null): TabList {
 export function savedWorkspace(state: TabsState, cwdOf: (id: string) => string | undefined): SavedWorkspace | undefined {
   const tabs = state.tabs.flatMap((t) => {
     const cwd = cwdOf(t.id);
-    return cwd === undefined ? [] : [{ id: t.id, title: t.title, cwd }];
+    return cwd === undefined ? [] : [{ id: t.id, title: t.title, cwd, ...(t.placement === "center" ? { placement: t.placement } : {}) }];
   });
   return tabs.length === 0 ? undefined : { tabs, activeId: state.activeId, next: state.next };
 }

@@ -172,6 +172,24 @@ pub struct TurnResult {
     pub text: Option<String>,
     pub total_cost_usd: Option<f64>,
     pub num_turns: Option<u64>,
+    pub usage: Option<ClaudeUsage>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ClaudeUsage {
+    pub input_tokens: Option<u64>,
+    pub output_tokens: Option<u64>,
+}
+
+impl ClaudeUsage {
+    fn parse(value: &Value) -> Option<Self> {
+        let input_tokens = value.get("input_tokens").and_then(Value::as_u64);
+        let output_tokens = value.get("output_tokens").and_then(Value::as_u64);
+        (input_tokens.is_some() || output_tokens.is_some()).then_some(Self {
+            input_tokens,
+            output_tokens,
+        })
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -223,6 +241,7 @@ impl ClaudeEvent {
                 text: str_field(&v, "result"),
                 total_cost_usd: v.get("total_cost_usd").and_then(Value::as_f64),
                 num_turns: v.get("num_turns").and_then(Value::as_u64),
+                usage: v.get("usage").and_then(ClaudeUsage::parse),
             }),
             ("control_request", _) => {
                 let request = v.get("request").cloned().unwrap_or(Value::Null);
@@ -399,6 +418,7 @@ mod tests {
                 text: Some("done".into()),
                 total_cost_usd: Some(0.25),
                 num_turns: Some(3),
+                usage: None,
             })
         );
     }

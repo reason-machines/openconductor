@@ -1,0 +1,10 @@
+.md-mermaid { margin: 12px 0; }
+.md-mermaid-diagram { overflow: auto; padding: 12px; color: var(--text); background: var(--bg); }
+.md-mermaid-diagram svg { display: block; max-width: 100%; height: auto; max-height: 500px; font: 14px var(--font-sans, sans-serif); }
+.md-mermaid-diagram text { fill: var(--text); stroke: none; }
+.md-mermaid-diagram .flowchart .label text { text-anchor: middle; }
+.md-mermaid-diagram :is(rect, circle, ellipse, polygon) { fill: var(--surface-muted); stroke: var(--muted); stroke-width: 1px; }
+.md-mermaid-diagram :is(path, line, polyline) { fill: none; stroke: var(--muted); stroke-width: 1.5px; }
+.md-mermaid-diagram marker path { fill: var(--muted); stroke: var(--muted); }
+.md-mermaid-diagram .labelBkg { fill: var(--bg); stroke: none; }
+.md-mermaid summary { width: fit-content; cursor: pointer; color: var(--muted); font-size: 12px; padding: 6px 0; }

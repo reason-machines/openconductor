@@ -90,11 +90,11 @@ function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayou
   return wanted && full?.of === selected ? full.file : null;
 }
 
-/** The open file, editable in the entire-file layout (EditInViewer.ts). */
+/** The open file, editable after its complete current contents are available. */
 function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff }) {
   const { opts, update } = diff;
-  const edit = useFileEdit(diff.worktree, selected.path, editableContents(selected, opts.layout, opts.ignoreWhitespace), diff.reloadQuietly);
   const full = useWholeFile(diff, selected, opts.layout);
+  const edit = useFileEdit(diff.worktree, selected.path, typeof opts.scope === "object" || diff.turn !== null ? null : editableContents(selected, opts.layout, opts.ignoreWhitespace, full), diff.reloadQuietly);
   return (
     <div className="oc-diff oc-diff-tab">
       <div className="oc-files">

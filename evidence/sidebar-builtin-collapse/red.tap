@@ -1,0 +1,71 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Pinned stays collapsed after remount and re-expansion survives another reload
+not ok 1 - Pinned stays collapsed after remount and re-expansion survives another reload
+  ---
+  duration_ms: 64.013179
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/builtinCollapse.test.ts:38:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /aria-expanded="false"/. Input:
+    
+    '<div class="sb-group" data-group="Pinned"><div class="sb-section-header"><button type="button" class="sb-section-toggle" aria-expanded="true"><span class="sb-section-label">Pinned</span><span class="sb-section-chevron"></span></button></div><div class="sb-ws-list sb-group-list">pinned-workspace</div></div>'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<div class="sb-group" data-group="Pinned"><div class="sb-section-header"><button type="button" class="sb-section-toggle" aria-expanded="true"><span class="sb-section-label">Pinned</span><span class="sb-section-chevron"></span></button></div><div class="sb-ws-list sb-group-list">pinned-workspace</div></div>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/builtinCollapse.test.ts:50:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: built-in groups persist independently without changing custom sections or Diff
+not ok 2 - built-in groups persist independently without changing custom sections or Diff
+  ---
+  duration_ms: 1.793455
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/builtinCollapse.test.ts:60:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'focus'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'focus'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/builtinCollapse.test.ts:69:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: early built-in toggles win delayed hydration without discarding the other group
+ok 3 - early built-in toggles win delayed hydration without discarding the other group
+  ---
+  duration_ms: 0.4065
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 1
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 628.48141

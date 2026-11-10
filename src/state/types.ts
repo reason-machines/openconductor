@@ -30,6 +30,8 @@ export interface Workspace {
   updatedAt?: number;
   /** Worktree path, once the backend created it. */
   path?: string;
+  linkedWorkspaceIds?: string[];
+  linkedDirectoryPaths?: string[];
   /** `intended_target_branch`: where the work merges back; "All changes" is diffed against it. */
   targetBranch?: string | null;
   /** `placeholder_branch_name`: the city branch, until the first message renames it. */
@@ -92,10 +94,9 @@ export interface Repo {
 
 /**
  * `root` is Conductor's `/` route: the wordmark and the three entry cards, shown at
- * start, when the open workspace goes away, and from the sidebar Home row, nav.home
- * (⌘⇧H) and the palette's Go to Home. `home` is Conductor's `/all-workspaces` route,
- * the workspace list, reached by opening /all-workspaces (and restored if it was
- * open). Conductor itself sends Home to /all-workspaces; ours differs on purpose.
+ * start and when the open workspace goes away. `home` is Conductor's
+ * `/all-workspaces` list, opened by the sidebar Home row, nav.home (⌘⇧H),
+ * the palette's Home action, or the explicit /all-workspaces path.
  */
 export type Selection =
   | { kind: "root" }

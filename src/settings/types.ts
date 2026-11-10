@@ -82,6 +82,8 @@ export interface Settings {
   };
   models: {
     default: string;
+    default_agent?: AgentKind | null;
+    default_initialized?: boolean;
     review?: string | null;
     default_thinking_enabled: boolean;
     review_thinking_enabled: boolean;

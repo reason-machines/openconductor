@@ -47,7 +47,7 @@ const SHELL_STATE = {
       name: "demo",
       path: "/repo",
       defaultBranch: "main",
-      workspaces: [{ id: "w1", name: "lisbon", branch: "lisbon", status: "idle", diff: { added: 0, removed: 0 }, createdAt: 0 }],
+      workspaces: [{ id: "w1", name: "lisbon", branch: "lisbon", path: "/repo/.worktrees/lisbon", status: "idle", diff: { added: 0, removed: 0 }, createdAt: 0 }],
     },
   ],
   selection: { kind: "workspace", repoId: "r1", workspaceId: "w1" },
@@ -66,7 +66,7 @@ function fakeBackend(shellState) {
     models: { default: "opus", default_thinking_enabled: true, review_thinking_enabled: true, codex: { default_thinking_level: "high", review_thinking_level: "high" } },
     providers: {},
   };
-  window.__fake = { spawns: [], saves: [] };
+  window.__fake = { spawns: [], saves: [], kills: [] };
   let handler;
   let cb = 0;
   const cbs = {};
@@ -98,7 +98,7 @@ function fakeBackend(shellState) {
         }
         case "pty_spawn": {
           const a = args.args;
-          window.__fake.spawns.push({ id: a.id, initialCommand: a.initialCommand ?? null });
+          window.__fake.spawns.push({ id: a.id, cwd: a.cwd, initialCommand: a.initialCommand ?? null });
           setTimeout(() => {
             emit({ kind: "ready", id: a.id, pid: 42 });
             emit({ kind: "data", id: a.id, data: b64("/repo$ ") });
@@ -113,8 +113,10 @@ function fakeBackend(shellState) {
         case "pty_write_mirror":
         case "pty_persist_terminal_history":
         case "pty_ack_bytes":
-        case "pty_kill":
         case "pty_clear_history":
+          return;
+        case "pty_kill":
+          window.__fake.kills.push(args.id);
           return;
         case "app_info":
           return { name: "OpenConductor", version: "0.1.0", platform: "macos" };
@@ -130,7 +132,8 @@ const spawns = (page) => page.evaluate(() => window.__fake.spawns.map((s) => s.i
 const lastSave = (page) => page.evaluate(() => window.__fake.saves.at(-1));
 
 async function bigTab(page) {
-  await page.locator(".term-mount .xterm-helper-textarea").focus();
+  const center = page.locator(".center-terminal .xterm-helper-textarea");
+  await (await center.count() ? center : page.locator(".ws-strip .xterm-helper-textarea")).focus();
   await page.keyboard.press("Meta+Shift+t");
 }
 
@@ -190,27 +193,73 @@ test("Big terminal mode: ⌘⇧T does nothing while off; on, it opens a tab runn
   await bigTab(page);
   await page.waitForFunction(() => window.__fake.spawns.length === 2);
   assert.deepEqual(await spawns(page), [null, 'codex -c model_reasoning_effort="high" --ask-for-approval never --sandbox danger-full-access']);
-  assert.equal(await page.locator(".term-tab").count(), 2);
-  // ⌘T stays a plain shell.
-  await page.locator(".term-mount .xterm-helper-textarea").focus();
+  assert.equal(await page.locator(".ws-strip .term-tab").count(), 1, "big terminals must not appear in the right panel");
+  const centerTabs = page.getByRole("tablist", { name: "Workspace tabs" });
+  await centerTabs.getByRole("tab", { name: "Terminal", exact: true }).waitFor();
+  await page.getByRole("region", { name: "Center terminal" }).waitFor();
+  assert.equal(await page.locator(".chat").isVisible(), false, "the chat and composer are hidden, not unmounted");
+  const beforeSwitch = await spawns(page);
+  await centerTabs.getByRole("tab", { name: "lisbon", exact: true }).click();
+  assert.equal(await page.locator(".chat").isVisible(), true);
+  assert.equal(await page.locator(".center-terminal").count(), 0);
+  await centerTabs.getByRole("tab", { name: "Terminal", exact: true }).click();
+  await page.getByRole("region", { name: "Center terminal" }).waitFor();
+  assert.deepEqual(await spawns(page), beforeSwitch, "tab switching reuses the PTY");
+  // ⌘T stays a plain panel shell.
+  await page.locator(".center-terminal .xterm-helper-textarea").focus();
   await page.keyboard.press("Meta+t");
   await page.waitForFunction(() => window.__fake.spawns.length === 3);
   assert.equal((await spawns(page))[2], null);
 
-  // Outside a terminal, with the panel hidden (⌘J), ⌘⇧T shows it with a new big terminal that has the keyboard.
+  // Outside a terminal, ⌘⇧T opens the center while leaving the right strip hidden.
   await page.evaluate(() => document.activeElement?.blur());
-  await page.keyboard.press("Meta+j");
-  await page.waitForFunction(() => !document.querySelector(".terminal-panel"));
+  await page.getByRole("button", { name: "Hide terminal panel" }).click();
+  await page.locator(".ws-strip.collapsed").waitFor();
+  await page.evaluate(() => document.activeElement?.blur());
+  await page.evaluate(() => {
+    window.__fake.focusEvents = [];
+    document.addEventListener("focusin", (event) => {
+      window.__fake.focusEvents.push({
+        tag: event.target.tagName,
+        className: event.target.className,
+        center: Boolean(event.target.closest(".center-terminal")),
+      });
+      if (window.__fake.focusEvents.length > 10) window.__fake.focusEvents.shift();
+    });
+  });
   await page.keyboard.press("Meta+Shift+t");
   await page.waitForFunction(() => window.__fake.spawns.length === 4);
   assert.equal((await spawns(page))[3], 'codex -c model_reasoning_effort="high" --ask-for-approval never --sandbox danger-full-access');
-  await page.locator(".terminal-panel").waitFor();
-  assert.equal(await page.locator(".term-tab").count(), 4);
-  await page.waitForFunction(() => document.activeElement?.closest(".terminal-panel .term-mount"));
+  await page.getByRole("region", { name: "Center terminal" }).waitFor();
+  assert.equal(await page.locator(".ws-strip .term-tab").count(), 2);
+  assert.equal(await page.locator(".ws-strip.collapsed").count(), 1, "opening a center tab does not reopen the right strip");
+  assert.equal(await centerTabs.getByRole("tab", { name: /^Terminal/ }).count(), 2);
+  try {
+    await page.waitForFunction(() => document.activeElement?.closest(".center-terminal .term-mount"));
+  } catch (error) {
+    const focus = await page.evaluate(() => ({
+      active: document.activeElement?.outerHTML.slice(0, 500),
+      events: window.__fake.focusEvents,
+      terminals: [...document.querySelectorAll(".term-mount")].map((mount) => ({
+        center: Boolean(mount.closest(".center-terminal")),
+        textareas: [...mount.querySelectorAll("textarea")].map((textarea) => ({
+          connected: textarea.isConnected,
+          disabled: textarea.disabled,
+          tabIndex: textarea.tabIndex,
+          rect: textarea.getBoundingClientRect().toJSON(),
+        })),
+      })),
+    }));
+    throw new Error(`New center terminal did not take keyboard focus: ${JSON.stringify({ focus, errors })}`, { cause: error });
+  }
+  assert.ok(await page.evaluate(() => window.__fake.spawns.every((s) => s.cwd === "/repo/.worktrees/lisbon")));
   if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/big-terminal-shortcut.png` });
   // Close it again so the tabs below stay under the per-workspace tab limit.
-  await page.getByRole("button", { name: "Close terminal" }).last().click();
-  await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 3);
+  const closedId = await page.evaluate(() => window.__fake.spawns[3].id);
+  await centerTabs.getByRole("button", { name: "Close Terminal 2 tab", exact: true }).click();
+  await page.waitForFunction((id) => window.__fake.kills.includes(id), closedId);
+  assert.equal(await centerTabs.getByRole("tab", { name: /^Terminal/ }).count(), 1);
+  assert.equal(await page.locator(".ws-strip .term-tab").count(), 2);
 
   // A custom command: added selected with "No command set", saved on Enter.
   await page.getByRole("button", { name: "Settings" }).click();
@@ -231,6 +280,8 @@ test("Big terminal mode: ⌘⇧T does nothing while off; on, it opens a tab runn
   await bigTab(page);
   await page.waitForFunction(() => window.__fake.spawns.length === 5);
   assert.equal((await spawns(page))[4], "htop -d 5");
+  await page.getByRole("region", { name: "Center terminal" }).waitFor();
+  assert.equal(await page.locator(".ws-strip .term-tab").count(), 2);
 
   // Deleting the selected custom command falls back to Claude.
   await page.getByRole("button", { name: "Settings" }).click();

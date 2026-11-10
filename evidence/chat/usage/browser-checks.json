@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "dark: real Transcript renders exact SDK-result counts after duplicated streaming metadata and persisted replay",
+    "dark: next turn does not inherit usage",
+    "dark: unknown usage rows hidden",
+    "dark: zero usage rows hidden",
+    "dark: partial count keeps missing input unknown, not zero",
+    "dark: streaming turn has no completed-turn details",
+    "light: real Transcript renders exact SDK-result counts after duplicated streaming metadata and persisted replay",
+    "light: next turn does not inherit usage",
+    "light: unknown usage rows hidden",
+    "light: zero usage rows hidden",
+    "light: partial count keeps missing input unknown, not zero",
+    "light: streaming turn has no completed-turn details"
+  ],
+  "errors": []
+}

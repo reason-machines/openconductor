@@ -1,0 +1,10 @@
+{
+  "reference_asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "reference_binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+  "source_hashes": {
+    "src/palette/CommandPalette.tsx": "ac9242a2ab363eb561bac3880d7ed9673fe592bd47f9cff08368b20d01f6ae6e",
+    "src/palette/PaletteHost.tsx": "c1a8ace23cc14f544389fe5bd78f53cf7ffb43878fe90d40b60e8a925b192404",
+    "src/palette/fromAppState.ts": "ab9b3a3d23893d536477c59f3fedb3ab38084b0a79f3b9388b4f695748f41f52",
+    "src/palette/palette.css": "e64857d9c25a9e372b55b27668b2b23a6c7367b30fe149c71fc0e92184fbc214"
+  }
+}

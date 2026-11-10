@@ -218,12 +218,12 @@ export const flows = [
     },
   },
   {
-    // The workspace's terminal panel (shown with ⌘J) runs a real login shell in the repository
-    // checkout. The typed line never contains "42", so seeing oc-term-42 proves
+    // The workspace's terminal panel (shown with ⌘J) runs a real login shell in its
+    // worktree. The typed line never contains "42", so seeing oc-term-42 proves
     // the shell evaluated it, and pwd shows where the shell started.
     name: "terminal",
     async run(wd, ctx) {
-      if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
       const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
       // Conductor's workspace opens on the right panel's Run tab with no terminal; + (New terminal) in that strip opens one.
       if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal by default");
@@ -232,7 +232,7 @@ export const flows = [
       const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
       await wd.click(screen);
       await wd.keys("echo oc-term-$((6*7)); pwd\uE007");
-      const cwds = [...new Set([ctx.repo, realpathSync(ctx.repo)])];
+      const cwds = [...new Set([ctx.worktree, realpathSync(ctx.worktree)])];
       const text = await wd.waitFor("the shell's output", async () => {
         const t = ((await rows()) ?? "").replace(/\u00a0/g, " ");
         return t.includes("oc-term-42") && cwds.some((c) => t.includes(c)) && t;
@@ -243,10 +243,7 @@ export const flows = [
     },
   },
   {
-    // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
-    // active result. Home leaves the workspace for the wordmark-and-cards
-    // Home screen (Conductor opens its /all-workspaces list here; ours follows
-    // Sven's brief for #483), and searching the workspace's name brings it back.
+    // Home opens the workspace list; searching the workspace's name brings it back.
     name: "command-palette",
     async run(wd) {
       const META = "\uE03D";
@@ -284,12 +281,12 @@ export const flows = [
       await run("Home", "Home");
       const home = () =>
         wd.execute(
-          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), workspace: !!document.querySelector('.workspace') };",
+          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), search: !!document.querySelector('.allws input[placeholder=\"Search\"]'), activeHome: !!document.querySelector('.sb-row[data-active=\"true\"][title^=\"Home\"]'), workspace: !!document.querySelector('.workspace') };",
           [],
         );
-      await wd.waitFor("the Home screen with its entry cards", async () => {
+      await wd.waitFor("the Home workspace list with search and active sidebar Home", async () => {
         const h = await home();
-        return h.cards === 3 && !h.list && !h.workspace;
+        return h.cards === 0 && h.list && h.search && h.activeHome && !h.workspace;
       }).catch(async (e) => {
         throw new Error(`${e.message}; saw ${JSON.stringify(await home())}`);
       });
@@ -915,6 +912,15 @@ export const flows = [
       if (pending.state !== "waiting") throw new Error(`pairing approved without browser approval: ${pending.state}`);
       rmSync(join(ctx.fakeReason.dir, "fake-reason-signed-out"));
       await wd.waitFor("Connected after the sign-in", async () => (await status()).startsWith("Connected"), 20000);
+      const workspaceSelect = `${section} select[aria-label="Workspace for new chats"]`;
+      const unselected = await wd.execute("const s = document.querySelector(arguments[0]); return { value: s.value, placeholderDisabled: s.querySelector('option[value=\"\"]').disabled };", [workspaceSelect]);
+      if (unselected.value !== "" || !unselected.placeholderDisabled) throw new Error(`workspace was implicitly selected: ${JSON.stringify(unselected)}`);
+      await wd.waitFor("no implicit workspace in the status table", async () => (await table()).includes("WorkspaceNot selected"));
+      if (tomlValue(file, "reason", "workspace") !== null) throw new Error("sign-in implicitly saved a workspace");
+      const pick = async (label, value) => wd.click((await wd.findAll(`${section} select[aria-label="${label}"] option[value="${value}"]`))[0]);
+      await pick("Workspace for new chats", "ws-a");
+      await wd.waitFor('[reason] workspace = "ws-a"', async () => tomlValue(file, "reason", "workspace") === '"ws-a"');
+      await wd.waitFor("the explicitly selected workspace in the status table", async () => (await table()).includes("WorkspaceWorkspace ws-a"));
       const rows = await table();
       const want = ["Version0.2.692", "Accounte2e@example.com", "WorkspaceWorkspace ws-a", "This MacNot connected"];
       if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`status table ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
@@ -922,7 +928,6 @@ export const flows = [
       await wd.waitFor("This Mac connected", async () => (await table()).includes("This MacConnected"), 20000);
 
       // New chats: a pinned workspace, model and effort in [reason].
-      const pick = async (label, value) => wd.click((await wd.findAll(`${section} select[aria-label="${label}"] option[value="${value}"]`))[0]);
       await pick("Workspace for new chats", "ws-b");
       await wd.waitFor('[reason] workspace = "ws-b"', async () => tomlValue(file, "reason", "workspace") === '"ws-b"');
       await wd.waitFor("the table follows the pinned workspace", async () => (await table()).includes("WorkspaceWorkspace ws-b"));
@@ -947,11 +952,12 @@ export const flows = [
       await wd.click((await wd.findAll(`${section} button[aria-label="Remove Reason API key"]`))[0]);
       await wd.waitFor("the key field after Remove", async () => (await wd.findAll(keyField)).length === 1);
 
-      // Back on the Reason account with the defaults unset, for the screenshot.
+      // Back on the Reason account with an explicit workspace and optional defaults unset.
       await clickByText(wd, `${section} button[aria-pressed]`, "Reason accountRecommended");
       await wd.waitFor("[providers.reason] reason_login", async () => tomlValue(file, "providers.reason", "kind") === '"reason_login"');
-      for (const label of ["Workspace for new chats", "Default Reason model", "Default Reason effort"]) await pick(label, "");
-      await wd.waitFor("[reason] cleared", async () => tomlValue(file, "reason", "workspace") === null && tomlValue(file, "reason", "model") === null);
+      await pick("Workspace for new chats", "ws-a");
+      for (const label of ["Default Reason model", "Default Reason effort"]) await pick(label, "");
+      await wd.waitFor("[reason] keeps the explicit workspace with optional defaults cleared", async () => tomlValue(file, "reason", "workspace") === '"ws-a"' && tomlValue(file, "reason", "model") === null && tomlValue(file, "reason", "reasoning_effort") === null);
       await wd.waitFor("Connected again", async () => (await status()).startsWith("Connected"), 20000);
       await showRows(wd, `${section} .agk-cards`);
     },

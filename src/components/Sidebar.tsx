@@ -7,14 +7,14 @@ import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, FolderPlus
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
 import { HelpMenu } from "./HelpMenu";
-import { PRICING_URL } from "./helpMenuItems";
-import { openUrl } from "../backend";
 import { RepoIcon } from "./RepoIcon";
 import { RenameWorkspaceDialog } from "./RenameWorkspaceDialog";
 import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
 import { RepoWorkspaceList } from "./PendingWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
+import { useBuiltinSectionCollapse } from "../state/useCustomSectionCollapse";
+import { MAIN_COLLAPSE_KEY, PINNED_COLLAPSE_KEY } from "../state/customSectionCollapse";
 import { SidebarStatusGroups } from "./SidebarStatusGroups";
 import { isRepoCollapsed, pinnedEntries, repoGroupWorkspaces, sectionEntries, type SidebarSection } from "../state/sidebarOrder";
 import { newId } from "../state/names";
@@ -315,8 +315,8 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
   const sel = state.selection;
   const dashboardEnabled = useDashboardEnabled().enabled;
   const routinesAvailable = useRoutinesAvailable();
-  // Conductor persists this per collapse key; ours lasts for the session.
-  const [groupCollapsed, setGroupCollapsed] = useState(false);
+  const [builtinCollapsed, toggleBuiltin] = useBuiltinSectionCollapse();
+  const groupCollapsed = builtinCollapsed.has(MAIN_COLLAPSE_KEY);
   // Conductor keeps "show hidden repositories" in component state, so it resets on reload.
   const [showHidden, setShowHidden] = useState(false);
   const [repoContext, setRepoContext] = useState<{ repoId: string; x: number; y: number } | null>(null);
@@ -387,7 +387,6 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           >
             <SidebarIcon size={16} />
           </button>
-          <span className="sb-app-mark" title="OpenConductor"><AppMark size={14} /></span>
         </div>
         <div className="sb-history">
           <ResourceUsagePill workspaces={usageWorkspaces} />
@@ -405,7 +404,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           {dashboardEnabled && (
             <NavRow icon={<LayoutGridIcon size={12} />} label="Dashboard" shortcut="" active={sel.kind === "dashboard"} onClick={() => dispatch({ type: "select", selection: { kind: "dashboard" } })} />
           )}
-          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} title={titleWithShortcut("Home", hint("nav.home"))} active={sel.kind === "root"} onClick={() => dispatch({ type: "select", selection: { kind: "root" } })} />
+          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} title={titleWithShortcut("Home", hint("nav.home"))} active={sel.kind === "home"} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
           <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
           {/* "Routines" (Conductor's `uy` row after Create, active on /routines*): Conductor shows it for a cloud
               organization; ours runs on Reason Loops, so it shows once Reason is signed in. */}
@@ -418,7 +417,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
 
       <nav className="repo-list" ref={scrollRoot}>
         {pinned.length > 0 && (
-          <SidebarGroup label="Pinned" count={pinned.length} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
+          <SidebarGroup label="Pinned" count={pinned.length} collapsed={builtinCollapsed.has(PINNED_COLLAPSE_KEY)} onToggle={() => toggleBuiltin(PINNED_COLLAPSE_KEY)} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
             <SidebarPresence>{pinned.map((entry, index) => row(entry, index))}</SidebarPresence>
           </SidebarGroup>
         )}
@@ -446,7 +445,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
         <section className="sb-my-workspaces" aria-label="My workspaces" data-drop-target={dropTarget?.type === "unsectioned" || undefined} {...{ [DROP_ATTR.unsectioned]: "" }}>
         {/* "My workspaces" section header (Conductor's `lBi`): label, hover chevron, "..." menu with Add project. */}
         <div className="sb-section-header" onContextMenu={(e) => { e.preventDefault(); setMyContext({ x: e.clientX, y: e.clientY }); }}>
-          <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => setGroupCollapsed(!groupCollapsed)}>
+          <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => toggleBuiltin(MAIN_COLLAPSE_KEY)}>
             <span className="sb-section-label">My workspaces</span>
             <span className="sb-section-spacer" aria-hidden />
             <span className="sb-section-chevron" data-collapsed={groupCollapsed || undefined}>
@@ -577,12 +576,10 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
 
       {/* Footer, after Conductor's `Nna`: px-4 py-3, top border, help and settings icons (h-4 w-4, stroke 1.5) gap-5 at the right. */}
       <div className="sb-footer">
-        {/* Conductor's `Nna` shows the account's plan; with no paid entitlement that is a dashed "FREE" badge
-            inside a button labelled "View pricing" that opens its pricing page. OpenConductor has no paid plans,
-            so the same button opens the project page. */}
-        <button type="button" className="sb-plan-btn" aria-label="View pricing" onClick={() => void openUrl(PRICING_URL)}>
-          <span className="sb-plan-badge">FREE</span>
-        </button>
+        <span className="sb-reason-tag">
+          <AppMark size={14} />
+          <span>Reason</span>
+        </span>
         <div className="sb-footer-actions">
           <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
           {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}

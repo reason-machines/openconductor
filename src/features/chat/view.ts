@@ -10,7 +10,7 @@
 
 import type { ChatTranscript } from "./reducer.ts";
 import { conductorTools, type ConductorTool } from "./conductorTools.ts";
-import type { ChatMessage, MessageOrigin, TurnStatus } from "./types.ts";
+import type { ChatMessage, MessageOrigin, TokenUsage, TurnStatus } from "./types.ts";
 import { messageOrigin, plainText } from "./types.ts";
 
 export type ToolStatus = "running" | "done" | "error" | "interrupted";
@@ -55,6 +55,8 @@ export type RowView =
       /** ISO times the turn started and ended, for the footer's "8m, 0s · 10:37 AM". */
       startedAt?: string;
       endedAt?: string;
+      usage?: TokenUsage;
+      model?: string;
     };
 
 interface ToolResult {
@@ -115,7 +117,16 @@ function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[],
     if (text.length > 0) finalText = text;
   }
   const prompt = turnMessages.find((m) => messageOrigin(m).kind === "user" && plainText(m).length > 0);
+  const model = turnMessages.find((m) => m.role === "assistant" && m.model)?.model
+    ?? turnMessages.find((m) => messageOrigin(m).kind === "user")?.model;
   const canRetry = state?.status === "failed" || state?.status === "cancelled";
+  let usage: TokenUsage | undefined;
+  for (const m of turnMessages) {
+    if (m.role !== "assistant" || !m.usage) continue;
+    usage ??= {};
+    if (m.usage.inputTokens !== undefined) usage.inputTokens = (usage.inputTokens ?? 0) + m.usage.inputTokens;
+    if (m.usage.outputTokens !== undefined) usage.outputTokens = (usage.outputTokens ?? 0) + m.usage.outputTokens;
+  }
   return {
     kind: "turn_end",
     key: `turn-end:${turnId}`,
@@ -124,6 +135,8 @@ function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[],
     ...(state?.error !== undefined ? { error: state.error } : {}),
     ...(finalText !== undefined ? { finalText } : {}),
     ...(canRetry && prompt ? { retryPrompt: plainText(prompt) } : {}),
+    ...(usage ? { usage } : {}),
+    ...(model ? { model } : {}),
     canReset: !isLastTurn && turnMessages.some((m) => m.role === "assistant"),
     ...(state?.startedAt !== undefined ? { startedAt: state.startedAt } : {}),
     ...(state?.endedAt !== undefined ? { endedAt: state.endedAt } : {}),

@@ -2,8 +2,10 @@
 
 OpenConductor uses the official Reason hexagon/two-eyes artwork. Home retains
 its OPENCONDUCTOR pixel wordmark; sign-in and first-run onboarding use the
-neutral mark. A separate compact mark sits beside the sidebar toggle; the toggle
-and account avatars retain their original roles.
+neutral mark. The compact mark sits beside “Reason” in the bottom-left sidebar
+footer, replacing the old dashed FREE plan badge. It no longer appears beside
+the title-bar toggle. Traffic lights, toggle, navigation and account avatars
+retain their original roles.
 
 ## Source provenance
 
@@ -50,3 +52,19 @@ verify these surfaces on macOS; cloud builds do not prove their appearance.
 
 This is a requested OpenConductor brand change, not a claim about Conductor's
 artwork or behavior. No new reverse-engineered Conductor claim is introduced.
+
+## Footer identity verification (2026-11-08)
+
+The native executor Session `e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46`
+reported fresh REA accessibility evidence from the real Conductor app, PID 95788,
+showing “View pricing” and Settings in the footer. Accessibility does not prove
+tag or title-bar pixels. REA `observe-native-ui` for CGWindow 82016 was denied
+Screen Recording permission. No alternate capture bypass was attempted.
+Retained dark/light sidebar captures remain historical reference only.
+
+The branding guard was updated first and failed on the old FREE badge. After
+the change it passes and checks for the official 14px Reason mark beside Reason
+in the footer, no pre-footer mark, and no FREE/pricing tag. The cloud frontend
+build and colour lint pass. These checks do not prove macOS rendering. Actual
+main-built native footer/title-bar screenshots and packaging remain with the
+sole native executor; this note is not native visual sign-off.

@@ -18,6 +18,7 @@ import { Markdown } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
 import { turnTime } from "./turnTime.ts";
 import { TurnDetails } from "./TurnDetails.tsx";
+import { turnAgentLabel } from "./fork.ts";
 import { openUrl } from "../../backend.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
 import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
@@ -41,7 +42,7 @@ export interface TranscriptProps {
   onForkToNewWorkspace?: (turnId: string) => void;
   /** The fork items are shown but disabled, e.g. while a fork is being made. */
   forkDisabled?: boolean;
-  /** The footer hover's first line, "Opus 5.5 via Reason" (Conductor's `kDo`). */
+  /** Agent name only; the footer combines it with the turn's historical message model. */
   turnAgent?: string;
   /** The chat's agent: a turn that failed because it is not signed in links to its Settings › Agents tab. */
   chatAgent?: ChatAgentId;
@@ -207,7 +208,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-      {when ? <TurnDetails when={when} agent={turnAgent} /> : null}
+      {when ? <TurnDetails when={when} agent={turnAgent ? turnAgentLabel(row.model, turnAgent) : undefined} usage={row.usage} /> : null}
       {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
       {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">
@@ -297,12 +298,12 @@ function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
         </div>
       ) : null}
       {block.items.map((item) => {
-        if (item.kind === "part") return <Part key={item.key} part={item.part} preview={item.preview === true} ctx={ctx} />;
+        if (item.kind === "part") return <Part key={item.key} partKey={item.key} part={item.part} preview={item.preview === true} ctx={ctx} />;
         const open = ctx.summaries.isOpen(item.summary.id, block.running);
         return (
           <Fragment key={item.summary.id}>
             <SummaryRow summary={item.summary} open={open} onToggle={block.running ? undefined : () => ctx.summaries.toggle(item.summary.id, open)} />
-            {open ? item.parts.map((p) => <Part key={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
+            {open ? item.parts.map((p) => <Part key={p.key} partKey={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
           </Fragment>
         );
       })}
@@ -332,7 +333,7 @@ function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: b
 }
 
 /** `preview`: the turn's final text; Conductor mutes every other text (`ROo` `muted: !isPreviewMessage`). */
-function Part({ part, preview = false, group, ctx }: { part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
+function Part({ partKey, part, preview = false, group, ctx }: { partKey: string; part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
   switch (part.kind) {
     case "text":
       return (
@@ -352,7 +353,7 @@ function Part({ part, preview = false, group, ctx }: { part: PartView; preview?:
         </div>
       );
     case "thinking":
-      return <ThinkingRow id={`thinking:${part.text.slice(0, 32)}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
+      return <ThinkingRow id={`thinking:${partKey}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
     case "tool": {
       const { call } = part;
       return (

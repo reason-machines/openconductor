@@ -61,9 +61,9 @@ export const claudeBackend: ChatBackend<null> = {
   // After Reset chat deleted turns, the runtime opens a new Claude session
   // and the first attachment is the kept conversation ("Earlier
   // conversation.md"), so it reaches Claude the same way.
-  async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath }) {
+  async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath, workspaceId }) {
     const withPrefs = firstMessage && repoPath ? await withGeneral(text, repoPath, cwd) : text;
-    return invoke("claude_prompt", { chatId, text: withAttachments(withPrefs, attachments), turn });
+    return invoke("claude_prompt", { chatId, text: withAttachments(withPrefs, attachments), turn, workspaceId });
   },
   // The backend tells a first Stop from a second (interrupt, then kill).
   cancel(chatId) {

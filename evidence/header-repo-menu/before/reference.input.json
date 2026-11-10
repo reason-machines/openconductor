@@ -1,0 +1,72 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://conductor.localhost:4682/?oc_scenario=populated&oc_theme=dark&oc_org=local&oc_number_fixture=1"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark"
+  },
+  "actions": [
+    {
+      "step_id": "settle",
+      "action": "wait_for_timeout",
+      "duration_ms": 2500
+    },
+    {
+      "step_id": "project",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "text=tide-web"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "workspace",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "text=Ada/fix login redirect"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "settle-workspace",
+      "action": "wait_for_timeout",
+      "duration_ms": 1000
+    },
+    {
+      "step_id": "repo-menu",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "button.max-w-48"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "settle-menu",
+      "action": "wait_for_timeout",
+      "duration_ms": 250
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "dom",
+      "url"
+    ],
+    "events": [
+      "page-errors"
+    ]
+  }
+}

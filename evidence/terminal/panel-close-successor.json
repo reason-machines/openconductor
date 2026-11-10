@@ -1,0 +1,21 @@
+{
+  "subject": "Conductor 0.87.6 right-panel terminal close successor",
+  "owner": "Conductor Rebuild",
+  "scope": "Static read of retained authorized shipped-app extraction; no fresh native observation",
+  "rea_parent_evidence_id": "ev_9063647c834e461fb91d4e8a92089ad133c9c9e30742d4570f5bb2280ab99fcf",
+  "source": {
+    "chunk": "assets/index-BGEQ8YjU.js",
+    "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+    "character_range": [2808050, 2810200],
+    "symbol": "Ns.destroyTerminal",
+    "snippet": "if(d.get(r)===s)if(u.length===0)d.delete(r);else{const p=l.indexOf(s);let m;if(p===0)m=u[0];else{const v=p-1;m=u[v]}d.set(r,m),i=m}",
+    "offset_basis": "Zero-based decoded JavaScript character offsets; range includes the full relevant destroy operation"
+  },
+  "interpretation": "Closing the active panel terminal chooses its predecessor; closing the first chooses the new first. Closing an inactive terminal preserves selection, and closing the last clears selection.",
+  "regression": "Panel order A,B,C, active B, close B: expected A; previous OpenConductor reducer selected C. Tests also cover first/last, inactive closes, and interleaved center terminals.",
+  "limits": [
+    "REA cross-chunk alias resolution is incomplete; bounded reads of the original retained bundles supply the store distinction.",
+    "Static source and pure reducer tests do not establish native keyboard focus or installed-app parity.",
+    "Center/grouped close and workspace restore are excluded. No browser/native runtime, build, install or workflow dispatch was performed for this correction."
+  ]
+}

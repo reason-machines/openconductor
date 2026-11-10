@@ -1,0 +1,10 @@
+{
+  "operation": "analyze_javascript_application",
+  "parent_evidence_id": "ev_9063647c834e461fb91d4e8a92089ad133c9c9e30742d4570f5bb2280ab99fcf",
+  "summary_evidence_id": "ev_e137c387071abfd8ce1822e4bee1fb646577e30152cbeab29982992e261e469b",
+  "selected_source": "assets/renderApp-D_fmY7hW.js",
+  "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "character_offset": 7143811,
+  "snippet": "children:[zt===\"running\"&&p.jsx(ri,{className:\"size-2.5\",type:\"working\"}),\"Setup\"]})}),He&&p.jsx(Q1,{value:Rx.RUN,className:\"h-8 flex items-center justify-",
+  "scope": "Retained extraction of real Conductor0.87.6; no native launch. Other3815inventoried files not analyzed; semantic alias joins incomplete; focused original-bundle read identifies the Setup render conditional."
+}
