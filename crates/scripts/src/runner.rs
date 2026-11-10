@@ -44,6 +44,7 @@ pub struct RunRequest {
     /// `run_mode = "concurrent"`.
     pub concurrent: bool,
     pub sink: Option<OutputSink>,
+    pub on_started: Arc<dyn Fn(RunStatus) + Send + Sync>,
     pub on_finished: Arc<dyn Fn(RunStatus) + Send + Sync>,
 }
 
@@ -131,12 +132,19 @@ impl RunManager {
                 return Err(e);
             }
         };
-        {
+        let status = {
             let mut inner = self.lock();
             inner.processes.insert(key.clone(), process.clone());
             inner.states.insert(key.clone(), RunState::Running);
             inner.last_exit.remove(&key);
-        }
+            RunStatus {
+                workspace_id: key.0.clone(),
+                script_id: key.1.clone(),
+                state: RunState::Running,
+                exit: None,
+            }
+        };
+        (req.on_started)(status);
         let this = self.clone();
         let on_finished = req.on_finished;
         thread::spawn(move || loop {
