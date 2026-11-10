@@ -23,6 +23,7 @@ function fixture(comment: DiffComment) {
   const removed: DiffComment[] = [];
   const unexpected = () => { throw new Error("Unexpected comment-card boundary call"); };
   const boundaries: Record<string, object> = {
+    "../../components/DialogFrame": { DialogFrame: unexpected },
     "../../backend": { openUrl: unexpected },
     "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: unexpected },
     "./commentsApi.ts": { commentStoreFor: unexpected },
