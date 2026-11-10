@@ -165,6 +165,7 @@ default = true
                 spec,
                 concurrent: true,
                 sink: None,
+                on_started: Arc::new(|_| {}),
                 on_finished: Arc::new(|_| {}),
             },
             SetupState::Running,

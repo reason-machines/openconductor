@@ -49,6 +49,7 @@ pub enum ScriptEvent {
         chunk: String,
     },
     SetupFinished(SetupOutcome),
+    RunStarted(RunStatus),
     RunFinished(RunStatus),
 }
 
@@ -268,6 +269,7 @@ impl ScriptService {
         let cwd = env::run_cwd(&ws.workspace_path, script.cwd.as_deref(), &env);
         let spec = self.spec(ws, ScriptKind::Run, script.command_line(), cwd)?;
         let events = self.events.clone();
+        let started_events = events.clone();
         let req = RunRequest {
             workspace_id: ws.workspace_id.clone(),
             repo_id: ws.repository_id.clone(),
@@ -275,6 +277,7 @@ impl ScriptService {
             spec,
             concurrent: cfg.run_mode == RunMode::Concurrent,
             sink: Some(self.sink(ws, "run", &script.id)),
+            on_started: Arc::new(move |status| started_events(ScriptEvent::RunStarted(status))),
             on_finished: Arc::new(move |status| events(ScriptEvent::RunFinished(status))),
         };
         let shutting_down = self.shutting_down.lock().unwrap_or_else(|e| e.into_inner());
