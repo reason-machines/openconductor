@@ -49,6 +49,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
   const [open, setOpen] = useState(false);
   const menu = usePresence(open);
   const [query, setQuery] = useState("");
+  const searching = query.trim() !== "";
   const [searchIndex, setSearchIndex] = useState(0);
   const [effortOpen, setEffortOpen] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
@@ -226,8 +227,8 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                   </button>
                 );
               })}
-              {children}
-              {onOpenSettings ? (
+              {!searching ? children : null}
+              {!searching && onOpenSettings ? (
                 <button
                   type="button"
                   role="menuitem"
@@ -245,8 +246,8 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                 </button>
               ) : null}
             </div>
-            {efforts || showFast ? <div className="oc-model-sep" /> : null}
-            {efforts ? (
+            {!searching && (efforts || showFast) ? <div className="oc-model-sep" /> : null}
+            {!searching && efforts ? (
               <div className="oc-model-sub" onMouseEnter={() => setEffortOpen(true)} onMouseLeave={() => setEffortOpen(false)}>
                 <button ref={effortTrigger} type="button" role="menuitem" className="oc-model-row" aria-haspopup="menu" aria-expanded={effortOpen} data-highlighted={effortOpen || undefined} onKeyDown={onEffortTriggerKey} onClick={() => setEffortOpen(true)}>
                   <span>{efforts.axisLabel}</span>
@@ -276,7 +277,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                 ) : null}
               </div>
             ) : null}
-            {showFast ? (
+            {!searching && showFast ? (
               <button type="button" role="menuitemcheckbox" aria-checked={!!value.fast} className="oc-model-row" onClick={() => onChange({ ...value, fast: !value.fast })}>
                 <span className="oc-model-row-grow">Fast</span>
                 <span className="oc-kbd-hint">{hint("chat.toggleFastMode")}</span>
