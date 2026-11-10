@@ -179,7 +179,7 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
             stays on GitHub and comes back with the next sync. */}
         {canDeleteComment(c) &&
           (source === "user-local" ? (
-            <button className="oc-link" onClick={() => window.confirm(c.reply_to_comment_id ? "Delete this reply?" : "Delete this comment and its replies?") && void ops.remove(c)}>
+            <button className="oc-link" onClick={() => void ops.remove(c)}>
               Delete
             </button>
           ) : (

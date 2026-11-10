@@ -94,9 +94,42 @@ Ordinary automatic hosted workflow command:
 node --experimental-strip-types --test src/features/diff/*.test.ts
 ```
 
-Hosted RED has not yet been observed. The production correction and unchanged
-assertion GREEN checkpoint follow only after that result. Local
-`git diff --check` is the only validation run in this checkpoint. Local tests,
-dependency installation, typecheck, build, app/browser/native execution, and
-screenshots are not admitted and were not run. There is no workflow rerun,
-manual dispatch, or extra observer. #847 FULL STOP remains intact.
+## Hosted failing-before checkpoint
+
+The automatic PR-head checkpoint `58a92486b1cf744f300c5446eccca531cf305259`
+reproduced both local root/reply failures for the intended reason:
+`Delete must not request confirmation`, actual `1`, expected `0`.
+All four nonlocal controls passed. The Diff workflow ran 201 tests:
+199 passed, 2 failed, none skipped.
+
+- [Diff frontend job 129958141958](https://github.com/reason-machines/openconductor/actions/runs/42852916651/job/129958141958):
+  failing tests 47 and 48, log lines 446 and 470.
+- [Frontend unit job 129958144586](https://github.com/reason-machines/openconductor/actions/runs/42852916720/job/129958144586):
+  the same two failures, tests 643 and 644; 1,788 passed, 2 failed.
+- [Frontend typecheck/build job 129958144349](https://github.com/reason-machines/openconductor/actions/runs/42852916720/job/129958144349):
+  its unit-test step failed on the same two assertions; it was not a typecheck
+  or bundler failure.
+
+The separate [Keybindings job 129958142906](https://github.com/reason-machines/openconductor/actions/runs/42852916873/job/129958142906)
+failed the shared composer-paste fixture precondition at
+`tests/e2e/composer-long-paste.e2e.mjs:134`: `5000 !== 0` before a paste.
+Its unit/build steps passed; E2E reported 201 passed, 1 failed, 1 skipped.
+The existing composer diagnosis owner received that exact receipt. The local
+Delete correction does not modify that path; no causal repair or green claim
+is made for that job.
+
+## Minimal correction checkpoint
+
+Current main `314aef7f20d0bacc08450b38d2af409048e9c0e5` still has the
+same `ReviewComments.tsx` blob `6a08a3df8e51bc1e7ba1e6782aaa76025148dbb4`.
+After integrating that main normally, the correction removes only the local
+Delete `window.confirm` gate and preserves the existing `ops.remove(c)` call.
+The regression file remains byte-identical to the failing-before checkpoint,
+Git blob `48ab2a327536948758158cfec7b32c913998ea0e`.
+
+Passing-after automatic hosted execution is pending. Local `git diff --check`
+and unchanged-regression blob comparison passed. Local tests, dependency
+installation, typecheck, build, app/browser/native execution, and screenshots
+are not admitted and were not run. There is no workflow rerun, manual dispatch,
+or extra observer. #847 FULL STOP remains intact. This is source parity plus a
+hosted component-regression checkpoint, not installed/deployed/native proof.
