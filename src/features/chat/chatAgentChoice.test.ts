@@ -41,6 +41,24 @@ test("loadout entries retain explicit agents and hide unavailable agent switches
   assert.equal(agentForPick(codex), "codex");
 });
 
+test("an explicit local loadout keeps its agent-default entry available in the picker", () => {
+  for (const [agent, model, entry, label] of [
+    ["codex", "gpt-5.6-sol", CODEX_ENTRY, "Codex"],
+    ["claude", "opus", CLAUDE_ENTRY, "Claude Code"],
+  ] as const) {
+    const picked: ModelChoice = { agent, model, effort: "medium" };
+    const state = pickerState(agent, picked, null, true, [picked]);
+    assert.deepEqual(state.value, picked, "the explicit loadout model and effort stay selected");
+    assert.equal(state.label, undefined);
+    assert.ok(state.favorites.includes(entry), `${label} can reset its explicit model to CLI defaults`);
+    const reset = pickerState(agent, entry, null, true, [picked]);
+    assert.deepEqual(reset.value, entry);
+    assert.equal(reset.label, label);
+    assert.equal(agentForPick(reset.value), agent);
+    assert.ok(reset.favorites.includes(picked), "the loadout stays available after resetting to defaults");
+  }
+});
+
 test("picking an entry picks its agent; a GPT or Claude model stays a Reason chat", () => {
   assert.equal(agentForPick(CODEX_ENTRY), "codex");
   assert.equal(agentForPick(CLAUDE_ENTRY), "claude");

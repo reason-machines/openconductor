@@ -53,7 +53,7 @@ export interface PickerState {
 export function pickerState(agent: ChatAgentId, reasonModel: ModelChoice, fallback: ModelChoice | null, agentsAvailable: boolean, loadout: readonly ModelChoice[] = []): PickerState {
   const availableLoadout = loadout.filter((pick) => agentsAvailable || agentForPick(pick) === agent);
   const reasonModels = [reasonModel, ...(fallback && fallback.model !== reasonModel.model ? [fallback] : [])];
-  const others = agentsAvailable ? CLI_AGENT_IDS.filter((id) => id !== agent).map((id) => CLI_AGENTS[id].entry) : [];
+  const others = agentsAvailable ? CLI_AGENT_IDS.filter((id) => id !== agent || reasonModel.agent === id).map((id) => CLI_AGENTS[id].entry) : [];
   if (agent !== "reason") {
     const local = reasonModel.agent === agent ? reasonModel : CLI_AGENTS[agent].entry;
     return { value: local, ...(local.agent ? {} : { label: CLI_AGENTS[agent].label }), favorites: [...availableLoadout, ...reasonModels, ...others] };
