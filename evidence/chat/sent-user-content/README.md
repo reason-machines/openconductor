@@ -58,6 +58,11 @@ compile then exposed a missing `serde_json::Value` fixture import, corrected in 
 another local runtime. No screenshot exists yet. The local main integration `5c1b52a7` contains the merged
 Stop barrier `e411fc1f9bb2a3ea8c9c3c67741384721702a408` without conflicts.
 
+Hosted `6b4b6a70` exposed a Clippy layout regression: inline optional metadata enlarged the
+existing ChatEvent::Upsert variant to 312 bytes. The source correction boxes only the newly
+introduced optional metadata, not the existing event API; serde keeps the same transparent JSON
+shape. No lint allowance, weakened check or additional local runtime is used.
+
 The group-scoped queue editor selector is migrated under its narrow source lease; two
 pre-existing Composer focus expectations that still say `TEXTAREA` are deliberately unchanged.
 

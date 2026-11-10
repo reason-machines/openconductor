@@ -127,10 +127,10 @@ fn valid_sent_path(path: &str) -> bool {
 
 fn deserialize_user_content<'de, D: serde::Deserializer<'de>>(
     deserializer: D,
-) -> Result<Option<SentUserContentV1>, D::Error> {
+) -> Result<Option<Box<SentUserContentV1>>, D::Error> {
     let raw = Option::<Value>::deserialize(deserializer)?;
     Ok(raw
-        .and_then(|value| serde_json::from_value::<SentUserContentV1>(value).ok())
+        .and_then(|value| serde_json::from_value::<Box<SentUserContentV1>>(value).ok())
         .filter(|content| {
             content.version == 1
                 && content.parts.iter().all(|part| match part {
@@ -182,7 +182,7 @@ pub struct ChatMessage {
         skip_serializing_if = "Option::is_none",
         deserialize_with = "deserialize_user_content"
     )]
-    pub user_content: Option<SentUserContentV1>,
+    pub user_content: Option<Box<SentUserContentV1>>,
     #[serde(default)]
     pub blocks: Vec<Block>,
 }
