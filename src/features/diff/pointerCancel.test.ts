@@ -4,8 +4,8 @@ import { createRequire } from "node:module";
 import { resolve } from "node:path";
 import { runInNewContext } from "node:vm";
 import { test } from "node:test";
-import type { CodeViewLineSelection } from "@pierre/diffs";
-import type { LineRange } from "./pierre.ts";
+import type { CodeViewLineSelection, SelectedLineRange } from "@pierre/diffs";
+import { fromPierreSide, rangeOf, type LineRange } from "./pierre.ts";
 
 const dependencies = createRequire(import.meta.url);
 const React = dependencies("react");
@@ -37,6 +37,8 @@ const boundaries: Record<string, object> = {
   "./FilePathChip": { FilePathChip: inert },
   "./useDiffTheme.ts": { useDiffTheme: () => ({ dark: "fixture", light: "fixture" }) },
   "./pierre.ts": {
+    fromPierreSide,
+    rangeOf,
     toPatch: () => "fixture patch",
     fullDiffMeta: () => ({ isPartial: false }),
     codeViewItem: () => ({ id: "fixture.ts", type: "diff", fileDiff: { isPartial: false } }),
@@ -75,6 +77,7 @@ function fixture({ commenting = true, editing = false, selected = null }: { comm
   return {
     code, comments, writes,
     select(selection: CodeViewLineSelection) { act(() => code().props.onSelectedLinesChange(selection)); },
+    end(selection: SelectedLineRange | null) { act(() => code().props.options.onLineSelectionEnd(selection)); },
     cancel() {
       const handlers = renderer.root.findAll((node: { type: unknown; props: { onPointerCancelCapture?: unknown } }) => typeof node.type === "string" && typeof node.props.onPointerCancelCapture === "function");
       assert.equal(handlers.length, 1, "comment-enabled code has one capture handler for pointer cancellation");
@@ -87,6 +90,67 @@ function fixture({ commenting = true, editing = false, selected = null }: { comm
 }
 
 const drag: CodeViewLineSelection = { id: "fixture.ts", range: { start: 2, end: 4, side: "additions" } };
+
+for (const editing of [false, true]) {
+  test(`actual ${editing ? "editable" : "read-only text"} diff clears a null selection end without saving or adding a comment`, () => {
+    const view = fixture({ editing });
+    try {
+      view.select(drag);
+      assert.deepEqual(view.code().props.selectedLines, drag);
+      view.end(null);
+      assert.equal(view.code().props.selectedLines, null);
+      assert.deepEqual(view.comments, []);
+      assert.deepEqual(view.writes, []);
+      view.end(null);
+      assert.equal(view.code().props.selectedLines, null);
+      view.select(drag);
+      assert.deepEqual(view.code().props.selectedLines, drag, "a later drag still controls the highlight");
+    } finally { view.close(); }
+  });
+}
+
+test("null selection end does not restore an unchanged parent range or change the parent draft", () => {
+  const selected: LineRange = { side: "new", start: 2, line: 4 };
+  const view = fixture({ selected });
+  try {
+    assert.deepEqual(view.code().props.selectedLines.range, drag.range);
+    view.end(null);
+    assert.equal(view.code().props.selectedLines, null);
+    view.update({ wrapLines: false, selected: { ...selected } });
+    assert.equal(view.code().props.selectedLines, null, "an unchanged parent range must not undo the clear");
+    assert.deepEqual(selected, { side: "new", start: 2, line: 4 });
+    assert.deepEqual(view.comments, []);
+    view.update({ selected: { side: "old", start: 6, line: 8 } });
+    assert.deepEqual(view.code().props.selectedLines.range, { start: 6, end: 8, side: "deletions" });
+  } finally { view.close(); }
+});
+
+test("comment-disabled code has no selection-end callback, including after commenting is turned off", () => {
+  const view = fixture({ commenting: false });
+  try {
+    assert.equal(view.code().props.options.onLineSelectionEnd, undefined);
+    view.update({ onLineClick: (range: LineRange) => view.comments.push(range) });
+    view.select(drag);
+    view.end(null);
+    assert.equal(view.code().props.selectedLines, null);
+    view.update({ onLineClick: undefined });
+    assert.equal(view.code().props.options.enableLineSelection, false);
+    assert.equal(view.code().props.options.onLineSelectionEnd, undefined);
+    assert.deepEqual(view.comments, []);
+    assert.deepEqual(view.writes, []);
+  } finally { view.close(); }
+});
+
+test("non-null selection end still creates the normalized comment range", () => {
+  const view = fixture();
+  try {
+    view.select(drag);
+    view.end({ start: 8, end: 6, side: "deletions" });
+    assert.deepEqual(view.comments, [{ side: "old", start: 6, line: 8 }]);
+    assert.deepEqual(view.code().props.selectedLines, drag);
+    assert.deepEqual(view.writes, []);
+  } finally { view.close(); }
+});
 
 for (const editing of [false, true]) {
   test(`actual ${editing ? "editable" : "read-only text"} diff clears a cancelled comment selection without saving or adding a comment`, () => {
