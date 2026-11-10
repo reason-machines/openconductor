@@ -25,6 +25,17 @@ Absent Reason settings are covered by direct tests of the actual helper modules,
 
 The inline button was inspected in the browser on the actual Transcript component. Its [published screenshot](https://api.reasonmachines.com/media/pr-screenshots/f75ca39a-0be8-4ebc-accd-ada3e64c8181/87bf44163693846f0b9b327c3f3e1d78/42a06b40-9e3b-49a3-a2a9-ca1905494d49.png) visibly labels the fixture as isolated synthetic IPC. It is not native or full-workspace proof.
 
+## CI fixture correction, 2026-11-10
+
+The hosted frontend job passed TypeScript, source tests, and production build, then failed the unchanged scroll suite because fake desktop backends rejected `reason_cli_ensure_current`. The shared populated fixture now explicitly returns completed onboarding (`999`) and a synthetic CLI-present result. The same missing command is modeled in the independent desktop fixtures; no scroll test or assertion changed.
+
+- **Failed before correction:** `node --test --test-name-pattern='wheel over fixed chrome' tests/e2e/scroll-containment.e2e.mjs`, against the production preview in the supported preview-server namespace, timed out after 30 seconds waiting for `.rp-tabs`.
+- **Passed after correction:** `node --test --test-concurrency=1 tests/e2e/scroll-containment.e2e.mjs`, in that same namespace: fixed chrome passed; settings zoom/resize passed; real content pane scrolling passed; settings wheel scrolling passed. All 4 passed, none skipped.
+- **Passed:** `REACT_EFFECTS_DEPS=node_modules node --test tests/onboarding-effects.test.mjs`: 17/17. New regressions cover both an explicit completed step and an existing repository with an unset step. A successful CLI check reaches Home without sign-in, onboarding writes, or navigation.
+- **Passed:** `npm run build` on the integrated source before this test-only correction, including TypeScript and branding. Only existing large-chunk warnings were emitted.
+- **Partial:** a full local browser suite attempt was stopped after profiler/paste assertions and a dialog navigation timeout failed under shared-cloud contention. It is not a full-suite pass. The unchanged isolated scroll suite passed afterward. A redundant full source-suite attempt timed out at 90 seconds and is not counted as a fresh pass. Exact corrective-head hosted checks remain required.
+- **Remaining product correction:** an existing working managed CLI still blocks on a failed release check in the current backend. A separately tested warning fallback is in progress; this fixture pass does not prove offline startup.
+
 ## Unmet acceptance proof
 
 The requested real built-app tests remain **not run**: independent fresh throwaway HOME/no Reason PATH for each agent choice, verification that the official CLI is installed and current after each, and actual signed-out send → inline button → browser pairing → original-chat reply with a published recording.

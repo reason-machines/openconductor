@@ -22,7 +22,7 @@ const deferred = () => {
   return { promise, resolve, reject };
 };
 
-async function fixture({ initial = { state: "idle" }, surface = "gate", installing = false, path = "/", step = null } = {}) {
+async function fixture({ initial = { state: "idle" }, surface = "gate", installing = false, path = "/", step = null, repoCount = 0 } = {}) {
   const installation = installing ? deferred() : null;
   const requests = [], opens = [], remembered = [], callbacks = [], timers = new Map(), intervals = new Map();
   const errors = [], navigations = [], writes = [], modules = new Map();
@@ -47,7 +47,7 @@ async function fixture({ initial = { state: "idle" }, surface = "gate", installi
     "src/settings/api": { async getSettings() { return {}; } },
     "src/settings/appearance": { applyAppearance() {} },
     "src/onboarding/api": {
-      async readFirstRunStep() { return step; }, async countRepos() { return 0; },
+      async readFirstRunStep() { return step; }, async countRepos() { return repoCount; },
       finishFirstRun(agent) { const result = deferred(); result.agent = agent; writes.push(result); return result.promise; },
     },
     "src/keybindings/KeybindingsProvider": { useKeybindings() {} },
@@ -231,6 +231,22 @@ for (const agent of ["claude", "codex", "reason"]) {
       assert.equal(f.requests.filter((r) => r.command === "reason_login_start").length, 0);
       assert.equal(f.writes[0].agent, agent);
       await act(async () => { f.writes[0].resolve(); });
+      assert.equal(f.count("home"), 1);
+    } finally { await f.close(); }
+  });
+}
+
+for (const [step, repoCount] of [["999", 0], [null, 1]]) {
+  test(`existing user with working CLI reaches Home without onboarding or sign-in: step ${step}, repos ${repoCount}`, async () => {
+    const f = await fixture({ step, repoCount });
+    try {
+      assert.equal(f.count("home"), 1);
+      assert.equal(f.count("reason-cli-setup"), 0);
+      assert.equal(f.writes.length, 0, "completed onboarding is not written again");
+      assert.deepEqual(f.navigations, []);
+      assert.equal(f.requests.filter((r) => r.command === "reason_cli_ensure_current").length, 1);
+      assert.equal(f.requests.some((r) => r.command === "reason_login_start"), false);
+      await f.rerender();
       assert.equal(f.count("home"), 1);
     } finally { await f.close(); }
   });
