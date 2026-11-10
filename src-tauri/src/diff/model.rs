@@ -65,6 +65,9 @@ pub struct FileDiff {
     pub binary: bool,
     pub additions: u32,
     pub deletions: u32,
+    /// Worktree modification time in Unix milliseconds; absent for historical results.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_modified_time: Option<i64>,
     pub hunks: Vec<Hunk>,
 }
 
@@ -77,6 +80,7 @@ impl FileDiff {
             binary: false,
             additions: 0,
             deletions: 0,
+            last_modified_time: None,
             hunks: Vec::new(),
         }
     }
@@ -104,6 +108,7 @@ impl FileDiff {
             binary: self.binary,
             additions: self.additions,
             deletions: self.deletions,
+            last_modified_time: self.last_modified_time,
         }
     }
 }
@@ -117,6 +122,8 @@ pub struct FileChange {
     pub binary: bool,
     pub additions: u32,
     pub deletions: u32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub last_modified_time: Option<i64>,
 }
 
 #[cfg(test)]

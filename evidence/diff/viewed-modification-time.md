@@ -102,8 +102,33 @@ metadata for fresh commit and turn results. Model round trips cover absent,
 zero, negative and positive timestamps. Before the fix these tests use JSON
 assertions instead of referring to a model field that does not yet exist.
 
-Hosted RED and unchanged-assertion GREEN are pending. The existing automatic
-workflows run these commands:
+Hosted RED is verified at published head
+`5ebb40bd437cea6d8c83b7d99da8a0f04c734068`:
+
+- [Diff frontend](https://github.com/reason-machines/openconductor/actions/runs/42803246110/job/129785845174)
+  ran 181 tests: 174 passed and exactly the seven new timestamp/storage/cache/hook
+  cases failed. All existing #894 navigation assertions passed. The same-content
+  rewrite stayed viewed, option-only changes lost the mark, and absent metadata
+  stayed viewed under the old fingerprint implementation.
+- [Linux Rust](https://github.com/reason-machines/openconductor/actions/runs/42803246110/job/129785844781)
+  and [macOS Rust](https://github.com/reason-machines/openconductor/actions/runs/42803246110/job/129785845100)
+  each ran 53 tests: 49 passed and four timestamp transport/serialization cases
+  failed because JSON had no timestamp. The historical-absence test passed.
+  Hosted formatting passed on both platforms before the tests ran.
+- The full frontend typecheck failed at the three test uses of the missing
+  `last_modified_time` wire field. This is separate from the executable
+  behavioral failures above.
+
+The fix removes fingerprints, transports optional signed Unix milliseconds, and
+adds the worktree-only stat reader. Frontend regression assertions are unchanged
+from RED. Existing Rust regression assertions are unchanged; two supplemental
+real-filesystem checks cover missing-stat absence in full/summary serialization
+and negative-epoch rounding, including ties toward positive infinity as in
+`Math.round`. These supplemental cases were added with the stat reader and do
+not receive a failing-before claim. Hosted unchanged-assertion GREEN and all
+exact-head checks remain pending.
+
+The existing automatic workflows run these commands:
 
 ```bash
 node --experimental-strip-types --test src/features/diff/*.test.ts
@@ -114,8 +139,8 @@ rustfmt --edition 2021 --check src-tauri/src/diff/*.rs
 Local tests, dependency installation, builds, browser or native app execution,
 workflow dispatch and new observers are not admitted and have not run. Local
 Rust formatting was attempted but the existing toolchain lacks the `rustfmt`
-component; no component was installed. Hosted formatting remains a required
-check. `git diff --check` is the local source whitespace check.
+component; no component was installed. Hosted formatting passed at RED and
+remains required on the fix head. `git diff --check` is the local source whitespace check.
 
 There is no screenshot because native admission remains closed. Packaging and
 hook tests do not prove native parity, pointer propagation, Pierre visuals,

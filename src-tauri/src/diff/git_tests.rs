@@ -235,6 +235,41 @@ fn historical_commit_and_turn_results_do_not_stat_the_present_worktree() {
 }
 
 #[test]
+fn missing_worktree_stat_leaves_full_and_summary_metadata_absent() {
+    let r = repo();
+    let mut file = super::FileDiff::new("missing.txt".into(), FileStatus::Modified);
+    file.last_modified_time = super::git::worktree_modified_time(&r, &file);
+    assert_eq!(file.last_modified_time, None);
+    assert!(serde_json::to_value(&file)
+        .unwrap()
+        .get("last_modified_time")
+        .is_none());
+    assert!(serde_json::to_value(file.summary())
+        .unwrap()
+        .get("last_modified_time")
+        .is_none());
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
+fn worktree_stat_rounds_negative_epoch_times_like_math_round() {
+    let r = repo();
+    write(&r, "f.txt", "x\n");
+    let file = super::FileDiff::new("f.txt".into(), FileStatus::Modified);
+    for (nanoseconds, expected) in [(400_000, 0), (500_000, 0), (600_000, -1)] {
+        let time = std::time::UNIX_EPOCH - std::time::Duration::from_nanos(nanoseconds);
+        fs::File::options()
+            .write(true)
+            .open(r.join("f.txt"))
+            .unwrap()
+            .set_times(fs::FileTimes::new().set_modified(time))
+            .unwrap();
+        assert_eq!(super::git::worktree_modified_time(&r, &file), Some(expected));
+    }
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
 fn commit_history_excludes_target_and_respects_remote_target() {
     let r = repo();
     write(&r, "base.txt", "base\n");
