@@ -58,6 +58,12 @@ test("agent-only picker choices preserve the named chip and leave runtime model 
     assert.equal(pickerState(agent, saved, null, true).label, label);
     assert.deepEqual(localModelOptions("agent-only", "codex", store), {});
     assert.deepEqual(localModelOptions("agent-only", "claude", store), {});
+    copyModelChoice("agent-only", "agent-fork", agent, [], store);
+    assert.deepEqual(loadModelChoice("agent-fork", store), entry);
+    assert.deepEqual(localModelOptions("agent-fork", "codex", store), {});
+    assert.deepEqual(localModelOptions("agent-fork", "claude", store), {});
+    copyModelChoice("missing", "default-fork", agent, [], store);
+    assert.deepEqual(loadModelChoice("default-fork", store), entry);
   }
 });
 

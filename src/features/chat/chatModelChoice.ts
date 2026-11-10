@@ -15,6 +15,7 @@ import type { ReasonConfig } from "./reasonChat.ts";
 import type { LoadoutSlot } from "../../settings/agents/loadout.ts";
 import { loadoutChoices } from "./loadoutChoices.ts";
 import { saveAgent, type ChatAgentId } from "./agentChoice.ts";
+import { agentForPick, CLAUDE_ENTRY, CODEX_ENTRY } from "./chatAgentChoice.ts";
 
 type Store = Pick<Storage, "getItem" | "setItem">;
 const choiceKey = (chatId: string) => `openconductor.composer.model.${chatId}`;
@@ -76,8 +77,8 @@ export function initializeLoadoutChoice(chatId: string, slots: readonly LoadoutS
 }
 
 export function copyModelChoice(sourceId: string, targetId: string, agent: ChatAgentId, config: readonly ReasonConfig[], store: Store = localStorage): void {
-  const choice = loadModelChoice(sourceId, store) ?? choiceFromReasonConfig(config) ?? { model: "default", effort: null };
-  saveModelChoice(targetId, { ...choice, agent }, store);
+  const choice = loadModelChoice(sourceId, store) ?? choiceFromReasonConfig(config) ?? (agent === "codex" ? CODEX_ENTRY : agent === "claude" ? CLAUDE_ENTRY : { agent: "reason" as const, model: "default", effort: null });
+  saveModelChoice(targetId, agentForPick(choice) === agent ? choice : { ...choice, agent }, store);
   saveAgent(targetId, agent, store);
 }
 
