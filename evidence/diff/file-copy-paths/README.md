@@ -14,7 +14,17 @@ makes Copy relative path optional, matching the rendered menu eligibility.
 
 The coordinating Session supplied retained REA static proof from the installed
 Conductor 0.87.6 frontend `renderApp-D_fmY7hW.js`, SHA-256
-`5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde`:
+`5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde`.
+
+The retained extraction receipt belongs to [the reference Session](https://reasonmachines.com/agents/de6c02f4-4880-4a0d-bf8f-9e3954522753),
+tool-output source `9181bb0b-bc9f-4d41-998b-1f4969d3ed68`, revision
+`25651063`, source sequence `1054`. No separate REA result URL was surfaced.
+The retained slices have these SHA-256 digests:
+
+- `Svs`: `2276321b09b5d62d934d1a391e9b0317407b6055d8276c73ab1a8334ff48a3aa`.
+- `syi`: `f569418d51f7b6b6bc45163ff43bc5b2f5839e2342871e43ce979f76a1611c5e`.
+
+The observations in that receipt are:
 
 - `Svs`, UTF-8 bytes `[2702053,2705864)`: Copy path is unconditional;
   Copy relative path is gated by the workspace-relative target `U`.
