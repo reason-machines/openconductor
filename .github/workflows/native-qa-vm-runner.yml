@@ -1,0 +1,57 @@
+name: VM runner source prerequisite
+
+on:
+  pull_request:
+    paths:
+      - 'native-qa-vm-runner/**'
+      - 'tools/native_qa_vm_signing.py'
+      - 'tools/test_native_qa_vm_signing.py'
+      - 'scripts/package-native-qa-vm-runner.sh'
+      - '.github/workflows/native-qa-vm-runner.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'native-qa-vm-runner/**'
+      - 'tools/native_qa_vm_signing.py'
+      - 'tools/test_native_qa_vm_signing.py'
+      - 'scripts/package-native-qa-vm-runner.sh'
+      - '.github/workflows/native-qa-vm-runner.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vm-runner-source-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  portable:
+    name: VM profile pre-construction refusal (portable only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          cc -std=c11 -Wall -Wextra -Werror -pedantic \
+            native-qa-vm-runner/Profile.c native-qa-vm-runner/ProfileTests.c \
+            -o "${RUNNER_TEMP}/vm-profile-tests"
+          "${RUNNER_TEMP}/vm-profile-tests"
+          python3 -W error::ResourceWarning -m unittest tools.test_native_qa_vm_signing -v
+  compile-sign:
+    name: VM runner compile and signature readback (no execution)
+    runs-on: macos-15
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and ad-hoc sign only; never execute runner
+        run: bash scripts/package-native-qa-vm-runner.sh
