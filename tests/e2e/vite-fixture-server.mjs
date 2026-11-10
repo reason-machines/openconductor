@@ -14,7 +14,7 @@ export async function startViteFixture({
   }
   const browserHost = host === "0.0.0.0" ? "127.0.0.1" : host === "::" ? "::1" : host;
   const http = createHttpServer();
-  const cacheDir = await mkdtemp(join(tmpdir(), "openconductor-vite-fixture-"));
+  let cacheDir;
   let vite;
   let closing;
   const close = () => {
@@ -43,9 +43,11 @@ export async function startViteFixture({
         diagnostic?.(`Vite close ${cacheDir}: started`);
         await vite?.close();
         diagnostic?.(`Vite close ${cacheDir}: completed`);
-        diagnostic?.(`cache removal ${cacheDir}: started`);
-        await rm(cacheDir, { recursive: true, force: true });
-        diagnostic?.(`cache removal ${cacheDir}: completed`);
+        if (cacheDir) {
+          diagnostic?.(`cache removal ${cacheDir}: started`);
+          await rm(cacheDir, { recursive: true, force: true });
+          diagnostic?.(`cache removal ${cacheDir}: completed`);
+        }
       })()]);
       const errors = results.filter((result) => result.status === "rejected").map((result) => result.reason);
       if (errors.length) throw new AggregateError(errors, "Failed to close Vite fixture");
@@ -54,17 +56,6 @@ export async function startViteFixture({
 
   try {
     // Vite 5 maps its own port: 0 to 5173. Keep the OS-allocated listener instead.
-    vite = await createViteServer({
-      appType: "spa",
-      cacheDir,
-      server: {
-        host, port, strictPort: true, middlewareMode: true,
-        // Concrete zero overrides clear inherited Tauri HMR ports during config merge.
-        hmr: { server: http, host: browserHost, protocol: "ws", port: 0, clientPort: 0 },
-      },
-      logLevel: "error",
-    });
-    http.on("request", vite.middlewares);
     await new Promise((resolve, reject) => {
       const cleanup = () => {
         http.off("error", failed);
@@ -78,6 +69,18 @@ export async function startViteFixture({
     });
     const address = http.address();
     if (!address || typeof address === "string") throw new Error("Fixture has no TCP address");
+    cacheDir = await mkdtemp(join(tmpdir(), "openconductor-vite-fixture-"));
+    vite = await createViteServer({
+      appType: "spa",
+      cacheDir,
+      server: {
+        host, port, strictPort: true, middlewareMode: true,
+        // Concrete zero overrides clear inherited Tauri HMR ports during config merge.
+        hmr: { server: http, host: browserHost, protocol: "ws", port: 0, clientPort: 0 },
+      },
+      logLevel: "error",
+    });
+    http.on("request", vite.middlewares);
     const hostname = browserHost.includes(":") ? `[${browserHost}]` : browserHost;
     return { base: `http://${hostname}:${address.port}`, close };
   } catch (error) {
