@@ -32,7 +32,7 @@ export function RemoveRepositoryDialog({ repo, onClose, onRemoved, onError }: Pr
     );
   };
   return (
-    <ConfirmationDialog title={`Remove ${repo.name}?`} confirmLabel="Remove" pendingLabel="Removing..." pending={pending} destructive primaryShortcut={false} onClose={onClose} onConfirm={remove}>
+    <ConfirmationDialog title={`Remove ${repo.name}?`} confirmLabel="Remove" pendingLabel="Removing..." pending={pending} dismissWhilePending destructive primaryShortcut={false} onClose={onClose} onConfirm={remove}>
       <p>All your workspaces will be permanently deleted.</p>
       <p className="settings-misc-break">The source directory {repo.path} will not be modified.</p>
     </ConfirmationDialog>
