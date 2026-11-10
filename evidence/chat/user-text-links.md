@@ -1,6 +1,6 @@
 # Sent-user ordinary HTTP(S) links
 
-Conductor Rebuild. Delivery owner SAME029f; evidence source be7a40e4. Unit SENT-USER-HTTP-LINKS-BE7-01 follows merged #938, without reopening #847 or #916. Regression-first checkpoint: production source is unchanged in this increment.
+Conductor Rebuild. Delivery owner SAME029f; evidence source be7a40e4. Unit SENT-USER-HTTP-LINKS-BE7-01 follows merged #938, without reopening #847 or #916. The regression-only checkpoint preceded the bounded correction in PR #947.
 
 ## Provenance and scope
 
@@ -14,7 +14,7 @@ Original handoff SHA-256: `f31470732ad3f8ea2c745985187ccf4c340f8b8a898a75c1da38d
 
 Default main was fetched and read at `be38582638f1e40eb091d9bcd5c595bcb1ba1b63`. The supported existing assigned branch integrated main without touching the stopped source owner's branch. Its net diff against main was empty before the new regression.
 
-`python3 .rea-work/user-links-packet/audit_user_text.py be38582638f1e40eb091d9bcd5c595bcb1ba1b63` passed **25/25 static assertions and 13 complete spans** on Reason Cloud. It re-read current plain Transcript user rows, rich sent text, existing LinkWithMenu and backend.openUrl, including their Git blobs. Both user text branches still insert raw text; assistant Markdown already uses LinkWithMenu/openUrl.
+`python3 .rea-work/user-links-packet/audit_user_text.py be38582638f1e40eb091d9bcd5c595bcb1ba1b63` passed **25/25 static assertions and 13 complete spans** on Reason Cloud. Before correction, the same unmodified audit was rerun against fetched default main `3555c192cd00b8781d8bdfe225ea0a09d1fe5c81`, again passing **25/25 and all 13 spans**. It re-read plain Transcript user rows, rich sent text, existing LinkWithMenu and backend.openUrl, including their Git blobs. At that checked main both user text branches still insert raw text; assistant Markdown already uses LinkWithMenu/openUrl. Those four production files had no diff between the delivery checkout and this main.
 
 ## Complete source joins
 
@@ -46,7 +46,18 @@ The new fixture mounts actual production plain Transcript and rich SentUserConte
 
 The fixture permits absent UserText only while production still renders its original raw text; it supplies no replacement implementation. It must remain byte-identical through the correction. Existing transcriptAgentSummary.test.ts extracts Row without imports; the ledger cleared a sixth, test-only dependency-injection hunk for the real production UserText when the correction lands. All its summary assertions must remain unchanged.
 
-Automatic hosted RED has not yet been observed at this checkpoint. Hosted GREEN, typecheck/build of the correction, merge and consuming-main/package checks are not yet verified. No manual dispatch or rerun.
+## Hosted RED and correction
+
+Automatic PR CI run [42914099024](https://github.com/reason-machines/openconductor/actions/runs/42914099024), tied to regression-only head `9809c14cc3b6cd11cc6308f37344afc5fc95acca`, reproduced **exactly seven intended failures** in `node --test "src/**/*.test.ts"`: the four plain-text URL cases, production opener/context callbacks, rich-text links beside chips, and ordinary workspace-origin/path variants. The four explicit literal/special exclusion cases passed. Both frontend jobs reported **2,020 tests / 2,013 pass / 7 fail**. This is an observed regression RED, not a successful check.
+
+- [Frontend unit job 130171920015](https://github.com/reason-machines/openconductor/actions/runs/42914099024/job/130171920015): failure window lines 4572–4794 shows empty actual anchor targets, including the plain and rich production render paths. All seven `not ok` names belong to `userText.test.ts`.
+- [Frontend typecheck/build job 130171919634](https://github.com/reason-machines/openconductor/actions/runs/42914099024/job/130171919634): the same seven failures; `npm run typecheck` and color lint passed before the regression step. Build and subsequent steps were skipped, not passed.
+
+The unchanged regression fixture SHA-256 is `0410992207283b4a3abba04f9f1f57c75deec66b6d6e0b1cbeecb1d0a1107604`. The correction adds private `UserText.tsx` and uses it only in the plain user-row branch and rich text-part branch. URL matching, punctuation stripping and bracket balance follow the retained source. Original visible text and MessageActions copy text are preserved. Anchors reuse unmodified LinkWithMenu and its existing production openUrl callback; no shared-helper changes.
+
+The sixth cleared test-only path now supplies the real UserText functions to the existing transcriptAgentSummary VM extraction. Every original summary assertion and the complete test body from `const sid` onward remain byte-identical; no passive replacement leaf or product test-environment branch was introduced.
+
+Static checks on Reason Cloud passed: locked fixture hash, unchanged summary assertions, unchanged excluded helpers, and `git diff --check`. Hosted GREEN, correction typecheck/build, merge and consuming-main/package checks are not yet verified. The PR's hosted checkout identity is reported separately from its branch head; hosted PR checks do not establish standalone-head execution. No manual dispatch or rerun.
 
 ## Explicit exclusions and acceptance gaps
 
