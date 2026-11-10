@@ -11,6 +11,15 @@ The held slice starts at `function m_a` and ends immediately before `function kU
 - Active matches use `wd=$u.filter(k_a).filter(Gn).sort(C_a).slice(0,GHe)` at `[11434,11485)`. The result becomes `n0` at 11530. `k_a` excludes archived workspaces.
 - Archived matches use `Gn=$u.filter(S_a).filter(cr).sort(w_a).slice(0,GHe)` at `[12006,12057)`. The result becomes `ab` at 12108. `S_a` includes only archived workspaces. An empty query returns no archived matches before that branch.
 - `C_a` at `[32324,32393)` and `w_a` at `[32167,32236)` both return `e.workspace.updatedAt-t.workspace.updatedAt`. JavaScript's sort therefore places the higher update timestamp first.
+The exact retained comparator declarations include their parameter identities:
+
+```js
+function C_a(t,e){return e.workspace.updatedAt-t.workspace.updatedAt}
+function w_a(t,e){return e.workspace.updatedAt-t.workspace.updatedAt}
+```
+
+Their corresponding full sort-and-cap expressions are `wd=$u.filter(k_a).filter(Gn).sort(C_a).slice(0,GHe)` and `Gn=$u.filter(S_a).filter(cr).sort(w_a).slice(0,GHe)`. In both functions, `t` is the first compared item and `e` is the second. The subtraction places the newest update first, not last.
+
 - Both call sites sort before the independent `slice(0,GHe)` cap. The All-query Workspaces group then calls `n0.map` at 30924 followed by `ab.map` at 30990. There is no intervening reversal or combined re-sort. Thus active results stay ahead of archived results, and each bucket admits its own fifty newest-updated matches.
 - Empty-query Recent workspaces instead derive `$1` from stored recent IDs through `w.map(Gn).filter(E_a)` and render `$1.map`. They do not use either update comparator.
 
@@ -39,8 +48,9 @@ The three regressions delivered in #948 remain textually unchanged. All fixtures
 
 ## Verification and limits
 
-- This test-only milestone has not yet run hosted CI. Failing-before verification is pending, not inferred from source inspection.
+- Automatic hosted CI on test-only head `389a11e6b6548b8187960cf478bc69a3c28700e2` confirmed all four intended failures in [frontend unit-test job 130203942116](https://github.com/reason-machines/openconductor/actions/runs/42923490094/job/130203942116). Tests 1418 and 1450 return old/MRU-first workspace order instead of newest-update-first. Test 1451 admits entries 0 through 49 instead of 59 through 10 from each state. Test 1421 reports the missing archived update field. The suite reports 2,050 passed and four failed. Recent/default-Workspaces assertions precede the failing All-order assertion and passed.
+- After that reproduction, current main was fetched and the unchanged production sources re-read at `385bdea15dc8861f3f3c9c3e42405eb8acfe180b`. The minimal correction adds separate update metadata to workspace entries, propagates it in the state adapter, and passes its comparator only in the All-query branch. Filtering and caps stay in their existing positions. Recent and default Workspaces code is unchanged.
+- Every failing-before regression assertion remains unchanged. The locked test Git blobs are `f75fb748bee92eac7aa2039c8fbbcb4f12d2efb3` for search and `5f91fe57e79324b7f6b99b88475ae534da9511bc` for the adapter. Passing-after hosted verification is pending for the correction.
 - Local checks are limited to TypeScript syntax and whitespace. Commands and decisive results belong in the pull request after execution.
-- Production code remains unchanged until automatic hosted CI demonstrates the intended failures. The correction must preserve every regression assertion from that failing baseline.
 - No local test execution, dependency install, application, build, browser, native command, reference acquisition, or manual workflow dispatch ran. No new screenshot is available because runtime capture is outside the admitted scope.
 - Hosted source tests can verify result inclusion and order. Packaged macOS activation, native focus or dismissal, and full visual parity remain unverified. The unresolved `JV()` Create-section gate is not part of this change. Protected #847/#916 boundaries remain unchanged.
