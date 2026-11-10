@@ -17,7 +17,7 @@ import { discardScope, type DiffTarget, type DiscardSource } from "./target.ts";
 import type { TurnRef } from "./turnChangesCache.ts";
 import { newFileText } from "./copyFile.ts";
 import { DEFAULT_VIEW_OPTIONS, type DiffScope, type DiffViewOptions, type FileDiff } from "./types.ts";
-import { isViewed, loadViewed, pruneViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
+import { isViewed, loadViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
 
 export type DiffLoad = { state: "loading" } | { state: "error"; message: string } | { state: "ready"; files: FileDiff[] };
 
@@ -150,9 +150,8 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   }, [load, opts.scope, onLoaded]);
 
   const setViewed = (map: ViewedMap) => {
-    const pruned = pruneViewed(map, files);
-    saveViewed(localStorage, workspaceId, pruned);
-    setViewedMap(pruned);
+    saveViewed(localStorage, workspaceId, map);
+    setViewedMap(map);
   };
 
   const open = useCallback(

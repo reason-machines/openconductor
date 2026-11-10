@@ -87,16 +87,32 @@ existing current-file count and changed-file invalidation assertion remain.
 All other existing timestamp, metadata, filtering, and navigation controls
 are unchanged.
 
-The first published checkpoint changes only the tests and this evidence.
-Production still contains the old pruning policy. Ordinary automatic hosted
+The first published checkpoint changed only the tests and this evidence.
+Production retained the old pruning policy. Ordinary automatic hosted
 CI runs:
 
 ```bash
 node --experimental-strip-types --test src/features/diff/*.test.ts
 ```
 
-Hosted failing-before and passing-after results are pending. The regression
-assertions will remain unchanged between those checkpoints.
+## Hosted failing-before result
+
+At published head `f9233919cf8efedccc18a65e7e1f4f137ac40802`, the
+[Diff frontend job](https://github.com/reason-machines/openconductor/actions/runs/42902617503/job/130132279889)
+ran the command above and reported 237 tests: 229 passed, eight failed, and
+none skipped. All eight failures were the new scope-retention cases, tests
+229 through 236, log lines 1541 through 1716. Each failed at the same
+assertion after returning to All changes: "toggling the subset must retain
+a.ts's existing mark", with actual `false` and expected `true`. Dependencies
+and the hook fixture initialized successfully. All other cases passed.
+
+## Minimal correction checkpoint
+
+The correction stores the already updated workspace map without pruning it
+against the current file list. It removes the unused pruning helper and its
+import. The test file is byte-identical to the failing-before checkpoint,
+Git blob `ce186605eab5c9b6286ef728c451030024cf42d6`. Hosted passing-after and
+all exact-head checks are pending.
 
 ## Verification limits
 
