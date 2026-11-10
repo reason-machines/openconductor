@@ -41,7 +41,9 @@ The locked `src/features/chat/modelPickerSearchHeight.test.ts` fixtures cover se
 
 The callback fixtures execute only OpenConductor's query-change body in automatic hosted CI. They supply a measured rectangle and record state updates. They do not mount React or measure browser layout. The wiring assertions are source checks, not mounted acceptance.
 
-The regression-only checkpoint is published before the product fix so automatic hosted `node --test "src/**/*.test.ts"` can establish RED. Its expected failure is the absent height lifecycle. The assertions remain unchanged through the correction. Hosted RED and GREEN receipts are recorded in the pull request as they arrive.
+Automatic hosted `node --test "src/**/*.test.ts"` established RED on checkpoint `8a6d6d3ff117da6ce73d74d85af5d2a9698a25fa`. The [unit job](https://github.com/reason-machines/openconductor/actions/runs/42919522387/job/130190554067) reported exactly seven failures, all from the new height fixtures. The first failure was `the input shares a query-change callback that owns the measured height`. Typechecking passed; the separate frontend job stopped on the same regressions before building.
+
+The locked fixture SHA-256 is `da4b7c76d081c1eb77d151c5d8f66e1428817f8d1ae6ab2d768bf7807f461c13`. The assertions remain unchanged through the correction. The minimal fix adds the optional height state, inner wrapper ref/style, and shared query transition. Hosted GREEN remains pending and is recorded in the pull request when verified.
 
 ## Verification limits
 
