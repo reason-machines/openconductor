@@ -230,7 +230,8 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
                     title={[nameOf(f), modelDescription?.(f.model)].filter(Boolean).join(" · ")}
                     onClick={() => {
                       if (!selected) onChange(f);
-                      setOpen(false);
+                      if (searching) setQuery("");
+                      else setOpen(false);
                     }}
                   >
                     <ModelGlyph model={f.model} agent={itemAgent?.(f)} />
