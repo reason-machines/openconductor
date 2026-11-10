@@ -264,7 +264,10 @@ fn worktree_stat_rounds_negative_epoch_times_like_math_round() {
             .unwrap()
             .set_times(fs::FileTimes::new().set_modified(time))
             .unwrap();
-        assert_eq!(super::git::worktree_modified_time(&r, &file), Some(expected));
+        assert_eq!(
+            super::git::worktree_modified_time(&r, &file),
+            Some(expected)
+        );
     }
     fs::remove_dir_all(r).unwrap();
 }
