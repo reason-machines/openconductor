@@ -19,7 +19,7 @@ This establishes Cancel-first focus in the shipped source. It is not a fresh ref
 
 ## OpenConductor comparison
 
-Current-main baseline `5eded44f223b38b59c121781036afab002b961f7` gives `autoFocus` to Quit in `src/features/quit/QuitDialog.tsx`. That differs from the complete reference focus chain above. The regression checks whether plain Enter then activates the destructive action. The planned correction moves `autoFocus` to Cancel without replacing the existing wrapper or changing any handlers, labels, shortcuts, or action ordering.
+Current-main baseline `5eded44f223b38b59c121781036afab002b961f7` gives `autoFocus` to Quit in `src/features/quit/QuitDialog.tsx`. That differs from the complete reference focus chain above. The regression checks whether plain Enter then activates the destructive action. The correction moves `autoFocus` to Cancel without replacing the existing wrapper or changing any handlers, labels, shortcuts, or action ordering.
 
 ## Behavioral regression
 
@@ -32,8 +32,8 @@ The suite runs in a disposable browser context. Outside Tauri, the backend's qui
 
 Discovery is established from source: `.github/workflows/keybindings.yml` builds the frontend and runs `npm run test:e2e`; `package.json` expands that command to `node --test tests/e2e/*.e2e.mjs`, which includes this existing file. No workflow, server, fixture infrastructure, or test-discovery edit is needed.
 
-- Hosted before-fix result: pending. The production component is unchanged in this regression checkpoint. A pending run is not a reproduced failure.
-- Hosted corrected result: not run. The fix waits for the before-fix behavioral failure.
+- Hosted before-fix result: reproduced on regression head `e1e2a14b115debdb5542cf9de5ccf92508f7fd7b` in [Keybindings run 42779294007, job 129705178786](https://github.com/reason-machines/openconductor/actions/runs/42779294007/job/129705178786). Both new cases failed at their intended behavioral assertions. Cancel was not the active element (`false`, expected `true`); plain Enter emitted one quit event (expected zero). The existing immediate-quit and explicit `Meta+Enter` cases passed. Overall browser suite: 185 tests, 182 passed, two failed, one skipped.
+- Hosted corrected result: pending automatic CI after the autofocus-only production fix. Both regression assertions and the existing Quit tests remain unchanged; a pending run is not a pass.
 - Diff hygiene: recorded separately when the checkpoint is committed.
 - Local Node, builds, dependency installation, browser, native execution, screenshots, and real persistence: not run under the existing resource hold. The unchanged workflow does not retain screenshots of this case, so there is no new visual evidence.
 - Focus containment, return focus, outside-pointer parity, installed-build behavior, and native physical keys remain unverified by these cases. The separate #870 mounted-remount and real-store acceptance gaps stay open.
