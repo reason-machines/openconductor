@@ -30,12 +30,38 @@ The Python verifier never starts the GUI.
 
    Preparation refuses an existing root or uncommitted tracked source changes.
    It creates an owned mode-0700 root, a manifest and `tauri.qa.json`.
-
-3. Build the QA bundle into a separate target directory. Do not replace a running
-   build, install it in `/Applications`, or change the user's signing credentials:
+   Before any probe, precreate the runner's three mutable files:
 
    ```bash
-   CARGO_TARGET_DIR="$qa/target" CARGO_PROFILE_DEV_DEBUG=0 CARGO_INCREMENTAL=0 \
+   python3 - "$qa" <<'PY'
+   import os
+   from pathlib import Path
+   import sys
+
+   root = Path(sys.argv[1])
+   for relative in (
+       "data/confinement-state",
+       "tmp/confinement-startup",
+       "tmp/confinement-child",
+   ):
+       with (root / relative).open("xb") as stream:
+           os.fchmod(stream.fileno(), 0o600)
+   PY
+   ```
+
+   These must be owned regular files with one hard link and mode 0600.
+   Exclusive creation refuses existing files. Keep the root and all staged
+   parent directories owned and free of symlinks, as required by
+   [the launcher's staging contract](../tools/native_qa_runner.py).
+   This does not add write permissions to the confinement policy.
+
+3. Build the QA bundle into a separate target directory outside `$qa`.
+   Do not replace a running build, install it in `/Applications`, or change the
+   user's signing credentials:
+
+   ```bash
+   build_target="${qa}-build"
+   CARGO_TARGET_DIR="$build_target" CARGO_PROFILE_DEV_DEBUG=0 CARGO_INCREMENTAL=0 \
      APPLE_SIGNING_IDENTITY=- \
      npx --no-install tauri build --debug --bundles app --config "$qa/tauri.qa.json"
    ```
@@ -43,12 +69,24 @@ The Python verifier never starts the GUI.
    This uses the base configuration's resources; it does not require fetching
    optional bundled agent tools. Check Mac disk capacity before building.
    Retain the build log and exact source commit alongside the manifest.
-
-4. Verify the headless receipt:
+   After a successful build, copy the bundle into a new code directory inside
+   the QA root. Do not put code in the runner's mutable data directories:
 
    ```bash
-   python3 tools/native_qa.py probe "$qa" \
-     "$qa/target/debug/bundle/macos/OpenConductor QA.app"
+   mkdir -m 700 "$qa/app"
+   qa_app="$qa/app/OpenConductor QA.app"
+   cp -R "$build_target/debug/bundle/macos/OpenConductor QA.app" "$qa_app"
+   ```
+
+   The runner requires the executable inside `$qa`, outside its mutable data
+   directories. It scans the whole root and refuses symlinks, hard-linked
+   regular files, unowned objects and unreadable directories. Keep compiler
+   output outside the root. Do not loosen the policy to bypass a refusal.
+
+4. Verify the headless receipt using the staged bundle:
+
+   ```bash
+   python3 tools/native_qa.py probe "$qa" "$qa_app"
    ```
 
    The verifier checks the bundle's identity and preflight capability marker
