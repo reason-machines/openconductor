@@ -471,20 +471,8 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
     }
     case "multi-edit":
       return <MultiEditRow {...shell} input={input} onOpenFile={onOpenFile} />;
-    case "write": {
-      const path = s(input.file_path);
-      const content = s(input.content);
-      return (
-        <RowShell
-          {...shell}
-          left={<span>{`Write ${content.split("\n").length} lines`}</span>}
-          right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
-          align="center"
-          bareContent
-          content={<DiffBlock oldText="" newText={content} />}
-        />
-      );
-    }
+    case "write":
+      return <WriteRow {...shell} input={input} onOpenFile={onOpenFile} />;
     case "web": {
       const target = s(input.url) || s(input.query);
       return (
@@ -512,6 +500,36 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
     default:
       return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
   }
+}
+
+function WriteRow({ input, onOpenFile, ...shell }: ShellBase & { input: Record<string, unknown>; onOpenFile?: (path: string) => void }) {
+  const [expanded, setExpanded] = useState(false);
+  const path = s(input.file_path);
+  const content = s(input.content);
+  const long = content.length > 2000;
+  const shown = long && !expanded ? content.substring(0, 2000) : content;
+  return (
+    <RowShell
+      {...shell}
+      left={<span>{`Write ${content.split("\n").length} lines`}</span>}
+      right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
+      align="center"
+      bareContent
+      content={
+        <>
+          <DiffBlock oldText="" newText={shown} />
+          {long ? (
+            <div style={{ borderTop: "1px solid var(--oc-border)", background: "color-mix(in oklab, var(--oc-muted) 30%, transparent)", padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span className="oc-tool-count">{expanded ? "Showing full content" : "Showing first 2,000 characters"}</span>
+              <button type="button" className="oc-text-action" style={{ padding: 0, color: "var(--accent)" }} onClick={() => setExpanded((previous) => !previous)}>
+                {expanded ? "Show less" : "Show more"}
+              </button>
+            </div>
+          ) : null}
+        </>
+      }
+    />
+  );
 }
 
 function MultiEditRow({ input, onOpenFile, ...shell }: ShellBase & { input: Record<string, unknown>; onOpenFile?: (path: string) => void }) {
