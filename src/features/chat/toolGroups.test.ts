@@ -269,7 +269,7 @@ for (const name of ["ExitPlanMode", "AskUserQuestion"]) {
     assert.deepEqual(describe(rows), [`"Earlier explanation" Read ${name} Read Read`, "turn_end"]);
     const agent = rows[0];
     assert.ok(agent?.kind === "agent");
-    assert.deepEqual(agent.items.filter((item) => item.kind === "part" && item.preview).map((item) => item.messageKey), ["a3"]);
+    assert.deepEqual(agent.items.flatMap((item) => item.kind === "part" && item.preview ? [item.messageKey] : []), ["a3"]);
   });
 
   test(`${name} protects its entire message and splits surrounding summaries`, () => {
@@ -283,7 +283,7 @@ for (const name of ["ExitPlanMode", "AskUserQuestion"]) {
     assert.deepEqual(describe(rows), [`[3 tool calls] "Please review" ${name} Read [3 tool calls] "Final response"`, "turn_end"]);
     const agent = rows[0];
     assert.ok(agent?.kind === "agent");
-    assert.deepEqual(agent.items.filter((item) => item.kind === "part" && item.preview).map((item) => item.messageKey), ["request", "request", "request", "final"]);
+    assert.deepEqual(agent.items.flatMap((item) => item.kind === "part" && item.preview ? [item.messageKey] : []), ["request", "request", "request", "final"]);
   });
 }
 
