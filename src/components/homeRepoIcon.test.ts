@@ -50,6 +50,7 @@ function renderHome({ menuOpen = false, matrix = false, projects = [], repos = f
     };
     if (name === "../home/allWorkspaces") return { ...home, loadFilters: () => ({ projects, archiveFilter: "active" }) };
     if (name === "./RepoIcon") return iconExports;
+    if (name === "./Tooltip") return { Tooltip: ({ children }: { children: React.ReactNode }) => children };
     if (name === "../state/rowStatus") return status;
     if (name === "../state/workspaceNumber") return { workspaceNumberLabel };
     if (name === "../state/chatUnread") return { isWorkspaceUnread: () => false };
