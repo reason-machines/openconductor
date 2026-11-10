@@ -173,7 +173,7 @@ test("Write expansion is row-local and survives closing and reopening its outer 
   } finally { await view.close(); }
 });
 
-test("Write starts collapsed when requested, keeps badge navigation and has no opt-in hover", async () => {
+test("Write starts collapsed when requested and keeps badge navigation without an immediate preview", async () => {
   const view = await fixture([write("x".repeat(2001), { open: false })]);
   try {
     assert.equal(view.header().props["aria-expanded"], false);
@@ -185,11 +185,7 @@ test("Write starts collapsed when requested, keeps badge navigation and has no o
     await view.click(badge, { stopPropagation: () => { stopped++; } });
     assert.equal(stopped, 1); assert.deepEqual(view.opened, [path]);
     assert.equal(view.header().props["aria-expanded"], false);
-    let ancestor: Node | null = badge;
-    while (ancestor) {
-      assert.notEqual(typeof ancestor.props.onPointerEnter, "function", "Write badge has no hover activation");
-      ancestor = ancestor.parent;
-    }
+    assert.equal(view.all(0, (node) => node.props["aria-label"] === "File change preview").length, 0);
     await view.click(view.header());
     assert.equal(view.body(), "x".repeat(2000));
     assert.equal(view.all(0, (node) => node.props.role === "region").length, 0);

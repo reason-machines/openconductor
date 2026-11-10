@@ -229,6 +229,7 @@ test("create a workspace directly inside a section", async () => {
     };
   });
   await page.getByRole("button", { name: "Focus actions" }).click();
+  await page.getByRole("menu", { name: "Focus actions", exact: true }).waitFor();
   const items = await page.getByRole("menu").getByRole("menuitem").allTextContents();
   try {
     assert.deepEqual(items, ["Create workspace", "Edit section", "New section…", "Delete section"]);
