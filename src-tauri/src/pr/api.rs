@@ -111,7 +111,10 @@ pub fn list_open_issues<R: Runner>(gh: &Gh<R>) -> Result<Vec<OpenIssue>, String>
 }
 
 /// Read full metadata for one selected GitHub issue without creating a workspace.
-pub fn issue_link_metadata<R: Runner>(gh: &Gh<R>, number: u64) -> Result<IssueLinkMetadata, String> {
+pub fn issue_link_metadata<R: Runner>(
+    gh: &Gh<R>,
+    number: u64,
+) -> Result<IssueLinkMetadata, String> {
     gh.issue_link_metadata(number).map_err(|e| e.to_string())
 }
 
