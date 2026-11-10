@@ -8,12 +8,12 @@ import type { Repo, Workspace } from "../state/types";
 import type { SetupState } from "../scripts/model";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { TerminalHost } from "../features/terminal/TerminalPanel";
-import { clearTab, closeTab, getTabs, openTab, restoreWorkspaceTabs, selectTab, subscribeTabs } from "../features/terminal/session";
+import { closeTab, getTabs, openTab, restoreWorkspaceTabs, selectTab, subscribeTabs } from "../features/terminal/session";
 import { canOpenTerminal, terminalTabs } from "../features/terminal/tabs";
 import { tabLabel } from "../features/terminal/shellIntegration";
 import { useAppPrefs } from "../settings/appPrefs";
 import { openRepoSettingsPage } from "../features/chat/ChatModelPicker";
-import { ChevronDownIcon, ChevronRightIcon, EraserIcon, PlusIcon, XIcon } from "../features/files/panelIcons";
+import { ChevronDownIcon, ChevronRightIcon, PlusIcon, XIcon } from "../features/files/panelIcons";
 
 export type StripView = "setup" | "run" | "terminal";
 
@@ -163,12 +163,6 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
           <PlusIcon />
         </button>
         <div className="ws-strip-actions" ref={setActionsEl} />
-        {/* Not in the reference capture (it has no terminal open); kept so scrollback can be cleared without ⌘K, which the command palette also takes. */}
-        {showTerminal && (
-          <button type="button" className="rp-icon ws-strip-end" aria-label="Clear terminal scrollback" title="Clear terminal scrollback" onClick={() => clearTab(activeTerm.id)}>
-            <EraserIcon />
-          </button>
-        )}
       </div>
       {open && error && <div className="term-error">{error}</div>}
       {/* Kept mounted while hidden, so run output and the setup state keep coming in. */}

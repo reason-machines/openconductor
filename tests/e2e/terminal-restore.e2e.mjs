@@ -308,7 +308,10 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
 
   // Clear scrollback clears the backend screen too, so the next save has no old output.
   await page.locator(".term-tab").first().click();
-  await page.getByRole("button", { name: "Clear terminal scrollback" }).click();
+  assert.equal(await page.getByRole("button", { name: "Clear terminal scrollback", exact: true }).count(), 0);
+  const terminalInput = page.locator(".terminal-panel .xterm-helper-textarea");
+  await terminalInput.focus();
+  await terminalInput.press("Meta+k");
   await page.waitForFunction(
     (id) => {
       const d = JSON.parse(localStorage.getItem("__fake_backend_disk"));
