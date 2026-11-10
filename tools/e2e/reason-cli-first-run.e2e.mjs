@@ -38,8 +38,8 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
 let sessionUrl = null;
-async function wd(method, path, body) {
-  const res = await fetch(`${sessionUrl ?? base}${path}`, { method, signal: AbortSignal.timeout(90000), headers: { "content-type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });
+async function wd(method, path, body, timeoutMs = 90000) {
+  const res = await fetch(`${sessionUrl ?? base}${path}`, { method, signal: AbortSignal.timeout(timeoutMs), headers: { "content-type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`${method} ${path}: ${res.status} ${JSON.stringify(json.value ?? json)}`);
   return json.value;
@@ -98,16 +98,25 @@ try {
     return s === null || s.state === "warning" ? { status: s } : null;
   }, 600000);
   console.log(`app responsive after install: ${JSON.stringify(await run("return document.readyState;"))}`);
-  await screenshot("cli-first-run-3-installed");
+  // WebKitGTK's WebDriver screenshot can hang once the install finishes even
+  // though the page still answers scripts; fall back to an X11 capture.
+  const shot3 = join(out, "cli-first-run-3-installed.png");
+  try {
+    writeFileSync(shot3, Buffer.from(await wd("GET", "/screenshot", undefined, 30000), "base64"));
+  } catch (error) {
+    console.log(`WebDriver screenshot failed (${error.message}); capturing the X display instead`);
+    try { execFileSync("import", ["-window", "root", shot3], { timeout: 30000 }); } catch (e) { console.log(`X capture failed: ${e.message}`); }
+  }
+  if (existsSync(shot3)) console.log(`screenshot: ${shot3}`);
   const version = execFileSync(cli, ["--version"], { env, encoding: "utf8", timeout: 60000 }).trim();
   assert.ok(version.length > 0);
   pass(`background install finished (${JSON.stringify(done.status?.state ?? "cleared")}); ${cli} --version: ${version}`);
 } catch (error) {
   console.error(`not ok - ${error instanceof Error ? error.stack : error}`);
-  await screenshot("cli-first-run-failure").catch(() => {});
+  await wd("GET", "/screenshot", undefined, 20000).then((b) => writeFileSync(join(out, "cli-first-run-failure.png"), Buffer.from(b, "base64"))).catch(() => {});
   process.exitCode = 1;
 } finally {
-  if (sessionUrl) await wd("DELETE", "").catch(() => {});
+  if (sessionUrl) await wd("DELETE", "", undefined, 20000).catch(() => {});
   driver.kill();
   await driverExited;
 }

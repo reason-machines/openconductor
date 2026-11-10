@@ -121,6 +121,7 @@ async function fixture({ strict, initial = { state: "idle" }, surface = "gate", 
   const { FirstRunGate } = load("src/onboarding/FirstRunGate");
   const { LoginScreen } = load("src/onboarding/SignIn");
   const api = load("src/onboarding/reasonSignIn");
+  const { ReasonCliStatus } = load("src/onboarding/ReasonCliStatus");
   function ReplayProbe() {
     React.useEffect(() => { replay.push("setup"); return () => { replay.push("cleanup"); }; }, []);
     return null;
@@ -130,7 +131,7 @@ async function fixture({ strict, initial = { state: "idle" }, surface = "gate", 
   const element = () => React.createElement(strict ? React.StrictMode : React.Fragment, null,
     React.createElement(ReplayProbe),
     surface === "gate"
-      ? React.createElement(FirstRunGate, {}, React.createElement("main", { "data-testid": "home" }, "Home"))
+      ? React.createElement(FirstRunGate, {}, React.createElement("main", { "data-testid": "home" }, "Home", React.createElement("footer", { className: "sb-footer" }, React.createElement(ReasonCliStatus))))
       : React.createElement(LoginScreen, { onDone, onFailed }),
   );
   await act(async () => { root.render(element()); });
@@ -210,7 +211,7 @@ for (const strict of [false, true]) {
       assert.equal(f.requests.some((r) => r.command === "reason_login_start"), false);
       await act(async () => { f.installation.reject(new Error("Synthetic CLI unavailable")); });
       assert.equal(f.count("home"), 1);
-      assert.match(f.host.textContent, /Synthetic CLI unavailable/);
+      assert.match(f.host.querySelector('.sb-footer [data-testid="reason-cli-status"]')?.textContent ?? "", /Synthetic CLI unavailable/);
     } finally { await f.close(); }
   });
 
