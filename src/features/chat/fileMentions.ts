@@ -1,3 +1,19 @@
+import type { FileMatch } from "../../spotlight/quickOpen.ts";
+
+export type MentionItem = { kind: "file"; match: FileMatch } | { kind: "terminal" };
+
+export function mentionItems(query: string, files: readonly FileMatch[], terminal: boolean): MentionItem[] {
+  let position = 0;
+  for (const char of query.toLowerCase()) {
+    const found = "terminal".indexOf(char, position);
+    if (found < 0) return files.map((match) => ({ kind: "file", match }));
+    position = found + 1;
+  }
+  const items: MentionItem[] = files.map((match) => ({ kind: "file", match }));
+  if (terminal) items.unshift({ kind: "terminal" });
+  return items;
+}
+
 export function mentionHighlights(text: string, indices: readonly number[], offset = 0): { text: string; matched: boolean }[] {
   const runs: { text: string; matched: boolean }[] = [];
   for (const char of text) {
@@ -20,11 +36,11 @@ export interface FileMentionQuery {
 export function fileMentionQuery(draft: string, start: number, end = start): FileMentionQuery | null {
   if (start !== end || start < 0 || start > draft.length) return null;
   const before = draft.slice(0, start);
-  const match = /(?:^|\s)@([^\s@]*)$/.exec(before);
+  const match = /(?:^|\s)@([^\s@\ufffc]*)$/.exec(before);
   if (!match) return null;
   const query = match[1] ?? "";
   const from = start - query.length - 1;
-  const suffix = /^[^\s@]*/.exec(draft.slice(start))?.[0] ?? "";
+  const suffix = /^[^\s@\ufffc]*/.exec(draft.slice(start))?.[0] ?? "";
   return { start: from, end: start + suffix.length, query };
 }
 

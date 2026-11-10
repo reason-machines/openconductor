@@ -1,0 +1,19 @@
+# Test-only PR head f5d4a8be4bc9bf71e71ddec05a9a50e196629b2d
+# ubuntu-22.04 automatic CI run 42747290168; excerpt, trailing whitespace removed
+2026-11-10T03:13:28.0189438Z failures:
+2026-11-10T03:13:28.0190043Z
+2026-11-10T03:13:28.0190603Z ---- workspace_archive::tests::restore_continues_when_post_checkout_hook_fails_after_creating_the_worktree stdout ----
+2026-11-10T03:13:28.0191173Z
+2026-11-10T03:13:28.0192015Z thread 'workspace_archive::tests::restore_continues_when_post_checkout_hook_fails_after_creating_the_worktree' (13973) panicked at src/workspace_archive/tests.rs:414:10:
+2026-11-10T03:13:28.0193992Z a created worktree must survive a failing post-checkout hook: Failed("Preparing worktree (checking out 'sven/ws')\narchive-hook-fixture")
+2026-11-10T03:13:28.0194927Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-11-10T03:13:28.0195334Z
+2026-11-10T03:13:28.0195435Z
+2026-11-10T03:13:28.0195622Z failures:
+2026-11-10T03:13:28.0196187Z     workspace_archive::tests::restore_continues_when_post_checkout_hook_fails_after_creating_the_worktree
+2026-11-10T03:13:28.0196684Z
+2026-11-10T03:13:28.0197155Z test result: FAILED. 877 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 24.46s
+2026-11-10T03:13:28.0197615Z
+2026-11-10T03:13:28.0247074Z error: test failed, to rerun pass `--lib`
+2026-11-10T03:13:28.0316168Z ##[error]Process completed with exit code 101.
+2026-11-10T03:13:28.0417544Z
