@@ -79,7 +79,6 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
                   key={e}
                   type="button"
                   role="option"
-                  aria-label={label}
                   title={label}
                   aria-selected={e === emoji}
                   className="section-emoji-option"

@@ -35,7 +35,11 @@ Local source-only checks passed: direct Node type-stripped calls exercise empty 
 
 Corrected hosted RED at `f4c6903b9f8a8acd70277d03164497528d884aa3`: [unit job 130118738460](https://github.com/reason-machines/openconductor/actions/runs/42898700561/job/130118738460), lines 724–875, again records exactly seven absent-Search-emoji errors and all three preserved controls passing. [Frontend job 130118738385](https://github.com/reason-machines/openconductor/actions/runs/42898700561/job/130118738385) passes typecheck and then fails only those seven unit tests. No test expectations change after this corrected RED.
 
-Pending: locked-regression GREEN, exact-head complete CI, and consuming-main checks. Local dependencies are absent; no installation is authorized, so local mounted component, typecheck, and build checks are not run.
+Hosted GREEN for the locked component regression at `27c10fe3c9b32e73e1cbefe363f7fd10c61e9a1d`: [unit job 130122878716](https://github.com/reason-machines/openconductor/actions/runs/42899929982/job/130122878716), lines 793–852, passes all ten tests without changing the locked fixture. The same run passes frontend typecheck and build.
+
+That head's [keybindings E2E job 130122877225](https://github.com/reason-machines/openconductor/actions/runs/42899929879/job/130122877225), lines 3730–3750, exposes a preserved-control regression. The unchanged section lifecycle test times out finding the option named `🚀` because the added text `aria-label` overrides the original glyph name. The correction removes that override, retaining the authored tooltip, search metadata, glyph, and callbacks. Neither the locked component fixture nor the existing E2E test is changed.
+
+Pending: exact-head GREEN after the accessible-name correction, complete CI, and consuming-main checks. Local dependencies are absent; no installation is authorized, so local mounted component, typecheck, and build checks are not run.
 
 ## Open parity boundaries
 
