@@ -103,8 +103,37 @@ still has no redirect effect. The existing automatic Diff workflow runs:
 node --experimental-strip-types --test src/features/diff/*.test.ts
 ```
 
-Hosted failing-before verification is pending. No failing-before or passing-after
-result is claimed before that workflow reports.
+## Hosted failing-before result
+
+At published test-only head `8d19da6f1ddcc232ae92e77e04a87e9a1e3e6cd0`, the
+[automatic Diff job](https://github.com/reason-machines/openconductor/actions/runs/42911750177/job/130163887522)
+ran 245 tests. It passed 240 and failed exactly five new selection cases,
+with no skips or cancellations. Dependencies and the fixture initialized
+successfully. Failures were tests 229, 230, 232, 233, and 236:
+
+- Flat filtering retained `b.drop` instead of `c.keep`.
+- Tree filtering retained `selected.drop` instead of `dir/item2.keep`.
+- Recovery from a no-match filter retained `b.drop` instead of `a.keep`.
+- Removing the loaded selected path left selection null instead of `a.ts`.
+- Old-path filtering retained `selected.ts` instead of renamed `new-name.ts`.
+
+All 237 previous tests and the three new preservation controls passed. Those
+controls exercise matching selection, initial null selection, and empty-list
+recovery. The no-match condition also passed before its later redirect assertion
+failed.
+
+## Minimal correction checkpoint
+
+The production change is one five-line effect beside the existing derived
+navigation sequence. It uses that sequence's first row only when the current
+non-null path is absent. Its functional state update retains a null path from
+a pending workspace reset. It changes no loading, history, or tab-open boundary.
+There are no new helpers or types.
+
+`viewed.test.ts` remains byte-identical to the failing-before checkpoint, Git
+blob `3f69285705f7cf78cced53e1f3aeb1270687c03f`. No old or new assertion, fixture
+boundary, case name, or action changed after RED. Hosted passing-after
+verification and all exact-head checks are pending.
 
 ## Verification limits
 
