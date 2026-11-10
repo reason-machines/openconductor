@@ -120,13 +120,37 @@ Ordinary automatic hosted workflow command:
 node --experimental-strip-types --test src/features/diff/*.test.ts
 ```
 
-The first checkpoint changes tests and this receipt only. Production and the
-shared dialog remain byte-identical to the comparison pin. Hosted RED is
-pending; the minimal production correction follows only after that failure
-is verified, with these tests unchanged.
+## Hosted failing-before result
 
-Local `git diff --check`, full retained-renderer and fragment hashes, and
-source-only diff review passed. Local dependencies, tests, typecheck, build,
-server, browser, native execution, installation, and screenshots were not run
-under #847 FULL STOP. There was no acquisition, dispatch, rerun, or new worker
-or observer. Packaging is not installation, deployment, or native parity.
+The test-and-evidence-only head
+`8d669c195b8ac08b2e23a109ad6c4dc96319eed8` kept production and the shared
+dialog byte-identical to the comparison pin. The ordinary automatic
+[Diff frontend job 130107983381](https://github.com/reason-machines/openconductor/actions/runs/42895654291/job/130107983381)
+ran the command above. It reported 229 tests, 207 passed, 22 failed, and none
+skipped. All 22 failures were the intended dirty-comment alert cases, log
+lines 446 through 1050. They report browser-confirmation count `1 !== 0`
+or missing in-app alert count `0 !== 1`. There was no dependency or fixture
+setup failure. The six clean-cancellation controls and six Delete controls
+passed. The latter are tests 75 through 80, log lines 1051 through 1086.
+
+## Minimal correction checkpoint
+
+The correction adds one local `discardOpen` state to `Composer` and renders
+its alert with the unchanged `DialogFrame` and existing confirmation CSS.
+The dirty predicate is unchanged. Dirty cancellation opens the alert without
+dismissing. Keep editing and the dialog's close callback close only the
+alert; explicit Discard closes the alert and calls the existing dismissal
+boundary. Clean cancellation still dismisses immediately. Save and Delete
+remain unchanged.
+
+The passing-after checkpoint retains both test files byte-for-byte from the
+failing-before head. `commentCancel.test.ts` is Git blob
+`e4826d605aae20419cf7018cd73e99fce36f5af7`; `commentDelete.test.ts` is
+`ba7fe93d51c793973e8dfdf82d6cc6447a4d9515`. Hosted GREEN is pending.
+
+Local `git diff --check`, full retained-renderer and fragment hashes,
+unchanged-regression checks, and source-only diff review passed. Local
+dependencies, tests, typecheck, build, server, browser, native execution,
+installation, and screenshots were not run under #847 FULL STOP. There was
+no acquisition, dispatch, rerun, or new worker or observer. Packaging is not
+installation, deployment, or native parity.
