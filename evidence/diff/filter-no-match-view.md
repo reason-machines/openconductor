@@ -113,8 +113,33 @@ hosted command is:
 node --experimental-strip-types --test src/features/diff/*.test.ts
 ```
 
-Hosted failing-before and passing-after results are pending. The regression
-file will remain unchanged between the intended failing run and correction.
+## Hosted failing-before result
+
+At published test-only head
+`8f720057bdc526fd40dd71b5d32f0bb1c68c08f3`, the
+[automatic Diff frontend job](https://github.com/reason-machines/openconductor/actions/runs/42918295233/job/130186309856)
+ran 250 tests. It passed 247 and failed exactly the three new no-match cases,
+with no skips or cancellations. Tests 237 and 238, the flat and tree round
+trips, failed with `the main Diff tab must explain the no-match filter`, actual
+`0`, expected `1`. Test 239, the initially unselected no-match view, failed the
+same missing-message assertion. The two new empty-list and rename controls
+passed, as did all 245 previous tests. Dependencies and component mounting
+initialized successfully. Both Diff Rust jobs passed.
+
+## Minimal correction checkpoint
+
+Current main was refreshed again before the production patch and remains
+`0244d800782a3eaf811aac53fedc8a536218fb2b`. The hook now returns the derived
+`noMatchingFiles` value. The main tab shows the explanation when there is no
+selection, or alongside its hidden mounted file container when selected. The
+container has both `hidden` and an explicit `display: none` override, because
+its existing author CSS sets `display: flex`. No shared CSS changes.
+
+The regression remains Git blob
+`76b0ee30f8893597280363387b958e39e9cc3c7f`, byte-identical to the failing-before
+checkpoint. No old or new assertion, action, case name, or fixture boundary
+changed after the failing run. Hosted passing-after verification and all
+exact-head checks are pending.
 
 ## Verification limits
 

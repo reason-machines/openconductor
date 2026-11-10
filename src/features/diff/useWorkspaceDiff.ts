@@ -250,6 +250,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     current,
     /** The selected file. */
     selected,
+    noMatchingFiles: files.length > 0 && navigationFiles.length === 0,
     open,
     openPath,
     /** The chat turn whose changes are shown, or null for `opts.scope`. */
