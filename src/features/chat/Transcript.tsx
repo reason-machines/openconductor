@@ -5,7 +5,7 @@
 // markdown) and, once finished, its footer.
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
-import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
+import { ChatSignInCard } from "./ChatSignInCard.tsx";
 import { Fragment, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
@@ -21,9 +21,10 @@ import { TurnDetails } from "./TurnDetails.tsx";
 import { turnAgentLabel } from "./fork.ts";
 import { openUrl } from "../../backend.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
-import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
-import { openAgentSettings } from "./ChatModelPicker.tsx";
+import { isSignInFailure } from "./agentSignIn.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
+import { SentUserContent } from "./SentUserContent.tsx";
+import type { UserPrompt } from "./userContent.ts";
 import "./chat.css";
 
 export interface TranscriptProps {
@@ -33,7 +34,7 @@ export interface TranscriptProps {
   /** "Don't collapse tool calls" setting: summary rows stay open. */
   dontCollapseToolCalls?: boolean;
   /** Sends a failed or cancelled turn's prompt again. */
-  onRetry?: (prompt: string, turnId: string) => void;
+  onRetry?: (prompt: UserPrompt, turnId: string) => void;
   /** Opens "Reset chat?" for a turn that can be reset. */
   onResetChat?: (turnId: string) => void;
   /** "Fork to new tab" in every finished turn's More actions menu. */
@@ -159,7 +160,7 @@ interface RowContext {
     isOpen: (summaryId: string, turnRunning: boolean) => boolean;
     toggle: (summaryId: string, open: boolean) => void;
   };
-  onRetry?: (prompt: string, turnId: string) => void;
+  onRetry?: (prompt: UserPrompt, turnId: string) => void;
   onResetChat?: (turnId: string) => void;
   resetDisabled: boolean;
   turnFooter?: (turnId: string) => ReactNode;
@@ -180,7 +181,7 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
         <div className="chat-msg chat-user oc-msg-user" data-message-role="user">
           <div className="oc-user-col">
             <div className="chat-bubble oc-bubble">
-              <div className="oc-user-text">{row.text}</div>
+              <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : row.text}</div>
               <MessageActions text={row.text} />
             </div>
             {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
@@ -225,21 +226,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
         {menuItems.length > 0 ? <TurnMenu items={menuItems} onSelect={(id) => actions[id]?.()} /> : null}
       </span>
       {turnFooter?.(row.turnId)}
-      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <SignInNotice agent={ctx.chatAgent} /> : null}
-    </div>
-  );
-}
-
-/** Reason signs in directly; local agents keep their Settings authentication flow. */
-function SignInNotice({ agent }: { agent: ChatAgentId }) {
-  const copy = signInCopy(agent);
-  return (
-    <div className="chat-sign-in" data-testid="chat-sign-in" data-agent={agent}>
-      <span className="chat-sign-in-badge">{copy.badge}</span>
-      <p>{copy.text}</p>
-      {agent === "reason" ? <ReasonSignInControls variant="chat" /> : (
-        <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>{copy.action}</button>
-      )}
+      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <ChatSignInCard agent={ctx.chatAgent} onSignedIn={row.retryPrompt && onRetry ? () => onRetry(row.retryPrompt!, row.turnId) : undefined} /> : null}
     </div>
   );
 }

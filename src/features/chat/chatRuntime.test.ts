@@ -7,6 +7,11 @@ import { chatStatuses, createChatRuntime, hideChat, reportChatStatus, subscribeC
 import { applyReasonPayload, type ReasonPayload } from "./reason.ts";
 import { onChatAttention } from "./attention.ts";
 import type { FileChange } from "../diff/types.ts";
+import { submittedUserPrompt, withSentAttachmentDisplay } from "./userContent.ts";
+import { writeComposerDraft } from "./composerDocument.ts";
+import { restoreEvents, type StoredMessage } from "./persist.ts";
+import { applyChatEvents, emptyTranscript } from "./reducer.ts";
+import { buildRows } from "./view.ts";
 
 type Config = string[];
 
@@ -57,6 +62,48 @@ function fakeHost() {
   return { host, store, invoked, recorded };
 }
 
+test("real runtime persists each rich sent snapshot without changing provider prompt or attachments", async () => {
+  const f = fakeBackend();
+  const h = fakeHost();
+  const saved: StoredMessage[] = [];
+  h.host.persist = true;
+  h.host.invoke = async (cmd, args) => {
+    if (cmd === "chat_messages_load") return { messages: [], agentSessionId: null };
+    if (cmd === "chat_messages_save") saved.push(...args.upserts as StoredMessage[]);
+    return null;
+  };
+  const rt = createChatRuntime(f.backend, h.host);
+  const attached = [{ name: ".context/attachments/a.png", text: "provider bytes" }];
+  const input = withSentAttachmentDisplay(submittedUserPrompt(writeComposerDraft([{ kind: "text", text: "Review " }, { kind: "file", path: "src/a.ts", label: "Custom", directory: false }])), attached, new Set([attached[0]!.name]));
+  const other = { text: input.text, userContent: submittedUserPrompt(writeComposerDraft([{ kind: "file", path: "src/b.ts", label: "Other", directory: false }])).userContent };
+  rt.submit("v1-one", "/ws", input, "queue", attached);
+  rt.submit("v1-two", "/ws", other, "queue");
+  await settle();
+  assert.equal(f.prompts[0]?.req.text, input.text);
+  assert.deepEqual(f.prompts[0]?.req.attachments, attached);
+  assert.ok(!("userContent" in f.prompts[0]!.req));
+  assert.deepEqual(rt.snapshot("v1-one").transcript.messages[0]?.userContent, input.userContent);
+  assert.deepEqual(rt.snapshot("v1-two").transcript.messages[0]?.userContent, other.userContent);
+  rt.submit("v1-one", "/ws", other, "steer");
+  await settle();
+  assert.deepEqual(rt.snapshot("v1-one").transcript.messages.filter((m) => m.role === "user").map((m) => m.userContent), [input.userContent, other.userContent]);
+  f.emit({ chatId: "v1-one", type: "turnEnded", end: { outcome: "cancelled" } });
+  f.emit({ chatId: "v1-one", type: "turnEnded", end: { outcome: "cancelled" } });
+  f.emit({ chatId: "v1-two", type: "turnEnded", end: { outcome: "cancelled" } });
+  for (const prompt of f.prompts) prompt.end();
+  await new Promise((resolve) => setTimeout(resolve, 400));
+  const rows = saved.filter((row) => JSON.parse(row.fullMessage).sessionId === "v1-one");
+  assert.ok(rows.length > 0, "actual ChatSaver persisted the user message");
+  assert.equal(rows[0]?.content, input.text + "\n\nAttached: " + attached[0]!.name);
+  const restored = applyChatEvents(emptyTranscript("v1-one"), restoreEvents("v1-one", rows.map((row) => row.fullMessage)));
+  assert.ok(restored.ok);
+  const user = buildRows(restored.transcript).find((row) => row.kind === "user");
+  assert.equal(user?.kind, "user");
+  if (user?.kind !== "user") assert.fail("missing rendered-model user row");
+  assert.deepEqual(user.message.userContent, input.userContent);
+  assert.equal(user.cancelled, true);
+});
+
 const settle = () => new Promise((r) => setImmediate(r));
 const userTexts = (rt: ReturnType<typeof createChatRuntime>, chatId: string) =>
   rt.snapshot(chatId).transcript.messages.filter((m) => m.role === "user").map((m) => (m.blocks[0] as { text: string }).text);
@@ -69,8 +116,8 @@ test("a queued message is prompted once the running turn ends", async () => {
   rt.subscribe("c1", (s) => seen.push(s.queue.status));
   rt.configure("c1", ["model=x"]);
 
-  rt.submit("c1", "/ws", "first", "queue", [], "/repo", "source-workspace");
-  rt.submit("c1", "/ws", "second", "queue");
+  rt.submit("c1", "/ws", { text: "first" }, "queue", [], "/repo", "source-workspace");
+  rt.submit("c1", "/ws", { text: "second" }, "queue");
   await settle();
   assert.equal(f.calls.listen, 1);
   assert.deepEqual(f.calls.open, [{ chatId: "c1", cwd: "/ws", sessionId: null, config: ["model=x"] }]);
@@ -111,7 +158,7 @@ test("a queued message is prompted once the running turn ends", async () => {
 test("an empty Reason completion fails the queue visibly and preserves the prompt for retry", async () => {
   const f = fakeBackend();
   const rt = createChatRuntime(f.backend, fakeHost().host);
-  rt.submit("empty-reply", "/ws", "sda", "queue");
+  rt.submit("empty-reply", "/ws", { text: "sda" }, "queue");
   await settle();
   f.emit({ chatId: "empty-reply", type: "turnEnded", end: { outcome: "completed" } });
   f.prompts[0]!.end();
@@ -130,7 +177,7 @@ test("a pick in a chat whose session is open goes to that session; before it ope
   rt.configure("c1", ["model=a"]);
   assert.deepEqual(f.calls.reconfigure, [], "no session yet: the pick waits for open");
 
-  rt.submit("c1", "/ws", "first", "queue");
+  rt.submit("c1", "/ws", { text: "first" }, "queue");
   await settle();
   assert.deepEqual(f.calls.open.map((o) => o.config), [["model=a"]]);
   f.emit({ chatId: "c1", type: "sessionStarted", sessionId: "agent-1" });
@@ -142,7 +189,7 @@ test("a pick in a chat whose session is open goes to that session; before it ope
   // the chip and the agent agree without a Reset chat.
   rt.configure("c1", ["model=b"]);
   assert.deepEqual(f.calls.reconfigure, [{ chatId: "c1", config: ["model=b"] }]);
-  rt.submit("c1", "/ws", "second", "queue");
+  rt.submit("c1", "/ws", { text: "second" }, "queue");
   await settle();
   assert.equal(f.calls.open.length, 1, "the same session continues");
   assert.equal(f.prompts.length, 2);
@@ -154,9 +201,9 @@ test("a steered follow-up goes to the backend while the turn runs", async () => 
   const rt = createChatRuntime(f.backend, fakeHost().host);
   assert.equal(rt.canSteer, true);
 
-  rt.submit("c1", "/ws", "first", "steer");
+  rt.submit("c1", "/ws", { text: "first" }, "steer");
   await settle();
-  rt.submit("c1", "/ws", "also this", "steer");
+  rt.submit("c1", "/ws", { text: "also this" }, "steer");
   await settle();
   assert.deepEqual(f.prompts.map((p) => p.req.text), ["first", "also this"]);
   assert.deepEqual(rt.snapshot("c1").queue.items, []);
@@ -172,8 +219,8 @@ test("a steered follow-up goes to the backend while the turn runs", async () => 
 test("Stop cancels, a second Stop cancels hard, and the queue moves on", async () => {
   const f = fakeBackend();
   const rt = createChatRuntime(f.backend, fakeHost().host);
-  rt.submit("c1", "/ws", "long task", "queue");
-  rt.submit("c1", "/ws", "next", "queue");
+  rt.submit("c1", "/ws", { text: "long task" }, "queue");
+  rt.submit("c1", "/ws", { text: "next" }, "queue");
   await settle();
 
   rt.stop("c1");
@@ -193,7 +240,7 @@ test("Stop cancels, a second Stop cancels hard, and the queue moves on", async (
 test("a Stop before the prompt reached the backend ends the turn cancelled without sending it", async () => {
   const f = fakeBackend();
   const rt = createChatRuntime(f.backend, fakeHost().host);
-  rt.submit("c1", "/ws", "never sent", "queue");
+  rt.submit("c1", "/ws", { text: "never sent" }, "queue");
   rt.stop("c1");
   await settle();
   assert.deepEqual(f.calls.cancel, [false]);
@@ -211,7 +258,7 @@ test("a prompt the backend rejects fails its turn", async () => {
   };
   const rt = createChatRuntime(f.backend, fakeHost().host);
   rt.configureDefault("c1", Promise.reject(new Error("lookup failed")));
-  rt.submit("c1", "/ws", "hi", "queue");
+  rt.submit("c1", "/ws", { text: "hi" }, "queue");
   await settle();
   assert.deepEqual(f.calls.open[0]?.config, ["default"], "a failed default lookup leaves the backend default");
   const turn = Object.values(rt.snapshot("c1").transcript.turns)[0];
@@ -225,7 +272,7 @@ test("Reset chat restores the turn's end checkpoint, then drops later turns", as
   const h = fakeHost();
   const rt = createChatRuntime(f.backend, h.host);
   for (const text of ["one", "two"]) {
-    rt.submit("c1", "/ws", text, "queue");
+    rt.submit("c1", "/ws", { text }, "queue");
     await settle();
     f.emit({ chatId: "c1", type: "turnEnded", end: { outcome: "completed" } });
     f.prompts.at(-1)!.end();
@@ -233,7 +280,7 @@ test("Reset chat restores the turn's end checkpoint, then drops later turns", as
   }
   const firstTurn = rt.snapshot("c1").transcript.messages[0]!.turnId!;
 
-  rt.submit("c1", "/ws", "three", "queue");
+  rt.submit("c1", "/ws", { text: "three" }, "queue");
   await settle();
   await assert.rejects(rt.reset("c1", "/ws", firstTurn, true), /Stop the agent/);
   f.emit({ chatId: "c1", type: "turnEnded", end: { outcome: "completed" } });
@@ -251,8 +298,8 @@ test("chat statuses span runtimes, and a hidden chat drops out", async () => {
   const rb = createChatRuntime(b.backend, fakeHost().host);
   let changes = 0;
   const off = subscribeChatStatuses(() => changes++);
-  ra.submit("status-a", "/ws", "hi", "queue");
-  rb.submit("status-b", "/ws", "hi", "queue");
+  ra.submit("status-a", "/ws", { text: "hi" }, "queue");
+  rb.submit("status-b", "/ws", { text: "hi" }, "queue");
   await settle();
   assert.equal(chatStatuses().get("status-a"), "working");
   assert.equal(chatStatuses().get("status-b"), "working");

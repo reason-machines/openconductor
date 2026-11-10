@@ -22,10 +22,10 @@ import { desktopHost } from "./desktopHost.ts";
 import { withAttachments } from "../diff/chatAttachment.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { withGeneralPreferences } from "../../settings/prompts.ts";
+import { localModelOptions } from "./chatModelChoice.ts";
 
 const EVENT = "claude-chat-event";
 const sessionKey = (chatId: string) => `openconductor.claude.session.${chatId}`;
-/** Claude Code chats have no picked options yet; the key is the runtime's slot for them. */
 const configKey = (chatId: string) => `openconductor.claude.config.${chatId}`;
 
 /** Claude Code chats need the desktop app (the `claude` CLI runs there). */
@@ -43,7 +43,6 @@ export const claudeBackend: ChatBackend<null> = {
   defaultConfig: null,
   sessionKey,
   configKey,
-  // No options to read back: a Claude Code chat always starts on the default.
   parseConfig: () => null,
   // A tool, plan or question prompt (`can_use_tool`, asked when tool
   // approvals are on or in plan mode) opens a card; `claude_respond` answers it.
@@ -63,7 +62,8 @@ export const claudeBackend: ChatBackend<null> = {
   // conversation.md"), so it reaches Claude the same way.
   async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath, workspaceId }) {
     const withPrefs = firstMessage && repoPath ? await withGeneral(text, repoPath, cwd) : text;
-    return invoke("claude_prompt", { chatId, text: withAttachments(withPrefs, attachments), turn, workspaceId });
+    const options = localModelOptions(chatId.replace(/:claude$/, ""), "claude");
+    return invoke("claude_prompt", { chatId, text: withAttachments(withPrefs, attachments), turn, workspaceId, options });
   },
   // The backend tells a first Stop from a second (interrupt, then kill).
   cancel(chatId) {

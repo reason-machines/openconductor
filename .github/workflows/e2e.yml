@@ -30,9 +30,8 @@ jobs:
   codex-chat:
     name: Codex chat through the built app (ubuntu-22.04)
     runs-on: ubuntu-22.04
-    # Normally about 4 minutes. 30 leaves room for a slow apt mirror (capped at 20 below)
-    # or a cold Rust cache, and stops a hung job from holding main's E2E queue for hours.
-    timeout-minutes: 30
+    # Includes a real Reason CLI install in each disposable test HOME.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       # The Azure apt mirror sometimes serves at 30-50 kB/s for 10-25 minutes, so keep the
@@ -89,8 +88,8 @@ jobs:
           git config --global user.email "ci@example.invalid"
       # tools/e2e/fake_codex_app_server.py replays a turn recorded from Codex 0.166.0 on macOS.
       - name: Codex chat e2e (stand-in codex app-server)
-        # Normally about 1 minute.
-        timeout-minutes: 5
+        # Includes the real Reason CLI setup budget.
+        timeout-minutes: 15
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-codex
           WEBKIT_DISABLE_DMABUF_RENDERER: "1"
@@ -106,8 +105,8 @@ jobs:
       # API key and CLI (subscription login) modes of Settings › Agents › Claude Code.
       - name: Claude Code chat e2e (stand-in claude, each auth mode)
         if: always()
-        # Normally about 1 minute.
-        timeout-minutes: 5
+        # Includes the real Reason CLI setup budget.
+        timeout-minutes: 15
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-claude
           WEBKIT_DISABLE_DMABUF_RENDERER: "1"
@@ -122,8 +121,8 @@ jobs:
       # The chat's bundled-binary download banner, against a local stand-in release host.
       - name: Agent binary download banner e2e
         if: always()
-        # Normally under a minute.
-        timeout-minutes: 5
+        # Includes the real Reason CLI setup budget.
+        timeout-minutes: 15
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-binary
           WEBKIT_DISABLE_DMABUF_RENDERER: "1"
@@ -141,9 +140,8 @@ jobs:
     # WebDriver for Tauri apps exists on Linux (WebKitWebDriver) and Windows
     # only; macOS WKWebView has no driver.
     runs-on: ubuntu-22.04
-    # Normally about 10.5 minutes. 40 leaves room for a slow apt mirror (capped at 20 below)
-    # or a cold Rust cache, and stops a hung job from holding main's E2E queue for hours.
-    timeout-minutes: 40
+    # Includes real CLI setup per suite, plus the optional five-pass chat run.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       # The Azure apt mirror sometimes serves at 30-50 kB/s for 10-25 minutes, so keep the
@@ -195,10 +193,10 @@ jobs:
         run: npx tauri build --debug --no-bundle
       - name: Install tauri-driver
         run: cargo install tauri-driver --locked
-      - name: WebDriver transport tests
-        run: node --test tests/e2e/webdriver.test.mjs tests/e2e/terminal-flow.test.mjs
+      - name: WebDriver transport and startup tests
+        run: node --experimental-strip-types --test tests/e2e/webdriver.test.mjs tests/e2e/startup.test.mjs tests/e2e/terminal-flow.test.mjs tools/e2e/reason-chat-settings.test.mjs
       - name: Reason chat e2e (fake reason acp)
-        timeout-minutes: 10
+        timeout-minutes: ${{ inputs.reason_chat_runs == '5' && 75 || 15 }}
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-screens
           E2E_RUNS: ${{ inputs.reason_chat_runs || '1' }}
@@ -216,10 +214,24 @@ jobs:
           name: reason-chat-e2e-screens
           path: ${{ runner.temp }}/e2e-screens
           retention-days: 14
+      - name: Reason CLI first run e2e (throwaway HOME, no reason on PATH, real install)
+        if: always()
+        timeout-minutes: 15
+        env:
+          E2E_OUT: ${{ runner.temp }}/e2e-cli-first-run
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a node tools/e2e/reason-cli-first-run.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reason-cli-first-run-e2e-screens
+          path: ${{ runner.temp }}/e2e-cli-first-run
+          retention-days: 14
       - name: Model picker e2e (fake reason acp)
         if: always()
-        # Normally under a minute.
-        timeout-minutes: 5
+        # Includes the real Reason CLI setup budget.
+        timeout-minutes: 15
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-picker
         run: xvfb-run -a node tools/e2e/model-picker.e2e.mjs src-tauri/target/debug/openconductor
@@ -231,8 +243,8 @@ jobs:
           retention-days: 14
       - name: Codex chat e2e (fake codex app-server)
         if: always()
-        # Normally about 1 minute.
-        timeout-minutes: 5
+        # Includes the real Reason CLI setup budget.
+        timeout-minutes: 15
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-codex
         run: xvfb-run -a node tools/e2e/codex-chat.e2e.mjs src-tauri/target/debug/openconductor
@@ -243,8 +255,8 @@ jobs:
           path: ${{ runner.temp }}/e2e-codex
       - name: Agent binaries e2e (local release manifest, fake codex)
         if: always()
-        # Normally under a minute.
-        timeout-minutes: 5
+        # Includes the real Reason CLI setup budget.
+        timeout-minutes: 15
         env:
           E2E_OUT: ${{ runner.temp }}/e2e-agent-binaries
         run: xvfb-run -a node tools/e2e/agent-binaries.e2e.mjs src-tauri/target/debug/openconductor
@@ -274,6 +286,7 @@ jobs:
       # with the fixture skill, filtered by typing, picked with Enter.
       - name: Slash menu e2e (fixture skills, stand-in reason)
         if: always()
+        timeout-minutes: 15
         env:
           E2E_OUT: ${{ runner.temp }}/slash-menu
           WEBKIT_DISABLE_DMABUF_RENDERER: "1"
@@ -292,8 +305,8 @@ jobs:
           git config --global user.email "ci@example.invalid"
       - name: App flows (tests/e2e/run.mjs)
         if: always()
-        # Normally about 1 minute; more flows land here often.
-        timeout-minutes: 10
+        # Includes the real Reason CLI setup budget.
+        timeout-minutes: 15
         env:
           OC_APP: src-tauri/target/debug/openconductor
           E2E_OUT: ${{ runner.temp }}/e2e-flows

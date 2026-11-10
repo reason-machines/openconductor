@@ -20,13 +20,28 @@ Hosted RED is confirmed by [CI run 42776616979, unit job 129696492459](https://g
 
 The second failing job, `Frontend typecheck + build` (129696492259), passed `npm run typecheck` and failed its subsequent unit-test step with the same six failures. Its build step was skipped. This was not a TypeScript diagnostic or an import/infrastructure failure.
 
-The source correction keeps every assertion unchanged. Hosted GREEN is pending. No local test, build, installation, browser, or native runtime was used for this correction.
+The source correction keeps every assertion unchanged. At corrected head `15303be19597dd42085128489a58d6f8d135c407`, [hosted frontend unit job 129894401308](https://github.com/reason-machines/openconductor/actions/runs/42834903660/job/129894401308) passed all seven Sidebar cases within 1,734 passing tests. Typecheck and build also passed. Full CI was not green: the Keybindings E2E job failed on the Composer shared-clear precondition (`5000 !== 0`), whose cause remains unproven. These results apply to that head, not subsequent integrations. No local test, build, installation, browser, or native runtime was used for this correction.
 
 ## Current-source reconciliation
 
 The supported current-main snapshot was `8c085c53590c7ca5d2f49c95bab3882a82382233`. At that commit, `Sidebar.tsx`, `KeybindingsProvider.tsx`, `overrides.ts`, and `tooltipPlacement.ts` were byte-identical to the regression baseline. The gap therefore still existed: navigation used the default-only `hint` function with no live snapshot, while the provider and effective resolver already supported saved replacements.
 
 Only the three navigation expressions, Home's title expression, the provider subscription, and NavRow's support for multiple hint strings change. The default-only `hint` function and its header/footer callers are unchanged. Focus actions, section behavior, unbinding, #847, #849, and Unarchive remain outside this correction.
+
+## Main integration — 2026-11-10
+
+Integrated main `953306cea609c2ae51507423e3d3ed1b10a81535` into the existing #882 branch. The sole content conflict was at the Sidebar component declaration: main added `onSendFeedback`, while #882 added the live override subscription immediately after that declaration. The resolution retains both. Main's feedback prop declaration and forwarding to HelpMenu are preserved; no feedback, Focus, section, footer, or unbinding behavior was changed by this resolution.
+
+Static verification passed:
+
+- `git diff --exit-code HEAD -- src/components/sidebarShortcutHints.test.ts` before the merge commit: all seven assertions remain byte-identical to the published corrected head.
+- `git diff --check origin/main`: no whitespace errors in this PR's delta against the integrated main.
+- `git diff --name-only --diff-filter=U`: no unresolved paths after staging the Sidebar resolution.
+- The diff against main still contains only Sidebar, the unchanged seven-case test, and this lane's existing evidence directory.
+
+The whole-merge `git diff --cached --check` reported new blank lines at EOF inherited from main in Sidebar and `src/features/chat/userContent.test.ts`; unrelated formatting was left unchanged. This is distinct from the passing PR-delta whitespace check.
+
+No local tests, build, install, application runtime, acquisition, or manual CI rerun/dispatch ran. Ordinary automatic CI on the integrated head is pending; the earlier hosted unit pass does not establish integrated-head GREEN. The existing Composer owner confirms no cause-addressed shared-clear repair receipt is held.
 
 ## Reference provenance
 

@@ -5,7 +5,7 @@
 // below; collapsed is the default and the right-hand part hides while open,
 // except for rows whose right part is a file badge.
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { FILE_GLYPHS, LUCIDE, type IconNode } from "./toolIconData.ts";
 import {
   askUserState,
@@ -168,8 +168,8 @@ export function FileGlyph({ path }: { path: string }) {
   );
 }
 
-export function FileBadge({ path, onOpen, children, className }: { path: string; onOpen?: (path: string) => void; children?: ReactNode; className?: string }) {
-  return (
+export function FileBadge({ path, onOpen, children, className, hoverContent }: { path: string; onOpen?: (path: string) => void; children?: ReactNode; className?: string; hoverContent?: ReactNode }) {
+  const button = (
     <button
       type="button"
       className={`oc-file-badge filebadge${className ? ` ${className}` : ""}`}
@@ -183,6 +183,82 @@ export function FileBadge({ path, onOpen, children, className }: { path: string;
       <span className="oc-file-badge-name">{baseName(path)}</span>
       {children}
     </button>
+  );
+  return hoverContent ? <FileBadgeHover content={hoverContent}>{button}</FileBadgeHover> : button;
+}
+
+function FileBadgeHover({ content, children }: { content: ReactNode; children: ReactNode }) {
+  const anchor = useRef<HTMLSpanElement>(null);
+  const card = useRef<HTMLDivElement>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [at, setAt] = useState<{ left: number; top: number } | null>(null);
+  const open = at !== null;
+  function clearTimer() {
+    if (timer.current !== null) clearTimeout(timer.current);
+    timer.current = null;
+  }
+  function close() {
+    clearTimer();
+    setAt(null);
+  }
+  function enter() {
+    clearTimer();
+    if (open) return;
+    timer.current = setTimeout(() => {
+      timer.current = null;
+      const rect = anchor.current?.getBoundingClientRect();
+      if (rect) setAt({ left: rect.left, top: rect.top - 8 });
+    }, 150);
+  }
+  function leave() {
+    clearTimer();
+    if (open) timer.current = setTimeout(close, 100);
+  }
+  useEffect(() => () => clearTimer(), []);
+  useEffect(() => {
+    if (!open || !anchor.current || !card.current) return;
+    const trigger = anchor.current.getBoundingClientRect();
+    const popup = card.current.getBoundingClientRect();
+    setAt({
+      left: Math.max(16, Math.min(trigger.left, window.innerWidth - popup.width - 16)),
+      top: Math.max(16, Math.min(trigger.top - popup.height - 8, window.innerHeight - popup.height - 16)),
+    });
+    const key = (event: KeyboardEvent) => { if (event.key === "Escape") close(); };
+    const scroll = (event: Event) => {
+      if (event.target instanceof Node && card.current?.contains(event.target)) return;
+      close();
+    };
+    window.addEventListener("keydown", key);
+    window.addEventListener("resize", close);
+    window.addEventListener("scroll", scroll, true);
+    return () => {
+      window.removeEventListener("keydown", key);
+      window.removeEventListener("resize", close);
+      window.removeEventListener("scroll", scroll, true);
+    };
+  }, [open]);
+  return (
+    <span
+      ref={anchor}
+      style={{ display: "inline-flex", minWidth: 0, maxWidth: "100%" }}
+      onPointerEnter={(event) => { if (event.pointerType !== "touch") enter(); }}
+      onPointerLeave={leave}
+    >
+      {children}
+      {at ? (
+        <div
+          ref={card}
+          role="region"
+          aria-label="File change preview"
+          style={{ position: "fixed", left: at.left, top: at.top, zIndex: 1000, width: "28rem", maxWidth: "calc(100vw - 32px)", maxHeight: "min(20rem, calc(100vh - 32px))", overflow: "auto", border: "1px solid var(--oc-border)", borderRadius: 6, background: "var(--oc-bg)", color: "var(--oc-fg)", whiteSpace: "normal" }}
+          onPointerEnter={clearTimer}
+          onPointerLeave={leave}
+          onClick={(event) => event.stopPropagation()}
+        >
+          {content}
+        </div>
+      ) : null}
+    </span>
   );
 }
 
@@ -393,45 +469,10 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
         />
       );
     }
-    case "multi-edit": {
-      const path = s(input.file_path);
-      const edits = Array.isArray(input.edits) ? (input.edits as Record<string, unknown>[]) : [];
-      const totals = edits.reduce<{ added: number; removed: number }>(
-        (t, e) => {
-          const c = editCounts(e) ?? { added: 0, removed: 0 };
-          return { added: t.added + c.added, removed: t.removed + c.removed };
-        },
-        { added: 0, removed: 0 },
-      );
-      return (
-        <RowShell
-          {...shell}
-          left={<span>{`${edits.length} ${edits.length === 1 ? "edit" : "edits"}`}</span>}
-          right={
-            <div className="oc-tool-right-row">
-              {path ? <FileBadge path={path} onOpen={onOpenFile} /> : null}
-              <LineCounts {...totals} />
-            </div>
-          }
-          keepRight
-          align="center"
-        />
-      );
-    }
-    case "write": {
-      const path = s(input.file_path);
-      const content = s(input.content);
-      return (
-        <RowShell
-          {...shell}
-          left={<span>{`Write ${content.split("\n").length} lines`}</span>}
-          right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
-          align="center"
-          bareContent
-          content={<DiffBlock oldText="" newText={content} />}
-        />
-      );
-    }
+    case "multi-edit":
+      return <MultiEditRow {...shell} input={input} onOpenFile={onOpenFile} />;
+    case "write":
+      return <WriteRow {...shell} input={input} onOpenFile={onOpenFile} />;
     case "web": {
       const target = s(input.url) || s(input.query);
       return (
@@ -459,6 +500,94 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
     default:
       return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
   }
+}
+
+function WriteRow({ input, onOpenFile, ...shell }: ShellBase & { input: Record<string, unknown>; onOpenFile?: (path: string) => void }) {
+  const [expanded, setExpanded] = useState(false);
+  const path = s(input.file_path);
+  const content = s(input.content);
+  const long = content.length > 2000;
+  const shown = long && !expanded ? content.substring(0, 2000) : content;
+  return (
+    <RowShell
+      {...shell}
+      left={<span>{`Write ${content.split("\n").length} lines`}</span>}
+      right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
+      align="center"
+      bareContent
+      content={
+        <>
+          <DiffBlock oldText="" newText={shown} />
+          {long ? (
+            <div style={{ borderTop: "1px solid var(--oc-border)", background: "color-mix(in oklab, var(--oc-muted) 30%, transparent)", padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span className="oc-tool-count">{expanded ? "Showing full content" : "Showing first 2,000 characters"}</span>
+              <button type="button" className="oc-text-action" style={{ padding: 0, color: "var(--accent)" }} onClick={() => setExpanded((previous) => !previous)}>
+                {expanded ? "Show less" : "Show more"}
+              </button>
+            </div>
+          ) : null}
+        </>
+      }
+    />
+  );
+}
+
+function MultiEditRow({ input, onOpenFile, ...shell }: ShellBase & { input: Record<string, unknown>; onOpenFile?: (path: string) => void }) {
+  const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
+  const path = s(input.file_path);
+  const edits = Array.isArray(input.edits) ? (input.edits as Record<string, unknown>[]) : [];
+  const totals = edits.reduce<{ added: number; removed: number }>(
+    (total, edit) => {
+      const counts = editCounts(edit) ?? { added: 0, removed: 0 };
+      return { added: total.added + counts.added, removed: total.removed + counts.removed };
+    },
+    { added: 0, removed: 0 },
+  );
+  return (
+    <RowShell
+      {...shell}
+      left={<span>{`${edits.length} ${edits.length === 1 ? "edit" : "edits"}`}</span>}
+      right={
+        <div className="oc-tool-right-row">
+          {path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={<DiffBlock oldText={edits.map((edit) => stripMarkers(s(edit.old_string))).join("\n")} newText={edits.map((edit) => stripMarkers(s(edit.new_string))).join("\n")} />} /> : null}
+          <LineCounts {...totals} />
+        </div>
+      }
+      keepRight
+      align="center"
+      bareContent
+      content={
+        <div className="oc-multi-edit-list">
+          {edits.map((edit, index) => {
+            const oldText = s(edit.old_string);
+            const newText = s(edit.new_string);
+            const open = expanded.has(index);
+            return (
+              <div className="oc-multi-edit-item" key={index}>
+                <button
+                  type="button"
+                  className="oc-multi-edit-head"
+                  aria-label={`Edit ${index + 1}`}
+                  aria-expanded={open}
+                  onClick={() => setExpanded((previous) => {
+                    const next = new Set(previous);
+                    if (next.has(index)) next.delete(index);
+                    else next.add(index);
+                    return next;
+                  })}
+                >
+                  <span className="oc-multi-edit-label">Edit {index + 1}</span>
+                  <LineCounts {...(editCounts(edit) ?? { added: 0, removed: 0 })} />
+                  <span className="oc-multi-edit-preview">{oldText.split("\n")[0]?.substring(0, 40) || "Empty"}{oldText.length > 40 ? "..." : ""}</span>
+                </button>
+                {open ? <div className="oc-multi-edit-body"><DiffBlock oldText={stripMarkers(oldText)} newText={stripMarkers(newText)} /></div> : null}
+              </div>
+            );
+          })}
+        </div>
+      }
+    />
+  );
 }
 
 function BashRow({ input, output, ...shell }: ShellBase & { input: Record<string, unknown>; output?: string }) {

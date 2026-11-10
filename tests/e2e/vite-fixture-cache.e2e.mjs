@@ -73,6 +73,7 @@ async function exerciseCacheOwnership() {
     await writeFile(join(project, "vite.config.mjs"), `
 import { existsSync, readFileSync } from "node:fs";
 const phase = readFileSync(${JSON.stringify(phaseFile)}, "utf8");
+if (phase === "occupied") throw new Error("Occupied port reached Vite configuration");
 let cacheDir;
 export default {
   plugins: [{
@@ -137,19 +138,19 @@ export default {
     await writeFile(phaseFile, "occupied");
     const port = Number(new URL(a.base).port);
     await assert.rejects(startViteFixture({ host: "127.0.0.1", port }), { code: "EADDRINUSE" });
-    const failedCache = caches.get("occupied");
+    assert.equal(caches.has("occupied"), false);
+    await fetchPinnedGraph(graphA, "occupied-port");
+    console.log("Occupied port rejected before Vite configuration; A graph still fetchable");
+
+    await writeFile(phaseFile, "config-failed");
+    await assert.rejects(startViteFixture({ host: "127.0.0.1", port: 0 }), /Synthetic config failure/);
+    const failedCache = caches.get("config-failed");
     assert.ok(failedCache);
     assert.notEqual(failedCache, caches.get("A"));
     assert.notEqual(failedCache, caches.get("B"));
     await assert.rejects(stat(failedCache), { code: "ENOENT" });
-    await fetchPinnedGraph(graphA, "failed-start");
-    console.log("Occupied-port startup cache removed; A graph still fetchable");
-
-    await writeFile(phaseFile, "config-failed");
-    await assert.rejects(startViteFixture({ host: "127.0.0.1", port: 0 }), /Synthetic config failure/);
-    assert.ok(caches.get("config-failed"));
-    await assert.rejects(stat(caches.get("config-failed")), { code: "ENOENT" });
-    console.log("Config-failure startup cache removed");
+    await fetchPinnedGraph(graphA, "config-failed");
+    console.log("Config-failure startup cache removed; A graph still fetchable");
 
     await Promise.all([a.close(), a.close()]);
     await assert.rejects(stat(caches.get("A")), { code: "ENOENT" });

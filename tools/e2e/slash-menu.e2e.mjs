@@ -18,11 +18,13 @@
 //      TAURI_DRIVER  tauri-driver binary (default: tauri-driver on PATH)
 
 import { spawn, execFileSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, chmodSync, realpathSync } from "node:fs";
+import { copyFileSync, existsSync, mkdtempSync, mkdirSync, writeFileSync, chmodSync, realpathSync, renameSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -63,7 +65,24 @@ const fake = join(repoRoot, "tools/reason-acp/fake_reason_acp.py");
 writeFileSync(join(bin, "reason"), `#!/bin/sh\nif [ "$1" = skills ]; then cat "${join(home, "skills.json")}"; exit 0; fi\nexec python3 "${fake}" "$@"\n`);
 chmodSync(join(bin, "reason"), 0o755);
 
-const env = { ...process.env, HOME: home, PATH: `${bin}:${process.env.PATH}` };
+// Skills discovery uses the managed path, not the chat executable override.
+// Keep the real install for every setup check; replace it only inside this disposable HOME.
+const managedReason = join(home, ".local/bin/reason");
+const officialReason = join(home, "official-reason");
+function installSkillsFixture() {
+  copyFileSync(managedReason, officialReason);
+  copyFileSync(join(bin, "reason"), `${managedReason}.fixture`);
+  renameSync(`${managedReason}.fixture`, managedReason);
+}
+function restoreOfficialReason() {
+  if (!existsSync(officialReason)) return;
+  copyFileSync(officialReason, `${managedReason}.restore`);
+  renameSync(`${managedReason}.restore`, managedReason);
+}
+
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), PATH: `${bin}:${process.env.PATH}` };
+mkdirSync(env.OPENCONDUCTOR_HOME, { recursive: true });
+writeFileSync(join(env.OPENCONDUCTOR_HOME, "settings.toml"), `reason_executable_path = ${JSON.stringify(join(bin, "reason"))}\n`);
 delete env.REASON_CLI;
 delete env.XDG_DATA_HOME;
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
@@ -71,6 +90,7 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
+const startup = new WebDriver(base);
 let sessionUrl = null;
 async function wd(method, path, body) {
   const res = await fetch(`${sessionUrl ?? base}${path}`, { method, headers: { "content-type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });
@@ -139,6 +159,7 @@ try {
   await waitFor("tauri-driver", () => fetch(`${base}/status`).then((r) => r.ok), 20000);
   const session = await wd("POST", "/session", { capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } } });
   sessionUrl = `${base}/session/${session.sessionId}`;
+  startup.sessionId = session.sessionId;
   await wd("POST", "/window/rect", { width: 1440, height: 900 }).catch(() => {});
   await waitFor("the app to load", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
   const seeded = await runAsync(
@@ -152,7 +173,10 @@ try {
   assert.ok(seeded?.workspace, `seeding failed: ${JSON.stringify(seeded)}`);
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
-  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  restoreOfficialReason();
+  // Keep the composer unmounted until the post-setup fixture hook has finished.
+  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); history.replaceState(null, '', '/first-run-onboarding'); location.reload();", JSON.stringify(prefs));
+  await finishStartup(startup, { afterSetup: installSkillsFixture });
   await waitFor("the workspace chat", () => run("return !!document.querySelector('.workspace .composer [contenteditable=true]');"), 60000);
   await waitFor("the model picker", () => chip());
 
@@ -205,6 +229,7 @@ try {
   process.exitCode = 1;
 } finally {
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
+  restoreOfficialReason();
   driver.kill();
   await Promise.race([driverExited, sleep(3000)]);
 }

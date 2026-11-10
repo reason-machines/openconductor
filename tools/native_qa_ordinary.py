@@ -9,7 +9,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import signal
 import subprocess
 import sys
 
@@ -35,22 +34,12 @@ def validate_receipt(root, receipt, manifest, executable):
 
 
 def run_prerequisite(executable, root):
-    process = subprocess.Popen([str(executable)], env=wk.qa.environment(root), cwd=root,
-                               stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                               text=True, close_fds=True, start_new_session=True)
-    try:
-        stdout, _stderr = process.communicate(timeout=TIMEOUT_SECONDS)
-        if process.returncode:
-            raise ValueError(f"ordinary QA prerequisite failed (exit {process.returncode})")
-        return json.loads(stdout)
-    finally:
-        try:
-            os.killpg(process.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        process.wait()
-        process.stdout.close()
-        process.stderr.close()
+    result = wk.qa.runner.run_probe(wk.qa.runner.LaunchSpec(
+        root, executable, wk.qa.runner.Probe.ORDINARY, timeout_seconds=TIMEOUT_SECONDS,
+    ))
+    if result.returncode:
+        raise ValueError(f"ordinary QA prerequisite failed (exit {result.returncode})")
+    return dict(json.loads(result.stdout), confinement_policy=result.policy_receipt)
 
 
 def probe(path, app):

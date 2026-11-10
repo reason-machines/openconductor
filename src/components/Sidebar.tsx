@@ -1,3 +1,4 @@
+import { ReasonCliStatus } from "../onboarding/ReasonCliStatus";
 import { useCallback, useEffect, useRef, useState, type Dispatch, type PointerEvent, type ReactNode, type RefObject } from "react";
 import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
@@ -70,6 +71,7 @@ interface Props {
   onAddProjectAt?: (path: string) => void;
   onOpenSettings: () => void;
   onOpenShortcuts: () => void;
+  onSendFeedback: () => void;
   /** Help › Submit a prompt and Help › Diagnostics. */
   onSubmitPrompt: () => void;
   onOpenDiagnostics: () => void;
@@ -254,7 +256,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
+export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSendFeedback, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
   const { overrides } = useKeybindingOverrides();
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
@@ -582,8 +584,9 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           <AppMark size={14} />
           <span>Reason</span>
         </span>
+        <ReasonCliStatus />
         <div className="sb-footer-actions">
-          <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
+          <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSendFeedback={onSendFeedback} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
           {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}
           <Tooltip content="Settings" shortcut={hint("openSettings")}>
             <button type="button" className="sb-footer-btn" aria-label="Settings" onClick={onOpenSettings}>
@@ -605,3 +608,4 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
     </aside>
   );
 }
+

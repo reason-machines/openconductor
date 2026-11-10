@@ -36,6 +36,7 @@ export function AdvancedPage({ settings, save }: Props) {
         browseTitle="Browse for SSH key"
         plain
         value={settings.ssh_key_path ?? ""}
+        onChange={(v) => save({ ...settings, ssh_key_path: v })}
         onSave={(v) => save(withTopLevel(settings, "ssh_key_path", v))}
       />
       <PrefSwitchRow
@@ -82,7 +83,6 @@ export function AdvancedPage({ settings, save }: Props) {
   );
 }
 
-/** The SSH key field (`npa`), saved on Enter or blur. Blank clears the setting. */
 function PathRow({
   label,
   help,
@@ -90,6 +90,7 @@ function PathRow({
   browseTitle = "Browse for executable",
   plain,
   value,
+  onChange,
   onSave,
 }: {
   label: string;
@@ -98,6 +99,7 @@ function PathRow({
   browseTitle?: string;
   plain?: boolean;
   value: string;
+  onChange: (v: string) => void;
   onSave: (v: string) => void;
 }) {
   const [text, setText] = useState(value);
@@ -125,7 +127,11 @@ function PathRow({
           autoComplete="off"
           spellCheck={false}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            const next = e.target.value;
+            setText(next);
+            onChange(next);
+          }}
           onBlur={() => commit(text)}
           onKeyDown={(e) => {
             if (e.key === "Enter") e.currentTarget.blur();

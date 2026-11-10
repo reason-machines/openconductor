@@ -17,15 +17,15 @@
 //
 // No JSX so `markdown.test.ts` can render it with react-dom/server.
 
-import { createElement as h, useEffect, useState, type ComponentType, type ReactNode } from "react";
+import { createElement as h, Fragment, useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { MermaidBlock } from "./mermaid.ts";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 import remarkSmartypants from "remark-smartypants";
-import { visit } from "unist-util-visit";
+import { SKIP, visit } from "unist-util-visit";
 import { common, createLowlight } from "lowlight";
-import type { Root as MdRoot } from "mdast";
+import type { PhrasingContent, Root as MdRoot } from "mdast";
 import type { Element, ElementContent, Root as HastRoot } from "hast";
 
 /** Conductor does not highlight code longer than this. */
@@ -49,8 +49,36 @@ export function remarkInlineCodeUrls() {
   };
 }
 
+const PLAIN_FILE_PATH = /(^|[\s([{"'“‘]|[^\w@./-](?!\/|\.\.?\/))((?:(?:\/|\.\.?\/)[\w@.-]+(?:\/[\w@.-]+)*|[\w@.-]+(?:\/[\w@.-]+)+)(?::\d+(?::\d+)?)?)/g;
+
+function remarkPlainFilePaths() {
+  return (tree: MdRoot) => {
+    visit(tree, (node, index, parent) => {
+      if (node.type === "link" || node.type === "linkReference") return SKIP;
+      if (node.type !== "text" || !parent || index === undefined) return;
+      const children: PhrasingContent[] = [];
+      let offset = 0;
+      for (const match of node.value.matchAll(PLAIN_FILE_PATH)) {
+        const path = match[2].replace(/\.+$/, "");
+        if (!looksLikePath(path)) continue;
+        const start = match.index + match[1].length;
+        if (start > offset) children.push({ type: "text", value: node.value.slice(offset, start) });
+        children.push({
+          type: "link", url: "", children: [{ type: "text", value: path }],
+          data: { hProperties: { "data-plain-file-path": path } },
+        });
+        offset = start + path.length;
+      }
+      if (children.length === 0) return;
+      if (offset < node.value.length) children.push({ type: "text", value: node.value.slice(offset) });
+      parent.children.splice(index, 1, ...children);
+      return index + children.length;
+    });
+  };
+}
+
 // remark-smartypants: Conductor's `TDs` plugin (curly quotes and apostrophes, en/em dashes, ellipses).
-export const remarkPlugins = [remarkGfm, remarkBreaks, remarkSmartypants, remarkInlineCodeUrls];
+export const remarkPlugins = [remarkGfm, remarkBreaks, remarkSmartypants, remarkInlineCodeUrls, remarkPlainFilePaths];
 
 function hastToReact(node: ElementContent, key: number): ReactNode {
   if (node.type === "text") return node.value;
@@ -124,13 +152,22 @@ export function looksLikePath(value: string): boolean {
   return path.startsWith("/") || path.startsWith("./") || (path.includes("/") && /\.[a-zA-Z0-9]{1,10}$/.test(path));
 }
 
-/** The absolute path an inline-code path names in the workspace, or undefined when it is outside it. */
+/** A normalized absolute file target strictly below the workspace, or undefined. */
 export function resolveWorkspacePath(value: string, workspacePath: string | undefined): string | undefined {
-  if (!workspacePath || !looksLikePath(value)) return undefined;
-  const root = workspacePath.replace(/\/$/, "");
+  if (!workspacePath?.startsWith("/") || !looksLikePath(value) || /[\\\u0000]/.test(workspacePath)) return undefined;
+  const normalize = (path: string) => {
+    const segments: string[] = [];
+    for (const segment of path.split("/")) {
+      if (!segment || segment === ".") continue;
+      if (segment === "..") segments.pop();
+      else segments.push(segment);
+    }
+    return `/${segments.join("/")}`;
+  };
+  const root = normalize(workspacePath);
   const path = value.replace(/:\d+(:\d+)?$/, "");
-  if (path.startsWith("/")) return path.startsWith(`${root}/`) ? path : undefined;
-  return `${root}/${path.replace(/^\.\//, "")}`;
+  const target = normalize(path.startsWith("/") ? path : `${root}/${path}`);
+  return target !== root && target.startsWith(root === "/" ? "/" : `${root}/`) ? target : undefined;
 }
 
 export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link }: MarkdownOptions = {}): Components {
@@ -151,8 +188,15 @@ export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link
       if (file === undefined) return code;
       return h("button", { type: "button", className: "md-file-link", title: `Open ${file}`, onClick: () => onOpenFile?.(file) }, code);
     },
-    a: ({ href, children }) =>
-      Link
+    a: ({ href, children, node }) => {
+      const path = node?.properties["data-plain-file-path"];
+      if (typeof path === "string") {
+        const file = resolveWorkspacePath(path, workspacePath);
+        return file === undefined
+          ? h(Fragment, null, children)
+          : h("button", { type: "button", className: "md-file-link", title: `Open ${file}`, onClick: () => onOpenFile?.(file) }, children);
+      }
+      return Link
         ? h(Link, { href, onOpenLink, children })
         : h(
             "a",
@@ -168,7 +212,8 @@ export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link
               },
             },
             children,
-          ),
+          );
+    },
     table: ({ children }) => h("div", { className: "md-table-scroll" }, h("table", null, children)),
   };
 }

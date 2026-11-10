@@ -15,6 +15,7 @@
 // Pure: no Tauri, no React, so `reason.test.ts` covers it.
 
 import type { Block, ChatEvent, ChatMessage, TokenUsage, TurnStatus } from "./types.ts";
+import type { SentUserContentV1 } from "./userContent.ts";
 import type { PermissionOption, PermissionPrompt, Question } from "./chatRuntime.ts";
 
 export interface ReasonPath {
@@ -126,15 +127,23 @@ export const attachmentLine = (name: string) => `Attached: ${name}`;
  * checkpoints (letters, digits, `.`, `_`, `-`); the default is only unique
  * within one app run. Attachments show by name.
  */
-export function startTurn(state: ReasonChatState, text: string, now = new Date(), turnId = `${state.chatId}:t${state.next}`, attachments: PromptAttachment[] = []): Step {
+export function startTurn(state: ReasonChatState, text: string, now = new Date(), turnId = `${state.chatId}:t${state.next}`, attachments: PromptAttachment[] = [], userContent?: SentUserContentV1): Step {
   const blocks: Block[] = [{ type: "text", text }, ...attachments.map((a): Block => ({ type: "text", text: attachmentLine(a.name) }))];
-  const user = message(state, turnId, `${turnId}:user`, "user", blocks, now);
+  const user = { ...message(state, turnId, `${turnId}:user`, "user", blocks, now), ...(userContent ? { userContent } : {}) };
   return {
     state: { ...state, open: [...state.open, { turnId, user, assistant: null }], next: state.next + 1 },
     events: [
       { type: "upsert", message: user },
       { type: "turn_status", sessionId: state.chatId, turnId, status: "running", at: now.toISOString() },
     ],
+  };
+}
+
+/** Reopens a failed, undelivered user message without adding or replacing it. */
+export function restartUnsentTurn(state: ReasonChatState, user: ChatMessage, now = new Date()): Step {
+  return {
+    state: { ...state, open: [...state.open, { turnId: user.turnId, user, assistant: null }] },
+    events: [{ type: "turn_status", sessionId: state.chatId, turnId: user.turnId, status: "running", at: now.toISOString() }],
   };
 }
 

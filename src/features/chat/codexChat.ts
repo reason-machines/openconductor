@@ -9,10 +9,12 @@ import { cachedAgentCommands, linkCodexSkills } from "./slashCompletions.ts";
 import { listen } from "@tauri-apps/api/event";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import * as Q from "./queue.ts";
+import type { SentUserContentV1, UserPrompt } from "./userContent.ts";
 import { chatWantsAttention, codexAsks, turnSettled } from "./attention.ts";
 import { reportChatStatus } from "./chatRuntime.ts";
 import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn, type CodexApproval, type CodexChatState, type CodexDecision, type CodexPayload, type Step } from "./codex.ts";
 import { statusWithOpenRequests, type CodexConsent, type ConsentAnswer } from "./codexConsent.ts";
+import { localModelOptions } from "./chatModelChoice.ts";
 
 const EVENT = "codex-chat-event";
 const threadKey = (chatId: string) => `openconductor.codex.thread.${chatId}`;
@@ -131,7 +133,7 @@ function setQueue(c: Chat, step: Q.QueueStep | Q.ChatQueue) {
     // Codex cannot steer (`CODEX_CAN_STEER`), so a steer never comes from the composer.
     if (e.kind === "cancel") {
       if (c.opened) void invoke("codex_cancel", { chatId: c.state.chatId });
-    } else void prompt(c, inlineAttachments(e.text, e.attachments));
+    } else void prompt(c, inlineAttachments(e.text, e.attachments), e.userContent);
   }
 }
 
@@ -159,9 +161,9 @@ export function subscribeCodex(chatId: string, fn: (v: CodexSnapshot) => void): 
 }
 
 /** Opens a turn and sends the prompt; `submitCodex` sets the folder first. */
-async function prompt(c: Chat, text: string): Promise<void> {
+async function prompt(c: Chat, text: string, userContent?: SentUserContentV1): Promise<void> {
   const chatId = c.state.chatId;
-  apply(c, startTurn(c.state, text));
+  apply(c, startTurn(c.state, text, new Date(), userContent));
   const turnId = newestTurn(c.state)!;
   try {
     await ensureListening();
@@ -173,7 +175,7 @@ async function prompt(c: Chat, text: string): Promise<void> {
     // Resolves with the prompt's end; the `turnEnded` event closes the turn.
     // A skill picked in the "/" menu (`$name`) goes to Codex as a skill input item too.
     const skills = cachedAgentCommands("codex", c.cwd ?? "")?.skills ?? [];
-    await invoke("codex_prompt", { chatId, text: linkCodexSkills(text, skills) });
+    await invoke("codex_prompt", { chatId, text: linkCodexSkills(text, skills), ...localModelOptions(chatId, "codex") });
   } catch (e) {
     // The prompt never reached Codex (no CLI, chat not open), so no event will end it.
     apply(c, failTurn(c.state, turnId, String(e)));
@@ -181,10 +183,10 @@ async function prompt(c: Chat, text: string): Promise<void> {
 }
 
 /** The composer's Send, the first message or a Retry: starts when idle, else queues. `cwd` is the workspace folder. */
-export function submitCodex(chatId: string, cwd: string, text: string, attachments: readonly Q.MessageAttachment[] = []): void {
+export function submitCodex(chatId: string, cwd: string, input: UserPrompt, attachments: readonly Q.MessageAttachment[] = []): void {
   const c = chat(chatId);
   c.cwd = cwd;
-  setQueue(c, Q.submit(c.view.queue, text, "queue", new Date(), attachments));
+  setQueue(c, Q.submit(c.view.queue, input, "queue", new Date(), attachments));
 }
 
 /** Stop: interrupts the running turn. A chat Codex never ran has nothing to stop. */

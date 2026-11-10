@@ -13,6 +13,7 @@
 // Pure apart from `ChatSaver`'s timer and the `save` function it is given.
 
 import type { ChatTranscript, TurnState } from "./reducer.ts";
+import { parseSentUserContent } from "./userContent.ts";
 import { plainText, type ChatEvent, type ChatMessage } from "./types.ts";
 
 /** A `session_messages` row as `chat_messages_save` takes it. */
@@ -91,7 +92,11 @@ export function restoreEvents(chatId: string, rows: readonly string[]): ChatEven
   for (const row of rows) {
     try {
       const m = JSON.parse(row) as FullMessage;
-      if (m && typeof m.id === "string" && Array.isArray(m.blocks)) messages.push({ ...m, sessionId: chatId });
+      if (m && typeof m.id === "string" && Array.isArray(m.blocks)) {
+        const { userContent: rawContent, ...message } = m;
+        const userContent = parseSentUserContent(rawContent);
+        messages.push({ ...message, sessionId: chatId, ...(userContent ? { userContent } : {}) });
+      }
     } catch {
       // A row this version cannot read is left out rather than failing the chat.
     }

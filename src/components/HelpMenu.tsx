@@ -23,11 +23,12 @@ const ICONS: Record<HelpIconName, JSX.Element> = {
 interface Props {
   appVersion?: string;
   onOpenShortcuts: () => void;
+  onSendFeedback: () => void;
   onSubmitPrompt: () => void;
   onOpenDiagnostics: () => void;
 }
 
-export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics }: Props) {
+export function HelpMenu({ appVersion, onOpenShortcuts, onSendFeedback, onSubmitPrompt, onOpenDiagnostics }: Props) {
   const { overrides } = useKeybindingOverrides();
   const claude = useAgentBinaryStatus("claude");
   const codex = useAgentBinaryStatus("codex");
@@ -69,6 +70,8 @@ export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDi
     switch (item.action.kind) {
       case "shortcuts":
         return onOpenShortcuts();
+      case "feedback":
+        return onSendFeedback();
       case "url":
         return void openUrl(item.action.url);
       case "submitPrompt":
