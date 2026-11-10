@@ -34,6 +34,12 @@ export async function startViteFixture({
         http.closeAllConnections();
       });
       const results = await Promise.allSettled([stopped, (async () => {
+        // Vite 5 can strand cold optimizer loads when close cancels their crawl.
+        diagnostic?.(`pending transforms ${cacheDir}: started`);
+        while (vite?._pendingRequests.size) {
+          await Promise.allSettled([...vite._pendingRequests.values()].map((pending) => pending.request));
+        }
+        diagnostic?.(`pending transforms ${cacheDir}: completed`);
         diagnostic?.(`Vite close ${cacheDir}: started`);
         await vite?.close();
         diagnostic?.(`Vite close ${cacheDir}: completed`);
