@@ -157,3 +157,45 @@ test("All search caps active and archived workspace matches separately", () => {
     ...Array.from({ length: 50 }, (_, i) => `workspace:archived-${59 - i}`),
   ]);
 });
+
+test("All search orders each state by workspace updates instead of recent visits", () => {
+  const mixed: PaletteData = {
+    ...data,
+    workspaces: [
+      ws("active-old", "target-old", 1000, { updatedAt: 100 }),
+      ws("active-tie-first", "target-tie", 900, { updatedAt: 300 }),
+      ws("active-new", "target-new", 0, { updatedAt: 400 }),
+      ws("active-tie-second", "target-tie", 800, { updatedAt: 300 }),
+      ws("archived-old", "target-old", 2000, { archived: true, updatedAt: 200 }),
+      ws("archived-new", "target-new", 0, { archived: true, updatedAt: 600 }),
+    ],
+    recentWorkspaceIds: ["active-old", "archived-old"],
+  };
+  const recent = buildResults("all", "", mixed).find((g) => g.id === "recent-workspaces");
+  assert.deepEqual(recent?.items.map((item) => item.id), ["workspace:active-old", "workspace:archived-old"]);
+  const matches = buildResults("all", "target", mixed).find((g) => g.id === "workspaces");
+  assert.deepEqual(matches?.items.map((item) => item.id), [
+    "workspace:active-new",
+    "workspace:active-tie-first",
+    "workspace:active-tie-second",
+    "workspace:active-old",
+    "workspace:archived-new",
+    "workspace:archived-old",
+  ]);
+});
+
+test("All search applies each state's cap after sorting by workspace updates", () => {
+  const many: PaletteData = {
+    ...data,
+    workspaces: Array.from({ length: 60 }, (_, i) => [
+      ws(`active-${i}`, `target-${i}`, 1000 - i, { updatedAt: i }),
+      ws(`archived-${i}`, `target-${i}`, 2000 - i, { archived: true, updatedAt: i }),
+    ]).flat(),
+    recentWorkspaceIds: [],
+  };
+  const matches = buildResults("all", "target", many).find((g) => g.id === "workspaces")?.items ?? [];
+  assert.deepEqual(matches.map((item) => item.id), [
+    ...Array.from({ length: 50 }, (_, i) => `workspace:active-${59 - i}`),
+    ...Array.from({ length: 50 }, (_, i) => `workspace:archived-${59 - i}`),
+  ]);
+});
