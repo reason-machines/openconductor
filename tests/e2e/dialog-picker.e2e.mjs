@@ -21,6 +21,14 @@ for (const [dialog, title] of [["create", "Choose where to create the project"],
   for (const mode of ["initial", "cancel", "select"]) {
     test(`${dialog}: Browse uses ${mode === "initial" ? "the loaded" : "the edited"} folder and ${mode === "select" ? "accepts the selection" : "preserves it on Cancel"}`, async () => {
       const page = await browser.newPage();
+      const diagnostics = [];
+      page.on("pageerror", (error) => diagnostics.push(error.stack ?? error.message));
+      page.on("console", (message) => {
+        if (["error", "warning"].includes(message.type())) diagnostics.push(message.text());
+      });
+      page.on("response", (response) => {
+        if (response.status() >= 400) diagnostics.push(`${response.status()} ${response.url()}`);
+      });
       try {
         const result = mode === "select" ? "&pickerResult=%2FUsers%2Fdemo%2Fselected" : "";
         await page.goto(`${base}/tools/dialogs/index.html?dialog=${dialog}&reference=1${result}`);
@@ -34,6 +42,17 @@ for (const [dialog, title] of [["create", "Choose where to create the project"],
         assert.deepEqual(request, { directory: true, multiple: false, title, defaultPath: expected });
         assert.equal(await input.inputValue(), mode === "select" ? "/Users/demo/selected" : expected);
         if (process.env.PICKER_SCREENSHOTS) await page.screenshot({ path: `${process.env.PICKER_SCREENSHOTS}/${dialog}-${mode}.png` });
+      } catch (error) {
+        console.error("Browse fixture diagnostics", {
+          dialog, mode, diagnostics,
+          page: await page.evaluate(() => ({
+            url: location.href,
+            input: document.querySelector(".field-row input")?.value,
+            isTauri: window.isTauri,
+            text: document.body.innerText,
+          })).catch((failure) => String(failure)),
+        });
+        throw error;
       } finally { await page.close(); }
     });
   }
