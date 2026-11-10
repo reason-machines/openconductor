@@ -63,4 +63,10 @@ node --test --test-concurrency=1 \
 
 **Partial:** an earlier neighboring batch including `agentSettings.test.ts` ran 19 passing cases but failed to load that suite because this checkout has no `@tauri-apps/api` dependency. No installation was attempted. This load failure is not a behavior failure or a passing test; ordinary CI's existing install and test steps cover it.
 
+### Hosted first-head results and type-narrowing correction
+
+On PR #901 head `8fb3bbab`, [the ordinary frontend unit job](https://github.com/reason-machines/openconductor/actions/runs/42812950914/job/129818720200) **passed**, including all four new callback tests and all four mounted reset tests. Its log explicitly passed the raw edit, accepted-override reset and no-duplicate blur/Enter cases. This is hosted synthetic component proof, not native or persistence proof.
+
+Two build/typecheck jobs **failed** with the same `TS18048` at `advancedSshCommit.test.ts:25`: `usage` was possibly undefined inside `saveThrough`, despite a top-level assertion. The correction moves the same source extraction and assertion into that function, where TypeScript can narrow the value before use; it adds no cast and removes no assertion. After this test-only correction, the 23 focused checks, syntax check and `git diff --check` **passed again locally**. A full local typecheck is still not run without dependencies; the corrected head's automatic CI result is a separate requirement.
+
 **Not run locally:** the changed mounted reset suite, full typecheck/build, browser/app/native execution, real picker, reference `platformFs` selection, persistence/relaunch or screenshots. Existing dependencies are absent, and the admitted work prohibits dependency acquisition and app/browser/native execution. Hosted checks remain separate evidence. No workflow was manually dispatched or rerun. #847 FULL STOP is unchanged.

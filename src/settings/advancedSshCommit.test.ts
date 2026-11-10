@@ -11,14 +11,14 @@ assert.ok(input, "the production SSH input exists");
 const changeAttribute = input.match(/onChange=\{([\s\S]*?)\}\s*onBlur=/u)?.[1];
 assert.ok(changeAttribute, "the production SSH input has a change callback");
 const change = new Function("e", "setText", "onChange", `return (${changeAttribute})(e);`);
-const usage = source.match(/<PathRow\s[\s\S]*?\n      \/>/u)?.[0];
-assert.ok(usage, "Advanced renders the SSH row");
 const topLevel = readFileSync(new URL("./agentSettings.ts", import.meta.url), "utf8")
   .match(/export function withTopLevel\([\s\S]*?\n\}/u)?.[0];
 assert.ok(topLevel, "the existing top-level setting mapper exists");
 const helpers = stripTypeScriptTypes(topLevel.replace(/^export /u, ""));
 
 function saveThrough(attribute: "onChange" | "onSave", value: string) {
+  const usage = source.match(/<PathRow\s[\s\S]*?\n      \/>/u)?.[0];
+  assert.ok(usage, "Advanced renders the SSH row");
   const pattern = attribute === "onChange"
     ? /onChange=\{([\s\S]*?)\}\n\s*onSave=/u
     : /onSave=\{([\s\S]*?)\}\n\s*\/>/u;
