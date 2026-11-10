@@ -25,6 +25,7 @@ fn req(dir: &Path, ws: &str, repo: &str, id: &str, script: &str, concurrent: boo
         },
         concurrent,
         sink: None,
+        on_started: Arc::new(|_| {}),
         on_finished: Arc::new(|_| {}),
     }
 }
@@ -71,6 +72,37 @@ fn completion_callback_reads_the_committed_status_and_output() {
     assert_eq!(status.exit, Some((Some(0), None)));
     assert_eq!(current, [status]);
     assert_eq!(output.as_deref(), Some("finished\r\n"));
+}
+
+#[test]
+fn admission_callback_precedes_completion_and_reads_the_committed_running_state() {
+    let tmp = tempfile::tempdir().unwrap();
+    let m = RunManager::default();
+    m.start(
+        req(tmp.path(), "w1", "r", "dev", "exit 7", true),
+        SetupState::Completed,
+    )
+    .unwrap();
+    wait_for("first exit", || m.state("w1", "dev") == RunState::Stopped);
+    assert_eq!(m.statuses("w1")[0].exit, Some((Some(7), None)));
+
+    let (tx, rx) = std::sync::mpsc::channel();
+    let started = tx.clone();
+    let observer = m.clone();
+    let mut request = req(tmp.path(), "w1", "r", "dev", "exit 0", true);
+    request.on_started = Arc::new(move |status| {
+        let current = observer.statuses("w1");
+        started.send((status, current)).unwrap();
+    });
+    request.on_finished = Arc::new(move |status| tx.send((status, Vec::new())).unwrap());
+    m.start(request, SetupState::Completed).unwrap();
+    let (admitted, current) = rx.recv_timeout(Duration::from_secs(10)).unwrap();
+    assert_eq!(admitted.state, RunState::Running);
+    assert_eq!(admitted.exit, None, "a new admission clears the old exit");
+    assert_eq!(current, [admitted]);
+    let (finished, _) = rx.recv_timeout(Duration::from_secs(10)).unwrap();
+    assert_eq!(finished.state, RunState::Stopped);
+    assert_eq!(finished.exit, Some((Some(0), None)));
 }
 
 #[test]
