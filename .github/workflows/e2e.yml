@@ -194,7 +194,7 @@ jobs:
       - name: Install tauri-driver
         run: cargo install tauri-driver --locked
       - name: WebDriver transport and startup tests
-        run: node --test tests/e2e/webdriver.test.mjs tests/e2e/startup.test.mjs tests/e2e/terminal-flow.test.mjs
+        run: node --experimental-strip-types --test tests/e2e/webdriver.test.mjs tests/e2e/startup.test.mjs tests/e2e/terminal-flow.test.mjs tools/e2e/reason-chat-settings.test.mjs
       - name: Reason chat e2e (fake reason acp)
         timeout-minutes: ${{ inputs.reason_chat_runs == '5' && 75 || 15 }}
         env:

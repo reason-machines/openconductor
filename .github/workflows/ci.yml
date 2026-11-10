@@ -202,16 +202,17 @@ jobs:
       - run: npm ci
       - name: Pure TypeScript modules (Node strips types natively)
         run: node --test "src/**/*.test.ts"
-      - name: Onboarding DOM persistence and StrictEffects (18 cases)
+      - name: Onboarding persistence and nonblocking startup regressions
         timeout-minutes: 3
         shell: bash
         env:
           NODE_ENV: development
           ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
+          REACT_EFFECTS_DEPS: ${{ github.workspace }}/node_modules
         run: |
           npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
             --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact \
             react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0
           echo "Onboarding source commit: $(git rev-parse HEAD)"
           node --check tests/onboarding-strict-effects.test.mjs
-          node --test --test-reporter=tap tests/onboarding-strict-effects.test.mjs
+          node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs

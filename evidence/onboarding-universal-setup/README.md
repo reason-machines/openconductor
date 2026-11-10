@@ -4,13 +4,13 @@ Conductor Rebuild, 2026-11-10. PR [#916](https://github.com/reason-machines/open
 
 ## Requested behavior
 
-Every normal startup entry, including first run, `/login`, and already-completed onboarding, awaits `reason_cli_ensure_current`. Claude Code, Codex, and Reason have the same installer gate. Onboarding completion awaits setup again through the shared promise, persists the explicitly chosen default agent, and only then writes completion. Sign-in is optional; a connected account no longer auto-advances past the agent choice. The explicit `?demo=1` browser/demo route remains a synthetic preview, not an onboarding installation path.
+Every normal startup entry, including first run, `/login`, and already-completed onboarding, starts `reason_cli_ensure_current` in the background. Claude Code, Codex, and Reason all request installation or update, without holding the current screen for setup or sign-in. Progress and retryable errors remain visible beside the usable screen. Onboarding completion persists the explicitly chosen default agent, then writes completion. A connected account never auto-advances past the agent choice. The explicit `?demo=1` browser/demo route remains a synthetic preview, not an onboarding installation path.
 
 A signed-out Reason send keeps its failed original user message and presents **Sign in to Reason** inline, using the existing #753 browser-pairing controls. The clicked control alone arms continuation. After valid pairing, an explicitly selected workspace is stored only if there was no pinned workspace. The runtime reopens that same undelivered turn, retaining its user row and turn ID. Duplicate approval cannot resend a running turn; cancellation, timeout and failure clear the continuation. Other agents' normal retry behavior is unchanged.
 
 Absent Reason settings are covered by direct tests of the actual helper modules, not a non-null assertion. The installer does not require signing in. Claude Code and Codex remain local-only. No provider credential handoff or cloud execution of either was added.
 
-## Verification retained for this increment
+## Historical verification before the nonblocking correction
 
 - The initial `agentSignIn` regression failed two assertions before the fix (ACP authentication-required error detection and exact button label). The same command passed 4/4 afterward.
 - `node --experimental-strip-types --test src/features/chat/reasonChat.test.ts src/features/chat/chatRuntime.test.ts src/workspace/archiveAgents.test.ts`: passed 33/33. The new signed-out test verifies no ACP start before sign-in, preservation of the original user row, the same chat and original turn ID after retry, a synthetic assistant reply in that turn, and no duplicate resend.
@@ -57,3 +57,27 @@ The requested real built-app tests remain **not run**: independent fresh throwaw
 Direct execution on the discovered Mac was withdrawn after initial read-only inspection. That actual denial was respected; no other Session, identity, browser, or device route was used to bypass it. A report was submitted about the missing recovery path. Native authentication and the requested recording therefore remain unverified, not simulated successes.
 
 No fresh Conductor runtime or REA claim is made by this request-driven behavior change. Existing reverse-engineered reference evidence remains historical. There is no new native-parity sign-off, and no aggregate feature-ledger row is promoted by these fixture checks.
+
+## Nonblocking startup correction
+
+Sven's later requirement supersedes the awaited installer gate described in the historical checks above. Every normal app launch still requests the official CLI installation or update, but the check runs in the background. Progress, failures with **Retry setup**, and usable-CLI update warnings appear beside the current screen. They never replace onboarding, login, or Home. Onboarding persists the agent choice without waiting for installation or sign-in.
+
+The continuation button now keeps the same DOM node when account status changes from checking to connected, and disables that node during persistence. Optional sign-in stays available while its initial account probe is pending. The built-app Reason fixture now persists the same explicit model in the Reason pin, settings default, and physical default slot. No built-app assertion or scroll test was relaxed.
+
+Verification on the corrective source published at `95e09c87`:
+
+- **Failed before:** five slow-CLI component regressions failed because all three choices and both existing-user Home paths were blocked.
+- **Failed before:** the real DOM continuation test failed in both development modes because account resolution detached the original button.
+- **Passed after:** `REACT_EFFECTS_DEPS=node_modules node --test tests/onboarding-effects.test.mjs`, 23/23.
+- **Passed after:** `ONBOARDING_DOM_DEPS=/tmp/oc-onboarding-dom-f75 NODE_ENV=development node --test tests/onboarding-strict-effects.test.mjs`, 22/22. Includes actual completion while installer and initial account reads remain unresolved, plus Home surviving installer rejection.
+- **Passed:** selected first-run, sign-in, chat, archive, and Reason fixture settings tests, 45/45 using `node --experimental-strip-types --test` on their files.
+- **Passed:** `TEST_BASE_URL=http://127.0.0.1:5197 node --test tests/e2e/onboarding-sign-in.e2e.mjs`, 30/30 in the supported preview namespace. All six slow/failed CLI × Claude Code/Codex/Reason paths reach Home with sign-in unresolved and zero login starts. IPC is synthetic.
+- **Passed:** the 34 baseline startup, WebDriver transport, and terminal-flow tests before the correction. Existing built-app assertions are unchanged.
+- **Partial:** `npm run build` passed branding and TypeScript, then timed out during Vite transformation after 240 seconds on the shared cloud computer. It is not a complete local build pass. Hosted exact-head checks remain separate.
+- **Passed:** `git diff --check`.
+
+![Synthetic IPC proof: Home remains usable while CLI setup and sign-in checks are pending](https://api.reasonmachines.com/media/pr-screenshots/5a4cf33e-1c21-4d7d-a6f4-1ae9b6fca6ac/bf48409ed8d89535dc75451a45fd8037/reason-home-slow-cli-unsigned-in.png#w=1280&h=900)
+
+![Synthetic IPC proof: Home remains usable after CLI setup fails, with Retry setup](https://api.reasonmachines.com/media/pr-screenshots/5a4cf33e-1c21-4d7d-a6f4-1ae9b6fca6ac/d4ff7d59f75f8bfdaaa022a3103047dd/reason-home-failed-cli-unsigned-in.png#w=1280&h=900)
+
+The real Mac fresh-HOME installation/current-version checks, native inline pairing, same-chat original-message continuation, and requested native recording remain unverified under the execution stop. No fixture image proves those requirements. Consuming-main package identity awaits merge.
