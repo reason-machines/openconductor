@@ -1,0 +1,30 @@
+Conductor Rebuild / PR #843 fixture correction / 2026-11-10
+
+Original CI exact head: 07450bbb1bbc8237d06a2c39df2b9619ad08eecd
+Failing check: Keybindings registry + logic tests
+Run: https://github.com/reason-machines/openconductor/actions/runs/42748798771/job/129607204968
+First failing test: terminal tabs and their screens come back after a relaunch, in a new shell
+Failure: page.waitForFunction: Timeout 5000ms exceeded.
+Location: tests/e2e/terminal-restore.e2e.mjs:315:14, waiting for backend clear mirror and saved snapshot after Cmd-K.
+172 passed, 1 failed, 1 skipped. Other 18 PR checks passed on that head.
+
+Source RED:
+node --experimental-strip-types --test src/features/terminal/capture.test.ts
+1 passed, 1 failed. The fixture case failed: fake backend: get_settings is not mocked.
+The default global-palette capture test passed.
+
+Source GREEN after fixture settings remap:
+node --experimental-strip-types --test src/features/terminal/capture.test.ts
+2 passed, 0 failed. Actual fixture settings are parsed by production parseOverrides and supplied to real dispatcher/capture helper.
+Default Cmd-K opens palette; configured Cmd-K falls through to terminal command resolver; configured Cmd-Shift-P still opens palette; outside-terminal Cmd-K does not resolve a terminal command.
+
+Focused suites:
+node --experimental-strip-types --test src/features/terminal/*.test.ts src/scripts/*.test.ts src/keybindings/*.test.ts src/settings/keybindingOverrides.test.ts
+180 passed, 0 failed, 0 skipped.
+node --check tests/e2e/terminal-restore.e2e.mjs: PASS
+node --check tests/e2e/script-output.e2e.mjs: PASS
+git diff --check: PASS
+
+Retained evidence: five index fragment hashes/range lengths and renderer registration hash checked against owner handoff: PASS. Entire artifact was freshly verified by existing index owner, not copied or re-read here. No extracted chunk executed.
+
+Limits: no local browser/E2E, build, native Mac, real PTY or package acceptance. Clear mirror, saved snapshots and archive deletion assertions are preserved but await exact-head CI. No product-priority or lifecycle edits. Failed-spawn semantics remain separately evidence-limited.
