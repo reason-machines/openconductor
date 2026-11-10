@@ -75,11 +75,13 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
   const items = useMemo(() => {
     const list = orderedModelChoices(value, favorites, models);
     const q = query.trim().toLowerCase();
+    const words = q.split(/\s+/);
     const name = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
     return q ? list.filter((f) => {
       const agent = itemAgent?.(f) ?? f.agent ?? agentForModel(f.model);
       const agentLabel = agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : "";
-      return name(f).toLowerCase().includes(q) || f.model.toLowerCase().includes(q) || agentLabel.toLowerCase().includes(q);
+      const fields = [name(f), f.model, agentLabel].map((field) => field.toLowerCase());
+      return words.every((word) => fields.some((field) => field.includes(word)));
     }) : list;
   }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
 
