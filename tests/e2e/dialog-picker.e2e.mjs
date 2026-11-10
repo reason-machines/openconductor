@@ -1,25 +1,34 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { chromium } from "playwright-core";
-import { createServer } from "vite";
+import { startViteFixture } from "./vite-fixture-server.mjs";
 
 let base = process.env.DIALOGS_URL;
 let browser;
 let server;
 before(async () => {
   if (!base) {
-    server = await createServer({ server: { host: "127.0.0.1", port: 0 }, logLevel: "error" });
-    await server.listen();
-    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+    server = await startViteFixture();
+    base = server.base;
   }
   browser = await chromium.launch({ executablePath: process.env.CHROME_PATH ?? "/usr/bin/chromium", args: ["--no-sandbox"] });
 });
-after(async () => { await browser?.close(); await server?.close(); });
+after(async () => {
+  try { await browser?.close(); } finally { await server?.close(); }
+});
 
 for (const [dialog, title] of [["create", "Choose where to create the project"], ["clone", "Choose where to clone the repository"]]) {
   for (const mode of ["initial", "cancel", "select"]) {
     test(`${dialog}: Browse uses ${mode === "initial" ? "the loaded" : "the edited"} folder and ${mode === "select" ? "accepts the selection" : "preserves it on Cancel"}`, async () => {
       const page = await browser.newPage();
+      const diagnostics = [];
+      page.on("pageerror", (error) => diagnostics.push(error.stack ?? error.message));
+      page.on("console", (message) => {
+        if (["error", "warning"].includes(message.type())) diagnostics.push(message.text());
+      });
+      page.on("response", (response) => {
+        if (response.status() >= 400) diagnostics.push(`${response.status()} ${response.url()}`);
+      });
       try {
         const result = mode === "select" ? "&pickerResult=%2FUsers%2Fdemo%2Fselected" : "";
         await page.goto(`${base}/tools/dialogs/index.html?dialog=${dialog}&reference=1${result}`);
@@ -33,6 +42,17 @@ for (const [dialog, title] of [["create", "Choose where to create the project"],
         assert.deepEqual(request, { directory: true, multiple: false, title, defaultPath: expected });
         assert.equal(await input.inputValue(), mode === "select" ? "/Users/demo/selected" : expected);
         if (process.env.PICKER_SCREENSHOTS) await page.screenshot({ path: `${process.env.PICKER_SCREENSHOTS}/${dialog}-${mode}.png` });
+      } catch (error) {
+        console.error("Browse fixture diagnostics", {
+          dialog, mode, diagnostics,
+          page: await page.evaluate(() => ({
+            url: location.href,
+            input: document.querySelector(".field-row input")?.value,
+            isTauri: window.isTauri,
+            text: document.body.innerText,
+          })).catch((failure) => String(failure)),
+        });
+        throw error;
       } finally { await page.close(); }
     });
   }
