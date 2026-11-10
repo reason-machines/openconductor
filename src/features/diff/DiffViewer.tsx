@@ -55,7 +55,7 @@ export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations,
     return (
       <div className="oc-diff oc-diff-tab">
         <div className="placeholder small">
-          <p>{load.state === "ready" && files.length === 0 ? "No changes to show." : "Pick a file in the changes list."}</p>
+          <p>{diff.noMatchingFiles ? "No files match this filter" : load.state === "ready" && files.length === 0 ? "No changes to show." : "Pick a file in the changes list."}</p>
         </div>
       </div>
     );
@@ -92,12 +92,13 @@ function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayou
 
 /** The open file, editable after its complete current contents are available. */
 function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff }) {
-  const { opts, update } = diff;
+  const { opts, update, noMatchingFiles } = diff;
   const full = useWholeFile(diff, selected, opts.layout);
   const edit = useFileEdit(diff.worktree, selected.path, typeof opts.scope === "object" || diff.turn !== null ? null : editableContents(selected, opts.layout, opts.ignoreWhitespace, full), diff.reloadQuietly);
   return (
     <div className="oc-diff oc-diff-tab">
-      <div className="oc-files">
+      {noMatchingFiles && <div className="placeholder small"><p>No files match this filter</p></div>}
+      <div className="oc-files" hidden={noMatchingFiles} style={noMatchingFiles ? { display: "none" } : undefined}>
         {notes?.(f)}
         <FileDiffView
           key={selected.path}

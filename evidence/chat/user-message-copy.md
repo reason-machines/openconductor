@@ -23,9 +23,9 @@ The unchanged packet verifier passed 17 span hash/width checks, six joins, and 1
 
 ## Current OpenConductor path
 
-At checked main `0244d800782a3eaf811aac53fedc8a536218fb2b`, the picker retains `path` and `label` separately. `composerPrompt` quotes whitespace paths using `JSON.stringify`; `submittedUserPrompt` captures the typed parts separately. Queue submission, runtime start, and persistence keep that metadata without replacing provider text. `buildRows` derives the user row's text from `plainText(message)`. User `Row` renders its rich content but hands raw `row.text` to `MessageActions`, which forwards it to `CopyButton` and `navigator.clipboard.writeText` unchanged.
+At checked main `3e2c77ab5d77643a75c4707f34d860ee7a32ef63`, which contains merged #947, the picker retains `path` and `label` separately. `composerPrompt` quotes whitespace paths using `JSON.stringify`; `submittedUserPrompt` captures the typed parts separately. Queue submission, runtime start, and persistence keep that metadata without replacing provider text. `buildRows` derives the user row's text from `plainText(message)`. User `Row` renders its rich content but hands raw `row.text` to `MessageActions`, which forwards it to `CopyButton` and `navigator.clipboard.writeText` unchanged.
 
-The correction must validate typed metadata and its exact serialized first-body join before using labels. Literal text and subsequent text blocks must remain in order. Missing, invalid, or mismatched metadata must copy raw text. No string search-and-replace or inference of labels is allowed.
+`userMessageCopyText` validates typed metadata through the existing parser and checks that its serialized prompt exactly matches the first text body. It then replaces only that body's inline file atoms with `@displayLabel`. The existing `plainText` join preserves later text blocks and attachment captions. Missing, invalid, or mismatched metadata copies raw text. There is no string search-and-replace or inference of labels. Only the user `MessageActions` argument changes; merged #947 rendering remains intact.
 
 ## Regression and verification
 
@@ -35,8 +35,9 @@ Cases cover whitespace paths, different labels, repeated atoms beside literal me
 
 - Passed locally: retained-source validation and `git diff --check`.
 - Initial hosted RED at `985fb4fbe001c29e44fce90e753d11a7fc0a22d8`: [frontend unit job](https://github.com/reason-machines/openconductor/actions/runs/42919897505/job/130191795334), `node --test "src/**/*.test.ts"`, ran 2,049 tests: 2,041 passed and eight failed. All eight failures were the new copy-label expectations. Legacy, malformed-metadata, provider/retry/export/fork immutability, and assistant controls passed. The separate typecheck found two fixture typing errors: the exported row type is `RowView`, and the queue's readonly attachments require an array copy for `startTurn`.
-- The second test-only checkpoint corrects those two typings without changing any assertion or production code. Its regression SHA-256 is `3f7278c0afe64b2ad5b210f212a5d715cdfe2f02ddfec269ecc89b53bd4ae7be`. The next hosted RED must pass typechecking and reproduce the eight label failures; that file then remains byte-identical through the production correction.
-- Hosted GREEN is not yet run.
+- Canonical hosted RED at `99dfb05575bead388e6474701fe76f3700fc44f3`: [frontend unit job](https://github.com/reason-machines/openconductor/actions/runs/42920266263/job/130193088509) ran 2,064 tests, with 2,056 passed and the same eight label expectations failed. The [typecheck job](https://github.com/reason-machines/openconductor/actions/runs/42920266263/job/130193088684) passed `npm run typecheck` and the color checks, then failed at the same unit tests. The regression SHA-256 remains `3f7278c0afe64b2ad5b210f212a5d715cdfe2f02ddfec269ecc89b53bd4ae7be`, byte-identical through the production correction.
+- The fix integrates merged main rather than the #947 branch. Both existing Row VM fixtures receive the real helper. Only the rich inline-file clipboard expectation changes; URL, rendering, summary, and callback assertions remain unchanged.
+- Hosted GREEN is pending on the production-correction checkpoint.
 - Not run locally: Node, typecheck, tests, builds, browser, native, provider operations, dependency installation, or reference JavaScript execution.
 
 ## Evidence limits

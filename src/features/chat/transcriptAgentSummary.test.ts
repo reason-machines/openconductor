@@ -13,6 +13,7 @@ import * as view from "./view.ts";
 import * as groups from "./toolGroups.ts";
 import * as time from "./turnTime.ts";
 import { toolKind } from "./conductorTools.ts";
+import { userMessageCopyText } from "./userMessageCopy.ts";
 
 function statements(path: string, names: string[]): string {
   const text = readFileSync(new URL(path, import.meta.url), "utf8");
@@ -55,7 +56,8 @@ function SummaryTransition({ summaryToggles, ...props }) {
 }
 exports.SummaryTransition = SummaryTransition;
 `;
-const compiled = ts.transpileModule(`${selected}\n${toolDefault}\n${transition}`, {
+const userText = statements("./UserText.tsx", ["trimUserUrl", "isOrdinaryUserUrl", "UserText"]);
+const compiled = ts.transpileModule(`${selected}\n${toolDefault}\n${userText}\n${transition}`, {
   fileName: "Transcript.tsx",
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022 },
   reportDiagnostics: true,
@@ -69,13 +71,14 @@ const renderers: {
 const unexpected = (name: string) => () => { throw new Error(`Unexercised leaf reached: ${name}`); };
 runInNewContext(compiled.outputText, {
   exports: renderers,
+  URL,
   require(name: string) { assert.equal(name, "react/jsx-runtime"); return localRequire(name); },
   React,
   Fragment: React.Fragment,
   useMemo: React.useMemo,
   useState: React.useState,
   useSyncExternalStore: React.useSyncExternalStore,
-  ...view, ...groups, ...time, toolKind,
+  ...view, ...groups, ...time, toolKind, userMessageCopyText,
   LinkMenuNotify: React.createContext(undefined),
   TurnFooter: () => null,
   MessageActions: () => null,
