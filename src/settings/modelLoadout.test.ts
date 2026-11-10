@@ -77,6 +77,8 @@ async function fixture(initial: FavoriteRow[] = [], options: { deferredRead?: bo
     deferWrite() { deferWrites += 1; },
     async releaseRead() { await act(async () => releaseRead()); },
     async rejectWrite(index: number) { await act(async () => writeRequests[index].reject()); },
+    async resolveWrite(index: number) { await act(async () => writeRequests[index].resolve()); },
+    async changePlanMode(value: boolean) { await act(async () => { settings = { ...settings, models: { ...settings.models, default_plan_mode: value } }; renderer.update(React.createElement(module.exports.ModelLoadout, props())); }); },
     remove: (number: number) => renderer.root.findByProps({ "aria-label": `Remove model from slot ${number}` }),
     effort: (value: string) => renderer.root.findAll((node: { type: unknown; props: { role?: string }; children: unknown[] }) => node.type === "button" && node.props.role === "menuitemradio" && node.children.filter((child) => typeof child === "string").join("") === `Effort: ${value}`)[0],
     async action(action: () => void) { await act(async () => { action(); }); },
@@ -209,6 +211,34 @@ for (const bothFail of [false, true]) {
     } finally { await f.close(); }
   });
 }
+
+test("clearing the sole slot stays empty while persistence waits and does not resurrect it on the next edit", async () => {
+  const initial = [{ id: "sole", configuration: JSON.stringify({ type: "built-in", agent: "reason", model: "live/reason-model", slot: 0, thinkingLevel: "high", fastMode: false }) }];
+  const f = await fixture(initial, { initialized: true });
+  try {
+    f.deferWrite();
+    await f.action(() => f.remove(1).props.onClick());
+    assert.match(f.card(1).props["aria-label"], /Empty/);
+    await f.action(() => f.palette("Live Claude").props.onClick());
+    assert.match(f.card(1).props["aria-label"], /Live Claude/);
+    assert.match(f.card(2).props["aria-label"], /Empty/);
+    await f.resolveWrite(0);
+    assert.deepEqual(f.modelIds(), ["live-claude-model"]);
+    assert.equal(f.settings().models.default, "live-claude-model");
+  } finally { await f.close(); }
+});
+
+test("a loadout write preserves a settings edit made while favorites persistence waits", async () => {
+  const f = await fixture();
+  try {
+    f.deferWrite();
+    await f.action(() => f.palette("Live Reason").props.onClick());
+    await f.changePlanMode(true);
+    await f.resolveWrite(0);
+    assert.equal(f.settings().models.default_plan_mode, true);
+    assert.equal(f.settings().models.default, "live/reason-model");
+  } finally { await f.close(); }
+});
 
 test("mounted effort activation and Escape restore focus to the slot anchor", async () => {
   const f = await fixture();

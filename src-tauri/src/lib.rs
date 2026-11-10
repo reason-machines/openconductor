@@ -79,6 +79,7 @@ pub mod draft_attachments;
 pub mod github_repo;
 pub mod local_account;
 pub mod menu;
+mod model_catalog;
 pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
@@ -560,6 +561,7 @@ pub fn run() {
             resource_usage::commands::get_resource_usage,
             sidebar_transparency::update_window_vibrancy,
             local_account::local_account,
+            model_catalog::local_model_catalog,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,

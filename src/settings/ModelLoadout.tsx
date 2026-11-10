@@ -25,7 +25,7 @@ export function LoadoutMark({ agent, size }: { agent: AgentKind; size: number })
 }
 
 export function ModelLoadout({ settings, save, models, errors, loading, refresh }: Props) {
-  const [stored, setStored] = useState<Favorite[] | null>(null);
+  const [stored, setStored] = useState<(Favorite | null)[] | null>(null);
   const [readRevision, setReadRevision] = useState(0);
   const [readError, setReadError] = useState<string | null>(null);
   const [pickup, setPickup] = useState<Pickup | null>(null);
@@ -43,7 +43,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
   const confirmed = useRef<(Favorite | null)[] | null>(null);
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
-  const slots = loadoutSlots(settings, stored ?? []);
+  const slots = stored ?? loadoutSlots(settings, []);
   const slotsValue = useRef(slots);
   slotsValue.current = slots;
 
@@ -54,8 +54,9 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
     void listFavorites().then((rows) => {
       if (live) {
         const favorites = parseFavorites(rows);
-        confirmed.current = loadoutSlots(settingsRef.current, favorites);
-        setStored(favorites);
+        const next = loadoutSlots(settingsRef.current, favorites);
+        confirmed.current = next;
+        setStored(next);
       }
     }, (e: unknown) => {
       if (live) setReadError(`Could not read the saved loadout: ${String(e)}`);
@@ -75,13 +76,13 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
     const changedAt = ++revision.current;
     pendingWrites.current += 1;
     slotsValue.current = next;
-    setStored(parseFavorites(slotsToRows(next)));
+    setStored(next);
     setNotice(message);
     setError(null);
     setSaving(true);
     const run = writes.current.then(async () => {
-      const nextSettings = withLoadoutDefault(settingsRef.current, next);
       await replaceFavorites(slotsToRows(next));
+      const nextSettings = withLoadoutDefault(settingsRef.current, next);
       if (await save(nextSettings) === false) throw new Error("Could not save the default model.");
       confirmed.current = next;
     });
@@ -92,7 +93,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
       catch { message += " The saved loadout could not be restored. Reopen Settings to read its current state."; }
       if (changedAt === revision.current) {
         slotsValue.current = previous;
-        setStored(parseFavorites(slotsToRows(previous)));
+        setStored(previous);
         setError(message);
       }
     }).finally(() => { pendingWrites.current -= 1; setSaving(pendingWrites.current > 0); });
