@@ -71,6 +71,7 @@ export function ComposerEditor(props: Props) {
         },
         handleKeyDown: (_view, event) => {
           if (event.isComposing || editor.view.composing || event.keyCode === 229) return false;
+          if (event.key === "Delete" || event.key === "Backspace") syncSelection();
           current.current.onKeyDown(event);
           return event.defaultPrevented;
         },

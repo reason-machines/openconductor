@@ -147,6 +147,40 @@ test("disabled conversion and exact lower boundaries retain ordinary editor past
   });
 });
 
+test("Delete removes a DOM selection before selectionchange is delivered", { timeout: 30_000 }, async () => {
+  await composer(true, async ({ page, input, paste }) => {
+    const text = "x".repeat(5000);
+    await paste(text);
+    assert.equal(await input.innerText(), text);
+    const result = await input.evaluate((node) => {
+      const doc = node.ownerDocument;
+      const selection = doc.getSelection();
+      if (!selection) throw new Error("The composer must have a DOM selection");
+      let selectionChanges = 0;
+      const changed = () => { selectionChanges++; };
+      doc.addEventListener("selectionchange", changed);
+      try {
+        const range = doc.createRange();
+        range.selectNodeContents(node);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        const selectedLength = selection.toString().length;
+        const selectionChangesBeforeDelete = selectionChanges;
+        const event = new KeyboardEvent("keydown", { key: "Delete", code: "Delete", keyCode: 46, bubbles: true, cancelable: true });
+        node.dispatchEvent(event);
+        return { selectedLength, selectionChangesBeforeDelete, defaultPrevented: event.defaultPrevented, textLength: node.textContent.length };
+      } finally {
+        doc.removeEventListener("selectionchange", changed);
+      }
+    });
+    console.log(JSON.stringify({ longPasteSelectionDelete: result }));
+    assert.equal(result.selectedLength, text.length);
+    assert.equal(result.selectionChangesBeforeDelete, 0);
+    assert.equal(result.textLength, 0, "Delete must remove the current DOM selection without waiting for selectionchange");
+    assert.equal(await page.locator(".chat .composer-attachment").count(), 0);
+  });
+});
+
 for (const [name, text] of [["5000 code units", "x".repeat(5000)], ["90 lines", Array(90).fill("row").join("\n")], ["short text", "ordinary paste"]]) {
   test(`isolated ${name} paste retains text, Undo and Redo without an attachment`, { timeout: 30_000 }, async () => {
     await composer(true, async ({ page, input, paste, modifier }) => {
