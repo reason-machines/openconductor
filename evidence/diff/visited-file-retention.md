@@ -130,8 +130,29 @@ The ordinary automatic hosted command is:
 node --experimental-strip-types --test src/features/diff/*.test.ts
 ```
 
-Hosted failing-before evidence is pending. Production correction must wait for
-the intended failures, and keep these assertions byte-identical afterward.
+## Hosted failing-before result and correction
+
+Published test-only head `e8d22410bee7f4842b566655483b52a6348cf2ba` ran the
+[automatic Diff frontend job](https://github.com/reason-machines/openconductor/actions/runs/42923886866/job/130205318833).
+It reported 260 cases, 253 passed and seven intended failures, with zero skips
+or cancellations. Cases 250–255 failed retention, recency, no-match retention,
+redirect precondition, or returning-scope isolation. Case 259 observed two
+comment-shortcut registrations instead of one for active/hidden views. Three
+new distinct commit/turn controls and all 250 previous cases passed. Both Diff
+Rust jobs passed. Dependency setup and actual component mounting succeeded.
+
+Before the product correction, main was refreshed to
+`71c6bead64f4787b825f0951d38b0fe5d7db1e9d`. The three product files remain
+byte-identical between this pin and the initial comparison pin. The correction
+adds the five-entry path list, scope-keyed mounted views, active-only comment
+navigation/reveal registration, and the atomic redirect revision. The existing
+single redirect predicate is unchanged. No-match explanation, selection, loaded
+arrays, raw indices, and tab-open behavior are preserved.
+
+The regression is Git blob `943d2788bb33a357833afde678bbc97cdc1518eb`,
+byte-identical to the failing checkpoint. No assertion, action, case, or fixture
+boundary changed afterward. Automatic hosted passing-after verification and
+all exact-head checks are pending.
 
 ## Verification limits
 

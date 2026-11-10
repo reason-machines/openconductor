@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { keyedCache } from "../lib/keyedCache";
 import type { Repo, Workspace } from "../state/types";
@@ -75,6 +75,7 @@ const SETUP_BUTTON = {
   stop: { idle: "Stop setup", pending: "Stopping..." },
 } as const;
 type SetupButtonMode = keyof typeof SETUP_BUTTON;
+const IDLE_SETUP: SetupStatus = { state: "idle", log: null, last: null };
 
 const errorText = (e: unknown) => (typeof e === "string" ? e : e instanceof Error ? e.message : String(e));
 
@@ -94,6 +95,8 @@ const spotSettings = keyedCache<SpotlightTesting>(64);
 export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetupState, onAddRunScript, onAskAgent, onShowRun }: Props) {
   const ref = useMemo(() => workspaceRef(repo, workspace), [repo, workspace]);
   const wsId = workspace.id;
+  const displayedWorkspaceId = useRef(wsId);
+  displayedWorkspaceId.current = wsId;
   const configKey = JSON.stringify(ref);
   const [configState, setConfigState] = useState<{ key: string; config: ScriptsConfig | null }>(() => ({ key: configKey, config: configs.get(configKey) ?? null }));
   // null until this workspace's config is known (from the cache or the backend).
@@ -101,10 +104,12 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const [runs, setRuns] = useState<RunStatus[]>([]);
   const [picked, setPicked] = useState<string | null>(null);
   const [runOutputState, setRunOutputState] = useState({ key: "", text: "" });
-  const [setup, setSetup] = useState<SetupStatus>({ state: "idle", log: null, last: null });
+  const [setupSnapshot, setSetupSnapshot] = useState<{ workspaceId: string; status: SetupStatus }>({ workspaceId: wsId, status: IDLE_SETUP });
+  const setup = setupSnapshot.workspaceId === wsId ? setupSnapshot.status : IDLE_SETUP;
   const [error, setError] = useState<string | null>(null);
   const [configError, setConfigError] = useState<string | null>(null);
-  const [setupPending, setSetupPending] = useState<"run" | "stop" | null>(null);
+  const [setupRequest, setSetupRequest] = useState<{ workspaceId: string; mode: "run" | "stop" } | null>(null);
+  const setupPending = setupRequest?.workspaceId === wsId ? setupRequest.mode : null;
   const [spotState, setSpotState] = useState<{ repoId: string; setting: SpotlightTesting | null }>(() => ({ repoId: repo.id, setting: spotSettings.get(repo.id) ?? null }));
   const spotSetting = spotState.repoId === repo.id ? spotState.setting : (spotSettings.get(repo.id) ?? null);
   const [spotView, setSpotView] = useState<SpotlightView>(EMPTY_VIEW);
@@ -141,8 +146,9 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
 
   const refresh = useCallback(async () => {
     const [status, setupState] = await Promise.all([api.runStatus(wsId), api.setupStatus(wsId)]);
+    if (displayedWorkspaceId.current !== wsId) return;
     setRuns(status.runs);
-    setSetup(setupState);
+    setSetupSnapshot({ workspaceId: wsId, status: setupState });
   }, [wsId]);
 
   useEffect(() => {
@@ -210,7 +216,10 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
         if (e.type === "output" && e.kind === "run" && e.scriptId === shown) {
           setRunOutputState((previous) => ({ key: outputKey, text: appendOutput(previous.key === outputKey ? previous.text : "", e.chunk) }));
         }
-        if (e.type === "output" && e.kind === "setup") setSetup((s) => ({ ...s, state: "running", log: appendOutput(s.log ?? "", e.chunk) }));
+        if (e.type === "output" && e.kind === "setup") setSetupSnapshot((previous) => {
+          const status = previous.workspaceId === wsId ? previous.status : IDLE_SETUP;
+          return { workspaceId: wsId, status: { ...status, state: "running", log: appendOutput(status.log ?? "", e.chunk) } };
+        });
         if (e.type === "setupFinished" || e.type === "runStarted" || e.type === "runFinished") refresh().catch(() => {});
       })
       .then((f) => (disposed ? f() : (off = f)));
@@ -315,9 +324,16 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   // script the dashed "Add setup script" card (Ask agent / Add manually).
   async function setupAction(mode: "run" | "stop") {
     if (setupPending || !ref) return;
-    setSetupPending(mode);
-    await act(() => (mode === "stop" ? api.cancelSetup(wsId) : api.startSetup(ref)));
-    setSetupPending(null);
+    const request = { workspaceId: wsId, mode };
+    setSetupRequest(request);
+    setError(null);
+    try {
+      await (mode === "stop" ? api.cancelSetup(wsId) : api.startSetup(ref));
+    } catch (e) {
+      if (displayedWorkspaceId.current === wsId) setError(errorText(e));
+    }
+    await refresh().catch(() => {});
+    setSetupRequest((pending) => pending === request ? null : pending);
   }
   const setupButton = (mode: SetupButtonMode, corner: boolean) => {
     const pending = mode === "stop" ? setupPending === "stop" : setupPending === "run";
