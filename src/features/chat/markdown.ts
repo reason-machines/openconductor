@@ -49,7 +49,7 @@ export function remarkInlineCodeUrls() {
   };
 }
 
-const PLAIN_FILE_PATH = /(^|[\s([{"'“‘])((?:(?:\/|\.\.?\/)[\w@.-]+(?:\/[\w@.-]+)*|[\w@.-]+(?:\/[\w@.-]+)+)(?::\d+(?::\d+)?)?)/g;
+const PLAIN_FILE_PATH = /(^|[\s([{"'“‘]|[^\w@./-](?!\/|\.\.?\/))((?:(?:\/|\.\.?\/)[\w@.-]+(?:\/[\w@.-]+)*|[\w@.-]+(?:\/[\w@.-]+)+)(?::\d+(?::\d+)?)?)/g;
 
 function remarkPlainFilePaths() {
   return (tree: MdRoot) => {

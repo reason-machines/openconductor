@@ -38,8 +38,15 @@ pub type Launcher =
 
 const STDERR_TAIL: usize = 20;
 
+#[derive(Clone, Debug, Default, PartialEq, Eq, serde::Deserialize)]
+pub struct ChatOptions {
+    pub model: Option<String>,
+    pub effort: Option<String>,
+}
+
 struct Live {
     directories: Vec<PathBuf>,
+    options: ChatOptions,
     session: Arc<Mutex<ClaudeSession>>,
     state: Arc<Mutex<TurnState>>,
 }
@@ -127,7 +134,18 @@ impl ClaudeRunner {
         self.prompt_with_directories(chat_id, text, &[])
     }
 
+    #[cfg(test)]
     pub fn prompt_with_directories(&self, chat_id: &str, text: &str, directories: &[PathBuf]) -> TurnEnd {
+        self.prompt_with_options(chat_id, text, directories, &ChatOptions::default())
+    }
+
+    pub fn prompt_with_options(
+        &self,
+        chat_id: &str,
+        text: &str,
+        directories: &[PathBuf],
+        options: &ChatOptions,
+    ) -> TurnEnd {
         let rx = {
             let mut chats = self.chats.lock().unwrap();
             let Some(chat) = chats.get_mut(chat_id) else {
@@ -139,7 +157,7 @@ impl ClaudeRunner {
                 (self.sink)(chat_id, ProviderEvent::TurnEnded(end.clone()));
                 return end;
             }
-            if let Err(e) = self.ensure_live(chat_id, chat, directories) {
+            if let Err(e) = self.ensure_live(chat_id, chat, directories, options) {
                 return self.fail_now(chat_id, e);
             }
             let live = chat.live.as_ref().unwrap();
@@ -265,23 +283,39 @@ impl ClaudeRunner {
         end
     }
 
-    fn ensure_live(&self, chat_id: &str, chat: &mut Chat, directories: &[PathBuf]) -> Result<(), String> {
+    fn ensure_live(
+        &self,
+        chat_id: &str,
+        chat: &mut Chat,
+        directories: &[PathBuf],
+        options: &ChatOptions,
+    ) -> Result<(), String> {
         if let Some(live) = &chat.live {
             let st = live.state.lock().unwrap();
             if st.alive {
                 if live.directories != directories {
                     return Err("Linked directories changed. Start a new Claude Code chat to apply them; live-session directory changes are not supported yet.".into());
                 }
-                return Ok(());
+                if live.options == *options {
+                    return Ok(());
+                }
+                if !st.waiting.is_empty() {
+                    return Err("Wait for the current Claude Code turn to end before changing model or effort.".into());
+                }
             }
-            // The process exited: resume its session in a new one.
             if let Some(id) = st.mapper.session_id() {
                 chat.resume = Some(id.to_owned());
             }
+            drop(st);
+            let mut session = live.session.lock().unwrap();
+            session.kill().map_err(|e| format!("Could not restart Claude Code: {e}"))?;
+            session.wait().map_err(|e| format!("Could not wait for Claude Code to exit: {e}"))?;
         }
         chat.live = None;
         let mut launch = (self.launcher)(&chat.cwd, chat.resume.clone())?;
         launch.add_dirs = directories.to_vec();
+        launch.model = options.model.clone();
+        launch.effort = options.effort.clone();
         let mut session = ClaudeSession::spawn(&launch)
             .map_err(|e| format!("Could not start Claude Code: {e}"))?;
         let events = session.take_events();
@@ -301,7 +335,12 @@ impl ClaudeRunner {
             state.clone(),
             self.sink.clone(),
         );
-        chat.live = Some(Live { directories: directories.to_vec(), session, state });
+        chat.live = Some(Live {
+            directories: directories.to_vec(),
+            options: options.clone(),
+            session,
+            state,
+        });
         Ok(())
     }
 }

@@ -18,7 +18,7 @@ use crate::settings::service::SettingsService;
 use crate::turn_checkpoint::{around_turn, TurnTarget};
 
 use super::interact::Answer;
-use super::runner::{ClaudeRunner, Launcher};
+use super::runner::{ChatOptions, ClaudeRunner, Launcher};
 
 pub const EVENT: &str = "claude-chat-event";
 
@@ -108,7 +108,9 @@ pub async fn claude_prompt(
     text: String,
     turn: Option<TurnArg>,
     workspace_id: Option<String>,
+    options: Option<ChatOptions>,
 ) -> Result<Value, String> {
+    let options = options.unwrap_or_default();
     let runner = state.runner(&app);
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
     // Stop also covers the database lookup before dispatch.
@@ -137,7 +139,7 @@ pub async fn claude_prompt(
             }),
             _ => None,
         };
-        around_turn(target, || runner.prompt_with_directories(&chat_id, &text, &directories))
+        around_turn(target, || runner.prompt_with_options(&chat_id, &text, &directories, &options))
     })
     .await
     .map_err(|e| e.to_string())?;

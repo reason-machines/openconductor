@@ -46,6 +46,7 @@ import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptySta
 import { AGENT_NAMES, commandSet, isKnownCommand, parseSlashCommand, type ComposerAgent } from "../features/chat/slashCommands.ts";
 import { useAgentCommands } from "../features/chat/slashCompletions.ts";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
+import { copyModelChoice } from "../features/chat/chatModelChoice.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
@@ -403,6 +404,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       const { id, directoryName, branchName, path } = fork.created.workspace;
       const title = review?.title ?? workspace.chatTitle ?? workspace.name;
       configureReason(id, config);
+      copyModelChoice(chatId, id, agentId, config);
       queuePending(id, { kind: "draft", text: "", attachments: [{ name: forkAttachmentName(title), text: fork.transcript }] });
       await startSetupScript({ id: backendRepo.id, root: backendRepo.root, defaultBranch: backendRepo.defaultBranch }, { id, name: directoryName, path }, targetBranch);
       dispatch({

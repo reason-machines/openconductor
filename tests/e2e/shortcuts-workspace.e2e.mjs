@@ -88,6 +88,24 @@ test("⌘1..⌘9 switch to the nth workspace in the sidebar (workspace.switchTo1
   await context.close();
 });
 
+test("composer Cmd1 selects its loadout and an empty Cmd2 never switches workspace while typing", async () => {
+  const { context, page, errors } = await open();
+  await page.getByTestId("composer-model-button").waitFor();
+  await page.locator(".composer [contenteditable=true]").first().focus();
+  await page.keyboard.press("Meta+1");
+  await page.waitForFunction(() => localStorage.getItem("openconductor.agent.w1") === "claude");
+  const choice = await page.evaluate(() => JSON.parse(localStorage.getItem("openconductor.composer.model.w1") ?? "null"));
+  assert.deepEqual(choice, { agent: "claude", model: "opus", effort: "high", fast: false });
+  await page.locator(".composer [contenteditable=true]").first().focus();
+  await page.keyboard.press("Meta+2");
+  await workspaceShown(page, "lisbon");
+  assert.equal(await page.evaluate(() => localStorage.getItem("openconductor.agent.w1")), "claude");
+  await press(page, "Meta+2");
+  await workspaceShown(page, "porto");
+  assert.deepEqual(errors, []);
+  await context.close();
+});
+
 test("⌘[ and ⌘] go back and forward through the workspaces shown (nav.back / nav.forward)", async () => {
   const { context, page, errors } = await open();
   await press(page, "Meta+2");

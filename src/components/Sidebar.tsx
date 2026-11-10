@@ -1,3 +1,4 @@
+import { ReasonCliStatus } from "../onboarding/ReasonCliStatus";
 import { useCallback, useEffect, useRef, useState, type Dispatch, type PointerEvent, type ReactNode, type RefObject } from "react";
 import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
@@ -580,6 +581,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           <AppMark size={14} />
           <span>Reason</span>
         </span>
+        <ReasonCliStatus />
         <div className="sb-footer-actions">
           <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
           {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}
@@ -603,3 +605,4 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
     </aside>
   );
 }
+

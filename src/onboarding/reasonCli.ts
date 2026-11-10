@@ -13,3 +13,29 @@ export function ensureReasonCli(): Promise<InstalledReasonCli | null> {
   });
   return ready;
 }
+
+/** Background CLI setup status, shown in-flow in the sidebar footer (never over the app). */
+export type ReasonCliSetup =
+  | { status: "idle" }
+  | { status: "installing" }
+  | { status: "ready"; warning?: string }
+  | { status: "error"; message: string };
+
+let setup: ReasonCliSetup = { status: "idle" };
+const listeners = new Set<() => void>();
+const publish = (next: ReasonCliSetup) => { setup = next; listeners.forEach((l) => l()); };
+export const reasonCliSetup = () => setup;
+export function subscribeReasonCliSetup(listener: () => void) {
+  listeners.add(listener);
+  return () => { listeners.delete(listener); };
+}
+
+/** Starts the install or update in the background; never awaited by startup. */
+export function startReasonCliSetup(): void {
+  if (!inTauri() || setup.status === "installing") return;
+  publish({ status: "installing" });
+  ensureReasonCli().then(
+    (result) => publish({ status: "ready", warning: result?.warning }),
+    (error: unknown) => publish({ status: "error", message: error instanceof Error ? error.message : String(error) }),
+  );
+}

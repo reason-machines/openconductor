@@ -14,6 +14,7 @@ import { chatWantsAttention, codexAsks, turnSettled } from "./attention.ts";
 import { reportChatStatus } from "./chatRuntime.ts";
 import { answered, applyCodexPayload, codexChat, failTurn, newestTurn, startTurn, type CodexApproval, type CodexChatState, type CodexDecision, type CodexPayload, type Step } from "./codex.ts";
 import { statusWithOpenRequests, type CodexConsent, type ConsentAnswer } from "./codexConsent.ts";
+import { localModelOptions } from "./chatModelChoice.ts";
 
 const EVENT = "codex-chat-event";
 const threadKey = (chatId: string) => `openconductor.codex.thread.${chatId}`;
@@ -174,7 +175,7 @@ async function prompt(c: Chat, text: string, userContent?: SentUserContentV1): P
     // Resolves with the prompt's end; the `turnEnded` event closes the turn.
     // A skill picked in the "/" menu (`$name`) goes to Codex as a skill input item too.
     const skills = cachedAgentCommands("codex", c.cwd ?? "")?.skills ?? [];
-    await invoke("codex_prompt", { chatId, text: linkCodexSkills(text, skills) });
+    await invoke("codex_prompt", { chatId, text: linkCodexSkills(text, skills), ...localModelOptions(chatId, "codex") });
   } catch (e) {
     // The prompt never reached Codex (no CLI, chat not open), so no event will end it.
     apply(c, failTurn(c.state, turnId, String(e)));

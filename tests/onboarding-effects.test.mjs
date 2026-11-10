@@ -96,13 +96,15 @@ async function fixture({ initial = { state: "idle" }, surface = "gate", installi
     return module.exports;
   }
   const { FirstRunGate } = load("src/onboarding/FirstRunGate");
+  // Stands in for the app shell's sidebar footer, where the CLI status lives once Home is up.
+  const { ReasonCliStatus } = load("src/onboarding/ReasonCliStatus");
   const api = load("src/onboarding/reasonSignIn");
   const { LoginScreen } = load("src/onboarding/SignIn");
   const { ReasonSignInControls } = load("src/onboarding/ReasonSignInControls");
   const onDone = () => { callbacks.push("done"); };
   const onFailed = (title, description) => { callbacks.push({ title, description }); };
   const element = () => surface === "gate"
-    ? React.createElement(FirstRunGate, {}, React.createElement("main", { "data-testid": "home" }, "Home"))
+    ? React.createElement(FirstRunGate, {}, React.createElement("main", { "data-testid": "home" }, "Home", React.createElement("footer", {}, React.createElement(ReasonCliStatus))))
     : surface === "controls"
       ? React.createElement(ReasonSignInControls, { label: "Sign in to Reason", onSignedIn: onDone })
       : React.createElement(LoginScreen, { onDone, onFailed });
