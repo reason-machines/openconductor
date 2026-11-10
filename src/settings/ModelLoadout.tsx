@@ -36,6 +36,9 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
   const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const nativeDrag = useRef<{ source: Source; accepted: boolean; canceled: boolean } | null>(null);
   const writes = useRef(Promise.resolve());
+  const revision = useRef(0);
+  const pendingWrites = useRef(0);
+  const confirmed = useRef<(Favorite | null)[] | null>(null);
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
   const slots = loadoutSlots(settings, stored ?? []);
@@ -44,8 +47,14 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
 
   useEffect(() => {
     let live = true;
-    void listFavorites().then((rows) => { if (live) setStored(parseFavorites(rows)); }, (e: unknown) => {
-      if (live) { setStored([]); setError(String(e)); }
+    void listFavorites().then((rows) => {
+      if (live) {
+        const favorites = parseFavorites(rows);
+        confirmed.current = loadoutSlots(settingsRef.current, favorites);
+        setStored(favorites);
+      }
+    }, (e: unknown) => {
+      if (live) setError(`Could not read the saved loadout: ${String(e)}`);
     });
     return () => { live = false; };
   }, []);
@@ -58,7 +67,8 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
   const nextFree = () => { const index = slotsValue.current.findIndex((slot) => slot === null); return index < 0 ? 0 : index; };
 
   const commit = (next: (Favorite | null)[], message: string) => {
-    const before = slotsValue.current;
+    const changedAt = ++revision.current;
+    pendingWrites.current += 1;
     slotsValue.current = next;
     setStored(parseFavorites(slotsToRows(next)));
     setNotice(message);
@@ -67,15 +77,20 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
     const run = writes.current.then(async () => {
       const nextSettings = withLoadoutDefault(settingsRef.current, next);
       await replaceFavorites(slotsToRows(next));
-      if (await save(nextSettings) === false) {
-        await replaceFavorites(slotsToRows(before));
-        throw new Error("Could not save the default model. Your previous loadout was restored.");
-      }
+      if (await save(nextSettings) === false) throw new Error("Could not save the default model.");
+      confirmed.current = next;
     });
-    writes.current = run.catch((e: unknown) => {
-      setStored(parseFavorites(slotsToRows(before)));
-      setError(String(e));
-    }).finally(() => setSaving(false));
+    writes.current = run.catch(async (e: unknown) => {
+      const previous = confirmed.current ?? loadoutSlots(settingsRef.current, []);
+      let message = String(e);
+      try { await replaceFavorites(slotsToRows(previous)); }
+      catch { message += " The saved loadout could not be restored. Reopen Settings to read its current state."; }
+      if (changedAt === revision.current) {
+        slotsValue.current = previous;
+        setStored(parseFavorites(slotsToRows(previous)));
+        setError(message);
+      }
+    }).finally(() => { pendingWrites.current -= 1; setSaving(pendingWrites.current > 0); });
   };
   const clear = (index: number) => commit(clearSlot(slotsValue.current, index), `Slot ${index + 1} cleared.`);
   const drop = (source: Source, target: number) => {
@@ -113,6 +128,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
   });
 
   const startDrag = (event: DragEvent, source: Source) => {
+    if (stored === null) { event.preventDefault(); return; }
     setMenu(null);
     setPickup(null);
     nativeDrag.current = { source, accepted: false, canceled: false };
@@ -211,7 +227,7 @@ export function ModelLoadout({ settings, save, models, errors, loading, refresh 
           <div className="ag-palette-list" aria-busy={loading}>
             {models.filter((model) => model.agent === agent).map((model) => {
               const source: Source = { kind: "palette", model };
-              return <button key={model.id} type="button" draggable className="ag-palette-item" aria-label={`Add ${model.name} to loadout`} title={model.name}
+              return <button key={model.id} type="button" draggable disabled={stored === null} className="ag-palette-item" aria-label={`Add ${model.name} to loadout`} title={model.name}
                 aria-describedby="loadout-keyboard-help" onClick={() => drop(source, nextFree())}
                 onKeyDown={(event) => keyDown(event, source)} onContextMenu={(event) => openMenu(event, source)}
                 onDragStart={(event) => startDrag(event, source)} onDragEnd={endDrag}>
