@@ -214,6 +214,20 @@ jobs:
           name: reason-chat-e2e-screens
           path: ${{ runner.temp }}/e2e-screens
           retention-days: 14
+      - name: Reason CLI first run e2e (throwaway HOME, no reason on PATH, real install)
+        if: always()
+        timeout-minutes: 15
+        env:
+          E2E_OUT: ${{ runner.temp }}/e2e-cli-first-run
+          WEBKIT_DISABLE_DMABUF_RENDERER: "1"
+          WEBKIT_DISABLE_COMPOSITING_MODE: "1"
+        run: xvfb-run -a node tools/e2e/reason-cli-first-run.e2e.mjs src-tauri/target/debug/openconductor
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reason-cli-first-run-e2e-screens
+          path: ${{ runner.temp }}/e2e-cli-first-run
+          retention-days: 14
       - name: Model picker e2e (fake reason acp)
         if: always()
         # Includes the real Reason CLI setup budget.

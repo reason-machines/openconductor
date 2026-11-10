@@ -15,8 +15,8 @@ function fixture(t, states) {
       current = states[Math.min(index++, states.length - 1)];
       if (current instanceof Error) throw current;
       const document = { querySelector(selector) {
-        if (selector === '[data-testid="reason-cli-setup"] [role="alert"]') return current.error ? { textContent: current.error } : null;
-        if (selector === '[data-testid="reason-cli-setup"]') return current.setup ? {} : null;
+        if (selector === '[data-testid="reason-cli-status"][data-state="error"]') return current.error ? { getAttribute: (name) => name === "title" ? current.error : null } : null;
+        if (selector === '[data-testid="reason-cli-status"][data-state="installing"]') return current.setup ? {} : null;
         if (selector === ".onb .onb-continue:not(:disabled)") return current.onboarding ? {} : null;
         if (selector === ".app") return current.app ? { dataset: { startup: current.startup ?? "ready" }, getAttribute: () => current.busy ?? "false" } : null;
         throw new Error(`unexpected selector: ${selector}`);

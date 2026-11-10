@@ -1,13 +1,13 @@
 const CONTINUE = ".onb .onb-continue:not(:disabled)";
 const SETUP_STATE = `
 return {
-  setupError: document.querySelector('[data-testid="reason-cli-setup"] [role="alert"]')?.textContent?.trim() || null,
-  setup: !!document.querySelector('[data-testid="reason-cli-setup"]'),
+  setupError: document.querySelector('[data-testid="reason-cli-status"][data-state="error"]')?.getAttribute('title')?.trim() || null,
+  setup: !!document.querySelector('[data-testid="reason-cli-status"][data-state="installing"]'),
   onboarding: !!document.querySelector('.onb .onb-continue:not(:disabled)'),
   app: !!document.querySelector('.app'),
 };`;
 
-/** Wait for the real installer gate without pairing, retrying or skipping onboarding. */
+/** Wait (test sync only; the app is usable meanwhile) for the background CLI install to settle, without pairing, retrying or skipping onboarding. */
 export async function waitForSetup(client, { timeoutMs = 600000 } = {}) {
   const deadline = Date.now() + timeoutMs;
   let last;
