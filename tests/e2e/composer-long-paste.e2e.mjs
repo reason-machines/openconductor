@@ -87,21 +87,50 @@ test("disabled conversion and exact lower boundaries retain ordinary editor past
     await input.evaluate((node) => {
       const phases = [];
       node.longPasteHistory = phases;
-      for (const type of ["beforeinput", "input", "paste", "keydown", "keyup"]) {
-        node.addEventListener(type, (event) => phases.push({
-          phase: type,
+      const record = (event, stage) => {
+        const selection = document.getSelection();
+        phases.push({
+          phase: event.type,
+          stage,
           key: event.key,
           inputType: event.inputType,
+          defaultPrevented: event.defaultPrevented,
+          selectionLength: selection ? selection.toString().length : null,
+          selectionCollapsed: selection?.isCollapsed ?? null,
           textLength: node.textContent.length,
           empty: node.dataset.empty,
           focused: node === document.activeElement,
-        }));
+        });
+      };
+      for (const type of ["beforeinput", "input", "paste", "keydown", "keyup"]) {
+        node.addEventListener(type, (event) => record(event, "capture"), { capture: true, passive: true });
+        node.addEventListener(type, (event) => record(event, "bubble"), { passive: true });
+        document.addEventListener(type, (event) => {
+          if (node.contains(event.target)) record(event, "document");
+        }, { passive: true });
       }
+      document.addEventListener("selectionchange", (event) => {
+        const selection = document.getSelection();
+        if (node === document.activeElement || node.contains(selection?.anchorNode) || node.contains(selection?.focusNode)) {
+          record(event, "document");
+        }
+      }, { passive: true });
     });
     for (const text of ["x".repeat(5000), Array(90).fill("row").join("\n"), "ordinary paste"]) {
       await input.fill("");
-      const clearedLength = (await input.textContent()).length;
-      console.log(JSON.stringify({ longPasteSharedHistory: "after-fill", nextPasteLength: text.length, textLength: clearedLength }));
+      const afterFill = await input.evaluate((node) => {
+        const selection = document.getSelection();
+        return {
+          textLength: node.textContent.length,
+          selectionLength: selection ? selection.toString().length : null,
+          selectionCollapsed: selection?.isCollapsed ?? null,
+          empty: node.dataset.empty,
+          focused: node === document.activeElement,
+          events: node.longPasteHistory,
+        };
+      });
+      const clearedLength = afterFill.textLength;
+      console.log(JSON.stringify({ longPasteSharedHistory: "after-fill", nextPasteLength: text.length, ...afterFill }));
       assert.equal(clearedLength, 0, "the shared fixture must be empty before each paste");
       await paste(text);
       assert.equal(await input.innerText(), text);
@@ -115,6 +144,40 @@ test("disabled conversion and exact lower boundaries retain ordinary editor past
       focused: node === document.activeElement,
     })) }));
     assert.equal(await input.textContent(), "");
+  });
+});
+
+test("Delete removes a DOM selection before selectionchange is delivered", { timeout: 30_000 }, async () => {
+  await composer(true, async ({ page, input, paste }) => {
+    const text = "x".repeat(5000);
+    await paste(text);
+    assert.equal(await input.innerText(), text);
+    const result = await input.evaluate((node) => {
+      const doc = node.ownerDocument;
+      const selection = doc.getSelection();
+      if (!selection) throw new Error("The composer must have a DOM selection");
+      let selectionChanges = 0;
+      const changed = () => { selectionChanges++; };
+      doc.addEventListener("selectionchange", changed);
+      try {
+        const range = doc.createRange();
+        range.selectNodeContents(node);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        const selectedLength = selection.toString().length;
+        const selectionChangesBeforeDelete = selectionChanges;
+        const event = new KeyboardEvent("keydown", { key: "Delete", code: "Delete", keyCode: 46, bubbles: true, cancelable: true });
+        node.dispatchEvent(event);
+        return { selectedLength, selectionChangesBeforeDelete, defaultPrevented: event.defaultPrevented, textLength: node.textContent.length };
+      } finally {
+        doc.removeEventListener("selectionchange", changed);
+      }
+    });
+    console.log(JSON.stringify({ longPasteSelectionDelete: result }));
+    assert.equal(result.selectedLength, text.length);
+    assert.equal(result.selectionChangesBeforeDelete, 0);
+    assert.equal(result.textLength, 0, "Delete must remove the current DOM selection without waiting for selectionchange");
+    assert.equal(await page.locator(".chat .composer-attachment").count(), 0);
   });
 });
 

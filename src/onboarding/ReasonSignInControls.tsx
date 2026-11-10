@@ -51,8 +51,8 @@ export function ReasonSignInControls({ variant = "settings", label = "Sign in wi
 
   return (
     <div className="ag-stack-2" data-testid="reason-sign-in-controls" data-state={state.state}>
-      <button type="button" className={primaryClass} disabled={!inTauri() || state.state === "checking" || pending || busy !== null} onClick={begin}>
-        {state.state === "checking" ? "Checking sign-in..." : pending ? OPENING_LABEL : retry ? "Retry sign-in" : label}
+      <button type="button" className={primaryClass} disabled={!inTauri() || pending || busy !== null} onClick={begin}>
+        {pending ? OPENING_LABEL : retry ? "Retry sign-in" : label}
         {onboarding && <span className="onb-btn-icon onb-signup-icon"><ArrowRightIcon size={16} /></span>}
       </button>
       {pending && (

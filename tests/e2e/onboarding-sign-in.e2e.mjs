@@ -62,6 +62,32 @@ test("completed onboarding with a working CLI opens Home despite an update warni
   } finally { await page.close(); }
 });
 
+for (const setup of ["slow", "failed"]) {
+  for (const agent of ["claude", "codex", "reason"]) {
+    test(`${agent} first run reaches Home with ${setup} CLI setup and unresolved sign-in`, async () => {
+      const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
+      try {
+        await page.goto(`${base}/tools/onboarding/index.html?surface=startup&firstRun=1&setup=${setup}&status=slow`);
+        const signUp = page.getByRole("button", { name: "Sign up", exact: true });
+        await signUp.waitFor();
+        assert.equal(await signUp.isEnabled(), true);
+        await page.locator(`input[name="first-run-agent"][value="${agent}"]`).check();
+        await page.getByRole("button", { name: "Continue without signing in", exact: true }).click();
+        await page.getByTestId("startup-home").waitFor();
+        await expectCalls(page, { attempts: 0, opens: 0, cliChecks: 1 });
+        if (setup === "slow") {
+          await page.getByRole("status").filter({ hasText: "Installing or updating the Reason CLI in the background" }).waitFor();
+        } else {
+          await page.getByRole("alert").filter({ hasText: "Synthetic CLI download unavailable" }).waitFor();
+          assert.equal(await page.getByRole("button", { name: "Retry setup", exact: true }).isEnabled(), true);
+        }
+        assert.equal(await page.getByTestId("startup-home").isVisible(), true);
+        await capture(page, `${agent}-home-${setup}-cli-unsigned-in`);
+      } finally { await page.close(); }
+    });
+  }
+}
+
 test("Settings preserves an unavailable pinned workspace instead of showing the account default", async () => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
   try {

@@ -649,7 +649,7 @@ export const flows = [
     // cards writing [providers] to settings.toml, Reset back to the CLI login,
     // and a palette click filling a loadout slot (conductor.db favorite_models).
     name: "agent-settings",
-    async run(wd) {
+    async run(wd, ctx) {
       const META = "\uE03D";
       const ESC = "\uE00C";
       const file = join(process.env.OPENCONDUCTOR_HOME ?? join(homedir(), ".openconductor"), "settings.toml");
@@ -706,23 +706,43 @@ export const flows = [
       await wd.waitFor("the Codex tab", async () => (await textsOf(wd, "button[aria-pressed]")).includes("API key"));
       if (before !== null && before !== '"claude_login"') throw new Error(`[providers.claude] was ${before} before the flow; it is now reset`);
 
-      await clickByText(wd, ".settings-nav .nav-item", "Default models");
-      await wd.waitFor("the Default models page", async () => (await heading()) === "Default models");
-      const slots = () => wd.execute("return Array.from(document.querySelectorAll('[data-loadout-slot]'), (e) => e.textContent.trim());", []);
-      const first = await wd.waitFor("five loadout slots", async () => {
-        const s = await slots();
-        return s.length === 5 ? s : null;
-      });
-      if (!first[0].includes("DEFAULT") || !first[1].includes("DROP MODEL HERE") || !first[2].includes("EMPTY")) throw new Error(`loadout slots ${JSON.stringify(first)}`);
-      const [add] = await wd.findAll('button[aria-label="Add GPT-5.5 to loadout"]');
-      if (!add) throw new Error("no GPT-5.5 in the Codex column");
-      await wd.click(add);
-      await wd.waitFor("GPT-5.5 in slot 2", async () => (await slots())[1].includes("GPT-5.5"));
-      await wd.execute("document.querySelector('button[aria-label=\"Delete loadout 2\"]').click();", []);
-      await wd.waitFor("slot 2 empty again", async () => (await slots())[1].includes("DROP MODEL HERE"));
-      const rows = await textsOf(wd, ".ag-setting-title");
-      const want = ["Loadout", "Codex personality", "Claude output style", "Review model", "Default to plan mode in new chats"];
-      if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`Default models rows ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
+      if (!ctx.fakeCodex) throw new Error("the stand-in Codex was not set up");
+      if (tomlValue(file, "", "codex_executable_path") !== null) throw new Error("unexpected Codex executable override before the loadout flow");
+      await wd.click((await wd.findAll('input[aria-label="Codex executable path"]'))[0]);
+      await wd.keys(ctx.fakeCodex.exe);
+      await wd.waitFor("the catalog CLI override to save", async () => tomlValue(file, "", "codex_executable_path") === JSON.stringify(ctx.fakeCodex.exe));
+      try {
+        await clickByText(wd, ".settings-nav .nav-item", "Default models");
+        await wd.waitFor("the Default models page", async () => (await heading()) === "Default models");
+        const slots = () => wd.execute("return Array.from(document.querySelectorAll('[data-loadout-slot]'), (e) => e.textContent.trim());", []);
+        const first = await wd.waitFor("five loadout slots", async () => {
+          const s = await slots();
+          return s.length === 5 ? s : null;
+        });
+        if (!first[0].includes("DEFAULT") || !first[1].includes("DROP MODEL HERE") || !first[2].includes("EMPTY")) throw new Error(`loadout slots ${JSON.stringify(first)}`);
+        const [add] = await wd.waitFor("the model advertised by the Codex catalog", async () => {
+          const buttons = await wd.findAll('.ag-palette-col[aria-label="Codex"] button[aria-label="Add E2E Catalog Codex to loadout"]:not(:disabled)');
+          return buttons.length === 1 ? buttons : null;
+        }, 30000);
+        const requests = readFileSync(join(ctx.fakeCodex.dir, "codex-fake.jsonl"), "utf8").trim().split("\n").map((line) => JSON.parse(line));
+        if (!requests.some((request) => request.method === "model/list")) throw new Error("the palette did not query the configured Codex CLI");
+        await wd.click(add);
+        await wd.waitFor("the catalog model in slot 2", async () => (await slots())[1].includes("E2E Catalog Codex"));
+        const saved = () => wd.execute("return window.__TAURI_INTERNALS__.invoke('favorite_models_list').then((rows) => rows.map((row) => JSON.parse(row.configuration)));", []);
+        await wd.waitFor("the catalog model and effort persisted in physical slot 2", async () =>
+          (await saved()).some((row) => row.slot === 1 && row.agent === "codex" && row.model === "e2e-codex-catalog" && row.thinkingLevel === "xhigh"));
+        await wd.click((await wd.findAll('button[aria-label="Remove model from slot 2"]'))[0]);
+        await wd.waitFor("slot 2 empty again", async () => (await slots())[1].includes("DROP MODEL HERE"));
+        await wd.waitFor("the removed model gone from storage", async () => !(await saved()).some((row) => row.model === "e2e-codex-catalog"));
+        const rows = await textsOf(wd, ".ag-setting-title");
+        const want = ["Loadout", "Codex personality", "Claude output style", "Review model", "Default to plan mode in new chats"];
+        if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`Default models rows ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
+      } finally {
+        await clickByText(wd, ".settings-nav .nav-item", "Agents");
+        await clickByText(wd, '[role="tab"]', "Codex");
+        await wd.click((await wd.findAll('button[aria-label="Reset to bundled Codex"]'))[0]);
+        await wd.waitFor("the catalog CLI override cleared", async () => tomlValue(file, "", "codex_executable_path") === null);
+      }
       await wd.execute("document.activeElement?.blur();", []);
       await wd.keys(ESC);
       await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);

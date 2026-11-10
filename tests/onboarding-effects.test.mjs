@@ -22,11 +22,11 @@ const deferred = () => {
   return { promise, resolve, reject };
 };
 
-async function fixture({ initial = { state: "idle" }, surface = "gate", installing = false, path = "/", step = null, repoCount = 0, cliWarning } = {}) {
+async function fixture({ initial = { state: "idle" }, surface = "gate", installing = false, path = "/", step = null, repoCount = 0, cliWarning, checking = false } = {}) {
   const installation = installing ? deferred() : null;
   const requests = [], opens = [], remembered = [], callbacks = [], timers = new Map(), intervals = new Map();
   const errors = [], navigations = [], writes = [], modules = new Map();
-  let status = initial, read, sequence = 0, root;
+  let status = initial, read = checking ? deferred() : undefined, sequence = 0, root;
   const window = {
     location: { pathname: path, search: "" },
     history: { state: null, replaceState(_state, _unused, url) { navigations.push(url); } },
@@ -219,10 +219,10 @@ test("unmount before account result suppresses the completion callback", async (
 });
 
 for (const agent of ["claude", "codex", "reason"]) {
-  test(`${agent} onboarding cannot skip CLI setup and saves its explicit choice without sign-in`, async () => {
+  test(`${agent} onboarding starts CLI setup and saves its explicit choice without sign-in`, async () => {
     const f = await fixture({ installing: true });
     try {
-      assert.equal(f.count("reason-cli-setup"), 1);
+      assert.match(f.text(), /Installing or updating the Reason CLI/);
       assert.equal(f.writes.length, 0);
       await act(async () => { f.installation.resolve({ path: "/fixture/bin/reason", version: "fixture" }); });
       await f.selectAgent(agent);
@@ -267,14 +267,47 @@ test("existing working CLI with an update warning opens Home and leaves sign-in 
 });
 
 for (const [path, step] of [["/", "999"], ["/login", null]]) {
-  test(`CLI setup also gates ${path} with completed-step ${step}`, async () => {
+  test(`CLI setup never gates ${path} with completed-step ${step}`, async () => {
     const f = await fixture({ path, step, installing: true });
     try {
-      assert.equal(f.count("reason-cli-setup"), 1);
-      assert.equal(f.count("home"), 0);
+      assert.match(f.text(), /Installing or updating the Reason CLI/);
+      assert.equal(f.count("home"), path === "/" ? 1 : 0);
+      if (path === "/login") assert.equal(f.button("Continue without signing in").props.disabled, false);
       await act(async () => { f.installation.resolve({ path: "/fixture/bin/reason", version: "fixture" }); });
       assert.equal(f.count("reason-cli-setup"), 0);
       assert.equal(f.count("home"), path === "/" ? 1 : 0);
+    } finally { await f.close(); }
+  });
+}
+
+for (const agent of ["claude", "codex", "reason"]) {
+  test(`slow CLI setup and pending sign-in never block ${agent} onboarding`, async () => {
+    const f = await fixture({ installing: true, checking: true });
+    try {
+      assert.equal(f.requests.filter((r) => r.command === "reason_cli_ensure_current").length, 1);
+      assert.equal(f.button("Sign up").props.disabled, false);
+      await f.selectAgent(agent);
+      await f.click("Continue without signing in");
+      assert.equal(f.writes[0].agent, agent);
+      await act(async () => { f.writes[0].resolve(); });
+      assert.equal(f.count("home"), 1, "Home opens while the CLI and account checks remain unresolved");
+      assert.equal(f.requests.some((r) => r.command === "reason_login_start"), false);
+      assert.match(f.text(), /Installing or updating the Reason CLI/);
+    } finally { await f.close(); }
+  });
+}
+
+for (const [step, repoCount] of [["999", 0], [null, 1]]) {
+  test(`slow CLI setup never blocks an existing user's Home: step ${step}, repos ${repoCount}`, async () => {
+    const f = await fixture({ installing: true, step, repoCount });
+    try {
+      assert.equal(f.count("home"), 1);
+      assert.equal(f.requests.filter((r) => r.command === "reason_cli_ensure_current").length, 1);
+      await act(async () => { f.installation.reject(new Error("Synthetic unavailable download")); });
+      assert.equal(f.count("home"), 1, "failed installation does not replace the app");
+      assert.match(f.text(), /Synthetic unavailable download/);
+      assert.equal(f.button("Retry setup").props.disabled, undefined);
+      assert.equal(f.requests.some((r) => r.command === "reason_login_start"), false);
     } finally { await f.close(); }
   });
 }

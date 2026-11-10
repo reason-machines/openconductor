@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
-import { ArrowRightIcon } from "../components/Icons";
 import { AppMark } from "../components/AppMark";
-import { CONTINUE_LABEL, EXIT_LABEL, nextSlideId, SLIDES, type Slide } from "./firstRun";
-import { SignUp, useReasonAccount, type SignUpProps } from "./SignIn";
+import { EXIT_LABEL, nextSlideId, SLIDES, type Slide } from "./firstRun";
+import { SignUp, type SignUpProps } from "./SignIn";
 import "./onboarding.css";
 import type { AgentKind } from "../settings/types";
 
@@ -23,7 +22,6 @@ const TICK_MS = 100;
  */
 export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue: (agent: AgentKind) => void; busy: boolean; onFailed: SignUpProps["onFailed"] }) {
   const [agent, setAgent] = useState<AgentKind>("reason");
-  const account = useReasonAccount();
   const [current, setCurrent] = useState<Slide["id"]>("repo");
   const [progress, setProgress] = useState(0);
   const select = useCallback((id: Slide["id"]) => {
@@ -82,17 +80,8 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
                   <label key={choice.id}><input type="radio" name="first-run-agent" value={choice.id} checked={agent === choice.id} onChange={() => setAgent(choice.id)} />{choice.label}</label>
                 ))}
               </fieldset>
-              <p className="onb-note">The Reason CLI is ready for every agent. You can sign in later.</p>
-              {account ? (
-                <button type="button" className="onb-btn onb-continue" onClick={() => onContinue(agent)} disabled={busy}>
-                  {CONTINUE_LABEL}
-                  <span className="onb-btn-icon">
-                    <ArrowRightIcon size={16} />
-                  </span>
-                </button>
-              ) : (
-                <SignUp onFailed={onFailed} onSkip={() => onContinue(agent)} />
-              )}
+              <p className="onb-note">The Reason CLI installs in the background for every agent. You can sign in later.</p>
+              <SignUp onFailed={onFailed} onSkip={() => onContinue(agent)} busy={busy} />
             </div>
           </div>
           <div className="onb-right" data-tauri-drag-region>

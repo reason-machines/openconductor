@@ -208,9 +208,16 @@ try {
   const seeded = await runAsync(
     `const done = arguments[arguments.length - 1];
      const invoke = window.__TAURI_INTERNALS__.invoke;
-     // The workspace chat's model comes from Settings' default model (#271).
+     const model = "byok:anthropic:claude-opus-5-5";
      invoke("get_settings")
-       .then((s) => invoke("update_settings", { settings: { ...s, reason: { ...s.reason, workspace: "ws-a" }, models: { ...s.models, default: "opus-5-5-1m" } } }))
+       .then(async (s) => {
+         await invoke("favorite_models_replace", { favorites: [{ id: "default", configuration: JSON.stringify({ type: "built-in", agent: "reason", model, fastMode: false, slot: 0 }) }] });
+         return invoke("update_settings", { settings: {
+           ...s,
+           reason: { ...s.reason, workspace: "ws-a", model, reasoning_effort: null },
+           models: { ...s.models, default: model, default_agent: "reason", default_initialized: true, default_fast_mode: false },
+         } });
+       })
        .then(() => invoke("add_repository", { path: arguments[0] }))
        .then((repo) => invoke("create_workspace", { repositoryId: repo.id, branchName: "e2e", directoryName: "e2e", baseBranch: null, existingBranch: false, prNumber: null }))
        .then((created) => done({ workspace: created.workspace }), (err) => done({ error: String(err) }));`,

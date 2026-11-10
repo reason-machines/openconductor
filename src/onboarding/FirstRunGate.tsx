@@ -40,11 +40,13 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
   const [busy, setBusy] = useState(false);
   const [cli, setCli] = useState<CliSetup>({ status: "installing" });
   const [installAttempt, retryInstall] = useState(0);
+  const [dismissedCliStatus, setDismissedCliStatus] = useState<CliSetup["status"]>();
 
   useEffect(() => {
     if (demo) return;
     let live = true;
     setCli({ status: "installing" });
+    setDismissedCliStatus(undefined);
     void ensureReasonCli().then(
       (result) => { if (live) setCli({ status: "ready", warning: result?.warning }); },
       (error: unknown) => { if (live) setCli({ status: "error", message: error instanceof Error ? error.message : String(error) }); },
@@ -99,22 +101,13 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
   const onFailed = useCallback((title: string, description: string) => show("error", title, { description }), [show]);
 
   if (demo) return <>{children}</>;
-  if (cli.status !== "ready") return (
-    <div className="onb-login" data-testid="reason-cli-setup">
-      <div className="onb-login-inner">
-        <h1>Setting up OpenConductor</h1>
-        <p className="onb-note" role="status">Installing or updating the Reason CLI. This is included for every agent; signing in is optional.</p>
-        {cli.status === "error" && <>
-          <p className="onb-error" role="alert">{cli.message}</p>
-          <button type="button" className="onb-btn" onClick={() => retryInstall((attempt) => attempt + 1)}>Retry setup</button>
-        </>}
-      </div>
-    </div>
-  );
-  const shownToasts: ToastItem[] = cli.warning
-    ? [{ id: 0, kind: "info", message: cli.warning, sticky: true }, ...toasts]
-    : toasts;
-  const toaster = <Toaster toasts={shownToasts} dismiss={(id) => { if (id === 0) setCli({ status: "ready" }); else dismiss(id); }} />;
+  const cliNotice: ToastItem | undefined = cli.status === "installing"
+    ? { id: 0, kind: "info", message: "Installing or updating the Reason CLI in the background. You can continue without signing in.", sticky: true }
+    : cli.status === "error"
+      ? { id: 0, kind: "error", message: "Couldn't set up the Reason CLI. You can keep using OpenConductor.", description: cli.message, sticky: true, extraActions: [{ label: "Retry setup", onClick: () => retryInstall((attempt) => attempt + 1) }] }
+      : cli.warning ? { id: 0, kind: "info", message: cli.warning, sticky: true } : undefined;
+  const shownToasts = cliNotice && dismissedCliStatus !== cli.status ? [cliNotice, ...toasts] : toasts;
+  const toaster = <Toaster toasts={shownToasts} dismiss={(id) => { if (id === 0) setDismissedCliStatus(cli.status); else dismiss(id); }} />;
   if (path === LOGIN_ROUTE)
     return (
       <>
