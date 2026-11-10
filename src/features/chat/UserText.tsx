@@ -28,7 +28,8 @@ function trimUserUrl(candidate: string): string {
 }
 
 function isOrdinaryUserUrl(href: string): boolean {
-  if (href.includes("wikipedia.org") || href.includes("wiktionary.org")) return false;
+  const hasPreviewText = /(?:wikipedia|wiktionary)\.org/.test(href);
+  if (hasPreviewText) return false;
   try {
     const url = new URL(href);
     const workspaceOrigin = url.origin === "https://app.conductor.build"
