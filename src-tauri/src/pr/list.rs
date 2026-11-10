@@ -134,7 +134,9 @@ impl<R: Runner> Gh<R> {
     /// Full formatter metadata for one selected issue, using the local GitHub CLI.
     pub fn issue_link_metadata(&self, number: u64) -> Result<IssueLinkMetadata, ListError> {
         if number == 0 {
-            return Err(ListError::Other("Issue number must be greater than zero".into()));
+            return Err(ListError::Other(
+                "Issue number must be greater than zero".into(),
+            ));
         }
         let endpoint = match &self.addressing {
             Addressing::Cwd(_) => format!("repos/{{owner}}/{{repo}}/issues/{number}"),
@@ -266,9 +268,8 @@ fn parse_issue_link_metadata(out: &str, number: u64) -> Result<IssueLinkMetadata
         milestone: Option<IssueLinkMilestone>,
     }
 
-    let invalid = |reason: &str| {
-        ListError::Other(format!("unexpected response from GitHub: {reason}"))
-    };
+    let invalid =
+        |reason: &str| ListError::Other(format!("unexpected response from GitHub: {reason}"));
     let value: serde_json::Value =
         serde_json::from_str(out).map_err(|e| invalid(&e.to_string()))?;
     let fields = value

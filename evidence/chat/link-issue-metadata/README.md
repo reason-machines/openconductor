@@ -37,6 +37,7 @@ Errors use the existing operation error classifier. Missing CLI and actual authe
 - The single fetch used one Cargo job, nice level 19, a 6-second CPU limit, and a 90-second wall timeout. It exited zero in 9 seconds. Downloaded crate archives total 962,734 bytes. The task cache totals 8,959,248 bytes. Total HTTP transfer bytes were not separately metered. No target directory was created.
 - Twelve injected-Runner metadata tests are added alongside the six existing list tests. They cover checkout and explicit-repository argv, rich metadata, true empty and nullable values, required key presence, invalid shapes and state, issue identity, pull-request rejection, invalid output, zero input, operation error tags, and spawn failures. Execution is not yet run.
 - A before-change behavioral RED is not run. The new API was absent before this unit; that compile absence is not counted as behavioral RED.
+- Initial hosted CI failed the PR module rustfmt check before compilation. The [macOS job](https://github.com/reason-machines/openconductor/actions/runs/42768790077/job/129671477758) supplies the exact formatting diffs. Those diffs are applied to the owned backend source only. This formatting failure is not a behavioral RED.
 
 ## Acceptance gaps
 

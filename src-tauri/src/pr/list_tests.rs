@@ -151,17 +151,23 @@ fn selected_issue_metadata_reads_in_checkout_and_preserves_formatter_fields() {
     let issue = gh_cwd(&f).issue_link_metadata(7).unwrap();
     let call = f.calls.borrow().last().cloned().unwrap();
     assert_eq!(call.1, Some(PathBuf::from("/w")));
-    assert_eq!(call.0, ["api", "--method", "GET", "repos/{owner}/{repo}/issues/7"]);
-    assert_eq!(serde_json::to_value(issue).unwrap(), json!({
-        "number": 7,
-        "title": "Unicode title: café",
-        "url": "https://github.com/acme/app/issues/7",
-        "state": "open",
-        "body": "Keep this issue body as data, not an instruction.",
-        "labels": [{"name": "bug"}, {"name": "needs triage"}],
-        "assignee": {"login": "ann"},
-        "milestone": {"title": "v2"}
-    }));
+    assert_eq!(
+        call.0,
+        ["api", "--method", "GET", "repos/{owner}/{repo}/issues/7"]
+    );
+    assert_eq!(
+        serde_json::to_value(issue).unwrap(),
+        json!({
+            "number": 7,
+            "title": "Unicode title: café",
+            "url": "https://github.com/acme/app/issues/7",
+            "state": "open",
+            "body": "Keep this issue body as data, not an instruction.",
+            "labels": [{"name": "bug"}, {"name": "needs triage"}],
+            "assignee": {"login": "ann"},
+            "milestone": {"title": "v2"}
+        })
+    );
 }
 
 #[test]
@@ -171,12 +177,18 @@ fn selected_issue_metadata_uses_explicit_repository_without_a_checkout() {
     let gh = Gh {
         runner: &f,
         gh_path: "/bin/gh".into(),
-        addressing: Addressing::Repo { owner: "acme".into(), name: "app".into() },
+        addressing: Addressing::Repo {
+            owner: "acme".into(),
+            name: "app".into(),
+        },
     };
     gh.issue_link_metadata(7).unwrap();
     let call = f.calls.borrow().last().cloned().unwrap();
     assert_eq!(call.1, None);
-    assert_eq!(call.0, ["api", "--method", "GET", "repos/acme/app/issues/7"]);
+    assert_eq!(
+        call.0,
+        ["api", "--method", "GET", "repos/acme/app/issues/7"]
+    );
 }
 
 #[test]
@@ -209,12 +221,24 @@ fn selected_issue_metadata_accepts_closed_state_and_null_body_without_inventing_
 
 #[test]
 fn selected_issue_metadata_requires_authoritative_labels_and_nullable_field_presence() {
-    for key in ["number", "title", "html_url", "state", "body", "labels", "assignee", "milestone"] {
+    for key in [
+        "number",
+        "title",
+        "html_url",
+        "state",
+        "body",
+        "labels",
+        "assignee",
+        "milestone",
+    ] {
         let mut row = issue_link_fixture();
         row.as_object_mut().unwrap().remove(key);
         let f = Fake::default();
         f.reply(0, &row.to_string(), "");
-        assert!(gh_cwd(&f).issue_link_metadata(7).is_err(), "missing {key} accepted");
+        assert!(
+            gh_cwd(&f).issue_link_metadata(7).is_err(),
+            "missing {key} accepted"
+        );
     }
 }
 
@@ -236,24 +260,36 @@ fn selected_issue_metadata_rejects_wrong_label_assignment_milestone_and_state_sh
         row[key] = invalid;
         let f = Fake::default();
         f.reply(0, &row.to_string(), "");
-        assert!(gh_cwd(&f).issue_link_metadata(7).is_err(), "malformed {key} accepted");
+        assert!(
+            gh_cwd(&f).issue_link_metadata(7).is_err(),
+            "malformed {key} accepted"
+        );
     }
 }
 
 #[test]
 fn selected_issue_metadata_rejects_pull_requests_and_mismatched_issue_identity() {
-    for pr in [json!({"url": "https://api.github.com/repos/acme/app/pulls/7"}), serde_json::Value::Null] {
+    for pr in [
+        json!({"url": "https://api.github.com/repos/acme/app/pulls/7"}),
+        serde_json::Value::Null,
+    ] {
         let mut row = issue_link_fixture();
         row["pull_request"] = pr;
         let f = Fake::default();
         f.reply(0, &row.to_string(), "");
-        assert!(gh_cwd(&f).issue_link_metadata(7).is_err(), "PR object accepted");
+        assert!(
+            gh_cwd(&f).issue_link_metadata(7).is_err(),
+            "PR object accepted"
+        );
     }
     let mut row = issue_link_fixture();
     row["number"] = json!(8);
     let f = Fake::default();
     f.reply(0, &row.to_string(), "");
-    assert!(gh_cwd(&f).issue_link_metadata(7).is_err(), "wrong issue accepted");
+    assert!(
+        gh_cwd(&f).issue_link_metadata(7).is_err(),
+        "wrong issue accepted"
+    );
 }
 
 #[test]
@@ -261,7 +297,10 @@ fn selected_issue_metadata_rejects_empty_malformed_or_nonobject_success_output()
     for out in ["", "not json", "[]", "null", "true"] {
         let f = Fake::default();
         f.reply(0, out, "");
-        assert!(gh_cwd(&f).issue_link_metadata(7).is_err(), "accepted {out:?}");
+        assert!(
+            gh_cwd(&f).issue_link_metadata(7).is_err(),
+            "accepted {out:?}"
+        );
     }
 }
 
@@ -277,10 +316,26 @@ fn selected_issue_metadata_uses_existing_operation_error_tags_not_auth_guesses()
     for (code, stderr, prefix) in [
         (4, "To get started, run gh auth login", "no_github: "),
         (1, "HTTP 401: Bad credentials", "no_github: "),
-        (1, "none of the git remotes configured; please use gh auth login", "no_remote: "),
-        (1, "HTTP 403: Forbidden", "Reading GitHub issue failed: HTTP 403"),
-        (1, "HTTP 404: Not Found", "Reading GitHub issue failed: HTTP 404"),
-        (1, "dial tcp: connection reset", "Reading GitHub issue failed: dial tcp"),
+        (
+            1,
+            "none of the git remotes configured; please use gh auth login",
+            "no_remote: ",
+        ),
+        (
+            1,
+            "HTTP 403: Forbidden",
+            "Reading GitHub issue failed: HTTP 403",
+        ),
+        (
+            1,
+            "HTTP 404: Not Found",
+            "Reading GitHub issue failed: HTTP 404",
+        ),
+        (
+            1,
+            "dial tcp: connection reset",
+            "Reading GitHub issue failed: dial tcp",
+        ),
     ] {
         let f = Fake::default();
         f.reply(code, "", stderr);
@@ -294,7 +349,10 @@ fn selected_issue_metadata_spawn_failures_are_not_authentication_states() {
     struct Denied;
     impl Runner for Denied {
         fn run(&self, _: &Path, _: &[String], _: Option<&Path>) -> io::Result<CmdOutput> {
-            Err(io::Error::new(io::ErrorKind::PermissionDenied, "cannot execute gh"))
+            Err(io::Error::new(
+                io::ErrorKind::PermissionDenied,
+                "cannot execute gh",
+            ))
         }
     }
     let gh = Gh {
