@@ -215,6 +215,32 @@ default = true
 }
 
 #[test]
+fn ordinary_run_exit_emits_its_committed_status_and_keeps_output() {
+    let f = fixture("[scripts.run.dev]\ncommand = \"echo finished; exit 7\"\n");
+    f.svc.start_run(&f.ws, Some("dev")).unwrap();
+    wait_for("run completion event", || {
+        f.events
+            .lock()
+            .unwrap()
+            .iter()
+            .any(|event| serde_json::to_value(event).unwrap()["type"] == "runFinished")
+    });
+    let events = f.events.lock().unwrap();
+    let finished: Vec<_> = events
+        .iter()
+        .map(|event| serde_json::to_value(event).unwrap())
+        .filter(|event| event["type"] == "runFinished")
+        .collect();
+    assert_eq!(finished.len(), 1);
+    assert_eq!(finished[0]["workspaceId"], "w1");
+    assert_eq!(finished[0]["scriptId"], "dev");
+    assert_eq!(finished[0]["state"], "stopped");
+    assert_eq!(finished[0]["exit"], serde_json::json!([7, null]));
+    assert_eq!(f.svc.runs.state("w1", "dev"), RunState::Stopped);
+    assert_eq!(f.svc.runs.output("w1", "dev").as_deref(), Some("finished\r\n"));
+}
+
+#[test]
 fn run_uses_cwd_args_and_errors_without_scripts() {
     let f = fixture("[scripts.run.test]\ncommand = \"pwd; echo\"\nargs = [\"a b\"]\noptions = { cwd = \"sub\" }\n");
     fs::create_dir_all(f.ws.workspace_path.join("sub")).unwrap();
