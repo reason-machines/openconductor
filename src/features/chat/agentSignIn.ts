@@ -11,7 +11,7 @@ import type { ChatAgentId } from "./agentChoice.ts";
 const PATTERNS: Record<ChatAgentId, readonly string[]> = {
   claude: ["please run /login", "authentication_error", "not logged in", "invalid api key", "oauth token has expired"],
   codex: ["401 unauthorized", "not logged in", "codex login", "invalid api key", "incorrect api key", "token_expired", "refresh token"],
-  reason: ["reason login", "not signed in", "not logged in", "401 unauthorized"],
+  reason: ["reason login", "not signed in", "not logged in", "401 unauthorized", "authentication required", "authentication_required"],
 };
 
 /** True when `error` says the chat's agent is not signed in. */

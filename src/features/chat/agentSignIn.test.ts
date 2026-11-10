@@ -27,7 +27,7 @@ test("Reason and empty errors", () => {
 
 test("copy names the agent", () => {
   assert.equal(signInCopy("reason").action, "Sign in to Reason");
-  assert.match(signInCopy("reason").text, /automatically/);
+  assert.match(signInCopy("reason").text, /sends as soon as you are signed in/);
   assert.equal(signInCopy("codex").action, "Open Codex settings");
   assert.match(signInCopy("claude").text, /^Claude Code is not signed in/);
 });

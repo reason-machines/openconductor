@@ -39,7 +39,7 @@ const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
 let sessionUrl = null;
 async function wd(method, path, body) {
-  const res = await fetch(`${sessionUrl ?? base}${path}`, { method, headers: { "content-type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });
+  const res = await fetch(`${sessionUrl ?? base}${path}`, { method, signal: AbortSignal.timeout(90000), headers: { "content-type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(`${method} ${path}: ${res.status} ${JSON.stringify(json.value ?? json)}`);
   return json.value;
@@ -97,9 +97,10 @@ try {
     if (s?.state === "error") throw Object.assign(new Error(`Reason CLI setup failed: ${s.title}`), { fatal: true });
     return s === null || s.state === "warning" ? { status: s } : null;
   }, 600000);
-  const version = execFileSync(cli, ["--version"], { env, encoding: "utf8" }).trim();
-  assert.ok(version.length > 0);
+  console.log(`app responsive after install: ${JSON.stringify(await run("return document.readyState;"))}`);
   await screenshot("cli-first-run-3-installed");
+  const version = execFileSync(cli, ["--version"], { env, encoding: "utf8", timeout: 60000 }).trim();
+  assert.ok(version.length > 0);
   pass(`background install finished (${JSON.stringify(done.status?.state ?? "cleared")}); ${cli} --version: ${version}`);
 } catch (error) {
   console.error(`not ok - ${error instanceof Error ? error.stack : error}`);
