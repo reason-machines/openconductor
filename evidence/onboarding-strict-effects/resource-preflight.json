@@ -1,0 +1,16 @@
+{
+  "observed_at": "2026-11-10T05:19:29.115619+00:00",
+  "target_verified_by_computers_list": "e8ebea05-8eb1-5a6c-a033-516861f723c6",
+  "slot": "DOM64-C302-01",
+  "cpu_interval_seconds": 1,
+  "cpu_idle_percent": 11.95,
+  "load1": 1.83251953125,
+  "mem_available_bytes": 29386477568,
+  "disk_available_bytes": 7246786560,
+  "owned_before_bytes": {
+    "deps": 0,
+    "cache": 0
+  },
+  "growth_limit_bytes": 125829120,
+  "passed": false
+}
