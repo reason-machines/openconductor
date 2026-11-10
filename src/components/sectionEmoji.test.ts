@@ -134,7 +134,7 @@ test("Remove emoji remains usable with no search results and omits emoji on Save
     assert.equal(view.renderer().root.findAllByProps({ placeholder: "Search emoji" }).length, 0);
     view.click("Save");
     assert.equal(view.submissions[0].name, "Existing");
-    assert.equal(Object.hasOwn(view.submissions[0], "emoji"), false);
+    assert.equal(Object.prototype.hasOwnProperty.call(view.submissions[0], "emoji"), false);
     assert.equal(view.closed(), 1);
   } finally { view.close(); }
 });
