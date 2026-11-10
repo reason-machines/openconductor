@@ -122,6 +122,7 @@ async function fixture(initial = running("A transcript\n")) {
   return {
     setup, runs, output, observed,
     holdStatus: (id: string) => heldStatuses.add(id),
+    allowStatus: (id: string) => heldStatuses.delete(id),
     async releaseStatus(id: string, status: SetupStatus) {
       const reads = pendingStatuses.filter((read) => read.workspaceId === id);
       assert.ok(reads.length > 0, "a setup snapshot is in flight for the specified workspace");
@@ -214,3 +215,24 @@ test("actual Setup panel keeps pending actions scoped to their workspace and req
   assert.ok(f.enabled("Stop setup"));
   assert.equal(f.output(), "setup-b started\n");
 });
+
+for (const revisit of [false, true]) {
+  test(`actual Setup panel keeps the newest same-workspace snapshot${revisit ? " after leaving and returning" : ""}`, async (t) => {
+    const f = await fixture();
+    t.after(f.close);
+    f.holdStatus(a.id);
+    await f.switchWorkspace({ ...a });
+    f.allowStatus(a.id);
+    if (revisit) await f.switchWorkspace(b);
+    f.setup.set(a.id, { state: "completed", log: "A completed\n", last: null });
+    if (revisit) await f.switchWorkspace(a);
+    else await f.emit({ type: "setupFinished", workspaceId: a.id, state: "completed", exitCode: 0, logPath: "", log: "A completed\n" });
+    assert.equal(f.state(), "completed");
+    assert.equal(f.output(), "A completed\n");
+    assert.ok(f.enabled("Rerun setup"));
+    await f.releaseStatus(a.id, running("obsolete A running snapshot\n"));
+    assert.equal(f.state(), "completed", "an older response cannot restore the completed setup's running state");
+    assert.equal(f.output(), "A completed\n", "an older response cannot replace the completed transcript");
+    assert.ok(f.enabled("Rerun setup"), "an older response cannot replace Rerun setup with Stop setup");
+  });
+}
