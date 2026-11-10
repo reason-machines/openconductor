@@ -164,12 +164,24 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     onOpen?.();
   };
 
+  const toggleFileViewed = (file: FileDiff) => {
+    const index = files.findIndex((f) => f.path === file.path);
+    if (index < 0) return;
+    const selectedFile = files[index];
+    const wasViewed = isViewed(viewed, selectedFile);
+    setViewed(toggleViewed(viewed, selectedFile));
+    if (wasViewed) return;
+    const unviewed = files.filter((f) => !isViewed(viewed, f));
+    const laterUnviewed = files.slice(index + 1).some((f) => !isViewed(viewed, f));
+    open(step(index, files.length, !laterUnviewed && unviewed.length > 1 ? -1 : 1));
+  };
+
   // Keys come from the registry (diff.nextFile = ArrowDown, diff.previousFile = ArrowUp,
   // diff.toggleViewed = Ctrl+V), so user overrides apply and bare arrows stay out of text fields.
   useKeybindings({
     "diff.nextFile": () => open(step(current, files.length, 1)),
     "diff.previousFile": () => open(step(current, files.length, -1)),
-    "diff.toggleViewed": () => current >= 0 && setViewed(toggleViewed(viewed, files[current])),
+    "diff.toggleViewed": () => current >= 0 && toggleFileViewed(files[current]),
   });
 
   // The file alone with whole-file context: Pierre builds the full old and new
@@ -229,7 +241,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     /** Back to `opts.scope`. */
     clearTurn: () => setTurn(null),
     isViewed: (f: FileDiff) => isViewed(viewed, f),
-    toggleViewed: (f: FileDiff) => setViewed(toggleViewed(viewed, f)),
+    toggleViewed: toggleFileViewed,
     viewedCount: viewedCount(viewed, files),
     /** Next file not marked viewed after the selected one, or -1. */
     unread,

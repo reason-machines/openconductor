@@ -10,7 +10,6 @@ import json
 import os
 from pathlib import Path
 import secrets
-import signal
 import subprocess
 import sys
 
@@ -50,28 +49,18 @@ def validate_stage(receipt, phase, token, pid):
 
 
 def run_stage(executable, root, phase, token):
-    env = ordinary.wk.qa.environment(root)
-    env["OC_NATIVE_QA_STORAGE_TOKEN"] = token  # Non-secret fixture identity, shared only across these two phases.
-    process = subprocess.Popen([str(executable), f"--oc-qa-storage-{phase}"], env=env, cwd=root,
-                               stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                               text=True, close_fds=True, start_new_session=True)
-    try:
-        stdout, _stderr = process.communicate(timeout=TIMEOUT_SECONDS)
-        if process.returncode:
-            raise ValueError(f"synthetic storage {phase} stage failed (exit {process.returncode})")
-        receipt = json.loads(stdout)
-        validate_stage(receipt, phase, token, process.pid)
-        return receipt
-    finally:
-        # This targets only our subprocess group. It is NOT proof that XPC helpers
-        # belong to this group or that all helper filesystem activity was observed.
-        try:
-            os.killpg(process.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        process.wait()
-        process.stdout.close()
-        process.stderr.close()
+    runner = ordinary.wk.qa.runner
+    probes = {"write": runner.Probe.STORAGE_WRITE, "read": runner.Probe.STORAGE_READ}
+    if phase not in probes:
+        raise ValueError("unsupported synthetic storage phase")
+    result = runner.run_probe(runner.LaunchSpec(
+        root, executable, probes[phase], token=token, timeout_seconds=TIMEOUT_SECONDS,
+    ))
+    if result.returncode:
+        raise ValueError(f"synthetic storage {phase} stage failed (exit {result.returncode})")
+    receipt = json.loads(result.stdout)
+    validate_stage(receipt, phase, token, result.pid)
+    return dict(receipt, confinement_policy=result.policy_receipt)
 
 
 def check_build_and_stores(root, executable, binary_hash, config_hash):
