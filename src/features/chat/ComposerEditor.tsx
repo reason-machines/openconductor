@@ -61,7 +61,14 @@ export function ComposerEditor(props: Props) {
       content: composerContent(current.current.value),
       enableInputRules: false, enablePasteRules: false,
       editorProps: {
-        attributes: { role: "textbox", "aria-label": "Message", "aria-multiline": "true", "data-testid": "composer-input", spellcheck: "false" },
+        attributes: {
+          role: "textbox", "aria-label": "Message", "aria-multiline": "true", "data-testid": "composer-input",
+          spellcheck: "false",
+          autocomplete: "new-password",
+          autocorrect: "off",
+          autocapitalize: "off",
+          writingsuggestions: "false",
+        },
         handleKeyDown: (_view, event) => {
           if (event.isComposing || editor.view.composing || event.keyCode === 229) return false;
           current.current.onKeyDown(event);
@@ -72,7 +79,9 @@ export function ComposerEditor(props: Props) {
           if (current.current.onPasteFiles(event.clipboardData.files)) return true;
           syncSelection();
           const parts = clipboardComposerParts(event.clipboardData.getData(COMPOSER_CLIPBOARD));
+          editor.view.dispatch(closeHistory(editor.state.tr));
           editor.commands.insertContent(parts ? inlineContent(parts) : inlineContent([{ kind: "text", text: event.clipboardData.getData("text/plain").replace(/\r\n?/g, "\n") }]));
+          editor.view.dispatch(closeHistory(editor.state.tr));
           return true;
         },
         handleDOMEvents: {

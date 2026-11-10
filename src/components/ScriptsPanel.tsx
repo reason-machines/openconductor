@@ -191,7 +191,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
         if (e.workspaceId !== wsId) return;
         if (e.type === "output" && e.kind === "run" && e.scriptId === shown) setRunOut((b) => appendOutput(b, e.chunk));
         if (e.type === "output" && e.kind === "setup") setSetup((s) => ({ ...s, state: "running", log: appendOutput(s.log ?? "", e.chunk) }));
-        if (e.type === "setupFinished") refresh().catch(() => {});
+        if (e.type === "setupFinished" || e.type === "runFinished") refresh().catch(() => {});
       })
       .then((f) => (off = f));
     return () => off?.();
@@ -219,18 +219,18 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   // One run-panel process per workspace, as in the reference: starting a
   // script ends this workspace's Spotlight session, and starting Spotlight
   // stops the run scripts of every workspace of the repository (backend).
-  async function startScript() {
+  async function startScript(scriptId: Parameters<typeof api.startRun>[1]) {
     if (spotMine) await spotlight.stopSpotlight(repoRoot);
-    await api.startRun(ref!, shown);
+    await api.startRun(ref!, scriptId);
   }
 
-  async function toggleSpotlightRun() {
+  async function toggleSpotlightRun(action: "start" | "stop") {
     setError(null);
     // Stay on the Spotlight task so its log stays readable after a stop.
     setPicked(SPOTLIGHT_TASK_ID);
-    setSpotPending(spotMine ? "stopping" : "starting");
+    setSpotPending(action === "stop" ? "stopping" : "starting");
     try {
-      if (spotMine) await spotlight.stopSpotlight(repoRoot);
+      if (action === "stop") await spotlight.stopSpotlight(repoRoot);
       else await spotlight.startSpotlight(repo.id, wsId, ref!.workspacePath, repoRoot);
     } catch (e) {
       setError(errorText(e));
@@ -266,8 +266,8 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   // The Run tab's ▶/■ button: stop what runs, else start the task shown.
   const toggleRun = () => {
     if (showSpotlight) {
-      if (!spotButton.disabled) void toggleSpotlightRun();
-    } else if (!button.disabled) void act(() => (button.action === "stop" ? api.stopRun(wsId, null) : startScript()));
+      if (!spotButton.disabled) void toggleSpotlightRun(spotMine ? "stop" : "start");
+    } else if (!button.disabled) void act(() => (button.action === "stop" ? api.stopRun(wsId, null) : startScript(shown)));
   };
   // workspace.toggleRun (⌘R), as Conductor's terminal panel binds it (renderApp-D_fmY7hW.js
   // offset ~7,141,947): with a run task and the workspace ready, show the Run tab, then stop
@@ -448,6 +448,8 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
                 onPick={(id) => {
                   setPicked(id);
                   onShowRun();
+                  if (id === SPOTLIGHT_TASK_ID) void toggleSpotlightRun("start");
+                  else void act(() => startScript(id));
                 }}
                 onConfigure={onAddRunScript}
               />

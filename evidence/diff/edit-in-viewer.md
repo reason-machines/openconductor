@@ -51,6 +51,123 @@ error boundary whose fallback reads "Failed to open editor".
   editor remounts (a content generation in its React key). Its own save does
   not trigger a remount.
 
+## Pending-draft refresh correction (2026-11-10)
+
+The complete retained Conductor 0.87.6 renderer is 11,600,457 bytes, SHA-256
+`5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde`.
+Literal complete-function reads, not evaluated code, establish this chain:
+
+- `Dqo`, UTF-8 bytes `[9636034,9637549)`, UTF-16
+  `[9590506,9592021)`, SHA-256
+  `e84b4c7ffc7323e35f137e86131118847873a856159170d6b39b804c06b7413e`,
+  chooses a present draft before saved content. Its saved-content-change
+  transition advances generation only without a draft and when the new
+  content is neither the previous editor content nor its own save. It
+  consumes the own-save acknowledgement when saved content changes. The
+  success callback clears a draft only if it still equals the submitted text.
+- `jqo`, UTF-8 bytes `[9641484,9642975)`, UTF-16
+  `[9595956,9597447)`, SHA-256
+  `3b57f4d3fb1c0ba90d3249cf522f66114602f79f79e85afbed10c08b16ba4741`,
+  calls `Dqo`, passes its draft value to the editor, and incorporates its
+  generation into the editable component key.
+
+At main `14dc5aa889ea9f9cc0459187e6d43c475f3cbdd7`, the external
+refresh branch in `useFileEdit` instead deleted any pending draft and
+advanced generation. The exact original transition reproduced loss of both
+nonempty and intentional-empty drafts. Clean refresh and own-save refresh
+were passing controls.
+
+`editorContents.ts` now owns the production key, observed disk content,
+generation and one-shot save acknowledgement transition. A read-only draft
+map makes draft presence, including an empty string, the remount guard.
+Unavailable content retains the last loaded revision. A late save cannot
+replace the acknowledgement for a different file or worktree. The hook
+at that correction still owns draft storage, conditional draft clearing and save I/O.
+
+Verification is source/unit only:
+
+- `node --experimental-strip-types --test
+  src/features/diff/editorContents.test.ts`: the extracted old refresh
+  behavior failed 8 of 13 assertions. Both draft cases failed directly.
+  After correction, all 13 pass.
+- Cases include clean external refresh, present draft equal to the new
+  disk text, loading gaps, empty loaded files, own-save refresh, edits
+  during save, stale acknowledgement consumption and file/worktree switches.
+- The new tests plus unchanged Changes tree, comment navigation, target-ref
+  and viewed-state tests pass 36 of 36. Four temporary mutations are caught:
+  removing the draft guard, using truthiness for an empty draft, retaining
+  a stale acknowledgement, and accepting another key's save acknowledgement.
+- No React facade or retained application code is executed. These tests do
+  not exercise hook mounting, Pierre document continuity, save IPC, native
+  admission or clipboard behavior. No dependency install, app build, new
+  REA extraction, browser run or native run was performed.
+
+## Pending-save draft producer correction (2026-11-10)
+
+This is a separate follow-on to the refresh correction in #855, not a
+regression introduced by it. The unguarded change callback already removed a
+draft whenever the text matched the old disk baseline, even while a different
+write was pending. The callback was byte-identical before and after #855.
+
+The complete inert `Dqo` read identified above explicitly stores a present
+draft while its save mutation is pending, including text equal to the old
+baseline. Success clears only a draft still equal to the submitted text. This
+is retained source proof, not observed reference running behavior, a claim
+about the mutation library's scheduling, or concurrency equivalence. No new
+REA extraction or evaluation of reference application code was performed.
+The earlier REA bundle-heap and IPC-binding gaps remain unchanged.
+
+`EditorDraftState` now shares the existing contents map with the refresh
+transition and `current()`, plus a per-key pending-save count.
+`changeEditorDraft` owns the real draft mutation, and `persistEditorDraft`
+owns the async write boundary, conditional success cleanup and pending-count
+release in `finally`. The hook calls these operations directly. It keeps the
+error-clear, file write, current-key save acknowledgement, rerender, saved
+notification and error-notification order. Its dirty-before/after rerender
+check and the existing refresh guards are unchanged. Counts preserve the
+existing concurrent writes without serialization or a new write-order promise.
+
+Production-imported reproduction, run on the Reason cloud computer with Node
+22.23.4 and no installed dependencies:
+
+- RED commit `67ebd84c4ce1091433bc3e63cbc8154e95564527` extracted the old
+  unguarded change behavior and wired the actual async save operation into
+  the hook. `node --experimental-strip-types --test
+  src/features/diff/editorContents.test.ts` exited 1: 20 passed, 6 failed.
+  Both nonempty and intentional-empty old-baseline tests recorded absent
+  drafts before and after the deferred write resolved, where present drafts
+  were expected. Four file/worktree and concurrent-save cases failed for
+  the same missing pending guard. All 13 original controls passed.
+- GREEN used the same tests unchanged after adding the pending guard:
+  26 passed, 0 failed, exit 0. All 13 original test bodies remain
+  byte-identical to starting main `e92b5dd8f6e0655766d4360e8b24c255907a3a42`.
+- The tests import the production mutation and persistence operations, not
+  copied callbacks, a fake React facade or a mutation proxy. Deferred write
+  promises exercise old-baseline retention, success, newer edits, rejection,
+  synchronous pending establishment, file/worktree isolation, and immediately
+  started concurrent saves in both completion orders. The old-baseline tests
+  also acknowledge and observe the saved content, consume the acknowledgement
+  without a generation change, retain the draft, and clear it on a later idle
+  edit to the new baseline.
+- `node --experimental-strip-types --test
+  src/features/diff/{editorContents,changesTree,nav,target,viewed}.test.ts`
+  passed 49 of 49. `git diff --check` passed.
+- A broader adjacent command adding `EditInViewer.test.ts` was partial:
+  49 tests passed, but that module could not load because `@pierre/diffs`
+  was not installed. No dependency installation was admitted; the normal
+  Diff frontend CI job runs all diff tests with dependencies.
+- Five temporary mutations were caught by the same 26-test suite: removing
+  the pending guard (6 failures), treating an empty draft as absent in the
+  refresh guard (1), unconditional success clearing (7), clearing another
+  key on success (2), and releasing pending state before write settlement
+  (6). Every mutation was restored; no mutation variant is committed.
+
+This verifies production-imported operations only. Hook mounting, Pierre
+continuity, save IPC, native behavior and visual parity remain NOT RUN.
+No local app launch, browser/native run, app build or heavy dependency
+installation was admitted, so there are no screenshots for this correction.
+Automatic PR CI and the containing-main macOS package are separate receipts.
+
 ## OpenConductor
 
 - `src/features/diff/EditInViewer.ts`: draft per worktree and file, save via

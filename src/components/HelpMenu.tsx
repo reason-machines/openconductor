@@ -59,6 +59,7 @@ export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDi
     const next = nextIndex(items.indexOf(document.activeElement as HTMLElement), items.length, e.key);
     if (next === -1) return;
     e.preventDefault();
+    e.stopPropagation();
     items[next].focus();
   };
 

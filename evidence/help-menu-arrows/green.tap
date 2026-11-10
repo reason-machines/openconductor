@@ -1,0 +1,63 @@
+(node:61) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:68) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:68) ExperimentalWarning: stripTypeScriptTypes is an experimental feature and might change at any time
+# Subtest: actual HelpMenu callback: ArrowDown from item 0 focuses 1 without bubbling
+ok 1 - actual HelpMenu callback: ArrowDown from item 0 focuses 1 without bubbling
+  ---
+  duration_ms: 0.9108
+  type: 'test'
+  ...
+# Subtest: actual HelpMenu callback: ArrowDown from item 1 focuses 2 without bubbling
+ok 2 - actual HelpMenu callback: ArrowDown from item 1 focuses 2 without bubbling
+  ---
+  duration_ms: 0.18757
+  type: 'test'
+  ...
+# Subtest: actual HelpMenu callback: ArrowDown from item 2 focuses 0 without bubbling
+ok 3 - actual HelpMenu callback: ArrowDown from item 2 focuses 0 without bubbling
+  ---
+  duration_ms: 0.107406
+  type: 'test'
+  ...
+# Subtest: actual HelpMenu callback: ArrowUp from item 0 focuses 2 without bubbling
+ok 4 - actual HelpMenu callback: ArrowUp from item 0 focuses 2 without bubbling
+  ---
+  duration_ms: 0.094822
+  type: 'test'
+  ...
+# Subtest: actual HelpMenu callback: ArrowUp from item 1 focuses 0 without bubbling
+ok 5 - actual HelpMenu callback: ArrowUp from item 1 focuses 0 without bubbling
+  ---
+  duration_ms: 0.129879
+  type: 'test'
+  ...
+# Subtest: actual HelpMenu callback: ArrowUp from item 2 focuses 1 without bubbling
+ok 6 - actual HelpMenu callback: ArrowUp from item 2 focuses 1 without bubbling
+  ---
+  duration_ms: 0.079763
+  type: 'test'
+  ...
+# Subtest: actual HelpMenu callback: unhandled keys remain available to other handlers
+ok 7 - actual HelpMenu callback: unhandled keys remain available to other handlers
+  ---
+  duration_ms: 0.221321
+  type: 'test'
+  ...
+# Subtest: actual HelpMenu callback: arrows without a focused menu item are not consumed
+ok 8 - actual HelpMenu callback: arrows without a focused menu item are not consumed
+  ---
+  duration_ms: 0.225819
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 168.686017

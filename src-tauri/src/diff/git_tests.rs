@@ -92,6 +92,186 @@ fn oid(r: &Path, revision: &str) -> String {
         .to_string()
 }
 
+fn set_modified(repo: &Path, path: &str, nanoseconds: u64) {
+    let time = std::time::UNIX_EPOCH + std::time::Duration::from_nanos(nanoseconds);
+    fs::File::options()
+        .write(true)
+        .open(repo.join(path))
+        .unwrap()
+        .set_times(fs::FileTimes::new().set_modified(time))
+        .unwrap();
+    assert_eq!(
+        fs::metadata(repo.join(path)).unwrap().modified().unwrap(),
+        time
+    );
+}
+
+#[test]
+fn worktree_modification_time_survives_full_and_summary_serialization_and_same_content_rewrite() {
+    let r = repo();
+    write(&r, "f.txt", "base\n");
+    commit(&r, "base");
+    write(&r, "f.txt", "same edited content\n");
+    set_modified(&r, "f.txt", 1_700_000_000_123_600_000);
+    let first = workspace_diff(&r, &req(Scope::Uncommitted)).unwrap();
+    let first_json = serde_json::to_value(&first).unwrap();
+    assert_eq!(
+        first_json["files"][0]["last_modified_time"],
+        1_700_000_000_124_i64
+    );
+    let summary = serde_json::to_value(list_changes(&r, &req(all())).unwrap()).unwrap();
+    assert_eq!(summary[0]["last_modified_time"], 1_700_000_000_124_i64);
+    write(&r, "f.txt", "same edited content\n");
+    set_modified(&r, "f.txt", 1_700_000_001_456_400_000);
+    let second = workspace_diff(&r, &req(Scope::Uncommitted)).unwrap();
+    assert_eq!(first.files[0].hunks, second.files[0].hunks);
+    assert_eq!(first.files[0].status, second.files[0].status);
+    let second_json = serde_json::to_value(second).unwrap();
+    assert_eq!(
+        second_json["files"][0]["last_modified_time"],
+        1_700_000_001_456_i64
+    );
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
+fn whitespace_and_context_options_do_not_change_worktree_modification_time() {
+    let r = repo();
+    write(&r, "f.txt", "one two\n");
+    commit(&r, "base");
+    write(&r, "f.txt", "one  two\n");
+    set_modified(&r, "f.txt", 1_700_000_000_500_000_000);
+    let plain = workspace_diff(&r, &req(Scope::Uncommitted)).unwrap();
+    let mut request = req(Scope::Uncommitted);
+    request.ignore_whitespace = true;
+    request.context_lines = Some(0);
+    let hidden = workspace_diff(&r, &request).unwrap();
+    assert!(!plain.files[0].hunks.is_empty());
+    assert!(hidden.files[0].hunks.is_empty());
+    for result in [plain, hidden] {
+        let json = serde_json::to_value(result).unwrap();
+        assert_eq!(
+            json["files"][0]["last_modified_time"],
+            1_700_000_000_500_i64
+        );
+    }
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
+fn deleted_untracked_and_renamed_paths_have_worktree_metadata() {
+    let r = repo();
+    write(&r, "gone.txt", "deleted\n");
+    write(&r, "old.txt", "renamed content\n");
+    commit(&r, "base");
+    fs::remove_file(r.join("gone.txt")).unwrap();
+    sh(&r, &["mv", "old.txt", "new.txt"]);
+    write(&r, "untracked.txt", "untracked\n");
+    set_modified(&r, "new.txt", 1_700_000_000_111_000_000);
+    set_modified(&r, "untracked.txt", 1_700_000_000_222_000_000);
+    let result = workspace_diff(&r, &req(all())).unwrap();
+    let full = serde_json::to_value(&result.files).unwrap();
+    let summary = serde_json::to_value(list_changes(&r, &req(all())).unwrap()).unwrap();
+    for files in [full, summary] {
+        for (path, expected) in [
+            ("gone.txt", 0),
+            ("new.txt", 1_700_000_000_111_i64),
+            ("untracked.txt", 1_700_000_000_222_i64),
+        ] {
+            let file = files
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|f| f["path"] == path)
+                .unwrap();
+            assert_eq!(file["last_modified_time"], expected, "{path}");
+        }
+    }
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
+fn historical_commit_and_turn_results_do_not_stat_the_present_worktree() {
+    let r = repo();
+    write(&r, "f.txt", "base\n");
+    commit(&r, "base");
+    let start = oid(&r, "HEAD");
+    write(&r, "f.txt", "historical\n");
+    commit(&r, "historical");
+    let end = oid(&r, "HEAD");
+    sh(
+        &r,
+        &[
+            "update-ref",
+            "refs/conductor-checkpoints/session-s-turn-t-start",
+            &start,
+        ],
+    );
+    sh(
+        &r,
+        &[
+            "update-ref",
+            "refs/conductor-checkpoints/session-s-turn-t-end",
+            &end,
+        ],
+    );
+    write(&r, "f.txt", "present day\n");
+    set_modified(&r, "f.txt", 1_700_000_001_000_000_000);
+    for scope in [
+        Scope::Commit { hash: end },
+        Scope::Turn {
+            session_id: "s".into(),
+            turn_id: "t".into(),
+        },
+    ] {
+        let result = workspace_diff(&r, &req(scope.clone())).unwrap();
+        assert_eq!(result.files.len(), 1);
+        let full = serde_json::to_value(result).unwrap();
+        assert!(full["files"][0].get("last_modified_time").is_none());
+        let summary = serde_json::to_value(list_changes(&r, &req(scope)).unwrap()).unwrap();
+        assert!(summary[0].get("last_modified_time").is_none());
+    }
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
+fn missing_worktree_stat_leaves_full_and_summary_metadata_absent() {
+    let r = repo();
+    let mut file = super::FileDiff::new("missing.txt".into(), FileStatus::Modified);
+    file.last_modified_time = super::git::worktree_modified_time(&r, &file);
+    assert_eq!(file.last_modified_time, None);
+    assert!(serde_json::to_value(&file)
+        .unwrap()
+        .get("last_modified_time")
+        .is_none());
+    assert!(serde_json::to_value(file.summary())
+        .unwrap()
+        .get("last_modified_time")
+        .is_none());
+    fs::remove_dir_all(r).unwrap();
+}
+
+#[test]
+fn worktree_stat_rounds_negative_epoch_times_like_math_round() {
+    let r = repo();
+    write(&r, "f.txt", "x\n");
+    let file = super::FileDiff::new("f.txt".into(), FileStatus::Modified);
+    for (nanoseconds, expected) in [(400_000, 0), (500_000, 0), (600_000, -1)] {
+        let time = std::time::UNIX_EPOCH - std::time::Duration::from_nanos(nanoseconds);
+        fs::File::options()
+            .write(true)
+            .open(r.join("f.txt"))
+            .unwrap()
+            .set_times(fs::FileTimes::new().set_modified(time))
+            .unwrap();
+        assert_eq!(
+            super::git::worktree_modified_time(&r, &file),
+            Some(expected)
+        );
+    }
+    fs::remove_dir_all(r).unwrap();
+}
+
 #[test]
 fn commit_history_excludes_target_and_respects_remote_target() {
     let r = repo();

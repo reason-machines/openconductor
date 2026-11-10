@@ -15,7 +15,7 @@ use crate::config::{
 use crate::env::{self, ScriptKind, WorkspaceContext};
 use crate::launch::{self, LaunchSpec, OutputSink};
 use crate::ports::PortAllocator;
-use crate::runner::{should_auto_run, RunManager, RunRequest};
+use crate::runner::{should_auto_run, RunManager, RunRequest, RunStatus};
 use crate::setup::{SetupManager, SetupOutcome, SetupState};
 use crate::shell_env;
 
@@ -49,6 +49,7 @@ pub enum ScriptEvent {
         chunk: String,
     },
     SetupFinished(SetupOutcome),
+    RunFinished(RunStatus),
 }
 
 pub type EventSink = Arc<dyn Fn(ScriptEvent) + Send + Sync>;
@@ -266,6 +267,7 @@ impl ScriptService {
         let env = env::script_env(&ctx, ScriptKind::Run, &self.settings_env(ws));
         let cwd = env::run_cwd(&ws.workspace_path, script.cwd.as_deref(), &env);
         let spec = self.spec(ws, ScriptKind::Run, script.command_line(), cwd)?;
+        let events = self.events.clone();
         let req = RunRequest {
             workspace_id: ws.workspace_id.clone(),
             repo_id: ws.repository_id.clone(),
@@ -273,6 +275,7 @@ impl ScriptService {
             spec,
             concurrent: cfg.run_mode == RunMode::Concurrent,
             sink: Some(self.sink(ws, "run", &script.id)),
+            on_finished: Arc::new(move |status| events(ScriptEvent::RunFinished(status))),
         };
         let shutting_down = self.shutting_down.lock().unwrap_or_else(|e| e.into_inner());
         if *shutting_down {

@@ -24,6 +24,8 @@ import type { ChatAgentId } from "./agentChoice.ts";
 import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
 import { openAgentSettings } from "./ChatModelPicker.tsx";
 import { thinkingChipText } from "./thinkingChip.ts";
+import { SentUserContent } from "./SentUserContent.tsx";
+import type { UserPrompt } from "./userContent.ts";
 import "./chat.css";
 
 export interface TranscriptProps {
@@ -33,7 +35,7 @@ export interface TranscriptProps {
   /** "Don't collapse tool calls" setting: summary rows stay open. */
   dontCollapseToolCalls?: boolean;
   /** Sends a failed or cancelled turn's prompt again. */
-  onRetry?: (prompt: string, turnId: string) => void;
+  onRetry?: (prompt: UserPrompt, turnId: string) => void;
   /** Opens "Reset chat?" for a turn that can be reset. */
   onResetChat?: (turnId: string) => void;
   /** "Fork to new tab" in every finished turn's More actions menu. */
@@ -89,6 +91,7 @@ export function Transcript({
     isOpen: (id, defaultOpen = false) => isToolExpanded(id, toggled, expandToolsByDefault || defaultOpen),
     onToggle: toggleTool,
     summaries: {
+      canCollapse: (running) => canCollapse(running, dontCollapseToolCalls),
       isOpen: (id, running) => isSummaryOpen(canCollapse(running, dontCollapseToolCalls), summaries.get(id)),
       toggle: (id, open) => setSummaries((prev) => new Map(prev).set(id, open ? "collapsed" : "expanded")),
     },
@@ -154,10 +157,11 @@ interface RowContext {
   isOpen: (toolId: string, defaultOpen?: boolean) => boolean;
   onToggle: (toolId: string, defaultOpen?: boolean) => void;
   summaries: {
+    canCollapse: (turnRunning: boolean) => boolean;
     isOpen: (summaryId: string, turnRunning: boolean) => boolean;
     toggle: (summaryId: string, open: boolean) => void;
   };
-  onRetry?: (prompt: string, turnId: string) => void;
+  onRetry?: (prompt: UserPrompt, turnId: string) => void;
   onResetChat?: (turnId: string) => void;
   resetDisabled: boolean;
   turnFooter?: (turnId: string) => ReactNode;
@@ -178,7 +182,7 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
         <div className="chat-msg chat-user oc-msg-user" data-message-role="user">
           <div className="oc-user-col">
             <div className="chat-bubble oc-bubble">
-              <div className="oc-user-text">{row.text}</div>
+              <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : row.text}</div>
               <MessageActions text={row.text} />
             </div>
             {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
@@ -292,6 +296,7 @@ function reportLabel(origin: ReportOrigin): string {
 
 /** A turn's agent output; its items sit directly in the turn's item list, as Conductor's do. */
 function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
+  const collapsible = ctx.summaries.canCollapse(block.running);
   return (
     <>
       {block.empty && block.streaming ? (
@@ -304,7 +309,7 @@ function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
         const open = ctx.summaries.isOpen(item.summary.id, block.running);
         return (
           <Fragment key={item.summary.id}>
-            <SummaryRow summary={item.summary} open={open} onToggle={block.running ? undefined : () => ctx.summaries.toggle(item.summary.id, open)} />
+            {collapsible ? <SummaryRow summary={item.summary} open={open} onToggle={() => ctx.summaries.toggle(item.summary.id, open)} /> : null}
             {open ? item.parts.map((p) => <Part key={p.key} partKey={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
           </Fragment>
         );

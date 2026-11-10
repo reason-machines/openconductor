@@ -31,6 +31,7 @@ import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
 import type { ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
 import { appendComposerText } from "../features/chat/composerDocument.ts";
+import { withSentAttachmentDisplay, type UserPrompt } from "../features/chat/userContent.ts";
 import { canMinimize } from "../features/chat/composerMinimize.ts";
 import { useComposerMinimize } from "../features/chat/useComposerMinimize.ts";
 import { AgentBinaryBanner } from "../features/chat/AgentBinaryBanner.tsx";
@@ -291,11 +292,11 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     const unsubscribe = agent.subscribe(runId, setSnapshot);
     // The workspace's Reason chat runs the default model unless the New workspace dialog picked one.
     if (main) configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
-    if (pendingMessage?.kind === "send") submit(pendingMessage.text, "queue", pendingMessage.attachments);
+    if (pendingMessage?.kind === "send") submit({ text: pendingMessage.text }, "queue", pendingMessage.attachments);
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      agent.submit(runId, cwd, first, "queue", [], repo.path || undefined, workspace.id);
+      agent.submit(runId, cwd, { text: first }, "queue", [], repo.path || undefined, workspace.id);
     }
     return unsubscribe;
   }, [chatId, agentId]);
@@ -310,10 +311,11 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   }, [transcript, waiting]);
 
   // Attachments (a review request, revert notes) go to the agent with the message and show by name.
-  function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
+  function submit(input: UserPrompt, mode: SendMode, attached: readonly TextAttachment[] = []) {
+    const { text } = input;
     if (!text.trim() && attached.length === 0) return;
     const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
-    agent.submit(runId, cwd, text, mode, attached, repo.path || undefined, workspace.id);
+    agent.submit(runId, cwd, input, mode, attached, repo.path || undefined, workspace.id);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
@@ -460,8 +462,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       setDraft((d) => appendComposerText(d, text));
       inputRef.current?.focus();
     },
-    send: (text) => submit(text, "queue"),
-    sendWith: (text, attached) => submit(text, "queue", attached),
+    send: (text) => submit({ text }, "queue"),
+    sendWith: (text, attached) => submit({ text }, "queue", attached),
     attach: (a) => setAttachments((list) => addAttachment(list, a)),
     forkToTab: () => {
       if (!forking) void forkToTab();
@@ -487,10 +489,14 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   }
 
   /** Copies every staged file before delivering any part of the message. */
-  async function onSubmit(text: string, mode: SendMode) {
+  async function onSubmit(input: UserPrompt, mode: SendMode) {
+    const copiedPaths = new Set<string>();
     await session.send(
-      (relativePath) => draftAttachmentsApi.uploadToWorkspace({ localWorkspaceId: workspace.id, relativePath, workspacePath: cwd }),
-      (sending) => submit(text, mode, sending.map(({ name, text }) => ({ name, text }))),
+      async (relativePath) => {
+        await draftAttachmentsApi.uploadToWorkspace({ localWorkspaceId: workspace.id, relativePath, workspacePath: cwd });
+        copiedPaths.add(relativePath);
+      },
+      (sending) => submit(withSentAttachmentDisplay(input, sending, copiedPaths), mode, sending.map(({ name, text }) => ({ name, text }))),
     );
   }
 
@@ -618,7 +624,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         queue={queue}
         canSteer={agent.canSteer}
         followUpMode={followUpMode}
-        onSubmit={planWaiting ? (text) => void agent.answerPermission?.(runId, planWaiting.requestId, { kind: "plan", approved: false, feedback: text }) : onSubmit}
+        onSubmit={planWaiting ? (input) => void agent.answerPermission?.(runId, planWaiting.requestId, { kind: "plan", approved: false, feedback: input.text }) : onSubmit}
         onStop={() => agent.stop(runId)}
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
@@ -1305,6 +1311,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
           <MainTabs fileTab={fileTarget?.workspaceId === workspace.id ? <span className={`main-tab${showFile ? " active" : ""}`}><button role="tab" aria-selected={showFile} onClick={() => setMainTab("file")}>{fileTarget.path.split("/").pop()}</button><button className="main-tab-close" aria-label={`Close ${fileTarget.path} tab`} onClick={closeFile}>×</button></span> : null} title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
           <div className="ws-chat-host" hidden={centerTerminal !== undefined}>
         <ChatPanel
+          key={activeReview?.chatId ?? workspace.id}
           repo={repo}
           workspace={workspace}
           dispatch={dispatch}
@@ -1343,7 +1350,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
           </div>
           {centerTerminal && (
             <section className="center-terminal terminal-panel" aria-label="Center terminal">
-              <TerminalHost key={centerTerminal.id} id={centerTerminal.id} />
+              <TerminalHost key={centerTerminal.id} id={centerTerminal.id} status={centerTerminal.status} />
             </section>
           )}
         </div>
@@ -1369,9 +1376,10 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
       </div>
       {renaming && (
         <RenameChatDialog
+          key={renaming.chatId}
           currentTitle={renaming.title}
           onRename={(title) => renameChat(renaming.chatId, title)}
-          onClose={() => setRenaming(null)}
+          onClose={() => setRenaming((current) => current?.chatId === renaming.chatId ? null : current)}
           onError={(message) => notify?.("error", `Failed to rename chat: ${message}`)}
         />
       )}

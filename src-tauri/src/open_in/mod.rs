@@ -17,6 +17,7 @@ pub mod icon;
 #[cfg(test)]
 mod tests;
 
+use std::ffi::{OsStr, OsString};
 use std::path::{Path, PathBuf};
 
 use serde::Serialize;
@@ -242,12 +243,16 @@ pub fn available_apps(roots: &Roots) -> Vec<&'static CatalogApp> {
 
 /// The program and arguments that open `dir` in `app` on macOS (Conductor's
 /// `uD` for a workspace folder): Finder runs `open <dir>`, Xcode `xed <dir>`,
-/// everything else `open -a <App> <dir>`.
+/// WezTerm spawns with `--cwd`, and other apps use `open -a <App> <dir>`.
 pub fn macos_open_command(app: &CatalogApp, dir: &Path) -> (String, Vec<String>) {
     let dir = dir.to_string_lossy().into_owned();
     match app.id {
         "finder" => ("open".into(), vec![dir]),
         "xcode" => ("xed".into(), vec![dir]),
+        "wezterm" => (
+            "wezterm".into(),
+            vec!["cli".into(), "spawn".into(), "--cwd".into(), dir],
+        ),
         _ => ("open".into(), vec!["-a".into(), app.app_name.into(), dir]),
     }
 }
@@ -266,4 +271,63 @@ pub fn macos_open_file_command(app: &CatalogApp, file: &Path) -> (String, Vec<St
         IconType::Terminal => macos_open_command(app, file.parent().unwrap_or(file)),
         IconType::Code => macos_open_command(app, file),
     }
+}
+
+pub fn run_macos_open(
+    app: &CatalogApp,
+    path: &Path,
+    is_file: bool,
+    mut run: impl FnMut(&str, &[String]) -> Result<(), String>,
+) -> Result<(), String> {
+    let (program, args) = if is_file {
+        macos_open_file_command(app, path)
+    } else {
+        macos_open_command(app, path)
+    };
+    let result = run(&program, &args);
+    if app.id == "wezterm" {
+        return if result.is_ok() {
+            run("open", &["-a".into(), app.app_name.into()])
+        } else {
+            let dir = if is_file {
+                path.parent().unwrap_or(path)
+            } else {
+                path
+            };
+            run(
+                "open",
+                &[
+                    "-a".into(),
+                    app.app_name.into(),
+                    "--args".into(),
+                    "start".into(),
+                    "--cwd".into(),
+                    dir.to_string_lossy().into_owned(),
+                ],
+            )
+        };
+    }
+    result.or_else(|err| {
+        if app.id == "xcode" {
+            run(
+                "open",
+                &[
+                    "-a".into(),
+                    app.app_name.into(),
+                    path.to_string_lossy().into_owned(),
+                ],
+            )
+        } else {
+            Err(err)
+        }
+    })
+}
+
+pub fn wezterm_search_path(path: Option<&OsStr>, home: Option<&OsStr>) -> Result<OsString, String> {
+    let mut dirs: Vec<PathBuf> = path.into_iter().flat_map(std::env::split_paths).collect();
+    dirs.push(PathBuf::from("/Applications/WezTerm.app/Contents/MacOS"));
+    if let Some(home) = home {
+        dirs.push(Path::new(home).join("Applications/WezTerm.app/Contents/MacOS"));
+    }
+    std::env::join_paths(dirs).map_err(|err| err.to_string())
 }

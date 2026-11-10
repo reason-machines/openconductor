@@ -1,0 +1,109 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+SOURCE BOUNDARY ONLY: production submit and host callbacks are evaluated with a deferred save and an in-memory setter; the key check is a source invariant, not a React remount observation. No app, browser, native, provider, or database operation.
+TAP version 13
+# Subtest: a completed save cannot close another chat opened after Cancel
+not ok 1 - a completed save cannot close another chat opened after Cancel
+  ---
+  duration_ms: 4.598704
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/evidence/dialogs/rename-chat-lifecycle/check-boundary.mjs:52:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    A's late success must preserve B
+    + actual - expected
+    
+    + null
+    - {
+    -   chatId: 'chat-b',
+    -   title: 'Chat B'
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    chatId: 'chat-b'
+    title: 'Chat B'
+  actual: ~
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/evidence/dialogs/rename-chat-lifecycle/check-boundary.mjs:63:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: successful save still closes its active chat
+ok 2 - successful save still closes its active chat
+  ---
+  duration_ms: 0.464014
+  type: 'test'
+  ...
+# Subtest: ordinary close still dismisses the active chat
+ok 3 - ordinary close still dismisses the active chat
+  ---
+  duration_ms: 0.125862
+  type: 'test'
+  ...
+# Subtest: late success after Cancel without replacement leaves the dialog closed
+ok 4 - late success after Cancel without replacement leaves the dialog closed
+  ---
+  duration_ms: 0.188731
+  type: 'test'
+  ...
+# Subtest: the reference's same-session success rule is retained
+ok 5 - the reference's same-session success rule is retained
+  ---
+  duration_ms: 0.312874
+  type: 'test'
+  ...
+# Subtest: a rejected save reports its error and does not close a replacement
+ok 6 - a rejected save reports its error and does not close a replacement
+  ---
+  duration_ms: 0.180366
+  type: 'test'
+  ...
+# Subtest: blank or unchanged trimmed title closes without a save: "   "
+ok 7 - blank or unchanged trimmed title closes without a save: "   "
+  ---
+  duration_ms: 0.189645
+  type: 'test'
+  ...
+# Subtest: blank or unchanged trimmed title closes without a save: " Chat A "
+ok 8 - blank or unchanged trimmed title closes without a save: " Chat A "
+  ---
+  duration_ms: 0.088337
+  type: 'test'
+  ...
+# Subtest: the host key follows chat identity, not the editable title
+not ok 9 - the host key follows chat identity, not the editable title
+  ---
+  duration_ms: 1.339422
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/evidence/dialogs/rename-chat-lifecycle/check-boundary.mjs:124:1'
+  failureType: 'testCodeFailure'
+  error: 'read the actual production key expression'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    expression (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/evidence/dialogs/rename-chat-lifecycle/check-boundary.mjs:19:10)
+    key (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/evidence/dialogs/rename-chat-lifecycle/check-boundary.mjs:125:34)
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/evidence/dialogs/rename-chat-lifecycle/check-boundary.mjs:126:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 7
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23.062878
