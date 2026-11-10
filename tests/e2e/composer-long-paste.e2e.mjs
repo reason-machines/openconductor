@@ -84,6 +84,20 @@ test("disabled conversion and exact lower boundaries retain ordinary editor past
     assert.equal(await page.locator(".chat .composer-attachment").count(), 0);
   });
   await composer(true, async ({ page, input, paste, modifier }) => {
+    await input.evaluate((node) => {
+      const phases = [];
+      node.longPasteHistory = phases;
+      for (const type of ["beforeinput", "input", "paste", "keydown", "keyup"]) {
+        node.addEventListener(type, (event) => phases.push({
+          phase: type,
+          key: event.key,
+          inputType: event.inputType,
+          textLength: node.textContent.length,
+          empty: node.dataset.empty,
+          focused: node === document.activeElement,
+        }));
+      }
+    });
     for (const text of ["x".repeat(5000), Array(90).fill("row").join("\n"), "ordinary paste"]) {
       await input.fill("");
       await paste(text);
@@ -91,9 +105,34 @@ test("disabled conversion and exact lower boundaries retain ordinary editor past
       assert.equal(await page.locator(".chat .composer-attachment").count(), 0);
     }
     await page.keyboard.press(`${modifier}+z`);
+    console.log(JSON.stringify({ longPasteSharedHistory: await input.evaluate((node) => ({
+      events: node.longPasteHistory,
+      undoLength: node.textContent.length,
+      empty: node.dataset.empty,
+      focused: node === document.activeElement,
+    })) }));
     assert.equal(await input.textContent(), "");
   });
 });
+
+for (const [name, text] of [["5000 code units", "x".repeat(5000)], ["90 lines", Array(90).fill("row").join("\n")], ["short text", "ordinary paste"]]) {
+  test(`isolated ${name} paste retains text, Undo and Redo without an attachment`, { timeout: 30_000 }, async () => {
+    await composer(true, async ({ page, input, paste, modifier }) => {
+      assert.equal(await input.textContent(), "");
+      await paste(text);
+      assert.equal(await input.innerText(), text);
+      assert.equal(await page.locator(".chat .composer-attachment").count(), 0);
+      await page.keyboard.press(`${modifier}+z`);
+      const undoLength = (await input.textContent()).length;
+      console.log(JSON.stringify({ longPasteIsolatedHistory: name, phase: "undo", textLength: undoLength }));
+      assert.equal(await input.textContent(), "");
+      await page.keyboard.press(`${modifier}+Shift+z`);
+      console.log(JSON.stringify({ longPasteIsolatedHistory: name, phase: "redo", textLength: (await input.textContent()).length }));
+      assert.equal(await input.innerText(), text);
+      assert.equal(await page.locator(".chat .composer-attachment").count(), 0);
+    });
+  });
+}
 
 test("recognized reference clipboard metadata takes precedence over the long-text threshold", { timeout: 30_000 }, async () => {
   await composer(true, async ({ page, input, paste }) => {

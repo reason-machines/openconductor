@@ -38,3 +38,15 @@ The correction reads the existing boolean preference in Composer, classifies the
 - Pending: unchanged mounted regression GREEN, additional mounted precedence controls, exact-head CI, merged-main behavior, and automatic package proof.
 - Not run: local app/browser/native runtime, installation, build, workflow dispatch/rerun, reference acquisition, native/WebKit clipboard behavior, attachment delivery to a real agent, or OS clipboard/native parity.
 - No screenshot: no local browser admission is held. Hosted behavioral results will be retained separately from visual/native acceptance; no screenshot or native parity is claimed.
+
+## Final-Undo diagnostic checkpoint
+
+Conductor Rebuild, 2026-11-10. Test/evidence-only lease COMPOSER-PASTE-UNDO-135-02.
+
+The [#903 hosted Keybindings job](https://github.com/reason-machines/openconductor/actions/runs/42823696419/job/129855355970), head `02e3c8526252c2db1a0277c8c413183969be1c01`, failed the final Undo assertion at `composer-long-paste.e2e.mjs:94`. The disabled-setting and all three lower-boundary text/no-attachment assertions passed before that assertion. The two oversized conversions, reference metadata, file/atom precedence and adjacent dedicated paste Undo/Redo test also passed. The log redacts the nonempty actual string, so its content and length are unknown.
+
+At current main `49fde8bf788f0914dc7e53e58c5b024a9294cc61`, the Composer, ComposerEditor, composerDocument and long-paste E2E test are unchanged from the verified #899 merge `4988e47daebc6936a868491dce28b5d7672bc381`. This is not evidence of a threshold product regression. Reusing one editor for three `fill`/paste cycles may contaminate the final Undo expectation, but that mechanism remains a hypothesis.
+
+This diagnostic increment preserves the original inputs, settings and failing assertions. It records only phase, text length, DOM empty-state and focus. Three additional fresh-context cases independently check the 5000-code-unit, 90-line and ordinary short-paste controls, each with exact text, zero attachments, Undo to empty and Redo to the original text. No product source, shared helper, delay, retry, disabled test or weaker assertion is introduced. The shared-history assertion must remain until hosted evidence establishes whether the fixture, product behavior or another cause is responsible.
+
+Verification at this checkpoint is limited to source review and `git diff --check`. Automatic hosted diagnostic results are pending. No local test, app/browser/native runtime, build, installation, acquisition, manual workflow dispatch/rerun or new CI observer ran. Native #847 remains stopped. No visible product change or screenshot is claimed.
