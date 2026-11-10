@@ -1,3 +1,4 @@
+@import './markdownFrontmatter.css';
 /* Chat transcript in Conductor's message list layout (renderApp `UDo`,
    `MDo`, `PDo`, `TDo`, tool rows `Mu`; evidence/chat/README.md). Sizes are
    Conductor's Tailwind classes in px (text-sm 14/20, text-xs 12/16 +0.01em,
