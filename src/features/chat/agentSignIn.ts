@@ -29,8 +29,8 @@ export function signInCopy(agent: ChatAgentId) {
   const label = AGENT_LABEL[agent];
   if (agent === "reason") return {
     badge: "Authentication required",
-    text: "Sign in with Reason in your browser, then retry your message.",
-    action: "Sign in with Reason",
+    text: "Sign in to Reason to use this agent. Your message sends as soon as you are signed in.",
+    action: "Sign in to Reason",
   };
   return {
     badge: "Authentication required",

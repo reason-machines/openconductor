@@ -5,7 +5,7 @@
 // markdown) and, once finished, its footer.
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
-import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
+import { ChatSignInCard } from "./ChatSignInCard.tsx";
 import { Fragment, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
@@ -21,8 +21,7 @@ import { TurnDetails } from "./TurnDetails.tsx";
 import { turnAgentLabel } from "./fork.ts";
 import { openUrl } from "../../backend.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
-import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
-import { openAgentSettings } from "./ChatModelPicker.tsx";
+import { isSignInFailure } from "./agentSignIn.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
 import { SentUserContent } from "./SentUserContent.tsx";
 import type { UserPrompt } from "./userContent.ts";
@@ -227,21 +226,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
         {menuItems.length > 0 ? <TurnMenu items={menuItems} onSelect={(id) => actions[id]?.()} /> : null}
       </span>
       {turnFooter?.(row.turnId)}
-      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <SignInNotice agent={ctx.chatAgent} /> : null}
-    </div>
-  );
-}
-
-/** Reason signs in directly; local agents keep their Settings authentication flow. */
-function SignInNotice({ agent }: { agent: ChatAgentId }) {
-  const copy = signInCopy(agent);
-  return (
-    <div className="chat-sign-in" data-testid="chat-sign-in" data-agent={agent}>
-      <span className="chat-sign-in-badge">{copy.badge}</span>
-      <p>{copy.text}</p>
-      {agent === "reason" ? <ReasonSignInControls variant="chat" /> : (
-        <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>{copy.action}</button>
-      )}
+      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <ChatSignInCard agent={ctx.chatAgent} onSignedIn={row.retryPrompt && onRetry ? () => onRetry(row.retryPrompt!, row.turnId) : undefined} /> : null}
     </div>
   );
 }
