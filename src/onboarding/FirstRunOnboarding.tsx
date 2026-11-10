@@ -5,6 +5,7 @@ import { AppMark } from "../components/AppMark";
 import { CONTINUE_LABEL, EXIT_LABEL, nextSlideId, SLIDES, type Slide } from "./firstRun";
 import { SignUp, useReasonAccount, type SignUpProps } from "./SignIn";
 import "./onboarding.css";
+import type { AgentKind } from "../settings/types";
 
 /** How long a slide shows before the next one (the reference advances when its video ends). */
 export const SLIDE_MS = 8000;
@@ -24,16 +25,17 @@ const TICK_MS = 100;
  * signing in", and Enter continues either way (Conductor's Enter waits for
  * the account).
  */
-export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue: () => void; busy: boolean; onFailed: SignUpProps["onFailed"] }) {
+export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue: (agent: AgentKind) => void; busy: boolean; onFailed: SignUpProps["onFailed"] }) {
+  const [agent, setAgent] = useState<AgentKind>("reason");
   const account = useReasonAccount();
   // wBi: once signed in, finish without waiting for Continue (once).
   const advanced = useRef(false);
   useEffect(() => {
     if (account && !advanced.current) {
       advanced.current = true;
-      onContinue();
+      onContinue(agent);
     }
-  }, [account, onContinue]);
+  }, [account, agent, onContinue]);
   const [current, setCurrent] = useState<Slide["id"]>("repo");
   const [progress, setProgress] = useState(0);
   const select = useCallback((id: Slide["id"]) => {
@@ -57,7 +59,7 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
 
   useKeybindings({
     "onboarding.continue": () => {
-      if (!busy) onContinue();
+      if (!busy) onContinue(agent);
     },
     "onboarding.nextSlide": next,
   });
@@ -86,15 +88,22 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
               ))}
             </div>
             <div className="onb-actions">
+              <fieldset className="onb-agent-choice" disabled={busy}>
+                <legend>Choose your default agent</legend>
+                {([{ id: "claude", label: "Claude Code" }, { id: "codex", label: "Codex" }, { id: "reason", label: "Reason" }] satisfies { id: AgentKind; label: string }[]).map((choice) => (
+                  <label key={choice.id}><input type="radio" name="first-run-agent" value={choice.id} checked={agent === choice.id} onChange={() => setAgent(choice.id)} />{choice.label}</label>
+                ))}
+              </fieldset>
+              <p className="onb-note">The Reason CLI is ready for every agent. You can sign in later.</p>
               {account ? (
-                <button type="button" className="onb-btn onb-continue" onClick={onContinue} disabled={busy}>
+                <button type="button" className="onb-btn onb-continue" onClick={() => onContinue(agent)} disabled={busy}>
                   {CONTINUE_LABEL}
                   <span className="onb-btn-icon">
                     <ArrowRightIcon size={16} />
                   </span>
                 </button>
               ) : (
-                <SignUp onFailed={onFailed} onSkip={onContinue} />
+                <SignUp onFailed={onFailed} onSkip={() => onContinue(agent)} />
               )}
             </div>
           </div>

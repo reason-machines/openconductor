@@ -6,6 +6,8 @@ import { countRepos, finishFirstRun, readFirstRunStep } from "./api";
 import { FINISH_FAILED, FIRST_RUN_DONE_STEP, firstRunView, parseFirstRunStep } from "./firstRun";
 import { ExitOnboardingButton, FirstRunOnboarding, StartupLoader } from "./FirstRunOnboarding";
 import { LoginScreen } from "./SignIn";
+import { ensureReasonCli } from "./reasonCli";
+import type { AgentKind } from "../settings/types";
 
 /** Conductor's `/login` route (`pSa`), outside the auth guard. */
 export const LOGIN_ROUTE = "/login";
@@ -31,6 +33,19 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [path, setPath] = useState(window.location.pathname);
   const [busy, setBusy] = useState(false);
+  const [cli, setCli] = useState<"installing" | "ready" | { error: string }>("installing");
+  const [installAttempt, retryInstall] = useState(0);
+
+  useEffect(() => {
+    if (demo) return;
+    let live = true;
+    setCli("installing");
+    void ensureReasonCli().then(
+      () => { if (live) setCli("ready"); },
+      (error: unknown) => { if (live) setCli({ error: error instanceof Error ? error.message : String(error) }); },
+    );
+    return () => { live = false; };
+  }, [demo, installAttempt]);
   const { toasts, show, dismiss } = useToasts();
 
   // The app shell applies the theme once it mounts; the onboarding and
@@ -59,10 +74,10 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
     setPath("/");
   }, []);
 
-  const onContinue = useCallback(() => {
+  const onContinue = useCallback((agent: AgentKind = "reason") => {
     if (busy) return;
     setBusy(true);
-    finishFirstRun().then(
+    finishFirstRun(agent).then(
       () => {
         setBusy(false);
         setLoaded((l) => (l ? { ...l, step: FIRST_RUN_DONE_STEP } : l));
@@ -79,6 +94,18 @@ export function FirstRunGate({ children }: { children: ReactNode }) {
   const onFailed = useCallback((title: string, description: string) => show("error", title, { description }), [show]);
 
   if (demo) return <>{children}</>;
+  if (cli !== "ready") return (
+    <div className="onb-login" data-testid="reason-cli-setup">
+      <div className="onb-login-inner">
+        <h1>Setting up OpenConductor</h1>
+        <p className="onb-note" role="status">Installing or updating the Reason CLI. This is included for every agent; signing in is optional.</p>
+        {typeof cli === "object" && <>
+          <p className="onb-error" role="alert">{cli.error}</p>
+          <button type="button" className="onb-btn" onClick={() => retryInstall((attempt) => attempt + 1)}>Retry setup</button>
+        </>}
+      </div>
+    </div>
+  );
   if (path === LOGIN_ROUTE)
     return (
       <>

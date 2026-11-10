@@ -52,6 +52,8 @@ g.__TAURI_INTERNALS__ = {
   },
 };
 
+handlers.set("reason_account_status", () => ({ name: "Fixture", email: "fixture@example.invalid", error: null }));
+
 // conductor.db's stored statuses, read once when reasonChat connects the status store at import.
 handlers.set("session_statuses", () => [
   { chatId: "ws-stored", workspaceId: "ws-stored", status: "needs_user_input" },

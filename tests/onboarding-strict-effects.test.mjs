@@ -54,6 +54,7 @@ async function fixture({ strict, initial = { state: "idle" }, surface = "gate", 
   const boundaries = {
     "@tauri-apps/api/core": { async invoke(command, args) {
       requests.push({ command, args });
+      if (command === "reason_cli_ensure_current") return { path: "/fixture/bin/reason", version: "fixture" };
       if (command === "db_first_run_onboarding_step") return null;
       if (command === "db_list_repos") return [];
       if (command === "db_finish_first_run_onboarding") {
@@ -80,6 +81,7 @@ async function fixture({ strict, initial = { state: "idle" }, surface = "gate", 
     "src/settings/connectedDefault": { async rememberConnection(agent) { events.push({ kind: "remember", agent }); } },
     "src/settings/api": { async getSettings() { return {}; } },
     "src/settings/appearance": { applyAppearance() {} },
+    "src/onboarding/firstRunAgent": { async selectFirstRunAgent() {} },
     "src/keybindings/KeybindingsProvider": { useKeybindings() {} },
     "src/components/AppMark": { AppMark: () => null },
     "src/components/Icons": { ArrowRightIcon: () => null, CloseIcon: () => null },

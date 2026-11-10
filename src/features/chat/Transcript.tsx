@@ -6,6 +6,7 @@
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
+import { rememberPairedWorkspace } from "../../onboarding/reasonChatConnection";
 import { Fragment, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
@@ -227,19 +228,19 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
         {menuItems.length > 0 ? <TurnMenu items={menuItems} onSelect={(id) => actions[id]?.()} /> : null}
       </span>
       {turnFooter?.(row.turnId)}
-      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <SignInNotice agent={ctx.chatAgent} /> : null}
+      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <SignInNotice agent={ctx.chatAgent} onSignedIn={row.retryPrompt && onRetry ? () => onRetry(row.retryPrompt!, row.turnId) : undefined} /> : null}
     </div>
   );
 }
 
 /** Reason signs in directly; local agents keep their Settings authentication flow. */
-function SignInNotice({ agent }: { agent: ChatAgentId }) {
+function SignInNotice({ agent, onSignedIn }: { agent: ChatAgentId; onSignedIn?: () => void }) {
   const copy = signInCopy(agent);
   return (
     <div className="chat-sign-in" data-testid="chat-sign-in" data-agent={agent}>
       <span className="chat-sign-in-badge">{copy.badge}</span>
       <p>{copy.text}</p>
-      {agent === "reason" ? <ReasonSignInControls variant="chat" /> : (
+      {agent === "reason" ? <ReasonSignInControls variant="chat" label={copy.action} onSignedIn={async (account) => { await rememberPairedWorkspace(account); onSignedIn?.(); }} /> : (
         <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>{copy.action}</button>
       )}
     </div>

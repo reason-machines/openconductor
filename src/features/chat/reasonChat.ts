@@ -30,6 +30,7 @@ import { listen } from "@tauri-apps/api/event";
 import { applyReasonPayload, permissionPrompt, type PromptAttachment, type ReasonPayload } from "./reason.ts";
 import { connectStatusStore, createChatRuntime, type ChatBackend, type Deliver, type PermissionAnswer, type PermissionEvents, type PermissionPrompt } from "./chatRuntime.ts";
 import { desktopHost } from "./desktopHost.ts";
+import { signedIn, type ReasonAccount } from "../../settings/agents/reasonModes.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { withGeneralPreferences } from "../../settings/prompts.ts";
 import { parseModelOptions, saveRunningModel, loadCachedModels, saveCachedModels, type ReasonModelOption, type RunningModel } from "./reasonModels.ts";
@@ -71,6 +72,8 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
       }
     }),
   async open(chatId, cwd, sessionId, config) {
+    const account = await invoke<ReasonAccount | null>("reason_account_status");
+    if (!signedIn(account)) throw new Error("Authentication required. Sign in to Reason to send this message.");
     await invoke("reason_open_chat", { chatId, cwd, sessionId, config });
   },
   // The open Session switches before its next prompt (reason_acp/provider.rs).

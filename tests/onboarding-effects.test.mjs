@@ -22,7 +22,8 @@ const deferred = () => {
   return { promise, resolve, reject };
 };
 
-async function fixture({ initial = { state: "idle" }, surface = "gate" } = {}) {
+async function fixture({ initial = { state: "idle" }, surface = "gate", installing = false } = {}) {
+  const installation = installing ? deferred() : null;
   const requests = [], opens = [], remembered = [], callbacks = [], timers = new Map(), intervals = new Map();
   const errors = [], navigations = [], writes = [], modules = new Map();
   let status = initial, read, sequence = 0, root;
@@ -35,6 +36,7 @@ async function fixture({ initial = { state: "idle" }, surface = "gate" } = {}) {
   const boundaries = {
     "@tauri-apps/api/core": { async invoke(command, args) {
       requests.push({ command, args });
+      if (command === "reason_cli_ensure_current") return installation ? installation.promise : { path: "/fixture/bin/reason", version: "fixture" };
       if (command === "reason_login_status") return read ? read.promise : status;
       if (command === "reason_login_start") return status = waiting;
       if (command === "reason_login_cancel") return status = { state: "cancelled" };
@@ -65,7 +67,7 @@ async function fixture({ initial = { state: "idle" }, surface = "gate" } = {}) {
     modules.set(file, module);
     let source = readFileSync(path, "utf8");
     const mutations = {
-      "advance-before-save": ["src/onboarding/FirstRunGate", "finishFirstRun().then(", "(finishFirstRun(), Promise.resolve()).then("],
+      "advance-before-save": ["src/onboarding/FirstRunGate", "finishFirstRun(agent).then(", "(finishFirstRun(agent), Promise.resolve()).then("],
       "skip-validation": ["src/onboarding/reasonSignIn", "if (!signedIn(account)) return", "if (false) return"],
       "repeat-callback": ["src/onboarding/SignIn", "if (!account || connectedNotified.current) return;", "if (!account) return;"],
     };
@@ -96,16 +98,19 @@ async function fixture({ initial = { state: "idle" }, surface = "gate" } = {}) {
   const { FirstRunGate } = load("src/onboarding/FirstRunGate");
   const api = load("src/onboarding/reasonSignIn");
   const { LoginScreen } = load("src/onboarding/SignIn");
+  const { ReasonSignInControls } = load("src/onboarding/ReasonSignInControls");
   const onDone = () => { callbacks.push("done"); };
   const onFailed = (title, description) => { callbacks.push({ title, description }); };
   const element = () => surface === "gate"
     ? React.createElement(FirstRunGate, {}, React.createElement("main", { "data-testid": "home" }, "Home"))
-    : React.createElement(LoginScreen, { onDone, onFailed });
+    : surface === "controls"
+      ? React.createElement(ReasonSignInControls, { label: "Sign in to Reason", onSignedIn: onDone })
+      : React.createElement(LoginScreen, { onDone, onFailed });
   await act(async () => { root = create(element()); });
   const all = (predicate) => root.root.findAll(predicate);
   const text = () => JSON.stringify(root.toJSON());
   return {
-    requests, opens, remembered, callbacks, writes, errors, navigations, timers, intervals, root, api, text,
+    requests, opens, remembered, callbacks, writes, errors, navigations, timers, intervals, root, api, text, installation,
     count(id) { return all((node) => node.props["data-testid"] === id).length; },
     button(label) {
       const result = all((node) => node.type === "button" && node.children.filter((x) => typeof x === "string").join("") === label);
