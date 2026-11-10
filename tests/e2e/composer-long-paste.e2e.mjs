@@ -100,6 +100,9 @@ test("disabled conversion and exact lower boundaries retain ordinary editor past
     });
     for (const text of ["x".repeat(5000), Array(90).fill("row").join("\n"), "ordinary paste"]) {
       await input.fill("");
+      const clearedLength = (await input.textContent()).length;
+      console.log(JSON.stringify({ longPasteSharedHistory: "after-fill", nextPasteLength: text.length, textLength: clearedLength }));
+      assert.equal(clearedLength, 0, "the shared fixture must be empty before each paste");
       await paste(text);
       assert.equal(await input.innerText(), text);
       assert.equal(await page.locator(".chat .composer-attachment").count(), 0);
