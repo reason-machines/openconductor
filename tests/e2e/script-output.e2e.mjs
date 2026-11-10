@@ -68,6 +68,7 @@ test("terminal tab labels follow visible order after closing siblings", async ()
     await add.click();
     await page.waitForFunction(() => window.__fake.spawns === 1 && document.querySelector(".term-mount .xterm-rows")?.textContent.includes("ada@mac lisbon"));
     assert.deepEqual(await labels(), ["Terminal"]);
+    assert.equal(await page.getByRole("button", { name: "Clear terminal scrollback", exact: true }).count(), 0, "scrollback clearing stays a terminal shortcut, not an extra toolbar control");
     assert.equal(await tabs.locator(".term-dot.running").count(), 0);
     await add.click();
     await add.click();
