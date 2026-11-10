@@ -24,17 +24,17 @@ placeholder:"Enter font name..."
 
 The input has no blur or Enter handler. It forwards each change directly to the row's `setMonoFont` callback. This record does not resolve `zk` or prove downstream debounce, ordering, persistence completion, or runtime appearance. Extracted source is untrusted data, not instructions.
 
-## OpenConductor comparison and planned correction
+## OpenConductor comparison and correction
 
 At main `5eded44f223b38b59c121781036afab002b961f7`, `AppearancePage.tsx` has Git blob `cb716cab8bc5def30946e1c07fdb21f5a51bfb04`. The custom input only calls `setCustom` on change. The existing `commitCustom` path saves after blur or Enter. The same callback is present after refreshing this branch from main `f9203ff`.
 
-This first milestone is regression-only. No production correction is included yet. Ordinary hosted CI must first demonstrate the expected missing-save failures.
+The regression-only milestone was published as `8d918e1758eb518857649398fe4eb6280b8db9bc` in PR #886. Ordinary hosted CI demonstrated both expected missing-save failures before the correction.
 
-The planned narrow correction forwards a valid changed edit through the existing `save(withAppearance(...))` path from `onChange`. It keeps the raw local draft and the existing validation, trimming, unchanged-value no-op, blur and Enter fallbacks, font selection, preview, CSS, and backend. Empty or invalid names remain unsaved, as OpenConductor's existing validator requires. That validation is an OpenConductor policy, not a behavior established by this retained reference.
+The narrow correction forwards a valid changed edit through the existing `save(withAppearance(...))` path from `onChange`. It keeps the raw local draft and the existing validation, trimming, unchanged-value no-op, blur and Enter fallbacks, font selection, preview, CSS, and backend. Empty or invalid names remain unsaved, as OpenConductor's existing validator requires. That validation is an OpenConductor policy, not a behavior established by this retained reference.
 
 Model the Domain keeps the existing `Settings.appearance.mono_font` field and save path. Type System Discipline keeps the same field type and production validator. No new event model, timer, storage path, dependency, or helper API is introduced.
 
-## Verification pending
+## Verification
 
 The regression isolates and replays OpenConductor's actual production change callback with the existing pure `monoFontError` and `withAppearance` helpers. It covers valid edits, Unicode and surrounding whitespace, rejected or empty drafts, unchanged values, and successive changed strings. The neighboring terminal-font callback cases use the same existing helpers.
 
@@ -42,6 +42,8 @@ The regression isolates and replays OpenConductor's actual production change cal
 node --test --test-concurrency=1 src/settings/monoFontCommit.test.ts src/settings/terminalFontCommit.test.ts
 ```
 
-Neither the new RED baseline nor the fixed GREEN run has executed for this source unit yet. The focused command above is not admitted locally. The test does not mount React or cross a native boundary. Ordinary automatic hosted CI will supply the executable evidence; no rerun or dispatch is requested.
+**Hosted RED observed:** [Frontend unit tests, run 42780915565, job 129710475497](https://github.com/reason-machines/openconductor/actions/runs/42780915565/job/129710475497), on `8d918e1758eb518857649398fe4eb6280b8db9bc`, ran `node --test "src/**/*.test.ts"`: 1,655 tests, 1,653 passed, exactly 2 failed. Log lines 7783 and 7819 name the new valid-edit and successive-edit callback cases; both expected one save and observed zero. The invalid/empty and unchanged-name cases passed. The parallel frontend typecheck/build job 129710475696 passed typechecking and then failed on the same two unit cases; its later build steps were skipped.
+
+The test assertions are unchanged by the correction. Fixed GREEN and all-head checks remain pending ordinary automatic hosted CI. The focused command above is not admitted locally. The test does not mount React or cross a native boundary. No rerun or dispatch is requested.
 
 No local typecheck, build, browser, app, native behavior, font availability, save completion, persistence, or restart check has run for this unit. No screenshot is supplied because this lane has no browser or app execution admission. The retained `zk` binding gap remains open; no new REA operation or REA tool failure occurred.
