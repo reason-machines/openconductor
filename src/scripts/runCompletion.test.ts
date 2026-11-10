@@ -217,7 +217,7 @@ test("actual Run panel isolates detected preview URLs and delayed snapshots acro
   f.holdOutput("dev");
   await f.admit("dev");
 
-  await f.menu("Test");
+  await f.admit("test");
   assert.ok(f.hasButton("Stop Test"));
   assert.equal(f.hasButton("Open http://localhost:5101/dev"), false, "busy task switches reset the detected URL");
   assert.doesNotMatch(f.output(), /5101\/dev/);

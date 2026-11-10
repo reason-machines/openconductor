@@ -51,7 +51,9 @@ Configured preview URLs remain covered by all existing completion cases. No exis
 
 - Passed: complete retained `nro` hash and output/reset subspan hash readback on Reason Cloud.
 - Passed: `git diff --check` before publishing the regression checkpoint.
-- Pending: automatic hosted RED, unchanged tests after the minimal correction, and all exact-head workflows.
+- Hosted RED at regression head `bdb0058451f9db4cbb3eee9d8cac85b4ed3d3291`: [CI run 42912691158, frontend job 130167129736](https://github.com/reason-machines/openconductor/actions/runs/42912691158/job/130167129736), `node --test "src/**/*.test.ts"`: 2,006 tests, 2,003 passed, 3 failed. The workspace case retained the previous URL (`true !== false`); the retired-listener case appended obsolete output to the current workspace. The task-switch case stopped before the isolation assertions because the busy toolbar correctly has no task menu.
+- The second regression-only checkpoint fixes that task-switch trigger to the real backend admission event. Every assertion remains unchanged. Production code is still unchanged; automatic hosted CI must now establish RED at the intended task-switch assertion before the correction.
+- Pending: corrected-trigger hosted RED, unchanged regressions after the minimal correction, and all exact-head workflows.
 - Not run: local tests, builds, browser screenshots, installed Mac acceptance, or side-by-side native parity. No screenshot is available because this lane has no browser/app/native execution admission. Component checks do not substitute for those observations.
 
 The failed-spawn catch/restart/tab-store gap remains separate and exhausted. No missing-tail search was repeated. #847 and all protected stops remain unchanged.
