@@ -4,6 +4,7 @@ import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSy
 import { homedir, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { installFakeApps } from "./fake-apps.mjs";
+import { waitForSetup } from "./startup.mjs";
 
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, stdio: "pipe" });
 
@@ -53,7 +54,8 @@ export const flows = [
     // step and opens Home.
     name: "first-run",
     async run(wd) {
-      await wd.waitFor("the first-run onboarding", async () => (await wd.findAll(".onb")).length > 0);
+      const startup = await waitForSetup(wd);
+      if (!startup.onboarding) throw new Error("expected first-run onboarding after Reason CLI setup");
       const signUp = await textsOf(wd, ".onb-signup");
       if (JSON.stringify(signUp) !== JSON.stringify(["Sign up"])) throw new Error(`Sign up button ${JSON.stringify(signUp)}`);
       await clickByText(wd, ".onb-continue", "Continue without signing in");

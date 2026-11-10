@@ -42,6 +42,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -63,7 +64,7 @@ writeFileSync(join(project, "README.md"), "e2e\n");
 git("add", ".");
 git("-c", "user.name=e2e", "-c", "user.email=e2e@example.com", "commit", "-q", "-m", "init");
 
-// `reason` on PATH is the fake; the app finds it with find_reason_cli.
+// Explicit chat override: the universal installer still ensures the official CLI.
 const bin = join(home, "bin");
 mkdirSync(bin);
 const fake = join(repoRoot, "tools/reason-acp/fake_reason_acp.py");
@@ -71,6 +72,8 @@ writeFileSync(join(bin, "reason"), `#!/bin/sh\nexec python3 "${fake}" "$@"\n`);
 chmodSync(join(bin, "reason"), 0o755);
 
 const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), PATH: `${bin}:${process.env.PATH}` };
+mkdirSync(env.OPENCONDUCTOR_HOME, { recursive: true });
+writeFileSync(join(env.OPENCONDUCTOR_HOME, "settings.toml"), `reason_executable_path = ${JSON.stringify(join(bin, "reason"))}\n`);
 delete env.REASON_CLI;
 // The app data folder (conductor.db, worktrees) must be under the fresh HOME too.
 delete env.XDG_DATA_HOME;
@@ -163,7 +166,7 @@ const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await runni
 
 // Navigate through the sidebar instead of racing React's saved preferences with a reload.
 async function openWorkspace(repoName, branch) {
-  await capture.waitForAppReady();
+  await finishStartup(capture);
   const row = `button[data-testid="left-sidebar-workspace-item"][title*=" · ${branch} · "]`;
   const rowId = await waitFor(`the ${branch} row in the sidebar`, async () => {
     const id = await elementBy("return document.querySelector(arguments[0]);", row);
@@ -192,7 +195,7 @@ async function launch() {
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
   capture.sessionId = session.sessionId;
-  await capture.waitForAppReady();
+  await finishStartup(capture);
 }
 
 try {
