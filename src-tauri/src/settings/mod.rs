@@ -5,6 +5,7 @@
 //! written on the first save. Saves are atomic (temp file + rename) and
 //! validated, so a bad value from the UI never reaches disk.
 
+mod big_terminal_prefs;
 pub mod commands;
 pub mod db_backed;
 pub mod effective;

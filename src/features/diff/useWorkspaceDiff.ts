@@ -17,7 +17,7 @@ import { discardScope, type DiffTarget, type DiscardSource } from "./target.ts";
 import type { TurnRef } from "./turnChangesCache.ts";
 import { newFileText } from "./copyFile.ts";
 import { DEFAULT_VIEW_OPTIONS, type DiffScope, type DiffViewOptions, type FileDiff } from "./types.ts";
-import { isViewed, loadViewed, pruneViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
+import { isViewed, loadViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
 
 export type DiffLoad = { state: "loading" } | { state: "error"; message: string } | { state: "ready"; files: FileDiff[] };
 
@@ -127,6 +127,11 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   const navigationFiles = useMemo(() => changeRows(
     filterChangedFiles(files, presentation.filePathFilter), presentation.diffFileListMode, new Set(), (file) => isViewed(viewed, file),
   ).flatMap((row) => row.kind === "file" ? [row.file] : []), [files, viewed, presentation.filePathFilter, presentation.diffFileListMode]);
+  useEffect(() => {
+    const first = navigationFiles[0];
+    if (first === undefined) return;
+    setSelectedPath((path) => path !== null && !navigationFiles.some((file) => file.path === path) ? first.path : path);
+  }, [navigationFiles, selectedPath]);
   const [uncommitted, setUncommitted] = useState<{ worktree: string | null; paths: Set<string> }>({ worktree: null, paths: new Set() });
   useEffect(() => {
     if (load.state !== "ready") return;
@@ -150,9 +155,8 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   }, [load, opts.scope, onLoaded]);
 
   const setViewed = (map: ViewedMap) => {
-    const pruned = pruneViewed(map, files);
-    saveViewed(localStorage, workspaceId, pruned);
-    setViewedMap(pruned);
+    saveViewed(localStorage, workspaceId, map);
+    setViewedMap(map);
   };
 
   const open = useCallback(

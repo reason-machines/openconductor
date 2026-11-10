@@ -46,8 +46,50 @@ the bundle is run by the checker.
 
 The macOS CI job compiles the ARM64 macOS 15 target, signs it, and reads back
 the signature. It never invokes the resulting executable. It uses no secrets,
-guest files, restore images, or provider credentials. No runner artifact is
+guest files, restore images, or provider credentials. No runner binary is
 installed or published.
+
+### Inert CI identity receipts
+
+On a successful push to this repository's main branch, the existing compile/sign
+job may publish exactly `receipt.json` and `build.json` for seven days. PR jobs
+publish neither. Packaging opts in with `--ci-receipt-dir` and refuses non-ad-hoc
+signing, incomplete CI context, a source/workflow SHA mismatch, dirty tracked or
+unexpected untracked inputs, linked identity inputs, or an existing output path.
+The directory must be outside the checkout. The final signed executable is hashed
+after signature readback; the existing identity checker performs a local
+self-consistency check without running it. That check is not authentication.
+
+`receipt.json` retains #931's schema. `build.json` records source, workflow,
+run/attempt/job, toolchain observations and the receipt-byte digest. Neither
+self-authenticates. SDK/compiler strings are diagnostics, not hermetic-build proof.
+Only two bounded JSON files are uploaded. The ephemeral signed executable is not
+retained by this artifact; a rebuild is not proven to have identical bytes.
+
+`tools/native_qa_vm_receipt.py` exposes `ApprovedBuild` and
+`consume_ci_receipt(selection, reader)`. Selection must independently pin numeric
+repository/workflow identities, the full source SHA, exact run/attempt and immutable
+artifact ID. A trusted broker must resolve these through authenticated GitHub
+metadata, including the workflow at the selected source, whole-run and producer
+job success, repository/head linkage, non-expiry and the service archive digest.
+It must cap the download at 256 KiB. The consumer checks that digest, rereads
+run/job/artifact metadata and parses exactly two allowlisted JSON members in memory
+without extraction, with a 64 KiB bound per file. Unknown or missing fields,
+self-reported authentication, wrong/stale identities, links, executable payloads,
+duplicate members/keys, manifest disagreement and observed mutations refuse.
+There is no latest-successful or candidate-derived fallback.
+
+**No production authenticated broker is implemented.** A Python reader subclass is
+an integration boundary, not proof of authentication. Current mediated Actions
+metadata lacks required authoritative fields, including numeric repository linkage
+and the service archive digest. A real consumer must refuse until a supported
+trusted integration supplies them. Synthetic readers prove policy only. The result
+contains exact receipt bytes and selected evidence IDs, never a launch permit.
+The caller must retain the same-build signed candidate through a separately
+authorized channel and compare the returned build ID when using #931's checker.
+No artifact download, candidate acquisition or native verification is wired here.
+Snapshots detect observed changes, not all transient swaps. Atomic verify-to-launch
+integrity, effective confinement and native admission remain unproved.
 
 ## Source checks
 
@@ -61,7 +103,7 @@ cc -std=c11 -Wall -Wextra -Werror -pedantic \
   -o "$out/profile-tests"
 "$out/profile-tests"
 rm -rf "$out"
-python3 -W error::ResourceWarning -m unittest tools.test_native_qa_vm_signing -v
+python3 -W error::ResourceWarning -m unittest tools.test_native_qa_vm_signing tools.test_native_qa_vm_receipt -v
 bash -n scripts/package-native-qa-vm-runner.sh
 ```
 

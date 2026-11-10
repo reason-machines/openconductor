@@ -13,9 +13,9 @@ import type { ChangesPresentation } from "./changesPresentation.ts";
 import { discardScope } from "./target.ts";
 import * as viewed from "./viewed.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
-import { isViewed, loadViewed, pruneViewed, saveViewed, setViewed, toggleViewed, viewedCount } from "./viewed.ts";
+import { isViewed, loadViewed, saveViewed, setViewed, toggleViewed, viewedCount } from "./viewed.ts";
 import { readCachedTurnChanges } from "./turnChangesCache.ts";
-import { DEFAULT_VIEW_OPTIONS, type DiffViewOptions, type FileDiff } from "./types.ts";
+import { DEFAULT_VIEW_OPTIONS, type DiffScope, type DiffViewOptions, type FileDiff } from "./types.ts";
 
 function file(path: string, text: string, modified = 1000): FileDiff & { last_modified_time: number } {
   return {
@@ -43,11 +43,13 @@ test("a viewed file that changes again is no longer viewed", () => {
   assert.equal(isViewed(toggleViewed({}, before), after), false);
 });
 
-test("prune drops files that left the diff; count only counts current marks", () => {
+test("marking and unmarking retain other paths while counts use only current files", () => {
   const a = file("a.ts", "x");
   const b = file("b.ts", "x");
   const m = toggleViewed(toggleViewed({}, a), b);
-  assert.deepEqual(Object.keys(pruneViewed(m, [a])), ["a.ts"]);
+  assert.deepEqual(Object.keys(setViewed(m, file("c.ts", "x"), true)).sort(), ["a.ts", "b.ts", "c.ts"]);
+  assert.deepEqual(Object.keys(setViewed(m, b, false)), ["a.ts"]);
+  assert.equal(viewedCount(m, [a]), 1);
   assert.equal(viewedCount(m, [a, file("b.ts", "changed", Date.now() + 1000)]), 1);
 });
 
@@ -116,6 +118,7 @@ function navigationFile(path: string): FileDiff {
 async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], initialPresentation: Partial<ChangesPresentation> = {}) {
   let presentation: ChangesPresentation = { diffFileListMode: "flat", filePathFilter: "", collapsedDirectoryPaths: [], ...initialPresentation };
   let loadCalls = 0;
+  let openCalls = 0;
   let loadedFiles = files;
   let whitespaceFiles: FileDiff[] | undefined;
   const storage = new Map<string, string>();
@@ -156,7 +159,7 @@ async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], init
   const useWorkspaceDiff = module.exports.useWorkspaceDiff;
   let current: WorkspaceDiff | undefined;
   function Probe() {
-    current = useWorkspaceDiff({ workspaceId: "fixture", worktree: null, target: { branch: "main", remote: "origin" } });
+    current = useWorkspaceDiff({ workspaceId: "fixture", worktree: null, target: { branch: "main", remote: "origin" }, onOpen: () => { openCalls++; } });
     return null;
   }
   let renderer: ReturnType<typeof create>;
@@ -169,6 +172,7 @@ async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], init
     next() { act(() => { handlers["diff.nextFile"](); }); },
     previous() { act(() => { handlers["diff.previousFile"](); }); },
     loadCalls: () => loadCalls,
+    openCalls: () => openCalls,
     present(change: Partial<ChangesPresentation>) {
       presentation = { ...presentation, ...change };
       act(() => { renderer.update(React.createElement(Probe)); });
@@ -187,6 +191,14 @@ async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], init
     async ignoreWhitespace(next: FileDiff[]) {
       whitespaceFiles = next;
       await act(async () => { state().update({ ignoreWhitespace: true }); });
+    },
+    async scope(scope: DiffScope, next: FileDiff[]) {
+      loadedFiles = next;
+      await act(async () => { state().update({ scope }); });
+    },
+    async reopen() {
+      act(() => renderer.unmount());
+      await act(async () => { renderer = create(React.createElement(Probe)); });
     },
     close() { act(() => renderer.unmount()); },
   };
@@ -409,6 +421,172 @@ test("actual navigation responds to presentation and timestamp changes without r
     assert.equal(view.state().isViewed(view.state().files[1]), false);
   } finally { view.close(); }
 });
+
+test("actual selection redirects an excluded file to the first filtered flat row without opening a tab", async () => {
+  const files = [navigationFile("a.keep"), navigationFile("b.drop"), navigationFile("c.keep")];
+  const view = await fixture(files, [files[0]]);
+  try {
+    view.open(1);
+    const calls = view.loadCalls();
+    const opens = view.openCalls();
+    view.present({ filePathFilter: "keep" });
+    assert.equal(view.state().selected, files[2], "the first visible unviewed row replaces the excluded selection");
+    assert.equal(view.state().current, 2);
+    assert.equal(view.state().files, files);
+    assert.equal(view.state().isViewed(files[0]), true);
+    assert.equal(view.state().viewedCount, 1);
+    assert.equal(view.loadCalls(), calls);
+    assert.equal(view.openCalls(), opens);
+    view.present({ filePathFilter: "" });
+    assert.equal(view.state().selected, files[2], "clearing the filter does not restore the excluded selection");
+  } finally { view.close(); }
+});
+
+test("actual selection redirects to natural tree order including collapsed descendants", async () => {
+  const files = [navigationFile("root.keep"), navigationFile("selected.drop"), navigationFile("dir/item10.keep"), navigationFile("dir/item2.keep")];
+  const view = await fixture(files, [files[3]], { diffFileListMode: "tree", collapsedDirectoryPaths: ["dir"] });
+  try {
+    view.open(1);
+    const calls = view.loadCalls();
+    const opens = view.openCalls();
+    view.present({ filePathFilter: "keep" });
+    assert.equal(view.state().selected, files[3]);
+    assert.equal(view.state().current, 3);
+    assert.equal(view.state().files, files);
+    assert.equal(view.loadCalls(), calls);
+    assert.equal(view.openCalls(), opens);
+  } finally { view.close(); }
+});
+
+test("actual selection keeps a matching file when filtering and presentation order change", async () => {
+  const files = [navigationFile("a.keep"), navigationFile("b.drop"), navigationFile("c.keep")];
+  const view = await fixture(files, [files[2]]);
+  try {
+    view.open(2);
+    const calls = view.loadCalls();
+    const opens = view.openCalls();
+    view.present({ filePathFilter: "keep" });
+    assert.equal(view.state().selected, files[2]);
+    view.present({ diffFileListMode: "tree" });
+    assert.equal(view.state().selected, files[2]);
+    assert.equal(view.loadCalls(), calls);
+    assert.equal(view.openCalls(), opens);
+  } finally { view.close(); }
+});
+
+test("actual selection waits through a no-match filter and redirects when matches return", async () => {
+  const files = [navigationFile("a.keep"), navigationFile("b.drop")];
+  const view = await fixture(files);
+  try {
+    view.open(1);
+    const calls = view.loadCalls();
+    const opens = view.openCalls();
+    view.present({ filePathFilter: "zzzz-no-match" });
+    assert.equal(view.state().selected, files[1], "no matching destination leaves selection unchanged");
+    view.present({ filePathFilter: "keep" });
+    assert.equal(view.state().selected, files[0]);
+    assert.equal(view.loadCalls(), calls);
+    assert.equal(view.openCalls(), opens);
+  } finally { view.close(); }
+});
+
+test("actual selection redirects a removed path after a loaded file list changes", async () => {
+  const files = [navigationFile("removed.ts"), navigationFile("z.ts")];
+  const view = await fixture(files);
+  try {
+    view.open(0);
+    const opens = view.openCalls();
+    const remaining = [files[1], navigationFile("a.ts")];
+    await view.reload(remaining);
+    assert.equal(view.state().selected, remaining[1]);
+    assert.equal(view.state().current, 1);
+    assert.equal(view.state().files, remaining);
+    assert.equal(view.openCalls(), opens);
+  } finally { view.close(); }
+});
+
+test("actual selection stays unselected before a file is opened", async () => {
+  const files = [navigationFile("a.keep"), navigationFile("b.drop")];
+  const view = await fixture(files);
+  try {
+    view.present({ filePathFilter: "keep" });
+    assert.equal(view.state().selected, null);
+    await view.reload([files[0]]);
+    assert.equal(view.state().selected, null);
+    assert.equal(view.state().current, -1);
+    assert.equal(view.openCalls(), 0);
+  } finally { view.close(); }
+});
+
+test("actual selection keeps an empty loaded list inert and recovers its existing path", async () => {
+  const files = [navigationFile("a.ts")];
+  const view = await fixture(files);
+  try {
+    view.open(0);
+    const opens = view.openCalls();
+    await view.reload([]);
+    assert.equal(view.state().selected, null);
+    assert.equal(view.state().current, -1);
+    await view.reload(files);
+    assert.equal(view.state().selected, files[0]);
+    assert.equal(view.openCalls(), opens);
+  } finally { view.close(); }
+});
+
+test("actual selection redirects to a renamed file matched by its old path", async () => {
+  const renamed: FileDiff = { ...navigationFile("new-name.ts"), old_path: "legacy-target.ts", status: "renamed" };
+  const files = [navigationFile("selected.ts"), renamed];
+  const view = await fixture(files);
+  try {
+    view.open(0);
+    const calls = view.loadCalls();
+    const opens = view.openCalls();
+    view.present({ filePathFilter: "legacy-target" });
+    assert.equal(view.state().selected, renamed);
+    assert.equal(view.state().current, 1);
+    assert.equal(view.state().files, files);
+    assert.equal(view.loadCalls(), calls);
+    assert.equal(view.openCalls(), opens);
+  } finally { view.close(); }
+});
+
+const subsetScopes: DiffScope[] = ["uncommitted", { type: "commit", commitHash: "fixture-commit" }];
+for (const scope of subsetScopes) {
+  for (const action of ["header", "keyboard"] as const) {
+    for (const wasViewed of [false, true]) {
+      const scopeName = typeof scope === "object" ? "commit" : scope;
+      test(`actual ${action} ${wasViewed ? "unmark" : "mark"} in ${scopeName} scope retains off-scope viewed marks after return and reopen`, async (t) => {
+        t.mock.method(Date, "now", () => 2000);
+        const a = navigationFile("a.ts");
+        const b = navigationFile("b.ts");
+        const files = [a, b];
+        const view = await fixture(files, wasViewed ? files : [a]);
+        try {
+          await view.scope(scope, [b]);
+          assert.deepEqual(view.state().files, [b]);
+          assert.equal(view.state().opts.scope, scope);
+          assert.equal(view.state().isViewed(a), true);
+          assert.equal(view.state().isViewed(b), wasViewed);
+          view.open(0);
+          view[action]();
+          assert.equal(view.state().isViewed(b), !wasViewed);
+          assert.equal(view.state().viewedCount, wasViewed ? 0 : 1);
+          await view.scope("all", files);
+          assert.equal(view.state().isViewed(a), true, "toggling the subset must retain a.ts's existing mark");
+          assert.equal(view.state().isViewed(b), !wasViewed);
+          assert.equal(view.state().viewedCount, wasViewed ? 1 : 2);
+          await view.reopen();
+          assert.equal(view.state().isViewed(a), true, "the retained mark must survive storage and remount");
+          assert.equal(view.state().isViewed(b), !wasViewed);
+          assert.equal(view.state().viewedCount, wasViewed ? 1 : 2);
+          await view.reload([{ ...a, last_modified_time: 2001 }, b]);
+          assert.equal(view.state().isViewed(view.state().files[0]), false);
+          assert.equal(view.state().viewedCount, wasViewed ? 0 : 1);
+        } finally { view.close(); }
+      });
+    }
+  }
+}
 
 test("actual viewed callbacks leave empty, unselected and missing files alone", async () => {
   for (const files of [[], [navigationFile("a.ts")]]) {
