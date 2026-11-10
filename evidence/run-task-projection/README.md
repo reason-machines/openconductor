@@ -28,4 +28,10 @@ The runner allows only one run script per workspace. This change does not alter 
 
 Two new tests mount the actual `ScriptsPanel` and `RunSplitButton` with the existing real React test renderer fixture. They use the real scripts event adapter and authoritative status reads, with only the IPC boundary simulated. They cover completed picked Test followed by quiet Dev admission, Stop, natural exit, retained Test output and restarting Test without an unintended Stop. All existing component cases and assertions are unchanged.
 
-Hosted regression results are pending. No local Node or Cargo test, build, dependency installation, browser, app, native action, acquisition, workflow dispatch or runtime admission ran. `git diff --check` is the only local validation planned. No screenshot is authorized. #847 and protected data remain untouched.
+## Hosted RED and correction
+
+The regression-only provider head `105330552ac14a136a11a8c430a7c8ce2d5638c2` failed both new cases in [hosted frontend job 129885385534](https://github.com/reason-machines/openconductor/actions/runs/42832343457/job/129885385534). The first failed with `the busy workspace task replaces an idle pick in the display`, expected `true`, actual `false`. The second failed its unchanged `Stop Dev` assertion. Those were the only two failing frontend cases. Existing admission and completion cases passed.
+
+The correction adds `displayedTask`, the direct four-input projection from retained `Yio`, after `shownTask` selection. ScriptsPanel reads output, status, body and header through the projected task. It does not call `setPicked` or change the selected-task helper, start/stop IPC, runner or event adapter. Two pure cases cover idle/busy selections, absent/inactive workspace tasks and Spotlight identities. The two mounted RED tests are unchanged.
+
+Corrected hosted results are pending. No local Node or Cargo test, build, dependency installation, browser, app, native action, acquisition, workflow dispatch or runtime admission ran. `git diff --check` is the only local executable validation. No screenshot is authorized. #847 and protected data remain untouched.
