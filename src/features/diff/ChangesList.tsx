@@ -4,6 +4,7 @@ import { useCallback, useState, type ReactNode } from "react";
 import "./diff.css";
 import { RevertIcon } from "./DiscardDialog";
 import { FileContextMenu } from "./FileContextMenu";
+import { fileCopyPaths } from "./fileCopyPaths.ts";
 import { copyText, openInApp } from "../openIn/apps";
 import { splitPath } from "./FilePathChip";
 import { SearchIcon, XIcon } from "../files/panelIcons";
@@ -58,6 +59,7 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
   const [menu, setMenu] = useState<{ path: string; x: number; y: number } | null>(null);
   const closeMenu = useCallback(() => setMenu(null), []);
   const menuFile = menu ? files.find((file) => file.path === menu.path) : undefined;
+  const { path: copyPath, relativePath } = fileCopyPaths(menuFile?.path ?? "", worktree);
   return (
     <div className="oc-diff oc-diff-list">
       {load.state === "loading" && <div className="placeholder small">Loading changes…</div>}
@@ -93,8 +95,8 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
       <div className="oc-changes-comment-actions">{actions?.(files)}</div>
       {menu && menuFile && <FileContextMenu key={menuFile.path} path={menuFile.path} at={menu} onClose={closeMenu} actions={{
         view: () => diff.openPath(menu.path),
-        copyPath: worktree ? () => copy(`${worktree.replace(/\/+$/, "")}/${menuFile.path}`, "path", notify) : undefined,
-        copyRelativePath: () => copy(menuFile.path, "relative path", notify),
+        copyPath: () => copy(copyPath, "path", notify),
+        copyRelativePath: relativePath !== undefined ? () => copy(relativePath, "relative path", notify) : undefined,
         openIn: worktree ? (app) => openInApp(app.id, `${worktree.replace(/\/+$/, "")}/${menuFile.path}`).catch((e) => notify?.("error", `Failed to open in ${app.name}: ${e instanceof Error ? e.message : String(e)}`)) : undefined,
         discard: () => diff.askDiscard(menuFile, "menu"),
       }} />}
