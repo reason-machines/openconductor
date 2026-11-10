@@ -266,7 +266,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                         onKeyDown={(e) => onEffortOptionKey(e, index)}
                         onClick={() => {
                           onChange({ ...value, effort: o.value });
-                          setOpen(false);
+                          setEffortOpen(false);
                         }}
                       >
                         <span>{o.label}</span>
