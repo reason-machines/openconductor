@@ -89,3 +89,36 @@ test("⌘Q asks first while agents run: Cancel keeps the app, ⌘↵ quits", asy
   assert.deepEqual(errors, []);
   await context.close();
 });
+
+test("Quit confirmation initially focuses Cancel rather than the destructive action", async () => {
+  const { page, context, errors } = await openApp("/?demo=1");
+  try {
+    await page.keyboard.press("Meta+q");
+    const dialog = quitDialog(page);
+    await dialog.waitFor();
+    assert.equal(
+      await dialog.getByRole("button", { name: "Cancel", exact: true }).evaluate((button) => document.activeElement === button),
+      true,
+      "the reference Cancel action receives initial focus",
+    );
+    assert.equal(await quits(page), 0);
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});
+
+test("plain Enter cancels the newly opened Quit confirmation without quitting", async () => {
+  const { page, context, errors } = await openApp("/?demo=1");
+  try {
+    await page.keyboard.press("Meta+q");
+    const dialog = quitDialog(page);
+    await dialog.waitFor();
+    await page.keyboard.press("Enter");
+    await dialog.waitFor({ state: "detached" });
+    assert.equal(await quits(page), 0, "plain Enter activates Cancel, not Quit");
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});
