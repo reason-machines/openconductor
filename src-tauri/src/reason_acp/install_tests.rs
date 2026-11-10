@@ -113,7 +113,10 @@ fn assert_degraded(result: InstalledCli, version: &str, cause: &str) {
     assert_eq!(result["path"], "/test/home/.local/bin/reason");
     assert_eq!(result["version"], version);
     let warning = result["warning"].as_str().unwrap();
-    assert!(warning.contains("update could not be verified"), "{warning}");
+    assert!(
+        warning.contains("update could not be verified"),
+        "{warning}"
+    );
     assert!(warning.contains(cause), "{warning}");
 }
 
@@ -145,7 +148,10 @@ fn partial_failed_update_cannot_reuse_a_previously_working_probe() {
     let mut fake = Fake::new(Some("0.2.9"));
     fake.failure = Some("partial installation failed".into());
     fake.remove_on_failure = true;
-    assert_eq!(ensure(&mut fake).unwrap_err(), "partial installation failed");
+    assert_eq!(
+        ensure(&mut fake).unwrap_err(),
+        "partial installation failed"
+    );
     assert_eq!(fake.checks, 2);
 }
 
