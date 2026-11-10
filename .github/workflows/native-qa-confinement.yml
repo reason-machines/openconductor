@@ -1,0 +1,56 @@
+name: Native QA confinement
+
+on:
+  pull_request:
+    paths:
+      - 'tools/native_qa*.py'
+      - 'tools/test_native_qa*.py'
+      - 'docs/native-qa-confinement.md'
+      - '.github/workflows/native-qa-confinement.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/native_qa*.py'
+      - 'tools/test_native_qa*.py'
+      - 'docs/native-qa-confinement.md'
+      - '.github/workflows/native-qa-confinement.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: native-qa-confinement-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  portable:
+    name: Native QA portable contracts (not enforcement proof)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: >-
+          python3 -W error::ResourceWarning -m unittest
+          tools.test_native_qa_runner.RunnerContractTests
+          tools.test_native_qa tools.test_native_qa_webkit
+          tools.test_native_qa_ordinary tools.test_native_qa_cache tools.test_native_qa_stdio -v
+  sentinel:
+    name: macOS executable sentinel denials (no app or WebKit)
+    runs-on: macos-latest
+    timeout-minutes: 5
+    env:
+      OC_CONFINEMENT_SENTINEL: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile and exercise only synthetic process-family sentinels
+        run: python3 -W error::ResourceWarning -m unittest tools.test_native_qa_runner.NativeSentinelTests -v
