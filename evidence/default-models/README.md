@@ -15,7 +15,7 @@ The image shows the Default models heading, Loadout description, five numbered c
 
 ## Verification limits at the source checkpoint
 
-The mounted regression tests exercise production React event handlers with controlled catalog and storage fixtures. They are supplementary checks, not built-app evidence. Test execution and full typecheck await the shared runtime admission and the catalog/fixed-slot dependency increments.
+The 13 mounted regression cases exercise production React event handlers with controlled catalog and storage fixtures. They are supplementary checks, not built-app evidence. Catalog PR #913 and fixed-slot PR #912 are integrated from main `d7d316031d97acaff81ebd08ad0884a70c4e57e0`. This supplies the physical-slot exports and the fifth explicit-agent argument used by both settings components; no compatibility wrapper is added. Exact-head mounted-test, typecheck, and keybinding results are recorded on PR #914 after hosted CI runs. Local test/build execution remains paused.
 
 The real `/Applications/Conductor.app` page has not been checked with REA for this request. A direct `rea --help` command timed out without output; no new REA evidence ID was produced. Mac execution authority was subsequently explicitly withdrawn in the concurrent onboarding lane, so no alternate Session or route was used to continue Mac execution.
 
