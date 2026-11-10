@@ -1,20 +1,21 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { chromium } from "playwright-core";
-import { createServer } from "vite";
+import { startViteFixture } from "./vite-fixture-server.mjs";
 
 let base = process.env.DIALOGS_URL;
 let browser;
 let server;
 before(async () => {
   if (!base) {
-    server = await createServer({ server: { host: "127.0.0.1", port: 0 }, logLevel: "error" });
-    await server.listen();
-    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+    server = await startViteFixture();
+    base = server.base;
   }
   browser = await chromium.launch({ executablePath: process.env.CHROME_PATH ?? "/usr/bin/chromium", args: ["--no-sandbox"] });
 });
-after(async () => { await browser?.close(); await server?.close(); });
+after(async () => {
+  try { await browser?.close(); } finally { await server?.close(); }
+});
 
 async function open(name, viewport = { width: 1280, height: 820 }, query = "") {
   const page = await browser.newPage({ viewport, reducedMotion: "reduce" });
@@ -128,4 +129,25 @@ test("dialogs remain within a short viewport and restore trigger focus", async (
   await page.keyboard.press("Escape");
   await page.waitForFunction(() => document.activeElement?.textContent === "clone", null, { timeout: 1500 });
   await page.close();
+});
+
+test("restore: Escape dismisses the pending dialog without repeating the restore", async () => {
+  const page = await open("restore");
+  try {
+    const dialog = page.getByRole("alertdialog");
+    await page.keyboard.press("Meta+Enter");
+    assert.equal(await dialog.getByRole("button", { name: "Restoring..." }).isDisabled(), true);
+    assert.equal(await dialog.getByRole("button", { name: "Cancel", exact: true }).isDisabled(), true);
+    const expected = [{ type: "unarchiveWorkspace", repoId: "fixture-repo", workspaceId: "fixture-workspace", useNewBranch: true }];
+    assert.deepEqual(JSON.parse(await page.getByTestId("events").textContent()), expected);
+    await page.mouse.click(10, 100);
+    assert.equal(await dialog.count(), 1, "pointer dismissal remains blocked while restoring");
+    await page.keyboard.press("Meta+Enter");
+    assert.deepEqual(JSON.parse(await page.getByTestId("events").textContent()), expected);
+    await page.keyboard.press("Escape");
+    await dialog.waitFor({ state: "detached", timeout: 5000 });
+    assert.deepEqual(JSON.parse(await page.getByTestId("events").textContent()), expected, "dismissal neither cancels nor repeats the restore action");
+  } finally {
+    await page.close();
+  }
 });

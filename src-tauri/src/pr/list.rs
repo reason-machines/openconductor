@@ -45,6 +45,41 @@ pub struct OpenIssue {
     pub body: Option<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IssueLinkMetadata {
+    pub number: u64,
+    pub title: String,
+    pub url: String,
+    pub body: Option<String>,
+    pub state: IssueLinkState,
+    pub labels: Vec<IssueLinkLabel>,
+    pub assignee: Option<IssueLinkAssignee>,
+    pub milestone: Option<IssueLinkMilestone>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum IssueLinkState {
+    Open,
+    Closed,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct IssueLinkLabel {
+    pub name: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct IssueLinkAssignee {
+    pub login: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct IssueLinkMilestone {
+    pub title: String,
+}
+
 #[derive(Debug, PartialEq, Eq)]
 pub enum ListError {
     /// `gh` is not installed or not signed in.
@@ -96,6 +131,29 @@ fn classify(action: &str, code: i32, stderr: &str) -> ListError {
 }
 
 impl<R: Runner> Gh<R> {
+    /// Full formatter metadata for one selected issue, using the local GitHub CLI.
+    pub fn issue_link_metadata(&self, number: u64) -> Result<IssueLinkMetadata, ListError> {
+        if number == 0 {
+            return Err(ListError::Other("Issue number must be greater than zero".into()));
+        }
+        let endpoint = match &self.addressing {
+            Addressing::Cwd(_) => format!("repos/{{owner}}/{{repo}}/issues/{number}"),
+            Addressing::Repo { owner, name } => format!("repos/{owner}/{name}/issues/{number}"),
+        };
+        let args = ["api", "--method", "GET", endpoint.as_str()].map(String::from);
+        let out = self
+            .runner
+            .run(&self.gh_path, &args, self.cwd())
+            .map_err(|e| match e.kind() {
+                io::ErrorKind::NotFound => ListError::NoGithub("gh is not installed".into()),
+                _ => ListError::Other(format!("couldn't run gh: {e}")),
+            })?;
+        if out.code != 0 {
+            return Err(classify("Reading GitHub issue", out.code, &out.stderr));
+        }
+        parse_issue_link_metadata(&out.stdout, number)
+    }
+
     fn list_json(&self, action: &str, kind: &str, fields: &str) -> Result<String, ListError> {
         let mut args: Vec<String> = [
             kind,
@@ -193,6 +251,51 @@ impl<R: Runner> Gh<R> {
             })
             .collect())
     }
+}
+
+fn parse_issue_link_metadata(out: &str, number: u64) -> Result<IssueLinkMetadata, ListError> {
+    #[derive(Deserialize)]
+    struct Row {
+        number: u64,
+        title: String,
+        html_url: String,
+        body: Option<String>,
+        state: IssueLinkState,
+        labels: Vec<IssueLinkLabel>,
+        assignee: Option<IssueLinkAssignee>,
+        milestone: Option<IssueLinkMilestone>,
+    }
+
+    let invalid = |reason: &str| {
+        ListError::Other(format!("unexpected response from GitHub: {reason}"))
+    };
+    let value: serde_json::Value =
+        serde_json::from_str(out).map_err(|e| invalid(&e.to_string()))?;
+    let fields = value
+        .as_object()
+        .ok_or_else(|| invalid("expected an issue object"))?;
+    if fields.contains_key("pull_request") {
+        return Err(invalid("selected item is a pull request, not an issue"));
+    }
+    for field in ["body", "assignee", "milestone"] {
+        if !fields.contains_key(field) {
+            return Err(invalid(&format!("missing field `{field}`")));
+        }
+    }
+    let row: Row = serde_json::from_value(value).map_err(|e| invalid(&e.to_string()))?;
+    if row.number != number {
+        return Err(invalid("issue number does not match the selected issue"));
+    }
+    Ok(IssueLinkMetadata {
+        number: row.number,
+        title: row.title,
+        url: row.html_url,
+        body: row.body,
+        state: row.state,
+        labels: row.labels,
+        assignee: row.assignee,
+        milestone: row.milestone,
+    })
 }
 
 fn parse<T: for<'de> Deserialize<'de>>(out: &str) -> Result<Vec<T>, ListError> {
