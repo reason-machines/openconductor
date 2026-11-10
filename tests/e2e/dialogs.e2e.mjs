@@ -130,3 +130,24 @@ test("dialogs remain within a short viewport and restore trigger focus", async (
   await page.waitForFunction(() => document.activeElement?.textContent === "clone", null, { timeout: 1500 });
   await page.close();
 });
+
+test("restore: Escape dismisses the pending dialog without repeating the restore", async () => {
+  const page = await open("restore");
+  try {
+    const dialog = page.getByRole("alertdialog");
+    await page.keyboard.press("Meta+Enter");
+    assert.equal(await dialog.getByRole("button", { name: "Restoring..." }).isDisabled(), true);
+    assert.equal(await dialog.getByRole("button", { name: "Cancel", exact: true }).isDisabled(), true);
+    const expected = [{ type: "unarchiveWorkspace", repoId: "fixture-repo", workspaceId: "fixture-workspace", useNewBranch: true }];
+    assert.deepEqual(JSON.parse(await page.getByTestId("events").textContent()), expected);
+    await page.mouse.click(10, 100);
+    assert.equal(await dialog.count(), 1, "pointer dismissal remains blocked while restoring");
+    await page.keyboard.press("Meta+Enter");
+    assert.deepEqual(JSON.parse(await page.getByTestId("events").textContent()), expected);
+    await page.keyboard.press("Escape");
+    await dialog.waitFor({ state: "detached", timeout: 5000 });
+    assert.deepEqual(JSON.parse(await page.getByTestId("events").textContent()), expected, "dismissal neither cancels nor repeats the restore action");
+  } finally {
+    await page.close();
+  }
+});

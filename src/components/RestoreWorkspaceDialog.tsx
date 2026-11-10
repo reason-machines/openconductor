@@ -32,7 +32,7 @@ export function RestoreWorkspaceDialog({ request, dispatch, onClose }: { request
     dispatch({ type: "unarchiveWorkspace", repoId: request.repoId, workspaceId: request.workspaceId, useNewBranch: true });
   };
   return (
-    <ConfirmationDialog title={title} confirmLabel={L.confirm} pendingLabel={L.pending} pending={pending} onClose={onClose} onConfirm={confirm}>
+    <ConfirmationDialog title={title} confirmLabel={L.confirm} pendingLabel={L.pending} pending={pending} dismissWhilePending onClose={onClose} onConfirm={confirm}>
       <p className="break-words" data-testid="restore-workspace-dialog">{body}</p>
     </ConfirmationDialog>
   );

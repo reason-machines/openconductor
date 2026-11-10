@@ -286,5 +286,5 @@ export function reasonModels(fresh = false): Promise<ReasonModelOption[]> {
 
 /** The first message or a Retry: starts when idle, else waits in the queue. */
 export function sendReason(chatId: string, cwd: string, text: string, attachments: readonly PromptAttachment[] = [], repoPath?: string): void {
-  reason.submit(chatId, cwd, text, "queue", attachments, repoPath);
+  reason.submit(chatId, cwd, { text }, "queue", attachments, repoPath);
 }

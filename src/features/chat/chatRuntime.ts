@@ -42,6 +42,7 @@ import { ChatSaver, restoreEvents } from "./persist.ts";
 import { chatWantsAttention, enteredWait, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import type { FileChange } from "../diff/types.ts";
+import type { SentUserContentV1, UserPrompt } from "./userContent.ts";
 
 /** Open turns of one chat, as reason.ts tracks them. */
 export type ChatTurns = ReasonChatState;
@@ -232,7 +233,7 @@ export interface ChatRuntime<Config> {
    * goes to the backend with each prompt. Attachments go as embedded files
    * and show by name.
    */
-  submit(chatId: string, cwd: string, text: string, mode: Q.SendMode, attachments?: readonly PromptAttachment[], repoPath?: string, workspaceId?: string): void;
+  submit(chatId: string, cwd: string, input: UserPrompt, mode: Q.SendMode, attachments?: readonly PromptAttachment[], repoPath?: string, workspaceId?: string): void;
   /** Stop. A second Stop while the first is pending asks the backend to stop hard. */
   stop(chatId: string): void;
   queueAction(chatId: string, action: QueueAction): void;
@@ -557,7 +558,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     switch (effect.kind) {
       case "start":
       case "steer":
-        void prompt(c, effect.text, [...effect.attachments]);
+        void prompt(c, effect.text, [...effect.attachments], effect.userContent);
         return;
       case "cancel":
         // The backend cancels only a prompt it has; one still on its way is stopped here.
@@ -579,7 +580,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
    * the turn changed, which go to the turn-changes cache for the chips under
    * the turn.
    */
-  async function prompt(c: Chat<Config>, text: string, attachments: PromptAttachment[]): Promise<void> {
+  async function prompt(c: Chat<Config>, text: string, attachments: PromptAttachment[], userContent?: SentUserContentV1): Promise<void> {
     const chatId = c.state.chatId;
     // A random turn id, so a turn's checkpoints and cached changes never
     // collide with a turn from an earlier app run.
@@ -595,7 +596,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     const newSession = !c.opened && !host.storage.getItem(sessionKey(chatId));
     const firstMessage = newSession && !c.transcript.messages.some((m) => m.role === "user");
     const carried = newSession ? earlierConversation(c.transcript) : null;
-    apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
+    apply(c, startTurn(c.state, text, new Date(), turnId, attachments, userContent));
     // `submit` sets the folder before any effect runs.
     const cwd = c.cwd ?? "";
     try {
@@ -631,12 +632,12 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       c.listeners.add(fn);
       return () => c.listeners.delete(fn);
     },
-    submit(chatId, cwd, text, mode, attachments = [], repoPath, workspaceId) {
+    submit(chatId, cwd, input, mode, attachments = [], repoPath, workspaceId) {
       const c = chat(chatId);
       c.cwd = cwd;
       if (repoPath) c.repoPath = repoPath;
       if (workspaceId) c.workspaceId = workspaceId;
-      setQueue(c, Q.submit(c.queue, text, mode, new Date(), attachments));
+      setQueue(c, Q.submit(c.queue, input, mode, new Date(), attachments));
     },
     stop(chatId) {
       const c = chat(chatId);

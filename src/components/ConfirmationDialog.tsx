@@ -8,16 +8,17 @@ type Props = {
   confirmLabel: string;
   pendingLabel?: string;
   pending?: boolean;
+  dismissWhilePending?: boolean;
   destructive?: boolean;
   primaryShortcut?: boolean;
   onConfirm: () => void;
   onClose: () => void;
 };
 
-export function ConfirmationDialog({ title, children, confirmLabel, pendingLabel, pending = false, destructive = false, primaryShortcut = true, onConfirm, onClose }: Props) {
+export function ConfirmationDialog({ title, children, confirmLabel, pendingLabel, pending = false, dismissWhilePending = false, destructive = false, primaryShortcut = true, onConfirm, onClose }: Props) {
   const id = useId();
   return (
-    <DialogFrame kind="alert" className="project-confirmation" titleId={`${id}-title`} descriptionId={`${id}-description`} onClose={() => { if (!pending) onClose(); }}>
+    <DialogFrame kind="alert" className="project-confirmation" titleId={`${id}-title`} descriptionId={`${id}-description`} onClose={() => { if (!pending || dismissWhilePending) onClose(); }}>
       <div className="project-confirmation-header">
         <h2 id={`${id}-title`}>{title}</h2>
         <div id={`${id}-description`} className="project-confirmation-body">{children}</div>

@@ -74,6 +74,87 @@ pub struct TokenUsage {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "kebab-case")]
+pub enum SentUserPart {
+    Text {
+        text: String,
+    },
+    File {
+        path: String,
+        label: String,
+        directory: bool,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "kebab-case")]
+pub enum SentAttachment {
+    WorkspaceFile {
+        name: String,
+        label: String,
+        path: String,
+    },
+    Embedded {
+        name: String,
+        label: String,
+    },
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SentUserContentV1 {
+    pub version: u8,
+    pub parts: Vec<SentUserPart>,
+    pub attachments: Vec<SentAttachment>,
+}
+
+fn valid_sent_path(path: &str) -> bool {
+    let scheme = path.split_once(':').is_some_and(|(prefix, _)| {
+        prefix
+            .as_bytes()
+            .first()
+            .is_some_and(u8::is_ascii_alphabetic)
+            && prefix
+                .bytes()
+                .all(|ch| ch.is_ascii_alphanumeric() || b"+.-".contains(&ch))
+    });
+    !path.is_empty()
+        && !path.contains(['\0', '\\'])
+        && !path.starts_with("//")
+        && !scheme
+        && !path.split('/').any(|part| part == "." || part == "..")
+}
+
+fn deserialize_user_content<'de, D: serde::Deserializer<'de>>(
+    deserializer: D,
+) -> Result<Option<Box<SentUserContentV1>>, D::Error> {
+    let raw = Option::<Value>::deserialize(deserializer)?;
+    Ok(raw
+        .and_then(|value| serde_json::from_value::<Box<SentUserContentV1>>(value).ok())
+        .filter(|content| {
+            content.version == 1
+                && content.parts.iter().all(|part| match part {
+                    SentUserPart::Text { .. } => true,
+                    SentUserPart::File { path, .. } => valid_sent_path(path),
+                })
+                && content
+                    .attachments
+                    .iter()
+                    .all(|attachment| match attachment {
+                        SentAttachment::Embedded { .. } => true,
+                        SentAttachment::WorkspaceFile { path, .. } => valid_sent_path(path),
+                    })
+                && (content
+                    .parts
+                    .iter()
+                    .any(|part| matches!(part, SentUserPart::File { .. }))
+                    || content.attachments.iter().any(|attachment| {
+                        matches!(attachment, SentAttachment::WorkspaceFile { .. })
+                    }))
+        }))
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ChatMessage {
     pub id: String,
@@ -96,6 +177,12 @@ pub struct ChatMessage {
     /// Set when the message arrived through an API key rather than the app.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sender_api_key_name: Option<String>,
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "deserialize_user_content"
+    )]
+    pub user_content: Option<Box<SentUserContentV1>>,
     #[serde(default)]
     pub blocks: Vec<Block>,
 }

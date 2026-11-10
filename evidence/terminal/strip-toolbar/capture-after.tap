@@ -1,0 +1,26 @@
+(node:73) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:80) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: default Cmd-K is consumed by the global palette before the terminal target
+ok 1 - default Cmd-K is consumed by the global palette before the terminal target
+  ---
+  duration_ms: 3.369231
+  type: 'test'
+  ...
+# Subtest: restoration fixture remaps the palette so Cmd-K reaches the terminal without disabling the palette
+ok 2 - restoration fixture remaps the palette so Cmd-K reaches the terminal without disabling the palette
+  ---
+  duration_ms: 2.442555
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 282.733049

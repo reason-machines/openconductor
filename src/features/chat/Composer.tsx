@@ -29,6 +29,7 @@ import type { FileMatch } from "../../spotlight/quickOpen";
 import { fileMentionQuery, mentionItems, type MentionItem } from "./fileMentions.ts";
 import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
 import { composerPrompt } from "./composerDocument.ts";
+import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type UserPrompt } from "./userContent.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
 import type { ComposerMinimize } from "./useComposerMinimize.ts";
@@ -48,7 +49,7 @@ export interface ComposerProps {
   queue: ChatQueue;
   canSteer: boolean;
   followUpMode?: FollowUpMode;
-  onSubmit: (text: string, mode: SendMode) => void;
+  onSubmit: (input: UserPrompt, mode: SendMode) => void;
   /** False when the owner clears only after asynchronous delivery succeeds. */
   clearOnSubmit?: boolean;
   onStop: () => void;
@@ -148,7 +149,7 @@ export function Composer({
     return () => { live = false; };
   }, [workspacePath, mentionQuery]);
   const fileMatches = files && files.workspacePath === workspacePath && files.query === mentionQuery ? files.matches : [];
-  const mentionMatches = mentionItems(mentionQuery ?? "", fileMatches, !!onAttachTerminalOutput);
+  const mentionMatches = mentionItems(mentionQuery ?? "", fileMatches, !!onAttachTerminalOutput, !!onLinkWorkspaces);
   const mentionOpen = mention !== null && mentionQuery !== undefined && mentionMatches.length > 0;
   const mentionFocus = Math.min(mentionIndex, Math.max(0, mentionMatches.length - 1));
 
@@ -158,6 +159,12 @@ export function Composer({
     const current = box.selection();
     const range = fileMentionQuery(current.text, current.start, current.end);
     if (!range || `${range.start}:${range.query}` !== mentionKey) return;
+    if (item.kind === "add-directory") {
+      if (!onLinkWorkspaces || !box.deleteRange(range)) return;
+      setMentionDismissed(mentionKey);
+      onLinkWorkspaces();
+      return;
+    }
     if (item.kind === "terminal") {
       if (!onAttachTerminalOutput || !box.deleteRange(range)) return;
       setMentionDismissed(mentionKey);
@@ -178,13 +185,13 @@ export function Composer({
 
   function submit(opposite: boolean) {
     if (inputRef.current?.composing()) return;
-    const text = composerPrompt(draft).trim();
-    if (!text && !hasAttachments) return;
-    if (text.startsWith("/") && onCommand?.(text)) {
+    const input = submittedUserPrompt(draft);
+    if (!input.text && !hasAttachments) return;
+    if (input.text.startsWith("/") && onCommand?.(input.text)) {
       setDraft("");
       return;
     }
-    onSubmit(text, working ? mode(opposite) : "queue");
+    onSubmit(input, working ? mode(opposite) : "queue");
     if (clearOnSubmit) setDraft("");
   }
 
@@ -526,6 +533,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
               key={m.id}
               id={m.id}
               text={m.text}
+              userContent={m.userContent}
               attachmentNames={m.attachments.map((a) => a.name)}
               first={i === 0}
               last={i === queue.items.length - 1}
@@ -546,6 +554,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
 interface RowProps {
   id: string;
   text: string;
+  userContent?: SentUserContentV1;
   attachmentNames: readonly string[];
   first: boolean;
   last: boolean;
@@ -558,44 +567,53 @@ interface RowProps {
   rowProps: React.LiHTMLAttributes<HTMLLIElement>;
 }
 
-function QueueRow({ id, text, attachmentNames, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
-  const [value, setValue] = useState(text);
+function QueueRow({ id, text, userContent, attachmentNames, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
+  const [value, setValue] = useState(() => queuedUserDraft({ text, userContent }));
+  const editor = useRef<ComposerEditorHandle>(null);
+  useLayoutEffect(() => {
+    if (!editing) return;
+    setValue(queuedUserDraft({ text, userContent }));
+    editor.current?.focus();
+  }, [editing, text, userContent]);
   if (editing) {
     return (
       <li className="queue-row is-editing">
-        <textarea
-          className="queue-edit"
-          aria-label="Edit queued message"
-          value={value}
-          autoFocus
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => {
-            const ev = e.nativeEvent;
-            if (ev.isComposing) return;
-            const hit = (command: string) => keys(command).some((s) => matchesEvent(s, ev));
-            if (hit("chat.queueEdit.cancel")) {
-              e.preventDefault();
-              onQueue({ kind: "cancelEdit" });
-            } else if (canSteer && hit("chat.queueEdit.saveAndSteer")) {
-              e.preventDefault();
-              onQueue({ kind: "saveEdit", text: value, steer: true });
-            } else if (hit("chat.queueEdit.save")) {
-              e.preventDefault();
-              onQueue({ kind: "saveEdit", text: value, steer: false });
-            }
-          }}
-          rows={2}
-        />
+        <div className="queue-edit" role="group" aria-label="Edit queued message">
+          <ComposerEditor
+            value={value}
+            inputRef={editor}
+            placeholder="Edit queued message"
+            onChange={setValue}
+            onSelection={() => {}}
+            onFocus={() => {}}
+            onBlur={() => {}}
+            onPasteFiles={() => false}
+            onKeyDown={(ev) => {
+              if (ev.isComposing) return;
+              const hit = (command: string) => keys(command).some((s) => matchesEvent(s, ev));
+              if (hit("chat.queueEdit.cancel")) {
+                ev.preventDefault();
+                onQueue({ kind: "cancelEdit" });
+              } else if (canSteer && hit("chat.queueEdit.saveAndSteer")) {
+                ev.preventDefault();
+                onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: true });
+              } else if (hit("chat.queueEdit.save")) {
+                ev.preventDefault();
+                onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: false });
+              }
+            }}
+          />
+        </div>
         <span className="queue-row-actions">
           <button type="button" className="chat-action" onClick={() => onQueue({ kind: "cancelEdit" })}>
             Cancel
           </button>
           {canSteer ? (
-            <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", text: value, steer: true })}>
+            <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: true })}>
               Save and steer
             </button>
           ) : null}
-          <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", text: value, steer: false })}>
+          <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: false })}>
             Save
           </button>
         </span>
@@ -619,7 +637,7 @@ function QueueRow({ id, text, attachmentNames, first, last, editing, canSteer, o
           type="button"
           className="chat-action"
           onClick={() => {
-            setValue(text);
+            setValue(queuedUserDraft({ text, userContent }));
             onQueue({ kind: "edit", id });
           }}
         >

@@ -54,7 +54,8 @@ export interface SetupStatus {
 
 export type ScriptEvent =
   | { type: "output"; workspaceId: string; kind: "setup" | "run"; scriptId: string; chunk: string }
-  | ({ type: "setupFinished" } & SetupOutcome);
+  | ({ type: "setupFinished" } & SetupOutcome)
+  | ({ type: "runFinished" } & RunStatus);
 
 /** Argument the backend needs to find a workspace's scripts. */
 export interface WorkspaceRef {

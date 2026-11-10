@@ -393,31 +393,8 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
         />
       );
     }
-    case "multi-edit": {
-      const path = s(input.file_path);
-      const edits = Array.isArray(input.edits) ? (input.edits as Record<string, unknown>[]) : [];
-      const totals = edits.reduce<{ added: number; removed: number }>(
-        (t, e) => {
-          const c = editCounts(e) ?? { added: 0, removed: 0 };
-          return { added: t.added + c.added, removed: t.removed + c.removed };
-        },
-        { added: 0, removed: 0 },
-      );
-      return (
-        <RowShell
-          {...shell}
-          left={<span>{`${edits.length} ${edits.length === 1 ? "edit" : "edits"}`}</span>}
-          right={
-            <div className="oc-tool-right-row">
-              {path ? <FileBadge path={path} onOpen={onOpenFile} /> : null}
-              <LineCounts {...totals} />
-            </div>
-          }
-          keepRight
-          align="center"
-        />
-      );
-    }
+    case "multi-edit":
+      return <MultiEditRow {...shell} input={input} onOpenFile={onOpenFile} />;
     case "write": {
       const path = s(input.file_path);
       const content = s(input.content);
@@ -459,6 +436,64 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
     default:
       return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
   }
+}
+
+function MultiEditRow({ input, onOpenFile, ...shell }: ShellBase & { input: Record<string, unknown>; onOpenFile?: (path: string) => void }) {
+  const [expanded, setExpanded] = useState<Set<number>>(() => new Set());
+  const path = s(input.file_path);
+  const edits = Array.isArray(input.edits) ? (input.edits as Record<string, unknown>[]) : [];
+  const totals = edits.reduce<{ added: number; removed: number }>(
+    (total, edit) => {
+      const counts = editCounts(edit) ?? { added: 0, removed: 0 };
+      return { added: total.added + counts.added, removed: total.removed + counts.removed };
+    },
+    { added: 0, removed: 0 },
+  );
+  return (
+    <RowShell
+      {...shell}
+      left={<span>{`${edits.length} ${edits.length === 1 ? "edit" : "edits"}`}</span>}
+      right={
+        <div className="oc-tool-right-row">
+          {path ? <FileBadge path={path} onOpen={onOpenFile} /> : null}
+          <LineCounts {...totals} />
+        </div>
+      }
+      keepRight
+      align="center"
+      bareContent
+      content={
+        <div className="oc-multi-edit-list">
+          {edits.map((edit, index) => {
+            const oldText = s(edit.old_string);
+            const newText = s(edit.new_string);
+            const open = expanded.has(index);
+            return (
+              <div className="oc-multi-edit-item" key={index}>
+                <button
+                  type="button"
+                  className="oc-multi-edit-head"
+                  aria-label={`Edit ${index + 1}`}
+                  aria-expanded={open}
+                  onClick={() => setExpanded((previous) => {
+                    const next = new Set(previous);
+                    if (next.has(index)) next.delete(index);
+                    else next.add(index);
+                    return next;
+                  })}
+                >
+                  <span className="oc-multi-edit-label">Edit {index + 1}</span>
+                  <LineCounts {...(editCounts(edit) ?? { added: 0, removed: 0 })} />
+                  <span className="oc-multi-edit-preview">{oldText.split("\n")[0]?.substring(0, 40) || "Empty"}{oldText.length > 40 ? "..." : ""}</span>
+                </button>
+                {open ? <div className="oc-multi-edit-body"><DiffBlock oldText={stripMarkers(oldText)} newText={stripMarkers(newText)} /></div> : null}
+              </div>
+            );
+          })}
+        </div>
+      }
+    />
+  );
 }
 
 function BashRow({ input, output, ...shell }: ShellBase & { input: Record<string, unknown>; output?: string }) {

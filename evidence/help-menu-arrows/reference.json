@@ -1,0 +1,58 @@
+{
+  "status": "Inert static REA evidence forwarded by the existing Home/header owner; not executed",
+  "source": "Existing retained Conductor renderer /assets/renderApp-D_fmY7hW.js",
+  "source_sha256_supplied_by_owner": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "provenance": {
+    "home_owner_session": "27102e36-8b7f-4f1b-9ada-1e0503d3fede",
+    "home_owner_message": "00ed99e8-fb4b-4dec-af14-8775f6fbed2a",
+    "source_owner_session": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+    "source_owner_forwarded_message": "f7e40ba1-7f34-491c-a664-b8ed6d2d9d7f",
+    "original_retained_receipt_prefix": "3edb9255",
+    "limitations": "Complete bounded function/binding source received from both owners. Hashes and offsets below are their retained-artifact receipts, not a new local hash or extraction. No new artifact, REA probe, browser, native runtime or screenshot."
+  },
+  "ranges": "Half-open [start,end); UTF-8 bytes and UTF-16 code units in the retained renderer",
+  "help_footer_binding": {
+    "name": "Nna",
+    "utf8": [9997288, 9998921],
+    "utf16": [9951726, 9953359],
+    "excerpt": "E=p.jsx(KQo,{open:e,onOpenChange:n})"
+  },
+  "help_popover": {
+    "name": "KQo",
+    "utf8": [9788028, 9792847],
+    "utf16": [9742478, 9747297],
+    "sha256_supplied_by_owner": "0aca278ea527e48821415691feda8daaa9541900925c8212cfac47a9ea0da46c",
+    "callback_binding_excerpt": "p.jsxs(E1,{ref:o,role:\"menu\",initialFocus:()=>o.current?.querySelector(\"[role=menuitem][data-selected]\")??o.current?.querySelector(\"[role=menuitem]\")??o.current,onKeyDown:u",
+    "arrow_callback": {
+      "utf8": [9788163, 9788606],
+      "utf16": [9742613, 9743056],
+      "sha256_supplied_by_owner": "ff58d1a9bbf00ab661a827f2726cfa66b5ecdbf691c17c889f76333f027f51ac",
+      "boundary": "Complete const u=xd(...) expression, excluding following semicolon",
+      "text": "const u=xd(d=>{if(d.key!==\"ArrowDown\"&&d.key!==\"ArrowUp\")return;const h=o.current?.querySelectorAll('[role=\"menuitem\"]:not([disabled]), [role=\"slider\"]:not([aria-disabled=\"true\"]), [role=\"switch\"]:not([disabled])');if(!h||h.length===0)return;const m=Array.from(h).findIndex(_=>_===document.activeElement);if(m===-1)return;const g=d.key===\"ArrowDown\"?(m+1)%h.length:(m-1+h.length)%h.length;d.preventDefault(),d.stopPropagation(),h[g]?.focus()})"
+    }
+  },
+  "callback_identity": {
+    "utf8": [674926, 674995],
+    "utf16": [674922, 674991],
+    "text": "function hEe(t){return t}const dBr=hEe,pEe=hEe,_v=hEe,fBr=hEe,xd=hEe;"
+  },
+  "popover_namespace": {
+    "utf8": [2136149, 2136402],
+    "utf16": [2135752, 2136005],
+    "text": "const cGe=Object.freeze(Object.defineProperty({__proto__:null,Arrow:vcs,Backdrop:ycs,Close:cFt,Description:wcs,Handle:Abi,Popup:E1,Portal:w1,Positioner:S1,Root:X1,Title:xcs,Trigger:ch,Viewport:Scs,createHandle:Ecs},Symbol.toStringTag,{value:\"Module\"}));"
+  },
+  "conclusions": [
+    "The retained Help binding explicitly routes Nna to KQo and its popup's onKeyDown to u.",
+    "The complete arrow callback prevents default, stops propagation, and cyclically focuses an enabled item only for ArrowDown/ArrowUp with a focused item.",
+    "xd is hEe, an identity function. X1/w1/S1/E1/ch are concrete same-renderer Popover primitives, not an assumed menu-library default.",
+    "No positive Home/End behavior is established by this bounded binding. No Home/End behavior is added to OpenConductor."
+  ],
+  "unknowns": [
+    "Global handlers, focus-manager effects and native runtime behavior were not run or exhaustively traced.",
+    "Reference and OpenConductor browser/native interaction and pixel parity remain unverified."
+  ],
+  "rea_gaps": [
+    "Historical Nna offsets were not the retained artifact's actual ranges; the original source owner supplied corrected ranges above.",
+    "The original exported message redacted some hashes; the full renderer and arrow hashes were supplied directly by the Home owner. No local re-extraction or re-hashing was performed."
+  ]
+}
