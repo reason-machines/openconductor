@@ -1,0 +1,125 @@
+# File navigation uses Changes presentation order
+
+Conductor Rebuild compared retained Conductor 0.87.6 with OpenConductor main
+`49fde8bf788f0914dc7e53e58c5b024a9294cc61` on 2026-11-10. This is a static
+shipped-artifact comparison. Native ordering parity is not observed.
+
+## Reference and causal chain
+
+The retained renderer `renderApp-D_fmY7hW.js` is 11,600,457 bytes, SHA-256
+`5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde`, matching
+[the existing extraction manifest](historical-chip/extraction.json). The binary
+provenance is SHA-256
+`0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d`.
+Existing REA evidence
+`ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367`
+has incomplete large-renderer semantic coverage. This pass supplements it with
+bounded literal reads of the already-retained bytes. It neither acquires nor
+executes the app and encounters no new REA tool failure.
+
+The complete decoded/minified definitions have these UTF-8 half-open ranges and
+SHA-256 hashes:
+
+- `fJe`, `[2731481,2732090)`,
+  `94dad71f536536d4dabd1f7081e22aa17154f8b2843c29a7fcff9086c455e095`.
+  It sorts conflicts, unviewed and viewed groups by path and returns that sequence.
+- `WFn`, `[2826567,2826682)`,
+  `d241009b097d847e1ef70853060fcde8a7bc891885fe4a60aeaa13708d6203e5`.
+  It traverses the existing directory builder with an empty collapsed set and
+  retains file rows. Collapsing a directory does not remove its descendants from
+  file navigation.
+- `GBt`, `[2829662,2829826)`,
+  `9a7d91cf0300b00722bb540e2d3fda87f88f662f34044c2fcc0c41d1d634022c`.
+  It reads the workspace route's `diffFileListMode`. The neighboring `qBt` reads
+  `filePathFilter` from the same route. Both are the same accessors used by the
+  production GitPanel, as recorded in [flat-order evidence](viewed-flat-order.md).
+- `gyi`, `[2840025,2840211)`,
+  `870f3a77fdc09ab5da4b31e1bef67a2d639c62e5f6254148040ad5f5c9c235a8`.
+  It filters matching path or old-path objects while preserving input order.
+- `Jqo`, `[9652565,9658452)`,
+  `0e24efc52f0ab809283b07a30fbb5e615db81ab56a03f12dad7e298d15a81a87`.
+  The mounted DiffView receives `fJe`'s `sortedFiles`. For a nonstack tree it
+  replaces that sequence with `WFn` traversal, then applies `gyi`. Its next,
+  previous and shared mark-viewed callback all step through that resulting `z`
+  sequence. It determines the mark callback's direction before the new mark
+  reorders the list. An existing mark is removed without navigation.
+
+The definition of `Jqo` is referenced by its production wrapper's `p.jsx(Jqo, …)`
+call with `selectedFile` and `onNavigateToFile`, not only by an isolated utility.
+The [earlier navigation receipt](viewed-navigation.md) closes the header
+`bji`/`GPo` and keyboard entry points to that shared callback. Timestamp semantics
+remain those in [the delivered modification-time receipt](viewed-modification-time.md).
+The reference's special stack view is outside OpenConductor's current model and
+is not claimed here.
+
+## Distinct mismatch after the delivered fixes
+
+At the current-main comparison pin, `useWorkspaceDiff.ts` is Git blob
+`809effca9c6a11ff0c7c1e81bd0c0791d2c8854a`. It uses raw `load.files` for next,
+previous and mark-viewed stepping. `ChangesList.tsx`, blob
+`e3f26e077b3c8747d45f52e862cfac9297ec1552`, instead renders the sequence from
+`changeRows` after applying the shared path filter. `changesTree.ts` is blob
+`4ea1d272b554c10548a37033a37de9431403ae46`. All three exact-main blobs match the
+inspected checkout.
+
+For loaded paths `a.ts, b.ts, c.ts` with only `b.ts` viewed, the reference and
+flat list order are `a.ts, c.ts, b.ts`. Next from `a.ts` must select `c.ts`.
+The current hook selects `b.ts`. Marking `a.ts` has the same wrong destination.
+The delivered #894 correction made marking navigate rather than stay still;
+#897 changed timestamp classification; #902 changed only the displayed flat
+rows. This unit corrects the remaining disagreement between display and
+navigation, without undoing those fixes.
+
+## Bounded design
+
+Only the existing hook, its actual-hook test file and this evidence note are
+leased. The planned correction reads the existing shared presentation snapshot
+and derives a separate navigation sequence with the existing tree and filter
+functions. Public `files`, raw indices, path selection, load/cache keys and
+network loading stay unchanged. A destination is mapped by path back into that
+public array. Tree navigation includes collapsed descendants, matching `WFn`.
+
+Sorting or filtering the public array was rejected because consumers use its
+indices and identity. Copying the grouping predicate was rejected because
+`changeRows` already owns it. This follows Model the Domain and Type System
+Discipline: navigation has one typed `FileDiff[]` sequence and raw indices remain
+in their existing domain. No new public API or route state is introduced.
+
+Automatic redirect when the selected path leaves the filter, reference stack
+views, conflict-model expansion, comments, editor/save behavior, IPC and native
+geometry are outside this unit. The existing `Next unread` control remains
+unchanged. This receipt does not claim complete navigation parity.
+
+## Regression checkpoint
+
+The first checkpoint adds seven actual-hook regression cases to the existing
+`viewed.test.ts`, without changing production code or previous assertions.
+The fixture retains the real production hook, viewed predicates, navigation,
+tree and filter helpers. Its new presentation boundary supplies the shared
+route snapshot; loading, storage and keybinding registration remain the
+existing isolated boundaries. The fixture has a null worktree and creates no
+native IPC, app process or polling timer.
+
+Cases cover next and previous wrapping through interleaved viewed groups;
+header and keyboard marking; final-unviewed backward fallback; natural tree
+order including collapsed descendants; filtered stepping with raw-index and
+object identity preservation; presentation changes without extra loading; and
+a timestamp invalidation that changes ordering. Previous stationary-unmark,
+empty-selection and timestamp assertions are unchanged.
+
+The ordinary hosted command is:
+
+```bash
+node --experimental-strip-types --test src/features/diff/*.test.ts
+```
+
+Hosted RED is pending at this regression-only checkpoint. No test pass is
+claimed. Capacity restrictions prohibit local tests, builds and dependency
+installation, so no local executable regression or typecheck ran. Local
+`git diff --check` is the only source whitespace check. There are no new
+workflow dispatches, reruns or observers. The ready PR's normal automatic CI
+owns RED and later same-assertion GREEN.
+
+No app, browser, native execution, screenshots or fresh REA acquisition ran.
+There is no screenshot because native admission remains stopped. Packaging
+cannot establish native navigation parity.

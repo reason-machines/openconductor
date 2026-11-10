@@ -7,6 +7,9 @@ import { resolve } from "node:path";
 import { runInNewContext } from "node:vm";
 import { keyedCache } from "../../lib/keyedCache.ts";
 import * as navigation from "./nav.ts";
+import { changeRows } from "./changesTree.ts";
+import { filterChangedFiles } from "./changesFilter.ts";
+import type { ChangesPresentation } from "./changesPresentation.ts";
 import { discardScope } from "./target.ts";
 import * as viewed from "./viewed.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
@@ -110,7 +113,9 @@ function navigationFile(path: string): FileDiff {
   return { path, old_path: null, status: "modified", binary: false, additions: 0, deletions: 0, hunks: [], ...{ last_modified_time: 1000 } };
 }
 
-async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = []) {
+async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], initialPresentation: Partial<ChangesPresentation> = {}) {
+  let presentation: ChangesPresentation = { diffFileListMode: "flat", filePathFilter: "", collapsedDirectoryPaths: [], ...initialPresentation };
+  let loadCalls = 0;
   let loadedFiles = files;
   let whitespaceFiles: FileDiff[] | undefined;
   const storage = new Map<string, string>();
@@ -125,12 +130,17 @@ async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = []) {
     "../../lib/keyedCache.ts": { keyedCache },
     "./api.ts": {
       WHOLE_FILE_CONTEXT: 1000000,
-      loadWorkspaceDiff: async (_worktree: unknown, _target: unknown, options: DiffViewOptions) =>
-        options.ignoreWhitespace && whitespaceFiles ? whitespaceFiles : loadedFiles,
+      loadWorkspaceDiff: async (_worktree: unknown, _target: unknown, options: DiffViewOptions) => {
+        loadCalls++;
+        return options.ignoreWhitespace && whitespaceFiles ? whitespaceFiles : loadedFiles;
+      },
       discardFileChanges: () => { throw new Error("Unexpected discard"); },
     },
     "../../keybindings/KeybindingsProvider.tsx": { useKeybindings: (next: typeof handlers) => Object.assign(handlers, next) },
     "./nav.ts": navigation,
+    "./changesTree.ts": { changeRows },
+    "./changesFilter.ts": { filterChangedFiles },
+    "./useChangesPresentation.ts": { useChangesPresentation: () => ({ presentation }) },
     "./target.ts": { discardScope },
     "./copyFile.ts": { newFileText: () => { throw new Error("Unexpected contents load"); } },
     "./types.ts": { DEFAULT_VIEW_OPTIONS },
@@ -156,6 +166,13 @@ async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = []) {
   return {
     state,
     open(index: number) { act(() => state().open(index)); },
+    next() { act(() => { handlers["diff.nextFile"](); }); },
+    previous() { act(() => { handlers["diff.previousFile"](); }); },
+    loadCalls: () => loadCalls,
+    present(change: Partial<ChangesPresentation>) {
+      presentation = { ...presentation, ...change };
+      act(() => { renderer.update(React.createElement(Probe)); });
+    },
     keyboard() { act(() => { handlers["diff.toggleViewed"](); }); },
     header() {
       const selected = state().selected;
@@ -289,6 +306,107 @@ test("actual viewed hook leaves fresh historical metadata absent and accepts cac
     await view.reload([{ ...before, last_modified_time: 1000 }]);
     assert.equal(view.state().viewedCount, 1);
     assert.equal(view.state().selected?.path, "a.ts");
+  } finally { view.close(); }
+});
+
+test("actual next and previous keys follow viewed-last flat order and wrap", async () => {
+  const files = [navigationFile("a.ts"), navigationFile("b.ts"), navigationFile("c.ts")];
+  const view = await fixture(files, [files[1]]);
+  try {
+    view.open(0);
+    for (const path of ["c.ts", "b.ts", "a.ts"]) {
+      view.next();
+      assert.equal(view.state().selected?.path, path);
+    }
+    for (const path of ["b.ts", "c.ts", "a.ts"]) {
+      view.previous();
+      assert.equal(view.state().selected?.path, path);
+    }
+    assert.equal(view.state().files, files);
+    assert.equal(view.state().current, 0);
+  } finally { view.close(); }
+});
+
+for (const action of ["header", "keyboard"] as const) {
+  test(`actual ${action} mark advances past an interleaved viewed file`, async () => {
+    const files = [navigationFile("a.ts"), navigationFile("b.ts"), navigationFile("c.ts")];
+    const view = await fixture(files, [files[1]]);
+    try {
+      view.open(0);
+      view[action]();
+      assert.equal(view.state().isViewed(files[0]), true);
+      assert.equal(view.state().selected, files[2]);
+      assert.equal(view.state().current, 2);
+      view.previous();
+      assert.equal(view.state().selected, files[1]);
+    } finally { view.close(); }
+  });
+}
+
+test("actual mark steps back in displayed order at the final unviewed file", async () => {
+  const files = [navigationFile("a.ts"), navigationFile("b.ts"), navigationFile("c.ts")];
+  const view = await fixture(files, [files[1]]);
+  try {
+    view.open(2);
+    view.header();
+    assert.equal(view.state().isViewed(files[2]), true);
+    assert.equal(view.state().selected, files[0]);
+  } finally { view.close(); }
+});
+
+test("actual navigation follows natural tree order including collapsed descendants", async () => {
+  const files = [navigationFile("root.ts"), navigationFile("dir/item10.ts"), navigationFile("dir/item2.ts")];
+  const view = await fixture(files, [files[2]], { diffFileListMode: "tree", collapsedDirectoryPaths: ["dir"] });
+  try {
+    view.open(2);
+    for (const path of ["dir/item10.ts", "root.ts", "dir/item2.ts"]) {
+      view.next();
+      assert.equal(view.state().selected?.path, path);
+    }
+    view.previous();
+    assert.equal(view.state().selected, files[0]);
+  } finally { view.close(); }
+});
+
+test("actual navigation and mark use the filtered sequence without changing public indices", async () => {
+  const files = [navigationFile("a.keep"), navigationFile("b.drop"), navigationFile("c.keep")];
+  const view = await fixture(files, [], { filePathFilter: "keep" });
+  try {
+    view.open(0);
+    view.next();
+    assert.equal(view.state().selected, files[2]);
+    assert.equal(view.state().current, 2);
+    view.next();
+    assert.equal(view.state().selected, files[0]);
+    view.previous();
+    assert.equal(view.state().selected, files[2]);
+    view.header();
+    assert.equal(view.state().isViewed(files[2]), true);
+    assert.equal(view.state().selected, files[0]);
+    assert.equal(view.state().files, files);
+  } finally { view.close(); }
+});
+
+test("actual navigation responds to presentation and timestamp changes without reloading for presentation", async (t) => {
+  t.mock.method(Date, "now", () => 2000);
+  const files = [navigationFile("a.keep"), navigationFile("b.drop"), navigationFile("c.keep")];
+  const view = await fixture(files, [files[1]]);
+  try {
+    view.open(0);
+    const calls = view.loadCalls();
+    view.present({ filePathFilter: "keep" });
+    view.next();
+    assert.equal(view.state().selected, files[2]);
+    assert.equal(view.loadCalls(), calls);
+    view.present({ filePathFilter: "" });
+    view.next();
+    assert.equal(view.state().selected, files[1]);
+    assert.equal(view.loadCalls(), calls);
+    await view.reload([files[0], { ...files[1], last_modified_time: 2001 }, files[2]]);
+    view.open(0);
+    view.next();
+    assert.equal(view.state().selected?.path, "b.drop");
+    assert.equal(view.state().isViewed(view.state().files[1]), false);
   } finally { view.close(); }
 });
 
