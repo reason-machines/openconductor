@@ -1,17 +1,22 @@
 import type { FileMatch } from "../../spotlight/quickOpen.ts";
 
-export type MentionItem = { kind: "file"; match: FileMatch } | { kind: "terminal" };
+export type MentionItem = { kind: "file"; match: FileMatch } | { kind: "terminal" } | { kind: "add-directory" };
 
-export function mentionItems(query: string, files: readonly FileMatch[], terminal: boolean): MentionItem[] {
+export function mentionItems(query: string, files: readonly FileMatch[], terminal: boolean, addDirectory = false): MentionItem[] {
+  const items: MentionItem[] = files.map((match) => ({ kind: "file", match }));
+  if (addDirectory && matchesMention(query, "add directory")) items.unshift({ kind: "add-directory" });
+  if (terminal && matchesMention(query, "terminal")) items.unshift({ kind: "terminal" });
+  return items;
+}
+
+function matchesMention(query: string, label: string): boolean {
   let position = 0;
   for (const char of query.toLowerCase()) {
-    const found = "terminal".indexOf(char, position);
-    if (found < 0) return files.map((match) => ({ kind: "file", match }));
+    const found = label.indexOf(char, position);
+    if (found < 0) return false;
     position = found + 1;
   }
-  const items: MentionItem[] = files.map((match) => ({ kind: "file", match }));
-  if (terminal) items.unshift({ kind: "terminal" });
-  return items;
+  return true;
 }
 
 export function mentionHighlights(text: string, indices: readonly number[], offset = 0): { text: string; matched: boolean }[] {

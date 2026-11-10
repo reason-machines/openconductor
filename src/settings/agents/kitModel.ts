@@ -16,3 +16,20 @@ export function agentsTabFrom(value: string | null | undefined): AgentsTab {
 export function maskedSecret(hint: string | null | undefined): string {
   return `••••••••${hint ?? ""}`;
 }
+
+export type CopyPathLabel = "file path" | "directory path";
+
+export async function copySettingsPath(
+  path: string | null,
+  write: (value: string) => Promise<void>,
+  notify: (kind: "info" | "error", message: string) => void,
+  label: CopyPathLabel = "file path",
+): Promise<void> {
+  if (!path) return;
+  try {
+    await write(path);
+    notify("info", `Copied ${label} to clipboard`);
+  } catch {
+    notify("error", "Failed to copy to clipboard");
+  }
+}

@@ -1,0 +1,2 @@
+PASS: actual removal props + shared defaults + close closure (pending and idle); action guards retained
+SOURCE BOUNDARY ONLY: no React mount, browser Escape, reference runtime, or native filesystem operation

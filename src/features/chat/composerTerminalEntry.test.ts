@@ -27,8 +27,8 @@ test("actual Composer offers the terminal action even when the file search retur
   const line = composer().split("\n").find((line) => line.startsWith("  const mentionMatches = "));
   assert.ok(line);
   const value = line.slice(line.indexOf(" = ") + 3).replace(/;$/, "");
-  const result = new Function("files", "workspacePath", "mentionQuery", "fileMatches", "onAttachTerminalOutput", "mentionItems", `return ${value}`)(
-    { workspacePath: "/fixture", query: "terminal", matches: [] }, "/fixture", "terminal", [], () => {},
+  const result = new Function("files", "workspacePath", "mentionQuery", "fileMatches", "onAttachTerminalOutput", "onLinkWorkspaces", "mentionItems", `return ${value}`)(
+    { workspacePath: "/fixture", query: "terminal", matches: [] }, "/fixture", "terminal", [], () => {}, undefined,
     () => [{ kind: "terminal" }],
   );
   assert.deepEqual(result, [{ kind: "terminal" }]);

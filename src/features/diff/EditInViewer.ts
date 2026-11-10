@@ -11,6 +11,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { Editor } from "@pierre/diffs/edit";
 import type { EditorFactory } from "@pierre/diffs/react";
 import { inTauri } from "../../backend";
+import { acknowledgeEditorSave, observeEditorContents, type EditorContents } from "./editorContents.ts";
 export { editableContents } from "./editable.ts";
 
 /** Pierre's editor factory, as Conductor's `bqo` (`(t, o, k) => new Editor(t, o, k)`). */
@@ -55,27 +56,10 @@ export function useFileEdit(worktree: string | null, path: string, onDisk: strin
   const key = draftKey(worktree, path);
   const [, rerender] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  // What we last wrote, so reloading our own save doesn't restart the editor.
-  const saved = useRef<{ key: string; text: string } | null>(null);
-  const seen = useRef<{ key: string; onDisk: string | null; generation: number }>({ key, onDisk, generation: 0 });
-
-  let { generation } = seen.current;
-  if (seen.current.key !== key) {
-    seen.current = { key, onDisk, generation: generation + 1 };
-    saved.current = null;
-  } else if (onDisk !== null && seen.current.onDisk !== onDisk) {
-    const ours = saved.current?.key === key && saved.current.text === onDisk;
-    // Changed on disk by someone else (the agent, a discard): the draft is dropped, as Conductor
-    // remounts its editor when saved content changes under it with no draft pending.
-    if (!ours && seen.current.onDisk !== null) {
-      drafts.delete(key);
-      generation += 1;
-    }
-    seen.current = { key, onDisk, generation };
-  }
-  generation = seen.current.generation;
-
-  const savedText = saved.current?.key === key ? saved.current.text : onDisk;
+  const seen = useRef<EditorContents>({ key, onDisk, generation: 0, saved: null });
+  seen.current = observeEditorContents(seen.current, key, onDisk, drafts);
+  const { generation } = seen.current;
+  const savedText = seen.current.saved ?? seen.current.onDisk;
   const dirty = isDirty(drafts.get(key), savedText);
   const latest = useRef({ key, savedText });
   latest.current = { key, savedText };
@@ -93,7 +77,7 @@ export function useFileEdit(worktree: string | null, path: string, onDisk: strin
       setError(null);
       saveFile(worktree, path, contents).then(
         () => {
-          saved.current = { key, text: contents };
+          seen.current = acknowledgeEditorSave(seen.current, key, contents);
           if (drafts.get(key) === contents) drafts.delete(key);
           rerender((n) => n + 1);
           onSaved?.();
