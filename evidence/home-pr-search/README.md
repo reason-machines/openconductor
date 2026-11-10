@@ -43,3 +43,11 @@ Passed 31/31. [Focused results](focused.tap). `git diff --check` passed.
 Browser/native acceptance, screenshots, application build, local typecheck, package installation and real PR lookup were NOT RUN. Local dependencies are not installed; exact-head CI must separately verify typecheck and build. Runtime admission remains with the existing owners. No Mac/native/browser operation, build, install, workflow dispatch or watcher was started by this pass. PR publication uses the repository's normal CI.
 
 For the existing acceptance owner, the remaining observation is to use a workspace with an already-known PR, search Home for its `#<number>`, then combine that with a title or project term. Check both a positive match and a different PR number, without changing repositories or creating a PR. No rendered or final parity credit is claimed from these pure tests.
+
+## CI fixture correction
+
+Initial published head `3691a6a07d61b0a9aeeda3180156ef0321ef04c2` passed `npm run typecheck`, then failed colour lint. The linter treated the four-digit PR test literals `#4321` and `#4329` as hex colours. [Local reproduction](lint-red.txt) confirms the same three reports. Build and the later steps in that job did not run.
+
+The regression now uses five-digit PR numbers 43210, 43220 and 43290. No matcher, assertion, linter, workflow or production logic changed in this correction. The original raw results above remain intact.
+
+With the updated fixture, temporarily removing only the production fix reproduces the same missing-row failure for `#43210`. Restoring that line makes the identical test pass 1/1. [Current red](current-red.tap), [current green](current-green.tap) and [current focused run](current-focused.tap) record the result; the focused run passes 31/31. `npm run lint:colors` now passes all six lint regressions and the scan of 798 files. [Passing lint result](lint-green.txt). `git diff --check` passes. Exact-head CI must be observed again after this correction is published.
