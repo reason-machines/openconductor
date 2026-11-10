@@ -267,7 +267,7 @@ test("footer chip glyphs, counts, order, compact layout and three-at-a-time reve
     assert.deepEqual(view.buttons().map((node) => text(node).split("+")[0]), ["file-0.ts", "file-1.ts"]);
     assert.match(text(view.buttons()[0]), /\+1-0$/);
     assert.ok(view.all((node) => node.type === "svg").length >= 3, "file glyphs and reveal icon remain present");
-    const more = view.all((node) => node.type === "button" && node.props.title === "Show 5 more changed files")[0];
+    const more = view.all((node) => node.type === "button" && node.props.title === "Show 3 more changed files")[0];
     assert.ok(more);
     await view.event(more, "onClick");
     assert.equal(view.buttons().length, 5);
