@@ -102,7 +102,8 @@ export function builtIn(id: string, model: string, thinkingLevel?: string, fastM
 /** Slot 1 as the settings describe it: the default model (a removed Cursor id reads as the default) with its effort and fast mode. */
 export function defaultFavorite(settings: Settings, id = "default"): BuiltInFavorite {
   const model = storedModel(settings.models.default || AGENT_DEFAULT_MODEL.claude);
-  return builtIn(id, model, settingsEffort(settings, model, "default", settings.models.default_agent), settings.models.default_fast_mode === true, settings.models.default_agent);
+  const agent = settings.models.default_agent ?? undefined;
+  return builtIn(id, model, settingsEffort(settings, model, "default", agent), settings.models.default_fast_mode === true, agent);
 }
 
 /**

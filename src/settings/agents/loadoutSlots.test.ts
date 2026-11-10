@@ -12,7 +12,8 @@ test("arbitrary equip and persistence retain five physical slots and dynamic age
   const rows = slotsToRows(slots);
   assert.deepEqual(rows.map((r) => JSON.parse(r.configuration).slot), [0, 4]);
   assert.deepEqual(loadoutSlots(DEFAULT_SETTINGS, parseFavorites(rows)), slots);
-  assert.equal(parseFavorites(rows)[1].type === "built-in" && parseFavorites(rows)[1].agent, "codex");
+  const restored = parseFavorites(rows)[1];
+  assert.equal(restored.type === "built-in" && restored.agent, "codex");
 });
 
 test("clear slot1 leaves a hole; slot5 never becomes the default", () => {
