@@ -220,6 +220,23 @@ fn macos_commands_match_conductor() {
 }
 
 #[test]
+fn wezterm_spawns_with_an_explicit_working_directory() {
+    let dir = Path::new("/Users/me/workspaces/app with spaces");
+    assert_eq!(
+        macos_open_command(find("wezterm").unwrap(), dir),
+        (
+            "wezterm".into(),
+            vec![
+                "cli".into(),
+                "spawn".into(),
+                "--cwd".into(),
+                dir.to_string_lossy().into_owned(),
+            ],
+        )
+    );
+}
+
+#[test]
 fn a_file_opens_in_editors_is_revealed_in_finder_and_gives_terminals_its_folder() {
     let file = Path::new("/Users/me/conductor/workspaces/app/lisbon/src/lib/auth.ts");
     let f = file.to_string_lossy().into_owned();
