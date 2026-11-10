@@ -6,6 +6,7 @@ import type { AppInfo } from "../backend";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, FolderPlusIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlayIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
+import { effectiveShortcuts } from "../keybindings/overrides";
 import { HelpMenu } from "./HelpMenu";
 import { RepoIcon } from "./RepoIcon";
 import { RenameWorkspaceDialog } from "./RenameWorkspaceDialog";
@@ -29,7 +30,7 @@ import { useRepoFilter } from "../home/useRepoFilter";
 import { useDashboardEnabled } from "../home/useDashboardEnabled";
 import { filterRepoGroups } from "../home/repoFilter";
 import { SidebarAddRepositoryMenu } from "./AddRepositoryMenu";
-import { useKeybindings } from "../keybindings/KeybindingsProvider";
+import { useKeybindings, useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { AccountMenu } from "./AccountMenu";
 import { AppMark } from "./AppMark";
 import { ResourceUsagePill } from "./ResourceUsagePill";
@@ -91,12 +92,12 @@ interface Props {
 
 // Conductor's nav rows: only Home has a native title (`HH("Home","nav.home")`, "Home ⌘…");
 // Create and Search have none. All three show the shortcut in the row on hover.
-function NavRow({ icon, label, shortcut, title, active, onClick }: { icon: JSX.Element; label: string; shortcut: string; title?: string; active?: boolean; onClick: () => void }) {
+function NavRow({ icon, label, shortcut, title, active, onClick }: { icon: JSX.Element; label: string; shortcut: string | readonly string[]; title?: string; active?: boolean; onClick: () => void }) {
   return (
     <button type="button" className="sb-row" data-active={active ? "true" : undefined} title={title} onClick={onClick}>
       <span className="sb-row-icon">{icon}</span>
       <span className="sb-row-label">{label}</span>
-      {shortcut && <kbd className="sb-row-hint">{shortcut}</kbd>}
+      {shortcut.length > 0 && <kbd className="sb-row-hint">{typeof shortcut === "string" ? shortcut : shortcut.map((key, index) => <span key={index}>{key}</span>)}</kbd>}
     </button>
   );
 }
@@ -254,6 +255,7 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
 }
 
 export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
+  const { overrides } = useKeybindingOverrides();
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
@@ -404,14 +406,14 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           {dashboardEnabled && (
             <NavRow icon={<LayoutGridIcon size={12} />} label="Dashboard" shortcut="" active={sel.kind === "dashboard"} onClick={() => dispatch({ type: "select", selection: { kind: "dashboard" } })} />
           )}
-          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} title={titleWithShortcut("Home", hint("nav.home"))} active={sel.kind === "home"} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
-          <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
+          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={effectiveShortcuts("nav.home", overrides).map(glyphs)} title={titleWithShortcut("Home", glyphs(effectiveShortcuts("nav.home", overrides)[0]))} active={sel.kind === "home"} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
+          <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={effectiveShortcuts("workspace.create", overrides).map(glyphs)} onClick={() => onOpenDialog("create")} />
           {/* "Routines" (Conductor's `uy` row after Create, active on /routines*): Conductor shows it for a cloud
               organization; ours runs on Reason Loops, so it shows once Reason is signed in. */}
           {routinesAvailable && (
             <NavRow icon={<PlayIcon size={12} />} label="Routines" shortcut="" active={sel.kind === "routines"} onClick={() => dispatch({ type: "select", selection: { kind: "routines" } })} />
           )}
-          <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />
+          <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={effectiveShortcuts("toggleCommandPalette", overrides).map(glyphs)} onClick={onSearch} />
         </div>
       </div>
 

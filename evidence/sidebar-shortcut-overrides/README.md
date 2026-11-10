@@ -2,7 +2,7 @@
 
 ## Scope
 
-Home, Create, and Search currently render registry defaults instead of the current keybinding overrides. Home's title also uses its default key. The intended fix uses the existing live provider snapshot and `effectiveShortcuts` resolver, including additional saved replacements and reset to defaults.
+Home, Create, and Search used registry defaults instead of current keybinding overrides. Home's title also used its default key. The correction reads `useKeybindingOverrides()` and uses the existing `effectiveShortcuts` resolver for the three hints and Home's primary-key title. Additional saved replacements appear in the hints. Reset returns to registry defaults.
 
 Only Home has a title in the retained reference caller. Create and Search have shortcut hints but no corresponding title. Footer shortcuts, header actions, unbinding, AllWorkspaces, home.css, #849, and Unarchive are outside this change.
 
@@ -10,13 +10,23 @@ Only Home has a title in the retained reference caller. Create and Search have s
 
 `src/components/sidebarShortcutHints.test.ts` contains seven tests. They evaluate the actual production hint function and navigation attribute expressions using the real registry, override parser, resolver, glyph formatter, and title formatter. Coverage includes default hints, primary and additional saved replacements for all three rows, changed snapshots, reset, Home's primary-key title, and the live-provider source wiring.
 
-The production Sidebar is unchanged at this checkpoint. Ordinary CI runs the test through:
+The regression-only checkpoint `49c8ff2003378164ec0f9551a934a78fe5ba551a` left production Sidebar unchanged. Ordinary CI ran the same seven tests through:
 
 ```bash
 node --test "src/**/*.test.ts"
 ```
 
-Hosted RED and GREEN results are not yet available at this checkpoint. A RED result must identify assertion failures caused by the unchanged defaults or missing live-provider wiring, not an infrastructure or import failure. The same assertions must pass after the minimal product fix.
+Hosted RED is confirmed by [CI run 42776616979, unit job 129696492459](https://github.com/reason-machines/openconductor/actions/runs/42776616979/job/129696492459). The default case passed. The other six cases failed with assertions: Home/Create/Search kept default hints instead of both saved replacements, the changed/reset case stopped at its first remap assertion, Home's title kept its default, and the live-provider import was absent. Overall: 1,620 passed, six failed, none skipped or cancelled. [Retained failure output](hosted-red.txt) includes the exact diagnostics.
+
+The second failing job, `Frontend typecheck + build` (129696492259), passed `npm run typecheck` and failed its subsequent unit-test step with the same six failures. Its build step was skipped. This was not a TypeScript diagnostic or an import/infrastructure failure.
+
+The source correction keeps every assertion unchanged. Hosted GREEN is pending. No local test, build, installation, browser, or native runtime was used for this correction.
+
+## Current-source reconciliation
+
+The supported current-main snapshot was `8c085c53590c7ca5d2f49c95bab3882a82382233`. At that commit, `Sidebar.tsx`, `KeybindingsProvider.tsx`, `overrides.ts`, and `tooltipPlacement.ts` were byte-identical to the regression baseline. The gap therefore still existed: navigation used the default-only `hint` function with no live snapshot, while the provider and effective resolver already supported saved replacements.
+
+Only the three navigation expressions, Home's title expression, the provider subscription, and NavRow's support for multiple hint strings change. The default-only `hint` function and its header/footer callers are unchanged. Focus actions, section behavior, unbinding, #847, #849, and Unarchive remain outside this correction.
 
 ## Reference provenance
 
