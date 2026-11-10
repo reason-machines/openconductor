@@ -1,3 +1,87 @@
+//! Big Terminal's non-file-backed settings, encoded as the reference's string rows.
+
+use std::collections::HashMap;
+
+use super::Terminal;
+
+const PRESET: &str = "big_terminal_preset";
+const COMMANDS: &str = "big_terminal_custom_commands";
+const KEYS: [&str; 2] = [PRESET, COMMANDS];
+
+type Row = (&'static str, Option<String>);
+
+pub(super) fn overlay(terminal: &mut Terminal, current: &HashMap<String, String>) {
+    if let Some(preset) = current.get(PRESET) {
+        terminal.big_terminal_preset = Some(preset.clone());
+    }
+    if let Some(text) = current.get(COMMANDS) {
+        terminal.big_terminal_custom_commands =
+            serde_json::from_str::<Vec<serde_json::Value>>(text)
+                .unwrap_or_default()
+                .into_iter()
+                .filter_map(|value| serde_json::from_value(value).ok())
+                .collect();
+    }
+}
+
+pub(super) fn rows(terminal: &Terminal) -> Result<Vec<Row>, serde_json::Error> {
+    Ok(vec![
+        (
+            PRESET,
+            terminal
+                .big_terminal_preset
+                .clone()
+                .filter(|value| {
+                    !value
+                        .trim_matches(|c: char| {
+                            c == '\u{feff}' || (c.is_whitespace() && c != '\u{85}')
+                        })
+                        .is_empty()
+                }),
+        ),
+        (
+            COMMANDS,
+            Some(serde_json::to_string(&terminal.big_terminal_custom_commands)?),
+        ),
+    ])
+}
+
+pub(super) fn changes(
+    terminal: &Terminal,
+    current: &HashMap<String, String>,
+) -> Result<Vec<Row>, serde_json::Error> {
+    Ok(rows(terminal)?
+        .into_iter()
+        .filter(|(key, value)| {
+            (*key != COMMANDS
+                || !terminal.big_terminal_custom_commands.is_empty()
+                || current.contains_key(*key))
+                && current.get(*key) != value.as_ref()
+        })
+        .collect())
+}
+
+pub(super) fn file_keys(table: &toml::Table) -> Vec<&'static str> {
+    match table.get("terminal").and_then(toml::Value::as_table) {
+        Some(terminal) => KEYS
+            .into_iter()
+            .filter(|key| terminal.contains_key(*key))
+            .collect(),
+        None => Vec::new(),
+    }
+}
+
+pub(super) fn strip(table: &mut toml::Table) {
+    if let Some(toml::Value::Table(terminal)) = table.get_mut("terminal") {
+        for key in KEYS {
+            terminal.remove(key);
+        }
+        if terminal.is_empty() {
+            table.remove("terminal");
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::fs;
@@ -11,8 +95,7 @@ mod tests {
     use crate::settings::service::SettingsService;
     use crate::settings::{BigTerminalCustomCommand, FILE_NAME};
 
-    const PRESET: &str = "big_terminal_preset";
-    const COMMANDS: &str = "big_terminal_custom_commands";
+    use super::{COMMANDS, PRESET};
 
     struct Fixture {
         service: SettingsService,
@@ -30,11 +113,9 @@ mod tests {
             ));
             fs::create_dir(&dir).unwrap();
             let pool = tauri::async_runtime::block_on(openconductor_db::open_in_memory()).unwrap();
-            let service = SettingsService::new(
-                dir.join(FILE_NAME),
-                Arc::new(MemorySecretStore::new()),
-            )
-            .with_db(pool.clone());
+            let service =
+                SettingsService::new(dir.join(FILE_NAME), Arc::new(MemorySecretStore::new()))
+                    .with_db(pool.clone());
             Self { service, pool, dir }
         }
 
@@ -71,10 +152,16 @@ mod tests {
         let mut settings = f.service.get().unwrap();
         settings.terminal.big_terminal_preset = Some("custom:a".into());
         settings.terminal.big_terminal_custom_commands = vec![command("a", "echo \"hello\"\nnext")];
-        settings.terminal.extra.insert("unrelated".into(), "kept".into());
+        settings
+            .terminal
+            .extra
+            .insert("unrelated".into(), "kept".into());
         f.service.update(settings).unwrap();
         assert_eq!(f.row(PRESET).as_deref(), Some("custom:a"));
-        assert_eq!(f.row(COMMANDS).as_deref(), Some("[{\"id\":\"a\",\"command\":\"echo \\\"hello\\\"\\nnext\"}]"));
+        assert_eq!(
+            f.row(COMMANDS).as_deref(),
+            Some("[{\"id\":\"a\",\"command\":\"echo \\\"hello\\\"\\nnext\"}]")
+        );
         let text = fs::read_to_string(f.service.path()).unwrap();
         assert!(!text.contains(PRESET), "{text}");
         assert!(!text.contains(COMMANDS), "{text}");
@@ -86,7 +173,10 @@ mod tests {
         .with_db(f.pool.clone());
         let back = recreated.get().unwrap();
         assert_eq!(back.terminal.big_terminal_preset.as_deref(), Some("custom:a"));
-        assert_eq!(back.terminal.big_terminal_custom_commands, vec![command("a", "echo \"hello\"\nnext")]);
+        assert_eq!(
+            back.terminal.big_terminal_custom_commands,
+            vec![command("a", "echo \"hello\"\nnext")]
+        );
     }
 
     #[test]
@@ -97,10 +187,19 @@ mod tests {
         f.set(COMMANDS, r#"[{"id":"new","command":" raw "},{"id":3,"command":"bad"},null,{"id":"empty","command":"","extra":true}]"#);
         let got = f.service.get().unwrap().terminal;
         assert_eq!(got.big_terminal_preset.as_deref(), Some("custom:new"));
-        assert_eq!(got.big_terminal_custom_commands, vec![command("new", " raw "), command("empty", "")]);
+        assert_eq!(
+            got.big_terminal_custom_commands,
+            vec![command("new", " raw "), command("empty", "")]
+        );
         for malformed in ["not json", "null", "{}", "[false,2]"] {
             f.set(COMMANDS, malformed);
-            assert!(f.service.get().unwrap().terminal.big_terminal_custom_commands.is_empty());
+            assert!(f
+                .service
+                .get()
+                .unwrap()
+                .terminal
+                .big_terminal_custom_commands
+                .is_empty());
         }
     }
 
@@ -115,11 +214,23 @@ mod tests {
         f.service.update(settings).unwrap();
         assert_eq!(f.row(PRESET), None);
         assert_eq!(f.row(COMMANDS).as_deref(), Some("[]"));
-        assert!(f.service.get().unwrap().terminal.big_terminal_custom_commands.is_empty());
+        assert!(f
+            .service
+            .get()
+            .unwrap()
+            .terminal
+            .big_terminal_custom_commands
+            .is_empty());
+        for blank in [" \t\n", "\u{feff}"] {
+            let mut settings = f.service.get().unwrap();
+            settings.terminal.big_terminal_preset = Some(blank.into());
+            f.service.update(settings).unwrap();
+            assert_eq!(f.row(PRESET), None);
+        }
         let mut settings = f.service.get().unwrap();
-        settings.terminal.big_terminal_preset = Some(" \t\n".into());
+        settings.terminal.big_terminal_preset = Some(" \u{85} ".into());
         f.service.update(settings).unwrap();
-        assert_eq!(f.row(PRESET), None);
+        assert_eq!(f.row(PRESET).as_deref(), Some(" \u{85} "));
     }
 
     #[test]
@@ -129,13 +240,19 @@ mod tests {
         f.set(PRESET, "claude");
         assert_eq!(f.service.move_appearance_to_db().unwrap(), vec![COMMANDS]);
         assert_eq!(f.row(PRESET).as_deref(), Some("claude"));
-        assert_eq!(f.row(COMMANDS).as_deref(), Some(r#"[{"id":"a","command":"file command"}]"#));
+        assert_eq!(
+            f.row(COMMANDS).as_deref(),
+            Some(r#"[{"id":"a","command":"file command"}]"#)
+        );
         let text = fs::read_to_string(f.service.path()).unwrap();
         assert!(!text.contains(PRESET) && !text.contains(COMMANDS), "{text}");
         assert!(text.contains("terminal_font_size = 15"), "{text}");
         assert!(text.contains("unrelated = \"kept\""), "{text}");
         assert!(f.service.move_appearance_to_db().unwrap().is_empty());
-        assert_eq!(f.service.get().unwrap().terminal.big_terminal_preset.as_deref(), Some("claude"));
+        assert_eq!(
+            f.service.get().unwrap().terminal.big_terminal_preset.as_deref(),
+            Some("claude")
+        );
     }
 
     #[test]
@@ -159,9 +276,33 @@ mod tests {
         f.file("[terminal]\nbig_terminal_preset = \"codex\"\n");
         f.set(PRESET, "claude");
         tauri::async_runtime::block_on(app_settings::deprecate(&f.pool, PRESET)).unwrap();
-        assert_eq!(f.service.get().unwrap().terminal.big_terminal_preset.as_deref(), Some("codex"));
+        assert_eq!(
+            f.service.get().unwrap().terminal.big_terminal_preset.as_deref(),
+            Some("codex")
+        );
         assert_eq!(f.service.move_appearance_to_db().unwrap(), vec![PRESET]);
         assert_eq!(f.row(PRESET).as_deref(), Some("codex"));
+    }
+
+    #[test]
+    fn unrelated_save_does_not_seed_unset_terminal_rows() {
+        let f = Fixture::new();
+        let mut settings = f.service.get().unwrap();
+        settings.appearance.terminal_font_size = 15;
+        f.service.update(settings).unwrap();
+        assert_eq!(f.row(PRESET), None);
+        assert_eq!(f.row(COMMANDS), None);
+        assert_eq!(f.service.get().unwrap().appearance.terminal_font_size, 15);
+    }
+
+    #[test]
+    fn migration_failure_leaves_the_legacy_file_unchanged() {
+        let f = Fixture::new();
+        let text = "[terminal]\nbig_terminal_preset = \"codex\"\n";
+        f.file(text);
+        tauri::async_runtime::block_on(f.pool.close());
+        assert!(f.service.move_appearance_to_db().is_err());
+        assert_eq!(fs::read_to_string(f.service.path()).unwrap(), text);
     }
 
     #[test]
@@ -178,7 +319,10 @@ mod tests {
         assert!(service.move_appearance_to_db().unwrap().is_empty());
         let text = fs::read_to_string(service.path()).unwrap();
         assert!(text.contains(PRESET) && text.contains(COMMANDS), "{text}");
-        assert_eq!(service.get().unwrap().terminal.big_terminal_preset.as_deref(), Some("codex"));
+        assert_eq!(
+            service.get().unwrap().terminal.big_terminal_preset.as_deref(),
+            Some("codex")
+        );
         assert_eq!(f.row(PRESET), None);
         assert_eq!(f.row(COMMANDS), None);
     }
