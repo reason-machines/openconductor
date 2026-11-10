@@ -31,7 +31,7 @@ Differences that remain:
 
 - Icon artwork. Conductor's bundled PNGs fill the whole square. The apps' own macOS icons have the standard transparent margin, so the icons look smaller, and VS Code shows its macOS tile, not the flat logo.
 - The rest of the header. Conductor puts the directory name before the button and the right-panel toggle after it. OpenConductor's header still has its Terminal and Archive buttons. Both are outside this change.
-- ⌘O. In Conductor, ⌘O shows an app switcher overlay while held (`Eco`, `o9`): a strip of recent apps that you cycle by pressing O again. Here ⌘O opens the default app at once, which is what the button's tooltip advertises. The switcher is not built.
+- ⌘O (historical gap). In Conductor, ⌘O shows an app switcher overlay while held (`Eco`, `o9`): a strip of recent apps that you cycle by pressing O again. The OpenConductor version captured for this report opened the default app at once and had no switcher. The later [held chooser implementation report](switcher/README.md) records `AppSwitcher`, retained REA source evidence, and passing browser checks with mocked backend dependencies. That evidence does not establish packaged macOS parity or actual external-app launch.
 - Remote and cloud workspaces (`ssh-remote`, the local mirror for Finder) and file-level opens with `--goto <line>` are not built. Only local workspace folders open.
 - Linux: Finder opens with `xdg-open`. Every other app returns "Opening in <App> is only supported on macOS".
 
