@@ -5,5 +5,5 @@ import type { AgentKind } from "../settings/types";
 
 export async function selectFirstRunAgent(agent: AgentKind): Promise<void> {
   const settings = await getSettings();
-  await updateSettings(withDefault(settings, { ...builtIn("default", agent === "reason" ? (settings.reason.model ?? "openai/gpt-6.1-sol") : AGENT_DEFAULT_MODEL[agent]), agent }));
+  await updateSettings(withDefault(settings, { ...builtIn("default", agent === "reason" ? (settings.reason?.model ?? "openai/gpt-6.1-sol") : AGENT_DEFAULT_MODEL[agent]), agent }));
 }
