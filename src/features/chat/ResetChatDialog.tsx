@@ -70,7 +70,7 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
   // header `space-y-2` (text-lg title, text-sm muted description), footer `justify-end space-x-2`
   // with an outline Cancel and a destructive Reset.
   return (
-    <div className="modal-backdrop oc-alert-backdrop" ref={motionRef} data-dialog-motion="alert" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="modal-backdrop oc-alert-backdrop" ref={motionRef} data-dialog-motion="alert">
       <div
         className="oc-alert oc-reset-chat"
         role="alertdialog"

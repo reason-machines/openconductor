@@ -15,9 +15,9 @@ This establishes source-level non-dismissal for outside pointer input. It is not
 
 ## Fresh-main mismatch and correction boundary
 
-Default main `d8094fc7878a3add17eac2756b46fef98b00b542` contains merged #903, whose Cancel-first autofocus and seven mounted regressions are preserved byte-for-byte. Its Reset backdrop still calls `onClose` on mouse-down when event target equals currentTarget. That callback contradicts the retained alert-dialog contract above.
+Initial default main `d8094fc7878a3add17eac2756b46fef98b00b542` contains merged #903, whose Cancel-first autofocus and seven mounted regressions are preserved byte-for-byte. A fresh default-main read at `f38cd222090dff7d1c05981863cba8aa2b2db369` before the correction confirmed the component and prior regression file are unchanged. Its Reset backdrop still calls `onClose` on mouse-down when event target equals currentTarget. That callback contradicts the retained alert-dialog contract above.
 
-The intended production correction deletes only the outer backdrop's `onMouseDown` attribute. It does not add a shared primitive, change other dialogs, alter keyboard handling, or change callbacks/inputs. The three-file lease is this component hunk, `src/features/chat/resetChatDismissal.test.ts`, and this note.
+The production correction deletes only the outer backdrop's `onMouseDown` attribute. It does not add a shared primitive, change other dialogs, alter keyboard handling, or change callbacks/inputs. The three-file lease is this component hunk, `src/features/chat/resetChatDismissal.test.ts`, and this note.
 
 ## Isolated regression
 
@@ -31,8 +31,8 @@ The unchanged automatic CI command `node --test "src/**/*.test.ts"` discovers th
 
 ## Verification
 
-- Regression-only checkpoint: test and evidence published before the production change; ordinary hosted RED is pending. No passing or failing result is claimed yet.
-- Corrected checkpoint: not applied until hosted RED reproduces the outside-dismissal failure. The same test assertions will be retained for GREEN.
+- **Hosted RED passed as a reproduction:** regression-only published head `c8124d3ba3dc4ce398f9c3042edafb44e7e4d418`, ordinary automatic [CI run 42837744539](https://github.com/reason-machines/openconductor/actions/runs/42837744539). Both [Frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/42837744539/job/129904366918) and [Frontend typecheck + build](https://github.com/reason-machines/openconductor/actions/runs/42837744539/job/129904366992) failed only the two new outside-mouse-down cases (`reset-files=true/false`): `outside mouse-down must not dismiss Reset chat`, actual `1`, expected `0`. The unit job reported 1,746 pass / 2 fail / 0 skip. All eight new Cancel/Escape/explicit confirmation controls passed. In the build job, the same unit-test failure blocked later build steps; no successful typecheck/build is implied.
+- **Corrected checkpoint:** applied only after the intended hosted RED above. The regression test and all seven prior focus/confirmation cases are unchanged; automatic exact-head GREEN is pending. No manual rerun or workflow dispatch.
 - Local source/diff hygiene: `git diff --check` and comparison of `resetChatFocus.test.ts` against fresh main; recorded at commit.
 - Local tests, typecheck, build, installs, browser/app/native runs, and screenshots: not run; local capacity admission remains withheld and #847 FULL STOP remains intact.
 - Mounted handler/callback/state checks cannot prove real DOM event propagation, touch/pen delivery, browser focus, native physical keys, installed behavior, or side-by-side visual parity. Those remain unverified, not acceptance claims.
