@@ -125,8 +125,29 @@ production hook, not setup or dependency failures.
 
 The production correction adds one presentation-derived navigation array and
 steps by path through it. The direction calculation uses that same pre-mark
-snapshot. No regression assertion or fixture was changed after RED. Hosted
-same-assertion GREEN is pending, not claimed.
+snapshot. No regression assertion or fixture was changed after RED.
+
+Hosted same-assertion GREEN is verified at published head
+`e0554c20089f76cbe291528b6db939aa7d40c893`. The automatic
+[Diff frontend job](https://github.com/reason-machines/openconductor/actions/runs/42831165875/job/129881247240)
+passed all 195 tests, with zero failures, cancellations or skips. The regression
+file remains Git blob `30bd102e8b7726f54a1741a95a22f044dbcfbd1d`, identical to
+RED. Diff Rust tests and clippy passed on Linux and macOS.
+
+That head completed 23 successful checks and one failed check. The automatic
+[Keybindings job](https://github.com/reason-machines/openconductor/actions/runs/42831165905/job/129881247571)
+failed the final Undo assertion in `composer-long-paste.e2e.mjs` and the immediate
+four-label Focus menu assertion in `sidebar-sections.e2e.mjs`. Neither cause is
+established. Their existing owners retain diagnosis. No assertion was weakened
+and this receipt does not classify either failure as unrelated or flaky.
+
+The branch now incorporates main
+`75a1196dd92f9303474067296e5d64500078180c`, including #906's diagnostic-only paste
+coverage. Its composer test matches main blob
+`6e9419aa7323a3b930e3e11be64fd5c9da40b25c`. The Diff hook and regression blobs
+are unchanged by this merge. This is a new diagnostic input, not a repair or
+clearance of the historical failures. New exact-head automatic results remain
+pending. #909's separate Focus diagnostic is not included in this main pin.
 
 Capacity restrictions prohibit local tests, builds and dependency installation,
 so no local executable regression or typecheck ran. Local `git diff --check` is
