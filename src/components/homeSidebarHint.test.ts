@@ -70,12 +70,13 @@ async function fixture(sidebarVisible = false) {
       return homeImports[name];
     },
   });
-  assert.ok(home.HomeScreen);
+  const { HomeScreen } = home;
+  assert.ok(HomeScreen);
   const useOverrides = useKeybindingOverrides;
   let current: ReturnType<typeof useOverrides> | undefined;
   function Controls() { current = useOverrides(); return null; }
-  const actions: Parameters<ComponentProps<typeof home.HomeScreen>["dispatch"]>[0][] = [];
-  const props: ComponentProps<typeof home.HomeScreen> = {
+  const actions: Parameters<ComponentProps<typeof HomeScreen>["dispatch"]>[0][] = [];
+  const props: ComponentProps<typeof HomeScreen> = {
     repos: [], sidebarVisible, dispatch: (action) => { actions.push(action); }, onOpenDialog() {}, onOpenProject() {},
   };
   let hydrate: ((raw: string | undefined) => void) | undefined;
@@ -84,7 +85,7 @@ async function fixture(sidebarVisible = false) {
   await act(async () => {
     renderer = create(React.createElement(KeybindingsProvider, {
       loadOverrides: () => stored,
-      children: React.createElement(React.Fragment, null, React.createElement(Controls), React.createElement(home.HomeScreen, props)),
+      children: React.createElement(React.Fragment, null, React.createElement(Controls), React.createElement(HomeScreen, props)),
     }));
   });
   return {

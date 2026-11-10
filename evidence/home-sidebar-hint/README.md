@@ -24,7 +24,7 @@ The existing [focused receipt](../help/shortcut-overrides/reference-focused.json
 
 Default main `8f88db182e0ea7ed20e0b612a6e111ba7f70dcc0` computes `TOGGLE_LEFT_SIDEBAR_HINT` at module load. That call omits the overrides argument, so it always uses the registry defaults. Moving that call inside render without supplying the provider snapshot would still be wrong.
 
-The minimal correction consumes the existing `useKeybindingOverrides` context and calculates the hint during HomeScreen render. No provider, resolver, registry, Sidebar, AllWorkspaces, CSS, keyboard dispatch, or callback behavior changes.
+Fresh default main `bd2d42c2a75bc2013cd447e78f07db01e25782dc` has an identical HomeScreen to that baseline. The correction consumes the existing `useKeybindingOverrides` context and calculates the hint during HomeScreen render. No provider, resolver, registry, Sidebar, AllWorkspaces, CSS, keyboard dispatch, or callback behavior changes.
 
 ## Regression and verification
 
@@ -32,7 +32,21 @@ The minimal correction consumes the existing `useKeybindingOverrides` context an
 
 Six cases cover defaults and click dispatch, delayed primary/additional hydration, live edits/reset, single-key replacement, malformed-setting fallback, and hidden-toggle behavior. The existing Frontend CI job discovers this test through `node --test "src/**/*.test.ts"`. No workflow or dependency edits are needed.
 
-The first publication contains only the regression and evidence, leaving production unchanged. Automatic hosted RED and GREEN receipts will be recorded here after observation. Local Node, tests, builds, browser/native execution, installation, manual workflow dispatch, and reruns are not admitted.
+### Hosted RED
+
+The [automatic Frontend unit-test job](https://github.com/reason-machines/openconductor/actions/runs/42906887398/job/130147089470) ran `node --test "src/**/*.test.ts"` against regression-only head `19223fa976278f8669633e874bb7ec6c4ba7e113`, with HomeScreen unchanged. It passed 1,987 tests and failed exactly three. All failures were this regression's expected title mismatch:
+
+- Persisted primary/additional hydration expected `Toggle left sidebar (⌘⇧Y or ⌥J)` but retained `Toggle left sidebar (⌘B or [)`.
+- A live provider update expected the same saved pair but retained the defaults.
+- A single saved shortcut expected `Toggle left sidebar (⌘⇧Y)` but retained the defaults.
+
+Defaults/click dispatch, malformed-setting fallback, and the hidden-toggle case passed. This is behavioral RED, independent of the separate test-setup typing failure.
+
+The [typecheck job](https://github.com/reason-machines/openconductor/actions/runs/42906887398/job/130147089444) also failed because a mutable optional `home.HomeScreen` property lost narrowing inside an async callback. The fixture now captures the component in an immutable local, validates it once, and uses that value for props and mounting. No test assertion was relaxed.
+
+### Fix checkpoint
+
+The next publication includes the provider-backed hint and the fixture typing correction. Automatic hosted GREEN is pending. `python3 evidence/home-sidebar-hint/verify-reference.py` and `git diff --check` passed after these edits. Local Node, tests, builds, browser/native execution, installation, manual workflow dispatch, and reruns are not admitted.
 
 ## Acquisition gaps and limits
 
