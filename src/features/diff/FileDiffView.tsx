@@ -26,7 +26,7 @@ import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import { FilePathChip } from "./FilePathChip";
 import type { CommentSide } from "./comments.ts";
-import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, type LineRange, codeViewItem, fromPierreSide, fullDiffMeta, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch } from "./pierre.ts";
+import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, type LineRange, codeViewItem, editableCodeViewItem, fromPierreSide, fullDiffMeta, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch } from "./pierre.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import { useDiffTheme } from "./useDiffTheme.ts";
 
@@ -63,7 +63,7 @@ interface Props {
   worktree?: string | null;
   /** Turn hidden whitespace back on (the whitespace-only empty state's link). */
   onShowWhitespace?: () => void;
-  /** Make the entire-file view an editor (EditInViewer.ts); absent where the file can't be edited. */
+  /** Enable editing from complete current contents; absent for read-only files and history. */
   edit?: FileEdit;
   /** The whole new file, for the header's "Copy file contents" button. */
   loadText?: () => Promise<string>;
@@ -123,13 +123,12 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
   const clickable = onLineClick !== undefined;
   const canLoad = loadFull !== undefined;
   const shown = useCodeViewItem(file, meta, layout, anchors);
-  // Editing (Conductor's EditablePierreFile): the file item with `edit: true`, starting from the draft.
-  // Pierre's edit session keeps its own document across item updates; a new `generation` remounts it.
-  const editing = edit !== undefined && shown.type === "file";
+  // Pierre requires complete diff metadata before attaching its editor.
+  const editing = edit !== undefined && (shown.type === "file" || !shown.fileDiff.isPartial);
   const latestEdit = useRef(edit);
   latestEdit.current = edit;
   const item = useMemo<CodeViewItem<LineAnchor>>(
-    () => (editing && shown.type === "file" ? { ...shown, file: { ...shown.file, contents: latestEdit.current!.current() }, edit: true } : shown),
+    () => (editing ? editableCodeViewItem(shown, latestEdit.current!.current()) : shown),
     [shown, editing],
   );
   const onEditChange = useCallback((e: { file: { contents: string } }) => latestEdit.current?.onChange(e.file.contents), []);
@@ -239,7 +238,7 @@ export function FileDiffView(props: Props) {
   else
     body = (
       <div className="oc-code-scroll">
-        <Code key={edit?.generation ?? 0} {...props} />
+        <Code key={`${edit?.generation ?? 0}:${props.layout}`} {...props} />
       </div>
     );
 

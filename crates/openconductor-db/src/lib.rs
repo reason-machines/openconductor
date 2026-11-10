@@ -44,6 +44,7 @@ mod scope;
 pub mod session_messages;
 pub mod sessions;
 pub mod terminal_sessions;
+pub mod workspace_links;
 pub mod workspace_rename;
 pub mod workspaces;
 
@@ -61,6 +62,8 @@ pub enum Error {
     Sqlx(#[from] sqlx::Error),
     #[error("no such row")]
     NotFound,
+    #[error("{0}")]
+    InvalidWorkspaceLink(String),
     #[error(transparent)]
     Migrate(#[from] sqlx::migrate::MigrateError),
 }

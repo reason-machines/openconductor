@@ -128,6 +128,21 @@ fn cwd() -> PathBuf {
 }
 
 #[test]
+fn linked_directories_reach_new_processes_without_guessing_live_reconciliation() {
+    let h = harness();
+    h.runner.open_chat("links", &cwd(), None);
+    let directories = vec![PathBuf::from("/extra/one"), PathBuf::from("/extra/two")];
+    assert_eq!(h.runner.prompt_with_directories("links", "hello", &directories), TurnEnd::Completed);
+    let args = h.args();
+    assert!(args[0].contains("--add-dir /extra/one"), "{args:?}");
+    assert!(args[0].contains("--add-dir /extra/two"), "{args:?}");
+    assert!(matches!(h.runner.prompt_with_directories("links", "changed", &[]), TurnEnd::Failed(message) if message.contains("Start a new Claude Code chat")));
+    assert_eq!(h.stdin().len(), 1, "changed directories must not silently send to the old process");
+    assert_eq!(h.runner.prompt_with_directories("links", "unchanged", &directories), TurnEnd::Completed);
+    assert_eq!(h.args().len(), 1);
+}
+
+#[test]
 fn turns_and_follow_ups_share_one_process() {
     let h = harness();
     h.runner.open_chat("c1", &cwd(), None);

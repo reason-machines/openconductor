@@ -26,6 +26,16 @@ pub fn update_settings(
 }
 
 #[tauri::command]
+pub fn initialize_default_runtime(
+    service: State<'_, SettingsService>,
+    agent: AgentKind,
+) -> Result<Option<Settings>, String> {
+    service
+        .initialize_default_runtime(agent)
+        .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 pub fn provider_status(
     service: State<'_, SettingsService>,
     agent: AgentKind,

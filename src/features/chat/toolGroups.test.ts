@@ -5,11 +5,13 @@ import { canCollapse, foldAgentRows, groupParts, isSummaryOpen, summaryLabel, ty
 import { buildRows, type PartView, type ToolStatus } from "./view.ts";
 import { applyChatEvents, emptyTranscript } from "./reducer.ts";
 import type { Block, ChatEvent, ChatMessage } from "./types.ts";
+import { applyCodexPayload, codexChat, startTurn, type CodexPayload } from "./codex.ts";
+import { applyReasonPayload, reasonChat, startTurn as startReasonTurn, type ReasonPayload } from "./reason.ts";
 
 const text = (t: string): PartView => ({ kind: "text", text: t, streaming: false });
 const thinking = (t: string): PartView => ({ kind: "thinking", text: t, streaming: false });
 const tool = (id: string, name: string, status: ToolStatus = "done"): PartView => ({ kind: "tool", call: { id, name, input: {}, tool: { name, input: {} }, status } });
-const keyed = (parts: PartView[]) => parts.map((part, i) => ({ key: `k${i}`, part }));
+const keyed = (parts: PartView[]) => parts.map((part, i) => ({ key: `k${i}`, messageKey: `m${i}`, part }));
 const shape = (parts: PartView[], hasFinal = true) =>
   groupParts(keyed(parts), "m1", hasFinal).map((g) => (g.kind === "summary" ? `[${summaryLabel(g.summary)}]` : g.part.kind === "tool" ? g.part.call.name : `"${g.part.text}"`));
 
@@ -102,6 +104,149 @@ test("a turn's messages fold into one block that collapses across messages", () 
   assert.deepEqual(describe(rows), ["user", '[4 tool calls, 2 messages] "Fixed."', "turn_end"]);
   const agent = rows[1]!;
   assert.ok(agent.kind === "agent" && !agent.running && agent.copyText === "Fixed.");
+});
+
+test("the Codex adapter's one-message turn keeps commentary and tools inline", () => {
+  let state = codexChat("s1");
+  const started = startTurn(state, "make hello.txt");
+  state = started.state;
+  const events = [...started.events];
+  const payloads: CodexPayload[] = [
+    { chatId: "s1", type: "message", itemId: "msg-a", text: "I’ll create `hello.txt` in the workspace, then run `cat hello.txt`.", phase: "commentary" },
+    ...["printf hello > hello.txt", "cat hello.txt"].map((command, i): CodexPayload => ({
+      chatId: "s1", type: "tool", id: `exec-${i}`, kind: "commandExecution", title: command,
+      status: "completed", input: { command }, output: i === 1 ? "hello from codex\n" : null, exitCode: 0,
+    })),
+    { chatId: "s1", type: "message", itemId: "msg-b", text: "hello from codex", phase: "final_answer" },
+    { chatId: "s1", type: "turnEnded", outcome: "completed" },
+  ];
+  for (const payload of payloads) {
+    const step = applyCodexPayload(state, payload);
+    state = step.state;
+    events.push(...step.events);
+  }
+  const transcript = applyChatEvents(emptyTranscript("s1"), events);
+  assert.ok(transcript.ok);
+  assert.equal(transcript.transcript.messages.filter((m) => m.role === "assistant").length, 1);
+  const agent = foldAgentRows(buildRows(transcript.transcript), transcript.transcript.activeTurn).find((r) => r.kind === "agent");
+  assert.ok(agent?.kind === "agent");
+  assert.equal(agent.items.filter((g) => g.kind === "summary").length, 0);
+  assert.deepEqual(agent.items.map((g) => g.kind === "part" && (g.part.kind === "tool" ? g.part.call.name : g.part.text)), [
+    "I’ll create `hello.txt` in the workspace, then run `cat hello.txt`.", "printf hello > hello.txt", "cat hello.txt", "hello from codex",
+  ]);
+  const final = agent.items.at(-1);
+  assert.ok(final?.kind === "part" && final.preview);
+});
+
+test("the Reason Lisbon adapter turn preserves one message and all inline content", () => {
+  const texts = [
+    "I'll look at how the login route decides where to send a signed-in user.",
+    "Found it. `redirectTo` treats any session object as signed in, including an expired one, while the dashboard loader rejects expired sessions and sends the user back to `/login`. I'll check `expiresAt` before redirecting.",
+    "Fixed. Expired sessions now go straight to `/login` instead of looping.\n\n- `src/lib/auth.ts`: only redirect to the dashboard when the session has not expired.\n- Tests: `pnpm test src/lib/auth.test.ts` passes (4 tests).",
+  ];
+  const call = (id: string, toolName: string): ReasonPayload => ({
+    chatId: "s1", type: "tool", id, toolName, title: toolName, kind: "execute", status: "completed",
+    output: "ok", diffs: [], locations: [], rawInput: {},
+  });
+  const started = startReasonTurn(reasonChat("s1"), "Fix the redirect loop");
+  let state = started.state;
+  const events = [...started.events];
+  const payloads: ReasonPayload[] = [
+    { chatId: "s1", type: "text", text: texts[0]! }, call("g", "Grep"), call("r", "Read"),
+    { chatId: "s1", type: "text", text: texts[1]! }, call("e", "Edit"), call("b", "Bash"),
+    { chatId: "s1", type: "text", text: texts[2]! },
+    { chatId: "s1", type: "turnEnded", end: { outcome: "completed" } },
+  ];
+  for (const payload of payloads) {
+    const step = applyReasonPayload(state, payload);
+    state = step.state;
+    events.push(...step.events);
+  }
+  const transcript = applyChatEvents(emptyTranscript("s1"), events);
+  assert.ok(transcript.ok);
+  assert.equal(transcript.transcript.messages.filter((m) => m.role === "assistant").length, 1);
+  const agent = foldAgentRows(buildRows(transcript.transcript), transcript.transcript.activeTurn).find((r) => r.kind === "agent");
+  assert.ok(agent?.kind === "agent");
+  assert.equal(agent.items.filter((g) => g.kind === "summary").length, 0);
+  assert.deepEqual(agent.items.map((g) => g.kind === "part" && (g.part.kind === "tool" ? g.part.call.name : g.part.text)), [
+    texts[0], "Grep", "Read", texts[1], "Edit", "Bash", texts[2],
+  ]);
+  const final = agent.items.at(-1);
+  assert.ok(final?.kind === "part" && final.preview);
+});
+
+test("the reference seed's six distinct pre-final messages still collapse", () => {
+  const rows = fold([
+    m("a1", "assistant", [said("I'll look.")]),
+    m("a2", "assistant", [use("g", "Grep")]), m("r1", "user", [result("g")]),
+    m("a3", "assistant", [use("r", "Read")]), m("r2", "user", [result("r")]),
+    m("a4", "assistant", [said("Found it.")]),
+    m("a5", "assistant", [use("e", "Edit")]), m("r3", "user", [result("e")]),
+    m("a6", "assistant", [use("b", "Bash")]), m("r4", "user", [result("b")]),
+    m("a7", "assistant", [said("Fixed.")]), done("t1"),
+  ]);
+  assert.deepEqual(describe(rows), ['[4 tool calls, 2 messages] "Fixed."', "turn_end"]);
+  const agent = rows[0];
+  assert.ok(agent?.kind === "agent");
+  const summary = agent.items[0];
+  assert.ok(summary?.kind === "summary");
+  assert.equal(new Set(summary.parts.map((p) => p.messageKey)).size, 6);
+});
+
+test("three tools in one assistant message stay inline before the final text", () => {
+  const rows = fold([
+    m("a1", "assistant", [use("a", "Read"), use("b", "Read"), use("c", "Read")]),
+    m("r1", "user", [result("a"), result("b"), result("c")]),
+    m("a2", "assistant", [said("Done.")]),
+    done("t1"),
+  ]);
+  assert.deepEqual(describe(rows), ['Read Read Read "Done."', "turn_end"]);
+});
+
+test("three tools across two assistant messages stay inline before the final text", () => {
+  const rows = fold([
+    m("a1", "assistant", [use("a", "Read"), use("b", "Read")]),
+    m("r1", "user", [result("a"), result("b")]),
+    m("a2", "assistant", [use("c", "Read")]),
+    m("r2", "user", [result("c")]),
+    m("a3", "assistant", [said("Done.")]),
+    done("t1"),
+  ]);
+  assert.deepEqual(describe(rows), ['Read Read Read "Done."', "turn_end"]);
+});
+
+test("empty assistant messages do not bring a two-message batch to the threshold", () => {
+  const rows = fold([
+    m("a1", "assistant", [use("a", "Read"), use("b", "Read")]),
+    m("r1", "user", [result("a"), result("b")]),
+    m("empty", "assistant", [said("  ")]),
+    m("a2", "assistant", [use("c", "Read")]),
+    m("r2", "user", [result("c")]),
+    m("a3", "assistant", [said("Done.")]),
+    done("t1"),
+  ]);
+  assert.deepEqual(describe(rows), ['Read Read Read "Done."', "turn_end"]);
+  const agent = rows[0]!;
+  assert.equal(agent.kind, "agent");
+  if (agent.kind === "agent") {
+    assert.deepEqual(agent.items.map((g) => g.kind === "part" && g.key), ["a", "b", "c", "a3:0"]);
+    const final = agent.items.at(-1);
+    assert.ok(final?.kind === "part" && final.preview);
+  }
+});
+
+test("three separate visible assistant messages collapse before the final text", () => {
+  const rows = fold([
+    m("a1", "assistant", [use("a", "Read")]),
+    m("r1", "user", [result("a")]),
+    m("a2", "assistant", [use("b", "Read")]),
+    m("r2", "user", [result("b")]),
+    m("a3", "assistant", [use("c", "Read")]),
+    m("r3", "user", [result("c")]),
+    m("a4", "assistant", [said("Done.")]),
+    done("t1"),
+  ]);
+  assert.deepEqual(describe(rows), ['[3 tool calls] "Done."', "turn_end"]);
 });
 
 test("a running turn is one block marked running, so the view keeps it open", () => {

@@ -8,6 +8,8 @@ import { issueToFrom, listErrorState, prToFrom, type OpenIssueDto, type OpenPrDt
 import type { BranchPrefixInfo } from "./naming";
 import { UPSTREAM_WARNING } from "./upstream";
 import { reportInitIssue, WORKTREE_PARTIAL_FAILURE } from "./initIssues";
+import { getSettings } from "../settings/api";
+import { initializeChatAgent } from "../features/chat/agentChoice";
 
 export interface RepositoryDto {
   id: string;
@@ -106,7 +108,9 @@ let browserNumber = 0;
 
 /** Creates the workspace and reports any non-fatal initialization issue (see initIssues). */
 export async function createWorkspace(args: CreateWorkspaceArgs): Promise<CreatedWorkspaceDto> {
+  const settings = await getSettings();
   const created = inTauri() ? await invoke<CreatedWorkspaceDto>("create_workspace", { ...args }) : await createInBrowser(args);
+  initializeChatAgent(created.workspace.id, settings);
   reportInitIssue(created);
   return created;
 }

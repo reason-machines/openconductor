@@ -5,6 +5,7 @@ src-tauri/gen/schemas/
 *.log
 .DS_Store
 e2e-artifacts/
+test-results/
 .native-proof/
 src-tauri/resources/bin/
 __pycache__/

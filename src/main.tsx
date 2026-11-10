@@ -15,6 +15,7 @@ import { agentBinaryStore } from "./features/chat/agentBinaryStore";
 import "./fonts.css";
 import "./theme/tokens.css";
 import "./styles.css";
+import "./scroll.css";
 import "./components/motion/motion.css";
 import "./components/motion/screens.css";
 

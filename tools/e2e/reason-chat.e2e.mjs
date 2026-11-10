@@ -207,7 +207,7 @@ try {
      const invoke = window.__TAURI_INTERNALS__.invoke;
      // The workspace chat's model comes from Settings' default model (#271).
      invoke("get_settings")
-       .then((s) => invoke("update_settings", { settings: { ...s, models: { ...s.models, default: "opus-5-5-1m" } } }))
+       .then((s) => invoke("update_settings", { settings: { ...s, reason: { ...s.reason, workspace: "ws-a" }, models: { ...s.models, default: "opus-5-5-1m" } } }))
        .then(() => invoke("add_repository", { path: arguments[0] }))
        .then((repo) => invoke("create_workspace", { repositoryId: repo.id, branchName: "e2e", directoryName: "e2e", baseBranch: null, existingBranch: false, prNumber: null }))
        .then((created) => done({ workspace: created.workspace }), (err) => done({ error: String(err) }));`,

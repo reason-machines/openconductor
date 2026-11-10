@@ -119,8 +119,8 @@ impl ReasonChats {
         let store = app
             .path()
             .app_data_dir()
-            .ok()
-            .map(|d| d.join(SESSION_STORE));
+            .map_err(|e| format!("Could not locate the Reason Session workspace store: {e}"))?
+            .join(SESSION_STORE);
         let app = app.clone();
         let sink: Sink = Arc::new(move |chat: &str, ev: ProviderEvent| {
             let event = wire::event_json(chat, &ev);
@@ -131,9 +131,7 @@ impl ReasonChats {
         provider.reconfigure_workspace(workspace);
         // Each Session's workspace, so a chat resumes there after a restart
         // even when the Reason desktop app has another workspace selected.
-        if let Some(store) = store {
-            provider = provider.with_session_store(store);
-        }
+        provider = provider.with_session_store(store);
         let provider = Arc::new(provider);
         *slot = Some(provider.clone());
         Ok(provider)
