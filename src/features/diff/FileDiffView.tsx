@@ -201,7 +201,7 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
     />
   );
   return (
-    <>
+    <div style={{ display: "contents" }} onPointerCancelCapture={clickable ? () => setSelection(null) : undefined}>
       {editing ? (
         <div className="oc-code-edit" onKeyDown={onKeyDown}>
           <EditProvider createEditor={createEditor}>{code}</EditProvider>
@@ -210,7 +210,7 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
         code
       )}
       <CommentNav previousCount={nav.previousCount} nextCount={nav.nextCount} navigate={nav.navigate} />
-    </>
+    </div>
   );
 }
 
