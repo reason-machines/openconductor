@@ -1,0 +1,15 @@
+{
+  "bundle_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "functions": {
+    "gbi": {
+      "function_character_offset": 2103713,
+      "default_path_character_offset": 2104271,
+      "excerpt": "t B=async()=>{const U=await fI({directory:!0,multiple:!1,title:\"Choose where to create the project\",defaultPath:d});U&&h(U)},F=async()=>{con"
+    },
+    "los": {
+      "function_character_offset": 1962736,
+      "default_path_character_offset": 1963455,
+      "excerpt": "=async()=>{const Se=await fI({directory:!0,multiple:!1,title:\"Choose where to clone the repository\",defaultPath:o});Se&&a(Se)},e[5]=o,e[6]=L"
+    }
+  }
+}

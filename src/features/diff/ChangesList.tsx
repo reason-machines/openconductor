@@ -4,6 +4,7 @@ import { useCallback, useState, type ReactNode } from "react";
 import "./diff.css";
 import { RevertIcon } from "./DiscardDialog";
 import { FileContextMenu } from "./FileContextMenu";
+import { fileCopyPaths } from "./fileCopyPaths.ts";
 import { copyText, openInApp } from "../openIn/apps";
 import { splitPath } from "./FilePathChip";
 import { SearchIcon, XIcon } from "../files/panelIcons";
@@ -58,14 +59,15 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
   const [menu, setMenu] = useState<{ path: string; x: number; y: number } | null>(null);
   const closeMenu = useCallback(() => setMenu(null), []);
   const menuFile = menu ? files.find((file) => file.path === menu.path) : undefined;
+  const { path: copyPath, relativePath } = fileCopyPaths(menuFile?.path ?? "", worktree);
   return (
     <div className="oc-diff oc-diff-list">
       {load.state === "loading" && <div className="placeholder small">Loading changes…</div>}
       {load.state === "error" && <div className="placeholder small"><p className="error">Couldn't load changes.</p><p className="muted">{load.message}</p><button className="btn btn-small" onClick={diff.refresh}>Try again</button></div>}
-      {load.state === "ready" && files.length === 0 && <div className="placeholder small"><p>{diff.turn ? "No changes in selected turn." : typeof opts.scope === "object" ? "No changes in selected commit." : opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>{!diff.turn && typeof opts.scope !== "object" && <p className="muted">Changes the agent makes show up here.</p>}{!diff.turn && opts.scope === "all" && emptyAction}</div>}
+      {load.state === "ready" && files.length === 0 && <div className="placeholder small"><p>{diff.turn ? "No changes in selected turn." : typeof opts.scope === "object" ? `No changes in commit ${opts.scope.commitHash.slice(0, 7)}` : opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>{!diff.turn && typeof opts.scope !== "object" && <p className="muted">Changes the agent makes show up here.</p>}{!diff.turn && opts.scope === "all" && emptyAction}</div>}
       {load.state === "ready" && files.length > 0 && filter && filtering && <ChangesFilterRow filter={filter} matchCount={shown.length} totalCount={files.length} />}
       {load.state === "ready" && files.length > 0 && <>
-        <div className="oc-changes-header"><span>{files.length} {files.length === 1 ? "file" : "files"} changed</span><ChangeCounts additions={totals.a} deletions={totals.d} showZero /></div>
+        {typeof opts.scope !== "object" && <div className="oc-changes-header"><span>{files.length} {files.length === 1 ? "file" : "files"} changed</span><ChangeCounts additions={totals.a} deletions={totals.d} showZero /></div>}
         <nav className="oc-changes" aria-label="Changed files" data-view={view}>
           {shown.length === 0 && <div className="oc-changes-nomatch">No files match this filter</div>}
           {rows.map((row, rowIndex) => {
@@ -80,7 +82,7 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
               {view === "tree" && <TreeGuides depth={row.depth} nextDepth={nextDepth} offset={8 + row.depth * 12} />}
               <button className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={files[current]?.path === f.path} onClick={() => diff.openPath(f.path)} title={`Open ${f.path}`}>
                 <span className="name">{f.status === "renamed" && f.old_path && <><PathParts path={view === "tree" ? splitPath(f.old_path).fileName : f.old_path} /><span className="oc-change-rename-arrow">→</span></>}<PathParts path={row.name} /></span>
-                <span className="oc-change-meta">{diff.uncommittedPaths.has(f.path) && <span className="oc-change-uncommitted">U</span>}<ChangeCounts additions={f.additions} deletions={f.deletions} /><ChangeStatus status={f.status} /></span>
+                <span className="oc-change-meta">{typeof opts.scope !== "object" && diff.uncommittedPaths.has(f.path) && <span className="oc-change-uncommitted">U</span>}<ChangeCounts additions={f.additions} deletions={f.deletions} /><ChangeStatus status={f.status} /></span>
               </button>
               <span className="oc-change-actions">
                 {diff.canDiscard && <Tooltip content="Discard changes"><button className="rp-icon oc-discard" onClick={() => diff.askDiscard(f)} aria-label={`Discard changes to ${f.path}`}><RevertIcon /></button></Tooltip>}
@@ -93,8 +95,8 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
       <div className="oc-changes-comment-actions">{actions?.(files)}</div>
       {menu && menuFile && <FileContextMenu key={menuFile.path} path={menuFile.path} at={menu} onClose={closeMenu} actions={{
         view: () => diff.openPath(menu.path),
-        copyPath: worktree ? () => copy(`${worktree.replace(/\/+$/, "")}/${menuFile.path}`, "path", notify) : undefined,
-        copyRelativePath: () => copy(menuFile.path, "relative path", notify),
+        copyPath: () => copy(copyPath, "path", notify),
+        copyRelativePath: relativePath !== undefined ? () => copy(relativePath, "relative path", notify) : undefined,
         openIn: worktree ? (app) => openInApp(app.id, `${worktree.replace(/\/+$/, "")}/${menuFile.path}`).catch((e) => notify?.("error", `Failed to open in ${app.name}: ${e instanceof Error ? e.message : String(e)}`)) : undefined,
         discard: () => diff.askDiscard(menuFile, "menu"),
       }} />}

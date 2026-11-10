@@ -204,7 +204,7 @@
 .settings .settings-markdown-preview { padding: 16px; border-radius: 6px; background: var(--s-card); }
 .settings .settings-markdown-preview h1 { margin: 0 0 24px; font-size: 30px; line-height: 36px; font-weight: 700; }
 .settings .settings-markdown-preview p { margin: 0; font-size: 14px; line-height: 24px; }
-.settings .settings-markdown-preview.tufte { font-family: "et-book", Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif; }
+.settings .settings-markdown-preview.tufte { font-family: Georgia, "Times New Roman", serif; }
 .settings .settings-markdown-preview.tufte h1 { font-weight: 400; font-style: italic; }
 .settings .settings-terminal-font { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--s-border); padding-top: 16px; }
 .settings .settings-terminal-font .settings-field { height: 38px; }

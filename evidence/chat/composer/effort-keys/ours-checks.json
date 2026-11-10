@@ -1,0 +1,76 @@
+{
+  "origin": "http://localhost:4469",
+  "label": "ours",
+  "checks": [
+    {
+      "name": "ArrowRight opens effort at Low",
+      "passed": true,
+      "state": {
+        "submenuVisible": true,
+        "focused": "Low",
+        "draft": "Keep this unsent draft",
+        "sent": ""
+      }
+    },
+    {
+      "name": "Enter opens effort at Low",
+      "passed": true,
+      "state": {
+        "submenuVisible": true,
+        "focused": "Low",
+        "draft": "Keep this unsent draft",
+        "sent": ""
+      }
+    },
+    {
+      "name": "ArrowDown advances Low to Medium",
+      "passed": true,
+      "state": {
+        "submenuVisible": true,
+        "focused": "Medium",
+        "draft": "Keep this unsent draft",
+        "sent": ""
+      }
+    },
+    {
+      "name": "ArrowUp wraps Low to Ultracode",
+      "passed": true,
+      "state": {
+        "submenuVisible": true,
+        "focused": "Ultracode",
+        "draft": "Keep this unsent draft",
+        "sent": ""
+      }
+    },
+    {
+      "name": "ArrowLeft closes only submenu and focuses Effort",
+      "passed": true,
+      "state": {
+        "submenuVisible": false,
+        "focused": "EffortHigh",
+        "draft": "Keep this unsent draft",
+        "sent": ""
+      }
+    },
+    {
+      "name": "Enter selects Medium and keeps parent menu open",
+      "passed": true,
+      "state": {
+        "submenuVisible": false,
+        "focused": "EffortMedium",
+        "draft": "Keep this unsent draft",
+        "sent": ""
+      }
+    },
+    {
+      "name": "Composing keyboard events neither open nor select effort",
+      "passed": true,
+      "state": {
+        "submenuVisible": true,
+        "focused": "Low",
+        "draft": "Keep this unsent draft",
+        "sent": ""
+      }
+    }
+  ]
+}

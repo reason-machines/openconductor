@@ -19,6 +19,10 @@
 .chat-turn-details[data-starting-style], .chat-turn-details[data-ending-style] { opacity: 0; transform: scale(0.95); }
 .chat-turn-details-content { display: flex; flex-direction: column; gap: 4px; padding: 4px; }
 .chat-turn-details-agent { font-weight: 500; }
+.chat-turn-details-usage { display: flex; flex-direction: column; gap: 4px; margin: 0; }
+.chat-turn-details-usage > div { display: flex; justify-content: space-between; gap: 16px; }
+.chat-turn-details-usage dt { color: var(--muted); }
+.chat-turn-details-usage dd { margin: 0; font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) {
   .chat-turn-details { transition: none; }
 }

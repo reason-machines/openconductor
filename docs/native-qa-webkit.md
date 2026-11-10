@@ -68,11 +68,84 @@ The control-policy fields record the installed/requested probe policy; only the
 native datastore persistence and window visibility fields are runtime
 observations. Retain this distinction in every report.
 
+## Ordinary main-window prerequisite (still no app admission)
+
+The ordinary QA launch path now stops at a separate main-window prerequisite.
+With `OC_NATIVE_QA_ROOT` present it refuses non-macOS/release builds, dev-server
+mode, remote frontend assets, multiple windows and any destination other than
+the bundled default `main` / `index.html`. Production launches without the QA
+environment retain their existing path.
+
+The gate runs before ordinary setup creates databases, settings, agent download
+workers or the ordinary UI. It clones the main-window configuration into one
+hidden `main` webview, substitutes only an inert `about:blank` bootstrap, requests
+JavaScript disabled and denies navigation/new windows. Its main-thread callback
+observes that instance's actual datastore persistence and window visibility,
+emits its prerequisite result and exits. There is no subsequent replacement
+webview and **no app-content navigation**. Plugin registration precedes this
+setup gate; this is not a claim that no framework/plugin initialization ran.
+
+A successful prerequisite is deliberately **not an admission token**. No code
+reads this receipt to unlock ordinary setup. The gate remains closed until a
+separate reviewed change and separately authorized filesystem/cache
+write-and-relaunch proof establish isolation. Neither #775's hidden probe nor
+this prerequisite proves that behavior.
+
+### Exact-build receipt recipe
+
+Only the sole coordinated native owner may execute this under a separate
+prerequisite-only runtime grant. This document grants no launch permission.
+
+1. Check out the exact containing merged commit, verify a clean tree, prepare a
+   new root and build its random-identity debug bundle using the
+   [path-preflight build recipe](native-qa-isolation.md). Do not reuse the #775
+   root or an earlier runtime fixture.
+2. Produce `paths-receipt.json` for that exact executable/configuration with
+   `tools/native_qa.py probe`. Retain the source SHA, build log and bundle.
+3. Execute only the prerequisite wrapper, never `open`, an installed app,
+   `cargo tauri dev` or an unwrapped ordinary launch:
+
+   ```bash
+   python3 tools/native_qa_ordinary.py "$qa" \
+     "$qa/target/debug/bundle/macos/OpenConductor QA.app" \
+     --execute-prerequisite
+   ```
+
+4. Expected: process exits successfully without app content or an ordinary
+   window; private `ordinary-webkit-prerequisite.json` binds the prepared source,
+   executable SHA256 and configuration SHA256. It must report `window_label=main`,
+   `bootstrap_url=about:blank`, `webkit_data_store_persistent=false`,
+   `native_window_visible=false`, `app_content_admitted=false`,
+   `ordinary_setup_admitted=false` and `cache_filesystem_verified=false`.
+   Missing observations, ordinary-store creation, a stale executable/config,
+   timeout, reused fixture or an old binary means refusal and no success receipt.
+
+### Filesystem/cache follow-on boundary
+
+Retain the root and process-scoped logs; do not delete preserved data or kill
+existing app/global WebKit processes. An independently authorized filesystem
+observer may surround only the prerequisite process group to record its reads
+and writes. A snapshot/diff alone is insufficient (transient writes can vanish),
+and a trace around the inert prerequisite alone does not exercise app-content
+cache behavior. Do not broaden tracing to unrelated processes/user data or
+request elevated access implicitly.
+
+The later cache proof must have its own reviewed bounded harness: identify the
+exact executable/config, observe writes against the isolated root and preserved
+sentinels without reading their contents, perform a synthetic cache/storage write,
+terminate only that QA process group, relaunch the same isolated fixture and
+verify the specified persistence/nonpersistence contract. It must cover relevant
+WebKit child-process writes and retain errors/trace coverage. **That harness,
+write-and-relaunch procedure and ordinary content admission are not implemented
+or authorized here.** If the observer cannot establish coverage, isolation remains
+unverified and the ordinary gate stays closed. Do not use existing receipts,
+boolean environment overrides or path-only checks to bypass it.
+
 ## Cloud-only validation
 
 ```bash
 python3 -W error::ResourceWarning -m unittest \
-  tools/test_native_qa.py tools/test_native_qa_webkit.py -v
+  tools/test_native_qa.py tools/test_native_qa_webkit.py tools/test_native_qa_ordinary.py -v
 ```
 
 These tests execute small fixture programs, not macOS apps or WebKit. They cover

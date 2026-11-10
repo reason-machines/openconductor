@@ -3,6 +3,7 @@
 
 import type { AppState, Workspace } from "../state/types.ts";
 import type { ActionEntry, PaletteData, SettingEntry, WorkspaceEntry } from "./search/model.ts";
+import type { OpenInApp } from "../features/openIn/apps.ts";
 import type { SearchItem } from "../settings/searchIndex.ts";
 import { labelTargetBranch, workspaceLabel } from "../components/sidebarLabel.ts";
 import { lastActiveAt as activityAt } from "../home/allWorkspaces.ts";
@@ -96,6 +97,8 @@ export function paletteDataFromState(
   recentIds: readonly string[],
   archived: readonly ArchivedWorkspace[] = [],
   settings: readonly SettingEntry[] = [],
+  openInApps: readonly Pick<OpenInApp, "id" | "name">[] = [],
+  defaultOpenIn: string | null = null,
 ): PaletteData {
   const rank = new Map(recentIds.map((id, i) => [id, i]));
   const workspaces: WorkspaceEntry[] = state.repos.flatMap((r) =>
@@ -133,15 +136,19 @@ export function paletteDataFromState(
     });
   }
   const activeWorkspaceId = state.selection.kind === "workspace" ? state.selection.workspaceId : null;
+  const selectedWorkspace = state.repos.flatMap((r) => r.workspaces).find((w) => w.id === activeWorkspaceId);
+  const openInActions: ActionEntry[] = selectedWorkspace?.path && selectedWorkspace.status !== "archived"
+    ? openInApps.map((app) => ({ id: `open-in-${app.id}`, title: app.name, group: "open-in", keywords: ["open", "in", "open in", app.name, app.id], bindingId: app.id === defaultOpenIn ? "workspace.openInApp" : undefined }))
+    : [];
   return {
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
-    actions: PALETTE_ACTIONS.filter((a) => {
+    actions: [...PALETTE_ACTIONS.filter((a) => {
       if (a.id === "go-to-next-unread") return nextUnreadChat(state, { skipSelected: false }) !== undefined;
       // Conductor lists it under Navigation only while a workspace is open (`Xt &&`).
       if (a.id === VIEW_ARCHIVED_ACTION) return activeWorkspaceId !== null;
       return true;
-    }),
+    }), ...openInActions],
     settings,
     // Archived workspaces stay in Recent, as in Conductor; ids of deleted ones drop out here
     // but stay stored, so they still count toward the cap of 5 (recordViewedWorkspace never prunes).

@@ -1,0 +1,79 @@
+/* Scroll ownership is independent of window sizing. The WebView document must
+   never become a scroll/bounce surface behind the application chrome. */
+html,
+body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* Stop at each content pane's boundary; retain its local macOS bounce. */
+.repo-list,
+.chat-scroll,
+.oc-files,
+.oc-changes,
+.oc-code-view,
+.diff-body,
+.checks,
+.settings-page,
+.settings-sheet-body,
+.scripts-output {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+/* xterm 6 owns its scrollable element; do not turn the terminal wrapper into
+   a second scroller or override xterm's scrollback sizing. */
+.term-body .xterm-scrollable-element,
+.script-output .xterm-scrollable-element {
+  overscroll-behavior: contain;
+}
+
+.home,
+.rp-tabs > .rp-tab-buttons,
+.ws-strip-tabs {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+/* A fixed strip must wrap rather than hide controls that previously depended
+   on horizontal scrolling in a narrow pane. */
+.rp-tabs {
+  flex-wrap: wrap;
+  height: auto;
+  min-height: 44px;
+}
+.rp-tabs > .rp-tab-buttons {
+  flex-basis: max-content;
+  flex-wrap: wrap;
+}
+.ws-strip-tabs {
+  flex-wrap: wrap;
+  height: auto;
+  min-height: 34px;
+}
+.ws-strip-tabs > .strip-tab {
+  min-height: 34px;
+}
+
+/* Nested editors, previews and menus must not chain into their fixed owner. */
+.oc-composer .tiptap,
+.oc-tool-content,
+.oc-tool-code,
+.md-code-scroll,
+.md-table-scroll,
+.oc-subagent-body,
+.settings-nav,
+.settings-search-list,
+.settings-preview,
+.settings-terminal-preview,
+.settings-misc-files-list,
+.oc-model-list,
+.oc-suggest,
+.qo-list,
+.cf-list,
+.create-page-scroll,
+.allws-scroll,
+.dash-board-scroll,
+.dash-col-list {
+  overscroll-behavior: contain;
+}

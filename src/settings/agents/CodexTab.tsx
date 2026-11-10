@@ -21,6 +21,7 @@ import { CheckIcon, CodexMark, ExternalIcon, KeyIcon, TerminalIcon } from "./ico
 import { AuthCards, ConfigFileCard, ExecutablePathRow, LoginButton, SecretRow, StatusLine, type AuthOption } from "./kit";
 import { storedSecret, useAgentStatus } from "./useAgentStatus";
 import "./codexTab.css";
+import { useConnectedDefault } from "../connectedDefault";
 
 const ICONS = { chatgpt: <CodexMark size={24} />, cli: <TerminalIcon size={24} />, apikey: <KeyIcon size={24} /> };
 const CODEX_AUTH: readonly AuthOption<CodexMode>[] = CODEX_MODES.map((m) => ({ ...m, icon: ICONS[m.id] }));
@@ -53,6 +54,7 @@ export function CodexTab({ settings, save, reload }: AgentTabProps) {
 
   const key = storedSecret(mode === storedMode ? provider : null, OPENAI_KEY);
   const auth = mode === "chatgpt" ? chatgptStatus(account) : codexAuthState(mode, login, key.present);
+  useConnectedDefault("codex", auth.authenticated);
 
   const switchMode = async (to: CodexMode) => {
     setPending(to);

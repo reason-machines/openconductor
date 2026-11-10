@@ -1,0 +1,31 @@
+(node:4522) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:4546) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: terminal lifecycle indicates starting and a muted normal exit with its code
+not ok 1 - terminal lifecycle indicates starting and a muted normal exit with its code
+  ---
+  duration_ms: 4242.641008
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/tests/e2e/script-output.e2e.mjs:49:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    locator.waitFor: Timeout 3000ms exceeded.
+    Call log:
+      - waiting for locator('.term-tab').getByRole('img', { name: 'Starting', exact: true }) to be visible
+    
+  code: 'ERR_TEST_FAILURE'
+  name: 'TimeoutError'
+  stack: |-
+    TestContext.<anonymous> (/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/tests/e2e/script-output.e2e.mjs:57:20)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5018.158313

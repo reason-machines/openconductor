@@ -334,9 +334,13 @@ pub async fn unarchive_workspace(
         let t = target.clone();
         let commit = commit.clone();
         let dir = target.directory_name.clone();
+        let branch_missing = w.branch.is_none();
         let step = tokio::task::spawn_blocking(move || -> Result<Result<archive::Restored, &'static str>, ArchiveFailureDto> {
             let mut t = t;
             if use_new_branch {
+                if branch_missing {
+                    t.branch = t.directory_name.clone();
+                }
                 t.branch = archive::create_restore_branch(&t, commit.as_deref()).map_err(failed)?;
             } else if let Some(s) = archive::restore_scenario(&t, commit.as_deref()) {
                 return Ok(Err(s.as_str()));

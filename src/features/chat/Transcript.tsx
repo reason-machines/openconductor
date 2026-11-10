@@ -6,7 +6,7 @@
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { ReasonSignInControls } from "../../onboarding/ReasonSignInControls";
-import { Fragment, useMemo, useState, type ReactNode } from "react";
+import { Fragment, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
 import { turnMenuItems, TURN_MENU_TOOLTIP, TURN_MENU_TRIGGER_LABEL, type TurnMenuItem } from "./turnMenu.ts";
@@ -16,8 +16,9 @@ import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./v
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
 import { Markdown } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
-import { turnTime } from "./turnTime.ts";
+import { turnDayClock, turnTime } from "./turnTime.ts";
 import { TurnDetails } from "./TurnDetails.tsx";
+import { turnAgentLabel } from "./fork.ts";
 import { openUrl } from "../../backend.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
 import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
@@ -41,7 +42,7 @@ export interface TranscriptProps {
   onForkToNewWorkspace?: (turnId: string) => void;
   /** The fork items are shown but disabled, e.g. while a fork is being made. */
   forkDisabled?: boolean;
-  /** The footer hover's first line, "Opus 5.5 via Reason" (Conductor's `kDo`). */
+  /** Agent name only; the footer combines it with the turn's historical message model. */
   turnAgent?: string;
   /** The chat's agent: a turn that failed because it is not signed in links to its Settings › Agents tab. */
   chatAgent?: ChatAgentId;
@@ -77,6 +78,8 @@ export function Transcript({
   chatAgent,
   notify,
 }: TranscriptProps) {
+  const clock = useMemo(() => turnDayClock(now), [now]);
+  const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const turns = useMemo(() => groupTurns(rows), [rows]);
   const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
@@ -86,6 +89,7 @@ export function Transcript({
     isOpen: (id, defaultOpen = false) => isToolExpanded(id, toggled, expandToolsByDefault || defaultOpen),
     onToggle: toggleTool,
     summaries: {
+      canCollapse: (running) => canCollapse(running, dontCollapseToolCalls),
       isOpen: (id, running) => isSummaryOpen(canCollapse(running, dontCollapseToolCalls), summaries.get(id)),
       toggle: (id, open) => setSummaries((prev) => new Map(prev).set(id, open ? "collapsed" : "expanded")),
     },
@@ -95,7 +99,7 @@ export function Transcript({
     turnFooter,
     workspacePath,
     onOpenFile,
-    now,
+    now: () => day,
     onForkToNewTab,
     onForkToNewWorkspace,
     forkDisabled,
@@ -151,6 +155,7 @@ interface RowContext {
   isOpen: (toolId: string, defaultOpen?: boolean) => boolean;
   onToggle: (toolId: string, defaultOpen?: boolean) => void;
   summaries: {
+    canCollapse: (turnRunning: boolean) => boolean;
     isOpen: (summaryId: string, turnRunning: boolean) => boolean;
     toggle: (summaryId: string, open: boolean) => void;
   };
@@ -207,7 +212,7 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-      {when ? <TurnDetails when={when} agent={turnAgent} /> : null}
+      {when ? <TurnDetails when={when} agent={turnAgent ? turnAgentLabel(row.model, turnAgent) : undefined} usage={row.usage} /> : null}
       {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
       {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">
@@ -289,6 +294,7 @@ function reportLabel(origin: ReportOrigin): string {
 
 /** A turn's agent output; its items sit directly in the turn's item list, as Conductor's do. */
 function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
+  const collapsible = ctx.summaries.canCollapse(block.running);
   return (
     <>
       {block.empty && block.streaming ? (
@@ -301,7 +307,7 @@ function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
         const open = ctx.summaries.isOpen(item.summary.id, block.running);
         return (
           <Fragment key={item.summary.id}>
-            <SummaryRow summary={item.summary} open={open} onToggle={block.running ? undefined : () => ctx.summaries.toggle(item.summary.id, open)} />
+            {collapsible ? <SummaryRow summary={item.summary} open={open} onToggle={() => ctx.summaries.toggle(item.summary.id, open)} /> : null}
             {open ? item.parts.map((p) => <Part key={p.key} partKey={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
           </Fragment>
         );

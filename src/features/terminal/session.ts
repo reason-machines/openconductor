@@ -19,7 +19,7 @@ import {
   ptyWrite,
   ptyWriteMirror,
 } from "./pty";
-import { canOpen, canOpenTerminal, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
+import { canOpen, canOpenTerminal, emptyTabs, tabsReducer, type TabsAction, type TabsState, type TerminalPlacement } from "./tabs";
 import { PersistThrottle, restoreCwds, restoreOutput, type HistoryRecord } from "./restore";
 import { subsystemStorage } from "./localStorage";
 import { TABS_SIZE_LIMIT, TABS_SUBSYSTEM, TabListStore, savedWorkspace } from "./tabList";
@@ -57,6 +57,12 @@ interface Live {
 const live = new Map<string, Live>();
 const tabsByWorkspace = new Map<string, TabsState>();
 const subscribers = new Set<() => void>();
+const centerTabListeners = new Set<(workspaceId: string, id: string) => void>();
+
+export function onCenterTabOpened(listener: (workspaceId: string, id: string) => void): () => void {
+  centerTabListeners.add(listener);
+  return () => { centerTabListeners.delete(listener); };
+}
 /** Times Find in terminal was asked for, per tab; the panel opens its find bar on a change. */
 const findRequests = new Map<string, number>();
 const EMPTY = emptyTabs();
@@ -174,13 +180,14 @@ export const openTab = (workspaceId: string, cwd: string, initialCommand?: strin
   startTab(workspaceId, cwd, initialCommand, undefined, undefined, opts.quiet);
 
 /**
- * ⌘⇧T from outside a terminal: open a tab running the Big terminal preset
- * (`run`, from `bigTabRequest`). The workspace's saved tabs come back first, so
- * the panel shown afterwards finds tabs and opens no plain shell of its own.
+ * Open a center tab running the Big terminal preset, then navigate to it.
+ * Saved tabs restore first; their commands are never run again.
  */
 export async function openBigTab(workspaceId: string, cwd: string, run: { command: string | undefined }, initialCommand?: string): Promise<string> {
   await restoreWorkspaceTabs(workspaceId, cwd, initialCommand);
-  return startTab(workspaceId, cwd, initialCommand, undefined, run);
+  const id = await startTab(workspaceId, cwd, initialCommand, undefined, run, false, "center");
+  centerTabListeners.forEach((listener) => listener(workspaceId, id));
+  return id;
 }
 
 /**
@@ -199,7 +206,7 @@ async function restoreOnce(workspaceId: string, cwd: string, initialCommand?: st
   const saved = await tabList.workspace(workspaceId);
   for (const tab of saved?.tabs ?? []) {
     if (live.has(tab.id)) continue;
-    await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }, undefined, true).catch(() => {});
+    await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }, undefined, true, tab.placement).catch(() => {});
   }
   hydrated.add(workspaceId);
   dispatch(workspaceId, { type: "restored", activeId: saved?.activeId ?? null, next: saved?.next ?? 1 });
@@ -217,6 +224,7 @@ async function startTab(
   restore?: { id: string; title: string },
   run?: { command: string | undefined },
   quiet = false,
+  placement: TerminalPlacement = "panel",
 ): Promise<string> {
   // Saved tabs come back as they were; new ones respect Tab Freak Mode's limit.
   const tabs = getTabs(workspaceId);
@@ -286,7 +294,7 @@ async function startTab(
     void ptyWrite(id, d).catch(() => {});
   });
   term.onResize(({ cols, rows }) => void ptyResize(id, cols, rows).catch(() => {}));
-  dispatch(workspaceId, { type: "open", id, title: restore?.title });
+  dispatch(workspaceId, { type: "open", id, title: restore?.title, placement });
   try {
     await spawnIn(restore ? restoreCwds(record, cwd) : [cwd], (dir) =>
       ptySpawn({ id, cwd: dir, cols: term.cols, rows: term.rows, initialCommand: run ? run.command : initialCommand }),
@@ -374,9 +382,8 @@ function runTerminalCommand(id: string, command: string) {
   else if (command === "terminal.closeTab") closeTab(l.workspaceId, id);
   else if (command === "terminal.newTab") void openTab(l.workspaceId, l.cwd, l.initialCommand).catch(() => {});
   else if (command === "terminal.newBigTab") {
-    // Conductor opens a center-pane terminal; we have no center tabs, so it is a panel tab (NOTES.md).
     const big = bigTabRequest();
-    if (big) void startTab(l.workspaceId, l.cwd, l.initialCommand, undefined, big).catch(() => {});
+    if (big) void openBigTab(l.workspaceId, l.cwd, big, l.initialCommand).catch(() => {});
   }
 }
 

@@ -58,7 +58,8 @@ const specs = {
 
 async function capture(side, state, steps) {
   const ready = { action: "wait_for", locator: { kind: "css", selector: "text=2 files changed" }, state: "visible", timeout_ms: 10000 };
-  const actions = [{ action: "wait_for_timeout", duration_ms: 5000 }, ...(side === "ref" ? refStart : []), ready, ...steps, settle].map((a, i) => ({ step_id: `s${i}`, ...a }));
+  const selectedReady = state === "history-selected" ? [{ action: "wait_for", locator: { kind: "css", selector: side === "ref" ? '.cursor-pointer.mx-2:has-text("auth.ts")' : 'button.oc-change[title="Open src/lib/auth.ts"]' }, state: "visible", timeout_ms: 5000 }] : [];
+  const actions = [{ action: "wait_for_timeout", duration_ms: 5000 }, ...(side === "ref" ? refStart : []), ready, ...steps, settle, ...selectedReady].map((a, i) => ({ step_id: `s${i}`, ...a }));
   const input = {
     browser: { mode: "launch", executable_path: "/usr/bin/chromium", headless: true },
     start_url: { url: (side === "ref" ? reference : `http://localhost:${port}/?oc_scenario=populated&oc_theme=dark`) + (state.startsWith("history-") ? "&oc_commit_history=1" : "") },
@@ -79,13 +80,16 @@ async function capture(side, state, steps) {
   const dom = artifacts.dom?.value?.text ?? artifacts.dom?.value ?? "";
   const domText = typeof dom === "string" ? dom : JSON.stringify(dom);
   if (!domText.includes(state === "history-selected" ? "abcdef1" : "files changed") || !domText.includes(state.startsWith("collapsed") ? "src / lib" : state === "history-selected" ? "auth.ts" : "auth.test.ts")) throw new Error(`${side}-${state}: not the populated Changes screen`);
+  if (state === "history-options" && (!domText.includes("Fix expired session redirect") || !domText.includes("1234567"))) throw new Error(`${side}-${state}: missing commit history rows`);
+  if (state === "history-selected" && !domText.includes("abcdef1")) throw new Error(`${side}-${state}: missing selected hash`);
   fs.writeFileSync(path.join(out, `${side}-${state}.dom.txt`), domText);
   const artifactPath = path.join(out, `${side}-${state}-artifact.json`);
   fs.writeFileSync(artifactPath, JSON.stringify(screenshot));
   return { evidence_id: ev.evidence_id, png_sha256: createHash("sha256").update(Buffer.from(screenshot.data_base64, "base64")).digest("hex"), artifactPath };
 }
 async function prove() {
-  const report = { source_commit: spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).stdout.trim(), build_index_sha256: createHash("sha256").update(fs.readFileSync("dist/index.html")).digest("hex") };
+  const sourceDiff = spawnSync("git", ["diff", "HEAD", "--binary"], { encoding: "utf8" }).stdout;
+  const report = { source_commit: spawnSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).stdout.trim(), source_dirty: sourceDiff.length > 0, source_diff_sha256: createHash("sha256").update(sourceDiff).digest("hex"), build_index_sha256: createHash("sha256").update(fs.readFileSync("dist/index.html")).digest("hex") };
   for (const [state, spec] of Object.entries(specs)) {
     if (process.env.STATES && !process.env.STATES.split(",").includes(state)) continue;
     try {

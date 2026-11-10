@@ -24,6 +24,23 @@ test("arrows, Enter and Escape drive the list", () => {
   assert.equal(cmdFor(key("Escape")), "close");
 });
 
+test("Ctrl+J moves forward through results and wraps like Ctrl+N", () => {
+  const command = cmdFor(key("j", { ctrlKey: true }));
+  assert.equal(command, "next-item");
+  assert.equal(moveActive(0, 3, command), 1);
+  assert.equal(moveActive(2, 3, command), 0);
+  assert.equal(cmdFor(key("j")), null);
+});
+
+test("Ctrl+K moves backward through results and wraps like Ctrl+P", () => {
+  const command = cmdFor(key("k", { ctrlKey: true }));
+  assert.equal(command, "prev-item");
+  assert.equal(moveActive(2, 3, command), 1);
+  assert.equal(moveActive(0, 3, command), 2);
+  assert.equal(cmdFor(key("k")), null);
+  assert.equal(cmdFor(key("k", { metaKey: true })), "close");
+});
+
 test("Home selects the first result instead of moving only the text cursor", () => {
   const command = cmdFor(key("Home"));
   assert.equal(command, "first-item");

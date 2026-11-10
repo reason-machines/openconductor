@@ -33,7 +33,7 @@ test("signed in: Version, Account, Workspace and This Mac; a pinned workspace wi
     { label: "Workspace", value: "Reason Tests" },
     { label: "This Mac", value: "Connected" },
   ]);
-  assert.equal(reasonStatus("account", account, DEFAULT_SETTINGS, false).rows[2].value, "Reason Engineering");
+  assert.equal(reasonStatus("account", account, DEFAULT_SETTINGS, false).rows[2].value, "Not selected");
 });
 
 test("signed out or keyless shows only the version and says what to do", () => {
@@ -61,8 +61,8 @@ test("an unavailable pinned workspace never falls back to the account selection"
   assert.equal(activeWorkspace(settings, account), null);
   assert.equal(reasonStatus("account", account, settings, false).rows.find((row) => row.label === "Workspace")?.value, "removed-workspace (unavailable)");
   assert.equal(activeWorkspace(settings, { ...account, workspaces: [] }), null);
-  assert.equal(activeWorkspace(DEFAULT_SETTINGS, account)?.slug, "reason-engineering");
-  assert.equal(activeWorkspace(withReason(DEFAULT_SETTINGS, "workspace", ""), account)?.slug, "reason-engineering");
+  assert.equal(activeWorkspace(DEFAULT_SETTINGS, account), null);
+  assert.equal(activeWorkspace(withReason(DEFAULT_SETTINGS, "workspace", ""), account), null);
 });
 
 test("an empty option unsets the key", () => {

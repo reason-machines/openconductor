@@ -24,6 +24,19 @@ test("a fenced block with a known language is highlighted with hljs classes", ()
   assert.doesNotMatch(html, /return a;\n<\/code>/);
 });
 
+test("Mermaid keeps a readable copyable source fallback before client rendering", () => {
+  const html = render("```mermaid\nflowchart LR\n  A[Request] --> B[Response]\n```");
+  assert.match(html, /class="md-code-block"/);
+  assert.match(html, /A\[Request\] --&gt; B\[Response\]/);
+  assert.match(html, /aria-label="Copy code"/);
+});
+
+test("partial Mermaid input remains readable during server rendering", () => {
+  const html = render("```mermaid\nflowchart LR\n A[unfinished");
+  assert.match(html, /A\[unfinished/);
+  assert.match(html, /aria-label="Copy code"/);
+});
+
 test("a fenced block with an unknown language stays plain text", () => {
   const html = render("```nosuchlang\nline one\nline two\n```");
   assert.match(html, /class="md-code-block"/);

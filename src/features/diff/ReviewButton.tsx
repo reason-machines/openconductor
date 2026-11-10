@@ -25,6 +25,7 @@ import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { chatTabWrites, restoredChatTabs, setOpenReviewChats } from "../../state/openChat.ts";
 import { inTauri } from "../../backend.ts";
 import { invoke } from "@tauri-apps/api/core";
+import { initializeChatAgent } from "../chat/agentChoice.ts";
 
 export interface ReviewTab {
   chatId: string;
@@ -143,12 +144,18 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
    * "+" and ⌘T ("New chat, same files"): a new Untitled chat in this
    * workspace on the default model, shown once created. Returns its chat id.
    */
-  const newChat = useCallback((): string => {
-    const chatId = newChatId(workspace.id, Date.now(), ++seq);
-    configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
-    save([...currentTabs(workspace.id), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
-    onOpen(chatId);
-    return chatId;
+  const newChat = useCallback(async (): Promise<string | undefined> => {
+    try {
+      const settings = await getSettings();
+      const chatId = newChatId(workspace.id, Date.now(), ++seq);
+      initializeChatAgent(chatId, settings);
+      configureReasonDefault(chatId, Promise.resolve(defaultChatConfig(settings)));
+      save([...currentTabs(workspace.id), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
+      onOpen(chatId);
+      return chatId;
+    } catch (e) {
+      setError(`Failed to create chat: ${e instanceof Error ? e.message : String(e)}`);
+    }
   }, [workspace.id, save, onOpen]);
 
   /** ⌘⇧T: put a closed chat tab back at the end of the strip and show it. */

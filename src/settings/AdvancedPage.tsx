@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { pickFolder } from "../backend";
+import { inTauri } from "../backend";
 import { scrollbackBytesFromMegabytes, scrollbackLimitBytes, scrollbackLimitMegabytes } from "../features/terminal/scrollback";
 import { withTopLevel } from "./agentSettings";
 import { PrefSwitchRow, Toggle } from "./controls";
 import { Row } from "./GeneralPage";
-import { FolderIcon } from "./icons";
+import { CloseIcon, FolderIcon } from "./icons";
 import { RootPathRow } from "./RootPathRow";
+import { ExecutablePathRow } from "./rows/AgentOptionRows";
 import type { Settings } from "./types";
 
 interface Props {
@@ -13,17 +14,11 @@ interface Props {
   save: (next: Settings) => void;
 }
 
-/** Executable override rows, in Conductor's order, with its copy. */
-const EXECUTABLES = [
-  { key: "claude_code_executable_path", label: "Claude Code" },
-  { key: "codex_executable_path", label: "Codex" },
-] as const;
-
 /**
  * Settings › More › Advanced, row for row with Conductor 0.87.6's `advanced`
  * tab (renderApp-D_fmY7hW.js registry, evidence/settings/NOTES.md "Settings
- * pages, row for row"): root directory, three executable paths, SSH private
- * key path, Remote execution MCP, Always allow local commands, Enable file
+ * pages, row for row"): root directory, local-agent executable paths, SSH
+ * private key path, Remote execution MCP, Always allow local commands, Enable file
  * sync in new cloud workspaces, Set upstream on plain git push, Scrollback
  * limit.
  */
@@ -32,15 +27,8 @@ export function AdvancedPage({ settings, save }: Props) {
   return (
     <div className="settings-rows">
       <RootPathRow />
-      {EXECUTABLES.map((e) => (
-        <PathRow
-          key={e.key}
-          label={`${e.label} executable path`}
-          help={`Override the bundled ${e.label} executable with a custom one. Leave empty to use the bundled version (recommended).`}
-          value={settings[e.key] ?? ""}
-          onSave={(v) => save(withTopLevel(settings, e.key, v))}
-        />
-      ))}
+      <ExecutablePathRow agent="claude" settings={settings} save={save} />
+      <ExecutablePathRow agent="codex" settings={settings} save={save} />
       <PathRow
         label="SSH private key path"
         help="Use your own SSH key for cloud workspace access. Leave empty to auto-generate a key."
@@ -94,12 +82,7 @@ export function AdvancedPage({ settings, save }: Props) {
   );
 }
 
-/**
- * A path field under its title (Conductor's executable-path rows `mGt` and SSH key row `npa`):
- * a mono 12 px input with a 24 px folder button titled "Browse for executable" (or "Browse for
- * SSH key") that picks a path; saved on Enter or blur, blank clears the setting. The SSH key row
- * is `plain`: Conductor draws it as a bare block, not a bordered settings row.
- */
+/** The SSH key field (`npa`), saved on Enter or blur. Blank clears the setting. */
 function PathRow({
   label,
   help,
@@ -123,18 +106,21 @@ function PathRow({
     if (next.trim() !== value.trim()) onSave(next);
   };
   const browse = async () => {
-    const picked = await pickFolder(label);
-    if (picked) {
+    if (!inTauri()) return;
+    const { open } = await import("@tauri-apps/plugin-dialog");
+    const picked = await open({ directory: false, multiple: false, title: "Select SSH private key" });
+    if (typeof picked === "string") {
       setText(picked);
       commit(picked);
     }
   };
   const field = (
-    <span className="settings-field-wrap">
-      <input
-        type="text"
-        aria-label={label}
-        className="settings-field mono"
+    <div className="oc-agent-exec-controls">
+      <span className="settings-field-wrap oc-agent-exec-field">
+        <input
+          type="text"
+          aria-label={label}
+          className="settings-field mono"
           placeholder={placeholder}
           autoComplete="off"
           spellCheck={false}
@@ -149,6 +135,21 @@ function PathRow({
           <FolderIcon size={14} />
         </button>
       </span>
+      {value && (
+        <button
+          type="button"
+          className="oc-agent-icon-btn"
+          title="Reset to auto-generated key"
+          aria-label="Reset to auto-generated key"
+          onClick={() => {
+            setText("");
+            onSave("");
+          }}
+        >
+          <CloseIcon size={14} />
+        </button>
+      )}
+    </div>
   );
   if (plain)
     return (

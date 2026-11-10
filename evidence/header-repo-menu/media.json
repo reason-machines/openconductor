@@ -1,0 +1,23 @@
+[
+  {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/d870afed-fe7e-4bd0-92ce-54d0680685ee/e2d9212bd329f5b81ff17866df79532f/oc-dark.png",
+    "markdown": "![OpenConductor header repository menu, dark; Chromium synthetic proof](https://api.reasonmachines.com/media/pr-screenshots/d870afed-fe7e-4bd0-92ce-54d0680685ee/e2d9212bd329f5b81ff17866df79532f/oc-dark.png#w=1280&h=820)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  },
+  {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/d870afed-fe7e-4bd0-92ce-54d0680685ee/fb5c537ea990d8754910cd41bdb57921/oc-light.png",
+    "markdown": "![OpenConductor header repository menu, light; Chromium synthetic proof](https://api.reasonmachines.com/media/pr-screenshots/d870afed-fe7e-4bd0-92ce-54d0680685ee/fb5c537ea990d8754910cd41bdb57921/oc-light.png#w=1280&h=820)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  },
+  {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/d870afed-fe7e-4bd0-92ce-54d0680685ee/61b919ea4de12efa6a6b4ff2750bd092/ref-dark.png",
+    "markdown": "![Extracted Conductor reference header repository menu; Chromium synthetic data](https://api.reasonmachines.com/media/pr-screenshots/d870afed-fe7e-4bd0-92ce-54d0680685ee/61b919ea4de12efa6a6b4ff2750bd092/ref-dark.png#w=1280&h=820)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  }
+]
