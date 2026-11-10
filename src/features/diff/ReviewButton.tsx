@@ -15,7 +15,6 @@ import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
 import { configureReason, configureReasonDefault } from "../chat/reasonChat.ts";
-import { defaultChatConfig } from "../chat/chatModel.ts";
 import { CHAT_ID_SEGMENT, NEW_CHAT_TITLE, newChatId } from "../chat/chatTabs.ts";
 import { hideChat, showChat } from "../chat/chatRuntime.ts";
 import type { PromptAttachment } from "../chat/reason.ts";
@@ -25,7 +24,10 @@ import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { chatTabWrites, restoredChatTabs, setOpenReviewChats } from "../../state/openChat.ts";
 import { inTauri } from "../../backend.ts";
 import { invoke } from "@tauri-apps/api/core";
-import { initializeChatAgent } from "../chat/agentChoice.ts";
+import { initializeLoadoutChoice } from "../chat/chatModelChoice.ts";
+import { loadoutSlots, parseFavorites } from "../../settings/agents/loadout.ts";
+import { listFavorites } from "../../settings/agents/api";
+import { sessionConfig } from "../chat/chatModel.ts";
 
 export interface ReviewTab {
   chatId: string;
@@ -146,10 +148,10 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
    */
   const newChat = useCallback(async (): Promise<string | undefined> => {
     try {
-      const settings = await getSettings();
+      const [settings, rows] = await Promise.all([getSettings(), listFavorites()]);
       const chatId = newChatId(workspace.id, Date.now(), ++seq);
-      initializeChatAgent(chatId, settings);
-      configureReasonDefault(chatId, Promise.resolve(defaultChatConfig(settings)));
+      const choice = initializeLoadoutChoice(chatId, loadoutSlots(settings, parseFavorites(rows)));
+      configureReasonDefault(chatId, Promise.resolve(sessionConfig(choice.model, choice.effort)));
       save([...currentTabs(workspace.id), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
       onOpen(chatId);
       return chatId;

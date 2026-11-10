@@ -9,7 +9,11 @@ import type { BranchPrefixInfo } from "./naming";
 import { UPSTREAM_WARNING } from "./upstream";
 import { reportInitIssue, WORKTREE_PARTIAL_FAILURE } from "./initIssues";
 import { getSettings } from "../settings/api";
-import { initializeChatAgent } from "../features/chat/agentChoice";
+import { initializeLoadoutChoice } from "../features/chat/chatModelChoice";
+import { listFavorites } from "../settings/agents/api";
+import { loadoutSlots, parseFavorites } from "../settings/agents/loadout";
+import { configureReason } from "../features/chat/reasonChat";
+import { sessionConfig } from "../features/chat/chatModel";
 
 export interface RepositoryDto {
   id: string;
@@ -108,9 +112,10 @@ let browserNumber = 0;
 
 /** Creates the workspace and reports any non-fatal initialization issue (see initIssues). */
 export async function createWorkspace(args: CreateWorkspaceArgs): Promise<CreatedWorkspaceDto> {
-  const settings = await getSettings();
+  const [settings, rows] = await Promise.all([getSettings(), listFavorites()]);
   const created = inTauri() ? await invoke<CreatedWorkspaceDto>("create_workspace", { ...args }) : await createInBrowser(args);
-  initializeChatAgent(created.workspace.id, settings);
+  const choice = initializeLoadoutChoice(created.workspace.id, loadoutSlots(settings, parseFavorites(rows)));
+  if (choice.agent === "reason") configureReason(created.workspace.id, sessionConfig(choice.model, choice.effort));
   reportInitIssue(created);
   return created;
 }

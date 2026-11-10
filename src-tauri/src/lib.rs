@@ -79,6 +79,7 @@ pub mod draft_attachments;
 pub mod github_repo;
 pub mod local_account;
 pub mod menu;
+mod model_catalog;
 pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
@@ -479,6 +480,7 @@ pub fn run() {
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
+            reason_chat::reason_cli_ensure_current,
             reason_chat::reason_account_status,
             reason_chat::reason_cloud_setup,
             reason_chat::reason_login_start,
@@ -560,6 +562,7 @@ pub fn run() {
             resource_usage::commands::get_resource_usage,
             sidebar_transparency::update_window_vibrancy,
             local_account::local_account,
+            model_catalog::local_model_catalog,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,

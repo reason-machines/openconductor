@@ -12,6 +12,9 @@ import type { Settings } from "../../settings/types.ts";
 import { defaultEffortSetting, reasonDefault } from "./chatModel.ts";
 import type { ModelChoice } from "./composerModels.ts";
 import type { ReasonConfig } from "./reasonChat.ts";
+import type { LoadoutSlot } from "../../settings/agents/loadout.ts";
+import { loadoutChoices } from "./loadoutChoices.ts";
+import { saveAgent, type ChatAgentId } from "./agentChoice.ts";
 
 type Store = Pick<Storage, "getItem" | "setItem">;
 const choiceKey = (chatId: string) => `openconductor.composer.model.${chatId}`;
@@ -56,10 +59,32 @@ export function loadModelChoice(chatId: string, store: Store = localStorage): Mo
   const v = parse(store.getItem(choiceKey(chatId)));
   if (v && typeof v === "object" && typeof (v as ModelChoice).model === "string") {
     const c = v as ModelChoice;
-    return { model: c.model, effort: typeof c.effort === "string" ? c.effort : null, ...(c.fast ? { fast: true } : {}) };
+    return { model: c.model, effort: typeof c.effort === "string" ? c.effort : null, ...(c.agent === "claude" || c.agent === "codex" || c.agent === "reason" ? { agent: c.agent } : {}), ...(c.fast ? { fast: true } : {}) };
   }
   const config = parse(store.getItem(reasonConfigKey(chatId)));
   return Array.isArray(config) ? choiceFromReasonConfig(config as ReasonConfig[]) : null;
+}
+
+/** Initialize only a new chat: an empty first slot never promotes a later favorite. */
+export function initializeLoadoutChoice(chatId: string, slots: readonly LoadoutSlot[], store: Store = localStorage): ModelChoice {
+  const saved = loadModelChoice(chatId, store);
+  if (saved) return saved;
+  const first: ModelChoice = loadoutChoices(slots)[0] ?? { agent: "reason", model: "default", effort: null };
+  saveModelChoice(chatId, first, store);
+  saveAgent(chatId, first.agent ?? "reason", store);
+  return first;
+}
+
+export function copyModelChoice(sourceId: string, targetId: string, agent: ChatAgentId, config: readonly ReasonConfig[], store: Store = localStorage): void {
+  const choice = loadModelChoice(sourceId, store) ?? choiceFromReasonConfig(config) ?? { model: "default", effort: null };
+  saveModelChoice(targetId, { ...choice, agent }, store);
+  saveAgent(targetId, agent, store);
+}
+
+export function localModelOptions(chatId: string, agent: "claude" | "codex", store: Store = localStorage): { model?: string; effort?: string } {
+  const choice = loadModelChoice(chatId, store);
+  if (choice?.agent !== agent) return {};
+  return { model: choice.model, ...(choice.effort ? { effort: choice.effort } : {}) };
 }
 
 /** Settings › Agents › Reason's default model, else Settings › Default models: the default model and its agent's default effort. */
