@@ -50,8 +50,38 @@ test("copies the editor draft when there is one, else loads the whole new file",
   assert.equal(await copySource(file("a.ts", { status: "added" }), { loadText })!(), "loaded");
 });
 
-test("a file with no hunks or no loader has nothing to copy", () => {
-  assert.equal(copySource(file("a.ts", { status: "renamed", hunks: [] }), { loadText }), null);
+for (const { label, oldText, newText } of [
+  { label: "adding trailing spaces", oldText: "new", newText: "new  " },
+  { label: "removing old-side whitespace", oldText: "\tnew  ", newText: "new" },
+  { label: "changing whitespace on both sides", oldText: "  new\t", newText: "\tnew  " },
+]) {
+  test(`whitespace-hidden files copy exact new-side text when ${label}`, async () => {
+    assert.notEqual(oldText, newText);
+    assert.equal(oldText.replace(/\s/g, ""), newText.replace(/\s/g, ""), "the fixture must be a whitespace-only change");
+    const unfiltered = file("a.ts");
+    unfiltered.hunks[0].lines = [
+      { kind: "context", old_line: 1, new_line: 1, text: "keep" },
+      { kind: "deletion", old_line: 2, new_line: null, text: oldText },
+      { kind: "addition", old_line: null, new_line: 2, text: newText },
+    ];
+    const hidden = { ...unfiltered, hunks: [] };
+    let loads = 0;
+    const read = copySource(hidden, {
+      loadText: async () => {
+        loads += 1;
+        return newFileText(unfiltered);
+      },
+    });
+    assert.ok(read, "a whitespace-only diff must retain its copy action");
+    assert.equal(loads, 0, "copying loads contents only when invoked");
+    assert.equal(await read(), `keep\n${newText}\n`);
+    assert.equal(loads, 1);
+  });
+}
+
+test("metadata-only changes without text hunks or a missing loader have nothing to copy", () => {
+  assert.equal(copySource(file("a.ts", { status: "renamed", additions: 0, deletions: 0, hunks: [] }), { loadText }), null);
+  assert.equal(copySource(file("a.ts", { additions: 0, deletions: 0, hunks: [] }), { loadText }), null);
   assert.equal(copySource(file("a.ts"), {}), null);
 });
 
