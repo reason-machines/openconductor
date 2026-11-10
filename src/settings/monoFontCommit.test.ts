@@ -17,6 +17,42 @@ const helpers = ["monoFontError", "withAppearance"].map((name) => {
   return match[0].replace(/^export /, "");
 }).join("\n");
 const change = new Function("e", "setCustom", "settings", "save", "saved", `${helpers}\nreturn (${attribute})(e);`);
+const choiceHandler = source.match(/const chooseFont = \(choice: string\) => \{[\s\S]*?\n  \};/u)?.[0];
+assert.ok(choiceHandler, "the production mono-font choice handler exists");
+const choose = new Function("choice", "setFontChoice", "setCustom", "settings", "save", "custom", `${helpers}\nconst BUILTIN = "builtin"; const CUSTOM = "custom";\n${stripTypeScriptTypes(choiceHandler)}\nchooseFont(choice);`);
+
+function fontChoice(choice: string, custom: string, saved: string | null = null) {
+  const settings: Settings = {
+    ...DEFAULT_SETTINGS,
+    appearance: { ...DEFAULT_SETTINGS.appearance, mono_font: saved, terminal_font_size: 17 },
+  };
+  let selected = "builtin";
+  let draft = custom;
+  const saves: Settings[] = [];
+  choose(choice, (next: string) => { selected = next; }, (next: string) => { draft = next; }, settings, (next: Settings) => saves.push(next), custom);
+  return { selected, draft, saves, settings };
+}
+
+test("source-only: choosing Custom seeds and saves Menlo without a text edit", () => {
+  for (const saved of [null, "iA Writer Mono"]) {
+    for (const custom of ["", "Previous Custom", "invalid;font"]) {
+      const { selected, draft, saves, settings } = fontChoice("custom", custom, saved);
+      assert.equal(selected, "custom");
+      assert.equal(draft, "Menlo", "Custom must replace the previous draft with Menlo");
+      assert.deepEqual(saves, [{ ...settings, appearance: { ...settings.appearance, mono_font: "Menlo" } }]);
+      assert.equal(settings.appearance.mono_font, saved);
+    }
+  }
+});
+
+test("source-only: built-in mono-font choices keep their existing save mapping", () => {
+  for (const { choice, expected } of [{ choice: "builtin", expected: null }, { choice: "iA Writer Mono", expected: "iA Writer Mono" }]) {
+    const { selected, draft, saves, settings } = fontChoice(choice, "Previous Custom", "Old Font");
+    assert.equal(selected, choice);
+    assert.equal(draft, "Previous Custom");
+    assert.deepEqual(saves, [{ ...settings, appearance: { ...settings.appearance, mono_font: expected } }]);
+  }
+});
 
 function inputChange(value: string, saved = "Old Font") {
   const settings: Settings = {
