@@ -26,7 +26,7 @@ import { RunSplitButton } from "./RunSplitButton";
 import { ScriptOutput } from "./ScriptOutput";
 import { ShortcutHint } from "./ui/Tooltip";
 import { RunIcon } from "../settings/rows/runIcons";
-import { runBody, runHeader } from "../scripts/runTab";
+import { displayedTask, runBody, runHeader } from "../scripts/runTab";
 import {
   EMPTY_VIEW,
   SPOTLIGHT_EMPTY_TEXT,
@@ -117,12 +117,22 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const spotEnabled = spotSetting?.enabled === true;
   const spotMine = spotView.workspaceId === wsId;
   const spotLogMine = spotView.logWorkspaceId === wsId;
-  const shown = shownTask({
+  const activeScript = activeRun(runs);
+  const selected = shownTask({
     picked,
     spotlightEnabled: spotEnabled,
-    activeScriptId: activeRun(runs)?.scriptId ?? null,
+    activeScriptId: activeScript?.scriptId ?? null,
     spotlightMine: spotMine,
     defaultScriptId: defaultScript(config)?.id ?? null,
+  });
+  const selectedBusy = selected === SPOTLIGHT_TASK_ID
+    ? spotMine || spotPending !== null
+    : runHeader(null, runs.find((r) => r.scriptId === selected)?.state ?? null).busy;
+  const shown = displayedTask({
+    selectedTaskId: selected,
+    selectedTaskIsBusy: selectedBusy,
+    workspaceActiveRunTaskId: activeScript?.scriptId ?? (spotMine ? SPOTLIGHT_TASK_ID : null),
+    workspaceActiveRunTaskIsBusy: activeScript !== null || spotMine,
   });
   const showSpotlight = shown === SPOTLIGHT_TASK_ID;
 

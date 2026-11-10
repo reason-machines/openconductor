@@ -175,6 +175,47 @@ async function fixture({ settingUp = false, autoRun = false } = {}) {
   };
 }
 
+test("actual Run panel displays a busy Dev admitted after the picked Test finishes and Stop keeps the pick", async (t) => {
+  const f = await fixture();
+  t.after(f.close);
+  await f.menu("Test");
+  await f.finish("test", 0);
+  assert.ok(f.hasButton("Run Test"));
+  assert.match(f.output(), /test final output 0/);
+
+  await f.admit("dev");
+  assert.ok(f.hasButton("Stop Dev"), "the busy workspace task replaces an idle pick in the display");
+  assert.equal(f.hasButton("Run Test"), false, "a Run label must not hide the workspace Stop action");
+  assert.equal(f.output(), "", "the busy task must not display the picked task's old output");
+  assert.equal(f.commands.length, 1, "display projection must not start another task");
+
+  await f.primary("Stop Dev");
+  assert.ok(f.hasButton("Run Test"), "stopping the displayed task preserves the original pick");
+  assert.match(f.output(), /test final output 0/);
+  assert.deepEqual(f.commands.map((command) => [command.name, command.args.scriptId]), [
+    ["run_script_start", "test"], ["run_script_stop", null],
+  ]);
+});
+
+test("actual Run panel returns to the picked Test after the displayed Dev exits naturally", async (t) => {
+  const f = await fixture();
+  t.after(f.close);
+  await f.menu("Test");
+  await f.finish("test", 7);
+  await f.admit("dev");
+  assert.ok(f.hasButton("Stop Dev"));
+
+  await f.finish("dev", 0);
+  assert.ok(f.hasButton("Run Test"), "projection must not overwrite the explicit pick");
+  assert.equal(f.hasButton("Run Dev"), false);
+  assert.match(f.output(), /test final output 7/);
+  assert.doesNotMatch(f.output(), /dev final output/);
+  await f.primary("Run Test");
+  assert.deepEqual(f.commands.map((command) => [command.name, command.args.scriptId]), [
+    ["run_script_start", "test"], ["run_script_start", "test"],
+  ]);
+});
+
 test("actual Run panel observes quiet queued Test admission after the early Setup completion refresh", async (t) => {
   const f = await fixture({ settingUp: true, autoRun: true });
   t.after(f.close);
