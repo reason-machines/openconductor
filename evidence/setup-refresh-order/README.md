@@ -4,7 +4,7 @@ Conductor Rebuild owns `SETUP-REFRESH-ORDER-1F-03`. The ledger cleared exactly t
 
 ## Source comparison
 
-Current main `71c6bead64f4787b825f0951d38b0fe5d7db1e9d` contains #950. Its `ScriptsPanel.refresh` reads Run and Setup status independently through `Promise.all`. Before committing those snapshots, it checks only whether the displayed workspace ID still matches. Two reads of the same workspace can finish in reverse order. The ID check also accepts an old A response after switching from A to B and back to A.
+The test-only comparison used main `71c6bead64f4787b825f0951d38b0fe5d7db1e9d`, which contains #950. Before the correction, main was refreshed and merged at `4a4a35899c007be0c7d0597fcf8df13c9b252601`. `ScriptsPanel.tsx` is unchanged between those main commits. Its `refresh` reads Run and Setup status independently through `Promise.all`. Before committing those snapshots, it checks only whether the displayed workspace ID still matches. Two reads of the same workspace can finish in reverse order. The ID check also accepts an old A response after switching from A to B and back to A.
 
 The actual scripts bridge sends `setup_script_status` and `run_script_status` IPC requests. The corresponding Tauri commands read the manager snapshots. An older response delayed at the external IPC boundary can therefore replace a newer completion already displayed by the component. The bounded regression below controls that boundary; it does not execute a terminal process or a native application.
 
@@ -29,12 +29,21 @@ Two appended cases keep the same assertions:
 
 The original four #950 test bodies and assertions remain byte-identical. Their contiguous block, from the first test declaration through the fourth test's closing newline, has SHA-256 `6ecc8c17730209a53cd16606fed4b9495e616601dd866f7740763764d2929685`. The original whole file before the fixture addition and appended tests has SHA-256 `283dfb3c11c028f33bd8df4adfda0f067f3628b41c4f928f75bb497c36985e3b`.
 
-The first published checkpoint changes only the regression and this note. Production code remains identical to the compared main commit. Ordinary automatic hosted CI must establish the intended failures before a production correction is made. The new assertions must remain unchanged for GREEN.
+The first published checkpoint changes only the regression and this note. Production code remains identical to the compared main commit. Ordinary automatic hosted CI established the two intended failures before the production correction.
+
+## Hosted RED and correction
+
+At published head `1f6a1adc3f79aabeef2be26066392ae10a2bac83`, [frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/42924568956/job/130207619898) ran `node --test "src/**/*.test.ts"`. They passed 2,062 cases and failed exactly the two new cases. Both reached the assertion `an older response cannot restore the completed setup's running state`, with actual `running` and expected `completed`. The four original Setup cases passed. No fixture or import failure occurred.
+
+The [typecheck and build job](https://github.com/reason-machines/openconductor/actions/runs/42924568956/job/130207619565) passed TypeScript and failed on the same two unit tests. Its build step did not run. The other 23 PR checks passed on that test-only head.
+
+The correction assigns each shared refresh a monotonically increasing sequence before its IPC requests. It rejects a response unless its sequence is still the newest and its workspace is still displayed, before either existing snapshot setter. The sequence survives workspace changes, so an old A response also loses to a newer A response after A → B → A. The workspace guard remains intact. No request, event, action, backend, API, model, Run-output, or preview policy changes.
 
 ## Verification and limits
 
-- Passed locally: `git diff --check`, unchanged original-four-body comparison, and production-source equality against main for the test-only checkpoint.
-- Pending: automatic hosted RED using `node --test "src/**/*.test.ts"`. No behavioral failure has yet been observed for this follow-up.
+- Passed locally: `git diff --check`, production-source equality against fresh main before the correction, and byte-identical verification of the complete six-case regression file against the published RED checkpoint. Its SHA-256 remains `49f9e52bd5fbcbd3888e26ecbeb259fe1c6d4c5914547648c0b716e650b1a74d`; the original-four-body hash above also remains unchanged.
+- Failed as intended before the correction: the two hosted component regressions described above. The four original cases passed.
+- Pending: automatic hosted GREEN with all six cases and assertions unchanged. No passing behavioral result is claimed for the correction yet.
 - Not run locally: Node tests, dependencies, TypeScript, build, browser, native, or application execution. No screenshot exists because browser and native execution remain outside the permitted scope.
 - The existing #950 consuming-main and macOS package follow-up remains separate. This follow-up does not install or run its package.
 

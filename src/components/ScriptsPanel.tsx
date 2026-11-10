@@ -97,6 +97,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const wsId = workspace.id;
   const displayedWorkspaceId = useRef(wsId);
   displayedWorkspaceId.current = wsId;
+  const refreshSequence = useRef(0);
   const configKey = JSON.stringify(ref);
   const [configState, setConfigState] = useState<{ key: string; config: ScriptsConfig | null }>(() => ({ key: configKey, config: configs.get(configKey) ?? null }));
   // null until this workspace's config is known (from the cache or the backend).
@@ -145,8 +146,9 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const detectedUrl = detectedPreview.key === outputKey ? detectedPreview.url : null;
 
   const refresh = useCallback(async () => {
+    const sequence = ++refreshSequence.current;
     const [status, setupState] = await Promise.all([api.runStatus(wsId), api.setupStatus(wsId)]);
-    if (displayedWorkspaceId.current !== wsId) return;
+    if (sequence !== refreshSequence.current || displayedWorkspaceId.current !== wsId) return;
     setRuns(status.runs);
     setSetupSnapshot({ workspaceId: wsId, status: setupState });
   }, [wsId]);
