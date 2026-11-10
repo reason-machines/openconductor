@@ -17,7 +17,7 @@ These are static declarations from identity-bound retained source. Generic combo
 
 ## Current-main discrepancy
 
-At fetched main `bd2d42c2a75bc2013cd447e78f07db01e25782dc`, rechecked at `5de7c4e4bb136c971965e3b5592cd17d8a6d72a3`, `RepoIconDialog.tsx` calls `searchEmoji(query)` and maps its results into the emoji grid. A query matching no entries leaves a blank grid with no message. The existing search helper trims and lowercases the query and uses the existing authored subset.
+At fetched main `bd2d42c2a75bc2013cd447e78f07db01e25782dc`, rechecked at `0244d800782a3eaf811aac53fedc8a536218fb2b`, `RepoIconDialog.tsx` calls `searchEmoji(query)` and maps its results into the emoji grid. A query matching no entries leaves a blank grid with no message. The existing search helper trims and lowercases the query and uses the existing authored subset.
 
 The ledger cleared `REPO-ICON-EMPTY-6013-01` for only `RepoIconDialog.tsx`'s EmojiTab message, the adjacent new regression, and this evidence file. Search normalization, catalog entries, selection, clearing, tabs, shared Modal, styling, onboarding, and provider paths remain unchanged.
 
@@ -35,4 +35,12 @@ Local `git diff --check` passed. Local dependencies are absent. No local install
 
 The first automatic hosted run at PR head `9ae104e572d2cf3451b04caab212744bad4e4916` failed all four new component tests with `query.trim is not a function`. Both frontend jobs failed at their unit-test step, before typecheck/build ran. This is not the intended missing-message RED evidence.
 
-The fixture's `findByProps({ placeholder: "Search emoji" })` matched the composite `SearchBar` first. That component takes a string callback, so sending it a synthetic event incorrectly put an object into query state. The corrected fixture selects the actual host `input`, asserts its placeholder, and invokes that input's event handler. All original behavioral assertions remain unchanged. Production remains unchanged while the next automatic hosted run establishes the intended failure. Hosted RED and GREEN results will be recorded here as they arrive.
+The fixture's `findByProps({ placeholder: "Search emoji" })` matched the composite `SearchBar` first. That component takes a string callback, so sending it a synthetic event incorrectly put an object into query state. The corrected fixture selects the actual host `input`, asserts its placeholder, and invokes that input's event handler. All original behavioral assertions remain unchanged.
+
+## Intended hosted RED and focused fix
+
+At exact PR head `ad1b529f9fc51d2cb6aae5c071fe6a9fe1b56126`, [automatic CI run 42915228979](https://github.com/reason-machines/openconductor/actions/runs/42915228979) established the intended RED. Frontend unit job `130175838491` fails only the two new empty-state tests. Both report `0 !== 1` for the status-message count at test lines 75 and 88. Selection and Remove emoji tests pass. Frontend job `130175837862` reports the same two failures at its unit-test step; typecheck and build do not run. This is distinct from the earlier fixture failure.
+
+The production fix keeps the existing `searchEmoji(query)` result in a local array and renders No emoji found with `role="status"` when it is empty. It reuses the existing muted text class. The grid, search helper, catalog, callbacks, and all regression assertions remain unchanged. No shared styles or Modal code change.
+
+Passed locally after the fix: test-file syntax with `node --experimental-strip-types --check src/components/repoIconEmoji.test.ts` and `git diff --check`. Component execution, typecheck, and build await the automatic hosted run on the published fix. No local runtime or install ran. Hosted GREEN is not yet established.

@@ -17,7 +17,7 @@ type Node = {
   children: (Node | string)[];
   findAll: (predicate: (node: Node) => boolean) => Node[];
 };
-type Renderer = { root: Node; unmount: () => void };
+type Renderer = { root: Node; unmount: () => void; update: (element: ReactNode) => void };
 const { create, act }: {
   create: (element: ReactNode, options: { createNodeMock: () => unknown }) => Renderer;
   act: (callback: () => void | Promise<void>) => Promise<void>;
@@ -33,11 +33,14 @@ type Command = { name: string; args: Record<string, unknown> };
 type SourceExports = Record<string, unknown> & { ScriptsPanel?: typeof ScriptsPanel };
 type WireListener = (event: { payload: unknown }) => void;
 
-async function fixture({ settingUp = false, autoRun = false } = {}) {
+async function fixture({ settingUp = false, autoRun = false, configuredPreview = true } = {}) {
   const commands: Command[] = [];
   const listeners = new Set<WireListener>();
   const modules = new Map<string, { exports: SourceExports }>();
   const output = new Map<string, string>();
+  const heldScripts = new Set<string>();
+  const pendingReads: { workspaceId: string; scriptId: string; resolve: (text: string) => void }[] = [];
+  let currentWorkspace = workspace;
   let runs: RunStatus[] = [];
   let setupState = settingUp ? "running" : "idle";
   let statusReads = 0;
@@ -55,7 +58,13 @@ async function fixture({ settingUp = false, autoRun = false } = {}) {
         statusReads++;
         return { runs, history: [] };
       case "setup_script_status": return { state: setupState, log: null, last: null };
-      case "run_script_output": return output.get(String(args.scriptId)) ?? null;
+      case "run_script_output": {
+        const scriptId = String(args.scriptId);
+        if (heldScripts.has(scriptId)) return new Promise<string>((resolve) => {
+          pendingReads.push({ workspaceId: String(args.workspaceId), scriptId, resolve });
+        });
+        return output.get(scriptId) ?? null;
+      }
       case "run_script_preview_env": return [];
       case "spotlight_testing_get": return { enabled: false, layer: "repo_local", managed: false };
       case "spotlight_status": return { active: false, workspaceId: null };
@@ -78,7 +87,7 @@ async function fixture({ settingUp = false, autoRun = false } = {}) {
   const boundaries: Record<string, unknown> = {
     "src/backend": { inTauri: () => true, openUrl: () => { throw new Error("No browser in completion regression"); } },
     "src/keybindings/KeybindingsProvider": { useKeybindings: inert },
-    "src/settings/useRepoSettings": { useRepoSettings: () => ({ previewUrls: { value: [{ name: "Local", url: "http://localhost:55000" }] } }) },
+    "src/settings/useRepoSettings": { useRepoSettings: () => ({ previewUrls: { value: configuredPreview ? [{ name: "Local", url: "http://localhost:55000" }] : [] } }) },
     "src/components/ScriptOutput": { ScriptOutput: ({ output: text }: { output: string }) => React.createElement("pre", null, text) },
     "src/components/ui/Tooltip": { Tooltip: passChildren, ShortcutHint: inert },
     "src/settings/rows/runIcons": { RunIcon: inert },
@@ -126,12 +135,13 @@ async function fixture({ settingUp = false, autoRun = false } = {}) {
   }
   const { ScriptsPanel: Panel } = load("src/components/ScriptsPanel");
   assert.ok(Panel);
+  const panel = () => React.createElement(Panel, {
+    repo, workspace: currentWorkspace, tab: "run", active: true, actionsSlot: {} as HTMLElement,
+    onShowRun: inert, onAddRunScript: inert,
+  });
   let renderer: Renderer;
   await act(async () => {
-    renderer = create(React.createElement(Panel, {
-      repo, workspace, tab: "run", active: true, actionsSlot: {} as HTMLElement,
-      onShowRun: inert, onAddRunScript: inert,
-    }), { createNodeMock: () => ({ getBoundingClientRect: () => ({ right: 200, bottom: 40 }) }) });
+    renderer = create(panel(), { createNodeMock: () => ({ getBoundingClientRect: () => ({ right: 200, bottom: 40 }) }) });
   });
   const buttons = (label: string) => renderer.root.findAll((node) => node.type === "button" && node.props["aria-label"] === label);
   async function click(predicate: (node: Node) => boolean) {
@@ -146,6 +156,29 @@ async function fixture({ settingUp = false, autoRun = false } = {}) {
   }
   return {
     commands,
+    holdOutput: (scriptId: string) => heldScripts.add(scriptId),
+    async releaseOutput(scriptId: string, text: string, workspaceId = workspace.id) {
+      const reads = pendingReads.filter((read) => read.workspaceId === workspaceId && read.scriptId === scriptId);
+      assert.ok(reads.length > 0, "an obsolete output snapshot is in flight");
+      heldScripts.delete(scriptId);
+      await act(async () => { for (const read of reads) read.resolve(text); });
+    },
+    async stream(scriptId: string, chunk: string) {
+      output.set(scriptId, `${output.get(scriptId) ?? ""}${chunk}`);
+      await emit({ type: "output", workspaceId: currentWorkspace.id, kind: "run", scriptId, chunk });
+    },
+    queuedDelivery() {
+      const queued = [...listeners];
+      return async (payload: unknown) => {
+        await act(async () => { for (const listener of queued) listener({ payload }); });
+      };
+    },
+    async switchWorkspace(text: string) {
+      currentWorkspace = { ...workspace, id: "other-completion-workspace", path: "/fixture/other-workspace" };
+      runs = [{ workspaceId: currentWorkspace.id, scriptId: "dev", state: "running", exit: null }];
+      output.set("dev", text);
+      await act(async () => { renderer.update(panel()); });
+    },
     hasButton: (label: string) => buttons(label).length === 1,
     statusReads: () => statusReads,
     hasText: (text: string) => renderer.root.findAll((node) => node.children.join("") === text).length > 0,
@@ -174,6 +207,57 @@ async function fixture({ settingUp = false, autoRun = false } = {}) {
     close: () => act(async () => { renderer.unmount(); }),
   };
 }
+
+test("actual Run panel isolates detected preview URLs and delayed snapshots across busy Dev to Test", async (t) => {
+  const f = await fixture({ configuredPreview: false });
+  t.after(f.close);
+  await f.primary("Run Dev");
+  await f.stream("dev", "http://localhost:5101/dev\n");
+  assert.ok(f.hasButton("Open http://localhost:5101/dev"));
+  f.holdOutput("dev");
+  await f.admit("dev");
+
+  await f.admit("test");
+  assert.ok(f.hasButton("Stop Test"));
+  assert.equal(f.hasButton("Open http://localhost:5101/dev"), false, "busy task switches reset the detected URL");
+  assert.doesNotMatch(f.output(), /5101\/dev/);
+  await f.stream("test", "http://localhost:5102/test\n");
+  assert.ok(f.hasButton("Open http://localhost:5102/test"));
+
+  await f.releaseOutput("dev", "obsolete dev snapshot http://localhost:5199/stale\n");
+  assert.match(f.output(), /5102\/test/);
+  assert.doesNotMatch(f.output(), /obsolete dev snapshot|5199\/stale/);
+  assert.ok(f.hasButton("Open http://localhost:5102/test"));
+});
+
+test("actual Run panel ignores obsolete output snapshots after switching workspaces with Dev busy", async (t) => {
+  const f = await fixture({ configuredPreview: false });
+  t.after(f.close);
+  await f.primary("Run Dev");
+  await f.stream("dev", "http://localhost:5201/first\n");
+  assert.ok(f.hasButton("Open http://localhost:5201/first"));
+  f.holdOutput("dev");
+  await f.admit("dev");
+  await f.switchWorkspace("");
+  assert.ok(f.hasButton("Stop Dev"));
+  assert.equal(f.hasButton("Open http://localhost:5201/first"), false, "workspace identity resets the detected URL even while busy");
+  await f.stream("dev", "http://localhost:5202/second\n");
+  await f.releaseOutput("dev", "obsolete first workspace http://localhost:5299/stale\n");
+  assert.match(f.output(), /5202\/second/);
+  assert.doesNotMatch(f.output(), /first workspace|5299\/stale/);
+  assert.ok(f.hasButton("Open http://localhost:5202/second"));
+});
+
+test("actual Run panel ignores queued output delivery from a retired workspace subscription", async (t) => {
+  const f = await fixture({ configuredPreview: false });
+  t.after(f.close);
+  await f.primary("Run Dev");
+  const deliver = f.queuedDelivery();
+  await f.switchWorkspace("current workspace output\n");
+  await deliver({ type: "output", workspaceId: workspace.id, kind: "run", scriptId: "dev", chunk: "obsolete queued output http://localhost:5399/stale\n" });
+  assert.equal(f.output(), "current workspace output\n");
+  assert.equal(f.hasButton("Open http://localhost:5399/stale"), false);
+});
 
 test("actual Run panel displays a busy Dev admitted after the picked Test finishes and Stop keeps the pick", async (t) => {
   const f = await fixture();
