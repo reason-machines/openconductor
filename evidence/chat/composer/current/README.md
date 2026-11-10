@@ -41,12 +41,12 @@ Before the queue fix, the new attachment-only regression failed because `submit(
 
 One full-suite run without a concurrency cap timed out after 90 seconds under shared load. The capped run above completed successfully. No test was disabled or weakened.
 
-## Side-by-side verdict
+## Historical side-by-side verdict
 
-The `pair-*.png` images put the decoded Conductor frontend on the left and the real OpenConductor component fixture on the right. They are unscaled crops of the same viewport, not pixel-normalized screenshots.
+This verdict describes the 2026-11-06 capture pass, not current-main behavior. The `pair-*.png` images put the decoded Conductor frontend on the left and the real OpenConductor component fixture on the right. They are unscaled crops of the same viewport, not pixel-normalized screenshots.
 
 - Empty, focused and multiline: box geometry, padding, text, controls and multiline line spacing match in the inspected crops. The component fixture has no transcript unread pill. The reference's unread pill is not a composer mismatch.
-- File menu: functional and closely aligned. Icon mapping still differs for README.md. Picking remains textual completion rather than Conductor's atomic mention chip.
+- File menu in this pass: functional and closely aligned. Icon mapping differed for README.md. Picking used textual completion rather than Conductor's atomic mention chip. The later [atomic-file implementation and verification](../mentions/README.md#atomic-file-implementation-and-verification-2312-utc) supersedes that picking limitation. It records file atoms, retained REA captures and isolated Chromium component checks, not native macOS/WebKit proof.
 - Model menu: layout matches. The neutral agent glyph intentionally differs from Conductor's agent logo. This fixture has the same one favourite model, but does not prove all runtime-provided model lists.
 - Add menu: partial. Add attachment is present, but Link workspaces and Plan mode are not implemented. Issue linking is not in this pass.
 - Working Send, Queue and Stop: browser interaction checks pass. No fresh native Conductor running-agent capture was made; existing working reference shots remain supporting evidence only.

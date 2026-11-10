@@ -1,0 +1,62 @@
+(node:23550) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:23633) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Setup tab shows its working indicator before the label only while running
+ok 1 - Setup tab shows its working indicator before the label only while running
+  ---
+  duration_ms: 1217.0641
+  type: 'test'
+  ...
+# Subtest: terminal tab labels follow visible order after closing siblings
+ok 2 - terminal tab labels follow visible order after closing siblings
+  ---
+  duration_ms: 1112.819126
+  type: 'test'
+  ...
+# Subtest: terminal lifecycle indicates starting and a muted normal exit with its code
+ok 3 - terminal lifecycle indicates starting and a muted normal exit with its code
+  ---
+  duration_ms: 966.7429
+  type: 'test'
+  ...
+# Subtest: interactive terminal retains Find after sharing the controller with script output
+ok 4 - interactive terminal retains Find after sharing the controller with script output
+  ---
+  duration_ms: 948.983421
+  type: 'test'
+  ...
+# Subtest: setup output supports Find without sending terminal input
+ok 5 - setup output supports Find without sending terminal input
+  ---
+  duration_ms: 1687.5226
+  type: 'test'
+  ...
+# Subtest: setup output renders terminal colors and carriage-return updates without a shell
+ok 6 - setup output renders terminal colors and carriage-return updates without a shell
+  ---
+  duration_ms: 1655.958171
+  type: 'test'
+  ...
+# Subtest: run output supports Find without sending terminal input
+ok 7 - run output supports Find without sending terminal input
+  ---
+  duration_ms: 1509.072054
+  type: 'test'
+  ...
+# Subtest: run output renders terminal colors and carriage-return updates without a shell
+ok 8 - run output renders terminal colors and carriage-return updates without a shell
+  ---
+  duration_ms: 1258.526671
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10849.781252

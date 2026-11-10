@@ -1,0 +1,86 @@
+{
+  "reaEvidenceId": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "analysis": "retained-static-artifact; target JavaScript never evaluated",
+  "artifacts": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "excerpts": [
+    {
+      "role": "custom-section-key",
+      "file": "renderApp-D_fmY7hW.js",
+      "utf16Offset": 10000569,
+      "utf8Offset": 10046133,
+      "excerpt": "const v=Iea(_),x=Cea(n.id);let w;e[3]===Symbol.for(\"react.memo_cache_sentinel\")?(w={defaultCollapsed:!1},e[3]=w):w=e[3];const[E,k]=aW(`section-${n.id}`,w)"
+    },
+    {
+      "role": "pinned-key",
+      "file": "renderApp-D_fmY7hW.js",
+      "utf16Offset": 9990678,
+      "utf8Offset": 10036240,
+      "excerpt": "x={defaultCollapsed:!1},e[9]=x):x=e[9];const[w,E]=aW(\"navigation-section-pinned\",x"
+    },
+    {
+      "role": "main-key",
+      "file": "renderApp-D_fmY7hW.js",
+      "utf16Offset": 10043816,
+      "utf8Offset": 10089392,
+      "excerpt": "h={defaultCollapsed:!1},e[0]=h):h=e[0];const[m,g]=aW(\"navigation-section-main\",h"
+    },
+    {
+      "role": "collapse-route",
+      "file": "renderApp-D_fmY7hW.js",
+      "utf16Offset": 9989144,
+      "utf8Offset": 10034706,
+      "excerpt": "const ZFi=IX(vo(),hSe()),gWt=uJe({routeId:\"workspace.sidebar\"}),bWt=\"collapsedGroups\",eBi={}"
+    },
+    {
+      "role": "collapse-hook",
+      "file": "renderApp-D_fmY7hW.js",
+      "utf16Offset": 9989500,
+      "utf8Offset": 10035062,
+      "excerpt": "function aW(t,{defaultCollapsed:e=!0}={}){const[n,i]=Gde({routeKey:gWt,stateKey:bWt,schema:ZFi,defaultValue:eBi}),r=n[t]??e,o=$.useCallback(()=>{i({...n,[t]:!r})},[r,n,t,i]);return[r,o]}"
+    },
+    {
+      "role": "route-store",
+      "file": "renderApp-D_fmY7hW.js",
+      "utf16Offset": 2708279,
+      "utf8Offset": 2708715,
+      "excerpt": "const DGe=bf()(sSe((t,e)=>({routeStates:{},getRouteStateValue:({routeKey:n,stateKey:i})=>Z7t({routeStates:e().routeStates,routeKey:n,stateKey:i}),setRouteStateValue:({routeKey:n,stateKey:i,value:r})=>{t(o=>{const a=Z7t({routeStates:o.routeStates,routeKey:n,stateKey:i});return Avs(a,r)?o:{routeStates:{...o.routeStates,[n]:{...o.routeStates[n]??{},[i]:r}}}})}}),{name:Cvs,storage:lDt(()=>tii({subsystem:kvs,sizeLimit:Tvs})),partialize:t=>({routeStates:t.routeStates}),merge:(t,e)=>{const n=Evs.safeParse(t);return n.success?{...e,routeStates:n.data.routeStates}:e}}));"
+    },
+    {
+      "role": "route-hook",
+      "file": "renderApp-D_fmY7hW.js",
+      "utf16Offset": 2708847,
+      "utf8Offset": 2709283,
+      "excerpt": "function Gde(t){const e=ne.c(14),{routeKey:n,stateKey:i,schema:r,defaultValue:o}=t;let a;e[0]!==n||e[1]!==i?(a=v=>Z7t({routeStates:v.routeStates,routeKey:n,stateKey:i}),e[0]=n,e[1]=i,e[2]=a):a=e[2];const c=DGe(a),u=DGe(Ivs);let d;e[3]!==o||e[4]!==c||e[5]!==r?(d=y4i({rawValue:c,schema:r,defaultValue:o}),e[3]=o,e[4]=c,e[5]=r,e[6]=d):d=e[6];const h=d;let m;e[7]!==n||e[8]!==u||e[9]!==i?(m=v=>{u({routeKey:n,stateKey:i,value:v})},e[7]=n,e[8]=u,e[9]=i,e[10]=m):m=e[10];const g=m;let _;return e[11]!==g||e[12]!==h?(_=[h,g],e[11]=g,e[12]=h,e[13]=_):_=e[13],_}"
+    },
+    {
+      "role": "storage-identities",
+      "file": "renderApp-D_fmY7hW.js",
+      "utf16Offset": 2707809,
+      "utf8Offset": 2708245,
+      "excerpt": "Evs=Jh({routeStates:IX(vo(),IX(vo(),_yr()))}),Cvs=\"route-user-state-v1\",kvs=\"route-user-state\",Tvs=5*1024*1024"
+    },
+    {
+      "role": "persist-hydration",
+      "file": "index-BGEQ8YjU.js",
+      "utf16Offset": 256129,
+      "utf8Offset": 256131,
+      "excerpt": "const GM=t=>e=>{try{const s=t(e);return s instanceof Promise?s:{then(n){return GM(n)(s)},catch(n){return this}}}catch(s){return{then(n){return this},catch(n){return GM(n)(s)}}}},DDe=(t,e)=>(s,n,r)=>{let i={storage:PE(()=>localStorage),partialize:v=>v,version:0,merge:(v,_)=>({..._,...v}),...e},o=!1;const a=new Set,c=new Set;let l=i.storage;if(!l)return t((...v)=>{console.warn(`[zustand persist middleware] Unable to update item '${i.name}', the given storage is currently unavailable.`),s(...v)},n,r);const u=()=>{const v=i.partialize({...n()});return l.setItem(i.name,{state:v,version:i.version})},d=r.setState;r.setState=(v,_)=>{d(v,_),u()};const h=t((...v)=>{s(...v),u()},n,r);r.getInitialState=()=>h;let p;const m=()=>{var v,_;if(!l)return;o=!1,a.forEach(k=>{var A;return k((A=n())!=null?A:h)});const S=((_=i.onRehydrateStorage)==null?void 0:_.call(i,(v=n())!=null?v:h))||void 0;return GM(l.getItem.bind(l))(i.name).then(k=>{if(k)if(typeof k.version==\"number\"&&k.version!==i.version){if(i.migrate){const A=i.migrate(k.state,k.version);return A instanceof Promise?A.then(I=>[!0,I]):[!0,A]}console.error(\"State loaded from storage couldn't be migrated since no migrate function was provided\")}else return[!1,k.state];return[!1,void 0]}).then(k=>{var A;const[I,C]=k;if(p=i.merge(C,(A=n())!=null?A:h),s(p,!0),I)return u()}).then(()=>{S?.(p,void 0),p=n(),o=!0,c.forEach(k=>k(p))}).catch(k=>{S?.(void 0,k)})};return r.persist={setOptions:v=>{i={...i,...v},v.storage&&(l=v.storage)},clearStorage:()=>{l?.removeItem(i.name)},getOptions:()=>i,rehydrate:()=>m(),hasHydrated:()=>o,onHydrate:v=>(a.add(v),()=>{a.delete(v)}),onFinishHydration:v=>(c.add(v),()=>{c.delete(v)})},i.skipHydration||m(),p||h},Gy=DDe"
+    },
+    {
+      "role": "backend-adapter",
+      "file": "index-BGEQ8YjU.js",
+      "utf16Offset": 2805493,
+      "utf8Offset": 2805969,
+      "excerpt": "function i2({subsystem:t,sizeLimit:e}){return{async getItem(s){const n=await Ms().getEntry({subsystem:t,id:s});return typeof n==\"string\"?n:null},async setItem(s,n){const r=await Ms().setEntry({subsystem:t,sizeLimit:e,id:s,content:n});if(!r.success)throw new Error(`Failed to persist local storage entry ${t}:${s}: ${r.reason}`)},async removeItem(s){await Ms().removeEntry({subsystem:t,id:s})}}}"
+    }
+  ],
+  "conclusion": "Custom sections and built-in navigation-section-pinned/main keys use the same serialized routeStates store, loaded and merged during persisted-store initialization.",
+  "gaps": [
+    "No custom-section or built-in collapse/reload native scenario was exercised.",
+    "Static control flow does not prove successful backend I/O or hydration ordering on a running app.",
+    "REA MCP operations unavailable in this Session; reused the retained REA graph and matching decoded artifacts."
+  ]
+}

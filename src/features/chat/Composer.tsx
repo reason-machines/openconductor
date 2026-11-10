@@ -26,7 +26,7 @@ import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./
 import { SlashMenu } from "./SlashMenu.tsx";
 import { fuzzyFilterFiles } from "../../backend";
 import type { FileMatch } from "../../spotlight/quickOpen";
-import { fileMentionQuery } from "./fileMentions.ts";
+import { fileMentionQuery, mentionItems, type MentionItem } from "./fileMentions.ts";
 import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
 import { composerPrompt } from "./composerDocument.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
@@ -49,6 +49,8 @@ export interface ComposerProps {
   canSteer: boolean;
   followUpMode?: FollowUpMode;
   onSubmit: (text: string, mode: SendMode) => void;
+  /** False when the owner clears only after asynchronous delivery succeeds. */
+  clearOnSubmit?: boolean;
   onStop: () => void;
   onQueue: (action: QueueAction) => void;
   /** Files going out with the next message, shown above the message box. */
@@ -57,6 +59,8 @@ export interface ComposerProps {
   workspacePath?: string;
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
+  onLinkWorkspaces?: () => void;
+  onAttachTerminalOutput?: () => void;
   /** The model picker (or another agent's picker), at the box's bottom left. */
   picker?: ReactNode;
   /** More pickers after it (an agent's access mode), in the same row. */
@@ -81,12 +85,15 @@ export function Composer({
   canSteer,
   followUpMode = "steering",
   onSubmit,
+  clearOnSubmit = true,
   onStop,
   onQueue,
   attachments,
   hasAttachments = false,
   workspacePath,
   onAttachFiles,
+  onLinkWorkspaces,
+  onAttachTerminalOutput,
   picker,
   controls,
   slashCommands = [],
@@ -140,16 +147,30 @@ export function Composer({
     );
     return () => { live = false; };
   }, [workspacePath, mentionQuery]);
-  const mentionMatches = files && files.workspacePath === workspacePath && files.query === mentionQuery ? files.matches : [];
+  const fileMatches = files && files.workspacePath === workspacePath && files.query === mentionQuery ? files.matches : [];
+  const mentionMatches = mentionItems(mentionQuery ?? "", fileMatches, !!onAttachTerminalOutput, !!onLinkWorkspaces);
   const mentionOpen = mention !== null && mentionQuery !== undefined && mentionMatches.length > 0;
   const mentionFocus = Math.min(mentionIndex, Math.max(0, mentionMatches.length - 1));
 
-  function pickFile(file: FileMatch) {
+  function pickMention(item: MentionItem) {
     const box = inputRef.current;
     if (!box || box.composing()) return;
     const current = box.selection();
     const range = fileMentionQuery(current.text, current.start, current.end);
     if (!range || `${range.start}:${range.query}` !== mentionKey) return;
+    if (item.kind === "add-directory") {
+      if (!onLinkWorkspaces || !box.deleteRange(range)) return;
+      setMentionDismissed(mentionKey);
+      onLinkWorkspaces();
+      return;
+    }
+    if (item.kind === "terminal") {
+      if (!onAttachTerminalOutput || !box.deleteRange(range)) return;
+      setMentionDismissed(mentionKey);
+      onAttachTerminalOutput();
+      return;
+    }
+    const file = item.match;
     box.insertFile(range, { path: file.relative_path, label: file.relative_path, directory: file.file.is_directory });
     setMentionDismissed(mentionKey);
   }
@@ -170,7 +191,7 @@ export function Composer({
       return;
     }
     onSubmit(text, working ? mode(opposite) : "queue");
-    setDraft("");
+    if (clearOnSubmit) setDraft("");
   }
 
   useKeybindings({
@@ -212,7 +233,7 @@ export function Composer({
       const selected = mentionMatches[mentionFocus];
       if (selected) {
         e.preventDefault();
-        pickFile(selected);
+        pickMention(selected);
       }
       return;
     }
@@ -273,7 +294,7 @@ export function Composer({
     <div className="composer-wrap">
       {queue.items.length > 0 ? <QueuePanel queue={queue} canSteer={canSteerNow(queue, canSteer)} onQueue={onQueue} listRef={queueRef} focus={focus} keys={keys} /> : null}
       <div className="oc-composer-anchor">
-        {mentionOpen ? <FileMentionMenu matches={mentionMatches} focused={mentionFocus} hasQuery={mentionQuery !== ""} onPick={pickFile} onFocus={setMentionIndex} /> : null}
+        {mentionOpen ? <FileMentionMenu matches={mentionMatches} focused={mentionFocus} hasQuery={mentionQuery !== ""} onPick={pickMention} onFocus={setMentionIndex} /> : null}
         {slashOpen ? <SlashMenu matches={slashMatches} focused={slashFocus} hasQuery={query !== ""} onPick={pickCommand} onFocus={setSlashIndex} /> : null}
         <form
           className={`composer oc-composer${dragging ? " is-dropping" : ""}`}
@@ -333,7 +354,7 @@ export function Composer({
           </div>
           <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
             <span className="oc-composer-fade">
-              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} />
+              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
             </span>
             {showFocusPill && minimized ? focusPill(true) : null}
             {onAttachFiles ? (
@@ -378,12 +399,11 @@ export function Composer({
   );
 }
 
-/** Conductor's "+" button (`a7i`): "Add attachments and more"; this build offers Add attachment. */
-function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: () => void }) {
+function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
-  if (!onAddAttachment) return null;
+  if (!onAddAttachment && !onLinkWorkspaces) return null;
   return (
     <span
       className="oc-add-menu"
@@ -405,7 +425,7 @@ function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: ()
       </Tooltip>
       {popup.mounted ? (
         <div className="oc-menu oc-add-popup" role="menu" data-motion="popup" {...popup.attrs}>
-          <button
+          {onAddAttachment ? <button
             type="button"
             role="menuitem"
             className="oc-menu-item"
@@ -417,7 +437,10 @@ function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: ()
             <PaperclipIcon size={16} />
             <span className="oc-menu-item-label">Add attachment</span>
             <span className="oc-kbd-hint">{hint}</span>
-          </button>
+          </button> : null}
+          {onLinkWorkspaces ? <button type="button" role="menuitem" className="oc-menu-item" onClick={() => { setOpen(false); onLinkWorkspaces(); }}>
+            <PlusIcon size={16} /><span className="oc-menu-item-label">Link workspaces</span>
+          </button> : null}
         </div>
       ) : null}
     </span>

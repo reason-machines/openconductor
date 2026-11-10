@@ -1,0 +1,220 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Pinned stays collapsed after remount and re-expansion survives another reload
+ok 1 - Pinned stays collapsed after remount and re-expansion survives another reload
+  ---
+  duration_ms: 82.857066
+  type: 'test'
+  ...
+# Subtest: built-in groups persist independently without changing custom sections or Diff
+ok 2 - built-in groups persist independently without changing custom sections or Diff
+  ---
+  duration_ms: 1.931824
+  type: 'test'
+  ...
+# Subtest: early built-in toggles win delayed hydration without discarding the other group
+ok 3 - early built-in toggles win delayed hydration without discarding the other group
+  ---
+  duration_ms: 0.33362
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: repo; filter=all; Focus=expanded: numbers target their labelled row
+ok 4 - repo; filter=all; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 2.353772
+  type: 'test'
+  ...
+# Subtest: repo; filter=all; Focus=collapsed: numbers target their labelled row
+ok 5 - repo; filter=all; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.299199
+  type: 'test'
+  ...
+# Subtest: repo; filter=alpha; Focus=expanded: numbers target their labelled row
+ok 6 - repo; filter=alpha; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.273995
+  type: 'test'
+  ...
+# Subtest: repo; filter=alpha; Focus=collapsed: numbers target their labelled row
+ok 7 - repo; filter=alpha; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.145482
+  type: 'test'
+  ...
+# Subtest: repo; filter=beta; Focus=expanded: numbers target their labelled row
+ok 8 - repo; filter=beta; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 10.372646
+  type: 'test'
+  ...
+# Subtest: repo; filter=beta; Focus=collapsed: numbers target their labelled row
+ok 9 - repo; filter=beta; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.181433
+  type: 'test'
+  ...
+# Subtest: status; filter=all; Focus=expanded: numbers target their labelled row
+ok 10 - status; filter=all; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.764034
+  type: 'test'
+  ...
+# Subtest: status; filter=all; Focus=collapsed: numbers target their labelled row
+ok 11 - status; filter=all; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.370004
+  type: 'test'
+  ...
+# Subtest: status; filter=alpha; Focus=expanded: numbers target their labelled row
+ok 12 - status; filter=alpha; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 1.105423
+  type: 'test'
+  ...
+# Subtest: status; filter=alpha; Focus=collapsed: numbers target their labelled row
+ok 13 - status; filter=alpha; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.424261
+  type: 'test'
+  ...
+# Subtest: status; filter=beta; Focus=expanded: numbers target their labelled row
+ok 14 - status; filter=beta; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 5.412121
+  type: 'test'
+  ...
+# Subtest: status; filter=beta; Focus=collapsed: numbers target their labelled row
+ok 15 - status; filter=beta; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.155623
+  type: 'test'
+  ...
+# (node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: production built-in hook restores both groups after remount and saves expansion
+ok 16 - production built-in hook restores both groups after remount and saves expansion
+  ---
+  duration_ms: 83.026486
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: custom section collapse survives a new store and re-expansion survives another reload
+ok 17 - custom section collapse survives a new store and re-expansion survives another reload
+  ---
+  duration_ms: 2.029355
+  type: 'test'
+  ...
+# Subtest: early clicks override hydration without discarding other saved section IDs
+ok 18 - early clicks override hydration without discarding other saved section IDs
+  ---
+  duration_ms: 0.232967
+  type: 'test'
+  ...
+# Subtest: two early clicks leave that section expanded, even if it was saved collapsed
+ok 19 - two early clicks leave that section expanded, even if it was saved collapsed
+  ---
+  duration_ms: 0.234623
+  type: 'test'
+  ...
+# Subtest: invalid storage defaults expanded without writing over it on load
+ok 20 - invalid storage defaults expanded without writing over it on load
+  ---
+  duration_ms: 0.338537
+  type: 'test'
+  ...
+# Subtest: snapshots are immutable and notifications stop after unsubscribe
+ok 21 - snapshots are immutable and notifications stop after unsubscribe
+  ---
+  duration_ms: 0.299478
+  type: 'test'
+  ...
+# Subtest: writes serialize and a failed write does not poison later saves
+ok 22 - writes serialize and a failed write does not poison later saves
+  ---
+  duration_ms: 0.574998
+  type: 'test'
+  ...
+# Subtest: the backend adapter round-trips without overwriting Diff's persisted envelope
+ok 23 - the backend adapter round-trips without overwriting Diff's persisted envelope
+  ---
+  duration_ms: 0.99277
+  type: 'test'
+  ...
+# Subtest: overlapping saves complete in order and hydration is idempotent
+ok 24 - overlapping saves complete in order and hydration is idempotent
+  ---
+  duration_ms: 0.262242
+  type: 'test'
+  ...
+# Subtest: failed reads never overwrite unknown saved state
+ok 25 - failed reads never overwrite unknown saved state
+  ---
+  duration_ms: 0.418267
+  type: 'test'
+  ...
+# (node:115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: pinned workspaces leave their repo group and sort by pin time
+ok 26 - pinned workspaces leave their repo group and sort by pin time
+  ---
+  duration_ms: 1.980851
+  type: 'test'
+  ...
+# Subtest: sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos
+ok 27 - sidebar order is pinned, then each repo newest first; visibleOnly skips collapsed repos
+  ---
+  duration_ms: 0.427251
+  type: 'test'
+  ...
+# Subtest: Created sort controls repository and shortcut order without moving pinned or section rows
+ok 28 - Created sort controls repository and shortcut order without moving pinned or section rows
+  ---
+  duration_ms: 0.403973
+  type: 'test'
+  ...
+# Subtest: effective status is manual, then derived, then in-progress
+ok 29 - effective status is manual, then derived, then in-progress
+  ---
+  duration_ms: 0.278059
+  type: 'test'
+  ...
+# Subtest: sectioned workspaces sit between Pinned and the repo groups and leave both
+ok 30 - sectioned workspaces sit between Pinned and the repo groups and leave both
+  ---
+  duration_ms: 0.281164
+  type: 'test'
+  ...
+# Subtest: an untoggled repo group is folded unless the open workspace is one of its rows (Conductor's Dra)
+ok 31 - an untoggled repo group is folded unless the open workspace is one of its rows (Conductor's Dra)
+  ---
+  duration_ms: 0.170109
+  type: 'test'
+  ...
+# Subtest: toggling stores the opposite of what the group shows
+ok 32 - toggling stores the opposite of what the group shows
+  ---
+  duration_ms: 0.266195
+  type: 'test'
+  ...
+# Subtest: visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups
+ok 33 - visibleOnly numbers only rows of unfolded groups: Home folds untoggled groups
+  ---
+  duration_ms: 0.190244
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 673.619043

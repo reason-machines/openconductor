@@ -97,6 +97,11 @@ function promptsEndOnDemand() {
   handlers.set("reason_prompt", (args) => {
     const d = deferred<object>();
     ends.push(() => {
+      assert.ok(typeof args.chatId === "string");
+      const transcript = rc.chatSnapshot(args.chatId).transcript;
+      if (!transcript.messages.some((m) => m.turnId === transcript.activeTurn && m.role === "assistant")) {
+        emit({ chatId: args.chatId, type: "text", text: "Done." });
+      }
       emit({ chatId: args.chatId, type: "turnEnded", end: { outcome: "completed" } });
       d.resolve({ outcome: "completed" });
     });

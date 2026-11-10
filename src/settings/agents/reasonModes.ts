@@ -45,11 +45,11 @@ export function reasonProviderFor(mode: ReasonMode): ProviderConfig {
 
 export const signedIn = (a: ReasonAccount | null): a is ReasonAccount => !!a && !a.error && !!(a.email?.trim() || a.name?.trim());
 
-/** The workspace new chats open in: the pinned one, else the Reason app's selection. */
+/** Only the workspace explicitly chosen in Settings may take new chats. */
 export function activeWorkspace(settings: Settings, account: ReasonAccount | null) {
   const pinned = settings.reason?.workspace ?? null;
   const all = account?.workspaces ?? [];
-  return (pinned ? all.find((w) => w.slug === pinned) : all.find((w) => w.selected)) ?? null;
+  return (pinned ? all.find((w) => w.slug === pinned) : null) ?? null;
 }
 
 export interface ReasonStatus {
@@ -73,7 +73,7 @@ export function reasonStatus(mode: ReasonMode, account: ReasonAccount | null, se
     rows.push({ label: "Account", value: account.email ?? account.name ?? "" });
     if (mode === "apikey") rows.push({ label: "Auth", value: "API key" });
     const ws = activeWorkspace(settings, account);
-    rows.push({ label: "Workspace", value: ws?.name ?? (settings.reason?.workspace ? `${settings.reason.workspace} (unavailable)` : account.organization ?? "Default") });
+    rows.push({ label: "Workspace", value: ws?.name ?? (settings.reason?.workspace ? `${settings.reason.workspace} (unavailable)` : "Not selected") });
     rows.push({ label: "This Mac", value: account.computerConnected ? "Connected" : "Not connected" });
   }
   const notConnectedMessage = account?.error ?? (account === null && mode !== "apikey" ? "Reason is not installed or did not answer." : NOT_CONNECTED[mode]);

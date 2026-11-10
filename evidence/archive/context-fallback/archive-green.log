@@ -1,0 +1,43 @@
+   Compiling archive-harness v0.0.0 (/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/.archive-harness)
+    Finished `test` profile [unoptimized] target(s) in 8.00s
+     Running unittests lib.rs (.archive-harness/target/debug/deps/archive_harness-b8ff3070effc1531)
+
+running 36 tests
+test workspace_archive::flow::tests::a_missing_directory_is_workspace_corrupted_and_unknown_ids_fail ... ok
+test workspace_archive::flow::tests::a_failing_archive_script_is_reported_and_the_archive_goes_on ... ok
+test workspace_archive::flow::tests::a_second_archive_while_one_runs_returns_at_once ... ok
+test workspace_archive::flow::tests::delete_workspace_drops_the_row_and_the_folder ... ok
+test workspace_archive::flow::tests::a_git_operation_blocks_safe_mode_without_changing_anything ... ok
+test workspace_archive::flow::tests::archive_runs_the_script_records_the_row_and_removes_the_worktree ... ok
+test workspace_archive::flow::tests::empty_branch_restore_does_not_use_directory_name ... ok
+test workspace_archive::flow::tests::null_branch_restore_uses_directory_name_and_recovers_checkpoint ... ok
+test workspace_archive::flow::tests::null_branch_restore_avoids_directory_name_collisions ... ok
+test workspace_archive::flow::tests::null_branch_restore_without_a_usable_commit_keeps_the_archive ... ok
+test workspace_archive::tests::branch_names_count_up_like_conductors_hf ... ok
+test workspace_archive::flow::tests::null_branch_without_new_branch_restore_does_not_create_a_branch ... ok
+test workspace_archive::tests::context_folder_replaces_an_older_archived_copy ... ok
+test workspace_archive::tests::delete_branch_on_archive_deletes_the_branch_but_never_the_default_branch ... ok
+test workspace_archive::tests::abandoned_conflict_residue_is_staged_then_saved ... ok
+test workspace_archive::tests::ids_map_slashes_for_checkpoint_and_archive_head ... ok
+test workspace_archive::tests::detached_head_keeps_the_stored_branch_and_deletes_nothing ... ok
+test workspace_archive::flow::tests::unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready ... ok
+test workspace_archive::tests::full_archive_saves_dirty_state_records_commit_removes_worktree_and_keeps_branch ... ok
+test workspace_archive::tests::missing_directory_is_workspace_corrupted ... ok
+test workspace_archive::tests::remove_worktree_falls_back_to_deleting_the_directory_and_pruning ... ok
+test workspace_archive::tests::merge_in_progress_blocks_safe_mode_and_discard_mode_clears_it ... ok
+test workspace_archive::tests::restore_to_new_branch_of_a_deleted_branch_without_commit_refuses ... ok
+test workspace_archive::tests::restore_of_a_deleted_branch_reuses_its_available_name ... ok
+test workspace_archive::tests::restore_scenarios_follow_conductors_cwt ... ok
+test workspace_archive::tests::restore_without_saved_context_preserves_checkpoint_todos_and_existing_excludes ... ok
+test workspace_archive::tests::restore_to_new_branch_skips_taken_names_and_keeps_the_work ... ok
+test workspace_archive::tests::unarchive_copies_the_gitignored_include_files_back ... ok
+test workspace_archive::tests::unarchive_brings_back_the_worktree_its_uncommitted_work_and_context ... ok
+test workspace_archive::tests::unarchive_honors_explicitly_empty_include_settings ... ok
+test workspace_archive::tests::unarchive_honors_custom_include_settings ... ok
+test workspace_archive::tests::unarchive_refuses_what_conductor_refuses ... ok
+test workspace_archive::tests::unarchive_reads_restored_workspace_include_settings ... ok
+test workspace_archive::tests::unarchive_uses_default_only_when_include_settings_are_unset ... ok
+test workspace_archive::tests::unarchive_reports_unreadable_include_settings_without_copying_defaults ... ok
+test workspace_archive::tests::unarchive_worktreeinclude_overrides_empty_settings ... ok
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 68 filtered out; finished in 22.82s

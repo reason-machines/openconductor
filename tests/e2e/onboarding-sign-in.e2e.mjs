@@ -2,20 +2,21 @@ import { after, before, test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import { chromium } from "playwright-core";
-import { createServer } from "vite";
+import { startViteFixture } from "./vite-fixture-server.mjs";
 
 let base = process.env.TEST_BASE_URL;
 let browser;
 let server;
 before(async () => {
   if (!base) {
-    server = await createServer({ server: { host: process.env.TEST_VITE_HOST ?? "127.0.0.1", port: Number(process.env.TEST_VITE_PORT ?? 0), strictPort: true }, logLevel: "error" });
-    await server.listen();
-    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+    server = await startViteFixture();
+    base = server.base;
   }
   browser = await chromium.launch({ executablePath: process.env.CHROME_PATH ?? "/usr/bin/chromium", args: ["--no-sandbox"] });
 });
-after(async () => { await browser?.close(); await server?.close(); });
+after(async () => {
+  try { await browser?.close(); } finally { await server?.close(); }
+});
 
 async function open(query, label = "Sign up") {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion: "reduce" });
@@ -55,10 +56,20 @@ test("Settings preserves an unavailable pinned workspace instead of showing the 
     await page.getByRole("alert").filter({ hasText: "Not signed in to removed-workspace" }).waitFor();
     assert.match(await page.getByTestId("reason-tab").innerText(), /removed-workspace \(unavailable\)/);
     await capture(page, "unavailable-pinned-workspace");
-    await workspace.selectOption("");
-    assert.equal(await workspace.inputValue(), "");
+    await workspace.selectOption("fixture-workspace");
+    assert.equal(await workspace.inputValue(), "fixture-workspace");
     assert.equal(await page.getByRole("alert").filter({ hasText: "Not signed in to" }).count(), 0);
     assert.doesNotMatch(await page.getByTestId("reason-tab").innerText(), /\(unavailable\)/);
+
+    await page.goto(`${base}/tools/onboarding/index.html?surface=settings&account=connected`);
+    await workspace.getByRole("option", { name: "Fixture workspace", exact: true }).waitFor({ state: "attached" });
+    assert.equal(await workspace.inputValue(), "");
+    assert.equal(await workspace.getByRole("option", { name: "Choose a workspace", exact: true }).isDisabled(), true);
+    assert.equal(await workspace.getByRole("option", { name: "Fixture workspace", exact: true }).evaluate((option) => option.selected), false);
+    await page.getByRole("alert").filter({ hasText: "Choose a workspace before starting a new Reason chat." }).waitFor();
+    await workspace.selectOption("fixture-workspace");
+    assert.equal(await workspace.inputValue(), "fixture-workspace");
+    assert.equal(await page.getByRole("alert").filter({ hasText: "Choose a workspace" }).count(), 0);
   } finally { await page.close(); }
 });
 

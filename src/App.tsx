@@ -1,10 +1,15 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "./state/store";
+import { useCustomSectionCollapse } from "./state/useCustomSectionCollapse";
 import { ATTACH_FAILED, destroyWorkspaceTerminals, onAttachFailure } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { OPEN_ADD_PROJECT_MENU, Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
+import { SidebarIcon } from "./components/Icons";
+import { titleWithShortcut } from "./components/Tooltip";
+import { effectiveShortcuts } from "./keybindings/overrides";
+import { glyphs } from "./keybindings/shortcut";
 import { SubmitPromptDialog } from "./components/SubmitPromptDialog";
 import { DiagnosticsPage } from "./diagnostics/DiagnosticsPage";
 import { AllWorkspaces } from "./components/AllWorkspaces";
@@ -114,14 +119,7 @@ export default function App() {
   useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
-  const [collapsedSections, setCollapsedSections] = useState<ReadonlySet<string>>(() => new Set());
-  const toggleSection = useCallback((id: string) => {
-    setCollapsedSections((previous) => {
-      const next = new Set(previous);
-      if (!next.delete(id)) next.add(id);
-      return next;
-    });
-  }, []);
+  const [collapsedSections, toggleSection] = useCustomSectionCollapse();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` opens the full-screen create page; `?dialog=create` the dialog.
   const [dialog, setDialog] = useState<DialogKind | null>(() => new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
@@ -514,6 +512,17 @@ export default function App() {
   return (
     <>
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style} aria-busy={startup === "loading"} data-startup={startup}>
+      {!isSidebarVisible(state) && !createPage && repo && workspace && (
+        <button
+          type="button"
+          className="sb-toggle workspace-sidebar-toggle"
+          aria-label="Toggle left sidebar"
+          title={titleWithShortcut("Toggle left sidebar", effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or "))}
+          onClick={() => dispatch({ type: "toggleSidebar" })}
+        >
+          <SidebarIcon size={16} />
+        </button>
+      )}
       {isSidebarVisible(state) && sidebarWidth.resizer}
       {isSidebarVisible(state) && <Sidebar state={state} collapsedSections={collapsedSections} onToggleSection={toggleSection} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
       <main className="main">

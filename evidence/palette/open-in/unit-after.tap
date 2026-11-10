@@ -1,0 +1,112 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: sidebar order spans repos in order, newest first inside a repo, as the sidebar shows them
+ok 1 - sidebar order spans repos in order, newest first inside a repo, as the sidebar shows them
+  ---
+  duration_ms: 2.109606
+  type: 'test'
+  ...
+# Subtest: Cmd+1..9 order puts Pinned first and skips collapsed repos
+ok 2 - Cmd+1..9 order puts Pinned first and skips collapsed repos
+  ---
+  duration_ms: 0.377785
+  type: 'test'
+  ...
+# Subtest: stepping wraps and starts at the ends when nothing is selected
+ok 3 - stepping wraps and starts at the ends when nothing is selected
+  ---
+  duration_ms: 0.361984
+  type: 'test'
+  ...
+# Subtest: recents drop unknown ids and outrank creation time in the Workspaces tab
+ok 4 - recents drop unknown ids and outrank creation time in the Workspaces tab
+  ---
+  duration_ms: 9.403317
+  type: 'test'
+  ...
+# Subtest: workspace actions appear only with a workspace selected
+ok 5 - workspace actions appear only with a workspace selected
+  ---
+  duration_ms: 4.412814
+  type: 'test'
+  ...
+# Subtest: palette workspace entries carry workspaces.number for the W-<n> column
+ok 6 - palette workspace entries carry workspaces.number for the W-<n> column
+  ---
+  duration_ms: 0.299634
+  type: 'test'
+  ...
+# Subtest: archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action
+ok 7 - archived workspaces from conductor.db join the palette data after the active ones; View archived workspaces is a Navigation action
+  ---
+  duration_ms: 1.056135
+  type: 'test'
+  ...
+# Subtest: Recent workspaces keeps archived workspaces and drops deleted ones, as Conductor's palette does
+ok 8 - Recent workspaces keeps archived workspaces and drops deleted ones, as Conductor's palette does
+  ---
+  duration_ms: 0.27381
+  type: 'test'
+  ...
+# Subtest: Go to next unread is listed under Navigation only while a chat of a non-archived workspace is unread
+ok 9 - Go to next unread is listed under Navigation only while a chat of a non-archived workspace is unread
+  ---
+  duration_ms: 0.625657
+  type: 'test'
+  ...
+# Subtest: the All tab lists Conductor's Actions and Navigation commands in its order, with their shortcuts
+ok 10 - the All tab lists Conductor's Actions and Navigation commands in its order, with their shortcuts
+  ---
+  duration_ms: 0.438679
+  type: 'test'
+  ...
+# Subtest: View archived workspaces is listed only while a workspace is open, as Conductor's `Xt &&`
+ok 11 - View archived workspaces is listed only while a workspace is open, as Conductor's `Xt &&`
+  ---
+  duration_ms: 0.250079
+  type: 'test'
+  ...
+# Subtest: workspace rows carry the sidebar's display name, last activity and unread
+ok 12 - workspace rows carry the sidebar's display name, last activity and unread
+  ---
+  duration_ms: 0.156206
+  type: 'test'
+  ...
+# Subtest: settings pages are listed with no query and their rows join once there is one (Conductor's `[...We, ...query ? He : []]`)
+ok 13 - settings pages are listed with no query and their rows join once there is one (Conductor's `[...We, ...query ? He : []]`)
+  ---
+  duration_ms: 2.151241
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: palette offers installed apps in catalog order with the saved app shortcut
+ok 14 - palette offers installed apps in catalog order with the saved app shortcut
+  ---
+  duration_ms: 2.444488
+  type: 'test'
+  ...
+# Subtest: Open in searches by app name and open-in keywords, but never appears in Settings or Projects
+ok 15 - Open in searches by app name and open-in keywords, but never appears in Settings or Projects
+  ---
+  duration_ms: 1.470037
+  type: 'test'
+  ...
+# Subtest: no app launch rows without a live workspace path
+ok 16 - no app launch rows without a live workspace path
+  ---
+  duration_ms: 0.37912
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1273.119434

@@ -4,9 +4,11 @@
 // `favorite_models`, one row per slot with the configuration as JSON
 // (`$9t`: `{type:"built-in", agent, model, thinkingLevel, fastMode}` or
 // `{type:"acp", acpAgentId, modelId}`). Pure, so node --test covers it.
-import { agentForModel, AGENT_DEFAULT_MODEL, storedModel, type ModelAgent } from "../models.ts";
+import { agentForModel, AGENT_DEFAULT_MODEL, storedModel } from "../models.ts";
 import { CLAUDE_EFFORT_LEVELS, type ClaudeEffortLevel, type Settings, type ThinkingLevel } from "../types.ts";
 import type { FavoriteRow } from "./api.ts";
+import type { AgentKind } from "../types.ts";
+import { isReasonModel } from "../reasonPalette.ts";
 
 /** Conductor's `J6t`: the number of loadout slots. */
 export const LOADOUT_SLOTS = 5;
@@ -14,7 +16,7 @@ export const LOADOUT_SLOTS = 5;
 export interface BuiltInFavorite {
   id: string;
   type: "built-in";
-  agent: ModelAgent;
+  agent: AgentKind;
   model: string;
   thinkingLevel?: string;
   fastMode: boolean;
@@ -28,10 +30,11 @@ export interface AcpFavorite {
 export type Favorite = BuiltInFavorite | AcpFavorite;
 
 /** Conductor's built-in default effort per agent (`Uv.<agent>.defaultLevel`). */
-export const DEFAULT_EFFORT: Record<ModelAgent, string | undefined> = { claude: "high", codex: "medium" };
+export const DEFAULT_EFFORT: Record<AgentKind, string | undefined> = { reason: undefined, claude: "high", codex: "medium" };
 
 /** Effort levels each agent's models offer (index `Wv`, `Bv`, `zp`). */
-export const EFFORT_LEVELS: Record<ModelAgent, readonly string[]> = {
+export const EFFORT_LEVELS: Record<AgentKind, readonly string[]> = {
+  reason: ["low", "medium", "high", "xhigh", "max"],
   claude: CLAUDE_EFFORT_LEVELS,
   codex: ["none", "low", "medium", "high", "xhigh", "max", "ultra"],
 };
@@ -52,7 +55,7 @@ export function parseFavorites(rows: readonly FavoriteRow[]): Favorite[] {
     if (c.type === "acp" && typeof c.acpAgentId === "string" && typeof c.modelId === "string") {
       out.push({ id: row.id, type: "acp", acpAgentId: c.acpAgentId, modelId: c.modelId });
     } else if (c.type === "built-in" && typeof c.model === "string") {
-      const agent = agentForModel(c.model);
+      const agent = isReasonModel(c.model) ? "reason" : agentForModel(c.model);
       if (!agent) continue;
       out.push({
         id: row.id,
@@ -73,7 +76,8 @@ export function toRows(favorites: readonly Favorite[]): FavoriteRow[] {
 
 /** The effort the settings give `model` for new chats (or reviews). */
 export function settingsEffort(settings: Settings, model: string, purpose: "default" | "review" = "default"): string | undefined {
-  const agent = agentForModel(model) ?? "claude";
+  const agent = isReasonModel(model) ? "reason" : agentForModel(model) ?? "claude";
+  if (agent === "reason") return settings.reason?.reasoning_effort ?? undefined;
   if (agent === "claude") {
     const c = settings.models.claude_code;
     const level = purpose === "review" ? (c?.review_effort_level ?? c?.default_effort_level) : c?.default_effort_level;
@@ -84,7 +88,7 @@ export function settingsEffort(settings: Settings, model: string, purpose: "defa
 }
 
 export function builtIn(id: string, model: string, thinkingLevel?: string, fastMode = false): BuiltInFavorite {
-  const agent = agentForModel(model) ?? "claude";
+  const agent = isReasonModel(model) ? "reason" : agentForModel(model) ?? "claude";
   const level = thinkingLevel ?? DEFAULT_EFFORT[agent];
   return { id, type: "built-in", agent, model, ...(level ? { thinkingLevel: level } : {}), fastMode };
 }
@@ -92,7 +96,8 @@ export function builtIn(id: string, model: string, thinkingLevel?: string, fastM
 /** Slot 1 as the settings describe it: the default model (a removed Cursor id reads as the default) with its effort and fast mode. */
 export function defaultFavorite(settings: Settings, id = "default"): BuiltInFavorite {
   const model = storedModel(settings.models.default || AGENT_DEFAULT_MODEL.claude);
-  return builtIn(id, model, settingsEffort(settings, model), settings.models.default_fast_mode === true);
+  const fav = builtIn(id, model, settingsEffort(settings, model), settings.models.default_fast_mode === true);
+  return settings.models.default_agent ? { ...fav, agent: settings.models.default_agent } : fav;
 }
 
 /**
@@ -101,6 +106,7 @@ export function defaultFavorite(settings: Settings, id = "default"): BuiltInFavo
  * model from the settings.
  */
 export function displayedLoadout(settings: Settings, stored: readonly Favorite[]): Favorite[] {
+  if (settings.models.default_initialized === false && stored.length === 0) return [];
   if (stored.length === 0) return [defaultFavorite(settings)];
   return stored.map((f, i) => (i === 0 ? defaultFavorite(settings, f.id) : f));
 }
@@ -132,7 +138,8 @@ export const isEquipped = (list: readonly Favorite[], model: string) => list.som
 export function withDefault(settings: Settings, fav: Favorite): Settings {
   if (fav.type !== "built-in") return settings;
   const m = settings.models;
-  const next: Settings = { ...settings, models: { ...m, default: fav.model, default_fast_mode: fav.fastMode } };
+  const next: Settings = { ...settings, models: { ...m, default: fav.model, default_agent: fav.agent, default_initialized: true, default_fast_mode: fav.fastMode } };
+  if (fav.agent === "reason") next.reason = { ...settings.reason, model: fav.model, reasoning_effort: fav.thinkingLevel ?? null };
   if (fav.agent === "claude" && fav.thinkingLevel)
     next.models.claude_code = { ...m.claude_code, default_effort_level: fav.thinkingLevel as ClaudeEffortLevel };
   if (fav.agent === "codex" && fav.thinkingLevel) next.models.codex = { ...m.codex, default_thinking_level: fav.thinkingLevel as ThinkingLevel };

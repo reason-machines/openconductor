@@ -145,6 +145,7 @@ def probe(path, app):
     if (root / "app-data").exists() or any((root / "settings").iterdir()):
         raise ValueError("path probe requires unused app-data and settings directories")
     result = subprocess.run([str(executable), "--oc-qa-paths"], env=env,
+                            stdin=subprocess.DEVNULL, close_fds=True,
                             capture_output=True, text=True, timeout=30, cwd=root)
     if result.returncode:
         raise ValueError(f"headless path probe failed (exit {result.returncode}); no GUI launch allowed")

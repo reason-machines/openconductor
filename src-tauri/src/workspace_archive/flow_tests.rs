@@ -251,6 +251,7 @@ async fn a_second_archive_while_one_runs_returns_at_once() {
 #[tokio::test]
 async fn unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready() {
     let e = env("flow-unarchive", "").await;
+    assert!(!e.f.ws().join(".context").exists());
     write(e.f.ws(), "wip.txt", "unsaved\n");
     // Not archived yet: nothing to do.
     assert!(!e.unarchive().await.unwrap().restored);
@@ -266,21 +267,29 @@ async fn unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready(
     assert!(!e.f.ws().exists());
     assert_eq!(e.row().await.state, WorkspaceState::Archived);
 
-    // "Restore to new branch": `sven/ws-v1` at the archive commit, stored on the row.
+    // "Restore to new branch": reuse the now-free name at the archive commit.
     let r = e.unarchive_with(true).await.unwrap();
     assert!(
         r.restored && r.recreated_branch && r.restored_changes && r.scenario.is_none(),
         "{r:?}"
     );
-    assert_eq!(r.branch.as_deref(), Some("sven/ws-v1"));
+    assert_eq!(r.branch.as_deref(), Some("sven/ws"));
     assert!(r.notices.is_empty());
     assert_eq!(
         fs::read_to_string(e.f.ws().join("wip.txt")).unwrap(),
         "unsaved\n"
     );
-    assert_eq!(g(e.f.ws(), &["branch", "--show-current"]), "sven/ws-v1");
+    assert_eq!(
+        fs::read_to_string(e.f.ws().join(".context/todos.md")).unwrap(),
+        ""
+    );
+    assert_eq!(
+        g(e.f.ws(), &["check-ignore", ".context/todos.md"]),
+        ".context/todos.md"
+    );
+    assert_eq!(g(e.f.ws(), &["branch", "--show-current"]), "sven/ws");
     assert_eq!(e.row().await.state, WorkspaceState::Ready);
-    assert_eq!(e.row().await.branch.as_deref(), Some("sven/ws-v1"));
+    assert_eq!(e.row().await.branch.as_deref(), Some("sven/ws"));
     assert!(!record.exists());
 
     // A directory in the way leaves the row archived.
@@ -307,6 +316,118 @@ async fn unarchive_recreates_the_worktree_with_its_work_and_marks_the_row_ready(
     assert!(e.unarchive().await.unwrap().restored);
     // Not archived any more: the conflict commands refuse.
     assert!(clear_unarchive_conflict(&e.pool, "repo/ws").await.is_err());
+}
+
+async fn set_archived_branch(e: &Env, branch: Option<&str>) {
+    sqlx::query("UPDATE workspaces SET branch = ? WHERE local_id = 'repo/ws'")
+        .bind(branch)
+        .execute(&e.pool)
+        .await
+        .unwrap();
+}
+
+#[tokio::test]
+async fn null_branch_restore_uses_directory_name_and_recovers_checkpoint() {
+    let e = env("flow-null-branch", "").await;
+    let head = g(e.f.ws(), &["rev-parse", "HEAD"]);
+    write(e.f.ws(), "wip.txt", "branchless work\n");
+    e.archive(None, true).await.unwrap();
+    set_archived_branch(&e, None).await;
+
+    let r = e.unarchive_with(true).await.unwrap();
+    assert!(
+        r.restored && r.recreated_branch && r.restored_changes,
+        "{r:?}"
+    );
+    assert_eq!(r.branch.as_deref(), Some("ws"));
+    assert_eq!(g(e.f.ws(), &["rev-parse", "HEAD"]), head);
+    assert_eq!(g(e.f.ws(), &["branch", "--show-current"]), "ws");
+    assert_eq!(
+        fs::read_to_string(e.f.ws().join("wip.txt")).unwrap(),
+        "branchless work\n"
+    );
+    assert_eq!(e.row().await.branch.as_deref(), Some("ws"));
+    assert_eq!(e.row().await.state, WorkspaceState::Ready);
+    assert!(!e.f.tmp.0.join("root/archived/repo/ws.ws").exists());
+}
+
+#[tokio::test]
+async fn null_branch_restore_avoids_directory_name_collisions() {
+    let e = env("flow-null-collision", "").await;
+    e.archive(None, true).await.unwrap();
+    set_archived_branch(&e, None).await;
+    g(e.f.repo(), &["branch", "ws"]);
+    g(e.f.repo(), &["branch", "ws-v1"]);
+    let original = g(e.f.repo(), &["rev-parse", "refs/heads/ws"]);
+
+    let r = e.unarchive_with(true).await.unwrap();
+    assert!(r.restored && r.recreated_branch, "{r:?}");
+    assert_eq!(r.branch.as_deref(), Some("ws-v2"));
+    assert_eq!(e.row().await.branch.as_deref(), Some("ws-v2"));
+    assert_eq!(g(e.f.repo(), &["rev-parse", "refs/heads/ws"]), original);
+}
+
+#[tokio::test]
+async fn null_branch_restore_without_a_usable_commit_keeps_the_archive() {
+    for commit in [None, Some("missing-archive-commit")] {
+        let e = env("flow-null-commit", "").await;
+        e.archive(None, true).await.unwrap();
+        set_archived_branch(&e, None).await;
+        sqlx::query("UPDATE workspaces SET archive_commit = ? WHERE local_id = 'repo/ws'")
+            .bind(commit)
+            .execute(&e.pool)
+            .await
+            .unwrap();
+
+        let err = e.unarchive_with(true).await.unwrap_err();
+        assert_eq!(err.code, "ArchiveFailed");
+        if commit.is_none() {
+            assert!(
+                err.message.contains("branch \"ws\" was deleted or renamed"),
+                "{err:?}"
+            );
+        } else {
+            assert!(
+                err.message.contains("Failed to create branch ws"),
+                "{err:?}"
+            );
+        }
+        assert_eq!(e.row().await.state, WorkspaceState::Archived);
+        assert_eq!(e.row().await.branch, None);
+        assert!(!e.f.ws().exists());
+        assert!(!e.f.branch_exists("ws"));
+        assert!(e.f.tmp.0.join("root/archived/repo/ws.ws").exists());
+    }
+}
+
+#[tokio::test]
+async fn empty_branch_restore_does_not_use_directory_name() {
+    let e = env("flow-empty-branch", "").await;
+    e.archive(None, true).await.unwrap();
+    set_archived_branch(&e, Some("")).await;
+
+    let err = e.unarchive_with(true).await.unwrap_err();
+    assert_eq!(
+        err.message,
+        "Cannot rehydrate workspace without branch information"
+    );
+    assert_eq!(e.row().await.state, WorkspaceState::Archived);
+    assert_eq!(e.row().await.branch.as_deref(), Some(""));
+    assert!(!e.f.branch_exists("ws"));
+}
+
+#[tokio::test]
+async fn null_branch_without_new_branch_restore_does_not_create_a_branch() {
+    let e = env("flow-null-no-new", "").await;
+    e.archive(None, true).await.unwrap();
+    set_archived_branch(&e, None).await;
+
+    let r = e.unarchive().await.unwrap();
+    assert!(!r.restored);
+    assert_eq!(r.scenario, Some("branchDeleted"));
+    assert_eq!(e.row().await.branch, None);
+    assert_eq!(e.row().await.state, WorkspaceState::Archived);
+    assert!(!e.f.branch_exists("ws"));
 }
 
 #[tokio::test]

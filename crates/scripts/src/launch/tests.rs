@@ -17,6 +17,22 @@ fn spec(dir: &Path, script: &str) -> LaunchSpec {
 }
 
 #[test]
+fn script_has_a_controlling_80_by_24_terminal_on_all_streams() {
+    let tmp = tempfile::tempdir().unwrap();
+    let mut p = spawn(
+        &spec(
+            tmp.path(),
+            "test -t 0 && test -t 1 && test -t 2 && stty size </dev/tty",
+        ),
+        None,
+    )
+    .unwrap();
+    let exit = p.wait().unwrap();
+    assert!(exit.success(), "exit {exit:?}: {}", p.transcript.text());
+    assert_eq!(p.transcript.text().trim(), "24 80");
+}
+
+#[test]
 fn script_path_slugs_the_workspace_path() {
     let p = script_path(
         Path::new("/h/.conductor"),
@@ -52,7 +68,10 @@ fn runs_in_cwd_with_env_and_merges_output() {
     let text = p.transcript.text();
     // `pwd` reports the logical $PWD we set (macOS temp dirs sit behind /var -> /private/var).
     let cwd = tmp.path();
-    assert!(text.contains("out\n") && text.contains("err\n"), "{text}");
+    assert!(
+        text.contains("out\r\n") && text.contains("err\r\n"),
+        "{text}"
+    );
     assert!(
         text.contains(&format!("55000 xterm-256color {}", cwd.display())),
         "{text}"

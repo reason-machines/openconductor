@@ -8,17 +8,18 @@
 //! login-shell environment, then terminal variables, then the `CONDUCTOR_*`
 //! overlay.
 //!
-//! Differences on purpose: output is a pipe with stdout and stderr merged,
-//! not a PTY, until the terminal module offers PTY sessions; and the process
-//! is the leader of its own process group, so stopping it stops everything
-//! the script started (bundled skill: keep run-script processes in one group).
+//! Scripts share an 80x24 controlling PTY for stdin, stdout and stderr.
+//! Each script leads its own session and process group so stopping it also
+//! stops the processes it started.
 
 use std::collections::BTreeMap;
-use std::fs;
+use std::fs::{self, File};
 use std::io::{self, Read};
+use std::os::fd::AsRawFd;
 use std::os::unix::process::{CommandExt, ExitStatusExt};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
 use std::time::{Duration, Instant};
@@ -140,6 +141,7 @@ impl Exit {
 pub struct Process {
     child: Child,
     reader: Option<JoinHandle<()>>,
+    reader_stop: Arc<AtomicBool>,
     script_path: PathBuf,
     pub transcript: Transcript,
 }
@@ -150,19 +152,8 @@ pub fn spawn(spec: &LaunchSpec, sink: Option<OutputSink>) -> io::Result<Process>
         fs::create_dir_all(dir)?;
     }
     fs::write(&spec.script_path, &spec.script)?;
-    let (mut reader, writer) = io::pipe()?;
-    let spawned = Command::new(script_shell())
-        .arg(&spec.script_path)
-        .current_dir(&spec.cwd)
-        .env_clear()
-        .envs(spec.environment())
-        .stdin(Stdio::null())
-        .stdout(writer.try_clone()?)
-        .stderr(writer)
-        .process_group(0)
-        .spawn();
-    let child = match spawned {
-        Ok(c) => c,
+    let (child, mut reader) = match spawn_pty(spec) {
+        Ok(pair) => pair,
         Err(e) => {
             let _ = fs::remove_file(&spec.script_path);
             return Err(e);
@@ -170,21 +161,81 @@ pub fn spawn(spec: &LaunchSpec, sink: Option<OutputSink>) -> io::Result<Process>
     };
     let transcript = Transcript::default();
     let t = transcript.clone();
+    let reader_stop = Arc::new(AtomicBool::new(false));
+    let stop = reader_stop.clone();
     let reader_thread = thread::spawn(move || {
         let mut buf = [0u8; 8192];
-        while let Ok(n @ 1..) = reader.read(&mut buf) {
-            t.push(&buf[..n]);
-            if let Some(sink) = &sink {
-                sink(&buf[..n]);
+        let mut pollfd = libc::pollfd {
+            fd: reader.as_raw_fd(),
+            events: libc::POLLIN,
+            revents: 0,
+        };
+        while !stop.load(Ordering::Acquire) {
+            // SAFETY: pollfd names the reader's live descriptor for this thread.
+            let ready = unsafe { libc::poll(&mut pollfd, 1, 50) };
+            if ready < 0 {
+                if io::Error::last_os_error().kind() == io::ErrorKind::Interrupted {
+                    continue;
+                }
+                break;
+            }
+            if ready == 0 {
+                continue;
+            }
+            match reader.read(&mut buf) {
+                Ok(0) => break,
+                Ok(n) => {
+                    t.push(&buf[..n]);
+                    if let Some(sink) = &sink {
+                        sink(&buf[..n]);
+                    }
+                }
+                Err(e) if e.kind() == io::ErrorKind::Interrupted => continue,
+                // Linux PTYs report EIO, rather than EOF, after the slave closes.
+                Err(_) => break,
             }
         }
     });
     Ok(Process {
         child,
         reader: Some(reader_thread),
+        reader_stop,
         script_path: spec.script_path.clone(),
         transcript,
     })
+}
+
+fn spawn_pty(spec: &LaunchSpec) -> io::Result<(Child, File)> {
+    let pair = rustix_openpty::openpty(
+        None,
+        Some(&rustix_openpty::rustix::termios::Winsize {
+            ws_row: 24,
+            ws_col: 80,
+            ws_xpixel: 0,
+            ws_ypixel: 0,
+        }),
+    )?;
+    let slave = File::from(pair.user);
+    let mut cmd = Command::new(script_shell());
+    cmd.arg(&spec.script_path)
+        .current_dir(&spec.cwd)
+        .env_clear()
+        .envs(spec.environment())
+        .stdin(Stdio::from(slave.try_clone()?))
+        .stdout(Stdio::from(slave.try_clone()?))
+        .stderr(Stdio::from(slave));
+    // SAFETY: only async-signal-safe syscalls run between fork and exec.
+    // Command installs the slave on fd 0 before invoking this closure.
+    unsafe {
+        cmd.pre_exec(|| {
+            if libc::setsid() == -1 || libc::ioctl(0, libc::TIOCSCTTY as _, 0) == -1 {
+                return Err(io::Error::last_os_error());
+            }
+            Ok(())
+        });
+    }
+    let child = cmd.spawn()?;
+    Ok((child, File::from(pair.controller)))
 }
 
 impl Process {
@@ -229,7 +280,7 @@ impl Process {
         let pgid = self.child.id() as i32;
         if pgid > 1 {
             // SAFETY: kill(2) with a negative pid signals that process group,
-            // which this child leads (process_group(0)).
+            // which this child leads (setsid in spawn_pty).
             unsafe {
                 libc::kill(-pgid, signal);
             }
@@ -237,16 +288,15 @@ impl Process {
     }
 
     fn finish(&mut self, status: std::process::ExitStatus) -> Exit {
-        // A background child of the script can keep the pipe open; give the
-        // reader a moment to drain, then leave it to finish on its own.
+        // Descendants can retain the slave after the script exits. Bound the
+        // drain and close the master instead of leaving a reader behind.
         if let Some(reader) = self.reader.take() {
             let deadline = Instant::now() + READER_DRAIN;
             while !reader.is_finished() && Instant::now() < deadline {
                 thread::sleep(Duration::from_millis(10));
             }
-            if reader.is_finished() {
-                let _ = reader.join();
-            }
+            self.reader_stop.store(true, Ordering::Release);
+            let _ = reader.join();
         }
         let _ = fs::remove_file(&self.script_path);
         Exit {

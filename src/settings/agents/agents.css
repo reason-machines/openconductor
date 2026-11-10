@@ -206,8 +206,11 @@
 .ag-slot:hover .ag-slot-delete, .ag-slot:focus-within .ag-slot-delete { opacity: 1; }
 
 /* Palette (`Z2a`, `X2a`). */
-.ag-palette { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; align-items: start; margin-top: 64px; }
+.ag-palette { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; margin-top: 64px; }
 .ag-palette-col { min-width: 0; }
+.ag-reason-search { border-top: 1px solid var(--ag-border); padding-top: 12px; }
+.ag-reason-search-input { width: 100%; min-width: 0; padding: 6px 8px; border: 1px solid var(--ag-border); border-radius: 6px; background: var(--ag-bg); color: var(--ag-fg); font: inherit; font-size: 12px; }
+.ag-reason-results { max-height: 240px; overflow-y: auto; margin-top: 10px; }
 .ag-palette-col > * + * { margin-top: 6px; }
 .ag-palette-head { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ag-muted-fg); }
 .ag-palette-list { display: flex; flex-direction: column; gap: 8px; }

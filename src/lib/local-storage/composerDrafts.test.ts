@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { LocalStorageClient, type Invoke } from "./client.ts";
 import { ComposerDrafts, draftMessage } from "./composerDrafts.ts";
 import { memoryInvoke } from "./memory.ts";
+import { restoreComposerAttachments } from "../../features/chat/composerAttachments.ts";
 
 function setup() {
   const calls: string[] = [];
@@ -50,10 +51,45 @@ test("the reference's attachment shape is read; other values are dropped", async
   const { client, drafts, logs } = setup();
   await client.setEntry({ subsystem: "composer-drafts", sizeLimit: 100, id: "a", content: { message: "hi", attachments: [] } });
   await client.setEntry({ subsystem: "composer-drafts", sizeLimit: 100, id: "b", content: 42 });
-  assert.equal(await drafts.load("a"), "hi");
+  assert.deepEqual(await drafts.load("a"), { message: "hi", attachments: [] });
   assert.equal(await drafts.load("b"), "");
   assert.equal(logs.length, 1);
   assert.equal(draftMessage({ message: "x" }), undefined);
+});
+
+test("staged attachment metadata survives a new store, even without draft text", async () => {
+  const { client, drafts } = setup();
+  const attachments = [{ name: ".context/attachments/abc123/notes.txt", text: "notes", label: "notes.txt", staged: ".context/attachments/abc123/notes.txt" }];
+  await drafts.save("workspace-a", "", attachments);
+  const after = new ComposerDrafts(client);
+  assert.deepEqual(await after.load("workspace-a"), { message: "", attachments });
+  assert.equal(await after.load("workspace-b"), "");
+});
+
+test("persisted attachment chips round-trip through the consumer decoder", async () => {
+  const { client, drafts } = setup();
+  const attachments = [{ name: ".context/attachments/abc123/notes.txt", text: "notes", label: "notes.txt", staged: ".context/attachments/abc123/notes.txt" }, { name: "review", text: "review comment" }];
+  await drafts.save("a", "draft", attachments);
+  const loaded = await new ComposerDrafts(client).load("a");
+  assert.notEqual(typeof loaded, "string");
+  if (typeof loaded === "string") throw new Error("attachment metadata lost");
+  assert.deepEqual(restoreComposerAttachments(loaded.attachments), attachments);
+  await drafts.save("a", "draft", attachments);
+});
+
+test("attachment removal persists without changing text and clear removes the whole draft", async () => {
+  const { client, drafts, calls } = setup();
+  const attachments = [{ name: ".context/attachments/abc123/notes.txt", text: "notes" }];
+  await drafts.save("a", "same text", attachments);
+  await drafts.save("b", "other draft", attachments);
+  await drafts.save("a", "same text", []);
+  const after = new ComposerDrafts(client);
+  assert.equal(await after.load("a"), "same text");
+  assert.deepEqual(await after.load("b"), { message: "other draft", attachments });
+  assert.equal(calls.filter((c) => c === "local_storage_set_entry").length, 3);
+  await after.clear("b");
+  assert.equal(await new ComposerDrafts(client).load("b"), "");
+  assert.equal(await new ComposerDrafts(client).load("a"), "same text");
 });
 
 test("a refused write reports false and logs", async () => {

@@ -77,8 +77,8 @@ def run_probe(executable, root):
     # its group, never the installed app or an existing QA/native process.
     process = subprocess.Popen([str(executable), "--oc-qa-webkit"],
                                env=qa.environment(root), cwd=root,
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                               text=True, start_new_session=True)
+                               stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                               text=True, close_fds=True, start_new_session=True)
     try:
         stdout, _stderr = process.communicate(timeout=TIMEOUT_SECONDS)
         if process.returncode:

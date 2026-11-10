@@ -56,7 +56,16 @@ pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
+mod workspace_links;
 pub mod recent_local_repos;
+mod workspace_file;
+
+#[tauri::command]
+async fn workspace_read_markdown(repo: String, path: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || workspace_file::read_markdown(std::path::Path::new(&repo), &path))
+        .await
+        .map_err(|e| format!("File read task failed: {e}"))?
+}
 mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
@@ -74,6 +83,7 @@ pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
 mod native_qa;
+mod native_qa_cache;
 pub mod open_in;
 pub mod project;
 pub mod quick_open;
@@ -306,6 +316,9 @@ pub fn run() {
         .plugin(updater_plugin())
         .setup(|app| {
             native_qa::validate(app.handle()).map_err(std::io::Error::other)?;
+            if native_qa::ordinary_gate(app.handle()).map_err(std::io::Error::other)? {
+                return Ok(());
+            }
             let data_dir = app.path().app_data_dir()?;
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
@@ -387,6 +400,7 @@ pub fn run() {
         })
         .manage(app_quit::QuitHandler::default())
         .invoke_handler(tauri::generate_handler![
+            workspace_read_markdown,
             app_quit::set_quit_handler_ready,
             app_quit::quit_app,
             root_path_commands::get_conductor_root,
@@ -420,6 +434,7 @@ pub fn run() {
             workspace_archive_commands::clear_unarchive_conflict,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
+            workspace_links::workspace_set_link,
             persistence_commands::db_repo_prompt,
             onboarding_commands::db_first_run_onboarding_step,
             onboarding_commands::db_finish_first_run_onboarding,
@@ -555,6 +570,7 @@ pub fn run() {
             settings::commands::update_settings,
             settings::commands::get_repo_settings,
             settings::commands::provider_status,
+            settings::commands::initialize_default_runtime,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
             settings::commands::reveal_provider_secret,
@@ -621,7 +637,7 @@ pub fn run() {
                 }
                 // Run scripts lead their own process groups; do not orphan them.
                 if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
-                    scripts.runs.stop_all();
+                    scripts.shutdown();
                 }
                 if let Some(shell) = app.try_state::<ShellCommands>() {
                     shell.0.cancel_all();

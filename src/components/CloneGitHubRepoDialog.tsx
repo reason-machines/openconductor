@@ -50,7 +50,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
   }, []);
 
   async function browse() {
-    const picked = await pickFolder("Choose where to clone the repository");
+    const picked = await pickFolder("Choose where to clone the repository", location);
     if (picked) setLocation(picked);
   }
 
