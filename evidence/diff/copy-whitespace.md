@@ -21,10 +21,13 @@ A pure rename or mode change with zero text counts remains excluded because this
 
 ## Verification
 
-The focused regression in `src/features/diff/copyFile.test.ts` checks that a whitespace-filtered file retains a lazy copy action and returns the complete unfiltered text. Metadata-only changes remain explicitly excluded.
+The focused regressions in `src/features/diff/copyFile.test.ts` use genuine whitespace-only changes: adding trailing spaces, removing old-side tabs/spaces, and changing whitespace on both sides. Each case explicitly assigns deletion and addition text, verifies the fixture differs only in whitespace, and asserts the exact complete new-side string without normalization. Each also checks zero loads before invocation and exactly one afterward. Metadata-only changes remain explicitly excluded, and the separate clipboard-marker assertion is unchanged.
 
-- Before the fix, the dependency-free pure-source check failed that regression with `a whitespace-only diff must retain its copy action`. Six other tests passed.
-- After the fix, the same check passed all seven tests. It copied production `copyFile.ts` and the unchanged test suite into a temporary directory, extracting the exact `join` and `fullContents` functions from production `pierre.ts` instead of loading its external parser dependency. No parser stub or browser was used. This is **partial verification**, not production-module integration or clipboard acceptance.
+The initial fixture placed trailing spaces on its deletion line while expecting an unchanged addition. That pass proved eligibility but not whitespace preservation. Acceptance review caught this gap before merge.
+
+- **Partial reproduction:** requiring `"keep\nnew  \n"` from the incorrect fixture failed with actual `"keep\nnew\n"`; six tests passed and one failed.
+- **Partial corrected check:** `NODE_NO_WARNINGS=1 node .oc-tmp/run-copy-pure-check.mjs` passed all nine tests. It copied production `copyFile.ts` and the unchanged corrected test suite into a temporary directory, extracting the exact `join` and `fullContents` functions from production `pierre.ts` instead of loading its external parser dependency. No parser stub or browser was used. This is **partial verification**, not production-module integration or clipboard acceptance.
+- **Partial mutation checks:** temporary copies rejected the original hunk-only eligibility rule (three failures), trimming copied whitespace (two failures), and copying the old side (four failures). Production files were not mutated. The corrected tests therefore catch both the eligibility regression and new-side whitespace/side-selection errors.
 - The direct command `node --test src/features/diff/copyFile.test.ts` could not run locally because `@pierre/diffs` was not installed. No dependency installation was authorized for this lane. Automatic exact-head CI owns direct-module, typecheck and full-suite checks.
 - `git diff --check` passed.
 
