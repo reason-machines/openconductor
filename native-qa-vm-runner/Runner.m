@@ -89,15 +89,15 @@ static bool OCVMConstruct(void *raw) {
     config.CPUCount = OC_VM_CPU_COUNT;
     config.memorySize = OC_VM_MEMORY_BYTES;
     config.platform = [context->platform copy];
-    config.bootLoader = [VZMacOSBootLoader new];
+    config.bootLoader = [[VZMacOSBootLoader alloc] init];
     config.storageDevices = @[[[VZVirtioBlockDeviceConfiguration alloc]
         initWithAttachment:context->disk]];
-    VZMacGraphicsDeviceConfiguration *graphics = [VZMacGraphicsDeviceConfiguration new];
+    VZMacGraphicsDeviceConfiguration *graphics = [[VZMacGraphicsDeviceConfiguration alloc] init];
     graphics.displays = @[[[VZMacGraphicsDisplayConfiguration alloc]
         initWithWidthInPixels:1280 heightInPixels:800 pixelsPerInch:144]];
     config.graphicsDevices = @[graphics];
-    config.keyboards = @[[VZUSBKeyboardConfiguration new]];
-    config.pointingDevices = @[[VZUSBScreenCoordinatePointingDeviceConfiguration new]];
+    config.keyboards = @[[[VZUSBKeyboardConfiguration alloc] init]];
+    config.pointingDevices = @[[[VZUSBScreenCoordinatePointingDeviceConfiguration alloc] init]];
     config.audioDevices = @[];
     config.consoleDevices = @[];
     config.directorySharingDevices = @[];
