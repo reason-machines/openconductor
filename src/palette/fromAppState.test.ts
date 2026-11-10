@@ -111,6 +111,45 @@ test("workspace actions appear only with a workspace selected", () => {
   assert.ok(!headings({ ...state, selection: { kind: "home" } }).includes("Workspace actions"));
 });
 
+for (const loaded of [false, true]) {
+  test(`Archive workspace is absent for the open archived selection ${loaded ? "after" : "before"} archived results load`, () => {
+    const workspace: Workspace = { ...w("archived-open", 4), status: "archived" };
+    const source: AppState = {
+      ...state,
+      selection: { kind: "workspace", repoId: "r1", workspaceId: workspace.id },
+      archivedOpen: { repoId: "r1", workspace },
+    };
+    const archived = loaded ? [{ id: workspace.id, repoId: "r1", name: workspace.name, branch: workspace.branch, createdAt: workspace.createdAt, workspace }] : [];
+    const data = paletteDataFromState(source, [workspace.id, "b"], archived);
+    assert.equal(data.activeWorkspaceId, workspace.id);
+    assert.deepEqual(data.recentWorkspaceIds, loaded ? [workspace.id, "b"] : ["b"]);
+    assert.deepEqual(
+      data.actions.filter((a) => a.id !== "archive-workspace").map((a) => a.id),
+      paletteDataFromState(state, []).actions.filter((a) => a.id !== "archive-workspace").map((a) => a.id),
+    );
+    for (const tab of ["all", "actions"] as const) {
+      for (const query of ["", "archive"]) {
+        const ids = buildResults(tab, query, data).flatMap((g) => g.items.map((i) => i.id));
+        assert.ok(!ids.includes("action:archive-workspace"), `${tab}/${query || "empty"} must not offer Archive workspace for an archived selection`);
+      }
+    }
+  });
+}
+
+test("Archive workspace stays available for an active selection and hidden without a workspace despite a retained archived view", () => {
+  const workspace: Workspace = { ...w("archived-open", 4), status: "archived" };
+  for (const selection of [state.selection, { kind: "home" }, { kind: "root" }] satisfies AppState["selection"][]) {
+    const source: AppState = { ...state, selection, archivedOpen: { repoId: "r1", workspace } };
+    const data = paletteDataFromState(source, []);
+    for (const tab of ["all", "actions"] as const) {
+      for (const query of ["", "archive"]) {
+        const ids = buildResults(tab, query, data).flatMap((g) => g.items.map((i) => i.id));
+        assert.equal(ids.includes("action:archive-workspace"), selection.kind === "workspace");
+      }
+    }
+  }
+});
+
 test("palette workspace entries carry workspaces.number for the W-<n> column", () => {
   const numbered: AppState = {
     ...state,

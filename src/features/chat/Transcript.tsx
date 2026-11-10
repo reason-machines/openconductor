@@ -26,6 +26,7 @@ import { thinkingChipText } from "./thinkingChip.ts";
 import { SentUserContent } from "./SentUserContent.tsx";
 import { UserText } from "./UserText.tsx";
 import type { UserPrompt } from "./userContent.ts";
+import { userMessageCopyText } from "./userMessageCopy.ts";
 import "./chat.css";
 
 export interface TranscriptProps {
@@ -183,7 +184,7 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
           <div className="oc-user-col">
             <div className="chat-bubble oc-bubble">
               <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : <UserText text={row.text} />}</div>
-              <MessageActions text={row.text} />
+              <MessageActions text={userMessageCopyText(row.message)} />
             </div>
             {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
           </div>
