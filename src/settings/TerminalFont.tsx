@@ -49,7 +49,13 @@ export function TerminalFontRows({ settings, save }: Props) {
         spellCheck={false}
         autoComplete="off"
         value={family}
-        onChange={(e) => setFamily(e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          setFamily(value);
+          const next = value.trim();
+          if (next === saved || (next !== "" && monoFontError(next) !== null)) return;
+          save(withAppearance(settings, "terminal_font_family", next === "" ? null : next));
+        }}
         onBlur={commitFamily}
         onKeyDown={(e) => e.key === "Enter" && commitFamily()}
       />
