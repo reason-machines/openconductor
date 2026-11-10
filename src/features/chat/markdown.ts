@@ -19,6 +19,7 @@
 
 import { createElement as h, Fragment, useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { MermaidBlock } from "./mermaid.ts";
+import { splitFrontmatter } from "./markdownFrontmatter.ts";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
@@ -219,9 +220,16 @@ export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link
 }
 
 export function Markdown({ text, className, onOpenLink, workspacePath, onOpenFile, Link }: { text: string; className?: string } & MarkdownOptions) {
+  const frontmatter = splitFrontmatter(text);
   return h(
     "div",
     { className: className ? `md ${className}` : "md" },
-    h(ReactMarkdown, { remarkPlugins, components: markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link }) }, text),
+    frontmatter && h(
+      "section",
+      { className: "md-frontmatter-card", "data-markdown-frontmatter": frontmatter.format },
+      h("div", { className: "md-frontmatter-header" }, h("span", { className: "md-frontmatter-label" }, "Frontmatter")),
+      h("pre", { className: "md-frontmatter-body" }, frontmatter.value),
+    ),
+    h(ReactMarkdown, { remarkPlugins, components: markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link }) }, frontmatter?.remainder ?? text),
   );
 }
