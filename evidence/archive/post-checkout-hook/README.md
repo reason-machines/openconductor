@@ -1,6 +1,6 @@
 # Restore after a checkout hook failure
 
-Conductor Rebuild compared archive restoration on main `e1687ee` with retained Conductor 0.87.6 extracted JavaScript. OpenConductor returns immediately when `git worktree add` exits nonzero. Conductor checks whether the requested worktree was created and continues with a warning when it was.
+Conductor Rebuild compared archive restoration on main `e1687ee` with retained Conductor 0.87.6 extracted JavaScript. Before this correction, OpenConductor returned immediately when `git worktree add` exited nonzero. Conductor checks whether the requested worktree was created and continues with a warning when it was.
 
 ## Retained reference
 
@@ -39,4 +39,17 @@ cargo test --offline --locked --manifest-path .archive-harness/Cargo.toml \
 
 It failed before compilation because the current computer has no cached `serde` package. See [offline attempt](offline-attempt.log). No production test ran. No dependency download, install, or retry occurred. The compile reservation was released after confirming no visible Cargo or compiler process and no generated target directory.
 
-Production RED and GREEN are pending. `git diff --check` passed. Native restoration, screenshots, visual parity, and app runtime acceptance are NOT RUN. Include-file collision and overwrite behavior are unchanged.
+## Production RED
+
+Automatic CI on test-only PR head `f5d4a8be4bc9bf71e71ddec05a9a50e196629b2d` reproduced the intended production failure on both platforms, not a compiler or setup failure:
+
+- [macOS app job](https://github.com/reason-machines/openconductor/actions/runs/42747290168/job/129602318301): 877 passed, 1 failed, 1 ignored. See [retained failure excerpt](ci-red-macos-latest.log).
+- [Linux app job](https://github.com/reason-machines/openconductor/actions/runs/42747290168/job/129602318287): 877 passed, 1 failed. See [retained failure excerpt](ci-red-ubuntu-22.04.log).
+
+The sole failing test was `workspace_archive::tests::restore_continues_when_post_checkout_hook_fails_after_creating_the_worktree`. Production `restore` returned `Failed("Preparing worktree (checking out 'sven/ws')\narchive-hook-fixture")` instead of recovering the checkpoint. The companion genuine-failure test passed.
+
+## Correction and remaining verification
+
+The correction handles a nonzero worktree-add result by querying the existing worktree parser and comparing the exact requested path or its canonical equivalent. A match records the existing partial-creation warning and continues checkpoint, include-file, and context recovery. No match, or a failed worktree-list query, returns the original worktree-add error. A prefix-only match does not qualify. No hook is disabled or retried.
+
+The regression assertions are unchanged after RED. Automatic CI on the corrected head must establish GREEN. No local compile was retried. `git diff --check` passed. Native restoration, screenshots, visual parity, and app runtime acceptance are NOT RUN. Include-file collision and overwrite behavior are unchanged.
