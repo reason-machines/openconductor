@@ -33,12 +33,13 @@ type Command = { name: string; args: Record<string, unknown> };
 type SourceExports = Record<string, unknown> & { ScriptsPanel?: typeof ScriptsPanel };
 type WireListener = (event: { payload: unknown }) => void;
 
-async function fixture() {
+async function fixture({ settingUp = false, autoRun = false } = {}) {
   const commands: Command[] = [];
   const listeners = new Set<WireListener>();
   const modules = new Map<string, { exports: SourceExports }>();
   const output = new Map<string, string>();
   let runs: RunStatus[] = [];
+  let setupState = settingUp ? "running" : "idle";
   let statusReads = 0;
   const script = (id: string, label: string, isDefault: boolean) => ({
     id, label, command: `fixture-${id}`, args: [], cwd: null, default: isDefault,
@@ -47,13 +48,13 @@ async function fixture() {
   async function invoke(name: string, args: Record<string, unknown>): Promise<unknown> {
     switch (name) {
       case "scripts_config": return {
-        setup: null, setupLayer: null, archive: null, runMode: "concurrent", autoRunAfterSetup: false,
+        setup: settingUp ? "fixture-setup" : null, setupLayer: null, archive: null, runMode: "concurrent", autoRunAfterSetup: autoRun,
         run: [script("dev", "Dev", true), script("test", "Test", false)], managedKeys: [], warnings: [],
       };
       case "run_script_status":
         statusReads++;
         return { runs, history: [] };
-      case "setup_script_status": return { state: "idle", log: null, last: null };
+      case "setup_script_status": return { state: setupState, log: null, last: null };
       case "run_script_output": return output.get(String(args.scriptId)) ?? null;
       case "run_script_preview_env": return [];
       case "spotlight_testing_get": return { enabled: false, layer: "repo_local", managed: false };
@@ -61,8 +62,8 @@ async function fixture() {
       case "run_script_start": {
         commands.push({ name, args });
         const scriptId = String(args.scriptId);
-        runs = [{ workspaceId: workspace.id, scriptId, state: "running", exit: null }];
-        output.set(scriptId, `${scriptId} started\n`);
+        runs = [{ workspaceId: workspace.id, scriptId, state: setupState === "running" ? "waiting_for_setup" : "running", exit: null }];
+        if (setupState !== "running") output.set(scriptId, `${scriptId} started\n`);
         return scriptId;
       }
       case "run_script_stop":
@@ -147,11 +148,21 @@ async function fixture() {
     commands,
     hasButton: (label: string) => buttons(label).length === 1,
     statusReads: () => statusReads,
+    hasText: (text: string) => renderer.root.findAll((node) => node.children.join("") === text).length > 0,
     output: () => renderer.root.findAll((node) => node.type === "pre").map((node) => node.children.join("")).join(""),
     primary: (label: string) => click((node) => node.props["aria-label"] === label),
     async menu(label: string) {
       await click((node) => node.props["aria-label"] === "Select task");
       await click((node) => node.props.role === "menuitem" && node.children.join("") === label);
+    },
+    async completeSetup() {
+      setupState = "completed";
+      await emit({ type: "setupFinished", workspaceId: workspace.id, state: "completed", exitCode: 0, logPath: "", log: "" });
+    },
+    async admit(scriptId: string) {
+      const status: RunStatus = { workspaceId: workspace.id, scriptId, state: "running", exit: null };
+      runs = [status];
+      await emit({ type: "runStarted", ...status });
     },
     async finish(scriptId: string, code: number) {
       const status: RunStatus = { workspaceId: workspace.id, scriptId, state: "stopped", exit: [code, null] };
@@ -163,6 +174,46 @@ async function fixture() {
     close: () => act(async () => { renderer.unmount(); }),
   };
 }
+
+test("actual Run panel observes quiet queued Test admission after the early Setup completion refresh", async (t) => {
+  const f = await fixture({ settingUp: true, autoRun: true });
+  t.after(f.close);
+  await f.menu("Test");
+  assert.ok(f.hasText("Setting up..."));
+  await f.completeSetup();
+  assert.ok(f.hasText("Setting up..."), "early completion still reads the committed waiting state");
+  await f.admit("test");
+  assert.ok(f.hasButton("Stop Test"), "admission replaces waiting with Stop for the selected quiet task");
+  assert.equal(f.hasText("Setting up..."), false);
+  assert.equal(f.hasButton("Stop Dev"), false);
+  assert.equal(f.output(), "", "no output or final exit is needed to update the toolbar");
+  assert.deepEqual(f.commands.map((command) => [command.name, command.args.scriptId]), [["run_script_start", "test"]]);
+});
+
+test("actual Run panel observes quiet automatic Dev admission without another start action", async (t) => {
+  const f = await fixture({ settingUp: true, autoRun: true });
+  t.after(f.close);
+  await f.completeSetup();
+  assert.ok(f.hasButton("Run Dev"));
+  await f.admit("dev");
+  assert.ok(f.hasButton("Stop Dev"), "automatic admission refreshes the real panel before output or exit");
+  assert.equal(f.hasButton("Run Dev"), false);
+  assert.equal(f.output(), "");
+  assert.equal(f.commands.length, 0, "notification must not start the automatic task again");
+});
+
+test("actual Run panel ignores foreign admission and reads current status rather than trusting its payload", async (t) => {
+  const f = await fixture();
+  t.after(f.close);
+  const before = f.statusReads();
+  await f.emit({ type: "runStarted", workspaceId: "other-workspace", scriptId: "test", state: "running", exit: null });
+  assert.equal(f.statusReads(), before);
+  await f.emit({ type: "runStarted", workspaceId: workspace.id, scriptId: "test", state: "running", exit: null });
+  assert.ok(f.statusReads() > before, "local admission reads authoritative status");
+  assert.ok(f.hasButton("Run Dev"), "a late admission payload must not resurrect a finished run");
+  assert.equal(f.hasButton("Stop Test"), false);
+  assert.equal(f.commands.length, 0);
+});
 
 for (const code of [0, 7]) {
   test(`actual Run panel observes natural exit ${code}, keeps output and restarts without Stop IPC`, async (t) => {
