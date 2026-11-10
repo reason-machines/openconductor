@@ -180,6 +180,8 @@ for (const activation of ["click", "Enter"]) {
       await page.goto(`${base}/?demo=1`);
       const sidebarWorkspace = row(page, "Quiet harbor");
       await sidebarWorkspace.waitFor();
+      const repositoryName = await page.locator(".sb-repo-group", { has: sidebarWorkspace }).locator(".sb-repo-name").innerText();
+      const repositoryHeader = page.locator(".sb-repo-header").filter({ has: page.getByText(repositoryName, { exact: true }) });
       await archiveFromMenu(page, "Quiet harbor");
       await page.evaluate(() => {
         history.pushState(null, "", "/all-workspaces");
@@ -187,6 +189,8 @@ for (const activation of ["click", "Enter"]) {
       });
       const list = page.getByRole("listbox", { name: "Workspaces" });
       await list.waitFor();
+      if (await repositoryHeader.getAttribute("aria-expanded") === "false") await repositoryHeader.click();
+      assert.equal(await repositoryHeader.getAttribute("aria-expanded"), "true", "expand the repository to observe restoration without selecting its workspace");
       await page.getByRole("button", { name: "Archived workspaces" }).click();
       await page.getByRole("menuitemcheckbox", { name: "Only archived", exact: true }).click();
       const archivedWorkspace = list.locator(".allws-row", {
