@@ -204,6 +204,12 @@ def handle(msg):
     note({"method": method, "params": logged})
     if method == "initialize":
         send({"id": mid, "result": {"userAgent": "fake-codex/0.166.0", "platformFamily": "unix"}})
+    elif method == "model/list":
+        send({"id": mid, "result": {"data": [{
+            "model": "e2e-codex-catalog", "displayName": "E2E Catalog Codex",
+            "supportedReasoningEfforts": [{"reasoningEffort": effort} for effort in ("medium", "xhigh")],
+            "defaultReasoningEffort": "xhigh", "hidden": False,
+        }], "nextCursor": None}})
     elif method == "account/read":
         send({"id": mid, "result": {"account": read_account(), "requiresOpenaiAuth": True}})
     elif method == "account/login/start" and params.get("type") == "apiKey":
