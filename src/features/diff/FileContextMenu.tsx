@@ -17,9 +17,8 @@ import { NUMBERED_ROWS, loadOpenInApps, supportsFileOpen, type OpenInApp } from 
 
 export interface FileMenuActions {
   view: () => void;
-  /** Absolute path; absent while the workspace has no worktree on disk. */
-  copyPath?: () => void;
-  copyRelativePath: () => void;
+  copyPath: () => void;
+  copyRelativePath?: () => void;
   discard: () => void;
   /** Opens the file in an installed app; absent without a worktree on disk. */
   openIn?: (app: OpenInApp) => void;
@@ -81,14 +80,14 @@ export function FileContextMenu({ path, at, actions, onClose }: Props) {
           ))}
         </SubMenu>
       )}
-      {actions.copyPath && (
-        <MenuItem icon={<CopyIcon />} onSelect={actions.copyPath}>
-          Copy path
+      <MenuItem icon={<CopyIcon />} onSelect={actions.copyPath}>
+        Copy path
+      </MenuItem>
+      {actions.copyRelativePath && (
+        <MenuItem icon={<CopyIcon />} onSelect={actions.copyRelativePath}>
+          Copy relative path
         </MenuItem>
       )}
-      <MenuItem icon={<CopyIcon />} onSelect={actions.copyRelativePath}>
-        Copy relative path
-      </MenuItem>
       <MenuSeparator />
       <MenuItem icon={<Undo2Icon />} onSelect={actions.discard}>
         Discard changes
