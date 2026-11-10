@@ -95,7 +95,7 @@ export class ComposerSession {
     this.changed();
   };
 
-  async attach(files: readonly PickedFile[], write?: (path: string, bytes: Uint8Array) => Promise<unknown>) {
+  async attach(files: readonly PickedFile[] | (() => Promise<readonly PickedFile[]>), write?: (path: string, bytes: Uint8Array) => Promise<unknown>) {
     if (this.sending) {
       this.publish({ error: "Wait for this send to finish, then attach the files again." });
       return;
@@ -103,7 +103,8 @@ export class ComposerSession {
     this.pendingFiles++;
     this.publish({ error: null });
     try {
-      for (const file of files) {
+      const picked = typeof files === "function" ? await files() : files;
+      for (const file of picked) {
         const why = rejectReason(file);
         if (why) { this.publish({ error: why }); continue; }
         try {
@@ -115,6 +116,8 @@ export class ComposerSession {
           this.publish({ error: `Failed to attach ${file.name}: ${error instanceof Error ? error.message : String(error)}. Please retry.` });
         }
       }
+    } catch (error) {
+      this.publish({ error: error instanceof Error ? error.message : String(error) });
     } finally {
       this.pendingFiles--;
     }

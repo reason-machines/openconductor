@@ -588,7 +588,19 @@ pub fn restore(
         path.as_os_str(),
         branch.as_ref(),
     ];
-    git(&t.repo_root, add)?;
+    let mut notices = Vec::new();
+    if let Err(e) = git(&t.repo_root, add) {
+        let want = std::fs::canonicalize(path).unwrap_or_else(|_| path.to_path_buf());
+        let created = crate::workspace::git::list_worktrees(&t.repo_root).is_ok_and(|list| {
+            list.iter().any(|w| {
+                w.path == *path || std::fs::canonicalize(&w.path).is_ok_and(|p| p == want)
+            })
+        });
+        if !created {
+            return Err(e.into());
+        }
+        notices.push(Notice::error(crate::workspace::init_log::WORKTREE_PARTIAL_FAILURE));
+    }
     let include_source = crate::settings::effective::resolve(&t.repo_root, Some(path)).map(|settings| {
         crate::workspace::files_to_copy::resolve_source(
             &t.repo_root,
@@ -596,7 +608,6 @@ pub fn restore(
         )
     });
 
-    let mut notices = Vec::new();
     let mut restored_changes = false;
     if archive_commit.is_some() {
         match checkpoint::restore(path, &checkpoint_id(&t.local_id)) {

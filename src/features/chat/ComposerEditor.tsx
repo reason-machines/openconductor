@@ -20,6 +20,7 @@ export interface ComposerEditorHandle {
   selection(): ComposerSelection;
   replaceText(text: string): void;
   insertFile(range: { start: number; end: number }, file: { path: string; label: string; directory: boolean }): void;
+  deleteRange(range: { start: number; end: number }): boolean;
   newline(): void;
 }
 
@@ -142,6 +143,16 @@ export function ComposerEditor(props: Props) {
         const { positions } = linearDocument(editor.state.doc);
         editor.chain().focus().insertContentAt({ from: positions[range.start], to: positions[range.end] }, inlineContent([{ kind: "file", ...file }, { kind: "text", text: " " }])).run();
         editor.view.dispatch(closeHistory(editor.state.tr));
+      },
+      deleteRange: (range) => {
+        if (editor.view.composing) return false;
+        const { positions } = linearDocument(editor.state.doc);
+        const from = positions[range.start], to = positions[range.end];
+        if (from === undefined || to === undefined) return false;
+        editor.view.dispatch(closeHistory(editor.state.tr));
+        const removed = editor.chain().focus().deleteRange({ from, to }).run();
+        editor.view.dispatch(closeHistory(editor.state.tr));
+        return removed;
       },
       newline: () => { editor.commands.setHardBreak(); },
     };
