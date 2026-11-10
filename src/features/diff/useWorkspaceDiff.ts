@@ -127,6 +127,11 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   const navigationFiles = useMemo(() => changeRows(
     filterChangedFiles(files, presentation.filePathFilter), presentation.diffFileListMode, new Set(), (file) => isViewed(viewed, file),
   ).flatMap((row) => row.kind === "file" ? [row.file] : []), [files, viewed, presentation.filePathFilter, presentation.diffFileListMode]);
+  useEffect(() => {
+    const first = navigationFiles[0];
+    if (first === undefined) return;
+    setSelectedPath((path) => path !== null && !navigationFiles.some((file) => file.path === path) ? first.path : path);
+  }, [navigationFiles, selectedPath]);
   const [uncommitted, setUncommitted] = useState<{ worktree: string | null; paths: Set<string> }>({ worktree: null, paths: new Set() });
   useEffect(() => {
     if (load.state !== "ready") return;
