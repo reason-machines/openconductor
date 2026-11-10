@@ -13,7 +13,9 @@ assert.ok(resultsStart >= 0 && resultsEnd > resultsStart, "model result rows are
 const resultRows = source.slice(resultsStart, resultsEnd);
 const click = resultRows.match(/onClick=\{\(\) => \{([\s\S]*?)\n\s*\}\}/);
 assert.ok(click, "model result rows expose their click callback");
-const activate = new Function("selected", "f", "onChange", "searching", "setQuery", "setOpen", click[1]);
+const queryChange = source.match(/const changeQuery = \(next: string\) => \{([\s\S]*?)\n  \};/);
+const transition = queryChange ? new Function("next", "query", "menuInner", "setSearchHeight", "setQuery", "setSearchIndex", queryChange[1]) : undefined;
+const activate = new Function("selected", "f", "onChange", "searching", "setQuery", "setOpen", "changeQuery", click[1]);
 
 for (const selected of [false, true]) {
   for (const query of ["sonnet", " sonnet ", "", " \t"]) {
@@ -22,6 +24,7 @@ for (const selected of [false, true]) {
       const changes: typeof choice[] = [];
       const state = { query, open: true };
       const searching = query.trim() !== "";
+      const searchState: { height: number | undefined; index: number } = { height: searching ? 248.5 : undefined, index: 3 };
       activate(
         selected,
         choice,
@@ -29,9 +32,21 @@ for (const selected of [false, true]) {
         searching,
         (next: string) => { state.query = next; },
         (next: boolean) => { state.open = next; },
+        (next: string) => {
+          assert.ok(transition, "the click callback's query transition is present");
+          transition(
+            next,
+            query,
+            { current: null },
+            (height: number | undefined) => { searchState.height = height; },
+            (value: string) => { state.query = value; },
+            (index: number) => { searchState.index = index; },
+          );
+        },
       );
       assert.deepEqual(state, searching ? { query: "", open: true } : { query, open: false });
       assert.deepEqual(changes, selected ? [] : [choice]);
+      if (transition) assert.deepEqual(searchState, { height: undefined, index: searching ? 0 : 3 });
     });
   }
 }

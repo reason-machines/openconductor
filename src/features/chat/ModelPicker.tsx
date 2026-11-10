@@ -54,11 +54,13 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
   const [open, setOpen] = useState(false);
   const menu = usePresence(open);
   const [query, setQuery] = useState("");
+  const [searchHeight, setSearchHeight] = useState<number>();
   const searching = query.trim() !== "";
   const [searchIndex, setSearchIndex] = useState(0);
   const [effortOpen, setEffortOpen] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
   const search = useRef<HTMLInputElement>(null);
+  const menuInner = useRef<HTMLDivElement>(null);
   const effortTrigger = useRef<HTMLButtonElement>(null);
   const effortMenu = useRef<HTMLDivElement>(null);
   const focusEffortOnOpen = useRef(false);
@@ -85,6 +87,13 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
     }) : list;
   }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
 
+  const changeQuery = (next: string) => {
+    if (!next.trim()) setSearchHeight(undefined);
+    else if (!query.trim()) setSearchHeight(menuInner.current?.getBoundingClientRect().height);
+    setQuery(next);
+    setSearchIndex(0);
+  };
+
   const selectSlot = (index: number) => {
     const focused = document.activeElement;
     const composer = root.current?.closest(".composer, .create-card");
@@ -110,6 +119,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
   useEffect(() => {
     if (!open) {
       setQuery("");
+      setSearchHeight(undefined);
       setSearchIndex(0);
       setEffortOpen(false);
       return;
@@ -173,7 +183,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
       const match = query.trim() ? items[resultIndex === undefined ? 0 : Number(resultIndex)] : undefined;
       if (match && !disabled) {
         if (!same(match, value)) onChange(match);
-        setQuery("");
+        changeQuery("");
         search.current?.focus();
       }
       return;
@@ -182,7 +192,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
       e.preventDefault();
       e.stopPropagation();
       if (effortOpen) setEffortOpen(false);
-      else if (e.target === search.current && query !== "") setQuery("");
+      else if (e.target === search.current && query !== "") changeQuery("");
       else setOpen(false);
     }
   };
@@ -214,10 +224,10 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
       </Tooltip>
       {menu.mounted ? (
         <div className="oc-model-menu" role="menu" aria-label="Model" data-motion="popup" {...menu.attrs}>
-          <div className="oc-model-menu-inner">
+          <div className="oc-model-menu-inner" ref={menuInner} style={searching ? { height: searchHeight } : undefined}>
             <div className="oc-model-search">
               <SearchSmallIcon />
-              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => { setQuery(e.target.value); setSearchIndex(0); }} />
+              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => changeQuery(e.target.value)} />
             </div>
             <div className="oc-model-list">
               {items.length === 0 ? <div className="oc-model-empty">No models found</div> : null}
@@ -237,7 +247,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
                     title={[nameOf(f), modelDescription?.(f.model)].filter(Boolean).join(" · ")}
                     onClick={() => {
                       if (!selected) onChange(f);
-                      if (searching) setQuery("");
+                      if (searching) changeQuery("");
                       else setOpen(false);
                     }}
                   >
