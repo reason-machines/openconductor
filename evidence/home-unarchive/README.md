@@ -28,7 +28,8 @@ No local test, build, install, browser or native runtime is admitted for this so
 - **Historical rendered RED:** `node --experimental-strip-types --test evidence/home-unarchive/render-probe.mjs` recorded two passing controls and one missing-button failure in `render-red.tap`. Its source digest is retained in the output. It was not rerun on the current main head and is not mounted behavior proof.
 - **Passed:** source diff whitespace checks and exact equality of the interaction test and controlled fixture against the regression checkpoint.
 - **Failed before the fix:** five direct Unarchive cases timed out on the absent button at published head `4d799fa4456369779ba34641be76987d536e6781`; their parent group also failed. Existing archive controls and independent row opening passed. See [hosted RED](hosted-red.md).
-- **Pending:** automatic exact-head hosted results with the product fix.
+- **Failed on the first fixed head:** Frontend unit job `129748634879` at `29d62d935b2049baf402fa6864f55b90ffaf3570` reported five `Unexpected Home dependency: ./Tooltip` errors in the existing Home repository-icon SSR loader. The follow-up adds only its missing import adapter. All original icon assertions, inputs and Unarchive interaction tests remain unchanged. Merge was refused, not queued.
+- **Pending:** automatic exact-head hosted results after that test-loader adapter.
 - **Not run locally:** new interaction cases, semantic fixture typecheck, application build, install, browser/native interaction, worktree/setup/persistence, tooltip/layout, side-by-side acceptance, and screenshots.
 
 There are no screenshots because local browser/native execution is not admitted and the existing hosted workflow does not retain Home screenshots. `SCREENSHOT_DIR` continues to support captures when a later authorized acceptance run supplies it.
