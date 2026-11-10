@@ -27,6 +27,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -54,6 +55,8 @@ writeFileSync(join(bin, "reason"), `#!/bin/sh\nexec python3 "${join(repoRoot, "t
 chmodSync(join(bin, "reason"), 0o755);
 
 const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), PATH: `${bin}:${process.env.PATH}` };
+mkdirSync(env.OPENCONDUCTOR_HOME, { recursive: true });
+writeFileSync(join(env.OPENCONDUCTOR_HOME, "settings.toml"), `reason_executable_path = ${JSON.stringify(join(bin, "reason"))}\n`);
 delete env.REASON_CLI;
 delete env.XDG_DATA_HOME;
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
@@ -154,7 +157,7 @@ try {
   const session = await wd("POST", "/session", { capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } } });
   sessionUrl = `${base}/session/${session.sessionId}`;
   startup.sessionId = session.sessionId;
-  await startup.waitForAppReady();
+  await finishStartup(startup);
   if (process.env.E2E_WINDOW_RECT === "1") await wd("POST", "/window/rect", { width: 1280, height: 800 }).catch(() => undefined);
 
   await waitFor("the app to load", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
@@ -174,7 +177,7 @@ try {
   note(`Settings' default model is "${seeded.defaultModel}"`);
   assert.equal(workspace.branchName, "picker", "the seeded workspace has the requested branch");
   await run("location.reload(); return true;");
-  await startup.waitForAppReady();
+  await finishStartup(startup);
   const row = 'button[data-testid="left-sidebar-workspace-item"][title*=" · picker · "]';
   const rowId = await waitFor("the picker workspace row", async () => {
     const el = await run("return document.querySelector(arguments[0]);", row);

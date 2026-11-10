@@ -14,7 +14,8 @@
 // agent's name on the chip.
 
 import { useEffect, useState } from "react";
-import { getSettings } from "../../settings/api";
+import { useLoadout } from "../../settings/agents/useLoadout";
+import { loadoutChoices } from "./loadoutChoices.ts";
 import { pickReasonModel, reasonModels, RUNNING_MODEL_EVENT } from "./reasonChat.ts";
 import { sessionConfig } from "./chatModel.ts";
 import { AUTO, loadCachedModels, loadRunningModel, modelEntries, reasonChoice, reasonModelName, shownModel, type ReasonModelOption, type RunningModel } from "./reasonModels.ts";
@@ -52,6 +53,8 @@ export function ChatModelPicker({ chatId, disabled = false, agent = "reason", on
   const [fallback, setFallback] = useState<ModelChoice | null>(null);
   const [running, setRunning] = useState<RunningModel | null>(() => loadRunningModel(chatId));
   const [models, setModels] = useState<ReasonModelOption[]>(() => loadCachedModels());
+  const loadout = useLoadout();
+  const slots = loadoutChoices(loadout?.slots ?? []);
 
   useEffect(() => {
     let live = true;
@@ -71,28 +74,24 @@ export function ChatModelPicker({ chatId, disabled = false, agent = "reason", on
     return () => window.removeEventListener(RUNNING_MODEL_EVENT, onRunning);
   }, [chatId]);
 
+  useEffect(() => setChoice(loadModelChoice(chatId)), [chatId]);
   useEffect(() => {
-    let live = true;
-    setChoice(loadModelChoice(chatId));
-    getSettings().then(
-      (s) => live && setFallback(defaultModelChoice(s)),
-      () => live && setFallback({ model: "opus-5-1m", effort: "high" }),
-    );
-    return () => {
-      live = false;
-    };
-  }, [chatId]);
+    if (!loadout) return;
+    setFallback(loadout.slots[0]?.type === "built-in" ? loadoutChoices(loadout.slots)[0] ?? null : loadout.settings.models.default_initialized === false ? { model: AUTO, effort: null, agent: "reason" } : defaultModelChoice(loadout.settings));
+  }, [loadout]);
 
   const picked = choice ?? fallback;
   if (!picked) return null;
   const pickedAuto = reasonChoice(picked).model === AUTO;
-  const state = pickerState(agent, shownModel(running, picked, models), fallback && reasonChoice(fallback), !!onAgentChange);
+  const shown = agent === "reason" ? { ...shownModel(running, picked, models), agent } : picked;
+  const state = pickerState(agent, shown, fallback && reasonChoice(fallback), !!onAgentChange, slots.filter((pick): pick is ModelChoice => pick !== null));
   return (
     <ModelPicker
       value={state.value}
       label={state.label}
       favorites={state.favorites}
-      models={modelEntries(models)}
+      loadout={slots}
+      models={modelEntries(models).map((pick) => ({ ...pick, agent: "reason" }))}
       modelName={(m) => reasonModelName(m, models)}
       modelDescription={(m) => models.find((o) => o.value === m)?.description}
       itemLabel={agentEntryLabel}
@@ -101,14 +100,14 @@ export function ChatModelPicker({ chatId, disabled = false, agent = "reason", on
       onOpenSettings={() => openSettingsPage("models")}
       onChange={(next) => {
         const nextAgent = agentForPick(next);
-        if (nextAgent !== agent) onAgentChange?.(nextAgent);
-        if (nextAgent !== "reason") return;
-        // A new effort for the model Auto ran keeps the chat on Auto.
-        const pick = pickedAuto && running && next.model === running.model ? { ...next, model: AUTO } : next;
+        if (nextAgent !== agent && !onAgentChange) return;
+        // An effort change for Auto's running model keeps the chat on Auto; a loadout pick is explicit.
+        const pick = nextAgent === "reason" && !slots.includes(next) && pickedAuto && running && next.model === running.model ? { ...next, model: AUTO } : next;
         setChoice(pick);
         setRunning(null);
         saveModelChoice(chatId, pick);
-        pickReasonModel(chatId, sessionConfig(pick.model, pick.effort));
+        if (nextAgent !== agent) onAgentChange?.(nextAgent);
+        if (nextAgent === "reason") pickReasonModel(chatId, sessionConfig(pick.model, pick.effort));
       }}
     />
   );

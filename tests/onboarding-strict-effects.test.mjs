@@ -34,14 +34,16 @@ function deferred() {
   return { promise, resolve, reject };
 }
 
-async function fixture({ strict, initial = { state: "idle" }, surface = "gate", failStart = false }) {
+async function fixture({ strict, initial = { state: "idle" }, surface = "gate", failStart = false, installing = false, checking = false }) {
   dom.reconfigure({ url: "https://openconductor.invalid/first-run-onboarding" });
   const host = document.createElement("div");
   document.body.append(host);
   const root = createRoot(host);
   const requests = [], events = [], callbacks = [], writes = [], errors = [], replay = [], unexpectedIpc = [];
   const timers = new Map(), intervals = new Map(), modules = new Map(), sources = new Map();
-  let status = initial, nextRead, serial = 0, attempt = 0, mounted = true;
+  const installation = installing ? deferred() : null;
+  const statusCheck = checking ? deferred() : null;
+  let status = initial, nextRead = statusCheck, serial = 0, attempt = 0, mounted = true;
   const originalHistory = window.history.replaceState;
   const originalSetInterval = window.setInterval;
   const originalClearInterval = window.clearInterval;
@@ -54,6 +56,7 @@ async function fixture({ strict, initial = { state: "idle" }, surface = "gate", 
   const boundaries = {
     "@tauri-apps/api/core": { async invoke(command, args) {
       requests.push({ command, args });
+      if (command === "reason_cli_ensure_current") return installation ? installation.promise : { path: "/fixture/bin/reason", version: "fixture" };
       if (command === "db_first_run_onboarding_step") return null;
       if (command === "db_list_repos") return [];
       if (command === "db_finish_first_run_onboarding") {
@@ -80,6 +83,7 @@ async function fixture({ strict, initial = { state: "idle" }, surface = "gate", 
     "src/settings/connectedDefault": { async rememberConnection(agent) { events.push({ kind: "remember", agent }); } },
     "src/settings/api": { async getSettings() { return {}; } },
     "src/settings/appearance": { applyAppearance() {} },
+    "src/onboarding/firstRunAgent": { async selectFirstRunAgent() {} },
     "src/keybindings/KeybindingsProvider": { useKeybindings() {} },
     "src/components/AppMark": { AppMark: () => null },
     "src/components/Icons": { ArrowRightIcon: () => null, CloseIcon: () => null },
@@ -117,6 +121,7 @@ async function fixture({ strict, initial = { state: "idle" }, surface = "gate", 
   const { FirstRunGate } = load("src/onboarding/FirstRunGate");
   const { LoginScreen } = load("src/onboarding/SignIn");
   const api = load("src/onboarding/reasonSignIn");
+  const { ReasonCliStatus } = load("src/onboarding/ReasonCliStatus");
   function ReplayProbe() {
     React.useEffect(() => { replay.push("setup"); return () => { replay.push("cleanup"); }; }, []);
     return null;
@@ -126,7 +131,7 @@ async function fixture({ strict, initial = { state: "idle" }, surface = "gate", 
   const element = () => React.createElement(strict ? React.StrictMode : React.Fragment, null,
     React.createElement(ReplayProbe),
     surface === "gate"
-      ? React.createElement(FirstRunGate, {}, React.createElement("main", { "data-testid": "home" }, "Home"))
+      ? React.createElement(FirstRunGate, {}, React.createElement("main", { "data-testid": "home" }, "Home", React.createElement("footer", { className: "sb-footer" }, React.createElement(ReasonCliStatus))))
       : React.createElement(LoginScreen, { onDone, onFailed }),
   );
   await act(async () => { root.render(element()); });
@@ -135,7 +140,7 @@ async function fixture({ strict, initial = { state: "idle" }, surface = "gate", 
     assert.equal(requests.filter((r) => r.command === "db_first_run_onboarding_step").length, strict ? 2 : 1, "actual gate startup effect replays under StrictMode");
   }
   return {
-    host, requests, events, callbacks, writes, errors, replay, sources, api,
+    host, requests, events, callbacks, writes, errors, replay, sources, api, installation, statusCheck,
     count(id) { return host.querySelectorAll(`[data-testid="${id}"]`).length; },
     button(label) {
       const buttons = [...host.querySelectorAll("button")].filter((button) => button.textContent.trim() === label);
@@ -178,6 +183,38 @@ async function fixture({ strict, initial = { state: "idle" }, surface = "gate", 
 
 for (const strict of [false, true]) {
   const mode = strict ? "development StrictEffects" : "non-Strict development control";
+  test(`${mode}: the same Continue button survives account-status resolution`, async () => {
+    const f = await fixture({ strict, checking: true });
+    try {
+      const button = f.button("Continue without signing in");
+      await act(async () => { f.statusCheck.resolve({ state: "connected", account }); });
+      assert.equal(button.isConnected, true, "an in-flight pointer click must not target a detached button");
+      await act(async () => { button.click(); });
+      assert.equal(f.writes.length, 1, "the original button still continues onboarding");
+      assert.equal(button.disabled, true, "persistence disables the same continuation target");
+      await act(async () => { button.click(); });
+      assert.equal(f.writes.length, 1, "a second click cannot duplicate persistence");
+      await f.settleFinish(0);
+      assert.equal(f.count("home"), 1);
+    } finally { await f.close(); }
+  });
+
+  test(`${mode}: actual persistence reaches Home before CLI setup or account status settles`, async () => {
+    const f = await fixture({ strict, installing: true, checking: true });
+    try {
+      assert.equal(f.button("Sign up").disabled, false);
+      await f.click("Continue without signing in");
+      assert.equal(f.writes.length, 1, "actual finishFirstRun does not await the installer");
+      await f.settleFinish(0);
+      assert.equal(f.count("home"), 1);
+      assert.equal(f.requests.filter((r) => r.command === "reason_cli_ensure_current").length, 1, "StrictEffects shares the background install");
+      assert.equal(f.requests.some((r) => r.command === "reason_login_start"), false);
+      await act(async () => { f.installation.reject(new Error("Synthetic CLI unavailable")); });
+      assert.equal(f.count("home"), 1);
+      assert.match(f.host.querySelector('.sb-footer [data-testid="reason-cli-status"]')?.textContent ?? "", /Synthetic CLI unavailable/);
+    } finally { await f.close(); }
+  });
+
   test(`${mode}: full onboarding waits for validated account and persistence before Home`, async (t) => {
     const f = await fixture({ strict });
     try {
@@ -187,6 +224,8 @@ for (const strict of [false, true]) {
       assert.equal(f.writes.length, 0, "handoff is not completion");
       assert.equal(f.events.filter((e) => e.kind === "open").length, 1);
       await f.publish({ state: "connected", account });
+      assert.equal(f.writes.length, 0, "sign-in never bypasses agent choice");
+      await f.click("Continue");
       assert.equal(f.writes.length, 1);
       assert.equal(f.count("home"), 0);
       assert.equal(f.button("Continue").disabled, true);
@@ -205,9 +244,11 @@ for (const strict of [false, true]) {
     } finally { await f.close(); }
   });
 
-  test(`${mode}: initially connected account starts only one pending finish`, async () => {
+  test(`${mode}: initially connected account waits for explicit Continue and starts only one pending finish`, async () => {
     const f = await fixture({ strict, initial: { state: "connected", account } });
     try {
+      assert.equal(f.writes.length, 0);
+      await f.click("Continue");
       assert.equal(f.writes.length, 1);
       assert.equal(f.count("home"), 0);
       await f.rerender();
@@ -221,6 +262,8 @@ for (const strict of [false, true]) {
   test(`${mode}: rejected save remains visible and explicit Continue retries`, async () => {
     const f = await fixture({ strict, initial: { state: "connected", account } });
     try {
+      assert.equal(f.writes.length, 0);
+      await f.click("Continue");
       assert.equal(f.writes.length, 1);
       await f.settleFinish(0, new Error("Synthetic persistence failure"));
       assert.equal(f.count("home"), 0);

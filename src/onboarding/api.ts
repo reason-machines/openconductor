@@ -4,6 +4,8 @@
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../backend";
 import { FIRST_RUN_DONE_STEP } from "./firstRun";
+import { selectFirstRunAgent } from "./firstRunAgent";
+import type { AgentKind } from "../settings/types";
 
 /** localStorage key of the step in the browser preview. */
 export const PREVIEW_STEP_KEY = "openconductor.firstRunOnboardingStep";
@@ -27,7 +29,8 @@ export async function countRepos(): Promise<number> {
 }
 
 /** Mark onboarding finished (`first_time_onboarding_step` 999, `onboarding_step` done). */
-export async function finishFirstRun(): Promise<void> {
+export async function finishFirstRun(agent: AgentKind = "reason"): Promise<void> {
+  await selectFirstRunAgent(agent);
   if (inTauri()) return invoke("db_finish_first_run_onboarding");
   localStorage.setItem(PREVIEW_STEP_KEY, String(FIRST_RUN_DONE_STEP));
 }

@@ -11,17 +11,21 @@ import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs } from "../../keybindings/shortcut.ts";
-import { effectiveEffort, fastModeAvailable, modelChip, modelDisplayName, modelEfforts, nextEffort, type ModelChoice } from "./composerModels.ts";
+import { effectiveEffort, fastModeAvailable, modelChoiceChip, modelDisplayName, modelEfforts, nextEffort, type ModelChoice } from "./composerModels.ts";
 import { ArrowUpRightIcon, CheckIcon, ChevronDownIcon, ChevronRightIcon, ModelGlyph, PlusSmallIcon, SearchSmallIcon, SettingsSmallIcon } from "./composerIcons.tsx";
 
 import type { ChatAgentId } from "./agentChoice";
+import { orderedModelChoices, sameModelChoice, selectLoadoutSlot } from "./loadoutChoices.ts";
+import { PRIORITY } from "../../keybindings/dispatcher.ts";
 
 export type { ModelChoice };
 
 export interface ModelPickerProps {
   value: ModelChoice;
-  /** Models listed above "Add models" (Conductor's favourites); the current one is added first when missing. */
+  /** Occupied loadout entries, already in physical slot order, listed first. */
   favorites?: readonly ModelChoice[];
+  loadout?: readonly (ModelChoice | null)[];
+  keybindingDialogIds?: string[];
   /** Label shown instead of the model's display name (an agent without Conductor model ids). */
   label?: string;
   onChange: (next: ModelChoice) => void;
@@ -43,9 +47,9 @@ export interface ModelPickerProps {
   itemAgent?: (choice: ModelChoice) => ChatAgentId;
 }
 
-const same = (a: ModelChoice, b: ModelChoice) => a.model === b.model;
+const same = sameModelChoice;
 
-export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription, itemAgent }: ModelPickerProps) {
+export function ModelPicker({ value, favorites = [], loadout = [], keybindingDialogIds, label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription, itemAgent }: ModelPickerProps) {
   const [open, setOpen] = useState(false);
   const menu = usePresence(open);
   const [query, setQuery] = useState("");
@@ -63,21 +67,30 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
     return s ? glyphs(s) : "";
   };
   const nameOf = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
-  const chip = modelChip(value.model, value.effort, value.fast, modelName?.(value.model));
+  const chip = modelChoiceChip(value, modelName?.(value.model));
   const efforts = modelEfforts(value.model);
-  const current = effectiveEffort(value.model, value.effort);
+  const current = value.agent ? value.effort : effectiveEffort(value.model, value.effort);
   const showFast = fastSupported && fastModeAvailable(value.model);
   const items = useMemo(() => {
-    // The agent's models come before the other favourites (the Codex and Claude Code entries).
-    const listed = [value, ...(models ?? []), ...favorites];
-    const unique = listed.filter((f, i) => listed.findIndex((g) => same(f, g)) === i);
-    const list = models ? unique : unique.slice(0, 5);
+    const list = orderedModelChoices(value, favorites, models);
     const q = query.trim().toLowerCase();
     const name = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
     return q ? list.filter((f) => name(f).toLowerCase().includes(q) || f.model.toLowerCase().includes(q)) : list;
   }, [favorites, value, query, itemLabel, models, modelName]);
 
+  const selectSlot = (index: number) => {
+    const focused = document.activeElement;
+    const composer = root.current?.closest(".composer, .create-card");
+    if (disabled || (!open && !composer?.contains(focused))) return false;
+    selectLoadoutSlot(loadout, index, onChange);
+    return true;
+  };
   useKeybindings({
+    "chat.selectLoadout1": () => selectSlot(0),
+    "chat.selectLoadout2": () => selectSlot(1),
+    "chat.selectLoadout3": () => selectSlot(2),
+    "chat.selectLoadout4": () => selectSlot(3),
+    "chat.selectLoadout5": () => selectSlot(4),
     "chat.openModelPicker": () => (disabled ? false : setOpen((o) => !o)),
     "chat.toggleThinking": () => {
       const next = nextEffort(value.model, value.effort);
@@ -85,7 +98,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
       onChange({ ...value, effort: next });
     },
     "chat.toggleFastMode": () => (disabled || !showFast ? false : onChange({ ...value, fast: !value.fast })),
-  });
+  }, { priority: PRIORITY.HIGH, allowWhileTyping: true, enableOnDialogIds: keybindingDialogIds });
 
   useEffect(() => {
     if (!open) {
@@ -203,10 +216,10 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
               {items.length === 0 ? <div className="oc-model-empty">No models found</div> : null}
               {items.map((f, index) => {
                 const selected = same(f, value);
-                const e = modelChip(f.model, f.effort).effort;
+                const e = modelChoiceChip(f).effort;
                 return (
                   <button
-                    key={f.model}
+                    key={`${f.agent ?? ""}:${f.model}:${f.effort ?? ""}:${!!f.fast}`}
                     type="button"
                     role="menuitem"
                     className="oc-model-item"
@@ -217,7 +230,8 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                     title={[nameOf(f), modelDescription?.(f.model)].filter(Boolean).join(" · ")}
                     onClick={() => {
                       if (!selected) onChange(f);
-                      setOpen(false);
+                      if (searching) setQuery("");
+                      else setOpen(false);
                     }}
                   >
                     <ModelGlyph model={f.model} agent={itemAgent?.(f)} />

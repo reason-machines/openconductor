@@ -71,7 +71,8 @@ const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
 function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }: { initial?: string; placeholder?: string; submitLabel: string; onSubmit: (body: string) => void; onCancel: () => void }) {
   const [text, setText] = useState(initial);
   const cancel = () => {
-    if (text.trim() && text.trim() !== initial.trim() && !window.confirm("Discard this comment? What you wrote will be lost.")) return;
+    const dirty = initial === "" ? text.trim() !== "" : text !== initial;
+    if (dirty && !window.confirm("Discard this comment? What you wrote will be lost.")) return;
     onCancel();
   };
   const submit = () => {
@@ -179,7 +180,7 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
             stays on GitHub and comes back with the next sync. */}
         {canDeleteComment(c) &&
           (source === "user-local" ? (
-            <button className="oc-link" onClick={() => window.confirm(c.reply_to_comment_id ? "Delete this reply?" : "Delete this comment and its replies?") && void ops.remove(c)}>
+            <button className="oc-link" onClick={() => void ops.remove(c)}>
               Delete
             </button>
           ) : (
