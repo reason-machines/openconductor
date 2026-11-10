@@ -54,9 +54,22 @@ save/change callbacks.
 - **Passed:** source-only `git diff --check`.
 - **Not run locally:** Node, React tests, dependency installation, typecheck,
   build, browser and native execution, under the serialized capacity restriction.
-- **Hosted RED pending:** ordinary automatic CI runs the new tests against the
-  unchanged production component in the first source milestone.
-- **Hosted GREEN pending:** the callback fix follows the captured RED result.
+- **Hosted RED verified:** source head
+  `ab6f26345c485ba47700389048675d56a65c493d`, Diff run `42775770250`,
+  job `129693799176`, passes 156 existing tests and fails all four new tests.
+  Cases 124–127 fail because no capture handler exists (log lines 910–1009).
+  The full frontend unit job `129693799372` independently fails the same four
+  cases (653–656). This is a behavioral failure in the actual mounted component,
+  not a parse, install or mock-loading failure.
+- **Harness compatibility corrected:** typecheck at that milestone also rejected
+  `Object.hasOwn` against the repository's target library. The dependency guard
+  now uses `Object.prototype.hasOwnProperty.call`; no assertion, dependency,
+  timeout or compiler target was weakened. That diagnostic also caused the
+  downstream build-dependent failures; those were not successful runtime checks.
+- **Hosted GREEN pending:** the production fix puts the source-proven conditional
+  capture handler on a containing div and clears the existing selection state.
+  `display: contents` avoids adding a layout box. Both editable and noneditable
+  code paths share the handler; comments-disabled views leave it absent.
 
 Focused command for the existing validation queue:
 

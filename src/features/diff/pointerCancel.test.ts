@@ -53,7 +53,7 @@ const evaluate = runInNewContext(`(function(require, module, exports) { ${javasc
 });
 evaluate((name: string) => {
   if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
-  assert.ok(Object.hasOwn(boundaries, name), `Unexpected dependency: ${name}`);
+  assert.ok(Object.prototype.hasOwnProperty.call(boundaries, name), `Unexpected dependency: ${name}`);
   return boundaries[name];
 }, module, module.exports);
 assert.ok("FileDiffView" in module.exports && typeof module.exports.FileDiffView === "function");
