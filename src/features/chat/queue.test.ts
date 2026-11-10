@@ -25,8 +25,8 @@ const now = new Date("2026-11-05T10:00:00.000Z");
 const texts = (q: ChatQueue) => q.items.map((m) => m.text);
 
 function working(...queued: string[]): ChatQueue {
-  let q = submit(emptyQueue(), "first", "queue", now).queue;
-  for (const t of queued) q = submit(q, t, "queue", now).queue;
+  let q = submit(emptyQueue(), { text: "first" }, "queue", now).queue;
+  for (const t of queued) q = submit(q, { text: t }, "queue", now).queue;
   return q;
 }
 
@@ -40,32 +40,32 @@ test("send mode: steering by default, the opposite key queues, non-steering agen
 });
 
 test("idle submit starts a turn; blank text does nothing", () => {
-  const r = submit(emptyQueue(), "hello", "queue", now);
+  const r = submit(emptyQueue(), { text: "hello" }, "queue", now);
   assert.deepEqual(r.effects, [{ kind: "start", text: "hello", attachments: [] }]);
   assert.equal(r.queue.status, "working");
-  assert.deepEqual(submit(emptyQueue(), "  \n", "steer", now).effects, []);
+  assert.deepEqual(submit(emptyQueue(), { text: "  \n" }, "steer", now).effects, []);
 });
 
 test("attachment-only messages start, steer, queue and survive a blank queue edit", () => {
   const attachments = [{ name: "notes.txt", text: "Review these notes" }];
-  const started = submit(emptyQueue(), "", "queue", now, attachments);
+  const started = submit(emptyQueue(), { text: "" }, "queue", now, attachments);
   assert.deepEqual(started.effects, [{ kind: "start", text: "", attachments }]);
   const q = working();
-  assert.deepEqual(submit(q, "", "steer", now, attachments).effects, [{ kind: "steer", text: "", attachments }]);
-  const queued = submit(q, "", "queue", now, attachments).queue;
+  assert.deepEqual(submit(q, { text: "" }, "steer", now, attachments).effects, [{ kind: "steer", text: "", attachments }]);
+  const queued = submit(q, { text: "" }, "queue", now, attachments).queue;
   assert.equal(queued.items.length, 1);
-  const edited = saveEdit(beginEdit(queued, queued.items[0]!.id), "");
+  const edited = saveEdit(beginEdit(queued, queued.items[0]!.id), { text: "" });
   assert.deepEqual(edited.queue.items[0]?.attachments, attachments);
   assert.deepEqual(turnEnded(edited.queue, "completed").effects, [{ kind: "start", text: "", attachments }]);
 });
 
 test("while working, steer goes into the turn and queue waits for the turn to end", () => {
   const q = working();
-  const steer = submit(q, "also do X", "steer", now);
+  const steer = submit(q, { text: "also do X" }, "steer", now);
   assert.deepEqual(steer.effects, [{ kind: "steer", text: "also do X", attachments: [] }]);
   assert.deepEqual(steer.queue.items, []);
 
-  const queued = submit(q, "then Y", "queue", now);
+  const queued = submit(q, { text: "then Y" }, "queue", now);
   assert.deepEqual(queued.effects, []);
   assert.deepEqual(texts(queued.queue), ["then Y"]);
   assert.equal(headStatusLabel(queued.queue), "Queued");
@@ -97,7 +97,7 @@ test("a failed turn pauses a non-empty queue; resume sends the head", () => {
   assert.equal(failed.queue.paused, true);
   assert.equal(headStatusLabel(failed.queue), "Queue paused");
   // A new message joins the paused queue instead of jumping it.
-  const more = submit(failed.queue, "b", "queue", now);
+  const more = submit(failed.queue, { text: "b" }, "queue", now);
   assert.deepEqual(more.effects, []);
   assert.deepEqual(texts(more.queue), ["a", "b"]);
   const resumed = resume(more.queue);
@@ -108,7 +108,7 @@ test("a failed turn pauses a non-empty queue; resume sends the head", () => {
 test("a failed turn with nothing queued leaves the next message free to start", () => {
   const failed = turnEnded(working(), "failed").queue;
   assert.equal(failed.paused, false);
-  assert.deepEqual(submit(failed, "retry", "queue", now).effects, [{ kind: "start", text: "retry", attachments: [] }]);
+  assert.deepEqual(submit(failed, { text: "retry" }, "queue", now).effects, [{ kind: "start", text: "retry", attachments: [] }]);
 });
 
 test("a cancelled turn does not pause: the head sends after the cancellation", () => {
@@ -117,7 +117,7 @@ test("a cancelled turn does not pause: the head sends after the cancellation", (
   assert.equal(s.queue.status, "cancelling");
   assert.equal(headStatusLabel(s.queue), "Waiting for cancellation");
   // Steering is not possible while cancelling; the message queues.
-  assert.deepEqual(submit(s.queue, "b", "steer", now).effects, []);
+  assert.deepEqual(submit(s.queue, { text: "b" }, "steer", now).effects, []);
   const r = turnEnded(s.queue, "cancelled");
   assert.deepEqual(r.effects, [{ kind: "start", text: "a", attachments: [] }]);
 });
@@ -154,7 +154,7 @@ test("an edited head does not send until the edit is saved or cancelled", () => 
   let r = turnEnded(q, "completed");
   assert.deepEqual(r.effects, []);
   assert.equal(r.queue.status, "idle");
-  r = saveEdit(r.queue, "a2");
+  r = saveEdit(r.queue, { text: "a2" });
   assert.deepEqual(r.effects, [{ kind: "start", text: "a2", attachments: [] }]);
 
   q = beginEdit(working("a"), working("a").items[0]!.id);
@@ -165,7 +165,7 @@ test("an edited head does not send until the edit is saved or cancelled", () => 
 test("save and steer sends the edited text into the running turn", () => {
   let q = working("a", "b");
   q = beginEdit(q, q.items[1]!.id);
-  const r = saveEdit(q, "b2", true);
+  const r = saveEdit(q, { text: "b2" }, true);
   assert.deepEqual(r.effects, [{ kind: "steer", text: "b2", attachments: [] }]);
   assert.deepEqual(texts(r.queue), ["a"]);
   assert.equal(r.queue.editingId, null);
@@ -174,7 +174,7 @@ test("save and steer sends the edited text into the running turn", () => {
 test("saving an edit as blank deletes the message", () => {
   let q = working("a");
   q = beginEdit(q, q.items[0]!.id);
-  assert.deepEqual(saveEdit(q, "   ").queue.items, []);
+  assert.deepEqual(saveEdit(q, { text: "   " }).queue.items, []);
 });
 
 test("steer a queued message: into the running turn, or start it when idle", () => {
@@ -197,8 +197,8 @@ test("steer a queued message: into the running turn, or start it when idle", () 
 
 test("a queued message keeps its attachments until it sends", () => {
   const file = { name: "revert-note.md", text: "reverted a.txt" };
-  let s = submit(emptyQueue(), "first", "queue");
-  s = submit(s.queue, "with a file", "queue", new Date(), [file]);
+  let s = submit(emptyQueue(), { text: "first" }, "queue");
+  s = submit(s.queue, { text: "with a file" }, "queue", new Date(), [file]);
   assert.deepEqual(s.queue.items[0]!.attachments, [file]);
   s = turnEnded(s.queue, "completed");
   assert.deepEqual(s.effects, [{ kind: "start", text: "with a file", attachments: [file] }]);
@@ -206,13 +206,13 @@ test("a queued message keeps its attachments until it sends", () => {
 
 test("a permission request holds the turn: follow-ups queue, Stop cancels, an answer resumes working", async () => {
   const { waitingOn, turnRunning } = await import("./queue.ts");
-  let q = submit(emptyQueue(), "go", "queue").queue;
+  let q = submit(emptyQueue(), { text: "go" }, "queue").queue;
   q = waitingOn(q, "needs_user_permission");
   assert.equal(q.status, "needs_user_permission");
   assert.ok(turnRunning(q.status));
   assert.equal(canSteerNow(q, true), false, "nothing to steer into while Reason waits on the user");
 
-  const followUp = submit(q, "and then", "steer");
+  const followUp = submit(q, { text: "and then" }, "steer");
   assert.deepEqual(followUp.effects, [], "the follow-up waits");
   assert.equal(followUp.queue.items.length, 1);
   assert.deepEqual(steerQueued(followUp.queue, followUp.queue.items[0]!.id).effects, []);
@@ -228,9 +228,9 @@ test("a permission request holds the turn: follow-ups queue, Stop cancels, an an
 });
 
 test("queue-panel actions run through actionStep (shared by the Reason and Codex chats)", () => {
-  let q = submit(emptyQueue(), "first", "queue").queue;
-  q = submit(q, "second", "queue").queue;
-  q = submit(q, "third", "queue").queue;
+  let q = submit(emptyQueue(), { text: "first" }, "queue").queue;
+  q = submit(q, { text: "second" }, "queue").queue;
+  q = submit(q, { text: "third" }, "queue").queue;
   assert.deepEqual(q.items.map((m) => m.text), ["second", "third"]);
   const moved = actionStep(q, { kind: "move", id: q.items[1]!.id, by: -1 });
   assert.ok(!("effects" in moved));
