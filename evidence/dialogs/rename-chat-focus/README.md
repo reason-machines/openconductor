@@ -36,6 +36,8 @@ The existing Keybindings workflow runs the same file through `npm run test:e2e` 
 
 ## Results and limits
 
-The test-only commit preserves the uncorrected production component for a hosted RED result. Hosted RED and corrected GREEN results are pending and must not be reported as passed before their actual logs are read.
+Hosted RED is established on the test-only head `990593e8b717b1d373436a34a8620fddc906b029`. The automatic [Keybindings run 42772557954](https://github.com/reason-machines/openconductor/actions/runs/42772557954/job/129683512877) completed `npm run test:e2e` with 183 tests, 177 passed, five failed, and one skipped. All five failures are the new Rename chat cases. The actual component mounted and initial title selection passed. The failures were Tab containment at line 43, Cancel focus return at line 66, both primary-shortcut dialog-close assertions at line 81, and pending-save Cancel focus return at line 105. The pending-save case reached its final focus-return assertion after confirming the disabled input, disabled primary button, and single recorded save.
+
+The correction replaces only RenameChatDialog's raw modal wrapper and local motion ref with the existing DialogFrame. It preserves title state, save and error handling, selected input, pending guards, and Cancel availability. The same five regressions are unchanged. Corrected hosted GREEN is pending and must not be reported as passed before its actual log is read.
 
 No screenshot is available because no local browser or app runtime was launched. Native focus, physical macOS keys, installed-build identity, visual parity, real persistence, and #870's held-save replacement/remount acceptance remain not run.
