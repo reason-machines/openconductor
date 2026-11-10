@@ -26,7 +26,7 @@ import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./
 import { SlashMenu } from "./SlashMenu.tsx";
 import { fuzzyFilterFiles } from "../../backend";
 import type { FileMatch } from "../../spotlight/quickOpen";
-import { fileMentionQuery } from "./fileMentions.ts";
+import { fileMentionQuery, mentionItems, type MentionItem } from "./fileMentions.ts";
 import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
 import { composerPrompt } from "./composerDocument.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
@@ -60,6 +60,7 @@ export interface ComposerProps {
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
   onLinkWorkspaces?: () => void;
+  onAttachTerminalOutput?: () => void;
   /** The model picker (or another agent's picker), at the box's bottom left. */
   picker?: ReactNode;
   /** More pickers after it (an agent's access mode), in the same row. */
@@ -92,6 +93,7 @@ export function Composer({
   workspacePath,
   onAttachFiles,
   onLinkWorkspaces,
+  onAttachTerminalOutput,
   picker,
   controls,
   slashCommands = [],
@@ -145,16 +147,30 @@ export function Composer({
     );
     return () => { live = false; };
   }, [workspacePath, mentionQuery]);
-  const mentionMatches = files && files.workspacePath === workspacePath && files.query === mentionQuery ? files.matches : [];
+  const fileMatches = files && files.workspacePath === workspacePath && files.query === mentionQuery ? files.matches : [];
+  const mentionMatches = mentionItems(mentionQuery ?? "", fileMatches, !!onAttachTerminalOutput, !!onLinkWorkspaces);
   const mentionOpen = mention !== null && mentionQuery !== undefined && mentionMatches.length > 0;
   const mentionFocus = Math.min(mentionIndex, Math.max(0, mentionMatches.length - 1));
 
-  function pickFile(file: FileMatch) {
+  function pickMention(item: MentionItem) {
     const box = inputRef.current;
     if (!box || box.composing()) return;
     const current = box.selection();
     const range = fileMentionQuery(current.text, current.start, current.end);
     if (!range || `${range.start}:${range.query}` !== mentionKey) return;
+    if (item.kind === "add-directory") {
+      if (!onLinkWorkspaces || !box.deleteRange(range)) return;
+      setMentionDismissed(mentionKey);
+      onLinkWorkspaces();
+      return;
+    }
+    if (item.kind === "terminal") {
+      if (!onAttachTerminalOutput || !box.deleteRange(range)) return;
+      setMentionDismissed(mentionKey);
+      onAttachTerminalOutput();
+      return;
+    }
+    const file = item.match;
     box.insertFile(range, { path: file.relative_path, label: file.relative_path, directory: file.file.is_directory });
     setMentionDismissed(mentionKey);
   }
@@ -217,7 +233,7 @@ export function Composer({
       const selected = mentionMatches[mentionFocus];
       if (selected) {
         e.preventDefault();
-        pickFile(selected);
+        pickMention(selected);
       }
       return;
     }
@@ -278,7 +294,7 @@ export function Composer({
     <div className="composer-wrap">
       {queue.items.length > 0 ? <QueuePanel queue={queue} canSteer={canSteerNow(queue, canSteer)} onQueue={onQueue} listRef={queueRef} focus={focus} keys={keys} /> : null}
       <div className="oc-composer-anchor">
-        {mentionOpen ? <FileMentionMenu matches={mentionMatches} focused={mentionFocus} hasQuery={mentionQuery !== ""} onPick={pickFile} onFocus={setMentionIndex} /> : null}
+        {mentionOpen ? <FileMentionMenu matches={mentionMatches} focused={mentionFocus} hasQuery={mentionQuery !== ""} onPick={pickMention} onFocus={setMentionIndex} /> : null}
         {slashOpen ? <SlashMenu matches={slashMatches} focused={slashFocus} hasQuery={query !== ""} onPick={pickCommand} onFocus={setSlashIndex} /> : null}
         <form
           className={`composer oc-composer${dragging ? " is-dropping" : ""}`}

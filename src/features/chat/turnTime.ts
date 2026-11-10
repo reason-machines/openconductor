@@ -17,6 +17,28 @@ export function formatTurnDuration(ms: number, { showTenths = false }: { showTen
 
 const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
 
+export function turnDayClock(now: () => number = Date.now) {
+  return {
+    getSnapshot: () => startOfDay(new Date(now())),
+    subscribe(onChange: () => void) {
+      let active = true;
+      let timer: ReturnType<typeof setTimeout>;
+      const schedule = () => {
+        const current = now();
+        const date = new Date(current);
+        const nextDay = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1).getTime();
+        timer = setTimeout(() => {
+          if (!active) return;
+          onChange();
+          if (active) schedule();
+        }, Math.max(nextDay - current, 1000));
+      };
+      schedule();
+      return () => { active = false; clearTimeout(timer); };
+    },
+  };
+}
+
 /** `SDo`: "10:37 AM" today, "Tue 10:37 AM" within the week, else "Nov 3, 10:37 AM" (year when it differs). */
 export function formatTurnEnd(at: string | number, now: number = Date.now(), locale?: string): string {
   const d = new Date(at);

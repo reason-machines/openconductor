@@ -1,0 +1,206 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: branch names read as sentences
+ok 1 - branch names read as sentences
+  ---
+  duration_ms: 0.777308
+  type: 'test'
+  ...
+# Subtest: a user-set name wins over the PR title and branch
+ok 2 - a user-set name wins over the PR title and branch
+  ---
+  duration_ms: 0.127751
+  type: 'test'
+  ...
+# Subtest: the PR title wins over the branch
+ok 3 - the PR title wins over the branch
+  ---
+  duration_ms: 0.084027
+  type: 'test'
+  ...
+# Subtest: the branch is shown, prettified, unless it is the target branch
+ok 4 - the branch is shown, prettified, unless it is the target branch
+  ---
+  duration_ms: 0.11175
+  type: 'test'
+  ...
+# Subtest: a stored workspace_name comes before the PR title even when not user-set ($V: if(e)return e)
+ok 5 - a stored workspace_name comes before the PR title even when not user-set ($V: if(e)return e)
+  ---
+  duration_ms: 0.16936
+  type: 'test'
+  ...
+# Subtest: the configured branch prefix is stripped before prettifying (pGe / zcs)
+ok 6 - the configured branch prefix is stripped before prettifying (pGe / zcs)
+  ---
+  duration_ms: 0.097705
+  type: 'test'
+  ...
+# Subtest: the target is the workspace's intended_target_branch, main when unset
+ok 7 - the target is the workspace's intended_target_branch, main when unset
+  ---
+  duration_ms: 0.150801
+  type: 'test'
+  ...
+# Subtest: rows are listed newest first, falling back to creation time
+ok 8 - rows are listed newest first, falling back to creation time
+  ---
+  duration_ms: 1.120394
+  type: 'test'
+  ...
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: date buckets count whole days back from local midnight
+ok 9 - date buckets count whole days back from local midnight
+  ---
+  duration_ms: 0.938633
+  type: 'test'
+  ...
+# Subtest: row time is date-fns formatDistance, shortened like Conductor
+ok 10 - row time is date-fns formatDistance, shortened like Conductor
+  ---
+  duration_ms: 0.220016
+  type: 'test'
+  ...
+# Subtest: search needs every word somewhere and highlights each field
+ok 11 - search needs every word somewhere and highlights each field
+  ---
+  duration_ms: 1.547284
+  type: 'test'
+  ...
+# Subtest: search matches workspace numbers as 12, w12 and w-12
+ok 12 - search matches workspace numbers as 12, w12 and w-12
+  ---
+  duration_ms: 0.427621
+  type: 'test'
+  ...
+# Subtest: Home search finds a known pull request number and combines it with text and filters
+ok 13 - Home search finds a known pull request number and combines it with text and filters
+  ---
+  duration_ms: 1.039834
+  type: 'test'
+  ...
+# Subtest: rows hide archived by default, filter by project, and sort newest first
+ok 14 - rows hide archived by default, filter by project, and sort newest first
+  ---
+  duration_ms: 0.282488
+  type: 'test'
+  ...
+# Subtest: row titles follow the sidebar display-name rule
+ok 15 - row titles follow the sidebar display-name rule
+  ---
+  duration_ms: 0.221809
+  type: 'test'
+  ...
+# Subtest: groups come in Conductor's order and skip empty days
+ok 16 - groups come in Conductor's order and skip empty days
+  ---
+  duration_ms: 0.244048
+  type: 'test'
+  ...
+# Subtest: project filter shows only with two or more projects that have workspaces
+ok 17 - project filter shows only with two or more projects that have workspaces
+  ---
+  duration_ms: 0.415677
+  type: 'test'
+  ...
+# Subtest: empty list offers Create with no workspaces, Clear filters when filtered
+ok 18 - empty list offers Create with no workspaces, Clear filters when filtered
+  ---
+  duration_ms: 0.395385
+  type: 'test'
+  ...
+# Subtest: saved filters drop unknown projects and bad values
+ok 19 - saved filters drop unknown projects and bad values
+  ---
+  duration_ms: 0.42679
+  type: 'test'
+  ...
+# Subtest: archived workspaces from conductor.db show under Only archived and Showing all
+ok 20 - archived workspaces from conductor.db show under Only archived and Showing all
+  ---
+  duration_ms: 1.825579
+  type: 'test'
+  ...
+# Subtest: archived rows of closed repositories, or already in the state, are not listed twice
+ok 21 - archived rows of closed repositories, or already in the state, are not listed twice
+  ---
+  duration_ms: 0.14465
+  type: 'test'
+  ...
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: setup state wins over the agent and the PR
+ok 22 - setup state wins over the agent and the PR
+  ---
+  duration_ms: 0.763977
+  type: 'test'
+  ...
+# Subtest: an active agent wins over the PR; idle and error fall through to it
+ok 23 - an active agent wins over the PR; idle and error fall through to it
+  ---
+  duration_ms: 0.232473
+  type: 'test'
+  ...
+# Subtest: PR states follow Conductor's order
+ok 24 - PR states follow Conductor's order
+  ---
+  duration_ms: 0.259354
+  type: 'test'
+  ...
+# Subtest: UNSTABLE is mergeable unless optional checks block and some failed
+ok 25 - UNSTABLE is mergeable unless optional checks block and some failed
+  ---
+  duration_ms: 0.128279
+  type: 'test'
+  ...
+# Subtest: running checks show in the git status, not the row icon
+ok 26 - running checks show in the git status, not the row icon
+  ---
+  duration_ms: 0.206285
+  type: 'test'
+  ...
+# Subtest: without a PR: branch when it has a remote, local otherwise
+ok 27 - without a PR: branch when it has a remote, local otherwise
+  ---
+  duration_ms: 0.121313
+  type: 'test'
+  ...
+# Subtest: sessions fold to the most urgent status
+ok 28 - sessions fold to the most urgent status
+  ---
+  duration_ms: 0.161865
+  type: 'test'
+  ...
+# Subtest: labels, colours and loaders
+ok 29 - labels, colours and loaders
+  ---
+  duration_ms: 0.149806
+  type: 'test'
+  ...
+# Subtest: Home shows the agent's or setup's status in place of the time, never a git status (vJo, aWt)
+ok 30 - Home shows the agent's or setup's status in place of the time, never a git status (vJo, aWt)
+  ---
+  duration_ms: 0.485495
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a numbered workspace reads W-<n>; one from before numbering has no label
+ok 31 - a numbered workspace reads W-<n>; one from before numbering has no label
+  ---
+  duration_ms: 0.615938
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 435.845918

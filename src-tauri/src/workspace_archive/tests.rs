@@ -395,6 +395,51 @@ fn unarchive_brings_back_the_worktree_its_uncommitted_work_and_context() {
 }
 
 #[test]
+fn restore_continues_when_post_checkout_hook_fails_after_creating_the_worktree() {
+    let f = Fixture::new("restore-checkout-hook");
+    write(f.ws(), "a.txt", "edited\n");
+    write(f.ws(), "staged.txt", "staged\n");
+    g(f.ws(), &["add", "staged.txt"]);
+    write(f.ws(), "new.txt", "untracked\n");
+    let root = f.tmp.0.join("root");
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    assert!(teardown(&f.target, &p, false, Some(&root)).is_empty());
+    let hooks = f.repo().join(".git/hooks");
+    g(f.repo(), &["config", "core.hooksPath", hooks.to_str().unwrap()]);
+    let hook = hooks.join("post-checkout");
+    fs::write(&hook, "#!/bin/sh\necho archive-hook-fixture >&2\nexit 7\n").unwrap();
+    assert!(Command::new("chmod").arg("+x").arg(&hook).status().unwrap().success());
+
+    let r = restore(&f.target, p.archive_commit.as_deref(), Some(&root), false)
+        .expect("a created worktree must survive a failing post-checkout hook");
+    assert!(r.restored_changes);
+    assert_eq!(r.branch, "sven/ws");
+    assert_eq!(r.notices, vec![Notice::error(crate::workspace::init_log::WORKTREE_PARTIAL_FAILURE)]);
+    assert_eq!(g(f.ws(), &["branch", "--show-current"]), "sven/ws");
+    assert_eq!(fs::read_to_string(f.ws().join("a.txt")).unwrap(), "edited\n");
+    assert_eq!(fs::read_to_string(f.ws().join("new.txt")).unwrap(), "untracked\n");
+    assert_eq!(g(f.ws(), &["diff", "--cached", "--name-only"]), "staged.txt");
+    assert_eq!(g(f.ws(), &["diff", "--name-only"]), "a.txt");
+    assert!(f.ws().join(".context/todos.md").is_file());
+}
+
+#[test]
+fn restore_rejects_failed_worktree_add_even_with_another_registered_worktree() {
+    let f = Fixture::new("restore-no-worktree");
+    let p = prepare(&f.target, ArchiveMode::Safe).unwrap();
+    assert!(teardown(&f.target, &p, false, None).is_empty());
+    let other = f.ws().with_file_name("ws-other");
+    g(f.repo(), &["worktree", "add", "-q", other.to_str().unwrap(), "sven/ws"]);
+    let mut target = f.target.clone();
+    target.branch = "missing-restore-branch".into();
+
+    assert!(matches!(restore(&target, None, None, true), Err(RestoreError::Failed(_))));
+    assert!(!f.ws().exists());
+    assert_eq!(g(&other, &["branch", "--show-current"]), "sven/ws");
+    assert_eq!(g(&other, &["status", "--porcelain"]), "");
+}
+
+#[test]
 fn restore_without_saved_context_preserves_checkpoint_todos_and_existing_excludes() {
     let f = Fixture::new("restore-context-fallback");
     write(f.ws(), ".context/todos.md", "keep these todos\n");
