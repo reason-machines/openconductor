@@ -43,7 +43,9 @@ The callback fixtures execute only OpenConductor's query-change body in automati
 
 Automatic hosted `node --test "src/**/*.test.ts"` established RED on checkpoint `8a6d6d3ff117da6ce73d74d85af5d2a9698a25fa`. The [unit job](https://github.com/reason-machines/openconductor/actions/runs/42919522387/job/130190554067) reported exactly seven failures, all from the new height fixtures. The first failure was `the input shares a query-change callback that owns the measured height`. Typechecking passed; the separate frontend job stopped on the same regressions before building.
 
-The locked fixture SHA-256 is `da4b7c76d081c1eb77d151c5d8f66e1428817f8d1ae6ab2d768bf7807f461c13`. The assertions remain unchanged through the correction. The minimal fix adds the optional height state, inner wrapper ref/style, and shared query transition. Hosted GREEN remains pending and is recorded in the pull request when verified.
+The locked fixture SHA-256 is `da4b7c76d081c1eb77d151c5d8f66e1428817f8d1ae6ab2d768bf7807f461c13`. The assertions remain unchanged through the correction. The minimal fix adds the optional height state, inner wrapper ref/style, and shared query transition.
+
+At correction `306a362c2a1d9c188a52748e0327cfdc1b584960`, all seven height fixtures passed, but four existing mouse fixtures failed with `changeQuery is not defined`. Their extracted click callback had only the previous `setQuery` binding. The mouse fixture now binds the actual extracted query-transition body and its state dependencies. All eight mouse cases, query/open assertions, model-change assertions, and the historical `MODEL_PICKER_REGRESSION_REF` input remain. Additional assertions check height and search-index release. The refreshed default head `203ba7e184ae4ad06cdddea2d579faadfe715846` has no intervening changes to either source file. Hosted GREEN remains pending and is recorded in the pull request when verified.
 
 ## Verification limits
 
