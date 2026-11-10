@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { pickFolder } from "../backend";
+import { inTauri } from "../backend";
 import { scrollbackBytesFromMegabytes, scrollbackLimitBytes, scrollbackLimitMegabytes } from "../features/terminal/scrollback";
 import { withTopLevel } from "./agentSettings";
 import { PrefSwitchRow, Toggle } from "./controls";
@@ -106,8 +106,10 @@ function PathRow({
     if (next.trim() !== value.trim()) onSave(next);
   };
   const browse = async () => {
-    const picked = await pickFolder(label);
-    if (picked) {
+    if (!inTauri()) return;
+    const { open } = await import("@tauri-apps/plugin-dialog");
+    const picked = await open({ directory: false, multiple: false, title: "Select SSH private key" });
+    if (typeof picked === "string") {
       setText(picked);
       commit(picked);
     }
