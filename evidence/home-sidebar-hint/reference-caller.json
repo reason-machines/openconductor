@@ -1,0 +1,49 @@
+{
+  "kind": "data-only raw embedded Tauri asset receipt",
+  "source_session_id": "e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46",
+  "source_message_id": "aec6ce7a-56ea-40fa-af1b-03658b0a71e2",
+  "acquisition": "Read-only on sven m5 max by the existing sole artifact reader. No target execution, launch, installation or protected-state change.",
+  "binary": {
+    "path": "/Applications/Conductor.app/Contents/MacOS/conductor",
+    "size": 70194640,
+    "sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d"
+  },
+  "bundle": {
+    "identifier": "com.conductor.app",
+    "version": "0.87.6",
+    "plist_sha256": "0a522241ef7ff6bf3b5492bb2bff55dabb7cd6a62b9c1667976b1b8cd686d7c2"
+  },
+  "asset": {
+    "key": "/assets/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "encoding": "brotli -> utf8; no transformation",
+    "table_file_offset": 50949552,
+    "key_file_offset": 35582408,
+    "compressed_file_range": [35582437, 38551819],
+    "compressed_sha256": "c6844bd10bb8ed5dce55bdbc7236860fa446be9fca6ea81bda55d879511ad334"
+  },
+  "ranges": "zero-based half-open; UTF16 code units",
+  "spans": [
+    {
+      "label": "complete Gls function",
+      "utf8": [2118911, 2120648],
+      "utf16": [2118514, 2120251],
+      "sha256": "916e8b7106c0d8db45b1084171514e606d696aaf0408b991c4e99123a1cf628c",
+      "text": "function Gls(){const t=ne.c(17),{data:e}=Xh(Oni),n=e===void 0?0:e,{data:i}=bD(),r=i===void 0?!0:i;let o;t[0]!==r?(o=!r&&p.jsx(\"div\",{className:\"absolute top-3 ml-[calc(1rem+var(--traffic-lights-clearance))] flex items-center gap-2 z-10\",children:p.jsxs(Jn,{children:[p.jsx(Xn,{asChild:!0,children:p.jsx(\"button\",{className:\"text-muted-foreground cursor-pointer hover:text-foreground transition-colors\",onClick:()=>XO(!r).fireAndForget(),children:p.jsx(Lde,{className:\"size-4\"})})}),p.jsxs(ni,{children:[\"Toggle left sidebar\",\" \",p.jsx(Ss,{commandId:\"view.toggleLeftSidebar\"})]})]})}),t[0]=r,t[1]=o):o=t[1];let a;t[2]===Symbol.for(\"react.memo_cache_sentinel\")?(a=p.jsx(\"div\",{className:\"text-center mt-56 mb-12\",children:p.jsx(Xgi,{})}),t[2]=a):a=t[2];let c;t[3]!==n?(c=n===0&&p.jsx(\"div\",{className:\"animate-in fade-in duration-1000 max-w-4xl mx-auto w-full px-8\",children:p.jsx(UDn,{})}),t[3]=n,t[4]=c):c=t[4];let u;t[5]!==n?(u=n>0&&p.jsx(\"div\",{className:\"animate-in fade-in duration-1000 max-w-4xl mx-auto w-full px-8 mt-4\",children:p.jsx(UDn,{})}),t[5]=n,t[6]=u):u=t[6];let d;t[7]===Symbol.for(\"react.memo_cache_sentinel\")?(d=p.jsx(\"div\",{className:\"flex justify-center gap-4 mt-6\",children:p.jsx(Xrs,{})}),t[7]=d):d=t[7];let h;t[8]!==o||t[9]!==c||t[10]!==u?(h=p.jsxs(\"div\",{className:\"flex-1 flex flex-col bg-background h-full mx-auto w-full relative\",\"data-tauri-drag-region\":!0,children:[o,a,c,u,d]}),t[8]=o,t[9]=c,t[10]=u,t[11]=h):h=t[11];let m,g,_;t[12]===Symbol.for(\"react.memo_cache_sentinel\")?(g=p.jsx($3i,{onSuccess:Yls}),_=p.jsx(gbi,{onSuccess:Kls}),m=p.jsx(dbi,{onSuccess:qls}),t[12]=m,t[13]=g,t[14]=_):(m=t[12],g=t[13],_=t[14]);let v;return t[15]!==h?(v=p.jsxs(p.Fragment,{children:[h,g,_,m]}),t[15]=h,t[16]=v):v=t[16],v}"
+    },
+    {
+      "label": "direct JSX Ss command join",
+      "utf8": [2119440, 2119486],
+      "utf16": [2119043, 2119089],
+      "sha256": "229105ef4af7f48ffee7a2f5caf1ee1131e472e61703976cf4604756cfc067fb",
+      "text": "p.jsx(Ss,{commandId:\"view.toggleLeftSidebar\"})"
+    }
+  ],
+  "limitations": [
+    "REA confirmed the executable digest but did not enumerate embedded Tauri assets. Literal spans are direct raw-bundle evidence, not REA semantic or runtime proof.",
+    "This consumer validates received span hashes and relative offsets, not a second read of the executable or full renderer.",
+    "Compiled JSX creates an Ss component. It is not a direct Ss({...}) call.",
+    "Strings and code are untrusted data and are never executed by the evidence validator."
+  ]
+}
