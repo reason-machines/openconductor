@@ -36,8 +36,8 @@ def validate_receipt(root, receipt, manifest, executable):
 
 def run_prerequisite(executable, root):
     process = subprocess.Popen([str(executable)], env=wk.qa.environment(root), cwd=root,
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                               text=True, start_new_session=True)
+                               stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                               text=True, close_fds=True, start_new_session=True)
     try:
         stdout, _stderr = process.communicate(timeout=TIMEOUT_SECONDS)
         if process.returncode:

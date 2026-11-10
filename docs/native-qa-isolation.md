@@ -83,6 +83,12 @@ approved native run. `native_qa.environment` defines that environment, including
 overrides are not forwarded. Do not import real account files or credentials,
 change keychain search lists, or touch preserved app processes and workspaces.
 
+All QA launchers disconnect caller stdin with `subprocess.DEVNULL` and close
+ambient nonstandard descriptors. Captured stdout/stderr remain receipt channels.
+The portable stdin regression uses a disposable writable canary and a calibrated
+inheriting control; it does not establish App Sandbox, WebKit/XPC confinement or
+protection against other ambient authority.
+
 The QA guard refuses invalid roots or paths before normal startup writes. It is
 not an OS sandbox: launching agents, terminals, selecting external repositories
 or signing in has separate effects and is outside this headless procedure.
@@ -90,7 +96,7 @@ or signing in has separate effects and is outside this headless procedure.
 ## Run the verifier tests on cloud
 
 ```bash
-python3 -m unittest tools/test_native_qa.py -v
+python3 -W error::ResourceWarning -m unittest tools/test_native_qa.py tools/test_native_qa_stdio.py -v
 ```
 
 These tests execute fixture scripts, not macOS apps. Native bundle compilation
