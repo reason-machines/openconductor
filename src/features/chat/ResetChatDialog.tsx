@@ -97,10 +97,10 @@ export function ResetChatDialog({ loadChangedCount, onConfirm, onClose }: Props)
         </label>
         {error && <p className="error small">{error}</p>}
         <div className="oc-alert-footer">
-          <button type="button" className="oc-alert-btn oc-alert-cancel" onClick={onClose}>
+          <button type="button" className="oc-alert-btn oc-alert-cancel" onClick={onClose} autoFocus>
             Cancel
           </button>
-          <button type="button" className="oc-alert-btn oc-alert-destructive" data-primary-action onClick={confirm} disabled={busy} autoFocus title="Reset (⌘↵)">
+          <button type="button" className="oc-alert-btn oc-alert-destructive" data-primary-action onClick={confirm} disabled={busy} title="Reset (⌘↵)">
             {busy ? "Resetting..." : "Reset"} {busy ? null : (
               // Conductor: `ml-2 inline-flex items-center opacity-60` with "⌘" and its 12px Enter icon (`gf`).
               <span className="oc-alert-kbd">
