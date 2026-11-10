@@ -51,7 +51,11 @@ merged #863 was not adopted. The initial hosted CI ran and failed on test assert
 three old retry scalar expectations, an invalid new Codex fixture event, and rustfmt. Source
 corrections preserve the assertions and use the typed Codex payload plus exact hosted formatter
 output. Local reruns/typecheck/Rust format or tests/browser/native/provider execution remain
-NOT RUN. No screenshot exists yet. The local main integration `5c1b52a7` contains the merged
+NOT RUN. The admitted formatter attempt failed before formatting: rustfmt is not installed for
+the stable toolchain; no installation, PATH hunt or retry followed, and the lease was released.
+Hosted head `acd38b70` PASSED frontend unit tests and the Rust formatting step. Its Rust test
+compile then exposed a missing `serde_json::Value` fixture import, corrected in source without
+another local runtime. No screenshot exists yet. The local main integration `5c1b52a7` contains the merged
 Stop barrier `e411fc1f9bb2a3ea8c9c3c67741384721702a408` without conflicts.
 
 The group-scoped queue editor selector is migrated under its narrow source lease; two
