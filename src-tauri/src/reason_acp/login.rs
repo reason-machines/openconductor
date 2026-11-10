@@ -248,8 +248,40 @@ fn account(
     cancelled: &AtomicBool,
     timeout: Duration,
 ) -> Option<Account> {
-    let out = run(launch, dir, &["status", "--json"], cancelled, timeout).ok()?;
-    parse_status(&String::from_utf8_lossy(&out.stdout))
+    let out = match run(launch, dir, &["status", "--json"], cancelled, timeout) {
+        Ok(out) => out,
+        Err(_error) => {
+            #[cfg(test)]
+            eprintln!(
+                "[reason_acp::login] stage=account.run error={_error:?} budget_ms={}",
+                timeout.as_millis()
+            );
+            return None;
+        }
+    };
+    let text = String::from_utf8_lossy(&out.stdout);
+    let account = parse_status(&text);
+    #[cfg(test)]
+    if account.is_none() {
+        match serde_json::from_str::<serde_json::Value>(text.trim()) {
+            Err(error) => eprintln!(
+                "[reason_acp::login] stage=account.parse category={:?} line={} column={} stdout_bytes={} stderr_bytes={} exit_code={:?}",
+                error.classify(),
+                error.line(),
+                error.column(),
+                out.stdout.len(),
+                out.stderr.len(),
+                out.status.code()
+            ),
+            Ok(_) => eprintln!(
+                "[reason_acp::login] stage=account.parse reason=valid_non_object stdout_bytes={} stderr_bytes={} exit_code={:?}",
+                out.stdout.len(),
+                out.stderr.len(),
+                out.status.code()
+            ),
+        }
+    }
+    account
 }
 
 fn pairing(
@@ -378,6 +410,11 @@ fn run(
     timeout: Duration,
 ) -> Result<Output, RunError> {
     if cancelled.load(Ordering::SeqCst) {
+        #[cfg(test)]
+        eprintln!(
+            "[reason_acp::login] stage=run.before_spawn error=Cancelled budget_ms={}",
+            timeout.as_millis()
+        );
         return Err(RunError::Cancelled);
     }
     let mut command = launch.base_command(dir);
@@ -387,39 +424,92 @@ fn run(
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped());
-    let mut child = command.spawn().map_err(|_| RunError::Failed)?;
-    let stdout = child.stdout.take().ok_or(RunError::Failed)?;
-    let stderr = child.stderr.take().ok_or(RunError::Failed)?;
-    let read = |mut pipe: Box<dyn Read + Send>| {
+    let mut child = command.spawn().map_err(|_error| {
+        #[cfg(test)]
+        eprintln!(
+            "[reason_acp::login] stage=spawn kind={:?} raw_os_error={:?}",
+            _error.kind(),
+            _error.raw_os_error()
+        );
+        RunError::Failed
+    })?;
+    let stdout = child
+        .stdout
+        .take()
+        .ok_or(RunError::Failed)
+        .inspect_err(|_| {
+            #[cfg(test)]
+            eprintln!("[reason_acp::login] stage=stdout.take reason=missing_pipe");
+        })?;
+    let stderr = child
+        .stderr
+        .take()
+        .ok_or(RunError::Failed)
+        .inspect_err(|_| {
+            #[cfg(test)]
+            eprintln!("[reason_acp::login] stage=stderr.take reason=missing_pipe");
+        })?;
+    let read = |_stage: &'static str, mut pipe: Box<dyn Read + Send>| {
         thread::spawn(move || {
             let mut bytes = Vec::new();
-            let _ = pipe.read_to_end(&mut bytes);
+            if let Err(_error) = pipe.read_to_end(&mut bytes) {
+                #[cfg(test)]
+                eprintln!(
+                    "[reason_acp::login] stage={_stage} kind={:?} raw_os_error={:?}",
+                    _error.kind(),
+                    _error.raw_os_error()
+                );
+            }
             bytes
         })
     };
-    let out = read(Box::new(stdout));
-    let err = read(Box::new(stderr));
+    let out = read("stdout.read", Box::new(stdout));
+    let err = read("stderr.read", Box::new(stderr));
     let deadline = Instant::now() + timeout;
     loop {
         if cancelled.load(Ordering::SeqCst) || Instant::now() >= deadline {
             let _ = child.kill();
             let _ = child.wait();
-            return Err(if cancelled.load(Ordering::SeqCst) {
+            let error = if cancelled.load(Ordering::SeqCst) {
                 RunError::Cancelled
             } else {
                 RunError::TimedOut
-            });
+            };
+            #[cfg(test)]
+            eprintln!(
+                "[reason_acp::login] stage=run.wait error={error:?} budget_ms={}",
+                timeout.as_millis()
+            );
+            return Err(error);
         }
         match child.try_wait() {
             Ok(Some(status)) => {
                 return Ok(Output {
                     status,
-                    stdout: out.join().unwrap_or_default(),
-                    stderr: err.join().unwrap_or_default(),
+                    stdout: out
+                        .join()
+                        .inspect_err(|_| {
+                            #[cfg(test)]
+                            eprintln!("[reason_acp::login] stage=stdout.join reason=thread_panic");
+                        })
+                        .unwrap_or_default(),
+                    stderr: err
+                        .join()
+                        .inspect_err(|_| {
+                            #[cfg(test)]
+                            eprintln!("[reason_acp::login] stage=stderr.join reason=thread_panic");
+                        })
+                        .unwrap_or_default(),
                 })
             }
             Ok(None) => thread::sleep(Duration::from_millis(10)),
-            Err(_) => {
+            Err(_error) => {
+                #[cfg(test)]
+                eprintln!(
+                    "[reason_acp::login] stage=try_wait kind={:?} raw_os_error={:?}",
+                    _error.kind(),
+                    _error.raw_os_error()
+                );
                 let _ = child.kill();
                 let _ = child.wait();
                 return Err(RunError::Failed);
