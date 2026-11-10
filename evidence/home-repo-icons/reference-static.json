@@ -1,0 +1,71 @@
+{
+  "mode": "Retained decoded shipped JavaScript only; no target execution",
+  "app": "Conductor 0.87.6",
+  "asset": "renderApp-D_fmY7hW.js",
+  "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "parentReaEvidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "retainedArtifact": "Existing .rea-work/oc-conductor-dist.tgz, member dist/assets/renderApp-D_fmY7hW.js, reread in memory by the existing evidence owners without disk extraction",
+  "handoff": "https://reasonmachines.com/agents/de6c02f4-4880-4a0d-bf8f-9e3954522753",
+  "corroboration": "https://reasonmachines.com/agents/13576d11-76fb-4842-aa9b-c398f9ca26f3",
+  "offsetConvention": "Zero-based, end-exclusive. UTF-16 code units and UTF-8 bytes are distinguished.",
+  "excerpts": [
+    {
+      "symbol": "_Jo props",
+      "utf16Range": [
+        9799758,
+        9799972
+      ],
+      "utf8Range": [
+        9845312,
+        9845526
+      ],
+      "sha256": "dd3240593e004b55acee1c918c07f2d9a6c467bc6b83719501503007ffa33645",
+      "excerpt": "const _Jo=$.memo(function(e){const n=ne.c(83),{workspace:i,displayBranch:r,repo:o,owner:a,showOwnerColumn:c,showRepositoryIcon:u,showCostColumn:d,workspaceStatusMatrixEnabled:h,onSelectWorkspace:m,fieldMatches:g}=e"
+    },
+    {
+      "symbol": "_Jo to SJo gate",
+      "utf16Range": [
+        9800789,
+        9800960
+      ],
+      "utf8Range": [
+        9846343,
+        9846514
+      ],
+      "sha256": "2fb37af925674f06bc030548c45b1e397535fc6153c3f058e4a1252a9c8acd03",
+      "excerpt": "estures:!0,gitStatus:v?void 0:x,hasUnread:!_&&!v&&i.hasUnread,isAutomationRun:i.origin===\"routine\",status:_?\"branch\":E}):u&&o&&p.jsx(SJo,{repository:o}),n[13]=x,n[14]=_,n["
+    },
+    {
+      "symbol": "SJo complete",
+      "utf16Range": [
+        9809259,
+        9809623
+      ],
+      "utf8Range": [
+        9854813,
+        9855177
+      ],
+      "sha256": "7c3412500429f4480b9dc5cd3e78f69d0bc3281ba150fa7308d061d94ef6961b",
+      "excerpt": "function SJo(t){const e=ne.c(7),{repository:n}=t;let i;e[0]!==n?(i=p.jsx(Xn,{asChild:!0,children:p.jsx(\"span\",{className:\"shrink-0\",children:p.jsx(U9,{repository:n})})}),e[0]=n,e[1]=i):i=e[1];let r;e[2]!==n.name?(r=p.jsx(ni,{children:n.name}),e[2]=n.name,e[3]=r):r=e[3];let o;return e[4]!==i||e[5]!==r?(o=p.jsxs(Jn,{children:[i,r]}),e[4]=i,e[5]=r,e[6]=o):o=e[6],o}"
+    },
+    {
+      "symbol": "nFi project-menu map",
+      "utf16Range": [
+        9777540,
+        9777723
+      ],
+      "utf8Range": [
+        9823094,
+        9823277
+      ],
+      "sha256": "a31b4ee117d17d24a8274c5f0101d7a6c91feec7723c6408ce6c9300429beea9",
+      "excerpt": "m.map(ue=>p.jsxs(i4e,{checked:a.includes(ue.id),onCheckedChange:()=>c(GXn(a,ue.id)),children:[p.jsx(U9,{repository:ue}),p.jsx(\"span\",{className:\"truncate\",children:ue.name})]},ue.id))"
+    }
+  ],
+  "limits": [
+    "_Jo delegates only when showRepositoryIcon and repo are present and workspaceStatusMatrixEnabled is false.",
+    "These fragments do not establish which live Home configuration enables the row branch.",
+    "nFi mapped repository menu entries directly delegate to U9.",
+    "Static delegation and server-rendered component checks do not establish browser or native visual parity."
+  ]
+}

@@ -72,7 +72,9 @@ export function ComposerEditor(props: Props) {
           if (current.current.onPasteFiles(event.clipboardData.files)) return true;
           syncSelection();
           const parts = clipboardComposerParts(event.clipboardData.getData(COMPOSER_CLIPBOARD));
+          editor.view.dispatch(closeHistory(editor.state.tr));
           editor.commands.insertContent(parts ? inlineContent(parts) : inlineContent([{ kind: "text", text: event.clipboardData.getData("text/plain").replace(/\r\n?/g, "\n") }]));
+          editor.view.dispatch(closeHistory(editor.state.tr));
           return true;
         },
         handleDOMEvents: {
