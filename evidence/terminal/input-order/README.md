@@ -21,11 +21,22 @@ The tests use the unchanged command `echo oc-term-$((6*7)); pwd\r`, split into `
 
 A failing controlled transport proves that this renderer bridge permits reordering under that schedule. It does not prove the captured main failure used that schedule, establish upstream WebDriver event order, or make #904 causal. The original `tests/e2e/flows.mjs`, WebDriver code, marker and assertions remain unchanged.
 
-## Regression checkpoint
+## Hosted RED and correction
 
-The first checkpoint factors the existing direct invocation through `createPtyWriter(send)` without adding serialization. The six tests express the desired contract before the fix. Hosted RED is pending; no result is inferred from source inspection.
+The first published checkpoint, `7538876208f744cf33af415038945d3e0d00c39c`, factors the existing direct invocation through `createPtyWriter(send)` without serialization. In automatic CI run `42836506457`, [frontend job 129900027732](https://github.com/reason-machines/openconductor/actions/runs/42836506457/job/129900027732) failed five of the six queue cases. The independent-terminal case passed. The failures cover exact byte order, one in-flight send and caller completion, rejection recovery, input during drain, and synchronous transport errors.
 
-The planned correction is one promise tail per terminal ID, not a global queue. Each caller must receive its own transport failure, while the stored tail recovers so later input still runs. Completed tails must not delete a newer tail for the same terminal.
+The exact-command assertion failed at log lines 5892–5915:
+
+```text
++ 'echo oct-erm-$((6*7)); pwd\r'
+- 'echo oc-term-$((6*7)); pwd\r'
+```
+
+[Frontend build job 129900026870](https://github.com/reason-machines/openconductor/actions/runs/42836506457/job/129900026870) passed typechecking and then failed on the same five tests. Its build step did not run.
+
+The correction stores one promise tail per terminal ID, not a global queue. Each write starts after the preceding tail settles. The returned promise preserves that caller's transport result, while the stored tail handles rejection so later input still runs. Completed tails delete only their own map entry, never a newer tail.
+
+Current main `d8094fc7878a3add17eac2756b46fef98b00b542` was fetched before the correction. The terminal input path remains unchanged from `50e6e018`. No test assertion or E2E input was changed. Unchanged-assertion hosted GREEN is pending; the controlled RED does not establish the original E2E failure's cause.
 
 ## Verification limits
 
