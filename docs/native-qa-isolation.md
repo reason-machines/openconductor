@@ -131,6 +131,40 @@ The QA guard refuses invalid roots or paths before normal startup writes. It is
 not an OS sandbox: launching agents, terminals, selecting external repositories
 or signing in has separate effects and is outside this headless procedure.
 
+## Validate retained observer framing offline
+
+No tracked native observer consumes the historical eslogger reader. Its retained
+scratch command skipped invalid JSON lines and deleted its raw capture during
+cleanup. The optional offline command below validates an existing capture; it
+does not launch an observer or change any native admission requirement:
+
+```bash
+python3 tools/native_qa_jsonl.py retained-events.jsonl
+```
+
+The validator opens the capture read-only and emits a count only after the whole
+input passes. It refuses malformed JSON, blank lines, invalid UTF-8, duplicate
+object keys at any depth, non-JSON numeric constants, unterminated final records
+and records over 1,048,576 bytes. The limit includes the LF or CRLF delimiter;
+`--max-record-bytes` changes that per-record bound. Reads stop at the first
+refusal, with a one-based line number and zero-based frame-start byte offset.
+Diagnostics omit record contents. Keep the original capture, including refused
+records; this tool does not copy, repair, truncate or delete it.
+
+This bounds each read and parse, not the total capture size or execution time.
+Nesting refusals follow the active JSON parser's capacity, not a fixed depth.
+An empty capture has zero records; scalars and arrays are valid JSON values.
+Neither result establishes an event schema, sequence continuity, attribution,
+helper coverage or prevention. The historical raw records were not retained, so
+these checks use synthetic bytes only. Actual app, WebKit and XPC confinement
+still require the reviewed runner and enforcement tests.
+
+Run the framing regressions without an observer or native app:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 -W error::ResourceWarning -m unittest tools/test_native_qa_jsonl.py -v
+```
+
 ## Run the verifier tests on cloud
 
 ```bash
