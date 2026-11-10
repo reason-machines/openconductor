@@ -22,12 +22,14 @@ At the checked main commit, the All-query branch calls `workspaceResults(data, q
 
 The tests use invented in-memory entries and the public result-model function. They do not access a database or real workspaces. `PaletteHost` already handles archived result selection through its existing archived-workspace path; that integration is not modified or newly verified here.
 
-The product correction is intentionally unapplied in the test-only milestone. Ordinary automatic hosted CI must first confirm the focused failures. After that receipt, the intended minimal fix is to concatenate the existing active and archived `workspaceResults` calls only in the All nonempty-query branch. Assertions will remain unchanged from that failing-before milestone.
+Automatic hosted CI confirmed all three focused failures on test-only head `9915d5b97d25bc1ad3f07a42f882aea11e7b54bd`. The [frontend unit-test job](https://github.com/reason-machines/openconductor/actions/runs/42918197392/job/130185973127) reports `not ok 1426`, `1427` and `1428`: the archived-only match is absent, the mixed results omit both archived matches, and the capped results omit the archived half. The suite reports 2,028 passes and three failures. The separate frontend build job passes typecheck but stops at the same three unit-test failures before building.
+
+Current main was fetched and re-read at `0244d800782a3eaf811aac53fedc8a536218fb2b` before the correction. The minimal fix concatenates the existing active and archived `workspaceResults` calls only in the All nonempty-query branch. Every regression assertion remains unchanged from the failing-before milestone. The test file's Git blob is `754afe2701f0461fada601f43e8a71b002bae8cb` at both milestones.
 
 ## Verification and limits
 
 - Local validation is limited to TypeScript syntax checking and `git diff --check`. Actual results are recorded in the pull request after those commands run.
-- Hosted failing-before and passing-after verification are pending. No success is inferred from source inspection or syntax checks.
+- Hosted failing-before verification passed as a reproduction: the three focused assertions fail for missing archived results. Hosted passing-after verification is pending for the correction. No success is inferred from source inspection or syntax checks.
 - Empty-query recents, per-state filtering and caps, Workspaces-tab archive preferences, other tabs, and existing selection handlers are preserved by the bounded scope. The tests specifically exercise result inclusion, grouping, independent caps and the empty-query guard, not native behavior.
 - No local unit tests, application, browser, build, package install, native command, manual workflow dispatch or reference capture ran. There is no new screenshot because runtime capture is outside the admitted scope.
 - Hosted model tests can establish candidate result behavior only. Actual macOS archived-result activation, packaged execution, native confinement and full visual parity remain unverified.

@@ -229,7 +229,7 @@ function group(id: string, heading: string | undefined, items: ResultItem[]): Re
 
 /**
  * Grouped results for a tab and query, in display order (Conductor's `m_a`). `archiveFilter`
- * is the Workspaces tab's "Archived workspaces" filter; other tabs never list archived workspaces.
+ * is the Workspaces tab's "Archived workspaces" filter; All queries include both states.
  */
 export function buildResults(tab: PaletteTab, query: string, data: PaletteData, archiveFilter: ArchiveFilter = "active"): ResultGroup[] {
   const empty = query.trim() === "";
@@ -255,7 +255,7 @@ export function buildResults(tab: PaletteTab, query: string, data: PaletteData, 
       // With a query: the command groups, then Projects, then Workspaces, which stays mounted
       // with "No results found" while no project matches either.
       const projects = projectResults(data, query);
-      const workspaces = workspaceResults(data, query);
+      const workspaces = [...workspaceResults(data, query, "active"), ...workspaceResults(data, query, "archived")];
       const showWorkspaces = projects.length === 0 || workspaces.length > 0;
       return [
         ...commandGroups(tab, data, query),
