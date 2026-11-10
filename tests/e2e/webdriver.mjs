@@ -72,10 +72,10 @@ export class WebDriver {
     return `/session/${this.sessionId}${path}`;
   }
 
-  async newSession(application) {
+  async newSession(application, timeoutMs = 45000) {
     const value = await this.#call("POST", "/session", {
       capabilities: { alwaysMatch: { "tauri:options": { application } } },
-    });
+    }, timeoutMs);
     this.sessionId = value.sessionId;
     return value;
   }

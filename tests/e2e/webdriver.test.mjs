@@ -91,6 +91,63 @@ for (const [operation, method, path, value] of [
   });
 }
 
+test("session creation has the existing built-app client's 45-second launch budget", async (t) => {
+  const deadlines = [];
+  const timeout = AbortSignal.timeout;
+  t.mock.method(AbortSignal, "timeout", (ms) => {
+    deadlines.push(ms);
+    return timeout(ms);
+  });
+  t.mock.method(globalThis, "fetch", async (url) => {
+    if (url.endsWith("/session")) return Response.json({ value: { sessionId: "launched" } });
+    return Response.json({ value: "ready" });
+  });
+  const wd = new WebDriver();
+  await wd.newSession("/fixture/app");
+  assert.equal(wd.sessionId, "launched");
+  assert.equal(await wd.title(), "ready");
+  assert.deepEqual(deadlines, [45000, 30000]);
+});
+
+test("session creation can outlast ordinary requests without disabling its deadline", async (t) => {
+  t.mock.method(globalThis, "fetch", async (_url, options) => {
+    await new Promise((resolve, reject) => {
+      const timer = setTimeout(resolve, 40);
+      options.signal.addEventListener("abort", () => {
+        clearTimeout(timer);
+        reject(options.signal.reason);
+      }, { once: true });
+    });
+    return Response.json({ value: { sessionId: "launched" } });
+  });
+  const wd = new WebDriver("http://127.0.0.1:4444", 20);
+  await wd.newSession("/fixture/app", 200);
+  assert.equal(wd.sessionId, "launched");
+});
+
+test("stalled session creation cancels at its explicit launch deadline", async (t) => {
+  let aborted = false;
+  t.mock.method(globalThis, "fetch", async (_url, options) => {
+    await new Promise((resolve, reject) => {
+      const timer = setTimeout(resolve, 100);
+      options.signal.addEventListener("abort", () => {
+        clearTimeout(timer);
+        aborted = true;
+        reject(options.signal.reason);
+      }, { once: true });
+    });
+    return Response.json({ value: { sessionId: "late" } });
+  });
+  const wd = new WebDriver();
+  await assert.rejects(wd.newSession("/fixture/app", 20), (error) => {
+    assert.equal(error.name, "TimeoutError");
+    assert.match(error.message, /POST \/session timed out after 20 ms/);
+    return true;
+  });
+  assert.equal(aborted, true);
+  assert.equal(wd.sessionId, null);
+});
+
 test("a failed transport names its operation, preserves its cause, and omits the request body", async (t) => {
   const cause = new TypeError("fetch failed");
   t.mock.method(globalThis, "fetch", async () => { throw cause; });
