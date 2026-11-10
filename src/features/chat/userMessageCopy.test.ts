@@ -14,7 +14,7 @@ import { turnMenuItems } from "./turnMenu.ts";
 import { turnTime } from "./turnTime.ts";
 import { plainText, type ChatMessage } from "./types.ts";
 import { retryUserPrompt, submittedUserPrompt } from "./userContent.ts";
-import { buildRows, type DisplayRow } from "./view.ts";
+import { buildRows, type RowView as DisplayRow } from "./view.ts";
 
 const sourceText = readFileSync(new URL("./Transcript.tsx", import.meta.url), "utf8");
 const source = ts.createSourceFile("Transcript.tsx", sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -103,7 +103,7 @@ function sent(parts: ComposerPart[], attachments: PromptAttachment[] = []) {
   assert.equal(effect?.kind, "start");
   if (effect?.kind !== "start") assert.fail("Real submission must start a turn");
   assert.equal(effect.text, composerPrompt(draft).trim());
-  const step = startTurn(reasonChat("copy"), effect.text, now, "turn", effect.attachments, effect.userContent);
+  const step = startTurn(reasonChat("copy"), effect.text, now, "turn", [...effect.attachments], effect.userContent);
   return step.state.open[0]!.user;
 }
 async function copied(message: ChatMessage) {

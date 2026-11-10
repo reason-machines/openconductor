@@ -34,7 +34,9 @@ The test-only checkpoint adds `userMessageCopy.test.ts`. It executes production 
 Cases cover whitespace paths, different labels, repeated atoms beside literal mentions, multiline Markdown and HTML-like text, quoted paths, directories, label whitespace, submission trimming, attachment captions, later text blocks, legacy copy, malformed metadata, mismatched bodies, and assistant copy. Each user copy checks provider text, retry, export, fork text, and message immutability.
 
 - Passed locally: retained-source validation and `git diff --check`.
-- Hosted RED and GREEN: pending at the test-only checkpoint. The regression SHA-256 is `8e5577966a890020a9b3eab49e837696aaa74565f4fed478595c745921ef5faa`; it must remain unchanged through the correction.
+- Initial hosted RED at `985fb4fbe001c29e44fce90e753d11a7fc0a22d8`: [frontend unit job](https://github.com/reason-machines/openconductor/actions/runs/42919897505/job/130191795334), `node --test "src/**/*.test.ts"`, ran 2,049 tests: 2,041 passed and eight failed. All eight failures were the new copy-label expectations. Legacy, malformed-metadata, provider/retry/export/fork immutability, and assistant controls passed. The separate typecheck found two fixture typing errors: the exported row type is `RowView`, and the queue's readonly attachments require an array copy for `startTurn`.
+- The second test-only checkpoint corrects those two typings without changing any assertion or production code. Its regression SHA-256 is `3f7278c0afe64b2ad5b210f212a5d715cdfe2f02ddfec269ecc89b53bd4ae7be`. The next hosted RED must pass typechecking and reproduce the eight label failures; that file then remains byte-identical through the production correction.
+- Hosted GREEN is not yet run.
 - Not run locally: Node, typecheck, tests, builds, browser, native, provider operations, dependency installation, or reference JavaScript execution.
 
 ## Evidence limits
