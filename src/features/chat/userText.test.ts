@@ -8,6 +8,7 @@ import ts from "typescript";
 import { emptyTranscript } from "./reducer.ts";
 import type { SentUserContentV1 } from "./userContent.ts";
 import * as userContent from "./userContent.ts";
+import { userMessageCopyText } from "./userMessageCopy.ts";
 import * as view from "./view.ts";
 import * as groups from "./toolGroups.ts";
 import * as time from "./turnTime.ts";
@@ -75,7 +76,7 @@ async function fixture(text: string, rich?: SentUserContentV1) {
     exports: production,
     require(name: string) { assert.equal(name, "react/jsx-runtime"); return dependencies(name); },
     React, Fragment: React.Fragment, useMemo: React.useMemo, useState: React.useState, useSyncExternalStore: React.useSyncExternalStore,
-    ...view, ...groups, ...time, ...bindings,
+    ...view, ...groups, ...time, ...bindings, userMessageCopyText,
     SentUserContent: load("SentUserContent.tsx").SentUserContent,
     UserText: existsSync(new URL("./UserText.tsx", import.meta.url)) ? load("UserText.tsx").UserText : undefined,
     Tooltip: ({ children }: { children?: React.ReactNode }) => children,
@@ -181,7 +182,7 @@ test("rich sent text autolinks around unchanged file and attachment chips with i
     for (const link of f.links()) await f.event(link, "onClick", { preventDefault: () => { prevented++; } });
     assert.equal(prevented, 2); assert.deepEqual(f.opened, ["https://example.com/a", "http://example.net/b"]);
     assert.deepEqual(f.files, ["/repo/src/a.ts", "/repo/notes.txt"]);
-    await f.copy(); assert.deepEqual(f.copied, [originalText]);
+    await f.copy(); assert.deepEqual(f.copied, ["https://example.com/a @a.ts\nthen http://example.net/b!"]);
   } finally { await f.close(); }
 });
 
