@@ -30,10 +30,9 @@ export function paletteCommandFor(e: KeyEventLike, overrides: Overrides = {}): P
     if (e.key === "ArrowUp") return "first-item";
     if (e.key === "ArrowDown") return "last-item";
   }
-  // Ctrl+N / Ctrl+P move like the arrows (macOS text-field convention).
   if (e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
-    if (e.key === "n") return "next-item";
-    if (e.key === "p") return "prev-item";
+    if (e.key === "n" || e.key === "j") return "next-item";
+    if (e.key === "p" || e.key === "k") return "prev-item";
   }
   switch (resolveCommand(e, PALETTE_FOCUS, PALETTE_COMMANDS, { overrides })) {
     case "commandPalette.nextTab":
