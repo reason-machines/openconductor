@@ -27,9 +27,15 @@ The exact reserved scope is `SectionDialog.tsx` search and empty-state rendering
 
 The first checkpoint contains only the actual-component regression fixture and this evidence file, with production unchanged. The fixture compiles the real TSX and mounts it with React test renderer. Only the outer Modal boundary is replaced by its children; unknown imports fail. It does not start a browser, server, native app, or backend.
 
-Expected RED: the seven search-dependent cases fail because the real component has no Search emoji input. Three preserved controls cover create Cancel, edit Cancel, and the primary name and composing-Enter behavior.
+Hosted RED at `d506d395d9e1b0da9be3c932cf145c93d8f644e9`: [frontend unit job 130117822752](https://github.com/reason-machines/openconductor/actions/runs/42898484352/job/130117822752), lines 718–901, records seven search-dependent failures with `No instances found with props: {"placeholder":"Search emoji"}`. The three preserved controls pass: create Cancel, edit Cancel, and the primary name and composing-Enter behavior. The same head also exposes a test-only ES2021 incompatibility in `Object.hasOwn`; it is corrected to the equivalent `Object.prototype.hasOwnProperty.call` assertion, with no expectation weakened and production still unchanged, at `f4c6903b9f8a8acd70277d03164497528d884aa3`.
 
-Pending: hosted RED observation, minimal fix, unchanged regression GREEN, exact-head complete CI, and consuming-main checks. Local dependencies are absent; no installation is authorized, so local mounted component, typecheck, and build checks are not run.
+The corrected regression file is locked at SHA-256 `c8209b91cf364fd9d3097c2b0e501db915c44e047b6a44722c866a6565bb9b86`. The correction adds authored labels and keywords for the same 20 choices, a normalized substring filter, the search input, and the no-results state. It removes the obsolete fixed-set limitation comment. No selection, clear, submit, cancel, name, or composing-Enter callback is changed.
+
+Local source-only checks passed: direct Node type-stripped calls exercise empty and whitespace queries, case-insensitive label matching, keyword matching, no results, unique emoji identities, and all 20 entries. A separate comparison against main verifies exact preservation of the original glyph list and order. `git diff --check` passed. These checks do not prove mounted UI behavior.
+
+Corrected hosted RED at `f4c6903b9f8a8acd70277d03164497528d884aa3`: [unit job 130118738460](https://github.com/reason-machines/openconductor/actions/runs/42898700561/job/130118738460), lines 724–875, again records exactly seven absent-Search-emoji errors and all three preserved controls passing. [Frontend job 130118738385](https://github.com/reason-machines/openconductor/actions/runs/42898700561/job/130118738385) passes typecheck and then fails only those seven unit tests. No test expectations change after this corrected RED.
+
+Pending: locked-regression GREEN, exact-head complete CI, and consuming-main checks. Local dependencies are absent; no installation is authorized, so local mounted component, typecheck, and build checks are not run.
 
 ## Open parity boundaries
 
