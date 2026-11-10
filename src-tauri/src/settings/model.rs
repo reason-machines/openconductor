@@ -548,6 +548,11 @@ pub enum CodexToolApprovalPolicy {
 pub struct Models {
     /// Model for new chats.
     pub default: String,
+    /// Runtime for new chats. Absent in legacy settings, whose chats used Reason.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_agent: Option<AgentKind>,
+    /// False until the first successful connection or an explicit model choice.
+    pub default_initialized: bool,
     /// Model for code review; `None` means "same as default".
     #[serde(skip_serializing_if = "Option::is_none")]
     pub review: Option<String>,
@@ -619,6 +624,8 @@ impl Default for Models {
     fn default() -> Self {
         Models {
             default: DEFAULT_MODEL.to_string(),
+            default_agent: None,
+            default_initialized: false,
             review: None,
             default_thinking_enabled: true,
             review_thinking_enabled: true,

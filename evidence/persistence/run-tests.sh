@@ -27,6 +27,7 @@ doctest = false
 [dependencies]
 openconductor-db = { path = "$repo_root/crates/openconductor-db" }
 serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

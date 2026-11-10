@@ -69,7 +69,7 @@ test("a queued message is prompted once the running turn ends", async () => {
   rt.subscribe("c1", (s) => seen.push(s.queue.status));
   rt.configure("c1", ["model=x"]);
 
-  rt.submit("c1", "/ws", "first", "queue", [], "/repo");
+  rt.submit("c1", "/ws", "first", "queue", [], "/repo", "source-workspace");
   rt.submit("c1", "/ws", "second", "queue");
   await settle();
   assert.equal(f.calls.listen, 1);
@@ -78,6 +78,7 @@ test("a queued message is prompted once the running turn ends", async () => {
   assert.equal(f.prompts[0]!.req.text, "first");
   assert.equal(f.prompts[0]!.req.firstMessage, true);
   assert.equal(f.prompts[0]!.req.repoPath, "/repo");
+  assert.equal(f.prompts[0]!.req.workspaceId, "source-workspace");
   assert.deepEqual(rt.snapshot("c1").queue.items.map((m) => m.text), ["second"]);
   assert.equal(rt.snapshot("c1").queue.status, "working");
 
@@ -93,6 +94,7 @@ test("a queued message is prompted once the running turn ends", async () => {
   assert.equal(f.prompts.length, 2);
   assert.equal(f.prompts[1]!.req.text, "second");
   assert.equal(f.prompts[1]!.req.firstMessage, false);
+  assert.equal(f.prompts[1]!.req.workspaceId, "source-workspace");
   assert.equal(f.calls.open.length, 1, "the session is opened once");
   assert.deepEqual(rt.snapshot("c1").queue.items, []);
   assert.deepEqual(userTexts(rt, "c1"), ["first", "second"]);

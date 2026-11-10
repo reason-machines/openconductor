@@ -1,6 +1,9 @@
 import type { AsyncKeyValue } from "../features/terminal/tabList.ts";
 
 export const CUSTOM_SECTION_COLLAPSE_ID = "sidebar-custom-section-collapse-v1";
+export const BUILTIN_SECTION_COLLAPSE_ID = "sidebar-builtin-collapse-v1";
+export const PINNED_COLLAPSE_KEY = "navigation-section-pinned";
+export const MAIN_COLLAPSE_KEY = "navigation-section-main";
 
 function parseCollapsed(raw: string | null): ReadonlySet<string> {
   try {
@@ -19,9 +22,11 @@ export class CustomSectionCollapse {
   private writes: Promise<void> = Promise.resolve();
   private readonly listeners = new Set<() => void>();
   private readonly storage: AsyncKeyValue;
+  private readonly storageId: string;
 
-  constructor(storage: AsyncKeyValue) {
+  constructor(storage: AsyncKeyValue, storageId = CUSTOM_SECTION_COLLAPSE_ID) {
     this.storage = storage;
+    this.storageId = storageId;
   }
 
   load(): Promise<void> {
@@ -30,7 +35,7 @@ export class CustomSectionCollapse {
   }
 
   private async hydrate(): Promise<void> {
-    const collapsed = new Set(parseCollapsed(await this.storage.getItem(CUSTOM_SECTION_COLLAPSE_ID)));
+    const collapsed = new Set(parseCollapsed(await this.storage.getItem(this.storageId)));
     for (const [id, value] of this.pending) {
       if (value) collapsed.add(id);
       else collapsed.delete(id);
@@ -60,7 +65,7 @@ export class CustomSectionCollapse {
 
   private save(): void {
     const serialized = JSON.stringify([...this.snapshot]);
-    this.writes = this.writes.catch(() => {}).then(() => this.storage.setItem(CUSTOM_SECTION_COLLAPSE_ID, serialized));
+    this.writes = this.writes.catch(() => {}).then(() => this.storage.setItem(this.storageId, serialized));
   }
 
   async flush(): Promise<void> {

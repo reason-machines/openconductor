@@ -17,20 +17,27 @@ interface Props {
   onError: (message: string) => void;
 }
 
-export function WorkspaceBranchHeader({ repoId, workspace, dispatch, onError }: Props) {
+export function WorkspaceBranchHeader(props: Props) {
+  if (props.workspace.status === "archived") {
+    return <span className="chip"><BranchIcon size={12} /> {props.workspace.branch}</span>;
+  }
+  return <EditableBranchHeader {...props} />;
+}
+
+function EditableBranchHeader({ repoId, workspace, dispatch, onError }: Props) {
   const [, refresh] = useReducer((revision: number) => revision + 1, 0);
   const callbacks = useRef({ dispatch, onError });
   callbacks.current = { dispatch, onError };
-  const { id, branch } = workspace;
+  const { id, branch, status } = workspace;
   const controller = useMemo(() => createBranchHeaderController({
-    repoId, workspace: { id, branch },
+    repoId, workspace: { id, branch, status },
     renameBranch: renameWorkspaceBranch,
     markUserSetBranchName,
     copyText,
     dispatch: (action) => callbacks.current.dispatch(action),
     onError: (message) => callbacks.current.onError(message),
     onChange: refresh,
-  }), [repoId, id, branch]);
+  }), [repoId, id, branch, status]);
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
   const { editing, value, pending } = controller.state;
 

@@ -7,7 +7,7 @@
 //   (`chat.autoAcceptToolCall`), other options, No (`chat.denyToolCall`). A
 //   request that offers no reject option still gets No, which declines it
 //   (ACP `cancelled`);
-// - plan (`W7o`): the plan with Copy and Approve (`chat.approvePlan`); text sent
+// - plan (`W7o`): Copy, Hand off and Approve (`chat.approvePlan`); text sent
 //   from the composer meanwhile asks for changes instead ("Enter your plan
 //   adjustments here...");
 // - questions (`H8i`): one page per question with its options, an "Other…"
@@ -16,7 +16,7 @@
 // Bare-key shortcuts (Enter, Backspace, 1-9) only fire outside text fields
 // (keybindings/dispatcher.ts), so typing in the composer is never an answer.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs } from "../../keybindings/shortcut.ts";
@@ -33,6 +33,7 @@ interface Props {
   onAnswer: (requestId: string, answer: PermissionAnswer) => void;
   /** "Cancel agent" on the questions card. */
   onStop: () => void;
+  onHandoffPlan: (requestId: string, plan: string) => Promise<void>;
 }
 
 function useHint() {
@@ -49,14 +50,14 @@ export function pendingToolApproval(permissions: readonly PermissionPrompt[]): T
 }
 
 /** The plan and question cards above the composer; tool approvals are `ToolApproval`, in the composer. */
-export function PermissionRequests({ permissions, onAnswer, onStop }: Props) {
+export function PermissionRequests({ permissions, onAnswer, onStop, onHandoffPlan }: Props) {
   const r = permissions.find((p) => p.kind !== "permission");
   if (!r) return null;
   const answer = (a: PermissionAnswer) => onAnswer(r.requestId, a);
   return (
     <div className="prompt-wrap" data-testid="chat-permission-request" data-kind={r.kind}>
       {r.kind === "plan" ? (
-        <PlanCard key={r.requestId} plan={r.plan} onAnswer={answer} />
+        <PlanCard key={r.requestId} plan={r.plan} onAnswer={answer} onHandoff={() => onHandoffPlan(r.requestId, r.plan)} />
       ) : (
         <QuestionCard key={r.requestId} questions={r.questions} onAnswer={answer} onStop={onStop} />
       )}
@@ -113,10 +114,29 @@ export function ToolApproval({ request, onAnswer }: { request: ToolPrompt; onAns
   );
 }
 
-function PlanCard({ plan, onAnswer }: { plan: string; onAnswer: (a: PermissionAnswer) => void }) {
+function PlanCard({ plan, onAnswer, onHandoff }: { plan: string; onAnswer: (a: PermissionAnswer) => void; onHandoff: () => Promise<void> }) {
   const hint = useHint();
   const [copied, setCopied] = useState(false);
-  const approve = () => onAnswer({ kind: "plan", approved: true });
+  const [handingOff, setHandingOff] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const busy = useRef(false);
+  const approve = () => {
+    if (!busy.current) onAnswer({ kind: "plan", approved: true });
+  };
+  const handoff = async () => {
+    if (busy.current) return;
+    busy.current = true;
+    setHandingOff(true);
+    setError(null);
+    try {
+      await onHandoff();
+    } catch (e) {
+      setError(`Failed to hand off plan: ${e instanceof Error ? e.message : String(e)}`);
+    } finally {
+      busy.current = false;
+      setHandingOff(false);
+    }
+  };
   useKeybindings({ "chat.approvePlan": approve });
   useEffect(() => {
     if (!copied) return;
@@ -137,12 +157,16 @@ function PlanCard({ plan, onAnswer }: { plan: string; onAnswer: (a: PermissionAn
           <button type="button" className="prompt-small" onClick={copy} disabled={!plan} title={copied ? "Copied to clipboard" : "Copy plan to clipboard"}>
             {copied ? "Copied" : "Copy"}
           </button>
-          <button type="button" className="prompt-small is-primary" onClick={approve} title="Execute plan in current chat">
+          <button type="button" className="prompt-small" onClick={() => void handoff()} disabled={handingOff || !plan.trim()} title="Send plan to a new chat for implementation">
+            Hand off
+          </button>
+          <button type="button" className="prompt-small is-primary" onClick={approve} disabled={handingOff} title="Execute plan in current chat">
             Approve <kbd>{hint("chat.approvePlan")}</kbd>
           </button>
         </span>
       </div>
       <div className="prompt-plan">{plan ? <Markdown text={plan} className="chat-text" onOpenLink={(href) => void openUrl(href)} /> : <span className="muted">The agent sent no plan text.</span>}</div>
+      {error ? <div className="error" role="alert">{error}</div> : null}
       <div className="prompt-foot muted">Type in the box below to ask for changes instead.</div>
     </div>
   );

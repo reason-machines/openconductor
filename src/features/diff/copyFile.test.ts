@@ -50,8 +50,26 @@ test("copies the editor draft when there is one, else loads the whole new file",
   assert.equal(await copySource(file("a.ts", { status: "added" }), { loadText })!(), "loaded");
 });
 
-test("a file with no hunks or no loader has nothing to copy", () => {
-  assert.equal(copySource(file("a.ts", { status: "renamed", hunks: [] }), { loadText }), null);
+test("whitespace-hidden files still copy their complete unfiltered text", async () => {
+  const unfiltered = file("a.ts");
+  unfiltered.hunks[0].lines[1].text = "new  ";
+  const hidden = { ...unfiltered, hunks: [] };
+  let loads = 0;
+  const read = copySource(hidden, {
+    loadText: async () => {
+      loads += 1;
+      return newFileText(unfiltered);
+    },
+  });
+  assert.ok(read, "a whitespace-only diff must retain its copy action");
+  assert.equal(loads, 0, "copying loads contents only when invoked");
+  assert.equal(await read(), "keep\nnew\n");
+  assert.equal(loads, 1);
+});
+
+test("metadata-only changes without text hunks or a missing loader have nothing to copy", () => {
+  assert.equal(copySource(file("a.ts", { status: "renamed", additions: 0, deletions: 0, hunks: [] }), { loadText }), null);
+  assert.equal(copySource(file("a.ts", { additions: 0, deletions: 0, hunks: [] }), { loadText }), null);
   assert.equal(copySource(file("a.ts"), {}), null);
 });
 

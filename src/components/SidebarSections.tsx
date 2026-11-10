@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { ChevronDownIcon, ChevronIcon } from "./Icons";
 import { DROP_ATTR } from "../state/navigationSections";
 
@@ -11,18 +11,19 @@ interface GroupProps {
   label: string;
   count: number;
   children: ReactNode;
+  collapsed: boolean;
+  onToggle(): void;
   /** Pinned takes dropped rows (Conductor's `data-workspace-pinned-drop`). */
   pinnedDropZone?: boolean;
   /** A dragged row is over the group: accent fill. */
   isDropTarget?: boolean;
 }
 
-export function SidebarGroup({ label, count, children, pinnedDropZone, isDropTarget }: GroupProps) {
-  const [collapsed, setCollapsed] = useState(false);
+export function SidebarGroup({ label, count, children, collapsed, onToggle, pinnedDropZone, isDropTarget }: GroupProps) {
   return (
     <div className="sb-group" data-group={label} data-drop-target={isDropTarget || undefined} {...(pinnedDropZone ? { [DROP_ATTR.pinned]: "" } : {})}>
       <div className="sb-section-header">
-        <button type="button" className="sb-section-toggle" aria-expanded={!collapsed} onClick={() => setCollapsed(!collapsed)}>
+        <button type="button" className="sb-section-toggle" aria-expanded={!collapsed} onClick={onToggle}>
           <span className="sb-section-label">{label}</span>
           {collapsed && <span className="sb-group-count">{count}</span>}
           <span className="sb-section-chevron" data-collapsed={collapsed || undefined}>

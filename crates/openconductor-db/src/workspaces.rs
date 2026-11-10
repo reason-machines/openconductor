@@ -44,6 +44,8 @@ pub struct Workspace {
     pub initialization_parent_branch: Option<String>,
     pub intended_target_branch: Option<String>,
     pub workspace_path: Option<String>,
+    pub linked_workspace_ids: Option<String>,
+    pub linked_directory_paths: Option<String>,
     pub archive_commit: Option<String>,
     pub initialization_log_path: Option<String>,
     pub initialization_files_copied: Option<i64>,
@@ -75,7 +77,7 @@ pub struct WorkspaceWithRepo {
 const SELECT_WITH_REPO: &str = "SELECT w.local_id, w.repository_id, w.directory_name, \
     w.workspace_name, w.branch, w.placeholder_branch_name, w.state, w.derived_status, \
     w.manual_status, w.active_session_id, w.initialization_parent_branch, \
-    w.intended_target_branch, w.workspace_path, w.archive_commit, w.initialization_log_path, \
+    w.intended_target_branch, w.workspace_path, w.linked_workspace_ids, w.linked_directory_paths, w.archive_commit, w.initialization_log_path, \
     w.initialization_files_copied, w.setup_log_path, w.pinned_at, w.notes, \
     COALESCE(w.unread, 0) AS unread, w.pr_title, w.pr_description, \
     COALESCE(w.user_set_workspace_name, 0) AS user_set_workspace_name, w.number, w.created_at, w.updated_at, \

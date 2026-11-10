@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useSyncExternalStore } from "react";
 import { inTauri, openUrl } from "../backend";
 import { signedIn, type ReasonAccount } from "../settings/agents/reasonModes";
+import { rememberConnection } from "../settings/connectedDefault";
 
 export const SIGN_UP_LABEL = "Sign up";
 export const OPENING_LABEL = "Opening browser...";
@@ -108,6 +109,7 @@ async function openSignInPage(state: Extract<ReasonLoginState, { state: "waiting
 }
 
 function accept(state: ReasonLoginState) {
+  if (state.state === "connected") void rememberConnection("reason").catch((error: unknown) => console.error("Could not save first connected runtime", error));
   publish({ ...snapshot, state, statusError: null, browserError: state.state === "waiting" ? snapshot.browserError : null });
   if (state.state === "waiting" && !openedAttempts.has(state.attemptId)) {
     openedAttempts.add(state.attemptId);

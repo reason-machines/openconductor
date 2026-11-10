@@ -6,7 +6,7 @@ type KeyEvent = { key: string; preventDefault(): void; stopPropagation(): void }
 
 interface Dependencies {
   repoId: string;
-  workspace: Pick<Workspace, "id" | "branch">;
+  workspace: Pick<Workspace, "id" | "branch" | "status">;
   renameBranch(workspaceId: string, branch: string): Promise<void>;
   markUserSetBranchName(workspaceId: string): Promise<void>;
   dispatch(action: Action): void;
@@ -25,8 +25,9 @@ function errorText(error: unknown): string {
 }
 
 export function createBranchHeaderController(deps: Dependencies) {
-  const { repoId, workspace: { id, branch } } = deps;
-  const canRename = canRenameBranch(branch);
+  const { repoId, workspace: { id, branch, status } } = deps;
+  const archived = status === "archived";
+  const canRename = !archived && canRenameBranch(branch);
   const state = { editing: false, value: branch, pending: false };
 
   function startEditing() {
@@ -84,7 +85,7 @@ export function createBranchHeaderController(deps: Dependencies) {
   }
 
   async function copy() {
-    if (!branch) return;
+    if (archived || !branch) return;
     try {
       await deps.copyText(branch);
     } catch {

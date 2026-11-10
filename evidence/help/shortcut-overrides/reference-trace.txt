@@ -1,0 +1,18 @@
+{
+  "login": true,
+  "shell": "/bin/zsh",
+  "signal": null,
+  "stderr": "",
+  "stdout": "\nSYMBOL Mde definitions 1\nchar-offset 2115806 byte-offset 2116206 ion DEe(t){return Zj(t).map(YM).join(\"\")}function n7t(t){const e=wYe(t)?.key;return e?DEe(e):void 0}function Mde(){const t=ne.c(2),e=$.useSyncExternalStore(q4r,WTn,WTn);let n;return t[0]!==e?(n=K4r(e),t[0]=e,t[1]=n):n=t[1],n}function jde(t){const e=ne.c(3),n=Mde();let i;return e[0]!==t||e[1]!==n?(i=wYe(t,n),e[0]=t,e[1]=n,e[2]=i):i=e[2],i}function nFt(t){const e=ne.c(2),n=jde(t)?.key;let i;return e[0]!==n?(i=n?DEe(n):void 0,e[0]=n,e[1]=i):i=e[1],i}function iFt(){const t=ne.c(2),e=Mde();let n;return t[0]!==e?(n=Y4r({overrides:e}),t[0]=e,t[1]=n):n=t[1],n}function HH(t,e){const n=nFt(e);return n?`${t} ${n}`:t}function bbi(t){const e=ne.c(3),{part:n,enterIconClassName:i}=t;let r;return e[0]!==i||e[1]!==n?(r=n.toLowerCase()===\"enter\"?p.jsx(gf,{className:i}):YM(n),e[0]=i,e[1]=n,e[2]=r):r=e[2],r}function $ls(t){const e=ne.c(2),{children:n}=t;let i;return e[0]!==n?(i=p.jsx(\"kbd\",{className:\"inline-flex min-w-6 items-center justify-center rounded border border-border bg-muted px-1.5 py-0.5 text-xs font-medium text-muted-foreground shadow-xs\",children:n}),e[0]=n,e[1]=i):i=e[1],i}function zls(t){const e=ne.c(4),{shortcut:n}=t;let i;e[0]!==n?(i=Zj(n),e[0]=n,e[1]=i):i=e[1];let r;return e[2]!==i?(r=p.jsx(Uls,{parts:i}),e[2]=i,e[3]=r):r=e[3],r}function Uls({parts:t}){return t.map((e,n)=>p.jsx($.Fragment,{children:p.jsx($ls,{children:p.jsx(bbi,{part:e,enterIconClassName:\"size-3.5\"})})},`${e}-${n}`))}function rFt(t){const e=ne.c(4),{shortcut:n}=t;let i;e[0]!==n?(i=Zj(n),e[0]=n,e[1]=i):i=e[1];let r;return e[2]!==i?(r=p.jsx(sFt,{parts:i}),e[2]=i,e[3]=r):r=e[3],r}function sFt({parts:t}){return t.map((e,n)=>p.jsx(\"span\",{children:p.jsx(bbi,{part:e})},`${e}-${n}`))}function Hls(t){const e=ne.c(2),{shortcut:n}=t;let i;return e[0]!==n?(i=p.jsx(\"span\",{className:\"inline-flex items-center text-xs text-muted-foreground\",children:p.jsx(rFt,{shortcut:n})}),e[0]=n,e[1]=i):i=e[1],i}function Ss(t){co\n\nSYMBOL wYe definitions 0\n\nSYMBOL WTn definitions 0\n\nSYMBOL K4r definitions 0\n\nSYMBOL q4r definitions 0\n",
+  "sandbox": "none",
+  "exit_code": 0,
+  "timed_out": false,
+  "truncated": false,
+  "ignored_env": [],
+  "interactive": true,
+  "shell_flags": [
+    "-lic"
+  ],
+  "device_id": "d09524dc-bfc0-4cd6-b578-2bde6c0c7571",
+  "root_id": "6b026fee-a931-4630-82f4-1498b2013cf5"
+}

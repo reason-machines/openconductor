@@ -1,5 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { runInNewContext } from "node:vm";
+import { createElement, type ComponentType } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import ts from "typescript";
+import type { Workspace } from "../state/types";
 import { createBranchHeaderController, sanitizeHeaderBranch } from "./branchHeaderController.ts";
 
 function deferred() {
@@ -9,13 +16,13 @@ function deferred() {
   return { promise, resolve, reject };
 }
 
-function fixture(branch = "sven/full.branch", workspaceId = "ws1") {
+function fixture(branch = "sven/full.branch", workspaceId = "ws1", status: Workspace["status"] = "idle") {
   const calls: unknown[] = [];
   const errors: string[] = [];
   const rename = deferred();
   let markerError: Error | undefined;
   const controller = createBranchHeaderController({
-    repoId: "repo1", workspace: { id: workspaceId, branch },
+    repoId: "repo1", workspace: { id: workspaceId, branch, status },
     renameBranch: async (...args) => { calls.push(["rename", ...args]); await rename.promise; },
     markUserSetBranchName: async (id) => { calls.push(["mark", id]); if (markerError) throw markerError; },
     dispatch: (action) => { calls.push(action); },
@@ -32,6 +39,70 @@ function key(key: string) {
     stopPropagation() { this.stopped = true; },
   };
 }
+
+test("archived header renders only a static branch label; active headers retain Rename", () => {
+  // Transform just this TSX module for Node's renderer; native I/O stays stubbed.
+  const source = readFileSync(new URL("./WorkspaceBranchHeader.tsx", import.meta.url), "utf8");
+  const { outputText } = ts.transpileModule(source, { compilerOptions: {
+    module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2021,
+  } });
+  const calls: string[] = [];
+  const nativeCall = async () => { calls.push("native"); };
+  const require = createRequire(import.meta.url);
+  const exports: { WorkspaceBranchHeader?: ComponentType<{
+    repoId: string; workspace: Workspace; dispatch(): void; onError(): void;
+  }> } = {};
+  runInNewContext(outputText, { exports, require: (name: string) => {
+    if (name === "react" || name === "react/jsx-runtime") return require(name);
+    if (name === "./branchHeaderController") return { createBranchHeaderController };
+    if (name === "../backend") return { markUserSetBranchName: nativeCall };
+    if (name === "../workspace/api") return { renameWorkspaceBranch: nativeCall };
+    if (name === "../features/openIn/apps") return { copyText: nativeCall };
+    if (name === "./Icons") return { BranchIcon: () => null };
+    if (name === "./menu/menuIcons") return { CopyIcon: () => null, PencilIcon: () => null };
+    if (name === "./menu/ContextMenu") return { ContextMenu: () => null, MenuItem: () => null };
+    if (name.endsWith(".css")) return {};
+    throw new Error(`Unexpected component dependency: ${name}`);
+  } });
+  const Header = exports.WorkspaceBranchHeader;
+  assert.ok(Header);
+  const workspace: Workspace = { id: "ws1", name: "workspace", branch: "sven/full.branch", status: "archived", diff: { added: 0, removed: 0 }, createdAt: 0 };
+  const props = { repoId: "repo1", workspace, dispatch() {}, onError() {} };
+  const archived = renderToStaticMarkup(createElement(Header, props));
+  assert.equal(archived, '<span class="chip"> sven/full.branch</span>');
+  assert.doesNotMatch(archived, /button|input|menu|Rename/);
+  for (const status of ["idle", "needs-review"] as const) {
+    const active = renderToStaticMarkup(createElement(Header, { ...props, workspace: { ...workspace, status } }));
+    assert.match(active, /<button[^>]+aria-label="Rename branch"/);
+  }
+  assert.deepEqual(calls, []);
+});
+
+test("archived header ignores edit, Copy/Rename shortcuts, Enter and blur without side effects", async () => {
+  const { controller, calls, rename } = fixture("sven/full.branch", "archived", "archived");
+  rename.resolve();
+  controller.startEditing();
+  await controller.menuKey(key("r"));
+  controller.change("must-not-rename");
+  await controller.inputKey(key("Enter"));
+  await controller.blur();
+  await controller.menuKey(key("c"));
+  await controller.copy();
+  assert.deepEqual(calls, []);
+  assert.equal(controller.canRename, false);
+  assert.equal(controller.state.editing, false);
+  assert.equal(controller.state.pending, false);
+});
+
+test("review workspace retains the active branch editor", async () => {
+  const { controller, calls, rename } = fixture("old", "review", "needs-review");
+  controller.startEditing();
+  controller.change("new");
+  const submitted = controller.inputKey(key("Enter"));
+  rename.resolve();
+  await submitted;
+  assert.deepEqual(calls[0], ["rename", "review", "new"]);
+});
 
 test("inline edit starts with the full branch and sanitizes only disallowed runs", () => {
   const { controller } = fixture();
@@ -172,7 +243,7 @@ test("in-flight rename keeps its workspace identity separate from another header
 test("clipboard rejection is reported without renaming", async () => {
   const errors: string[] = [];
   const controller = createBranchHeaderController({
-    repoId: "repo1", workspace: { id: "ws1", branch: "full/name" },
+    repoId: "repo1", workspace: { id: "ws1", branch: "full/name", status: "idle" },
     renameBranch: async () => { assert.fail("must not rename"); },
     markUserSetBranchName: async () => { assert.fail("must not mark"); },
     dispatch: () => { assert.fail("must not dispatch"); },

@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type Dispatch, type MouseEvent as ReactMouseEvent, type MutableRefObject, type ReactNode } from "react";
 import type { Repo, Workspace } from "../state/types";
-import type { Action } from "../state/store";
+import { loadReposFromDb, type Action } from "../state/store";
+import { LinkedDirectoryPicker } from "../features/chat/LinkedDirectoryPicker.tsx";
+import { mutateWorkspaceLinks, type LinkMutation } from "../features/chat/workspaceLinks.ts";
 import { ChevronIcon, RightSidebarIcon } from "./Icons";
 import { toggleRightPanel } from "./panelPrefs";
 import { clearManuallyUnread, markManuallyUnread, readOnView, setSelectedChat, setShownChat } from "../state/autoUnread";
@@ -13,7 +15,8 @@ import { configureReason, configureReasonDefault, reasonAvailable, reasonChatCon
 import { CHAT_AGENTS, saveAgent, savedAgent, type ChatAgentId } from "../features/chat/agents.ts";
 import { chatStatuses, subscribeChatStatuses, type ChatSnapshot, type PermissionPrompt } from "../features/chat/chatRuntime.ts";
 import { PermissionRequests, ToolApproval, pendingToolApproval } from "../features/chat/PermissionRequests.tsx";
-import { completeTranscript, copiedTranscriptMessage, forkAttachmentName, forkTranscript, turnAgentLabel } from "../features/chat/fork.ts";
+import { handoffPlan } from "../features/chat/planHandoff.ts";
+import { completeTranscript, copiedTranscriptMessage, forkAttachmentName, forkTranscript } from "../features/chat/fork.ts";
 import { ChatTabMenu, type ChatTabMenuActions } from "./ChatTabMenu";
 import { RenameChatDialog } from "./RenameChatDialog";
 import { PrBadgeMenu } from "../features/pr/PrBadgeMenu";
@@ -64,7 +67,8 @@ import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
 import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
-import { attachmentPath, promptText, randomDir, rejectReason, restoreComposerAttachments, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
+import { attachmentPath, randomDir, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
+import { composerSessionFor } from "../features/chat/composerSession.ts";
 import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
 
 /** Sends a message with attached text files from the chat shown (Fix errors). */
@@ -94,6 +98,8 @@ import { ChecksTab } from "../features/pr/checks/ChecksTab";
 import { fixShortcutApplies } from "../features/pr/checks/fixErrors";
 import { useFixErrors, type FixErrors } from "../features/pr/checks/useFixErrors";
 import { AllFilesTree, FilesToolbarButtons, useFilesToolbar } from "../features/files/AllFilesTree";
+import { MarkdownFileView } from "../features/files/MarkdownFileView";
+import { isMarkdownFile } from "../features/files/fileView";
 import { useWorkspacePrSync } from "../features/pr/workspaceSync.ts";
 import { PrTab } from "../features/pr/PrTab";
 import { BranchPicker } from "../features/pr/edit/BranchPicker";
@@ -132,9 +138,6 @@ interface Props {
 const COMPOSER_AGENT: Record<ChatAgentId, ComposerAgent> = { reason: "acp", codex: "codex", claude: "claude" };
 /** The Create-workspace dialog's first message, sent when the chat opens. */
 const firstPrompts = new Map<string, string>();
-
-/** Wait after the last keystroke before the composer draft is saved. */
-const DRAFT_SAVE_DELAY_MS = 300;
 
 /** Queues the Create-workspace dialog's first message for the new workspace's chat. */
 export function seedTranscript(workspaceId: string, text: string) {
@@ -201,6 +204,28 @@ type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly Per
 function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
+  const [linkRepos, setLinkRepos] = useState<Repo[] | null>(null);
+  const linkRequest = useRef(0);
+  useEffect(() => {
+    linkRequest.current++;
+    setLinkRepos(null);
+    return () => { linkRequest.current++; };
+  }, [workspace.id]);
+  const linkWorkspace = linkRepos?.flatMap((r) => r.workspaces).find((w) => w.id === workspace.id);
+  async function openLinks() {
+    const request = ++linkRequest.current;
+    try {
+      const repos = await loadReposFromDb();
+      if (request === linkRequest.current) setLinkRepos(repos);
+    } catch (e) { if (request === linkRequest.current) setAttachError(String(e)); }
+  }
+  async function mutateLink(mutation: LinkMutation) {
+    const request = linkRequest.current;
+    await invoke("workspace_set_link", { ...mutation });
+    const repos = await loadReposFromDb();
+    if (request === linkRequest.current) setLinkRepos(repos);
+    dispatch({ type: "hydrate", repos });
+  }
   const main = chatId === workspace.id;
   const [picked, setPicked] = useState<Record<string, ChatAgentId>>({});
   const agentId: ChatAgentId = reason ? (picked[chatId] ?? savedAgent(chatId)) : "reason";
@@ -223,16 +248,18 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const planWaiting = waiting?.kind === "plan" ? waiting : undefined;
   // Conductor's composer shows the oldest tool approval in place of its editor (`Jpo`).
   const toolApproval = pendingToolApproval(permissions);
-  const [draft, setDraft] = useState("");
-  // Files going out with the next message: the user's (staged until sent) and the diff viewer's notes (the revert note after a discard).
-  const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
-  const [attachError, setAttachError] = useState<string | null>(null);
+  const session = useMemo(() => composerSessionFor(chatId, composerDrafts()), [chatId]);
+  const { draft, attachments, error: attachError } = useSyncExternalStore(session.subscribe, session.snapshot);
+  const { setDraft, setAttachments } = session;
+  const setAttachError = session.setError;
+  useEffect(() => {
+    void session.connect();
+    return () => session.disconnect();
+  }, [session]);
   /** The turn whose "Reset chat?" dialog is open. */
   const [resetTurn, setResetTurn] = useState<string | null>(null);
   /** A "Fork to new tab" is reading the chat's options. */
   const [forking, setForking] = useState(false);
-  /** The turn footer hover's "Opus 5.5 via Reason". */
-  const [turnAgent, setTurnAgent] = useState<string | undefined>(undefined);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<ComposerEditorHandle>(null);
   const running = transcript.activeTurn !== null;
@@ -248,9 +275,6 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const followUpMode = useFollowUpMode();
 
   useEffect(() => {
-    setDraft("");
-    setAttachments([]);
-    setAttachError(null);
     setAccess(codexAccess(chatId));
   }, [chatId]);
 
@@ -270,7 +294,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     const first = main ? firstPrompts.get(workspace.id) : undefined;
     if (first !== undefined) {
       firstPrompts.delete(workspace.id);
-      agent.submit(runId, cwd, first, "queue", [], repo.path || undefined);
+      agent.submit(runId, cwd, first, "queue", [], repo.path || undefined, workspace.id);
     }
     return unsubscribe;
   }, [chatId, agentId]);
@@ -280,48 +304,6 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     setPicked((p) => ({ ...p, [chatId]: next }));
   }
 
-  // The draft is kept between launches (`composer-drafts`, keyed by the chat
-  // session, which is the workspace): loaded when the workspace opens, saved
-  // after typing pauses and when the workspace changes; an empty draft is
-  // removed.
-  const draftLoadedFor = useRef<string | null>(null);
-  const pendingDraft = useRef<{ id: string; text: string; attachments: ComposerAttachment[] } | null>(null);
-  const flushDraft = useCallback(() => {
-    const p = pendingDraft.current;
-    pendingDraft.current = null;
-    if (p) void (p.text === "" && p.attachments.length === 0 ? composerDrafts().clear(p.id) : composerDrafts().save(p.id, p.text, p.attachments));
-  }, []);
-  useEffect(() => {
-    let live = true;
-    draftLoadedFor.current = null;
-    const id = workspace.id;
-    composerDrafts()
-      .load(id)
-      .then(
-        (saved) => {
-          if (!live) return;
-          draftLoadedFor.current = id;
-          const message = typeof saved === "string" ? saved : saved.message;
-          const restored = restoreComposerAttachments(typeof saved === "string" ? [] : saved.attachments);
-          if (message) setDraft((d) => (d === "" ? message : d));
-          setAttachments((current) => current.length === 0 ? restored : current);
-        },
-        () => {
-          if (live) draftLoadedFor.current = id;
-        },
-      );
-    return () => {
-      live = false;
-      flushDraft();
-    };
-  }, [workspace.id, flushDraft]);
-  useEffect(() => {
-    if (draftLoadedFor.current !== workspace.id) return;
-    pendingDraft.current = { id: workspace.id, text: draft, attachments };
-    const timer = setTimeout(flushDraft, DRAFT_SAVE_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [draft, attachments, workspace.id, flushDraft]);
-
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
   }, [transcript, waiting]);
@@ -330,23 +312,33 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   function submit(text: string, mode: SendMode, attached: readonly TextAttachment[] = []) {
     if (!text.trim() && attached.length === 0) return;
     const first = main && !agent.snapshot(runId).transcript.messages.some((m) => m.role === "user");
-    agent.submit(runId, cwd, text, mode, attached, repo.path || undefined);
+    agent.submit(runId, cwd, text, mode, attached, repo.path || undefined, workspace.id);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
-  // The chat's model, for the turn footer hover. A Codex or Claude Code chat names only its agent.
-  useEffect(() => {
-    let live = true;
-    setTurnAgent(agent.label);
-    if (agentId === "reason")
-      void reasonChatConfig(chatId).then((config) => {
-        if (live) setTurnAgent(turnAgentLabel(config.find((o) => o.id === "model")?.value, "Reason"));
-      });
-    return () => {
-      live = false;
-    };
-  }, [chatId, agentId]);
+  async function handoffPlanToTab(requestId: string, plan: string) {
+    const config = agentId === "reason" ? defaultChatConfig(await getSettings()) : [];
+    const answer = agent.answerPermission;
+    if (!answer) throw new Error("This agent cannot answer plan requests.");
+    await handoffPlan({
+      plan,
+      attachmentPath: attachmentPath("plan.md", randomDir()),
+      isPending: () => agent.snapshot(runId).permissions.some((p) => p.kind === "plan" && p.requestId === requestId),
+      stage: async (attachment) => {
+        await draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath: attachment.name, data: new TextEncoder().encode(attachment.text) });
+      },
+      openDraft: (draft) => {
+        const id = forkToNewTab("Implement plan", config, draft);
+        saveAgent(id, agentId);
+      },
+      reject: () => answer(runId, requestId, { kind: "plan", approved: false }),
+      stop: () => agent.stop(runId),
+    }).catch((error: unknown) => {
+      notify?.("error", `Failed to hand off plan: ${error instanceof Error ? error.message : String(error)}`);
+      throw error;
+    });
+  }
 
   /**
    * Conductor's "Fork to new tab" (`y9t`): a new tab in this workspace on this
@@ -477,47 +469,21 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
 
   /** Stages each file (Conductor's draft attachments); it reaches the workspace when the message is sent. */
   async function attachFiles(files: File[]) {
-    setAttachError(null);
-    for (const file of files) {
-      const why = rejectReason(file);
-      if (why) {
-        setAttachError(why);
-        continue;
-      }
-      try {
-        const bytes = new Uint8Array(await file.arrayBuffer());
-        const relativePath = attachmentPath(file.name, randomDir());
-        if (reason) await draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data: bytes });
-        const a: ComposerAttachment = { name: relativePath, label: file.name, text: promptText(bytes, relativePath), ...(reason ? { staged: relativePath } : {}) };
-        setAttachments((list) => addAttachment(list, a));
-      } catch (e) {
-        setAttachError(`Failed to attach ${file.name}: ${e instanceof Error ? e.message : String(e)}`);
-      }
-    }
+    await session.attach(files, reason ? (relativePath, data) => draftAttachmentsApi.write({ draftWorkspaceId: workspace.id, relativePath, data }) : undefined);
   }
 
   function removeAttachment(a: ComposerAttachment) {
+    if (session.sending) return;
     setAttachments((list) => list.filter((x) => x.name !== a.name));
     if (a.staged) draftAttachmentsApi.remove({ localWorkspaceId: workspace.id, relativePath: a.staged }).catch((e) => console.warn("chat: staged attachment not removed", e));
   }
 
-  /** Copies staged files into the workspace (`.context/attachments/…`), then sends. */
+  /** Copies every staged file before delivering any part of the message. */
   async function onSubmit(text: string, mode: SendMode) {
-    const sending = attachments;
-    setAttachments([]);
-    setAttachError(null);
-    const failed: string[] = [];
-    for (const a of sending) {
-      if (!a.staged) continue;
-      try {
-        await draftAttachmentsApi.uploadToWorkspace({ localWorkspaceId: workspace.id, relativePath: a.staged, workspacePath: cwd });
-      } catch (e) {
-        console.warn("chat: attachment not copied into the workspace", e);
-        failed.push(a.label ?? a.name);
-      }
-    }
-    if (failed.length > 0) setAttachError(`Not copied into the workspace (sent inline only): ${failed.join(", ")}`);
-    submit(text, mode, sending.map(({ name, text }) => ({ name, text })));
+    await session.send(
+      (relativePath) => draftAttachmentsApi.uploadToWorkspace({ localWorkspaceId: workspace.id, relativePath, workspacePath: cwd }),
+      (sending) => submit(text, mode, sending.map(({ name, text }) => ({ name, text }))),
+    );
   }
 
   return (
@@ -570,7 +536,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             // end checkpoint under the Reason chat id, so Codex and Claude Code chats do not offer it yet.
             onForkToNewWorkspace={reason && agentId === "reason" && workspace.path && workspace.status !== "archived" ? (turnId) => void forkToWorkspace(turnId) : undefined}
             forkDisabled={forking}
-            turnAgent={turnAgent}
+            turnAgent={agent.label}
             chatAgent={agentId}
           />
         )}
@@ -583,7 +549,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           onClose={() => setResetTurn(null)}
         />
       ) : null}
-      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => void agent.answerPermission?.(runId, requestId, answer)} onStop={() => agent.stop(runId)} />
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => void agent.answerPermission?.(runId, requestId, answer)} onStop={() => agent.stop(runId)} onHandoffPlan={handoffPlanToTab} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
@@ -608,6 +574,17 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           </button>
         </div>
       ) : null}
+      {linkRepos ? <LinkedDirectoryPicker
+        key={workspace.id}
+        repos={linkRepos}
+        repositoryId={repo.id}
+        excludedPaths={[cwd]}
+        linkedWorkspaceIds={linkWorkspace?.linkedWorkspaceIds}
+        linkedDirectoryPaths={linkWorkspace?.linkedDirectoryPaths}
+        onChoose={(selection) => mutateWorkspaceLinks({ workspaceId: workspace.id, selection, linkedWorkspaceIds: linkWorkspace?.linkedWorkspaceIds ?? [], mutate: mutateLink })}
+        onRemoveDirectory={(path) => mutateLink({ workspaceId: workspace.id, kind: "directory", value: path, linked: false })}
+        onClose={() => { linkRequest.current++; setLinkRepos(null); }}
+      /> : null}
       <AgentBinaryBanner agent={binaryAgentFor(agentId)} />
       {toolApproval ? (
         <div className="composer-wrap">
@@ -623,6 +600,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       <Composer
         key={chatId}
         draft={draft}
+        clearOnSubmit={planWaiting !== undefined}
         setDraft={setDraft}
         inputRef={inputRef}
         workspacePath={cwd}
@@ -636,6 +614,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         onStop={() => agent.stop(runId)}
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
+        onLinkWorkspaces={() => void openLinks()}
         controls={
           // Codex's access mode; the agent itself is picked in the model picker.
           codex ? (
@@ -671,6 +650,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           // Conductor's built-in effects are not wired here yet; the agent's own commands and skills go to the agent as typed.
           const cmd = parseSlashCommand(text, isKnownCommand);
           if (!cmd || slashCommands.some((c) => c.name === cmd.name && (c.effect === "agent" || c.effect === "skill"))) return false;
+          if (slashCommands.some((c) => c.name === cmd.name && c.effect === "pick_linked_directory")) { void openLinks(); return true; }
           const who = agentId === "reason" ? "Reason" : AGENT_NAMES[COMPOSER_AGENT[agentId]];
           setAttachError(cmd.name === "plan" ? "Plan mode is not available in this chat." : `/${cmd.name} is not available for ${who}.`);
           return true;
@@ -717,7 +697,7 @@ interface RightPanelProps {
   targetControl?: ReactNode;
 }
 
-function RightPanel({ workspaceId, diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl }: RightPanelProps) {
+function RightPanel({ workspaceId, diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl, onOpenFile }: RightPanelProps & { onOpenFile: (path: string) => boolean }) {
   const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
   // Picking a turn's file in the chat shows that turn's changes list.
   useEffect(() => {
@@ -792,7 +772,7 @@ function RightPanel({ workspaceId, diff, actions, pr, worktree, review, fixError
           readOnly={readOnly}
         />
       ) : (
-        <AllFilesTree worktree={worktree} notify={notify} toolbar={files} />
+        <AllFilesTree worktree={worktree} notify={notify} toolbar={files} onOpenFile={onOpenFile} />
       )}
     </section>
   );
@@ -828,9 +808,10 @@ interface MainTabsProps {
   chatMenu: (chatId: string, title: string) => Omit<ChatTabMenuActions, "toggleRead">;
   /** The "+" after the chat tabs (NewChatButton). */
   newChat: ReactNode;
+  fileTab: ReactNode;
 }
 
-function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, terminals, onCloseTerminal, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, chatMenu, newChat }: MainTabsProps) {
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, terminals, onCloseTerminal, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, chatMenu, newChat, fileTab }: MainTabsProps) {
   const [menu, setMenu] = useState<{ chatId: string; title: string; x: number; y: number } | null>(null);
   const openMenu = (chatId: string, tabTitle: string) => (e: ReactMouseEvent) => {
     e.preventDefault();
@@ -889,6 +870,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, terminal
           </span>
         );
       })}
+      {fileTab}
       {newChat}
     </div>
   );
@@ -959,6 +941,15 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   useEffect(() => {
     if (mainTab.startsWith("terminal:") && !centerTerminal) setMainTab("chat");
   }, [mainTab, centerTerminal]);
+  const [fileTarget, setFileTarget] = useState<{ path: string; workspaceId: string } | null>(null);
+  useEffect(() => setFileTarget(null), [workspace.id]);
+  const openMarkdown = (path: string) => {
+    if (!workspace.path || !isMarkdownFile(path)) return false;
+    setFileTarget({ path, workspaceId: workspace.id });
+    setMainTab("file");
+    return true;
+  };
+  const closeFile = () => { setFileTarget(null); setMainTab("chat"); };
   const [prOpen, setPrOpen] = useState(false);
   const [pickingTarget, setPickingTarget] = useState(false);
   const [pickingChangesTarget, setPickingChangesTarget] = useState(false);
@@ -1142,11 +1133,12 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   const showDiff = diffOpen && mainTab === "diff";
   const showPr = prOpen && mainTab === "pr";
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
-  const activeTab = centerTerminal ? `terminal:${centerTerminal.id}` : showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
+  const showFile = mainTab === "file" && fileTarget !== null && fileTarget.workspaceId === workspace.id && workspace.path !== undefined;
+  const activeTab = showFile ? "file" : centerTerminal ? `terminal:${centerTerminal.id}` : showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const prNumber = pullRequest.pr?.number ?? null;
   const [prMenu, setPrMenu] = useState<{ x: number; y: number } | null>(null);
   useEffect(() => {
-    if (activeTab !== "diff" && activeTab !== "pr" && !activeTab.startsWith("terminal:")) recordViewedChat(workspace.id, activeTab);
+    if (activeTab !== "diff" && activeTab !== "pr" && activeTab !== "file" && !activeTab.startsWith("terminal:")) recordViewedChat(workspace.id, activeTab);
   }, [workspace.id, activeTab]);
   // ⌘W closes the tab on screen and ⌘⇧T reopens the last closed one, as Conductor's workspace
   // view does. The workspace's own chat has no close button here, so ⌘W leaves it. Inside a
@@ -1154,7 +1146,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   useKeybindings(
     {
       "nav.closeTab": () => {
-        if (activeTab === "diff") closeDiffTab();
+        if (activeTab === "file") closeFile();
+        else if (activeTab === "diff") closeDiffTab();
         else if (activeTab === "pr") closePrTab();
         else if (centerTerminal) closeTab(workspace.id, centerTerminal.id);
         else if (activeTab !== "chat") closeReview(activeTab);
@@ -1170,7 +1163,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   shownChat.current = activeReview?.chatId ?? workspace.id;
   // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
   // skips it while the window has focus, and an unread workspace shown that way is read.
-  const transcriptShown = showDiff || showPr || centerTerminal ? null : shownChat.current;
+  const transcriptShown = showDiff || showPr || centerTerminal || showFile ? null : shownChat.current;
   const focused = useWindowFocused();
   useEffect(() => {
     setShownChat(transcriptShown);
@@ -1300,7 +1293,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
       </header>
       <div className={`ws-split${rightPanelVisible ? "" : " right-hidden"}`}>
         <div className="ws-main">
-          <MainTabs title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
+          <MainTabs fileTab={fileTarget?.workspaceId === workspace.id ? <span className={`main-tab${showFile ? " active" : ""}`}><button role="tab" aria-selected={showFile} onClick={() => setMainTab("file")}>{fileTarget.path.split("/").pop()}</button><button className="main-tab-close" aria-label={`Close ${fileTarget.path} tab`} onClick={closeFile}>×</button></span> : null} title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
           <div className="ws-chat-host" hidden={centerTerminal !== undefined}>
         <ChatPanel
           repo={repo}
@@ -1318,7 +1311,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
           forkToNewTab={reviews.fork}
           chatTabs={[{ chatId: workspace.id, title: workspace.chatTitle ?? workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
           content={
-            showDiff ? (
+            showFile && fileTarget && workspace.path ? (
+              <MarkdownFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} />
+            ) : showDiff ? (
               <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />
             ) : showPr ? (
               <PrTab
@@ -1346,6 +1341,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
         {rightPanelVisible && (
           <div className={`ws-right${stripOpen ? "" : " strip-collapsed"}`}>
             <RightPanel
+              onOpenFile={openMarkdown}
               workspaceId={workspace.id}
               diff={diff}
               actions={review.actions}

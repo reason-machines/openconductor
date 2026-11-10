@@ -24,14 +24,14 @@ export function isTextPath(path: string): boolean {
 /**
  * What the copy button copies for `file`, or null when the header has no copy
  * button. `draft` is the entire-file editor's text; `loadText` loads the whole
- * new file. A file with no hunks (a pure rename or mode change) has no text a
- * diff can give, so it gets no button rather than an empty copy.
+ * new file. Whitespace filtering can hide every hunk while retaining nonzero
+ * counts. Metadata-only changes still have no text a diff can reconstruct.
  */
 export function copySource(file: FileDiff, from: { draft?: () => string; loadText?: () => Promise<string> }): (() => Promise<string>) | null {
   if (file.status === "deleted" || file.binary || !isTextPath(file.path)) return null;
   const { draft, loadText } = from;
   if (draft) return async () => draft();
-  if (loadText && file.hunks.length > 0) return loadText;
+  if (loadText && (file.hunks.length > 0 || file.additions > 0 || file.deletions > 0)) return loadText;
   return null;
 }
 

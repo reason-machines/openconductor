@@ -21,6 +21,9 @@ const l = (x1: number, y1: number, x2: number, y2: number): Node => ({ kind: "li
 
 const ALERT: Shape = { nodes: [c(12, 12, 10), l(12, 8, 12, 12), l(12, 16, 12.01, 16)] };
 const PULL: Shape = { nodes: [c(18, 18, 3), c(6, 6, 3), p("M13 6h3a2 2 0 0 1 2 2v7"), l(6, 9, 6, 21)] };
+// REA LXo/WXo, renderApp 5199d392…; Sven requests the branch glyph for local rows too.
+// Reference rules and the deliberate local-row override: evidence/sidebar-pr-icons/README.md.
+const BRANCH: Shape = { nodes: [p("M15 6a9 9 0 0 0-9 9V3"), c(18, 6, 3), c(6, 18, 3)] };
 
 const SHAPES: Partial<Record<RowStatus, Shape>> = {
   unstarted: { nodes: [c(12, 12, 9)] },
@@ -58,15 +61,8 @@ const SHAPES: Partial<Record<RowStatus, Shape>> = {
   "checks-failing": { nodes: [p("M18 6 6 18"), p("m6 6 12 12")] },
   "checks-pending": PULL,
   "open-pr": PULL,
-  local: {
-    nodes: [
-      p("M10 16h.01"),
-      p("M2.212 11.577a2 2 0 0 0-.212.896V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5.527a2 2 0 0 0-.212-.896L18.55 5.11A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"),
-      p("M21.946 12.013H2.054"),
-      p("M6 16h.01"),
-    ],
-  },
-  branch: { nodes: [p("M15 6a9 9 0 0 0-9 9V3"), c(18, 6, 3), c(6, 18, 3)] },
+  local: BRANCH,
+  branch: BRANCH,
 };
 
 function draw(n: Node, key: number): ReactNode {
@@ -82,13 +78,10 @@ function draw(n: Node, key: number): ReactNode {
   }
 }
 
-/** Three dots that pulse in turn: the agent is working, setting up or waiting. */
 function Loader({ size }: { size: number }) {
   return (
-    <svg className="sb-ws-loader" width={size} height={size} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-      <circle cx="3" cy="8" r="1.5" />
-      <circle cx="8" cy="8" r="1.5" />
-      <circle cx="13" cy="8" r="1.5" />
+    <svg className="sb-ws-loader" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 2a10 10 0 1 0 10 10" />
     </svg>
   );
 }
