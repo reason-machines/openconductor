@@ -18,7 +18,7 @@ These are static source observations, not runtime observations of Conductor.
 
 ## Fresh-main mismatch and bounded mapping
 
-After #951 merged, the checked default head was `94bab92ec9d56bc751207f45196e38de0fb7cc82`. Its `ModelPicker.tsx` has no query-keyed layout effect or scroll-position reset. Its `.oc-model-list` is the confirmed result viewport: the existing CSS gives it `display: grid`, `align-content: start`, `overflow-y: auto`, and `min-height: 0`.
+After #951 merged, the checked default head was `94bab92ec9d56bc751207f45196e38de0fb7cc82`. Main was refreshed again at `b32eff2702b3e78f28b375eca45f4cc4dfbd35b0` before the correction; the picker and both #951 fixture files remained byte-identical. Its `ModelPicker.tsx` has no query-keyed layout effect or scroll-position reset. Its `.oc-model-list` is the confirmed result viewport: the existing CSS gives it `display: grid`, `align-content: start`, `overflow-y: auto`, and `min-height: 0`.
 
 The bounded correction uses the existing picker root ref to resolve only that picker's `.oc-model-list`, then resets its `scrollTop` in a layout effect keyed by the raw query. The raw query includes blank and whitespace changes, matching the retained `[o]` dependency. An unchanged query does not reset a user's later scroll. An absent root or list is harmless. The outer menu and sibling pickers are not reset.
 
@@ -28,7 +28,11 @@ The exact implementation scope is the React import and query-layout-effect hunk 
 
 The test-only checkpoint precedes the product correction. Automatic hosted CI runs `node --test "src/**/*.test.ts"`. The new fixtures execute OpenConductor's extracted query-layout-effect callback against explicit scroll-state objects. They do not execute reference JavaScript.
 
-Seven fixtures cover starting a search, refining it, replacing it with no results, clearing it with blank or whitespace input, retaining a user's scroll for an unchanged query, isolating the result viewport, and tolerating an absent picker or list. RED must be an executed scroll-state assertion, not a missing-ref string assertion. Hosted RED is pending at this checkpoint; the product correction has not been applied.
+Seven fixtures cover starting a search, refining it, replacing it with no results, clearing it with blank or whitespace input, retaining a user's scroll for an unchanged query, isolating the result viewport, and tolerating an absent picker or list.
+
+Hosted RED was confirmed on test-only head `c2ded5c223a1d7d466d7e97768df25c53ada68fa` in [CI run 42924830087, frontend unit job 130208538610](https://github.com/reason-machines/openconductor/actions/runs/42924830087/job/130208538610). The four scroll-state assertions failed with actual offsets `176`, `96`, `64`, and `128`, each expected to be `0`. The other three scroll fixtures passed. The full frontend run reported 2,089 tests, 2,085 passing and exactly these four failing. These are executed state assertions, not a missing-ref string check.
+
+The correction imports `useLayoutEffect` and resets only the root-scoped `.oc-model-list` on raw query changes. All seven scroll fixtures are unchanged from the RED checkpoint. Hosted GREEN and the full exact-head check suite are pending after publication.
 
 The eight mouse fixtures and seven height fixtures from #951 remain byte-identical to merged main. Their SHA-256 values are `45d080e56eb16052b9406df4685ae2fea95fb7b17c056451787e809332484b68` and `da4b7c76d081c1eb77d151c5d8f66e1428817f8d1ae6ab2d768bf7807f461c13`, respectively. Their assertions and `MODEL_PICKER_REGRESSION_REF` input are preserved.
 
