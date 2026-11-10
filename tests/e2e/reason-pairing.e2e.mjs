@@ -7,7 +7,7 @@ import { join, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import { once } from "node:events";
 import { chromium } from "playwright-core";
-import { createServer } from "vite";
+import { startViteFixture } from "./vite-fixture-server.mjs";
 import { startPairingServer } from "../../tools/reason-pairing/server.mjs";
 import { buildRustBridge, startRustBridge } from "../../tools/reason-pairing/rust-bridge.mjs";
 
@@ -27,17 +27,19 @@ before(async () => {
   binary = await buildRustBridge(resolve("."), join(temporary, "rust"));
   pairing = await startPairingServer();
   if (!base) {
-    vite = await createServer({ server: { host: process.env.TEST_VITE_HOST ?? "127.0.0.1", port: Number(process.env.TEST_VITE_PORT ?? 0), strictPort: true }, logLevel: "error" });
-    await vite.listen();
-    base = vite.resolvedUrls.local[0].replace(/\/$/, "");
+    vite = await startViteFixture();
+    base = vite.base;
   }
   browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
 });
 after(async () => {
-  await browser?.close();
-  await vite?.close();
-  await pairing?.close();
-  if (temporary) await rm(temporary, { recursive: true, force: true });
+  try {
+    const results = await Promise.allSettled([browser?.close(), vite?.close(), pairing?.close()]);
+    const errors = results.filter((result) => result.status === "rejected").map((result) => result.reason);
+    if (errors.length) throw new AggregateError(errors, "Pairing fixture cleanup failed");
+  } finally {
+    if (temporary) await rm(temporary, { recursive: true, force: true });
+  }
 });
 
 async function fixture({ entry = "settings", strict = true, workspace, timeoutMs, loginDelayMs, existing = false, pending = false, failOpen = false, stateTimeoutMs = 10_000 } = {}) {
