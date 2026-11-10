@@ -26,6 +26,7 @@ const callbacks = new Map<number, (e: { event: string; payload: unknown }) => vo
 const eventOf = new Map<number, string>();
 const prompts = new Map<string, () => void>();
 const promptTexts = new Map<string, string[]>();
+const promptArgs = new Map<string, Record<string, unknown>[]>();
 let nextCallback = 1;
 const store = new Map<string, string>();
 const g = globalThis as Record<string, unknown>;
@@ -51,6 +52,7 @@ g.__TAURI_INTERNALS__ = {
     if (cmd === "codex_prompt") {
       const chatId = args.chatId as string;
       promptTexts.set(chatId, [...promptTexts.get(chatId) ?? [], args.text as string]);
+      promptArgs.set(chatId, [...promptArgs.get(chatId) ?? [], args]);
       return new Promise<void>((resolve) => prompts.set(chatId, resolve));
     }
     return null;
@@ -111,6 +113,36 @@ test("Codex adapter keeps V1 separate from exact inline attachment text through 
   await until(() => (promptTexts.get(chatId)?.length ?? 0) === 2, "queued rich prompt");
   assert.equal(promptTexts.get(chatId)?.[1], second.text);
   assert.deepEqual(codex.codexSnapshot(chatId).transcript.messages.filter((m) => m.role === "user").map((m) => m.userContent), [first.userContent, second.userContent]);
+  emit({ chatId, type: "turnEnded", outcome: "completed" } satisfies CodexPayload);
+  prompts.get(chatId)?.();
+});
+
+test("Codex sends each picked local loadout on dispatch, including queued changes and absent effort", async () => {
+  const chatId = "codex-picked-options";
+  const key = `openconductor.composer.model.${chatId}`;
+  store.set(key, JSON.stringify({ agent: "codex", model: "dynamic-codex", effort: "high" }));
+  codex.submitCodex(chatId, "/ws", { text: "first" });
+  await until(() => (promptArgs.get(chatId)?.length ?? 0) === 1, "picked Codex prompt");
+  assert.equal(promptArgs.get(chatId)?.[0]?.model, "dynamic-codex");
+  assert.equal(promptArgs.get(chatId)?.[0]?.effort, "high");
+
+  store.set(key, JSON.stringify({ agent: "codex", model: "next-codex", effort: null }));
+  codex.submitCodex(chatId, "/ws", { text: "queued" });
+  assert.equal(promptArgs.get(chatId)?.length, 1, "the active turn is not reconfigured");
+  const firstEnd = prompts.get(chatId);
+  emit({ chatId, type: "turnEnded", outcome: "completed" } satisfies CodexPayload);
+  firstEnd?.();
+  await until(() => (promptArgs.get(chatId)?.length ?? 0) === 2, "updated queued Codex prompt");
+  assert.equal(promptArgs.get(chatId)?.[1]?.model, "next-codex");
+  assert.ok(!("effort" in promptArgs.get(chatId)![1]!), "no static effort is invented");
+  emit({ chatId, type: "turnEnded", outcome: "completed" } satisfies CodexPayload);
+  prompts.get(chatId)?.();
+
+  store.set(key, JSON.stringify({ agent: "claude", model: "dynamic-codex", effort: "max" }));
+  codex.submitCodex(chatId, "/ws", { text: "different provider" });
+  await until(() => (promptArgs.get(chatId)?.length ?? 0) === 3, "unmatched Codex prompt");
+  assert.ok(!("model" in promptArgs.get(chatId)![2]!));
+  assert.ok(!("effort" in promptArgs.get(chatId)![2]!));
   emit({ chatId, type: "turnEnded", outcome: "completed" } satisfies CodexPayload);
   prompts.get(chatId)?.();
 });

@@ -41,6 +41,18 @@ test("a favorite pick applies its own effort; an effort pick keeps the model", (
   assert.deepEqual(pickLaunch(claude, { model: "gpt-5.5", effort: "ultracode" }, s), { agent: "codex", model: "gpt-5.5", effort: "max" });
 });
 
+test("explicit live catalog picks retain their agent and effort without hardcoded validation", () => {
+  const current = { agent: "claude", model: "opus", effort: "high" };
+  assert.deepEqual(pickLaunch(current, { agent: "codex", model: "new-codex-id", effort: "adaptive" }, DEFAULT_SETTINGS), { agent: "codex", model: "new-codex-id", effort: "adaptive" });
+  assert.deepEqual(pickLaunch(current, { agent: "codex", model: "new-codex-id", effort: null }, DEFAULT_SETTINGS), { agent: "codex", model: "new-codex-id", effort: "" });
+});
+
+test("launch uses only slot1, including explicit runtime and absent effort", () => {
+  const favorite = { id: "a", type: "built-in" as const, agent: "codex" as const, model: "new-codex-id", fastMode: false };
+  assert.deepEqual(launchDefaults(DEFAULT_SETTINGS, [favorite, null, null, null, null]), { agent: "codex", model: "new-codex-id", effort: "" });
+  assert.deepEqual(launchDefaults(DEFAULT_SETTINGS, [null, favorite, null, null, null]), { agent: "reason", model: "default", effort: "" });
+});
+
 test("the loadout lists built-in favorites with their effort and skips ACP ones", () => {
   assert.deepEqual(
     loadoutPicks([
@@ -48,6 +60,6 @@ test("the loadout lists built-in favorites with their effort and skips ACP ones"
       { id: "b", type: "acp", acpAgentId: "some-acp-agent", modelId: "x" },
       { id: "c", type: "built-in", agent: "codex", model: "gpt-5.5", fastMode: false },
     ]),
-    [{ model: "opus-5-5-1m", effort: "max" }, { model: "gpt-5.5", effort: null }],
+    [{ agent: "claude", model: "opus-5-5-1m", effort: "max" }, { agent: "codex", model: "gpt-5.5", effort: null }],
   );
 });
