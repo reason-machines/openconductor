@@ -18,24 +18,12 @@ const TICK_MS = 100;
  * selects it; ArrowDown (`onboarding.nextSlide`) goes to the next and Enter
  * (`onboarding.continue`) continues.
  *
- * Like Conductor, it shows "Sign up" (src/onboarding/SignIn.tsx) until the
- * account is signed in, then "Continue", and moves on by itself once signed
- * in (`wBi`'s auto_advance). The account is Reason's (`reason status`). Local
- * agents need no account, so signed out it also offers "Continue without
- * signing in", and Enter continues either way (Conductor's Enter waits for
- * the account).
+ * The default agent is an explicit choice. Reason sign-in is optional and
+ * does not advance this screen; Continue persists the choice either way.
  */
 export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue: (agent: AgentKind) => void; busy: boolean; onFailed: SignUpProps["onFailed"] }) {
   const [agent, setAgent] = useState<AgentKind>("reason");
   const account = useReasonAccount();
-  // wBi: once signed in, finish without waiting for Continue (once).
-  const advanced = useRef(false);
-  useEffect(() => {
-    if (account && !advanced.current) {
-      advanced.current = true;
-      onContinue(agent);
-    }
-  }, [account, agent, onContinue]);
   const [current, setCurrent] = useState<Slide["id"]>("repo");
   const [progress, setProgress] = useState(0);
   const select = useCallback((id: Slide["id"]) => {

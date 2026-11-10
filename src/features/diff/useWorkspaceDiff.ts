@@ -10,6 +10,9 @@ import { keyedCache } from "../../lib/keyedCache.ts";
 import { discardFileChanges, loadWorkspaceDiff, WHOLE_FILE_CONTEXT } from "./api.ts";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { nextUnread, step } from "./nav.ts";
+import { changeRows } from "./changesTree.ts";
+import { filterChangedFiles } from "./changesFilter.ts";
+import { useChangesPresentation } from "./useChangesPresentation.ts";
 import { discardScope, type DiffTarget, type DiscardSource } from "./target.ts";
 import type { TurnRef } from "./turnChangesCache.ts";
 import { newFileText } from "./copyFile.ts";
@@ -56,6 +59,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   const target = useMemo<DiffTarget>(() => ({ branch, remote }), [branch, remote]);
   const [opts, setOpts] = useState<DiffViewOptions>(initialOptions);
   const [viewed, setViewedMap] = useState<ViewedMap>(() => loadViewed(localStorage, workspaceId));
+  const { presentation } = useChangesPresentation(workspaceId);
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   // The file waiting for the discard confirmation and the scope it will be restored from.
   const [pending, setPending] = useState<{ file: FileDiff; scope: DiffScope } | null>(null);
@@ -120,6 +124,9 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   }, [workspaceId]);
 
   const files = useMemo(() => (load.state === "ready" ? load.files : []), [load]);
+  const navigationFiles = useMemo(() => changeRows(
+    filterChangedFiles(files, presentation.filePathFilter), presentation.diffFileListMode, new Set(), (file) => isViewed(viewed, file),
+  ).flatMap((row) => row.kind === "file" ? [row.file] : []), [files, viewed, presentation.filePathFilter, presentation.diffFileListMode]);
   const [uncommitted, setUncommitted] = useState<{ worktree: string | null; paths: Set<string> }>({ worktree: null, paths: new Set() });
   useEffect(() => {
     if (load.state !== "ready") return;
@@ -157,6 +164,11 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     [files, onOpen],
   );
   const openPath = (path: string) => open(files.findIndex((f) => f.path === path));
+  const stepFile = (path: string | null, direction: 1 | -1) => {
+    const index = navigationFiles.findIndex((file) => file.path === path);
+    if (index < 0) return;
+    openPath(navigationFiles[step(index, navigationFiles.length, direction)].path);
+  };
   /** Switch to one turn's changes and open `path` there (a file chip under the turn). */
   const openTurnFile = (ref: TurnRef, path: string) => {
     if (turn?.sessionId !== ref.sessionId || turn?.turnId !== ref.turnId) setTurn(ref);
@@ -171,16 +183,17 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     const wasViewed = isViewed(viewed, selectedFile);
     setViewed(toggleViewed(viewed, selectedFile));
     if (wasViewed) return;
-    const unviewed = files.filter((f) => !isViewed(viewed, f));
-    const laterUnviewed = files.slice(index + 1).some((f) => !isViewed(viewed, f));
-    open(step(index, files.length, !laterUnviewed && unviewed.length > 1 ? -1 : 1));
+    const navigationIndex = navigationFiles.findIndex((f) => f.path === selectedFile.path);
+    const unviewed = navigationFiles.filter((f) => !isViewed(viewed, f));
+    const laterUnviewed = navigationFiles.slice(navigationIndex + 1).some((f) => !isViewed(viewed, f));
+    stepFile(selectedFile.path, !laterUnviewed && unviewed.length > 1 ? -1 : 1);
   };
 
   // Keys come from the registry (diff.nextFile = ArrowDown, diff.previousFile = ArrowUp,
   // diff.toggleViewed = Ctrl+V), so user overrides apply and bare arrows stay out of text fields.
   useKeybindings({
-    "diff.nextFile": () => open(step(current, files.length, 1)),
-    "diff.previousFile": () => open(step(current, files.length, -1)),
+    "diff.nextFile": () => stepFile(selectedPath, 1),
+    "diff.previousFile": () => stepFile(selectedPath, -1),
     "diff.toggleViewed": () => current >= 0 && toggleFileViewed(files[current]),
   });
 

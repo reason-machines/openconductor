@@ -138,6 +138,35 @@ test("a prompt sent while the stored transcript loads waits for it, then runs af
   ends.shift()!();
 });
 
+test("signed-out Reason preserves the original turn without starting ACP, then retry uses the same chat", async () => {
+  const chatId = "signed-out-inline";
+  handlers.set("chat_messages_load", () => ({ messages: [], agentSessionId: null }));
+  handlers.set("reason_account_status", () => null);
+  const ends = promptsEndOnDemand();
+  rc.submitChat(chatId, "/w", { text: "original signed-out prompt" }, "queue");
+  await until(() => Object.values(rc.chatSnapshot(chatId).transcript.turns).some((turn) => turn.status === "failed"), "inline authentication failure");
+  const failed = rc.chatSnapshot(chatId).transcript;
+  const original = failed.messages.find((message) => message.role === "user")!;
+  assert.equal(original.blocks[0]?.type === "text" && original.blocks[0].text, "original signed-out prompt");
+  assert.match(failed.turns[original.turnId].error ?? "", /Sign in to Reason/);
+  assert.equal(callsOf("reason_open_chat", chatId).length, 0);
+  assert.equal(callsOf("reason_prompt", chatId).length, 0);
+  handlers.set("reason_account_status", () => ({ name: "Fixture", email: "fixture@example.invalid", error: null }));
+  assert.equal(rc.retryReasonAuth(chatId, "/w", { text: "original signed-out prompt" }, original.turnId), true);
+  await until(() => callsOf("reason_prompt", chatId).length === 1, "same-chat retry");
+  assert.equal(callsOf("reason_prompt", chatId)[0].args.text, "original signed-out prompt");
+  assert.equal(callsOf("reason_open_chat", chatId).length, 1);
+  assert.equal(rc.chatSnapshot(chatId).transcript.messages.filter((message) => message.role === "user").length, 1);
+  assert.equal(rc.chatSnapshot(chatId).transcript.activeTurn, original.turnId);
+  assert.equal(rc.chatSnapshot(chatId).transcript.messages[0], original, "the original user message is not replaced");
+  assert.equal(rc.retryReasonAuth(chatId, "/w", { text: "original signed-out prompt" }, original.turnId), false, "duplicate approval cannot resend a running turn");
+  emit({ chatId, type: "text", text: "Paired reply" });
+  emit({ chatId, type: "turnEnded", end: { outcome: "completed" } });
+  assert.equal(rc.chatSnapshot(chatId).transcript.turns[original.turnId].status, "completed");
+  assert.equal(rc.chatSnapshot(chatId).transcript.messages.at(-1)?.turnId, original.turnId);
+  ends.shift()!();
+});
+
 test("Stop while the stored transcript loads cancels the prompt without sending it", async () => {
   const chatId = "race-2";
   const load = deferred<{ messages: string[]; agentSessionId: string | null }>();

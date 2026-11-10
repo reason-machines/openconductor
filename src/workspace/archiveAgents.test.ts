@@ -47,6 +47,7 @@ g.__TAURI_INTERNALS__ = {
       return 1;
     }
     if (cmd === "session_statuses") return [];
+    if (cmd === "reason_account_status") return { name: "Fixture", email: "fixture@example.invalid", error: null };
     // A Codex prompt resolves when its turn ends; these turns keep running.
     if (cmd === "codex_prompt") return new Promise(() => undefined);
     if (cmd === "reason_prompt") return new Promise(() => undefined);

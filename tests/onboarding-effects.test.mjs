@@ -22,13 +22,13 @@ const deferred = () => {
   return { promise, resolve, reject };
 };
 
-async function fixture({ initial = { state: "idle" }, surface = "gate", installing = false } = {}) {
+async function fixture({ initial = { state: "idle" }, surface = "gate", installing = false, path = "/", step = null } = {}) {
   const installation = installing ? deferred() : null;
   const requests = [], opens = [], remembered = [], callbacks = [], timers = new Map(), intervals = new Map();
   const errors = [], navigations = [], writes = [], modules = new Map();
   let status = initial, read, sequence = 0, root;
   const window = {
-    location: { pathname: "/", search: "" },
+    location: { pathname: path, search: "" },
     history: { state: null, replaceState(_state, _unused, url) { navigations.push(url); } },
     setInterval(callback) { const id = ++sequence; intervals.set(id, callback); return id; },
     clearInterval(id) { intervals.delete(id); },
@@ -47,8 +47,8 @@ async function fixture({ initial = { state: "idle" }, surface = "gate", installi
     "src/settings/api": { async getSettings() { return {}; } },
     "src/settings/appearance": { applyAppearance() {} },
     "src/onboarding/api": {
-      async readFirstRunStep() { return null; }, async countRepos() { return 0; },
-      finishFirstRun() { const result = deferred(); writes.push(result); return result.promise; },
+      async readFirstRunStep() { return step; }, async countRepos() { return 0; },
+      finishFirstRun(agent) { const result = deferred(); result.agent = agent; writes.push(result); return result.promise; },
     },
     "src/keybindings/KeybindingsProvider": { useKeybindings() {} },
     "src/components/AppMark": { AppMark: () => null },
@@ -117,6 +117,7 @@ async function fixture({ initial = { state: "idle" }, surface = "gate", installi
       assert.equal(result.length, 1, `One ${label} button`);
       return result[0];
     },
+    async selectAgent(agent) { await act(async () => { root.root.findByProps({ type: "radio", value: agent }).props.onChange(); }); },
     async click(label) { const button = this.button(label); assert.notEqual(button.props.disabled, true, `${label} is enabled`); await act(async () => { button.props.onClick(); }); },
     async publish(next) { status = next; await act(async () => { await api.refreshReasonSignIn(); }); },
     async rerender() { await act(async () => { root.update(element()); }); },
@@ -134,7 +135,9 @@ test("actual onboarding effect waits for validated account and durable finish be
     assert.equal(f.writes.length, 0, "browser handoff is not completion");
     assert.equal(f.opens.length, 1);
     await f.publish({ state: "connected", account });
-    assert.equal(f.writes.length, 1, "actual account effect calls persistence");
+    assert.equal(f.writes.length, 0, "sign-in is separate from choosing an agent");
+    await f.click("Continue");
+    assert.equal(f.writes.length, 1, "explicit Continue calls persistence");
     assert.equal(f.count("home"), 0, "Home waits for persistence");
     assert.equal(f.button("Continue").props.disabled, true);
     await f.rerender();
@@ -151,6 +154,8 @@ test("actual onboarding effect waits for validated account and durable finish be
 test("rejected onboarding persistence remains visible and manual Continue retries successfully", async () => {
   const f = await fixture({ initial: { state: "connected", account } });
   try {
+    assert.equal(f.writes.length, 0);
+    await f.click("Continue");
     assert.equal(f.writes.length, 1);
     await act(async () => { f.writes[0].reject(new Error("Synthetic persistence failure")); });
     assert.equal(f.count("home"), 0);
@@ -211,6 +216,62 @@ test("unmount before account result suppresses the completion callback", async (
   assert.equal(f.writes.length, 0);
   assert.deepEqual(f.callbacks, []);
   assert.deepEqual(f.navigations, []);
+});
+
+for (const agent of ["claude", "codex", "reason"]) {
+  test(`${agent} onboarding cannot skip CLI setup and saves its explicit choice without sign-in`, async () => {
+    const f = await fixture({ installing: true });
+    try {
+      assert.equal(f.count("reason-cli-setup"), 1);
+      assert.equal(f.writes.length, 0);
+      await act(async () => { f.installation.resolve({ path: "/fixture/bin/reason", version: "fixture" }); });
+      await f.selectAgent(agent);
+      await f.click("Continue without signing in");
+      assert.equal(f.requests.filter((r) => r.command === "reason_cli_ensure_current").length, 1);
+      assert.equal(f.requests.filter((r) => r.command === "reason_login_start").length, 0);
+      assert.equal(f.writes[0].agent, agent);
+      await act(async () => { f.writes[0].resolve(); });
+      assert.equal(f.count("home"), 1);
+    } finally { await f.close(); }
+  });
+}
+
+for (const [path, step] of [["/", "999"], ["/login", null]]) {
+  test(`CLI setup also gates ${path} with completed-step ${step}`, async () => {
+    const f = await fixture({ path, step, installing: true });
+    try {
+      assert.equal(f.count("reason-cli-setup"), 1);
+      assert.equal(f.count("home"), 0);
+      await act(async () => { f.installation.resolve({ path: "/fixture/bin/reason", version: "fixture" }); });
+      assert.equal(f.count("reason-cli-setup"), 0);
+      assert.equal(f.count("home"), path === "/" ? 1 : 0);
+    } finally { await f.close(); }
+  });
+}
+
+test("only the clicked inline sign-in resumes once after validated pairing", async () => {
+  const f = await fixture({ surface: "controls" });
+  try {
+    await f.click("Sign in to Reason");
+    assert.deepEqual(f.callbacks, []);
+    await f.publish({ state: "connected", account });
+    assert.deepEqual(f.callbacks, ["done"]);
+    await f.rerender();
+    await f.publish({ state: "connected", account: { ...account } });
+    assert.deepEqual(f.callbacks, ["done"]);
+  } finally { await f.close(); }
+});
+
+test("background sign-in and cancelled inline pairing never send a continuation", async () => {
+  const existing = await fixture({ surface: "controls", initial: { state: "connected", account } });
+  try { assert.deepEqual(existing.callbacks, []); } finally { await existing.close(); }
+  const cancelled = await fixture({ surface: "controls" });
+  try {
+    await cancelled.click("Sign in to Reason");
+    await cancelled.click("Cancel");
+    await cancelled.publish({ state: "connected", account });
+    assert.deepEqual(cancelled.callbacks, []);
+  } finally { await cancelled.close(); }
 });
 
 test("actual SignUp failure callback and retry do not report success before validated completion", async () => {

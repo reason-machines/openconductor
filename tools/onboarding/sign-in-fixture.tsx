@@ -34,6 +34,9 @@ const transcript: ChatTranscript = {
 Reflect.set(window, "isTauri", true);
 Reflect.set(window, "__TAURI_INTERNALS__", {
   async invoke(command: string, args?: Record<string, unknown>) {
+    if (command === "get_settings") return settings;
+    if (command === "update_settings") return settings = args?.settings as Settings;
+    if (command === "initialize_default_runtime") return null;
     if (command === "reason_account_status") return state.state === "connected" ? state.account : emptyAccount;
     if (command === "reason_logout") { state = { state: "idle" }; return { ok: true, message: "" }; }
     if (command === "reason_login_status") { statusReads++; return state; }

@@ -216,9 +216,10 @@ for (const strict of ["0", "1"]) {
 
 for (const surface of ["settings", "chat"]) {
   test(`${surface}: direct browser sign-in shows the connected account and workspace`, async () => {
-    const page = await open(`surface=${surface}`, "Sign in with Reason");
+    const label = surface === "chat" ? "Sign in to Reason" : "Sign in with Reason";
+    const page = await open(`surface=${surface}`, label);
     try {
-      await page.getByRole("button", { name: "Sign in with Reason", exact: true }).click();
+      await page.getByRole("button", { name: label, exact: true }).click();
       await page.getByTestId("reason-login-code").waitFor();
       await expectCalls(page, { opens: 1 });
       await page.getByRole("button", { name: "Resolve synthetic account", exact: true }).click();

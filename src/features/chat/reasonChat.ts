@@ -225,6 +225,7 @@ if (reasonAvailable()) connectStatusStore({ invoke: desktopHost.invoke, listen }
 export const chatSnapshot = reason.snapshot;
 export const subscribeChat = reason.subscribe;
 export const submitChat = reason.submit;
+export const retryReasonAuth = reason.retryUnsent;
 export const stopChat = reason.stop;
 export const queueAction = reason.queueAction;
 /**

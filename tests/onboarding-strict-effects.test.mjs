@@ -189,6 +189,8 @@ for (const strict of [false, true]) {
       assert.equal(f.writes.length, 0, "handoff is not completion");
       assert.equal(f.events.filter((e) => e.kind === "open").length, 1);
       await f.publish({ state: "connected", account });
+      assert.equal(f.writes.length, 0, "sign-in never bypasses agent choice");
+      await f.click("Continue");
       assert.equal(f.writes.length, 1);
       assert.equal(f.count("home"), 0);
       assert.equal(f.button("Continue").disabled, true);
@@ -207,9 +209,11 @@ for (const strict of [false, true]) {
     } finally { await f.close(); }
   });
 
-  test(`${mode}: initially connected account starts only one pending finish`, async () => {
+  test(`${mode}: initially connected account waits for explicit Continue and starts only one pending finish`, async () => {
     const f = await fixture({ strict, initial: { state: "connected", account } });
     try {
+      assert.equal(f.writes.length, 0);
+      await f.click("Continue");
       assert.equal(f.writes.length, 1);
       assert.equal(f.count("home"), 0);
       await f.rerender();
@@ -223,6 +227,8 @@ for (const strict of [false, true]) {
   test(`${mode}: rejected save remains visible and explicit Continue retries`, async () => {
     const f = await fixture({ strict, initial: { state: "connected", account } });
     try {
+      assert.equal(f.writes.length, 0);
+      await f.click("Continue");
       assert.equal(f.writes.length, 1);
       await f.settleFinish(0, new Error("Synthetic persistence failure"));
       assert.equal(f.count("home"), 0);
