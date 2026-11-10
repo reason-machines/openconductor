@@ -512,7 +512,7 @@ function WriteRow({ input, onOpenFile, ...shell }: ShellBase & { input: Record<s
     <RowShell
       {...shell}
       left={<span>{`Write ${content.split("\n").length} lines`}</span>}
-      right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
+      right={path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={<DiffBlock oldText="" newText={shown} />} /> : undefined}
       align="center"
       bareContent
       content={
