@@ -20,12 +20,6 @@ export function toggleViewed(map: ViewedMap, file: FileDiff): ViewedMap {
   return setViewed(map, file, !isViewed(map, file));
 }
 
-/** Drop marks for files that are no longer in the diff. */
-export function pruneViewed(map: ViewedMap, files: FileDiff[]): ViewedMap {
-  const present = new Set(files.map((f) => f.path));
-  return Object.fromEntries(Object.entries(map).filter(([path]) => present.has(path)));
-}
-
 export function viewedCount(map: ViewedMap, files: FileDiff[]): number {
   return files.filter((f) => isViewed(map, f)).length;
 }
