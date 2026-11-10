@@ -37,6 +37,7 @@ import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { glyphs } from "../keybindings/shortcut";
 import { useBoolPref } from "../settings/useBoolPref";
 import { workspaceNumberLabel } from "../state/workspaceNumber";
+import { RepoIcon } from "./RepoIcon";
 
 interface Props {
   repos: Repo[];
@@ -140,8 +141,8 @@ function Row({
             />
           </span>
         ) : showRepoIcon && (
-          <span className="allws-repo-initial" title={repo.name} aria-hidden>
-            {repo.name.charAt(0).toUpperCase()}
+          <span title={repo.name} aria-hidden>
+            <RepoIcon repo={repo} className="allws-repo-initial" />
           </span>
         )}
         {/* "Show workspace numbers" (Conductor's `_Jo`): a fixed-width W-<n> column, empty for unnumbered rows. */}
@@ -297,7 +298,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
                     </MenuCheck>
                     {projectChoices.map((r) => (
                       <MenuCheck key={r.id} checked={filters.projects.includes(r.id)} onClick={() => setFilters({ ...filters, projects: toggleProject(filters.projects, r.id) })}>
-                        <span className="allws-repo-initial" aria-hidden>{r.name.charAt(0).toUpperCase()}</span>
+                        <RepoIcon repo={r} className="allws-repo-initial" />
                         {r.name}
                       </MenuCheck>
                     ))}
