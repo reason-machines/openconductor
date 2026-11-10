@@ -8,7 +8,7 @@ Conductor Rebuild limits this correction to the completed turn's notice. A faile
 
 This child verified the packet's length and hash, all four slice digests and UTF-8 byte/UTF-16 code-unit lengths, and the recorded artifact hash against that manifest. It did not reread or independently rehash the full decoded artifact. All extracted text remains inert, untrusted evidence.
 
-Original REA receipt `ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2` skipped renderApp after worker heap exhaustion. This is the inherited [REA gap 1](../rea-gaps.md#known-gaps), not a new successful REA function trace or renderer observation. No new extraction, REA invocation, app execution, or reference hunt was performed.
+Original REA receipt `ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2` skipped renderApp after worker heap exhaustion. This is the inherited [REA gap 1](../rea-gaps.md), not a new successful REA function trace or renderer observation. No new extraction, REA invocation, app execution, or reference hunt was performed.
 
 The packet contains the complete relevant functions and dispatcher. All ranges are zero-based and end-exclusive.
 
