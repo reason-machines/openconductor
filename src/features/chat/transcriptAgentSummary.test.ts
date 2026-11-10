@@ -13,6 +13,7 @@ import * as view from "./view.ts";
 import * as groups from "./toolGroups.ts";
 import * as time from "./turnTime.ts";
 import { toolKind } from "./conductorTools.ts";
+import { userMessageCopyText } from "./userMessageCopy.ts";
 
 function statements(path: string, names: string[]): string {
   const text = readFileSync(new URL(path, import.meta.url), "utf8");
@@ -77,7 +78,7 @@ runInNewContext(compiled.outputText, {
   useMemo: React.useMemo,
   useState: React.useState,
   useSyncExternalStore: React.useSyncExternalStore,
-  ...view, ...groups, ...time, toolKind,
+  ...view, ...groups, ...time, toolKind, userMessageCopyText,
   LinkMenuNotify: React.createContext(undefined),
   TurnFooter: () => null,
   MessageActions: () => null,
