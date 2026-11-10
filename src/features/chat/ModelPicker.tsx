@@ -11,6 +11,7 @@ import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs } from "../../keybindings/shortcut.ts";
+import { AGENT_LABEL, agentForModel } from "../../settings/models.ts";
 import { effectiveEffort, fastModeAvailable, modelChoiceChip, modelDisplayName, modelEfforts, nextEffort, type ModelChoice } from "./composerModels.ts";
 import { ArrowUpRightIcon, CheckIcon, ChevronDownIcon, ChevronRightIcon, ModelGlyph, PlusSmallIcon, SearchSmallIcon, SettingsSmallIcon } from "./composerIcons.tsx";
 
@@ -75,8 +76,12 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
     const list = orderedModelChoices(value, favorites, models);
     const q = query.trim().toLowerCase();
     const name = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
-    return q ? list.filter((f) => name(f).toLowerCase().includes(q) || f.model.toLowerCase().includes(q)) : list;
-  }, [favorites, value, query, itemLabel, models, modelName]);
+    return q ? list.filter((f) => {
+      const agent = itemAgent?.(f) ?? f.agent ?? agentForModel(f.model);
+      const agentLabel = agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : "";
+      return name(f).toLowerCase().includes(q) || f.model.toLowerCase().includes(q) || agentLabel.toLowerCase().includes(q);
+    }) : list;
+  }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
 
   const selectSlot = (index: number) => {
     const focused = document.activeElement;
