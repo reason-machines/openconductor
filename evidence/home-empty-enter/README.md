@@ -47,10 +47,18 @@ This follows Test Behavior, Not Implementation: the assertions check visible row
 
 The existing automatic CI command is `node --test "src/**/*.test.ts"`. No workflow, dependency, or queue configuration changes are needed. Setup, import, or graph failures do not qualify as intended RED. Cases and assertions remain frozen after publication.
 
+## Automatic hosted RED
+
+[The hosted receipt](hosted-red.json) and [four-case log excerpt](hosted-red.log) record automatic CI run [43050567375, unit job 130626219598](https://github.com/reason-machines/openconductor/actions/runs/43050567375/job/130626219598) at published head `dbe165b42081dc19f620e2d084150abbd15d03ba`.
+
+The complete suite ran 2,807 tests: 2,805 passed and exactly two failed. Both empty-source and filtered-to-zero cases reached and passed their no-activation assertions, then failed cancellation with `false !== true`. Nonempty Enter prevention/selected-row activation and the unrelated empty-list key controls both passed. This is intended component RED, not a setup, import, or graph failure. The Frontend typecheck + build job also failed at its unit-test step on the same two assertions, not at typecheck.
+
+The log excerpt removes trailing whitespace from blank log messages only. The frozen test and contract bytes remain unchanged. The contract's `hosted_red: NOT_RUN` records the pre-publication freeze; the later hosted receipt records the actual result. No production fix preceded this RED.
+
 ## Ownership and verification limits
 
-This first increment contains tests and evidence only. Product changes are not present.
+This increment contains tests and evidence only. Product changes are not present.
 
 PR #1052 exclusively owns the shared `AllWorkspaces.onSearchKey` handler until its owner explicitly releases the lease after merge. An Enter-only fix requires fresh main containing #1052 and a new handler/source-mismatch check. PR #1049's provider changes and fixtures remain with their owner. Frozen header8, Prefix9, Home-list6, and Home-End7 inputs are untouched. The root retains #1041.
 
-Source verification and static test-contract checks passed. No local Node, app, browser, native, build, install, hosted dispatch, rerun, or E1 execution was run. Automatic hosted RED and GREEN are not yet observed at this increment. Native and visual parity, original-app acceptance, and consuming-main packaged behavior remain unverified. Unit checks alone cannot complete the rebuild.
+Source verification and static test-contract checks passed. Intended automatic hosted RED was observed as recorded above; GREEN has not been observed. No local Node, app, browser, native, build, install, hosted dispatch, rerun, or E1 execution was run. Native and visual parity, original-app acceptance, and consuming-main packaged behavior remain unverified. Unit checks alone cannot complete the rebuild.
