@@ -118,7 +118,8 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const [spotRequest, setSpotRequest] = useState<{ workspaceId: string; phase: "starting" | "stopping" } | null>(null);
   const spotPending = spotRequest?.workspaceId === wsId ? spotRequest.phase : null;
   const repoSettings = useRepoSettings(repo.path || undefined, workspace.path);
-  const [previewEnv, setPreviewEnv] = useState<PreviewEnv>({});
+  const [previewEnvState, setPreviewEnvState] = useState<{ key: string; env: PreviewEnv }>({ key: configKey, env: {} });
+  const previewEnv = previewEnvState.key === configKey ? previewEnvState.env : {};
   const [detectedPreview, setDetectedPreview] = useState<{ key: string; url: string | null }>({ key: "", url: null });
 
   const repoRoot = repo.path;
@@ -239,9 +240,13 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   }, [onSetupState, setup.state]);
 
   useEffect(() => {
-    setPreviewEnv({});
-    if (ref) api.previewEnv(ref).then((pairs) => setPreviewEnv(previewEnvFrom(pairs)), () => {});
-  }, [ref]);
+    let disposed = false;
+    setPreviewEnvState({ key: configKey, env: {} });
+    if (ref) api.previewEnv(ref).then((pairs) => {
+      if (!disposed) setPreviewEnvState({ key: configKey, env: previewEnvFrom(pairs) });
+    }, () => {});
+    return () => { disposed = true; };
+  }, [ref, configKey]);
 
   async function act(f: () => Promise<unknown>) {
     setError(null);
