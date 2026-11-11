@@ -1,0 +1,1 @@
+retryMessage=async({sessionId:e,messageId:s})=>await this.mutateEntry(e,s,async()=>{await sn(this.dependencies.db,s,{state:"ready",sendAttemptCount:0,nextSendAttemptAt:null,lastError:null},new Date(this.dependencies.clock.now()).toISOString())})

@@ -210,7 +210,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   // The file alone with whole-file context: Pierre builds the full old and new
   // files from it when an "N unmodified lines" row is expanded.
   const loadFull = (f: FileDiff) =>
-    loadWorkspaceDiff(worktree, target, opts, { path: f.path, contextLines: WHOLE_FILE_CONTEXT, turn }).then(([full]) => {
+    loadWorkspaceDiff(worktree, target, { ...opts, ignoreWhitespace: false }, { path: f.path, contextLines: WHOLE_FILE_CONTEXT, turn }).then(([full]) => {
       if (!full) throw new Error(`${f.path} has no changes any more.`);
       return full;
     });

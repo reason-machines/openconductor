@@ -1,0 +1,24 @@
+{
+  "kind": "SAME64_MULTIPLE_AUTH_RETRY_CONTRACT_V1",
+  "profiles": {
+    "baseline-red": {
+      "tests": [
+        "one signed-out message resumes once after a connected notification",
+        "two signed-out messages both resume after pairing without a manual second retry"
+      ],
+      "failed_tests": [
+        "two signed-out messages both resume after pairing without a manual second retry"
+      ],
+      "required_failure_fragments": {
+        "two signed-out messages both resume after pairing without a manual second retry": "second failed message is not lost when the first retry was working"
+      }
+    },
+    "matched-green": {
+      "tests": [
+        "one signed-out message resumes once after a connected notification",
+        "two signed-out messages both resume after pairing without a manual second retry"
+      ],
+      "failed_tests": []
+    }
+  }
+}
