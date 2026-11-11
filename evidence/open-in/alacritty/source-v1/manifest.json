@@ -1,0 +1,118 @@
+{
+  "id": "SAME15-ALACRITTY-WORKSPACE-PACKET-V1",
+  "files": [
+    {
+      "path": "EXECUTION.md",
+      "bytes": 4540,
+      "sha256": "b7633f1dc40fefcd0682a7df27a4b2eca20e592dec72bcedcd11909a99348b5d"
+    },
+    {
+      "path": "alacritty_workspace_tests.rs",
+      "bytes": 2526,
+      "sha256": "00179e5da85d9dee38ad3db0d5ab66b7e7d2f257a63f69b972ff38e06e881343"
+    },
+    {
+      "path": "baseline-src-tauri__src__open_in__commands.rs.txt",
+      "bytes": 3375,
+      "sha256": "1bac431754f3a853eae5ccb4b544ed093d982a1db8f070fc8415197f64604d44"
+    },
+    {
+      "path": "baseline-src-tauri__src__open_in__mod.rs.txt",
+      "bytes": 11537,
+      "sha256": "2632eab71f8487a80f045337edfabe0431f891b77438064516e82b663a8f7f04"
+    },
+    {
+      "path": "baseline-src-tauri__src__open_in__tests.rs.txt",
+      "bytes": 12997,
+      "sha256": "df8ffa7db1c8d80fdeb9d12fb92f234a9e34619bdf7c77f8383a821b7e8f3715"
+    },
+    {
+      "path": "baseline-src__features__openIn__OpenInButton.tsx.txt",
+      "bytes": 8624,
+      "sha256": "9aa5cf9904a860dcccd1fa42450b96044eb84c334080267c33f88d8f20dde727"
+    },
+    {
+      "path": "fixture-load.patch",
+      "bytes": 244,
+      "sha256": "e7693c1c6d4e3964c0c3bd63b5555a13075bbbec38acb1fe584b5f87856582ff"
+    },
+    {
+      "path": "original-AZ.txt",
+      "bytes": 43,
+      "sha256": "85880f296f214b081d897f3309299740dec7d12cd0a74f4af6628ffef6f4f8a6"
+    },
+    {
+      "path": "original-I8.txt",
+      "bytes": 159,
+      "sha256": "8625ac2e383db210166d30d1499410ceb0047cced53cecc2c31fd7f742273a91"
+    },
+    {
+      "path": "original-ICi.txt",
+      "bytes": 3433,
+      "sha256": "57c76b8d88d0d77ebaa532d58de89dbbe1e7ff447f7d110729af9f18d438989a"
+    },
+    {
+      "path": "original-OGe.txt",
+      "bytes": 148,
+      "sha256": "db9b2dcb6aa84255fa1cac05cf8ab38e03f6d7ccc69e3b1e66627d96216424ad"
+    },
+    {
+      "path": "original-P9.txt",
+      "bytes": 8045,
+      "sha256": "bf2bd3507c56618ed2d218f4c6efe656926ed3d4a523f8fd16ce5cffd153aede"
+    },
+    {
+      "path": "original-Z_s.txt",
+      "bytes": 1100,
+      "sha256": "6ee4b683e118c050b07d334b0462be0b691e9674a7bccbf49b2f0af07e7bce34"
+    },
+    {
+      "path": "original-_xt.txt",
+      "bytes": 74,
+      "sha256": "64b693f5ef165e1e024227e11769ace98c8b69042b2cafbe3f670600177d57f0"
+    },
+    {
+      "path": "original-alacritty-catalog-entry.txt",
+      "bytes": 139,
+      "sha256": "c4803ae10ebc68f66545364293167132fd9743611cf18c5907d09f4c95124ef2"
+    },
+    {
+      "path": "original-ele.txt",
+      "bytes": 67,
+      "sha256": "408dcebdced1b1264e98718d2bfcd6a69c073de6167c5e9757fb450ff3d1201f"
+    },
+    {
+      "path": "original-h4i.txt",
+      "bytes": 78,
+      "sha256": "899edbe75c0ed7cb074c7338533fe93bce20030b67fd0b2dc34cb6ca698fccd7"
+    },
+    {
+      "path": "original-o4e.txt",
+      "bytes": 123,
+      "sha256": "d19d25adf90c32c81a43f0292ba9cc05d7d838c8a855a00befe9a993cac5f418"
+    },
+    {
+      "path": "original-rvs.txt",
+      "bytes": 38,
+      "sha256": "7cc39c2ca2626adee395c97fc69a3950a12b883ba8bed565ead02940b9d12310"
+    },
+    {
+      "path": "original-uD.txt",
+      "bytes": 4543,
+      "sha256": "272d373e491a760dacfb797c5abe1cc969360b93bfb37b26976f01b7317cea0f"
+    },
+    {
+      "path": "regression-contract.json",
+      "bytes": 1879,
+      "sha256": "2c1d94a5ee6fc8a2bb98fde40b207e0634d74a20295e2862c74ead23fe6844f3"
+    },
+    {
+      "path": "source-packet.json",
+      "bytes": 7221,
+      "sha256": "fff12e4a16f80275bcba8a5716cbcfc2aa3d12802bde476b51a444eee710165e"
+    }
+  ],
+  "runtime": "NOT_RUN",
+  "product_patch": "NOT_AUTHORED_OR_APPLIED",
+  "scope": "SOURCE_ONLY; no E1 intake/admission"
+}

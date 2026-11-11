@@ -1,0 +1,207 @@
+{
+  "id": "SAME15-ALACRITTY-WORKSPACE-SOURCE-V1",
+  "owner": "15faf4d8-d257-49ef-874d-8008c5c78aaf",
+  "status": "SOURCE_QUALIFIED_DIFFERENCE; LEDGER_SOURCE_ONLY_RESERVATION_CONFIRMED; NO_PRODUCT_EDIT_OR_RUNTIME",
+  "checked_main": "d8f6bdfd26370491295f38ffecd7090c71a2a6db",
+  "source": {
+    "app": "Conductor 0.87.6 /Applications/Conductor.app on sven m5 max",
+    "native_binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+    "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "retained_rea_evidence": "ev_338577609e67c31212d529d59606e90597850528ea9a2f9559d23a4876c960d1",
+    "limitations": "Retained REA bounded-slice lineage; manual inert source joins, not a fresh REA acquisition, automatic call-graph proof or behavioral observation."
+  },
+  "trace": [
+    "Catalog Alacritty is a terminal app with cliBinDir Contents/MacOS; Z_s marks it available from system or user Applications bundle directories.",
+    "ICi renders P9 for a nonarchived local workspace and passes userVisiblePath as pathToOpen, openWithinPath and directoryFallbackPath with type workspace.",
+    "P9 selects catalog apps passing Gce local eligibility and dispatches selected app to uD with the same workspace path/boundary.",
+    "In uD for that local workspace, v/h4i/rvs clamp the parent directory to the workspace boundary, keeping the selected workspace as D.",
+    "The alacritty branch first invokes alacritty msg create-window --working-directory D. On code 0 it activates with open -a Alacritty. Otherwise it invokes open -na Alacritty --args --working-directory D and checks the fallback exit code.",
+    "OGe appends /Applications/Alacritty.app/Contents/MacOS and $HOME/Applications/Alacritty.app/Contents/MacOS after existing PATH for the CLI request.",
+    "Current main offers Alacritty but run_macos_open has only WezTerm/Xcode special handling. Folder launches use open -a Alacritty D without the IPC create-window/cwd fallback sequence. commands.rs adds a bundle PATH only for wezterm."
+  ],
+  "reference_spans": [
+    {
+      "role": "uD",
+      "file": "original-uD.txt",
+      "utf8_byte_range": [
+        2674155,
+        2678698
+      ],
+      "bytes": 4543,
+      "sha256": "272d373e491a760dacfb797c5abe1cc969360b93bfb37b26976f01b7317cea0f"
+    },
+    {
+      "role": "OGe",
+      "file": "original-OGe.txt",
+      "utf8_byte_range": [
+        2672421,
+        2672569
+      ],
+      "bytes": 148,
+      "sha256": "db9b2dcb6aa84255fa1cac05cf8ab38e03f6d7ccc69e3b1e66627d96216424ad"
+    },
+    {
+      "role": "I8",
+      "file": "original-I8.txt",
+      "utf8_byte_range": [
+        2672569,
+        2672728
+      ],
+      "bytes": 159,
+      "sha256": "8625ac2e383db210166d30d1499410ceb0047cced53cecc2c31fd7f742273a91"
+    },
+    {
+      "role": "o4e",
+      "file": "original-o4e.txt",
+      "utf8_byte_range": [
+        2673055,
+        2673178
+      ],
+      "bytes": 123,
+      "sha256": "d19d25adf90c32c81a43f0292ba9cc05d7d838c8a855a00befe9a993cac5f418"
+    },
+    {
+      "role": "ICi",
+      "file": "original-ICi.txt",
+      "utf8_byte_range": [
+        7306771,
+        7310204
+      ],
+      "bytes": 3433,
+      "sha256": "57c76b8d88d0d77ebaa532d58de89dbbe1e7ff447f7d110729af9f18d438989a"
+    },
+    {
+      "role": "P9",
+      "file": "original-P9.txt",
+      "utf8_byte_range": [
+        2689481,
+        2697526
+      ],
+      "bytes": 8045,
+      "sha256": "bf2bd3507c56618ed2d218f4c6efe656926ed3d4a523f8fd16ce5cffd153aede"
+    },
+    {
+      "role": "AZ",
+      "file": "original-AZ.txt",
+      "utf8_byte_range": [
+        573231,
+        573274
+      ],
+      "bytes": 43,
+      "sha256": "85880f296f214b081d897f3309299740dec7d12cd0a74f4af6628ffef6f4f8a6"
+    },
+    {
+      "role": "Z_s",
+      "file": "original-Z_s.txt",
+      "utf8_byte_range": [
+        2670076,
+        2671176
+      ],
+      "bytes": 1100,
+      "sha256": "6ee4b683e118c050b07d334b0462be0b691e9674a7bccbf49b2f0af07e7bce34"
+    },
+    {
+      "role": "ele",
+      "file": "original-ele.txt",
+      "utf8_byte_range": [
+        2672116,
+        2672183
+      ],
+      "bytes": 67,
+      "sha256": "408dcebdced1b1264e98718d2bfcd6a69c073de6167c5e9757fb450ff3d1201f"
+    },
+    {
+      "role": "_xt",
+      "file": "original-_xt.txt",
+      "utf8_byte_range": [
+        2671866,
+        2671940
+      ],
+      "bytes": 74,
+      "sha256": "64b693f5ef165e1e024227e11769ace98c8b69042b2cafbe3f670600177d57f0"
+    },
+    {
+      "role": "h4i",
+      "file": "original-h4i.txt",
+      "utf8_byte_range": [
+        2672183,
+        2672261
+      ],
+      "bytes": 78,
+      "sha256": "899edbe75c0ed7cb074c7338533fe93bce20030b67fd0b2dc34cb6ca698fccd7"
+    },
+    {
+      "role": "rvs",
+      "file": "original-rvs.txt",
+      "utf8_byte_range": [
+        2672261,
+        2672299
+      ],
+      "bytes": 38,
+      "sha256": "7cc39c2ca2626adee395c97fc69a3950a12b883ba8bed565ead02940b9d12310"
+    },
+    {
+      "role": "alacritty-catalog-entry",
+      "file": "original-alacritty-catalog-entry.txt",
+      "utf8_byte_range": [
+        571309,
+        571448
+      ],
+      "bytes": 139,
+      "sha256": "c4803ae10ebc68f66545364293167132fd9743611cf18c5907d09f4c95124ef2"
+    }
+  ],
+  "main_files": [
+    {
+      "path": "src-tauri/src/open_in/mod.rs",
+      "file": "baseline-src-tauri__src__open_in__mod.rs.txt",
+      "bytes": 11537,
+      "sha256": "2632eab71f8487a80f045337edfabe0431f891b77438064516e82b663a8f7f04"
+    },
+    {
+      "path": "src-tauri/src/open_in/commands.rs",
+      "file": "baseline-src-tauri__src__open_in__commands.rs.txt",
+      "bytes": 3375,
+      "sha256": "1bac431754f3a853eae5ccb4b544ed093d982a1db8f070fc8415197f64604d44"
+    },
+    {
+      "path": "src-tauri/src/open_in/tests.rs",
+      "file": "baseline-src-tauri__src__open_in__tests.rs.txt",
+      "bytes": 12997,
+      "sha256": "df8ffa7db1c8d80fdeb9d12fb92f234a9e34619bdf7c77f8383a821b7e8f3715"
+    },
+    {
+      "path": "src/features/openIn/OpenInButton.tsx",
+      "file": "baseline-src__features__openIn__OpenInButton.tsx.txt",
+      "bytes": 8624,
+      "sha256": "9aa5cf9904a860dcccd1fa42450b96044eb84c334080267c33f88d8f20dde727"
+    }
+  ],
+  "potential_scope": [
+    "mod.rs Alacritty-only workspace-folder dispatch and dedicated PATH helper",
+    "commands.rs Alacritty-only PATH branch",
+    "NEW dedicated regression/evidence"
+  ],
+  "exclusions": [
+    "ICON15",
+    "Move12/M11",
+    "Settings49",
+    "Archive",
+    "Home App call sites",
+    "WezTerm behavior/helper",
+    "Xcode/Finder/other app behavior",
+    "file-level behavior",
+    "remote/cloud targets",
+    "native menu redesign"
+  ],
+  "behavioral_status": "NOT_RUN; not RED or GREEN; no runtime admission requested by this capture",
+  "remaining_questions": [
+    "Root implementation/runtime decision after this source packet; no intake or admission granted",
+    "Transport exceptions versus nonzero activation exit semantics are not equated by the existing Result-only runner seam",
+    "Actual packaged Alacritty IPC/window/cwd and bundle-only PATH behavior remain unobserved"
+  ],
+  "ledger_receipts": [
+    "0e7b57cc-0f53-4a75-8b09-0a9855256675",
+    "68a4de2d-3bb1-40da-bc28-bf9502cf16bd"
+  ]
+}
