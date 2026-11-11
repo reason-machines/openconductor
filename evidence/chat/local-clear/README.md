@@ -64,6 +64,16 @@ These controls exercise open-chat identity, persisted rows, unread state, chat t
 - **Passed.** Four original receipt hashes, the combined frontend receipt hash, the immutable baseline fixture hash, and source whitespace checking with `git diff --check`.
 - **Not run in this checkout.** Node tests, compiler, formatter, Rust checks, builds, app or provider execution. All local runtime remains serialized through the existing executor.
 
+## Initial hosted CI failures
+
+The ready main-based PR was published as [#1020](https://github.com/reason-machines/openconductor/pull/1020), initial hosted head `81e1a52ced3ea1b066497e7e894f77fd79b00eea`. Its first hosted checks exposed these failures.
+
+- Persistence on Ubuntu and macOS stopped at `cargo fmt --check`. The later database tests did not run in those jobs. Formatting remains with the sole local executor.
+- Two keybinding tests failed with `primaryId is not defined` in their extracted chat-host JSX. Their isolated VM now supplies the same primary identity as its workspace fixture.
+- Seven Diff auto-close tests failed with `tabOfChat is not defined` in their extracted workspace initializer. Their probe now includes the real source declarations for `tabOfChat` and `primaryId`.
+
+The test-driver corrections do not change product code, scenarios, or behavioral assertions. Their hosted recheck has not passed yet. No failing check is bypassed.
+
 ## Remaining acceptance limits
 
 Synthetic mounted tests do not prove native persistence, actual local Claude or Codex behavior, side-by-side visual parity, running or queued clear semantics, installed macOS behavior, or reference rollback semantics. The provider and DB boundaries in the mounted fixture are synthetic. There is no screenshot because native and visible app execution has not run for this unit.
