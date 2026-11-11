@@ -14,14 +14,14 @@ The source asset, 13 retained spans, byte offsets, hashes and three REA evidence
 
 `src/features/openIn/settingsShortcutHint.test.ts` renders the actual `RepoMiscRows` through its private `PathLine` and real `OpenInButton` and app helpers. Only external settings, motion, keybinding and IPC boundaries are controlled. Unrelated Settings row effects are inert.
 
-Nine cases cover two Workspaces default-app omissions, two Root path hints, identical-path caller distinction, both icon-only badge controls, and both exact app and copy payloads. Three failures are predicted on baseline. They are not observed failures until hosted CI executes them. The existing 11 numbering cases remain byte-identical, including generic icon and split-menu shortcut hints.
+Nine cases cover two Workspaces default-app omissions, two Root path hints, identical-path caller distinction, both icon-only badge controls, and both exact app and copy payloads. Hosted baseline head `290b500317f6c809f958c94b3b023f946d510bf7` reproduced all three intended assertion failures. Cursor and Terminal Workspaces rows and the identical-path caller distinction incorrectly displayed `⌘⇧O`. All six controls passed. The full suite passed 3,115 cases and failed only these three. Typecheck passed before the same assertions failed in the build workflow. [The hosted receipt](hosted-red.json) pins both jobs and the decisive lines. The existing 11 numbering cases remain byte-identical, including generic icon and split-menu shortcut hints.
 
 Verification on Reason cloud uses Python source and digest checks plus `git diff --check`. Normal hosted CI runs `node --test "src/**/*.test.ts"`. Local Node, Rust, browser and native execution are not admitted for this lane.
 
 ## Repair boundary
 
-After hosted assertion-level RED, pass a presentation-only `showShortcutHint` opt-out from the Workspaces row through `PathLine`, with a true default in `OpenInButton`. Keep Root path, generic icon menus, split menus, numeric registration, app eligibility, invocation and all frozen fixtures unchanged.
+After observed hosted assertion-level RED, the Workspaces row passes a presentation-only `showShortcutHint={false}` through `PathLine`. `OpenInButton` defaults the option to true. Root path, generic icon menus, split menus, numeric registration, app eligibility, invocation and all frozen fixtures remain unchanged.
 
 ## Acceptance limits
 
-Hosted RED and unchanged-fixture GREEN are pending. Native GUI, physical key delivery, shortcut dispatch, app activation, clipboard behavior, side-by-side screenshots and full checkpoint restoration are unverified. There is no screenshot because this lane has no browser or native runtime admission. Component assertions are not native parity.
+Hosted assertion RED is confirmed. Candidate source verification passed; unchanged-fixture hosted GREEN is pending. Native GUI, physical key delivery, shortcut dispatch, app activation, clipboard behavior, side-by-side screenshots and full checkpoint restoration are unverified. There is no screenshot because this lane has no browser or native runtime admission. Component assertions are not native parity.
