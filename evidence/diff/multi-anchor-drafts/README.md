@@ -16,7 +16,7 @@ At main `15e87440daa703030f4c402e7a41b9221a149768`, `useReviewComments` retains 
 
 Thirteen cases cover distinct line anchors, returning to an existing anchor, paths, old/new sides, overlapping ranges, isolated discard/save, actual annotation hide/remount, failed save, late save, duplicate clicks, workspace isolation and stale cancelled callbacks. The source-qualified expectation is nine baseline failures and four passing controls. Actual counts must come from hosted execution, not this expectation.
 
-The fixture is published before any product change. Its SHA-256 is pinned in `source.json`. The same bytes must fail on baseline for the recorded behavioral assertions and pass after the minimal fix. Existing automatic frontend and Diff test jobs execute it. No new executor, workflow dispatch or local Node run is introduced.
+The fixture was published before any product change. Its SHA-256 is pinned in `source.json` and remains unchanged. Automatic hosted head `09fa14eebc236ab7d02abb6cffbcb7a4f1b7385d` reproduced all nine intended assertion failures and four passing controls. The entire Diff suite passed 448 cases and failed only those nine. Each failure lost the earlier exact body, returning undefined or an empty string. See [the hosted job](https://github.com/reason-machines/openconductor/actions/runs/43115355531/job/130841811973), `hosted-red.json` and the JSON-escaped assertion excerpt in `hosted-red.log.json`. The same bytes must pass after the minimal fix. Existing automatic frontend and Diff test jobs execute them. No new executor, workflow dispatch or local Node run is introduced.
 
 To reproduce against the baseline in an admitted runtime:
 
@@ -32,8 +32,10 @@ Model the Domain selects a collection of new drafts, not another body slot or a 
 
 Distinct ending-line anchors render independent editors. For different ranges sharing an ending-line annotation, preserve every body and show only the latest selected range. Reselecting a retained range restores its body. This compatibility boundary preserves the frozen remount fixture's single-editor expectation. It is not a claim of full original same-ending-line simultaneous native parity.
 
-Keep the correction inside ReviewComments composing state, line-click handling, anchors and annotations. Do not change saved-edit maps, replies, backend persistence, WorkspaceView or existing fixture bodies. `source.json` pins every existing Diff test for preservation checks.
+Opening a distinct anchor retires only untouched drafts whose raw body is exactly empty. Typed whitespace is retained without trimming. Changes and cancels from a retired generation cannot recreate that draft or overwrite a survivor. Simultaneous untouched empty editors remain outside this bounded repair.
+
+The correction stays inside ReviewComments composing state, line-click handling, anchors and annotations. Do not change saved-edit maps, replies, backend persistence, WorkspaceView or existing fixture bodies. `source.json` pins every existing Diff test for preservation checks.
 
 ## Evidence limits
 
-Source integrity checks passed on Reason cloud. Hosted behavioral reproduction is pending at this test-only milestone. No local Node, typecheck, browser DOM, native event delivery, screenshot, original app execution or SQLite check ran. The mounted test does not prove Pierre hit testing or visual parity. Real-DOM gutter acceptance is a separate, parked unit. Packaging, when verified after merge, is static evidence rather than installed-app acceptance.
+Source integrity checks passed on Reason cloud, and hosted behavioral RED passed its qualification gate. Candidate hosted GREEN is pending. No local Node, typecheck, browser DOM, native event delivery, screenshot, original app execution or SQLite check ran. The mounted test does not prove Pierre hit testing or visual parity. Real-DOM gutter acceptance is a separate, parked unit. Packaging, when verified after merge, is static evidence rather than installed-app acceptance.

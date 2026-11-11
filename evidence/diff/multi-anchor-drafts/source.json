@@ -1,11 +1,12 @@
 {
   "unit": "DIFF-MULTI-ANCHOR-NEW-DRAFTS-DE6",
-  "status": "TEST_ONLY_BASELINE_AWAITING_HOSTED_REPRODUCTION",
+  "status": "CANDIDATE_APPLIED_AFTER_HOSTED_BEHAVIORAL_RED",
+  "revalidated_main": "1a0a2bef734686d3dbfc9c11155562595d9df9e6",
   "main": "15e87440daa703030f4c402e7a41b9221a149768",
   "product": {
     "path": "src/features/diff/ReviewComments.tsx",
     "baseline": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3",
-    "candidate": null
+    "candidate": "5d61d8a59f1a500d31c399907b0f54c9a51089ed7b7a7442d6c9b890b6d3d564"
   },
   "original_identity": {
     "version": "0.87.6",
