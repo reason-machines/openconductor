@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "rea
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import "@xterm/xterm/css/xterm.css";
-import { onPtyEvent, ptyKill, ptyResize, ptySpawn, ptyWrite } from "../../features/terminal/pty";
+import { onPtyEvent, ptyAckBytes, ptyKill, ptyResize, ptySpawn, ptyWrite } from "../../features/terminal/pty";
 import { AUTH_MODE_LABEL, type AuthMode, type InfoRow } from "./agentAuth";
 import { homeDir, openExternal } from "./api";
 import { CheckIcon, CloseIcon, CodexMark, ExternalIcon, GearIcon, KeyIcon, PencilIcon, PlayIcon, RefreshIcon, TerminalIcon, TrashIcon } from "./icons";
@@ -342,8 +342,10 @@ function LoginTerminal({ command, label, onDismiss, onDone }: { command: string;
     const unlisten = onPtyEvent((e) => {
       if (gone || !spawning || e.id !== terminalId) return;
       if (e.kind === "data") {
+        const bytes = e.data.byteLength;
         pendingOutput++;
         term.write(e.data, () => {
+          if (!gone && bytes > 0) void ptyAckBytes(terminalId, bytes).catch(() => {});
           pendingOutput--;
           observeExit();
         });
