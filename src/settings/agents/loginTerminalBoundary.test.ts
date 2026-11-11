@@ -102,7 +102,7 @@ test("the real xterm parser ignores echoed bootstrap text and accepts a split co
     await output("Done;login-pty\x07");
     assert.match(view.text(), /Finished fixture-cli login\./);
     assert.ok(view.done());
-    assert.deepEqual(view.killed, []);
+    assert.deepEqual([...view.killed], []);
   } finally { parser.dispose(); await view.close(); }
 });
 
