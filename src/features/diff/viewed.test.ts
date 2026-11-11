@@ -1030,3 +1030,227 @@ test("actual viewed callbacks leave empty, unselected and missing files alone", 
     } finally { view.close(); }
   }
 });
+
+async function emptyDiffCloseFixture(initialLoad: WorkspaceDiff["load"] = { state: "ready", files: [navigationFile("a.ts")] }) {
+  const ownerPath = resolve("src/components/WorkspaceView.tsx");
+  const ownerSource = ts.createSourceFile(ownerPath, readFileSync(ownerPath, "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  let owner;
+  for (const statement of ownerSource.statements) {
+    if (ts.isFunctionDeclaration(statement) && statement.name?.text === "WorkspaceView") owner = statement;
+  }
+  assert.ok(owner?.body);
+  const statements = owner.body.statements;
+  const declaration = (name: string) => {
+    for (const statement of statements) {
+      if (!ts.isVariableStatement(statement)) continue;
+      for (const item of statement.declarationList.declarations) {
+        if (item.name.getText() === name) return statement;
+      }
+    }
+    throw new Error(`Missing workspace declaration: ${name}`);
+  };
+  const from = statements.indexOf(declaration("activeReview"));
+  const to = statements.indexOf(declaration("prNumber"));
+  assert.ok(from >= 0 && to > from);
+  const activeOwner = statements.slice(from, to).map((node: { getText(): string }) => node.getText()).join("\n");
+  let tabJSX = "";
+  function findTab(node: { getText(): string; tagName?: { getText(): string } }) {
+    if (ts.isJsxSelfClosingElement(node) && node.tagName?.getText() === "DiffTab") {
+      assert.equal(tabJSX, "", "one owner-to-DiffTab binding");
+      tabJSX = node.getText();
+    }
+    ts.forEachChild(node, findTab);
+  }
+  findTab(owner);
+  assert.notEqual(tabJSX, "");
+  const closedHistory: { workspaceId: string; tab: object }[] = [];
+  let closeCalls = 0;
+  let controls: { open: () => void; select: (tab: string) => void; manual: () => void; automatic?: () => void } | undefined;
+  function ObserveClose({ children }: { children: { props: { onClose?: () => void } } }) {
+    const callback = children.props.onClose;
+    const observed = React.useCallback(() => { closeCalls++; callback?.(); }, [callback]);
+    return React.cloneElement(children, callback ? { onClose: observed } : {});
+  }
+  const tabPath = resolve("src/features/diff/DiffViewer.tsx");
+  const tabJavascript = ts.transpileModule(readFileSync(tabPath, "utf8"), {
+    fileName: tabPath,
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+  }).outputText;
+  const inert = () => null;
+  const tabBoundaries: Record<string, object> = {
+    "../../components/ui/Tooltip.tsx": { Tooltip: inert },
+    "../../components/ConductorIcon": { ConductorIcon: inert },
+    "./diff.css": {},
+    "./DiscardDialog": { DiscardDialog: inert },
+    "./Whitespace": { ViewOptionsMenu: inert },
+    "./FileDiffView": { FileDiffView: inert },
+    "./EditInViewer.ts": { editableContents: () => null, useFileEdit: () => undefined },
+    "./ChangesList": { ChangesList: inert },
+  };
+  const tabModule = { exports: {} };
+  runInNewContext(`(function(require, module, exports) { ${tabJavascript}\n})`)((name: string) => {
+    if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+    assert.ok(Object.prototype.hasOwnProperty.call(tabBoundaries, name), `Unexpected auto-close boundary: ${name}`);
+    return tabBoundaries[name];
+  }, tabModule, tabModule.exports);
+  assert.ok("DiffTab" in tabModule.exports && typeof tabModule.exports.DiffTab === "function");
+  const probeSource = `
+    const { useState, useRef, useCallback } = React;
+    function Probe({ workspace, reviews, load, noMatchingFiles }) {
+      ${declaration("[diffOpen, setDiffOpen]").getText()}
+      ${declaration("[mainTab, setMainTab]").getText()}
+      ${declaration("openDiffTab").getText()}
+      ${declaration("closeDiffTab").getText()}
+      const centerTerminal = undefined;
+      const fileTarget = null;
+      const showDiff = diffOpen && mainTab === "diff";
+      const showPr = false;
+      ${activeOwner}
+      const files = load.state === "ready" ? load.files : [];
+      const diff = {
+        load, files, selected: files[0] ?? null, noMatchingFiles, redirectRevision: 0,
+        turn: null, worktree: "fixture-owner", opts: options, update() {},
+        isViewed: () => false, loadFull: async (file) => file, loadText: async () => "",
+        unread: -1, current: 0, canDiscard: false, reloadQuietly() {}
+      };
+      const review = {};
+      const notify = undefined;
+      const content = showDiff ? (${tabJSX}) : null;
+      recordControls({ open: openDiffTab, select: setMainTab, manual: closeDiffTab, automatic: content?.props.onClose });
+      return <div data-empty-diff-owner={true} data-main-tab={mainTab} data-diff-open={diffOpen}>
+        {content && <ObserveClose>{content}</ObserveClose>}
+      </div>;
+    }
+    module.exports = { Probe };
+  `;
+  const probeJavascript = ts.transpileModule(probeSource, {
+    fileName: "empty-diff-owner.tsx",
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+  }).outputText;
+  const probeModule = { exports: {} };
+  runInNewContext(`(function(require, module, exports) { ${probeJavascript}\n})`, {
+    React, ObserveClose, DiffTab: tabModule.exports.DiffTab, options: DEFAULT_VIEW_OPTIONS,
+    recordControls: (next: typeof controls) => { controls = next; },
+    pushClosedTab: (workspaceId: string, tab: object) => { closedHistory.push({ workspaceId, tab: { ...tab } }); },
+  })(dependencies, probeModule, probeModule.exports);
+  assert.ok("Probe" in probeModule.exports && typeof probeModule.exports.Probe === "function");
+  const Probe = probeModule.exports.Probe;
+  let inputs = { workspace: { id: "fixture-owner", path: null }, reviews: { tabs: [{ chatId: "review-a" }] }, load: initialLoad, noMatchingFiles: false };
+  let renderer: ReturnType<typeof create>;
+  const element = () => React.createElement(Probe, inputs);
+  await act(async () => { renderer = create(element()); });
+  const actions = () => { assert.ok(controls); return controls; };
+  const update = async () => { await act(async () => { renderer.update(element()); }); };
+  return {
+    open() { act(() => actions().open()); },
+    select(tab: string) { act(() => actions().select(tab)); },
+    manual() { act(() => actions().manual()); },
+    automatic: () => actions().automatic,
+    invoke(callback: (() => void) | undefined) { act(() => callback?.()); },
+    async load(load: WorkspaceDiff["load"]) { inputs = { ...inputs, load }; await update(); },
+    async noMatch(noMatchingFiles: boolean) { inputs = { ...inputs, noMatchingFiles }; await update(); },
+    async reviews(tabs: { chatId: string }[]) { inputs = { ...inputs, reviews: { tabs } }; await update(); },
+    async workspace(id: string) { inputs = { ...inputs, workspace: { ...inputs.workspace, id } }; await update(); },
+    snapshot() {
+      const props = renderer.root.findByProps({ "data-empty-diff-owner": true }).props;
+      return { tab: props["data-main-tab"], open: props["data-diff-open"] };
+    },
+    closeCalls: () => closeCalls,
+    closedHistory,
+    update,
+    close() { act(() => renderer.unmount()); },
+  };
+}
+
+test("mounted DiffTab and actual owner wiring auto-close a populated-to-empty raw list without reopen history", async () => {
+  const view = await emptyDiffCloseFixture();
+  try {
+    view.open();
+    assert.deepEqual(view.snapshot(), { tab: "diff", open: true });
+    await view.load({ state: "ready", files: [] });
+    assert.deepEqual(view.snapshot(), { tab: "chat", open: false });
+    assert.equal(view.closeCalls(), 1);
+    assert.deepEqual(view.closedHistory, []);
+  } finally { view.close(); }
+});
+
+test("mounted DiffTab and actual owner wiring close an initially empty loaded list once", async () => {
+  const view = await emptyDiffCloseFixture({ state: "ready", files: [] });
+  try {
+    view.open();
+    await view.update();
+    await view.update();
+    assert.deepEqual(view.snapshot(), { tab: "chat", open: false });
+    assert.equal(view.closeCalls(), 1);
+    assert.deepEqual(view.closedHistory, []);
+  } finally { view.close(); }
+});
+
+test("mounted DiffTab never auto-closes loading, failed or filtered-nonempty raw lists", async () => {
+  const view = await emptyDiffCloseFixture({ state: "loading" });
+  try {
+    view.open();
+    assert.deepEqual(view.snapshot(), { tab: "diff", open: true });
+    await view.load({ state: "error", message: "fixture load failed" });
+    assert.deepEqual(view.snapshot(), { tab: "diff", open: true });
+    await view.load({ state: "ready", files: [navigationFile("a.ts")] });
+    await view.noMatch(true);
+    assert.deepEqual(view.snapshot(), { tab: "diff", open: true });
+    assert.equal(view.closeCalls(), 0);
+    assert.deepEqual(view.closedHistory, []);
+  } finally { view.close(); }
+});
+
+test("automatic empty Diff close returns to the previously viewed review chat", async () => {
+  const view = await emptyDiffCloseFixture();
+  try {
+    view.select("review-a");
+    view.open();
+    await view.load({ state: "ready", files: [] });
+    assert.deepEqual(view.snapshot(), { tab: "review-a", open: false });
+    assert.equal(view.closeCalls(), 1);
+    assert.deepEqual(view.closedHistory, []);
+  } finally { view.close(); }
+});
+
+test("automatic empty Diff close falls back to the workspace chat if its previous review closed", async () => {
+  const view = await emptyDiffCloseFixture();
+  try {
+    view.select("review-a");
+    view.open();
+    await view.reviews([]);
+    await view.load({ state: "ready", files: [] });
+    assert.deepEqual(view.snapshot(), { tab: "chat", open: false });
+    assert.equal(view.closeCalls(), 1);
+    assert.deepEqual(view.closedHistory, []);
+  } finally { view.close(); }
+});
+
+test("a stale automatic Diff close cannot steal an inactive tab or another workspace", async () => {
+  const view = await emptyDiffCloseFixture();
+  try {
+    view.open();
+    const automatic = view.automatic();
+    view.select("review-a");
+    view.invoke(automatic);
+    assert.deepEqual(view.snapshot(), { tab: "review-a", open: true });
+    view.select("diff");
+    await view.workspace("other-workspace");
+    view.invoke(automatic);
+    assert.deepEqual(view.snapshot(), { tab: "diff", open: true });
+    await view.load({ state: "ready", files: [] });
+    assert.deepEqual(view.snapshot(), { tab: "chat", open: false });
+    assert.deepEqual(view.closedHistory, []);
+  } finally { view.close(); }
+});
+
+test("manual Diff close still records a reopenable Diff tab", async () => {
+  const view = await emptyDiffCloseFixture();
+  try {
+    view.open();
+    view.manual();
+    assert.deepEqual(view.snapshot(), { tab: "chat", open: false });
+    assert.equal(view.closeCalls(), 0);
+    assert.deepEqual(view.closedHistory, [{ workspaceId: "fixture-owner", tab: { kind: "diff" } }]);
+  } finally { view.close(); }
+});
