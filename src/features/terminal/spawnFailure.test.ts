@@ -49,6 +49,8 @@ function fixture(spawn: (args: SpawnArgs) => Promise<string>, saved = false) {
     attachCustomKeyEventHandler() {}
     onData(input: (text: string) => void) { this.input = input; }
     onResize() {}
+    onSelectionChange() { return { dispose() {} }; }
+    getSelection() { return ""; }
     write() {}
     resize(cols: number, rows: number) { this.cols = cols; this.rows = rows; }
     dispose() { this.disposed = true; }
