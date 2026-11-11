@@ -23,11 +23,12 @@ type SelectionProps = {
   onAddToChat?: (text: string) => boolean;
 };
 
-function fixture({ sessionId = "chat-A", accept = true, status = "running" }: {
+function fixture({ sessionId: initialSessionId = "chat-A", accept = true, status = "running" }: {
   sessionId?: string;
   accept?: boolean;
   status?: SelectionProps["status"];
 } = {}) {
+  let sessionId: string | undefined = initialSessionId;
   let selection = "";
   let activeId = "term-A";
   let accepted = accept;

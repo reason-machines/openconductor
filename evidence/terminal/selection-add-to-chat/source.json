@@ -65,8 +65,8 @@
   "fixtures": [
     {
       "path": "src/features/terminal/selectionAddToChat.test.ts",
-      "bytes": 7428,
-      "sha256": "1c99ccd2370f8c01d1a8496ba8788ef88deddb9f3612f4ed5a7f70b0bd393cdb"
+      "bytes": 7502,
+      "sha256": "8107224a40867e6af24ad52d0085e6a66259a1760469bf683bc044c7b9a8a7cc"
     },
     {
       "path": "src/features/terminal/selectionChatFocus.test.ts",
@@ -80,5 +80,6 @@
     }
   ],
   "hosted_baseline": "NOT_RUN",
-  "local_node_browser_native": "NOT_RUN"
+  "local_node_browser_native": "NOT_RUN",
+  "fixture_typing_correction": "Destructured default alias plus explicitly optional local target; all test bodies and assertions unchanged. New hosted baseline required before candidate."
 }
