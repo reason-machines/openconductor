@@ -42,7 +42,7 @@ function workspaceChatHost(KeybindingScope: unknown, ChatPanel: unknown) {
   const module = { exports: {} };
   runInNewContext(`(function(require,module,exports){${compiled}\n})`, {
     KeybindingScope, ChatPanel,
-    activeReview: undefined, workspace: { id: "workspace", name: "Workspace" }, repo: {},
+    activeReview: undefined, primaryId: "workspace", workspace: { id: "workspace", name: "Workspace" }, repo: {},
     dispatch: () => {}, notify: undefined, chatBridge: {}, setAgentWorking: () => {}, diff: {},
     prBase: undefined, hasNextUnread: undefined, selectedChat: "workspace", onNextUnread: undefined,
     reviews: { tabs: [], fork: () => {} }, showFile: false, showDiff: false, showPr: false,

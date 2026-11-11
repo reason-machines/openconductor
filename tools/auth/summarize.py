@@ -21,11 +21,13 @@ def read(path, default=None):
         return default
 
 
-# A provider's own usage or rate limit: the app got the turn to the provider
-# with the selected credential and the provider refused it. Not an app bug.
+# A provider's own refusal: the app got the turn to the provider with the
+# selected credential and the provider refused it for a usage limit or the
+# account's billing state (Claude Code: "can't use your Claude subscription,
+# usually because a payment is past due"). Not an app bug.
 PROVIDER_LIMIT = re.compile(
     r"hit your (weekly|daily|usage|session|5-hour)? ?limit|usage limit|rate limit|quota|"
-    r"insufficient_quota|limit .{0,40}resets", re.I)
+    r"insufficient_quota|limit .{0,40}resets|can't use your Claude subscription|payment is past due", re.I)
 
 
 def classify(m, t, tab):
@@ -33,7 +35,7 @@ def classify(m, t, tab):
         return "pass", None
     if (tab.get("connected") and not tab.get("loginPrompt") and not t.get("signInNotice")
             and t.get("status") == "failed" and PROVIDER_LIMIT.search(t.get("error") or "")):
-        return "blocked-by-provider", "the provider refused the turn with its own usage limit; the app was connected with no sign-in prompt"
+        return "blocked-by-provider", "the provider refused the turn (its own usage limit or the account's billing state); the app was connected with no sign-in prompt"
     return "fail", None
 
 

@@ -1,0 +1,205 @@
+{
+  "packet": "PALETTE-CREATE-SECTION-15-01",
+  "status": "Source expectations plus an authored 10-case real-component fixture; tests NOT RUN",
+  "cases": [
+    {
+      "id": "local-scope-ready",
+      "given": {
+        "reference_hn": "active organization id",
+        "reference_de": "local"
+      },
+      "reference_source_expected": {
+        "row": "present",
+        "selection": "close palette then open Ij mode=create"
+      },
+      "product_state_mapping": "Existing fixed local navigation-section namespace; capability present at StoreStartup ready. Intentional local mapping, not JV value parity."
+    },
+    {
+      "id": "scope-unavailable",
+      "given": {
+        "reference_hn": "undefined",
+        "reference_de": "local"
+      },
+      "reference_source_expected": {
+        "row": "absent",
+        "selection": "no Ij open"
+      },
+      "product_state_mapping": "Reference active-org unavailability is unobserved. OpenConductor independently withholds capability at StoreStartup loading/error."
+    },
+    {
+      "id": "nonlocal-control",
+      "given": {
+        "reference_hn": "defined",
+        "reference_de": "not-local"
+      },
+      "reference_source_expected": {
+        "row": "absent",
+        "selection": "no Ij open"
+      },
+      "product_state_mapping": "scope exclusion only; no cloud UI to add"
+    },
+    {
+      "id": "existing-flow-control",
+      "given": {
+        "app": "OpenConductor",
+        "entry": "Sidebar New section…"
+      },
+      "preserve": [
+        "existing SectionDialog submission",
+        "one createSection dispatch",
+        "name/emoji",
+        "beforeSectionId/workspaceIdToMove paths"
+      ],
+      "expected": "existing behavior unchanged after a future palette bridge; NOT RUN"
+    },
+    {
+      "id": "routing-and-search-controls",
+      "given": {
+        "app": "OpenConductor",
+        "locations": [
+          "root",
+          "Home",
+          "workspace"
+        ],
+        "tabs": [
+          "All",
+          "Actions"
+        ]
+      },
+      "expected": "No selected-workspace/repository-count gate. Settings/Diagnostics early returns remain unchanged; this unit does not mount a palette there.",
+      "query_cases": [
+        "create section",
+        "new section",
+        "sidebar"
+      ]
+    },
+    {
+      "id": "hidden-sidebar-control",
+      "given": {
+        "app": "OpenConductor",
+        "sidebar": "hidden",
+        "palette": "open"
+      },
+      "source_constraint": "Baseline Sidebar owns the dialog and is absent when hidden. Candidate moves that one dialog to App.",
+      "future_expected": "Actual CommandPalette click opens the shared SectionDialog without mounting Sidebar.",
+      "verification": "NOT RUN"
+    },
+    {
+      "id": "no-premature-write",
+      "given": {
+        "reference_dialog_mode": "create",
+        "action": "open or cancel dialog"
+      },
+      "future_expected": [
+        "do not write a section until submit",
+        "cancel makes no state transition",
+        "submit dispatches one createSection with no workspace move or insertion override"
+      ],
+      "source_limit": "Reference source now closes createSection.mutate then immediate dialog close with onError callback. Storage success below gS.create is unobserved; dialog form comparison belongs to existing6013."
+    },
+    {
+      "id": "selected-section-namespace",
+      "given": {
+        "reference_hn": "active organization id A",
+        "reference_de": "local",
+        "selected_workspace": "any or absent"
+      },
+      "reference_source_expected": {
+        "dialog": "navigation-section-name-dialog",
+        "mode": "create",
+        "creation_organizationId": "A",
+        "localWorkspaceIdToMove": "absent for plain palette command",
+        "beforeSectionId": "absent for plain palette command"
+      },
+      "product_mapping": "explicit existing local navigation-section store adaptation; no new organization model",
+      "verification": "static chain only; NOT EXECUTED"
+    },
+    {
+      "id": "reference-close-timing",
+      "given": {
+        "create_mutation": "pending or error after enqueue"
+      },
+      "reference_source_expected": "Aya supplies onError and closes immediately after mutate, not after onSuccess",
+      "ownership": "form-body comparison passed to existing6013; menus lane preserves caller contract only",
+      "verification": "static source only; NOT EXECUTED"
+    }
+  ],
+  "checked_main": "385ccb5229f56ff33903f034352eaa9827c40f0e",
+  "execution_request": {
+    "status": "FROZEN after ledger expectation-hunk clearance; NOT RUN. Existing sole e1 queue only.",
+    "baseline": "b34ba2de9ad45365715d21a0bfe24d9c36b335fb",
+    "product_candidate": "2fffaf802b0cab3ed67d925e3f3e4f418bc050d9",
+    "frozen_test": {
+      "path": "src/palette/createSection.test.ts",
+      "sha256": "58305af8b2f65d17a1b3752f348d5732c60bd79aed87e4659f0e9509014bb344",
+      "cases": 10
+    },
+    "direct_dependencies": {
+      "react": "18.3.1",
+      "react-dom": "18.3.1",
+      "react-test-renderer": "18.3.1",
+      "typescript": "5.9.3",
+      "fuzzysort": "3.1.0"
+    },
+    "install_if_missing": "Single isolated resolver with five pinned direct packages, lifecycle scripts disabled; no project manifest/lockfile change or full app install. Reuse if available. No install performed.",
+    "phases": [
+      {
+        "id": "baseline",
+        "command": "node --experimental-strip-types --test src/palette/createSection.test.ts",
+        "source": "Pinned main + frozen new test in isolated temporary fixture. Baseline product/existing tests unchanged.",
+        "expected": "Missing row/capability/callback assertions fail. Dependency/import errors are fixture failures, not product reproduction."
+      },
+      {
+        "id": "candidate",
+        "command": "node --experimental-strip-types --test src/palette/createSection.test.ts",
+        "source": "Authored candidate, byte-identical frozen new test.",
+        "expected": "All 10 new cases pass. Expected, not observed."
+      },
+      {
+        "id": "preservation",
+        "command": "node --experimental-strip-types --test src/palette/createSection.test.ts src/palette/fromAppState.test.ts src/palette/gitPanelActions.test.ts src/components/sectionEmoji.test.ts src/state/navigationSections.test.ts",
+        "source": "Candidate, existing assertions preserved; only Actions-order expectation adds Create section after Create workspace.",
+        "expected": "New cases and existing controls pass. No deleted/weak/focused/skipped assertions."
+      }
+    ],
+    "bounds": {
+      "foreground_timeout_seconds_per_phase": 120,
+      "parallel_jobs": 1,
+      "target": "Existing coordinator-admitted cloud slot only",
+      "automatic_retry": false
+    },
+    "real_modules": [
+      "App",
+      "PaletteHost",
+      "CommandPalette.choose",
+      "SectionDialog",
+      "Modal",
+      "fromAppState",
+      "search/model",
+      "store.reducer",
+      "navigationSections"
+    ],
+    "boundary_doubles": [
+      "useAppStore uses React.useReducer with explicit AppState/StoreStartup; real DB hydration/persistence effects do not run",
+      "Sidebar is a leaf probe of the App-supplied callback, not actual Sidebar menu gestures",
+      "Other screens, keybinding hooks, installed-app discovery, recents/filter/display helpers and external operations are inert or fail closed; unknown imports fail"
+    ],
+    "not_proven": [
+      "IPC/database hydration or persistence",
+      "real Sidebar menu gestures",
+      "CSS/focus/motion/layout/pointer dismissal/browser/native/visual parity",
+      "live providers",
+      "reference selected organization/eligibility/persistence"
+    ],
+    "typecheck": {
+      "command": "npm run typecheck",
+      "source": "Exact candidate frontend using complete existing resolver; NOT RUN. Missing dependencies are not a passing typecheck.",
+      "executor": "Existing sole e1 queue, no self-admission or duplicate executor"
+    },
+    "deferred": [
+      "Exact-head hosted CI/macOS package after ordinary publication admission",
+      "Native/side-by-side visual proof"
+    ],
+    "fixture_error_policy": "Correct wiring errors first; freeze a replacement hash and use that same test for both baseline and candidate. Do not count dependency/mock errors as product reproduction."
+  }
+}

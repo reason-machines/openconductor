@@ -1,0 +1,58 @@
+{
+  "producer": "Conductor Rebuild",
+  "status": "PREPARED_SOURCE_ONLY_NOT_SUBMITTED_FOR_EXECUTION",
+  "base_sha": "b6e7473d17462ce09948437b4239fb0a31e8d37f",
+  "key": "not_absolutely_right",
+  "before_tracked_edits": "Resolve exact Transcript and existing extracted-component fixture ownership with canonical ledger ddfc6518-d50f-46a6-b83c-c3a18aa07e43.",
+  "reference_contract": {
+    "transform": "Exact ordered five start-anchored case-insensitive replacements from complete kKn; boolean false returns original text.",
+    "boundary": "Complete assistant caller GOo maps assistant blocks to ROo; ROo filters text/thinking only and suppresses a whitespace-empty result.",
+    "preserved": ["User, report and system text", "Tool inputs and results", "Raw message objects and transcript serialization", "Existing clipboard/export/fork paths", "Shared Markdown renderer", "All permission policies"]
+  },
+  "prepared_new_sources": [
+    "candidate/src/features/chat/assistantText.ts",
+    "candidate/src/features/chat/assistantText.test.ts"
+  ],
+  "proposed_existing_source_hunk": {
+    "path": "src/features/chat/Transcript.tsx",
+    "changes": [
+      "Read existing useBoolPref(not_absolutely_right) once in Transcript, defaulting false through existing preference metadata.",
+      "Forward the boolean in RowContext.",
+      "Only in Part text/thinking branches, compute display text through helper, omit trimmed-empty results, otherwise pass untrimmed filtered text to the existing leaf."
+    ]
+  },
+  "extracted_component_fixture_dependency_census": [
+    "src/features/chat/copyCodeFeedback.test.ts",
+    "src/features/chat/thinkingLinks.test.ts",
+    "src/features/chat/thinkingToolLinks.test.ts",
+    "src/features/chat/todoMixedRows.test.ts",
+    "src/features/chat/transcriptAgentSummary.test.ts",
+    "src/features/chat/userText.test.ts"
+  ],
+  "fixture_adaptation": "Supply false-default preference-hook binding in each extracted Transcript harness; bind real pure helper only in harnesses extracting Part. Keep all existing assertions unchanged. Add enabled/off controls in existing transcriptAgentSummary harness rather than creating a second component harness.",
+  "required_behavior_controls": [
+    "Each of five exact prefix variants strips only when enabled; disabled display is byte-identical.",
+    "Case-insensitive matching; non-leading text, leading whitespace, Markdown decoration and smart apostrophe remain source-exact.",
+    "Ordered replacement chaining stays source-exact; no added normalization, word boundary or global replacement.",
+    "Actual production Transcript/Part emits filtered assistant text and thinking with enabled flag, including preview and streaming parts.",
+    "Actual Part suppresses prefix-only/whitespace-empty text and thinking blocks.",
+    "A user message beginning with the same phrase remains unchanged.",
+    "Tool call input and output remain unchanged.",
+    "Rendering does not mutate message objects, complete/fork transcript or raw copy payloads.",
+    "Rerendering off/on/off restores the original display from untouched messages.",
+    "Existing copy-code rejection/success, thinking links, mixed Todo rows, summary transitions and user-link controls stay passing."
+  ],
+  "red_green_plan": {
+    "red": "Overlay the same new helper/test sources and fixture bindings on exact baseline Transcript. Newly added enabled-display controls must fail at the unfiltered assistant display assertion, not missing modules or unrelated dependencies. Existing controls must pass.",
+    "green": "Overlay the exact minimal candidate Transcript hunk; run the same frozen focused controls and related extracted Transcript tests, then exact candidate typecheck through existing serialized queue.",
+    "red_non_acceptance": "A missing helper, ReferenceError, setup/import failure or assertion weakening is not the intended RED.",
+    "queue": "Existing e1 serialized executor only, after collision resolution and frozen source bytes; no second runner, native acquisition, install or provider launch."
+  },
+  "explicit_gaps": [
+    "All prepared final helper and fixture sources are unexecuted.",
+    "No product patch is integrated yet.",
+    "No live Settings event/save, native IPC, desktop persistence or visual acceptance is demonstrated.",
+    "Reference source comparison is not runtime execution of Conductor.",
+    "Auto-permission sidecar precedence remains missing and parked."
+  ]
+}

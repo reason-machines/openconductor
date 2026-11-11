@@ -333,6 +333,10 @@ def main():
     if os.path.isfile(supplemental_path):
         with open(supplemental_path) as f:
             doc["supplemental_evidence"] = json.load(f)
+    corrections_path = os.path.join(OUT, "row-corrections.json")
+    if os.path.isfile(corrections_path):
+        with open(corrections_path) as f:
+            doc["row_corrections"] = json.load(f)
     rescore(doc)
     with open(os.path.join(ROOT, "parity/ui-map.json"), "w") as f:
         json.dump(doc, f, indent=1, ensure_ascii=False)
@@ -367,6 +371,16 @@ def write_md(doc):
     L.append("\nRaw retained rows: %d. Excluded rows: %d. The in-scope queue includes two additional system requirements: toast component, placement, timing and look, and the Experimental default-off gate. Both remain unverified.\n" % (doc["raw_summary"]["total"], doc["excluded_summary"]["total"]))
     for reason, number in doc["excluded_summary"]["by_reason"].items():
         L.append("- %d: %s" % (number, reason))
+    corrections = doc.get("row_corrections", {}).get("corrections", [])
+    if corrections:
+        L.append("\n## Row corrections\n")
+        L.append("%s Each corrected row keeps its scorer result as `raw_status` / `raw_why`; a correction never promotes a row to matches. Source: [row-corrections.json](ui-map/row-corrections.json).\n" % doc["row_corrections"]["note"])
+        L.append("| Row | Category | Scored | Now | Evidence |\n|---|---|---|---|---|")
+        rows = {row["id"]: row for row in doc["states"] + doc["items"]}
+        for record in corrections:
+            row = rows[record["id"]]
+            limits = "<br>Limits: " + esc(" ".join(record["limits"])) if record.get("limits") else ""
+            L.append("| `%s` | %s | %s | %s / %s | %s%s |" % (record["id"], record["category"], row["raw_status"], row["status"], row["scope"], esc("; ".join(record["evidence"])), limits))
     L.append("\n## Main-screen verdicts\n")
     for screen in doc["main_screens"].values():
         L.append("- **%s**: %s in area evidence; retained evidence %s (%d/%d state matches); final review **%s**. %s" % (screen["title"], screen["area_verdict"], screen["evidence_verdict"], screen["counts"]["matches"], screen["counts"]["total"], screen["final_review"], screen["gap"]))

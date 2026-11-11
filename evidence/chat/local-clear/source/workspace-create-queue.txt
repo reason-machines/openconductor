@@ -1,0 +1,1 @@
+async queueWorkspaceTask(e,s){let n=this.workspaceOperationsQueue.get(e);return n===void 0&&(n=new rn({type:"serial"}),this.workspaceOperationsQueue.set(e,n)),n.run(s)}
