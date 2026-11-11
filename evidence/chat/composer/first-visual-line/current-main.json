@@ -89,10 +89,11 @@
     "historical_v2_controls": "PASSED 2/2",
     "historical_v2_candidate": "PASSED 20/20",
     "current_main_candidate": "PASSED 20/20 on published3a04378db67472fc3f3bb7444fbac4ba540aa941, containing main31b675fb; exact original V2 fixture; no skips",
-    "regressions": "NOT_RUN",
-    "typecheck": "NOT_RUN",
+    "regressions": "PASSED 19/19 unchanged composerQueueFocus7 + composerReservedSpace12, exit0/no skips; release16:54:16.905856Z",
+    "typecheck": "LOCAL FAILED: configured 384MiB heap exhausted, exit-6 before TypeScript diagnostics; no retry or narrowed config; standard automatic hosted typecheck pending",
     "native_parity": "NOT_RUN"
   },
   "scope": "Only queue-focus and first-visual-line hunks are transplanted. PLAN1055 Props.onSubmit and async draft-clear handling remain unchanged. Historical manifests and fixture bytes are not repinned.",
-  "current_main_candidate_receipt_sha256": "77cf345aba41d73fda9fde4885bad388253232ba1024895e6e253c5ed9382f05"
+  "current_main_candidate_receipt_sha256": "77cf345aba41d73fda9fde4885bad388253232ba1024895e6e253c5ed9382f05",
+  "configured_typecheck_post_failure_pins": "PASS985source/2313runtime/8055type-manifest; tracked tree unchanged"
 }
