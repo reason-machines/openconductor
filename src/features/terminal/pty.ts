@@ -5,6 +5,7 @@ import { invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { PTY_EVENT, decodeBase64, parsePtyEvent, type PtyEvent } from "./events";
 import type { HistoryRecord, PersistArgs } from "./restore";
+import { createPtyWriter } from "./writeQueue.ts";
 
 export interface SpawnArgs {
   id?: string;
@@ -22,7 +23,7 @@ export interface SpawnArgs {
 export const ptySpawn = (args: SpawnArgs): Promise<string> =>
   isTauri() ? invoke<string>("pty_spawn", { args }) : Promise.reject(new Error("Terminals need the desktop app."));
 
-export const ptyWrite = (id: string, data: string) => invoke<void>("pty_write", { id, data });
+export const ptyWrite = createPtyWriter((id, data) => invoke<void>("pty_write", { id, data }));
 export const ptyResize = (id: string, cols: number, rows: number) => invoke<void>("pty_resize", { id, cols, rows });
 export const ptyKill = (id: string) => invoke<void>("pty_kill", { id });
 export const ptyAckBytes = (id: string, bytes: number) => invoke<void>("pty_ack_bytes", { id, bytes });

@@ -14,6 +14,7 @@ import { VIEW_ARCHIVED_LABEL, type ArchivedWorkspace } from "../workspace/archiv
 export const VIEW_ARCHIVED_ACTION = "view-archived-workspaces";
 import { sidebarEntries } from "../state/sidebarOrder.ts";
 import { nextUnreadChat } from "../state/nextUnread.ts";
+import { GIT_PANEL_ACTIONS, gitPanelWorkspace } from "./gitPanelActions.ts";
 
 export interface WorkspaceRef {
   repoId: string;
@@ -42,10 +43,10 @@ export function stepWorkspace(state: AppState, delta: 1 | -1): WorkspaceRef | un
 
 /**
  * Conductor's command palette items (`m_a`, renderApp @10,909,900-10,918,150), in its order,
- * for a local user. Left out: Create section (sidebar sections), Team and Routines (cloud
- * organisations), Passport and Check for updates (no OpenConductor counterpart yet), and the
- * workspace actions OpenConductor cannot run from here (Search in files, Show changes / checks /
- * notes, Link issue, Move to section and the PR actions).
+ * for a local user. Left out: Team and Routines (cloud organisations), Passport and
+ * Check for updates (no OpenConductor counterpart yet), and the
+ * workspace actions OpenConductor cannot run from here (Search in files, Show notes,
+ * Link issue, Move to section and the PR actions).
  */
 export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   // Workspace actions: only while a workspace is open.
@@ -54,6 +55,7 @@ export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   { id: "archive-workspace", title: "Archive workspace", group: "workspace-actions", bindingId: "workspace.archive", icon: "archive", keywords: ["archive", "current", "workspace"] },
   // Actions.
   { id: "new-workspace", title: "Create workspace", group: "actions", bindingId: "workspace.create", icon: "plus", keywords: ["new", "workspace", "create", "create workspace"] },
+  { id: "create-section", title: "Create section", group: "actions", icon: "plus", keywords: ["create", "new", "section", "sidebar"] },
   { id: "add-project", title: "Add project", group: "actions", bindingId: "nav.addRepository", icon: "folder-plus", keywords: ["add", "project", "repository", "repo", "open", "import"] },
   { id: "toggle-theme", title: "Toggle theme", group: "actions", bindingId: "toggleTheme", icon: "sun-moon", keywords: ["toggle", "theme", "dark", "light"] },
   { id: "toggle-left-sidebar", title: "Toggle left sidebar", group: "actions", bindingId: "view.toggleLeftSidebar", icon: "panel-left", keywords: ["toggle", "left", "sidebar", "panel"] },
@@ -112,6 +114,7 @@ export function paletteDataFromState(
         branch: w.branch,
         repoName: r.name,
         lastActiveAt,
+        updatedAt: w.updatedAt ?? w.createdAt,
         archived: w.status === "archived",
         number: w.number ?? null,
         label: displayName(w),
@@ -129,6 +132,7 @@ export function paletteDataFromState(
       branch: a.branch,
       repoName: repoNames.get(a.repoId) ?? "",
       lastActiveAt: a.createdAt - Number.MAX_SAFE_INTEGER / 2,
+      updatedAt: a.workspace.updatedAt ?? a.createdAt,
       archived: true,
       number: a.workspace.number ?? null,
       label: displayName(a.workspace),
@@ -144,9 +148,17 @@ export function paletteDataFromState(
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
     actions: [...PALETTE_ACTIONS.filter((a) => {
+      if (a.id === "quick-open") return gitPanelWorkspace(state) !== undefined;
+      if (a.id === "archive-workspace") return selectedWorkspace?.status !== "archived" && state.archivedOpen?.workspace.id !== activeWorkspaceId;
       if (a.id === "go-to-next-unread") return nextUnreadChat(state, { skipSelected: false }) !== undefined;
-      // Conductor lists it under Navigation only while a workspace is open (`Xt &&`).
-      if (a.id === VIEW_ARCHIVED_ACTION) return activeWorkspaceId !== null;
+      // Conductor gates both rows on the resolved workspace (`Xt &&`).
+      if (a.id === VIEW_ARCHIVED_ACTION || a.id === "copy-url") {
+        const sel = state.selection;
+        if (sel.kind !== "workspace") return false;
+        const workspace = state.repos.find((r) => r.id === sel.repoId)?.workspaces.find((w) => w.id === sel.workspaceId)
+          ?? (state.archivedOpen?.workspace.id === sel.workspaceId ? state.archivedOpen.workspace : undefined);
+        return workspace !== undefined;
+      }
       return true;
     }), ...openInActions],
     settings,
@@ -154,6 +166,17 @@ export function paletteDataFromState(
     // but stay stored, so they still count toward the cap of 5 (recordViewedWorkspace never prunes).
     recentWorkspaceIds: recentIds.filter((id) => workspaces.some((w) => w.id === id)),
     activeWorkspaceId,
+  };
+}
+
+/** Add context-only panel commands at the host boundary without changing the base list contract. */
+export function workspacePaletteData(...args: Parameters<typeof paletteDataFromState>): PaletteData {
+  const data = paletteDataFromState(...args);
+  if (!gitPanelWorkspace(args[0])) return data;
+  const panelActions = GIT_PANEL_ACTIONS.map(({ entry }) => entry);
+  return {
+    ...data,
+    actions: data.actions.flatMap((entry) => entry.id === "copy-url" ? [...panelActions, entry] : [entry]),
   };
 }
 

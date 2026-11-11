@@ -56,13 +56,25 @@ pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
+mod workspace_links;
 pub mod recent_local_repos;
+mod workspace_file;
+
+#[tauri::command]
+async fn workspace_read_markdown(repo: String, path: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || workspace_file::read_markdown(std::path::Path::new(&repo), &path))
+        .await
+        .map_err(|e| format!("File read task failed: {e}"))?
+}
 mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
 mod sidebar_section_commands;
 pub mod sidebar_transparency;
 mod agent_settings_commands;
+mod config_sync;
+#[path = "config_sync/commands.rs"]
+mod config_sync_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
@@ -70,6 +82,7 @@ pub mod draft_attachments;
 pub mod github_repo;
 pub mod local_account;
 pub mod menu;
+mod model_catalog;
 pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
@@ -391,6 +404,7 @@ pub fn run() {
         })
         .manage(app_quit::QuitHandler::default())
         .invoke_handler(tauri::generate_handler![
+            workspace_read_markdown,
             app_quit::set_quit_handler_ready,
             app_quit::quit_app,
             root_path_commands::get_conductor_root,
@@ -424,6 +438,7 @@ pub fn run() {
             workspace_archive_commands::clear_unarchive_conflict,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
+            workspace_links::workspace_set_link,
             persistence_commands::db_repo_prompt,
             onboarding_commands::db_first_run_onboarding_step,
             onboarding_commands::db_finish_first_run_onboarding,
@@ -438,6 +453,8 @@ pub fn run() {
             sidebar_workspace_commands::db_mark_workspace_read,
             sidebar_workspace_commands::db_open_chat_tab,
             sidebar_workspace_commands::db_close_chat_tab,
+            sidebar_workspace_commands::db_clear_local_chat,
+            sidebar_workspace_commands::db_select_chat,
             sidebar_workspace_commands::db_touch_workspace,
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
@@ -459,6 +476,7 @@ pub fn run() {
             diff::comment_commands::diff_comments_list,
             diff::comment_commands::diff_comment_add,
             diff::comment_commands::diff_comment_edit,
+            diff::comment_commands::diff_comments_update_anchors,
             diff::comment_commands::diff_comment_delete,
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
@@ -468,6 +486,7 @@ pub fn run() {
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
+            reason_chat::reason_cli_ensure_current,
             reason_chat::reason_account_status,
             reason_chat::reason_cloud_setup,
             reason_chat::reason_login_start,
@@ -502,6 +521,8 @@ pub fn run() {
             agent_settings_commands::cli_login_status,
             agent_settings_commands::favorite_models_list,
             agent_settings_commands::favorite_models_replace,
+            config_sync_commands::config_sync_diff,
+            config_sync_commands::config_sync_apply,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,
@@ -549,6 +570,7 @@ pub fn run() {
             resource_usage::commands::get_resource_usage,
             sidebar_transparency::update_window_vibrancy,
             local_account::local_account,
+            model_catalog::local_model_catalog,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
@@ -559,6 +581,7 @@ pub fn run() {
             settings::commands::update_settings,
             settings::commands::get_repo_settings,
             settings::commands::provider_status,
+            settings::commands::initialize_default_runtime,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
             settings::commands::reveal_provider_secret,
@@ -566,6 +589,7 @@ pub fn run() {
             pr::commands::pr_lookup,
             pr::commands::pr_list_open,
             pr::commands::gh_issue_list_open,
+            pr::commands::gh_issue_link_metadata,
             pr::commands::pr_git_state,
             pr::commands::pr_pull_latest_from_target,
             pr::commands::pr_header_state,
@@ -625,7 +649,7 @@ pub fn run() {
                 }
                 // Run scripts lead their own process groups; do not orphan them.
                 if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
-                    scripts.runs.stop_all();
+                    scripts.shutdown();
                 }
                 if let Some(shell) = app.try_state::<ShellCommands>() {
                     shell.0.cancel_all();

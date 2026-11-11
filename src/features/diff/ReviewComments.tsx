@@ -11,12 +11,15 @@
 // suggested changes, Resolve (on GitHub) and Delete (here only, as Conductor
 // does); they cannot be edited or replied to. Comments on the PR itself are
 // listed from the Changes toolbar, so no file has to be open.
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useState, type ReactNode } from "react";
 import { openUrl } from "../../backend";
+import { DialogFrame } from "../../components/DialogFrame";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
 import {
   bodyParts,
+  commentAnchorUpdates,
+  type CommentAnchorPositions,
   canDeleteComment,
   commentAttachment,
   commentSource,
@@ -70,8 +73,14 @@ const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
 
 function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }: { initial?: string; placeholder?: string; submitLabel: string; onSubmit: (body: string) => void; onCancel: () => void }) {
   const [text, setText] = useState(initial);
+  const [discardOpen, setDiscardOpen] = useState(false);
+  const dialogId = useId();
   const cancel = () => {
-    if (text.trim() && text.trim() !== initial.trim() && !window.confirm("Discard this comment? What you wrote will be lost.")) return;
+    const dirty = initial === "" ? text.trim() !== "" : text !== initial;
+    if (dirty) {
+      setDiscardOpen(true);
+      return;
+    }
     onCancel();
   };
   const submit = () => {
@@ -105,6 +114,20 @@ function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }
           {submitLabel}
         </button>
       </div>
+      {discardOpen && (
+        <DialogFrame kind="alert" className="project-confirmation" titleId={`${dialogId}-title`} descriptionId={`${dialogId}-description`} onClose={() => setDiscardOpen(false)}>
+          <div className="project-confirmation-header">
+            <h2 id={`${dialogId}-title`}>Discard comment?</h2>
+            <div id={`${dialogId}-description`} className="project-confirmation-body">
+              {initial === "" ? "This comment will be lost." : "Your changes to this comment will be lost."}
+            </div>
+          </div>
+          <div className="modal-actions">
+            <button type="button" className="btn" data-dialog-cancel onClick={() => setDiscardOpen(false)}>Keep editing</button>
+            <button type="button" className="btn btn-danger" onClick={() => { setDiscardOpen(false); onCancel(); }}>Discard</button>
+          </div>
+        </DialogFrame>
+      )}
     </div>
   );
 }
@@ -179,7 +202,7 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
             stays on GitHub and comes back with the next sync. */}
         {canDeleteComment(c) &&
           (source === "user-local" ? (
-            <button className="oc-link" onClick={() => window.confirm(c.reply_to_comment_id ? "Delete this reply?" : "Delete this comment and its replies?") && void ops.remove(c)}>
+            <button className="oc-link" onClick={() => void ops.remove(c)}>
               Delete
             </button>
           ) : (
@@ -442,10 +465,20 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     for (const t of threads) {
       if (t.root.file_path !== file.path || t.root.file_level) continue;
       const a = { side: sideOf(t.root), line: t.root.end_line_number ?? t.root.line_number };
-      out.set(`${a.side}:${a.line}`, a);
+      const key = `${a.side}:${a.line}`;
+      const existing = out.get(key);
+      out.set(key, { ...a, commentIds: [...(existing?.commentIds ?? []), t.root.id, ...t.replies.map((c) => c.id)] });
     }
-    if (composing?.path === file.path) out.set(`${composing.side}:${composing.line}`, { side: composing.side, line: composing.line });
+    if (composing?.path === file.path) {
+      const key = `${composing.side}:${composing.line}`;
+      if (!out.has(key)) out.set(key, { side: composing.side, line: composing.line });
+    }
     return [...out.values()];
+  };
+
+  const persistAnchors = (file: FileDiff, positions: CommentAnchorPositions) => {
+    const updates = commentAnchorUpdates(stored, file.path, positions);
+    if (updates.length > 0) void run(store.updateAnchors(updates));
   };
 
   const annotations = (file: FileDiff, anchor: LineAnchor): ReactNode => {
@@ -539,5 +572,5 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const hasPending = hasPendingComments(comments);
   const addAllToChat = () => void toChat(ready);
 
-  return { onLineClick, commentRange, anchors, annotations, notes, actions, onLoaded, hasPending, addAllToChat };
+  return { onLineClick, commentRange, anchors, annotations, persistAnchors, notes, actions, onLoaded, hasPending, addAllToChat };
 }

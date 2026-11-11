@@ -30,6 +30,8 @@ export interface Workspace {
   updatedAt?: number;
   /** Worktree path, once the backend created it. */
   path?: string;
+  linkedWorkspaceIds?: string[];
+  linkedDirectoryPaths?: string[];
   /** `intended_target_branch`: where the work merges back; "All changes" is diffed against it. */
   targetBranch?: string | null;
   /** `placeholder_branch_name`: the city branch, until the first message renames it. */
@@ -44,6 +46,10 @@ export interface Workspace {
    * session title). Absent, the tab shows the workspace's name.
    */
   chatTitle?: string;
+  /** Shell primary is the oldest visible UI chat, not the selected secondary. */
+  primaryChatId?: string;
+  /** Persisted workspaces.active_session_id, independent of the primary. */
+  activeSessionId?: string;
   /** Title of the workspace's pull request; the sidebar row shows it in place of the branch. */
   prTitle?: string | null;
   /** Body of the workspace's pull request (`pr_description`); Create PR uses it verbatim. */

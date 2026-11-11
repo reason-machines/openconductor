@@ -224,7 +224,7 @@ export function forkAttachmentName(title: string | null | undefined): string {
 
 /**
  * The footer hover's first line (Conductor's `kDo`): "Opus 5.5 via Reason"
- * when the chat's model is one we know, else just the agent's name.
+ * when the turn's model is one we know, else just the agent's name.
  */
 export function turnAgentLabel(model: string | null | undefined, agentName: string): string {
   const label = model ? knownModelLabel(model) : null;

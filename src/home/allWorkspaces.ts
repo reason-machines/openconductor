@@ -275,6 +275,7 @@ export function homeRows(
       directory: row.workspace.name,
       repo: row.repo.name,
       number,
+      prNumber: row.workspace.pr?.number,
     });
     return matches ? [{ ...row, matches }] : [];
   });
@@ -296,12 +297,12 @@ export type EmptyAction = "create" | "clear" | null;
 
 /**
  * What the empty list offers below "No matching workspaces": Create a
- * workspace when nothing is filtered and there are no active workspaces at
- * all (`Or`), else Clear filters when a filter is set (`mr`).
+ * workspace when no project is selected, archived workspaces are hidden, and
+ * no workspace records exist before filtering (`Or`), else Clear filters (`mr`).
  */
 export function emptyAction(repos: readonly Repo[], filters: HomeFilters): EmptyAction {
-  const anyActive = repos.some((r) => r.workspaces.some((w) => w.status !== "archived"));
-  if (filters.projects.length === 0 && filters.archiveFilter === "active" && !anyActive) return "create";
+  const anyWorkspace = repos.some((r) => r.workspaces.length > 0);
+  if (filters.projects.length === 0 && filters.archiveFilter === "active" && !anyWorkspace) return "create";
   return hasActiveFilters(filters) ? "clear" : null;
 }
 

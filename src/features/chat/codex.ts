@@ -17,6 +17,7 @@
 // Pure: no Tauri, no React, so `codex.test.ts` covers it.
 
 import type { CodexConsent } from "./codexConsent.ts";
+import type { SentUserContentV1 } from "./userContent.ts";
 import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
 
 export type CodexDecision = "accept" | "acceptForSession" | "decline" | "cancel";
@@ -94,9 +95,9 @@ function message(state: CodexChatState, turnId: string, id: string, role: ChatMe
 }
 
 /** The user's prompt: a new turn, running (queued behind any open one). */
-export function startTurn(state: CodexChatState, text: string, now = new Date()): Step {
+export function startTurn(state: CodexChatState, text: string, now = new Date(), userContent?: SentUserContentV1): Step {
   const turnId = `${state.chatId}:t${state.next}`;
-  const user = message(state, turnId, `${turnId}:user`, "user", [{ type: "text", text }], now);
+  const user = { ...message(state, turnId, `${turnId}:user`, "user", [{ type: "text", text }], now), ...(userContent ? { userContent } : {}) };
   return {
     state: { ...state, open: [...state.open, { turnId, assistant: null, items: {} }], next: state.next + 1 },
     events: [

@@ -18,8 +18,9 @@ export interface ComposerEditorHandle {
   focused(): boolean;
   composing(): boolean;
   selection(): ComposerSelection;
-  replaceText(text: string): void;
+  replaceRange(range: { start: number; end: number }, text: string): boolean;
   insertFile(range: { start: number; end: number }, file: { path: string; label: string; directory: boolean }): void;
+  deleteRange(range: { start: number; end: number }): boolean;
   newline(): void;
 }
 
@@ -60,9 +61,22 @@ export function ComposerEditor(props: Props) {
       content: composerContent(current.current.value),
       enableInputRules: false, enablePasteRules: false,
       editorProps: {
-        attributes: { role: "textbox", "aria-label": "Message", "aria-multiline": "true", "data-testid": "composer-input", spellcheck: "false" },
+        attributes: {
+          role: "textbox", "aria-label": "Message", "aria-multiline": "true", "data-testid": "composer-input",
+          spellcheck: "false",
+          autocomplete: "new-password",
+          autocorrect: "off",
+          autocapitalize: "off",
+          writingsuggestions: "false",
+        },
         handleKeyDown: (_view, event) => {
+          if ((event.key === " " || event.code === "Space") && event.ctrlKey && !event.metaKey) {
+            event.preventDefault();
+            event.stopPropagation();
+            return true;
+          }
           if (event.isComposing || editor.view.composing || event.keyCode === 229) return false;
+          if (event.key === "Delete" || event.key === "Backspace") syncSelection();
           current.current.onKeyDown(event);
           return event.defaultPrevented;
         },
@@ -71,7 +85,9 @@ export function ComposerEditor(props: Props) {
           if (current.current.onPasteFiles(event.clipboardData.files)) return true;
           syncSelection();
           const parts = clipboardComposerParts(event.clipboardData.getData(COMPOSER_CLIPBOARD));
+          editor.view.dispatch(closeHistory(editor.state.tr));
           editor.commands.insertContent(parts ? inlineContent(parts) : inlineContent([{ kind: "text", text: event.clipboardData.getData("text/plain").replace(/\r\n?/g, "\n") }]));
+          editor.view.dispatch(closeHistory(editor.state.tr));
           return true;
         },
         handleDOMEvents: {
@@ -134,14 +150,31 @@ export function ComposerEditor(props: Props) {
       focused: () => editor.isFocused,
       composing: () => editor.view.composing,
       selection: () => snapshot(editor),
-      replaceText: (text) => {
-        editor.chain().focus().setTextSelection({ from: 1, to: editor.state.doc.content.size - 1 }).insertContent(inlineContent([{ kind: "text", text }])).run();
+      replaceRange: (range, text) => {
+        if (editor.view.composing) return false;
+        const { positions } = linearDocument(editor.state.doc);
+        const from = positions[range.start], to = positions[range.end];
+        if (from === undefined || to === undefined || from > to) return false;
+        editor.view.dispatch(closeHistory(editor.state.tr));
+        const replaced = editor.chain().focus().insertContentAt({ from, to }, inlineContent([{ kind: "text", text }])).run();
+        editor.view.dispatch(closeHistory(editor.state.tr));
+        return replaced;
       },
       insertFile: (range, file) => {
         editor.view.dispatch(closeHistory(editor.state.tr));
         const { positions } = linearDocument(editor.state.doc);
         editor.chain().focus().insertContentAt({ from: positions[range.start], to: positions[range.end] }, inlineContent([{ kind: "file", ...file }, { kind: "text", text: " " }])).run();
         editor.view.dispatch(closeHistory(editor.state.tr));
+      },
+      deleteRange: (range) => {
+        if (editor.view.composing) return false;
+        const { positions } = linearDocument(editor.state.doc);
+        const from = positions[range.start], to = positions[range.end];
+        if (from === undefined || to === undefined) return false;
+        editor.view.dispatch(closeHistory(editor.state.tr));
+        const removed = editor.chain().focus().deleteRange({ from, to }).run();
+        editor.view.dispatch(closeHistory(editor.state.tr));
+        return removed;
       },
       newline: () => { editor.commands.setHardBreak(); },
     };

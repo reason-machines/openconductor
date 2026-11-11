@@ -1,0 +1,22 @@
+.term-spawn-error {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+  color: var(--destructive);
+  background: var(--panel);
+  font-size: 12px;
+}
+
+.term-spawn-error button {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  background: var(--panel);
+}

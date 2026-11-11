@@ -29,6 +29,7 @@ import {
 import { storedSecret } from "./useAgentStatus";
 import { providerStatus } from "../api";
 import type { ProviderStatus } from "../types";
+import { useConnectedDefault } from "../connectedDefault";
 
 const ICONS: Record<ReasonMode, JSX.Element> = { account: <ReasonMark size={24} />, cli: <TerminalIcon size={24} />, apikey: <KeyIcon size={24} /> };
 const REASON_AUTH: readonly AuthOption<ReasonMode>[] = REASON_MODES.map((m) => ({ ...m, icon: ICONS[m.id] }));
@@ -93,6 +94,7 @@ export function ReasonTab({ settings, save, reload }: AgentTabProps) {
 
   const key = storedSecret(mode === storedMode ? provider : null, REASON_KEY);
   const status = reasonStatus(mode, account, settings, key.present);
+  useConnectedDefault("reason", status.connected);
 
   const switchMode = (to: ReasonMode) => {
     setPending(to);
@@ -153,7 +155,7 @@ export function ReasonTab({ settings, save, reload }: AgentTabProps) {
           return saved !== false;
         }} systemCli={paths?.systemCli ?? null} />
       </div>
-      <ConfigFileCard title="Reason config" displayPath="~/.config/reason" path={paths?.configDir ?? null} />
+      <ConfigFileCard title="Reason config" displayPath="~/.config/reason" path={paths?.configDir ?? null} copyLabel="directory path" />
     </div>
   );
 }

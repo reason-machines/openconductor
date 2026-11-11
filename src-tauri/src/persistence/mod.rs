@@ -232,6 +232,8 @@ pub struct WorkspaceRow {
     pub derived_status: Option<String>,
     pub manual_status: Option<String>,
     pub workspace_path: Option<String>,
+    pub linked_workspace_ids: Vec<String>,
+    pub linked_directory_paths: Vec<String>,
     /// `intended_target_branch`: the branch the work merges into; "All changes" diffs against it.
     pub intended_target_branch: Option<String>,
     pub pinned_at: Option<String>,
@@ -243,6 +245,8 @@ pub struct WorkspaceRow {
     /// The workspace's open chat tabs besides its main chat, oldest first:
     /// they come back after a restart with their unread, as Conductor's do.
     pub chat_tabs: Vec<ChatTabRow>,
+    pub primary_chat_id: String,
+    pub active_session_id: Option<String>,
     /// The main chat's own title once the user renamed it (`sessions::main_chat_titles`);
     /// absent, its tab shows the workspace name.
     pub chat_title: Option<String>,
@@ -304,12 +308,17 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
         .await?
         .into_iter()
         .collect();
-    Ok(workspaces::list(pool)
-        .await?
-        .into_iter()
-        .map(|w| {
-            let w = w.workspace;
-            WorkspaceRow {
+    let mut rows = Vec::new();
+    for stored in workspaces::list(pool).await? {
+            let w = stored.workspace;
+            let primary_chat_id = sessions::primary_chat_id(pool, &w.local_id).await?;
+            let mut chat_tabs = tabs.remove(&w.local_id).unwrap_or_default();
+            let primary_tab = chat_tabs.iter().position(|t| t.id == primary_chat_id).map(|i| chat_tabs.remove(i));
+            let chat_title = if primary_chat_id == w.local_id { titles.remove(&w.local_id) } else { primary_tab.map(|t| t.title) };
+            let active_session_id = w.active_session_id.filter(|id| id == &primary_chat_id || chat_tabs.iter().any(|t| &t.id == id)).or_else(|| Some(primary_chat_id.clone()));
+            rows.push(WorkspaceRow {
+                linked_workspace_ids: decode_links(w.linked_workspace_ids.as_deref())?,
+                linked_directory_paths: decode_links(w.linked_directory_paths.as_deref())?,
                 directory_name: w.directory_name.unwrap_or_default(),
                 workspace_name: w.workspace_name,
                 user_set_workspace_name: w.user_set_workspace_name,
@@ -323,8 +332,10 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 pinned_at: w.pinned_at,
                 unread: w.unread,
                 unread_chats: unread.remove(&w.local_id).unwrap_or_default(),
-                chat_tabs: tabs.remove(&w.local_id).unwrap_or_default(),
-                chat_title: titles.remove(&w.local_id),
+                chat_tabs,
+                chat_title,
+                primary_chat_id,
+                active_session_id,
                 pr_title: w.pr_title,
                 pr_description: w.pr_description,
                 number: w.number,
@@ -334,9 +345,15 @@ pub async fn list_workspaces(pool: &SqlitePool) -> Result<Vec<WorkspaceRow>> {
                 updated_at: w.updated_at,
                 repository_id: w.repository_id,
                 id: w.local_id,
-            }
-        })
-        .collect())
+            });
+    }
+    Ok(rows)
+}
+
+fn decode_links(raw: Option<&str>) -> Result<Vec<String>> {
+    raw.map(serde_json::from_str).transpose()
+        .map(|links| links.unwrap_or_default())
+        .map_err(|e| openconductor_db::Error::InvalidWorkspaceLink(format!("Invalid saved workspace links: {e}")))
 }
 
 fn state_name(s: WorkspaceState) -> &'static str {

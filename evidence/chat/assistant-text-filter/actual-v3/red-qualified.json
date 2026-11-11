@@ -1,0 +1,128 @@
+{
+  "author": "Conductor Rebuild",
+  "qualified": true,
+  "receipt_sha256": "6147be741e1858077b26532176618f0ca8f8802674bd9ce04132bba6636b964d",
+  "tap_sha256": "95b1f628346a48a5bf107da93b5fa40d8c3cf31b3aae36bdbf492ebfa36dd8de",
+  "qualified_at": "2026-11-11T11:34:30.505849+00:00",
+  "summary": {
+    "tests": 109,
+    "pass": 92,
+    "fail": 17,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "failure_categories": {
+    "enabled anchored-prefix text/thinking display": 10,
+    "enabled trimmed-empty block display": 2,
+    "enabled streaming display": 2,
+    "intermediate/final display": 1,
+    "assistant leaf display after earlier nonassistant leaf controls": 1,
+    "mounted enabled rerender display": 1
+  },
+  "failures": [
+    {
+      "name": "assistant display prefix=\"You're absolutely right! \" enabled=true kind=text",
+      "category": "enabled anchored-prefix text/thinking display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "assistant display prefix=\"You're absolutely right! \" enabled=true kind=thinking",
+      "category": "enabled anchored-prefix text/thinking display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "assistant display prefix=\"You're absolutely right.\\\\n\\\\n\" enabled=true kind=text",
+      "category": "enabled anchored-prefix text/thinking display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "assistant display prefix=\"You're absolutely right.\\\\n\\\\n\" enabled=true kind=thinking",
+      "category": "enabled anchored-prefix text/thinking display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "assistant display prefix=\"You're absolutely right -\\\\t\" enabled=true kind=text",
+      "category": "enabled anchored-prefix text/thinking display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "assistant display prefix=\"You're absolutely right -\\\\t\" enabled=true kind=thinking",
+      "category": "enabled anchored-prefix text/thinking display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "assistant display prefix=\"You're absolutely right \u2013\\\\n\" enabled=true kind=text",
+      "category": "enabled anchored-prefix text/thinking display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "assistant display prefix=\"You're absolutely right \u2013\\\\n\" enabled=true kind=thinking",
+      "category": "enabled anchored-prefix text/thinking display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "assistant display prefix=\"You're absolutely right \" enabled=true kind=text",
+      "category": "enabled anchored-prefix text/thinking display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "assistant display prefix=\"You're absolutely right \" enabled=true kind=thinking",
+      "category": "enabled anchored-prefix text/thinking display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "enabled assistant display hides trimmed-empty text",
+      "category": "enabled trimmed-empty block display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "enabled display filters streaming text",
+      "category": "enabled streaming display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "enabled assistant display hides trimmed-empty thinking",
+      "category": "enabled trimmed-empty block display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "enabled display filters streaming thinking",
+      "category": "enabled streaming display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "enabled display filters intermediate and preview text without changing their emphasis",
+      "category": "intermediate/final display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "enabled display leaves user, report, system and tool payloads and raw copy/fork data untouched",
+      "category": "assistant leaf display after earlier nonassistant leaf controls",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    },
+    {
+      "name": "mounted off/on/off rerender restores raw assistant text and thinking from the same transcript",
+      "category": "mounted enabled rerender display",
+      "error_code": "ERR_ASSERTION",
+      "assertion_reached": true
+    }
+  ],
+  "note": "All 17 failures are the intended enabled display assertions. All 92 other cases passed, including helper and existing controls. Multi-assertion tests terminate at the reported display assertion; later checks in those failing bodies are not claimed until GREEN. No setup/import/type errors, skips, cancellations, timeouts or input drift. Conditional unchanged-case GREEN may now apply sole Transcript delta in private snapshot."
+}

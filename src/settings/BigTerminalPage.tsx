@@ -113,7 +113,11 @@ function CustomRow(props: { custom: CustomCommand; selected: boolean; onSelect: 
           autoCapitalize="off"
           spellCheck={false}
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => {
+            const command = e.target.value;
+            setText(command);
+            props.onChange(command);
+          }}
           onBlur={commit}
           onKeyDown={(e) => {
             if (e.key === "Enter") e.currentTarget.blur();

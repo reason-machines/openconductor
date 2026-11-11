@@ -12,6 +12,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
@@ -54,6 +55,8 @@ struct Entry {
     state: Option<SetupState>,
     process: Option<Arc<Mutex<Process>>>,
     outcome: Option<SetupOutcome>,
+    interrupted: bool,
+    worker: Option<thread::JoinHandle<()>>,
 }
 
 /// Setup runs for every workspace.
@@ -61,6 +64,7 @@ struct Entry {
 pub struct SetupManager {
     log_dir: PathBuf,
     entries: Arc<Mutex<HashMap<String, Entry>>>,
+    shutting_down: Arc<AtomicBool>,
 }
 
 impl SetupManager {
@@ -69,6 +73,7 @@ impl SetupManager {
         Self {
             log_dir: log_dir.into(),
             entries: Arc::default(),
+            shutting_down: Arc::default(),
         }
     }
 
@@ -114,11 +119,15 @@ impl SetupManager {
         done: OnSetupDone,
     ) -> io::Result<bool> {
         let mut entries = self.lock();
+        if self.shutting_down.load(Ordering::Acquire) {
+            return Ok(false);
+        }
         let entry = entries.entry(workspace_id.to_string()).or_default();
         if entry.state == Some(SetupState::Running) {
             return Ok(false);
         }
         entry.outcome = None;
+        entry.interrupted = false;
         let process = match launch::spawn(spec, sink) {
             Ok(p) => Arc::new(Mutex::new(p)),
             Err(e) => {
@@ -131,10 +140,9 @@ impl SetupManager {
         };
         entry.state = Some(SetupState::Running);
         entry.process = Some(process.clone());
-        drop(entries);
         let this = self.clone();
         let id = workspace_id.to_string();
-        thread::spawn(move || loop {
+        entry.worker = Some(thread::spawn(move || loop {
             let exited = process.lock().unwrap_or_else(|e| e.into_inner()).try_wait();
             match exited {
                 Ok(None) => thread::sleep(Duration::from_millis(50)),
@@ -157,8 +165,38 @@ impl SetupManager {
                     return;
                 }
             }
-        });
+        }));
         Ok(true)
+    }
+
+    /// Seal setup admission, interrupt active processes and wait for completion callbacks.
+    pub fn interrupt_all(&self) {
+        let targets: Vec<_> = {
+            let mut entries = self.lock();
+            self.shutting_down.store(true, Ordering::Release);
+            entries
+                .values_mut()
+                .map(|entry| {
+                    if entry.state == Some(SetupState::Running) {
+                        entry.interrupted = true;
+                    }
+                    (entry.process.clone(), entry.worker.take())
+                })
+                .collect()
+        };
+        for (process, _) in &targets {
+            if let Some(process) = process {
+                let _ = process
+                    .lock()
+                    .unwrap_or_else(|e| e.into_inner())
+                    .stop(CANCEL_GRACE);
+            }
+        }
+        for (_, worker) in targets {
+            if let Some(worker) = worker {
+                let _ = worker.join();
+            }
+        }
     }
 
     /// Cancel a running setup and wait for it to end.
@@ -168,7 +206,7 @@ impl SetupManager {
             let Some(entry) = entries.get_mut(workspace_id) else {
                 return;
             };
-            if entry.state != Some(SetupState::Running) {
+            if entry.state != Some(SetupState::Running) || entry.interrupted {
                 return;
             }
             entry.state = Some(SetupState::Cancelled);
@@ -207,6 +245,13 @@ impl SetupManager {
     }
 
     fn finish(&self, workspace_id: &str, exit_code: Option<i32>, log: String, done: OnSetupDone) {
+        let mut entries = self.lock();
+        let entry = entries.entry(workspace_id.to_string()).or_default();
+        let (exit_code, log) = if entry.interrupted {
+            (Some(1), format!("{log}\n{INTERRUPTED}"))
+        } else {
+            (exit_code, log)
+        };
         let log_path = self.log_path(workspace_id);
         let log = match write_log(&log_path, &log) {
             Ok(()) => log,
@@ -216,8 +261,6 @@ impl SetupManager {
             ),
         };
         let outcome = {
-            let mut entries = self.lock();
-            let entry = entries.entry(workspace_id.to_string()).or_default();
             let state = match (entry.state, exit_code) {
                 (Some(SetupState::Cancelled), _) => SetupState::Cancelled,
                 (_, Some(0)) => SetupState::Completed,
@@ -235,6 +278,7 @@ impl SetupManager {
             entry.outcome = Some(outcome.clone());
             outcome
         };
+        drop(entries);
         done(outcome);
     }
 

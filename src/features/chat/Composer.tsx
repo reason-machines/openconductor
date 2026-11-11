@@ -14,7 +14,7 @@
 // (composerMinimize.ts); focus, a click or ⌘L expands it.
 
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ClipboardEvent, type DragEvent, type FormEvent, type KeyboardEvent, type ReactNode, type RefObject } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
@@ -22,13 +22,16 @@ import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
 import { canSteerNow, headStatusLabel, resolveSendMode, turnRunning, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
 import type { QueueAction } from "./queue.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
-import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
+import { composerSlashRange, matchCommands, type SlashCommand } from "./slashCommands.ts";
 import { SlashMenu } from "./SlashMenu.tsx";
 import { fuzzyFilterFiles } from "../../backend";
 import type { FileMatch } from "../../spotlight/quickOpen";
-import { fileMentionQuery } from "./fileMentions.ts";
+import { fileMentionQuery, mentionItems, type MentionItem } from "./fileMentions.ts";
 import { ComposerEditor, type ComposerEditorHandle, type ComposerSelection } from "./ComposerEditor.tsx";
 import { composerPrompt } from "./composerDocument.ts";
+import { longPasteAttachment } from "./composerLongPaste.ts";
+import { useBoolPref } from "../../settings/useBoolPref.ts";
+import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type UserPrompt } from "./userContent.ts";
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
 import type { ComposerMinimize } from "./useComposerMinimize.ts";
@@ -48,7 +51,9 @@ export interface ComposerProps {
   queue: ChatQueue;
   canSteer: boolean;
   followUpMode?: FollowUpMode;
-  onSubmit: (text: string, mode: SendMode) => void;
+  onSubmit: (input: UserPrompt, mode: SendMode) => void;
+  /** False when the owner clears only after asynchronous delivery succeeds. */
+  clearOnSubmit?: boolean;
   onStop: () => void;
   onQueue: (action: QueueAction) => void;
   /** Files going out with the next message, shown above the message box. */
@@ -57,6 +62,8 @@ export interface ComposerProps {
   workspacePath?: string;
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
+  onLinkWorkspaces?: () => void;
+  onAttachTerminalOutput?: () => void;
   /** The model picker (or another agent's picker), at the box's bottom left. */
   picker?: ReactNode;
   /** More pickers after it (an agent's access mode), in the same row. */
@@ -81,18 +88,22 @@ export function Composer({
   canSteer,
   followUpMode = "steering",
   onSubmit,
+  clearOnSubmit = true,
   onStop,
   onQueue,
   attachments,
   hasAttachments = false,
   workspacePath,
   onAttachFiles,
+  onLinkWorkspaces,
+  onAttachTerminalOutput,
   picker,
   controls,
   slashCommands = [],
   onCommand,
   minimize,
 }: ComposerProps) {
+  const autoConvertLongText = useBoolPref("auto_convert_long_text");
   const minimized = minimize?.minimized ?? false;
   const fileInput = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -122,8 +133,10 @@ export function Composer({
     if (minimized && inputRef.current?.focused()) inputRef.current.blur();
   }, [minimized, inputRef]);
 
-  const query = focused ? slashQuery(selection.text, selection.start) : null;
-  const slashMatches = useMemo(() => (query === null || query === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashDismissed, slashCommands]);
+  const slash = focused ? composerSlashRange(selection.text, selection.start, selection.end) : null;
+  const query = slash?.query ?? null;
+  const slashKey = slash ? `${slash.start}:${slash.end}:${slash.query}` : null;
+  const slashMatches = useMemo(() => (query === null || slashKey === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashKey, slashDismissed, slashCommands]);
   const slashOpen = slashMatches.length > 0;
   const slashFocus = Math.min(slashIndex, Math.max(0, slashMatches.length - 1));
   const mention = focused && workspacePath ? fileMentionQuery(selection.text, selection.start, selection.end) : null;
@@ -140,37 +153,54 @@ export function Composer({
     );
     return () => { live = false; };
   }, [workspacePath, mentionQuery]);
-  const mentionMatches = files && files.workspacePath === workspacePath && files.query === mentionQuery ? files.matches : [];
+  const fileMatches = files && files.workspacePath === workspacePath && files.query === mentionQuery ? files.matches : [];
+  const mentionMatches = mentionItems(mentionQuery ?? "", fileMatches, !!onAttachTerminalOutput, !!onLinkWorkspaces);
   const mentionOpen = mention !== null && mentionQuery !== undefined && mentionMatches.length > 0;
   const mentionFocus = Math.min(mentionIndex, Math.max(0, mentionMatches.length - 1));
 
-  function pickFile(file: FileMatch) {
+  function pickMention(item: MentionItem) {
     const box = inputRef.current;
     if (!box || box.composing()) return;
     const current = box.selection();
     const range = fileMentionQuery(current.text, current.start, current.end);
     if (!range || `${range.start}:${range.query}` !== mentionKey) return;
+    if (item.kind === "add-directory") {
+      if (!onLinkWorkspaces || !box.deleteRange(range)) return;
+      setMentionDismissed(mentionKey);
+      onLinkWorkspaces();
+      return;
+    }
+    if (item.kind === "terminal") {
+      if (!onAttachTerminalOutput || !box.deleteRange(range)) return;
+      setMentionDismissed(mentionKey);
+      onAttachTerminalOutput();
+      return;
+    }
+    const file = item.match;
     box.insertFile(range, { path: file.relative_path, label: file.relative_path, directory: file.file.is_directory });
     setMentionDismissed(mentionKey);
   }
 
   function pickCommand(command: SlashCommand) {
-    if (inputRef.current?.composing()) return;
-    const next = completeInsert(selection.text, command.insert ?? `/${command.name}`);
-    inputRef.current?.replaceText(next);
+    const box = inputRef.current;
+    if (!box || box.composing() || !slash) return;
+    const current = box.selection();
+    const range = composerSlashRange(current.text, current.start, current.end);
+    if (!range || range.start !== slash.start || range.end !== slash.end || range.query !== slash.query) return;
+    if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
     setSlashIndex(0);
   }
 
   function submit(opposite: boolean) {
     if (inputRef.current?.composing()) return;
-    const text = composerPrompt(draft).trim();
-    if (!text && !hasAttachments) return;
-    if (text.startsWith("/") && onCommand?.(text)) {
+    const input = submittedUserPrompt(draft);
+    if (!input.text && !hasAttachments) return;
+    if (input.text.startsWith("/") && onCommand?.(input.text)) {
       setDraft("");
       return;
     }
-    onSubmit(text, working ? mode(opposite) : "queue");
-    setDraft("");
+    onSubmit(input, working ? mode(opposite) : "queue");
+    if (clearOnSubmit) setDraft("");
   }
 
   useKeybindings({
@@ -189,6 +219,14 @@ export function Composer({
     onAttachFiles(files);
     return true;
   };
+  function onPasteCapture(event: ClipboardEvent<HTMLFormElement>) {
+    if (!onAttachFiles || event.defaultPrevented) return;
+    const file = longPasteAttachment(event.clipboardData, autoConvertLongText);
+    if (!file) return;
+    event.preventDefault();
+    event.stopPropagation();
+    onAttachFiles([file]);
+  }
   const hasFiles = (e: DragEvent) => onAttachFiles !== undefined && Array.from(e.dataTransfer?.types ?? []).includes("Files");
   const queueRef = useRef<HTMLOListElement>(null);
 
@@ -212,7 +250,7 @@ export function Composer({
       const selected = mentionMatches[mentionFocus];
       if (selected) {
         e.preventDefault();
-        pickFile(selected);
+        pickMention(selected);
       }
       return;
     }
@@ -236,12 +274,12 @@ export function Composer({
     if (slashOpen && e.key === "Escape") {
       e.preventDefault();
       e.stopPropagation();
-      setSlashDismissed(query);
+      setSlashDismissed(slashKey);
       return;
     }
     // ↑ with the caret at the very start goes to the last queued message.
     const current = inputRef.current?.selection();
-    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {
+    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {
       e.preventDefault();
       focus({ row: queue.items[queue.items.length - 1].id });
     } else if (hit("chat.cancel") && working) {
@@ -273,11 +311,12 @@ export function Composer({
     <div className="composer-wrap">
       {queue.items.length > 0 ? <QueuePanel queue={queue} canSteer={canSteerNow(queue, canSteer)} onQueue={onQueue} listRef={queueRef} focus={focus} keys={keys} /> : null}
       <div className="oc-composer-anchor">
-        {mentionOpen ? <FileMentionMenu matches={mentionMatches} focused={mentionFocus} hasQuery={mentionQuery !== ""} onPick={pickFile} onFocus={setMentionIndex} /> : null}
+        {mentionOpen ? <FileMentionMenu matches={mentionMatches} focused={mentionFocus} hasQuery={mentionQuery !== ""} onPick={pickMention} onFocus={setMentionIndex} /> : null}
         {slashOpen ? <SlashMenu matches={slashMatches} focused={slashFocus} hasQuery={query !== ""} onPick={pickCommand} onFocus={setSlashIndex} /> : null}
         <form
           className={`composer oc-composer${dragging ? " is-dropping" : ""}`}
           aria-label="composer"
+          onPasteCapture={onPasteCapture}
           data-composer-minimized={minimized || undefined}
           data-composer-resize-instant={(minimize && !minimize.animate) || undefined}
           onClick={() => minimize?.expand()}
@@ -333,7 +372,7 @@ export function Composer({
           </div>
           <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
             <span className="oc-composer-fade">
-              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} />
+              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
             </span>
             {showFocusPill && minimized ? focusPill(true) : null}
             {onAttachFiles ? (
@@ -378,12 +417,11 @@ export function Composer({
   );
 }
 
-/** Conductor's "+" button (`a7i`): "Add attachments and more"; this build offers Add attachment. */
-function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: () => void }) {
+function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
-  if (!onAddAttachment) return null;
+  if (!onAddAttachment && !onLinkWorkspaces) return null;
   return (
     <span
       className="oc-add-menu"
@@ -405,7 +443,7 @@ function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: ()
       </Tooltip>
       {popup.mounted ? (
         <div className="oc-menu oc-add-popup" role="menu" data-motion="popup" {...popup.attrs}>
-          <button
+          {onAddAttachment ? <button
             type="button"
             role="menuitem"
             className="oc-menu-item"
@@ -417,7 +455,10 @@ function AddMenu({ hint, onAddAttachment }: { hint: string; onAddAttachment?: ()
             <PaperclipIcon size={16} />
             <span className="oc-menu-item-label">Add attachment</span>
             <span className="oc-kbd-hint">{hint}</span>
-          </button>
+          </button> : null}
+          {onLinkWorkspaces ? <button type="button" role="menuitem" className="oc-menu-item" onClick={() => { setOpen(false); onLinkWorkspaces(); }}>
+            <PlusIcon size={16} /><span className="oc-menu-item-label">Link workspaces</span>
+          </button> : null}
         </div>
       ) : null}
     </span>
@@ -509,6 +550,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
               key={m.id}
               id={m.id}
               text={m.text}
+              userContent={m.userContent}
               attachmentNames={m.attachments.map((a) => a.name)}
               first={i === 0}
               last={i === queue.items.length - 1}
@@ -529,6 +571,7 @@ function QueuePanel({ queue, canSteer, onQueue, listRef, focus, keys }: QueuePan
 interface RowProps {
   id: string;
   text: string;
+  userContent?: SentUserContentV1;
   attachmentNames: readonly string[];
   first: boolean;
   last: boolean;
@@ -541,44 +584,53 @@ interface RowProps {
   rowProps: React.LiHTMLAttributes<HTMLLIElement>;
 }
 
-function QueueRow({ id, text, attachmentNames, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
-  const [value, setValue] = useState(text);
+function QueueRow({ id, text, userContent, attachmentNames, first, last, editing, canSteer, onQueue, keys, dragging, rowProps }: RowProps) {
+  const [value, setValue] = useState(() => queuedUserDraft({ text, userContent }));
+  const editor = useRef<ComposerEditorHandle>(null);
+  useLayoutEffect(() => {
+    if (!editing) return;
+    setValue(queuedUserDraft({ text, userContent }));
+    editor.current?.focus();
+  }, [editing, text, userContent]);
   if (editing) {
     return (
       <li className="queue-row is-editing">
-        <textarea
-          className="queue-edit"
-          aria-label="Edit queued message"
-          value={value}
-          autoFocus
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => {
-            const ev = e.nativeEvent;
-            if (ev.isComposing) return;
-            const hit = (command: string) => keys(command).some((s) => matchesEvent(s, ev));
-            if (hit("chat.queueEdit.cancel")) {
-              e.preventDefault();
-              onQueue({ kind: "cancelEdit" });
-            } else if (canSteer && hit("chat.queueEdit.saveAndSteer")) {
-              e.preventDefault();
-              onQueue({ kind: "saveEdit", text: value, steer: true });
-            } else if (hit("chat.queueEdit.save")) {
-              e.preventDefault();
-              onQueue({ kind: "saveEdit", text: value, steer: false });
-            }
-          }}
-          rows={2}
-        />
+        <div className="queue-edit" role="group" aria-label="Edit queued message">
+          <ComposerEditor
+            value={value}
+            inputRef={editor}
+            placeholder="Edit queued message"
+            onChange={setValue}
+            onSelection={() => {}}
+            onFocus={() => {}}
+            onBlur={() => {}}
+            onPasteFiles={() => false}
+            onKeyDown={(ev) => {
+              if (ev.isComposing) return;
+              const hit = (command: string) => keys(command).some((s) => matchesEvent(s, ev));
+              if (hit("chat.queueEdit.cancel")) {
+                ev.preventDefault();
+                onQueue({ kind: "cancelEdit" });
+              } else if (canSteer && hit("chat.queueEdit.saveAndSteer")) {
+                ev.preventDefault();
+                onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: true });
+              } else if (hit("chat.queueEdit.save")) {
+                ev.preventDefault();
+                onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: false });
+              }
+            }}
+          />
+        </div>
         <span className="queue-row-actions">
           <button type="button" className="chat-action" onClick={() => onQueue({ kind: "cancelEdit" })}>
             Cancel
           </button>
           {canSteer ? (
-            <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", text: value, steer: true })}>
+            <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: true })}>
               Save and steer
             </button>
           ) : null}
-          <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", text: value, steer: false })}>
+          <button type="button" className="chat-action" onClick={() => onQueue({ kind: "saveEdit", input: submittedUserPrompt(value), steer: false })}>
             Save
           </button>
         </span>
@@ -602,7 +654,7 @@ function QueueRow({ id, text, attachmentNames, first, last, editing, canSteer, o
           type="button"
           className="chat-action"
           onClick={() => {
-            setValue(text);
+            setValue(queuedUserDraft({ text, userContent }));
             onQueue({ kind: "edit", id });
           }}
         >

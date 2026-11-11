@@ -9,7 +9,8 @@ import { useState } from "react";
 import { chipLayout, type TurnRef } from "../diff/turnChangesCache.ts";
 import type { FileChange } from "../diff/types.ts";
 import { useTurnChanges } from "../diff/useTurnChanges.ts";
-import { FileBadge, FileGlyph } from "./ToolRows.tsx";
+import { FileGlyph } from "./ToolRows.tsx";
+import { TurnFilePreview } from "./turnFilePreview.ts";
 
 /** Conductor's `ID` (showZero, no border): "+N -N" in text-3xs mono. */
 function Counts({ additions, deletions }: { additions: number; deletions: number }) {
@@ -28,9 +29,9 @@ export function TurnChanges({ turn, worktree, onOpenFile }: { turn: TurnRef; wor
   const { first, revealed, hidden, more, hiddenTotals } = chipLayout(files, expanded);
   // Conductor's chip (`_Do`): the file badge (file-type glyph, name) with the file's counts.
   const chip = (f: FileChange) => (
-    <FileBadge key={f.path} path={f.path} className="chat-turn-chip" onOpen={onOpenFile}>
+    <TurnFilePreview key={JSON.stringify([worktree, turn.sessionId, turn.turnId, f.path, f.old_path, f.status, f.binary, f.additions, f.deletions])} file={f} turn={turn} worktree={worktree} onOpenFile={onOpenFile}>
       <Counts additions={f.additions} deletions={f.deletions} />
-    </FileBadge>
+    </TurnFilePreview>
   );
   // Two items of the footer row, as in Conductor: the first chips stay on the row
   // (shrinking, names cut short); the revealed chips and "+N more" follow, on a

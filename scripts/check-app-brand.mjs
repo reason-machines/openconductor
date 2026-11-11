@@ -48,7 +48,11 @@ assert.match(text("src/components/Icons.tsx"), /AppMark as LogoMark/);
 for (const path of ["src/onboarding/SignIn.tsx", "src/onboarding/FirstRunOnboarding.tsx"]) {
   assert.match(text(path), /<AppMark size=\{96\} \/>/, path);
 }
-assert.match(text("src/components/Sidebar.tsx"), /className="sb-app-mark"[^\n]*<AppMark size=\{14\}/);
+const sidebar = text("src/components/Sidebar.tsx");
+const footer = sidebar.slice(sidebar.indexOf('<div className="sb-footer">'));
+assert.match(footer, /className="sb-reason-tag">\s*<AppMark size=\{14\} \/>\s*<span>Reason<\/span>/);
+assert.doesNotMatch(sidebar.slice(0, sidebar.indexOf('<div className="sb-footer">')), /<AppMark /);
+assert.doesNotMatch(sidebar, /sb-plan-badge|>FREE<|aria-label="View pricing"/);
 assert.match(text("src/components/HomeScreen.tsx"), /<Wordmark \/>/);
 assert.match(text("src/components/Wordmark.tsx"), /pixelWordmark\("OPENCONDUCTOR"\)/);
 const config = JSON.parse(text("src-tauri/tauri.conf.json"));

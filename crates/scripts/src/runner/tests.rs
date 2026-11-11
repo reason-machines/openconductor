@@ -25,6 +25,8 @@ fn req(dir: &Path, ws: &str, repo: &str, id: &str, script: &str, concurrent: boo
         },
         concurrent,
         sink: None,
+        on_started: Arc::new(|_| {}),
+        on_finished: Arc::new(|_| {}),
     }
 }
 
@@ -48,8 +50,59 @@ fn runs_to_exit_and_keeps_output() {
     )
     .unwrap();
     wait_for("exit", || m.state("w1", "test") == RunState::Stopped);
-    assert_eq!(m.output("w1", "test").as_deref(), Some("done\n"));
+    assert_eq!(m.output("w1", "test").as_deref(), Some("done\r\n"));
     assert_eq!(m.statuses("w1")[0].exit, Some((Some(2), None)));
+}
+
+#[test]
+fn completion_callback_reads_the_committed_status_and_output() {
+    let tmp = tempfile::tempdir().unwrap();
+    let m = RunManager::default();
+    let (tx, rx) = std::sync::mpsc::channel();
+    let observer = m.clone();
+    let mut request = req(tmp.path(), "w1", "r", "dev", "echo finished", true);
+    request.on_finished = Arc::new(move |status| {
+        let current = observer.statuses("w1");
+        let output = observer.output("w1", "dev");
+        tx.send((status, current, output)).unwrap();
+    });
+    m.start(request, SetupState::Completed).unwrap();
+    let (status, current, output) = rx.recv_timeout(Duration::from_secs(10)).unwrap();
+    assert_eq!(status.state, RunState::Stopped);
+    assert_eq!(status.exit, Some((Some(0), None)));
+    assert_eq!(current, [status]);
+    assert_eq!(output.as_deref(), Some("finished\r\n"));
+}
+
+#[test]
+fn admission_callback_precedes_completion_and_reads_the_committed_running_state() {
+    let tmp = tempfile::tempdir().unwrap();
+    let m = RunManager::default();
+    m.start(
+        req(tmp.path(), "w1", "r", "dev", "exit 7", true),
+        SetupState::Completed,
+    )
+    .unwrap();
+    wait_for("first exit", || m.state("w1", "dev") == RunState::Stopped);
+    assert_eq!(m.statuses("w1")[0].exit, Some((Some(7), None)));
+
+    let (tx, rx) = std::sync::mpsc::channel();
+    let started = tx.clone();
+    let observer = m.clone();
+    let mut request = req(tmp.path(), "w1", "r", "dev", "exit 0", true);
+    request.on_started = Arc::new(move |status| {
+        let current = observer.statuses("w1");
+        started.send((status, current)).unwrap();
+    });
+    request.on_finished = Arc::new(move |status| tx.send((status, Vec::new())).unwrap());
+    m.start(request, SetupState::Completed).unwrap();
+    let (admitted, current) = rx.recv_timeout(Duration::from_secs(10)).unwrap();
+    assert_eq!(admitted.state, RunState::Running);
+    assert_eq!(admitted.exit, None, "a new admission clears the old exit");
+    assert_eq!(current, [admitted]);
+    let (finished, _) = rx.recv_timeout(Duration::from_secs(10)).unwrap();
+    assert_eq!(finished.state, RunState::Stopped);
+    assert_eq!(finished.exit, Some((Some(0), None)));
 }
 
 #[test]
@@ -74,6 +127,36 @@ fn starting_a_script_stops_the_workspaces_other_run() {
     assert_eq!(m.history("w1"), ["test", "dev"]);
     assert!(m.stop("w1", Some("test")));
     assert!(!m.stop("w1", Some("test")), "nothing left to stop");
+}
+
+#[test]
+fn rerun_of_the_same_script_replaces_the_pty_and_transcript() {
+    let tmp = tempfile::tempdir().unwrap();
+    let m = RunManager::default();
+    m.start(
+        req(tmp.path(), "w1", "r", "dev", LONG, true),
+        SetupState::Idle,
+    )
+    .unwrap();
+    wait_for("first run", || {
+        m.output("w1", "dev").unwrap_or_default().contains("up")
+    });
+    m.start(
+        req(
+            tmp.path(),
+            "w1",
+            "r",
+            "dev",
+            "test -t 0 && test -t 1 && test -t 2 && echo fresh",
+            true,
+        ),
+        SetupState::Idle,
+    )
+    .unwrap();
+    wait_for("rerun exit", || m.state("w1", "dev") == RunState::Stopped);
+    assert_eq!(m.output("w1", "dev").as_deref(), Some("fresh\r\n"));
+    assert_eq!(m.statuses("w1")[0].exit, Some((Some(0), None)));
+    assert_eq!(m.history("w1"), ["dev"]);
 }
 
 #[test]
@@ -186,7 +269,7 @@ fn latest_is_the_newest_run_with_its_state_and_output() {
     let first = m.latest("w1").unwrap();
     assert_eq!(first.script_id, "test");
     assert_eq!(first.state, RunState::Stopped);
-    assert_eq!(first.output.as_deref(), Some("old\n"));
+    assert_eq!(first.output.as_deref(), Some("old\r\n"));
 
     m.start(
         req(tmp.path(), "w1", "r", "dev", LONG, true),
@@ -199,7 +282,7 @@ fn latest_is_the_newest_run_with_its_state_and_output() {
     let live = m.latest("w1").unwrap();
     assert_eq!(live.script_id, "dev");
     assert_eq!(live.state, RunState::Running);
-    assert_eq!(live.output.as_deref(), Some("up\n"));
+    assert_eq!(live.output.as_deref(), Some("up\r\n"));
     assert!(live.started_at >= first.started_at);
     assert_eq!(m.latest("w2"), None, "other workspaces are not mixed in");
     m.stop_all();

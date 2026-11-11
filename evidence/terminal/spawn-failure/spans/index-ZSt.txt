@@ -1,0 +1,1 @@
+function ZSt(t){return t.kind==="interactive"&&t.connectionState==="spawn_error"}

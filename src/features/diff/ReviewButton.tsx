@@ -8,23 +8,27 @@
 // click. Review tabs live until closed; an open one is stored in conductor.db
 // and comes back after a restart, as Conductor's review chat (a `sessions`
 // row) does (state/openChat.ts). Their Reason Sessions stay in Reason.
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { ContextMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
 import { configureReason, configureReasonDefault } from "../chat/reasonChat.ts";
-import { defaultChatConfig } from "../chat/chatModel.ts";
 import { CHAT_ID_SEGMENT, NEW_CHAT_TITLE, newChatId } from "../chat/chatTabs.ts";
 import { hideChat, showChat } from "../chat/chatRuntime.ts";
 import type { PromptAttachment } from "../chat/reason.ts";
 import { buildReviewPrompt, type ConfigChoice, REVIEW_ATTACHMENT, REVIEW_MESSAGE, reviewDraft, reviewModel, reviewTabTitle } from "./review.ts";
 import { repoReviewPrompt } from "./reviewApi.ts";
 import { repoSettingsEffective } from "../../settings/repoSettings.ts";
-import { chatTabWrites, restoredChatTabs, setOpenReviewChats } from "../../state/openChat.ts";
+import { chatTabWrites, restoredChatTabs, setOpenReviewChats, setPrimaryChatId } from "../../state/openChat.ts";
 import { inTauri } from "../../backend.ts";
 import { invoke } from "@tauri-apps/api/core";
+import { initializeLoadoutChoice } from "../chat/chatModelChoice.ts";
+import { loadoutSlots, parseFavorites } from "../../settings/agents/loadout.ts";
+import { listFavorites } from "../../settings/agents/api";
+import { sessionConfig } from "../chat/chatModel.ts";
+import type { LocalChatReplacement } from "../chat/localClear.ts";
 
 export interface ReviewTab {
   chatId: string;
@@ -67,6 +71,8 @@ function currentTabs(workspaceId: string): ReviewTab[] {
 
 /** Review chats of a workspace. `onOpen` shows a chat once it is created. */
 export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId: string) => void) {
+  const displayedWorkspace = useRef(workspace.id);
+  displayedWorkspace.current = workspace.id;
   const [tabs, setTabs] = useState<ReviewTab[]>(() => currentTabs(workspace.id));
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -143,12 +149,18 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
    * "+" and ⌘T ("New chat, same files"): a new Untitled chat in this
    * workspace on the default model, shown once created. Returns its chat id.
    */
-  const newChat = useCallback((): string => {
-    const chatId = newChatId(workspace.id, Date.now(), ++seq);
-    configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
-    save([...currentTabs(workspace.id), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
-    onOpen(chatId);
-    return chatId;
+  const newChat = useCallback(async (): Promise<string | undefined> => {
+    try {
+      const [settings, rows] = await Promise.all([getSettings(), listFavorites().catch(() => [])]);
+      const chatId = newChatId(workspace.id, Date.now(), ++seq);
+      const choice = initializeLoadoutChoice(chatId, loadoutSlots(settings, parseFavorites(rows)));
+      configureReasonDefault(chatId, Promise.resolve(sessionConfig(choice.model, choice.effort)));
+      save([...currentTabs(workspace.id), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
+      onOpen(chatId);
+      return chatId;
+    } catch (e) {
+      setError(`Failed to create chat: ${e instanceof Error ? e.message : String(e)}`);
+    }
   }, [workspace.id, save, onOpen]);
 
   /** ⌘⇧T: put a closed chat tab back at the end of the strip and show it. */
@@ -169,7 +181,19 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
     [workspace.id, save],
   );
 
-  return { tabs, start, close, fork, newChat, reopen, rename, error };
+  const replaceLocal = (sourceId: string, replacement: LocalChatReplacement): string => {
+    const all = [{ chatId: workspace.primaryChatId ?? workspace.id, title: workspace.chatTitle ?? workspace.name, modelLabel: "", effort: null }, ...currentTabs(workspace.id)];
+    const visible: ReviewTab[] = [...all.filter((t) => t.chatId !== sourceId), { chatId: replacement.chatId, title: replacement.title, blank: true, modelLabel: "", effort: null }];
+    const next = visible.filter((t) => t.chatId !== replacement.primaryChatId);
+    setPrimaryChatId(workspace.id, replacement.primaryChatId);
+    tabsByWorkspace.set(workspace.id, next);
+    setOpenReviewChats(workspace.id, next.map((t) => t.chatId));
+    if (displayedWorkspace.current === workspace.id) setTabs(next);
+    hideChat(sourceId);
+    return visible.find((t) => t.chatId === replacement.primaryChatId)?.title ?? replacement.title;
+  };
+
+  return { tabs, start, close, fork, newChat, reopen, rename, replaceLocal, error };
 }
 
 /**

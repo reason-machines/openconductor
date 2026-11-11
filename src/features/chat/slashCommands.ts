@@ -17,6 +17,7 @@
 // Pure: slashCommands.test.ts covers it.
 
 import fuzzysort from "fuzzysort";
+export { composerSlashRange } from "./composerSlashRange.ts";
 
 /** The agent running the chat, as Conductor names it; Reason runs as an ACP agent. */
 export type ComposerAgent = "claude" | "codex" | "acp";

@@ -1,0 +1,1 @@
+async function _Qe(t,{localWorkspaceId:e,activeSessionId:s}){let n=!1;t.updateCachedWorkspaceForAction(e,i=>i.activeSessionId===s?(n=!0,i):{...i,activeSessionId:s})!==void 0&&n||await t.runWorkspaceAction(e,async()=>{await t.dependencies.db.execute("UPDATE workspaces SET active_session_id = ? WHERE local_id = ?",[s??null,e])})}

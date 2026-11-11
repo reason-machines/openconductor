@@ -1,3 +1,4 @@
+import { ReasonCliStatus } from "../onboarding/ReasonCliStatus";
 import { useCallback, useEffect, useRef, useState, type Dispatch, type PointerEvent, type ReactNode, type RefObject } from "react";
 import type { AppState } from "../state/types";
 import type { Action } from "../state/store";
@@ -6,19 +7,19 @@ import type { AppInfo } from "../backend";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, ChevronIcon, FolderPlusIcon, HomeIcon, LayoutGridIcon, MoreIcon, PlayIcon, PlusIcon, SearchIcon, SettingsIcon, SidebarIcon } from "./Icons";
 import { COMMANDS } from "../keybindings/registry";
 import { glyphs } from "../keybindings/shortcut";
+import { effectiveShortcuts } from "../keybindings/overrides";
 import { HelpMenu } from "./HelpMenu";
-import { PRICING_URL } from "./helpMenuItems";
-import { openUrl } from "../backend";
 import { RepoIcon } from "./RepoIcon";
 import { RenameWorkspaceDialog } from "./RenameWorkspaceDialog";
 import { hasHiddenRepos, moveRepo, visibleRepos } from "../state/repoOrder";
 import { SidebarWorkspaceRow, useWorkspaceRows, type RowCallbacks } from "./SidebarWorkspaceRow";
 import { RepoWorkspaceList } from "./PendingWorkspaceRow";
 import { SidebarGroup } from "./SidebarSections";
+import { useBuiltinSectionCollapse } from "../state/useCustomSectionCollapse";
+import { MAIN_COLLAPSE_KEY, PINNED_COLLAPSE_KEY } from "../state/customSectionCollapse";
 import { SidebarStatusGroups } from "./SidebarStatusGroups";
 import { isRepoCollapsed, pinnedEntries, repoGroupWorkspaces, sectionEntries, type SidebarSection } from "../state/sidebarOrder";
-import { newId } from "../state/names";
-import { SectionDialog, type SectionDialogMode } from "./SectionDialog";
+import type { SectionDialogMode } from "./SectionDialog";
 import { useSidebarDrag, type WorkspaceRef } from "./useSidebarDrag";
 import { DROP_ATTR, reorderIndicator, reorderToIndex, workspaceDropAction, type DropTarget } from "../state/navigationSections";
 import { ProjectFilterSubmenu, SidebarRadioSubmenu } from "./home/ProjectFilterSubmenu";
@@ -29,7 +30,7 @@ import { useRepoFilter } from "../home/useRepoFilter";
 import { useDashboardEnabled } from "../home/useDashboardEnabled";
 import { filterRepoGroups } from "../home/repoFilter";
 import { SidebarAddRepositoryMenu } from "./AddRepositoryMenu";
-import { useKeybindings } from "../keybindings/KeybindingsProvider";
+import { useKeybindings, useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { AccountMenu } from "./AccountMenu";
 import { AppMark } from "./AppMark";
 import { ResourceUsagePill } from "./ResourceUsagePill";
@@ -64,11 +65,13 @@ interface Props {
   onToggleSection: (id: string) => void;
   dispatch: Dispatch<Action>;
   onOpenDialog: (d: DialogKind, repoId?: string, sectionId?: string) => void;
+  onOpenSectionDialog: (data: SectionDialogMode) => void;
   onOpenProject: () => void;
   /** A Recents row of the add-repository menu: add that folder as Open project would. */
   onAddProjectAt?: (path: string) => void;
   onOpenSettings: () => void;
   onOpenShortcuts: () => void;
+  onSendFeedback: () => void;
   /** Help › Submit a prompt and Help › Diagnostics. */
   onSubmitPrompt: () => void;
   onOpenDiagnostics: () => void;
@@ -91,12 +94,12 @@ interface Props {
 
 // Conductor's nav rows: only Home has a native title (`HH("Home","nav.home")`, "Home ⌘…");
 // Create and Search have none. All three show the shortcut in the row on hover.
-function NavRow({ icon, label, shortcut, title, active, onClick }: { icon: JSX.Element; label: string; shortcut: string; title?: string; active?: boolean; onClick: () => void }) {
+function NavRow({ icon, label, shortcut, title, active, onClick }: { icon: JSX.Element; label: string; shortcut: string | readonly string[]; title?: string; active?: boolean; onClick: () => void }) {
   return (
     <button type="button" className="sb-row" data-active={active ? "true" : undefined} title={title} onClick={onClick}>
       <span className="sb-row-icon">{icon}</span>
       <span className="sb-row-label">{label}</span>
-      {shortcut && <kbd className="sb-row-hint">{shortcut}</kbd>}
+      {shortcut.length > 0 && <kbd className="sb-row-hint">{typeof shortcut === "string" ? shortcut : shortcut.map((key, index) => <span key={index}>{key}</span>)}</kbd>}
     </button>
   );
 }
@@ -253,12 +256,12 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
+export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenSectionDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSendFeedback, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
+  const { overrides } = useKeybindingOverrides();
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
   const renamingWs = renaming && state.repos.find((r) => r.id === renaming.repoId)?.workspaces.find((w) => w.id === renaming.workspaceId);
-  const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
   // Drag rows onto a section, Pinned or My workspaces, and section headers to reorder (Conductor's `esa`).
   const scrollRoot = useRef<HTMLElement>(null);
   const onDropWorkspace = (ws: WorkspaceRef, target: DropTarget) => {
@@ -277,29 +280,20 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
     onRename: onRenameWorkspace ?? openRename,
     onArchive: onArchiveWorkspace,
     onCopyLink: onCopyWorkspaceLink,
-    onNewSection: (ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id }),
+    onNewSection: (ws) => onOpenSectionDialog({ mode: "create", workspaceIdToMove: ws.id }),
     collapsedSections,
     onRowPointerDown: (e, repoId, ws) => drag.workspacePointerDown(e, { repoId, id: ws.id, pinned: typeof ws.pinnedAt === "number" }),
   });
   const { sections, sectioned } = sectionEntries(state);
   const pinned = pinnedEntries(state, sectioned);
-  const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
-    if (mode.mode === "edit") {
-      dispatch({ type: "editSection", sectionId: mode.sectionId, ...value });
-      return;
-    }
-    const section = { id: newId(), ...value, workspaceIds: mode.workspaceIdToMove === undefined ? [] : [mode.workspaceIdToMove] };
-    // Conductor's create (`_Y`) takes the workspace out of any other section; it does not unpin it.
-    dispatch({ type: "createSection", section, beforeSectionId: mode.beforeSectionId });
-  };
   const sectionMenu = (sectionId: string): MenuEntry[] => {
     const s = state.sections?.find((x) => x.id === sectionId);
     // Conductor's section menu (`oBi` @10004433, right-click via `Qia`): Create workspace (plus),
     // Edit section (pencil), New section… (plus), separator, Delete section (trash-2, destructive).
     return [
       { label: "Create workspace", icon: <MenuPlusIcon />, onSelect: () => onOpenDialog("create", undefined, sectionId) },
-      { label: "Edit section", icon: <PencilIcon />, onSelect: () => s && setSectionDialog({ mode: "edit", sectionId, name: s.name, emoji: s.emoji }) },
-      { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => setSectionDialog({ mode: "create", beforeSectionId: sectionId }) },
+      { label: "Edit section", icon: <PencilIcon />, onSelect: () => s && onOpenSectionDialog({ mode: "edit", sectionId, name: s.name, emoji: s.emoji }) },
+      { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => onOpenSectionDialog({ mode: "create", beforeSectionId: sectionId }) },
       "-",
       { label: "Delete section", icon: <Trash2Icon />, destructive: true, onSelect: () => dispatch({ type: "deleteSection", sectionId }) },
     ];
@@ -315,8 +309,8 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
   const sel = state.selection;
   const dashboardEnabled = useDashboardEnabled().enabled;
   const routinesAvailable = useRoutinesAvailable();
-  // Conductor persists this per collapse key; ours lasts for the session.
-  const [groupCollapsed, setGroupCollapsed] = useState(false);
+  const [builtinCollapsed, toggleBuiltin] = useBuiltinSectionCollapse();
+  const groupCollapsed = builtinCollapsed.has(MAIN_COLLAPSE_KEY);
   // Conductor keeps "show hidden repositories" in component state, so it resets on reload.
   const [showHidden, setShowHidden] = useState(false);
   const [repoContext, setRepoContext] = useState<{ repoId: string; x: number; y: number } | null>(null);
@@ -387,7 +381,6 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           >
             <SidebarIcon size={16} />
           </button>
-          <span className="sb-app-mark" title="OpenConductor"><AppMark size={14} /></span>
         </div>
         <div className="sb-history">
           <ResourceUsagePill workspaces={usageWorkspaces} />
@@ -405,20 +398,20 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           {dashboardEnabled && (
             <NavRow icon={<LayoutGridIcon size={12} />} label="Dashboard" shortcut="" active={sel.kind === "dashboard"} onClick={() => dispatch({ type: "select", selection: { kind: "dashboard" } })} />
           )}
-          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={hint("nav.home")} title={titleWithShortcut("Home", hint("nav.home"))} active={sel.kind === "home"} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
-          <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={hint("workspace.create")} onClick={() => onOpenDialog("create")} />
+          <NavRow icon={<HomeIcon size={12} />} label="Home" shortcut={effectiveShortcuts("nav.home", overrides).map(glyphs)} title={titleWithShortcut("Home", glyphs(effectiveShortcuts("nav.home", overrides)[0]))} active={sel.kind === "home"} onClick={() => dispatch({ type: "select", selection: { kind: "home" } })} />
+          <NavRow icon={<PlusIcon size={12} />} label="Create" shortcut={effectiveShortcuts("workspace.create", overrides).map(glyphs)} onClick={() => onOpenDialog("create")} />
           {/* "Routines" (Conductor's `uy` row after Create, active on /routines*): Conductor shows it for a cloud
               organization; ours runs on Reason Loops, so it shows once Reason is signed in. */}
           {routinesAvailable && (
             <NavRow icon={<PlayIcon size={12} />} label="Routines" shortcut="" active={sel.kind === "routines"} onClick={() => dispatch({ type: "select", selection: { kind: "routines" } })} />
           )}
-          <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={hint("toggleCommandPalette")} onClick={onSearch} />
+          <NavRow icon={<SearchIcon size={12} />} label="Search" shortcut={effectiveShortcuts("toggleCommandPalette", overrides).map(glyphs)} onClick={onSearch} />
         </div>
       </div>
 
       <nav className="repo-list" ref={scrollRoot}>
         {pinned.length > 0 && (
-          <SidebarGroup label="Pinned" count={pinned.length} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
+          <SidebarGroup label="Pinned" count={pinned.length} collapsed={builtinCollapsed.has(PINNED_COLLAPSE_KEY)} onToggle={() => toggleBuiltin(PINNED_COLLAPSE_KEY)} pinnedDropZone isDropTarget={dropTarget?.type === "pinned"}>
             <SidebarPresence>{pinned.map((entry, index) => row(entry, index))}</SidebarPresence>
           </SidebarGroup>
         )}
@@ -446,7 +439,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
         <section className="sb-my-workspaces" aria-label="My workspaces" data-drop-target={dropTarget?.type === "unsectioned" || undefined} {...{ [DROP_ATTR.unsectioned]: "" }}>
         {/* "My workspaces" section header (Conductor's `lBi`): label, hover chevron, "..." menu with Add project. */}
         <div className="sb-section-header" onContextMenu={(e) => { e.preventDefault(); setMyContext({ x: e.clientX, y: e.clientY }); }}>
-          <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => setGroupCollapsed(!groupCollapsed)}>
+          <button type="button" className="sb-section-toggle" aria-expanded={!groupCollapsed} onClick={() => toggleBuiltin(MAIN_COLLAPSE_KEY)}>
             <span className="sb-section-label">My workspaces</span>
             <span className="sb-section-spacer" aria-hidden />
             <span className="sb-section-chevron" data-collapsed={groupCollapsed || undefined}>
@@ -455,7 +448,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           </button>
           {myContext && (
             <ContextMenu at={myContext} onClose={closeMyContext} label="My workspaces actions">
-              <CtxItem icon={<MenuPlusIcon />} onSelect={() => setSectionDialog({ mode: "create" })}>New section…</CtxItem>
+              <CtxItem icon={<MenuPlusIcon />} onSelect={() => onOpenSectionDialog({ mode: "create" })}>New section…</CtxItem>
             </ContextMenu>
           )}
           <HeaderMenu label="My workspaces" className="sb-section-menu" contextOpen={!!myContext} items={[
@@ -466,7 +459,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
             { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
             { key: "sort-by", render: (close) => <SidebarRadioSubmenu label="Sort by" options={SIDEBAR_SORT_OPTIONS} selected={state.sidebarSort ?? "updated"} onChange={(value) => { void setAppPref({ key: "sidebar_sort_by", value }).catch((err) => console.error("Could not save sidebar sort", err)); }} onClose={close} /> },
             "-",
-            { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => setSectionDialog({ mode: "create" }) },
+            { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => onOpenSectionDialog({ mode: "create" }) },
             { label: "Add project…", icon: <FolderPlusIcon />, onSelect: () => requestAnimationFrame(() => setAddMenuOpen(true)) },
           ]} />
           <span ref={addMenuAnchor} className="sb-add-menu-anchor" aria-hidden />
@@ -566,25 +559,16 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
       </nav>
       {drag.overlay}
       {rows.menu}
-      {sectionDialog && (
-        <SectionDialog
-          key={sectionDialog.mode === "edit" ? sectionDialog.sectionId : `create-${sectionDialog.workspaceIdToMove ?? "empty"}`}
-          data={sectionDialog}
-          onSubmit={(value) => submitSection(sectionDialog, value)}
-          onClose={() => setSectionDialog(null)}
-        />
-      )}
 
       {/* Footer, after Conductor's `Nna`: px-4 py-3, top border, help and settings icons (h-4 w-4, stroke 1.5) gap-5 at the right. */}
       <div className="sb-footer">
-        {/* Conductor's `Nna` shows the account's plan; with no paid entitlement that is a dashed "FREE" badge
-            inside a button labelled "View pricing" that opens its pricing page. OpenConductor has no paid plans,
-            so the same button opens the project page. */}
-        <button type="button" className="sb-plan-btn" aria-label="View pricing" onClick={() => void openUrl(PRICING_URL)}>
-          <span className="sb-plan-badge">FREE</span>
-        </button>
+        <span className="sb-reason-tag">
+          <AppMark size={14} />
+          <span>Reason</span>
+        </span>
+        <ReasonCliStatus />
         <div className="sb-footer-actions">
-          <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
+          <HelpMenu appVersion={info?.version} onOpenShortcuts={onOpenShortcuts} onSendFeedback={onSendFeedback} onSubmitPrompt={onSubmitPrompt} onOpenDiagnostics={onOpenDiagnostics} />
           {/* Conductor's footer Settings (`Nna`): Tooltip "Settings" with the openSettings shortcut. */}
           <Tooltip content="Settings" shortcut={hint("openSettings")}>
             <button type="button" className="sb-footer-btn" aria-label="Settings" onClick={onOpenSettings}>
@@ -606,3 +590,4 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
     </aside>
   );
 }
+

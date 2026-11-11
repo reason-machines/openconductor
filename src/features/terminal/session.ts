@@ -19,7 +19,7 @@ import {
   ptyWrite,
   ptyWriteMirror,
 } from "./pty";
-import { canOpen, canOpenTerminal, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs";
+import { canOpen, canOpenTerminal, emptyTabs, tabsReducer, type TabsAction, type TabsState, type TerminalPlacement } from "./tabs";
 import { PersistThrottle, restoreCwds, restoreOutput, type HistoryRecord } from "./restore";
 import { subsystemStorage } from "./localStorage";
 import { TABS_SIZE_LIMIT, TABS_SUBSYSTEM, TabListStore, savedWorkspace } from "./tabList";
@@ -45,6 +45,7 @@ interface Live {
   /** Spawn settings, reused by a new tab opened from this one (the panel's command, not a big terminal's). */
   cwd: string;
   initialCommand?: string;
+  launch: { cwds: string[]; initialCommand?: string };
   /** Saved-history fields (`pty_persist_terminal_history`). */
   startedAt: string;
   endedAt?: string;
@@ -56,7 +57,14 @@ interface Live {
 
 const live = new Map<string, Live>();
 const tabsByWorkspace = new Map<string, TabsState>();
+const panelWorkspaceOrder = new Set<string>();
 const subscribers = new Set<() => void>();
+const centerTabListeners = new Set<(workspaceId: string, id: string) => void>();
+
+export function onCenterTabOpened(listener: (workspaceId: string, id: string) => void): () => void {
+  centerTabListeners.add(listener);
+  return () => { centerTabListeners.delete(listener); };
+}
 /** Times Find in terminal was asked for, per tab; the panel opens its find bar on a change. */
 const findRequests = new Map<string, number>();
 const EMPTY = emptyTabs();
@@ -110,6 +118,23 @@ function persistOnHide() {
 
 export const getTabs = (workspaceId: string): TabsState => tabsByWorkspace.get(workspaceId) ?? EMPTY;
 
+export function getResourceTerminalLabels(): Record<string, string> {
+  const labels: Record<string, string> = {};
+  let panelNumber = 0;
+  for (const workspaceId of panelWorkspaceOrder) {
+    for (const tab of getTabs(workspaceId).tabs) {
+      if (tab.placement !== "center") labels[tab.id] = `Terminal ${++panelNumber}`;
+    }
+  }
+  let centerNumber = 0;
+  for (const [id, terminal] of live) {
+    if (getTabs(terminal.workspaceId).tabs.some((tab) => tab.id === id && tab.placement === "center")) {
+      labels[id] = `Terminal tab ${++centerNumber}`;
+    }
+  }
+  return labels;
+}
+
 export function subscribeTabs(f: () => void): () => void {
   subscribers.add(f);
   return () => subscribers.delete(f);
@@ -118,6 +143,7 @@ export function subscribeTabs(f: () => void): () => void {
 function dispatch(workspaceId: string, a: TabsAction) {
   const next = tabsReducer(getTabs(workspaceId), a);
   tabsByWorkspace.set(workspaceId, next);
+  if (a.type === "open" && a.placement !== "center") panelWorkspaceOrder.add(workspaceId);
   saveTabs(workspaceId, next);
   subscribers.forEach((f) => f());
 }
@@ -130,6 +156,18 @@ export const getFindRequests = (id: string): number => findRequests.get(id) ?? 0
 
 /** The live xterm of tab `id`, for the find bar. */
 export const terminalOf = (id: string): Terminal | undefined => live.get(id)?.term;
+
+export function spawnErrorOf(id: string): string | undefined {
+  const terminal = live.get(id);
+  return terminal ? getTabs(terminal.workspaceId).tabs.find((tab) => tab.id === id)?.spawnError : undefined;
+}
+
+export async function retryTab(id: string): Promise<void> {
+  const terminal = live.get(id);
+  if (!terminal || getTabs(terminal.workspaceId).tabs.find((tab) => tab.id === id)?.status !== "spawn_error") return;
+  dispatch(terminal.workspaceId, { type: "retry", id });
+  await spawnTerminal(id, terminal);
+}
 
 export const selectTab = (workspaceId: string, id: string) => dispatch(workspaceId, { type: "select", id });
 
@@ -148,6 +186,8 @@ function route(e: PtyEvent) {
   }
   // Ready and exit both forget tracked commands, as in the reference.
   l.shell = emptyShellState();
+  l.term.options.disableStdin = e.kind !== "ready";
+  l.term.options.theme = { ...l.term.options.theme, cursor: e.kind === "ready" ? cssVar("--text") : "transparent", cursorAccent: cssVar("--panel") };
   if (e.kind === "exit") {
     l.ack.flush();
     l.endedAt = new Date().toISOString();
@@ -174,13 +214,12 @@ export const openTab = (workspaceId: string, cwd: string, initialCommand?: strin
   startTab(workspaceId, cwd, initialCommand, undefined, undefined, opts.quiet);
 
 /**
- * ⌘⇧T from outside a terminal: open a tab running the Big terminal preset
- * (`run`, from `bigTabRequest`). The workspace's saved tabs come back first, so
- * the panel shown afterwards finds tabs and opens no plain shell of its own.
+ * Open a center tab running the Big terminal preset, then navigate to it.
+ * Saved tabs restore first; their commands are never run again.
  */
 export async function openBigTab(workspaceId: string, cwd: string, run: { command: string | undefined }, initialCommand?: string): Promise<string> {
   await restoreWorkspaceTabs(workspaceId, cwd, initialCommand);
-  return startTab(workspaceId, cwd, initialCommand, undefined, run);
+  return startTab(workspaceId, cwd, initialCommand, undefined, run, false, "center");
 }
 
 /**
@@ -199,7 +238,7 @@ async function restoreOnce(workspaceId: string, cwd: string, initialCommand?: st
   const saved = await tabList.workspace(workspaceId);
   for (const tab of saved?.tabs ?? []) {
     if (live.has(tab.id)) continue;
-    await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }, undefined, true).catch(() => {});
+    await startTab(workspaceId, cwd, initialCommand, { id: tab.id, title: tab.title }, undefined, true, tab.placement).catch(() => {});
   }
   hydrated.add(workspaceId);
   dispatch(workspaceId, { type: "restored", activeId: saved?.activeId ?? null, next: saved?.next ?? 1 });
@@ -217,6 +256,7 @@ async function startTab(
   restore?: { id: string; title: string },
   run?: { command: string | undefined },
   quiet = false,
+  placement: TerminalPlacement = "panel",
 ): Promise<string> {
   // Saved tabs come back as they were; new ones respect Tab Freak Mode's limit.
   const tabs = getTabs(workspaceId);
@@ -230,6 +270,7 @@ async function startTab(
   const id = restore?.id ?? `term-${crypto.randomUUID()}`;
   const font = currentTerminalFont();
   const term = new Terminal({
+    disableStdin: true,
     cursorBlink: true,
     fontFamily: font.family,
     fontSize: font.size,
@@ -238,6 +279,8 @@ async function startTab(
     theme: {
       background: cssVar("--panel"),
       foreground: cssVar("--text"),
+      cursor: "transparent",
+      cursorAccent: cssVar("--panel"),
       // xterm's default selection is pale white, invisible on the light theme.
       // The inactive colour matters for Find: the match is selected while the
       // find input, not the terminal, has focus.
@@ -256,7 +299,7 @@ async function startTab(
     term.resize(Math.max(record.cols, 1), Math.max(record.rows, 1));
     term.write(restoreOutput(record));
   }
-  live.set(id, {
+  const terminal: Live = {
     workspaceId,
     term,
     fit,
@@ -266,11 +309,13 @@ async function startTab(
     quiet,
     cwd,
     initialCommand,
+    launch: { cwds: restore ? restoreCwds(record, cwd) : [cwd], initialCommand: run ? run.command : initialCommand },
     startedAt: record?.startedAt ?? new Date().toISOString(),
     hasReceivedUserInput: record?.hasReceivedUserInput ?? false,
     decoder: new TextDecoder(),
     shell: emptyShellState(),
-  });
+  };
+  live.set(id, terminal);
   term.attachCustomKeyEventHandler((e) => {
     const command = e.type === "keydown" ? terminalCommandFor(e) : undefined;
     if (command === undefined) return true;
@@ -280,25 +325,35 @@ async function startTab(
     runTerminalCommand(id, command);
     return false;
   });
-  term.onData((d) => {
-    const l = live.get(id);
-    if (l && d.length > 0) l.hasReceivedUserInput = true;
-    void ptyWrite(id, d).catch(() => {});
-  });
+  term.onData((d) => writeInput(id, d));
   term.onResize(({ cols, rows }) => void ptyResize(id, cols, rows).catch(() => {}));
-  dispatch(workspaceId, { type: "open", id, title: restore?.title });
-  try {
-    await spawnIn(restore ? restoreCwds(record, cwd) : [cwd], (dir) =>
-      ptySpawn({ id, cwd: dir, cols: term.cols, rows: term.rows, initialCommand: run ? run.command : initialCommand }),
-    );
-  } catch (err) {
-    dispose(id);
-    dispatch(workspaceId, { type: "close", id });
-    // A restored tab that cannot start is gone from the list, so its saved screen goes too.
-    if (restore) void forget(id);
-    throw err;
-  }
+  dispatch(workspaceId, { type: "open", id, title: restore?.title, placement });
+  if (placement === "center") centerTabListeners.forEach((listener) => listener(workspaceId, id));
+  await spawnTerminal(id, terminal);
   return id;
+}
+
+async function spawnTerminal(id: string, terminal: Live): Promise<void> {
+  try {
+    await spawnIn(terminal.launch.cwds, async (cwd) => {
+      const { cols, rows } = terminal.term;
+      await ptySpawn({ id, cwd, cols, rows, initialCommand: terminal.launch.initialCommand });
+      if (
+        live.get(id) === terminal &&
+        getTabs(terminal.workspaceId).tabs.some((tab) => tab.id === id && tab.status !== "exited") &&
+        (terminal.term.cols !== cols || terminal.term.rows !== rows)
+      ) {
+        void ptyResize(id, terminal.term.cols, terminal.term.rows).catch(() => {});
+      }
+    });
+  } catch (error) {
+    if (live.get(id) === terminal) {
+      terminal.term.options.disableStdin = true;
+      terminal.term.options.theme = { ...terminal.term.options.theme, cursor: "transparent", cursorAccent: cssVar("--panel") };
+      dispatch(terminal.workspaceId, { type: "failed", id, error: error instanceof Error ? error.message : String(error) });
+    }
+    throw error;
+  }
 }
 
 /** Spawn in the first directory that works (a restored tab's saved cwd may be gone). */
@@ -361,11 +416,18 @@ export function attachTab(id: string, container: HTMLElement): () => void {
   };
 }
 
+function writeInput(id: string, data: string) {
+  const l = live.get(id);
+  if (!l || l.term.options.disableStdin || getTabs(l.workspaceId).tabs.find((tab) => tab.id === id)?.status !== "running") return;
+  if (data.length > 0) l.hasReceivedUserInput = true;
+  void ptyWrite(id, data).catch(() => {});
+}
+
 function runTerminalCommand(id: string, command: string) {
   const l = live.get(id);
   if (!l) return;
   const bytes = LINE_EDIT_BYTES[command];
-  if (bytes !== undefined) void ptyWrite(id, bytes).catch(() => {});
+  if (bytes !== undefined) writeInput(id, bytes);
   else if (command === "terminal.clearScrollback") clearTab(id);
   else if (command === FIND_COMMAND) {
     findRequests.set(id, getFindRequests(id) + 1);
@@ -374,14 +436,17 @@ function runTerminalCommand(id: string, command: string) {
   else if (command === "terminal.closeTab") closeTab(l.workspaceId, id);
   else if (command === "terminal.newTab") void openTab(l.workspaceId, l.cwd, l.initialCommand).catch(() => {});
   else if (command === "terminal.newBigTab") {
-    // Conductor opens a center-pane terminal; we have no center tabs, so it is a panel tab (NOTES.md).
     const big = bigTabRequest();
-    if (big) void startTab(l.workspaceId, l.cwd, l.initialCommand, undefined, big).catch(() => {});
+    if (big) void openBigTab(l.workspaceId, l.cwd, big, l.initialCommand).catch(() => {});
   }
 }
 
 export function clearTab(id: string) {
-  live.get(id)?.term.clear();
+  const l = live.get(id);
+  l?.term.clear();
+  if (l && !l.term.options.disableStdin && getTabs(l.workspaceId).tabs.find((tab) => tab.id === id)?.status === "running") {
+    void ptyWrite(id, "\x0c").catch(() => {});
+  }
   void ptyClearHistory(id).catch(() => {});
   // Clear the backend screen too, as the reference does, so saved history does not bring it back.
   void ptyWriteMirror(id, "\x1b[H\x1b[2J\x1b[3J")
@@ -416,6 +481,7 @@ export async function destroyWorkspaceTerminals(workspaceId: string): Promise<vo
     dispose(id);
   }
   tabsByWorkspace.delete(workspaceId);
+  panelWorkspaceOrder.delete(workspaceId);
   hydrated.delete(workspaceId);
   void tabList.setWorkspace(workspaceId, undefined);
   subscribers.forEach((f) => f());

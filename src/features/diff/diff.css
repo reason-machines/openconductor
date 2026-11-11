@@ -95,7 +95,8 @@
 .oc-changes-options-menu { width: max-content; min-width: 220px; max-width: 320px; max-height: 80vh; overflow-y: auto; overflow-x: hidden; }
 .oc-changes-commit-message { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .oc-changes-commit-message + .oc-changes-option-detail { line-height: 16px; }
-.rp-tabs-end .oc-changes-historical-scope { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); }
+.rp-tabs-end .oc-changes-historical-scope { background: var(--highlight); color: var(--emphasis); border: 1px solid color-mix(in oklab, var(--emphasis) 40%, transparent); }
+.rp-tabs-end .oc-changes-historical-scope:hover:not(:disabled) { background: var(--link-elevated); color: var(--emphasis); }
 .oc-changes-options-menu .cm-shortcut { padding-left: 8px; letter-spacing: 0; }
 .oc-changes-target { display: flex; align-items: center; gap: 8px; padding: 6px 8px; white-space: nowrap; color: var(--muted); font-size: 14px; }
 .oc-changes-target-trigger { display: inline-flex; align-items: center; gap: 6px; padding: 0; color: var(--muted); font-size: 14px; white-space: nowrap; }
@@ -109,6 +110,8 @@
 .oc-file-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 8px 4px 8px 12px; background: var(--bg); font-size: 12px; }
 /* Conductor's NPo: "flex min-w-0 flex-1 items-center gap-2" around the path chip, "flex shrink-0 items-center gap-2" around the actions. */
 .oc-file-lead { display: flex; flex: 1; min-width: 0; align-items: center; gap: 8px; }
+.oc-file-refresh-status { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: 8px; width: 96px; height: 28px; border-radius: 6px; font-size: 12px; color: var(--muted); }
+button.oc-file-refresh-status { color: var(--danger); }
 .oc-file-actions { display: flex; flex-shrink: 0; align-items: center; gap: 8px; }
 /* The path chip (FilePathChip.tsx): Conductor's QZ outline pill, h-5 rounded-sm px-1.5 gap-1 text-xs, sans. */
 .oc-path-chip { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; min-width: 0; height: 20px; padding: 0 6px; border: 1px solid var(--input); border-radius: 4px; background: transparent; color: var(--text); font-family: var(--font-sans); font-size: 12px; line-height: 1; cursor: pointer; }

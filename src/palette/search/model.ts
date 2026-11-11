@@ -57,6 +57,8 @@ export interface WorkspaceEntry {
   repoName: string;
   /** Recency rank; newest first (recently viewed workspaces sort above the rest). */
   lastActiveAt: number;
+  /** Workspace update timestamp used by All-search buckets, separate from recent visits. */
+  updatedAt?: number;
   archived?: boolean;
   /** `workspaces.number`, shown as `W-<n>` with "Show workspace numbers"; null before numbering. */
   number?: number | null;
@@ -140,12 +142,13 @@ export interface PaletteData {
 }
 
 const byRecency = (a: WorkspaceEntry, b: WorkspaceEntry) => b.lastActiveAt - a.lastActiveAt;
+const byUpdatedAt = (a: WorkspaceEntry, b: WorkspaceEntry) => (b.updatedAt ?? b.lastActiveAt) - (a.updatedAt ?? a.lastActiveAt);
 
-function workspaceResults(data: PaletteData, query: string, archiveFilter: ArchiveFilter = "active"): ResultItem[] {
+function workspaceResults(data: PaletteData, query: string, archiveFilter: ArchiveFilter = "active", order = byRecency): ResultItem[] {
   const q = query.trim();
   return data.workspaces
     .filter((w) => matchesArchiveFilter(!!w.archived, archiveFilter) && (q === "" || tokensMatch(q, [w.label ?? w.name, w.name, w.branch, w.repoName])))
-    .sort(byRecency)
+    .sort(order)
     .slice(0, RESULT_CAP)
     .map((w) => ({ kind: "workspace", id: `workspace:${w.id}`, workspace: w }));
 }
@@ -206,7 +209,6 @@ function tabGroups(tab: PaletteTab, order: readonly ActionGroupId[]): ActionGrou
 function settingItems(data: PaletteData, query: string): ResultItem[] {
   const listed = query.trim() === "" ? data.settings.filter((s) => !s.row) : data.settings;
   return ranked(listed, query, (s) => s.title, (s) => [...(s.section ? [s.section] : []), ...(s.keywords ?? [])])
-    .slice(0, RESULT_CAP)
     .map((s) => ({ kind: "setting", id: `setting:${s.id}`, setting: s }));
 }
 
@@ -229,7 +231,7 @@ function group(id: string, heading: string | undefined, items: ResultItem[]): Re
 
 /**
  * Grouped results for a tab and query, in display order (Conductor's `m_a`). `archiveFilter`
- * is the Workspaces tab's "Archived workspaces" filter; other tabs never list archived workspaces.
+ * is the Workspaces tab's "Archived workspaces" filter; All queries include both states.
  */
 export function buildResults(tab: PaletteTab, query: string, data: PaletteData, archiveFilter: ArchiveFilter = "active"): ResultGroup[] {
   const empty = query.trim() === "";
@@ -255,7 +257,7 @@ export function buildResults(tab: PaletteTab, query: string, data: PaletteData, 
       // With a query: the command groups, then Projects, then Workspaces, which stays mounted
       // with "No results found" while no project matches either.
       const projects = projectResults(data, query);
-      const workspaces = workspaceResults(data, query);
+      const workspaces = [...workspaceResults(data, query, "active", byUpdatedAt), ...workspaceResults(data, query, "archived", byUpdatedAt)];
       const showWorkspaces = projects.length === 0 || workspaces.length > 0;
       return [
         ...commandGroups(tab, data, query),

@@ -1,0 +1,550 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: built-in presets run Conductor's commands
+ok 1 - built-in presets run Conductor's commands
+  ---
+  duration_ms: 0.817376
+  type: 'test'
+  ...
+# Subtest: with tool approvals required, Claude and Codex drop their skip-approval flags
+ok 2 - with tool approvals required, Claude and Codex drop their skip-approval flags
+  ---
+  duration_ms: 0.217776
+  type: 'test'
+  ...
+# Subtest: an executable path replaces the first word, quoted; blank paths and other agents are ignored
+ok 3 - an executable path replaces the first word, quoted; blank paths and other agents are ignored
+  ---
+  duration_ms: 0.153522
+  type: 'test'
+  ...
+# Subtest: custom presets run their command trimmed, nothing when empty or deleted
+ok 4 - custom presets run their command trimmed, nothing when empty or deleted
+  ---
+  duration_ms: 0.132178
+  type: 'test'
+  ...
+# Subtest: stored preset falls back to Claude unless it is a preset or custom id
+ok 5 - stored preset falls back to Claude unless it is a preset or custom id
+  ---
+  duration_ms: 0.110525
+  type: 'test'
+  ...
+# Subtest: custom commands drop malformed entries, from an array or Conductor's JSON string
+ok 6 - custom commands drop malformed entries, from an array or Conductor's JSON string
+  ---
+  duration_ms: 1.205872
+  type: 'test'
+  ...
+# Subtest: deleting the selected custom command selects the first one left, else Claude
+ok 7 - deleting the selected custom command selects the first one left, else Claude
+  ---
+  duration_ms: 0.38792
+  type: 'test'
+  ...
+# Subtest: the settings tab lists Conductor's presets in its order, without pi
+ok 8 - the settings tab lists Conductor's presets in its order, without pi
+  ---
+  duration_ms: 0.312665
+  type: 'test'
+  ...
+# Subtest: ⌘⇧T does nothing while the mode is off, else opens a tab running the preset
+ok 9 - ⌘⇧T does nothing while the mode is off, else opens a tab running the preset
+  ---
+  duration_ms: 0.47081
+  type: 'test'
+  ...
+# Subtest: ⌘⇧T follows Claude Code tool approvals and the executable paths from settings
+ok 10 - ⌘⇧T follows Claude Code tool approvals and the executable paths from settings
+  ---
+  duration_ms: 0.531644
+  type: 'test'
+  ...
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: matches ignore case and come back in buffer order
+ok 11 - matches ignore case and come back in buffer order
+  ---
+  duration_ms: 2.05629
+  type: 'test'
+  ...
+# Subtest: a match across a wrapped row starts on the first row and spans onto the next
+ok 12 - a match across a wrapped row starts on the first row and spans onto the next
+  ---
+  duration_ms: 0.255552
+  type: 'test'
+  ...
+# Subtest: rows that are not wrapped never join
+ok 13 - rows that are not wrapped never join
+  ---
+  duration_ms: 0.167829
+  type: 'test'
+  ...
+# Subtest: wide characters count as two cells
+ok 14 - wide characters count as two cells
+  ---
+  duration_ms: 0.243685
+  type: 'test'
+  ...
+# Subtest: matches do not overlap
+ok 15 - matches do not overlap
+  ---
+  duration_ms: 0.1075
+  type: 'test'
+  ...
+# Subtest: an empty term finds nothing
+ok 16 - an empty term finds nothing
+  ---
+  duration_ms: 0.088128
+  type: 'test'
+  ...
+# Subtest: counter, wrap-around and scroll row
+ok 17 - counter, wrap-around and scroll row
+  ---
+  duration_ms: 0.230501
+  type: 'test'
+  ...
+# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a chosen family goes in front of Conductor's stack; empty keeps the stack
+ok 18 - a chosen family goes in front of Conductor's stack; empty keeps the stack
+  ---
+  duration_ms: 0.643209
+  type: 'test'
+  ...
+# Subtest: size defaults to 12 and stays in the slider's 10-20 px
+ok 19 - size defaults to 12 and stays in the slider's 10-20 px
+  ---
+  duration_ms: 1.117756
+  type: 'test'
+  ...
+# Subtest: listeners hear each real change once, and nothing after unsubscribing
+ok 20 - listeners hear each real change once, and nothing after unsubscribing
+  ---
+  duration_ms: 0.201793
+  type: 'test'
+  ...
+# (node:109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: restored tabs keep their titles, active tab and counter
+ok 21 - restored tabs keep their titles, active tab and counter
+  ---
+  duration_ms: 1.871187
+  type: 'test'
+  ...
+# Subtest: restore output replays modes, then the screen, then the reference's grey divider
+ok 22 - restore output replays modes, then the screen, then the reference's grey divider
+  ---
+  duration_ms: 0.154879
+  type: 'test'
+  ...
+# Subtest: a restored shell starts in the saved cwd, falling back to the workspace's
+ok 23 - a restored shell starts in the saved cwd, falling back to the workspace's
+  ---
+  duration_ms: 0.132233
+  type: 'test'
+  ...
+# Subtest: bursts of output save once, within the delay, and output during a save is not starved
+ok 24 - bursts of output save once, within the delay, and output during a save is not starved
+  ---
+  duration_ms: 6.336679
+  type: 'test'
+  ...
+# Subtest: flush saves now and replaces a pending save; cancel drops it
+ok 25 - flush saves now and replaces a pending save; cancel drops it
+  ---
+  duration_ms: 1.344171
+  type: 'test'
+  ...
+# Subtest: saves of one terminal never overlap, and a failed save does not stop the next
+ok 26 - saves of one terminal never overlap, and a failed save does not stop the next
+  ---
+  duration_ms: 16.331661
+  type: 'test'
+  ...
+# Subtest: drop cancels a pending save and runs its step after a save already running
+ok 27 - drop cancels a pending save and runs its step after a save already running
+  ---
+  duration_ms: 1.019568
+  type: 'test'
+  ...
+# Subtest: a failed drop step does not reject and does not stop later saves
+ok 28 - a failed drop step does not reject and does not stop later saves
+  ---
+  duration_ms: 0.298969
+  type: 'test'
+  ...
+# (node:115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a stored limit defaults to 10 MB and stays within 1 MB to 1 GB
+ok 29 - a stored limit defaults to 10 MB and stays within 1 MB to 1 GB
+  ---
+  duration_ms: 0.743884
+  type: 'test'
+  ...
+# Subtest: the field shows whole MB, at least 1
+ok 30 - the field shows whole MB, at least 1
+  ---
+  duration_ms: 0.129287
+  type: 'test'
+  ...
+# Subtest: typed MB become bytes the way Conductor parses its field
+ok 31 - typed MB become bytes the way Conductor parses its field
+  ---
+  duration_ms: 0.121528
+  type: 'test'
+  ...
+# Subtest: xterm keeps one row per 160 bytes
+ok 32 - xterm keeps one row per 160 bytes
+  ---
+  duration_ms: 0.088843
+  type: 'test'
+  ...
+# Subtest: live terminals hear only real changes
+ok 33 - live terminals hear only real changes
+  ---
+  duration_ms: 1.208672
+  type: 'test'
+  ...
+# (node:122) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: marks parse as the reference's three kinds; anything else is not a mark
+ok 34 - marks parse as the reference's three kinds; anything else is not a mark
+  ---
+  duration_ms: 1.764175
+  type: 'test'
+  ...
+# Subtest: marks are stripped from output, ended by BEL or ST, and kept in order
+ok 35 - marks are stripped from output, ended by BEL or ST, and kept in order
+  ---
+  duration_ms: 0.550491
+  type: 'test'
+  ...
+# Subtest: an unknown or unterminated mark passes through as text, as in the reference
+ok 36 - an unknown or unterminated mark passes through as text, as in the reference
+  ---
+  duration_ms: 0.214918
+  type: 'test'
+  ...
+# Subtest: a command runs from ProgramStart to CommandDone; the prompt clears the program
+ok 37 - a command runs from ProgramStart to CommandDone; the prompt clears the program
+  ---
+  duration_ms: 0.471492
+  type: 'test'
+  ...
+# Subtest: a prompt or a new program finishes the running command; a stray CommandDone does not
+ok 38 - a prompt or a new program finishes the running command; a stray CommandDone does not
+  ---
+  duration_ms: 0.159788
+  type: 'test'
+  ...
+# Subtest: only the last 5 commands and the last 1 MiB of output are kept
+ok 39 - only the last 5 commands and the last 1 MiB of output are kept
+  ---
+  duration_ms: 13.46467
+  type: 'test'
+  ...
+# Subtest: the tab shows the running program after its title until the program ends or the shell restarts
+ok 40 - the tab shows the running program after its title until the program ends or the shell restarts
+  ---
+  duration_ms: 0.490034
+  type: 'test'
+  ...
+# (node:133) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tab shortcuts resolve inside the terminal
+ok 41 - tab shortcuts resolve inside the terminal
+  ---
+  duration_ms: 1.488638
+  type: 'test'
+  ...
+# Subtest: line-editing shortcuts resolve to commands that send shell bytes
+ok 42 - line-editing shortcuts resolve to commands that send shell bytes
+  ---
+  duration_ms: 0.33013
+  type: 'test'
+  ...
+# Subtest: ordinary typing reaches the shell untouched
+ok 43 - ordinary typing reaches the shell untouched
+  ---
+  duration_ms: 0.25352
+  type: 'test'
+  ...
+# Subtest: every command the terminal handles is in the registry
+ok 44 - every command the terminal handles is in the registry
+  ---
+  duration_ms: 0.292561
+  type: 'test'
+  ...
+# (node:140) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: center placement survives saving and reopening without moving panel tabs
+ok 45 - center placement survives saving and reopening without moving panel tabs
+  ---
+  duration_ms: 1.368448
+  type: 'test'
+  ...
+# Subtest: the reference's persisted tab list reads as its store merges it
+ok 46 - the reference's persisted tab list reads as its store merges it
+  ---
+  duration_ms: 1.300208
+  type: 'test'
+  ...
+# Subtest: version 1 records name the workspace workspaceId
+ok 47 - version 1 records name the workspace workspaceId
+  ---
+  duration_ms: 0.198398
+  type: 'test'
+  ...
+# Subtest: unreadable lists read as empty
+ok 48 - unreadable lists read as empty
+  ---
+  duration_ms: 0.274155
+  type: 'test'
+  ...
+# Subtest: our list encodes in the reference's shape and round-trips
+ok 49 - our list encodes in the reference's shape and round-trips
+  ---
+  duration_ms: 0.357189
+  type: 'test'
+  ...
+# Subtest: our earlier localStorage format still reads
+ok 50 - our earlier localStorage format still reads
+  ---
+  duration_ms: 0.293674
+  type: 'test'
+  ...
+# Subtest: only tabs with a live terminal are saved; none saves nothing
+ok 51 - only tabs with a live terminal are saved; none saves nothing
+  ---
+  duration_ms: 0.23549
+  type: 'test'
+  ...
+# Subtest: the store applies changes in order, writes them whole, and keeps other workspaces
+ok 52 - the store applies changes in order, writes them whole, and keeps other workspaces
+  ---
+  duration_ms: 6.214869
+  type: 'test'
+  ...
+# Subtest: a list that could not be read is never overwritten
+ok 53 - a list that could not be read is never overwritten
+  ---
+  duration_ms: 0.555495
+  type: 'test'
+  ...
+# Subtest: a failed write is reported and later changes still save
+ok 54 - a failed write is reported and later changes still save
+  ---
+  duration_ms: 4.265098
+  type: 'test'
+  ...
+# Subtest: our earlier localStorage list moves into the store once
+ok 55 - our earlier localStorage list moves into the store once
+  ---
+  duration_ms: 2.14375
+  type: 'test'
+  ...
+# Subtest: a move that cannot be written keeps the localStorage copy
+ok 56 - a move that cannot be written keeps the localStorage copy
+  ---
+  duration_ms: 2.112802
+  type: 'test'
+  ...
+# (node:146) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: center terminals keep their placement through lifecycle changes
+ok 57 - center terminals keep their placement through lifecycle changes
+  ---
+  duration_ms: 3.001863
+  type: 'test'
+  ...
+# Subtest: closing a panel tab never selects a center terminal
+ok 58 - closing a panel tab never selects a center terminal
+  ---
+  duration_ms: 0.170001
+  type: 'test'
+  ...
+# Subtest: opening tabs numbers them, selects the new one and stops at the limit
+ok 59 - opening tabs numbers them, selects the new one and stops at the limit
+  ---
+  duration_ms: 0.278781
+  type: 'test'
+  ...
+# Subtest: closing a panel terminal selects its predecessor or first remaining terminal
+ok 60 - closing a panel terminal selects its predecessor or first remaining terminal
+  ---
+  duration_ms: 0.371185
+  type: 'test'
+  ...
+# Subtest: closing the active tab selects its predecessor; numbers are not reused
+ok 61 - closing the active tab selects its predecessor; numbers are not reused
+  ---
+  duration_ms: 0.158145
+  type: 'test'
+  ...
+# Subtest: ready and exit update status; unknown ids change nothing
+ok 62 - ready and exit update status; unknown ids change nothing
+  ---
+  duration_ms: 0.148023
+  type: 'test'
+  ...
+# Subtest: pty events decode base64 bytes and reject malformed payloads
+ok 63 - pty events decode base64 bytes and reject malformed payloads
+  ---
+  duration_ms: 0.556778
+  type: 'test'
+  ...
+# Subtest: acks batch at the threshold and flush after a quiet period
+ok 64 - acks batch at the threshold and flush after a quiet period
+  ---
+  duration_ms: 0.216281
+  type: 'test'
+  ...
+# Subtest: timer functions are called unbound (browsers reject setTimeout with another `this`)
+ok 65 - timer functions are called unbound (browsers reject setTimeout with another `this`)
+  ---
+  duration_ms: 0.297069
+  type: 'test'
+  ...
+# (node:157) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: workspaceRef needs both paths
+ok 66 - workspaceRef needs both paths
+  ---
+  duration_ms: 1.630355
+  type: 'test'
+  ...
+# Subtest: default script prefers the default flag, local only
+ok 67 - default script prefers the default flag, local only
+  ---
+  duration_ms: 0.262381
+  type: 'test'
+  ...
+# Subtest: run button follows the active run
+ok 68 - run button follows the active run
+  ---
+  duration_ms: 0.225364
+  type: 'test'
+  ...
+# Subtest: exit text and output buffer
+ok 69 - exit text and output buffer
+  ---
+  duration_ms: 0.321506
+  type: 'test'
+  ...
+# (node:164) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: growing snapshots append only the new bytes, preserving split ANSI sequences
+ok 70 - growing snapshots append only the new bytes, preserving split ANSI sequences
+  ---
+  duration_ms: 1.61946
+  type: 'test'
+  ...
+# Subtest: a rerun or a trimmed snapshot replaces the screen instead of retaining stale rows
+ok 71 - a rerun or a trimmed snapshot replaces the screen instead of retaining stale rows
+  ---
+  duration_ms: 0.183855
+  type: 'test'
+  ...
+# (node:170) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: detectLocalhostUrl takes the last localhost URL, after stripping ANSI
+ok 72 - detectLocalhostUrl takes the last localhost URL, after stripping ANSI
+  ---
+  duration_ms: 1.179774
+  type: 'test'
+  ...
+# Subtest: detectLocalhostUrl only reads the last 1000 lines
+ok 73 - detectLocalhostUrl only reads the last 1000 lines
+  ---
+  duration_ms: 0.249497
+  type: 'test'
+  ...
+# Subtest: localhostInfo: port as written or the protocol default; other hosts are not local
+ok 74 - localhostInfo: port as written or the protocol default; other hosts are not local
+  ---
+  duration_ms: 1.255727
+  type: 'test'
+  ...
+# Subtest: resolvePreviewUrl expands $((CONDUCTOR_PORT + N)) and $NAME like Conductor's gEi
+ok 75 - resolvePreviewUrl expands $((CONDUCTOR_PORT + N)) and $NAME like Conductor's gEi
+  ---
+  duration_ms: 0.252877
+  type: 'test'
+  ...
+# Subtest: previewOptions: configured URLs win over the detected one; labels fall back to the URL
+ok 76 - previewOptions: configured URLs win over the detected one; labels fall back to the URL
+  ---
+  duration_ms: 0.418064
+  type: 'test'
+  ...
+# Subtest: previewEnvFrom keeps only the preview variables
+ok 77 - previewEnvFrom keeps only the preview variables
+  ---
+  duration_ms: 0.19263
+  type: 'test'
+  ...
+# (node:181) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: idle: Start <label> and Test your changes here; Spotlight and no task have their own wording
+ok 78 - idle: Start <label> and Test your changes here; Spotlight and no task have their own wording
+  ---
+  duration_ms: 2.1764
+  type: 'test'
+  ...
+# Subtest: pending lines show only before any output; a task that ran shows its output
+ok 79 - pending lines show only before any output; a task that ran shows its output
+  ---
+  duration_ms: 0.408052
+  type: 'test'
+  ...
+# Subtest: header: Run <label> when idle, Stop <label> while busy, Stopping... while it stops
+ok 80 - header: Run <label> when idle, Stop <label> while busy, Stopping... while it stops
+  ---
+  duration_ms: 0.370784
+  type: 'test'
+  ...
+# (node:187) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: only macOS runs the check
+ok 81 - only macOS runs the check
+  ---
+  duration_ms: 1.549253
+  type: 'test'
+  ...
+# Subtest: an accepted license (exit 0) does not block
+ok 82 - an accepted license (exit 0) does not block
+  ---
+  duration_ms: 0.214465
+  type: 'test'
+  ...
+# Subtest: a failure that names the license blocks
+ok 83 - a failure that names the license blocks
+  ---
+  duration_ms: 0.117333
+  type: 'test'
+  ...
+# Subtest: other failures (no Xcode, only the command line tools) do not
+ok 84 - other failures (no Xcode, only the command line tools) do not
+  ---
+  duration_ms: 0.116653
+  type: 'test'
+  ...
+# Subtest: Run for me opens Terminal on the accept command
+ok 85 - Run for me opens Terminal on the accept command
+  ---
+  duration_ms: 0.120642
+  type: 'test'
+  ...
+1..85
+# tests 85
+# suites 0
+# pass 85
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 876.825337

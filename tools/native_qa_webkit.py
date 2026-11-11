@@ -10,7 +10,6 @@ import json
 import os
 from pathlib import Path
 import plistlib
-import signal
 import subprocess
 import sys
 
@@ -73,25 +72,12 @@ def validate_receipt(root, receipt, manifest, executable):
 
 
 def run_probe(executable, root):
-    # A separate process group lets timeout/cleanup target only this probe and
-    # its group, never the installed app or an existing QA/native process.
-    process = subprocess.Popen([str(executable), "--oc-qa-webkit"],
-                               env=qa.environment(root), cwd=root,
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                               text=True, start_new_session=True)
-    try:
-        stdout, _stderr = process.communicate(timeout=TIMEOUT_SECONDS)
-        if process.returncode:
-            raise ValueError(f"WebKit probe failed (exit {process.returncode})")
-        return json.loads(stdout)
-    finally:
-        try:
-            os.killpg(process.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        process.wait()
-        process.stdout.close()
-        process.stderr.close()
+    result = qa.runner.run_probe(qa.runner.LaunchSpec(
+        root, executable, qa.runner.Probe.WEBKIT, timeout_seconds=TIMEOUT_SECONDS,
+    ))
+    if result.returncode:
+        raise ValueError(f"WebKit probe failed (exit {result.returncode})")
+    return dict(json.loads(result.stdout), confinement_policy=result.policy_receipt)
 
 
 def probe(path, app):

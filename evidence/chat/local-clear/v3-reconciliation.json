@@ -1,0 +1,9 @@
+{
+  "old_default_head": "11a5f73df99faa0d33bcc0c19b78606bc2c0b992",
+  "new_default_head": "c2041a9273c17e0bbafa4326633002e75e311901",
+  "path": "src/features/chat/Composer.tsx",
+  "sha256": "ba13bc0523ef60d657b5cd864030b7a958dbdc9f60c3d866067cf493dc0e01f0",
+  "size": 28735,
+  "disposition": "Use current-default Composer as a reconciled execution-baseline dependency, not a clear product patch. Its only change since 11a is !e.ctrlKey in the existing ArrowUp queue-edit guard. Keep all 12 clear product bytes and b026 fixture unchanged.",
+  "runtime": "No Node, test, compiler, install or provider execution in this authoring checkout."
+}

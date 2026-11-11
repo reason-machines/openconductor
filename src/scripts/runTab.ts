@@ -37,6 +37,18 @@ export interface RunHeader {
   name: string;
 }
 
+/** Conductor's `Yio`: display a busy workspace task without replacing the selection. */
+export function displayedTask(o: {
+  selectedTaskId: string | null;
+  selectedTaskIsBusy: boolean;
+  workspaceActiveRunTaskId: string | null;
+  workspaceActiveRunTaskIsBusy: boolean;
+}): string | null {
+  return o.workspaceActiveRunTaskId !== null && o.workspaceActiveRunTaskIsBusy && !o.selectedTaskIsBusy
+    ? o.workspaceActiveRunTaskId
+    : o.selectedTaskId;
+}
+
 /** `Wt`: the shown task's label, Spotlight for the spotlight task. */
 export function taskLabel(task: RunTabTask | null): string {
   if (!task) return DEFAULT_RUN_LABEL;

@@ -1,0 +1,256 @@
+{
+  "kind": "SAME64_MULTIPLE_AUTH_RETRY_SOURCE_ONLY_V1",
+  "author": "Conductor Rebuild",
+  "main_sha": "2b079f13e07b580d26191f7f1f50b4d21e62174e",
+  "historical_archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "historical_asset_sha256": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "reference_spans": [
+    {
+      "name": "credential_retry_caller",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8752681,
+        8752817
+      ],
+      "sha256": "bb98ac831dd4ded0fe16b5fd069630ed79510927467562441b07fce0a3010328",
+      "path": "reference/credential_retry_caller.literal.txt"
+    },
+    {
+      "name": "local_dispatch_route",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2363593,
+        2363691
+      ],
+      "sha256": "bfd768850f6a00e79f7f75501e7b941fd1f950738268e0e31d13144aad10f4b6",
+      "path": "reference/local_dispatch_route.literal.txt"
+    },
+    {
+      "name": "local_retry_preserves_payload",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2413118,
+        2413363
+      ],
+      "sha256": "d89d632dc4ffccba638fb826df0527c8ed0ac82abc5f27bbb9e0f1b7048134eb",
+      "path": "reference/local_retry_preserves_payload.literal.txt"
+    },
+    {
+      "name": "local_retry_drainer",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2382270,
+        2384268
+      ],
+      "sha256": "55fa152275d7442ff276bc4721253ac242cd2155a7c540e7169c0c5b8a2db2f0",
+      "path": "reference/local_retry_drainer.literal.txt"
+    },
+    {
+      "name": "local_retry_mutation_join",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2413835,
+        2414282
+      ],
+      "sha256": "fd339422f4056b033f67590999004d9e02d137d778f8a271b95dc50d8920fe2c",
+      "path": "reference/local_retry_mutation_join.literal.txt"
+    }
+  ],
+  "reference_verification": "Retained literal SHA-256 identities verified against the earlier source receipt. Original upload was not placed on this recovered machine; original archive/assets NOT rechecked. No new REA acquisition.",
+  "source_pins": [
+    {
+      "path": "package.json",
+      "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
+      "git_blob": "5fe4780b22a7417ae510a4f09f40d088683aece2",
+      "executed_when_admitted": false
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "sha256": "9156b2303c8cfd3dc3f01f71d8e821e6fff3a6740fc4118dc8c0ed19b5d8d896",
+      "git_blob": "445fa380d797e61e8fab1fd7e4288175453c5001",
+      "executed_when_admitted": false
+    },
+    {
+      "path": "src/features/chat/ChatSignInCard.tsx",
+      "sha256": "62d5b5fd5ada792582cb03aa1a4118a7e9842ad13497d542c4752eb969b22114",
+      "git_blob": "f7ead1415c9f9deb4441a466a555a7008fdd23b1",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "sha256": "7b98c1ab857e7c015bc04c0cab64b8206ef2741ab8dc87800a32f3576a00ac00",
+      "git_blob": "f421643b2082ac3107963f1b4ef616998cb8de0b",
+      "executed_when_admitted": false
+    },
+    {
+      "path": "src/features/chat/agentSignIn.ts",
+      "sha256": "0ac95bb2d28e00a0108b274374e3b35b7e1c547508cf027cd524eb2cc546a3f7",
+      "git_blob": "3d2ec407aec6083ec9dd89ecd42f1f2a4096699d",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/attention.ts",
+      "sha256": "9a674d34d8172ef0b94ebf1136398f526fbdb3c86c5a10748ecdfbfedff8c314",
+      "git_blob": "005eb99beae5211ece2d26655fcc4588d04d402a",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/chatRuntime.ts",
+      "sha256": "c0f01e837017954f25175f4e38a732876c1a617409cb61e5b7a250d79e67b077",
+      "git_blob": "30c6830893f1547a9e2edf6cc2312bca2da4d9d6",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/checkpoints.ts",
+      "sha256": "b462a6367fc162f53c214b1e8bef6d8aac7c3fb253f2f4393c8169c4bfc6d432",
+      "git_blob": "dc90ed4819ce94e8db02bac3f3346992405c5827",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/composerDocument.ts",
+      "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676",
+      "git_blob": "e5a796c3f6f5d9439ff3270ac0d5953e8f9e740e",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/persist.ts",
+      "sha256": "39f4a68ebf7a299ff8ab7531a6931fb499d2a072d70f6ac4961d6eabe793f49a",
+      "git_blob": "654aa94dc82872220ad9ec3048ffb9b6901b98be",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "sha256": "884de4b3cce37d27ce77df3af49bcb1bf2a3b5d79fd8e06bf1ddbd158842bab3",
+      "git_blob": "6da92450dda41fe0402d4626568b8930795f97e2",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/reason.ts",
+      "sha256": "403e62172114f30d3cc8d10801a74f99036f0f1dfa1adde24a7081fb92ffca77",
+      "git_blob": "e151fc11c5488e29fdc4af684b45e168a25249fe",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/reasonChat.ts",
+      "sha256": "fac7a3c428eaa6b680e15624400232de5f8948f7b9307c6ae352c7f16f09e05b",
+      "git_blob": "770588fc7ffaa7d3b3d950ddc6f1fc5f008ad71f",
+      "executed_when_admitted": false
+    },
+    {
+      "path": "src/features/chat/reducer.ts",
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "git_blob": "aa9847dcc0b5030b82f1e72496f408834db9d064",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/rewind.ts",
+      "sha256": "011b517c6bd12b2749818db9e84825e4f79dce1fb18cffe3991c172cb88425d0",
+      "git_blob": "39fdab2bbedddd43ed4348dfb19fd4b1e947da8f",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/types.ts",
+      "sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+      "git_blob": "30b5aa083c150875b248e87599f00683a54a03f4",
+      "executed_when_admitted": true
+    },
+    {
+      "path": "src/features/chat/userContent.ts",
+      "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c",
+      "git_blob": "409f8836c57145098270139a1e960b8fdf7f365d",
+      "executed_when_admitted": true
+    }
+  ],
+  "execution_graph": [
+    "src/features/chat/ChatSignInCard.tsx",
+    "src/features/chat/agentSignIn.ts",
+    "src/features/chat/attention.ts",
+    "src/features/chat/chatRuntime.ts",
+    "src/features/chat/checkpoints.ts",
+    "src/features/chat/composerDocument.ts",
+    "src/features/chat/persist.ts",
+    "src/features/chat/queue.ts",
+    "src/features/chat/reason.ts",
+    "src/features/chat/reducer.ts",
+    "src/features/chat/rewind.ts",
+    "src/features/chat/types.ts",
+    "src/features/chat/userContent.ts"
+  ],
+  "mocked_boundaries": {
+    "src/onboarding/reasonSignIn": "Synthetic React external-store idle/connected notification only. No real account, parser, pairing, persistence, browser, token or native behavior.",
+    "src/onboarding/ReasonSignInControls": "Null display component. Initiation, account selection and authentication UI are outside this regression.",
+    "src/features/chat/ChatModelPicker.tsx": "Fail if provider settings is opened. Reason continuations must not invoke it."
+  },
+  "required_dependencies": [
+    "react",
+    "react/jsx-runtime",
+    "react-test-renderer",
+    "typescript"
+  ],
+  "source_joins": [
+    {
+      "name": "sequential_failed_submit_feasible",
+      "path": "src/features/chat/queue.ts",
+      "literal": "if (!busy(q.status) && q.items.length === 0 && !q.paused)"
+    },
+    {
+      "name": "failed_empty_queue_is_not_paused",
+      "path": "src/features/chat/queue.ts",
+      "literal": "paused: q.paused || q.items.length > 0"
+    },
+    {
+      "name": "card_consumes_before_callback",
+      "path": "src/features/chat/ChatSignInCard.tsx",
+      "literal": "sent.current = true;\n    callback.current?.();"
+    },
+    {
+      "name": "busy_retry_is_refused",
+      "path": "src/features/chat/chatRuntime.ts",
+      "literal": "if (Q.turnRunning(c.queue.status) || c.transcript.turns[turnId]?.status !== \"failed\") return false;"
+    },
+    {
+      "name": "each_failed_turn_has_own_card",
+      "path": "src/features/chat/Transcript.tsx",
+      "literal": "<ChatSignInCard agent={ctx.chatAgent} onSignedIn="
+    },
+    {
+      "name": "consumer_uses_retry_unsent",
+      "path": "src/components/WorkspaceView.tsx",
+      "literal": "retryReasonAuth(runId, cwd, prompt, turnId)"
+    },
+    {
+      "name": "reason_retry_alias",
+      "path": "src/features/chat/reasonChat.ts",
+      "literal": "export const retryReasonAuth = reason.retryUnsent;"
+    }
+  ],
+  "fixture": {
+    "path": "fixture/authRetryMultiple.test.mjs",
+    "sha256": "9b3d03de095956357d3e81e0290e2f4b214b849b5620dedc60f42d3bf245efcc",
+    "tests": [
+      "one signed-out message resumes once after a connected notification",
+      "two signed-out messages both resume after pairing without a manual second retry"
+    ]
+  },
+  "predicted_baseline": "One single-message control pass and one intended second-message-delivery assertion failure. Prediction only.",
+  "behavioral_red_green": "NOT_RUN",
+  "native_acceptance": "NOT_RUN",
+  "product_patch": "NONE",
+  "ownership": "Independent regression/evidence only. No product lease. retryUnsent busy guard shares the function of the earlier attachment candidate; any future product hunk requires exact reconciliation without changing that frozen candidate.",
+  "scope_exclusions": [
+    "auth initiation",
+    "deep links",
+    "provider/account changes",
+    "Composer135",
+    "BE7 transcript",
+    "#916/814",
+    "durable restart",
+    "cloud Claude/Codex",
+    "cloud UI"
+  ],
+  "queue": "No admission or new position. Preserve all older units and PINNED V2 then badge then existing attachment retry.",
+  "limits": "Real React card effects and runtime execute only when admitted; status store, display controls and provider are synthetic. Test does not mount production Transcript/WorkspaceView, authenticate, run Tauri, or prove real-app parity."
+}

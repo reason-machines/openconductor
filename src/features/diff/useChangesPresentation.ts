@@ -20,6 +20,7 @@ export function useChangesPresentation(workspaceId: string) {
   const store = presentationStore();
   const snapshot = useCallback(() => store.get(workspaceId), [store, workspaceId]);
   const value = useSyncExternalStore(store.subscribe, snapshot, snapshot);
+  const ready = useSyncExternalStore(store.subscribe, store.isReady, store.isReady);
   const update = (change: ChangesUpdate) => store.update(workspaceId, change);
-  return { presentation: value, update };
+  return { presentation: value, ready, update };
 }

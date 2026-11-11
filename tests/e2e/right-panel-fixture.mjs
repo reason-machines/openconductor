@@ -30,12 +30,12 @@ export const FILES = [
  * Calls the right panel makes are recorded in window.__fake.calls; commands it
  * does not know fail, as in the other e2e fakes, and are listed in window.__fake.unmocked.
  */
-export function fakeBackend({ shell, files, spotlight = false, setupScript = null, runScript = null, xcodeLicense = "accepted", failSettingsWrite = false }) {
+export function fakeBackend({ shell, files, spotlight = false, setupScript = null, runScript = null, xcodeLicense = "accepted", failSettingsWrite = false, zoom = 1 }) {
   localStorage.setItem("openconductor.shell.v1", JSON.stringify(shell));
   localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shell.selection, collapsed: [] }));
   const settings = {
     general: { theme: "dark" },
-    appearance: { zoom_level_v2: 1, low_contrast_dark_mode: false, terminal_font_size: 12 },
+    appearance: { zoom_level_v2: zoom, low_contrast_dark_mode: false, terminal_font_size: 12 },
     git: {},
     models: { default: "opus" },
     providers: {},
@@ -54,6 +54,10 @@ export function fakeBackend({ shell, files, spotlight = false, setupScript = nul
     transformCallback: (f) => ((cbs[++cb] = f), cb),
     async invoke(cmd, args) {
       switch (cmd) {
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
+        case "db_first_run_onboarding_step":
+          return "999";
         case "local_storage_get_entry":
           return localStorage.getItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`);
         case "local_storage_set_entry":

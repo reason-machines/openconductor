@@ -47,6 +47,7 @@ g.__TAURI_INTERNALS__ = {
       return 1;
     }
     if (cmd === "session_statuses") return [];
+    if (cmd === "reason_account_status") return { name: "Fixture", email: "fixture@example.invalid", error: null };
     // A Codex prompt resolves when its turn ends; these turns keep running.
     if (cmd === "codex_prompt") return new Promise(() => undefined);
     if (cmd === "reason_prompt") return new Promise(() => undefined);
@@ -72,7 +73,7 @@ const reasonCancels = (chatId: string) => calls.filter((c) => c.cmd === "reason_
 const cancels = (chatId: string) => calls.filter((c) => c.cmd === "codex_cancel" && c.args.chatId === chatId).length;
 
 test("a working Codex chat blocks a plain archive", async () => {
-  codex.submitCodex("ws-codex-run", "/ws/codex-run", "refactor the parser");
+  codex.submitCodex("ws-codex-run", "/ws/codex-run", { text: "refactor the parser" });
   await settle();
   assert.equal(archive.workspaceAgentStatus("ws-codex-run"), "working");
   assert.equal(archive.blockedByAgents(archive.workspaceAgentStatus("ws-codex-run"), false), true);
@@ -80,7 +81,7 @@ test("a working Codex chat blocks a plain archive", async () => {
 });
 
 test("Stop agents and archive cancels the workspace's running Codex turn", async () => {
-  codex.submitCodex("ws-codex-stop", "/ws/codex-stop", "run the tests");
+  codex.submitCodex("ws-codex-stop", "/ws/codex-stop", { text: "run the tests" });
   await settle();
   assert.equal(codex.codexSnapshot("ws-codex-stop").queue.status, "working");
   archive.stopWorkspaceAgents("ws-codex-stop");
@@ -89,7 +90,7 @@ test("Stop agents and archive cancels the workspace's running Codex turn", async
 });
 
 test("Stop agents and archive also cancels a Codex chat waiting on an approval", async () => {
-  codex.submitCodex("ws-codex-ask", "/ws/codex-ask", "write hello.txt");
+  codex.submitCodex("ws-codex-ask", "/ws/codex-ask", { text: "write hello.txt" });
   await settle();
   emitCodex({ chatId: "ws-codex-ask", type: "approval", requestId: 7, kind: "command", itemId: "exec-1", command: "touch hello.txt", cwd: "/ws/codex-ask", reason: null, decisions: ["accept", "cancel"] });
   assert.equal(codex.codexSnapshot("ws-codex-ask").queue.status, "needs_user_permission");
@@ -98,7 +99,7 @@ test("Stop agents and archive also cancels a Codex chat waiting on an approval",
 });
 
 test("Stop agents and archive also cancels a Reason chat waiting on a permission", async () => {
-  reason.submitChat("ws-reason-ask", "/ws/reason-ask", "clean the build", "queue");
+  reason.submitChat("ws-reason-ask", "/ws/reason-ask", { text: "clean the build" }, "queue");
   await settle();
   await settle();
   assert.equal(calls.filter((c) => c.cmd === "reason_prompt" && c.args.chatId === "ws-reason-ask").length, 1);
@@ -112,7 +113,7 @@ test("Stop agents and archive also cancels a Reason chat waiting on a permission
 
 test("Stop agents and archive cancels a running Claude Code chat through its own runtime only", async () => {
   const chatId = claude.claudeChatId("ws-claude-stop");
-  claude.claudeRuntime.submit(chatId, "/ws/claude-stop", "fix the build", "queue");
+  claude.claudeRuntime.submit(chatId, "/ws/claude-stop", { text: "fix the build" }, "queue");
   await settle();
   await settle();
   assert.equal(calls.filter((c) => c.cmd === "claude_prompt" && c.args.chatId === chatId).length, 1);
@@ -126,7 +127,7 @@ test("Stop agents and archive cancels a running Claude Code chat through its own
 });
 
 test("startArchive stops the Codex chat before the backend archive runs", async () => {
-  codex.submitCodex("ws-codex-order", "/ws/codex-order", "long job");
+  codex.submitCodex("ws-codex-order", "/ws/codex-order", { text: "long job" });
   await settle();
   const order: string[] = [];
   await archive.startArchive(
@@ -150,7 +151,7 @@ test("startArchive stops the Codex chat before the backend archive runs", async 
 });
 
 test("another workspace's Codex chat is left running", async () => {
-  codex.submitCodex("ws-codex-other", "/ws/codex-other", "keep going");
+  codex.submitCodex("ws-codex-other", "/ws/codex-other", { text: "keep going" });
   await settle();
   archive.stopWorkspaceAgents("ws-codex-elsewhere");
   assert.equal(cancels("ws-codex-other"), 0);

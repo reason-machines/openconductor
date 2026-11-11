@@ -14,6 +14,11 @@ import subprocess
 import sys
 import uuid
 
+if __package__:
+    from . import native_qa_runner as runner
+else:
+    import native_qa_runner as runner
+
 VERSION = "OPENCONDUCTOR_NATIVE_QA_PREFLIGHT_V1"
 PREFIX = "com.reasonmachines.openconductor.qa."
 PATH_FIELDS = (
@@ -144,15 +149,14 @@ def probe(path, app):
     # Even a buggy probe cannot reach pre-existing QA databases or settings.
     if (root / "app-data").exists() or any((root / "settings").iterdir()):
         raise ValueError("path probe requires unused app-data and settings directories")
-    result = subprocess.run([str(executable), "--oc-qa-paths"], env=env,
-                            capture_output=True, text=True, timeout=30, cwd=root)
+    result = runner.run_probe(runner.LaunchSpec(root, executable, runner.Probe.PATHS))
     if result.returncode:
         raise ValueError(f"headless path probe failed (exit {result.returncode}); no GUI launch allowed")
     receipt = json.loads(result.stdout)
     validate_receipt(root, receipt, manifest, executable)
     if (root / "app-data").exists() or any((root / "settings").iterdir()):
         raise ValueError("headless probe unexpectedly created app stores; no GUI launch allowed")
-    receipt.update(prepared_source_sha=manifest["source_sha"],
+    receipt.update(confinement_policy=result.policy_receipt, prepared_source_sha=manifest["source_sha"],
                    binary_sha256=hashlib.sha256(binary).hexdigest(),
                    config_sha256=manifest["config_sha256"],
                    scope="resolved native paths only; no GUI or WebKit runtime proof")

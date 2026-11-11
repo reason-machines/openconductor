@@ -26,6 +26,7 @@ pub mod account;
 pub mod api;
 pub mod cli;
 pub mod cloud;
+pub mod install;
 pub mod login;
 pub mod provider;
 pub mod rpc;

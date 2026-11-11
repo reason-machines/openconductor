@@ -1,0 +1,1 @@
+function FSt(t,e){t.connectionState="spawn_error",t.error=e instanceof Error?e.message:String(e),t.isInputEnabled=!1,t.canStartShell=t.kind==="interactive",t.runningProgram=void 0,t.completedCommandMarkerId=void 0}

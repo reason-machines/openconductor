@@ -96,6 +96,8 @@
     transformCallback: () => ++cb,
     async invoke(cmd, args) {
       switch (cmd) {
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
         case "local_storage_get_entry":
           return localStorage.getItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`);
         case "local_storage_set_entry":

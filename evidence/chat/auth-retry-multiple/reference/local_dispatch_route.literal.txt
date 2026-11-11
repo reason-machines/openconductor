@@ -1,0 +1,1 @@
+async forWorkspace(e){return await this.deps.isCloudWorkspace(e)?this.deps.remote:this.deps.local}
