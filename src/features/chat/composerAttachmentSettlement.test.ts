@@ -136,6 +136,7 @@ async function fixture(agentId: Agent) {
     const chatId = currentId;
     return evaluate<Callbacks>(callbacksSource, `{ attachFiles, removeAttachment, onSubmit, onCommand: (${commandSource}) }`, {
       session,
+      chatId,
       setAttachments: session.setAttachments,
       reason: agentId === "reason",
       workspace: { id: workspaceId, status: "ready" },
@@ -204,6 +205,7 @@ async function fixture(agentId: Agent) {
     },
     async persisted(id: string) {
       current.flush(); original.flush();
+      await drafts.load(id);
       return new ComposerDrafts(client).load(id);
     },
     dispose() { current.disconnect(); original.disconnect(); },
