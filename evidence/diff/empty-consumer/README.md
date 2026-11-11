@@ -141,12 +141,61 @@ Raw outputs remain in this Session's scratch directory as
 `.rea-work/diff-empty-consumer/`. The existing Diff workflow includes the new file
 through `src/features/diff/*.test.ts`.
 
+## CI typecheck correction
+
+The first published head `c4143a7cac5cb5c6b22113b8d3273084097df729`
+passed the hosted Diff and frontend unit-test jobs, but six jobs failed at the
+same TypeScript check. `emptyLoadStates.test.ts:108` reported TS18046 because the
+dynamically loaded `useWorkspaceDiff` export remained `unknown` inside the
+hoisted `Fixture` function declaration. The app build stopped before producing
+the executable, so downstream chat E2E launches reported a missing binary.
+
+The correction changes only that declaration to a non-hoisted `const` arrow
+created after the existing runtime `typeof` guard. It adds no type assertion,
+`any`, suppression, or compiler exclusion. All five scenario bodies and their
+assertions, production code, and the dynamic-loader boundary remain unchanged.
+The corrected fixture SHA-256 is
+`a76b8b68460a1d2f6b1b9b2c6a253cb603844307377f3c828a46b57658305180`.
+The original RED/GREEN fixture hash above is historical, not this corrected hash.
+
+The serialized correction check passed on Reason Cloud using the existing
+dependencies, with no install or build:
+
+```bash
+NODE_OPTIONS=--max-old-space-size=1536 nice -n 19 \
+  timeout --kill-after=5s 120s node node_modules/typescript/lib/tsc.js --noEmit
+
+env -u DIFF_EMPTY_REGRESSION_REF NODE_OPTIONS=--max-old-space-size=384 \
+  nice -n 19 timeout --kill-after=5s 60s node --experimental-strip-types \
+  --test --test-concurrency=1 src/features/diff/emptyLoadStates.test.ts
+```
+
+- Full-project typecheck passed, exit `0`, from
+  `2026-11-11T07:52:58.354475530Z` to `2026-11-11T07:53:19.985181417Z`.
+- The five-case fixture passed `5/5`, exit `0`, from
+  `2026-11-11T07:53:19.986062428Z` to `2026-11-11T07:53:21.162941148Z`.
+  No cases were skipped or cancelled.
+- The corrected fixture hash stayed unchanged. All five scenario bodies and
+  assertions match the first published fixture byte-for-byte, SHA-256
+  `cf2e49cc887b54d4e9ce65cc117c1f519e0a9058adfea0b3acf11cd2e5c9f765`.
+- Production `DiffViewer.tsx` matches the published head byte-for-byte.
+  Both commands terminated normally and no owned matching process remained;
+  the local execution slot was released. No retry or additional test ran.
+- `git diff --check` passed. The correction changes only this README and the
+  two declaration lines in the existing regression fixture.
+
+The earlier hosted TS18046 is the observed compiler failure before this
+correction. The local post-correction pass does not establish hosted success;
+all exact-head hosted checks must still pass. Raw outputs remain in Session
+scratch as `ci-correction-typecheck.log` and `ci-correction-fivecase.log`.
+
 ## Verification limits
 
 The paired check proves mounted React loading/error rendering, recovery, and
 ready-empty closure through controlled IPC. It does not prove actual backend
 availability, installed-app behavior, reference/native interaction, geometry,
 focus, or visual parity. No screenshot exists because browser/native runtime was
-not admitted or launched. Local adjacent/full suites, typecheck, and build were
-not run. Exact-head hosted checks remain required before protected merge.
+not admitted or launched. Local adjacent/full suites and build were not run.
+The full-project no-emit typecheck passed after the fixture-only correction
+above. Exact-head hosted checks remain required before protected merge.
 Consuming-main CI and macOS package verification remain a separate delivery step.

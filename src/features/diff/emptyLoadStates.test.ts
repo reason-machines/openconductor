@@ -104,10 +104,10 @@ async function fixture() {
   let opened = 0;
   const onClose = () => { closed++; };
   const onOpen = () => { opened++; };
-  function Fixture() {
+  const Fixture = () => {
     state = useWorkspaceDiff({ workspaceId: "workspace", worktree: "/repo", target: { branch: "main", remote: "origin" }, onOpen });
     return React.createElement(DiffTab, { diff: state, onClose });
-  }
+  };
   let renderer: ReturnType<typeof create>;
   await act(async () => { renderer = create(React.createElement(Fixture)); });
   const pending = () => {
