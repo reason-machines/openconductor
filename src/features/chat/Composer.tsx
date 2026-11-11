@@ -22,7 +22,7 @@ import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
 import { canSteerNow, headStatusLabel, resolveSendMode, turnRunning, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
 import type { QueueAction } from "./queue.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
-import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
+import { matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
 import { SlashMenu } from "./SlashMenu.tsx";
 import { fuzzyFilterFiles } from "../../backend";
 import type { FileMatch } from "../../spotlight/quickOpen";
@@ -180,9 +180,11 @@ export function Composer({
   }
 
   function pickCommand(command: SlashCommand) {
-    if (inputRef.current?.composing()) return;
-    const next = completeInsert(selection.text, command.insert ?? `/${command.name}`);
-    inputRef.current?.replaceText(next);
+    const box = inputRef.current;
+    if (!box || box.composing() || query === null) return;
+    const current = box.selection();
+    if (current.start !== current.end || slashQuery(current.text, current.start) !== query) return;
+    if (!box.replaceRange({ start: 0, end: current.start }, `${command.insert ?? `/${command.name}`} `)) return;
     setSlashIndex(0);
   }
 
