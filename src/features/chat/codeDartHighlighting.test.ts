@@ -16,7 +16,12 @@ test("an ordinary fenced Dart block renders tokens without changing its source",
   assert.match(html, /<span class="hljs-keyword">final<\/span>/);
   assert.match(html, /<span class="hljs-number">42<\/span>/);
   const code = html.match(/<code[^>]*>([\s\S]*?)<\/code>/)?.[1];
-  assert.equal(code?.replace(/<[^>]*>/g, ""), dart);
+  assert.equal(code, [
+    '<span class="hljs-keyword">void</span> main() {',
+    '  <span class="hljs-keyword">final</span> answer = <span class="hljs-number">42</span>;',
+    '  <span class="hljs-built_in">print</span>(answer);',
+    '}',
+  ].join("\n"));
   assert.match(html, /class="md-code-block" data-code-surface="true"/);
   assert.match(html, /class="md-code-scroll"/);
   assert.match(html, /aria-label="Copy code"/);

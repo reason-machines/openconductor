@@ -74,3 +74,9 @@ node --test --test-concurrency=1 src/features/chat/codeDartHighlighting.test.ts 
 The new test checks keyword and number spans, unchanged Dart text, the existing code and scroll wrappers, and the copy-button label. The cutoff fixtures have exactly 100,000 and 100,001 characters after removal of the renderer-added final newline. Existing Nix and copy-feedback tests remain unchanged and pass, including the Nix alias and copy payload/notification behavior.
 
 `git diff --check` passed. These focused checks ran on Reason cloud with one test worker. Full typechecking, build, and packaging were not run locally on the CPU-constrained shared computer; the existing hosted workflows verify those after publication. No native app, browser, real clipboard, or side-by-side visual check ran in this source-only unit. There is no screenshot for that reason. Packaging verifies consumption, not native or visual acceptance.
+
+## CodeQL review follow-up
+
+CodeQL flagged the new test's `replace(/<[^>]*>/g, "")` expression as incomplete HTML sanitization. That expression was used only to compare rendered text in an assertion, not to sanitize content for rendering. The test now compares the complete expected highlighted code fragment without stripping any tags. It still checks every source character, newline, keyword span, and number span. Production code and the other six cases are unchanged. No query, check, or alert was suppressed.
+
+The original RED and GREEN hash above records the test before this review correction. The revised test has SHA-256 `3f164adc5f9cbbf93af5b3e5e9e65164636f74e3b40705991ae7d2a4b7a912f0`. The same related command passed all 106 cases again on Reason cloud after the assertion change. `git diff --check` also passed. The hosted CodeQL rerun remains the verification of the static-analysis finding; CodeQL was not run locally.
