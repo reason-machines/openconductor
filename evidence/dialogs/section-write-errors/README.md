@@ -25,3 +25,11 @@ Test Behavior, Not Implementation shaped the assertions around rendered toast te
 No local Node, browser, native app, installation, new executor or workflow dispatch was run. Native database/queue execution, physical IME and visual acceptance remain unverified. No screenshot is supplied because this lane has no native/browser runtime admission. The strict physical acceptance gate remains unmet.
 
 The eight frozen files from the earlier section-input work are unchanged. No cloud UI, provider path, busy state, awaited-close behavior or shared Modal policy is part of this unit.
+
+## Hosted baseline correction
+
+At published head `631e1f9b7ded78d60a3fd6afffb477853611a593`, the [hosted unit job](https://github.com/reason-machines/openconductor/actions/runs/43110349781/job/130824389650) exercised all 12 new cases: four missing-toast assertions failed and eight controls passed. The [build job](https://github.com/reason-machines/openconductor/actions/runs/43110349781/job/130824389758) separately rejected two hook calls because TypeScript does not preserve their runtime type narrowing inside a hoisted function declaration. This is not a clean executable baseline for the unchanged-fixture comparison.
+
+The corrected baseline uses an arrow declaration for the same Harness, after the existing export checks. All assertions and event sequences remain byte-identical. The corrected fixture is resealed in `fixture.sha256`; automatic hosted execution is pending before any product patch. No type assertion or suppression was added.
+
+Rechecked fresh main `812af41eb4df443dab474283c886f20dc2146461`: all five scoped product files still match the pinned source hashes. Product code remains unchanged.

@@ -97,7 +97,7 @@ async function fixture(mode: SectionDialogMode) {
     compilerOptions: { target: ts.ScriptTarget.ES2022 },
   }).outputText;
   const bindSubmit = runInNewContext(binding);
-  function Harness() {
+  const Harness = () => {
     const [, send] = useAppStore();
     const { toasts, show, dismiss } = useToasts();
     const [open, setOpen] = React.useState(true);
@@ -114,7 +114,7 @@ async function fixture(mode: SectionDialogMode) {
       open && React.createElement(SectionDialog, { data, onSubmit: (value: unknown) => submit(data, value), onClose: () => setOpen(false) }),
       React.createElement(Toaster, { toasts, dismiss }),
     );
-  }
+  };
   await act(async () => { mounted = create(React.createElement(Harness)); });
   const click = (label: string) => {
     const button = mounted.root.findAllByType("button").find((host: Host) => host.props.children === label);
