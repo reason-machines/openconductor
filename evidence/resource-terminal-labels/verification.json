@@ -1,0 +1,29 @@
+{
+  "owner": "Conductor Rebuild / SAME271",
+  "preFixMain": "9e4df51294ab5cd6abdd73aa1212ae501c551b13",
+  "implementationBase": "887964ad496b1069e6ef0fb54f16df373e82932a",
+  "regressionSha256BeforeAndAfter": "4f2b7dac82684ed22967ecf7144f830b6b14f742ca0d81f7d232acdadf49198a",
+  "focusedBefore": {
+    "tests": 5,
+    "passed": 2,
+    "failed": 3,
+    "decisive": "Actual mounted poll sends empty map; actual pure sampler and panel display zsh x4"
+  },
+  "focusedAfter": {
+    "tests": 5,
+    "passed": 5,
+    "failed": 0,
+    "pureRustFixtureBinaryReused": true
+  },
+  "relatedUnitTests": {
+    "tests": 95,
+    "passed": 95,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "diffCheck": "passed",
+  "nativeVisualAcceptance": "not run",
+  "referenceNativeLabelApplication": "not observed",
+  "fullLocalBuild": "not run",
+  "priorCompletedReceipts": "unchanged"
+}

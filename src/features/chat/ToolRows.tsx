@@ -344,6 +344,7 @@ export interface ToolRowProps {
   isError: boolean;
   open: boolean;
   onToggle: () => void;
+  todoRows?: Record<"completed" | "started", Pick<ShellProps, "open" | "onToggle">>;
   workspacePath?: string;
   onOpenFile?: (path: string) => void;
 }
@@ -387,7 +388,7 @@ export function ConductorToolRow(props: ToolRowProps) {
   );
 }
 
-function Row({ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
+function Row({ tool, status, result, isError, open, onToggle, todoRows, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const icon = <ToolIcon name={name} />;
   const shell = { icon, open, onToggle, status };
@@ -496,12 +497,35 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
     case "todo": {
       const todos = Array.isArray(input.todos) ? (input.todos as Record<string, unknown>[]) : [];
       const done = todos.filter((t) => t.status === "completed").length;
+      const activeIndex = todos.findIndex((t) => t.status === "in_progress");
+      const active = todos[activeIndex];
+      const content = todos.length > 0 ? todos.map((t) => `${t.status === "completed" ? "✓" : "○"} ${s(t.content)}`).join("\n") : undefined;
+      if (name === "TodoWrite" && active && done > 0 && done < todos.length) {
+        return (
+          <>
+            <RowShell
+              {...shell}
+              {...todoRows?.completed}
+              left={<span>Todo completed</span>}
+              right={<span className="oc-tool-count">{`${done}/${todos.length} completed`}</span>}
+              content={content}
+            />
+            <RowShell
+              {...shell}
+              {...todoRows?.started}
+              left={<span>Todo started</span>}
+              right={<span className="oc-tool-count">{`${activeIndex + 1}. ${s(active.content) || "todo"}`}</span>}
+              content={content}
+            />
+          </>
+        );
+      }
       return (
         <RowShell
           {...shell}
           left={<span>{done > 0 && done < todos.length ? "Todo completed" : "Update todos"}</span>}
           right={todos.length > 0 ? <span className="oc-tool-count">{`${done}/${todos.length} completed`}</span> : undefined}
-          content={todos.length > 0 ? todos.map((t) => `${t.status === "completed" ? "✓" : "○"} ${s(t.content)}`).join("\n") : undefined}
+          content={content}
         />
       );
     }
