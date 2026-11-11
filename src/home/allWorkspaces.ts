@@ -201,13 +201,14 @@ export interface HomeGroup {
 }
 
 /** Repositories that have at least one workspace (the project filter's choices, `je`). */
-export function reposWithWorkspaces(repos: readonly Repo[]): Repo[] {
-  return repos.filter((r) => r.workspaces.length > 0);
+export function reposWithWorkspaces(repos: readonly Repo[], archivedRows: readonly ArchivedWorkspace[] = []): Repo[] {
+  const archivedRepoIds = new Set(archivedRows.map((row) => row.repoId));
+  return repos.filter((r) => r.workspaces.length > 0 || archivedRepoIds.has(r.id));
 }
 
 /** The project filter only shows when more than one project has workspaces. */
-export function showProjectFilter(repos: readonly Repo[]): boolean {
-  return reposWithWorkspaces(repos).length > 1;
+export function showProjectFilter(repos: readonly Repo[], archivedRows: readonly ArchivedWorkspace[] = []): boolean {
+  return reposWithWorkspaces(repos, archivedRows).length > 1;
 }
 
 /** "In all projects", "In tide-web" or "In 2 projects". */
