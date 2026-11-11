@@ -1420,7 +1420,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
             showFile && fileTarget && workspace.path ? (
               <MarkdownFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} />
             ) : showDiff ? (
-              <DiffTab diff={diff} onClose={autoCloseDiffTab} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />
+              <DiffTab diff={diff} onClose={autoCloseDiffTab} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} onPersistAnchors={review.persistAnchors} notes={review.notes} notify={notify} />
             ) : showPr ? (
               <PrTab
                 worktree={workspace.path ?? null}

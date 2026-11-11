@@ -16,6 +16,10 @@ pub mod commands;
 pub mod icon;
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod alacritty_workspace_tests;
+#[cfg(test)]
+mod alacritty_status_tests;
 
 use std::ffi::{OsStr, OsString};
 use std::path::{Path, PathBuf};
@@ -273,12 +277,70 @@ pub fn macos_open_file_command(app: &CatalogApp, file: &Path) -> (String, Vec<St
     }
 }
 
+#[derive(Debug, PartialEq, Eq)]
+pub enum AlacrittyExit {
+    Success,
+    Nonzero(String),
+}
+
+pub fn run_alacritty_folder(
+    dir: &Path,
+    mut run: impl FnMut(&str, &[String]) -> Result<AlacrittyExit, String>,
+) -> Result<(), String> {
+    let dir = dir.to_string_lossy().into_owned();
+    match run(
+        "alacritty",
+        &[
+            "msg".into(),
+            "create-window".into(),
+            "--working-directory".into(),
+            dir.clone(),
+        ],
+    )? {
+        AlacrittyExit::Success => {
+            run("open", &["-a".into(), "Alacritty".into()])?;
+            Ok(())
+        }
+        AlacrittyExit::Nonzero(_) => match run(
+            "open",
+            &[
+                "-na".into(),
+                "Alacritty".into(),
+                "--args".into(),
+                "--working-directory".into(),
+                dir,
+            ],
+        )? {
+            AlacrittyExit::Success => Ok(()),
+            AlacrittyExit::Nonzero(error) => Err(error),
+        },
+    }
+}
+
+pub fn alacritty_search_path(path: Option<&OsStr>, home: Option<&OsStr>) -> Result<OsString, String> {
+    let mut dirs: Vec<PathBuf> = path.into_iter().flat_map(std::env::split_paths).collect();
+    dirs.push(PathBuf::from("/Applications/Alacritty.app/Contents/MacOS"));
+    if let Some(home) = home {
+        dirs.push(Path::new(home).join("Applications/Alacritty.app/Contents/MacOS"));
+    }
+    std::env::join_paths(dirs).map_err(|err| err.to_string())
+}
+
 pub fn run_macos_open(
     app: &CatalogApp,
     path: &Path,
     is_file: bool,
     mut run: impl FnMut(&str, &[String]) -> Result<(), String>,
 ) -> Result<(), String> {
+    if app.id == "alacritty" && !is_file {
+        // The legacy runner has no transport/status distinction; production uses the typed runner.
+        return run_alacritty_folder(path, |program, args| {
+            Ok(match run(program, args) {
+                Ok(()) => AlacrittyExit::Success,
+                Err(error) => AlacrittyExit::Nonzero(error),
+            })
+        });
+    }
     let (program, args) = if is_file {
         macos_open_file_command(app, path)
     } else {

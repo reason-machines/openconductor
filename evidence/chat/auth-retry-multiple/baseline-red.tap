@@ -1,0 +1,38 @@
+TAP version 13
+# Subtest: one signed-out message resumes once after a connected notification
+ok 1 - one signed-out message resumes once after a connected notification
+  ---
+  duration_ms: 518.298301
+  type: 'test'
+  ...
+# Subtest: two signed-out messages both resume after pairing without a manual second retry
+not ok 2 - two signed-out messages both resume after pairing without a manual second retry
+  ---
+  duration_ms: 297.713962
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/evidence/chat/auth-retry-multiple/fixture/authRetryMultiple.test.mjs:148:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    second failed message is not lost when the first retry was working
+
+    1 !== 2
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/evidence/chat/auth-retry-multiple/fixture/authRetryMultiple.test.mjs:160:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1174.92543

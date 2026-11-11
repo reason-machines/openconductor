@@ -25,7 +25,7 @@ import { createEditor, type FileEdit } from "./EditInViewer.ts";
 import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import { FilePathChip } from "./FilePathChip";
-import type { CommentSide } from "./comments.ts";
+import type { CommentAnchorPositions, CommentSide } from "./comments.ts";
 import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, type LineRange, codeViewItem, editableCodeViewItem, fromPierreSide, fullDiffMeta, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch } from "./pierre.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import { useDiffTheme } from "./useDiffTheme.ts";
@@ -53,6 +53,7 @@ interface Props {
   anchors?: LineAnchor[];
   /** What to render under an anchored line. */
   annotations?: (anchor: LineAnchor) => ReactNode;
+  onPersistAnchors?: (positions: CommentAnchorPositions) => void;
   /** This file loaded with whole-file context, for expanding unmodified lines. */
   loadFull?: () => Promise<FileDiff>;
   /** This file already loaded with whole-file context: drawn as a full diff (pierre.ts `fullDiffMeta`). */
@@ -103,7 +104,7 @@ export function revealLine(path: string, anchor: LineAnchor): boolean {
   return reveal !== undefined;
 }
 
-function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, loadFull, edit, isVisible = true }: Props) {
+function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, onPersistAnchors, loadFull, edit, isVisible = true }: Props) {
   const themeType = useThemeType();
   const theme = useDiffTheme();
   const view = useRef<CodeViewHandle<LineAnchor, undefined> | null>(null);
@@ -135,13 +136,32 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
     () => (editing ? editableCodeViewItem(shown, latestEdit.current!.current(), ignoreWhitespace) : shown),
     [shown, editing, ignoreWhitespace],
   );
-  const onEditChange = useCallback((e: { file: { contents: string } }) => latestEdit.current?.onChange(e.file.contents), []);
+  const movedAnchors = useRef(new Map<string, number | null>());
+  const persistAnchors = useRef(onPersistAnchors);
+  persistAnchors.current = onPersistAnchors;
+  const observeAnchors = useCallback((annotations: Array<{ lineNumber: number; metadata?: LineAnchor }> | undefined) => {
+    if (annotations === undefined) return;
+    for (const id of movedAnchors.current.keys()) movedAnchors.current.set(id, null);
+    for (const annotation of annotations) {
+      for (const id of annotation.metadata?.commentIds ?? []) movedAnchors.current.set(id, annotation.lineNumber);
+    }
+  }, []);
+  const onEditChange = useCallback((e: { file: { contents: string }; lineAnnotations?: Array<{ lineNumber: number; metadata?: LineAnchor }> }) => {
+    latestEdit.current?.onChange(e.file.contents);
+    observeAnchors(e.lineAnnotations);
+  }, [observeAnchors]);
+  const onEditComplete = useCallback((e: { lineAnnotations?: Array<{ lineNumber: number; metadata?: LineAnchor }> }) => {
+    observeAnchors(e.lineAnnotations);
+    persistAnchors.current?.(movedAnchors.current);
+    return "accept" as const;
+  }, [observeAnchors]);
   const { overrides } = useKeybindingOverrides();
   const onKeyDown = (e: React.KeyboardEvent) => {
     // Only the save shortcut: other keys belong to the editor, CommentNav and the comment box.
     if (!editing || !effectiveShortcuts("editor.saveFile", overrides).some((s) => matchesEvent(s, e.nativeEvent))) return;
     e.preventDefault();
     const contents = view.current?.getEditor(file.path)?.getFile()?.contents ?? latestEdit.current!.current();
+    persistAnchors.current?.(movedAnchors.current);
     latestEdit.current!.onSave(contents);
   };
   const fileSide: CommentSide = item.type === "file" && file.status === "deleted" ? "old" : "new";
@@ -202,7 +222,7 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
       selectedLines={selection}
       onSelectedLinesChange={setSelection}
       onItemEditChange={editing ? onEditChange : undefined}
-      onItemEditComplete={editing ? acceptEdit : undefined}
+      onItemEditComplete={editing ? onEditComplete : undefined}
       renderAnnotation={(...[a]) => annotations?.(a.metadata!)}
     />
   );
@@ -219,9 +239,6 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
     </div>
   );
 }
-
-/** An ended edit session keeps its text, as Conductor's onItemEditComplete accepts it. */
-const acceptEdit = () => "accept" as const;
 
 /** The one CodeView item, rebuilt (with a bumped version) only when the file, its parsed diff, layout or anchors change. */
 function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, layout: DiffLayout, anchors: LineAnchor[]): CodeViewItem<LineAnchor> {
