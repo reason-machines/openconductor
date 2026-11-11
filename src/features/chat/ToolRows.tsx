@@ -460,7 +460,7 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
           left={<span>Edit</span>}
           right={
             <div className="oc-tool-right-row">
-              {path ? <FileBadge path={path} onOpen={onOpenFile} /> : null}
+              {path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={counts ? <DiffBlock oldText={stripMarkers(s(input.old_string))} newText={stripMarkers(s(input.new_string))} /> : undefined} /> : null}
               {counts ? <LineCounts {...counts} /> : null}
             </div>
           }
