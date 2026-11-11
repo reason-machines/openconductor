@@ -1,0 +1,98 @@
+{
+  "unit": "COMMENT-EDIT-DRAFT-RETENTION",
+  "version": 2,
+  "status": "SEALED_AFTER_1046_MERGE",
+  "owner": "de6c02f4-4880-4a0d-bf8f-9e3954522753",
+  "baseline": "5bea00de87fac9ef306e89a4fd35e3d88527ad15",
+  "anchor_merge": "df44ec50db0e7632a7782089e4cde9e41e1ed6b8",
+  "fixture_sha256": "487a0b6d0bb87c7325c865c864e0664f060c16d6e51d48981c250b511ec5ddf7",
+  "product": {
+    "baseline": "d40c6bb567f136f9bd6efa7f12d517d7430a0a736bc7d995721055bd5b5a881f",
+    "candidate": "16837e0203358d1a954fd50e8ce29e4aafd724d61a72f6e0e043439fa5f72aa2"
+  },
+  "dependencies": {
+    "src/features/diff/comments.ts": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800",
+    "src/features/diff/commentStore.ts": "89b6dc1e8c4acd63482bdca83147d1eed286b06ef1bc40c25cbc25440c44af3c",
+    "src/features/diff/nav.ts": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c",
+    "package.json": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
+    "package-lock.json": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1",
+    "tsconfig.json": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5"
+  },
+  "reference": {
+    "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "bytes": 11600457,
+    "spans": {
+      "Pae-store": {
+        "utf8": [
+          9404882,
+          9405467
+        ],
+        "sha256": "f60fe4bbf103700c85a6dc8c2bd4340b8477b3629df27641892e451444039ace"
+      },
+      "wet-consumer": {
+        "utf8": [
+          9411602,
+          9413099
+        ],
+        "sha256": "cfe8f5dde3fc55ba71e0e07df39fdb3ba403285d7234074159b85b371a3aadb5"
+      },
+      "SVo-editor": {
+        "utf8": [
+          9413099,
+          9416741
+        ],
+        "sha256": "1e6bca0b0cdf23c9b84cdb0c057e3b0929ad26176e714615132c938dd13f7e83"
+      },
+      "kVo-edit-action": {
+        "utf8": [
+          9416841,
+          9419019
+        ],
+        "sha256": "751ec5564b7060c6ad6edadaf7cf4929b6386ed56337ceb6398614fb4db80221"
+      },
+      "TVo-edit-action": {
+        "utf8": [
+          9419019,
+          9420917
+        ],
+        "sha256": "fe3c7ce2238d53ec182230040217aeaaa578f7433ed013460060856522f1eb7d"
+      }
+    }
+  },
+  "source_observation": "Pae holds per-comment drafts outside mount lifetimes; wet reads them; SVo changes drafts without saving the stored body and discards only after successful save or explicit cancel/discard.",
+  "design_choice": "Use the existing comment workspace and ID together as the key; keep empty strings distinct from absent drafts. In-memory only, not process-restart persistence.",
+  "scope": "ReviewComments.tsx only; local edited comments, no new-comment/reply draft retention or backend changes",
+  "expected_baseline": {
+    "failures": 4,
+    "controls": 2
+  },
+  "expected_candidate": {
+    "passed": 6
+  },
+  "frozen_fixtures": {
+    "src/features/diff/hiddenWhitespaceEditing.test.ts": "6e0b9c57c9d1f2ab99f517104e6b262ea643b517d9d3aeef81be6f4fa4c52ca1",
+    "src/features/diff/movedCommentAnchors.test.ts": "48428ff7dd42cb1c1a01874ad8cea53eda20b286093aea45ca66fe07a962b88c"
+  },
+  "historical_harness_requalification": {
+    "moved_anchors": {
+      "baseline": "248b6c359c830c6ac5e050721bae18e44e168068",
+      "fixture_sha256": "48428ff7dd42cb1c1a01874ad8cea53eda20b286093aea45ca66fe07a962b88c",
+      "only_changed_candidate_pin": "src/features/diff/ReviewComments.tsx",
+      "previous": "d40c6bb567f136f9bd6efa7f12d517d7430a0a736bc7d995721055bd5b5a881f",
+      "current": "16837e0203358d1a954fd50e8ce29e4aafd724d61a72f6e0e043439fa5f72aa2"
+    },
+    "hidden_whitespace": {
+      "candidate_pins_changed": 0,
+      "validated_pairs": 29,
+      "fixture_sha256": "6e0b9c57c9d1f2ab99f517104e6b262ea643b517d9d3aeef81be6f4fa4c52ca1",
+      "assertion_tail_sha256": "edf7785d1e3d47380bac762a3df64beb0e5cad5fa36c388581654ac772a26a97"
+    }
+  },
+  "runtime": "NOT RUN LOCALLY; hosted automatic paired checks required",
+  "not_exercised": [
+    "Browser/editor DOM",
+    "Real Tauri/SQLite transport",
+    "Native/visual acceptance",
+    "E1"
+  ]
+}
