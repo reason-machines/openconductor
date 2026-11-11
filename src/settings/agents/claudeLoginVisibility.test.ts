@@ -77,7 +77,7 @@ function fixture({ authenticated, loading = false, apiKey = false }: { authentic
   let renderer: ReturnType<typeof create>;
   act(() => { renderer = create(React.createElement(tab.ClaudeTab, { settings, save: forbid("save"), reload: forbid("reload") })); });
   return {
-    buttons: () => renderer.root.findAllByType("button").map((node: { children: unknown[] }) => node.children.join("")),
+    buttons: () => renderer.root.findAllByType("button").map((node: { children: unknown[] }) => node.children.filter((child) => typeof child === "string").join("")),
     secrets: () => renderer.root.findAllByType("secret-row"),
     status: () => renderer.root.findByProps({ "data-testid": "agent-auth-status" }).findAllByType("div").map((node: { children: unknown[] }) => node.children.join("")).join(" "),
     forbiddenCalls,
