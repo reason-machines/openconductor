@@ -162,6 +162,83 @@ async fn clear_legacy_unread(pool: &SqlitePool, workspace_id: &str) -> Result<()
     }
 }
 
+#[derive(serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LocalChatReplacement {
+    chat_id: String,
+    primary_chat_id: String,
+    title: String,
+}
+
+#[tauri::command]
+pub async fn db_clear_local_chat(
+    db: State<'_, Db>,
+    settings: State<'_, crate::settings::service::SettingsService>,
+    workspace_id: String,
+    chat_id: String,
+    agent: String,
+    model: Option<String>,
+    effort: Option<String>,
+) -> Result<LocalChatReplacement, String> {
+    let settings = settings.get().map_err(|e| e.to_string())?;
+    clear_local_chat(&db.0, &settings, workspace_id, chat_id, &agent, model, effort).await
+}
+
+async fn clear_local_chat(
+    pool: &SqlitePool,
+    settings: &crate::settings::Settings,
+    workspace_id: String,
+    chat_id: String,
+    agent: &str,
+    model: Option<String>,
+    effort: Option<String>,
+) -> Result<LocalChatReplacement, String> {
+    use sessions::{AgentType, NewSession, PermissionMode};
+    let agent_type = match agent {
+        "claude" => AgentType::Claude,
+        "codex" => AgentType::Codex,
+        _ => return Err("Only local Claude and Codex chats can be cleared".into()),
+    };
+    let model = model.or_else(|| {
+        let model = settings.model_for(crate::settings::launch::Purpose::Chat);
+        let default_agent = crate::settings::launch::model_agent(model);
+        ((agent_type == AgentType::Claude && default_agent == crate::agent::AgentKind::Claude)
+            || (agent_type == AgentType::Codex && default_agent == crate::agent::AgentKind::Codex)).then(|| model.to_owned())
+    });
+    let id = format!("{workspace_id}:chat:{}", uuid::Uuid::new_v4());
+    let replacement = NewSession {
+        id: id.clone(),
+        workspace_id,
+        agent_type: Some(agent_type),
+        fast_mode: settings.models.default_fast_mode && model.as_deref().is_some_and(|model| model.starts_with("opus") || model.starts_with("gpt-")),
+        model,
+        acp_config: None,
+        permission_mode: if settings.models.default_plan_mode { PermissionMode::Plan } else { PermissionMode::Default },
+        claude_effort_level: (agent_type == AgentType::Claude).then(|| effort.clone()).flatten(),
+        codex_thinking_level: (agent_type == AgentType::Codex).then_some(effort).flatten(),
+        agent_personality: (agent_type == AgentType::Codex).then(|| settings.models.codex.personality.unwrap_or(crate::settings::CodexPersonality::Pragmatic).codex_value().to_owned()),
+        now: iso_time::from_millis(now_millis()),
+    };
+    let primary_chat_id = sessions::replace_local(pool, &chat_id, &replacement).await.map_err(|e| e.to_string())?;
+    Ok(LocalChatReplacement { chat_id: id, primary_chat_id, title: sessions::UNTITLED.into() })
+}
+
+#[tauri::command]
+pub async fn db_select_chat(
+    db: State<'_, Db>,
+    workspace_id: String,
+    chat_id: String,
+) -> Result<(), String> {
+    select_chat(&db.0, &workspace_id, &chat_id).await
+}
+
+async fn select_chat(pool: &SqlitePool, workspace_id: &str, chat_id: &str) -> Result<(), String> {
+    let primary = sessions::primary_chat_id(pool, workspace_id).await.map_err(|e| e.to_string())?;
+    let valid = chat_id == primary || sessions::open_tabs(pool).await.map_err(|e| e.to_string())?.iter().any(|tab| tab.workspace_id == workspace_id && tab.id == chat_id);
+    if !valid { return Err("Chat is not visible in this workspace".into()); }
+    workspaces::set_active_session(pool, workspace_id, Some(chat_id)).await.map_err(|e| e.to_string())
+}
+
 /// JS: `invoke("db_touch_workspace", { workspaceId, at })`, `at` in ms since
 /// the epoch: the user sent a message, so `workspaces.updated_at` moves forward
 /// to it (never back), as Conductor's `setSessionUpdatedAt` does on every
@@ -278,6 +355,74 @@ mod tests {
         );
         assert!(workspace_changes(&dir, "no-such-branch".into()).is_err());
         let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    async fn clear_test_workspace() -> SqlitePool {
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        sqlx::query("INSERT INTO repos (id, name, root_path) VALUES ('r', 'Test', '/synthetic/repo')").execute(&pool).await.unwrap();
+        sqlx::query("INSERT INTO workspaces (local_id, repository_id, directory_name, branch, state) VALUES ('w', 'r', 'Test', 'test', 'ready')").execute(&pool).await.unwrap();
+        pool
+    }
+
+    #[tokio::test]
+    async fn local_clear_command_defaults_and_persisted_rows() {
+        use sessions::PermissionMode;
+        for agent in ["claude", "codex"] {
+            for defaults in [false, true] {
+                let pool = clear_test_workspace().await;
+                sessions::open_tab(&pool, "w", "w", "Renamed predecessor", "2026-11-01T00:00:00Z").await.unwrap();
+                sqlx::query("UPDATE sessions SET permission_mode = ?, fast_mode = ?, agent_personality = 'friendly' WHERE id = 'w'")
+                    .bind(if defaults { "default" } else { "plan" }).bind(!defaults).execute(&pool).await.unwrap();
+                let mut settings = crate::settings::Settings::default();
+                settings.models.default_plan_mode = defaults;
+                settings.models.default_fast_mode = defaults;
+                let model = if agent == "claude" { "opus-4-8-1m" } else { "gpt-5.5" };
+                let result = clear_local_chat(&pool, &settings, "w".into(), "w".into(), agent, Some(model.into()), Some("high".into())).await.unwrap();
+                assert_ne!(result.chat_id, "w");
+                assert_eq!(result.primary_chat_id, result.chat_id);
+                assert_eq!(result.title, "Untitled");
+                let session = sessions::get(&pool, &result.chat_id).await.unwrap().unwrap();
+                assert_eq!(session.model.as_deref(), Some(model));
+                assert_eq!(session.permission_mode, if defaults { PermissionMode::Plan } else { PermissionMode::Default });
+                assert_eq!(session.fast_mode, defaults);
+                assert_eq!(if agent == "claude" { session.claude_effort_level.as_deref() } else { session.codex_thinking_level.as_deref() }, Some("high"));
+                if agent == "codex" { assert_eq!(session.agent_personality.as_deref(), Some("friendly")); }
+                let row = store::list_workspaces(&pool).await.unwrap().remove(0);
+                assert_eq!(row.primary_chat_id, result.chat_id);
+                assert_eq!(row.active_session_id.as_deref(), Some(result.chat_id.as_str()));
+                assert_eq!(row.chat_title.as_deref(), Some("Untitled"));
+                assert!(row.chat_tabs.is_empty());
+                sessions::open_tab(&pool, &result.chat_id, "w", "Replacement renamed", "2026-11-11T00:00:00Z").await.unwrap();
+                let row = store::list_workspaces(&pool).await.unwrap().remove(0);
+                assert_eq!(row.chat_title.as_deref(), Some("Replacement renamed"));
+                let json = serde_json::to_value(row).unwrap();
+                assert_eq!(json["primaryChatId"], result.chat_id);
+                assert_eq!(json["activeSessionId"], result.chat_id);
+                assert_eq!(json["chatTitle"], "Replacement renamed");
+                assert!(!json.to_string().contains("Renamed predecessor"));
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn local_clear_persisted_selection_does_not_promote_secondary() {
+        let pool = clear_test_workspace().await;
+        for (id, day) in [("w", "01"), ("w:chat:1", "02"), ("w:chat:2", "03"), ("w:chat:3", "04"), ("w:chat:4", "05")] {
+            sessions::open_tab(&pool, id, "w", id, &format!("2026-11-{day}T00:00:00Z")).await.unwrap();
+        }
+        let settings = crate::settings::Settings::default();
+        let result = clear_local_chat(&pool, &settings, "w".into(), "w".into(), "codex", Some("gpt-5.5".into()), Some("high".into())).await.unwrap();
+        let row = store::list_workspaces(&pool).await.unwrap().remove(0);
+        assert_eq!(row.primary_chat_id, "w:chat:1");
+        assert_eq!(row.active_session_id.as_deref(), Some(result.chat_id.as_str()));
+        assert_eq!(row.chat_tabs.last().unwrap().id, result.chat_id);
+        assert_eq!(row.chat_tabs.len(), 4);
+        select_chat(&pool, "w", "w:chat:2").await.unwrap();
+        let row = store::list_workspaces(&pool).await.unwrap().remove(0);
+        assert_eq!(row.primary_chat_id, "w:chat:1");
+        assert_eq!(row.active_session_id.as_deref(), Some("w:chat:2"));
+        assert!(select_chat(&pool, "w", "w").await.is_err());
+        assert!(select_chat(&pool, "w", "elsewhere:chat:1").await.is_err());
     }
 
     #[test]

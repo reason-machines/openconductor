@@ -45,11 +45,10 @@ function scoreOne(candidate: string, query: string): number {
   return Math.min(0.94, avg * (0.9 + 0.1 * Math.min(1, significant / c.length)));
 }
 
-/** Best score of the query against the value and any keywords. */
+/** Score the value and keywords as one ordered search candidate. */
 export function commandScore(value: string, query: string, keywords: readonly string[] = []): number {
-  let best = scoreOne(value, query);
-  for (const k of keywords) best = Math.max(best, scoreOne(k, query) * 0.9);
-  return best;
+  const candidate = [value, ...keywords.map((keyword) => keyword.trim())].join(" ");
+  return scoreOne(candidate, query);
 }
 
 /** Score if it clears the threshold, else 0 (hidden). */

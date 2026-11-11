@@ -43,8 +43,8 @@ export function stepWorkspace(state: AppState, delta: 1 | -1): WorkspaceRef | un
 
 /**
  * Conductor's command palette items (`m_a`, renderApp @10,909,900-10,918,150), in its order,
- * for a local user. Left out: Create section (sidebar sections), Team and Routines (cloud
- * organisations), Passport and Check for updates (no OpenConductor counterpart yet), and the
+ * for a local user. Left out: Team and Routines (cloud organisations), Passport and
+ * Check for updates (no OpenConductor counterpart yet), and the
  * workspace actions OpenConductor cannot run from here (Search in files, Show notes,
  * Link issue, Move to section and the PR actions).
  */
@@ -55,6 +55,7 @@ export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   { id: "archive-workspace", title: "Archive workspace", group: "workspace-actions", bindingId: "workspace.archive", icon: "archive", keywords: ["archive", "current", "workspace"] },
   // Actions.
   { id: "new-workspace", title: "Create workspace", group: "actions", bindingId: "workspace.create", icon: "plus", keywords: ["new", "workspace", "create", "create workspace"] },
+  { id: "create-section", title: "Create section", group: "actions", icon: "plus", keywords: ["create", "new", "section", "sidebar"] },
   { id: "add-project", title: "Add project", group: "actions", bindingId: "nav.addRepository", icon: "folder-plus", keywords: ["add", "project", "repository", "repo", "open", "import"] },
   { id: "toggle-theme", title: "Toggle theme", group: "actions", bindingId: "toggleTheme", icon: "sun-moon", keywords: ["toggle", "theme", "dark", "light"] },
   { id: "toggle-left-sidebar", title: "Toggle left sidebar", group: "actions", bindingId: "view.toggleLeftSidebar", icon: "panel-left", keywords: ["toggle", "left", "sidebar", "panel"] },
