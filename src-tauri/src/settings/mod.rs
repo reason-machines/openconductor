@@ -5,6 +5,7 @@
 //! written on the first save. Saves are atomic (temp file + rename) and
 //! validated, so a bad value from the UI never reaches disk.
 
+mod big_terminal_prefs;
 pub mod commands;
 pub mod db_backed;
 pub mod effective;
@@ -72,8 +73,15 @@ pub fn load(path: &Path) -> Result<Settings, SettingsError> {
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => return Ok(Settings::default()),
         Err(e) => return Err(SettingsError::Io(path.to_path_buf(), e)),
     };
-    let settings: Settings = toml::from_str(&text)
+    let mut settings: Settings = toml::from_str(&text)
         .map_err(|e| SettingsError::Parse(path.to_path_buf(), e.to_string()))?;
+    let raw: toml::Table = toml::from_str(&text)
+        .map_err(|e| SettingsError::Parse(path.to_path_buf(), e.to_string()))?;
+    if let Some(models) = raw.get("models").and_then(toml::Value::as_table) {
+        if models.contains_key("default") && !models.contains_key("default_initialized") {
+            settings.models.default_initialized = true;
+        }
+    }
     validate(&settings)?;
     Ok(settings)
 }

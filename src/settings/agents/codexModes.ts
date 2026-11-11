@@ -67,15 +67,15 @@ export function switchSteps(settings: Settings, to: CodexMode): SwitchStep[] {
   return [...clear, { op: "connect", config }];
 }
 
-const planLabel = (p: string) => p.charAt(0).toUpperCase() + p.slice(1);
-
-/** The ChatGPT card's status line and table (the CLI and API key cards use agentAuth's codexAuthState). */
+/**
+ * The ChatGPT card's status line and table (the CLI and API key cards use agentAuth's codexAuthState).
+ * The table holds the account's email only: Conductor's `[{ label: "ChatGPT account", value: email }]`
+ * (renderApp-D_fmY7hW.js, offset 10581008), with no plan or workspace row.
+ */
 export function chatgptStatus(account: CodexAccount | null): AuthState {
   const rows: InfoRow[] = [];
   const on = account?.kind === "chatgpt";
   if (on && account.email) rows.push({ label: "ChatGPT account", value: account.email });
-  if (on && account.planType) rows.push({ label: "Plan", value: planLabel(account.planType) });
-  if (on && account.workspaceName) rows.push({ label: "Workspace", value: account.workspaceName });
   return { authenticated: on, rows, notConnectedMessage: "Not signed in with ChatGPT" };
 }
 

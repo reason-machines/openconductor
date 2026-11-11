@@ -17,6 +17,7 @@
   // ?oc_theme=light|dark picks Conductor's theme mode (seed.js writes it into
   // the virtual filesystem where Conductor's portable storage reads it).
   const themeMode = new URLSearchParams(location.search).get("oc_theme") || "dark";
+  const mentionFiles = new URLSearchParams(location.search).has("oc_mention_files");
 
 
   // ---- callbacks and events -------------------------------------------------
@@ -42,6 +43,7 @@
   }
   const listeners = new Map(); // eventId -> {event, handler}
   let nextEventId = 1;
+  let sidecarRequestsSent = false;
   function emit(event, payload) {
     for (const [id, l] of listeners) {
       if (l.event === event) runCallback(l.handler, { event, id, payload });
@@ -121,8 +123,17 @@
       localStorage.setItem(VFS_KEY, JSON.stringify(vfs));
     } catch (e) {}
   };
+  // ?oc_setup_script=<command>: tide-web's repository-local settings (.conductor/settings.local.toml in its
+  // main checkout) set scripts.setup, for the terminal panel's Setup tab (tools/side-by-side/setup-tab.mjs).
+  // ?oc_run_script=<command> sets scripts.run the same way, for the Run tab (one run script, "run").
+  const setupScript = new URLSearchParams(location.search).get("oc_setup_script");
+  const runScript = new URLSearchParams(location.search).get("oc_run_script");
+  if (setupScript || runScript)
+    vfs["/Users/demo/code/tide-web/.main/.conductor/settings.local.toml"] =
+      "[scripts]\n" + (setupScript ? `setup = ${JSON.stringify(setupScript)}\n` : "") + (runScript ? `run = ${JSON.stringify(runScript)}\n` : "");
   saveVfs();
   window.__OC_VFS__ = vfs;
+  const failSettingsWrite = new URLSearchParams(location.search).has("oc_fail_settings_write");
   const enc = new TextEncoder();
   const dec = new TextDecoder();
   function fsPath(args, options) {
@@ -143,6 +154,9 @@
         return Array.from(enc.encode(vfs[p]));
       case "write_text_file":
       case "write_file": {
+        // ?oc_fail_settings_write=1: a repository's .conductor settings file cannot be written (a
+        // read-only checkout), for Settings › Scripts' "Failed to save run script" toasts.
+        if (failSettingsWrite && /\/\.conductor\/settings(\.local)?\.toml$/.test(p)) throw `Permission denied (os error 13): ${p}`;
         const bytes = args instanceof Uint8Array ? args : Array.isArray(args) ? Uint8Array.from(args) : args.data ? Uint8Array.from(args.data) : new Uint8Array();
         vfs[p] = dec.decode(bytes);
         saveVfs();
@@ -245,6 +259,26 @@
     },
     "GET https://api.conductor.build/organizations": { organizations: [] },
   };
+  // ?oc_org=cloud: the user belongs to one cloud organization (Conductor's `iPe` with
+  // supportsLocal false, which `Qo` reads as "cloud"), so the /settings/organization/*
+  // routes and /team render instead of redirecting to /settings/user/general. Its
+  // answers are invented (tools/screens/org-fixtures.js), keyed by "METHOD /path".
+  const orgMode = new URLSearchParams(location.search).get("oc_org");
+  const ORG_FIXTURES = orgMode && window.__OC_ORG_FIXTURES__ ? window.__OC_ORG_FIXTURES__(orgMode) : null;
+  if (ORG_FIXTURES) HTTP_FIXTURES["GET https://api.conductor.build/organizations"] = ORG_FIXTURES["GET /organizations"];
+  const refusedHttp = (window.__OC_REFUSED_HTTP__ = []);
+  function httpFixture(method, url) {
+    const exact = HTTP_FIXTURES[`${method} ${url}`];
+    if (exact !== undefined || !ORG_FIXTURES) return exact;
+    let u;
+    try {
+      u = new URL(url);
+    } catch (e) {
+      return undefined;
+    }
+    const f = ORG_FIXTURES[`${method} ${u.pathname}`];
+    return typeof f === "function" ? f(u.searchParams) : f;
+  }
   const httpResponses = new Map();
   let nextHttpRid = 1;
 
@@ -291,6 +325,14 @@
       case "plugin:event|listen": {
         const id = nextEventId++;
         listeners.set(id, { event: args.event, handler: args.handler });
+        // Requests the sidecar sends the app unprompted (seed.sidecarRequests,
+        // e.g. a toolApproval), once the app listens for sidecar lines.
+        if (args.event === "rpc_from_sidecar" && seed.sidecarRequests && seed.sidecarRequests.length && !sidecarRequestsSent) {
+          sidecarRequestsSent = true;
+          setTimeout(() => {
+            for (const req of seed.sidecarRequests) emit("rpc_from_sidecar", { line: JSON.stringify(req) });
+          }, 500);
+        }
         return id;
       }
       case "plugin:event|unlisten":
@@ -343,8 +385,9 @@
         return String(args.path).startsWith("/");
       case "plugin:http|fetch": {
         const { method, url } = args.clientConfig || {};
-        const body = HTTP_FIXTURES[`${method} ${url}`];
+        const body = httpFixture(method, url);
         if (body === undefined) {
+          refusedHttp.push(`${method} ${url}`);
           console.warn(`[oc-mock] refused plugin:http ${method} ${url}`);
           throw "network disabled in the screenshot harness";
         }
@@ -372,6 +415,17 @@
       case "plugin:http|fetch_cancel":
         httpResponses.delete(args.rid);
         return null;
+      case "fuzzy_filter_files": {
+        if (!mentionFiles) return [];
+        const query = String(args.query ?? "").toLowerCase();
+        return TREE_FILES.flatMap((relative_path) => {
+          const match_indices = [];
+          let next = 0;
+          for (let i = 0; i < relative_path.length && next < query.length; i++)
+            if (relative_path[i].toLowerCase() === query[next]) { match_indices.push(i); next++; }
+          return next === query.length ? [{ file: { name: relative_path.split("/").pop(), path: `${args.workspacePath}/${relative_path}`, is_directory: false }, relative_path, match_indices, score: 0 }] : [];
+        });
+      }
       case "list_file_tree":
         // The right panel's All files tab: { name, path, is_directory } under
         // directoryPath, at most maxDepth levels deep (null: all).
@@ -420,6 +474,12 @@
   try {
     Object.defineProperty(Navigator.prototype, "platform", { get: () => "MacIntel" });
     Object.defineProperty(Navigator.prototype, "userAgentData", { get: () => undefined });
+    // Conductor sets <html data-platform> from navigator.userAgent when window.__TAURI__ is absent
+    // (renderApp `Hde`), and its macOS-only startup checks (`QQt`, the Xcode license) read that.
+    // Headless Chromium on Linux says "linux"; a capture that needs the macOS path opts in with
+    // ?oc_xcode_license= so every other reference state keeps the user agent it was captured with.
+    if (new URLSearchParams(location.search).has("oc_xcode_license"))
+      Object.defineProperty(Navigator.prototype, "userAgent", { get: () => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)" });
   } catch (e) {}
   // Belt and braces next to the CSP: refuse any cross-origin fetch quickly.
   const realFetch = window.fetch.bind(window);
@@ -434,7 +494,7 @@
     try {
       realFetch("/__mock/log?scenario=" + encodeURIComponent(scenarioName), {
         method: "POST",
-        body: JSON.stringify({ unhandled, vfs, shell: window.__OC_SHELL_LOG__, log: log.map((e) => ({ cmd: e.cmd, args: e.args, error: e.error, rows: e.rows })) }),
+        body: JSON.stringify({ unhandled, refusedHttp, vfs, shell: window.__OC_SHELL_LOG__, log: log.map((e) => ({ cmd: e.cmd, args: e.args, error: e.error, rows: e.rows })) }),
       });
     } catch (e) {}
   }, 1000);

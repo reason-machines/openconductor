@@ -3,7 +3,8 @@
 // rows in memory): archive from the row menu, "View archived workspaces" in
 // the palette, the "Archived workspaces" filter, opening an archived
 // workspace (banner, Unarchive in place of Archive, "Workspace archived"
-// placeholder), and Unarchive from the banner and from the palette row.
+// placeholder), and Unarchive from the banner. Conductor's palette rows have
+// no unarchive button (only Home's rows do), so neither do ours.
 // Run after `npm run build`:
 //
 //   node --test tests/e2e/
@@ -15,6 +16,7 @@ import { existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { chromium } from "playwright-core";
 import { preview } from "vite";
+import { startViteFixture } from "./vite-fixture-server.mjs";
 
 const CANDIDATES = [
   process.env.CHROME_PATH,
@@ -74,24 +76,33 @@ test("archived workspaces are listed in the palette, open read-only and can be u
   await archiveFromMenu(page, "Copper wren");
 
   // "View archived workspaces" switches to the Workspaces tab showing all.
-  let palette = await openArchivedList(page);
+  const palette = await openArchivedList(page);
   assert.equal(await palette.getByRole("tab", { selected: true }).textContent(), "Workspaces");
-  const filter = palette.getByLabel("Archived workspaces");
-  assert.equal(await filter.inputValue(), "all");
-  assert.deepEqual(await filter.locator("option").allTextContents(), ["Hiding archived", "Showing all", "Only archived"]);
+  // The "Archived workspaces" filter: a button showing the choice, and a listbox of the three.
+  const filter = palette.getByRole("button", { name: "Archived workspaces" });
+  const choose = async (label) => {
+    await filter.click();
+    await palette.getByRole("listbox", { name: "Archived workspaces" }).getByRole("option", { name: label }).click();
+  };
+  assert.equal((await filter.textContent()).trim(), "Showing all");
+  await filter.click();
+  assert.deepEqual(await palette.getByRole("listbox", { name: "Archived workspaces" }).getByRole("option").allTextContents(), ["Hiding archived", "Showing all", "Only archived"]);
+  await filter.click();
   const titles = () => palette.locator(".palette-item .palette-title").allTextContents();
   const archivedTitles = () => palette.locator(".palette-item[data-archived] .palette-title").allTextContents();
-  assert.deepEqual(await archivedTitles(), ["copper-wren", "quiet-harbor"], "newest archived first");
-  assert.ok((await titles()).includes("amber-falcon"), "Showing all keeps active workspaces");
-  await filter.selectOption("archived");
-  assert.deepEqual(await titles(), ["copper-wren", "quiet-harbor"]);
+  // Archived rows list under their own "Archived" heading, newest first.
+  assert.deepEqual(await archivedTitles(), ["Copper wren", "Quiet harbor"], "newest archived first");
+  assert.deepEqual(await palette.locator(".palette-heading").allTextContents(), ["Workspaces", "Archived"]);
+  assert.ok((await titles()).includes("Amber falcon"), "Showing all keeps active workspaces");
+  await choose("Only archived");
+  assert.deepEqual(await titles(), ["Copper wren", "Quiet harbor"]);
   await shot(page, "archived-workspaces-palette.png");
-  await filter.selectOption("active");
+  await choose("Hiding archived");
   assert.deepEqual(await archivedTitles(), []);
-  await filter.selectOption("archived");
+  await choose("Only archived");
 
   // Opening an archived workspace: read-only, with the banner and Unarchive.
-  await palette.locator(".palette-item", { hasText: "quiet-harbor" }).click();
+  await palette.locator(".palette-item", { hasText: "Quiet harbor" }).click();
   assert.equal(await palette.count(), 0);
   const view = page.locator(".archived-workspace");
   await view.waitFor();
@@ -107,16 +118,6 @@ test("archived workspaces are listed in the palette, open read-only and can be u
   await row(page, "Quiet harbor").waitFor();
   assert.equal(await page.locator(".archived-workspace").count(), 0);
   assert.equal(await row(page, "Quiet harbor").getAttribute("aria-current"), "page");
-
-  // Unarchive from the palette row's button.
-  palette = await openArchivedList(page);
-  await palette.getByLabel("Archived workspaces").selectOption("archived");
-  assert.deepEqual(await palette.locator(".palette-item[data-archived] .palette-title").allTextContents(), ["copper-wren"]);
-  const wren = palette.locator(".palette-item", { hasText: "copper-wren" });
-  await wren.hover();
-  await wren.getByRole("button", { name: "Unarchive workspace" }).click();
-  assert.equal(await palette.count(), 0);
-  await row(page, "Copper wren").waitFor();
 
   assert.deepEqual(errors, []);
   await page.close();
@@ -168,6 +169,132 @@ test("Home's All workspaces lists archived workspaces under Only archived and Sh
 
   assert.deepEqual(errors, []);
   await page.close();
+});
+
+for (const activation of ["click", "Enter"]) {
+  test(`Home Unarchive restores through the store with ${activation} without opening the workspace`, async () => {
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    try {
+      await page.goto(`${base}/?demo=1`);
+      const sidebarWorkspace = row(page, "Quiet harbor");
+      await sidebarWorkspace.waitFor();
+      const repositoryName = await page.locator(".sb-repo-group", { has: sidebarWorkspace }).locator(".sb-repo-name").innerText();
+      const repositoryHeader = page.locator(".sb-repo-header").filter({ has: page.getByText(repositoryName, { exact: true }) });
+      await archiveFromMenu(page, "Quiet harbor");
+      await page.evaluate(() => {
+        history.pushState(null, "", "/all-workspaces");
+        dispatchEvent(new PopStateEvent("popstate"));
+      });
+      const list = page.getByRole("listbox", { name: "Workspaces" });
+      await list.waitFor();
+      if (await repositoryHeader.getAttribute("aria-expanded") === "false") await repositoryHeader.click();
+      assert.equal(await repositoryHeader.getAttribute("aria-expanded"), "true", "expand the repository to observe restoration without selecting its workspace");
+      await page.getByRole("button", { name: "Archived workspaces" }).click();
+      await page.getByRole("menuitemcheckbox", { name: "Only archived", exact: true }).click();
+      const archivedWorkspace = list.locator(".allws-row", {
+        has: page.locator(".allws-name", { hasText: /quiet.harbor/i }),
+      });
+      await archivedWorkspace.waitFor();
+      const unarchive = archivedWorkspace.getByRole("button", { name: "Unarchive workspace", exact: true });
+      await unarchive.waitFor({ timeout: 1500 });
+      if (activation === "click") await unarchive.click();
+      else {
+        await unarchive.focus();
+        await page.keyboard.press("Enter");
+      }
+      await sidebarWorkspace.waitFor();
+      await archivedWorkspace.waitFor({ state: "detached" });
+      assert.equal(new URL(page.url()).pathname, "/all-workspaces", "restoration keeps the Home workspace list open");
+      assert.equal(await list.isVisible(), true, "the Home list remains mounted");
+      assert.equal(await page.locator(".archived-workspace").count(), 0, "activation does not open the archive view");
+      assert.notEqual(await sidebarWorkspace.getAttribute("aria-current"), "page", "restoration does not select the restored workspace");
+      assert.deepEqual(errors, []);
+      await shot(page, `home-unarchive-${activation}.png`);
+    } finally {
+      await page.close();
+    }
+  });
+}
+
+test("Home Unarchive controlled pending and event lifecycle", async (t) => {
+  const fixture = await startViteFixture();
+  const expectedAction = { type: "unarchiveWorkspace", repoId: "home-repo", workspaceId: "home-unarchive" };
+  const actions = async (page) => JSON.parse(await page.getByTestId("actions").textContent());
+  const open = async () => {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+    await page.goto(`${fixture.base}/tools/home-unarchive/index.html`);
+    await page.getByRole("button", { name: "Archived workspaces", exact: true }).click();
+    await page.getByRole("menuitemcheckbox", { name: "Only archived", exact: true }).click();
+    const archived = page.locator(".allws-row", { has: page.locator(".allws-name", { hasText: "Archived Home fixture" }) });
+    await archived.waitFor();
+    return { page, archived, button: archived.getByRole("button", { name: "Unarchive workspace", exact: true }) };
+  };
+  try {
+    for (const activation of ["click", "Enter"]) {
+      await t.test(`${activation} dispatches once, suppresses row navigation and settles only matching terminal events`, async () => {
+        const { page, button } = await open();
+        try {
+          await button.waitFor({ timeout: 1500 });
+          if (activation === "click") await button.click();
+          else { await button.focus(); await page.keyboard.press("Enter"); }
+          assert.deepEqual(await actions(page), [expectedAction], "no select/openArchivedWorkspace action");
+          assert.equal(await button.isDisabled(), true, "pending disables the real button");
+          assert.equal(await page.getByTestId("bubbled").textContent(), "[]", "activation never reaches the containing row/tree");
+          const other = page.locator(".allws-row", { has: page.locator(".allws-name", { hasText: "Other archived fixture" }) });
+          assert.equal(await other.getByRole("button", { name: "Unarchive workspace" }).isDisabled(), false, "other rows remain usable");
+          await page.keyboard.press("Enter");
+          await button.evaluate((node) => { node.click(); node.click(); });
+          assert.deepEqual(await actions(page), [expectedAction], "pending suppresses repeated activation");
+          await page.getByRole("button", { name: "Fail unrelated unarchive", exact: true }).click();
+          assert.equal(await button.isDisabled(), true, "unrelated workspace cannot settle this row");
+          await page.getByRole("button", { name: "Fail other repository unarchive", exact: true }).click();
+          assert.equal(await button.isDisabled(), true, "other repository cannot settle this row");
+          await page.getByRole("button", { name: "Fail matching unarchive", exact: true }).click();
+          assert.equal(await button.isEnabled(), true, "matching failure permits retry");
+          const enterPrevented = await button.evaluate((node) => {
+            const event = new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true });
+            node.dispatchEvent(event);
+            return event.defaultPrevented;
+          });
+          assert.equal(enterPrevented, true, "Enter avoids a follow-on native click");
+          assert.deepEqual(await actions(page), [expectedAction, expectedAction]);
+          await page.getByRole("button", { name: "Complete matching unarchive", exact: true }).click();
+          assert.equal(await button.isEnabled(), true, "a no-restore completion also settles pending");
+          const clickPrevented = await button.evaluate((node) => {
+            const event = new MouseEvent("click", { bubbles: true, cancelable: true });
+            node.dispatchEvent(event);
+            return event.defaultPrevented;
+          });
+          assert.equal(clickPrevented, true);
+          assert.deepEqual(await actions(page), [expectedAction, expectedAction, expectedAction]);
+          assert.equal(await page.getByTestId("bubbled").textContent(), "[]");
+        } finally { await page.close(); }
+      });
+    }
+    await t.test("a synchronous activation burst dispatches once", async () => {
+      const { page, button } = await open();
+      try {
+        await button.waitFor({ timeout: 1500 });
+        await button.evaluate((node) => { node.click(); node.click(); node.click(); });
+        assert.deepEqual(await actions(page), [expectedAction]);
+        assert.equal(await button.isDisabled(), true);
+        assert.equal(await page.getByTestId("bubbled").textContent(), "[]");
+      } finally { await page.close(); }
+    });
+    await t.test("the archived row remains independently openable outside the control", async () => {
+      const { page, archived } = await open();
+      try {
+        await archived.locator(".allws-name").click();
+        const dispatched = await actions(page);
+        assert.equal(dispatched.length, 1);
+        assert.equal(dispatched[0].type, "openArchivedWorkspace");
+        assert.equal(dispatched[0].repoId, "home-repo");
+        assert.equal(dispatched[0].workspace.id, "home-unarchive");
+      } finally { await page.close(); }
+    });
+  } finally { await fixture.close(); }
 });
 
 // Conductor's row (`lJn` → `iea`) has an Archive button at its right end that is

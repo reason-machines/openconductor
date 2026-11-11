@@ -117,7 +117,7 @@ test("a turn that ends out of view marks its workspace unread; the composer's Ne
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(`${base}/?demo=1`);
   const [first, second] = await page.locator(`${ROW} .sb-ws-name`).allTextContents();
-  const composer = page.locator(".composer textarea");
+  const composer = page.locator(".composer [contenteditable=true]");
   const nextUnread = page.getByRole("button", { name: "Next unread" });
 
   // A turn that ends while its chat is on screen leaves the workspace read.
@@ -208,6 +208,10 @@ function fakeBackend() {
     transformCallback: () => ++cb,
     async invoke(cmd, args) {
       switch (cmd) {
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
+        case "db_first_run_onboarding_step":
+          return "999";
         case "plugin:event|listen":
           return 1;
         case "plugin:event|unlisten":

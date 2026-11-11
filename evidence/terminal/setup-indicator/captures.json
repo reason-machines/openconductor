@@ -1,0 +1,89 @@
+{
+  "reference-running": {
+    "evidence_id": "ev_c43fe3e2dc8a3cc0d8c145e87826f10deaa0c98c79f5ff01df7cccb17a51b706",
+    "sha256": "f20c5e00fb433ebf70411a95e096f1d242de784f5c2f6390b5ccce4678be1736",
+    "url": {
+      "url": "http://conductor.localhost:4404/repository/repo-tide-web/workspace/ws-osaka?activeTabType=session&sessionId=sess-osaka",
+      "origin": "http://conductor.localhost:4404",
+      "query_parameter_names": [
+        "activeTabType",
+        "sessionId"
+      ],
+      "redacted": false
+    },
+    "issues": []
+  },
+  "reference-completed": {
+    "evidence_id": "ev_0d15e2cf2db35d5d394475c2aad66f0b1681a14221686c68b2ac397d6993086b",
+    "sha256": "02b2ce290e9966f5cb277a436c8a57323aead9f52a8c0f83e37c6e29e6bdc792",
+    "url": {
+      "url": "http://conductor.localhost:4404/repository/repo-tide-web/workspace/ws-osaka?activeTabType=session&sessionId=sess-osaka",
+      "origin": "http://conductor.localhost:4404",
+      "query_parameter_names": [
+        "activeTabType",
+        "sessionId"
+      ],
+      "redacted": false
+    },
+    "issues": []
+  },
+  "reference-failed": {
+    "evidence_id": "ev_98f4dfa30f766c89f6297e01224b57d5b95a6454d23daec80abfc1732aebb82c",
+    "sha256": "02b2ce290e9966f5cb277a436c8a57323aead9f52a8c0f83e37c6e29e6bdc792",
+    "url": {
+      "url": "http://conductor.localhost:4404/repository/repo-tide-web/workspace/ws-osaka?activeTabType=session&sessionId=sess-osaka",
+      "origin": "http://conductor.localhost:4404",
+      "query_parameter_names": [
+        "activeTabType",
+        "sessionId"
+      ],
+      "redacted": false
+    },
+    "issues": []
+  },
+  "openconductor-running": {
+    "evidence_id": "ev_52fab88b9a99e77cdeffb1018eb2e3f4867f44d31369e8426227a922a2887d80",
+    "sha256": "6e379abeaf19116555219e1cab721027cc34359c55330df31acc511fe923f708",
+    "url": {
+      "url": "http://localhost:4404/?kind=setup&palette=stone&setupState=running",
+      "origin": "http://localhost:4404",
+      "query_parameter_names": [
+        "kind",
+        "palette",
+        "setupState"
+      ],
+      "redacted": false
+    },
+    "issues": []
+  },
+  "openconductor-completed": {
+    "evidence_id": "ev_796697f46507cb4bc8ba1e0f67a7d7b15c15f2a23fdf2c5558b0af46a9293394",
+    "sha256": "d4dbb624d57e88a2f14f25e8dfc07a6c4022f0fa1754f2650a9922160413223e",
+    "url": {
+      "url": "http://localhost:4404/?kind=setup&palette=stone&setupState=completed",
+      "origin": "http://localhost:4404",
+      "query_parameter_names": [
+        "kind",
+        "palette",
+        "setupState"
+      ],
+      "redacted": false
+    },
+    "issues": []
+  },
+  "openconductor-failed": {
+    "evidence_id": "ev_24ae933b959f5f29414918f8c5977200492760dcca48c98bce6d11a2a460776f",
+    "sha256": "d4dbb624d57e88a2f14f25e8dfc07a6c4022f0fa1754f2650a9922160413223e",
+    "url": {
+      "url": "http://localhost:4404/?kind=setup&palette=stone&setupState=failed",
+      "origin": "http://localhost:4404",
+      "query_parameter_names": [
+        "kind",
+        "palette",
+        "setupState"
+      ],
+      "redacted": false
+    },
+    "issues": []
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "source_commit": "af9f632ab2d766b7b6d303a01be2a952afe2c01b",
+  "build_index_sha256": "8595f56c35086ef92de8a64c745a5c294ecbfc3e844b663fb0a0e57d437d6a8c",
+  "diff-split": {
+    "reference": {
+      "evidence_id": "ev_7545681bf3e68b46994ac83df9f271bc52e87287cf08660cb0ffd75f1d63e78c",
+      "png_sha256": "281226b723917d907cd9af2c65ed2e4db1c44a70160085f4a996a8c2363f81f3",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/changes-current-main/ref-diff-split-artifact.json"
+    },
+    "openconductor": {
+      "evidence_id": "ev_f033227827fa16d54f8fe63d7cec0f236f96d56392e8ed37c228e783d0cde06e",
+      "png_sha256": "1f608222a2d78fc64708fefe7d64f0f618660f2eea8d0e256299f65f0eb3b53e",
+      "artifactPath": "/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.oc-tmp/changes-current-main/oc-diff-split-artifact.json"
+    },
+    "compare": {
+      "evidence_id": "ev_65a5b008e900adc092c4dc65409a8059c7d0eda4aa6f02a3d112df2dc7d6e2d9",
+      "changed_pixels": 28207,
+      "compared_pixels": 1049600,
+      "changed_ratio": 0.02687404725609756
+    }
+  }
+}

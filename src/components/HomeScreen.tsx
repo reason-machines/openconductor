@@ -2,14 +2,13 @@ import type { Dispatch, ReactNode } from "react";
 import type { Repo } from "../state/types";
 import type { Action } from "../state/store";
 import type { DialogKind } from "./Dialogs";
-import { FolderIcon, FolderPlusIcon, GlobeIcon, SidebarIcon, TicketsPlaneIcon } from "./Icons";
+import { FolderIcon, FolderPlusIcon, GlobeIcon, SidebarIcon } from "./Icons";
 import { Wordmark } from "./Wordmark";
 import { activeWorkspaceCount } from "../state/selectors";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs } from "../keybindings/shortcut";
-import { CITY_TOTAL, visitedCities } from "../home/cities";
-
-const TOGGLE_LEFT_SIDEBAR_HINT = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
+import { PassportButton } from "../home/PassportDialog";
 
 // Layout follows evidence/screens/home.md (Conductor's `Gls`): wordmark, three entry
 // cards, the "cities visited" line, and a sidebar toggle only while the sidebar is
@@ -33,15 +32,16 @@ function EntryCard({ icon, label, onClick }: { icon: ReactNode; label: string; o
 }
 
 export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOpenProject }: Props) {
+  const { overrides } = useKeybindingOverrides();
+  const sidebarHint = effectiveShortcuts("view.toggleLeftSidebar", overrides).map(glyphs).join(" or ");
   const hasWorkspaces = activeWorkspaceCount(repos) > 0;
-  const cities = visitedCities(repos);
   return (
     <div className="home" data-tauri-drag-region>
       {!sidebarVisible && (
         <button
           type="button"
           className="home-sidebar-toggle"
-          title={`Toggle left sidebar (${TOGGLE_LEFT_SIDEBAR_HINT})`}
+          title={`Toggle left sidebar (${sidebarHint})`}
           aria-label="Toggle left sidebar"
           onClick={() => dispatch({ type: "toggleSidebar" })}
         >
@@ -53,21 +53,12 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOp
       </div>
       <div className={`home-cards-wrap ${hasWorkspaces ? "has-workspaces" : ""}`}>
         <div className="home-cards">
-          <EntryCard icon={<FolderIcon size={16} />} label="Open project" onClick={onOpenProject} />
-          <EntryCard icon={<GlobeIcon size={16} />} label="Open GitHub project" onClick={() => onOpenDialog("clone")} />
-          <EntryCard icon={<FolderPlusIcon size={16} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
+          <EntryCard icon={<FolderIcon size={16} strokeWidth={1} />} label="Open project" onClick={onOpenProject} />
+          <EntryCard icon={<GlobeIcon size={16} strokeWidth={1} />} label="Open GitHub project" onClick={() => onOpenDialog("clone")} />
+          <EntryCard icon={<FolderPlusIcon size={16} strokeWidth={1} />} label="Quick start" onClick={() => onOpenDialog("quickstart")} />
         </div>
       </div>
-      {/* Conductor's `Xrs`: "<n>/<total> cities visited" behind a tickets-plane icon, nothing while no
-          workspace is named after a city. Conductor's button opens its world-map dialog, which we lack. */}
-      {cities.length > 0 && (
-        <div className="home-footer">
-          <button type="button" className="home-cities" title={cities.join(", ")}>
-            <TicketsPlaneIcon size={16} />
-            {`${cities.length}/${CITY_TOTAL} cities visited`}
-          </button>
-        </div>
-      )}
+      <div className="home-footer"><PassportButton repos={repos} dispatch={dispatch} /></div>
     </div>
   );
 }

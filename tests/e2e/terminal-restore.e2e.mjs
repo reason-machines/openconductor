@@ -79,6 +79,10 @@ function fakeBackend(shellState) {
     transformCallback: (f) => ((cbs[++cb] = f), cb),
     async invoke(cmd, args) {
       switch (cmd) {
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
+        case "db_first_run_onboarding_step":
+          return "999";
         case "plugin:event|listen":
           if (args.event === "pty-event") handler = args.handler;
           return 1;
@@ -192,6 +196,21 @@ function fakeBackend(shellState) {
         case "pty_kill":
         case "pty_clear_history":
           return;
+        case "get_settings":
+          return {
+            $schema: "https://openconductor.dev/schemas/settings.schema.json",
+            general: { theme: "system", send_native_notification: true, sound_type: "default" },
+            appearance: { zoom_level_v2: 1, low_contrast_dark_mode: false, terminal_font_size: 12 },
+            git: { branch_prefix_type: "github_username", delete_branch_on_archive: false, archive_on_merge: false, worktree_push_auto_setup_remote: true },
+            models: { default: "opus", default_thinking_enabled: true, review_thinking_enabled: true, codex: { default_thinking_level: "medium", review_thinking_level: "medium" } },
+            providers: {},
+            keybinding_overrides_v1: JSON.stringify({
+              version: 1,
+              overrides: {
+                toggleCommandPalette: { key: { kind: "logical", value: "p" }, modifiers: ["meta", "shift"] },
+              },
+            }),
+          };
         case "app_info":
           return { name: "OpenConductor", version: "0.1.0", platform: "macos" };
         default:
@@ -304,11 +323,14 @@ test("terminal tabs and their screens come back after a relaunch, in a new shell
   await waitForScreen(page, "Previous terminal session restored");
   await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
-  assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 3"]);
+  assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 2"]);
 
-  // Clear scrollback clears the backend screen too, so the next save has no old output.
+  // With the palette remapped to Cmd-Shift-P in settings, Cmd-K clears the backend screen too.
   await page.locator(".term-tab").first().click();
-  await page.getByRole("button", { name: "Clear terminal scrollback" }).click();
+  assert.equal(await page.getByRole("button", { name: "Clear terminal scrollback", exact: true }).count(), 0);
+  const terminalInput = page.locator(".terminal-panel .xterm-helper-textarea");
+  await terminalInput.focus();
+  await terminalInput.press("Meta+k");
   await page.waitForFunction(
     (id) => {
       const d = JSON.parse(localStorage.getItem("__fake_backend_disk"));
@@ -349,8 +371,8 @@ test("a tab list saved in the webview's localStorage by an earlier build moves t
   await page.goto(base + "/");
   await showTerminalPanel(page);
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
-  assert.deepEqual(await tabTitles(page), ["Terminal 2", "Terminal 5"]);
-  assert.equal(await page.locator(".term-tab.active span:not(.term-dot)").innerText(), "Terminal 5");
+  assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 2"]);
+  assert.equal(await page.locator(".term-tab.active span:not(.term-dot)").innerText(), "Terminal 2");
   await page.waitForFunction(() => localStorage.getItem("terminal-panel-tabs-v1") === null, null, { timeout: 5000 });
   const tabs = await savedTabs(page);
   assert.deepEqual(tabs.record.state.workspaceTerminals, [["w1", ["old-1", "old-2"]]]);
@@ -361,7 +383,7 @@ test("a tab list saved in the webview's localStorage by an earlier build moves t
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 3);
-  assert.deepEqual(await tabTitles(page), ["Terminal 2", "Terminal 5", "Terminal 6"]);
+  assert.deepEqual(await tabTitles(page), ["Terminal 1", "Terminal 2", "Terminal 3"]);
   assert.deepEqual(errors, []);
   await context.close();
 });

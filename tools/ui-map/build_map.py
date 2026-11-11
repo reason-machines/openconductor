@@ -26,6 +26,7 @@ import json
 import os
 import re
 from collections import Counter, OrderedDict, defaultdict
+from scoped_report import rescore, write_html
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "../.."))
@@ -106,7 +107,8 @@ TEAM_RULES = [
     ("cloud-org", r"organi[sz]ation|\bteam\b|teammate|cloud|member|invite|\bshare|sharing|\bseat|billing|subscription|\bplan\b"),
     ("settings", r"^settings|display name|setting:|settings-|/settings|preference|key-?bindings?|appearance|\btheme\b"),
     ("git-review", r"\bdiff|changes? to this file|\bgit\b|github|pull request|\bpr\b|\bmerge|\bbranch|commit|\bpush|rebase|checks?\b|review|conflict"),
-    ("terminal-scripts", r"terminal|script|\bport|\brun\b|setup command|archive script|\bshell\b"),
+    # \bscripts?\b, not "script": "transcript" and "description" are chat and PR copy.
+    ("terminal-scripts", r"terminal|\bscripts?\b|\bport|\brun\b|setup command|archive script|\bshell\b"),
     ("chat", r"\bchat|composer|message|model|prompt|permission|tool[ -]call|\bplan mode|agent|claude|codex|thinking|attach|fast mode|sending|\binput\b|transcript|\bmcp\b"),
     ("workspaces", r"workspace|repositor|\brepo|project|worktree|\bclone|\bcreate\b|archive"),
 ]
@@ -156,7 +158,9 @@ def main():
         r = ref.get(sid, {})
         o = oc.get(sid, {})
         c = cmp_.get(sid, {})
-        want_path = (st.get("ref") or {}).get("path", "/")
+        # A state whose route Conductor itself redirects (e.g. /settings/organization/github → /computer)
+        # names where the reference should land as ref.expect_path.
+        want_path = (st.get("ref") or {}).get("expect_path") or (st.get("ref") or {}).get("path", "/")
         final = ((r.get("rea") or {}).get("final_url") or "")
         final_path = re.sub(r"^https?://[^/]+", "", final).split("?")[0]
         ref_status = r.get("status", "not-run")
@@ -283,6 +287,7 @@ def main():
             team=owning_team(dict(it, copy=copy), host),
             component=it.get("component"), source=it.get("source"),
             copy=copy[:6], tokens=it.get("tokens") or [],
+            observed_in_reference=bool(hs and hs["reference"]["status"] == "captured") if kind in ("route", "settings-page") else ref_has,
             state=host, state_basis=basis,
             reference_screenshot=hs["reference"]["file"] if hs and ref_has else (hs["reference"]["file"] if hs and kind in ("route", "settings-page", "settings-row") else None),
             openconductor_screenshot=hs["openconductor"]["file"] if hs else None,
@@ -319,16 +324,22 @@ def main():
         schema="openconductor.ui-map/1",
         conductor=inv["source"],
         openconductor=OrderedDict(commit=os.environ.get("UIMAP_OC_COMMIT"), lane="debug build, tauri-driver + WebKitWebDriver under Xvfb (tests/e2e lane)", viewport=spec["viewport"], theme=spec["theme"]),
-        rules=OrderedDict(match_ratio_t24=MATCH_RATIO, copy_bar=COPY_BAR, statuses=__doc__.split("Status, per state and per item")[1].strip()),
+        rules=OrderedDict(match_ratio_t24=MATCH_RATIO, copy_bar=COPY_BAR, raw_statuses=__doc__.split("Status, per state and per item")[1].strip(), statuses="matches: retained threshold match; missing/wrong: valid reference observation proves a gap; unverified: no valid reference observation proves the raw gap. Scope is independent; only in-scope rows enter summary."),
         summary=summary,
         states=list(states.values()),
         items=items,
     )
+    supplemental_path = os.path.join(ROOT, "parity/ui-program/supplemental-evidence.json")
+    if os.path.isfile(supplemental_path):
+        with open(supplemental_path) as f:
+            doc["supplemental_evidence"] = json.load(f)
+    rescore(doc)
     with open(os.path.join(ROOT, "parity/ui-map.json"), "w") as f:
         json.dump(doc, f, indent=1, ensure_ascii=False)
         f.write("\n")
     write_md(doc)
-    print(json.dumps(summary["states"]), json.dumps(summary["items"]))
+    write_html(doc, ROOT)
+    print(json.dumps(doc["summary"]))
 
 
 def esc(s):
@@ -343,19 +354,36 @@ def write_md(doc):
     L.append("%s, chunks %s. OpenConductor at `%s`, %s, %dx%d, %s theme.\n" % (
         doc["conductor"]["app"], ", ".join("`%s` (`%s`)" % (c["name"], c["sha256"][:12]) for c in doc["conductor"]["chunks"]),
         doc["openconductor"]["commit"] or "?", doc["openconductor"]["lane"], doc["openconductor"]["viewport"]["width"], doc["openconductor"]["viewport"]["height"], doc["openconductor"]["theme"]))
+    L.append("## Scope and evidence\n")
+    L.append("The in-scope denominator excludes triage, routines, cloud-org and other cloud-only routes. Cloud UI is deferred. Unobservable toast literals are not required. All raw rows, statuses and reasons remain in JSON as `raw_status` / `raw_why` and `raw_summary`. Already merged cloud code is retained. Reason local-to-cloud runtime remains in scope; Claude Code and Codex stay local.\n")
+    L.append("This rescore reuses retained captures. It is not a new capture run or a native final-review pass. `unverified` means no valid reference observation proves a gap; it is neither missing nor matching. Threshold matches are not Track D sign-off.\n")
+    L.append("[Interactive ledger](ui-program/ledger.html) includes separate verdicts for every main screen and a searchable queue.\n")
     L.append("## Summary\n")
-    L.append("| | Total | Missing | Wrong | Matches |\n|---|---:|---:|---:|---:|")
-    L.append("| **All** | **%d** | **%d** | **%d** | **%d** |" % (s["total"], s["missing"], s["wrong"], s["matches"]))
-    L.append("| States (captured screens) | %d | %d | %d | %d |" % (s["states"]["total"], s["states"]["missing"], s["states"]["wrong"], s["states"]["matches"]))
-    L.append("| Inventory items | %d | %d | %d | %d |" % (s["items"]["total"], s["items"]["missing"], s["items"]["wrong"], s["items"]["matches"]))
+    L.append("| | Total | Missing | Wrong | Matches | Unverified |\n|---|---:|---:|---:|---:|---:|")
+    for label, values in [("In scope", s), ("States", s["states"]), ("Inventory items", s["items"]), ("System requirements", s["requirements"])]:
+        L.append("| %s | %d | %d | %d | %d | %d |" % (label, *(values[key] for key in ("total", "missing", "wrong", "matches", "unverified"))))
     for k, v in s["items_by_kind"].items():
-        L.append("| &nbsp;&nbsp;%s | %d | %d | %d | %d |" % (k, v["total"], v["missing"], v["wrong"], v["matches"]))
-    L.append("\n### By owning team\n")
+        L.append("| &nbsp;&nbsp;%s | %d | %d | %d | %d | %d |" % (k, *(v[key] for key in ("total", "missing", "wrong", "matches", "unverified"))))
+    L.append("\nRaw retained rows: %d. Excluded rows: %d. The in-scope queue includes two additional system requirements: toast component, placement, timing and look, and the Experimental default-off gate. Both remain unverified.\n" % (doc["raw_summary"]["total"], doc["excluded_summary"]["total"]))
+    for reason, number in doc["excluded_summary"]["by_reason"].items():
+        L.append("- %d: %s" % (number, reason))
+    L.append("\n## Main-screen verdicts\n")
+    for screen in doc["main_screens"].values():
+        L.append("- **%s**: %s in area evidence; retained evidence %s (%d/%d state matches); final review **%s**. %s" % (screen["title"], screen["area_verdict"], screen["evidence_verdict"], screen["counts"]["matches"], screen["counts"]["total"], screen["final_review"], screen["gap"]))
+    supplemental = doc.get("supplemental_evidence", {})
+    if supplemental:
+        L.append("\n## Supplemental evidence\n")
+        L.append("Ledger reconciled against main `%s`. This is not a new capture identity. Supplemental crops do not replace full-state scores, change the denominator, or sign off native parity.\n" % supplemental["source_main_commit"])
+        L.extend("- " + note for note in supplemental.get("batch_notes", []))
+        for record in supplemental["records"]:
+            L.append("- **%s (%s)**: %s [Merged PR](%s), [evidence](../%s). Lane: %s" % (record["id"], record["verdict"], record["summary"], record["pr_url"], record["evidence_path"], record["lane"]))
+            L.extend("  - " + limit for limit in record["limits"])
+    L.append("\n## By owning team\n")
     L.append("Default owner by area (`TEAM_RULES` in `tools/ui-map/build_map.py`; reassign there and regenerate). Counts include states and items.\n")
-    L.append("| Team | Total | Missing | Wrong | Matches |\n|---|---:|---:|---:|---:|")
+    L.append("| Team | Total | Missing | Wrong | Matches | Unverified |\n|---|---:|---:|---:|---:|---:|")
     for t, v in s["by_team"].items():
-        L.append("| %s | %d | %d | %d | %d |" % (t, v["total"], v["missing"], v["wrong"], v["matches"]))
-    L.append("\n%d of %d items were located in a captured state; %d have a reference screenshot of the state they appear in. The rest are listed from the bundle but were not observed on screen in either app (error toasts, dialogs behind server state, cloud and organization features); they are counted missing because their copy is in no OpenConductor capture, but most were not rendered in the reference either, so that status is unverified on screen until a state that shows them is added to `tools/ui-map/states.json`.\n" % (s["located_items"], s["items"]["total"], s["items_with_reference_screenshot"]))
+        L.append("| %s | %d | %d | %d | %d | %d |" % (t, *(v[key] for key in ("total", "missing", "wrong", "matches", "unverified"))))
+    L.append("\n%d of %d in-scope items were located in a captured state; %d have a reference screenshot. Unobserved in-scope items are unverified, not invented missing behavior.\n" % (s["located_items"], s["items"]["total"], s["items_with_reference_screenshot"]))
     L.append("## How it was measured\n")
     L.append("- **Inventory**: `tools/ui-map/extract_inventory.py` over Conductor's decoded Tauri asset table (`renderApp`, `index` chunks). Routes from TanStack route definitions; dialogs, sheets, menus, tabs, selects from Radix/Base UI components named by `displayName`; toasts from sonner calls; popovers from popover-surface classes; empty states from their copy; settings pages and rows from [evidence/settings/settings-registry.json](../evidence/settings/settings-registry.json) (REA-extracted). Copy is untrusted data, kept for matching only.")
     L.append("- **Conductor reference**: `tools/ui-map/capture_ref.mjs` renders the extracted frontend in Chromium through the `tools/screens` harness (Tauri IPC mocked with sql.js databases built from the evidence schemas and synthetic seed rows) and captures each state with REA `capture-browser-scenario` (screenshot, URL, DOM).")
@@ -363,19 +391,21 @@ def write_md(doc):
     L.append("- **Diff**: `tools/ui-map/compare.mjs` runs REA `compare-web-screenshots` at channel thresholds 0 and 24 for every state with both captures; `diff/<state>.jpg` is reference | OpenConductor | changed pixels (threshold 24).")
     L.append("- **Status** (per state, and per item through the state it appears in):")
     L.append("  - **matches**: the reference rendered the state, OpenConductor reached it, the item's copy is on screen in both, at least %d%% of the reference's UI copy is on OpenConductor's screen, and the state differs by at most %d%% of pixels at channel threshold 24." % (COPY_BAR * 100, MATCH_RATIO * 100))
-    L.append("  - **wrong**: OpenConductor shows it (its copy is in a capture of the running app) but it is not shown to match: the diff or copy is over the bar, or there is no valid reference render to prove a match.")
-    L.append("  - **missing**: OpenConductor has no way to reach the state, shows a different screen there (under 25% of the reference's UI copy), or the item's copy is in no capture of the running app.")
+    L.append("  - **wrong**: the valid reference observation and OpenConductor capture differ beyond the existing threshold.")
+    L.append("  - **missing**: a valid reference observation exists, but OpenConductor did not show its equivalent.")
+    L.append("  - **unverified**: no valid reference observation proves the raw gap. No match is inferred.")
+    L.append("- Every row below includes its scope. Deferred and not-required rows are retained evidence, excluded from the summary denominator.")
     L.append("- UI copy means rendered strings that are literals in Conductor's bundle (`ui_strings` in inventory.json), so invented seed data (repo, workspace and user names) never counts. The OpenConductor brand name is normalised to Conductor before matching.")
     L.append("- **Side-by-side records** ([ui-map/side-by-side.json](ui-map/side-by-side.json)): a builder who fixes a state captures both apps in that state with REA `capture-browser-scenario` (`tools/side-by-side/*.mjs`, Conductor's extracted frontend in the `tools/screens` harness beside OpenConductor's built frontend in Chromium with Tauri IPC mocked) and scores the pair with REA `compare-web-screenshots`, at the map's viewport. The record stands in for both captures of that state, under the same status rules, until the OpenConductor lane captures the state again; its rows link the committed side-by-side image and name the lane in `openconductor.note`.\n")
     L.append("- Seed data differs between the two sides (the reference harness seeds six workspaces with a transcript; the OpenConductor seed has one real git worktree), so the pixel ratio carries some content difference too. The copy check and the side-by-side images are the better guide to what to fix.\n")
     L.append("## States\n")
-    L.append("| State | Status | Team | Why | Reference | OpenConductor | Diff | t24 |\n|---|---|---|---|---|---|---|---:|")
+    L.append("| State | Status / scope | Team | Why | Reference | OpenConductor | Diff | t24 |\n|---|---|---|---|---|---|---|---:|")
     for st in doc["states"]:
         r = st["reference"]
         o = st["openconductor"]
         d = st["diff"]
         L.append("| %s<br>`%s` | %s | %s | %s | %s | %s | %s | %s |" % (
-            esc(st["title"]), st["id"], st["status"], st["team"], esc(st["why"]),
+            esc(st["title"]), st["id"], st["status"] + " / " + st["scope"], st["team"], esc(st["why"]),
             "[png](%s)" % r["file"] if r["file"] else esc(r["status"]),
             "[png](%s)" % o["file"] if o["file"] else esc(o["status"]),
             "[jpg](%s)" % d["file"] if d["file"] else "",
@@ -389,14 +419,14 @@ def write_md(doc):
             continue
         xs = kinds[k]
         c = Counter(i["status"] for i in xs)
-        L.append("\n## %s (%d: %d missing, %d wrong, %d matches)\n" % (k, len(xs), c["missing"], c["wrong"], c["matches"]))
+        L.append("\n## %s (all %d retained rows, including exclusions)\n" % (k, len(xs)))
         L.append("| Item | Status | Team | Copy | Component | State | Why |\n|---|---|---|---|---|---|---|")
         for i in xs:
             name = i["name"] or ""
             if k == "settings-row":
                 name = "%s › %s" % (i.get("page"), i["name"])
             L.append("| `%s`%s | %s | %s | %s | `%s` | %s | %s |" % (
-                i["id"], ("<br>" + esc(name[:80])) if name else "", i["status"], i["team"], esc(" / ".join(x[:70] for x in i["copy"][:2])),
+                i["id"], ("<br>" + esc(name[:80])) if name else "", i["status"] + " / " + i["scope"], i["team"], esc(" / ".join(x[:70] for x in i["copy"][:2])),
                 i["component"] or "", ("[%s](%s)" % (i["state"], i["openconductor_screenshot"] or i["reference_screenshot"] or "")) if i["state"] else "", esc(i["why"])))
     gaps = os.path.join(HERE, "REA-GAPS.md")
     if os.path.exists(gaps):

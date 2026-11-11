@@ -1,0 +1,159 @@
+{
+  "mode": "Retained decoded shipped JavaScript only; no target execution",
+  "app": "Conductor 0.87.6",
+  "parentReaEvidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "sources": [
+    {
+      "asset": "dist/assets/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "owner": "https://reasonmachines.com/agents/13576d11-76fb-4842-aa9b-c398f9ca26f3"
+    },
+    {
+      "asset": "dist/assets/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "owner": "https://reasonmachines.com/agents/de6c02f4-4880-4a0d-bf8f-9e3954522753"
+    }
+  ],
+  "provenance": "Existing evidence owners reread retained archive members in memory. This Session has no retained archive and did not extract or restore one. Fragment digests can be checked here; full-asset digests are the owners' receipts.",
+  "offsetConvention": "Zero-based end-exclusive UTF-8 byte offsets.",
+  "excerpts": [
+    {
+      "asset": "index",
+      "symbol": "t9e local permission normalization",
+      "range": [
+        867548,
+        867644
+      ],
+      "sha256": "6f48ab68940787164cddb8c7f8113d4a02582c51085dc2b044c26d3282f3c619",
+      "source": "function t9e({storedPermissionLevel:t,isLocalWorkspace:e}){return e||t===\"write\"?\"write\":\"read\"}"
+    },
+    {
+      "asset": "index",
+      "symbol": "w_ normalized permission call",
+      "range": [
+        862349,
+        862509
+      ],
+      "sha256": "de6bbbab952e3e96d43dd6ce6398c5735380bf407204e4aaa0c69eccf5fbcd0a",
+      "source": "o=t.dependencies.roundhouse.resolveWorkspaceHostingServerUrl(e.hosting_server_url),a=t9e({storedPermissionLevel:e.permission_level,isLocalWorkspace:o===void 0})"
+    },
+    {
+      "asset": "index",
+      "symbol": "xXe workspace selector",
+      "range": [
+        1074261,
+        1074516
+      ],
+      "sha256": "9ebe380bfcd75cae685bb7e4a5ea0a9d937e6c8888ca9f62fb639bbb2af18682",
+      "source": "xXe=(t,{localWorkspaceId:e})=>{const s=t.workspacesByLocalId[e];if(s!==void 0)return s;if(t.allWorkspacesLoaded)return dt(void 0);if(Object.values(t.workspacePagesByOrganization).some(r=>r!==void 0&&r.loading&&r.localWorkspaceIds.includes(e)))return tr()}"
+    },
+    {
+      "asset": "index",
+      "symbol": "MXe workspace query initializer",
+      "range": [
+        1074638,
+        1074846
+      ],
+      "sha256": "ceb522a5edcdc4a9241ebabb67a201f37a54962025ca4f15c07ecafa181292b4",
+      "source": "MXe=ko({cacheKey:({localWorkspaceId:t})=>`workspace:${t}`,normalizeInput:({localWorkspaceId:t})=>t===void 0?Ga:{args:{localWorkspaceId:t}},selector:xXe,sideEffect:(t,{localWorkspaceId:e})=>t.getWorkspace(e)})"
+    },
+    {
+      "asset": "index",
+      "symbol": "kYt exported as dh, imported as Ld",
+      "range": [
+        3286981,
+        3287099
+      ],
+      "sha256": "7f5b906c85f313f2e4bd1747a928421be0b3075b88b14820cb275157139b8a84",
+      "source": "function kYt(t){const e=z.c(2);let s;return e[0]!==t?(s={localWorkspaceId:t},e[0]=t,e[1]=s):s=e[1],il(s,yn(ZBt)).data}"
+    },
+    {
+      "asset": "index",
+      "symbol": "ZBt permission selector",
+      "range": [
+        3287099,
+        3287141
+      ],
+      "sha256": "67f0e80e53508ed8091ed95b9defc59dd3a4e188d3eb69bfad7d17fe5bda1eb7",
+      "source": "function ZBt(t){return t?.permissionLevel}"
+    },
+    {
+      "asset": "index",
+      "symbol": "HYt exported as hG, imported as BYe",
+      "range": [
+        3311814,
+        3312356
+      ],
+      "sha256": "f1cb74ad8a3888bdb0591667a8eacea9a44928067cc2efa476a7469a86d33f65",
+      "source": "function HYt(){const t=cWt(),e=Be({mutationKey:PWt,mutationFn:async({localWorkspaceId:s,useNewBranch:n})=>{const r=Rfe({localWorkspaceId:s,nextState:\"sleeping\"});try{return await Z2(s,{useNewBranch:n})}catch(i){throw r?.rollback(),i}finally{r?.settle()}},onSuccess:(s,{localWorkspaceId:n})=>{s.completed&&s.needsSetupScript&&t.mutate({localWorkspaceId:n})},onError:async(s,{localWorkspaceId:n,useNewBranch:r})=>{Y.error(\"Failed to unarchive workspace:\",s),await eU(s,n,(i,o)=>e.mutate({localWorkspaceId:i,...o}),{useNewBranch:r})}});return e}"
+    },
+    {
+      "asset": "index",
+      "symbol": "Z2 local and remote restore callback",
+      "range": [
+        3310607,
+        3310924
+      ],
+      "sha256": "eacfabc5b9d408449273831aafcb1e913441328b2f30dd6cabc25bb6a15ee901",
+      "source": "async function Z2(t,e){const s=await we.unarchiveWorkspace({localWorkspaceId:t,performUnarchive:async n=>{const r=await we.getWorkspace(t);return r.host!==M?await TWt(r,e):await RWt(t,n,e)}});return s.completed&&Gt(\"workspace_unarchived\",{workspace_id:t,restore_type:s.restoreType,new_branch_name:s.newBranchName}),s}"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "vJo complete archived branch",
+      "range": [
+        9849951,
+        9850506
+      ],
+      "sha256": "c48d5ba04701700e44731251da3529dca058a88a7941205d54aa0e0a4b415141",
+      "source": "function vJo(t){const e=ne.c(6),{localWorkspaceId:n,isArchived:i,status:r,lastActiveAt:o,workspaceStatusMatrixEnabled:a}=t;let c;return e[0]!==i||e[1]!==o||e[2]!==n||e[3]!==r||e[4]!==a?(c=p.jsx(\"div\",{className:\"flex w-12 shrink-0 items-center justify-end\",children:i?p.jsx(yJo,{localWorkspaceId:n}):!a&&aWt(r)?p.jsx(\"span\",{className:\"flex size-4 items-center justify-center [&_svg]:size-3.5\",children:p.jsx(RCe,{status:r})}):p.jsx(\"span\",{className:\"text-xs text-muted-foreground\",children:BPt(o)})}),e[0]=i,e[1]=o,e[2]=n,e[3]=r,e[4]=a,e[5]=c):c=e[5],c}"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "yJo complete button and permission gate",
+      "range": [
+        9850506,
+        9851854
+      ],
+      "sha256": "4b0d32aabe26eef7bf43951d29c0ab11efa4fe7763f4bbcaee10de6b1067b68e",
+      "source": "function yJo(t){const e=ne.c(17),{localWorkspaceId:n}=t,i=BYe(),r=Ld(n);let o;e[0]!==n||e[1]!==i?(o=()=>i.mutate({localWorkspaceId:n}),e[0]=n,e[1]=i,e[2]=o):o=e[2];const a=o;let c;e[3]!==a?(c=xd(x=>{x.key===\"Enter\"&&(x.stopPropagation(),x.preventDefault(),a())}),e[3]=a,e[4]=c):c=e[4];const u=c;if(r===\"read\"){let x;return e[5]===Symbol.for(\"react.memo_cache_sentinel\")?(x=p.jsx(O9,{className:\"size-3.5 text-faint\"}),e[5]=x):x=e[5],x}let d;e[6]!==a?(d=x=>{x.stopPropagation(),x.preventDefault(),a()},e[6]=a,e[7]=d):d=e[7];let h,m;e[8]===Symbol.for(\"react.memo_cache_sentinel\")?(h=p.jsx(O9,{className:\"size-3.5 group-hover:hidden group-focus-visible/unarchive:hidden\"}),m=p.jsx(nI,{className:\"hidden size-3.5 group-hover:block group-focus-visible/unarchive:block\"}),e[8]=h,e[9]=m):(h=e[8],m=e[9]);let g;e[10]!==u||e[11]!==d||e[12]!==i.isPending?(g=p.jsx(Xn,{asChild:!0,children:p.jsxs(\"button\",{type:\"button\",\"aria-label\":\"Unarchive workspace\",disabled:i.isPending,onClick:d,onKeyDown:u,className:\"group/unarchive cursor-pointer text-faint transition-colors hover:text-foreground\",children:[h,m]})}),e[10]=u,e[11]=d,e[12]=i.isPending,e[13]=g):g=e[13];let _;e[14]===Symbol.for(\"react.memo_cache_sentinel\")?(_=p.jsx(ni,{children:\"Unarchive workspace\"}),e[14]=_):_=e[14];let v;return e[15]!==g?(v=p.jsxs(Jn,{children:[g,_]}),e[15]=g,e[16]=v):v=e[16],v}"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "nI rotate-ccw icon declaration",
+      "range": [
+        654373,
+        654523
+      ],
+      "sha256": "74ed6ff6df06c7137504661ed69d6f7b6171db7afb57043f29b1f1aa3f4ededf",
+      "source": "const mfi=[[\"path\",{d:\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\",key:\"1357e3\"}],[\"path\",{d:\"M3 3v5h5\",key:\"1xhq8a\"}]],nI=Ln(\"rotate-ccw\",mfi)"
+    }
+  ],
+  "completeCallerReceipts": [
+    {
+      "symbol": "_Jo memoized const declaration",
+      "range": [
+        9845312,
+        9849951
+      ],
+      "sha256": "bb441602f8d5f83f1ae3fd3fe4606b3f858799b6a0dc740ac1dc632205259c89",
+      "observation": "Derives isArchived from workspace.state === archived and passes it to vJo. No explicit host or permission conditional occurs within this complete declaration."
+    },
+    {
+      "symbol": "w_ readWorkspace",
+      "range": [
+        862175,
+        865564
+      ],
+      "sha256": "f6017bf3d547ced5405f3f8036932215b8d415cbfb386ca13823c977016041f2",
+      "observation": "Returns permissionLevel from the recorded t9e call."
+    }
+  ],
+  "limits": [
+    "Static decoded shipped code, not source-map original code or native interaction.",
+    "Opaque outer wrappers and other ancestors are not exhaustively traced.",
+    "No new cloud workspace or permission model is proposed. OpenConductor's applicable scope is local workspaces.",
+    "Actual click, keyboard activation, event propagation, pending state, hover, focus, tooltip, and native persistence remain untested."
+  ]
+}

@@ -72,12 +72,66 @@ const notInstalled = (tool: string, version = `${tool} --version`) =>
 const notFound = (tool: string, version = `${tool} --version`) =>
   `command -v ${tool} && ${version} 2>/dev/null || echo 'not found'`;
 
+/** Conductor's `LD`: the markers around `env` in a capture's output. */
+const ENV_DELIMITER = "_OPENCONDUCTOR_SHELL_ENV_DELIMITER_";
+/** `K2t`: the variables the captured environment keeps. */
+export const CAPTURED_ENV_KEYS = [
+  "HOME", "LANG", "LC_ALL", "LC_CTYPE", "SSH_AUTH_SOCK", "XDG_CONFIG_HOME", "XDG_DATA_HOME", "XDG_CACHE_HOME",
+  "GIT_AUTHOR_NAME", "GIT_AUTHOR_EMAIL", "GIT_COMMITTER_NAME", "GIT_COMMITTER_EMAIL", "GIT_SSH_COMMAND", "GH_HOST",
+] as const;
+/** `hL`: directories appended to the captured PATH, and the PATH used when capture fails. */
+export const FALLBACK_PATH_DIRS = [
+  "/opt/homebrew/bin", "/usr/local/bin", "/home/linuxbrew/.linuxbrew/bin", "$HOME/.local/bin", "/opt/local/bin",
+  "/usr/local/git/bin", "/usr/bin", "/bin",
+] as const;
+
+/** `Wfe`/`NY`: the captured PATH's entries then the fallback dirs, `$HOME` expanded, without repeats. */
+export function mergedPath(path: string | undefined, home: string | undefined): string {
+  const expand = (dirs: readonly string[]) => dirs.flatMap((d) => (!d.includes("$HOME") ? [d] : home ? [d.split("$HOME").join(home)] : []));
+  const own = (path ?? "").split(":").map((d) => d.trim()).filter((d) => d.length > 0);
+  const merged = [...new Set(expand([...own, ...FALLBACK_PATH_DIRS]))];
+  return merged.length > 0 ? merged.join(":") : expand(FALLBACK_PATH_DIRS).join(":");
+}
+
+/** `yAt`: the `NAME=value` lines between the two markers, with terminal escapes removed. */
+export function parseCapturedEnv(output: string): Record<string, string> | null {
+  const body = output.split(ENV_DELIMITER)[1];
+  if (body === undefined) return null;
+  const env: Record<string, string> = {};
+  // eslint-disable-next-line no-control-regex
+  for (const line of body.replace(/[\u001b\u009b][[\]()#;?]*(?:(?:[a-zA-Z\d]*(?:;[a-zA-Z\d]*)*)?\u0007|(?:\d{1,4}(?:;\d{0,4})*)?[\dA-PR-TZcf-nq-uy=><~])/g, "").split(/\r?\n/u)) {
+    const eq = line.indexOf("=");
+    if (eq > 0) env[line.substring(0, eq)] = line.substring(eq + 1);
+  }
+  return env;
+}
+
 /**
- * `hoa`: every check, in Conductor's order. One deliberate difference: Conductor's
- * "Conductor captured shell env" row prints the login-shell environment its
- * frontend cached at startup (`yni`); OpenConductor caches none, so the row
- * prints the environment the app hands to commands it runs ("OpenConductor app env").
+ * Conductor's "captured shell env" row (`yni` → `Bfe`/`Y2t`, index chunk @3,350,678): the
+ * login shell's environment as the app captures it at startup (`zsh -ilc` within 6 s, else
+ * `zsh -lc` within 3 s, `Fde`), reduced to `K2t` with the merged PATH (`Z2t`); when both fail,
+ * the fallback PATH alone with `fellBack=true` (`LY`). Printed as `fellBack`, `PATH`, then the keys.
  */
+export async function capturedShellEnv(shell: ShellRun): Promise<string> {
+  const probe = `printf '%s\\n' ${ENV_DELIMITER}; env; printf '%s\\n' ${ENV_DELIMITER}; exit`;
+  let env: Record<string, string> | null = null;
+  for (const [flags, timeoutMs] of [["-ilc", 6000], ["-lc", 3000]] as const) {
+    env = parseCapturedEnv(await shell(`DISABLE_AUTO_UPDATE=true zsh ${flags} ${shellQuote(probe)}`, timeoutMs));
+    if (env) break;
+  }
+  const lines: string[] = [];
+  if (env) {
+    lines.push("fellBack=false", `PATH=${mergedPath(env.PATH, env.HOME)}`);
+    const kept = CAPTURED_ENV_KEYS.filter((k) => env![k] !== undefined && env![k] !== "").map((k) => [k, env![k]] as const);
+    for (const [k, v] of kept.sort(([a], [b]) => a.localeCompare(b))) lines.push(`${k}=${v}`);
+  } else {
+    const home = (await shell("echo $HOME")).trim();
+    lines.push("fellBack=true", `PATH=${mergedPath(undefined, home && !home.startsWith("[error]") ? home : undefined)}`);
+  }
+  return lines.join("\n");
+}
+
+/** `hoa`: every check, in Conductor's order. */
 export function diagnosticChecks(): CheckDef[] {
   const checks: CheckDef[] = [
     cmd("macOS version", "sw_vers"),
@@ -135,7 +189,7 @@ export function diagnosticChecks(): CheckDef[] {
     cmd("$LANG", 'echo "${LANG:-unset}"'),
     cmd("$LC_ALL", 'echo "${LC_ALL:-unset}"'),
     cmd("$TMPDIR", 'echo "${TMPDIR:-unset}"'),
-    cmd("OpenConductor app env", "env | sort", { containsEnv: true }),
+    { label: "OpenConductor captured shell env", containsEnv: true, run: capturedShellEnv },
     cmd("Disk space (root)", "df -h / | tail -1"),
     cmd("System integrity protection (SIP)", "csrutil status 2>/dev/null || echo 'unknown'"),
   ];

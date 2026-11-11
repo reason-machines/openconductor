@@ -18,7 +18,7 @@ use crate::settings::service::SettingsService;
 use crate::turn_checkpoint::{around_turn, TurnTarget};
 
 use super::interact::Answer;
-use super::runner::{ClaudeRunner, Launcher};
+use super::runner::{ChatOptions, ClaudeRunner, Launcher};
 
 pub const EVENT: &str = "claude-chat-event";
 
@@ -107,12 +107,29 @@ pub async fn claude_prompt(
     chat_id: String,
     text: String,
     turn: Option<TurnArg>,
+    workspace_id: Option<String>,
+    options: Option<ChatOptions>,
 ) -> Result<Value, String> {
+    let options = options.unwrap_or_default();
     let runner = state.runner(&app);
     let cwd = state.cwds.lock().unwrap().get(&chat_id).cloned();
-    // Announced before the start checkpoint, so a Stop while it is saved
-    // still stops this prompt.
+    // Stop also covers the database lookup before dispatch.
     runner.expect_prompt(&chat_id);
+    let directories = if let Some(id) = workspace_id {
+        let db = app.state::<crate::db::Db>();
+        let source = openconductor_db::workspaces::get(&db.0, &id).await.map_err(|e| e.to_string())?
+            .ok_or_else(|| "The source workspace no longer exists.".to_string())?;
+        let expected = source.workspace.workspace_path.or(source.root_path).map(PathBuf::from);
+        if expected.is_none() || expected != cwd {
+            return Err("The chat folder does not match the source workspace.".into());
+        }
+        let paths = openconductor_db::workspace_links::resolve(&db.0, &id).await.map_err(|e| e.to_string())?;
+        let paths: Vec<PathBuf> = paths.into_iter().map(PathBuf::from).collect();
+        if paths.iter().any(|path| !path.is_absolute()) {
+            return Err("Saved workspace links contain a non-local directory.".into());
+        }
+        paths
+    } else { Vec::new() };
     let (end, changes) = tauri::async_runtime::spawn_blocking(move || {
         let target = match (&cwd, &turn) {
             (Some(workspace), Some(turn)) => Some(TurnTarget {
@@ -122,7 +139,7 @@ pub async fn claude_prompt(
             }),
             _ => None,
         };
-        around_turn(target, || runner.prompt(&chat_id, &text))
+        around_turn(target, || runner.prompt_with_options(&chat_id, &text, &directories, &options))
     })
     .await
     .map_err(|e| e.to_string())?;

@@ -30,6 +30,7 @@ fn provider(name: &str) -> (Arc<ReasonProvider>, Log, PathBuf) {
         home.clone(),
         Arc::new(move |chat, ev| sink.lock().unwrap().push((chat.to_string(), ev))),
     );
+    p.reconfigure_workspace(Some("ws-a".into()));
     (Arc::new(p), log, home)
 }
 
@@ -57,6 +58,34 @@ fn started(log: &Log) -> Vec<String> {
         _ => None,
     });
     ids.collect()
+}
+
+#[test]
+fn new_chats_require_the_settings_workspace() {
+    let (p, log, home) = provider("no-settings-workspace");
+    p.reconfigure_workspace(None);
+    p.open_chat("chat", &home, None);
+    let end = p.prompt("chat", "echo: must not send");
+    assert!(
+        matches!(end, TurnEnd::Failed(ref message) if message.contains("Settings")),
+        "{end:?}"
+    );
+    assert!(started(&log).is_empty());
+    assert!(!home.join("state.json").exists());
+}
+
+#[test]
+fn legacy_session_with_unknown_ownership_is_not_resumed_in_the_selected_workspace() {
+    let (p, log, home) = provider("legacy-offline");
+    std::fs::write(home.join("fake-reason-discovery-offline"), "").unwrap();
+    p.open_chat("chat", &home, Some("legacy-session".into()));
+    let end = p.prompt("chat", "echo: must not send");
+    assert!(
+        matches!(end, TurnEnd::Failed(ref message) if message.contains("workspace")),
+        "{end:?}"
+    );
+    assert!(started(&log).is_empty());
+    assert!(!home.join("state.json").exists());
 }
 
 #[test]
@@ -163,6 +192,7 @@ fn provider_in(home: PathBuf) -> (Arc<ReasonProvider>, Log, PathBuf) {
         home.clone(),
         Arc::new(move |chat, ev| sink.lock().unwrap().push((chat.to_string(), ev))),
     );
+    p.reconfigure_workspace(Some("ws-a".into()));
     (Arc::new(p), log, home)
 }
 
@@ -433,7 +463,8 @@ fn a_follow_up_after_relaunch_resumes_the_session_in_its_own_workspace() {
     assert_eq!(reply(&log), "turn 2: two", "the same Session ran turn 2");
     assert!(started(&log).is_empty(), "no new Session");
 
-    // A new chat still opens in the workspace selected now.
+    // Settings, not the CLI's selected workspace, chooses a new chat.
+    p.reconfigure_workspace(Some("ws-b".into()));
     p.open_chat("new", &home, None);
     assert_eq!(p.prompt("new", "echo: b"), TurnEnd::Completed);
     let state: serde_json::Value =
@@ -490,6 +521,48 @@ fn the_session_store_remembers_each_sessions_workspace() {
     p.open_chat("chat", &home, Some(id));
     assert_eq!(p.prompt("chat", "echo: two"), TurnEnd::Completed);
     assert_eq!(reply(&log), "turn 2: two");
+}
+
+#[test]
+fn a_persisted_workspace_survives_settings_and_cli_selection_changes_offline() {
+    let (_, _, home) = provider("pinned-offline");
+    let store = home.join("session-workspaces.json");
+    let (p, log, _) = provider_in(home.clone());
+    let p = Arc::try_unwrap(p)
+        .ok()
+        .unwrap()
+        .with_session_store(store.clone());
+    p.open_chat("chat", &home, None);
+    assert_eq!(p.prompt("chat", "echo: one"), TurnEnd::Completed);
+    let id = started(&log).pop().unwrap();
+    drop(p);
+    std::fs::write(home.join("fake-reason-selected"), "ws-b").unwrap();
+    std::fs::write(home.join("fake-reason-discovery-offline"), "").unwrap();
+    let (p, log, _) = provider_in(home.clone());
+    let p = Arc::try_unwrap(p).ok().unwrap().with_session_store(store);
+    p.reconfigure_workspace(Some("ws-b".into()));
+    p.open_chat("chat", &home, Some(id));
+    assert_eq!(p.prompt("chat", "echo: two"), TurnEnd::Completed);
+    assert_eq!(reply(&log), "turn 2: two");
+}
+
+#[test]
+fn workspace_persistence_failure_does_not_send_the_prompt() {
+    let (p, log, home) = provider("store-failure");
+    let blocked = home.join("not-a-directory");
+    std::fs::write(&blocked, "occupied").unwrap();
+    let p = Arc::try_unwrap(p)
+        .ok()
+        .unwrap()
+        .with_session_store(blocked.join("workspaces.json"));
+    p.open_chat("chat", &home, None);
+    let end = p.prompt("chat", "echo: must not send");
+    assert!(
+        matches!(end, TurnEnd::Failed(ref message) if message.contains("Could not save")),
+        "{end:?}"
+    );
+    assert!(started(&log).is_empty());
+    assert!(reply(&log).is_empty());
 }
 
 fn session_models(log: &Log) -> Vec<(String, Option<String>)> {

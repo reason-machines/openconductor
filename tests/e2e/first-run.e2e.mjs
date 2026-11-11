@@ -124,3 +124,46 @@ test("/first-run-onboarding replays the onboarding after it is done; Exit onboar
   assert.deepEqual(errors, []);
   await context.close();
 });
+
+test("signed out of Reason, the onboarding offers Sign up and Privacy like Conductor, plus going on without an account", async () => {
+  const { page, context, errors } = await open("/");
+  await page.locator(".onb").waitFor();
+  const signUp = page.locator(".onb-signup");
+  assert.equal((await signUp.textContent()).trim(), "Sign up");
+  assert.equal(await page.getByRole("button", { name: "Privacy", exact: true }).count(), 1);
+  assert.equal(await page.getByRole("button", { name: "Continue", exact: true }).count(), 0, "Continue waits for an account");
+  // The browser preview leaves sign-in to the desktop app.
+  assert.equal(await signUp.isDisabled(), true, "Sign up is unavailable outside the desktop app");
+  await page.getByText("Reason sign-in runs in the desktop app.", { exact: true }).waitFor();
+  assert.equal(await page.getByRole("alert").count(), 0, "an unavailable action is not a failed sign-in");
+  await shot(page, "first-run-signed-out--dark");
+  await page.getByRole("button", { name: "Continue without signing in" }).click();
+  await page.locator(".home").waitFor();
+  assert.equal(await page.evaluate((k) => localStorage.getItem(k), STEP_KEY), "999");
+  assert.deepEqual(errors, []);
+  await context.close();
+});
+
+test("/login shows Conductor's sign-in screen; going on without an account leaves for Home", async () => {
+  const done = () => localStorage.setItem("openconductor.firstRunOnboardingStep", "999");
+  const { page, context, errors } = await open("/login", { init: done });
+  await page.locator(".onb-login").waitFor();
+  assert.equal((await page.locator(".onb-login-prompt").textContent()).trim(), "Sign in to continue.");
+  assert.equal((await page.locator(".onb-signup").textContent()).trim(), "Sign up");
+  assert.equal(await page.getByRole("button", { name: "Privacy", exact: true }).count(), 1);
+  assert.equal(await page.locator(".app").count(), 0, "the app shell is not mounted under /login");
+  await shot(page, "login--dark");
+  await page.getByRole("button", { name: "Continue without signing in" }).click();
+  await page.locator(".home").waitFor();
+  assert.equal(new URL(page.url()).pathname, "/");
+  assert.deepEqual(errors, []);
+  await context.close();
+});
+
+test("the onboarding follows the stored theme before the app shell mounts", async () => {
+  const dark = () => localStorage.setItem("openconductor.settings.preview", JSON.stringify({ general: { theme: "dark", send_native_notification: true, sound_type: "default" } }));
+  const { page, context } = await open("/", { init: dark, colorScheme: "light" });
+  await page.locator(".onb").waitFor();
+  await page.waitForFunction(() => document.documentElement.dataset.theme === "dark");
+  await context.close();
+});

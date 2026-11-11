@@ -1,0 +1,133 @@
+(node:74) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Changes presentation survives reconstruction without sharing values between workspaces
+ok 1 - Changes presentation survives reconstruction without sharing values between workspaces
+  ---
+  duration_ms: 2.12698
+  type: 'test'
+  ...
+# Subtest: early edits survive delayed hydration without overwriting saved fields or sibling routes
+ok 2 - early edits survive delayed hydration without overwriting saved fields or sibling routes
+  ---
+  duration_ms: 0.593633
+  type: 'test'
+  ...
+# Subtest: an early folder toggle applies to saved collapsed paths after hydration
+not ok 3 - an early folder toggle applies to saved collapsed paths after hydration
+  ---
+  duration_ms: 1.215794
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/changesPresentation.test.ts:47:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'scripts',
+    -   'src/lib'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'scripts'
+    1: 'src/lib'
+  actual:
+    0: 'scripts'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/changesPresentation.test.ts:56:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: a failed read cannot erase unseen routes and a later edit retries hydration
+not ok 4 - a failed read cannot erase unseen routes and a later edit retries hydration
+  ---
+  duration_ms: 7.409344
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/changesPresentation.test.ts:59:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    a failed read must not write an empty envelope
+    + actual - expected
+    
+      {
+        state: {
+          routeStates: {
+            'workspace.changes/lisbon': {
+    +         filePathFilter: 'auth'
+    -         collapsedDirectoryPaths: [
+    -           'src/lib'
+    -         ],
+    -         diffFileListMode: 'tree',
+    -         filePathFilter: 'test'
+            },
+    -       'workspace.files/porto': {
+    -         openDirectoryPaths: [
+    -           'src'
+    -         ]
+    -       }
+          }
+        },
+        version: 0
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    state:
+      routeStates:
+        workspace.files/porto:
+          openDirectoryPaths:
+            0: 'src'
+        workspace.changes/lisbon:
+          diffFileListMode: 'tree'
+          filePathFilter: 'test'
+          collapsedDirectoryPaths:
+            0: 'src/lib'
+    version: 0
+  actual:
+    state:
+      routeStates:
+        workspace.changes/lisbon:
+          filePathFilter: 'auth'
+    version: 0
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src/features/diff/changesPresentation.test.ts:69:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: writes remain ordered when a previous save is slow
+ok 5 - writes remain ordered when a previous save is slow
+  ---
+  duration_ms: 0.31677
+  type: 'test'
+  ...
+# Subtest: invalid persisted fields independently fall back to defaults
+ok 6 - invalid persisted fields independently fall back to defaults
+  ---
+  duration_ms: 0.242284
+  type: 'test'
+  ...
+# Subtest: storage failures leave the current list usable and later writes can recover
+ok 7 - storage failures leave the current list usable and later writes can recover
+  ---
+  duration_ms: 0.396044
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 5
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 774.851111

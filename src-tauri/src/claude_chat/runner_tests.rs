@@ -13,7 +13,7 @@ use std::time::Duration;
 
 use serde_json::Value;
 
-use super::runner::{ClaudeRunner, Launcher};
+use super::runner::{ChatOptions, ClaudeRunner, Launcher};
 use crate::agent::{ClaudeLaunch, LaunchEnv};
 use crate::reason_acp::provider::{ProviderEvent, Sink, TurnEnd};
 use crate::reason_acp::wire;
@@ -125,6 +125,63 @@ impl Harness {
 
 fn cwd() -> PathBuf {
     std::env::temp_dir()
+}
+
+#[test]
+fn linked_directories_reach_new_processes_without_guessing_live_reconciliation() {
+    let h = harness();
+    h.runner.open_chat("links", &cwd(), None);
+    let directories = vec![PathBuf::from("/extra/one"), PathBuf::from("/extra/two")];
+    assert_eq!(h.runner.prompt_with_directories("links", "hello", &directories), TurnEnd::Completed);
+    let args = h.args();
+    assert!(args[0].contains("--add-dir /extra/one"), "{args:?}");
+    assert!(args[0].contains("--add-dir /extra/two"), "{args:?}");
+    assert!(matches!(h.runner.prompt_with_directories("links", "changed", &[]), TurnEnd::Failed(message) if message.contains("Start a new Claude Code chat")));
+    assert_eq!(h.stdin().len(), 1, "changed directories must not silently send to the old process");
+    assert_eq!(h.runner.prompt_with_directories("links", "unchanged", &directories), TurnEnd::Completed);
+    assert_eq!(h.args().len(), 1);
+}
+
+#[test]
+fn per_chat_options_reach_launch_and_changes_resume_only_that_chat() {
+    let h = harness();
+    h.runner.open_chat("picked", &cwd(), Some("saved-9".into()));
+    h.runner.open_chat("other", &cwd(), None);
+    let mut options = ChatOptions {
+        model: Some("picked-model".into()),
+        effort: Some("high".into()),
+    };
+    assert_eq!(h.runner.prompt_with_options("picked", "first", &[], &options), TurnEnd::Completed);
+    assert_eq!(h.runner.prompt_with_options("picked", "same", &[], &options), TurnEnd::Completed);
+    let args = h.args();
+    assert_eq!(args.len(), 1, "unchanged picks reuse the process");
+    assert!(args[0].contains("--model picked-model"), "{args:?}");
+    assert!(args[0].contains("--effort high"), "{args:?}");
+    assert!(args[0].contains("--resume saved-9"), "{args:?}");
+
+    assert_eq!(h.runner.prompt("other", "independent"), TurnEnd::Completed);
+    let args = h.args();
+    assert_eq!(args.len(), 2);
+    assert!(!args[1].contains("--model") && !args[1].contains("--effort"), "{args:?}");
+    assert!(!args[1].contains("--resume"), "{args:?}");
+
+    options.model = Some("next-model".into());
+    assert_eq!(h.runner.prompt_with_options("picked", "new model", &[], &options), TurnEnd::Completed);
+    options.effort = Some("low".into());
+    assert_eq!(h.runner.prompt_with_options("picked", "new effort", &[], &options), TurnEnd::Completed);
+    options.effort = None;
+    assert_eq!(h.runner.prompt_with_options("picked", "no effort", &[], &options), TurnEnd::Completed);
+    assert_eq!(h.runner.prompt("picked", "default options"), TurnEnd::Completed);
+    assert_eq!(h.runner.prompt("other", "unchanged other"), TurnEnd::Completed);
+    let args = h.args();
+    assert_eq!(args.len(), 6, "each changed pick restarts only its own process");
+    for arg in &args[2..] {
+        assert!(arg.contains("--resume fake-1"), "{args:?}");
+    }
+    assert!(args[2].contains("--model next-model") && args[2].contains("--effort high"), "{args:?}");
+    assert!(args[3].contains("--model next-model") && args[3].contains("--effort low"), "{args:?}");
+    assert!(args[4].contains("--model next-model") && !args[4].contains("--effort"), "{args:?}");
+    assert!(!args[5].contains("--model") && !args[5].contains("--effort"), "{args:?}");
 }
 
 #[test]

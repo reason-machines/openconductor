@@ -3,10 +3,9 @@
 //
 // Drives the real app binary over WebDriver (tauri-driver + WebKitWebDriver,
 // Linux only) against tools/reason-acp/fake_reason_acp.py standing in for
-// `reason acp`, with Settings' default model left at its stored default
-// (`opus`, a Claude alias Reason has no fixed model for):
+// `reason acp`, with fresh Settings initialized by the first Reason connection:
 //
-//   1. a new chat: the chip shows what its first Session will run ("Auto")
+//   1. a new chat: the chip shows the first-connected default (GPT-6.1 Sol)
 //   2. the picker lists Reason's models by Reason's names ("Claude Opus 5.5")
 //   3. after a turn: the chip shows the model and effort the Session ran on,
 //      as `reason session get` reports it (the fake: Claude Opus 5.5, High)
@@ -27,6 +26,8 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -53,7 +54,9 @@ mkdirSync(bin);
 writeFileSync(join(bin, "reason"), `#!/bin/sh\nexec python3 "${join(repoRoot, "tools/reason-acp/fake_reason_acp.py")}" "$@"\n`);
 chmodSync(join(bin, "reason"), 0o755);
 
-const env = { ...process.env, HOME: home, PATH: `${bin}:${process.env.PATH}` };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), PATH: `${bin}:${process.env.PATH}` };
+mkdirSync(env.OPENCONDUCTOR_HOME, { recursive: true });
+writeFileSync(join(env.OPENCONDUCTOR_HOME, "settings.toml"), `reason_executable_path = ${JSON.stringify(join(bin, "reason"))}\n`);
 delete env.REASON_CLI;
 delete env.XDG_DATA_HOME;
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
@@ -61,6 +64,7 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
+const startup = new WebDriver(base);
 let sessionUrl = null;
 
 async function wd(method, path, body) {
@@ -122,7 +126,7 @@ async function screenshot(name) {
 const CHIP = "[data-testid='composer-model-button']";
 const chipTitle = () => run(`return document.querySelector("${CHIP}")?.title || null;`);
 const chatText = () => run("const el = document.querySelector('.chat-scroll'); return el ? el.innerText : null;");
-const running = () => run("return !!document.querySelector('.composer button[title=\"Stop the agent\"]');");
+const running = () => run("return !!document.querySelector('.composer button[aria-label^=\"Stop the agent\"]');");
 const menuItems = () => run("return [...document.querySelectorAll('.oc-model-menu .oc-model-list .oc-model-item:not(.oc-model-add) .oc-model-item-name')].map((e) => e.textContent);");
 const checkedItem = () => run("return document.querySelector('.oc-model-menu .oc-model-item[data-selected] .oc-model-item-name')?.textContent ?? null;");
 
@@ -137,7 +141,7 @@ async function closePicker() {
 }
 
 async function send(text) {
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));
@@ -152,6 +156,8 @@ try {
   await waitFor("tauri-driver", () => fetch(`${base}/status`).then((r) => r.ok), 20000);
   const session = await wd("POST", "/session", { capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } } });
   sessionUrl = `${base}/session/${session.sessionId}`;
+  startup.sessionId = session.sessionId;
+  await finishStartup(startup);
   if (process.env.E2E_WINDOW_RECT === "1") await wd("POST", "/window/rect", { width: 1280, height: 800 }).catch(() => undefined);
 
   await waitFor("the app to load", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
@@ -159,6 +165,7 @@ try {
     `const done = arguments[arguments.length - 1];
      const invoke = window.__TAURI_INTERNALS__.invoke;
      invoke("get_settings")
+       .then((s) => invoke("update_settings", { settings: { ...s, reason: { ...s.reason, workspace: "ws-a" } } }).then(() => s))
        .then((s) => invoke("add_repository", { path: arguments[0] }).then((repo) => ({ s, repo })))
        .then(({ s, repo }) => invoke("create_workspace", { repositoryId: repo.id, branchName: "picker", directoryName: "picker", baseBranch: null, existingBranch: false, prNumber: null })
          .then((created) => done({ workspace: created.workspace, defaultModel: s.models.default })))
@@ -168,8 +175,20 @@ try {
   assert.ok(seeded?.workspace, `seeding failed: ${JSON.stringify(seeded)}`);
   const workspace = seeded.workspace;
   note(`Settings' default model is "${seeded.defaultModel}"`);
-  const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
-  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  assert.equal(workspace.branchName, "picker", "the seeded workspace has the requested branch");
+  await run("location.reload(); return true;");
+  await finishStartup(startup);
+  const row = 'button[data-testid="left-sidebar-workspace-item"][title*=" · picker · "]';
+  const rowId = await waitFor("the picker workspace row", async () => {
+    const el = await run("return document.querySelector(arguments[0]);", row);
+    if (el) return el[W3C_ELEMENT] ?? el.ELEMENT;
+    const header = await run(`return [...document.querySelectorAll('.sb-repo-header[role="button"][aria-expanded="false"]')]
+      .find((h) => h.querySelector('.sb-repo-name')?.textContent === 'proj') || null;`);
+    if (header) await wd("POST", `/element/${header[W3C_ELEMENT] ?? header.ELEMENT}/click`, {});
+    return null;
+  });
+  await wd("POST", `/element/${rowId}/click`, {});
+  await waitFor("picker to be the open workspace", () => run("return document.querySelector(arguments[0])?.getAttribute('aria-current') === 'page';", row));
   await waitFor("the empty chat", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   // 1. A new chat: what its first Session will run.
@@ -178,7 +197,10 @@ try {
   const chip1 = await chipTitle();
   await screenshot("picker-1-new-chat");
   note(`new chat chip: "${chip1}"`);
-  check(() => assert.equal(chip1, "Auto", `the default \`opus\` runs Reason's Auto (was "${before}")`));
+  check(() => {
+    assert.equal(seeded.defaultModel, "openai/gpt-6.1-sol", "the first Reason connection persists its configured default");
+    assert.equal(chip1, "GPT-6.1 Sol", `the new chat uses the first-connected Reason default (was "${before}")`);
+  });
 
   // 2. The list.
   await openPicker();
@@ -189,7 +211,11 @@ try {
     for (const name of ["Auto", "Claude Opus 5.5", "GPT-5.6-Sol", "Claude Sonnet 5.5"]) assert.ok(items1.includes(name), `${name} is listed: ${JSON.stringify(items1)}`);
     assert.ok(!items1.includes("Opus 4.8"), "no Conductor-only name");
   });
-  await closePicker();
+  // Auto is an explicit choice now, not the fresh first-connected default.
+  await run("const b = [...document.querySelectorAll('.oc-model-menu .oc-model-item')].find((e) => e.querySelector('.oc-model-item-name')?.textContent === 'Auto'); b.click(); return true;");
+  await waitFor("the menu to close", () => run("return !document.querySelector('.oc-model-menu');"));
+  const autoChip = await chipTitle();
+  check(() => assert.equal(autoChip, "Auto", "the user can explicitly choose Auto before the first turn"));
 
   // 3. A turn on Auto: the chip shows what the Session ran on.
   await send("echo: hello");

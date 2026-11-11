@@ -8,10 +8,20 @@ export const REPO_URL = "https://github.com/reason-machines/openconductor";
 
 export const FEEDBACK_URL = `${REPO_URL}/issues/new`;
 
+/** Help › Docs and the palette's "Open documentation". */
+export const DOCS_URL = `${REPO_URL}#readme`;
+
+/** Help › Changelog and the palette's "Open changelog". */
+export const CHANGELOG_URL = `${REPO_URL}/releases`;
+
+/** Where the sidebar's "View pricing" plan badge goes. Conductor's opens its pricing page; OpenConductor has no paid plans. */
+export const PRICING_URL = REPO_URL;
+
 export type HelpIcon = "keyboard" | "book" | "message" | "stethoscope";
 
 export type HelpAction =
   | { kind: "shortcuts" }
+  | { kind: "feedback" }
   | { kind: "url"; url: string }
   /** Conductor's `aJ` dialog. */
   | { kind: "submitPrompt" }
@@ -33,18 +43,22 @@ export interface HelpItem {
 
 export const HELP_ITEMS: readonly HelpItem[] = [
   { label: "Keyboard shortcuts", icon: "keyboard", commandId: "openKeyboardShortcuts", action: { kind: "shortcuts" } },
-  { label: "Docs", icon: "book", external: true, action: { kind: "url", url: `${REPO_URL}#readme` } },
+  { label: "Docs", icon: "book", external: true, action: { kind: "url", url: DOCS_URL } },
   { label: "Best practices", external: true, action: { kind: "url", url: `${REPO_URL}/tree/main/docs` } },
-  { label: "Changelog", external: true, action: { kind: "url", url: `${REPO_URL}/releases` } },
-  { label: "Send feedback", icon: "message", commandId: "sendFeedback", action: { kind: "url", url: FEEDBACK_URL } },
+  { label: "Changelog", external: true, action: { kind: "url", url: CHANGELOG_URL } },
+  { label: "Send feedback", icon: "message", commandId: "sendFeedback", action: { kind: "feedback" } },
   { label: "Submit a prompt", action: { kind: "submitPrompt" } },
   { label: "Diagnostics", icon: "stethoscope", action: { kind: "diagnostics" } },
   { label: "Open debug tools", action: { kind: "devtools" } },
 ];
 
-/** Version footer; Conductor's reads "Conductor v<app> • Claude Code <v> • Codex <v>", with "..." while unknown. */
-export function versionLine(appVersion: string | undefined, appName = "OpenConductor"): string {
-  return `${appName} v${appVersion ?? "..."}`;
+/**
+ * Version footer, Conductor's `YQo` (renderApp @9,793,117): "<app> v<app> • Claude Code <v> • Codex <v>",
+ * with "..." for any version not known yet. Conductor runs each agent's `--version`; OpenConductor shows
+ * the version of the Claude Code and Codex binaries it downloaded and runs (`get_agent_binary_state`).
+ */
+export function versionLine(appVersion: string | undefined, agents: { claudeCode?: string; codex?: string } = {}, appName = "OpenConductor"): string {
+  return `${appName} v${appVersion ?? "..."} • Claude Code ${agents.claudeCode || "..."} • Codex ${agents.codex || "..."}`;
 }
 
 /** Next focused item for ArrowDown/ArrowUp, wrapping at both ends like Conductor's menu; -1 when nothing is focused. */

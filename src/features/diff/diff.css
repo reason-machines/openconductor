@@ -45,12 +45,11 @@
 .oc-change-row .oc-change { flex: 1; min-width: 0; width: auto; }
 .oc-change-row .oc-discard { flex-shrink: 0; opacity: 0; margin-right: 4px; }
 .oc-change-row:hover .oc-discard, .oc-change-row .oc-discard:focus-visible { opacity: 1; }
-.oc-file-header .oc-discard { color: var(--muted); }
-.oc-discard-path { font-family: var(--oc-diff-font); font-weight: 600; word-break: break-all; }
+.oc-discard-path { font-family: var(--font-mono); word-break: break-all; }
 .oc-change { display: flex; align-items: center; gap: 6px; width: 100%; padding: 3px 10px; text-align: left; }
 .oc-change:hover { background: var(--hover); }
 .oc-change[aria-current="true"] { background: var(--active); }
-.oc-change .name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: left; }
+.oc-change .name { flex: 1; display: flex; min-width: 0; overflow: hidden; white-space: nowrap; }
 .oc-change.viewed .name { color: var(--muted); }
 .oc-status { width: 14px; font-family: var(--oc-diff-font); font-weight: 600; text-align: center; }
 .oc-status.added, .oc-status.untracked { color: var(--oc-diff-addition); }
@@ -64,15 +63,73 @@
 .oc-diff.oc-diff-list, .oc-diff.oc-diff-tab { grid-template-columns: minmax(0, 1fr); }
 .oc-diff.oc-diff-tab { grid-template-rows: minmax(0, 1fr); position: relative; }
 .oc-diff-tab .oc-next-unread { position: absolute; right: 16px; bottom: 12px; margin: 0; }
-.oc-diff-list .oc-changes { border-right: 0; }
-.oc-diff-list .oc-change-row { margin: 0 4px; border-radius: 6px; }
-.oc-diff-list .oc-change { padding: 5px 8px; border-radius: 6px; font-size: 13px; }
+.oc-diff.oc-diff-list { display: flex; flex-direction: column; }
+.oc-diff-list .oc-changes { flex: 1; min-height: 0; border-right: 0; padding: 0 0 8px; }
+.oc-diff-list .oc-changes-header { flex: none; height: 32px; padding: 0 26px 0 20px; border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); font-size: 14px; font-weight: 500; line-height: 1; }
+.oc-diff-list .oc-change-row { position: relative; margin: 0 8px; border-radius: 6px; }
+.oc-diff-list .oc-change { min-height: 32px; padding: 4px 12px; border-radius: 6px; font-size: 14px; gap: 6px; }
+.oc-diff-list .oc-change-row:has(.oc-change.viewed) { opacity: .5; }
+.oc-diff-list .oc-change .name { align-items: center; }
+.oc-diff-list .oc-count { display: inline-flex; gap: 4px; font-size: 10px; font-weight: 500; line-height: 15px; white-space: nowrap; }
+.oc-diff-list .oc-count .d { margin-left: 0; }
+.oc-diff-list .oc-status { width: 12px; height: 12px; flex: none; }
+.oc-diff-list .oc-status.untracked { color: var(--muted); }
+.oc-change-meta { display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 0 6px; min-width: 40px; flex: none; }
+.oc-change-uncommitted { font-size: 12px; font-weight: 500; color: var(--text); }
+.oc-change-actions { position: absolute; right: 0; top: 0; height: 100%; display: inline-flex; align-items: center; visibility: hidden; }
+.oc-change-row:has(.oc-change-actions button):hover .oc-change-meta, .oc-change-row:has(.oc-change-actions button):focus-within .oc-change-meta { visibility: hidden; }
+.oc-change-row:hover .oc-change-actions, .oc-change-row:focus-within .oc-change-actions { visibility: visible; }
+.oc-change-row:has(.oc-change-actions button:hover) .oc-change { background: transparent; }
+.oc-change-row .oc-change-actions .oc-discard { opacity: 1; margin: 0; }
+.oc-change-rename-arrow { flex: none; margin: 0 8px; color: var(--muted); }
+.oc-change-guide { position: absolute; pointer-events: none; top: 0; width: .5px; background: color-mix(in srgb, var(--muted) 20%, transparent); }
+.oc-change-directory { position: relative; display: flex; flex: none; align-items: center; gap: 6px; height: 32px; width: 100%; padding-right: 18px; text-align: left; color: var(--muted); }
+.oc-change-directory:hover { background: var(--hover); }
+.oc-change-directory > svg { flex: none; }
+.oc-change-directory .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: 12px; }
+.oc-changes-comment-actions { display: flex; flex: none; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 12px; font-size: 12px; }
+.oc-changes-comment-actions:empty { display: none; }
+.rp-tabs-end .oc-changes-tree-toggle, .rp-tabs-end [aria-label="Filter files"] { margin-right: 6px; }
+.rp-tabs-end .oc-changes-options { margin-right: 8px; }
+.rp-tabs-end .oc-changes-scope { display: inline-flex; align-items: center; gap: 4px; width: auto; max-width: 150px; margin-right: 8px; padding: 0 6px; background: var(--active); color: var(--text); font-size: 12px; }
+.oc-changes-options-menu { width: max-content; min-width: 220px; max-width: 320px; max-height: 80vh; overflow-y: auto; overflow-x: hidden; }
+.oc-changes-commit-message { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-changes-commit-message + .oc-changes-option-detail { line-height: 16px; }
+.rp-tabs-end .oc-changes-historical-scope { background: var(--highlight); color: var(--emphasis); border: 1px solid color-mix(in oklab, var(--emphasis) 40%, transparent); }
+.rp-tabs-end .oc-changes-historical-scope:hover:not(:disabled) { background: var(--link-elevated); color: var(--emphasis); }
+.oc-changes-options-menu .cm-shortcut { padding-left: 8px; letter-spacing: 0; }
+.oc-changes-target { display: flex; align-items: center; gap: 8px; padding: 6px 8px; white-space: nowrap; color: var(--muted); font-size: 14px; }
+.oc-changes-target-trigger { display: inline-flex; align-items: center; gap: 6px; padding: 0; color: var(--muted); font-size: 14px; white-space: nowrap; }
+.oc-changes-target-trigger:hover { color: var(--text); }
+.oc-changes-option-label { flex: 1; min-width: 0; }
+.oc-changes-option-detail { display: block; color: var(--muted); font-size: 12px; }
 .oc-diff-tab .oc-file { border-radius: 0; border-width: 0 0 1px; margin-bottom: 0; content-visibility: visible; }
 .oc-files { overflow: auto; min-width: 0; padding: 8px 12px 40px; }
 .oc-next-unread { position: sticky; bottom: 12px; display: block; width: fit-content; margin: 0 0 0 auto; box-shadow: 0 2px 8px var(--shadow-15); }
 .oc-file { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; content-visibility: auto; contain-intrinsic-size: auto 200px; }
-.oc-file-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--oc-diff-bg-gutter); border-bottom: 1px solid var(--border); font-size: 12px; }
-.oc-file-header .path { flex: 1; font-family: var(--oc-diff-font); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-file-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; padding: 8px 4px 8px 12px; background: var(--bg); font-size: 12px; }
+/* Conductor's NPo: "flex min-w-0 flex-1 items-center gap-2" around the path chip, "flex shrink-0 items-center gap-2" around the actions. */
+.oc-file-lead { display: flex; flex: 1; min-width: 0; align-items: center; gap: 8px; }
+.oc-file-refresh-status { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: 8px; width: 96px; height: 28px; border-radius: 6px; font-size: 12px; color: var(--muted); }
+button.oc-file-refresh-status { color: var(--danger); }
+.oc-file-actions { display: flex; flex-shrink: 0; align-items: center; gap: 8px; }
+/* The path chip (FilePathChip.tsx): Conductor's QZ outline pill, h-5 rounded-sm px-1.5 gap-1 text-xs, sans. */
+.oc-path-chip { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; min-width: 0; height: 20px; padding: 0 6px; border: 1px solid var(--input); border-radius: 4px; background: transparent; color: var(--text); font-family: var(--font-sans); font-size: 12px; line-height: 1; cursor: pointer; }
+.oc-path-chip:hover { background: var(--hover); }
+.oc-path-chip .oc-file-icon { width: 12px; height: 12px; }
+.oc-path-chip-text { display: flex; align-items: baseline; gap: 8px; min-width: 0; overflow: hidden; }
+.oc-path-label { display: flex; align-items: baseline; min-width: 0; }
+.oc-path-dir { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
+.oc-path-name { flex-shrink: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.oc-path-arrow { flex-shrink: 0; }
+/* Conductor's S1e icon buttons (size-7, sidebar-muted icon, popover-accent on hover) for revert, copy and View options. */
+.oc-file-header .oc-discard, .oc-file-header .oc-view-options-trigger { width: 28px; height: 28px; border-radius: 6px; color: var(--sidebar-muted-foreground); }
+.oc-file-header .oc-discard:hover, .oc-file-header .oc-view-options-trigger:hover { background: var(--surface-accent); color: var(--text); }
+/* The layout group (HPo / EDi): h-8 rounded-md bg-muted p-0.5, three size-7 buttons, the pressed one bg-popover-accent. */
+.oc-layout-group { display: inline-flex; align-items: center; height: 32px; padding: 2px; box-sizing: border-box; border-radius: 6px; background: var(--surface-muted); }
+.oc-layout-group button { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border-radius: 6px; color: var(--sidebar-muted-foreground); }
+.oc-layout-group button:hover { background: var(--surface-accent); color: var(--text); }
+.oc-layout-group button[aria-pressed="true"] { background: var(--surface-accent); color: var(--text); }
 .oc-file-header label { display: inline-flex; gap: 4px; align-items: center; color: var(--muted); }
 .oc-file-note { padding: 10px 12px; color: var(--muted); font-size: 12px; }
 
@@ -104,8 +161,6 @@
 .oc-thread-collapsed { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 6px 10px; font-size: 12px; cursor: pointer; color: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .oc-composer textarea { display: block; width: 100%; box-sizing: border-box; border: 0; border-radius: 6px 6px 0 0; padding: 8px 10px; resize: vertical; font: inherit; font-size: 13px; background: transparent; color: inherit; }
 .oc-composer textarea:focus { outline: none; }
-.btn.oc-btn-danger, .btn.oc-btn-danger:hover { background: var(--diff-del); border-color: var(--diff-del); color: var(--on-solid); }
-.btn.oc-btn-danger .muted { color: inherit; opacity: 0.7; }
 /* Whitespace-only file while whitespace is hidden (Whitespace.tsx). */
 .oc-whitespace-only { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 32px 12px; text-align: center; }
 .oc-whitespace-only p { margin: 0; font-size: 13px; font-weight: 500; }
@@ -126,9 +181,15 @@
 .oc-view-option:hover, .oc-view-option:focus-visible { background: var(--active); }
 .oc-view-option .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .oc-view-option .check { display: inline-flex; width: 14px; }
-.oc-file-header .oc-viewed { display: inline-flex; align-items: center; gap: 4px; padding: 2px 6px; border-radius: 6px; color: var(--muted); }
-.oc-file-header .oc-viewed:hover { background: var(--active); }
+/* Conductor's MPo: a ghost sm button, w-24 text-xs font-medium gap-1.5; size-4 rounded-sm box, border muted-foreground, filled with the foreground and a size-3 check once viewed. */
+.oc-file-header .oc-viewed { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 96px; height: 24px; flex-shrink: 0; padding: 0 8px; border-radius: 4px; color: var(--muted); font-size: 12px; font-weight: 500; }
+.oc-file-header .oc-viewed:hover { background: var(--hover); }
 .oc-file-header .oc-viewed[aria-pressed="true"] { color: var(--text); }
+.oc-viewed-box { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex-shrink: 0; box-sizing: border-box; border: 1px solid var(--muted); border-radius: 4px; }
+.oc-viewed[aria-pressed="true"] .oc-viewed-box { background: var(--text); border-color: var(--text); color: var(--bg); }
+/* "Copy file contents" (FileDiffView.tsx), Conductor's S1e ghost button: size-7, muted icon, accent on hover. */
+.oc-file-header .oc-copy-file { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; flex-shrink: 0; padding: 0; border-radius: 6px; color: var(--sidebar-muted-foreground); }
+.oc-file-header .oc-copy-file:hover { background: var(--active); color: var(--text); }
 
 /* Editing in the entire-file view (EditInViewer.ts). Conductor's dot: size-2 rounded-full bg-warning-foreground-secondary. */
 .oc-file-header .oc-unsaved { width: 8px; height: 8px; flex-shrink: 0; border-radius: 9999px; background: var(--amber); }
@@ -140,3 +201,18 @@
 .oc-pull-latest:hover:not(:disabled) { background: var(--hover); color: var(--text); }
 .oc-pull-latest:disabled { opacity: 0.5; cursor: default; }
 .oc-pull-latest-spinner { width: 12px; height: 12px; border-width: 1.5px; }
+
+/* Conductor's Changes filter row (`W4s`): px-2 pb-2 around a h-7 rounded-md bg-muted px-3 box,
+   gap-1.5; size-3 muted search icon, text-sm input, "N of M" text-xs tabular-nums, close button
+   -mr-1.5 p-1.5. Opens to 36 px over 180 ms ease-out. */
+.oc-changes-filter { flex: none; height: 36px; padding: 0 8px 8px; box-sizing: border-box; overflow: hidden; animation: oc-changes-filter-in 180ms ease-out; }
+.oc-changes-filter-box { display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 12px; border-radius: 6px; background: var(--surface-muted); color: var(--muted); }
+.oc-changes-filter-box > svg { flex: none; }
+.oc-changes-filter-box input { flex: 1; min-width: 0; padding: 0; border: 0; outline: none; background: transparent; color: var(--text); font: inherit; font-size: 14px; }
+.oc-changes-filter-box input::placeholder { color: var(--muted); }
+.oc-changes-filter-count { flex: none; font-size: 12px; font-variant-numeric: tabular-nums; }
+.oc-changes-filter-close { display: inline-flex; flex: none; margin-right: -6px; padding: 6px; border: 0; background: none; color: var(--muted); }
+.oc-changes-filter-close:hover { color: var(--text); }
+.oc-changes-nomatch { display: flex; align-items: center; justify-content: center; height: 96px; padding: 0 16px; text-align: center; font-size: 12px; color: var(--muted); }
+@keyframes oc-changes-filter-in { from { height: 0; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .oc-changes-filter { animation: none; } }

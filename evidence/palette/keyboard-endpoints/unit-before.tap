@@ -1,0 +1,102 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: arrows, Enter and Escape drive the list
+ok 1 - arrows, Enter and Escape drive the list
+  ---
+  duration_ms: 0.813032
+  type: 'test'
+  ...
+# Subtest: Home selects the first result instead of moving only the text cursor
+not ok 2 - Home selects the first result instead of moving only the text cursor
+  ---
+  duration_ms: 9.534299
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/state.test.ts:27:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + null
+    - 'first-item'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'first-item'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/state.test.ts:29:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: End selects the last result instead of moving only the text cursor
+not ok 3 - End selects the last result instead of moving only the text cursor
+  ---
+  duration_ms: 0.35093
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/state.test.ts:35:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+
+    + null
+    - 'last-item'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'last-item'
+  actual: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/state.test.ts:37:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: modified Home and End keep their text-field behavior
+ok 4 - modified Home and End keep their text-field behavior
+  ---
+  duration_ms: 0.37193
+  type: 'test'
+  ...
+# Subtest: Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+ok 5 - Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+  ---
+  duration_ms: 0.33773
+  type: 'test'
+  ...
+# Subtest: rebinding the palette toggle changes what closes it
+ok 6 - rebinding the palette toggle changes what closes it
+  ---
+  duration_ms: 0.136955
+  type: 'test'
+  ...
+# Subtest: active row wraps and clamps
+ok 7 - active row wraps and clamps
+  ---
+  duration_ms: 0.170687
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 5
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 317.456582

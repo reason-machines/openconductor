@@ -1,0 +1,29 @@
+{
+  "source_main_sha": "f16d9338ae254955baca8f67baee1652eeb055af",
+  "before_source_sha": "403d440b882deecd4977716d9f1dc3cb68dc2eda",
+  "reference_js_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "reference_css_sha256": "5b876e143b67a7b0f09e3816b12c18bc588b4af7a9a43f04ce77fd5337d9ff04",
+  "help_byte_start": 9788028,
+  "help_byte_end_exclusive": 9793199,
+  "static_evidence_id": "ev_a5741d7426810a0ccab286f8c817898a562e9fbc21ce0a38984b760ec3230f5c",
+  "reference_capture_evidence_id": "ev_6827aa14339c210296dfb9f46b81c93bd7e082edb74e05326631595007638c59",
+  "before_capture_evidence_id": "ev_af4e1f535b06ac551967718e2e8d3c2d099aafc9853bef8aed282b963b9ea353",
+  "after_capture": "Visible browser Page.captureScreenshot after npm run build",
+  "viewport": [
+    1280,
+    820
+  ],
+  "theme": "stone dark",
+  "images": {
+    "reference-dark.png": "332d22c8f68922d25e4c06ce641c21e33c7e25b40778fb9dc8a2bb68d5d3a265",
+    "after-dark.png": "12fa46aca07daaf1f0b533e2e3cf84b1757f8d63677f17d78f07d49793962d54",
+    "before-dark.png": "0e61a835fae91482b4ff25ec036617024813ffede8629375248a3cdc32d43c70"
+  },
+  "limitations": [
+    "Full-screen differences retained and nonzero",
+    "Light-theme fixture invalid",
+    "Projects datasets differ",
+    "Palette keyboard not exercised",
+    "Installed native parity unverified"
+  ]
+}

@@ -10,11 +10,11 @@
 // row) does (state/openChat.ts). Their Reason Sessions stay in Reason.
 import { useCallback, useEffect, useState } from "react";
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
+import { ContextMenu, MenuItem } from "../../components/menu/ContextMenu";
 import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
 import { configureReason, configureReasonDefault } from "../chat/reasonChat.ts";
-import { defaultChatConfig } from "../chat/chatModel.ts";
 import { CHAT_ID_SEGMENT, NEW_CHAT_TITLE, newChatId } from "../chat/chatTabs.ts";
 import { hideChat, showChat } from "../chat/chatRuntime.ts";
 import type { PromptAttachment } from "../chat/reason.ts";
@@ -24,6 +24,10 @@ import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { chatTabWrites, restoredChatTabs, setOpenReviewChats } from "../../state/openChat.ts";
 import { inTauri } from "../../backend.ts";
 import { invoke } from "@tauri-apps/api/core";
+import { initializeLoadoutChoice } from "../chat/chatModelChoice.ts";
+import { loadoutSlots, parseFavorites } from "../../settings/agents/loadout.ts";
+import { listFavorites } from "../../settings/agents/api";
+import { sessionConfig } from "../chat/chatModel.ts";
 
 export interface ReviewTab {
   chatId: string;
@@ -142,12 +146,18 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
    * "+" and ⌘T ("New chat, same files"): a new Untitled chat in this
    * workspace on the default model, shown once created. Returns its chat id.
    */
-  const newChat = useCallback((): string => {
-    const chatId = newChatId(workspace.id, Date.now(), ++seq);
-    configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
-    save([...currentTabs(workspace.id), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
-    onOpen(chatId);
-    return chatId;
+  const newChat = useCallback(async (): Promise<string | undefined> => {
+    try {
+      const [settings, rows] = await Promise.all([getSettings(), listFavorites().catch(() => [])]);
+      const chatId = newChatId(workspace.id, Date.now(), ++seq);
+      const choice = initializeLoadoutChoice(chatId, loadoutSlots(settings, parseFavorites(rows)));
+      configureReasonDefault(chatId, Promise.resolve(sessionConfig(choice.model, choice.effort)));
+      save([...currentTabs(workspace.id), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
+      onOpen(chatId);
+      return chatId;
+    } catch (e) {
+      setError(`Failed to create chat: ${e instanceof Error ? e.message : String(e)}`);
+    }
   }, [workspace.id, save, onOpen]);
 
   /** ⌘⇧T: put a closed chat tab back at the end of the strip and show it. */
@@ -160,7 +170,15 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
     [workspace.id, save, onOpen],
   );
 
-  return { tabs, start, close, fork, newChat, reopen, error };
+  /** "Rename chat" on a review, fork or "+" tab. */
+  const rename = useCallback(
+    (chatId: string, title: string) => {
+      save(currentTabs(workspace.id).map((t) => (t.chatId === chatId ? { ...t, title } : t)));
+    },
+    [workspace.id, save],
+  );
+
+  return { tabs, start, close, fork, newChat, reopen, rename, error };
 }
 
 /**
@@ -180,21 +198,13 @@ async function reviewPreferences(repoId: string, repoPath: string, workspacePath
   return repoReviewPrompt(repoId);
 }
 
-const MENU_WIDTH = 180;
-
-/** The Review button; right-click offers "Edit before sending". */
-export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void; onEdit: () => void; error: string | null }) {
+/**
+ * The Review button; right-click opens Conductor's one-item menu (`u6s`):
+ * "Edit before sending", disabled like the button in a read-only workspace.
+ */
+export function ReviewButton({ onReview, onEdit, error, disabled }: { onReview: () => void; onEdit: () => void; error: string | null; disabled?: boolean }) {
   const [menu, setMenu] = useState<{ x: number; y: number } | null>(null);
-  useEffect(() => {
-    if (!menu) return;
-    const close = () => setMenu(null);
-    window.addEventListener("click", close);
-    window.addEventListener("blur", close);
-    return () => {
-      window.removeEventListener("click", close);
-      window.removeEventListener("blur", close);
-    };
-  }, [menu]);
+  const closeMenu = useCallback(() => setMenu(null), []);
   return (
     <span className="review-action">
       {error && (
@@ -206,6 +216,7 @@ export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void
         <button
           className="btn btn-small review-button"
           onClick={onReview}
+          disabled={disabled}
           onContextMenu={(e) => {
             e.preventDefault();
             setMenu({ x: e.clientX, y: e.clientY });
@@ -215,12 +226,12 @@ export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void
         </button>
       </Tooltip>
       {menu && (
-        // The button sits at the window's right edge: keep the menu inside it.
-        <div className="review-menu" role="menu" style={{ left: Math.max(4, Math.min(menu.x, window.innerWidth - MENU_WIDTH - 8)), top: menu.y }}>
-          <button role="menuitem" onClick={onEdit}>
+        // ContextMenu flips and shifts it inside the window (the button sits at the right edge).
+        <ContextMenu at={menu} label="Review actions" onClose={closeMenu}>
+          <MenuItem disabled={disabled} onSelect={onEdit}>
             Edit before sending
-          </button>
-        </div>
+          </MenuItem>
+        </ContextMenu>
       )}
     </span>
   );
@@ -229,8 +240,8 @@ export function ReviewButton({ onReview, onEdit, error }: { onReview: () => void
 function ReviewIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z" />
-      <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+      <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+      <circle cx="12" cy="12" r="3" />
     </svg>
   );
 }

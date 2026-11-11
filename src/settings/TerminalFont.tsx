@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Slider } from "@base-ui/react/slider";
 import { monoFontError, withAppearance } from "./appearance";
 import type { Settings } from "./types";
 import {
@@ -48,7 +49,13 @@ export function TerminalFontRows({ settings, save }: Props) {
         spellCheck={false}
         autoComplete="off"
         value={family}
-        onChange={(e) => setFamily(e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          setFamily(value);
+          const next = value.trim();
+          if (next === saved || (next !== "" && monoFontError(next) !== null)) return;
+          save(withAppearance(settings, "terminal_font_family", next === "" ? null : next));
+        }}
         onBlur={commitFamily}
         onKeyDown={(e) => e.key === "Enter" && commitFamily()}
       />
@@ -58,15 +65,22 @@ export function TerminalFontRows({ settings, save }: Props) {
           <span className="settings-row-label">Terminal Font Size</span>
           <span className="settings-row-help">{size}px</span>
         </div>
-        <input
-          type="range"
-          aria-label="Terminal Font Size"
+        <Slider.Root
+          className="settings-terminal-slider"
           min={TERMINAL_FONT_SIZE_MIN}
           max={TERMINAL_FONT_SIZE_MAX}
           step={1}
+          largeStep={10}
           value={size}
-          onChange={(e) => save(withAppearance(settings, "terminal_font_size", Number(e.target.value)))}
-        />
+          onValueChange={(value) => save(withAppearance(settings, "terminal_font_size", value))}
+        >
+          <Slider.Control className="settings-terminal-slider-control">
+            <Slider.Track className="settings-terminal-slider-track">
+              <Slider.Indicator className="settings-terminal-slider-fill" />
+            </Slider.Track>
+            <Slider.Thumb className="settings-terminal-slider-thumb" aria-label="Terminal Font Size" />
+          </Slider.Control>
+        </Slider.Root>
       </div>
       <div
         className="settings-terminal-preview"

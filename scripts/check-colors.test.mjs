@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { findColors } from "./check-colors.mjs";
+import { readFileSync } from "node:fs";
+import { findColors, findNeutralLeaks, hasHue, neutralModes } from "./check-colors.mjs";
 
 const rules = (text, path) => findColors(text, path).map((h) => `${h.rule}: ${h.match}`);
 
@@ -21,4 +22,37 @@ test("ignores issue numbers, comments, token names and non-colour words", () => 
   assert.deepEqual(rules("/* was #14100f0d light, #ffffff0d dark */\n.x { color: var(--collab-blue); white-space: nowrap; }", "a.css"), []);
   assert.deepEqual(rules('.n[data-color="blue"] { color: var(--tint-blue-600); }', "a.css"), []);
   assert.deepEqual(rules('const url = "https://example.com/#abc";', "a.ts"), []);
+});
+
+// A cut-down tokens.css: Neutral greys, one fixed Stone token, one meaningful hue.
+const TOKENS = `
+:root { --conductor-accent: #fafaf9; --success: #16a34a; --mix: color-mix(in srgb, var(--conductor-accent) 50%, transparent); }
+:root[data-theme="dark"] { --conductor-accent: #2c2826; }
+:root:not([data-color-palette]), :root[data-color-palette="neutral"] { --bg: #ffffff; --surface-accent: #f5f5f5; }
+:root[data-color-palette="neutral"][data-theme="dark"] { --bg: #0a0a0a; --surface-accent: #262626; }
+:root[data-color-palette="neutral"][data-low-contrast][data-theme="dark"] { --bg: #1c1c1c; }
+`;
+const leaks = (text) => findNeutralLeaks(text, "a.css", neutralModes(TOKENS)).map((h) => `${h.line} ${h.token} ${h.mode} ${h.value}`);
+
+test("flags a fixed Stone token under Neutral: the Agents auth cards' leak before the fix", () => {
+  // agents.css on main mapped the card surfaces to Conductor's Stone values.
+  assert.deepEqual(leaks(".oc-ag {\n  --ag-accent: var(--conductor-accent);\n}"), ["2 --conductor-accent light #fafaf9"]);
+  assert.deepEqual(leaks(".x { background: var(--mix); }"), ["1 --mix light color-mix(in srgb, var(--conductor-accent) 50%, transparent)"]);
+});
+
+test("passes palette tokens and colours that carry meaning", () => {
+  assert.deepEqual(leaks(".oc-ag { --ag-accent: var(--surface-accent); --ag-bg: var(--bg); color: var(--success); }"), []);
+  assert.deepEqual(leaks("/* var(--conductor-accent) */ .x { color: var(--undefined-token); }"), []);
+});
+
+test("hasHue reads hex, short hex, alpha hex, hsl() and rgb()", () => {
+  const none = new Map();
+  for (const v of ["#262626", "#fff", "#ffffff1a", "hsl(0 0% 50%)", "rgb(20, 20, 20)", "transparent"]) assert.equal(hasHue(v, none), false, v);
+  for (const v of ["#2c2826", "#fea", "#14100f1a", "hsl(30 8% 91%)", "rgb(44, 40, 38)"]) assert.equal(hasHue(v, none), true, v);
+});
+
+test("the real tokens.css: Neutral has no hue in the Agents page's palette tokens", () => {
+  const modes = neutralModes(readFileSync(new URL("../src/theme/tokens.css", import.meta.url), "utf8"));
+  const css = readFileSync(new URL("../src/settings/agents/agents.css", import.meta.url), "utf8");
+  assert.deepEqual(findNeutralLeaks(css, "src/settings/agents/agents.css", modes), []);
 });

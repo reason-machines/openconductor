@@ -1,0 +1,38 @@
+{
+  "app": "/Applications/Conductor.app",
+  "source": "/Users/sven/code/conductor-rea-work/frontend/dist/assets/renderApp-D_fmY7hW.js",
+  "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "rea_version": "6.7.0",
+  "rea_evidence_id": "ev_118f9505f2b69a7f36f24659a649ccc235c40e8a64f65a2b1d8fd0371ba7f4bb",
+  "limitations": [
+    "Caller-selected source analysis leaves 1907 inventoried files outside analysis scope. Inventory identity covers the complete artifact; relationships through unselected sources remain unknown.",
+    "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+    "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+    "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+    "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+    "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+    "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code.",
+    "assets/renderApp-D_fmY7hW.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing assets/renderApp-D_fmY7hW.js during static"
+  ],
+  "functions": {
+    "Dlo": {
+      "char_offset": 7355984,
+      "source": "function Dlo(t){const e=ne.c(14),{localWorkspaceId:n,workspaceNumber:i}=t;let r;e[0]!==n?(r=()=>{XV({localWorkspaceId:n})},e[0]=n,e[1]=r):r=e[1];const o=r;let a;e[2]!==i?(a=()=>{n5(i,\"workspace ID\").fireAndForget()},e[2]=i,e[3]=a):a=e[3];const c=a;oi(\"workspace.copyLink\",o,Olo);let u;e[4]===Symbol.for(\"react.memo_cache_sentinel\")?(u=p.jsx(Zh,{}),e[4]=u):u=e[4];let d;e[5]===Symbol.for(\"react.memo_cache_sentinel\")?(d=p.jsx(J4,{children:p.jsx(Ss,{commandId:\"workspace.copyLink\"})}),e[5]=d):d=e[5];let h;e[6]!==o?(h=p.jsxs(L1,{onClick:o,children:[u,\"Copy link\",d]}),e[6]=o,e[7]=h):h=e[7];let m;e[8]===Symbol.for(\"react.memo_cache_sentinel\")?(m=p.jsx(YLt,{}),e[8]=m):m=e[8];let g;e[9]!==c?(g=p.jsxs(L1,{onClick:c,children:[m,\"Copy ID\"]}),e[9]=c,e[10]=g):g=e[10];let _;return e[11]!==h||e[12]!==g?(_=p.jsxs(p.Fragment,{children:[h,g]}),e[11]=h,e[12]=g,e[13]=_):_=e[13],_}"
+    },
+    "Plo": {
+      "char_offset": 7356853,
+      "source": "function Plo(t){const e=ne.c(15),{localWorkspaceId:n,number:i}=t,r=`W-${i}`,o=`Copy link to ${r}`;let a;e[0]!==n?(a=()=>{XV({localWorkspaceId:n})},e[0]=n,e[1]=a):a=e[1];let c;e[2]!==o||e[3]!==a||e[4]!==r?(c=p.jsx(Xn,{asChild:!0,children:p.jsx(A6,{asChild:!0,children:p.jsx(\"button\",{type:\"button\",\"aria-label\":o,onClick:a,className:\"h-6 shrink-0 cursor-pointer rounded-sm px-1.5 font-mono text-sm text-muted-foreground hover:bg-accent hover:text-foreground\",children:r})})}),e[2]=o,e[3]=a,e[4]=r,e[5]=c):c=e[5];let u;e[6]===Symbol.for(\"react.memo_cache_sentinel\")?(u=p.jsx(ni,{children:\"Copy link\"}),e[6]=u):u=e[6];let d;e[7]!==c?(d=p.jsxs(Jn,{children:[c,u]}),e[7]=c,e[8]=d):d=e[8];let h;e[9]!==n||e[10]!==r?(h=p.jsx(gy,{className:\"min-w-[180px]\",children:p.jsx(Dlo,{localWorkspaceId:n,workspaceNumber:r})}),e[9]=n,e[10]=r,e[11]=h):h=e[11];let m;return e[12]!==d||e[13]!==h?(m=p.jsxs(kS,{children:[d,h]}),e[12]=d,e[13]=h,e[14]=m):m=e[14],m}"
+    },
+    "Llo": {
+      "char_offset": 7360017,
+      "source": "function Llo(t){const e=ne.c(19),{workspace:n,repo:i,displayName:r}=t,[o,a]=$.useState(!1),c=$.useRef(null),{container:u,positionMethod:d}=hc();zf(o);let h;e[0]!==r?(h=p.jsx(\"span\",{className:\"block min-w-0 truncate text-xs font-medium\",children:r}),e[0]=r,e[1]=h):h=e[1];let m;e[2]!==h||e[3]!==n.localId?(m=p.jsx(o8i,{localWorkspaceId:n.localId,bare:!1,children:h}),e[2]=h,e[3]=n.localId,e[4]=m):m=e[4];let g;e[5]!==r||e[6]!==i||e[7]!==n?(g=p.jsx(E1,{ref:c,initialFocus:c,className:\"w-72 space-y-1 rounded-lg ring-1 ring-popover-ring bg-popover p-4 text-popover-foreground shadow-md outline-none origin-(--transform-origin) data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95 transition-[opacity,scale] duration-100\",children:p.jsx(a8i,{workspace:n,displayName:r,repo:i})}),e[5]=r,e[6]=i,e[7]=n,e[8]=g):g=e[8];let _;e[9]!==d||e[10]!==g?(_=p.jsx(S1,{className:\"z-50\",align:\"start\",sideOffset:4,positionMethod:d,children:g}),e[9]=d,e[10]=g,e[11]=_):_=e[11];let v;e[12]!==u||e[13]!==_?(v=p.jsx(w1,{container:u,children:_}),e[12]=u,e[13]=_,e[14]=v):v=e[14];let x;return e[15]!==o||e[16]!==m||e[17]!==v?(x=p.jsxs(X1,{open:o,onOpenChange:a,children:[m,v]}),e[15]=o,e[16]=m,e[17]=v,e[18]=x):x=e[18],x}"
+    },
+    "headerHostDispatch": {
+      "char_offset": 7357794,
+      "source": "function s8i(t){const e=ne.c(27),{localWorkspaceId:n}=t;let i;e[0]!==n?(i={localWorkspaceId:n},e[0]=n,e[1]=i):i=e[1];const{data:r}=Ms(i),o=pI(r??void 0),a=mI(),c=r?.repositoryId;let u;e[2]!==c?(u={repoId:c},e[2]=c,e[3]=u):u=e[3];const{data:d}=Y1(u),{organization:h}=so(),m=h===void 0?void 0:fc(h),{data:g}=EDt(),_=m===\"cloud\",v=r?.userSetWorkspaceName,x=r?.workspaceName,w=r?.directoryName,E=r?.prTitle,k=r?.intendedTargetBranch,I=r?.host;let R;e[4]!==o||e[5]!==a||e[6]!==v||e[7]!==x||e[8]!==w||e[9]!==E||e[10]!==k||e[11]!==I?(R=$V({userSetWorkspaceName:v,workspaceName:x,directoryName:w,prTitle:E,branch:o,branchPrefix:a,targetBranch:k,host:I}),e[4]=o,e[5]=a,e[6]=v,e[7]=x,e[8]=w,e[9]=E,e[10]=k,e[11]=I,e[12]=R):R=e[12];const O=R;let D;e[13]!==a||e[14]!==O||e[15]!==r?(D=O??(r?.placeholderBranchName?pGe({branch:r.placeholderBranchName,branchPrefix:a}):void 0),e[13]=a,e[14]=O,e[15]=r,e[16]=D):D=e[16];const P=D;if(!r)return null;if(r.host!==gn){const B=h===void 0?void 0:pPt({workspace:r,organizationHostingMode:m,legacyCloudWorkspaceWriteAccessEnabled:g});let F;return e[17]!==P||e[18]!==_||e[19]!==d||e[20]!==B||e[21]!==r?(F=p.jsx(Mlo,{workspace:r,repo:d,displayName:P,isCloudOrg:_,surfaceMode:B}),e[17]=P,e[18]=_,e[19]=d,e[20]=B,e[21]=r,e[22]=F):F=e[22],F}let L;return e[23]!==P||e[24]!==d||e[25]!==r?(L=p.jsx(Llo,{workspace:r,repo:d,displayName:P}),e[23]=P,e[24]=d,e[25]=r,e[26]=L):L=e[26],L}"
+    }
+  },
+  "app_version": "0.87.6",
+  "app_binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+  "observation": "Static only; no native launch/input, app modified or database read."
+}

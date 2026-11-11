@@ -3,6 +3,7 @@
 // localStorage keeps only UI preferences (selection, sidebar visibility, collapsed repos).
 import type { AppState, Repo, Selection, UnreadChat, Workspace } from "./types";
 import { isWorkspaceStatus } from "./workspaceStatus.ts";
+import { parseStatusCollapsed } from "../home/sidebarGroupBy.ts";
 import { restoreChatTabs, type StoredChatTab } from "./openChat.ts";
 
 export interface DbRepoRow {
@@ -31,6 +32,8 @@ export interface DbWorkspaceRow {
   derivedStatus: string | null;
   manualStatus: string | null;
   workspacePath: string | null;
+  linkedWorkspaceIds?: string[];
+  linkedDirectoryPaths?: string[];
   /** `intended_target_branch`; absent from rows of an older backend. */
   intendedTargetBranch?: string | null;
   pinnedAt: string | null;
@@ -40,6 +43,8 @@ export interface DbWorkspaceRow {
   unreadChats?: { id: string; updatedAt: string }[];
   /** The open chat tabs besides the main chat (review, fork, "+"), oldest first; absent from rows of an older backend. */
   chatTabs?: StoredChatTab[];
+  /** The main chat's own title once renamed ("Rename chat"); absent otherwise and from rows of an older backend. */
+  chatTitle?: string | null;
   /** The PR's title and body as last stored (`pr_title`, `pr_description`). */
   prTitle: string | null;
   prDescription: string | null;
@@ -57,7 +62,11 @@ export interface DbWorkspaceRow {
 export interface UiPrefs {
   selection: Selection;
   sidebarVisible?: boolean;
+  /** Repository groups folded by hand. */
   collapsed: string[];
+  /** Repository groups unfolded by hand; the others follow the open workspace (isRepoCollapsed). */
+  expanded: string[];
+  sidebarStatusCollapsed?: AppState["sidebarStatusCollapsed"];
 }
 
 /** Rows that are not in the sidebar: archived, being archived, or deleted. */
@@ -82,6 +91,8 @@ export function workspaceFromRow(w: DbWorkspaceRow): Workspace {
     createdAt: sqliteTime(w.createdAt),
     updatedAt: w.updatedAt ? sqliteTime(w.updatedAt) : undefined,
     path: w.workspacePath ?? undefined,
+    linkedWorkspaceIds: w.linkedWorkspaceIds ?? [],
+    linkedDirectoryPaths: w.linkedDirectoryPaths ?? [],
     placeholderBranchName: w.placeholderBranchName,
     targetBranch: w.intendedTargetBranch ?? null,
     /* sidebar: pin, unread and status columns */
@@ -94,6 +105,7 @@ export function workspaceFromRow(w: DbWorkspaceRow): Workspace {
     number: w.number ?? null,
     state: w.state,
     userSetWorkspaceName: w.userSetWorkspaceName || undefined,
+    chatTitle: w.chatTitle ?? undefined,
   };
 }
 
@@ -167,19 +179,25 @@ export function prefsOf(state: AppState): UiPrefs {
   return {
     selection: state.selection,
     sidebarVisible: state.sidebarVisible,
-    collapsed: state.repos.filter((r) => r.collapsed).map((r) => r.id),
+    collapsed: state.repos.filter((r) => r.collapsed === true).map((r) => r.id),
+    expanded: state.repos.filter((r) => r.collapsed === false).map((r) => r.id),
+    ...(state.sidebarStatusCollapsed ? { sidebarStatusCollapsed: state.sidebarStatusCollapsed } : {}),
   };
 }
 
 export function parsePrefs(raw: string | null): UiPrefs {
-  const fallback: UiPrefs = { selection: { kind: "root" }, collapsed: [] };
+  const fallback: UiPrefs = { selection: { kind: "root" }, collapsed: [], expanded: [] };
+  const ids = (v: unknown): string[] => (Array.isArray(v) ? v.filter((id): id is string => typeof id === "string") : []);
   if (!raw) return fallback;
   try {
     const p = JSON.parse(raw) as Partial<UiPrefs>;
+    const sidebarStatusCollapsed = parseStatusCollapsed(p.sidebarStatusCollapsed);
     return {
       selection: p.selection?.kind === "workspace" || p.selection?.kind === "home" || p.selection?.kind === "root" ? p.selection : fallback.selection,
       sidebarVisible: typeof p.sidebarVisible === "boolean" ? p.sidebarVisible : undefined,
-      collapsed: Array.isArray(p.collapsed) ? p.collapsed.filter((id): id is string => typeof id === "string") : [],
+      collapsed: ids(p.collapsed),
+      expanded: ids(p.expanded),
+      ...(sidebarStatusCollapsed ? { sidebarStatusCollapsed } : {}),
     };
   } catch {
     return fallback;

@@ -27,6 +27,8 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -101,6 +103,7 @@ exe(custom, codexWrapper("codex-custom"));
 const env = {
   ...process.env,
   HOME: home,
+  OPENCONDUCTOR_HOME: join(home, ".openconductor"),
   SHELL: "/bin/bash",
   OPENCONDUCTOR_AGENT_BINARY_MANIFEST: manifestPath,
 };
@@ -110,6 +113,7 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
+const startup = new WebDriver(base);
 let sessionUrl = null;
 
 async function wd(method, path, body) {
@@ -176,6 +180,7 @@ try {
     capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } },
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
+  startup.sessionId = session.sessionId;
   await waitFor("the app to load", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
 
   // 1. Startup downloads.
@@ -225,6 +230,7 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  await finishStartup(startup);
   await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
   // The chip renders only once the chat's model resolves (ChatModelPicker returns null until then), after the chat text.
   await waitFor("the model picker chip", () => run("return !!document.querySelector(\"[data-testid='composer-model-button']\") || null;"));
@@ -234,7 +240,7 @@ try {
   );
   await run("[...document.querySelectorAll('.oc-model-menu .oc-model-item')].find((b) => b.textContent.trim() === 'Codex').click();");
   await waitFor("Codex on the picker chip", () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.title === 'Codex' || null;"));
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text: "which codex is this" });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text: "which codex is this" });
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
   await waitFor("the reply", () => chatText().then((t) => t && t.includes("turn 1: which codex is this")));
   await screenshot("agent-binaries-1-codex-chat");

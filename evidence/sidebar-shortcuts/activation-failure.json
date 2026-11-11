@@ -1,0 +1,36 @@
+{
+  "theme": "dark",
+  "group": "status",
+  "filter": "tide-web",
+  "context": "expanded",
+  "target": {
+    "title": "Ada/rate limit headers · ada/rate-limit-headers · Ready",
+    "number": 5
+  },
+  "observed": {
+    "selection": {
+      "kind": "workspace",
+      "repoId": "repo-tide-web",
+      "workspaceId": "ws-osaka"
+    },
+    "active": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+    "rows": [
+      {
+        "title": "Add search to settings · ada/settings-search · Ready",
+        "number": "1"
+      },
+      {
+        "title": "Ada/fix login redirect · ada/fix-login-redirect · Ready",
+        "number": "2"
+      },
+      {
+        "title": "Cursor pagination for /events · ada/pagination-cursor · Ready",
+        "number": "3"
+      },
+      {
+        "title": "Ada/dark mode tokens · ada/dark-mode-tokens · Ready",
+        "number": "4"
+      }
+    ]
+  }
+}

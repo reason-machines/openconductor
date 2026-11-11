@@ -18,36 +18,93 @@ def oc_settings(label=None, extra=()):
     return s+list(extra)
 OPEN_WS=[{"click":".sb-ws-name","after_ms":1500}]
 HOME=[{"click":".sb-primary .sb-row","text":"Home","after_ms":800}]
+# Chat turns from tools/reason-acp/fake_reason_acp.py, which the lane puts on PATH as `reason` for
+# states with oc_fake_reason. The prompts are its aliases for Conductor's reference turns.
+LISBON_PROMPT="After signing in, users with an expired session get bounced between /login and /dashboard forever. Can you find out why and fix it?"
+TALLINN_PROMPT="Return X-RateLimit-Limit and X-RateLimit-Remaining headers on every API response."
+def send_prompt(text):
+    # React's native value setter plus an input event: WebDriver typing loses keys when the
+    # workspace terminal takes focus (#402).
+    return [{"wait":".composer textarea"},
+            {"exec":"const ta=document.querySelector('.composer textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(ta,arguments[0]);ta.dispatchEvent(new Event('input',{bubbles:true}));","args":[text],"after_ms":300},
+            {"click":".composer button[type=submit]","after_ms":500}]
 
 # screens and routes
 st("onboarding-signed-out","Onboarding, signed out", ref("/", "signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
-st("first-run-onboarding","First-run onboarding", ref("/first-run-onboarding","signed-in"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/first-run-onboarding"}])
+# Conductor renders /first-run-onboarding only through its auth guard: signed in with
+# projects the harness redirects it to "/", so the reference is the signed-out first run.
+st("first-run-onboarding","First-run onboarding", ref("/first-run-onboarding","signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/first-run-onboarding"}])
 st("home-empty","Home, no projects", ref("/","signed-in"), oc=[{"click":".onb-continue","after_ms":1000}], oc_fresh=True)
 st("home","Home with projects", ref("/"), oc=HOME, covers=[{"kind":"route","name":"/"}])
 st("all-workspaces","All workspaces list", ref("/all-workspaces"), oc=HOME, covers=[{"kind":"route","name":"/all-workspaces"}])
 st("create","Create workspace composer", ref(actions=[{"click":"text=Create >> nth=0"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800}], covers=[{"kind":"route","name":"/create"}])
-st("create-repo-picker","Create: repo picker open", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"text=Select repo"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800},{"click":"form.create-ws button","nth":0}])
+st("create-repo-picker","Create: repo picker open", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"text=Select repo"}]), oc=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800},{"click":".create-repo-trigger"}])
+# Conductor's "Create from" picker (l4a): PRs first; Branches lists every branch but the default one.
+CREATE_FROM_OC=[{"click":".sb-primary .sb-row","text":"Create","after_ms":800},{"click":"[aria-label='Create from']","after_ms":800}]
+st("create-from-prs","Create from: PRs", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"[aria-label='Create from']"}]), oc=CREATE_FROM_OC)
+st("create-from-branches","Create from: Branches", ref(actions=[{"click":"text=Create >> nth=0"},{"click":"[aria-label='Create from']"},{"click":"[role=tab] >> text=Branches"}]), oc=CREATE_FROM_OC+[{"click":"[role=tab]","text":"Branches","after_ms":600}], covers=[{"kind":"tab","name":"Branches"}])
 st("workspace-chat","Workspace: chat transcript", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]), oc=OPEN_WS, covers=[{"kind":"route","name":"/repository/$repositoryId/workspace/$localWorkspaceId"}])
 st("workspace-new-chat","Workspace: new empty chat", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"}]), oc=OPEN_WS)
-st("workspace-tool-calls","Chat: tool calls expanded", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=4 tool calls, 2 messages"}]), oc=OPEN_WS)
+st("workspace-tool-calls","Chat: tool calls expanded", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=4 tool calls, 2 messages"}]),
+   oc=OPEN_WS+send_prompt(LISBON_PROMPT)+[{"wait":".chat-tool-summary-row","timeout":30000,"after_ms":800},{"click":".chat-tool-summary-row","after_ms":800}], oc_fake_reason=True)
 st("diff-unified","Diff: file, unified", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500}])
 st("diff-split","Diff: file, split", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"},{"click":"role=button[name='Split view']"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500},{"click":"button","text":"Split view"}])
 st("diff-entire-file","Diff: entire file", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=auth.ts >> nth=-1"},{"click":"role=button[name='Entire file']"}]), oc=OPEN_WS+[{"click":"button.oc-change[title='Open src/lib/auth.ts']","after_ms":1500},{"click":"button","text":"Entire file"}])
-st("needs-permission","Workspace needing permission", ref(actions=[{"click":"text=tide-api"},{"click":"text=Ada/rate limit headers"}]), oc_reason="the OpenConductor seed has no workspace with a pending permission request")
+# The terminal panel's Setup tab (Conductor's `nro`, local workspace): with no setup script, the
+# dashed "Add setup script" card; with one (?oc_setup_script seeds tide-web's settings.local.toml in
+# the harness), "No setup script output" and Run setup. Both open the workspace with an empty chat, as
+# workspace-new-chat does. Side-by-side: tools/side-by-side/setup-tab.mjs.
+SETUP_TAB=[{"click":".ws-strip-tabs [role=tab]","text":"Setup","after_ms":800}]
+st("panel-setup-add","Terminal panel: Setup, no setup script", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Setup"}]), oc=OPEN_WS+SETUP_TAB)
+st("panel-setup-idle","Terminal panel: Setup, before setup runs", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Setup"}], query={"oc_setup_script":"npm install"}),
+   oc_reason="the lane's seeded repositories have no setup script; tools/side-by-side/setup-tab.mjs captures this state",
+   covers=[{"kind":"empty-state","name":"No setup script output"}])
+# The Run tab next to it: no run script (the dashed "Add run script" card), and a run script that
+# has not run yet (Conductor's idle "Start Run" view and the strip's run split button).
+RUN_TAB=[{"click":".ws-strip-tabs [role=tab]","text":"Run","after_ms":800}]
+st("panel-run-add","Terminal panel: Run, no run script", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"}]), oc=OPEN_WS+RUN_TAB)
+st("panel-run-idle","Terminal panel: Run, before the run script runs", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"}], query={"oc_run_script":"npm run dev"}),
+   oc_reason="the lane's seeded repositories have no run script; tools/side-by-side/setup-tab.mjs captures this state")
+# Conductor's startup Xcode license check (`HBr` -> `QQt`) when `xcodebuild -license check` says the
+# license is not accepted (?oc_xcode_license=unaccepted makes the harness a macOS user agent and
+# answers the check that way), over the same workspace's Run tab.
+st("toast-xcode-license","Toast: Xcode license is not accepted", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/dark mode tokens"},{"click":"[role=tab] >> text=Run"},{"wait":"text=Xcode license is not accepted"}], query={"oc_xcode_license":"unaccepted"}),
+   oc_reason="the lane's Linux build skips the macOS-only check; tools/side-by-side/setup-tab.mjs captures this state",
+   covers=[{"kind":"toast","name":"Xcode license is not accepted"}])
+# Settings › tide-web › Scripts, Add, Save while the repository's settings file cannot be written
+# (?oc_fail_settings_write=1): Conductor's settings service toasts "Failed to save setting" (index `Sz`).
+st("toast-save-setting-failed","Toast: Failed to save setting (Scripts, read-only settings file)", ref("/settings/repos/repo-tide-web/scripts", actions=[{"click":"button:text-is('Add')"},{"click":"[role=dialog] button:has-text('Save')"},{"wait":"text=Failed to save setting"}], query={"oc_fail_settings_write":"1"}),
+   oc_reason="the lane's settings files are writable; tools/side-by-side/setup-tab.mjs captures this state")
+# Conductor's harness sends the sidecar's toolApproval request for "tallinn" (scenario needs-permission,
+# tools/screens/seed-data.js); OpenConductor gets the same turn from the fake `reason acp` ("tallinn").
+st("needs-permission","Workspace needing permission", ref(scenario="needs-permission", actions=[{"click":"text=tide-api"},{"click":"text=Ada/rate limit headers"},{"wait":"text=Do you want to run this command?"}]),
+   oc=OPEN_WS+send_prompt(TALLINN_PROMPT)+[{"wait":"[data-testid=chat-permission-request]","timeout":30000,"after_ms":800}], oc_fake_reason=True)
 for path,title in [("/dashboard","Dashboard"),("/routines","Routines"),("/routines/new","New routine"),("/team","Team"),("/diagnostics","Diagnostics"),("/new-member-onboarding","New member onboarding"),("/cloud-collab-onboarding","Cloud collaboration onboarding")]:
     sid="route-"+path.strip("/").replace("/","-")
     if path == "/diagnostics":
         # Help > Diagnostics opens it (Conductor's footer help popover navigates to /diagnostics).
         st(sid, title, ref(path, wait=False), oc=[{"click":".sb-footer-btn","text":"Help"},{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800}], covers=[{"kind":"route","name":path}])
         continue
-    st(sid, title, ref(path, wait=path not in ("/diagnostics","/new-member-onboarding","/cloud-collab-onboarding")), oc_reason="OpenConductor has no route or view for "+path, covers=[{"kind":"route","name":path}])
-st("login","Login", ref("/login","signed-out"), oc=[], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
+    # OpenConductor's /routines pages run on Reason Loops and need a signed-in Reason account, which the lane's
+    # throwaway HOME has none of; tools/side-by-side/routines.mjs scores them with the Reason API mocked.
+    reason = ("the UI map lane has no Reason account; scored by tools/side-by-side/routines.mjs" if path.startswith("/routines")
+              else "OpenConductor has no route or view for "+path)
+    st(sid, title, ref(path, wait=path not in ("/diagnostics","/new-member-onboarding","/cloud-collab-onboarding")), oc_reason=reason, covers=[{"kind":"route","name":path}])
+# The gate reads the path once at startup, so the lane loads /login rather than pushing it.
+st("login","Login", ref("/login","signed-out"), oc=[{"exec":"location.assign('/login');"},{"wait":".onb-login","after_ms":800}], oc_fresh=True, covers=[{"kind":"route","name":"/login"}])
 
 # settings
 USER=[("general","General"),("account","Account"),("models","Default models"),("providers","Agents"),("environment","Environment"),("git","Git"),("ports",None),("appearance","Appearance"),("key-bindings","Keyboard shortcuts"),("experimental","Experimental"),("advanced","Advanced"),("terminal","Big terminal"),("internal",None)]
 for tab,label in USER:
     path="/settings/user/"+tab
-    if label:
+    if tab=="terminal":
+        # Conductor lists the Big terminal tab (under More) only while Big terminal mode is on, and
+        # /settings/user/terminal renders General when it is off, so both sides turn the mode on first.
+        st("settings-terminal", "Settings > Big terminal",
+           ref("/settings/user/experimental", actions=[{"click":"#big-terminal-mode"},{"click":"text=\"Big terminal\""}]),
+           oc=oc_settings("Experimental", [{"click":"input[role=switch]","text":"Big terminal mode","after_ms":400},{"click":".settings-nav .nav-item","text":"Big terminal","after_ms":600}]),
+           covers=[{"kind":"route","name":path},{"kind":"settings-page","name":tab}])
+    elif label:
         st("settings-"+tab, "Settings > "+(label), ref(path), oc=oc_settings(label), covers=[{"kind":"route","name":path},{"kind":"settings-page","name":tab}])
     else:
         st("settings-"+tab, "Settings > "+tab, ref(path), oc_reason="OpenConductor's settings have no %s page" % tab, covers=[{"kind":"route","name":path},{"kind":"settings-page","name":tab}])
@@ -64,18 +121,35 @@ st("settings-repo-misc-lower", "Settings > tide-web > Misc, scrolled to Remove r
    covers=[{"kind":"settings-page","name":"repo-misc"}])
 for sec in ["github","members","preferences","computer","environment","mcp","prompts"]:
     path="/settings/organization/"+sec
-    st("settings-org-"+sec, "Settings > Organization > "+sec, ref(path), oc_reason="OpenConductor has no organization settings", covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
-st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"), oc_reason="OpenConductor has no cloud settings", covers=[{"kind":"route","name":"/settings/cloud/setup"}])
+    # Conductor renders these only for a member of a cloud organization (`lW`; any other account is
+    # sent to /settings/user/general), so the reference runs with ?oc_org=cloud
+    # (tools/screens/org-fixtures.js). OpenConductor's organization is the signed-in Reason workspace,
+    # which the lane's throwaway HOME has none of; tools/side-by-side/org-settings.mjs scores them.
+    # The Cloud computer page (where /github redirects) shows tide-web twice, so it waits for its own copy.
+    # /github is Conductor's redirect to /computer (`REa`), so that is where its reference lands.
+    r = (ref(path, wait=False, actions=[{"wait":"text=Configure your organization's shared cloud computer."}], query={"oc_org":"cloud"},
+             **({"expect_path":"/settings/organization/computer"} if sec=="github" else {}))
+         if sec in ("github","computer") else ref(path, query={"oc_org":"cloud"}))
+    st("settings-org-"+sec, "Settings > Organization > "+sec, r,
+       oc_reason="the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
+       covers=[{"kind":"route","name":path},{"kind":"settings-page","name":"organization-"+sec}])
+# The lane's throwaway HOME has no Reason login, so Settings lists no Cloud group to click: open the page
+# the way create's "Set up cloud" does (the app's open-settings event). Its steps then read signed out.
+st("settings-cloud-setup","Settings > Cloud setup", ref("/settings/cloud/setup"),
+   oc=oc_settings(None,[{"exec":"window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'setup-cloud'}}))","after_ms":2500}]),
+   covers=[{"kind":"route","name":"/settings/cloud/setup"},{"kind":"settings-page","name":"setup"}])
 st("settings-search","Settings search", ref("/settings/user/general", actions=[{"fill":["input[placeholder='Search settings']","branch"]}]), oc=oc_settings(None,[{"type":"branch","css":".settings input[type=search], .settings input[placeholder]"}]))
 
 # palette
 st("palette-all","Command palette", ref(actions=[{"press":"Meta+k"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800}])
 st("palette-workspaces","Command palette: Workspaces tab", ref(actions=[{"press":"Meta+k"},{"click":"[role=dialog] >> text=Workspaces"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"click":"[role=dialog] button, [role=dialog] [role=tab]","text":"Workspaces"}])
 st("palette-search","Command palette: search", ref(actions=[{"press":"Meta+k"},{"fill":["[role=dialog] input","login"]}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"login"}])
+# A query nothing matches: the All tab keeps its Workspaces group with a disabled "No results found" row (`m_a`).
+st("palette-no-results","Command palette: no results", ref(actions=[{"press":"Meta+k"},{"fill":["[role=dialog] input","zzqx"]}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"zzqx"}], covers=[{"kind":"empty-state","name":"No results found"}])
 
 # dialogs
-st("dialog-clone-github","Clone GitHub repo dialog", ref(actions=[{"click":"text=Open GitHub project"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"Open GitHub project","after_ms":600},{"keys":"{Enter}","after_ms":800}], oc_note="OpenConductor's Home shows the workspace list, not the entry cards, so the dialog is opened from the command palette")
-st("dialog-create-project","Create project dialog", ref(actions=[{"click":"text=Quick start"}]), oc=[{"chord":["Meta"],"key":"k","after_ms":800},{"keys":"Quick start","after_ms":600},{"keys":"{Enter}","after_ms":800}], oc_note="opened from the command palette, see dialog-clone-github")
+st("dialog-clone-github","Clone GitHub repo dialog", ref(actions=[{"click":"text=Open GitHub project"}]), oc=[{"click":".home-card","text":"Open GitHub project","after_ms":800}])
+st("dialog-create-project","Create project dialog", ref(actions=[{"click":"text=Quick start"}]), oc=[{"click":".home-card","text":"Quick start","after_ms":800}])
 st("dialog-rename-workspace","Rename workspace dialog", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Rename"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Rename"}])
 st("dialog-keyboard-shortcuts","Keyboard shortcuts dialog", ref(actions=[{"press":"Meta+/"}]), oc=[{"chord":["Meta"],"key":"/","after_ms":800}])
 
@@ -83,7 +157,7 @@ st("dialog-keyboard-shortcuts","Keyboard shortcuts dialog", ref(actions=[{"press
 st("menu-account","Account / computer menu", ref(actions=[{"click":"[aria-label='Account menu']"}]), oc=[{"click":".sb-computer"}])
 st("menu-workspace-context","Workspace context menu", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"}]), oc=[{"rclick":".sb-ws-name"}])
 st("menu-workspace-status","Workspace context menu > Set status", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Set status"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Set status"}])
-st("menu-model-picker","Composer model picker", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=Opus 5 >> nth=-1"}]), oc=OPEN_WS+[{"click":".composer button","text":"Opus 5"}])
+st("menu-model-picker","Composer model picker", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"click":"text=Opus 5 >> nth=-1"}]), oc=OPEN_WS+[{"click":".composer .oc-model-chip"}])
 st("menu-repo-actions","Sidebar repo actions menu", ref(actions=[{"hover":"text=tide-web"},{"click":"[aria-label='tide-web actions']"}]), oc=[{"click":".sb-menu-trigger","text":"tide-web actions"}])
 st("menu-help","Help menu", ref(actions=[{"click":"xpath=//button[@aria-label='Settings']/preceding::button[1]"}]), oc=[{"click":".sb-footer-btn","text":"Help"}])
 HELP_REF={"click":"xpath=//button[@aria-label='Settings']/preceding::button[1]"}
@@ -91,6 +165,36 @@ HELP_OC={"click":".sb-footer-btn","text":"Help"}
 st("dialog-submit-prompt","Help > Submit a prompt dialog", ref(actions=[HELP_REF,{"click":"[role=menuitem] >> text=Submit a prompt"}]), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Submit a prompt","after_ms":800}], covers=[{"kind":"dialog","name":"Submit a prompt"}])
 st("diagnostics-run","Diagnostics after a run", ref("/diagnostics", wait=False, actions=[{"click":"text=Run environment diagnostics"}], final_settle_ms=4000), oc=[HELP_OC,{"click":"[role=menu] [role=menuitem]","text":"Diagnostics","after_ms":800},{"click":".diag-btn-primary","after_ms":4000}])
 st("toast-copied-link","Toast: copied link", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Copy link"}], final_settle_ms=300), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Copy link","after_ms":200}])
+# Right-click menus inside a workspace (side-by-side records: tools/side-by-side/shell-menus.mjs).
+st("menu-chat-tab","Chat tab context menu", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"rclick":"[role=tab][aria-label^='Close chat']"}]), oc=OPEN_WS+[{"rclick":".main-tabs [role=tab]"}])
+st("menu-changes-file","Changes file context menu", ref(actions=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"},{"rclick":".cursor-pointer.mx-2:has-text('auth.test.ts')"}]), oc=OPEN_WS+[{"rclick":".oc-change-row"}])
 st("sidebar-after-archive","Sidebar after archiving a workspace", ref(actions=[{"click":"text=tide-web"},{"rclick":"text=Ada/fix login redirect"},{"click":"[role=menu] >> text=Archive"}]), oc=[{"rclick":".sb-ws-name"},{"click":"[role=menu] [role=menuitem]","text":"Archive","after_ms":1000}])
+# Rename chat dialog and the Review button's right-click menu (chat builder 1)
+LISBON=[{"click":"text=tide-web"},{"click":"text=Ada/fix login redirect"}]
+st("dialog-rename-chat","Rename chat dialog", ref(actions=LISBON+[{"rclick":"[role=tab][aria-label^='Close chat']"},{"click":"[role=menuitem] >> text=Rename chat"}]), oc=OPEN_WS+[{"rclick":".main-tabs [role=tab]","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Rename chat","after_ms":800}])
+# Turn footer "Show message actions" -> Reset chat (Conductor dDo "Reset chat?", renderApp @8,910,893 bytes).
+st("dialog-reset-chat","Reset chat? dialog", ref(actions=LISBON+[{"click":"[aria-label='Show message actions']"},{"click":"[role=menuitem] >> text=Reset chat"}]), oc=OPEN_WS+[{"click":"[aria-label='Show message actions']","after_ms":600},{"click":"[role=menu] [role=menuitem]","text":"Reset chat","after_ms":800}], covers=[{"kind":"dialog","name":"Reset chat?"}])
+# Model picker searched for a model no agent has (Conductor A7o "No models found", @8,601,078 bytes).
+st("empty-model-search","Model picker, search with no match", ref(actions=LISBON+[{"click":"text=Opus 5 >> nth=-1"},{"fill":["[placeholder='Search models']","zzz"]}]), oc=OPEN_WS+[{"click":".composer .oc-model-chip","after_ms":600},{"type":"zzz","css":"[placeholder='Search models']"}], covers=[{"kind":"empty-state","name":"No models found"}])
+st("menu-review-edit","Review button menu (Edit before sending)", ref(actions=LISBON+[{"rclick":"button:has-text('Review') >> nth=0"}]), oc=OPEN_WS+[{"rclick":".review-button","after_ms":600}], covers=[{"kind":"menu","name":"u6s"}])
+
+# Conductor's reference opens on "/" (Home: wordmark and the Open project / Open GitHub
+# project / Quick start cards) and stays there unless its actions open a workspace (Create
+# is a dialog over Home). The seeded OpenConductor app opens on its workspace instead, so
+# those states first go to OpenConductor's root view (Selection "root", the sidebar Home
+# row) and both sides show the same scene behind the dialog, menu or toast. States whose
+# own OpenConductor steps start by navigating (workspace, Home, Settings) are left as is.
+def ref_leaves_home(a):
+    return a.get("click", "").startswith("text=Ada/")
+# On Home both apps fold every repository group nobody has toggled (Conductor's `Dra`:
+# repo-<id> defaultCollapsed unless the open workspace is in the group), so where the
+# reference clicks "tide-web" to unfold it, OpenConductor clicks its tide-web header too.
+OPEN_TIDE = {"click": ".sb-repo-name", "text": "tide-web", "after_ms": 400}
+OC_NAVIGATES = [OPEN_WS[0], HOME[0], SETTINGS[0]]
+for s in S:
+    r = s.get("ref")
+    if (r and r["path"] == "/" and r["scenario"] == "populated" and s.get("oc") and not s.get("oc_fresh")
+            and not any(ref_leaves_home(a) for a in r["actions"]) and s["oc"][0] not in OC_NAVIGATES):
+        s["oc"] = HOME + ([OPEN_TIDE] if {"click": "text=tide-web"} in r["actions"] else []) + s["oc"]
 json.dump({"schema":"openconductor.ui-map-states/1","viewport":{"width":1280,"height":820},"theme":"dark","states":S}, open(__import__('os').path.join(__import__('os').path.dirname(__file__),'states.json'),'w'), indent=1)
 print(len(S))

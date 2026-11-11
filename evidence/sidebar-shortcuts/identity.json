@@ -1,0 +1,20 @@
+{
+  "sourceCommit": "6b8838ccc1f70c4cb05e6028f6db76eb8ec0ca68",
+  "sourceTree": "c0bbd85ffdc7e54fa19b35ac4a1135821d44ac13",
+  "contexts": 42,
+  "activationAssertions": 162,
+  "files": {
+    "src/App.tsx": "268ed9bf2ab0fbcf17d3461ee26e7cbcecb3be1cd792a81c7f9830b0182c2266",
+    "src/components/Sidebar.tsx": "fd693627253626e9d76d1dc9276e83962f79058379c0fb01db91b884c46883d0",
+    "src/palette/PaletteHost.tsx": "0cf92bb8bae50fe5d3b01018f203dc7d5c9cffd302b424f7d0fff2f658b8b2af",
+    "src/palette/fromAppState.ts": "34d7cd3d161daa3dae2e073e47ab96ac3302cd57a76f6b9f79ce0b90f2c4c440",
+    "src/palette/fromAppState.test.ts": "6ffc210721b0ac5ad183bf50a46272e3c34831ee76a7688c4120323ba48bff73",
+    "src/palette/shortcutOrder.test.ts": "819ac990d5a7af106cdf87eacc6f2c40a9a8166cfa7acff6695522c87e291f27",
+    "tools/side-by-side/main-shell.mjs": "14780e7fc494a0452ec760477086a51175fe02013b7780c600fb2ee334d74a19",
+    "tools/side-by-side/sidebar-shortcuts-fixture.js": "83c7b4c7fc3a3b54b98eaa2ad8ee5d06316a8da2f9847ef8d3abc362f124e039",
+    "tools/side-by-side/sidebar-shortcuts.check.mjs": "78e7171c3734a266dd37ab253c83beccf571c0e601dd107184a513fce26c349b",
+    "dist/index.html": "35b5959f798288008530ddb55de065bbe4d55b6d06cc01861327b61ebddcb8d8",
+    "dist/assets/index-gNBoa0Hc.js": "2e5044ed63d2a0a26a6bfbbacd2394a0e0eec7c766058d1329cad7de8f8e2b12",
+    "dist/assets/index-fMPLLvgl.css": "c1fe53969e958ebeca8662a9de03c1c30b768cdcc79b05fd7a550cc38a5d2407"
+  }
+}

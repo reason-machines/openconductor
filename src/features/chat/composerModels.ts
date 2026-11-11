@@ -16,6 +16,8 @@ import { agentForModel, type ModelAgent } from "../../settings/models.ts";
 export interface ModelChoice {
   /** Conductor model id ("opus-5-1m"), or a runtime's own id. */
   model: string;
+  /** Explicit runtime identity for live catalog IDs and loadout picks. */
+  agent?: import("./agentChoice.ts").ChatAgentId;
   effort: string | null;
   fast?: boolean;
 }
@@ -188,6 +190,14 @@ export function nextEffort(model: string, effort: string | null | undefined): st
 /** Fast mode is offered for Opus models and every Codex model (Conductor's `Kc`). */
 export function fastModeAvailable(model: string): boolean {
   return model.startsWith("opus") || agentForModel(model) === "codex";
+}
+
+/** Explicit loadout selections display their stored effort, including live catalog levels. */
+export function modelChoiceChip(choice: ModelChoice, name?: string): { label: string; effort: string | null; accessible: string } {
+  if (!choice.agent) return modelChip(choice.model, choice.effort, choice.fast, name);
+  const label = name ?? modelDisplayName(choice.model);
+  const effort = choice.effort ? modelEfforts(choice.model)?.options.find((option) => option.value === choice.effort)?.label ?? choice.effort : null;
+  return { label, effort, accessible: [label, effort, choice.fast ? "Fast" : null].filter(Boolean).join(" · ") };
 }
 
 /** The composer's model chip: "Opus 5" (or `name`) and "High", plus "Fast" when on, for the accessible label. */

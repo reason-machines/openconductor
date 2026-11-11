@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { USER_PAGES } from "./pages.ts";
-import { CLOUD_ONLY_ROUTES, TAB_PATHS, keptSearch, resolveSettingsUrl, settingsDeepLink, settingsPath, type RouteContext } from "./routes.ts";
+import { CLOUD_ONLY_ROUTES, ORG_PAGES, ORG_ROUTES, TAB_PATHS, keptSearch, resolveSettingsUrl, settingsDeepLink, settingsPath, settingsSearch, type RouteContext } from "./routes.ts";
 
 const ctx: RouteContext = { repoIds: ["r1", "r2"], lastRepoId: null, userPages: USER_PAGES };
 const at = (url: string, c: RouteContext = ctx) => {
@@ -35,7 +35,38 @@ test("unknown and gated user tabs open General", () => {
 test("cloud and organization routes need a cloud org, so they open General", () => {
   const concrete = (p: string) => p.replace("$cloudProjectId", "proj").replace("$owner", "acme").replace("$repo", "app");
   for (const p of CLOUD_ONLY_ROUTES) assert.equal(at(concrete(p)), "/settings/user/general", p);
+  for (const [p] of ORG_ROUTES) assert.equal(at(p), "/settings/user/general", p);
   assert.equal(at("/settings?cloudProjectId=p1"), "/settings/user/general");
+});
+
+test("with a Reason workspace active, the organization pages open (Conductor's PI routes)", () => {
+  const org = { ...ctx, organization: true, experimentalCloudUI: true };
+  for (const page of ORG_PAGES) assert.equal(at(`/settings/organization/${page}`, org), `/settings/organization/${page}`);
+  // `pCa` and `REa` redirect to Cloud computer, `xCa` to MCP.
+  assert.equal(at("/settings/organization", org), "/settings/organization/computer");
+  assert.equal(at("/settings/organization/", org), "/settings/organization/computer");
+  assert.equal(at("/settings/organization/github", org), "/settings/organization/computer");
+  assert.equal(at("/settings/organization/mcp-servers", org), "/settings/organization/mcp");
+  // No page yet for an organization repository or a cloud project.
+  assert.equal(at("/settings/organization/repositories/acme/app/scripts", org), "/settings/user/general");
+  // `TEa`: Cloud setup sends a cloud organization to General.
+  assert.equal(at("/settings/cloud/setup", org), "/settings/user/general");
+  assert.equal(at("/settings/cloud", org), "/settings/user/general");
+  // `Jse`: ?tab=organization-* opens its page.
+  assert.equal(at("/settings?tab=organization-members", org), "/settings/organization/members");
+  assert.equal(at("/settings?tab=organization-mcp-servers", org), "/settings/organization/mcp");
+  assert.equal(at("/settings?tab=organization", org), "/settings/organization/computer");
+  assert.equal(settingsDeepLink({ scope: "org", page: "members" }), "openconductor://settings/organization/members");
+});
+
+test("opted-in Cloud setup has its own route, outside /settings/user", () => {
+  const optedIn = { ...ctx, experimentalCloudUI: true };
+  assert.equal(at("/settings/cloud/setup", optedIn), "/settings/cloud/setup");
+  assert.equal(at("/settings/cloud/setup/", optedIn), "/settings/cloud/setup");
+  assert.equal(at("/settings/cloud", optedIn), "/settings/cloud/setup");
+  assert.equal(at("/settings/user/setup-cloud"), "/settings/user/general");
+  assert.ok(!(CLOUD_ONLY_ROUTES as readonly string[]).includes("/settings/cloud/setup"));
+  assert.equal(settingsDeepLink({ scope: "user", page: "setup-cloud" }).endsWith("://settings/cloud/setup"), true);
 });
 
 test("/settings/repos opens the last-viewed repository, else the first, else General", () => {
@@ -67,7 +98,7 @@ test("the /settings index redirect (?tab=, ?repoId=)", () => {
   assert.equal(at("/settings?tab=actions"), "/settings/repos/r1/actions");
   assert.equal(at("/settings?tab=git"), "/settings/user/git");
   assert.equal(at("/settings?tab=environment"), "/settings/user/environment");
-  for (const tab of Object.keys(TAB_PATHS)) assert.match(at(`/settings?tab=${tab}`) ?? "", /^\/settings\/(user|repos)\//);
+  for (const tab of Object.keys(TAB_PATHS)) assert.match(at(`/settings?tab=${tab}`) ?? "", /^\/settings\/(user|repos|cloud\/setup)/);
 });
 
 test("repo ids are URL-encoded both ways", () => {
@@ -79,6 +110,15 @@ test("a resolved URL keeps unrelated search parameters only", () => {
   assert.equal(keptSearch("?tab=git&demo=1&repoId=r"), "?demo=1");
   assert.equal(keptSearch("?section=scripts"), "");
   assert.equal(keptSearch(""), "");
+});
+
+test("resolved Agents URLs retain only a supported provider tab", () => {
+  const location = { scope: "user", page: "providers" } as const;
+  assert.equal(settingsSearch(location, "?tab=providers&providerTab=codex&demo=1"), "?demo=1&providerTab=codex");
+  assert.equal(settingsSearch(location, "?providerTab=claude"), "?providerTab=claude");
+  assert.equal(settingsSearch(location, "?providerTab=opencode"), "");
+  assert.equal(settingsSearch({ scope: "user", page: "general" }, "?providerTab=codex&demo=1"), "?demo=1");
+  assert.equal(settingsSearch(null, "?providerTab=codex"), "");
 });
 
 test("Copy link on a settings page copies its deep link (Conductor's TGt)", () => {

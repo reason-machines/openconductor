@@ -48,6 +48,8 @@
 }
 /* `min-w-[200px]` (workspace menu), `w-44` (Set status), `min-w-44` (Move to section). */
 .cm.cm-min-w-200 { min-width: 200px; }
+/* `min-w-[180px]`: the PR badge's menu (`RFt` -> `w_i`). */
+.cm.cm-min-w-180 { min-width: 180px; }
 .cm.cm-w-44 { width: 176px; }
 .cm.cm-min-w-44 { min-width: 176px; }
 
@@ -106,3 +108,15 @@
 .cm-item svg.cm-status-canceled { color: var(--cm-status-canceled); }
 /* Section emoji in Move to section (`flex size-4 shrink-0 items-center justify-center leading-none`). */
 .cm-emoji { display: flex; flex-shrink: 0; align-items: center; justify-content: center; width: 16px; height: 16px; line-height: 1; }
+/* The chat turn footer's dropdown (`Tm` + `Yc` with `gap-2`): its items pass 14px icons
+   (`h-3.5 w-3.5`) in the item's own colour, not the context menu's muted 16px ones. */
+.cm.cm-turn-menu .cm-item svg { width: 14px; height: 14px; }
+.cm.cm-turn-menu .cm-item > svg { color: inherit; }
+/* An Open in app row (`X7t`): `px-2.5 py-2 justify-between`, the app's icon and name, and its
+   number key (1-9) at the right in `text-xs text-muted-foreground font-mono w-3 text-right`. */
+.cm-item.cm-app-row { padding: 8px 10px; justify-content: space-between; }
+.cm-app-name { display: flex; flex: 1; min-width: 0; align-items: center; gap: 8px; overflow: hidden; }
+.cm-app-key { margin-left: 8px; width: 12px; text-align: right; font-family: var(--font-mono, ui-monospace, monospace); font-size: 12px; line-height: 16px; color: var(--cm-muted); }
+/* A shortcut that ends in a key glyph (`J4` "inline-flex items-center" around ⌘⌥ and `gf`, size-3). */
+.cm-shortcut.cm-shortcut-glyph { display: inline-flex; align-items: center; }
+.cm-item .cm-shortcut svg { width: 12px; height: 12px; color: inherit; }

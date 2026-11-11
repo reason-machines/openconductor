@@ -13,7 +13,7 @@ const p = await b.newPage({ viewport: { width: 1280, height: 860 } });
 const errors = [];
 p.on("pageerror", (e) => errors.push(e.message));
 await p.goto(`http://127.0.0.1:${PORT}/?demo=1`);
-const box = p.locator(".composer textarea");
+const box = p.locator(".composer [contenteditable=true]");
 await box.waitFor();
 const ok = (m) => console.log("ok -", m);
 const rowStatus = () => p.locator('[data-testid="left-sidebar-workspace-item"][data-active] [data-testid="workspace-status-icon"]').getAttribute("data-status");
@@ -38,7 +38,8 @@ await p.screenshot({ path: `${OUT}/1-permission.png` });
 // The Home list (the /all-workspaces route; sidebar Home opens the wordmark screen, #483)
 // shows the same workspace with the same status while the chat keeps waiting.
 await p.evaluate(() => { history.pushState(null, "", "/all-workspaces"); dispatchEvent(new PopStateEvent("popstate")); });
-const homeStatus = p.locator('[data-testid="home-workspace-status"][data-status="needs-user-permission"]');
+// The demo seeds another workspace (Slate heron) that already needs permission, so look at this one.
+const homeStatus = p.getByRole("option", { name: /^Amber falcon/ }).locator('[data-testid="home-workspace-status"][data-status="needs-user-permission"]');
 await homeStatus.waitFor();
 assert.equal(await homeStatus.getAttribute("aria-label"), "Needs permission");
 ok("Home shows the waiting workspace as Needs permission");
@@ -56,14 +57,14 @@ ok("↵ (chat.approveToolCall) answers Yes; the turn ends and the row goes back 
 await send("plan");
 await card("plan").waitFor();
 await settle("needs-plan-response");
-assert.equal(await box.getAttribute("placeholder"), "Enter your plan adjustments here...");
+assert.equal(await box.getAttribute("data-placeholder"), "Enter your plan adjustments here...");
 ok("a plan shows the card, the row needs a plan response and the composer asks for adjustments");
 await p.screenshot({ path: `${OUT}/3-plan.png` });
 await send("use SQLite");
 await card("plan").waitFor({ state: "detached" });
 await settle("branch");
 assert.match(await lastReply(), /keep planning: use SQLite/);
-assert.notEqual(await box.getAttribute("placeholder"), "Enter your plan adjustments here...");
+assert.notEqual(await box.getAttribute("data-placeholder"), "Enter your plan adjustments here...");
 ok("text sent while a plan waits asks for changes");
 await send("plan");
 await card("plan").getByRole("button", { name: /^Approve/ }).click();
@@ -87,10 +88,14 @@ await settle("branch");
 assert.match(await lastReply(), /Postgres; Search, Export, Sync/);
 ok("Submit sends every question's answers");
 
-// Stop clears a waiting card.
+// Stop clears a waiting card. A tool approval takes the composer's place (Conductor's
+// `Jpo`), so its Stop button is hidden; ⌘⇧⌫ (chat.cancel, "Cancel agent") still stops.
 await send("permission");
 await card("permission").waitFor();
-await p.locator('.composer button[title="Stop the agent"]').click();
+assert.equal(await p.locator(".composer.oc-composer.is-approval [data-testid=chat-permission-request]").count(), 1);
+assert.equal(await p.locator('.composer [contenteditable=true]').isVisible(), false);
+await p.locator("body").click({ position: { x: 640, y: 120 } });
+await p.keyboard.press("Meta+Shift+Backspace");
 await card("permission").waitFor({ state: "detached" });
 await settle("branch");
 ok("Stop drops the waiting card");

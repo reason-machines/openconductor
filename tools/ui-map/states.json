@@ -28,7 +28,7 @@
    "title": "First-run onboarding",
    "ref": {
     "path": "/first-run-onboarding",
-    "scenario": "signed-in",
+    "scenario": "signed-out",
     "actions": []
    },
    "oc": [],
@@ -126,6 +126,11 @@
    "oc": [
     {
      "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-primary .sb-row",
      "text": "Create",
      "after_ms": 800
     }
@@ -158,12 +163,100 @@
    "oc": [
     {
      "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-primary .sb-row",
      "text": "Create",
      "after_ms": 800
     },
     {
-     "click": "form.create-ws button",
-     "nth": 0
+     "click": ".create-repo-trigger"
+    }
+   ]
+  },
+  {
+   "id": "create-from-prs",
+   "title": "Create from: PRs",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=Create >> nth=0"
+     },
+     {
+      "click": "[aria-label='Create from']"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Create",
+     "after_ms": 800
+    },
+    {
+     "click": "[aria-label='Create from']",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "create-from-branches",
+   "title": "Create from: Branches",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=Create >> nth=0"
+     },
+     {
+      "click": "[aria-label='Create from']"
+     },
+     {
+      "click": "[role=tab] >> text=Branches"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Create",
+     "after_ms": 800
+    },
+    {
+     "click": "[aria-label='Create from']",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=tab]",
+     "text": "Branches",
+     "after_ms": 600
+    }
+   ],
+   "covers": [
+    {
+     "kind": "tab",
+     "name": "Branches"
     }
    ]
   },
@@ -248,8 +341,32 @@
     {
      "click": ".sb-ws-name",
      "after_ms": 1500
+    },
+    {
+     "wait": ".composer textarea"
+    },
+    {
+     "exec": "const ta=document.querySelector('.composer textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(ta,arguments[0]);ta.dispatchEvent(new Event('input',{bubbles:true}));",
+     "args": [
+      "After signing in, users with an expired session get bounced between /login and /dashboard forever. Can you find out why and fix it?"
+     ],
+     "after_ms": 300
+    },
+    {
+     "click": ".composer button[type=submit]",
+     "after_ms": 500
+    },
+    {
+     "wait": ".chat-tool-summary-row",
+     "timeout": 30000,
+     "after_ms": 800
+    },
+    {
+     "click": ".chat-tool-summary-row",
+     "after_ms": 800
     }
-   ]
+   ],
+   "oc_fake_reason": true
   },
   {
    "id": "diff-unified",
@@ -362,8 +479,8 @@
    ]
   },
   {
-   "id": "needs-permission",
-   "title": "Workspace needing permission",
+   "id": "panel-setup-add",
+   "title": "Terminal panel: Setup, no setup script",
    "ref": {
     "path": "/",
     "scenario": "populated",
@@ -372,14 +489,224 @@
       "wait": "text=tide-web"
      },
      {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Setup"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": ".ws-strip-tabs [role=tab]",
+     "text": "Setup",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "panel-setup-idle",
+   "title": "Terminal panel: Setup, before setup runs",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Setup"
+     }
+    ],
+    "query": {
+     "oc_setup_script": "npm install"
+    }
+   },
+   "oc_reason": "the lane's seeded repositories have no setup script; tools/side-by-side/setup-tab.mjs captures this state",
+   "covers": [
+    {
+     "kind": "empty-state",
+     "name": "No setup script output"
+    }
+   ]
+  },
+  {
+   "id": "panel-run-add",
+   "title": "Terminal panel: Run, no run script",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Run"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": ".ws-strip-tabs [role=tab]",
+     "text": "Run",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "panel-run-idle",
+   "title": "Terminal panel: Run, before the run script runs",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Run"
+     }
+    ],
+    "query": {
+     "oc_run_script": "npm run dev"
+    }
+   },
+   "oc_reason": "the lane's seeded repositories have no run script; tools/side-by-side/setup-tab.mjs captures this state"
+  },
+  {
+   "id": "toast-xcode-license",
+   "title": "Toast: Xcode license is not accepted",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/dark mode tokens"
+     },
+     {
+      "click": "[role=tab] >> text=Run"
+     },
+     {
+      "wait": "text=Xcode license is not accepted"
+     }
+    ],
+    "query": {
+     "oc_xcode_license": "unaccepted"
+    }
+   },
+   "oc_reason": "the lane's Linux build skips the macOS-only check; tools/side-by-side/setup-tab.mjs captures this state",
+   "covers": [
+    {
+     "kind": "toast",
+     "name": "Xcode license is not accepted"
+    }
+   ]
+  },
+  {
+   "id": "toast-save-setting-failed",
+   "title": "Toast: Failed to save setting (Scripts, read-only settings file)",
+   "ref": {
+    "path": "/settings/repos/repo-tide-web/scripts",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "button:text-is('Add')"
+     },
+     {
+      "click": "[role=dialog] button:has-text('Save')"
+     },
+     {
+      "wait": "text=Failed to save setting"
+     }
+    ],
+    "query": {
+     "oc_fail_settings_write": "1"
+    }
+   },
+   "oc_reason": "the lane's settings files are writable; tools/side-by-side/setup-tab.mjs captures this state"
+  },
+  {
+   "id": "needs-permission",
+   "title": "Workspace needing permission",
+   "ref": {
+    "path": "/",
+    "scenario": "needs-permission",
+    "actions": [
+     {
       "click": "text=tide-api"
      },
      {
       "click": "text=Ada/rate limit headers"
+     },
+     {
+      "wait": "text=Do you want to run this command?"
      }
     ]
    },
-   "oc_reason": "the OpenConductor seed has no workspace with a pending permission request"
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "wait": ".composer textarea"
+    },
+    {
+     "exec": "const ta=document.querySelector('.composer textarea');Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(ta,arguments[0]);ta.dispatchEvent(new Event('input',{bubbles:true}));",
+     "args": [
+      "Return X-RateLimit-Limit and X-RateLimit-Remaining headers on every API response."
+     ],
+     "after_ms": 300
+    },
+    {
+     "click": ".composer button[type=submit]",
+     "after_ms": 500
+    },
+    {
+     "wait": "[data-testid=chat-permission-request]",
+     "timeout": 30000,
+     "after_ms": 800
+    }
+   ],
+   "oc_fake_reason": true
   },
   {
    "id": "route-dashboard",
@@ -413,7 +740,7 @@
      }
     ]
    },
-   "oc_reason": "OpenConductor has no route or view for /routines",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/routines.mjs",
    "covers": [
     {
      "kind": "route",
@@ -433,7 +760,7 @@
      }
     ]
    },
-   "oc_reason": "OpenConductor has no route or view for /routines/new",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/routines.mjs",
    "covers": [
     {
      "kind": "route",
@@ -527,7 +854,15 @@
     "scenario": "signed-out",
     "actions": []
    },
-   "oc": [],
+   "oc": [
+    {
+     "exec": "location.assign('/login');"
+    },
+    {
+     "wait": ".onb-login",
+     "after_ms": 800
+    }
+   ],
    "covers": [
     {
      "kind": "route",
@@ -934,11 +1269,17 @@
    "id": "settings-terminal",
    "title": "Settings > Big terminal",
    "ref": {
-    "path": "/settings/user/terminal",
+    "path": "/settings/user/experimental",
     "scenario": "populated",
     "actions": [
      {
       "wait": "text=tide-web"
+     },
+     {
+      "click": "#big-terminal-mode"
+     },
+     {
+      "click": "text=\"Big terminal\""
      }
     ]
    },
@@ -953,7 +1294,17 @@
     },
     {
      "click": ".settings-nav .nav-item",
-     "text": "Big terminal"
+     "text": "Experimental"
+    },
+    {
+     "click": "input[role=switch]",
+     "text": "Big terminal mode",
+     "after_ms": 400
+    },
+    {
+     "click": ".settings-nav .nav-item",
+     "text": "Big terminal",
+     "after_ms": 600
     }
    ],
    "covers": [
@@ -1249,11 +1600,15 @@
     "scenario": "populated",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Configure your organization's shared cloud computer."
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    },
+    "expect_path": "/settings/organization/computer"
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1275,9 +1630,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1299,9 +1657,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1321,11 +1682,14 @@
     "scenario": "populated",
     "actions": [
      {
-      "wait": "text=tide-web"
+      "wait": "text=Configure your organization's shared cloud computer."
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1347,9 +1711,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1371,9 +1738,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1395,9 +1765,12 @@
      {
       "wait": "text=tide-web"
      }
-    ]
+    ],
+    "query": {
+     "oc_org": "cloud"
+    }
    },
-   "oc_reason": "OpenConductor has no organization settings",
+   "oc_reason": "the UI map lane has no Reason account; scored by tools/side-by-side/org-settings.mjs",
    "covers": [
     {
      "kind": "route",
@@ -1421,11 +1794,28 @@
      }
     ]
    },
-   "oc_reason": "OpenConductor has no cloud settings",
+   "oc": [
+    {
+     "click": ".sb-footer-btn",
+     "text": "Settings"
+    },
+    {
+     "wait": ".settings",
+     "after_ms": 800
+    },
+    {
+     "exec": "window.dispatchEvent(new CustomEvent('openconductor:open-settings',{detail:{page:'setup-cloud'}}))",
+     "after_ms": 2500
+    }
+   ],
    "covers": [
     {
      "kind": "route",
      "name": "/settings/cloud/setup"
+    },
+    {
+     "kind": "settings-page",
+     "name": "setup"
     }
    ]
   },
@@ -1479,6 +1869,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "chord": [
       "Meta"
      ],
@@ -1507,6 +1902,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "chord": [
       "Meta"
      ],
@@ -1516,6 +1916,150 @@
     {
      "click": "[role=dialog] button, [role=dialog] [role=tab]",
      "text": "Workspaces"
+    }
+   ]
+  },
+  {
+   "id": "palette-workspaces-projects",
+   "title": "Command palette: Workspaces tab, project filter open",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "click": "[role=dialog] >> text=Workspaces"
+     },
+     {
+      "click": "[role=dialog] button:has-text('All projects')"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=dialog] button, [role=dialog] [role=tab]",
+     "text": "Workspaces"
+    },
+    {
+     "click": ".palette .palette-ws-filter",
+     "text": "All projects",
+     "after_ms": 600
+    }
+   ]
+  },
+  {
+   "id": "palette-workspaces-archive-filter",
+   "title": "Command palette: Workspaces tab, archive filter open",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "click": "[role=dialog] >> text=Workspaces"
+     },
+     {
+      "click": "[role=dialog] button:has-text('Hiding archived')"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=dialog] button, [role=dialog] [role=tab]",
+     "text": "Workspaces"
+    },
+    {
+     "click": ".palette .palette-ws-filter",
+     "text": "Hiding archived",
+     "after_ms": 600
+    }
+   ]
+  },
+  {
+   "id": "palette-workspaces-empty",
+   "title": "Command palette: Workspaces tab, no matching workspaces",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "click": "[role=dialog] >> text=Workspaces"
+     },
+     {
+      "fill": [
+       "[role=dialog] input[placeholder]",
+       "zzzz"
+      ]
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "click": "[role=dialog] button, [role=dialog] [role=tab]",
+     "text": "Workspaces"
+    },
+    {
+     "click": ".palette-input",
+     "type": "zzzz",
+     "after_ms": 600
+    }
+   ],
+   "covers": [
+    {
+     "kind": "empty-state",
+     "name": "No matching workspaces"
     }
    ]
   },
@@ -1542,6 +2086,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "chord": [
       "Meta"
      ],
@@ -1550,6 +2099,51 @@
     },
     {
      "keys": "login"
+    }
+   ]
+  },
+  {
+   "id": "palette-no-results",
+   "title": "Command palette: no results",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "press": "Meta+k"
+     },
+     {
+      "fill": [
+       "[role=dialog] input",
+       "zzqx"
+      ]
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "chord": [
+      "Meta"
+     ],
+     "key": "k",
+     "after_ms": 800
+    },
+    {
+     "keys": "zzqx"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "empty-state",
+     "name": "No results found"
     }
    ]
   },
@@ -1570,22 +2164,16 @@
    },
    "oc": [
     {
-     "chord": [
-      "Meta"
-     ],
-     "key": "k",
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
      "after_ms": 800
     },
     {
-     "keys": "Open GitHub project",
-     "after_ms": 600
-    },
-    {
-     "keys": "{Enter}",
+     "click": ".home-card",
+     "text": "Open GitHub project",
      "after_ms": 800
     }
-   ],
-   "oc_note": "OpenConductor's Home shows the workspace list, not the entry cards, so the dialog is opened from the command palette"
+   ]
   },
   {
    "id": "dialog-create-project",
@@ -1604,22 +2192,16 @@
    },
    "oc": [
     {
-     "chord": [
-      "Meta"
-     ],
-     "key": "k",
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
      "after_ms": 800
     },
     {
-     "keys": "Quick start",
-     "after_ms": 600
-    },
-    {
-     "keys": "{Enter}",
+     "click": ".home-card",
+     "text": "Quick start",
      "after_ms": 800
     }
-   ],
-   "oc_note": "opened from the command palette, see dialog-clone-github"
+   ]
   },
   {
    "id": "dialog-rename-workspace",
@@ -1643,6 +2225,16 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-repo-name",
+     "text": "tide-web",
+     "after_ms": 400
+    },
     {
      "rclick": ".sb-ws-name"
     },
@@ -1669,6 +2261,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "chord": [
       "Meta"
      ],
@@ -1694,6 +2291,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "click": ".sb-computer"
     }
    ]
@@ -1717,6 +2319,16 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-repo-name",
+     "text": "tide-web",
+     "after_ms": 400
+    },
     {
      "rclick": ".sb-ws-name"
     }
@@ -1744,6 +2356,16 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-repo-name",
+     "text": "tide-web",
+     "after_ms": 400
+    },
     {
      "rclick": ".sb-ws-name"
     },
@@ -1780,8 +2402,7 @@
      "after_ms": 1500
     },
     {
-     "click": ".composer button",
-     "text": "Opus 5"
+     "click": ".composer .oc-model-chip"
     }
    ]
   },
@@ -1805,6 +2426,11 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
      "click": ".sb-menu-trigger",
      "text": "tide-web actions"
     }
@@ -1826,6 +2452,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "click": ".sb-footer-btn",
      "text": "Help"
@@ -1851,6 +2482,11 @@
     ]
    },
    "oc": [
+    {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
     {
      "click": ".sb-footer-btn",
      "text": "Help"
@@ -1921,12 +2557,84 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-repo-name",
+     "text": "tide-web",
+     "after_ms": 400
+    },
+    {
      "rclick": ".sb-ws-name"
     },
     {
      "click": "[role=menu] [role=menuitem]",
      "text": "Copy link",
      "after_ms": 200
+    }
+   ]
+  },
+  {
+   "id": "menu-chat-tab",
+   "title": "Chat tab context menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": "[role=tab][aria-label^='Close chat']"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".main-tabs [role=tab]"
+    }
+   ]
+  },
+  {
+   "id": "menu-changes-file",
+   "title": "Changes file context menu",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": ".cursor-pointer.mx-2:has-text('auth.test.ts')"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".oc-change-row"
     }
    ]
   },
@@ -1953,12 +2661,194 @@
    },
    "oc": [
     {
+     "click": ".sb-primary .sb-row",
+     "text": "Home",
+     "after_ms": 800
+    },
+    {
+     "click": ".sb-repo-name",
+     "text": "tide-web",
+     "after_ms": 400
+    },
+    {
      "rclick": ".sb-ws-name"
     },
     {
      "click": "[role=menu] [role=menuitem]",
      "text": "Archive",
      "after_ms": 1000
+    }
+   ]
+  },
+  {
+   "id": "dialog-rename-chat",
+   "title": "Rename chat dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": "[role=tab][aria-label^='Close chat']"
+     },
+     {
+      "click": "[role=menuitem] >> text=Rename chat"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".main-tabs [role=tab]",
+     "after_ms": 600
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Rename chat",
+     "after_ms": 800
+    }
+   ]
+  },
+  {
+   "id": "dialog-reset-chat",
+   "title": "Reset chat? dialog",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "[aria-label='Show message actions']"
+     },
+     {
+      "click": "[role=menuitem] >> text=Reset chat"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": "[aria-label='Show message actions']",
+     "after_ms": 600
+    },
+    {
+     "click": "[role=menu] [role=menuitem]",
+     "text": "Reset chat",
+     "after_ms": 800
+    }
+   ],
+   "covers": [
+    {
+     "kind": "dialog",
+     "name": "Reset chat?"
+    }
+   ]
+  },
+  {
+   "id": "empty-model-search",
+   "title": "Model picker, search with no match",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "click": "text=Opus 5 >> nth=-1"
+     },
+     {
+      "fill": [
+       "[placeholder='Search models']",
+       "zzz"
+      ]
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "click": ".composer .oc-model-chip",
+     "after_ms": 600
+    },
+    {
+     "type": "zzz",
+     "css": "[placeholder='Search models']"
+    }
+   ],
+   "covers": [
+    {
+     "kind": "empty-state",
+     "name": "No models found"
+    }
+   ]
+  },
+  {
+   "id": "menu-review-edit",
+   "title": "Review button menu (Edit before sending)",
+   "ref": {
+    "path": "/",
+    "scenario": "populated",
+    "actions": [
+     {
+      "wait": "text=tide-web"
+     },
+     {
+      "click": "text=tide-web"
+     },
+     {
+      "click": "text=Ada/fix login redirect"
+     },
+     {
+      "rclick": "button:has-text('Review') >> nth=0"
+     }
+    ]
+   },
+   "oc": [
+    {
+     "click": ".sb-ws-name",
+     "after_ms": 1500
+    },
+    {
+     "rclick": ".review-button",
+     "after_ms": 600
+    }
+   ],
+   "covers": [
+    {
+     "kind": "menu",
+     "name": "u6s"
     }
    ]
   }

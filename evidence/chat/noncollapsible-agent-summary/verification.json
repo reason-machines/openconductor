@@ -1,0 +1,14 @@
+{
+  "base": "e92b5dd8f6e0655766d4360e8b24c255907a3a42",
+  "sourceBeforeSha256": "327c8cf638d06cee797b752e6c771bdbacad5138a044737fa8c4ac04a8f0d694",
+  "sourceAfterSha256": "1cd19f64c7b22d8811c770b94badd44fad72943e6dbfd4fc792ef35f96278d48",
+  "changedStatements": [
+    "Transcript",
+    "RowContext",
+    "Agent"
+  ],
+  "adjacentStatements": "byte-identical, including footer, toolbar, retry, sign-in, Part and SummaryRow",
+  "reference": "5 retained static slices have matching SHA-256 and UTF-8/UTF-16 lengths; parent verified full-artifact slice offsets",
+  "reachability": "last active turn/status -> isNotComplete; garry_mode -> dontCollapseToolCalls; !G bypasses PDo",
+  "limitations": "static Conductor source and OpenConductor SSR only; no mounted/browser/native/build verification"
+}

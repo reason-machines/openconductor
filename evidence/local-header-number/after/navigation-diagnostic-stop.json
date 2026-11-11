@@ -1,0 +1,10 @@
+{
+  "state": "stopped",
+  "stopped": [
+    {
+      "server_id": "d61037aa-8fa6-414f-ae09-79c4957ad873",
+      "port": 4682
+    }
+  ],
+  "guidance": "Each stopped server's process group has ended on the computer, so its port is free for preview_start."
+}

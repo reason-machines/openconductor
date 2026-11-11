@@ -26,14 +26,16 @@ import type { SourceState } from "../workspace/createFrom";
 import { launchDefaults, loadoutPicks, pickLaunch, type LaunchModel, type LaunchPick } from "../workspace/launchModel";
 import { ModelPicker } from "../features/chat/ModelPicker";
 import { openSettingsPage } from "../features/chat/ChatModelPicker";
-import { listFavorites } from "../settings/agents/api";
-import { displayedLoadout, parseFavorites } from "../settings/agents/loadout";
+import { useLoadout } from "../settings/agents/useLoadout";
+import { loadoutChoices } from "../features/chat/loadoutChoices";
+import { saveModelChoice } from "../features/chat/chatModelChoice";
+import { saveAgent } from "../features/chat/agentChoice";
 import { CreateFromPicker } from "./CreateFromPicker";
-import { Tooltip } from "./Tooltip";
-import { getSettings } from "../settings/api";
 import type { Settings } from "../settings/types";
 import { modelLabel } from "../settings/models";
-import { AddRepositoryMenu } from "./AddRepositoryMenu";
+import type { AddRepositoryActions } from "./AddRepositoryMenu";
+import { RepoSelect } from "./create/RepoSelect";
+import { TargetBranchButton } from "./create/TargetBranchButton";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs, matchesEvent } from "../keybindings/shortcut";
@@ -57,7 +59,8 @@ export interface CreateWorkspaceComposerProps {
   onClose: () => void;
   /** Creation started or settled; the dialog keeps itself open while busy. */
   onBusyChange?: (busy: boolean) => void;
-  onAddRepository: () => void;
+  /** The repo picker's "Add project" menu: Open project, Open GitHub project, Quick start, Recents. */
+  addActions: AddRepositoryActions;
   /** A non-fatal issue while creating the workspace; the workspace still opens. */
   onWarning: (message: string) => void;
   dispatch: Dispatch<Action>;
@@ -92,7 +95,7 @@ export function CreateWorkspaceComposer({
   eyebrowVariant,
   onClose,
   onBusyChange,
-  onAddRepository,
+  addActions,
   onWarning,
   dispatch,
   sections = [],
@@ -105,19 +108,20 @@ export function CreateWorkspaceComposer({
   sectionsRef.current = sections;
   const [sectionMenuOpen, setSectionMenuOpen] = useState(false);
   const startRepo = repos.find((r) => r.id === initialRepoId) ?? repos[0];
-  const [settings, setSettings] = useState<Settings | null>(null);
-  const [favorites, setFavorites] = useState<LaunchPick[]>([]);
+  const loadout = useLoadout();
+  const settings = loadout?.settings ?? null;
+  const favorites = loadoutPicks(loadout?.slots ?? []);
+  const modelEdited = useRef(false);
   const [draft, setDraft] = useState<CreateDraft>(() =>
     newDraft({ repoId: startRepo?.id ?? null, defaultBranch: startRepo?.defaultBranch ?? "main", cityName: suggestName(startRepo)?.name ?? "", ...launchDefaults(null) }),
   );
   const [errors, setErrors] = useState<DraftErrors>({});
   const [branchSrc, setBranchSrc] = useState<SourceState<BranchDto>>({ status: "loading" });
-  const branches = branchSrc.status === "ready" ? branchSrc.items.map((b) => b.name) : [];
   const [progress, send] = useReducer(reduceProgress, { step: "idle" });
   const repo = repos.find((r) => r.id === draft.repoId);
   const prefix = useMemo(() => resolveBranchPrefix(prefixSettings, githubUsername), [prefixSettings, githubUsername]);
-  const [cloning, setCloning] = useState(false);
-  const busy = progress.step === "creating" || progress.step === "detecting_setup" || cloning;
+  const [branchAttempt, setBranchAttempt] = useState(0);
+  const busy = progress.step === "creating" || progress.step === "detecting_setup";
   useEffect(() => onBusyChange?.(busy), [busy, onBusyChange]);
   const { overrides } = useKeybindingOverrides();
   const submitKeys = [...effectiveShortcuts("chat.submitMessage", overrides), ...effectiveShortcuts("chat.submitOppositeFollowUp", overrides)];
@@ -133,35 +137,18 @@ export function CreateWorkspaceComposer({
     if (!draft.repoId && repos[0]) chooseRepo(repos[0].id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [repos.length]);
-  // A freshly cloned repo gets its id in the store; select it once it shows up.
-  const [pendingRepoPath, setPendingRepoPath] = useState<string | null>(null);
+  // A project added while the composer is open ("Add project" in the repo picker) becomes its repository.
+  const knownRepoIds = useRef(new Set(repos.map((r) => r.id)));
   useEffect(() => {
-    const added = pendingRepoPath ? repos.find((r) => r.path === pendingRepoPath) : undefined;
-    if (!added) return;
-    setPendingRepoPath(null);
-    chooseRepo(added.id);
+    const added = repos.find((r) => !knownRepoIds.current.has(r.id));
+    knownRepoIds.current = new Set(repos.map((r) => r.id));
+    if (added) chooseRepo(added.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [repos, pendingRepoPath]);
+  }, [repos]);
 
   useEffect(() => {
-    let live = true;
-    getSettings().then(
-      (s) => {
-        if (!live) return;
-        setSettings(s);
-        setDraft((d) => ({ ...d, ...launchDefaults(s) }));
-        // Conductor lists the loadout (slot 1 is the default model) as the picker's favorites.
-        listFavorites().then(
-          (rows) => live && setFavorites(loadoutPicks(displayedLoadout(s, parseFavorites(rows)))),
-          () => live && setFavorites(loadoutPicks(displayedLoadout(s, []))),
-        );
-      },
-      () => undefined,
-    );
-    return () => {
-      live = false;
-    };
-  }, []);
+    if (loadout && !modelEdited.current) setDraft((d) => ({ ...d, ...launchDefaults(loadout.settings, loadout.slots) }));
+  }, [loadout]);
 
   useEffect(() => {
     if (!repo?.path) return setBranchSrc({ status: "ready", items: [{ name: repo?.defaultBranch ?? "main", remote: null, commit: "", isHead: true, committedAt: 0 }] });
@@ -184,7 +171,7 @@ export function CreateWorkspaceComposer({
     return () => {
       live = false;
     };
-  }, [repo?.id]);
+  }, [repo?.id, branchAttempt]);
 
   function chooseRepo(id: string) {
     const next = repos.find((r) => r.id === id);
@@ -196,6 +183,7 @@ export function CreateWorkspaceComposer({
   }
 
   function chooseLaunch(next: LaunchModel) {
+    modelEdited.current = true;
     setDraft((d) => ({ ...d, ...next }));
   }
 
@@ -229,6 +217,10 @@ export function CreateWorkspaceComposer({
         userSetBranchName: naming.user_set_branch_name,
         number: created.number ?? null,
       };
+      if (draft.agent === "reason" || draft.agent === "claude" || draft.agent === "codex") {
+        saveAgent(id, draft.agent);
+        saveModelChoice(id, { agent: draft.agent, model: draft.model, effort: draft.effort || null });
+      }
       // The first message opens the workspace's first chat session.
       if (firstSession) {
         configureReason(id, sessionConfig(firstSession.model, firstSession.effort));
@@ -284,60 +276,36 @@ export function CreateWorkspaceComposer({
     }
   }
 
-  const addRepository = (label: string, primary = false) => (
-    <AddRepositoryMenu
-      label={label}
-      primary={primary}
-      disabled={busy}
-      onOpenProject={onAddRepository}
-      onBusyChange={setCloning}
-      onCloned={(cloned, source) => {
-        dispatch({ type: "addRepo", repo: { name: source.name, path: cloned.root, remote: source.url, defaultBranch: cloned.defaultBranch } });
-        setPendingRepoPath(cloned.root);
-      }}
-    />
-  );
-
-  const branchOptions = branches.includes(draft.baseBranch) ? branches : [draft.baseBranch, ...branches];
   const error = errors.repo ?? errors.baseBranch ?? errors.name ?? errors.from;
   const status = progress.step !== "idle" ? progressLabel(progress) : null;
   return (
-    <form onSubmit={submit} className={`create-ws create-ws-${eyebrowVariant}`} aria-busy={busy}>
+    <form onSubmit={submit} className={`create-ws create-ws-${eyebrowVariant}`} aria-busy={busy} aria-label="composer">
       <div className="create-eyebrow">
-        {repos.length === 0 ? (
-          addRepository("Add repository", true)
-        ) : (
-          <>
-            {/* Conductor's repo trigger (`ZQo`): Tooltip "Switch repo" with the workspace.create hint. */}
-            <Tooltip content="Switch repo" shortcut={hint("workspace.create")}>
-              <select className="create-chip" aria-label="Repository" value={draft.repoId ?? ""} onChange={(e) => chooseRepo(e.target.value)} disabled={busy} aria-invalid={!!errors.repo}>
-                {repos.map((r) => (
-                  <option key={r.id} value={r.id}>{r.name}</option>
-                ))}
-              </select>
-            </Tooltip>
-            {addRepository("Add…")}
-            {/* Conductor's target-branch trigger (`U4a`): Tooltip "Target branch". */}
-            <Tooltip content="Target branch">
-              <select
-                className="create-chip"
-                aria-label="Base branch"
-                value={draft.baseBranch}
-                onChange={(e) => setDraft({ ...draft, baseBranch: e.target.value })}
-                disabled={busy}
-                aria-invalid={!!errors.baseBranch}
-              >
-                {branchOptions.map((b) => (
-                  <option key={b} value={b}>{b}</option>
-                ))}
-              </select>
-            </Tooltip>
-          </>
+        <RepoSelect
+          repos={repos}
+          value={draft.repoId}
+          disabled={busy}
+          invalid={!!errors.repo}
+          shortcut={hint("workspace.create")}
+          onChange={chooseRepo}
+          addActions={addActions}
+        />
+        {repo && (
+          <TargetBranchButton
+            value={draft.baseBranch}
+            defaultBranch={repo.defaultBranch ?? "main"}
+            branches={branchSrc}
+            disabled={busy}
+            invalid={!!errors.baseBranch}
+            onChange={(baseBranch) => setDraft((d) => ({ ...d, baseBranch }))}
+            onRetry={() => setBranchAttempt((n) => n + 1)}
+          />
         )}
         <span className="create-eyebrow-end">
           <CreateFromPicker
             value={draft.from}
             branches={branchSrc}
+            defaultBranch={repo?.defaultBranch ?? null}
             repoPath={repo?.path ?? null}
             disabled={busy || !repo}
             shortcut={hint("workspace.createFromPRBranchIssue")}
@@ -361,7 +329,7 @@ export function CreateWorkspaceComposer({
           disabled={busy}
         />
         <div className="create-card-bar">
-          <CreateModelPicker value={draft} favorites={favorites} settings={settings} disabled={busy} onChange={chooseLaunch} />
+          <CreateModelPicker value={draft} favorites={favorites} slots={loadoutChoices(loadout?.slots ?? [])} settings={settings} disabled={busy} onChange={chooseLaunch} />
           <div className="create-split" role="group" aria-label="Create workspace">
             <button
               type="submit"
@@ -426,11 +394,14 @@ export function CreateWorkspaceComposer({
  * picker (`RNi` inside `Hji`), with the loadout's favorites, "Add models" and
  * "Edit" (Settings › Default models) and the effort submenu, in place of two selects.
  */
-function CreateModelPicker({ value, favorites, settings, disabled, onChange }: { value: LaunchModel; favorites: readonly LaunchPick[]; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
+function CreateModelPicker({ value, favorites, slots, settings, disabled, onChange }: { value: LaunchModel; favorites: readonly LaunchPick[]; slots: readonly (import("../features/chat/composerModels").ModelChoice | null)[]; settings: Settings | null; disabled: boolean; onChange: (next: LaunchModel) => void }) {
   return (
     <ModelPicker
-      value={{ model: value.model, effort: value.effort || null }}
+      value={{ model: value.model, effort: value.effort || null, ...(value.agent === "reason" || value.agent === "claude" || value.agent === "codex" ? { agent: value.agent } : {}) }}
       favorites={favorites}
+      loadout={slots}
+      keybindingDialogIds={["dialog"]}
+      itemAgent={(f) => f.agent ?? "reason"}
       itemLabel={(f) => modelLabel(f.model)}
       modelName={modelLabel}
       disabled={disabled}

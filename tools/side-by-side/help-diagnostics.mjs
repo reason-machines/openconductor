@@ -49,7 +49,7 @@ const item = (label) => css(`[role=menuitem] >> text=${label}`);
  * Per state: the clicks on each side (REA actions without step ids), how long to settle
  * after, its UI map state id and its committed side-by-side image (parity/side-by-side/).
  */
-const STATES = {
+const HELP_STATES = {
   "help-menu": { ref: [REF_HELP], oc: [OC_HELP], uiMap: "menu-help", image: "dialogs-menus-01-help-menu.png" },
   "submit-prompt": { ref: [REF_HELP, item("Submit a prompt")], oc: [OC_HELP, item("Submit a prompt")], uiMap: "dialog-submit-prompt", image: "dialogs-menus-02-submit-prompt.png" },
   diagnostics: { ref: [REF_HELP, item("Diagnostics")], oc: [OC_HELP, item("Diagnostics")], uiMap: "route-diagnostics", image: "dialogs-menus-03-diagnostics.png" },
@@ -62,6 +62,14 @@ const STATES = {
   },
 };
 
+// SBS_STATES=<module> swaps in another set of states with the same shape (its default export,
+// built from the `css` helper it is given), e.g. tools/side-by-side/create-composer-states.mjs.
+// It may also export `ocInvoke`: Tauri command results the OpenConductor side answers with
+// (for example `local_account`), handed to the page server as SBS_OC_INVOKE.
+const statesModule = process.env.SBS_STATES ? await import(path.resolve(process.env.SBS_STATES)) : null;
+const STATES = statesModule ? statesModule.default({ css }) : HELP_STATES;
+if (statesModule?.ocInvoke) process.env.SBS_OC_INVOKE = JSON.stringify(statesModule.ocInvoke);
+
 // OpenConductor: dist/ with the sidebar-screens seed, Home (not All workspaces)
 // selected like Conductor's "/", and a Tauri shell that answers every command empty.
 const ocSeed = fs.readFileSync(path.join(repoRoot, "tools/sidebar-screens/seed.js"), "utf8");
@@ -72,6 +80,8 @@ const ocExtra = `(function () {
     metadata: { currentWindow: { label: "main" }, currentWebview: { label: "main" } },
     transformCallback: () => 0,
     async invoke(cmd) {
+      const answers = ${process.env.SBS_OC_INVOKE ?? "{}"};
+      if (cmd in answers) return answers[cmd];
       if (cmd === "execute_shell_command_cancellable" || cmd === "execute_shell_command") return { stdout: "", stderr: "", exitCode: 0, signal: null, cancelled: false, truncated: false };
       throw new Error("not mocked: " + cmd);
     },
@@ -147,7 +157,10 @@ function compare(name, a, b) {
 function capture(name, url, clicks, settle) {
   const actions = [{ step_id: "settle", action: "wait_for_timeout", duration_ms: 4000 }];
   clicks.forEach((locator, i) => {
-    actions.push({ step_id: `c${i}`, action: "click", locator, timeout_ms: 5000 });
+    // A step is a locator to click, or { press: key } on the body, or { fill: [locator, text] }.
+    if (locator.press) actions.push({ step_id: `c${i}`, action: "press", locator: css("body"), key: locator.press, timeout_ms: 5000 });
+    else if (locator.fill) actions.push({ step_id: `c${i}`, action: "fill", locator: locator.fill[0], value: { source: "literal", value: locator.fill[1] }, timeout_ms: 5000 });
+    else actions.push({ step_id: `c${i}`, action: "click", locator, timeout_ms: 5000 });
     actions.push({ step_id: `p${i}`, action: "wait_for_timeout", duration_ms: 600 });
   });
   actions.push({ step_id: "final", action: "wait_for_timeout", duration_ms: settle ?? 800 });
@@ -191,10 +204,10 @@ try {
       const { png: ocPng, ...oc } = capture(`oc-${state}`, `http://localhost:${OC_PORT}/?${q}`, spec.oc, spec.settle);
       manifest[state] = { tool: "rea capture-browser-scenario", viewport: VIEWPORT, theme: "dark", ref, oc };
       let line = `${state}: ref ${ref.evidence_id} | oc ${oc.evidence_id}`;
-      if (RECORD) {
+      if (RECORD && spec.uiMap) {
         const cmp = compare(state, refPng, ocPng);
         record.states[spec.uiMap] = {
-          lane: "tools/side-by-side/help-diagnostics.mjs: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium",
+          lane: `tools/side-by-side/help-diagnostics.mjs${process.env.SBS_STATES ? ` (SBS_STATES=${path.relative(repoRoot, path.resolve(process.env.SBS_STATES))})` : ""}: REA capture-browser-scenario of Conductor's extracted frontend (tools/screens harness) and of OpenConductor's built frontend (dist/, Tauri IPC mocked) in Chromium`,
           openconductor_commit: head,
           viewport: VIEWPORT,
           image: `side-by-side/${spec.image}`,

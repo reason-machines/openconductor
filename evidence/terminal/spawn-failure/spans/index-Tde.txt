@@ -1,0 +1,1 @@
+function Tde(t){const e=(r,i)=>{PEt(r,i).forEach(o=>{MEt(o)||t(o)})},s=Ns.subscribe(r=>r.terminals,e),n=Gr.subscribe(r=>r.terminals,e);return()=>{s(),n()}}

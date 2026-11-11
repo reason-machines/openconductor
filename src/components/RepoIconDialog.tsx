@@ -23,30 +23,36 @@ interface Props {
  * "Change icon for <repo>" (Conductor's change-repo-icon dialog, `Lya` / `dUi` in the decoded
  * renderApp-D_fmY7hW.js @11015415 / @10807619): four tabs that each set `repos.icon` and close.
  */
-export function RepoIconDialog({ repo, onChange, onClose, onError }: Props) {
+export function RepoIconDialog(props: Props) {
+  return (
+    <Modal title={`Change icon for ${props.repo.name}`} onClose={props.onClose}>
+      <RepoIconPicker {...props} />
+    </Modal>
+  );
+}
+
+export function RepoIconPicker({ repo, onChange, onClose, onError }: Props) {
   const [tab, setTab] = useState<Tab>("icons");
   const pick = (icon: string | null) => {
     onChange(icon);
     onClose();
   };
   return (
-    <Modal title={`Change icon for ${repo.name}`} onClose={onClose}>
-      <div className="repo-icon-dialog">
-        <div className="repo-icon-tabs" role="tablist">
-          {TABS.map(([id, label]) => (
-            <button key={id} type="button" role="tab" aria-selected={tab === id} className="repo-icon-tab" data-active={tab === id || undefined} onClick={() => setTab(id)}>
-              {label}
-            </button>
-          ))}
-        </div>
-        <div className="repo-icon-panel">
-          {tab === "icons" && <IconsTab repo={repo} pick={pick} />}
-          {tab === "emoji" && <EmojiTab repo={repo} pick={pick} />}
-          {tab === "favicon" && <FaviconTab repo={repo} pick={pick} />}
-          {tab === "upload" && <UploadTab repo={repo} pick={pick} onError={onError} />}
-        </div>
+    <div className="repo-icon-dialog">
+      <div className="repo-icon-tabs" role="tablist">
+        {TABS.map(([id, label]) => (
+          <button key={id} type="button" role="tab" aria-selected={tab === id} className="repo-icon-tab" data-active={tab === id || undefined} onClick={() => setTab(id)}>
+            {label}
+          </button>
+        ))}
       </div>
-    </Modal>
+      <div className="repo-icon-panel">
+        {tab === "icons" && <IconsTab repo={repo} pick={pick} />}
+        {tab === "emoji" && <EmojiTab repo={repo} pick={pick} />}
+        {tab === "favicon" && <FaviconTab repo={repo} pick={pick} />}
+        {tab === "upload" && <UploadTab repo={repo} pick={pick} onError={onError} />}
+      </div>
+    </div>
   );
 }
 
@@ -86,11 +92,13 @@ function EmojiTab({ repo, pick }: { repo: Repo; pick: (icon: string | null) => v
   const [query, setQuery] = useState("");
   const current = parseRepoIcon(repo.icon, isRepoIconName);
   const selected = current?.kind === "emoji" ? current.emoji : null;
+  const choices = searchEmoji(query);
   return (
     <>
       <SearchBar value={query} onChange={setQuery} placeholder="Search emoji" clearLabel="Remove emoji" onClear={repo.icon ? () => pick(null) : undefined} />
+      {choices.length === 0 && <p className="muted" role="status">No emoji found</p>}
       <div className="repo-icon-grid">
-        {searchEmoji(query).map(([emoji, name]) => (
+        {choices.map(([emoji, name]) => (
           <button key={emoji} type="button" className="repo-icon-cell repo-icon-emoji-cell" title={name} aria-label={name} data-selected={selected === emoji || undefined} onClick={() => pick(emojiIcon(emoji) ?? null)}>
             {emoji}
           </button>

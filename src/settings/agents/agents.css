@@ -1,22 +1,24 @@
 /* Settings › Agents and Default models, laid out like Conductor 0.87.6's
-   providers and models pages (Tailwind classes read from renderApp-D_fmY7hW.js;
-   colours from evidence/frontend/css-tokens.json `:root,.light` and `.dark`). */
+   providers and models pages (Tailwind classes read from renderApp-D_fmY7hW.js).
+   Colours are the chosen palette's tokens (src/theme/tokens.css): under Stone
+   they are Conductor's own `:root,.light` and `.dark` values
+   (evidence/frontend/css-tokens.json), and under Neutral they are pure greys. */
 .oc-ag {
-  --ag-accent: var(--conductor-accent);
-  --ag-accent-fg: var(--conductor-accent-fg);
-  --ag-muted: var(--conductor-muted);
-  --ag-muted-fg: var(--conductor-muted-fg);
-  --ag-fg: var(--conductor-fg);
-  --ag-bg: var(--conductor-bg);
-  --ag-border: var(--conductor-border);
-  --ag-input: var(--conductor-input);
+  --ag-accent: var(--surface-accent);
+  --ag-accent-fg: var(--surface-accent-text);
+  --ag-muted: var(--surface-muted);
+  --ag-muted-fg: var(--muted);
+  --ag-fg: var(--text);
+  --ag-bg: var(--bg);
+  --ag-border: var(--border);
+  --ag-input: var(--input);
   --ag-destructive: var(--destructive);
   --ag-success: var(--success);
-  --ag-primary: var(--conductor-primary);
-  --ag-primary-fg: var(--conductor-primary-fg);
-  --ag-tip: var(--conductor-tip);
-  --ag-tip-fg: var(--conductor-tip-fg);
-  --ag-ring: var(--conductor-ring);
+  --ag-primary: var(--accent);
+  --ag-primary-fg: var(--accent-text);
+  --ag-tip: var(--popover);
+  --ag-tip-fg: var(--popover-text);
+  --ag-ring: var(--ring);
   color: var(--ag-fg);
   font-size: 14px;
 }
@@ -55,7 +57,7 @@
   background: none; border: 0; border-bottom: 1px solid transparent; cursor: default;
 }
 .ag-tab:hover { color: var(--ag-fg); }
-.ag-tab.on { color: var(--ag-fg); border-bottom-color: var(--conductor-tab-underline); }
+.ag-tab.on { color: var(--ag-fg); border-bottom-color: var(--emphasis); }
 
 /* Buttons (shadcn variants). */
 .ag-btn {
@@ -166,11 +168,12 @@
 .ag-loadout { width: 100%; max-width: 672px; user-select: none; }
 .ag-loadout-share { display: flex; justify-content: flex-end; margin: 22px 0 12px; }
 .ag-mono { font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace); font-size: 10px; letter-spacing: 0.05em; }
-.ag-slots { display: grid; grid-auto-flow: column; grid-auto-columns: 128px; gap: 8px; width: fit-content; height: 128px; }
-.ag-slot-cell { position: relative; width: 128px; height: 128px; border-radius: 6px; }
+.ag-slots { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.ag-slot-cell { position: relative; min-width: 0; aspect-ratio: 1; border-radius: 6px; }
 .ag-slot-cell.drop { box-shadow: 0 0 0 1px var(--ag-ring); }
 .ag-slot-empty {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  width: 100%; padding: 4px; background: transparent; font: inherit;
   border: 1px dashed var(--ag-border); border-radius: 6px; color: var(--ag-muted-fg);
 }
 .ag-slot-num {
@@ -181,11 +184,17 @@
 .ag-slot { position: relative; width: 128px; height: 128px; }
 .ag-slot .ag-picker { width: 100%; height: 100%; }
 .ag-slot-card {
-  position: relative; display: block; width: 128px; height: 128px; padding: 4px; box-sizing: border-box;
+  position: relative; display: block; width: 100%; height: 100%; padding: 4px; box-sizing: border-box;
   border-radius: 6px; border: 1px solid var(--ag-border); background: var(--ag-bg); color: var(--ag-fg);
   font: inherit; font-size: 12px; text-align: left; cursor: default;
 }
 .ag-slot-card:hover { background: var(--ag-accent); }
+.ag-slot-card:focus-visible, .ag-slot-empty:focus-visible, .ag-palette-item:focus-visible { outline: 2px solid var(--ag-ring); outline-offset: 2px; }
+.ag-slot-card[aria-pressed="true"] { opacity: 0.6; }
+.ag-slot-cell:hover .ag-slot-delete, .ag-slot-cell:focus-within .ag-slot-delete { opacity: 1; }
+.ag-loadout-menu { position: fixed; z-index: 100; max-height: min(420px, 80vh); }
+.ag-catalog-refresh { margin-top: 16px; }
+.ag-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 .ag-slot-icon { position: absolute; left: 0; right: 0; top: 32px; display: flex; justify-content: center; color: var(--conductor-slot-icon); }
 .ag-slot-model { position: absolute; left: 12px; right: 12px; bottom: 28px; color: var(--ag-muted-fg); }
 .ag-slot-effort {
@@ -204,8 +213,11 @@
 .ag-slot:hover .ag-slot-delete, .ag-slot:focus-within .ag-slot-delete { opacity: 1; }
 
 /* Palette (`Z2a`, `X2a`). */
-.ag-palette { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; align-items: start; margin-top: 64px; }
+.ag-palette { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; margin-top: 64px; }
 .ag-palette-col { min-width: 0; }
+.ag-reason-search { border-top: 1px solid var(--ag-border); padding-top: 12px; }
+.ag-reason-search-input { width: 100%; min-width: 0; padding: 6px 8px; border: 1px solid var(--ag-border); border-radius: 6px; background: var(--ag-bg); color: var(--ag-fg); font: inherit; font-size: 12px; }
+.ag-reason-results { max-height: 240px; overflow-y: auto; margin-top: 10px; }
 .ag-palette-col > * + * { margin-top: 6px; }
 .ag-palette-head { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ag-muted-fg); }
 .ag-palette-list { display: flex; flex-direction: column; gap: 8px; }

@@ -1,13 +1,89 @@
 # UI program ledger: OpenConductor vs Conductor, screen by screen
 
+## Current scope, 6 November 2026
+
+The [generated interactive ledger](ledger.html) and [machine-readable map](../ui-map.json) are the current scope-aware evidence queue. Regenerate them with `python3 tools/ui-map/build_map.py`. The records below are historical audits, not current final-review sign-off.
+
+- Local Home, sidebar, workspace and chat, composer, diff and changes, local Settings, Open in, palette, and dialogs remain in scope. Track D repeats fresh native side-by-side review after builders until a pass finds nothing material. Every current main-screen final verdict is unverified.
+- Team, routines, triage, organization and other cloud UI are deferred and excluded from the denominator. Retained code must be hidden behind an Experimental setting that is off by default. The gate is a separate, currently unverified requirement. This scope change does not authorize deleting already merged implementation.
+- Only Reason spans the Mac and a Reason cloud computer in one chat. Claude Code and Codex run locally on the Mac, with no cloud path or credential hand-off.
+- Toast parity requires one verified system covering component, placement, timing and look, plus observable main-flow toasts. Unobservable errors are not missing requirements. Raw extracted strings and assessments remain in the map.
+- The ledger owner exclusively edits aggregate maps, generator, side-by-side records and this ledger. Builders send area evidence and proposed verdicts instead of rewriting shared files.
+- All current program Sessions use GPT-6.1 Sol at xhigh on `openai-codex:42b88e79-2ef2-4e3e-93b1-8c93dcad16a7`, with no paid fallback. Subscription limits pause inference rather than changing source. The older subscription history below is not current configuration.
+- Cloud Team PR [#711](https://github.com/reason-machines/openconductor/pull/711) was closed without merge at `f8e284bc` by the coordinator, [closure record](https://github.com/reason-machines/openconductor/pull/711#issuecomment-6696223606). It was the only open PR returned by the initial reconciliation.
+
+This rescore runs on Reason cloud and reuses checked-in REA captures from the real Conductor 0.87.6 binary, SHA256 `0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d`. It performs no new REA capture and introduces no new REA gap. Existing limitations remain in [REA-GAPS.md](../../tools/ui-map/REA-GAPS.md). Retained Chromium threshold matches do not prove current native parity. No real playground or workspace data is touched.
+
+## Merged supplemental evidence, main `623b0936be1ebf430255c719dff4e1d04e7afeed`
+
+[PR #722](https://github.com/reason-machines/openconductor/pull/722) adds [repository menu, sidebar and Home evidence](../../evidence/shell-actions/README.md). Only its repository-menu crop matches exactly. Home and sidebar remain partial. The selected Stone palette does not verify the default Neutral palette, and this browser fixture does not verify native macOS.
+
+[PR #718](https://github.com/reason-machines/openconductor/pull/718) adds compact-footer layout and reveal proof, not native workspace sign-off. [PR #723](https://github.com/reason-machines/openconductor/pull/723) adds browser default-off and persisted opt-in proof, not native gate or signed-in Mac-to-cloud proof. Their raw crops, manifests, limitations and existing REA gaps stay in the linked area evidence.
+
+[PR #725](https://github.com/reason-machines/openconductor/pull/725) adds [local dialog evidence](../../evidence/dialogs/NOTES.md): four fresh REA browser pairs and 12 passing isolated component checks. Its area remains partial. Archive's rejected reference capture, restore's static-only reference, fixture copy and palette differences, and native picker, filesystem and authentication gaps remain explicit. Earlier #682 and #690 proof is reused, not rerun.
+
+The [supplemental manifest](supplemental-evidence.json) records these merges separately from the retained whole-state map. The generator includes it in JSON, Markdown and HTML without replacing state scores. The scoped totals remain 341 entries: 169 retained matches, 48 observed wrong, 3 observed missing and 121 unverified. All nine native final-review verdicts remain unverified. No new captures or REA gaps were introduced by this integration.
+
+## Merge batch, 7 November 2026
+
+Reconciled against main `a988e5a820e35ce41eb82856f8a1e7d20cd18594`. The [canonical evidence manifest](supplemental-evidence.json) and [generated ledger](ledger.html) now include merged #738–#745 and proof-only #746. This is a source reconciliation, not a new capture identity.
+
+- #739 publishes the bounded composition fix-forward for the historical #735 Send-click defect. Synthetic composition does not establish real macOS IME safety.
+- #740 terminal labels, #741 slider, #742 permission tokens, #738 discard alert and #745 Help styling have separate browser, source and packaging evidence. Native behavior and each retained area gap remain unverified.
+- #744 consuming main passed all six workflows, including both E2E jobs. #746 publishes 18 proof-only files and fixture/driver corrections without repeating the product change. Its captures remain the original bounded #744 run. Group by is missing, with a partial REA semantic-graph trace rather than runtime proof.
+- Sole E2E owner `acc3b5c5` confirms run `42317008433` on `50265ba2` passed both jobs and 23/23 App flows. The reported streak remains 0/10 because the newer run-number `42317638688` was cancelled. Later consuming results stay with that owner; no pending snapshot is treated as a pass.
+
+The 341-entry scoped denominator, 169 retained matches, 48 wrong, 3 missing, 121 unverified and all nine native final-review verdicts are unchanged. Existing capture rows are not rescored. The earlier native source pin came from a driver note and its hold from the coordinator, not an independently verified immutable human ban. This Cloud-only batch performs no Mac launch/input, agent/credential operation, new preview, capture, CI dispatch or duplicate monitoring.
+
+## Bounded synthetic WKWebView receipt, 7 November 2026
+
+Conductor Rebuild reconciled the later [runtime-owner proof](https://reasonmachines.com/agents/d8e894e9-2c63-4ec3-9a11-f28722af996d?page=339835bf-57c3-46f5-825d-97167f31613f) against main `e9cfaed4a97a66bb495ca5a8b8f49aa6f0238094`. This adds no capture, score change or native final-review pass. The evidence is the owner's completed run, not a rerun by ledger integration.
+
+- Runtime owner `d8e894e9` reports 10/10 synthetic WKWebView composition checks and 23/23 total assertions passed on Sven's Mac. The run ended at `2026-11-07T00:40:15.127Z` on source `50265ba211c5506a50180ad3f5dfa535183e1e98`, containing merged #739. Enter, Send, file and slash-suggestion blocking passed during synthetic composition. Post-composition `/clear` stayed local without agent delivery.
+- The binary was a local debug rebuild with an ad-hoc signature, not a downloaded CI artifact. Its SHA256 is `d336711a992fc25e03c51299c4b949cfad20a7a6029ca2d49314087a4ae3c525`. The owner's retained archive SHA256 is `027471391e1739e335c33c16bb13409dcfc294070d6ac31dd2e09dad7ae2a9ea`. Ledger integration did not reopen the archive or inspect an image.
+- Isolation and own-AppHandle nonce gates passed per owner, with zero sessions, messages or PTYs. Owned app `37126` and helper `37145` exited. The owner reports no residual handles or IP descriptors, and stable `54473` identity/hash unchanged before and after. Its later read-only audit confirmed both owned PIDs absent and the stable identity unchanged.
+- Exact-window screenshot capture **failed** with `could not create image from window`. Two capture acknowledgements are not image passes. Real macOS IME, native visual parity, signed-in ACP and real-data cleanup were NOT RUN. No new Conductor/REA behavior is inferred.
+- This source predates #740 merge `667ac60f` by one commit. Terminal labels/status, selected-worktree cwd, #741 slider rendering/drag/persistence and #742 colors/actions were NOT RUN. Containing #742 source does not prove its behavior. Earlier `8467` assertions and each package remain separate evidence.
+
+All nine native full-parity verdicts remain unverified. Synthetic WKWebView assertions do not change the ten-run E2E streak, five-pass local verdict or real-auth verdict. Existing owners retain those checks. Ledger integration performed no Mac launch/input, new capture, preview or dispatch.
+
+### Ledger #747 merge-gate gap
+
+[PR #747](https://github.com/reason-machines/openconductor/pull/747) merged at `2026-11-07T00:56:46.75571Z` before all exact-head checks passed. The coordinator observed 14/16 successes with both E2E jobs running. Direct readback confirms Codex job `128244199775` completed later at `00:58:03Z`. The ALL-checks gate did not hold. Later success does not make that merge compliant. No post-merge cancellation or rollback is claimed. Future merge requests wait for every exact-head check and workflow to succeed.
+
+## Grouping and Settings evidence, main `70bf6c5e`, 7 November 2026
+
+Conductor Rebuild reconciled three newly merged increments on Reason Cloud. This updates the [canonical evidence manifest](supplemental-evidence.json) and generated JSON, Markdown and HTML, not the retained capture scores.
+
+- [#748 Group by](../../evidence/sidebar-group/README.md) supersedes the historical missing-feature note. Its dark reference and both-theme fixture checks cover status/project grouping, counts/order, badges, filtering and mocked reload/collapse. Semantic coverage remains partial. Shortcut labels do not prove modifier-number activation; browser storage does not prove native database persistence.
+- [#750 Reason defaults](../../evidence/settings/defaults-clear/README.md) retains three failing stale-handler schedules and one passing separate-render control before the correction, then all four passing after. The production-handler test uses invented in-memory IPC, not WebKit dispatch. The conditional defect is proven; attribution of the original #748 timeout remains unproven. Owner-reported 1,310 units and consuming fake-provider E2E are separate checks, not native or real-auth proof.
+- [#751 final-source proof](../../evidence/sidebar-group/exact-head-after/README.md) retains eight REA captures and two filter screenshots inspected/published by the Home owner. Local tree `dbdc265e` equals final #748 head `e295f98f`, not a later consuming-main render or installed app. Its preview stop receipt is actual, with `01:48:58.673Z` only an upper-bound timestamp. Ledger integration read the manifests, not the images, and performed no recapture.
+- Sole E2E owner `acc3b5c5` confirms consuming `1512/42327005025` on `154ba0da` and `1513/42327550939` on `70bf6c5e` each passed both jobs, eight late suites and 23/23 App flows. The latter artifact is `13556900481/results.json`; #751 consuming follow-through is closed. Its ordered-main streak is 7/10 after the `1499` cancellation reset. Active `1515/42329391407` is uncounted. This is attributed accounting, not a new independent pass or a native/five-pass/auth promotion.
+- [The sole native owner's later receipt](https://reasonmachines.com/agents/d8e894e9-2c63-4ec3-9a11-f28722af996d?page=35fcabfb-811f-4210-b4a4-61c67f0b99d8) uses a local ad-hoc debug rebuild of `154ba0da`, not a CI artifact. It reports #741 synthetic native keys and computed slider geometry plus scratch-TOML readback after shutdown, not physical keys, pointer drag or restart persistence. Its final #742 driver passed 30/30 computed-token/synthetic Yes/No checks through the no-provider/stale-request false path, not active-agent option transport. The exact-window screenshot failed. Earlier partial drivers are not combined into a green suite; #739 was not rerun, and real IME/#740 tabs/cwd remain NOT RUN. Owned processes exited with stable app/source identity unchanged per owner. Ledger integration did not reopen the archive or launch the app.
+- #752 Projects correction remains an unmerged receipt at this source snapshot. Browser sign-in remains the separately owned P0. Neither grants native parity credit. The existing coordinator Page is read-only here; source/data goes to its owner without another Page or status-only patch.
+
+All 24 earlier evidence records remain retained alongside three merged increments and one bounded native receipt. Every raw/scoped row, exclusion, capture score, toast-system/main-flow requirement and default-off/native gate distinction is unchanged. The scoped denominator remains 341, with 169 retained matches, 48 wrong, 3 missing and 121 unverified. All nine final native reviews remain unverified. No product/driver edit, Mac launch/input, preview, dependency install, new worker, capture, dispatch/rerun or duplicate watcher occurred in this reconciliation.
+
+## Visible-row shortcut evidence, main `dff4e7b0`, 7 November 2026
+
+Conductor Rebuild reconciled merged [#757](https://github.com/reason-machines/openconductor/pull/757) on Reason Cloud. The [retained sidebar proof](../../evidence/sidebar-shortcuts/README.md) and [canonical manifest](supplemental-evidence.json) add one unique supplemental record; all 29 earlier records stay unchanged.
+
+- The owner reproduced Meta+2 selecting hidden Lisbon instead of visible Osaka after custom Focus collapse. Six collapsed-section cases failed before, while six controls passed. The correction shares the existing session-local collapsed-section set. The owner reports 44 focused and 1,325 full units plus build/color checks passed after.
+- Committed metadata retains 42 actual-key browser contexts and 162 activations across dark/light, Project/Status, three project filters and custom/status collapse. Out-of-range Meta+9 remains a no-op. The earlier animation-related driver failure and its corrected wait stay distinct from the product fix. Source hashes and actual preview-stop receipts are checked here; runtime assertions and image inspection remain owner-attributed.
+- Home owner `27102e36` reports all four non-E2E consuming workflows passed on `0c088d05`, including package 39/39 and signature verification. Sole E2E owner `acc3b5c5` confirms [1529/42332253868](https://github.com/reason-machines/openconductor/actions/runs/42332253868), both jobs, late suites and artifact `13558368120/results.json` passed 23/23. Neither packaging nor fake-provider Ubuntu E2E proves native installation or real-auth behavior.
+- The same E2E owner delivered the historical ten-green target through 1523, with 20/20 jobs and 230/230 flows validated by that owner. This integration does not recount or extend it. #754 consuming 1530 remains with its existing owner; no partial runtime result is promoted.
+- Grounding reuses retained REA-decoded numbering evidence, not a fresh section-specific reference runtime capture. Before and after viewports differ; no pixel-distance match is claimed. Remapped modifiers, Pinned/My-workspaces container collapse, persisted native collapse, real authentication, actual IME and native side-by-side acceptance remain unverified. Five-pass failure and original #748 timing/causality remain separate gaps.
+
+The 341-entry denominator, 169 retained matches, 48 wrong, 3 missing and 121 unverified are unchanged. Every raw/scoped row, exclusion, capture identity/score, observable main-flow toast/system requirement, default-off/native gate distinction and all nine unverified native verdicts are retained. No product/driver edit, Mac input, new capture, preview, dependency install, worker, dispatch/rerun or duplicate E2E watcher occurred. The parent-owned Page is read-only here; canonical source/data is sent to its owner.
+
+## Historical program records
+
 One row per node of Sven's UI audit program. A node is done when its side-by-side image
 (real Conductor left, OpenConductor right, same window size; rules in
 [side-by-side/README.md](../side-by-side/README.md)) shows it matching, and that image is linked
 from a merged PR.
 
-The coordinator Session owns this file. Builder Sessions update their own row in the PR that
-changes the node: owner Session id, PR numbers, status and the date of the side-by-side image
-that justifies the status.
+The coordinator's ledger owner maintains this file. Builder Sessions send evidence summaries with their Session id, PR numbers, proposed status and capture identity. The ledger owner integrates them after the relevant merge batch.
 
 ## Columns
 
@@ -42,6 +118,7 @@ that justifies the status.
 | Settings: Organization and Cloud (cloud org only) `settings-org` | unassigned | | missing | seed | n/a |
 | Dialogs and menus `dialogs-menus` | 700983e1 (Help menu, Submit a prompt, Diagnostics) | #631 | wrong | 2026-11-06, 18ecd9590, [dialogs-menus-01](../side-by-side/dialogs-menus-01-help-menu.png) (harness render) | build: unrecorded (700983e1, Opus 5.5 high) |
 | Toasts `toasts` | unassigned | | wrong | seed | n/a |
+| Routines (Reason Loops) `routines` | d369b42f (Reason cloud features) | #685 | wrong | 2026-11-06, [routines-01](../side-by-side/routines-01-list.png), [routines-02](../side-by-side/routines-02-new.png) (harness render: t24 1.7% / 0.9%, does not count as matches; table and saved routine have no reference, the harness has no cloud organization) | build: unrecorded (d369b42f, Opus 5.5 high) |
 
 Settings groups follow Conductor's settings navigation as read from its bundle
 ([evidence/settings/NOTES.md](../../evidence/settings/NOTES.md), "Settings pages"): Personal,
@@ -362,3 +439,27 @@ main `841a805`.
     Not a REA bug: on a Reason cloud computer without root, WebKitGTK from a sysroot fails with
     "Unable to spawn … WebKitNetworkProcess"; the lane runs under `unshare -rm` with the sysroot's
     `/usr/lib/x86_64-linux-gnu` and `/usr/share` overlaid.
+
+## Track C: responsiveness and transitions (transition lab)
+
+Owner: Session 818a22cc (track C). Click to content for every screen switch in the built app,
+cold and warm, against Conductor 0.87.6; full numbers, filmstrips and commands in
+[side-by-side/transitions/timing](../side-by-side/transitions/timing/README.md).
+
+| Area | PRs | Status | Measured (built app, median content ms; loader on screen) | Open |
+|---|---|---|---|---|
+| Workspace switch, Home to workspace, Settings › Back | #636 | matches: no loader, no flip, one-frame swap like Conductor's cached `useFilesChanged` | 13 to 35 ms (main `841a805`: 101 to 203 ms, "Loading changes…" 56 to 696 ms, wrong list for one frame) | a workspace never opened since launch still shows "Loading changes…" until git answers, as Conductor does |
+| Right panel tabs (All files, Changes, Checks) | #636 | matches: instant | 2 to 8 ms warm; first All files after launch 46 ms with its loader | none |
+| Panels (⌘B, ⌥⌘B, ⌘J) | (none needed) | matches: instant, layout shift 0 | 5 to 55 ms | none |
+| Dialogs (⌘K, ⌘P, ⌥⌘/, ⌘N, confirmations) | #605 (motion), #636 (measured) | matches: Conductor's durations and easing | open 13 to 51 ms; ⌘K exit 135 to 142 ms vs Conductor 141 to 144 | none |
+| Settings open and page switch | #636 | matches: no "Loading…" frame, no shift on open, Environment, Misc or Default models | 5 to 47 ms; Appearance cold 73 to 148 ms in both builds (code preview highlight) | Appearance first mount |
+| Window sizes 900, 1280, 1600, 2100 | #584, #591 (layout), #636 (checked) | matches: same boxes as Conductor within 1 px, no overflow | n/a | visual details in the sheet are track B's |
+
+### REA gaps hit by track C
+
+1. `analyze-javascript-application` (6.8.0) keeps bindings (`K9t`) but not object-pattern property
+   names or option objects, so a hook's query options cannot be read from its evidence; 3 min 9 s
+   and 125 MB of evidence for one 3.5 MB chunk.
+2. `inspect-analysis-view` documents only `{inputJson}`; no way to search an evidence bundle for a symbol.
+3. `capture-browser-scenario` forces reduced motion and has no per-frame sampling (as in #605), so
+   timing came from frame logs and the Xvfb recording; the native Conductor window was not measured.

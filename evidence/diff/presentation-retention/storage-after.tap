@@ -1,0 +1,56 @@
+(node:73) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:80) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Changes presentation survives reconstruction without sharing values between workspaces
+ok 1 - Changes presentation survives reconstruction without sharing values between workspaces
+  ---
+  duration_ms: 5.62885
+  type: 'test'
+  ...
+# Subtest: early edits survive delayed hydration without overwriting saved fields or sibling routes
+ok 2 - early edits survive delayed hydration without overwriting saved fields or sibling routes
+  ---
+  duration_ms: 0.497665
+  type: 'test'
+  ...
+# Subtest: an early folder toggle applies to saved collapsed paths after hydration
+ok 3 - an early folder toggle applies to saved collapsed paths after hydration
+  ---
+  duration_ms: 0.298614
+  type: 'test'
+  ...
+# Subtest: a failed read cannot erase unseen routes and a later edit retries hydration
+ok 4 - a failed read cannot erase unseen routes and a later edit retries hydration
+  ---
+  duration_ms: 0.340752
+  type: 'test'
+  ...
+# Subtest: writes remain ordered when a previous save is slow
+ok 5 - writes remain ordered when a previous save is slow
+  ---
+  duration_ms: 0.345082
+  type: 'test'
+  ...
+# Subtest: invalid persisted fields independently fall back to defaults
+ok 6 - invalid persisted fields independently fall back to defaults
+  ---
+  duration_ms: 0.157195
+  type: 'test'
+  ...
+# Subtest: storage failures leave the current list usable and later writes can recover
+ok 7 - storage failures leave the current list usable and later writes can recover
+  ---
+  duration_ms: 0.356816
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 717.668582

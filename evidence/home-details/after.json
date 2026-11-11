@@ -1,0 +1,334 @@
+{
+  "dark": {
+    "ref": {
+      "text": "5/385 cities visited",
+      "footer": {
+        "x": 688.65625,
+        "y": 536,
+        "width": 158.671875,
+        "height": 28,
+        "fontSize": "12px",
+        "fontWeight": "450",
+        "lineHeight": "16px",
+        "paddingLeft": "10px",
+        "paddingRight": "10px",
+        "borderRadius": "6px",
+        "color": "rgb(165, 160, 156)",
+        "gap": "6px",
+        "justifyContent": "center",
+        "letterSpacing": "0.12px"
+      },
+      "icon": {
+        "width": "16px",
+        "height": "16px",
+        "strokeWidth": "1px",
+        "marginRight": "6px",
+        "vectorEffect": "non-scaling-stroke"
+      },
+      "cards": [
+        {
+          "label": "Open project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(243, 242, 241)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(243, 242, 241)",
+            "letterSpacing": "normal"
+          }
+        },
+        {
+          "label": "Open GitHub project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(243, 242, 241)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(243, 242, 241)",
+            "letterSpacing": "normal"
+          }
+        },
+        {
+          "label": "Quick start",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(243, 242, 241)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(243, 242, 241)",
+            "letterSpacing": "normal"
+          }
+        }
+      ],
+      "hover": {
+        "color": "rgb(234, 232, 230)",
+        "backgroundRgba": [
+          255,
+          255,
+          255,
+          13
+        ]
+      }
+    },
+    "oc": {
+      "text": "5/385 cities visited",
+      "footer": {
+        "x": 688.65625,
+        "y": 536,
+        "width": 158.671875,
+        "height": 28,
+        "fontSize": "12px",
+        "fontWeight": "450",
+        "lineHeight": "16px",
+        "paddingLeft": "10px",
+        "paddingRight": "10px",
+        "borderRadius": "6px",
+        "color": "rgb(165, 160, 156)",
+        "gap": "6px",
+        "justifyContent": "center",
+        "letterSpacing": "0.12px"
+      },
+      "icon": {
+        "width": "16px",
+        "height": "16px",
+        "strokeWidth": "1px",
+        "marginRight": "6px",
+        "vectorEffect": "non-scaling-stroke"
+      },
+      "cards": [
+        {
+          "label": "Open project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(243, 242, 241)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(243, 242, 241)",
+            "letterSpacing": "normal"
+          }
+        },
+        {
+          "label": "Open GitHub project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(243, 242, 241)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(243, 242, 241)",
+            "letterSpacing": "normal"
+          }
+        },
+        {
+          "label": "Quick start",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(243, 242, 241)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(243, 242, 241)",
+            "letterSpacing": "normal"
+          }
+        }
+      ],
+      "hover": {
+        "color": "rgb(234, 232, 230)",
+        "backgroundRgba": [
+          255,
+          255,
+          255,
+          13
+        ]
+      }
+    }
+  },
+  "light": {
+    "ref": {
+      "text": "5/385 cities visited",
+      "footer": {
+        "x": 688.65625,
+        "y": 536,
+        "width": 158.671875,
+        "height": 28,
+        "fontSize": "12px",
+        "fontWeight": "450",
+        "lineHeight": "16px",
+        "paddingLeft": "10px",
+        "paddingRight": "10px",
+        "borderRadius": "6px",
+        "color": "rgb(142, 136, 133)",
+        "gap": "6px",
+        "justifyContent": "center",
+        "letterSpacing": "0.12px"
+      },
+      "icon": {
+        "width": "16px",
+        "height": "16px",
+        "strokeWidth": "1px",
+        "marginRight": "6px",
+        "vectorEffect": "non-scaling-stroke"
+      },
+      "cards": [
+        {
+          "label": "Open project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(44, 40, 38)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(44, 40, 38)",
+            "letterSpacing": "normal"
+          }
+        },
+        {
+          "label": "Open GitHub project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(44, 40, 38)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(44, 40, 38)",
+            "letterSpacing": "normal"
+          }
+        },
+        {
+          "label": "Quick start",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(44, 40, 38)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(44, 40, 38)",
+            "letterSpacing": "normal"
+          }
+        }
+      ],
+      "hover": {
+        "color": "rgb(44, 40, 38)",
+        "backgroundRgba": [
+          20,
+          20,
+          20,
+          13
+        ]
+      }
+    },
+    "oc": {
+      "text": "5/385 cities visited",
+      "footer": {
+        "x": 688.65625,
+        "y": 536,
+        "width": 158.671875,
+        "height": 28,
+        "fontSize": "12px",
+        "fontWeight": "450",
+        "lineHeight": "16px",
+        "paddingLeft": "10px",
+        "paddingRight": "10px",
+        "borderRadius": "6px",
+        "color": "rgb(142, 136, 133)",
+        "gap": "6px",
+        "justifyContent": "center",
+        "letterSpacing": "0.12px"
+      },
+      "icon": {
+        "width": "16px",
+        "height": "16px",
+        "strokeWidth": "1px",
+        "marginRight": "6px",
+        "vectorEffect": "non-scaling-stroke"
+      },
+      "cards": [
+        {
+          "label": "Open project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(44, 40, 38)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(44, 40, 38)",
+            "letterSpacing": "normal"
+          }
+        },
+        {
+          "label": "Open GitHub project",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(44, 40, 38)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(44, 40, 38)",
+            "letterSpacing": "normal"
+          }
+        },
+        {
+          "label": "Quick start",
+          "width": "16px",
+          "height": "16px",
+          "strokeWidth": "1px",
+          "color": "rgb(44, 40, 38)",
+          "vectorEffect": "non-scaling-stroke",
+          "caption": {
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "color": "rgb(44, 40, 38)",
+            "letterSpacing": "normal"
+          }
+        }
+      ],
+      "hover": {
+        "color": "rgb(44, 40, 38)",
+        "backgroundRgba": [
+          20,
+          20,
+          20,
+          13
+        ]
+      }
+    }
+  }
+}

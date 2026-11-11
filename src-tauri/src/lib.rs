@@ -19,6 +19,20 @@
 //!
 //! Those modules are added here once their owners land them.
 
+/// `std::eprintln!` for every module below, except that a failed write is
+/// dropped instead of panicking. An agent that launches the app with stderr on
+/// its own pipe closes that pipe when its command returns; `std::eprintln!`
+/// then panics with EPIPE, and the first log line in the setup hook aborted the
+/// app before its window opened (tests/closed_stderr.rs). Unit tests keep
+/// `std::eprintln!` so the test harness still captures their output.
+#[cfg(not(test))]
+macro_rules! eprintln {
+    ($($arg:tt)*) => {{
+        use ::std::io::Write as _;
+        let _ = ::std::writeln!(::std::io::stderr(), $($arg)*);
+    }};
+}
+
 pub mod agent;
 pub mod agent_binaries;
 pub mod agent_commands;
@@ -42,13 +56,25 @@ pub mod db;
 pub mod e2e;
 pub mod persistence;
 mod persistence_commands;
+mod workspace_links;
 pub mod recent_local_repos;
+mod workspace_file;
+
+#[tauri::command]
+async fn workspace_read_markdown(repo: String, path: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || workspace_file::read_markdown(std::path::Path::new(&repo), &path))
+        .await
+        .map_err(|e| format!("File read task failed: {e}"))?
+}
 mod recent_local_repos_commands;
 mod sidebar_repo_commands;
 mod repo_misc_commands;
 mod sidebar_section_commands;
 pub mod sidebar_transparency;
 mod agent_settings_commands;
+mod config_sync;
+#[path = "config_sync/commands.rs"]
+mod config_sync_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
@@ -56,9 +82,12 @@ pub mod draft_attachments;
 pub mod github_repo;
 pub mod local_account;
 pub mod menu;
+mod model_catalog;
 pub mod pr;
 mod local_storage_commands;
 mod onboarding_commands;
+mod native_qa;
+mod native_qa_cache;
 pub mod open_in;
 pub mod project;
 pub mod quick_open;
@@ -255,7 +284,9 @@ fn updater_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R, tauri_pl
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let builder = tauri::Builder::default();
+    native_qa::reject_release_request();
+    let context = native_qa::before_startup(tauri::generate_context!());
+    let builder = native_qa::guard_builder(tauri::Builder::default());
     // Conductor is macOS-only; elsewhere keep Tauri's no-menu default.
     #[cfg(target_os = "macos")]
     let builder = builder.menu(menu::build);
@@ -288,6 +319,10 @@ pub fn run() {
         .plugin(tauri_plugin_sql::Builder::new().build())
         .plugin(updater_plugin())
         .setup(|app| {
+            native_qa::validate(app.handle()).map_err(std::io::Error::other)?;
+            if native_qa::ordinary_gate(app.handle()).map_err(std::io::Error::other)? {
+                return Ok(());
+            }
             let data_dir = app.path().app_data_dir()?;
             // Conductor runs its bundled tools from $APPDATA/bin (bundled_bin.rs).
             bundled_bin::install_at_startup(&app.path().resource_dir()?, &data_dir);
@@ -326,6 +361,7 @@ pub fn run() {
             let mut workspaces = workspace::service::WorkspaceService::new(data_dir)?;
             // Settings › Advanced › root directory (`conductor_root_path`).
             if let Some(root) = root_path_commands::root_from_settings(&db) {
+                native_qa::validate_workspace(&root).map_err(std::io::Error::other)?;
                 workspaces = workspaces.with_root(root);
             }
             // Deletes workspaces left initializing, imports pre-database repositories.
@@ -337,6 +373,7 @@ pub fn run() {
             app.manage(workspace_archive::flow::InFlightArchives::default());
             app.manage(quick_open::commands::FileCache::default());
             app.manage(reason_chat::ReasonChats::default());
+            app.manage(reason_acp::login::LoginService::default());
             app.manage(codex_chat::CodexChats::with_binaries(binaries));
             app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
@@ -367,6 +404,7 @@ pub fn run() {
         })
         .manage(app_quit::QuitHandler::default())
         .invoke_handler(tauri::generate_handler![
+            workspace_read_markdown,
             app_quit::set_quit_handler_ready,
             app_quit::quit_app,
             root_path_commands::get_conductor_root,
@@ -400,6 +438,7 @@ pub fn run() {
             workspace_archive_commands::clear_unarchive_conflict,
             persistence_commands::db_list_repos,
             persistence_commands::db_list_workspaces,
+            workspace_links::workspace_set_link,
             persistence_commands::db_repo_prompt,
             onboarding_commands::db_first_run_onboarding_step,
             onboarding_commands::db_finish_first_run_onboarding,
@@ -425,6 +464,7 @@ pub fn run() {
             sidebar_rename_commands::db_mark_user_set_branch_name,
             sidebar_workspace_commands::sidebar_workspace_changes,
             diff::commands::diff_workspace,
+            diff::commands::diff_branch_commits,
             diff::commands::diff_discard_file,
             diff::commands::diff_write_file,
             checkpoint_commands::checkpoint_save,
@@ -443,9 +483,15 @@ pub fn run() {
             quick_open::commands::fuzzy_filter_files,
             quick_open::commands::fuzzy_match_files,
             reason_chat::reason_cli_path,
+            reason_chat::reason_cli_ensure_current,
             reason_chat::reason_account_status,
+            reason_chat::reason_cloud_setup,
             reason_chat::reason_login_start,
+            reason_chat::reason_login_status,
+            reason_chat::reason_login_cancel,
+            reason_chat::reason_logout,
             reason_chat::reason_connect_computer,
+            reason_chat::reason_api_call,
             reason_chat::reason_paths,
             reason_chat::reason_open_chat,
             reason_chat::reason_set_config,
@@ -472,6 +518,8 @@ pub fn run() {
             agent_settings_commands::cli_login_status,
             agent_settings_commands::favorite_models_list,
             agent_settings_commands::favorite_models_replace,
+            config_sync_commands::config_sync_diff,
+            config_sync_commands::config_sync_apply,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,
@@ -519,6 +567,7 @@ pub fn run() {
             resource_usage::commands::get_resource_usage,
             sidebar_transparency::update_window_vibrancy,
             local_account::local_account,
+            model_catalog::local_model_catalog,
             settings::commands::get_settings,
             settings::effective::repo_settings_effective,
             settings::effective::repo_settings_set_local,
@@ -529,6 +578,7 @@ pub fn run() {
             settings::commands::update_settings,
             settings::commands::get_repo_settings,
             settings::commands::provider_status,
+            settings::commands::initialize_default_runtime,
             settings::commands::connect_provider,
             settings::commands::disconnect_provider,
             settings::commands::reveal_provider_secret,
@@ -536,6 +586,7 @@ pub fn run() {
             pr::commands::pr_lookup,
             pr::commands::pr_list_open,
             pr::commands::gh_issue_list_open,
+            pr::commands::gh_issue_link_metadata,
             pr::commands::pr_git_state,
             pr::commands::pr_pull_latest_from_target,
             pr::commands::pr_header_state,
@@ -581,7 +632,7 @@ pub fn run() {
             agent_binaries::commands::request_agent_binary_download,
             agent_binaries::commands::cancel_agent_binary_download,
         ])
-        .build(tauri::generate_context!())
+        .build(context)
         .expect("error while building OpenConductor")
         .run(|app, event| {
             // Shells and their children must not outlive the app.
@@ -595,7 +646,7 @@ pub fn run() {
                 }
                 // Run scripts lead their own process groups; do not orphan them.
                 if let Some(scripts) = app.try_state::<oc_scripts::service::ScriptService>() {
-                    scripts.runs.stop_all();
+                    scripts.shutdown();
                 }
                 if let Some(shell) = app.try_state::<ShellCommands>() {
                     shell.0.cancel_all();

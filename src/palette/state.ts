@@ -6,6 +6,7 @@ import type { FocusContext } from "../keybindings/dispatcher.ts";
 import type { Overrides } from "../keybindings/overrides.ts";
 import { resolveCommand } from "../keybindings/resolve.ts";
 import type { KeyEventLike } from "../keybindings/shortcut.ts";
+import type { PaletteTab, ResultItem } from "./search/model.ts";
 
 export const COMMAND_PALETTE_DIALOG_ID = "command-palette-dialog";
 
@@ -20,6 +21,8 @@ export function paletteCommandFor(e: KeyEventLike, overrides: Overrides = {}): P
   if (plain && !e.shiftKey) {
     if (e.key === "ArrowDown") return "next-item";
     if (e.key === "ArrowUp") return "prev-item";
+    if (e.key === "Home") return "first-item";
+    if (e.key === "End") return "last-item";
     if (e.key === "Enter") return "select";
     if (e.key === "Escape") return "close";
   }
@@ -27,10 +30,9 @@ export function paletteCommandFor(e: KeyEventLike, overrides: Overrides = {}): P
     if (e.key === "ArrowUp") return "first-item";
     if (e.key === "ArrowDown") return "last-item";
   }
-  // Ctrl+N / Ctrl+P move like the arrows (macOS text-field convention).
   if (e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
-    if (e.key === "n") return "next-item";
-    if (e.key === "p") return "prev-item";
+    if (e.key === "n" || e.key === "j") return "next-item";
+    if (e.key === "p" || e.key === "k") return "prev-item";
   }
   switch (resolveCommand(e, PALETTE_FOCUS, PALETTE_COMMANDS, { overrides })) {
     case "commandPalette.nextTab":
@@ -44,9 +46,24 @@ export function paletteCommandFor(e: KeyEventLike, overrides: Overrides = {}): P
   }
 }
 
+export function tabSelectionIndex({ from, to, selected, results }: {
+  from: PaletteTab;
+  to: PaletteTab;
+  selected: ResultItem | undefined;
+  results: readonly ResultItem[];
+}): number {
+  if (((from === "all" && to === "projects") || (from === "projects" && to === "all")) && selected?.kind === "project") {
+    const index = results.findIndex((item) => item.id === selected.id);
+    if (index >= 0) return index;
+  }
+  return to === "workspaces" ? -1 : 0;
+}
+
 /** New active index after a movement command; the list wraps around. */
 export function moveActive(active: number, count: number, cmd: PaletteCommand): number {
   if (count === 0) return 0;
+  // No row highlighted yet (the Workspaces tab opens that way): the first move picks an end.
+  if (active < 0) return cmd === "prev-item" || cmd === "last-item" ? count - 1 : 0;
   switch (cmd) {
     case "next-item":
       return (active + 1) % count;

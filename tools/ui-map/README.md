@@ -1,6 +1,21 @@
 # UI map tooling
 
-Builds [parity/ui-map.md](../../parity/ui-map.md) and [parity/ui-map.json](../../parity/ui-map.json): every Conductor screen, route, panel, dialog, menu, popover, toast, empty state and settings page and row, each with a Conductor reference screenshot, an OpenConductor screenshot from the built app, a REA visual diff and a status (missing / wrong / matches).
+Builds [parity/ui-map.md](../../parity/ui-map.md), [parity/ui-map.json](../../parity/ui-map.json) and the [interactive program ledger](../../parity/ui-program/ledger.html). Raw inventory and assessments are preserved. The summary counts only in-scope local UI, with separate missing, wrong, matches and unverified statuses.
+
+## Rescore retained evidence without rebuilding
+
+```bash
+python3 tools/ui-map/build_map.py
+python3 -m unittest discover -s tools/ui-map -p 'test_scope.py'
+```
+
+This does not capture either app or verify current native parity. `scoped_report.py` excludes cloud-org, routines, triage, cloud-only onboarding and Ports from the denominator. Unobservable toast literals are not required. It adds one toast-system requirement and one Experimental default-off-gate requirement, both unverified until supported by evidence. Every row retains `raw_status`, `raw_why`, `scope` and `scope_reason`; `raw_summary` preserves the old counts. Version 2 readers must use the scoped `summary`, not count all retained rows.
+
+The nine `main_screens` verdicts separate retained state evidence from final native review. A threshold match never signs off a main screen. The generated page provides filters over both the in-scope queue and retained exclusions. Builders submit evidence summaries to the ledger owner rather than editing aggregate files concurrently.
+
+## Merged supplemental evidence
+
+The ledger owner records merged area evidence in [supplemental-evidence.json](../../parity/ui-program/supplemental-evidence.json). Each record names the PR, merge commit, area, capture lane, evidence source and limits. `source_main_commit` is the reconciled main revision, not an app capture identity. Regeneration copies these records into the reports and links them to the nine main-screen verdicts. It does not replace whole-state scores, add rows to the denominator or promote native final review. Unmerged area reports stay with their owners until the next merged batch.
 
 ## Regenerate (one command)
 
@@ -30,7 +45,7 @@ Only `parity/ui-map.md`, `parity/ui-map.json` and `parity/ui-map/{inventory,comp
 
 Prerequisites: Conductor's decoded asset table at `.rea-work/dist` (`tools/extract_tauri_assets.py`; third-party code, never committed), REA (`npm i -g rea-agents`), Chromium, `npm ci` in `tools/screens`, and for the OpenConductor lane the same system packages as `.github/workflows/e2e.yml` (`libwebkit2gtk-4.1-dev`, `webkit2gtk-driver`, `xvfb`), `cargo install tauri-driver --locked`, and `npx tauri build --debug --no-bundle`. GPU-less Xvfb also needs `WEBKIT_DISABLE_DMABUF_RENDERER=1 WEBKIT_DISABLE_COMPOSITING_MODE=1`.
 
-The OpenConductor lane runs every state in a fresh app session on a copy of one seeded HOME (repos tide-web, tide-api, dotfiles; one workspace in tide-web with two uncommitted files; dark theme), with `HOME` pointed at a scratch dir so nothing touches the real home.
+The OpenConductor lane runs every state in a fresh app session on a copy of one seeded HOME (repos tide-web, tide-api, dotfiles with 3, 2 and 1 workspaces like the reference fixture, the open tide-web one with two uncommitted files; git identity Ada Demo <ada@example.com> as in `tools/screens/fixtures.js`; dark theme), with `HOME` pointed at a scratch dir so nothing touches the real home.
 
 Status rules and the REA gaps hit are at the top and bottom of the generated map.
 

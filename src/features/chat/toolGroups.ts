@@ -4,8 +4,8 @@
 //
 // - The turn's final text (its last non-empty text part) is a "preview" item:
 //   it always shows and is never collapsed.
-// - The other items are batched between previews. A batch of 3 or more
-//   items becomes one summary row; shorter batches stay as they are.
+// - The other items are batched between previews. A batch from 3 or more
+//   visible messages becomes one summary row; shorter batches stay as they are.
 // - A summary counts tool calls and other messages (text or thinking with
 //   content); its label leaves out zero counts.
 // - Nothing collapses while the turn runs, or when "Don't collapse tool calls"
@@ -15,7 +15,7 @@
 import type { PartView, RowView } from "./view.ts";
 import { plainText } from "./types.ts";
 
-/** Conductor collapses a batch only when it has at least this many items. */
+/** Conductor collapses a batch only when it has at least this many visible messages. */
 export const MIN_COLLAPSED_ITEMS = 3;
 
 export interface ToolSummary {
@@ -29,6 +29,7 @@ export interface ToolSummary {
 /** A part with a React key that stays stable across the turn's messages. */
 export interface KeyedPart {
   key: string;
+  messageKey: string;
   part: PartView;
 }
 
@@ -85,7 +86,8 @@ export function groupParts(parts: KeyedPart[], keyPrefix: string, hasFinalText =
   let batchStart = 0;
   const flush = () => {
     if (batch.length === 0) return;
-    const summary = batch.length >= MIN_COLLAPSED_ITEMS ? summarize(`${keyPrefix}:collapse-${batchStart}`, batch) : undefined;
+    const messageCount = new Set(batch.map((p) => p.messageKey)).size;
+    const summary = messageCount >= MIN_COLLAPSED_ITEMS ? summarize(`${keyPrefix}:collapse-${batchStart}`, batch) : undefined;
     if (summary) out.push({ kind: "summary", summary, parts: batch });
     else for (const p of batch) out.push({ kind: "part", ...p });
     batch = [];
@@ -155,7 +157,7 @@ export function foldAgentRows(rows: RowView[], activeTurn: string | null | undef
     const turnId = row.message.turnId;
     const run: AssistantRow[] = [row];
     while (rows[i + 1]?.kind === "assistant" && (rows[i + 1] as AssistantRow).message.turnId === turnId) run.push(rows[++i] as AssistantRow);
-    const parts = run.flatMap((r) => r.parts.map((part, j) => ({ key: part.kind === "tool" ? part.call.id : `${r.key}:${j}`, part })));
+    const parts = run.flatMap((r) => r.parts.map((part, j) => ({ key: part.kind === "tool" ? part.call.id : `${r.key}:${j}`, messageKey: r.key, part })));
     const last = run[run.length - 1]!;
     const items = groupParts(parts, `${turnId}:${row.key}`, lastBlockStart.get(turnId) === i - run.length + 1);
     const copyText = last.streaming ? "" : plainText(last.message);

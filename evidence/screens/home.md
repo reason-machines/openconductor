@@ -1,5 +1,7 @@
 # Home screen (Conductor v0.87.6)
 
+Current Home detail proof: [footer, icons and 385-city recognition](../home-details/README.md) supersedes the earlier OpenConductor city-count and footer-size notes below. [Passport evidence](../passport/README.md) supersedes the missing-world-map notes. OpenConductor retains its own wordmark. Reference country rendering and full native parity remain unverified.
+
 Source: the frontend chunk `assets/renderApp-D_fmY7hW.js` (11,554,351 bytes) and
 `assets/index-BGEQ8YjU.js`, decoded from the Tauri asset table of
 `/Applications/Conductor.app/Contents/MacOS/conductor` on the Mac "sven m5 max"
@@ -127,9 +129,10 @@ No description text and no keyboard hint on the cards.
   (@10,882,903) both navigate to `/all-workspaces` (`UJo`, the workspace list
   headed "Home"); the row is active only on that route. The wordmark screen above
   is the `/` route only; no sidebar item opens it.
-- OpenConductor differs here on purpose (Sven's brief for #483): its sidebar Home
-  row, `nav.home` (⌘⇧H) and the palette's Go to Home open the wordmark screen
-  (`root`), and the Home row is active there. The workspace list stays at
-  `/all-workspaces` (opened by that path at start, or restored if it was open).
+- The earlier #483 brief intentionally sent OpenConductor Home to entry cards.
+  The current parity directive supersedes that difference. Sidebar Home,
+  `nav.home` (⌘⇧H) and palette Home now select the workspace list, with Home
+  active only there. [Fresh REA and regression proof](../home-routing/README.md)
+  retains the distinct URL-history and native gaps.
   Capture: `tools/home_capture.mjs` shot `home-row-light-1344` starts in a
   workspace and clicks the Home row.

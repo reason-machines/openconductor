@@ -6,13 +6,20 @@ import { SETTINGS_CHANGED } from "./appearance";
 import { BOOL_PREFS, boolPref, type BoolPrefKey } from "./prefs";
 
 export function useBoolPref(key: BoolPrefKey): boolean {
-  const [value, setValue] = useState<boolean>(BOOL_PREFS[key].default);
+  return useBoolPrefState(key) ?? BOOL_PREFS[key].default;
+}
+
+export function useBoolPrefState(key: BoolPrefKey): boolean | null {
+  const [value, setValue] = useState<boolean | null>(null);
   useEffect(() => {
     let live = true;
     const load = () =>
       getSettings().then(
         (s) => live && setValue(boolPref(s, key)),
-        (err) => console.warn(`Failed to read ${key}`, err),
+        (err) => {
+          if (live) setValue(BOOL_PREFS[key].default);
+          console.warn(`Failed to read ${key}`, err);
+        },
       );
     load();
     window.addEventListener(SETTINGS_CHANGED, load);

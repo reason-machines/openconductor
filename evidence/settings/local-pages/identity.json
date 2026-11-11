@@ -1,0 +1,26 @@
+{
+  "reference_binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+  "reference_index_sha256": "48b778fa0c04f73e55a744c99873cf8cafe942ba7613f24c533b0963b1cf411b",
+  "rea_version": "6.8.0",
+  "openconductor_source_commit": "5457cb1d09822a0c00ae89e528e5eb943a14fef8",
+  "built_assets": {
+    "dist/assets/index-l0BL5AGe.js": "c0e9bbbe17c82078705b795daa4ca8710a911bb346fb6b8bef301bf8d48e8d4e",
+    "dist/assets/index-BPz8J_8X.css": "565ebdb8949a35dcd0118211e78221c611e8b4f9295532f85dae13afdac8aaa2",
+    "dist/assets/index-D31YrmJg.js": "079ecd8b2a65be7358dec409b2d992d704a5acfff679292c564f3280e918125c"
+  },
+  "lane": "Chromium, invented Tauri IPC; not native Mac",
+  "viewport": {
+    "width": 1280,
+    "height": 820
+  },
+  "browser_checks": [
+    "three rapid defaults clears persist together",
+    "rejected save rolls back and next save succeeds",
+    "local preset/custom command edit/delete round trip"
+  ],
+  "not_run": [
+    "live authentication",
+    "native Mac screenshot comparison",
+    "real filesystem persistence/file pickers"
+  ]
+}

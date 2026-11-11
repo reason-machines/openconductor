@@ -1,0 +1,136 @@
+[
+  {
+    "name": "multiline",
+    "image": "evidence/chat/composer/mentions/ours-multiline.png",
+    "evidence_id": "ev_49cdf28a4fbcb795da058496722942425472dba67884d6262e9160d0e1cc169d",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4427/tools/composer/demo.html?agent=claude"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": ".composer [contenteditable=true]"
+          },
+          "value": {
+            "source": "literal",
+            "value": "Review the login redirect.\nKeep the expired-session test.\nThen update the docs."
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  },
+  {
+    "name": "chip",
+    "image": "evidence/chat/composer/mentions/ours-chip.png",
+    "evidence_id": "ev_7ab6c8d26ad73625d6f11d959c189c031ee95cf0bbe6b224ac1d549551d821f7",
+    "scenario": {
+      "browser": {
+        "mode": "launch",
+        "executable_path": "/usr/bin/chromium",
+        "headless": true
+      },
+      "start_url": {
+        "url": "http://localhost:4427/tools/composer/demo.html?agent=claude"
+      },
+      "environment": {
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "device_scale_factor": 1
+        },
+        "color_scheme": "dark",
+        "locale": "en-US",
+        "timezone": "UTC"
+      },
+      "actions": [
+        {
+          "step_id": "settle",
+          "action": "wait_for_timeout",
+          "duration_ms": 1800
+        },
+        {
+          "step_id": "type",
+          "action": "fill",
+          "locator": {
+            "kind": "css",
+            "selector": ".composer [contenteditable=true]"
+          },
+          "value": {
+            "source": "literal",
+            "value": "@README"
+          },
+          "timeout_ms": 5000
+        },
+        {
+          "step_id": "suggestions",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        },
+        {
+          "step_id": "pick",
+          "action": "press",
+          "locator": {
+            "kind": "css",
+            "selector": ".composer [contenteditable=true]"
+          },
+          "key": "Enter"
+        },
+        {
+          "step_id": "final",
+          "action": "wait_for_timeout",
+          "duration_ms": 600
+        }
+      ],
+      "capture": {
+        "at_end": [
+          "screenshot",
+          "url"
+        ],
+        "events": [
+          "console",
+          "page-errors"
+        ]
+      }
+    }
+  }
+]

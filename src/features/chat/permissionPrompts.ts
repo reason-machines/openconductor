@@ -5,7 +5,27 @@
 // Conductor 0.87.6 (REA-read renderApp chunk; evidence/chat-status/README.md):
 // the tool card is `Jpo` (heading from `Xpo`), the questions card `H8i`.
 
-import type { PermissionOption, Question } from "./chatRuntime.ts";
+import type { PermissionOption, Question, ToolPrompt } from "./chatRuntime.ts";
+import { conductorTools, type ConductorTool } from "./conductorTools.ts";
+
+/** ACP tool kinds; any other `tool` on a request is the provider's tool name (Claude Code's `Bash`). */
+const ACP_KINDS = new Set(["read", "edit", "delete", "move", "search", "execute", "think", "fetch", "switch_mode", "other"]);
+
+/**
+ * The tool call the card draws with the transcript's row (Conductor's `Jpo`
+ * renders its approval's `{name: toolName, input: toolInput}` with `hIt`, the
+ * transcript's tool row). A Reason request carries the ACP kind and raw input,
+ * mapped the way its transcript rows are (conductorTools.ts `fromReason`).
+ * Undefined when the request names no tool: the card then says "Approve this
+ * tool request to continue".
+ */
+export function permissionTool(p: Pick<ToolPrompt, "tool" | "title" | "input">): ConductorTool | undefined {
+  if (!p.tool && !p.title) return undefined;
+  if (!p.tool || ACP_KINDS.has(p.tool)) {
+    return conductorTools(p.title || p.tool, { kind: p.tool || "other", paths: [], title: p.title, ...(p.input !== null && p.input !== undefined ? { rawInput: p.input } : {}) })[0];
+  }
+  return conductorTools(p.tool, p.input ?? {})[0];
+}
 
 /** The card's question for a tool (Conductor's `Xpo`); ACP tool kinds map to the same lines. */
 export function permissionHeading(tool: string): string {
@@ -14,6 +34,8 @@ export function permissionHeading(tool: string): string {
     case "BashOutput":
     case "execute":
       return "Do you want to run this command?";
+    case "mcp__conductor__RunLocalCommand":
+      return "Do you want to run this command on your Mac?";
     case "Write":
     case "Edit":
     case "MultiEdit":

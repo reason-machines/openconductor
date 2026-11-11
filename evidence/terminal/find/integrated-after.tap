@@ -1,0 +1,44 @@
+(node:28553) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:28560) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: interactive terminal retains Find after sharing the controller with script output
+ok 1 - interactive terminal retains Find after sharing the controller with script output
+  ---
+  duration_ms: 906.293813
+  type: 'test'
+  ...
+# Subtest: setup output supports Find without sending terminal input
+ok 2 - setup output supports Find without sending terminal input
+  ---
+  duration_ms: 837.990649
+  type: 'test'
+  ...
+# Subtest: setup output renders terminal colors and carriage-return updates without a shell
+ok 3 - setup output renders terminal colors and carriage-return updates without a shell
+  ---
+  duration_ms: 904.830911
+  type: 'test'
+  ...
+# Subtest: run output supports Find without sending terminal input
+ok 4 - run output supports Find without sending terminal input
+  ---
+  duration_ms: 909.676345
+  type: 'test'
+  ...
+# Subtest: run output renders terminal colors and carriage-return updates without a shell
+ok 5 - run output renders terminal colors and carriage-return updates without a shell
+  ---
+  duration_ms: 850.302141
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4947.571923

@@ -66,14 +66,14 @@ function Fixture() {
   const [forked, setForked] = React.useState<string | null>(null);
   return (
     <div style={{ position: "fixed", inset: 0, background: "var(--bg)", overflow: "auto" }}>
-      <section className="chat" style={{ position: "absolute", left: 256, top: 80, width: 789, bottom: 0, display: "flex", flexDirection: "column", border: 0 }}>
+      <section className="chat" style={{ position: "absolute", left: 256, top: 80, width: Number(params.get("width") ?? 789), bottom: 0, display: "flex", flexDirection: "column", border: 0 }}>
         <div className="chat-scroll">
           <Transcript
             transcript={r.transcript}
             workspacePath={LISBON.workspacePath}
             turnFooter={turnFooter}
             expandToolsByDefault={params.get("open") === "1"}
-            turnAgent={turnAgentLabel("byok:anthropic:claude-opus-5-5", "Reason")}
+            turnAgent={params.has("noAgent") ? undefined : turnAgentLabel("byok:anthropic:claude-opus-5-5", "Reason")}
             onResetChat={() => undefined}
             onForkToNewTab={(turnId) => (fork ? setForked(forkTranscript(r.transcript, turnId)) : undefined)}
             onForkToNewWorkspace={(turnId) => (fork ? setForked(forkTranscript(r.transcript, turnId)) : undefined)}
@@ -103,8 +103,8 @@ if (params.get("tools") === "expanded") {
   setTimeout(() => document.querySelector<HTMLButtonElement>('.chat-tool-summary-row[aria-expanded="false"]')?.click(), 100);
 }
 if (fork) {
-  setTimeout(() => document.querySelector<HTMLButtonElement>('.chat-turn-menu button[aria-label="More actions"]')?.click(), 150);
-  if (params.get("forked") === "1") setTimeout(() => document.querySelector<HTMLButtonElement>(".chat-menu-item")?.click(), 300);
+  setTimeout(() => document.querySelector<HTMLButtonElement>('button[aria-label="Show message actions"]')?.click(), 150);
+  if (params.get("forked") === "1") setTimeout(() => document.querySelector<HTMLElement>(".cm-turn-menu [role=menuitem]")?.click(), 300);
 }
 for (let i = 0; i < Number(params.get("more") ?? 0); i++) {
   setTimeout(() => document.querySelector<HTMLButtonElement>(".chat-turn-chip.more")?.click(), 150 + i * 50);

@@ -36,19 +36,31 @@ return "target " + describe(el) + " at " + Math.round(x) + "," + Math.round(y) +
 const REPAINT_STOP = `clearInterval(window.__ocE2eRepaint); document.getElementById("__oc_e2e_repaint")?.remove();`;
 
 export class WebDriver {
-  constructor(base = "http://127.0.0.1:4444") {
+  constructor(base = "http://127.0.0.1:4444", requestTimeoutMs = 30000) {
     this.base = base;
+    this.requestTimeoutMs = requestTimeoutMs;
     this.sessionId = null;
   }
 
-  async #call(method, path, body, timeoutMs) {
-    const res = await fetch(this.base + path, {
-      method,
-      headers: { "content-type": "application/json" },
-      body: body === undefined ? undefined : JSON.stringify(body),
-      signal: timeoutMs === undefined ? undefined : AbortSignal.timeout(timeoutMs),
-    });
-    const json = await res.json().catch(() => ({}));
+  async #call(method, path, body, timeoutMs = this.requestTimeoutMs) {
+    let res;
+    let json;
+    try {
+      res = await fetch(this.base + path, {
+        method,
+        headers: { "content-type": "application/json" },
+        body: body === undefined ? undefined : JSON.stringify(body),
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      json = await res.json();
+    } catch (cause) {
+      const detail = cause?.name === "TimeoutError"
+        ? `timed out after ${timeoutMs} ms`
+        : `transport failed: ${cause?.message ?? cause}`;
+      const error = new Error(`${method} ${path} ${detail}`, { cause });
+      error.name = cause?.name ?? "Error";
+      throw error;
+    }
     if (!res.ok || json?.value?.error) {
       const err = json?.value ?? {};
       throw new Error(`${method} ${path} -> ${res.status} ${err.error ?? ""}: ${err.message ?? ""}`);
@@ -60,12 +72,32 @@ export class WebDriver {
     return `/session/${this.sessionId}${path}`;
   }
 
-  async newSession(application) {
+  async newSession(application, timeoutMs = 45000) {
     const value = await this.#call("POST", "/session", {
       capabilities: { alwaysMatch: { "tauri:options": { application } } },
-    });
+    }, timeoutMs);
     this.sessionId = value.sessionId;
     return value;
+  }
+
+  async waitForAppReady(timeoutMs = 30000) {
+    const deadline = Date.now() + timeoutMs;
+    let last;
+    while (Date.now() < deadline) {
+      try {
+        last = await this.execute(
+          'const app = document.querySelector(".app"); return app ? { startup: app.dataset.startup, busy: app.getAttribute("aria-busy") } : null;',
+          [],
+          Math.max(1, deadline - Date.now()),
+        );
+      } catch (error) {
+        last = error instanceof Error ? error.message : String(error);
+      }
+      if (last?.startup === "error") throw new Error("app startup failed: workspace-store loading returned an error");
+      if (last?.startup === "ready" && last.busy === "false") return;
+      await new Promise((resolve) => setTimeout(resolve, Math.max(0, Math.min(250, deadline - Date.now()))));
+    }
+    throw new Error(`timed out waiting for app startup after ${timeoutMs} ms; last: ${JSON.stringify(last)}`);
   }
 
   async deleteSession() {
@@ -74,8 +106,8 @@ export class WebDriver {
     this.sessionId = null;
   }
 
-  execute(script, args = []) {
-    return this.#call("POST", this.#s("/execute/sync"), { script, args });
+  execute(script, args = [], timeoutMs) {
+    return this.#call("POST", this.#s("/execute/sync"), { script, args }, timeoutMs);
   }
 
   async findAll(css) {
@@ -135,14 +167,16 @@ export class WebDriver {
    * invisible element repainting until the snapshot is taken, and bound the wait.
    */
   async screenshot(timeoutMs = 20000) {
-    await this.execute(REPAINT_START, [timeoutMs]);
+    const deadline = Date.now() + timeoutMs;
+    const remaining = () => Math.max(1, deadline - Date.now());
     try {
-      return Buffer.from(await this.#call("GET", this.#s("/screenshot"), undefined, timeoutMs), "base64");
+      await this.execute(REPAINT_START, [timeoutMs], remaining());
+      return Buffer.from(await this.#call("GET", this.#s("/screenshot"), undefined, remaining()), "base64");
     } catch (e) {
       if (e?.name !== "TimeoutError") throw e;
-      throw new Error(`screenshot timed out after ${timeoutMs} ms: WebKit painted no frame even with the page forced to repaint, so the webview may be stuck`);
+      throw new Error(`screenshot timed out after ${timeoutMs} ms: WebKit did not answer before the capture deadline`);
     } finally {
-      await this.execute(REPAINT_STOP).catch(() => undefined);
+      await this.execute(REPAINT_STOP, [], remaining()).catch(() => undefined);
     }
   }
 

@@ -29,22 +29,25 @@ let base;
 before(async () => {
   assert.ok(executablePath, `no Chrome or Chromium found; set CHROME_PATH (tried ${CANDIDATES.join(", ")})`);
   assert.ok(existsSync("dist/index.html"), "dist/ is missing; run `npm run build` first");
-  server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
-  base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  if (process.env.OC_E2E_BASE) base = process.env.OC_E2E_BASE;
+  else {
+    server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
+    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  }
   browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
 });
 
 after(async () => {
   await browser?.close();
-  await new Promise((resolve) => server?.httpServer.close(resolve));
+  if (server) await new Promise((resolve) => server.httpServer.close(resolve));
 });
 
-async function open({ spotlight = false } = {}) {
+async function open({ spotlight = false, shell = SHELL } = {}) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
   const errors = [];
   page.on("pageerror", (err) => errors.push(err.message));
-  await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES, spotlight });
+  await page.addInitScript(fakeBackend, { shell, files: FILES, spotlight });
   await page.goto(base + "/");
   await page.locator(".rp-tabs").waitFor();
   return { context, page, errors };
@@ -65,6 +68,202 @@ test("tabs: All files, Changes with its count, Checks; each tab brings its own i
   for (const name of ["Collapse folders", "Filter files", "New file"]) await page.getByRole("button", { name, exact: true }).waitFor();
   assert.deepEqual(errors, []);
   await context.close();
+});
+
+test("Changes: sorted flat rows, compressed hierarchy, collapsing counts, filtering and scope options", async () => {
+  const { context, page, errors } = await open();
+  const changed = page.locator('nav[aria-label="Changed files"]');
+  await changed.locator(".oc-change").first().waitFor();
+  assert.deepEqual(await changed.locator(".oc-change .name").allTextContents(), ["src/lib/auth.test.ts", "src/lib/auth.ts"]);
+  assert.equal(await page.getByRole("button", { name: "Refresh", exact: true }).count(), 0);
+  assert.equal(await changed.getByRole("img", { name: "untracked", exact: true }).count(), 2);
+  await page.getByRole("button", { name: "Show folder hierarchy", exact: true }).click();
+  const folder = changed.getByRole("button", { name: "src / lib", exact: true });
+  assert.equal(await folder.getAttribute("aria-expanded"), "true");
+  await folder.click();
+  assert.equal(await folder.getAttribute("aria-expanded"), "false");
+  assert.equal(await changed.locator(".oc-change").count(), 0);
+  assert.match(await folder.innerText(), /\+15/);
+  assert.match(await folder.innerText(), /-1/);
+  await page.getByRole("button", { name: "Filter files", exact: true }).click();
+  const filter = page.getByRole("textbox", { name: "Filter changed files" });
+  await filter.fill("test");
+  assert.equal(await folder.getAttribute("aria-expanded"), "false");
+  assert.equal(await changed.locator(".oc-change").count(), 0);
+  assert.equal(await page.locator(".oc-changes-filter-count").textContent(), "1 of 2");
+  await folder.click();
+  assert.equal(await folder.getAttribute("aria-expanded"), "true");
+  assert.equal(await changed.locator(".oc-change").count(), 1);
+  await changed.locator(".oc-change").click();
+  await page.locator(".oc-path-chip").filter({ hasText: "auth.test.ts" }).waitFor();
+  assert.equal(await changed.locator(".oc-change").getAttribute("aria-current"), "true");
+  await folder.click();
+  assert.equal(await folder.getAttribute("aria-expanded"), "false");
+  assert.equal(await changed.locator(".oc-change").count(), 0);
+  await filter.press("Escape");
+  assert.equal(await filter.count(), 0);
+  assert.equal(await changed.locator(".oc-change").count(), 0);
+  await page.getByRole("button", { name: "Show flat list", exact: true }).click();
+  assert.equal(await changed.locator(".oc-change").count(), 2);
+  const options = page.getByRole("button", { name: "Changes options", exact: true });
+  await options.click();
+  const popup = page.getByRole("menu", { name: "Changes options", exact: true });
+  await popup.waitFor();
+  const popupBounds = await popup.boundingBox();
+  const triggerBounds = await options.boundingBox();
+  assert.ok(popupBounds && triggerBounds);
+  assert.ok(Math.abs(popupBounds.x + popupBounds.width - triggerBounds.x - triggerBounds.width) < 1);
+  await page.getByRole("menuitem", { name: /Uncommitted changes/ }).click();
+  await page.getByRole("button", { name: "Back to all changes", exact: true }).waitFor();
+  await page.waitForFunction(() => window.__fake.calls.some((c) => c.cmd === "diff_workspace" && c.request.scope.kind === "uncommitted"));
+  await page.getByRole("button", { name: "Back to all changes", exact: true }).click();
+  await page.getByRole("button", { name: "Changes options", exact: true }).waitFor();
+  assert.deepEqual(errors, []);
+  await context.close();
+});
+
+test("Changes: each workspace retains its hierarchy, collapsed folders and filter after leaving and reloading", async () => {
+  const shell = structuredClone(SHELL);
+  shell.repos[0].workspaces.push({ id: "w2", name: "porto", branch: "ada/porto", path: WT + "-porto" });
+  const { context, page, errors } = await open({ shell });
+  try {
+    const changed = page.locator('nav[aria-label="Changed files"]');
+    await changed.locator(".oc-change").first().waitFor();
+    await page.getByRole("button", { name: "Show folder hierarchy", exact: true }).click();
+    const folder = changed.getByRole("button", { name: "src / lib", exact: true });
+    await folder.click();
+    await page.getByRole("tab", { name: "All files", exact: true }).click();
+    await page.getByRole("tab", { name: "Changes 2", exact: true }).click();
+    assert.equal(await folder.getAttribute("aria-expanded"), "false", "collapsed folders survive a panel-tab switch");
+    await page.getByRole("button", { name: "Filter files", exact: true }).click();
+    await page.getByRole("textbox", { name: "Filter changed files" }).fill("test");
+    const workspace = (name) => page.locator('[data-testid="left-sidebar-workspace-item"]').filter({ has: page.locator(".sb-ws-name", { hasText: name }) });
+    await workspace("porto").click();
+    await page.getByRole("button", { name: "Show folder hierarchy", exact: true }).waitFor();
+    assert.equal(await page.getByRole("textbox", { name: "Filter changed files" }).count(), 0);
+    await workspace("lisbon").click();
+    await page.getByRole("button", { name: "Show flat list", exact: true }).waitFor();
+    assert.equal(await page.getByRole("textbox", { name: "Filter changed files" }).inputValue(), "test");
+    assert.equal(await folder.getAttribute("aria-expanded"), "false", "filtering retains the collapsed directory");
+    assert.equal(await changed.locator(".oc-change").count(), 0);
+    assert.equal(await page.locator(".oc-changes-filter-count").textContent(), "1 of 2");
+    await page.reload();
+    await page.getByRole("button", { name: "Show flat list", exact: true }).waitFor();
+    const filter = page.getByRole("textbox", { name: "Filter changed files" });
+    assert.equal(await filter.inputValue(), "test", "the filter survives a reload");
+    assert.equal(await folder.getAttribute("aria-expanded"), "false", "the filtered directory stays collapsed after reload");
+    assert.equal(await changed.locator(".oc-change").count(), 0);
+    assert.equal(await page.locator(".oc-changes-filter-count").textContent(), "1 of 2");
+    await folder.click();
+    assert.equal(await folder.getAttribute("aria-expanded"), "true");
+    assert.equal(await changed.locator(".oc-change").count(), 1);
+    await folder.click();
+    assert.equal(await folder.getAttribute("aria-expanded"), "false");
+    assert.equal(await changed.locator(".oc-change").count(), 0);
+    await filter.press("Escape");
+    assert.equal(await folder.getAttribute("aria-expanded"), "false", "filtering does not overwrite collapsed folders");
+    await page.reload();
+    await folder.waitFor();
+    assert.equal(await folder.getAttribute("aria-expanded"), "false");
+    assert.equal(await page.getByRole("textbox", { name: "Filter changed files" }).count(), 0, "clearing the filter is persisted");
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});
+
+test("Changes: discard confirmation matches the alert layout and Cancel never discards", async () => {
+  const { context, page, errors } = await open();
+  try {
+    await page.locator('.oc-change[title="Open src/lib/auth.test.ts"]').click({ button: "right" });
+    await page.getByRole("menuitem", { name: "Discard changes", exact: true }).click();
+    const dialog = page.getByRole("alertdialog", { name: "Discard file changes?" });
+    await dialog.waitFor({ timeout: 2000 });
+    const metrics = await dialog.evaluate((el) => ({
+      width: el.offsetWidth,
+      padding: getComputedStyle(el).padding,
+      titleSize: getComputedStyle(el.querySelector("h2")).fontSize,
+    }));
+    assert.deepEqual(metrics, { width: 512, padding: "24px", titleSize: "18px" });
+    assert.equal(await dialog.evaluate((el) => document.getElementById(el.getAttribute("aria-describedby"))?.textContent), "Discard all changes to src/lib/auth.test.ts? This action cannot be undone.");
+    assert.equal(await dialog.getByRole("button", { name: "Close", exact: true }).count(), 0);
+    await page.waitForFunction(() => document.activeElement?.textContent === "Cancel");
+    await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await dialog.waitFor({ state: "detached" });
+    assert.deepEqual(await calls(page, "diff_discard_file"), []);
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});
+
+test("Changes: discard shortcut sends the selected file once, blocks dismissal while pending and retries an error", async () => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES });
+    await page.addInitScript(() => {
+      const invoke = window.__TAURI_INTERNALS__.invoke;
+      window.__TAURI_INTERNALS__.invoke = (cmd, args) => {
+        if (cmd !== "diff_discard_file") return invoke(cmd, args);
+        window.__fake.calls.push({ cmd, ...args });
+        return new Promise((resolve, reject) => { window.__finishDiscard = { resolve, reject }; });
+      };
+    });
+    await page.goto(base + "/");
+    await page.locator('.oc-change[title="Open src/lib/auth.test.ts"]').hover();
+    await page.getByRole("button", { name: "Discard changes to src/lib/auth.test.ts", exact: true }).click();
+    const dialog = page.getByRole("alertdialog", { name: "Discard file changes?" });
+    await dialog.waitFor({ timeout: 2000 });
+    await dialog.press("Meta+Enter");
+    await page.waitForFunction(() => window.__fake.calls.some((c) => c.cmd === "diff_discard_file"));
+    assert.equal(await dialog.getByRole("button", { name: "Discarding…", exact: true }).isDisabled(), true);
+    assert.equal(await dialog.getByRole("button", { name: "Cancel", exact: true }).isDisabled(), true);
+    await dialog.press("Meta+Enter");
+    await dialog.press("Escape");
+    assert.equal(await dialog.isVisible(), true);
+    const requests = await calls(page, "diff_discard_file");
+    assert.equal(requests.length, 1);
+    assert.equal(requests[0].repo, WT);
+    assert.equal(requests[0].request.path, "src/lib/auth.test.ts");
+    assert.equal(requests[0].request.scope.kind, "all");
+    await page.evaluate(() => window.__finishDiscard.reject(new Error("fixture refused discard")));
+    await dialog.getByText("Couldn't discard: Error: fixture refused discard", { exact: true }).waitFor();
+    await dialog.getByRole("button", { name: /^Discard / }).click();
+    await page.waitForFunction(() => window.__fake.calls.filter((c) => c.cmd === "diff_discard_file").length === 2);
+    await page.evaluate(() => window.__finishDiscard.resolve());
+    await dialog.waitFor({ state: "detached" });
+  } finally {
+    await context.close();
+  }
+});
+
+test("Changes: external edits refresh without a Reload button", async () => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  try {
+    await page.addInitScript(fakeBackend, { shell: SHELL, files: FILES });
+    await page.addInitScript(() => {
+      const invoke = window.__TAURI_INTERNALS__.invoke;
+      window.__diffFiles = [];
+      window.__TAURI_INTERNALS__.invoke = (cmd, args) => cmd === "diff_workspace"
+        ? Promise.resolve({ files: window.__diffFiles })
+        : invoke(cmd, args);
+    });
+    await page.goto(base + "/");
+    await page.getByText("No changes on this branch yet.", { exact: true }).waitFor();
+    assert.equal(await page.locator('.oc-diff-toolbar button[title="Reload changes"]').count(), 0);
+    await page.evaluate(() => {
+      window.__diffFiles = [{ path: "e2e-diff.txt", old_path: null, status: "untracked", binary: false, additions: 3, deletions: 0, hunks: [] }];
+    });
+    const row = page.locator('.oc-change[title="Open e2e-diff.txt"]');
+    await row.waitFor({ timeout: 6000 });
+    assert.equal(await row.locator(".name").textContent(), "e2e-diff.txt");
+    assert.equal(await row.locator(".oc-count .a").textContent(), "+3");
+    if (process.env.OC_DIFF_REFRESH_SCREENSHOT) await page.screenshot({ path: process.env.OC_DIFF_REFRESH_SCREENSHOT });
+  } finally {
+    await context.close();
+  }
 });
 
 test("All files: folders and type icons, chevron on hover, collapse, filter, and files open through Open in", async () => {
@@ -152,9 +351,13 @@ test("strip: Setup and Run under the list, Run's dashed empty state, chevron and
   await box.getByText("Run tests or a development server to test changes in this workspace").waitFor();
   assert.equal(await box.evaluate((e) => getComputedStyle(e).borderTopStyle), "dashed");
 
-  // Setup shows its own body.
+  // Setup with no setup script: Conductor's dashed "Add setup script" card (Ask agent / Add manually).
   await strip.getByRole("tab", { name: "Setup" }).click();
-  await strip.getByText("No setup script is configured for this repository.").waitFor();
+  const addSetup = strip.locator(".scripts-setup-add-box");
+  await addSetup.getByRole("heading", { name: "Add setup script" }).waitFor();
+  assert.equal(await addSetup.evaluate((e) => getComputedStyle(e).borderTopStyle), "dashed");
+  assert.deepEqual(await addSetup.getByRole("button").allInnerTexts(), ["Ask agent", "Add manually"]);
+  await addSetup.getByText("Run commands when a workspace is created to install dependencies or set up the environment").waitFor();
   await strip.getByRole("tab", { name: "Run" }).click();
 
   // The chevron hides the body (tabs stay), and shows it again.
@@ -174,7 +377,7 @@ test("strip: Setup and Run under the list, Run's dashed empty state, chevron and
   await strip.getByRole("button", { name: "New terminal" }).click();
   await strip.locator(".terminal-panel .xterm-rows").waitFor();
   await page.waitForFunction(() => document.querySelector(".ws-strip .terminal-panel .xterm-rows")?.textContent?.includes("lisbon %"));
-  assert.deepEqual(await strip.locator(".ws-strip-tabs [role=tab]").allInnerTexts(), ["Setup", "Run", "Terminal 1"]);
+  assert.deepEqual(await strip.locator(".ws-strip-tabs [role=tab]").allInnerTexts(), ["Setup", "Run", "Terminal"]);
   assert.equal(await page.locator(".workspace > .terminal-panel").count(), 0);
   // Run is still one click away; closing the terminal goes back to it.
   await strip.getByRole("tab", { name: "Run" }).click();
@@ -202,9 +405,10 @@ test("Run with spotlight testing on and no run script offers Run Spotlight, whic
   const strip = page.locator(".ws-right .ws-strip");
   await strip.waitFor();
   assert.equal(await strip.getByRole("tab", { name: "Run" }).getAttribute("aria-selected"), "true");
-  const start = strip.locator(".scripts-actions .btn-primary");
+  // Conductor's run split button names the task: "Start spotlight" (header), and the idle body offers the same.
+  const start = strip.getByRole("button", { name: "Start spotlight", exact: true });
   await start.waitFor();
-  assert.match(await start.innerText(), /Run Spotlight$/);
+  await strip.getByText("Sync your changes to the repository root.").waitFor();
   assert.equal(await strip.locator(".scripts-empty-box").count(), 0);
   await start.click();
   await page.waitForFunction(() => window.__fake.calls.some((c) => c.cmd === "spotlight_start"));

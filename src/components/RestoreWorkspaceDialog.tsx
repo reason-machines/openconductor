@@ -4,7 +4,7 @@
 // another workspace, or moved since the archive. "Restore to new branch"
 // unarchives onto a new, uniquely named branch from the archive commit.
 import { useEffect, useState, type Dispatch } from "react";
-import { Modal } from "./Dialogs";
+import { ConfirmationDialog } from "./ConfirmationDialog";
 import type { Action } from "../state/store";
 import { RESTORE_DIALOG_LABELS as L, onArchiveEvent, restoreDialogCopy, type RestoreScenario } from "../workspace/archive";
 
@@ -32,24 +32,8 @@ export function RestoreWorkspaceDialog({ request, dispatch, onClose }: { request
     dispatch({ type: "unarchiveWorkspace", repoId: request.repoId, workspaceId: request.workspaceId, useNewBranch: true });
   };
   return (
-    <Modal title={title} onClose={onClose}>
-      <div
-        className="modal-body"
-        data-testid="restore-workspace-dialog"
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && !pending) confirm();
-        }}
-      >
-        <p className="break-words">{body}</p>
-        <div className="modal-actions">
-          <button className="btn" onClick={onClose} disabled={pending}>
-            {L.cancel}
-          </button>
-          <button className="btn btn-primary" autoFocus onClick={confirm} disabled={pending}>
-            {pending ? L.pending : L.confirm}
-          </button>
-        </div>
-      </div>
-    </Modal>
+    <ConfirmationDialog title={title} confirmLabel={L.confirm} pendingLabel={L.pending} pending={pending} dismissWhilePending onClose={onClose} onConfirm={confirm}>
+      <p className="break-words" data-testid="restore-workspace-dialog">{body}</p>
+    </ConfirmationDialog>
   );
 }

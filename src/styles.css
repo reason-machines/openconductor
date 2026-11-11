@@ -5,6 +5,9 @@
   --sidebar-width: 256px;
   /* Left inset that clears the macOS traffic lights when the sidebar is hidden. */
   --traffic-lights-clearance: 66px;
+  /* Conductor renderer header inset: 86px at zoom 1, shared in both sidebar states.
+     Source anchors and native capture gap: evidence/sidebar-titlebar-toggle/README.md. */
+  --sidebar-toggle-inset: calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance)));
   font-family: var(--font-sans);
   font-size: 13px;
   color: var(--text);
@@ -13,7 +16,9 @@
 }
 
 * { box-sizing: border-box; }
-html, body, #root { margin: 0; height: 100%; }
+html, body, #root { margin: 0; height: 100%; min-height: 0; }
+body, #root { display: flex; flex-direction: column; }
+#root { flex: 1; min-width: 0; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 input, textarea { font: inherit; color: inherit; }
 code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover); padding: 1px 4px; border-radius: 4px; }
@@ -24,7 +29,8 @@ code { font-family: var(--font-mono); font-size: 0.92em; background: var(--hover
 .del { color: var(--diff-del); }
 
 /* The sidebar is `--sidebar-width` wide but never more than 40% of the window (Conductor's aside: max-w-[40%]). */
-.app { display: grid; grid-template-columns: min(var(--sidebar-width), 40%) 1fr; height: 100vh; overflow: hidden; background: var(--bg); }
+/* Inherit the zoom-adjusted root height: viewport units are scaled again by CSS zoom. */
+.app { display: grid; grid-template-columns: min(var(--sidebar-width), 40%) 1fr; height: 100%; min-height: 0; flex: 1; overflow: hidden; background: var(--bg); }
 .app.sidebar-hidden { grid-template-columns: 1fr; }
 .app { position: relative; }
 /* Experimental "Sidebar transparency": Conductor's rule (renderApp-BYEcFwvt.css) clears html, body, #root and its
@@ -47,7 +53,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
    then the computer switcher and Home / Create / Search rows (px-1.5 py-1.5 gap-2 rounded-md,
    size-4 icon box, gap-0.5 between rows) above a border-b. */
 .sb-header { position: relative; flex: none; }
-.sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 calc(16px + var(--traffic-lights-clearance) + min(4px, var(--traffic-lights-clearance))); }
+.sb-topbar { display: flex; align-items: center; height: 32px; padding: 8px 0 0 var(--sidebar-toggle-inset); }
+.workspace-sidebar-toggle { position: absolute; top: 12px; left: var(--sidebar-toggle-inset); z-index: 2; }
 .sb-toggle { display: inline-flex; padding: 0; color: var(--muted); transition: color 150ms cubic-bezier(0, 0, 0.2, 1); } /* Rta: transition-colors duration-150 ease-out */
 .sb-toggle:hover { color: var(--text); }
 .sb-history { position: absolute; top: 8px; right: 14px; z-index: 1; display: flex; align-items: center; gap: 8px; }
@@ -107,8 +114,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-repo-lead { position: relative; display: flex; flex: none; }
 .sb-repo-initial { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; background: var(--repo-initial-bg); color: var(--repo-initial-fg); font-size: 10px; font-weight: 500; line-height: 1; }
 .sb-repo-chevron { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; visibility: hidden; color: var(--sidebar-muted-foreground); }
-.sb-repo:hover .sb-repo-initial { visibility: hidden; }
-.sb-repo:hover .sb-repo-chevron { visibility: visible; }
+.sb-repo-header:hover .sb-repo-initial { visibility: hidden; }
+.sb-repo-header:hover .sb-repo-chevron { visibility: visible; }
 .sb-repo-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: var(--sidebar-muted-foreground); }
 .sb-repo-count { flex: none; font-family: var(--font-mono); font-size: 11px; line-height: 14px; color: var(--sidebar-muted-foreground); }
 .sb-repo-spacer { width: 36px; flex: none; }
@@ -117,7 +124,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* Conductor's Button keeps its icon at full size ([&_svg]:shrink-0): the size-4 plus is 16px, not squeezed by the padding. */
 .sb-repo-add svg { flex: none; }
 .sb-repo-menu { right: 36px; }
-.ws-empty { color: var(--sidebar-muted-foreground); margin: 0; padding: 4px 6px 4px 26px; font-size: 12px; }
 /* Workspace rows, after Conductor's `wFi`: py-2 pr-1.5 pl-5 rounded-md, hover and selected bg-sidebar-accent,
    a size-4 leading status icon (mt-0.5 mr-0.5; the branch icon, size-3.5 muted, for a plain branch),
    name font-450 muted, or semibold accent-foreground when unread, and a text-2xs px-1 diff that is
@@ -135,20 +141,19 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .sb-ws-archive button { display: flex; align-items: center; justify-content: center; padding: 0; border: 0; background: none; color: var(--sidebar-muted-foreground); cursor: pointer; transition: color 150ms; }
 .sb-ws-archive button:hover { color: var(--sidebar-foreground); }
 .sb-ws-status { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; margin-right: 2px; flex: none; color: var(--sidebar-muted-foreground); }
-/* Row status colours: Conductor's dWt (destructive, purple, in-progress, git green, highlight, checks pending). */
-.sb-ws-status[data-color="destructive"] { color: var(--diff-del); }
-.sb-ws-status[data-color="merged"] { color: var(--status-merged); }
-.sb-ws-status[data-color="in-progress"] { color: var(--status-in-progress); }
-.sb-ws-status[data-color="ready"] { color: var(--diff-add); }
-.sb-ws-status[data-color="conflict"] { color: var(--status-in-progress); opacity: 0.8; }
-.sb-ws-status[data-color="checks-pending"] { color: var(--status-in-progress); }
+/* REA dWt, renderApp 5199d392… + CSS 5b876e14…; evidence/sidebar-pr-icons/README.md. */
+.sb-ws-status[data-color="destructive"] { color: var(--destructive); }
+.sb-ws-status[data-color="merged"] { color: var(--status-row-merged); }
+.sb-ws-status[data-color="in-progress"] { color: var(--conductor-status-in-progress); }
+.sb-ws-status[data-color="ready"] { color: var(--success); }
+.sb-ws-status[data-color="conflict"] { color: var(--status-row-conflict); }
+.sb-ws-status[data-color="checks-pending"] { color: var(--diff-mod); }
 /* Workspace status matrix: the matrix colours itself and otherwise takes the row's colour (Conductor's text-sidebar-foreground). */
 .sb-ws-status[data-matrix] { color: inherit; }
-.sb-ws-loader circle { animation: sb-ws-dot 1.2s ease-in-out infinite; opacity: 0.35; }
-.sb-ws-loader circle:nth-child(2) { animation-delay: 0.2s; }
-.sb-ws-loader circle:nth-child(3) { animation-delay: 0.4s; }
+.sb-ws-loader { animation: sb-ws-spin 1s linear infinite; transform-origin: center; }
+@keyframes sb-ws-spin { to { transform: rotate(360deg); } }
 @keyframes sb-ws-dot { 0%, 100% { opacity: 0.35; } 40% { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .sb-ws-loader circle { animation: none; opacity: 0.8; } }
+@media (prefers-reduced-motion: reduce) { .sb-ws-loader { animation: none; } }
 .sb-ws-name { flex: 1; min-width: 0; margin-right: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 450; color: var(--sidebar-muted-foreground); }
 /* Conductor's title line is title, gap-1.5, a flex-1 spacer, gap-1.5, then the diff stat or a size-3 slot for the
    hover archive button: a title truncates 12px before the diff stat, or 24px before the row's right padding. */
@@ -165,8 +170,7 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* Sidebar footer, after Conductor's `Nna`: px-4 py-3 flex justify-between border-t border-sidebar-border;
    actions are flex gap-5 ml-auto; each icon is text-sidebar-muted-foreground hover:text-foreground. */
 .sb-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--sidebar-border); }
-/* Conductor's Badge `tip-outline` + `h-4 border-dashed !border-muted-foreground/80 text-muted-foreground/80`. */
-.sb-plan-badge { display: inline-flex; align-items: center; flex-shrink: 0; height: 16px; padding: 0 8px; border: 1px dashed color-mix(in srgb, var(--sidebar-muted-foreground) 80%, transparent); border-radius: 2px; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: color-mix(in srgb, var(--sidebar-muted-foreground) 80%, transparent); user-select: none; }
+.sb-reason-tag { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; height: 20px; font-size: 12px; font-weight: 500; color: var(--sidebar-muted-foreground); user-select: none; }
 /* Conductor's footer line is 20px tall (its plan badge button), so the 16px icons centre 10px below the padding. */
 .sb-footer-actions { position: relative; display: flex; align-items: center; gap: 20px; min-height: 20px; margin-left: auto; }
 .sb-footer-btn { display: inline-flex; padding: 0; color: var(--sidebar-muted-foreground); }
@@ -175,9 +179,9 @@ html.sidebar-transparency .settings { background: var(--bg); }
    items px-2.5 py-2 text-sm rounded-md gap-2, 16px icons (or ml-6 indent), 12px muted external arrow;
    version line border-t mt-1 pt-2 px-2.5 pb-1 text-2xs muted. */
 .sb-help { position: relative; display: inline-flex; }
-.sb-help-menu { position: absolute; left: 0; bottom: calc(100% + 4px); z-index: 50; width: 340px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); color: var(--text); box-shadow: 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10); }
-.sb-help-item { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 10px; border-radius: 6px; font-size: 14px; line-height: 20px; text-align: left; color: var(--text); }
-.sb-help-item:hover, .sb-help-item:focus { outline: none; background: var(--hover); }
+.sb-help-menu { position: absolute; left: 0; bottom: calc(100% + 4px); z-index: 50; width: 340px; padding: 4px; border-radius: 8px; background: var(--popover); color: var(--popover-text); box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10); }
+.sb-help-item { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 10px; border-radius: 6px; font-size: 14px; line-height: 20px; text-align: left; color: var(--popover-text); }
+.sb-help-item:hover, .sb-help-item:focus { outline: none; background: var(--popover-hover); }
 .sb-help-item-main { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .sb-help-icon { display: inline-flex; width: 16px; height: 16px; flex: none; }
 .sb-help-external { display: inline-flex; color: var(--muted); }
@@ -204,10 +208,11 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .home-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .home-card-icon { display: flex; }
 .home-card-label { font-size: 14px; line-height: 20px; }
-/* Conductor's `flex justify-center gap-4 mt-6` row holding a ghost sm button (h-8, px-3, text-sm, muted). */
 .home-footer { display: flex; justify-content: center; gap: 16px; margin-top: 24px; }
-.home-cities { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 4px; font-size: 14px; color: var(--muted); }
-.home-cities:hover { color: var(--text); }
+.home-cities { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 6px; font-size: 12px; font-weight: 450; line-height: 16px; letter-spacing: 0.01em; color: var(--muted); }
+.home-cities svg { margin-right: 6px; }
+.home-card-icon svg *, .home-cities svg * { vector-effect: non-scaling-stroke; }
+.home-cities:hover { color: var(--text); background: var(--hover); }
 @keyframes home-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .home-cards-wrap { animation: none; } }
 
@@ -229,10 +234,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
    centre line as the sidebar's toggle row (h-8 pt-2). With the sidebar hidden, its content clears the
    traffic lights (Conductor's ml-[var(--traffic-lights-clearance)]). */
 .ws-header { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 12px; box-sizing: border-box; height: 40px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--border); background: var(--panel); }
-.app.sidebar-hidden .ws-header { padding-left: calc(16px + var(--traffic-lights-clearance)); }
+.app.sidebar-hidden .ws-header { padding-left: calc(var(--sidebar-toggle-inset) + 16px + 12px); }
 .ws-title { display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; white-space: nowrap; }
-.ws-number { flex-shrink: 0; height: 24px; padding: 0 6px; border: 0; border-radius: 4px; background: none; font-family: var(--font-mono); font-size: 13px; color: var(--muted); cursor: pointer; }
-.ws-number:hover { background: var(--hover); color: var(--text); }
 /* Header actions row: Conductor's header group is "flex items-center gap-1.5" and its
    buttons use the xs button size (h-6 px-2 text-xs gap-1.5 rounded-sm, icons size-3),
    so Open in, the PR control and Archive share one 24px height and centre line. */
@@ -288,15 +291,14 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .review-action .error { color: var(--destructive); font-size: 12px; }
 .tabs .review-button { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border: 1px solid transparent; border-radius: 6px; color: var(--accent); font-weight: 500; }
 .tabs .review-button:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); }
-.review-menu { position: fixed; z-index: 60; width: 180px; box-sizing: border-box; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px var(--shadow-18); }
-.review-menu button { display: block; width: 100%; padding: 6px 10px; border: 0; border-radius: 5px; text-align: left; color: var(--text); font-weight: 400; }
-.review-menu button:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
 .review-chat-info { padding: 8px 16px; font-size: 12px; border-bottom: 1px dashed var(--border); }
 .tab-count { margin-left: 4px; font-size: 11px; color: var(--muted); }
 .chat-scroll[hidden] { display: none; }
-.main-tabs { padding-top: 6px; }
+/* Conductor's chat tab (Q1 @6,943,290) is h-10: a 40px strip whose active tab's 2px underline lies over the
+   strip's bottom border (y 38-39 of the strip), with the title's glyphs at y 15-25. */
+.main-tabs { padding-top: 5px; }
 .main-tab { display: inline-flex; align-items: center; }
-.main-tab > button[role="tab"] { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.main-tab > button[role="tab"] { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-bottom: 10px; margin-bottom: -1px; }
 /* parity:sidebar.ws-unread — Conductor's l8i dot before the chat tab title (size-2 shrink-0 text-unread, gap-2 to the title). */
 .main-tab-unread { display: inline-block; flex-shrink: 0; margin-right: 8px; vertical-align: middle; color: var(--unread); }
 .main-tab-close { margin-left: -6px; padding: 2px 6px; color: var(--muted); border-radius: 4px; font-size: 14px; line-height: 1; }
@@ -309,7 +311,10 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .main-tab-tip { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); z-index: 20; align-items: center; gap: 8px; padding: 3px 8px; white-space: nowrap; font-size: 12px; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 2px 8px var(--shadow-25); pointer-events: none; }
 .main-tab-tip kbd { font: inherit; color: var(--muted); }
 .main-tab-new:hover .main-tab-tip, .main-tab-new-button:focus-visible + .main-tab-tip { display: inline-flex; }
-.chat > .oc-diff { flex: 1; }
+/* The content tab (diff or PR) sits in .chat-content, a layout-less wrapper that catches its scrolls. */
+.chat-content { display: contents; }
+.chat > .oc-diff,
+.chat-content > .oc-diff { flex: 1; }
 .diff-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
 .diff-summary { display: flex; gap: 10px; align-items: center; font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
 
@@ -345,7 +350,10 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* Create composer (Conductor's `Hji` in the dialog `pya` and the /create page `zCa`):
    eyebrow row of chips, a muted card with the editor, model and effort bottom-left,
    Create bottom-right. Dialog: max-w-3xl, borderless, anchored to the top edge. */
-.create-backdrop { place-items: start center; padding-top: clamp(48px, 12vh, 128px); }
+/* Conductor's top-edge-anchored DialogContent (`nd` with topEdgeAnchored, renderApp @1,914,819):
+   top-[max(2rem,calc(50%-250px))] of the window, over `bg-overlay backdrop-blur-xs`
+   (black at 50%, 4px blur) that covers the whole window, sidebar included. */
+.create-backdrop { place-items: start center; padding-top: max(2rem, calc(50vh - 250px)); background: color-mix(in srgb, var(--shadow-color) 50%, transparent); backdrop-filter: blur(4px); }
 .create-dialog { width: min(768px, calc(100vw - 48px)); outline: 0; }
 .create-ws { display: flex; flex-direction: column; min-width: 0; }
 .create-eyebrow { position: relative; display: flex; align-items: center; gap: 8px; min-width: 0; }
@@ -364,8 +372,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .create-chip:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
 .create-chip:disabled { opacity: 0.6; cursor: default; }
 .create-chip[aria-invalid="true"] { color: var(--diff-del); }
-/* Repo trigger `-ml-2 pl-2 pr-1.5`: its text lines up with the card's left edge. */
-.create-eyebrow > select.create-chip:first-child { margin-left: -8px; padding: 0 6px 0 8px; color: var(--text); font-weight: 500; }
 /* Create (`sQo`): Button size `xs` with `bg-foreground text-background`: h-6 px-2 text-xs gap-1.5 rounded-sm,
    `transition-none active:scale-100` (no press scale). */
 .create-split > .btn-small { height: 24px; padding: 0 8px; gap: 6px; border-radius: 4px; border-color: var(--text); background: var(--text); color: var(--bg); font-size: 12px; line-height: 16px; transition: none; }
@@ -377,22 +383,48 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .create-from { position: relative; display: flex; align-items: center; gap: 2px; min-width: 0; }
 .create-from-btn { max-width: 260px; }
 .create-from-clear { padding: 0 6px; }
-.create-from-panel { position: absolute; top: 100%; right: 0; width: min(420px, calc(100vw - 64px)); z-index: 20; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow-18); padding: 8px; display: flex; flex-direction: column; gap: 6px; color: var(--text); }
-.create-eyebrow .add-repo-pop { left: 0; right: auto; }
-.create-eyebrow .add-repo > .btn-small { height: 28px; padding: 0 8px; border: 0; background: transparent; color: var(--muted); font-size: 13px; font-weight: 400; }
-.create-eyebrow .add-repo > .btn-small:hover:not(:disabled) { background: var(--hover); color: var(--text); }
+/* Conductor's create-from popover (l4a): w-[28rem] rounded-lg ring-1 ring-popover-ring bg-popover p-0 shadow-md,
+   below the trigger (side bottom, sideOffset 4, align end). */
+.create-from-panel { position: absolute; top: 100%; right: 0; width: min(448px, calc(100vw - 64px)); z-index: 20; margin-top: 4px; display: flex; flex-direction: column; overflow: hidden; border-radius: 8px; background: var(--popover); color: var(--popover-text); box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10); font-size: 14px; line-height: 20px; }
+/* The cmdk input (kI) with wrapperClassName "!border-sidebar-border px-4 [&_svg]:hidden": h-11, text-sm, no search icon. */
+.cf-input { display: flex; align-items: center; flex-shrink: 0; padding: 0 16px; border-bottom: 1px solid var(--sidebar-border); }
+.cf-input input { width: 100%; height: 44px; padding: 12px 0; border: 0; outline: none; background: transparent; color: inherit; font: inherit; font-size: 14px; }
+.cf-input input::placeholder { color: var(--muted); }
+/* Tabs: "shrink-0 px-2 py-1.5 border-b !border-sidebar-border", triggers Q9t: h-7 px-2.5 text-xs rounded-md, the active one bg-muted. */
+.cf-tabs { display: flex; align-items: center; gap: 4px; flex-shrink: 0; padding: 6px 8px; border-bottom: 1px solid var(--sidebar-border); }
+.cf-tabs button { height: 28px; padding: 0 10px; border-radius: 6px; background: transparent; color: var(--muted); font-size: 12px; font-weight: 500; line-height: 16px; }
+.cf-tabs button:hover { color: var(--text); }
+.cf-tabs button[data-active] { background: var(--surface-muted); color: var(--text); }
+/* List: max-h-[320px] overflow-y-auto; cmdk List py-2; groups px-2 pb-1.5; heading px-2 py-1.5 text-xs muted font-medium. */
+.cf-list { min-height: 0; max-height: 320px; overflow-y: auto; padding: 8px 0; }
+.cf-group { padding: 0 8px; }
+.cf-heading { padding: 6px 8px; color: var(--muted); font-size: 12px; font-weight: 500; line-height: 16px; }
+/* Rows ($o + wOt): flex gap-2 items-center rounded-sm px-2, h-9, the highlighted one bg-sidebar-accent. */
+.cf-row { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 8px; overflow: hidden; border-radius: 4px; cursor: pointer; user-select: none; }
+.cf-row[data-selected] { background: var(--sidebar-accent); }
+.cf-row > svg, .cf-state { flex-shrink: 0; color: var(--muted); display: inline-flex; }
+.cf-state.cf-open { color: var(--success); }
+.cf-number { flex-shrink: 0; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.cf-number-pr { width: 48px; }
+.cf-number-issue { width: 64px; }
+.cf-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cf-check { display: inline-flex; flex-shrink: 0; color: var(--text); }
+/* $Ge / L9: "Select ↵" at the end, ml-auto text-xs muted, only on the highlighted row. */
+.cf-hint { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; flex-shrink: 0; color: var(--muted); font-size: 12px; opacity: 0; }
+.cf-row[data-selected] .cf-hint { opacity: 1; }
+/* Empty (o5): py-6 text-center text-xs muted/70. Loading (i4a): centred py-6, spinner, ml-2 text-sm muted.
+   Error and setup hints: px-2 py-3 text-sm, destructive or muted. "N more": px-3 py-1 text-[11px] muted/50. */
+.cf-empty { margin: 0; padding: 24px 0; text-align: center; font-size: 12px; color: color-mix(in srgb, var(--muted) 70%, transparent); }
+.cf-loading { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0; padding: 24px 0; color: var(--muted); }
+.cf-error, .cf-setup { margin: 0; padding: 12px 8px; }
+.cf-error { color: var(--destructive); }
+.cf-setup { color: var(--muted); }
+.cf-more { padding: 4px 12px; font-size: 11px; color: color-mix(in srgb, var(--muted) 50%, transparent); }
 /* Full-screen /create page. */
 .create-page { position: relative; display: flex; flex-direction: column; height: 100%; min-height: 0; background: var(--bg); }
 .create-page-top { position: relative; flex-shrink: 0; height: 36px; }
 .create-page-scroll { display: flex; flex: 1; min-height: 0; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 0 24px 80px; }
 .create-page-column { width: 100%; max-width: 768px; padding-top: clamp(3rem, 12vh, 8rem); }
-.create-from-tabs { display: flex; gap: 4px; }
-.create-from-tabs button { padding: 3px 8px; border-radius: 5px; color: var(--muted); font-size: 12px; }
-.create-from-tabs button.active { background: var(--hover); color: inherit; font-weight: 600; }
-.create-from-panel ul { list-style: none; margin: 0; padding: 0; max-height: 180px; overflow-y: auto; }
-.create-from-panel li { padding: 5px 8px; border-radius: 5px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.create-from-panel li.active { background: var(--hover); }
-.create-from-status, .create-from-hint { margin: 2px 4px; }
 
 /* Toasts (bottom-right stack) */
 .toaster { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: flex; flex-direction: column; gap: 8px; max-width: 420px; }
@@ -424,7 +456,7 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .qo-hint { border-top: 1px solid var(--border); padding: 6px 12px; color: var(--muted); font-size: 11px; }
 
 /* Settings */
-.settings { display: grid; grid-template-columns: 256px 1fr; height: 100vh; overflow: hidden; }
+.settings { display: grid; grid-template-columns: 256px 1fr; height: 100%; min-height: 0; flex: 1; overflow: hidden; }
 .settings-nav { background: var(--sidebar); border-right: 1px solid var(--border); padding: 8px; overflow-y: auto; }
 .settings-group { margin-top: 12px; display: flex; flex-direction: column; gap: 1px; }
 .settings-group-title { color: var(--muted); font-size: 11px; font-weight: 500; padding: 4px 8px; }
@@ -479,9 +511,12 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .term-x:hover, .term-icon:hover:not(:disabled) { background: var(--hover); color: var(--text); }
 .term-icon:disabled { opacity: 0.4; }
 .term-spacer { flex: 1; }
-.term-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
-.term-dot.running { background: var(--diff-add); }
-.term-dot.exited { background: var(--diff-del); }
+.term-dot { flex-shrink: 0; color: var(--muted); }
+.term-starting, .setup-working { flex-shrink: 0; color: var(--muted); }
+.term-starting circle, .setup-working circle { animation: sb-ws-dot 1.2s ease-in-out infinite; opacity: 0.35; }
+.term-starting circle:nth-child(2), .setup-working circle:nth-child(2) { animation-delay: 0.2s; }
+.term-starting circle:nth-child(3), .setup-working circle:nth-child(3) { animation-delay: 0.4s; }
+@media (prefers-reduced-motion: reduce) { .term-starting circle, .setup-working circle { animation: none; opacity: 0.8; } }
 .term-body { position: relative; flex: 1; min-height: 0; padding: 4px 0 0 8px; overflow: hidden; }
 .term-mount { height: 100%; }
 /* Find in terminal: the reference's floating bar (top-2 right-4, w-96, rounded-lg, shadow-lg). */
@@ -539,10 +574,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .scripts-actions .btn { color: var(--text); padding: 4px 10px; border: 1px solid var(--border); }
 .scripts-actions .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
 .scripts-actions .btn-stop { background: var(--destructive); border-color: var(--destructive); color: var(--on-solid); }
-.setup-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-left: 4px; background: var(--border); vertical-align: middle; }
-.setup-dot.running { background: var(--amber); }
-.setup-dot.completed { background: var(--success); }
-.setup-dot.failed { background: var(--destructive); }
 .scripts-meta { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; padding: 6px 12px; font-size: 12px; color: var(--muted); }
 /* The command shrinks first; in a narrow panel the controls wrap onto a second row instead of being clipped. */
 .scripts-meta code { flex: 1 1 0; min-width: 80px; max-width: max-content; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -550,13 +581,6 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .scripts-error { padding: 6px 12px; font-size: 12px; color: var(--destructive); }
 
 /* Create workspace: Add repository (Open project / Clone repo) */
-.add-repo { position: relative; display: flex; }
-.add-repo-pop { position: absolute; top: 100%; right: 0; z-index: 25; margin-top: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px var(--shadow-18); padding: 6px; display: flex; flex-direction: column; gap: 6px; font-weight: 400; }
-.add-repo-menu { min-width: 160px; }
-.add-repo-menu button { text-align: left; padding: 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; cursor: pointer; }
-.add-repo-menu button:hover, .add-repo-menu button:focus-visible { background: var(--hover); outline: 0; }
-.add-repo-clone { width: min(380px, calc(100vw - 64px)); padding: 8px; }
-.add-repo-clone input { min-width: 0; }
 .spotlight-toggle { margin-left: auto; display: inline-flex; gap: 5px; align-items: center; white-space: nowrap; cursor: pointer; }
 .spotlight-toggle input { margin: 0; }
 .spotlight-status.syncing::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--accent); vertical-align: middle; }
@@ -589,19 +613,31 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .quit-kbd { margin-left: 8px; opacity: 0.6; font: inherit; }
 
 /* Create project (Home → Quick start), evidence/screens/create-project.md. */
-.modal:has(.create-project-dialog) { width: min(525px, calc(100vw - 48px)); }
-.create-project-subtitle { color: var(--muted); }
-.create-project-hint { font-weight: 400; font-size: 12px; color: var(--muted); }
-.create-project-hint code { padding: 1px 5px; border-radius: 4px; background: var(--hover); color: var(--text); }
+/* Conductor's generic dialog (`nd`) at sm:max-w-[525px]: 24px padding, 6px radius, app background,
+   header 16px above a body that starts 8px lower (mt-2), fields 24px apart (space-y-6). */
+.modal.create-project-modal { width: min(525px, calc(100vw - 48px)); padding: 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; border-radius: 6px; background: var(--bg); font-size: 14px; line-height: 20px; }
+.create-project-header { display: flex; flex-direction: column; gap: 6px; }
+.create-project-header h2 { margin: 0; font-size: 20px; font-weight: 500; line-height: 20px; letter-spacing: -0.025em; }
+.create-project-subtitle { margin: 0; color: var(--muted); }
+.create-project-dialog { margin-top: 8px; display: flex; flex-direction: column; gap: 24px; }
+.create-project-dialog .field { gap: 8px; }
+.create-project-dialog .field > span:first-child { font-size: 14px; line-height: 14px; }
+.create-project-dialog .field input { height: 32px; box-sizing: border-box; padding: 8px 12px; font-size: 14px; line-height: 20px; border-color: var(--input); }
+.create-project-dialog .field input:focus { border-color: var(--accent); }
+.create-project-dialog .btn { height: 32px; padding: 0 12px; font-size: 14px; border-color: var(--input); background: var(--bg); font-weight: 450; }
+.create-project-dialog .btn-primary { background: var(--accent); border-color: var(--accent); font-weight: 500; }
+.create-project-dialog .modal-actions { margin-top: 0; }
+.create-project-hint { font-weight: 400; font-size: 12px; line-height: 16px; color: var(--muted); }
+.create-project-hint code { padding: 2px 4px; border-radius: 4px; background: var(--surface-muted); color: var(--muted); font-size: 12px; }
 .create-project-hint.invalid { color: var(--diff-del); }
 .create-project-templates { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.create-project-templates button { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 16px 8px; border: 1px solid transparent; border-radius: 6px; background: var(--hover); color: inherit; font: inherit; cursor: pointer; }
-.create-project-templates button:hover:not(:disabled) { background: color-mix(in srgb, var(--text) 9%, transparent); }
+.create-project-templates button { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 8px; border: 1px solid transparent; border-radius: 4px; background: color-mix(in srgb, var(--surface-muted) 50%, transparent); color: inherit; font: inherit; cursor: pointer; }
+.create-project-templates button:hover:not(:disabled) { background: var(--surface-muted); }
 .create-project-templates button.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 20%, transparent); }
 .create-project-templates button:disabled { cursor: default; opacity: 0.7; }
-.create-project-template-icon { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }
-.create-project-template-label { font-size: 13px; font-weight: 500; }
-.create-project-template-desc { font-size: 10px; font-weight: 400; color: var(--muted); text-align: center; }
+.create-project-template-icon { display: grid; place-items: center; width: 40px; height: 40px; box-sizing: border-box; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); }
+.create-project-template-label { font-size: 14px; font-weight: 500; line-height: 20px; }
+.create-project-template-desc { margin-top: -8px; font-size: 10px; font-weight: 400; line-height: 20px; color: var(--muted); text-align: center; }
 
 /* sidebar: repo menu, hidden repositories and drag to reorder (Conductor's repo list) */
 .sb-menu-sep { height: 1px; margin: 4px 0; background: var(--border); }
@@ -707,6 +743,8 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .rename-ws-branch:has(input:disabled) { opacity: 0.6; }
 .rename-ws-dialog .btn-ghost { background: transparent; border-color: transparent; }
 .rename-ws-dialog .btn-ghost:hover { background: var(--hover); }
+/* Rename chat's title icon: lucide message-square-text at size-5. */
+.rename-chat-icon { width: 20px; height: 20px; flex-shrink: 0; }
 
 /* Sidebar add-repository menu (Conductor's `wra` popover around `Gji`): w-80 rounded-lg p-1
    popover; rows px-2.5 py-2 text-sm rounded-md gap-2 with 16px icons; then a my-1 separator,
@@ -732,11 +770,19 @@ html.sidebar-transparency .settings { background: var(--bg); }
 /* sidebar: Account menu (Conductor's `zna`: w-[260px], align start; items gap-2 with size-3.5 muted icons;
    the email heading is font-normal, muted). */
 .sb-account { position: relative; }
-.sb-account-menu { position: absolute; left: 0; top: calc(100% + 4px); z-index: 50; width: 260px; padding: 4px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); box-shadow: 0 6px 20px var(--shadow-18); }
-.sb-account-email { padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--muted); }
-.sb-account-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 4px; text-align: left; font-size: 13px; color: var(--text); }
-.sb-account-item:hover, .sb-account-item:focus-visible { background: var(--hover); }
+/* Conductor's `zna` popup (`Tm`, w-[260px]): rounded-lg, ring-1 ring-popover-ring, bg-popover, p-1, shadow-md;
+   the email heading and items px-2 py-1.5 text-sm, separators -mx-1 my-1 h-px bg-muted, icons size-3.5 muted.
+   Palette tokens, so Neutral stays grey (scripts/check-colors.mjs). */
+.sb-account-menu { position: absolute; left: 0; top: calc(100% + 4px); z-index: 50; width: 260px; padding: 4px; border-radius: 8px; background: var(--popover); color: var(--popover-text); box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10); font-size: 14px; line-height: 20px; }
+.sb-account-menu .sb-menu-sep { margin: 4px -4px; background: var(--surface-muted); }
+.sb-account-email { padding: 6px 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: var(--muted); }
+.sb-account-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 6px 8px; border-radius: 6px; text-align: left; font-size: 14px; line-height: 20px; color: inherit; }
+.sb-account-item:hover, .sb-account-item:focus-visible { outline: none; background: var(--hover); }
 .sb-account-item-icon { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; flex: none; color: var(--muted); }
+/* Conductor's organization rows (`zna`): label, a cloud mark for cloud organizations, a check on the active one. */
+.sb-account-org-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-account-org-cloud { display: flex; color: var(--muted); }
+.sb-account-org-check { display: flex; margin-left: auto; }
 
 /* sidebar: resource usage pill (Conductor's `vna`: rounded-md border border-sidebar-border text-2xs
    sidebar-muted; gap-1 px-2 py-1, or p-1 when collapsed; size-3 microchip icon). */
@@ -810,3 +856,10 @@ html.sidebar-transparency .settings { background: var(--bg); }
 .submit-prompt-submit:disabled { opacity: 0.5; pointer-events: none; }
 .submit-prompt-kbd { display: inline-flex; align-items: center; opacity: 0.6; }
 @media (prefers-reduced-motion: reduce) { .submit-prompt-submit:active { transform: none; } }
+.sb-cli-status { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; min-width: 0; font-size: 11px; color: var(--sidebar-muted-foreground); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.sb-cli-status[data-state="error"] { color: var(--destructive, var(--sidebar-muted-foreground)); }
+.sb-cli-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.sb-cli-action { flex: none; padding: 0; font-size: inherit; color: var(--text); text-decoration: underline; }
+.sb-cli-action[aria-label="Dismiss"] { text-decoration: none; }
+.onb-cli-status { position: fixed; left: 16px; bottom: 12px; max-width: 40vw; display: flex; }
+.onb-cli-status:empty { display: none; }

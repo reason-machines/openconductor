@@ -1,10 +1,36 @@
 // Run: node --test "src/**/*.test.ts"
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { MAX_TABS, emptyTabs, tabsReducer, type TabsAction, type TabsState } from "./tabs.ts";
+import { MAX_TABS, emptyTabs, tabsReducer, terminalTabs, type TabsAction, type TabsState } from "./tabs.ts";
 import { AckBatcher, parsePtyEvent } from "./events.ts";
 
 const run = (actions: TabsAction[], s: TabsState = emptyTabs()) => actions.reduce(tabsReducer, s);
+
+test("center terminals keep their placement through lifecycle changes", () => {
+  let s = run([
+    { type: "open", id: "panel" },
+    { type: "open", id: "center", placement: "center" },
+    { type: "ready", id: "center" },
+    { type: "program", id: "center", runningProgram: "codex" },
+    { type: "exit", id: "center", exitCode: 0, signal: null },
+  ]);
+  assert.equal(s.tabs.find((t) => t.id === "center")?.placement, "center");
+  assert.equal(s.activeId, "panel", "a center tab does not change the right-panel selection");
+  assert.deepEqual(terminalTabs(s, "panel").map((t) => t.id), ["panel"]);
+  assert.deepEqual(terminalTabs(s, "center").map((t) => t.id), ["center"]);
+  s = tabsReducer(s, { type: "close", id: "center" });
+  assert.equal(s.activeId, "panel");
+});
+
+test("closing a panel tab never selects a center terminal", () => {
+  const s = run([
+    { type: "open", id: "p1" }, { type: "open", id: "p2" },
+    { type: "open", id: "center", placement: "center" },
+    { type: "close", id: "p2" },
+  ]);
+  assert.equal(s.activeId, "p1");
+  assert.equal(tabsReducer(s, { type: "close", id: "p1" }).activeId, null);
+});
 
 test("opening tabs numbers them, selects the new one and stops at the limit", () => {
   const s = run([{ type: "open", id: "a" }, { type: "open", id: "b" }, { type: "open", id: "b" }]);
@@ -18,10 +44,31 @@ test("opening tabs numbers them, selects the new one and stops at the limit", ()
   assert.equal(full.tabs.length, MAX_TABS);
 });
 
-test("closing the active tab selects its neighbour; numbers are not reused", () => {
+test("closing a panel terminal selects its predecessor or first remaining terminal", () => {
+  const opened = run([
+    { type: "open", id: "a" },
+    { type: "open", id: "center", placement: "center" },
+    { type: "open", id: "b" },
+    { type: "open", id: "c" },
+  ]);
+  for (const [selected, closed, expected] of [
+    ["b", "b", "a"],
+    ["a", "a", "b"],
+    ["c", "c", "b"],
+    ["b", "a", "b"],
+    ["b", "c", "b"],
+    ["b", "center", "b"],
+  ]) {
+    const state = run([{ type: "select", id: selected }, { type: "close", id: closed }], opened);
+    assert.equal(state.activeId, expected, `selected ${selected}, closed ${closed}`);
+    assert.deepEqual(state.tabs.map((tab) => tab.id), opened.tabs.filter((tab) => tab.id !== closed).map((tab) => tab.id));
+  }
+});
+
+test("closing the active tab selects its predecessor; numbers are not reused", () => {
   const opened = run(["a", "b", "c"].map((id) => ({ type: "open", id }) as const));
   let s = run([{ type: "select", id: "b" }, { type: "close", id: "b" }], opened);
-  assert.equal(s.activeId, "c");
+  assert.equal(s.activeId, "a");
   s = run([{ type: "close", id: "c" }], s);
   assert.equal(s.activeId, "a");
   s = run([{ type: "close", id: "a" }, { type: "open", id: "d" }], s);

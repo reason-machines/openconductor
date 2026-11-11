@@ -1,0 +1,42 @@
+.passport { position: fixed; inset: 0; z-index: 300; display: flex; flex-direction: column; gap: 16px; width: 100%; height: 100%; max-width: none; margin: 0; padding: 0; border: 0; border-radius: 0; outline: none; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--font-mono); letter-spacing: normal; }
+.passport-header { display: flex; align-items: center; justify-content: space-between; flex: none; padding: 16px 16px 16px 96px; border-bottom: 1px solid var(--border); gap: 24px; }
+.passport-heading { display: flex; align-items: center; gap: 16px; white-space: nowrap; }
+.passport-heading h2 { margin: 0; font: inherit; font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+.passport-back { display: flex; align-items: center; gap: 8px; padding: 0; letter-spacing: .01em; font-size: 12px; line-height: 16px; color: var(--muted); white-space: nowrap; }
+.passport-back:hover { color: var(--text); }
+.passport-summary { display: flex; align-items: center; gap: 24px; font-size: 12px; line-height: 16px; }
+.passport-tiers { display: flex; align-items: center; gap: 16px; }
+.passport-tier { color: var(--muted); }
+.passport-tier[data-tier="uncommon"] { color: var(--passport-uncommon); }
+.passport-tier[data-tier="rare"] { color: var(--passport-rare); }
+.passport-tier[data-tier="legendary"] { color: var(--passport-legendary); }
+.passport-tiers .passport-tier { display: flex; align-items: center; gap: 4px; }
+.passport-tiers .passport-tier[data-empty] { color: color-mix(in srgb, var(--muted) 30%, transparent); }
+.passport-progress { display: flex; align-items: center; gap: 12px; color: var(--muted); white-space: nowrap; }
+.passport-progress > span:nth-child(2) { display: flex; align-items: center; gap: 1px; }
+.passport-progress > span:nth-child(2) > span { color: color-mix(in srgb, var(--muted) 30%, transparent); }
+.passport-progress [data-filled] { color: var(--accent); }
+.passport-body { position: relative; flex: 1; min-height: 0; overflow: hidden; cursor: crosshair; }
+.passport-map { width: 100%; height: 100%; background: var(--bg); touch-action: none; user-select: none; }
+.passport-graticule { stroke: var(--border); stroke-width: 0.3; }
+.passport-countries { fill: var(--surface-muted); stroke: var(--text); stroke-width: 0.3; }
+.passport-unvisited { fill: currentColor; opacity: 0.3; }
+.passport-workspace { fill: currentColor; cursor: pointer; }
+.passport-workspace[data-tier="common"] { color: var(--passport-active); }
+.passport-workspace[data-archived] { cursor: default; }
+.passport-workspace[data-archived][data-tier="common"] { color: var(--accent); }
+.passport-workspace:not([data-archived]) circle { animation: passport-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+.passport-map circle:focus-visible, .passport-workspace:focus-visible circle { outline: none; stroke: var(--text); stroke-width: 1; }
+.passport-tip { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); padding: 4px 0; }
+.passport-tip .passport-tier { display: inline-flex; align-items: center; gap: 4px; text-transform: capitalize; }
+.passport-tip > span:last-child { font-size: 12px; color: var(--muted); }
+.passport-zoom { position: absolute; bottom: 16px; right: 16px; z-index: 1; display: flex; flex-direction: column; gap: 4px; padding: 4px; background: color-mix(in srgb, var(--bg) 80%, transparent); backdrop-filter: blur(4px); border: 1px solid var(--border); border-radius: 6px; }
+.passport-zoom button { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: var(--text); border-radius: 6px; }
+.passport-zoom button:hover { background: var(--hover); }
+.passport-zoom svg { width: 16px; height: 16px; }
+.passport svg path { vector-effect: non-scaling-stroke; }
+.passport-map path { vector-effect: none; }
+.passport-footer { flex: none; display: flex; justify-content: space-between; padding: 8px 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 10px; line-height: 20px; }
+@keyframes passport-pulse { 50% { opacity: 0.5; } }
+@media (prefers-reduced-motion: reduce) { .passport-workspace:not([data-archived]) circle { animation: none; } }
+@media (max-width: 1000px) { .passport-header { flex-wrap: wrap; gap: 12px; padding-left: calc(16px + var(--traffic-lights-clearance)); } }

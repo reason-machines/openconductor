@@ -1,0 +1,110 @@
+[
+  {
+    "side": "ref",
+    "theme": "dark",
+    "trigger": "sidebar",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/all-workspaces"
+  },
+  {
+    "side": "ref",
+    "theme": "dark",
+    "trigger": "shortcut",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/all-workspaces"
+  },
+  {
+    "side": "ref",
+    "theme": "dark",
+    "trigger": "palette",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/all-workspaces"
+  },
+  {
+    "side": "ref",
+    "theme": "light",
+    "trigger": "sidebar",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/all-workspaces"
+  },
+  {
+    "side": "ref",
+    "theme": "light",
+    "trigger": "shortcut",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/all-workspaces"
+  },
+  {
+    "side": "ref",
+    "theme": "light",
+    "trigger": "palette",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/all-workspaces"
+  },
+  {
+    "side": "oc",
+    "theme": "dark",
+    "trigger": "sidebar",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/"
+  },
+  {
+    "side": "oc",
+    "theme": "dark",
+    "trigger": "shortcut",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/"
+  },
+  {
+    "side": "oc",
+    "theme": "dark",
+    "trigger": "palette",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/"
+  },
+  {
+    "side": "oc",
+    "theme": "light",
+    "trigger": "sidebar",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/"
+  },
+  {
+    "side": "oc",
+    "theme": "light",
+    "trigger": "shortcut",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/"
+  },
+  {
+    "side": "oc",
+    "theme": "light",
+    "trigger": "palette",
+    "rootActive": false,
+    "listVisible": true,
+    "homeActive": true,
+    "route": "/"
+  }
+]

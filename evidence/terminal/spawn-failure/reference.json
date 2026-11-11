@@ -1,0 +1,679 @@
+{
+  "task": "ACQ-TERMINAL-SPAWN-01",
+  "producer": "Conductor Rebuild / 1f14fa82-4ec3-41fc-b085-32ec441b4228",
+  "evidence_type": "Static retained shipped JavaScript; no reference execution",
+  "provenance": {
+    "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "source_packet": ".oc-tmp/vio-received-72733982/packet.json",
+    "original_attachment_id": "bfa06ee0-799f-47fe-9edc-73997c70a340",
+    "original_attachment_sha256": "d0d8e4b9b20c5150f30f5edff149bfc25f3074da5a1a66357b1caaf1ef0033ab",
+    "local_verification": "Both retained full assets rehashed and parsed as modules, without evaluation. Complete AST declaration ranges converted from UTF-16 indices to UTF-8 byte offsets.",
+    "rea_gap": "Earlier renderer semantic analysis exhausted its heap, as recorded by the acquisition packet. No REA MCP operation is exposed to this Session. This continuation uses retained original bytes only; no new native acquisition or analyzer installation."
+  },
+  "offset_units": "Zero-based UTF-8 bytes; half-open [start,end)",
+  "artifacts": [
+    {
+      "artifact": "index",
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    {
+      "artifact": "renderer",
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  ],
+  "spans": [
+    {
+      "name": "_St",
+      "artifact": "index",
+      "file": "spans/index-_St.txt",
+      "utf8_half_open": [
+        2555599,
+        2555829
+      ],
+      "bytes": 230,
+      "sha256": "220c80cb132288c1347b23170f7b822a54298827c54fb8bee0c703f70eeeb6f3",
+      "ast_type": "ClassDeclaration"
+    },
+    {
+      "name": "PSt",
+      "artifact": "index",
+      "file": "spans/index-PSt.txt",
+      "utf8_half_open": [
+        2558637,
+        2559162
+      ],
+      "bytes": 525,
+      "sha256": "29ed253671eab6d879776eb2274af8e02061169b2ba03604ec33c2f1d99874f5",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "FSt",
+      "artifact": "index",
+      "file": "spans/index-FSt.txt",
+      "utf8_half_open": [
+        2559586,
+        2559800
+      ],
+      "bytes": 214,
+      "sha256": "fac7e315986dc1a6589bcb8aee4f1024e9b977100cf26c6b06ec74fb358c068c",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "ZSt",
+      "artifact": "index",
+      "file": "spans/index-ZSt.txt",
+      "utf8_half_open": [
+        2560850,
+        2560931
+      ],
+      "bytes": 81,
+      "sha256": "2abc514cf43ed9fa64eab329c6535806b135cc42518f8a38a0d17098e7d5a15f",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "V9",
+      "artifact": "index",
+      "file": "spans/index-V9.txt",
+      "utf8_half_open": [
+        2756759,
+        2771688
+      ],
+      "bytes": 14929,
+      "sha256": "696ede0db7b5dfab9e731e122ffeb7dd29605b548b43e54d08d0926ce082c675",
+      "ast_type": "ClassDeclaration"
+    },
+    {
+      "name": "$kt",
+      "artifact": "index",
+      "file": "spans/index-$kt.txt",
+      "utf8_half_open": [
+        2776043,
+        2783784
+      ],
+      "bytes": 7741,
+      "sha256": "01a68c4db09714e2c2696dca642094d0e518af4aa11f86b41fefbf382e1816f1",
+      "ast_type": "ClassDeclaration"
+    },
+    {
+      "name": "FAt",
+      "artifact": "index",
+      "file": "spans/index-FAt.txt",
+      "utf8_half_open": [
+        2828546,
+        2828780
+      ],
+      "bytes": 234,
+      "sha256": "1d4f53a1460b7fce389cc29b109d002f1ac997d08373fe71c25f1aad2c57f95f",
+      "ast_type": "ClassDeclaration"
+    },
+    {
+      "name": "export-gh",
+      "artifact": "index",
+      "file": "spans/index-export-gh.txt",
+      "utf8_half_open": [
+        3484259,
+        3484267
+      ],
+      "bytes": 8,
+      "sha256": "2480388e61e8e7bc885632949b422000cfb3dd593b84dbbfaabb7cc110e4e860",
+      "ast_type": "ExportSpecifier"
+    },
+    {
+      "name": "ts",
+      "artifact": "index",
+      "file": "spans/index-ts.txt",
+      "utf8_half_open": [
+        2829209,
+        2829217
+      ],
+      "bytes": 8,
+      "sha256": "a324795677321eb5d15ccefc2ee9a24e408a3db5099e78ff7cd30ca7f7b6c42f",
+      "ast_type": "VariableDeclarator"
+    },
+    {
+      "name": "d1e",
+      "artifact": "renderer",
+      "file": "spans/renderer-d1e.txt",
+      "utf8_half_open": [
+        6929046,
+        6930321
+      ],
+      "bytes": 1275,
+      "sha256": "a6969b63c3f6b5f087cc6f89c6c885447cf936f0e8c72bb2d8ba6518b12c5826",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "Jio",
+      "artifact": "renderer",
+      "file": "spans/renderer-Jio.txt",
+      "utf8_half_open": [
+        7166136,
+        7167419
+      ],
+      "bytes": 1283,
+      "sha256": "423106ff223f555ef558ca06672fc757f190d809b95131715052ef393973bbff",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "Xwa",
+      "artifact": "renderer",
+      "file": "spans/renderer-Xwa.txt",
+      "utf8_half_open": [
+        11154184,
+        11157364
+      ],
+      "bytes": 3180,
+      "sha256": "cb5d1f1ae97144c4473cffc0889aee7e4e7efda952d828d7895183d8dfbb531a",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "eSa",
+      "artifact": "renderer",
+      "file": "spans/renderer-eSa.txt",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ],
+      "bytes": 4517,
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "import-qc",
+      "artifact": "renderer",
+      "file": "spans/renderer-import-qc.txt",
+      "utf8_half_open": [
+        57354,
+        57362
+      ],
+      "bytes": 8,
+      "sha256": "447426764ef0b8ca8f18e5bddd099b165145cc1c3967f959a75eaa90d90193ba",
+      "ast_type": "ImportSpecifier"
+    },
+    {
+      "name": "import-Sh",
+      "artifact": "renderer",
+      "file": "spans/renderer-import-Sh.txt",
+      "utf8_half_open": [
+        57393,
+        57401
+      ],
+      "bytes": 8,
+      "sha256": "80c822f0c70b605970dc836425a9326572734e91036d81ba4249381955c3a2e1",
+      "ast_type": "ImportSpecifier"
+    },
+    {
+      "name": "import-U4e",
+      "artifact": "renderer",
+      "file": "spans/renderer-import-U4e.txt",
+      "utf8_half_open": [
+        57412,
+        57421
+      ],
+      "bytes": 9,
+      "sha256": "29fd6d66803de548d0b67c343520ebe4d6e3e56edaf38d3fb34c3d72a64fb286",
+      "ast_type": "ImportSpecifier"
+    },
+    {
+      "name": "import-mii",
+      "artifact": "renderer",
+      "file": "spans/renderer-import-mii.txt",
+      "utf8_half_open": [
+        57481,
+        57490
+      ],
+      "bytes": 9,
+      "sha256": "c45039a054bf73c41831cab07311a3cc1f18056dcab7e52a608f484c8acf27e3",
+      "ast_type": "ImportSpecifier"
+    },
+    {
+      "name": "import-aVe",
+      "artifact": "renderer",
+      "file": "spans/renderer-import-aVe.txt",
+      "utf8_half_open": [
+        57806,
+        57815
+      ],
+      "bytes": 9,
+      "sha256": "40ed61bc07451f2560d6ea974ee2a28615936700a676314ec78c043c33da6c3e",
+      "ast_type": "ImportSpecifier"
+    },
+    {
+      "name": "import-HCt",
+      "artifact": "renderer",
+      "file": "spans/renderer-import-HCt.txt",
+      "utf8_half_open": [
+        65482,
+        65491
+      ],
+      "bytes": 9,
+      "sha256": "aca59451b066e672b2f09090799969d1efb0f4f59e7b5ddc4857206d479778e4",
+      "ast_type": "ImportSpecifier"
+    },
+    {
+      "name": "xEi",
+      "artifact": "renderer",
+      "file": "spans/renderer-xEi.txt",
+      "utf8_half_open": [
+        6568897,
+        6571703
+      ],
+      "bytes": 2806,
+      "sha256": "c9eafaa506a034b54ffb3e6f82f0635e7509d7a7e9672fc4aaca171b09303bc3",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "G5e",
+      "artifact": "renderer",
+      "file": "spans/renderer-G5e.txt",
+      "utf8_half_open": [
+        6948263,
+        6948594
+      ],
+      "bytes": 331,
+      "sha256": "e66ecdb8c59d6c0b8528ab59f5c0191c664aed3ef8707f66e98fd622361ad821",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "nro",
+      "artifact": "renderer",
+      "file": "spans/renderer-nro.txt",
+      "utf8_half_open": [
+        7170202,
+        7199367
+      ],
+      "bytes": 29165,
+      "sha256": "906c982d3300028803e71158d7f70c6fd3c1cc6f55f1ff6e9c6fd645cac34123",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "iti",
+      "artifact": "renderer",
+      "file": "spans/renderer-iti.txt",
+      "utf8_half_open": [
+        11153705,
+        11154035
+      ],
+      "bytes": 330,
+      "sha256": "759879c8a6585102e88b4cf3e8f982ae6cc951ee48d9b0f3ae60991ce2a37764",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "Jwa",
+      "artifact": "renderer",
+      "file": "spans/renderer-Jwa.txt",
+      "utf8_half_open": [
+        11157364,
+        11157454
+      ],
+      "bytes": 90,
+      "sha256": "241b567dcdf2257d0f27832a78e8915a779da6cce86572d6608fd6898c70a77f",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "tCt",
+      "artifact": "renderer",
+      "file": "spans/renderer-tCt.txt",
+      "utf8_half_open": [
+        11157454,
+        11158521
+      ],
+      "bytes": 1067,
+      "sha256": "83972a3cf58ed69ccb460013bd94577f4d0731483dc15fc522f0fc7a78fb310f",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "Zwa",
+      "artifact": "renderer",
+      "file": "spans/renderer-Zwa.txt",
+      "utf8_half_open": [
+        11158521,
+        11160762
+      ],
+      "bytes": 2241,
+      "sha256": "b30f983732154a396d671f194c17d660c080ae113e430c1baf5d0b089f4ab089",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "export-gl",
+      "artifact": "index",
+      "file": "spans/index-export-gl.txt",
+      "utf8_half_open": [
+        3484298,
+        3484306
+      ],
+      "bytes": 8,
+      "sha256": "c35010ec4c782295c2ace88289ee55d2f47685dc5ed44b98c8e1c3fca6617bb2",
+      "ast_type": "ExportSpecifier"
+    },
+    {
+      "name": "export-gn",
+      "artifact": "index",
+      "file": "spans/index-export-gn.txt",
+      "utf8_half_open": [
+        3484317,
+        3484326
+      ],
+      "bytes": 9,
+      "sha256": "90d785fd2994ceb706edd662d06bb0d6717521c2cc2d998c9110ad3b9f145140",
+      "ast_type": "ExportSpecifier"
+    },
+    {
+      "name": "export-gu",
+      "artifact": "index",
+      "file": "spans/index-export-gu.txt",
+      "utf8_half_open": [
+        3484385,
+        3484394
+      ],
+      "bytes": 9,
+      "sha256": "1ac14e7bad423470849c10e6b6855c73b7dc6aa31251ea62a11a93f034c835ed",
+      "ast_type": "ExportSpecifier"
+    },
+    {
+      "name": "yo",
+      "artifact": "index",
+      "file": "spans/index-yo.txt",
+      "utf8_half_open": [
+        2811696,
+        2813381
+      ],
+      "bytes": 1685,
+      "sha256": "3a86ce1bbe75884e4557a6abfccda3b628e5ec16cbcd33fe2c506e303604c858",
+      "ast_type": "VariableDeclarator"
+    },
+    {
+      "name": "DAt",
+      "artifact": "index",
+      "file": "spans/index-DAt.txt",
+      "utf8_half_open": [
+        2828843,
+        2829203
+      ],
+      "bytes": 360,
+      "sha256": "2466f4fd8610a85d162bafe38060173dd1320f1d617d6cd1538fdafb2abe65cd",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "LAt",
+      "artifact": "index",
+      "file": "spans/index-LAt.txt",
+      "utf8_half_open": [
+        2829342,
+        2829386
+      ],
+      "bytes": 44,
+      "sha256": "5a08de5924381457f4d6148fca13f19329e61dbacfb03b8eb4f76d34fdbd4f00",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "$At",
+      "artifact": "index",
+      "file": "spans/index-$At.txt",
+      "utf8_half_open": [
+        2829615,
+        2829692
+      ],
+      "bytes": 77,
+      "sha256": "ce730d0245d0416176c9ab32782e697a905a8210266e4bd4eca1c08e3b9881c8",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "Ns",
+      "artifact": "index",
+      "file": "spans/index-Ns.txt",
+      "utf8_half_open": [
+        2807121,
+        2811695
+      ],
+      "bytes": 4574,
+      "sha256": "f0bae78e67df03a25ea5dca2da470444e70ef755c8b32af5ee16b2e82938ba40",
+      "ast_type": "VariableDeclarator"
+    },
+    {
+      "name": "export-g$",
+      "artifact": "index",
+      "file": "spans/index-export-g$.txt",
+      "utf8_half_open": [
+        3483823,
+        3483831
+      ],
+      "bytes": 8,
+      "sha256": "bd756ec12e711d5a2914988d9a7392f9472a405dc408b7d2956749d9454de362",
+      "ast_type": "ExportSpecifier"
+    },
+    {
+      "name": "export-t5",
+      "artifact": "index",
+      "file": "spans/index-export-t5.txt",
+      "utf8_half_open": [
+        3492136,
+        3492145
+      ],
+      "bytes": 9,
+      "sha256": "22755274257b236957f257e1893ea252f026f3682b0a05dd8d4416dd212a2d95",
+      "ast_type": "ExportSpecifier"
+    },
+    {
+      "name": "z1",
+      "artifact": "index",
+      "file": "spans/index-z1.txt",
+      "utf8_half_open": [
+        2806621,
+        2806672
+      ],
+      "bytes": 51,
+      "sha256": "887d55e058c22422f384803f2bf04054fb493992c0f14368e10ed323b0b082a1",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "MEt",
+      "artifact": "index",
+      "file": "spans/index-MEt.txt",
+      "utf8_half_open": [
+        2813467,
+        2813563
+      ],
+      "bytes": 96,
+      "sha256": "5203b9f8d4d539409a924a6e3dd3ac80daef768464e5e4046fd26577fc5dd738",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "Tde",
+      "artifact": "index",
+      "file": "spans/index-Tde.txt",
+      "utf8_half_open": [
+        2813563,
+        2813718
+      ],
+      "bytes": 155,
+      "sha256": "1a956e6b6ec61d20e2640eabdbc55255ab993675abc1c7a3228618b4b99e44d0",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "bI",
+      "artifact": "index",
+      "file": "spans/index-bI.txt",
+      "utf8_half_open": [
+        2829218,
+        2829342
+      ],
+      "bytes": 124,
+      "sha256": "0697565ca461b948787a64ba19dd96270d69f48b674484eb0b632d18eae7d046",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "lSa",
+      "artifact": "renderer",
+      "file": "spans/renderer-lSa.txt",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "bytes": 338,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a",
+      "ast_type": "FunctionDeclaration"
+    },
+    {
+      "name": "ySt",
+      "artifact": "index",
+      "file": "spans/index-ySt.txt",
+      "utf8_half_open": [
+        2552188,
+        2555599
+      ],
+      "bytes": 3411,
+      "sha256": "7bd7df55ddbf55db2ed5863a00115af41e8696377bfb17a7ef5cb5e69ecb3913",
+      "ast_type": "ClassDeclaration"
+    },
+    {
+      "name": "Tde-call-2829215",
+      "artifact": "index",
+      "file": "spans/index-Tde-call-2829215.txt",
+      "utf8_half_open": [
+        2829692,
+        2829730
+      ],
+      "bytes": 38,
+      "sha256": "66fd1062731df75b336c81f13a2acfa90c8cd4af56656bbee45be2aacbf5d223",
+      "ast_type": "ExpressionStatement"
+    },
+    {
+      "name": "Tde-call-3237638",
+      "artifact": "index",
+      "file": "spans/index-Tde-call-3237638.txt",
+      "utf8_half_open": [
+        3238138,
+        3238179
+      ],
+      "bytes": 41,
+      "sha256": "41f3ed27d31b7dd75bc117ec4911f76b419c4442add86394472c30dccf70b296",
+      "ast_type": "ExpressionStatement"
+    }
+  ],
+  "main_comparison": {
+    "sha": "26ba01a1857a425780252abe3d28aa4eb9ba9572",
+    "failure": "startTab catches a backend spawn rejection, disposes its live screen, closes its tab, and forgets saved history for a restored tab. No failed state or Retry exists.",
+    "files": [
+      {
+        "path": "src/features/terminal/session.ts",
+        "sha256": "47bbd1fd5bedbc02ef229e2fa55ff7d366606513036e87eb706a27e334e8ef70"
+      },
+      {
+        "path": "src/features/terminal/tabs.ts",
+        "sha256": "63eccfcdbf2b87811462b40d2e7862552c0e157935fa86b79423a58e8ed39b8c"
+      },
+      {
+        "path": "src/features/terminal/TerminalPanel.tsx",
+        "sha256": "597daab69412d624c795ac3e00bd939a2dc717de4724ad51786cae5ca7037b88"
+      }
+    ]
+  },
+  "conclusions": [
+    {
+      "status": "static-proven",
+      "claim": "Renderer qc imports index gh, which exports ts=DAt(). DAt returns the $kt runtime. The unrelated index qc export is ROe and is not the terminal runtime.",
+      "spans": [
+        "import-qc",
+        "export-gh",
+        "ts",
+        "DAt",
+        "$kt"
+      ]
+    },
+    {
+      "status": "static-proven",
+      "claim": "$kt.createSession registers V9 before start. Cold-restore-record lookup rejection deletes that controller, but i.start rejection emits its snapshot and rethrows without deleting it.",
+      "spans": [
+        "$kt",
+        "V9"
+      ]
+    },
+    {
+      "status": "static-proven",
+      "claim": "V9.spawnBackendSession catches backend.createSession rejection, sets spawn_error via FSt, clears commands, logs and emits the error, then rethrows. FSt disables input and permits canStartShell only for interactive sessions.",
+      "spans": [
+        "V9",
+        "FSt"
+      ]
+    },
+    {
+      "status": "static-proven",
+      "claim": "Xwa catches createSession rejection, reads qc.getSession(w), and retains error state. eSa binds J.canStartShell to Zwa.canRestartShell; Zwa binds error state to tCt. tCt renders Failed to start terminal and Retry, disabling Retry when canRetry is false.",
+      "spans": [
+        "Xwa",
+        "eSa",
+        "Zwa",
+        "tCt"
+      ]
+    },
+    {
+      "status": "static-proven",
+      "claim": "The visible Retry callback calls Xwa.restartShell, which passes w to qc.restartShell. The runtime looks up that same id. V9.restartShell permits only kind interactive with connectionState spawn_error. Restart disables input and canStartShell while launching, and PSt may fall back from restored/current cwd to the resolved launch cwd.",
+      "spans": [
+        "Xwa",
+        "$kt",
+        "V9",
+        "ZSt",
+        "PSt"
+      ]
+    },
+    {
+      "status": "static-proven",
+      "claim": "w initializes from aVe(c), imported from index g$=bI. bI selects c if running, otherwise an existing c:handoff or c. The ordinary failed initial case therefore retries c. This does not prove native PTY reuse.",
+      "spans": [
+        "Xwa",
+        "import-aVe",
+        "export-g$",
+        "bI"
+      ]
+    },
+    {
+      "status": "static-proven",
+      "claim": "Sh imports gl=yo, whose create/get/destroy methods bind to Ns. Ns creates a terminal record independently of runtime start. The shown error path does not call destroyTerminal. Tde subscribes to terminal-map removals and destroys runtime/surface records after those removals, not in response to spawn_error.",
+      "spans": [
+        "import-Sh",
+        "export-gl",
+        "yo",
+        "Ns",
+        "Tde",
+        "MEt",
+        "Tde-call-2829215",
+        "Tde-call-3237638"
+      ]
+    },
+    {
+      "status": "static-proven",
+      "claim": "nro maps registered workspace terminals to Jio; local Jio passes the id to d1e, then xEi binds an interactive surface config with surfaceId unchanged. lSa renders eSa for an interactive config, and eSa passes that surfaceId to Xwa as terminalId.",
+      "spans": [
+        "nro",
+        "Jio",
+        "d1e",
+        "xEi",
+        "lSa",
+        "eSa",
+        "Xwa"
+      ]
+    },
+    {
+      "status": "static-proven",
+      "claim": "Each local _St.createSession allocates a proposed PTY id with crypto.randomUUID. ySt.spawn passes that id to pty_spawn separately from metadata.terminalId/request.id. Retry reuses the runtime/controller id; this packet does not assert reuse or survival of a native PTY.",
+      "spans": [
+        "FAt",
+        "_St",
+        "ySt"
+      ]
+    }
+  ],
+  "limits": [
+    "Static source proves branch and binding structure, not observed Conductor behavior or successful shell execution.",
+    "The native pty_spawn handler, its native error cleanup, and actual PTY/process registration were not inspected. That boundary requires the sole native executor and is not needed to justify frontend retention of the rejected runtime controller.",
+    "Environment-resolution failure before controller insertion and cold-history-lookup failure are not backend-spawn failures and are not claimed retryable.",
+    "No native app, Mac, provider, credentials, shell, browser, server, install, build, dispatch, E2E run or screenshot is part of this continuation.",
+    "The OpenConductor regression uses real session/reducer/TerminalHost source with fake PTY, DOM and xterm boundaries; it is not installed-app or visual parity acceptance."
+  ]
+}

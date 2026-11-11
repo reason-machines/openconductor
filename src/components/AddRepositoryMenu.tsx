@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import type { Repo } from "../state/types";
-import { inTauri, pickFolder, recentLocalRepositories } from "../backend";
+import { recentLocalRepositories } from "../backend";
 import { FolderIcon, FolderPlusIcon, GlobeIcon } from "./Icons";
 import {
   MENU_WIDTH,
@@ -16,115 +16,6 @@ import {
   showRecents,
   type RecentLocalRepo,
 } from "./addRepositoryMenuModel";
-import { cloneRepository, type RepositoryDto } from "../workspace/api";
-import {
-  CLONE_DESTINATION_TITLE,
-  CLONE_PLACEHOLDER,
-  CLONING,
-  INVALID_CLONE_URL,
-  cloneFailedMessage,
-  parseCloneUrl,
-  type CloneSource,
-} from "../workspace/repoPicker";
-
-interface Props {
-  disabled?: boolean;
-  /** Label of the closed button: "Add…" next to the picker, "Add repository" when there are none. */
-  label: string;
-  primary?: boolean;
-  onOpenProject: () => void;
-  onCloned: (repo: RepositoryDto, source: CloneSource) => void;
-  onBusyChange?: (busy: boolean) => void;
-}
-
-type Mode = { kind: "closed" } | { kind: "menu" } | { kind: "clone"; status: "idle" | "cloning"; error?: string };
-
-// Outside the desktop app there is no folder picker; clones "land" here.
-const BROWSER_CLONE_PARENT = "~/code";
-
-/** "Add repository" in the create dialog: Open project, or Clone repo from a pasted URL. */
-export function AddRepositoryMenu({ disabled, label, primary, onOpenProject, onCloned, onBusyChange }: Props) {
-  const [mode, setMode] = useState<Mode>({ kind: "closed" });
-  const [url, setUrl] = useState("");
-  const cloning = mode.kind === "clone" && mode.status === "cloning";
-
-  function setCloning(on: boolean, error?: string) {
-    setMode({ kind: "clone", status: on ? "cloning" : "idle", error });
-    onBusyChange?.(on);
-  }
-
-  async function clone() {
-    if (cloning) return;
-    const source = parseCloneUrl(url);
-    if (!source) return setMode({ kind: "clone", status: "idle", error: INVALID_CLONE_URL });
-    const parent = inTauri() ? await pickFolder(CLONE_DESTINATION_TITLE) : BROWSER_CLONE_PARENT;
-    if (!parent) return;
-    setCloning(true);
-    try {
-      const repo = await cloneRepository(source.url, parent, source.name);
-      onBusyChange?.(false);
-      setMode({ kind: "closed" });
-      setUrl("");
-      onCloned(repo, source);
-    } catch (err) {
-      setCloning(false, cloneFailedMessage(err));
-    }
-  }
-
-  return (
-    <div className="add-repo">
-      <button
-        type="button"
-        className={`btn ${primary ? "btn-primary" : "btn-small"}`}
-        aria-haspopup="menu"
-        aria-expanded={mode.kind !== "closed"}
-        disabled={disabled || cloning}
-        onClick={() => setMode(mode.kind === "menu" ? { kind: "closed" } : { kind: "menu" })}
-      >
-        {label}
-      </button>
-      {mode.kind === "clone" && (
-      <div className="add-repo-pop add-repo-clone" onKeyDown={(e) => e.key === "Escape" && !cloning && (e.stopPropagation(), setMode({ kind: "closed" }))}>
-        <div className="field-row">
-          <input
-            autoFocus
-            value={url}
-            placeholder={CLONE_PLACEHOLDER}
-            aria-label="Clone URL"
-            aria-invalid={!!mode.error}
-            disabled={cloning}
-            onChange={(e) => {
-              setUrl(e.target.value);
-              if (mode.error) setMode({ kind: "clone", status: "idle" });
-            }}
-            onKeyDown={(e) => {
-              // Enter clones; it must not submit the surrounding create form.
-              if (e.key !== "Enter" || e.metaKey || e.ctrlKey) return;
-              e.preventDefault();
-              void clone();
-            }}
-          />
-          <button type="button" className="btn btn-small btn-primary" onClick={() => void clone()} disabled={cloning || !url.trim()}>
-            {cloning ? "Cloning..." : "Clone"}
-          </button>
-          <button type="button" className="btn btn-small" onClick={() => setMode({ kind: "closed" })} disabled={cloning}>Cancel</button>
-        </div>
-        {mode.error ? (
-          <span className="error small" role="alert">{mode.error}</span>
-        ) : cloning ? (
-          <span className="muted small" role="status">{CLONING}</span>
-        ) : null}
-      </div>
-      )}
-      {mode.kind === "menu" && (
-        <div className="add-repo-pop add-repo-menu" role="menu" onKeyDown={(e) => e.key === "Escape" && (e.stopPropagation(), setMode({ kind: "closed" }))}>
-          <button type="button" role="menuitem" autoFocus onClick={() => (setMode({ kind: "closed" }), onOpenProject())}>Open project</button>
-          <button type="button" role="menuitem" onClick={() => setMode({ kind: "clone", status: "idle" })}>Clone repo</button>
-        </div>
-      )}
-    </div>
-  );
-}
 
 // --- Sidebar add-repository menu (Conductor's `Gji` body in the `wra` popover) ---
 
@@ -239,10 +130,15 @@ export function AddRepositoryMenuItems({ repos, recents, loading, onActionComple
  * from the header's right edge), 320px wide, focus starts on the first item,
  * the arrow keys move through the items, and Escape or a click outside closes it.
  */
-export function SidebarAddRepositoryMenu({ open, onOpenChange, anchorRef, repos, ...actions }: AddRepositoryActions & {
+export function SidebarAddRepositoryMenu({ open, onOpenChange, anchorRef, align = "end", repos, ...actions }: AddRepositoryActions & {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   anchorRef: RefObject<HTMLElement | null>;
+  /**
+   * "end": the menu's right edge at the anchor (the sidebar header's point);
+   * "start": under the anchor, left edges aligned (the create composer's repo trigger, `ZQo`).
+   */
+  align?: "start" | "end";
   repos: Repo[];
 }) {
   const { recents, loading, refresh } = useRecentLocalRepos();
@@ -256,7 +152,7 @@ export function SidebarAddRepositoryMenu({ open, onOpenChange, anchorRef, repos,
     const anchor = anchorRef.current?.getBoundingClientRect();
     const menu = menuRef.current;
     if (!anchor || !menu) return;
-    const p = menuPosition({ x: anchor.right, y: anchor.bottom }, { width: MENU_WIDTH, height: menu.offsetHeight }, { width: window.innerWidth, height: window.innerHeight });
+    const p = menuPosition({ x: align === "start" ? anchor.left + MENU_WIDTH : anchor.right, y: anchor.bottom }, { width: MENU_WIDTH, height: menu.offsetHeight }, { width: window.innerWidth, height: window.innerHeight });
     setPos((prev) => (prev && prev.left === p.left && prev.top === p.top ? prev : { left: p.left, top: p.top }));
   });
   // Focus the first item once the menu is placed (a hidden element cannot take focus).

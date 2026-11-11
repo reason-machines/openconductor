@@ -10,7 +10,7 @@ const p = await b.newPage({ viewport: { width: 1200, height: 820 } });
 const errors = [];
 p.on("pageerror", (e) => errors.push(e.message));
 await p.goto("http://127.0.0.1:5391/?demo=1");
-const box = p.locator(".composer textarea");
+const box = p.locator(".composer [contenteditable=true]");
 await box.waitFor();
 const ok = (m) => console.log("ok -", m);
 const active = () => p.evaluate(() => document.activeElement?.dataset?.id ? document.activeElement.textContent.trim().split("\n")[0] : document.activeElement?.tagName);
@@ -31,7 +31,7 @@ assert.match(await active(), /^four/); ok("⌫ deletes the focused row and focus
 await p.keyboard.press("Home");
 assert.match(await active(), /^two/); ok("Home focuses the first row");
 await p.keyboard.press("e");
-const edit = p.locator('textarea[aria-label="Edit queued message"]');
+const edit = p.locator('[role="group"][aria-label="Edit queued message"] [contenteditable=true]');
 await edit.waitFor(); ok("E opens the row for editing");
 await edit.fill("two, edited"); await edit.press("Escape");
 await edit.waitFor({ state: "detached" });

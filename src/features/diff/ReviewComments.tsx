@@ -11,8 +11,9 @@
 // suggested changes, Resolve (on GitHub) and Delete (here only, as Conductor
 // does); they cannot be edited or replied to. Comments on the PR itself are
 // listed from the Changes toolbar, so no file has to be open.
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useState, type ReactNode } from "react";
 import { openUrl } from "../../backend";
+import { DialogFrame } from "../../components/DialogFrame";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
 import {
@@ -70,8 +71,14 @@ const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
 
 function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }: { initial?: string; placeholder?: string; submitLabel: string; onSubmit: (body: string) => void; onCancel: () => void }) {
   const [text, setText] = useState(initial);
+  const [discardOpen, setDiscardOpen] = useState(false);
+  const dialogId = useId();
   const cancel = () => {
-    if (text.trim() && text.trim() !== initial.trim() && !window.confirm("Discard this comment? What you wrote will be lost.")) return;
+    const dirty = initial === "" ? text.trim() !== "" : text !== initial;
+    if (dirty) {
+      setDiscardOpen(true);
+      return;
+    }
     onCancel();
   };
   const submit = () => {
@@ -105,6 +112,20 @@ function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }
           {submitLabel}
         </button>
       </div>
+      {discardOpen && (
+        <DialogFrame kind="alert" className="project-confirmation" titleId={`${dialogId}-title`} descriptionId={`${dialogId}-description`} onClose={() => setDiscardOpen(false)}>
+          <div className="project-confirmation-header">
+            <h2 id={`${dialogId}-title`}>Discard comment?</h2>
+            <div id={`${dialogId}-description`} className="project-confirmation-body">
+              {initial === "" ? "This comment will be lost." : "Your changes to this comment will be lost."}
+            </div>
+          </div>
+          <div className="modal-actions">
+            <button type="button" className="btn" data-dialog-cancel onClick={() => setDiscardOpen(false)}>Keep editing</button>
+            <button type="button" className="btn btn-danger" onClick={() => { setDiscardOpen(false); onCancel(); }}>Discard</button>
+          </div>
+        </DialogFrame>
+      )}
     </div>
   );
 }
@@ -179,7 +200,7 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
             stays on GitHub and comes back with the next sync. */}
         {canDeleteComment(c) &&
           (source === "user-local" ? (
-            <button className="oc-link" onClick={() => window.confirm(c.reply_to_comment_id ? "Delete this reply?" : "Delete this comment and its replies?") && void ops.remove(c)}>
+            <button className="oc-link" onClick={() => void ops.remove(c)}>
               Delete
             </button>
           ) : (

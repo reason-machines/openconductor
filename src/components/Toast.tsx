@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CloseIcon } from "./Icons";
 import { toastTimeout, type ToastAction, type ToastItem } from "./toastTiming";
 import { endingProps } from "./sidebarMotion";
@@ -10,21 +10,26 @@ let nextId = 1;
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const dismiss = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
-  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean; action?: ToastAction; secondaryAction?: ToastAction; description?: string; extraActions?: ToastAction[] }) => {
-    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky, action: opts?.action, secondaryAction: opts?.secondaryAction, description: opts?.description, extraActions: opts?.extraActions }]);
+  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean; action?: ToastAction; secondaryAction?: ToastAction; description?: string; extraActions?: ToastAction[]; durationMs?: number }) => {
+    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky, action: opts?.action, secondaryAction: opts?.secondaryAction, description: opts?.description, extraActions: opts?.extraActions, durationMs: opts?.durationMs }]);
   }, []);
   return { toasts, show, dismiss };
 }
 
 function Toast({ toast, leaving, onDismiss }: { toast: ToastItem; leaving: boolean; onDismiss: () => void }) {
   const [copied, setCopied] = useState(false);
+  // The timer starts once per toast. The parent passes a new onDismiss on every
+  // render, so it is read through a ref: as an effect dependency it restarted
+  // the timer on each re-render, and a busy app kept an error toast up for good.
+  const dismissRef = useRef(onDismiss);
+  dismissRef.current = onDismiss;
   useEffect(() => {
     if (leaving) return;
     const ms = toastTimeout(toast);
     if (ms === null) return;
-    const t = setTimeout(onDismiss, ms);
+    const t = setTimeout(() => dismissRef.current(), ms);
     return () => clearTimeout(t);
-  }, [toast, onDismiss, leaving]);
+  }, [toast, leaving]);
 
   async function copy() {
     await navigator.clipboard?.writeText(toast.message).catch(() => undefined);

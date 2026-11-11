@@ -350,6 +350,12 @@
   }
 }
 
+:root[data-color-palette="stone"] { --link-elevated: #f3ece7; }
+:root[data-color-palette="stone"][data-theme="dark"] { --link-elevated: #413030; }
+@media (prefers-color-scheme: dark) {
+  :root[data-color-palette="stone"]:not([data-theme="light"]) { --link-elevated: #413030; }
+}
+
 /* Blue: cool greys with a blue accent */
 :root[data-color-palette="blue"] {
   --bg: #ffffff;
@@ -802,6 +808,7 @@
 
 /* Palette-independent tokens. */
 :root {
+  --link-elevated: var(--surface-accent);
   /* Diff and git colours: the same in every palette, they carry meaning. */
   --diff-add: #1a7f37;
   --diff-del: #cf222e;
@@ -813,6 +820,9 @@
   --amber: #c98a1b;
   /* Workspace and task status. */
   --status-merged: #a855f7;
+  /* Sidebar PR glyphs: REA CSS 5b876e14…, text-purple-500 / text-highlight-muted. */
+  --status-row-merged: oklch(62.7% .265 303.9);
+  --status-row-conflict: #cca694;
   --status-in-progress: #d29922;
   --status-in-review: #16a249;
   --status-done: #cca694;
@@ -853,32 +863,24 @@
   --shadow-color: #000000;
   /* Brand and artwork. */
   --brand-claude: #d97757;
+  --brand-linear: #5e6ad2;
   --logo-bg: #262e40;
   --logo-fg: #f4efde;
   --logo-dot: #e8b04b;
   --terminal-preview-bg: #000000;
   --terminal-preview-fg: #4ade80;
   /* Conductor's own Stone values, fixed in every palette: right-click menus
-     (src/components/menu/contextMenu.css) and Settings > Agents / Default models
-     (src/settings/agents/agents.css) copy Conductor's look whatever palette is chosen. */
+     (src/components/menu/contextMenu.css) and popover menus (src/components/popoverMenu.css)
+     copy Conductor's look whatever palette is chosen. Settings > Agents / Default models use
+     the palette tokens, and npm run lint:colors fails any new hued colour under Neutral. */
   --conductor-popover: #ffffff;
   --conductor-popover-fg: #211e1c;
   --conductor-popover-accent: #14100f0d;
   --conductor-popover-ring: #211e1c0d;
-  --conductor-accent: #fafaf9;
   --conductor-accent-fg: #2c2826;
-  --conductor-muted: #fafaf9;
   --conductor-muted-fg: #8e8885;
   --conductor-fg: #2c2826;
-  --conductor-bg: #fff;
   --conductor-border: #eae8e6;
-  --conductor-input: #14100f1a;
-  --conductor-primary: #413030;
-  --conductor-primary-fg: #f3f2f1;
-  --conductor-tip: #fff;
-  --conductor-tip-fg: #413030;
-  --conductor-ring: #2c2826;
-  --conductor-tab-underline: #cca694;
   --conductor-slot-icon: #c8664a;
   --conductor-menu-shadow: #0000001a;
   --conductor-status-backlog: #8e8885;
@@ -902,20 +904,12 @@
   --conductor-popover-fg: #eae8e6;
   --conductor-popover-accent: #ffffff0d;
   --conductor-popover-ring: #ffffff1a;
-  --conductor-accent: #2c2826;
   --conductor-accent-fg: #f3f2f1;
-  --conductor-muted: #211e1c;
   --conductor-muted-fg: #a5a09c;
   --conductor-fg: #eae8e6;
-  --conductor-bg: #141110;
   --conductor-border: #ffffff1a;
-  --conductor-input: #fff3;
-  --conductor-primary: #f3f2f1;
-  --conductor-primary-fg: #2c2826;
-  --conductor-tip: #413030;
-  --conductor-tip-fg: #fff;
-  --conductor-ring: #bcb6b3;
   --conductor-status-in-progress: #ffdc2e;
+  --status-row-conflict: #ddc1b1;
   --unread: #cca694;
   --diff-del: #f85149;
   --diff-mod: #d29922;
@@ -947,20 +941,12 @@
     --conductor-popover-fg: #eae8e6;
     --conductor-popover-accent: #ffffff0d;
     --conductor-popover-ring: #ffffff1a;
-    --conductor-accent: #2c2826;
     --conductor-accent-fg: #f3f2f1;
-    --conductor-muted: #211e1c;
     --conductor-muted-fg: #a5a09c;
     --conductor-fg: #eae8e6;
-    --conductor-bg: #141110;
     --conductor-border: #ffffff1a;
-    --conductor-input: #fff3;
-    --conductor-primary: #f3f2f1;
-    --conductor-primary-fg: #2c2826;
-    --conductor-tip: #413030;
-    --conductor-tip-fg: #fff;
-    --conductor-ring: #bcb6b3;
     --conductor-status-in-progress: #ffdc2e;
+    --status-row-conflict: #ddc1b1;
     --unread: #cca694;
     --diff-del: #f85149;
     --diff-mod: #d29922;
@@ -989,6 +975,7 @@
 
 /* Derived tokens: overlays of the palette's base colours. */
 :root {
+  --glass-white: #fff;
   --hover: color-mix(in srgb, var(--overlay-base) 5%, transparent);
   --active: color-mix(in srgb, var(--overlay-base) 9%, transparent);
   --popover-hover: color-mix(in srgb, var(--overlay-base) 5%, transparent);

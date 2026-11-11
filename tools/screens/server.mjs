@@ -44,6 +44,7 @@ const MOCK_FILES = {
   "/__mock/fixtures.js": path.join(here, "fixtures.js"),
   "/__mock/seed-data.js": path.join(here, "seed-data.js"),
   "/__mock/seed.js": path.join(here, "seed.js"),
+  "/__mock/org-fixtures.js": path.join(here, "org-fixtures.js"),
   "/__mock/tauri-mock.js": path.join(here, "tauri-mock.js"),
   "/__mock/conductor.schema.sql": path.join(repoRoot, "evidence/sqlite/conductor.schema.sql"),
   "/__mock/cache.schema.sql": path.join(repoRoot, "evidence/sqlite/cache.schema.sql"),
@@ -65,6 +66,7 @@ function indexHtml(scenario) {
     `<script src="/__mock/seed-data.js"></script>\n` +
     `<script src="/__mock/seed.js"></script>\n` +
     `<script src="/__mock/fixtures.js"></script>\n` +
+    `<script src="/__mock/org-fixtures.js"></script>\n` +
     `<script src="/__mock/tauri-mock.js"></script>\n`;
   const marker = html.indexOf('<script type="module"');
   return marker === -1 ? html.replace("</head>", inject + "</head>") : html.slice(0, marker) + inject + html.slice(marker);
@@ -101,4 +103,4 @@ const server = http.createServer((req, res) => {
   return send(res, 200, MIME[".html"], indexHtml(scenario));
 });
 
-server.listen(PORT, "127.0.0.1", () => console.log(`screens harness on http://localhost:${PORT} (dist ${DIST})`));
+server.listen(PORT, process.env.HOST ?? "127.0.0.1", () => console.log(`screens harness on http://localhost:${PORT} (dist ${DIST})`));

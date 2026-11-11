@@ -55,17 +55,43 @@ export interface WorkspaceEntry {
   name: string;
   branch: string;
   repoName: string;
-  /** Last activity, ms since epoch; newest first. */
+  /** Recency rank; newest first (recently viewed workspaces sort above the rest). */
   lastActiveAt: number;
+  /** Workspace update timestamp used by All-search buckets, separate from recent visits. */
+  updatedAt?: number;
   archived?: boolean;
   /** `workspaces.number`, shown as `W-<n>` with "Show workspace numbers"; null before numbering. */
   number?: number | null;
+  /** The sidebar's display name (Conductor's `$V`); the row shows it in the All tab. */
+  label?: string;
+  /** Last activity in ms since epoch, for the row's "17m" (Conductor's `BPt`). */
+  activeAt?: number;
+  /** Bold when a chat is unread (Conductor's `SUi` `font-semibold`). */
+  unread?: boolean;
 }
 
 export interface ProjectEntry {
   id: string;
   name: string;
 }
+
+/** Leading icon of an action row (Conductor draws a Lucide icon before each item). */
+export type PaletteIcon =
+  | "plus"
+  | "folder-plus"
+  | "sun-moon"
+  | "panel-left"
+  | "panel-right"
+  | "maximize"
+  | "message"
+  | "keyboard"
+  | "book"
+  | "chevron-right"
+  | "settings"
+  | "home"
+  | "archive"
+  | "file"
+  | "link";
 
 export interface ActionEntry {
   id: string;
@@ -74,13 +100,19 @@ export interface ActionEntry {
   keywords?: readonly string[];
   /** Binding id whose chord is shown beside the item. */
   bindingId?: string;
+  /** A fixed hint shown instead of a binding (Conductor writes "⌘," beside Settings). */
+  hint?: string;
+  icon?: PaletteIcon;
 }
 
 export interface SettingEntry {
   id: string;
   title: string;
-  section: string;
+  /** The page a row lives on; pages themselves have none. */
+  section?: string;
   keywords?: readonly string[];
+  /** A settings row (Conductor's `xUi`), listed only while there is a query; pages always are. */
+  row?: boolean;
 }
 
 export type ResultItem =
@@ -91,8 +123,11 @@ export type ResultItem =
 
 export interface ResultGroup {
   id: string;
-  heading: string;
+  /** Absent for the Projects tab's one group (Conductor's `heading: undefined`). */
+  heading?: string;
   items: ResultItem[];
+  /** Shown as a disabled row when the group has no items (the All tab's "No results found"). */
+  emptyText?: string;
 }
 
 export interface PaletteData {
@@ -107,12 +142,13 @@ export interface PaletteData {
 }
 
 const byRecency = (a: WorkspaceEntry, b: WorkspaceEntry) => b.lastActiveAt - a.lastActiveAt;
+const byUpdatedAt = (a: WorkspaceEntry, b: WorkspaceEntry) => (b.updatedAt ?? b.lastActiveAt) - (a.updatedAt ?? a.lastActiveAt);
 
-function workspaceResults(data: PaletteData, query: string, archiveFilter: ArchiveFilter = "active"): ResultItem[] {
+function workspaceResults(data: PaletteData, query: string, archiveFilter: ArchiveFilter = "active", order = byRecency): ResultItem[] {
   const q = query.trim();
   return data.workspaces
-    .filter((w) => matchesArchiveFilter(!!w.archived, archiveFilter) && (q === "" || tokensMatch(q, [w.name, w.branch, w.repoName])))
-    .sort(byRecency)
+    .filter((w) => matchesArchiveFilter(!!w.archived, archiveFilter) && (q === "" || tokensMatch(q, [w.label ?? w.name, w.name, w.branch, w.repoName])))
+    .sort(order)
     .slice(0, RESULT_CAP)
     .map((w) => ({ kind: "workspace", id: `workspace:${w.id}`, workspace: w }));
 }
@@ -134,31 +170,69 @@ function ranked<T>(entries: readonly T[], query: string, text: (e: T) => string,
     .map((x) => x.e);
 }
 
-function actionGroups(data: PaletteData, query: string): ResultGroup[] {
-  const hits = ranked(data.actions, query, (a) => a.title, (a) => a.keywords ?? []);
-  return ACTION_GROUP_ORDER.filter((g) => g !== "workspace-actions" || data.activeWorkspaceId !== null)
-    .map((g) => ({
-      id: g,
-      heading: ACTION_GROUP_HEADING[g],
-      items: hits.filter((a) => a.group === g).map((a): ResultItem => ({ kind: "action", id: `action:${a.id}`, action: a })),
-    }))
-    .filter((g) => g.items.length > 0);
+/**
+ * Words each command group answers to (Conductor's `ua` map in `m_a`, renderApp @10,896,700);
+ * Open in adds the names of the apps it lists.
+ */
+const GROUP_WORDS: Record<ActionGroupId, string> = {
+  "workspace-actions":
+    "quick open file search find picker changes diff uncommitted all files tree checks ci notes scratchpad link issue linear pull request github archive copy url share move section organize",
+  actions:
+    "new workspace create toggle theme dark light left right sidebar panel zen mode focus distraction send feedback report submit prompt request feature idea show keyboard shortcuts keys hotkeys passport globe world cities visited check update updates version changelog release notes",
+  navigation: "go to next unread attention chat session settings preferences config archive archived workspaces view show open docs documentation help guide history",
+  settings: "settings preferences config chat appearance theme git env environment variables claude code account experimental advanced storage",
+  "open-in": "open in",
+};
+
+/**
+ * Group order for a query: groups whose words contain more of the query's words come
+ * first, ties keep the fixed order (Conductor's `J1`, with `O_a` as the comparator).
+ */
+export function groupOrder(query: string, openInNames: readonly string[] = []): ActionGroupId[] {
+  const words = query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) return [...ACTION_GROUP_ORDER];
+  const hay = (g: ActionGroupId) => (g === "open-in" ? `${openInNames.join(" ")} open in` : GROUP_WORDS[g]);
+  return ACTION_GROUP_ORDER.map((g, index) => ({ g, index, n: words.filter((w) => hay(g).includes(w)).length }))
+    .sort((a, b) => b.n - a.n || a.index - b.index)
+    .map((x) => x.g);
 }
 
-function settingResults(data: PaletteData, query: string): ResultItem[] {
-  return ranked(data.settings, query, (s) => s.title, (s) => [s.section, ...(s.keywords ?? [])])
+/** The command groups each tab lists (Conductor's `$s`): Actions has no Navigation or Settings, Settings only Settings. */
+function tabGroups(tab: PaletteTab, order: readonly ActionGroupId[]): ActionGroupId[] {
+  if (tab === "actions") return order.filter((g) => g === "workspace-actions" || g === "actions" || g === "open-in");
+  if (tab === "settings") return order.filter((g) => g === "settings");
+  if (tab === "all") return [...order];
+  return [];
+}
+
+/** Settings pages, and with a query their rows too (Conductor's `[...We, ...query ? He : []]`). */
+function settingItems(data: PaletteData, query: string): ResultItem[] {
+  const listed = query.trim() === "" ? data.settings.filter((s) => !s.row) : data.settings;
+  return ranked(listed, query, (s) => s.title, (s) => [...(s.section ? [s.section] : []), ...(s.keywords ?? [])])
     .slice(0, RESULT_CAP)
     .map((s) => ({ kind: "setting", id: `setting:${s.id}`, setting: s }));
 }
 
-function group(id: string, heading: string, items: ResultItem[]): ResultGroup[] {
+function commandGroups(tab: PaletteTab, data: PaletteData, query: string): ResultGroup[] {
+  const hits = ranked(data.actions, query, (a) => a.title, (a) => a.keywords ?? []);
+  const openIn = data.actions.filter((a) => a.group === "open-in").map((a) => a.title);
+  return tabGroups(tab, groupOrder(query, openIn))
+    .filter((g) => g !== "workspace-actions" || data.activeWorkspaceId !== null)
+    .map((g) => ({
+      id: g,
+      heading: ACTION_GROUP_HEADING[g],
+      items: g === "settings" ? settingItems(data, query) : hits.filter((a) => a.group === g).map((a): ResultItem => ({ kind: "action", id: `action:${a.id}`, action: a })),
+    }))
+    .filter((g) => g.items.length > 0);
+}
+
+function group(id: string, heading: string | undefined, items: ResultItem[]): ResultGroup[] {
   return items.length > 0 ? [{ id, heading, items }] : [];
 }
 
 /**
- * Grouped results for a tab and query, in display order. `archiveFilter` is
- * the Workspaces tab's "Archived workspaces" filter; other tabs never list
- * archived workspaces.
+ * Grouped results for a tab and query, in display order (Conductor's `m_a`). `archiveFilter`
+ * is the Workspaces tab's "Archived workspaces" filter; All queries include both states.
  */
 export function buildResults(tab: PaletteTab, query: string, data: PaletteData, archiveFilter: ArchiveFilter = "active"): ResultGroup[] {
   const empty = query.trim() === "";
@@ -166,11 +240,10 @@ export function buildResults(tab: PaletteTab, query: string, data: PaletteData, 
     case "workspaces":
       return group("workspaces", "Workspaces", workspaceResults(data, query, archiveFilter));
     case "projects":
-      return group("projects", "Projects", projectResults(data, query));
+      return group("projects", undefined, projectResults(data, query));
     case "actions":
-      return actionGroups(data, query);
     case "settings":
-      return group("settings", "Settings", settingResults(data, query));
+      return commandGroups(tab, data, query);
     case "all": {
       if (empty) {
         // Conductor (m_a, renderApp @10,854,949) maps each recent id onto every
@@ -180,13 +253,17 @@ export function buildResults(tab: PaletteTab, query: string, data: PaletteData, 
           .map((id) => byId.get(id))
           .filter((w): w is WorkspaceEntry => w !== undefined)
           .map((w): ResultItem => ({ kind: "workspace", id: `workspace:${w.id}`, workspace: w }));
-        return [...group("recent-workspaces", "Recent workspaces", recents), ...actionGroups(data, query)];
+        return [...group("recent-workspaces", "Recent workspaces", recents), ...commandGroups(tab, data, query)];
       }
+      // With a query: the command groups, then Projects, then Workspaces, which stays mounted
+      // with "No results found" while no project matches either.
+      const projects = projectResults(data, query);
+      const workspaces = [...workspaceResults(data, query, "active", byUpdatedAt), ...workspaceResults(data, query, "archived", byUpdatedAt)];
+      const showWorkspaces = projects.length === 0 || workspaces.length > 0;
       return [
-        ...group("workspaces", "Workspaces", workspaceResults(data, query)),
-        ...group("projects", "Projects", projectResults(data, query)),
-        ...actionGroups(data, query),
-        ...group("settings", "Settings", settingResults(data, query)),
+        ...commandGroups(tab, data, query),
+        ...group("projects", "Projects", projects),
+        ...(showWorkspaces ? [{ id: "workspaces", heading: "Workspaces", items: workspaces, emptyText: "No results found" }] : []),
       ];
     }
   }

@@ -43,6 +43,7 @@ export const ArrowRightIcon = ({ size, strokeWidth }: P) => <ConductorIcon name=
 export const MoreIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="ellipsis" size={size} strokeWidth={strokeWidth} />;
 export const CodeIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="code-xml" size={size} strokeWidth={strokeWidth} />;
 export const ChevronDownIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="chevron-down" size={size} strokeWidth={strokeWidth} />;
+export const ChevronsUpDownIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="chevrons-up-down" size={size} strokeWidth={strokeWidth} />;
 export const HelpIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="circle-question-mark" size={size} strokeWidth={strokeWidth} />;
 export const SettingsIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="settings" size={size} strokeWidth={strokeWidth} />;
 export const BookIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="book-open" size={size} strokeWidth={strokeWidth} />;
@@ -63,14 +64,20 @@ export const CopyIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="copy"
 export const CheckIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="check" size={size} strokeWidth={strokeWidth} />;
 export const ChevronUpIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="chevron-up" size={size} strokeWidth={strokeWidth} />;
 export const UserIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="user" size={size} strokeWidth={strokeWidth} />;
+// Routines (Conductor's /routines): the sidebar row and Run button draw Lucide's play,
+// the suggestions calendar-check / heart-pulse / newspaper with clock-3 by the schedule.
+export const PlayIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="play" size={size} strokeWidth={strokeWidth} />;
+export const CalendarCheckIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="calendar-check" size={size} strokeWidth={strokeWidth} />;
+export const HeartPulseIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="heart-pulse" size={size} strokeWidth={strokeWidth} />;
+export const NewspaperIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="newspaper" size={size} strokeWidth={strokeWidth} />;
+export const ClockIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="clock-3" size={size} strokeWidth={strokeWidth} />;
+export const TrashIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="trash-2" size={size} strokeWidth={strokeWidth} />;
+export const PowerIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="power" size={size} strokeWidth={strokeWidth} />;
+export const LinkIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="link" size={size} strokeWidth={strokeWidth} />;
+export const WebhookIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="webhook" size={size} strokeWidth={strokeWidth} />;
+export const PullRequestIcon = ({ size, strokeWidth }: P) => <ConductorIcon name="git-pull-request" size={size} strokeWidth={strokeWidth} />;
 
-export const LogoMark = ({ size = 20 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
-    <rect x="1" y="1" width="22" height="22" rx="6" style={{ fill: "var(--logo-bg)" }} />
-    <path d="M12 5.5c.35 3.9 1.9 5.6 6.5 6.5-4.6.9-6.15 2.6-6.5 6.5-.35-3.9-1.9-5.6-6.5-6.5 4.6-.9 6.15-2.6 6.5-6.5z" style={{ fill: "var(--logo-fg)" }} />
-    <circle cx="16.6" cy="7.6" r="1" style={{ fill: "var(--logo-dot)" }} />
-  </svg>
-);
+export { AppMark as LogoMark } from "./AppMark";
 
 /** A plain circled "N" standing in for the Next.js template mark. */
 export const NextMarkIcon = ({ size = 16 }: { size?: number }) => (

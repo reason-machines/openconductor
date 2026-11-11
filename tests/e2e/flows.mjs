@@ -4,6 +4,7 @@ import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSy
 import { homedir, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { installFakeApps } from "./fake-apps.mjs";
+import { waitForSetup } from "./startup.mjs";
 
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, stdio: "pipe" });
 
@@ -48,11 +49,16 @@ function tomlValue(path, section, key) {
 export const flows = [
   {
     // A fresh conductor.db has no repositories and no onboarding step, so the
-    // first-run onboarding comes first; Continue writes the step and opens Home.
+    // first-run onboarding comes first. No Reason account here, so it offers
+    // "Sign up" (Reason) and "Continue without signing in", which writes the
+    // step and opens Home.
     name: "first-run",
     async run(wd) {
-      await wd.waitFor("the first-run onboarding", async () => (await wd.findAll(".onb")).length > 0);
-      await clickByText(wd, ".onb-continue", "Continue");
+      const startup = await waitForSetup(wd);
+      if (!startup.onboarding) throw new Error("expected first-run onboarding after Reason CLI setup");
+      const signUp = await textsOf(wd, ".onb-signup");
+      if (JSON.stringify(signUp) !== JSON.stringify(["Sign up"])) throw new Error(`Sign up button ${JSON.stringify(signUp)}`);
+      await clickByText(wd, ".onb-continue", "Continue without signing in");
       await wd.waitFor("Home after onboarding", async () => (await wd.findAll(".home")).length > 0);
       const step = await wd.execute("return window.__TAURI_INTERNALS__.invoke('db_first_run_onboarding_step');", []);
       if (step !== "999") throw new Error(`first_time_onboarding_step ${JSON.stringify(step)}, want "999"`);
@@ -80,6 +86,19 @@ export const flows = [
       await wd.execute("window.__OC_E2E_PICK_FOLDER__ = arguments[0];", [repo]);
       await clickByText(wd, ".home-card", "Open project");
       await wd.waitFor("e2e-demo in the sidebar", async () => (await textsOf(wd, ".sb-repo-name")).includes("e2e-demo"));
+      // A group nobody has toggled folds whenever its open workspace is not one of its rows
+      // (Conductor's `Dra`); later flows read e2e-demo's rows from Home and Settings, so unfold it by hand.
+      const expanded = () => wd.execute("const h = [...document.querySelectorAll('.sb-repo-header')].find((e) => e.querySelector('.sb-repo-name')?.textContent === 'e2e-demo'); return h?.getAttribute('aria-expanded');", []);
+      const toggle = async () => {
+        const i = await wd.execute("return [...document.querySelectorAll('.sb-repo-header')].findIndex((e) => e.querySelector('.sb-repo-name')?.textContent === 'e2e-demo');", []);
+        await wd.click((await wd.findAll(".sb-repo-header"))[i]);
+      };
+      if ((await expanded()) === "true") {
+        await toggle();
+        await wd.waitFor("e2e-demo folded", async () => (await expanded()) === "false");
+      }
+      await toggle();
+      await wd.waitFor("e2e-demo unfolded by hand", async () => (await expanded()) === "true");
     },
   },
   {
@@ -114,8 +133,7 @@ export const flows = [
       if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
       // A new, untracked file in the selected workspace's worktree, as an agent would write it.
       writeFileSync(join(ctx.worktree, "e2e-diff.txt"), "one\ntwo\nthree\n");
-      const [reload] = await wd.waitFor("the Changes panel", () => wd.findAll('.oc-diff-toolbar button[title="Reload changes"]').then((ids) => ids.length && ids));
-      await wd.click(reload);
+      // The Changes panel refreshes external edits without a Reload control.
       const rows = await wd.waitFor("e2e-diff.txt in Changed files", async () => {
         const r = await wd.execute(
           "return Array.from(document.querySelectorAll('.oc-change'), (e) => [e.querySelector('.name')?.textContent.trim(), e.querySelector('.oc-count .a')?.textContent.trim()]);",
@@ -141,7 +159,8 @@ export const flows = [
       const settings = join(ctx.repo, ".conductor", "settings.local.toml");
       const spotlightSetting = () => (existsSync(settings) ? readFileSync(settings, "utf8").match(/^spotlight_testing = (true|false)$/m)?.[1] ?? "unset" : "no file");
       const refs = () => git(ctx.repo, "for-each-ref", "--format=%(refname)", "refs/conductor-checkpoints").toString().split("\n").filter(Boolean);
-      const buttonText = () => wd.execute("return document.querySelector('.scripts-actions .btn-primary, .scripts-actions .btn-stop')?.textContent.trim() ?? null;", []);
+      // The strip's run split button (Conductor's): its name is "Start spotlight" idle, "Stop Spotlight" while it syncs.
+      const buttonText = () => wd.execute("return document.querySelector('.ws-strip .run-split-main')?.getAttribute('aria-label') ?? null;", []);
       if (existsSync(inRoot)) throw new Error("e2e-diff.txt is already in the repository root");
 
       // Like Conductor, the Run tab of a repository without a run script shows only
@@ -173,9 +192,9 @@ export const flows = [
         await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
       }
       await setSpotlightTesting(true);
-      await wd.waitFor("Run Spotlight", async () => (await buttonText())?.endsWith("Run Spotlight"));
+      await wd.waitFor("Start spotlight", async () => (await buttonText()) === "Start spotlight");
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} after turning it on, want true`);
-      const [start] = await wd.findAll(".scripts-actions .btn-primary");
+      const [start] = await wd.findAll(".ws-strip .run-split-main");
       await wd.click(start);
 
       await wd.waitFor("the workspace's file synced into the repository root", async () => existsSync(inRoot) && readFileSync(inRoot, "utf8") === "one\ntwo\nthree\n", 60000);
@@ -184,10 +203,10 @@ export const flows = [
         throw new Error(`checkpoint refs while syncing: ${JSON.stringify(during)}, want pre-spotlight and cp-spotlight-<epoch>-<pid>`);
       }
       if (!existsSync(join(ctx.worktree, "e2e-diff.txt"))) throw new Error("saving the checkpoint removed e2e-diff.txt from the worktree");
-      await wd.waitFor("Stop Spotlight", async () => (await buttonText())?.endsWith("Stop Spotlight"));
+      await wd.waitFor("Stop Spotlight", async () => (await buttonText()) === "Stop Spotlight");
       if (spotlightSetting() !== "true") throw new Error(`.conductor/settings.local.toml spotlight_testing: ${spotlightSetting()} while syncing, want true (the sync must not touch the root's own settings)`);
 
-      const [stop] = await wd.findAll(".scripts-actions .btn-stop");
+      const [stop] = await wd.findAll(".ws-strip .run-split-main.is-stop");
       await wd.click(stop);
       await wd.waitFor("the repository root restored from pre-spotlight", async () => !existsSync(inRoot), 60000);
       await wd.waitFor("the pre-spotlight ref dropped", async () => !refs().includes("refs/conductor-checkpoints/pre-spotlight"));
@@ -201,12 +220,12 @@ export const flows = [
     },
   },
   {
-    // The workspace's terminal panel (shown with ⌘J) runs a real login shell in the repository
-    // checkout. The typed line never contains "42", so seeing oc-term-42 proves
+    // The workspace's terminal panel (shown with ⌘J) runs a real login shell in its
+    // worktree. The typed line never contains "42", so seeing oc-term-42 proves
     // the shell evaluated it, and pwd shows where the shell started.
     name: "terminal",
     async run(wd, ctx) {
-      if (!ctx.repo) throw new Error("needs the add-repo flow's repository");
+      if (!ctx.worktree) throw new Error("needs the create-workspace flow's worktree");
       const rows = () => wd.execute("return document.querySelector('.terminal-panel .xterm-rows')?.textContent ?? null;", []);
       // Conductor's workspace opens on the right panel's Run tab with no terminal; + (New terminal) in that strip opens one.
       if ((await wd.findAll(".terminal-panel")).length) throw new Error("the workspace shows a terminal by default");
@@ -215,7 +234,7 @@ export const flows = [
       const [screen] = await wd.waitFor("a terminal in the workspace's terminal panel", () => wd.findAll(".terminal-panel .xterm-screen").then((ids) => ids.length && ids), 60000);
       await wd.click(screen);
       await wd.keys("echo oc-term-$((6*7)); pwd\uE007");
-      const cwds = [...new Set([ctx.repo, realpathSync(ctx.repo)])];
+      const cwds = [...new Set([ctx.worktree, realpathSync(ctx.worktree)])];
       const text = await wd.waitFor("the shell's output", async () => {
         const t = ((await rows()) ?? "").replace(/\u00a0/g, " ");
         return t.includes("oc-term-42") && cwds.some((c) => t.includes(c)) && t;
@@ -226,10 +245,7 @@ export const flows = [
     },
   },
   {
-    // ⌘K opens the palette from anywhere; typing filters it and Enter runs the
-    // active result. Go to Home leaves the workspace for the wordmark-and-cards
-    // Home screen (Conductor opens its /all-workspaces list here; ours follows
-    // Sven's brief for #483), and searching the workspace's name brings it back.
+    // Home opens the workspace list; searching the workspace's name brings it back.
     name: "command-palette",
     async run(wd) {
       const META = "\uE03D";
@@ -263,21 +279,31 @@ export const flows = [
       }
 
       await open();
-      await run("Go to Home", "Go to Home");
+      // Conductor's Navigation item is "Home" (`V9t`).
+      await run("Home", "Home");
       const home = () =>
         wd.execute(
-          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), workspace: !!document.querySelector('.workspace') };",
+          "return { cards: document.querySelectorAll('.home .home-card').length, list: !!document.querySelector('.allws'), search: !!document.querySelector('.allws input[placeholder=\"Search\"]'), activeHome: !!document.querySelector('.sb-row[data-active=\"true\"][title^=\"Home\"]'), workspace: !!document.querySelector('.workspace') };",
           [],
         );
-      await wd.waitFor("the Home screen with its entry cards", async () => {
+      await wd.waitFor("the Home workspace list with search and active sidebar Home", async () => {
         const h = await home();
-        return h.cards === 3 && !h.list && !h.workspace;
+        return h.cards === 0 && h.list && h.search && h.activeHome && !h.workspace;
       }).catch(async (e) => {
         throw new Error(`${e.message}; saw ${JSON.stringify(await home())}`);
       });
 
       await open();
-      await run(name, name);
+      // Workspace rows show the sidebar's display name (Conductor's `SUi`), so pick the row by kind.
+      await wd.keys(name);
+      const activeKind = () => wd.execute("return document.querySelector('.palette-item.active')?.dataset.kind ?? null;", []);
+      await wd.waitFor(`a workspace result for ${JSON.stringify(name)}`, async () => (await wd.findAll('.palette-item[data-kind="workspace"]')).length > 0);
+      for (let i = 0; (await activeKind()) !== "workspace"; i++) {
+        if (i > 20) throw new Error(`could not highlight the workspace result; results ${JSON.stringify(await titles())}`);
+        await wd.keys(DOWN);
+      }
+      await wd.keys(ENTER);
+      await wd.waitFor("the palette to close after Enter", async () => !(await paletteOpen()));
       const back = await wd.waitFor(`the ${name} workspace view`, headerName);
       if (back !== name) throw new Error(`palette opened workspace ${JSON.stringify(back)}, want ${JSON.stringify(name)}`);
     },
@@ -427,6 +453,11 @@ export const flows = [
       const [cursor] = await wd.findAll('.oi-menu .oi-row[data-app="cursor"]');
       await wd.click(cursor);
       await wd.waitFor("the button to open in Cursor", async () => (await main())?.label === "Open in Cursor");
+      // That error toast dismisses itself after 8 s (toastTiming.ts) while the app keeps
+      // re-rendering; it used to stay up and show on every later screenshot (Settings › Agents).
+      const cursorToast = async () => (await textsOf(wd, ".toast-message")).some((t) => t.startsWith("Failed to open in cursor"));
+      await wd.waitFor("the Open in Cursor error toast", cursorToast, 5000);
+      await wd.waitFor("the Open in Cursor error toast to dismiss itself", async () => !(await cursorToast()), 12000);
       await openMenu();
       const kbdRow = (await rows()).find((r) => r.kbd)?.label;
       if (kbdRow !== "Cursor") throw new Error(`⌘O hint on ${JSON.stringify(kbdRow)}, want Cursor`);
@@ -577,7 +608,7 @@ export const flows = [
     // Open project on a folder that is already added is not refused: like
     // Conductor it adds a second project on the same folder, `<name>-v1`
     // (evidence/screens/duplicate-repo.md). Runs from the palette's
-    // "Open project" action, since Home's cards only show at start-up.
+    // "Add project" action and its popover, since Home's cards only show at start-up.
     name: "duplicate-repo",
     async run(wd, ctx) {
       if (!ctx.repo) throw new Error("needs the add-repo flow's repo");
@@ -586,11 +617,15 @@ export const flows = [
       await wd.execute("document.activeElement?.blur();", []);
       await wd.chord(["\uE03D"], "k");
       await wd.waitFor("the command palette", async () => (await wd.findAll('.palette[aria-label="Command palette"]')).length > 0, 10000);
-      await wd.keys("Open project");
-      await wd.waitFor("Open project highlighted", () =>
-        wd.execute("return document.querySelector('.palette-item.active .palette-title')?.textContent.trim() === 'Open project';", []),
+      // Conductor's palette "Add project" opens the sidebar's add-project popover (`g9e.open()`); its Open project runs the picker.
+      await wd.keys("Add project");
+      await wd.waitFor("Add project highlighted", () =>
+        wd.execute("return document.querySelector('.palette-item.active .palette-title')?.textContent.trim() === 'Add project';", []),
       );
       await wd.keys(ENTER);
+      await wd.waitFor("the add-project popover's Open project", () =>
+        wd.execute("const b = [...document.querySelectorAll('.add-menu-item')].find((e) => e.textContent.trim() === 'Open project'); if (!b) return false; b.click(); return true;", []),
+      );
       await wd.waitFor("e2e-demo-v1 in the sidebar", async () => (await textsOf(wd, ".sb-repo-name")).includes("e2e-demo-v1")).catch(async (e) => {
         throw new Error(`${e.message}; sidebar ${JSON.stringify(await textsOf(wd, ".sb-repo-name"))}`);
       });
@@ -614,7 +649,7 @@ export const flows = [
     // cards writing [providers] to settings.toml, Reset back to the CLI login,
     // and a palette click filling a loadout slot (conductor.db favorite_models).
     name: "agent-settings",
-    async run(wd) {
+    async run(wd, ctx) {
       const META = "\uE03D";
       const ESC = "\uE00C";
       const file = join(process.env.OPENCONDUCTOR_HOME ?? join(homedir(), ".openconductor"), "settings.toml");
@@ -671,23 +706,43 @@ export const flows = [
       await wd.waitFor("the Codex tab", async () => (await textsOf(wd, "button[aria-pressed]")).includes("API key"));
       if (before !== null && before !== '"claude_login"') throw new Error(`[providers.claude] was ${before} before the flow; it is now reset`);
 
-      await clickByText(wd, ".settings-nav .nav-item", "Default models");
-      await wd.waitFor("the Default models page", async () => (await heading()) === "Default models");
-      const slots = () => wd.execute("return Array.from(document.querySelectorAll('[data-loadout-slot]'), (e) => e.textContent.trim());", []);
-      const first = await wd.waitFor("five loadout slots", async () => {
-        const s = await slots();
-        return s.length === 5 ? s : null;
-      });
-      if (!first[0].includes("DEFAULT") || !first[1].includes("DROP MODEL HERE") || !first[2].includes("EMPTY")) throw new Error(`loadout slots ${JSON.stringify(first)}`);
-      const [add] = await wd.findAll('button[aria-label="Add GPT-5.5 to loadout"]');
-      if (!add) throw new Error("no GPT-5.5 in the Codex column");
-      await wd.click(add);
-      await wd.waitFor("GPT-5.5 in slot 2", async () => (await slots())[1].includes("GPT-5.5"));
-      await wd.execute("document.querySelector('button[aria-label=\"Delete loadout 2\"]').click();", []);
-      await wd.waitFor("slot 2 empty again", async () => (await slots())[1].includes("DROP MODEL HERE"));
-      const rows = await textsOf(wd, ".ag-setting-title");
-      const want = ["Loadout", "Codex personality", "Claude output style", "Review model", "Default to plan mode in new chats"];
-      if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`Default models rows ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
+      if (!ctx.fakeCodex) throw new Error("the stand-in Codex was not set up");
+      if (tomlValue(file, "", "codex_executable_path") !== null) throw new Error("unexpected Codex executable override before the loadout flow");
+      await wd.click((await wd.findAll('input[aria-label="Codex executable path"]'))[0]);
+      await wd.keys(ctx.fakeCodex.exe);
+      await wd.waitFor("the catalog CLI override to save", async () => tomlValue(file, "", "codex_executable_path") === JSON.stringify(ctx.fakeCodex.exe));
+      try {
+        await clickByText(wd, ".settings-nav .nav-item", "Default models");
+        await wd.waitFor("the Default models page", async () => (await heading()) === "Default models");
+        const slots = () => wd.execute("return Array.from(document.querySelectorAll('[data-loadout-slot]'), (e) => e.textContent.trim());", []);
+        const first = await wd.waitFor("five loadout slots", async () => {
+          const s = await slots();
+          return s.length === 5 ? s : null;
+        });
+        if (!first[0].includes("DEFAULT") || !first[1].includes("DROP MODEL HERE") || !first[2].includes("EMPTY")) throw new Error(`loadout slots ${JSON.stringify(first)}`);
+        const [add] = await wd.waitFor("the model advertised by the Codex catalog", async () => {
+          const buttons = await wd.findAll('.ag-palette-col[aria-label="Codex"] button[aria-label="Add E2E Catalog Codex to loadout"]:not(:disabled)');
+          return buttons.length === 1 ? buttons : null;
+        }, 30000);
+        const requests = readFileSync(join(ctx.fakeCodex.dir, "codex-fake.jsonl"), "utf8").trim().split("\n").map((line) => JSON.parse(line));
+        if (!requests.some((request) => request.method === "model/list")) throw new Error("the palette did not query the configured Codex CLI");
+        await wd.click(add);
+        await wd.waitFor("the catalog model in slot 2", async () => (await slots())[1].includes("E2E Catalog Codex"));
+        const saved = () => wd.execute("return window.__TAURI_INTERNALS__.invoke('favorite_models_list').then((rows) => rows.map((row) => JSON.parse(row.configuration)));", []);
+        await wd.waitFor("the catalog model and effort persisted in physical slot 2", async () =>
+          (await saved()).some((row) => row.slot === 1 && row.agent === "codex" && row.model === "e2e-codex-catalog" && row.thinkingLevel === "xhigh"));
+        await wd.click((await wd.findAll('button[aria-label="Remove model from slot 2"]'))[0]);
+        await wd.waitFor("slot 2 empty again", async () => (await slots())[1].includes("DROP MODEL HERE"));
+        await wd.waitFor("the removed model gone from storage", async () => !(await saved()).some((row) => row.model === "e2e-codex-catalog"));
+        const rows = await textsOf(wd, ".ag-setting-title");
+        const want = ["Loadout", "Codex personality", "Claude output style", "Review model", "Default to plan mode in new chats"];
+        if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`Default models rows ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
+      } finally {
+        await clickByText(wd, ".settings-nav .nav-item", "Agents");
+        await clickByText(wd, '[role="tab"]', "Codex");
+        await wd.click((await wd.findAll('button[aria-label="Reset to bundled Codex"]'))[0]);
+        await wd.waitFor("the catalog CLI override cleared", async () => tomlValue(file, "", "codex_executable_path") === null);
+      }
       await wd.execute("document.activeElement?.blur();", []);
       await wd.keys(ESC);
       await wd.waitFor("Settings to close on Esc", async () => (await wd.findAll(".settings")).length === 0);
@@ -792,7 +847,7 @@ export const flows = [
       const connected = await wd.waitFor("Connected with ChatGPT", async () => (await textsOf(wd, '[data-testid="codex-chatgpt-connected"] .agc-ok'))[0], 20000);
       if (connected !== "Connected with ChatGPT as e2e@example.com") throw new Error(`connected line ${JSON.stringify(connected)}`);
       const table = await textsOf(wd, `${section} .ag-info tr`);
-      if (JSON.stringify(table) !== JSON.stringify(["ChatGPT accounte2e@example.com", "PlanPro"])) throw new Error(`status table ${JSON.stringify(table)}`);
+      if (JSON.stringify(table) !== JSON.stringify(["ChatGPT accounte2e@example.com"])) throw new Error(`status table ${JSON.stringify(table)}`);
       const buttons = await textsOf(wd, '[data-testid="codex-chatgpt-connected"] button');
       if (JSON.stringify(buttons) !== JSON.stringify(["Manage usage", "Reconnect"])) throw new Error(`connected actions ${JSON.stringify(buttons)}`);
       const sent = readFileSync(join(ctx.fakeCodex.dir, "codex-fake.jsonl"), "utf8");
@@ -842,6 +897,7 @@ export const flows = [
       writeFileSync(exe, `#!/bin/sh\ncd "${dir}" && exec python3 "${resolve("tools/reason-acp/fake_reason_acp.py")}" "$@"\n`);
       chmodSync(exe, 0o755);
       writeFileSync(join(dir, "fake-reason-signed-out"), "");
+      writeFileSync(join(dir, "fake-reason-require-approval"), "");
       ctx.fakeReason = { dir, exe };
     },
     teardown(ctx) {
@@ -873,7 +929,20 @@ export const flows = [
       await clickByText(wd, `${section} button`, "Sign in with Reason");
       const code = await wd.waitFor("the pairing code", async () => (await textsOf(wd, '[data-testid="reason-login-code"]'))[0], 20000);
       if (code !== "E2E1-CODE") throw new Error(`pairing code ${JSON.stringify(code)}`);
+      await wd.waitFor("waiting for browser approval", async () => (await textsOf(wd, '[data-testid="reason-login-waiting"]'))[0]?.includes("Finish signing in in the browser window."));
+      const pending = await wd.execute("return window.__TAURI_INTERNALS__.invoke('reason_login_status');", []);
+      if (pending.state !== "waiting") throw new Error(`pairing approved without browser approval: ${pending.state}`);
+      rmSync(join(ctx.fakeReason.dir, "fake-reason-signed-out"));
       await wd.waitFor("Connected after the sign-in", async () => (await status()).startsWith("Connected"), 20000);
+      const workspaceSelect = `${section} select[aria-label="Workspace for new chats"]`;
+      const unselected = await wd.execute("const s = document.querySelector(arguments[0]); return { value: s.value, placeholderDisabled: s.querySelector('option[value=\"\"]').disabled };", [workspaceSelect]);
+      if (unselected.value !== "" || !unselected.placeholderDisabled) throw new Error(`workspace was implicitly selected: ${JSON.stringify(unselected)}`);
+      await wd.waitFor("no implicit workspace in the status table", async () => (await table()).includes("WorkspaceNot selected"));
+      if (tomlValue(file, "reason", "workspace") !== null) throw new Error("sign-in implicitly saved a workspace");
+      const pick = async (label, value) => wd.click((await wd.findAll(`${section} select[aria-label="${label}"] option[value="${value}"]`))[0]);
+      await pick("Workspace for new chats", "ws-a");
+      await wd.waitFor('[reason] workspace = "ws-a"', async () => tomlValue(file, "reason", "workspace") === '"ws-a"');
+      await wd.waitFor("the explicitly selected workspace in the status table", async () => (await table()).includes("WorkspaceWorkspace ws-a"));
       const rows = await table();
       const want = ["Version0.2.692", "Accounte2e@example.com", "WorkspaceWorkspace ws-a", "This MacNot connected"];
       if (JSON.stringify(rows) !== JSON.stringify(want)) throw new Error(`status table ${JSON.stringify(rows)}, want ${JSON.stringify(want)}`);
@@ -881,7 +950,6 @@ export const flows = [
       await wd.waitFor("This Mac connected", async () => (await table()).includes("This MacConnected"), 20000);
 
       // New chats: a pinned workspace, model and effort in [reason].
-      const pick = async (label, value) => wd.click((await wd.findAll(`${section} select[aria-label="${label}"] option[value="${value}"]`))[0]);
       await pick("Workspace for new chats", "ws-b");
       await wd.waitFor('[reason] workspace = "ws-b"', async () => tomlValue(file, "reason", "workspace") === '"ws-b"');
       await wd.waitFor("the table follows the pinned workspace", async () => (await table()).includes("WorkspaceWorkspace ws-b"));
@@ -906,11 +974,12 @@ export const flows = [
       await wd.click((await wd.findAll(`${section} button[aria-label="Remove Reason API key"]`))[0]);
       await wd.waitFor("the key field after Remove", async () => (await wd.findAll(keyField)).length === 1);
 
-      // Back on the Reason account with the defaults unset, for the screenshot.
+      // Back on the Reason account with an explicit workspace and optional defaults unset.
       await clickByText(wd, `${section} button[aria-pressed]`, "Reason accountRecommended");
       await wd.waitFor("[providers.reason] reason_login", async () => tomlValue(file, "providers.reason", "kind") === '"reason_login"');
-      for (const label of ["Workspace for new chats", "Default Reason model", "Default Reason effort"]) await pick(label, "");
-      await wd.waitFor("[reason] cleared", async () => tomlValue(file, "reason", "workspace") === null && tomlValue(file, "reason", "model") === null);
+      await pick("Workspace for new chats", "ws-a");
+      for (const label of ["Default Reason model", "Default Reason effort"]) await pick(label, "");
+      await wd.waitFor("[reason] keeps the explicit workspace with optional defaults cleared", async () => tomlValue(file, "reason", "workspace") === '"ws-a"' && tomlValue(file, "reason", "model") === null && tomlValue(file, "reason", "reasoning_effort") === null);
       await wd.waitFor("Connected again", async () => (await status()).startsWith("Connected"), 20000);
       await showRows(wd, `${section} .agk-cards`);
     },
@@ -936,6 +1005,23 @@ export const flows = [
         await wd.waitFor(`models.codex tool_approval_policy = "${v}"`, async () => (tomlValue(file, "models.codex", "tool_approval_policy") ?? '"default"') === `"${v}"`);
       }
       await showRows(wd, sw);
+    },
+  },
+  // Settings › Account › Sign out (Conductor's `account:sign-out`) signs this
+  // computer out of Reason with `reason logout`: the agents-reason flow left
+  // the stand-in signed in; afterwards the row is gone and `reason status` has
+  // no account.
+  {
+    name: "account-reason-sign-out",
+    async run(wd, ctx) {
+      if (!ctx.fakeReason) throw new Error("needs the agents-reason flow's stand-in Reason");
+      await openSettingsPage(wd, "Account");
+      const row = ".settings-account-signout";
+      await wd.waitFor("the Sign out row", async () => (await textsOf(wd, `${row} button`))[0] === "Sign out", 20000);
+      await clickByText(wd, `${row} button`, "Sign out");
+      await wd.waitFor("the Sign out row gone", async () => (await wd.findAll(row)).length === 0, 20000);
+      const account = await wd.execute("return window.__TAURI_INTERNALS__.invoke('reason_account_status');", []);
+      if (account.email !== null) throw new Error(`still signed in to Reason as ${account.email}`);
     },
   },
   {

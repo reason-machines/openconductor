@@ -1,0 +1,88 @@
+(node:14543) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:14561) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tabs: All files, Changes with its count, Checks; each tab brings its own icons
+ok 1 - tabs: All files, Changes with its count, Checks; each tab brings its own icons
+  ---
+  duration_ms: 1490.582639
+  type: 'test'
+  ...
+# Subtest: Changes: sorted flat rows, compressed hierarchy, collapsing counts, filtering and scope options
+ok 2 - Changes: sorted flat rows, compressed hierarchy, collapsing counts, filtering and scope options
+  ---
+  duration_ms: 1547.386942
+  type: 'test'
+  ...
+# Subtest: Changes: external edits refresh without a Reload button
+ok 3 - Changes: external edits refresh without a Reload button
+  ---
+  duration_ms: 2997.708204
+  type: 'test'
+  ...
+# Subtest: All files: folders and type icons, chevron on hover, collapse, filter, and files open through Open in
+ok 4 - All files: folders and type icons, chevron on hover, collapse, filter, and files open through Open in
+  ---
+  duration_ms: 1409.018921
+  type: 'test'
+  ...
+# Subtest: New file: named in the folder last opened, written empty, then opened through Open in
+ok 5 - New file: named in the folder last opened, written empty, then opened through Open in
+  ---
+  duration_ms: 979.420841
+  type: 'test'
+  ...
+# Subtest: strip: Setup and Run under the list, Run's dashed empty state, chevron and ⌘J collapse it, + opens a terminal tab
+ok 6 - strip: Setup and Run under the list, Run's dashed empty state, chevron and ⌘J collapse it, + opens a terminal tab
+  ---
+  duration_ms: 1043.586985
+  type: 'test'
+  ...
+# Subtest: Add run script opens the repository's Scripts settings
+ok 7 - Add run script opens the repository's Scripts settings
+  ---
+  duration_ms: 636.250164
+  type: 'test'
+  ...
+# Subtest: Run with spotlight testing on and no run script offers Run Spotlight, which starts it
+ok 8 - Run with spotlight testing on and no run script offers Run Spotlight, which starts it
+  ---
+  duration_ms: 680.363653
+  type: 'test'
+  ...
+# (node:14566) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a chat tab's menu: Conductor's items in order, copies, rename, fork, close others
+ok 9 - a chat tab's menu: Conductor's items in order, copies, rename, fork, close others
+  ---
+  duration_ms: 5747.066328
+  type: 'test'
+  ...
+# Subtest: without the experimental setting the chat tab menu has no Fork to new tab
+ok 10 - without the experimental setting the chat tab menu has no Fork to new tab
+  ---
+  duration_ms: 796.851592
+  type: 'test'
+  ...
+# Subtest: a changed file's menu: View, Copy path, Copy relative path, Discard changes, with icons
+ok 11 - a changed file's menu: View, Copy path, Copy relative path, Discard changes, with icons
+  ---
+  duration_ms: 1153.288948
+  type: 'test'
+  ...
+# Subtest: the PR badge's menu opens the PR on each site and copies its link and number
+ok 12 - the PR badge's menu opens the PR on each site and copies its link and number
+  ---
+  duration_ms: 1096.224196
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11585.448209

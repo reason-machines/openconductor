@@ -466,3 +466,41 @@ async fn lists_each_workspaces_open_chat_tabs() {
     );
     assert_eq!(w.unread_chats[0].id, "app/oslo:review:1");
 }
+
+#[tokio::test]
+async fn lists_a_renamed_main_chat_title_only() {
+    let pool = pool().await;
+    record_repository(&pool, &repo("app")).await.unwrap();
+    for name in ["oslo", "kyiv"] {
+        finish_workspace(&pool, &ws("app", name), Some("main"), None)
+            .await
+            .unwrap();
+    }
+    use openconductor_db::sessions;
+    // "Rename chat" on oslo's main chat upserts its session row (db_open_chat_tab).
+    sessions::open_tab(
+        &pool,
+        "app/oslo",
+        "app/oslo",
+        "Login bug",
+        "2026-11-06T10:00:00.000Z",
+    )
+    .await
+    .unwrap();
+    // A main chat row with the schema default title was never renamed.
+    sessions::open_tab(
+        &pool,
+        "app/kyiv",
+        "app/kyiv",
+        "Untitled",
+        "2026-11-06T10:00:00.000Z",
+    )
+    .await
+    .unwrap();
+    let rows = list_workspaces(&pool).await.unwrap();
+    let title = |id: &str| rows.iter().find(|w| w.id == id).unwrap().chat_title.clone();
+    assert_eq!(title("app/oslo").as_deref(), Some("Login bug"));
+    assert_eq!(title("app/kyiv"), None);
+    // The main chat is not one of the extra tabs.
+    assert!(rows.iter().all(|w| w.chat_tabs.is_empty()));
+}

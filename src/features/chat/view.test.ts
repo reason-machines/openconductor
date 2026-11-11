@@ -4,6 +4,17 @@ import assert from "node:assert/strict";
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
 import { buildRows, isToolExpanded, type RowView } from "./view.ts";
+import { diffForSave, restoreEvents } from "./persist.ts";
+
+test("turn usage sums distinct result messages only, replayed upserts replace rather than add", () => {
+  const base = { sessionId: "s1", turnId: "t1", role: "assistant" as const, createdAt: "2026-11-05T10:00:00.000Z", blocks: [] };
+  const first = { ...base, id: "a1", usage: { inputTokens: 100, outputTokens: 20 } };
+  const second = { ...base, id: "a2", usage: { inputTokens: 200, outputTokens: 30 } };
+  const third = { ...base, turnId: "t2", id: "a3", usage: { outputTokens: 7 } };
+  const result = applyChatEvents(emptyTranscript("s1"), [first, second, first, third, second].map((message) => ({ type: "upsert", message })));
+  assert.ok(result.ok);
+  assert.deepEqual(buildRows(result.transcript).filter((r) => r.kind === "turn_end").map((r) => r.usage), [{ inputTokens: 300, outputTokens: 50 }, { outputTokens: 7 }]);
+});
 
 const msg = (id: string, role: ChatMessage["role"], blocks: Block[], extra: Partial<ChatMessage> = {}): ChatMessage => ({
   id,
@@ -25,6 +36,52 @@ function apply(events: ChatEvent[]): ChatTranscript {
   return r.transcript;
 }
 const kinds = (rows: RowView[]) => rows.map((r) => r.kind);
+
+const turnModels = (t: ChatTranscript) => buildRows(t).filter((r) => r.kind === "turn_end").map((r) => "model" in r ? r.model : undefined);
+
+test("turn attribution uses the first truthy assistant model, not a later assistant or another turn", () => {
+  const transcript = apply([
+    upsert(msg("u1", "user", [text("q")], { model: "requested" })),
+    upsert(msg("a0", "assistant", [], { model: "" })),
+    upsert(msg("a1", "assistant", [text("first")], { model: "reported-first" })),
+    upsert(msg("a2", "assistant", [text("last")], { model: "reported-later" })),
+    upsert(msg("u2", "user", [text("q2")], { turnId: "t2", model: "requested-next" })),
+    upsert(msg("a3", "assistant", [text("next")], { turnId: "t2", model: "reported-next" })),
+  ]);
+  assert.deepEqual(turnModels(transcript), ["reported-first", "reported-next"]);
+});
+
+test("turn attribution falls back only to its original user's snapshot, not steering, reports or system data", () => {
+  const transcript = apply([
+    upsert(msg("rep", "user", [text("report")], { model: "report-model", senderSessionId: "child" })),
+    upsert(msg("sys", "system", [text("notice")], { model: "system-model" })),
+    upsert(msg("u1", "user", [text("q")], { model: "original" })),
+    upsert(msg("steer", "user", [text("steer")], { model: "steering-model" })),
+    upsert(msg("a1", "assistant", [text("answer")])),
+  ]);
+  assert.deepEqual(turnModels(transcript), ["original"]);
+});
+
+test("missing historical models stay unknown, even when a later steering message has a model", () => {
+  const transcript = apply([
+    upsert(msg("u1", "user", [text("q")])),
+    upsert(msg("steer", "user", [text("steer")], { model: "later-selection" })),
+    upsert(msg("a1", "assistant", [text("answer")], { model: "" })),
+  ]);
+  assert.deepEqual(turnModels(transcript), [undefined]);
+});
+
+test("historical turn models survive the existing full-message save and restore boundary", () => {
+  const transcript = apply([
+    upsert(msg("u1", "user", [text("q")], { model: "requested" })),
+    upsert(msg("a1", "assistant", [text("answer")], { model: "reported" })),
+    upsert(msg("u2", "user", [], { turnId: "t2", model: "attachment-only-snapshot" })),
+    upsert(msg("a2", "assistant", [text("answer2")], { turnId: "t2" })),
+  ]);
+  const saved = diffForSave(null, transcript);
+  const restored = apply(restoreEvents("s1", saved.upserts.map((m) => m.fullMessage)));
+  assert.deepEqual(turnModels(restored), ["reported", "attachment-only-snapshot"]);
+});
 
 test("a streaming assistant message marks its last text part as streaming and has no footer yet", () => {
   const rows = buildRows(
@@ -111,7 +168,7 @@ test("a finished turn ends with a footer carrying its final text; a failed turn 
     status: "failed",
     error: "rate limited",
     finalText: "partial",
-    retryPrompt: "try this",
+    retryPrompt: { text: "try this" },
     canReset: false,
   });
 });

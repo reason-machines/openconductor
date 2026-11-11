@@ -19,7 +19,10 @@
   // The apps of Sven's Mac "sven m5 max" (checked 2026-11-05) besides Finder and Terminal.
   const INSTALLED_APPS = ["Cursor", "Visual Studio Code", "Zed", "Xcode", "Ghostty"];
   const ok = (stdout) => ({ code: 0, stdout, stderr: "" });
+  const XCODE_UNACCEPTED = "You have not agreed to the Xcode license agreements. Please run 'sudo xcodebuild -license' from within a Terminal window to review and agree to the Xcode and Apple SDKs license.\n";
   const fail = (stderr) => ({ code: 1, stdout: "", stderr });
+  // Keep this synthetic scenario after Conductor changes the route for a commit scope.
+  const commitHistory = new URLSearchParams(location.search).has("oc_commit_history");
 
   // A tiny fake git: answers the read-only commands Conductor runs on startup
   // and when opening a workspace, from window.__OC_SEED_DATA__[scenario].git.
@@ -35,6 +38,10 @@
     const diff = git.diffs[cwd];
 
     if (/pmset -g batt/.test(cmd)) return ok("Now drawing from 'AC Power'\n");
+    // ?oc_xcode_license=unaccepted: `xcodebuild -license check` fails the way an unaccepted license
+    // does, so Conductor's startup check (`HBr`) raises its "Xcode license is not accepted" toast.
+    if (/xcodebuild -license check/.test(cmd) && new URLSearchParams(location.search).get("oc_xcode_license") === "unaccepted")
+      return { code: 69, stdout: XCODE_UNACCEPTED, stderr: "" };
     // Conductor's installed-apps check (`Z_s`): one `test -d "/Applications/<App>.app" ... && echo "<id>"`
     // clause per catalog app. Answers as a Mac with INSTALLED_APPS in /Applications.
     if (/test -d "\/Applications\//.test(cmd) && /&& echo "/.test(cmd)) {
@@ -56,10 +63,16 @@
     if (/config .*--get/.test(cmd)) return fail("");
     if (/rev-parse --abbrev-ref HEAD|branch --show-current/.test(cmd) && wt) return ok(wt.branch + "\n");
     if (/rev-parse/.test(cmd)) return ok("2222222222222222222222222222222222222222\n");
-    const show = cmd.match(/git( -c [^ ]+)* show '?[0-9a-f]{7,40}:([^' ]+)'?/);
+    const commitFile = cmd.includes("abcdef1234567890abcdef1234567890abcdef12") ? "src/lib/auth.ts" : "src/lib/auth.test.ts";
+    if (commitHistory && /git( -c [^ ]+)* show/.test(cmd) && /--name-status|--numstat/.test(cmd)) {
+      const files = (diff?.files ?? []).filter((f) => f.path === commitFile);
+      return ok(files.map((f) => cmd.includes("--numstat") ? `${f.added}\t${f.removed}\t${f.path}` : `M\t${f.path}`).join("\n") + "\n");
+    }
+    const show = cmd.match(/git( -c [^ ]+)* show '?([0-9a-f]{7,40})(\^?):([^' ]+)'?/);
     if (show) {
-      const base = diff && diff.base && diff.base[show[2]];
-      return base !== undefined ? ok(base) : fail(`fatal: path '${show[2]}' does not exist`);
+      const base = diff && diff.base && diff.base[show[4]];
+      const current = (window.__OC_SEED_DATA__ || {}).populated?.vfs?.[`${cwd}/${show[4]}`];
+      return base !== undefined ? ok(commitHistory && !show[3] && current !== undefined ? current : base) : fail(`fatal: path '${show[4]}' does not exist`);
     }
     if (/merge-base/.test(cmd)) return ok("1111111111111111111111111111111111111111\n");
     if (/diff .*--numstat/.test(cmd)) return ok(diff ? diff.files.map((f) => `${f.added}\t${f.removed}\t${f.path}`).join("\n") + "\n" : "");
@@ -67,7 +80,7 @@
     if (/diff .*--name-only/.test(cmd)) return ok(diff ? diff.files.map((f) => f.path).join("\n") + "\n" : "");
     if (/git( -c [^ ]+)* diff/.test(cmd)) return ok(diff ? diff.patch : "");
     if (/status --porcelain/.test(cmd)) return ok(diff ? diff.files.map((f) => ` M ${f.path}`).join("\n") + "\n" : "");
-    if (/git( -c [^ ]+)* log/.test(cmd)) return ok("");
+    if (/git( -c [^ ]+)* log/.test(cmd)) return ok(commitHistory ? "abcdef1234567890abcdef1234567890abcdef12|Fix expired session redirect|Ada Demo|ada@example.com|1793448000\n1234567890abcdef1234567890abcdef12345678|Add session redirect coverage|Ada Demo|ada@example.com|1793361600\n" : "");
     if (/rev-list --count/.test(cmd)) return ok("0\n");
     return ok("");
   }
@@ -100,6 +113,10 @@
         console.warn(`[oc-mock] refused native_http_fetch ${r.method} ${r.url}`);
         throw "network disabled in the screenshot harness";
       },
+      // Conductor runs its startup tasks (`FTa`: repo dirs, the Xcode license check `HBr`, binary
+      // verification, ...) only once this answers false; the harness leaves it null unless a capture
+      // opts in with ?oc_xcode_license=, so other reference states keep their startup quiet.
+      is_running_under_rosetta: () => (new URLSearchParams(location.search).has("oc_xcode_license") ? false : null),
       execute_shell_command: shell,
       execute_shell_command_cancellable: shell,
       "plugin:shell|execute": shell,

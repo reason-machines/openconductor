@@ -39,6 +39,8 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -76,7 +78,7 @@ const fake = join(repoRoot, "tools/e2e/fake_claude.py");
 writeFileSync(join(bin, "claude"), `#!/bin/sh\nexec python3 "${fake}" "$@"\n`);
 chmodSync(join(bin, "claude"), 0o755);
 
-const env = { ...process.env, HOME: home, SHELL: "/bin/bash" };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), SHELL: "/bin/bash" };
 for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME", "CLAUDE_CONFIG_DIR", "CLAUDE_CODE_OAUTH_TOKEN", "ANTHROPIC_AUTH_TOKEN", "ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL"]) delete env[k];
 // Left in the user's shell: only the API key mode may hand Claude Code a key, and it must be the stored one.
 env.ANTHROPIC_API_KEY = "sk-ant-e2e-left-in-the-shell";
@@ -87,6 +89,7 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
+const startup = new WebDriver(base);
 let sessionUrl = null;
 
 async function wd(method, path, body, timeoutMs = 45000) {
@@ -150,7 +153,7 @@ const signInNotice = () => run("const n = document.querySelector('[data-testid=\
 const chip = () => run("return document.querySelector(\"[data-testid='composer-model-button']\")?.textContent ?? null;");
 
 async function send(text) {
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
@@ -196,6 +199,7 @@ try {
     capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } },
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
+  startup.sessionId = session.sessionId;
 
   await waitFor("the app to load", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
   const seeded = await runAsync(
@@ -210,6 +214,7 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  await finishStartup(startup);
   await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   const claudeSettings = () =>

@@ -3,7 +3,9 @@
 // city workspaces) so our screens line up with evidence/screens/sidebar--*.png.
 // Written into OpenConductor's localStorage app state before the app boots.
 // Fields our current model does not know (unread, prTitle, updatedAt) are ignored
-// by older builds, so the same seed captures main and a branch.
+// by older builds, so the same seed captures main and a branch. An unread
+// workspace also carries its main chat in `unreadChats` (src/state/chatUnread.ts),
+// as the reference's unread rows do (Go to next unread is listed while one is).
 (function () {
   const now = Date.now();
   const ago = (m) => now - m * 60000;
@@ -20,6 +22,7 @@
     id, name, path: `/Users/demo/code/${name}`, remote, defaultBranch: "main", collapsed: true,
     workspaces: ws.filter((w) => w[1] === id).map(([wid, , dir, branch, m, unread, prTitle, [added, removed]]) => ({
       id: wid, name: dir, branch, status: "idle", diff: { added, removed }, createdAt: ago(m + 60), updatedAt: ago(m), unread, prTitle: prTitle ?? undefined,
+      unreadChats: unread ? [{ id: wid, at: ago(m) }] : undefined,
     })),
   });
   const state = {

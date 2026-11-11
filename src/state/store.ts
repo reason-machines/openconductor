@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import type { AppState, Repo, Selection, Workspace } from "./types";
 import type { WorkspaceStatusValue } from "./workspaceStatus";
@@ -9,6 +9,8 @@ import { inTauri } from "../backend";
 import { orderRepos, setRepoHidden } from "./repoOrder";
 import { keepPr, parsePrefs, prefsOf, reposFromDb, restoreChatTabsOf, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted";
 import { sidebarWrite } from "./sidebarPersist";
+import { collapseSidebarGroups, setStatusGroupCollapsed, toggleRepoCollapsed } from "./sidebarOrder";
+import type { SidebarGroupBy } from "../home/sidebarGroupBy";
 import { withActivity } from "./nextUnread";
 import { withChatUnread, withWorkspaceRead } from "./chatUnread";
 import { assignWorkspace, createSection, deleteSection, editSection, nextUpdatedAt, reorderSection, sectionOf, sectionsFromDb, withoutWorkspace, type DbNavSection, type NavSection } from "./navigationSections";
@@ -17,6 +19,7 @@ import { archiveWorkspace, deleteWorkspace, emitArchiveEvent, startArchive, star
 import { scriptsConfig, startSetup } from "../scripts/api";
 import { workspaceRef } from "../scripts/model";
 import { unwatchSetup, watchSetup } from "../workspace/setupWatch";
+import { useAppPrefs } from "../settings/appPrefs";
 
 /** Browser (vite dev, previews): the whole shell state lives here. */
 const STORAGE_KEY = "openconductor.shell.v1";
@@ -29,6 +32,8 @@ export type Action =
   | { type: "addRepo"; repo: Omit<Repo, "id" | "workspaces">; id?: string }
   | { type: "removeRepo"; repoId: string }
   | { type: "toggleRepo"; repoId: string }
+  | { type: "setStatusGroupCollapsed"; status: WorkspaceStatusValue; collapsed: boolean }
+  | { type: "collapseSidebarGroups"; groupBy: SidebarGroupBy }
   | { type: "newWorkspace"; repoId: string }
   | {
       type: "addWorkspace";
@@ -44,6 +49,8 @@ export type Action =
    * "Stop agents and archive".
    */
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string; mode?: ArchiveMode; stopRunningAgents?: boolean }
+  /** "Rename chat" on the workspace's main chat tab. */
+  | { type: "setChatTitle"; repoId: string; workspaceId: string; title: string }
   /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). `prDescription` and `pr` left out keep what the row has. */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
   /** Open an archived workspace from the archived list: read-only, with Unarchive. */
@@ -132,20 +139,24 @@ export function reducer(state: AppState, action: Action): AppState {
       return { ...state, repos, selection: sel };
     }
     case "toggleRepo":
-      return { ...state, repos: state.repos.map((r) => (r.id === action.repoId ? { ...r, collapsed: !r.collapsed } : r)) };
+      return { ...state, repos: toggleRepoCollapsed(state, action.repoId) };
+    case "setStatusGroupCollapsed":
+      return setStatusGroupCollapsed(state, action.status, action.collapsed);
+    case "collapseSidebarGroups":
+      return collapseSidebarGroups(state, action.groupBy);
     case "newWorkspace": {
       let selection: Selection = state.selection;
       const repos = state.repos.map((r) => {
         if (r.id !== action.repoId) return r;
         const ws = makeWorkspace(r);
         selection = { kind: "workspace", repoId: r.id, workspaceId: ws.id };
-        return { ...r, collapsed: false, workspaces: [...r.workspaces, ws] };
+        return { ...r, workspaces: [...r.workspaces, ws] };
       });
       return { ...state, repos, selection };
     }
     case "addWorkspace": {
       const ws: Workspace = { ...action.workspace, status: "idle", diff: { added: 0, removed: 0 }, createdAt: Date.now() };
-      const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, collapsed: false, workspaces: [...r.workspaces, ws] } : r));
+      const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: [...r.workspaces, ws] } : r));
       return { ...state, repos, selection: { kind: "workspace", repoId: action.repoId, workspaceId: ws.id } };
     }
     case "renameWorkspace": {
@@ -161,6 +172,11 @@ export function reducer(state: AppState, action: Action): AppState {
               ...(action.userSet && action.branch !== undefined ? { userSetBranchName: true } : {}),
             };
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(rename) } : r));
+      return { ...state, repos };
+    }
+    case "setChatTitle": {
+      const set = (w: Workspace): Workspace => (w.id === action.workspaceId ? { ...w, chatTitle: action.title } : w);
+      const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));
       return { ...state, repos };
     }
     case "setWorkspacePr": {
@@ -215,10 +231,11 @@ export function reducer(state: AppState, action: Action): AppState {
     case "reset":
       return action.state;
     case "hydrate": {
-      const collapsed = new Set(state.repos.filter((r) => r.collapsed).map((r) => r.id));
+      // Folded or unfolded by hand (the rest follow the open workspace, see isRepoCollapsed).
+      const toggled = new Map(state.repos.flatMap((r) => (r.collapsed === undefined ? [] : [[r.id, r.collapsed] as const])));
       // conductor.db has no PR or agent activity: keep what the open workspaces reported.
       const live = new Map(state.repos.flatMap((r) => r.workspaces).map((w) => [w.id, w]));
-      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed || collapsed.has(r.id) || undefined, workspaces: r.workspaces.map((w) => keepPr(w, live.get(w.id))) }));
+      const repos = action.repos.map((r) => ({ ...r, collapsed: r.collapsed ?? toggled.get(r.id), workspaces: r.workspaces.map((w) => keepPr(w, live.get(w.id))) }));
       const viewingArchived = state.selection.kind === "workspace" && state.archivedOpen?.workspace.id === state.selection.workspaceId;
       return { ...state, repos, selection: viewingArchived ? state.selection : validSelection(state.selection, repos) };
     }
@@ -315,11 +332,12 @@ function load(): AppState {
     return s;
   }
   if (inTauri()) {
-    // Repos arrive from conductor.db after mount; collapsed ids wait on placeholder rows.
+    // Repos arrive from conductor.db after mount; groups folded or unfolded by hand wait on placeholder rows.
     // First run after the switch: keep the selection and layout the old shell state had.
     const prefs = parsePrefs(localStorage.getItem(PREFS_KEY) ?? legacyPrefs(localStorage.getItem(STORAGE_KEY)));
-    const repos = prefs.collapsed.map((id) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed: true }));
-    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible }, window.location.pathname, window.location.search);
+    const placeholder = (id: string, collapsed: boolean) => ({ id, name: "", path: "", defaultBranch: "", workspaces: [], collapsed });
+    const repos = [...prefs.collapsed.map((id) => placeholder(id, true)), ...prefs.expanded.map((id) => placeholder(id, false))];
+    return startSelection({ repos, selection: prefs.selection, sidebarVisible: prefs.sidebarVisible, sidebarStatusCollapsed: prefs.sidebarStatusCollapsed }, window.location.pathname, window.location.search);
   }
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -357,20 +375,39 @@ export async function loadSectionsFromDb(): Promise<{ sections: NavSection[]; up
   return { sections: sectionsFromDb(layout?.sections ?? []), updatedAt: layout?.updatedAt ?? 0 };
 }
 
+export type StoreStartup = "loading" | "ready" | "error";
+
 export function useAppStore() {
   const [state, rawDispatch] = useReducer(reducer, undefined, load);
   const demo = new URLSearchParams(window.location.search).get("demo") === "1";
   const desktop = inTauri() && !demo;
+  const [startup, setStartup] = useState<StoreStartup>(desktop ? "loading" : "ready");
+  const sectionsWrittenAt = useRef<number | undefined>(undefined);
   useEffect(() => {
     if (!desktop) return;
-    loadReposFromDb().then(
-      (repos) => rawDispatch({ type: "hydrate", repos }),
-      (err) => console.error("conductor.db: could not list repositories", err),
-    );
+    let current = true;
+    const reads = [
+      loadReposFromDb().then((repos) => {
+        if (current) rawDispatch({ type: "hydrate", repos });
+      }),
+      loadSectionsFromDb().then(({ sections, updatedAt }) => {
+        if (!current) return;
+        sectionsWrittenAt.current = updatedAt;
+        rawDispatch({ type: "hydrateSections", sections, updatedAt });
+      }),
+    ];
+    void Promise.allSettled(reads).then((results) => {
+      if (!current) return;
+      const sources = ["repositories", "sidebar sections"];
+      results.forEach((result, i) => {
+        if (result.status === "rejected") console.error(`conductor.db: could not read ${sources[i]}`, result.reason);
+      });
+      setStartup(results.every((result) => result.status === "fulfilled") ? "ready" : "error");
+    });
+    return () => { current = false; };
   }, [desktop]);
-  // Sections: read once, then write the whole layout whenever an edit restamps it
+  // Sections: write the whole layout whenever an edit restamps it
   // (Conductor's local backend `WIr` does the same through `tve`).
-  const sectionsWrittenAt = useRef<number | undefined>(undefined);
   const reloadSections = useCallback(() => {
     loadSectionsFromDb().then(
       ({ sections, updatedAt }) => {
@@ -380,9 +417,6 @@ export function useAppStore() {
       (err) => console.error("conductor.db: could not read sidebar sections", err),
     );
   }, []);
-  useEffect(() => {
-    if (desktop) reloadSections();
-  }, [desktop, reloadSections]);
   useEffect(() => {
     const at = state.sectionsUpdatedAt;
     if (!desktop || at === undefined || at === sectionsWrittenAt.current) return;
@@ -404,8 +438,7 @@ export function useAppStore() {
     else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, demo, desktop]);
   // Navigating to /all-workspaces while the app runs (history navigation)
-  // shows the Home list, as loading that path does. Sidebar Home opens the
-  // wordmark screen instead, so this is the in-session route to the list.
+  // shows the Home list, as loading that path or selecting sidebar Home does.
   useEffect(() => {
     const onPop = () => {
       if (window.location.pathname === "/all-workspaces") rawDispatch({ type: "select", selection: { kind: "home" } });
@@ -500,7 +533,9 @@ export function useAppStore() {
     },
     [desktop],
   );
-  return [state, dispatch] as const;
+  const { sidebar_sort_by: sidebarSort, sidebar_group_by: sidebarGroupBy, sidebar_repo_filter: sidebarRepoFilter } = useAppPrefs();
+  const viewState = useMemo(() => ({ ...state, sidebarSort, sidebarGroupBy, sidebarRepoFilter }), [state, sidebarSort, sidebarGroupBy, sidebarRepoFilter]);
+  return [viewState, dispatch, startup] as const;
 }
 
 /** Conductor reruns the setup script after an unarchive; a failure shows through the setup watch. */

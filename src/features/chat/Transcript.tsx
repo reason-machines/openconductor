@@ -5,18 +5,28 @@
 // markdown) and, once finished, its footer.
 
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
-import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { usePresence } from "../../components/motion/usePresence.ts";
+import { ChatSignInCard } from "./ChatSignInCard.tsx";
+import { Fragment, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { DropdownMenu, MenuItem } from "../../components/menu/ContextMenu";
+import { EllipsisIcon, MessageSquarePlusIcon, SplitIcon, Undo2Icon } from "../../components/menu/menuIcons";
+import { turnMenuItems, TURN_MENU_TOOLTIP, TURN_MENU_TRIGGER_LABEL, type TurnMenuItem } from "./turnMenu.ts";
+import { LinkMenuNotify, LinkWithMenu } from "./LinkMenu.tsx";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
-import { Markdown } from "./markdown.ts";
+import { Markdown, type MarkdownOptions } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
-import { turnTime } from "./turnTime.ts";
+import { turnDayClock, turnTime } from "./turnTime.ts";
+import { TurnDetails } from "./TurnDetails.tsx";
+import { turnAgentLabel } from "./fork.ts";
 import { openUrl } from "../../backend.ts";
 import type { ChatAgentId } from "./agentChoice.ts";
-import { isSignInFailure, signInCopy } from "./agentSignIn.ts";
-import { openAgentSettings } from "./ChatModelPicker.tsx";
+import { isSignInFailure } from "./agentSignIn.ts";
+import { thinkingChipText } from "./thinkingChip.ts";
+import { SentUserContent } from "./SentUserContent.tsx";
+import { UserText } from "./UserText.tsx";
+import type { UserPrompt } from "./userContent.ts";
+import { userMessageCopyText } from "./userMessageCopy.ts";
 import "./chat.css";
 
 export interface TranscriptProps {
@@ -26,7 +36,7 @@ export interface TranscriptProps {
   /** "Don't collapse tool calls" setting: summary rows stay open. */
   dontCollapseToolCalls?: boolean;
   /** Sends a failed or cancelled turn's prompt again. */
-  onRetry?: (prompt: string, turnId: string) => void;
+  onRetry?: (prompt: UserPrompt, turnId: string) => void;
   /** Opens "Reset chat?" for a turn that can be reset. */
   onResetChat?: (turnId: string) => void;
   /** "Fork to new tab" in every finished turn's More actions menu. */
@@ -35,7 +45,7 @@ export interface TranscriptProps {
   onForkToNewWorkspace?: (turnId: string) => void;
   /** The fork items are shown but disabled, e.g. while a fork is being made. */
   forkDisabled?: boolean;
-  /** The footer hover's first line, "Opus 5.5 via Reason" (Conductor's `kDo`). */
+  /** Agent name only; the footer combines it with the turn's historical message model. */
   turnAgent?: string;
   /** The chat's agent: a turn that failed because it is not signed in links to its Settings › Agents tab. */
   chatAgent?: ChatAgentId;
@@ -49,6 +59,8 @@ export interface TranscriptProps {
   onOpenFile?: (path: string) => void;
   /** Clock for the footer's time of day (tests pin it). */
   now?: () => number;
+  /** Toasts, e.g. a markdown link's "Copy link address" (LinkMenu.tsx). */
+  notify?: MarkdownOptions["notify"];
 }
 
 export function Transcript({
@@ -67,7 +79,10 @@ export function Transcript({
   forkDisabled = false,
   turnAgent,
   chatAgent,
+  notify,
 }: TranscriptProps) {
+  const clock = useMemo(() => turnDayClock(now), [now]);
+  const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const turns = useMemo(() => groupTurns(rows), [rows]);
   const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
@@ -77,6 +92,7 @@ export function Transcript({
     isOpen: (id, defaultOpen = false) => isToolExpanded(id, toggled, expandToolsByDefault || defaultOpen),
     onToggle: toggleTool,
     summaries: {
+      canCollapse: (running) => canCollapse(running, dontCollapseToolCalls),
       isOpen: (id, running) => isSummaryOpen(canCollapse(running, dontCollapseToolCalls), summaries.get(id)),
       toggle: (id, open) => setSummaries((prev) => new Map(prev).set(id, open ? "collapsed" : "expanded")),
     },
@@ -86,30 +102,33 @@ export function Transcript({
     turnFooter,
     workspacePath,
     onOpenFile,
-    now,
+    now: () => day,
     onForkToNewTab,
     onForkToNewWorkspace,
     forkDisabled,
     turnAgent,
     chatAgent,
+    notify,
   };
 
   return (
-    <div className="transcript">
-      {turns.map((turn) => {
-        const footer = turn.rows.find((r): r is TurnEndRow => r.kind === "turn_end");
-        return (
-          <div key={turn.key} className="oc-turn" data-turn-id={turn.turnId}>
-            <div className="oc-turn-body">
-              <div className="oc-turn-items">
-                {turn.rows.map((row) => (row.kind === "turn_end" ? null : <Row key={row.key} row={row} ctx={ctx} />))}
+    <LinkMenuNotify.Provider value={notify}>
+      <div className="transcript">
+        {turns.map((turn) => {
+          const footer = turn.rows.find((r): r is TurnEndRow => r.kind === "turn_end");
+          return (
+            <div key={turn.key} className="oc-turn" data-turn-id={turn.turnId}>
+              <div className="oc-turn-body">
+                <div className="oc-turn-items">
+                  {turn.rows.map((row) => (row.kind === "turn_end" ? null : <Row key={row.key} row={row} ctx={ctx} />))}
+                </div>
+                {footer ? <TurnFooter row={footer} ctx={ctx} /> : null}
               </div>
-              {footer ? <TurnFooter row={footer} ctx={ctx} /> : null}
             </div>
-          </div>
-        );
-      })}
-    </div>
+          );
+        })}
+      </div>
+    </LinkMenuNotify.Provider>
   );
 }
 
@@ -140,16 +159,18 @@ interface RowContext {
   isOpen: (toolId: string, defaultOpen?: boolean) => boolean;
   onToggle: (toolId: string, defaultOpen?: boolean) => void;
   summaries: {
+    canCollapse: (turnRunning: boolean) => boolean;
     isOpen: (summaryId: string, turnRunning: boolean) => boolean;
     toggle: (summaryId: string, open: boolean) => void;
   };
-  onRetry?: (prompt: string, turnId: string) => void;
+  onRetry?: (prompt: UserPrompt, turnId: string) => void;
   onResetChat?: (turnId: string) => void;
   resetDisabled: boolean;
   turnFooter?: (turnId: string) => ReactNode;
   workspacePath?: string;
   onOpenFile?: (path: string) => void;
   now: () => number;
+  notify?: TranscriptProps["notify"];
   onForkToNewTab?: (turnId: string) => void;
   onForkToNewWorkspace?: (turnId: string) => void;
   forkDisabled: boolean;
@@ -164,8 +185,8 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
         <div className="chat-msg chat-user oc-msg-user" data-message-role="user">
           <div className="oc-user-col">
             <div className="chat-bubble oc-bubble">
-              <div className="oc-user-text">{row.text}</div>
-              <MessageActions text={row.text} />
+              <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : <UserText text={row.text} />}</div>
+              <MessageActions text={userMessageCopyText(row.message)} />
             </div>
             {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
           </div>
@@ -185,20 +206,18 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
   }
 }
 
-/** Conductor's turn footer: duration · end time, copy and More actions, then the turn's changed files. */
+/** Conductor's turn footer: duration · end time, "Copy final message" and "Show message actions", then the turn's changed files. */
 function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
   const { onRetry, onResetChat, resetDisabled, turnFooter, onForkToNewTab, onForkToNewWorkspace, forkDisabled, turnAgent } = ctx;
   const fork = onForkToNewTab ? () => onForkToNewTab(row.turnId) : undefined;
   const forkWorkspace = onForkToNewWorkspace ? () => onForkToNewWorkspace(row.turnId) : undefined;
   const reset = row.canReset && onResetChat ? () => onResetChat(row.turnId) : undefined;
+  const actions: Partial<Record<TurnMenuItem["id"], () => void>> = { "fork-tab": fork, "fork-workspace": forkWorkspace, "reset-chat": reset };
+  const menuItems = turnMenuItems({ canForkToTab: !!fork, canForkToWorkspace: !!forkWorkspace, canReset: !!reset, forkPending: forkDisabled, resetBlocked: resetDisabled });
   const when = turnTime(row.startedAt, row.endedAt, ctx.now(), "en-US");
   return (
     <div className={`chat-turn-end oc-turn-footer status-${row.status ?? "unknown"}`} data-turn-id={row.turnId}>
-      {when ? (
-        <span className="chat-turn-time oc-turn-time" title={turnAgent ? `${turnAgent}\n${when.range}` : when.range}>
-          {when.label}
-        </span>
-      ) : null}
+      {when ? <TurnDetails when={when} agent={turnAgent ? turnAgentLabel(row.model, turnAgent) : undefined} usage={row.usage} /> : null}
       {row.status === "failed" ? <span className="chat-turn-error">{row.error ?? "The turn failed."}</span> : null}
       {row.status === "cancelled" ? <span className="chat-badge">Interrupted by user</span> : null}
       <span className="chat-turn-actions">
@@ -208,140 +227,55 @@ function TurnFooter({ row, ctx }: { row: TurnEndRow; ctx: RowContext }) {
             Retry
           </button>
         ) : null}
-        {fork || forkWorkspace || reset ? (
-          <TurnMenu onFork={fork} onForkWorkspace={forkWorkspace} forkDisabled={forkDisabled} onReset={reset} resetDisabled={resetDisabled} />
-        ) : null}
+        {menuItems.length > 0 ? <TurnMenu items={menuItems} onSelect={(id) => actions[id]?.()} /> : null}
       </span>
       {turnFooter?.(row.turnId)}
-      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <SignInNotice agent={ctx.chatAgent} /> : null}
+      {row.status === "failed" && ctx.chatAgent && isSignInFailure(ctx.chatAgent, row.error) ? <ChatSignInCard agent={ctx.chatAgent} onSignedIn={row.retryPrompt && onRetry ? () => onRetry(row.retryPrompt!, row.turnId) : undefined} /> : null}
     </div>
   );
 }
 
-/** "Authentication required" under a turn its agent refused for want of a login, with a link to that agent's tab. */
-function SignInNotice({ agent }: { agent: ChatAgentId }) {
-  const copy = signInCopy(agent);
-  return (
-    <div className="chat-sign-in" data-testid="chat-sign-in" data-agent={agent}>
-      <span className="chat-sign-in-badge">{copy.badge}</span>
-      <p>{copy.text}</p>
-      <button type="button" className="chat-sign-in-open" onClick={() => openAgentSettings(agent)}>
-        {copy.action}
-      </button>
-    </div>
-  );
-}
+const TURN_MENU_ICONS: Record<TurnMenuItem["icon"], (p: { className?: string }) => JSX.Element> = {
+  "message-square-plus": MessageSquarePlusIcon,
+  split: SplitIcon,
+  "undo-2": Undo2Icon,
+};
 
 /**
- * Conductor's turn footer "More actions" menu: "Fork to new tab" and "Fork to
- * new workspace" on every turn, "Reset chat" on turns that can be reset.
+ * Conductor's turn footer "Show message actions" menu (turnMenu.ts): a 20px ellipsis
+ * button with the tooltip "More actions" that opens a dropdown under it.
  */
-function TurnMenu({
-  onFork,
-  onForkWorkspace,
-  forkDisabled,
-  onReset,
-  resetDisabled,
-}: {
-  onFork?: () => void;
-  onForkWorkspace?: () => void;
-  forkDisabled: boolean;
-  onReset?: () => void;
-  resetDisabled: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  const menu = usePresence(open);
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    if (!open) return;
-    const close = (e: MouseEvent) => ref.current?.contains(e.target as Node) || setOpen(false);
-    document.addEventListener("mousedown", close);
-    return () => document.removeEventListener("mousedown", close);
-  }, [open]);
+function TurnMenu({ items, onSelect }: { items: TurnMenuItem[]; onSelect: (id: TurnMenuItem["id"]) => void }) {
+  const [anchor, setAnchor] = useState<DOMRect | null>(null);
+  const open = anchor !== null;
   return (
-    <span className="chat-turn-menu" ref={ref} onKeyDown={(e) => e.key === "Escape" && setOpen(false)}>
-      <Tooltip content="More actions">
-        <button type="button" className="oc-icon-action" aria-label="More actions" aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-          <Lucide name="ellipsis" className="oc-icon-action-svg" />
+    <>
+      <Tooltip content={TURN_MENU_TOOLTIP}>
+        <button
+          type="button"
+          className="oc-icon-action oc-turn-menu-trigger"
+          aria-label={TURN_MENU_TRIGGER_LABEL}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          data-popup-open={open || undefined}
+          onClick={(e) => setAnchor(open ? null : e.currentTarget.getBoundingClientRect())}
+        >
+          <EllipsisIcon className="oc-icon-action-svg" />
         </button>
       </Tooltip>
-      {menu.mounted ? (
-        <div className="chat-menu" role="menu" data-motion="popup" {...menu.attrs}>
-          {onFork ? (
-            <button
-              type="button"
-              role="menuitem"
-              className="chat-menu-item"
-              disabled={forkDisabled}
-              onClick={() => {
-                setOpen(false);
-                onFork();
-              }}
-            >
-              <ForkIcon /> Fork to new tab
-            </button>
-          ) : null}
-          {onForkWorkspace ? (
-            <button
-              type="button"
-              role="menuitem"
-              className="chat-menu-item"
-              disabled={forkDisabled}
-              onClick={() => {
-                setOpen(false);
-                onForkWorkspace();
-              }}
-            >
-              <WorkspaceForkIcon /> Fork to new workspace
-            </button>
-          ) : null}
-          {onReset ? (
-            <button
-              type="button"
-              role="menuitem"
-              className="chat-menu-item"
-              data-action="reset-chat"
-              disabled={resetDisabled}
-              onClick={() => {
-                setOpen(false);
-                onReset();
-              }}
-            >
-              <ResetIcon /> Reset chat
-            </button>
-          ) : null}
-        </div>
+      {anchor ? (
+        <DropdownMenu anchor={anchor} label={TURN_MENU_TRIGGER_LABEL} className="cm-turn-menu" onClose={() => setAnchor(null)}>
+          {items.map((item) => {
+            const Icon = TURN_MENU_ICONS[item.icon];
+            return (
+              <MenuItem key={item.id} icon={<Icon />} disabled={item.disabled} onSelect={() => onSelect(item.id)}>
+                {item.label}
+              </MenuItem>
+            );
+          })}
+        </DropdownMenu>
       ) : null}
-    </span>
-  );
-}
-
-function ForkIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <circle cx="4" cy="3" r="1.5" />
-      <circle cx="12" cy="3" r="1.5" />
-      <circle cx="8" cy="13" r="1.5" />
-      <path d="M4 4.5v1.5a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.5M8 8v3.5" />
-    </svg>
-  );
-}
-
-function WorkspaceForkIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M1.75 4.25a1 1 0 0 1 1-1h3l1.5 1.5h5.5a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1z" />
-      <path d="M8 7.25v3.5M6.25 9h3.5" />
-    </svg>
-  );
-}
-
-function ResetIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9" />
-      <path d="M2.5 2.5v3h3" />
-    </svg>
+    </>
   );
 }
 
@@ -351,6 +285,7 @@ function reportLabel(origin: ReportOrigin): string {
 
 /** A turn's agent output; its items sit directly in the turn's item list, as Conductor's do. */
 function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
+  const collapsible = ctx.summaries.canCollapse(block.running);
   return (
     <>
       {block.empty && block.streaming ? (
@@ -359,12 +294,12 @@ function Agent({ block, ctx }: { block: AgentBlock; ctx: RowContext }) {
         </div>
       ) : null}
       {block.items.map((item) => {
-        if (item.kind === "part") return <Part key={item.key} part={item.part} preview={item.preview === true} ctx={ctx} />;
+        if (item.kind === "part") return <Part key={item.key} partKey={item.key} part={item.part} preview={item.preview === true} ctx={ctx} />;
         const open = ctx.summaries.isOpen(item.summary.id, block.running);
         return (
           <Fragment key={item.summary.id}>
-            <SummaryRow summary={item.summary} open={open} onToggle={block.running ? undefined : () => ctx.summaries.toggle(item.summary.id, open)} />
-            {open ? item.parts.map((p) => <Part key={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
+            {collapsible ? <SummaryRow summary={item.summary} open={open} onToggle={() => ctx.summaries.toggle(item.summary.id, open)} /> : null}
+            {open ? item.parts.map((p) => <Part key={p.key} partKey={p.key} part={p.part} group={item.summary.id} ctx={ctx} />) : null}
           </Fragment>
         );
       })}
@@ -394,7 +329,7 @@ function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: b
 }
 
 /** `preview`: the turn's final text; Conductor mutes every other text (`ROo` `muted: !isPreviewMessage`). */
-function Part({ part, preview = false, group, ctx }: { part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
+function Part({ partKey, part, preview = false, group, ctx }: { partKey: string; part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
   switch (part.kind) {
     case "text":
       return (
@@ -403,17 +338,19 @@ function Part({ part, preview = false, group, ctx }: { part: PartView; preview?:
             <div className="oc-text-wrap">
               <Markdown
                 text={part.text}
+                notify={ctx.notify}
                 className={`oc-prose chat-text${preview ? "" : " muted"}${part.streaming ? " is-streaming" : ""}`}
                 onOpenLink={(href) => void openUrl(href)}
                 workspacePath={ctx.workspacePath}
                 onOpenFile={ctx.onOpenFile}
+                Link={LinkWithMenu}
               />
             </div>
           </div>
         </div>
       );
     case "thinking":
-      return <ThinkingRow id={`thinking:${part.text.slice(0, 32)}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
+      return <ThinkingRow id={`thinking:${partKey}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
     case "tool": {
       const { call } = part;
       return (
@@ -426,6 +363,10 @@ function Part({ part, preview = false, group, ctx }: { part: PartView; preview?:
             isError={call.status === "error"}
             open={ctx.isOpen(call.id, opensByDefault(call.tool))}
             onToggle={() => ctx.onToggle(call.id, opensByDefault(call.tool))}
+            todoRows={call.tool.name === "TodoWrite" ? {
+              completed: { open: ctx.isOpen(`${call.id}-completed`), onToggle: () => ctx.onToggle(`${call.id}-completed`) },
+              started: { open: ctx.isOpen(`${call.id}-started`), onToggle: () => ctx.onToggle(`${call.id}-started`) },
+            } : undefined}
             workspacePath={ctx.workspacePath}
             onOpenFile={ctx.onOpenFile}
           />
@@ -456,14 +397,19 @@ function ThinkingRow({ id, text, streaming, group, ctx }: { id: string; text: st
             </div>
             {!open ? (
               <div className="oc-tool-right">
-                <span className="oc-code-chip sans">{text.trim()}</span>
+                <span className="oc-code-chip sans">{thinkingChipText(text)}</span>
               </div>
             ) : null}
           </div>
         </div>
         {open ? (
           <div className="oc-tool-content plain">
-            <Markdown text={text} className={`oc-prose muted${streaming ? " is-streaming" : ""}`} />
+            <Markdown
+              text={text}
+              className={`oc-prose muted${streaming ? " is-streaming" : ""}`}
+              onOpenLink={(href) => void openUrl(href)}
+              Link={LinkWithMenu}
+            />
           </div>
         ) : null}
       </div>
@@ -488,7 +434,8 @@ function CopyButton({ text, label }: { text: string; label: string }) {
     } catch {
       setState("failed");
     }
-    setTimeout(() => setState("idle"), 1500);
+    // Conductor's SimpleCopyButton (`t0`) shows the check and "Copied!" for 2s.
+    setTimeout(() => setState("idle"), 2000);
   }
   const title = state === "copied" ? "Copied!" : state === "failed" ? "Couldn't copy" : label;
   return (

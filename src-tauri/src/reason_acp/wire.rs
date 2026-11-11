@@ -17,6 +17,19 @@ pub fn event_json(chat: &str, ev: &ProviderEvent) -> Value {
             json!({ "type": "sessionStarted", "sessionId": session_id })
         }
         ProviderEvent::TurnEnded(end) => json!({ "type": "turnEnded", "end": turn_end_json(end) }),
+        ProviderEvent::Usage {
+            input_tokens,
+            output_tokens,
+        } => {
+            let mut usage = json!({});
+            if let Some(tokens) = input_tokens {
+                usage["inputTokens"] = json!(tokens);
+            }
+            if let Some(tokens) = output_tokens {
+                usage["outputTokens"] = json!(tokens);
+            }
+            json!({ "type": "usage", "usage": usage })
+        }
         ProviderEvent::Agent(a) => agent_json(a),
         ProviderEvent::Notice(t) => json!({ "type": "notice", "text": t }),
         ProviderEvent::PermissionRequested(r) => {

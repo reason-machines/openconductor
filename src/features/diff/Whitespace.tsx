@@ -8,6 +8,7 @@
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
 import { useEffect, useRef, useState } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
+import { ConductorIcon } from "../../components/ConductorIcon";
 
 const WhitespaceIcon = () => (
   <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -16,14 +17,8 @@ const WhitespaceIcon = () => (
   </svg>
 );
 
-const OptionsIcon = () => (
-  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" aria-hidden>
-    <path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11" />
-    <circle cx="5.5" cy="4.5" r="1.2" fill="var(--oc-diff-bg-gutter, Canvas)" />
-    <circle cx="10.5" cy="8" r="1.2" fill="var(--oc-diff-bg-gutter, Canvas)" />
-    <circle cx="7" cy="11.5" r="1.2" fill="var(--oc-diff-bg-gutter, Canvas)" />
-  </svg>
-);
+// Conductor's trigger icon is Lucide "ellipsis-vertical" (`NZ`) at size-3 (REA, kPo in renderApp 0.87.6).
+const OptionsIcon = () => <ConductorIcon name="ellipsis-vertical" size={12} />;
 
 const Check = () => (
   <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -72,7 +67,7 @@ export function ViewOptionsMenu({ whitespace, textWrap }: ViewOptionsProps) {
       <Tooltip content={VIEW_OPTIONS_LABEL}>
         <button
           type="button"
-          className="icon-btn"
+          className="icon-btn oc-view-options-trigger"
           aria-label={VIEW_OPTIONS_LABEL}
           aria-haspopup="menu"
           aria-expanded={open}

@@ -1,0 +1,11 @@
+{
+  "src/App.tsx": "43639a74b0c6926852f917f772b81a85ced02b072605c59966e4749bfc00e1ef",
+  "src/components/WorkspaceView.tsx": "b4de34fd3b234c68d3dbe67105c83765d82e253c2cb8198df72bbb2c9221c0ef",
+  "src/styles.css": "d2173630e7f1efd533bb32c35d5d0572fdd2d454ca893265858594ed1739eee6",
+  "tools/side-by-side/local-header-number.check.mjs": "28fc917917ef74abfc666b7630eacec58f63f08630789521a90ade0a584de78a",
+  "tools/side-by-side/workspace-number-fixture.js": "dd248d3128077c1e3661b6741ea8ba0970da41386de05a037d5f07e7e734e073",
+  "built_entries": {
+    "dist/assets/index-DOclDGJQ.js": "44eb9c939f30151c2d0aefe0a1a73cb9fe190e4ac1c2bb2f7f75d8ddbccd5915",
+    "dist/assets/index-CSL2mbcE.js": "de08881e36e83c9e6855b96ffe75f84d9f5ce44bd8ee7153d6e6ecbe86fe325a"
+  }
+}

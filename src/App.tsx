@@ -1,15 +1,23 @@
+import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "./state/store";
-import { destroyWorkspaceTerminals } from "./features/terminal/session";
+import { useCustomSectionCollapse } from "./state/useCustomSectionCollapse";
+import { ATTACH_FAILED, destroyWorkspaceTerminals, onAttachFailure } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
-import { Sidebar } from "./components/Sidebar";
+import { OPEN_ADD_PROJECT_MENU, Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
+import { SidebarIcon } from "./components/Icons";
+import { titleWithShortcut } from "./components/Tooltip";
+import { effectiveShortcuts } from "./keybindings/overrides";
+import { glyphs } from "./keybindings/shortcut";
 import { SubmitPromptDialog } from "./components/SubmitPromptDialog";
+import { FeedbackDialog } from "./components/FeedbackDialog";
 import { DiagnosticsPage } from "./diagnostics/DiagnosticsPage";
 import { AllWorkspaces } from "./components/AllWorkspaces";
 import { Dashboard } from "./components/Dashboard";
 import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
+import { BrowserPreviewHost } from "./features/browser/BrowserPreview";
 import type { DialogKind } from "./components/Dialogs";
 import { CreateProjectDialog } from "./components/CreateProjectDialog";
 import { OPEN_IN_GITHUB, SUCCESS_TOAST } from "./state/createProject";
@@ -19,6 +27,7 @@ import { CreateWorkspacePage } from "./components/CreateWorkspacePage";
 import { RemoveRepositoryDialog } from "./components/RemoveRepositoryDialog";
 import { MISC_COPY } from "./settings/repoMisc";
 import { useAppPrefs } from "./settings/appPrefs";
+import { useBoolPrefState } from "./settings/useBoolPref";
 import { loadBranchPrefix } from "./workspace/api";
 import { prefixSettingsFromInfo, type BranchPrefixSettings } from "./workspace/naming";
 import { Toaster, useToasts, type ToastAction } from "./components/Toast";
@@ -31,7 +40,16 @@ import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/Restor
 import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
-import { FEEDBACK_URL } from "./components/helpMenuItems";
+import { CHANGELOG_URL, DOCS_URL } from "./components/helpMenuItems";
+import {
+  openInTerminalScript,
+  XCODE_LICENSE_COMMAND,
+  XCODE_LICENSE_DESCRIPTION,
+  XCODE_LICENSE_TITLE,
+  XCODE_LICENSE_TOAST_MS,
+  xcodeLicenseBlocked,
+  type ShellOut,
+} from "./scripts/xcodeLicense";
 import { addRepository, appInfo, inspectProjectFolder, inTauri, openUrl, pickFolder, quitApp, setQuitHandlerReady, type AppInfo } from "./backend";
 import { chatStatuses } from "./features/chat/chatRuntime";
 import { countRunningAgents, quitDecision } from "./features/quit/quit";
@@ -39,15 +57,20 @@ import { QuitDialog } from "./features/quit/QuitDialog";
 import { addRegisteredRepo, decideOpenProject, failedToAddMessage } from "./state/openProject";
 import { createFailedMessage } from "./state/githubRepoDialog";
 import { GitHubRepoDialog, type GitHubRepoTarget } from "./components/GitHubRepoDialog";
-import { PaletteHost } from "./palette/PaletteHost";
+import { PaletteHost, type PaletteCommands } from "./palette/PaletteHost";
 import { useKeybindingOverrides, useKeybindings } from "./keybindings/KeybindingsProvider";
 import { PRIORITY } from "./keybindings/dispatcher";
 import { copyWorkspaceLink } from "./workspace/link";
 import { SettingsView } from "./settings/SettingsView";
 import { USER_PAGES } from "./settings/pages";
-import { OPEN_SETTINGS_EVENT } from "./features/chat/ChatModelPicker.tsx";
-import { REPO_SECTIONS, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
-import { changeZoom, rememberSettings } from "./settings/useSettings";
+import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatModelPicker.tsx";
+import { RoutinesPage } from "./features/routines/RoutinesPage";
+import { RoutineEditor } from "./features/routines/RoutineEditor";
+import { REPO_SECTIONS, cloudSettingsLocation, keptSearch, resolveSettingsUrl, settingsPath, settingsSearch, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { agentsTabFrom } from "./settings/agents/kitModel";
+import { selectProviderTab } from "./settings/providerTab";
+import { ORGANIZATION_EVENT, storedOrganization } from "./org/organization";
+import { changeZoom, rememberSettings, toggleTheme } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
 import { errorText, getSettings } from "./settings/api";
 import { KeyboardShortcutsDialog } from "./components/KeyboardShortcutsDialog";
@@ -61,7 +84,7 @@ import { storedRepoFilter } from "./home/useRepoFilter";
 import { toggleGarryMode, toggleRightPanel, toggleZenMode, useSidebarVisiblePref, useSidebarWidth } from "./components/panelPrefs";
 
 export default function App() {
-  const [state, storeDispatch] = useAppStore();
+  const [state, storeDispatch, startup] = useAppStore();
   // The full-screen create page (`/create`) fills the main area until a
   // selection or a created workspace replaces it.
   const [createPage, setCreatePage] = useState<{ repoId: string | null; sectionId?: string; fromOpen?: boolean } | null>(() => (window.location.pathname === "/create" ? { repoId: null } : null));
@@ -73,6 +96,12 @@ export default function App() {
     [storeDispatch],
   );
   const prefs = useAppPrefs();
+  const cloudUI = useBoolPrefState("experimental_cloud_ui");
+  useEffect(() => {
+    if (cloudUI !== false || state.selection.kind !== "routines") return;
+    dispatch({ type: "select", selection: { kind: "root" } });
+    window.history.replaceState(window.history.state, "", "/" + keptSearch(window.location.search));
+  }, [cloudUI, state.selection, dispatch]);
   // A `/create` start URL shows no workspace as current, like the reference's route.
   useEffect(() => {
     if (createPage && state.selection.kind === "workspace") storeDispatch({ type: "select", selection: { kind: "root" } });
@@ -92,6 +121,7 @@ export default function App() {
   useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
+  const [collapsedSections, toggleSection] = useCustomSectionCollapse();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` opens the full-screen create page; `?dialog=create` the dialog.
   const [dialog, setDialog] = useState<DialogKind | null>(() => new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
@@ -119,9 +149,12 @@ export default function App() {
   // Help › Diagnostics (Conductor's `/diagnostics` route) and Help › Submit a prompt.
   const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
   const [submitPromptOpen, setSubmitPromptOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
+  // A terminal screen that could not attach (Conductor's "Failed to attach terminal" toast).
+  useEffect(() => onAttachFailure(() => show("error", ATTACH_FAILED)), [show]);
   // Non-fatal initialization issues (Conductor's workspaceError with "View logs"), from every create path.
   useInitIssues(useCallback((message: string, opts: { sticky: true; action?: ToastAction }) => show("error", message, opts), [show]));
   // Archive on merge for workspaces that are not open (the open one reports through its own PR lookup).
@@ -182,6 +215,10 @@ export default function App() {
     repoIds: state.repos.map((r) => r.id),
     lastRepoId: state.selection.kind === "workspace" ? state.selection.repoId : null,
     userPages: USER_PAGES,
+    // Read synchronously from the stored choice, so an organization start URL resolves on the first render.
+    organization: storedOrganization() !== null,
+    // Preserve start-URL intent until settings load; rendering and navigation enforce the preference.
+    experimentalCloudUI: true,
   });
   const [settingsLocation, setSettingsLocation] = useState<SettingsLocation | null>(() =>
     resolveSettingsUrl(window.location.pathname, window.location.search, routeContext()),
@@ -197,15 +234,25 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.repos]);
   const navigateSettings = useCallback((loc: SettingsLocation | null) => {
-    setSettingsLocation(loc);
-    const search = keptSearch(window.location.search);
-    window.history.replaceState(window.history.state, "", (loc ? settingsPath(loc) : "/") + search);
-  }, []);
-  // Show the page a start URL resolved to, as Conductor's redirects do.
+    const target = loc ? cloudSettingsLocation(loc, cloudUI === true) : null;
+    setSettingsLocation(target);
+    const search = settingsSearch(target, window.location.search);
+    window.history.replaceState(window.history.state, "", (target ? settingsPath(target) : "/") + search);
+  }, [cloudUI]);
   useEffect(() => {
-    if (settingsLocation && !pendingReposUrl.current) navigateSettings(settingsLocation);
+    if (cloudUI !== null && settingsLocation && !pendingReposUrl.current) navigateSettings(settingsLocation);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [cloudUI]);
+  // Switching to Personal while an organization page is open lands on General, as Conductor's `lW` redirect does.
+  const settingsLocationRef = useRef(settingsLocation);
+  settingsLocationRef.current = settingsLocation;
+  useEffect(() => {
+    const onChange = () => {
+      if (storedOrganization() === null && settingsLocationRef.current?.scope === "org") navigateSettings({ scope: "user", page: "general" });
+    };
+    window.addEventListener(ORGANIZATION_EVENT, onChange);
+    return () => window.removeEventListener(ORGANIZATION_EVENT, onChange);
+  }, [navigateSettings]);
   const openSettings = useCallback(() => {
     if (!settingsLocation) navigateSettings({ scope: "user", page: "general" });
   }, [settingsLocation, navigateSettings]);
@@ -217,14 +264,11 @@ export default function App() {
       // The right panel's "Add run script" opens the repository's Scripts settings.
       const section = REPO_SECTIONS.find((s) => s === detail?.section);
       if (detail?.repoId && section) return navigateSettings({ scope: "repo", repoId: detail.repoId, section });
-      const known = USER_PAGES.find((p) => p === detail?.page);
+      // Cloud setup (create's "Set up cloud") lives at /settings/cloud/setup, outside the user pages.
+      const known = [...USER_PAGES, "setup-cloud" as const].find((p) => p === detail?.page);
       if (known) navigateSettings({ scope: "user", page: known });
       // A chat's "Open <agent> settings": the Agents page opens on that agent's tab.
-      if (known === "providers" && detail?.providerTab) {
-        const q = new URLSearchParams(window.location.search);
-        q.set("providerTab", detail.providerTab);
-        window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}`);
-      }
+      if (known === "providers" && detail?.providerTab) selectProviderTab(agentsTabFrom(detail.providerTab));
     };
     window.addEventListener(OPEN_SETTINGS_EVENT, open);
     return () => window.removeEventListener(OPEN_SETTINGS_EVENT, open);
@@ -268,6 +312,14 @@ export default function App() {
   }, [dispatch, show]);
   const openProject = useCallback(() => void addProject(), [addProject]);
   const addProjectAt = useCallback((path: string) => void addProject(path), [addProject]);
+  // The create composer's "Add project" (Conductor's `ZQo` opens `Gji`, the sidebar's add menu): a project
+  // opened from there becomes the composer's repository; the GitHub and Quick start items open their dialogs.
+  const createAddActions = {
+    onOpenProject: openProject,
+    onOpenGitHubProject: () => openDialog("clone"),
+    onQuickStart: () => openDialog("quickstart"),
+    onAddProjectAt: addProjectAt,
+  };
   const [quickOpen, setQuickOpen] = useState(false);
   // ⌥⌘/ and the native Help > Keyboard Shortcuts item both toggle the help dialog.
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
@@ -335,7 +387,8 @@ export default function App() {
   useKeybindings({
     "openKeyboardShortcuts": toggleShortcuts,
     "openSettings": openSettings,
-    "sendFeedback": () => void openUrl(FEEDBACK_URL),
+    "sendFeedback": () => setFeedbackOpen(true),
+    "toggleTheme": () => void toggleTheme().catch((e) => show("error", errorText(e))),
     "view.zoomIn": () => void changeZoom("in").catch((e) => show("error", errorText(e))),
     "view.zoomOut": () => void changeZoom("out").catch((e) => show("error", errorText(e))),
     "view.resetZoom": () => void changeZoom("reset").catch((e) => show("error", errorText(e))),
@@ -366,6 +419,25 @@ export default function App() {
     { priority: PRIORITY.DIALOG, isGlobal: true, enableOnInputFocus: true, enableOnTerminalFocus: false },
   );
 
+  // What the command palette's items run: the same handlers as their shortcuts.
+  const paletteCommands: PaletteCommands = {
+    addProject: () => (isSidebarVisible(state) ? window.dispatchEvent(new Event(OPEN_ADD_PROJECT_MENU)) : openProject()),
+    toggleTheme: () => void toggleTheme().catch((e) => show("error", errorText(e))),
+    toggleLeftSidebar: () => dispatch({ type: "toggleSidebar" }),
+    toggleRightSidebar: toggleRightPanel,
+    toggleZenMode: () => toggleZenMode(isSidebarVisible(state), dispatch),
+    sendFeedback: () => setFeedbackOpen(true),
+    submitPrompt: () => setSubmitPromptOpen(true),
+    showShortcuts: () => setShortcutsOpen(true),
+    openChangelog: () => void openUrl(CHANGELOG_URL),
+    openSettings: () => navigateSettings({ scope: "user", page: "general" }),
+    openDocs: () => void openUrl(DOCS_URL),
+    quickOpen: () => setQuickOpen(canQuickOpen),
+    copyUrl: () => {
+      if (workspace) copyLink(workspace.id);
+    },
+  };
+
   const [prefix, setPrefix] = useState<{ settings: BranchPrefixSettings; githubUsername: string | null }>({ settings: {}, githubUsername: null });
   // Re-read each time the dialog or page opens so a settings change applies to the next create.
   const creating = dialog === "create" || createPage !== null;
@@ -378,7 +450,25 @@ export default function App() {
     appInfo().then(setInfo).catch(() => setInfo(null));
   }, []);
 
-  // The Toaster sits at the same place (second child of this fragment) in both views, so
+  // Conductor's startup Xcode license check (`HBr`, src/scripts/xcodeLicense.ts): an unaccepted
+  // license blocks git, so say so for 15 s with "Run for me".
+  useEffect(() => {
+    if (!inTauri()) return;
+    const run = (command: string) => invoke<ShellOut>("execute_shell_command", { request: { command } });
+    appInfo()
+      .then((i) => xcodeLicenseBlocked(i.platform, run))
+      .then((blocked) => {
+        if (!blocked) return;
+        show("error", XCODE_LICENSE_TITLE, {
+          durationMs: XCODE_LICENSE_TOAST_MS,
+          description: XCODE_LICENSE_DESCRIPTION,
+          action: { label: "Run for me", onClick: () => void run(openInTerminalScript(XCODE_LICENSE_COMMAND)).catch(() => {}) },
+        });
+      })
+      .catch(() => {});
+  }, [show]);
+
+  // The Toaster sits at the same place (third child of this fragment) in every view, so
   // opening or closing Settings keeps the toasts mounted: their timers keep running and
   // they do not replay their 400ms slide-in over the page that just opened.
   const toaster = <Toaster toasts={toasts} dismiss={dismiss} />;
@@ -389,6 +479,7 @@ export default function App() {
           <DiagnosticsPage onClose={() => setDiagnosticsOpen(false)} notify={show} />
           {quitDialog}
         </>
+        <BrowserPreviewHost />
         {toaster}
       </>
     );
@@ -398,7 +489,7 @@ export default function App() {
       <>
         <>
         <SettingsView
-          location={settingsLocation}
+          location={cloudSettingsLocation(settingsLocation, cloudUI === true)}
           repos={state.repos}
           onNavigate={navigateSettings}
           onClose={closeSettings}
@@ -411,18 +502,34 @@ export default function App() {
             },
             notify: (kind, message) => show(kind, message),
           }}
+          onLaunchCloudWorkspace={() => {
+            closeSettings();
+            openDialog("create");
+          }}
         />
         {quitDialog}
         </>
+        <BrowserPreviewHost />
         {toaster}
       </>
     );
 
   return (
     <>
-    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style}>
+    <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style} aria-busy={startup === "loading"} data-startup={startup}>
+      {!isSidebarVisible(state) && !createPage && repo && workspace && (
+        <button
+          type="button"
+          className="sb-toggle workspace-sidebar-toggle"
+          aria-label="Toggle left sidebar"
+          title={titleWithShortcut("Toggle left sidebar", effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or "))}
+          onClick={() => dispatch({ type: "toggleSidebar" })}
+        >
+          <SidebarIcon size={16} />
+        </button>
+      )}
       {isSidebarVisible(state) && sidebarWidth.resizer}
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
+      {isSidebarVisible(state) && <Sidebar state={state} collapsedSections={collapsedSections} onToggleSection={toggleSection} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSendFeedback={() => setFeedbackOpen(true)} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
       <main className="main">
         {createPage ? (
           <CreateWorkspacePage
@@ -437,7 +544,7 @@ export default function App() {
             githubUsername={prefix.githubUsername}
             sidebarVisible={isSidebarVisible(state)}
             onClose={() => setCreatePage(null)}
-            onAddRepository={() => void openProject()}
+            addActions={createAddActions}
             onWarning={(message) => show("error", message, { sticky: true })}
             dispatch={dispatch}
           />
@@ -449,12 +556,29 @@ export default function App() {
             workspace={workspace}
             dispatch={dispatch}
             notify={show}
-            onCopyLink={() => copyLink(workspace.id)}
             hasNextUnread={(selectedChatId) => nextUnreadChat(state, { skipSelected: true, selectedChatId }) !== undefined}
             onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
         ) : sel.kind === "home" ? (
           <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+        ) : sel.kind === "routines" && cloudUI === true ? (
+          sel.page ? (
+            <RoutineEditor
+              page={sel.page}
+              repos={state.repos}
+              onNavigate={(page) => dispatch({ type: "select", selection: page ? { kind: "routines", page } : { kind: "routines" } })}
+              onOpenReasonSettings={() => openAgentSettings("reason")}
+              notify={show}
+            />
+          ) : (
+            <RoutinesPage
+              sidebarVisible={isSidebarVisible(state)}
+              onToggleSidebar={() => dispatch({ type: "toggleSidebar" })}
+              onNavigate={(page) => dispatch({ type: "select", selection: page ? { kind: "routines", page } : { kind: "routines" } })}
+              onOpenReasonSettings={() => openAgentSettings("reason")}
+              notify={show}
+            />
+          )
         ) : sel.kind === "dashboard" ? (
           <Dashboard
             repos={state.repos}
@@ -507,10 +631,7 @@ export default function App() {
           prefixSettings={prefix.settings}
           githubUsername={prefix.githubUsername}
           onClose={() => setDialog(null)}
-          onAddRepository={() => {
-            setDialog(null);
-            void openProject();
-          }}
+          addActions={createAddActions}
           onWarning={(message) => show("error", message, { sticky: true })}
           dispatch={dispatch}
         />
@@ -533,8 +654,9 @@ export default function App() {
         />
       )}
       {submitPromptOpen && <SubmitPromptDialog appVersion={info?.version} platform={info?.platform} onClose={() => setSubmitPromptOpen(false)} />}
+      {feedbackOpen && <FeedbackDialog appVersion={info?.version} platform={info?.platform} onClose={() => setFeedbackOpen(false)} />}
       {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
-      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} />
+      <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} />
       {archiveOverAgents && (
         <ArchiveRunningDialog
           onClose={() => setArchiveOverAgents(null)}
@@ -544,6 +666,7 @@ export default function App() {
       {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       {quitDialog}
     </div>
+    <BrowserPreviewHost />
     {toaster}
     </>
   );

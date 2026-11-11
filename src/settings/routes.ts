@@ -6,9 +6,15 @@
 // map `Jse`), REA-extracted on sven m5 max; evidence/settings/NOTES.md,
 // "Settings routes". OpenConductor has no Conductor account or cloud
 // organization, so every route Conductor gates behind one resolves where
-// Conductor sends a local user: /settings/user/general.
+// Conductor sends a local user: /settings/user/general. The exception is
+// /settings/cloud/setup (Conductor's `TEa`, which renders the page unless the
+// active organization is already a cloud one): OpenConductor's cloud is
+// Reason, set up there. With a Reason workspace as the active organization
+// (src/org/organization.ts) the /settings/organization routes open its pages,
+// as Conductor's `lW` does for a cloud organization.
 
 import { APP_URL_SCHEME } from "../workspace/link.ts";
+import { AGENTS_TABS } from "./agents/kitModel.ts";
 import type { SettingsPage } from "./pages.ts";
 
 /**
@@ -28,10 +34,18 @@ export const REPO_SECTION_LABELS: Record<RepoSection, string> = {
   misc: "Misc",
 };
 
-/** Where settings is open: a user page or one repository's section (Conductor's "workspace" scope). */
+/**
+ * Pages of the active organization (`/settings/organization/<page>`, Conductor's
+ * `organizationSettings` scope: `organization-<page>` tabs).
+ */
+export const ORG_PAGES = ["computer", "members", "preferences", "environment", "mcp", "prompts"] as const;
+export type OrgPage = (typeof ORG_PAGES)[number];
+
+/** Where settings is open: a user page, one repository's section (Conductor's "workspace" scope) or an organization page. */
 export type SettingsLocation =
   | { scope: "user"; page: SettingsPage }
-  | { scope: "repo"; repoId: string; section: RepoSection };
+  | { scope: "repo"; repoId: string; section: RepoSection }
+  | { scope: "org"; page: OrgPage };
 
 export interface RouteContext {
   /** Repository ids in sidebar order. */
@@ -40,32 +54,41 @@ export interface RouteContext {
   lastRepoId?: string | null;
   /** User pages that exist here; anything else falls back to General. */
   userPages: readonly SettingsPage[];
+  /** A Reason workspace is the active organization (Conductor's cloud organization). */
+  organization?: boolean;
+  experimentalCloudUI?: boolean;
 }
 
 const GENERAL: SettingsLocation = { scope: "user", page: "general" };
+const CLOUD_SETUP: SettingsLocation = { scope: "user", page: "setup-cloud" };
+export const CLOUD_SETUP_PATH = "/settings/cloud/setup";
 
 /**
  * Settings routes that need a Conductor cloud organization or account
  * (Conductor's `lW` and `Jna` gates). Each redirects to /settings/user/general
- * for a local user, which is every OpenConductor user.
+ * without one; the organization pages (ORG_ROUTES) open with a Reason
+ * workspace active. Cloud projects and organization repository settings have
+ * no OpenConductor page yet, so they always do.
  */
 export const CLOUD_ONLY_ROUTES = [
-  "/settings/cloud",
-  "/settings/cloud/setup",
   "/settings/cloud/$cloudProjectId",
-  "/settings/organization",
-  "/settings/organization/github",
-  "/settings/organization/members",
-  "/settings/organization/preferences",
-  "/settings/organization/computer",
-  "/settings/organization/environment",
-  "/settings/organization/mcp",
-  "/settings/organization/mcp-servers",
-  "/settings/organization/prompts",
   "/settings/organization/repositories/$owner/$repo",
   "/settings/organization/repositories/$owner/$repo/scripts",
   "/settings/organization/repositories/$owner/$repo/git",
 ] as const;
+
+const orgPage = (page: OrgPage): SettingsLocation => ({ scope: "org", page });
+
+/**
+ * Conductor's organization routes (`PI`'s children): the index (`pCa`) and
+ * /github (`REa`) redirect to Cloud computer, /mcp-servers (`xCa`) to MCP.
+ */
+export const ORG_ROUTES: readonly (readonly [string, OrgPage])[] = [
+  ["/settings/organization", "computer"],
+  ["/settings/organization/github", "computer"],
+  ["/settings/organization/mcp-servers", "mcp"],
+  ...ORG_PAGES.map((p) => [`/settings/organization/${p}`, p] as const),
+];
 
 /** User tabs Conductor shows only with a cloud organization (Ports) or internal settings (Internal). */
 export const GATED_USER_TABS = ["ports", "internal"] as const;
@@ -118,6 +141,10 @@ function match(pattern: string, segments: string[]): Params | null {
   return params;
 }
 
+export function cloudSettingsLocation(location: SettingsLocation, enabled: boolean): SettingsLocation {
+  return !enabled && (location.scope === "org" || (location.scope === "user" && location.page === "setup-cloud")) ? GENERAL : location;
+}
+
 function userPage(tab: string, ctx: RouteContext): SettingsLocation {
   if ((GATED_USER_TABS as readonly string[]).includes(tab)) return GENERAL;
   return (ctx.userPages as readonly string[]).includes(tab) ? { scope: "user", page: tab as SettingsPage } : GENERAL;
@@ -164,6 +191,11 @@ export const SETTINGS_ROUTES: readonly (readonly [string, Resolver])[] = [
     "/settings/repos/$repoId/$section",
     ({ repoId, section }, _, ctx) => (isRepoSection(section) ? repoLocation(repoId, section, ctx) : GENERAL),
   ],
+  // Conductor's `dCa`: the /settings/cloud index redirects to /settings/cloud/setup, which
+  // (`TEa`) sends a cloud organization to General.
+  ["/settings/cloud", (_, __, ctx) => (ctx.organization ? GENERAL : CLOUD_SETUP)],
+  [CLOUD_SETUP_PATH, (_, __, ctx) => (ctx.organization ? GENERAL : CLOUD_SETUP)],
+  ...ORG_ROUTES.map(([p, page]) => [p, ((_, __, ctx) => (ctx.organization ? orgPage(page) : GENERAL)) as Resolver] as const),
   ...CLOUD_ONLY_ROUTES.map((p) => [p, () => GENERAL] as const),
 ];
 
@@ -182,7 +214,8 @@ function resolvePath(pathname: string, search: URLSearchParams, ctx: RouteContex
  * when the URL is not under /settings.
  */
 export function resolveSettingsUrl(pathname: string, search: string, ctx: RouteContext): SettingsLocation | null {
-  return resolvePath(pathname, new URLSearchParams(search), ctx);
+  const location = resolvePath(pathname, new URLSearchParams(search), ctx);
+  return location ? cloudSettingsLocation(location, ctx.experimentalCloudUI === true) : null;
 }
 
 /** Search parameters the /settings routes read; dropped once the URL shows the resolved page. */
@@ -196,8 +229,21 @@ export function keptSearch(search: string): string {
   return s ? `?${s}` : "";
 }
 
+/** A provider tab remains part of the resolved Agents page, not its redirect input. */
+export function settingsSearch(location: SettingsLocation | null, search: string): string {
+  const kept = new URLSearchParams(keptSearch(search));
+  if (location?.scope === "user" && location.page === "providers") {
+    const tab = AGENTS_TABS.find((value) => value === new URLSearchParams(search).get("providerTab"));
+    if (tab) kept.set("providerTab", tab);
+  }
+  const query = kept.toString();
+  return query ? `?${query}` : "";
+}
+
 /** The canonical path of a location, as Conductor's router shows it. */
 export function settingsPath(loc: SettingsLocation): string {
+  if (loc.scope === "org") return `/settings/organization/${loc.page}`;
+  if (loc.scope === "user" && loc.page === "setup-cloud") return CLOUD_SETUP_PATH;
   return loc.scope === "user"
     ? `/settings/user/${loc.page}`
     : `/settings/repos/${encodeURIComponent(loc.repoId)}/${loc.section}`;
@@ -206,7 +252,7 @@ export function settingsPath(loc: SettingsLocation): string {
 /**
  * What "Copy link" on a settings page link copies: Conductor's `TGt`
  * (index-BGEQ8YjU.js) builds `${scheme}://settings/` + the page's route
- * (`user/<page>`, `repos/<repoId>/<section>`), so it is the canonical path
+ * (`user/<page>`, `repos/<repoId>/<section>`, `organization/<page>`), so it is the canonical path
  * under the app's URL scheme.
  */
 export function settingsDeepLink(loc: SettingsLocation): string {

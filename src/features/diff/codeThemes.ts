@@ -8,7 +8,7 @@
 // own published palettes, kept as --syntax-<theme>-<key> in src/theme/tokens.css
 // (Shiki passes var() colours through to the inline styles it emits); the
 // token-to-scope mapping is ours.
-import { PIERRE_THEME } from "./pierre.ts";
+import { CONDUCTOR_THEME } from "./conductorCodeTheme.ts";
 
 export type CodeTheme =
   | "default"
@@ -103,9 +103,9 @@ export const shikiNameOf = (id: Exclude<CodeTheme, "default">): string => (CODE_
 
 /** Pierre's `theme` option for a Code theme setting (Conductor's rule, see the header). */
 export function diffThemeFor(theme: CodeTheme): { dark: string; light: string } {
-  if (theme === "default") return { ...PIERRE_THEME };
+  if (theme === "default") return { ...CONDUCTOR_THEME };
   const def = CODE_THEMES[theme];
-  return def.mode === "dark" ? { dark: shikiNameOf(theme), light: PIERRE_THEME.light } : { dark: PIERRE_THEME.dark, light: shikiNameOf(theme) };
+  return def.mode === "dark" ? { dark: shikiNameOf(theme), light: CONDUCTOR_THEME.light } : { dark: CONDUCTOR_THEME.dark, light: shikiNameOf(theme) };
 }
 
 /** A TextMate/Shiki theme for one palette. */

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { nextUnreadChat } from "./nextUnread.ts";
-import { keepPr, parsePrefs, prefsOf, reposFromDb, restoreChatTabsOf, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
+import { workspaceFromRow, keepPr, parsePrefs, prefsOf, reposFromDb, restoreChatTabsOf, validSelection, withoutLiveSessions, type DbRepoRow, type DbWorkspaceRow } from "./persisted.ts";
 import { chatOpenable, restoredChatTabs } from "./openChat.ts";
 import { isWorkspaceUnread } from "./chatUnread.ts";
 import type { AppState, Workspace } from "./types";
@@ -10,6 +10,15 @@ const repo = (id: string, extra: Partial<DbRepoRow> = {}): DbRepoRow => ({
   id, name: id, rootPath: `/src/${id}`, remoteUrl: null, defaultBranch: "main", displayOrder: 0, hidden: false, icon: null,
   createdAt: "2026-11-05 12:00:00", ...extra,
 });
+test("persisted workspace links hydrate separately from prompt attachments", () => {
+  const restored = workspaceFromRow(ws("r", "source", "ready", { linkedWorkspaceIds: ["target"], linkedDirectoryPaths: ["/extra"] }));
+  assert.deepEqual(restored.linkedWorkspaceIds, ["target"]);
+  assert.deepEqual(restored.linkedDirectoryPaths, ["/extra"]);
+  const older = workspaceFromRow(ws("r", "older"));
+  assert.deepEqual(older.linkedWorkspaceIds, []);
+  assert.deepEqual(older.linkedDirectoryPaths, []);
+});
+
 const ws = (repositoryId: string, dir: string, state = "ready", extra: Partial<DbWorkspaceRow> = {}): DbWorkspaceRow => ({
   id: `${repositoryId}/${dir}`, repositoryId, directoryName: dir, workspaceName: null, branch: dir, placeholderBranchName: null,
   state, derivedStatus: null, manualStatus: null, workspacePath: `/data/${dir}`, pinnedAt: null, unread: false, prTitle: null, prDescription: null, number: null,
@@ -56,11 +65,15 @@ test("selection falls back to home when its workspace is gone", () => {
 });
 
 test("prefs round-trip and survive garbage", () => {
-  const repos = reposFromDb([repo("a"), repo("b")], [], ["b"]);
+  const repos = reposFromDb([repo("a"), repo("b"), repo("c")], [], ["b"]);
+  // c was unfolded by hand; a was never toggled and follows the open workspace.
+  repos[2].collapsed = false;
   const prefs = prefsOf({ repos, selection: { kind: "home" }, sidebarVisible: false });
-  assert.deepEqual(parsePrefs(JSON.stringify(prefs)), { selection: { kind: "home" }, sidebarVisible: false, collapsed: ["b"] });
-  assert.deepEqual(parsePrefs("{nope"), { selection: { kind: "root" }, collapsed: [] });
-  assert.deepEqual(parsePrefs(null), { selection: { kind: "root" }, collapsed: [] });
+  assert.deepEqual(parsePrefs(JSON.stringify(prefs)), { selection: { kind: "home" }, sidebarVisible: false, collapsed: ["b"], expanded: ["c"] });
+  // Prefs saved before `expanded` existed.
+  assert.deepEqual(parsePrefs(JSON.stringify({ selection: { kind: "root" }, collapsed: ["b"] })), { selection: { kind: "root" }, sidebarVisible: undefined, collapsed: ["b"], expanded: [] });
+  assert.deepEqual(parsePrefs("{nope"), { selection: { kind: "root" }, collapsed: [], expanded: [] });
+  assert.deepEqual(parsePrefs(null), { selection: { kind: "root" }, collapsed: [], expanded: [] });
 });
 
 test("sidebar: pin, unread and status columns reach the workspace", () => {

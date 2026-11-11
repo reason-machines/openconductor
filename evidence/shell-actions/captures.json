@@ -1,0 +1,94 @@
+{
+  "viewport": {
+    "width": 1280,
+    "height": 820
+  },
+  "theme": "dark",
+  "palette": "stone",
+  "captures": {
+    "ref-home": {
+      "evidence_id": "ev_d9b6454424d44efbca0238ea5a3b75977e2d1c31ce81ce3908ab6e4b6a6eef4a",
+      "sha256": "b9da77721bc348a1032591c0c9c8dc63dfd74ad4200615c015de5ff1f5ea5331"
+    },
+    "oc-home": {
+      "evidence_id": "ev_b8426d26457f3b175f185b4622048da9003cb120b0848ad4361d9a39de722461",
+      "sha256": "6aa31a57570e8378d8f9ef392e6ef1aa287ecfe578465705dcc1e418d8149d7a"
+    },
+    "ref-repo-menu": {
+      "evidence_id": "ev_332891618ebf92a7f4134427ec48611a16a9f6094601d0a530cb29014b118eaa",
+      "sha256": "a9d6ef0d01c4a73d6be55bb71e2163a76f242378da56e92116f196a45a4984b0"
+    },
+    "oc-repo-menu": {
+      "evidence_id": "ev_fb069ed7e791808cc66e1881a31ac68a03392feac0cac49e1143f8aae1ea65f6",
+      "sha256": "ba941d14f2f70527946556c90b1fd7bfdcc0075e1bca6a294ad2dcc89eec8d75"
+    }
+  },
+  "comparisons": {
+    "home": {
+      "crop": [
+        256,
+        0,
+        1280,
+        820
+      ],
+      "thresholds": {
+        "0": {
+          "evidence_id": "ev_af4fadf4a2431d6b961e13d96bf89544851ae7213643d2f4f357d6c541f46460",
+          "changed_pixels": 44237,
+          "total_pixels": null,
+          "changed_ratio": 0.0526831650152439
+        },
+        "24": {
+          "evidence_id": "ev_a7a97a9010663c7e133a8fbc2b9aeb044dd0673fa73e6218e3f8e51800fec654",
+          "changed_pixels": 43044,
+          "total_pixels": null,
+          "changed_ratio": 0.05126238567073171
+        }
+      }
+    },
+    "sidebar": {
+      "crop": [
+        0,
+        0,
+        256,
+        820
+      ],
+      "thresholds": {
+        "0": {
+          "evidence_id": "ev_b3ded7b156cdfd5bbe00a088e1dc760224a76b2a259d4d949962d49a22d1ca4b",
+          "changed_pixels": 9954,
+          "total_pixels": null,
+          "changed_ratio": 0.04741806402439024
+        },
+        "24": {
+          "evidence_id": "ev_9e065e2f68757da3da606fcdb548f2377f262548346737ac475c00ac17c99c15",
+          "changed_pixels": 782,
+          "total_pixels": null,
+          "changed_ratio": 0.003725228658536585
+        }
+      }
+    },
+    "repo-menu": {
+      "crop": [
+        45,
+        247,
+        214,
+        426
+      ],
+      "thresholds": {
+        "0": {
+          "evidence_id": "ev_91a7a9466306b61244db26e14e2692b618bf89255da1ff61fa81acde3be96a20",
+          "changed_pixels": 0,
+          "total_pixels": null,
+          "changed_ratio": 0
+        },
+        "24": {
+          "evidence_id": "ev_344b73902bf3ed14f640f1891fb2586b486f2500f049617b13bd8c0587c6084d",
+          "changed_pixels": 0,
+          "total_pixels": null,
+          "changed_ratio": 0
+        }
+      }
+    }
+  }
+}

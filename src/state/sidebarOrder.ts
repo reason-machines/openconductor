@@ -6,9 +6,11 @@
 // between Pinned and the repository groups, and a workspace in a section
 // leaves both (renderApp `nra`: Pinned and My workspaces filter out
 // `sectionedWorkspaceIds`).
-import type { AppState, Workspace } from "./types.ts";
-import { byRecentActivity } from "../components/sidebarLabel.ts";
+import type { AppState, Repo, Selection, Workspace } from "./types.ts";
+import { sortSidebarWorkspaces, type SidebarSort } from "../home/sidebarSort.ts";
 import { projectSections, type NavSection } from "./navigationSections.ts";
+import { SIDEBAR_STATUS_ORDER, type SidebarGroupBy } from "../home/sidebarGroupBy.ts";
+import { effectiveStatus, type WorkspaceStatusValue } from "./workspaceStatus.ts";
 
 export interface SidebarEntry {
   repoId: string;
@@ -48,9 +50,59 @@ export function pinnedEntries(state: AppState, sectioned: ReadonlySet<string> = 
     .sort((a, b) => (a.workspace.pinnedAt ?? 0) - (b.workspace.pinnedAt ?? 0));
 }
 
-/** A repository group's rows: unpinned workspaces outside sections, newest activity first. */
-export function repoGroupWorkspaces(workspaces: readonly Workspace[], sectioned: ReadonlySet<string> = new Set()): Workspace[] {
-  return byRecentActivity(workspaces.filter((w) => !isPinned(w) && !sectioned.has(w.id)));
+/** Unpinned workspaces outside sections, in the selected timestamp order. */
+export function repoGroupWorkspaces(workspaces: readonly Workspace[], sectioned: ReadonlySet<string> = new Set(), sort: SidebarSort = "updated"): Workspace[] {
+  return sortSidebarWorkspaces(workspaces.filter((w) => !isPinned(w) && !sectioned.has(w.id)), sort);
+}
+
+/**
+ * Whether a repository group is folded. Conductor 0.87.6 (`Dra` in the decoded
+ * renderApp-D_fmY7hW.js @10,033,200) keeps one flag per group under
+ * `repo-<id>` (`aW`, route state `workspace.sidebar` / `collapsedGroups`), and a
+ * group nobody has toggled is collapsed unless the open workspace is one of its
+ * rows (`defaultCollapsed: !rows.includes(routeWorkspaceId)`). `repo.collapsed`
+ * is that stored flag: `undefined` until the group is toggled.
+ */
+export function isRepoCollapsed(repo: Repo, selection: Selection, sectioned: ReadonlySet<string> = new Set()): boolean {
+  if (repo.collapsed !== undefined) return repo.collapsed;
+  if (selection.kind !== "workspace" || selection.repoId !== repo.id) return true;
+  return !repoGroupWorkspaces(repo.workspaces, sectioned).some((w) => w.id === selection.workspaceId);
+}
+
+/** A click on a repository header stores the opposite of what the group shows now (`aW`'s toggle). */
+export function toggleRepoCollapsed(state: AppState, repoId: string): Repo[] {
+  const { sectioned } = sectionEntries(state);
+  return state.repos.map((r) => (r.id === repoId ? { ...r, collapsed: !isRepoCollapsed(r, state.selection, sectioned) } : r));
+}
+
+export interface SidebarStatusGroup {
+  status: WorkspaceStatusValue;
+  entries: SidebarEntry[];
+}
+
+export function statusGroupEntries(state: AppState, sectioned: ReadonlySet<string> = sectionEntries(state).sectioned): SidebarStatusGroup[] {
+  const entries = state.repos
+    .filter((repo) => !state.sidebarRepoFilter || repo.id === state.sidebarRepoFilter)
+    .flatMap((repo) => repoGroupWorkspaces(repo.workspaces, sectioned, state.sidebarSort)
+      .filter((workspace) => workspace.status !== "archived")
+      .map((workspace) => ({ repoId: repo.id, workspace })));
+  const ordered = sortSidebarWorkspaces(entries.map((entry) => ({ ...entry, createdAt: entry.workspace.createdAt, updatedAt: entry.workspace.updatedAt })), state.sidebarSort);
+  return SIDEBAR_STATUS_ORDER.map((status) => ({ status, entries: ordered.filter(({ workspace }) => effectiveStatus(workspace) === status) }));
+}
+
+export function isStatusGroupCollapsed(state: AppState, group: SidebarStatusGroup): boolean {
+  const selection = state.selection;
+  return state.sidebarStatusCollapsed?.[group.status] ?? !(selection.kind === "workspace" && group.entries.some(({ workspace }) => workspace.id === selection.workspaceId));
+}
+
+export function collapseSidebarGroups(state: AppState, groupBy: SidebarGroupBy): AppState {
+  return groupBy === "repo"
+    ? { ...state, repos: state.repos.map((repo) => ({ ...repo, collapsed: true })) }
+    : { ...state, sidebarStatusCollapsed: Object.fromEntries(SIDEBAR_STATUS_ORDER.map((status) => [status, true])) };
+}
+
+export function setStatusGroupCollapsed(state: AppState, status: WorkspaceStatusValue, collapsed: boolean): AppState {
+  return { ...state, sidebarStatusCollapsed: { ...state.sidebarStatusCollapsed, [status]: collapsed } };
 }
 
 /**
@@ -66,8 +118,10 @@ export function sidebarEntries(
   const { sections, sectioned } = sectionEntries(state);
   const pinned = visibleOnly && pinnedCollapsed ? [] : pinnedEntries(state, sectioned);
   const inSections = sections.flatMap((s) => (visibleOnly && collapsedSections.has(s.section.id) ? [] : s.entries));
-  const grouped = state.repos.flatMap((r) =>
-    visibleOnly && r.collapsed ? [] : repoGroupWorkspaces(r.workspaces, sectioned).map((workspace) => ({ repoId: r.id, workspace })),
-  );
+  const grouped = state.sidebarGroupBy === "status"
+    ? statusGroupEntries(state, sectioned).flatMap((group) => visibleOnly && isStatusGroupCollapsed(state, group) ? [] : group.entries)
+    : state.repos.flatMap((r) =>
+      visibleOnly && isRepoCollapsed(r, state.selection, sectioned) ? [] : repoGroupWorkspaces(r.workspaces, sectioned, state.sidebarSort).map((workspace) => ({ repoId: r.id, workspace })),
+    );
   return [...pinned, ...inSections, ...grouped];
 }

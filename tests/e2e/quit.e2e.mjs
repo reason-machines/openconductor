@@ -89,3 +89,64 @@ test("⌘Q asks first while agents run: Cancel keeps the app, ⌘↵ quits", asy
   assert.deepEqual(errors, []);
   await context.close();
 });
+
+for (const outsideInput of ["mouse-down", "click"]) {
+  test(`Quit confirmation ignores outside ${outsideInput} and keeps explicit dismissal`, async () => {
+    const { page, context, errors } = await openApp("/?demo=1");
+    try {
+      await page.keyboard.press("Meta+q");
+      const dialog = quitDialog(page);
+      await dialog.waitFor();
+      await page.mouse.move(8, 8);
+      if (outsideInput === "mouse-down") await page.mouse.down();
+      else await page.mouse.click(8, 8);
+
+      assert.equal(await dialog.count(), 1, "outside pointer input must not dismiss Quit confirmation");
+      assert.equal(await dialog.isVisible(), true, "Quit confirmation stays visible after outside pointer input");
+      assert.equal(await quits(page), 0, "outside pointer input must not quit");
+      await page.mouse.up();
+      assert.equal(await dialog.count(), 1, "pointer release must not dismiss Quit confirmation");
+
+      if (outsideInput === "mouse-down") await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+      else await page.keyboard.press("Escape");
+      await dialog.waitFor({ state: "detached" });
+      assert.equal(await quits(page), 0, "explicit dismissal must not quit");
+      assert.deepEqual(errors, []);
+    } finally {
+      await context.close();
+    }
+  });
+}
+
+test("Quit confirmation initially focuses Cancel rather than the destructive action", async () => {
+  const { page, context, errors } = await openApp("/?demo=1");
+  try {
+    await page.keyboard.press("Meta+q");
+    const dialog = quitDialog(page);
+    await dialog.waitFor();
+    assert.equal(
+      await dialog.getByRole("button", { name: "Cancel", exact: true }).evaluate((button) => document.activeElement === button),
+      true,
+      "the reference Cancel action receives initial focus",
+    );
+    assert.equal(await quits(page), 0);
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});
+
+test("plain Enter cancels the newly opened Quit confirmation without quitting", async () => {
+  const { page, context, errors } = await openApp("/?demo=1");
+  try {
+    await page.keyboard.press("Meta+q");
+    const dialog = quitDialog(page);
+    await dialog.waitFor();
+    await page.keyboard.press("Enter");
+    await dialog.waitFor({ state: "detached" });
+    assert.equal(await quits(page), 0, "plain Enter activates Cancel, not Quit");
+    assert.deepEqual(errors, []);
+  } finally {
+    await context.close();
+  }
+});

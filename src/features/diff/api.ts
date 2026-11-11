@@ -5,7 +5,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { inTauri } from "../../backend";
 import { scopeRequest, type DiffTarget } from "./target.ts";
-import type { DiffLine, DiffScope, DiffViewOptions, FileChange, FileDiff } from "./types.ts";
+import type { BranchCommit, DiffLine, DiffScope, DiffViewOptions, FileChange, FileDiff } from "./types.ts";
 import type { TurnRef } from "./turnChangesCache.ts";
 
 /** Context large enough that each file comes back as one hunk covering the whole file. */
@@ -22,6 +22,12 @@ export interface LoadExtra {
 
 // Browser mode: sample files discarded this page load, so the flow can be tried without Tauri.
 const discardedSamples = new Set<string>();
+
+export async function loadBranchCommits(worktree: string | null, target: DiffTarget): Promise<BranchCommit[]> {
+  if (!inTauri()) return [];
+  if (!worktree) return [];
+  return invoke<BranchCommit[]>("diff_branch_commits", { repo: worktree, base: target.branch, remote: target.remote });
+}
 
 /** `target`: the workspace's target branch, which "All changes" is compared against (target.ts). */
 export async function loadWorkspaceDiff(worktree: string | null, target: DiffTarget, opts: DiffViewOptions, extra: LoadExtra = {}): Promise<FileDiff[]> {
@@ -112,6 +118,6 @@ export function sampleDiff(opts: DiffViewOptions): FileDiff[] {
   // Like the backend: hidden whitespace keeps the file and its counts, drops its hunks.
   const spacedFull = file("README.md", "modified", [[3, 3, "", " ## Usage\n-Run  the server with `npm start`.\n+Run the server with `npm start`."]]);
   const spaced = opts.ignoreWhitespace ? { ...spacedFull, hunks: [] } : spacedFull;
-  const files = opts.scope === "all" ? [spaced, added, committed] : [spaced, added];
+  const files = typeof opts.scope === "object" ? [committed] : opts.scope === "all" ? [spaced, added, committed] : [spaced, added];
   return files.sort((a, b) => a.path.localeCompare(b.path));
 }

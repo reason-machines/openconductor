@@ -30,12 +30,12 @@ export const FILES = [
  * Calls the right panel makes are recorded in window.__fake.calls; commands it
  * does not know fail, as in the other e2e fakes, and are listed in window.__fake.unmocked.
  */
-export function fakeBackend({ shell, files, spotlight = false }) {
+export function fakeBackend({ shell, files, spotlight = false, setupScript = null, runScript = null, xcodeLicense = "accepted", failSettingsWrite = false, zoom = 1 }) {
   localStorage.setItem("openconductor.shell.v1", JSON.stringify(shell));
   localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shell.selection, collapsed: [] }));
   const settings = {
     general: { theme: "dark" },
-    appearance: { zoom_level_v2: 1, low_contrast_dark_mode: false, terminal_font_size: 12 },
+    appearance: { zoom_level_v2: zoom, low_contrast_dark_mode: false, terminal_font_size: 12 },
     git: {},
     models: { default: "opus" },
     providers: {},
@@ -54,6 +54,15 @@ export function fakeBackend({ shell, files, spotlight = false }) {
     transformCallback: (f) => ((cbs[++cb] = f), cb),
     async invoke(cmd, args) {
       switch (cmd) {
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
+        case "db_first_run_onboarding_step":
+          return "999";
+        case "local_storage_get_entry":
+          return localStorage.getItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`);
+        case "local_storage_set_entry":
+          localStorage.setItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`, args.args.content);
+          return { success: true };
         case "plugin:event|listen":
           if (args.event === "pty-event") ptyHandler = args.handler;
           return 1;
@@ -62,7 +71,7 @@ export function fakeBackend({ shell, files, spotlight = false }) {
         case "db_list_repos":
           return shell.repos.map((r, i) => ({ id: r.id, name: r.name, rootPath: r.path, remoteUrl: null, defaultBranch: r.defaultBranch, displayOrder: i, hidden: false, icon: null, createdAt: "2026-01-01T00:00:00Z" }));
         case "db_list_workspaces":
-          return shell.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" })));
+          return shell.repos.flatMap((r) => r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path, pinnedAt: null, unread: w.unread ?? false, createdAt: "2026-01-01T00:00:00Z" })));
         case "get_settings":
           return structuredClone(settings);
         case "app_info":
@@ -70,6 +79,7 @@ export function fakeBackend({ shell, files, spotlight = false }) {
         case "fuzzy_filter_files":
           return fileList.map((p) => ({ file: { name: p.split("/").pop(), path: p, is_directory: false }, relative_path: p, score: 0, match_indices: [] }));
         case "diff_workspace":
+          window.__fake.calls.push({ cmd, request: args.request });
           return {
             files: [
               { path: "src/lib/auth.test.ts", old_path: null, status: "untracked", binary: false, additions: 14, deletions: 0, hunks: [] },
@@ -81,7 +91,17 @@ export function fakeBackend({ shell, files, spotlight = false }) {
           fileList.push(args.request.path);
           return;
         case "scripts_config":
-          return { setup: null, setupLayer: null, archive: null, runMode: "concurrent", autoRunAfterSetup: false, run: [], managedKeys: [], warnings: [] };
+          return {
+            setup: setupScript,
+            setupLayer: setupScript === null ? null : "repo_local",
+            archive: null,
+            runMode: "concurrent",
+            autoRunAfterSetup: false,
+            // Conductor's `scripts.run` string is one run script named "run".
+            run: runScript === null ? [] : [{ id: "run", label: "Run", command: runScript, args: [], cwd: null, default: true, icon: "play", hide: false, availableIn: ["local", "cloud"], layer: "repo_local" }],
+            managedKeys: [],
+            warnings: [],
+          };
         case "setup_script_status":
           return { state: "idle", log: null, last: null };
         case "run_script_status":
@@ -94,6 +114,20 @@ export function fakeBackend({ shell, files, spotlight = false }) {
         case "spotlight_start":
           window.__fake.calls.push({ cmd, ...args });
           return true;
+        // The startup Xcode license check (src/scripts/xcodeLicense.ts); other shell commands stay unmocked.
+        case "execute_shell_command":
+          if (/xcodebuild -license check/.test(args.request?.command ?? "")) {
+            return xcodeLicense === "unaccepted"
+              ? { stdout: "You have not agreed to the Xcode license agreements. Please run 'sudo xcodebuild -license' from within a Terminal window to review and agree to the Xcode and Apple SDKs license.\n", stderr: "", exitCode: 69 }
+              : { stdout: "", stderr: "", exitCode: 0 };
+          }
+          window.__fake.unmocked.push(cmd);
+          throw new Error(`fake backend: ${cmd} ${args.request?.command} is not mocked`);
+        // Settings › Scripts writes; with failSettingsWrite the repository's settings file is read-only.
+        case "repo_settings_set_local":
+          window.__fake.calls.push({ cmd, key: args.key, value: args.value });
+          if (failSettingsWrite) throw new Error(`Permission denied (os error 13): ${args.repoPath}/.conductor/settings.local.toml`);
+          return {};
         case "open_in_apps":
           return [{ id: "finder", name: "Finder", kind: "finder", installed: true }];
         case "open_in_app":

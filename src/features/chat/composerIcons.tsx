@@ -4,6 +4,8 @@
 // stop-circle-outline (MIT), which Conductor's Cancel button uses.
 
 import type { SVGProps } from "react";
+import { ReasonMark } from "../../components/ReasonMark";
+import type { ChatAgentId } from "./agentChoice";
 
 type IconProps = SVGProps<SVGSVGElement> & { size?: number; strokeWidth?: number };
 
@@ -87,14 +89,9 @@ export const StopCircleIcon = ({ size = 16, ...rest }: IconProps) => (
   </svg>
 );
 
-/**
- * The small mark before a model in the picker. Conductor shows the agent's
- * logo there; OpenConductor ships no third-party logos, so it draws a neutral
- * mark in the agent's colour instead (see the PR's remaining differences).
- */
-export function ModelGlyph({ model }: { model: string }) {
-  // Conductor ids ("opus-5-1m", "gpt-5.5") and Reason ids ("byok:anthropic:claude-opus-5-5", "byok:openai-codex:gpt-5.6-sol").
-  const agent = /^gpt-|^byok:openai/.test(model) ? "codex" : /^(opus|sonnet|haiku|fable)|^byok:anthropic:/.test(model) ? "claude" : "other";
+export function ModelGlyph({ model, agent: chatAgent }: { model: string; agent?: ChatAgentId }) {
+  if (chatAgent === "reason") return <ReasonMark className="oc-model-glyph" />;
+  const agent = chatAgent ?? (/^gpt-|^byok:openai/.test(model) ? "codex" : /^(opus|sonnet|haiku|fable)|^byok:anthropic:/.test(model) ? "claude" : "other");
   return (
     <svg className="oc-model-glyph" data-agent={agent} width={14} height={14} viewBox="0 0 16 16" aria-hidden>
       <path fill="currentColor" d="M8 1.5c.4 3.3 1.6 4.6 5 5-3.4.4-4.6 1.7-5 5-.4-3.3-1.6-4.6-5-5 3.4-.4 4.6-1.7 5-5z" />

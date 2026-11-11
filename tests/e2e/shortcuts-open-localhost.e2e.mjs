@@ -24,19 +24,21 @@ const executablePath = CANDIDATES.find((p) => existsSync(p));
 
 let server;
 let browser;
-let base;
+let base = process.env.E2E_BASE;
 
 before(async () => {
   assert.ok(executablePath, `no Chrome or Chromium found; set CHROME_PATH (tried ${CANDIDATES.join(", ")})`);
   assert.ok(existsSync("dist/index.html"), "dist/ is missing; run `npm run build` first");
-  server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
-  base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  if (!base) {
+    server = await preview({ preview: { port: 0, host: "127.0.0.1", strictPort: false }, logLevel: "error" });
+    base = server.resolvedUrls.local[0].replace(/\/$/, "");
+  }
   browser = await chromium.launch({ executablePath, args: ["--no-sandbox"] });
 });
 
 after(async () => {
   await browser?.close();
-  await new Promise((resolve) => server?.httpServer.close(resolve));
+  if (server) await new Promise((resolve) => server.httpServer.close(resolve));
 });
 
 async function openDemo() {
@@ -78,8 +80,8 @@ test("⌘⇧B opens the run's localhost URL from the Run tab; it does nothing be
   assert.equal(await strip.getByTestId("preview-open").count(), 0);
 
   // Start the dev script; once its output prints the URL, the Open button appears.
-  await run.getByRole("button", { name: "▶ Run" }).click();
-  await run.locator(".scripts-output", { hasText: "http://localhost:55000/" }).waitFor();
+  await strip.getByRole("button", { name: "Run Dev", exact: true }).click();
+  await run.getByRole("region", { name: "Script output", exact: true }).locator(".xterm-rows", { hasText: "http://localhost:55000/" }).waitFor();
   const open = strip.getByRole("button", { name: "Open http://localhost:55000/" });
   await open.waitFor();
 
@@ -99,8 +101,8 @@ test("⌘⇧B opens the run's localhost URL from the Run tab; it does nothing be
 
   // Back on Run, stopping the script hides the button and ⌘⇧B does nothing again.
   await strip.getByRole("tab", { name: "Run", exact: true }).click();
-  await run.getByRole("button", { name: "■ Stop" }).click();
-  await run.getByRole("button", { name: "▶ Run" }).waitFor();
+  await strip.getByRole("button", { name: "Stop Dev", exact: true }).click();
+  await strip.getByRole("button", { name: "Run Dev", exact: true }).waitFor();
   assert.equal(await strip.getByTestId("preview-open").count(), 0);
   await press(page, "Meta+Shift+b");
   await page.waitForTimeout(300);
@@ -115,7 +117,7 @@ test("the Open button shows the port and its tooltip names the URL and ⌘⇧B",
   const strip = page.getByRole("region", { name: "Terminal panel" });
   const run = page.getByRole("region", { name: "Run", exact: true });
   await strip.getByRole("tab", { name: "Run", exact: true }).click();
-  await run.getByRole("button", { name: "▶ Run" }).click();
+  await strip.getByRole("button", { name: "Run Dev", exact: true }).click();
   const open = strip.getByRole("button", { name: "Open http://localhost:55000/" });
   await open.waitFor();
   await open.hover();

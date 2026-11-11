@@ -1,0 +1,20 @@
+.linked-directory-layer { position: fixed; inset: 0; z-index: 50; }
+.linked-directory-backdrop { position: absolute; inset: 0; background: var(--backdrop); }
+.linked-directory-picker { position: absolute; top: max(16px, calc(50% - 250px)); left: 50%; transform: translateX(-50%); width: min(576px, calc(100vw - 32px)); max-height: min(600px, calc(100vh - 32px), calc(50vh + 234px)); display: flex; flex-direction: column; overflow: hidden; outline: none; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); color: var(--text); box-shadow: 0 20px 60px var(--shadow-25); }
+.linked-directory-title { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.linked-directory-search { flex: none; box-sizing: border-box; width: 100%; height: 49px; padding: 12px 16px; outline: none; border: 0; border-bottom: 1px solid var(--border); border-radius: 0; background: transparent; color: var(--text); font: inherit; font-size: 16px; line-height: 24px; }
+.linked-directory-search::placeholder { color: var(--faint); }
+.linked-directory-list { overflow-y: auto; padding: 8px; }
+.linked-directory-list > [role="group"] + [role="group"] { margin-top: 6px; }
+.linked-directory-heading { display: flex; align-items: center; height: 28px; padding: 0 8px; font-size: 12px; line-height: 16px; color: var(--muted); }
+.linked-directory-row { display: flex; align-items: center; gap: 16px; min-height: 44px; padding: 8px; border-radius: 4px; cursor: default; font-size: 14px; line-height: 20px; }
+.linked-directory-row > svg { flex: none; color: var(--muted); }
+.linked-directory-row[aria-selected="true"] { background: var(--hover); }
+.linked-directory-row[aria-disabled="true"] { opacity: .6; }
+.linked-directory-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.linked-directory-detail { flex-shrink: 0; color: var(--muted); font-size: 12px; }
+.linked-directory-spacer { flex: 1; }
+.linked-directory-hint { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: 12px; opacity: 0; }
+.linked-directory-row:hover .linked-directory-hint { opacity: 1; }
+.linked-directory-status { padding: 8px 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; }
+.linked-directory-status[role="alert"] { color: var(--destructive); }

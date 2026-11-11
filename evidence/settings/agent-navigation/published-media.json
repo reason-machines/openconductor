@@ -1,0 +1,16 @@
+{
+  "before": {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/91578002-1a92-46d0-beb5-0f489acaead4/58d2efd9387e4edc29aaaec996b75785/before.png",
+    "markdown": "![Before: Settings search selects Claude but Codex remains visible](https://api.reasonmachines.com/media/pr-screenshots/91578002-1a92-46d0-beb5-0f489acaead4/58d2efd9387e4edc29aaaec996b75785/before.png#w=1280&h=820)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  },
+  "after": {
+    "uploaded": true,
+    "kind": "image",
+    "embed_url": "https://api.reasonmachines.com/media/pr-screenshots/91578002-1a92-46d0-beb5-0f489acaead4/cc8376445a276739e280bef51864fb2f/after.png",
+    "markdown": "![After: Settings search selects and displays Claude Code](https://api.reasonmachines.com/media/pr-screenshots/91578002-1a92-46d0-beb5-0f489acaead4/cc8376445a276739e280bef51864fb2f/after.png#w=1280&h=820)",
+    "note": "Uploaded. Put the returned markdown in the pull request body."
+  }
+}

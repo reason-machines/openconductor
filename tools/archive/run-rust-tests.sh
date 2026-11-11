@@ -33,6 +33,11 @@ oc-scripts = { path = "$repo_root/crates/scripts" }
 openconductor-db = { path = "$repo_root/crates/openconductor-db" }
 tauri = { path = "tauri" }
 
+[dev-dependencies]
+sqlx = { version = "0.8.6", default-features = false, features = ["sqlite", "runtime-tokio"] }
+# Match the std-enabled rustix used by the app and oc-scripts' test graph.
+rustix = { version = "1", features = ["std"] }
+
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(workspace_std_only)'] }
 
@@ -55,10 +60,16 @@ pub mod db {
 pub mod settings {
     pub mod effective {
         pub fn resolve(
-            _repo_root: &std::path::Path,
-            _workspace: Option<&std::path::Path>,
+            repo_root: &std::path::Path,
+            workspace: Option<&std::path::Path>,
         ) -> Result<oc_scripts::config::EffectiveSettings, String> {
-            Err("stub".into())
+            let home = repo_root.parent().unwrap().join("isolated-settings-home");
+            oc_scripts::config::load_effective(&oc_scripts::config::EffectivePaths {
+                user_dir: home.join(".conductor"),
+                home,
+                repo_root: repo_root.to_path_buf(),
+                workspace: workspace.map(std::path::Path::to_path_buf),
+            }).map_err(|e| e.to_string())
         }
     }
 }

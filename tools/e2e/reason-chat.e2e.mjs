@@ -41,6 +41,8 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -62,14 +64,16 @@ writeFileSync(join(project, "README.md"), "e2e\n");
 git("add", ".");
 git("-c", "user.name=e2e", "-c", "user.email=e2e@example.com", "commit", "-q", "-m", "init");
 
-// `reason` on PATH is the fake; the app finds it with find_reason_cli.
+// Explicit chat override: the universal installer still ensures the official CLI.
 const bin = join(home, "bin");
 mkdirSync(bin);
 const fake = join(repoRoot, "tools/reason-acp/fake_reason_acp.py");
 writeFileSync(join(bin, "reason"), `#!/bin/sh\nexec python3 "${fake}" "$@"\n`);
 chmodSync(join(bin, "reason"), 0o755);
 
-const env = { ...process.env, HOME: home, PATH: `${bin}:${process.env.PATH}` };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), PATH: `${bin}:${process.env.PATH}` };
+mkdirSync(env.OPENCONDUCTOR_HOME, { recursive: true });
+writeFileSync(join(env.OPENCONDUCTOR_HOME, "settings.toml"), `reason_executable_path = ${JSON.stringify(join(bin, "reason"))}\n`);
 delete env.REASON_CLI;
 // The app data folder (conductor.db, worktrees) must be under the fresh HOME too.
 delete env.XDG_DATA_HOME;
@@ -78,6 +82,7 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
+const capture = new WebDriver(base);
 let sessionUrl = null;
 
 async function wd(method, path, body) {
@@ -101,6 +106,10 @@ async function find(css) {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const run = (script, ...args) => wd("POST", "/execute/sync", { script, args });
+/** Runs `script` in the page; it returns one element (or null), whose WebDriver id this returns. */
+const elementBy = (script, ...args) => run(script, ...args).then((el) => (el ? el[W3C_ELEMENT] ?? el.ELEMENT ?? null : null));
+/** A real WebDriver click: scrolled into view, refused while another element covers it. */
+const click = (id) => wd("POST", `/element/${id}/click`, {});
 /** Runs `script` in the page; it calls the last argument with its result. */
 const runAsync = (script, ...args) => wd("POST", "/execute/async", { script, args });
 
@@ -120,9 +129,9 @@ async function waitFor(what, fn, timeoutMs = 30000) {
 }
 
 async function screenshot(name) {
-  const png = await wd("GET", "/screenshot");
+  const png = await capture.screenshot();
   const file = join(out, `${name}.png`);
-  writeFileSync(file, Buffer.from(png, "base64"));
+  writeFileSync(file, png);
   console.log(`screenshot: ${file}`);
 }
 
@@ -136,10 +145,10 @@ const focusedElement = () =>
     if (a.closest(".composer")) return "composer " + a.tagName.toLowerCase();
     if (a.closest(".terminal-panel")) return "terminal " + a.className;
     return a.tagName.toLowerCase() + (a.className ? "." + a.className : "");`);
-const composerValue = () => run("const t = document.querySelector('.composer textarea'); return t ? t.value : null;");
+const composerValue = () => run("const t = document.querySelector('.composer [contenteditable=true]'); return t ? t.textContent : null;");
 
 async function send(text) {
-  await wd("POST", `/element/${await find(".composer textarea")}/value`, { text });
+  await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
   // Send is disabled while the box is empty: a click then does nothing and the
   // turn never shows, so say where the typed text went instead of timing out later.
   const typed = await composerValue();
@@ -155,6 +164,24 @@ const toolInputs = () =>
 /** A finished turn has no Stop button. */
 const turnDone = (n) => waitFor(`turn ${n} to finish`, async () => !(await running()));
 
+// Navigate through the sidebar instead of racing React's saved preferences with a reload.
+async function openWorkspace(repoName, branch) {
+  await finishStartup(capture);
+  const row = `button[data-testid="left-sidebar-workspace-item"][title*=" · ${branch} · "]`;
+  const rowId = await waitFor(`the ${branch} row in the sidebar`, async () => {
+    const id = await elementBy("return document.querySelector(arguments[0]);", row);
+    if (id) return id;
+    const header = await elementBy(
+      `return [...document.querySelectorAll('.sb-repo-header[role="button"][aria-expanded="false"]')].find((h) => h.querySelector(".sb-repo-name")?.textContent === arguments[0]) || null;`,
+      repoName,
+    );
+    if (header) await click(header);
+    return null;
+  });
+  await click(rowId);
+  await waitFor(`${branch} to be the open workspace`, () => run("return document.querySelector(arguments[0])?.getAttribute('aria-current') === 'page';", row));
+}
+
 const steps = [];
 const pass = (s) => {
   steps.push(s);
@@ -167,6 +194,8 @@ async function launch() {
     capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } },
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
+  capture.sessionId = session.sessionId;
+  await finishStartup(capture);
 }
 
 try {
@@ -179,9 +208,16 @@ try {
   const seeded = await runAsync(
     `const done = arguments[arguments.length - 1];
      const invoke = window.__TAURI_INTERNALS__.invoke;
-     // The workspace chat's model comes from Settings' default model (#271).
+     const model = "byok:anthropic:claude-opus-5-5";
      invoke("get_settings")
-       .then((s) => invoke("update_settings", { settings: { ...s, models: { ...s.models, default: "opus-5-5-1m" } } }))
+       .then(async (s) => {
+         await invoke("favorite_models_replace", { favorites: [{ id: "default", configuration: JSON.stringify({ type: "built-in", agent: "reason", model, fastMode: false, slot: 0 }) }] });
+         return invoke("update_settings", { settings: {
+           ...s,
+           reason: { ...s.reason, workspace: "ws-a", model, reasoning_effort: null },
+           models: { ...s.models, default: model, default_agent: "reason", default_initialized: true, default_fast_mode: false },
+         } });
+       })
        .then(() => invoke("add_repository", { path: arguments[0] }))
        .then((repo) => invoke("create_workspace", { repositoryId: repo.id, branchName: "e2e", directoryName: "e2e", baseBranch: null, existingBranch: false, prNumber: null }))
        .then((created) => done({ workspace: created.workspace }), (err) => done({ error: String(err) }));`,
@@ -189,8 +225,10 @@ try {
   );
   assert.ok(seeded?.workspace, `seeding failed: ${JSON.stringify(seeded)}`);
   const workspace = seeded.workspace;
-  const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
-  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  assert.equal(workspace.branchName, "e2e", "the seeded workspace has the requested branch");
+  // The page loads conductor.db's rows at startup, so reload to list the seeded repo, then open its workspace.
+  await run("location.reload(); return true;");
+  await openWorkspace("proj", workspace.branchName);
   // Conductor's empty first chat (x9s) and a model, not Codex, on the picker chip.
   const intro = await waitFor("the empty chat's intro", () => chatText().then((t) => t && t.includes("You’re in a new copy of") && t));
   assert.ok(intro.includes("called e2e"), intro);
@@ -202,11 +240,11 @@ try {
 
   // Conductor's default workspace layout shows no terminal, so none opens with
   // the workspace to take the keyboard from the chat box.
-  await run(`document.querySelector('.composer textarea').focus(); return true;`);
+  await run(`document.querySelector('.composer [contenteditable=true]').focus(); return true;`);
   await sleep(500);
   assert.equal(await run("return document.querySelectorAll('.terminal-panel').length;"), 0, "the workspace opened a terminal panel by default");
   const focus = await focusedElement();
-  assert.equal(focus, "composer textarea", `something took focus from the chat box (${focus})`);
+  assert.equal(focus, "composer div", `something took focus from the chat box (${focus})`);
   pass("no terminal opens with the workspace (Conductor's default layout) and the chat box keeps focus");
 
   // 1. A local path: in the workspace folder under HOME.
@@ -296,22 +334,26 @@ try {
   }
   pass(`turns 5 and 6 each saved start/end checkpoints (${refs.length} refs in the workspace)`);
 
-  // Every finished turn has a More actions menu ("Fork to new tab", "Fork to new workspace"); only
-  // turns before the last also have "Reset chat". Opens the turn's menu with
-  // real clicks, reads its items, and leaves it open.
+  // Every finished turn has a "Show message actions" menu ("Fork to new tab", "Fork to new
+  // workspace"); only turns before the last also have "Reset chat". Opens the turn's menu with
+  // real clicks, reads its items, and leaves it open. The menu is portalled to <body> under its
+  // button (.cm-turn-menu, one open at a time) behind a backdrop, so Escape closes it.
   const openMenu = async (turn) => {
-    // The menu opens upward from its button (.chat-menu: bottom: 100%), so a
-    // turn near the top of the transcript would put it past the scroller's edge.
-    await run(`document.querySelector(arguments[0]).scrollIntoView({ block: "center" }); return true;`, turn);
-    await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
+    await click(await find(`${turn} button[aria-label="Show message actions"]`));
     return waitFor(`${turn}'s menu`, () =>
-      run(`const m = document.querySelector('${turn} .chat-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
+      run(`const m = document.querySelector('.cm-turn-menu'); return m ? [...m.querySelectorAll('[role="menuitem"]')].map((b) => b.innerText.trim()) : null;`),
     );
   };
   const closeMenu = async (turn) => {
-    await wd("POST", `/element/${await find(`${turn} button[aria-label="More actions"]`)}/click`, {});
-    await waitFor(`${turn}'s menu to close`, () => run(`return !document.querySelector('${turn} .chat-menu');`));
+    await run(`document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true })); return true;`);
+    await waitFor(`${turn}'s menu to close`, () => run(`return !document.querySelector('.cm-turn-menu');`));
   };
+  const menuItem = (name) =>
+    waitFor(`the "${name}" menu item`, () =>
+      elementBy(`return [...document.querySelectorAll('.cm-turn-menu [role="menuitem"]')].find((b) => b.innerText.trim() === arguments[0]) || null;`, name),
+    );
+  // "Reset chat?" by role and accessible title, not by class.
+  const resetDialog = `[...document.querySelectorAll('[role="alertdialog"]')].find((d) => document.getElementById(d.getAttribute("aria-labelledby"))?.textContent.trim() === "Reset chat?") || null`;
   const turn5 = `.chat-turn-end[data-turn-id="${id5}"]`;
   const turn6 = `.chat-turn-end[data-turn-id="${id6}"]`;
   const lastItems = await openMenu(turn6);
@@ -320,20 +362,21 @@ try {
   const turn5Items = await openMenu(turn5);
   assert.deepEqual(turn5Items, ["Fork to new tab", "Fork to new workspace", "Reset chat"], "turn 5 has both forks and Reset chat");
   pass('the last turn\'s menu has "Fork to new tab" and "Fork to new workspace"; turn 5\'s also has "Reset chat"');
-  const resetItem = turn5Items.indexOf("Reset chat") + 1;
-  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]:nth-child(${resetItem})`)}/click`, {});
-  const dialog = await waitFor('"Reset chat?" with "2 changed"', () =>
-    run(`const d = document.querySelector('.modal[aria-label="Reset chat?"]'); return d && d.innerText.includes("changed") ? d.innerText : null;`),
+  await click(await menuItem("Reset chat"));
+  await waitFor('the "Reset chat?" dialog', () => run(`return !!(${resetDialog});`));
+  // The count arrives after the dialog opens. Wait for its value, then assert it.
+  const dialog = await waitFor('"Reset chat?" to finish counting changed files', () =>
+    run(`const d = ${resetDialog}; return d && /\\b\\d+ changed\\b/.test(d.innerText) ? d.innerText : null;`),
   );
   assert.match(dialog, /Later messages will be deleted\./);
   assert.match(dialog, /Also reset files/);
-  assert.match(dialog, /\b2 changed\b/, dialog);
-  assert.equal(await run(`return document.querySelector('.modal input[aria-label="Also reset files"]').checked;`), true);
+  assert.match(dialog, /\b2 changed\b/, `the count of files changed since turn 5:\n${dialog}`);
+  assert.equal(await run(`return (${resetDialog}).querySelector('input[type="checkbox"][aria-label="Also reset files"]').checked;`), true);
   await screenshot("reason-chat-reset-dialog");
   pass('Reset chat on turn 5 opens "Reset chat?": "Later messages will be deleted.", Also reset files on, 2 changed');
 
-  await wd("POST", `/element/${await find(".modal .oc-btn-danger")}/click`, {});
-  await waitFor("the dialog to close", () => run(`return !document.querySelector('.modal[aria-label="Reset chat?"]');`), 15000);
+  await click(await elementBy(`return [...(${resetDialog}).querySelectorAll("button")].find((b) => b.innerText.trim().startsWith("Reset")) || null;`));
+  await waitFor("the dialog to close", () => run(`return !(${resetDialog});`), 15000);
   const after = await chatText();
   assert.ok(after.includes("turn 5 wrote notes.txt"), after);
   assert.ok(!after.includes("turn 6 wrote"), after);
@@ -370,11 +413,15 @@ try {
     throw new Error(`${e.message}; the sidebar row icons are ${JSON.stringify(await sidebarStatus())}`);
   });
   const card = await waitFor("the permission card", () => run(`const c = document.querySelector('[data-testid="chat-permission-request"]'); return c ? c.innerText : null;`));
-  // Conductor's tool card (`Jpo`): the question for an `execute` tool, the call's title, Reason's options.
+  // Conductor's tool approval (`Jpo`), in the composer box in place of its editor: the
+  // question for an `execute` tool, the call as the transcript's Bash row (command in a
+  // chip), and Yes / No whatever the options are named.
   assert.match(card, /Do you want to run this command\?/);
-  assert.match(card, /bash: rm -rf build/);
-  assert.match(card, /Allow/);
-  assert.match(card, /Reject/);
+  assert.match(card, /Bash/);
+  assert.match(card, /rm -rf build/);
+  assert.match(card, /Yes/);
+  assert.match(card, /No/);
+  assert.equal(await run(`return !!document.querySelector('.composer.oc-composer.is-approval [data-testid="chat-permission-request"]');`), true);
   const storedRows = await waitFor("needs_user_permission in conductor.db", async () => {
     const rows = await storedStatuses();
     return Array.isArray(rows) && rows.some((r) => r.chatId === workspace.id && r.status === "needs_user_permission") && rows;
@@ -388,8 +435,16 @@ try {
   await screenshot("status-needs-permission-home");
   pass("the Home list shows the workspace's Needs permission status in place of its time");
 
-  await run(`document.querySelector('[data-testid="workspace-status-icon"][data-status="needs-user-permission"]').closest("button").click(); return true;`);
-  await wd("POST", `/element/${await waitFor("the Allow button", () => find('[data-testid="chat-permission-request"] button[data-kind="allow_once"]'))}/click`, {});
+  // With no workspace open its sidebar group is folded (Conductor's `Dra`), so open it from
+  // the Home list: the option whose status reads "Needs permission".
+  await click(
+    await waitFor("the Home row that needs permission", () =>
+      elementBy(
+        `return [...document.querySelectorAll('[role="listbox"][aria-label="Workspaces"] [role="option"]')].find((o) => o.querySelector('[role="img"][aria-label="Needs permission"]')) || null;`,
+      ),
+    ),
+  );
+  await click(await waitFor("the Allow button", () => find('[data-testid="chat-permission-request"] button[data-kind="allow_once"]')));
   await waitFor('"permission: allow"', () => chatText().then((t) => t.includes("permission: allow")));
   await turnDone(8);
   await waitFor("the sidebar row to leave Needs permission", async () => !needsPermission(await sidebarStatus()));
@@ -404,9 +459,8 @@ try {
   // "e2e" named "e2e-v1", a workspace on it restored to turn 5's end
   // checkpoint, and its chat's composer holding the transcript, not sent.
   const forkItems = await openMenu(turn5);
-  const forkItem = forkItems.indexOf("Fork to new workspace") + 1;
-  assert.ok(forkItem > 0, JSON.stringify(forkItems));
-  await wd("POST", `/element/${await find(`${turn5} .chat-menu [role="menuitem"]:nth-child(${forkItem})`)}/click`, {});
+  assert.ok(forkItems.includes("Fork to new workspace"), JSON.stringify(forkItems));
+  await click(await menuItem("Fork to new workspace"));
   const worktrees = () =>
     execFileSync("git", ["worktree", "list", "--porcelain"], { cwd: workspace.path, encoding: "utf8" })
       .split("\n\n")
@@ -438,7 +492,8 @@ try {
   writeFileSync(join(home, "fake-reason-selected"), "ws-b");
   await launch();
   await waitFor("the app to load again", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
-  await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  // The app reopens the workspace that was open when it quit (the fork), so go back to the first chat from its sidebar row.
+  await openWorkspace("proj", workspace.branchName);
   await waitFor("the first chat's transcript after the relaunch", () => chatText().then((t) => t && t.includes("turn 5 wrote notes.txt")));
   assert.equal(await run("return localStorage.getItem(arguments[0]);", sessionKey), before, "the chat kept its Session id");
   await send("echo: after relaunch");

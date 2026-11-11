@@ -63,6 +63,7 @@ function fakeBackend({ repo, workspace }) {
   const gate = new Promise((r) => (release = r));
   window.__releasePty = () => release();
   window.__ptyInput = "";
+  window.__ptySpawns = [];
   window.isTauri = true;
   window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener() {} };
   window.__TAURI_INTERNALS__ = {
@@ -70,6 +71,10 @@ function fakeBackend({ repo, workspace }) {
     transformCallback: (f) => ((cbs[++cb] = f), cb),
     async invoke(cmd, args) {
       switch (cmd) {
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
+        case "db_first_run_onboarding_step":
+          return "999";
         case "plugin:event|listen":
           if (args.event !== "pty-event") return 1;
           await gate;
@@ -83,6 +88,7 @@ function fakeBackend({ repo, workspace }) {
           return [{ id: workspace.id, repositoryId: repo.id, directoryName: workspace.name, workspaceName: workspace.name, branch: workspace.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: workspace.path, pinnedAt: null, unread: false, createdAt: "2026-01-01T00:00:00Z" }];
         case "pty_spawn": {
           const a = args.args;
+          window.__ptySpawns.push({ id: a.id, cwd: a.cwd });
           setTimeout(() => {
             emit({ kind: "ready", id: a.id, pid: 42 });
             emit({ kind: "data", id: a.id, data: b64(`${a.cwd}$ `) });
@@ -116,16 +122,34 @@ const focusedIn = (page) =>
     return a ? a.tagName.toLowerCase() : "none";
   });
 
-async function open(page) {
-  await page.addInitScript(fakeBackend, { repo: REPO, workspace: WORKSPACE });
+async function open(page, workspace = WORKSPACE) {
+  await page.addInitScript(fakeBackend, { repo: REPO, workspace });
   await page.goto(base + "/");
-  await page.locator(".composer textarea").waitFor();
+  await page.locator(".composer [contenteditable=true]").waitFor();
+}
+
+for (const path of ["/worktrees/lisbon", "/repo", null]) {
+  test(`new terminal tabs use selected workspace cwd (${path ?? "repository fallback"})`, async () => {
+    const page = await browser.newPage();
+    try {
+      await open(page, { ...WORKSPACE, path });
+      await page.locator(".ws-strip[data-terminals-ready]").waitFor();
+      await page.evaluate(() => window.__releasePty());
+      for (let count = 1; count <= 2; count++) {
+        await page.getByRole("button", { name: "New terminal" }).click();
+        await page.waitForFunction((n) => window.__ptySpawns.length === n, count);
+        assert.deepEqual(await page.evaluate(() => window.__ptySpawns.map((s) => s.cwd)), Array(count).fill(path ?? REPO.path));
+      }
+    } finally {
+      await page.close();
+    }
+  });
 }
 
 test("no terminal opens with the workspace, so the chat box keeps every key", async () => {
   const page = await browser.newPage();
   await open(page);
-  const box = page.locator(".composer textarea");
+  const box = page.locator(".composer [contenteditable=true]");
   await box.click();
   await page.keyboard.type("lo");
   // Terminals live in the right panel's strip, which opens on Run; nothing spawns a shell by itself.
@@ -135,7 +159,7 @@ test("no terminal opens with the workspace, so the chat box keeps every key", as
   await page.keyboard.type("cal");
   assert.equal(await page.locator(".terminal-panel").count(), 0, "no terminal is shown");
   assert.equal(await focusedIn(page), "composer", "focus stays in the chat box");
-  assert.equal(await box.inputValue(), "local", "every key went to the chat box");
+  assert.equal(await box.textContent(), "local", "every key went to the chat box");
   assert.equal(await page.evaluate(() => window.__ptyInput), "", "no key reached a shell");
   assert.equal(await page.locator('.composer button[type="submit"]').isEnabled(), true, "Send is enabled");
   await page.close();
@@ -159,7 +183,7 @@ test("a tab the user opens takes the keyboard", async () => {
   await page.evaluate(() => window.__releasePty());
   await showTerminalPanel(page);
   await page.locator(".term-tab").first().waitFor();
-  await page.locator(".composer textarea").click();
+  await page.locator(".composer [contenteditable=true]").click();
   await page.getByRole("button", { name: "New terminal" }).click();
   await page.waitForFunction(() => document.querySelectorAll(".term-tab").length === 2);
   await page.waitForFunction(() => document.activeElement?.closest(".terminal-panel .term-mount"));

@@ -1,0 +1,11 @@
+{
+  "passed": 6,
+  "checks": [
+    "Enter picks a file before a second Enter submits its path",
+    "ArrowDown and Tab pick a ranked result",
+    "Email text does not open mentions, Escape dismisses, slash menu still works",
+    "Multiline input scrolls at 188px and shrinks back to the 152px box",
+    "An attachment with empty text enables Send and is delivered, then cleared",
+    "Working state shows Stop, attachment-only queued follow-up shows Queue, Stop returns idle"
+  ]
+}

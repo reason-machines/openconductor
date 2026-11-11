@@ -11,7 +11,7 @@ import type { ChatAgentId } from "./agentChoice.ts";
 const PATTERNS: Record<ChatAgentId, readonly string[]> = {
   claude: ["please run /login", "authentication_error", "not logged in", "invalid api key", "oauth token has expired"],
   codex: ["401 unauthorized", "not logged in", "codex login", "invalid api key", "incorrect api key", "token_expired", "refresh token"],
-  reason: ["reason login", "not signed in", "not logged in", "401 unauthorized"],
+  reason: ["reason login", "not signed in", "not logged in", "401 unauthorized", "authentication required", "authentication_required"],
 };
 
 /** True when `error` says the chat's agent is not signed in. */
@@ -27,6 +27,11 @@ export const AGENT_LABEL: Record<ChatAgentId, string> = { reason: "Reason", clau
 /** The copy under the failed turn. */
 export function signInCopy(agent: ChatAgentId) {
   const label = AGENT_LABEL[agent];
+  if (agent === "reason") return {
+    badge: "Authentication required",
+    text: "Sign in to Reason to use this agent. Your message sends as soon as you are signed in.",
+    action: "Sign in to Reason",
+  };
   return {
     badge: "Authentication required",
     text: `${label} is not signed in. Sign in on its Settings › Agents tab, then send your message again.`,

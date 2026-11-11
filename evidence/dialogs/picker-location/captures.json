@@ -1,0 +1,24 @@
+{
+  "oc-create": {
+    "evidence_id": "ev_d772c77569ca81d8ed216bb27359fe4ee2453230b57bee52df2336bba174eb40",
+    "request": {
+      "directory": true,
+      "multiple": false,
+      "title": "Choose where to create the project",
+      "defaultPath": "/Users/demo/Code/with spaces"
+    },
+    "png_sha256": "d109859c3e6db7ea10e37e5fcfe654bebbff9372972e4d42a847d876bbb91b26",
+    "issues": []
+  },
+  "oc-clone": {
+    "evidence_id": "ev_bd56af6fd027bdd5705a6f9775e2b3b83611ff07a88c8d5ceb0ed483b704ec8b",
+    "request": {
+      "directory": true,
+      "multiple": false,
+      "title": "Choose where to clone the repository",
+      "defaultPath": "/Users/demo/Code/with spaces"
+    },
+    "png_sha256": "6f92f1310066d8b555f3fda3eb5d43a214e2e28bd83341bb8f82c452a019dd69",
+    "issues": []
+  }
+}

@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { errorText, getSettings, updateSettings } from "./api";
 import { applyAppearance, DEFAULT_ZOOM, SETTINGS_CHANGED, withAppearance, zoomStep } from "./appearance";
+import { withField } from "./model";
+import { resolveDark } from "./sidebarTransparency";
 import "./appearance.css";
 import type { Settings } from "./types";
 
@@ -24,9 +26,22 @@ export function useSettings() {
     setSettingsState(s);
   }, []);
   const [error, setError] = useState<string | null>(null);
+  const writes = useRef<Promise<void>>(Promise.resolve());
+  const revision = useRef(0);
+  const confirmed = useRef(settings);
 
   const reload = useCallback(() => {
-    getSettings().then(setSettings, (e) => setError(errorText(e)));
+    const startedAt = revision.current;
+    void writes.current.then(getSettings).then(
+      (stored) => {
+        if (startedAt !== revision.current) return;
+        confirmed.current = stored;
+        setSettings(stored);
+      },
+      (e) => {
+        if (startedAt === revision.current) setError(errorText(e));
+      },
+    );
   }, [setSettings]);
   useEffect(reload, [reload]);
   // A save from outside this view (⌘+ / ⌘− zoom) would otherwise be overwritten by the next save here.
@@ -36,23 +51,33 @@ export function useSettings() {
   }, [reload]);
 
   const save = useCallback(
-    async (next: Settings): Promise<boolean> => {
-      const prev = settings;
+    (next: Settings): Promise<boolean> => {
+      const savedAt = ++revision.current;
       setSettings(next);
       applyAppearance(next);
-      try {
-        const stored = await updateSettings(next);
-        setSettings(stored);
-        setError(null);
-        return true;
-      } catch (e) {
-        setSettings(prev);
-        if (prev) applyAppearance(prev);
-        setError(errorText(e));
-        return false;
-      }
+      const run = writes.current.then(async () => {
+        try {
+          const stored = await updateSettings(next);
+          confirmed.current = stored;
+          if (savedAt === revision.current) {
+            setSettings(stored);
+            setError(null);
+            window.dispatchEvent(new Event(SETTINGS_CHANGED));
+          }
+          return true;
+        } catch (e) {
+          if (savedAt === revision.current) {
+            setSettings(confirmed.current);
+            if (confirmed.current) applyAppearance(confirmed.current);
+            setError(errorText(e));
+          }
+          return false;
+        }
+      });
+      writes.current = run.then(() => undefined);
+      return run;
     },
-    [settings, setSettings],
+    [setSettings],
   );
 
   return { settings, error, save, reload };
@@ -73,4 +98,16 @@ export function changeZoom(direction: "in" | "out" | "reset"): Promise<void> {
   });
   zoomQueue = run.catch(() => undefined);
   return run;
+}
+
+/**
+ * ⌥⌘T and the palette's "Toggle theme": the opposite of the mode in effect, saved as an explicit
+ * theme (Conductor's `i(n === "dark" ? "light" : "dark")`, renderApp @10,904,339).
+ */
+export async function toggleTheme(): Promise<void> {
+  const s = await getSettings();
+  const dark = resolveDark(s.general.theme === "system" ? undefined : s.general.theme, window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const stored = await updateSettings(withField(s, "general", "theme", dark ? "light" : "dark"));
+  applyAppearance(rememberSettings(stored));
+  window.dispatchEvent(new Event(SETTINGS_CHANGED));
 }

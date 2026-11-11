@@ -1,0 +1,61 @@
+{
+  "repository": "reason-machines/monorepo",
+  "revision": "ae7783193f148a24095dd1556f6b132a151bfb0a",
+  "source": [
+    {
+      "path": "public/app-brand/reason-mark-mask.svg",
+      "upstream": "apps/web/public/reason-agent-mark/reason-mark-mask.svg",
+      "sha256": "165ebc1307e4f84bb69118d32d97d3a9e6ab82ddde1f2f0a63b2c62af7c176e1"
+    },
+    {
+      "path": "public/favicon.svg",
+      "upstream": "apps/web/public/favicon.svg",
+      "sha256": "342a4a7f2f4ba9264d7359befd3cb1bc505bd979cc795f895dac085a6db06c1f"
+    },
+    {
+      "path": "src-tauri/icons/reason-app-icon-ink-1024.png",
+      "upstream": "apps/web/public/reason-agent-mark/app-icon/reason-app-icon-ink-1024.png",
+      "sha256": "47663b200d6165c472acf3a0c3855f205151e453dd29d710c0945ec66892e067"
+    },
+    {
+      "path": "src-tauri/icons/icon.svg",
+      "upstream": "apps/web/public/reason-agent-mark/app-icon/reason-app-icon-ink.svg",
+      "sha256": "83cdae8f69caf417428aa5864e21fe6473310f0d52b1535eff5454e080a696d3"
+    }
+  ],
+  "generated": [
+    {
+      "path": "src-tauri/icons/128x128.png",
+      "sha256": "5dbcb6f7ba60faaf22b0dcb5d980d6e2db38c75c1ea3c64bf1572be7e5155305"
+    },
+    {
+      "path": "src-tauri/icons/128x128@2x.png",
+      "sha256": "24d6dbc9b759a6c40b46a05620caa8bc51d3f85c0f7cc9d228a217f80699f312"
+    },
+    {
+      "path": "src-tauri/icons/32x32.png",
+      "sha256": "82685d5375d083b25866458c4bdcfb1a28d249ca2c74d6ac099f1dca2a589f40"
+    },
+    {
+      "path": "src-tauri/icons/64x64.png",
+      "sha256": "1b8cd12ddd566e29a9857569955462f696e51e9dded34bbe62cbd5088a8b47d8"
+    },
+    {
+      "path": "src-tauri/icons/icon.icns",
+      "sha256": "04704c9b89895f4eeb299d42621f07c351ef5c644db16bbf01cc81e3d1407cf3",
+      "hashMode": "icns-chunks"
+    },
+    {
+      "path": "src-tauri/icons/icon.ico",
+      "sha256": "f4a6e1b8f7e16669bfb361a9501a0470656e5b7404936ba2733b26d46e83b142"
+    },
+    {
+      "path": "src-tauri/icons/icon.png",
+      "sha256": "7c55522cbf148a2883cc7d68a678a6606556c66bf77e6b1cbbc95d5d184372b9"
+    },
+    {
+      "path": "public/icon.png",
+      "sha256": "5dbcb6f7ba60faaf22b0dcb5d980d6e2db38c75c1ea3c64bf1572be7e5155305"
+    }
+  ]
+}

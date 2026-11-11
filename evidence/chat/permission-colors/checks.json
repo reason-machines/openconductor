@@ -1,0 +1,24 @@
+{
+  "checks": [
+    "dark: permission tool colors resolve outside the transcript",
+    "light: permission tool colors resolve outside the transcript",
+    "No returns the reject option and clears approval",
+    "Enter returns allow and clears approval",
+    "Backspace returns deny and clears approval",
+    "No page errors"
+  ],
+  "themes": {
+    "dark": {
+      "muted": "#171717",
+      "foreground": "#a3a3a3",
+      "color": "rgb(163, 163, 163)",
+      "background": "rgb(23, 23, 23)"
+    },
+    "light": {
+      "muted": "#f5f5f5",
+      "foreground": "#737373",
+      "color": "rgb(115, 115, 115)",
+      "background": "rgb(245, 245, 245)"
+    }
+  }
+}

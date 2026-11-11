@@ -1,6 +1,8 @@
 import type { WorkspaceStatusValue } from "./workspaceStatus.ts";
 import type { RowPr, SessionStatus } from "./rowStatus.ts";
 import type { NavSection } from "./navigationSections.ts";
+import type { SidebarSort } from "../home/sidebarSort.ts";
+import type { SidebarGroupBy } from "../home/sidebarGroupBy.ts";
 
 /** The workspace's lifecycle in this shell; what its agent is doing is `sessionStatus`. */
 export type WorkspaceStatus = "idle" | "needs-review" | "archived";
@@ -28,6 +30,8 @@ export interface Workspace {
   updatedAt?: number;
   /** Worktree path, once the backend created it. */
   path?: string;
+  linkedWorkspaceIds?: string[];
+  linkedDirectoryPaths?: string[];
   /** `intended_target_branch`: where the work merges back; "All changes" is diffed against it. */
   targetBranch?: string | null;
   /** `placeholder_branch_name`: the city branch, until the first message renames it. */
@@ -37,6 +41,11 @@ export interface Workspace {
   /** `user_set_workspace_name` / `user_set_branch_name`: block the auto-rename. */
   userSetWorkspaceName?: boolean;
   userSetBranchName?: boolean;
+  /**
+   * The main chat's own title, once renamed with its tab's "Rename chat" (Conductor's
+   * session title). Absent, the tab shows the workspace's name.
+   */
+  chatTitle?: string;
   /** Title of the workspace's pull request; the sidebar row shows it in place of the branch. */
   prTitle?: string | null;
   /** Body of the workspace's pull request (`pr_description`); Create PR uses it verbatim. */
@@ -85,19 +94,33 @@ export interface Repo {
 
 /**
  * `root` is Conductor's `/` route: the wordmark and the three entry cards, shown at
- * start, when the open workspace goes away, and from the sidebar Home row, nav.home
- * (⌘⇧H) and the palette's Go to Home. `home` is Conductor's `/all-workspaces` route,
- * the workspace list, reached by opening /all-workspaces (and restored if it was
- * open). Conductor itself sends Home to /all-workspaces; ours differs on purpose.
+ * start and when the open workspace goes away. `home` is Conductor's
+ * `/all-workspaces` list, opened by the sidebar Home row, nav.home (⌘⇧H),
+ * the palette's Home action, or the explicit /all-workspaces path.
  */
 export type Selection =
   | { kind: "root" }
   | { kind: "home" }
   /** Conductor's `/dashboard` (Experimental "Dashboard"); `repo` is its `?repo=` project tab. */
   | { kind: "dashboard"; repo?: string }
+  /** Conductor's `/routines` pages on Reason Loops (src/features/routines). */
+  | { kind: "routines"; page?: RoutinesPage }
   | { kind: "workspace"; repoId: string; workspaceId: string };
 
+/**
+ * Which `/routines` page: the list (none), `/routines/new`, `/routines/new/$suggestionId`,
+ * `/routines/$automationId` (a Loop, by its Reason and id) or `/routines/$automationId/fork`.
+ */
+export type RoutinesPage =
+  | { view: "new"; suggestion?: string }
+  | { view: "edit"; reasonId: string; id: string }
+  | { view: "fork"; reasonId: string; id: string };
+
 export interface AppState {
+  sidebarSort?: SidebarSort;
+  sidebarGroupBy?: SidebarGroupBy;
+  sidebarRepoFilter?: string | null;
+  sidebarStatusCollapsed?: Partial<Record<WorkspaceStatusValue, boolean>>;
   repos: Repo[];
   selection: Selection;
   /** Left sidebar shown; absent in older saved state, which means shown. */

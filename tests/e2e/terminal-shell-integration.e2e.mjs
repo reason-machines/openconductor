@@ -82,6 +82,10 @@ function fakeBackend(shellState) {
     transformCallback: (f) => ((cbs[++cb] = f), cb),
     async invoke(cmd, args) {
       switch (cmd) {
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
+        case "db_first_run_onboarding_step":
+          return "999";
         case "plugin:event|listen":
           if (args.event === "pty-event") handler = args.handler;
           return 1;
@@ -186,22 +190,22 @@ test("the tab shows the running program from the shell's marks, and the marks ne
 
   await page.locator(".term-tab").first().waitFor();
   await waitForScreen(page, "/repo$");
-  assert.equal(await activeLabel(page), "Terminal 1");
+  assert.equal(await activeLabel(page), "Terminal");
 
   // A command that finishes: the label is back once the next prompt arrives.
   await type(page, "echo hi");
   await waitForScreen(page, "ran: echo hi");
-  await waitForLabel(page, "Terminal 1");
+  await waitForLabel(page, "Terminal");
 
   // A command that keeps running shows its program.
   await type(page, "watch ls");
   await waitForScreen(page, "Every 2s");
-  await waitForLabel(page, "Terminal 1 (watch)");
+  await waitForLabel(page, "Terminal (watch)");
 
   // Ctrl+C ends it; the prompt mark clears the program.
   await page.keyboard.press("Control+c");
   await waitForScreen(page, "^C");
-  await waitForLabel(page, "Terminal 1");
+  await waitForLabel(page, "Terminal");
 
   // A UTF-8 character split across two chunks still draws whole.
   await type(page, "accent");

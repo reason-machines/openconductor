@@ -262,5 +262,59 @@
   };
 
   const populated = { conductor: sql.join("\n"), vfs, git };
-  window.__OC_SEED_DATA__ = { populated };
+
+  // "needs-permission": populated plus a turn in "tallinn" waiting on a Bash
+  // approval. Conductor keeps tool approvals in memory only (index chunk
+  // `enqueueToolApproval`, fed by the sidecar's `toolApproval` JSON-RPC request,
+  // `Ke.addMethod(la.TOOL_APPROVAL, ...)`), so the mock sends that request once
+  // the app listens on rpc_from_sidecar (tauri-mock.js `sidecarRequests`).
+  // Same turn as tools/reason-acp/fake_reason_acp.py "tallinn".
+  const TALLINN_PROMPT = "Return X-RateLimit-Limit and X-RateLimit-Remaining headers on every API response.";
+  const TALLINN_COMMAND = { command: "pnpm test src/middleware/rate-limit.test.ts", description: "Run the rate limit tests" };
+  const tallinnRow = (id, role, content, ago, extra = {}) =>
+    insert("session_messages", { id, session_id: "sess-tallinn", role, content, created_at: iso(ago), sent_at: iso(ago), turn_id: "u-tallinn-1", model: "claude-opus-4-8", ...extra });
+  const tallinnAssistant = (id, content, ago) =>
+    tallinnRow(id, "assistant", JSON.stringify({ type: "assistant", message: { role: "assistant", model: "claude-opus-4-8", content }, session_id: "claude-demo-2" }), ago, { sdk_message_id: `sdk-${id}` });
+  const needsPermission = {
+    ...populated,
+    conductor: [
+      populated.conductor,
+      tallinnRow("u-tallinn-1", "user", TALLINN_PROMPT, 7),
+      tallinnAssistant("m-tallinn-1", [{ type: "text", text: "I'll add both headers in the rate limit middleware, then run its tests." }], 6),
+      tallinnAssistant("m-tallinn-2", [{ type: "tool_use", id: "tu-tallinn-1", name: "Bash", input: TALLINN_COMMAND }], 6),
+    ].join("\n"),
+    sidecarRequests: [
+      { jsonrpc: "2.0", id: "oc-mock-approval-1", method: "toolApproval", params: { sessionId: "sess-tallinn", toolUseId: "tu-tallinn-1", toolName: "Bash", toolInput: TALLINN_COMMAND } },
+    ],
+  };
+  // "two-turns": populated plus a second, shorter turn in "lisbon", so the first
+  // turn is not the last one. Conductor's turn menu offers "Reset chat" only on
+  // a turn before the last (renderApp `TDo`: `ue = ... && !isLastTurn && ...`).
+  // Same second turn as tools/side-by-side/chat-tabs.mjs (LISBON_FOLLOW_UP).
+  const LISBON_FOLLOW_UP = "Also cover a session that expires exactly now.";
+  const second = [];
+  const t2 = "u-lisbon-2";
+  second.push(insert("session_messages", { id: t2, session_id: S, role: "user", content: LISBON_FOLLOW_UP, created_at: iso(20), sent_at: iso(20), turn_id: t2, model: "claude-opus-4-8" }));
+  second.push(
+    insert("session_messages", {
+      id: `m-${S}-t2-1`,
+      session_id: S,
+      role: "assistant",
+      content: JSON.stringify({ type: "assistant", message: { role: "assistant", model: "claude-opus-4-8", content: [{ type: "text", text: "Done. A session whose `expiresAt` equals now counts as expired, and a test covers it." }] }, session_id: "claude-demo-1" }),
+      created_at: iso(19),
+      sent_at: iso(19),
+      turn_id: t2,
+      sdk_message_id: "sdk-8",
+      model: "claude-opus-4-8",
+    }),
+  );
+  second.push(insert("session_messages", { id: `m-${S}-t2-2`, session_id: S, role: "assistant", content: JSON.stringify({ type: "result", subtype: "success", session_id: "claude-demo-1", is_error: false, result: "done" }), created_at: iso(19), sent_at: iso(19), turn_id: t2, model: "claude-opus-4-8" }));
+  const twoTurns = { ...populated, conductor: [populated.conductor, ...second].join("\n") };
+
+  // "chat-link": populated with a markdown web link in lisbon's last reply, so
+  // REA can right-click it and open Conductor's link menu (`cEi` -> `EQ`).
+  const LISBON_TAIL = "passes (4 tests).";
+  const chatLink = { ...populated, conductor: populated.conductor.replace(LISBON_TAIL, `${LISBON_TAIL} See the [session docs](https://docs.example.com/auth/sessions).`) };
+
+  window.__OC_SEED_DATA__ = { populated, "needs-permission": needsPermission, "two-turns": twoTurns, "chat-link": chatLink };
 })();

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { CODE_THEME_IDS, CODE_THEMES, codeThemeFrom, diffThemeFor, shikiNameOf, shikiTheme } from "./codeThemes.ts";
 import { colorVisionFrom, diffRootVars } from "./appearance.ts";
-import { PIERRE_THEME } from "./pierre.ts";
+import { CONDUCTOR_THEME } from "./conductorCodeTheme.ts";
 
 test("the eight code themes Conductor offers, one mode each (Latte light)", () => {
   assert.deepEqual(CODE_THEME_IDS, ["catppuccin-latte", "catppuccin-macchiato", "catppuccin-mocha", "dracula", "nord", "tokyo-night", "gruvbox-dark", "solarized-dark"]);
@@ -17,10 +17,10 @@ test("Shiki names: the id for a dark theme, <id>-light for a light one", () => {
   assert.equal(shikiNameOf("catppuccin-latte"), "catppuccin-latte-light");
 });
 
-test("Pierre theme: chosen theme on its own mode, default on the other", () => {
-  assert.deepEqual(diffThemeFor("default"), PIERRE_THEME);
-  assert.deepEqual(diffThemeFor("tokyo-night"), { dark: "tokyo-night", light: PIERRE_THEME.light });
-  assert.deepEqual(diffThemeFor("catppuccin-latte"), { dark: PIERRE_THEME.dark, light: "catppuccin-latte-light" });
+test("Pierre theme: Conductor Dark/Light by default; a chosen theme on its own mode, Conductor's on the other", () => {
+  assert.deepEqual(diffThemeFor("default"), { dark: "conductor-dark", light: "conductor-light" });
+  assert.deepEqual(diffThemeFor("tokyo-night"), { dark: "tokyo-night", light: CONDUCTOR_THEME.light });
+  assert.deepEqual(diffThemeFor("catppuccin-latte"), { dark: CONDUCTOR_THEME.dark, light: "catppuccin-latte-light" });
 });
 
 test("unknown stored values fall back to defaults", () => {

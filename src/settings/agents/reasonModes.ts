@@ -6,7 +6,7 @@
 import type { ProviderConfig, Settings } from "../types";
 import type { InfoRow } from "./agentAuth";
 
-/** The cards: "Reason account" (sign in from the app), "CLI" (`reason login` in a terminal), "API key". */
+/** The cards select a Reason browser account, existing CLI credentials, or an API key. */
 export type ReasonMode = "account" | "cli" | "apikey";
 
 export const REASON_MODES: readonly { id: ReasonMode; label: string; recommended?: boolean }[] = [
@@ -32,13 +32,6 @@ export interface ReasonAccount {
   computerConnected: boolean;
 }
 
-/** `reason login` without a terminal: the link and the code its page shows. */
-export interface LoginPrompt {
-  url: string | null;
-  code: string | null;
-  message: string;
-}
-
 export function reasonModeOf(settings: Settings): ReasonMode {
   const p = settings.providers.reason;
   if (p?.kind === "reason_api") return "apikey";
@@ -50,13 +43,13 @@ export function reasonProviderFor(mode: ReasonMode): ProviderConfig {
   return mode === "cli" ? { kind: "reason_login", source: "cli" } : { kind: "reason_login" };
 }
 
-export const signedIn = (a: ReasonAccount | null): a is ReasonAccount => !!a && (a.email !== null || a.name !== null);
+export const signedIn = (a: ReasonAccount | null): a is ReasonAccount => !!a && !a.error && !!(a.email?.trim() || a.name?.trim());
 
-/** The workspace new chats open in: the pinned one, else the Reason app's selection. */
+/** Only the workspace explicitly chosen in Settings may take new chats. */
 export function activeWorkspace(settings: Settings, account: ReasonAccount | null) {
   const pinned = settings.reason?.workspace ?? null;
   const all = account?.workspaces ?? [];
-  return all.find((w) => w.slug === pinned) ?? all.find((w) => w.selected) ?? null;
+  return (pinned ? all.find((w) => w.slug === pinned) : null) ?? null;
 }
 
 export interface ReasonStatus {
@@ -67,7 +60,7 @@ export interface ReasonStatus {
 
 const NOT_CONNECTED: Record<ReasonMode, string> = {
   account: "Not signed in. Sign in with your Reason account.",
-  cli: "Not signed in. Run reason login.",
+  cli: "Not signed in. Sign in with your Reason account.",
   apikey: "No Reason API key. Add one below.",
 };
 
@@ -80,7 +73,7 @@ export function reasonStatus(mode: ReasonMode, account: ReasonAccount | null, se
     rows.push({ label: "Account", value: account.email ?? account.name ?? "" });
     if (mode === "apikey") rows.push({ label: "Auth", value: "API key" });
     const ws = activeWorkspace(settings, account);
-    rows.push({ label: "Workspace", value: ws?.name ?? account.organization ?? "Default" });
+    rows.push({ label: "Workspace", value: ws?.name ?? (settings.reason?.workspace ? `${settings.reason.workspace} (unavailable)` : "Not selected") });
     rows.push({ label: "This Mac", value: account.computerConnected ? "Connected" : "Not connected" });
   }
   const notConnectedMessage = account?.error ?? (account === null && mode !== "apikey" ? "Reason is not installed or did not answer." : NOT_CONNECTED[mode]);

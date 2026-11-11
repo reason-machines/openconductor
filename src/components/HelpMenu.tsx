@@ -1,16 +1,12 @@
 import { useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { openDevtools, openUrl } from "../backend";
-import { COMMANDS } from "../keybindings/registry";
-import { glyphs } from "../keybindings/shortcut";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
+import { helpShortcutHints } from "./helpShortcutHints";
 import { ArrowUpRightIcon, BookIcon, HelpIcon, KeyboardIcon, MessageIcon, StethoscopeIcon } from "./Icons";
 import { Tooltip } from "./Tooltip";
 import { HELP_ITEMS, nextIndex, versionLine, type HelpIcon as HelpIconName, type HelpItem } from "./helpMenuItems";
 import { endingProps, useMenuPresence } from "./sidebarMotion";
-
-function shortcut(commandId: string): string {
-  const c = COMMANDS.find((cmd) => cmd.id === commandId);
-  return c ? glyphs(c.key) : "";
-}
+import { useAgentBinaryStatus } from "../features/chat/agentBinaryStore";
 
 const ICONS: Record<HelpIconName, JSX.Element> = {
   keyboard: <KeyboardIcon size={16} />,
@@ -27,11 +23,15 @@ const ICONS: Record<HelpIconName, JSX.Element> = {
 interface Props {
   appVersion?: string;
   onOpenShortcuts: () => void;
+  onSendFeedback: () => void;
   onSubmitPrompt: () => void;
   onOpenDiagnostics: () => void;
 }
 
-export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDiagnostics }: Props) {
+export function HelpMenu({ appVersion, onOpenShortcuts, onSendFeedback, onSubmitPrompt, onOpenDiagnostics }: Props) {
+  const { overrides } = useKeybindingOverrides();
+  const claude = useAgentBinaryStatus("claude");
+  const codex = useAgentBinaryStatus("codex");
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -60,6 +60,7 @@ export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDi
     const next = nextIndex(items.indexOf(document.activeElement as HTMLElement), items.length, e.key);
     if (next === -1) return;
     e.preventDefault();
+    e.stopPropagation();
     items[next].focus();
   };
 
@@ -69,6 +70,8 @@ export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDi
     switch (item.action.kind) {
       case "shortcuts":
         return onOpenShortcuts();
+      case "feedback":
+        return onSendFeedback();
       case "url":
         return void openUrl(item.action.url);
       case "submitPrompt":
@@ -99,7 +102,7 @@ export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDi
       {popup.mounted && (
         <div ref={menuRef} className="sb-help-menu" role="menu" aria-label="Help" onKeyDown={onMenuKey} {...endingProps(popup.ending)}>
           {HELP_ITEMS.map((item) => {
-            const keys = item.commandId ? shortcut(item.commandId) : "";
+            const keys = item.commandId ? helpShortcutHints(item.commandId, overrides) : [];
             return (
               <button key={item.label} type="button" role="menuitem" className="sb-help-item" onClick={() => select(item)}>
                 <span className="sb-help-item-main">
@@ -107,11 +110,11 @@ export function HelpMenu({ appVersion, onOpenShortcuts, onSubmitPrompt, onOpenDi
                   <span>{item.label}</span>
                   {item.external && <span className="sb-help-external"><ArrowUpRightIcon size={12} /></span>}
                 </span>
-                {keys && <kbd className="sb-help-kbd">{keys}</kbd>}
+                {keys.map((key, index) => <kbd key={index} className="sb-help-kbd">{key}</kbd>)}
               </button>
             );
           })}
-          <div className="sb-help-version">{versionLine(appVersion)}</div>
+          <div className="sb-help-version">{versionLine(appVersion, { claudeCode: claude?.version, codex: codex?.version })}</div>
         </div>
       )}
     </div>

@@ -5,7 +5,7 @@
 
 import { CODEX_THINKING_LEVELS } from "../settings/agentSettings.ts";
 import { agentForModel, newChatModel, type ModelAgent } from "../settings/models.ts";
-import { CLAUDE_EFFORT_LEVELS, type Settings } from "../settings/types.ts";
+import { CLAUDE_EFFORT_LEVELS, type AgentKind, type Settings } from "../settings/types.ts";
 import type { Favorite } from "../settings/agents/loadout.ts";
 
 export interface LaunchModel {
@@ -33,9 +33,15 @@ function defaultEffort(agent: ModelAgent | string, settings: Settings | null): s
 }
 
 /** What a new create composer starts with: the default model and its agent's default effort. */
-export function launchDefaults(settings: Settings | null): LaunchModel {
+export function launchDefaults(settings: Settings | null, slots?: readonly (Favorite | null)[]): LaunchModel {
+  if (slots) {
+    const first = slots[0];
+    return first?.type === "built-in" ? { agent: first.agent, model: first.model, effort: first.thinkingLevel ?? "" } : { agent: "reason", model: "default", effort: "" };
+  }
   if (!settings) return { agent: "claude", model: "opus", effort: FALLBACK_EFFORT };
-  const { agent, model } = newChatModel(settings);
+  const stored = newChatModel(settings);
+  const { model } = stored;
+  const agent = settings.models.default_agent ?? stored.agent;
   return { agent, model, effort: defaultEffort(agent, settings) };
 }
 
@@ -53,6 +59,7 @@ export function chooseModel(current: LaunchModel, model: string, settings: Setti
 export interface LaunchPick {
   model: string;
   effort: string | null;
+  agent?: AgentKind;
 }
 
 /**
@@ -61,11 +68,12 @@ export interface LaunchPick {
  * the model. An effort the model's agent does not offer becomes its default.
  */
 export function pickLaunch(current: LaunchModel, pick: LaunchPick, settings: Settings | null): LaunchModel {
+  if (pick.agent) return { agent: pick.agent, model: pick.model, effort: pick.effort ?? "" };
   const next = pick.model === current.model ? current : chooseModel(current, pick.model, settings);
   return pick.effort && effortLevels(next.agent).includes(pick.effort) ? { ...next, effort: pick.effort } : next;
 }
 
 /** The loadout's built-in favorites as picker rows (ACP favorites need an agent the create flow cannot launch). */
-export function loadoutPicks(favorites: readonly Favorite[]): LaunchPick[] {
-  return favorites.flatMap((f) => (f.type === "built-in" ? [{ model: f.model, effort: f.thinkingLevel ?? null }] : []));
+export function loadoutPicks(favorites: readonly (Favorite | null)[]): LaunchPick[] {
+  return favorites.flatMap((f) => (f?.type === "built-in" ? [{ agent: f.agent, model: f.model, effort: f.thinkingLevel ?? null }] : []));
 }

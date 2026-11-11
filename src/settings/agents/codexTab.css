@@ -1,3 +1,5 @@
 /* Settings › Agents › Codex (CodexTab.tsx); theme tokens only. */
 .agc-ok { display: inline-flex; align-items: center; gap: 6px; color: var(--ag-success); font-size: 14px; }
+.agc-connected { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.agc-line { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 section[aria-label="Codex"] .ag-info th { white-space: nowrap; }

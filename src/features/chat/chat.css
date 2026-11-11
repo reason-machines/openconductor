@@ -1,8 +1,10 @@
+@import './markdownFrontmatter.css';
 /* Chat transcript in Conductor's message list layout (renderApp `UDo`,
    `MDo`, `PDo`, `TDo`, tool rows `Mu`; evidence/chat/README.md). Sizes are
    Conductor's Tailwind classes in px (text-sm 14/20, text-xs 12/16 +0.01em,
    spacing 4px steps); colours are its theme tokens (evidence/frontend/css-tokens.json). */
-.transcript {
+.transcript,
+.prompt-approval {
   --oc-fg: var(--text); --oc-muted-fg: var(--muted); --oc-muted: var(--surface-muted); --oc-accent: var(--surface-accent); --oc-accent-fg: var(--surface-accent-text);
   --oc-highlight: var(--highlight); --oc-highlight-fg: var(--highlight-text); --oc-border: var(--border); --oc-input: var(--input); --oc-bg: var(--bg);
   --oc-git-green: var(--success); --oc-git-red: var(--destructive); --oc-destructive: var(--destructive); --oc-link-fg: var(--emphasis);
@@ -10,8 +12,8 @@
   --oc-tint-cyan-600: var(--tint-cyan-600); --oc-tint-yellow-400: var(--tint-yellow-400); --oc-tint-yellow-600: var(--tint-yellow-600);
   --oc-tint-orange-600: var(--tint-orange-600); --oc-tint-orange-700: var(--tint-orange-700); --oc-tint-red-600: var(--tint-red-600);
   --oc-tint-green-500: var(--tint-green-500); --oc-tint-green-600: var(--tint-green-600); --oc-tint-gray-600: var(--tint-gray); --oc-tint-documentation: var(--tint-doc);
-  display: flex; flex-direction: column; color: var(--oc-fg);
 }
+.transcript { display: flex; flex-direction: column; color: var(--oc-fg); }
 
 /* The scroll area is the list: no padding of its own, turns centre at max-w-4xl.
    The first turn sits 16px below the tab bar (Virtuoso's top offset). */
@@ -27,6 +29,9 @@
 .oc-user-col { display: flex; flex-direction: column; align-items: flex-end; max-width: 100%; min-width: 0; }
 .oc-bubble { position: relative; max-width: 768px; padding: 12px 16px; border-radius: 4px; background: var(--oc-highlight); color: var(--oc-highlight-fg); overflow: hidden; overflow-wrap: break-word; }
 .oc-user-text { font-size: 14px; line-height: 20px; white-space: pre-wrap; overflow-wrap: break-word; user-select: text; }
+.oc-sent-file-chip { display: inline; border: 1px solid var(--border); border-radius: 4px; padding: 1px 4px; background: var(--muted); color: inherit; font: inherit; overflow-wrap: anywhere; }
+button.oc-sent-file-chip { cursor: pointer; }
+button.oc-sent-file-chip:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 .oc-bubble .chat-msg-actions { position: absolute; top: 4px; right: 6px; }
 
 .chat-report { align-self: stretch; border-left: 3px solid var(--accent); background: var(--hover); border-radius: 0 var(--radius) var(--radius) 0; padding: 6px 10px; white-space: pre-wrap; }
@@ -83,6 +88,12 @@
 .oc-tool-content { margin-top: 8px; user-select: text; font-family: var(--font-mono); font-size: 12px; line-height: 16px; font-weight: 500; white-space: pre-wrap; overflow-wrap: break-word; color: var(--oc-accent-fg); background: var(--oc-accent); padding: 12px; border-radius: 6px; border: 1px solid var(--oc-border); max-height: 384px; overflow: auto; }
 .oc-tool-content.bare { padding: 0; background: none; border: 0; }
 .oc-tool-content.plain { font-family: inherit; font-weight: 400; background: none; border: 0; padding: 0 0 0 20px; color: inherit; }
+.oc-multi-edit-item + .oc-multi-edit-item { border-top: 1px solid var(--oc-border); }
+.oc-multi-edit-head { display: flex; align-items: center; gap: 8px; width: 100%; padding: 12px; border: 0; background: none; color: inherit; font: 400 12px/16px var(--font-sans); text-align: left; cursor: pointer; }
+.oc-multi-edit-head:hover { background: color-mix(in oklab, var(--oc-muted) 30%, transparent); }
+.oc-multi-edit-label { flex: none; font-weight: 500; }
+.oc-multi-edit-preview { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--oc-muted-fg); }
+.oc-multi-edit-body { border-top: 1px solid var(--oc-border); padding: 8px; }
 .oc-tool[data-tone="error"] .oc-tool-content { color: var(--oc-destructive); background: color-mix(in oklab, var(--oc-destructive) 10%, transparent); border-color: color-mix(in oklab, var(--oc-destructive) 20%, transparent); }
 .oc-tool-code { margin: 0; padding: 12px; font: 500 12px/16px var(--font-mono); color: var(--oc-accent-fg); background: var(--oc-accent); border: 1px solid var(--oc-border); border-radius: 6px; white-space: pre; overflow: auto; max-height: 384px; }
 .oc-tool-prompt { color: var(--oc-muted-fg); }
@@ -121,7 +132,7 @@
 .chat-thinking .oc-prose { color: var(--oc-muted-fg); }
 
 /* Turn footer (`TDo`): one wrapping row, text-xs muted. */
-.oc-turn-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; margin-top: 2px; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: var(--oc-muted-fg); }
+.oc-turn-footer { container: turn-footer / inline-size; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; margin-top: 2px; font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: var(--oc-muted-fg); }
 .oc-turn-time { flex: none; border-radius: 4px; }
 .oc-turn-time:hover { color: var(--oc-fg); }
 .chat-turn-actions { display: flex; flex: none; align-items: center; gap: 4px; }
@@ -135,6 +146,13 @@
 .oc-icon-action { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--oc-muted-fg); cursor: pointer; }
 .oc-icon-action:hover, .oc-icon-action[aria-expanded="true"] { background: var(--oc-accent); color: var(--oc-accent-fg); }
 .oc-icon-action-svg { width: 14px; height: 14px; }
+/* Conductor's footer icons are lucide-react with its global `.lucide{stroke-width:1px}` and non-scaling strokes. */
+.oc-turn-footer .oc-icon-action svg { stroke-width: 1px; }
+.oc-turn-footer .oc-icon-action svg * { vector-effect: non-scaling-stroke; }
+/* "Show message actions" (`tt` ghost iconXs + `size-5`): rounded-sm (4px), presses to 97%, accent while open. */
+.oc-turn-menu-trigger { border-radius: 4px; transition: transform 150ms ease-out; }
+.oc-turn-menu-trigger:active { transform: scale(0.97); }
+.oc-turn-menu-trigger[data-popup-open] { background: var(--oc-accent); color: var(--oc-accent-fg); }
 .oc-text-action { font-size: 12px; color: var(--oc-muted-fg); padding: 2px 6px; border-radius: 5px; }
 .oc-text-action:hover { background: var(--oc-accent); color: var(--oc-accent-fg); }
 /* Conductor (`vDo`): the first chips share the footer row and shrink instead of wrapping (flex-1 min-w-0
@@ -143,10 +161,24 @@
 .chat-turn-changes-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
 .chat-turn-changes-more.revealed { flex-basis: 100%; }
 .chat-turn-chip { flex: 0 1 auto; min-width: 0; }
-.chat-turn-chip.more { padding: 0 4px; tab-size: 4; font-variant-numeric: tabular-nums; }
+.chat-turn-chip.more { gap: 4px; padding: 0 6px; tab-size: 4; font-variant-numeric: tabular-nums; }
 .oc-chip-counts { display: flex; flex: none; align-items: center; gap: 4px; font: 500 10px/12px var(--font-mono); letter-spacing: 0.04em; }
 .oc-chip-counts .a { color: var(--oc-git-green); }
 .oc-chip-counts .d { color: var(--oc-git-red); }
+.chat-turn-more-icon { width: 12px; height: 12px; flex: none; }
+.chat-turn-more-compact { display: none; }
+.chat-turn-chip.more.compact-only { display: none; }
+@container turn-footer (width < 560px) {
+  .chat-turn-chip.more .oc-chip-counts { display: none; }
+}
+@container turn-footer (width < 480px) {
+  .chat-turn-chip.more { padding: 0 4px; }
+  .chat-turn-changes:not(.revealed) { display: none; }
+  .chat-turn-changes.revealed { flex-basis: 100%; max-width: none; }
+  .chat-turn-chip.more.compact-only { display: inline-flex; }
+  .chat-turn-more-compact { display: inline; }
+  .chat-turn-more-wide { display: none; }
+}
 
 /* Conductor: a stopped prompt's "Cancelled" caption (mt-0.5 text-xs muted) and the outline "Interrupted by user" badge. */
 .chat-cancelled { margin-top: 2px; font-size: 12px; line-height: 16px; color: var(--oc-muted-fg); }
@@ -201,29 +233,32 @@
 .hljs-emphasis { font-style: italic; }
 .hljs-strong { font-weight: 700; }
 .hljs-link { text-decoration: underline; }
-.chat-turn-menu { position: relative; display: inline-flex; }
-.chat-menu { position: absolute; right: 0; bottom: calc(100% + 4px); transform-origin: bottom right; z-index: 20; min-width: 140px; padding: 4px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 6px 20px var(--shadow-18); }
-.chat-menu-item { display: flex; align-items: center; gap: 8px; width: 100%; padding: 5px 8px; border-radius: 5px; font-size: 12.5px; text-align: left; white-space: nowrap; }
-.chat-menu-item:hover:not(:disabled) { background: var(--hover); }
-.chat-menu-item:disabled { opacity: 0.5; cursor: default; }
 
-.oc-reset-files { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+/* "Reset chat?" in Conductor's AlertDialog: a centred 512px (max-w-lg) panel, p-6, gap-4, rounded-xl,
+   over the overlay with backdrop-blur-xs; header space-y-2 with a text-lg font-medium title and a
+   text-sm muted description; footer justify-end space-x-2 with 32px (h-8) outline and destructive buttons. */
+.oc-alert-backdrop { backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.oc-alert { display: grid; gap: 16px; width: min(512px, calc(100vw - 32px)); box-sizing: border-box; padding: 24px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 10px 15px -3px var(--shadow-25); color: var(--text); }
+.oc-alert-header { display: flex; flex-direction: column; gap: 8px; }
+.oc-alert-header h2 { margin: 0; font-size: 18px; line-height: 28px; font-weight: 500; }
+.oc-alert-header p { margin: 0; font-size: 14px; line-height: 20px; color: var(--muted); }
+.oc-alert-footer { display: flex; justify-content: flex-end; gap: 8px; }
+.oc-alert-btn { display: inline-flex; align-items: center; justify-content: center; height: 32px; box-sizing: border-box; gap: 8px; padding: 0 12px; border-radius: 6px; border: 1px solid transparent; font: inherit; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; }
+.oc-alert-btn:disabled { opacity: 0.5; cursor: default; }
+.oc-alert-cancel { background: transparent; border-color: var(--border); color: var(--text); }
+.oc-alert-cancel:hover { background: var(--hover); }
+.oc-alert-destructive { background: var(--destructive); color: var(--on-solid); }
+.oc-alert-destructive:hover:not(:disabled) { filter: brightness(1.08); }
+.oc-alert-kbd { margin-left: 8px; display: inline-flex; align-items: center; opacity: 0.6; }
+.oc-alert-enter { display: inline-block; width: 12px; height: 12px; flex-shrink: 0; }
+
+.oc-reset-files { display: flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; color: var(--text); }
+/* Conductor's checkbox `pv`: a 16px rounded box, filled with the foreground and a background-coloured check when on. */
+.oc-reset-files input[type="checkbox"] { appearance: none; -webkit-appearance: none; position: relative; flex-shrink: 0; width: 16px; height: 16px; margin: 0; border: 1px solid var(--text); border-radius: 4px; background: transparent; cursor: pointer; }
+.oc-reset-files input[type="checkbox"]:checked { background: var(--text); }
+.oc-reset-files input[type="checkbox"]:checked::after { content: ""; position: absolute; left: 4.5px; top: 1.5px; width: 4px; height: 8px; border: solid var(--bg); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
 .oc-reset-count { font-variant-numeric: tabular-nums; }
 .oc-skeleton { display: inline-block; width: 64px; height: 14px; border-radius: 4px; background: var(--muted); opacity: 0.2; animation: pulse 1.4s ease-in-out infinite; }
-
-/* Conductor (`vDo`): the first chips share the footer row and shrink instead of wrapping (flex-1 min-w-0
-   max-w-fit overflow-hidden); revealed chips and "+N more" wrap, on their own line once revealed (basis-full). */
-.chat-turn-changes { display: flex; flex: 1 1 0; align-items: center; gap: 8px; min-width: 0; max-width: fit-content; overflow: hidden; }
-.chat-turn-changes-more { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
-.chat-turn-changes-more.revealed { flex-basis: 100%; }
-.chat-turn-chip { display: inline-flex; flex: 0 1 auto; min-width: 0; align-items: center; gap: 6px; height: 20px; padding: 0 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); font-size: 12px; line-height: 1; max-width: 240px; }
-.chat-turn-chip:hover { background: var(--hover); }
-.chat-turn-chip .name { font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-.chat-turn-chip .count { flex: none; font-family: var(--font-mono); font-size: 11px; }
-.chat-turn-chip .a { color: var(--diff-add); }
-.chat-turn-chip .d { color: var(--diff-del); }
-.chat-turn-chip.more { color: var(--muted); }
-
 
 /* Conductor's prose for chat text (`xS`: prose prose-sm, with its own overrides). */
 .oc-prose { font-size: 14px; line-height: 1.71429; letter-spacing: -0.01em; color: var(--oc-fg); font-kerning: normal; text-rendering: optimizeLegibility; overflow-wrap: anywhere; text-wrap: pretty; white-space: normal; user-select: text; }

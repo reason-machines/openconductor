@@ -1,0 +1,43 @@
+{
+  "tool": "REA capture-browser-scenario",
+  "viewport": {
+    "width": 1280,
+    "height": 820
+  },
+  "state": "setup-running-find-progress",
+  "captures": {
+    "reference": {
+      "evidence_id": "ev_b7fc387ce8d4cf1216b6dd6353745ac0371c4d6297b7e3a263ba2e244b17fdd0",
+      "sha256": "583ee454e542c2af58b65661e60f046186a0f3968afd120c85eb50f1f83c98cb",
+      "scenario": "reference-scenario.json",
+      "screenshot": "reference.png",
+      "url": {
+        "url": "http://conductor.localhost:4402/repository/repo-tide-web/workspace/ws-osaka?activeTabType=session&sessionId=sess-osaka",
+        "origin": "http://conductor.localhost:4402",
+        "query_parameter_names": [
+          "activeTabType",
+          "sessionId"
+        ],
+        "redacted": false
+      },
+      "issues": []
+    },
+    "openconductor": {
+      "evidence_id": "ev_af928c4bcfb96dce3fb7689b6cb43322cff1d86cdc13f05646e8725183ab0a40",
+      "sha256": "beca25008a57d4ebb6c32bee8c406d233482b09aa2345c469900f35db2973689",
+      "scenario": "openconductor-scenario.json",
+      "screenshot": "openconductor.png",
+      "url": {
+        "url": "http://localhost:4402/?kind=setup&running=1&palette=stone",
+        "origin": "http://localhost:4402",
+        "query_parameter_names": [
+          "kind",
+          "running",
+          "palette"
+        ],
+        "redacted": false
+      },
+      "issues": []
+    }
+  }
+}
