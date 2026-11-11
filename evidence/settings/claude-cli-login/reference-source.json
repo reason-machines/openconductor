@@ -1,0 +1,96 @@
+{
+  "format": "claude-cli-login-reference-v1",
+  "checked_main": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "baseline": {
+    "path": "baseline-ClaudeTab.tsx.txt",
+    "sha256": "d6461a6fc353ba06431d9dc7267f4e29f3cbd65aecf1b85d8e693dbe3090e9e6"
+  },
+  "retained_REA_provenance": {
+    "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "rea_limit": "Original semantic renderer analysis exhausted heap. Read-only extraction from retained shipped original bytes. No reference JavaScript executed.",
+    "parent_archive": {
+      "path": ".rea-work/dart-eligibility/dart-source-closure.tar.gz",
+      "bytes": 6226760,
+      "sha256": "29557fbf62c37076841230dbaf9d9e2de7a77aa02b974ce3a1f8bb552d241fd6",
+      "originals_verified_equal": true
+    }
+  },
+  "reference_assets": [
+    {
+      "key": "renderer",
+      "path": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "key": "index",
+      "path": ".rea-work/retained-reference/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "reference_spans": [
+    {
+      "name": "jpa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10619879,
+        10624045
+      ],
+      "bytes": 4166,
+      "sha256": "f339bdf9702ca236ab96391682eeccb54f05f999690c91e2717e43f25d01535f",
+      "literal": "function jpa(t){const e=ne.c(83),{repoContext:n}=t;let i;e[0]!==n?(i=Ozi(n),e[0]=n,e[1]=i):i=e[1];const r=i,{data:o}=Dzi(n);let a;e[2]!==o?(a=o===void 0?{}:o,e[2]=o,e[3]=a):a=e[3];const c=a,u=dxe(\"claude_provider\",n),d=dxe(\"claude_executable_path\",n),h=dxe(\"chrome_mode_enabled\",n)===\"true\",m=_0(),g=c.ANTHROPIC_API_KEY??\"\";let _;e[4]!==g?(_=g.trim(),e[4]=g,e[5]=_):_=e[5];const v=_!==\"\",x=u===\"custom\",w=NDt(),E=p9r(),k=E.mutate;let I;e[6]!==k?(I=()=>{k()},e[6]=k,e[7]=I):I=e[7];let R;e[8]!==g||e[9]!==u||e[10]!==k?(R=[g,u,k],e[8]=g,e[9]=u,e[10]=k,e[11]=R):R=e[11],$.useEffect(I,R);const O=w.data?.status;let D;e[12]!==m||e[13]!==n?(D=()=>{m.invalidateQueries({queryKey:bGt.sharedLocal(n)}).fireAndForget(),m.invalidateQueries({queryKey:[\"envVars\",\"shared\",\"local\"]}).fireAndForget()},e[12]=m,e[13]=n,e[14]=D):D=e[14];const P=D;let L;e[15]!==P||e[16]!==r?(L=async ke=>{if(ke===\"apikey\"){await iS.updateSetting(\"claude_provider\",\"custom\",r);const Se=await f$i();if(Se?.trim()){if(!await _Z(zo,{key:\"ANTHROPIC_API_KEY\",scope:\"shared\",context:\"local\",value:Se.trim(),target:r}))return;P(),kt.success(\"API key imported from env\")}}else await iS.updateSetting(\"claude_provider\",\"default\",r)},e[15]=P,e[16]=r,e[17]=L):L=e[17];const B=L;let F;e[18]!==P||e[19]!==r?(F={envKey:\"ANTHROPIC_API_KEY\",providerSettingKey:\"claude_provider\",settingsTarget:r,invalidateSharedEnv:P},e[18]=P,e[19]=r,e[20]=F):F=e[20];const{handleSaveApiKey:H,handleRemoveApiKey:U}=Lzi(F),[z,G]=$.useState(null),K=z??(x?\"apikey\":\"cli\");let X,Q;e[21]!==z||e[22]!==x?(X=()=>{z===(x?\"apikey\":\"cli\")&&G(null)},Q=[z,x],e[21]=z,e[22]=x,e[23]=X,e[24]=Q):(X=e[23],Q=e[24]),$.useEffect(X,Q);const J=n!==void 0&&K===\"apikey\"&&v;let te,Z,se,ce,ae,de,ue,pe;if(e[25]!==O||e[26]!==d||e[27]!==K||e[28]!==B||e[29]!==v||e[30]!==J||e[31]!==P||e[32]!==k||e[33]!==n){const Se=(J?{apiKeySource:\"repository settings\",apiProvider:\"firstParty\"}:void 0)??Mpa({accountInfo:O,mode:K});let De;e[42]!==J||e[43]!==P||e[44]!==k?(De=()=>{if(J){P();return}k()},e[42]=J,e[43]=P,e[44]=k,e[45]=De):De=e[45],se=De,Z=K===\"apikey\"?v?\"Could not verify the configured API key\":\"No Anthropic API key configured\":\"CLI not authenticated\",ue=\"space-y-6\";let je;e[46]!==B?(je=Le=>{G(Le),B(Le).catch(()=>G(null)).fireAndForget()},e[46]=B,e[47]=je):je=e[47];let Ne;e[48]!==K||e[49]!==je?(Ne=p.jsx(wzi,{value:K,modes:Pzi,onChange:je}),e[48]=K,e[49]=je,e[50]=Ne):Ne=e[50],e[51]!==n||e[52]!==Ne?(pe=p.jsx(Al,{settingKey:\"claude_provider\",repoScope:n,title:void 0,className:\"border-t-0 pt-0\",children:Ne}),e[51]=n,e[52]=Ne,e[53]=pe):pe=e[53],te=t$i,ce=Se!==void 0,ae=Se,de=Se?Yki(Se,K,d?!1:void 0):[],e[25]=O,e[26]=d,e[27]=K,e[28]=B,e[29]=v,e[30]=J,e[31]=P,e[32]=k,e[33]=n,e[34]=te,e[35]=Z,e[36]=se,e[37]=ce,e[38]=ae,e[39]=de,e[40]=ue,e[41]=pe}else te=e[34],Z=e[35],se=e[36],ce=e[37],ae=e[38],de=e[39],ue=e[40],pe=e[41];let be;e[54]!==w.isLoading||e[55]!==J||e[56]!==E.isPending?(be=Cpa({hasScopedApiKeyAuth:J,queryIsLoading:w.isLoading,refreshIsPending:E.isPending}),e[54]=w.isLoading,e[55]=J,e[56]=E.isPending,e[57]=be):be=e[57];const he=!J&&E.isPending;let ge;e[58]!==te||e[59]!==Z||e[60]!==se||e[61]!==ce||e[62]!==ae||e[63]!==de||e[64]!==be||e[65]!==he?(ge=p.jsx(te,{isAuthenticated:ce,accountInfo:ae,infoRows:de,isLoading:be,onRefresh:se,isRefreshing:he,notConnectedMessage:Z}),e[58]=te,e[59]=Z,e[60]=se,e[61]=ce,e[62]=ae,e[63]=de,e[64]=be,e[65]=he,e[66]=ge):ge=e[66];let ve;e[67]!==g||e[68]!==K||e[69]!==U||e[70]!==H||e[71]!==se?(ve=p.jsx(\"div\",{className:\"min-h-10\",children:K===\"apikey\"?p.jsx(YWt,{label:\"Anthropic API key\",configuredKey:g,getKeyUrl:\"https://console.anthropic.com/settings/keys\",onSave:H,onRemove:U}):p.jsx(Met,{onRefresh:se,loginCommand:\"/login\",loginCommandLabel:\"claude /login\",cliName:\"claude\",runFromBundledBin:!0})}),e[67]=g,e[68]=K,e[69]=U,e[70]=H,e[71]=se,e[72]=ve):ve=e[72];let ye;e[73]!==h||e[74]!==n||e[75]!==r?(ye=p.jsx(Rpa,{chromeModeEnabled:h,repoContext:n,settingsTarget:r}),e[73]=h,e[74]=n,e[75]=r,e[76]=ye):ye=e[76];let xe;return e[77]!==ue||e[78]!==pe||e[79]!==ge||e[80]!==ve||e[81]!==ye?(xe=p.jsxs(\"div\",{className:ue,children:[pe,ge,ve,ye]}),e[77]=ue,e[78]=pe,e[79]=ge,e[80]=ve,e[81]=ye,e[82]=xe):xe=e[82],xe}"
+    },
+    {
+      "name": "Met",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10254426,
+        10255772
+      ],
+      "utf16_half_open": [
+        10208811,
+        10210157
+      ],
+      "bytes": 1346,
+      "sha256": "e8ff33ba929c09102a235ff68ef6db78a6e0d9c66db5c85df6496c13b2e3ffde",
+      "literal": "function Met(t){const e=ne.c(18),{onRefresh:n,commandPrefix:i,loginCommand:r,loginCommandLabel:o,cliName:a,runFromBundledBin:c}=t,u=i===void 0?\"\":i,d=c===void 0?!1:c;let h;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(h={stage:\"idle\"},e[0]=h):h=e[0];const[m,g]=$.useState(h);let _;e[1]===Symbol.for(\"react.memo_cache_sentinel\")?(_=async()=>{const k=await rde();g({stage:\"running\",pathPrefix:k})},e[1]=_):_=e[1];const v=_;if(m.stage===\"running\"){let k;e[2]!==a||e[3]!==d||e[4]!==m.pathPrefix?(k=d?nl(`${m.pathPrefix}/${a}`):a,e[2]=a,e[3]=d,e[4]=m.pathPrefix,e[5]=k):k=e[5];const R=`${u}${k} ${r}`;let O;e[6]===Symbol.for(\"react.memo_cache_sentinel\")?(O=()=>g({stage:\"idle\"}),e[6]=O):O=e[6];let D;e[7]!==n?(D=()=>{g({stage:\"idle\"}),n()},e[7]=n,e[8]=D):D=e[8];let P;return e[9]!==o||e[10]!==R||e[11]!==D||e[12]!==m.pathPrefix?(P=p.jsx(ONi,{className:\"border-border bg-card\",command:R,commandLabel:o,pathPrefix:m.pathPrefix,terminalBodyClassName:\"h-72\",onDismiss:O,onDone:D}),e[9]=o,e[10]=R,e[11]=D,e[12]=m.pathPrefix,e[13]=P):P=e[13],P}let x,w;e[14]===Symbol.for(\"react.memo_cache_sentinel\")?(x=()=>{v().fireAndForget()},w=p.jsx(uy,{className:\"mr-1 size-3 fill-current\"}),e[14]=x,e[15]=w):(x=e[14],w=e[15]);let E;return e[16]!==o?(E=p.jsxs(tt,{type:\"button\",size:\"sm\",variant:\"outline\",onClick:x,children:[w,\"Run \",o]}),e[16]=o,e[17]=E):E=e[17],E}"
+    },
+    {
+      "name": "Mpa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10619790,
+        10619879
+      ],
+      "utf16_half_open": [
+        10574056,
+        10574145
+      ],
+      "bytes": 89,
+      "sha256": "5ac0061d00d19580e3846c6edb584f5d940ed652909c99dac2f54ec3d6f19f69",
+      "literal": "function Mpa({accountInfo:t,mode:e}){return e===\"apikey\"?Lpa(t)?t:void 0:Ppa(t)?t:void 0}"
+    },
+    {
+      "name": "Ppa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10619593,
+        10619719
+      ],
+      "utf16_half_open": [
+        10573859,
+        10573985
+      ],
+      "bytes": 126,
+      "sha256": "4bc4bbcb5ae4d8767a22be2aaab0bc0327bc0be9aa5240a3ec0e6152d5c8c3a0",
+      "literal": "function Ppa(t){return t?.subscriptionType!==void 0&&t.subscriptionType!==null||t?.tokenSource!==void 0&&t.tokenSource!==null}"
+    }
+  ],
+  "observed_source_contract": "jpa chooses YWt versus Met only by mode K. Authenticated status ce is passed separately to t$i. Met idle always renders Run plus the command label; no authentication flag is read.",
+  "limitations": [
+    "Retained literal closure, not a new real-app acquisition or observed UI.",
+    "Original source archive absent after recovery; literal hashes match the previously retained packet.",
+    "No Conductor JavaScript, native app, provider, authentication, credentials or IPC executed."
+  ]
+}

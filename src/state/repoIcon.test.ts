@@ -40,3 +40,20 @@ test("fitIcon scales the longest side to at most 128 and centers", () => {
   assert.deepEqual(fitIcon(32, 32), { canvas: 32, width: 32, height: 32, x: 0, y: 0 });
   assert.deepEqual(fitIcon(0, 0), { canvas: 128, width: 128, height: 128, x: 0, y: 0 });
 });
+
+test("fitIcon preserves half-pixel centering for odd padding", () => {
+  assert.deepEqual(fitIcon(300, 100), { canvas: 128, width: 128, height: 43, x: 0, y: 42.5 });
+  assert.deepEqual(fitIcon(100, 300), { canvas: 128, width: 43, height: 128, x: 42.5, y: 0 });
+  assert.deepEqual(fitIcon(32, 31), { canvas: 32, width: 32, height: 31, x: 0, y: 0.5 });
+  assert.deepEqual(fitIcon(31, 32), { canvas: 32, width: 31, height: 32, x: 0.5, y: 0 });
+});
+
+test("fitIcon defaults a missing width to 128 independently of height", () => {
+  assert.deepEqual(fitIcon(0, 64), { canvas: 128, width: 128, height: 64, x: 0, y: 32 });
+  assert.deepEqual(fitIcon(0, 256), { canvas: 128, width: 64, height: 128, x: 32, y: 0 });
+});
+
+test("fitIcon defaults a missing height to 128 independently of width", () => {
+  assert.deepEqual(fitIcon(64, 0), { canvas: 128, width: 64, height: 128, x: 32, y: 0 });
+  assert.deepEqual(fitIcon(256, 0), { canvas: 128, width: 128, height: 64, x: 0, y: 32 });
+});
