@@ -1,0 +1,183 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: parseRepoIcon decodes emoji, uploaded images and bundled icon names
+ok 1 - parseRepoIcon decodes emoji, uploaded images and bundled icon names
+  ---
+  duration_ms: 2.052969
+  type: 'test'
+  ...
+# Subtest: emojiIcon trims and refuses blank input
+ok 2 - emojiIcon trims and refuses blank input
+  ---
+  duration_ms: 0.12749
+  type: 'test'
+  ...
+# Subtest: githubAvatarUrl reads the owner from github.com remotes only
+ok 3 - githubAvatarUrl reads the owner from github.com remotes only
+  ---
+  duration_ms: 0.337075
+  type: 'test'
+  ...
+# Subtest: uploads accept the five image types by extension
+ok 4 - uploads accept the five image types by extension
+  ---
+  duration_ms: 1.494235
+  type: 'test'
+  ...
+# Subtest: fitIcon scales the longest side to at most 128 and centers
+ok 5 - fitIcon scales the longest side to at most 128 and centers
+  ---
+  duration_ms: 0.278367
+  type: 'test'
+  ...
+# Subtest: fitIcon preserves half-pixel centering for odd padding
+not ok 6 - fitIcon preserves half-pixel centering for odd padding
+  ---
+  duration_ms: 1.169537
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/state/repoIcon.test.ts:44:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      {
+        canvas: 128,
+        height: 43,
+        width: 128,
+        x: 0,
+    +   y: 43
+    -   y: 42.5
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    canvas: 128
+    width: 128
+    height: 43
+    x: 0
+    y: 42.5
+  actual:
+    canvas: 128
+    width: 128
+    height: 43
+    x: 0
+    y: 43
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/state/repoIcon.test.ts:45:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: fitIcon defaults a missing width to 128 independently of height
+not ok 7 - fitIcon defaults a missing width to 128 independently of height
+  ---
+  duration_ms: 0.380965
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/state/repoIcon.test.ts:51:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      {
+    +   canvas: 64,
+    -   canvas: 128,
+        height: 64,
+    +   width: 64,
+    -   width: 128,
+        x: 0,
+    +   y: 0
+    -   y: 32
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    canvas: 128
+    width: 128
+    height: 64
+    x: 0
+    y: 32
+  actual:
+    canvas: 64
+    width: 64
+    height: 64
+    x: 0
+    y: 0
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/state/repoIcon.test.ts:52:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: fitIcon defaults a missing height to 128 independently of width
+not ok 8 - fitIcon defaults a missing height to 128 independently of width
+  ---
+  duration_ms: 0.280093
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/state/repoIcon.test.ts:56:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      {
+    +   canvas: 64,
+    +   height: 64,
+    -   canvas: 128,
+    -   height: 128,
+        width: 64,
+    +   x: 0,
+    -   x: 32,
+        y: 0
+      }
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    canvas: 128
+    width: 64
+    height: 128
+    x: 32
+    y: 0
+  actual:
+    canvas: 64
+    width: 64
+    height: 64
+    x: 0
+    y: 0
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/state/repoIcon.test.ts:57:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 5
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 303.581043

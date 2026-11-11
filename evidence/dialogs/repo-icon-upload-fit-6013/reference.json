@@ -1,0 +1,66 @@
+{
+  "author": "Conductor Rebuild",
+  "main_commit": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "original_upload": {
+    "attachment_id": "9bba4171-4ff7-4ded-83e7-5a62a9f75350",
+    "sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+    "exact_original_and_renderer_readback": "PASS"
+  },
+  "rea": {
+    "evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "limit": "Historical semantic renderer analysis exhausted heap. Current pass reads retained identity-verified shipped bytes, not target execution."
+  },
+  "renderer": {
+    "filename": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "offsets": "Zero-based UTF-8 byte offsets, half-open [start,end).",
+  "spans": [
+    {
+      "name": "yba",
+      "utf8_half_open": [
+        10849294,
+        10849947
+      ],
+      "bytes": 653,
+      "sha256": "e87481c708437decdf805d0b47532996e6ad304d3c8cf0c091e43434cfa51a19",
+      "text": "async function yba({bytes:t,mimeType:e}){const n=new Blob([new Uint8Array(t)],{type:e}),i=URL.createObjectURL(n);try{const r=await vba(i),o=r.naturalWidth||U9t,a=r.naturalHeight||U9t;if(o>H9t||a>H9t)throw new Error(`Image dimensions ${o}x${a} exceed the ${H9t}px limit`);const c=Math.min(U9t,Math.max(o,a)),u=c/Math.max(o,a),d=Math.max(1,Math.round(o*u)),h=Math.max(1,Math.round(a*u)),m=document.createElement(\"canvas\");m.width=c,m.height=c;const g=m.getContext(\"2d\");if(!g)throw new Error(\"Canvas 2D context unavailable\");return g.imageSmoothingQuality=\"high\",g.drawImage(r,(c-d)/2,(c-h)/2,d,h),m.toDataURL(\"image/png\")}finally{URL.revokeObjectURL(i)}}"
+    },
+    {
+      "name": "xba",
+      "utf8_half_open": [
+        10849947,
+        10851437
+      ],
+      "bytes": 1490,
+      "sha256": "6635e20d4d262117586050981ec0361b71c9757d3bce8cc15b6f286be8801f67",
+      "text": "function xba({repository:t,onClose:e}){const n=LSe(),[i,r]=$.useState(!1),o=lEi(t.icon),a=async()=>{const c=await fI({multiple:!1,filters:[{name:\"Images\",extensions:Object.keys(Oei)}]});if(typeof c!=\"string\")return;const u=c.split(\".\").pop()?.toLowerCase(),d=u!==void 0?Oei[u]:void 0;if(d===void 0){kt.error(\"Choose a PNG, JPEG, GIF, WebP, or SVG image\");return}r(!0);try{if((await bce({path:c,host:gn})).size>_ba){kt.error(\"Image is too large. Choose one under 10MB.\");return}const m=await ZO({path:c,host:gn}),g=await yba({bytes:m,mimeType:d});await n.mutateAsync({id:t.id,icon:g}),e()}catch(h){Bt.error(\"Failed to set uploaded repo icon:\",h),kt.error(\"Failed to set the icon. Try a different image.\")}finally{r(!1)}};return p.jsxs(\"div\",{className:\"flex h-full flex-col justify-between gap-4 p-4\",children:[p.jsx(\"div\",{className:\"flex flex-1 items-center justify-center\",children:p.jsxs(\"div\",{className:\"flex flex-col items-center gap-2\",children:[o?p.jsx(\"img\",{src:o,alt:\"Uploaded icon\",className:\"h-10 w-10 rounded\"}):p.jsx(\"div\",{className:\"h-10 w-10 rounded flex items-center justify-center bg-muted text-muted-foreground\",children:p.jsx(lEe,{className:\"size-4\"})}),p.jsx(tt,{variant:\"outline\",size:\"sm\",disabled:i,onClick:()=>{a().fireAndForget()},children:o?\"Replace image\u2026\":\"Choose image\u2026\"})]})}),p.jsx(\"p\",{className:\"rounded-md bg-muted/40 p-3 text-xs text-muted-foreground\",children:\"Upload a PNG, JPEG, GIF, WebP, or SVG image. Conductor resizes it to icon size.\"})]})}"
+    },
+    {
+      "name": "dUi",
+      "utf8_half_open": [
+        10851437,
+        10852953
+      ],
+      "bytes": 1516,
+      "sha256": "cff9673cb8228bdfacecd367fbc8bcfc5c6037de1245b20fef4aff8013651acc",
+      "text": "function dUi(t){const e=ne.c(24),{repository:n,onClose:i}=t,[r,o]=$.useState(\"icons\"),a=r===\"icons\";let c;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(c=()=>o(\"icons\"),e[0]=c):c=e[0];let u;e[1]!==a?(u=p.jsx(Ize,{active:a,onClick:c,children:\"Icons\"}),e[1]=a,e[2]=u):u=e[2];const d=r===\"emoji\";let h;e[3]===Symbol.for(\"react.memo_cache_sentinel\")?(h=()=>o(\"emoji\"),e[3]=h):h=e[3];let m;e[4]!==d?(m=p.jsx(Ize,{active:d,onClick:h,children:\"Emoji\"}),e[4]=d,e[5]=m):m=e[5];const g=r===\"favicon\";let _;e[6]===Symbol.for(\"react.memo_cache_sentinel\")?(_=()=>o(\"favicon\"),e[6]=_):_=e[6];let v;e[7]!==g?(v=p.jsx(Ize,{active:g,onClick:_,children:\"Favicon\"}),e[7]=g,e[8]=v):v=e[8];const x=r===\"upload\";let w;e[9]===Symbol.for(\"react.memo_cache_sentinel\")?(w=()=>o(\"upload\"),e[9]=w):w=e[9];let E;e[10]!==x?(E=p.jsx(Ize,{active:x,onClick:w,children:\"Upload\"}),e[10]=x,e[11]=E):E=e[11];let k;e[12]!==E||e[13]!==u||e[14]!==m||e[15]!==v?(k=p.jsxs(\"div\",{className:\"flex gap-1 px-2 border-b\",children:[u,m,v,E]}),e[12]=E,e[13]=u,e[14]=m,e[15]=v,e[16]=k):k=e[16];let I;e[17]!==i||e[18]!==n||e[19]!==r?(I=p.jsx(\"div\",{className:\"min-h-0 flex-1 overflow-hidden\",children:r===\"icons\"?p.jsx(bba,{repository:n,onClose:i}):r===\"emoji\"?p.jsx(hba,{repository:n,onClose:i}):r===\"favicon\"?p.jsx(pba,{repository:n,onClose:i}):p.jsx(xba,{repository:n,onClose:i})}),e[17]=i,e[18]=n,e[19]=r,e[20]=I):I=e[20];let R;return e[21]!==k||e[22]!==I?(R=p.jsxs(\"div\",{className:\"flex h-[320px] flex-col\",children:[k,I]}),e[21]=k,e[22]=I,e[23]=R):R=e[23],R}"
+    }
+  ],
+  "current_main_blobs": {
+    "src/state/repoIcon.ts": {
+      "git_blob": "3c6d6c388de99005933ad372437320a50a553f8c",
+      "sha256": "1785b9d6423ecee181979d27b77386f177ce7200b4c783612a2450d78300728c"
+    },
+    "src/state/repoIcon.test.ts": {
+      "git_blob": "4b7a70e6e3a40e59df8d65c47f58b234134e5f16",
+      "sha256": "62791b4441a9420ffc6f887b306a5605cca342ff5951f8f3373d3386f1f3bff2"
+    },
+    "src/components/RepoIconDialog.tsx": {
+      "git_blob": "dea59a1f28e93f5b661af4ca400931d9bc5b416e",
+      "sha256": "cc17f83cb13c9d76ac133bcf4c2e00596fcd315d5ae0e84c7de9b8b837869e40"
+    }
+  },
+  "scope": "fitIcon geometry only. No raster output, canvas sampling quality, native picker, persistence or focus proof."
+}

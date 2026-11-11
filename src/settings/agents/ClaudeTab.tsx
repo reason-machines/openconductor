@@ -94,7 +94,7 @@ export function ClaudeTab({ settings, save, reload }: AgentTabProps) {
           }}
         />
       ) : (
-        !auth.authenticated && <LoginButton command="claude /login" label="claude /login" onDone={refresh} />
+        <LoginButton command="claude /login" label="claude /login" onDone={refresh} />
       )}
       <div className="settings-rows agk-rows">
         <ChromeModeRow />

@@ -1,0 +1,1 @@
+const E9t=1,lOt=50,WBi=300,nYe=10,GBi=Array.from({length:(WBi-lOt)/nYe+1},(t,e)=>lOt+e*nYe);function qBi(t){return Math.round(t*100)}function xZn({currentZoomLevel:t,direction:e}){const n=qBi(t),i=e==="in"?nYe:-nYe;return Math.min(WBi,Math.max(lOt,n+i))/100}
