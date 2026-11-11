@@ -7,6 +7,7 @@ import type { ToolRowProps } from "./ToolRows.tsx";
 import * as tools from "./conductorTools.ts";
 import * as icons from "./toolIconData.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
+import { highlight } from "./markdown.ts";
 
 // Mount the production row and its real React hooks, as multiEditHover.test.ts
 // does. Only the unrelated Markdown leaf is excluded; no row is mocked.
@@ -39,7 +40,7 @@ async function fixture(rows: Row[]) {
         case "./conductorTools.ts": return tools;
         case "./toolIconData.ts": return icons;
         case "./thinkingChip.ts": return { thinkingChipText };
-        case "./markdown.ts": return { Markdown: () => { throw new Error("Unrelated Markdown leaf"); } };
+        case "./markdown.ts": return { highlight, Markdown: () => { throw new Error("Unrelated Markdown leaf"); } };
         case "./LinkMenu.tsx": return { LinkWithMenu: () => { throw new Error("Unrelated link menu rendered"); } };
         case "../../backend.ts": return { openUrl: () => { throw new Error("Unrelated external opener invoked"); } };
         default: throw new Error(`Unexpected ToolRows dependency: ${name}`);

@@ -186,6 +186,7 @@ function route(e: PtyEvent) {
   }
   // Ready and exit both forget tracked commands, as in the reference.
   l.shell = emptyShellState();
+  l.term.options.disableStdin = e.kind !== "ready";
   if (e.kind === "exit") {
     l.ack.flush();
     l.endedAt = new Date().toISOString();
@@ -193,7 +194,6 @@ function route(e: PtyEvent) {
     const how = e.signal ? `signal ${e.signal}` : `code ${e.exitCode}`;
     l.term.write(`\r\n\x1b[2m[Process exited with ${how}]\x1b[0m\r\n`);
   }
-  if (e.kind === "ready") l.term.options.disableStdin = false;
   dispatch(l.workspaceId, e.kind === "ready" ? { type: "ready", id: e.id } : { type: "exit", id: e.id, exitCode: e.exitCode, signal: e.signal });
 }
 
@@ -269,6 +269,7 @@ async function startTab(
   const id = restore?.id ?? `term-${crypto.randomUUID()}`;
   const font = currentTerminalFont();
   const term = new Terminal({
+    disableStdin: true,
     cursorBlink: true,
     fontFamily: font.family,
     fontSize: font.size,
@@ -321,12 +322,7 @@ async function startTab(
     runTerminalCommand(id, command);
     return false;
   });
-  term.onData((d) => {
-    const l = live.get(id);
-    if (getTabs(workspaceId).tabs.find((tab) => tab.id === id)?.status === "spawn_error") return;
-    if (l && d.length > 0) l.hasReceivedUserInput = true;
-    void ptyWrite(id, d).catch(() => {});
-  });
+  term.onData((d) => writeInput(id, d));
   term.onResize(({ cols, rows }) => void ptyResize(id, cols, rows).catch(() => {}));
   dispatch(workspaceId, { type: "open", id, title: restore?.title, placement });
   if (placement === "center") centerTabListeners.forEach((listener) => listener(workspaceId, id));
@@ -408,11 +404,18 @@ export function attachTab(id: string, container: HTMLElement): () => void {
   };
 }
 
+function writeInput(id: string, data: string) {
+  const l = live.get(id);
+  if (!l || l.term.options.disableStdin || getTabs(l.workspaceId).tabs.find((tab) => tab.id === id)?.status !== "running") return;
+  if (data.length > 0) l.hasReceivedUserInput = true;
+  void ptyWrite(id, data).catch(() => {});
+}
+
 function runTerminalCommand(id: string, command: string) {
   const l = live.get(id);
   if (!l) return;
   const bytes = LINE_EDIT_BYTES[command];
-  if (bytes !== undefined) void ptyWrite(id, bytes).catch(() => {});
+  if (bytes !== undefined) writeInput(id, bytes);
   else if (command === "terminal.clearScrollback") clearTab(id);
   else if (command === FIND_COMMAND) {
     findRequests.set(id, getFindRequests(id) + 1);
