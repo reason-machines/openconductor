@@ -33,11 +33,11 @@
   "statuses": "matches: retained threshold match; missing/wrong: valid reference observation proves a gap; unverified: no valid reference observation proves the raw gap. Scope is independent; only in-scope rows enter summary."
  },
  "summary": {
-  "total": 341,
-  "missing": 3,
+  "total": 340,
+  "missing": 0,
   "wrong": 48,
   "matches": 169,
-  "unverified": 121,
+  "unverified": 123,
   "states": {
    "total": 71,
    "missing": 0,
@@ -46,11 +46,11 @@
    "unverified": 5
   },
   "items": {
-   "total": 268,
-   "missing": 3,
+   "total": 267,
+   "missing": 0,
    "wrong": 38,
    "matches": 113,
-   "unverified": 114
+   "unverified": 116
   },
   "requirements": {
    "total": 2,
@@ -117,11 +117,11 @@
     "unverified": 5
    },
    "settings-row": {
-    "total": 96,
-    "missing": 3,
+    "total": 95,
+    "missing": 0,
     "wrong": 20,
     "matches": 51,
-    "unverified": 22
+    "unverified": 24
    },
    "tab": {
     "total": 13,
@@ -155,17 +155,17 @@
    },
    "onboarding-auth": {
     "total": 10,
-    "missing": 1,
+    "missing": 0,
     "wrong": 4,
     "matches": 1,
-    "unverified": 4
+    "unverified": 5
    },
    "settings": {
-    "total": 167,
-    "missing": 2,
+    "total": 166,
+    "missing": 0,
     "wrong": 39,
     "matches": 88,
-    "unverified": 38
+    "unverified": 39
    },
    "shell": {
     "total": 84,
@@ -189,8 +189,8 @@
     "unverified": 3
    }
   },
-  "located_items": 183,
-  "items_with_reference_screenshot": 183
+  "located_items": 182,
+  "items_with_reference_screenshot": 182
  },
  "states": [
   {
@@ -27164,8 +27164,8 @@
    "id": "settings-row:account:sign-out",
    "kind": "settings-row",
    "name": "Sign out",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "unverified",
+   "why": "Row exists on main (#690) and, like Conductor's, renders only while signed in. The retained lane capture settings-account runs signed out, so it cannot show this row. Not counted as a match.",
    "team": "onboarding-auth",
    "component": null,
    "source": {
@@ -27193,7 +27193,18 @@
    "raw_why": "copy not shown in any OpenConductor capture",
    "scope": "in-scope",
    "scope_reason": "Local main-screen parity requirement.",
-   "verification": "observed gap"
+   "verification": "unverified",
+   "correction": {
+    "category": "scorer quirk: capture in a state that hides the row",
+    "evidence": [
+     "src/settings/AccountPage.tsx: Sign out row returns null without a signed-in Reason account, added by #690",
+     "oc-captures.json settings-account DOM: \"Not signed in\""
+    ],
+    "limits": [
+     "OpenConductor signs out of Reason (`reason logout`); Conductor's row signs out of a Conductor account.",
+     "No signed-in lane capture or visual comparison exists."
+    ]
+   }
   },
   {
    "id": "settings-page:advanced",
@@ -27360,9 +27371,16 @@
    ],
    "raw_status": "missing",
    "raw_why": "copy not shown in any OpenConductor capture",
-   "scope": "in-scope",
-   "scope_reason": "Local main-screen parity requirement.",
-   "verification": "observed gap"
+   "scope": "not-required",
+   "scope_reason": "Agent removed from OpenConductor (OpenCode, with Cursor, by #635/#639/#640). Raw evidence retained.",
+   "verification": "observed gap",
+   "correction": {
+    "category": "removed by decision",
+    "evidence": [
+     "#640 removed the OpenCode Advanced rows and executable-path override after #635 removed the backend setting",
+     "parity/ui-program/ledger.md settings row: Advanced, OpenCode row removed on purpose by #640"
+    ]
+   }
   },
   {
    "id": "settings-row:advanced:ssh-private-key-path",
@@ -31283,8 +31301,8 @@
    "id": "settings-row:providers:use-claude-code-with-chrome",
    "kind": "settings-row",
    "name": "Use Claude Code with Chrome",
-   "status": "missing",
-   "why": "copy not shown in any OpenConductor capture",
+   "status": "unverified",
+   "why": "Row exists on main (Settings > Agents > Claude Code tab, #432), but the retained lane capture settings-providers shows the Reason tab, so it cannot show this row. No current lane capture of the Claude Code tab; not counted as a match.",
    "team": "settings",
    "component": null,
    "source": {
@@ -31311,7 +31329,19 @@
    "raw_why": "copy not shown in any OpenConductor capture",
    "scope": "in-scope",
    "scope_reason": "Local main-screen parity requirement.",
-   "verification": "observed gap"
+   "verification": "unverified",
+   "correction": {
+    "category": "scorer quirk: capture shows another tab",
+    "evidence": [
+     "src/settings/agentOptions.ts and src/settings/rows/AgentOptionRows.tsx render the row (chrome_mode_enabled), added by #432",
+     "oc-captures.json settings-providers DOM: Reason tab selected, Claude Code tab not opened",
+     "evidence/settings/agents-screens/built-agents-claude-options--dark.png (#463): built app showed the row on the Claude Code tab"
+    ],
+    "limits": [
+     "The #463 built-app capture predates #635/#639 (it still shows Cursor and OpenCode tabs); it is historical, not current-main evidence.",
+     "No REA visual comparison of the Claude Code tab against Conductor's at current main."
+    ]
+   }
   },
   {
    "id": "settings-page:environment",
@@ -32874,6 +32904,55 @@
    }
   }
  },
+ "row_corrections": {
+  "schema": "openconductor.ui-map-row-corrections/1",
+  "reconciled_main_commit": "5555ec59",
+  "note": "Raw `missing` from the scorer's \"copy not shown in any OpenConductor capture\" rule only proves the retained OpenConductor capture did not show the row. Where that capture was taken in a state that cannot show the row (another tab, signed out), the gap is withdrawn to unverified until a lane capture of the right state exists. A row for a feature OpenConductor removed by decision is scoped out, not counted as missing.",
+  "corrections": [
+   {
+    "id": "settings-row:providers:use-claude-code-with-chrome",
+    "category": "scorer quirk: capture shows another tab",
+    "raw_status": "missing",
+    "status": "unverified",
+    "why": "Row exists on main (Settings > Agents > Claude Code tab, #432), but the retained lane capture settings-providers shows the Reason tab, so it cannot show this row. No current lane capture of the Claude Code tab; not counted as a match.",
+    "evidence": [
+     "src/settings/agentOptions.ts and src/settings/rows/AgentOptionRows.tsx render the row (chrome_mode_enabled), added by #432",
+     "oc-captures.json settings-providers DOM: Reason tab selected, Claude Code tab not opened",
+     "evidence/settings/agents-screens/built-agents-claude-options--dark.png (#463): built app showed the row on the Claude Code tab"
+    ],
+    "limits": [
+     "The #463 built-app capture predates #635/#639 (it still shows Cursor and OpenCode tabs); it is historical, not current-main evidence.",
+     "No REA visual comparison of the Claude Code tab against Conductor's at current main."
+    ]
+   },
+   {
+    "id": "settings-row:account:sign-out",
+    "category": "scorer quirk: capture in a state that hides the row",
+    "raw_status": "missing",
+    "status": "unverified",
+    "why": "Row exists on main (#690) and, like Conductor's, renders only while signed in. The retained lane capture settings-account runs signed out, so it cannot show this row. Not counted as a match.",
+    "evidence": [
+     "src/settings/AccountPage.tsx: Sign out row returns null without a signed-in Reason account, added by #690",
+     "oc-captures.json settings-account DOM: \"Not signed in\""
+    ],
+    "limits": [
+     "OpenConductor signs out of Reason (`reason logout`); Conductor's row signs out of a Conductor account.",
+     "No signed-in lane capture or visual comparison exists."
+    ]
+   },
+   {
+    "id": "settings-row:advanced:opencode-executable-path",
+    "category": "removed by decision",
+    "raw_status": "missing",
+    "scope": "not-required",
+    "scope_reason": "Agent removed from OpenConductor (OpenCode, with Cursor, by #635/#639/#640). Raw evidence retained.",
+    "evidence": [
+     "#640 removed the OpenCode Advanced rows and executable-path override after #635 removed the backend setting",
+     "parity/ui-program/ledger.md settings row: Advanced, OpenCode row removed on purpose by #640"
+    ]
+   }
+  ]
+ },
  "raw_summary": {
   "total": 983,
   "missing": 710,
@@ -33068,7 +33147,7 @@
   }
  ],
  "excluded_summary": {
-  "total": 644,
+  "total": 645,
   "by_scope": {
    "deferred": {
     "total": 404,
@@ -33078,8 +33157,8 @@
     "unverified": 353
    },
    "not-required": {
-    "total": 240,
-    "missing": 0,
+    "total": 241,
+    "missing": 1,
     "wrong": 0,
     "matches": 1,
     "unverified": 239
@@ -33088,7 +33167,8 @@
   "by_reason": {
    "Cloud UI not in scope. Existing implementation and raw evidence retained.": 136,
    "Unassigned extracted inventory excluded from this main-screen denominator.": 268,
-   "No dedicated toast observation. Not a missing parity requirement; raw copy assessment retained.": 240
+   "No dedicated toast observation. Not a missing parity requirement; raw copy assessment retained.": 240,
+   "Agent removed from OpenConductor (OpenCode, with Cursor, by #635/#639/#640). Raw evidence retained.": 1
   }
  },
  "scope": {

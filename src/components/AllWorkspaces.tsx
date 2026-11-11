@@ -42,6 +42,7 @@ import { Tooltip } from "./Tooltip";
 
 interface Props {
   repos: Repo[];
+  loading?: boolean;
   sidebarVisible: boolean;
   dispatch: Dispatch<Action>;
   onCreateWorkspace: () => void;
@@ -235,7 +236,7 @@ function Row({
   );
 }
 
-export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspace }: Props) {
+export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace }: Props) {
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
   const [filters, setFiltersState] = useState<HomeFilters>(() => loadFilters(repoIds));
@@ -383,7 +384,11 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
       </div>
       <div className="allws-scroll">
         <div className="allws-list" role="listbox" aria-label="Workspaces">
-          {groups.length > 0 ? (
+          {loading ? (
+            <div className="allws-loading" role="status" aria-label="Loading workspaces">
+              <RowStatusIcon status="working" size={16} />
+            </div>
+          ) : groups.length > 0 ? (
             <>
               {groups.map((g) => (
                 <section key={g.bucket} className="allws-group" aria-label={g.label}>

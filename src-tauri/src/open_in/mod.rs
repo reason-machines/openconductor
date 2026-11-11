@@ -16,6 +16,8 @@ pub mod commands;
 pub mod icon;
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod alacritty_workspace_tests;
 
 use std::ffi::{OsStr, OsString};
 use std::path::{Path, PathBuf};
