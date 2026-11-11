@@ -1,0 +1,92 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: starting ordinary input cannot queue writes or mark saved user input
+ok 1 - starting ordinary input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 1116.905285
+  type: 'test'
+  ...
+# Subtest: starting line-edit input cannot queue writes or mark saved user input
+ok 2 - starting line-edit input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 28.24051
+  type: 'test'
+  ...
+# Subtest: exited ordinary input cannot queue writes or mark saved user input
+ok 3 - exited ordinary input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 20.951145
+  type: 'test'
+  ...
+# Subtest: exited line-edit input cannot queue writes or mark saved user input
+ok 4 - exited line-edit input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 35.686871
+  type: 'test'
+  ...
+# Subtest: spawn_error ordinary input cannot queue writes or mark saved user input
+ok 5 - spawn_error ordinary input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 29.039384
+  type: 'test'
+  ...
+# Subtest: spawn_error line-edit input cannot queue writes or mark saved user input
+ok 6 - spawn_error line-edit input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 27.287812
+  type: 'test'
+  ...
+# Subtest: running enabled ordinary input is written to the selected PTY and recorded
+ok 7 - running enabled ordinary input is written to the selected PTY and recorded
+  ---
+  duration_ms: 19.160308
+  type: 'test'
+  ...
+# Subtest: running disabled ordinary input cannot queue writes or mark saved user input
+ok 8 - running disabled ordinary input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 11.740922
+  type: 'test'
+  ...
+# Subtest: running enabled line-edit input is written to the selected PTY and recorded
+ok 9 - running enabled line-edit input is written to the selected PTY and recorded
+  ---
+  duration_ms: 23.309126
+  type: 'test'
+  ...
+# Subtest: running disabled line-edit input cannot queue writes or mark saved user input
+ok 10 - running disabled line-edit input cannot queue writes or mark saved user input
+  ---
+  duration_ms: 19.59666
+  type: 'test'
+  ...
+# Subtest: stdin is disabled until ready and after exit
+ok 11 - stdin is disabled until ready and after exit
+  ---
+  duration_ms: 9.011219
+  type: 'test'
+  ...
+# Subtest: failed-spawn retry stays read-only until ready, then accepts input
+ok 12 - failed-spawn retry stays read-only until ready, then accepts input
+  ---
+  duration_ms: 11.46618
+  type: 'test'
+  ...
+# Subtest: read-only terminals still allow local Find and clear commands
+ok 13 - read-only terminals still allow local Find and clear commands
+  ---
+  duration_ms: 6.745685
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2445.259944

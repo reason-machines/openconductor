@@ -1,0 +1,91 @@
+{
+  "id": "ACQ-COMPOSER-QUEUE-CTRL-135-04",
+  "author": "Conductor Rebuild",
+  "main": "b34ba2de9ad45365715d21a0bfe24d9c36b335fb",
+  "status": "baseline_red_patched_31_pass_typecheck_pass",
+  "reference_artifact_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "current_source_sha256": "7f00ce6d2c0acb1df02428ec9874f91c160e9f5f480fab202486c24fe370ccbd",
+  "current_line_282": "    if (e.key === \"ArrowUp\" && !e.shiftKey && !e.metaKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {",
+  "same_input": {
+    "key": "ArrowUp",
+    "ctrlKey": true,
+    "shiftKey": false,
+    "metaKey": false,
+    "altKey": false,
+    "composition": false,
+    "draft": "",
+    "selection": [
+      0,
+      0
+    ],
+    "suggestions": "none",
+    "queue": "nonempty, visible, same session, not editing"
+  },
+  "reference": "uqn returns ArrowUp; lHt does not enter its all-modifiers-clear focus branch, so X/Z8i.focusLast is not called and this queue-navigation branch does not preventDefault.",
+  "current": "Composer tests Shift, Meta and Alt but not Ctrl, then preventDefault and focus({row:last}) invoke the live queue-list query and row focus.",
+  "correction": "Add only !e.ctrlKey to Composer.tsx onKeyDown queue-focus guard. Do not change top-of-editor semantics, queue editing, root slash, atom fixtures or ComposerEditor.",
+  "fixture": {
+    "current_path": "src/features/chat/composerQueueFocus.test.ts",
+    "delivery_path": "src/features/chat/composerQueueFocus.test.ts",
+    "sha256": "cce2db54f4ccca445d66791fca2c9eec68b62f44e55e487af23607aea318bd37",
+    "cases": 7,
+    "actual_wiring": "Mount actual transpiled Composer and capture its real ComposerEditor callback. createNodeMock supplies only the DOM queue-list lookup/focus endpoint; observe consumption, selector and focus calls.",
+    "expected_RED": "Ctrl+ArrowUp first assertion expected preventDefault false, actual true on pinned main. Missing dependency/fixture setup error is not RED.",
+    "controls": [
+      "plain ArrowUp focuses last row",
+      "Shift/Meta/Alt do not take focus",
+      "non-start caret does not take focus",
+      "empty queue does not take focus"
+    ]
+  },
+  "runtime_request": {
+    "target_computer_id": "b3bf539c-baa9-5c0a-bd50-9c4212affce9",
+    "dependencies_read_present": {
+      "react": "18.3.1",
+      "react-test-renderer": "18.3.1",
+      "typescript": "5.9.3"
+    },
+    "baseline": "COMPOSER_QUEUE_FOCUS_SOURCE_REF=b34ba2de9ad45365715d21a0bfe24d9c36b335fb node --test --test-concurrency=1 --test-name-pattern='Ctrl[+]ArrowUp' src/features/chat/composerQueueFocus.test.ts",
+    "patched_and_locked": "node --test --test-concurrency=1 src/features/chat/composerQueueFocus.test.ts src/features/chat/composerSlashPrefix.test.ts src/features/chat/composerSlashAtoms.test.ts src/features/chat/slashCommands.test.ts",
+    "typecheck": "npm run typecheck",
+    "bounds_seconds": [
+      60,
+      120,
+      120
+    ],
+    "resource_limits": "nice19,1536MiB Node heap,singleworker,kill-after5s,noautomaticretry",
+    "no": [
+      "install",
+      "broad tests",
+      "build",
+      "browser/server",
+      "native/provider",
+      "workflow dispatch"
+    ]
+  },
+  "verification": {
+    "passed": [
+      "retained original hash",
+      "7 complete or bounded actual-caller spans",
+      "fresh-main source mismatch",
+      "baseline RED for consumed-key assertion",
+      "patched and locked regressions 31/31 PASS",
+      "npm run typecheck PASS"
+    ],
+    "not_run": [
+      "visual",
+      "native keyboard",
+      "IME",
+      "provider"
+    ],
+    "product_or_locked_tests_changed": "Only the queue ArrowUp guard is changed; ComposerEditor and all existing tests are byte-identical to base."
+  },
+  "reference_spans_file": "reference-spans.json",
+  "provenance": {
+    "kind": "already-retained-shipped-renderer-bytes",
+    "historical_rea_evidence_id": "REAev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "artifact_member": "renderApp-D_fmY7hW.js",
+    "limitations": "Source-contract evidence only. No fresh acquisition or execution of Conductor."
+  },
+  "candidate_source_sha256": "ba13bc0523ef60d657b5cd864030b7a958dbdc9f60c3d866067cf493dc0e01f0"
+}

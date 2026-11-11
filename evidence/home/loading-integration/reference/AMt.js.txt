@@ -1,0 +1,1 @@
+function AMt({baseUrl:t,state:e}){if(t===void 0)return{data:void 0,error:void 0,isError:!1,isLoading:!1};const s=e.organizationsError===void 0?void 0:new Error(e.organizationsError);return{data:Object.values(e.organizationsById),error:s,isError:s!==void 0,isLoading:e.organizationsLoadedAt===void 0&&s===void 0}}

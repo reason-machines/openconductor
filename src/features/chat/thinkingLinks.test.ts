@@ -9,6 +9,7 @@ import type { TranscriptProps } from "./Transcript.tsx";
 import { Markdown } from "./markdown.ts";
 import { applyChatEvents, emptyTranscript } from "./reducer.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
+import { assistantDisplayText } from "./assistantText.ts";
 import * as view from "./view.ts";
 import * as groups from "./toolGroups.ts";
 import * as time from "./turnTime.ts";
@@ -65,6 +66,7 @@ async function fixture({ text, streaming = false, assistantText }: { text: strin
     require(name: string) { assert.equal(name, "react/jsx-runtime"); return dependencies(name); },
     React, Fragment: React.Fragment,
     useMemo: React.useMemo, useState: React.useState, useSyncExternalStore: React.useSyncExternalStore,
+    useBoolPref: () => false, assistantDisplayText,
     ...view, ...groups, ...time, ...links,
     Markdown, thinkingChipText,
     openUrl: async (href: string) => { opened.push(href); },

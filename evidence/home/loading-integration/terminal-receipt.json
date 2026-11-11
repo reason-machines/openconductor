@@ -1,0 +1,199 @@
+{
+  "unit": "ACQ-HOME-LOADING-271-03-regression",
+  "author": "Conductor Rebuild",
+  "status": "PASS_TERMINAL_RELEASE",
+  "terminal_release_utc": "2026-11-11T10:14:27.026600+00:00",
+  "preflight": {
+    "unit": "ACQ-HOME-LOADING-271-03-regression",
+    "qualified_baseline": "12a805ed90f5aeb0d472e53a64ad6d85bf2d3479",
+    "observed_default_ref": "12a805ed90f5aeb0d472e53a64ad6d85bf2d3479",
+    "source_pins": [
+      {
+        "path": "package.json",
+        "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b"
+      },
+      {
+        "path": "src/App.tsx",
+        "sha256": "c429a28cb187c7a9c535a85fb565f08f4cd926740645099441bc04addd36bccc"
+      },
+      {
+        "path": "src/components/AllWorkspaces.tsx",
+        "sha256": "f9be6bc8124033ac7e7062b8d4b1a423286a7b86b58465d0258b049f5ca6f81f"
+      },
+      {
+        "path": "src/components/RowStatusIcon.tsx",
+        "sha256": "e29e27c6d84f87e9e7cbe11f719ee126fefb228d3e1deb49e9b90420ef0097aa"
+      },
+      {
+        "path": "src/state/store.ts",
+        "sha256": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96"
+      },
+      {
+        "path": "src/state/persisted.ts",
+        "sha256": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209"
+      },
+      {
+        "path": "src/state/selectors.ts",
+        "sha256": "37f68b0305f898b2cdf575e05bd0a0ebf89983eb527b96526cf4f9406da2302d"
+      },
+      {
+        "path": "src/state/navigationSections.ts",
+        "sha256": "876c4b8bb79dbf558f91f90186f60604b16ab627fbedb37bb45d6b6a4b4a0b49"
+      },
+      {
+        "path": "src/state/workspaceStatus.ts",
+        "sha256": "8b26245bf7cec0e806485e5fc9608220df08cbd7250953e946122b0044eef714"
+      },
+      {
+        "path": "src/home/sidebarGroupBy.ts",
+        "sha256": "9559b98fa5853a4e227376285c4723f2b8ede795cacc0238f9a94aad9ee16449"
+      },
+      {
+        "path": "src/state/openChat.ts",
+        "sha256": "40a9ea9f4719fa4c8602e4bc2611c47051c54a317131f458a324cddfc072a152"
+      },
+      {
+        "path": "src/state/workspaceSessions.ts",
+        "sha256": "180c76b22899e63cc3d1f5b92cdcedfa9c7a0bdebe82c6c7d3de54c037da291b"
+      },
+      {
+        "path": "src/state/rowStatus.ts",
+        "sha256": "e22c083e131c35774234f0f91fb1f5e5b117c6d40161ac3f346395bc46f2df34"
+      },
+      {
+        "path": "src/state/chatUnread.ts",
+        "sha256": "5367c692afa7818f0044b2f7bbbfc736acd3f7bb4dda5a10cc3b9276cb212b79"
+      },
+      {
+        "path": "src/home/allWorkspaces.ts",
+        "sha256": "d0f085b570f531b0b2d0679473b30d70b133a3280f164ad871fdb6aff8eec20b"
+      },
+      {
+        "path": "src/components/sidebarLabel.ts",
+        "sha256": "3fddba42c85e28f14f38f48382d89c31c5de4d8fcc31dcee286033d61bbc33ac"
+      },
+      {
+        "path": "src/state/workspaceNumber.ts",
+        "sha256": "16e32a34381b71319e0735ebfd3843ef2f7a026d541e27ad781009437b971aae"
+      },
+      {
+        "path": "src/home.css",
+        "sha256": "75ba62e3d6a6a73b557155f1f904eb5254a79fd0a08bbd106ae556c7d0a0160e"
+      }
+    ],
+    "fixture": {
+      "intended_path": "src/components/homeLoading.test.ts",
+      "bytes": 9460,
+      "sha256": "7fc4ee787d23650efa77d716e79ee3701b178b01506b497c20a3b6a569a132d6",
+      "cases": 4
+    },
+    "patch": {
+      "bytes": 2662,
+      "sha256": "19528f2a344f9163bfad4b1872744c3d35b0dff6849fe62244cd934f1427bde4"
+    },
+    "scope": {
+      "src/App.tsx": {
+        "baseline_sha256": "c429a28cb187c7a9c535a85fb565f08f4cd926740645099441bc04addd36bccc",
+        "candidate_sha256": "e0bf3c21e128ac4e36430e76754fca3e04bc6f7311d5e8459f8570f6bb9bae03"
+      },
+      "src/components/AllWorkspaces.tsx": {
+        "baseline_sha256": "f9be6bc8124033ac7e7062b8d4b1a423286a7b86b58465d0258b049f5ca6f81f",
+        "candidate_sha256": "f2cd29c810d99a0ea8cbb6fa59d09c00134e28bb2e48f6a681f1ef604e89c4b5"
+      },
+      "src/home.css": {
+        "baseline_sha256": "75ba62e3d6a6a73b557155f1f904eb5254a79fd0a08bbd106ae556c7d0a0160e",
+        "candidate_sha256": "e3556e517dc906aba9bacb1b72771e91c7a760ba49788c301b98cf4247dbd113"
+      }
+    },
+    "dependency_versions_verified": {
+      "react": "18.3.1",
+      "react-test-renderer": "18.3.1",
+      "typescript": "5.9.3",
+      "loose-envify": "1.4.0",
+      "react-is": "18.3.1",
+      "react-shallow-renderer": "16.15.0",
+      "scheduler": "0.23.2",
+      "js-tokens": "4.0.0",
+      "object-assign": "4.1.1"
+    },
+    "candidate_changed_only": [
+      "src/App.tsx",
+      "src/components/AllWorkspaces.tsx",
+      "src/home.css"
+    ],
+    "fixture_identical_both_trees": true,
+    "input_archive": "9b2cc8a7-32f3-41b4-8169-2f74c68c1208/1c93c1c810efe5cfc56ae800d3b3a2607240fa9f85f3119ad2aa292623bd56d0",
+    "qualification_metadata_inspector_note": "Inspector initially looked for older nested candidate_hashes metadata; canonical prospective-scope.json is authoritative and all existing candidate files match. No source rewrite/repeated setup/apply/test.",
+    "previous_source_drift_stops_preserved": true,
+    "previous_cloud_lease_release": "135 actual offlineaudit PASS terminal2026-11-11T10:03:01.756784Z",
+    "no_install": true,
+    "full_tsc_NOT_QUALIFIED": true
+  },
+  "phases": {
+    "home-loading-red": {
+      "receipt": {
+        "started_utc": "2026-11-11T10:14:00.729969+00:00",
+        "finished_utc": "2026-11-11T10:14:02.435983+00:00",
+        "command": [
+          "timeout",
+          "--kill-after=5s",
+          "90s",
+          "bash",
+          "-c",
+          "cd .rea-work/ui-runtime/home-loading-271/red && exec node --test --test-concurrency=1 src/components/homeLoading.test.ts"
+        ],
+        "wall_seconds": 1.706,
+        "process_exit": 1,
+        "limit_reason": null,
+        "wall_limit_seconds": 95.0,
+        "max_added_bytes": 16777216,
+        "initial_bytes": 59869639,
+        "final_bytes": 59871722,
+        "peak_observed_bytes": 59871722,
+        "added_bytes": 2083,
+        "peak_added_bytes": 2083,
+        "process_terminal": true
+      },
+      "stdout": "TAP version 13\n# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: Home keeps the loading state while the actual desktop store hydrates through App\nnot ok 1 - Home keeps the loading state while the actual desktop store hydrates through App\n  ---\n  duration_ms: 499.842916\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/home-loading-271/red/src/components/homeLoading.test.ts:157:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    pending workspace data must render Loading workspaces, not a settled empty list\n    \n    0 !== 1\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 1\n  actual: 0\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/home-loading-271/red/src/components/homeLoading.test.ts:161:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n# Subtest: Home keeps populated desktop data visible after startup\nok 2 - Home keeps populated desktop data visible after startup\n  ---\n  duration_ms: 216.348694\n  type: 'test'\n  ...\n# Subtest: Home keeps its settled-empty Create action after desktop startup\nok 3 - Home keeps its settled-empty Create action after desktop startup\n  ---\n  duration_ms: 203.184532\n  type: 'test'\n  ...\n# Subtest: Home browser preview stays ready and does not issue desktop reads\nok 4 - Home browser preview stays ready and does not issue desktop reads\n  ---\n  duration_ms: 148.136147\n  type: 'test'\n  ...\n1..4\n# tests 4\n# suites 0\n# pass 3\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1566.399031\n",
+      "stderr": "(node:98) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    "home-loading-green": {
+      "receipt": {
+        "started_utc": "2026-11-11T10:14:24.437694+00:00",
+        "finished_utc": "2026-11-11T10:14:27.026600+00:00",
+        "command": [
+          "timeout",
+          "--kill-after=5s",
+          "90s",
+          "bash",
+          "-c",
+          "cd .rea-work/ui-runtime/home-loading-271/green && exec node --test --test-concurrency=1 src/components/homeLoading.test.ts"
+        ],
+        "wall_seconds": 2.589,
+        "process_exit": 0,
+        "limit_reason": null,
+        "wall_limit_seconds": 95.0,
+        "max_added_bytes": 16777216,
+        "initial_bytes": 59872351,
+        "final_bytes": 59873646,
+        "peak_observed_bytes": 59873646,
+        "added_bytes": 1295,
+        "peak_added_bytes": 1295,
+        "process_terminal": true
+      },
+      "stdout": "TAP version 13\n# (node:87) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: Home keeps the loading state while the actual desktop store hydrates through App\nok 1 - Home keeps the loading state while the actual desktop store hydrates through App\n  ---\n  duration_ms: 1095.882917\n  type: 'test'\n  ...\n# Subtest: Home keeps populated desktop data visible after startup\nok 2 - Home keeps populated desktop data visible after startup\n  ---\n  duration_ms: 256.391973\n  type: 'test'\n  ...\n# Subtest: Home keeps its settled-empty Create action after desktop startup\nok 3 - Home keeps its settled-empty Create action after desktop startup\n  ---\n  duration_ms: 223.810821\n  type: 'test'\n  ...\n# Subtest: Home browser preview stays ready and does not issue desktop reads\nok 4 - Home browser preview stays ready and does not issue desktop reads\n  ---\n  duration_ms: 167.181426\n  type: 'test'\n  ...\n1..4\n# tests 4\n# suites 0\n# pass 4\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 2419.567245\n",
+      "stderr": "(node:80) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    }
+  },
+  "preserved_previous_stops": [
+    "home-loading-source-drift-stop.json",
+    "home-loading-fresh-inputs-drift-stop.json"
+  ],
+  "proof_scope": "Actual App\u2192real useAppStore hydration/lifecycle/persisted mapping\u2192AllWorkspaces/RowStatusIcon in mounted React fixture. Controlled IPC/storage; unrelated App effects inert; FirstRunGate NOT mounted. No native/referenceJS/browser/provider/process launched.",
+  "gaps": [
+    "Full localTSC/build NOT RUN: scoped9 resolver incomplete for repository imports/types; ordinary hostedCI remains owner",
+    "Actualnative/reference mounted/visual geometry/FirstRunGate runtime parity NOT RUN",
+    "Exact referenceperquery timing not established; existing startup waits sidebarsectionhydration too"
+  ],
+  "next": "Owner271 publish minimal ready mainPR after exactcurrent deliveryreconcile; ownCI/protectedmerge/consumingpackage. No newapprovalgate."
+}

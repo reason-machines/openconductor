@@ -1,0 +1,1 @@
+loadWorkspaceList(){return this.readAndStoreWorkspaces().catch(e=>{throw this.initialWorkspacesLoad=void 0,this.__store.setState({allWorkspacesError:an(e)}),e})}

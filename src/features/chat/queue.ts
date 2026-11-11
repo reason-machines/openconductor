@@ -51,6 +51,8 @@ export interface MessageAttachment {
 
 export interface QueuedMessage {
   id: string;
+  /** An unchanged failed message to reopen instead of adding a new turn. */
+  retryTurnId?: string;
   text: string;
   userContent?: SentUserContentV1;
   attachments: readonly MessageAttachment[];
@@ -70,9 +72,9 @@ export interface ChatQueue {
 
 export type Effect =
   /** Start a new turn with this prompt (the session was idle). */
-  | ({ kind: "start"; attachments: readonly MessageAttachment[] } & UserPrompt)
+  | ({ kind: "start"; attachments: readonly MessageAttachment[]; retryTurnId?: string } & UserPrompt)
   /** Send this prompt into the running turn. */
-  | ({ kind: "steer"; attachments: readonly MessageAttachment[] } & UserPrompt)
+  | ({ kind: "steer"; attachments: readonly MessageAttachment[]; retryTurnId?: string } & UserPrompt)
   /** Interrupt the running turn; `hard` on a repeated Stop. */
   | { kind: "cancel"; hard: boolean };
 
@@ -113,11 +115,11 @@ export function waitingOn(q: ChatQueue, needs: SessionStatus | null): ChatQueue 
 function drain(q: ChatQueue, effects: Effect[]): QueueStep {
   const head = q.items[0];
   if (!head || busy(q.status) || q.paused || q.editingId === head.id) return { queue: q, effects };
-  return { queue: { ...q, status: "working", items: q.items.slice(1) }, effects: [...effects, { kind: "start", ...snapshotUserPrompt(head), attachments: head.attachments }] };
+  return { queue: { ...q, status: "working", items: q.items.slice(1) }, effects: [...effects, { kind: "start", ...snapshotUserPrompt(head), attachments: head.attachments, ...(head.retryTurnId ? { retryTurnId: head.retryTurnId } : {}) }] };
 }
 
-function enqueue(q: ChatQueue, input: UserPrompt, attachments: readonly MessageAttachment[], now: Date): ChatQueue {
-  const item = { id: `q${q.next}`, ...input, attachments, createdAt: now.toISOString() };
+function enqueue(q: ChatQueue, input: UserPrompt, attachments: readonly MessageAttachment[], now: Date, retryTurnId?: string): ChatQueue {
+  const item = { id: `q${q.next}`, ...input, attachments, createdAt: now.toISOString(), ...(retryTurnId ? { retryTurnId } : {}) };
   return { ...q, items: [...q.items, item], next: q.next + 1 };
 }
 
@@ -131,6 +133,12 @@ export function submit(q: ChatQueue, input: UserPrompt, mode: SendMode, now = ne
     return { queue: { ...q, status: "working" }, effects: [{ kind: "start", ...snapshot, attachments }] };
   }
   return drain(enqueue(q, snapshot, attachments, now), []);
+}
+
+/** Retries use the same ordering and holds as new queued messages, without steering. */
+export function retry(q: ChatQueue, input: UserPrompt, turnId: string, now = new Date(), attachments: readonly MessageAttachment[] = []): QueueStep {
+  if (q.items.some((item) => item.retryTurnId === turnId)) return { queue: q, effects: [] };
+  return drain(enqueue(q, snapshotUserPrompt(input), attachments, now, turnId), []);
 }
 
 /** A turn the runtime started outside `submit` (e.g. Retry or the first message). */
@@ -188,7 +196,8 @@ export function saveEdit(q: ChatQueue, input: UserPrompt, steer = false): QueueS
   if (input.text.trim() === "" && !q.items.find((item) => item.id === id)?.attachments.length) return remove(q, id);
   const items = q.items.map((item) => {
     if (item.id !== id) return item;
-    const { userContent: previous, ...rest } = item;
+    // A saved edit is a new prompt, not the unchanged failed transcript entry.
+    const { userContent: previous, retryTurnId: _retryTurnId, ...rest } = item;
     return { ...rest, ...editedUserPrompt(input, { text: item.text, userContent: previous }) };
   });
   const edited = { ...q, editingId: null, items };
@@ -228,9 +237,10 @@ export function steerQueued(q: ChatQueue, id: string): QueueStep {
   if (!m) return { queue: q, effects: [] };
   const items = q.items.filter((x) => x.id !== id);
   const editingId = q.editingId === id ? null : q.editingId;
-  if (q.status === "working") return { queue: { ...q, items, editingId }, effects: [{ kind: "steer", ...snapshotUserPrompt(m), attachments: m.attachments }] };
+  const retry = m.retryTurnId ? { retryTurnId: m.retryTurnId } : {};
+  if (q.status === "working") return { queue: { ...q, items, editingId }, effects: [{ kind: "steer", ...snapshotUserPrompt(m), attachments: m.attachments, ...retry }] };
   if (busy(q.status)) return { queue: q, effects: [] };
-  return { queue: { ...q, items, editingId, status: "working", paused: false }, effects: [{ kind: "start", ...snapshotUserPrompt(m), attachments: m.attachments }] };
+  return { queue: { ...q, items, editingId, status: "working", paused: false }, effects: [{ kind: "start", ...snapshotUserPrompt(m), attachments: m.attachments, ...retry }] };
 }
 
 /** Why the head is not sending yet, as shown in the queue header. */

@@ -186,6 +186,8 @@ function route(e: PtyEvent) {
   }
   // Ready and exit both forget tracked commands, as in the reference.
   l.shell = emptyShellState();
+  l.term.options.disableStdin = e.kind !== "ready";
+  l.term.options.theme = { ...l.term.options.theme, cursor: e.kind === "ready" ? cssVar("--text") : "transparent", cursorAccent: cssVar("--panel") };
   if (e.kind === "exit") {
     l.ack.flush();
     l.endedAt = new Date().toISOString();
@@ -193,7 +195,6 @@ function route(e: PtyEvent) {
     const how = e.signal ? `signal ${e.signal}` : `code ${e.exitCode}`;
     l.term.write(`\r\n\x1b[2m[Process exited with ${how}]\x1b[0m\r\n`);
   }
-  if (e.kind === "ready") l.term.options.disableStdin = false;
   dispatch(l.workspaceId, e.kind === "ready" ? { type: "ready", id: e.id } : { type: "exit", id: e.id, exitCode: e.exitCode, signal: e.signal });
 }
 
@@ -269,6 +270,7 @@ async function startTab(
   const id = restore?.id ?? `term-${crypto.randomUUID()}`;
   const font = currentTerminalFont();
   const term = new Terminal({
+    disableStdin: true,
     cursorBlink: true,
     fontFamily: font.family,
     fontSize: font.size,
@@ -277,6 +279,8 @@ async function startTab(
     theme: {
       background: cssVar("--panel"),
       foreground: cssVar("--text"),
+      cursor: "transparent",
+      cursorAccent: cssVar("--panel"),
       // xterm's default selection is pale white, invisible on the light theme.
       // The inactive colour matters for Find: the match is selected while the
       // find input, not the terminal, has focus.
@@ -321,12 +325,7 @@ async function startTab(
     runTerminalCommand(id, command);
     return false;
   });
-  term.onData((d) => {
-    const l = live.get(id);
-    if (getTabs(workspaceId).tabs.find((tab) => tab.id === id)?.status === "spawn_error") return;
-    if (l && d.length > 0) l.hasReceivedUserInput = true;
-    void ptyWrite(id, d).catch(() => {});
-  });
+  term.onData((d) => writeInput(id, d));
   term.onResize(({ cols, rows }) => void ptyResize(id, cols, rows).catch(() => {}));
   dispatch(workspaceId, { type: "open", id, title: restore?.title, placement });
   if (placement === "center") centerTabListeners.forEach((listener) => listener(workspaceId, id));
@@ -336,12 +335,21 @@ async function startTab(
 
 async function spawnTerminal(id: string, terminal: Live): Promise<void> {
   try {
-    await spawnIn(terminal.launch.cwds, (cwd) =>
-      ptySpawn({ id, cwd, cols: terminal.term.cols, rows: terminal.term.rows, initialCommand: terminal.launch.initialCommand }),
-    );
+    await spawnIn(terminal.launch.cwds, async (cwd) => {
+      const { cols, rows } = terminal.term;
+      await ptySpawn({ id, cwd, cols, rows, initialCommand: terminal.launch.initialCommand });
+      if (
+        live.get(id) === terminal &&
+        getTabs(terminal.workspaceId).tabs.some((tab) => tab.id === id && tab.status !== "exited") &&
+        (terminal.term.cols !== cols || terminal.term.rows !== rows)
+      ) {
+        void ptyResize(id, terminal.term.cols, terminal.term.rows).catch(() => {});
+      }
+    });
   } catch (error) {
     if (live.get(id) === terminal) {
       terminal.term.options.disableStdin = true;
+      terminal.term.options.theme = { ...terminal.term.options.theme, cursor: "transparent", cursorAccent: cssVar("--panel") };
       dispatch(terminal.workspaceId, { type: "failed", id, error: error instanceof Error ? error.message : String(error) });
     }
     throw error;
@@ -408,11 +416,18 @@ export function attachTab(id: string, container: HTMLElement): () => void {
   };
 }
 
+function writeInput(id: string, data: string) {
+  const l = live.get(id);
+  if (!l || l.term.options.disableStdin || getTabs(l.workspaceId).tabs.find((tab) => tab.id === id)?.status !== "running") return;
+  if (data.length > 0) l.hasReceivedUserInput = true;
+  void ptyWrite(id, data).catch(() => {});
+}
+
 function runTerminalCommand(id: string, command: string) {
   const l = live.get(id);
   if (!l) return;
   const bytes = LINE_EDIT_BYTES[command];
-  if (bytes !== undefined) void ptyWrite(id, bytes).catch(() => {});
+  if (bytes !== undefined) writeInput(id, bytes);
   else if (command === "terminal.clearScrollback") clearTab(id);
   else if (command === FIND_COMMAND) {
     findRequests.set(id, getFindRequests(id) + 1);
@@ -427,7 +442,11 @@ function runTerminalCommand(id: string, command: string) {
 }
 
 export function clearTab(id: string) {
-  live.get(id)?.term.clear();
+  const l = live.get(id);
+  l?.term.clear();
+  if (l && !l.term.options.disableStdin && getTabs(l.workspaceId).tabs.find((tab) => tab.id === id)?.status === "running") {
+    void ptyWrite(id, "\x0c").catch(() => {});
+  }
   void ptyClearHistory(id).catch(() => {});
   // Clear the backend screen too, as the reference does, so saved history does not bring it back.
   void ptyWriteMirror(id, "\x1b[H\x1b[2J\x1b[3J")
