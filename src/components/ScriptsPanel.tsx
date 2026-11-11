@@ -12,7 +12,6 @@ import {
   visibleScripts,
   workspaceRef,
   type RunState,
-  type RunStatus,
   type ScriptsConfig,
   type SetupStatus,
 } from "../scripts/model";
@@ -76,6 +75,7 @@ const SETUP_BUTTON = {
 } as const;
 type SetupButtonMode = keyof typeof SETUP_BUTTON;
 const IDLE_SETUP: SetupStatus = { state: "idle", log: null, last: null };
+const IDLE_RUN_STATUS: Awaited<ReturnType<typeof api.runStatus>> = { runs: [], history: [] };
 
 const errorText = (e: unknown) => (typeof e === "string" ? e : e instanceof Error ? e.message : String(e));
 
@@ -102,7 +102,8 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const [configState, setConfigState] = useState<{ key: string; config: ScriptsConfig | null }>(() => ({ key: configKey, config: configs.get(configKey) ?? null }));
   // null until this workspace's config is known (from the cache or the backend).
   const config = configState.key === configKey ? configState.config : (configs.get(configKey) ?? null);
-  const [runs, setRuns] = useState<RunStatus[]>([]);
+  const [runSnapshot, setRunSnapshot] = useState({ workspaceId: wsId, status: IDLE_RUN_STATUS });
+  const { runs, history } = runSnapshot.workspaceId === wsId ? runSnapshot.status : IDLE_RUN_STATUS;
   const [picked, setPicked] = useState<string | null>(null);
   const [runOutputState, setRunOutputState] = useState({ key: "", text: "" });
   const [setupSnapshot, setSetupSnapshot] = useState<{ workspaceId: string; status: SetupStatus }>({ workspaceId: wsId, status: IDLE_SETUP });
@@ -114,9 +115,11 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const [spotState, setSpotState] = useState<{ repoId: string; setting: SpotlightTesting | null }>(() => ({ repoId: repo.id, setting: spotSettings.get(repo.id) ?? null }));
   const spotSetting = spotState.repoId === repo.id ? spotState.setting : (spotSettings.get(repo.id) ?? null);
   const [spotView, setSpotView] = useState<SpotlightView>(EMPTY_VIEW);
-  const [spotPending, setSpotPending] = useState<"starting" | "stopping" | null>(null);
+  const [spotRequest, setSpotRequest] = useState<{ workspaceId: string; phase: "starting" | "stopping" } | null>(null);
+  const spotPending = spotRequest?.workspaceId === wsId ? spotRequest.phase : null;
   const repoSettings = useRepoSettings(repo.path || undefined, workspace.path);
-  const [previewEnv, setPreviewEnv] = useState<PreviewEnv>({});
+  const [previewEnvState, setPreviewEnvState] = useState<{ key: string; env: PreviewEnv }>({ key: configKey, env: {} });
+  const previewEnv = previewEnvState.key === configKey ? previewEnvState.env : {};
   const [detectedPreview, setDetectedPreview] = useState<{ key: string; url: string | null }>({ key: "", url: null });
 
   const repoRoot = repo.path;
@@ -124,8 +127,9 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const spotMine = spotView.workspaceId === wsId;
   const spotLogMine = spotView.logWorkspaceId === wsId;
   const activeScript = activeRun(runs);
+  const historicalScriptId = history.find((id) => visibleScripts(config).some((script) => script.id === id));
   const selected = shownTask({
-    picked,
+    picked: picked ?? historicalScriptId ?? null,
     spotlightEnabled: spotEnabled,
     activeScriptId: activeScript?.scriptId ?? null,
     spotlightMine: spotMine,
@@ -149,7 +153,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     const sequence = ++refreshSequence.current;
     const [status, setupState] = await Promise.all([api.runStatus(wsId), api.setupStatus(wsId)]);
     if (sequence !== refreshSequence.current || displayedWorkspaceId.current !== wsId) return;
-    setRuns(status.runs);
+    setRunSnapshot({ workspaceId: wsId, status });
     setSetupSnapshot({ workspaceId: wsId, status: setupState });
   }, [wsId]);
 
@@ -236,9 +240,13 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   }, [onSetupState, setup.state]);
 
   useEffect(() => {
-    setPreviewEnv({});
-    if (ref) api.previewEnv(ref).then((pairs) => setPreviewEnv(previewEnvFrom(pairs)), () => {});
-  }, [ref]);
+    let disposed = false;
+    setPreviewEnvState({ key: configKey, env: {} });
+    if (ref) api.previewEnv(ref).then((pairs) => {
+      if (!disposed) setPreviewEnvState({ key: configKey, env: previewEnvFrom(pairs) });
+    }, () => {});
+    return () => { disposed = true; };
+  }, [ref, configKey]);
 
   async function act(f: () => Promise<unknown>) {
     setError(null);
@@ -259,17 +267,18 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   }
 
   async function toggleSpotlightRun(action: "start" | "stop") {
+    const request = { workspaceId: wsId, phase: action === "stop" ? "stopping" : "starting" } satisfies NonNullable<typeof spotRequest>;
     setError(null);
     // Stay on the Spotlight task so its log stays readable after a stop.
     setPicked(SPOTLIGHT_TASK_ID);
-    setSpotPending(action === "stop" ? "stopping" : "starting");
+    setSpotRequest(request);
     try {
       if (action === "stop") await spotlight.stopSpotlight(repoRoot);
       else await spotlight.startSpotlight(repo.id, wsId, ref!.workspacePath, repoRoot);
     } catch (e) {
-      setError(errorText(e));
+      if (displayedWorkspaceId.current === wsId) setError(errorText(e));
     }
-    setSpotPending(null);
+    setSpotRequest((pending) => pending === request ? null : pending);
     await Promise.all([refresh(), refreshSpotlight()]).catch(() => {});
   }
 

@@ -124,8 +124,8 @@ for (const loaded of [false, true]) {
     assert.equal(data.activeWorkspaceId, workspace.id);
     assert.deepEqual(data.recentWorkspaceIds, loaded ? [workspace.id, "b"] : ["b"]);
     assert.deepEqual(
-      data.actions.filter((a) => a.id !== "archive-workspace").map((a) => a.id),
-      paletteDataFromState(state, []).actions.filter((a) => a.id !== "archive-workspace").map((a) => a.id),
+      data.actions.filter((a) => a.id !== "archive-workspace" && a.id !== "quick-open").map((a) => a.id),
+      paletteDataFromState(state, []).actions.filter((a) => a.id !== "archive-workspace" && a.id !== "quick-open").map((a) => a.id),
     );
     for (const tab of ["all", "actions"] as const) {
       for (const query of ["", "archive"]) {
@@ -145,6 +145,79 @@ test("Archive workspace stays available for an active selection and hidden witho
       for (const query of ["", "archive"]) {
         const ids = buildResults(tab, query, data).flatMap((g) => g.items.map((i) => i.id));
         assert.equal(ids.includes("action:archive-workspace"), selection.kind === "workspace");
+      }
+    }
+  }
+});
+
+for (const loaded of [false, true]) {
+  test(`File picker is absent for the open archived selection ${loaded ? "after" : "before"} archived results load`, () => {
+    const workspace: Workspace = { ...w("archived-open", 4), status: "archived", state: "archived", path: "/invented/workspaces/archived-open" };
+    const source: AppState = {
+      ...state,
+      selection: { kind: "workspace", repoId: "r1", workspaceId: workspace.id },
+      archivedOpen: { repoId: "r1", workspace },
+    };
+    const archived = loaded ? [{ id: workspace.id, repoId: "r1", name: workspace.name, branch: workspace.branch, createdAt: workspace.createdAt, workspace }] : [];
+    const data = paletteDataFromState(source, [workspace.id, "b"], archived);
+    assert.equal(data.activeWorkspaceId, workspace.id);
+    assert.deepEqual(data.recentWorkspaceIds, loaded ? [workspace.id, "b"] : ["b"]);
+    assert.ok(!data.actions.some((a) => a.id === "quick-open"), "an archived selection must not offer File picker");
+    for (const tab of ["all", "actions"] as const) {
+      for (const query of ["", "picker"]) {
+        const ids = buildResults(tab, query, data).flatMap((g) => g.items.map((i) => i.id));
+        assert.ok(!ids.includes("action:quick-open"), `${tab}/${query || "empty"} must not offer File picker for an archived selection`);
+      }
+    }
+  });
+}
+
+test("File picker is absent for an unstarted local workspace even when its path is known", () => {
+  const workspace: Workspace = { ...w("unstarted", 4), state: "unstarted", path: "/invented/workspaces/unstarted" };
+  const source: AppState = {
+    ...state,
+    repos: [{ ...state.repos[0], workspaces: [workspace] }],
+    selection: { kind: "workspace", repoId: "r1", workspaceId: workspace.id },
+  };
+  const data = paletteDataFromState(source, []);
+  assert.equal(data.activeWorkspaceId, workspace.id);
+  assert.ok(!data.actions.some((a) => a.id === "quick-open"), "an unstarted selection must not offer File picker");
+  for (const tab of ["all", "actions"] as const) {
+    for (const query of ["", "picker"]) {
+      const ids = buildResults(tab, query, data).flatMap((g) => g.items.map((i) => i.id));
+      assert.ok(!ids.includes("action:quick-open"), `${tab}/${query || "empty"} must not offer File picker for an unstarted selection`);
+    }
+  }
+});
+
+test("File picker stays available for active local states despite an unrelated retained archived view", () => {
+  const archivedWorkspace: Workspace = { ...w("archived-open", 4), status: "archived", state: "archived" };
+  for (const workspaceState of [undefined, "active", "ready", "initializing", "setting_up", "failed"]) {
+    const source: AppState = {
+      ...state,
+      repos: [{ ...state.repos[0], workspaces: [{ ...w("b", 2), state: workspaceState }] }],
+      archivedOpen: { repoId: "r1", workspace: archivedWorkspace },
+    };
+    const data = paletteDataFromState(source, []);
+    assert.equal(data.actions.find((a) => a.id === "quick-open")?.bindingId, "nav.quickOpen");
+    for (const tab of ["all", "actions"] as const) {
+      for (const query of ["", "picker"]) {
+        const ids = buildResults(tab, query, data).flatMap((g) => g.items.map((i) => i.id));
+        assert.ok(ids.includes("action:quick-open"), `${tab}/${query || "empty"} must retain File picker for local state ${workspaceState ?? "unspecified"}`);
+      }
+    }
+  }
+});
+
+test("File picker is absent for a missing workspace or without a workspace selection", () => {
+  const selections = [{ kind: "workspace", repoId: "r1", workspaceId: "missing" }, { kind: "home" }, { kind: "root" }] satisfies AppState["selection"][];
+  for (const selection of selections) {
+    const data = paletteDataFromState({ ...state, selection }, []);
+    assert.ok(!data.actions.some((a) => a.id === "quick-open"), "File picker requires an active local workspace");
+    for (const tab of ["all", "actions"] as const) {
+      for (const query of ["", "picker"]) {
+        const ids = buildResults(tab, query, data).flatMap((g) => g.items.map((i) => i.id));
+        assert.ok(!ids.includes("action:quick-open"));
       }
     }
   }
@@ -261,4 +334,81 @@ test("settings pages are listed with no query and their rows join once there is 
   assert.ok(settings("theme").includes("Theme"), "a query reaches the rows");
   // "login" matches Account by its keywords, as Conductor's palette shows it.
   assert.ok(settings("login").includes("Account"));
+});
+
+const viewArchivedId = "view-archived-workspaces";
+function assertViewArchivedEligibility(source: AppState, expected: boolean, archived: Parameters<typeof paletteDataFromState>[2] = []) {
+  const data = paletteDataFromState(source, ["b"], archived);
+  assert.equal(data.actions.some((a) => a.id === viewArchivedId), expected);
+  for (const query of ["", "archive"]) {
+    const navigation = buildResults("all", query, data).find((g) => g.id === "navigation");
+    assert.equal(navigation?.items.some((item) => item.id === `action:${viewArchivedId}`) ?? false, expected);
+  }
+  return data;
+}
+
+const missingViewArchivedSources: [string, AppState][] = [
+  ["startup placeholders before workspace hydration", { ...state, repos: [{ ...state.repos[0], workspaces: [] }] }],
+  ["a missing selected workspace", { ...state, selection: { kind: "workspace", repoId: "r1", workspaceId: "missing" } }],
+  ["a workspace found only in another repository", { ...state, selection: { kind: "workspace", repoId: "r2", workspaceId: "b" } }],
+  ["a missing selected repository", { ...state, selection: { kind: "workspace", repoId: "missing", workspaceId: "b" } }],
+];
+for (const [label, source] of missingViewArchivedSources) {
+  test(`View archived workspaces is absent for ${label}`, () => {
+    const data = assertViewArchivedEligibility(source, false);
+    assert.equal(data.activeWorkspaceId, source.selection.kind === "workspace" ? source.selection.workspaceId : null);
+  });
+}
+
+for (const loaded of [false, true]) {
+  test(`View archived workspaces does not resolve a selection from the archived list ${loaded ? "after" : "before"} results load`, () => {
+    const workspace: Workspace = { ...w("archived-selected", 4), status: "archived", state: "archived" };
+    const source: AppState = {
+      ...state,
+      selection: { kind: "workspace", repoId: "r1", workspaceId: workspace.id },
+      archivedOpen: { repoId: "r1", workspace: { ...workspace, id: "unrelated-archived" } },
+    };
+    const archived = loaded ? [{ id: workspace.id, repoId: "r1", name: workspace.name, branch: workspace.branch, createdAt: workspace.createdAt, workspace }] : [];
+    assertViewArchivedEligibility(source, false, archived);
+  });
+
+  test(`View archived workspaces stays available for the resolved archived view ${loaded ? "after" : "before"} results load`, () => {
+    const workspace: Workspace = { ...w("archived-open", 4), status: "archived", state: "archived" };
+    const source: AppState = {
+      ...state,
+      selection: { kind: "workspace", repoId: "r1", workspaceId: workspace.id },
+      archivedOpen: { repoId: "r1", workspace },
+    };
+    const archived = loaded ? [{ id: workspace.id, repoId: "r1", name: workspace.name, branch: workspace.branch, createdAt: workspace.createdAt, workspace }] : [];
+    const data = assertViewArchivedEligibility(source, true, archived);
+    assert.equal(data.activeWorkspaceId, workspace.id);
+    assert.deepEqual(data.recentWorkspaceIds, ["b"]);
+    assert.ok(!data.actions.some((a) => a.id === "archive-workspace" || a.id === "quick-open"));
+  });
+}
+
+test("View archived workspaces requires presence rather than a ready-only lifecycle", () => {
+  for (const workspaceState of [undefined, "active", "ready", "initializing", "setting_up", "unstarted", "failed"]) {
+    const source: AppState = {
+      ...state,
+      repos: [{ ...state.repos[0], workspaces: [{ ...w("b", 2), state: workspaceState }] }],
+      archivedOpen: { repoId: "r1", workspace: { ...w("unrelated-archived", 4), status: "archived" } },
+    };
+    const data = assertViewArchivedEligibility(source, true);
+    assert.equal(data.activeWorkspaceId, "b");
+    assert.deepEqual(data.recentWorkspaceIds, ["b"]);
+  }
+});
+
+test("View archived workspaces is absent without a workspace selection despite a retained archived view", () => {
+  for (const selection of [{ kind: "home" }, { kind: "root" }] satisfies AppState["selection"][]) {
+    const source: AppState = {
+      ...state,
+      selection,
+      archivedOpen: { repoId: "r1", workspace: { ...w("b", 2), status: "archived" } },
+    };
+    const data = assertViewArchivedEligibility(source, false);
+    assert.equal(data.activeWorkspaceId, null);
+    assert.deepEqual(data.recentWorkspaceIds, ["b"]);
+  }
 });
