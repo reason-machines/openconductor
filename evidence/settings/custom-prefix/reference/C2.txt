@@ -1,0 +1,1 @@
+async function C2(){const t=await Ie.getSettingForUserV2("branch_prefix_type");if(t!=="none"){if(t==="custom")return(await Ie.getSetting("branch_prefix_custom"))?.replace(/\/\/+/g,"/")||void 0;if(t==="github_username"){const e=await I2();return e?.githubUsername?`${e.githubUsername}/`:void 0}}}

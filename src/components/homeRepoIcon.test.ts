@@ -57,6 +57,7 @@ function renderHome({ menuOpen = false, matrix = false, projects = [], repos = f
     if (name === "../features/chat/useWorkspaceSession") return { useWorkspaceAgentStatus: () => "idle" };
     if (name === "../settings/useStatusMatrix") return { useStatusMatrix: () => matrix };
     if (name === "../settings/useBoolPref") return { useBoolPref: () => false };
+    if (name === "../keybindings/KeybindingsProvider") return { useKeybindingOverrides: () => ({ overrides: {} }) };
     if (name === "../keybindings/overrides") return { effectiveShortcuts: () => [] };
     if (name === "../keybindings/shortcut") return { glyphs: () => "" };
     if (name === "../workspace/archive") return { listArchivedWorkspaces: unexpectedIo };

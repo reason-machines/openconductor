@@ -1,0 +1,11 @@
+{
+  "base": "2b079f13e07b580d26191f7f1f50b4d21e62174e",
+  "source_checks": "PASS",
+  "retained_reference_spans": 6,
+  "fixture_sha256": "b4f4cae76a414e5c3312ddd411e3b17ab39f90bc55b8662cdc058d55b2599605",
+  "actions": "normalized extracted callbacks match baseline",
+  "scope": "App and WorkspaceView exact replacements; other owners unchanged",
+  "runtime": "NOT RUN",
+  "behavioral_red_green": "NOT OBSERVED",
+  "typecheck_build_browser_native": "NOT RUN"
+}

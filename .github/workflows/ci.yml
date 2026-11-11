@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Bounded APT setup regression tests (no package installs)
+        run: python3 tools/ci/test_apt_install.py -v
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -59,9 +61,8 @@ jobs:
           df -h /
       - name: Install Tauri system deps (Linux)
         if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+        timeout-minutes: 20
+        run: tools/ci/apt-install.sh libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -202,6 +203,9 @@ jobs:
       - run: npm ci
       - name: Pure TypeScript modules (Node strips types natively)
         run: node --test "src/**/*.test.ts"
+      - name: Custom branch-prefix unchanged-fixture baseline and candidate replay
+        timeout-minutes: 3
+        run: python3 evidence/settings/custom-prefix/replay.py --out-dir "$RUNNER_TEMP/custom-prefix-replay"
       - name: Script output copy unchanged-fixture baseline and candidate replay
         timeout-minutes: 4
         run: |

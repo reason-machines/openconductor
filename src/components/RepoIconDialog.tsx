@@ -157,6 +157,7 @@ async function resizeToDataUrl(file: File, mime: string): Promise<string> {
     canvas.height = fit.canvas;
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas 2D context unavailable");
+    ctx.imageSmoothingQuality = "high";
     ctx.drawImage(img, fit.x, fit.y, fit.width, fit.height);
     return canvas.toDataURL("image/png");
   } finally {

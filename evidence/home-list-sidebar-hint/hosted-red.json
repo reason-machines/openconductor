@@ -1,0 +1,41 @@
+{
+  "owner": "Conductor Rebuild",
+  "unit": "HOME-LIST-HINT-271-02",
+  "pr": 1049,
+  "head_sha": "0e38905d8188ecc45f7b67c2fe45aabf8c9bde7d",
+  "production_sha256": "f2cd29c810d99a0ea8cbb6fa59d09c00134e28bb2e48f6a681f1ef604e89c4b5",
+  "regression_sha256": "24ac11db947e3d568d768627ad99b909fff4c53242a1e1002299177e1e7f61c8",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "workflow_run_id": 43043390743,
+  "job_id": 130600835511,
+  "url": "https://github.com/reason-machines/openconductor/actions/runs/43043390743/job/130600835511",
+  "conclusion": "failure",
+  "totals": { "tests": 2809, "pass": 2806, "fail": 3, "cancelled": 0, "skipped": 0, "todo": 0 },
+  "failures": [
+    {
+      "test": "mounted Home workspace-list sidebar hint follows persisted primary and additional shortcuts after hydration",
+      "line": 143,
+      "actual": "Toggle left sidebar (⌘B or [)",
+      "expected": "Toggle left sidebar (⌘⇧Y or ⌥J)"
+    },
+    {
+      "test": "mounted Home workspace-list sidebar hint follows live provider changes and reset without parent rerender",
+      "line": 152,
+      "actual": "Toggle left sidebar (⌘B or [)",
+      "expected": "Toggle left sidebar (⌘⇧Y or ⌥J)"
+    },
+    {
+      "test": "Home workspace-list sidebar hint replaces defaults with a single saved shortcut",
+      "line": 164,
+      "actual": "Toggle left sidebar (⌘B or [)",
+      "expected": "Toggle left sidebar (⌘⇧Y)"
+    }
+  ],
+  "passing_controls": [
+    "Home workspace-list sidebar toggle retains its default hint and click action",
+    "Home workspace-list sidebar hint keeps defaults when the persisted setting is malformed",
+    "Home workspace list omits the toggle while the sidebar is visible, including after hydration"
+  ],
+  "classification": "Intended mounted-component assertion mismatches after actual provider updates; not fixture/import/typecheck failure.",
+  "limits": "Hosted React title-property tests only; not native tooltip, geometry, installed-provider persistence, or visual parity."
+}
