@@ -164,7 +164,7 @@ test("actual Run panel falls back to Dev when all historical tasks were removed"
   const f = await fixture({ history: ["deleted", "test"], configured: ["dev"] });
   t.after(f.close);
   assert.ok(f.hasButton("Run Dev"));
-  assert.deepEqual(f.commands, []);
+  assert.equal(f.commands.length, 0);
   await f.primary("Run Dev");
   assert.equal(f.commands.length, 1);
   assert.equal(f.commands[0].args.scriptId, "dev");
