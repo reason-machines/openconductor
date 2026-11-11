@@ -438,8 +438,7 @@ export function useAppStore() {
     else localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, demo, desktop]);
   // Navigating to /all-workspaces while the app runs (history navigation)
-  // shows the Home list, as loading that path does. Sidebar Home opens the
-  // wordmark screen instead, so this is the in-session route to the list.
+  // shows the Home list, as loading that path or selecting sidebar Home does.
   useEffect(() => {
     const onPop = () => {
       if (window.location.pathname === "/all-workspaces") rawDispatch({ type: "select", selection: { kind: "home" } });

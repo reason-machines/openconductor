@@ -1,0 +1,266 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a blank or whitespace query keeps every file in order
+ok 1 - a blank or whitespace query keeps every file in order
+  ---
+  duration_ms: 1.94316
+  type: 'test'
+  ...
+# Subtest: matching is fuzzy, case-insensitive and keeps the list order
+ok 2 - matching is fuzzy, case-insensitive and keeps the list order
+  ---
+  duration_ms: 1.153768
+  type: 'test'
+  ...
+# Subtest: a rename matches on its old path too
+ok 3 - a rename matches on its old path too
+  ---
+  duration_ms: 0.13655
+  type: 'test'
+  ...
+# Subtest: no match gives an empty list
+ok 4 - no match gives an empty list
+  ---
+  duration_ms: 0.111631
+  type: 'test'
+  ...
+# Subtest: the row is active while open or holding text
+ok 5 - the row is active while open or holding text
+  ---
+  duration_ms: 0.19881
+  type: 'test'
+  ...
+# Subtest: the toggle needs two files unless the filter is active
+ok 6 - the toggle needs two files unless the filter is active
+  ---
+  duration_ms: 0.090606
+  type: 'test'
+  ...
+# Subtest: toggling opens an idle filter and clears an active one
+ok 7 - toggling opens an idle filter and clears an active one
+  ---
+  duration_ms: 0.220343
+  type: 'test'
+  ...
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Changes presentation survives reconstruction without sharing values between workspaces
+ok 8 - Changes presentation survives reconstruction without sharing values between workspaces
+  ---
+  duration_ms: 23.034876
+  type: 'test'
+  ...
+# Subtest: early edits survive delayed hydration without overwriting saved fields or sibling routes
+ok 9 - early edits survive delayed hydration without overwriting saved fields or sibling routes
+  ---
+  duration_ms: 0.510366
+  type: 'test'
+  ...
+# Subtest: an early folder toggle applies to saved collapsed paths after hydration
+ok 10 - an early folder toggle applies to saved collapsed paths after hydration
+  ---
+  duration_ms: 0.322263
+  type: 'test'
+  ...
+# Subtest: a failed read cannot erase unseen routes and a later edit retries hydration
+ok 11 - a failed read cannot erase unseen routes and a later edit retries hydration
+  ---
+  duration_ms: 0.33928
+  type: 'test'
+  ...
+# Subtest: writes remain ordered when a previous save is slow
+ok 12 - writes remain ordered when a previous save is slow
+  ---
+  duration_ms: 0.358696
+  type: 'test'
+  ...
+# Subtest: invalid persisted fields independently fall back to defaults
+ok 13 - invalid persisted fields independently fall back to defaults
+  ---
+  duration_ms: 0.154744
+  type: 'test'
+  ...
+# Subtest: storage failures leave the current list usable and later writes can recover
+ok 14 - storage failures leave the current list usable and later writes can recover
+  ---
+  duration_ms: 0.330206
+  type: 'test'
+  ...
+# (node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: flat changes sort by path and retain file identity
+ok 15 - flat changes sort by path and retain file identity
+  ---
+  duration_ms: 69.317218
+  type: 'test'
+  ...
+# Subtest: tree compresses single-directory chains and starts expanded
+ok 16 - tree compresses single-directory chains and starts expanded
+  ---
+  duration_ms: 0.564522
+  type: 'test'
+  ...
+# Subtest: collapsed directories hide descendants and retain aggregate counts
+ok 17 - collapsed directories hide descendants and retain aggregate counts
+  ---
+  duration_ms: 0.193373
+  type: 'test'
+  ...
+# Subtest: tree sorts directories before files without compressing through a file
+ok 18 - tree sorts directories before files without compressing through a file
+  ---
+  duration_ms: 0.335333
+  type: 'test'
+  ...
+# Subtest: filtered files do not retain unrelated folders or aggregates
+ok 19 - filtered files do not retain unrelated folders or aggregates
+  ---
+  duration_ms: 0.231822
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: commentWindow is empty without comments
+ok 20 - commentWindow is empty without comments
+  ---
+  duration_ms: 8.354213
+  type: 'test'
+  ...
+# Subtest: comments on screen count in neither direction
+ok 21 - comments on screen count in neither direction
+  ---
+  duration_ms: 0.199204
+  type: 'test'
+  ...
+# Subtest: a comment above the reading line is previous even while still partly on screen
+ok 22 - a comment above the reading line is previous even while still partly on screen
+  ---
+  duration_ms: 0.142677
+  type: 'test'
+  ...
+# Subtest: with nothing on screen, comments at or above the reading line are previous
+ok 23 - with nothing on screen, comments at or above the reading line are previous
+  ---
+  duration_ms: 0.1932
+  type: 'test'
+  ...
+# Subtest: all comments below the viewport are next
+ok 24 - all comments below the viewport are next
+  ---
+  duration_ms: 0.119402
+  type: 'test'
+  ...
+# Subtest: measureComments places anchors by side in the item and dedupes them
+ok 25 - measureComments places anchors by side in the item and dedupes them
+  ---
+  duration_ms: 0.475188
+  type: 'test'
+  ...
+# (node:113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: All changes uses the workspace's target branch, not the repo default
+ok 26 - All changes uses the workspace's target branch, not the repo default
+  ---
+  duration_ms: 25.147132
+  type: 'test'
+  ...
+# Subtest: an open pull request's base wins over the stored target; a merged one does not
+ok 27 - an open pull request's base wins over the stored target; a merged one does not
+  ---
+  duration_ms: 0.186658
+  type: 'test'
+  ...
+# Subtest: a workspace without a stored target falls back to the repo default
+ok 28 - a workspace without a stored target falls back to the repo default
+  ---
+  duration_ms: 0.096798
+  type: 'test'
+  ...
+# Subtest: commit scope sends the exact selected hash, never the target branch
+ok 29 - commit scope sends the exact selected hash, never the target branch
+  ---
+  duration_ms: 0.159777
+  type: 'test'
+  ...
+# Subtest: Uncommitted sends no target
+ok 30 - Uncommitted sends no target
+  ---
+  duration_ms: 0.172857
+  type: 'test'
+  ...
+# Subtest: the context menu discards against the All changes base in every view
+ok 31 - the context menu discards against the All changes base in every view
+  ---
+  duration_ms: 0.105919
+  type: 'test'
+  ...
+# Subtest: revert icons use the view's scope and are off in the turn view
+ok 32 - revert icons use the view's scope and are off in the turn view
+  ---
+  duration_ms: 0.126333
+  type: 'test'
+  ...
+# Subtest: Cmd+Alt+U opens Changes in Uncommitted, and toggles back to All changes from there
+ok 33 - Cmd+Alt+U opens Changes in Uncommitted, and toggles back to All changes from there
+  ---
+  duration_ms: 0.493834
+  type: 'test'
+  ...
+# (node:120) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: historical scope uses the reference link fill, text and 40% border instead of action accent
+ok 34 - historical scope uses the reference link fill, text and 40% border instead of action accent
+  ---
+  duration_ms: 1.004353
+  type: 'test'
+  ...
+# Subtest: historical scope hover outranks generic icon hover without changing its link text
+ok 35 - historical scope hover outranks generic icon hover without changing its link text
+  ---
+  duration_ms: 0.297527
+  type: 'test'
+  ...
+# Subtest: Stone link colours match the retained compiled CSS in light, dark and system dark
+ok 36 - Stone link colours match the retained compiled CSS in light, dark and system dark
+  ---
+  duration_ms: 8.683557
+  type: 'test'
+  ...
+# (node:131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: every palette sets the same tokens in light, dark and system dark
+ok 37 - every palette sets the same tokens in light, dark and system dark
+  ---
+  duration_ms: 71.134348
+  type: 'test'
+  ...
+# Subtest: Neutral is the default and has no hue: every surface, text and line token has R = G = B
+ok 38 - Neutral is the default and has no hue: every surface, text and line token has R = G = B
+  ---
+  duration_ms: 0.85421
+  type: 'test'
+  ...
+# Subtest: Stone keeps Conductor's values for the surfaces Sven compared
+ok 39 - Stone keeps Conductor's values for the surfaces Sven compared
+  ---
+  duration_ms: 0.238477
+  type: 'test'
+  ...
+# Subtest: --unread is Conductor's text-unread colour in every palette: light, dark and system dark
+ok 40 - --unread is Conductor's text-unread colour in every palette: light, dark and system dark
+  ---
+  duration_ms: 0.695872
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7475.408348

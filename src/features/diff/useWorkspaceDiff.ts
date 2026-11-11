@@ -10,11 +10,14 @@ import { keyedCache } from "../../lib/keyedCache.ts";
 import { discardFileChanges, loadWorkspaceDiff, WHOLE_FILE_CONTEXT } from "./api.ts";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { nextUnread, step } from "./nav.ts";
+import { changeRows } from "./changesTree.ts";
+import { filterChangedFiles } from "./changesFilter.ts";
+import { useChangesPresentation } from "./useChangesPresentation.ts";
 import { discardScope, type DiffTarget, type DiscardSource } from "./target.ts";
 import type { TurnRef } from "./turnChangesCache.ts";
 import { newFileText } from "./copyFile.ts";
 import { DEFAULT_VIEW_OPTIONS, type DiffScope, type DiffViewOptions, type FileDiff } from "./types.ts";
-import { isViewed, loadViewed, pruneViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
+import { isViewed, loadViewed, saveViewed, toggleViewed, viewedCount, type ViewedMap } from "./viewed.ts";
 
 export type DiffLoad = { state: "loading" } | { state: "error"; message: string } | { state: "ready"; files: FileDiff[] };
 
@@ -56,7 +59,12 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   const target = useMemo<DiffTarget>(() => ({ branch, remote }), [branch, remote]);
   const [opts, setOpts] = useState<DiffViewOptions>(initialOptions);
   const [viewed, setViewedMap] = useState<ViewedMap>(() => loadViewed(localStorage, workspaceId));
-  const [selectedPath, setSelectedPath] = useState<string | null>(null);
+  const { presentation } = useChangesPresentation(workspaceId);
+  const [selection, setSelection] = useState<{ path: string | null; redirectRevision: number }>({ path: null, redirectRevision: 0 });
+  const selectedPath = selection.path;
+  const setSelectedPath = useCallback((path: string | null) => {
+    setSelection((current) => current.path === path ? current : { ...current, path });
+  }, []);
   // The file waiting for the discard confirmation and the scope it will be restored from.
   const [pending, setPending] = useState<{ file: FileDiff; scope: DiffScope } | null>(null);
   // The selected chat turn; not saved, unlike `opts`.
@@ -64,7 +72,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
 
   const update = (patch: Partial<DiffViewOptions>) => {
     const next = { ...opts, ...patch };
-    localStorage.setItem(OPTIONS_KEY, JSON.stringify(next));
+    localStorage.setItem(OPTIONS_KEY, JSON.stringify({ ...next, scope: typeof next.scope === "object" ? "all" : next.scope }));
     setOpts(next);
     if (patch.scope) setTurn(null);
   };
@@ -116,9 +124,20 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     setViewedMap(loadViewed(localStorage, workspaceId));
     setSelectedPath(null);
     setTurn(null);
+    setOpts((current) => typeof current.scope === "object" ? { ...current, scope: "all" } : current);
   }, [workspaceId]);
 
   const files = useMemo(() => (load.state === "ready" ? load.files : []), [load]);
+  const navigationFiles = useMemo(() => changeRows(
+    filterChangedFiles(files, presentation.filePathFilter), presentation.diffFileListMode, new Set(), (file) => isViewed(viewed, file),
+  ).flatMap((row) => row.kind === "file" ? [row.file] : []), [files, viewed, presentation.filePathFilter, presentation.diffFileListMode]);
+  useEffect(() => {
+    const first = navigationFiles[0];
+    if (first === undefined) return;
+    setSelection((current) => current.path !== null && !navigationFiles.some((file) => file.path === current.path)
+      ? { path: first.path, redirectRevision: current.redirectRevision + 1 }
+      : current);
+  }, [navigationFiles, selectedPath]);
   const [uncommitted, setUncommitted] = useState<{ worktree: string | null; paths: Set<string> }>({ worktree: null, paths: new Set() });
   useEffect(() => {
     if (load.state !== "ready") return;
@@ -142,9 +161,8 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   }, [load, opts.scope, onLoaded]);
 
   const setViewed = (map: ViewedMap) => {
-    const pruned = pruneViewed(map, files);
-    saveViewed(localStorage, workspaceId, pruned);
-    setViewedMap(pruned);
+    saveViewed(localStorage, workspaceId, map);
+    setViewedMap(map);
   };
 
   const open = useCallback(
@@ -156,6 +174,11 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     [files, onOpen],
   );
   const openPath = (path: string) => open(files.findIndex((f) => f.path === path));
+  const stepFile = (path: string | null, direction: 1 | -1) => {
+    const index = navigationFiles.findIndex((file) => file.path === path);
+    if (index < 0) return;
+    openPath(navigationFiles[step(index, navigationFiles.length, direction)].path);
+  };
   /** Switch to one turn's changes and open `path` there (a file chip under the turn). */
   const openTurnFile = (ref: TurnRef, path: string) => {
     if (turn?.sessionId !== ref.sessionId || turn?.turnId !== ref.turnId) setTurn(ref);
@@ -163,12 +186,25 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     onOpen?.();
   };
 
+  const toggleFileViewed = (file: FileDiff) => {
+    const index = files.findIndex((f) => f.path === file.path);
+    if (index < 0) return;
+    const selectedFile = files[index];
+    const wasViewed = isViewed(viewed, selectedFile);
+    setViewed(toggleViewed(viewed, selectedFile));
+    if (wasViewed) return;
+    const navigationIndex = navigationFiles.findIndex((f) => f.path === selectedFile.path);
+    const unviewed = navigationFiles.filter((f) => !isViewed(viewed, f));
+    const laterUnviewed = navigationFiles.slice(navigationIndex + 1).some((f) => !isViewed(viewed, f));
+    stepFile(selectedFile.path, !laterUnviewed && unviewed.length > 1 ? -1 : 1);
+  };
+
   // Keys come from the registry (diff.nextFile = ArrowDown, diff.previousFile = ArrowUp,
   // diff.toggleViewed = Ctrl+V), so user overrides apply and bare arrows stay out of text fields.
   useKeybindings({
-    "diff.nextFile": () => open(step(current, files.length, 1)),
-    "diff.previousFile": () => open(step(current, files.length, -1)),
-    "diff.toggleViewed": () => current >= 0 && setViewed(toggleViewed(viewed, files[current])),
+    "diff.nextFile": () => stepFile(selectedPath, 1),
+    "diff.previousFile": () => stepFile(selectedPath, -1),
+    "diff.toggleViewed": () => current >= 0 && toggleFileViewed(files[current]),
   });
 
   // The file alone with whole-file context: Pierre builds the full old and new
@@ -213,12 +249,15 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     reloadQuietly,
     /** Worktree folder the diff is read from (null while the workspace has none). */
     worktree,
+    target,
     totals,
     uncommittedPaths,
     /** Index of the selected file in `files`, or -1. */
     current,
     /** The selected file. */
     selected,
+    redirectRevision: selection.redirectRevision,
+    noMatchingFiles: files.length > 0 && navigationFiles.length === 0,
     open,
     openPath,
     /** The chat turn whose changes are shown, or null for `opts.scope`. */
@@ -227,7 +266,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     /** Back to `opts.scope`. */
     clearTurn: () => setTurn(null),
     isViewed: (f: FileDiff) => isViewed(viewed, f),
-    toggleViewed: (f: FileDiff) => setViewed(toggleViewed(viewed, f)),
+    toggleViewed: toggleFileViewed,
     viewedCount: viewedCount(viewed, files),
     /** Next file not marked viewed after the selected one, or -1. */
     unread,

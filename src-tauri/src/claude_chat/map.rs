@@ -107,7 +107,17 @@ impl TurnMapper {
                 api_error: None,
             } => self.assistant(message),
             ClaudeEvent::ToolResults { message } => self.tool_results(message),
-            ClaudeEvent::Result(result) => vec![ProviderEvent::TurnEnded(self.turn_end(result))],
+            ClaudeEvent::Result(result) => {
+                let mut events = Vec::new();
+                if let Some(usage) = &result.usage {
+                    events.push(ProviderEvent::Usage {
+                        input_tokens: usage.input_tokens,
+                        output_tokens: usage.output_tokens,
+                    });
+                }
+                events.push(ProviderEvent::TurnEnded(self.turn_end(result)));
+                events
+            }
             _ => Vec::new(),
         }
     }

@@ -8,12 +8,12 @@ import type { Repo, Workspace } from "../state/types";
 import type { SetupState } from "../scripts/model";
 import { ScriptsPanel } from "./ScriptsPanel";
 import { TerminalHost } from "../features/terminal/TerminalPanel";
-import { clearTab, closeTab, getTabs, openTab, restoreWorkspaceTabs, selectTab, subscribeTabs } from "../features/terminal/session";
-import { canOpenTerminal } from "../features/terminal/tabs";
+import { closeTab, getTabs, openTab, restoreWorkspaceTabs, selectTab, subscribeTabs } from "../features/terminal/session";
+import { canOpenTerminal, terminalTabs } from "../features/terminal/tabs";
 import { tabLabel } from "../features/terminal/shellIntegration";
 import { useAppPrefs } from "../settings/appPrefs";
 import { openRepoSettingsPage } from "../features/chat/ChatModelPicker";
-import { ChevronDownIcon, ChevronRightIcon, EraserIcon, PlusIcon, XIcon } from "../features/files/panelIcons";
+import { ChevronDownIcon, ChevronRightIcon, PlusIcon, XIcon } from "../features/files/panelIcons";
 
 export type StripView = "setup" | "run" | "terminal";
 
@@ -33,6 +33,7 @@ interface Props {
 export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd, onAskSetupAgent }: Props) {
   const wsId = workspace.id;
   const terms = useSyncExternalStore(subscribeTabs, () => getTabs(wsId));
+  const panelTabs = terminalTabs(terms, "panel");
   const tabFreakMode = useAppPrefs().experimental_tab_freak_mode;
   const [setupState, setSetupState] = useState<SetupState>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -56,8 +57,8 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
 
   // Closing the last terminal while it is shown goes back to Run (not while a new one is starting).
   useEffect(() => {
-    if (view === "terminal" && restored && !busy && terms.tabs.length === 0) setView("run");
-  }, [view, restored, busy, terms.tabs.length, setView]);
+    if (view === "terminal" && restored && !busy && panelTabs.length === 0) setView("run");
+  }, [view, restored, busy, panelTabs.length, setView]);
 
   const show = (v: StripView) => {
     setView(v);
@@ -85,7 +86,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
     setView("run");
     setOpen(true);
   }, [setView, setOpen]);
-  const activeTerm = terms.tabs.find((t) => t.id === terms.activeId) ?? null;
+  const activeTerm = panelTabs.find((t) => t.id === terms.activeId) ?? panelTabs[0] ?? null;
   const showTerminal = open && view === "terminal" && activeTerm !== null;
 
   return (
@@ -102,28 +103,47 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
           {open ? <ChevronDownIcon /> : <ChevronRightIcon />}
         </button>
         <button type="button" role="tab" aria-selected={open && view === "setup"} className={`strip-tab${open && view === "setup" ? " active" : ""}`} onClick={() => show("setup")}>
+          {setupState === "running" && (
+            <svg className="setup-working" width={10} height={10} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <circle cx="3" cy="8" r="1.5" />
+              <circle cx="8" cy="8" r="1.5" />
+              <circle cx="13" cy="8" r="1.5" />
+            </svg>
+          )}
           Setup
-          {setupState !== "idle" && <span className={`setup-dot ${setupState}`} aria-label={setupState} />}
         </button>
         <button type="button" role="tab" aria-selected={open && view === "run"} className={`strip-tab${open && view === "run" ? " active" : ""}`} onClick={() => show("run")}>
           Run
         </button>
-        {terms.tabs.map((t, index) => {
-          const selected = open && view === "terminal" && t.id === terms.activeId;
+        {panelTabs.map((t, index) => {
+          const selected = open && view === "terminal" && t.id === activeTerm?.id;
+          const exitLabel = t.exitCode === undefined ? "Exited" : `Exited (code ${t.exitCode})`;
           return (
             <div
               key={t.id}
               role="tab"
               aria-selected={selected}
               className={`strip-tab term-tab${selected ? " active" : ""}`}
-              data-current={t.id === terms.activeId || undefined}
+              data-current={t.id === activeTerm?.id || undefined}
               onClick={() => {
                 selectTab(wsId, t.id);
                 show("terminal");
               }}
             >
-              {t.status !== "running" && <span className={`term-dot ${t.status}`} />}
-              <span>{tabLabel(terms.tabs.length === 1 ? "Terminal" : `Terminal ${index + 1}`, t.runningProgram)}</span>
+              {t.status === "starting" ? (
+                <svg className="term-starting" width={10} height={10} viewBox="0 0 16 16" fill="currentColor" role="img" aria-label="Starting">
+                  <title>Starting</title>
+                  <circle cx="3" cy="8" r="1.5" />
+                  <circle cx="8" cy="8" r="1.5" />
+                  <circle cx="13" cy="8" r="1.5" />
+                </svg>
+              ) : t.status === "exited" ? (
+                <svg className="term-dot exited" width={10} height={10} viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth={2} role="img" aria-label={exitLabel}>
+                  <title>{exitLabel}</title>
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
+              ) : null}
+              <span>{tabLabel(panelTabs.length === 1 ? "Terminal" : `Terminal ${index + 1}`, t.runningProgram)}</span>
               <button
                 type="button"
                 className="term-x"
@@ -143,12 +163,6 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
           <PlusIcon />
         </button>
         <div className="ws-strip-actions" ref={setActionsEl} />
-        {/* Not in the reference capture (it has no terminal open); kept so scrollback can be cleared without ⌘K, which the command palette also takes. */}
-        {showTerminal && (
-          <button type="button" className="rp-icon ws-strip-end" aria-label="Clear terminal scrollback" title="Clear terminal scrollback" onClick={() => clearTab(activeTerm.id)}>
-            <EraserIcon />
-          </button>
-        )}
       </div>
       {open && error && <div className="term-error">{error}</div>}
       {/* Kept mounted while hidden, so run output and the setup state keep coming in. */}
@@ -157,7 +171,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
       </div>
       {showTerminal && (
         <section className="terminal-panel" aria-label="Terminal">
-          <TerminalHost key={activeTerm.id} id={activeTerm.id} />
+          <TerminalHost key={activeTerm.id} id={activeTerm.id} status={activeTerm.status} />
         </section>
       )}
     </section>

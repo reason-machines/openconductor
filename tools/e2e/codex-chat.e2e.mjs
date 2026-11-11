@@ -40,6 +40,8 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -81,7 +83,7 @@ writeFileSync(
   `codex_executable_path = ${JSON.stringify(custom)}\n\n[models.codex]\npersonality = "friendly"\n`,
 );
 
-const env = { ...process.env, HOME: home, SHELL: "/bin/bash" };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), SHELL: "/bin/bash" };
 for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME", "OPENAI_API_KEY", "CODEX_API_KEY", "CODEX_HOME"]) delete env[k];
 // A key left in the user's shell: only the API key mode may hand Codex a key, and it must be the stored one.
 const SHELL_KEY = "sk-e2e-left-in-the-shell";
@@ -93,6 +95,7 @@ const driverExited = new Promise((r) => driver.on("exit", r));
 
 const W3C_ELEMENT = "element-6066-11e4-a52e-4f735466cecf";
 const base = "http://127.0.0.1:4444";
+const startup = new WebDriver(base);
 let sessionUrl = null;
 
 async function wd(method, path, body, timeoutMs = 45000) {
@@ -196,6 +199,7 @@ try {
     capabilities: { alwaysMatch: { browserName: "wry", "tauri:options": { application: app } } },
   });
   sessionUrl = `${base}/session/${session.sessionId}`;
+  startup.sessionId = session.sessionId;
 
   // Seed one repo with one workspace through the real backend, as the UI does.
   await waitFor("the app to load", () => run("return document.readyState === 'complete' && !!document.getElementById('root');"));
@@ -211,6 +215,7 @@ try {
   const workspace = seeded.workspace;
   const prefs = { selection: { kind: "workspace", repoId: workspace.repositoryId, workspaceId: workspace.id }, collapsed: [] };
   await run("localStorage.setItem('openconductor.shell.prefs.v1', arguments[0]); location.reload();", JSON.stringify(prefs));
+  await finishStartup(startup);
   await waitFor("the chat panel", () => chatText().then((t) => t && t.includes("You’re in a new copy of")));
 
   const cliPath = await runAsync("const done = arguments[arguments.length - 1]; window.__TAURI_INTERNALS__.invoke('codex_cli_path').then(done, (e) => done('error: ' + e));");
@@ -254,17 +259,21 @@ try {
   const tools = await toolNames();
   assert.deepEqual(tools, ["printf '%s\\n' 'hello from codex' > hello.txt", "cat hello.txt"]);
   assert.equal(readFileSync(join(workspace.path, "hello.txt"), "utf8"), "hello from codex\n");
-  // The commentary message folds into the (now opened) tool-call group and renders as Markdown, so its
-  // `code` spans lose their backticks; the final reply stays outside it (user bubbles are left out: the prompt quotes the reply).
-  const [grouped, outside] = await run(
-    `const groups = [...document.querySelectorAll('.chat-scroll [data-tool-group]')];
-     const clone = document.querySelector('.chat-scroll').cloneNode(true);
-     for (const g of clone.querySelectorAll('[data-tool-group], .chat-user')) g.remove();
-     return [groups.map((g) => g.innerText).join('\\n'), clone.textContent];`,
+  // The Codex adapter stores this whole turn in one assistant message. Conductor's threshold counts
+  // messages, not blocks, so commentary and both tools stay inline before the final reply.
+  const inline = await run(
+    `const chat = document.querySelector('.chat-scroll');
+     return {
+       summaries: chat.querySelectorAll('.chat-tool-summary-row').length,
+       grouped: chat.querySelectorAll('[data-tool-group]').length,
+       texts: [...chat.querySelectorAll('.chat-assistant .chat-text')].map((e) => e.innerText.trim()),
+       code: [...chat.querySelectorAll('.chat-assistant .chat-text code')].map((e) => e.textContent)
+     };`,
   );
-  assert.match(grouped, /I.ll create `?hello\.txt`? in the workspace, then run `?cat hello\.txt`?\./, "commentary message shown inside the tool-call group");
-  assert.ok(outside.includes("hello from codex"), "final message shown outside the tool-call group");
-  assert.ok(!/I.ll create/.test(outside), "commentary is not outside the tool-call group");
+  assert.equal(inline.summaries, 0, "one assistant message does not reach the three-message collapse threshold");
+  assert.equal(inline.grouped, 0, "commentary and tools stay outside summary groups");
+  assert.deepEqual(inline.texts, ["I’ll create hello.txt in the workspace, then run cat hello.txt.", "hello from codex"], "commentary and final reply remain visible in order");
+  assert.deepEqual(inline.code, ["hello.txt", "cat hello.txt"], "commentary retains its Markdown code spans");
   await screenshot("codex-2-turn-done");
   pass(`Allow runs the commands (${tools.join(" | ")}), hello.txt is in ${workspace.path}, reply shown`);
   await waitFor("the sidebar row to leave Needs permission", async () => !(await rowStatus()).includes("needs-user-permission"), 15000);
@@ -307,6 +316,9 @@ try {
   // 4. Stop a running turn.
   await send("slow");
   await waitFor("the Stop button", running);
+  await waitFor("the slow turn to reach Codex", () =>
+    requests().find((r) => r.method === "turn/start" && r.params.threadId === "th-e2e-1" && r.params.input.some((i) => i.type === "text" && i.text === "slow")),
+  );
   await wd("POST", `/element/${await find('.composer button[aria-label^="Stop the agent"]')}/click`, {});
   await waitFor('a second "Interrupted by user"', () => chatText().then((t) => (t.match(/Interrupted by user/g) ?? []).length === 2), 20000);
   await turnDone(4);

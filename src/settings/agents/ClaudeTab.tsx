@@ -14,6 +14,7 @@ import { KeyIcon, TerminalIcon } from "./icons";
 import { AuthCards, ConfigFileCard, ExecutablePathRow, LoginButton, SecretRow, StatusLine, type AuthOption } from "./kit";
 import { ChromeModeRow } from "../rows/AgentOptionRows";
 import { storedSecret, useAgentStatus } from "./useAgentStatus";
+import { useConnectedDefault } from "../connectedDefault";
 
 export interface AgentTabProps {
   settings: Settings;
@@ -51,6 +52,7 @@ export function ClaudeTab({ settings, save, reload }: AgentTabProps) {
   const keyName = apiKeyName("claude", configForMode("claude", "apikey", stored));
   const key = storedSecret(mode === storedMode ? provider : null, keyName);
   const auth = claudeAuthState(mode, login, key.present);
+  useConnectedDefault("claude", auth.authenticated);
 
   const connect = async (next: ProviderConfig, secrets: { key: string; value: string }[] = []) => {
     setProvider(await connectProvider("claude", next, secrets));

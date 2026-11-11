@@ -3339,6 +3339,7 @@ name = "oc-scripts"
 version = "0.1.0"
 dependencies = [
  "libc",
+ "rustix-openpty",
  "serde",
  "serde_json",
  "toml 0.8.2",
@@ -3379,6 +3380,8 @@ dependencies = [
  "libc",
  "notify",
  "nucleo-matcher",
+ "objc2",
+ "objc2-web-kit",
  "oc-scripts",
  "openconductor-db",
  "plist",

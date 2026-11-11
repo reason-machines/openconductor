@@ -57,7 +57,7 @@ function Demo() {
           onAttachFiles={(picked) => setFiles((current) => [...current, ...picked])}
           hasAttachments={files.length > 0}
           attachments={files.length ? <div className="composer-attachments" aria-label="Attachments">{files.map((file, index) => <span key={index} className="chip composer-attachment">{file.name}<button type="button" className="composer-attachment-remove" aria-label={`Remove ${file.name}`} onClick={() => setFiles((current) => current.filter((_, i) => i !== index))}>×</button></span>)}</div> : null}
-          picker={<ModelPicker value={model} onChange={setModel} onOpenSettings={() => undefined} fastSupported />}
+          picker={<ModelPicker value={model} favorites={params.has("model-arrow-checks") ? ["sonnet", "sonnet-5-1m", "sonnet-5-5-1m", "sonnet-4-6-1m"].map((model) => ({ model, effort: "high" })) : params.has("model-search-checks") ? [{ model: "sonnet", effort: "high" }] : undefined} onChange={setModel} onOpenSettings={() => undefined} fastSupported />}
           slashCommands={commands}
         />
       </div>

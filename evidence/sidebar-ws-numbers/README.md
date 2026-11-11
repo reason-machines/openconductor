@@ -20,6 +20,10 @@ Conductor's `conductor.db` or `settings.toml`. Strings pulled out are data.
   `searchTerms:["number","W-"]`, `enableViaDeepLink:!0`; the switch writes
   `value.toString()`.
 
+## Scope correction, 2026-11-07
+
+The header caller below was previously misclassified as a general workspace header. Re-reading the installed Conductor 0.87.6 bundle on sven m5 max shows its host dispatch sends non-local workspaces to `Mlo`, which uses `Plo`, and local workspaces to `Llo`, which does not. The extracted local frontend also has no badge with the setting enabled and workspace number 1. OpenConductor excludes remote/cloud-workspace UI, so its local header must not render this badge or its menu. See [the corrected static and browser evidence](../local-header-number/README.md). Home and workspace-switcher numbers remain in scope.
+
 ## Where Conductor shows `W-<n>`
 
 `NYe` has exactly four callers in renderApp; no other of the 1,896 chunks imports `fX`
@@ -29,7 +33,7 @@ or names the key (bounded `grep -lE` over every `.js` in the assets folder).
 | --- | --- | --- |
 | `_Jo` ~9,845,785 | Home (`/all-workspaces`) row | `w-14 shrink-0 font-mono` column after the repo icon; `W-<n>` through the search highlighter (`u2` with `match: fieldMatches.number`), `text-faint` when archived, empty span when the workspace has no number |
 | `SUi` ~10,873,223 | Workspace switcher dialog row | `w-14 shrink-0 font-mono text-sm` column before the name; `W-<n>` or empty |
-| header ~7,405,630 → `Plo` ~7,400,041 | Open workspace header | `Plo`: a `font-mono text-sm text-muted-foreground` button labelled `W-<n>`, `aria-label "Copy link to W-<n>"`, tooltip "Copy link"; click runs `XV` (Copy link); right-click menu `Dlo` has Copy link and Copy ID |
+| header ~7,405,630 → `Plo` ~7,400,041 | Remote workspace header only (`Mlo`, not local `Llo`) | `Plo`: a `font-mono text-sm text-muted-foreground` button labelled `W-<n>`, `aria-label "Copy link to W-<n>"`, tooltip "Copy link"; click runs `XV` (Copy link); right-click menu `Dlo` has Copy link and Copy ID |
 | `m9e` ~6,530,533 | Inline workspace link chip | `W-<n>` in muted text before the workspace name, workspaces only (not session links) |
 
 The sidebar workspace rows are **not** a caller: Conductor's sidebar never shows the
@@ -46,8 +50,8 @@ card (`lZo`, ~9,886,544, cloud hosts only) and the Home search matcher (`kJo`, a
   numbers" come from #438 (`src/settings/prefs.ts`, `src-tauri/src/settings/table_prefs.rs`,
   `src/settings/ExperimentalPage.tsx`). Code outside Settings reads it with
   `src/settings/useBoolPref.ts`.
-- Home rows, the ⌘K palette's workspace rows and the workspace header show `W-<n>` when on.
-  The header badge runs the existing Copy link (`src/workspace/link.ts`).
-- Not built: the inline workspace link chip (`m9e`; OpenConductor has no such chip), the
-  header badge's right-click menu with Copy ID, and the setting's search terms (the
-  settings page has no search).
+- Home rows and the ⌘K palette's workspace rows show `W-<n>` when on. The local
+  workspace header badge was removed after the host-dispatch correction above.
+- The inline workspace link chip (`m9e`) is not built. The remote header badge and
+  its Copy ID menu are outside OpenConductor's current scope. Setting search terms
+  were implemented later by #644.

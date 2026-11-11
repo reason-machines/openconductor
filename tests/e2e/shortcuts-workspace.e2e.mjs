@@ -88,6 +88,24 @@ test("⌘1..⌘9 switch to the nth workspace in the sidebar (workspace.switchTo1
   await context.close();
 });
 
+test("composer Cmd1 selects its loadout and an empty Cmd2 never switches workspace while typing", async () => {
+  const { context, page, errors } = await open();
+  await page.getByTestId("composer-model-button").waitFor();
+  await page.locator(".composer [contenteditable=true]").first().focus();
+  await page.keyboard.press("Meta+1");
+  await page.waitForFunction(() => localStorage.getItem("openconductor.agent.w1") === "claude");
+  const choice = await page.evaluate(() => JSON.parse(localStorage.getItem("openconductor.composer.model.w1") ?? "null"));
+  assert.deepEqual(choice, { agent: "claude", model: "opus", effort: "high", fast: false });
+  await page.locator(".composer [contenteditable=true]").first().focus();
+  await page.keyboard.press("Meta+2");
+  await workspaceShown(page, "lisbon");
+  assert.equal(await page.evaluate(() => localStorage.getItem("openconductor.agent.w1")), "claude");
+  await press(page, "Meta+2");
+  await workspaceShown(page, "porto");
+  assert.deepEqual(errors, []);
+  await context.close();
+});
+
 test("⌘[ and ⌘] go back and forward through the workspaces shown (nav.back / nav.forward)", async () => {
   const { context, page, errors } = await open();
   await press(page, "Meta+2");
@@ -172,10 +190,14 @@ test("⌘, opens Settings and Escape returns to the workspace (openSettings, set
   await context.close();
 });
 
-test("⌘⇧H goes Home (nav.home)", async () => {
+test("⌘⇧H opens the Home workspace list (nav.home)", async () => {
   const { context, page, errors } = await open();
   await press(page, "Meta+Shift+h");
   await page.locator(".ws-header").waitFor({ state: "detached" });
+  await page.getByRole("listbox", { name: "Workspaces", exact: true }).waitFor();
+  assert.equal(await page.getByRole("textbox", { name: "Search workspaces", exact: true }).isVisible(), true);
+  assert.equal(await page.locator('.sb-row[data-active="true"] .sb-row-label').innerText(), "Home");
+  assert.equal(await page.locator(".home-wordmark").count(), 0);
   assert.deepEqual(errors, []);
   await context.close();
 });

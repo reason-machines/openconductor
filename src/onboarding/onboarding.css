@@ -30,7 +30,11 @@
 .onb-slide.active { background: color-mix(in srgb, var(--text) 10%, transparent); }
 .onb-slide-title { margin: 0; font-size: inherit; font-weight: 500; color: var(--text); }
 .onb-slide-desc { margin: 0; color: var(--muted); }
-.onb-actions { padding-left: 16px; }
+.onb-actions { padding-left: 16px; display: flex; flex-direction: column; gap: 16px; }
+.onb-agent-choice { display: flex; flex-wrap: wrap; gap: 16px; border: 0; padding: 0; margin: 0; font-size: 14px; }
+.onb-agent-choice legend { margin-bottom: 12px; font-weight: 500; }
+.onb-agent-choice label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.onb-agent-choice input { accent-color: var(--text); }
 /* The primary buttons: Continue (signed in) and Sign up (signed out), Conductor's
    default Button (`REe`: h-8 px-3 gap-2 rounded-md bg-foreground font-medium). */
 .onb-btn {

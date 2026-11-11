@@ -7,6 +7,52 @@ import { applyReasonPayload, cancelUnsent, failTurn, newestTurn, reasonChat, sta
 import { applyChatEvents, emptyTranscript, type ChatTranscript } from "./reducer.ts";
 import { buildRows } from "./view.ts";
 import type { ChatEvent } from "./types.ts";
+import { readFileSync } from "node:fs";
+import { diffForSave, restoreEvents } from "./persist.ts";
+
+test("Claude result wire usage survives final upserts, persistence and replay without duplication", () => {
+  const wire: ReasonPayload[] = JSON.parse(readFileSync(new URL("../../../evidence/chat/usage/claude-wire.json", import.meta.url), "utf8"));
+  const usage = wire[0]!;
+  const { t, rows } = run([
+    { prompt: "first turn" }, { type: "text", text: "Working" },
+    usage, usage, { type: "text", text: ". Done." }, wire[1]!,
+    { prompt: "unknown usage" }, { type: "text", text: "No counts supplied" },
+    { type: "turnEnded", end: { outcome: "completed" } },
+  ]);
+  assert.deepEqual(rows.filter((r) => r.kind === "turn_end").map((r) => r.usage), [{ inputTokens: 18200, outputTokens: 2400 }, undefined]);
+  const saved = diffForSave(null, t).upserts.map((m) => m.fullMessage);
+  const replay = restoreEvents(CHAT, saved);
+  const restored = applyChatEvents(emptyTranscript(CHAT), [...replay, ...replay]);
+  assert.ok(restored.ok);
+  assert.deepEqual(buildRows(restored.transcript), rows);
+});
+
+test("usage absence, explicit zero and partial counts remain distinct", () => {
+  for (const usage of [undefined, {}, { inputTokens: 0, outputTokens: 0 }, { outputTokens: 2400 }, { inputTokens: 18200, outputTokens: 0 }]) {
+    const { rows } = run([
+      { prompt: "check" }, { type: "text", text: "Done" },
+      ...(usage === undefined ? [] : [{ type: "usage" as const, usage }]),
+      { type: "turnEnded", end: { outcome: "completed" } },
+    ]);
+    const end = rows.find((r) => r.kind === "turn_end");
+    assert.ok(end?.kind === "turn_end");
+    assert.deepEqual(end.usage, usage);
+  }
+});
+
+test("an empty successful Reason turn is a retryable failure, not a timestamp-only reply", () => {
+  const { rows } = run([
+    { prompt: "sda" }, { type: "text", text: "" }, { type: "text", text: " \n" },
+    { type: "usage", usage: { outputTokens: 0 } },
+    { type: "turnEnded", end: { outcome: "completed" } },
+  ]);
+  assert.equal(rows.filter((r) => r.kind === "assistant").length, 0);
+  const end = rows.find((r) => r.kind === "turn_end");
+  assert.ok(end?.kind === "turn_end");
+  assert.equal(end.status, "failed");
+  assert.match(end.error ?? "", /no reply/i);
+  assert.deepEqual(end.retryPrompt, { text: "sda" });
+});
 
 const CHAT = "repo/tokyo";
 const HOME = "/Users/sven/conductor/workspaces/repo/tokyo";
@@ -106,7 +152,7 @@ test("device_not_found fails the turn with the error, not a reply", () => {
   assert.ok(end.kind === "turn_end");
   assert.equal(end.status, "failed");
   assert.equal(end.error, msg);
-  assert.equal(end.retryPrompt, "hi");
+  assert.deepEqual(end.retryPrompt, { text: "hi" });
 });
 
 test("a follow-up during a turn supersedes it; the end goes to the older turn", () => {
@@ -137,7 +183,8 @@ test("a mid-turn report is attributed to another session, never the user", () =>
 test("Stop ends the turn cancelled with the prompt offered again; a failed call fails it", () => {
   const stopped = run([{ prompt: "long job" }, { type: "turnEnded", end: { outcome: "cancelled" } }]);
   const end = stopped.rows.at(-1)!;
-  assert.ok(end.kind === "turn_end" && end.status === "cancelled" && end.retryPrompt === "long job");
+  assert.ok(end.kind === "turn_end" && end.status === "cancelled");
+  assert.deepEqual(end.retryPrompt, { text: "long job" });
 
   let state = startTurn(reasonChat(CHAT), "hi").state;
   const when = new Date("2026-11-05T10:00:00.000Z");

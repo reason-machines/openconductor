@@ -19,14 +19,19 @@ fn fixture(body: &str) -> (PathBuf, LaunchConfig) {
     (dir, LaunchConfig::new(cli).unwrap())
 }
 
-fn service(timeout: Duration) -> LoginService {
-    LoginService::with_options(LoginOptions {
+fn options(timeout: Duration) -> LoginOptions {
+    LoginOptions {
         startup_timeout: Duration::from_millis(500),
         status_timeout: Duration::from_millis(300),
         timeout,
         poll_interval: Duration::from_millis(20),
         allow_loopback: false,
-    })
+        clock: None,
+    }
+}
+
+fn service(timeout: Duration) -> LoginService {
+    LoginService::with_options(options(timeout))
 }
 
 fn wait(service: &LoginService, matches: impl Fn(&LoginState) -> bool) -> LoginState {
@@ -74,6 +79,45 @@ fn one_pairing_is_shared_until_approved_and_returns_account_and_workspace() {
     assert_eq!(account.organization.as_deref(), Some("Reason Tests"));
     assert_eq!(account.workspaces[0].slug, "reason-tests");
     let _ = std::fs::remove_dir_all(dir);
+}
+
+#[test]
+fn built_app_fake_waits_for_explicit_approval_before_connecting() {
+    let root = std::env::var("REASON_ACP_REPO_ROOT")
+        .unwrap_or_else(|_| concat!(env!("CARGO_MANIFEST_DIR"), "/..").into());
+    let fake = PathBuf::from(root).join("tools/reason-acp/fake_reason_acp.py");
+    let (dir, launch) = fixture(&format!("exec python3 \"{}\" \"$@\"", fake.display()));
+    std::fs::write(dir.join("fake-reason-signed-out"), "").unwrap();
+    std::fs::write(dir.join("fake-reason-require-approval"), "").unwrap();
+    let service = service(Duration::from_secs(5));
+    service.start(launch, dir.clone());
+    let state = wait(&service, |state| {
+        matches!(state, LoginState::Waiting { .. })
+    });
+    let LoginState::Waiting { prompt, .. } = &state else {
+        unreachable!()
+    };
+    assert_eq!(prompt.code.as_deref(), Some("E2E1-CODE"));
+    assert_eq!(
+        prompt.url,
+        "https://reasonmachines.com/cli/connect?request=e2e-request"
+    );
+    std::thread::sleep(Duration::from_millis(120));
+    assert_eq!(
+        service.snapshot(),
+        state,
+        "status reads cannot approve pairing"
+    );
+    std::fs::remove_file(dir.join("fake-reason-signed-out")).unwrap();
+    let LoginState::Connected { account } = wait(&service, |state| {
+        matches!(state, LoginState::Connected { .. })
+    }) else {
+        unreachable!()
+    };
+    assert_eq!(account.email.as_deref(), Some("e2e@example.com"));
+    assert_eq!(account.workspaces[0].slug, "ws-a");
+    drop(service);
+    std::fs::remove_dir_all(dir).unwrap();
 }
 
 #[test]
@@ -162,17 +206,34 @@ fn cancel_stops_polling_ignores_late_approval_and_retry_reads_existing_login() {
 #[test]
 fn expired_app_wait_can_be_retried_without_a_stale_attempt_cancelling_it() {
     let (dir, launch) = fixture(&format!("{STATUS}\n{LINK}"));
-    let service = service(Duration::from_millis(150));
+    let clock = std::sync::Arc::new(std::sync::Mutex::new(Instant::now()));
+    let now = clock.clone();
+    let service = LoginService::with_options(LoginOptions {
+        clock: Some(std::sync::Arc::new(move || *now.lock().unwrap())),
+        ..options(Duration::from_millis(150))
+    });
     let LoginState::Starting { attempt_id: old } = service.start(launch.clone(), dir.clone())
     else {
         unreachable!()
     };
+    wait(&service, |state| {
+        matches!(state, LoginState::Waiting { .. })
+    });
+    *clock.lock().unwrap() += Duration::from_millis(150);
     wait(&service, |state| matches!(state, LoginState::TimedOut));
-    service.start(launch, dir.clone());
+    let LoginState::Starting { attempt_id: new } = service.start(launch, dir.clone()) else {
+        unreachable!()
+    };
+    assert_ne!(new, old);
+    std::thread::sleep(Duration::from_millis(200));
     let retry = wait(&service, |state| {
         matches!(state, LoginState::Waiting { .. })
     });
     assert_eq!(service.cancel(&old), retry);
+    assert_eq!(service.snapshot(), retry);
+    *clock.lock().unwrap() += Duration::from_millis(150);
+    wait(&service, |state| matches!(state, LoginState::TimedOut));
+    drop(service);
     let _ = std::fs::remove_dir_all(dir);
 }
 

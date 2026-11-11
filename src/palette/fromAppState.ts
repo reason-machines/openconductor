@@ -3,6 +3,7 @@
 
 import type { AppState, Workspace } from "../state/types.ts";
 import type { ActionEntry, PaletteData, SettingEntry, WorkspaceEntry } from "./search/model.ts";
+import type { OpenInApp } from "../features/openIn/apps.ts";
 import type { SearchItem } from "../settings/searchIndex.ts";
 import { labelTargetBranch, workspaceLabel } from "../components/sidebarLabel.ts";
 import { lastActiveAt as activityAt } from "../home/allWorkspaces.ts";
@@ -25,8 +26,8 @@ export function sidebarOrder(state: AppState): WorkspaceRef[] {
 }
 
 /** What Cmd+1..9 count: the rows on screen, so collapsed repos are skipped, as the row hints are. */
-export function shortcutOrder(state: AppState): WorkspaceRef[] {
-  return sidebarEntries(state, { visibleOnly: true });
+export function shortcutOrder(state: AppState, collapsedSections: ReadonlySet<string>): WorkspaceRef[] {
+  return sidebarEntries(state, { visibleOnly: true, collapsedSections });
 }
 
 /** The workspace `delta` steps from the selected one, wrapping; first one if none is selected. */
@@ -65,7 +66,7 @@ export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   // Navigation. Go to next unread comes first, only while something is unread (renderApp @10,916,846).
   { id: "go-to-next-unread", title: "Go to next unread", group: "navigation", bindingId: "chat.nextAttention", icon: "chevron-right", keywords: ["go", "to", "next", "unread", "attention", "chat", "session"] },
   { id: "settings", title: "Settings", group: "navigation", hint: "⌘,", icon: "settings", keywords: ["settings", "preferences", "config"] },
-  // Conductor's `V9t` ("Home", nav.home); it opens /all-workspaces there, the wordmark screen here (#483).
+  // Conductor's `V9t` ("Home", nav.home) opens the /all-workspaces list.
   { id: "go-home", title: "Home", group: "navigation", bindingId: "nav.home", icon: "home", keywords: ["home", "history", "all", "workspaces", "activity"] },
   // Conductor: opens the Workspaces tab with archived workspaces shown, only while a workspace is open.
   { id: VIEW_ARCHIVED_ACTION, title: VIEW_ARCHIVED_LABEL, group: "navigation", icon: "archive", keywords: ["archive", "archived", "workspaces", "view", "show"] },
@@ -96,6 +97,8 @@ export function paletteDataFromState(
   recentIds: readonly string[],
   archived: readonly ArchivedWorkspace[] = [],
   settings: readonly SettingEntry[] = [],
+  openInApps: readonly Pick<OpenInApp, "id" | "name">[] = [],
+  defaultOpenIn: string | null = null,
 ): PaletteData {
   const rank = new Map(recentIds.map((id, i) => [id, i]));
   const workspaces: WorkspaceEntry[] = state.repos.flatMap((r) =>
@@ -109,6 +112,7 @@ export function paletteDataFromState(
         branch: w.branch,
         repoName: r.name,
         lastActiveAt,
+        updatedAt: w.updatedAt ?? w.createdAt,
         archived: w.status === "archived",
         number: w.number ?? null,
         label: displayName(w),
@@ -126,6 +130,7 @@ export function paletteDataFromState(
       branch: a.branch,
       repoName: repoNames.get(a.repoId) ?? "",
       lastActiveAt: a.createdAt - Number.MAX_SAFE_INTEGER / 2,
+      updatedAt: a.workspace.updatedAt ?? a.createdAt,
       archived: true,
       number: a.workspace.number ?? null,
       label: displayName(a.workspace),
@@ -133,15 +138,27 @@ export function paletteDataFromState(
     });
   }
   const activeWorkspaceId = state.selection.kind === "workspace" ? state.selection.workspaceId : null;
+  const selectedWorkspace = state.repos.flatMap((r) => r.workspaces).find((w) => w.id === activeWorkspaceId);
+  const openInActions: ActionEntry[] = selectedWorkspace?.path && selectedWorkspace.status !== "archived"
+    ? openInApps.map((app) => ({ id: `open-in-${app.id}`, title: app.name, group: "open-in", keywords: ["open", "in", "open in", app.name, app.id], bindingId: app.id === defaultOpenIn ? "workspace.openInApp" : undefined }))
+    : [];
   return {
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
-    actions: PALETTE_ACTIONS.filter((a) => {
+    actions: [...PALETTE_ACTIONS.filter((a) => {
+      if (a.id === "quick-open") return selectedWorkspace !== undefined && selectedWorkspace.status !== "archived" && selectedWorkspace.state !== "archived" && selectedWorkspace.state !== "unstarted";
+      if (a.id === "archive-workspace") return selectedWorkspace?.status !== "archived" && state.archivedOpen?.workspace.id !== activeWorkspaceId;
       if (a.id === "go-to-next-unread") return nextUnreadChat(state, { skipSelected: false }) !== undefined;
-      // Conductor lists it under Navigation only while a workspace is open (`Xt &&`).
-      if (a.id === VIEW_ARCHIVED_ACTION) return activeWorkspaceId !== null;
+      // Conductor gates both rows on the resolved workspace (`Xt &&`).
+      if (a.id === VIEW_ARCHIVED_ACTION || a.id === "copy-url") {
+        const sel = state.selection;
+        if (sel.kind !== "workspace") return false;
+        const workspace = state.repos.find((r) => r.id === sel.repoId)?.workspaces.find((w) => w.id === sel.workspaceId)
+          ?? (state.archivedOpen?.workspace.id === sel.workspaceId ? state.archivedOpen.workspace : undefined);
+        return workspace !== undefined;
+      }
       return true;
-    }),
+    }), ...openInActions],
     settings,
     // Archived workspaces stay in Recent, as in Conductor; ids of deleted ones drop out here
     // but stay stored, so they still count toward the cap of 5 (recordViewedWorkspace never prunes).

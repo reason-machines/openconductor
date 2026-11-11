@@ -36,12 +36,14 @@
 
 import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscript } from "./reducer.ts";
 import { restoreCheckpoint, turnCheckpointRef, type Invoke } from "./checkpoints.ts";
-import { cancelUnsent, failTurn, openTurns, reasonChat, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
+import { cancelUnsent, failTurn, openTurns, reasonChat, restartUnsentTurn, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
 import { chatWantsAttention, enteredWait, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
 import type { FileChange } from "../diff/types.ts";
+import type { SentUserContentV1, UserPrompt } from "./userContent.ts";
+import type { ChatMessage } from "./types.ts";
 
 /** Open turns of one chat, as reason.ts tracks them. */
 export type ChatTurns = ReasonChatState;
@@ -165,6 +167,7 @@ export interface PromptRequest {
   firstMessage: boolean;
   /** Repository the chat's workspace belongs to, if known. */
   repoPath: string | null;
+  workspaceId?: string;
 }
 
 /** An agent the runtime runs chats on. */
@@ -231,7 +234,9 @@ export interface ChatRuntime<Config> {
    * goes to the backend with each prompt. Attachments go as embedded files
    * and show by name.
    */
-  submit(chatId: string, cwd: string, text: string, mode: Q.SendMode, attachments?: readonly PromptAttachment[], repoPath?: string): void;
+  submit(chatId: string, cwd: string, input: UserPrompt, mode: Q.SendMode, attachments?: readonly PromptAttachment[], repoPath?: string, workspaceId?: string): void;
+  /** Retry a failed, undelivered turn in place; false if it can no longer be retried safely. */
+  retryUnsent(chatId: string, cwd: string, input: UserPrompt, turnId: string): boolean;
   /** Stop. A second Stop while the first is pending asks the backend to stop hard. */
   stop(chatId: string): void;
   queueAction(chatId: string, action: QueueAction): void;
@@ -273,6 +278,7 @@ interface Chat<Config> {
   cwd: string | null;
   /** Repository the chat's workspace belongs to. */
   repoPath: string | null;
+  workspaceId?: string;
   opened: boolean;
   /** Options the chat's session runs on: `open` passes them, `configure` updates an open one; the first prompt waits for them. */
   config: Config | Promise<Config>;
@@ -555,7 +561,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     switch (effect.kind) {
       case "start":
       case "steer":
-        void prompt(c, effect.text, [...effect.attachments]);
+        void prompt(c, effect.text, [...effect.attachments], effect.userContent);
         return;
       case "cancel":
         // The backend cancels only a prompt it has; one still on its way is stopped here.
@@ -577,11 +583,11 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
    * the turn changed, which go to the turn-changes cache for the chips under
    * the turn.
    */
-  async function prompt(c: Chat<Config>, text: string, attachments: PromptAttachment[]): Promise<void> {
+  async function prompt(c: Chat<Config>, text: string, attachments: PromptAttachment[], userContent?: SentUserContentV1, retryUser?: ChatMessage): Promise<void> {
     const chatId = c.state.chatId;
     // A random turn id, so a turn's checkpoints and cached changes never
     // collide with a turn from an earlier app run.
-    const turnId = `${chatId}:${crypto.randomUUID()}`;
+    const turnId = retryUser?.turnId ?? `${chatId}:${crypto.randomUUID()}`;
     // Stop is shown from here on, but the backend only learns of the turn
     // once `prompt` runs; a Stop before that is held in `c.stopped`.
     c.unsent.add(turnId);
@@ -591,9 +597,10 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     // No session yet: a new chat, or one whose session was dropped by Reset
     // chat. The new session gets the conversation the chat still shows.
     const newSession = !c.opened && !host.storage.getItem(sessionKey(chatId));
-    const firstMessage = newSession && !c.transcript.messages.some((m) => m.role === "user");
-    const carried = newSession ? earlierConversation(c.transcript) : null;
-    apply(c, startTurn(c.state, text, new Date(), turnId, attachments));
+    const prior = retryUser ? { ...c.transcript, messages: c.transcript.messages.filter((message) => message.turnId !== turnId) } : c.transcript;
+    const firstMessage = newSession && !prior.messages.some((m) => m.role === "user");
+    const carried = newSession ? earlierConversation(prior) : null;
+    apply(c, retryUser ? restartUnsentTurn(c.state, retryUser) : startTurn(c.state, text, new Date(), turnId, attachments, userContent));
     // `submit` sets the folder before any effect runs.
     const cwd = c.cwd ?? "";
     try {
@@ -612,7 +619,7 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       // changed. Resolves after the turn ended; a rejection means the turn
       // never started (no CLI, no process), so no event will end it.
       const turn = turnCheckpointRef(chatId, turnId);
-      const end = await backend.prompt({ chatId, cwd, text, attachments: carried ? [carried, ...attachments] : attachments, turn, firstMessage, repoPath: c.repoPath });
+      const end = await backend.prompt({ chatId, cwd, text, attachments: carried ? [carried, ...attachments] : attachments, turn, firstMessage, repoPath: c.repoPath, workspaceId: c.workspaceId });
       if (end.turnChanges) host.recordTurnChanges(turn, end.turnChanges);
     } catch (e) {
       c.unsent.delete(turnId);
@@ -629,11 +636,23 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
       c.listeners.add(fn);
       return () => c.listeners.delete(fn);
     },
-    submit(chatId, cwd, text, mode, attachments = [], repoPath) {
+    submit(chatId, cwd, input, mode, attachments = [], repoPath, workspaceId) {
       const c = chat(chatId);
       c.cwd = cwd;
       if (repoPath) c.repoPath = repoPath;
-      setQueue(c, Q.submit(c.queue, text, mode, new Date(), attachments));
+      if (workspaceId) c.workspaceId = workspaceId;
+      setQueue(c, Q.submit(c.queue, input, mode, new Date(), attachments));
+    },
+    retryUnsent(chatId, cwd, input, turnId) {
+      const c = chat(chatId);
+      if (Q.turnRunning(c.queue.status) || c.transcript.turns[turnId]?.status !== "failed") return false;
+      const messages = c.transcript.messages.filter((message) => message.turnId === turnId);
+      const user = messages.find((message) => message.role === "user");
+      if (!user || messages.some((message) => message.role === "assistant")) return false;
+      c.cwd = cwd;
+      setQueue(c, { ...c.queue, status: "working" });
+      void prompt(c, input.text, [], input.userContent, user);
+      return true;
     },
     stop(chatId) {
       const c = chat(chatId);

@@ -1,0 +1,62 @@
+(node:118) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:125) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: actual onboarding effect waits for validated account and durable finish before Home, once
+ok 1 - actual onboarding effect waits for validated account and durable finish before Home, once
+  ---
+  duration_ms: 224.481668
+  type: 'test'
+  ...
+# Subtest: rejected onboarding persistence remains visible and manual Continue retries successfully
+ok 2 - rejected onboarding persistence remains visible and manual Continue retries successfully
+  ---
+  duration_ms: 84.234533
+  type: 'test'
+  ...
+# Subtest: invalid account cannot invoke onboarding completion: account error
+ok 3 - invalid account cannot invoke onboarding completion: account error
+  ---
+  duration_ms: 87.264403
+  type: 'test'
+  ...
+# Subtest: invalid account cannot invoke onboarding completion: empty identity
+ok 4 - invalid account cannot invoke onboarding completion: empty identity
+  ---
+  duration_ms: 72.378081
+  type: 'test'
+  ...
+# Subtest: invalid account cannot invoke onboarding completion: malformed workspace
+ok 5 - invalid account cannot invoke onboarding completion: malformed workspace
+  ---
+  duration_ms: 54.686
+  type: 'test'
+  ...
+# Subtest: cancelled attempt ignores a stale Connected callback before actual onboarding effect
+ok 6 - cancelled attempt ignores a stale Connected callback before actual onboarding effect
+  ---
+  duration_ms: 56.222607
+  type: 'test'
+  ...
+# Subtest: unmount before account result suppresses the completion callback
+ok 7 - unmount before account result suppresses the completion callback
+  ---
+  duration_ms: 51.714624
+  type: 'test'
+  ...
+# Subtest: actual SignUp failure callback and retry do not report success before validated completion
+ok 8 - actual SignUp failure callback and retry do not report success before validated completion
+  ---
+  duration_ms: 50.477021
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1012.202089

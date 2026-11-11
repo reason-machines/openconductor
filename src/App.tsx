@@ -1,11 +1,17 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppStore } from "./state/store";
+import { useCustomSectionCollapse } from "./state/useCustomSectionCollapse";
 import { ATTACH_FAILED, destroyWorkspaceTerminals, onAttachFailure } from "./features/terminal/session";
 import { isSidebarVisible, removedWorkspaceIds } from "./state/selectors";
 import { OPEN_ADD_PROJECT_MENU, Sidebar } from "./components/Sidebar";
 import { HomeScreen } from "./components/HomeScreen";
+import { SidebarIcon } from "./components/Icons";
+import { titleWithShortcut } from "./components/Tooltip";
+import { effectiveShortcuts } from "./keybindings/overrides";
+import { glyphs } from "./keybindings/shortcut";
 import { SubmitPromptDialog } from "./components/SubmitPromptDialog";
+import { FeedbackDialog } from "./components/FeedbackDialog";
 import { DiagnosticsPage } from "./diagnostics/DiagnosticsPage";
 import { AllWorkspaces } from "./components/AllWorkspaces";
 import { Dashboard } from "./components/Dashboard";
@@ -33,7 +39,7 @@ import { RestoreWorkspaceDialog, type RestoreRequest } from "./components/Restor
 import type { Action } from "./state/store";
 import { useInitIssues } from "./workspace/useInitIssues";
 import { QuickOpenDialog } from "./components/QuickOpenDialog";
-import { CHANGELOG_URL, DOCS_URL, FEEDBACK_URL } from "./components/helpMenuItems";
+import { CHANGELOG_URL, DOCS_URL } from "./components/helpMenuItems";
 import {
   openInTerminalScript,
   XCODE_LICENSE_COMMAND,
@@ -59,7 +65,9 @@ import { USER_PAGES } from "./settings/pages";
 import { OPEN_SETTINGS_EVENT, openAgentSettings } from "./features/chat/ChatModelPicker.tsx";
 import { RoutinesPage } from "./features/routines/RoutinesPage";
 import { RoutineEditor } from "./features/routines/RoutineEditor";
-import { REPO_SECTIONS, cloudSettingsLocation, keptSearch, resolveSettingsUrl, settingsPath, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { REPO_SECTIONS, cloudSettingsLocation, keptSearch, resolveSettingsUrl, settingsPath, settingsSearch, type RouteContext, type SettingsLocation } from "./settings/routes";
+import { agentsTabFrom } from "./settings/agents/kitModel";
+import { selectProviderTab } from "./settings/providerTab";
 import { ORGANIZATION_EVENT, storedOrganization } from "./org/organization";
 import { changeZoom, rememberSettings, toggleTheme } from "./settings/useSettings";
 import { applyAppearance } from "./settings/appearance";
@@ -112,6 +120,7 @@ export default function App() {
   useAutoUnread(state, dispatch);
   useSidebarVisiblePref(isSidebarVisible(state), dispatch);
   const sidebarWidth = useSidebarWidth();
+  const [collapsedSections, toggleSection] = useCustomSectionCollapse();
   const [paletteOpen, setPaletteOpen] = useState(() => new URLSearchParams(window.location.search).get("palette") === "1");
   // `/create` opens the full-screen create page; `?dialog=create` the dialog.
   const [dialog, setDialog] = useState<DialogKind | null>(() => new URLSearchParams(window.location.search).get("dialog") as DialogKind | null);
@@ -139,6 +148,7 @@ export default function App() {
   // Help › Diagnostics (Conductor's `/diagnostics` route) and Help › Submit a prompt.
   const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
   const [submitPromptOpen, setSubmitPromptOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const { toasts, show, dismiss } = useToasts();
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
@@ -225,7 +235,7 @@ export default function App() {
   const navigateSettings = useCallback((loc: SettingsLocation | null) => {
     const target = loc ? cloudSettingsLocation(loc, cloudUI === true) : null;
     setSettingsLocation(target);
-    const search = keptSearch(window.location.search);
+    const search = settingsSearch(target, window.location.search);
     window.history.replaceState(window.history.state, "", (target ? settingsPath(target) : "/") + search);
   }, [cloudUI]);
   useEffect(() => {
@@ -257,11 +267,7 @@ export default function App() {
       const known = [...USER_PAGES, "setup-cloud" as const].find((p) => p === detail?.page);
       if (known) navigateSettings({ scope: "user", page: known });
       // A chat's "Open <agent> settings": the Agents page opens on that agent's tab.
-      if (known === "providers" && detail?.providerTab) {
-        const q = new URLSearchParams(window.location.search);
-        q.set("providerTab", detail.providerTab);
-        window.history.replaceState(window.history.state, "", `${window.location.pathname}?${q}`);
-      }
+      if (known === "providers" && detail?.providerTab) selectProviderTab(agentsTabFrom(detail.providerTab));
     };
     window.addEventListener(OPEN_SETTINGS_EVENT, open);
     return () => window.removeEventListener(OPEN_SETTINGS_EVENT, open);
@@ -380,7 +386,7 @@ export default function App() {
   useKeybindings({
     "openKeyboardShortcuts": toggleShortcuts,
     "openSettings": openSettings,
-    "sendFeedback": () => void openUrl(FEEDBACK_URL),
+    "sendFeedback": () => setFeedbackOpen(true),
     "toggleTheme": () => void toggleTheme().catch((e) => show("error", errorText(e))),
     "view.zoomIn": () => void changeZoom("in").catch((e) => show("error", errorText(e))),
     "view.zoomOut": () => void changeZoom("out").catch((e) => show("error", errorText(e))),
@@ -419,7 +425,7 @@ export default function App() {
     toggleLeftSidebar: () => dispatch({ type: "toggleSidebar" }),
     toggleRightSidebar: toggleRightPanel,
     toggleZenMode: () => toggleZenMode(isSidebarVisible(state), dispatch),
-    sendFeedback: () => void openUrl(FEEDBACK_URL),
+    sendFeedback: () => setFeedbackOpen(true),
     submitPrompt: () => setSubmitPromptOpen(true),
     showShortcuts: () => setShortcutsOpen(true),
     openChangelog: () => void openUrl(CHANGELOG_URL),
@@ -508,8 +514,19 @@ export default function App() {
   return (
     <>
     <div className={`app ${isSidebarVisible(state) ? "" : "sidebar-hidden"}`} style={sidebarWidth.style} aria-busy={startup === "loading"} data-startup={startup}>
+      {!isSidebarVisible(state) && !createPage && repo && workspace && (
+        <button
+          type="button"
+          className="sb-toggle workspace-sidebar-toggle"
+          aria-label="Toggle left sidebar"
+          title={titleWithShortcut("Toggle left sidebar", effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or "))}
+          onClick={() => dispatch({ type: "toggleSidebar" })}
+        >
+          <SidebarIcon size={16} />
+        </button>
+      )}
       {isSidebarVisible(state) && sidebarWidth.resizer}
-      {isSidebarVisible(state) && <Sidebar state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
+      {isSidebarVisible(state) && <Sidebar state={state} collapsedSections={collapsedSections} onToggleSection={toggleSection} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} onAddProjectAt={addProjectAt} onOpenSettings={openSettings} onOpenShortcuts={toggleShortcuts} onSendFeedback={() => setFeedbackOpen(true)} onSubmitPrompt={() => setSubmitPromptOpen(true)} onOpenDiagnostics={() => setDiagnosticsOpen(true)} onSearch={() => setPaletteOpen(true)} nav={nav} info={info} onCopyWorkspaceLink={(ws) => copyLink(ws.id)} onError={(message) => show("error", message)} onCreateFrom={(repoId) => openDialog("create", repoId, undefined, true)} onOpenRepoSettings={(repoId) => navigateSettings({ scope: "repo", repoId, section: "misc" })} onRemoveRepository={removeRepositoryFromMenu} />}
       <main className="main">
         {createPage ? (
           <CreateWorkspacePage
@@ -536,7 +553,6 @@ export default function App() {
             workspace={workspace}
             dispatch={dispatch}
             notify={show}
-            onCopyLink={() => copyLink(workspace.id)}
             hasNextUnread={(selectedChatId) => nextUnreadChat(state, { skipSelected: true, selectedChatId }) !== undefined}
             onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
@@ -635,8 +651,9 @@ export default function App() {
         />
       )}
       {submitPromptOpen && <SubmitPromptDialog appVersion={info?.version} platform={info?.platform} onClose={() => setSubmitPromptOpen(false)} />}
+      {feedbackOpen && <FeedbackDialog appVersion={info?.version} platform={info?.platform} onClose={() => setFeedbackOpen(false)} />}
       {shortcutsOpen && <KeyboardShortcutsDialog onClose={() => setShortcutsOpen(false)} overrides={overrides} />}
-      <PaletteHost state={state} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} />
+      <PaletteHost state={state} collapsedSections={collapsedSections} dispatch={dispatch} onOpenDialog={openDialog} onOpenProject={openProject} open={paletteOpen} onOpenChange={setPaletteOpen} commands={paletteCommands} />
       {archiveOverAgents && (
         <ArchiveRunningDialog
           onClose={() => setArchiveOverAgents(null)}

@@ -106,6 +106,8 @@ test("sections: create, move in and out, edit, delete", async () => {
   await row(page, "Quiet harbor").click({ button: "right" });
   await rowMenu(page).getByRole("menuitem", { name: "Pin" }).click();
   await page.locator(".sb-group", { hasText: "Pinned" }).waitFor();
+  await settled(() => row(page, "Quiet harbor").count(), 1);
+  assert.equal(await row(page, "Quiet harbor").getAttribute("data-pinned"), "true");
   await openMoveMenu(page, "Quiet harbor");
   await moveMenu(page).getByRole("menuitemradio", { name: "Focus" }).click();
   await settled(() => rowsIn(focus), ["Quiet harbor"]);
@@ -174,9 +176,69 @@ test("create a workspace directly inside a section", async () => {
   }
 
   // The section menu's first item, then Create in <section>.
+  await page.evaluate(() => {
+    const describe = (element) => element && ({
+      tag: element.tagName,
+      role: element.getAttribute("role"),
+      label: element.getAttribute("aria-label"),
+      expanded: element.getAttribute("aria-expanded"),
+      hidden: element.hidden,
+      ariaHidden: element.getAttribute("aria-hidden"),
+      inert: element.inert,
+      open: element.hasAttribute("data-open"),
+      starting: element.hasAttribute("data-starting-style"),
+      ending: element.hasAttribute("data-ending-style"),
+      style: element.getAttribute("style"),
+    });
+    const snapshot = () => ({
+      time: performance.now(),
+      trigger: describe(document.querySelector('button[aria-label="Focus actions"]')),
+      active: describe(document.activeElement),
+      dialogs: [...document.querySelectorAll('[role="dialog"]')].map(describe),
+      menus: [...document.querySelectorAll('[role="menu"]')].map((menu) => ({
+        ...describe(menu),
+        items: [...menu.querySelectorAll('[role="menuitem"]')].map((item) => item.textContent),
+        ancestors: [...(function* () { for (let el = menu.parentElement; el; el = el.parentElement) yield el; })()].map(describe),
+      })),
+    });
+    const before = snapshot();
+    const events = [];
+    const record = (type, target) => {
+      if (events.length === 32) events.shift();
+      events.push({ type, target: describe(target), state: snapshot() });
+    };
+    const onEvent = (event) => {
+      if (event.target instanceof Element && event.target.closest('[aria-label="Focus actions"], [role="menu"]')) record(event.type, event.target);
+    };
+    const types = ["pointerdown", "mousedown", "pointerup", "mouseup", "click", "focusin", "focusout"];
+    for (const type of types) document.addEventListener(type, onEvent, true);
+    const observer = new MutationObserver(() => record("mutation", null));
+    observer.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ["aria-expanded", "aria-hidden", "hidden", "inert", "data-open", "data-starting-style", "data-ending-style"] });
+    window.__sectionMenuDiagnostic = {
+      finish() {
+        observer.disconnect();
+        for (const type of types) document.removeEventListener(type, onEvent, true);
+        const after = snapshot();
+        const menuStyles = [...document.querySelectorAll('[role="menu"]')].map((menu) => {
+          const style = getComputedStyle(menu);
+          return { label: menu.getAttribute("aria-label"), display: style.display, visibility: style.visibility, opacity: style.opacity };
+        });
+        delete window.__sectionMenuDiagnostic;
+        return { before, events, after, menuStyles };
+      },
+    };
+  });
   await page.getByRole("button", { name: "Focus actions" }).click();
+  await page.getByRole("menu", { name: "Focus actions", exact: true }).waitFor();
   const items = await page.getByRole("menu").getByRole("menuitem").allTextContents();
-  assert.deepEqual(items, ["Create workspace", "Edit section", "New section…", "Delete section"]);
+  try {
+    assert.deepEqual(items, ["Create workspace", "Edit section", "New section…", "Delete section"]);
+  } catch (error) {
+    const diagnostic = await page.evaluate(() => window.__sectionMenuDiagnostic.finish());
+    console.log("Focus actions failure state", JSON.stringify({ items, ...diagnostic }));
+    throw error;
+  }
+  await page.evaluate(() => window.__sectionMenuDiagnostic.finish());
   await page.getByRole("menuitem", { name: "Create workspace" }).click();
   const create = dialog(page, "New workspace");
   await create.waitFor();

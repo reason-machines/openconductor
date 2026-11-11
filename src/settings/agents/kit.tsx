@@ -6,6 +6,8 @@
 // key/value table, the masked secret row, option rows, the executable path
 // and the config-file card. The Codex and Reason tabs import from here.
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { CopyIcon } from "../../components/Icons";
+import { Toaster, useToasts } from "../../components/Toast";
 import { AppIcon } from "../../features/openIn/OpenInButton";
 import { defaultAppId, loadOpenInApps, openInApp, type OpenInApp } from "../../features/openIn/apps";
 import { recordOpenIn, useAppPrefs } from "../appPrefs";
@@ -13,7 +15,7 @@ import type { InfoRow } from "./agentAuth";
 import { openUrl } from "../../backend";
 import { CheckIcon, ChevronDownIcon, ExternalIcon, EyeIcon, PencilIcon, TrashIcon } from "./icons";
 import { AuthStatus } from "./parts";
-import { maskedSecret } from "./kitModel";
+import { copySettingsPath, maskedSecret, type CopyPathLabel } from "./kitModel";
 import "./kit.css";
 
 export type { InfoRow };
@@ -263,14 +265,14 @@ export function OptionRow({ title, help, control, stacked }: { title: ReactNode;
 }
 
 /** A file's card: title, path in mono, and "Open in" at the right (`Nzi`). */
-export function ConfigFileCard({ title, displayPath, path, fallbackPath }: { title: string; displayPath: string; path: string | null; fallbackPath?: string }) {
+export function ConfigFileCard({ title, displayPath, path, fallbackPath, copyLabel }: { title: string; displayPath: string; path: string | null; fallbackPath?: string; copyLabel?: CopyPathLabel }) {
   return (
     <section className="agk-config" aria-label={title}>
       <div className="agk-config-text">
         <h3>{title}</h3>
         <p className="agk-mono">{displayPath}</p>
       </div>
-      <OpenInSplit label="Open in" path={path} fallbackPath={fallbackPath} />
+      <OpenInSplit label="Open in" path={path} fallbackPath={fallbackPath} copyLabel={copyLabel} />
     </section>
   );
 }
@@ -281,7 +283,8 @@ export function ConfigFileCard({ title, displayPath, path, fallbackPath }: { tit
  * installed apps. Disabled until `path` is known; when `path` does not
  * exist yet it opens `fallbackPath` (Conductor's `directoryFallbackPath`).
  */
-export function OpenInSplit({ label, path, fallbackPath }: { label: string; path: string | null; fallbackPath?: string }) {
+export function OpenInSplit({ label, path, fallbackPath, copyLabel }: { label: string; path: string | null; fallbackPath?: string; copyLabel?: CopyPathLabel }) {
+  const { toasts, show, dismiss } = useToasts();
   const [apps, setApps] = useState<OpenInApp[] | null>(null);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -303,6 +306,10 @@ export function OpenInSplit({ label, path, fallbackPath }: { label: string; path
     document.addEventListener("mousedown", close, true);
     return () => document.removeEventListener("mousedown", close, true);
   }, [open]);
+  const copyPath = () => {
+    setOpen(false);
+    void copySettingsPath(path, (value) => navigator.clipboard?.writeText(value) ?? Promise.reject(new Error("no clipboard")), show, copyLabel);
+  };
   const list = apps ?? [];
   const def = list.find((a) => a.id === defaultAppId(list, saved));
   const openWith = (id: string) => {
@@ -322,7 +329,7 @@ export function OpenInSplit({ label, path, fallbackPath }: { label: string; path
         {def && <AppIcon app={def} size={12} />}
         {label}
       </button>
-      <button type="button" className="agk-split-chevron" disabled={!path || list.length === 0} aria-label={`${label}...`} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(!open)}>
+      <button type="button" className="agk-split-chevron" disabled={!path} aria-label={`${label}...`} aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(!open)}>
         <ChevronDownIcon size={12} />
       </button>
       {open && (
@@ -333,8 +340,13 @@ export function OpenInSplit({ label, path, fallbackPath }: { label: string; path
               {a.name}
             </button>
           ))}
+          <button type="button" role="menuitem" className="ag-menu-item" onClick={copyPath}>
+            <CopyIcon size={14} />
+            Copy path
+          </button>
         </div>
       )}
+      <Toaster toasts={toasts} dismiss={dismiss} />
       {error && (
         <p className="ag-error agk-split-error" role="alert">
           {error}

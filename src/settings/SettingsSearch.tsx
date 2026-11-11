@@ -4,7 +4,7 @@
 // opens a results list under it (anchor width, 6 px below, 30 results at most,
 // "No settings match "…"" when empty). ↑/↓ move, Enter opens, Esc clears, and a
 // clear button replaces the key hint while there is a query. ⌘F focuses it.
-import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CloseIcon, SearchIcon } from "../components/Icons";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
 import { COMMANDS } from "../keybindings/registry";
@@ -48,6 +48,17 @@ export function SettingsSearch({ items, iconFor, onPick }: Props) {
     setBox({ left: r.left, top: r.bottom + 6, width: r.width });
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onOutsidePress = (event: PointerEvent) => {
+      if (!(event.target instanceof Node) || anchor.current?.contains(event.target) || list.current?.contains(event.target)) return;
+      setQuery("");
+      setHighlight(0);
+    };
+    document.addEventListener("pointerdown", onOutsidePress, true);
+    return () => document.removeEventListener("pointerdown", onOutsidePress, true);
+  }, [open]);
+
   const move = (delta: number) => {
     const next = Math.min(Math.max(active + delta, 0), results.length - 1);
     setHighlight(next);
@@ -80,6 +91,10 @@ export function SettingsSearch({ items, iconFor, onPick }: Props) {
             e.preventDefault();
             const r = results[active];
             if (r) pick(r.item);
+          } else if (e.key === "Escape") {
+            e.preventDefault();
+            e.stopPropagation();
+            clear();
           }
         }}
       />

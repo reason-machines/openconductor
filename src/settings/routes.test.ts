@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { USER_PAGES } from "./pages.ts";
-import { CLOUD_ONLY_ROUTES, ORG_PAGES, ORG_ROUTES, TAB_PATHS, keptSearch, resolveSettingsUrl, settingsDeepLink, settingsPath, type RouteContext } from "./routes.ts";
+import { CLOUD_ONLY_ROUTES, ORG_PAGES, ORG_ROUTES, TAB_PATHS, keptSearch, resolveSettingsUrl, settingsDeepLink, settingsPath, settingsSearch, type RouteContext } from "./routes.ts";
 
 const ctx: RouteContext = { repoIds: ["r1", "r2"], lastRepoId: null, userPages: USER_PAGES };
 const at = (url: string, c: RouteContext = ctx) => {
@@ -110,6 +110,15 @@ test("a resolved URL keeps unrelated search parameters only", () => {
   assert.equal(keptSearch("?tab=git&demo=1&repoId=r"), "?demo=1");
   assert.equal(keptSearch("?section=scripts"), "");
   assert.equal(keptSearch(""), "");
+});
+
+test("resolved Agents URLs retain only a supported provider tab", () => {
+  const location = { scope: "user", page: "providers" } as const;
+  assert.equal(settingsSearch(location, "?tab=providers&providerTab=codex&demo=1"), "?demo=1&providerTab=codex");
+  assert.equal(settingsSearch(location, "?providerTab=claude"), "?providerTab=claude");
+  assert.equal(settingsSearch(location, "?providerTab=opencode"), "");
+  assert.equal(settingsSearch({ scope: "user", page: "general" }, "?providerTab=codex&demo=1"), "?demo=1");
+  assert.equal(settingsSearch(null, "?providerTab=codex"), "");
 });
 
 test("Copy link on a settings page copies its deep link (Conductor's TGt)", () => {

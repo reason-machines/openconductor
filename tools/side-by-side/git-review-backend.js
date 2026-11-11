@@ -96,6 +96,13 @@
     transformCallback: () => ++cb,
     async invoke(cmd, args) {
       switch (cmd) {
+        case "reason_cli_ensure_current":
+          return { path: "/fixture/bin/reason", version: "fixture" };
+        case "local_storage_get_entry":
+          return localStorage.getItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`);
+        case "local_storage_set_entry":
+          localStorage.setItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`, args.args.content);
+          return { success: true };
         case "plugin:event|listen":
           return 1;
         case "plugin:event|unlisten":
@@ -116,11 +123,16 @@
           );
         case "app_info":
           return { name: "OpenConductor", version: "0.1.0", platform: "macos" };
+        case "diff_branch_commits":
+          return new URLSearchParams(location.search).has("oc_commit_history") ? [
+            { hash: "abcdef1234567890abcdef1234567890abcdef12", message: "Fix expired session redirect", author: "Ada Demo", date: 1793448000000 },
+            { hash: "1234567890abcdef1234567890abcdef12345678", message: "Add session redirect coverage", author: "Ada Demo", date: 1793361600000 },
+          ] : [];
         case "diff_workspace": {
           const req = args.request ?? {};
           // Conductor's harness shows four lines above the change and two below it (lines 6 to 12 of auth.ts).
           const ctx = req.context_lines ?? 4;
-          const paths = Object.keys(FILES).filter((p) => !req.path || p === req.path);
+          const paths = Object.keys(FILES).filter((p) => (!req.path || p === req.path) && (req.scope?.kind !== "commit" || p === (req.scope.hash.startsWith("abcdef1") ? "src/lib/auth.ts" : "src/lib/auth.test.ts")));
           return { files: paths.map((p) => diffFile(p, ctx)).sort((x, y) => (x.path < y.path ? -1 : 1)) };
         }
         case "fuzzy_filter_files":

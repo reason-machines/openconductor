@@ -15,7 +15,6 @@ import { getSettings } from "../../settings/api";
 import { DEFAULT_SETTINGS } from "../../settings/types";
 import type { Repo, Workspace } from "../../state/types";
 import { configureReason, configureReasonDefault } from "../chat/reasonChat.ts";
-import { defaultChatConfig } from "../chat/chatModel.ts";
 import { CHAT_ID_SEGMENT, NEW_CHAT_TITLE, newChatId } from "../chat/chatTabs.ts";
 import { hideChat, showChat } from "../chat/chatRuntime.ts";
 import type { PromptAttachment } from "../chat/reason.ts";
@@ -25,6 +24,10 @@ import { repoSettingsEffective } from "../../settings/repoSettings.ts";
 import { chatTabWrites, restoredChatTabs, setOpenReviewChats } from "../../state/openChat.ts";
 import { inTauri } from "../../backend.ts";
 import { invoke } from "@tauri-apps/api/core";
+import { initializeLoadoutChoice } from "../chat/chatModelChoice.ts";
+import { loadoutSlots, parseFavorites } from "../../settings/agents/loadout.ts";
+import { listFavorites } from "../../settings/agents/api";
+import { sessionConfig } from "../chat/chatModel.ts";
 
 export interface ReviewTab {
   chatId: string;
@@ -143,12 +146,18 @@ export function useReviewChats(repo: Repo, workspace: Workspace, onOpen: (chatId
    * "+" and ⌘T ("New chat, same files"): a new Untitled chat in this
    * workspace on the default model, shown once created. Returns its chat id.
    */
-  const newChat = useCallback((): string => {
-    const chatId = newChatId(workspace.id, Date.now(), ++seq);
-    configureReasonDefault(chatId, getSettings().then(defaultChatConfig));
-    save([...currentTabs(workspace.id), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
-    onOpen(chatId);
-    return chatId;
+  const newChat = useCallback(async (): Promise<string | undefined> => {
+    try {
+      const [settings, rows] = await Promise.all([getSettings(), listFavorites().catch(() => [])]);
+      const chatId = newChatId(workspace.id, Date.now(), ++seq);
+      const choice = initializeLoadoutChoice(chatId, loadoutSlots(settings, parseFavorites(rows)));
+      configureReasonDefault(chatId, Promise.resolve(sessionConfig(choice.model, choice.effort)));
+      save([...currentTabs(workspace.id), { chatId, title: NEW_CHAT_TITLE, blank: true, modelLabel: "", effort: null }]);
+      onOpen(chatId);
+      return chatId;
+    } catch (e) {
+      setError(`Failed to create chat: ${e instanceof Error ? e.message : String(e)}`);
+    }
   }, [workspace.id, save, onOpen]);
 
   /** ⌘⇧T: put a closed chat tab back at the end of the strip and show it. */

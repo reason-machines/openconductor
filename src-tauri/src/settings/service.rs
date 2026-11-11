@@ -21,7 +21,9 @@ use serde::Deserialize;
 
 use openconductor_db::{app_settings, SqlitePool};
 
-use super::{db_backed, load, save, save_table, table_prefs, validate, Settings, SettingsError};
+use super::{
+    big_terminal_prefs, db_backed, load, save, save_table, table_prefs, validate, Settings, SettingsError,
+};
 use crate::agent::byok::{self, ByokError};
 use crate::agent::{
     AgentKind, LaunchEnv, ProviderConfig, ProviderStatus, SecretStore, SecretString,
@@ -137,6 +139,7 @@ impl SettingsService {
             let rows = Self::table_rows(pool)?;
             db_backed::overlay(&mut settings.appearance, &rows);
             table_prefs::overlay(&mut settings, &rows);
+            big_terminal_prefs::overlay(&mut settings.terminal, &rows);
         }
         Ok(settings)
     }
@@ -150,9 +153,12 @@ impl SettingsService {
         validate(settings)?;
         let current = Self::table_rows(pool)?;
         let prefs = table_prefs::changes(settings, &current).map_err(SettingsError::Invalid)?;
+        let terminal = big_terminal_prefs::changes(&settings.terminal, &current)
+            .map_err(|e| SettingsError::Invalid(e.to_string()))?;
         for (key, value) in db_backed::changes(&settings.appearance, &current)
             .into_iter()
             .chain(prefs.into_iter().map(|(k, v)| (k, Some(v))))
+            .chain(terminal)
         {
             run_db(async {
                 match &value {
@@ -166,13 +172,13 @@ impl SettingsService {
             toml::Table::try_from(settings).map_err(|e| SettingsError::Invalid(e.to_string()))?;
         db_backed::strip(&mut table);
         table_prefs::strip(&mut table);
+        big_terminal_prefs::strip(&mut table);
         Ok(save_table(&self.path, &table)?)
     }
 
-    /// Once, at startup: move table-backed keys (appearance and
-    /// [`table_prefs`]) an older build wrote to the file into the table (a
-    /// row the table already has wins), then drop them from the file.
-    /// Returns the keys moved.
+    /// Move legacy file preferences to the table once at startup.
+    /// Existing active rows win. Drop file keys after successful writes.
+    /// Returns the keys newly copied.
     pub fn move_appearance_to_db(&self) -> Result<Vec<&'static str>, ServiceError> {
         let Some(pool) = &self.db else {
             return Ok(Vec::new());
@@ -186,7 +192,8 @@ impl SettingsService {
             Err(e) => return Err(SettingsError::Io(self.path.clone(), e).into()),
         };
         let in_file = db_backed::in_file(&raw);
-        if in_file.is_empty() && !table_prefs::file_has_any(&raw) {
+        let terminal_in_file = big_terminal_prefs::file_keys(&raw);
+        if in_file.is_empty() && !table_prefs::file_has_any(&raw) && terminal_in_file.is_empty() {
             return Ok(Vec::new());
         }
         let from_file = load(&self.path)?;
@@ -207,9 +214,21 @@ impl SettingsService {
                 moved.push(key);
             }
         }
+        for (key, value) in big_terminal_prefs::rows(&from_file.terminal)
+            .map_err(|e| SettingsError::Invalid(e.to_string()))?
+        {
+            if !terminal_in_file.contains(&key) || current.contains_key(key) {
+                continue;
+            }
+            if let Some(value) = value {
+                run_db(app_settings::set(pool, key, &value)).map_err(db_err)?;
+                moved.push(key);
+            }
+        }
         let mut stripped = raw;
         db_backed::strip(&mut stripped);
         table_prefs::strip(&mut stripped);
+        big_terminal_prefs::strip(&mut stripped);
         save_table(&self.path, &stripped)?;
         Ok(moved)
     }
@@ -224,10 +243,42 @@ impl SettingsService {
     }
 
     /// Replaces the whole file with `settings` and returns what was saved.
-    pub fn update(&self, settings: Settings) -> Result<Settings, ServiceError> {
+    pub fn update(&self, mut settings: Settings) -> Result<Settings, ServiceError> {
         let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
+        let current = self.read()?;
+        if !settings.models.default_initialized && current.models.default_initialized {
+            settings.models.default = current.models.default;
+            settings.models.default_agent = current.models.default_agent;
+            settings.models.default_initialized = true;
+        }
         self.persist(&settings)?;
         Ok(settings)
+    }
+
+    /// Called only after an authentication status reports a successful connection.
+    /// The same lock as all settings writes makes the first connection win once.
+    pub fn initialize_default_runtime(
+        &self,
+        agent: AgentKind,
+    ) -> Result<Option<Settings>, ServiceError> {
+        let _guard = self.lock.lock().unwrap_or_else(|e| e.into_inner());
+        let mut settings = self.read()?;
+        if settings.models.default_initialized {
+            return Ok(None);
+        }
+        settings.models.default = match agent {
+            AgentKind::Reason => settings
+                .reason
+                .model
+                .clone()
+                .unwrap_or_else(|| "openai/gpt-6.1-sol".into()),
+            AgentKind::Claude => "opus-5-1m".into(),
+            AgentKind::Codex => "gpt-5.6-sol".into(),
+        };
+        settings.models.default_agent = Some(agent);
+        settings.models.default_initialized = true;
+        self.persist(&settings)?;
+        Ok(Some(settings))
     }
 
     /// Status of the provider `agent` uses now (its CLI login if unset).
@@ -377,6 +428,90 @@ mod tests {
         s.models.review = Some("opus".into());
         assert_eq!(svc.update(s.clone()).unwrap(), s);
         assert_eq!(svc.get().unwrap(), s);
+    }
+
+    #[test]
+    fn first_connected_runtime_wins_every_connection_order_and_restart() {
+        use AgentKind::{Claude, Codex, Reason};
+        for order in [
+            [Reason, Claude, Codex],
+            [Reason, Codex, Claude],
+            [Claude, Reason, Codex],
+            [Claude, Codex, Reason],
+            [Codex, Reason, Claude],
+            [Codex, Claude, Reason],
+        ] {
+            let (svc, store) = service();
+            let mut before_connection = svc.get().unwrap();
+            before_connection.general.theme = super::super::Theme::Dark;
+            svc.update(before_connection.clone()).unwrap();
+            assert!(!svc.get().unwrap().models.default_initialized);
+            let first = svc.initialize_default_runtime(order[0]).unwrap().unwrap();
+            assert_eq!(first.models.default_agent, Some(order[0]));
+            assert_eq!(
+                first.models.default,
+                match order[0] {
+                    Reason => "openai/gpt-6.1-sol",
+                    Claude => "opus-5-1m",
+                    Codex => "gpt-5.6-sol",
+                }
+            );
+            for agent in order {
+                assert!(svc.initialize_default_runtime(agent).unwrap().is_none());
+            }
+            // A slow pre-connection settings form must not undo the winning connection.
+            svc.update(before_connection).unwrap();
+            let restarted = SettingsService::new(svc.path().to_path_buf(), store);
+            assert_eq!(restarted.get().unwrap().models, first.models);
+            assert!(restarted
+                .initialize_default_runtime(order[2])
+                .unwrap()
+                .is_none());
+        }
+    }
+
+    #[test]
+    fn first_connection_preserves_persisted_legacy_models_including_opus() {
+        for model in ["opus", "sonnet-5-5-1m", "gpt-5.6-sol"] {
+            let (svc, _) = service();
+            fs::create_dir_all(svc.path().parent().unwrap()).unwrap();
+            fs::write(svc.path(), format!("[models]\ndefault = \"{model}\"\n")).unwrap();
+            assert!(svc.get().unwrap().models.default_initialized);
+            assert!(svc
+                .initialize_default_runtime(AgentKind::Reason)
+                .unwrap()
+                .is_none());
+            assert_eq!(svc.get().unwrap().models.default, model);
+            assert_eq!(svc.get().unwrap().models.default_agent, None);
+        }
+    }
+
+    #[test]
+    fn reason_first_uses_the_users_configured_reason_model() {
+        let (svc, _) = service();
+        let mut settings = svc.get().unwrap();
+        settings.reason.model = Some("byok:openai:gpt-6.1-terra".into());
+        svc.update(settings).unwrap();
+        let selected = svc
+            .initialize_default_runtime(AgentKind::Reason)
+            .unwrap()
+            .unwrap();
+        assert_eq!(selected.models.default, "byok:openai:gpt-6.1-terra");
+    }
+
+    #[test]
+    fn explicit_loadout_selection_survives_later_connections() {
+        let (svc, _) = service();
+        let mut settings = svc.get().unwrap();
+        settings.models.default = "sonnet-5-5-1m".into();
+        settings.models.default_agent = Some(AgentKind::Claude);
+        settings.models.default_initialized = true;
+        svc.update(settings.clone()).unwrap();
+        assert!(svc
+            .initialize_default_runtime(AgentKind::Reason)
+            .unwrap()
+            .is_none());
+        assert_eq!(svc.get().unwrap().models, settings.models);
     }
 
     #[test]

@@ -121,6 +121,8 @@ pub async fn codex_open_chat<R: Runtime>(
     // the bundled copy (waits for its download), else the CLI on the login
     // shell's PATH (agent_launch.rs).
     let mut launch = settings.codex_launch(&cwd)?;
+    // Effort is selected per turn, including an explicit model with no effort.
+    launch.config.retain(|(key, _)| key != "model_reasoning_effort");
     let launch_app = app.clone();
     launch.executable = tauri::async_runtime::spawn_blocking(move || {
         crate::agent_launch::launch(&launch_app, Agent::Codex)
@@ -154,8 +156,16 @@ pub async fn codex_open_chat<R: Runtime>(
     Ok(())
 }
 
+fn prompt_effort(
+    model: Option<&str>,
+    effort: Option<String>,
+    default_effort: impl FnOnce() -> Option<String>,
+) -> Option<String> {
+    if model.is_some() { effort } else { effort.or_else(default_effort) }
+}
+
 /// Runs one prompt (after any still queued); events arrive meanwhile.
-/// Without `effort`, the Codex thinking level from settings is used.
+/// Without a picked model or effort, the Codex thinking level from settings is used.
 #[tauri::command]
 pub async fn codex_prompt(
     state: State<'_, CodexChats>,
@@ -166,7 +176,7 @@ pub async fn codex_prompt(
     effort: Option<String>,
 ) -> Result<TurnEnd, String> {
     let runner = state.get(&chat_id)?;
-    let effort = effort.or_else(|| {
+    let effort = prompt_effort(model.as_deref(), effort, || {
         let level = settings.get().ok()?.models.codex.default_thinking_level;
         serde_json::to_value(level)
             .ok()?
@@ -226,6 +236,14 @@ pub async fn codex_close_chat(state: State<'_, CodexChats>, chat_id: String) -> 
 mod tests {
     use super::*;
     use crate::agent::codex_wire::Outcome;
+
+    #[test]
+    fn picked_model_effort_does_not_inherit_app_defaults() {
+        assert_eq!(prompt_effort(Some("dynamic-model"), None, || panic!("explicit model must not read default effort")), None);
+        assert_eq!(prompt_effort(Some("dynamic-model"), Some("high".into()), || panic!("explicit effort must not read defaults")), Some("high".into()));
+        assert_eq!(prompt_effort(None, Some("low".into()), || panic!("explicit effort must not read defaults")), Some("low".into()));
+        assert_eq!(prompt_effort(None, None, || Some("medium".into())), Some("medium".into()));
+    }
 
     #[test]
     fn events_carry_the_chat_id_beside_the_payload() {

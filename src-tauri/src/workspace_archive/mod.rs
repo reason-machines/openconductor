@@ -506,7 +506,7 @@ pub fn unique_branch_name(repo_root: &Path, branch: &str) -> Result<String, Stri
                 .map(|out| out.lines().any(|r| r.splitn(4, '/').nth(3) == Some(b)))
                 .unwrap_or(false)
     };
-    let mut name = next_branch_name(branch);
+    let mut name = branch.to_string();
     for _ in 0..1000 {
         if !taken(&name) {
             return Ok(name);
@@ -588,9 +588,26 @@ pub fn restore(
         path.as_os_str(),
         branch.as_ref(),
     ];
-    git(&t.repo_root, add)?;
-
     let mut notices = Vec::new();
+    if let Err(e) = git(&t.repo_root, add) {
+        let want = std::fs::canonicalize(path).unwrap_or_else(|_| path.to_path_buf());
+        let created = crate::workspace::git::list_worktrees(&t.repo_root).is_ok_and(|list| {
+            list.iter().any(|w| {
+                w.path == *path || std::fs::canonicalize(&w.path).is_ok_and(|p| p == want)
+            })
+        });
+        if !created {
+            return Err(e.into());
+        }
+        notices.push(Notice::error(crate::workspace::init_log::WORKTREE_PARTIAL_FAILURE));
+    }
+    let include_source = crate::settings::effective::resolve(&t.repo_root, Some(path)).map(|settings| {
+        crate::workspace::files_to_copy::resolve_source(
+            &t.repo_root,
+            settings.file_include_globs.as_ref().map(|globs| globs.value.as_str()),
+        )
+    });
+
     let mut restored_changes = false;
     if archive_commit.is_some() {
         match checkpoint::restore(path, &checkpoint_id(&t.local_id)) {
@@ -604,27 +621,29 @@ pub fn restore(
     // here they come after the checkpoint restore, which cleans untracked
     // files, and `copy_files` never overwrites what the checkpoint put back.
     // A failure is a toast; the workspace is restored anyway.
-    let source = crate::workspace::files_to_copy::resolve_source(&t.repo_root, None);
-    if let Err(e) = crate::workspace::files_to_copy::files_to_copy(&t.repo_root, &source)
-        .and_then(|files| crate::workspace::files_to_copy::copy_files(&t.repo_root, path, &files))
-    {
+    if let Err(e) = include_source.and_then(|source| {
+        crate::workspace::files_to_copy::files_to_copy(&t.repo_root, &source)
+            .and_then(|files| crate::workspace::files_to_copy::copy_files(&t.repo_root, path, &files))
+            .map_err(|e| e.to_string())
+    }) {
         notices.push(Notice::error(format!("Couldn't copy gitignored files: {e}")));
     }
-    if let Some(root) = root_dir {
-        let saved = root
-            .join(ARCHIVED_CONTEXTS_DIR)
+    let saved_context = root_dir.map(|root| {
+        root.join(ARCHIVED_CONTEXTS_DIR)
             .join(&t.repo_name)
-            .join(&t.directory_name);
+            .join(&t.directory_name)
+    });
+    if let Some(saved) = saved_context.filter(|saved| saved.exists()) {
         let dest = path.join(CONTEXT_FOLDER);
         // The archived copy wins over one the checkpoint brought back
         // (Conductor git-excludes `.context`, so its checkpoints never hold
         // it). Conductor only logs a failure here.
-        if saved.exists() {
-            if dest.exists() {
-                let _ = std::fs::remove_dir_all(&dest);
-            }
-            let _ = std::fs::rename(&saved, &dest);
+        if dest.exists() {
+            let _ = std::fs::remove_dir_all(&dest);
         }
+        let _ = std::fs::rename(&saved, &dest);
+    } else {
+        create_context_folder(path)?;
     }
     Ok(Restored {
         branch: branch.to_string(),
@@ -632,6 +651,50 @@ pub fn restore(
         restored_changes,
         notices,
     })
+}
+
+fn create_context_folder(workspace: &Path) -> Result<(), String> {
+    use std::io::Write;
+
+    let exclude = PathBuf::from(git(workspace, ["rev-parse", "--git-path", "info/exclude"])?);
+    let exclude = if exclude.is_absolute() {
+        exclude
+    } else {
+        workspace.join(exclude)
+    };
+    let contents = match std::fs::read_to_string(&exclude) {
+        Ok(contents) => contents,
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => String::new(),
+        Err(e) => return Err(format!("{}: {e}", exclude.display())),
+    };
+    if !contents.lines().any(|line| line == "/.context/") {
+        if let Some(parent) = exclude.parent() {
+            std::fs::create_dir_all(parent).map_err(|e| format!("{}: {e}", parent.display()))?;
+        }
+        let mut file = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(&exclude)
+            .map_err(|e| format!("{}: {e}", exclude.display()))?;
+        let separator = if contents.is_empty() || contents.ends_with('\n') {
+            ""
+        } else {
+            "\n"
+        };
+        writeln!(file, "{separator}/.context/").map_err(|e| format!("{}: {e}", exclude.display()))?;
+    }
+    let context = workspace.join(CONTEXT_FOLDER);
+    std::fs::create_dir_all(&context).map_err(|e| format!("{}: {e}", context.display()))?;
+    let todos = context.join("todos.md");
+    match std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&todos)
+    {
+        Ok(_) => Ok(()),
+        Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => Ok(()),
+        Err(e) => Err(format!("{}: {e}", todos.display())),
+    }
 }
 
 /// `git worktree prune` after a workspace folder was deleted.

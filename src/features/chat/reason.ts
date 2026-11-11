@@ -14,7 +14,8 @@
 //   message.
 // Pure: no Tauri, no React, so `reason.test.ts` covers it.
 
-import type { Block, ChatEvent, ChatMessage, TurnStatus } from "./types.ts";
+import type { Block, ChatEvent, ChatMessage, TokenUsage, TurnStatus } from "./types.ts";
+import type { SentUserContentV1 } from "./userContent.ts";
 import type { PermissionOption, PermissionPrompt, Question } from "./chatRuntime.ts";
 
 export interface ReasonPath {
@@ -52,6 +53,7 @@ export type ReasonPayload = { chatId: string } & (
   | { type: "error"; code: string | null; status: number | null; message: string }
   | ReasonTool
   | { type: "turnEnded"; end: ReasonTurnEnd }
+  | { type: "usage"; usage: TokenUsage }
   | PermissionRequestPayload
   | { type: "permissionResolved"; requestId: string }
   | { type: "sessionModel"; model: string; effort: string | null }
@@ -125,15 +127,23 @@ export const attachmentLine = (name: string) => `Attached: ${name}`;
  * checkpoints (letters, digits, `.`, `_`, `-`); the default is only unique
  * within one app run. Attachments show by name.
  */
-export function startTurn(state: ReasonChatState, text: string, now = new Date(), turnId = `${state.chatId}:t${state.next}`, attachments: PromptAttachment[] = []): Step {
+export function startTurn(state: ReasonChatState, text: string, now = new Date(), turnId = `${state.chatId}:t${state.next}`, attachments: PromptAttachment[] = [], userContent?: SentUserContentV1): Step {
   const blocks: Block[] = [{ type: "text", text }, ...attachments.map((a): Block => ({ type: "text", text: attachmentLine(a.name) }))];
-  const user = message(state, turnId, `${turnId}:user`, "user", blocks, now);
+  const user = { ...message(state, turnId, `${turnId}:user`, "user", blocks, now), ...(userContent ? { userContent } : {}) };
   return {
     state: { ...state, open: [...state.open, { turnId, user, assistant: null }], next: state.next + 1 },
     events: [
       { type: "upsert", message: user },
       { type: "turn_status", sessionId: state.chatId, turnId, status: "running", at: now.toISOString() },
     ],
+  };
+}
+
+/** Reopens a failed, undelivered user message without adding or replacing it. */
+export function restartUnsentTurn(state: ReasonChatState, user: ChatMessage, now = new Date()): Step {
+  return {
+    state: { ...state, open: [...state.open, { turnId: user.turnId, user, assistant: null }] },
+    events: [{ type: "turn_status", sessionId: state.chatId, turnId: user.turnId, status: "running", at: now.toISOString() }],
   };
 }
 
@@ -177,10 +187,15 @@ function closeOldest(state: ReasonChatState, end: ReasonTurnEnd, now: Date): Ste
   return oldest ? closeTurn(state, oldest.turnId, end, now) : { state, events: [] };
 }
 
+const hasReply = (blocks: Block[]): boolean => blocks.some((b) => b.type === "tool_use" || ((b.type === "text" || b.type === "thinking") && b.text.trim().length > 0));
+
 function closeTurn(state: ReasonChatState, turnId: string, end: ReasonTurnEnd, now: Date): Step {
   const turn = state.open.find((t) => t.turnId === turnId);
   if (!turn) return { state, events: [] };
-  const s = turnStatus(end);
+  const hasContent = turn.assistant && hasReply(turn.assistant.blocks);
+  const s = turnStatus(end.outcome === "completed" && !hasContent
+    ? { outcome: "failed", message: "Reason returned no reply. Retry to continue this chat." }
+    : end);
   const at = now.toISOString();
   const events: ChatEvent[] = [];
   // A stopped turn's prompt is marked cancelled, as Conductor's `session_messages.cancelled_at`.
@@ -238,6 +253,14 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
       return { state, events: [], sessionId: p.sessionId };
     case "turnEnded":
       return closeOldest(state, p.end, now);
+    case "usage": {
+      const turn = state.open[0];
+      if (!turn) return { state, events: [] };
+      const prev = turn.assistant ?? message(state, turn.turnId, `${turn.turnId}:assistant`, "assistant", [], now);
+      const assistant = { ...prev, usage: p.usage };
+      const open = [{ ...turn, assistant }, ...state.open.slice(1)];
+      return { state: { ...state, open }, events: hasReply(assistant.blocks) ? [{ type: "upsert", message: assistant }] : [] };
+    }
     case "notice": {
       const turn = state.open[state.open.length - 1];
       const id = `${state.chatId}:n${state.next}`;
@@ -253,12 +276,13 @@ export function applyReasonPayload(state: ReasonChatState, p: ReasonPayload, now
     case "text":
     case "thought":
     case "tool": {
+      if ((p.type === "text" || p.type === "thought") && p.text.length === 0) return { state, events: [] };
       const turn = state.open[state.open.length - 1];
       if (!turn) return { state, events: [] };
       const prev = turn.assistant ?? message(state, turn.turnId, `${turn.turnId}:assistant`, "assistant", [], now);
       const assistant = { ...prev, blocks: withContent(prev.blocks, p) };
       const open = [...state.open.slice(0, -1), { ...turn, assistant }];
-      return { state: { ...state, open }, events: [{ type: "upsert", message: assistant }] };
+      return { state: { ...state, open }, events: hasReply(assistant.blocks) ? [{ type: "upsert", message: assistant }] : [] };
     }
     // The error also ends the turn as failed with its text; the app keeps its
     // own transcript, so replays and titles are not shown here.

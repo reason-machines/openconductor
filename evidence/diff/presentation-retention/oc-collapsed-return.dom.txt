@@ -1,0 +1,311 @@
+<!DOCTYPE html><html lang="en" data-theme="dark" data-color-palette="neutral" style="--diffs-font-family: ui-monospace, &quot;SF Mono&quot;, Menlo, monospace; --file-code-font-variant-ligatures: normal; --diffs-font-features: normal;"><head><script>// Invented data for OpenConductor sidebar captures, mirroring the populated
+// scenario of tools/screens/seed-data.js (repos tide-web, tide-api, dotfiles; six
+// city workspaces) so our screens line up with evidence/screens/sidebar--*.png.
+// Written into OpenConductor's localStorage app state before the app boots.
+// Fields our current model does not know (unread, prTitle, updatedAt) are ignored
+// by older builds, so the same seed captures main and a branch. An unread
+// workspace also carries its main chat in `unreadChats` (src/state/chatUnread.ts),
+// as the reference's unread rows do (Go to next unread is listed while one is).
+(function () {
+  const now = Date.now();
+  const ago = (m) => now - m * 60000;
+  // [id, repo, directory (city), branch, minutes ago, unread, pr title, diff]
+  const ws = [
+    ["ws-lisbon", "repo-tide-web", "lisbon", "ada/fix-login-redirect", 12, false, null, [15, 1]],
+    ["ws-osaka", "repo-tide-web", "osaka", "ada/dark-mode-tokens", 3, false, null, [0, 0]],
+    ["ws-quito", "repo-tide-web", "quito", "ada/settings-search", 95, true, "Add search to settings", [0, 0]],
+    ["ws-tallinn", "repo-tide-api", "tallinn", "ada/rate-limit-headers", 6, true, null, [0, 0]],
+    ["ws-accra", "repo-tide-api", "accra", "ada/pagination-cursor", 1440, false, "Cursor pagination for /events", [0, 0]],
+    ["ws-bergen", "repo-dotfiles", "bergen", "ada/zsh-prompt", 300, false, null, [0, 0]],
+  ];
+  const repo = (id, name, remote) => ({
+    id, name, path: `/Users/demo/code/${name}`, remote, defaultBranch: "main", collapsed: true,
+    workspaces: ws.filter((w) => w[1] === id).map(([wid, , dir, branch, m, unread, prTitle, [added, removed]]) => ({
+      id: wid, name: dir, branch, status: "idle", diff: { added, removed }, createdAt: ago(m + 60), updatedAt: ago(m), unread, prTitle: prTitle ?? undefined,
+      unreadChats: unread ? [{ id: wid, at: ago(m) }] : undefined,
+    })),
+  });
+  const state = {
+    repos: [
+      repo("repo-tide-web", "tide-web", "git@github.com:tide-labs/tide-web.git"),
+      repo("repo-tide-api", "tide-api", "git@github.com:tide-labs/tide-api.git"),
+      repo("repo-dotfiles", "dotfiles", "git@github.com:ada-demo/dotfiles.git"),
+    ],
+    selection: { kind: "home" },
+  };
+  const scenario = new URLSearchParams(location.search).get("oc_scenario");
+  // The references are signed in, so Conductor's first-run onboarding is done.
+  localStorage.setItem("openconductor.firstRunOnboardingStep", "999");
+  if (scenario === "populated") localStorage.setItem("openconductor.shell.v1", JSON.stringify(state));
+  else if (scenario === "empty") localStorage.removeItem("openconductor.shell.v1");
+})();
+</script><script>// Fake Tauri backend for tools/side-by-side/git-review.mjs, injected after
+// tools/sidebar-screens/seed.js. It opens the seeded lisbon workspace and
+// serves the two files Conductor's harness changes there
+// (tools/screens/seed-data.js: AUTH_BEFORE/AFTER, TEST_BEFORE/AFTER) as a real
+// diff: one change block per file, `context_lines` of context, whole files
+// when the entire-file view asks. Shell commands answer empty with exit 0;
+// anything else fails, like the other fakes.
+(function () {
+  const raw = localStorage.getItem("openconductor.shell.v1");
+  const shell = raw ? JSON.parse(raw) : { repos: [] };
+  for (const r of shell.repos) for (const w of r.workspaces) w.path = `${r.path}/${w.name}`;
+  shell.selection = { kind: "workspace", repoId: "repo-tide-web", workspaceId: "ws-lisbon" };
+  localStorage.setItem("openconductor.shell.v1", JSON.stringify(shell));
+  localStorage.setItem("openconductor.shell.prefs.v1", JSON.stringify({ selection: shell.selection, collapsed: [] }));
+  const created = new Date(Date.now() - 3600_000).toISOString();
+  const AUTH_BEFORE = [
+    'import { getSession } from "./session";',
+    "",
+    "export type Session = { userId: string; expiresAt: number };",
+    "",
+    "export async function currentSession(): Promise<Session | null> {",
+    "  return (await getSession()) ?? null;",
+    "}",
+    "",
+    "export function redirectTo(session) {",
+    '  if (session) return "/dashboard";',
+    '  return "/login";',
+    "}",
+  ];
+  const AUTH_AFTER = AUTH_BEFORE.map((l) => (l === '  if (session) return "/dashboard";' ? '  if (session && session.expiresAt > Date.now()) return "/dashboard";' : l));
+  const TEST_BEFORE = [
+    'import { describe, expect, it } from "vitest";',
+    'import { redirectTo } from "./auth";',
+    "",
+    'describe("redirectTo", () => {',
+    '  it("sends signed-out users to /login", () => {',
+    '    expect(redirectTo(null)).toBe("/login");',
+    "  });",
+    "});",
+  ];
+  const TEST_AFTER = [
+    ...TEST_BEFORE.slice(0, 7),
+    "",
+    '  it("sends expired sessions to /login", () => {',
+    "    const expired = { expiresAt: Date.now() - 1000 };",
+    '    expect(redirectTo(expired)).toBe("/login");',
+    "  });",
+    "",
+    '  it("sends live sessions to the dashboard", () => {',
+    "    const live = { expiresAt: Date.now() + 60_000 };",
+    '    expect(redirectTo(live)).toBe("/dashboard");',
+    "  });",
+    "",
+    '  it("treats a missing expiry as expired", () => {',
+    '    expect(redirectTo({})).toBe("/login");',
+    "  });",
+    "});",
+  ];
+  const FILES = { "src/lib/auth.ts": [AUTH_BEFORE, AUTH_AFTER], "src/lib/auth.test.ts": [TEST_BEFORE, TEST_AFTER] };
+  const TREE = [".gitignore", "README.md", "package.json", "tsconfig.json", "src/main.tsx", "src/App.tsx", "src/lib/auth.ts", "src/lib/auth.test.ts", "src/lib/session.ts", "src/routes/login.tsx", "src/routes/dashboard.tsx"];
+
+  /** One change block (common prefix and suffix around it) as a hunk with `ctx` lines of context. */
+  function diffFile(path, ctx) {
+    const [a, b] = FILES[path];
+    let p = 0;
+    while (p < a.length && p < b.length && a[p] === b[p]) p++;
+    let s = 0;
+    while (s < a.length - p && s < b.length - p && a[a.length - 1 - s] === b[b.length - 1 - s]) s++;
+    const lo = Math.max(0, p - ctx);
+    const hiA = Math.min(a.length, a.length - s + ctx);
+    const hiB = Math.min(b.length, b.length - s + ctx);
+    const lines = [];
+    for (let i = lo; i < p; i++) lines.push({ kind: "context", old_line: i + 1, new_line: i + 1, text: a[i] });
+    for (let i = p; i < a.length - s; i++) lines.push({ kind: "deletion", old_line: i + 1, new_line: null, text: a[i] });
+    for (let i = p; i < b.length - s; i++) lines.push({ kind: "addition", old_line: null, new_line: i + 1, text: b[i] });
+    for (let i = 0; i < hiA - (a.length - s); i++) lines.push({ kind: "context", old_line: a.length - s + i + 1, new_line: b.length - s + i + 1, text: a[a.length - s + i] });
+    return {
+      path,
+      old_path: null,
+      status: "modified",
+      binary: false,
+      additions: b.length - s - p,
+      deletions: a.length - s - p,
+      hunks: [{ old_start: lo + 1, old_lines: hiA - lo, new_start: lo + 1, new_lines: hiB - lo, section: "", lines }],
+    };
+  }
+
+  const settings = { general: { theme: "dark" }, appearance: { zoom_level_v2: 1, low_contrast_dark_mode: false, terminal_font_size: 12 }, git: {}, models: { default: "opus" }, providers: {} };
+  const ok = { stdout: "", stderr: "", exitCode: 0, signal: null, cancelled: false, truncated: false };
+  let cb = 0;
+  window.isTauri = true;
+  window.__fake = { unmocked: [] };
+  window.__TAURI_EVENT_PLUGIN_INTERNALS__ = { unregisterListener() {} };
+  window.__TAURI_INTERNALS__ = {
+    metadata: { currentWindow: { label: "main" }, currentWebview: { label: "main" } },
+    transformCallback: () => ++cb,
+    async invoke(cmd, args) {
+      switch (cmd) {
+        case "local_storage_get_entry":
+          return localStorage.getItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`);
+        case "local_storage_set_entry":
+          localStorage.setItem(`mock-subsystem:${args.args.subsystem}:${args.args.id}`, args.args.content);
+          return { success: true };
+        case "plugin:event|listen":
+          return 1;
+        case "plugin:event|unlisten":
+          return;
+        case "execute_shell_command":
+        case "execute_shell_command_cancellable":
+          return ok;
+        case "get_settings":
+          return structuredClone(settings);
+        // Signed in and past first-run onboarding, like the reference's populated scenario.
+        case "db_first_run_onboarding_step":
+          return "999";
+        case "db_list_repos":
+          return shell.repos.map((r, i) => ({ id: r.id, name: r.name, rootPath: r.path, remoteUrl: r.remote ?? null, defaultBranch: r.defaultBranch, displayOrder: i, hidden: false, icon: null, createdAt: created }));
+        case "db_list_workspaces":
+          return shell.repos.flatMap((r) =>
+            r.workspaces.map((w) => ({ id: w.id, repositoryId: r.id, directoryName: w.name, workspaceName: w.name, branch: w.branch, placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: w.path, pinnedAt: null, unread: !!w.unread, prTitle: w.prTitle ?? null, createdAt: created })),
+          );
+        case "app_info":
+          return { name: "OpenConductor", version: "0.1.0", platform: "macos" };
+        case "diff_workspace": {
+          const req = args.request ?? {};
+          // Conductor's harness shows four lines above the change and two below it (lines 6 to 12 of auth.ts).
+          const ctx = req.context_lines ?? 4;
+          const paths = Object.keys(FILES).filter((p) => !req.path || p === req.path);
+          return { files: paths.map((p) => diffFile(p, ctx)).sort((x, y) => (x.path < y.path ? -1 : 1)) };
+        }
+        case "fuzzy_filter_files":
+          return TREE.map((p) => ({ file: { name: p.split("/").pop(), path: p, is_directory: false }, relative_path: p, score: 0, match_indices: [] }));
+        case "scripts_config":
+          return { setup: null, setupLayer: null, archive: null, runMode: "concurrent", autoRunAfterSetup: false, run: [], managedKeys: [], warnings: [] };
+        case "setup_script_status":
+          return { state: "idle", log: null, last: null };
+        case "run_script_status":
+          return { runs: [], history: [] };
+        case "spotlight_testing_get":
+          return { enabled: false, layer: null, managed: false };
+        case "spotlight_status":
+          return { active: false, workspaceId: null };
+        case "open_in_apps":
+          return [{ id: "finder", name: "Finder", kind: "finder", installed: true }];
+        // No review comments and no PR, like the reference's lisbon (gh is signed out there).
+        case "diff_comments_list":
+          return [];
+        case "diff_comments_sync_github":
+          return { pr_number: null, skipped: "no pull request", review_comments: 0, general_comments: null, changed: 0 };
+        case "pr_lookup":
+          return (args.requests ?? []).map(() => ({ lookup: { kind: "none" }, derivedStatus: "in-progress" }));
+        case "pr_git_state":
+          return { hasUncommitted: true, hasChanges: true, hasRemote: true, canCreatePr: true, remote: "origin", upstream: { branchExists: false, diverged: false, ahead: 0, behind: 0 }, targetBehind: 0, detached: false };
+        case "sidebar_workspace_changes":
+          return [];
+        // The Create from picker. gh is signed out in the reference harness (`gh auth status` fails),
+        // so PRs and GitHub issues are "set up GitHub"; branches are main plus each workspace's branch.
+        case "pr_list_open":
+        case "gh_issue_list_open":
+          throw "no_github: gh auth login required";
+        case "ensure_repository": {
+          const repo = shell.repos.find((r) => r.id === args.repositoryId || r.path === args.path);
+          return { id: repo.id, name: repo.name, root: repo.path, defaultBranch: repo.defaultBranch };
+        }
+        // Conductor's create composer opens with no repository chosen, so its Branches tab is
+        // empty ("No branches found"). Ours opens on tide-web; giving it only its default branch,
+        // which the list leaves out, shows the same empty state.
+        case "list_branches":
+          return [{ name: "main", remote: null, commit: "", isHead: true, committedAt: 0 }];
+        default:
+          window.__fake.unmocked.push(cmd);
+          throw new Error(`fake backend: ${cmd} is not mocked`);
+      }
+    },
+  };
+})();
+</script>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenConductor</title>
+    <script type="module" crossorigin="" src="/assets/index-DQM7Ixso.js"></script>
+    <link rel="stylesheet" crossorigin="" href="/assets/index-fMPLLvgl.css">
+  <style type="text/css" data-rfd-always=":r0:"> [data-rfd-drag-handle-context-id=":r0:"] { 
+          -webkit-touch-callout: none;
+          -webkit-tap-highlight-color: rgba(0,0,0,0);
+          touch-action: manipulation;
+         } [data-rfd-droppable-context-id=":r0:"] { overflow-anchor: none; } </style><style type="text/css" data-rfd-dynamic=":r0:"> [data-rfd-drag-handle-context-id=":r0:"] { 
+      cursor: -webkit-grab;
+      cursor: grab;
+     }  </style><style data-tiptap-style="">.ProseMirror {
+  position: relative;
+}
+
+.ProseMirror {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  -webkit-font-variant-ligatures: none;
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0; /* the above doesn't seem to work in Edge */
+}
+
+.ProseMirror [contenteditable="false"] {
+  white-space: normal;
+}
+
+.ProseMirror [contenteditable="false"] [contenteditable="true"] {
+  white-space: pre-wrap;
+}
+
+.ProseMirror pre {
+  white-space: pre-wrap;
+}
+
+img.ProseMirror-separator {
+  display: inline !important;
+  border: none !important;
+  margin: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.ProseMirror-gapcursor {
+  display: none;
+  pointer-events: none;
+  position: absolute;
+  margin: 0;
+}
+
+.ProseMirror-gapcursor:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -2px;
+  width: 20px;
+  border-top: 1px solid black;
+  animation: ProseMirror-cursor-blink 1.1s steps(2, start) infinite;
+}
+
+@keyframes ProseMirror-cursor-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.ProseMirror-hideselection *::selection {
+  background: transparent;
+}
+
+.ProseMirror-hideselection *::-moz-selection {
+  background: transparent;
+}
+
+.ProseMirror-hideselection * {
+  caret-color: transparent;
+}
+
+.ProseMirror-focused .ProseMirror-gapcursor {
+  display: block;
+}</style><link rel="modulepreload" as="script" crossorigin="" href="/assets/html-BlS82ilI.js"><link rel="modulepreload" as="script" crossorigin="" href="/assets/javascript-wDzz0qaB.js"><link rel="modulepreload" as="script" crossorigin="" href="/assets/css-Z72CF80r.js"><link rel="modulepreload" as="script" crossorigin="" href="/assets/shiki-24tgXn3F.js"><link rel="modulepreload" as="script" crossorigin="" href="/assets/stream-tokenizer-BpvYBWh9.js"><link rel="modulepreload" as="script" crossorigin="" href="/assets/core-CdbexxEs.js"></head>
+  <body>
+    <div id="root"><div class="app " aria-busy="false" data-startup="error" style="--sidebar-width: 256px;"><button type="button" class="sidebar-resizer" tabindex="-1" role="separator" aria-orientation="vertical" aria-label="Resize sidebar" aria-valuemin="192" aria-valuemax="480" aria-valuenow="256"></button><aside class="sidebar" aria-label="Repositories and workspaces"><div class="sb-header" data-tauri-drag-region="deep"><div class="sb-topbar"><button type="button" class="sb-toggle" aria-label="Toggle left sidebar" title="Toggle left sidebar ⌘B"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"></rect><path d="M9 3v18"></path></svg></button></div><div class="sb-history"><span hidden=""></span><button type="button" class="sb-icon-btn" aria-label="Go back" title="Go back ⌘["><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg></button><button type="button" class="sb-icon-btn" aria-label="Go forward" title="Go forward ⌘]" disabled=""><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button></div><div class="sb-primary"><div class="sb-account"><button type="button" class="sb-row sb-computer" aria-label="Account menu" aria-haspopup="menu" aria-expanded="false"><span class="sb-row-icon"><span class="sb-avatar" aria-hidden="true"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span></span><span class="sb-computer-name">My Mac</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div><button type="button" class="sb-row" title="Home ⌘⇧H"><span class="sb-row-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></span><span class="sb-row-label">Home</span><kbd class="sb-row-hint">⌘⇧H</kbd></button><button type="button" class="sb-row"><span class="sb-row-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span><span class="sb-row-label">Create</span><kbd class="sb-row-hint">⌘N</kbd></button><button type="button" class="sb-row"><span class="sb-row-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg></span><span class="sb-row-label">Search</span><kbd class="sb-row-hint">⌘K</kbd></button></div></div><nav class="repo-list"><section class="sb-nav-sections" aria-label="Sections" data-navigation-sections-section=""></section><section class="sb-my-workspaces" aria-label="My workspaces" data-workspace-unsectioned-drop=""><div class="sb-section-header"><button type="button" class="sb-section-toggle" aria-expanded="true"><span class="sb-section-label">My workspaces</span><span class="sb-section-spacer" aria-hidden="true"></span><span class="sb-section-chevron"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></button><div class="sb-menu-anchor sb-section-menu"><button type="button" class="sb-menu-trigger" aria-label="My workspaces actions" aria-haspopup="menu" aria-expanded="false"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button></div><span class="sb-add-menu-anchor" aria-hidden="true"></span></div><div class="sb-repo-groups" data-rfd-droppable-id="repo-list" data-rfd-droppable-context-id=":r0:"><div data-rfd-draggable-context-id=":r0:" data-rfd-draggable-id="repo-tide-web" class="sb-repo-group"><div class="sb-repo"><div tabindex="0" role="button" aria-describedby="rfd-hidden-text-:r0:-hidden-text-:r1:" data-rfd-drag-handle-draggable-id="repo-tide-web" data-rfd-drag-handle-context-id=":r0:" draggable="false" class="sb-repo-header" aria-expanded="true"><div class="sb-repo-main"><span class="sb-repo-lead"><span class="sb-repo-initial" aria-hidden="true">T</span><span class="sb-repo-chevron" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></span></span><span class="sb-repo-name">tide-web</span></div><span class="sb-repo-spacer" aria-hidden="true"></span><button type="button" class="sb-repo-add" title="Create workspace" aria-label="Create workspace in tide-web"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button></div><div class="sb-menu-anchor sb-repo-menu"><button type="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" id="base-ui-:r7:" aria-label="tide-web actions" class="sb-menu-trigger"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button></div></div><div class="sb-ws-list"><div class="sb-ws-row"><button type="button" class="sb-ws" data-testid="left-sidebar-workspace-item" data-active="true" aria-current="page" title="lisbon · ada/fix-login-redirect · Ready"><span class="sb-ws-lead" data-testid="workspace-leading-visual"><span class="sb-ws-status" data-testid="workspace-status-icon" data-status="branch" data-color="muted" role="img" aria-label="Ready"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6a9 9 0 0 0-9 9V3"></path><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle></svg></span><span class="sb-ws-hint" aria-label="Switch with Command-1" aria-hidden="true" data-state="hidden">1</span></span><span class="sb-ws-name">lisbon</span></button><div class="sb-ws-archive"><button type="button" aria-label="Archive workspace" data-testid="workspace-archive-button"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg></button></div></div><div class="sb-ws-row"><button type="button" class="sb-ws" data-testid="left-sidebar-workspace-item" title="osaka · ada/dark-mode-tokens · Ready"><span class="sb-ws-lead" data-testid="workspace-leading-visual"><span class="sb-ws-status" data-testid="workspace-status-icon" data-status="branch" data-color="muted" role="img" aria-label="Ready"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6a9 9 0 0 0-9 9V3"></path><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle></svg></span><span class="sb-ws-hint" aria-label="Switch with Command-2" aria-hidden="true" data-state="hidden">2</span></span><span class="sb-ws-name">osaka</span></button><div class="sb-ws-archive"><button type="button" aria-label="Archive workspace" data-testid="workspace-archive-button"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg></button></div></div><div class="sb-ws-row"><button type="button" class="sb-ws" data-testid="left-sidebar-workspace-item" data-unread="true" title="quito · ada/settings-search · Ready"><span class="sb-ws-lead" data-testid="workspace-leading-visual"><span class="sb-ws-status" data-testid="workspace-status-icon" data-status="branch" data-color="muted" role="img" aria-label="Ready"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6a9 9 0 0 0-9 9V3"></path><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle></svg></span><span class="sb-ws-hint" aria-label="Switch with Command-3" aria-hidden="true" data-state="hidden">3</span></span><span class="sb-ws-name">quito</span></button><div class="sb-ws-archive"><button type="button" aria-label="Archive workspace" data-testid="workspace-archive-button"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg></button></div></div></div></div><div data-rfd-draggable-context-id=":r0:" data-rfd-draggable-id="repo-tide-api" class="sb-repo-group"><div class="sb-repo"><div tabindex="0" role="button" aria-describedby="rfd-hidden-text-:r0:-hidden-text-:r1:" data-rfd-drag-handle-draggable-id="repo-tide-api" data-rfd-drag-handle-context-id=":r0:" draggable="false" class="sb-repo-header" aria-expanded="false"><div class="sb-repo-main"><span class="sb-repo-lead"><span class="sb-repo-initial" aria-hidden="true">T</span><span class="sb-repo-chevron" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transition: transform 0.12s;"><path d="m9 18 6-6-6-6"></path></svg></span></span><span class="sb-repo-name">tide-api</span><span class="sb-repo-count">2</span></div><span class="sb-repo-spacer" aria-hidden="true"></span><button type="button" class="sb-repo-add" title="Create workspace" aria-label="Create workspace in tide-api"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button></div><div class="sb-menu-anchor sb-repo-menu"><button type="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" id="base-ui-:rj:" aria-label="tide-api actions" class="sb-menu-trigger"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button></div></div></div><div data-rfd-draggable-context-id=":r0:" data-rfd-draggable-id="repo-dotfiles" class="sb-repo-group"><div class="sb-repo"><div tabindex="0" role="button" aria-describedby="rfd-hidden-text-:r0:-hidden-text-:r1:" data-rfd-drag-handle-draggable-id="repo-dotfiles" data-rfd-drag-handle-context-id=":r0:" draggable="false" class="sb-repo-header" aria-expanded="false"><div class="sb-repo-main"><span class="sb-repo-lead"><span class="sb-repo-initial" aria-hidden="true">D</span><span class="sb-repo-chevron" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transition: transform 0.12s;"><path d="m9 18 6-6-6-6"></path></svg></span></span><span class="sb-repo-name">dotfiles</span><span class="sb-repo-count">1</span></div><span class="sb-repo-spacer" aria-hidden="true"></span><button type="button" class="sb-repo-add" title="Create workspace" aria-label="Create workspace in dotfiles"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button></div><div class="sb-menu-anchor sb-repo-menu"><button type="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" id="base-ui-:rp:" aria-label="dotfiles actions" class="sb-menu-trigger"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button></div></div></div></div></section></nav><div class="sb-footer"><button type="button" class="sb-plan-btn" aria-label="View pricing"><span class="sb-plan-badge">FREE</span></button><div class="sb-footer-actions"><div class="sb-help"><button type="button" class="sb-footer-btn" aria-label="Help" aria-haspopup="menu" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><path d="M12 17h.01"></path></svg></button></div><button type="button" class="sb-footer-btn" aria-label="Settings"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"></path><circle cx="12" cy="12" r="3"></circle></svg></button></div></div></aside><main class="main"><div class="workspace"><header class="ws-header" data-tauri-drag-region="deep"><div class="ws-title"><span class="crumb">tide-web</span><span class="crumb-sep">/</span><strong>lisbon</strong><span class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6a9 9 0 0 0-9 9V3"></path><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle></svg> ada/fix-login-redirect</span><span class="pr-base-anchor target-chip"><button class="chip" aria-label="Target branch main" title="Target branch">→ main</button></span></div><div class="ws-actions"><div class="oi" data-testid="open-in"><button type="button" class="oi-main" aria-label="Open in Finder" id="base-ui-:r16:" data-base-ui-tooltip-trigger=""><span class="oi-app-glyph" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 16 4-4-4-4"></path><path d="m6 8-4 4 4 4"></path><path d="m14.5 4-5 16"></path></svg></span></button><button type="button" class="oi-chevron" aria-label="Open in..." aria-haspopup="menu" aria-expanded="false" id="base-ui-:rs:" data-base-ui-tooltip-trigger=""><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button></div><button class="btn btn-small btn-icon active" title="Toggle right sidebar ⌥⌘B" aria-label="Toggle right sidebar" aria-pressed="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M15 4v16"></path></svg></button></div></header><div class="ws-split"><section class="chat" aria-label="Chat"><div class="tabs main-tabs" role="tablist" aria-label="Workspace tabs"><span class="main-tab active"><button role="tab" aria-selected="true" class="active">lisbon</button></span><span class="main-tab-new"><button type="button" class="main-tab-new-button" aria-label="New chat, same files ⌘T"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg></button><span role="tooltip" aria-hidden="true" class="main-tab-tip">New chat, same files<kbd>⌘T</kbd></span></span></div><div class="chat-scroll"><div class="oc-chat-empty"><div class="oc-first-chat"><div class="oc-first-chat-box"><h3>You’re in a new copy of <span class="oc-mono">tide-web</span> called <span class="oc-mono">lisbon</span></h3></div><ul class="oc-first-chat-steps"><li class="oc-first-chat-step"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6a9 9 0 0 0-9 9V3"></path><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle></svg><span>Branched <span class="oc-mono">ada/fix-login-redirect</span> from <span class="oc-mono">origin/main</span></span></li><li class="oc-first-chat-step"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></svg><span>Created <span class="oc-mono">lisbon</span></span></li></ul></div></div><div></div></div><div class="next-unread-anchor"><button type="button" class="btn btn-small next-unread"><span>Next unread</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transition: transform 0.12s;"><path d="m9 18 6-6-6-6"></path></svg></button></div><div class="oc-composer-slot"><div class="composer-wrap"><div class="oc-composer-anchor"><form class="composer oc-composer" aria-label="composer" data-composer-resize-instant="true"><div class="oc-composer-input"><div class="oc-editor-mount"><div contenteditable="true" role="textbox" aria-label="Message" aria-multiline="true" data-testid="composer-input" spellcheck="false" translate="no" class="tiptap ProseMirror" tabindex="0" data-placeholder="Ask to make changes, @mention files, run /commands" data-empty="true" style=""><p><br class="ProseMirror-trailingBreak"></p></div></div></div><div class="oc-focus-pill" aria-hidden="true">⌘L to focus</div><div class="oc-composer-left"><span class="oc-model-picker"><button type="button" class="oc-model-chip" data-testid="composer-model-button" aria-label="Change agent (Auto)" title="Auto" aria-haspopup="menu" aria-expanded="false" id="base-ui-:r18:" data-base-ui-tooltip-trigger=""><span class="oc-model-chip-icon" aria-hidden="true"><svg class="oc-model-glyph" data-agent="other" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5c.4 3.3 1.6 4.6 5 5-3.4.4-4.6 1.7-5 5-.4-3.3-1.6-4.6-5-5 3.4-.4 4.6-1.7 5-5z"></path></svg></span><span class="oc-model-chip-label">Auto</span><span class="oc-model-chip-details"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="oc-model-chip-chevron"><path d="m6 9 6 6 6-6"></path></svg></span></button></span></div><div class="oc-composer-right"><span class="oc-composer-fade"><span class="oc-add-menu"><button type="button" class="oc-icon-btn oc-add-btn" aria-label="Add" aria-haspopup="menu" aria-expanded="false" id="base-ui-:ru:" data-base-ui-tooltip-trigger=""><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button></span></span><input type="file" multiple="" hidden="" aria-hidden="true" tabindex="-1" style=""><button class="oc-send" type="submit" disabled="" data-mode="queue" aria-label="Send message ↵" data-testid="composer-send-button" id="base-ui-:r10:" data-base-ui-tooltip-trigger=""><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"></path><path d="M12 19V5"></path></svg></button></div></form></div></div></div></section><div class="ws-right"><section class="diff" aria-label="Changes"><div class="rp-tabs" role="tablist"><div class="rp-tab-buttons"><button type="button" role="tab" aria-selected="false" class="rp-tab">All files</button><button type="button" role="tab" aria-selected="true" class="rp-tab active">Changes <span class="tab-count">2</span></button><button type="button" role="tab" aria-selected="false" class="rp-tab">Checks </button></div><span class="rp-tabs-end"><span class="review-action"><button class="btn btn-small review-button" id="base-ui-:r1m:" data-base-ui-tooltip-trigger=""><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></svg> Review</button></span><button type="button" class="rp-icon" aria-label="Filter files" aria-pressed="false" id="base-ui-:r1o:" data-base-ui-tooltip-trigger=""><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-4.34-4.34"></path><circle cx="11" cy="11" r="8"></circle></svg></button><button type="button" class="rp-icon oc-changes-tree-toggle on" aria-label="Show flat list" id="base-ui-:r1q:" data-base-ui-tooltip-trigger=""><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg></button><button type="button" class="rp-icon oc-changes-options" aria-label="Changes options" aria-haspopup="menu" aria-expanded="false" id="base-ui-:r1s:" data-base-ui-tooltip-trigger=""><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></button></span></div><div class="oc-diff oc-diff-list"><div class="oc-changes-header"><span>2 files changed</span><span class="oc-count"><span class="a">+15</span><span class="d">-1</span></span></div><nav class="oc-changes" aria-label="Changed files" data-view="tree"><button type="button" class="oc-change-directory" aria-label="src / lib" aria-expanded="false" style="padding-left: 12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M1.5 2h5l.35.15.86.85h5.79l.5.5v10l-.5.5h-12l-.5-.5v-11l.5-.5zM2 3v10h11V4H7.5l-.35-.15L6.29 3H2z"></path></svg><span class="name">src / lib</span><span class="oc-count"><span class="a">+15</span><span class="d">-1</span></span></button></nav><div class="oc-changes-comment-actions"></div></div></section><section class="ws-strip" aria-label="Terminal panel" data-repo-id="repo-tide-web" data-terminals-ready="true"><div class="ws-strip-tabs" role="tablist"><button type="button" class="rp-icon ws-strip-toggle" aria-label="Hide terminal panel" title="Hide terminal panel" aria-expanded="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></button><button type="button" role="tab" aria-selected="false" class="strip-tab">Setup</button><button type="button" role="tab" aria-selected="true" class="strip-tab active">Run</button><button type="button" class="rp-icon" aria-label="New terminal" title="New terminal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></button><div class="ws-strip-actions"></div></div><div class="ws-strip-body"><section class="scripts" aria-label="Run"><div class="scripts-empty"><div class="scripts-empty-box"><p>Run tests or a development server to test changes in this workspace</p><button type="button" class="scripts-empty-btn">Add run script</button></div></div></section></div></section></div></div></div></main></div></div>
+  
+
+<div id="rfd-announcement-:r0:" aria-live="assertive" aria-atomic="true" style="position: absolute; width: 1px; height: 1px; margin: -1px; border: 0px; padding: 0px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); clip-path: inset(100%);"></div><div id="rfd-hidden-text-:r0:-hidden-text-:r1:" style="display: none;">
+  Press space bar to start a drag.
+  When dragging you can use the arrow keys to move the item around and escape to cancel.
+  Some screen readers may require you to be in focus mode or to use your pass through key
+</div></body></html>

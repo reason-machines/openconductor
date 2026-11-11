@@ -1,0 +1,13 @@
+[package]
+name = "markdown-read-tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+path = "../../src-tauri/src/workspace_file.rs"
+
+[dependencies]
+libc = "0.2"
+
+[workspace]

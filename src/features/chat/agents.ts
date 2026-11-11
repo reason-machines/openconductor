@@ -47,7 +47,7 @@ export const CHAT_AGENTS: Record<ChatAgentId, ChatAgent> = {
     snapshot: (chatId) => ({ ...codexSnapshot(chatId), permissions: [] }),
     subscribe: (chatId, fn) => subscribeCodex(chatId, (s) => fn({ ...s, permissions: [] })),
     // Codex gets attachments inline in the prompt; a follow-up always queues.
-    submit: (chatId, cwd, text, _mode, attachments) => submitCodex(chatId, cwd, text, attachments),
+    submit: (chatId, cwd, input, _mode, attachments) => submitCodex(chatId, cwd, input, attachments),
     stop: stopCodex,
     queueAction: codexQueueAction,
     chatId: (id) => id,

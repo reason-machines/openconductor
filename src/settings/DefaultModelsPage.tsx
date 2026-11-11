@@ -1,27 +1,20 @@
-import { useEffect, useRef, useState, type DragEvent, type ReactNode } from "react";
-import { AGENT_DEFAULT_MODEL, AGENT_LABEL, MODEL_PALETTE, modelLabel, storedModel, type ModelAgent } from "./models";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { AGENT_DEFAULT_MODEL, modelLabel, storedModel } from "./models";
 import { CLAUDE_OUTPUT_STYLES, CODEX_PERSONALITIES, levelLabel } from "./agentSettings";
 import { withAgentModel } from "./agentSettings";
 import type { ClaudePersonality, CodexPersonality, Settings } from "./types";
-import { listFavorites, openExternal, replaceFavorites } from "./agents/api";
+import { openExternal } from "./agents/api";
 import {
   builtIn,
-  displayedLoadout,
-  EFFORT_LEVELS,
-  equip,
-  isEquipped,
-  LOADOUT_SLOTS,
-  move,
-  parseFavorites,
-  remove,
   settingsEffort,
-  toRows,
-  withDefault,
   withReview,
   type BuiltInFavorite,
-  type Favorite,
 } from "./agents/loadout";
-import { AgentMark, CheckIcon, ChevronDownIcon, CloseIcon, ExternalIcon, GripIcon } from "./agents/icons";
+import { CheckIcon, ChevronDownIcon } from "./agents/icons";
+import { LOADOUT_COLUMNS, LOADOUT_LABEL, loadoutModelLabel } from "./reasonPalette";
+import { reasonModelName } from "../features/chat/reasonModels";
+import { fetchModelCatalog, type CatalogModel } from "./modelCatalog";
+import { LoadoutMark, ModelLoadout } from "./ModelLoadout";
 import "./agents/agents.css";
 
 interface Props {
@@ -32,8 +25,7 @@ interface Props {
 /** Conductor's review model when none is chosen (index `pZ`; features/diff/review.ts). */
 const REVIEW_FALLBACK = AGENT_DEFAULT_MODEL.claude;
 
-/** The palette columns, in Conductor's order (`P3a`) without its Cursor and OpenCode columns. */
-const COLUMNS = Object.keys(MODEL_PALETTE) as ModelAgent[];
+const loadoutLabel = (model: string) => loadoutModelLabel(model) ?? (model.includes(":") || model.includes("/") || model === "default" ? reasonModelName(model, []) : modelLabel(model));
 
 /**
  * Settings › Default models (Conductor's `models` tab, `$3a`): the Loadout
@@ -42,6 +34,20 @@ const COLUMNS = Object.keys(MODEL_PALETTE) as ModelAgent[];
  * style, Review model and Default to plan mode in new chats.
  */
 export function DefaultModelsPage({ settings, save }: Props) {
+  const [catalog, setCatalog] = useState<Awaited<ReturnType<typeof fetchModelCatalog>>>({ models: [], errors: {} });
+  const [loading, setLoading] = useState(true);
+  const [revision, setRevision] = useState(0);
+  useEffect(() => {
+    let live = true;
+    setLoading(true);
+    setCatalog({ models: [], errors: {} });
+    void fetchModelCatalog().then((next) => {
+      if (live) { setCatalog(next); setLoading(false); }
+    }, (error: unknown) => {
+      if (live) { setCatalog({ models: [], errors: { reason: String(error), claude: String(error), codex: String(error) } }); setLoading(false); }
+    });
+    return () => { live = false; };
+  }, [revision, settings.reason?.workspace, settings.reason_executable_path, settings.claude_executable_path, settings.codex_executable_path]);
   const m = settings.models;
   const personality = m.codex.personality ?? "pragmatic";
   const reviewModel = storedModel(m.review || REVIEW_FALLBACK);
@@ -53,7 +59,7 @@ export function DefaultModelsPage({ settings, save }: Props) {
           <div className="ag-setting-title">Loadout</div>
           <p className="ag-setting-desc">Choose which models you want to use</p>
         </div>
-        <Loadout settings={settings} save={save} />
+        <ModelLoadout settings={settings} save={save} models={catalog.models} errors={catalog.errors} loading={loading} refresh={() => setRevision((value) => value + 1)} />
       </section>
       <SettingRow title="Codex personality">
         <select
@@ -96,11 +102,12 @@ export function DefaultModelsPage({ settings, save }: Props) {
       </SettingRow>
       <SettingRow title="Review model">
         <ModelPicker
+          models={catalog.models}
           value={review}
           onChange={(f) => save(withReview(settings, f))}
           trigger={(open) => (
-            <button type="button" className="ag-picker-trigger" aria-label={`Review model: ${modelLabel(review.model)}`} onClick={open}>
-              <span className="ag-medium">{modelLabel(review.model)}</span>
+            <button type="button" className="ag-picker-trigger" aria-label={`Review model: ${loadoutLabel(review.model)}`} onClick={open}>
+              <span className="ag-medium">{loadoutLabel(review.model)}</span>
               {review.thinkingLevel && <span className="ag-muted">{levelLabel(review.thinkingLevel)}</span>}
               <ChevronDownIcon size={12} />
             </button>
@@ -140,198 +147,18 @@ function Switch({ label, checked, onChange }: { label: string; checked: boolean;
   );
 }
 
-type Drag = { kind: "palette"; model: string } | { kind: "slot"; index: number };
-
-// The favorites last read: the page opens on them (the slots are not busy, then
-// filled, a few frames later) and reads them again behind it.
-let lastFavorites: Favorite[] | null = null;
-
-/** The five slots and the per-agent palette below them. */
-function Loadout({ settings, save }: Props) {
-  const [stored, setStoredState] = useState<Favorite[] | null>(() => lastFavorites);
-  const setStored = (next: Favorite[]) => {
-    lastFavorites = next;
-    setStoredState(next);
-  };
-  const [drag, setDrag] = useState<Drag | null>(null);
-  const [dropAt, setDropAt] = useState<number | null>(null);
-  useEffect(() => {
-    listFavorites().then((rows) => setStored(parseFavorites(rows)), () => setStored([]));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const slots = displayedLoadout(settings, stored ?? []);
-
-  const commit = (next: Favorite[]) => {
-    setStored(next);
-    void replaceFavorites(toRows(next));
-    if (next[0] && next[0] !== slots[0]) save(withDefault(settings, next[0]));
-  };
-  const add = (model: string, index = Math.min(slots.length, LOADOUT_SLOTS - 1)) =>
-    commit(equip(slots, builtIn(crypto.randomUUID(), model, undefined, false), index));
-
-  const onDrop = (index: number) => (e: DragEvent) => {
-    e.preventDefault();
-    const d = drag;
-    setDrag(null);
-    setDropAt(null);
-    if (!d) return;
-    if (d.kind === "palette") {
-      if (index <= slots.length) add(d.model, index);
-    } else if (index !== d.index && index < slots.length) commit(move(slots, d.index, index));
-  };
-  const dragOver = (index: number) => (e: DragEvent) => {
-    if (!drag) return;
-    e.preventDefault();
-    setDropAt(index);
-  };
-
-  return (
-    <div className="ag-loadout">
-      <div className="ag-loadout-share">
-        <button type="button" className="ag-btn ag-outline ag-sm" disabled title="Sign in to share a loadout">
-          Share
-          <ExternalIcon size={14} />
-        </button>
-      </div>
-      <div className="ag-slots" aria-busy={stored === null}>
-        {Array.from({ length: LOADOUT_SLOTS }, (_, i) => {
-          const fav = slots[i];
-          return (
-            <div
-              key={i}
-              data-loadout-slot
-              className={`ag-slot-cell${dropAt === i ? " drop" : ""}`}
-              onDragOver={dragOver(i)}
-              onDragLeave={() => setDropAt(null)}
-              onDrop={onDrop(i)}
-            >
-              {fav ? (
-                <SlotCard
-                  fav={fav}
-                  index={i}
-                  onChange={(f) => commit(slots.map((s, j) => (j === i ? { ...f, id: s.id } : s)))}
-                  onDelete={i === 0 ? undefined : () => commit(remove(slots, fav.id))}
-                  onDragStart={() => setDrag({ kind: "slot", index: i })}
-                  onDragEnd={() => {
-                    setDrag(null);
-                    setDropAt(null);
-                  }}
-                />
-              ) : (
-                <div className="ag-slot-empty">
-                  <span className="ag-mono">{i === slots.length ? "DROP MODEL HERE" : "EMPTY"}</span>
-                  <span className="ag-slot-num">{i + 1}</span>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-      <div className="ag-palette">
-        {COLUMNS.map((agent) => {
-          const label = AGENT_LABEL[agent];
-          return (
-            <section key={agent} className="ag-palette-col" aria-label={label}>
-              <span className="ag-palette-head">
-                <AgentMark agent={agent} size={14} />
-                {label}
-              </span>
-              <div className="ag-palette-list">
-                {MODEL_PALETTE[agent].map((model) => {
-                    const name = modelLabel(model);
-                    return (
-                      <button
-                        key={model}
-                        type="button"
-                        draggable
-                        className="ag-palette-item"
-                        aria-label={`Add ${name} to loadout`}
-                        title={name}
-                        onClick={() => add(model)}
-                        onDragStart={(e) => {
-                          e.dataTransfer.effectAllowed = "copy";
-                          e.dataTransfer.setData("text/plain", model);
-                          setDrag({ kind: "palette", model });
-                        }}
-                        onDragEnd={() => {
-                          setDrag(null);
-                          setDropAt(null);
-                        }}
-                      >
-                        <span className="ag-truncate">{name}</span>
-                        {isEquipped(slots, model) && <CheckIcon size={12} />}
-                        <span className="ag-grip">
-                          <GripIcon size={14} />
-                        </span>
-                      </button>
-                    );
-                  })}
-              </div>
-            </section>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-/** A filled slot (Conductor's `t3a`): agent icon, model, effort, slot number; DEFAULT on slot 1, × on the others. */
-function SlotCard(props: {
-  fav: Favorite;
-  index: number;
-  onChange: (f: BuiltInFavorite) => void;
-  onDelete?: () => void;
-  onDragStart: () => void;
-  onDragEnd: () => void;
-}) {
-  const { fav, index, onChange, onDelete, onDragStart, onDragEnd } = props;
-  const name = fav.type === "built-in" ? modelLabel(fav.model) : fav.modelId;
-  const effort = fav.type === "built-in" && fav.thinkingLevel ? levelLabel(fav.thinkingLevel) : undefined;
-  return (
-    <div
-      className="ag-slot"
-      draggable
-      onDragStart={(e) => {
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", String(index));
-        onDragStart();
-      }}
-      onDragEnd={onDragEnd}
-    >
-      <ModelPicker
-        value={fav.type === "built-in" ? fav : undefined}
-        onChange={onChange}
-        trigger={(open) => (
-          <button type="button" className="ag-slot-card" aria-label={[name, effort].filter(Boolean).join(", ")} title="Change agent" onClick={open}>
-            <span className="ag-slot-icon">
-              {fav.type === "built-in" && <AgentMark agent={fav.agent} size={28} />}
-            </span>
-            <span className="ag-slot-model ag-truncate">{name}</span>
-            <span className="ag-slot-effort">{effort}</span>
-            <span className="ag-slot-num">{index + 1}</span>
-          </button>
-        )}
-      />
-      {index === 0 && <span className="ag-default-badge">DEFAULT</span>}
-      {onDelete && (
-        <button type="button" className="ag-slot-delete" aria-label={`Delete loadout ${index + 1}`} onClick={onDelete}>
-          <CloseIcon size={14} />
-        </button>
-      )}
-    </div>
-  );
-}
-
 /**
  * Model and effort menu for a slot or the review model. Conductor opens its
  * composer model picker here; this menu lists the same palette models and
  * the chosen model's effort levels.
  */
 function ModelPicker({
+  models,
   value,
   onChange,
   trigger,
 }: {
+  models: readonly CatalogModel[];
   value?: BuiltInFavorite;
   onChange: (f: BuiltInFavorite) => void;
   trigger: (open: () => void) => ReactNode;
@@ -355,35 +182,35 @@ function ModelPicker({
       {trigger(() => setOpen(!open))}
       {open && (
         <div className="ag-menu" role="menu">
-          {(Object.keys(MODEL_PALETTE) as ModelAgent[]).map((a) => (
+          {LOADOUT_COLUMNS.map((a) => (
             <div key={a} className="ag-menu-group">
               <div className="ag-menu-head">
-                <AgentMark agent={a} size={12} />
-                {AGENT_LABEL[a]}
+                <LoadoutMark agent={a} size={12} />
+                {LOADOUT_LABEL[a]}
               </div>
-              {MODEL_PALETTE[a].map((model) => (
+              {models.filter((model) => model.agent === a).map((model) => (
                 <button
-                  key={model}
+                  key={model.id}
                   type="button"
                   role="menuitemradio"
-                  aria-checked={value?.model === model}
+                  aria-checked={value?.agent === a && value.model === model.id}
                   className="ag-menu-item"
                   onClick={() => {
-                    onChange(builtIn(value?.id ?? "picked", model, value?.agent === a ? value.thinkingLevel : undefined, value?.fastMode ?? false));
+                    onChange(builtIn(value?.id ?? "picked", model.id, value?.agent === a ? value.thinkingLevel : model.defaultEffort ?? undefined, value?.fastMode ?? false, a));
                     setOpen(false);
                   }}
                 >
-                  <span className="ag-grow ag-truncate">{modelLabel(model)}</span>
-                  {value?.model === model && <CheckIcon size={12} />}
+                  <span className="ag-grow ag-truncate">{model.name}</span>
+                  {value?.agent === a && value.model === model.id && <CheckIcon size={12} />}
                 </button>
               ))}
             </div>
           ))}
-          {value && agent && EFFORT_LEVELS[agent].length > 0 && (
+          {value && agent && (models.find((model) => model.agent === agent && model.id === value.model)?.efforts?.length ?? 0) > 0 && (
             <div className="ag-menu-group">
               <div className="ag-menu-head">Effort</div>
               <div className="ag-menu-efforts">
-                {EFFORT_LEVELS[agent].map((l) => (
+                {models.find((model) => model.agent === agent && model.id === value.model)?.efforts?.map((l) => (
                   <button
                     key={l}
                     type="button"

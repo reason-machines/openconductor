@@ -1,0 +1,252 @@
+(node:51) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:58) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: running default omits summary header and retains all parts
+not ok 1 - running default omits summary header and retains all parts
+  ---
+  duration_ms: 12.484038
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:148:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    noncollapsible work must not render a summary header
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:153:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: finished dontCollapseToolCalls omits summary header and retains all parts
+not ok 2 - finished dontCollapseToolCalls omits summary header and retains all parts
+  ---
+  duration_ms: 1.673163
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:148:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    noncollapsible work must not render a summary header
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:153:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: running plus dontCollapseToolCalls omits summary header and retains all parts
+not ok 3 - running plus dontCollapseToolCalls omits summary header and retains all parts
+  ---
+  duration_ms: 1.291497
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:148:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    noncollapsible work must not render a summary header
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:153:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: finished normal batch is collapsed and final text is visible
+ok 4 - finished normal batch is collapsed and final text is visible
+  ---
+  duration_ms: 0.965816
+  type: 'test'
+  ...
+# Subtest: normal summary preserves its real toggle after 1 activation(s)
+ok 5 - normal summary preserves its real toggle after 1 activation(s)
+  ---
+  duration_ms: 1.927514
+  type: 'test'
+  ...
+# Subtest: normal summary preserves its real toggle after 2 activation(s)
+ok 6 - normal summary preserves its real toggle after 2 activation(s)
+  ---
+  duration_ms: 1.081423
+  type: 'test'
+  ...
+# Subtest: no-summary final-only turn running=false
+ok 7 - no-summary final-only turn running=false
+  ---
+  duration_ms: 0.569968
+  type: 'test'
+  ...
+# Subtest: no-summary final-only turn running=true
+ok 8 - no-summary final-only turn running=true
+  ---
+  duration_ms: 0.413588
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=false dontCollapse=false
+ok 9 - two-message short batch running=false dontCollapse=false
+  ---
+  duration_ms: 1.042549
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=true dontCollapse=false
+ok 10 - two-message short batch running=true dontCollapse=false
+  ---
+  duration_ms: 0.787797
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=false dontCollapse=true
+ok 11 - two-message short batch running=false dontCollapse=true
+  ---
+  duration_ms: 0.55467
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=true dontCollapse=true
+ok 12 - two-message short batch running=true dontCollapse=true
+  ---
+  duration_ms: 0.370626
+  type: 'test'
+  ...
+# Subtest: earlier completed turn stays collapsed while only the latest running turn loses its header
+not ok 13 - earlier completed turn stays collapsed while only the latest running turn loses its header
+  ---
+  duration_ms: 3.80109
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:193:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    only the earlier completed turn has a summary header
+    
+    2 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:200:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: expandToolsByDefault alone does not hide a collapsible summary
+ok 14 - expandToolsByDefault alone does not hide a collapsible summary
+  ---
+  duration_ms: 0.67205
+  type: 'test'
+  ...
+# Subtest: independent expandToolsByDefault expands inline short-batch tools running=false
+ok 15 - independent expandToolsByDefault expands inline short-batch tools running=false
+  ---
+  duration_ms: 0.463507
+  type: 'test'
+  ...
+# Subtest: independent expandToolsByDefault expands inline short-batch tools running=true
+ok 16 - independent expandToolsByDefault expands inline short-batch tools running=true
+  ---
+  duration_ms: 0.34796
+  type: 'test'
+  ...
+# Subtest: expandToolsByDefault plus running keeps expanded inline tools without a summary header
+not ok 17 - expandToolsByDefault plus running keeps expanded inline tools without a summary header
+  ---
+  duration_ms: 0.757075
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:222:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    noncollapsible work must not render a summary header
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:227:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: expandToolsByDefault plus dontCollapse keeps expanded inline tools without a summary header
+not ok 18 - expandToolsByDefault plus dontCollapse keeps expanded inline tools without a summary header
+  ---
+  duration_ms: 0.588662
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:222:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    noncollapsible work must not render a summary header
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/8e693aec-e47b-440b-825f-0796c2b59c8b/repo/src/features/chat/transcriptAgentSummary.test.ts:227:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: three tools in one assistant message do not invent a summary
+ok 19 - three tools in one assistant message do not invent a summary
+  ---
+  duration_ms: 0.498523
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 13
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1246.027546

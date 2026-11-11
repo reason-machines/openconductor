@@ -1,0 +1,26 @@
+{
+  "started": {
+    "server_id": "b89b7f65-2a10-42e3-9bdb-c1992aee26d1",
+    "port": 4682,
+    "state": "running",
+    "exit_code": null,
+    "reason_code": null,
+    "started_at": "2026-11-07T02:47:51.987Z",
+    "expires_at": "2026-11-07T14:47:52.127Z",
+    "output": "",
+    "listening": true,
+    "preview_link": "https://reasonmachines.com/agents/27102e36-8b7f-4f1b-9ada-1e0503d3fede/preview?port=4682",
+    "guidance": "Before you tell the user it works, look at it yourself, the same server the user's Browser tab shows: with browser_script, `await page.goto(\"http://localhost:4682/<route>\"); console.log(await page.title()); await view(await page.screenshot(), { label: \"localhost:4682\" });`, or with browser_use where browser_script cannot run (the execution context says so, and so does its refusal). A blank page, an error overlay or a failed request is a problem to fix or to report plainly, never a running app; if you cannot look at it at all, say the page is unverified. It keeps running after your reply, like a terminal tab, until preview_stop, the user's Stop in the Browser tab, archiving the Session, or 12 hours. The Session's Browser tab now shows it to the user, signed in through Reason's preview relay; when you check another route, show the user that route too with app_open({ kind: \"browser\", port: 4682, path }); never paste a reason-preview.com link, which is a 30-second one-use ticket. End your reply with this line, saying where the server runs and how it reaches the user: \"The preview server runs on this computer at localhost:4682, forwarded through Reason's preview relay: [Open the page](https://reasonmachines.com/agents/27102e36-8b7f-4f1b-9ada-1e0503d3fede/preview?port=4682&path=/<route>).\" Replace <route> with the page you checked and copy the link exactly, never retyped. In the chat it opens that page in the Session's Browser tab, and in a new tab, on another device or shared with a teammate it opens the page on its own for whoever signs in with access to this Session. When this computer parks while idle the server stops with it, and Reason starts it again from the same command and port when a later turn wakes the computer, so its preview link keeps working (restarted_on_wake in preview_status); start it yourself only if preview_status shows no such restart."
+  },
+  "stopped": {
+    "state": "stopped",
+    "stopped": [
+      {
+        "server_id": "b89b7f65-2a10-42e3-9bdb-c1992aee26d1",
+        "port": 4682
+      }
+    ],
+    "guidance": "Each stopped server's process group has ended on the computer, so its port is free for preview_start."
+  },
+  "recordedAt": "2026-11-07T02:49:20.651Z"
+}

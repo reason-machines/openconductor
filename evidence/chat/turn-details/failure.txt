@@ -1,0 +1,3 @@
+AssertionError [ERR_ASSERTION]: finished-turn timestamp must be keyboard focusable, not a native-title span
+
+'SPAN' !== 'BUTTON'

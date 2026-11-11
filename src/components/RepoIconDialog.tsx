@@ -86,11 +86,13 @@ function EmojiTab({ repo, pick }: { repo: Repo; pick: (icon: string | null) => v
   const [query, setQuery] = useState("");
   const current = parseRepoIcon(repo.icon, isRepoIconName);
   const selected = current?.kind === "emoji" ? current.emoji : null;
+  const choices = searchEmoji(query);
   return (
     <>
       <SearchBar value={query} onChange={setQuery} placeholder="Search emoji" clearLabel="Remove emoji" onClear={repo.icon ? () => pick(null) : undefined} />
+      {choices.length === 0 && <p className="muted" role="status">No emoji found</p>}
       <div className="repo-icon-grid">
-        {searchEmoji(query).map(([emoji, name]) => (
+        {choices.map(([emoji, name]) => (
           <button key={emoji} type="button" className="repo-icon-cell repo-icon-emoji-cell" title={name} aria-label={name} data-selected={selected === emoji || undefined} onClick={() => pick(emojiIcon(emoji) ?? null)}>
             {emoji}
           </button>

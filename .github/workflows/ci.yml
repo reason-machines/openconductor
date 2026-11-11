@@ -28,7 +28,15 @@ jobs:
         run: npm run lint:colors
       - name: Frontend unit tests
         run: node --test "src/**/*.test.ts"
+      - name: Window fill across interface zoom and resize
+        run: node --test tests/e2e/window-fill.e2e.mjs
+      - name: Native QA isolation verifier tests (no GUI)
+        run: python3 -W error::ResourceWarning -m unittest tools/test_native_qa.py tools/test_native_qa_webkit.py tools/test_native_qa_ordinary.py tools/test_native_qa_cache.py tools/test_native_qa_stdio.py tools/test_native_qa_jsonl.py -v
+      - name: Synthetic storage payload fixture tests (no WebKit)
+        run: node --test tools/test_native_qa_storage.mjs
       - run: npm run build
+      - name: Fixed chrome and contained pane scrolling
+        run: node --test tests/e2e/scroll-containment.e2e.mjs
 
   app:
     name: Tauri app check, test, clippy (${{ matrix.os }})
@@ -194,3 +202,17 @@ jobs:
       - run: npm ci
       - name: Pure TypeScript modules (Node strips types natively)
         run: node --test "src/**/*.test.ts"
+      - name: Onboarding persistence and nonblocking startup regressions
+        timeout-minutes: 3
+        shell: bash
+        env:
+          NODE_ENV: development
+          ONBOARDING_DOM_DEPS: ${{ runner.temp }}/onboarding-dom-deps
+          REACT_EFFECTS_DEPS: ${{ github.workspace }}/node_modules
+        run: |
+          npm install --prefix "$ONBOARDING_DOM_DEPS" --cache "$RUNNER_TEMP/onboarding-dom-cache" \
+            --ignore-scripts --no-audit --no-fund --package-lock=false --save-exact \
+            react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0
+          echo "Onboarding source commit: $(git rev-parse HEAD)"
+          node --check tests/onboarding-strict-effects.test.mjs
+          node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs

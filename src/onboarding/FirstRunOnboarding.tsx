@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useKeybindings } from "../keybindings/KeybindingsProvider";
-import { ArrowRightIcon } from "../components/Icons";
-import { Wordmark } from "../components/Wordmark";
-import { CONTINUE_LABEL, EXIT_LABEL, nextSlideId, SLIDES, type Slide } from "./firstRun";
-import { SignUp, useReasonAccount, type SignUpProps } from "./SignIn";
+import { AppMark } from "../components/AppMark";
+import { EXIT_LABEL, nextSlideId, SLIDES, type Slide } from "./firstRun";
+import { SignUp, type SignUpProps } from "./SignIn";
 import "./onboarding.css";
+import type { AgentKind } from "../settings/types";
 
 /** How long a slide shows before the next one (the reference advances when its video ends). */
 export const SLIDE_MS = 8000;
@@ -17,23 +17,11 @@ const TICK_MS = 100;
  * selects it; ArrowDown (`onboarding.nextSlide`) goes to the next and Enter
  * (`onboarding.continue`) continues.
  *
- * Like Conductor, it shows "Sign up" (src/onboarding/SignIn.tsx) until the
- * account is signed in, then "Continue", and moves on by itself once signed
- * in (`wBi`'s auto_advance). The account is Reason's (`reason status`). Local
- * agents need no account, so signed out it also offers "Continue without
- * signing in", and Enter continues either way (Conductor's Enter waits for
- * the account).
+ * The default agent is an explicit choice. Reason sign-in is optional and
+ * does not advance this screen; Continue persists the choice either way.
  */
-export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue: () => void; busy: boolean; onFailed: SignUpProps["onFailed"] }) {
-  const account = useReasonAccount();
-  // wBi: once signed in, finish without waiting for Continue (once).
-  const advanced = useRef(false);
-  useEffect(() => {
-    if (account && !advanced.current) {
-      advanced.current = true;
-      onContinue();
-    }
-  }, [account, onContinue]);
+export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue: (agent: AgentKind) => void; busy: boolean; onFailed: SignUpProps["onFailed"] }) {
+  const [agent, setAgent] = useState<AgentKind>("reason");
   const [current, setCurrent] = useState<Slide["id"]>("repo");
   const [progress, setProgress] = useState(0);
   const select = useCallback((id: Slide["id"]) => {
@@ -57,7 +45,7 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
 
   useKeybindings({
     "onboarding.continue": () => {
-      if (!busy) onContinue();
+      if (!busy) onContinue(agent);
     },
     "onboarding.nextSlide": next,
   });
@@ -67,7 +55,7 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
     <div className="onb" data-tauri-drag-region>
       <div className="onb-inner">
         <div className="onb-wordmark">
-          <Wordmark />
+          <AppMark size={96} />
         </div>
         <div className="onb-grid" data-tauri-drag-region>
           <div className="onb-left" data-tauri-drag-region>
@@ -86,16 +74,14 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
               ))}
             </div>
             <div className="onb-actions">
-              {account ? (
-                <button type="button" className="onb-btn onb-continue" onClick={onContinue} disabled={busy}>
-                  {CONTINUE_LABEL}
-                  <span className="onb-btn-icon">
-                    <ArrowRightIcon size={16} />
-                  </span>
-                </button>
-              ) : (
-                <SignUp onFailed={onFailed} onSkip={onContinue} />
-              )}
+              <fieldset className="onb-agent-choice" disabled={busy}>
+                <legend>Choose your default agent</legend>
+                {([{ id: "claude", label: "Claude Code" }, { id: "codex", label: "Codex" }, { id: "reason", label: "Reason" }] satisfies { id: AgentKind; label: string }[]).map((choice) => (
+                  <label key={choice.id}><input type="radio" name="first-run-agent" value={choice.id} checked={agent === choice.id} onChange={() => setAgent(choice.id)} />{choice.label}</label>
+                ))}
+              </fieldset>
+              <p className="onb-note">The Reason CLI installs in the background for every agent. You can sign in later.</p>
+              <SignUp onFailed={onFailed} onSkip={() => onContinue(agent)} busy={busy} />
             </div>
           </div>
           <div className="onb-right" data-tauri-drag-region>

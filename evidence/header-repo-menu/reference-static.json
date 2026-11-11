@@ -1,0 +1,27 @@
+{
+  "bundle": "renderApp-D_fmY7hW.js",
+  "kind": "retained REA-extracted shipped JavaScript, not native execution",
+  "excerpts": [
+    {
+      "function": "ACi",
+      "characterOffset": 7258233,
+      "decodedExcerpt": "function ACi(t){const e=ne.c(22),{localWorkspaceId:n}=t;let i;e[0]!==n?(i={localWorkspaceId:n},e[0]=n,e[1]=i):i=e[1];const{data:r}=Ms(i,ed(voo)),o=r?.repositoryId;let a;e[2]!==o?(a={repoId:o},e[2]=o,e[3]=a):a=e[3];const{data:c}=Y1(a);if(!c||!r)return null;let u;e[4]===Symbol.for(\"react.memo_cache_sentinel\")?(u=p.jsx(Ozt,{}),e[4]=u):u=e[4];let d;e[5]!==c?(d=p.jsx(xoo,{repo:c}),e[5]=c,e[6]=d):d=e[6];let h;e[7]===Symbol.for(\"react.memo_cache_sentinel\")?(h=p.jsx(td,{className:\"size-3 text-muted-foreground shrink-0\",\"data-tauri-drag-region\":!0}),e[7]=h):h=e[7];let m;e[8]!==n||e[9]!==r.isArchived?(m=r.isArchived?p.jsx(yoo,{localWorkspaceId:n}):p.jsx(bro,{localWorkspaceId:n}),e[8]=n,e[9]=r.isArchived,e[10]=m):m=e[10];let g;e[11]!==n?(g=p.jsx(woo,{localWorkspaceId:n}),e[11]=n,e[12]=g):g=e[12];let _;e[13]!==d||e[14]!==m||e[15]!==g?(_=p.jsxs(\"div\",{className:\"flex items-center gap-2 min-w-0 shrink overflow-hidden mr-3\",\"data-tauri-drag-region\":!0,children:[u,d,h,m,g]}),e[13]=d,e[14]=m,e[15]=g,e[16]=_):_=e[16];let v;e[17]!==n?(v=p.jsx(ICi,{localWorkspaceId:n}),e[17]=n,e[18]=v):v=e[18];let x;return e[19]!==v||e[20]!==_?(x=p.jsxs(\"div\",{className:\"flex justify-between items-center pl-4 pr-2 py-2 h-10 bg-sidebar-background relative border-b border-border\",\"data-tauri-drag-region\":!0,children:[_,v]}),e[19]=v,e[20]=_,e[21]=x):x=e[21],x}"
+    },
+    {
+      "function": "xoo",
+      "characterOffset": 7260109,
+      "decodedExcerpt": "function xoo(t){const e=ne.c(23),{repo:n}=t,i=aa();let r;e[0]!==n.remoteUrl?(r=K9i(n.remoteUrl),e[0]=n.remoteUrl,e[1]=r):r=e[1];const o=r;let a;e[2]!==n?(a=p.jsx(U9,{repository:n}),e[2]=n,e[3]=a):a=e[3];let c;e[4]!==n.name?(c=p.jsx(\"span\",{className:\"min-w-0 truncate text-sm font-medium\",children:n.name}),e[4]=n.name,e[5]=c):c=e[5];let u;e[6]!==a||e[7]!==c?(u=p.jsx(Sg,{asChild:!0,children:p.jsxs(\"button\",{className:\"flex min-w-0 max-w-48 shrink items-center gap-2 rounded px-1 py-0.5 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground\",children:[a,c]})}),e[6]=a,e[7]=c,e[8]=u):u=e[8];let d;e[9]!==i||e[10]!==n.id?(d=()=>{i({to:\"/settings/repos/$repoId/misc\",params:{repoId:n.id}}).fireAndForget()},e[9]=i,e[10]=n.id,e[11]=d):d=e[11];let h;e[12]===Symbol.for(\"react.memo_cache_sentinel\")?(h=p.jsx(cv,{className:\"mr-2 size-3.5\"}),e[12]=h):h=e[12];let m;e[13]!==d?(m=p.jsxs(Yc,{onClick:d,children:[h,\"Repository settings\"]}),e[13]=d,e[14]=m):m=e[14];let g;e[15]!==o?(g=o&&p.jsxs(Yc,{onClick:()=>{vs(o).fireAndForget()},children:[p.jsx(co,{className:\"mr-2 size-3.5\"}),\"Open on GitHub\"]}),e[15]=o,e[16]=g):g=e[16];let _;e[17]!==m||e[18]!==g?(_=p.jsxs(Tm,{align:\"start\",children:[m,g]}),e[17]=m,e[18]=g,e[19]=_):_=e[19];let v;return e[20]!==u||e[21]!==_?(v=p.jsxs(h2,{children:[u,_]}),e[20]=u,e[21]=_,e[22]=v):v=e[22],v}"
+    },
+    {
+      "function": "K9i",
+      "characterOffset": 7162713,
+      "decodedExcerpt": "function K9i(t){const e=mro(t);return e?`https://github.com/${e}`:null}"
+    },
+    {
+      "function": "mro",
+      "characterOffset": 7162648,
+      "decodedExcerpt": "function mro(t){if(Lni(t)?.hostname===\"github.com\")return pro(t)}"
+    }
+  ],
+  "transfer_note": "Bundle hash omitted: retained-message transfer redacted it. Decoded excerpts transferred from parent; original identity evidence remains there."
+}

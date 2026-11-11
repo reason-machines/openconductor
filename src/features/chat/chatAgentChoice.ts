@@ -26,7 +26,7 @@ const cliAgentFor = (entry: ModelChoice): CliAgent | undefined => CLI_AGENT_IDS.
 
 /** The agent a picked entry runs on. */
 export function agentForPick(pick: ModelChoice): ChatAgentId {
-  return cliAgentFor(pick) ?? "reason";
+  return pick.agent ?? cliAgentFor(pick) ?? "reason";
 }
 
 /** Name for an entry that is not a Conductor model id. */
@@ -50,9 +50,13 @@ export interface PickerState {
  * chat shows the agent's name on the chip with the Reason models listed to
  * switch back.
  */
-export function pickerState(agent: ChatAgentId, reasonModel: ModelChoice, fallback: ModelChoice | null, agentsAvailable: boolean): PickerState {
+export function pickerState(agent: ChatAgentId, reasonModel: ModelChoice, fallback: ModelChoice | null, agentsAvailable: boolean, loadout: readonly ModelChoice[] = []): PickerState {
+  const availableLoadout = loadout.filter((pick) => agentsAvailable || agentForPick(pick) === agent);
   const reasonModels = [reasonModel, ...(fallback && fallback.model !== reasonModel.model ? [fallback] : [])];
-  const others = agentsAvailable ? CLI_AGENT_IDS.filter((id) => id !== agent).map((id) => CLI_AGENTS[id].entry) : [];
-  if (agent !== "reason") return { value: CLI_AGENTS[agent].entry, label: CLI_AGENTS[agent].label, favorites: [...reasonModels, ...others] };
-  return { value: reasonModel, favorites: [...reasonModels.slice(1), ...others] };
+  const others = agentsAvailable ? CLI_AGENT_IDS.filter((id) => id !== agent || reasonModel.agent === id).map((id) => CLI_AGENTS[id].entry) : [];
+  if (agent !== "reason") {
+    const local = reasonModel.agent === agent ? reasonModel : CLI_AGENTS[agent].entry;
+    return { value: local, ...(local.agent ? {} : { label: CLI_AGENTS[agent].label }), favorites: [...availableLoadout, ...reasonModels, ...others] };
+  }
+  return { value: reasonModel, favorites: [...availableLoadout, ...reasonModels.slice(1), ...others] };
 }

@@ -19,7 +19,9 @@ Current CLI source was inspected read-only at [monorepo 6677412104358d1becb9fd3c
 - `reason logout` removes saved credentials and disconnects devices as well as stopping pending sign-in. Cancel must not call it.
 - Current `canonicalUserHome()` resolves the account-database home rather than trusting HOME alone. Release tests need the CLI's explicit `REASON_TEST_ACCOUNT_ROOT` isolation, if the tested installed version supports it. The directory must be canonical, owned, mode 0700, and different from the real account home. A fresh HOME alone does not prove credential isolation on that implementation.
 
-The exact installed Mac version, Finder launch resolution, and Sven's original built-app failure are not yet established by this cloud evidence.
+The sole native driver later verified installed CLI 0.2.701 on `sven m5 max`. The running stable app's actual PATH begins with the installed CLI directory and includes the Homebrew/local directories. Missing PATH is therefore not established as the cause. Only 0.2.700 and 0.2.701 remain in the canonical installed versions directory. Sven's original built-app failure and the earlier 0.2.69x behavior remain unknown.
+
+The native driver created a canonical mode-0700 account root and a separate owned single-link mode-0600 keychain outside the real keychain directory. The default and search keychain lists stayed unchanged. After the fixture's first managed-runtime install completed, `status --json` returned no account, account error, organization, workspace or connection. This establishes a signed-out isolated fixture, not a successful app sign-in. A prior 15-second preflight cutoff interrupted that first install and is not evidence of a pairing failure.
 
 ## Reproduced deadline defect
 
@@ -43,7 +45,7 @@ This proves the deadline mechanism with a synthetic delayed CLI. It does not est
 
 ## Lifecycle and ownership
 
-`reason_acp/login.rs` owns one typed attempt. `reason_login_start` joins an active attempt or starts another after a terminal state. `reason_login_status` returns its snapshot. `reason_login_cancel` accepts an attempt ID, so stale cancellation cannot stop a retry.
+`reason_acp/login.rs` owns one typed attempt. `reason_login_start` joins an active attempt or starts another after a terminal state. `reason_login_status` returns active/terminal attempt snapshots; while idle or connected it refreshes the actual CLI account off the UI thread. A generation and state comparison prevents a slow account read from overriding a newer start, cancel, retry or explicit sign-out. `reason_login_cancel` accepts an attempt ID, so stale cancellation cannot stop a retry. Cancelled and timed-out attempts stay frozen until explicit retry even if the CLI later completes.
 
 The CLI runs with null stdin, captured output, and no shell. Startup has a separate 60-second deadline. The app waits at most ten minutes for browser approval. Cancel and timeout stop app polling and terminate and reap an active foreground subprocess. Existing login short-circuits pairing and returns the account and workspace. No cancel path logs out or deletes credentials.
 
@@ -61,10 +63,18 @@ Run the module suite and clippy.
 REASON_ACP_HARNESS_DIR=/tmp/openconductor-reason-tests bash tools/reason-acp/run-rust-tests.sh
 ```
 
-On this cloud computer, all 71 Rust tests and clippy passed. The six new lifecycle tests exercise one shared attempt, approved account and workspace, existing login preservation, cancel and late-result protection, stopped polling, timeout and retry, stale cancel, foreground process termination and reaping, and production versus fake URL validation. The delayed-link regression also passed.
+On this cloud computer, all 75 Rust tests and clippy passed. The nine lifecycle tests exercise one shared attempt, approved account and workspace, existing login preservation, cancel and late-result protection, stopped polling, timeout and retry, stale cancel, foreground process termination and reaping, production versus fake URL validation, existing-account discovery on a fresh app, external expiry, explicit sign-out reset, and slow-refresh/reset protection. The delayed-link regression also passed.
+
+The fresh-app saved-account regression failed against the old snapshot-only status method, then passed after the canonical refresh fix. Refresh never launches login or logout.
 
 Rust formatting passed. The system Rust installation did not include rustfmt or clippy and was read-only, so these tools ran from a private temporary Rust installation rather than modifying shared tooling.
 
 A full Linux `cargo check --manifest-path src-tauri/Cargo.toml --lib` failed before compiling app code because the cloud host lacks `glib-2.0` and `gobject-2.0` development libraries. macOS package CI must check Tauri integration.
 
-Fake-server browser E2E, native fresh-account browser approval, the Reason turn, and package-macos results will be recorded separately. They have not passed on the evidence above.
+The shared frontend has passed 22 synthetic UI cases across the actual onboarding, Settings and chat entry components. A separate approval-gated HTTP server and fake CLI drive the production Rust lifecycle through 17 browser cases, including real-time 21-second URL waits for fresh and existing-pending sign-ins. All six server/CLI boundary tests passed. See [the runnable fake-server contract and viewed evidence](../../../tools/reason-pairing/README.md).
+
+The integrated frontend passed `npm run typecheck`, `npm run build`, all 1,311 tests from `node --test "src/**/*.test.ts"`, and `npm run lint:colors` on this cloud computer. The combined browser suites and exact-head CI are checked again after the final test increment.
+
+The built-app flow fixture previously approved pairing from the first `status` read. The shared Rust lifecycle could reach Connected before WebDriver observed the confirmation code. `built_app_fake_waits_for_explicit_approval_before_connecting` failed before the fixture correction with `status reads cannot approve pairing`, then passed afterwards. The built-app flow now opts into explicit synthetic approval, asserts the confirmation code and waiting state, and only then removes its isolated signed-out marker. Existing ACP fixtures retain their default behavior. No production authentication or timeout was weakened.
+
+The native signed-out preflight receipt is [recorded separately](native-macos-preflight.json). The [later built-app receipt](native-macos-3992181-preapproval.json) reports a successful build, 39 bundle checks, and genuine CLI 0.2.701 pairing reaching browser-approval waiting on the isolated Mac. Browser access was unavailable and its Chrome access card awaits the person. Screenshot capture failed for the exact owned window; no native image or visual claim is attached. Native browser approval, Connected account/workspace, a real Reason turn, and the containing main-branch package remain unverified. The sole native driver owns those remaining observations.

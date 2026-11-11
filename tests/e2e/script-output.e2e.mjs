@@ -21,6 +21,43 @@ after(async () => {
   if (server) await new Promise((resolve) => server.close(resolve));
 });
 
+test("Setup tab shows its working indicator before the label only while running", async () => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+  try {
+    await page.goto(`${base}/?kind=setup&setupState=idle`);
+    const tab = page.getByRole("tab", { name: /^Setup/ });
+    await tab.click();
+    const indicators = tab.locator("svg, .setup-dot");
+    await page.getByRole("button", { name: "Run setup", exact: true }).waitFor();
+    assert.equal(await indicators.count(), 0);
+    await page.getByRole("button", { name: "Run setup", exact: true }).click();
+    await page.getByRole("button", { name: "Stop setup", exact: true }).waitFor();
+    assert.equal(await indicators.locator("circle").count(), 3);
+    assert.equal(await tab.evaluate((el) => el.firstElementChild?.tagName.toLowerCase()), "svg");
+    assert.equal(await indicators.getAttribute("width"), "10");
+    assert.deepEqual(await indicators.evaluate((el) => {
+      const style = getComputedStyle(el);
+      return { width: style.width, border: style.borderTopWidth };
+    }), { width: "10px", border: "0px" });
+    if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/setup-running.png` });
+    await page.getByRole("button", { name: "Stop setup", exact: true }).click();
+    await page.getByRole("button", { name: "Rerun setup", exact: true }).waitFor();
+    await indicators.waitFor({ state: "detached" });
+    assert.equal(await indicators.count(), 0);
+    for (const state of ["completed", "failed", "cancelled"]) {
+      await page.getByRole("button", { name: "Rerun setup", exact: true }).click();
+      await page.getByRole("button", { name: "Stop setup", exact: true }).waitFor();
+      await page.evaluate((value) => window.__scriptOutputTest.finish(value), state);
+      await page.getByRole("button", { name: "Rerun setup", exact: true }).waitFor();
+      await indicators.waitFor({ state: "detached" });
+      assert.equal(await indicators.count(), 0, `${state} has no indicator`);
+    }
+    if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/setup-finished.png` });
+  } finally {
+    await page.close();
+  }
+});
+
 test("terminal tab labels follow visible order after closing siblings", async () => {
   const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
   try {
@@ -31,6 +68,7 @@ test("terminal tab labels follow visible order after closing siblings", async ()
     await add.click();
     await page.waitForFunction(() => window.__fake.spawns === 1 && document.querySelector(".term-mount .xterm-rows")?.textContent.includes("ada@mac lisbon"));
     assert.deepEqual(await labels(), ["Terminal"]);
+    assert.equal(await page.getByRole("button", { name: "Clear terminal scrollback", exact: true }).count(), 0, "scrollback clearing stays a terminal shortcut, not an extra toolbar control");
     assert.equal(await tabs.locator(".term-dot.running").count(), 0);
     await add.click();
     await add.click();
@@ -41,6 +79,41 @@ test("terminal tab labels follow visible order after closing siblings", async ()
     assert.deepEqual(await labels(), ["Terminal"]);
     assert.equal(await page.evaluate(() => window.__fake.spawns), 3);
     if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/terminal-single.png` });
+  } finally {
+    await page.close();
+  }
+});
+
+test("terminal lifecycle indicates starting and a muted normal exit with its code", async () => {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 820 } });
+  try {
+    await page.goto(`${base}/?kind=setup`);
+    await page.evaluate(() => window.__scriptOutputTest.holdTerminal());
+    await page.getByRole("button", { name: "New terminal", exact: true }).click();
+    const tab = page.locator(".term-tab");
+    const starting = tab.getByRole("img", { name: "Starting", exact: true });
+    await starting.waitFor({ timeout: 3000 });
+    assert.equal(await starting.locator("circle").count(), 3);
+    await page.evaluate(() => window.__scriptOutputTest.terminalReady());
+    await page.waitForFunction(() => !document.querySelector(".term-tab .term-starting"));
+    assert.equal(await tab.getByRole("img").count(), 0);
+    for (const code of [0, 7]) {
+      await page.evaluate((value) => window.__scriptOutputTest.terminalExit(value), code);
+      const exited = tab.getByRole("img", { name: `Exited (code ${code})`, exact: true });
+      await exited.waitFor({ timeout: 3000 });
+      assert.equal(await exited.locator("title").textContent(), `Exited (code ${code})`);
+      const actual = await exited.evaluate((el) => getComputedStyle(el).color);
+      const expected = await exited.evaluate((el) => {
+        const probe = document.createElement("span");
+        probe.style.color = "var(--muted)";
+        el.append(probe);
+        const color = getComputedStyle(probe).color;
+        probe.remove();
+        return color;
+      });
+      assert.equal(actual, expected);
+    }
+    if (process.env.OC_SHOT_DIR) await page.screenshot({ path: `${process.env.OC_SHOT_DIR}/terminal-exited.png` });
   } finally {
     await page.close();
   }

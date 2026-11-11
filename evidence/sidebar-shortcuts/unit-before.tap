@@ -1,0 +1,394 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: repo; filter=all; Focus=expanded: numbers target their labelled row
+ok 1 - repo; filter=all; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 2.858679
+  type: 'test'
+  ...
+# Subtest: repo; filter=all; Focus=collapsed: numbers target their labelled row
+not ok 2 - repo; filter=all; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 1.772011
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:33:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          label: 'pinned',
+          target: 'pinned'
+        },
+        {
+          label: 'visible-alpha',
+    +     target: 'section-beta'
+    -     target: 'visible-alpha'
+        },
+        {
+          label: 'visible-beta',
+    +     target: 'section-alpha'
+    -     target: 'visible-beta'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-alpha'
+      target: 'visible-alpha'
+    2:
+      label: 'visible-beta'
+      target: 'visible-beta'
+  actual:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-alpha'
+      target: 'section-beta'
+    2:
+      label: 'visible-beta'
+      target: 'section-alpha'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:39:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: repo; filter=alpha; Focus=expanded: numbers target their labelled row
+ok 3 - repo; filter=alpha; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.312759
+  type: 'test'
+  ...
+# Subtest: repo; filter=alpha; Focus=collapsed: numbers target their labelled row
+not ok 4 - repo; filter=alpha; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.529647
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:33:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          label: 'pinned',
+          target: 'pinned'
+        },
+        {
+          label: 'visible-alpha',
+    +     target: 'section-beta'
+    -     target: 'visible-alpha'
+        },
+        {
+          label: 'visible-beta',
+    +     target: 'section-alpha'
+    -     target: 'visible-beta'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-alpha'
+      target: 'visible-alpha'
+    2:
+      label: 'visible-beta'
+      target: 'visible-beta'
+  actual:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-alpha'
+      target: 'section-beta'
+    2:
+      label: 'visible-beta'
+      target: 'section-alpha'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:39:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: repo; filter=beta; Focus=expanded: numbers target their labelled row
+ok 5 - repo; filter=beta; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.158642
+  type: 'test'
+  ...
+# Subtest: repo; filter=beta; Focus=collapsed: numbers target their labelled row
+not ok 6 - repo; filter=beta; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.31899
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:33:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          label: 'pinned',
+          target: 'pinned'
+        },
+        {
+          label: 'visible-alpha',
+    +     target: 'section-beta'
+    -     target: 'visible-alpha'
+        },
+        {
+          label: 'visible-beta',
+    +     target: 'section-alpha'
+    -     target: 'visible-beta'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-alpha'
+      target: 'visible-alpha'
+    2:
+      label: 'visible-beta'
+      target: 'visible-beta'
+  actual:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-alpha'
+      target: 'section-beta'
+    2:
+      label: 'visible-beta'
+      target: 'section-alpha'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:39:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: status; filter=all; Focus=expanded: numbers target their labelled row
+ok 7 - status; filter=all; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.417404
+  type: 'test'
+  ...
+# Subtest: status; filter=all; Focus=collapsed: numbers target their labelled row
+not ok 8 - status; filter=all; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.269635
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:33:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          label: 'pinned',
+          target: 'pinned'
+        },
+        {
+          label: 'visible-beta',
+    +     target: 'section-beta'
+    -     target: 'visible-beta'
+        },
+        {
+          label: 'visible-alpha',
+    +     target: 'section-alpha'
+    -     target: 'visible-alpha'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-beta'
+      target: 'visible-beta'
+    2:
+      label: 'visible-alpha'
+      target: 'visible-alpha'
+  actual:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-beta'
+      target: 'section-beta'
+    2:
+      label: 'visible-alpha'
+      target: 'section-alpha'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:39:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: status; filter=alpha; Focus=expanded: numbers target their labelled row
+ok 9 - status; filter=alpha; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 2.168383
+  type: 'test'
+  ...
+# Subtest: status; filter=alpha; Focus=collapsed: numbers target their labelled row
+not ok 10 - status; filter=alpha; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.539233
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:33:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          label: 'pinned',
+          target: 'pinned'
+        },
+        {
+          label: 'visible-alpha',
+    +     target: 'section-beta'
+    -     target: 'visible-alpha'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-alpha'
+      target: 'visible-alpha'
+  actual:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-alpha'
+      target: 'section-beta'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:39:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: status; filter=beta; Focus=expanded: numbers target their labelled row
+ok 11 - status; filter=beta; Focus=expanded: numbers target their labelled row
+  ---
+  duration_ms: 0.183769
+  type: 'test'
+  ...
+# Subtest: status; filter=beta; Focus=collapsed: numbers target their labelled row
+not ok 12 - status; filter=beta; Focus=collapsed: numbers target their labelled row
+  ---
+  duration_ms: 0.200037
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:33:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+          label: 'pinned',
+          target: 'pinned'
+        },
+        {
+          label: 'visible-beta',
+    +     target: 'section-beta'
+    -     target: 'visible-beta'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-beta'
+      target: 'visible-beta'
+  actual:
+    0:
+      label: 'pinned'
+      target: 'pinned'
+    1:
+      label: 'visible-beta'
+      target: 'section-beta'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/palette/shortcutOrder.test.ts:39:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 6
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 230.657821

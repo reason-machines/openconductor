@@ -1,0 +1,11 @@
+{
+  "type": "result",
+  "subtype": "success",
+  "is_error": false,
+  "session_id": "sdk-fixture",
+  "result": "done",
+  "usage": {
+    "input_tokens": 18200,
+    "output_tokens": 2400
+  }
+}

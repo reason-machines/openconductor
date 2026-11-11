@@ -275,6 +275,7 @@ export function homeRows(
       directory: row.workspace.name,
       repo: row.repo.name,
       number,
+      prNumber: row.workspace.pr?.number,
     });
     return matches ? [{ ...row, matches }] : [];
   });

@@ -6,20 +6,27 @@
 // Cycle effort shortcut. ⌘/ opens it, ⌘⇧/ cycles the effort, ⌘⇧E toggles Fast.
 
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { glyphs } from "../../keybindings/shortcut.ts";
-import { effectiveEffort, fastModeAvailable, modelChip, modelDisplayName, modelEfforts, nextEffort, type ModelChoice } from "./composerModels.ts";
+import { AGENT_LABEL, agentForModel } from "../../settings/models.ts";
+import { effectiveEffort, fastModeAvailable, modelChoiceChip, modelDisplayName, modelEfforts, nextEffort, type ModelChoice } from "./composerModels.ts";
 import { ArrowUpRightIcon, CheckIcon, ChevronDownIcon, ChevronRightIcon, ModelGlyph, PlusSmallIcon, SearchSmallIcon, SettingsSmallIcon } from "./composerIcons.tsx";
+
+import type { ChatAgentId } from "./agentChoice";
+import { orderedModelChoices, sameModelChoice, selectLoadoutSlot } from "./loadoutChoices.ts";
+import { PRIORITY } from "../../keybindings/dispatcher.ts";
 
 export type { ModelChoice };
 
 export interface ModelPickerProps {
   value: ModelChoice;
-  /** Models listed above "Add models" (Conductor's favourites); the current one is added first when missing. */
+  /** Occupied loadout entries, already in physical slot order, listed first. */
   favorites?: readonly ModelChoice[];
+  loadout?: readonly (ModelChoice | null)[];
+  keybindingDialogIds?: string[];
   /** Label shown instead of the model's display name (an agent without Conductor model ids). */
   label?: string;
   onChange: (next: ModelChoice) => void;
@@ -38,37 +45,73 @@ export interface ModelPickerProps {
   modelName?: (model: string) => string | undefined;
   /** A line about a model (Reason's "Claude · Subscription"), shown as its tooltip. */
   modelDescription?: (model: string) => string | undefined;
+  itemAgent?: (choice: ModelChoice) => ChatAgentId;
 }
 
-const same = (a: ModelChoice, b: ModelChoice) => a.model === b.model;
+const same = sameModelChoice;
 
-export function ModelPicker({ value, favorites = [], label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription }: ModelPickerProps) {
+export function ModelPicker({ value, favorites = [], loadout = [], keybindingDialogIds, label, onChange, onOpenSettings, fastSupported = false, disabled = false, children, itemLabel, models, modelName, modelDescription, itemAgent }: ModelPickerProps) {
   const [open, setOpen] = useState(false);
   const menu = usePresence(open);
   const [query, setQuery] = useState("");
+  const [searchHeight, setSearchHeight] = useState<number>();
+  const searching = query.trim() !== "";
+  const [searchIndex, setSearchIndex] = useState(0);
   const [effortOpen, setEffortOpen] = useState(false);
   const root = useRef<HTMLSpanElement>(null);
+  const search = useRef<HTMLInputElement>(null);
+  const menuInner = useRef<HTMLDivElement>(null);
+  const effortTrigger = useRef<HTMLButtonElement>(null);
+  const effortMenu = useRef<HTMLDivElement>(null);
+  const focusEffortOnOpen = useRef(false);
   const { overrides } = useKeybindingOverrides();
   const hint = (id: string) => {
     const s = effectiveShortcuts(id, overrides)[0];
     return s ? glyphs(s) : "";
   };
   const nameOf = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
-  const chip = modelChip(value.model, value.effort, value.fast, modelName?.(value.model));
+  const chip = modelChoiceChip(value, modelName?.(value.model));
   const efforts = modelEfforts(value.model);
-  const current = effectiveEffort(value.model, value.effort);
+  const current = value.agent ? value.effort : effectiveEffort(value.model, value.effort);
   const showFast = fastSupported && fastModeAvailable(value.model);
   const items = useMemo(() => {
-    // The agent's models come before the other favourites (the Codex and Claude Code entries).
-    const listed = [value, ...(models ?? []), ...favorites];
-    const unique = listed.filter((f, i) => listed.findIndex((g) => same(f, g)) === i);
-    const list = models ? unique : unique.slice(0, 5);
+    const list = orderedModelChoices(value, favorites, models);
     const q = query.trim().toLowerCase();
+    const words = q.split(/\s+/);
     const name = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
-    return q ? list.filter((f) => name(f).toLowerCase().includes(q) || f.model.toLowerCase().includes(q)) : list;
-  }, [favorites, value, query, itemLabel, models, modelName]);
+    return q ? list.filter((f) => {
+      const agent = itemAgent?.(f) ?? f.agent ?? agentForModel(f.model);
+      const agentLabel = agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : "";
+      const fields = [name(f), f.model, agentLabel, agent ? `${agent}:${f.model}` : ""].map((field) => field.toLowerCase());
+      return words.every((word) => fields.some((field) => field.includes(word)));
+    }) : list;
+  }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
 
+  useLayoutEffect(() => {
+    const rows = root.current?.querySelector(".oc-model-list");
+    if (rows) rows.scrollTop = 0;
+  }, [query]);
+
+  const changeQuery = (next: string) => {
+    if (!next.trim()) setSearchHeight(undefined);
+    else if (!query.trim()) setSearchHeight(menuInner.current?.getBoundingClientRect().height);
+    setQuery(next);
+    setSearchIndex(0);
+  };
+
+  const selectSlot = (index: number) => {
+    const focused = document.activeElement;
+    const composer = root.current?.closest(".composer, .create-card");
+    if (disabled || (!open && !composer?.contains(focused))) return false;
+    selectLoadoutSlot(loadout, index, onChange);
+    return true;
+  };
   useKeybindings({
+    "chat.selectLoadout1": () => selectSlot(0),
+    "chat.selectLoadout2": () => selectSlot(1),
+    "chat.selectLoadout3": () => selectSlot(2),
+    "chat.selectLoadout4": () => selectSlot(3),
+    "chat.selectLoadout5": () => selectSlot(4),
     "chat.openModelPicker": () => (disabled ? false : setOpen((o) => !o)),
     "chat.toggleThinking": () => {
       const next = nextEffort(value.model, value.effort);
@@ -76,11 +119,13 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
       onChange({ ...value, effort: next });
     },
     "chat.toggleFastMode": () => (disabled || !showFast ? false : onChange({ ...value, fast: !value.fast })),
-  });
+  }, { priority: PRIORITY.HIGH, allowWhileTyping: true, enableOnDialogIds: keybindingDialogIds });
 
   useEffect(() => {
     if (!open) {
       setQuery("");
+      setSearchHeight(undefined);
+      setSearchIndex(0);
       setEffortOpen(false);
       return;
     }
@@ -89,12 +134,74 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
     return () => document.removeEventListener("mousedown", close);
   }, [open]);
 
+  useEffect(() => {
+    if (effortOpen && focusEffortOnOpen.current) {
+      effortMenu.current?.querySelector<HTMLButtonElement>("button")?.focus();
+      focusEffortOnOpen.current = false;
+    }
+  }, [effortOpen]);
+
+  const onEffortTriggerKey = (e: KeyboardEvent<HTMLButtonElement>) => {
+    if (e.defaultPrevented || e.nativeEvent.isComposing || disabled) return;
+    if (e.key !== "ArrowRight" && e.key !== "Enter") return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (effortOpen) effortMenu.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    else {
+      focusEffortOnOpen.current = true;
+      setEffortOpen(true);
+    }
+  };
+
+  const onEffortOptionKey = (e: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (e.defaultPrevented || e.nativeEvent.isComposing || disabled || !efforts) return;
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "ArrowLeft" && e.key !== "Enter") return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      const next = (index + (e.key === "ArrowDown" ? 1 : -1) + efforts.options.length) % efforts.options.length;
+      effortMenu.current?.querySelectorAll<HTMLButtonElement>("button")[next]?.focus();
+    } else {
+      if (e.key === "Enter") onChange({ ...value, effort: efforts.options[index].value });
+      setEffortOpen(false);
+      effortTrigger.current?.focus();
+    }
+  };
+
   const onMenuKey = (e: KeyboardEvent) => {
+    if (e.defaultPrevented || ("isComposing" in e && e.isComposing === true) || e.nativeEvent.isComposing === true
+      || e.keyCode === 229 || e.which === 229 || e.nativeEvent.keyCode === 229 || e.nativeEvent.which === 229) return;
+    const resultIndex = e.target instanceof HTMLButtonElement ? e.target.dataset.modelResult : undefined;
+    const inSearch = e.target === search.current || (query.trim() !== "" && resultIndex !== undefined);
+    if (query.trim() && inSearch && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (items.length && !disabled) {
+        const index = resultIndex === undefined ? 0 : Number(resultIndex);
+        const next = (index + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+        root.current?.querySelector<HTMLButtonElement>(`[data-model-result="${next}"]`)?.focus();
+      }
+      return;
+    }
+    if (inSearch && e.key === "Enter") {
+      e.preventDefault();
+      e.stopPropagation();
+      const match = query.trim() ? items[resultIndex === undefined ? 0 : Number(resultIndex)] : undefined;
+      if (match && !disabled) {
+        if (!same(match, value)) onChange(match);
+        changeQuery("");
+        search.current?.focus();
+      }
+      return;
+    }
     if (e.key === "Escape") {
       e.preventDefault();
       e.stopPropagation();
       if (effortOpen) setEffortOpen(false);
+      else if (e.target === search.current && query !== "") changeQuery("");
       else setOpen(false);
+    } else if (e.target === search.current && e.key !== "ArrowUp" && e.key !== "ArrowDown" && e.key !== "Tab") {
+      e.stopPropagation();
     }
   };
 
@@ -114,7 +221,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
         >
           {/* Conductor's `composer-compact-model-icon`: shown only while the composer is minimized. */}
           <span className="oc-model-chip-icon" aria-hidden>
-            <ModelGlyph model={value.model} />
+            <ModelGlyph model={value.model} agent={itemAgent?.(value)} />
           </span>
           <span className="oc-model-chip-label">{label ?? chip.label}</span>
           <span className="oc-model-chip-details">
@@ -125,38 +232,44 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
       </Tooltip>
       {menu.mounted ? (
         <div className="oc-model-menu" role="menu" aria-label="Model" data-motion="popup" {...menu.attrs}>
-          <div className="oc-model-menu-inner">
+          <div className="oc-model-menu-inner" ref={menuInner} style={searching ? { height: searchHeight } : undefined}>
             <div className="oc-model-search">
               <SearchSmallIcon />
-              <input aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => setQuery(e.target.value)} />
+              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} autoFocus value={query} onChange={(e) => changeQuery(e.target.value)} />
             </div>
             <div className="oc-model-list">
               {items.length === 0 ? <div className="oc-model-empty">No models found</div> : null}
-              {items.map((f) => {
+              {items.map((f, index) => {
                 const selected = same(f, value);
-                const e = modelChip(f.model, f.effort).effort;
+                const e = modelChoiceChip(f).effort;
+                const agent = searching ? itemAgent?.(f) ?? f.agent ?? agentForModel(f.model) : undefined;
+                const detail = searching ? (agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : undefined) : e;
                 return (
                   <button
-                    key={f.model}
+                    key={`${f.agent ?? ""}:${f.model}:${f.effort ?? ""}:${!!f.fast}`}
                     type="button"
                     role="menuitem"
                     className="oc-model-item"
                     data-selected={selected || undefined}
+                    data-model-result={index}
+                    data-highlighted={query.trim() !== "" && index === searchIndex || undefined}
+                    onFocus={() => setSearchIndex(index)}
                     title={[nameOf(f), modelDescription?.(f.model)].filter(Boolean).join(" · ")}
                     onClick={() => {
                       if (!selected) onChange(f);
-                      setOpen(false);
+                      if (searching) changeQuery("");
+                      else setOpen(false);
                     }}
                   >
-                    <ModelGlyph model={f.model} />
+                    <ModelGlyph model={f.model} agent={itemAgent?.(f)} />
                     <span className="oc-model-item-name">{selected && label ? label : nameOf(f)}</span>
-                    {e ? <span className="oc-model-item-effort">{e}</span> : null}
+                    {detail ? <span className="oc-model-item-effort">{detail}</span> : null}
                     {selected ? <CheckIcon className="oc-model-item-check" /> : null}
                   </button>
                 );
               })}
-              {children}
-              {onOpenSettings ? (
+              {!searching ? children : null}
+              {!searching && onOpenSettings ? (
                 <button
                   type="button"
                   role="menuitem"
@@ -174,23 +287,24 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                 </button>
               ) : null}
             </div>
-            {efforts || showFast ? <div className="oc-model-sep" /> : null}
-            {efforts ? (
+            {!searching && (efforts || showFast) ? <div className="oc-model-sep" /> : null}
+            {!searching && efforts ? (
               <div className="oc-model-sub" onMouseEnter={() => setEffortOpen(true)} onMouseLeave={() => setEffortOpen(false)}>
-                <button type="button" role="menuitem" className="oc-model-row" aria-haspopup="menu" aria-expanded={effortOpen} data-highlighted={effortOpen || undefined} onClick={() => setEffortOpen(true)}>
+                <button ref={effortTrigger} type="button" role="menuitem" className="oc-model-row" aria-haspopup="menu" aria-expanded={effortOpen} data-highlighted={effortOpen || undefined} onKeyDown={onEffortTriggerKey} onClick={() => setEffortOpen(true)}>
                   <span>{efforts.axisLabel}</span>
                   <span className="oc-model-row-value">{efforts.options.find((o) => o.value === current)?.label}</span>
                   <ChevronRightIcon className="oc-model-row-chevron" />
                 </button>
                 {effortOpen ? (
-                  <div className="oc-model-submenu" role="menu" aria-label={efforts.axisLabel}>
-                    {efforts.options.map((o) => (
+                  <div ref={effortMenu} className="oc-model-submenu" role="menu" aria-label={efforts.axisLabel}>
+                    {efforts.options.map((o, index) => (
                       <button
                         key={o.value}
                         type="button"
                         role="menuitem"
                         className="oc-model-row"
                         data-selected={o.value === current || undefined}
+                        onKeyDown={(e) => onEffortOptionKey(e, index)}
                         onClick={() => {
                           onChange({ ...value, effort: o.value });
                           setOpen(false);
@@ -204,7 +318,7 @@ export function ModelPicker({ value, favorites = [], label, onChange, onOpenSett
                 ) : null}
               </div>
             ) : null}
-            {showFast ? (
+            {!searching && showFast ? (
               <button type="button" role="menuitemcheckbox" aria-checked={!!value.fast} className="oc-model-row" onClick={() => onChange({ ...value, fast: !value.fast })}>
                 <span className="oc-model-row-grow">Fast</span>
                 <span className="oc-kbd-hint">{hint("chat.toggleFastMode")}</span>

@@ -119,8 +119,8 @@ impl ReasonChats {
         let store = app
             .path()
             .app_data_dir()
-            .ok()
-            .map(|d| d.join(SESSION_STORE));
+            .map_err(|e| format!("Could not locate the Reason Session workspace store: {e}"))?
+            .join(SESSION_STORE);
         let app = app.clone();
         let sink: Sink = Arc::new(move |chat: &str, ev: ProviderEvent| {
             let event = wire::event_json(chat, &ev);
@@ -131,9 +131,7 @@ impl ReasonChats {
         provider.reconfigure_workspace(workspace);
         // Each Session's workspace, so a chat resumes there after a restart
         // even when the Reason desktop app has another workspace selected.
-        if let Some(store) = store {
-            provider = provider.with_session_store(store);
-        }
+        provider = provider.with_session_store(store);
         let provider = Arc::new(provider);
         *slot = Some(provider.clone());
         Ok(provider)
@@ -146,6 +144,22 @@ pub fn reason_cli_path(app: AppHandle) -> Option<String> {
     configured(&app)
         .ok()
         .map(|(l, _)| l.cli().display().to_string())
+}
+
+/// Ensures the official current CLI without signing in or changing overrides.
+#[tauri::command]
+pub async fn reason_cli_ensure_current() -> Result<crate::reason_acp::install::InstalledCli, String>
+{
+    static INSTALLER: std::sync::OnceLock<crate::reason_acp::install::CliInstaller> =
+        std::sync::OnceLock::new();
+    let home = home()?;
+    tauri::async_runtime::spawn_blocking(move || {
+        INSTALLER
+            .get_or_init(Default::default)
+            .ensure_current(&home)
+    })
+    .await
+    .map_err(|e| e.to_string())?
 }
 
 /// Runs `f` with the configured CLI off the UI thread, in the home folder.

@@ -26,7 +26,7 @@ import { CommentNav, useCommentNavigation } from "./CommentNav";
 import { RevertIcon } from "./DiscardDialog";
 import { FilePathChip } from "./FilePathChip";
 import type { CommentSide } from "./comments.ts";
-import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, type LineRange, codeViewItem, fromPierreSide, fullDiffMeta, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch } from "./pierre.ts";
+import { type Anchor, CODE_VIEW_LAYOUT, EXPANSION_LINE_COUNT, type LineRange, codeViewItem, editableCodeViewItem, fromPierreSide, fullDiffMeta, lineTarget, loadedFiles, rangeOf, selectionOf, toPatch } from "./pierre.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import { useDiffTheme } from "./useDiffTheme.ts";
 
@@ -35,6 +35,8 @@ export type { LineRange };
 
 interface Props {
   file: FileDiff;
+  /** Inactive retained views keep their Code state but not global navigation. */
+  isVisible?: boolean;
   layout: DiffLayout;
   ignoreWhitespace: boolean;
   /** Wrap long lines instead of scrolling them sideways. */
@@ -63,7 +65,7 @@ interface Props {
   worktree?: string | null;
   /** Turn hidden whitespace back on (the whitespace-only empty state's link). */
   onShowWhitespace?: () => void;
-  /** Make the entire-file view an editor (EditInViewer.ts); absent where the file can't be edited. */
+  /** Enable editing from complete current contents; absent for read-only files and history. */
   edit?: FileEdit;
   /** The whole new file, for the header's "Copy file contents" button. */
   loadText?: () => Promise<string>;
@@ -99,7 +101,7 @@ export function revealLine(path: string, anchor: LineAnchor): boolean {
   return reveal !== undefined;
 }
 
-function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, loadFull, edit }: Props) {
+function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, loadFull, edit, isVisible = true }: Props) {
   const themeType = useThemeType();
   const theme = useDiffTheme();
   const view = useRef<CodeViewHandle<LineAnchor, undefined> | null>(null);
@@ -123,13 +125,12 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
   const clickable = onLineClick !== undefined;
   const canLoad = loadFull !== undefined;
   const shown = useCodeViewItem(file, meta, layout, anchors);
-  // Editing (Conductor's EditablePierreFile): the file item with `edit: true`, starting from the draft.
-  // Pierre's edit session keeps its own document across item updates; a new `generation` remounts it.
-  const editing = edit !== undefined && shown.type === "file";
+  // Pierre requires complete diff metadata before attaching its editor.
+  const editing = edit !== undefined && (shown.type === "file" || !shown.fileDiff.isPartial);
   const latestEdit = useRef(edit);
   latestEdit.current = edit;
   const item = useMemo<CodeViewItem<LineAnchor>>(
-    () => (editing && shown.type === "file" ? { ...shown, file: { ...shown.file, contents: latestEdit.current!.current() }, edit: true } : shown),
+    () => (editing ? editableCodeViewItem(shown, latestEdit.current!.current()) : shown),
     [shown, editing],
   );
   const onEditChange = useCallback((e: { file: { contents: string } }) => latestEdit.current?.onChange(e.file.contents), []);
@@ -166,6 +167,7 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
       onLineSelectionEnd: clickable
         ? (r: SelectedLineRange | null) => {
             if (r) latest.current.onLineClick?.(rangeOf(r, wholeFile ? fileSide : fromPierreSide(r.side)));
+            else setSelection(null);
           }
         : undefined,
       diffStyle: layout === "split" ? "split" : "unified",
@@ -180,12 +182,13 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
   );
 
   useEffect(() => {
+    if (!isVisible) return;
     const reveal = (a: LineAnchor) => view.current?.scrollTo(lineTarget(file.path, a, layout === "file"));
     revealers.set(file.path, reveal);
     return () => {
       if (revealers.get(file.path) === reveal) revealers.delete(file.path);
     };
-  }, [file.path, layout]);
+  }, [file.path, layout, isVisible]);
 
   if (!meta && layout !== "file") return <div className="oc-file-note">This diff couldn't be displayed.</div>;
   const code = (
@@ -202,7 +205,7 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
     />
   );
   return (
-    <>
+    <div style={{ display: "contents" }} onPointerCancelCapture={clickable ? () => setSelection(null) : undefined}>
       {editing ? (
         <div className="oc-code-edit" onKeyDown={onKeyDown}>
           <EditProvider createEditor={createEditor}>{code}</EditProvider>
@@ -210,8 +213,8 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
       ) : (
         code
       )}
-      <CommentNav previousCount={nav.previousCount} nextCount={nav.nextCount} navigate={nav.navigate} />
-    </>
+      {isVisible && <CommentNav previousCount={nav.previousCount} nextCount={nav.nextCount} navigate={nav.navigate} />}
+    </div>
   );
 }
 
@@ -239,7 +242,7 @@ export function FileDiffView(props: Props) {
   else
     body = (
       <div className="oc-code-scroll">
-        <Code key={edit?.generation ?? 0} {...props} />
+        <Code key={`${edit?.generation ?? 0}:${props.layout}`} {...props} />
       </div>
     );
 

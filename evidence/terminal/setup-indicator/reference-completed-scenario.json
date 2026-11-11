@@ -1,0 +1,79 @@
+{
+  "browser": {
+    "mode": "launch",
+    "executable_path": "/usr/bin/chromium",
+    "headless": true
+  },
+  "start_url": {
+    "url": "http://conductor.localhost:4404/?oc_scenario=populated&oc_theme=dark&oc_script_output=1&oc_setup_script=npm%20install&oc_setup_state=completed"
+  },
+  "environment": {
+    "viewport": {
+      "width": 1280,
+      "height": 820,
+      "device_scale_factor": 1
+    },
+    "color_scheme": "dark",
+    "locale": "en-US",
+    "timezone": "UTC"
+  },
+  "actions": [
+    {
+      "step_id": "loaded",
+      "action": "wait_for_timeout",
+      "duration_ms": 1800
+    },
+    {
+      "step_id": "repository",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "text=tide-web"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "workspace",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "text=Ada/dark mode tokens"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "setup",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "[role=tab] >> text=Setup"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "run-setup",
+      "action": "click",
+      "locator": {
+        "kind": "css",
+        "selector": "button:text-is('Run setup')"
+      },
+      "timeout_ms": 5000
+    },
+    {
+      "step_id": "settled",
+      "action": "wait_for_timeout",
+      "duration_ms": 1800
+    }
+  ],
+  "capture": {
+    "at_end": [
+      "screenshot",
+      "dom",
+      "url"
+    ],
+    "events": [
+      "console",
+      "page-errors"
+    ]
+  }
+}

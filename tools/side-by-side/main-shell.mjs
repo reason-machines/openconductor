@@ -14,6 +14,9 @@ mock["/__mock/sidebar-sort-fixture.js"] = path.join(root, "tools/side-by-side/si
 const sidebarSortFixture = fs.readFileSync(mock["/__mock/sidebar-sort-fixture.js"], "utf8");
 const sidebarGroupFixture = fs.readFileSync(path.join(root, 'tools/side-by-side/sidebar-group-fixture.js'), 'utf8');
 const seed = fs.readFileSync(path.join(root,'tools/sidebar-screens/seed.js'),'utf8');
+const sidebarShortcutsFixture = fs.readFileSync(path.join(root, 'tools/side-by-side/sidebar-shortcuts-fixture.js'), 'utf8');
+mock['/__mock/workspace-number-fixture.js'] = path.join(root, 'tools/side-by-side/workspace-number-fixture.js');
+const numberFixture = fs.readFileSync(mock['/__mock/workspace-number-fixture.js'], 'utf8');
 const extra = `(() => {
  const theme = new URLSearchParams(location.search).get('oc_theme') || 'dark';
  localStorage.setItem('openconductor.settings.preview',JSON.stringify({general:{theme,send_native_notification:true,sound_type:'default'},appearance:{color_palette:'stone',zoom_level_v2:1,low_contrast_dark_mode:false,terminal_font_size:12}}));
@@ -26,6 +29,7 @@ const extra = `(() => {
  throw new Error('not mocked: '+cmd);
  }};
  window.__OC_SORT_FIXTURE__?.();
+ ${numberFixture}
 })();`;
 http.createServer((req,res)=>{
  const url=new URL(req.url,'http://localhost');
@@ -37,7 +41,7 @@ http.createServer((req,res)=>{
  if(!file.startsWith(root)||!fs.existsSync(file)||fs.statSync(file).isDirectory())file=path.join(dir,'index.html');
  let body=fs.readFileSync(file);
  if(file.endsWith('index.html')){
-  const inject=reference?`<meta http-equiv="Content-Security-Policy" content="connect-src 'self' data: blob:"><script>window.__OC_SCENARIO__=${JSON.stringify(url.searchParams.get('oc_scenario')||'signed-in')};</script>`+['sql-wasm.js','seed-data.js','seed.js','fixtures.js','org-fixtures.js','sidebar-sort-fixture.js','tauri-mock.js'].map(f=>`<script src="/__mock/${f}"></script>`).join(''):`<script>${seed}</script><script>${sidebarSortFixture}</script><script>${sidebarGroupFixture}</script><script>${extra}</script>`;
+  const inject=reference?`<meta http-equiv="Content-Security-Policy" content="connect-src 'self' data: blob:"><script>window.__OC_SCENARIO__=${JSON.stringify(url.searchParams.get('oc_scenario')||'signed-in')};</script>`+['sql-wasm.js','seed-data.js','seed.js','fixtures.js','org-fixtures.js','sidebar-sort-fixture.js','workspace-number-fixture.js','tauri-mock.js'].map(f=>`<script src="/__mock/${f}"></script>`).join(''):`<script>${seed}</script><script>${sidebarSortFixture}</script><script>${sidebarGroupFixture}</script><script>${sidebarShortcutsFixture}</script><script>${extra}</script>`;
   body=body.toString().replace('<head>','<head>'+inject);
  }
  res.writeHead(200,{'content-type':mime[path.extname(file)]||'application/octet-stream','cache-control':'no-store'});res.end(body);
@@ -60,6 +64,19 @@ http.createServer((req,res)=>{
  }
  if(process.argv.includes('--passport-check')) {
   try { await import('./passport.check.mjs'); } catch(e) { console.error(e); return; }
+ }
+ if(process.argv.includes('--home-routing-capture')) await import('./home-routing-capture.mjs');
+ if(process.argv.includes('--home-routing-check')) {
+  try { await import('./home-routing.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
+ }
+ if(process.argv.includes('--header-repo-check')) {
+  try { await import('./header-repo-menu.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
+ }
+ if(process.argv.includes('--local-header-check')) {
+  try { await import('./local-header-number.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
+ }
+ if(process.argv.includes('--shortcuts-check')) {
+  try { await import('./sidebar-shortcuts.check.mjs'); } catch(e) { console.error(e); process.exitCode = 1; return; }
  }
  if(process.argv.includes('--group-capture')) await import('./sidebar-group-capture.mjs');
  if(process.argv.includes('--capture')) await import('./main-shell-capture.mjs');

@@ -31,6 +31,8 @@ import { mkdtempSync, mkdirSync, writeFileSync, realpathSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import assert from "node:assert/strict";
+import { WebDriver } from "../../tests/e2e/webdriver.mjs";
+import { finishStartup } from "../../tests/e2e/startup.mjs";
 
 const app = process.argv[2] && resolve(process.argv[2]);
 if (!app) {
@@ -53,7 +55,14 @@ git("-c", "user.name=e2e", "-c", "user.email=e2e@example.com", "commit", "-q", "
 const MiB = 1024 * 1024;
 const payload = Buffer.alloc(3 * MiB, 7);
 let mode = "fail";
+const fixtureRequests = [];
 const server = createServer((req, res) => {
+  const request = { path: req.url, mode, status: null, finished: false };
+  fixtureRequests.push(request);
+  res.on("finish", () => {
+    request.status = res.statusCode;
+    request.finished = true;
+  });
   if (req.url !== "/claude" || mode === "fail") {
     res.writeHead(404).end("not here");
     return;
@@ -74,12 +83,13 @@ const manifest = join(home, "agent-binary-manifest.json");
 const sha256 = createHash("sha256").update(payload).digest("hex");
 writeFileSync(manifest, JSON.stringify({ claude: { version: "2.1.284", files: [{ exe: "claude", url, sha256, size: payload.length }] } }));
 
-const env = { ...process.env, HOME: home, SHELL: "/bin/bash", OPENCONDUCTOR_AGENT_BINARY_MANIFEST: manifest };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), SHELL: "/bin/bash", OPENCONDUCTOR_AGENT_BINARY_MANIFEST: manifest };
 for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME"]) delete env[k];
 const driver = spawn(process.env.TAURI_DRIVER || "tauri-driver", [], { env, stdio: ["ignore", "inherit", "inherit"] });
 const driverExited = new Promise((r) => driver.on("exit", r));
 
 const base = "http://127.0.0.1:4444";
+const startup = new WebDriver(base);
 let sessionUrl = null;
 
 /** One WebDriver request; none may hang the run (25 s bound, named in the error). */
@@ -180,6 +190,7 @@ try {
     180000,
   );
   sessionUrl = `${base}/session/${session.sessionId}`;
+  startup.sessionId = session.sessionId;
   await wd("POST", "/window/rect", { width: 1280, height: 860 }).catch(() => {});
 
   // One repo with one workspace through the real backend; its main chat runs Claude Code.
@@ -192,6 +203,7 @@ try {
     JSON.stringify(prefs),
     workspace.id,
   );
+  await finishStartup(startup);
   await waitFor("the chat composer", () => run("return !!document.querySelector('.composer-wrap [contenteditable=true]');"));
 
   // 1. The app fetches both agents at launch (lib.rs, as Conductor does); the host 404s:
@@ -214,6 +226,7 @@ try {
 
   const failed = await waitFor("the failed banner", bannerIn("failed"), 30000);
   assert.match(failed.text, /^Couldn't download Claude Code\. see error$/, failed.text);
+  assert.ok(fixtureRequests.some((r) => r.mode === "fail" && r.status === 404 && r.finished), "the local fixture answered the failed download with HTTP 404");
   assert.equal(failed.action, "Retry");
   assert.ok(failed.alert, "destructive alert icon");
   assert.ok(await click(".agent-binary-banner-toggle"));
@@ -225,6 +238,7 @@ try {
 
   // 2. Hydrating a failed status retries it (Conductor's AgentBinaryStore.initialize).
   await run("location.reload();");
+  await finishStartup(startup);
   await waitFor("the chat composer after reload", () => run("return !!document.querySelector('.composer-wrap [contenteditable=true]');"));
   const again = await waitFor("the auto-retry", bannerIn("retrying"), 15000, 100);
   if (!sawRetrying) await checkRetrying(again, "the auto-retry retries");
@@ -256,6 +270,7 @@ try {
   const settings = await invoke("get_settings");
   await invoke("update_settings", { settings: { ...settings, claude_code_executable_path: "/usr/bin/true" } });
   await run("location.reload();");
+  await finishStartup(startup);
   await waitFor("the chat composer after reload", () => run("return !!document.querySelector('.composer-wrap [contenteditable=true]');"));
   await invoke("request_agent_binary_download", { agent: "claude" });
   await waitFor("2.1.285 to be retrying", async () => {
@@ -269,7 +284,16 @@ try {
   console.log(`\n${steps.length} checks passed`);
 } catch (e) {
   console.error(`not ok - ${e instanceof Error ? e.stack : e}`);
-  if (sessionUrl) await screenshot("binary-failure").catch(() => {});
+  if (sessionUrl) {
+    await screenshot("binary-failure").catch(() => {});
+    const diagnostics = {
+      banner: await banner().catch((error) => ({ error: String(error) })),
+      backend: await invoke("get_agent_binary_state").catch((error) => ({ error: String(error) })),
+      fixtureRequests,
+    };
+    writeFileSync(join(out, "binary-failure.json"), JSON.stringify(diagnostics, null, 2));
+    console.error(`binary failure diagnostics: ${JSON.stringify(diagnostics)}`);
+  }
   process.exitCode = 1;
 } finally {
   if (sessionUrl) await wd("DELETE", "").catch(() => {});

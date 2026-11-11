@@ -72,6 +72,32 @@ test("unknown command ids throw", () => {
   assert.throws(() => bindCommands(createDispatcher(), { "no.such.command": () => {} }), /Unknown keybinding/);
 });
 
+test("hidden chat bindings cannot cancel or attach from a center terminal", () => {
+  const d = createDispatcher();
+  const ran: string[] = [];
+  bindCommands(d, {
+    "chat.cancel": () => void ran.push("cancel"),
+    "chat.addAttachment": () => void ran.push("attach"),
+  }, { isFocusedScope: false });
+  const terminal = { ...idle, typing: true, inTerminal: true };
+  assert.equal(d.dispatch(key("Backspace", { metaKey: true, shiftKey: true }), terminal).kind, "pass");
+  assert.equal(d.dispatch(key("u", { metaKey: true }), terminal).kind, "pass");
+  assert.deepEqual(ran, []);
+});
+
+test("focused chat shortcuts still work while its panel terminal has keyboard focus", () => {
+  const d = createDispatcher();
+  const ran: string[] = [];
+  bindCommands(d, {
+    "chat.cancel": () => void ran.push("cancel"),
+    "chat.addAttachment": () => void ran.push("attach"),
+  }, { isFocusedScope: true });
+  const terminal = { ...idle, typing: true, inTerminal: true };
+  assert.equal(d.dispatch(key("Backspace", { metaKey: true, shiftKey: true }), terminal).kind, "ran");
+  assert.equal(d.dispatch(key("u", { metaKey: true }), terminal).kind, "ran");
+  assert.deepEqual(ran, ["cancel", "attach"]);
+});
+
 const doc = (tagged: (string | undefined)[], modal: boolean) => ({
   querySelectorAll: () => tagged.map((dialogId) => ({ dataset: { dialogId } })),
   querySelector: () => (modal ? {} : null),
