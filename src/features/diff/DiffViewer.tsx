@@ -116,7 +116,7 @@ function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayou
   const [full, setFull] = useState<{ key: string; of: FileDiff; file: FileDiff } | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [failure, setFailure] = useState<{ key: string; of: FileDiff; attempt: number } | null>(null);
-  const wanted = layout !== "file" && !selected.binary && selected.hunks.length > 0;
+  const wanted = (layout !== "file" || diff.opts.ignoreWhitespace) && !selected.binary && selected.hunks.length > 0;
   const loadFull = diff.loadFull;
   useEffect(() => {
     if (!wanted) return;
