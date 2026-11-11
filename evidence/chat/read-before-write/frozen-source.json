@@ -1,0 +1,16 @@
+{
+  "checked_main": "1b415a2c9eacd606e5697cb30bee4d7c3b559b0f",
+  "original_attachment_sha256": "36f62a224a324c7c9f8722bf0789928eb2e90bd67cc0c03fc79da6cd10685a57",
+  "validated_packet_files": 16,
+  "validated_renderer_spans": [
+    "AI",
+    "F0o",
+    "hpo"
+  ],
+  "frozen_test": {
+    "path": "src/features/chat/toolErrorRetry.test.ts",
+    "sha256": "1efade652717faa26df812405ef938e64541b4ffb71522a33336e101a27a3d40"
+  },
+  "baseline_toolrows_sha256": "6c5c246d734f24e8b47463ac6ded4aa6eeba027fe34a81c90c52e095e6d68322",
+  "scope": "Static source qualification only; hosted baseline execution pending; no local Node/browser/native/provider execution."
+}
