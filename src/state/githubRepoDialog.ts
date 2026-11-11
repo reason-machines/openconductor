@@ -31,6 +31,7 @@ export function repoSlug(name: string): string {
 
 export interface StatusInput {
   ownersLoading: boolean;
+  name: string;
   slug: string;
   availability: AvailabilityState;
 }
@@ -38,8 +39,9 @@ export interface StatusInput {
 export type StatusTone = "muted" | "error" | "ok";
 
 /** The one status line under the repository name. */
-export function statusLine({ ownersLoading, slug, availability: a }: StatusInput): { text: string; tone: StatusTone } {
+export function statusLine({ ownersLoading, name, slug, availability: a }: StatusInput): { text: string; tone: StatusTone } | null {
   if (ownersLoading) return { text: "Loading GitHub owners...", tone: "muted" };
+  if (!name.trim()) return null;
   if (!slug) return { text: "Repository name must include letters or numbers.", tone: "error" };
   if (a.kind === "error" && a.slug === slug) return { text: "Couldn't check repository availability.", tone: "error" };
   if (a.kind === "taken" && a.slug === slug) return { text: "This repository already exists.", tone: "error" };

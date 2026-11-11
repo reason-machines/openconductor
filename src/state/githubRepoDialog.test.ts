@@ -10,11 +10,12 @@ test("repo slug: lowercase, dashes for other characters, collapsed and trimmed, 
   assert.equal(repoSlug("x".repeat(120)).length, 100);
 });
 
-test("status line follows loading, empty name, then the check for this exact slug", () => {
-  const s = (ownersLoading: boolean, slug: string, availability: Parameters<typeof statusLine>[0]["availability"]) =>
-    statusLine({ ownersLoading, slug, availability }).text;
-  assert.equal(s(true, "notes", { kind: "idle" }), "Loading GitHub owners...");
-  assert.equal(s(false, "", { kind: "idle" }), "Repository name must include letters or numbers.");
+test("status line follows loading, blank or invalid name, then the check for this exact slug", () => {
+  const s = (ownersLoading: boolean, name: string, availability: Parameters<typeof statusLine>[0]["availability"]) =>
+    statusLine({ ownersLoading, name, slug: repoSlug(name), availability })?.text ?? null;
+  assert.equal(s(true, "", { kind: "idle" }), "Loading GitHub owners...");
+  assert.equal(s(false, "", { kind: "idle" }), null);
+  assert.equal(s(false, " !-- ", { kind: "idle" }), "Repository name must include letters or numbers.");
   assert.equal(s(false, "notes", { kind: "checking" }), "Checking repository availability...");
   assert.equal(s(false, "notes", { kind: "available", slug: "notes" }), "Repository name is available.");
   assert.equal(s(false, "notes", { kind: "taken", slug: "notes" }), "This repository already exists.");
