@@ -12,6 +12,7 @@
 //! - any other state: rewrites `directory_name` and `workspace_path`.
 
 use std::path::{Path, PathBuf};
+use std::sync::LazyLock;
 
 use tauri::State;
 
@@ -19,14 +20,13 @@ use openconductor_db::workspace_rename as rename;
 
 use crate::db::Db;
 
-/// Conductor's directory-name rule (`YQe`): letters, numbers, marks, `_`
-/// and `-` only. Rust has no Unicode mark class in std, so combining marks
-/// are refused here; the frontend sends NFC names, where they are rare.
+/// Conductor's directory-name rule (`YQe`): letters, numbers, marks, `_` and `-` only.
 pub fn valid_directory_name(name: &str) -> bool {
-    !name.is_empty()
-        && name
-            .chars()
-            .all(|c| c.is_alphanumeric() || c == '_' || c == '-')
+    static DIRECTORY_NAME: LazyLock<regex::Regex> = LazyLock::new(|| {
+        regex::Regex::new(r"\A[\p{Letter}\p{Number}\p{Mark}_-]+\z")
+            .expect("valid directory-name pattern")
+    });
+    DIRECTORY_NAME.is_match(name)
 }
 
 /// JS: `invoke("db_rename_workspace", { workspaceId, newDirectoryName,
@@ -171,5 +171,26 @@ mod tests {
         assert!(!valid_directory_name("a/b"));
         assert!(!valid_directory_name(".."));
         assert!(!valid_directory_name("a b"));
+    }
+
+    #[test]
+    fn directory_name_accepts_nfc_stable_nonspacing_mark() {
+        assert!(valid_directory_name("q\u{0301}"));
+    }
+
+    #[test]
+    fn directory_name_accepts_nfc_stable_enclosing_mark() {
+        assert!(valid_directory_name("q\u{20dd}"));
+    }
+
+    #[test]
+    fn directory_name_accepts_nfc_stable_spacing_mark() {
+        assert!(valid_directory_name("q\u{093e}"));
+    }
+
+    #[test]
+    fn directory_name_rejects_non_mark_unicode_controls() {
+        assert!(!valid_directory_name("q\u{200d}"));
+        assert!(!valid_directory_name("q😀"));
     }
 }
