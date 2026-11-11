@@ -560,9 +560,15 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
   function run(c: Chat<Config>, effect: Q.Effect) {
     switch (effect.kind) {
       case "start":
-      case "steer":
-        void prompt(c, effect.text, [...effect.attachments], effect.userContent);
+      case "steer": {
+        const user = effect.retryTurnId ? c.transcript.messages.find((message) => message.turnId === effect.retryTurnId && message.role === "user") : undefined;
+        if (effect.retryTurnId && (!user || c.transcript.turns[effect.retryTurnId]?.status !== "failed")) {
+          setQueue(c, Q.turnEnded(c.queue, "cancelled", openTurns(c.state) > 0));
+          return;
+        }
+        void prompt(c, effect.text, [...effect.attachments], effect.userContent, user);
         return;
+      }
       case "cancel":
         // The backend cancels only a prompt it has; one still on its way is stopped here.
         for (const turnId of c.unsent) c.stopped.add(turnId);
@@ -645,13 +651,12 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
     },
     retryUnsent(chatId, cwd, input, turnId) {
       const c = chat(chatId);
-      if (Q.turnRunning(c.queue.status) || c.transcript.turns[turnId]?.status !== "failed") return false;
+      if (c.transcript.turns[turnId]?.status !== "failed" || c.queue.items.some((item) => item.retryTurnId === turnId)) return false;
       const messages = c.transcript.messages.filter((message) => message.turnId === turnId);
       const user = messages.find((message) => message.role === "user");
       if (!user || messages.some((message) => message.role === "assistant")) return false;
       c.cwd = cwd;
-      setQueue(c, { ...c.queue, status: "working" });
-      void prompt(c, input.text, [], input.userContent, user);
+      setQueue(c, Q.retry(c.queue, input, turnId));
       return true;
     },
     stop(chatId) {
