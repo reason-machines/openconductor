@@ -1,0 +1,156 @@
+{
+  "candidate": "CHAT.TOOL-DISCLOSURE-REMOUNT",
+  "disposition": "SOURCE_QUALIFIED_BEHAVIOR_NOT_RUN",
+  "checked_main": "516a58c931f31097007c97e844a1bb56d118c528",
+  "author": "Conductor Rebuild",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "original": {
+    "version": "Conductor 0.87.6",
+    "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "spans": {
+      "dIt-store": {
+        "path": "original-spans/dIt-store.txt",
+        "utf8_half_open": [
+          7795149,
+          7795403
+        ],
+        "sha256": "de8a258cc0bb150b3812474dbb9db332c052a7cb2bc10b0864254b40ba19dcdd",
+        "next_boundary": "function Mu("
+      },
+      "Mu": {
+        "path": "original-spans/Mu.txt",
+        "utf8_half_open": [
+          7795403,
+          7798463
+        ],
+        "sha256": "2a88a2516341f7a98563d2f4b2a602ac9c0acc584282cd01cf54a011e3e4231d",
+        "next_boundary": "function y0o("
+      },
+      "y0o": {
+        "path": "original-spans/y0o.txt",
+        "utf8_half_open": [
+          7798463,
+          7798500
+        ],
+        "sha256": "c7b44d404477445811e077d4dc816d86d2b91ba6a4b79e19f380793cc77649b2",
+        "next_boundary": "function x0o("
+      },
+      "O0o-read": {
+        "path": "original-spans/O0o-read.txt",
+        "utf8_half_open": [
+          7816650,
+          7817911
+        ],
+        "sha256": "93420505827520da576eb0ad4b434c6ea440bf2daea0d69d187c727f50d02c13",
+        "next_boundary": "function D0o("
+      },
+      "gpo-plan": {
+        "path": "original-spans/gpo-plan.txt",
+        "utf8_half_open": [
+          7848698,
+          7849789
+        ],
+        "sha256": "7ea61e4d130bc3f35bb22df0e16290a7b5111a2db87bffb04ca05a80407ecb99",
+        "next_boundary": "function bpo("
+      },
+      "hIt-dispatch": {
+        "path": "original-spans/hIt-dispatch.txt",
+        "utf8_half_open": [
+          7877770,
+          7878325
+        ],
+        "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+        "next_boundary": "function Xpo("
+      },
+      "registry": {
+        "path": "original-spans/registry.txt",
+        "utf8_half_open": [
+          7877182,
+          7877770
+        ],
+        "sha256": "94305b7588c4a5551656594289bc17ddb6934ed298cb76fc48181a2731105310",
+        "next_boundary": "function hIt("
+      }
+    }
+  },
+  "current_sources": {
+    "src/features/chat/Transcript.tsx": {
+      "path": "current-main/src/features/chat/Transcript.tsx",
+      "sha256": "a79b1dd9a6fbc9e0455a7ddff918962cf13b32f2bdd0997d00c0790ccc0b85bc"
+    },
+    "src/features/chat/ToolRows.tsx": {
+      "path": "current-main/src/features/chat/ToolRows.tsx",
+      "sha256": "6aa1f21d4070ebcaf3f4cdbbbce1b9c61e3efe89351314297824eaa3251db4b3"
+    },
+    "src/features/chat/view.ts": {
+      "path": "current-main/src/features/chat/view.ts",
+      "sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db"
+    },
+    "src/features/chat/toolGroups.ts": {
+      "path": "current-main/src/features/chat/toolGroups.ts",
+      "sha256": "eadaab0dd0636ca31a0570074920905ba00edcff7963e4828e7b51299ac79252"
+    },
+    "src/components/WorkspaceView.tsx": {
+      "path": "current-main/src/components/WorkspaceView.tsx",
+      "sha256": "3a520439bd8b09531e82e8dcb74e780c311cb5c079504b9c8796aeea12988fe2"
+    },
+    "src/features/chat/reducer.ts": {
+      "path": "current-main/src/features/chat/reducer.ts",
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a"
+    },
+    "src/features/chat/types.ts": {
+      "path": "current-main/src/features/chat/types.ts",
+      "sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31"
+    },
+    "src/settings/useBoolPref.ts": {
+      "path": "current-main/src/settings/useBoolPref.ts",
+      "sha256": "2ddcb5c12133e8cfe0547960595082bdfd288cb352a28ec8c6ba8ee2bfa6a31a"
+    }
+  },
+  "claim": "Original uncontrolled Read and Propose plan rows retain manual expansion in module store by toolCall.id. Current real chat selection keys ChatPanel, remounting Transcript and resetting its mount-local tool expansion map.",
+  "limits": [
+    "Static extracted source is not an observed original native tab switch.",
+    "Actual mounted A to B to A RED/GREEN is not run.",
+    "No claim about arbitrary controlled Mu callers or summary-level persistence.",
+    "No product/test publication, Node, browser, provider, DB, native or workflow execution.",
+    "Shared-runtime and clean-publisher admission remain unresolved; assigned #847 branch is frozen."
+  ],
+  "checks": [
+    "dIt-store original-byte readback",
+    "Mu original-byte readback",
+    "y0o original-byte readback",
+    "O0o-read original-byte readback",
+    "gpo-plan original-byte readback",
+    "hIt-dispatch original-byte readback",
+    "registry original-byte readback",
+    "shared store preserves other expanded keys",
+    "Mu reads store by caller persistence key",
+    "Mu override beats stored state",
+    "Mu controlled toggle delegates first",
+    "Mu stores only after a manual uncontrolled toggle",
+    "Read provides the tool ID persistence key",
+    "Read does not control collapse",
+    "Plan starts expanded and provides tool ID key",
+    "Plan does not control collapse",
+    "Read and plan renderer registry is reachable",
+    "Dispatcher consumes registry and actual call/result",
+    "bounded store access inventory",
+    "src/features/chat/Transcript.tsx pin readback",
+    "src/features/chat/ToolRows.tsx pin readback",
+    "src/features/chat/view.ts pin readback",
+    "src/features/chat/toolGroups.ts pin readback",
+    "src/components/WorkspaceView.tsx pin readback",
+    "src/features/chat/reducer.ts pin readback",
+    "src/features/chat/types.ts pin readback",
+    "src/settings/useBoolPref.ts pin readback",
+    "actual ChatPanel is keyed by selected chat",
+    "actual ChatPanel renders Transcript",
+    "actual Transcript manual expansion is mount-local",
+    "actual Transcript override flows to tool renderer",
+    "actual Transcript toggle uses the tool ID",
+    "current default helper respects manual false",
+    "current plan default matches original default",
+    "current settings caller is actual garryMode",
+    "current row shell receives controlled expansion"
+  ]
+}

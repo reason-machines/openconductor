@@ -1,0 +1,45 @@
+{
+  "author": "Conductor Rebuild",
+  "main_sha": "167492e56dbbb90850efbadf1db2848dae7622f2",
+  "lineage_main": "516a58c931f31097007c97e844a1bb56d118c528",
+  "source_pins": {
+    "src/features/chat/Transcript.tsx": {
+      "sha256": "a79b1dd9a6fbc9e0455a7ddff918962cf13b32f2bdd0997d00c0790ccc0b85bc",
+      "unchanged_from_lineage": true
+    },
+    "src/features/chat/ToolRows.tsx": {
+      "sha256": "6aa1f21d4070ebcaf3f4cdbbbce1b9c61e3efe89351314297824eaa3251db4b3",
+      "unchanged_from_lineage": true
+    },
+    "src/features/chat/view.ts": {
+      "sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db",
+      "unchanged_from_lineage": true
+    },
+    "src/features/chat/toolGroups.ts": {
+      "sha256": "eadaab0dd0636ca31a0570074920905ba00edcff7963e4828e7b51299ac79252",
+      "unchanged_from_lineage": true
+    },
+    "src/components/WorkspaceView.tsx": {
+      "sha256": "3a520439bd8b09531e82e8dcb74e780c311cb5c079504b9c8796aeea12988fe2",
+      "unchanged_from_lineage": true
+    },
+    "src/features/chat/reducer.ts": {
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "unchanged_from_lineage": true
+    },
+    "src/features/chat/types.ts": {
+      "sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+      "unchanged_from_lineage": true
+    },
+    "src/settings/useBoolPref.ts": {
+      "sha256": "2ddcb5c12133e8cfe0547960595082bdfd288cb352a28ec8c6ba8ee2bfa6a31a",
+      "unchanged_from_lineage": true
+    }
+  },
+  "baseline_transcript_sha256": "a79b1dd9a6fbc9e0455a7ddff918962cf13b32f2bdd0997d00c0790ccc0b85bc",
+  "reference_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "original_archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "fixture_behavior": "NOT_RUN",
+  "product_changed": false,
+  "scope": "Transcript tool expansion state lifetime only; no WorkspaceView/settings/API/backend/summary-lifetime edits."
+}
