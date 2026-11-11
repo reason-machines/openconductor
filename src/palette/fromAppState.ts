@@ -112,6 +112,7 @@ export function paletteDataFromState(
         branch: w.branch,
         repoName: r.name,
         lastActiveAt,
+        updatedAt: w.updatedAt ?? w.createdAt,
         archived: w.status === "archived",
         number: w.number ?? null,
         label: displayName(w),
@@ -129,6 +130,7 @@ export function paletteDataFromState(
       branch: a.branch,
       repoName: repoNames.get(a.repoId) ?? "",
       lastActiveAt: a.createdAt - Number.MAX_SAFE_INTEGER / 2,
+      updatedAt: a.workspace.updatedAt ?? a.createdAt,
       archived: true,
       number: a.workspace.number ?? null,
       label: displayName(a.workspace),
@@ -144,6 +146,7 @@ export function paletteDataFromState(
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
     actions: [...PALETTE_ACTIONS.filter((a) => {
+      if (a.id === "archive-workspace") return selectedWorkspace?.status !== "archived" && state.archivedOpen?.workspace.id !== activeWorkspaceId;
       if (a.id === "go-to-next-unread") return nextUnreadChat(state, { skipSelected: false }) !== undefined;
       // Conductor lists it under Navigation only while a workspace is open (`Xt &&`).
       if (a.id === VIEW_ARCHIVED_ACTION) return activeWorkspaceId !== null;

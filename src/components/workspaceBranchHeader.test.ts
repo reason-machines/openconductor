@@ -40,6 +40,130 @@ function key(key: string) {
   };
 }
 
+const mountedDependencies = createRequire(import.meta.url);
+const { act, create } = mountedDependencies("react-test-renderer");
+
+function mountedHeaderFixture() {
+  const rename = deferred();
+  const marker = deferred();
+  const calls: unknown[] = [];
+  const errors: string[] = [];
+  const exports: Partial<Pick<typeof import("./WorkspaceBranchHeader"), "WorkspaceBranchHeader">> = {};
+  const { outputText } = ts.transpileModule(readFileSync(new URL("./WorkspaceBranchHeader.tsx", import.meta.url), "utf8"), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2021 },
+  });
+  const nativeImports: Record<string, unknown> = {
+    "../backend": { markUserSetBranchName: async (id: string) => { calls.push(["mark", id]); await marker.promise; } },
+    "../workspace/api": { renameWorkspaceBranch: async (...args: string[]) => { calls.push(["rename", ...args]); await rename.promise; } },
+    "../features/openIn/apps": { copyText: async (text: string) => { calls.push(["copy", text]); } },
+    "./branchHeaderController": { createBranchHeaderController },
+    "./Icons": { BranchIcon: () => null },
+    "./menu/menuIcons": { CopyIcon: () => null, PencilIcon: () => null },
+    "./menu/ContextMenu": { ContextMenu: () => null, MenuItem: () => null },
+  };
+  runInNewContext(outputText, {
+    exports,
+    require(name: string) {
+      if (name === "react" || name === "react/jsx-runtime") return mountedDependencies(name);
+      if (name.endsWith(".css")) return {};
+      assert.ok(name in nativeImports, `Unexpected branch header dependency: ${name}`);
+      return nativeImports[name];
+    },
+  });
+  const Header = exports.WorkspaceBranchHeader;
+  assert.ok(Header);
+  const workspace: Workspace = { id: "ws1", name: "workspace", branch: "old/branch", status: "idle", diff: { added: 0, removed: 0 }, createdAt: 0 };
+  let renderer: ReturnType<typeof create>;
+  act(() => {
+    renderer = create(createElement(Header, {
+      repoId: "repo1", workspace,
+      dispatch: (action) => { calls.push(action); },
+      onError: (message: string) => { errors.push(message); },
+    }));
+  });
+  return {
+    rename, marker, calls, errors,
+    inputs: () => renderer.root.findAllByType("input"),
+    button: () => renderer.root.findByProps({ "aria-label": "Rename branch" }),
+    async close() {
+      await act(async () => { rename.resolve(); marker.resolve(); });
+      act(() => { renderer.unmount(); });
+    },
+  };
+}
+
+for (const submitWith of ["Enter", "blur"] as const) {
+  test(`mounted branch editor closes on ${submitWith} before rename and marker finish`, async () => {
+    const view = mountedHeaderFixture();
+    try {
+      act(() => { view.button().props.onClick(); });
+      const input = view.inputs()[0];
+      assert.ok(input);
+      act(() => { input.props.onChange({ currentTarget: { value: "next/branch" } }); });
+      act(() => {
+        if (submitWith === "Enter") input.props.onKeyDown(key("Enter"));
+        else input.props.onBlur();
+      });
+      assert.deepEqual(view.calls, [["rename", "ws1", "next/branch"]]);
+      assert.equal(view.inputs().length, 0, "submitted editor closes while the rename promise is unresolved");
+      assert.equal(view.button().props["aria-disabled"], true);
+      act(() => { input.props.onBlur(); input.props.onKeyDown(key("Enter")); view.button().props.onClick(); });
+      assert.equal(view.inputs().length, 0);
+      assert.deepEqual(view.calls, [["rename", "ws1", "next/branch"]]);
+      await act(async () => { view.rename.resolve(); });
+      assert.deepEqual(view.calls, [
+        ["rename", "ws1", "next/branch"],
+        { type: "renameWorkspace", repoId: "repo1", workspaceId: "ws1", branch: "next/branch", userSet: true },
+        ["mark", "ws1"],
+      ]);
+      assert.equal(view.inputs().length, 0, "the preference write does not hold the editor open");
+      assert.equal(view.button().props["aria-disabled"], true);
+      await act(async () => { view.marker.resolve(); });
+      assert.equal(view.button().props["aria-disabled"], false);
+      assert.deepEqual(view.errors, []);
+    } finally { await view.close(); }
+  });
+}
+
+test("mounted submitted branch editor stays closed on rename rejection and permits a retry", async () => {
+  const view = mountedHeaderFixture();
+  try {
+    act(() => { view.button().props.onClick(); });
+    const input = view.inputs()[0];
+    assert.ok(input);
+    act(() => { input.props.onChange({ currentTarget: { value: "taken" } }); input.props.onBlur(); });
+    assert.equal(view.inputs().length, 0, "submitted editor closes before a rejected rename settles");
+    await act(async () => { view.rename.reject(new Error("branch exists")); });
+    assert.deepEqual(view.calls, [["rename", "ws1", "taken"]]);
+    assert.deepEqual(view.errors, ["Failed to rename branch: branch exists"]);
+    assert.equal(view.button().props["aria-disabled"], false);
+    act(() => { view.button().props.onClick(); });
+    assert.equal(view.inputs()[0].props.value, "old/branch");
+  } finally { await view.close(); }
+});
+
+test("mounted branch editor preserves empty, unchanged and Escape controls without I/O", async () => {
+  const view = mountedHeaderFixture();
+  try {
+    act(() => { view.button().props.onClick(); });
+    act(() => { view.inputs()[0].props.onChange({ currentTarget: { value: "" } }); });
+    act(() => { view.inputs()[0].props.onBlur(); });
+    assert.equal(view.inputs().length, 1);
+    assert.deepEqual(view.calls, []);
+    act(() => { view.inputs()[0].props.onChange({ currentTarget: { value: "old/branch" } }); });
+    act(() => { view.inputs()[0].props.onKeyDown(key("Enter")); });
+    assert.equal(view.inputs().length, 0);
+    act(() => { view.button().props.onClick(); });
+    act(() => { view.inputs()[0].props.onChange({ currentTarget: { value: "discard" } }); });
+    const input = view.inputs()[0];
+    const escape = key("Escape");
+    act(() => { input.props.onKeyDown(escape); input.props.onBlur(); });
+    assert.equal(escape.stopped, true);
+    assert.equal(view.inputs().length, 0);
+    assert.deepEqual(view.calls, []);
+  } finally { await view.close(); }
+});
+
 test("archived header renders only a static branch label; active headers retain Rename", () => {
   // Transform just this TSX module for Node's renderer; native I/O stays stubbed.
   const source = readFileSync(new URL("./WorkspaceBranchHeader.tsx", import.meta.url), "utf8");
