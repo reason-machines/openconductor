@@ -161,7 +161,7 @@ function useFullDiskAccessStatus(): boolean | undefined {
     if (typeof window === "undefined" || typeof window.addEventListener !== "function") return;
     let active = true;
     let revision = 0;
-    let timer: ReturnType<typeof window.setTimeout> | undefined;
+    let timer: number | undefined;
     const refresh = async () => {
       const current = ++revision;
       window.clearTimeout(timer);
