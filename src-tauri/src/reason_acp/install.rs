@@ -189,9 +189,7 @@ impl NativeInstaller<'_> {
             }
         };
         if !status.success() {
-            return Err(format!(
-                "Reason {step} failed. Check your connection and available disk space, then retry."
-            ));
+            return Err(failure_message(step, status.code()));
         }
         let mut output = Vec::new();
         File::open(output_path)
@@ -329,3 +327,23 @@ impl Drop for Scratch {
 #[cfg(test)]
 #[path = "install_tests.rs"]
 mod tests;
+
+/// Keeps the failing process's exit code so a failed step can be diagnosed.
+/// For curl the code alone names the cause; no output, URL or body is shown.
+pub(crate) fn failure_message(step: &str, code: Option<i32>) -> String {
+    let detail = match (step, code) {
+        ("download", Some(6)) => " (curl 6: could not resolve host)".to_string(),
+        ("download", Some(7)) => " (curl 7: could not connect)".to_string(),
+        ("download", Some(22)) => " (curl 22: server returned an HTTP error)".to_string(),
+        ("download", Some(23)) => " (curl 23: could not write the download)".to_string(),
+        ("download", Some(28)) => " (curl 28: timed out)".to_string(),
+        ("download", Some(35)) => " (curl 35: TLS handshake failed)".to_string(),
+        ("download", Some(56)) => " (curl 56: connection dropped)".to_string(),
+        ("download", Some(c)) => format!(" (curl exit {c})"),
+        (_, Some(c)) => format!(" (exit {c})"),
+        (_, None) => " (stopped by a signal)".to_string(),
+    };
+    format!(
+        "Reason {step} failed{detail}. Check your connection and available disk space, then retry."
+    )
+}
