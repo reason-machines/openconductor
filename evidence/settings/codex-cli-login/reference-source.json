@@ -1,0 +1,48 @@
+{
+  "format": "codex-cli-login-retained-v1",
+  "checked_main": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "retained_REA_provenance": {
+    "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "rea_limit": "Original semantic renderer analysis exhausted heap. Read-only extraction from retained shipped original bytes. No reference JavaScript executed.",
+    "parent_archive": {
+      "path": ".rea-work/dart-eligibility/dart-source-closure.tar.gz",
+      "bytes": 6226760,
+      "sha256": "29557fbf62c37076841230dbaf9d9e2de7a77aa02b974ce3a1f8bb552d241fd6",
+      "originals_verified_equal": true
+    }
+  },
+  "original_archive_available": true,
+  "original_archive_verification": "reference-revalidation.json",
+  "reference_spans": [
+    {
+      "name": "Fpa",
+      "utf8_half_open": [
+        10624045,
+        10629892
+      ],
+      "bytes": 5847,
+      "sha256": "91cfc778aef5e775a9fc3b2a1a60a2670a830f4de0bd4399e512e94a92c528ac",
+      "literal": "function Fpa(t){const e=ne.c(102),{repoContext:n}=t;let i;e[0]!==n?(i=Ozi(n),e[0]=n,e[1]=i):i=e[1];const r=i,{data:o}=Dzi(n),a=o===void 0?{}:o,c=dxe(\"codex_provider\",n),u=dxe(\"default_codex_personality\",n);let d;e[2]!==u?(d=g9r(u),e[2]=u,e[3]=d):d=e[3];const h=d,m=_0(),g=u$i(a),_=g.trim()!==\"\",v=c===\"custom\";let x;e[4]!==c?(x=hni(c),e[4]=c,e[5]=x):x=e[5];const w=x===bxe,{data:E}=vsi(),k=E===void 0?!1:E,I=w||k;let R;e[6]!==I?(R={enabled:I},e[6]=I,e[7]=R):R=e[7];const O=dRi(R),D=w?\"chatgpt\":v?\"apikey\":\"cli\",P=Aca(),L=Ica(),B=m9r().codex,F=P.refetch,H=L.mutateAsync;let U;e[8]!==m?(U=()=>{OPt(m).fireAndForget()},e[8]=m,e[9]=U):U=e[9];const z=U;let G;e[10]!==H||e[11]!==F||e[12]!==z?(G=async()=>{await Promise.all([F(),H()]),z()},e[10]=H,e[11]=F,e[12]=z,e[13]=G):G=e[13];const K=G;let X;e[14]!==m||e[15]!==n?(X=()=>{m.invalidateQueries({queryKey:bGt.sharedLocal(n)}).fireAndForget(),m.invalidateQueries({queryKey:[\"envVars\",\"shared\",\"local\"]}).fireAndForget()},e[14]=m,e[15]=n,e[16]=X):X=e[16];const Q=X;let J;e[17]!==Q||e[18]!==r?(J=async Dn=>{if(Dn===\"chatgpt\"){if(!await iS.updateSetting(\"codex_provider\",bxe,r))throw new Error(\"Failed to update the Codex provider\")}else if(Dn===\"apikey\"){const _n=await d$i();if(_n?.trim()){if(!await _Z(zo,{key:\"CODEX_API_KEY\",scope:\"shared\",context:\"local\",value:_n.trim(),target:r}))return;const Zt=await iS.updateSetting(\"codex_provider\",\"custom\",r);if(Q(),!Zt)return;kt.success(\"API key imported from env\")}else await iS.updateSetting(\"codex_provider\",\"custom\",r)}else await iS.updateSetting(\"codex_provider\",\"default\",r)},e[17]=Q,e[18]=r,e[19]=J):J=e[19];const te=J;let Z;e[20]!==K?(Z=()=>{K().fireAndForget()},e[20]=K,e[21]=Z):Z=e[21];let se;e[22]!==Q||e[23]!==r||e[24]!==Z?(se={envKey:\"CODEX_API_KEY\",providerSettingKey:\"codex_provider\",settingsTarget:r,invalidateSharedEnv:Q,onRemoved:Z},e[22]=Q,e[23]=r,e[24]=Z,e[25]=se):se=e[25];const{handleSaveApiKey:ce,handleRemoveApiKey:ae}=Lzi(se),[de,ue]=$.useState(null),pe=de??D;let be,he;e[26]!==D||e[27]!==de?(be=()=>{de===D&&ue(null)},he=[de,D],e[26]=D,e[27]=de,e[28]=be,e[29]=he):(be=e[28],he=e[29]),$.useEffect(be,he);let ge;e[30]!==_||e[31]!==K||e[32]!==v||e[33]!==w?(ge=()=>{w||(!v||_)&&K().fireAndForget()},e[30]=_,e[31]=K,e[32]=v,e[33]=w,e[34]=ge):ge=e[34];let ve;e[35]!==g||e[36]!==c||e[37]!==_||e[38]!==K||e[39]!==v||e[40]!==w?(ve=[g,c,_,K,v,w],e[35]=g,e[36]=c,e[37]=_,e[38]=K,e[39]=v,e[40]=w,e[41]=ve):ve=e[41],$.useEffect(ge,ve);let ye;e[42]!==z?(ye=()=>{z()},e[42]=z,e[43]=ye):ye=e[43];let xe;e[44]!==g||e[45]!==c||e[46]!==z?(xe=[g,c,z],e[44]=g,e[45]=c,e[46]=z,e[47]=xe):xe=e[47],$.useEffect(ye,xe);const ke=w?O.configured:v?P.data?.isAuthenticated===!0&&B?.accountType===\"apiKey\":B?.accountType!==void 0;let Se;e[48]!==B?(Se=B??b9r(),e[48]=B,e[49]=Se):Se=e[49];const De=Se;let je;e[50]!==O.email?(je=O.email===void 0?[]:[{label:\"ChatGPT account\",value:O.email}],e[50]=O.email,e[51]=je):je=e[51];const Ne=je,Le=w?\"Not signed in with ChatGPT\":v?_?\"Could not verify the configured API key\":\"No OpenAI API key configured\":\"CLI not authenticated\",ze=L.error?.message??L.data?.error,Ke=w?O.isError?\"Couldn't check the ChatGPT connection.\":void 0:ze!==void 0&&ke?`Couldn't verify the connection \u2014 showing the last known account. ${ze}`:ze;let Ze;e[52]!==K||e[53]!==w?(Ze=()=>{if(w){b1e().fireAndForget();return}K().fireAndForget()},e[52]=K,e[53]=w,e[54]=Ze):Ze=e[54];const Ye=Ze,Qe=k||pe===\"chatgpt\"?Dpa:Pzi;let Ue;e[55]!==te?(Ue=Dn=>{ue(Dn),te(Dn).catch(()=>ue(null)).fireAndForget()},e[55]=te,e[56]=Ue):Ue=e[56];let We;e[57]!==pe||e[58]!==Qe||e[59]!==Ue?(We=p.jsx(wzi,{value:pe,modes:Qe,onChange:Ue}),e[57]=pe,e[58]=Qe,e[59]=Ue,e[60]=We):We=e[60];let Ve;e[61]!==n||e[62]!==We?(Ve=p.jsx(Al,{settingKey:\"codex_provider\",repoScope:n,title:void 0,className:\"border-t-0 pt-0\",children:We}),e[61]=n,e[62]=We,e[63]=Ve):Ve=e[63];const He=w?O.configured?O:void 0:B;let it;e[64]!==De||e[65]!==Ne||e[66]!==w?(it=w?Ne:De?Qki(De):[],e[64]=De,e[65]=Ne,e[66]=w,e[67]=it):it=e[67];const ft=w?O.isLoading:P.isLoading||L.isPending,gt=w?O.isLoading:L.isPending;let Tt;e[68]!==ke||e[69]!==Le||e[70]!==Ye||e[71]!==Ke||e[72]!==He||e[73]!==it||e[74]!==ft||e[75]!==gt?(Tt=p.jsx(t$i,{isAuthenticated:ke,accountInfo:He,infoRows:it,isLoading:ft,onRefresh:Ye,isRefreshing:gt,notConnectedMessage:Le,detail:Ke}),e[68]=ke,e[69]=Le,e[70]=Ye,e[71]=Ke,e[72]=He,e[73]=it,e[74]=ft,e[75]=gt,e[76]=Tt):Tt=e[76];let Ct;e[77]!==O.configured||e[78]!==O.email||e[79]!==g||e[80]!==pe||e[81]!==ae||e[82]!==ce||e[83]!==Ye?(Ct=p.jsx(\"div\",{className:\"min-h-10\",children:pe===\"chatgpt\"?p.jsx(v$i,{configured:O.configured,email:O.email}):pe===\"apikey\"?p.jsx(YWt,{label:\"OpenAI API key\",configuredKey:g,getKeyUrl:\"https://platform.openai.com/api-keys\",onSave:ce,onRemove:ae}):p.jsx(Met,{onRefresh:Ye,loginCommand:\"login\",loginCommandLabel:\"codex login\",cliName:\"codex\",runFromBundledBin:!0})}),e[77]=O.configured,e[78]=O.email,e[79]=g,e[80]=pe,e[81]=ae,e[82]=ce,e[83]=Ye,e[84]=Ct):Ct=e[84];let _t;e[85]!==r?(_t=Dn=>{iS.updateSetting(\"default_codex_personality\",Dn,r).fireAndForget()},e[85]=r,e[86]=_t):_t=e[86];let Vt;e[87]===Symbol.for(\"react.memo_cache_sentinel\")?(Vt=ODt.map(Bpa),e[87]=Vt):Vt=e[87];let bt;e[88]!==h||e[89]!==n||e[90]!==_t?(bt=p.jsx(Z5e,{settingKey:\"default_codex_personality\",repoScope:n,title:\"Codex personality for new chats\",description:\"Style to use when a new chat starts with a Codex model\",value:h,onValueChange:_t,triggerClassName:\"w-[180px]\",options:Vt}),e[88]=h,e[89]=n,e[90]=_t,e[91]=bt):bt=e[91];let wt,Nt;e[92]!==n?(wt=p.jsx(kzi,{repoContext:n}),Nt=n===void 0&&p.jsx(Ipa,{}),e[92]=n,e[93]=wt,e[94]=Nt):(wt=e[93],Nt=e[94]);let Wt;return e[95]!==Ve||e[96]!==Tt||e[97]!==Ct||e[98]!==bt||e[99]!==wt||e[100]!==Nt?(Wt=p.jsxs(\"div\",{className:\"space-y-6\",children:[Ve,Tt,Ct,bt,wt,Nt]}),e[95]=Ve,e[96]=Tt,e[97]=Ct,e[98]=bt,e[99]=wt,e[100]=Nt,e[101]=Wt):Wt=e[101],Wt}"
+    },
+    {
+      "name": "Met",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10254426,
+        10255772
+      ],
+      "utf16_half_open": [
+        10208811,
+        10210157
+      ],
+      "bytes": 1346,
+      "sha256": "e8ff33ba929c09102a235ff68ef6db78a6e0d9c66db5c85df6496c13b2e3ffde",
+      "literal": "function Met(t){const e=ne.c(18),{onRefresh:n,commandPrefix:i,loginCommand:r,loginCommandLabel:o,cliName:a,runFromBundledBin:c}=t,u=i===void 0?\"\":i,d=c===void 0?!1:c;let h;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(h={stage:\"idle\"},e[0]=h):h=e[0];const[m,g]=$.useState(h);let _;e[1]===Symbol.for(\"react.memo_cache_sentinel\")?(_=async()=>{const k=await rde();g({stage:\"running\",pathPrefix:k})},e[1]=_):_=e[1];const v=_;if(m.stage===\"running\"){let k;e[2]!==a||e[3]!==d||e[4]!==m.pathPrefix?(k=d?nl(`${m.pathPrefix}/${a}`):a,e[2]=a,e[3]=d,e[4]=m.pathPrefix,e[5]=k):k=e[5];const R=`${u}${k} ${r}`;let O;e[6]===Symbol.for(\"react.memo_cache_sentinel\")?(O=()=>g({stage:\"idle\"}),e[6]=O):O=e[6];let D;e[7]!==n?(D=()=>{g({stage:\"idle\"}),n()},e[7]=n,e[8]=D):D=e[8];let P;return e[9]!==o||e[10]!==R||e[11]!==D||e[12]!==m.pathPrefix?(P=p.jsx(ONi,{className:\"border-border bg-card\",command:R,commandLabel:o,pathPrefix:m.pathPrefix,terminalBodyClassName:\"h-72\",onDismiss:O,onDone:D}),e[9]=o,e[10]=R,e[11]=D,e[12]=m.pathPrefix,e[13]=P):P=e[13],P}let x,w;e[14]===Symbol.for(\"react.memo_cache_sentinel\")?(x=()=>{v().fireAndForget()},w=p.jsx(uy,{className:\"mr-1 size-3 fill-current\"}),e[14]=x,e[15]=w):(x=e[14],w=e[15]);let E;return e[16]!==o?(E=p.jsxs(tt,{type:\"button\",size:\"sm\",variant:\"outline\",onClick:x,children:[w,\"Run \",o]}),e[16]=o,e[17]=E):E=e[17],E}"
+    }
+  ],
+  "source_contract": "Fpa chooses ChatGPT, API-key or Met only by mode pe, independently of connected flag ke. Met idle renders Run plus codex login without reading authenticated status.",
+  "limits": [
+    "Retained original upload and renderer identities verified; exact Fpa and Met slices match. No fresh Mac app acquisition.",
+    "No reference JavaScript, native, provider or IPC execution."
+  ]
+}

@@ -201,6 +201,8 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+      - name: Chat top-level find frozen component regression
+        run: node --test --test-reporter=tap tests/chat-search/transcriptFind.component.test.mjs
       - name: Pure TypeScript modules (Node strips types natively)
         run: node --test "src/**/*.test.ts"
       - name: Custom branch-prefix unchanged-fixture baseline and candidate replay
@@ -236,4 +238,5 @@ jobs:
             react@18.3.1 react-dom@18.3.1 typescript@5.9.3 jsdom@26.1.0
           echo "Onboarding source commit: $(git rev-parse HEAD)"
           node --check tests/onboarding-strict-effects.test.mjs
-          node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs
+          node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs tests/onboarding-selected-slide.test.mjs
+          node --test --test-reporter=tap tests/chat-search/transcriptFind.dom.test.mjs

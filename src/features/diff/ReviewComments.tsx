@@ -11,7 +11,7 @@
 // suggested changes, Resolve (on GitHub) and Delete (here only, as Conductor
 // does); they cannot be edited or replied to. Comments on the PR itself are
 // listed from the Changes toolbar, so no file has to be open.
-import { useCallback, useEffect, useId, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { openUrl } from "../../backend";
 import { DialogFrame } from "../../components/DialogFrame";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
@@ -71,8 +71,10 @@ const GITHUB_SYNC_MS = 120_000;
 
 const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
 
-function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }: { initial?: string; placeholder?: string; submitLabel: string; onSubmit: (body: string) => void; onCancel: () => void }) {
-  const [text, setText] = useState(initial);
+function Composer({ initial = "", edit, placeholder, submitLabel, onSubmit, onCancel }: { initial?: string; edit?: { text: string; onChange: (body: string) => void }; placeholder?: string; submitLabel: string; onSubmit: (body: string) => void; onCancel: () => void }) {
+  const [localText, setLocalText] = useState(initial);
+  const text = edit?.text ?? localText;
+  const setText = edit?.onChange ?? setLocalText;
   const [discardOpen, setDiscardOpen] = useState(false);
   const dialogId = useId();
   const cancel = () => {
@@ -167,10 +169,41 @@ function GithubCommentAuthor({ c }: { c: DiffComment }) {
   );
 }
 
+type CommentIdentity = Pick<DiffComment, "workspace_id" | "id">;
+const commentEditDrafts = new Map<string, string>();
+const commentEditListeners = new Set<() => void>();
+const commentEditKey = (comment: CommentIdentity) => JSON.stringify([comment.workspace_id, comment.id]);
+const notifyCommentEdit = () => commentEditListeners.forEach((listener) => listener());
+const subscribeCommentEdit = (listener: () => void) => {
+  commentEditListeners.add(listener);
+  return () => { commentEditListeners.delete(listener); };
+};
+
+function useCommentEditDraft(comment: CommentIdentity): string | undefined {
+  const key = commentEditKey(comment);
+  return useSyncExternalStore(subscribeCommentEdit, () => commentEditDrafts.get(key), () => undefined);
+}
+
+function startCommentEdit(comment: CommentIdentity & Pick<DiffComment, "body">): void {
+  const key = commentEditKey(comment);
+  if (commentEditDrafts.has(key)) return;
+  commentEditDrafts.set(key, comment.body);
+  notifyCommentEdit();
+}
+
+function updateCommentEdit(comment: CommentIdentity, body: string): void {
+  commentEditDrafts.set(commentEditKey(comment), body);
+  notifyCommentEdit();
+}
+
+function discardCommentEdit(comment: CommentIdentity): void {
+  if (commentEditDrafts.delete(commentEditKey(comment))) notifyCommentEdit();
+}
+
 function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
-  const [editing, setEditing] = useState(false);
+  const draft = useCommentEditDraft(c);
   const source = commentSource(c);
-  if (editing) return <Composer initial={c.body} submitLabel="Save" onCancel={() => setEditing(false)} onSubmit={(b) => void ops.edit(c, b).then((ok) => ok && setEditing(false))} />;
+  if (draft !== undefined) return <Composer initial={c.body} edit={{ text: draft, onChange: (body) => updateCommentEdit(c, body) }} submitLabel="Save" onCancel={() => discardCommentEdit(c)} onSubmit={(b) => void ops.edit(c, b).then((ok) => ok && discardCommentEdit(c))} />;
   return (
     <div className="oc-comment">
       <div className="oc-comment-meta">
@@ -193,7 +226,7 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
           </a>
         )}
         {source === "user-local" && (
-          <button className="oc-link" onClick={() => setEditing(true)}>
+          <button className="oc-link" onClick={() => startCommentEdit(c)}>
             Edit
           </button>
         )}

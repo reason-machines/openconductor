@@ -46,6 +46,8 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
             value={name}
             autoFocus
             autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
             spellCheck={false}
             onFocus={(e) => e.currentTarget.select()}
             onChange={(e) => setName(e.target.value)}
