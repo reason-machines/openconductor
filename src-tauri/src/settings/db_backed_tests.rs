@@ -128,6 +128,7 @@ fn update_writes_the_table_and_keeps_the_keys_out_of_the_file() {
     assert_eq!(t["mono_font"], "Menlo");
     assert_eq!(t["code_theme"], "dracula");
     assert_eq!(t["colored_sidebar_diffs"], "true");
+    assert_eq!(t["terminal_font_size"], "14");
     let text = fs::read_to_string(&path).unwrap();
     for key in KEYS {
         assert!(
@@ -135,7 +136,7 @@ fn update_writes_the_table_and_keeps_the_keys_out_of_the_file() {
             "{key} must not be in the file:\n{text}"
         );
     }
-    assert!(text.contains("terminal_font_size = 14"), "{text}");
+    assert!(!text.contains("terminal_font_size"), "{text}");
 
     let back = svc.get().unwrap();
     assert_eq!(back.appearance.zoom_level_v2, 1.3);
@@ -166,7 +167,12 @@ fn values_an_older_build_wrote_to_the_file_move_to_the_table_once() {
     moved.sort();
     assert_eq!(
         moved,
-        vec!["low_contrast_dark_mode", "mono_font", "zoom_level_v2"]
+        vec![
+            "low_contrast_dark_mode",
+            "mono_font",
+            "terminal_font_size",
+            "zoom_level_v2",
+        ]
     );
     let t = table(&pool);
     assert_eq!(t["zoom_level_v2"], "1.2");
@@ -176,7 +182,8 @@ fn values_an_older_build_wrote_to_the_file_move_to_the_table_once() {
         !text.contains("zoom_level_v2") && !text.contains("code_theme"),
         "{text}"
     );
-    assert!(text.contains("terminal_font_size = 15"), "{text}");
+    assert!(!text.contains("terminal_font_size"), "{text}");
+    assert_eq!(t["terminal_font_size"], "15");
     assert!(text.contains("archive_on_merge = true"), "{text}");
 
     let s = svc.get().unwrap();
