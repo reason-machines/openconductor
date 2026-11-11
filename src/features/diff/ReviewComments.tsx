@@ -11,7 +11,7 @@
 // suggested changes, Resolve (on GitHub) and Delete (here only, as Conductor
 // does); they cannot be edited or replied to. Comments on the PR itself are
 // listed from the Changes toolbar, so no file has to be open.
-import { useCallback, useEffect, useId, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { openUrl } from "../../backend";
 import { DialogFrame } from "../../components/DialogFrame";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
@@ -76,6 +76,7 @@ function Composer({ initial = "", edit, placeholder, submitLabel, onSubmit, onCa
   const text = edit?.text ?? localText;
   const setText = edit?.onChange ?? setLocalText;
   const [discardOpen, setDiscardOpen] = useState(false);
+  const composing = useRef(false);
   const dialogId = useId();
   const cancel = () => {
     const dirty = initial === "" ? text.trim() !== "" : text !== initial;
@@ -96,7 +97,11 @@ function Composer({ initial = "", edit, placeholder, submitLabel, onSubmit, onCa
         value={text}
         placeholder={placeholder}
         onChange={(e) => setText(e.target.value)}
+        onCompositionStart={() => { composing.current = true; }}
+        onCompositionEnd={() => { composing.current = false; }}
+        onBlur={() => { composing.current = false; }}
         onKeyDown={(e) => {
+          if (composing.current || e.nativeEvent?.isComposing || e.keyCode === 229 || e.which === 229) return;
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();
             submit();
@@ -316,7 +321,7 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
   );
 }
 
-type Composing = LineRange & { path: string };
+type Composing = LineRange & { path: string; workspaceId: string; id: string; body: string };
 
 /** Conductor's toasts for review comments. */
 export type Notify = (kind: "info" | "error", message: string) => void;
@@ -360,7 +365,8 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const store = useMemo(() => commentStoreFor(workspaceId, workspacePath), [workspaceId, workspacePath]);
   const [stored, setStored] = useState<DiffComment[]>([]);
   const [files, setFiles] = useState<FileDiff[]>([]);
-  const [composing, setComposing] = useState<Composing | null>(null);
+  const [newDraft, setComposing] = useState<Composing | null>(null);
+  const composing = newDraft?.workspaceId === workspaceId ? newDraft : null;
   const [focused, setFocused] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [github, setGithub] = useState<{ report?: GithubSyncReport; error?: string }>({});
@@ -488,7 +494,11 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     "diff.previousComment": () => goToComment(-1),
   });
 
-  const onLineClick = (file: FileDiff, range: LineRange) => setComposing({ path: file.path, ...range });
+  const onLineClick = (file: FileDiff, range: LineRange) => {
+    const next = { path: file.path, ...range, workspaceId, id: crypto.randomUUID(), body: "" };
+    setComposing((current) => current?.workspaceId === workspaceId && current.path === file.path && current.side === range.side && current.start === range.start && current.line === range.line ? current : next);
+  };
+  const discardNewDraft = (draft: Composing) => setComposing((current) => current?.id === draft.id && current.body === draft.body ? null : current);
   // The composer's lines stay highlighted in the file until it is saved or cancelled.
   const commentRange = (file: FileDiff): LineRange | null => (composing?.path === file.path ? { side: composing.side, start: composing.start, line: composing.line } : null);
 
@@ -525,12 +535,14 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
         ))}
         {draft && (
           <Composer
+            key={draft.id}
+            edit={{ text: draft.body, onChange: (body) => setComposing((current) => current?.id === draft.id ? { ...current, body } : current) }}
             placeholder="Leave a comment for the agent…"
             submitLabel="Comment"
-            onCancel={() => setComposing(null)}
+            onCancel={() => discardNewDraft(draft)}
             onSubmit={(body) =>
               void run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() }))).then(
-                (ok) => ok && setComposing(null),
+                (ok) => ok && discardNewDraft(draft),
               )
             }
           />

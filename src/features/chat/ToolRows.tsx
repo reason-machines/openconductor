@@ -354,6 +354,13 @@ const s = (v: unknown): string => (typeof v === "string" ? v : "");
 /** `AI`: a failed tool's error line under its row. */
 function ErrorRow({ text }: { text: string }) {
   const [open, setOpen] = useState(false);
+  if (text.includes("File has not been read yet. Read it first before writing to it.")) {
+    return (
+      <div className="oc-tool-aside" style={{ paddingLeft: 20, paddingTop: 8, borderRadius: 8 }}>
+        Claude Code has to retry the file edit because of a bug in its permissions logic. Just a moment!
+      </div>
+    );
+  }
   return (
     <RowShell
       icon={<Lucide name="circle-x" className="oc-tool-icon" />}

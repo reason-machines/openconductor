@@ -1,0 +1,8 @@
+{
+  "source_finding": "BE7 source review at bde5f51e: nRo scrollToItem is called only by explicit navigation/current-match commands. KIo refreshes highlights without scrolling.",
+  "reference_span_sha256": "6df0a370e3ebf0cf076c8dd61291eccd95e4ca105c93f7c4f22b8b7439fcaf0c",
+  "change": "Add explicit scrollToMatch action before existing DOM scroll assertions; append distinct no-passive-scroll control. No existing assertion changed. All five component bodies unchanged.",
+  "before_dom_sha256": "19e99902cc674b291e482ba21203e5bb301989885a9276701d76b4ccba009568",
+  "after_dom_sha256": "82f79c57629f4656c00c6710f9de481be048beb1484e0cafe8c9b20a22557e61",
+  "original_assertions_unchanged": true
+}

@@ -1,0 +1,60 @@
+2026-11-11T16:18:38.1815068Z # Subtest: connected CLI retains Run codex login
+2026-11-11T16:18:38.1834725Z not ok 2316 - connected CLI retains Run codex login
+2026-11-11T16:18:38.1864216Z   ---
+2026-11-11T16:18:38.1864809Z   duration_ms: 403.207247
+2026-11-11T16:18:38.1865349Z   type: 'test'
+2026-11-11T16:18:38.1866349Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/codexLoginVisibility.test.ts:110:3'
+2026-11-11T16:18:38.1867375Z   failureType: 'testCodeFailure'
+2026-11-11T16:18:38.1868109Z   error: 'CLI mode must keep the login action regardless of connected status'
+2026-11-11T16:18:38.1868862Z   code: 'ERR_ASSERTION'
+2026-11-11T16:18:38.1869279Z   name: 'AssertionError'
+2026-11-11T16:18:38.1869682Z   expected: true
+2026-11-11T16:18:38.1870036Z   actual: false
+2026-11-11T16:18:38.1870400Z   operator: '=='
+2026-11-11T16:18:38.1870755Z   stack: |-
+2026-11-11T16:18:38.1871758Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/codexLoginVisibility.test.ts:114:14)
+2026-11-11T16:18:38.1872544Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T16:18:38.1873017Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T16:18:38.1873843Z     Test.start (node:internal/test_runner/test:944:17)
+2026-11-11T16:18:38.1874670Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+2026-11-11T16:18:38.1875324Z   ...
+2026-11-11T16:18:38.1875813Z # Subtest: signed-out CLI retains Run codex login
+2026-11-11T16:18:38.1876487Z ok 2317 - signed-out CLI retains Run codex login
+2026-11-11T16:18:38.1876995Z   ---
+2026-11-11T16:18:38.1877348Z   duration_ms: 157.347742
+2026-11-11T16:18:38.1877780Z   type: 'test'
+2026-11-11T16:18:38.1878109Z   ...
+2026-11-11T16:18:38.1878653Z # Subtest: refreshing connected CLI retains Run codex login
+2026-11-11T16:18:38.1879495Z not ok 2318 - refreshing connected CLI retains Run codex login
+2026-11-11T16:18:38.1880096Z   ---
+2026-11-11T16:18:38.1880442Z   duration_ms: 75.50482
+2026-11-11T16:18:38.1880832Z   type: 'test'
+2026-11-11T16:18:38.1881843Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/codexLoginVisibility.test.ts:110:3'
+2026-11-11T16:18:38.1882896Z   failureType: 'testCodeFailure'
+2026-11-11T16:18:38.1890725Z   error: 'CLI mode must keep the login action regardless of connected status'
+2026-11-11T16:18:38.1891501Z   code: 'ERR_ASSERTION'
+2026-11-11T16:18:38.1891900Z   name: 'AssertionError'
+2026-11-11T16:18:38.1892288Z   expected: true
+2026-11-11T16:18:38.1892637Z   actual: false
+2026-11-11T16:18:38.1892967Z   operator: '=='
+2026-11-11T16:18:38.1893307Z   stack: |-
+2026-11-11T16:18:38.1921337Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/codexLoginVisibility.test.ts:114:14)
+2026-11-11T16:18:38.1922689Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-11T16:18:38.1923520Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-11T16:18:38.1924372Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-11T16:18:38.1925270Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-11T16:18:38.1925957Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-11T16:18:38.1926830Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T16:18:38.1927528Z   ...
+2026-11-11T16:18:38.1928199Z # Subtest: API-key mode retains its secret control instead of CLI login
+2026-11-11T16:18:38.1929182Z ok 2319 - API-key mode retains its secret control instead of CLI login
+2026-11-11T16:18:38.1929822Z   ---
+2026-11-11T16:18:38.1930540Z   duration_ms: 76.371079
+2026-11-11T16:18:38.1930982Z   type: 'test'
+2026-11-11T16:18:38.1931319Z   ...
+2026-11-11T16:18:38.1932009Z # Subtest: ChatGPT mode retains its sign-in control instead of CLI login
+2026-11-11T16:18:38.1933011Z ok 2320 - ChatGPT mode retains its sign-in control instead of CLI login
+2026-11-11T16:18:38.1933805Z   ---
+2026-11-11T16:18:38.1934175Z   duration_ms: 86.203861
+2026-11-11T16:18:38.1934574Z   type: 'test'
+2026-11-11T16:18:38.1935155Z   ...

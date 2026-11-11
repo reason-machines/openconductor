@@ -1,0 +1,1 @@
+function z5o(t){return{suggestionHandledKey:!1,isExternalUpdate:!1,latestTriggers:[],latestMessageSendKey:"enter",latestMatchesSendCommand:t,isImeCompositionActive:!1,latestMessageSendMode:"steering",latestQueueEditMode:!1,latestCanSubmit:!1,latestPlaceholder:"",latestAttachmentsById:new Map}}

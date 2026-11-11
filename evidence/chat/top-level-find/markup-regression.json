@@ -1,0 +1,31 @@
+{
+  "owner": "Conductor Rebuild",
+  "pr": 1053,
+  "head": "25cb020877fcbee415324629ea1793782d30664f",
+  "workflow_run": 43054440414,
+  "component_regression": {
+    "job": 130640170880,
+    "command": "node --test --test-reporter=tap tests/chat-search/transcriptFind.component.test.mjs",
+    "passed": 5,
+    "failed": 0,
+    "log_lines": [164, 212]
+  },
+  "full_frontend": {
+    "jobs": [130640170880, 130640170196],
+    "command": "node --test \"src/**/*.test.ts\"",
+    "passed": 2852,
+    "failed": 1,
+    "test": "enabled display leaves user, report, system and tool payloads and raw copy/fork data untouched",
+    "location": "src/features/chat/transcriptAgentSummary.test.ts:327",
+    "cause": "The search change added data-searchable to user text even with search disabled, changing the existing raw HTML contract.",
+    "correction": "Reuse the existing user and assistant text-wrapper selectors for highlights. Remove both added wrapper attributes. Preserve all test assertions."
+  },
+  "unchanged_sha256": {
+    "tests/chat-search/transcriptFind.component.test.mjs": "c8a7886319634c2d854004c01e19e39d04544cd5ac51820dcbee9438ee2ea942",
+    "tests/chat-search/transcriptFind.dom.test.mjs": "82f79c57629f4656c00c6710f9de481be048beb1484e0cafe8c9b20a22557e61",
+    "src/features/chat/transcriptAgentSummary.test.ts": "6a34610ac3718ac1fcfd4fb11f9084c9f4edc38442e084c5fbc55471d0e728c5"
+  },
+  "corrected_hosted_result": "PENDING",
+  "dom_result": "NOT RUN: the preceding full frontend step failed",
+  "local_runtime": "NOT RUN"
+}
