@@ -40,7 +40,6 @@ jobs:
     env:
       HEADER_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
       HEADER_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-      HEADER_OUT: ${{ runner.temp }}/workspace-header-menu
     steps:
       - uses: actions/checkout@v4
         with:
@@ -50,6 +49,8 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+      - name: Set hosted artifact directory
+        run: echo "HEADER_OUT=$RUNNER_TEMP/workspace-header-menu" >> "$GITHUB_ENV"
       - name: Frozen fixture and fail-closed result contract
         run: |
           echo "b4f4cae76a414e5c3312ddd411e3b17ab39f90bc55b8662cdc058d55b2599605  tests/e2e/workspace-header-menu-cases.mjs" | sha256sum --check
