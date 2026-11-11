@@ -37,6 +37,7 @@ function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: Di
 
 export interface DiffTabProps {
   diff: WorkspaceDiff;
+  onClose?: () => void;
   onLineClick?: (file: FileDiff, range: LineRange) => void;
   /** Lines a comment is being written on in `file`, if any. */
   commentRange?: (file: FileDiff) => LineRange | null;
@@ -49,19 +50,41 @@ export interface DiffTabProps {
 }
 
 /** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
-export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps) {
-  const { selected, files, load } = diff;
+export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps) {
+  const { selected, files, load, redirectRevision } = diff;
+  const empty = load.state === "ready" && load.files.length === 0;
+  useEffect(() => {
+    if (empty) onClose?.();
+  }, [empty, onClose]);
+  const path = selected?.path;
+  const [visited, setVisited] = useState<{ revision: number; paths: string[] }>({ revision: redirectRevision, paths: [] });
+  useEffect(() => {
+    if (path === undefined) return;
+    setVisited((current) => ({
+      revision: redirectRevision,
+      paths: current.revision !== redirectRevision ? [path] : [...current.paths.filter((item) => item !== path), path].slice(-5),
+    }));
+  }, [path, redirectRevision]);
   if (!selected) {
     return (
       <div className="oc-diff oc-diff-tab">
         <div className="placeholder small">
-          <p>{load.state === "ready" && files.length === 0 ? "No changes to show." : "Pick a file in the changes list."}</p>
+          <p>{diff.noMatchingFiles ? "No files match this filter" : load.state === "ready" && files.length === 0 ? "No changes to show." : "Pick a file in the changes list."}</p>
         </div>
       </div>
     );
   }
-  const f = files[diff.current];
-  return <OpenFile diff={diff} f={f} selected={selected} onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} notes={notes} notify={notify} />;
+  const scope = diff.turn ? ["turn", diff.turn.sessionId, diff.turn.turnId] : diff.opts.scope;
+  return (
+    <div className="oc-diff oc-diff-tab">
+      {diff.noMatchingFiles && <div className="placeholder small"><p>No files match this filter</p></div>}
+      {files.map((file) => visited.paths.includes(file.path) && (
+        <OpenFile key={JSON.stringify([diff.worktree, file.path, scope])} diff={diff} f={file} selected={file}
+          isVisible={!diff.noMatchingFiles && file.path === selected.path}
+          onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} notes={notes} notify={notify} />
+      ))}
+    </div>
+  );
 }
 
 /**
@@ -91,48 +114,47 @@ function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayou
 }
 
 /** The open file, editable after its complete current contents are available. */
-function OpenFile({ diff, f, selected, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff }) {
+function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff; isVisible: boolean }) {
   const { opts, update } = diff;
   const full = useWholeFile(diff, selected, opts.layout);
   const edit = useFileEdit(diff.worktree, selected.path, typeof opts.scope === "object" || diff.turn !== null ? null : editableContents(selected, opts.layout, opts.ignoreWhitespace, full), diff.reloadQuietly);
   return (
-    <div className="oc-diff oc-diff-tab">
-      <div className="oc-files">
-        {notes?.(f)}
-        <FileDiffView
-          key={selected.path}
-          file={selected}
-          layout={opts.layout}
-          ignoreWhitespace={opts.ignoreWhitespace}
-          wrapLines={opts.wrapLines}
-          viewed={diff.isViewed(f)}
-          onToggleViewed={() => diff.toggleViewed(f)}
-          onLineClick={onLineClick && ((r) => onLineClick(f, r))}
-          selected={commentRange?.(f)}
-          anchors={anchors?.(f)}
-          annotations={annotations && ((a) => annotations(f, a))}
-          loadFull={() => diff.loadFull(f)}
-          full={full}
-          loadText={() => diff.loadText(f)}
-          notify={notify}
-          onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
-          onShowWhitespace={() => update({ ignoreWhitespace: false })}
-          edit={edit}
-          worktree={diff.worktree}
-          tools={<LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />}
-          options={
-            <ViewOptionsMenu
-              whitespace={{ hidden: opts.ignoreWhitespace, onChange: (ignoreWhitespace) => update({ ignoreWhitespace }) }}
-              textWrap={f.binary ? undefined : { wrapLines: opts.wrapLines, onChange: (wrapLines) => update({ wrapLines }) }}
-            />
-          }
-        />
-        {diff.unread >= 0 && diff.unread !== diff.current && (
-          <button className="btn btn-small oc-next-unread" onClick={() => diff.open(diff.unread)}>
-            Next unread ›
-          </button>
-        )}
-      </div>
+    <div className="oc-files" hidden={!isVisible} style={!isVisible ? { display: "none" } : undefined}>
+      {notes?.(f)}
+      <FileDiffView
+        key={selected.path}
+        file={selected}
+        isVisible={isVisible}
+        layout={opts.layout}
+        ignoreWhitespace={opts.ignoreWhitespace}
+        wrapLines={opts.wrapLines}
+        viewed={diff.isViewed(f)}
+        onToggleViewed={() => diff.toggleViewed(f)}
+        onLineClick={onLineClick && ((r) => onLineClick(f, r))}
+        selected={commentRange?.(f)}
+        anchors={anchors?.(f)}
+        annotations={annotations && ((a) => annotations(f, a))}
+        loadFull={() => diff.loadFull(f)}
+        full={full}
+        loadText={() => diff.loadText(f)}
+        notify={notify}
+        onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}
+        onShowWhitespace={() => update({ ignoreWhitespace: false })}
+        edit={edit}
+        worktree={diff.worktree}
+        tools={<LayoutToggle value={opts.layout} onChange={(layout) => update({ layout })} />}
+        options={
+          <ViewOptionsMenu
+            whitespace={{ hidden: opts.ignoreWhitespace, onChange: (ignoreWhitespace) => update({ ignoreWhitespace }) }}
+            textWrap={f.binary ? undefined : { wrapLines: opts.wrapLines, onChange: (wrapLines) => update({ wrapLines }) }}
+          />
+        }
+      />
+      {diff.unread >= 0 && diff.unread !== diff.current && (
+        <button className="btn btn-small oc-next-unread" onClick={() => diff.open(diff.unread)}>
+          Next unread ›
+        </button>
+      )}
     </div>
   );
 }

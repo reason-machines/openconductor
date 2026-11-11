@@ -8,7 +8,7 @@ use openconductor_db::{app_settings, SqlitePool};
 
 use super::db_backed::{self, KEYS};
 use super::service::SettingsService;
-use super::{Appearance, CodeTheme, FILE_NAME};
+use super::{Appearance, CodeTheme, ColorVision, FILE_NAME};
 use crate::agent::MemorySecretStore;
 
 fn rows(pairs: &[(&str, &str)]) -> HashMap<String, String> {
@@ -275,4 +275,160 @@ fn table_prefs_in_an_older_file_move_to_the_table() {
         !text.contains("voice_mode") && !text.contains("automerge"),
         "{text}"
     );
+}
+
+#[test]
+fn terminal_appearance_rows_overlay_the_active_table_values() {
+    let mut appearance = Appearance::default();
+    db_backed::overlay(
+        &mut appearance,
+        &rows(&[
+            ("terminal_font_family", "JetBrains Mono"),
+            ("terminal_font_size", "16"),
+            ("color_vision", "tritanopia"),
+        ]),
+    );
+    assert_eq!(appearance.terminal_font_family.as_deref(), Some("JetBrains Mono"));
+    assert_eq!(appearance.terminal_font_size, 16);
+    assert_eq!(appearance.color_vision, ColorVision::Tritanopia);
+}
+
+#[test]
+fn terminal_appearance_rows_encode_the_reference_strings() {
+    let appearance = Appearance {
+        terminal_font_family: Some("Menlo".into()),
+        terminal_font_size: 15,
+        color_vision: ColorVision::ProtanopiaDeuteranopia,
+        ..Appearance::default()
+    };
+    let encoded: HashMap<_, _> = db_backed::rows(&appearance).into_iter().collect();
+    assert_eq!(encoded.get("terminal_font_family"), Some(&Some("Menlo".into())));
+    assert_eq!(encoded.get("terminal_font_size"), Some(&Some("15".into())));
+    assert_eq!(
+        encoded.get("color_vision"),
+        Some(&Some("protanopia-deuteranopia".into()))
+    );
+}
+
+#[test]
+fn terminal_appearance_saves_and_restores_through_the_table() {
+    let path = temp_file();
+    let (svc, pool) = with_db(path.clone());
+    let mut settings = svc.get().unwrap();
+    settings.appearance.terminal_font_family = Some("Menlo".into());
+    settings.appearance.terminal_font_size = 18;
+    settings.appearance.color_vision = ColorVision::Tritanopia;
+    settings.git.archive_on_merge = true;
+    svc.update(settings).unwrap();
+
+    let active = table(&pool);
+    assert_eq!(active.get("terminal_font_family").map(String::as_str), Some("Menlo"));
+    assert_eq!(active.get("terminal_font_size").map(String::as_str), Some("18"));
+    assert_eq!(active.get("color_vision").map(String::as_str), Some("tritanopia"));
+    let text = fs::read_to_string(&path).unwrap();
+    for key in ["terminal_font_family", "terminal_font_size", "color_vision"] {
+        assert!(!text.contains(key), "{key} must not remain in TOML: {text}");
+    }
+    assert!(text.contains("archive_on_merge = true"));
+
+    let reopened = SettingsService::new(path, Arc::new(MemorySecretStore::new())).with_db(pool);
+    let restored = reopened.get().unwrap();
+    assert_eq!(restored.appearance.terminal_font_family.as_deref(), Some("Menlo"));
+    assert_eq!(restored.appearance.terminal_font_size, 18);
+    assert_eq!(restored.appearance.color_vision, ColorVision::Tritanopia);
+    assert!(restored.git.archive_on_merge);
+}
+
+#[test]
+fn terminal_appearance_active_rows_override_legacy_file_values() {
+    let path = temp_file();
+    fs::write(
+        &path,
+        "[appearance]\nterminal_font_family = \"Legacy\"\nterminal_font_size = 11\ncolor_vision = \"default\"\n",
+    )
+    .unwrap();
+    let (svc, pool) = with_db(path);
+    for (key, value) in [
+        ("terminal_font_family", "Menlo"),
+        ("terminal_font_size", "19"),
+        ("color_vision", "tritanopia"),
+    ] {
+        tauri::async_runtime::block_on(app_settings::set(&pool, key, value)).unwrap();
+    }
+    let loaded = svc.get().unwrap();
+    assert_eq!(loaded.appearance.terminal_font_family.as_deref(), Some("Menlo"));
+    assert_eq!(loaded.appearance.terminal_font_size, 19);
+    assert_eq!(loaded.appearance.color_vision, ColorVision::Tritanopia);
+}
+
+#[test]
+fn terminal_appearance_legacy_migration_preserves_active_rows_and_unrelated_values() {
+    let path = temp_file();
+    fs::write(
+        &path,
+        "[appearance]\nterminal_font_family = \"Legacy\"\nterminal_font_size = 15\ncolor_vision = \"protanopia-deuteranopia\"\nfuture_appearance_key = \"keep\"\n\n[git]\narchive_on_merge = true\n",
+    )
+    .unwrap();
+    let (svc, pool) = with_db(path.clone());
+    tauri::async_runtime::block_on(app_settings::set(&pool, "terminal_font_family", "Menlo"))
+        .unwrap();
+    let mut copied = svc.move_appearance_to_db().unwrap();
+    copied.sort();
+    assert_eq!(copied, vec!["color_vision", "terminal_font_size"]);
+    let active = table(&pool);
+    assert_eq!(active["terminal_font_family"], "Menlo");
+    assert_eq!(active["terminal_font_size"], "15");
+    assert_eq!(active["color_vision"], "protanopia-deuteranopia");
+    let text = fs::read_to_string(&path).unwrap();
+    for key in ["terminal_font_family", "terminal_font_size", "color_vision"] {
+        assert!(!text.contains(key), "{key} must not remain in TOML: {text}");
+    }
+    assert!(text.contains("future_appearance_key = \"keep\""));
+    assert!(text.contains("archive_on_merge = true"));
+    assert!(svc.move_appearance_to_db().unwrap().is_empty());
+    let restored = svc.get().unwrap();
+    assert_eq!(restored.appearance.terminal_font_family.as_deref(), Some("Menlo"));
+    assert_eq!(restored.appearance.terminal_font_size, 15);
+    assert_eq!(restored.appearance.color_vision, ColorVision::ProtanopiaDeuteranopia);
+}
+
+#[test]
+fn terminal_appearance_migration_does_not_materialize_unset_defaults() {
+    let path = temp_file();
+    fs::write(&path, "[appearance]\nterminal_font_size = 14\n").unwrap();
+    let (svc, pool) = with_db(path);
+    assert_eq!(svc.move_appearance_to_db().unwrap(), vec!["terminal_font_size"]);
+    let active = table(&pool);
+    assert_eq!(active["terminal_font_size"], "14");
+    assert!(!active.contains_key("terminal_font_family"));
+    assert!(!active.contains_key("color_vision"));
+}
+
+#[test]
+fn terminal_appearance_font_reset_deletes_the_row() {
+    let (svc, pool) = with_db(temp_file());
+    tauri::async_runtime::block_on(app_settings::set(&pool, "terminal_font_family", "Menlo"))
+        .unwrap();
+    let mut settings = svc.get().unwrap();
+    settings.appearance.terminal_font_family = None;
+    svc.update(settings).unwrap();
+    assert!(!table(&pool).contains_key("terminal_font_family"));
+    assert_eq!(svc.get().unwrap().appearance.terminal_font_family, None);
+}
+
+#[test]
+fn terminal_appearance_without_database_keeps_the_file_fallback() {
+    let path = temp_file();
+    let svc = SettingsService::new(path.clone(), Arc::new(MemorySecretStore::new()));
+    let mut settings = svc.get().unwrap();
+    settings.appearance.terminal_font_family = Some("Menlo".into());
+    settings.appearance.terminal_font_size = 20;
+    settings.appearance.color_vision = ColorVision::ProtanopiaDeuteranopia;
+    svc.update(settings.clone()).unwrap();
+    let text = fs::read_to_string(path).unwrap();
+    assert!(text.contains("terminal_font_family = \"Menlo\""));
+    assert!(text.contains("terminal_font_size = 20"));
+    assert!(text.contains("color_vision = \"protanopia-deuteranopia\""));
+    assert_eq!(svc.get().unwrap().appearance, settings.appearance);
+    assert!(svc.move_appearance_to_db().unwrap().is_empty());
 }
