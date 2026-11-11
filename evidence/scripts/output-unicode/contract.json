@@ -1,0 +1,19 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "baseline_product_sha256": "477cf9fc89646eb0075cf841430facca792d30116dc779aab31d22e94e7e0ffd",
+  "candidate_product_sha256": "457c704260558013306063815f21f8dc79aba56404283f165adfa07db61aafcf",
+  "fixture_sha256": "9a0af6dd749042fe89e9f36e85ce0263e01764f2665dd7f400691d31b271729f",
+  "patch_sha256": "fd414a426cb575fcd318205b8ae66e926209516f1a83f325c07c50831de064cf",
+  "lockfile_sha256_at_preparation": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "proof_scope": "frozen differential pair plus normal unit tests against the current component",
+  "expected_baseline_not_observed": {
+    "width_failures": 4,
+    "passing_controls": 5
+  },
+  "expected_candidate_not_observed": {
+    "passing": 9
+  },
+  "native_or_visual_behavior_verified": false,
+  "fixture_adapter": "Delegate addon lifecycle to real xterm; no prepared case bodies or assertions changed."
+}

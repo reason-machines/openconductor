@@ -123,12 +123,17 @@ export class ComposerSession {
     }
   }
 
-  async send(copy: (path: string) => Promise<unknown>, deliver: (attachments: readonly ComposerAttachment[]) => void): Promise<boolean> {
+  readyToSend(): boolean {
     if (this.sending) return false;
     if (!this.loaded || this.pendingFiles > 0) {
       this.publish({ error: "Wait for the draft and selected files to finish loading, then send again." });
       return false;
     }
+    return true;
+  }
+
+  async send(copy: (path: string) => Promise<unknown>, deliver: (attachments: readonly ComposerAttachment[]) => void): Promise<boolean> {
+    if (!this.readyToSend()) return false;
     this.sending = true;
     const generation = this.generation;
     const draft = this.state.draft;

@@ -64,6 +64,26 @@ export interface DiffComment {
   suggestion_base_code: string | null;
 }
 
+export type CommentAnchorPositions = ReadonlyMap<string, number | null>;
+export type CommentAnchorUpdate = Pick<DiffComment, "id" | "line_number" | "end_line_number">;
+
+export function commentAnchorUpdates(comments: DiffComment[], path: string, positions: CommentAnchorPositions): CommentAnchorUpdate[] {
+  const updates: CommentAnchorUpdate[] = [];
+  for (const comment of comments) {
+    if (comment.file_path !== path || comment.file_level || comment.remote_url !== null) continue;
+    const line = positions.get(comment.id);
+    if (line == null) continue;
+    const delta = line - (comment.end_line_number ?? comment.line_number);
+    if (delta === 0) continue;
+    updates.push({
+      id: comment.id,
+      line_number: comment.line_number + delta,
+      end_line_number: comment.end_line_number === null ? null : comment.end_line_number + delta,
+    });
+  }
+  return updates;
+}
+
 export interface NewComment {
   id: string;
   workspaceId: string;

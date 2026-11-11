@@ -98,6 +98,7 @@ export const fromPierreSide = (side: AnnotationSide | undefined): CommentSide =>
 export interface Anchor {
   side: CommentSide;
   line: number;
+  commentIds?: string[];
 }
 
 /**

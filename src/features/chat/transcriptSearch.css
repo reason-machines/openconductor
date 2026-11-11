@@ -1,0 +1,4 @@
+.chat:has(> .chat-scroll > .transcript) { position: relative; }
+.chat-find { color: var(--text); }
+.transcript mark[data-search-highlight="true"] { background: color-mix(in srgb, var(--amber) 30%, transparent); color: inherit; }
+.transcript mark[data-search-current="true"] { background: color-mix(in srgb, var(--amber) 65%, transparent); outline: 2px solid var(--emphasis); border-radius: 2px; }

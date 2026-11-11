@@ -1,0 +1,22 @@
+{
+  "result": "PASS_STATIC_PACKAGE_ONLY",
+  "run": 43053157437,
+  "job": 130635450436,
+  "artifact": 13870492685,
+  "main": "df44ec50db0e7632a7782089e4cde9e41e1ed6b8",
+  "repo_id": 1446810994,
+  "event": "push",
+  "attempt": 1,
+  "archive_sha256": "82c08a818017918cd0ff551bf158f6a12d9d772b5d94efa053a9d464139a3c4f",
+  "bundle_contract_checks": 39,
+  "bundle_contract_all_pass": true,
+  "binary_sha256": "437aa315d2038d0197c8db383c3e71f2b9d431e7dae2ddc52acf90525858363b",
+  "binary_bytes": 153118880,
+  "anchor_command_present": true,
+  "not_exercised": [
+    "Install/launch",
+    "Native/visual editing",
+    "Real provider",
+    "E1"
+  ]
+}
