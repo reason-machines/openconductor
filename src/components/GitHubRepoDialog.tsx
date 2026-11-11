@@ -48,7 +48,7 @@ export function GitHubRepoDialog({ target, onClose, onOpenSettings, onCreated, o
     loadOwners(force).then(
       (value) => {
         setOwners({ kind: "ready", value });
-        setOwner((cur) => cur || value.owners[0]?.login || "");
+        setOwner((cur) => value.owners.some((entry) => entry.login === cur) ? cur : value.owners[0]?.login || "");
       },
       (err) => setOwners({ kind: "error", message: ownersErrorMessage(err instanceof Error ? err.message : String(err)) }),
     );
