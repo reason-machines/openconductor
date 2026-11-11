@@ -1,0 +1,124 @@
+TAP version 13
+# Subtest: Ctrl+ArrowUp leaves the Composer's queue focus untouched
+ok 1 - Ctrl+ArrowUp leaves the Composer's queue focus untouched
+  ---
+  duration_ms: 1757.863938
+  type: 'test'
+  ...
+# Subtest: unmodified ArrowUp at the start focuses the last queued row
+ok 2 - unmodified ArrowUp at the start focuses the last queued row
+  ---
+  duration_ms: 759.312709
+  type: 'test'
+  ...
+# Subtest: shiftKey+ArrowUp does not take queue focus
+ok 3 - shiftKey+ArrowUp does not take queue focus
+  ---
+  duration_ms: 189.966934
+  type: 'test'
+  ...
+# Subtest: metaKey+ArrowUp does not take queue focus
+ok 4 - metaKey+ArrowUp does not take queue focus
+  ---
+  duration_ms: 921.316063
+  type: 'test'
+  ...
+# Subtest: altKey+ArrowUp does not take queue focus
+ok 5 - altKey+ArrowUp does not take queue focus
+  ---
+  duration_ms: 181.001047
+  type: 'test'
+  ...
+# Subtest: ArrowUp preserves focus with non-start caret
+ok 6 - ArrowUp preserves focus with non-start caret
+  ---
+  duration_ms: 989.416347
+  type: 'test'
+  ...
+# Subtest: ArrowUp preserves focus with empty queue
+ok 7 - ArrowUp preserves focus with empty queue
+  ---
+  duration_ms: 1391.072901
+  type: 'test'
+  ...
+# Subtest: Ctrl+Space is handled before the Composer command callback
+ok 8 - Ctrl+Space is handled before the Composer command callback
+  ---
+  duration_ms: 248.264311
+  type: 'test'
+  ...
+# Subtest: logical space with another physical code is handled before the Composer command callback
+ok 9 - logical space with another physical code is handled before the Composer command callback
+  ---
+  duration_ms: 9.153829
+  type: 'test'
+  ...
+# Subtest: physical Space with another logical key is handled before the Composer command callback
+ok 10 - physical Space with another logical key is handled before the Composer command callback
+  ---
+  duration_ms: 2.710052
+  type: 'test'
+  ...
+# Subtest: Ctrl+Shift+Space is handled before the Composer command callback
+ok 11 - Ctrl+Shift+Space is handled before the Composer command callback
+  ---
+  duration_ms: 35.231217
+  type: 'test'
+  ...
+# Subtest: Ctrl+Alt+Space is handled before the Composer command callback
+ok 12 - Ctrl+Alt+Space is handled before the Composer command callback
+  ---
+  duration_ms: 2.819264
+  type: 'test'
+  ...
+# Subtest: Ctrl+Shift+Alt+Space is handled before the Composer command callback
+ok 13 - Ctrl+Shift+Alt+Space is handled before the Composer command callback
+  ---
+  duration_ms: 3.811301
+  type: 'test'
+  ...
+# Subtest: plain Space still reaches the Composer command callback once
+ok 14 - plain Space still reaches the Composer command callback once
+  ---
+  duration_ms: 3.67814
+  type: 'test'
+  ...
+# Subtest: Meta+Space still reaches the Composer command callback once
+ok 15 - Meta+Space still reaches the Composer command callback once
+  ---
+  duration_ms: 8.467905
+  type: 'test'
+  ...
+# Subtest: Ctrl+Meta+Space still reaches the Composer command callback once
+ok 16 - Ctrl+Meta+Space still reaches the Composer command callback once
+  ---
+  duration_ms: 18.927437
+  type: 'test'
+  ...
+# Subtest: Ctrl+Shift+Meta+Space still reaches the Composer command callback once
+ok 17 - Ctrl+Shift+Meta+Space still reaches the Composer command callback once
+  ---
+  duration_ms: 6.258319
+  type: 'test'
+  ...
+# Subtest: Ctrl+another key still reaches the Composer command callback once
+ok 18 - Ctrl+another key still reaches the Composer command callback once
+  ---
+  duration_ms: 2.226721
+  type: 'test'
+  ...
+# Subtest: an allowed chord retains the parent callback's handled result
+ok 19 - an allowed chord retains the parent callback's handled result
+  ---
+  duration_ms: 2.014206
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9510.753545

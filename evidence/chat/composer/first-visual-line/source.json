@@ -1,0 +1,168 @@
+{
+  "id": "COMPOSER-FIRST-VISUAL-LINE-39955",
+  "owner": "Conductor Rebuild",
+  "baseline": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "archive_sha256": "ac5513dd23c6bf905f01270d91fd10bb43d76020194b8d7abbb9a05dd091ef7e",
+  "original": {
+    "path": ".source-prep-13576/retained-originals/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "analysis_limit": "Retained real-app compiled bytes. Original REA JavaScript analysis exhausted its worker heap; no semantic graph or native runtime proof."
+  },
+  "reference_spans": "../queue-focus-control/reference-spans.json",
+  "main_source_pins": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "bytes": 28735,
+      "sha256": "ba13bc0523ef60d657b5cd864030b7a958dbdc9f60c3d866067cf493dc0e01f0"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "bytes": 9694,
+      "sha256": "6b1a0b88d90a006eb82d1c098f83097873001aea462d5a521d96e0f90b6ec36c"
+    },
+    {
+      "path": "src/features/chat/composerSchema.ts",
+      "bytes": 2825,
+      "sha256": "f64206351ac2253c2333cb67eaa19e11aee7775c64f885c1c72e374dd5f6b338"
+    },
+    {
+      "path": "src/features/chat/composerDocument.ts",
+      "bytes": 2502,
+      "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676"
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "bytes": 12974,
+      "sha256": "2fe4c796ec1048ad122ed0a729c40c5480d51b327187e404aff84073cbf89285"
+    },
+    {
+      "path": "src/features/chat/queueKeys.ts",
+      "bytes": 2947,
+      "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1901,
+      "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 221776,
+      "sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 526,
+      "sha256": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5"
+    }
+  ],
+  "frozen_main_fixtures": [
+    {
+      "path": "src/features/chat/composerAttachments.test.ts",
+      "bytes": 2971,
+      "sha256": "71f4ae854a66fca6b4672ff2c602d9be8de541382d33dda555ca2df995a4ba12"
+    },
+    {
+      "path": "src/features/chat/composerDirectoryEntry.test.ts",
+      "bytes": 5723,
+      "sha256": "4b6e1a8b5e45c6893c78b0c6dd506a462492ec2960123095d7dd981d35ed5c8f"
+    },
+    {
+      "path": "src/features/chat/composerDocument.test.ts",
+      "bytes": 2169,
+      "sha256": "790cdc37859790e4f40c9827b2313fa801bb796ca3942d80d8e8d8617f468a0f"
+    },
+    {
+      "path": "src/features/chat/composerLongPaste.test.ts",
+      "bytes": 2333,
+      "sha256": "5283d2819add9f8621b0046ecc82b47e878a4aa5fb05cbce336d90c84e6d6b5a"
+    },
+    {
+      "path": "src/features/chat/composerMinimize.test.ts",
+      "bytes": 3577,
+      "sha256": "b67efe38118100ea489c37e5136749159bbc352854c26c298807fb60d28925f2"
+    },
+    {
+      "path": "src/features/chat/composerModels.test.ts",
+      "bytes": 2525,
+      "sha256": "83b9010d4def64b716527a2483e4e54d58bdbf5afc27c846bc55d7dfa48a733b"
+    },
+    {
+      "path": "src/features/chat/composerQueueFocus.test.ts",
+      "bytes": 6871,
+      "sha256": "cce2db54f4ccca445d66791fca2c9eec68b62f44e55e487af23607aea318bd37"
+    },
+    {
+      "path": "src/features/chat/composerReservedSpace.test.ts",
+      "bytes": 6455,
+      "sha256": "51a84ca89e0925814b178d7bf625cd525d1819652f79d497873b78ed8da03e24"
+    },
+    {
+      "path": "src/features/chat/composerSchema.test.ts",
+      "bytes": 2666,
+      "sha256": "bed970e91f18cd038a3f43885e8190f251d96d7d000491a900575e8afda67018"
+    },
+    {
+      "path": "src/features/chat/composerSession.test.ts",
+      "bytes": 10964,
+      "sha256": "e0cd494c65f4fa11d378012a3acd89591902580a99f97e4aa6af11f27f720adb"
+    },
+    {
+      "path": "src/features/chat/composerSlashAtoms.test.ts",
+      "bytes": 9896,
+      "sha256": "ebe2883b9f4b38d9acf8486a5b02122a483dc33bcbd7651444235b2cc112f92d"
+    },
+    {
+      "path": "src/features/chat/composerSlashPrefix.test.ts",
+      "bytes": 8816,
+      "sha256": "69f266c51364c12fe775885f86e52ef527e7c6435c227a313a8849d73bde8148"
+    },
+    {
+      "path": "src/features/chat/composerSubmit.test.ts",
+      "bytes": 9112,
+      "sha256": "e783f1e30be4007d9adfcc564934fdf87764fb328275645f873cd27b9f5b1c72"
+    },
+    {
+      "path": "src/features/chat/composerTerminal.test.ts",
+      "bytes": 6107,
+      "sha256": "5ebd7372da6066326ce802dbb069b79c34ab793bc17afb1c98d5bcfa6d49e25f"
+    },
+    {
+      "path": "src/features/chat/composerTerminalEntry.test.ts",
+      "bytes": 6610,
+      "sha256": "09cc654d0fd4a64927fcb4fa32d539cd139b57d920e0e18ead312d7ea7e16d3c"
+    }
+  ],
+  "excluded_unmerged_fixture": [
+    {
+      "path": "src/features/chat/composerSuggestionKeys.test.ts",
+      "bytes": 12978,
+      "sha256": "ac3f9b763e760005341e2b278763d62bf777b599f517e99ce58772cdfb6ddfa2"
+    }
+  ],
+  "checks": {
+    "archive_identity": "passed",
+    "original_identity": "passed",
+    "retained_spans": "passed 7/7",
+    "baseline_inputs": "passed 9/9",
+    "frozen_main_fixtures": "passed 15/15",
+    "baseline_behavior": "not run",
+    "candidate_behavior": "not run",
+    "typecheck": "not run",
+    "browser_geometry": "not run",
+    "native": "not run"
+  },
+  "limits": [
+    "The retained renderer is inert compiled JavaScript, not original source.",
+    "The earlier REA JavaScript analysis exhausted its worker heap. Its evidence id establishes retained artifact lineage, not a semantic graph or native execution.",
+    "The fixture substitutes the editor view layout answer and DOM focus endpoint. It does not measure browser geometry.",
+    "No install, Node, build, browser, preview, native or executor was invoked during source preparation."
+  ],
+  "fixture": {
+    "path": "src/features/chat/composerFirstVisualLine.test.ts",
+    "bytes": 12476,
+    "sha256": "0d4a88966e5568a4e985f433f8ec60c11abf893e77d1af26887fe61b2a8f43ea"
+  }
+}
