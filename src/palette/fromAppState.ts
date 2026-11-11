@@ -150,7 +150,13 @@ export function paletteDataFromState(
       if (a.id === "archive-workspace") return selectedWorkspace?.status !== "archived" && state.archivedOpen?.workspace.id !== activeWorkspaceId;
       if (a.id === "go-to-next-unread") return nextUnreadChat(state, { skipSelected: false }) !== undefined;
       // Conductor lists it under Navigation only while a workspace is open (`Xt &&`).
-      if (a.id === VIEW_ARCHIVED_ACTION) return activeWorkspaceId !== null;
+      if (a.id === VIEW_ARCHIVED_ACTION) {
+        const sel = state.selection;
+        if (sel.kind !== "workspace") return false;
+        const workspace = state.repos.find((r) => r.id === sel.repoId)?.workspaces.find((w) => w.id === sel.workspaceId)
+          ?? (state.archivedOpen?.workspace.id === sel.workspaceId ? state.archivedOpen.workspace : undefined);
+        return workspace !== undefined;
+      }
       return true;
     }), ...openInActions],
     settings,
