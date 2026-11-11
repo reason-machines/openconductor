@@ -38,7 +38,7 @@ if operation == "update":
         print("update timed out during internal retries")
         sys.exit(124)
     if scenario in ("ubuntu-dns-failure", "fallback-unavailable"):
-        if scenario == "fallback-unavailable" or record["mirror"] != "https://mirrors.kernel.org/ubuntu/ priority:1":
+        if scenario == "fallback-unavailable" or record["mirror"] != "https://mirrors.kernel.org/ubuntu/\tpriority:1":
             print("Temporary failure resolving Ubuntu archive mirror")
             sys.exit(100)
     if scenario == "mirror-fallback" and sum(r["operation"] == "update" for r in previous) < 2:
@@ -98,6 +98,33 @@ class AptInstallTest(unittest.TestCase):
                 self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
                 self.assertIn("Failed to fetch", result.stdout + result.stderr)
 
+    @unittest.skipUnless(shutil.which("apt-get"), "APT is not installed on this platform")
+    def test_real_apt_parses_generated_fallback_priority_as_metadata(self):
+        _, records = self.run_installer("fallback-unavailable", self.ubuntu_mirrors)
+        fallback = records[-1]["mirror"].replace("https://mirrors.kernel.org",
+                                                "http://127.0.0.1:9")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for path in ("conf.d", "sources.list.d", "state/lists/partial", "cache", "log"):
+                (root / path).mkdir(parents=True)
+            (root / "unused.conf").write_text("")
+            (root / "mirrors").write_text(fallback + "\n")
+            (root / "sources.list").write_text(f"deb mirror+file:{root}/mirrors jammy main\n")
+            config = root / "apt.conf"
+            config.write_text(f'Dir::Etc "{root}"; Dir::Etc::parts "conf.d"; '
+                              f'Dir::Etc::main "unused.conf"; '
+                              f'Dir::State "{root}/state"; Dir::Cache "{root}/cache"; '
+                              f'Dir::Log "{root}/log";')
+            result = subprocess.run(
+                ["apt-get", "-o", "Debug::NoLocking=true", "-o", "Acquire::Retries=0",
+                 "-o", "Acquire::http::Timeout=1", "-o", "APT::Update::Error-Mode=any", "update"],
+                env={**os.environ, "APT_CONFIG": str(config)},
+                capture_output=True, text=True, timeout=8)
+            output = result.stdout + result.stderr
+            self.assertEqual(result.returncode, 100, output)
+            self.assertIn("Err:2 http://127.0.0.1:9/ubuntu jammy InRelease", output)
+            self.assertNotIn("priority:1", output)
+
     def test_failed_metadata_never_reaches_install(self):
         result, records = self.run_installer("missing-metadata")
         self.assertNotEqual(result.returncode, 0, result.stdout)
@@ -118,18 +145,18 @@ class AptInstallTest(unittest.TestCase):
             "https://three.invalid/ priority:1",
         ])
 
-    ubuntu_mirrors = ("http://azure.archive.ubuntu.com/ubuntu/ priority:1\n"
-                      "https://archive.ubuntu.com/ubuntu/ priority:2\n"
-                      "https://security.ubuntu.com/ubuntu/ priority:3\n")
+    ubuntu_mirrors = ("http://azure.archive.ubuntu.com/ubuntu/\tpriority:1\n"
+                      "https://archive.ubuntu.com/ubuntu/\tpriority:2\n"
+                      "https://security.ubuntu.com/ubuntu/\tpriority:3\n")
 
     def test_ubuntu_dns_failure_uses_independent_final_mirror(self):
         result, records = self.run_installer("ubuntu-dns-failure", self.ubuntu_mirrors)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual([r["operation"] for r in records], ["update"] * 3 + ["install"])
         self.assertEqual([r["mirror"] for r in records[:3]], [
-            "http://azure.archive.ubuntu.com/ubuntu/ priority:1",
-            "https://archive.ubuntu.com/ubuntu/ priority:1",
-            "https://mirrors.kernel.org/ubuntu/ priority:1",
+            "http://azure.archive.ubuntu.com/ubuntu/\tpriority:1",
+            "https://archive.ubuntu.com/ubuntu/\tpriority:1",
+            "https://mirrors.kernel.org/ubuntu/\tpriority:1",
         ])
 
     def test_unavailable_independent_mirror_does_not_install(self):
@@ -142,14 +169,14 @@ class AptInstallTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual([r["operation"] for r in records], ["update", "install"])
         self.assertEqual({r["mirror"] for r in records}, {
-            "http://azure.archive.ubuntu.com/ubuntu/ priority:1",
+            "http://azure.archive.ubuntu.com/ubuntu/\tpriority:1",
         })
 
     def test_install_failure_does_not_enable_metadata_fallback(self):
         result, records = self.run_installer("install-failure", self.ubuntu_mirrors)
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertEqual([r["operation"] for r in records], ["update"] + ["install"] * 3)
-        self.assertEqual(records[-1]["mirror"], "https://security.ubuntu.com/ubuntu/ priority:1")
+        self.assertEqual(records[-1]["mirror"], "https://security.ubuntu.com/ubuntu/\tpriority:1")
 
     def test_exhausted_install_attempts_still_fail(self):
         result, records = self.run_installer("install-failure")

@@ -29,7 +29,7 @@ next_mirror() {
   {
     if [ "${1:-}" = metadata-fallback ] &&
       grep -Eq '^https?://(azure\.archive|archive|security)\.ubuntu\.com/ubuntu/?([[:space:]]|$)' "$mirrors"; then
-      printf '%s\n' 'https://mirrors.kernel.org/ubuntu/ priority:1'
+      printf '%s\t%s\n' 'https://mirrors.kernel.org/ubuntu/' 'priority:1'
       grep -v '^https://mirrors\.kernel\.org/ubuntu/' "$mirrors"
     else
       tail -n +2 "$mirrors"
