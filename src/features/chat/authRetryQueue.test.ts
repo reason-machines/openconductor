@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createChatRuntime, type ChatBackend, type ChatHost, type Deliver, type PromptRequest } from "./chatRuntime.ts";
 import { applyReasonPayload, type ReasonPayload } from "./reason.ts";
+import { turnCheckpointRef } from "./checkpoints.ts";
 import type { ChatMessage } from "./types.ts";
 import { retryUserPrompt } from "./userContent.ts";
 
@@ -70,7 +71,7 @@ test("accepted retries keep original turns, deduplicate and stay ahead of later 
   assert.deepEqual(f.prompts.map((request) => request.text), ["first"]);
   await f.finish();
   assert.deepEqual(f.prompts.map((request) => request.text), ["first", "second"]);
-  assert.equal(f.prompts[1]?.turn.turnId, second.turnId);
+  assert.deepEqual(f.prompts[1]?.turn, turnCheckpointRef("retry-queue-order", second.turnId));
   f.runtime.queueAction("retry-queue-order", { kind: "pause" });
   await f.finish();
   assert.equal(f.prompts.length, 2);
@@ -94,7 +95,7 @@ test("a failed continuation pauses the remaining retry until the existing resume
   assert.equal(f.prompts.length, 1);
   f.runtime.queueAction("retry-queue-failure", { kind: "resume" });
   await tick();
-  assert.equal(f.prompts[1]?.turn.turnId, second.turnId);
+  assert.deepEqual(f.prompts[1]?.turn, turnCheckpointRef("retry-queue-failure", second.turnId));
   await f.finish();
 });
 
@@ -129,7 +130,7 @@ test("a saved edit becomes a new turn without rewriting the original failed mess
   await tick();
   await f.finish();
   assert.equal(f.prompts[1]?.text, "edited second");
-  assert.notEqual(f.prompts[1]?.turn.turnId, second.turnId);
+  assert.notDeepEqual(f.prompts[1]?.turn, turnCheckpointRef("retry-queue-edit", second.turnId));
   assert.equal(f.snapshot().transcript.turns[second.turnId]?.status, "failed");
   const original = f.snapshot().transcript.messages.find((message) => message.id === second.id);
   assert.ok(original);
@@ -166,7 +167,7 @@ test("explicitly steering a queued retry preserves its original turn identity", 
   assert.ok(queued);
   f.runtime.queueAction("retry-queue-steer", { kind: "steer", id: queued.id });
   await tick();
-  assert.deepEqual(f.prompts.map((request) => request.turn.turnId), [first.turnId, second.turnId]);
+  assert.deepEqual(f.prompts.map((request) => request.turn), [first, second].map((user) => turnCheckpointRef("retry-queue-steer", user.turnId)));
   assert.equal(f.snapshot().transcript.messages.filter((message) => message.role === "user").length, 2);
   await f.finish();
   await f.finish();
