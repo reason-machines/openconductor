@@ -33,7 +33,13 @@ For each of start and stop, it checks:
 
 The tests also assert that restoring the panel does not issue a start or stop. Protected runSelectionHistory.test.ts, setupContext.test.ts and runCompletion.test.ts are untouched.
 
-Hosted RED is pending. Production is deliberately unchanged until the regression-only revision demonstrates the intended failures. Local dependency installation, component execution, typecheck/build, browser capture, reference execution, native and installed-Mac checks have not run. No screenshot is available because this lane admits source/hosted regression work, not browser or native execution.
+Hosted RED is confirmed on regression-only head `ac3fff8b804d41f299d6637a442786fab53d91b2`, [CI run42937552436/frontend unit job130251268624](https://github.com/reason-machines/openconductor/actions/runs/42937552436/job/130251268624), command `node --test "src/**/*.test.ts"`. Exactly six tests failed: pending start/stop projected into B, late start/stop errors appeared in B, and old start/stop completions cleared B's newer pending action. Both same-workspace command-identity/error controls passed. The full suite reported 2,178 passed, six failed, zero cancelled and zero skipped out of 2,184. Independent frontend job130251268970 passed typecheck and color lint, then failed at those same unit regressions before build.
+
+Decisive failure messages include `B can start Spotlight while A's command is unresolved`, `a command failure belongs to the workspace that issued it`, and `an obsolete completion must not clear the newer request`.
+
+The minimal correction stores workspace identity and phase in one request object. Pending state is derived only for the displayed workspace, a completion clears only its own request object, and a caught error is published only while its workspace is displayed. Existing script/history/Setup/completion paths, IPC arguments and process policy are unchanged. All eight regression cases remain unchanged from the hosted RED revision.
+
+Hosted GREEN for the correction is pending. Local dependency installation, component execution, typecheck/build, browser capture, reference execution, native and installed-Mac checks have not run. No screenshot is available because this lane admits source/hosted regression work, not browser or native execution.
 
 ## Recheck inert reference identity
 
