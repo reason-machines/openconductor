@@ -1,6 +1,6 @@
 {
   "unit": "DIFF-NEW-INLINE-DRAFT-REMOUNT-SOURCE-DE6",
-  "status": "TEST_ONLY_PRODUCT_UNCHANGED_AWAITING_HOSTED_RED",
+  "status": "V2_TEST_ONLY_CORRECTED_EXISTING_SUBMIT_TRIM_CONTROL",
   "main": "c25670504400771e2fb31e01560db249ea4bd06c",
   "original_identity": {
     "version": "0.87.6",
@@ -266,7 +266,7 @@
   "lease": "ReviewComments Composing body/identity/reset plus isolated mounted regression/evidence; automatic hosted test-first; no local/native runtime",
   "baseline": "c25670504400771e2fb31e01560db249ea4bd06c",
   "fixture": "src/features/diff/newInlineDraftRemount.test.ts",
-  "fixture_sha256": "0cf77b6cf12bd3881fc08a5a8672d51943aeb91a0eb4c88062b809d8dc7a90ed",
+  "fixture_sha256": "03fe7b4aece5b6c5db55772df27ab04ec80c85356d38d34d576fe0397b41b907",
   "product": {
     "baseline": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508",
     "candidate": null
@@ -283,5 +283,11 @@
     "src/features/diff/commentImeSubmit.test.ts": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
     "src/features/diff/movedCommentAnchors.test.ts": "48428ff7dd42cb1c1a01874ad8cea53eda20b286093aea45ca66fe07a962b88c",
     "src/features/diff/hiddenWhitespaceEditing.test.ts": "6e0b9c57c9d1f2ab99f517104e6b262ea643b517d9d3aeef81be6f4fa4c52ca1"
+  },
+  "historical_fixture_v1": {
+    "sha256": "0cf77b6cf12bd3881fc08a5a8672d51943aeb91a0eb4c88062b809d8dc7a90ed",
+    "snapshot": "v1-fixture.test.ts.txt",
+    "receipt": "hosted-v1-red.json",
+    "result": "14 intended failures, one passing control, one out-of-scope submit-trim control mismatch"
   }
 }

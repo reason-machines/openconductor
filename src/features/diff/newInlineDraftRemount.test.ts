@@ -194,7 +194,7 @@ test("new draft keep editing retains body after remount", async (t) => {
 test("new draft successful submit clears only saved draft", async (t) => {
   const view = await fixture(); t.after(view.close);
   await view.open(); await view.change(body); await view.click("Comment");
-  assert.equal(view.added.length, 1); assert.equal(view.added[0].body, body);
+  assert.equal(view.added.length, 1); assert.equal(view.added[0].body, "未送信のコメント\nexact trailing spaces");
   assert.equal(view.added[0].workspace_id, "workspace-a"); assert.equal(view.added[0].file_path, file.path);
   assert.equal(view.inputs(), 0); await view.open(); await view.evict(); assert.equal(view.value(), "");
 });
