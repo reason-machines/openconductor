@@ -39,6 +39,8 @@ import {
   type TaskItem,
 } from "./conductorTools.ts";
 import { Markdown } from "./markdown.ts";
+import { LinkWithMenu } from "./LinkMenu.tsx";
+import { openUrl } from "../../backend.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
 import type { ToolStatus } from "./view.ts";
 
@@ -857,7 +859,14 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
           right={<span className="oc-code-chip sans">{thinkingChipText(text)}</span>}
           align="center"
           plainContent
-          content={<Markdown text={text} className="oc-prose muted" />}
+          content={
+            <Markdown
+              text={text}
+              className="oc-prose muted"
+              onOpenLink={(href) => void openUrl(href)}
+              Link={LinkWithMenu}
+            />
+          }
         />
       );
     }
