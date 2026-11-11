@@ -639,5 +639,7 @@ the row), and leaves these keys out of `settings.toml`. At startup, values an ol
 `[appearance]` move into the table. A row the table already has wins. Then the keys are dropped from
 the file. The frontend still sees them as `settings.appearance.*`, so the Appearance page, the diff
 viewer and the sidebar are unchanged. `terminal_font_family`, `terminal_font_size` and `color_vision`
-are also non-file-backed in Conductor (`Pe`/`yl` without `fileKey`), but they belong to the terminal
-and diff areas and stay in `[appearance]` for now.
+now follow that same table route. Their key-specific readers, setters, reachable Appearance rows,
+non-file-backed classification and exclusion from secure storage are recorded in
+[Terminal Appearance persistence](terminal-appearance-persistence.md). The legacy TOML upgrade is
+OpenConductor compatibility policy, not an observed Conductor migration.

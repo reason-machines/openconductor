@@ -14,7 +14,7 @@ import { LinkMenuNotify, LinkWithMenu } from "./LinkMenu.tsx";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
-import { Markdown } from "./markdown.ts";
+import { Markdown, type MarkdownOptions } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
 import { turnDayClock, turnTime } from "./turnTime.ts";
 import { TurnDetails } from "./TurnDetails.tsx";
@@ -24,7 +24,9 @@ import type { ChatAgentId } from "./agentChoice.ts";
 import { isSignInFailure } from "./agentSignIn.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
 import { SentUserContent } from "./SentUserContent.tsx";
+import { UserText } from "./UserText.tsx";
 import type { UserPrompt } from "./userContent.ts";
+import { userMessageCopyText } from "./userMessageCopy.ts";
 import "./chat.css";
 
 export interface TranscriptProps {
@@ -58,7 +60,7 @@ export interface TranscriptProps {
   /** Clock for the footer's time of day (tests pin it). */
   now?: () => number;
   /** Toasts, e.g. a markdown link's "Copy link address" (LinkMenu.tsx). */
-  notify?: (kind: "info" | "error", message: string) => void;
+  notify?: MarkdownOptions["notify"];
 }
 
 export function Transcript({
@@ -106,6 +108,7 @@ export function Transcript({
     forkDisabled,
     turnAgent,
     chatAgent,
+    notify,
   };
 
   return (
@@ -167,6 +170,7 @@ interface RowContext {
   workspacePath?: string;
   onOpenFile?: (path: string) => void;
   now: () => number;
+  notify?: TranscriptProps["notify"];
   onForkToNewTab?: (turnId: string) => void;
   onForkToNewWorkspace?: (turnId: string) => void;
   forkDisabled: boolean;
@@ -181,8 +185,8 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
         <div className="chat-msg chat-user oc-msg-user" data-message-role="user">
           <div className="oc-user-col">
             <div className="chat-bubble oc-bubble">
-              <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : row.text}</div>
-              <MessageActions text={row.text} />
+              <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : <UserText text={row.text} />}</div>
+              <MessageActions text={userMessageCopyText(row.message)} />
             </div>
             {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
           </div>
@@ -334,6 +338,7 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
             <div className="oc-text-wrap">
               <Markdown
                 text={part.text}
+                notify={ctx.notify}
                 className={`oc-prose chat-text${preview ? "" : " muted"}${part.streaming ? " is-streaming" : ""}`}
                 onOpenLink={(href) => void openUrl(href)}
                 workspacePath={ctx.workspacePath}
@@ -395,7 +400,12 @@ function ThinkingRow({ id, text, streaming, group, ctx }: { id: string; text: st
         </div>
         {open ? (
           <div className="oc-tool-content plain">
-            <Markdown text={text} className={`oc-prose muted${streaming ? " is-streaming" : ""}`} />
+            <Markdown
+              text={text}
+              className={`oc-prose muted${streaming ? " is-streaming" : ""}`}
+              onOpenLink={(href) => void openUrl(href)}
+              Link={LinkWithMenu}
+            />
           </div>
         ) : null}
       </div>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { keyedCache } from "../lib/keyedCache";
 import type { Repo, Workspace } from "../state/types";
@@ -12,7 +12,6 @@ import {
   visibleScripts,
   workspaceRef,
   type RunState,
-  type RunStatus,
   type ScriptsConfig,
   type SetupStatus,
 } from "../scripts/model";
@@ -75,6 +74,8 @@ const SETUP_BUTTON = {
   stop: { idle: "Stop setup", pending: "Stopping..." },
 } as const;
 type SetupButtonMode = keyof typeof SETUP_BUTTON;
+const IDLE_SETUP: SetupStatus = { state: "idle", log: null, last: null };
+const IDLE_RUN_STATUS: Awaited<ReturnType<typeof api.runStatus>> = { runs: [], history: [] };
 
 const errorText = (e: unknown) => (typeof e === "string" ? e : e instanceof Error ? e.message : String(e));
 
@@ -94,32 +95,41 @@ const spotSettings = keyedCache<SpotlightTesting>(64);
 export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetupState, onAddRunScript, onAskAgent, onShowRun }: Props) {
   const ref = useMemo(() => workspaceRef(repo, workspace), [repo, workspace]);
   const wsId = workspace.id;
+  const displayedWorkspaceId = useRef(wsId);
+  displayedWorkspaceId.current = wsId;
+  const refreshSequence = useRef(0);
   const configKey = JSON.stringify(ref);
   const [configState, setConfigState] = useState<{ key: string; config: ScriptsConfig | null }>(() => ({ key: configKey, config: configs.get(configKey) ?? null }));
   // null until this workspace's config is known (from the cache or the backend).
   const config = configState.key === configKey ? configState.config : (configs.get(configKey) ?? null);
-  const [runs, setRuns] = useState<RunStatus[]>([]);
+  const [runSnapshot, setRunSnapshot] = useState({ workspaceId: wsId, status: IDLE_RUN_STATUS });
+  const { runs, history } = runSnapshot.workspaceId === wsId ? runSnapshot.status : IDLE_RUN_STATUS;
   const [picked, setPicked] = useState<string | null>(null);
-  const [runOut, setRunOut] = useState("");
-  const [setup, setSetup] = useState<SetupStatus>({ state: "idle", log: null, last: null });
+  const [runOutputState, setRunOutputState] = useState({ key: "", text: "" });
+  const [setupSnapshot, setSetupSnapshot] = useState<{ workspaceId: string; status: SetupStatus }>({ workspaceId: wsId, status: IDLE_SETUP });
+  const setup = setupSnapshot.workspaceId === wsId ? setupSnapshot.status : IDLE_SETUP;
   const [error, setError] = useState<string | null>(null);
   const [configError, setConfigError] = useState<string | null>(null);
-  const [setupPending, setSetupPending] = useState<"run" | "stop" | null>(null);
+  const [setupRequest, setSetupRequest] = useState<{ workspaceId: string; mode: "run" | "stop" } | null>(null);
+  const setupPending = setupRequest?.workspaceId === wsId ? setupRequest.mode : null;
   const [spotState, setSpotState] = useState<{ repoId: string; setting: SpotlightTesting | null }>(() => ({ repoId: repo.id, setting: spotSettings.get(repo.id) ?? null }));
   const spotSetting = spotState.repoId === repo.id ? spotState.setting : (spotSettings.get(repo.id) ?? null);
   const [spotView, setSpotView] = useState<SpotlightView>(EMPTY_VIEW);
-  const [spotPending, setSpotPending] = useState<"starting" | "stopping" | null>(null);
+  const [spotRequest, setSpotRequest] = useState<{ workspaceId: string; phase: "starting" | "stopping" } | null>(null);
+  const spotPending = spotRequest?.workspaceId === wsId ? spotRequest.phase : null;
   const repoSettings = useRepoSettings(repo.path || undefined, workspace.path);
-  const [previewEnv, setPreviewEnv] = useState<PreviewEnv>({});
-  const [detectedUrl, setDetectedUrl] = useState<string | null>(null);
+  const [previewEnvState, setPreviewEnvState] = useState<{ key: string; env: PreviewEnv }>({ key: configKey, env: {} });
+  const previewEnv = previewEnvState.key === configKey ? previewEnvState.env : {};
+  const [detectedPreview, setDetectedPreview] = useState<{ key: string; url: string | null }>({ key: "", url: null });
 
   const repoRoot = repo.path;
   const spotEnabled = spotSetting?.enabled === true;
   const spotMine = spotView.workspaceId === wsId;
   const spotLogMine = spotView.logWorkspaceId === wsId;
   const activeScript = activeRun(runs);
+  const historicalScriptId = history.find((id) => visibleScripts(config).some((script) => script.id === id));
   const selected = shownTask({
-    picked,
+    picked: picked ?? historicalScriptId ?? null,
     spotlightEnabled: spotEnabled,
     activeScriptId: activeScript?.scriptId ?? null,
     spotlightMine: spotMine,
@@ -135,11 +145,16 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     workspaceActiveRunTaskIsBusy: activeScript !== null || spotMine,
   });
   const showSpotlight = shown === SPOTLIGHT_TASK_ID;
+  const outputKey = JSON.stringify([wsId, shown]);
+  const runOut = runOutputState.key === outputKey ? runOutputState.text : "";
+  const detectedUrl = detectedPreview.key === outputKey ? detectedPreview.url : null;
 
   const refresh = useCallback(async () => {
+    const sequence = ++refreshSequence.current;
     const [status, setupState] = await Promise.all([api.runStatus(wsId), api.setupStatus(wsId)]);
-    setRuns(status.runs);
-    setSetup(setupState);
+    if (sequence !== refreshSequence.current || displayedWorkspaceId.current !== wsId) return;
+    setRunSnapshot({ workspaceId: wsId, status });
+    setSetupSnapshot({ workspaceId: wsId, status: setupState });
   }, [wsId]);
 
   useEffect(() => {
@@ -190,31 +205,48 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   }, [repoRoot]);
 
   useEffect(() => {
-    if (!shown) return setRunOut("");
-    api.runOutput(wsId, shown).then((o) => setRunOut(o ?? ""), () => {});
-  }, [wsId, shown, runs]);
+    if (!shown) return setRunOutputState({ key: outputKey, text: "" });
+    let disposed = false;
+    api.runOutput(wsId, shown).then((o) => {
+      if (!disposed) setRunOutputState({ key: outputKey, text: o ?? "" });
+    }, () => {});
+    return () => { disposed = true; };
+  }, [wsId, shown, runs, outputKey]);
 
   useEffect(() => {
     let off: (() => void) | undefined;
+    let disposed = false;
     api
       .onScriptEvent((e) => {
-        if (e.workspaceId !== wsId) return;
-        if (e.type === "output" && e.kind === "run" && e.scriptId === shown) setRunOut((b) => appendOutput(b, e.chunk));
-        if (e.type === "output" && e.kind === "setup") setSetup((s) => ({ ...s, state: "running", log: appendOutput(s.log ?? "", e.chunk) }));
+        if (disposed || e.workspaceId !== wsId) return;
+        if (e.type === "output" && e.kind === "run" && e.scriptId === shown) {
+          setRunOutputState((previous) => ({ key: outputKey, text: appendOutput(previous.key === outputKey ? previous.text : "", e.chunk) }));
+        }
+        if (e.type === "output" && e.kind === "setup") setSetupSnapshot((previous) => {
+          const status = previous.workspaceId === wsId ? previous.status : IDLE_SETUP;
+          return { workspaceId: wsId, status: { ...status, state: "running", log: appendOutput(status.log ?? "", e.chunk) } };
+        });
         if (e.type === "setupFinished" || e.type === "runStarted" || e.type === "runFinished") refresh().catch(() => {});
       })
-      .then((f) => (off = f));
-    return () => off?.();
-  }, [wsId, shown, refresh]);
+      .then((f) => (disposed ? f() : (off = f)));
+    return () => {
+      disposed = true;
+      off?.();
+    };
+  }, [wsId, shown, refresh, outputKey]);
 
   useEffect(() => {
     onSetupState?.(setup.state);
   }, [onSetupState, setup.state]);
 
   useEffect(() => {
-    setPreviewEnv({});
-    if (ref) api.previewEnv(ref).then((pairs) => setPreviewEnv(previewEnvFrom(pairs)), () => {});
-  }, [ref]);
+    let disposed = false;
+    setPreviewEnvState({ key: configKey, env: {} });
+    if (ref) api.previewEnv(ref).then((pairs) => {
+      if (!disposed) setPreviewEnvState({ key: configKey, env: previewEnvFrom(pairs) });
+    }, () => {});
+    return () => { disposed = true; };
+  }, [ref, configKey]);
 
   async function act(f: () => Promise<unknown>) {
     setError(null);
@@ -235,17 +267,18 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   }
 
   async function toggleSpotlightRun(action: "start" | "stop") {
+    const request = { workspaceId: wsId, phase: action === "stop" ? "stopping" : "starting" } satisfies NonNullable<typeof spotRequest>;
     setError(null);
     // Stay on the Spotlight task so its log stays readable after a stop.
     setPicked(SPOTLIGHT_TASK_ID);
-    setSpotPending(action === "stop" ? "stopping" : "starting");
+    setSpotRequest(request);
     try {
       if (action === "stop") await spotlight.stopSpotlight(repoRoot);
       else await spotlight.startSpotlight(repo.id, wsId, ref!.workspacePath, repoRoot);
     } catch (e) {
-      setError(errorText(e));
+      if (displayedWorkspaceId.current === wsId) setError(errorText(e));
     }
-    setSpotPending(null);
+    setSpotRequest((pending) => pending === request ? null : pending);
     await Promise.all([refresh(), refreshSpotlight()]).catch(() => {});
   }
 
@@ -260,11 +293,11 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   // Conductor's run-tab URL (`ea`): found in the run output while the task runs, kept until it stops.
   const runBusy = !showSpotlight && busy;
   useEffect(() => {
-    if (!runBusy) setDetectedUrl(null);
-  }, [runBusy, shown, wsId]);
+    if (!runBusy) setDetectedPreview({ key: outputKey, url: null });
+  }, [runBusy, outputKey]);
   useEffect(() => {
-    if (runBusy && detectedUrl === null) setDetectedUrl(detectLocalhostUrl(runOut));
-  }, [runBusy, detectedUrl, runOut]);
+    if (runBusy && detectedUrl === null) setDetectedPreview({ key: outputKey, url: detectLocalhostUrl(runOut) });
+  }, [runBusy, detectedUrl, runOut, outputKey]);
   // The Open button (`id`): while the run task runs, with a preview URL or one found in its output.
   const previews = runBusy ? previewOptions(repoSettings?.previewUrls?.value, detectedUrl, previewEnv) : [];
   // In-app browser preview is an experimental setting in Conductor, off by default; with it off
@@ -302,9 +335,16 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   // script the dashed "Add setup script" card (Ask agent / Add manually).
   async function setupAction(mode: "run" | "stop") {
     if (setupPending || !ref) return;
-    setSetupPending(mode);
-    await act(() => (mode === "stop" ? api.cancelSetup(wsId) : api.startSetup(ref)));
-    setSetupPending(null);
+    const request = { workspaceId: wsId, mode };
+    setSetupRequest(request);
+    setError(null);
+    try {
+      await (mode === "stop" ? api.cancelSetup(wsId) : api.startSetup(ref));
+    } catch (e) {
+      if (displayedWorkspaceId.current === wsId) setError(errorText(e));
+    }
+    await refresh().catch(() => {});
+    setSetupRequest((pending) => pending === request ? null : pending);
   }
   const setupButton = (mode: SetupButtonMode, corner: boolean) => {
     const pending = mode === "stop" ? setupPending === "stop" : setupPending === "run";

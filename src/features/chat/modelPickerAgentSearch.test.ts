@@ -63,3 +63,37 @@ test("source-only: agent search preserves matching input order and unknown IDs",
   assert.deepEqual(results("custom-model", [unknown]), [unknown]);
   assert.deepEqual(results("claude", [unknown]), []);
 });
+
+for (const [query, expected] of [
+  ["opus claude", [opus]],
+  [" CLAUDE\t \n opus ", [opus]],
+  ["codex sol", [codex]],
+  ["gpt sol", [codex]],
+  ["opus missing", []],
+  ["claude gpt", []],
+] as const) {
+  test(`source-only: every model-search word matches the same result for ${JSON.stringify(query)}`, () => {
+    assert.deepEqual(results(query), expected);
+  });
+}
+
+test("source-only: multiword search preserves matching input order", () => {
+  const secondOpus: ModelChoice = { model: "opus-5-5-1m", effort: null };
+  assert.deepEqual(results("opus claude", [secondOpus, codex, opus]), [secondOpus, opus]);
+});
+
+test("source-only: multiword search preserves explicit and callback agent precedence", () => {
+  const reason: ModelChoice = { ...opus, agent: "reason" };
+  assert.deepEqual(results("reason opus", [reason]), [reason]);
+  assert.deepEqual(results("claude opus", [reason]), []);
+  assert.deepEqual(results("codex opus", [reason], () => "codex"), [reason]);
+  assert.deepEqual(results("reason opus", [reason], () => "codex"), []);
+});
+
+test("source-only: multiword search uses supplied names and keeps unknown model IDs", () => {
+  const custom: ModelChoice = { model: "custom-model", effort: null, agent: "reason" };
+  const named = filter(custom, [], [custom], "north reason", () => "North Star", undefined, undefined, orderedModelChoices, modelDisplayName, agentForModel, AGENT_LABEL);
+  assert.deepEqual(named, [custom]);
+  assert.deepEqual(results("custom model", [custom]), [custom]);
+  assert.deepEqual(results("custom claude", [custom]), []);
+});

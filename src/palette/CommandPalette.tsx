@@ -150,6 +150,9 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     typed.current = true;
   }, [query]);
   useEffect(() => {
+    if (tab !== "workspaces") listRef.current?.scrollTo(0, 0);
+  }, [tab, query]);
+  useEffect(() => {
     listRef.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: "nearest" });
   }, [active]);
 
