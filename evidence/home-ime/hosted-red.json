@@ -1,0 +1,50 @@
+{
+  "unit": "ACQ-HOME-IME-271-06",
+  "producer": "Conductor Rebuild",
+  "phase": "RED_BEFORE_PRODUCT_FIX",
+  "head_sha": "5905b3873b2be2153b7b1c6297bed51b603acdb6",
+  "workflow": {
+    "run_id": 43068992878,
+    "job_id": 130691479387
+  },
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43068992878/job/130691479387",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "command_note": "Exact command is recorded in the workflow; hosted full unit suite executed the frozen Home fixture.",
+  "fixture_sha256": "f972b0a3707f54f8709b36aeacc01efe3c1fc4a015e6f8a4ddb85fb7d1638d7f",
+  "full_suite": {
+    "tests": 2943,
+    "passed": 2938,
+    "failed": 5,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "fixture": {
+    "tests": 7,
+    "failed": [
+      140,
+      141,
+      142,
+      143,
+      146
+    ],
+    "passed": [
+      144,
+      145
+    ],
+    "failure": "Each negative test observed one local preventDefault call when zero was expected; ordinary Enter targeting and navigation controls passed."
+  },
+  "log_excerpt": "hosted-red.log.txt",
+  "typecheck_build": "Same five unit assertions failed in Frontend typecheck + build; no TypeScript diagnostics were found.",
+  "separate_failure": {
+    "job": 130691478819,
+    "run": 43068992778,
+    "cases": [
+      "agents-reason pairing-code timeout",
+      "account-reason-sign-out Sign out row timeout"
+    ],
+    "scope": "No Home key assertions failed in this built-app job; ownership requested from existing ledger, cause not inferred."
+  },
+  "native": "NOT_RUN",
+  "browser": "NOT_RUN",
+  "visual": "NOT_RUN"
+}

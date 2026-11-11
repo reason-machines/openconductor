@@ -1,0 +1,5 @@
+async function EXe(t,{workspace:e,rename:s,workspacePath:n,newWorkspacePath:r,renamingBackToOriginal:i}){const{localWorkspaceId:o,newDirectoryName:a,workspaceNameToPersist:c,userSetWorkspaceName:l}=s;i||(await t.fs.isSymlink(r,M)&&await t.fs.removeSymlink(r,M),await t.fs.createSymlink(n,r,M));const u=await t.fs.isSymlink(e.userVisiblePath,M);await t.db.execute(`UPDATE workspaces
+         SET secondary_directory_name = ?,
+             workspace_name = ?,
+             user_set_workspace_name = CASE WHEN ? = 1 THEN 1 ELSE user_set_workspace_name END
+         WHERE local_id = ?`,[i?null:a,c,l,o]),u&&await t.db.execute("INSERT INTO symlinks_pending_deletion (path) VALUES (?)",[e.userVisiblePath]),i||await t.db.execute("DELETE FROM symlinks_pending_deletion WHERE path = ?",[r])}

@@ -16,7 +16,9 @@ Before this fix, OpenConductor's frontend slugified `myname-` into `myname/`, yi
 python3 evidence/settings/custom-prefix/replay.py --out-dir /tmp/custom-prefix-replay
 ```
 
-The replay copies only pure source modules into disposable directories. It reverses [fix.patch](fix.patch) and checks all eight restored source hashes against the recorded baseline. It runs the same SHA-256-pinned seven-case Node fixture, six-case mounted GitPage fixture, and Rust fixture in both phases. No retained Conductor code, installed app, provider, or native GUI is executed.
+The replay copies only pure source modules into disposable directories. It reverses [fix.patch](fix.patch), restores the immutable [baseline types](baseline/types.ts), and checks all eight restored source hashes against the original manifest. The types snapshot is byte-identical to the recorded commit, so unrelated theme-default changes cannot contaminate the historical prefix baseline. Candidate sources remain unchanged. The assembly regression checks this separation for all three candidate theme defaults.
+
+It runs the same SHA-256-pinned seven-case Node fixture, six-case mounted GitPage fixture, and Rust fixture in both phases. The original manifest, patch, fixture hashes, failure counts and assertions are unchanged. No retained Conductor code, installed app, provider, or native GUI is executed.
 
 Observed on the Reason cloud computer:
 

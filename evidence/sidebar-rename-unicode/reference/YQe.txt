@@ -1,0 +1,1 @@
+const YQe=/^[\p{Letter}\p{Number}\p{Mark}_-]+$/u;

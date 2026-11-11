@@ -1,0 +1,122 @@
+2026-11-11T17:31:53.3636934Z # Subtest: Home composing Enter does not open the selected workspace or cancel IME confirmation
+2026-11-11T17:31:53.3638075Z not ok 140 - Home composing Enter does not open the selected workspace or cancel IME confirmation
+2026-11-11T17:31:53.3639031Z   ---
+2026-11-11T17:31:53.3639438Z   duration_ms: 244.986489
+2026-11-11T17:31:53.3639873Z   type: 'test'
+2026-11-11T17:31:53.3640629Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeIme.test.ts:99:1'
+2026-11-11T17:31:53.3641527Z   failureType: 'testCodeFailure'
+2026-11-11T17:31:53.3642295Z   error: |-
+2026-11-11T17:31:53.3642773Z     Expected values to be strictly equal:
+2026-11-11T17:31:53.3643291Z     
+2026-11-11T17:31:53.3643774Z     1 !== 0
+2026-11-11T17:31:53.3644153Z     
+2026-11-11T17:31:53.3644544Z   code: 'ERR_ASSERTION'
+2026-11-11T17:31:53.3644965Z   name: 'AssertionError'
+2026-11-11T17:31:53.3645393Z   expected: 0
+2026-11-11T17:31:53.3645784Z   actual: 1
+2026-11-11T17:31:53.3646176Z   operator: 'strictEqual'
+2026-11-11T17:31:53.3646600Z   stack: |-
+2026-11-11T17:31:53.3647479Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeIme.test.ts:103:12)
+2026-11-11T17:31:53.3648490Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T17:31:53.3649277Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T17:31:53.3649936Z   ...
+2026-11-11T17:31:53.3650577Z # Subtest: Home legacy keyCode 229 Enter does not open the selected workspace
+2026-11-11T17:31:53.3651474Z not ok 141 - Home legacy keyCode 229 Enter does not open the selected workspace
+2026-11-11T17:31:53.3652099Z   ---
+2026-11-11T17:31:53.3652476Z   duration_ms: 211.723025
+2026-11-11T17:31:53.3652895Z   type: 'test'
+2026-11-11T17:31:53.3653631Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeIme.test.ts:109:1'
+2026-11-11T17:31:53.3654630Z   failureType: 'testCodeFailure'
+2026-11-11T17:31:53.3655088Z   error: |-
+2026-11-11T17:31:53.3655517Z     Expected values to be strictly equal:
+2026-11-11T17:31:53.3655984Z     
+2026-11-11T17:31:53.3656336Z     1 !== 0
+2026-11-11T17:31:53.3656708Z     
+2026-11-11T17:31:53.3657071Z   code: 'ERR_ASSERTION'
+2026-11-11T17:31:53.3657491Z   name: 'AssertionError'
+2026-11-11T17:31:53.3657921Z   expected: 0
+2026-11-11T17:31:53.3658294Z   actual: 1
+2026-11-11T17:31:53.3658678Z   operator: 'strictEqual'
+2026-11-11T17:31:53.3659101Z   stack: |-
+2026-11-11T17:31:53.3659939Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeIme.test.ts:113:12)
+2026-11-11T17:31:53.3661100Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T17:31:53.3662018Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:31:53.3662687Z   ...
+2026-11-11T17:31:53.3663331Z # Subtest: Home leaves composing and legacy-229 navigation to the input method
+2026-11-11T17:31:53.3664388Z not ok 142 - Home leaves composing and legacy-229 navigation to the input method
+2026-11-11T17:31:53.3665035Z   ---
+2026-11-11T17:31:53.3665427Z   duration_ms: 111.069509
+2026-11-11T17:31:53.3665870Z   type: 'test'
+2026-11-11T17:31:53.3666643Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeIme.test.ts:119:1'
+2026-11-11T17:31:53.3667462Z   failureType: 'testCodeFailure'
+2026-11-11T17:31:53.3667927Z   error: |-
+2026-11-11T17:31:53.3668316Z     ArrowDown
+2026-11-11T17:31:53.3668712Z     
+2026-11-11T17:31:53.3669083Z     1 !== 0
+2026-11-11T17:31:53.3669456Z     
+2026-11-11T17:31:53.3669841Z   code: 'ERR_ASSERTION'
+2026-11-11T17:31:53.3670298Z   name: 'AssertionError'
+2026-11-11T17:31:53.3670743Z   expected: 0
+2026-11-11T17:31:53.3671141Z   actual: 1
+2026-11-11T17:31:53.3671565Z   operator: 'strictEqual'
+2026-11-11T17:31:53.3672005Z   stack: |-
+2026-11-11T17:31:53.3672880Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeIme.test.ts:125:16)
+2026-11-11T17:31:53.3674005Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T17:31:53.3674818Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:31:53.3675709Z   ...
+2026-11-11T17:31:53.3676368Z # Subtest: Home does not act on Enter or navigation already prevented upstream
+2026-11-11T17:31:53.3677293Z not ok 143 - Home does not act on Enter or navigation already prevented upstream
+2026-11-11T17:31:53.3677933Z   ---
+2026-11-11T17:31:53.3678325Z   duration_ms: 68.828376
+2026-11-11T17:31:53.3678766Z   type: 'test'
+2026-11-11T17:31:53.3679535Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeIme.test.ts:133:1'
+2026-11-11T17:31:53.3680364Z   failureType: 'testCodeFailure'
+2026-11-11T17:31:53.3680841Z   error: |-
+2026-11-11T17:31:53.3681240Z     Enter
+2026-11-11T17:31:53.3681616Z     
+2026-11-11T17:31:53.3681984Z     1 !== 0
+2026-11-11T17:31:53.3682356Z     
+2026-11-11T17:31:53.3682734Z   code: 'ERR_ASSERTION'
+2026-11-11T17:31:53.3683182Z   name: 'AssertionError'
+2026-11-11T17:31:53.3683623Z   expected: 0
+2026-11-11T17:31:53.3684213Z   actual: 1
+2026-11-11T17:31:53.3684606Z   operator: 'strictEqual'
+2026-11-11T17:31:53.3685058Z   stack: |-
+2026-11-11T17:31:53.3685931Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeIme.test.ts:138:14)
+2026-11-11T17:31:53.3686928Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T17:31:53.3687740Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:31:53.3688399Z   ...
+2026-11-11T17:31:53.4069711Z # Subtest: Home ordinary Enter still opens the selected workspace
+2026-11-11T17:31:53.4094674Z ok 144 - Home ordinary Enter still opens the selected workspace
+2026-11-11T17:31:53.4144701Z   ---
+2026-11-11T17:31:53.4198539Z   duration_ms: 37.585424
+2026-11-11T17:31:53.4224125Z   type: 'test'
+2026-11-11T17:31:53.4224694Z   ...
+2026-11-11T17:31:53.4594066Z # Subtest: Home ordinary arrows and endpoint keys retain selection navigation
+2026-11-11T17:31:53.4619736Z ok 145 - Home ordinary arrows and endpoint keys retain selection navigation
+2026-11-11T17:31:53.4660356Z   ---
+2026-11-11T17:31:53.4714489Z   duration_ms: 48.842841
+2026-11-11T17:31:53.4755322Z   type: 'test'
+2026-11-11T17:31:53.4757580Z   ...
+2026-11-11T17:31:53.4779927Z # Subtest: Home empty-list composing Enter is untouched while ordinary Enter stays cancelled
+2026-11-11T17:31:53.4835163Z not ok 146 - Home empty-list composing Enter is untouched while ordinary Enter stays cancelled
+2026-11-11T17:31:53.4836161Z   ---
+2026-11-11T17:31:53.4845011Z   duration_ms: 47.728736
+2026-11-11T17:31:53.4845998Z   type: 'test'
+2026-11-11T17:31:53.4846793Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeIme.test.ts:168:1'
+2026-11-11T17:31:53.4852808Z   failureType: 'testCodeFailure'
+2026-11-11T17:31:53.4853267Z   error: |-
+2026-11-11T17:31:53.4853841Z     Expected values to be strictly equal:
+2026-11-11T17:31:53.4854285Z     
+2026-11-11T17:31:53.4854618Z     1 !== 0
+2026-11-11T17:31:53.4854973Z     
+2026-11-11T17:31:53.4855343Z   code: 'ERR_ASSERTION'
+2026-11-11T17:31:53.4855746Z   name: 'AssertionError'
+2026-11-11T17:31:53.4856235Z   expected: 0
+2026-11-11T17:31:53.4856607Z   actual: 1
+2026-11-11T17:31:53.4856990Z   operator: 'strictEqual'
+2026-11-11T17:31:53.4857393Z   stack: |-
+2026-11-11T17:31:53.4858192Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeIme.test.ts:171:12)
+2026-11-11T17:31:53.4859109Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T17:31:53.4859833Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T17:31:53.4860409Z   ...
