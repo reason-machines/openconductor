@@ -1,6 +1,6 @@
 {
   "unit": "DIFF-MULTI-ANCHOR-NEW-DRAFTS-DE6",
-  "status": "CANDIDATE_APPLIED_AFTER_HOSTED_BEHAVIORAL_RED",
+  "status": "13_HOSTED_COMPONENT_CASES_GREEN_PRIOR_PAIRED_PIN_MAINTENANCE_PENDING_CI",
   "revalidated_main": "1a0a2bef734686d3dbfc9c11155562595d9df9e6",
   "main": "15e87440daa703030f4c402e7a41b9221a149768",
   "product": {
@@ -167,7 +167,7 @@
     "New isolated mounted regression and evidence only; no saved-edit maps, reply editor, backend or WorkspaceView edits"
   ],
   "protected_fixture_collision": "Same ending-line annotation retains all range bodies but displays only the latest selected range; frozen fixture bodies and assertions remain unchanged. This is not full original simultaneous same-ending-line native parity.",
-  "runtime": "OBSERVED: automatic hosted baseline09fa14eebc reproduced9intended assertion failures and4controls. Candidate hosted GREEN pending. NOT RUN: local Node, native, DOM/browser, SQLite, app restart or reference JavaScript.",
+  "runtime": "OBSERVED: automatic hosted baseline09fa14eebc reproduced9intended assertion failures and4controls; same13cases passed on624df197. Four old paired proofs require automatic re-execution after candidate-pin-only maintenance. NOT RUN: local Node, native, DOM/browser, SQLite, app restart or reference JavaScript.",
   "limits": "Source evidence is not original native behavior. No simultaneous same-ending-line range display, whole-app persistence or global workspace retention claim.",
   "tracked_product_or_fixture_edits": true,
   "all_frozen_fixtures_unchanged": true,
