@@ -82,7 +82,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
     return q ? list.filter((f) => {
       const agent = itemAgent?.(f) ?? f.agent ?? agentForModel(f.model);
       const agentLabel = agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : "";
-      const fields = [name(f), f.model, agentLabel].map((field) => field.toLowerCase());
+      const fields = [name(f), f.model, agentLabel, agent ? `${agent}:${f.model}` : ""].map((field) => field.toLowerCase());
       return words.every((word) => fields.some((field) => field.includes(word)));
     }) : list;
   }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
