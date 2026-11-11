@@ -56,6 +56,7 @@ interface Live {
 
 const live = new Map<string, Live>();
 const tabsByWorkspace = new Map<string, TabsState>();
+const panelWorkspaceOrder = new Set<string>();
 const subscribers = new Set<() => void>();
 const centerTabListeners = new Set<(workspaceId: string, id: string) => void>();
 
@@ -116,6 +117,23 @@ function persistOnHide() {
 
 export const getTabs = (workspaceId: string): TabsState => tabsByWorkspace.get(workspaceId) ?? EMPTY;
 
+export function getResourceTerminalLabels(): Record<string, string> {
+  const labels: Record<string, string> = {};
+  let panelNumber = 0;
+  for (const workspaceId of panelWorkspaceOrder) {
+    for (const tab of getTabs(workspaceId).tabs) {
+      if (tab.placement !== "center") labels[tab.id] = `Terminal ${++panelNumber}`;
+    }
+  }
+  let centerNumber = 0;
+  for (const [id, terminal] of live) {
+    if (getTabs(terminal.workspaceId).tabs.some((tab) => tab.id === id && tab.placement === "center")) {
+      labels[id] = `Terminal tab ${++centerNumber}`;
+    }
+  }
+  return labels;
+}
+
 export function subscribeTabs(f: () => void): () => void {
   subscribers.add(f);
   return () => subscribers.delete(f);
@@ -124,6 +142,7 @@ export function subscribeTabs(f: () => void): () => void {
 function dispatch(workspaceId: string, a: TabsAction) {
   const next = tabsReducer(getTabs(workspaceId), a);
   tabsByWorkspace.set(workspaceId, next);
+  if (a.type === "open" && a.placement !== "center") panelWorkspaceOrder.add(workspaceId);
   saveTabs(workspaceId, next);
   subscribers.forEach((f) => f());
 }
@@ -423,6 +442,7 @@ export async function destroyWorkspaceTerminals(workspaceId: string): Promise<vo
     dispose(id);
   }
   tabsByWorkspace.delete(workspaceId);
+  panelWorkspaceOrder.delete(workspaceId);
   hydrated.delete(workspaceId);
   void tabList.setWorkspace(workspaceId, undefined);
   subscribers.forEach((f) => f());
