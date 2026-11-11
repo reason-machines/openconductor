@@ -397,7 +397,12 @@ function ThinkingRow({ id, text, streaming, group, ctx }: { id: string; text: st
         </div>
         {open ? (
           <div className="oc-tool-content plain">
-            <Markdown text={text} className={`oc-prose muted${streaming ? " is-streaming" : ""}`} />
+            <Markdown
+              text={text}
+              className={`oc-prose muted${streaming ? " is-streaming" : ""}`}
+              onOpenLink={(href) => void openUrl(href)}
+              Link={LinkWithMenu}
+            />
           </div>
         ) : null}
       </div>

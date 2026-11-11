@@ -88,7 +88,7 @@ import { terminalTabs, type TerminalTab } from "../features/terminal/tabs";
 import { tabLabel } from "../features/terminal/shellIntegration";
 import "../features/terminal/centerTerminal.css";
 import { bigTabRequest } from "../features/terminal/bigTerminal";
-import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
+import { KeybindingScope, useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { PRIORITY } from "../keybindings/dispatcher.ts";
 import { PanelStrip, type StripView } from "./PanelStrip";
 import "./rightPanel.css";
@@ -1156,6 +1156,17 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
   const showFile = mainTab === "file" && fileTarget !== null && fileTarget.workspaceId === workspace.id && workspace.path !== undefined;
   const activeTab = showFile ? "file" : centerTerminal ? `terminal:${centerTerminal.id}` : showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
+  const lastDiffSession = useRef({ workspaceId: workspace.id, tab: "chat" });
+  if (mainTab === "chat" || activeReview) lastDiffSession.current = { workspaceId: workspace.id, tab: mainTab };
+  const activeDiffOwner = useRef({ workspaceId: workspace.id, tab: mainTab });
+  activeDiffOwner.current = { workspaceId: workspace.id, tab: mainTab };
+  const autoCloseDiffTab = useCallback(() => {
+    if (activeDiffOwner.current.workspaceId !== workspace.id || activeDiffOwner.current.tab !== "diff") return;
+    const previous = lastDiffSession.current;
+    const tab = previous.workspaceId === workspace.id && reviews.tabs.some((review) => review.chatId === previous.tab) ? previous.tab : "chat";
+    setDiffOpen(false);
+    setMainTab((current) => current === "diff" ? tab : current);
+  }, [workspace.id, reviews.tabs]);
   const prNumber = pullRequest.pr?.number ?? null;
   const [prMenu, setPrMenu] = useState<{ x: number; y: number } | null>(null);
   useEffect(() => {
@@ -1316,6 +1327,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
         <div className="ws-main">
           <MainTabs fileTab={fileTarget?.workspaceId === workspace.id ? <span className={`main-tab${showFile ? " active" : ""}`}><button role="tab" aria-selected={showFile} onClick={() => setMainTab("file")}>{fileTarget.path.split("/").pop()}</button><button className="main-tab-close" aria-label={`Close ${fileTarget.path} tab`} onClick={closeFile}>×</button></span> : null} title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
           <div className="ws-chat-host" hidden={centerTerminal !== undefined}>
+          <KeybindingScope focused={centerTerminal === undefined}>
         <ChatPanel
           key={activeReview?.chatId ?? workspace.id}
           repo={repo}
@@ -1336,7 +1348,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
             showFile && fileTarget && workspace.path ? (
               <MarkdownFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} />
             ) : showDiff ? (
-              <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />
+              <DiffTab diff={diff} onClose={autoCloseDiffTab} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />
             ) : showPr ? (
               <PrTab
                 worktree={workspace.path ?? null}
@@ -1353,6 +1365,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
             ) : null
           }
         />
+          </KeybindingScope>
           </div>
           {centerTerminal && (
             <section className="center-terminal terminal-panel" aria-label="Center terminal">

@@ -12,7 +12,6 @@ import {
   visibleScripts,
   workspaceRef,
   type RunState,
-  type RunStatus,
   type ScriptsConfig,
   type SetupStatus,
 } from "../scripts/model";
@@ -76,6 +75,7 @@ const SETUP_BUTTON = {
 } as const;
 type SetupButtonMode = keyof typeof SETUP_BUTTON;
 const IDLE_SETUP: SetupStatus = { state: "idle", log: null, last: null };
+const IDLE_RUN_STATUS: Awaited<ReturnType<typeof api.runStatus>> = { runs: [], history: [] };
 
 const errorText = (e: unknown) => (typeof e === "string" ? e : e instanceof Error ? e.message : String(e));
 
@@ -97,11 +97,13 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const wsId = workspace.id;
   const displayedWorkspaceId = useRef(wsId);
   displayedWorkspaceId.current = wsId;
+  const refreshSequence = useRef(0);
   const configKey = JSON.stringify(ref);
   const [configState, setConfigState] = useState<{ key: string; config: ScriptsConfig | null }>(() => ({ key: configKey, config: configs.get(configKey) ?? null }));
   // null until this workspace's config is known (from the cache or the backend).
   const config = configState.key === configKey ? configState.config : (configs.get(configKey) ?? null);
-  const [runs, setRuns] = useState<RunStatus[]>([]);
+  const [runSnapshot, setRunSnapshot] = useState({ workspaceId: wsId, status: IDLE_RUN_STATUS });
+  const { runs, history } = runSnapshot.workspaceId === wsId ? runSnapshot.status : IDLE_RUN_STATUS;
   const [picked, setPicked] = useState<string | null>(null);
   const [runOutputState, setRunOutputState] = useState({ key: "", text: "" });
   const [setupSnapshot, setSetupSnapshot] = useState<{ workspaceId: string; status: SetupStatus }>({ workspaceId: wsId, status: IDLE_SETUP });
@@ -123,8 +125,9 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const spotMine = spotView.workspaceId === wsId;
   const spotLogMine = spotView.logWorkspaceId === wsId;
   const activeScript = activeRun(runs);
+  const historicalScriptId = history.find((id) => visibleScripts(config).some((script) => script.id === id));
   const selected = shownTask({
-    picked,
+    picked: picked ?? historicalScriptId ?? null,
     spotlightEnabled: spotEnabled,
     activeScriptId: activeScript?.scriptId ?? null,
     spotlightMine: spotMine,
@@ -145,9 +148,10 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const detectedUrl = detectedPreview.key === outputKey ? detectedPreview.url : null;
 
   const refresh = useCallback(async () => {
+    const sequence = ++refreshSequence.current;
     const [status, setupState] = await Promise.all([api.runStatus(wsId), api.setupStatus(wsId)]);
-    if (displayedWorkspaceId.current !== wsId) return;
-    setRuns(status.runs);
+    if (sequence !== refreshSequence.current || displayedWorkspaceId.current !== wsId) return;
+    setRunSnapshot({ workspaceId: wsId, status });
     setSetupSnapshot({ workspaceId: wsId, status: setupState });
   }, [wsId]);
 
