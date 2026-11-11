@@ -8,18 +8,16 @@ import { StatusMatrix } from "./StatusMatrix";
 import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { labelTargetBranch, workspaceLabel } from "./sidebarLabel";
 import { useBranchPrefix } from "./useBranchPrefix";
-import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
+import { WorkspaceContextMenu } from "./WorkspaceContextMenu";
 import { COMMANDS } from "../keybindings/registry";
 import { HINT_DELAY_MS, hintLabel, hintNumbers, holdsExactly } from "../state/shortcutHint";
 import { sidebarEntries } from "../state/sidebarOrder";
-import { sectionOf } from "../state/navigationSections";
 import { compactCount } from "../state/sidebarDiffStat";
 import { useRowDiffStat } from "./useRowDiffStat";
 import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { applyRowLookup, useRowPrPoll } from "../features/pr/sidebarPrPoller";
 import { usePrSettings } from "../features/pr/usePullRequest";
 import type { LookupResult } from "../features/pr/types";
-import { clearManuallyUnreadForWorkspace, markManuallyUnread, selectedChatOf } from "../state/autoUnread";
 import { attentionChat, isWorkspaceUnread } from "../state/chatUnread";
 import { requestChat, workspaceChats } from "../state/openChat";
 import { chatStatuses } from "../features/chat/chatRuntime";
@@ -262,39 +260,20 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
   const repo = menu && state.repos.find((r) => r.id === menu.repoId);
   const ws = menu && repo?.workspaces.find((w) => w.id === menu.workspaceId);
   if (menu && repo && ws) {
-    const ids = { repoId: repo.id, workspaceId: ws.id };
     element = (
-      <WorkspaceActionsMenu
+      <WorkspaceContextMenu
         key={ws.id}
+        repoId={repo.id}
         workspace={ws}
         selected={sel.kind === "workspace" && sel.workspaceId === ws.id}
         at={{ x: menu.x, y: menu.y }}
         onClose={close}
         sections={state.sections ?? []}
-        currentSectionId={sectionOf(state.sections, ws.id)?.id}
-        actions={{
-          toggleRead: () => {
-            // Conductor's row menu (renderApp @7,306,180): an unread workspace is read whole
-            // (markWorkspaceAsRead, and its hand marks go); otherwise its selected chat is
-            // marked unread by hand, which sticks while it is on screen.
-            if (isWorkspaceUnread(ws)) {
-              clearManuallyUnreadForWorkspace(ws.id);
-              dispatch({ type: "markWorkspaceRead", ...ids });
-            } else {
-              const chatId = selectedChatOf(ws.id);
-              markManuallyUnread(chatId);
-              dispatch({ type: "setChatUnread", ...ids, chatId, unread: true, at: Date.now() });
-            }
-          },
-          togglePin: () => dispatch({ type: "setWorkspacePinned", ...ids, pinned: typeof ws.pinnedAt !== "number" }),
-          setStatus: (status) => dispatch({ type: "setWorkspaceStatus", ...ids, status }),
-          rename: onRename && (() => onRename(repo.id, ws)),
-          copyLink: onCopyLink && (() => onCopyLink(ws)),
-          archive: () => archive(repo.id, ws),
-          moveToSection: (sectionId) => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId }),
-          newSection: () => onNewSection?.(ws),
-          removeFromSection: () => dispatch({ type: "assignSection", workspaceId: ws.id, sectionId: null }),
-        }}
+        dispatch={dispatch}
+        onRename={onRename}
+        onArchive={onArchive}
+        onCopyLink={onCopyLink}
+        onNewSection={onNewSection}
       />
     );
   }

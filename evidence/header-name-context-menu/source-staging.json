@@ -1,0 +1,32 @@
+{
+  "unit": "SAME271-workspace-name-context-menu-v1",
+  "main": "2b079f13e07b580d26191f7f1f50b4d21e62174e",
+  "frozen_main": "2b079f13e07b580d26191f7f1f50b4d21e62174e",
+  "manifest_sha256": "e2253c9286644ff22d6eaa4f98882a77955d39b2c67de494e7c4868cee7e5709",
+  "source_files": 968,
+  "source_bytes": 6117976,
+  "fixture_sha256": "b4f4cae76a414e5c3312ddd411e3b17ab39f90bc55b8662cdc058d55b2599605",
+  "cases": [
+    "control.sidebar-actions",
+    "control.header-primary-click",
+    "header.context-menu-open-dismiss",
+    "header.existing-pin-read-status",
+    "header.existing-rename-dialog",
+    "header.existing-new-section",
+    "header.sidebar-hidden",
+    "header.workspace-target-isolation"
+  ],
+  "installed_direct_versions": {},
+  "installed_package_metadata": {},
+  "node_bytes": null,
+  "admission": "NOT GRANTED. Existing E1 queue only; staged imports verified but no JS execution.",
+  "executor_still_required": [
+    "actual target capacity",
+    "live imported dependency/resolver inventory",
+    "exact Node version",
+    "eligible queue slot",
+    "before/after behavioral result"
+  ],
+  "runtime": "NOT RUN",
+  "product_patch": "NOT PREPARED OR APPLIED"
+}

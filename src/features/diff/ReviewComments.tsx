@@ -18,6 +18,8 @@ import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
 import {
   bodyParts,
+  commentAnchorUpdates,
+  type CommentAnchorPositions,
   canDeleteComment,
   commentAttachment,
   commentSource,
@@ -463,10 +465,20 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     for (const t of threads) {
       if (t.root.file_path !== file.path || t.root.file_level) continue;
       const a = { side: sideOf(t.root), line: t.root.end_line_number ?? t.root.line_number };
-      out.set(`${a.side}:${a.line}`, a);
+      const key = `${a.side}:${a.line}`;
+      const existing = out.get(key);
+      out.set(key, { ...a, commentIds: [...(existing?.commentIds ?? []), t.root.id, ...t.replies.map((c) => c.id)] });
     }
-    if (composing?.path === file.path) out.set(`${composing.side}:${composing.line}`, { side: composing.side, line: composing.line });
+    if (composing?.path === file.path) {
+      const key = `${composing.side}:${composing.line}`;
+      if (!out.has(key)) out.set(key, { side: composing.side, line: composing.line });
+    }
     return [...out.values()];
+  };
+
+  const persistAnchors = (file: FileDiff, positions: CommentAnchorPositions) => {
+    const updates = commentAnchorUpdates(stored, file.path, positions);
+    if (updates.length > 0) void run(store.updateAnchors(updates));
   };
 
   const annotations = (file: FileDiff, anchor: LineAnchor): ReactNode => {
@@ -560,5 +572,5 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const hasPending = hasPendingComments(comments);
   const addAllToChat = () => void toChat(ready);
 
-  return { onLineClick, commentRange, anchors, annotations, notes, actions, onLoaded, hasPending, addAllToChat };
+  return { onLineClick, commentRange, anchors, annotations, persistAnchors, notes, actions, onLoaded, hasPending, addAllToChat };
 }
