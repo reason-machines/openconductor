@@ -32,7 +32,7 @@ The integration assertions cover all three layouts with and without a final newl
 
 The bridge replaces Tauri IPC and Pierre's rendered CodeView/editor handle. It does not execute the Rust diff backend, a real DOM editor, the installed app or reference JavaScript. A passing fixture would prove only the exercised frontend request/editor-item/save-handler contract and disposable-file write, not native or visual parity.
 
-Use the sealed fixture unchanged for both baseline and candidate. Its baseline selector changes only the five production modules:
+Use the same fixture for both baseline and candidate. The sealed v2 archive remains unchanged. CI found a TypeScript narrowing error in its loader setup, corrected by capturing the already checked hook in a const alias. Apply [the exact setup-only patch](fixture-typing-correction.patch) identically to both phases, or use the corrected published fixture. [The correction receipt](fixture-typing-correction.json) verifies unchanged assertions and product files. Its baseline selector changes only the five production modules:
 
 ```bash
 DIFF_WHITESPACE_REGRESSION_REF=2b079f13e07b580d26191f7f1f50b4d21e62174e \
@@ -47,6 +47,8 @@ The portable execution archive also retains those source trees, the original dow
 - Passed on the Reason cloud computer: retained-source qualification against baseline main `2b079f13e07b580d26191f7f1f50b4d21e62174e`, exact original-fixture identity and `git diff --check`.
 - Passed before publication against fetched main `d8f6bdfd26370491295f38ffecd7090c71a2a6db`: all 29 sealed main inputs are unchanged; both retained assets, all 13 reference spans and all 64 sealed baseline/candidate files match. The integration fixture, assertion tail and original downstream fixture retain their frozen hashes. [The publication source receipt](publication-source-check.json) records this source-only check. Main was merged into the assigned branch without altering the candidate or fixtures.
 - Source review by `byok:openai-codex:gpt-6.1-sol` recommended the single raw whole-file source and identified the Entire-file and metadata-only safety additions included here. This is not an independent model-family review or runtime acceptance.
-- Not run: Node baseline/candidate, full typecheck/build, Rust, DOM/native, save-through-real-IPC, package consumption or side-by-side parity. No screenshot exists because browser/native execution was not admitted.
+- Passed in hosted CI at initial published head `4073f1e4fc18f13eb00ab4d557f0bb113334e21d`: [Diff frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/43026934381/job/130543895125), including all six layout/EOF loader-editor-save cases. This is candidate-only component-fixture evidence, not paired baseline RED/GREEN or native acceptance.
+- Failed at that head: build/typecheck reported TS18046 in the fixture's nested `Fixture` function. The setup-only const-alias correction preserves every assertion and all five product hashes; new exact-head workflows must prove it clears the failure.
+- Not run locally: Node baseline/candidate, full typecheck/build, Rust, DOM/native, save-through-real-IPC, package consumption or side-by-side parity. No screenshot exists because browser/native execution was not admitted.
 
 The frozen aggregate HEADER/summary reservation, ROW fixtures/hooks, WorkspaceView, backend and queue order are unchanged. This source-verified candidate is being published ready against main with behavioral and native gaps explicit. Product acceptance and merge still require actual E1 RED/GREEN with unchanged assertions and all exact-head workflows green. Consuming-package and installed-app verification follow the merge; publication is not behavioral proof.

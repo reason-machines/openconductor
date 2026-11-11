@@ -152,9 +152,10 @@ async function fixture(layout: DiffLayout, newline = true, kind: Kind = "modifie
   const { DiffTab } = load(resolve(root, "src/features/diff/DiffViewer.tsx"));
   const { useWorkspaceDiff } = load(resolve(root, "src/features/diff/useWorkspaceDiff.ts"));
   assert.ok(typeof DiffTab === "function" && typeof useWorkspaceDiff === "function");
+  const useWorkspaceState = useWorkspaceDiff;
   let state: WorkspaceDiff;
   function Fixture() {
-    state = useWorkspaceDiff({ workspaceId: "fixture", worktree: input.repo, target: { branch: "main", remote: null } });
+    state = useWorkspaceState({ workspaceId: "fixture", worktree: input.repo, target: { branch: "main", remote: null } });
     return React.createElement(DiffTab, { diff: state });
   }
   let renderer: ReturnType<typeof create>;
