@@ -144,8 +144,10 @@ The workflow selects `macos-15` and Python 3.12. The controller requires Darwin,
 GitHub-hosted context, an exact 40-character dispatched/checked-out commit and
 clean tracked inputs. Context environment fields are selection checks, not
 independent host attestation. Observations retain the actual macOS/kernel and
-architecture, run/attempt, source hash, actual UID/EUID/GID/groups, plan digest,
-namespace device/inode and each resource's UID/device/inode/mode/size/link count.
+architecture, run/attempt, selected and observed checkout SHA, source hash,
+actual UID/EUID/GID/groups, raw plan bytes and digest, namespace device/inode
+and each resource's UID/device/inode/mode/size/link count. Every invocation
+retains its exact argv, stdout, stderr and exit status or transport error.
 No SDK, signed-service or macOS 26.4 result is inferred from this worker label.
 
 The original non-root job UID remains the caller. The consumer must be the

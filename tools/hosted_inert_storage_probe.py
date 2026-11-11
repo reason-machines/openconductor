@@ -34,6 +34,8 @@ class HostedObservation:
     status: str = "UNAVAILABLE"
     principals: dict = field(default_factory=dict)
     selection: dict = field(default_factory=dict)
+    plan_json: str | None = None
+    checkout_head: str | None = None
     snapshots: list = field(default_factory=list)
     invocations: list = field(default_factory=list)
     source_sha256: str | None = None
@@ -117,7 +119,7 @@ class HostedController:
             argv = ["/usr/bin/sudo", "-n", "-u", "#1", "-g", "#1", "--", *argv]
         else:
             require(role == "caller", "unknown hosted role")
-        record = {"role": role, "arguments": arguments, "query": query}
+        record = {"role": role, "arguments": arguments, "query": query, "argv": argv}
         self.evidence.invocations.append(record)
         try:
             result = subprocess.run(argv, stdin=subprocess.DEVNULL,
@@ -132,6 +134,13 @@ class HostedController:
             require(self.source.read_bytes() == self.original
                     and self.staged.read_bytes() == self.original, "probe source changed")
         return record
+
+    def retain_plan(self):
+        selected = self.evidence.selection
+        with probe.directory(probe.root_path(selected["probe_id"])) as fd:
+            data = probe.read_file(fd, "plan.json")
+        self.evidence.plan_json = data.decode("utf-8")
+        require(probe.digest(data) == selected["plan_sha256"], "retained plan bytes changed")
 
     def snapshot(self, phase, point):
         selection = self.evidence.selection
@@ -167,6 +176,7 @@ class HostedController:
                 "missing independent plan digest")
         self.evidence.selection = {key: initialized[key] for key in ("probe_id", "plan_sha256")}
         selected = self.evidence.selection
+        self.retain_plan()
         for phase in probe.PHASES:
             args = ["--probe-id", selected["probe_id"], "--plan-sha256", selected["plan_sha256"],
                     "--phase", phase]
@@ -252,7 +262,8 @@ def main(argv=None):
                          "machine": platform.machine(), "run_id": os.environ.get("GITHUB_RUN_ID"),
                          "attempt": os.environ.get("GITHUB_RUN_ATTEMPT")}
         checkout = subprocess.run(["git", "rev-parse", "HEAD"], check=True, capture_output=True, text=True)
-        require(checkout.stdout.strip() == args.expected_head, "checkout does not match dispatched commit")
+        evidence.checkout_head = checkout.stdout.strip()
+        require(evidence.checkout_head == args.expected_head, "checkout does not match dispatched commit")
         subprocess.run(["git", "diff", "--quiet", "HEAD", "--"], check=True)
         HostedController(evidence, caller).run()
         code = 0

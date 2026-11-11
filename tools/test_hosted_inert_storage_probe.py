@@ -185,6 +185,7 @@ class HostedControllerFixtures(unittest.TestCase):
                 self.assertEqual(launch.call_args.kwargs["cwd"], "/")
                 self.assertTrue(launch.call_args.kwargs["close_fds"])
                 self.assertIn("error", controller.evidence.invocations[0])
+                self.assertEqual(controller.evidence.invocations[0]["argv"], argv)
 
     def test_source_change_refused_before_external_invocation(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -217,6 +218,7 @@ class HostedControllerFixtures(unittest.TestCase):
                 controller.evidence.snapshots.append(result)
                 return PLAN, result
             with patch.object(controller, "invoke", side_effect=invoke), \
+                    patch.object(controller, "retain_plan"), \
                     patch.object(controller, "snapshot", side_effect=snapshot):
                 controller.run()
             self.assertEqual(controller.evidence.status, "BOUNDED_SYSCALL_OBSERVATIONS")
@@ -241,10 +243,26 @@ class HostedControllerFixtures(unittest.TestCase):
                     value = role_result("consumer" if args[0] == "consumer-check" else "consumer-verify")
                 return dict(returncode=0, stdout=json.dumps(value))
             with patch.object(controller, "invoke", side_effect=invoke), \
+                    patch.object(controller, "retain_plan"), \
                     patch.object(controller, "snapshot", return_value=(PLAN, {})):
                 with self.assertRaisesRegex(probe.Unavailable, "caller transport"):
                     controller.run()
             self.assertEqual(calls[-1][0], "consumer-verify")
+
+    def test_raw_plan_bytes_are_retained_and_digest_checked(self):
+        with tempfile.TemporaryDirectory() as temp, patch.object(probe, "BASE", Path(temp)):
+            controller = self.controller(temp)
+            data = probe.encoded(PLAN.payload())
+            root = probe.root_path(PLAN.probe_id)
+            root.mkdir()
+            (root / "plan.json").write_bytes(data)
+            controller.evidence.selection = dict(probe_id=PLAN.probe_id, plan_sha256=probe.digest(data))
+            controller.retain_plan()
+            self.assertEqual(controller.evidence.plan_json.encode(), data)
+            (root / "plan.json").write_bytes(data + b" ")
+            with self.assertRaisesRegex(probe.Unavailable, "plan bytes changed"):
+                controller.retain_plan()
+            self.assertEqual(controller.evidence.plan_json.encode(), data + b" ")
 
     def test_wrong_consumer_identity_stops_before_initialization(self):
         for field, value in (("uid", 501), ("uid", True), ("euid", 0), ("gid", 20),
