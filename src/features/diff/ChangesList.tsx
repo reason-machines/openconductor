@@ -56,7 +56,7 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
   const { opts, load, files, totals, current } = diff;
   const filtering = filter ? filterActive(filter.open, filter.query) : false;
   const shown = filter ? filterChangedFiles(files, filter.query) : files;
-  const rows = changeRows(shown, view, filter?.query.trim() ? new Set() : collapsed, diff.isViewed);
+  const rows = changeRows(shown, view, collapsed, diff.isViewed);
   const [menu, setMenu] = useState<{ path: string; x: number; y: number } | null>(null);
   const closeMenu = useCallback(() => setMenu(null), []);
   const menuFile = menu ? files.find((file) => file.path === menu.path) : undefined;
@@ -68,7 +68,7 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
       {load.state === "ready" && files.length === 0 && <div className="placeholder small"><p>{diff.turn ? "No changes in selected turn." : typeof opts.scope === "object" ? `No changes in commit ${opts.scope.commitHash.slice(0, 7)}` : opts.scope === "uncommitted" ? "Nothing uncommitted." : "No changes on this branch yet."}</p>{!diff.turn && typeof opts.scope !== "object" && <p className="muted">Changes the agent makes show up here.</p>}{!diff.turn && opts.scope === "all" && emptyAction}</div>}
       {load.state === "ready" && files.length > 0 && filter && filtering && <ChangesFilterRow filter={filter} matchCount={shown.length} totalCount={files.length} />}
       {load.state === "ready" && files.length > 0 && <>
-        {typeof opts.scope !== "object" && <div className="oc-changes-header"><span>{files.length} {files.length === 1 ? "file" : "files"} changed</span><ChangeCounts additions={totals.a} deletions={totals.d} showZero /></div>}
+        {typeof opts.scope !== "object" && files.length > 1 && <div className="oc-changes-header"><span>{files.length} {files.length === 1 ? "file" : "files"} changed</span><ChangeCounts additions={totals.a} deletions={totals.d} showZero /></div>}
         <nav className="oc-changes" aria-label="Changed files" data-view={view}>
           {shown.length === 0 && <div className="oc-changes-nomatch">No files match this filter</div>}
           {rows.map((row, rowIndex) => {
