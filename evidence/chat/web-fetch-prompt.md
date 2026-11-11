@@ -1,6 +1,6 @@
 # Ordinary WebFetch prompt disclosure
 
-Conductor Rebuild owns this source-backed component correction. Production remains unchanged at the test-only milestone. A mounted failure must precede the web-arm-only fix. Browser, native, provider, visual, and installed-package acceptance are not part of this unit.
+Conductor Rebuild owns this source-backed component correction. Hosted execution reproduced the omission before the web-arm-only fix. The same regression remains byte-frozen for GREEN. Browser, native, provider, visual, and installed-package acceptance are not part of this unit.
 
 ## Retained reference
 
@@ -27,17 +27,24 @@ The preceding Read fix #1004 merged at that same current-main commit. Its 23 PR 
 
 `webFetchPrompt.test.ts` runs that actual normalization path and the actual compiled production `ConductorToolRow` with real React and react-test-renderer. It toggles the real row header. Only unrelated Markdown, syntax, link, and external-open leaves throw if executed; no web-row behavior is replaced by a mock.
 
-Seven cases cover exact prompt text and whitespace, prompt-before-result order, plain-code rendering of markup-like input, collapsed state and collapse controls, unchanged URL/query chips, missing/empty prompt, completed WebSearch without prompt, and the existing empty-result gate. Three prompt-bearing cases should expose the missing child. Four output-only or empty-result controls should pass. Those counts are expectations until execution, not reported test results.
+Seven cases cover exact prompt text and whitespace, prompt-before-result order, plain-code rendering of markup-like input, collapsed state and collapse controls, unchanged URL/query chips, missing/empty prompt, completed WebSearch without prompt, and the existing empty-result gate.
+
+Hosted test-only head `d1b3c64a0b657a241cfa2639abc4d929b4ed3d24` ran `node --test "src/**/*.test.ts"` in [CI run 42969178046](https://github.com/reason-machines/openconductor/actions/runs/42969178046/job/130353395097). Exactly three prompt-bearing cases failed with `0 !== 1` at the expected missing-code-child assertions. The primary message was `expanded ordinary WebFetch must disclose its prompt in a code element`. All four new controls passed, as did every other test: 2,511 passes and three failures out of 2,514. There was no fixture load or normalization failure.
 
 The test is frozen at SHA-256 `836d8f41c20f90a2956989a52249dd4ad823e5299c4c62622f82c96ef4eb9197` before production changes.
+
+## Minimal production correction
+
+Fresh main was re-fetched after confirmed RED and remains `6be97d85b854b2a1bf7930db49e2227a26af2e6a`. The production delta is two lines in the existing web arm: read the string prompt and conditionally place a list item with a plain code child before the existing output. The original output-only expression is retained when prompt is absent or empty. The existing output truthiness gate, target selection, header, and shell stay unchanged. No shared helper, import, style, Markdown behavior, fallback, truncation, error handling, or pending behavior changes.
 
 ## Verification
 
 - `python3 .rea-work/webfetch-prompt-handoff/verify-packet.py`: PASS for retained byte identities, spans, and declarative checks.
 - `node --check src/features/chat/webFetchPrompt.test.ts`: PASS for syntax only.
 - `git diff --check`: PASS.
-- Mounted RED: pending hosted CI on the test-only publication. No production edit has been made.
-- Mounted GREEN, full-suite tests, typecheck, and build: not run for this unit yet.
+- Mounted RED: confirmed above, exactly three missing-prompt failures with all four controls and all other tests passing.
+- Byte comparison outside the web arm, frozen new regression, Read regression, both #994 fixtures, and Write fixture: PASS.
+- Mounted GREEN, full-suite tests, typecheck, and build: pending hosted CI on the minimal fix.
 - Local dependency installation and heavy build: not run.
 - Browser, native, real-provider, visual, and installed-package acceptance: not run, excluded from this scoped unit. There is no screenshot because no browser or native run was performed.
 
