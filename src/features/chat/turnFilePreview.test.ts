@@ -80,6 +80,8 @@ async function fixture(initial = [change()]) {
         }),
       };
       if (name === "./markdown.ts") return { Markdown: () => { throw new Error("Unrelated Markdown was rendered"); } };
+      if (name === "./LinkMenu.tsx") return { LinkWithMenu: () => { throw new Error("Unrelated link menu rendered"); } };
+      if (name === "../../backend.ts") return { openUrl: () => { throw new Error("Unrelated external opener invoked"); } };
       const target = resolve(dirname(filename), name);
       const resolved = [target, `${target}.ts`, `${target}.tsx`].find((path) => allowed.has(path));
       assert.ok(resolved, `Unexpected import: ${name}`);
