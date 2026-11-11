@@ -430,7 +430,11 @@ function runTerminalCommand(id: string, command: string) {
 }
 
 export function clearTab(id: string) {
-  live.get(id)?.term.clear();
+  const l = live.get(id);
+  l?.term.clear();
+  if (l && !l.term.options.disableStdin && getTabs(l.workspaceId).tabs.find((tab) => tab.id === id)?.status === "running") {
+    void ptyWrite(id, "\x0c").catch(() => {});
+  }
   void ptyClearHistory(id).catch(() => {});
   // Clear the backend screen too, as the reference does, so saved history does not bring it back.
   void ptyWriteMirror(id, "\x1b[H\x1b[2J\x1b[3J")

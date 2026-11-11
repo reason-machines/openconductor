@@ -1,0 +1,89 @@
+{
+  "owner": "Conductor Rebuild",
+  "unit": "ACQ-TERMINAL-CLEAR-REDRAW-1F-03",
+  "computer": {
+    "id": "b3bf539c-baa9-5c0a-bd50-9c4212affce9",
+    "name": "Cloud computer 300",
+    "size": "l"
+  },
+  "baseline_commit": "4739c9c029f87c64901a2431de6032b81f2b7348",
+  "main_checked": "385ccb5229f56ff33903f034352eaa9827c40f0e",
+  "main_drift": "Composer-only #1012. No terminal, resource-label test, or package manifest/lockfile changes relative to the frozen baseline.",
+  "frozen_test_commit": "8722758011b743a6257e03afe91be8ef6a8b8c62",
+  "frozen_test_sha256": "0476e29f8f2dd5e7d37ea527023f28290d606fb0f055348c6a209f8c63091948",
+  "baseline_session_sha256": "4e8169eb56b6bdf9e155886280ee9cc2301f97e58edb848973c233695a75d5c3",
+  "dependencies": "Existing node_modules reused. Frozen baseline snapshot symlinks that directory. No install, cache warm, or manifest/lockfile change.",
+  "log_storage": "Stored logs remove trailing whitespace and blank EOF lines only. Assertions, counts, diagnostics, and fixture bytes are unchanged. Untouched local logs retained in .oc-tmp/clear-redraw-1f/raw-logs.",
+  "raw_log_sha256": {
+    "before.tap": "152e7ce4c5dac7ac9aa9e25742e0fe064fb1a9fdbcbd03a949addfab2aa85410",
+    "after.tap": "3fd6ea623d56fcc1a21cd0920655ceb7833e537cb5104e51ad3262a603979354",
+    "focused.tap": "000e625aaf69053ec66bb752401a17be23be2895205cb4328ae51f15c2129e70",
+    "typecheck.log": "e409406f8d6d388c111e0d2f32036bcf9617f92bf33a444d13769692378d2660",
+    "typecheck1536.log": "d5085e3e8e565109d158c9b2533aa52ddf5936811f85b35986ae3f533bd2bcbb"
+  },
+  "red": {
+    "cwd": ".oc-tmp/clear-redraw-1f/red",
+    "command": "env NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 90s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/clearRedraw.test.ts",
+    "started_at": "2026-11-11T07:35:59Z",
+    "completed_at": "2026-11-11T07:36:00Z",
+    "exit_code": 1,
+    "passed": 5,
+    "failed": 3,
+    "result": "Expected behavioral assertion failures: running clear and both shortcut metadata cases expected one same-id formfeed request but received no write. Other guard cases passed.",
+    "log": "before.tap"
+  },
+  "green": {
+    "command": "env NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 90s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/clearRedraw.test.ts",
+    "started_at": "2026-11-11T07:36:13Z",
+    "completed_at": "2026-11-11T07:36:14Z",
+    "exit_code": 0,
+    "passed": 8,
+    "failed": 0,
+    "fixture_unchanged": true,
+    "log": "after.tap"
+  },
+  "focused": {
+    "command": "env NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 180s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/*.test.ts src/components/resourceUsageLabels.test.ts",
+    "started_at": "2026-11-11T07:36:18Z",
+    "completed_at": "2026-11-11T07:36:26Z",
+    "exit_code": 0,
+    "passed": 115,
+    "failed": 0,
+    "existing_tests_unchanged": true,
+    "log": "focused.tap"
+  },
+  "typecheck_attempts": [
+    {
+      "command": "env NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 180s npm run typecheck",
+      "started_at": "2026-11-11T07:36:31Z",
+      "completed_at": "2026-11-11T07:37:09Z",
+      "exit_code": 134,
+      "result": "FAILED: Node reached its configured 768 MiB heap limit. No TypeScript result or machine-memory-shortage claim. Execution stopped and corrected bounded admission requested; no automatic retry.",
+      "log": "typecheck.log"
+    },
+    {
+      "command": "env NODE_OPTIONS=--max-old-space-size=1536 nice -n 19 timeout --kill-after=5s 180s npm run typecheck",
+      "admission": "Same sole executor admitted one corrected bounded invocation after the diagnosed heap-cap failure. No source/dependency changes or test reruns.",
+      "started_at": "2026-11-11T07:39:23Z",
+      "completed_at": "2026-11-11T07:39:44Z",
+      "exit_code": 0,
+      "result": "PASS: tsc --noEmit completed without compiler diagnostics.",
+      "log": "typecheck1536.log"
+    }
+  ],
+  "implementation_session_sha256": "e94da195a0f3d315ab2862f4f3333e4014df15f69b4ace90b53449258e60ad87",
+  "local_head_limit": "Local execution used the implementation atop main4739c9c. Rebase/publication onto main385ccb5 preserves tested terminal files; no local rerun of the published head. Hosted exact-head workflows remain the merge gate.",
+  "process_state": "All foreground commands returned. Process listing at 2026-11-11T07:40:01Z found no clearRedraw, focused-test, npm typecheck, or tsc job continuing. Sole local slot released to the executor then.",
+  "checks": {
+    "git_diff_check": "PASS",
+    "typecheck": "PASS after one executor-admitted corrected heap-cap invocation; initial 768 MiB failure retained",
+    "full_frontend_suite": "NOT RUN",
+    "build": "NOT RUN",
+    "native_commands": "NOT RUN",
+    "installed_app": "NOT RUN",
+    "browser_or_visual": "NOT RUN",
+    "live_shell_redraw": "NOT RUN",
+    "native_pty_reuse": "UNVERIFIED"
+  },
+  "boundary": "The regression runs production session, shortcut dispatch, tab-state and persistence logic. PTY, DOM/xterm, storage and preferences are mocked. Results establish frontend guarded request behavior, not native delivery, shell execution, shell redraw, native PTY reuse, or visual parity."
+}
