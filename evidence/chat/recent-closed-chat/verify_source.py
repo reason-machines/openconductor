@@ -28,7 +28,7 @@ for asset in original['retained_assets']:
         actual = data[start:end]
         check('original span: ' + span['label'], actual == (packet / 'original-spans' / Path(span['file']).name).read_bytes() and sha(actual) == span['sha256'])
 fixture = (packet / q['fixture']['path']).read_bytes()
-check('unchanged V3 five-case fixture', sha(fixture) == q['fixture']['sha256'])
+check('frozen five-case fixture', sha(fixture) == q['fixture']['sha256'])
 for source in q['source_inputs']:
     baseline = subprocess.check_output(['git', 'show', q['baseline_main'] + ':' + source['path']], cwd=root)
     check('baseline pin: ' + source['path'], sha(baseline) == source['sha256'])

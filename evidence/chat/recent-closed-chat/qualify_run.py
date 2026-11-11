@@ -33,9 +33,9 @@ raw = args.tap.read_text()
 tap = re.sub(r'^\d{4}-\d\d-\d\dT\S+Z ', '', raw, flags=re.M)
 ids = ['CLOSED_ELIGIBLE', 'OPEN_CONTROL', 'NO_USER_CONTROL', 'WORKSPACE_CONTROL', 'REOPEN_AND_ATTACH']
 markers = {
-    'CLOSED_ELIGIBLE': 'CLOSED_ELIGIBLE_MISSING_HIDDEN_SOURCE',
-    'WORKSPACE_CONTROL': 'WORKSPACE_CONTROL_MISSING_OWN_HIDDEN_SOURCE',
-    'REOPEN_AND_ATTACH': 'REOPEN_AND_ATTACH_MISSING_RECLOSED_SOURCE',
+    'CLOSED_ELIGIBLE': 'closed user source is missing',
+    'WORKSPACE_CONTROL': 'own workspace closed source is missing',
+    'REOPEN_AND_ATTACH': 'reclosed user source is missing',
 }
 pattern = re.compile(r'^(not ok|ok) \d+ - (' + '|'.join(ids) + r'):[^\n]*$', re.M)
 matches = list(pattern.finditer(tap))

@@ -3,7 +3,7 @@
   "phase": "baseline",
   "baseline_main": "53eaf50ba4811a96fce1f8c2026e2abb442b5ba6",
   "checks_passed": 303,
-  "fixture_sha256": "6dd638919b9ed67bddde9a9cada32cab6e28b1ea5cfea8fd3e04f6ef6b225a93",
+  "fixture_sha256": "e05ce56a4a6a726de870f7f1a8e9ec6aace8e13242db64f1f475be9f24bee547",
   "status": "STATIC_PASS_ONLY",
   "checks": [
     {
@@ -115,7 +115,7 @@
       "passed": true
     },
     {
-      "check": "unchanged V3 five-case fixture",
+      "check": "frozen five-case fixture",
       "passed": true
     },
     {

@@ -5,7 +5,7 @@
   "packet_archive_sha256": "5568f56152392c2cff6b54149c14ea099369fb361c7baa322fe68fac31b1954f",
   "fixture": {
     "path": "recentClosedChatEligibility.test.mjs",
-    "sha256": "6dd638919b9ed67bddde9a9cada32cab6e28b1ea5cfea8fd3e04f6ef6b225a93",
+    "sha256": "e05ce56a4a6a726de870f7f1a8e9ec6aace8e13242db64f1f475be9f24bee547",
     "cases": 5
   },
   "source_inputs": [
@@ -576,7 +576,14 @@
     "src/state/persisted.ts",
     "src-tauri/src/persistence/mod.rs"
   ],
-  "runtime_status": "NOT_RUN",
+  "runtime_status": "INITIAL_HOSTED_BASELINE_UNQUALIFIED_WORKSPACE_REJECTION; REVISED_BASELINE_PENDING",
+  "fixture_revision": {
+    "prior_sha256": "6dd638919b9ed67bddde9a9cada32cab6e28b1ea5cfea8fd3e04f6ef6b225a93",
+    "reason": "Model the exact production db_select_chat domain rejection before mutation; retain all five behavioral cases and exact stale-selection assertions. Use readable failure markers in redacted hosted logs.",
+    "source_checked_main": "167492e56dbbb90850efbadf1db2848dae7622f2",
+    "initial_hosted_head": "a56af1e98f18587f50cb6bd69854ed6a318abc47",
+    "initial_hosted_run": 43118950602
+  },
   "test_only_changes": [
     "src-tauri/src/persistence/tests.rs",
     ".github/workflows/ci.yml"

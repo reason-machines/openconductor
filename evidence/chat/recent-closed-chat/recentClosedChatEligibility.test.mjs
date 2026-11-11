@@ -29,6 +29,8 @@ function fixture({ mode = "user", foreign = false } = {}) {
   const storage = { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => values.set(key, value), removeItem: (key) => values.delete(key) };
   const nativeCalls = [];
   const boundaryErrors = [];
+  const rejectedSelections = [];
+  const selectionRejected = "Chat is not visible in this workspace";
   const forbiddenCalls = [];
   const hidden = new Set();
   const bindings = new Map();
@@ -60,7 +62,10 @@ function fixture({ mode = "user", foreign = false } = {}) {
   async function invoke(command, args) {
     nativeCalls.push({ command, args: JSON.stringify(args) });
     try { return await invokeBoundary(command, args); }
-    catch (error) { boundaryErrors.push(String(error)); throw error; }
+    catch (error) {
+      if (error !== selectionRejected) boundaryErrors.push(String(error));
+      throw error;
+    }
   }
   async function invokeBoundary(command, args) {
     if (command === "db_list_repos") { assert.equal(args, undefined); return [repoRow]; }
@@ -68,7 +73,11 @@ function fixture({ mode = "user", foreign = false } = {}) {
     if (command === "db_select_chat") {
       assert.deepEqual(Object.keys(args).sort(), ["chatId", "workspaceId"]);
       const r = rows.find((r) => r.id === args.workspaceId);
-      assert.ok(r && (args.chatId === r.primaryChatId || r.chatTabs.some((tab) => tab.id === args.chatId)));
+      assert.ok(r, `Unknown workspace ${args.workspaceId}`);
+      if (args.chatId !== r.primaryChatId && !r.chatTabs.some((tab) => tab.id === args.chatId)) {
+        rejectedSelections.push({ ...selectedCall(args.workspaceId, args.chatId), activeSessionId: r.activeSessionId });
+        throw selectionRejected;
+      }
       r.activeSessionId = args.chatId;
       return;
     }
@@ -192,7 +201,8 @@ function fixture({ mode = "user", foreign = false } = {}) {
     return renderer.root.findAll((node) => node.type?.name === "TranscriptChip").map((node) => node.props.chat);
   }
   return {
-    workspaceId, foreignWorkspaceId, sourceId, targetId, foreignSourceId, sourceTitle, nativeCalls, hidden, transcripts,
+    workspaceId, foreignWorkspaceId, sourceId, targetId, foreignSourceId, sourceTitle, nativeCalls, hidden, transcripts, rejectedSelections,
+    persistedSelection: (id) => rows.find((r) => r.id === id).activeSessionId,
     async mount() {
       const repos = await app.loadReposFromDb();
       assert.deepEqual(nativeCalls, [{ command: "db_list_repos", args: undefined }, { command: "db_list_workspaces", args: undefined }], "real hydration reads only the established repository/workspace selectors");
@@ -224,6 +234,7 @@ function fixture({ mode = "user", foreign = false } = {}) {
       if (renderer) await act(async () => renderer.unmount());
       assert.equal(forbiddenCalls.length, 0, "suggestion/close/reopen must not execute a provider or clipboard operation");
       assert.deepEqual(boundaryErrors, [], "transport assertions must not be swallowed by product async catches");
+      assert.deepEqual(rejectedSelections, foreign ? [{ ...selectedCall(foreignWorkspaceId, targetId), activeSessionId: foreignWorkspaceId }] : [], "only the exact cross-workspace stale selection may be rejected");
       assert.ok(nativeCalls.every((call) => ["db_select_chat", "db_close_chat_tab", "db_open_chat_tab"].includes(call.command)), `unexpected native calls: ${JSON.stringify(nativeCalls)}`);
     },
   };
@@ -240,7 +251,7 @@ test("CLOSED_ELIGIBLE: closing a user chat keeps its transcript suggestion in an
     assert.equal(f.hidden.has(f.sourceId), true);
     assert.equal(f.storedSource().id, f.sourceId, "the source session record is retained, never deleted");
     assert.deepEqual(f.nativeCalls, [{ command: "db_select_chat", args: JSON.stringify({ workspaceId: f.workspaceId, chatId: f.targetId }) }, { command: "db_close_chat_tab", args: JSON.stringify({ chatId: f.sourceId }) }]);
-    assert.deepEqual(f.suggestions(), [f.sourceId], "CLOSED_ELIGIBLE_MISSING_HIDDEN_SOURCE");
+    assert.deepEqual(f.suggestions(), [f.sourceId], "closed user source is missing");
     assert.match(f.text(), /New chat in/);
     assert.doesNotMatch(f.text(), /You’re in a new copy/);
     assert.equal(JSON.stringify([...f.transcripts]), before);
@@ -281,9 +292,12 @@ test("WORKSPACE_CONTROL: same-title closed suggestions do not cross workspace sw
     await f.select("Empty target");
     await f.close(f.sourceTitle);
     await f.switchWorkspace(f.foreignWorkspaceId);
+    assert.deepEqual(f.rejectedSelections, [{ command: "db_select_chat", args: JSON.stringify({ workspaceId: f.foreignWorkspaceId, chatId: f.targetId }), activeSessionId: f.foreignWorkspaceId }], "the stale target must be rejected before mutating the other workspace selection");
+    assert.equal(f.persistedSelection(f.foreignWorkspaceId), f.foreignWorkspaceId);
+    assert.equal(f.hidden.has(f.foreignSourceId), false);
     await f.close(f.sourceTitle);
     assert.equal(f.hasTab(f.sourceTitle), false);
-    assert.deepEqual(f.suggestions(), [f.foreignSourceId], "WORKSPACE_CONTROL_MISSING_OWN_HIDDEN_SOURCE");
+    assert.deepEqual(f.suggestions(), [f.foreignSourceId], "own workspace closed source is missing");
     await f.switchWorkspace(f.workspaceId);
     await f.select("Empty target");
     assert.deepEqual(f.suggestions(), [f.sourceId]);
@@ -303,7 +317,7 @@ test("REOPEN_AND_ATTACH: reclose deduplicates the suggestion and attaches the or
     await f.select("Empty target");
     assert.deepEqual(f.suggestions(), [f.sourceId]);
     await f.close(f.sourceTitle);
-    assert.deepEqual(f.suggestions(), [f.sourceId], "REOPEN_AND_ATTACH_MISSING_RECLOSED_SOURCE");
+    assert.deepEqual(f.suggestions(), [f.sourceId], "reclosed user source is missing");
     const before = JSON.stringify([...f.transcripts]);
     await f.attach(f.sourceId);
     const attachments = f.attachments();
