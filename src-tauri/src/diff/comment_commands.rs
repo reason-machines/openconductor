@@ -188,9 +188,10 @@ pub async fn diff_comments_update_anchors(
     workspace_id: String,
     updates: Vec<CommentAnchorInput>,
 ) -> Result<(), String> {
-    if updates.iter().any(|u| {
-        u.line_number < 1 || u.end_line_number.is_some_and(|end| end < u.line_number)
-    }) {
+    if updates
+        .iter()
+        .any(|u| u.line_number < 1 || u.end_line_number.is_some_and(|end| end < u.line_number))
+    {
         return Err("invalid comment anchor".into());
     }
     for update in updates {

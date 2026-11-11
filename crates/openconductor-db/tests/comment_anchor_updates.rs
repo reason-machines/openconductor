@@ -93,5 +93,8 @@ async fn anchor_updates_skip_remote_whole_file_wrong_workspace_and_invalid_range
         .await
         .unwrap();
     let single = diff_comments::get(&pool, "local").await.unwrap().unwrap();
-    assert_eq!((single.line_number, single.end_line_number), (Some(8), None));
+    assert_eq!(
+        (single.line_number, single.end_line_number),
+        (Some(8), None)
+    );
 }
