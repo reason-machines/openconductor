@@ -1,0 +1,74 @@
+[
+  {
+    "name": "bys-component",
+    "start": 2840211,
+    "end": 2849411,
+    "bytes": 9200,
+    "sha256": "d77fdd8a944737a5ecca9d41deefd024307cf526de8c871a25a7f91aa4a8c450",
+    "literal": null
+  },
+  {
+    "name": "ancestor-reveal",
+    "start": 2843241,
+    "end": 2843539,
+    "bytes": 298,
+    "sha256": "db38ae2a680259ca001c1b73c52576384732374574d594c43c4817a8e628e414",
+    "literal": "_t=()=>{if(v!==\"tree\"){Ct.current=void 0;return}if(!_||Ct.current===_)return;Ct.current=_;const Dt=iys(_);let Xt=!1;const hn=new Set(Ue);for(const Hn of Dt)hn.delete(Hn)&&(Xt=!0);Xt&&We(hn)},Vt=[_,v,Ue,We],n[54]=Ue,n[55]=v,n[56]=_,n[57]=We,n[58]=_t,n[59]=Vt):(_t=n[58],Vt=n[59]),$.useEffect(_t,Vt);"
+  },
+  {
+    "name": "scroll-producer",
+    "start": 2843540,
+    "end": 2844000,
+    "bytes": 460,
+    "sha256": "168a6a41a551c5aad1f4261b5cca0bc3816923031f53ab0c238465f0d67d6d17",
+    "literal": "et bt;n[60]!==He?(bt=Dt=>He.findIndex(Xt=>Xt.type===\"file\"&&Xt.file.path===Dt),n[60]=He,n[61]=bt):bt=n[61];const wt=bt;let Nt;n[62]===Symbol.for(\"react.memo_cache_sentinel\")?(Nt=Dt=>{ft.current?.scrollIntoView({index:Dt})},n[62]=Nt):Nt=n[62];const Wt=Nt;let Dn;n[63]!==wt||n[64]!==_?(Dn={selectedFile:_,getSelectedFileIndex:wt,scrollToIndex:Wt},n[63]=wt,n[64]=_,n[65]=Dn):Dn=n[65],sys(Dn);let _n;n[66]!==v||n[67]!==i||n[68]!==m?(_n=Dt=>{Ah(\"git_diff_file_selec"
+  },
+  {
+    "name": "selected-row-scroll-helper",
+    "start": 2828488,
+    "end": 2828983,
+    "bytes": 495,
+    "sha256": "6006f45d6b396ea0431dc34834415cafdc8dc060d906598c7878a606b8ebecb6",
+    "literal": "function sys(t){const e=ne.c(10),{selectedFile:n,getSelectedFileIndex:i,scrollToIndex:r}=t,o=$.useRef(void 0),a=$.useRef(void 0);let c,u;e[0]!==n?(c=()=>{n!==o.current&&(o.current=n,a.current=n)},u=[n],e[0]=n,e[1]=c,e[2]=u):(c=e[1],u=e[2]),$.useEffect(c,u);let d;e[3]!==i||e[4]!==r?(d=()=>{const m=a.current;if(!m)return;const g=i(m);g!==-1&&(r(g),a.current=void 0)},e[3]=i,e[4]=r,e[5]=d):d=e[5];let h;e[6]!==i||e[7]!==r||e[8]!==n?(h=[i,r,n],e[6]=i,e[7]=r,e[8]=n,e[9]=h):h=e[9],$.useEffect(d,h)}"
+  },
+  {
+    "name": "active-file-input",
+    "start": 2840376,
+    "end": 2840546,
+    "bytes": 170,
+    "sha256": "cc902eac517c6cab828f797a7e580cfdb57b511a319388c173e74bce4702746f",
+    "literal": "ntRepo:u}=HV(),{data:d}=u,{diffScope:h}=uF(),{navigateToFile:m}=Wd(i),_=WXe()?.path,[v]=GBt(i),{data:x}=bV(i);let w;n[0]!==x?(w=x===void 0?[]:x,n[0]=x,n[1]=w):w=n[1];cons"
+  },
+  {
+    "name": "selected-row-index",
+    "start": 2843577,
+    "end": 2843747,
+    "bytes": 170,
+    "sha256": "800a1c952ec30fd31cd099c10a9d80ca5aeb23e2f232b5734c30e48542884352",
+    "literal": "(Xt=>Xt.type===\"file\"&&Xt.file.path===Dt),n[60]=He,n[61]=bt):bt=n[61];const wt=bt;let Nt;n[62]===Symbol.for(\"react.memo_cache_sentinel\")?(Nt=Dt=>{ft.current?.scrollIntoVi"
+  },
+  {
+    "name": "scroll-host",
+    "start": 2843653,
+    "end": 2843843,
+    "bytes": 190,
+    "sha256": "abc070fe0125dd95a4743c7f0ba02093cb2c86efd05b62c7ccf8f3af84cf04f2",
+    "literal": "wt=bt;let Nt;n[62]===Symbol.for(\"react.memo_cache_sentinel\")?(Nt=Dt=>{ft.current?.scrollIntoView({index:Dt})},n[62]=Nt):Nt=n[62];const Wt=Nt;let Dn;n[63]!==wt||n[64]!==_?(Dn={selectedFile:_,"
+  },
+  {
+    "name": "scroll-helper-call",
+    "start": 2843851,
+    "end": 2843981,
+    "bytes": 130,
+    "sha256": "abf8d339b48b9460139e9cae5e5a0afdd4134125d5f41d5c8b46ba0d82660dc7",
+    "literal": "tedFileIndex:wt,scrollToIndex:Wt},n[63]=wt,n[64]=_,n[65]=Dn):Dn=n[65],sys(Dn);let _n;n[66]!==v||n[67]!==i||n[68]!==m?(_n=Dt=>{Ah(\""
+  },
+  {
+    "name": "scroll-consumer",
+    "start": 2847498,
+    "end": 2847718,
+    "bytes": 220,
+    "sha256": "9a69bad1904242b6ac1c5276c2a8bf7a7f253b3ee5e5cc03c361f126e0a75488",
+    "literal": "-xs text-muted-foreground\",children:\"No files match this filter\"}):gt?p.jsx(y4s,{customScrollParent:gt,ref:ft,data:He,computeItemKey:Sys,fixedItemHeight:32,increaseViewportBy:96,itemContent:(Dt,Xt)=>{if(Xt.type===\"header"
+  }
+]

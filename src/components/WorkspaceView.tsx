@@ -753,7 +753,7 @@ function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, rev
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
   const files = useFilesToolbar();
-  const { presentation, update: updatePresentation } = useChangesPresentation(workspaceId);
+  const { presentation, ready: presentationReady, update: updatePresentation } = useChangesPresentation(workspaceId);
   const [filterOpen, setFilterOpen] = useState(false);
   useEffect(() => setFilterOpen(false), [workspaceId]);
   const revealedFile = useRef<{ workspaceId: string; path: string } | null>(null);
@@ -815,7 +815,7 @@ function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, rev
         </span>
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} worktree={worktree} emptyAction={emptyAction} filter={filter} notify={notify} view={presentation.diffFileListMode} collapsed={new Set(presentation.collapsedDirectoryPaths)} toggleDirectory={toggleDirectory} />
+        <ChangesList diff={diff} actions={actions} worktree={worktree} activeFilePath={presentationReady ? activeFilePath : undefined} emptyAction={emptyAction} filter={filter} notify={notify} view={presentation.diffFileListMode} collapsed={new Set(presentation.collapsedDirectoryPaths)} toggleDirectory={toggleDirectory} />
       ) : tab === "checks" ? (
         <ChecksTab
           worktree={worktree}
