@@ -363,6 +363,10 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
             isError={call.status === "error"}
             open={ctx.isOpen(call.id, opensByDefault(call.tool))}
             onToggle={() => ctx.onToggle(call.id, opensByDefault(call.tool))}
+            todoRows={call.tool.name === "TodoWrite" ? {
+              completed: { open: ctx.isOpen(`${call.id}-completed`), onToggle: () => ctx.onToggle(`${call.id}-completed`) },
+              started: { open: ctx.isOpen(`${call.id}-started`), onToggle: () => ctx.onToggle(`${call.id}-started`) },
+            } : undefined}
             workspacePath={ctx.workspacePath}
             onOpenFile={ctx.onOpenFile}
           />

@@ -1,0 +1,1 @@
+function LAt(t){return ts.getSession(bI(t))}

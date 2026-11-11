@@ -3,13 +3,15 @@
 // URLs, Files to copy, Remove repository. Each row is Conductor's `Al` with
 // its content stacked under the title and description.
 import { useEffect, useRef, useState } from "react";
+import { Popover } from "@base-ui/react/popover";
 import type { Repo } from "../../state/types";
 import { RepoIcon } from "../../components/RepoIcon";
-import { RepoIconDialog } from "../../components/RepoIconDialog";
+import { RepoIconPicker } from "../../components/RepoIconDialog";
 import { RemoveRepositoryDialog } from "../../components/RemoveRepositoryDialog";
 import { ArrowUpRightIcon, ChevronDownIcon, ChevronUpIcon, CircleAlertIcon, PlusIcon, RefreshCwIcon } from "../../components/Icons";
 import { openUrl } from "../../backend";
 import "./rows.css";
+import "./repoIconPopover.css";
 import { OpenInButton } from "../../features/openIn/OpenInButton";
 import { Row } from "../GeneralPage";
 import { TrashIcon } from "../icons";
@@ -100,17 +102,23 @@ function IconRow({ repo, actions }: { repo: Repo; actions: RepoMiscActions }) {
   const [open, setOpen] = useState(false);
   return (
     <Row label={COPY.icon.title} help={COPY.icon.description} stacked>
-      <button type="button" className="settings-misc-icon" aria-label="Change repository icon" onClick={() => setOpen(true)}>
-        <RepoIcon repo={repo} />
-      </button>
-      {open && (
-        <RepoIconDialog
-          repo={repo}
-          onChange={(icon) => actions.onSetIcon(repo.id, icon)}
-          onClose={() => setOpen(false)}
-          onError={(message) => actions.notify("error", message)}
-        />
-      )}
+      <Popover.Root open={open} onOpenChange={setOpen} modal={false}>
+        <Popover.Trigger type="button" className="settings-misc-icon" aria-label="Change repository icon">
+          <RepoIcon repo={repo} />
+        </Popover.Trigger>
+        <Popover.Portal>
+          <Popover.Positioner className="settings-repo-icon-positioner" side="bottom" align="start" sideOffset={4}>
+            <Popover.Popup className="settings-repo-icon-popover" aria-label="Change repository icon">
+              <RepoIconPicker
+                repo={repo}
+                onChange={(icon) => actions.onSetIcon(repo.id, icon)}
+                onClose={() => setOpen(false)}
+                onError={(message) => actions.notify("error", message)}
+              />
+            </Popover.Popup>
+          </Popover.Positioner>
+        </Popover.Portal>
+      </Popover.Root>
     </Row>
   );
 }
