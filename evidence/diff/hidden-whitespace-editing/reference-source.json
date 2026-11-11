@@ -1,0 +1,228 @@
+{
+  "scope": "DIFF-EDIT-HIDDEN-WHITESPACE source qualification only",
+  "main": "2b079f13e07b580d26191f7f1f50b4d21e62174e",
+  "reference": {
+    "renderer": {
+      "path": ".oc-tmp/chip-reference/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    "index": {
+      "path": ".rea-work/pzi-wzi-source-loan/index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  },
+  "main_sources": {
+    "src/features/diff/editable.ts": {
+      "git_blob": "34a39d49ef85e116874a1d80eb8548c588ead599",
+      "sha256": "4fe180dcb7585c04406d0fb51cf977773040db985bc62bbb09ed31f94d0b1790",
+      "bytes": 850
+    },
+    "src/features/diff/EditInViewer.ts": {
+      "git_blob": "5b79de9fd5cc4c62540f227e370cc6f21b178a5a",
+      "sha256": "ed1fecd1fec3226edf91bc0e6695a6f153f98c4e0f63c6bb71dcc364273bb0d4",
+      "bytes": 5002
+    },
+    "src/features/diff/DiffViewer.tsx": {
+      "git_blob": "804f8521ce8405382971ed8d1c91d9bec5bdcc19",
+      "sha256": "cccee3ab384da094d2d01da32bbf5e1b3cd5bceee5727b441ef77d7462d0a033",
+      "bytes": 10028
+    },
+    "src/features/diff/FileDiffView.tsx": {
+      "git_blob": "2f18ca24322597a7f7b8d86d00f5f1f7f197e3e4",
+      "sha256": "e91927f737a76472f6a75ed4c7aefb0bf09b0b80afd5fb1e581de44f4754e60a",
+      "bytes": 17990
+    },
+    "src/features/diff/useWorkspaceDiff.ts": {
+      "git_blob": "054c6ba23ee75ab2c67cebf102bdd1a7323276d7",
+      "sha256": "8b0de3c5bdd848c484e30aecc18c79b7c99eae818412352131d50806f5830b53",
+      "bytes": 13729
+    },
+    "src/features/diff/pierre.ts": {
+      "git_blob": "e1aabde86e5d053f856135ae15247105db9207e8",
+      "sha256": "825d13480e0ffe3c543b792b45be9d12df1d2a5e350778752f9a808b08e44710",
+      "bytes": 7924
+    },
+    "src/features/diff/EditInViewer.test.ts": {
+      "git_blob": "c9823ead597d5835cbbc3566f5f012b8359509ee",
+      "sha256": "3ae2a25429f443b093bd0370b21b6daddde19e78282f1d660e8c6225678d31e8",
+      "bytes": 4871
+    },
+    "src/features/diff/api.ts": {
+      "git_blob": "a62bee5f8a1af2c5e9963796ec742e50aac13083",
+      "sha256": "abbc4950ec46258c7cd76c447ce63f5a923b80a9d9313e6c13c2e4a6d02e5c7a",
+      "bytes": 6498
+    },
+    "src-tauri/src/diff/git.rs": {
+      "git_blob": "65800e0256d0f243e7d6f716ef135449b77002cf",
+      "sha256": "841fe26a5eb54d4c71d2d04748ec790bfa9080d50008681bd74a9f830d49e955",
+      "bytes": 17713
+    },
+    "src-tauri/src/diff/model.rs": {
+      "git_blob": "3fc9442ab36533d9a9c3220971a46ccad35613f4",
+      "sha256": "3c794269be0b8c0e1c7cc0eef1f5632d676f439d165f94679ca2a5b8b28a49ce",
+      "bytes": 6412
+    }
+  },
+  "reference_spans": [
+    {
+      "name": "bji",
+      "asset": "renderer",
+      "utf8": [
+        9643145,
+        9646819
+      ],
+      "sha256": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688",
+      "source": "function bji({localWorkspaceId:t,filePath:e,fileDiff:n,canReturnToDiff:i=!1,viewMode:r,isVisible:o=!0,visibleVisitCount:a=0,isSplitView:c,hideWhitespaceChanges:u,workspacePath:d,onToggleViewed:h,contentMode:m,onContentModeChange:g,targetLineNumber:_,commentId:v,lastModifiedTime:x=n?.lastModifiedTime,readTarget:w,attachmentSourcePending:E=!1,copyImage:k}){const I=r.type===\"tree\",R=W9e(e),O=Uki(e),D=d9e(e),{data:P}=us(\"experimental_legacy_file_preview_and_editing\"),L=!P,F=Ld(t)!==\"write\"||w!==void 0||E,H=!I&&n?.status===\"conflicted\",U=R===\"text\"&&!n?.isBinary&&!H,z=I||r.type===\"all\"||r.type===\"uncommitted\",G=U&&n?.status!==\"deleted\"&&(I||L&&z),K=G&&!F&&d!==void 0,[X,Q]=$.useState(D?\"preview\":\"edit\"),J=O&&(m??X)===\"preview\",te=$.useCallback(Ue=>{g===void 0?Q(Ue):g(Ue)},[g]),{data:Z,isFetching:se,refetch:ce,isRefetching:ae,error:de,dataUpdatedAt:ue,loadFullContents:pe}=Gri({localWorkspaceId:t,viewMode:r,selectedFile:e,fileStatus:n?.status,isBinary:n?.isBinary,oldPath:n?.oldPath,lastModifiedTime:x,hideWhitespaceChanges:u,readTarget:w,enabled:!E&&(!I||R===\"text\"),preferPatchForRemoteDiffs:!G&&n?.status!==\"conflicted\"&&(!D||!J)}),[be,he]=$.useState(0);$.useEffect(()=>{const Ue=Z===void 0,We=a>1;!o||a===0||a===be||se||!Ue&&!We||(he(a),ce())},[Z,se,o,ce,be,a]);const{navigateToFile:ge}=Wd(t),ve=$.useCallback(Ue=>{if(I&&Ue!==\"diff\"){te(Ue);return}ge({path:e,mode:Ue===\"diff\"?\"diff\":\"edit\",contentMode:Ue===\"diff\"?void 0:Ue,lineNumber:_,commentId:v})},[I,te,ge,e,_,v]),[ye,xe]=$.useState(_!==void 0),ke=I||G&&ye?\"raw\":c?\"split\":\"unified\",Se=$.useCallback(Ue=>{te(\"edit\"),xe(Ue===\"raw\"),Ue!==\"raw\"&&CSr(Ue===\"split\").fireAndForget()},[te]),De=$.useCallback(()=>te(\"preview\"),[te]),je=$.useCallback(()=>{te(J?\"edit\":\"preview\")},[te,J]);oi(\"workspace.toggleFileEdit\",()=>!o||!I&&!L?!1:J?(te(\"edit\"),!0):I&&P&&i?(ve(\"diff\"),!0):!1,{enableOnInputFocus:!1});const Ne=Oqo({localWorkspaceId:t,filePath:e,workspacePath:d,savedContent:Z?.newContent??\"\"}),Le=G?{workspacePath:d,viewStyle:ke,diffScopeKey:gji(e,r),hasDiff:!I,contentEditable:K,useLegacyEditor:P,targetLineNumber:_,isPreviewing:J}:void 0,ze=$.useCallback(Ue=>{kSr(Ue).fireAndForget()},[]),Ke=$.useCallback(()=>{ze(!1)},[ze]),{data:Ze}=us(\"wrap_lines\"),Ye=!L||Ze,Qe=$.useCallback(Ue=>{TSr(Ue).fireAndForget()},[]);return p.jsxs(\"div\",{className:\"h-full flex flex-col overflow-hidden\",children:[o&&p.jsx(GPo,{filePath:e,fileDiff:n,viewMode:r,localWorkspaceId:t,workspacePath:d,readOnly:F,lastModifiedTime:x,hasUnsavedChanges:K&&Ne!==(Z?.newContent??\"\"),modeToggle:L?void 0:{modes:CPo({hasDiff:I?i:n!==void 0,isPreviewableFile:O,canEdit:n?.status!==\"deleted\"&&R===\"text\"}),value:I?J?\"preview\":\"edit\":\"diff\",onChange:ve},preview:!L&&!I&&D?{isPreviewing:J,onToggle:je}:void 0,viewStyle:!I||L&&U?{value:J?\"preview\":ke,includeDiff:!I,includeRaw:G,onChange:Se,onPreview:L&&O&&(G||D)?De:void 0}:void 0,whitespace:I?void 0:{hideWhitespaceChanges:u,onChange:ze},textWrap:L&&U?{wrapLines:Ye,onChange:Qe}:void 0,diffDataUpdatedAt:ue??0,refetchDiffData:ce,isRefetching:ae||Z!==void 0&&a>1&&a!==be,refreshFailed:Z!==void 0&&de!==void 0,newContent:G&&Z!==void 0&&Z.newContent!==null?Ne:Z?.newContent,loadFullContents:Z?.patch!==void 0?pe:void 0,copySourceLoading:L&&Z===void 0,copyImage:k,onToggleViewed:h,layout:L?\"pierre\":\"default\"}),p.jsx(\"div\",{className:\"flex-1 w-full overflow-hidden\",children:p.jsx(Mqo,{localWorkspaceId:t,filePath:e,fileDiff:Z,isFetchingFileDiff:E||se,isVisible:o,isFileView:I,isAttachmentReadOnly:w!==void 0||E,diffViewMode:c?\"split\":\"unified\",hideWhitespaceChanges:u,onShowWhitespaceChanges:Ke,isSvgPreview:J&&D,isConflicted:H,isBinary:n?.isBinary,loadFullContents:pe,editable:Le,wrapLines:Ye})})]})}"
+    },
+    {
+      "name": "Mqo",
+      "asset": "renderer",
+      "utf8": [
+        9637614,
+        9641484
+      ],
+      "sha256": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c",
+      "source": "function Mqo(t){const e=ne.c(56),{localWorkspaceId:n,fileDiff:i,filePath:r,isFileView:o,isAttachmentReadOnly:a,isFetchingFileDiff:c,isVisible:u,diffViewMode:d,hideWhitespaceChanges:h,onShowWhitespaceChanges:m,isSvgPreview:g,isConflicted:_,isBinary:v,loadFullContents:x,editable:w,wrapLines:E}=t,k=o===void 0?!1:o,I=a===void 0?!1:a,R=HEe(n),O=i?.hideReason,D=i?.path;let P,L;e[0]!==R||e[1]!==D||e[2]!==O||e[3]!==n?(P=()=>{O===PCt.FetchError&&!R&&Pqo.warn(\"[file-diff] rendering 'Failed to load file contents'\",{path:D,workspaceId:n})},L=[O,D,n,R],e[0]=R,e[1]=D,e[2]=O,e[3]=n,e[4]=P,e[5]=L):(P=e[4],L=e[5]),$.useEffect(P,L);let B;e[6]!==r?(B=r===void 0?\"text\":W9e(r),e[6]=r,e[7]=B):B=e[7];const F=B;if(k&&r!==void 0&&F!==\"text\"){let z;return e[8]!==r||e[9]!==n||e[10]!==F?(z=p.jsx(hLo,{kind:F,localWorkspaceId:n,filePath:r}),e[8]=r,e[9]=n,e[10]=F,e[11]=z):z=e[11],z}if(c&&!i){let z;return e[12]===Symbol.for(\"react.memo_cache_sentinel\")?(z=p.jsx(\"div\",{className:\"flex items-center justify-center h-full\",children:p.jsx(ri,{type:\"working\",className:\"size-6\"})}),e[12]=z):z=e[12],z}if(R&&!I&&(!i||i.hideReason===PCt.FetchError)){let z;return e[13]===Symbol.for(\"react.memo_cache_sentinel\")?(z=p.jsx(yCe,{}),e[13]=z):z=e[13],z}if(i?.hideReason){let z;e[14]!==i.hideReason?(z=ESr(i.hideReason),e[14]=i.hideReason,e[15]=z):z=e[15];let G;return e[16]!==z?(G=p.jsx(\"div\",{className:\"p-4 text-muted-foreground text-center\",children:z}),e[16]=z,e[17]=G):G=e[17],G}if(!i||k&&i.newContent===null){if(r!==void 0&&Fde(r)){let K;return e[18]===Symbol.for(\"react.memo_cache_sentinel\")?(K=p.jsx(cet,{}),e[18]=K):K=e[18],K}const z=k?\"Failed to load file\":\"Failed to load file diff\";let G;return e[19]!==z?(G=p.jsx(\"div\",{className:\"flex items-center justify-center gap-2 p-4 text-muted-foreground\",children:z}),e[19]=z,e[20]=G):G=e[20],G}const H=tmo(i);if(H!==void 0){const z=Lqo[H];let G;return e[21]!==z||e[22]!==i.path||e[23]!==n?(G=p.jsx(z,{localWorkspaceId:n,filePath:i.path}),e[21]=z,e[22]=i.path,e[23]=n,e[24]=G):G=e[24],G}if(RDt(i.path)!==void 0||v){let z;return e[25]===Symbol.for(\"react.memo_cache_sentinel\")?(z=p.jsx(\"div\",{className:\"p-4 text-muted-foreground text-center\",children:\"Binary file changed\"}),e[25]=z):z=e[25],z}if(_&&i.newContent){let z;return e[26]!==d||e[27]!==i.newContent||e[28]!==i.path||e[29]!==n?(z=p.jsx(KVo,{filePath:i.path,newContent:i.newContent,localWorkspaceId:n,diffViewMode:d}),e[26]=d,e[27]=i.newContent,e[28]=i.path,e[29]=n,e[30]=z):z=e[30],z}if(i.oldContent!==null||i.newContent!==null||i.patch!==void 0){if(w===void 0&&g&&d9e(i.path)&&(i.newContent!==null||i.oldContent!==null)){const X=i.newContent??i.oldContent??\"\";let Q;return e[31]!==X?(Q=p.jsx(zMi,{content:X}),e[31]=X,e[32]=Q):Q=e[32],Q}if(w!==void 0&&i.newContent!==null){const X=r??i.path,Q=i.oldContent??\"\";let J;return e[33]!==w||e[34]!==i.newContent||e[35]!==h||e[36]!==u||e[37]!==n||e[38]!==m||e[39]!==X||e[40]!==Q||e[41]!==E?(J=p.jsx(jqo,{localWorkspaceId:n,...w,filePath:X,oldContent:Q,savedContent:i.newContent,hideWhitespaceChanges:h,onShowWhitespaceChanges:m,isVisible:u,wrapLines:E}),e[33]=w,e[34]=i.newContent,e[35]=h,e[36]=u,e[37]=n,e[38]=m,e[39]=X,e[40]=Q,e[41]=E,e[42]=J):J=e[42],J}const z=i.oldContent??\"\",G=i.newContent??\"\";let K;return e[43]!==d||e[44]!==i.patch||e[45]!==i.path||e[46]!==h||e[47]!==u||e[48]!==x||e[49]!==n||e[50]!==m||e[51]!==z||e[52]!==G||e[53]!==E?(K=p.jsx($Vo,{oldContent:z,newContent:G,patch:i.patch,loadFullContents:x,filePath:i.path,isVisible:u,diffViewMode:d,hideWhitespaceChanges:h,onShowWhitespaceChanges:m,localWorkspaceId:n,wrapLines:E}),e[43]=d,e[44]=i.patch,e[45]=i.path,e[46]=h,e[47]=u,e[48]=x,e[49]=n,e[50]=m,e[51]=z,e[52]=G,e[53]=E,e[54]=K):K=e[54],K}let U;return e[55]===Symbol.for(\"react.memo_cache_sentinel\")?(U=p.jsx(\"div\",{className:\"p-4 text-muted-foreground text-center\",children:\"No changes in this file\"}),e[55]=U):U=e[55],U}"
+    },
+    {
+      "name": "jqo",
+      "asset": "renderer",
+      "utf8": [
+        9641484,
+        9642975
+      ],
+      "sha256": "3b57f4d3fb1c0ba90d3249cf522f66114602f79f79e85afbed10c08b16ba4741",
+      "source": "function jqo({localWorkspaceId:t,filePath:e,workspacePath:n,viewStyle:i,diffScopeKey:r,oldContent:o,savedContent:a,hideWhitespaceChanges:c,onShowWhitespaceChanges:u,isVisible:d,wrapLines:h,hasDiff:m=!0,contentEditable:g=!0,useLegacyEditor:_=!1,targetLineNumber:v,isPreviewing:x=!1}){const{draftContent:w,editorContentGeneration:E,handleDraftChange:k,saveDraftContent:I}=Dqo({localWorkspaceId:t,filePath:e,workspacePath:n,savedContent:a,remountEditorOnSavedContentChange:g&&!_}),R=sVo(`markdown-preview:${t}:${e}`);if(x){const O=HX(e);if(O!==void 0)return p.jsx(qFo,{content:w,format:O});if(cUt(e))return p.jsx(gLo,{content:w});if(lUt(e))return p.jsx(\"div\",{ref:R.ref,onScroll:R.onScroll,className:\"h-full overflow-auto\",children:p.jsx(eee,{text:w,markdownFilePath:e,localWorkspaceId:t,workspacePath:n,tufte:{wrapperClassName:\"pb-[var(--composer-overlay-height,0px)]\"},default:{className:\"!max-w-4xl mx-auto break-words\",wrapperClassName:\"p-4 pb-[calc(1rem+var(--composer-overlay-height,0px))]\"}})});if(wZe(e))return p.jsx(pLo,{html:w,filePath:e});if(d9e(e))return p.jsx(zMi,{content:w})}return _?p.jsx(KVt,{filePath:e,localWorkspaceId:t,targetLineNumber:v,value:w,onChange:k,onSave:O=>I(O).fireAndForget(),readOnly:!g}):p.jsx(Tqo,{filePath:e,localWorkspaceId:t,viewStyle:i,hasDiff:m,contentEditable:g,targetLineNumber:v,oldContent:o,value:w,onChange:k,onSave:O=>I(O).fireAndForget(),hideWhitespaceChanges:c,onShowWhitespaceChanges:u,isVisible:d,wrapLines:h},`${r}:${i}:${g}:${E}:${c}:${o}`)}"
+    },
+    {
+      "name": "Dqo",
+      "asset": "renderer",
+      "utf8": [
+        9636034,
+        9637549
+      ],
+      "sha256": "e84b4c7ffc7323e35f137e86131118847873a856159170d6b39b804c06b7413e",
+      "source": "function Dqo({localWorkspaceId:t,filePath:e,workspacePath:n,savedContent:i,remountEditorOnSavedContentChange:r}){const{draftKey:o,legacyDraftKey:a,pendingDraftKey:c}=pji({localWorkspaceId:t,filePath:e,workspacePath:n}),u=yle(L=>L.drafts[c]),d=mji({localWorkspaceId:t,filePath:e,workspacePath:n}),h=$.useRef(void 0),m=Ao({scope:{id:`file-save:${t}:${e}`},mutationFn:async L=>{await SSr({localWorkspaceId:t,path:e,contents:L})},onSuccess:(L,B)=>{h.current=B,HBt.setContent({localWorkspaceId:t,filePath:e,scope:\"working-tree\",updater:H=>H&&{...H,newContent:B}});const F=o??c;RM.getDraft(F)===B&&RM.clearDraft(F)},onError:L=>{er.error(`Failed to save file: ${L instanceof Error?L.message:\"Unknown error\"}`,t)}});$.useEffect(()=>{!o||m.isPending||(u!==void 0&&(RM.setDraft(o,u),RM.clearDraft(c)),a&&RM.migrateDraft({fromKey:a,toKey:o}))},[o,a,u,c,m.isPending]);const g=d??i,_=d!==void 0&&d!==i,[v,x]=$.useState(i),[w,E]=$.useState(n),[k,I]=$.useState(0),R=$.useRef(g);if(n!==w&&(E(n),r&&n!==void 0&&d!==void 0&&u===void 0&&I(L=>L+1)),i!==v){x(i);const L=i===R.current||i===h.current;h.current=void 0,r&&d===void 0&&!L&&I(B=>B+1)}R.current=g;const O=$.useCallback(L=>{const B=o??c;if(m.isPending||L!==i){RM.setDraft(B,L);return}RM.clearDraft(B)},[o,c,m.isPending,i]),D=async(L=g)=>{await m.mutateAsync(L)},P=$.useCallback(()=>{RM.clearDraft(c),o&&RM.clearDraft(o)},[o,c]);return{draftContent:g,hasUnsavedChanges:_,editorContentGeneration:k,handleDraftChange:O,saveDraftContent:D,isSavePending:m.isPending,discardDraft:P}}"
+    },
+    {
+      "name": "kqo",
+      "asset": "renderer",
+      "utf8": [
+        9628186,
+        9633515
+      ],
+      "sha256": "3af80b1ec23526b5f7da46310901c69f22cb9965ef67fba947801071ede1bcc1",
+      "source": "function kqo({filePath:t,localWorkspaceId:e,viewStyle:n,hasDiff:i,targetLineNumber:r,oldContent:o,value:a,onChange:c,onSave:u,contentEditable:d=!0,isVisible:h=!0,hideWhitespaceChanges:m=!1,onShowWhitespaceChanges:g,wrapLines:_}){const v=$.useRef(i).current,x=n!==\"raw\"&&v,{lineAnnotations:w,addComment:E,persistCommentAnchors:k,isReadOnly:I}=OMi(e,t),R=!I,O=$.useMemo(()=>x?w:w.filter(on=>on.side===\"additions\"),[x,w]),D=$.useRef(new Map),P=$.useRef(O),[L,B]=$.useState(O),F=$.useCallback(on=>{if(on===void 0||on===P.current)return;const jn=D.current,Ft=new Set;for(const Dt of on)jn.set(Dt.metadata.id,Dt.lineNumber),Ft.add(Dt.metadata.id);for(const Dt of P.current)Ft.has(Dt.metadata.id)||jn.set(Dt.metadata.id,null);P.current=on},[]),H=$.useCallback(({file:on,lineAnnotations:jn})=>{c(on.contents),F(jn)},[c,F]),U=$.useCallback(({lineAnnotations:on})=>(F(on),k(D.current),\"accept\"),[F,k]),z=$.useCallback(on=>{k(D.current),u(on)},[k,u]),{createEditor:G,editorOptions:K,containerRef:X,openFind:Q,handleKeyDown:J}=_qo({onSave:z,targetLineNumber:r}),te=Dgi(),{mode:Z}=zk(),se=$.useMemo(()=>({...wqo[Z],...d?xqo:void 0}),[Z,d]),ce=$.useRef(se);ce.current=se;const[ae,de]=$.useState(null),ue=d?L:O,pe=$.useCallback(()=>{if(!d)return O;const on=D.current,jn=[];for(const Ft of O){const Dt=on.get(Ft.metadata.id);Dt!==null&&jn.push(Dt===void 0||Dt===Ft.lineNumber?Ft:{...Ft,lineNumber:Dt})}return jn},[d,O]),{previousCount:be,nextCount:he,hasCommentNavigationTarget:ge,navigateToComment:ve,handleCodeViewScroll:ye,handleNavigationPostRender:xe}=BMi({codeViewHandle:ae,itemId:_6e,lineAnnotations:ue,getCurrentLineAnnotations:pe}),ke=vqo({codeViewHandle:ae,itemId:_6e,targetLineNumber:r});$.useEffect(()=>{const on=ae?.getInstance();if(on!=null)for(const jn of on.getRenderedItems())OXn(jn.element,se)},[ae,se]),oi(\"fileEditor.search\",()=>{if(!d||!h)return!1;Q()});const Se=$.useRef(a),De=$.useRef(o),je=d?Se.current:a,Ne=d?De.current:o,{oldCacheKey:Le,newCacheKey:ze}=$.useMemo(()=>nUt({localWorkspaceId:e,filePath:t,oldContent:Ne,newContent:je,hideWhitespaceChanges:m}),[e,t,Ne,je,m]),Ke=$.useMemo(()=>({name:t,lang:HX(t),contents:je,cacheKey:ze}),[t,je,ze]),Ze=$.useMemo(()=>x?iI({name:t,lang:HX(t),contents:Ne,cacheKey:Le},{name:t,lang:HX(t),contents:je,cacheKey:ze},m?{ignoreWhitespace:!0}:void 0):void 0,[x,t,Ne,je,Le,ze,m]),Ye=R;$.useEffect(()=>{if(!d)return;const on=D.current,jn=[];for(const hn of O){const Hn=on.get(hn.metadata.id);Hn!==null&&jn.push(Hn===void 0||Hn===hn.lineNumber?hn:{...hn,lineNumber:Hn})}const Ft=P.current,Dt=qXr(Ft)?Ft:void 0;let Xt=Ft.length===jn.length;for(let hn=0;Xt&&hn<Ft.length;hn++){const Hn=Ft[hn],en=jn[hn];Xt=Hn.metadata===en.metadata&&Hn.lineNumber===en.lineNumber&&(Dt===void 0||Dt[hn].side===en.side)}Xt||(P.current=jn,B(jn))},[d,O]);const[Qe,Ue]=$.useState(null),We=$.useCallback(on=>{Ue(on?.range??null)},[]),Ve=$.useMemo(()=>Qe?{id:_6e,range:Qe}:null,[Qe]),He=$.useCallback(on=>{if(!on){Ue(null);return}const jn=Math.min(on.start,on.end),Ft=Math.max(on.start,on.end);Ue(on),E(jn,on.side??\"additions\",jn===Ft?void 0:Ft)},[E]),it=$.useCallback(on=>{const jn=Math.min(on.start,on.end),Ft=Math.max(on.start,on.end);E(jn,on.side??\"additions\",jn===Ft?void 0:Ft)},[E]),ft=$.useCallback(()=>{Ue(null)},[]),gt=$.useCallback(on=>p.jsx(wet,{comment:on.metadata,localWorkspaceId:e,onDismiss:ft}),[e,ft]),Tt=$.useMemo(()=>Ye?{enableGutterUtility:!0,enableLineSelection:!0,lineHoverHighlight:\"number\",controlledSelection:!0,onLineSelectionEnd:He,onGutterUtilityClick:it,unsafeCSS:NMi}:void 0,[Ye,He,it]),Ct=$.useMemo(()=>Cqo(je),[je]),_t=Umi(),[Vt,bt]=$.useState(!1),wt=Ze!=null?Math.max(Ze.additionLines.length,Ze.deletionLines.length):Ct,Nt=(Ke.lang??J3(t))!==\"text\"&&wt>0&&wt<=U0i,Wt=d&&(Vt||!Nt),Dn=$.useCallback((on,jn,Ft)=>{if(Ft!==\"unmount\"&&(OXn(on,ce.current),xe(),ke(),!(!d||Vt||!Nt))){if(_t===void 0||!_t.isWorkingPool()){bt(!0);return}if(Ze!=null){const Dt=_t.getDiffResultCache(Ze);Dt!=null&&Qw(Dt.options,_t.getDiffRenderOptions())&&bt(!0)}else{const Dt=_t.getFileResultCache(Ke);Dt!=null&&z8(Dt.options,_t.getFileRenderOptions())&&bt(!0)}}},[xe,ke,d,Vt,Nt,_t,Ze,Ke]),_n=m&&Ze!=null&&Ze.hunks.length===0&&g!=null,Vn=$.useMemo(()=>({disableFileHeader:!0,layout:Eqo,overflow:_?\"wrap\":\"scroll\",diffStyle:n===\"split\"?\"split\":\"unified\",hunkSeparators:\"line-info-basic\",expansionLineCount:20,theme:{dark:te.dark,light:te.light},onPostRender:Dn,...Tt}),[_,n,te.dark,te.light,Dn,Tt]),Zt=$.useMemo(()=>JSON.stringify(ue),[ue]),zt=`${Le}:${ze}:${Wt}:${Zt}`,[ct,Pt]=$.useState({signature:zt,version:0});let Rt=ct.version;ct.signature!==zt&&(Rt=ct.version+1,Pt({signature:zt,version:Rt}));const Yt=$.useMemo(()=>[Ze!=null?{id:_6e,type:\"diff\",fileDiff:Ze,annotations:ue,edit:Wt,version:Rt}:{id:_6e,type:\"file\",file:Ke,annotations:ue,edit:Wt,version:Rt}],[Ze,Ke,ue,Wt,Rt]);return _n?p.jsx(FMi,{onShowWhitespaceChanges:g}):p.jsxs(\"div\",{ref:X,className:\"relative h-full w-full overflow-hidden\",onKeyDown:d?J:void 0,onPointerCancelCapture:Ye?ft:void 0,children:[p.jsx(lzr,{createEditor:G,children:p.jsx(Igi,{items:Yt,selectedLines:Ve,onSelectedLinesChange:We,onItemEditChange:H,onItemEditComplete:U,editorOptions:K,options:Vn,className:\"file-code-text h-full w-full overflow-auto\",style:Sqo,ref:de,onScroll:ye,renderAnnotation:gt})}),ge&&h&&p.jsx($Mi,{previousCount:be,nextCount:he,onNavigate:ve})]})}"
+    },
+    {
+      "name": "Y9t",
+      "asset": "index",
+      "utf8": [
+        3199214,
+        3200829
+      ],
+      "sha256": "d275afb03c1b74e04d37c8a6f46e9edfcf82d43d4b889bbf6cf013c1eb73f740",
+      "source": "function Y9t(t){const e=z.c(25),{localWorkspaceId:s,viewMode:n,selectedFile:r,fileStatus:i,isBinary:o,oldPath:a,lastModifiedTime:c,hideWhitespaceChanges:l,preferPatchForRemoteDiffs:u,readTarget:d,enabled:h}=t,p=h===void 0?!0:h,m=j_(s),{data:v}=WLt(s),{data:_}=pY(m?.workspacePath,m?.workspaceHost??ho,n.type===\"turn\"?n.sessionId:void 0,n.type===\"turn\"?n.turnId:void 0,\"start\"),{data:S}=pY(m?.workspacePath,m?.workspaceHost??ho,n.type===\"turn\"?n.sessionId:void 0,n.type===\"turn\"?n.turnId:void 0,\"end\"),k=m?.workspacePath,A=m?.workspaceHost;let I;e[0]!==p||e[1]!==i||e[2]!==l||e[3]!==o||e[4]!==c||e[5]!==s||e[6]!==v||e[7]!==a||e[8]!==u||e[9]!==d?.host||e[10]!==d?.path||e[11]!==r||e[12]!==S||e[13]!==_||e[14]!==n||e[15]!==A||e[16]!==k?(I=p&&k!==void 0&&A!==void 0?{localWorkspaceId:s,workspacePath:k,workspaceHost:d?.host??A,viewMode:n,filePath:d?.path??r,fileStatus:i,isBinary:o,oldPath:a,mergeBase:v,turnStartCheckpoint:_??void 0,turnEndCheckpoint:S??void 0,lastModifiedTime:c,hideWhitespaceChanges:l,preferPatchForRemoteDiffs:u}:void 0,e[0]=p,e[1]=i,e[2]=l,e[3]=o,e[4]=c,e[5]=s,e[6]=v,e[7]=a,e[8]=u,e[9]=d?.host,e[10]=d?.path,e[11]=r,e[12]=S,e[13]=_,e[14]=n,e[15]=A,e[16]=k,e[17]=I):I=e[17];const C=I;let R;e[18]!==C?(R=async()=>{if(C===void 0)throw new Error(\"File diff preconditions are unavailable\");return await Vk.load({...C,hideWhitespaceChanges:void 0,preferPatchForRemoteDiffs:!1})},e[18]=C,e[19]=R):R=e[19];const x=R;let O;e[20]!==C?(O={controller:Vk.store,params:C},e[20]=C,e[21]=O):O=e[21];const G=yLt(O);let Z;return e[22]!==G||e[23]!==x?(Z={...G,loadFullContents:x},e[22]=G,e[23]=x,e[24]=Z):Z=e[24],Z}"
+    },
+    {
+      "name": "bLt",
+      "asset": "index",
+      "utf8": [
+        3179075,
+        3184425
+      ],
+      "sha256": "728ed139a4f43d3d8875e42a61fe7a025b71a77f53e2b1364e432c9acad7540e",
+      "source": "class bLt{constructor(e){this.dependencies=e,this.cache=dLt({logger:e.logging.logger}),this.store=vLt({load:s=>this.load(s),cache:this.cache,logger:e.logging.logger})}cache;store;async load(e){if(e.viewMode.type===\"tree\")return await this.loadTreeFile(e);const s=this.resolveComparison(e);if(s===void 0)return Ti(e.filePath,tn.NoChanges);let n;const r=async S=>{if(S>wLt)return!1;n??=this.dependencies.git.getChangedLineCount({localWorkspaceId:e.localWorkspaceId,filePath:e.filePath,oldPath:e.oldPath,fromRef:s.fromRef,toRef:s.toRef});const k=await n;return k!==void 0&&k<=SLt},i=oY(e.filePath);if(e.isBinary===!0&&i===void 0)return id(e.filePath,null,null);const o=e.viewMode.type===\"all\"||e.viewMode.type===\"uncommitted\",a=o?await this.dependencies.workspaceFiles.statAtTarget({workspacePath:e.workspacePath,host:e.workspaceHost,path:e.filePath}):void 0;if(i!==void 0)return e.fileStatus===\"deleted\"||!o?id(e.filePath,null,null):a?.exists?dY({filePath:e.filePath,mediaKind:i,stat:a}):Ti(e.filePath,tn.NoChanges);if(a?.exists&&a.size!==void 0&&a.size>Em&&!await r(a.size))return Ti(e.filePath,tn.FileTooLarge);if(q2(e))return await this.loadRemotePatchFile({params:e,comparison:s,canRenderOversizedFile:r});const c=await this.dependencies.git.readFileAtRevision({localWorkspaceId:e.localWorkspaceId,ref:s.fromRef,filePath:e.oldPath??e.filePath}),l=await this.loadNewContent({params:e,comparison:s}),u=uY(c),d=uY(l),h=c.status===\"error\"||l.status===\"error\";if(c.status===\"error\"&&this.logGitReadError(\"old\",e,s.fromRef,c),l.status===\"error\"&&this.logGitReadError(\"new\",e,s.toRef,l),e.viewMode.type===\"commit\"||e.viewMode.type===\"turn\"){if(h&&u===null!=(d===null))return Ti(e.filePath,tn.FetchError);if(u===null&&d===null)return Ti(e.filePath,tn.NoChanges)}const p=new TextEncoder,m=u?p.encode(u).byteLength:0,v=d?p.encode(d).byteLength:0,_=Math.max(m,v);return _>Em&&!await r(_)?Ti(e.filePath,tn.FileTooLarge):u===d?Ti(e.filePath,tn.NoChanges):id(e.filePath,u,d)}fetch=e=>{this.store.store.getState().fetch(e).fireAndForget()};refetch=e=>{this.store.store.getState().refetch(e).fireAndForget()};prefetch=e=>{this.store.store.getState().prefetch(e)};setContent=e=>{this.store.store.getState().setContent(e)};invalidate=e=>{this.store.store.getState().invalidate(e)};evictWorkspaceCache=async e=>{await this.cache.evictFileDiffCacheForWorkspace(e)};async loadTreeFile(e){const s=kLt(e)&&this.dependencies.externalFiles?this.dependencies.externalFiles:void 0,n=oY(e.filePath);if(s===void 0&&n===void 0&&Ht(e.workspaceHost)&&this.dependencies.readCloudTextFileBounded!==void 0){const o=await this.dependencies.readCloudTextFileBounded({workspacePath:e.workspacePath,host:e.workspaceHost,path:e.filePath,maxBytes:Em});if(o.kind===\"loaded\")return id(e.filePath,null,o.text);if(o.kind===\"too-large\")return Ti(e.filePath,tn.FileTooLarge)}const r=s?await s.stat({path:e.filePath,host:e.workspaceHost}):await this.dependencies.workspaceFiles.statAtTarget({workspacePath:e.workspacePath,host:e.workspaceHost,path:e.filePath});if(r.exists&&n!==void 0)return dY({filePath:e.filePath,mediaKind:n,stat:r});if(r.exists&&r.size!==void 0&&r.size>Em)return Ti(e.filePath,tn.FileTooLarge);const i=s?await s.readText({path:e.filePath,host:e.workspaceHost}):await this.dependencies.workspaceFiles.readTextAtTarget({workspacePath:e.workspacePath,host:e.workspaceHost,path:e.filePath});return id(e.filePath,null,i)}async loadRemotePatchFile({params:e,comparison:s,canRenderOversizedFile:n}){const r=await this.dependencies.git.getFileDiffPatch({localWorkspaceId:e.localWorkspaceId,filePath:e.filePath,fileStatus:e.fileStatus,fromRef:s.fromRef,toRef:s.toRef,hideWhitespaceChanges:e.hideWhitespaceChanges});if(r.status===\"error\")return this.logGitPatchError(e,s,r),Ti(e.filePath,tn.FetchError);if(r.patch===\"\"&&e.hideWhitespaceChanges!==!0)return Ti(e.filePath,tn.NoChanges);const i=new TextEncoder().encode(r.patch).byteLength;return i>Em&&!await n(i)?Ti(e.filePath,tn.FileTooLarge):ELt({path:e.filePath,patch:r.patch})}async loadNewContent({params:e,comparison:s}){if(s.toRef!==void 0)return await this.dependencies.git.readFileAtRevision({localWorkspaceId:e.localWorkspaceId,ref:s.toRef,filePath:e.filePath});try{return{status:\"found\",content:await this.dependencies.workspaceFiles.readTextAtTarget({workspacePath:e.workspacePath,host:e.workspaceHost,path:e.filePath})}}catch{return{status:\"missing\"}}}resolveComparison(e){switch(e.viewMode.type){case\"all\":return e.mergeBase?{fromRef:e.mergeBase}:void 0;case\"uncommitted\":return{fromRef:\"HEAD\"};case\"commit\":return{fromRef:`${e.viewMode.commitHash}^`,toRef:e.viewMode.commitHash};case\"turn\":{if(e.turnStartCheckpoint===void 0)return;const s=this.dependencies.checkpoint.getCheckpointId({sessionId:e.viewMode.sessionId,turnId:e.viewMode.turnId,type:\"start\"}),n=e.turnEndCheckpoint?this.dependencies.checkpoint.getCheckpointId({sessionId:e.viewMode.sessionId,turnId:e.viewMode.turnId,type:\"end\"}):void 0;return{fromRef:lY(s),toRef:n===void 0?void 0:lY(n)}}case\"tree\":return}}logGitReadError(e,s,n,r){this.dependencies.logging.logger.error(`git show failed for ${e} content`,{code:r.code,stderr:r.stderr,filePath:s.filePath,ref:n})}logGitPatchError(e,s,n){this.dependencies.logging.logger.error(\"git diff failed for patch\",{code:n.code,stderr:n.stderr,filePath:e.filePath,oldPath:e.oldPath,fromRef:s.fromRef,toRef:s.toRef})}}"
+    },
+    {
+      "name": "q2",
+      "asset": "index",
+      "utf8": [
+        3169191,
+        3169342
+      ],
+      "sha256": "9071780837d3720a905ae955030ed6c620c58cc091f7d1b03a36951887798b57",
+      "source": "function q2(t){return t.preferPatchForRemoteDiffs===!0&&t.viewMode.type!==\"tree\"&&t.oldPath===void 0&&t.fileStatus!==\"conflicted\"&&Ht(t.workspaceHost)}"
+    },
+    {
+      "name": "Zjt",
+      "asset": "index",
+      "utf8": [
+        2264317,
+        2264435
+      ],
+      "sha256": "7113706cf0c18066088186a539604e95629d29319aa2eff29d2af06649c871de",
+      "source": "async function Zjt({localWorkspaceId:t,path:e,contents:s}){await bk.writeText({localWorkspaceId:t,path:e,contents:s})}"
+    },
+    {
+      "name": "_qo",
+      "asset": "renderer",
+      "utf8": [
+        9625664,
+        9626587
+      ],
+      "sha256": "ada75d88e61326e61ed92b1dc2bb48d31f40b7fe869c25a763c4d2b804de1d0e",
+      "source": "function _qo({onSave:t,targetLineNumber:e}){const n=$.useRef(t);n.current=t;const i=$.useRef(null),r=$.useRef(e);r.current=e;const o=$.useRef(null),a=$.useMemo(()=>({onAttach:m=>{o.current=m;const g=r.current;g==null||g<1||m.focus({lineNumber:g,character:0,preventScroll:!0})}}),[]),c=$.useRef(!0);$.useEffect(()=>{if(c.current){c.current=!1;return}const m=o.current;m==null||e==null||e<1||m.focus({lineNumber:e,character:0,preventScroll:!0})},[e]);const u=$.useCallback(m=>{i.current=m},[]),d=$.useCallback(()=>{const m=i.current;if(!m)return;const g=fji(m);g&&(g.focus(),g.dispatchEvent(new KeyboardEvent(\"keydown\",{...KHo({commandId:\"editor.openSearch\"}),bubbles:!0,cancelable:!0})))},[]),h=$.useCallback(m=>{if(Qh(\"editor.saveFile\",m.nativeEvent)){m.preventDefault();const g=o.current?.getFile();g!==void 0&&n.current(g.contents)}},[]);return{createEditor:bqo,editorOptions:a,containerRef:u,openFind:d,handleKeyDown:h}}"
+    },
+    {
+      "name": "cRa service factories",
+      "asset": "renderer",
+      "utf8": [
+        11595743,
+        11596603
+      ],
+      "sha256": "b3fae3568b71ebef9b34d040bc6bbb2b58f079f4c06bca2e0fac7daf0e4d41b1",
+      "source": "function cRa({dependencies:t}){return tRa({dependencies:t,factories:{workspace:e=>s7r(e),workspaceFiles:r7r,checkpoint:i7r,repo:e=>n7r({services:e,detectDefaultBranch:({repoPath:n,remoteName:i})=>l7r(n,i)}),git:t7r,fileDiff:e7r,settings:Zkr,sessions:e=>Jkr(e,{applySessionFeedItemEffects:cIa,executeSessionFeedBatchPlatformTask:n=>oRa({task:n,gitService:e.git}),sessionTurnCompletionPlatform:a7r,ingestScalarLocalSessionFeedEvent:async n=>await oIa({...n,source:\"sidecar-session-event\"}),recordPersistedLocalSessionFeedEvent:({sessionId:n,event:i,feedOffset:r})=>ott({sessionId:n,source:\"sidecar-session-event\",payload:i,offset:r}),resolveCloudDisplayMessage:lRa,addPlanApprovalMessage:o7r}),sections:e=>Xkr(qIr({user:e.user,workspace:e.workspace,localDatabase:e.db,cacheDatabase:e.cacheDb,subscription:{client:Tni,getEndpoint:kni}})),user:Qkr,composer:Ykr}})}"
+    },
+    {
+      "name": "fRa bootstrap",
+      "asset": "renderer",
+      "utf8": [
+        11596682,
+        11596957
+      ],
+      "sha256": "e21d0b6459167edfd57c73193fc725288b8e243356aab3b85dc59f861d67bbd2",
+      "source": "function fRa(){if(tni)return;M7r(),KTa(),jNo(),LIa();const t=eRa({workspaceError:i=>{bYe.error(i)}});HQ=cRa({dependencies:t}),tni=!0,c7r.start().fireAndForget();const n=u7r({db:eO,platformConfig:{appType:lv,isMacOS:uri()},secrets:d7r});hRa(),aAa(),jCa(RU),vRa(n),_Ra(),uRa()}"
+    },
+    {
+      "name": "_Vt installer",
+      "asset": "index",
+      "utf8": [
+        3232467,
+        3232929
+      ],
+      "sha256": "cfadd2e6b8ba6c1822ce0782d8b950639e2a98d8eef5449c84fd474674d92bfc",
+      "source": "const _Vt=t=>{const e=ALt({get git(){return t.git},get workspaceFiles(){return t.workspaceFiles},readCloudTextFileBounded:Imt,externalFiles:{readText:({path:s,host:n})=>Va({path:s,host:n}),stat:async({path:s,host:n})=>{if(!await Pt({path:s,host:n}))return{exists:!1};const r=await Th({path:s,host:n});return{exists:!0,modifiedAt:r.mtime?.getTime(),size:r.size}}},get checkpoint(){return t.checkpoint},logging:{logger:Y.child({name:\"file-diff\"})}});return Vk=e,e}"
+    }
+  ],
+  "passed": [
+    "Pinned main source reads and literal producer-to-editor-to-save chain",
+    "Exact retained renderer whole-file SHA and byte spans",
+    "Local text producer uses raw file reads; hideWhitespaceChanges affects display parsing",
+    "Current production eligibility returns null whenever ignoreWhitespace is true"
+  ],
+  "not_run": [
+    "Application JavaScript",
+    "Node regression",
+    "Git fixture generation",
+    "Browser/native app",
+    "Actual behavioral RED/GREEN",
+    "Build/package"
+  ],
+  "not_claimed": [
+    "Reference native behavior",
+    "Runtime compatibility",
+    "UI admission",
+    "Fix correctness"
+  ],
+  "exclusions": [
+    "Aggregate packet and assertions",
+    "ROW artifacts/hooks",
+    "Backend/status changes",
+    "Refresh/cache lifecycle",
+    "Conflict ingress",
+    "Shared native setup"
+  ]
+}

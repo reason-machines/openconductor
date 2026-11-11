@@ -144,7 +144,7 @@ export function codeViewItem(file: FileDiff, meta: FileDiffMetadata | undefined,
 }
 
 /** Seed Pierre's edit session from the full draft, retaining the old side and annotations. */
-export function editableCodeViewItem<A>(item: CodeViewItem<A>, contents: string): CodeViewItem<A> {
+export function editableCodeViewItem<A>(item: CodeViewItem<A>, contents: string, ignoreWhitespace = false): CodeViewItem<A> {
   if (item.type === "file") return { ...item, file: { ...item.file, contents }, edit: true };
   const meta = item.fileDiff;
   if (meta.isPartial) return item;
@@ -154,6 +154,7 @@ export function editableCodeViewItem<A>(item: CodeViewItem<A>, contents: string)
     fileDiff: parseDiffFromFile(
       meta.type === "new" ? null : { name: meta.prevName ?? meta.name, contents: meta.deletionLines.join("") },
       { name: meta.name, contents },
+      ignoreWhitespace ? { ignoreWhitespace: true } : undefined,
     ),
   };
 }
