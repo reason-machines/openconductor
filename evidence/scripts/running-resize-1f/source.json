@@ -1,0 +1,337 @@
+{
+  "owner": "Conductor Rebuild",
+  "scope": "RUNNING-SCRIPT-PTY-RESIZE",
+  "status": "REGRESSION_ONLY_AWAITING_HOSTED_BEHAVIORAL_RED",
+  "main_checked": "516a58c931f31097007c97e844a1bb56d118c528",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "original_assets": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "spans": [
+    {
+      "symbol": "rSa",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        11167486,
+        11170601
+      ],
+      "bytes": 3115,
+      "sha256": "55b02cfb58c1416fce68bf0cc9178e9b37bed4e03ccb0de73661b7787d99fc95",
+      "file": "reference/rSa.txt",
+      "boundary": "Complete run-output wrapper"
+    },
+    {
+      "symbol": "runtime-spawn",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2764981,
+        2767877
+      ],
+      "bytes": 2896,
+      "sha256": "6a409e1603fbd389aa3576f88b36f03efa6ad93509c4a6b262186b13ffa457aa",
+      "file": "reference/runtime-spawn.txt",
+      "boundary": "Complete backend-session lifecycle method"
+    },
+    {
+      "symbol": "local-backend",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2552188,
+        2555599
+      ],
+      "bytes": 3411,
+      "sha256": "7bd7df55ddbf55db2ed5863a00115af41e8696377bfb17a7ef5cb5e69ecb3913",
+      "file": "reference/local-backend.txt",
+      "boundary": "Complete local backend session class"
+    },
+    {
+      "symbol": "local-backend-factory",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2555599,
+        2555829
+      ],
+      "bytes": 230,
+      "sha256": "220c80cb132288c1347b23170f7b822a54298827c54fb8bee0c703f70eeeb6f3",
+      "file": "reference/local-backend-factory.txt",
+      "boundary": "Complete local backend factory class"
+    },
+    {
+      "symbol": "backend-router",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2828546,
+        2828780
+      ],
+      "bytes": 234,
+      "sha256": "1d4f53a1460b7fce389cc29b109d002f1ac997d08373fe71c25f1aad2c57f95f",
+      "file": "reference/backend-router.txt",
+      "boundary": "Complete backend router class; local branch only assessed"
+    },
+    {
+      "symbol": "runtime-factory",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2828843,
+        2829218
+      ],
+      "bytes": 375,
+      "sha256": "6d0ed70cda3275a8436e1b8015a10ba314622de6d627919eb41852472d1b447f",
+      "file": "reference/runtime-factory.txt",
+      "boundary": "Complete runtime factory and shared ts instance"
+    },
+    {
+      "symbol": "renderer-qc-import",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        57354,
+        57362
+      ],
+      "bytes": 8,
+      "sha256": "447426764ef0b8ca8f18e5bddd099b165145cc1c3967f959a75eaa90d90193ba",
+      "file": "reference/renderer-qc-import.txt",
+      "boundary": "Exact import/export specifier, not a complete declaration"
+    },
+    {
+      "symbol": "index-ts-export",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3484259,
+        3484267
+      ],
+      "bytes": 8,
+      "sha256": "2480388e61e8e7bc885632949b422000cfb3dd593b84dbbfaabb7cc110e4e860",
+      "file": "reference/index-ts-export.txt",
+      "boundary": "Exact import/export specifier, not a complete declaration"
+    },
+    {
+      "symbol": "w9e",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "bytes": 3429,
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "file": "reference/w9e.txt",
+      "boundary": "Complete retained function"
+    },
+    {
+      "symbol": "dno",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "bytes": 1719,
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "file": "reference/dno.txt",
+      "boundary": "Complete retained function"
+    },
+    {
+      "symbol": "uno",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "bytes": 421,
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "file": "reference/uno.txt",
+      "boundary": "Complete retained function"
+    },
+    {
+      "symbol": "cno",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "bytes": 385,
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "file": "reference/cno.txt",
+      "boundary": "Complete retained function"
+    },
+    {
+      "symbol": "lno",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "bytes": 1125,
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "file": "reference/lno.txt",
+      "boundary": "Complete retained function"
+    },
+    {
+      "symbol": "fit-callback-$At",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        6916898,
+        6918617
+      ],
+      "bytes": 1719,
+      "sha256": "5d73083eabd52c3345aad238d153d0fc71dd52040b8084b7d93d8f120180cd14",
+      "file": "reference/fit-callback-$At.txt",
+      "boundary": "Complete function ending before uVn"
+    },
+    {
+      "symbol": "controller-resize",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2761060,
+        2761235
+      ],
+      "bytes": 175,
+      "sha256": "ca39cf9cdab0439e974843cc43061979574b9cb427cb0c5b67a691661881465a",
+      "file": "reference/controller-resize.txt",
+      "boundary": "Complete V9 resize method"
+    },
+    {
+      "symbol": "controller-context",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2756759,
+        2776043
+      ],
+      "bytes": 19284,
+      "sha256": "9a7acf5735ca33ebdf9ee6ff9b19f54e9f007501dab0a41b537cd3038a946c73",
+      "file": "reference/controller-context.txt",
+      "boundary": "Context slice starts at V9; ends before $kt; not asserted to be one complete declaration"
+    },
+    {
+      "symbol": "registry-createSession",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2776910,
+        2777583
+      ],
+      "bytes": 673,
+      "sha256": "d5349d3f2a0a3f1fd6b9803891808a58dd193e5bc32d5bb2bb89411b0fa4e41d",
+      "file": "reference/registry-createSession.txt",
+      "boundary": "Complete method constructing V9 and storing it in sessions"
+    },
+    {
+      "symbol": "registry-resize",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2778695,
+        2778743
+      ],
+      "bytes": 48,
+      "sha256": "199ee66542dd3c9681a6e48fb4b153253a6629cbf56e941b1ce5b15c9e9c5312",
+      "file": "reference/registry-resize.txt",
+      "boundary": "Complete $kt resize method"
+    },
+    {
+      "symbol": "registry-context",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        2776043,
+        2778743
+      ],
+      "bytes": 2700,
+      "sha256": "212a863780d8779a73e68cfe3c49758f31ab09fcc3145b32ddb7a2ac4aaf8289",
+      "file": "reference/registry-context.txt",
+      "boundary": "Class prefix through resize method; contextual, not a complete class"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "src/components/ScriptOutput.tsx",
+      "file": "baseline/src/components/ScriptOutput.tsx",
+      "bytes": 5296,
+      "sha256": "8380908bf6ba874e35b1a805f23e9c9825eeb5683489c973e7a242dcba441b65"
+    },
+    {
+      "path": "src/components/ScriptsPanel.tsx",
+      "file": "baseline/src/components/ScriptsPanel.tsx",
+      "bytes": 24797,
+      "sha256": "505ff3b51ac641f261ec02c4e140447bf6ae5b29f22f278ec0a273bf8951409c"
+    },
+    {
+      "path": "src/scripts/api.ts",
+      "file": "baseline/src/scripts/api.ts",
+      "bytes": 7567,
+      "sha256": "694c26f838c34aa53840a3f195a8916e6f1f9677f138ead1509139cc001364ed"
+    },
+    {
+      "path": "src/scripts/model.ts",
+      "file": "baseline/src/scripts/model.ts",
+      "bytes": 5209,
+      "sha256": "70e705fa88d72375098560374edb6e9c7da62ecf39cb4a950bf4f37f7f26ba1a"
+    },
+    {
+      "path": "src-tauri/src/scripts.rs",
+      "file": "baseline/src-tauri/src/scripts.rs",
+      "bytes": 6500,
+      "sha256": "7fa53b28daf499218413c958de12797da35688f1216b9177af06cf88be943746"
+    },
+    {
+      "path": "src-tauri/src/lib.rs",
+      "file": "baseline/src-tauri/src/lib.rs",
+      "bytes": 30227,
+      "sha256": "27479540d61f572df38d6b84e1c79e57acc18bba64762e9e375c1111e4987f74"
+    },
+    {
+      "path": "crates/scripts/src/launch.rs",
+      "file": "baseline/crates/scripts/src/launch.rs",
+      "bytes": 10434,
+      "sha256": "f3ac9ddf818b713c4b4ad65866674801890ad9058a7b99e6b464070f2d053b42"
+    },
+    {
+      "path": "crates/scripts/src/runner.rs",
+      "file": "baseline/crates/scripts/src/runner.rs",
+      "bytes": 14539,
+      "sha256": "c53900dd51538cf41f29973e4e5e6ccbc82cc31fecb8bb5d576971622767e0ee"
+    },
+    {
+      "path": "crates/scripts/src/service.rs",
+      "file": "baseline/crates/scripts/src/service.rs",
+      "bytes": 15174,
+      "sha256": "cea7ea4700ac0ad8a831d3b5e4f33b2823353af4df357d4e5f55117178f59c97"
+    }
+  ],
+  "fixture": {
+    "path": "src/scripts/runningResize.test.ts",
+    "frozen_copy": "fixture-v1.ts.txt",
+    "sha256": "cf089b503b287d3e221eeda2360d45779f04c5696294696ab53d2f0d8a4bf2c9",
+    "cases": 8
+  },
+  "reference_source": [
+    "rSa derives running from task process state; its onResize calls qc.resize(surfaceId,cols,rows) only while running.",
+    "w9e passes onResize through dno to $At. $At fits a measured terminal and calls the callback with actual terminal cols/rows when dimensions change; callback changes have a same-size path.",
+    "qc imports the ts singleton. DAt creates $kt; its createSession constructs V9 and stores it by resolved session ID. $kt.resize looks up that controller and passes cols/rows.",
+    "V9.resize updates replay/screen state and forwards to its retained backendSession.resize. The local ySt backend checks isAlive and invokes pty_resize with the PTY ID, cols and rows.",
+    "V9.spawnBackendSession sets initial geometry from screen state and rechecks geometry after readiness. The native implementation of Conductor pty_resize is outside this retained source inquiry."
+  ],
+  "current_source": [
+    "At the pinned main, ScriptOutput fits visible local xterm geometry but exposes no onResize callback.",
+    "The checked scripts API, Tauri command group and RunManager have no run_script_resize route.",
+    "Merged #1085 retains the live script PTY input master and runId. Resize will reuse this same owner and lifetime, not introduce a second PTY."
+  ],
+  "design": {
+    "input": "workspaceId + scriptId + runId + measured positive u16 cols/rows",
+    "route": "visible ScriptOutput fit -> current running ScriptsPanel callback -> scripts API -> registered script IPC -> RunManager generation check -> retained Process master",
+    "alternatives": [
+      "Reuse #1085 Process master and RunManager lifetime gate (selected)",
+      "Resolve a generic PtyManager by workspace/script (rejected: can target replacement and duplicates ownership)"
+    ],
+    "lifecycle": "Only running identified runs; stop/exit/stale/workspace replacement cannot resize a new generation. Already-measured dimensions must reach a new current run without remounting output."
+  },
+  "verification": {
+    "original_assets_and_19_spans": "PASS_STATIC",
+    "current_main_9_files": "PASS_STATIC",
+    "mounted_behavior": "NOT_RUN",
+    "backend_pty": "NOT_RUN",
+    "native_visual": "NOT_RUN"
+  },
+  "boundaries": [
+    "Only normal automatic hosted checks; no local Node/Rust/app/provider runtime, install, dispatch/rerun or new watcher.",
+    "Script lane only. No settings LoginTerminal, generic PTY, terminal ACK/font, cloud/provider work.",
+    "Retained original JavaScript proves forwarding to pty_resize, not Conductor native ioctl behavior or native parity.",
+    "Do not apply product correction before intended assertion RED; never merge until every exact-head check and workflow positively passes."
+  ]
+}

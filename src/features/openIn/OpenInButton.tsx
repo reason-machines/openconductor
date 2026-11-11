@@ -22,6 +22,7 @@ interface Props {
    * `size: "icon"` beside settings paths. It registers no shortcuts.
    */
   variant?: "split" | "icon";
+  showShortcutHint?: boolean;
 }
 
 /** The app's own icon with Conductor's hairline frame, else its kind's glyph. */
@@ -60,7 +61,7 @@ export function useInstalledApps(): OpenInApp[] | null {
   return apps;
 }
 
-export function OpenInButton({ path, notify, variant = "split" }: Props) {
+export function OpenInButton({ path, notify, variant = "split", showShortcutHint = true }: Props) {
   const split = variant === "split";
   const installed = useInstalledApps();
   const apps = installed ?? [];
@@ -187,7 +188,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
                   <span className="oi-row-label">{a.name}</span>
                 </span>
                 <span className="oi-row-end">
-                  {a.id === defaultId && openKeyText && <span className="oi-row-kbd">{openKeyText}</span>}
+                  {showShortcutHint && a.id === defaultId && openKeyText && <span className="oi-row-kbd">{openKeyText}</span>}
                   {split && numbers.apps[i] !== undefined && <span className="oi-row-num">{numbers.apps[i]}</span>}
                 </span>
               </button>

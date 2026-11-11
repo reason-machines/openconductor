@@ -1,0 +1,54 @@
+{
+  "unit": "HOME-ROW-LABEL-FALLBACKS-271",
+  "producer": "Conductor Rebuild",
+  "phase": "QUALIFIED_HOSTED_RED_BEFORE_PRODUCT_CHANGE",
+  "head": "b537f0cd5cd82420834dc311fdca91dcc5f0f3ed",
+  "run_id": 43114550314,
+  "job_id": 130839013883,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43114550314/job/130839013883",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "fixture_sha256": "beb49db0c36d524378e64236facf39cdbc104db774fc357dab1099a3efb1601c",
+  "cases": {
+    "failed": [
+      163,
+      164
+    ],
+    "passed": [
+      165,
+      166,
+      167,
+      168
+    ],
+    "actual_titles": [
+      "Pull request title",
+      "Topic/different name"
+    ],
+    "expected_titles": [
+      "Stored display",
+      "Stored display"
+    ],
+    "repository_context": "Project A remained present in all six"
+  },
+  "full_suite": {
+    "tests": 3144,
+    "passed": 3142,
+    "failed": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "setup": "Checkout, Node setup, npm ci passed; assertions reached in production Home rendering with real persisted/archive/label functions.",
+  "other_failed_job": {
+    "id": 130839014043,
+    "cause": "The frontend workflow also executes the same test suite and reached the same two label failures."
+  },
+  "log_normalization": "Trailing whitespace removed from excerpt lines only; assertion text unchanged.",
+  "log_lines": [
+    1193,
+    1288
+  ],
+  "product_changed_before_red": false,
+  "candidate_green": "PENDING",
+  "native": "NOT_RUN",
+  "visual": "NOT_RUN"
+}

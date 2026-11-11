@@ -254,13 +254,9 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
 
   useEffect(() => setLimit(PAGE_SIZE), [query, filters]);
 
-  // Archived workspaces are not in the sidebar state; read them from
-  // conductor.db when the archive filter shows them, and again after an
-  // archive or unarchive changes the repos.
+  // Project choices include archived-only repositories even while archived rows are hidden.
   const [archivedRows, setArchivedRows] = useState<ArchivedWorkspace[]>([]);
-  const showsArchived = filters.archiveFilter !== "active";
   useEffect(() => {
-    if (!showsArchived) return;
     let live = true;
     listArchivedWorkspaces().then(
       (rows) => live && setArchivedRows(rows),
@@ -269,7 +265,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
     return () => {
       live = false;
     };
-  }, [showsArchived, repos]);
+  }, [repos]);
 
   const rows = useMemo(() => homeRows(repos, filters, query, archivedRows), [repos, filters, query, archivedRows]);
   const shown = rows.slice(0, limit);
@@ -277,7 +273,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
   const groups = groupByDate(shown, now);
   const flat = groups.flatMap((g) => g.rows.map((row) => ({ row, key: `${g.bucket}:${row.workspace.id}` })));
   const activeIndex = Math.max(0, flat.findIndex((entry) => entry.key === activeKey));
-  const projectChoices = reposWithWorkspaces(repos);
+  const projectChoices = reposWithWorkspaces(repos, archivedRows);
   const empty = emptyAction(repos, filters);
 
   useEffect(() => setActiveKey(flat[activeIndex]?.key), [activeIndex, flat]);
@@ -358,7 +354,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
                 onKeyDown={onSearchKey}
               />
             </label>
-            {showProjectFilter(repos) && (
+            {showProjectFilter(repos, archivedRows) && (
               <Menu ariaLabel="Projects" label={projectFilterLabel(repos, filters.projects)} icon={<FolderIcon size={14} />}>
                 {() => (
                   <>

@@ -32,7 +32,9 @@ function mount(options: { deferListener?: boolean; deferSpawn?: boolean } = {}):
   const text = readFileSync(fixtureUrl, "utf8");
   const boundary = text.indexOf('\ntest("login bootstrap');
   assert.ok(boundary > 0);
-  const setup = text.slice(0, boundary).replaceAll("import.meta.url", "__fixtureUrl");
+  const setup = text.slice(0, boundary)
+    .replaceAll("import.meta.url", "__fixtureUrl")
+    .replace("ptyResize: async () => {},", "ptyResize: async () => {}, ptyAckBytes: async () => {},");
   const javascript = ts.transpileModule(`${setup}\nexports.fixture = fixture;`, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true },
   }).outputText;
