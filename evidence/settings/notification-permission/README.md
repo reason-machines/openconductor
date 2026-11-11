@@ -41,4 +41,10 @@ The publication owner independently replayed fresh main `248b6c359c830c6ac5e0507
 
 The local checks used the already retained public React 18.3.1, react-test-renderer 18.3.1 and TypeScript 5.9.3 fixture dependencies under `.oc-tmp/ssh-reset/deps`. Each Node command ran at niceness 15 with a 10-second CPU limit and a 45-second wall limit. No installation was needed. They ran on Reason cloud without a browser, native app or provider execution. The fixture preserves unrelated values but does not exercise an unrelated edit arriving during a pending permission prompt; the latest-settings ref is source-reviewed rather than independently race-tested.
 
+## Existing Sync regression integration
+
+On published head `a1024078777a1756c8a827aa80969a98f3dc9f12`, both hosted frontend jobs passed dependency installation and the build job passed `npm run typecheck`. Each then failed the same seven existing Sync tests with `Unexpected import: ./notificationPermission` in `configSyncHarness.cjs`. The notification replay itself passed. This was a loader integration failure, not a type error or permission assertion failure.
+
+The Sync harness now treats `notificationPermissionGranted` like its other unrelated UI boundaries: importing GeneralPage is allowed, but invoking the permission helper records a forbidden boundary and throws. All existing Sync test bodies, the notification fixture and its replay harness remain unchanged. Clean-root hosted checks verify this correction; no local Node run or dependency installation is claimed for this follow-up.
+
 Native permission prompts, actual browser event delivery, native persistence, notification delivery and visual parity were not run. No screenshot is supplied because runtime/native admission and the existing frozen proof queue were deliberately unchanged. Hosted CI, protected merge and consuming-main package results are reported separately on the pull request.
