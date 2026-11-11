@@ -32,6 +32,7 @@ import { useDiffTheme } from "./useDiffTheme.ts";
 
 export type LineAnchor = Anchor;
 export type { LineRange };
+export type FileRefreshStatus = { type: "updating" } | { type: "failed"; onRetry: () => void };
 
 interface Props {
   file: FileDiff;
@@ -43,6 +44,7 @@ interface Props {
   wrapLines: boolean;
   viewed: boolean;
   onToggleViewed: () => void;
+  refreshStatus?: FileRefreshStatus;
   /** The gutter button on a line, or a drag across line numbers, starts a comment on those lines. */
   onLineClick?: (range: LineRange) => void;
   /** Lines a comment is being written on, kept highlighted until it is saved or cancelled. */
@@ -233,7 +235,7 @@ function useCodeViewItem(file: FileDiff, meta: ReturnType<typeof processFile>, l
 }
 
 export function FileDiffView(props: Props) {
-  const { file, ignoreWhitespace, viewed, onToggleViewed, onDiscard, tools, options, worktree, onShowWhitespace, edit, loadText, notify } = props;
+  const { file, ignoreWhitespace, viewed, onToggleViewed, refreshStatus, onDiscard, tools, options, worktree, onShowWhitespace, edit, loadText, notify } = props;
   const copy = copySource(file, { draft: edit?.current, loadText });
   let body: ReactNode;
   if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
@@ -269,7 +271,13 @@ export function FileDiffView(props: Props) {
           )}
           {copy && <CopyFileButton path={file.path} read={copy} notify={notify} />}
           {tools}
-          <ViewedToggle viewed={viewed} onToggle={onToggleViewed} />
+          {refreshStatus?.type === "updating" ? (
+            <span className="oc-file-refresh-status" role="status"><span className="clone-spinner" aria-hidden />Updating…</span>
+          ) : refreshStatus?.type === "failed" ? (
+            <Tooltip content="Update failed. Retry">
+              <button type="button" className="oc-file-refresh-status" aria-label="Update failed. Retry" onClick={refreshStatus.onRetry}>Retry update</button>
+            </Tooltip>
+          ) : <ViewedToggle viewed={viewed} onToggle={onToggleViewed} />}
           {options}
         </div>
       </header>
