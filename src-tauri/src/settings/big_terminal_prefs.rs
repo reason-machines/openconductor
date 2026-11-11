@@ -236,7 +236,7 @@ mod tests {
     #[test]
     fn legacy_migration_preserves_existing_rows_and_unrelated_file_keys() {
         let f = Fixture::new();
-        f.file("[appearance]\nterminal_font_size = 15\n[terminal]\nbig_terminal_preset = \"codex\"\nbig_terminal_custom_commands = [{id=\"a\",command=\"file command\"}]\nunrelated = \"kept\"\n");
+        f.file("[git]\narchive_on_merge = true\n[terminal]\nbig_terminal_preset = \"codex\"\nbig_terminal_custom_commands = [{id=\"a\",command=\"file command\"}]\nunrelated = \"kept\"\n");
         f.set(PRESET, "claude");
         assert_eq!(f.service.move_appearance_to_db().unwrap(), vec![COMMANDS]);
         assert_eq!(f.row(PRESET).as_deref(), Some("claude"));
@@ -246,7 +246,7 @@ mod tests {
         );
         let text = fs::read_to_string(f.service.path()).unwrap();
         assert!(!text.contains(PRESET) && !text.contains(COMMANDS), "{text}");
-        assert!(text.contains("terminal_font_size = 15"), "{text}");
+        assert!(text.contains("archive_on_merge = true"), "{text}");
         assert!(text.contains("unrelated = \"kept\""), "{text}");
         assert!(f.service.move_appearance_to_db().unwrap().is_empty());
         assert_eq!(
