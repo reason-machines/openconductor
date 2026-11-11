@@ -44,7 +44,7 @@ export function FilePathChip({ path, oldPath, worktree, notify }: Props) {
   const full = worktree ? `${worktree}/${path}` : null;
   const open = () => {
     if (!full || !appId) return;
-    openInApp(appId, full).catch((err) => notify?.("error", `Failed to open in ${app?.name ?? appId}: ${err instanceof Error ? err.message : String(err)}`));
+    openInApp(appId, appId === "alacritty" && worktree ? worktree : full).catch((err) => notify?.("error", `Failed to open in ${app?.name ?? appId}: ${err instanceof Error ? err.message : String(err)}`));
   };
   const chip = (
     <button type="button" className="oc-path-chip" onClick={open} aria-label={path} title={app && full ? undefined : path}>
