@@ -49,6 +49,12 @@ Ordinary automatic hosted CI runs `node --test "src/**/*.test.ts"` and the repos
 
 ## Hosted delivery observations
 
-The first ready pull-request increment contains only this evidence and the supplied regression. Production remains unchanged so ordinary automatic hosted CI can establish the baseline. No baseline RED or corrected GREEN has been observed yet.
+[PR #1037](https://github.com/reason-machines/openconductor/pull/1037) published the unchanged five-case regression and evidence first at baseline head `33557889bee7bf3e4f5a1b71c67320df004752a3`. Automatic hosted [CI run 43027398091](https://github.com/reason-machines/openconductor/actions/runs/43027398091) recorded the intended host-prop RED on 2026-11-11:
+
+- [Frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/43027398091/job/130545462572), `node --test "src/**/*.test.ts"`, failed with 2,768 passes and four failures out of 2,772 tests. The empty, `sonnet`, and `opus` query cases and the replacement-results case each observed `disabled` as `undefined` instead of `true`. The reenabling selection control passed. These are mounted host-prop assertions, not behavioral mouse RED.
+- [Frontend typecheck + build](https://github.com/reason-machines/openconductor/actions/runs/43027398091/job/130545462388) passed `npm run typecheck` and its colour-literal check, then failed on the same four unit assertions. Its later build and UI steps were skipped, not passed.
+- The other 21 reported baseline checks passed, including macOS and Ubuntu platform checks. Their success is not native parity evidence for this correction.
+
+After observing those failures, this increment adds only the supplied `disabled={disabled}` production line. The result-click callback bytes, five-case regression (SHA-256 `02ddcf39eca4b48ad88d6088a5e139d2c10e7f818ed297edc73133102f9136f5`), and all prior fixtures remain unchanged. Corrected exact-head hosted GREEN and consuming-main package linkage have not yet been observed; subsequent receipts belong in the PR discussion.
 
 At packet creation, source hashes and the one-line diff were checked. Local Node tests, builds, browser, native macOS, packaged app, and provider execution were not run. No screenshot exists because no visible or native execution is admitted. Mounted host-prop coverage is not browser mouse suppression or native parity proof. The existing REA semantic-worker limitation remains documented in `evidence/rea-gaps.md`; this packet executes no reference code and introduces no new REA tool failure.
