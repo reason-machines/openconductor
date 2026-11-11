@@ -8,7 +8,7 @@ import tarfile
 ROOT = Path(__file__).resolve().parents[3]
 EVIDENCE = Path(__file__).resolve().parent
 PACKET_SHA = "00088ead476e92f357aa3bb056fafab20a2cda85c98705b9c71b047379e102f1"
-FIXTURE_SHA = "dd2b22dd7e562329144e92fe3da10d870ba65c63cce3a1c19d5b948db9c5e022"
+FIXTURE_SHA = "8ccac9ae0b6d4319f6f2a0626404d4f67c462ffa018c4b6d43e49fa55a71a26c"
 BEFORE = '              setAttachments((list) => addAttachment(list, { name: forkAttachmentName(c.title), text }));'
 AFTER = '              const attachment: ComposerAttachment = { name: `session-transcript-${c.chatId}.md`, label: forkAttachmentName(c.title), text };\n              setAttachments((list) => addAttachment(list, attachment));'
 

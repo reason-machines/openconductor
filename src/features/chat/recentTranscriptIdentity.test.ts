@@ -28,7 +28,7 @@ function fixture(titles: readonly [string, string] = ["Investigation", "Investig
   const values = new Map<string, string>();
   const storage = { getItem: (key: string) => values.get(key) ?? null, setItem: (key: string, value: string) => { values.set(key, value); }, removeItem: (key: string) => values.delete(key) };
   const providerCalls: unknown[][] = [];
-  const nativeCalls: string[] = [];
+  const nativeCalls: { command: string; args: string | undefined }[] = [];
   const emptyMap = new Map();
   const terminalTabs = emptyTabs();
   const queue = { status: "idle", items: [], editingId: null, paused: false };
@@ -54,8 +54,8 @@ function fixture(titles: readonly [string, string] = ["Investigation", "Investig
   const settings = { models: { default: "opus-4-8-1m", default_fast_mode: false, default_plan_mode: false, claude_code: {}, codex: {} } };
   const db = { id: workspaceId, repositoryId: "repo", directoryName: "Transcript fixture", workspaceName: null, branch: "test", placeholderBranchName: null, state: "ready", derivedStatus: null, manualStatus: null, workspacePath: "/synthetic/worktree", pinnedAt: null, unread: false, chatTabs: [{ id: sourceIds[0], title: titles[0] }, { id: sourceIds[1], title: titles[1] }, { id: controlId, title: "Control target" }], chatTitle: "Target", prTitle: null, prDescription: null, number: null, createdAt: "2026-11-01T00:00:00Z", primaryChatId: workspaceId, activeSessionId: workspaceId };
   const draftStore = { load: async () => "", save: async () => {}, clear: async () => {} };
-  async function invoke(command: string) {
-    nativeCalls.push(command);
+  async function invoke(command: string, args: unknown) {
+    nativeCalls.push({ command, args: JSON.stringify(args) });
     assert.equal(command, "db_select_chat", "attachment selection must not invoke native storage or provider commands");
   }
   const component = ({ children }: { children?: unknown }) => children ?? null;
@@ -147,7 +147,7 @@ function fixture(titles: readonly [string, string] = ["Investigation", "Investig
     workspaceId, controlId, sourceIds, transcripts, providerCalls, nativeCalls,
     async mount() {
       await act(async () => { renderer = create(React.createElement(Host)); });
-      assert.deepEqual(nativeCalls, ["db_select_chat"], "mount only persists the initially selected chat");
+      assert.deepEqual(nativeCalls, [{ command: "db_select_chat", args: JSON.stringify({ workspaceId, chatId: workspaceId }) }], "mount only persists the initially selected chat");
       nativeCalls.length = 0;
     },
     async attach(id: string) {
@@ -163,7 +163,11 @@ function fixture(titles: readonly [string, string] = ["Investigation", "Investig
     },
     async removeFirst() { await act(async () => renderer.root.findAllByProps({ className: "composer-attachment-remove" })[0].props.onClick()); },
     errorCount: () => renderer.root.findAllByProps({ role: "alert" }).length,
-    dispose() { act(() => renderer.unmount()); assert.equal(providerCalls.length, 0); },
+    dispose() {
+      act(() => renderer.unmount());
+      assert.equal(providerCalls.length, 0);
+      assert.ok(nativeCalls.every((call) => call.command === "db_select_chat"), "only selected-chat bookkeeping may call native transport");
+    },
   };
 }
 
