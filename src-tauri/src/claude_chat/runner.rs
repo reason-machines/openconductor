@@ -26,7 +26,7 @@ use std::time::Duration;
 use serde_json::Value;
 
 use crate::agent::claude_stream::{ClaudeEvent, PermissionDecision};
-use crate::agent::{ClaudeLaunch, ClaudeSession, SessionEvent};
+use crate::agent::{ClaudeLaunch, ClaudeSession, PermissionMode, SessionEvent};
 use crate::reason_acp::provider::{ProviderEvent, Sink, TurnEnd};
 
 use super::interact::{self, Answer};
@@ -42,6 +42,7 @@ const STDERR_TAIL: usize = 20;
 pub struct ChatOptions {
     pub model: Option<String>,
     pub effort: Option<String>,
+    pub permission_mode: Option<PermissionMode>,
 }
 
 struct Live {
@@ -116,6 +117,26 @@ impl ClaudeRunner {
             if session_id.is_some() {
                 chat.resume = session_id;
             }
+        }
+    }
+
+    pub fn busy(&self, chat_id: &str) -> bool {
+        self.chats.lock().unwrap().get(chat_id).is_some_and(|chat| {
+            chat.expected || chat.live.as_ref().is_some_and(|live| !live.state.lock().unwrap().waiting.is_empty())
+        })
+    }
+
+    pub fn approves_plan(&self, chat_id: &str, id: &str, answer: &Answer) -> bool {
+        if !matches!(answer, Answer::Plan { approved: true, .. }) { return false; }
+        self.chats.lock().unwrap().get(chat_id).and_then(|chat| chat.live.as_ref()).is_some_and(|live| {
+            live.state.lock().unwrap().asks.get(id).is_some_and(|(tool, _)| tool == "ExitPlanMode")
+        })
+    }
+
+    pub fn abandon_prompt(&self, chat_id: &str) {
+        if let Some(chat) = self.chats.lock().unwrap().get_mut(chat_id) {
+            chat.expected = false;
+            chat.stopped_before_send = false;
         }
     }
 
@@ -300,7 +321,7 @@ impl ClaudeRunner {
                     return Ok(());
                 }
                 if !st.waiting.is_empty() {
-                    return Err("Wait for the current Claude Code turn to end before changing model or effort.".into());
+                    return Err("Wait for the current Claude Code turn to end before changing model, effort or Plan mode.".into());
                 }
             }
             if let Some(id) = st.mapper.session_id() {
@@ -316,6 +337,7 @@ impl ClaudeRunner {
         launch.add_dirs = directories.to_vec();
         launch.model = options.model.clone();
         launch.effort = options.effort.clone();
+        if let Some(mode) = options.permission_mode { launch.permission_mode = mode; }
         let mut session = ClaudeSession::spawn(&launch)
             .map_err(|e| format!("Could not start Claude Code: {e}"))?;
         let events = session.take_events();
