@@ -90,7 +90,7 @@ export function GitHubRepoDialog({ target, onClose, onOpenSettings, onCreated, o
   }
 
   return (
-    <Modal title="Create a private GitHub repo?" onClose={onClose} motion="alert">
+    <Modal title="Create a private GitHub repo?" onClose={onClose} motion="alert" disablePointerDismissal>
       <form onSubmit={submit} className="modal-body github-repo">
         <p className="muted">{dialogDescription(target.needsGitInit, target.existingOriginUrl)}</p>
         <label className="field">
