@@ -89,7 +89,10 @@
     }
   ],
   "fixture_sha256": "4f3db0f8e7a8ce17854325bde5552fe3b02d25f10ad591ab21307af147ff0dcd",
-  "baseline_status": "HOSTED_BEHAVIORAL_RED_PENDING; no local Node/native/browser execution",
+  "baseline_status": "HOSTED_BEHAVIORAL_RED; eight macOS assertion failures, 1008 passed, one ignored; no local Node/native/browser execution",
+  "baseline_head": "f04e48283a38fa6b85c232dbc1326ecfbdb53659",
+  "baseline_job": "https://github.com/reason-machines/openconductor/actions/runs/43043772414/job/130602219408",
+  "candidate_status": "HOSTED_BEHAVIORAL_GREEN_PENDING; fixture remains byte-identical",
   "fixture_entrypoint": "commands::open_in_app on macOS, with isolated temporary executable shims",
   "originals_retained": true,
   "runtime_queue_admission": false,

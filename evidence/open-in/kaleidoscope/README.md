@@ -38,9 +38,17 @@ transport error, and stdout/exit-code diagnostics. Recorded argv and PATH are
 asserted for every invocation. Paths include spaces and quotes. Candidate runs
 exercise eleven cases in these eight tests. The fixture must remain byte-identical.
 
-- Baseline hosted behavioral RED: pending.
-- Candidate hosted behavioral GREEN: not run.
-- Local app, Node, browser, and native execution: not run.
+- Baseline hosted behavioral RED: all eight Kaleidoscope tests failed their
+  assertions on macOS head `f04e48283a38fa6b85c232dbc1326ecfbdb53659`.
+  The full suite reported 1008 passed, eight failed, and one ignored.
+  [Baseline job](https://github.com/reason-machines/openconductor/actions/runs/43043772414/job/130602219408).
+- Candidate hosted behavioral GREEN: pending the unchanged fixture on the fix.
+- Passed locally: eight retained source-span hashes, unchanged fixture hash,
+  and `git diff --check`. Full renderer byte joins were not rerun for the fix.
+- Not run locally: app, Node, browser, and native execution. The `rustfmt`
+  component is unavailable in the installed toolchain.
+- The baseline Linux built-app jobs failed during dependency installation,
+  before application execution. Those failures do not establish behavioral RED.
 
 Normal hosted CI runs `cargo check --locked --all-targets`, `cargo test --locked`,
 and `cargo clippy --locked --all-targets -- -D warnings` from `src-tauri`.
@@ -59,5 +67,6 @@ python3 evidence/open-in/kaleidoscope/verify_source.py --renderer <retained-rend
 No native launch, actual `ksdiff` execution, packaged PATH, menu, or side-by-side
 parity claim follows from these hosted stand-ins. File targets, other launchers,
 cloud UI, ICON15, Move12, M11, and Settings49 are outside this change. The five
-missing original native menu function bodies remain unverified. Runtime ownership
-and admission remain unchanged.
+original native menu symbol intervals have verified E1 raw bytes and LLVM
+disassembly. Complete CFG, callback ownership, final ordering, and menu behavior
+remain unverified. Runtime ownership and admission remain unchanged.
