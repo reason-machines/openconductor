@@ -89,7 +89,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
         <label className="field">
           <span>Repository URL</span>
           <input
-            id="git-url" autoFocus autoComplete="off" spellCheck={false} value={url} disabled={pending}
+            id="git-url" autoFocus autoComplete="off" spellCheck={false} value={url}
             placeholder={urlPlaceholder(protocol)} onChange={(e) => setUrl(e.target.value)}
           />
         </label>
@@ -122,7 +122,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
         <label className="field">
           <span>Location</span>
           <div className="field-row">
-            <input value={location} disabled={pending} placeholder="Enter path or click to select" onChange={(e) => setLocation(e.target.value)} />
+            <input value={location} placeholder="Enter path or click to select" onChange={(e) => setLocation(e.target.value)} />
             <button type="button" className="btn" disabled={pending} onClick={() => void browse()}>Browse</button>
           </div>
         </label>
