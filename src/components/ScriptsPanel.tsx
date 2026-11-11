@@ -293,6 +293,16 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   const busy = showSpotlight ? spotButton.action === "stop" : button.action === "stop";
   const shownStatus = runs.find((r) => r.scriptId === shown);
   const setupRunning = setup.state === "running";
+  const inputRunId = !showSpotlight && shownStatus?.state === "running" ? shownStatus.runId : undefined;
+  const inputKey = JSON.stringify([wsId, shown, inputRunId]);
+  const currentInputKey = useRef(inputKey);
+  currentInputKey.current = inputKey;
+  const writeInput = useCallback(async (data: string) => {
+    if (!shown || !inputRunId || currentInputKey.current !== inputKey) return;
+    await api.writeRun(wsId, shown, inputRunId, data).catch((e) => {
+      if (currentInputKey.current === inputKey) setError(errorText(e));
+    });
+  }, [wsId, shown, inputRunId, inputKey]);
 
   // Conductor's run-tab URL (`ea`): found in the run output while the task runs, kept until it stops.
   const runBusy = !showSpotlight && busy;
@@ -479,7 +489,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     return showSpotlight ? (
       <ScriptOutput key={`spotlight:${wsId}`} output={spotLogMine && spotView.log.length > 0 ? spotView.log.join("\n") : spotButton.hint ?? SPOTLIGHT_EMPTY_TEXT} />
     ) : (
-      <ScriptOutput key={`run:${wsId}:${shown}`} output={runOut} />
+      <ScriptOutput key={`run:${wsId}:${shown}`} output={runOut} onInput={inputRunId ? writeInput : undefined} />
     );
   }
 
