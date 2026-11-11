@@ -336,6 +336,21 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
   }
 
+  async function answerClaudePlan(requestId: string, text = session.snapshot().draft) {
+    const pending = agent.snapshot(runId).permissions[0];
+    if (pending?.kind !== "plan" || pending.requestId !== requestId || !agent.answerPermission) return;
+    const feedback = text.trim();
+    if (feedback && !session.readyToSend()) return;
+    const submittedDraft = session.snapshot().draft;
+    setAttachError(null);
+    try {
+      await agent.answerPermission(runId, requestId, feedback ? { kind: "plan", approved: false, feedback } : { kind: "plan", approved: true });
+      if (feedback && session.snapshot().draft === submittedDraft) setDraft("");
+    } catch (error) {
+      setAttachError(error instanceof Error ? error.message : String(error));
+    }
+  }
+
   async function handoffPlanToTab(requestId: string, plan: string) {
     const config = agentId === "reason" ? defaultChatConfig(await getSettings()) : [];
     const answer = agent.answerPermission;
@@ -583,7 +598,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           onClose={() => setResetTurn(null)}
         />
       ) : null}
-      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => void agent.answerPermission?.(runId, requestId, answer)} onStop={() => agent.stop(runId)} onHandoffPlan={handoffPlanToTab} />
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => {
+        if (agentId === "claude" && answer.kind === "plan" && answer.approved) void answerClaudePlan(requestId);
+        else void agent.answerPermission?.(runId, requestId, answer);
+      }} onStop={() => agent.stop(runId)} onHandoffPlan={handoffPlanToTab} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
@@ -644,7 +662,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         queue={queue}
         canSteer={agent.canSteer}
         followUpMode={followUpMode}
-        onSubmit={planWaiting ? (input) => void agent.answerPermission?.(runId, planWaiting.requestId, { kind: "plan", approved: false, feedback: input.text }) : onSubmit}
+        onSubmit={planWaiting ? (input) => {
+          if (agentId === "claude") return answerClaudePlan(planWaiting.requestId, input.text);
+          else void agent.answerPermission?.(runId, planWaiting.requestId, { kind: "plan", approved: false, feedback: input.text });
+        } : onSubmit}
         onStop={() => agent.stop(runId)}
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}

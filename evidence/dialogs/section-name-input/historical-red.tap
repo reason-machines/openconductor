@@ -1,0 +1,130 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: section create name input disables automatic correction and capitalization
+not ok 1 - section create name input disables automatic correction and capitalization
+  ---
+  duration_ms: 107.914366
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/4ec37fcd-1e1d-4895-a3bd-3aa5462859bc/repo/.ara-state/section-name-input-regression/src/components/sectionNameInput.test.ts:74:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   autoCapitalize: undefined,
+    +   autoCorrect: undefined
+    -   autoCapitalize: 'off',
+    -   autoCorrect: 'off'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    autoCorrect: 'off'
+    autoCapitalize: 'off'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/4ec37fcd-1e1d-4895-a3bd-3aa5462859bc/repo/.ara-state/section-name-input-regression/src/components/sectionNameInput.test.ts:78:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: section create name input keeps focus selection and the initial name
+ok 2 - section create name input keeps focus selection and the initial name
+  ---
+  duration_ms: 39.212886
+  type: 'test'
+  ...
+# Subtest: section create name input preserves trimmed submit before close
+ok 3 - section create name input preserves trimmed submit before close
+  ---
+  duration_ms: 29.734216
+  type: 'test'
+  ...
+# Subtest: section create name input preserves blank validation and IME-safe Enter
+ok 4 - section create name input preserves blank validation and IME-safe Enter
+  ---
+  duration_ms: 72.261217
+  type: 'test'
+  ...
+# Subtest: section create Cancel closes without submitting the name
+ok 5 - section create Cancel closes without submitting the name
+  ---
+  duration_ms: 43.653984
+  type: 'test'
+  ...
+# Subtest: section edit name input disables automatic correction and capitalization
+not ok 6 - section edit name input disables automatic correction and capitalization
+  ---
+  duration_ms: 26.120543
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/4ec37fcd-1e1d-4895-a3bd-3aa5462859bc/repo/.ara-state/section-name-input-regression/src/components/sectionNameInput.test.ts:74:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    +   autoCapitalize: undefined,
+    +   autoCorrect: undefined
+    -   autoCapitalize: 'off',
+    -   autoCorrect: 'off'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    autoCorrect: 'off'
+    autoCapitalize: 'off'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/4ec37fcd-1e1d-4895-a3bd-3aa5462859bc/repo/.ara-state/section-name-input-regression/src/components/sectionNameInput.test.ts:78:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: section edit name input keeps focus selection and the initial name
+ok 7 - section edit name input keeps focus selection and the initial name
+  ---
+  duration_ms: 19.509384
+  type: 'test'
+  ...
+# Subtest: section edit name input preserves trimmed submit before close
+ok 8 - section edit name input preserves trimmed submit before close
+  ---
+  duration_ms: 27.832148
+  type: 'test'
+  ...
+# Subtest: section edit name input preserves blank validation and IME-safe Enter
+ok 9 - section edit name input preserves blank validation and IME-safe Enter
+  ---
+  duration_ms: 23.331404
+  type: 'test'
+  ...
+# Subtest: section edit Cancel closes without submitting the name
+ok 10 - section edit Cancel closes without submitting the name
+  ---
+  duration_ms: 18.806641
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 8
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 790.703971

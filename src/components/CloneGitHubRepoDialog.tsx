@@ -89,7 +89,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
         <label className="field">
           <span>Repository URL</span>
           <input
-            id="git-url" autoFocus autoComplete="off" spellCheck={false} value={url}
+            id="git-url" autoFocus autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} value={url}
             placeholder={urlPlaceholder(protocol)} onChange={(e) => setUrl(e.target.value)}
           />
         </label>

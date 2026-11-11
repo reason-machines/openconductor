@@ -1,0 +1,67 @@
+{
+  "archive_sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+  "renderer": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "Qo-native-input-wrapper",
+      "utf8_half_open": [
+        1934438,
+        1935194
+      ],
+      "bytes": 756,
+      "sha256": "f059e0af88042c5591d17aa65da5e9614dc6f63d0351dc60fe9b504516bf0fcc",
+      "text": "const Qo=$.forwardRef((t,e)=>{const n=ne.c(11);let i,r,o;n[0]!==t?({className:i,type:o,...r}=t,n[0]=t,n[1]=i,n[2]=r,n[3]=o):(i=n[1],r=n[2],o=n[3]);let a;n[4]!==i?(a=Xe(\"flex h-8 rounded-md w-full text-sm bg-background px-3 py-2 outline-none !border !border-input focus:!border-1 focus:!border-special focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-muted-foreground [color-scheme:light] dark:[color-scheme:dark]\",i),n[4]=i,n[5]=a):a=n[5];let c;return n[6]!==r||n[7]!==e||n[8]!==a||n[9]!==o?(c=p.jsx(\"input\",{type:o,spellCheck:!1,autoComplete:\"new-password\",autoCorrect:\"off\",autoCapitalize:\"off\",writingsuggestions:\"false\",className:a,ref:e,...r}),n[6]=r,n[7]=e,n[8]=a,n[9]=o,n[10]=c):c=n[10],c});Qo.displayName=\"Input\";"
+    },
+    {
+      "name": "Aya",
+      "utf8_half_open": [
+        11056145,
+        11058891
+      ],
+      "bytes": 2746,
+      "sha256": "3217043d3c0b71c509cdd3c786d814a7f6045d159b05c1f0c1980535a42eddfa",
+      "text": "function Aya({data:t,sections:e,sectionKey:n,createSection:i,editSection:r}){const o=t.mode===\"edit\"?e.find(B=>B.id===t.sectionId):void 0,a=o?.name??\"\",[c,u]=$.useState(a),[d,h]=$.useState(void 0),m=d===void 0?o?.emoji:d.emoji,[g,_]=$.useState(!1),{container:v,positionMethod:x}=hc(),w=$.useCallback(B=>{h({emoji:B}),_(!1)},[]),E=$.useCallback(()=>{h({emoji:void 0}),_(!1)},[]),k=c.trim(),I=i.isPending||r.isPending,R=k.length>0&&!I,O=()=>{nr.closeDialog(Ij),t.mode===\"create\"&&t.returnToCommandPalette&&t.localWorkspaceIdToMove!==void 0&&nr.openDialog(Tk,{initialSectionWorkspaceId:t.localWorkspaceIdToMove})},D=()=>{if(!R)return;if(t.mode===\"edit\"){r.mutate({organizationId:n,sectionId:t.sectionId,name:k,...m===void 0?{}:{emoji:m}},{onError:()=>kt.error(\"Couldn't edit section\")}),O();return}const B={onError:()=>kt.error(\"Couldn't create section\")};i.mutate({organizationId:n,name:k,...m===void 0?{}:{emoji:m},...t.beforeSectionId===void 0?{}:{beforeSectionId:t.beforeSectionId},...t.localWorkspaceIdToMove===void 0?{}:{localWorkspaceIdToMove:t.localWorkspaceIdToMove}},B),O()},P=_v(B=>{B.key===\"Enter\"&&!B.nativeEvent.isComposing&&(B.preventDefault(),B.stopPropagation(),D())}),L=t.mode===\"create\";return p.jsxs(p.Fragment,{children:[p.jsxs(\"div\",{className:\"flex w-full min-w-0 items-center gap-2\",children:[p.jsxs(X1,{open:g,onOpenChange:_,children:[p.jsx(ch,{render:p.jsx(tt,{type:\"button\",variant:\"outline\",size:\"icon\",className:\"shrink-0 px-0 text-base\",\"aria-label\":m===void 0?\"Choose section emoji\":\"Change section emoji\",children:m===void 0?p.jsx(jfi,{className:\"size-4\"}):p.jsx(\"span\",{\"aria-hidden\":!0,className:\"flex size-full items-center justify-center leading-none\",children:m})})}),p.jsx(w1,{container:v,children:p.jsx(S1,{className:\"z-50\",align:\"start\",side:\"bottom\",sideOffset:4,positionMethod:x,children:p.jsx(E1,{onKeyDown:B=>{Qh(\"dialog.primaryAction\",B.nativeEvent)&&B.stopPropagation()},className:\"h-[320px] w-[360px] overflow-hidden rounded-lg ring-1 ring-popover-ring bg-popover text-popover-foreground shadow-md outline-none origin-(--transform-origin) data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 transition-[opacity,scale] duration-100\",children:p.jsx(uUi,{selectedEmoji:m,onSelect:w,onClear:m===void 0?void 0:E})})})})]}),p.jsx(Qo,{className:\"min-w-0\",\"aria-label\":\"Section name\",value:c,onChange:B=>u(B.target.value),onFocus:B=>B.currentTarget.select(),onKeyDown:P,autoFocus:!0,autoComplete:\"off\",autoCorrect:\"off\",autoCapitalize:\"off\",spellCheck:!1})]}),p.jsxs(km,{children:[p.jsx(tt,{variant:\"ghost\",disabled:I,onClick:O,children:\"Cancel\"}),p.jsx(tt,{\"data-primary-action\":!0,disabled:!R,onClick:D,children:L?\"Create\":\"Save\"})]})]})}"
+    },
+    {
+      "name": "section-name-input",
+      "utf8_half_open": [
+        11058477,
+        11058707
+      ],
+      "bytes": 230,
+      "sha256": "a435b1fc9672912953faeb71968bfcba4f2834a499b3aaa2c4ba03258c0acae7",
+      "text": "p.jsx(Qo,{className:\"min-w-0\",\"aria-label\":\"Section name\",value:c,onChange:B=>u(B.target.value),onFocus:B=>B.currentTarget.select(),onKeyDown:P,autoFocus:!0,autoComplete:\"off\",autoCorrect:\"off\",autoCapitalize:\"off\",spellCheck:!1})"
+    }
+  ],
+  "implementation_base": "5bea00de87fac9ef306e89a4fd35e3d88527ad15",
+  "historical_red_base": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "fixture_sha256": "006cabec6907c845ca308f3a258e64085fa196b84bc5a8b892e079d5f05701c3",
+  "baseline_files": {
+    "src/components/SectionDialog.tsx": {
+      "sha256": "81dc2339639676fafae43700ee7ead982f173c0d29114ff93ceda39163a18e9a",
+      "git_blob": "ebc0c163910c1a36920de86ce04e0b1c3b654e5b"
+    },
+    "src/components/sectionEmoji.ts": {
+      "sha256": "26ede4b2e538a166bf59ef8601de200507db3e0a1d4c9a1d7ce294c1c13d789d",
+      "git_blob": "66575788ce2b4ae757ca761f50ed7b963d26b322"
+    },
+    "src/components/sectionEmoji.test.ts": {
+      "sha256": "c8209b91cf364fd9d3097c2b0e501db915c44e047b6a44722c866a6565bb9b86",
+      "git_blob": "f999856b95b2e82969122103e8657dc8fa022fae"
+    },
+    ".github/workflows/ci.yml": {
+      "sha256": "84b3a278540eed3fbe0bf2b8794c0cade7e1bd102f366e0717aba0d5d9baf511",
+      "git_blob": "9238ab172cd899de1b327bcfb4e1a210ea1d7a43"
+    }
+  },
+  "receipts_sha256": {
+    "historical-red.tap": "0d7b7ba4826bb47dd3872140be605e657eddb3564941db9aa00106722c8e3b9c",
+    "historical-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "green.tap": "78e28f03c8c4bf22bb2989b6c332fea9e0c0ca053f51ecd11b859669bb8e7feb",
+    "neighbors.tap": "4a8fe0e6223b3253d3286bddc36a9dc254f50980e1f70b076c24e947fe76e685"
+  }
+}

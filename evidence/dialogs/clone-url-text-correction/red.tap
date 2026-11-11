@@ -1,0 +1,116 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone URL disables autoCorrect before cloning
+not ok 1 - clone URL disables autoCorrect before cloning
+  ---
+  duration_ms: 188.488526
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneUrlTextCorrection.test.ts:102:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    autoCorrect must be off on the URL input
+    
+    undefined !== 'off'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'off'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneUrlTextCorrection.test.ts:106:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: clone URL disables autoCapitalize before cloning
+not ok 2 - clone URL disables autoCapitalize before cloning
+  ---
+  duration_ms: 83.823411
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneUrlTextCorrection.test.ts:102:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    autoCapitalize must be off on the URL input
+    
+    undefined !== 'off'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'off'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneUrlTextCorrection.test.ts:106:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clone URL keeps its existing input controls before cloning
+ok 3 - clone URL keeps its existing input controls before cloning
+  ---
+  duration_ms: 63.321566
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCorrect while cloning
+not ok 4 - clone URL disables autoCorrect while cloning
+  ---
+  duration_ms: 80.093281
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneUrlTextCorrection.test.ts:102:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    autoCorrect must be off on the URL input
+    
+    undefined !== 'off'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'off'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneUrlTextCorrection.test.ts:106:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clone URL disables autoCapitalize while cloning
+not ok 5 - clone URL disables autoCapitalize while cloning
+  ---
+  duration_ms: 53.879622
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneUrlTextCorrection.test.ts:102:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    autoCapitalize must be off on the URL input
+    
+    undefined !== 'off'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'off'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/components/cloneUrlTextCorrection.test.ts:106:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clone URL keeps its existing input controls while cloning
+ok 6 - clone URL keeps its existing input controls while cloning
+  ---
+  duration_ms: 65.909011
+  type: 'test'
+  ...
+# Subtest: clone URL preserves mixed-case edits and the captured pending request
+ok 7 - clone URL preserves mixed-case edits and the captured pending request
+  ---
+  duration_ms: 35.909433
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 3
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1084.189923
