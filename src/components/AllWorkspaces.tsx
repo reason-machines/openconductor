@@ -244,7 +244,7 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
     saveFilters(f);
   };
   const [limit, setLimit] = useState(PAGE_SIZE);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeKey, setActiveKey] = useState<string>();
   const sentinel = useRef<HTMLDivElement>(null);
   const now = Date.now();
   const showNumbers = useBoolPref("experimental_show_workspace_numbers");
@@ -272,11 +272,13 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
   const shown = rows.slice(0, limit);
   const hasMore = rows.length > limit;
   const groups = groupByDate(shown, now);
-  const flat = groups.flatMap((g) => g.rows);
+  const flat = groups.flatMap((g) => g.rows.map((row) => ({ row, key: `${g.bucket}:${row.workspace.id}` })));
+  const activeIndex = Math.max(0, flat.findIndex((entry) => entry.key === activeKey));
   const projectChoices = reposWithWorkspaces(repos);
   const empty = emptyAction(repos, filters);
 
-  useEffect(() => setActiveIndex(0), [query, filters]);
+  useEffect(() => setActiveKey(flat[activeIndex]?.key), [activeIndex, flat]);
+  useEffect(() => setActiveKey(undefined), [query]);
 
   useEffect(() => {
     const el = sentinel.current;
@@ -296,14 +298,14 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
     if (flat.length === 0) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActiveIndex((i) => Math.min(i + 1, flat.length - 1));
+      setActiveKey(flat[Math.min(activeIndex + 1, flat.length - 1)].key);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setActiveIndex((i) => Math.max(i - 1, 0));
+      setActiveKey(flat[Math.max(activeIndex - 1, 0)].key);
     } else if (e.key === "Enter") {
       e.preventDefault();
-      const row = flat[activeIndex];
-      if (row) open(row);
+      const entry = flat[activeIndex];
+      if (entry) open(entry.row);
     }
   };
 
@@ -399,7 +401,10 @@ export function AllWorkspaces({ repos, sidebarVisible, dispatch, onCreateWorkspa
                         showNumber={showNumbers}
                         active={i === activeIndex}
                         now={now}
-                        onOpen={() => open(row)}
+                        onOpen={() => {
+                          setActiveKey(flat[i].key);
+                          open(row);
+                        }}
                         dispatch={dispatch}
                       />
                     );
