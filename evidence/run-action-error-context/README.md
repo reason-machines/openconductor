@@ -28,7 +28,11 @@ For ordinary start, stop and task-picker start/restart, the same three cases exe
 
 The task-picker case drives RunSplitButton's actual mounted `onPick` callback. It does not claim a native menu interaction. Initial mount is also checked not to issue a script command.
 
-`node --experimental-strip-types --check src/scripts/runActionErrorContext.test.ts`, retained-source hashes, fresh source joins, and `git diff --check` passed. The regression-only publication leaves production code unchanged. Hosted RED has not yet completed. Local component execution, dependency installation and typecheck/build are not run in this CPU-constrained source/hosted-regression lane.
+`node --experimental-strip-types --check src/scripts/runActionErrorContext.test.ts`, retained-source hashes, fresh source joins, and `git diff --check` passed. Fresh main was rechecked at `1b7577234` after hosted RED; ScriptsPanel is byte-identical to the pre-fix version described above.
+
+Hosted RED at `06f6a2f888b1ed755f040a78501ad2a21b405cd8` is confirmed in [CI run 42944857887, unit job 130275088913](https://github.com/reason-machines/openconductor/actions/runs/42944857887/job/130275088913). The six start/stop/pick stale-workspace cases fail with A's error displayed in B or replacing B's own error. All three same-workspace/error/IPC controls pass. The full frontend run reports 2,278 tests, 2,272 passed, and exactly those six failed. The typecheck/build job's test phase reports the same six failures; these are intended behavior failures, not a TypeScript compilation error.
+
+The correction reuses the existing `displayedWorkspaceId.current === wsId` check in generic `act()`'s catch. All nine regression cases are unchanged. Hosted GREEN is pending publication of the correction. Local component execution, dependency installation and typecheck/build are not run in this CPU-constrained source/hosted-regression lane.
 
 No browser screenshot is available because this lane does not admit browser/native runtime execution. Installed-Mac, real-provider and feature-specific visual acceptance are not run.
 
