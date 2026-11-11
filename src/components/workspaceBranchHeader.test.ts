@@ -106,6 +106,14 @@ function mountedHeaderFixture() {
   };
 }
 
+test("mounted branch editor requests the shipped new-password autocomplete hint", async () => {
+  const view = mountedHeaderFixture();
+  try {
+    act(() => { view.button().props.onClick(); });
+    assert.equal(view.inputs()[0].props.autoComplete, "new-password");
+  } finally { await view.close(); }
+});
+
 for (const submitWith of ["Enter", "blur"] as const) {
   test(`mounted branch editor closes on ${submitWith} before rename and marker finish`, async () => {
     const view = mountedHeaderFixture();

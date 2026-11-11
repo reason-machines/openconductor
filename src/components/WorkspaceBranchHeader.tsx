@@ -57,7 +57,7 @@ function EditableBranchHeader({ repoId, workspace, dispatch, onError }: Props) {
             value={value}
             disabled={pending}
             autoFocus
-            autoComplete="off"
+            autoComplete="new-password"
             autoCorrect="off"
             autoCapitalize="off"
             spellCheck={false}
