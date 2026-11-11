@@ -71,6 +71,7 @@ import { showUncommittedChanges, TARGET_REMOTE, targetBranch } from "../features
 import type { DiffScope, FileDiff } from "../features/diff/types";
 import { useReviewComments, type ChatBridge } from "../features/diff/ReviewComments";
 import { queuePending, ReviewButton, takePendingMessage, useReviewChats, type ReviewTab } from "../features/diff/ReviewButton";
+import { clearLocalChat, type LocalChatReplacement } from "../features/chat/localClear.ts";
 import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
 import { attachmentPath, randomDir, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
 import { composerSessionFor } from "../features/chat/composerSession.ts";
@@ -155,6 +156,7 @@ export function seedTranscript(workspaceId: string, text: string) {
 interface ChatPanelProps extends Props {
   /** The workspace id for the workspace's own chat, or a review chat's id. */
   chatId: string;
+  onClearLocal: (sourceId: string, replacement: LocalChatReplacement) => void;
   /** Set for a review chat. */
   review?: ReviewTab;
   bridge: MutableRefObject<ShownChatBridge | null>;
@@ -209,7 +211,7 @@ function ApprovalCard({ approval, onAnswer }: { approval: CodexApproval; onAnswe
 /** What the chat panel shows: Codex's approvals and consent requests, or the permission requests of Reason and Claude Code. */
 type ChatView = Omit<ChatSnapshot, "permissions"> & { permissions?: readonly PermissionPrompt[]; approvals?: CodexApproval[]; consents?: CodexConsent[] };
 
-function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs }: ChatPanelProps) {
+function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, content, onRunningChange, openTurnFile, openFile, onNextUnread, forkToNewTab, chatTabs, onClearLocal }: ChatPanelProps) {
   const reason = reasonAvailable();
   const cwd = workspace.path ?? repo.path;
   const [linkRepos, setLinkRepos] = useState<Repo[] | null>(null);
@@ -234,7 +236,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     if (request === linkRequest.current) setLinkRepos(repos);
     dispatch({ type: "hydrate", repos });
   }
-  const main = chatId === workspace.id;
+  const main = chatId === (workspace.primaryChatId ?? workspace.id);
+  const clearing = useRef(false);
   const [picked, setPicked] = useState<Record<string, ChatAgentId>>({});
   const agentId: ChatAgentId = reason ? (picked[chatId] ?? savedAgent(chatId)) : "reason";
   const agent = CHAT_AGENTS[agentId];
@@ -672,10 +675,23 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         }
         slashCommands={slashCommands}
         onCommand={(text) => {
-          // Conductor's built-in effects are not wired here yet; the agent's own commands and skills go to the agent as typed.
+          // Agent commands and skills shadow the built-ins.
           const cmd = parseSlashCommand(text, isKnownCommand);
           if (!cmd || slashCommands.some((c) => c.name === cmd.name && (c.effect === "agent" || c.effect === "skill"))) return false;
           if (slashCommands.some((c) => c.name === cmd.name && c.effect === "pick_linked_directory")) { void openLinks(); return true; }
+          if (cmd.name === "clear" && (agentId === "claude" || agentId === "codex")) {
+            if (clearing.current) return true;
+            if (workspace.status === "archived" || running || queue.status !== "idle" || queue.items.length > 0 || permissions.length > 0 || approvals.length > 0 || consents.length > 0) {
+              setAttachError("Only an idle local chat can be cleared.");
+              return true;
+            }
+            clearing.current = true;
+            void clearLocalChat(workspace.id, chatId, agentId)
+              .then((replacement) => onClearLocal(chatId, replacement))
+              .catch((error: unknown) => setAttachError(error instanceof Error ? error.message : String(error)))
+              .finally(() => { clearing.current = false; });
+            return true;
+          }
           const who = agentId === "reason" ? "Reason" : AGENT_NAMES[COMPOSER_AGENT[agentId]];
           setAttachError(cmd.name === "plan" ? "Plan mode is not available in this chat." : `/${cmd.name} is not available for ${who}.`);
           return true;
@@ -961,6 +977,7 @@ function TargetChip({ target, open, setOpen, repo, variant = "header" }: { targe
 }
 
 export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread, hasNextUnread }: Props) {
+  const primaryId = workspace.primaryChatId ?? workspace.id;
   // The right panel's Setup / Run / Terminal strip: open on Run, like Conductor.
   // ⌘J hides or shows the right panel; Big terminals live in the center.
   const [stripOpen, setStripOpen] = useState(true);
@@ -970,7 +987,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   const settingUp = useCreateSetupRunning(workspace.id);
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
   const [diffOpen, setDiffOpen] = useState(false);
-  const [mainTab, setMainTab] = useState<MainTab>("chat");
+  const [mainTab, setMainTab] = useState<MainTab>(() => tabOfChat(primaryId, workspace.activeSessionId));
   const browserPage = useSyncExternalStore(subscribeBrowser, () => browserSnapshot().pages.get(workspace.id));
   const displayedWorkspace = useRef(workspace.id);
   displayedWorkspace.current = workspace.id;
@@ -1007,11 +1024,11 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
     setPickingTarget(false);
     setPickingChangesTarget(false);
     // Go to next unread or a row click may have asked for one of its chats (state/openChat.ts).
-    setMainTab(tabOfChat(workspace.id, takeChatRequest(workspace.id)));
+    setMainTab(tabOfChat(primaryId, takeChatRequest(workspace.id) ?? workspace.activeSessionId));
     return onChatRequest((id) => {
-      if (id === workspace.id) setMainTab(tabOfChat(workspace.id, takeChatRequest(workspace.id)));
+      if (id === workspace.id) setMainTab(tabOfChat(primaryId, takeChatRequest(workspace.id)));
     });
-  }, [workspace.id]);
+  }, [workspace.id, primaryId]);
   const openPrTab = useCallback(() => {
     setPrOpen(true);
     setMainTab("pr");
@@ -1061,27 +1078,27 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   // Inserts go to the chat shown; sends (e.g. Create PR) go to the workspace's own chat, switching to it.
   const shownChat = useRef<string>(workspace.id);
   // Review comments attach to the workspace's own chat, even while a review chat is shown.
-  const attach = useWorkspaceChatAttach(workspace.id, shownChat, chatBridge, useCallback(() => setMainTab("chat"), []));
+  const attach = useWorkspaceChatAttach(primaryId, shownChat, chatBridge, useCallback(() => setMainTab("chat"), []));
   const chat = useMemo<ChatBridge & ComposerAttach>(
     () => ({
       attach,
       insert: (t) => chatBridge.current?.insert(t),
       send: (t) => {
-        if (shownChat.current === workspace.id) return chatBridge.current?.send(t);
-        queuePending(workspace.id, { kind: "send", text: t, attachments: [] });
+        if (shownChat.current === primaryId) return chatBridge.current?.send(t);
+        queuePending(primaryId, { kind: "send", text: t, attachments: [] });
         setMainTab("chat");
       },
     }),
-    [workspace.id, attach],
+    [primaryId, attach],
   );
   // Fix errors goes to the workspace's own chat with its log files attached, and shows that chat.
   const sendToChat = useCallback(
     (text: string, attachments: TextAttachment[]) => {
-      if (shownChat.current === workspace.id && chatBridge.current) chatBridge.current.sendWith(text, attachments);
-      else queuePending(workspace.id, { kind: "send", text, attachments });
+      if (shownChat.current === primaryId && chatBridge.current) chatBridge.current.sendWith(text, attachments);
+      else queuePending(primaryId, { kind: "send", text, attachments });
       setMainTab("chat");
     },
-    [workspace.id],
+    [primaryId],
   );
   // The Setup tab's "Ask agent" (Conductor's `Jo`): the setup-script prompt goes to the workspace's chat.
   const askSetupAgent = useCallback(() => chat.send(SETUP_SCRIPT_PROMPT), [chat]);
@@ -1239,7 +1256,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
     },
     { enableOnTerminalFocus: false },
   );
-  shownChat.current = activeReview?.chatId ?? workspace.id;
+  shownChat.current = activeReview?.chatId ?? primaryId;
   // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
   // skips it while the window has focus, and an unread workspace shown that way is read.
   const transcriptShown = showBrowser || showDiff || showPr || centerTerminal || showFile ? null : shownChat.current;
@@ -1248,6 +1265,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
     setShownChat(transcriptShown);
     return () => setShownChat(null);
   }, [transcriptShown]);
+  useEffect(() => {
+    if (inTauri() && transcriptShown) void invoke("db_select_chat", { workspaceId: workspace.id, chatId: transcriptShown }).catch((error: unknown) => console.error("conductor.db: select chat failed", error));
+  }, [workspace.id, transcriptShown]);
   // The selected chat tab (Conductor's selectedSessionId): the row menu's "Mark as unread" marks it.
   const selectedChat = shownChat.current;
   useEffect(() => {
@@ -1299,16 +1319,16 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   /** "Close others": every other closable chat tab; the right-clicked one shows (Conductor's `H`). */
   const closeOtherChats = (chatId: string) => {
     for (const r of reviews.tabs) if (r.chatId !== chatId) closeReview(r.chatId);
-    setMainTab(tabOfChat(workspace.id, chatId));
+    setMainTab(tabOfChat(primaryId, chatId));
   };
   /** "Rename chat": a review, fork or "+" tab keeps its title with the tab; the main chat in its session row. */
   const renameChat = async (chatId: string, title: string) => {
-    if (chatId !== workspace.id) return reviews.rename(chatId, title);
+    if (chatId !== primaryId) return reviews.rename(chatId, title);
     if (inTauri()) await invoke("db_open_chat_tab", { chatId, workspaceId: workspace.id, title });
     dispatch({ type: "setChatTitle", repoId: repo.id, workspaceId: workspace.id, title });
   };
   const chatMenu = (chatId: string, title: string): Omit<ChatTabMenuActions, "toggleRead"> => {
-    const closable = chatId !== workspace.id;
+    const closable = chatId !== primaryId;
     return {
       rename: archived ? undefined : () => setRenaming({ chatId, title }),
       fork:
@@ -1372,16 +1392,21 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
       </header>
       <div className={`ws-split${rightPanelVisible ? "" : " right-hidden"}`}>
         <div className="ws-main">
-          <MainTabs browserTab={browserPage ? <BrowserPreviewTab page={browserPage} selected={showBrowser} onSelect={() => setMainTab("browser")} onClose={closeBrowser} /> : null} fileTab={fileTarget?.workspaceId === workspace.id ? <span className={`main-tab${showFile ? " active" : ""}`}><button role="tab" aria-selected={showFile} onClick={() => setMainTab("file")}>{fileTarget.path.split("/").pop()}</button><button className="main-tab-close" aria-label={`Close ${fileTarget.path} tab`} onClick={closeFile}>×</button></span> : null} title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
+          <MainTabs browserTab={browserPage ? <BrowserPreviewTab page={browserPage} selected={showBrowser} onSelect={() => setMainTab("browser")} onClose={closeBrowser} /> : null} fileTab={fileTarget?.workspaceId === workspace.id ? <span className={`main-tab${showFile ? " active" : ""}`}><button role="tab" aria-selected={showFile} onClick={() => setMainTab("file")}>{fileTarget.path.split("/").pop()}</button><button className="main-tab-close" aria-label={`Close ${fileTarget.path} tab`} onClick={closeFile}>×</button></span> : null} title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={primaryId} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
           <div className="ws-chat-host" hidden={centerTerminal !== undefined || showBrowser}>
           <KeybindingScope focused={centerTerminal === undefined && !showBrowser}>
         <ChatPanel
-          key={activeReview?.chatId ?? workspace.id}
+          key={activeReview?.chatId ?? primaryId}
           repo={repo}
           workspace={workspace}
           dispatch={dispatch}
           notify={notify}
-          chatId={activeReview?.chatId ?? workspace.id}
+          chatId={activeReview?.chatId ?? primaryId}
+          onClearLocal={(sourceId, replacement) => {
+            const title = reviews.replaceLocal(sourceId, replacement);
+            dispatch({ type: "replaceLocalChat", repoId: repo.id, workspaceId: workspace.id, sourceId, chatId: replacement.chatId, primaryChatId: replacement.primaryChatId, title });
+            if (displayedWorkspace.current === workspace.id) setMainTab(tabOfChat(replacement.primaryChatId, replacement.chatId));
+          }}
           review={activeReview}
           bridge={chatBridge}
           onRunningChange={setAgentWorking}
@@ -1390,7 +1415,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
           // Conductor hides the button once the workspace's PR is merged (g1o's `hidden`, `mIo` isMerged).
           onNextUnread={!prBase?.merged && hasNextUnread?.(selectedChat) ? onNextUnread : undefined}
           forkToNewTab={reviews.fork}
-          chatTabs={[{ chatId: workspace.id, title: workspace.chatTitle ?? workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
+          chatTabs={[{ chatId: primaryId, title: workspace.chatTitle ?? workspace.name }, ...reviews.tabs.map((r) => ({ chatId: r.chatId, title: r.title }))]}
           content={
             showFile && fileTarget && workspace.path ? (
               <MarkdownFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} />

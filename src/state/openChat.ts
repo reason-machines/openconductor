@@ -19,6 +19,16 @@ export interface StoredChatTab {
   title: string;
 }
 
+const primaryChats = new Map<string, string>();
+
+export function primaryChatId(workspaceId: string): string {
+  return primaryChats.get(workspaceId) ?? workspaceId;
+}
+
+export function setPrimaryChatId(workspaceId: string, chatId: string): void {
+  primaryChats.set(workspaceId, chatId);
+}
+
 const reviewChats = new Map<string, readonly string[]>();
 const restored = new Map<string, readonly StoredChatTab[]>();
 /** Workspaces whose tab strip this window has set; a later database read does not override it. */
@@ -37,8 +47,9 @@ export function setOpenReviewChats(workspaceId: string, chatIds: readonly string
  * count for unread and Go to next unread until the workspace's strip changes in
  * this window, which then owns it.
  */
-export function restoreChatTabs(workspaceId: string, tabs: readonly StoredChatTab[]): void {
+export function restoreChatTabs(workspaceId: string, tabs: readonly StoredChatTab[], primaryId = workspaceId): void {
   if (setHere.has(workspaceId)) return;
+  setPrimaryChatId(workspaceId, primaryId);
   if (tabs.length > 0) {
     restored.set(workspaceId, tabs);
     reviewChats.set(
@@ -58,13 +69,13 @@ export function restoredChatTabs(workspaceId: string): readonly StoredChatTab[] 
 
 /** The workspace's chats in tab order: its main chat, then open review chats. */
 export function workspaceChats(workspaceId: string): string[] {
-  return [workspaceId, ...(reviewChats.get(workspaceId) ?? [])];
+  return [primaryChatId(workspaceId), ...(reviewChats.get(workspaceId) ?? [])];
 }
 
 /** The chat has a tab to show it in: the main chat always, a review chat while its tab is open. */
 export function chatOpenable(chatId: string): boolean {
   const ws = workspaceOfChat(chatId);
-  return ws === chatId || (reviewChats.get(ws)?.includes(chatId) ?? false);
+  return primaryChatId(ws) === chatId || (reviewChats.get(ws)?.includes(chatId) ?? false);
 }
 
 /** A strip change as conductor.db writes: tabs that opened and tabs that closed. */
