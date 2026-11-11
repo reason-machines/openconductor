@@ -1,0 +1,232 @@
+{
+  "rea_acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_asset": {
+    "asset": "renderer",
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "reference_spans": [
+    {
+      "asset": "renderer",
+      "name": "gno",
+      "path": "reference/gno.txt",
+      "utf8_half_open": [
+        6926664,
+        6929046
+      ],
+      "bytes": 2382,
+      "sha256": "647b58ff6d4712742e8946fdf3d8ef2bb31e578b3047a7d0f0a9384395ea7db3"
+    },
+    {
+      "asset": "renderer",
+      "name": "OJs",
+      "path": "reference/OJs.txt",
+      "utf8_half_open": [
+        6571868,
+        6572718
+      ],
+      "bytes": 850,
+      "sha256": "5690f01ab02ec3aa205005c2775965062bbdcef532d855a294e14a719095dd41"
+    },
+    {
+      "asset": "renderer",
+      "name": "xEi",
+      "path": "reference/xEi.txt",
+      "utf8_half_open": [
+        6568897,
+        6571703
+      ],
+      "bytes": 2806,
+      "sha256": "c9eafaa506a034b54ffb3e6f82f0635e7509d7a7e9672fc4aaca171b09303bc3"
+    },
+    {
+      "asset": "renderer",
+      "name": "AJs",
+      "path": "reference/AJs.txt",
+      "utf8_half_open": [
+        6571703,
+        6571748
+      ],
+      "bytes": 45,
+      "sha256": "2a35b68dafaa319ea940d805be477f8002d9bc3aa0c439cfe9d84752af590f5e"
+    },
+    {
+      "asset": "renderer",
+      "name": "aSa",
+      "path": "reference/aSa.txt",
+      "utf8_half_open": [
+        11170916,
+        11171573
+      ],
+      "bytes": 657,
+      "sha256": "68f370d7469b65a71859999fe41df5b274073483a74d21f2874fa84daa62ecce"
+    },
+    {
+      "asset": "renderer",
+      "name": "lSa",
+      "path": "reference/lSa.txt",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "bytes": 338,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a"
+    },
+    {
+      "asset": "renderer",
+      "name": "uSa",
+      "path": "reference/uSa.txt",
+      "utf8_half_open": [
+        11171943,
+        11172105
+      ],
+      "bytes": 162,
+      "sha256": "09da707923a705cc9c8f93572eb11724514f8a7d2e75bc45d89020a36fedd4e9"
+    },
+    {
+      "asset": "renderer",
+      "name": "rSa",
+      "path": "reference/rSa.txt",
+      "utf8_half_open": [
+        11167486,
+        11170601
+      ],
+      "bytes": 3115,
+      "sha256": "55b02cfb58c1416fce68bf0cc9178e9b37bed4e03ccb0de73661b7787d99fc95"
+    },
+    {
+      "asset": "renderer",
+      "name": "w9e",
+      "path": "reference/w9e.txt",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "bytes": 3429,
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32"
+    },
+    {
+      "asset": "renderer",
+      "name": "dno",
+      "path": "reference/dno.txt",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "bytes": 1719,
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318"
+    },
+    {
+      "asset": "renderer",
+      "name": "uno",
+      "path": "reference/uno.txt",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "bytes": 421,
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b"
+    },
+    {
+      "asset": "renderer",
+      "name": "cno",
+      "path": "reference/cno.txt",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "bytes": 385,
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5"
+    },
+    {
+      "asset": "renderer",
+      "name": "lno",
+      "path": "reference/lno.txt",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "bytes": 1125,
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5"
+    },
+    {
+      "asset": "renderer",
+      "name": "setup-output-call",
+      "path": "reference/setup-output-call.txt",
+      "utf8_half_open": [
+        7193069,
+        7193176
+      ],
+      "bytes": 107,
+      "sha256": "f171c3aa850421ac704acc245a6f59291d13d222acc975b5177a051c81486368"
+    },
+    {
+      "asset": "renderer",
+      "name": "run-output-call",
+      "path": "reference/run-output-call.txt",
+      "utf8_half_open": [
+        7197564,
+        7197670
+      ],
+      "bytes": 106,
+      "sha256": "79b678d8f2dc8a0784344b21810124a0ef65049f8a17fbf14d798f418d5d769b"
+    },
+    {
+      "name": "t9s",
+      "asset": "renderer",
+      "path": "reference/t9s.txt",
+      "utf8_half_open": [
+        3140055,
+        3140134
+      ],
+      "bytes": 79,
+      "sha256": "4ae382816b30e3b65c256132845a99c89050d84f3f8207c95d724cc407dd38f2"
+    }
+  ],
+  "main_inputs": [
+    {
+      "path": "src/components/ScriptOutput.tsx",
+      "bytes": 4214,
+      "sha256": "f217af1ffb71d24f5575247cb08dfa894806d521abfd6d0193ef6d89c336c319"
+    },
+    {
+      "path": "src/components/ScriptsPanel.tsx",
+      "bytes": 24172,
+      "sha256": "7da73eb9ef1e1c7e778fcaa956007d46d6ecb4606e8a8f46fc8657e82d8f5079"
+    },
+    {
+      "path": "src/scripts/output.ts",
+      "bytes": 227,
+      "sha256": "937937398bb8cef6fa2bcc17d085bcfe8c1c214750756c092958aae315ffb75b"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1901,
+      "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 221776,
+      "sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1"
+    }
+  ],
+  "author": "Conductor Rebuild",
+  "main_checked": "d8f6bdfd26370491295f38ffecd7090c71a2a6db",
+  "prior_main_checked": "2b079f13e07b580d26191f7f1f50b4d21e62174e",
+  "frozen_fixture_sha256": "ad4939bbd75ec25c91370da48ff393653992b2b3695c119492c4821ddabdbd4e",
+  "delivered_fixture_sha256": "e0d0b2da360d8d3d7360fc960945a8e4737ce13bf13f033af40b384df1d0c279",
+  "candidate_sha256": "477cf9fc89646eb0075cf841430facca792d30116dc779aab31d22e94e7e0ffd",
+  "patch_sha256": "9628dfee9814951e9f3b12c6b84396f9df586307d0cbcf42d414f57472550d9b",
+  "fixture_adapter": {
+    "reason": "Node 22 type stripping does not transform TypeScript parameter properties; no test body or assertion changed.",
+    "before": "class CopyEvent extends Event {\n  constructor(public clipboardData: { setData: (type: string, text: string) => void } | null) {\n    super(\"copy\", { bubbles: true, cancelable: true });\n  }\n}",
+    "after": "class CopyEvent extends Event {\n  clipboardData: { setData: (type: string, text: string) => void } | null;\n  constructor(clipboardData: { setData: (type: string, text: string) => void } | null) {\n    super(\"copy\", { bubbles: true, cancelable: true });\n    this.clipboardData = clipboardData;\n  }\n}"
+  },
+  "behavioral_cases_run": 0,
+  "expected_baseline_not_observed": {
+    "payload_assertion_failures": 4,
+    "passing_controls": 5
+  },
+  "native_verified": false
+}

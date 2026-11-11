@@ -209,7 +209,6 @@ function tabGroups(tab: PaletteTab, order: readonly ActionGroupId[]): ActionGrou
 function settingItems(data: PaletteData, query: string): ResultItem[] {
   const listed = query.trim() === "" ? data.settings.filter((s) => !s.row) : data.settings;
   return ranked(listed, query, (s) => s.title, (s) => [...(s.section ? [s.section] : []), ...(s.keywords ?? [])])
-    .slice(0, RESULT_CAP)
     .map((s) => ({ kind: "setting", id: `setting:${s.id}`, setting: s }));
 }
 

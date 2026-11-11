@@ -1,0 +1,12 @@
+{
+  "kind": "static-source-verification-only",
+  "main_checked": "d8f6bdfd26370491295f38ffecd7090c71a2a6db",
+  "main_inputs_verified": 5,
+  "reference_spans_verified": 16,
+  "reference_renderer_verified": true,
+  "product_matches_retained_candidate": true,
+  "only_fixture_constructor_syntax_changed": true,
+  "frozen_test_bodies_identical": 9,
+  "behavioral_cases_run": 0,
+  "native_clipboard_or_xterm_runtime_verified": false
+}

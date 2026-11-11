@@ -1,0 +1,177 @@
+{
+  "producer": "Conductor Rebuild",
+  "status": "SOURCE_QUALIFIED_RENDER_CONSUMER_GAP_NOT_RUNTIME_VERIFIED",
+  "checked_main": "b6e7473d17462ce09948437b4239fb0a31e8d37f",
+  "scope": "Retained REA-extracted assets and pinned Git source only; no reference JavaScript, application, test, build or native execution.",
+  "reference_provenance": "Conductor 0.87.6 retained shipped assets; ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2 records original renderer semantic-analysis heap exhaustion and static-only extraction.",
+  "assets": [
+    {
+      "asset": "renderer",
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "asset": "index",
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "spans": [
+    {
+      "name": "transform-kKn",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8865604,
+        8865874
+      ],
+      "bytes": 270,
+      "sha256": "b38f44ef1ab8475baff228f7545c000308425bcc4d3d296d11fd4f3b00c92c7b",
+      "path": "reference-spans/transform-kKn.txt"
+    },
+    {
+      "name": "assistant-block-ROo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8870021,
+        8872955
+      ],
+      "bytes": 2934,
+      "sha256": "4b020f575c8024708d1576ab02d0154a6690a710abe1fbe5e603fd7731e69afe",
+      "path": "reference-spans/assistant-block-ROo.txt"
+    },
+    {
+      "name": "assistant-message-GOo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8895884,
+        8896973
+      ],
+      "bytes": 1089,
+      "sha256": "4ccc42483a6dcf792da1f6bfd7a9495387221c975cd7f13f325d9d3f59d99f47",
+      "path": "reference-spans/assistant-message-GOo.txt"
+    },
+    {
+      "name": "settings-row",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10713825,
+        10714196
+      ],
+      "bytes": 371,
+      "sha256": "5c3c861661899118dfc5361525bbd53c86e535cd4cb2dddfd35560515b640d3e",
+      "path": "reference-spans/settings-row.txt"
+    },
+    {
+      "name": "boolean-metadata",
+      "asset": "index",
+      "utf8_half_open": [
+        282058,
+        282087
+      ],
+      "bytes": 29,
+      "sha256": "7e465902547a6a65d39a9520d9d752afbc199f2a8d6f01f5b596c515d8002974",
+      "path": "reference-spans/boolean-metadata.txt"
+    },
+    {
+      "name": "boolean-schema",
+      "asset": "index",
+      "utf8_half_open": [
+        290975,
+        291000
+      ],
+      "bytes": 25,
+      "sha256": "1ec41131432d9d4806815454ae116269ed044aaaf65b5613d62a8f58c69e8382",
+      "path": "reference-spans/boolean-schema.txt"
+    },
+    {
+      "name": "setter-p6t",
+      "asset": "index",
+      "utf8_half_open": [
+        413402,
+        413484
+      ],
+      "bytes": 82,
+      "sha256": "0bca90c4706ba19df54a265d389cf2739bebf5d6e0a0cc4fdd69c86997e05304",
+      "path": "reference-spans/setter-p6t.txt"
+    }
+  ],
+  "current_snapshots": [
+    {
+      "path": "src/settings/GeneralPage.tsx",
+      "bytes": 9223,
+      "sha256": "21babc4221ce2a05b15205ff06929a91dd30d5a4724474b3058b0f1b4058fded",
+      "source": "https://github.com/reason-machines/openconductor/blob/b6e7473d17462ce09948437b4239fb0a31e8d37f/src/settings/GeneralPage.tsx"
+    },
+    {
+      "path": "src/settings/prefs.ts",
+      "bytes": 4731,
+      "sha256": "c29549a90cd52e0b69d1381fead957aec44d83ee971751bd2aee5b8a7981d663",
+      "source": "https://github.com/reason-machines/openconductor/blob/b6e7473d17462ce09948437b4239fb0a31e8d37f/src/settings/prefs.ts"
+    },
+    {
+      "path": "src/settings/useBoolPref.ts",
+      "bytes": 1092,
+      "sha256": "2ddcb5c12133e8cfe0547960595082bdfd288cb352a28ec8c6ba8ee2bfa6a31a",
+      "source": "https://github.com/reason-machines/openconductor/blob/b6e7473d17462ce09948437b4239fb0a31e8d37f/src/settings/useBoolPref.ts"
+    },
+    {
+      "path": "src/settings/useSettings.ts",
+      "bytes": 4404,
+      "sha256": "c1b933e09a3f8bb42dd39136e58b6ce32f14c669f180a1ad09a63cc37cc47211",
+      "source": "https://github.com/reason-machines/openconductor/blob/b6e7473d17462ce09948437b4239fb0a31e8d37f/src/settings/useSettings.ts"
+    },
+    {
+      "path": "src-tauri/src/settings/table_prefs.rs",
+      "bytes": 23796,
+      "sha256": "be6bb7e899481bf623831dcb7fd9a1b9eabd6d50d4eca290014d462ed88403f4",
+      "source": "https://github.com/reason-machines/openconductor/blob/b6e7473d17462ce09948437b4239fb0a31e8d37f/src-tauri/src/settings/table_prefs.rs"
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "bytes": 19881,
+      "sha256": "533b97a4f656a6bb6e72953c1a7809a82871fbfa5dbc8578d204b96ddc85e06e",
+      "source": "https://github.com/reason-machines/openconductor/blob/b6e7473d17462ce09948437b4239fb0a31e8d37f/src/features/chat/Transcript.tsx"
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "bytes": 8612,
+      "sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db",
+      "source": "https://github.com/reason-machines/openconductor/blob/b6e7473d17462ce09948437b4239fb0a31e8d37f/src/features/chat/view.ts"
+    },
+    {
+      "path": "src/features/chat/copyCodeFeedback.test.ts",
+      "bytes": 8769,
+      "sha256": "7851a962f637106c096efda1e8756d12a593a7765a5a27d5ee9b8256474df6c3",
+      "source": "https://github.com/reason-machines/openconductor/blob/b6e7473d17462ce09948437b4239fb0a31e8d37f/src/features/chat/copyCodeFeedback.test.ts"
+    }
+  ],
+  "observed_source": [
+    "Reference boolean metadata defaults not_absolutely_right to false; non-file-backed boolean schema and setter persist the string form.",
+    "Reference General row reads the flag; its imported X9r alias joins index export qM to p6t.",
+    "Complete kKn is boolean-gated, case-insensitive and start-anchored. It chains five prefix replacements; it does not globally remove text or normalize apostrophes.",
+    "Complete ROo applies kKn independently to text and thinking blocks and omits an empty trimmed result. Tool-use branches do not use the transform.",
+    "Complete GOo accepts assistant message content and maps its blocks to ROo.",
+    "Pinned current Transcript Part passes raw part.text to Markdown or ThinkingRow. Current key census finds persistence/UI declarations but no chat flag reader."
+  ],
+  "proposed_hunk": [
+    "Add a pure assistant-text display helper matching the complete reference transform.",
+    "Read existing useBoolPref(not_absolutely_right) once in Transcript and pass the value in RowContext.",
+    "Apply the helper only in Part text/thinking branches before rendering; omit empty results.",
+    "Do not change user/report/system text, tools, raw transcript storage, clipboard, shared Markdown or any policy setting.",
+    "Adapt the existing copy-code fixture for the new production dependencies; add focused disabled/enabled/text/thinking/empty/user/tool controls."
+  ],
+  "qualification_limits": [
+    "Source proves an absent display consumer, not an observed running-app defect.",
+    "No broad Settings, Markdown or chat ownership lease is implied; exact hunk collision coordination is pending.",
+    "No runtime/test/build/native executor admission; focused checks must use the existing serialized queue.",
+    "Auto-permission remains parked; no sidecar selector or policy precedence was inferred."
+  ],
+  "verification": {
+    "asset_identity_and_span_capture": "passed, static bytes only",
+    "pinned_source_capture_and_literal_census": "passed, static source only",
+    "product_tests_typecheck_build": "not run",
+    "native_visual_provider": "not run"
+  }
+}
