@@ -16,9 +16,9 @@ The renderer asset lock is SHA-256 `5199d392ef2dec92886393f181bc98531efc6251f75b
 
 ## Current source discrepancy
 
-Checked main `8f1f7b05d98c2469f1646864def08a9f7b774d1f`. `src/state/githubRepoDialog.ts` returns the invalid-name error for every empty normalized slug, without knowing whether the raw name is blank. `src/components/GitHubRepoDialog.tsx` therefore renders an error status and marks blank input `aria-invalid=true` after owner loading.
+Revalidated on fresh main `166139398538f0e58eabd3870facbb1702ea665b`; the bounded product files were unchanged from the earlier comparison at `8f1f7b05d98c2469f1646864def08a9f7b774d1f`. `src/state/githubRepoDialog.ts` returns the invalid-name error for every empty normalized slug, without knowing whether the raw name is blank. `src/components/GitHubRepoDialog.tsx` therefore renders an error status and marks blank input `aria-invalid=true` after owner loading.
 
-The bounded correction will pass the raw name to `statusLine`, return null for trimmed blank input after the loading branch, and let the component omit that status. Nonblank invalid names keep their error. The existing slug normalization, availability effect, submission guard, and create payload remain unchanged. Existing helper-call expectations are confined to `src/state/githubRepoDialog.test.ts`.
+The bounded correction passes the raw name to `statusLine`, returns null for trimmed blank input after the loading branch, and lets the component omit that status. Nonblank invalid names keep their error. The existing slug normalization, availability effect, submission guard, and create payload remain unchanged. Existing helper-call expectations are confined to `src/state/githubRepoDialog.test.ts`.
 
 ## Regression checkpoint
 
@@ -26,7 +26,11 @@ The bounded correction will pass the raw name to `statusLine`, return null for t
 
 The cases cover empty input, spaces, tab/newline, and nonbreaking space remaining neutral and unable to check or submit; loading priority; a nonblank invalid name retaining its error; and a normalized valid name reaching the unchanged create payload while pending creation blocks repeated submission.
 
-The first commit changes only this regression and its evidence. Hosted RED has not run yet. Local verification is limited to syntax and source-integrity checks:
+The first published commit, `8a8a804dbe6210248b383318997a96dc40a721d0`, changes only this regression and its evidence. [Hosted RED](https://github.com/reason-machines/openconductor/actions/runs/42937374548/job/130250673671) ran `node --test "src/**/*.test.ts"`: 2,178 passed and exactly four failed. All four failures were the intended actual-component `aria-invalid` assertion at line 107 (`true !== false`) for empty input, spaces, tab/newline, and NBSP. Nonblank-invalid and normalized-valid/pending controls passed. The frontend build job independently reached the same four failures after typecheck and color checks passed.
+
+The fix leaves `src/components/githubRepoName.test.ts` byte-for-byte unchanged (SHA-256 `78b7bfd0be097e55b2e845491aff0f6c28c7125adccbdabbd5b740b1c326324c`). Only the existing `statusLine` helper-call expectations in `src/state/githubRepoDialog.test.ts` are adapted to its raw-name argument and nullable result. Hosted GREEN is pending.
+
+Local verification is limited to syntax, source-integrity, and diff checks:
 
 ```bash
 node --experimental-strip-types --check src/components/githubRepoName.test.ts
