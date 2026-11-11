@@ -8,7 +8,7 @@ The shipped Conductor REA chain is `ONi -> nZe -> Loi -> tIr -> runtime.attachRe
 
 OpenConductor already filters events by its reserved terminal ID and records `exited = true` for a matching exit. Its `onData` checks only the resolved ID, so subsequent input still reaches `ptyWrite`. The backend stores exit information before emitting the exit and already rejects later writes with `NotRunning`. This finding concerns unnecessary frontend bridge dispatch only: no dead-process write, visible error, crash or provider impact has been observed.
 
-The proposed correction reuses the existing `exited` liveness flag in `onData`. It must not gate on the `completed` presentation state: command completion deliberately keeps the shell usable. No ACK callback, backend, general terminal, script input or provider architecture changes are in scope.
+The one-line correction reuses the existing `exited` liveness flag in `onData`. It does not gate on the `completed` presentation state: command completion deliberately keeps the shell usable. No ACK callback, backend, general terminal, script input or provider architecture changes are in scope.
 
 ## Frozen real-component regression
 
@@ -23,13 +23,15 @@ The six frozen cases are:
 - A foreign terminal's exit does not disable input.
 - Dismissal ignores a stale matching exit without a status refresh.
 
-The two post-exit assertions are predicted failures on unchanged product code; the other four are controls. Actual hosted behavioral RED has not run at this checkpoint. Product source is unchanged, and no repair will be published before the intended baseline assertion failures are observed. The frozen fixture SHA-256 is `64d426e2f94d8fc9541b43b8c45dffe9b47b7e71661e7b728bf9fe434cc35318`.
+The [automatic hosted unit job](https://github.com/reason-machines/openconductor/actions/runs/43112753173/job/130832796051) on regression-only head `db0f76cf5b7497749e0b468b2f81d0718778c75a` reproduced exactly the two intended post-exit assertion failures and passed all four controls. Product code was unchanged. `hosted-baseline.log.txt` retains all six cases with their assertion output, and `hosted-baseline.json` records the qualification. The frozen fixture SHA-256 remains `64d426e2f94d8fc9541b43b8c45dffe9b47b7e71661e7b728bf9fe434cc35318`.
+
+`loginTerminalInputAfterExitProof.test.ts` runs that same frozen six-case fixture against the retained baseline and the candidate. It requires exactly two named assertion failures and four passing controls for RED, then all six passing for GREEN, with no skipped, cancelled or todo cases. The baseline, fixture and completion factory are hash-pinned. This proof runs in the existing automatic hosted unit workflow. Candidate behavioral GREEN remains pending at this source checkpoint.
 
 The oracle is deliberately limited to a settled spawn and a settled matching exit with no queued output. Input during spawn, input while post-exit output still renders and exit before create resolves are excluded. Early-input readiness was separately closed as a bounded nondefect; this change does not reopen it.
 
 ## Verification and provenance
 
-`python3 evidence/settings/login-terminal-input-after-exit/verify_source.py <original-upload.tar>` checks the original archive and both asset hashes, all 21 exact source spans (including two complete functions), seven pinned current-main source files, baseline source, frozen component tests and the exact permitted one-guard candidate shape. This is source verification, not behavioral RED/GREEN.
+`python3 evidence/settings/login-terminal-input-after-exit/verify_source.py <original-upload.tar>` checks the original archive and both asset hashes, all 21 exact source spans (including two complete functions), seven pinned current-main source files, baseline source, frozen component tests and the exact permitted one-guard candidate shape. All seven source pins were also re-read at current default-branch head `0e34c1287a73c41d3cecb37e9dc48ce34a5df381` and remain identical. This source check is not behavioral RED or GREEN.
 
 `reference-source.json` retains exact byte ranges, hashes and REA evidence lineage. Earlier semantic renderer analysis exhausted the heap; these shipped bytes were inspected statically, without evaluating reference JavaScript. The normal automatic hosted `node --test "src/**/*.test.ts"` workflow is the admitted behavioral executor. No workflow change, manual dispatch, rerun, duplicate watcher or local Node execution is introduced.
 

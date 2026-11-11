@@ -355,7 +355,7 @@ function LoginTerminal({ command, label, onDismiss, onDone }: { command: string;
         observeExit();
       }
     });
-    const input = term.onData((d) => id && void ptyWrite(id, d));
+    const input = term.onData((d) => id && !exited && void ptyWrite(id, d));
     const resize = term.onResize(({ cols, rows }) => id && void ptyResize(id, cols, rows));
     (async () => {
       try {

@@ -2,6 +2,7 @@
   "author": "Conductor Rebuild",
   "dedupe_key": "settings-login-input-after-exit",
   "main_sha": "87e6da16d981de85ee26c16fac14c00a45c62025",
+  "verified_current_main_sha": "0e34c1287a73c41d3cecb37e9dc48ce34a5df381",
   "archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
   "assets": {
     "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
