@@ -260,8 +260,11 @@ try {
   // Ask first, so Codex asks before running the command.
   await run(
     `const s = document.querySelector('.codex-access');
-     Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'ask');
-     s.dispatchEvent(new Event('change', { bubbles: true }));`,
+     window.__ocCodexAccessDiagnostics.capture('before-setter');
+     const setterReturn = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'ask');
+     window.__ocCodexAccessDiagnostics.capture('after-setter', null, setterReturn);
+     const dispatchReturn = s.dispatchEvent(new Event('change', { bubbles: true }));
+     return window.__ocCodexAccessDiagnostics.capture('after-dispatch', null, dispatchReturn);`,
   );
   assertCodexAccessSnapshot(await recordAccess("after-change"));
   pass("access menu defaults to Full access (Conductor's default) and is set to Ask first");

@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { ConfigSyncDialog } from "./ConfigSyncDialog";
 import { openUrl } from "../backend";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { currentSendKeyMode, effectiveShortcuts, type Overrides } from "../keybindings/overrides";
@@ -35,6 +36,7 @@ const shortcutGlyphs = (commandId: string, overrides: Overrides) => effectiveSho
  */
 export function GeneralPage({ settings, save }: Props) {
   const g = settings.general;
+  const [syncOpen, setSyncOpen] = useState(false);
   const { overrides } = useKeybindingOverrides();
   const followUp = enumPref(settings, "default_message_send_mode");
   return (
@@ -135,9 +137,9 @@ export function GeneralPage({ settings, save }: Props) {
         help="Copy skills, slash commands, and MCP servers between Claude Code and Codex."
         button="Sync"
         icon={<SyncIcon />}
-        disabled
-        onClick={() => undefined}
+        onClick={() => setSyncOpen(true)}
       />
+      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} />}
     </div>
   );
 }
