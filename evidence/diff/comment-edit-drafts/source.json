@@ -8,14 +8,14 @@
   "fixture_sha256": "487a0b6d0bb87c7325c865c864e0664f060c16d6e51d48981c250b511ec5ddf7",
   "product": {
     "baseline": "d40c6bb567f136f9bd6efa7f12d517d7430a0a736bc7d995721055bd5b5a881f",
-    "candidate": "16837e0203358d1a954fd50e8ce29e4aafd724d61a72f6e0e043439fa5f72aa2"
+    "candidate": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3"
   },
   "dependencies": {
     "src/features/diff/comments.ts": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800",
     "src/features/diff/commentStore.ts": "89b6dc1e8c4acd63482bdca83147d1eed286b06ef1bc40c25cbc25440c44af3c",
     "src/features/diff/nav.ts": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c",
-    "package.json": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
-    "package-lock.json": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1",
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
     "tsconfig.json": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5"
   },
   "reference": {

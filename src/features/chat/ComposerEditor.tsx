@@ -12,11 +12,12 @@ import { FileAtom, composerContent, inlineContent, linearDocument, partsFrom } f
 
 export interface ComposerSelection { text: string; start: number; end: number }
 export interface ComposerEditorHandle {
-  focus(): void;
+  focus(position?: "end"): void;
   blur(): void;
   visible(): boolean;
   focused(): boolean;
   composing(): boolean;
+  atTop?(): boolean;
   selection(): ComposerSelection;
   replaceRange(range: { start: number; end: number }, text: string): boolean;
   insertFile(range: { start: number; end: number }, file: { path: string; label: string; directory: boolean }): void;
@@ -144,11 +145,18 @@ export function ComposerEditor(props: Props) {
       return true;
     }
     const handle: ComposerEditorHandle = {
-      focus: () => { editor.view.focus(); },
+      focus: (position) => {
+        if (position === "end") editor.view.dispatch(editor.state.tr.setSelection(TextSelection.atEnd(editor.state.doc)));
+        editor.view.focus();
+      },
       blur: () => { editor.view.dom.blur(); },
       visible: () => editor.view.dom.offsetParent !== null,
       focused: () => editor.isFocused,
       composing: () => editor.view.composing,
+      atTop: () => {
+        const { selection, doc } = editor.state;
+        return editor.isEmpty || (selection.empty && doc.firstChild === selection.$from.parent && editor.view.endOfTextblock("up"));
+      },
       selection: () => snapshot(editor),
       replaceRange: (range, text) => {
         if (editor.view.composing) return false;
