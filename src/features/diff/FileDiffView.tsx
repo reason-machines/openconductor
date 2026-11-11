@@ -35,6 +35,8 @@ export type { LineRange };
 
 interface Props {
   file: FileDiff;
+  /** Inactive retained views keep their Code state but not global navigation. */
+  isVisible?: boolean;
   layout: DiffLayout;
   ignoreWhitespace: boolean;
   /** Wrap long lines instead of scrolling them sideways. */
@@ -99,7 +101,7 @@ export function revealLine(path: string, anchor: LineAnchor): boolean {
   return reveal !== undefined;
 }
 
-function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, loadFull, edit }: Props) {
+function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, selected = null, anchors = [], annotations, loadFull, edit, isVisible = true }: Props) {
   const themeType = useThemeType();
   const theme = useDiffTheme();
   const view = useRef<CodeViewHandle<LineAnchor, undefined> | null>(null);
@@ -180,12 +182,13 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
   );
 
   useEffect(() => {
+    if (!isVisible) return;
     const reveal = (a: LineAnchor) => view.current?.scrollTo(lineTarget(file.path, a, layout === "file"));
     revealers.set(file.path, reveal);
     return () => {
       if (revealers.get(file.path) === reveal) revealers.delete(file.path);
     };
-  }, [file.path, layout]);
+  }, [file.path, layout, isVisible]);
 
   if (!meta && layout !== "file") return <div className="oc-file-note">This diff couldn't be displayed.</div>;
   const code = (
@@ -210,7 +213,7 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
       ) : (
         code
       )}
-      <CommentNav previousCount={nav.previousCount} nextCount={nav.nextCount} navigate={nav.navigate} />
+      {isVisible && <CommentNav previousCount={nav.previousCount} nextCount={nav.nextCount} navigate={nav.navigate} />}
     </div>
   );
 }

@@ -1156,6 +1156,17 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
   const showFile = mainTab === "file" && fileTarget !== null && fileTarget.workspaceId === workspace.id && workspace.path !== undefined;
   const activeTab = showFile ? "file" : centerTerminal ? `terminal:${centerTerminal.id}` : showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
+  const lastDiffSession = useRef({ workspaceId: workspace.id, tab: "chat" });
+  if (mainTab === "chat" || activeReview) lastDiffSession.current = { workspaceId: workspace.id, tab: mainTab };
+  const activeDiffOwner = useRef({ workspaceId: workspace.id, tab: mainTab });
+  activeDiffOwner.current = { workspaceId: workspace.id, tab: mainTab };
+  const autoCloseDiffTab = useCallback(() => {
+    if (activeDiffOwner.current.workspaceId !== workspace.id || activeDiffOwner.current.tab !== "diff") return;
+    const previous = lastDiffSession.current;
+    const tab = previous.workspaceId === workspace.id && reviews.tabs.some((review) => review.chatId === previous.tab) ? previous.tab : "chat";
+    setDiffOpen(false);
+    setMainTab((current) => current === "diff" ? tab : current);
+  }, [workspace.id, reviews.tabs]);
   const prNumber = pullRequest.pr?.number ?? null;
   const [prMenu, setPrMenu] = useState<{ x: number; y: number } | null>(null);
   useEffect(() => {
@@ -1336,7 +1347,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
             showFile && fileTarget && workspace.path ? (
               <MarkdownFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} />
             ) : showDiff ? (
-              <DiffTab diff={diff} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />
+              <DiffTab diff={diff} onClose={autoCloseDiffTab} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />
             ) : showPr ? (
               <PrTab
                 worktree={workspace.path ?? null}
