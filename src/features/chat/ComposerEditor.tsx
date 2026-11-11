@@ -70,6 +70,11 @@ export function ComposerEditor(props: Props) {
           writingsuggestions: "false",
         },
         handleKeyDown: (_view, event) => {
+          if ((event.key === " " || event.code === "Space") && event.ctrlKey && !event.metaKey) {
+            event.preventDefault();
+            event.stopPropagation();
+            return true;
+          }
           if (event.isComposing || editor.view.composing || event.keyCode === 229) return false;
           if (event.key === "Delete" || event.key === "Backspace") syncSelection();
           current.current.onKeyDown(event);

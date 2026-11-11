@@ -1035,10 +1035,13 @@ async function emptyDiffCloseFixture(initialLoad: WorkspaceDiff["load"] = { stat
   const ownerPath = resolve("src/components/WorkspaceView.tsx");
   const ownerSource = ts.createSourceFile(ownerPath, readFileSync(ownerPath, "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   let owner;
+  let tabOfChat;
   for (const statement of ownerSource.statements) {
     if (ts.isFunctionDeclaration(statement) && statement.name?.text === "WorkspaceView") owner = statement;
+    if (ts.isFunctionDeclaration(statement) && statement.name?.text === "tabOfChat") tabOfChat = statement;
   }
   assert.ok(owner?.body);
+  assert.ok(tabOfChat);
   const statements = owner.body.statements;
   const declaration = (name: string) => {
     for (const statement of statements) {
@@ -1096,7 +1099,9 @@ async function emptyDiffCloseFixture(initialLoad: WorkspaceDiff["load"] = { stat
   assert.ok("DiffTab" in tabModule.exports && typeof tabModule.exports.DiffTab === "function");
   const probeSource = `
     const { useState, useRef, useCallback } = React;
+    ${tabOfChat.getText()}
     function Probe({ workspace, reviews, load, noMatchingFiles }) {
+      ${declaration("primaryId").getText()}
       ${declaration("[diffOpen, setDiffOpen]").getText()}
       ${declaration("[mainTab, setMainTab]").getText()}
       ${declaration("openDiffTab").getText()}

@@ -38,8 +38,9 @@ interface Props {
   commands: PaletteCommands;
 }
 
-/** What the palette's items do that the app shell owns (each mirrors its keyboard shortcut's handler). */
+/** App-shell commands available to the palette's actions. */
 export interface PaletteCommands {
+  createSection?: () => void;
   addProject: () => void;
   toggleTheme: () => void;
   toggleLeftSidebar: () => void;
@@ -98,7 +99,10 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
   const apps = useInstalledApps();
   const prefs = useAppPrefs();
   const { toasts, show, dismiss } = useToasts();
-  const data = useMemo(() => workspacePaletteData(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in), [state, recents, archived, settingEntries, apps, prefs.default_open_in]);
+  const data = useMemo(() => {
+    const entries = workspacePaletteData(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in);
+    return commands.createSection ? entries : { ...entries, actions: entries.actions.filter((entry) => entry.id !== "create-section") };
+  }, [state, recents, archived, settingEntries, apps, prefs.default_open_in, commands.createSection]);
   const archivedById = (id: string) => archived.find((a) => a.id === id);
   const showWorkspaceNumbers = useBoolPref("experimental_show_workspace_numbers");
 
@@ -110,6 +114,7 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
   const actions: Record<string, () => void> = {
     "archive-workspace": () => sel.kind === "workspace" && dispatch({ type: "archiveWorkspace", repoId: sel.repoId, workspaceId: sel.workspaceId }),
     "new-workspace": () => (activeRepoId ? onOpenDialog("create") : onOpenProject()),
+    "create-section": () => commands.createSection?.(),
     // Conductor opens the sidebar's add-project popover on the next frame (`b_a`, after the dialog closes).
     "add-project": () => requestAnimationFrame(commands.addProject),
     "toggle-theme": commands.toggleTheme,

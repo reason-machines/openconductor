@@ -45,6 +45,8 @@ export interface DbWorkspaceRow {
   chatTabs?: StoredChatTab[];
   /** The main chat's own title once renamed ("Rename chat"); absent otherwise and from rows of an older backend. */
   chatTitle?: string | null;
+  primaryChatId?: string;
+  activeSessionId?: string | null;
   /** The PR's title and body as last stored (`pr_title`, `pr_description`). */
   prTitle: string | null;
   prDescription: string | null;
@@ -106,6 +108,8 @@ export function workspaceFromRow(w: DbWorkspaceRow): Workspace {
     state: w.state,
     userSetWorkspaceName: w.userSetWorkspaceName || undefined,
     chatTitle: w.chatTitle ?? undefined,
+    primaryChatId: w.primaryChatId ?? w.id,
+    activeSessionId: w.activeSessionId ?? undefined,
   };
 }
 
@@ -137,15 +141,16 @@ export function reposFromDb(repos: DbRepoRow[], workspaces: DbWorkspaceRow[], co
  * marks the main chat.
  */
 export function unreadChatsOf(w: DbWorkspaceRow): UnreadChat[] | undefined {
-  const tabbed = (id: string) => id === w.id || (w.chatTabs?.some((t) => t.id === id) ?? false);
+  const primary = w.primaryChatId ?? w.id;
+  const tabbed = (id: string) => id === primary || (w.chatTabs?.some((t) => t.id === id) ?? false);
   const chats = (w.unreadChats ?? []).filter((c) => tabbed(c.id)).map((c) => ({ id: c.id, at: sqliteTime(c.updatedAt) }));
-  if (w.unread && chats.length === 0) chats.push({ id: w.id, at: sqliteTime(w.updatedAt ?? w.createdAt) });
+  if (w.unread && primary === w.id && chats.length === 0) chats.push({ id: primary, at: sqliteTime(w.updatedAt ?? w.createdAt) });
   return chats.length > 0 ? chats : undefined;
 }
 
 /** Show again the chat tabs that were open when the app last ran (`db_list_workspaces` rows). */
 export function restoreChatTabsOf(rows: readonly DbWorkspaceRow[]): void {
-  for (const w of rows) restoreChatTabs(w.id, w.chatTabs ?? []);
+  for (const w of rows) restoreChatTabs(w.id, w.chatTabs ?? [], w.primaryChatId ?? w.id);
 }
 
 /** Keep the selection only while it still points at a listed workspace. */
