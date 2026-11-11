@@ -18,6 +18,12 @@ interface KeybindingsContext {
 }
 
 const Context = createContext<KeybindingsContext | null>(null);
+const FocusedScope = createContext<boolean | undefined>(undefined);
+
+export function KeybindingScope({ focused, children }: { focused: boolean; children: ReactNode }) {
+  const parent = useContext(FocusedScope);
+  return <FocusedScope.Provider value={parent !== false && focused}>{children}</FocusedScope.Provider>;
+}
 
 interface Props {
   /** Reads the stored overrides once at startup (`keybinding_overrides_v1`). */
@@ -105,6 +111,7 @@ export function useKeybindings(handlers: CommandHandlers, options?: number | Bin
   const bindOptions: BindOptions = typeof options === "number" ? { priority: options } : (options ?? {});
   const optionsKey = JSON.stringify(bindOptions);
   const { dispatcher, overrides } = useKeybindingsContext();
+  const isFocusedScope = useContext(FocusedScope);
   const latest = useRef(handlers);
   latest.current = handlers;
   const ids = Object.keys(handlers)
@@ -114,6 +121,6 @@ export function useKeybindings(handlers: CommandHandlers, options?: number | Bin
   useEffect(() => {
     const proxies: CommandHandlers = {};
     for (const id of ids ? ids.split("\n") : []) proxies[id] = () => latest.current[id]?.();
-    return bindCommands(dispatcher, proxies, { overrides }, JSON.parse(optionsKey) as BindOptions);
-  }, [dispatcher, overrides, ids, optionsKey]);
+    return bindCommands(dispatcher, proxies, { overrides, isFocusedScope }, JSON.parse(optionsKey) as BindOptions);
+  }, [dispatcher, overrides, isFocusedScope, ids, optionsKey]);
 }
