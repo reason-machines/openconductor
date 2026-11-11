@@ -59,6 +59,52 @@ test("recents drop unknown ids and outrank creation time in the Workspaces tab",
   assert.deepEqual(order, ["workspace:a", "workspace:c", "workspace:b"]);
 });
 
+test("All search uses workspace updates while Recent and Workspaces keep their existing order", () => {
+  const active = [
+    { ...w("target-active-old", 100), updatedAt: 10 },
+    { ...w("target-active-new", 1), updatedAt: 200 },
+    w("target-active-fallback", 50),
+  ];
+  const archived = [
+    { ...w("target-archived-old", 100), status: "archived" as const, updatedAt: 10 },
+    { ...w("target-archived-new", 1), status: "archived" as const, updatedAt: 200 },
+    { ...w("target-archived-fallback", 50), status: "archived" as const },
+  ].map((workspace) => ({
+    id: workspace.id,
+    repoId: "r1",
+    name: workspace.name,
+    branch: workspace.branch,
+    createdAt: workspace.createdAt,
+    workspace,
+  }));
+  const source: AppState = {
+    ...state,
+    repos: [{ ...state.repos[0], workspaces: active }],
+    selection: { kind: "workspace", repoId: "r1", workspaceId: "target-active-old" },
+  };
+  const entries = paletteDataFromState(source, ["target-active-old", "target-archived-old", "target-active-new"], archived);
+  const recent = buildResults("all", "", entries).find((g) => g.id === "recent-workspaces");
+  assert.deepEqual(recent?.items.map((item) => item.id), [
+    "workspace:target-active-old",
+    "workspace:target-archived-old",
+    "workspace:target-active-new",
+  ]);
+  assert.deepEqual(buildResults("workspaces", "", entries)[0].items.map((item) => item.id), [
+    "workspace:target-active-old",
+    "workspace:target-active-new",
+    "workspace:target-active-fallback",
+  ]);
+  const matches = buildResults("all", "target", entries).find((g) => g.id === "workspaces");
+  assert.deepEqual(matches?.items.map((item) => item.id), [
+    "workspace:target-active-new",
+    "workspace:target-active-fallback",
+    "workspace:target-active-old",
+    "workspace:target-archived-new",
+    "workspace:target-archived-fallback",
+    "workspace:target-archived-old",
+  ]);
+});
+
 test("workspace actions appear only with a workspace selected", () => {
   const headings = (s: AppState) => buildResults("all", "", paletteDataFromState(s, [])).map((g) => g.heading);
   assert.ok(headings(state).includes("Workspace actions"));
@@ -89,6 +135,7 @@ test("archived workspaces from conductor.db join the palette data after the acti
     branch: "b-z",
     repoName: "api",
     lastActiveAt: 5 - Number.MAX_SAFE_INTEGER / 2,
+    updatedAt: 5,
     archived: true,
     number: null,
     label: "B z",
