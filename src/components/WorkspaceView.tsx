@@ -124,6 +124,8 @@ import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 import { RepoHeaderMenu } from "./RepoHeaderMenu";
 import { WorkspaceBranchHeader } from "./WorkspaceBranchHeader";
+import { WorkspaceNameHeader } from "./WorkspaceNameHeader";
+import type { NavSection } from "../state/navigationSections";
 import { SETUP_SCRIPT_PROMPT } from "../scripts/setupPrompt";
 
 interface Props {
@@ -135,6 +137,11 @@ interface Props {
   onNextUnread?: () => void;
   /** Whether a chat other than `selectedChatId` is unread: the button shows only then. */
   hasNextUnread?: (selectedChatId: string) => boolean;
+}
+
+interface WorkspaceViewProps extends Props {
+  sections: readonly NavSection[];
+  onNewSection: (workspace: Workspace) => void;
 }
 
 // In the desktop app the workspace's own chat runs the agent picked in the
@@ -753,7 +760,7 @@ function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, rev
   const count = diff.load.state === "ready" ? diff.files.length : null;
   const checksStatus = pr.pr?.status?.checks.status ?? null;
   const files = useFilesToolbar();
-  const { presentation, update: updatePresentation } = useChangesPresentation(workspaceId);
+  const { presentation, ready: presentationReady, update: updatePresentation } = useChangesPresentation(workspaceId);
   const [filterOpen, setFilterOpen] = useState(false);
   useEffect(() => setFilterOpen(false), [workspaceId]);
   const revealedFile = useRef<{ workspaceId: string; path: string } | null>(null);
@@ -815,7 +822,7 @@ function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, rev
         </span>
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} worktree={worktree} emptyAction={emptyAction} filter={filter} notify={notify} view={presentation.diffFileListMode} collapsed={new Set(presentation.collapsedDirectoryPaths)} toggleDirectory={toggleDirectory} />
+        <ChangesList diff={diff} actions={actions} worktree={worktree} activeFilePath={presentationReady ? activeFilePath : undefined} emptyAction={emptyAction} filter={filter} notify={notify} view={presentation.diffFileListMode} collapsed={new Set(presentation.collapsedDirectoryPaths)} toggleDirectory={toggleDirectory} />
       ) : tab === "checks" ? (
         <ChecksTab
           worktree={worktree}
@@ -976,7 +983,7 @@ function TargetChip({ target, open, setOpen, repo, variant = "header" }: { targe
   );
 }
 
-export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread, hasNextUnread }: Props) {
+export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onNewSection, onNextUnread, hasNextUnread }: WorkspaceViewProps) {
   const primaryId = workspace.primaryChatId ?? workspace.id;
   // The right panel's Setup / Run / Terminal strip: open on Run, like Conductor.
   // ⌘J hides or shows the right panel; Big terminals live in the center.
@@ -1351,7 +1358,16 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
         <div className="ws-title">
           <RepoHeaderMenu repo={repo} onError={(message) => notify?.("error", message)} />
           <span className="crumb-sep">/</span>
-          <strong>{workspace.name}</strong>
+          <WorkspaceNameHeader
+            key={workspace.id}
+            repoId={repo.id}
+            workspace={workspace}
+            sections={sections}
+            dispatch={dispatch}
+            onNewSection={onNewSection}
+            onCopyLink={(ws) => void copyWorkspaceLink(ws.id).then(({ kind, message }) => notify?.(kind, message))}
+            onError={(message) => notify?.("error", message)}
+          />
           <WorkspaceBranchHeader repoId={repo.id} workspace={workspace} dispatch={dispatch} onError={(message) => notify?.("error", message)} />
           <TargetChip target={target} open={pickingTarget} setOpen={setPickingTarget} repo={repo} />
           {prNumber !== null && (

@@ -1,0 +1,248 @@
+{
+  "unit": "ROW_SCROLL_V3_CANDIDATE7_ONLY",
+  "status": "PASS7_EXIT0_AFTER_QUALIFIED_REUSED_V2_RED6ASSERT1CONTROL",
+  "qualification": {
+    "status": "SOURCE_ONLY_READY_NOT_ADMITTED",
+    "archive_sha256": "128363fb3899d1079b5cd103f6f6616d35d211939a28642a302485b943e9e2a4",
+    "packet_sha256": "4301c3dfebec2d6ccfc23a913a9468a5f94123f45f46745e5fada1dea3576519",
+    "all17_baseline_byteidentical_to_existing_executed_v2_red": [
+      {
+        "path": "src/components/WorkspaceView.tsx",
+        "sha256": "275992cd7f3fb63597d24e45c1cca2502285bd985fa20029bbf63660a0b91f9f"
+      },
+      {
+        "path": "src/features/diff/ChangesList.tsx",
+        "sha256": "bbe884a50120ed90fbc3a1b50fc0a94829940e5ca9451d7e49d8fd48c5fb9b8c"
+      },
+      {
+        "path": "src/features/diff/ChangesToolbar.tsx",
+        "sha256": "42df4f59dd58bd87420bf5ccb299f4751ffaa1ce2926fb17630d35abb646777d"
+      },
+      {
+        "path": "src/features/diff/DiffViewer.tsx",
+        "sha256": "cccee3ab384da094d2d01da32bbf5e1b3cd5bceee5727b441ef77d7462d0a033"
+      },
+      {
+        "path": "src/features/diff/FilePathChip.tsx",
+        "sha256": "0cbc5906f7e8ce258e5e2f13c9d0baf0363dd26d77a71317b7209db09efa0a62"
+      },
+      {
+        "path": "src/features/diff/changesFilter.ts",
+        "sha256": "d64fa6ad922c03292f7984e0e9e65ab637ca2e36d86401fcd7717f85f58a5d0a"
+      },
+      {
+        "path": "src/features/diff/changesPresentation.ts",
+        "sha256": "42401fc7ff3ee932dce5800c8c020c73350e826a55b90ab6f9824664fde9360a"
+      },
+      {
+        "path": "src/features/diff/changesTree.ts",
+        "sha256": "17e591f08a7b271c7c6eac8dba1d3f952719b689efa2f5b9ca4dc7f218916b70"
+      },
+      {
+        "path": "src/features/diff/fileCopyPaths.ts",
+        "sha256": "2c7c8f3e06e40ee925d1c855aeba8a0c9456baebbd058a6a5553cc624b24f674"
+      },
+      {
+        "path": "src/features/diff/renameDisplayPath.ts",
+        "sha256": "2035e03045b4d695c90f5fa9e650b3240a9b57542c33056c5cbf25c3357d9fc0"
+      },
+      {
+        "path": "src/features/diff/selectedReveal.test.ts",
+        "sha256": "f37729569d4d2a82d47123113dde98f23762fa0f1afe3664463aec299a9db3c5"
+      },
+      {
+        "path": "src/features/diff/types.ts",
+        "sha256": "37f4ee973e762d4818b517a53c0b0eb4a548aa87ac8cafbf738feba58bc0794b"
+      },
+      {
+        "path": "src/features/diff/useChangesPresentation.ts",
+        "sha256": "2f5c3175e0886926b462bcb5c3a4c5a7f2a8d7aa23407bf15cc57f3706c3a98d"
+      },
+      {
+        "path": "src/features/diff/useWorkspaceDiff.ts",
+        "sha256": "8b0de3c5bdd848c484e30aecc18c79b7c99eae818412352131d50806f5830b53"
+      },
+      {
+        "path": "src/features/files/tree.ts",
+        "sha256": "eb2af1ab025dbd6bf4e33a8e3c9a2916b13777f6396388008ff4f8ea81f330f2"
+      },
+      {
+        "path": "src/keybindings/fuzzy.ts",
+        "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c"
+      },
+      {
+        "path": "src/lib/local-storage/subsystems.ts",
+        "sha256": "4851ad02730dbe9197a185e006c8803a6b82126d0ab508b0bc84f93f8748a963"
+      }
+    ],
+    "fixture_unchanged": true,
+    "candidates": {
+      "ChangesList.tsx": "34240b90edc7612a16fcc61d3f4fa3681b0b3d374f56cd588ddad8fb35deaaaa",
+      "WorkspaceView.tsx": "9156b2303c8cfd3dc3f01f71d8e821e6fff3a6740fc4118dc8c0ed19b5d8d896",
+      "changesPresentation.ts": "94e9f4c842d7525e364f902dc0a8d195bb80b0260738821e7dddf9ff68f0dc4d",
+      "useChangesPresentation.ts": "f5c849770c370f63a5e25352110928e03ad6ceefd25d783aaa510423127509b9"
+    },
+    "changesList_byteidentical_v2_candidate": true,
+    "prior_receipt_preserved": true,
+    "prior_qualified_RED_reused_no_duplicate_baseline": true,
+    "new_Node_setup_candidate_application": false
+  },
+  "original_and_v2_actual_receipt": {
+    "unit": "DIFF-SELECTED-ROW-SCROLL-01",
+    "version": 2,
+    "status": "STOP_CANDIDATE5PASS2ASSERTIONFAIL_NOT_GREEN",
+    "qualification": {
+      "unit": "DIFF-SELECTED-ROW-SCROLL-01",
+      "version": 2,
+      "archive": "44c59e72e58c463cf97af4fc04e7447fbe7335bbfcd16dc5f6d208bf5356fbdb",
+      "fixture_sha256": "7043501cfea2ce48d956ea4728abfd531a93058327b243e2291a014297cd3a9f",
+      "one_option_insertion_actual_byte_proof": true,
+      "complete_seven_case_tail_actual_byte_equal": true,
+      "all17production_inputs_actual_byte_equal": true,
+      "original_stop_receipt_actual_byte_equal": true,
+      "same_product_patch_sha256": "d8d351e81fca4bb9c2db75259fc70dc21cd569e2a9631c2c6ac17b83f12737d9",
+      "no_package_or_dependency_change": true,
+      "preflight_inspector_correction": "Initialstaticguardassumedoptionatend; actualinsertbeforetarget, nowexactoptionremovalprovesoldbytes. No priorV2tree/Node/admissionoccurred.",
+      "candidate_NOT_applied": true,
+      "Node_NOT_started": true
+    },
+    "baseline": {
+      "runner": {
+        "started_utc": "2026-11-11T10:46:14.052642+00:00",
+        "finished_utc": "2026-11-11T10:46:15.584035+00:00",
+        "command": [
+          "timeout",
+          "--kill-after=5s",
+          "60s",
+          "bash",
+          "-c",
+          "cd .rea-work/ui-runtime/row-scroll-v2/red && exec node --test --test-concurrency=1 src/features/diff/selectedRowScroll.test.ts"
+        ],
+        "wall_seconds": 1.531,
+        "process_exit": 1,
+        "limit_reason": null,
+        "wall_limit_seconds": 70.0,
+        "max_added_bytes": 16777216,
+        "initial_bytes": 66576418,
+        "final_bytes": 66583630,
+        "peak_observed_bytes": 66583630,
+        "added_bytes": 7212,
+        "peak_added_bytes": 7212,
+        "process_terminal": true
+      },
+      "tests": 7,
+      "intended_assertion_fail": 6,
+      "control_pass": 1,
+      "setup_errors": false,
+      "stdout_unmodified": "TAP version 13\n# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: new active diff selection scrolls its real rendered row after ancestors open\nnot ok 1 - new active diff selection scrolls its real rendered row after ancestors open\n  ---\n  duration_ms: 324.896963\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:223:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    the active file row receives one DOM scroll request\n    + actual - expected\n    \n    + []\n    - [\n    -   'src/nested/target.ts'\n    - ]\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n    0: 'src/nested/target.ts'\n  actual:\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:230:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n# Subtest: manual re-collapse and ordinary renders do not repeat a successful selection scroll\nnot ok 2 - manual re-collapse and ordinary renders do not repeat a successful selection scroll\n  ---\n  duration_ms: 141.544436\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:236:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n    + []\n    - [\n    -   'src/nested/target.ts'\n    - ]\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n    0: 'src/nested/target.ts'\n  actual:\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:239:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: a filtered-out selected row waits for visibility and a newer selection cancels the pending row\nnot ok 3 - a filtered-out selected row waits for visibility and a newer selection cancels the pending row\n  ---\n  duration_ms: 112.508784\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:253:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n    + []\n    - [\n    -   'src/nested/target.ts'\n    - ]\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n    0: 'src/nested/target.ts'\n  actual:\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:259:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: the same selected path in another workspace scrolls that workspace's mounted row\nnot ok 4 - the same selected path in another workspace scrolls that workspace's mounted row\n  ---\n  duration_ms: 108.117742\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:270:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n    + []\n    - [\n    -   'src/nested/target.ts'\n    - ]\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n    0: 'src/nested/target.ts'\n  actual:\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:273:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: only a file target in the current workspace reaches the row-scroll consumer\nnot ok 5 - only a file target in the current workspace reaches the row-scroll consumer\n  ---\n  duration_ms: 107.809998\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:283:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n    + []\n    - [\n    -   'src/nested/target.ts'\n    - ]\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n    0: 'src/nested/target.ts'\n  actual:\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:290:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: leaving file content cancels a hidden selection's pending scroll\nnot ok 6 - leaving file content cancels a hidden selection's pending scroll\n  ---\n  duration_ms: 103.676286\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:299:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n    + []\n    - [\n    -   'src/nested/target.ts'\n    - ]\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n    0: 'src/nested/target.ts'\n  actual:\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/red/src/features/diff/selectedRowScroll.test.ts:307:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: inactive and absent file paths never issue a scroll request\nok 7 - inactive and absent file paths never issue a scroll request\n  ---\n  duration_ms: 109.754518\n  type: 'test'\n  ...\n1..7\n# tests 7\n# suites 0\n# pass 1\n# fail 6\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1357.894072\n",
+      "stderr_unmodified": "(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    "candidate": {
+      "runner": {
+        "started_utc": "2026-11-11T10:47:01.814838+00:00",
+        "finished_utc": "2026-11-11T10:47:03.676071+00:00",
+        "command": [
+          "timeout",
+          "--kill-after=5s",
+          "60s",
+          "bash",
+          "-c",
+          "cd .rea-work/ui-runtime/row-scroll-v2/green && exec node --test --test-concurrency=1 src/features/diff/selectedRowScroll.test.ts"
+        ],
+        "wall_seconds": 1.861,
+        "process_exit": 1,
+        "limit_reason": null,
+        "wall_limit_seconds": 70.0,
+        "max_added_bytes": 16777216,
+        "initial_bytes": 66994115,
+        "final_bytes": 66997886,
+        "peak_observed_bytes": 66997886,
+        "added_bytes": 3771,
+        "peak_added_bytes": 3771,
+        "process_terminal": true
+      },
+      "tests": 7,
+      "pass": 5,
+      "fail": 2,
+      "cases_failed": [
+        3,
+        6
+      ],
+      "failure": "initialscrolls actual[target] expected[] at256/302 in savedqueryroot cases; failures occur BEFOREquery-clearing/cancel steps",
+      "stdout_unmodified": "TAP version 13\n# (node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: new active diff selection scrolls its real rendered row after ancestors open\nok 1 - new active diff selection scrolls its real rendered row after ancestors open\n  ---\n  duration_ms: 433.49952\n  type: 'test'\n  ...\n# Subtest: manual re-collapse and ordinary renders do not repeat a successful selection scroll\nok 2 - manual re-collapse and ordinary renders do not repeat a successful selection scroll\n  ---\n  duration_ms: 250.47078\n  type: 'test'\n  ...\n# Subtest: a filtered-out selected row waits for visibility and a newer selection cancels the pending row\nnot ok 3 - a filtered-out selected row waits for visibility and a newer selection cancels the pending row\n  ---\n  duration_ms: 132.835422\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/green/src/features/diff/selectedRowScroll.test.ts:253:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n    + [\n    +   'src/nested/target.ts'\n    + ]\n    - []\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n  actual:\n    0: 'src/nested/target.ts'\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/green/src/features/diff/selectedRowScroll.test.ts:256:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: the same selected path in another workspace scrolls that workspace's mounted row\nok 4 - the same selected path in another workspace scrolls that workspace's mounted row\n  ---\n  duration_ms: 110.990851\n  type: 'test'\n  ...\n# Subtest: only a file target in the current workspace reaches the row-scroll consumer\nok 5 - only a file target in the current workspace reaches the row-scroll consumer\n  ---\n  duration_ms: 135.390519\n  type: 'test'\n  ...\n# Subtest: leaving file content cancels a hidden selection's pending scroll\nnot ok 6 - leaving file content cancels a hidden selection's pending scroll\n  ---\n  duration_ms: 100.179783\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/green/src/features/diff/selectedRowScroll.test.ts:299:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly deep-equal:\n    + actual - expected\n    \n    + [\n    +   'src/nested/target.ts'\n    + ]\n    - []\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n  actual:\n    0: 'src/nested/target.ts'\n  operator: 'deepStrictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/row-scroll-v2/green/src/features/diff/selectedRowScroll.test.ts:302:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: inactive and absent file paths never issue a scroll request\nok 7 - inactive and absent file paths never issue a scroll request\n  ---\n  duration_ms: 100.814131\n  type: 'test'\n  ...\n1..7\n# tests 7\n# suites 0\n# pass 5\n# fail 2\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1674.803654\n",
+      "stderr_unmodified": "(node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n",
+      "source_changed_only": [
+        "src/components/WorkspaceView.tsx",
+        "src/features/diff/ChangesList.tsx"
+      ],
+      "candidate_hashes": {
+        "src/components/WorkspaceView.tsx": "925e541a33793c5fb2a2311ec6ea3886903642500fb6da43b3647f8dd4eeba74",
+        "src/features/diff/ChangesList.tsx": "34240b90edc7612a16fcc61d3f4fa3681b0b3d374f56cd588ddad8fb35deaaaa"
+      }
+    },
+    "original_stop_preserved": {
+      "attachment": "1db72be3-2fd7-408d-b1c4-d7e5c7f62da0",
+      "sha256": "fbe8924aa40f87a05a984b735f2811b71ea5700c5b846648090dc4ff753a93e1"
+    },
+    "source_fixture_package_unchanged_after_run": true,
+    "no_retry_or_assertion_change": true,
+    "no_tsc_build_lint_native_browser_provider": true,
+    "tracked_tree_unchanged": true,
+    "next": "Source-owningde6diagnoserootcause/minimalcandidateversion; preserveall7assertions. No furtherNodeuntilseparateadmission."
+  },
+  "original_stop_attachment": "1db72be3-2fd7-408d-b1c4-d7e5c7f62da0",
+  "v2_failure_attachment": "6d2d8898-616f-42b3-8424-ab4075de1755",
+  "v3": {
+    "runner": {
+      "started_utc": "2026-11-11T11:03:02.178681+00:00",
+      "finished_utc": "2026-11-11T11:03:03.782731+00:00",
+      "command": [
+        "timeout",
+        "--kill-after=5s",
+        "60s",
+        "bash",
+        "-c",
+        "cd .rea-work/ui-runtime/row-scroll-v3/green && exec node --test --test-concurrency=1 src/features/diff/selectedRowScroll.test.ts"
+      ],
+      "wall_seconds": 1.604,
+      "process_exit": 0,
+      "limit_reason": null,
+      "wall_limit_seconds": 70.0,
+      "max_added_bytes": 16777216,
+      "initial_bytes": 67588696,
+      "final_bytes": 67590742,
+      "peak_observed_bytes": 67590742,
+      "added_bytes": 2046,
+      "peak_added_bytes": 2046,
+      "process_terminal": true
+    },
+    "stdout_unmodified": "TAP version 13\n# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: new active diff selection scrolls its real rendered row after ancestors open\nok 1 - new active diff selection scrolls its real rendered row after ancestors open\n  ---\n  duration_ms: 377.410281\n  type: 'test'\n  ...\n# Subtest: manual re-collapse and ordinary renders do not repeat a successful selection scroll\nok 2 - manual re-collapse and ordinary renders do not repeat a successful selection scroll\n  ---\n  duration_ms: 177.621728\n  type: 'test'\n  ...\n# Subtest: a filtered-out selected row waits for visibility and a newer selection cancels the pending row\nok 3 - a filtered-out selected row waits for visibility and a newer selection cancels the pending row\n  ---\n  duration_ms: 128.820801\n  type: 'test'\n  ...\n# Subtest: the same selected path in another workspace scrolls that workspace's mounted row\nok 4 - the same selected path in another workspace scrolls that workspace's mounted row\n  ---\n  duration_ms: 107.188187\n  type: 'test'\n  ...\n# Subtest: only a file target in the current workspace reaches the row-scroll consumer\nok 5 - only a file target in the current workspace reaches the row-scroll consumer\n  ---\n  duration_ms: 101.472701\n  type: 'test'\n  ...\n# Subtest: leaving file content cancels a hidden selection's pending scroll\nok 6 - leaving file content cancels a hidden selection's pending scroll\n  ---\n  duration_ms: 95.021646\n  type: 'test'\n  ...\n# Subtest: inactive and absent file paths never issue a scroll request\nok 7 - inactive and absent file paths never issue a scroll request\n  ---\n  duration_ms: 109.673273\n  type: 'test'\n  ...\n1..7\n# tests 7\n# suites 0\n# pass 7\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1445.739689\n",
+    "stderr_unmodified": "(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n",
+    "actual_pass": 7,
+    "actual_fail": 0,
+    "candidate_hashes": {
+      "ChangesList.tsx": "34240b90edc7612a16fcc61d3f4fa3681b0b3d374f56cd588ddad8fb35deaaaa",
+      "WorkspaceView.tsx": "9156b2303c8cfd3dc3f01f71d8e821e6fff3a6740fc4118dc8c0ed19b5d8d896",
+      "changesPresentation.ts": "94e9f4c842d7525e364f902dc0a8d195bb80b0260738821e7dddf9ff68f0dc4d",
+      "useChangesPresentation.ts": "f5c849770c370f63a5e25352110928e03ad6ceefd25d783aaa510423127509b9"
+    },
+    "fixture_sha256": "7043501cfea2ce48d956ea4728abfd531a93058327b243e2291a014297cd3a9f",
+    "changed_exactly": [
+      "src/components/WorkspaceView.tsx",
+      "src/features/diff/useChangesPresentation.ts",
+      "src/features/diff/changesPresentation.ts",
+      "src/features/diff/ChangesList.tsx"
+    ]
+  },
+  "samefixture_assertions_original17inputs_preserved": true,
+  "baseline_not_rerun": true,
+  "no_Node_retry": true,
+  "preflight_inspector_correction_NOT_RUNTIME": {
+    "no_admission_or_runtime_started": true,
+    "cause": "inspector compared V3 imports against originalRED instead of executedV2; V2 alreadyaddsReactuseRef. Exactimports byteidentical V3 versusexecutedV2 all4 paths. No source/dependency change or Node retry. Existingbaseline-onlyprivateTreeverified/reused."
+  },
+  "no_install_export_tsc_build_lint_browser_native_provider_geometry_or_reference_eval": true,
+  "tracked_tree_unchanged": true,
+  "release": "2026-11-11T11:03:03.782731+00:00",
+  "owner_next": "de6 ordinary ready-mainPR/normalCI/protectedmerge/consuming-package; no newapprovalgates. Headless productioncomponent scrollREQUEST parity only, not native/geometry/visual acceptance."
+}

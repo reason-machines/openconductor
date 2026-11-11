@@ -1,0 +1,22 @@
+{
+  "author": "Conductor Rebuild",
+  "delivery_base": "2ad07c052a3e31daf1839f6dc3c3737836cf5539",
+  "receipt_sha256": "28285f931e8757e49a5251168251ed22848e59b52d9a5701e81dce798a74cb82",
+  "fixture_sha256": "9983095ab54b82579683b0122698238e300fc4e16e7938e7d884f0041668c543",
+  "candidate_session_sha256": "8560deacd82ccec6a8442494b38c887a0e81fe44d271839c9e79888029a0a235",
+  "candidate_patch_sha256": "108e18d986794760380c4a451074afefcbe0e921dfdbe2192d1fb0de34d2c97b",
+  "frozen_archive_sha256": "5ec11b6cff403cd634a509068ac7a120d85e55df616063a264ef6d83f334bc88",
+  "retained_span_hashes_verified": 19,
+  "current_main_source_pins_verified": 24,
+  "red": {
+    "intended_assertion_failures": 7,
+    "passing_controls": 3
+  },
+  "green": {
+    "passes": 10,
+    "failures": 0
+  },
+  "targeted_color_lint": "passed",
+  "local_runtime_repeated": false,
+  "native_pty_kernel_history_xterm_visual": "unverified"
+}
