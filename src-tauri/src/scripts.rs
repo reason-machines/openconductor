@@ -129,6 +129,23 @@ pub fn run_script_stop(
 }
 
 #[tauri::command]
+pub async fn run_script_write(
+    scripts: State<'_, ScriptService>,
+    workspace_id: String,
+    script_id: String,
+    run_id: String,
+    data: String,
+) -> Result<bool, String> {
+    let runs = scripts.runs.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        runs.write(&workspace_id, &script_id, &run_id, data.as_bytes())
+    })
+    .await
+    .map_err(|e| e.to_string())?
+    .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 pub fn run_script_status(scripts: State<'_, ScriptService>, workspace_id: String) -> RunStatusDto {
     RunStatusDto {
         runs: scripts.runs.statuses(&workspace_id),

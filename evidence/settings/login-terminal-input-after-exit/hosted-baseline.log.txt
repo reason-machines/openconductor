@@ -1,0 +1,88 @@
+2026-11-11T22:35:12.9400009Z # Subtest: exited login shells do not dispatch further input
+2026-11-11T22:35:12.9400775Z not ok 2583 - exited login shells do not dispatch further input
+2026-11-11T22:35:12.9401340Z   ---
+2026-11-11T22:35:12.9401841Z   duration_ms: 187.652683
+2026-11-11T22:35:12.9432115Z   type: 'test'
+2026-11-11T22:35:12.9462525Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalInputAfterExit.test.ts:48:1'
+2026-11-11T22:35:12.9472308Z   failureType: 'testCodeFailure'
+2026-11-11T22:35:12.9472796Z   error: |-
+2026-11-11T22:35:12.9473318Z     Exited login shells must not dispatch stdin to a dead PTY
+2026-11-11T22:35:12.9473866Z     + actual - expected
+2026-11-11T22:35:12.9474224Z
+2026-11-11T22:35:12.9474541Z     + [
+2026-11-11T22:35:12.9474847Z     +   {
+2026-11-11T22:35:12.9475208Z     +     data: 'echo after-exit\r',
+2026-11-11T22:35:12.9475653Z     +     id: 'login-pty'
+2026-11-11T22:35:12.9476017Z     +   }
+2026-11-11T22:35:12.9476323Z     + ]
+2026-11-11T22:35:12.9476630Z     - []
+2026-11-11T22:35:12.9476944Z
+2026-11-11T22:35:12.9477261Z   code: 'ERR_ASSERTION'
+2026-11-11T22:35:12.9477637Z   name: 'AssertionError'
+2026-11-11T22:35:12.9477992Z   expected:
+2026-11-11T22:35:12.9478302Z   actual:
+2026-11-11T22:35:12.9478610Z     0:
+2026-11-11T22:35:12.9478921Z       id: 'login-pty'
+2026-11-11T22:35:12.9479297Z       data: 'echo after-exit\r'
+2026-11-11T22:35:12.9479704Z   operator: 'deepStrictEqual'
+2026-11-11T22:35:12.9480092Z   stack: |-
+2026-11-11T22:35:12.9481003Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalInputAfterExit.test.ts:55:12)
+2026-11-11T22:35:12.9482182Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:35:12.9482957Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T22:35:12.9483533Z   ...
+2026-11-11T22:35:12.9484378Z # Subtest: a completed login shell stops dispatching input after its later exit
+2026-11-11T22:35:12.9485286Z not ok 2584 - a completed login shell stops dispatching input after its later exit
+2026-11-11T22:35:12.9485843Z   ---
+2026-11-11T22:35:12.9486174Z   duration_ms: 116.154731
+2026-11-11T22:35:12.9486538Z   type: 'test'
+2026-11-11T22:35:12.9487384Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalInputAfterExit.test.ts:60:1'
+2026-11-11T22:35:12.9488312Z   failureType: 'testCodeFailure'
+2026-11-11T22:35:12.9488705Z   error: |-
+2026-11-11T22:35:12.9489166Z     Command completion must not keep an exited PTY writable
+2026-11-11T22:35:12.9489671Z     + actual - expected
+2026-11-11T22:35:12.9490011Z
+2026-11-11T22:35:12.9490317Z     + [
+2026-11-11T22:35:12.9490616Z     +   {
+2026-11-11T22:35:12.9491000Z     +     data: 'echo after-completed-exit\r',
+2026-11-11T22:35:12.9491451Z     +     id: 'login-pty'
+2026-11-11T22:35:12.9491946Z     +   }
+2026-11-11T22:35:12.9492251Z     + ]
+2026-11-11T22:35:12.9492572Z     - []
+2026-11-11T22:35:12.9492871Z
+2026-11-11T22:35:12.9493179Z   code: 'ERR_ASSERTION'
+2026-11-11T22:35:12.9493537Z   name: 'AssertionError'
+2026-11-11T22:35:12.9493892Z   expected:
+2026-11-11T22:35:12.9494197Z   actual:
+2026-11-11T22:35:12.9494495Z     0:
+2026-11-11T22:35:12.9494811Z       id: 'login-pty'
+2026-11-11T22:35:12.9495216Z       data: 'echo after-completed-exit\r'
+2026-11-11T22:35:12.9495649Z   operator: 'deepStrictEqual'
+2026-11-11T22:35:12.9496221Z   stack: |-
+2026-11-11T22:35:12.9497104Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalInputAfterExit.test.ts:68:12)
+2026-11-11T22:35:12.9498128Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T22:35:12.9498828Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T22:35:12.9499393Z   ...
+2026-11-11T22:35:12.9499942Z # Subtest: running login shells still dispatch input to their own PTY
+2026-11-11T22:35:12.9500730Z ok 2585 - running login shells still dispatch input to their own PTY
+2026-11-11T22:35:12.9501244Z   ---
+2026-11-11T22:35:12.9501676Z   duration_ms: 109.918561
+2026-11-11T22:35:12.9502100Z   type: 'test'
+2026-11-11T22:35:12.9502420Z   ...
+2026-11-11T22:35:12.9502896Z # Subtest: completed but live login shells remain writable
+2026-11-11T22:35:12.9503532Z ok 2586 - completed but live login shells remain writable
+2026-11-11T22:35:12.9503992Z   ---
+2026-11-11T22:35:12.9504315Z   duration_ms: 94.470777
+2026-11-11T22:35:12.9504665Z   type: 'test'
+2026-11-11T22:35:12.9504973Z   ...
+2026-11-11T22:35:12.9505503Z # Subtest: a foreign PTY exit cannot disable this login shell's input
+2026-11-11T22:35:12.9506232Z ok 2587 - a foreign PTY exit cannot disable this login shell's input
+2026-11-11T22:35:12.9506727Z   ---
+2026-11-11T22:35:12.9507040Z   duration_ms: 108.259312
+2026-11-11T22:35:12.9507396Z   type: 'test'
+2026-11-11T22:35:12.9507731Z   ...
+2026-11-11T22:35:12.9508235Z # Subtest: dismissed logins ignore stale matching exit callbacks
+2026-11-11T22:35:12.9508925Z ok 2588 - dismissed logins ignore stale matching exit callbacks
+2026-11-11T22:35:12.9509474Z   ---
+2026-11-11T22:35:12.9509785Z   duration_ms: 74.535135
+2026-11-11T22:35:12.9510138Z   type: 'test'
+2026-11-11T22:35:12.9510469Z   ...

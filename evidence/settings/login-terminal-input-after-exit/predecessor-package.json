@@ -1,0 +1,34 @@
+{
+  "owner": "Conductor Rebuild",
+  "pr": "https://github.com/reason-machines/openconductor/pull/1084",
+  "merged_main_commit": "87e6da16d981de85ee26c16fac14c00a45c62025",
+  "tested_pr_head": "6d926d9f59e799a78a2455479d3193eed6474097",
+  "pr_exact_head_checks": {
+    "passed": 22,
+    "failed": 0
+  },
+  "package_run": "https://github.com/reason-machines/openconductor/actions/runs/43111623812",
+  "package_run_head": "87e6da16d981de85ee26c16fac14c00a45c62025",
+  "package_job": 130828836029,
+  "package_conclusion": "success",
+  "artifact_id": 13896816691,
+  "artifact_size": 64482929,
+  "artifact_sha256": "01c02e83e8435444988ab6ae4c5c40838654be28f6ffc2d3ac132862fbae2a6e",
+  "github_artifact_digest_matches": true,
+  "bundle_zip_sha256": "963c31a2a4f878d3b6398240da559f795f9e998f225bd5e408bc8b272800998c",
+  "bundle_check_sha256": "819701251e7c950f141ec4dc4fdd08e04c9a095746d8cac0f12702f3dcc08acf",
+  "bundle_checks": {
+    "passed": 39,
+    "failed": 0
+  },
+  "bundle_archive_members": 20,
+  "binary_sha256": "a7e9675bffe66baaaffb6dec51d340cbe7c5f2718f2fa0fea1bbe929a7696b7d",
+  "static_archive_verification": "PASS",
+  "verification_host": "Reason Cloud Linux; bundle built and signed on hosted macOS",
+  "native_app_execution": "NOT_RUN",
+  "provider_realIPC_visual_acceptance": "NOT_RUN",
+  "limits": [
+    "Hosted bundle report verifies signing; Linux inspection did not independently run codesign.",
+    "The exact consuming-main archive proves packaging, not native output flow control or provider acceptance."
+  ]
+}
