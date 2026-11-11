@@ -88,10 +88,11 @@
     "historical_v1": "FAILED 19 passed, 1 mention setup failure",
     "historical_v2_controls": "PASSED 2/2",
     "historical_v2_candidate": "PASSED 20/20",
-    "current_main_candidate": "NOT_RUN",
+    "current_main_candidate": "PASSED 20/20 on published3a04378db67472fc3f3bb7444fbac4ba540aa941, containing main31b675fb; exact original V2 fixture; no skips",
     "regressions": "NOT_RUN",
     "typecheck": "NOT_RUN",
     "native_parity": "NOT_RUN"
   },
-  "scope": "Only queue-focus and first-visual-line hunks are transplanted. PLAN1055 Props.onSubmit and async draft-clear handling remain unchanged. Historical manifests and fixture bytes are not repinned."
+  "scope": "Only queue-focus and first-visual-line hunks are transplanted. PLAN1055 Props.onSubmit and async draft-clear handling remain unchanged. Historical manifests and fixture bytes are not repinned.",
+  "current_main_candidate_receipt_sha256": "77cf345aba41d73fda9fde4885bad388253232ba1024895e6e253c5ed9382f05"
 }
