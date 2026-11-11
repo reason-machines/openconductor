@@ -1,14 +1,22 @@
 import { createServer } from "node:http";
 
 export function createAgentBinaryReleaseFixture(payload) {
+  let failureBarrier = null;
   const fixture = {
     mode: "fail",
     requests: [],
     async holdFailuresUntil(ready) {
-      return ready();
+      let release;
+      failureBarrier = new Promise((resolve) => { release = resolve; });
+      try {
+        return await ready();
+      } finally {
+        failureBarrier = null;
+        release();
+      }
     },
   };
-  fixture.server = createServer((req, res) => {
+  fixture.server = createServer(async (req, res) => {
     const request = { path: req.url, mode: fixture.mode, status: null, finished: false };
     fixture.requests.push(request);
     res.on("finish", () => {
@@ -16,6 +24,7 @@ export function createAgentBinaryReleaseFixture(payload) {
       request.finished = true;
     });
     if (req.url !== "/claude" || request.mode === "fail") {
+      if (failureBarrier) await failureBarrier;
       res.writeHead(404).end("not here");
       return;
     }
