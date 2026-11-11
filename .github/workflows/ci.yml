@@ -206,11 +206,23 @@ jobs:
       - name: Custom branch-prefix unchanged-fixture baseline and candidate replay
         timeout-minutes: 3
         run: python3 evidence/settings/custom-prefix/replay.py --out-dir "$RUNNER_TEMP/custom-prefix-replay"
-      - name: Script output copy unchanged-fixture baseline and candidate replay
+      - name: Script output copy and Unicode unchanged-fixture differential replays
         timeout-minutes: 4
         run: |
           python3 -m unittest discover -s evidence/scripts/output-copy -p test_replay.py -v
           python3 evidence/scripts/output-copy/replay.py --out-dir "$RUNNER_TEMP/output-copy-replay"
+          python3 evidence/scripts/output-unicode/verify-source.py
+          python3 -m unittest discover -s evidence/scripts/output-unicode -p test_replay.py -v
+          python3 evidence/scripts/output-unicode/replay.py --out-dir "$RUNNER_TEMP/output-unicode-replay"
+      - name: Retain script output differential receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: script-output-differential-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/output-copy-replay/
+            ${{ runner.temp }}/output-unicode-replay/
+          if-no-files-found: ignore
       - name: Onboarding persistence and nonblocking startup regressions
         timeout-minutes: 3
         shell: bash

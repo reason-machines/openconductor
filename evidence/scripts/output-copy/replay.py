@@ -35,17 +35,28 @@ def sha(data):
 
 def prepare(directory):
     record = json.loads((HERE / "source-identity.json").read_text())
-    assert sha((ROOT / FIXTURE).read_bytes()) == record["delivered_fixture_sha256"], "fixture changed"
-    assert sha((ROOT / PRODUCT).read_bytes()) == record["candidate_sha256"], "candidate changed"
+    historical_fixture = (HERE / "frozen-outputCopy.test.ts.txt").read_bytes()
+    assert sha(historical_fixture) == record["frozen_fixture_sha256"], "frozen fixture changed"
+    for adapter in record["fixture_adapters"]:
+        before, after = adapter["before"].encode(), adapter["after"].encode()
+        assert historical_fixture.count(before) == 1, adapter["reason"]
+        historical_fixture = historical_fixture.replace(before, after)
+    assert sha(historical_fixture) == record["delivered_fixture_sha256"], "historical fixture changed"
+    historical_product = (HERE / "candidate-ScriptOutput.tsx.txt").read_bytes()
+    assert sha(historical_product) == record["candidate_sha256"], "historical candidate changed"
     assert sha((HERE / "copy.patch").read_bytes()) == record["patch_sha256"], "patch changed"
+    current_fixture = (ROOT / FIXTURE).read_bytes()
+    assert historical_fixture[historical_fixture.index(b'test("'):] == current_fixture[current_fixture.index(b'test("'):], "nine current assertions changed"
     for path in FILES:
         (directory / path).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / path, directory / path)
+    (directory / FIXTURE).write_bytes(historical_fixture)
+    (directory / PRODUCT).write_bytes(historical_product)
     (directory / "node_modules").symlink_to(ROOT / "node_modules", target_is_directory=True)
     subprocess.run(["git", "apply", "--reverse", str(HERE / "copy.patch")], cwd=directory, check=True)
     baseline = next(item for item in record["main_inputs"] if item["path"] == str(PRODUCT))
     assert sha((directory / PRODUCT).read_bytes()) == baseline["sha256"], "not the recorded main baseline"
-    assert (directory / FIXTURE).read_bytes() == (ROOT / FIXTURE).read_bytes(), "fixture changed in replay"
+    assert (directory / FIXTURE).read_bytes() == historical_fixture, "fixture changed in replay"
     return record
 
 
@@ -73,7 +84,8 @@ def main():
     args = parser.parse_args()
     args.out_dir.mkdir(parents=True, exist_ok=True)
     receipt = {"head": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-               "command": COMMAND, "native_clipboard_or_rendering_verified": False}
+               "command": COMMAND, "native_clipboard_or_rendering_verified": False,
+               "proof_scope": "frozen historical pair; ordinary frontend unit CI tests the current component"}
     with tempfile.TemporaryDirectory(prefix="output-copy-replay-") as temporary:
         directory = Path(temporary)
         record = prepare(directory)
@@ -81,7 +93,7 @@ def main():
         receipt["baseline_main"] = record["main_checked"]
         for phase in ("before", "after"):
             if phase == "after":
-                shutil.copyfile(ROOT / PRODUCT, directory / PRODUCT)
+                shutil.copyfile(HERE / "candidate-ScriptOutput.tsx.txt", directory / PRODUCT)
             assert sha((directory / FIXTURE).read_bytes()) == receipt["fixture_sha256"], "fixture changed between phases"
             product_hash = sha((directory / PRODUCT).read_bytes())
             result = subprocess.run(COMMAND, cwd=directory, text=True, stdout=subprocess.PIPE,
