@@ -75,6 +75,11 @@ export async function openDevtools(): Promise<void> {
   await invoke("open_devtools");
 }
 
+/** Native fail-open access heuristic, not proof of a macOS permission grant. */
+export async function checkFullDiskAccess(): Promise<boolean> {
+  return invoke<boolean>("check_full_disk_access");
+}
+
 export async function openUrl(url: string): Promise<void> {
   if (!inTauri()) {
     window.open(url, "_blank", "noopener");

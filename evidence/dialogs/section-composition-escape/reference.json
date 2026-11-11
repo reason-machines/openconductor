@@ -1,0 +1,735 @@
+{
+  "author": "Conductor Rebuild",
+  "gap_key": "section-name-composition-escape-source-frontier",
+  "status": "SOURCE_QUALIFIED_SECTION_ONLY_LEASE_GRANTED_HOSTED_RED_NOT_RUN",
+  "checked_main": "9a237404bc19caefe3f8473b9aae7ab4bc2439a5",
+  "archive_sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+  "rea_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "assets": {
+    "renderer": {
+      "file": ".ara-state/dialog-current-c2567050/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "file": ".ara-state/dialog-current-c2567050/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "verified_original_declarations": 42,
+  "additional_composition_declarations": [
+    {
+      "name": "ove",
+      "utf8_half_open": [
+        442170,
+        442175
+      ],
+      "sha256": "d4363016a402c93f762cf89efb78d5b6b6548b6fd8a99967e233036311800a50",
+      "bytes": 5,
+      "file": "composition-closure/ove.txt"
+    },
+    {
+      "name": "bS",
+      "utf8_half_open": [
+        442176,
+        442464
+      ],
+      "sha256": "18396376badb2246c94a35966e5cfc32e34bff2afb988ec3d5fa13223ddf513b",
+      "bytes": 288,
+      "file": "composition-closure/bS.txt"
+    },
+    {
+      "name": "yD",
+      "utf8_half_open": [
+        443006,
+        443073
+      ],
+      "sha256": "9d869b7ceb7747e866481810a8c886df30a05aed8693858e511bc5a7916a2c2c",
+      "bytes": 67,
+      "file": "composition-closure/yD.txt"
+    },
+    {
+      "name": "jOr",
+      "utf8_half_open": [
+        451642,
+        451687
+      ],
+      "sha256": "c67f942baecc2b50839b7e4ba851e1cf7b3b84eaca24ebf363324821d16b4351",
+      "bytes": 45,
+      "file": "composition-closure/jOr.txt"
+    },
+    {
+      "name": "BOr",
+      "utf8_half_open": [
+        451898,
+        451914
+      ],
+      "sha256": "6d6981d04350db5fd2f6ca435c5df629894d33cbdec12c02addd07415c2c1462",
+      "bytes": 16,
+      "file": "composition-closure/BOr.txt"
+    }
+  ],
+  "current_source": {
+    "src/components/SectionDialog.tsx": {
+      "sha256": "9f58ec5096a7b03d5f39c8837f9f7d4ebec02537f7bc9a287eea30a34b55085d",
+      "git_blob": "c8fa118422b103471c766f6a86cd8f4de6460d65"
+    },
+    "src/components/Dialogs.tsx": {
+      "sha256": "ecbffa963b0e61be7da873e62f8d67af27fc0dfc802def7abaa8b278355cf203",
+      "git_blob": "26b3f79e88edc9cae81129b067f82d6b32048c31"
+    },
+    "src/components/DialogFrame.tsx": {
+      "sha256": "f8b2d16d69e39dfdc0e33303f47bae20934e0cf94fc39e2f0cf327521c9acb7f",
+      "git_blob": "ed3ade90d5423fdd9352a413a4eb7dc2693519b9"
+    },
+    "src/components/motion/dialogMotion.ts": {
+      "sha256": "0f9c5b9ee51ab9bd5e822e31a1d764676e3622c434103de2ca29ea2d8bd14839",
+      "git_blob": "c69371e7af0f7c90fe8b894c3588e1eedbcd4b15"
+    },
+    "src/components/sectionNameInput.test.ts": {
+      "sha256": "006cabec6907c845ca308f3a258e64085fa196b84bc5a8b892e079d5f05701c3",
+      "git_blob": "80f7220a675b11075baac906c2b1dc370128bb72"
+    },
+    "src/App.tsx": {
+      "sha256": "3dc27eaa48b07ced25b188ebdef219744220a2008176c23709f08983ed226df6",
+      "git_blob": "62a525d4b26ed2e48274e62341c7784b95750306"
+    },
+    "src/main.tsx": {
+      "sha256": "b1ad5f34cbb74420d946183105a216b809233ac09dab49beeea3c9366db5da80",
+      "git_blob": "a4aad8167fcf00a271a2448bb2c251d9ebd61759"
+    },
+    "src/keybindings/KeybindingsProvider.tsx": {
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+      "git_blob": "7ca5327d1debdee398cdfa6590366fdc8327b253"
+    },
+    "src/keybindings/listeners.ts": {
+      "sha256": "6944c63efcb6edee49d59d1ccdcfaed649902021946c8a8f60d50549fd89011a",
+      "git_blob": "5ffaebb8a3432716c98ae6e49711a7f775193969"
+    },
+    "src/keybindings/dispatcher.ts": {
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+      "git_blob": "15429db2fcbb241e2e94dcc6297cf7aed29da5a6"
+    },
+    "src/keybindings/bind.ts": {
+      "sha256": "999228b49c38bcc781ae384c9c11694d69a0a1bab86ccff787c6c19182697119",
+      "git_blob": "61445beac7b1fada317ff4cbf557ffd79afd134d"
+    },
+    "src/keybindings/resolve.ts": {
+      "sha256": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc",
+      "git_blob": "243c903a1212bf32ab91dcb62b6a499619979a6d"
+    },
+    "src/keybindings/shortcut.ts": {
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+      "git_blob": "d148f7a3f6cdd9ff466579e4216e842770e30bc8"
+    },
+    "src/keybindings/selectAll.ts": {
+      "sha256": "508b26417d717f938eb118afbe8c0ff96873643cb4e5c0879467e5368e97db90",
+      "git_blob": "9fb77ffd88c0df33c9ec920d1f3d3697f75f935f"
+    },
+    "src/keybindings/registry.ts": {
+      "sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9",
+      "git_blob": "88d52070749de6572b43fb79575894625c104a76"
+    }
+  },
+  "frozen_bytes_unchanged": {
+    "src/components/sectionNameInput.test.ts": "006cabec6907c845ca308f3a258e64085fa196b84bc5a8b892e079d5f05701c3",
+    "evidence/dialogs/section-name-input/README.md": "258b35096e09e59d66d13b48ca4e5f452649fd30c8edcf61a170944840b07424",
+    "evidence/dialogs/section-name-input/green.tap": "78e28f03c8c4bf22bb2989b6c332fea9e0c0ca053f51ecd11b859669bb8e7feb",
+    "evidence/dialogs/section-name-input/historical-red.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "evidence/dialogs/section-name-input/historical-red.tap": "0d7b7ba4826bb47dd3872140be605e657eddb3564941db9aa00106722c8e3b9c",
+    "evidence/dialogs/section-name-input/neighbors.tap": "4a8fe0e6223b3253d3286bddc36a9dc254f50980e1f70b076c24e947fe76e685",
+    "evidence/dialogs/section-name-input/reference.json": "d9d7b8e31f4893781b224b3848f96f18a6d3d2841fa4b593d0ae17eea718a89d",
+    "evidence/dialogs/section-name-input/verify_source.py": "c176f1b019efa7a5e8c1b298385418b2995d50aa3ab145f5b4af7827cf3c0197"
+  },
+  "original_chain": [
+    "kya mounts Section dialog kg with nd and Tya. Tya mounts Aya after sections load.",
+    "Aya forwards its Enter handler through identity _v/hEe and Qo to input.",
+    "kg -> hv -> Bjt -> _3i -> Vrs -> SZ. Vrs enables Escape only without nested open dialogs.",
+    "JSe stores SZ floating props, Rde reads popupProps and passes them into Es.",
+    "SZ also registers native keydown/compositionstart/compositionend on Gl(m), the floating element ownerDocument or document.",
+    "SZ composition ref P starts false. Start clears prior timer then sets true. End schedules false after yD?5:0 milliseconds. Cleanup removes listeners and clears timer.",
+    "bS uses clearTimeout/setTimeout with sentinel0. yD tests CSS support for -webkit-backdrop-filter:none.",
+    "While P.current is true, SZ Escape returns without requesting close or preventing the default.",
+    "nd primary action -> Qh import ca -> TQt -> nh effective override or default -> Hfe/_Ut. Aya Enter guards nativeEvent.isComposing independently."
+  ],
+  "current_chain": [
+    "SectionDialog -> shared Modal. Input Enter is composition-guarded and stops propagation when submitting.",
+    "Modal closes on bubbled Escape without composition state. No matching Section or Modal composition start/end handlers exist.",
+    "Window capture leaves bare Escape to bubble; it does not stop the local Modal callback."
+  ],
+  "intentional_divergence": "No intentional composition divergence documented in bounded introduction66a892af and SectionDialog/Dialogs change history. Ledger reconciliation pending. This is not exhaustive policy absence.",
+  "nondefects": [
+    "Local Enter is guarded in both sources.",
+    "No unconditional prior-defaultPrevented contract is established; no such fix is proposed."
+  ],
+  "proposed_scope": "Reserved SectionDialog only, new independent regression, preserve all eight frozen files. Product correction waits for hosted regression failure.",
+  "checks": {
+    "retained_archive_assets_spans": "PASS",
+    "timer_platform_closure": "PASS",
+    "fresh_main_source": "PASS",
+    "eight_frozen_files": "PASS",
+    "tracked_diff": "PASS",
+    "runtime": "NOT_RUN",
+    "native_visual": "NOT_RUN"
+  },
+  "unverified": [
+    "No component/browser/native execution or physical IME event delivery.",
+    "No actual runtime override values or pending mutation behavior.",
+    "No product edit, workflow dispatch or runtime admission.",
+    "Strict physical publication remains unsatisfied and unwaived."
+  ],
+  "page_id": "6b1bcce1-4f39-4eec-ba89-04e706d0f7ec",
+  "page_url": "https://reasonmachines.com/agents/6013adf2-e94a-4a6d-9be7-bbd07622cf3c?page=6b1bcce1-4f39-4eec-ba89-04e706d0f7ec",
+  "declarations": [
+    {
+      "asset": "renderer",
+      "name": "Qh",
+      "kind": "import",
+      "file": "reference/renderer-Qh-import.txt",
+      "utf8_half_open": [
+        54795,
+        54803
+      ],
+      "bytes": 8,
+      "sha256": "1b194c6d61bdd2ba9511d896cec3c875d62548892f7010b52ebf7f8eb909fdc4"
+    },
+    {
+      "asset": "renderer",
+      "name": "d3",
+      "kind": "declaration",
+      "file": "reference/renderer-d3-declaration.txt",
+      "utf8_half_open": [
+        441141,
+        441223
+      ],
+      "bytes": 82,
+      "sha256": "921180e09928d5a0733708b3ffacc749bba5b0a25e43b52430468f38171ae786"
+    },
+    {
+      "asset": "renderer",
+      "name": "bOr",
+      "kind": "declaration",
+      "file": "reference/renderer-bOr-declaration.txt",
+      "utf8_half_open": [
+        443233,
+        443273
+      ],
+      "bytes": 40,
+      "sha256": "bb3729aa3b6e566e57d9985022c481286a874aa3f79c2c54cbdbff92c38c5e51"
+    },
+    {
+      "asset": "renderer",
+      "name": "wZ",
+      "kind": "variable",
+      "file": "reference/renderer-wZ-variable.txt",
+      "utf8_half_open": [
+        448092,
+        448107
+      ],
+      "bytes": 15,
+      "sha256": "36e7fa62748aa9e8bdb259c78f07be6c9c04b607c551857cee6a76a5e06901f2"
+    },
+    {
+      "asset": "renderer",
+      "name": "Ys",
+      "kind": "declaration",
+      "file": "reference/renderer-Ys-declaration.txt",
+      "utf8_half_open": [
+        448293,
+        448508
+      ],
+      "bytes": 215,
+      "sha256": "adf38d5bddb3ecb26da5f419d38eb2ab5d03a0a7d2024791f78660734f4bee05"
+    },
+    {
+      "asset": "renderer",
+      "name": "vc",
+      "kind": "declaration",
+      "file": "reference/renderer-vc-declaration.txt",
+      "utf8_half_open": [
+        450333,
+        450422
+      ],
+      "bytes": 89,
+      "sha256": "aca42ffe320f48e067c872f43484d6e50c8f5453f096ce78a150d7cbe89235a0"
+    },
+    {
+      "asset": "renderer",
+      "name": "jOr",
+      "kind": "variable",
+      "file": "reference/renderer-jOr-variable.txt",
+      "utf8_half_open": [
+        451642,
+        451687
+      ],
+      "bytes": 45,
+      "sha256": "c67f942baecc2b50839b7e4ba851e1cf7b3b84eaca24ebf363324821d16b4351"
+    },
+    {
+      "asset": "renderer",
+      "name": "fr",
+      "kind": "declaration",
+      "file": "reference/renderer-fr-declaration.txt",
+      "utf8_half_open": [
+        451688,
+        451770
+      ],
+      "bytes": 82,
+      "sha256": "bbb876cae07fe3e19683c629a9ba756a6a9d978a714ffd13a284d99cc00e276f"
+    },
+    {
+      "asset": "renderer",
+      "name": "FOr",
+      "kind": "declaration",
+      "file": "reference/renderer-FOr-declaration.txt",
+      "utf8_half_open": [
+        451770,
+        451898
+      ],
+      "bytes": 128,
+      "sha256": "87690d160f95212fe8f8b0ae3519af728e7139cde4ca97b25f7a91cd86e78ba0"
+    },
+    {
+      "asset": "renderer",
+      "name": "Gl",
+      "kind": "declaration",
+      "file": "reference/renderer-Gl-declaration.txt",
+      "utf8_half_open": [
+        452892,
+        452941
+      ],
+      "bytes": 49,
+      "sha256": "3524616a9f228ed66bddc787dbc6f105382517200d09397a48f4c7d36d5b3c82"
+    },
+    {
+      "asset": "renderer",
+      "name": "DDr",
+      "kind": "declaration",
+      "file": "reference/renderer-DDr-declaration.txt",
+      "utf8_half_open": [
+        480060,
+        480188
+      ],
+      "bytes": 128,
+      "sha256": "3a9935badbb45be3a786a7f8ac312d11ba1039d41d7295b358a28d577e0089e5"
+    },
+    {
+      "asset": "renderer",
+      "name": "SZ",
+      "kind": "declaration",
+      "file": "reference/renderer-SZ-declaration.txt",
+      "utf8_half_open": [
+        480188,
+        485653
+      ],
+      "bytes": 5465,
+      "sha256": "ad109d330e72b3e4e33789f4482e7c5c61e88fcc77859c3a8329ff6be12b4ecd"
+    },
+    {
+      "asset": "renderer",
+      "name": "JSe",
+      "kind": "declaration",
+      "file": "reference/renderer-JSe-declaration.txt",
+      "utf8_half_open": [
+        516478,
+        516607
+      ],
+      "bytes": 129,
+      "sha256": "1c9226fd01bd5481ec7489e267f5f3b59dabbbc9c5a6f9bc1ad78fa74324ac48"
+    },
+    {
+      "asset": "renderer",
+      "name": "hEe",
+      "kind": "declaration",
+      "file": "reference/renderer-hEe-declaration.txt",
+      "utf8_half_open": [
+        674926,
+        674951
+      ],
+      "bytes": 25,
+      "sha256": "f4586b0ea0458a4bc4cbec25db1764f45a1e67eb97f9fbbe73376b37483a643c"
+    },
+    {
+      "asset": "renderer",
+      "name": "_v",
+      "kind": "variable",
+      "file": "reference/renderer-_v-variable.txt",
+      "utf8_half_open": [
+        674973,
+        674979
+      ],
+      "bytes": 6,
+      "sha256": "f89e4a96892d03235d276a10436e3366cdacd00bf162590811269ccfefe356f2"
+    },
+    {
+      "asset": "renderer",
+      "name": "Rde",
+      "kind": "variable",
+      "file": "reference/renderer-Rde-variable.txt",
+      "utf8_half_open": [
+        1904644,
+        1905795
+      ],
+      "bytes": 1151,
+      "sha256": "0e1c8eabd9149ee24668748dcd73a520bf8a99916a6a77f61aa7688bdc375277"
+    },
+    {
+      "asset": "renderer",
+      "name": "Vrs",
+      "kind": "declaration",
+      "file": "reference/renderer-Vrs-declaration.txt",
+      "utf8_half_open": [
+        1906108,
+        1907403
+      ],
+      "bytes": 1295,
+      "sha256": "2a9cdee9b9ddff7ce2d9fc903f36a2605199a08206c6fdb5eca62715699e6b72"
+    },
+    {
+      "asset": "renderer",
+      "name": "Grs",
+      "kind": "declaration",
+      "file": "reference/renderer-Grs-declaration.txt",
+      "utf8_half_open": [
+        1907770,
+        1908216
+      ],
+      "bytes": 446,
+      "sha256": "9c81b363e3e14e0bcc3e346d06ab44519baaaa7f1fe258ab2ffcc3892f9185f9"
+    },
+    {
+      "asset": "renderer",
+      "name": "qrs",
+      "kind": "declaration",
+      "file": "reference/renderer-qrs-declaration.txt",
+      "utf8_half_open": [
+        1908216,
+        1908502
+      ],
+      "bytes": 286,
+      "sha256": "d834a56452983b961619efe30f516f0944c34029ce08c7d4c99a344b764df7c4"
+    },
+    {
+      "asset": "renderer",
+      "name": "Krs",
+      "kind": "declaration",
+      "file": "reference/renderer-Krs-declaration.txt",
+      "utf8_half_open": [
+        1908502,
+        1908711
+      ],
+      "bytes": 209,
+      "sha256": "5e54357979fa6047e2fd52a9b839cb9dbb3fe06369a5be564c8701a9482cee3a"
+    },
+    {
+      "asset": "renderer",
+      "name": "_3i",
+      "kind": "declaration",
+      "file": "reference/renderer-_3i-declaration.txt",
+      "utf8_half_open": [
+        1908711,
+        1909725
+      ],
+      "bytes": 1014,
+      "sha256": "09260b99d1bbeb1ea8ba9de4aead815f033feb6b9ab33a423289b663a971d532"
+    },
+    {
+      "asset": "renderer",
+      "name": "Bjt",
+      "kind": "declaration",
+      "file": "reference/renderer-Bjt-declaration.txt",
+      "utf8_half_open": [
+        1909725,
+        1909764
+      ],
+      "bytes": 39,
+      "sha256": "a9b1b38a1ad7b242192f7b6002dfaceb1b89450353634ab0e0767e4b0b30cce7"
+    },
+    {
+      "asset": "renderer",
+      "name": "jZ",
+      "kind": "declaration",
+      "file": "reference/renderer-jZ-declaration.txt",
+      "utf8_half_open": [
+        1910696,
+        1910985
+      ],
+      "bytes": 289,
+      "sha256": "c57fce88a6519630e130eb81d6098bf2e07cefee72f81375de5a3cd640862c9f"
+    },
+    {
+      "asset": "renderer",
+      "name": "hv",
+      "kind": "variable",
+      "file": "reference/renderer-hv-variable.txt",
+      "utf8_half_open": [
+        1911334,
+        1913031
+      ],
+      "bytes": 1697,
+      "sha256": "f32b89d12af701fcc9b09a9cab85fee11c88b06ebca47f64176aa9b7901369a5"
+    },
+    {
+      "asset": "renderer",
+      "name": "nd",
+      "kind": "variable",
+      "file": "reference/renderer-nd-variable.txt",
+      "utf8_half_open": [
+        1914942,
+        1918577
+      ],
+      "bytes": 3635,
+      "sha256": "7378a9f126c48c402ed5bff4453218fc81ba47ef9fde5fd464697f4c18292c3c"
+    },
+    {
+      "asset": "renderer",
+      "name": "kg",
+      "kind": "variable",
+      "file": "reference/renderer-kg-variable.txt",
+      "utf8_half_open": [
+        1920422,
+        1920973
+      ],
+      "bytes": 551,
+      "sha256": "b8f3f58001761178c81d975175f9d76bbf2a099dde2f97ebbeed7754fd4a4d00"
+    },
+    {
+      "asset": "renderer",
+      "name": "Qo",
+      "kind": "variable",
+      "file": "reference/renderer-Qo-variable.txt",
+      "utf8_half_open": [
+        1934444,
+        1935170
+      ],
+      "bytes": 726,
+      "sha256": "14ece4759170507a77d6c2ffdf59cc7c2de379f810286037ef0779eda33732b5"
+    },
+    {
+      "asset": "renderer",
+      "name": "kya",
+      "kind": "declaration",
+      "file": "reference/renderer-kya-declaration.txt",
+      "utf8_half_open": [
+        11054301,
+        11054936
+      ],
+      "bytes": 635,
+      "sha256": "3ebd4ff9b3f73088701dd554ccb401e5ad5a56f223729d87ff5e5e7d37cc2d94"
+    },
+    {
+      "asset": "renderer",
+      "name": "Tya",
+      "kind": "declaration",
+      "file": "reference/renderer-Tya-declaration.txt",
+      "utf8_half_open": [
+        11054936,
+        11056145
+      ],
+      "bytes": 1209,
+      "sha256": "27ab9fe6fc9eafa2055b7bd44b61365181da1af8fba0b4740b83e6dab28c49ac"
+    },
+    {
+      "asset": "renderer",
+      "name": "Aya",
+      "kind": "declaration",
+      "file": "reference/renderer-Aya-declaration.txt",
+      "utf8_half_open": [
+        11056145,
+        11058891
+      ],
+      "bytes": 2746,
+      "sha256": "3217043d3c0b71c509cdd3c786d814a7f6045d159b05c1f0c1980535a42eddfa"
+    },
+    {
+      "asset": "index",
+      "name": "ca",
+      "kind": "export",
+      "file": "reference/index-ca-export.txt",
+      "utf8_half_open": [
+        3481691,
+        3481700
+      ],
+      "bytes": 9,
+      "sha256": "b33c810666a02b677b37fe77123d7655849b04c502a6ee58269b018118c62e0c"
+    },
+    {
+      "asset": "index",
+      "name": "Eg",
+      "kind": "variable",
+      "file": "reference/index-Eg-variable.txt",
+      "utf8_half_open": [
+        3357920,
+        3357952
+      ],
+      "bytes": 32,
+      "sha256": "26b44773b03f216c4b5116ab6b6b37016ba77989a7fc5fbb6fcbe0dbb8d4eca2"
+    },
+    {
+      "asset": "index",
+      "name": "Jk",
+      "kind": "declaration",
+      "file": "reference/index-Jk-declaration.txt",
+      "utf8_half_open": [
+        3357953,
+        3358010
+      ],
+      "bytes": 57,
+      "sha256": "737a91537bf8e788e31864ee0c6b83e39ab07f72617d2ff78dfd11dc4e5ae89d"
+    },
+    {
+      "asset": "index",
+      "name": "Oy",
+      "kind": "declaration",
+      "file": "reference/index-Oy-declaration.txt",
+      "utf8_half_open": [
+        3358010,
+        3358105
+      ],
+      "bytes": 95,
+      "sha256": "f9472015c249f5c9afa129ef27222b209fa22c2f5e6f80c4da242f0f34c8755a"
+    },
+    {
+      "asset": "index",
+      "name": "Hfe",
+      "kind": "variable",
+      "file": "reference/index-Hfe-variable.txt",
+      "utf8_half_open": [
+        3358153,
+        3358229
+      ],
+      "bytes": 76,
+      "sha256": "8f2fe649116c5f460b454a529b9e8c03c20c9e5a7c8342f90a424501c8c4391e"
+    },
+    {
+      "asset": "index",
+      "name": "mUt",
+      "kind": "declaration",
+      "file": "reference/index-mUt-declaration.txt",
+      "utf8_half_open": [
+        3358230,
+        3358371
+      ],
+      "bytes": 141,
+      "sha256": "144b4d083764d94dc5b4a54bfbc15d3853732c19613ac053389462c95c89670d"
+    },
+    {
+      "asset": "index",
+      "name": "vUt",
+      "kind": "declaration",
+      "file": "reference/index-vUt-declaration.txt",
+      "utf8_half_open": [
+        3358371,
+        3358541
+      ],
+      "bytes": 170,
+      "sha256": "76d1a07ebbeb40f9ab061ad95019a4158cc7646faf05e4956b22a59a210efc4e"
+    },
+    {
+      "asset": "index",
+      "name": "_Ut",
+      "kind": "declaration",
+      "file": "reference/index-_Ut-declaration.txt",
+      "utf8_half_open": [
+        3359217,
+        3359357
+      ],
+      "bytes": 140,
+      "sha256": "2c36a6ed732d18892dfefdba685d863f27064bc683cb7de285ef115e24365d64"
+    },
+    {
+      "asset": "index",
+      "name": "V_",
+      "kind": "variable",
+      "file": "reference/index-V_-variable.txt",
+      "utf8_half_open": [
+        3360752,
+        3386741
+      ],
+      "bytes": 25989,
+      "sha256": "77bd4bb1909c7387df8a580ba21be27b6ffd8a75e03ed9652c016d09564e0fe9"
+    },
+    {
+      "asset": "index",
+      "name": "WUt",
+      "kind": "declaration",
+      "file": "reference/index-WUt-declaration.txt",
+      "utf8_half_open": [
+        3393417,
+        3393447
+      ],
+      "bytes": 30,
+      "sha256": "a5fc0ce86bfc959fcf1b62b28561e1222c59322d9fc05866d4c7156bd03ca69f"
+    },
+    {
+      "asset": "index",
+      "name": "nh",
+      "kind": "declaration",
+      "file": "reference/index-nh-declaration.txt",
+      "utf8_half_open": [
+        3393483,
+        3393608
+      ],
+      "bytes": 125,
+      "sha256": "278fa92a1196832de0fd6002ab85c9e1fcbdcf6455591306c5d094efa4f2fd4b"
+    },
+    {
+      "asset": "index",
+      "name": "TQt",
+      "kind": "declaration",
+      "file": "reference/index-TQt-declaration.txt",
+      "utf8_half_open": [
+        3394706,
+        3394765
+      ],
+      "bytes": 59,
+      "sha256": "3d20839a0dfff54bd43aa0f0ed5cd862f1ff49678c9018fc4aae67b3825e56dd"
+    },
+    {
+      "asset": "renderer",
+      "name": "ove",
+      "utf8_half_open": [
+        442170,
+        442175
+      ],
+      "sha256": "d4363016a402c93f762cf89efb78d5b6b6548b6fd8a99967e233036311800a50",
+      "bytes": 5,
+      "file": "composition-closure/ove.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "bS",
+      "utf8_half_open": [
+        442176,
+        442464
+      ],
+      "sha256": "18396376badb2246c94a35966e5cfc32e34bff2afb988ec3d5fa13223ddf513b",
+      "bytes": 288,
+      "file": "composition-closure/bS.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "yD",
+      "utf8_half_open": [
+        443006,
+        443073
+      ],
+      "sha256": "9d869b7ceb7747e866481810a8c886df30a05aed8693858e511bc5a7916a2c2c",
+      "bytes": 67,
+      "file": "composition-closure/yD.txt"
+    },
+    {
+      "asset": "renderer",
+      "name": "BOr",
+      "utf8_half_open": [
+        451898,
+        451914
+      ],
+      "sha256": "6d6981d04350db5fd2f6ca435c5df629894d33cbdec12c02addd07415c2c1462",
+      "bytes": 16,
+      "file": "composition-closure/BOr.txt"
+    }
+  ],
+  "scope": "SectionDialog only, new sectionCompositionEscape.test.ts and this evidence directory. Shared Modal and eight frozen files unchanged. No local runtime/native/browser execution."
+}

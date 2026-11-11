@@ -1,0 +1,180 @@
+{
+  "candidate": "CHAT.ERROR-READ-BEFORE-WRITE",
+  "disposition": "QUALIFIED_STATIC_DIVERGENCE_AWAITING_ACTIVE_LEDGER_DEDUPE",
+  "checked_main": "435c3356902c3e7cdf246f3089029154b3f908f6",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_version": "Conductor 0.87.6 retained extracted renderer/index assets",
+  "artifacts": [
+    {
+      "path": "/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/artifacts/chat-tool-disclosure-qualification-be7/reference/renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "path": "/home/runner/.reason/workspace/sessions/be7a40e4-7a95-4b4b-a75d-41eaf9426f8b/repo/artifacts/chat-tool-disclosure-qualification-be7/reference/index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "spans": {
+    "AI": {
+      "file": "reference-AI.txt",
+      "utf8_half_open": [
+        7798976,
+        7800630
+      ],
+      "sha256": "55b4c9c66f291c95692ec57b2d7226646d9e2e11bdc209bcb4a9fd5e8fe85ba6",
+      "text": "function AI(t){const e=ne.c(16),{content:n}=t;let i;e[0]!==n?(i=typeof n==\"string\"?n:JSON.stringify(n),e[0]=n,e[1]=i):i=e[1];const r=i;let o;e[2]!==r?(o=H9e(r,U9e),e[2]=r,e[3]=o):o=e[3];const{text:a,wasTruncated:c}=o;if(r.includes(\"File has not been read yet. Read it first before writing to it.\")){let _;return e[4]===Symbol.for(\"react.memo_cache_sentinel\")?(_=p.jsx(\"div\",{className:\"text-xs text-muted-foreground pl-5 pt-2 rounded-lg break-words\",children:\"Claude Code has to retry the file edit because of a bug in its permissions logic. Just a moment!\"}),e[4]=_):_=e[4],_}let u;e[5]===Symbol.for(\"react.memo_cache_sentinel\")?(u=p.jsx(eI,{className:\"size-3\"}),e[5]=u):u=e[5];let d;e[6]===Symbol.for(\"react.memo_cache_sentinel\")?(d=p.jsx(\"span\",{children:\"Error\"}),e[6]=d):d=e[6];let h;e[7]!==a?(h=p.jsx(\"span\",{className:\"block truncate text-xs font-mono font-medium bg-destructive/10 px-1 py-0.5 rounded-md select-text\",children:a}),e[7]=a,e[8]=h):h=e[8];let m;e[9]!==r.length||e[10]!==c?(m=c&&p.jsxs(\"div\",{className:\"text-xs text-muted-foreground mt-2 italic\",children:[\"Content truncated (\",r.length.toLocaleString(),\" \",\"chars total)\"]}),e[9]=r.length,e[10]=c,e[11]=m):m=e[11];let g;return e[12]!==a||e[13]!==h||e[14]!==m?(g=p.jsxs(Mu,{icon:u,iconColor:\"text-destructive\",mainColor:\"text-destructive\",rightContentColor:\"text-destructive\",leftContent:d,contentAlignment:\"center\",rightContent:h,isCollapsible:!0,showContent:!0,contentClassName:\"font-mono text-xs font-medium whitespace-pre-wrap break-words text-destructive bg-destructive/10 p-3 rounded-md border border-destructive/20\",children:[a,m]}),e[12]=a,e[13]=h,e[14]=m,e[15]=g):g=e[15],g}"
+    },
+    "F0o": {
+      "file": "reference-F0o.txt",
+      "utf8_half_open": [
+        7821278,
+        7823360
+      ],
+      "sha256": "cdc0e2040029e55c5c45119879784658d59ba81c3aef8a771766ea351222b636",
+      "text": "function F0o(t){const e=ne.c(47),{toolCall:n,toolResult:i,localWorkspaceId:r}=t,o=n.input?.file_path||\"\",a=n.input?.old_string,c=n.input?.new_string;let u,d;e[0]!==i?.content?(d=sUt(i?.content,\"diffString\"),u=d?j0o(d):void 0,e[0]=i?.content,e[1]=u,e[2]=d):(u=e[1],d=e[2]);const h=u;let m;e[3]!==h?.oldContent||e[4]!==a?(m=h?.oldContent??oV(typeof a==\"string\"?a:\"\"),e[3]=h?.oldContent,e[4]=a,e[5]=m):m=e[5];const g=m;let _;e[6]!==h?.newContent||e[7]!==c?(_=h?.newContent??oV(typeof c==\"string\"?c:\"\"),e[6]=h?.newContent,e[7]=c,e[8]=_):_=e[8];const v=_;let x;e[9]!==v||e[10]!==g?(x=rUt(g,v),e[9]=v,e[10]=g,e[11]=x):x=e[11];const{addedLines:w,removedLines:E}=x,k=g.length>0||v.length>0;let I,R;e[12]===Symbol.for(\"react.memo_cache_sentinel\")?(I=p.jsx(Ju,{name:\"Edit\"}),R=p.jsx(\"span\",{children:\"Edit\"}),e[12]=I,e[13]=R):(I=e[12],R=e[13]);let O;e[14]!==o||e[15]!==k||e[16]!==v||e[17]!==g||e[18]!==d?(O=k?p.jsx(sV,{oldContent:g,newContent:v,filePath:o,patch:d}):void 0,e[14]=o,e[15]=k,e[16]=v,e[17]=g,e[18]=d,e[19]=O):O=e[19];let D;e[20]!==o||e[21]!==r||e[22]!==O?(D=p.jsx(tee,{filePath:o,localWorkspaceId:r,inline:!1,hoverCardContent:O}),e[20]=o,e[21]=r,e[22]=O,e[23]=D):D=e[23];let P;e[24]!==w||e[25]!==k||e[26]!==E?(P=k&&p.jsx(fIt,{addedLines:w,removedLines:E}),e[24]=w,e[25]=k,e[26]=E,e[27]=P):P=e[27];let L;e[28]!==D||e[29]!==P?(L=p.jsxs(\"div\",{className:\"flex items-center gap-2\",children:[D,P]}),e[28]=D,e[29]=P,e[30]=L):L=e[30];let B;e[31]!==o||e[32]!==k||e[33]!==v||e[34]!==g||e[35]!==d?(B=k&&p.jsx(sV,{oldContent:g,newContent:v,filePath:o,patch:d}),e[31]=o,e[32]=k,e[33]=v,e[34]=g,e[35]=d,e[36]=B):B=e[36];let F;e[37]!==k||e[38]!==L||e[39]!==B||e[40]!==n.id?(F=p.jsx(Mu,{icon:I,leftContent:R,contentAlignment:\"center\",rightContent:L,isCodeBlock:!0,alwaysShowRightContent:!0,isCollapsible:k,persistKey:n.id,children:B}),e[37]=k,e[38]=L,e[39]=B,e[40]=n.id,e[41]=F):F=e[41];let H;e[42]!==i?(H=i?.is_error&&i?.content&&p.jsx(AI,{content:i.content}),e[42]=i,e[43]=H):H=e[43];let U;return e[44]!==F||e[45]!==H?(U=p.jsxs(p.Fragment,{children:[F,H]}),e[44]=F,e[45]=H,e[46]=U):U=e[46],U}"
+    },
+    "hpo": {
+      "file": "reference-hpo.txt",
+      "utf8_half_open": [
+        7845824,
+        7847626
+      ],
+      "sha256": "439808b9941142548d2132720d96712eac341450ea87d9e9ccccdd5f5256ff3b",
+      "text": "function hpo(t){const e=ne.c(33),{toolCall:n,toolResult:i,localWorkspaceId:r}=t,o=n.input?.file_path||\"\",a=n.input?.content||\"\",[c,u]=$.useState(!1),d=a.length>2e3;let h;e[0]!==a||e[1]!==d||e[2]!==c?(h=d&&!c?a.substring(0,2e3):a,e[0]=a,e[1]=d,e[2]=c,e[3]=h):h=e[3];const m=h;let g;e[4]!==a?(g=a.split(`\n`),e[4]=a,e[5]=g):g=e[5];const _=g.length;let v;e[6]===Symbol.for(\"react.memo_cache_sentinel\")?(v=p.jsx(Ju,{name:\"Write\"}),e[6]=v):v=e[6];let x;e[7]!==_?(x=p.jsxs(\"span\",{children:[\"Write \",_,\" lines\"]}),e[7]=_,e[8]=x):x=e[8];let w;e[9]!==m||e[10]!==o?(w=p.jsx(sV,{oldContent:void 0,newContent:m,filePath:o}),e[9]=m,e[10]=o,e[11]=w):w=e[11];let E;e[12]!==o||e[13]!==r||e[14]!==w?(E=p.jsx(tee,{filePath:o,localWorkspaceId:r,inline:!1,hoverCardContent:w}),e[12]=o,e[13]=r,e[14]=w,e[15]=E):E=e[15];let k;e[16]!==m||e[17]!==o?(k=p.jsx(sV,{oldContent:void 0,newContent:m,filePath:o}),e[16]=m,e[17]=o,e[18]=k):k=e[18];let I;e[19]!==d||e[20]!==c?(I=d&&p.jsxs(\"div\",{className:\"border-t bg-muted/30 px-4 py-2 flex items-center justify-between\",children:[p.jsx(\"span\",{className:\"text-xs text-muted-foreground\",children:c?\"Showing full content\":`Showing first ${2e3.toLocaleString()} characters`}),p.jsx(\"button\",{onClick:()=>u(!c),className:\"text-xs text-primary hover:underline\",children:c?\"Show less\":\"Show more\"})]}),e[19]=d,e[20]=c,e[21]=I):I=e[21];let R;e[22]!==x||e[23]!==E||e[24]!==k||e[25]!==I||e[26]!==n.id?(R=p.jsxs(Mu,{icon:v,leftContent:x,contentAlignment:\"center\",rightContent:E,isCodeBlock:!0,persistKey:n.id,children:[k,I]}),e[22]=x,e[23]=E,e[24]=k,e[25]=I,e[26]=n.id,e[27]=R):R=e[27];let O;e[28]!==i?(O=i?.is_error&&i?.content&&p.jsx(AI,{content:i.content}),e[28]=i,e[29]=O):O=e[29];let D;return e[30]!==O||e[31]!==R?(D=p.jsxs(p.Fragment,{children:[R,O]}),e[30]=O,e[31]=R,e[32]=D):D=e[32],D}"
+    },
+    "hIt": {
+      "file": "reference-hIt.txt",
+      "utf8_half_open": [
+        7877770,
+        7878325
+      ],
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+      "text": "function hIt(t){const e=ne.c(12),{toolCall:n,toolResult:i,toolResultCreatedAt:r,sessionId:o,localWorkspaceId:a}=t;let c;e[0]!==n.name?(c=O1o({kind:L1o(n.name),registry:Qpo}),e[0]=n.name,e[1]=c):c=e[1];const u=c;if(u===void 0){let h;return e[2]!==n||e[3]!==i?(h=p.jsx(aUt,{toolCall:n,toolResult:i}),e[2]=n,e[3]=i,e[4]=h):h=e[4],h}let d;return e[5]!==u||e[6]!==a||e[7]!==o||e[8]!==n||e[9]!==i||e[10]!==r?(d=p.jsx(u,{toolCall:n,toolResult:i,toolResultCreatedAt:r,sessionId:o,localWorkspaceId:a}),e[5]=u,e[6]=a,e[7]=o,e[8]=n,e[9]=i,e[10]=r,e[11]=d):d=e[11],d}"
+    },
+    "O1o": {
+      "file": "reference-O1o.txt",
+      "utf8_half_open": [
+        7587305,
+        7589311
+      ],
+      "sha256": "9626b2475336658160af1f100a8b9d91e11a58f07527aa79f9bf52149b7474f0",
+      "text": "function O1o({kind:t,registry:e}){if(t===void 0)return;const n=e[t];return n===\"unhandled\"?void 0:n}const D1o={Agent:\"sub-agent\",AskUserQuestion:\"ask-user-question\",Bash:\"bash\",BashOutput:\"bash-output\",Edit:\"edit\",EnterPlanMode:\"enter-plan-mode\",ExitPlanMode:\"exit-plan-mode\",Glob:\"glob\",Grep:\"grep\",ImageGeneration:\"image-generation\",LS:\"ls\",MultiEdit:\"multi-edit\",NotebookEdit:\"multi-edit\",NotebookRead:\"read\",Read:\"read\",ScheduleWakeup:\"schedule-wakeup\",SendMessage:\"send-message\",Skill:\"skill\",SlashCommand:\"slash-command\",Task:\"sub-agent\",TaskCreate:\"task-create\",TaskGet:\"task-get\",TaskList:\"task-list\",TaskUpdate:\"task-update\",Teammate:\"teammate\",Thinking:\"thinking\",TodoRead:\"todo\",TodoWrite:\"todo\",WebFetch:\"web\",WebSearch:\"web\",Write:\"write\",mcp__conductor__AskUserQuestion:\"ask-user-question\",mcp__conductor__DiffComment:\"diff-comment\",mcp__conductor__GetDiffComments:\"get-diff-comments\",mcp__conductor__GetTerminalOutput:\"get-terminal-output\",mcp__conductor__GetWorkspaceDiff:\"get-workspace-diff\",mcp__conductor__RunLocalCommand:\"run-local-command\",mcp__node_repl__js:\"node-repl-js\",\"sub-agent\":\"sub-agent\"},P1o=[[\"collab__\",\"codex-collab\"],[\"mcp__context7__\",\"context7-mcp\"],[\"mcp__linear__\",\"linear-mcp\"]];function L1o(t){const e=D1o[t];if(e!==void 0)return e;for(const[n,i]of P1o)if(t.startsWith(n))return i}const M1o={WorkspaceSummary:\"Workspace summary\",ListComputers:\"List computers\",GetComputerConfiguration:\"Read computer configuration\",CreateComputerConfiguration:\"Create computer configuration\",GetComputerBuildStatus:\"Read computer build status\",UpdateRepositorySetupScript:\"Update repository setup script\"};function ski(t){const e=WYe(t);let n=r5r(t);if(e===void 0||n===void 0)return;const i=n.toLowerCase(),r=e.toLowerCase();(i.startsWith(`${r}-`)||i.startsWith(`${r}_`))&&(n=n.slice(e.length+1));const o=n.split(new RegExp(\"[-_]+|(?<=[a-z0-9])(?=[A-Z])\")).filter(a=>a!==\"\");if(o.length!==0)return o.map((a,c)=>c===0?a.charAt(0).toUpperCase()+a.slice(1):a.toLowerCase()).join(\" \")}"
+    },
+    "L1o": {
+      "file": "reference-L1o.txt",
+      "utf8_half_open": [
+        7588525,
+        7589311
+      ],
+      "sha256": "3a81ff9e770e0e3209e4363631afff354c8d1be1de8854e3f694ff5017834eb2",
+      "text": "function L1o(t){const e=D1o[t];if(e!==void 0)return e;for(const[n,i]of P1o)if(t.startsWith(n))return i}const M1o={WorkspaceSummary:\"Workspace summary\",ListComputers:\"List computers\",GetComputerConfiguration:\"Read computer configuration\",CreateComputerConfiguration:\"Create computer configuration\",GetComputerBuildStatus:\"Read computer build status\",UpdateRepositorySetupScript:\"Update repository setup script\"};function ski(t){const e=WYe(t);let n=r5r(t);if(e===void 0||n===void 0)return;const i=n.toLowerCase(),r=e.toLowerCase();(i.startsWith(`${r}-`)||i.startsWith(`${r}_`))&&(n=n.slice(e.length+1));const o=n.split(new RegExp(\"[-_]+|(?<=[a-z0-9])(?=[A-Z])\")).filter(a=>a!==\"\");if(o.length!==0)return o.map((a,c)=>c===0?a.charAt(0).toUpperCase()+a.slice(1):a.toLowerCase()).join(\" \")}"
+    }
+  },
+  "main_sources": {
+    "ToolRows.tsx": {
+      "repository_path": "src/features/chat/ToolRows.tsx",
+      "commit": "435c3356902c3e7cdf246f3089029154b3f908f6",
+      "sha256": "6c5c246d734f24e8b47463ac6ded4aa6eeba027fe34a81c90c52e095e6d68322"
+    },
+    "Transcript.tsx": {
+      "repository_path": "src/features/chat/Transcript.tsx",
+      "commit": "435c3356902c3e7cdf246f3089029154b3f908f6",
+      "sha256": "7b98c1ab857e7c015bc04c0cab64b8206ef2741ab8dc87800a32f3576a00ac00"
+    },
+    "view.ts": {
+      "repository_path": "src/features/chat/view.ts",
+      "commit": "435c3356902c3e7cdf246f3089029154b3f908f6",
+      "sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db"
+    },
+    "conductorTools.ts": {
+      "repository_path": "src/features/chat/conductorTools.ts",
+      "commit": "435c3356902c3e7cdf246f3089029154b3f908f6",
+      "sha256": "df5a568960c64e53f4b1a40b9c634024b3fa78d34121cdced974a162742387b0"
+    }
+  },
+  "checks": [
+    {
+      "name": "full retained artifact renderApp-D_fmY7hW.js",
+      "passed": true
+    },
+    {
+      "name": "full retained artifact index-BGEQ8YjU.js",
+      "passed": true
+    },
+    {
+      "name": "AI has complete next-function boundary iUt",
+      "passed": true
+    },
+    {
+      "name": "exact trigger uses includes on untruncated result",
+      "passed": true
+    },
+    {
+      "name": "retry note is explicit early return before generic Mu",
+      "passed": true
+    },
+    {
+      "name": "Edit F0o forwards failed nonempty content to AI",
+      "passed": true
+    },
+    {
+      "name": "Write hpo forwards failed nonempty content to AI",
+      "passed": true
+    },
+    {
+      "name": "actual tool registry maps Edit/Write to checked callers",
+      "passed": true
+    },
+    {
+      "name": "hIt invokes registry-selected component with original tool result",
+      "passed": true
+    },
+    {
+      "name": "fresh-main ErrorRow lacks exact-trigger branch and note",
+      "passed": true
+    },
+    {
+      "name": "fresh-main ErrorRow displays raw error text in generic disclosure",
+      "passed": true
+    },
+    {
+      "name": "fresh-main wrapper forwards exact result under error guard",
+      "passed": true
+    },
+    {
+      "name": "fresh-main wrapper includes edit/write error row kinds",
+      "passed": true
+    },
+    {
+      "name": "actual Transcript caller passes error status and result",
+      "passed": true
+    },
+    {
+      "name": "actual view connects tool-result isError to call error status",
+      "passed": true
+    }
+  ],
+  "observed_source_difference": "For the exact read-before-write failure substring, original AI returns a muted retry explanation instead of a generic expandable error. Current ErrorRow always renders generic Error with raw text. Both actual Edit/Write caller paths reach the respective error component.",
+  "bounded_negative_findings": [
+    "Generic nonmatching errors still use the original Mu disclosure; this candidate does not establish a general disclosure defect.",
+    "No evidence here justifies retrying a command, changing provider permissions, changing request state, or repairing backend behavior. The candidate is presentation-only."
+  ],
+  "proposed_exact_hunk_if_deduped": "src/features/chat/ToolRows.tsx private ErrorRow only; add dedicated actual-component regression file without changing existing test bodies.",
+  "reference_limits": [
+    "Historical REA whole-renderer semantic analysis skipped because of heap exhaustion.",
+    "Retained static extracted JavaScript is not original authored source or observed native execution."
+  ],
+  "not_run": [
+    "product JavaScript",
+    "RED/GREEN component tests",
+    "browser",
+    "native",
+    "provider/credentials",
+    "typecheck/build/package"
+  ],
+  "protected": [
+    "#847 frozen; assigned branch not modified",
+    "#1053 delivery owned by e09",
+    "composer/de6/auth hunks untouched"
+  ]
+}
