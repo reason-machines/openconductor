@@ -1,7 +1,7 @@
 {
   "kind": "retained-source-editor-comparison-not-behavior",
   "author": "Conductor Rebuild",
-  "checked_main": "3a3199233be3f2ec17e40b7a888561d08f95e7ec",
+  "checked_main": "435c3356902c3e7cdf246f3089029154b3f908f6",
   "source": {
     "path": "src/settings/agents/kit.tsx",
     "sha256": "5da43355c0757ecea46c4cf94db9272af5565ddfc2be5ad799abf668c7d4007a"

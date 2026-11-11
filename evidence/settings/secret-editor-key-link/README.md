@@ -12,7 +12,7 @@ The original Session upload `conductor-dxe-source-closure.tar` has SHA-256 `f3ef
 - `n$i`, bytes `[10248914, 10250561)`, owns the form input and trimmed, nonempty, nonpending submit guard.
 - `Zla`, bytes `[10250685, 10252749)`, owns the masked row's edit action.
 
-Fresh main `3a3199233be3f2ec17e40b7a888561d08f95e7ec` contains #1062's Codex login fix. Its `kit.tsx`, SHA-256 `5da43355c0757ecea46c4cf94db9272af5565ddfc2be5ad799abf668c7d4007a`, still adds `!configured` to the editor's provider-link condition. This hides the link when replacing an existing key. The intended product fix removes only that guard.
+Fresh main `435c3356902c3e7cdf246f3089029154b3f908f6` contains #1062's Codex login fix. Its `kit.tsx`, SHA-256 `5da43355c0757ecea46c4cf94db9272af5565ddfc2be5ad799abf668c7d4007a`, still adds `!configured` to the editor's provider-link condition. This hides the link when replacing an existing key. The product fix removes only that guard.
 
 The archive, three literal slices, baseline equality, and bounded declarations passed the Python verifier:
 
@@ -37,11 +37,24 @@ The link opener is a recording stub. Save, delete, and reveal callbacks throw if
 node --test src/settings/agents/secretEditorKeyLink.test.ts
 ```
 
-The fixture is discovered by the repository's existing automatic frontend checks. No workflow, dispatch, or rerun is added. This test-first publication intentionally leaves product source unchanged. Qualify an actual hosted result before publishing the one-line fix: exactly the two configured-editor cases must fail at the missing-link assertion while both controls pass. Setup failures, skips, missing cases, and cancellations are not behavioral RED.
+The fixture is discovered by the repository's existing automatic frontend checks. No workflow, dispatch, or rerun is added.
+
+## Hosted baseline and candidate replay
+
+Test-only published head `f9d53d8319a5e5dd98892ce1d1c4d5d5f17a4953` reproduced behavioral RED in [frontend unit job 130671849242](https://github.com/reason-machines/openconductor/actions/runs/43063424590/job/130671849242). Exactly the two configured-editor cases failed at the missing-link assertion. Both controls passed. The full suite ran 2,925 tests with only those two failures. [Retained four-case TAP excerpt](hosted-baseline-four-cases.tap.txt) records the assertions, not a setup failure.
+
+`secretEditorKeyLinkProof.test.ts` replays the byte-identical four-case fixture against the retained baseline, then the candidate. It requires four completed cases, exactly the two expected baseline assertion failures, and all four candidate cases passing. Skips, cancellations, missing cases, child-process failures, and setup failures cannot satisfy the proof. The replay runs in normal automatic hosted CI:
+
+```bash
+node --test src/settings/agents/secretEditorKeyLinkProof.test.ts
+```
+
+Candidate GREEN is pending. No local Node or render runtime was started. The #1062 frozen five-case fixture remains byte-identical.
 
 ## Verification boundary
 
-- PASS: original-byte/source qualification, baseline equality, and static fixture identity.
-- NOT RUN: behavioral RED/GREEN, local Node or render checks, screenshot, native rendering, installation, real browser opening, persistence, real provider, and real IPC.
+- PASS: original-byte/source qualification against main `435c33569`, baseline equality, static fixture identity, exact one-line product comparison, and hosted baseline RED.
+- PENDING: hosted candidate GREEN and complete exact-head CI.
+- NOT RUN: local Node or render checks, screenshot, native rendering, installation, real browser opening, persistence, real provider, and real IPC.
 - No screenshot is available because browser/native execution is outside this lane's admitted runtime scope.
 - Hosted mounted tests can prove component transitions and callback routing, not final native parity or successful provider authentication.

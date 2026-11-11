@@ -173,7 +173,7 @@ export function SecretRow(props: {
             })
           }
         />
-        {getKeyUrl && !configured && (
+        {getKeyUrl && (
           <button type="button" className="ag-link-underline" onClick={() => void openUrl(getKeyUrl)}>
             Get key
             <ExternalIcon size={12} />
