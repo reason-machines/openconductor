@@ -44,7 +44,9 @@ not ok 178 - actual ChangesList tree label preserves move from nested directory 
   expected: 'old/auth.ts→auth.ts'
 ```
 
-After that behavioral RED, `renameDisplayPath` centralizes only this label decision. Flat view retains the input old path. Tree view compares parents from the original old/new file paths and abbreviates only a matching parent. It follows the retained helpers' nonempty-component handling. `ChangesList` calls it inside the unchanged renamed-file/old-path guard; it does not compare the shortened tree row name or change stored file paths. The regression file remains byte-identical with SHA-256 `8a5393536c81477e8662d41b00dcaa32d161806342a3c985ce9acca53f1b899f`.
+After that behavioral RED, `renameDisplayPath` centralizes only this label decision. Flat view retains the input old path. Tree view compares parents from the original old/new file paths and abbreviates only a matching parent. It follows the retained helpers' nonempty-component handling. `ChangesList` calls it inside the unchanged renamed-file/old-path guard; it does not compare the shortened tree row name or change stored file paths. The first passing-after behavioral head `63c50101fdc8ae450add69a293d9fa94afee5ba7` used the byte-identical regression with SHA-256 `8a5393536c81477e8662d41b00dcaa32d161806342a3c985ce9acca53f1b899f`. [Diff run 42935282866, job 130243716340](https://github.com/reason-machines/openconductor/actions/runs/42935282866/job/130243716340) passed all 285 tests, including the three previously failing labels and all 15 controls.
+
+That head's typecheck and Keybindings build separately failed because the test loader used `Object.hasOwn`, which the repository's ES2021 TypeScript library does not declare. Only that loader guard was replaced with the equivalent `Object.prototype.hasOwnProperty.call`. No compiler configuration or production workaround was added. An exact comparison confirms this is the sole test-file change, with every one of the 18 case definitions and behavioral assertions unchanged. Six own/missing/inherited-property guard comparisons passed. The compatibility-adjusted test's SHA-256 is `5689ba409fa0c055406dce76cdde11c7a155c80d4c5cef538e0a48a559da001f`. The original RED-to-GREEN behavioral proof above is not a typecheck/build pass.
 
 ## Verification status
 
@@ -53,6 +55,8 @@ After that behavioral RED, `renameDisplayPath` centralizes only this label decis
 - The held renderer's whole hash and five helper/producer/consumer span widths, digests and bytes: passed source-only validation.
 - Local dependency-backed tests, typecheck, builds and application/browser execution: not run. Dependencies are absent and this lane is restricted to source/lightweight work and automatic hosted checks.
 - Hosted behavioral RED: passed reproduction, with exactly the three intended assertion failures listed above. No dependency or fixture failure was counted as a reproduction.
-- Passing-after actual-component tests, typecheck and all triggered exact-head checks: pending at correction publication.
+- Passing-after actual-component tests: passed all 285 on `63c50101`, with the original test byte-identical to behavioral RED.
+- Typecheck and Keybindings build on `63c50101`: failed on the new loader's unsupported `Object.hasOwn` declaration. The single equivalent guard correction is described above.
+- Compatibility-adjusted exact-head component tests, typecheck/build and all other triggered checks: pending at the guard correction's publication.
 
 No screenshot was taken because browser/native runtime admission remains closed. React-renderer labels are not visible Chromium, WebKit, an installed app or real-editor acceptance. Packaging, if later successful, is not installation, deployment, notarization or native parity.

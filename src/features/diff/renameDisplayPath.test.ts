@@ -54,7 +54,7 @@ const component = evaluate(readFileSync(componentPath, "utf8"), componentPath, (
     const helperPath = resolve("src/features/diff/renameDisplayPath.ts");
     return evaluate(readFileSync(helperPath, "utf8"), helperPath, () => { throw new Error("Unexpected rename helper dependency"); });
   }
-  assert.ok(Object.hasOwn(boundaries, name), `Unexpected Changes list dependency: ${name}`);
+  assert.ok(Object.prototype.hasOwnProperty.call(boundaries, name), `Unexpected Changes list dependency: ${name}`);
   return boundaries[name];
 });
 assert.equal(typeof component.ChangesList, "function");
