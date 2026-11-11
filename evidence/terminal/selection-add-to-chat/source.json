@@ -1,0 +1,85 @@
+{
+  "main_checked": "6b37c4dbb2aa9b6ff1186b988f16bbbb6eaab3ca",
+  "rea_acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "original_spans": [
+    {
+      "symbol": "nSa",
+      "bytes": 564,
+      "utf8_half_open": [
+        11165324,
+        11165888
+      ],
+      "sha256": "9cc884fc4db8fd82c6927db40023fd05b123023437f9ab85e396ee735571d90e"
+    },
+    {
+      "symbol": "m$t",
+      "bytes": 348,
+      "utf8_half_open": [
+        3140134,
+        3140482
+      ],
+      "sha256": "087fd368571d12cc41aea3f98e478be31e7fc4fad026071490e3d17f968c65a1"
+    },
+    {
+      "symbol": "iSa",
+      "bytes": 1598,
+      "utf8_half_open": [
+        11165888,
+        11167486
+      ],
+      "sha256": "6684d447fd003dc49e33f65d6a7e6f73f830fb32fbcf93e9933b03f1658b4e4b"
+    },
+    {
+      "symbol": "rSa",
+      "bytes": 3115,
+      "utf8_half_open": [
+        11167486,
+        11170601
+      ],
+      "sha256": "55b02cfb58c1416fce68bf0cc9178e9b37bed4e03ccb0de73661b7787d99fc95"
+    }
+  ],
+  "baseline_files": {
+    "src/features/terminal/TerminalPanel.tsx": {
+      "bytes": 1469,
+      "sha256": "b2623583505c976f1738785ebf5e05f7c3690b9cdffe05139050b7a795ee1b40"
+    },
+    "src/components/PanelStrip.tsx": {
+      "bytes": 8592,
+      "sha256": "98ffac9be8c66304edd0a5b9fe9fd6465ebbd2d52ef8f6fc8a8532da8f9457de"
+    },
+    "src/components/WorkspaceView.tsx": {
+      "bytes": 83347,
+      "sha256": "c0753403e6c9c2481b51e87c45e291910fc17cf979519cc772aa36a84e4b3b8e"
+    },
+    "src/features/diff/chatAttachment.ts": {
+      "bytes": 3888,
+      "sha256": "2883bc3aa9ba22822a0e7609d36352796e10ab563f639823b602267d8612eebd"
+    },
+    "src/features/terminal/session.ts": {
+      "bytes": 20342,
+      "sha256": "8560deacd82ccec6a8442494b38c887a0e81fe44d271839c9e79888029a0a235"
+    }
+  },
+  "fixtures": [
+    {
+      "path": "src/features/terminal/selectionAddToChat.test.ts",
+      "bytes": 7502,
+      "sha256": "8107224a40867e6af24ad52d0085e6a66259a1760469bf683bc044c7b9a8a7cc"
+    },
+    {
+      "path": "src/features/terminal/selectionChatFocus.test.ts",
+      "bytes": 7555,
+      "sha256": "95eba5a4c9c2afa05af6d749b9e34e1dc1967989435b51c08d0e2c46d76fc908"
+    },
+    {
+      "path": "src/features/terminal/selectionChatCaller.test.ts",
+      "bytes": 6415,
+      "sha256": "7fb4d437798219ccf81bf4e4bb77f418ac4f03fda95e2c227df8b8caa315d975"
+    }
+  ],
+  "hosted_baseline": "00bcc7a: 17 intended assertion failures, 3 controls pass; tsc PASS; details baseline-00bcc7a.json",
+  "local_node_browser_native": "NOT_RUN",
+  "fixture_typing_correction": "Destructured default alias plus explicitly optional local target; all test bodies and assertions unchanged. New hosted baseline required before candidate."
+}
