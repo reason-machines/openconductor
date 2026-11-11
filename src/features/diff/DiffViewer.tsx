@@ -65,6 +65,20 @@ export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, ann
       paths: current.revision !== redirectRevision ? [path] : [...current.paths.filter((item) => item !== path), path].slice(-5),
     }));
   }, [path, redirectRevision]);
+  if (load.state === "loading") {
+    return (
+      <div className="oc-diff oc-diff-tab">
+        <div className="placeholder small" role="status" aria-label="Loading file changes"><span className="clone-spinner" aria-hidden /></div>
+      </div>
+    );
+  }
+  if (load.state === "error") {
+    return (
+      <div className="oc-diff oc-diff-tab">
+        <div className="placeholder small"><p className="error">Couldn't load file changes</p><p className="muted">{load.message}</p></div>
+      </div>
+    );
+  }
   if (!selected) {
     return (
       <div className="oc-diff oc-diff-tab">

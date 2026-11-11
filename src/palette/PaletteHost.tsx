@@ -5,7 +5,7 @@ import type { DialogKind } from "../components/Dialogs";
 import { CommandPalette } from "./CommandPalette.tsx";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
-import { paletteDataFromState, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
+import { workspacePaletteData, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import { buildSearchIndex } from "../settings/searchIndex";
 import { settingsGroups } from "../settings/pages";
 import { AGENT_SEARCH_TABS, scrollToRow, searchIcon } from "../settings/SettingsView";
@@ -21,6 +21,8 @@ import { AppIcon, useInstalledApps } from "../features/openIn/OpenInButton.tsx";
 import { openInApp } from "../features/openIn/apps.ts";
 import { recordOpenIn, useAppPrefs } from "../settings/appPrefs.ts";
 import { Toaster, useToasts } from "../components/Toast";
+import { ConductorIcon } from "../components/ConductorIcon";
+import { GIT_PANEL_ACTIONS, requestGitPanelAction } from "./gitPanelActions.ts";
 
 interface Props {
   state: AppState;
@@ -96,7 +98,7 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
   const apps = useInstalledApps();
   const prefs = useAppPrefs();
   const { toasts, show, dismiss } = useToasts();
-  const data = useMemo(() => paletteDataFromState(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in), [state, recents, archived, settingEntries, apps, prefs.default_open_in]);
+  const data = useMemo(() => workspacePaletteData(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in), [state, recents, archived, settingEntries, apps, prefs.default_open_in]);
   const archivedById = (id: string) => archived.find((a) => a.id === id);
   const showWorkspaceNumbers = useBoolPref("experimental_show_workspace_numbers");
 
@@ -121,6 +123,7 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
     settings: commands.openSettings,
     "open-docs": commands.openDocs,
     "quick-open": commands.quickOpen,
+    ...Object.fromEntries(GIT_PANEL_ACTIONS.map(({ entry }) => [entry.id, () => requestGitPanelAction(entry.id, state)])),
     "copy-url": commands.copyUrl,
     "go-home": () => dispatch({ type: "select", selection: { kind: "home" } }),
     "next-workspace": () => go(stepWorkspace(state, 1)),
@@ -193,6 +196,9 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
       onSelect={onSelect}
       settingIcon={settingIcon}
       actionIcon={(id) => {
+        if (id === "show-all-files") return <ConductorIcon name="list-tree" size={16} />;
+        if (id === "show-changes" || id === "show-uncommitted-changes") return <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2Z" /><path d="M14 2v5a1 1 0 0 0 1 1h5M9 13h6M12 10v6M9 19h6" /></svg>;
+        if (id === "show-checks") return <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden><circle cx={12} cy={12} r={10} /><path d="m9 12 2 2 4-4" /></svg>;
         const app = apps?.find((a) => id === `open-in-${a.id}`);
         return app ? <AppIcon app={{ ...app, icon: null }} size={14} /> : null;
       }}
