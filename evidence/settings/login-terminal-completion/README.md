@@ -26,7 +26,7 @@ Only `LoginTerminal`, its state type and `terminalHeader` change. The bootstrap 
 
 `loginTerminalProof.test.ts` replays the byte-identical ten-case fixture against the frozen baseline and candidate, requiring exactly the expected five RED failures followed by ten GREEN passes with strict TAP counts and assertion signatures. `loginTerminalBoundary.test.ts` adds five safety cases using the retained fixture factory without changing its assertions: stable pre-resolution terminal identity, delayed-start dismissal, the real non-rendering xterm parser ignoring echoed bootstrap text and accepting a split OSC, and both completion/premature-exit output-drain outcomes. Terminal/PTY/provider boundaries remain substituted; the real xterm parser case is not native UI or real IPC proof.
 
-Candidate hosted GREEN and all exact-head checks are pending. No product execution was performed locally.
+[Automatic hosted candidate unit job](https://github.com/reason-machines/openconductor/actions/runs/43084667229/job/130745820383) at `435ef36adbad8fde5156b3967016add1d11cae1c` passed all ten unchanged assertions and the strict paired baseline RED/candidate GREEN replay. The five supplemental cases failed during fixture setup with `Cannot read properties of undefined (reading 'ok')`, before reaching their assertions. Their CommonJS transpilation omitted `esModuleInterop`, leaving the fixture's default `node:assert/strict` import undefined. The follow-up enables that compiler option only; product code, frozen fixture, and all supplemental assertions remain unchanged. Supplemental GREEN and all exact-head checks remain pending. No product execution was performed locally.
 
 ## Verification
 

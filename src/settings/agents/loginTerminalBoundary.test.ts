@@ -34,7 +34,7 @@ function mount(options: { deferListener?: boolean; deferSpawn?: boolean } = {}):
   assert.ok(boundary > 0);
   const setup = text.slice(0, boundary).replaceAll("import.meta.url", "__fixtureUrl");
   const javascript = ts.transpileModule(`${setup}\nexports.fixture = fixture;`, {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true },
   }).outputText;
   const exports: { fixture?: (options: { deferListener?: boolean; deferSpawn?: boolean }) => View } = {};
   runInNewContext(javascript, { exports, require: dependencies, URL, process, __fixtureUrl: fixtureUrl.href });
