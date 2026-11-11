@@ -52,6 +52,7 @@ export function createBranchHeaderController(deps: Dependencies) {
       return;
     }
     state.pending = true;
+    state.editing = false;
     deps.onChange();
     try {
       await deps.renameBranch(id, next);
