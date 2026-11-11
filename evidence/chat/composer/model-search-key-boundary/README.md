@@ -29,11 +29,13 @@ no reference code is executed or copied into the test.
 ## Current source and scope
 
 Checked main: `efad8bf5817748aed5c1108f9266c1a7e4853926`.
-Its `ModelPicker.tsx` is byte-identical to the pre-regression working source.
-The current `onMenuKey` callback returns after handled navigation or Enter,
-handles Escape, then lets ordinary search-input keys propagate.
+Its `ModelPicker.tsx` was byte-identical to the pre-regression working source.
+Before the correction, `onMenuKey` returned after handled navigation or Enter,
+handled Escape, then let ordinary search-input keys propagate. Revalidation
+against main `50b0a4403ee26d315775869b35958bfe28291ae2` confirmed the same
+picker source and unchanged locked fixtures before the fix.
 
-The proposed correction is confined to that callback's tail. It contains ordinary
+The correction is confined to that callback's tail. It contains ordinary
 keys only when the event target is the search input, without preventing default
 editing. Existing ArrowUp, ArrowDown, Tab, Enter, Escape, IME, and already-prevented
 behavior is preserved. Result buttons and other targets retain their behavior.
@@ -67,9 +69,17 @@ The optional `MODEL_PICKER_SEARCH_KEY_REGRESSION_REF` reads the product source
 from a named git revision, so the same assertions can exercise the baseline.
 
 - **Passed:** retained renderer and span hash validation, fresh-main comparison,
-  locked fixture equality, and `git diff --check`.
-- **Not run yet:** automatic hosted RED. The production callback is unchanged;
-  the minimal correction waits for an executed failure for the intended reason.
+  locked fixture equality, regression-test hash equality, and `git diff --check`.
+- **Executed RED:** automatic hosted `node --test "src/**/*.test.ts"` at
+  `5042e78ccc35b90711548269d920d57281093268` ran 2,138 tests, with 2,132
+  passing and exactly the six ordinary-key cases failing. Each failure exposed
+  `stopped: false` where `stopped: true` was expected, while default editing and
+  all eight preservation controls were unchanged. Both frontend jobs reported
+  the same six failures. [Unit-test RED log](https://github.com/reason-machines/openconductor/actions/runs/42931948520/job/130232610866)
+  and [build-job RED log](https://github.com/reason-machines/openconductor/actions/runs/42931948520/job/130232610833).
+- **Pending GREEN:** automatic hosted rerun on the minimal callback-tail fix.
+  The 14-case regression file and all #951/#957 fixtures are byte-identical to
+  the executed RED revision. No test assertion or workflow was weakened.
 - **Not run:** local Node, dependency installation, local tests or builds,
   mounted React, browser, native, real-provider, or reference execution. No new
   acquisition, manual workflow dispatch, or runtime admission was made. No
