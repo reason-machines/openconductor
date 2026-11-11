@@ -1,6 +1,6 @@
 # Copy URL requires a resolved workspace
 
-Conductor Rebuild compared retained Conductor 0.87.6 renderer source with OpenConductor main `7af2b95aa74dff985fb6b745f7cc080287d35ea6` on 11 November 2026. The scope is only the palette's Copy URL row eligibility. Clipboard contents, link protocols, host dispatch, shortcuts, and other action predicates are unchanged.
+Conductor Rebuild compared retained Conductor 0.87.6 renderer source with OpenConductor main `7af2b95aa74dff985fb6b745f7cc080287d35ea6` on 11 November 2026. The affected adapter and callback chain were rechecked unchanged against fresh main `1b75772349ee3e97b4f4ac9dec594d67b3048e15` before the fix. The scope is only the palette's Copy URL row eligibility. Clipboard contents, link protocols, host dispatch, shortcuts, and other action predicates are unchanged.
 
 ## Retained reference chain
 
@@ -41,8 +41,10 @@ The new cases check both action entries and actual All and Actions results for e
 
 ## Verification state
 
-This is the tests-first milestone. The production predicate has not changed. Behavioral failing-before evidence is pending the automatic hosted frontend tests. Passing syntax or whitespace checks do not count as behavioral RED or GREEN.
+The tests-first published head `f83f98ac21e6b0d272d21f94cc0c1d1df269d8b5` established behavioral RED in automatic [CI run 42944920609](https://github.com/reason-machines/openconductor/actions/runs/42944920609). Both frontend jobs reported 2,279 tests, 2,272 passing and seven failing. All seven failures are the new Copy URL absence cases: startup placeholders, missing workspace, wrong repository, missing repository, unrelated archived view before and after results load, and no workspace selection. Each failure reports `actual: true`, `expected: false` from `assertCopyUrlEligibility`. The matching archived-view and lifecycle-positive controls passed.
 
-Local validation is limited to retained-source length and hash checks, the pre-existing test-prefix comparison, `node --experimental-strip-types --check src/palette/fromAppState.test.ts`, and `git diff --check`. Actual results are reported in the pull request.
+The fix adds only Copy URL to the existing View archived workspaces resolved-presence predicate. All prior action predicates, clipboard callbacks and payloads stay unchanged. The complete 26,600-byte failing-before test file remains byte-identical, SHA-256 `973e502c550e2e91209560957ed29a34a385da00711d882a75cf8b668bfc3739`. The 22,282-byte pre-existing prefix also remains unchanged.
+
+Passing-after behavioral verification is pending automatic hosted CI on the fix. Local validation is limited to retained-source length and hash checks, the pre-existing test-prefix and complete published test-file comparisons, `node --experimental-strip-types --check src/palette/fromAppState.ts`, `node --experimental-strip-types --check src/palette/fromAppState.test.ts`, and `git diff --check`. Syntax and whitespace checks do not count as behavioral GREEN.
 
 Dependency installation, local behavioral tests, builds, browser execution, native execution, reference acquisition, and manual workflow dispatch were not run. Automatic hosted workflows provide the behavioral checks. No screenshot is available because this slice does not admit browser or native capture. Installed-app activation, real clipboard effects, and visual parity remain unverified. #975's cancelled exact-head E2E remains an uncredited gap, with no replacement watcher.
