@@ -24,6 +24,7 @@ function tauriCommentStore(workspaceId: string, workspacePath: string | null): C
       await invoke("diff_comment_add", { comment });
     },
     edit: (id, body) => invoke("diff_comment_edit", { id, body }),
+    updateAnchors: (updates) => invoke("diff_comments_update_anchors", { workspaceId, updates }),
     remove: async (id) => {
       await invoke("diff_comment_delete", { id });
     },
