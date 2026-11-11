@@ -34,7 +34,9 @@ cargo test --locked
 cargo clippy --all-targets -- -D warnings
 ```
 
-Candidate executable results are pending. Static registration and consumer checks, frozen-fixture identity, and `git diff --check` passed. No local Node, Rust, browser, native, or provider execution was run because this lane has no local runtime admission.
+Hosted candidate `9672b819cf06c56b604fd564186ab2bc88b8f51a` passed frontend unit tests and typecheck/build in [CI run 43092612674](https://github.com/reason-machines/openconductor/actions/runs/43092612674). The macOS and Linux Tauri app checks failed with `E0432` and `E0433`: the new persistence module uses `sqlx`, but the app declared it only under dev-dependencies. The macOS package and built-app jobs reproduced the same compile failure before app execution.
+
+The correction moves the existing `sqlx` declaration to app dependencies without changing its version, features, or lockfile. Python TOML checks confirmed the declaration is identical, and the frozen regression fixture remains byte-identical to the RED checkpoint. Corrected-head hosted checks are pending. Static registration and consumer checks, frozen-fixture identity, and `git diff --check` passed. No local Node, Rust, browser, native, or provider execution was run because this lane has no local runtime admission.
 
 ## Remaining gaps
 
