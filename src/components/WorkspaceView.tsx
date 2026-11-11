@@ -91,6 +91,8 @@ import { bigTabRequest } from "../features/terminal/bigTerminal";
 import { KeybindingScope, useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import { PRIORITY } from "../keybindings/dispatcher.ts";
 import { PanelStrip, type StripView } from "./PanelStrip";
+import { BrowserPreviewAnchor, BrowserPreviewTab } from "../features/browser/BrowserPreview";
+import { browserSnapshot, closeBrowserPreview, openBrowserPreview, subscribeBrowser } from "../features/browser/store.ts";
 import "./rightPanel.css";
 import { useCreateSetupRunning } from "../workspace/useSetupWatch";
 import { RUNNING_SETUP } from "../workspace/createFlow";
@@ -830,9 +832,10 @@ interface MainTabsProps {
   /** The "+" after the chat tabs (NewChatButton). */
   newChat: ReactNode;
   fileTab: ReactNode;
+  browserTab?: ReactNode;
 }
 
-function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, terminals, onCloseTerminal, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, chatMenu, newChat, fileTab }: MainTabsProps) {
+function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, terminals, onCloseTerminal, onSelect, onCloseDiff, onCloseReview, mainChatId, isUnread, onToggleRead, chatMenu, newChat, fileTab, browserTab }: MainTabsProps) {
   const [menu, setMenu] = useState<{ chatId: string; title: string; x: number; y: number } | null>(null);
   const openMenu = (chatId: string, tabTitle: string) => (e: ReactMouseEvent) => {
     e.preventDefault();
@@ -892,6 +895,7 @@ function MainTabs({ title, active, diffOpen, prTab, onClosePr, reviews, terminal
         );
       })}
       {fileTab}
+      {browserTab}
       {newChat}
     </div>
   );
@@ -953,6 +957,15 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   // The "All changes" tab opens when a file is picked in the changes list, and is reused for every file.
   const [diffOpen, setDiffOpen] = useState(false);
   const [mainTab, setMainTab] = useState<MainTab>("chat");
+  const browserPage = useSyncExternalStore(subscribeBrowser, () => browserSnapshot().pages.get(workspace.id));
+  const displayedWorkspace = useRef(workspace.id);
+  displayedWorkspace.current = workspace.id;
+  const openPreview = useCallback((workspaceId: string, url: string) => {
+    if (!openBrowserPreview(workspaceId, url)) return false;
+    if (displayedWorkspace.current === workspaceId) setMainTab("browser");
+    return true;
+  }, []);
+  const closeBrowser = () => { closeBrowserPreview(workspace.id); setMainTab("chat"); };
   const terminals = useSyncExternalStore(subscribeTabs, () => getTabs(workspace.id));
   const centerTerminals = terminalTabs(terminals, "center");
   const centerTerminal = centerTerminals.find((tab) => `terminal:${tab.id}` === mainTab);
@@ -1155,7 +1168,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   const showPr = prOpen && mainTab === "pr";
   const activeReview = reviews.tabs.find((r) => r.chatId === mainTab);
   const showFile = mainTab === "file" && fileTarget !== null && fileTarget.workspaceId === workspace.id && workspace.path !== undefined;
-  const activeTab = showFile ? "file" : centerTerminal ? `terminal:${centerTerminal.id}` : showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
+  const showBrowser = mainTab === "browser" && browserPage !== undefined;
+  const activeTab = showBrowser ? "browser" : showFile ? "file" : centerTerminal ? `terminal:${centerTerminal.id}` : showDiff ? "diff" : showPr ? "pr" : (activeReview?.chatId ?? "chat");
   const lastDiffSession = useRef({ workspaceId: workspace.id, tab: "chat" });
   if (mainTab === "chat" || activeReview) lastDiffSession.current = { workspaceId: workspace.id, tab: mainTab };
   const activeDiffOwner = useRef({ workspaceId: workspace.id, tab: mainTab });
@@ -1170,7 +1184,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   const prNumber = pullRequest.pr?.number ?? null;
   const [prMenu, setPrMenu] = useState<{ x: number; y: number } | null>(null);
   useEffect(() => {
-    if (activeTab !== "diff" && activeTab !== "pr" && activeTab !== "file" && !activeTab.startsWith("terminal:")) recordViewedChat(workspace.id, activeTab);
+    if (activeTab !== "browser" && activeTab !== "diff" && activeTab !== "pr" && activeTab !== "file" && !activeTab.startsWith("terminal:")) recordViewedChat(workspace.id, activeTab);
   }, [workspace.id, activeTab]);
   // ⌘W closes the tab on screen and ⌘⇧T reopens the last closed one, as Conductor's workspace
   // view does. The workspace's own chat has no close button here, so ⌘W leaves it. Inside a
@@ -1178,7 +1192,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   useKeybindings(
     {
       "nav.closeTab": () => {
-        if (activeTab === "file") closeFile();
+        if (activeTab === "browser") closeBrowser();
+        else if (activeTab === "file") closeFile();
         else if (activeTab === "diff") closeDiffTab();
         else if (activeTab === "pr") closePrTab();
         else if (centerTerminal) closeTab(workspace.id, centerTerminal.id);
@@ -1195,7 +1210,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   shownChat.current = activeReview?.chatId ?? workspace.id;
   // The chat whose transcript is on screen (none while the diff or PR tab is open): auto-unread
   // skips it while the window has focus, and an unread workspace shown that way is read.
-  const transcriptShown = showDiff || showPr || centerTerminal || showFile ? null : shownChat.current;
+  const transcriptShown = showBrowser || showDiff || showPr || centerTerminal || showFile ? null : shownChat.current;
   const focused = useWindowFocused();
   useEffect(() => {
     setShownChat(transcriptShown);
@@ -1204,9 +1219,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   // The selected chat tab (Conductor's selectedSessionId): the row menu's "Mark as unread" marks it.
   const selectedChat = shownChat.current;
   useEffect(() => {
-    setSelectedChat(centerTerminal ? null : selectedChat);
+    setSelectedChat(centerTerminal || showBrowser ? null : selectedChat);
     return () => setSelectedChat(null);
-  }, [selectedChat, centerTerminal]);
+  }, [selectedChat, centerTerminal, showBrowser]);
   // Showing a chat (again) drops its hand mark (yIo's mount effect).
   useEffect(() => clearManuallyUnread(selectedChat), [selectedChat]);
   useEffect(() => {
@@ -1325,9 +1340,9 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
       </header>
       <div className={`ws-split${rightPanelVisible ? "" : " right-hidden"}`}>
         <div className="ws-main">
-          <MainTabs fileTab={fileTarget?.workspaceId === workspace.id ? <span className={`main-tab${showFile ? " active" : ""}`}><button role="tab" aria-selected={showFile} onClick={() => setMainTab("file")}>{fileTarget.path.split("/").pop()}</button><button className="main-tab-close" aria-label={`Close ${fileTarget.path} tab`} onClick={closeFile}>×</button></span> : null} title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
-          <div className="ws-chat-host" hidden={centerTerminal !== undefined}>
-          <KeybindingScope focused={centerTerminal === undefined}>
+          <MainTabs browserTab={browserPage ? <BrowserPreviewTab page={browserPage} selected={showBrowser} onSelect={() => setMainTab("browser")} onClose={closeBrowser} /> : null} fileTab={fileTarget?.workspaceId === workspace.id ? <span className={`main-tab${showFile ? " active" : ""}`}><button role="tab" aria-selected={showFile} onClick={() => setMainTab("file")}>{fileTarget.path.split("/").pop()}</button><button className="main-tab-close" aria-label={`Close ${fileTarget.path} tab`} onClick={closeFile}>×</button></span> : null} title={workspace.chatTitle ?? workspace.name} active={activeTab} diffOpen={diffOpen} prTab={prOpen ? (prNumber !== null ? `PR #${prNumber}` : "PR") : null} onClosePr={closePrTab} reviews={reviews.tabs} terminals={centerTerminals} onCloseTerminal={(id) => closeTab(workspace.id, id)} onSelect={setMainTab} onCloseDiff={closeDiffTab} onCloseReview={closeReview} mainChatId={workspace.id} isUnread={(chatId) => isChatUnread(workspace, chatId)} onToggleRead={toggleChatRead} chatMenu={chatMenu} newChat={<NewChatButton openTabs={openChatTabs} onNewChat={newChat} />} />
+          <div className="ws-chat-host" hidden={centerTerminal !== undefined || showBrowser}>
+          <KeybindingScope focused={centerTerminal === undefined && !showBrowser}>
         <ChatPanel
           key={activeReview?.chatId ?? workspace.id}
           repo={repo}
@@ -1367,6 +1382,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
         />
           </KeybindingScope>
           </div>
+          {showBrowser && <BrowserPreviewAnchor workspaceId={workspace.id} url={browserPage.url} />}
           {centerTerminal && (
             <section className="center-terminal terminal-panel" aria-label="Center terminal">
               <TerminalHost key={centerTerminal.id} id={centerTerminal.id} status={centerTerminal.status} />
@@ -1389,7 +1405,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
               notify={notify}
               emptyAction={<PullLatestButton pullLatest={pullLatest} agentWorking={agentWorking} />}
             />
-            <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={workspace.path ?? repo.path} onAskSetupAgent={workspace.status === "archived" ? undefined : askSetupAgent} />
+            <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={workspace.path ?? repo.path} onAskSetupAgent={workspace.status === "archived" ? undefined : askSetupAgent} onOpenPreview={workspace.status === "archived" ? undefined : openPreview} />
           </div>
         )}
       </div>

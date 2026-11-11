@@ -17,6 +17,7 @@ import { AllWorkspaces } from "./components/AllWorkspaces";
 import { Dashboard } from "./components/Dashboard";
 import "./home.css";
 import { WorkspaceView } from "./components/WorkspaceView";
+import { BrowserPreviewHost } from "./features/browser/BrowserPreview";
 import type { DialogKind } from "./components/Dialogs";
 import { CreateProjectDialog } from "./components/CreateProjectDialog";
 import { OPEN_IN_GITHUB, SUCCESS_TOAST } from "./state/createProject";
@@ -663,6 +664,7 @@ export default function App() {
       {restoreRequest && <RestoreWorkspaceDialog request={restoreRequest} dispatch={dispatch} onClose={closeRestore} />}
       {quitDialog}
     </div>
+    <BrowserPreviewHost />
     {toaster}
     </>
   );
