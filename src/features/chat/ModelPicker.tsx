@@ -82,7 +82,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
     return q ? list.filter((f) => {
       const agent = itemAgent?.(f) ?? f.agent ?? agentForModel(f.model);
       const agentLabel = agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : "";
-      const fields = [name(f), f.model, agentLabel].map((field) => field.toLowerCase());
+      const fields = [name(f), f.model, agentLabel, agent ? `${agent}:${f.model}` : ""].map((field) => field.toLowerCase());
       return words.every((word) => fields.some((field) => field.includes(word)));
     }) : list;
   }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
@@ -235,7 +235,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
           <div className="oc-model-menu-inner" ref={menuInner} style={searching ? { height: searchHeight } : undefined}>
             <div className="oc-model-search">
               <SearchSmallIcon />
-              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => changeQuery(e.target.value)} />
+              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} autoFocus value={query} onChange={(e) => changeQuery(e.target.value)} />
             </div>
             <div className="oc-model-list">
               {items.length === 0 ? <div className="oc-model-empty">No models found</div> : null}

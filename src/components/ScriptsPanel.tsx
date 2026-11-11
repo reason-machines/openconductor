@@ -158,6 +158,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   }, [wsId]);
 
   useEffect(() => {
+    let disposed = false;
     setPicked(null);
     setError(null);
     setConfigError(null);
@@ -168,11 +169,13 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
           setConfigState({ key: configKey, config: c });
         },
         (e) => {
+          if (disposed) return;
           setError(errorText(e));
           setConfigError(errorText(e));
         },
       );
     refresh().catch(() => {});
+    return () => { disposed = true; };
   }, [ref, configKey, refresh]);
 
   const refreshSpotlight = useCallback(async () => {
