@@ -46,8 +46,10 @@ Original evidence packets remain attached to the owning Session:
 
 ## Frozen regression and observed baseline
 
-The permanent integration test is the exact 2,613-byte frozen fixture,
+The original integration test is the exact 2,613-byte frozen fixture,
 SHA-256 `e100ef85c31560b49166f8f58344534ec5ea833c94a5800a57649b80f36887f2`.
+The matched baseline and candidate runs below used those bytes. The permanent
+test has the same tokens after the CI formatting correction described below.
 Existing `effective_tests.rs` is unchanged. All fixture paths are disposable;
 no real HOME, environment, credentials, provider, native app, or reference
 JavaScript is read or executed.
@@ -74,7 +76,7 @@ The sole serialized executor ran the frozen baseline on Reason Cloud:
 The same serialized executor tested candidate `5d591f648b18298a1a141a1be3d4e73a147f0624`
 on Reason Cloud with locked/offline dependencies and one Cargo job. The loader
 SHA-256 is `d3fd96d92d66d9ab92923aee2496042af93229776e249c4b2c9ba7c3f82ae33c`.
-The fixture remains byte-identical to the failing baseline.
+For that execution, the fixture remained byte-identical to the failing baseline.
 
 - **Passed:** the exact integration-test command above, three tests and no
   failures or ignored cases. JSON-only loading, TOML priority without JSON
@@ -101,6 +103,26 @@ SHA-256 `814e3ffb99125b6d771dcfc943ec84b64fef4b0c727dd53a020fc7cdea96300d`.
 stable toolchain lacks the rustfmt component; its check exited before any
 formatting comparison. No formatter or toolchain was installed. Hosted CI
 results are reported on the pull request.
+
+## Hosted formatting correction
+
+Both Scripts jobs on PR #1016 head `15c2eabea1c170695e7ea91797f59a5ef8dadd2e`
+failed `cargo fmt --check`. The [Ubuntu job](https://github.com/reason-machines/openconductor/actions/runs/42984021080/job/130400822229)
+and [macOS job](https://github.com/reason-machines/openconductor/actions/runs/42984021080/job/130400822227)
+reported the same two assertion line wraps in `managed_terminal_json.rs`.
+Their clippy and test steps did not run.
+
+Conductor Rebuild applied those exact line wraps. The formatted fixture is
+2,657 bytes, SHA-256
+`738ee61d5a759c1cb2bf5d0a5add235ff7e55f131ca29f5ae340ad3cd9fa044e`.
+A Python comparison against the original frozen fixture **passed** for the
+complete non-whitespace Rust token sequence, including all string literals.
+All three tests and every assertion are unchanged. The product loader hash
+still matches the tested candidate. `git diff --check` **passed**.
+
+Local formatter and Rust tests were not rerun. Hosted CI must validate the
+formatted fixture; the original byte-identical RED/GREEN results above remain
+historical proof, not a claim that this formatted file was already executed.
 
 ## Limits
 

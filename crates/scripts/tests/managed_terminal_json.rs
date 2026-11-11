@@ -60,8 +60,14 @@ fn managed_toml_selects_one_file_without_json_only_key_leakage() {
         "[environment_variables.local]\nOC_MANAGED_64_COMMON = \"toml\"\nOC_MANAGED_64_TOML_ONLY = \"toml-only\"\n",
     );
     let vars = terminal_settings_map(&paths);
-    assert_eq!(vars.get("OC_MANAGED_64_COMMON").map(String::as_str), Some("toml"));
-    assert_eq!(vars.get("OC_MANAGED_64_TOML_ONLY").map(String::as_str), Some("toml-only"));
+    assert_eq!(
+        vars.get("OC_MANAGED_64_COMMON").map(String::as_str),
+        Some("toml")
+    );
+    assert_eq!(
+        vars.get("OC_MANAGED_64_TOML_ONLY").map(String::as_str),
+        Some("toml-only")
+    );
     assert!(!vars.contains_key("OC_MANAGED_64_JSON_ONLY"));
 }
 
