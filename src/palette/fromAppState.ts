@@ -14,6 +14,7 @@ import { VIEW_ARCHIVED_LABEL, type ArchivedWorkspace } from "../workspace/archiv
 export const VIEW_ARCHIVED_ACTION = "view-archived-workspaces";
 import { sidebarEntries } from "../state/sidebarOrder.ts";
 import { nextUnreadChat } from "../state/nextUnread.ts";
+import { GIT_PANEL_ACTIONS, gitPanelWorkspace } from "./gitPanelActions.ts";
 
 export interface WorkspaceRef {
   repoId: string;
@@ -44,12 +45,13 @@ export function stepWorkspace(state: AppState, delta: 1 | -1): WorkspaceRef | un
  * Conductor's command palette items (`m_a`, renderApp @10,909,900-10,918,150), in its order,
  * for a local user. Left out: Create section (sidebar sections), Team and Routines (cloud
  * organisations), Passport and Check for updates (no OpenConductor counterpart yet), and the
- * workspace actions OpenConductor cannot run from here (Search in files, Show changes / checks /
- * notes, Link issue, Move to section and the PR actions).
+ * workspace actions OpenConductor cannot run from here (Search in files, Show notes,
+ * Link issue, Move to section and the PR actions).
  */
 export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   // Workspace actions: only while a workspace is open.
   { id: "quick-open", title: "File picker", group: "workspace-actions", bindingId: "nav.quickOpen", icon: "file", keywords: ["quick", "open", "file", "search", "find", "picker"] },
+  ...GIT_PANEL_ACTIONS.map(({ entry }) => entry),
   { id: "copy-url", title: "Copy URL", group: "workspace-actions", bindingId: "workspace.copyLink", icon: "link", keywords: ["copy", "url", "link", "share", "workspace"] },
   { id: "archive-workspace", title: "Archive workspace", group: "workspace-actions", bindingId: "workspace.archive", icon: "archive", keywords: ["archive", "current", "workspace"] },
   // Actions.
@@ -146,7 +148,7 @@ export function paletteDataFromState(
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
     actions: [...PALETTE_ACTIONS.filter((a) => {
-      if (a.id === "quick-open") return selectedWorkspace !== undefined && selectedWorkspace.status !== "archived" && selectedWorkspace.state !== "archived" && selectedWorkspace.state !== "unstarted";
+      if (a.id === "quick-open" || GIT_PANEL_ACTIONS.some(({ entry }) => entry.id === a.id)) return gitPanelWorkspace(state) !== undefined;
       if (a.id === "archive-workspace") return selectedWorkspace?.status !== "archived" && state.archivedOpen?.workspace.id !== activeWorkspaceId;
       if (a.id === "go-to-next-unread") return nextUnreadChat(state, { skipSelected: false }) !== undefined;
       // Conductor gates both rows on the resolved workspace (`Xt &&`).
