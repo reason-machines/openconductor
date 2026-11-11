@@ -17,6 +17,7 @@ on:
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/reason-pairing.yml"
+      - "tools/ci/**"
   pull_request:
     paths:
       - "src/onboarding/**"
@@ -32,6 +33,7 @@ on:
       - "package.json"
       - "package-lock.json"
       - ".github/workflows/reason-pairing.yml"
+      - "tools/ci/**"
 
 permissions:
   contents: read
@@ -43,8 +45,8 @@ concurrency:
 jobs:
   pairing:
     name: Fake browser approval through production Rust and React
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -56,7 +58,11 @@ jobs:
           python-version: "3.12"
       - uses: dtolnay/rust-toolchain@stable
       - run: npm ci
-      - run: npx playwright-core install --with-deps chromium
+      - name: Browser dependency setup regression tests (no package installs)
+        run: python3 tools/ci/test_pairing_browser_install.py -v
+      - name: Bounded browser dependencies and Chromium download
+        timeout-minutes: 23
+        run: tools/ci/install-pairing-browser.sh
       - name: Check fake server and executable boundaries
         run: node --test tools/reason-pairing/server.test.mjs
       - name: Browser pairing E2E

@@ -1,0 +1,163 @@
+{
+  "producer": "Conductor Rebuild",
+  "run": 43031371815,
+  "job": 130558976061,
+  "artifact": 13860504203,
+  "artifact_sha256": "66ed96fb50e4ce73709b7392a4f580610f6f6f2977867cdc480a031954629c9e",
+  "phases": {
+    "baseline": {
+      "source": "d8f6bdfd26370491295f38ffecd7090c71a2a6db",
+      "harnessSource": "d85e6d2464d0bb9013cbdfaa898c76d7ab689eed",
+      "fixtureSha256": "b4f4cae76a414e5c3312ddd411e3b17ab39f90bc55b8662cdc058d55b2599605",
+      "packageLockSha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1",
+      "node": "v22.23.4",
+      "browser": "156.0.8078.79",
+      "status": "EXPECTED_RED",
+      "cases": [
+        {
+          "id": "control.sidebar-actions",
+          "status": "passed",
+          "phase": "behavior"
+        },
+        {
+          "id": "control.header-primary-click",
+          "status": "passed",
+          "phase": "behavior"
+        },
+        {
+          "id": "header.context-menu-open-dismiss",
+          "status": "failed",
+          "phase": "behavior",
+          "error": "locator.waitFor: Timeout 3000ms exceeded.\nCall log:\n  - waiting for getByRole('menu', { name: 'Workspace actions', exact: true }) to be visible\n"
+        },
+        {
+          "id": "header.existing-pin-read-status",
+          "status": "failed",
+          "phase": "behavior",
+          "error": "locator.waitFor: Timeout 3000ms exceeded.\nCall log:\n  - waiting for getByRole('menu', { name: 'Workspace actions', exact: true }) to be visible\n"
+        },
+        {
+          "id": "header.existing-rename-dialog",
+          "status": "failed",
+          "phase": "behavior",
+          "error": "locator.waitFor: Timeout 3000ms exceeded.\nCall log:\n  - waiting for getByRole('menu', { name: 'Workspace actions', exact: true }) to be visible\n"
+        },
+        {
+          "id": "header.existing-new-section",
+          "status": "failed",
+          "phase": "behavior",
+          "error": "locator.waitFor: Timeout 3000ms exceeded.\nCall log:\n  - waiting for getByRole('menu', { name: 'Workspace actions', exact: true }) to be visible\n"
+        },
+        {
+          "id": "header.sidebar-hidden",
+          "status": "failed",
+          "phase": "behavior",
+          "error": "locator.waitFor: Timeout 3000ms exceeded.\nCall log:\n  - waiting for getByRole('menu', { name: 'Workspace actions', exact: true }) to be visible\n"
+        },
+        {
+          "id": "header.workspace-target-isolation",
+          "status": "failed",
+          "phase": "behavior",
+          "error": "locator.waitFor: Timeout 3000ms exceeded.\nCall log:\n  - waiting for getByRole('menu', { name: 'Workspace actions', exact: true }) to be visible\n"
+        }
+      ],
+      "errors": [],
+      "screenshots": [
+        {
+          "path": "header.context-menu-open-dismiss.png",
+          "sha256": "e89e5d2a02ab452d3e930e46f21a0676b946dbb46cf0faee989df2fe22d30ead"
+        },
+        {
+          "path": "header.existing-pin-read-status.png",
+          "sha256": "e89e5d2a02ab452d3e930e46f21a0676b946dbb46cf0faee989df2fe22d30ead"
+        },
+        {
+          "path": "header.existing-rename-dialog.png",
+          "sha256": "e89e5d2a02ab452d3e930e46f21a0676b946dbb46cf0faee989df2fe22d30ead"
+        },
+        {
+          "path": "header.existing-new-section.png",
+          "sha256": "e89e5d2a02ab452d3e930e46f21a0676b946dbb46cf0faee989df2fe22d30ead"
+        },
+        {
+          "path": "header.sidebar-hidden.png",
+          "sha256": "5e6b953c7efda242bebc00860223ef1bcfe148c454452efa1754622901b922ff"
+        },
+        {
+          "path": "header.workspace-target-isolation.png",
+          "sha256": "e89e5d2a02ab452d3e930e46f21a0676b946dbb46cf0faee989df2fe22d30ead"
+        }
+      ]
+    },
+    "candidate": {
+      "source": "d85e6d2464d0bb9013cbdfaa898c76d7ab689eed",
+      "harnessSource": "d85e6d2464d0bb9013cbdfaa898c76d7ab689eed",
+      "fixtureSha256": "b4f4cae76a414e5c3312ddd411e3b17ab39f90bc55b8662cdc058d55b2599605",
+      "packageLockSha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1",
+      "node": "v22.23.4",
+      "browser": "156.0.8078.79",
+      "status": "INVALID",
+      "cases": [
+        {
+          "id": "control.sidebar-actions",
+          "status": "passed",
+          "phase": "behavior"
+        },
+        {
+          "id": "control.header-primary-click",
+          "status": "passed",
+          "phase": "behavior"
+        },
+        {
+          "id": "header.context-menu-open-dismiss",
+          "status": "passed",
+          "phase": "behavior"
+        },
+        {
+          "id": "header.existing-pin-read-status",
+          "status": "passed",
+          "phase": "behavior"
+        },
+        {
+          "id": "header.existing-rename-dialog",
+          "status": "passed",
+          "phase": "behavior"
+        },
+        {
+          "id": "header.existing-new-section",
+          "status": "passed",
+          "phase": "behavior"
+        },
+        {
+          "id": "header.sidebar-hidden",
+          "status": "passed",
+          "phase": "behavior"
+        },
+        {
+          "id": "header.workspace-target-isolation",
+          "status": "failed",
+          "phase": "behavior",
+          "error": "locator.getAttribute: Timeout 3000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"left-sidebar-workspace-item\"]').filter({ has: locator('.sb-ws-name').filter({ hasText: 'Quiet harbor' }) })\n"
+        }
+      ],
+      "errors": [],
+      "screenshots": [
+        {
+          "path": "header-context-menu.png",
+          "sha256": "e89e5d2a02ab452d3e930e46f21a0676b946dbb46cf0faee989df2fe22d30ead"
+        },
+        {
+          "path": "header-context-menu-sidebar-hidden.png",
+          "sha256": "21e93ed97ffab11529329b012614a7602d9033c6d564e1fc4ac878b8ab97de59"
+        },
+        {
+          "path": "header.workspace-target-isolation.png",
+          "sha256": "7e1e39926f32dcf91d36a59dd5a6a18ec14f4bd8e17f09c2c860cbc70f828420"
+        }
+      ]
+    }
+  },
+  "diagnosis": "Candidate isolation comparison row is hidden by legitimate default repository collapse after the selected Copper wren is pinned. No stale-target action failure observed. This is not eight-case GREEN.",
+  "correction": "External hosted runner uses Playwright locator handler and actual repository button, once per navigation, to observe collapse/expand and store explicit expanded UI state for both phases. No page wrappers, synthetic events, storage, fixture edits, assertion edits or product changes.",
+  "corrected_execution": "NOT RUN"
+}
