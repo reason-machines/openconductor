@@ -78,12 +78,12 @@ jobs:
               if receipt["observedParents"] != receipt["expectedParents"] or receipt["observedSourceTree"] != receipt["expectedSourceTree"]:
                   raise ValueError("Historical synthetic identity mismatch")
               patch = subprocess.check_output([
-                  "git", "diff", "--binary", "--no-ext-diff", "--no-textconv", "--no-color",
+                  "git", "diff", "--binary", "--full-index", "--no-ext-diff", "--no-textconv", "--no-color",
                   "--no-renames", "--diff-algorithm=myers", "--src-prefix=a/", "--dst-prefix=b/",
                   base, head, "--", *paths,
               ])
               receipt["patchSha256"] = hashlib.sha256(patch).hexdigest()
-              if receipt["patchSha256"] != "212aa24187da7f7c1a195f5a0f453cb035caec2098a6d34b294dc1ba90e60956":
+              if receipt["patchSha256"] != "5b7f31ae0fa3b42b78c51b6d29a1831e0db1e82a166a22f51c6ccef6306af39f":
                   raise ValueError("Four-path diagnostic patch mismatch")
               (output / "codex-diagnostic.patch").write_bytes(patch)
               before = git("show", synthetic + ":tools/e2e/codex-chat.e2e.mjs").splitlines()
@@ -316,12 +316,12 @@ jobs:
               if receipt["observedParents"] != receipt["expectedParents"] or receipt["observedSourceTree"] != receipt["expectedSourceTree"]:
                   raise ValueError("Historical synthetic identity mismatch")
               patch = subprocess.check_output([
-                  "git", "diff", "--binary", "--no-ext-diff", "--no-textconv", "--no-color",
+                  "git", "diff", "--binary", "--full-index", "--no-ext-diff", "--no-textconv", "--no-color",
                   "--no-renames", "--diff-algorithm=myers", "--src-prefix=a/", "--dst-prefix=b/",
                   base, head, "--", *paths,
               ])
               receipt["patchSha256"] = hashlib.sha256(patch).hexdigest()
-              if receipt["patchSha256"] != "212aa24187da7f7c1a195f5a0f453cb035caec2098a6d34b294dc1ba90e60956":
+              if receipt["patchSha256"] != "5b7f31ae0fa3b42b78c51b6d29a1831e0db1e82a166a22f51c6ccef6306af39f":
                   raise ValueError("Four-path diagnostic patch mismatch")
               (output / "codex-diagnostic.patch").write_bytes(patch)
               before = git("show", synthetic + ":tools/e2e/codex-chat.e2e.mjs").splitlines()
