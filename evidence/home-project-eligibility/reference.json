@@ -1,0 +1,301 @@
+{
+  "unit": "HOME-PROJECT-ELIGIBILITY-271",
+  "producer": "Conductor Rebuild",
+  "classification": "SOURCE_CANDIDATE_PENDING_HOSTED_REGRESSION",
+  "main": "15e87440daa703030f4c402e7a41b9221a149768",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "parent_rea_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "full_asset_digests_rechecked": true,
+    "assets": {
+      "renderer": {
+        "bytes": 11600457,
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+      },
+      "index": {
+        "bytes": 3493297,
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+      }
+    }
+  },
+  "spans": [
+    {
+      "name": "Home-UJo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030",
+      "source": "function UJo(){const t=ne.c(176),e=aa(),n=g5(),{data:i,isLoading:r}=Xh();let o;t[0]!==i?(o=i===void 0?[]:i,t[0]=i,t[1]=o):o=t[1];const a=o,{data:c,isLoading:u}=nF();let d;t[2]!==c?(d=c===void 0?[]:c,t[2]=c,t[3]=d):d=t[3];const h=d,{data:m}=yV(gPt);let g;t[4]!==m?(g=m===void 0?[]:m,t[4]=m,t[5]=g):g=t[5];const _=g,v=hI(Ko.store,ed(KJo)),[x,w]=$.useState(\"\"),{organization:E,baseUrl:k,isLoading:I}=so();let R;t[6]!==E?(R=E!==void 0&&fc(E)===\"cloud\",t[6]=E,t[7]=R):R=t[7];const O=R,D=O?E.id:void 0;let P;t[8]!==k||t[9]!==D?(P={baseUrl:k,organizationId:D},t[8]=k,t[9]=D,t[10]=P):P=t[10];const{data:L}=j9(P),B=Vd(),F=B?.id,H=E?.id,{owners:U,projects:z,archiveFilter:G,setOwners:K,setProjects:X,setArchiveFilter:Q,clearFilters:J}=MJo(H),[te,Z]=$.useState(50),se=$.useRef(null),ce=mI(),{data:ae}=bD(),de=ae===void 0?!0:ae,{data:ue}=Lii(),{data:pe}=sde(),be=pe===void 0?!1:pe,he=ue;let ge;t[11]===Symbol.for(\"react.memo_cache_sentinel\")?(ge=()=>{Z(50)},t[11]=ge):ge=t[11];let ve;t[12]!==G||t[13]!==U||t[14]!==z||t[15]!==x?(ve=[x,U,z,G],t[12]=G,t[13]=U,t[14]=z,t[15]=x,t[16]=ve):ve=t[16],$.useEffect(ge,ve);let ye;t[17]!==h?(ye=new Map,h.forEach(Ei=>ye.set(Ei.id,Ei)),t[17]=h,t[18]=ye):ye=t[18];const xe=ye;let ke;t[19]!==a?(ke=new Set(a.map(qJo)),t[19]=a,t[20]=ke):ke=t[20];const Se=ke;let De;if(t[21]!==Se||t[22]!==h){let Ei;t[24]!==Se?(Ei=hi=>Se.has(hi.id),t[24]=Se,t[25]=Ei):Ei=t[25],De=h.filter(Ei),t[21]=Se,t[22]=h,t[23]=De}else De=t[23];const je=De;let Ne;if(t[26]!==L){Ne=new Map;for(const Ei of L??[])Ne.set(Ei.id,Ei);t[26]=L,t[27]=Ne}else Ne=t[27];const Le=Ne;let ze;if(t[28]!==F||t[29]!==L){let Ei;t[31]!==F?(Ei=(hi,Dr)=>{if(hi.id!==Dr.id){if(hi.id===F)return-1;if(Dr.id===F)return 1}return(hi.name??hi.email).localeCompare(Dr.name??Dr.email)},t[31]=F,t[32]=Ei):Ei=t[32],ze=[...L??[]].sort(Ei),t[28]=F,t[29]=L,t[30]=ze}else ze=t[30];const Ke=ze;let Ze;e:{if(!O){let Dr;t[33]===Symbol.for(\"react.memo_cache_sentinel\")?(Dr=[],t[33]=Dr):Dr=t[33],Ze=Dr;break e}if(U===void 0){let Dr;t[34]!==F?(Dr=F!==void 0?[F]:void 0,t[34]=F,t[35]=Dr):Dr=t[35],Ze=Dr;break e}let Ei;t[36]!==U?(Ei=new Set(U),t[36]=U,t[37]=Ei):Ei=t[37];let hi;t[38]!==Ei?(hi=[...Ei],t[38]=Ei,t[39]=hi):hi=t[39],Ze=hi}const Ye=Ze;let Qe;if(t[40]!==_){Qe=new Map;for(const Ei of _){if(Ei.localWorkspaceId===void 0)continue;const hi=Qe.get(Ei.localWorkspaceId);hi?hi.push(Ei):Qe.set(Ei.localWorkspaceId,[Ei])}t[40]=_,t[41]=Qe}else Qe=t[41];const Ue=Qe;let We;e:{if(!a){let hi;t[42]===Symbol.for(\"react.memo_cache_sentinel\")?(hi=[],t[42]=hi):hi=t[42],We=hi;break e}let Ei;if(t[43]!==xe||t[44]!==Ue||t[45]!==a){let hi;t[47]!==xe?(hi=mo=>xe.has(mo.repositoryId),t[47]=xe,t[48]=hi):hi=t[48];let Dr;t[49]!==Ue?(Dr=mo=>zJo(mo,Ue.get(mo.localId)??$Jo),t[49]=Ue,t[50]=Dr):Dr=t[50],Ei=[...a.filter(hi).map(Dr)].sort(GJo),t[43]=xe,t[44]=Ue,t[45]=a,t[46]=Ei}else Ei=t[46];We=Ei}const Ve=We;let He;e:{if(Ye===void 0){let hi;t[51]===Symbol.for(\"react.memo_cache_sentinel\")?(hi=[],t[51]=hi):hi=t[51],He=hi;break e}if(Ye.length===0){He=Ve;break e}if(F===void 0){let hi;if(t[52]!==Ve||t[53]!==Ye){let Dr;t[55]!==Ye?(Dr=Ra=>Ye.some(mo=>HJ({workspace:Ra,userId:mo})),t[55]=Ye,t[56]=Dr):Dr=t[56],hi=Ve.filter(Dr),t[52]=Ve,t[53]=Ye,t[54]=hi}else hi=t[54];He=hi;break e}let Ei;if(t[57]!==Ve||t[58]!==F||t[59]!==Ye){let hi;t[61]!==F||t[62]!==Ye?(hi=Dr=>{const Ra=Ye.some(Eu=>HJ({workspace:Dr,userId:Eu})),mo=Ye.includes(F)&&Dr.creatorUserId===void 0&&Dr.assigneeUserId===void 0;return Ra||mo},t[61]=F,t[62]=Ye,t[63]=hi):hi=t[63],Ei=Ve.filter(hi),t[57]=Ve,t[58]=F,t[59]=Ye,t[60]=Ei}else Ei=t[60];He=Ei}const it=He;let ft;if(t[64]!==G||t[65]!==it||t[66]!==z){let Ei;t[68]!==G||t[69]!==z?(Ei=hi=>!(G===\"active\"&&hi.state===\"archived\"||G===\"archived\"&&hi.state!==\"archived\"||z.length>0&&!z.includes(hi.repositoryId)),t[68]=G,t[69]=z,t[70]=Ei):Ei=t[70],ft=it.filter(Ei),t[64]=G,t[65]=it,t[66]=z,t[67]=ft}else ft=t[67];const gt=ft;let Tt;if(t[71]!==ce||t[72]!==gt||t[73]!==v||t[74]!==xe){let Ei;t[76]!==ce||t[77]!==v||t[78]!==xe?(Ei=hi=>{const Dr=hi.state===\"archived\"?void 0:v.localBranch[hi.localId],Ra=Dr&&!QO(Dr)?Dr:void 0,mo=Ra??(hi.state===\"archived\"?hi.branch:void 0),Eu=$V({userSetWorkspaceName:hi.userSetWorkspaceName,workspaceName:hi.workspaceName,directoryName:hi.directoryName,prTitle:hi.prTitle,branch:mo,branchPrefix:ce,targetBranch:hi.intendedTargetBranch,host:hi.host})??hi.directoryName,fo=xe.get(hi.repositoryId)?.name??\"\",Fo={name:Eu,branch:Ra??hi.branch??\"\",directory:hi.directoryName,repo:fo,number:hi.number,prNumber:v.workspacePrNumber[hi.localId]};return{workspace:hi,displayBranch:Eu,searchFields:Fo}},t[76]=ce,t[77]=v,t[78]=xe,t[79]=Ei):Ei=t[79],Tt=gt.map(Ei),t[71]=ce,t[72]=gt,t[73]=v,t[74]=xe,t[75]=Tt}else Tt=t[75];const Ct=Tt;let _t;if(t[80]!==x||t[81]!==Ct){e:{const Ei=x.trim();if(!Ei){let hi;t[83]!==Ct?(hi=Ct.map(WJo),t[83]=Ct,t[84]=hi):hi=t[84],_t=hi;break e}_t=Ct.flatMap(hi=>{const Dr=pFi({query:Ei,fields:hi.searchFields});return Dr?[{workspace:hi.workspace,displayBranch:hi.displayBranch,fieldMatches:Dr}]:[]})}t[80]=x,t[81]=Ct,t[82]=_t}else _t=t[82];const Vt=_t;let bt;e:{if(!O){let hi;t[85]===Symbol.for(\"react.memo_cache_sentinel\")?(hi=[],t[85]=hi):hi=t[85];let Dr;t[86]!==Vt?(Dr={pinnedItems:hi,unpinnedWorkspaces:Vt},t[86]=Vt,t[87]=Dr):Dr=t[87],bt=Dr;break e}let Ei;if(t[88]!==Vt){const hi=[],Dr=[];for(const Ra of Vt){const{pinnedAt:mo}=Ra.workspace;mo!==void 0&&Ra.workspace.state!==\"archived\"?hi.push({...Ra,pinnedAt:mo}):Dr.push(Ra)}hi.sort(VJo),Ei={pinnedItems:hi,unpinnedWorkspaces:Dr},t[88]=Vt,t[89]=Ei}else Ei=t[89];bt=Ei}const{pinnedItems:wt,unpinnedWorkspaces:Nt}=bt;let Wt;t[90]!==te||t[91]!==Nt?(Wt=Nt.slice(0,te),t[90]=te,t[91]=Nt,t[92]=Wt):Wt=t[92];const Dn=Nt.length>te;let _n;t[93]!==Wt||t[94]!==Dn?(_n={workspacesToDisplay:Wt,hasMore:Dn},t[93]=Wt,t[94]=Dn,t[95]=_n):_n=t[95];const{workspacesToDisplay:Vn,hasMore:Zt}=_n;let zt;t[96]!==Vn?(zt={today:[],yesterday:[],\"2daysAgo\":[],\"3daysAgo\":[],\"4daysAgo\":[],\"5daysAgo\":[],\"6daysAgo\":[],\"1weekAgo\":[],\"2weeksAgo\":[],\"3weeksAgo\":[],\"1monthAgo\":[],\"2monthsAgo\":[],\"3monthsAgo\":[],older:[]},Vn.forEach(Ei=>{const hi=jJo(Ei.workspace.lastActiveAt);zt[hi].push(Ei)}),t[96]=Vn,t[97]=zt):zt=t[97];const ct=zt;let Pt;t[98]!==e?(Pt=Ei=>{e({to:\"/repository/$repositoryId/workspace/$localWorkspaceId\",params:{repositoryId:Ei.repositoryId,localWorkspaceId:Ei.localId}}).fireAndForget()},t[98]=e,t[99]=Pt):Pt=t[99];const Rt=Pt,Yt=O&&Le.size>0,on=z.length===0;let jn;t[100]!==Rt||t[101]!==Le||t[102]!==xe||t[103]!==he||t[104]!==Yt||t[105]!==on||t[106]!==be?(jn={repoMap:xe,membersById:Le,showOwnerColumn:Yt,showRepositoryIcon:on,showCostColumn:he,workspaceStatusMatrixEnabled:be,onSelectWorkspace:Rt},t[100]=Rt,t[101]=Le,t[102]=xe,t[103]=he,t[104]=Yt,t[105]=on,t[106]=be,t[107]=jn):jn=t[107];const Ft=jn;let Dt;t[108]!==Ft||t[109]!==ct?(Dt=BJo.map(Ei=>p.jsx(iJn,{heading:FJo[Ei],items:ct[Ei]??[],...Ft},Ei)),t[108]=Ft,t[109]=ct,t[110]=Dt):Dt=t[110];let Xt;t[111]!==Zt?(Xt=Zt&&p.jsx(\"div\",{ref:se,className:\"py-4 flex justify-center\",children:p.jsx(ri,{type:\"working\",className:\"size-4\"})}),t[111]=Zt,t[112]=Xt):Xt=t[112];let hn;t[113]!==Dt||t[114]!==Xt?(hn=p.jsxs(p.Fragment,{children:[Dt,Xt]}),t[113]=Dt,t[114]=Xt,t[115]=hn):hn=t[115];const Hn=hn;let en,Li;t[116]!==Zt?(en=()=>{const Ei=se.current;if(!Ei||!Zt)return;const hi=new IntersectionObserver(Dr=>{Dr[0].isIntersecting&&Z(HJo)},{threshold:.1});return hi.observe(Ei),()=>hi.disconnect()},Li=[Zt],t[116]=Zt,t[117]=en,t[118]=Li):(en=t[117],Li=t[118]),$.useEffect(en,Li);const dr=Vn.length>0||wt.length>0,mr=Ye!==void 0&&Ye.length>0||z.length>0||G!==\"all\",Zr=O&&Ke.length>1,Tr=je.length>1,Or=U===void 0&&z.length===0&&G===\"active\"&&it.length===0,Jo=r||u||I||Ye===void 0;let Zo;t[119]!==de?(Zo=!de&&p.jsx(YJo,{}),t[119]=de,t[120]=Zo):Zo=t[120];let pl;t[121]!==e?(pl=()=>{e({to:\"/settings/organization/computer\"}).fireAndForget()},t[121]=e,t[122]=pl):pl=t[122];let Ws;t[123]!==E||t[124]!==B||t[125]!==O||t[126]!==pl?(Ws=p.jsx(RJo,{activeOrg:E,currentUser:B,isCloudOrg:O,onOpenOrgSettings:pl}),t[123]=E,t[124]=B,t[125]=O,t[126]=pl,t[127]=Ws):Ws=t[127];let ea;t[128]!==E||t[129]!==O||t[130]!==Ke?(ea=O&&p.jsx(NJo,{members:Ke,organizationId:E.id}),t[128]=E,t[129]=O,t[130]=Ke,t[131]=ea):ea=t[131];let ba;t[132]!==n?(ba=p.jsx(tt,{size:\"sm\",className:\"shrink-0 text-sm\",onClick:()=>n(),children:\"Create workspace\"}),t[132]=n,t[133]=ba):ba=t[133];let Gs;t[134]!==ea||t[135]!==ba?(Gs=p.jsxs(\"div\",{className:\"flex shrink-0 items-center gap-3\",children:[ea,ba]}),t[134]=ea,t[135]=ba,t[136]=Gs):Gs=t[136];let Oi;t[137]!==Ws||t[138]!==Gs?(Oi=p.jsxs(\"div\",{className:\"mx-auto flex w-full max-w-4xl items-center justify-between px-8 pb-3 pt-1\",children:[Ws,Gs]}),t[137]=Ws,t[138]=Gs,t[139]=Oi):Oi=t[139];let gr;t[140]!==x?(gr=p.jsx(kI,{placeholder:\"Search\",autoFocus:!0,wrapperClassName:\"min-w-0 flex-1 border-b-0 px-2\",value:x,onValueChange:w}),t[140]=x,t[141]=gr):gr=t[141];let Yr;t[142]!==Ye?(Yr=Ye??[],t[142]=Ye,t[143]=Yr):Yr=t[143];let Bs;t[144]!==G||t[145]!==Ke||t[146]!==je||t[147]!==z||t[148]!==Q||t[149]!==K||t[150]!==X||t[151]!==Zr||t[152]!==Tr||t[153]!==Yr?(Bs=p.jsx(nFi,{showOwnerFilter:Zr,showProjectFilter:Tr,selectedOwnerIds:Yr,onOwnersChange:K,selectedProjectIds:z,onProjectsChange:X,archiveFilter:G,onArchiveFilterChange:Q,orderedMembers:Ke,repos:je}),t[144]=G,t[145]=Ke,t[146]=je,t[147]=z,t[148]=Q,t[149]=K,t[150]=X,t[151]=Zr,t[152]=Tr,t[153]=Yr,t[154]=Bs):Bs=t[154];let la;t[155]!==gr||t[156]!==Bs?(la=p.jsx(\"div\",{className:\"border-b\",children:p.jsxs(\"div\",{className:\"mx-auto flex w-full max-w-4xl items-center gap-2 px-8\",children:[gr,Bs]})}),t[155]=gr,t[156]=Bs,t[157]=la):la=t[157];let ca;t[158]!==Zo||t[159]!==Oi||t[160]!==la?(ca=p.jsxs(\"div\",{className:\"relative pt-9\",\"data-tauri-drag-region\":!0,children:[Zo,Oi,la]}),t[158]=Zo,t[159]=Oi,t[160]=la,t[161]=ca):ca=t[161];let Fc;t[162]!==J||t[163]!==mr||t[164]!==dr||t[165]!==O||t[166]!==Jo||t[167]!==n||t[168]!==wt||t[169]!==Or||t[170]!==Hn||t[171]!==Ft?(Fc=p.jsx(L6,{className:\"flex-1 max-h-none overflow-y-scroll mt-1 pt-0\",children:p.jsx(\"div\",{className:\"mx-auto w-full max-w-4xl px-8 pt-2\",children:Jo?p.jsx(\"div\",{role:\"status\",\"aria-label\":\"Loading workspaces\",className:\"flex justify-center py-6 text-muted-foreground\",children:p.jsx(ri,{type:\"working\",className:\"size-4\"})}):dr?p.jsxs(p.Fragment,{children:[O&&p.jsx(iJn,{heading:\"Pinned\",items:wt,...Ft}),Hn]}):p.jsxs(\"div\",{className:\"py-6 flex flex-col items-center gap-3 text-sm text-muted-foreground\",children:[p.jsx(\"span\",{children:\"No matching workspaces\"}),Or?p.jsx(tt,{size:\"sm\",onClick:()=>n(),children:\"Create a workspace\"}):mr&&p.jsx(tt,{variant:\"outline\",size:\"sm\",onClick:J,children:\"Clear filters\"})]})})}),t[162]=J,t[163]=mr,t[164]=dr,t[165]=O,t[166]=Jo,t[167]=n,t[168]=wt,t[169]=Or,t[170]=Hn,t[171]=Ft,t[172]=Fc):Fc=t[172];let lr;return t[173]!==ca||t[174]!==Fc?(lr=p.jsx(\"div\",{className:\"h-full flex flex-col bg-background\",children:p.jsxs(KV,{shouldFilter:!1,disablePointerSelection:!0,className:\"h-full flex flex-col bg-transparent\",children:[ca,Fc]})}),t[173]=ca,t[174]=Fc,t[175]=lr):lr=t[175],lr}"
+    },
+    {
+      "name": "workspace-repository-qJo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9874810,
+        9874848
+      ],
+      "bytes": 38,
+      "sha256": "636883e9ad74fd9f99ea65fb01bf5e56f2f1e212d6fdf57ada9f2bd8cc432700",
+      "source": "function qJo(t){return t.repositoryId}"
+    },
+    {
+      "name": "filter-controls-nFi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9820611,
+        9824705
+      ],
+      "bytes": 4094,
+      "sha256": "e8064ef68babed91e936ed903442e09407fa15cef1ff3031f15d0aecfee61263",
+      "source": "function nFi(t){const e=ne.c(51),{showOwnerFilter:n,showProjectFilter:i,selectedOwnerIds:r,onOwnersChange:o,selectedProjectIds:a,onProjectsChange:c,archiveFilter:u,onArchiveFilterChange:d,orderedMembers:h,repos:m,variant:g,modal:_}=t,v=g===void 0?\"default\":g,x=_===void 0?!0:_,w=v===\"compact\",E=SXo;let k,I;e[0]!==h||e[1]!==r[0]||e[2]!==r.length?(k=r.length===1?h.find(ue=>ue.id===r[0]):void 0,I=r.length===0?\"anyone\":r.length===1?k?E(k):\"1 person\":`${r.length} people`,e[0]=h,e[1]=r[0],e[2]=r.length,e[3]=k,e[4]=I):(k=e[3],I=e[4]);const R=I;let O;e[5]!==m||e[6]!==a[0]||e[7]!==a.length?(O=a.length===0?\"all projects\":a.length===1?(()=>{const ue=m.find(pe=>pe.id===a[0]);return ue?ue.name:\"1 project\"})():`${a.length} projects`,e[5]=m,e[6]=a[0],e[7]=a.length,e[8]=O):O=e[8];const D=O;let P;e[9]===Symbol.for(\"react.memo_cache_sentinel\")?(P=[\"active\",\"all\",\"archived\"],e[9]=P):P=e[9];const L=P;let B;e[10]===Symbol.for(\"react.memo_cache_sentinel\")?(B={active:\"Hiding archived\",all:\"Showing all\",archived:\"Only archived\"},e[10]=B):B=e[10];const F=B;let H;e[11]!==R||e[12]!==w||e[13]!==x||e[14]!==o||e[15]!==h||e[16]!==k||e[17]!==r||e[18]!==n?(H=n&&p.jsxs(h2,{modal:x,children:[p.jsx(Sg,{asChild:!0,children:p.jsx(qXn,{className:w?\"h-6 max-w-36 gap-1 px-1.5 text-xs\":void 0,icon:k?p.jsx(\"span\",{\"aria-hidden\":\"true\",className:\"shrink-0\",children:p.jsx(ZKe,{member:k,className:w?\"size-3.5\":\"size-4\"})}):p.jsx(sMt,{className:Xe(\"shrink-0\",w?\"size-3.5\":\"size-4\")}),label:w?R===\"anyone\"?\"Anyone\":R:`By ${R}`})}),p.jsxs(Tm,{align:\"start\",className:\"w-56\",children:[p.jsx(i4e,{checked:r.length===0,onCheckedChange:()=>o([]),children:p.jsx(\"span\",{className:\"truncate\",children:\"Anyone\"})}),h.map(ue=>p.jsxs(i4e,{checked:r.includes(ue.id),onCheckedChange:()=>o(GXn(r,ue.id)),children:[p.jsx(ZKe,{member:ue,className:\"size-4\"}),p.jsx(\"span\",{className:\"truncate\",children:E(ue)})]},ue.id))]})]}),e[11]=R,e[12]=w,e[13]=x,e[14]=o,e[15]=h,e[16]=k,e[17]=r,e[18]=n,e[19]=H):H=e[19];let U;e[20]!==w||e[21]!==x||e[22]!==c||e[23]!==D||e[24]!==m||e[25]!==a||e[26]!==i?(U=i&&p.jsxs(h2,{modal:x,children:[p.jsx(Sg,{asChild:!0,children:p.jsx(qXn,{className:w?\"h-6 max-w-36 gap-1 px-1.5 text-xs\":void 0,icon:p.jsx(Ak,{className:Xe(\"shrink-0\",w?\"size-3.5\":\"size-4\")}),label:w?D===\"all projects\"?\"All projects\":D:`In ${D}`})}),p.jsxs(Tm,{align:\"start\",className:\"w-56\",children:[p.jsx(i4e,{checked:a.length===0,onCheckedChange:()=>c([]),children:p.jsx(\"span\",{className:\"truncate\",children:\"All projects\"})}),m.map(ue=>p.jsxs(i4e,{checked:a.includes(ue.id),onCheckedChange:()=>c(GXn(a,ue.id)),children:[p.jsx(U9,{repository:ue}),p.jsx(\"span\",{className:\"truncate\",children:ue.name})]},ue.id))]})]}),e[20]=w,e[21]=x,e[22]=c,e[23]=D,e[24]=m,e[25]=a,e[26]=i,e[27]=U):U=e[27];let z;e[28]!==d?(z=ue=>d(tFi.parse(ue)),e[28]=d,e[29]=z):z=e[29];const G=w&&\"h-6 gap-1 px-1.5 text-xs\";let K;e[30]!==G?(K=Xe(\"h-7 w-auto max-w-48 gap-1.5 border-0 bg-transparent px-2 py-0 text-sm text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-[popup-open]:text-foreground active:scale-[0.98]\",G),e[30]=G,e[31]=K):K=e[31];const X=w?\"size-3.5\":\"size-4\";let Q;e[32]!==X?(Q=Xe(\"shrink-0\",X),e[32]=X,e[33]=Q):Q=e[33];let J;e[34]!==Q?(J=p.jsx(O9,{className:Q}),e[34]=Q,e[35]=J):J=e[35];let te,Z;e[36]===Symbol.for(\"react.memo_cache_sentinel\")?(te=p.jsx(lh,{}),Z=p.jsx(Ml,{className:\"size-3 shrink-0\"}),e[36]=te,e[37]=Z):(te=e[36],Z=e[37]);let se;e[38]!==K||e[39]!==J?(se=p.jsxs(Bf,{\"aria-label\":\"Archived workspaces\",hideChevrons:!0,className:K,children:[J,te,Z]}),e[38]=K,e[39]=J,e[40]=se):se=e[40];let ce;e[41]===Symbol.for(\"react.memo_cache_sentinel\")?(ce=p.jsx($f,{align:\"end\",children:L.map(ue=>p.jsx(Il,{value:ue,children:F[ue]},ue))}),e[41]=ce):ce=e[41];let ae;e[42]!==u||e[43]!==x||e[44]!==se||e[45]!==z?(ae=p.jsxs(ah,{modal:x,value:u,onValueChange:z,children:[se,ce]}),e[42]=u,e[43]=x,e[44]=se,e[45]=z,e[46]=ae):ae=e[46];let de;return e[47]!==ae||e[48]!==H||e[49]!==U?(de=p.jsxs(\"div\",{className:\"flex shrink-0 items-center gap-1\",children:[H,U,ae]}),e[47]=ae,e[48]=H,e[49]=U,e[50]=de):de=e[50],de}"
+    },
+    {
+      "name": "all-workspaces-Afe",
+      "asset": "index",
+      "utf8_half_open": [
+        3284737,
+        3285851
+      ],
+      "bytes": 1114,
+      "sha256": "95635092bcbc111c89f8a06b001ab0e2305938606157af400da28bdf0d8c9251",
+      "source": "function Afe(t){const e=FI(),{organization:s,isLoading:n}=rl(),{data:r}=dBe(),i=s!==void 0&&X$(s),a=kfe()&&s!==void 0&&Qo(s)===\"cloud\"?s.id:void 0,c=XBt(i?void 0:a),l=a===void 0?void 0:c?.localWorkspaceIds??KBt,u=tt(we.store,qa(v=>YBt(v,l))),d=tt(we.store,yn(v=>({error:v.allWorkspacesError,loaded:v.allWorkspacesLoaded}))),h=$e.useMemo(()=>{if(i)return dt(VBt);if(a!==void 0){const v=l!==void 0&&l.length>0,_=c?.error!==void 0&&wn(c.error)&&c.error.code===ot.FORBIDDEN;return c?.error!==void 0&&(_||!v)?Mr(c.error):!c?.loaded&&!v?tr():dt(u)}return d.error!==void 0?Mr(d.error):d.loaded?dt(u):tr()},[a,d,l,i,c?.error,c?.loaded,u]);$e.useEffect(()=>{a!==void 0||n||h.data!==void 0||h.error!==void 0||we.getWorkspaces().catch(v=>{Y.error(\"Failed to load local workspaces\",{error:v})})},[n,a,h.data,h.error]);const p=$e.useRef(void 0),m=$e.useMemo(()=>{if(h.data===void 0)return h;const v=QBt({workspaces:h.data,organization:s,activeOrgPointer:e,activeOrgIsLoading:n,unstartedWorkspacesEnabled:r===!0}),_=t===void 0?v:t(v),S=p.current===void 0?_:Yse(p.current,_);return p.current=S,dt(S)},[n,e,s,t,r,h]);return Gv(m)}"
+    },
+    {
+      "name": "cached-workspaces-YBt",
+      "asset": "index",
+      "utf8_half_open": [
+        3283791,
+        3284185
+      ],
+      "bytes": 394,
+      "sha256": "bc5bb2e198c4630a82efd22091ca57553c97ce672d472683ef292543edcea481",
+      "source": "function YBt(t,e){if(Am!==void 0&&Am.workspacesByLocalId===t.workspacesByLocalId&&Am.pagedWorkspaceIds===e)return Am.workspaces;const s=e!==void 0?e.flatMap(n=>{const r=t.workspacesByLocalId[n]?.data;return r===void 0?[]:[r]}):Object.values(t.workspacesByLocalId).flatMap(n=>n?.data===void 0?[]:[n.data]);return Am={workspacesByLocalId:t.workspacesByLocalId,pagedWorkspaceIds:e,workspaces:s},s}"
+    },
+    {
+      "name": "scoped-workspaces-QBt",
+      "asset": "index",
+      "utf8_half_open": [
+        3284192,
+        3284737
+      ],
+      "bytes": 545,
+      "sha256": "72aaad60f9f51051a9768a0554a3bf1485fbad3d846d621c998a077d07226a6b",
+      "source": "function QBt(t){const e=TY;if(e!==void 0&&e.workspaces===t.workspaces&&e.organization===t.organization&&e.activeOrgPointer===t.activeOrgPointer&&e.activeOrgIsLoading===t.activeOrgIsLoading&&e.unstartedWorkspacesEnabled===t.unstartedWorkspacesEnabled)return e.scopedWorkspaces;const s=t.workspaces.filter(n=>(t.unstartedWorkspacesEnabled||n.state!==\"unstarted\")&&J$({workspace:n,activeOrganization:t.organization,activeOrganizationPointer:t.activeOrgPointer,activeOrganizationLoading:t.activeOrgIsLoading}));return TY={...t,scopedWorkspaces:s},s}"
+    },
+    {
+      "name": "organization-scope-J$",
+      "asset": "index",
+      "utf8_half_open": [
+        923985,
+        924293
+      ],
+      "bytes": 308,
+      "sha256": "02c78a7d49542118bb1141f3722b3a6897e724546c7c0b76048713217816499c",
+      "source": "function J$({workspace:t,activeOrganization:e,activeOrganizationPointer:s,activeOrganizationLoading:n}){return e===void 0?s!==void 0?!1:n?t.storedHostingServerUrl===void 0||t.orgId===void 0:!0:X$(e)?!1:t.storedHostingServerUrl===void 0?Qo(e)===\"local\":t.orgId===e.id?!0:t.orgId===void 0&&e.kind===\"personal\"}"
+    }
+  ],
+  "baseline_pins": [
+    {
+      "path": "src/components/AllWorkspaces.tsx",
+      "sha256": "f01926bb3f3436ff8bf148bf66c4d840127117ea7598cd146baeb9828d92fb69",
+      "bytes": 17650
+    },
+    {
+      "path": "src/home/allWorkspaces.ts",
+      "sha256": "d0f085b570f531b0b2d0679473b30d70b133a3280f164ad871fdb6aff8eec20b",
+      "bytes": 13171
+    },
+    {
+      "path": "src/state/store.ts",
+      "sha256": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96",
+      "bytes": 31520
+    },
+    {
+      "path": "src/state/persisted.ts",
+      "sha256": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209",
+      "bytes": 9197
+    },
+    {
+      "path": "src/workspace/archive.ts",
+      "sha256": "26e187412bbadd452fd380261cb9e4deea31c17b452384c5818ff46e3967dfa0",
+      "bytes": 4749
+    },
+    {
+      "path": "src/workspace/archivedList.ts",
+      "sha256": "5d5c2d74f3f2bcd2a0b1109cc22c3465a276bdd04edc71031689f1fc0a7942eb",
+      "bytes": 2977
+    },
+    {
+      "path": "src-tauri/src/persistence_commands.rs",
+      "sha256": "26154ade996b875fdf340c803b013daa0234f288de1f6fd142bc43404573edca",
+      "bytes": 10582
+    },
+    {
+      "path": "src-tauri/src/persistence/mod.rs",
+      "sha256": "f82a17bbac3c7f055d4dc7433a83c1828e754728bed87e4a0597c2c476f17266",
+      "bytes": 14518
+    },
+    {
+      "path": "crates/openconductor-db/src/workspaces.rs",
+      "sha256": "5551996a52e93fe6f64f1e90967877d285511fbb9282bae7678564e89406a96f",
+      "bytes": 12844
+    }
+  ],
+  "anchor_checks": [
+    {
+      "name": "renderer import maps Xh to index cb",
+      "needle": "cb as Xh",
+      "sha256": "c78fd1de48e6bff7f077e067acce8e79e0346d82ecc2ad60914e94a3f85eddb7"
+    },
+    {
+      "name": "index export maps Afe to cb",
+      "needle": "Afe as cb",
+      "sha256": "6482888a94bd6537fe8a0132b074db3468ff9764387ef15a9f301e99b9fbff45"
+    },
+    {
+      "name": "Home reads all workspaces",
+      "needle": "{data:i,isLoading:r}=Xh()",
+      "sha256": "c086cdea2caf31db5a34cbe38647797cf130e371696d2ddfc5e8d74b63ba60c7"
+    },
+    {
+      "name": "workspace identity is repositoryId",
+      "needle": "return t.repositoryId",
+      "sha256": "36e7ae1355d269b00e020797b38320e04839da59c62004c2e3f116bd04346b6f"
+    },
+    {
+      "name": "choices derive repository ids before archive filtering",
+      "needle": "ke=new Set(a.map(qJo))",
+      "sha256": "cc4188f306a1c4538e0dd8852dba14c6ea7d5e50824463738ab747626f46ccbe"
+    },
+    {
+      "name": "choices keep matching repositories",
+      "needle": "Ei=hi=>Se.has(hi.id)",
+      "sha256": "4f01c2518488fcacbb509be365afb502c01fa6067f0c000b2d876ad53ba126ed"
+    },
+    {
+      "name": "choices use repository order",
+      "needle": "De=h.filter(Ei)",
+      "sha256": "3191a133bd421aa7c1b75407fb838b4dccadafae436b954517053db12c9b0d59"
+    },
+    {
+      "name": "project menu uses choice count",
+      "needle": "Tr=je.length>1",
+      "sha256": "f6b98ce247b73c871cc9309071e930d5eb12752924af9e25615b4e22de0095c6"
+    },
+    {
+      "name": "Home forwards full choices and eligibility",
+      "needle": "showProjectFilter:Tr,selectedOwnerIds:Yr,onOwnersChange:K,selectedProjectIds:z,onProjectsChange:X,archiveFilter:G,onArchiveFilterChange:Q,orderedMembers:Ke,repos:je",
+      "sha256": "91281972c73c0c2f3a6e0f34646502a92f1667dcd87e89e919071420516e7dc7"
+    },
+    {
+      "name": "archive filtering is applied to row list",
+      "needle": "G===\"active\"&&hi.state===\"archived\"||G===\"archived\"&&hi.state!==\"archived\"",
+      "sha256": "0c3186f88264bd125815160a7ca43bdf7aeadcbc357c87209d5a92b586dded26"
+    },
+    {
+      "name": "query hook reads cache",
+      "needle": "u=tt(we.store,qa(v=>YBt(v,l)))",
+      "sha256": "41f95c74175c79b31acd40770684c05f783a41d9b8adcb4c199fc706db4fcada"
+    },
+    {
+      "name": "hook applies organization and unstarted scope",
+      "needle": "QBt({workspaces:h.data,organization:s,activeOrgPointer:e,activeOrgIsLoading:n,unstartedWorkspacesEnabled:r===!0})",
+      "sha256": "df6ea2c5846ea1c37dc993134a3848d6be39d2ddfc6394d57983f1ad93174ff9"
+    },
+    {
+      "name": "cache includes all stored data",
+      "needle": "Object.values(t.workspacesByLocalId).flatMap(n=>n?.data===void 0?[]:[n.data])",
+      "sha256": "b2bcca8263d8dac0f67636968704c54ad96148eef594f2d4ebd0bb458c7c8cd2"
+    },
+    {
+      "name": "scope only removes unstarted and other organizations",
+      "needle": "(t.unstartedWorkspacesEnabled||n.state!==\"unstarted\")&&J$({workspace:n,activeOrganization:t.organization,activeOrganizationPointer:t.activeOrgPointer,activeOrganizationLoading:t.activeOrgIsLoading})",
+      "sha256": "02da637a639311dcf4cb7504d17b09db568d412edf7af53d8be70aa4544a18b7"
+    },
+    {
+      "name": "crates/openconductor-db/src/workspaces.rs",
+      "needle": "format!(\"{SELECT_WITH_REPO} ORDER BY w.created_at ASC, w.local_id ASC\")",
+      "sha256": "d6127f607b716a2b43a722ff6c7ad4c78802ba38f798e2f05f67a53173ef4ce2"
+    },
+    {
+      "name": "src-tauri/src/persistence/mod.rs",
+      "needle": "for stored in workspaces::list(pool).await?",
+      "sha256": "dad40826609722bed8a330aefe5700ea68ae597ea9f9999e102d36fb1c9d2419"
+    },
+    {
+      "name": "src-tauri/src/persistence_commands.rs",
+      "needle": "store::list_workspaces(&db.0).await.map_err(|e| e.to_string())",
+      "sha256": "e55653d50349a5564cb930c35dea4850247a4012e1ba9150e557c26b32b818e8"
+    },
+    {
+      "name": "src/state/store.ts",
+      "needle": "return reposFromDb(repos, workspaces, collapsed);",
+      "sha256": "966516641a9383960d8a59b1115a37632a07f7704d5b6730c0d23223d8f4d375"
+    },
+    {
+      "name": "src/state/persisted.ts",
+      "needle": "const HIDDEN_STATES = new Set([\"archiving\", \"archived\", \"deleted\"]);",
+      "sha256": "69867ae1c175a4d70074bf7bd6a844a7382c21963bb76f123ceb33639076f164"
+    },
+    {
+      "name": "src/state/persisted.ts",
+      "needle": ".filter((w) => w.repositoryId === r.id && !HIDDEN_STATES.has(w.state))",
+      "sha256": "3d354dbfe1aaafb342342dd1f6a32d1b9cdc1e842ca55b87e2ba74adef2f7c2b"
+    },
+    {
+      "name": "src/workspace/archive.ts",
+      "needle": "return archivedFromRows(await invoke<DbWorkspaceRow[]>(\"db_list_workspaces\"));",
+      "sha256": "f7341a5147a2d18c800a2cbfa0149e780409c19b5f0975a4bdd4627e9ac33e5d"
+    },
+    {
+      "name": "src/workspace/archivedList.ts",
+      "needle": ".filter((w) => w.state === \"archived\")",
+      "sha256": "0f1069b68b4291b9083a84280918b9ffdefa8b1ceb482b554f290b6189aa821e"
+    },
+    {
+      "name": "src/home/allWorkspaces.ts",
+      "needle": "return repos.filter((r) => r.workspaces.length > 0);",
+      "sha256": "dcf76b83b550c5adc07e0608044998c97079055141e6d5cdfdf88aa8ba1891c1"
+    },
+    {
+      "name": "src/components/AllWorkspaces.tsx",
+      "needle": "const projectChoices = reposWithWorkspaces(repos);",
+      "sha256": "2bac3ff49712683a5ec5e95b2be4620201c7b3b68158da005d24f1a92b162595"
+    },
+    {
+      "name": "src/components/AllWorkspaces.tsx",
+      "needle": "{showProjectFilter(repos) && (",
+      "sha256": "6cb870afd9fff877b1dfffb5f5a593e88495f3dc17dc790de46fbfdcbe4f6d4f"
+    }
+  ],
+  "same_input": {
+    "repositories": [
+      "linked A",
+      "linked B"
+    ],
+    "workspace_rows": [
+      {
+        "repositoryId": "A",
+        "state": "archived"
+      },
+      {
+        "repositoryId": "B",
+        "state": "archived"
+      }
+    ],
+    "archive_filter": "archived",
+    "reference_source_prediction": "Projects control visible; A and B choices",
+    "current_source_prediction": "Archived Home rows visible, Projects control absent because both sidebar arrays are empty"
+  },
+  "backend_boundary": "db_list_workspaces returns every state. reposFromDb excludes archived rows from sidebar arrays. listArchivedWorkspaces independently maps those same rows through archivedFromRows; Home receives them as archivedRows. No implicit selection/restore is part of deriving project choices.",
+  "limits": [
+    "Retained decoded shipped JavaScript, not native interaction.",
+    "No product or fixture execution yet. Hosted regression is required before declaring a reproduced bug.",
+    "No local Node, Rust, application, provider, browser, native or installed-package execution.",
+    "REA semantic-renderer heap-exhaustion limitation is unchanged. No new REA engine call or acquisition.",
+    "Source checker pins baseline bytes; it is not a product-behavior test."
+  ]
+}
