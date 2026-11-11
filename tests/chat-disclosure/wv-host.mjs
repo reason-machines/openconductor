@@ -130,7 +130,7 @@ export function fixture({ kind = "Read", garry = false } = {}) {
     "src/features/chat/chatRuntime": { chatStatuses: () => emptyMap, subscribeChatStatuses: unsubscribe, hideChat: noop, showChat: noop },
     "src/features/chat/codexChat": { CODEX_ACCESS: { full: { label: "Full access" } }, codexAccess: () => "full" },
     "src/features/chat/slashCompletions": { useAgentCommands: () => undefined },
-    "src/features/chat/PermissionRequests": { PermissionRequests: () => null, pendingToolApproval: () => undefined },
+    "src/features/chat/PermissionRequests": { PermissionRequests: () => null, ToolApproval: forbidden, pendingToolApproval: () => undefined },
     "src/features/chat/ComposerEditor": { ComposerEditor: editor },
     "src/lib/local-storage": { composerDrafts: () => draftStore },
     "src/settings/api": { getSettings: async () => settings },
@@ -162,7 +162,7 @@ export function fixture({ kind = "Read", garry = false } = {}) {
     "src/features/pr/useTargetBranch": { useTargetBranch: () => ({ branch: "main", disabledReason: null, changing: false }) },
     "src/features/pr/usePrActions": { usePrActions: () => ({}) },
     "src/features/pr/checks/useFixErrors": { useFixErrors: () => ({}) },
-    "src/features/pr/usePullLatest": { usePullLatest: () => ({ shortcut: noop }) },
+    "src/features/pr/usePullLatest": { PullLatestButton: () => null, usePullLatest: () => ({ shortcut: noop }) },
   };
   const actualTsx = new Set(["src/components/WorkspaceView", "src/features/chat/ChatEmptyState", "src/features/chat/Composer", "src/features/diff/ReviewButton", "src/features/chat/Transcript", "src/features/chat/ToolRows"]);
   function load(filename) {
@@ -249,9 +249,12 @@ export function fixture({ kind = "Read", garry = false } = {}) {
       assert.deepEqual(nativeCalls, [{ command: "db_list_repos", args: undefined }, { command: "db_list_workspaces", args: undefined }], "real hydration reads only the established repository/workspace selectors");
       nativeCalls.length = 0;
       state = { repos, selection: { kind: "workspace", repoId: "repo", workspaceId } };
+      await appPrefs.loadAppPrefs();
+      assert.equal(appPrefs.getAppPrefs().right_panel_visible, false, "actual persisted fixture preference is loaded before mounting unrelated panels");
+      assert.equal(appPrefs.getAppPrefs().garry_mode, garry, "actual persisted fixture Garry preference is loaded before mounting chat");
       await act(async () => { renderer = create(React.createElement(Host)); });
       assert.deepEqual(nativeCalls.filter((call) => call.command !== "get_app_prefs"), [selectedCall(workspaceId, workspaceId)], "mount persists the initial primary selection exactly");
-      assert.equal(nativeCalls.filter((call) => call.command === "get_app_prefs").length, 1, "actual appPrefs subscribes and reads through native IPC once");
+      assert.equal(nativeCalls.filter((call) => call.command === "get_app_prefs").length, 1, "actual appPrefs hydrates through native IPC once before rendering");
       nativeCalls.length = 0;
     },
     async select(title) { const node = tab(title); assert.ok(node, `Missing rendered tab ${title}`); await act(async () => node.props.onClick()); },

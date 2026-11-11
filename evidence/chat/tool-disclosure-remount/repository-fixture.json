@@ -3,7 +3,7 @@
   "repository_files": {
     "src/features/chat/disclosureRemount.test.ts": "c36799f1024ea655a325aaca53805ca1a2a8b6fb2ee40cb7f0bff93ec8803f3a",
     "tests/chat-disclosure/disclosureRemount.component.test.mjs": "affb87195267009c80fcd727441b25a1e4290c29af91d45c7a9f71b8fd4e7d53",
-    "tests/chat-disclosure/wv-host.mjs": "555f8f2e743a7dc7e08b98b4320a7b78d75d5ef6e8b04d7f32a0708f5c4d3ada",
+    "tests/chat-disclosure/wv-host.mjs": "274df8317c705dfc49631f138ba42ae8738e36cd62d0ea47a9a4a140fa0086ae",
     "tests/chat-disclosure/static-import-closure.json": "ba98f329d5557187456087d1ca48d9bc91c367b2dd0aec62967b373150cd3c0b",
     "evidence/chat/tool-disclosure-remount/baseline-Transcript.tsx.txt": "a79b1dd9a6fbc9e0455a7ddff918962cf13b32f2bdd0997d00c0790ccc0b85bc"
   }

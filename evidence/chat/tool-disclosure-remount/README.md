@@ -42,6 +42,8 @@ The automatic hosted frontend jobs run:
 node --test "src/**/*.test.ts"
 ```
 
-No local Node, React, browser, Rust, native, provider, credential, database, or package execution has run. No screenshot is provided because the UI has not been run. Current baseline behavioral RED and subsequent candidate GREEN are pending. All exact-head workflows must pass before merge.
+The first automatic hosted baseline, head `6c379ef1e08ae987ac20d53eadaecedd84c5bf4f`, failed all five cases during fixture mounting. The decorative `AllFilesTree` proxy supplied a component for the unrelated `useFilesToolbar()` hook; its no-argument call threw before any intended disclosure assertion. This run is rejected, not behavioral RED. [The diagnostic receipt](unqualified-hosted-baseline.json) retains the exact job and failure lines. The corrected host calls the actual `appPrefs.loadAppPrefs()` initializer through the existing synthetic native boundary before mounting, asserts the persisted panel and Garry values, and completes two missing unrelated boundary exports. No panel hook value or production component is fabricated to avoid the error. [The source-only host receipt](host-bootstrap-repair.json) records the four replacements. Only the host digest is re-frozen before a qualified behavioral baseline; product code and all five scenario bodies remain unchanged.
+
+No local Node, React, browser, Rust, native, provider, credential, database, or package execution has run. No screenshot is provided because no browser or native UI has been run. Qualified baseline behavioral RED and subsequent candidate GREEN are pending. All exact-head workflows must pass before merge.
 
 Only `Transcript` tool-map lifetime and dedicated regression/evidence files belong to this change. Workspace producers, closed-chat catalogs, APIs, backends, models, labels, summary expansion, and Settings display wiring are outside scope. The merged login fixtures remain unchanged.
