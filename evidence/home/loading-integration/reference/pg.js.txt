@@ -1,0 +1,1 @@
+function pg({organizations:t,activeOrganizationPointer:e,strictOrganization:s}){return s!==void 0?t.find(r=>r.kind==="personal"):t.find(r=>r.id===e)??t.find(r=>r.kind==="personal")??t[0]}

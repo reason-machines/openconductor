@@ -85,8 +85,10 @@ earlier from `Contents/Resources/bin/.internal/conductor-runtime`) and its front
 - The login-shell capture strips `ANTHROPIC_API_KEY`, `CLAUDE_CODE_OAUTH_TOKEN`,
   `CODEX_ACCESS_TOKEN`, `CODEX_API_KEY`, `CURSOR_API_KEY`, `OPENAI_API_KEY` (`Tf8`);
   OpenConductor's `crates/scripts/src/shell_env.rs` already does the same.
-- Conductor does not import a key found in the login shell and shows no list of sign-in
-  sources; the Agents page shows only the CLI's login status. The "Paste a setup token
+- Conductor shows no list of sign-in sources; the Agents page shows the CLI's login
+  status. Correction (2026-11-11): picking the API key card does import a key from the
+  environment through `get_*_api_key_from_env`, see `api-key-env-import.md`; the
+  backend's source for it is unbound. The "Paste a setup token
   instead" / "Sign in with Claude" component (`Hca`) and the Codex ChatGPT OAuth routes
   belong to the cloud sign-in, and Conductor has no credential hand-off for local chats
   to another machine, so OpenConductor builds none of these.

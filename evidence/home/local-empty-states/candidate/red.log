@@ -1,0 +1,90 @@
+(node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home offers Clear filters for a settled archived-only local workspace list
+not ok 1 - Home offers Clear filters for a settled archived-only local workspace list
+  ---
+  duration_ms: 343.00457
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/.ara-state/home-empty-action-runtime/src/components/homeEmptyAction.test.ts:113:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'Create a workspace'
+    -   'Clear filters'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Clear filters'
+  actual:
+    0: 'Create a workspace'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/.ara-state/home-empty-action-runtime/src/components/homeEmptyAction.test.ts:118:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Home offers Create for an initially empty local list and retains the separate header action
+ok 2 - Home offers Create for an initially empty local list and retains the separate header action
+  ---
+  duration_ms: 143.156507
+  type: 'test'
+  ...
+# Subtest: Home clears a project-filter miss and reveals the existing workspace
+ok 3 - Home clears a project-filter miss and reveals the existing workspace
+  ---
+  duration_ms: 84.152359
+  type: 'test'
+  ...
+# Subtest: Home clears active filters without clearing a nonmatching text query
+ok 4 - Home clears active filters without clearing a nonmatching text query
+  ---
+  duration_ms: 108.878311
+  type: 'test'
+  ...
+# Subtest: Home clears an archived-filter miss instead of offering Create
+ok 5 - Home clears an archived-filter miss instead of offering Create
+  ---
+  duration_ms: 57.269743
+  type: 'test'
+  ...
+# Subtest: Home offers no empty-state action for an unfiltered empty list in all mode
+ok 6 - Home offers no empty-state action for an unfiltered empty list in all mode
+  ---
+  duration_ms: 36.959208
+  type: 'test'
+  ...
+# Subtest: Home offers no empty-state action for a query miss with all filters cleared
+ok 7 - Home offers no empty-state action for a query miss with all filters cleared
+  ---
+  duration_ms: 27.673134
+  type: 'test'
+  ...
+# Subtest: Home clears a project-filter miss while already in all mode
+ok 8 - Home clears a project-filter miss while already in all mode
+  ---
+  duration_ms: 36.843738
+  type: 'test'
+  ...
+# Subtest: Home renders nonempty rows without an empty-state action and preserves header Create
+ok 9 - Home renders nonempty rows without an empty-state action and preserves header Create
+  ---
+  duration_ms: 39.340843
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1681.42657

@@ -1,0 +1,119 @@
+{
+  "unit": "ACQ-CHAT-LOCAL-CLEAR-BE7-06",
+  "author": "Conductor Rebuild",
+  "scope": "Source-only successful idle local Claude/Codex /clear with no same-name agent/skill override",
+  "offset_convention": "Zero-based half-open raw UTF-8 byte ranges in whole original assets",
+  "assets": {
+    "renderer": {
+      "member": "renderApp-D_fmY7hW.js",
+      "path": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+      "size": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "member": "index-BGEQ8YjU.js",
+      "path": ".rea-work/retained-reference/index-BGEQ8YjU.js",
+      "size": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "source_provenance": {
+    "archive_sha256_historical": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+    "rea_receipt_historical": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "rea_gap": "Historical renderer semantic analysis exhausted heap. This unit reads hash-verified retained original bytes only; no target JS execution or fresh acquisition.",
+    "archive_revalidation": "Not repeated; individual whole member identities were checked for this unit."
+  },
+  "spans": [
+    {
+      "name": "clear-declaration",
+      "asset": "renderer",
+      "start": 7894643,
+      "end": 7894783,
+      "size": 140,
+      "sha256": "a0e6cffdd7454c52fb6013dac39df5f1920c7b285287b38e435faf5050806fc2",
+      "file": "reference/clear-declaration.txt"
+    },
+    {
+      "name": "kYo",
+      "asset": "renderer",
+      "start": 9736698,
+      "end": 9739298,
+      "size": 2600,
+      "sha256": "756189b326acd2e7a58a6a0ed4b390274d1b64facfb76730ebfe2dd16ca3b346",
+      "file": "reference/kYo.txt"
+    },
+    {
+      "name": "clear-mutation",
+      "asset": "index",
+      "start": 3150139,
+      "end": 3150661,
+      "size": 522,
+      "sha256": "ea2ade25ee4f1d029ec366c5deafdd30113789fd77fd57b22aae44086e2583ae",
+      "file": "reference/clear-mutation.txt"
+    },
+    {
+      "name": "clear-mutation-function",
+      "asset": "index",
+      "start": 3150085,
+      "end": 3150139,
+      "size": 54,
+      "sha256": "f3ed8e2d15a58c6bb1905a73f687cc2867817b0e4e976da170841156dfce34dd",
+      "file": "reference/clear-mutation-function.txt"
+    },
+    {
+      "name": "clear-session-method",
+      "asset": "index",
+      "start": 1512849,
+      "end": 1512935,
+      "size": 86,
+      "sha256": "f381adc3464501a037ebc4229249df7b4b145bb656a54e35312393424a3e1ac3",
+      "file": "reference/clear-session-method.txt"
+    },
+    {
+      "name": "workspace-create-queue",
+      "asset": "index",
+      "start": 1534896,
+      "end": 1535064,
+      "size": 168,
+      "sha256": "6545034a6121370d7b257d038e819c1b3389c89e2705b4b5172213302d65955f",
+      "file": "reference/workspace-create-queue.txt"
+    },
+    {
+      "name": "Met",
+      "asset": "index",
+      "start": 1125931,
+      "end": 1126387,
+      "size": 456,
+      "sha256": "b0715cf1fae282c23a17183717b4f61f0a3ba73bb377af1758a8e8ff67703ab8",
+      "file": "reference/Met.txt"
+    },
+    {
+      "name": "Xet",
+      "asset": "index",
+      "start": 1133054,
+      "end": 1135912,
+      "size": 2858,
+      "sha256": "292807ad1f035d649b1d2479a752afd2e2d2a57a965910f3e418d8eb75148e7f",
+      "file": "reference/Xet.txt"
+    },
+    {
+      "name": "_Qe",
+      "asset": "index",
+      "start": 1017530,
+      "end": 1017859,
+      "size": 329,
+      "sha256": "3e4dc94168dac0ec3c9af30afd121b2e3256d6ce5ab71045aa0abdafd2044eda",
+      "file": "reference/_Qe.txt"
+    },
+    {
+      "name": "visible-session-hook",
+      "asset": "index",
+      "start": 1537690,
+      "end": 1537977,
+      "size": 287,
+      "sha256": "3b2b4f76d2bd1caa6c977d5d0a38360b2f1a1df61287595087a12b1e9ef48e21",
+      "file": "reference/visible-session-hook.txt"
+    }
+  ],
+  "validation": "All original asset hashes, span sizes/hashes and byte offsets verified by static Python; no target JavaScript execution or new REA acquisition."
+}

@@ -1,0 +1,58 @@
+{
+  "status": "FIXTURE_SHAPE_FAILURE_NOT_PRODUCT_RED",
+  "behavioral_assertion_reached": false,
+  "counts": {
+    "pass": 0,
+    "fixture_failures": 2
+  },
+  "failure": "Cannot read properties of undefined (reading 'filter')",
+  "where": "terminalTabs(TabsState, placement) called by mounted WorkspaceView",
+  "source_contract": "terminal/tabs.ts emptyTabs() returns {tabs:[],activeId:null,next:1}; frozen fixture terminal/session.getTabs returns emptyList array instead of TabsState",
+  "run": {
+    "started_utc": "2026-11-11T08:24:41.961420+00:00",
+    "finished_utc": "2026-11-11T08:24:43.779777+00:00",
+    "command": [
+      "timeout",
+      "--kill-after=5s",
+      "90s",
+      "node",
+      "--experimental-strip-types",
+      "--test",
+      "--test-concurrency=1",
+      ".rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts"
+    ],
+    "wall_seconds": 1.818,
+    "process_exit": 1,
+    "limit_reason": null,
+    "wall_limit_seconds": 95.0,
+    "max_added_bytes": 67108864,
+    "initial_bytes": 36153506,
+    "final_bytes": 36159642,
+    "peak_observed_bytes": 36159642,
+    "added_bytes": 6136,
+    "peak_added_bytes": 6136,
+    "process_terminal": true
+  },
+  "fixture_sha256": "aad82aad2f9d7e6afc37c24d415af423a51d5c18fecf151df8cae4f28a378319",
+  "fixture_unchanged": true,
+  "baseline_main": "385ccb5229f56ff33903f034352eaa9827c40f0e",
+  "checked_default_head": "966e331c7eea6963327fd81a62d5a872fd72fabe",
+  "all_84_static_inputs_unchanged": true,
+  "dependency_gap_corrected": {
+    "status": "PASS",
+    "package": "fuzzysort",
+    "version": "3.1.0",
+    "regular_files": 6,
+    "bytes": 45608,
+    "dependencies": {},
+    "archive_sha256": "f8efeac7fa706b3fac79e1f72d5ab3eb632c8a0e7c354aaea5f7d1370c61246e",
+    "manifest_sha256": "dffbcfc951d2d23d6664f3ee5c5ab2166397ac1ca7568610f530e8b560e6d29f",
+    "all_file_bytes_and_hashes_verified": true,
+    "install_or_lifecycle": false
+  },
+  "stdout": "TAP version 13\n# (node:189) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# The above error occurred in the <WorkspaceView> component:\n#     at WorkspaceView (evalmachine.<anonymous>:542:26)\n#     at Host (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts:156:39)\n# Consider adding an error boundary to your tree to customize error handling behavior.\n# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.\n# The above error occurred in the <WorkspaceView> component:\n#     at WorkspaceView (evalmachine.<anonymous>:542:26)\n#     at Host (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts:156:39)\n# Consider adding an error boundary to your tree to customize error handling behavior.\n# Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.\n# Subtest: mounted claude /clear replaces the idle primary, preserving history and reload identity\nnot ok 1 - mounted claude /clear replaces the idle primary, preserving history and reload identity\n  ---\n  duration_ms: 887.366806\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts:190:3'\n  failureType: 'testCodeFailure'\n  error: \"Cannot read properties of undefined (reading 'filter')\"\n  code: 'ERR_TEST_FAILURE'\n  name: 'TypeError'\n  stack: |-\n    terminalTabs (evalmachine.<anonymous>:18:47)\n    WorkspaceView (evalmachine.<anonymous>:565:53)\n    renderWithHooks (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)\n    mountIndeterminateComponent (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9884:13)\n    beginWork (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11351:16)\n    performUnitOfWork (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15850:12)\n    workLoopSync (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)\n    renderRootSync (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)\n    performSyncWorkOnRoot (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15461:20)\n    flushSyncCallbacks (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2597:22)\n  ...\n# Subtest: mounted codex /clear replaces the idle primary, preserving history and reload identity\nnot ok 2 - mounted codex /clear replaces the idle primary, preserving history and reload identity\n  ---\n  duration_ms: 480.663962\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts:190:3'\n  failureType: 'testCodeFailure'\n  error: \"Cannot read properties of undefined (reading 'filter')\"\n  code: 'ERR_TEST_FAILURE'\n  name: 'TypeError'\n  stack: |-\n    terminalTabs (evalmachine.<anonymous>:18:47)\n    WorkspaceView (evalmachine.<anonymous>:565:53)\n    renderWithHooks (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:5608:18)\n    mountIndeterminateComponent (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:9884:13)\n    beginWork (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:11351:16)\n    performUnitOfWork (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15850:12)\n    workLoopSync (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15784:5)\n    renderRootSync (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15756:7)\n    performSyncWorkOnRoot (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:15461:20)\n    flushSyncCallbacks (/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:2597:22)\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 0\n# fail 2\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1706.173529\n",
+  "stderr": "(node:182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n",
+  "product_candidate_applied": false,
+  "additional_retry_performed": false,
+  "next_action": "Owner repairs only invalid fixture boundary state with real pure emptyTabs() or authoritative TabsState, freezes new harness hash preserving scenario/assertion bodies; replay corrected baseline before candidate."
+}

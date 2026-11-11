@@ -99,14 +99,14 @@
       stored,
     };
     q(".settings-back")?.click();
-    await waitFor("the workspace", () => q(".workspace .composer textarea"));
+    await waitFor("the workspace", () => q(".workspace .composer [contenteditable=true]"));
     return info;
   }
 
   async function newAgentChat(first) {
     if (!first) {
       q(".main-tab-new-button").click();
-      await waitFor("a new chat", () => q(".workspace .composer textarea") && !q(".chat-turn-end"));
+      await waitFor("a new chat", () => q(".workspace .composer [contenteditable=true]") && !q(".chat-turn-end"));
     }
     const chip = await waitFor("the model picker", () => q("[data-testid='composer-model-button']"));
     chip.click();
@@ -120,7 +120,13 @@
 
   async function sendTurn(prompt) {
     const endsBefore = qa(".chat-turn-end").length;
-    setValue(q(".composer textarea"), prompt);
+    // The composer is a contenteditable editor: a normal insertText edit, as
+    // tools/e2e/transcript-parity.e2e.mjs types into it.
+    const box = q(".composer [contenteditable=true]");
+    box.focus();
+    getSelection().selectAllChildren(box);
+    document.execCommand("insertText", false, prompt);
+    await waitFor("the composer to hold the prompt", () => q(".composer [contenteditable=true]").textContent === prompt);
     await waitFor("Send enabled", () => !q('.composer button[type="submit"]').disabled);
     const sentAt = Date.now();
     q('.composer button[type="submit"]').click();
@@ -153,7 +159,7 @@
     }
     (await waitFor("Create workspace button", () => q(`.sb-repo-add[aria-label="Create workspace in ${cfg.repoName}"]`))).click();
     (await waitFor("the Create workspace dialog", () => q('form.create-ws button[type="submit"]'))).click();
-    await waitFor("the workspace view", () => q(".workspace .composer textarea"), 60000);
+    await waitFor("the workspace view", () => q(".workspace .composer [contenteditable=true]"), 60000);
     step("workspace created");
 
     for (const [i, mode] of cfg.modes.entries()) {

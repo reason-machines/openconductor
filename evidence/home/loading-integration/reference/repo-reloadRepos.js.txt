@@ -1,0 +1,1 @@
+async reloadRepos(e){try{const s=await d2t(this);return(e===void 0||e())&&this.__store.setState({isLoaded:!0,repos:Object.fromEntries(s.map(n=>[n.id,dt(n)]))}),s}catch(s){throw(e===void 0||e())&&this.__store.setState(n=>({...n,isLoaded:!0})),s}}

@@ -1,0 +1,127 @@
+{
+  "unit": "terminal-post-spawn-resize-reconciliation-1f",
+  "author": "Conductor Rebuild",
+  "main_checked": "b6e7473d17462ce09948437b4239fb0a31e8d37f",
+  "fixture": {
+    "path": "src/features/terminal/resizeState.test.ts",
+    "bytes": 9257,
+    "sha256": "9983095ab54b82579683b0122698238e300fc4e16e7938e7d884f0041668c543"
+  },
+  "baseline_session_sha256": "e7785e03355148c1937a02b3aca8cafebb1821fbb6cd304946b08c476fc11409",
+  "candidate_session_sha256": "8560deacd82ccec6a8442494b38c887a0e81fe44d271839c9e79888029a0a235",
+  "candidate_patch_sha256": "108e18d986794760380c4a451074afefcbe0e921dfdbe2192d1fb0de34d2c97b",
+  "source_reference_sha256": "444b650215b52c5456c9902a918d9e55f45cf8084d8538aa43e035a738fbdaad",
+  "source_closure": [
+    {
+      "path": "src/features/terminal/session.ts",
+      "file": "main/src/features/terminal/session.ts",
+      "bytes": 20002,
+      "sha256": "e7785e03355148c1937a02b3aca8cafebb1821fbb6cd304946b08c476fc11409"
+    },
+    {
+      "path": "src/features/terminal/events.ts",
+      "file": "main/src/features/terminal/events.ts",
+      "bytes": 3155,
+      "sha256": "31401ad8918a9ed628ea2d4cdd934341ffb0bd0cd618b633f7a4b919e1504e68"
+    },
+    {
+      "path": "src/features/terminal/tabs.ts",
+      "file": "main/src/features/terminal/tabs.ts",
+      "bytes": 4876,
+      "sha256": "352d9f23dca03e4eb52fb790dd18638f713c42e15106b366fb70ca4cb08e559e"
+    },
+    {
+      "path": "src/features/terminal/restore.ts",
+      "file": "main/src/features/terminal/restore.ts",
+      "bytes": 3793,
+      "sha256": "3b18eb195b1737cf9e9c547b437645adffc02169515b5f70476e571365ab7376"
+    },
+    {
+      "path": "src/features/terminal/tabList.ts",
+      "file": "main/src/features/terminal/tabList.ts",
+      "bytes": 10138,
+      "sha256": "38f259a681d4d1656dd359b7b02149ccec44b3225e1e1173e48e138a538d4acd"
+    },
+    {
+      "path": "src/features/terminal/shortcuts.ts",
+      "file": "main/src/features/terminal/shortcuts.ts",
+      "bytes": 1529,
+      "sha256": "87c9790dc7b00682b37d679b04d90343da6b0fa81d7e7d02a94f258e6498b97a"
+    },
+    {
+      "path": "src/features/terminal/shellIntegration.ts",
+      "file": "main/src/features/terminal/shellIntegration.ts",
+      "bytes": 6998,
+      "sha256": "64a8d4249f53591366cd9c0e529a14cf3ec0d024a5b6dde5a12ed143aeae5cda"
+    },
+    {
+      "path": "src/features/terminal/bigTerminal.ts",
+      "file": "main/src/features/terminal/bigTerminal.ts",
+      "bytes": 6347,
+      "sha256": "7b86aa2fc0af9120117e29bc1f04bae569bb7c2fbb8af4e666bdd5b2cd643b8f"
+    },
+    {
+      "path": "src/keybindings/resolve.ts",
+      "file": "main/src/keybindings/resolve.ts",
+      "bytes": 2809,
+      "sha256": "f8818d52d1af70bc788f5bda2d162b5b1634402592807bc78b5233ad4e1142bc"
+    },
+    {
+      "path": "src/keybindings/dispatcher.ts",
+      "file": "main/src/keybindings/dispatcher.ts",
+      "bytes": 5180,
+      "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197"
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "file": "main/src/keybindings/shortcut.ts",
+      "bytes": 5791,
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8"
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "file": "main/src/keybindings/overrides.ts",
+      "bytes": 8207,
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "file": "main/src/keybindings/registry.ts",
+      "bytes": 28780,
+      "sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9"
+    },
+    {
+      "path": "src/keybindings/types.ts",
+      "file": "main/src/keybindings/types.ts",
+      "bytes": 1758,
+      "sha256": "cdfcd723ed324b7f32698d36496fbc6bf6514c78f61e4d562c81b302207c4ecb"
+    },
+    {
+      "path": "scripts/check-colors.mjs",
+      "file": "main/scripts/check-colors.mjs",
+      "bytes": 9306,
+      "sha256": "2e83c62d1a4ab34ccc8d9790f246251d0b7d0b4b242161154d12a3ad1651b9c9"
+    },
+    {
+      "path": "src/theme/tokens.css",
+      "file": "main/src/theme/tokens.css",
+      "bytes": 33442,
+      "sha256": "6d78f6f09053db08211e122fb44da4e55e8f420480a0f426d1ad08bf70e05afb"
+    },
+    {
+      "path": "package.json",
+      "file": "main/package.json",
+      "bytes": 1901,
+      "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b"
+    },
+    {
+      "path": "package-lock.json",
+      "file": "main/package-lock.json",
+      "bytes": 221776,
+      "sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1"
+    }
+  ],
+  "candidate_applied_to_product": false,
+  "fixture_executed": false,
+  "assertions": "Same fixture bytes for RED and GREEN; no reference JS evaluation"
+}

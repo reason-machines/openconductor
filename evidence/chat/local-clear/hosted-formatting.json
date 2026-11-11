@@ -1,0 +1,16 @@
+{
+  "method": "Apply the exact 16 formatting hunks emitted by hosted cargo fmt --check, with exact original candidate hash and unique non-overlapping old-text matches; local rustfmt is unavailable.",
+  "source_head": "81e1a52ced3ea1b066497e7e894f77fd79b00eea",
+  "source_job": "https://github.com/reason-machines/openconductor/actions/runs/42993095328/job/130430459729",
+  "files": [
+    {
+      "path": "crates/openconductor-db/src/sessions.rs",
+      "hunks": 8
+    },
+    {
+      "path": "crates/openconductor-db/tests/local_clear.rs",
+      "hunks": 8
+    }
+  ],
+  "verification": "Source whitespace check and frontend pins passed. Hosted formatting recheck and Rust tests pending."
+}

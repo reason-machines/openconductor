@@ -1,6 +1,6 @@
 // parity:diff.changes-list:ui parity:diff.discard:ui parity:diff.whitespace:ui parity:diff.viewed:ui parity:diff.turn-changes:ui
 import { Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useCallback, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import "./diff.css";
 import { RevertIcon } from "./DiscardDialog";
 import { FileContextMenu } from "./FileContextMenu";
@@ -19,6 +19,7 @@ export interface ChangesListProps {
   diff: WorkspaceDiff;
   actions?: (files: FileDiff[]) => ReactNode;
   worktree?: string | null;
+  activeFilePath?: string;
   emptyAction?: ReactNode;
   filter?: ChangesFilterState;
   notify?: Notify;
@@ -52,11 +53,26 @@ function copy(text: string, label: string, notify?: Notify) {
   copyText(text).then(() => notify?.("info", `Copied ${label} to clipboard`), () => notify?.("error", "Failed to copy to clipboard"));
 }
 
-export function ChangesList({ diff, actions, worktree, emptyAction, filter, notify, view = "flat", collapsed, toggleDirectory }: ChangesListProps) {
+export function ChangesList({ diff, actions, worktree, activeFilePath, emptyAction, filter, notify, view = "flat", collapsed, toggleDirectory }: ChangesListProps) {
   const { opts, load, files, totals, current } = diff;
   const filtering = filter ? filterActive(filter.open, filter.query) : false;
   const shown = filter ? filterChangedFiles(files, filter.query) : files;
   const rows = changeRows(shown, view, collapsed, diff.isViewed);
+  const fileRows = useRef(new Map<string, HTMLButtonElement>());
+  const lastSelection = useRef<{ worktree: string | null | undefined; path: string | undefined }>({ worktree: undefined, path: undefined });
+  const pendingPath = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (lastSelection.current.worktree !== worktree || lastSelection.current.path !== activeFilePath) {
+      lastSelection.current = { worktree, path: activeFilePath };
+      pendingPath.current = activeFilePath;
+    }
+    const path = pendingPath.current;
+    if (path === undefined) return;
+    const row = fileRows.current.get(path);
+    if (!row) return;
+    row.scrollIntoView({ block: "nearest" });
+    pendingPath.current = undefined;
+  }, [worktree, activeFilePath, rows]);
   const [menu, setMenu] = useState<{ path: string; x: number; y: number } | null>(null);
   const closeMenu = useCallback(() => setMenu(null), []);
   const menuFile = menu ? files.find((file) => file.path === menu.path) : undefined;
@@ -81,7 +97,7 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
             const f = row.file;
             return <div key={f.path} className="oc-change-row" style={view === "tree" ? { marginLeft: 8 + row.depth * 12 } : undefined} onContextMenu={(e) => { e.preventDefault(); setMenu({ path: f.path, x: e.clientX, y: e.clientY }); }}>
               {view === "tree" && <TreeGuides depth={row.depth} nextDepth={nextDepth} offset={8 + row.depth * 12} />}
-              <button className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={files[current]?.path === f.path} onClick={() => diff.openPath(f.path)} title={`Open ${f.path}`}>
+              <button ref={(row) => { if (row) fileRows.current.set(f.path, row); else fileRows.current.delete(f.path); }} className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={files[current]?.path === f.path} onClick={() => diff.openPath(f.path)} title={`Open ${f.path}`}>
                 <span className="name">{f.status === "renamed" && f.old_path && <><PathParts path={renameDisplayPath({ oldPath: f.old_path, path: f.path, view })} /><span className="oc-change-rename-arrow">→</span></>}<PathParts path={row.name} /></span>
                 <span className="oc-change-meta">{typeof opts.scope !== "object" && diff.uncommittedPaths.has(f.path) && <span className="oc-change-uncommitted">U</span>}<ChangeCounts additions={f.additions} deletions={f.deletions} /><ChangeStatus status={f.status} /></span>
               </button>

@@ -57,6 +57,7 @@
 .allws-status { display: flex; align-items: center; justify-content: center; width: 16px; height: 16px; color: var(--sidebar-muted-foreground, var(--muted)); }
 .allws-status[data-color="destructive"] { color: var(--diff-del); }
 .allws-more { height: 24px; }
+.allws-loading { display: flex; justify-content: center; padding: 24px 0; color: var(--muted); }
 .allws-empty { padding: 24px 0; display: flex; flex-direction: column; align-items: center; gap: 12px; font-size: 14px; color: var(--muted); }
 .allws-clear { height: 28px; padding: 0 10px; border-radius: 6px; border: 1px solid var(--border); color: var(--text); font-size: 14px; }
 .allws-clear:hover { background: var(--hover); }
