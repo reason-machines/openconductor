@@ -167,9 +167,10 @@
     "New isolated mounted regression and evidence only; no saved-edit maps, reply editor, backend or WorkspaceView edits"
   ],
   "protected_fixture_collision": "Same ending-line annotation retains all range bodies but displays only the latest selected range; frozen fixture bodies and assertions remain unchanged. This is not full original simultaneous same-ending-line native parity.",
-  "runtime": "NOT RUN: local Node, hosted fixture, native, DOM/browser, SQLite, app restart or reference JavaScript.",
+  "runtime": "OBSERVED: automatic hosted baseline09fa14eebc reproduced9intended assertion failures and4controls. Candidate hosted GREEN pending. NOT RUN: local Node, native, DOM/browser, SQLite, app restart or reference JavaScript.",
   "limits": "Source evidence is not original native behavior. No simultaneous same-ending-line range display, whole-app persistence or global workspace retention claim.",
-  "tracked_product_or_fixture_edits": false,
+  "tracked_product_or_fixture_edits": true,
+  "all_frozen_fixtures_unchanged": true,
   "fixture": {
     "path": "src/features/diff/multiAnchorDrafts.test.ts",
     "sha256": "366bacf14235f38d8aab739794c8f2d5debceffd512d989b8f2e6ff4c6a7279b",
