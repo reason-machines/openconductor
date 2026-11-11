@@ -123,7 +123,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
           <span>Location</span>
           <div className="field-row">
             <input value={location} placeholder="Enter path or click to select" onChange={(e) => setLocation(e.target.value)} />
-            <button type="button" className="btn" disabled={pending} onClick={() => void browse()}>Browse</button>
+            <button type="button" className="btn" onClick={() => void browse()}>Browse</button>
           </div>
         </label>
         {pending && log.length > 0 && (

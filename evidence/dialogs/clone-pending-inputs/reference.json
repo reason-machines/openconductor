@@ -1,6 +1,6 @@
 {
   "producer": "Conductor Rebuild / 6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
-  "scope": "Clone URL/location pending-disabled props only. No Browse/recent control, shared modal, log/error/preference changes.",
+  "scope": "Clone URL/location/Browse pending-disabled props only. No recent control, shared modal, log/error/preference changes.",
   "archive": {
     "attachment_id": "9bba4171-4ff7-4ded-83e7-5a62a9f75350",
     "bytes": 15206400,
@@ -136,21 +136,109 @@
       "bytes": 3642,
       "sha256": "1597ff6b039d905738debd5d0b9ecff32d152e754a7a6816ef74a0c9cff653a2",
       "literal": "const nd=$.forwardRef((t,e)=>{const n=ne.c(67);let i,r,o,a,c,u,d,h,m,g,_,v,x,w;n[0]!==t?({className:r,children:i,overlayClassName:v,onKeyDown:g,onOpenAutoFocus:_,onCloseAutoFocus:d,onEscapeKeyDown:h,onInteractOutside:m,initialFocus:u,finalFocus:a,forceMount:c,topEdgeAnchored:w,\"data-tauri-drag-region\":o,...x}=t,n[0]=t,n[1]=i,n[2]=r,n[3]=o,n[4]=a,n[5]=c,n[6]=u,n[7]=d,n[8]=h,n[9]=m,n[10]=g,n[11]=_,n[12]=v,n[13]=x,n[14]=w):(i=n[1],r=n[2],o=n[3],a=n[4],c=n[5],u=n[6],d=n[7],h=n[8],m=n[9],g=n[10],_=n[11],v=n[12],x=n[13],w=n[14]);const E=w===void 0?!0:w,k=$.useContext(x3i),I=$.useContext(y3i),R=$.useContext(w3i),O=$.useId(),[D,P]=$.useState(void 0);let L,B;n[15]!==h||n[16]!==m||n[17]!==O||n[18]!==R?(L=()=>{if(R!==null)return R({overlayOwnerId:O,onEscapeKeyDown:h,onInteractOutside:m})},B=[O,R,h,m],n[15]=h,n[16]=m,n[17]=O,n[18]=R,n[19]=L,n[20]=B):(L=n[19],B=n[20]),$.useLayoutEffect(L,B);let F;n[21]!==e?(F=ge=>{P(ge??void 0),typeof e==\"function\"?e(ge):e&&(e.current=ge)},n[21]=e,n[22]=F):F=n[22];const H=F;let U;n[23]!==u||n[24]!==_?(U=u??(_?()=>{const ge=new Event(\"openAutoFocus\",{cancelable:!0});return _(ge),!ge.defaultPrevented}:void 0),n[23]=u,n[24]=_,n[25]=U):U=n[25];const z=U;let G;n[26]!==a||n[27]!==d?(G=a??(()=>{const ge=new Event(\"closeAutoFocus\",{cancelable:!0});return d?.(ge),tSe(ge),!ge.defaultPrevented}),n[26]=a,n[27]=d,n[28]=G):G=n[28];const K=G;let X;n[29]!==v?(X=Xe(\"fixed inset-0 z-50 bg-overlay backdrop-blur-xs transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0\",v),n[29]=v,n[30]=X):X=n[30];const Q=X;let J;n[31]!==o||n[32]!==c||n[33]!==k||n[34]!==I||n[35]!==v||n[36]!==Q?(J=k?p.jsx(Hjt,{forceMount:c,className:v,\"data-tauri-drag-region\":o}):p.jsx(\"div\",{className:Q,\"data-starting-style\":I?void 0:\"\",\"data-ending-style\":I?void 0:\"\",\"data-tauri-drag-region\":o}),n[31]=o,n[32]=c,n[33]=k,n[34]=I,n[35]=v,n[36]=Q,n[37]=J):J=n[37];const te=E?\"pointer-events-none fixed inset-x-0 top-[max(2rem,calc(50%-250px))] bottom-0 z-50 flex items-start justify-center pb-8\":\"pointer-events-none fixed inset-0 z-50 flex items-center justify-center py-8\",Z=c&&!I&&\"hidden\";let se;n[38]!==Z||n[39]!==te?(se=Xe(te,Z),n[38]=Z,n[39]=te,n[40]=se):se=n[40];let ce;n[41]!==r?(ce=Xe(\"pointer-events-auto relative max-h-full overflow-y-auto rounded-md grid w-full max-w-lg gap-4 border border-border bg-background p-6 shadow-lg outline-none [&>[data-base-ui-portal]]:absolute transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 focus:outline-none focus-visible:outline-none\",r),n[41]=r,n[42]=ce):ce=n[42];let ae;n[43]!==g?(ae=ge=>{if(Qh(\"dialog.primaryAction\",ge.nativeEvent)){ge.preventDefault();const ve=ge.currentTarget.querySelector(\"[data-primary-action]\");ve&&!ve.hasAttribute(\"disabled\")&&ve.click()}g?.(ge)},n[43]=g,n[44]=ae):ae=n[44];let de;n[45]!==i||n[46]!==O?(de=p.jsx(zjt.Provider,{value:O,children:i}),n[45]=i,n[46]=O,n[47]=de):de=n[47];let ue;n[48]!==D||n[49]!==de?(ue=p.jsx($Xe.Provider,{value:D,children:de}),n[48]=D,n[49]=de,n[50]=ue):ue=n[50];let pe;n[51]!==H||n[52]!==o||n[53]!==x||n[54]!==K||n[55]!==z||n[56]!==ce||n[57]!==ae||n[58]!==ue?(pe=p.jsx(Rde,{...x,\"data-dialog-portal-container\":!0,\"data-tauri-drag-region\":o,ref:H,initialFocus:z,finalFocus:K,className:ce,onKeyDown:ae,children:ue}),n[51]=H,n[52]=o,n[53]=x,n[54]=K,n[55]=z,n[56]=ce,n[57]=ae,n[58]=ue,n[59]=pe):pe=n[59];let be;n[60]!==se||n[61]!==pe?(be=p.jsx(\"div\",{className:se,children:pe}),n[60]=se,n[61]=pe,n[62]=be):be=n[62];let he;return n[63]!==c||n[64]!==be||n[65]!==J?(he=p.jsxs(Ujt,{forceMount:c,children:[J,be]}),n[63]=c,n[64]=be,n[65]=J,n[66]=he):he=n[66],he});"
+    },
+    {
+      "name": "tt-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1923125,
+        1923688
+      ],
+      "bytes": 563,
+      "sha256": "927f4db30521c31acc69e3030404188c6f52275c67c691ea7ff9af615f935d80",
+      "literal": "tt=$.forwardRef((t,e)=>{const n=ne.c(12);let i,r,o,a;if(n[0]!==t){const{className:d,variant:h,size:m,asChild:g,children:_,...v}=t;i=(g===void 0?!1:g)&&$.isValidElement(_)?_:void 0,a=S3i,r=\"button\",o=r_({className:lo(REe({variant:h,size:m,className:d}))},{...v,children:i?void 0:_}),n[0]=t,n[1]=i,n[2]=r,n[3]=o,n[4]=a}else i=n[1],r=n[2],o=n[3],a=n[4];let c;n[5]!==i?(c=i??p.jsx(\"button\",{}),n[5]=i,n[6]=c):c=n[6];let u;return n[7]!==e||n[8]!==r||n[9]!==o||n[10]!==c?(u={defaultTagName:r,props:o,ref:e,render:c},n[7]=e,n[8]=r,n[9]=o,n[10]=c,n[11]=u):u=n[11],a(u)});"
+    },
+    {
+      "name": "S3i-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1920998,
+        1921053
+      ],
+      "bytes": 55,
+      "sha256": "ddd119d405884d670467e1c1690f8ae012c20705de121e26c34bc1f688939bf6",
+      "literal": "function S3i(t){return Es(t.defaultTagName??\"div\",t,t)}"
+    },
+    {
+      "name": "prop-composition-and-render",
+      "asset": "renderer",
+      "utf8_half_open": [
+        463925,
+        466387
+      ],
+      "bytes": 2462,
+      "sha256": "1426a29915ffabf4688d49ce1af890134f66f860e544b08ef8c78f6c4edca580",
+      "literal": "function r_(t,e,n,i,r){if(!n&&!i&&!r&&!t)return FVe(e);let o=FVe(t);return e&&(o=B6e(o,e)),n&&(o=B6e(o,n)),i&&(o=B6e(o,i)),r&&(o=B6e(o,r)),o}function dDr(t){if(t.length===0)return cLt;if(t.length===1)return FVe(t[0]);let e=FVe(t[0]);for(let n=1;n<t.length;n+=1)e=B6e(e,t[n]);return e}function FVe(t){return uLt(t)?{...sli(t,cLt)}:fDr(t)}function B6e(t,e){return uLt(e)?sli(e,t):hDr(t,e)}function fDr(t){const e={...t};for(const n in e){const i=e[n];rli(n,i)&&(e[n]=oli(i))}return e}function hDr(t,e){if(!e)return t;for(const n in e){const i=e[n];switch(n){case\"style\":{t[n]=p8t(t.style,i);break}case\"className\":{t[n]=ali(t.className,i);break}default:rli(n,i)?t[n]=pDr(t[n],i):t[n]=i}}return t}function rli(t,e){const n=t.charCodeAt(0),i=t.charCodeAt(1),r=t.charCodeAt(2);return n===111&&i===110&&r>=65&&r<=90&&(typeof e==\"function\"||typeof e>\"u\")}function uLt(t){return typeof t==\"function\"}function sli(t,e){return uLt(t)?t(e):t??cLt}function pDr(t,e){return e?t?(...n)=>{const i=n[0];if(lli(i)){const o=i;BVe(o);const a=e(...n);return o.baseUIHandlerPrevented||t?.(...n),a}const r=e(...n);return t?.(...n),r}:oli(e):t}function oli(t){return t&&((...e)=>{const n=e[0];return lli(n)&&BVe(n),t(...e)})}function BVe(t){return t.preventBaseUIHandler=()=>{t.baseUIHandlerPrevented=!0},t}function ali(t,e){return e?t?e+\" \"+t:e:t}function lli(t){return t!=null&&typeof t==\"object\"&&\"nativeEvent\"in t}function Es(t,e,n={}){const i=e.render,r=mDr(e,n);if(n.enabled===!1)return null;const o=n.state??pf;return _Dr(t,i,r,o)}function mDr(t,e={}){const{className:n,style:i,render:r}=t,{state:o=pf,ref:a,props:c,stateAttributesMapping:u,enabled:d=!0}=e,h=d?uDr(n,o):void 0,m=d?ili(i,o):void 0,g=d?cDr(o,u):pf,_=d&&c?gDr(c):void 0,v=d?p8t(g,_)??{}:pf;return typeof document<\"u\"&&(d?Array.isArray(a)?v.ref=DOr([v.ref,WIn(r),...a]):v.ref=e5(v.ref,WIn(r),a):e5(null,null)),d?(h!==void 0&&(v.className=ali(v.className,h)),m!==void 0&&(v.style=p8t(v.style,m)),v):pf}function gDr(t){return Array.isArray(t)?dDr(t):r_(void 0,t)}const bDr=Symbol.for(\"react.lazy\");function _Dr(t,e,n,i){if(e){if(typeof e==\"function\")return e(n,i);const r=r_(n,e.props);r.ref=n.ref;let o=e;return o?.$$typeof===bDr&&(o=$.Children.toArray(e)[0]),$.cloneElement(o,r)}if(t&&typeof t==\"string\")return vDr(t,n);throw new Error(jl(8))}function vDr(t,e){return t===\"button\"?$.createElement(\"button\",{type:\"button\",...e,key:e.key}):t===\"img\"?$.createElement(\"img\",{alt:\"\",...e,key:e.key}):$.createElement(t,e)}"
+    },
+    {
+      "name": "empty-default-state",
+      "asset": "renderer",
+      "utf8_half_open": [
+        441659,
+        441679
+      ],
+      "bytes": 20,
+      "sha256": "69fddf944c77de1bb1bdd9e062590a64ecc936dcb2ec2f6c7026dc35c531e864",
+      "literal": "pf=Object.freeze({})"
+    },
+    {
+      "name": "merge-and-state-attributes",
+      "asset": "renderer",
+      "utf8_half_open": [
+        463493,
+        463806
+      ],
+      "bytes": 313,
+      "sha256": "b8959317910c6e416cbcbc45ea1793f674e943e575044bf0661faaebca0b43ba",
+      "literal": "function p8t(t,e){if(t&&!e)return t;if(!t&&e)return e;if(t||e)return{...t,...e}}function cDr(t,e){const n={};for(const i in t){const r=t[i];if(e?.hasOwnProperty(i)){const o=e[i](r);o!=null&&Object.assign(n,o);continue}r===!0?n[`data-${i.toLowerCase()}`]=\"\":r&&(n[`data-${i.toLowerCase()}`]=r.toString())}return n}"
+    },
+    {
+      "name": "Browse-button-call",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1966418,
+        1966475
+      ],
+      "bytes": 57,
+      "sha256": "bde3cd8bf7d83482775bb91f4daf3c54efc349aea0d51e73a488774707720836",
+      "literal": "p.jsx(tt,{variant:\"outline\",onClick:B,children:\"Browse\"})"
+    },
+    {
+      "name": "Browse-handler",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1963735,
+        1963862
+      ],
+      "bytes": 127,
+      "sha256": "cbae682a7aebfe03a5e2cdb9f5b367dc0d8e9c08a65767772ead9982870438d0",
+      "literal": "L=async()=>{const Se=await fI({directory:!0,multiple:!1,title:\"Choose where to clone the repository\",defaultPath:o});Se&&a(Se)}"
+    },
+    {
+      "name": "submit-disabled-control",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1967571,
+        1967599
+      ],
+      "bytes": 28,
+      "sha256": "4ac5feb6b920e03bf15244331d3c1de0a3cb5e318eae1b26232df71864dd716b",
+      "literal": "const ve=E.isPending||!i||!o"
     }
   ],
   "checks": {
     "archive_safety_and_identity": "PASS",
     "original_asset_integrity": "PASS 2/2",
-    "exact_spans": "PASS 9/9",
+    "exact_spans": "PASS 17/17",
     "local_ancestor_pending_guards": "No pending/inert guard in los or direct mount/root/content; no blanket native claim.",
-    "before_fix": "RED 3 passed, 2 failed; only the pending URL/location disabled assertions failed.",
-    "after_fix": "GREEN 33 passed, 0 failed across five focused suites.",
-    "regression_unchanged_sha256": "1d0d7ce7a9ba5a9bf5112050a4f09d92a1bcb296528e9119ca928ad2bca4e6a4"
+    "before_fix": "RED 3 passed, 3 failed; only pending URL/location/Browse disabled assertions failed. Production component byte-identical to main c91751164.",
+    "after_fix": "GREEN 34 passed, 0 failed across five focused suites.",
+    "regression_unchanged_sha256": "28c6f0549a2afdfe3d52fa8b16ac8e734b50b5dfe5e7cdcbba54344de7bd8e88"
   },
   "limits": [
     "Static shipped-source props and synthetic handlers are not native acceptance.",
     "Base UI primitives, motion, shortcuts and backend boundaries are stubbed in the component test; actual CloneGitHubRepoDialog and DialogFrame source run.",
-    "Physical input, focus, shortcut delivery, global overlay interference, visual parity, real cloning and installed-app behavior remain unverified.",
+    "Physical input, focus, shortcut delivery, global overlay interference, visual parity, real cloning and native folder-picker outcome and installed-app behavior remain unverified.",
     "No reference JavaScript execution, Mac contact, browser/native launch or acquisition."
   ]
 }

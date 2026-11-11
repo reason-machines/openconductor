@@ -45,6 +45,7 @@ function dialogFrame() {
 
 async function fixture() {
   const requests: { remoteUrl: string; path: string; name: string }[] = [];
+  const picks: { title: string; defaultPath: string }[] = [];
   let rejectClone: (error: Error) => void = () => { throw new Error("No clone is pending"); };
   let progress: (line: string) => void = () => { throw new Error("No clone is pending"); };
   const exports: Partial<Pick<typeof import("./CloneGitHubRepoDialog"), "CloneGitHubRepoDialog">> = {};
@@ -61,7 +62,10 @@ async function fixture() {
         },
         async lastCloneDirectory() { return null; },
         async folderExists() { return false; },
-        async pickFolder() { throw new Error("Native picker is outside this test"); },
+        async pickFolder(title: string, defaultPath: string) {
+          picks.push({ title, defaultPath });
+          return "/synthetic/picked";
+        },
         saveLastCloneDirectory() { throw new Error("Clone must not succeed in this test"); },
       };
       if (name === "../workspace/api") return {
@@ -93,7 +97,7 @@ async function fixture() {
     await act(async () => { void renderer.root.findByType("form").props.onSubmit({ preventDefault() {} }); });
   }
   return {
-    requests, input, edit, submit,
+    requests, picks, input, edit, submit,
     primary: () => renderer.root.findByProps({ type: "submit" }),
     async start() {
       edit("url", "https://github.com/acme/first.git");
@@ -139,7 +143,22 @@ for (const field of ["url", "location"]) {
   });
 }
 
-test("pending clone keeps its submit guard, progress, Browse and recent controls", async () => {
+test("clone Browse remains enabled while its captured request is unresolved", async () => {
+  const view = await fixture();
+  try {
+    await view.start();
+    assert.notEqual(view.button("Browse").props.disabled, true, "Browse must not be disabled while cloning");
+    await act(async () => { view.button("Browse").props.onClick(); });
+    assert.deepEqual(view.picks, [{ title: "Choose where to clone the repository", defaultPath: "/synthetic/initial" }]);
+    assert.equal(view.input("location").props.value, "/synthetic/picked");
+    assert.deepEqual(view.requests, [{ remoteUrl: "https://github.com/acme/first.git", path: "/synthetic/initial", name: "first" }]);
+    await view.submit();
+    assert.equal(view.requests.length, 1);
+    assert.equal(view.primary().props.disabled, true);
+  } finally { view.dispose(); }
+});
+
+test("pending clone keeps its submit guard, progress and recent controls", async () => {
   const view = await fixture();
   try {
     await view.start();
@@ -148,7 +167,6 @@ test("pending clone keeps its submit guard, progress, Browse and recent controls
     view.log("Receiving objects");
     assert.match(view.rendered(), /Receiving objects/);
     assert.match(view.rendered(), /Cloning/);
-    assert.equal(view.button("Browse").props.disabled, true);
     assert.equal(view.recent().props.disabled, true);
   } finally { view.dispose(); }
 });
