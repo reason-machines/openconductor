@@ -37,6 +37,7 @@ function LayoutToggle({ value, onChange }: { value: DiffLayout; onChange: (v: Di
 
 export interface DiffTabProps {
   diff: WorkspaceDiff;
+  onClose?: () => void;
   onLineClick?: (file: FileDiff, range: LineRange) => void;
   /** Lines a comment is being written on in `file`, if any. */
   commentRange?: (file: FileDiff) => LineRange | null;
@@ -49,8 +50,12 @@ export interface DiffTabProps {
 }
 
 /** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
-export function DiffTab({ diff, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps) {
+export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps) {
   const { selected, files, load, redirectRevision } = diff;
+  const empty = load.state === "ready" && load.files.length === 0;
+  useEffect(() => {
+    if (empty) onClose?.();
+  }, [empty, onClose]);
   const path = selected?.path;
   const [visited, setVisited] = useState<{ revision: number; paths: string[] }>({ revision: redirectRevision, paths: [] });
   useEffect(() => {

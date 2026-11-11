@@ -21,7 +21,36 @@ class ListenerTarget {
   }
 }
 
-function fixture() {
+function workspaceChatHost(KeybindingScope: unknown, ChatPanel: unknown) {
+  const path = fileURLToPath(new URL("../components/WorkspaceView.tsx", import.meta.url));
+  const source = ts.createSourceFile(path, readFileSync(path, "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const hosts: string[] = [];
+  const visit = (node: import("typescript").Node) => {
+    if (ts.isJsxElement(node) && node.openingElement.attributes.properties.some((attribute: import("typescript").JsxAttributeLike) =>
+      ts.isJsxAttribute(attribute) && attribute.name.getText(source) === "className" &&
+      attribute.initializer && ts.isStringLiteral(attribute.initializer) && attribute.initializer.text === "ws-chat-host")) {
+      hosts.push(node.getText(source));
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(source);
+  assert.equal(hosts.length, 1, "run the actual WorkspaceView chat host JSX, not a copied wrapper");
+  const compiled = ts.transpileModule(`function ChatHost({centerTerminal}) { return (${hosts[0]}); } module.exports = ChatHost;`, {
+    fileName: path,
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX },
+  }).outputText;
+  const module = { exports: {} };
+  runInNewContext(`(function(require,module,exports){${compiled}\n})`, {
+    KeybindingScope, ChatPanel,
+    activeReview: undefined, workspace: { id: "workspace", name: "Workspace" }, repo: {},
+    dispatch: () => {}, notify: undefined, chatBridge: {}, setAgentWorking: () => {}, diff: {},
+    prBase: undefined, hasNextUnread: undefined, selectedChat: "workspace", onNextUnread: undefined,
+    reviews: { tabs: [], fork: () => {} }, showFile: false, showDiff: false, showPr: false,
+  })(createRequire(path), module, module.exports);
+  return module.exports;
+}
+
+function fixture(actualWorkspaceHost = false) {
   const window = new ListenerTarget();
   const document = Object.assign(new ListenerTarget(), {
     querySelectorAll: () => [], querySelector: () => null,
@@ -55,11 +84,13 @@ function fixture() {
     useKeybindings({ "view.toggleLeftSidebar": () => { ran.push("sidebar"); } });
     return null;
   }
+  const ChatHost = actualWorkspaceHost ? workspaceChatHost(KeybindingScope, Chat) : undefined;
   const tree = (focused: boolean, nested = false) => React.createElement(KeybindingsProvider, null,
     React.createElement(Shell),
-    React.createElement(KeybindingScope, { focused }, nested
-      ? React.createElement(KeybindingScope, { focused: true }, React.createElement(Chat))
-      : React.createElement(Chat)),
+    ChatHost ? React.createElement(ChatHost, { centerTerminal: focused ? undefined : { id: "terminal" } })
+      : React.createElement(KeybindingScope, { focused }, nested
+        ? React.createElement(KeybindingScope, { focused: true }, React.createElement(Chat))
+        : React.createElement(Chat)),
   );
   let root: { update(tree: unknown): void; unmount(): void; toJSON(): unknown };
   const render = (focused: boolean, nested = false) => act(() => {
@@ -103,6 +134,30 @@ test("a mounted chat stops handling terminal keys while hidden and resumes witho
     assert.deepEqual(f.ran, ["cancel", "attach", "sidebar", "attach"]);
     assert.equal(f.mounts(), 1);
     assert.deepEqual(f.content(), { type: "span", props: {}, children: ["retained draft"] });
+  } finally { f.dispose(); }
+});
+
+test("WorkspaceView's actual retained chat host suppresses shortcuts only for a center terminal", () => {
+  const f = fixture(true);
+  try {
+    f.render(true);
+    f.key("Backspace", true);
+    f.key("u");
+    assert.deepEqual(f.ran, ["cancel", "attach"]);
+    f.render(false);
+    f.key("Backspace", true);
+    f.key("u");
+    assert.deepEqual(f.ran, ["cancel", "attach"], "hidden WorkspaceView chat must not handle center-terminal keys");
+    f.key("b");
+    assert.deepEqual(f.ran, ["cancel", "attach", "sidebar"]);
+    f.render(true);
+    f.key("u");
+    assert.deepEqual(f.ran, ["cancel", "attach", "sidebar", "attach"]);
+    assert.equal(f.mounts(), 1, "switching center tabs must retain the draft's mounted chat");
+    assert.deepEqual(f.content(), {
+      type: "div", props: { className: "ws-chat-host", hidden: false },
+      children: [{ type: "span", props: {}, children: ["retained draft"] }],
+    });
   } finally { f.dispose(); }
 });
 
