@@ -34,6 +34,82 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+      - name: Pin exact historical Codex diagnostic source
+        id: codex-diagnostic-source
+        if: github.event_name == 'pull_request' && github.head_ref == 'reason/openconductor-sol-e2e-ow-acc3b5c5' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          DIAGNOSTIC_PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          DIAGNOSTIC_WORKFLOW_MERGE: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, re, subprocess
+          output = pathlib.Path(os.environ["RUNNER_TEMP"]) / "e2e-codex"
+          output.mkdir(parents=True, exist_ok=True)
+          synthetic = "eff3c0588599dcb2392a982a2fcd96e856006817"
+          base = "9e4df51294ab5cd6abdd73aa1212ae501c551b13"
+          head = os.environ["DIAGNOSTIC_PR_HEAD"]
+          paths = [
+              "src/components/WorkspaceView.tsx",
+              "tools/e2e/codex-chat.e2e.mjs",
+              "tools/e2e/codex-access-diagnostics.mjs",
+              "tools/e2e/codex-access-diagnostics.test.mjs",
+          ]
+          receipt = {
+              "workflowMerge": os.environ["DIAGNOSTIC_WORKFLOW_MERGE"],
+              "publishedHead": head,
+              "historicalSynthetic": synthetic,
+              "expectedParents": [
+                  "74e48d1354ff54e3ef252558d41f2edf242a2248",
+                  "58e7d6625d65eae2b45c3b8e6461b96d3d7a1743",
+              ],
+              "expectedSourceTree": "3d74639fd422b0f70c7b239dd3481f5393bcd7a9",
+              "expectedOverlayTree": "4c94e034e36ddeefe1aef801999924e5bc18b721",
+              "sourcePinVerified": False,
+          }
+          def git(*args):
+              return subprocess.check_output(["git", *args], text=True).strip()
+          try:
+              if not re.fullmatch(r"[0-9a-f]{40}", head):
+                  raise ValueError("Published head must be an immutable SHA")
+              subprocess.run(["git", "fetch", "--no-tags", "--depth=1", "origin", synthetic, base, head], check=True)
+              headers = git("cat-file", "commit", synthetic).split("\n\n", 1)[0].splitlines()
+              receipt["observedParents"] = [line[7:] for line in headers if line.startswith("parent ")]
+              receipt["observedSourceTree"] = git("rev-parse", synthetic + "^{tree}")
+              if receipt["observedParents"] != receipt["expectedParents"] or receipt["observedSourceTree"] != receipt["expectedSourceTree"]:
+                  raise ValueError("Historical synthetic identity mismatch")
+              patch = subprocess.check_output([
+                  "git", "diff", "--binary", "--no-ext-diff", "--no-textconv", "--no-color",
+                  "--no-renames", "--diff-algorithm=myers", "--src-prefix=a/", "--dst-prefix=b/",
+                  base, head, "--", *paths,
+              ])
+              receipt["patchSha256"] = hashlib.sha256(patch).hexdigest()
+              if receipt["patchSha256"] != "212aa24187da7f7c1a195f5a0f453cb035caec2098a6d34b294dc1ba90e60956":
+                  raise ValueError("Four-path diagnostic patch mismatch")
+              (output / "codex-diagnostic.patch").write_bytes(patch)
+              before = git("show", synthetic + ":tools/e2e/codex-chat.e2e.mjs").splitlines()
+              subprocess.run(["git", "checkout", "--detach", synthetic], check=True)
+              subprocess.run(["git", "apply", "--index", "--whitespace=error-all"], input=patch, check=True)
+              receipt["observedOverlayTree"] = git("write-tree")
+              if receipt["observedOverlayTree"] != receipt["expectedOverlayTree"]:
+                  raise ValueError("Built-source overlay tree mismatch")
+              subprocess.run(["git", "diff", "--exit-code"], check=True)
+              after = pathlib.Path("tools/e2e/codex-chat.e2e.mjs").read_text().splitlines()
+              assertions = [line for line in before if "assert." in line]
+              if len(assertions) != 55 or assertions != [line for line in after if "assert." in line]:
+                  raise ValueError("Original policy assertions changed")
+              receipt["originalAssertionLinesPreserved"] = len(assertions)
+              source_lock = pathlib.Path("src-tauri/Cargo.lock").read_bytes()
+              (output / "source-Cargo.lock").write_bytes(source_lock)
+              receipt["sourceCargoLockSha256"] = hashlib.sha256(source_lock).hexdigest()
+              receipt["sourcePinVerified"] = True
+          except Exception as error:
+              receipt["failure"] = str(error)
+              raise
+          finally:
+              serialized = json.dumps(receipt, indent=2) + "\n"
+              (output / "codex-source-provenance.json").write_text(serialized)
+              print(serialized)
+          PY
       # The Azure apt mirror sometimes serves at 30-50 kB/s for 10-25 minutes, so keep the
       # downloaded .debs in the Actions cache (one key per ISO week; restore-keys reuse last week's).
       - name: apt cache key
@@ -80,6 +156,58 @@ jobs:
       - run: npm ci
       - name: Build the app (debug, no bundle)
         run: npx tauri build --debug --no-bundle
+      - name: Retain Codex diagnostic build provenance
+        if: always() && github.event_name == 'pull_request' && github.head_ref == 'reason/openconductor-sol-e2e-ow-acc3b5c5' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          python3 - <<'PY'
+          import difflib, hashlib, json, pathlib, re, os
+          output = pathlib.Path(os.environ["RUNNER_TEMP"]) / "e2e-codex"
+          output.mkdir(parents=True, exist_ok=True)
+          report = {"sourcePinVerified": False, "effectiveLockCaptured": False}
+          try:
+              pin = json.loads((output / "codex-source-provenance.json").read_text())
+              report.update({key: pin.get(key) for key in [
+                  "sourcePinVerified", "workflowMerge", "publishedHead", "historicalSynthetic",
+                  "observedSourceTree", "observedOverlayTree", "sourceCargoLockSha256",
+              ]})
+              report["proofLabel"] = "pinned source; build outcome remains in job log" if report["sourcePinVerified"] else "source pin failed; not exact-source proof"
+              effective = pathlib.Path("src-tauri/Cargo.lock").read_bytes()
+              (output / "effective-Cargo.lock").write_bytes(effective)
+              report["effectiveCargoLockSha256"] = hashlib.sha256(effective).hexdigest()
+              report["effectiveLockCaptured"] = True
+              source = (output / "source-Cargo.lock").read_bytes()
+              (output / "cargo-lock-build.diff").write_text("".join(difflib.unified_diff(
+                  source.decode().splitlines(True), effective.decode().splitlines(True),
+                  fromfile="source-Cargo.lock", tofile="effective-Cargo.lock",
+              )))
+              def packages(raw):
+                  result = []
+                  root = None
+                  for block in raw.decode().split("[[package]]")[1:]:
+                      fields = dict(re.findall(r'^(name|version|source|checksum) = "([^"]*)"$', block, re.M))
+                      if fields.get("name") == "openconductor":
+                          match = re.search(r"^dependencies = \[\n(.*?)^\]", block, re.M | re.S)
+                          root = set(re.findall(r'^\s*"([^"]+)",?$', match.group(1), re.M)) if match else set()
+                      else:
+                          result.append(tuple(fields.get(key) for key in ["name", "version", "source", "checksum"]))
+                  return set(result), root
+              original_packages, original_edges = packages(source)
+              effective_packages, effective_edges = packages(effective)
+              report["resolvedPackageIdentityDifferences"] = len(original_packages ^ effective_packages)
+              if original_edges is None or effective_edges is None:
+                  report["rootDependencyDeltaUnavailable"] = True
+              else:
+                  report["rootDependencyEdgesAdded"] = sorted(effective_edges - original_edges)
+                  report["rootDependencyEdgesRemoved"] = sorted(original_edges - effective_edges)
+              app = pathlib.Path("src-tauri/target/debug/openconductor")
+              report["binarySha256IfPresent"] = hashlib.sha256(app.read_bytes()).hexdigest() if app.is_file() else None
+          except Exception as error:
+              report["captureError"] = str(error)
+          finally:
+              serialized = json.dumps(report, indent=2) + "\n"
+              (output / "codex-build-provenance.json").write_text(serialized)
+              print(serialized)
+          PY
       - name: Install tauri-driver
         run: cargo install tauri-driver --locked
       - name: Configure git identity
@@ -144,6 +272,82 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
+      - name: Pin exact historical Codex diagnostic source
+        id: codex-diagnostic-source
+        if: github.event_name == 'pull_request' && github.head_ref == 'reason/openconductor-sol-e2e-ow-acc3b5c5' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          DIAGNOSTIC_PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          DIAGNOSTIC_WORKFLOW_MERGE: ${{ github.sha }}
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, re, subprocess
+          output = pathlib.Path(os.environ["RUNNER_TEMP"]) / "e2e-codex"
+          output.mkdir(parents=True, exist_ok=True)
+          synthetic = "eff3c0588599dcb2392a982a2fcd96e856006817"
+          base = "9e4df51294ab5cd6abdd73aa1212ae501c551b13"
+          head = os.environ["DIAGNOSTIC_PR_HEAD"]
+          paths = [
+              "src/components/WorkspaceView.tsx",
+              "tools/e2e/codex-chat.e2e.mjs",
+              "tools/e2e/codex-access-diagnostics.mjs",
+              "tools/e2e/codex-access-diagnostics.test.mjs",
+          ]
+          receipt = {
+              "workflowMerge": os.environ["DIAGNOSTIC_WORKFLOW_MERGE"],
+              "publishedHead": head,
+              "historicalSynthetic": synthetic,
+              "expectedParents": [
+                  "74e48d1354ff54e3ef252558d41f2edf242a2248",
+                  "58e7d6625d65eae2b45c3b8e6461b96d3d7a1743",
+              ],
+              "expectedSourceTree": "3d74639fd422b0f70c7b239dd3481f5393bcd7a9",
+              "expectedOverlayTree": "4c94e034e36ddeefe1aef801999924e5bc18b721",
+              "sourcePinVerified": False,
+          }
+          def git(*args):
+              return subprocess.check_output(["git", *args], text=True).strip()
+          try:
+              if not re.fullmatch(r"[0-9a-f]{40}", head):
+                  raise ValueError("Published head must be an immutable SHA")
+              subprocess.run(["git", "fetch", "--no-tags", "--depth=1", "origin", synthetic, base, head], check=True)
+              headers = git("cat-file", "commit", synthetic).split("\n\n", 1)[0].splitlines()
+              receipt["observedParents"] = [line[7:] for line in headers if line.startswith("parent ")]
+              receipt["observedSourceTree"] = git("rev-parse", synthetic + "^{tree}")
+              if receipt["observedParents"] != receipt["expectedParents"] or receipt["observedSourceTree"] != receipt["expectedSourceTree"]:
+                  raise ValueError("Historical synthetic identity mismatch")
+              patch = subprocess.check_output([
+                  "git", "diff", "--binary", "--no-ext-diff", "--no-textconv", "--no-color",
+                  "--no-renames", "--diff-algorithm=myers", "--src-prefix=a/", "--dst-prefix=b/",
+                  base, head, "--", *paths,
+              ])
+              receipt["patchSha256"] = hashlib.sha256(patch).hexdigest()
+              if receipt["patchSha256"] != "212aa24187da7f7c1a195f5a0f453cb035caec2098a6d34b294dc1ba90e60956":
+                  raise ValueError("Four-path diagnostic patch mismatch")
+              (output / "codex-diagnostic.patch").write_bytes(patch)
+              before = git("show", synthetic + ":tools/e2e/codex-chat.e2e.mjs").splitlines()
+              subprocess.run(["git", "checkout", "--detach", synthetic], check=True)
+              subprocess.run(["git", "apply", "--index", "--whitespace=error-all"], input=patch, check=True)
+              receipt["observedOverlayTree"] = git("write-tree")
+              if receipt["observedOverlayTree"] != receipt["expectedOverlayTree"]:
+                  raise ValueError("Built-source overlay tree mismatch")
+              subprocess.run(["git", "diff", "--exit-code"], check=True)
+              after = pathlib.Path("tools/e2e/codex-chat.e2e.mjs").read_text().splitlines()
+              assertions = [line for line in before if "assert." in line]
+              if len(assertions) != 55 or assertions != [line for line in after if "assert." in line]:
+                  raise ValueError("Original policy assertions changed")
+              receipt["originalAssertionLinesPreserved"] = len(assertions)
+              source_lock = pathlib.Path("src-tauri/Cargo.lock").read_bytes()
+              (output / "source-Cargo.lock").write_bytes(source_lock)
+              receipt["sourceCargoLockSha256"] = hashlib.sha256(source_lock).hexdigest()
+              receipt["sourcePinVerified"] = True
+          except Exception as error:
+              receipt["failure"] = str(error)
+              raise
+          finally:
+              serialized = json.dumps(receipt, indent=2) + "\n"
+              (output / "codex-source-provenance.json").write_text(serialized)
+              print(serialized)
+          PY
       # The Azure apt mirror sometimes serves at 30-50 kB/s for 10-25 minutes, so keep the
       # downloaded .debs in the Actions cache (one key per ISO week; restore-keys reuse last week's).
       - name: apt cache key
@@ -191,6 +395,58 @@ jobs:
       - run: npm ci
       - name: Build the app (debug, no bundle)
         run: npx tauri build --debug --no-bundle
+      - name: Retain Codex diagnostic build provenance
+        if: always() && github.event_name == 'pull_request' && github.head_ref == 'reason/openconductor-sol-e2e-ow-acc3b5c5' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          python3 - <<'PY'
+          import difflib, hashlib, json, pathlib, re, os
+          output = pathlib.Path(os.environ["RUNNER_TEMP"]) / "e2e-codex"
+          output.mkdir(parents=True, exist_ok=True)
+          report = {"sourcePinVerified": False, "effectiveLockCaptured": False}
+          try:
+              pin = json.loads((output / "codex-source-provenance.json").read_text())
+              report.update({key: pin.get(key) for key in [
+                  "sourcePinVerified", "workflowMerge", "publishedHead", "historicalSynthetic",
+                  "observedSourceTree", "observedOverlayTree", "sourceCargoLockSha256",
+              ]})
+              report["proofLabel"] = "pinned source; build outcome remains in job log" if report["sourcePinVerified"] else "source pin failed; not exact-source proof"
+              effective = pathlib.Path("src-tauri/Cargo.lock").read_bytes()
+              (output / "effective-Cargo.lock").write_bytes(effective)
+              report["effectiveCargoLockSha256"] = hashlib.sha256(effective).hexdigest()
+              report["effectiveLockCaptured"] = True
+              source = (output / "source-Cargo.lock").read_bytes()
+              (output / "cargo-lock-build.diff").write_text("".join(difflib.unified_diff(
+                  source.decode().splitlines(True), effective.decode().splitlines(True),
+                  fromfile="source-Cargo.lock", tofile="effective-Cargo.lock",
+              )))
+              def packages(raw):
+                  result = []
+                  root = None
+                  for block in raw.decode().split("[[package]]")[1:]:
+                      fields = dict(re.findall(r'^(name|version|source|checksum) = "([^"]*)"$', block, re.M))
+                      if fields.get("name") == "openconductor":
+                          match = re.search(r"^dependencies = \[\n(.*?)^\]", block, re.M | re.S)
+                          root = set(re.findall(r'^\s*"([^"]+)",?$', match.group(1), re.M)) if match else set()
+                      else:
+                          result.append(tuple(fields.get(key) for key in ["name", "version", "source", "checksum"]))
+                  return set(result), root
+              original_packages, original_edges = packages(source)
+              effective_packages, effective_edges = packages(effective)
+              report["resolvedPackageIdentityDifferences"] = len(original_packages ^ effective_packages)
+              if original_edges is None or effective_edges is None:
+                  report["rootDependencyDeltaUnavailable"] = True
+              else:
+                  report["rootDependencyEdgesAdded"] = sorted(effective_edges - original_edges)
+                  report["rootDependencyEdgesRemoved"] = sorted(original_edges - effective_edges)
+              app = pathlib.Path("src-tauri/target/debug/openconductor")
+              report["binarySha256IfPresent"] = hashlib.sha256(app.read_bytes()).hexdigest() if app.is_file() else None
+          except Exception as error:
+              report["captureError"] = str(error)
+          finally:
+              serialized = json.dumps(report, indent=2) + "\n"
+              (output / "codex-build-provenance.json").write_text(serialized)
+              print(serialized)
+          PY
       - name: Install tauri-driver
         run: cargo install tauri-driver --locked
       - name: WebDriver transport and startup tests

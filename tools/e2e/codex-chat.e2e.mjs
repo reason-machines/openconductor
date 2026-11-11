@@ -42,6 +42,7 @@ import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 import { finishStartup } from "../../tests/e2e/startup.mjs";
+import { installCodexAccessDiagnostics } from "./codex-access-diagnostics.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -123,6 +124,19 @@ async function find(css) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const run = (script, ...args) => wd("POST", "/execute/sync", { script, args });
 const runAsync = (script, ...args) => wd("POST", "/execute/async", { script, args });
+let accessDiagnosticsInstalled = false;
+
+async function recordAccess(phase) {
+  const snapshot = await run("return window.__ocCodexAccessDiagnostics.capture(arguments[0]);", phase);
+  console.log(`codex access ${phase}: ${JSON.stringify(snapshot)}`);
+  return snapshot;
+}
+
+async function saveAccessDiagnostics() {
+  if (!accessDiagnosticsInstalled) return;
+  const report = await run("return window.__ocCodexAccessDiagnostics.read();");
+  writeFileSync(join(out, "codex-access-diagnostics.json"), JSON.stringify(report, null, 2));
+}
 
 async function waitFor(what, fn, timeoutMs = 30000) {
   const end = Date.now() + timeoutMs;
@@ -165,8 +179,9 @@ const requests = () =>
     .split("\n")
     .map((l) => JSON.parse(l));
 
-async function send(text) {
+async function send(text, beforeSubmit) {
   await wd("POST", `/element/${await find(".composer [contenteditable=true]")}/value`, { text });
+  if (beforeSubmit) await beforeSubmit();
   await wd("POST", `/element/${await find(".composer button[type=submit]")}/click`, {});
 }
 
@@ -225,6 +240,9 @@ try {
 
   await pickCodex("codex-0-model-picker");
   pass("the model picker switches the chat to Codex: the chip reads Codex and the access menu shows");
+  await run(`return (${installCodexAccessDiagnostics.toString()})(arguments[0]);`, workspace.id);
+  accessDiagnosticsInstalled = true;
+  await recordAccess("before-change");
   const access = await run("const s = document.querySelector('.codex-access'); return s && [s.value, [...s.options].map((o) => o.textContent)];");
   assert.deepEqual(access, ["full", ["Full access", "Ask first", "Read only"]], "Conductor's default: full access");
   // Ask first, so Codex asks before running the command.
@@ -233,10 +251,11 @@ try {
      Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'ask');
      s.dispatchEvent(new Event('change', { bubbles: true }));`,
   );
-  pass("access menu defaults to Full access (Conductor's default) and is set to Ask first");
+  await recordAccess("after-change");
+  pass("access menu defaults to Full access (Conductor's default); Ask first change dispatched and state recorded");
 
   // 1. The recorded turn: approval, Allow, two commands, the reply.
-  await send("hello: create hello.txt with 'hello from codex', then cat it");
+  await send("hello: create hello.txt with 'hello from codex', then cat it", () => recordAccess("pre-Send"));
   const buttons = await waitFor("the approval card", async () => {
     const b = await approvalButtons();
     return b.length ? b : null;
@@ -502,6 +521,7 @@ try {
 } catch (e) {
   console.error(`not ok - ${e instanceof Error ? e.stack : e}`);
   if (sessionUrl) {
+    if (accessDiagnosticsInstalled) await recordAccess("failure").catch(() => {});
     await screenshot("codex-failure").catch(() => {});
     await chatText().then((t) => console.error(`chat text:\n${t}`)).catch(() => {});
   }
@@ -510,6 +530,10 @@ try {
   } catch {}
   process.exitCode = 1;
 } finally {
+  if (accessDiagnosticsInstalled) {
+    await saveAccessDiagnostics().catch((e) => console.error(`access diagnostics unavailable: ${e.message}`));
+    await run("window.__ocCodexAccessDiagnostics.restore();").catch(() => {});
+  }
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
   driver.kill();
   await Promise.race([driverExited, sleep(3000)]);

@@ -641,6 +641,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           codex ? (
             <select
               className="agent-select codex-access"
+              data-chat-id={chatId}
               aria-label="Codex access"
               value={access}
               disabled={running}
