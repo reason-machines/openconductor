@@ -71,7 +71,7 @@ const files: FileDiff[] = [
   { path: "src/beta.ts", old_path: null, status: "modified", additions: 5, deletions: 3, binary: false, hunks: [] },
 ];
 
-function renderList(target: Target, view: changesTree.ChangesView, selectedFiles: FileDiff[], query?: string) {
+function renderList(target: Target, view: changesTree.ChangesView, selectedFiles: FileDiff[], query?: string, collapsed: ReadonlySet<string> = new Set()) {
   let renderer: ReturnType<typeof create>;
   act(() => {
     renderer = create(React.createElement(component.ChangesList, {
@@ -81,7 +81,7 @@ function renderList(target: Target, view: changesTree.ChangesView, selectedFiles
         current: 0, isViewed: () => false, uncommittedPaths: new Set(), canDiscard: false,
         openPath: unexpected, refresh: unexpected, turn: target.turn,
       },
-      view, collapsed: new Set(), toggleDirectory: unexpected,
+      view, collapsed, toggleDirectory: unexpected,
       filter: query === undefined ? undefined : { open: true, query, setQuery: unexpected, close: unexpected },
     }));
   });
@@ -89,6 +89,8 @@ function renderList(target: Target, view: changesTree.ChangesView, selectedFiles
     return {
       summaries: renderer.root.findAllByProps({ className: "oc-changes-header" }).map(visibleText),
       rows: renderer.root.findAllByProps({ className: "oc-change" }).map(visibleText),
+      directories: renderer.root.findAllByProps({ className: "oc-change-directory" }).map((node: TextNode & { props: { "aria-expanded": boolean } }) => ({ text: visibleText(node), expanded: node.props["aria-expanded"] })),
+
       matches: renderer.root.findAllByProps({ className: "oc-changes-filter-count" }).map(visibleText),
       noMatch: renderer.root.findAllByProps({ className: "oc-changes-nomatch" }).map(visibleText),
     };
@@ -153,3 +155,62 @@ for (const view of ["flat", "tree"] satisfies changesTree.ChangesView[]) {
     });
   }
 }
+
+for (const target of targets) {
+  test(`actual ChangesList ${target.name}/tree keeps a matching directory collapsed`, () => {
+    const collapsed = new Set(["src"]);
+    const result = renderList(target, "tree", files, "alpha", collapsed);
+    assert.deepEqual(result.directories, [{ text: "src+4-1", expanded: false }]);
+    assert.deepEqual(result.rows, []);
+    assert.deepEqual(result.matches, ["1 of 2"]);
+    assert.deepEqual(result.summaries, ["2 files changed+9-4"]);
+    assert.deepEqual(result.noMatch, []);
+    assert.deepEqual([...collapsed], ["src"]);
+  });
+}
+
+test("actual ChangesList tree keeps a directory collapsed without a filter", () => {
+  const result = renderList(targets[0], "tree", files, undefined, new Set(["src"]));
+  assert.deepEqual(result.directories, [{ text: "src+9-4", expanded: false }]);
+  assert.deepEqual(result.rows, []);
+  assert.deepEqual(result.matches, []);
+});
+
+test("actual ChangesList tree keeps a directory collapsed with a whitespace-only filter", () => {
+  const result = renderList(targets[0], "tree", files, "   ", new Set(["src"]));
+  assert.deepEqual(result.directories, [{ text: "src+9-4", expanded: false }]);
+  assert.deepEqual(result.rows, []);
+  assert.deepEqual(result.matches, ["2 of 2"]);
+});
+
+test("actual ChangesList tree still shows a matching file in an expanded directory", () => {
+  const result = renderList(targets[0], "tree", files, "alpha");
+  assert.deepEqual(result.directories, [{ text: "src", expanded: true }]);
+  assert.equal(result.rows.length, 1);
+  assert.ok(result.rows[0].includes("alpha.ts"));
+  assert.deepEqual(result.matches, ["1 of 2"]);
+});
+
+test("actual ChangesList tree retains the no-match message with collapsed paths", () => {
+  const result = renderList(targets[0], "tree", files, "missing", new Set(["src"]));
+  assert.deepEqual(result.directories, []);
+  assert.deepEqual(result.rows, []);
+  assert.deepEqual(result.matches, ["0 of 2"]);
+  assert.deepEqual(result.noMatch, ["No files match this filter"]);
+});
+
+test("actual ChangesList flat filtering ignores tree collapse state", () => {
+  const result = renderList(targets[0], "flat", files, "alpha", new Set(["src"]));
+  assert.deepEqual(result.directories, []);
+  assert.equal(result.rows.length, 1);
+  assert.ok(result.rows[0].includes("alpha.ts"));
+  assert.deepEqual(result.matches, ["1 of 2"]);
+});
+
+test("actual ChangesList tree retains collapse for a compressed directory while filtering", () => {
+  const nested = files.map((file) => ({ ...file, path: file.path.replace("src/", "src/lib/") }));
+  const result = renderList(targets[0], "tree", nested, "alpha", new Set(["src/lib"]));
+  assert.deepEqual(result.directories, [{ text: "src / lib+4-1", expanded: false }]);
+  assert.deepEqual(result.rows, []);
+  assert.deepEqual(result.matches, ["1 of 2"]);
+});
