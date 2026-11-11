@@ -73,8 +73,21 @@ from another revision without changing the assertions.
 
 - **Passed:** retained renderer and complete span hashes, fresh-main picker
   equality, all four locked fixture hashes, and `git diff --check`.
-- **Pending RED:** automatic hosted tests on the regression-only commit.
-  Product code is unchanged until the intended failure is observed.
+- **Executed RED:** automatic hosted `node --test "src/**/*.test.ts"` on
+  regression-only head `bfbe1fed5af905127114aa97e97b08ac6106683a` ran 2,194
+  tests. Exactly 11 intended composition cases failed and 2,183 tests passed,
+  including the seven new preservation controls. All eight 229-only Enter and
+  Escape cases, both synthetic-flag cases, and composing navigation failed.
+  For example, empty-query 229 Escape closed the menu and prevented default
+  instead of leaving it untouched. [Hosted RED log](https://github.com/reason-machines/openconductor/actions/runs/42937756727/job/130251933068).
+  Assertions stop at the first failing query in each case; RED does not claim
+  that both query variants executed. Product source was revalidated against
+  unchanged fresh main `166139398538f0e58eabd3870facbb1702ea665b` before the fix.
+- **Pending GREEN:** automatic hosted rerun on the first-guard-only correction.
+  The new 18-case test SHA-256 remains
+  `8ab198fd940c895ae2eb65db5ffd345e00ca7f49a6dac9d323277ad4514ac6d2`.
+  All #951, #957, and #965 fixtures remain byte-identical. The correction uses
+  the reference's six composition signals without a shared helper or type cast.
 - **Not run:** local Node, dependency installation, local tests or builds,
   mounted React, browser dispatch, native macOS, real-provider, or reference
   execution. No screenshot is available under the retained-source-only scope.
