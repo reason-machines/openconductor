@@ -1,0 +1,33 @@
+name: Inert storage probe fixtures
+
+on:
+  pull_request:
+    paths:
+      - 'tools/inert_storage_probe.py'
+      - 'tools/test_inert_storage_probe.py'
+      - 'docs/inert-storage-probe.md'
+      - '.github/workflows/inert-storage-probe.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/inert_storage_probe.py'
+      - 'tools/test_inert_storage_probe.py'
+      - 'docs/inert-storage-probe.md'
+      - '.github/workflows/inert-storage-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  fixtures:
+    name: Inert role fixtures (not OS enforcement)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -W error::ResourceWarning -m unittest tools.test_inert_storage_probe -v
