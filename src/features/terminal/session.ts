@@ -45,6 +45,7 @@ interface Live {
   /** Spawn settings, reused by a new tab opened from this one (the panel's command, not a big terminal's). */
   cwd: string;
   initialCommand?: string;
+  launch: { cwds: string[]; initialCommand?: string };
   /** Saved-history fields (`pty_persist_terminal_history`). */
   startedAt: string;
   endedAt?: string;
@@ -156,6 +157,18 @@ export const getFindRequests = (id: string): number => findRequests.get(id) ?? 0
 /** The live xterm of tab `id`, for the find bar. */
 export const terminalOf = (id: string): Terminal | undefined => live.get(id)?.term;
 
+export function spawnErrorOf(id: string): string | undefined {
+  const terminal = live.get(id);
+  return terminal ? getTabs(terminal.workspaceId).tabs.find((tab) => tab.id === id)?.spawnError : undefined;
+}
+
+export async function retryTab(id: string): Promise<void> {
+  const terminal = live.get(id);
+  if (!terminal || getTabs(terminal.workspaceId).tabs.find((tab) => tab.id === id)?.status !== "spawn_error") return;
+  dispatch(terminal.workspaceId, { type: "retry", id });
+  await spawnTerminal(id, terminal);
+}
+
 export const selectTab = (workspaceId: string, id: string) => dispatch(workspaceId, { type: "select", id });
 
 function route(e: PtyEvent) {
@@ -180,6 +193,7 @@ function route(e: PtyEvent) {
     const how = e.signal ? `signal ${e.signal}` : `code ${e.exitCode}`;
     l.term.write(`\r\n\x1b[2m[Process exited with ${how}]\x1b[0m\r\n`);
   }
+  if (e.kind === "ready") l.term.options.disableStdin = false;
   dispatch(l.workspaceId, e.kind === "ready" ? { type: "ready", id: e.id } : { type: "exit", id: e.id, exitCode: e.exitCode, signal: e.signal });
 }
 
@@ -204,9 +218,7 @@ export const openTab = (workspaceId: string, cwd: string, initialCommand?: strin
  */
 export async function openBigTab(workspaceId: string, cwd: string, run: { command: string | undefined }, initialCommand?: string): Promise<string> {
   await restoreWorkspaceTabs(workspaceId, cwd, initialCommand);
-  const id = await startTab(workspaceId, cwd, initialCommand, undefined, run, false, "center");
-  centerTabListeners.forEach((listener) => listener(workspaceId, id));
-  return id;
+  return startTab(workspaceId, cwd, initialCommand, undefined, run, false, "center");
 }
 
 /**
@@ -283,7 +295,7 @@ async function startTab(
     term.resize(Math.max(record.cols, 1), Math.max(record.rows, 1));
     term.write(restoreOutput(record));
   }
-  live.set(id, {
+  const terminal: Live = {
     workspaceId,
     term,
     fit,
@@ -293,11 +305,13 @@ async function startTab(
     quiet,
     cwd,
     initialCommand,
+    launch: { cwds: restore ? restoreCwds(record, cwd) : [cwd], initialCommand: run ? run.command : initialCommand },
     startedAt: record?.startedAt ?? new Date().toISOString(),
     hasReceivedUserInput: record?.hasReceivedUserInput ?? false,
     decoder: new TextDecoder(),
     shell: emptyShellState(),
-  });
+  };
+  live.set(id, terminal);
   term.attachCustomKeyEventHandler((e) => {
     const command = e.type === "keydown" ? terminalCommandFor(e) : undefined;
     if (command === undefined) return true;
@@ -309,23 +323,29 @@ async function startTab(
   });
   term.onData((d) => {
     const l = live.get(id);
+    if (getTabs(workspaceId).tabs.find((tab) => tab.id === id)?.status === "spawn_error") return;
     if (l && d.length > 0) l.hasReceivedUserInput = true;
     void ptyWrite(id, d).catch(() => {});
   });
   term.onResize(({ cols, rows }) => void ptyResize(id, cols, rows).catch(() => {}));
   dispatch(workspaceId, { type: "open", id, title: restore?.title, placement });
-  try {
-    await spawnIn(restore ? restoreCwds(record, cwd) : [cwd], (dir) =>
-      ptySpawn({ id, cwd: dir, cols: term.cols, rows: term.rows, initialCommand: run ? run.command : initialCommand }),
-    );
-  } catch (err) {
-    dispose(id);
-    dispatch(workspaceId, { type: "close", id });
-    // A restored tab that cannot start is gone from the list, so its saved screen goes too.
-    if (restore) void forget(id);
-    throw err;
-  }
+  if (placement === "center") centerTabListeners.forEach((listener) => listener(workspaceId, id));
+  await spawnTerminal(id, terminal);
   return id;
+}
+
+async function spawnTerminal(id: string, terminal: Live): Promise<void> {
+  try {
+    await spawnIn(terminal.launch.cwds, (cwd) =>
+      ptySpawn({ id, cwd, cols: terminal.term.cols, rows: terminal.term.rows, initialCommand: terminal.launch.initialCommand }),
+    );
+  } catch (error) {
+    if (live.get(id) === terminal) {
+      terminal.term.options.disableStdin = true;
+      dispatch(terminal.workspaceId, { type: "failed", id, error: error instanceof Error ? error.message : String(error) });
+    }
+    throw error;
+  }
 }
 
 /** Spawn in the first directory that works (a restored tab's saved cwd may be gone). */
