@@ -540,9 +540,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
               setAttachments((list) => addAttachment(list, { name: forkAttachmentName(c.title), text }));
             }}
           />
-        ) : (
+        ) : null}
           <Transcript
             transcript={transcript}
+            searchEnabled={content === null}
             notify={notify}
             expandToolsByDefault={garryMode}
             dontCollapseToolCalls={garryMode}
@@ -566,7 +567,6 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             turnAgent={agent.label}
             chatAgent={agentId}
           />
-        )}
         <div ref={endRef} />
       </div>
       {resetTurn !== null ? (

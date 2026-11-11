@@ -3,7 +3,8 @@
   "archive_sha256": "6b66e4b237bf8ff354c0b6fa68f680adaf1186ac97191cfef7e33b27ddb7c218",
   "frozen_tests": {
     "tests/chat-search/transcriptFind.component.test.mjs": "ea7db7ab1677be54fed0b2cd9439d79d988a027b341cc57f0933a61e1dde709b",
-    "tests/chat-search/transcriptFind.fixture.json": "7521ca838c7cc4e91cab00581e82a3bf00ce63a29e19256fb47316823137876f"
+    "tests/chat-search/transcriptFind.fixture.json": "7521ca838c7cc4e91cab00581e82a3bf00ce63a29e19256fb47316823137876f",
+    "tests/chat-search/transcriptFind.dom.test.mjs": "c9103ce31295556262a3284447b7be560f878690212ac75d532b0eb22aa7540f"
   },
   "setup_only_corrections": [
     "Select rowTurn variable declaration in production AST, not only function declarations.",

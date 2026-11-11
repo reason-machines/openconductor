@@ -29,10 +29,12 @@ import type { UserPrompt } from "./userContent.ts";
 import { userMessageCopyText } from "./userMessageCopy.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
 import { assistantDisplayText } from "./assistantText.ts";
+import { TranscriptSearch } from "./TranscriptSearch.tsx";
 import "./chat.css";
 
 export interface TranscriptProps {
   transcript: ChatTranscript;
+  searchEnabled?: boolean;
   /** "Keep tool calls expanded" setting. */
   expandToolsByDefault?: boolean;
   /** "Don't collapse tool calls" setting: summary rows stay open. */
@@ -67,6 +69,7 @@ export interface TranscriptProps {
 
 export function Transcript({
   transcript,
+  searchEnabled = false,
   expandToolsByDefault = false,
   dontCollapseToolCalls = false,
   onRetry,
@@ -115,8 +118,7 @@ export function Transcript({
     notify,
   };
 
-  return (
-    <LinkMenuNotify.Provider value={notify}>
+  const content = (
       <div className="transcript">
         {turns.map((turn) => {
           const footer = turn.rows.find((r): r is TurnEndRow => r.kind === "turn_end");
@@ -132,8 +134,10 @@ export function Transcript({
           );
         })}
       </div>
-    </LinkMenuNotify.Provider>
   );
+  return <LinkMenuNotify.Provider value={notify}>
+    {searchEnabled ? <TranscriptSearch transcript={transcript}>{content}</TranscriptSearch> : content}
+  </LinkMenuNotify.Provider>;
 }
 
 type TurnEndRow = Extract<DisplayRow, { kind: "turn_end" }>;
@@ -190,7 +194,7 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
         <div className="chat-msg chat-user oc-msg-user" data-message-role="user">
           <div className="oc-user-col">
             <div className="chat-bubble oc-bubble">
-              <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : <UserText text={row.text} />}</div>
+              <div className="oc-user-text" data-searchable="true">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : <UserText text={row.text} />}</div>
               <MessageActions text={userMessageCopyText(row.message)} />
             </div>
             {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
@@ -342,7 +346,7 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
       return (
         <div className="chat-msg chat-assistant oc-msg-assistant" data-message-role="assistant" data-tool-group={group}>
           <div className="oc-assistant-col">
-            <div className="oc-text-wrap">
+            <div className="oc-text-wrap" data-searchable="true">
               <Markdown
                 text={text}
                 notify={ctx.notify}
