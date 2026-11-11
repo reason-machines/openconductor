@@ -18,7 +18,9 @@ The correction is intentionally narrower than the reference implementation: hold
 
 The sixteen cases cover exact Unicode/whitespace body retention, annotation eviction, same-anchor reopening, separate path/side/range/workspace identities, explicit discard and keep-editing, successful and failed submit, deferred old-submit completion across another anchor/workspace or same-anchor replacement, and stale input/cancel callbacks. The store double records actual submitted comment payloads and can defer or reject the add operation.
 
-Test-first publication contains the unchanged product and the new fixture. Automatic hosted Node tests must first expose the behavioral failures. Only after that receipt is inspected will the product guard be added, with the same fixture bytes. No local Node, renderer, native or E1 invocation is authorized.
+The test-only head `4f27ba556fba85557e5a4362273b3296dfa83437` reproduced all fourteen intended behavioral failures in automatic hosted execution. One save control additionally expected untrimmed stored text, conflicting with the existing `newLocalComment` trim contract. The complete V1 fixture and selected exact log remain in `v1-fixture.test.ts.txt` and `hosted-v1-red.json`; they are not a successful baseline. V2 corrects only that out-of-scope stored-submit expectation, retaining exact draft-body assertions. V2 was separately published as test-only head `d349e1c3da38b63b5c4f68a943c63eb32b4a7ecf` before the product fix.
+
+`run-paired.py` runs the unchanged V2 fixture against the pinned baseline and candidate, requiring exactly fourteen named AssertionErrors plus two passing controls on baseline, then all sixteen cases passing on candidate, with zero skips, cancellations or TODOs. It pins source, dependencies and the four historical fixtures. Its Python-only verifier self-test accepts both valid TAP shapes and rejects eleven invalid shapes; that check is not product behavior. Paired behavior and all exact-head CI must pass before merge. No local Node, renderer, native or E1 invocation is authorized.
 
 ## Verification limits
 

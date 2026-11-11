@@ -1,6 +1,6 @@
 {
   "unit": "DIFF-NEW-INLINE-DRAFT-REMOUNT-SOURCE-DE6",
-  "status": "V2_TEST_ONLY_CORRECTED_EXISTING_SUBMIT_TRIM_CONTROL",
+  "status": "14_INTENDED_HOSTED_FAILURES_REPRODUCED_MINIMAL_CANDIDATE_PENDING_PAIRED_PROOF",
   "main": "c25670504400771e2fb31e01560db249ea4bd06c",
   "original_identity": {
     "version": "0.87.6",
@@ -263,13 +263,13 @@
     "native/visual"
   ],
   "rea_limit": "Historical REA renderer analysis exhausted heap; this pass reads complete retained shipped JS. REA artifact receipt establishes binary identity only, not JavaScript semantics or execution.",
-  "lease": "ReviewComments Composing body/identity/reset plus isolated mounted regression/evidence; automatic hosted test-first; no local/native runtime",
+  "lease": "ReviewComments Composing body/workspace/generation, controlled binding and identity-safe clear only; hosted automatic paired proof admitted; no local/native runtime",
   "baseline": "c25670504400771e2fb31e01560db249ea4bd06c",
   "fixture": "src/features/diff/newInlineDraftRemount.test.ts",
   "fixture_sha256": "03fe7b4aece5b6c5db55772df27ab04ec80c85356d38d34d576fe0397b41b907",
   "product": {
     "baseline": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508",
-    "candidate": null
+    "candidate": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3"
   },
   "dependencies": {
     "src/features/diff/comments.ts": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800",
@@ -289,5 +289,25 @@
     "snapshot": "v1-fixture.test.ts.txt",
     "receipt": "hosted-v1-red.json",
     "result": "14 intended failures, one passing control, one out-of-scope submit-trim control mismatch"
-  }
+  },
+  "historical_harness_requalification": [
+    {
+      "manifest": "evidence/diff/comment-edit-drafts/source.json",
+      "changed": "ReviewComments candidate source hash only",
+      "old": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508",
+      "new": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3"
+    },
+    {
+      "manifest": "evidence/diff/comment-ime-submit/source.json",
+      "changed": "ReviewComments candidate source hash only",
+      "old": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508",
+      "new": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3"
+    },
+    {
+      "manifest": "evidence/diff/moved-comment-anchors/source.json",
+      "changed": "ReviewComments candidate source hash only",
+      "old": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508",
+      "new": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3"
+    }
+  ]
 }
