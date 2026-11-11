@@ -10,13 +10,40 @@ const deps = createRequire(new URL("../../../package.json", import.meta.url));
 const React: typeof import("react") = deps("react");
 const ts: typeof import("typescript") = deps("typescript");
 type Node = { type: unknown; props: Record<string, unknown>; children: (Node | string)[]; findAll: (predicate: (node: Node) => boolean) => Node[] };
-type Renderer = { root: Node; unmount: () => void };
+type Renderer = { root: Node; update: (element: ReactNode) => void; unmount: () => void };
 const { create, act }: {
   create: (element: ReactNode, options: { createNodeMock: () => unknown }) => Renderer;
   act: (callback: () => void | Promise<void>) => Promise<void>;
 } = deps("react-test-renderer");
 
-async function fixture() {
+function appRoot(Host: typeof import("./BrowserPreview").BrowserPreviewHost) {
+  const path = resolve("src/App.tsx");
+  const source = ts.createSourceFile(path, readFileSync(path, "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const app = source.statements.find((node): node is import("typescript").FunctionDeclaration => ts.isFunctionDeclaration(node) && node.name?.text === "App");
+  assert.ok(app?.body);
+  const returns = app.body.statements.flatMap((node) => ts.isReturnStatement(node) ? [node] : ts.isIfStatement(node) && ts.isReturnStatement(node.thenStatement) ? [node.thenStatement] : []);
+  assert.equal(returns.length, 3, "exercise all actual App root return branches");
+  const roots = returns.map((node) => {
+    assert.ok(node.expression && ts.isParenthesizedExpression(node.expression));
+    const fragment = node.expression.expression;
+    assert.ok(ts.isJsxFragment(fragment));
+    const page = fragment.children.find((child) => !ts.isJsxText(child));
+    assert.ok(page && (ts.isJsxElement(page) || ts.isJsxFragment(page)));
+    const start = fragment.getStart(source);
+    const jsx = fragment.getText(source);
+    return jsx.slice(0, page.getStart(source) - start) + '<div data-view={view} />' + jsx.slice(page.end - start);
+  });
+  const compiled = ts.transpileModule(`function AppRoot({view = "workspace"}) {
+    if (view === "diagnostics") return (${roots[0]});
+    if (view === "settings") return (${roots[1]});
+    return (${roots[2]});
+  }`, { fileName: path, compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX } }).outputText;
+  const toaster = React.createElement("span", { "data-testid": "retained-toast" }, "Toast");
+  const Root: (props: { view?: string }) => ReactNode = runInThisContext(`(function(require,exports,BrowserPreviewHost,toaster){${compiled}\nreturn AppRoot;})`, { filename: path })(deps, {}, Host, toaster);
+  return Root;
+}
+
+async function fixture(withAppRoot = false) {
   const external: string[] = [];
   const cache = new Map<string, { exports: Record<string, unknown> }>();
   const directory = resolve("src/features/browser");
@@ -43,8 +70,10 @@ async function fixture() {
   assert.equal(typeof source.openBrowserPreview, "function");
   const Host = view.BrowserPreviewHost as typeof import("./BrowserPreview").BrowserPreviewHost;
   const store = source as typeof import("./store.ts");
+  const Root = withAppRoot ? appRoot(Host) : undefined;
+  const tree = (view = "workspace") => Root ? React.createElement(Root, { view }) : React.createElement(Host);
   let renderer: Renderer;
-  await act(async () => { renderer = create(React.createElement(Host), { createNodeMock: () => null }); });
+  await act(async () => { renderer = create(tree(), { createNodeMock: () => null }); });
   const byLabel = (label: string) => {
     const node = renderer.root.findAll((item) => item.type === "button" && item.props["aria-label"] === label)[0];
     assert.ok(node, `mounted ${label} button`);
@@ -57,6 +86,8 @@ async function fixture() {
   };
   return {
     external, store,
+    view: (view: string) => act(async () => { renderer.update(tree(view)); }),
+    toast: () => renderer.root.findAll((node) => node.props["data-testid"] === "retained-toast")[0],
     frames: () => renderer.root.findAll((node) => node.type === "iframe"),
     surface: () => renderer.root.findAll((node) => node.props.className === "oc-browser-surface"),
     open: (workspaceId: string, url: string) => act(async () => { assert.equal(store.openBrowserPreview(workspaceId, url), true); }),
@@ -97,6 +128,26 @@ test("actual global host retains iframe identity through chat, Home and workspac
   await f.closePage("a");
   assert.deepEqual(f.frames().map((node) => node.props.src), ["http://localhost:51002/B"]);
 });
+
+for (const retained of ["toast", "browser document"]) {
+  test(`actual App roots retain the ${retained} through Settings and Diagnostics`, async (t) => {
+    const f = await fixture(true); t.after(f.close);
+    await f.open("a", "http://localhost:51001/A");
+    await f.place("a", "http://localhost:51001/A");
+    const current = () => retained === "toast" ? f.toast() : f.frames()[0];
+    const initial = current();
+    assert.ok(initial);
+    for (const view of ["settings", "workspace", "diagnostics", "settings", "workspace"]) {
+      await f.park();
+      await f.view(view);
+      assert.ok(current() === initial, `${view} must not remount the ${retained}`);
+      assert.equal(f.surface()[0].props["aria-hidden"], true);
+    }
+    await f.place("a", "http://localhost:51001/A");
+    assert.ok(current() === initial);
+    assert.equal(f.surface()[0].props["aria-hidden"], false);
+  });
+}
 
 test("actual Reload and repeated Run preview replace the iframe document", async (t) => {
   const f = await fixture(); t.after(f.close);

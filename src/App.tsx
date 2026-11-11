@@ -468,7 +468,7 @@ export default function App() {
       .catch(() => {});
   }, [show]);
 
-  // The Toaster sits at the same place (second child of this fragment) in both views, so
+  // The Toaster sits at the same place (third child of this fragment) in every view, so
   // opening or closing Settings keeps the toasts mounted: their timers keep running and
   // they do not replay their 400ms slide-in over the page that just opened.
   const toaster = <Toaster toasts={toasts} dismiss={dismiss} />;
@@ -479,6 +479,7 @@ export default function App() {
           <DiagnosticsPage onClose={() => setDiagnosticsOpen(false)} notify={show} />
           {quitDialog}
         </>
+        <BrowserPreviewHost />
         {toaster}
       </>
     );
@@ -508,6 +509,7 @@ export default function App() {
         />
         {quitDialog}
         </>
+        <BrowserPreviewHost />
         {toaster}
       </>
     );
