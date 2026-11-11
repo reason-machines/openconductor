@@ -35,7 +35,9 @@ The candidate requires all four unchanged cases to pass. Ordinary hosted CI disc
 ## Verification boundary
 
 - Source closure and `git diff --check` passed before publication.
-- Hosted baseline RED is pending at the test-first publication. No product edit is included yet.
+- Hosted baseline RED passed its expected-failure contract at `3486831e0e52f6378a97740b7e43d66f361dfe10`. The [unit job](https://github.com/reason-machines/openconductor/actions/runs/43035703593/job/130574016946) completed 2,807 cases with exactly the two intended missing-button failures. Signed-out CLI and API-key controls passed. The [retained job excerpt](baseline-hosted.txt) contains all four outcomes.
+- Candidate GREEN, typecheck, build and all exact-head hosted checks are pending after the one-line guard correction. The mounted regression is unchanged.
+- The baseline built-app jobs failed during Ubuntu dependency installation before app behavior. That infrastructure result is separate from the mounted RED.
 - No local Node, Rust, browser, native app or provider execution. There is no screenshot because native/browser acceptance is not admitted for this lane.
 - Mounted tests do not prove Rust IPC, terminal spawn, actual account switching, native appearance or side-by-side parity.
 - Existing E1 runtime order and frozen retry, PINNED V2 and badge packets are unchanged.
