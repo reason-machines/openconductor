@@ -13,6 +13,7 @@ import { FileDiffView, type FileRefreshStatus, type LineAnchor, type LineRange }
 import { editableContents, useFileEdit } from "./EditInViewer.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
+import type { CommentAnchorPositions } from "./comments.ts";
 export { ChangesList, type ChangesListProps } from "./ChangesList";
 
 // Conductor's `UPo` icons (Lucide, size-3): text-align-start, columns-2, file-text.
@@ -43,6 +44,7 @@ export interface DiffTabProps {
   commentRange?: (file: FileDiff) => LineRange | null;
   anchors?: (file: FileDiff) => LineAnchor[];
   annotations?: (file: FileDiff, anchor: LineAnchor) => ReactNode;
+  onPersistAnchors?: (file: FileDiff, positions: CommentAnchorPositions) => void;
   /** Shown above the file: PR-level and whole-file comments. */
   notes?: (file: FileDiff) => ReactNode;
   /** Shows a toast (a failed copy of the file). */
@@ -50,7 +52,7 @@ export interface DiffTabProps {
 }
 
 /** Main-area "All changes" tab: the file picked in the changes list, with its toolbar. */
-export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps) {
+export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, annotations, onPersistAnchors, notes, notify }: DiffTabProps) {
   const { selected, files, load, redirectRevision } = diff;
   const empty = load.state === "ready" && load.files.length === 0;
   useEffect(() => {
@@ -95,7 +97,7 @@ export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, ann
       {files.map((file) => visited.paths.includes(file.path) && (
         <OpenFile key={JSON.stringify([diff.worktree, file.path, scope])} diff={diff} f={file} selected={file}
           isVisible={!diff.noMatchingFiles && file.path === selected.path}
-          onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} notes={notes} notify={notify} />
+          onLineClick={onLineClick} commentRange={commentRange} anchors={anchors} annotations={annotations} onPersistAnchors={onPersistAnchors} notes={notes} notify={notify} />
       ))}
     </div>
   );
@@ -141,7 +143,7 @@ function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayou
 }
 
 /** The open file, editable after its complete current contents are available. */
-function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff; isVisible: boolean }) {
+function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anchors, annotations, onPersistAnchors, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff; isVisible: boolean }) {
   const { opts, update } = diff;
   const { file: full, current, refreshStatus } = useWholeFile(diff, selected, opts.layout);
   const edit = useFileEdit(diff.worktree, selected.path, typeof opts.scope === "object" || diff.turn !== null ? null : editableContents(selected, opts.layout, opts.ignoreWhitespace, current ? full : null), diff.reloadQuietly);
@@ -161,6 +163,7 @@ function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anc
         selected={commentRange?.(f)}
         anchors={anchors?.(f)}
         annotations={annotations && ((a) => annotations(f, a))}
+        onPersistAnchors={onPersistAnchors && ((positions) => onPersistAnchors(f, positions))}
         loadFull={() => diff.loadFull(f)}
         full={full}
         refreshStatus={refreshStatus}

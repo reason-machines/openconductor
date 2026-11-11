@@ -1,0 +1,23 @@
+{
+  "producer": "Conductor Rebuild",
+  "scope": "source-only Python staging self-test; no app execution or admission",
+  "archive_sha256": "6879abcc815533bfde3bfd4562d9d2b82f6e7f86b357ef3a1ee52060eb83aa88",
+  "prefix9_archive_sha256": "67499667ce63369a620478514a15dae13bfd4a18da29c251f725b0072ded7265",
+  "prefix9_fixture_sha256": "894e0f32379cf3bade2d18f7b04b373ff62eab3a002dbeec8f05be1dff8bc3ce",
+  "original_verifier_sha256": "2ae64b02b599f4a3a018be9fd1c35971dd7f104a814000ddd2ed266d34505627",
+  "prepared_verifier_sha256": "8e7ec0489862df94a17b04f11342083bbb57cad06a61caa6126fbc18666a0882",
+  "setup_changes": [
+    "explicit verified Prefix9 input",
+    "separate actual report output"
+  ],
+  "frozen_packet_members_unchanged": 8,
+  "original_assertions_unchanged": true,
+  "command": [
+    "/usr/bin/python3",
+    "/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/.ara-state/header-name-selftest-restored/original/verify-prepared.py"
+  ],
+  "returncode": 0,
+  "actual_report": "/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/.ara-state/header-name-selftest-restored/actual-selftest.json",
+  "behavioral_red_green": "NOT RUN",
+  "runtime_admission": "NOT GRANTED; existing E1 queue unchanged"
+}

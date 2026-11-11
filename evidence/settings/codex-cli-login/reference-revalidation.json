@@ -1,0 +1,27 @@
+{
+  "kind": "original-archive-and-current-main-source-verification",
+  "checked_main": "86fd4ee9d727deface07fec849b6af7702c3d762",
+  "archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "archive_bytes": 21493760,
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "renderer_bytes": 11600457,
+  "spans": [
+    {
+      "name": "Fpa",
+      "bytes": 5847,
+      "sha256": "91cfc778aef5e775a9fc3b2a1a60a2670a830f4de0bd4399e512e94a92c528ac",
+      "matched_original": true
+    },
+    {
+      "name": "Met",
+      "bytes": 1346,
+      "sha256": "e8ff33ba929c09102a235ff68ef6db78a6e0d9c66db5c85df6496c13b2e3ffde",
+      "matched_original": true
+    }
+  ],
+  "baseline_sha256": "790912dbbf434d08c57be42541d70950a8d9dc80fb6fed71cce22c8c57da4974",
+  "frozen_fixture_sha256": "15a7fef650efa2f5b85859ef067193b6fc4eefdbb72e933ecaeb72e1e0d15191",
+  "behavioral_RED": "NOT_RUN",
+  "behavioral_GREEN": "NOT_RUN",
+  "native_provider_real_IPC": "NOT_RUN"
+}
