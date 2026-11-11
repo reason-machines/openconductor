@@ -1,0 +1,78 @@
+{
+  "producer": "Conductor Rebuild",
+  "baseline_commit": "15e87440daa703030f4c402e7a41b9221a149768",
+  "reference_provenance": "Retained REA extraction of real Conductor 0.87.6 from sven m5 max; no new acquisition or native execution.",
+  "renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "reference_spans": [
+    {
+      "label": "effective-webview-consumer",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10929539,
+        10930066
+      ],
+      "sha256": "bb18c7741fdd24bb16a272bab1f05160fe9fbb88f0174487a91279a58bab1880",
+      "path": "reference/effective-webview-consumer.txt"
+    },
+    {
+      "label": "current-webview",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8646044,
+        8646147
+      ],
+      "sha256": "775a6964134b1aa02156eeaf4ae356a02eeaf4b6f6a8ef20cc164afc90cc0fa0",
+      "path": "reference/current-webview.txt"
+    },
+    {
+      "label": "webview-zoom-sdk",
+      "asset": "renderer",
+      "utf8_half_open": [
+        8648213,
+        8648302
+      ],
+      "sha256": "1bb17e97ac8de93e7b8a8eb4efe1ebb183c4c9c6941f4e4119b31a7ce7aaf9f5",
+      "path": "reference/webview-zoom-sdk.txt"
+    },
+    {
+      "label": "traffic-light-gate",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10926843,
+        10926926
+      ],
+      "sha256": "4b555358ff49a754a6244e173feeee25ff49b125736a0a570c7ba847507ec3a7",
+      "path": "reference/traffic-light-gate.txt"
+    }
+  ],
+  "framework": {
+    "api": "2.12.4",
+    "tauri": "2.12.5",
+    "tauri-utils": "2.10.2",
+    "zoom_hotkeys_default": false,
+    "hotkey_source": "tauri-utils 2.10.2 config.rs #[serde(default)] zoom_hotkeys_enabled: bool; Default initializes false; tauri-runtime2.12.2 copies config value."
+  },
+  "files": {
+    "baseline/src/settings/appearance.ts": "6aaae12dcdd99d9772b797beb5bba13dd3a2a751fa5c60a73e72e3e5b77e9251",
+    "baseline/src-tauri/capabilities/default.json": "5de2fd357b44b68b2990be1944f25324ef2bcd7984c623a02aab573000076e15",
+    "reference/current-webview.txt": "775a6964134b1aa02156eeaf4ae356a02eeaf4b6f6a8ef20cc164afc90cc0fa0",
+    "reference/effective-webview-consumer.txt": "bb18c7741fdd24bb16a272bab1f05160fe9fbb88f0174487a91279a58bab1880",
+    "reference/traffic-light-gate.txt": "4b555358ff49a754a6244e173feeee25ff49b125736a0a570c7ba847507ec3a7",
+    "reference/webview-zoom-sdk.txt": "1bb17e97ac8de93e7b8a8eb4efe1ebb183c4c9c6941f4e4119b31a7ce7aaf9f5"
+  },
+  "fixture_sha256": "498ca5c66af73e3b361dc4843060df9337b53d9c8dcfcd78c37cde7ec8536ac3",
+  "expected_baseline_failures": [
+    "appearance applies 0.5 through the real current-Webview SDK without CSS multiplication",
+    "appearance applies 1 through the real current-Webview SDK without CSS multiplication",
+    "appearance applies 1.5 through the real current-Webview SDK without CSS multiplication",
+    "appearance applies 3 through the real current-Webview SDK without CSS multiplication",
+    "native zoom requests stay ordered across a delayed reply and preserve reset",
+    "permission rejection is reported without CSS fallback and does not poison later requests",
+    "unrelated appearance saves do not repeat a successful native zoom",
+    "the main capability grants only the required additional webview setter"
+  ],
+  "gaps": [
+    "Native permission acceptance, WKWebView scale, pointer/menu geometry, OS first-launch and restart behavior NOT_RUN.",
+    "macOS26+ scaled traffic lights/update_traffic_light_position/resize unimplemented; only retained renderer call contract is known."
+  ]
+}
