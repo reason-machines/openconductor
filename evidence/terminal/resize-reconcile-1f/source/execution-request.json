@@ -1,0 +1,54 @@
+{
+  "unit": "terminal-post-spawn-resize-reconciliation-1f",
+  "owner": "1f14fa82-4ec3-41fc-b085-32ec441b4228",
+  "executor": "e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46",
+  "no_new_runtime_here": true,
+  "main_checked": "b6e7473d17462ce09948437b4239fb0a31e8d37f",
+  "frozen_manifest_sha256": "24d9bdf34b83b97c67afc02756d7cc9b63e2a478950a24e1007de7cb30e0528b",
+  "scope": [
+    "src/features/terminal/session.ts:spawnTerminal",
+    "src/features/terminal/resizeState.test.ts",
+    "evidence/terminal/resize-reconcile-1f/**"
+  ],
+  "deps": {
+    "runtime": [
+      "existing TypeScript",
+      "existing React"
+    ],
+    "xterm": "type-only imports + isolated Terminal boundary",
+    "install": false,
+    "full_app_typecheck_qualified": false
+  },
+  "phases": [
+    {
+      "stage": "RED",
+      "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 60s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/resizeState.test.ts",
+      "expected": "10 cases: 7 intended request-assertion failures, 3 passes; setup failures do not qualify",
+      "source": "baseline session/main closure"
+    },
+    {
+      "stage": "GREEN",
+      "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 60s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/resizeState.test.ts",
+      "expected": "same 10 cases/assertions all pass after ONLY frozen candidate.patch",
+      "source": "same private closure + candidate.patch"
+    },
+    {
+      "stage": "target-color-lint",
+      "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 20s node scripts/check-colors.mjs src/features/terminal/resizeState.test.ts",
+      "expected": "exit 0; no literals/hue violations"
+    }
+  ],
+  "execution_rules": [
+    "Existing sole queue only after source/dependency admission; no extra runner/install/observer",
+    "Check fresh main source pins, frozen hashes and physical existing dependency pins before execution",
+    "Do not evaluate retained reference JS",
+    "If missing source/dependency, return exact blocker; no setup/retry loop",
+    "No broad focused/fullTSC/native gate added",
+    "Return actual commands, timing, process terminal state, limits, full TAP, input/source identities; no predicted result as actual"
+  ],
+  "gaps": [
+    "No actual xterm rendering",
+    "No native/PTY/kernel/shell/provider/browser/install behavior",
+    "No whole-app TSC from scoped resolver"
+  ]
+}

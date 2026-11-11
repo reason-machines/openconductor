@@ -404,3 +404,12 @@ fn ipc_is_registered_and_does_not_change_user_override_settings() {
     assert!(!handler.contains("SettingsService"));
     assert!(!handler.contains("login"));
 }
+
+#[test]
+fn failed_steps_report_their_exit_code() {
+    assert_eq!(failure_message("download", Some(22)), "Reason download failed (curl 22: server returned an HTTP error). Check your connection and available disk space, then retry.");
+    assert!(failure_message("download", Some(6)).contains("curl 6: could not resolve host"));
+    assert!(failure_message("download", Some(92)).contains("(curl exit 92)"));
+    assert!(failure_message("install", Some(1)).contains("Reason install failed (exit 1)."));
+    assert!(failure_message("install", None).contains("stopped by a signal"));
+}

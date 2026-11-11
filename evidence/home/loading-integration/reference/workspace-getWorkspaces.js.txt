@@ -1,0 +1,1 @@
+async getWorkspaces(){return await this.waitForWorkspacesToLoad(),Object.values(this.state.workspacesByLocalId).filter(e=>e!==void 0).flatMap(e=>e.data===void 0?[]:[e.data])}

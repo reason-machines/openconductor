@@ -8,6 +8,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, typ
 import { createPortal } from "react-dom";
 import { invoke, isTauri } from "@tauri-apps/api/core";
 import { useAppPrefs } from "../settings/appPrefs";
+import { getResourceTerminalLabels } from "../features/terminal/session";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, ChipIcon, CopyIcon, LayersIcon, ListTreeIcon, TerminalIcon } from "./Icons";
 import {
   DEFAULT_VIEW,
@@ -48,9 +49,7 @@ function useResourceUsage(enabled: boolean): ResourceUsage | null {
     const poll = () => {
       if (inFlight) return; // `dedupe: "in-flight"`
       inFlight = true;
-      // OpenConductor's terminal tabs live in each workspace's panel, so no
-      // labels are passed; terminal shells show their executable name.
-      invoke<ResourceUsage>("get_resource_usage", { terminalLabels: {} })
+      invoke<ResourceUsage>("get_resource_usage", { terminalLabels: getResourceTerminalLabels() })
         .then((u) => live && setUsage(dropDefunct(u)))
         .catch((err) => console.warn("resource usage unavailable", err))
         .finally(() => {

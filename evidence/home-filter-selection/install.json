@@ -1,0 +1,50 @@
+{
+  "command": [
+    "nice",
+    "-n",
+    "19",
+    "timeout",
+    "--kill-after=5s",
+    "120s",
+    "npm",
+    "install",
+    "--prefix",
+    "/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/.ara-state/home-filter-selection-deps",
+    "--ignore-scripts",
+    "--no-audit",
+    "--no-fund",
+    "--no-save",
+    "--package-lock=false",
+    "--omit=optional",
+    "--legacy-peer-deps",
+    "react@18.3.1",
+    "react-test-renderer@18.3.1",
+    "typescript@5.9.3",
+    "loose-envify@1.4.0",
+    "react-is@18.3.1",
+    "react-shallow-renderer@16.15.0",
+    "scheduler@0.23.2",
+    "js-tokens@4.0.0",
+    "object-assign@4.1.1"
+  ],
+  "environment": {
+    "NODE_OPTIONS": "--max-old-space-size=384",
+    "npm_config_jobs": "1",
+    "npm_config_maxsockets": "1"
+  },
+  "exit": 0,
+  "elapsed_seconds": 3.472,
+  "installed_packages": [
+    "js-tokens",
+    "loose-envify",
+    "object-assign",
+    "react",
+    "react-is",
+    "react-shallow-renderer",
+    "react-test-renderer",
+    "scheduler",
+    "typescript"
+  ],
+  "raw_output_sha256": "baaa6ea7270e601addce3d3194139ee75858ae6e159f44a1d4d46b838f2e6baa",
+  "log_trailing_whitespace_normalized": true
+}

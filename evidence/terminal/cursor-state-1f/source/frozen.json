@@ -1,0 +1,10 @@
+{
+  "baseline": "b34ba2de9ad45365715d21a0bfe24d9c36b335fb",
+  "baseline_session_sha256": "e94da195a0f3d315ab2862f4f3333e4014df15f69b4ace90b53449258e60ad87",
+  "fixture_sha256": "1cabc78d3cc6446eea19780fc5fd71a28578b1995ba7134be9194df1a72d3681",
+  "red_fixture_sha256": "1cabc78d3cc6446eea19780fc5fd71a28578b1995ba7134be9194df1a72d3681",
+  "candidate_patch_sha256": "accd9f9e871a7489773836570b57abf1abcb963f0dab6626aa1d99091868aa65",
+  "candidate_session_sha256": "e7785e03355148c1937a02b3aca8cafebb1821fbb6cd304946b08c476fc11409",
+  "product_patch_applied": false,
+  "tests_executed": false
+}

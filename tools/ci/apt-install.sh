@@ -43,10 +43,14 @@ updated=0
 for i in $(seq 1 "$attempts"); do
   [ "$i" -gt 1 ] && next_mirror
   if [ "$updated" = 0 ]; then
-    if sudo timeout -k 10 "$update_timeout" apt-get "${opts[@]}" update; then
+    # The outer loop owns metadata retries. Internal retries can consume the whole
+    # deadline without reporting an error; apt otherwise accepts failed indexes.
+    if sudo timeout -k 10 "$update_timeout" apt-get "${opts[@]}" \
+      -o Acquire::Retries=0 -o APT::Update::Error-Mode=any update; then
       updated=1
     else
-      echo "::warning::apt-get update attempt $i/$attempts failed or ran over ${update_timeout}s"
+      update_status=$?
+      echo "::warning::apt-get update attempt $i/$attempts exited $update_status (deadline ${update_timeout}s)"
       continue
     fi
   fi

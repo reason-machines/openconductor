@@ -11,6 +11,7 @@ import * as groups from "./toolGroups.ts";
 import * as time from "./turnTime.ts";
 import * as view from "./view.ts";
 import { applyChatEvents, emptyTranscript } from "./reducer.ts";
+import { assistantDisplayText } from "./assistantText.ts";
 
 const dependencies = createRequire(import.meta.url);
 const { act, create } = dependencies("react-test-renderer");
@@ -69,6 +70,7 @@ async function fixture({ text = fenced, withNotify = true }: { text?: string; wi
     exports: production,
     require(name: string) { assert.equal(name, "react/jsx-runtime"); return dependencies(name); },
     Fragment: React.Fragment, useMemo: React.useMemo, useState: React.useState, useSyncExternalStore: React.useSyncExternalStore,
+    useBoolPref: () => false, assistantDisplayText,
     ...view, ...groups, ...time,
     Markdown: markdown.Markdown,
     LinkMenuNotify: React.createContext(undefined),

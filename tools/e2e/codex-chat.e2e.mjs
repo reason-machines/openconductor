@@ -42,7 +42,7 @@ import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { WebDriver } from "../../tests/e2e/webdriver.mjs";
 import { finishStartup } from "../../tests/e2e/startup.mjs";
-import { installCodexAccessDiagnostics } from "./codex-access-diagnostics.mjs";
+import { installCodexAccessDiagnostics, assertCodexAccessSnapshot, codexBoundaryReport, assertCodexBoundary } from "./codex-access-diagnostics.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const app = process.argv[2] && resolve(process.argv[2]);
@@ -84,7 +84,7 @@ writeFileSync(
   `codex_executable_path = ${JSON.stringify(custom)}\n\n[models.codex]\npersonality = "friendly"\n`,
 );
 
-const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), SHELL: "/bin/bash" };
+const env = { ...process.env, HOME: home, OPENCONDUCTOR_HOME: join(home, ".openconductor"), SHELL: "/bin/bash", OC_E2E_OUT: out };
 for (const k of ["XDG_DATA_HOME", "XDG_CONFIG_HOME", "OPENAI_API_KEY", "CODEX_API_KEY", "CODEX_HOME"]) delete env[k];
 // A key left in the user's shell: only the API key mode may hand Codex a key, and it must be the stored one.
 const SHELL_KEY = "sk-e2e-left-in-the-shell";
@@ -125,6 +125,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const run = (script, ...args) => wd("POST", "/execute/sync", { script, args });
 const runAsync = (script, ...args) => wd("POST", "/execute/async", { script, args });
 let accessDiagnosticsInstalled = false;
+let expectedChatId = null;
+let firstTurnBoundary = null;
 
 async function recordAccess(phase) {
   const snapshot = await run("return window.__ocCodexAccessDiagnostics.capture(arguments[0]);", phase);
@@ -132,9 +134,19 @@ async function recordAccess(phase) {
   return snapshot;
 }
 
+function readBoundary() {
+  return codexBoundaryReport(expectedChatId, readFileSync(join(out, "codex-open-chat-events.jsonl"), "utf8"), requests().find((r) => r.method === "thread/start"));
+}
+
 async function saveAccessDiagnostics() {
   if (!accessDiagnosticsInstalled) return;
   const report = await run("return window.__ocCodexAccessDiagnostics.read();");
+  report.firstTurnRustBoundary = firstTurnBoundary;
+  try {
+    report.rustBoundary = { available: true, ...readBoundary() };
+  } catch {
+    report.rustBoundary = { available: false, failure: "missing-or-invalid-boundary-evidence" };
+  }
   writeFileSync(join(out, "codex-access-diagnostics.json"), JSON.stringify(report, null, 2));
 }
 
@@ -240,22 +252,27 @@ try {
 
   await pickCodex("codex-0-model-picker");
   pass("the model picker switches the chat to Codex: the chip reads Codex and the access menu shows");
-  await run(`return (${installCodexAccessDiagnostics.toString()})(arguments[0]);`, workspace.id);
+  expectedChatId = workspace.id;
+  await run(`return (${installCodexAccessDiagnostics.toString()})(arguments[0]);`, expectedChatId);
   accessDiagnosticsInstalled = true;
-  await recordAccess("before-change");
   const access = await run("const s = document.querySelector('.codex-access'); return s && [s.value, [...s.options].map((o) => o.textContent)];");
   assert.deepEqual(access, ["full", ["Full access", "Ask first", "Read only"]], "Conductor's default: full access");
   // Ask first, so Codex asks before running the command.
   await run(
     `const s = document.querySelector('.codex-access');
-     Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'ask');
-     s.dispatchEvent(new Event('change', { bubbles: true }));`,
+     window.__ocCodexAccessDiagnostics.capture('before-setter');
+     const setterReturn = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, 'ask');
+     window.__ocCodexAccessDiagnostics.capture('after-setter', null, setterReturn);
+     const dispatchReturn = s.dispatchEvent(new Event('change', { bubbles: true }));
+     return window.__ocCodexAccessDiagnostics.capture('after-dispatch', null, dispatchReturn);`,
   );
-  await recordAccess("after-change");
-  pass("access menu defaults to Full access (Conductor's default); Ask first change dispatched and state recorded");
+  assertCodexAccessSnapshot(await recordAccess("after-change"));
+  pass("access menu defaults to Full access (Conductor's default) and is set to Ask first");
 
   // 1. The recorded turn: approval, Allow, two commands, the reply.
-  await send("hello: create hello.txt with 'hello from codex', then cat it", () => recordAccess("pre-Send"));
+  await send("hello: create hello.txt with 'hello from codex', then cat it", async () => {
+    assertCodexAccessSnapshot(await recordAccess("pre-Send"));
+  });
   const buttons = await waitFor("the approval card", async () => {
     const b = await approvalButtons();
     return b.length ? b : null;
@@ -306,6 +323,9 @@ try {
   const turn = sent.find((r) => r.method === "turn/start");
   assert.equal(turn.params.effort, "medium", "default Codex thinking level from settings");
   assert.deepEqual(sent.find((r) => r.response)?.response, { id: 0, result: { decision: "accept" } });
+  firstTurnBoundary = readBoundary();
+  await saveAccessDiagnostics();
+  assertCodexBoundary(firstTurnBoundary);
   pass("Codex got thread/start in the workspace folder (on-request, workspace-write), effort medium, and the accept answer");
   const launches = sent.filter((r) => r.launch).map((r) => r.launch);
   assert.ok(launches.length > 0, "the fake logged its launch");
@@ -530,10 +550,7 @@ try {
   } catch {}
   process.exitCode = 1;
 } finally {
-  if (accessDiagnosticsInstalled) {
-    await saveAccessDiagnostics().catch((e) => console.error(`access diagnostics unavailable: ${e.message}`));
-    await run("window.__ocCodexAccessDiagnostics.restore();").catch(() => {});
-  }
+  await saveAccessDiagnostics().catch(() => console.error("access diagnostics unavailable"));
   if (sessionUrl) await wd("DELETE", "").catch(() => {});
   driver.kill();
   await Promise.race([driverExited, sleep(3000)]);

@@ -1,0 +1,17 @@
+{
+  "reason": "CI TS18046: unknown dynamic hook narrowing is not retained inside a nested function declaration",
+  "failed_head": "4073f1e4fc18f13eb00ab4d557f0bb113334e21d",
+  "failed_check": "https://github.com/reason-machines/openconductor/actions/runs/43026934406/job/130543888915",
+  "fix": "Capture the already runtime-checked function in a new const alias before the nested Fixture function; call that alias. No assertion, mock, request, input, save handler or product change.",
+  "original_v2_fixture_sha256": "8d7374c47ac019fbd7cf001f4aaf7d7c1acea5279c6765b731a4df6241eee816",
+  "corrected_fixture_sha256": "6e0b9c57c9d1f2ab99f517104e6b262ea643b517d9d3aeef81be6f4fa4c52ca1",
+  "assertion_tail_sha256": "edf7785d1e3d47380bac762a3df64beb0e5cad5fa36c388581654ac772a26a97",
+  "patch_sha256": "965ab2b162bb76a35638be0580fec73231d2e02a9ce4dc91cf5ae6827ab028ab",
+  "assertions": "byte-identical",
+  "all_five_product_files": "byte-identical to sealed v2",
+  "sealed_v2": "All 64 files verified unchanged; do not rewrite the archive or manifest",
+  "apply": "Identical setup-only patch to both baseline and candidate of the SAME DIFF-EDIT-HIDDEN-WHITESPACE unit, or use the corrected published fixture with the unchanged production baseline selector",
+  "local_execution": "NOT RUN; no E1 admission or queue reorder",
+  "ci_before": "Diff frontend unit tests passed the candidate component fixture at the failing-typecheck head; this does not establish baseline RED or native acceptance",
+  "ci_after": "Pending new exact-head workflows"
+}

@@ -1,0 +1,1 @@
+function SMt(t){return t.activeOrganizationPointer}
