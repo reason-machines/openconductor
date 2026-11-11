@@ -304,7 +304,10 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
       if (entry) setActiveKey(entry.key);
       return;
     }
-    if (flat.length === 0) return;
+    if (flat.length === 0) {
+      if (e.key === "Enter") e.preventDefault();
+      return;
+    }
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setActiveKey(flat[Math.min(activeIndex + 1, flat.length - 1)].key);
