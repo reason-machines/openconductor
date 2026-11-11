@@ -24,7 +24,9 @@ The fixture executes actual applyReasonPayload → reducer → buildRows/conduct
 
 The primary example has file_path `/repo/src/example.ts`, offset 7 and numbered result lines. Assertions preserve cleaned text, the blank line, exact line numbers and the collapsed/expanded toggle, then require real const/true syntax spans. Canonical extension aliases, unmapped/registered-but-unmapped/pathless fallbacks, per-line grammar reset, per-line combined-result cutoff, exact/over-limit fallback, safe literal markup, file navigation and empty/error controls are covered.
 
-Test-only milestone: production ToolRows is unchanged. Hosted mounted RED must fail for missing syntax spans, not loading or fixture errors, before the production patch is made. The fixture will remain unchanged through GREEN.
+Hosted test-only commit `c53cbb9afddf21bba8ceb6ef37ce10beeceafdc8` reproduced the failure before production edits. [CI run 42964298224](https://github.com/reason-machines/openconductor/actions/runs/42964298224/job/130337818401) reported exactly 21 missing-syntax assertion failures and all seven new fallback/empty/error controls passing. The primary failure was `ordinary Read highlights the TypeScript const keyword`; the other syntax cases failed with `ordinary Read renders real syntax spans, not a plain line`. No fixture load or normalization failure occurred.
+
+The minimal patch selects the retained extension aliases in the Read arm, passes the language only to Read's NumberedCode, and reuses `highlight(language, line) ?? line` independently per line. Shared primitives and Markdown stay unchanged. Fresh main `56e4c7a980dd5df18b66e9dc61daccc3f39937ae` still has the same raw-span Read implementation and was merged before publication. The regression fixture remains unchanged for hosted GREEN.
 
 ## Validation record
 
@@ -32,8 +34,8 @@ Test-only milestone: production ToolRows is unchanged. Hosted mounted RED must f
 - `node --check src/features/chat/readSyntaxHighlight.test.ts`: PASS, syntax only.
 - `git diff --check`: PASS. ToolRows, markdown.ts and both #994 fixtures remain byte-identical to fresh main before RED.
 - New regression fixture frozen at SHA-256 `acd015bba3bd0db2b53c1842a278278a837ebc26813486e4c721cf40758120ef` before test-only publication.
-- Hosted mounted RED: pending test-only publication.
-- Production fix and unchanged GREEN/full suite/typecheck/build: not yet run.
+- Hosted mounted RED: PASS as a reproduction; 21 intended syntax failures, seven new controls passing, 2,439 other tests passing (2,467 total). Command: `node --test "src/**/*.test.ts"`.
+- Production fix added only after that RED. Unchanged GREEN/full suite/typecheck/build: pending hosted CI. No local dependency installation or heavy build.
 - Containing-main CI and macOS package verification: pending delivery.
 
 ## Limits

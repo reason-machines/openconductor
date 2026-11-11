@@ -38,7 +38,7 @@ import {
   type ConductorTool,
   type TaskItem,
 } from "./conductorTools.ts";
-import { Markdown } from "./markdown.ts";
+import { highlight, Markdown } from "./markdown.ts";
 import { LinkWithMenu } from "./LinkMenu.tsx";
 import { openUrl } from "../../backend.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
@@ -410,6 +410,12 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
     case "read": {
       const path = s(input.file_path);
       const text = output === undefined ? undefined : readContent(output);
+      const languages: Record<string, string> = {
+        js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript",
+        py: "python", rs: "rust", json: "json", yml: "yaml", yaml: "yaml",
+        css: "css", html: "html", htm: "html", xml: "xml", sh: "bash", bash: "bash",
+      };
+      const language = languages[path.split(".").pop()?.toLowerCase() ?? ""];
       return (
         <RowShell
           {...shell}
@@ -418,7 +424,7 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
           keepRight
           align="center"
           bareContent
-          content={text ? <NumberedCode text={text} start={typeof input.offset === "number" ? input.offset : 1} /> : undefined}
+          content={text ? <NumberedCode text={text} start={typeof input.offset === "number" ? input.offset : 1} language={language} /> : undefined}
         />
       );
     }
@@ -614,14 +620,14 @@ function BashRow({ input, output, ...shell }: ShellBase & { input: Record<string
   );
 }
 
-function NumberedCode({ text, start }: { text: string; start: number }) {
+function NumberedCode({ text, start, language }: { text: string; start: number; language?: string }) {
   const lines = text.split("\n");
   return (
     <pre className="oc-tool-code numbered">
       {lines.map((l, i) => (
         <div key={i} className="oc-code-line">
           <span className="oc-code-ln">{start + i}</span>
-          <span>{l}</span>
+          <span>{highlight(language, l) ?? l}</span>
         </div>
       ))}
     </pre>
