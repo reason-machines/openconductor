@@ -196,10 +196,18 @@ pub async fn primary_chat_id(pool: &SqlitePool, workspace_id: &str) -> Result<St
     primary_chat_id_on(&mut connection, workspace_id).await
 }
 
-async fn primary_chat_id_on(connection: &mut sqlx::SqliteConnection, workspace_id: &str) -> Result<String> {
-    let original_hidden: Option<bool> = sqlx::query_scalar("SELECT is_hidden = 1 FROM sessions WHERE id = ?")
-        .bind(workspace_id).fetch_optional(&mut *connection).await?;
-    if original_hidden != Some(true) { return Ok(workspace_id.to_owned()); }
+async fn primary_chat_id_on(
+    connection: &mut sqlx::SqliteConnection,
+    workspace_id: &str,
+) -> Result<String> {
+    let original_hidden: Option<bool> =
+        sqlx::query_scalar("SELECT is_hidden = 1 FROM sessions WHERE id = ?")
+            .bind(workspace_id)
+            .fetch_optional(&mut *connection)
+            .await?;
+    if original_hidden != Some(true) {
+        return Ok(workspace_id.to_owned());
+    }
     let first: Option<String> = sqlx::query_scalar(
         "SELECT id FROM sessions WHERE workspace_id = ? AND is_hidden IS NOT 1 \
          AND (substr(id, 1, length(workspace_id) + 8) = workspace_id || ':review:' \
@@ -220,51 +228,89 @@ pub async fn replace_local(
     let valid_id = source_id == workspace_id
         || source_id.starts_with(&format!("{workspace_id}:chat:"))
         || source_id.starts_with(&format!("{workspace_id}:review:"));
-    if !valid_id || source_id.ends_with(":claude") || source_id == replacement.id
+    if !valid_id
+        || source_id.ends_with(":claude")
+        || source_id == replacement.id
         || !replacement.id.starts_with(&format!("{workspace_id}:chat:"))
-        || !matches!(replacement.agent_type, Some(AgentType::Claude | AgentType::Codex))
+        || !matches!(
+            replacement.agent_type,
+            Some(AgentType::Claude | AgentType::Codex)
+        )
     {
         return Err(sqlx::Error::Protocol("Invalid local clear identity".into()).into());
     }
     let alias = format!("{source_id}:claude");
     let mut tx = pool.begin().await?;
-    let exists: i64 = sqlx::query_scalar("SELECT count(*) FROM workspaces WHERE local_id = ? AND state = 'ready'")
-        .bind(workspace_id).fetch_one(&mut *tx).await?;
-    if exists != 1 { return Err(crate::Error::NotFound); }
+    let exists: i64 = sqlx::query_scalar(
+        "SELECT count(*) FROM workspaces WHERE local_id = ? AND state = 'ready'",
+    )
+    .bind(workspace_id)
+    .fetch_one(&mut *tx)
+    .await?;
+    if exists != 1 {
+        return Err(crate::Error::NotFound);
+    }
     let invalid: i64 = sqlx::query_scalar(
         "SELECT count(*) FROM sessions WHERE (id = ? OR id = ?) \
          AND (status <> 'idle' OR is_hidden = 1 OR (workspace_id IS NOT NULL AND workspace_id <> ?))",
     ).bind(source_id).bind(&alias).bind(workspace_id).fetch_one(&mut *tx).await?;
     if invalid != 0 {
-        return Err(sqlx::Error::Protocol("Only a visible idle local chat can be cleared".into()).into());
+        return Err(
+            sqlx::Error::Protocol("Only a visible idle local chat can be cleared".into()).into(),
+        );
     }
     if source_id != workspace_id {
         let exists: i64 = sqlx::query_scalar("SELECT count(*) FROM sessions WHERE id = ?")
-            .bind(source_id).fetch_one(&mut *tx).await?;
-        if exists != 1 { return Err(crate::Error::NotFound); }
+            .bind(source_id)
+            .fetch_one(&mut *tx)
+            .await?;
+        if exists != 1 {
+            return Err(crate::Error::NotFound);
+        }
     }
     let personality: Option<String> = if replacement.agent_type == Some(AgentType::Codex) {
         sqlx::query_scalar("SELECT agent_personality FROM sessions WHERE id = ?")
-            .bind(source_id).fetch_optional(&mut *tx).await?.flatten()
+            .bind(source_id)
+            .fetch_optional(&mut *tx)
+            .await?
+            .flatten()
             .or_else(|| replacement.agent_personality.clone())
-    } else { replacement.agent_personality.clone() };
+    } else {
+        replacement.agent_personality.clone()
+    };
     sqlx::query(
         "INSERT INTO sessions (id, workspace_id, status, claude_session_id, last_user_message_at, \
          agent_type, model, acp_config, permission_mode, codex_thinking_level, agent_personality, \
          fast_mode, claude_effort_level, feed_offset, created_at, updated_at) \
          VALUES (?, ?, 'idle', NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, -1, ?, ?)",
-    ).bind(&replacement.id).bind(workspace_id).bind(replacement.agent_type)
-        .bind(&replacement.model).bind(&replacement.acp_config).bind(replacement.permission_mode)
-        .bind(&replacement.codex_thinking_level).bind(personality).bind(replacement.fast_mode)
-        .bind(&replacement.claude_effort_level).bind(&replacement.now).bind(&replacement.now)
-        .execute(&mut *tx).await?;
+    )
+    .bind(&replacement.id)
+    .bind(workspace_id)
+    .bind(replacement.agent_type)
+    .bind(&replacement.model)
+    .bind(&replacement.acp_config)
+    .bind(replacement.permission_mode)
+    .bind(&replacement.codex_thinking_level)
+    .bind(personality)
+    .bind(replacement.fast_mode)
+    .bind(&replacement.claude_effort_level)
+    .bind(&replacement.now)
+    .bind(&replacement.now)
+    .execute(&mut *tx)
+    .await?;
     sqlx::query("INSERT OR IGNORE INTO sessions (id, workspace_id, created_at, updated_at) VALUES (?, ?, ?, ?)")
         .bind(source_id).bind(workspace_id).bind(&replacement.now).bind(&replacement.now)
         .execute(&mut *tx).await?;
     sqlx::query("UPDATE sessions SET is_hidden = 1 WHERE id = ? OR id = ?")
-        .bind(source_id).bind(alias).execute(&mut *tx).await?;
+        .bind(source_id)
+        .bind(alias)
+        .execute(&mut *tx)
+        .await?;
     sqlx::query("UPDATE workspaces SET active_session_id = ? WHERE local_id = ?")
-        .bind(&replacement.id).bind(workspace_id).execute(&mut *tx).await?;
+        .bind(&replacement.id)
+        .bind(workspace_id)
+        .execute(&mut *tx)
+        .await?;
     let primary = primary_chat_id_on(&mut tx, workspace_id).await?;
     tx.commit().await?;
     Ok(primary)

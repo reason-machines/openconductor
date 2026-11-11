@@ -68,7 +68,7 @@ These controls exercise open-chat identity, persisted rows, unread state, chat t
 
 The ready main-based PR was published as [#1020](https://github.com/reason-machines/openconductor/pull/1020), initial hosted head `81e1a52ced3ea1b066497e7e894f77fd79b00eea`. Its first hosted checks exposed these failures.
 
-- Persistence on Ubuntu and macOS stopped at `cargo fmt --check`. The later database tests did not run in those jobs. Formatting remains with the sole local executor.
+- Persistence on Ubuntu and macOS stopped at `cargo fmt --check`. The later database tests did not run in those jobs. The sole executor then attempted the exact four-file local formatter command, but its stable toolchain lacks the `rustfmt` component. No file changed and no installation or retry occurred. After that writer released the files, this branch applied all sixteen formatting hunks from the hosted formatter output to the two exact baseline files. [The formatting record](hosted-formatting.json) links the failing job and records the scope. Hosted formatting and database tests must still pass.
 - Two keybinding tests failed with `primaryId is not defined` in their extracted chat-host JSX. Their isolated VM now supplies the same primary identity as its workspace fixture.
 - Seven Diff auto-close tests failed with `tabOfChat is not defined` in their extracted workspace initializer. Their probe now includes the real source declarations for `tabOfChat` and `primaryId`.
 
