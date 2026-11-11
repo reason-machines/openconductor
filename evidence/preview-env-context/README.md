@@ -26,7 +26,17 @@ The five cases exercise the real environment request and mounted Open handler:
 - A rejected obsolete request must leave B's URL unchanged.
 - Same-workspace expansion and exact `run_script_preview_env` arguments stay unchanged.
 
-The regression-only revision has no production diff. `node --experimental-strip-types --check src/scripts/previewEnvContext.test.ts`, inert retained-reference hashes, protected-file comparisons and `git diff --check` passed. Hosted RED is pending. Local component execution and typecheck have not run because this lane uses hosted regression execution without local dependency installation.
+Hosted RED is confirmed on regression-only head `ee4309acc7caef19d483d648d2a871bd8a7f5036`, [CI run42940368191/frontend unit job130260452750](https://github.com/reason-machines/openconductor/actions/runs/42940368191/job/130260452750). `node --test "src/**/*.test.ts"` reported 2,193 passed and exactly three failed out of 2,196, zero cancelled or skipped. The failures were the intended mounted-button cases, not fixture or type failures:
+
+- While B was loading, the actual button was `Open http://localhost:51001/A` instead of the unresolved current-workspace template.
+- After B resolved, A's late response replaced `Open http://localhost:51002/B` with `Open http://localhost:51001/A`.
+- Returning to A let the older response replace `Open http://localhost:51003/A-current` with `Open http://localhost:51001/A-old`.
+
+Both obsolete-rejection and same-workspace expansion/exact-IPC controls passed. The independent frontend job130260452415 passed typecheck and color lint, then failed on the same unit regressions before build.
+
+The correction associates environment state with the serialized workspace reference and ignores responses after their requesting effect is disposed. The key prevents projection into another workspace, while disposal also rejects obsolete requests for the same workspace after leaving and returning. All five test cases remain byte-for-byte unchanged from RED. No URL algorithm, IPC, process policy or protected Spotlight/history/Setup/completion code changed.
+
+`node --experimental-strip-types --check src/scripts/previewEnvContext.test.ts`, inert retained-reference hashes, protected-file comparisons and `git diff --check` passed. Hosted GREEN is pending. Local component execution and typecheck have not run because this lane uses hosted regression execution without local dependency installation.
 
 No browser screenshot is available. This is a source and mounted-component regression lane, not browser or native acceptance. Installed-Mac, real-provider and feature-specific visual checks are not run.
 
