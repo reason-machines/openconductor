@@ -254,7 +254,10 @@ impl RunManager {
         let process = {
             let inner = self.lock();
             if inner.states.get(&key) != Some(&RunState::Running)
-                || inner.run_ids.get(&key).is_none_or(|current| current != run_id)
+                || inner
+                    .run_ids
+                    .get(&key)
+                    .is_none_or(|current| current != run_id)
             {
                 return Ok(false);
             }

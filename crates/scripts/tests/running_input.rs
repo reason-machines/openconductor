@@ -9,7 +9,8 @@ use oc_scripts::launch::{script_path, LaunchSpec};
 use oc_scripts::runner::{RunManager, RunRequest, RunState};
 use oc_scripts::setup::SetupState;
 
-const READ: &str = "stty -echo; printf 'ready\\n'; IFS= read -r -t 10 answer; printf 'received:%s\\n' \"$answer\"";
+const READ: &str =
+    "stty -echo; printf 'ready\\n'; IFS= read -r -t 10 answer; printf 'received:%s\\n' \"$answer\"";
 
 fn request(dir: &Path, workspace: &str, script: &str) -> RunRequest {
     RunRequest {
@@ -71,7 +72,10 @@ fn live_script_consumes_input_from_its_pty_and_keeps_the_transcript_after_exit()
         Some("ready\r\nreceived:reply-é漢字\r\n")
     );
     assert!(!manager.write("a", "dev", &run_id, b"late\n").unwrap());
-    assert_eq!(manager.statuses("a")[0].run_id.as_deref(), Some(run_id.as_str()));
+    assert_eq!(
+        manager.statuses("a")[0].run_id.as_deref(),
+        Some(run_id.as_str())
+    );
 }
 
 #[test]
@@ -88,9 +92,15 @@ fn a_previous_run_id_cannot_write_to_a_replacement_with_the_same_workspace_and_s
     let current_id = ready(&manager, "a", "dev");
     assert_ne!(old_id, current_id);
     assert!(!manager.write("a", "dev", &old_id, b"poison\n").unwrap());
-    assert!(!manager.write("b", "dev", &current_id, b"wrong workspace\n").unwrap());
-    assert!(!manager.write("a", "other", &current_id, b"wrong script\n").unwrap());
-    assert!(manager.write("a", "dev", &current_id, b"current\n").unwrap());
+    assert!(!manager
+        .write("b", "dev", &current_id, b"wrong workspace\n")
+        .unwrap());
+    assert!(!manager
+        .write("a", "other", &current_id, b"wrong script\n")
+        .unwrap());
+    assert!(manager
+        .write("a", "dev", &current_id, b"current\n")
+        .unwrap());
     wait_for(|| manager.state("a", "dev") == RunState::Stopped);
     assert_eq!(
         manager.output("a", "dev").as_deref(),
@@ -133,6 +143,12 @@ fn simultaneous_workspaces_have_distinct_run_ids_and_separate_input() {
         manager.state("a", "dev") == RunState::Stopped
             && manager.state("b", "dev") == RunState::Stopped
     });
-    assert_eq!(manager.output("a", "dev").as_deref(), Some("ready\r\nreceived:A\r\n"));
-    assert_eq!(manager.output("b", "dev").as_deref(), Some("ready\r\nreceived:B\r\n"));
+    assert_eq!(
+        manager.output("a", "dev").as_deref(),
+        Some("ready\r\nreceived:A\r\n")
+    );
+    assert_eq!(
+        manager.output("b", "dev").as_deref(),
+        Some("ready\r\nreceived:B\r\n")
+    );
 }

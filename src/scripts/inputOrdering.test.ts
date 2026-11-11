@@ -59,7 +59,7 @@ async function fixture(baseline = false) {
     const require = (name: string): unknown => {
       if (name.endsWith(".css")) return {};
       if (name === "../scripts/output") return load("src/scripts/output.ts");
-      assert.ok(Object.hasOwn(boundary, name), `unexpected dependency ${name}`);
+      assert.ok(Object.prototype.hasOwnProperty.call(boundary, name), `unexpected dependency ${name}`);
       return boundary[name];
     };
     runInNewContext(`(function(require,module,exports){${code}\n})`, {
