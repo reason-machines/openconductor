@@ -1,0 +1,1 @@
+function Koo(){const t=ne.c(1);let e;return t[0]===Symbol.for("react.memo_cache_sentinel")?(e={service:gS,actionKey:"editNavigationSection",action:gS.edit},t[0]=e):e=t[0],p1e(e)}
