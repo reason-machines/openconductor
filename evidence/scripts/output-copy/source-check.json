@@ -5,7 +5,7 @@
   "reference_spans_verified": 16,
   "reference_renderer_verified": true,
   "product_matches_retained_candidate": true,
-  "only_fixture_constructor_syntax_changed": true,
+  "only_recorded_fixture_transport_changed": true,
   "frozen_test_bodies_identical": 9,
   "behavioral_cases_run": 0,
   "native_clipboard_or_xterm_runtime_verified": false

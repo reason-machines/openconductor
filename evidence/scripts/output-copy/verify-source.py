@@ -29,10 +29,12 @@ def main():
     delivered = (ROOT / "src/scripts/outputCopy.test.ts").read_bytes()
     assert sha(original) == record["frozen_fixture_sha256"], "frozen fixture"
     assert sha(delivered) == record["delivered_fixture_sha256"], "delivered fixture"
-    adapter = record["fixture_adapter"]
-    before, after = adapter["before"].encode(), adapter["after"].encode()
-    assert original.count(before) == delivered.count(after) == 1, "constructor adapter"
-    assert original.replace(before, after) == delivered, "only the constructor syntax may differ"
+    adapted = original
+    for adapter in record["fixture_adapters"]:
+        before, after = adapter["before"].encode(), adapter["after"].encode()
+        assert adapted.count(before) == 1, adapter["reason"]
+        adapted = adapted.replace(before, after)
+    assert adapted == delivered, "only the recorded fixture transport changes may differ"
     tests = original[original.index(b'test("'):]
     assert tests == delivered[delivered.index(b'test("'):], "frozen test bodies"
     assert tests.count(b'\ntest("') + 1 == 9, "nine cases"
@@ -57,7 +59,7 @@ def main():
         "reference_spans_verified": len(record["reference_spans"]),
         "reference_renderer_verified": renderer is not None,
         "product_matches_retained_candidate": True,
-        "only_fixture_constructor_syntax_changed": True,
+        "only_recorded_fixture_transport_changed": True,
         "frozen_test_bodies_identical": 9,
         "behavioral_cases_run": 0,
         "native_clipboard_or_xterm_runtime_verified": False,

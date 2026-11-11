@@ -14,7 +14,7 @@ The product patch registers after `term.open`, so the listener runs after xterm'
 
 [src/scripts/outputCopy.test.ts](../../../src/scripts/outputCopy.test.ts) mounts the real component with React Test Renderer. It uses the installed xterm source implementations of `BufferLine`, `Buffer`, `SelectionService`, and `copyHandler`. DOM event targets, rendering, observers, and unrelated component hooks are replaced at their boundaries. This does not run a real terminal renderer or system clipboard.
 
-All nine original test bodies and assertions remain byte-identical to the [frozen fixture](frozen-outputCopy.test.ts.txt). Only `CopyEvent`'s TypeScript constructor parameter property is expanded to an explicit field and assignment, because Node 22's type stripping does not transform parameter properties. Both fixture hashes and that exact reversible syntax change are recorded.
+All nine original test bodies and assertions remain byte-identical to the [frozen fixture](frozen-outputCopy.test.ts.txt). `CopyEvent`'s TypeScript constructor parameter property is expanded to an explicit field and assignment, because Node 22's type stripping does not transform parameter properties. Stable aliases capture setup-validated xterm values before callbacks so TypeScript retains their narrowed types. No assertion is removed or weakened. Both fixture hashes and the exact reversible transport changes are recorded.
 
 The nine cases cover partial-line trailing spaces, multiline trimming with indentation and internal spaces, a spaces-only selection, selected blank lines, an unchanged-text control, a collapsed selection, copy outside the terminal, missing clipboard data, and listener removal on unmount.
 
@@ -29,11 +29,11 @@ git apply --check --reverse evidence/scripts/output-copy/copy.patch
 git diff --check
 ```
 
-The [source check receipt](source-check.json) verifies five baseline file hashes, all sixteen retained reference spans against the full renderer, the exact product candidate, and the fixture-only syntax change. It executes no JavaScript or application behavior.
+The [source check receipt](source-check.json) verifies five baseline file hashes, all sixteen retained reference spans against the full renderer, the exact product candidate, and the fixture-only transport changes. It executes no JavaScript or application behavior.
 
 Not run locally: `node --test src/scripts/outputCopy.test.ts`, typecheck, build, broader tests, browser, or native tests. The expected baseline result is four clipboard-payload assertion failures and five passing controls. That is an unobserved expectation, not a RED result. The same nine cases must run on the candidate for GREEN. Setup, resolver, or loader failures do not establish the intended failure.
 
-The existing sole executor retains behavioral coordination and its older disposal, cancellation, and OSC8 queue order. This source increment does not admit another local runtime. Normal hosted PR checks can execute the after-fix tests but cannot establish the baseline RED on their own.
+The existing sole executor retains behavioral coordination and its older disposal, cancellation, and OSC8 queue order. This source increment does not admit another local runtime. Hosted PR head `309f77d095e28eca3863e9f059a831c158735329` passed all nine after-fix cases in [Frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/43027715083/job/130546531496), TAP 2140 through 2148. The [retained hosted receipt](hosted-first-head.json) includes those exact log lines. Typecheck on that head failed at two callback uses of unknown xterm exports. The fixture transport correction captures their validated types in stable aliases. Its hosted typecheck still needs to pass on the corrected head. After-fix success does not establish baseline RED or change executor admission.
 
 No screenshot is supplied because browser and native execution are outside this lane's admission. Native clipboard delivery, xterm rendering, and side-by-side installed-app behavior remain unverified. The original REA renderer analysis exhausted its worker heap, so the retained byte-span evidence is not a complete semantic call graph.
 

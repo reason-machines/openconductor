@@ -215,18 +215,35 @@
   "main_checked": "d8f6bdfd26370491295f38ffecd7090c71a2a6db",
   "prior_main_checked": "2b079f13e07b580d26191f7f1f50b4d21e62174e",
   "frozen_fixture_sha256": "ad4939bbd75ec25c91370da48ff393653992b2b3695c119492c4821ddabdbd4e",
-  "delivered_fixture_sha256": "e0d0b2da360d8d3d7360fc960945a8e4737ce13bf13f033af40b384df1d0c279",
+  "delivered_fixture_sha256": "baf6ed6c6adb3cc3dbcd9532c7a3f15324026240c4194db6a8dfe154a666b220",
   "candidate_sha256": "477cf9fc89646eb0075cf841430facca792d30116dc779aab31d22e94e7e0ffd",
   "patch_sha256": "9628dfee9814951e9f3b12c6b84396f9df586307d0cbcf42d414f57472550d9b",
-  "fixture_adapter": {
-    "reason": "Node 22 type stripping does not transform TypeScript parameter properties; no test body or assertion changed.",
-    "before": "class CopyEvent extends Event {\n  constructor(public clipboardData: { setData: (type: string, text: string) => void } | null) {\n    super(\"copy\", { bubbles: true, cancelable: true });\n  }\n}",
-    "after": "class CopyEvent extends Event {\n  clipboardData: { setData: (type: string, text: string) => void } | null;\n  constructor(clipboardData: { setData: (type: string, text: string) => void } | null) {\n    super(\"copy\", { bubbles: true, cancelable: true });\n    this.clipboardData = clipboardData;\n  }\n}"
-  },
   "behavioral_cases_run": 0,
   "expected_baseline_not_observed": {
     "payload_assertion_failures": 4,
     "passing_controls": 5
   },
-  "native_verified": false
+  "native_verified": false,
+  "fixture_adapters": [
+    {
+      "reason": "Node 22 type stripping does not transform TypeScript parameter properties; no test body or assertion changed.",
+      "before": "class CopyEvent extends Event {\n  constructor(public clipboardData: { setData: (type: string, text: string) => void } | null) {\n    super(\"copy\", { bubbles: true, cancelable: true });\n  }\n}",
+      "after": "class CopyEvent extends Event {\n  clipboardData: { setData: (type: string, text: string) => void } | null;\n  constructor(clipboardData: { setData: (type: string, text: string) => void } | null) {\n    super(\"copy\", { bubbles: true, cancelable: true });\n    this.clipboardData = clipboardData;\n  }\n}"
+    },
+    {
+      "reason": "Capture the setup-validated object/function types in stable aliases before fixture callbacks.",
+      "before": "assert.ok(SelectionMode && typeof SelectionMode === \"object\");\n\ntype Selection",
+      "after": "assert.ok(SelectionMode && typeof SelectionMode === \"object\");\nassert.ok(typeof copyHandler === \"function\");\nconst normalSelectionMode = Reflect.get(SelectionMode, \"NORMAL\");\nconst nativeCopyHandler = copyHandler;\n\ntype Selection"
+    },
+    {
+      "reason": "Use the validated selection mode alias without changing the constructed value.",
+      "before": "_activeSelectionMode: { value: Reflect.get(SelectionMode, \"NORMAL\") },",
+      "after": "_activeSelectionMode: { value: normalSelectionMode },"
+    },
+    {
+      "reason": "Use the validated copy function alias without changing the invoked function.",
+      "before": "if (this.getSelection()) Reflect.apply(copyHandler, undefined, [event, selection]);",
+      "after": "if (this.getSelection()) Reflect.apply(nativeCopyHandler, undefined, [event, selection]);"
+    }
+  ]
 }

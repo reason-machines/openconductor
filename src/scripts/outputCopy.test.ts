@@ -55,6 +55,9 @@ assert.equal(typeof XtermBuffer, "function");
 assert.equal(typeof SelectionService, "function");
 assert.equal(typeof copyHandler, "function");
 assert.ok(SelectionMode && typeof SelectionMode === "object");
+assert.ok(typeof copyHandler === "function");
+const normalSelectionMode = Reflect.get(SelectionMode, "NORMAL");
+const nativeCopyHandler = copyHandler;
 
 type Selection = { lines: string[]; start?: [number, number]; end?: [number, number] };
 type BufferRow = { set: (index: number, cell: [number, string, number, number]) => void };
@@ -68,7 +71,7 @@ function selectionService(input: Selection) {
   const buffer = Object.create(XtermBuffer.prototype, { lines: { value: { get: (index: number) => rows[index] } } });
   return Object.create(SelectionService.prototype, {
     _model: { value: { finalSelectionStart: input.start, finalSelectionEnd: input.end } },
-    _activeSelectionMode: { value: Reflect.get(SelectionMode, "NORMAL") },
+    _activeSelectionMode: { value: normalSelectionMode },
     _bufferService: { value: { buffer } },
   });
 }
@@ -91,7 +94,7 @@ async function fixture(input: Selection) {
     disposed = 0;
     options: Record<string, unknown>;
     readonly nativeCopy = (event: Event) => {
-      if (this.getSelection()) Reflect.apply(copyHandler, undefined, [event, selection]);
+      if (this.getSelection()) Reflect.apply(nativeCopyHandler, undefined, [event, selection]);
     };
     constructor(options: Record<string, unknown>) { this.options = options; screens.push(this); }
     loadAddon() {}
