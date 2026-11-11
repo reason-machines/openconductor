@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import "@xterm/xterm/css/xterm.css";
-import { attachTab } from "./session";
+import { attachTab, retryTab, spawnErrorOf } from "./session";
+import "./spawnFailure.css";
 import { FindBar, useTerminalFind } from "./FindBar";
 import type { TerminalTab } from "./tabs";
 import { TerminalIcon } from "../../components/Icons";
@@ -19,6 +20,14 @@ export function TerminalHost({ id, status }: Pick<TerminalTab, "id" | "status">)
         <div className="term-startup" role="status">
           <TerminalIcon size={48} />
           <p>Starting terminal…</p>
+        </div>
+      )}
+      {status === "spawn_error" && (
+        <div className="term-spawn-error" role="alert">
+          <span>Failed to start terminal: {spawnErrorOf(id)}</span>
+          <button type="button" disabled={false} onClick={() => {
+            void retryTab(id).catch(() => {});
+          }}>Retry</button>
         </div>
       )}
       <div className="term-mount" data-terminal ref={ref} />

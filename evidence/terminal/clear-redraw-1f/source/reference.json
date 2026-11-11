@@ -1,0 +1,244 @@
+{
+  "candidate": "terminal clear-scrollback shell-redraw request",
+  "owner": "Conductor Rebuild / 1f14fa82-4ec3-41fc-b085-32ec441b4228",
+  "main_checked": "4739c9c029f87c64901a2431de6032b81f2b7348",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "attachment_id": "bfa06ee0-799f-47fe-9edc-73997c70a340",
+  "attachment_sha256": "d0d8e4b9b20c5150f30f5edff149bfc25f3074da5a1a66357b1caaf1ef0033ab",
+  "offset_units": "zero-based UTF-8 bytes; half-open [start,end)",
+  "artifacts": [
+    {
+      "artifact": "index",
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    {
+      "artifact": "renderer",
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  ],
+  "spans": [
+    {
+      "artifact": "index",
+      "name": "V9",
+      "file": "spans/index-V9.txt",
+      "utf8_half_open": [
+        2756759,
+        2771688
+      ],
+      "bytes": 14929,
+      "sha256": "696ede0db7b5dfab9e731e122ffeb7dd29605b548b43e54d08d0926ce082c675",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes"
+    },
+    {
+      "artifact": "index",
+      "name": "$kt",
+      "file": "spans/index-$kt.txt",
+      "utf8_half_open": [
+        2776043,
+        2783784
+      ],
+      "bytes": 7741,
+      "sha256": "01a68c4db09714e2c2696dca642094d0e518af4aa11f86b41fefbf382e1816f1",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes"
+    },
+    {
+      "artifact": "index",
+      "name": "export-gh",
+      "file": "spans/index-export-gh.txt",
+      "utf8_half_open": [
+        3484259,
+        3484267
+      ],
+      "bytes": 8,
+      "sha256": "2480388e61e8e7bc885632949b422000cfb3dd593b84dbbfaabb7cc110e4e860",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes"
+    },
+    {
+      "artifact": "index",
+      "name": "ts",
+      "file": "spans/index-ts.txt",
+      "utf8_half_open": [
+        2829209,
+        2829217
+      ],
+      "bytes": 8,
+      "sha256": "a324795677321eb5d15ccefc2ee9a24e408a3db5099e78ff7cd30ca7f7b6c42f",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes"
+    },
+    {
+      "artifact": "renderer",
+      "name": "Xwa",
+      "file": "spans/renderer-Xwa.txt",
+      "utf8_half_open": [
+        11154184,
+        11157364
+      ],
+      "bytes": 3180,
+      "sha256": "cb5d1f1ae97144c4473cffc0889aee7e4e7efda952d828d7895183d8dfbb531a",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes"
+    },
+    {
+      "artifact": "renderer",
+      "name": "eSa",
+      "file": "spans/renderer-eSa.txt",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ],
+      "bytes": 4517,
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes"
+    },
+    {
+      "artifact": "renderer",
+      "name": "import-qc",
+      "file": "spans/renderer-import-qc.txt",
+      "utf8_half_open": [
+        57354,
+        57362
+      ],
+      "bytes": 8,
+      "sha256": "447426764ef0b8ca8f18e5bddd099b165145cc1c3967f959a75eaa90d90193ba",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes"
+    },
+    {
+      "artifact": "renderer",
+      "name": "Zwa",
+      "file": "spans/renderer-Zwa.txt",
+      "utf8_half_open": [
+        11158521,
+        11160762
+      ],
+      "bytes": 2241,
+      "sha256": "b30f983732154a396d671f194c17d660c080ae113e430c1baf5d0b089f4ab089",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes"
+    },
+    {
+      "artifact": "index",
+      "name": "DAt",
+      "file": "spans/index-DAt.txt",
+      "utf8_half_open": [
+        2828843,
+        2829203
+      ],
+      "bytes": 360,
+      "sha256": "2466f4fd8610a85d162bafe38060173dd1320f1d617d6cd1538fdafb2abe65cd",
+      "extraction": "Existing AST declaration/import/export span revalidated against full original bytes"
+    },
+    {
+      "name": "_St",
+      "artifact": "index",
+      "file": "spans/index-_St.txt",
+      "utf8_half_open": [
+        2555599,
+        2555829
+      ],
+      "bytes": 230,
+      "sha256": "220c80cb132288c1347b23170f7b822a54298827c54fb8bee0c703f70eeeb6f3",
+      "ast_type": "ClassDeclaration"
+    },
+    {
+      "name": "FAt",
+      "artifact": "index",
+      "file": "spans/index-FAt.txt",
+      "utf8_half_open": [
+        2828546,
+        2828780
+      ],
+      "bytes": 234,
+      "sha256": "1d4f53a1460b7fce389cc29b109d002f1ac997d08373fe71c25f1aad2c57f95f",
+      "ast_type": "ClassDeclaration"
+    },
+    {
+      "name": "ySt",
+      "artifact": "index",
+      "file": "spans/index-ySt.txt",
+      "utf8_half_open": [
+        2552188,
+        2555599
+      ],
+      "bytes": 3411,
+      "sha256": "7bd7df55ddbf55db2ed5863a00115af41e8696377bfb17a7ef5cb5e69ecb3913",
+      "ast_type": "ClassDeclaration"
+    },
+    {
+      "artifact": "renderer",
+      "name": "$wa",
+      "utf8_half_open": [
+        11151172,
+        11152004
+      ],
+      "bytes": 832,
+      "sha256": "834843853c83b1c6ad0963f9913e947389e09548448768cde9126083770829a2",
+      "extraction": "Unique named declaration anchors; manually inspected complete body; not new AST validation",
+      "file": "spans/renderer-$wa.txt"
+    },
+    {
+      "artifact": "renderer",
+      "name": "lSa",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "bytes": 338,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a",
+      "extraction": "Unique named declaration anchors; manually inspected complete body; not new AST validation",
+      "file": "spans/renderer-lSa.txt"
+    }
+  ],
+  "main_sources": [
+    {
+      "file": "src/features/terminal/session.ts",
+      "commit": "4739c9c029f87c64901a2431de6032b81f2b7348",
+      "bytes": 19465,
+      "sha256": "4e8169eb56b6bdf9e155886280ee9cc2301f97e58edb848973c233695a75d5c3"
+    },
+    {
+      "file": "src/features/terminal/pty.ts",
+      "commit": "4739c9c029f87c64901a2431de6032b81f2b7348",
+      "bytes": 3248,
+      "sha256": "6ae39f143a2ac74f846c08f02cefdbf7c0cba35c8336480e9e53dc47b9f61ec7"
+    },
+    {
+      "file": "src/features/terminal/shortcuts.ts",
+      "commit": "4739c9c029f87c64901a2431de6032b81f2b7348",
+      "bytes": 1529,
+      "sha256": "87c9790dc7b00682b37d679b04d90343da6b0fa81d7e7d02a94f258e6498b97a"
+    },
+    {
+      "file": "src/features/terminal/writeQueue.ts",
+      "commit": "4739c9c029f87c64901a2431de6032b81f2b7348",
+      "bytes": 446,
+      "sha256": "3a20d651fb8f410cd9cf13cc3bc19b68d609d7acd189a2bd3ffa4992f856009b"
+    },
+    {
+      "file": "src-tauri/src/terminal_commands.rs",
+      "commit": "4739c9c029f87c64901a2431de6032b81f2b7348",
+      "bytes": 9313,
+      "sha256": "75a8725122182bf9313501ce5d1abba608bb252e0afc8f11bc0a8762b432d24e"
+    },
+    {
+      "file": "src-tauri/src/terminal/manager.rs",
+      "commit": "4739c9c029f87c64901a2431de6032b81f2b7348",
+      "bytes": 12496,
+      "sha256": "9889795e54c7bf248d84a5336c2614272d906039a069366e92aa87d4c483a771"
+    }
+  ],
+  "verification": {
+    "complete_original_assets_rehashed": 2,
+    "retained_spans_matched": 14,
+    "product_execution": false,
+    "reference_execution": false,
+    "tests_run": false,
+    "runtime_or_install": false
+  },
+  "limits": [
+    "Source-only IPC-request mismatch, not observed redraw or shell execution.",
+    "No native PTY-allocation/reuse claim.",
+    "Historical full-Babel 60-second timeout remains an analysis gap; not rerun."
+  ]
+}

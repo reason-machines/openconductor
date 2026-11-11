@@ -1,0 +1,453 @@
+{
+  "unit": "ACQ-SETTINGS-CONFIG-SYNC-49-04",
+  "kind": "retained-static-source-only",
+  "offsets": "zero-based UTF-8 bytes, half-open [start,end)",
+  "original_archive": {
+    "attachment_id": "078ccf87-1bdc-43a9-b085-ea94babc5839",
+    "sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+    "bytes": 21493760
+  },
+  "assets": [
+    {
+      "member": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "member": ".rea-work/retained-reference/index-BGEQ8YjU.js",
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "spans": [
+    {
+      "name": "paths",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10940826,
+      "end": 10941110,
+      "sha256": "2153b6213cd028660ad6d656074f0841543e0fd84fdf083e116e6d4058f8b9d3"
+    },
+    {
+      "name": "skills",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10941110,
+      "end": 10941411,
+      "sha256": "b77905fd003c34dedae27df200cae7922f69b84d7850868a94afecfb31e11299"
+    },
+    {
+      "name": "copy-skills",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10941411,
+      "end": 10942181,
+      "sha256": "0f7a7eb1f7ab47cce48e86801271172c85d3c1b90f91a37b4b93e80127c9b893"
+    },
+    {
+      "name": "copy-commands",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10942181,
+      "end": 10942791,
+      "sha256": "02a74fe0ae838e31a924e87dd952805dd6d93a8e350639bbf745b165c9d54433"
+    },
+    {
+      "name": "diff-rules",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10942791,
+      "end": 10943385,
+      "sha256": "4b92da71fa61ace8ea845b99c507736e51ee180c736b5cfe3f64115062a5485e"
+    },
+    {
+      "name": "load-diff",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10943385,
+      "end": 10944278,
+      "sha256": "9666140efa3c1b96ccfea415bb5af0276ad68f2ffa68c7788fd2566da8240215"
+    },
+    {
+      "name": "sync-dispatch-and-consumers",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10944354,
+      "end": 10947660,
+      "sha256": "8a5c769c082bf2b163e741ac7e143633f18139fad44cf43ed1b2bb8739d678bf"
+    },
+    {
+      "name": "options-and-defaults",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10947660,
+      "end": 10948312,
+      "sha256": "503762a5bd608f493bda626dd3dfc4b48fa64a0c20720d09d28dd6891044cf66"
+    },
+    {
+      "name": "dialog-gate",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10948312,
+      "end": 10948507,
+      "sha256": "8a52397193bd445ec7776cf635d56bc970b611839c29b66f044e9b55f73c1d40"
+    },
+    {
+      "name": "dialog",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10948507,
+      "end": 10953485,
+      "sha256": "25a11259c1ad67003f27a7ad58aec15540531fb329f03dea6b9a4befa8d5f87b"
+    },
+    {
+      "name": "error-query-reset",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10953485,
+      "end": 10953690,
+      "sha256": "ac48ba868416ff9a9af3d9320006e1165750c0480a8dd0298801e9c7322fe7e9"
+    },
+    {
+      "name": "category-control",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10953690,
+      "end": 10956803,
+      "sha256": "321cf8d967cb45b2147a3a519cf3f03211251f086454d1711ab31236618dcde5"
+    },
+    {
+      "name": "item-control",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10956846,
+      "end": 10957876,
+      "sha256": "d3dda3dd8be727b34119197cd6b01652459570b8e40bd3d2d4e217cb5d76050d"
+    },
+    {
+      "name": "settings-row",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10716898,
+      "end": 10717259,
+      "sha256": "5314f31b09ad2a10988831cffa222d064e9e07dd0afe01be4cc574c97abbe029"
+    },
+    {
+      "name": "mcp-codec-read-write",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 10416750,
+      "end": 10426984,
+      "sha256": "be09512c00ea7405f692cfd62a5b07242a7f0f1ff20a31e71d5d95e5bc7d9196",
+      "kind": "complete source span"
+    },
+    {
+      "name": "dialog-root-mount",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 11100379,
+      "end": 11100392,
+      "sha256": "14379e0bee4e51de5b9663afe01a3bb934fa40cd7d00e2e1f50cff989e123271",
+      "kind": "call-site fragment"
+    },
+    {
+      "name": "index-import",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 52991,
+      "end": 66495,
+      "sha256": "711b96377098ad3838934209f1710cb85acfc256abecae07605139daf0670ed5",
+      "kind": "full index import declaration"
+    },
+    {
+      "name": "export-c3",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3481358,
+      "end": 3481366,
+      "sha256": "2cae0f0dd88b6afd30238b45d74a445b3dff620e32088c1fccb9b9281458a8ad",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "binding-Pt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3469810,
+      "end": 3469902,
+      "sha256": "2a805567c52b549dfb89ec20ec218e250c05898f7d6237adf1b13e78dc36cdf7",
+      "kind": "complete source span"
+    },
+    {
+      "name": "export-d7",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3482027,
+      "end": 3482035,
+      "sha256": "963ae4d0b0c9a09f17c964a8beb5016d6ee2ed4d5d03d836c6197a681010f5e1",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "binding-mU",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3470666,
+      "end": 3470758,
+      "sha256": "d93a2632a0931edd95175ad2ab752a2fe1411fdbb0d9372f9b576c17bef1ed9d",
+      "kind": "complete source span"
+    },
+    {
+      "name": "export-V",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3480033,
+      "end": 3480039,
+      "sha256": "090d298be2bda5b74c801c87f5308ea4ddac83eef145236b0e181c89d91b8203",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "export-eunderscore",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3482930,
+      "end": 3482938,
+      "sha256": "e7a53cdd9127cc8882b13d94705485c2bd0a2e1168697107d4228b239c39688a",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "binding-Va",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3470984,
+      "end": 3471060,
+      "sha256": "3a5dee8cbe0acaa67f255b1e0435dc3f6d3f9f54a6fd11dddf5554a7b4a84c30",
+      "kind": "complete source span"
+    },
+    {
+      "name": "export-aw",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3480659,
+      "end": 3480667,
+      "sha256": "3cadd24eb0149be65e841cf221b7654f98502d816704dcaaff02abbd19b0e936",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "binding-Ka",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3469902,
+      "end": 3469994,
+      "sha256": "cf211cff9784f45970b66eccc3e0bd177136689d60005073314ccb32132fba19",
+      "kind": "complete source span"
+    },
+    {
+      "name": "export-jq",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3486232,
+      "end": 3486241,
+      "sha256": "390fb329d9ee7becff340307ab89dbe5f8e06ff0d456192025372d1c1018e8e9",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "binding-vXt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3470201,
+      "end": 3470316,
+      "sha256": "c043a16de3c742995f6b898ba1cd077de5ba60c68f672ac23f75c902be42a9bf",
+      "kind": "complete source span"
+    },
+    {
+      "name": "export-l0",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3486977,
+      "end": 3486985,
+      "sha256": "6932b1a4569d8b5ce85b95414e88190344b0bedc1da2e22c0d3e341d2c0e5e80",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "binding-Ua",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3471060,
+      "end": 3471164,
+      "sha256": "956b33c083feac4f05ef556d8f79273de346abf5f3cc425f36beeeba797acefc",
+      "kind": "complete source span"
+    },
+    {
+      "name": "export-k7",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3486416,
+      "end": 3486424,
+      "sha256": "3767b699f5bfa727f4bd181532619c2090d40b20204939c5d22d905318e8d926",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "binding-wo",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3469994,
+      "end": 3470086,
+      "sha256": "0166de0a0008b9f6cce4303e5ae5ac83e0be3f2f75e9f91870eef1d11ae7cef0",
+      "kind": "complete source span"
+    },
+    {
+      "name": "export-bp",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3481205,
+      "end": 3481213,
+      "sha256": "659fc00db7c3392c822d6798e69fa6235676c868f2a22cf13a9279d5534fee68",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "export-eZ",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3482921,
+      "end": 3482929,
+      "sha256": "258868aa1de15a50ddffa1748c04e5bebe4685587f9212d879c1a09620112011",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "binding-vt",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 20753,
+      "end": 20810,
+      "sha256": "27e7936e1b67a8edd898f6cfd30b891222e0d2da94ecf7f0e8fd68cebd87e000",
+      "kind": "complete source span"
+    },
+    {
+      "name": "export-qT",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3490455,
+      "end": 3490464,
+      "sha256": "4f451668887292225630412e1e70d3ddf46235636634148f5f23fd4d3f666abe",
+      "kind": "export alias fragment"
+    },
+    {
+      "name": "plugin-U0e",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 20165,
+      "end": 20249,
+      "sha256": "08161763339b6986b0983d63bb8e57fdc8665a45079350359e329fb0df896f6b",
+      "kind": "complete source span"
+    },
+    {
+      "name": "plugin-rh",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 20594,
+      "end": 20753,
+      "sha256": "11174afacc438cd02612535b6defea711f254030190be65efc364530cc917a82",
+      "kind": "complete source span"
+    },
+    {
+      "name": "plugin-dke",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 27374,
+      "end": 27568,
+      "sha256": "a85c39ca4fae0810602eae64043b81810a470b24e57b6ecd324921e59952b1c5",
+      "kind": "complete source span"
+    },
+    {
+      "name": "plugin-nke",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 25329,
+      "end": 25525,
+      "sha256": "ee5ba1923b2933b17016caf4104511ec9ee47b371ba3df134712eb4e962b40fa",
+      "kind": "complete source span"
+    },
+    {
+      "name": "plugin-ike",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 25792,
+      "end": 26078,
+      "sha256": "beb2f15ac0dfb5756d6caa5223a746734dd16386f006ede4f8c9077e0fa0bb45",
+      "kind": "complete source span"
+    },
+    {
+      "name": "plugin-ske",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 25143,
+      "end": 25329,
+      "sha256": "65ffd89a5234fb88f6d3c6a5c88723e3355731ef8afeed3a5fc3c56d45d20146",
+      "kind": "complete source span"
+    },
+    {
+      "name": "plugin-tke",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 24868,
+      "end": 25143,
+      "sha256": "05395ea6e1d348ecc17d407ccf83110ea0ed39ce1afdacac765c293f2d10f300",
+      "kind": "complete source span"
+    },
+    {
+      "name": "plugin-uke",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 27094,
+      "end": 27374,
+      "sha256": "181eac1e7a7c3cade4ccecf03bd784f2caacc9e429b5ea8dab6d978f8dea8b2f",
+      "kind": "complete source span"
+    },
+    {
+      "name": "plugin-oke",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 26078,
+      "end": 26265,
+      "sha256": "f60bd5579debfeb3f11f3b12d306a1a0dc4027c6303d6082ec37507329829a8b",
+      "kind": "complete source span"
+    },
+    {
+      "name": "local-host",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 2486,
+      "end": 2518,
+      "sha256": "c6c2c126b133e40e2a7003c126515c141155ce965b7ffda0e359fea30c7a2a5b",
+      "kind": "declaration fragment"
+    },
+    {
+      "name": "dialog-id",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3261921,
+      "end": 3261952,
+      "sha256": "fb8b8cf63fbecf2cdf86f03608df8ebf3ece13f236bcb9d2147e5712eb81a9e7",
+      "kind": "declaration fragment"
+    },
+    {
+      "name": "home-cache",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 20666,
+      "end": 20682,
+      "sha256": "36f3fcca0ab25e82b9c240f668fb329f85bb1fa4194540a5d74cc5e08848ef02",
+      "kind": "declaration fragment"
+    },
+    {
+      "name": "settings-button-row-helper",
+      "asset": "renderApp-D_fmY7hW.js",
+      "start": 7757954,
+      "end": 7758506,
+      "sha256": "2cd88e36f385b0ff77897f4d35123514842a29907c9f5a9ec55ef393f76876ad",
+      "kind": "full function declaration"
+    },
+    {
+      "name": "local-host-full-declaration",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 2439,
+      "end": 2518,
+      "sha256": "da6c1e194116d1dbc18f325817cba491c8022a87bd2e08be1c751356a70cc5a7",
+      "kind": "full const declaration"
+    },
+    {
+      "name": "dialog-store",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3260595,
+      "end": 3261124,
+      "sha256": "ef896c474e4d499346ec949dfce321ca017a534139566b9946f5ee7b0bc61f60",
+      "kind": "complete store initializer and wrapper bindings within a multi-declarator statement"
+    },
+    {
+      "name": "export-dialog-store",
+      "asset": "index-BGEQ8YjU.js",
+      "start": 3481367,
+      "end": 3481375,
+      "sha256": "18a9822b762e735679b753104251e30099d85e500b5f1bc02d7b6ddd9fd18125",
+      "kind": "export alias fragment"
+    }
+  ],
+  "contract": [
+    "The user-scope General registration renders a Sync action opening the shared sync-agent-configs-dialog. Its helper forwards an omitted disabled prop rather than adding a cloud gate.",
+    "The mounted dialog reads a fresh diff on opening. It presents MCP servers, slash commands and skills in that order. Categories start collapsed; all missing items start selected via empty deselection sets.",
+    "Diffs compare names, not changed contents. Existing same-name entries are not offered for overwrite. A category read error is reported for that category while other categories can load.",
+    "Skills are non-hidden directories containing SKILL.md. Skill copy omits .git, node_modules and .DS_Store. Root SKILL.md imported to Codex gets basic frontmatter if absent. Partial failed skill copies are removed by the frontend request chain.",
+    "Slash command names come from recursively discovered non-hidden Markdown files without their .md suffix. Missing files are copied in both directions, creating parent directories.",
+    "MCP source entries are filtered to supported shapes; occupied target names block copying even if unsupported. Claude JSON preserves unrelated top-level raw properties. Codex TOML appends converted sections to the held raw text. Codex bearer-token-env and env-http-header entries are excluded from the reverse direction. Allowed env and literal header fields can be carried across.",
+    "Only selected items/categories are submitted. Primary Sync is disabled for zero selected items or while pending. Cancel is disabled while pending. Closing resets selection and expansion; successful mutation closes only with zero failures/unsupported entries. The diff query is invalidated after a resolved mutation."
+  ],
+  "architecture": {
+    "classification": "LOCAL_CONFIG_COPY_WITH_POSSIBLE_MCP_SECRET_VALUES",
+    "not_exclusively_architecture_excluded_cloud": true,
+    "evidence": "Plugin Home supplies both roots; gn imports index M, and all immediate file operations pass that same local-host object. No remote host, VM, Reason cloud call, provider login transfer or Keychain operation occurs in this bounded chain.",
+    "credential_caveat": "MCP args/env/headers/http_headers are copied as data and may contain credentials. Reading a whole local .claude.json in the reference can also load unrelated raw fields, although only mcpServers are merged. This is not proof credential copying is authorized for OpenConductor. No credential-bearing real file was read by this investigation.",
+    "no_invented_equivalent": "The source contract includes all three categories. No cloud substitute or credentials-stripped local product replacement is proposed."
+  },
+  "verification": {
+    "original_archive_sha256": "passed",
+    "asset_hashes": "passed",
+    "asset_byte_ranges_and_retained_span_files": "passed",
+    "assets": 2,
+    "spans": 52,
+    "code_executed_from_reference": false
+  },
+  "limits": "No original app/native/plugin execution, permissions, visual comparison or real credential/config reads. Source proves the retained JS request chain only."
+}

@@ -72,6 +72,9 @@ mod repo_misc_commands;
 mod sidebar_section_commands;
 pub mod sidebar_transparency;
 mod agent_settings_commands;
+mod config_sync;
+#[path = "config_sync/commands.rs"]
+mod config_sync_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
@@ -515,6 +518,8 @@ pub fn run() {
             agent_settings_commands::cli_login_status,
             agent_settings_commands::favorite_models_list,
             agent_settings_commands::favorite_models_replace,
+            config_sync_commands::config_sync_diff,
+            config_sync_commands::config_sync_apply,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,

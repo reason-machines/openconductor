@@ -1,0 +1,53 @@
+{
+  "unit": "ACQ-HOME-LOCAL-EMPTY-271-02-candidate",
+  "result": "EXPECTED_RED_THEN_GREEN_AND_HELPER_PASS",
+  "source_checkout_head": "0ffdbef260742b4720a7211fb3939f7420900616",
+  "actual_checked_default_main": "b34ba2de9ad45365715d21a0bfe24d9c36b335fb",
+  "phase_results": {
+    "red": {
+      "exit_code": 1,
+      "elapsed_seconds": 1.787,
+      "counts": {
+        "tests": 9,
+        "pass": 8,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "fixture_sha256_after": "0368e970513156b1446366774d85ec3461c3358ca12328a5d6d40fec32daae49"
+    },
+    "green": {
+      "exit_code": 0,
+      "elapsed_seconds": 1.531,
+      "counts": {
+        "tests": 9,
+        "pass": 9,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "fixture_sha256_after": "0368e970513156b1446366774d85ec3461c3358ca12328a5d6d40fec32daae49"
+    },
+    "related": {
+      "exit_code": 0,
+      "elapsed_seconds": 0.316,
+      "counts": {
+        "tests": 13,
+        "pass": 13,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "fixture_sha256_after": "0368e970513156b1446366774d85ec3461c3358ca12328a5d6d40fec32daae49"
+    }
+  },
+  "whitespace_and_patch_check": "PASS",
+  "no_install": true,
+  "foreground_processes_terminated": true,
+  "local_slot_released": true,
+  "product_checkout_edited": false,
+  "publication": "not yet; transfer to one separate main-based delivery Session"
+}

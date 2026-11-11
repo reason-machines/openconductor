@@ -1,0 +1,56 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home retains a surviving selected workspace and Enter target when a project filter removes earlier rows
+ok 1 - Home retains a surviving selected workspace and Enter target when a project filter removes earlier rows
+  ---
+  duration_ms: 168.04408
+  type: 'test'
+  ...
+# Subtest: Home retains selection when clearing the project filter inserts earlier rows
+ok 2 - Home retains selection when clearing the project filter inserts earlier rows
+  ---
+  duration_ms: 84.753364
+  type: 'test'
+  ...
+# Subtest: Home resets to the first remaining row when the selected workspace is filtered out
+ok 3 - Home resets to the first remaining row when the selected workspace is filtered out
+  ---
+  duration_ms: 92.227603
+  type: 'test'
+  ...
+# Subtest: Home selects the first row after an empty filtered list becomes nonempty
+ok 4 - Home selects the first row after an empty filtered list becomes nonempty
+  ---
+  duration_ms: 48.649487
+  type: 'test'
+  ...
+# Subtest: Home search changes reset selection even when the selected workspace still matches
+ok 5 - Home search changes reset selection even when the selected workspace still matches
+  ---
+  duration_ms: 67.421209
+  type: 'test'
+  ...
+# Subtest: Home row clicks activate that workspace rather than the previous keyboard target
+ok 6 - Home row clicks activate that workspace rather than the previous keyboard target
+  ---
+  duration_ms: 33.57406
+  type: 'test'
+  ...
+# Subtest: Home retains selection across same-group row reordering but resets after the selected row changes date group
+ok 7 - Home retains selection across same-group row reordering but resets after the selected row changes date group
+  ---
+  duration_ms: 42.564409
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1065.212167

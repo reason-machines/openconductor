@@ -1,0 +1,1 @@
+function DAt({backend:t=new FAt}={}){const e=OAt(),s=new $kt(t,e,{debugLogger:Dde,getMaxBufferedLines:iAt,historyStore:$D.historyStore,persistenceCoordinator:$D.persistenceCoordinator});return s.onSessionChange(n=>{n.connectionState!=="disposed"&&n.connectionState!=="exited"&&n.connectionState!=="spawn_error"||e.cleanupDirectScript(n.id).fireAndForget()}),s}
