@@ -37,16 +37,31 @@ selection highlighting, the captured request and the pending-submit guard.
 [fixture.sha256](fixture.sha256) freezes this new fixture across hosted RED and
 GREEN. No local component test, build or browser ran because this lane has no
 serialized local test slot. Normal automatic hosted checks provide the execution
-route. The regression-only publication leaves production and the old test
-unchanged. Intended RED has not yet been observed.
+route. The regression-only head `f69cdd7fcc5ad69cf7ad7afdfb726aa90eb9fed3` left
+production and the old test unchanged. Automatic hosted
+[unit job 130670992015](https://github.com/reason-machines/openconductor/actions/runs/43063190036/job/130670992015)
+ran `node --test "src/**/*.test.ts"` and reported **2923 passed, 4 failed**.
+Both idle-selection cases passed. Only the four new pending-selection and
+retry cases failed, each on the disabled recent button. The separate frontend
+build job ran the same suite and failed on the same four cases, not compilation.
+[Hosted RED receipt](hosted-red.json) preserves the failing names and output.
 
 The old [clonePendingInputs fixture](baseline-clonePendingInputs.test.ts.txt)
 asserts that recent buttons are disabled while cloning. Its original bytes and
 hash are preserved here. The ledger found no explicit user freeze of that
 assertion and reserved its single-assertion migration for this owner. After
-intended RED, it will assert the source-proven enabled contract. No test is
-skipped, deleted, marked expected-failure or weakened. Its other submit, progress,
-retry and input controls remain unchanged.
+intended RED, the candidate removes only the recent button's `disabled={pending}`
+prop. The old fixture now asserts that recent selection remains enabled. Only
+that assertion and its case label changed. No test is skipped, deleted or marked
+expected-failure. Its other submit, progress, retry and input controls remain
+unchanged. The new six-case fixture remains byte-identical to hosted RED.
+Candidate hosted GREEN has not yet been observed.
+
+Before applying the candidate, fresh main
+`435c3356902c3e7cdf246f3089029154b3f908f6` had byte-identical
+`CloneGitHubRepoDialog.tsx`, `clonePendingInputs.test.ts` and `DialogFrame.tsx`
+counterparts. The retained-source verifier and frozen fixture checksum passed
+again on Reason Cloud. This static check runs no component or reference app.
 
 ## Limits
 
