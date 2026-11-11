@@ -1,0 +1,42 @@
+{
+  "baseline_commit": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "phases": {
+    "baseline": {
+      "node": {
+        "tests": 7,
+        "pass": 3,
+        "fail": 4
+      },
+      "node_exit": 1,
+      "mounted_input": {
+        "tests": 6,
+        "pass": 2,
+        "fail": 4
+      },
+      "input_exit": 1,
+      "input_fixture_sha256": "7e378f757d7838440955733c9d1d9b907a64fd6a80b03b26768f5e7201f45e26",
+      "rust_exit": 101,
+      "node_fixture_sha256": "8b04f0fbe90ddd1d241ff2e0495263193868f27f2e4fc2c5df7e389c503b3d30",
+      "rust_fixture_sha256": "64eb03864e32c7d4108f133cc45366c9886f0edf47dd672f3d6cd9980a5ada0c"
+    },
+    "candidate": {
+      "node": {
+        "tests": 7,
+        "pass": 7,
+        "fail": 0
+      },
+      "node_exit": 0,
+      "mounted_input": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0
+      },
+      "input_exit": 0,
+      "input_fixture_sha256": "7e378f757d7838440955733c9d1d9b907a64fd6a80b03b26768f5e7201f45e26",
+      "rust_exit": 0,
+      "node_fixture_sha256": "8b04f0fbe90ddd1d241ff2e0495263193868f27f2e4fc2c5df7e389c503b3d30",
+      "rust_fixture_sha256": "64eb03864e32c7d4108f133cc45366c9886f0edf47dd672f3d6cd9980a5ada0c"
+    }
+  },
+  "result": "PASS: intended baseline assertions fail; identical fixtures pass on candidate"
+}
