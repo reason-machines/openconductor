@@ -106,7 +106,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
                 {recent.map((r) => (
                   <li key={r.id}>
                     <button
-                      type="button" disabled={pending} aria-pressed={isSelectedRepo(r, url)}
+                      type="button" aria-pressed={isSelectedRepo(r, url)}
                       className={isSelectedRepo(r, url) ? "selected" : ""} onClick={() => setUrl(recentRepoUrl(r, protocol))}
                     >
                       {r.owner.avatar_url ? <img src={r.owner.avatar_url} alt="" /> : <span className="clone-avatar" />}

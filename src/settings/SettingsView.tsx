@@ -253,6 +253,7 @@ export function SettingsView({ location, repos, onNavigate, onClose, miscActions
               settings={settings}
               save={save}
               reload={reload}
+              notify={notify}
               onOpenReasonSettings={() => onNavigate({ scope: "user", page: "providers" })}
               onLaunchCloudWorkspace={onLaunchCloudWorkspace}
             />
@@ -268,6 +269,7 @@ function UserPage({
   settings,
   save,
   reload,
+  notify,
   onOpenReasonSettings,
   onLaunchCloudWorkspace,
 }: {
@@ -275,6 +277,7 @@ function UserPage({
   settings: Settings;
   save: ReturnType<typeof useSettings>["save"];
   reload: () => void;
+  notify: Props["miscActions"]["notify"];
   onOpenReasonSettings: () => void;
   onLaunchCloudWorkspace: () => void;
 }) {
@@ -302,7 +305,7 @@ function UserPage({
     case "git":
       return <GitPage settings={settings} save={save} />;
     case "general":
-      return <GeneralPage settings={settings} save={save} />;
+      return <GeneralPage settings={settings} save={save} notify={notify} />;
   }
 }
 

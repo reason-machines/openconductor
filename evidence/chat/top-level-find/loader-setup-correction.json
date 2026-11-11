@@ -1,0 +1,17 @@
+{
+  "cause": "The fixture extension resolver mistook .generated in conductorIcons.generated for a file extension and did not try the real .ts file. Both loaders now test file existence before suffix resolution. No product or behavioral assertion was changed.",
+  "changes": [
+    {
+      "path": "tests/chat-search/transcriptFind.component.test.mjs",
+      "before_sha256": "ea7db7ab1677be54fed0b2cd9439d79d988a027b341cc57f0933a61e1dde709b",
+      "after_sha256": "c8a7886319634c2d854004c01e19e39d04544cd5ac51820dcbee9438ee2ea942",
+      "all_test_bodies_unchanged": true
+    },
+    {
+      "path": "tests/chat-search/transcriptFind.dom.test.mjs",
+      "before_sha256": "c9103ce31295556262a3284447b7be560f878690212ac75d532b0eb22aa7540f",
+      "after_sha256": "19e99902cc674b291e482ba21203e5bb301989885a9276701d76b4ccba009568",
+      "all_test_bodies_unchanged": true
+    }
+  ]
+}

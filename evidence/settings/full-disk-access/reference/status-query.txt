@@ -1,0 +1,1 @@
+async function cga(){try{return await tl("check_full_disk_access")}catch(t){return Bt.error("check_full_disk_access failed:",t),!0}}const uga={status:()=>["fullDiskAccessStatus"]},dga={status:()=>({queryKey:uga.status(),queryFn:cga})};
