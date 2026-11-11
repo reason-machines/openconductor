@@ -29,7 +29,13 @@ Three new fixture files contain 20 cases:
 
 These tests do not prove native selection, actual browser focus/layout, clipboard behavior, asynchronous transfer completion or provider delivery. The caller tests do not mount the entire workspace.
 
-The initial commit contains tests and evidence only. Hosted baseline RED is pending. No Node, browser, app or native execution ran locally. The unchanged fixtures must run again after the minimal fix. Setup, loader and type errors are not behavioral RED.
+The corrected test-only head `00bcc7a91d2b6516d46e69e8a823f6eff82c14d3` ran in automatic CI `43072746848`. Unit job `130704635122` recorded 17 assertion failures and three passing controls across these 20 cases; the ordinary suite recorded 2971 passes and 17 failures. Four callback-region existence failures establish missing source, not executed callback behavior. Typecheck job `130704634801` completed `tsc --noEmit` successfully, then failed the same ordinary-suite assertions. The retained log window (trailing whitespace removed only) and receipt are `baseline-00bcc7a.txt` and `baseline-00bcc7a.json`. Setup, loader and type errors are not behavioral RED.
+
+Before the candidate, main `c25670504400771e2fb31e01560db249ea4bd06c` was fetched and re-read. It contains #1065. The three terminal/caller baseline files are unchanged; the editor matches #1065’s reported SHA-256, and its `atTop`/Up behavior is preserved. `candidate-source.json` records all four current-main and candidate source hashes.
+
+The candidate subscribes to the visible host’s xterm selection, offers its normalized preview and action, sends a timestamped text attachment through the existing target-chat bridge, and clears only React action state when accepted. A guarded animation frame reveals/focuses that chat at the rich document’s end. Ordinary editor focus keeps its selection; no empty insertion or transport/backend change is used. All three fixture files are byte-identical to the corrected RED baseline. Candidate execution is pending automatic hosted CI.
+
+No Node, browser, app or native execution ran locally. No screenshot is supplied because browser/native execution is outside this lane’s admission. Actual DOM layout/focus, installed-app behavior and asynchronous attachment/provider delivery remain unverified.
 
 ```bash
 python3 evidence/terminal/selection-add-to-chat/verify-source.py

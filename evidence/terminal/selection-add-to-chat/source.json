@@ -79,7 +79,7 @@
       "sha256": "7fb4d437798219ccf81bf4e4bb77f418ac4f03fda95e2c227df8b8caa315d975"
     }
   ],
-  "hosted_baseline": "NOT_RUN",
+  "hosted_baseline": "00bcc7a: 17 intended assertion failures, 3 controls pass; tsc PASS; details baseline-00bcc7a.json",
   "local_node_browser_native": "NOT_RUN",
   "fixture_typing_correction": "Destructured default alias plus explicitly optional local target; all test bodies and assertions unchanged. New hosted baseline required before candidate."
 }

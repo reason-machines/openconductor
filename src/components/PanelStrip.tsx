@@ -30,9 +30,11 @@ interface Props {
   /** Setup's "Ask agent": sends the setup-script prompt to the workspace's chat; absent when it can't. */
   onAskSetupAgent?: () => void;
   onOpenPreview?: (workspaceId: string, url: string) => boolean;
+  chatSessionId?: string;
+  onAddTerminalSelection?: (text: string) => boolean;
 }
 
-export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd, onAskSetupAgent, onOpenPreview }: Props) {
+export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd, onAskSetupAgent, onOpenPreview, chatSessionId, onAddTerminalSelection }: Props) {
   const wsId = workspace.id;
   const inAppBrowser = useBoolPref("experimental_in_app_browser_preview");
   const terms = useSyncExternalStore(subscribeTabs, () => getTabs(wsId));
@@ -174,7 +176,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
       </div>
       {showTerminal && (
         <section className="terminal-panel" aria-label="Terminal">
-          <TerminalHost key={activeTerm.id} id={activeTerm.id} status={activeTerm.status} />
+          <TerminalHost key={activeTerm.id} id={activeTerm.id} status={activeTerm.status} sessionId={chatSessionId} onAddToChat={onAddTerminalSelection} />
         </section>
       )}
     </section>

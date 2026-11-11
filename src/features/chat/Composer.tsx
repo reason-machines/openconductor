@@ -235,7 +235,10 @@ export function Composer({
   /** Moves focus to a queued row or back to the message box. */
   function focus(target: QueueFocus) {
     if (target === "composer") return inputRef.current?.focus();
-    queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`)?.focus();
+    const row = queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`);
+    if (!row) return false;
+    row.focus();
+    return true;
   }
 
   function onKeyDown(e: globalThis.KeyboardEvent) {
@@ -279,11 +282,13 @@ export function Composer({
       setSlashDismissed(slashKey);
       return;
     }
-    // ↑ with the caret at the very start goes to the last queued message.
-    const current = inputRef.current?.selection();
-    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {
-      e.preventDefault();
-      focus({ row: queue.items[queue.items.length - 1].id });
+    const box = inputRef.current;
+    const current = box?.selection();
+    if (e.key === "ArrowUp" && plain && queue.items.length > 0 && queue.editingId === null && (box?.atTop?.() ?? (current?.start === 0 && current.end === 0))) {
+      if (focus({ row: queue.items[queue.items.length - 1].id })) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     } else if (hit("chat.cancel") && working) {
       e.preventDefault();
       onStop();
