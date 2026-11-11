@@ -17,11 +17,11 @@ Original received source is retained in [this Session](https://reasonmachines.co
 
 ## Current-main discrepancy
 
-Fetched main `4a4a35899c007be0c7d0597fcf8df13c9b252601` uses `setOwner((cur) => cur || value.owners[0]?.login || "")` after every successful owners load. Once an owner is selected, this retains its login even when the refreshed list no longer contains it.
+Fetched main `4a4a35899c007be0c7d0597fcf8df13c9b252601`, revalidated unchanged at `a0a82a29e7dccee0ddb2fa530203ed711ab8e1e2`, uses `setOwner((cur) => cur || value.owners[0]?.login || "")` after every successful owners load. Once an owner is selected, this retains its login even when the refreshed list no longer contains it.
 
 The existing Try again path makes this reachable. An initial personal owner with an organizations error exposes Retry. If its next owners result contains a different signed-in personal login, the current component displays and checks the old login. This is a controlled source-level schedule, not an observed real authentication change. The Rust owners producer reads the current personal login on each request and returns that login with an organizations error, matching the fixture's result shapes.
 
-The proposed correction keeps a selected login only when the refreshed result still contains it, otherwise choosing its first owner or an empty string. No callback, network command, or shared state model needs to change.
+The correction keeps a selected login only when the refreshed result still contains it, otherwise choosing its first owner or an empty string. No callback, network command, or shared state model needs to change.
 
 The ledger cleared `GITHUB-OWNER-RETRY-6013-01` for only the owner reconciliation line, its adjacent regression, and this evidence directory. No other product code is included.
 
@@ -31,7 +31,19 @@ The ledger cleared `GITHUB-OWNER-RETRY-6013-01` for only the owner reconciliatio
 
 The regression covers a removed owner falling back before availability and creation, a still-valid owner surviving refresh, and initial empty selection remaining unable to submit until the first owner and its availability arrive. The two refresh results use valid personal-owner and organizations-error shapes. They do not perform authentication changes.
 
-This first checkpoint changes tests and evidence only. Production stays unchanged until normal automatic hosted CI demonstrates the intended stale-login failure. The focused command is:
+The first checkpoint changed tests and evidence only. Normal automatic hosted CI at published head `9a62be3d7c33be9032aeddb3ebb55806fd93f0b1` demonstrated the intended stale-login failure in [Frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/42927675066/job/130218205723), lines 486–509:
+
+```text
+not ok 53 - GitHub owner retry replaces a login absent from the refreshed owners before checking or creating
+Expected values to be strictly equal:
++ actual - expected
++ 'previous-user'
+- 'current-user'
+```
+
+The remaining two owner tests passed. This was the job's only `not ok` result. The [Frontend typecheck + build job](https://github.com/reason-machines/openconductor/actions/runs/42927675066/job/130218205783), lines 549–572, reached the same intended assertion after typecheck passed; build was skipped because the tests failed. This established RED before changing production. The correction changes only the successful owners-load reconciliation line. The regression remains byte-for-byte unchanged.
+
+The focused command is:
 
 ```bash
 node --experimental-strip-types --test src/components/githubRepoOwners.test.ts
@@ -45,4 +57,4 @@ node evidence/dialogs/github-owner-retry/verify-reference.mjs
 git diff --check
 ```
 
-The reference verifier passed all five source byte-length and SHA-256 checks without executing reference code. Test syntax and diff hygiene passed. Local component execution, installation, typecheck, build, browser, native launch, and provider operations were not run because this lane has no runtime admission. Automatic hosted RED and GREEN are not yet established. There is no screenshot. Source and future hosted component checks do not prove native or visual acceptance.
+The reference verifier passed all five source byte-length and SHA-256 checks without executing reference code. Test syntax and diff hygiene passed. Local component execution, installation, typecheck, build, browser, native launch, and provider operations were not run because this lane has no runtime admission. Hosted RED is established above. GREEN on the fixed published head remains pending. There is no screenshot. Source and hosted component checks do not prove native or visual acceptance.
