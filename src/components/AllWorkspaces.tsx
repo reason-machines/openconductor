@@ -29,6 +29,7 @@ import {
 } from "../home/allWorkspaces";
 import { listArchivedWorkspaces, onArchiveEvent, type ArchivedWorkspace } from "../workspace/archive";
 import { effectiveShortcuts } from "../keybindings/overrides";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { useWorkspaceAgentStatus } from "../features/chat/useWorkspaceSession";
 import { homeStatus, rowGitStatus, rowStatusColor, rowStatusLabel, showsActivityStatus } from "../state/rowStatus";
 import { RowStatusIcon } from "./RowStatusIcon";
@@ -237,6 +238,7 @@ function Row({
 }
 
 export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch, onCreateWorkspace }: Props) {
+  const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const repoIds = useMemo(() => new Set(repos.map((r) => r.id)), [repos]);
   const [filters, setFiltersState] = useState<HomeFilters>(() => loadFilters(repoIds));
@@ -296,6 +298,12 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
       : dispatch({ type: "select", selection: { kind: "workspace", repoId: row.repo.id, workspaceId: row.workspace.id } });
 
   const onSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Home" || e.key === "End") {
+      e.preventDefault();
+      const entry = flat[e.key === "Home" ? 0 : flat.length - 1];
+      if (entry) setActiveKey(entry.key);
+      return;
+    }
     if (flat.length === 0) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -310,7 +318,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
     }
   };
 
-  const toggleHint = effectiveShortcuts("view.toggleLeftSidebar").map(glyphs).join(" or ");
+  const toggleHint = effectiveShortcuts("view.toggleLeftSidebar", overrides).map(glyphs).join(" or ");
   let index = -1;
 
   return (

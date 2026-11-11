@@ -35,18 +35,20 @@ export function TranscriptSearch({ transcript, children }: {
   const open = () => change(search.kind === "open" ? { ...search, focus: search.focus + 1 } : { kind: "open", query: "", index: 0, focus: 1 });
   const navigate = (delta: number) => {
     if (search.kind !== "open" || matches.length === 0) return false;
-    change({ ...search, index: (index + delta + matches.length) % matches.length });
+    const next = (index + delta + matches.length) % matches.length;
+    change({ ...search, index: next });
+    scrollTo(matches[next]);
   };
-  const scroll = () => {
-    if (!selected) return false;
-    const turn = [...(container.current?.querySelectorAll<HTMLElement>(".oc-turn[data-turn-id]") ?? [])].find((node) => node.dataset.turnId === selected.turnId);
+  const scrollTo = (match: typeof selected) => {
+    if (!match) return false;
+    const turn = [...(container.current?.querySelectorAll<HTMLElement>(".oc-turn[data-turn-id]") ?? [])].find((node) => node.dataset.turnId === match.turnId);
     turn?.scrollIntoView({ block: "center", behavior: "smooth" });
   };
   useKeybindings({ "chat.search": open }, { enableOnTerminalFocus: false });
   useKeybindings({
     "chat.searchNext": () => navigate(1),
     "chat.searchPrevious": () => navigate(-1),
-    "chat.scrollToMatch": scroll,
+    "chat.scrollToMatch": () => scrollTo(selected),
   }, { priority: PRIORITY.HIGH, enabled: search.kind === "open", enableOnTerminalFocus: false });
 
   const session = useRef<string>();
@@ -66,7 +68,6 @@ export function TranscriptSearch({ transcript, children }: {
     let cleanup: (() => void) | undefined;
     const frame = requestAnimationFrame(() => {
       cleanup = highlightTranscript(root, query, selected);
-      scroll();
     });
     return () => { cancelAnimationFrame(frame); cleanup?.(); };
   }, [transcript, query, selected]);

@@ -1,0 +1,1 @@
+function Joi(t){return t.replace(/[\p{Cc} ~^:?*[\\\s]/gu,"").replace(/@\{/g,"").replace(/\.{2,}/g,".").replace(/^[.-]+/,"").replace(/\/\.+/g,"/").replace(/\/{2,}/g,"/").replace(/^\/+/,"")}const OIr=/[/_.-]$/;

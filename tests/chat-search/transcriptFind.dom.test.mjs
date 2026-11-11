@@ -113,6 +113,7 @@ test("actual Transcript DOM highlights only top-level text, centers selection, a
     const marks = () => [...f.container.querySelectorAll('mark[data-search-highlight="true"]')];
     assert.equal(marks().length, 3, "tool and thinking controls never receive marks");
     assert.equal(marks().filter((m) => m.dataset.searchCurrent === "true").length, 1);
+    await f.key("j", { metaKey: true, altKey: true }, input);
     assert.equal(scrolls.at(-1).element.dataset.turnId, "turn-1");
     assert.equal(scrolls.at(-1).options.block, "center");
     await f.key("g", { metaKey: true }, input); await f.frame();
@@ -157,5 +158,24 @@ test("actual keybinding provider honors overrides, terminal exclusion, inactive 
     assert.equal(f.container.querySelector('[role="search"]'), null, "non-chat content has no search host");
     await f.key("h", { metaKey: true });
     assert.equal(f.container.querySelector('[role="search"]'), null);
+  } finally { await f.close(); }
+});
+
+
+test("query changes and passive streaming refresh marks without pulling the viewport", async () => {
+  const f = await mount();
+  try {
+    await f.key("f", { metaKey: true });
+    const before = scrolls.length;
+    const input = await f.input("needle");
+    await f.frame();
+    assert.equal(scrolls.length, before, "typing a query does not scroll");
+    const streamed = structuredClone(fixture);
+    streamed.messages.push({ ...fixture.messages[0], id: "later", turnId: "turn-2", blocks: [{ type: "text", text: "unrelated streaming update" }] });
+    await f.render(streamed); await f.frame();
+    assert.equal(scrolls.length, before, "unrelated streaming does not scroll away from the user's viewport");
+    await f.key("g", { metaKey: true }, input);
+    assert.equal(scrolls.length, before + 1, "explicit navigation centers the requested match");
+    assert.equal(scrolls.at(-1).options.block, "center");
   } finally { await f.close(); }
 });

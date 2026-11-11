@@ -1,0 +1,1 @@
+function Pga(t){return t==="github_username"||t==="custom"||t==="none"}
