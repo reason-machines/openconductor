@@ -24,6 +24,18 @@ def run(command, cwd, output, env=None):
     return result
 
 
+def prepare_sources(tree, phase, manifest):
+    for path in manifest["baseline_sources"]:
+        destination = tree / path
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / path, destination)
+    if phase == "baseline":
+        subprocess.run(["git", "apply", "--unidiff-zero", "--reverse", str(HERE / "fix.patch")], cwd=tree, check=True)
+        shutil.copyfile(HERE / "baseline/types.ts", tree / "src/settings/types.ts")
+        for path, expected in manifest["baseline_sources"].items():
+            assert digest(tree / path) == expected, f"Baseline source changed: {path}"
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out-dir", required=True)
@@ -43,16 +55,9 @@ def main():
     for phase in ["baseline", "candidate"]:
         with tempfile.TemporaryDirectory(prefix="oc-prefix-") as temp:
             tree = Path(temp)
-            for path in manifest["baseline_sources"]:
-                destination = tree / path
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(ROOT / path, destination)
+            prepare_sources(tree, phase, manifest)
             shutil.copyfile(fixture, tree / "src/settings/customPrefix.test.ts")
             shutil.copyfile(input_fixture, tree / "src/settings/customPrefixInput.test.ts")
-            if phase == "baseline":
-                subprocess.run(["git", "apply", "--unidiff-zero", "--reverse", str(HERE / "fix.patch")], cwd=tree, check=True)
-                for path, expected in manifest["baseline_sources"].items():
-                    assert digest(tree / path) == expected, f"Baseline source changed: {path}"
             assert digest(tree / "src/settings/customPrefix.test.ts") == manifest["node_fixture_sha256"]
             node = run(["node", "--test", "src/settings/customPrefix.test.ts"], tree, out / f"{phase}-node.tap")
             counts = {key: int(re.search(rf"^# {key} (\d+)$", node.stdout, re.M)[1]) for key in ["tests", "pass", "fail"]}
