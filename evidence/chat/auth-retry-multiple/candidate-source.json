@@ -1,0 +1,38 @@
+{
+  "kind": "SAME64_MULTIPLE_RETRY_CANDIDATE_SOURCE_V1",
+  "author": "Conductor Rebuild",
+  "main_sha": "d8f6bdfd26370491295f38ffecd7090c71a2a6db",
+  "baseline_head": "ddd9d5202d0ab72e0f9a17ff2e3d52b8bb5729bf",
+  "baseline_red": "QUALIFIED_RED",
+  "frozen_fixture_sha256": "9b3d03de095956357d3e81e0290e2f4b214b849b5620dedc60f42d3bf245efcc",
+  "files": [
+    {
+      "path": "src/features/chat/chatRuntime.ts",
+      "sha256": "3be9dec9988fa9d07ea06145995ef648ab66f23307557ffd7cc4abf7b8293ba0"
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "sha256": "2fe4c796ec1048ad122ed0a729c40c5480d51b327187e404aff84073cbf89285"
+    },
+    {
+      "path": "src/features/chat/authRetryMultiple.test.ts",
+      "sha256": "bd34759c48322adf51255e7a5b8936442df2557aeb6503f4c7133c94ca3dbadf"
+    },
+    {
+      "path": "src/features/chat/authRetryQueue.test.ts",
+      "sha256": "d6c6d7247ec6ed07a99d3d27fc97c61cbb264fbfe52e3e709007a5372de3108d"
+    }
+  ],
+  "independent_safety_tests": [
+    "accepted retries keep original turns, deduplicate and stay ahead of later submissions",
+    "a failed continuation pauses the remaining retry until the existing resume action",
+    "deleting an accepted queued retry prevents its delivery",
+    "a saved edit becomes a new turn without rewriting the original failed message",
+    "a retry whose original turn was reset away cannot leave the queue working",
+    "explicitly steering a queued retry preserves its original turn identity"
+  ],
+  "matched_green": "PENDING_HOSTED",
+  "local_runtime": "NOT_RUN",
+  "native_acceptance": "NOT_RUN",
+  "ownership": "Minimal queue carrier, retry enqueue, edit marker strip and runtime guard/dispatch only. No producer/auth/card/Transcript/WV/parser/persistence changes. Existing frozen attachment candidate unapplied and unchanged."
+}

@@ -54,7 +54,7 @@ const report = {
   fixtureSha256: fixtureSha, packageLockSha256: lockSha, node: process.version,
   sourceFiles, renderer, startedAt: new Date().toISOString(),
   scope: "hosted production-renderer browser demo, not Tauri/native/original-Conductor parity",
-  status: "INVALID", cases: [], errors: [], screenshots: [],
+  status: "INVALID", cases: [], setup: [], errors: [], screenshots: [],
 };
 let server;
 let browser;
@@ -69,6 +69,38 @@ try {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: "reduce" });
   const page = await context.newPage();
   page.on("pageerror", (error) => report.errors.push(error.message));
+  let navigation = 0;
+  let preparedNavigation = -1;
+  page.on("domcontentloaded", () => { navigation++; });
+  const repoHeader = page.locator('.sb-repo-header[role="button"]').filter({
+    has: page.locator(".sb-repo-name", { hasText: /^openconductor$/ }),
+  });
+  await page.addLocatorHandler(repoHeader, async () => {
+    if (preparedNavigation === navigation) return;
+    const setup = { caseId: CASE_IDS[report.cases.length], status: "INVALID", steps: [] };
+    report.setup.push(setup);
+    const expanded = await repoHeader.getAttribute("aria-expanded");
+    assert.ok(expanded === "true" || expanded === "false", "repository expansion must be observable");
+    setup.initialExpanded = expanded;
+    // Store an explicit expanded choice; the default folds when pinning moves
+    // the selected workspace out of this group. Use only the real UI control.
+    if (expanded === "true") {
+      await repoHeader.click();
+      await page.locator('.sb-repo-header[aria-expanded="false"]').filter({
+        has: page.locator(".sb-repo-name", { hasText: /^openconductor$/ }),
+      }).waitFor({ state: "visible" });
+      setup.steps.push("collapsed via repository button; observed aria-expanded=false");
+    }
+    await repoHeader.click();
+    await page.locator('.sb-repo-header[aria-expanded="true"]').filter({
+      has: page.locator(".sb-repo-name", { hasText: /^openconductor$/ }),
+    }).waitFor({ state: "visible" });
+    await page.locator('[data-testid="left-sidebar-workspace-item"] .sb-ws-name', { hasText: "Quiet harbor" }).waitFor({ state: "visible" });
+    setup.steps.push("expanded via repository button; observed aria-expanded=true and Quiet harbor visible");
+    setup.status = "READY";
+    preparedNavigation = navigation;
+    await save();
+  }, { noWaitAfter: true });
   const screenshot = async (page, label) => {
     const path = join(out, label + ".png");
     await page.screenshot({ path });
@@ -84,6 +116,8 @@ try {
     },
   });
   verifyHeaderMenuResults(report.cases, CASE_IDS, values.expect);
+  assert.deepEqual(report.setup.map(({ caseId }) => caseId), [...CASE_IDS], "every frozen case needs the same explicit UI setup");
+  assert.ok(report.setup.every(({ status }) => status === "READY"), "incomplete repository setup invalidates proof");
   assert.equal(report.errors.length, 0, "renderer exceptions invalidate paired proof");
   report.status = values.expect === "baseline" ? "EXPECTED_RED" : "GREEN";
   console.log(JSON.stringify({ source, expectation: values.expect, status: report.status, cases: report.cases.length }));

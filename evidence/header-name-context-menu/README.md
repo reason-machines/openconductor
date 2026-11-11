@@ -1,6 +1,6 @@
 # Workspace-name context menu candidate
 
-Conductor Rebuild prepared this candidate against main `2b079f13e07b580d26191f7f1f50b4d21e62174e` and reconciled it with main `d8f6bdfd26370491295f38ffecd7090c71a2a6db`. It is not yet behaviorally verified. The ledger authorized ready main-target publication to obtain the paired hosted proof below.
+Conductor Rebuild prepared this candidate against main `2b079f13e07b580d26191f7f1f50b4d21e62174e` and reconciled it with main `248b6c359c830c6ac5e050721bae18e44e168068`. It is not yet fully behaviorally verified. The first hosted run observed the intended baseline RED and seven candidate passes; the eighth case exposed a repository-expansion setup defect. The ledger authorized ready main-target publication to obtain the paired hosted proof below.
 
 The retained REA spans in [reference.json](reference.json) trace the real Conductor 0.87.6 local header through `s8i → Llo → o8i → SI/wI → D9e`. `SI` handles the context-menu event and `D9e` supplies the existing workspace actions. The original asset digests, byte offsets and evidence IDs remain recorded. This continuation recovered the frozen packet and verified its embedded span digests; it did not rerun REA or the reference app.
 
@@ -28,11 +28,11 @@ The original packet's `stage.py --packet <original-packet> --repo . --main 2b079
 
 The frozen [eight-case behavioral fixture](../../tests/e2e/workspace-header-menu-cases.mjs) remains byte-identical to the original packet. SHA-256 is `b4f4cae76a414e5c3312ddd411e3b17ab39f90bc55b8662cdc058d55b2599605`. E1 retains execution on its existing admitted full-app page and preview. The separately authorized hosted workflow does not consume that reservation. Older queued units and the separate prefix9 packet keep their order and assertions.
 
-The baseline prediction is two passing controls and six failures waiting for the header menu. The candidate prediction is eight passes. Neither prediction is an observed result. Navigation, import or setup failures are invalid reproductions, not intended RED.
+The original prediction was two passing controls and six failures waiting for the header menu, followed by eight candidate passes. The first hosted run observed that exact baseline RED but only seven candidate passes. The remaining failure is recorded separately below; it is not GREEN. Navigation, import or setup failures are invalid reproductions, not intended RED.
 
 ## Limits
 
-Behavioral baseline and candidate execution, nearby tests, typecheck and build have not run for this candidate. Browser screenshots, native behavior, installed-app consumption and side-by-side Conductor/Cairo acceptance are unverified. No screenshot exists because no browser or native runtime was admitted.
+At hosted head `d85e6d2464d0bb9013cbdfaa898c76d7ab689eed`, baseline behavior, seven candidate cases, typecheck/build, unit checks and both ordinary built-app jobs passed. The dedicated paired check failed the eighth candidate case. Corrected-runner results remain pending. Native behavior, installed-app consumption and side-by-side Conductor/Cairo acceptance are unverified. Hosted screenshots exist in the retained artifact; no local or E1 app runtime was launched.
 
 The fixture does not verify clipboard contents, archive effects, rename submission, all section branches, native dragging or positioning. Left-click workspace details remain outside this candidate. The dedicated hosted workflow supplies scoped production-renderer behavior checks independently of E1. Neither route supplies native parity by itself. No second E1 executor or watcher is needed.
 
@@ -77,4 +77,13 @@ The runner saves every case's phase/status/error, the exact source and harness S
 
 After this regression has landed, later PRs retain the eight-case candidate check without demanding that an already-fixed base reproduce the bug. Main pushes run the candidate check on the consuming main SHA. This does not establish packaged-app consumption, WebKit behavior, native geometry, real-provider operation or side-by-side Conductor/Cairo acceptance.
 
-The [publication source check](publication-source-check.json) passed against `d8f6bdf`. Workflow YAML parsing, the unchanged fixture hash and `git diff --check` passed locally. No Node, app, browser or native process was launched in this checkout. Hosted contract tests, builds and paired results are pending publication.
+The [publication source check](publication-source-check.json) passed against `d8f6bdf`; a subsequent source-boundary check also passed against `248b6c3`. Workflow YAML parsing, the unchanged fixture hash and `git diff --check` passed locally. No Node, app, browser or native process was launched in this checkout.
+
+### Initial hosted result and explicit UI setup correction
+
+[Run 43031371815](https://github.com/reason-machines/openconductor/actions/runs/43031371815) retains [artifact 13860504203](https://github.com/reason-machines/openconductor/actions/runs/43031371815/artifacts/13860504203). Its GitHub digest and downloaded ZIP SHA-256 both equal `66ed96fb50e4ce73709b7392a4f580610f6f6f2977867cdc480a031954629c9e`. [The retained result summary](hosted-initial-results.json) records every original row and phase identity, not a corrected rerun.
+
+- Base `d8f6bdf` produced both passing controls, six attributed missing-menu failures and zero renderer exceptions: actual intended RED.
+- Candidate `d85e6d2` passed seven cases. Target isolation pinned Copper wren correctly, then timed out reading Quiet harbor. The failure screenshot shows the `openconductor` repository collapsed. `isRepoCollapsed` legitimately folds a default-state repository when its selected workspace moves to Pinned; no stale-target action failure was observed.
+- The external runner now establishes an explicit expanded repository choice once per navigation using Playwright's locator handler and the actual repository button. It observes `aria-expanded`, collapses an initially expanded default group and awaits the collapsed state, then expands and awaits both the expanded state and Quiet harbor. This is ordinary UI setup, not a product/default-collapse change, a page wrapper, an injected event, a mock or a storage write. Both phases use the same adapter.
+- Each setup result is retained by case ID; missing, failed or out-of-order setup invalidates the run. The original eight-case file and every assertion remain byte-identical (`b4f4cae7…`), as do Prefix9 and E1's queue. Corrected RED/GREEN is **not yet observed**. No timeout, result expectation or product action was weakened.

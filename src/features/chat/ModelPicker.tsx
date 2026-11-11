@@ -254,6 +254,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
                     className="oc-model-item"
                     data-selected={selected || undefined}
                     data-model-result={index}
+                    disabled={disabled}
                     data-highlighted={query.trim() !== "" && index === searchIndex || undefined}
                     onFocus={() => setSearchIndex(index)}
                     title={[nameOf(f), modelDescription?.(f.model)].filter(Boolean).join(" · ")}

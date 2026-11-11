@@ -1,0 +1,99 @@
+{
+  "kind": "SAME64_MULTIPLE_RETRY_PUBLICATION_BASELINE_V1",
+  "author": "Conductor Rebuild",
+  "checked_main": "d8f6bdfd26370491295f38ffecd7090c71a2a6db",
+  "source_pins": [
+    {
+      "path": "package.json",
+      "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
+      "git_blob": "5fe4780b22a7417ae510a4f09f40d088683aece2"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "sha256": "9156b2303c8cfd3dc3f01f71d8e821e6fff3a6740fc4118dc8c0ed19b5d8d896",
+      "git_blob": "445fa380d797e61e8fab1fd7e4288175453c5001"
+    },
+    {
+      "path": "src/features/chat/ChatSignInCard.tsx",
+      "sha256": "62d5b5fd5ada792582cb03aa1a4118a7e9842ad13497d542c4752eb969b22114",
+      "git_blob": "f7ead1415c9f9deb4441a466a555a7008fdd23b1"
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "sha256": "7b98c1ab857e7c015bc04c0cab64b8206ef2741ab8dc87800a32f3576a00ac00",
+      "git_blob": "f421643b2082ac3107963f1b4ef616998cb8de0b"
+    },
+    {
+      "path": "src/features/chat/agentSignIn.ts",
+      "sha256": "0ac95bb2d28e00a0108b274374e3b35b7e1c547508cf027cd524eb2cc546a3f7",
+      "git_blob": "3d2ec407aec6083ec9dd89ecd42f1f2a4096699d"
+    },
+    {
+      "path": "src/features/chat/attention.ts",
+      "sha256": "9a674d34d8172ef0b94ebf1136398f526fbdb3c86c5a10748ecdfbfedff8c314",
+      "git_blob": "005eb99beae5211ece2d26655fcc4588d04d402a"
+    },
+    {
+      "path": "src/features/chat/chatRuntime.ts",
+      "sha256": "c0f01e837017954f25175f4e38a732876c1a617409cb61e5b7a250d79e67b077",
+      "git_blob": "30c6830893f1547a9e2edf6cc2312bca2da4d9d6"
+    },
+    {
+      "path": "src/features/chat/checkpoints.ts",
+      "sha256": "b462a6367fc162f53c214b1e8bef6d8aac7c3fb253f2f4393c8169c4bfc6d432",
+      "git_blob": "dc90ed4819ce94e8db02bac3f3346992405c5827"
+    },
+    {
+      "path": "src/features/chat/composerDocument.ts",
+      "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676",
+      "git_blob": "e5a796c3f6f5d9439ff3270ac0d5953e8f9e740e"
+    },
+    {
+      "path": "src/features/chat/persist.ts",
+      "sha256": "39f4a68ebf7a299ff8ab7531a6931fb499d2a072d70f6ac4961d6eabe793f49a",
+      "git_blob": "654aa94dc82872220ad9ec3048ffb9b6901b98be"
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "sha256": "884de4b3cce37d27ce77df3af49bcb1bf2a3b5d79fd8e06bf1ddbd158842bab3",
+      "git_blob": "6da92450dda41fe0402d4626568b8930795f97e2"
+    },
+    {
+      "path": "src/features/chat/reason.ts",
+      "sha256": "403e62172114f30d3cc8d10801a74f99036f0f1dfa1adde24a7081fb92ffca77",
+      "git_blob": "e151fc11c5488e29fdc4af684b45e168a25249fe"
+    },
+    {
+      "path": "src/features/chat/reasonChat.ts",
+      "sha256": "fac7a3c428eaa6b680e15624400232de5f8948f7b9307c6ae352c7f16f09e05b",
+      "git_blob": "770588fc7ffaa7d3b3d950ddc6f1fc5f008ad71f"
+    },
+    {
+      "path": "src/features/chat/reducer.ts",
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "git_blob": "aa9847dcc0b5030b82f1e72496f408834db9d064"
+    },
+    {
+      "path": "src/features/chat/rewind.ts",
+      "sha256": "011b517c6bd12b2749818db9e84825e4f79dce1fb18cffe3991c172cb88425d0",
+      "git_blob": "39fdab2bbedddd43ed4348dfb19fd4b1e947da8f"
+    },
+    {
+      "path": "src/features/chat/types.ts",
+      "sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+      "git_blob": "30b5aa083c150875b248e87599f00683a54a03f4"
+    },
+    {
+      "path": "src/features/chat/userContent.ts",
+      "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c",
+      "git_blob": "409f8836c57145098270139a1e960b8fdf7f365d"
+    }
+  ],
+  "frozen_fixture_sha256": "9b3d03de095956357d3e81e0290e2f4b214b849b5620dedc60f42d3bf245efcc",
+  "retained_reference_spans": 5,
+  "outcome": "SOURCE_ONLY_PASS",
+  "behavioral_red_green": "NOT_RUN",
+  "native_acceptance": "NOT_RUN",
+  "original_archive_reverification": "NOT_RUN; retained exact-byte literal spans only",
+  "queue": "Existing E1 priorities unchanged. Hosted regression delivery does not allocate a local runtime slot."
+}
