@@ -31,7 +31,7 @@ The selected-file effect in `bys` expands ancestor paths when the selected file 
 
 ## Fresh-main comparison and regression
 
-Main `7af2b95aa74dff985fb6b745f7cc080287d35ea6` was fetched and reread. `ChangesList.tsx` still calls `changeRows(shown, view, filter?.query.trim() ? new Set() : collapsed, diff.isViewed)`. Its hash is `9e947d8b741820ec0ec10bbb1dfe34431908ac6cf102bb8fcd3baec8fd921e72`. A nonblank query therefore hides the controlled collapse Set from the actual row builder. The source-backed correction is to pass `collapsed` unconditionally. The #974 summary visibility/scope guards must remain unchanged.
+Main `7af2b95aa74dff985fb6b745f7cc080287d35ea6` was fetched and reread. `ChangesList.tsx` still calls `changeRows(shown, view, filter?.query.trim() ? new Set() : collapsed, diff.isViewed)`. Its hash is `9e947d8b741820ec0ec10bbb1dfe34431908ac6cf102bb8fcd3baec8fd921e72`. A nonblank query therefore hides the controlled collapse Set from the actual row builder. The source-backed correction is to pass `collapsed` unconditionally. Immediately before publishing that correction, main was refreshed to `1b75772349ee3e97b4f4ac9dec594d67b3048e15`. Its production file retained the same hash, and an exact byte comparison proved the correction differs only in that one argument. The #974 summary visibility/scope guards remain unchanged.
 
 The sole product caller, `WorkspaceView.tsx` lines 738-786 at that main, supplies a Set from `presentation.collapsedDirectoryPaths`. Input changes and clearing update only `filePathFilter`; folder toggles update only `collapsedDirectoryPaths`. `ChangesPresentationStore` merges those partial updates, retaining sibling fields. No hook or caller modification is needed.
 
@@ -42,15 +42,16 @@ node --experimental-strip-types --test src/features/diff/changesSummary.test.ts
 node --experimental-strip-types --test src/features/diff/*.test.ts
 ```
 
-The existing browser retention spec also encodes the old auto-reveal assumption. Its affected expectation requires a scoped correction plus explicit expand/collapse, filter count, clear and reload controls. That browser-spec extension is awaiting path clearance; no browser execution is admitted in this slice.
+The existing browser retention spec also encodes the old auto-reveal assumption. Its scoped correction now requires zero visible descendants and `1 of 2` matching files while the folder is collapsed, including after reload. It explicitly expands the folder to require one visible row, collapses it again to require zero, then retains the existing Escape and reload checks. All other tests, assertions, harness behavior, timeouts and skips are unchanged. The four-path lease includes only this test's filter/collapse expectation region. Browser execution is not admitted in this slice, so these new browser assertions are syntax-checked but not reported as passed.
 
 ## Verification boundaries
 
 - Complete retained renderer identity, complete producer/caller/row spans and all literal identities above: passed source-only validation.
 - Fresh-main comparison and product caller/state review: passed source-only validation on the named main commit.
 - Regression syntax and `git diff --check`: passed.
-- Intended behavioral RED: not run yet. Await the ordinary automatic hosted Diff workflow before changing production.
-- Passing-after tests, typecheck/build, exact-head workflows and consuming package: pending until a correction is published.
+- Intended behavioral RED: confirmed on published test-only head `c98044d99a32024ef3030c3b9bf7d83d3295ea70`, [Diff run 42945152052 / job 130276064116](https://github.com/reason-machines/openconductor/actions/runs/42945152052/job/130276064116). The command `node --experimental-strip-types --test src/features/diff/*.test.ts` ran 330 tests: 326 passed and exactly the four intended cases failed; zero skips or cancellations. Lines 531, 571, 611 and 681 identify the branch, uncommitted, turn and compressed-folder failures. The decisive actual output was `{ expanded: true, text: 'src' }` instead of `{ expanded: false, text: 'src+4-1' }`; the compressed case differed the same way for `src / lib`. All five new controls and 321 prior tests passed. Both Diff Rust jobs also passed.
+- After the intended RED, the sole production change replaces the conditional collapse argument with `collapsed`. The 45-case component regression is byte-identical to the executed RED head, SHA-256 `7b113cdffe488c89ac99b8054bd1aa19e6b81d3a158d939174613c968a0a1eff`. The untouched 18-case rename regression retains SHA-256 `5689ba409fa0c055406dce76cdde11c7a155c80d4c5cef538e0a48a559da001f`.
+- Passing-after tests, typecheck/build, exact-head workflows and consuming package: pending at correction publication. The separate browser-spec update was syntax-checked, not executed.
 - Local dependency installation, dependency-backed tests/builds, browser and native application execution: not run. Root dependencies are absent; this lane permits source/lightweight work and automatic hosted checks only.
 
 No screenshot is available because browser/native runtime admission is closed. React renderer assertions do not establish visible WebKit/Chromium, installed-app, real-editor or native parity. Successful packaging is not installation, deployment or notarization. No WorkspaceView, hook, FileDiffView, CSS, comment counts or provider changes are in this slice. Comment counts remain parked.

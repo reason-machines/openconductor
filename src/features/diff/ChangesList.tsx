@@ -56,7 +56,7 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
   const { opts, load, files, totals, current } = diff;
   const filtering = filter ? filterActive(filter.open, filter.query) : false;
   const shown = filter ? filterChangedFiles(files, filter.query) : files;
-  const rows = changeRows(shown, view, filter?.query.trim() ? new Set() : collapsed, diff.isViewed);
+  const rows = changeRows(shown, view, collapsed, diff.isViewed);
   const [menu, setMenu] = useState<{ path: string; x: number; y: number } | null>(null);
   const closeMenu = useCallback(() => setMenu(null), []);
   const menuFile = menu ? files.find((file) => file.path === menu.path) : undefined;
