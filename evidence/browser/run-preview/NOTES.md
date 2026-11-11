@@ -38,6 +38,8 @@ Excluded: annotation overlay and proxy, annotation-to-chat messages, local-serve
 - Source verifier: passed.
 - Frozen mounted Run routing regressions: **5 passed** after integration (the same three former failures and two fallback controls). The test file is byte-identical to regression commit `048509b56`.
 - `node --test --test-concurrency=1 src/scripts/*.test.ts src/features/browser/*.test.ts`: **98 passed**. This includes the eight new model/mounted-host checks and existing setup, preview, config-load, Run-error, Spotlight and completion controls.
+- Initial hosted frontend/keybinding jobs exposed ten fixture failures: nine terminal SSR loads did not stub the newly imported preference boundary, and the extracted real chat-host JSX lacked its new `showBrowser` binding. Reproduced locally: **10 failed / 2 passed**. Added the preference boundary stub and expanded the actual-host shortcut checks to cover Browser visibility without removing any terminal case: **13 passed**.
+- `node --test --test-concurrency=1 "src/**/*.test.ts"`: **2,416 passed / 0 failed** after the fixture corrections. No check was disabled or weakened.
 - `npm run typecheck`: passed after integration.
 - `git diff --check`: passed. Existing #973/#977/#981/#989 control files are unchanged.
 - Actual full-app rendering and navigation: not yet observed. Component tests exercise the real Run/strip and preview host with only IPC/DOM boundaries substituted.

@@ -35,7 +35,7 @@ function workspaceChatHost(KeybindingScope: unknown, ChatPanel: unknown) {
   };
   visit(source);
   assert.equal(hosts.length, 1, "run the actual WorkspaceView chat host JSX, not a copied wrapper");
-  const compiled = ts.transpileModule(`function ChatHost({centerTerminal}) { return (${hosts[0]}); } module.exports = ChatHost;`, {
+  const compiled = ts.transpileModule(`function ChatHost({centerTerminal, showBrowser = false}) { return (${hosts[0]}); } module.exports = ChatHost;`, {
     fileName: path,
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX },
   }).outputText;
@@ -85,17 +85,17 @@ function fixture(actualWorkspaceHost = false) {
     return null;
   }
   const ChatHost = actualWorkspaceHost ? workspaceChatHost(KeybindingScope, Chat) : undefined;
-  const tree = (focused: boolean, nested = false) => React.createElement(KeybindingsProvider, null,
+  const tree = (focused: boolean, nested = false, browserPreview = false) => React.createElement(KeybindingsProvider, null,
     React.createElement(Shell),
-    ChatHost ? React.createElement(ChatHost, { centerTerminal: focused ? undefined : { id: "terminal" } })
+    ChatHost ? React.createElement(ChatHost, { centerTerminal: focused || browserPreview ? undefined : { id: "terminal" }, showBrowser: browserPreview })
       : React.createElement(KeybindingScope, { focused }, nested
         ? React.createElement(KeybindingScope, { focused: true }, React.createElement(Chat))
         : React.createElement(Chat)),
   );
   let root: { update(tree: unknown): void; unmount(): void; toJSON(): unknown };
-  const render = (focused: boolean, nested = false) => act(() => {
-    if (root) root.update(tree(focused, nested));
-    else root = create(tree(focused, nested));
+  const render = (focused: boolean, nested = false, browserPreview = false) => act(() => {
+    if (root) root.update(tree(focused, nested, browserPreview));
+    else root = create(tree(focused, nested, browserPreview));
   });
   const key = (value: string, shiftKey = false) => {
     let stopped = false;
@@ -137,29 +137,32 @@ test("a mounted chat stops handling terminal keys while hidden and resumes witho
   } finally { f.dispose(); }
 });
 
-test("WorkspaceView's actual retained chat host suppresses shortcuts only for a center terminal", () => {
-  const f = fixture(true);
-  try {
-    f.render(true);
-    f.key("Backspace", true);
-    f.key("u");
-    assert.deepEqual(f.ran, ["cancel", "attach"]);
-    f.render(false);
-    f.key("Backspace", true);
-    f.key("u");
-    assert.deepEqual(f.ran, ["cancel", "attach"], "hidden WorkspaceView chat must not handle center-terminal keys");
-    f.key("b");
-    assert.deepEqual(f.ran, ["cancel", "attach", "sidebar"]);
-    f.render(true);
-    f.key("u");
-    assert.deepEqual(f.ran, ["cancel", "attach", "sidebar", "attach"]);
-    assert.equal(f.mounts(), 1, "switching center tabs must retain the draft's mounted chat");
-    assert.deepEqual(f.content(), {
-      type: "div", props: { className: "ws-chat-host", hidden: false },
-      children: [{ type: "span", props: {}, children: ["retained draft"] }],
-    });
-  } finally { f.dispose(); }
-});
+for (const hiddenBy of ["center terminal", "Browser preview"] as const) {
+  test(`WorkspaceView's actual retained chat host suppresses shortcuts behind a ${hiddenBy}`, () => {
+    const f = fixture(true);
+    try {
+      f.render(true);
+      f.key("Backspace", true);
+      f.key("u");
+      assert.deepEqual(f.ran, ["cancel", "attach"]);
+      f.render(false, false, hiddenBy === "Browser preview");
+      f.key("Backspace", true);
+      f.key("u");
+      assert.deepEqual(f.ran, ["cancel", "attach"], `hidden WorkspaceView chat must not handle ${hiddenBy} keys`);
+      assert.equal((f.content() as { props: { hidden: boolean } }).props.hidden, true);
+      f.key("b");
+      assert.deepEqual(f.ran, ["cancel", "attach", "sidebar"]);
+      f.render(true);
+      f.key("u");
+      assert.deepEqual(f.ran, ["cancel", "attach", "sidebar", "attach"]);
+      assert.equal(f.mounts(), 1, "switching center tabs must retain the draft's mounted chat");
+      assert.deepEqual(f.content(), {
+        type: "div", props: { className: "ws-chat-host", hidden: false },
+        children: [{ type: "span", props: {}, children: ["retained draft"] }],
+      });
+    } finally { f.dispose(); }
+  });
+}
 
 test("a nested focused scope cannot reactivate a hidden parent chat", () => {
   const f = fixture();
