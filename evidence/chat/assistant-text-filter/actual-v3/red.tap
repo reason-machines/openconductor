@@ -1,0 +1,1157 @@
+(node:96) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:103) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: enabled display strips the anchored prefix "You're absolutely right! "
+ok 1 - enabled display strips the anchored prefix "You're absolutely right! "
+  ---
+  duration_ms: 0.92799
+  type: 'test'
+  ...
+# Subtest: disabled display keeps "You're absolutely right! " byte-identical
+ok 2 - disabled display keeps "You're absolutely right! " byte-identical
+  ---
+  duration_ms: 0.162685
+  type: 'test'
+  ...
+# Subtest: enabled display strips the anchored prefix "You're absolutely right.\\n\\n"
+ok 3 - enabled display strips the anchored prefix "You're absolutely right.\\n\\n"
+  ---
+  duration_ms: 0.171106
+  type: 'test'
+  ...
+# Subtest: disabled display keeps "You're absolutely right.\\n\\n" byte-identical
+ok 4 - disabled display keeps "You're absolutely right.\\n\\n" byte-identical
+  ---
+  duration_ms: 0.076611
+  type: 'test'
+  ...
+# Subtest: enabled display strips the anchored prefix "You're absolutely right -\\t"
+ok 5 - enabled display strips the anchored prefix "You're absolutely right -\\t"
+  ---
+  duration_ms: 0.076484
+  type: 'test'
+  ...
+# Subtest: disabled display keeps "You're absolutely right -\\t" byte-identical
+ok 6 - disabled display keeps "You're absolutely right -\\t" byte-identical
+  ---
+  duration_ms: 0.064215
+  type: 'test'
+  ...
+# Subtest: enabled display strips the anchored prefix "You're absolutely right –\\n"
+ok 7 - enabled display strips the anchored prefix "You're absolutely right –\\n"
+  ---
+  duration_ms: 0.135017
+  type: 'test'
+  ...
+# Subtest: disabled display keeps "You're absolutely right –\\n" byte-identical
+ok 8 - disabled display keeps "You're absolutely right –\\n" byte-identical
+  ---
+  duration_ms: 0.068551
+  type: 'test'
+  ...
+# Subtest: enabled display strips the anchored prefix "You're absolutely right "
+ok 9 - enabled display strips the anchored prefix "You're absolutely right "
+  ---
+  duration_ms: 0.246345
+  type: 'test'
+  ...
+# Subtest: disabled display keeps "You're absolutely right " byte-identical
+ok 10 - disabled display keeps "You're absolutely right " byte-identical
+  ---
+  duration_ms: 0.304079
+  type: 'test'
+  ...
+# Subtest: enabled display preserves case-insensitive matching
+ok 11 - enabled display preserves case-insensitive matching
+  ---
+  duration_ms: 0.160843
+  type: 'test'
+  ...
+# Subtest: enabled display keeps nonmatching source boundary "Leading sentence. You're absolutely right! Keep this."
+ok 12 - enabled display keeps nonmatching source boundary "Leading sentence. You're absolutely right! Keep this."
+  ---
+  duration_ms: 0.08127
+  type: 'test'
+  ...
+# Subtest: enabled display keeps nonmatching source boundary " You're absolutely right! Keep this."
+ok 13 - enabled display keeps nonmatching source boundary " You're absolutely right! Keep this."
+  ---
+  duration_ms: 0.061672
+  type: 'test'
+  ...
+# Subtest: enabled display keeps nonmatching source boundary "You’re absolutely right! Keep this."
+ok 14 - enabled display keeps nonmatching source boundary "You’re absolutely right! Keep this."
+  ---
+  duration_ms: 0.092704
+  type: 'test'
+  ...
+# Subtest: enabled display keeps nonmatching source boundary "**You're absolutely right!** Keep this."
+ok 15 - enabled display keeps nonmatching source boundary "**You're absolutely right!** Keep this."
+  ---
+  duration_ms: 0.04564
+  type: 'test'
+  ...
+# Subtest: enabled display keeps nonmatching source boundary "A different answer."
+ok 16 - enabled display keeps nonmatching source boundary "A different answer."
+  ---
+  duration_ms: 0.045576
+  type: 'test'
+  ...
+# Subtest: the five replacements remain ordered rather than collapsed into a global expression
+ok 17 - the five replacements remain ordered rather than collapsed into a global expression
+  ---
+  duration_ms: 0.072218
+  type: 'test'
+  ...
+# Subtest: a prefix-only block yields an empty display string
+ok 18 - a prefix-only block yields an empty display string
+  ---
+  duration_ms: 0.054122
+  type: 'test'
+  ...
+# (node:111) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: rejected fenced-code copy requests the source-proven error title and description
+ok 19 - rejected fenced-code copy requests the source-proven error title and description
+  ---
+  duration_ms: 88.289862
+  type: 'test'
+  ...
+# Subtest: ordinary fenced-code success confirms only after fulfillment and resets at two seconds without feedback
+ok 20 - ordinary fenced-code success confirms only after fulfillment and resets at two seconds without feedback
+  ---
+  duration_ms: 60.547208
+  type: 'test'
+  ...
+# Subtest: rejected code copy without an installed notifier remains handled and never claims success
+ok 21 - rejected code copy without an installed notifier remains handled and never claims success
+  ---
+  duration_ms: 33.700327
+  type: 'test'
+  ...
+# Subtest: plain assistant text and inline code request no copy feedback
+ok 22 - plain assistant text and inline code request no copy feedback
+  ---
+  duration_ms: 51.727302
+  type: 'test'
+  ...
+# (node:119) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: expanded Thinking uses the existing external opener for http://example.com/a?q=one&b=two\#part
+ok 23 - expanded Thinking uses the existing external opener for http://example.com/a?q=one&b=two\#part
+  ---
+  duration_ms: 183.363726
+  type: 'test'
+  ...
+# Subtest: expanded Thinking exposes the existing link-copy action for http://example.com/a?q=one&b=two\#part
+ok 24 - expanded Thinking exposes the existing link-copy action for http://example.com/a?q=one&b=two\#part
+  ---
+  duration_ms: 83.290789
+  type: 'test'
+  ...
+# Subtest: expanded Thinking uses the existing external opener for https://example.net/b?q=two\#end
+ok 25 - expanded Thinking uses the existing external opener for https://example.net/b?q=two\#end
+  ---
+  duration_ms: 69.294735
+  type: 'test'
+  ...
+# Subtest: expanded Thinking exposes the existing link-copy action for https://example.net/b?q=two\#end
+ok 26 - expanded Thinking exposes the existing link-copy action for https://example.net/b?q=two\#end
+  ---
+  duration_ms: 58.102134
+  type: 'test'
+  ...
+# Subtest: Thinking keeps its link route after streaming completes and the row is collapsed and reopened
+ok 27 - Thinking keeps its link route after streaming completes and the row is collapsed and reopened
+  ---
+  duration_ms: 50.435571
+  type: 'test'
+  ...
+# Subtest: ordinary assistant links keep their existing opener and menu beside a Thinking block
+ok 28 - ordinary assistant links keep their existing opener and menu beside a Thinking block
+  ---
+  duration_ms: 35.642754
+  type: 'test'
+  ...
+# Subtest: Thinking still renders Markdown and escaped HTML without adding links to plain text or code
+ok 29 - Thinking still renders Markdown and escaped HTML without adding links to plain text or code
+  ---
+  duration_ms: 45.843477
+  type: 'test'
+  ...
+# (node:127) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: expanded Thinking tool uses the existing external opener for http://example.com/a?q=one&b=two\#part
+ok 30 - expanded Thinking tool uses the existing external opener for http://example.com/a?q=one&b=two\#part
+  ---
+  duration_ms: 332.780388
+  type: 'test'
+  ...
+# Subtest: expanded Thinking tool exposes the existing link-copy action for http://example.com/a?q=one&b=two\#part
+ok 31 - expanded Thinking tool exposes the existing link-copy action for http://example.com/a?q=one&b=two\#part
+  ---
+  duration_ms: 124.725239
+  type: 'test'
+  ...
+# Subtest: expanded Thinking tool uses the existing external opener for https://example.net/b?q=two\#end
+ok 32 - expanded Thinking tool uses the existing external opener for https://example.net/b?q=two\#end
+  ---
+  duration_ms: 86.521252
+  type: 'test'
+  ...
+# Subtest: expanded Thinking tool exposes the existing link-copy action for https://example.net/b?q=two\#end
+ok 33 - expanded Thinking tool exposes the existing link-copy action for https://example.net/b?q=two\#end
+  ---
+  duration_ms: 96.351896
+  type: 'test'
+  ...
+# Subtest: Thinking tool links survive completion, input updates, collapse and reopen
+ok 34 - Thinking tool links survive completion, input updates, collapse and reopen
+  ---
+  duration_ms: 81.542283
+  type: 'test'
+  ...
+# Subtest: ordinary assistant links keep their existing opener and menu beside a Thinking tool
+ok 35 - ordinary assistant links keep their existing opener and menu beside a Thinking tool
+  ---
+  duration_ms: 65.337703
+  type: 'test'
+  ...
+# Subtest: Thinking tools still render Markdown and escaped HTML without adding links to plain text or code
+ok 36 - Thinking tools still render Markdown and escaped HTML without adding links to plain text or code
+  ---
+  duration_ms: 89.014307
+  type: 'test'
+  ...
+# (node:135) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary mixed TodoWrite renders completed and started rows with the original active index
+ok 37 - ordinary mixed TodoWrite renders completed and started rows with the original active index
+  ---
+  duration_ms: 19.69909
+  type: 'test'
+  ...
+# Subtest: completed and started disclosures toggle independently and show the same complete list
+ok 38 - completed and started disclosures toggle independently and show the same complete list
+  ---
+  duration_ms: 7.986474
+  type: 'test'
+  ...
+# Subtest: different tool-use identities do not share either disclosure entry
+ok 39 - different tool-use identities do not share either disclosure entry
+  ---
+  duration_ms: 4.228981
+  type: 'test'
+  ...
+# Subtest: summary unmount and remount retains independent entries in the existing Transcript map
+ok 40 - summary unmount and remount retains independent entries in the existing Transcript map
+  ---
+  duration_ms: 6.189641
+  type: 'test'
+  ...
+# Subtest: mixed active item uses its actual position and the source fallback label
+ok 41 - mixed active item uses its actual position and the source fallback label
+  ---
+  duration_ms: 2.25759
+  type: 'test'
+  ...
+# Subtest: nonmixed empty input retains one ordinary row
+ok 42 - nonmixed empty input retains one ordinary row
+  ---
+  duration_ms: 1.574976
+  type: 'test'
+  ...
+# Subtest: nonmixed only active input retains one ordinary row
+ok 43 - nonmixed only active input retains one ordinary row
+  ---
+  duration_ms: 1.987457
+  type: 'test'
+  ...
+# Subtest: nonmixed no active input retains one ordinary row
+ok 44 - nonmixed no active input retains one ordinary row
+  ---
+  duration_ms: 1.626045
+  type: 'test'
+  ...
+# Subtest: nonmixed all completed input retains one ordinary row
+ok 45 - nonmixed all completed input retains one ordinary row
+  ---
+  duration_ms: 1.944326
+  type: 'test'
+  ...
+# Subtest: nonmixed only pending input retains one ordinary row
+ok 46 - nonmixed only pending input retains one ordinary row
+  ---
+  duration_ms: 1.693951
+  type: 'test'
+  ...
+# Subtest: TodoRead is outside this ordinary TodoWrite change
+ok 47 - TodoRead is outside this ordinary TodoWrite change
+  ---
+  duration_ms: 3.230058
+  type: 'test'
+  ...
+# Subtest: existing expand-tools preference applies independently to both mixed disclosures
+ok 48 - existing expand-tools preference applies independently to both mixed disclosures
+  ---
+  duration_ms: 2.351209
+  type: 'test'
+  ...
+# (node:143) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Warning: Detected multiple renderers concurrently rendering the same context provider. This is currently unsupported.
+# Warning: Detected multiple renderers concurrently rendering the same context provider. This is currently unsupported.
+#     at Transcript (Transcript.tsx:7:23)
+# Subtest: running default omits summary header and retains all parts
+ok 49 - running default omits summary header and retains all parts
+  ---
+  duration_ms: 8.457211
+  type: 'test'
+  ...
+# Subtest: finished dontCollapseToolCalls omits summary header and retains all parts
+ok 50 - finished dontCollapseToolCalls omits summary header and retains all parts
+  ---
+  duration_ms: 1.687327
+  type: 'test'
+  ...
+# Subtest: running plus dontCollapseToolCalls omits summary header and retains all parts
+ok 51 - running plus dontCollapseToolCalls omits summary header and retains all parts
+  ---
+  duration_ms: 0.913681
+  type: 'test'
+  ...
+# Subtest: finished normal batch is collapsed and final text is visible
+ok 52 - finished normal batch is collapsed and final text is visible
+  ---
+  duration_ms: 1.205187
+  type: 'test'
+  ...
+# Subtest: normal summary preserves its real toggle after 1 activation(s)
+ok 53 - normal summary preserves its real toggle after 1 activation(s)
+  ---
+  duration_ms: 1.988335
+  type: 'test'
+  ...
+# Subtest: normal summary preserves its real toggle after 2 activation(s)
+ok 54 - normal summary preserves its real toggle after 2 activation(s)
+  ---
+  duration_ms: 1.162237
+  type: 'test'
+  ...
+# Subtest: no-summary final-only turn running=false
+ok 55 - no-summary final-only turn running=false
+  ---
+  duration_ms: 0.681142
+  type: 'test'
+  ...
+# Subtest: no-summary final-only turn running=true
+ok 56 - no-summary final-only turn running=true
+  ---
+  duration_ms: 0.602113
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=false dontCollapse=false
+ok 57 - two-message short batch running=false dontCollapse=false
+  ---
+  duration_ms: 1.116654
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=true dontCollapse=false
+ok 58 - two-message short batch running=true dontCollapse=false
+  ---
+  duration_ms: 0.825765
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=false dontCollapse=true
+ok 59 - two-message short batch running=false dontCollapse=true
+  ---
+  duration_ms: 0.589278
+  type: 'test'
+  ...
+# Subtest: two-message short batch running=true dontCollapse=true
+ok 60 - two-message short batch running=true dontCollapse=true
+  ---
+  duration_ms: 0.469058
+  type: 'test'
+  ...
+# Subtest: earlier completed turn stays collapsed while only the latest running turn loses its header
+ok 61 - earlier completed turn stays collapsed while only the latest running turn loses its header
+  ---
+  duration_ms: 2.222152
+  type: 'test'
+  ...
+# Subtest: expandToolsByDefault alone does not hide a collapsible summary
+ok 62 - expandToolsByDefault alone does not hide a collapsible summary
+  ---
+  duration_ms: 0.703943
+  type: 'test'
+  ...
+# Subtest: independent expandToolsByDefault expands inline short-batch tools running=false
+ok 63 - independent expandToolsByDefault expands inline short-batch tools running=false
+  ---
+  duration_ms: 0.533611
+  type: 'test'
+  ...
+# Subtest: independent expandToolsByDefault expands inline short-batch tools running=true
+ok 64 - independent expandToolsByDefault expands inline short-batch tools running=true
+  ---
+  duration_ms: 0.43725
+  type: 'test'
+  ...
+# Subtest: expandToolsByDefault plus running keeps expanded inline tools without a summary header
+ok 65 - expandToolsByDefault plus running keeps expanded inline tools without a summary header
+  ---
+  duration_ms: 0.613315
+  type: 'test'
+  ...
+# Subtest: expandToolsByDefault plus dontCollapse keeps expanded inline tools without a summary header
+ok 66 - expandToolsByDefault plus dontCollapse keeps expanded inline tools without a summary header
+  ---
+  duration_ms: 0.507472
+  type: 'test'
+  ...
+# Subtest: three tools in one assistant message do not invent a summary
+ok 67 - three tools in one assistant message do not invent a summary
+  ---
+  duration_ms: 0.551802
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right! " enabled=false kind=text
+ok 68 - assistant display prefix="You're absolutely right! " enabled=false kind=text
+  ---
+  duration_ms: 0.706067
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right! " enabled=false kind=thinking
+ok 69 - assistant display prefix="You're absolutely right! " enabled=false kind=thinking
+  ---
+  duration_ms: 0.726267
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right! " enabled=true kind=text
+not ok 70 - assistant display prefix="You're absolutely right! " enabled=true kind=text
+  ---
+  duration_ms: 1.46812
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:269:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right! Keep this.'
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+  actual:
+    0: 'You&#x27;re absolutely right! Keep this.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:274:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: assistant display prefix="You're absolutely right! " enabled=true kind=thinking
+not ok 71 - assistant display prefix="You're absolutely right! " enabled=true kind=thinking
+  ---
+  duration_ms: 0.913321
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:269:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right! Keep this.'
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+  actual:
+    0: 'You&#x27;re absolutely right! Keep this.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:274:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: assistant display prefix="You're absolutely right.\\n\\n" enabled=false kind=text
+ok 72 - assistant display prefix="You're absolutely right.\\n\\n" enabled=false kind=text
+  ---
+  duration_ms: 0.445788
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right.\\n\\n" enabled=false kind=thinking
+ok 73 - assistant display prefix="You're absolutely right.\\n\\n" enabled=false kind=thinking
+  ---
+  duration_ms: 0.492567
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right.\\n\\n" enabled=true kind=text
+not ok 74 - assistant display prefix="You're absolutely right.\\n\\n" enabled=true kind=text
+  ---
+  duration_ms: 0.709642
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:269:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right.\n\nKeep this.'
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+  actual:
+    0: |-
+      You&#x27;re absolutely right.
+      
+      Keep this.
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:274:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: assistant display prefix="You're absolutely right.\\n\\n" enabled=true kind=thinking
+not ok 75 - assistant display prefix="You're absolutely right.\\n\\n" enabled=true kind=thinking
+  ---
+  duration_ms: 0.705585
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:269:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right.\n\nKeep this.'
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+  actual:
+    0: |-
+      You&#x27;re absolutely right.
+      
+      Keep this.
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:274:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: assistant display prefix="You're absolutely right -\\t" enabled=false kind=text
+ok 76 - assistant display prefix="You're absolutely right -\\t" enabled=false kind=text
+  ---
+  duration_ms: 0.476536
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right -\\t" enabled=false kind=thinking
+ok 77 - assistant display prefix="You're absolutely right -\\t" enabled=false kind=thinking
+  ---
+  duration_ms: 0.465607
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right -\\t" enabled=true kind=text
+not ok 78 - assistant display prefix="You're absolutely right -\\t" enabled=true kind=text
+  ---
+  duration_ms: 0.761699
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:269:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right -\tKeep this.'
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+  actual:
+    0: 'You&#x27;re absolutely right -\tKeep this.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:274:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: assistant display prefix="You're absolutely right -\\t" enabled=true kind=thinking
+not ok 79 - assistant display prefix="You're absolutely right -\\t" enabled=true kind=thinking
+  ---
+  duration_ms: 0.735435
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:269:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right -\tKeep this.'
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+  actual:
+    0: 'You&#x27;re absolutely right -\tKeep this.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:274:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: assistant display prefix="You're absolutely right –\\n" enabled=false kind=text
+ok 80 - assistant display prefix="You're absolutely right –\\n" enabled=false kind=text
+  ---
+  duration_ms: 0.505932
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right –\\n" enabled=false kind=thinking
+ok 81 - assistant display prefix="You're absolutely right –\\n" enabled=false kind=thinking
+  ---
+  duration_ms: 0.488118
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right –\\n" enabled=true kind=text
+not ok 82 - assistant display prefix="You're absolutely right –\\n" enabled=true kind=text
+  ---
+  duration_ms: 0.659425
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:269:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right –\nKeep this.'
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+  actual:
+    0: |-
+      You&#x27;re absolutely right –
+      Keep this.
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:274:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: assistant display prefix="You're absolutely right –\\n" enabled=true kind=thinking
+not ok 83 - assistant display prefix="You're absolutely right –\\n" enabled=true kind=thinking
+  ---
+  duration_ms: 0.690533
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:269:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right –\nKeep this.'
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+  actual:
+    0: |-
+      You&#x27;re absolutely right –
+      Keep this.
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:274:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: assistant display prefix="You're absolutely right " enabled=false kind=text
+ok 84 - assistant display prefix="You're absolutely right " enabled=false kind=text
+  ---
+  duration_ms: 0.438882
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right " enabled=false kind=thinking
+ok 85 - assistant display prefix="You're absolutely right " enabled=false kind=thinking
+  ---
+  duration_ms: 0.545947
+  type: 'test'
+  ...
+# Subtest: assistant display prefix="You're absolutely right " enabled=true kind=text
+not ok 86 - assistant display prefix="You're absolutely right " enabled=true kind=text
+  ---
+  duration_ms: 0.609296
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:269:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right Keep this.'
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+  actual:
+    0: 'You&#x27;re absolutely right Keep this.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:274:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: assistant display prefix="You're absolutely right " enabled=true kind=thinking
+not ok 87 - assistant display prefix="You're absolutely right " enabled=true kind=thinking
+  ---
+  duration_ms: 0.645482
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:269:7'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right Keep this.'
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+  actual:
+    0: 'You&#x27;re absolutely right Keep this.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:274:16)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: enabled assistant display hides trimmed-empty text
+not ok 88 - enabled assistant display hides trimmed-empty text
+  ---
+  duration_ms: 0.667141
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:281:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'You&#x27;re absolutely right!\n\t'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: |-
+      You&#x27;re absolutely right!
+      	
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:283:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: whitespace-only text is hidden enabled=false
+ok 89 - whitespace-only text is hidden enabled=false
+  ---
+  duration_ms: 0.443991
+  type: 'test'
+  ...
+# Subtest: whitespace-only text is hidden enabled=true
+ok 90 - whitespace-only text is hidden enabled=true
+  ---
+  duration_ms: 0.34757
+  type: 'test'
+  ...
+# Subtest: enabled display filters streaming text
+not ok 91 - enabled display filters streaming text
+  ---
+  duration_ms: 0.52447
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:293:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right! Live answer'
+    -   'Live answer'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Live answer'
+  actual:
+    0: 'You&#x27;re absolutely right! Live answer'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:295:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: enabled assistant display hides trimmed-empty thinking
+not ok 92 - enabled assistant display hides trimmed-empty thinking
+  ---
+  duration_ms: 0.840682
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:281:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'You&#x27;re absolutely right!\n\t'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: |-
+      You&#x27;re absolutely right!
+      	
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:283:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: whitespace-only thinking is hidden enabled=false
+ok 93 - whitespace-only thinking is hidden enabled=false
+  ---
+  duration_ms: 0.38506
+  type: 'test'
+  ...
+# Subtest: whitespace-only thinking is hidden enabled=true
+ok 94 - whitespace-only thinking is hidden enabled=true
+  ---
+  duration_ms: 0.314023
+  type: 'test'
+  ...
+# Subtest: enabled display filters streaming thinking
+not ok 95 - enabled display filters streaming thinking
+  ---
+  duration_ms: 0.550532
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:293:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right! Live answer'
+    -   'Live answer'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Live answer'
+  actual:
+    0: 'You&#x27;re absolutely right! Live answer'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:295:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: enabled display filters intermediate and preview text without changing their emphasis
+not ok 96 - enabled display filters intermediate and preview text without changing their emphasis
+  ---
+  duration_ms: 1.67788
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:300:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right! Intermediate',
+    +   'You&#x27;re absolutely right. Final'
+    -   'Intermediate',
+    -   'Final'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Intermediate'
+    1: 'Final'
+  actual:
+    0: 'You&#x27;re absolutely right! Intermediate'
+    1: 'You&#x27;re absolutely right. Final'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:305:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: enabled display leaves user, report, system and tool payloads and raw copy/fork data untouched
+not ok 97 - enabled display leaves user, report, system and tool payloads and raw copy/fork data untouched
+  ---
+  duration_ms: 1.424732
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:310:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   'You&#x27;re absolutely right! Keep raw.'
+    -   'Keep raw.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep raw.'
+  actual:
+    0: 'You&#x27;re absolutely right! Keep raw.'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:332:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: mounted off/on/off rerender restores raw assistant text and thinking from the same transcript
+not ok 98 - mounted off/on/off rerender restores raw assistant text and thinking from the same transcript
+  ---
+  duration_ms: 45.791004
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:340:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    +   "You're absolutely right! Keep this.",
+    +   "You're absolutely right! Keep this."
+    -   'Keep this.',
+    -   'Keep this.'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Keep this.'
+    1: 'Keep this.'
+  actual:
+    0: "You're absolutely right! Keep this."
+    1: "You're absolutely right! Keep this."
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/settings49-v3-run-dcf4bb6c/snapshot/src/features/chat/transcriptAgentSummary.test.ts:353:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# (node:151) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: sent plain user text autolinks HTTP and HTTPS in order without changing content or copy text
+ok 99 - sent plain user text autolinks HTTP and HTTPS in order without changing content or copy text
+  ---
+  duration_ms: 150.992528
+  type: 'test'
+  ...
+# Subtest: sent plain user text autolinks punctuation and quotes without changing content or copy text
+ok 100 - sent plain user text autolinks punctuation and quotes without changing content or copy text
+  ---
+  duration_ms: 55.527935
+  type: 'test'
+  ...
+# Subtest: sent plain user text autolinks balanced and excess closing brackets without changing content or copy text
+ok 101 - sent plain user text autolinks balanced and excess closing brackets without changing content or copy text
+  ---
+  duration_ms: 50.035968
+  type: 'test'
+  ...
+# Subtest: sent plain user text autolinks multiline raw HTML and Markdown without changing content or copy text
+ok 102 - sent plain user text autolinks multiline raw HTML and Markdown without changing content or copy text
+  ---
+  duration_ms: 40.322306
+  type: 'test'
+  ...
+# Subtest: sent user anchors use the unchanged production LinkWithMenu opener callback and context action
+ok 103 - sent user anchors use the unchanged production LinkWithMenu opener callback and context action
+  ---
+  duration_ms: 40.624254
+  type: 'test'
+  ...
+# Subtest: rich sent text autolinks around unchanged file and attachment chips with isolated callbacks
+ok 104 - rich sent text autolinks around unchanged file and attachment chips with isolated callbacks
+  ---
+  duration_ms: 43.711178
+  type: 'test'
+  ...
+# Subtest: excluded user text stays literal without ordinary navigation: No URL: **literal** <img src=x> user@example.
+ok 105 - excluded user text stays literal without ordinary navigation: No URL: **literal** <img src=x> user@example.
+  ---
+  duration_ms: 28.007636
+  type: 'test'
+  ...
+# Subtest: excluded user text stays literal without ordinary navigation: https://en.wikipedia.org/wiki/Test https://en
+ok 106 - excluded user text stays literal without ordinary navigation: https://en.wikipedia.org/wiki/Test https://en
+  ---
+  duration_ms: 30.64807
+  type: 'test'
+  ...
+# Subtest: excluded user text stays literal without ordinary navigation: https://app.conductor.build/workspace/one?ses
+ok 107 - excluded user text stays literal without ordinary navigation: https://app.conductor.build/workspace/one?ses
+  ---
+  duration_ms: 29.165621
+  type: 'test'
+  ...
+# Subtest: excluded user text stays literal without ordinary navigation: conductor-file://src/a.ts conductor-file-code
+ok 108 - excluded user text stays literal without ordinary navigation: conductor-file://src/a.ts conductor-file-code
+  ---
+  duration_ms: 28.540972
+  type: 'test'
+  ...
+# Subtest: only exact special-workspace routes are excluded; ordinary origin and path variants stay web links
+ok 109 - only exact special-workspace routes are excluded; ordinary origin and path variants stay web links
+  ---
+  duration_ms: 31.105602
+  type: 'test'
+  ...
+1..109
+# tests 109
+# suites 0
+# pass 92
+# fail 17
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6721.979237

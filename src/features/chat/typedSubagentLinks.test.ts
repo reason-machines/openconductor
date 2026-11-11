@@ -15,6 +15,7 @@ import { thinkingChipText } from "./thinkingChip.ts";
 import * as view from "./view.ts";
 import * as groups from "./toolGroups.ts";
 import * as time from "./turnTime.ts";
+import { assistantDisplayText } from "./assistantText.ts";
 
 const dependencies = createRequire(import.meta.url);
 const { act, create } = dependencies("react-test-renderer");
@@ -102,6 +103,7 @@ async function fixture(calls: Call[], running = false) {
     require(name: string) { assert.equal(name, "react/jsx-runtime"); return dependencies(name); },
     React, Fragment: React.Fragment,
     useMemo: React.useMemo, useState: React.useState, useSyncExternalStore: React.useSyncExternalStore,
+    useBoolPref: () => false, assistantDisplayText,
     ...view, ...groups, ...time, ...links,
     Markdown, thinkingChipText,
     openUrl: async (href: string) => { opened.push(href); },

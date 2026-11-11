@@ -16,6 +16,7 @@ import * as tools from "./conductorTools.ts";
 import * as icons from "./toolIconData.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
 import { userMessageCopyText } from "./userMessageCopy.ts";
+import { assistantDisplayText } from "./assistantText.ts";
 
 interface Instance {
   type: string | React.ComponentType;
@@ -77,6 +78,7 @@ runInNewContext(compile(selected, "Transcript.tsx"), {
   require(name: string) { assert.equal(name, "react/jsx-runtime"); return localRequire(name); },
   React, Fragment: React.Fragment,
   useMemo: React.useMemo, useState: React.useState, useSyncExternalStore: React.useSyncExternalStore,
+  useBoolPref: () => false, assistantDisplayText,
   ...view, ...groups, ...time, ...toolExports, userMessageCopyText,
   LinkMenuNotify: React.createContext(undefined),
   TurnFooter: () => null,
