@@ -1,0 +1,74 @@
+(node:56) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:63) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: section create name input disables automatic correction and capitalization
+ok 1 - section create name input disables automatic correction and capitalization
+  ---
+  duration_ms: 88.817399
+  type: 'test'
+  ...
+# Subtest: section create name input keeps focus selection and the initial name
+ok 2 - section create name input keeps focus selection and the initial name
+  ---
+  duration_ms: 33.535558
+  type: 'test'
+  ...
+# Subtest: section create name input preserves trimmed submit before close
+ok 3 - section create name input preserves trimmed submit before close
+  ---
+  duration_ms: 23.880538
+  type: 'test'
+  ...
+# Subtest: section create name input preserves blank validation and IME-safe Enter
+ok 4 - section create name input preserves blank validation and IME-safe Enter
+  ---
+  duration_ms: 51.505883
+  type: 'test'
+  ...
+# Subtest: section create Cancel closes without submitting the name
+ok 5 - section create Cancel closes without submitting the name
+  ---
+  duration_ms: 22.94191
+  type: 'test'
+  ...
+# Subtest: section edit name input disables automatic correction and capitalization
+ok 6 - section edit name input disables automatic correction and capitalization
+  ---
+  duration_ms: 13.895018
+  type: 'test'
+  ...
+# Subtest: section edit name input keeps focus selection and the initial name
+ok 7 - section edit name input keeps focus selection and the initial name
+  ---
+  duration_ms: 19.567332
+  type: 'test'
+  ...
+# Subtest: section edit name input preserves trimmed submit before close
+ok 8 - section edit name input preserves trimmed submit before close
+  ---
+  duration_ms: 57.298915
+  type: 'test'
+  ...
+# Subtest: section edit name input preserves blank validation and IME-safe Enter
+ok 9 - section edit name input preserves blank validation and IME-safe Enter
+  ---
+  duration_ms: 43.805642
+  type: 'test'
+  ...
+# Subtest: section edit Cancel closes without submitting the name
+ok 10 - section edit Cancel closes without submitting the name
+  ---
+  duration_ms: 35.987714
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 775.176993
