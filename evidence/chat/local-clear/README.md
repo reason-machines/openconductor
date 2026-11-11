@@ -72,7 +72,7 @@ The ready main-based PR was published as [#1020](https://github.com/reason-machi
 - Two keybinding tests failed with `primaryId is not defined` in their extracted chat-host JSX. Their isolated VM now supplies the same primary identity as its workspace fixture.
 - Seven Diff auto-close tests failed with `tabOfChat is not defined` in their extracted workspace initializer. Their probe now includes the real source declarations for `tabOfChat` and `primaryId`.
 
-The test-driver corrections do not change product code, scenarios, or behavioral assertions. Their hosted recheck has not passed yet. No failing check is bypassed.
+The test-driver corrections do not change product code, scenarios, or behavioral assertions. On hosted head `aecf8141f10112cda76681efcb7e61336a3b00ee`, frontend typecheck/build, frontend unit tests, and Diff frontend tests passed. Both persistence jobs passed formatting and then failed to compile the new test: `chat_messages::load` returns `Loaded`, not a collection. The assertion now checks `Loaded.messages.is_empty()`, preserving its empty-transcript expectation. The authoritative `Loaded` return shape was checked in `crates/openconductor-db/src/chat_messages.rs`; `git diff --check` passed. No local Rust runtime was duplicated. The corrected assertion still needs hosted compilation and test execution. No failing check is bypassed.
 
 ## Remaining acceptance limits
 

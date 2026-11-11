@@ -99,6 +99,7 @@ async fn local_clear_preserves_transcript_and_options_but_not_provider_identity(
         assert!(chat_messages::load(&pool, &next.id)
             .await
             .unwrap()
+            .messages
             .is_empty());
         let source_after = sessions::get(&pool, runtime_id).await.unwrap().unwrap();
         assert!(source_after.is_hidden);
