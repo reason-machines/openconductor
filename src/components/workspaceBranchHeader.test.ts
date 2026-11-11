@@ -100,14 +100,15 @@ for (const submitWith of ["Enter", "blur"] as const) {
       const input = view.inputs()[0];
       assert.ok(input);
       act(() => { input.props.onChange({ currentTarget: { value: "next/branch" } }); });
+      const { onBlur, onKeyDown } = input.props;
       act(() => {
-        if (submitWith === "Enter") input.props.onKeyDown(key("Enter"));
-        else input.props.onBlur();
+        if (submitWith === "Enter") onKeyDown(key("Enter"));
+        else onBlur();
       });
       assert.deepEqual(view.calls, [["rename", "ws1", "next/branch"]]);
       assert.equal(view.inputs().length, 0, "submitted editor closes while the rename promise is unresolved");
       assert.equal(view.button().props["aria-disabled"], true);
-      act(() => { input.props.onBlur(); input.props.onKeyDown(key("Enter")); view.button().props.onClick(); });
+      act(() => { onBlur(); onKeyDown(key("Enter")); view.button().props.onClick(); });
       assert.equal(view.inputs().length, 0);
       assert.deepEqual(view.calls, [["rename", "ws1", "next/branch"]]);
       await act(async () => { view.rename.resolve(); });
