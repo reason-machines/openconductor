@@ -55,6 +55,18 @@ The complete suite ran 2,807 tests: 2,805 passed and exactly two failed. Both em
 
 The log excerpt removes trailing whitespace from blank log messages only. The frozen test and contract bytes remain unchanged. The contract's `hosted_red: NOT_RUN` records the pre-publication freeze; the later hosted receipt records the actual result. No production fix preceded this RED.
 
+## Consuming-main handoff
+
+[The source-only handoff](consuming-main-handoff.json) pins the exact frozen4 test, pre-publication contract, source verifier, source receipts, and first hosted RED receipt and log by path and SHA-256. It separates actual RED from unobserved GREEN, merge, package identity, and packaged behavior.
+
+The unit job at receipt-publication head `eb7311ae230b68da801a5358029b8c2c66609825` also reports the two intended cancellation failures. Automatic run [43052357886, job 130632619486](https://github.com/reason-machines/openconductor/actions/runs/43052357886/job/130632619486) names them at log lines 838 and 860.
+
+The handoff leaves #1052's merge SHA, containing-main SHA, and post-release source receipt unset. No explicit handler lease release has arrived. After that release, this PR requires an actual updated main containing #1052, a read of its complete handler and provider-aware input callback, and a new source-mismatch receipt before product code changes.
+
+The correction boundary is the empty-list early return only. Empty-list Enter must be prevented before return without activation. Other empty-list keys and every nonempty branch remain unchanged. Preserve #1052's endpoint7 inputs and #1049's live shortcut-provider wrapper. Do not expand IME, alternate navigation, or Home/End behavior.
+
+The package-owner handoff remains prepared, not admitted for execution. After unchanged-assertion GREEN and every exact-head workflow pass, it requires a verified merge, consuming-main identity, package source and artifact digest, and separate behavioral receipts. It adds no runtime admission, executor, dispatch, rerun, or queue change.
+
 ## Ownership and verification limits
 
 This increment contains tests and evidence only. Product changes are not present.

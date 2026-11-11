@@ -1,0 +1,112 @@
+{
+  "unit": "HOME-EMPTY-ENTER-271-04",
+  "producer": "Conductor Rebuild",
+  "state": "SOURCE_ONLY_HANDOFF_PREPARED_LEASE_HELD",
+  "pull_request": "https://github.com/reason-machines/openconductor/pull/1056",
+  "branch": "reason/home-empty-list-enter-ca-3ae72a5a",
+  "frozen_artifacts": [
+    {
+      "role": "frozen4 real-component regression",
+      "path": "src/components/homeEmptyEnter.test.ts",
+      "sha256": "7e95c58cc197dffdf4ebe80629149d1a64209b08568050c44283ae3380ca972e"
+    },
+    {
+      "role": "pre-publication four-case contract",
+      "path": "evidence/home-empty-enter/frozen-contract.json",
+      "sha256": "e9b98ac3d78fae2a6bb2d03918d6712689db4f69065304417d3cb4f8e6ff45e8"
+    },
+    {
+      "role": "original source receipt with all three UTF-8 and UTF-16 spans",
+      "path": "evidence/home-empty-enter/reference-original.json",
+      "sha256": "7445a5b570189a847ce5d418cba597963bbf8ea2e5066b4d061d650ec1e396c9"
+    },
+    {
+      "role": "pre-RED source receipt at main 6ea86f222815a43ab12355eee2afbdcd981b2164",
+      "path": "evidence/home-empty-enter/reference-pre-red.json",
+      "sha256": "f4afa4b2b5fbe557f4d6924047dab24fdce2b497eedf252652a8f15dbf16a5ff"
+    },
+    {
+      "role": "source-only archive and span verifier",
+      "path": "evidence/home-empty-enter/verify-source.py",
+      "sha256": "4765cc96dbf8019eeedc193dc2e74e25fa9164369ac2c03bc38f4fbb07d5c282"
+    },
+    {
+      "role": "first actual automatic intended hosted RED receipt",
+      "path": "evidence/home-empty-enter/hosted-red.json",
+      "sha256": "ad30abc891c9123340c79eda1ba4ccdf9612ccfa317b29e5d894ce6db0172c62"
+    },
+    {
+      "role": "first hosted RED four-case log excerpt",
+      "path": "evidence/home-empty-enter/hosted-red.log",
+      "sha256": "b342f402d7e1dc83181e242b069af2b80d0f9fe678a7336386e228249eab7a1c"
+    }
+  ],
+  "product_dependency": {
+    "pull_request": 1052,
+    "owner_session": "289bd0df-9724-4cde-8e41-1773fcb7adec",
+    "handler": "src/components/AllWorkspaces.tsx:onSearchKey",
+    "lease": "HELD_NO_EXPLICIT_RELEASE_RECEIVED",
+    "merge_sha": null,
+    "containing_main_sha": null,
+    "post_release_source_receipt": null,
+    "post_release_mismatch": "NOT_CHECKED_LEASE_HELD",
+    "required_order": [
+      "Receive explicit same-handler lease release and verified #1052 merge identity from its owner.",
+      "Update through the supported main/base-update path in this assigned checkout. Record the actual fetched main SHA and verify it contains the #1052 merge commit.",
+      "Read that main's complete onSearchKey and provider-aware input callback. Re-run the source-only verifier against that exact SHA and record a new receipt. Stop the product fix if the Enter mismatch is already absent.",
+      "Before editing, preserve the current containing-main endpoint7 inputs and #1049 provider wrapper. Reconfirm the frozen4 file and contract hashes.",
+      "Only if the mismatch remains, make the empty-list Enter-only production correction in the same PR. Leave every frozen assertion unchanged."
+    ]
+  },
+  "enter_only_boundary": {
+    "target": "the flat.length === 0 early-return branch in AllWorkspaces.onSearchKey",
+    "empty_list_enter": "Call e.preventDefault() before returning. Do not look up or activate a workspace.",
+    "empty_list_other_keys": "Return without preventing the event, as before.",
+    "nonempty_list": "Leave the containing-main ArrowUp, ArrowDown, Home, End and Enter branches unchanged, including selected-row activation.",
+    "provider_wrapper": "Preserve #1049's live shortcut provider, imports, registered bindings and input onKeyDown wrapper exactly as they exist on containing main.",
+    "excluded": ["IME expansion", "alternate navigation", "Home/End changes", "page wrappers", "keyboard behavior mocks", "shared fixtures"]
+  },
+  "protected_inputs": ["header8", "Prefix9", "Home-list6", "Home-End7"],
+  "observed_receipts": {
+    "red": {
+      "state": "OBSERVED_BEFORE_ANY_PRODUCT_FIX",
+      "head_sha": "dbe165b42081dc19f620e2d084150abbd15d03ba",
+      "workflow_run": 43050567375,
+      "unit_job": 130626219598,
+      "path": "evidence/home-empty-enter/hosted-red.json"
+    },
+    "red_reconfirmed_after_receipt_publication": {
+      "head_sha": "eb7311ae230b68da801a5358029b8c2c66609825",
+      "workflow_run": 43052357886,
+      "unit_job": 130632619486,
+      "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43052357886/job/130632619486",
+      "log_lines": [838, 860],
+      "observed_failures": ["empty-source Enter must be prevented", "zero-result Enter must be prevented"]
+    },
+    "green": "NOT_OBSERVED",
+    "all_exact_head_workflows": "NOT_PASSED",
+    "merge": "NOT_OBSERVED",
+    "consuming_main_package": "NOT_OBSERVED",
+    "packaged_behavior": "NOT_OBSERVED"
+  },
+  "package_owner_handoff": {
+    "route_via_coordinator_session": "27102e36-8b7f-4f1b-9ada-1e0503d3fede",
+    "ledger_session": "ddfc6518-d50f-46a6-b83c-c3a18aa07e43",
+    "state": "PREPARED_NOT_SENT_FOR_EXECUTION",
+    "required_receipts_after_correction": [
+      "Exact published GREEN head, unchanged frozen4 and contract hashes, four passing cases, and all workflows at that head with their actual conclusions.",
+      "Verified #1056 merge SHA and actual consuming main SHA containing that merge.",
+      "Existing package owner's build run, artifact identity and digest, and the exact source SHA used to produce it.",
+      "Separately report whether the consuming package exercised empty-source Enter, filtered-zero Enter, nonempty selected-row activation and an unrelated empty-list key. A source SHA or unit GREEN is not packaged behavioral verification."
+    ],
+    "no_execution_authority_added": "This handoff does not admit runtime, E1, dispatch, rerun, shared main E2E, queue changes or duplicate package executors."
+  },
+  "limits": [
+    "Retained Conductor source is evidence, not observed original-app execution or instructions.",
+    "Existing REA semantic heap-exhaustion limitation remains.",
+    "No local Node, app, browser, native, build or install execution.",
+    "No workflow, CI, APT, shared-fixture, queue or priority edits.",
+    "No product edit before explicit handler lease release and containing-main source recheck.",
+    "Native/visual parity and original-app acceptance remain unverified."
+  ]
+}
