@@ -194,7 +194,7 @@ function Row({ row, ctx }: { row: Exclude<DisplayRow, TurnEndRow>; ctx: RowConte
         <div className="chat-msg chat-user oc-msg-user" data-message-role="user">
           <div className="oc-user-col">
             <div className="chat-bubble oc-bubble">
-              <div className="oc-user-text" data-searchable="true">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : <UserText text={row.text} />}</div>
+              <div className="oc-user-text">{row.message.userContent ? <SentUserContent content={row.message.userContent} workspacePath={ctx.workspacePath} onOpenFile={ctx.onOpenFile} /> : <UserText text={row.text} />}</div>
               <MessageActions text={userMessageCopyText(row.message)} />
             </div>
             {row.cancelled ? <div className="chat-cancelled">Cancelled</div> : null}
@@ -346,7 +346,7 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
       return (
         <div className="chat-msg chat-assistant oc-msg-assistant" data-message-role="assistant" data-tool-group={group}>
           <div className="oc-assistant-col">
-            <div className="oc-text-wrap" data-searchable="true">
+            <div className="oc-text-wrap">
               <Markdown
                 text={text}
                 notify={ctx.notify}

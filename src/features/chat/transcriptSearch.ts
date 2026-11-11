@@ -40,7 +40,7 @@ export function highlightTranscript(root: HTMLElement, query: string, selected: 
   if (!query.trim()) return () => {};
   const doc = root.ownerDocument;
   const walker = doc.createTreeWalker(root, 4, {
-    acceptNode: (node) => node.parentElement?.closest('[data-searchable="true"]') && node.textContent?.trim() ? 1 : 2,
+    acceptNode: (node) => node.parentElement?.closest('.oc-msg-user .oc-user-text, .oc-msg-assistant .oc-text-wrap') && node.textContent?.trim() ? 1 : 2,
   });
   const nodes: Text[] = [];
   let node = walker.nextNode();

@@ -1,0 +1,1 @@
+async function zzt({settingKey:t,enabled:e}){await ee.updateSetting(t,e.toString())}

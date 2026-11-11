@@ -1,0 +1,1 @@
+ir({tab:"general",settingKey:"notifications_enabled",scopes:["user"],title:"Agent notifications",description:"Get notified when an agent finishes working.",render:function({title:e,description:n}){return p.jsx(mei,{settingKey:"notifications_enabled",id:"agent-notifications",title:e,description:n})}}),

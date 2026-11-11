@@ -1,0 +1,126 @@
+(node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: repository emoji search shows No emoji found without changing or closing the icon dialog
+ok 1 - repository emoji search shows No emoji found without changing or closing the icon dialog
+  ---
+  duration_ms: 200.596861
+  type: 'test'
+  ...
+# Subtest: repository emoji empty state disappears when the query matches or is cleared
+ok 2 - repository emoji empty state disappears when the query matches or is cleared
+  ---
+  duration_ms: 173.911582
+  type: 'test'
+  ...
+# Subtest: repository emoji search still selects a matching emoji and closes once
+ok 3 - repository emoji search still selects a matching emoji and closes once
+  ---
+  duration_ms: 96.731654
+  type: 'test'
+  ...
+# Subtest: Remove emoji stays available with no results and clears the repository icon once
+ok 4 - Remove emoji stays available with no results and clears the repository icon once
+  ---
+  duration_ms: 86.058747
+  type: 'test'
+  ...
+# (node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: settings icon trigger opens a non-modal picker anchored below the trigger without a dialog shell
+ok 5 - settings icon trigger opens a non-modal picker anchored below the trigger without a dialog shell
+  ---
+  duration_ms: 512.114105
+  type: 'test'
+  ...
+# Subtest: settings popup selects an icon for its repository and closes
+ok 6 - settings popup selects an icon for its repository and closes
+  ---
+  duration_ms: 253.348676
+  type: 'test'
+  ...
+# Subtest: settings popup clears an existing icon and closes
+ok 7 - settings popup clears an existing icon and closes
+  ---
+  duration_ms: 170.107329
+  type: 'test'
+  ...
+# Subtest: settings popup controlled dismissal and reopening reset the picker to Icons
+ok 8 - settings popup controlled dismissal and reopening reset the picker to Icons
+  ---
+  duration_ms: 187.491848
+  type: 'test'
+  ...
+# Subtest: settings popup trigger toggles closed without changing the icon
+ok 9 - settings popup trigger toggles closed without changing the icon
+  ---
+  duration_ms: 100.633681
+  type: 'test'
+  ...
+# Subtest: global repository icon dialog keeps its modal shell and picker
+ok 10 - global repository icon dialog keeps its modal shell and picker
+  ---
+  duration_ms: 111.693301
+  type: 'test'
+  ...
+# (node:115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: parseRepoIcon decodes emoji, uploaded images and bundled icon names
+ok 11 - parseRepoIcon decodes emoji, uploaded images and bundled icon names
+  ---
+  duration_ms: 1.704012
+  type: 'test'
+  ...
+# Subtest: emojiIcon trims and refuses blank input
+ok 12 - emojiIcon trims and refuses blank input
+  ---
+  duration_ms: 0.167156
+  type: 'test'
+  ...
+# Subtest: githubAvatarUrl reads the owner from github.com remotes only
+ok 13 - githubAvatarUrl reads the owner from github.com remotes only
+  ---
+  duration_ms: 0.310669
+  type: 'test'
+  ...
+# Subtest: uploads accept the five image types by extension
+ok 14 - uploads accept the five image types by extension
+  ---
+  duration_ms: 0.184755
+  type: 'test'
+  ...
+# Subtest: fitIcon scales the longest side to at most 128 and centers
+ok 15 - fitIcon scales the longest side to at most 128 and centers
+  ---
+  duration_ms: 0.238048
+  type: 'test'
+  ...
+# Subtest: fitIcon preserves half-pixel centering for odd padding
+ok 16 - fitIcon preserves half-pixel centering for odd padding
+  ---
+  duration_ms: 0.175382
+  type: 'test'
+  ...
+# Subtest: fitIcon defaults a missing width to 128 independently of height
+ok 17 - fitIcon defaults a missing width to 128 independently of height
+  ---
+  duration_ms: 0.130027
+  type: 'test'
+  ...
+# Subtest: fitIcon defaults a missing height to 128 independently of width
+ok 18 - fitIcon defaults a missing height to 128 independently of width
+  ---
+  duration_ms: 0.092715
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3760.347602
