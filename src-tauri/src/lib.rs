@@ -453,6 +453,8 @@ pub fn run() {
             sidebar_workspace_commands::db_mark_workspace_read,
             sidebar_workspace_commands::db_open_chat_tab,
             sidebar_workspace_commands::db_close_chat_tab,
+            sidebar_workspace_commands::db_clear_local_chat,
+            sidebar_workspace_commands::db_select_chat,
             sidebar_workspace_commands::db_touch_workspace,
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,

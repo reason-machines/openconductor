@@ -1,0 +1,141 @@
+{
+  "id": "PALETTE-CREATE-SECTION-FILTER-135-01",
+  "author": "Conductor Rebuild",
+  "observed_at": "2026-11-11T09:33:55.709453+00:00",
+  "qualification": "STATIC INERT ORIGINAL COMPILED JAVASCRIPT SPANS ONLY; no target execution, JS evaluation, analyzer, install or tests",
+  "artifact": {
+    "path": ".source-prep-13576/retained-originals/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "provenance": {
+    "manifest": "evidence/frontend/tauri-assets-manifest.json",
+    "manifest_entry": {
+      "key": "/assets/renderApp-D_fmY7hW.js",
+      "encoding": "brotli",
+      "compressed_bytes": 2969382,
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "retained_REA_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "lineage_file": "evidence/chat/composer/ime-send/source/packet.json",
+    "known_REA_gap": "retained JS worker exhausted heap; parse_status skipped, spans are inert text rather than REA call graph",
+    "acquisition": "existing retained original bytes, no new app acquisition"
+  },
+  "spans": [
+    {
+      "label": "palette outer h_a explicit filter",
+      "utf8_bytes_half_open": [
+        10888832,
+        10889073
+      ],
+      "bytes": 241,
+      "sha256": "db46eeae9e65f9feee9a554863994313bfa6fbabdf9653f1fbb11b2d34d7d55b",
+      "compiled_javascript": "function h_a(){const t=ne.c(1);let e;return t[0]===Symbol.for(\"react.memo_cache_sentinel\")?(e=p.jsx(qZ,{id:Tk,commandProps:{filter:wUi},dialogContentProps:{className:\"max-w-2xl\",onEscapeKeyDown:p_a},children:p.jsx(m_a,{})}),t[0]=e):e=t[0],e}"
+    },
+    {
+      "label": "qZ commandProps forwarding",
+      "utf8_bytes_half_open": [
+        2914281,
+        2914883
+      ],
+      "bytes": 602,
+      "sha256": "3c4668993d34a5789760789144590b188c01cdb757d6f1671c4328487c13115f",
+      "compiled_javascript": "qZ=t=>{const e=ne.c(18);let n,i,r,o,a;e[0]!==t?({children:n,commandProps:i,id:o,dialogContentProps:r,...a}=t,e[0]=t,e[1]=n,e[2]=i,e[3]=r,e[4]=o,e[5]=a):(n=e[1],i=e[2],r=e[3],o=e[4],a=e[5]);const c=r?.className;let u;e[6]!==r?(u=r?Q5s(r):{},e[6]=r,e[7]=u):u=e[7];const d=u;let h;e[8]!==n||e[9]!==i||e[10]!==c||e[11]!==o||e[12]!==d?(h=p.jsx(Y5s,{commandProps:i,dialogContentClassName:c,dialogContentProps:d,id:o,children:n}),e[8]=n,e[9]=i,e[10]=c,e[11]=o,e[12]=d,e[13]=h):h=e[13];let m;return e[14]!==o||e[15]!==a||e[16]!==h?(m=p.jsx(kg,{id:o,...a,children:h}),e[14]=o,e[15]=a,e[16]=h,e[17]=m):m=e[17],m}"
+    },
+    {
+      "label": "Y5s Command wrapper spread preserves filter",
+      "utf8_bytes_half_open": [
+        2914884,
+        2916816
+      ],
+      "bytes": 1932,
+      "sha256": "1f343b0f6340b44087d7914fc114f67311554dd62c7b60c549241f3645c4ea29",
+      "compiled_javascript": "function Y5s(t){const e=ne.c(23),{children:n,commandProps:i,dialogContentClassName:r,dialogContentProps:o,id:a}=t;let c,u,d;e[0]!==o?({onCloseAutoFocus:c,onEscapeKeyDown:u,...d}=o,e[0]=o,e[1]=c,e[2]=u,e[3]=d):(c=e[1],u=e[2],d=e[3]);let h;if(e[4]!==a||e[5]!==u){let E;e[7]!==a?(E=I=>{I.key===\"Escape\"&&(I.stopPropagation(),nr.closeDialog(a))},e[7]=a,e[8]=E):E=e[8];const k=xd(E);h=xd(I=>{const R=I.defaultPrevented||I.nativeEvent.defaultPrevented;I.key===\"Escape\"&&(u?.(I.nativeEvent),!R&&(I.defaultPrevented||I.nativeEvent.defaultPrevented)&&(I.preventBaseUIHandler(),I.stopPropagation())),k(I)}),e[4]=a,e[5]=u,e[6]=h}else h=e[6];const m=h;let g;e[9]!==r?(g=E=>Xe(\"cmd-dialog-anim overflow-hidden p-0 shadow-xl max-w-xl fixed inset-x-0 mx-auto top-[calc(50%-250px)] w-full max-h-[500px] flex flex-col bg-sidebar-background z-50 rounded-md focus:outline-none border\",typeof r==\"function\"?r(E):r),e[9]=r,e[10]=g):g=e[10];let _;e[11]!==c?(_=()=>{const E=new Event(\"closeAutoFocus\",{cancelable:!0});return c?.(E),tSe(E),!E.defaultPrevented},e[11]=c,e[12]=_):_=e[12];let v;e[13]===Symbol.for(\"react.memo_cache_sentinel\")?(v=p.jsx(Nde,{className:\"sr-only\",children:\"Search\"}),e[13]=v):v=e[13];let x;e[14]!==n||e[15]!==i?(x=p.jsx(KV,{loop:!0,className:\"[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5] flex flex-col h-full\",...i,children:n}),e[14]=n,e[15]=i,e[16]=x):x=e[16];let w;return e[17]!==m||e[18]!==d||e[19]!==g||e[20]!==_||e[21]!==x?(w=p.jsx(Ujt,{children:p.jsxs(Rde,{className:g,\"aria-describedby\":void 0,onKeyDown:m,finalFocus:_,...d,children:[v,x]})}),e[17]=m,e[18]=d,e[19]=g,e[20]=_,e[21]=x,e[22]=w):w=e[22],w}"
+    },
+    {
+      "label": "KV props forwarded to P6",
+      "utf8_bytes_half_open": [
+        2913899,
+        2914245
+      ],
+      "bytes": 346,
+      "sha256": "c3739dad72ecb65cbfe872202d68e77cba24ad8ff8e239059a3213a9219f35c3",
+      "compiled_javascript": "const KV=$.forwardRef((t,e)=>{const n=ne.c(9);let i,r;n[0]!==t?({className:i,...r}=t,n[0]=t,n[1]=i,n[2]=r):(i=n[1],r=n[2]);let o;n[3]!==i?(o=Xe(\"flex h-full w-full flex-col overflow-hidden rounded-md\",i),n[3]=i,n[4]=o):o=n[4];let a;return n[5]!==r||n[6]!==e||n[7]!==o?(a=p.jsx(P6,{ref:e,className:o,...r}),n[5]=r,n[6]=e,n[7]=o,n[8]=a):a=n[8],a});"
+    },
+    {
+      "label": "P6 root and Item binding",
+      "utf8_bytes_half_open": [
+        2912384,
+        2912492
+      ],
+      "bytes": 108,
+      "sha256": "20b129f07752490e4c9ca33091b5d947173fb1de439bcda0f2b15b9e25deb4f6",
+      "compiled_javascript": "P6=Object.assign(Xyi,{List:$5s,Item:M5s,Input:B5s,Group:j5s,Separator:F5s,Dialog:z5s,Empty:U5s,Loading:H5s})"
+    },
+    {
+      "label": "cmdk score dispatch override then default",
+      "utf8_bytes_half_open": [
+        2905191,
+        2905321
+      ],
+      "bytes": 130,
+      "sha256": "4d3b01d28ba4ec03676363667b4ed5746f7d4fac7ef6b842ad4c5543ad847f14",
+      "compiled_javascript": "function B(ce,ae){var de,ue;let pe=(ue=(de=c.current)==null?void 0:de.filter)!=null?ue:L5s;return ce?pe(ce,n.current.search,ae):0}"
+    },
+    {
+      "label": "cmdk item value and keyword registration",
+      "utf8_bytes_half_open": [
+        2913001,
+        2913356
+      ],
+      "bytes": 355,
+      "sha256": "4b0a2f5d6eb1f9b91d99f987e0f85aeaa4abcdd1849f44ff769532113d74d44b",
+      "compiled_javascript": "function Zyi(t,e,n,i=[]){let r=$.useRef(),o=YEe();return DJ(()=>{var a;let c=(()=>{var d;for(let h of n){if(typeof h==\"string\")return h.trim();if(typeof h==\"object\"&&\"current\"in h)return h.current?(d=h.current.textContent)==null?void 0:d.trim():r.current}})(),u=i.map(d=>d.trim());o.value(t,c,u),(a=e.current)==null||a.setAttribute(bae,c),r.current=c}),r}"
+    },
+    {
+      "label": "actual palette filter threshold",
+      "utf8_bytes_half_open": [
+        10872078,
+        10872171
+      ],
+      "bytes": 93,
+      "sha256": "c6caa096acb780de71bd8f8dba8d9c024a72818fa62ac88a31ece75cb9913760",
+      "compiled_javascript": "const Hba=.2;function wUi(t,e,n){const i=iRi({value:t,search:e,keywords:n});return i>Hba?i:0}"
+    },
+    {
+      "label": "actual custom scorer closure",
+      "utf8_bytes_half_open": [
+        8457894,
+        8458998
+      ],
+      "bytes": 1104,
+      "sha256": "7af03a8d22411decca30dfa14f8abe37b74900ac2e5b0664e9b01478925270a2",
+      "compiled_javascript": "const bqn=1,oSo=.9,aSo=.8,lSo=.17,Jwt=.1,Zwt=.999,cSo=.9999,uSo=.99,dSo=/[\\\\/_+.#\"@[({&]/,fSo=/[\\\\/_+.#\"@[({&]/g,hSo=/[\\s-]/,nRi=/[\\s-]/g;function hRt(t,e,n,i,r,o,a){if(o===e.length)return r===t.length?bqn:uSo;const c=`${r},${o}`,u=a.get(c);if(u!==void 0)return u;const d=i.charAt(o);let h=n.indexOf(d,r),m=0;for(;h>=0;){let g=hRt(t,e,n,i,h+1,o+1,a);if(g>m){if(h===r)g*=bqn;else if(dSo.test(t.charAt(h-1))){g*=aSo;const _=t.slice(r,h-1).match(fSo);_&&r>0&&(g*=Math.pow(Zwt,_.length))}else if(hSo.test(t.charAt(h-1))){g*=oSo;const _=t.slice(r,h-1).match(nRi);_&&r>0&&(g*=Math.pow(Zwt,_.length))}else g*=lSo,r>0&&(g*=Math.pow(Zwt,h-r));t.charAt(h)!==e.charAt(o)&&(g*=cSo)}if(g<Jwt&&n.charAt(h-1)===i.charAt(o+1)||i.charAt(o+1)===i.charAt(o)&&n.charAt(h-1)!==i.charAt(o)){const _=hRt(t,e,n,i,h+1,o+2,a);_*Jwt>g&&(g=_*Jwt)}g>m&&(m=g),h=n.indexOf(d,h+1)}return a.set(c,m),m}function _qn(t){return t.toLowerCase().replace(nRi,\" \")}function pSo(t,e,n){const i=n!==void 0&&n.length>0?`${t} ${n.join(\" \")}`:t;return hRt(i,e,_qn(i),_qn(e),0,0,new Map)}function iRi({value:t,search:e,keywords:n}){return pSo(t,e,n)}"
+    },
+    {
+      "label": "create-section row with actual condition and keywords",
+      "utf8_bytes_half_open": [
+        10914211,
+        10914418
+      ],
+      "bytes": 207,
+      "sha256": "d4fc6ba50da3306777a9da08841e38fd2ced7b504d1d612ed6bad379b81f5c8e",
+      "compiled_javascript": "hn!==void 0&&de===\"local\"&&p.jsxs($o,{value:\"create-section\",onSelect:_a,keywords:[\"create\",\"new\",\"section\",\"sidebar\"],children:[p.jsx(Qc,{className:\"size-3.5\"}),p.jsx(gd,{query:E,text:\"Create section\"})]}),"
+    }
+  ],
+  "observations": [
+    "h_a passes commandProps:{filter:wUi} to qZ; qZ forwards to Y5s; Y5s spreads commandProps into KV; KV spreads into P6=Xyi.",
+    "cmdk B chooses c.current.filter when present and passes value, current.search, keywords; Zyi trims each keyword before registration.",
+    "wUi calls iRi({value,search,keywords}) and returns score only if score > .2, otherwise zero.",
+    "iRi calls pSo. With nonempty keywords, pSo constructs value + single space + keywords.join(single space) before hRt scoring. This is not a max of per-keyword scores.",
+    "_qn lowercases and replaces each whitespace-or-hyphen match with a single space; hRt recurses through sequential search characters with preserved cross-keyword ordering.",
+    "create-section value and keywords are create-section / [create,new,section,sidebar], with local and section-capability condition."
+  ],
+  "limits": [
+    "No source code/product edits",
+    "No execution of scorer: no numeric search scores or runtime visibility claimed",
+    "No native/browser/visual parity proof",
+    "REA lineage is retained historical record; current retained asset and manifest identity rechecked"
+  ]
+}
