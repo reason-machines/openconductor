@@ -4,7 +4,7 @@ Conductor Rebuild owns `HEADER-AUTOCOMPLETE-271-03`. The branch editor must decl
 
 ## Retained source
 
-The comparison was revalidated against main `697ba00b2fec7ea4151b771603f57b3f6874191d` on 11 November 2026. No new reference acquisition or runtime was used.
+The comparison was revalidated against main `1b75772349ee3e97b4f4ac9dec594d67b3048e15` on 11 November 2026. All three source pins below are unchanged from regression-only head `1274dba0f69d475282cd2793a5614700ebd2a986`. No new reference acquisition or runtime was used.
 
 - [Retained trace](reference-static.json): 8,311 bytes, SHA-256 `4901177a0829b07b8414a5d4b9c8adf091f9549f8dc9dafac5ebbcb79a01588e`, git blob `f553fa75066ac57d1b958ec193ce36760e1eae94`.
 - [Retained REA graph](../frontend/rea-analyze-javascript-application.json.gz): 44,783,232 bytes, SHA-256 `b0ffc795bf955a3dd54fd9bfb15d7eadf23ef6768c330c2e2223cc8581c8578f`, git blob `90b801cb23bc10e4780c9a1e48c8f358bc859686`.
@@ -43,8 +43,9 @@ npm run build
 - **Passed on Reason Cloud:** retained trace and graph hashes, artifact membership, complete `bro` hash, direct input binding, literal spans, unchanged controller, and exact preservation of the whole previous test file.
 - **Passed:** `node --experimental-strip-types --check src/components/workspaceBranchHeader.test.ts` and `git diff --check`.
 - Regression-file SHA-256: `bad3e380eddfab814b98c94d206d4951bbe1acc6d4b9a1ca0120e446150567b1`. This file must remain byte-identical through the production fix and passing-after check.
-- **Hosted RED pending:** the regression-only increment leaves the production prop unchanged. Expected failure is actual `off` versus expected `new-password` at the mounted attribute assertion, not a loader or setup failure. No production fix is applied before this failure is observed.
-- **Hosted GREEN pending:** after the intended RED, change only the production prop and rerun the unchanged test.
+- **Hosted RED passed as an intended reproduction:** [unit job 130272244871](https://github.com/reason-machines/openconductor/actions/runs/42943990150/job/130272244871) on exact regression-only head `1274dba0f69d475282cd2793a5614700ebd2a986` failed only `mounted branch editor requests the shipped new-password autocomplete hint`, at `workspaceBranchHeader.test.ts:113`. The mounted actual value was `off`, expected `new-password`, with `ERR_ASSERTION`; the other 2,269 tests passed. The [frontend typecheck/build job](https://github.com/reason-machines/openconductor/actions/runs/42943990150/job/130272244326) reached the same assertion and failed it too. Neither failure is a loader or setup error.
+- **Production correction:** after observing that RED, change only `autoComplete="off"` to `autoComplete="new-password"`. The complete test file remains byte-identical to the hosted RED file; the controller and all prior caret fixture, event, context, import and assertion bytes are unchanged.
+- **Hosted GREEN pending:** the existing PR subscription will verify the unchanged regression and all exact-head checks after publishing the one-prop correction.
 - **Not run locally:** dependency installation, component execution, typecheck, or build. Hosted checks provide those results separately.
 
 ## Acceptance limits
