@@ -1,0 +1,5 @@
+async function JQe(t,{localWorkspaceId:e,newWorkspaceName:s,source:n="user"}){const r=await t.getWorkspace(e),i=QQe(s),o=r.workspaceName??r.directoryName;if(i===r.directoryName&&s===o)return;const a=XQe(i);if(a)throw new Error(a);const c=s===i?null:s,l=n==="user"?1:0;if(r.state==="initializing"&&r.remoteState?.knownToRoundhouse!==!0)throw new Error("Cannot rename while workspace is initializing");const u=await t.waitForWorkspaceId({localWorkspaceId:e}),d={workspace:r,workspaceId:u,newWorkspaceName:s,newDirectoryName:i,workspaceNameToPersist:c,userSetWorkspaceName:l};if(r.host!==M){const h=i===await VQe(t,e);await t.server(r.host).renameWorkspace(d),await t.dependencies.db.execute(`UPDATE workspaces
+             SET secondary_directory_name = ?,
+                 workspace_name = ?,
+                 user_set_workspace_name = CASE WHEN ? = 1 THEN 1 ELSE user_set_workspace_name END
+             WHERE local_id = ?`,[h?null:i,c,l,e])}else await t.server(r.host).renameWorkspace(d);ZQe(t,e),t.refreshWorkspace(e).fireAndForget()}

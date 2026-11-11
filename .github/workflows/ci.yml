@@ -207,7 +207,9 @@ jobs:
         run: node --test "src/**/*.test.ts"
       - name: Custom branch-prefix unchanged-fixture baseline and candidate replay
         timeout-minutes: 3
-        run: python3 evidence/settings/custom-prefix/replay.py --out-dir "$RUNNER_TEMP/custom-prefix-replay"
+        run: |
+          python3 -m unittest discover -s evidence/settings/custom-prefix -p test_replay.py -v
+          python3 evidence/settings/custom-prefix/replay.py --out-dir "$RUNNER_TEMP/custom-prefix-replay"
       - name: Script output copy and Unicode unchanged-fixture differential replays
         timeout-minutes: 4
         run: |
@@ -239,4 +241,4 @@ jobs:
           echo "Onboarding source commit: $(git rev-parse HEAD)"
           node --check tests/onboarding-strict-effects.test.mjs
           node --test --test-reporter=tap tests/onboarding-effects.test.mjs tests/onboarding-strict-effects.test.mjs tests/onboarding-selected-slide.test.mjs
-          node --test --test-reporter=tap tests/chat-search/transcriptFind.dom.test.mjs
+          node --test --test-reporter=tap tests/chat-search/*.dom.test.mjs

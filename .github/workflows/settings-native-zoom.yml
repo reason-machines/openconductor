@@ -1,0 +1,43 @@
+name: Settings native zoom boundary
+
+on:
+  pull_request:
+    paths:
+      - 'src/settings/appearance.ts'
+      - 'src/settings/nativeZoom.ts'
+      - 'src/settings/nativeZoom.test.ts'
+      - 'src-tauri/capabilities/default.json'
+      - 'evidence/settings/native-zoom/**'
+      - '.github/workflows/settings-native-zoom.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/settings/appearance.ts'
+      - 'src/settings/nativeZoom.ts'
+      - 'src/settings/nativeZoom.test.ts'
+      - 'src-tauri/capabilities/default.json'
+      - 'evidence/settings/native-zoom/**'
+      - '.github/workflows/settings-native-zoom.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    name: Native zoom unchanged baseline and fixed consumer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Replay the same frozen fixture against baseline and fixed sources
+        run: python3 evidence/settings/native-zoom/replay.py --out-dir "$RUNNER_TEMP/native-zoom-replay"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: settings-native-zoom-replay
+          path: ${{ runner.temp }}/native-zoom-replay
+          if-no-files-found: error
