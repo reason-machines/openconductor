@@ -145,7 +145,11 @@ function fixture(titles: readonly [string, string] = ["Investigation", "Investig
   }
   return {
     workspaceId, controlId, sourceIds, transcripts, providerCalls, nativeCalls,
-    async mount() { await act(async () => { renderer = create(React.createElement(Host)); }); },
+    async mount() {
+      await act(async () => { renderer = create(React.createElement(Host)); });
+      assert.deepEqual(nativeCalls, ["db_select_chat"], "mount only persists the initially selected chat");
+      nativeCalls.length = 0;
+    },
     async attach(id: string) {
       const chip = renderer.root.find((node: { type: { name?: string }; props: { chat?: { chatId: string } } }) => node.type.name === "TranscriptChip" && node.props.chat?.chatId === id);
       await act(async () => chip.findByType("button").props.onClick());
