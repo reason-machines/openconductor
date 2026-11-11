@@ -1,0 +1,46 @@
+{
+  "id": "ACQ-HOME-LOCAL-EMPTY-271-02",
+  "page_id": "0a33b4d6-065e-42e0-ad37-ba4a1c266bca",
+  "files": {
+    "README.md": {
+      "bytes": 5317,
+      "sha256": "8a019ddd341fea8987ff02d8b1c1a037cb5faf53a12085b4d2962642c65f0ace"
+    },
+    "anchors.json": {
+      "bytes": 10478,
+      "sha256": "88969da64881fa0b20bc261c6d1c6a63934c13a5e5800cc172f1350b66c3bcf6"
+    },
+    "main-AllWorkspaces.tsx.txt": {
+      "bytes": 16560,
+      "sha256": "09a33ea155ddd2a6dfd3a547ff3a4c69b95e203de5e67bd3adb60dfa63d10c38"
+    },
+    "main-homeRows.ts.txt": {
+      "bytes": 13170,
+      "sha256": "45e77dda94f361cdf16be238f5ef55ae8b5329166da88197e14d84651c6d35bd"
+    },
+    "prepare.py": {
+      "bytes": 16580,
+      "sha256": "10823a91b54febe220c62022f80c540cdd44cf17956f1308437904ec49687520"
+    },
+    "receipt.json": {
+      "bytes": 3539,
+      "sha256": "3b05fd2b44ba4b594417622519d8db81bc6ff3ce6ffe4f5571f17c9b1629c118"
+    },
+    "reference-MJo.js.txt": {
+      "bytes": 1848,
+      "sha256": "7e75df8888bf9d63c869ce04c489d322f385442a92eeef71253a9cee4f51bfe9"
+    },
+    "reference-UJo.js.txt": {
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030"
+    },
+    "review.html": {
+      "bytes": 5879,
+      "sha256": "2bcbf2068be31018d35ef318944afbb5ee5ca501d7e2873434e556e40a7b3775"
+    },
+    "truth-table.json": {
+      "bytes": 7589,
+      "sha256": "52ba56fb436c21e3620db4d1026b7e223b86ef2c779544112a7081941d70070f"
+    }
+  }
+}

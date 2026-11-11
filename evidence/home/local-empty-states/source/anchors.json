@@ -1,0 +1,322 @@
+[
+  {
+    "name": "reference-data-loading-inputs",
+    "text": "e=aa(),n=g5(),{data:i,isLoading:r}=Xh();",
+    "sha256": "0bad26cfc269b8d6e14002cf936087a8eeee83bc6627e4bf11f1d45db2011ce6",
+    "bytes": 40,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9863582,
+      9863622
+    ],
+    "utf16_half_open": [
+      9818028,
+      9818068
+    ]
+  },
+  {
+    "name": "reference-repository-loading",
+    "text": "const a=o,{data:c,isLoading:u}=nF();",
+    "sha256": "5a4770bb8cadd254d26913bb2dfc7812b06aa7c755b8572aca47cc66c7b27915",
+    "bytes": 36,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9863678,
+      9863714
+    ],
+    "utf16_half_open": [
+      9818124,
+      9818160
+    ]
+  },
+  {
+    "name": "reference-local-org-loading",
+    "text": "[x,w]=$.useState(\"\"),{organization:E,baseUrl:k,isLoading:I}=so();",
+    "sha256": "fe64c43e03eb75b402227e20d88f23cd54615a044f505243b9fd6668b58c9cca",
+    "bytes": 65,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9863886,
+      9863951
+    ],
+    "utf16_half_open": [
+      9818332,
+      9818397
+    ]
+  },
+  {
+    "name": "reference-local-owners-empty",
+    "text": "if(!O){let Dr;t[33]===Symbol.for(\"react.memo_cache_sentinel\")?(Dr=[],t[33]=Dr):Dr=t[33],Ze=Dr;break e}",
+    "sha256": "ccb348026cebf1da5b5fcac065dd0eae6db3d5d6dff5a09a29bf9a41767e2e6f",
+    "bytes": 102,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9865407,
+      9865509
+    ],
+    "utf16_half_open": [
+      9819853,
+      9819955
+    ]
+  },
+  {
+    "name": "reference-no-owner-filter",
+    "text": "if(Ye.length===0){He=Ve;break e}",
+    "sha256": "aefc8e38055926438e4d9c6666ee584e70e551f103ca161fb2b7108dcf7f8997",
+    "bytes": 32,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9866511,
+      9866543
+    ],
+    "utf16_half_open": [
+      9820957,
+      9820989
+    ]
+  },
+  {
+    "name": "reference-known-repositories-only",
+    "text": "hi=mo=>xe.has(mo.repositoryId)",
+    "sha256": "7dc8c64e63c57b366289d2d8f0779c9853416a42e8c82477758b79470d38f99f",
+    "bytes": 30,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9866139,
+      9866169
+    ],
+    "utf16_half_open": [
+      9820585,
+      9820615
+    ]
+  },
+  {
+    "name": "reference-archive-project-predicate",
+    "text": "hi=>!(G===\"active\"&&hi.state===\"archived\"||G===\"archived\"&&hi.state!==\"archived\"||z.length>0&&!z.includes(hi.repositoryId))",
+    "sha256": "d93c3981e1a497914163118983d22c48b7433ed2f78ebaeb76ca546317df79db",
+    "bytes": 123,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9867178,
+      9867301
+    ],
+    "utf16_half_open": [
+      9821624,
+      9821747
+    ]
+  },
+  {
+    "name": "reference-local-no-pinned-items",
+    "text": "Dr={pinnedItems:hi,unpinnedWorkspaces:Vt}",
+    "sha256": "eb61a17486138104f74bf2e33c75f63d0e2abda173d6af81a53d90cded18b8ae",
+    "bytes": 41,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9868702,
+      9868743
+    ],
+    "utf16_half_open": [
+      9823148,
+      9823189
+    ]
+  },
+  {
+    "name": "reference-display-predicates",
+    "text": "const dr=Vn.length>0||wt.length>0,mr=Ye!==void 0&&Ye.length>0||z.length>0||G!==\"all\",Zr=O&&Ke.length>1,Tr=je.length>1,Or=U===void 0&&z.length===0&&G===\"active\"&&it.length===0,Jo=r||u||I||Ye===void 0;",
+    "sha256": "eb28e3980e055c0d37926de76a535e7d4f19e94782c27de9083fae1c4cec977e",
+    "bytes": 199,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9871003,
+      9871202
+    ],
+    "utf16_half_open": [
+      9825449,
+      9825648
+    ]
+  },
+  {
+    "name": "reference-header-create",
+    "text": "p.jsx(tt,{size:\"sm\",className:\"shrink-0 text-sm\",onClick:()=>n(),children:\"Create workspace\"})",
+    "sha256": "aacb33705f2c9cf179c65f9b40a017a54b3f011a218609e0e562f7874e1f67a2",
+    "bytes": 94,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9871746,
+      9871840
+    ],
+    "utf16_half_open": [
+      9826192,
+      9826286
+    ]
+  },
+  {
+    "name": "reference-loading-consumer",
+    "text": "Jo?p.jsx(\"div\",{role:\"status\",\"aria-label\":\"Loading workspaces\",className:\"flex justify-center py-6 text-muted-foreground\",children:p.jsx(ri,{type:\"working\",className:\"size-4\"})})",
+    "sha256": "fa8aae97477effc61bf6c2c2a04e51f62a42ca8d8f8b4ea78274fea151b7226e",
+    "bytes": 179,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9873597,
+      9873776
+    ],
+    "utf16_half_open": [
+      9828043,
+      9828222
+    ]
+  },
+  {
+    "name": "reference-empty-consumer",
+    "text": "p.jsxs(\"div\",{className:\"py-6 flex flex-col items-center gap-3 text-sm text-muted-foreground\",children:[p.jsx(\"span\",{children:\"No matching workspaces\"}),Or?p.jsx(tt,{size:\"sm\",onClick:()=>n(),children:\"Create a workspace\"}):mr&&p.jsx(tt,{variant:\"outline\",size:\"sm\",onClick:J,children:\"Clear filters\"})]})",
+    "sha256": "4d3c02b1d77f01ad5a1bfb347665e76ee53085596913dcc40cf363a42f1dfedf",
+    "bytes": 306,
+    "parent": "Home-UJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9873863,
+      9874169
+    ],
+    "utf16_half_open": [
+      9828309,
+      9828615
+    ]
+  },
+  {
+    "name": "reference-clear-callback",
+    "text": "L=()=>E({owners:[],projects:[],archiveFilter:\"all\"})",
+    "sha256": "a9e77edf44c1caa92aea2d449fdc40ad5752a6efe9e2ecc4cbcf9bfb48177231",
+    "bytes": 52,
+    "parent": "Home-filter-state-MJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9861773,
+      9861825
+    ],
+    "utf16_half_open": [
+      9816219,
+      9816271
+    ]
+  },
+  {
+    "name": "reference-clear-does-not-set-query",
+    "text": "w=H=>{c(H),o({search:{org:t,owners:H.owners,projects:H.projects.length>0?H.projects:void 0,state:H.archiveFilter===\"active\"?void 0:H.archiveFilter},replace:!0}).fireAndForget()}",
+    "sha256": "a028fc57d75577fbaac4da2209592c3cdcf39f21bade943b0bca2d95f21610c0",
+    "bytes": 177,
+    "parent": "Home-filter-state-MJo",
+    "asset": "renderApp-D_fmY7hW.js",
+    "utf8_half_open": [
+      9861119,
+      9861296
+    ],
+    "utf16_half_open": [
+      9815565,
+      9815742
+    ]
+  },
+  {
+    "name": "main-component-input-contract",
+    "text": "interface Props {\n  repos: Repo[];\n  sidebarVisible: boolean;\n  dispatch: Dispatch<Action>;\n  onCreateWorkspace: () => void;\n}",
+    "sha256": "657989b0915b328440ba79a72bcce1c84142f32f5667f2f1577202c514ac9508",
+    "bytes": 126,
+    "main_sha": "4739c9c029f87c64901a2431de6032b81f2b7348",
+    "path": "src/components/AllWorkspaces.tsx",
+    "lines_inclusive": [
+      43,
+      48
+    ]
+  },
+  {
+    "name": "main-empty-action-caller",
+    "text": "const empty = emptyAction(repos, filters);",
+    "sha256": "6887205f563f816d78ae904de0fbd9c4ae6bc09cd272116c2904813bae357388",
+    "bytes": 42,
+    "main_sha": "4739c9c029f87c64901a2431de6032b81f2b7348",
+    "path": "src/components/AllWorkspaces.tsx",
+    "lines_inclusive": [
+      277,
+      277
+    ]
+  },
+  {
+    "name": "main-list-branch",
+    "text": "{groups.length > 0 ? (",
+    "sha256": "9f879cbd3b067d83799e9c3a7e469d8d599885cb0ada61954d4a2daa21517e41",
+    "bytes": 22,
+    "main_sha": "4739c9c029f87c64901a2431de6032b81f2b7348",
+    "path": "src/components/AllWorkspaces.tsx",
+    "lines_inclusive": [
+      384,
+      384
+    ]
+  },
+  {
+    "name": "main-empty-consumer",
+    "text": "<div className=\"allws-empty\">\n              <span>No matching workspaces</span>\n              {empty === \"create\" && (\n                <button type=\"button\" className=\"allws-create\" onClick={onCreateWorkspace}>\n                  Create a workspace\n                </button>\n              )}\n              {empty === \"clear\" && (\n                <button type=\"button\" className=\"allws-clear\" onClick={() => setFilters(CLEARED_FILTERS)}>\n                  Clear filters\n                </button>\n              )}\n            </div>",
+    "sha256": "971956ba318d9abe023741ede057094ffec4706e00e1fc229f0d577ad73b29b4",
+    "bytes": 529,
+    "main_sha": "4739c9c029f87c64901a2431de6032b81f2b7348",
+    "path": "src/components/AllWorkspaces.tsx",
+    "lines_inclusive": [
+      412,
+      424
+    ]
+  },
+  {
+    "name": "main-empty-action-declaration",
+    "text": "export function emptyAction(repos: readonly Repo[], filters: HomeFilters): EmptyAction {\n  const anyActive = repos.some((r) => r.workspaces.some((w) => w.status !== \"archived\"));\n  if (filters.projects.length === 0 && filters.archiveFilter === \"active\" && !anyActive) return \"create\";\n  return hasActiveFilters(filters) ? \"clear\" : null;\n}",
+    "sha256": "cff0d2a172af13921446ef100d1bd069bf09ee8a8c3df76a8cca1ffa38039c38",
+    "bytes": 339,
+    "main_sha": "4739c9c029f87c64901a2431de6032b81f2b7348",
+    "path": "src/home/allWorkspaces.ts",
+    "lines_inclusive": [
+      303,
+      307
+    ]
+  },
+  {
+    "name": "main-filter-presence",
+    "text": "export function hasActiveFilters(f: HomeFilters): boolean {\n  return f.projects.length > 0 || f.archiveFilter !== \"all\";\n}",
+    "sha256": "f801c628a65939e86d2f31b48cde76b892de4e5bd3acbd4e847b8e72f503bdb5",
+    "bytes": 122,
+    "main_sha": "4739c9c029f87c64901a2431de6032b81f2b7348",
+    "path": "src/home/allWorkspaces.ts",
+    "lines_inclusive": [
+      225,
+      227
+    ]
+  },
+  {
+    "name": "main-clear-value",
+    "text": "export const CLEARED_FILTERS: HomeFilters = { projects: [], archiveFilter: \"all\" };",
+    "sha256": "aaec9fb7ac23531bc91eb970df3c19909906cd36b64c7f7ab0e6969f68582b15",
+    "bytes": 83,
+    "main_sha": "4739c9c029f87c64901a2431de6032b81f2b7348",
+    "path": "src/home/allWorkspaces.ts",
+    "lines_inclusive": [
+      230,
+      230
+    ]
+  },
+  {
+    "name": "main-groups-drop-empty",
+    "text": "return BUCKET_ORDER.filter((b) => by.has(b)).map((b) => ({ bucket: b, label: BUCKET_LABELS[b], rows: by.get(b)! }));",
+    "sha256": "90cf8a8fdd11c4605ee8c33263a623a372fa767dee09d459e97700950c54ff12",
+    "bytes": 116,
+    "main_sha": "4739c9c029f87c64901a2431de6032b81f2b7348",
+    "path": "src/home/allWorkspaces.ts",
+    "lines_inclusive": [
+      293,
+      293
+    ]
+  }
+]

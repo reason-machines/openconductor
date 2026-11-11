@@ -1,0 +1,90 @@
+{
+  "id": "ACQ-HOME-LOCAL-EMPTY-271-02",
+  "producer": "Conductor Rebuild / 27102e36",
+  "status": "STATIC_SETTLED_ARCHIVED_ONLY_ACTION_DIFFERENCE_LOADING_INTEGRATION_UNRESOLVED",
+  "main_sha": "4739c9c029f87c64901a2431de6032b81f2b7348",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "asset": "dist/assets/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "identity_basis": "Previously verified full retained renderer; this pass reuses its recorded full digest and verifies each new exact span. No reacquisition or repeated whole-asset hash.",
+    "parent_rea_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "retained_service_receipt_attributed": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "original_attachment_id": "e81cbda9-871b-4334-a706-3241320dc976"
+  },
+  "retained_declarations": {
+    "Home-UJo": {
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "utf16_half_open": [
+        9817995,
+        9829017
+      ],
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030"
+    },
+    "Home-filter-state-MJo": {
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9860278,
+        9862126
+      ],
+      "utf16_half_open": [
+        9814724,
+        9816572
+      ],
+      "bytes": 1848,
+      "sha256": "7e75df8888bf9d63c869ce04c489d322f385442a92eeef71253a9cee4f51bfe9"
+    }
+  },
+  "offset_convention": "Zero-based half-open UTF-8 bytes and UTF-16 code units; payload is exact concatenation without separators.",
+  "anchors": 22,
+  "cases": 12,
+  "source_processing_only": true,
+  "target_javascript_executed": false,
+  "missing_dependencies": [
+    "g5 create-workspace callback implementation",
+    "tt generic button enablement implementation",
+    "LJo default filter object and persisted preference inputs",
+    "OpenConductor caller/loading integration outside permitted component/helper reads",
+    "Xh/nF/so provider implementation and loading transitions"
+  ],
+  "files": {
+    "reference-UJo.js.txt": {
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030",
+      "bytes": 11022
+    },
+    "reference-MJo.js.txt": {
+      "sha256": "7e75df8888bf9d63c869ce04c489d322f385442a92eeef71253a9cee4f51bfe9",
+      "bytes": 1848
+    },
+    "main-AllWorkspaces.tsx.txt": {
+      "sha256": "09a33ea155ddd2a6dfd3a547ff3a4c69b95e203de5e67bd3adb60dfa63d10c38",
+      "bytes": 16560
+    },
+    "main-homeRows.ts.txt": {
+      "sha256": "45e77dda94f361cdf16be238f5ef55ae8b5329166da88197e14d84651c6d35bd",
+      "bytes": 13170
+    },
+    "anchors.json": {
+      "sha256": "88969da64881fa0b20bc261c6d1c6a63934c13a5e5800cc172f1350b66c3bcf6",
+      "bytes": 10478
+    },
+    "truth-table.json": {
+      "sha256": "52ba56fb436c21e3620db4d1026b7e223b86ef2c779544112a7081941d70070f",
+      "bytes": 7589
+    }
+  },
+  "limits": [
+    "No product or test edit.",
+    "No mounted/component test, typecheck, build, browser, provider, native, or new REA acquisition.",
+    "No reference runtime, visual parity, actual loading reachability, button implementation, or creation outcome is proven.",
+    "Original renderer upload is not placed in this recovered workspace. Retained exact source text and prior REA hashes are reused."
+  ]
+}
