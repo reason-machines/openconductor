@@ -1,0 +1,270 @@
+{
+  "producer": "Conductor Rebuild / 6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+  "scope": "create-github-repo-confirm-dialog controller, controlled modal, immediate close reducer and direct outsidePress predicate consumer only.",
+  "archive": {
+    "attachment_id": "9bba4171-4ff7-4ded-83e7-5a62a9f75350",
+    "bytes": 15206400,
+    "sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+    "safe_members": 13
+  },
+  "assets": [
+    {
+      "key": "index",
+      "path": ".rea-work/retained-reference/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    {
+      "key": "renderer",
+      "path": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  ],
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "rea_limit": "The original semantic renderer analysis exhausted heap. This supplement reads identity-verified retained shipped bytes only, with no reference JavaScript execution.",
+  "offset_convention": "Zero-based UTF-8 half-open byte offsets.",
+  "main_counterexample": {
+    "commit": "a588bddd7f56be4493644dae4c41952919e56f6a",
+    "files": {
+      "src/components/GitHubRepoDialog.tsx": {
+        "snapshot": "artifacts/github-repo-dialog-mounted-current-main.tsx",
+        "bytes": 5812,
+        "sha256": "7bf8d526781caa599c2a90dee80452b3396faa0df090bc3968d54fdc587f3d8a"
+      },
+      "src/components/Dialogs.tsx": {
+        "snapshot": "artifacts/github-modal-mounted-current-main.tsx",
+        "bytes": 1397,
+        "sha256": "ecbffa963b0e61be7da873e62f8d67af27fc0dfc802def7abaa8b278355cf203"
+      },
+      "src/App.tsx": {
+        "snapshot": "artifacts/github-app-mounted-current-main.tsx",
+        "bytes": 37349,
+        "sha256": "0d0921256b84b8a44e5b5704cf5c4549e34e66514c119e956179efdd2f101629"
+      }
+    },
+    "pending_cancel": "NO_SOURCE_DISCREPANCY",
+    "backdrop": "SOURCE_COUNTEREXAMPLE_BEHAVIORAL_REPRO_REQUIRED"
+  },
+  "checks": {
+    "archive_identity_safe_members": "PASS 13 safe members",
+    "original_assets": "PASS 2 of 2",
+    "prior_spans": "PASS 21 unique spans",
+    "new_spans": "PASS 18 of 18",
+    "direct_bindings_predicates": "PASS",
+    "product_tests_build_runtime_native_visual": "NOT RUN",
+    "tracked_product_changes": "NONE"
+  },
+  "spans": [
+    {
+      "name": "HI-store-and-adapters",
+      "asset": "index",
+      "utf8_half_open": [
+        3260595,
+        3261124
+      ],
+      "bytes": 529,
+      "sha256": "ef896c474e4d499346ec949dfce321ca017a534139566b9946f5ee7b0bc61f60",
+      "literal": "HI=nr((t,e)=>({activeDialogId:null,activeDialogData:null,dialogData:{},openDialog:(n,...r)=>{const i=r[0],o=pBt(i);e().activeDialogId!==n&&hBt(),t(a=>({activeDialogId:n,activeDialogData:o?i:null,dialogData:o?{...a.dialogData,[n]:i}:a.dialogData}))},closeDialog:n=>t(r=>{if(!n||r.activeDialogId===n){const i={...r.dialogData};return n&&delete i[n],{activeDialogId:null,activeDialogData:null,dialogData:i}}return r})})),fBt=(t,...e)=>HI.getState().openDialog(t,...e),qI={openDialog:fBt,closeDialog:t=>HI.getState().closeDialog(t)};"
+    },
+    {
+      "name": "AVt-dialog-data-selector",
+      "asset": "index",
+      "utf8_half_open": [
+        3261124,
+        3261227
+      ],
+      "bytes": 103,
+      "sha256": "225fc855e1c495132fa80a1b4cbd3810074ca94e4a4401ad49c2952bae9dd79b"
+    },
+    {
+      "name": "external-store-hook-and-creator",
+      "asset": "index",
+      "utf8_half_open": [
+        383617,
+        383845
+      ],
+      "bytes": 228,
+      "sha256": "bef4d83ec4a5375a15364de5615d81d5ae8b167708f4e38e4af507edc9d51d3c"
+    },
+    {
+      "name": "V5-store-setter-and-Hs",
+      "asset": "index",
+      "utf8_half_open": [
+        255286,
+        255609
+      ],
+      "bytes": 323,
+      "sha256": "fe188dbf4b5bfa3f5bf9d78dbea2bc6b1b0924ed5cdd17005f0e324e19fd9012"
+    },
+    {
+      "name": "HI-export-bY",
+      "asset": "index",
+      "utf8_half_open": [
+        3481036,
+        3481044
+      ],
+      "bytes": 8,
+      "sha256": "2b2ef260bc3d4c4b091e121a03c245141398e35676d09fb5568da32f84497a3c",
+      "literal": "HI as bY"
+    },
+    {
+      "name": "AVt-export-cL",
+      "asset": "index",
+      "utf8_half_open": [
+        3481533,
+        3481542
+      ],
+      "bytes": 9,
+      "sha256": "7ffe1b632f806cddcb437135a03fc9bb4df51662cf04a0340b920fe0e00034c4",
+      "literal": "AVt as cL"
+    },
+    {
+      "name": "dbi-mounted-controller",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2028481,
+        2028804
+      ],
+      "bytes": 323,
+      "sha256": "46ba78c033773bf6fa4e5ac64ea601b090b13650795dce585c68dd530754dbd3",
+      "literal": "function dbi(t){const e=ne.c(8),{onSuccess:n}=t,i=x1(xas);let r;e[0]!==i||e[1]!==n?(r=i?p.jsx(was,{onSuccess:n}):null,e[0]=i,e[1]=n,e[2]=r):r=e[2];let o;e[3]!==r?(o=p.jsx(Im,{children:r}),e[3]=r,e[4]=o):o=e[4];let a;return e[5]!==i||e[6]!==o?(a=p.jsx(Tg,{open:i,onOpenChange:yas,children:o}),e[5]=i,e[6]=o,e[7]=a):a=e[7],a}"
+    },
+    {
+      "name": "yas-close-and-xas-active-selector",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2028804,
+        2028894
+      ],
+      "bytes": 90,
+      "sha256": "5dd3d10921d350272f2b3837764007f7a7f38a201e50b90b57d39479ae95dc76",
+      "literal": "function yas(t){return!t&&nr.closeDialog(sH)}function xas(t){return t.activeDialogId===sH}"
+    },
+    {
+      "name": "Oos-alert-dialog-adapter",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1983759,
+        1983804
+      ],
+      "bytes": 45,
+      "sha256": "0abf461395f1cf33902d693f3406ca5ebd519abd08ca463e3df524e1758fe19e",
+      "literal": "function Oos(t){return _3i(\"alert-dialog\",t)}"
+    },
+    {
+      "name": "Tg-controlled-modal-wrapper",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1983870,
+        1984773
+      ],
+      "bytes": 903,
+      "sha256": "4f7b93660718d8e44f87fa32f4fb1eba733f538d3ecf96747182aaf27efc637a",
+      "literal": "Tg=t=>{const e=ne.c(18);let n,i,r,o,a;e[0]!==t?({open:o,defaultOpen:i,onOpenChange:r,children:n,...a}=t,e[0]=t,e[1]=n,e[2]=i,e[3]=r,e[4]=o,e[5]=a):(n=e[1],i=e[2],r=e[3],o=e[4],a=e[5]);let c;e[6]!==i||e[7]!==r||e[8]!==o?(c={open:o,defaultOpen:i,onOpenChange:r},e[6]=i,e[7]=r,e[8]=o,e[9]=c):c=e[9];const[u,d]=jZ(c),h=$.useRef(void 0);let m;e[10]===Symbol.for(\"react.memo_cache_sentinel\")?(m=x=>(h.current=x,()=>{h.current===x&&(h.current=void 0)}),e[10]=m):m=e[10];const g=m;let _;e[11]!==d?(_=(x,w)=>{if(!x&&w.reason===\"escape-key\"&&w.event instanceof KeyboardEvent){const E=w.event.defaultPrevented;if(h.current?.(w.event),!E&&w.event.defaultPrevented){w.cancel();return}}d(x)},e[11]=d,e[12]=_):_=e[12];let v;return e[13]!==n||e[14]!==u||e[15]!==a||e[16]!==_?(v=p.jsx(V3i.Provider,{value:g,children:p.jsx(Oos,{...a,open:u,onOpenChange:_,children:n})}),e[13]=n,e[14]=u,e[15]=a,e[16]=_,e[17]=v):v=e[17],v}"
+    },
+    {
+      "name": "jZ-controlled-open-adapter",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1910696,
+        1910985
+      ],
+      "bytes": 289,
+      "sha256": "c57fce88a6519630e130eb81d6098bf2e07cefee72f81375de5a3cd640862c9f"
+    },
+    {
+      "name": "Im-dialog-content-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1986040,
+        1988670
+      ],
+      "bytes": 2630,
+      "sha256": "0779203fd9f18529275a04c9eb0e581ba1927acfcc24844d9e7bc1d898677dc4"
+    },
+    {
+      "name": "_3i-modal-state-and-context",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1908711,
+        1909725
+      ],
+      "bytes": 1014,
+      "sha256": "09260b99d1bbeb1ea8ba9de4aead815f033feb6b9ab33a423289b663a971d532",
+      "literal": "function _3i(t,e){const{children:n,open:i,defaultOpen:r=!1,onOpenChange:o,onOpenChangeComplete:a,disablePointerDismissal:c=!1,modal:u=!0,actionsRef:d,handle:h,triggerId:m,defaultTriggerId:g=null}=e,_=t===\"drawer\",v=t===\"alert-dialog\",x=v?!0:u,w=v||c,E=v?\"alertdialog\":\"dialog\",k=jV(!0),I=k!=null,R={modal:x,disablePointerDismissal:w,nested:I,role:E},O=kQe((H,U)=>new Grs({open:r,openProp:i,activeTriggerId:g,triggerIdProp:m,...R},H,U),!0);O.useControlledProp(\"openProp\",i),O.useControlledProp(\"triggerIdProp\",m),O.useSyncedValues(R),O.useContextCallback(\"onOpenChange\",o),O.useContextCallback(\"onOpenChangeComplete\",a);const D=O.useState(\"open\"),P=O.useState(\"mounted\"),L=O.useState(\"payload\");Mli(O,D),QSe(O);const{forceUnmount:B}=XSe(D,O);$.useImperativeHandle(d,()=>({unmount:B,close:()=>O.setOpen(!1,Ys(hJ))}),[B,O]);const F=D||P;return p.jsxs(g3i.Provider,{value:O,children:[h&&p.jsx(KSe,{handle:h,store:O}),F&&p.jsx(Vrs,{store:O,parentContext:k?.context,isDrawer:_}),typeof n==\"function\"?n({payload:L}):n]})}"
+    },
+    {
+      "name": "Grs-setOpen-qrs-Krs",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1907770,
+        1908711
+      ],
+      "bytes": 941,
+      "sha256": "a37aea48d00ecab93a9a49c717717881966e6beac0777bf85c3cbf3068fdaafc"
+    },
+    {
+      "name": "Vrs-outside-press-and-selectors",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1906108,
+        1907770
+      ],
+      "bytes": 1662,
+      "sha256": "051884b5669de5f180d030d9e0463a06a928c79cd687ebcc5f0c39671883120a",
+      "literal": "function Vrs({store:t,parentContext:e,isDrawer:n}){const i=t.useState(\"open\"),r=t.useState(\"disablePointerDismissal\"),o=t.useState(\"modal\"),a=t.useState(\"popupElement\"),c=t.useState(\"floatingRootContext\"),[u,d]=$.useState(0),[h,m]=$.useState(0),g=u===0,_=SZ(c,{outsidePressEvent(){return t.context.internalBackdropRef.current||t.context.backdropRef.current?\"intentional\":{mouse:o===\"trap-focus\"?\"sloppy\":\"intentional\",touch:\"sloppy\"}},outsidePress(v){if(!t.context.outsidePressEnabledRef.current||\"button\"in v&&v.button!==0)return!1;if(\"touches\"in v){if(v.type===\"touchend\"){if(v.changedTouches.length!==1||v.touches.length!==0)return!1}else if(v.touches.length!==1)return!1}const x=jf(v);if(g&&!r){if(o){const w=t.context.internalBackdropRef.current,E=t.context.backdropRef.current;return w||E?w===x||E===x||oo(x,a)&&!x?.hasAttribute(\"data-base-ui-portal\"):!0}return!0}return!1},escapeKey:g});return p0i(i&&o===!0,a),t.useContextCallback(\"onNestedDialogOpen\",(v,x)=>{d(v),m(x)}),or(()=>(e?.onNestedDialogOpen&&(i?e.onNestedDialogOpen(u+1,h+(n?1:0)):e.onNestedDialogOpen(0,0)),()=>{e?.onNestedDialogOpen&&i&&e.onNestedDialogOpen(0,0)}),[n,i,u,h,e]),JSe(t,{activeTriggerProps:_.reference,inactiveTriggerProps:_.trigger,popupProps:_.floating,nestedOpenDialogCount:u,nestedOpenDrawerCount:h}),null}const Wrs={...eEe,modal:t=>t.modal,nested:t=>t.nested,nestedOpenDialogCount:t=>t.nestedOpenDialogCount,nestedOpenDrawerCount:t=>t.nestedOpenDrawerCount,disablePointerDismissal:t=>t.disablePointerDismissal,openMethod:t=>t.openMethod,descriptionElementId:t=>t.descriptionElementId,titleElementId:t=>t.titleElementId,viewportElement:t=>t.viewportElement,role:t=>t.role};"
+    },
+    {
+      "name": "SZ-dismissal-dispatch",
+      "asset": "renderer",
+      "utf8_half_open": [
+        480188,
+        485653
+      ],
+      "bytes": 5465,
+      "sha256": "ad109d330e72b3e4e33789f4482e7c5c61e88fcc77859c3a8329ff6be12b4ecd",
+      "literal": "function SZ(t,e={}){const{enabled:n=!0,escapeKey:i=!0,outsidePress:r=!0,outsidePressEvent:o=\"sloppy\",referencePress:a=ODr,bubbles:c,externalTree:u}=e,d=\"rootStore\"in t?t.rootStore:t,h=d.useState(\"open\"),m=d.useState(\"floatingElement\"),{dataRef:g}=d.context,_=TV(u),v=fr(typeof r==\"function\"?r:()=>!1),x=typeof r==\"function\"?v:r,w=x!==!1,E=fr(()=>o),{escapeKey:k,outsidePress:I}=DDr(c),R=$.useRef(!1),O=$.useRef(!1),D=$.useRef(!1),P=$.useRef(!1),L=$.useRef(\"\"),B=$.useRef(null),F=b0(),H=b0(),U=fr(()=>{H.clear(),g.current.insideReactTree=!1}),z=fr(ce=>{const ae=g.current.floatingContext?.nodeId;return(_?BH(_.nodesRef.current,ae):[]).some(ue=>ue.context?.open&&!ue.context.dataRef.current[ce])}),G=fr(ce=>m4t(ce,d.select(\"floatingElement\"))||m4t(ce,d.select(\"domReferenceElement\"))),K=fr(ce=>{a()&&d.setOpen(!1,Ys(JA,ce.nativeEvent))}),X=fr(ce=>{if(!h||!n||!i||ce.key!==\"Escape\"||P.current||!k&&z(\"__escapeKeyBubbles\"))return;const ae=bOr(ce)?ce.nativeEvent:ce,de=Ys(wZ,ae);d.setOpen(!1,de),de.isCanceled||ce.preventDefault(),!k&&!de.isPropagationAllowed&&ce.stopPropagation()}),Q=fr(()=>{g.current.insideReactTree=!0,H.start(0,U)}),J=fr(ce=>{if(!h||!n||ce.button!==0)return;const ae=jf(ce.nativeEvent);oo(d.select(\"floatingElement\"),ae)&&(R.current||(R.current=!0,O.current=!1))}),te=fr(ce=>{!h||!n||(ce.defaultPrevented||ce.nativeEvent.defaultPrevented)&&R.current&&(O.current=!0)});$.useEffect(()=>{if(!h||!n)return U;g.current.__escapeKeyBubbles=k,g.current.__outsidePressBubbles=I;const ce=new bS,ae=new bS;function de(){ce.clear(),P.current=!0}function ue(){ce.start(yD?5:0,()=>{P.current=!1})}function pe(){D.current=!0,ae.start(0,()=>{D.current=!1})}function be(){R.current=!1,O.current=!1}function he(){const Ue=L.current,We=Ue===\"pen\"||!Ue?\"mouse\":Ue,Ve=E(),He=typeof Ve==\"function\"?Ve():Ve;return typeof He==\"string\"?He:He[We]}function ge(Ue){const We=he();return We===\"intentional\"&&Ue.type!==\"click\"||We===\"sloppy\"&&Ue.type===\"click\"}function ve(Ue){const We=g.current.floatingContext?.nodeId,Ve=_&&BH(_.nodesRef.current,We).some(He=>m4t(Ue,He.context?.elements.floating));return G(Ue)||Ve}function ye(Ue){if(ge(Ue)){Ue.type!==\"click\"&&!G(Ue)&&(ae.clear(),D.current=!1),U();return}if(g.current.insideReactTree){U();return}const We=jf(Ue),Ve=`[${Mxe(\"inert\")}]`,He=lu(We)?We.getRootNode():null,it=Array.from((Cce(He)?He:Gl(d.select(\"floatingElement\"))).querySelectorAll(Ve)),ft=d.context.triggerElements;if(We&&(ft.hasElement(We)||ft.hasMatchingElement(Tt=>oo(Tt,We))))return;let gt=lu(We)?We:null;for(;gt&&!fj(gt);){const Tt=Pj(gt);if(fj(Tt)||!lu(Tt))break;gt=Tt}if(!(it.length&&lu(We)&&!SOr(We)&&!oo(We,d.select(\"floatingElement\"))&&it.every(Tt=>!oo(gt,Tt)))){if(sh(We)&&!(\"touches\"in Ue)){const Tt=fj(We),Ct=Zx(We),_t=/auto|scroll/,Vt=Tt||_t.test(Ct.overflowX),bt=Tt||_t.test(Ct.overflowY),wt=Vt&&We.clientWidth>0&&We.scrollWidth>We.clientWidth,Nt=bt&&We.clientHeight>0&&We.scrollHeight>We.clientHeight,Wt=Ct.direction===\"rtl\",Dn=Nt&&(Wt?Ue.offsetX<=We.offsetWidth-We.clientWidth:Ue.offsetX>We.clientWidth),_n=wt&&Ue.offsetY>We.clientHeight;if(Dn||_n)return}if(!ve(Ue)){if(he()===\"intentional\"&&D.current){ae.clear(),D.current=!1;return}typeof x==\"function\"&&!x(Ue)||z(\"__outsidePressBubbles\")||(d.setOpen(!1,Ys(VSe,Ue)),U())}}}function xe(Ue){he()!==\"sloppy\"||Ue.pointerType===\"touch\"||!d.select(\"open\")||!n||G(Ue)||ye(Ue)}function ke(Ue){if(he()!==\"sloppy\"||!d.select(\"open\")||!n||G(Ue))return;const We=Ue.touches[0];We&&(B.current={startTime:Date.now(),startX:We.clientX,startY:We.clientY,dismissOnTouchEnd:!1,dismissOnMouseDown:!0},F.start(1e3,()=>{B.current&&(B.current.dismissOnTouchEnd=!1,B.current.dismissOnMouseDown=!1)}))}function Se(Ue,We){const Ve=jf(Ue);if(!Ve)return;const He=vc(Ve,Ue.type,()=>{We(Ue),He()})}function De(Ue){L.current=\"touch\",Se(Ue,ke)}function je(Ue){F.clear(),Ue.type===\"pointerdown\"&&(L.current=Ue.pointerType),!(Ue.type===\"mousedown\"&&B.current&&!B.current.dismissOnMouseDown)&&Se(Ue,We=>{We.type===\"pointerdown\"?xe(We):ye(We)})}function Ne(Ue){if(!R.current)return;const We=O.current;if(be(),he()===\"intentional\"){if(Ue.type===\"pointercancel\"){We&&pe();return}if(!ve(Ue)){if(We){pe();return}typeof x==\"function\"&&!x(Ue)||(ae.clear(),D.current=!0,U())}}}function Le(Ue){if(he()!==\"sloppy\"||!B.current||G(Ue))return;const We=Ue.touches[0];if(!We)return;const Ve=Math.abs(We.clientX-B.current.startX),He=Math.abs(We.clientY-B.current.startY),it=Math.sqrt(Ve*Ve+He*He);it>5&&(B.current.dismissOnTouchEnd=!0),it>10&&(ye(Ue),F.clear(),B.current=null)}function ze(Ue){Se(Ue,Le)}function Ke(Ue){he()!==\"sloppy\"||!B.current||G(Ue)||(B.current.dismissOnTouchEnd&&ye(Ue),F.clear(),B.current=null)}function Ze(Ue){Se(Ue,Ke)}const Ye=Gl(m),Qe=$A(i&&$A(vc(Ye,\"keydown\",X),vc(Ye,\"compositionstart\",de),vc(Ye,\"compositionend\",ue)),w&&$A(vc(Ye,\"click\",je,!0),vc(Ye,\"pointerdown\",je,!0),vc(Ye,\"pointerup\",Ne,!0),vc(Ye,\"pointercancel\",Ne,!0),vc(Ye,\"mousedown\",je,!0),vc(Ye,\"mouseup\",Ne,!0),vc(Ye,\"touchstart\",De,!0),vc(Ye,\"touchmove\",ze,!0),vc(Ye,\"touchend\",Ze,!0)));return()=>{Qe(),ce.clear(),ae.clear(),be(),D.current=!1,U()}},[g,m,i,w,x,h,n,k,I,X,U,E,z,G,_,d,F]);const Z=$.useMemo(()=>({onKeyDown:X,onPointerDown:K,onClick:K}),[X,K]),se=$.useMemo(()=>({onKeyDown:X,onPointerDown:te,onMouseDown:te,onClickCapture:Q,onMouseDownCapture(ce){Q(),J(ce)},onPointerDownCapture(ce){Q(),J(ce)},onMouseUpCapture:Q,onTouchEndCapture:Q,onTouchMoveCapture:Q}),[X,Q,J,te]);return $.useMemo(()=>n?{reference:Z,floating:se,trigger:Z}:{},[n,Z,se])}"
+    },
+    {
+      "name": "Gls-controller-mount-declaration",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2118911,
+        2120648
+      ],
+      "bytes": 1737,
+      "sha256": "916e8b7106c0d8db45b1084171514e606d696aaf0408b991c4e99123a1cf628c"
+    },
+    {
+      "name": "Isa-controller-mount-declaration",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10109106,
+        10110824
+      ],
+      "bytes": 1718,
+      "sha256": "8e4e87d1a27340220ae099b918de1e2bf871ecee14e96cc9953667419b5f26d1"
+    }
+  ],
+  "renderer_index_import": {
+    "name": "renderer-index-import-complete",
+    "asset": "renderer",
+    "utf8_half_open": [
+      52991,
+      66495
+    ],
+    "bytes": 13504,
+    "sha256": "711b96377098ad3838934209f1710cb85acfc256abecae07605139daf0670ed5",
+    "joined_literals": [
+      "bY as x1",
+      "cL as ib",
+      "c4 as nr,c5 as sH"
+    ]
+  },
+  "limits": [
+    "No reference JavaScript execution, actual click, Escape, native render, visual match, mutation cancellation, after-unmount completion or external provider behavior was observed.",
+    "Ancillary library helpers, focus, transitions, geometry, pointer-event delivery and platform-specific behavior are not a complete execution model.",
+    "No product patch, regression test execution, build, Mac contact, native launch, acquisition, new reader or E2E observer occurred in this source pass."
+  ]
+}
