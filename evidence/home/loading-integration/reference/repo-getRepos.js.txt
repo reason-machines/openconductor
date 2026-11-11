@@ -1,0 +1,1 @@
+async getRepos(){const e=this.hydration;if(!e)throw new Error("getRepos() called before service started");return await e,Object.values(this.state.repos).map(s=>s?.data).filter(s=>s!==void 0)}

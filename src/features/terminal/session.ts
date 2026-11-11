@@ -335,9 +335,17 @@ async function startTab(
 
 async function spawnTerminal(id: string, terminal: Live): Promise<void> {
   try {
-    await spawnIn(terminal.launch.cwds, (cwd) =>
-      ptySpawn({ id, cwd, cols: terminal.term.cols, rows: terminal.term.rows, initialCommand: terminal.launch.initialCommand }),
-    );
+    await spawnIn(terminal.launch.cwds, async (cwd) => {
+      const { cols, rows } = terminal.term;
+      await ptySpawn({ id, cwd, cols, rows, initialCommand: terminal.launch.initialCommand });
+      if (
+        live.get(id) === terminal &&
+        getTabs(terminal.workspaceId).tabs.some((tab) => tab.id === id && tab.status !== "exited") &&
+        (terminal.term.cols !== cols || terminal.term.rows !== rows)
+      ) {
+        void ptyResize(id, terminal.term.cols, terminal.term.rows).catch(() => {});
+      }
+    });
   } catch (error) {
     if (live.get(id) === terminal) {
       terminal.term.options.disableStdin = true;

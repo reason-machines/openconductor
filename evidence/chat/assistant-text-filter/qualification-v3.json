@@ -1,0 +1,176 @@
+{
+  "producer": "Conductor Rebuild",
+  "version": 3,
+  "status": "FROZEN_SOURCE_ONLY_RUNTIME_NOT_RUN",
+  "baseline_main": "b6e7473d17462ce09948437b4239fb0a31e8d37f",
+  "reference": "source-v1/source-packet.json",
+  "original_replay_immutable": true,
+  "static_checks": [
+    "whole reference assets and all seven spans match original digest/offset pins",
+    "all original six fixture test tails remain byte-exact",
+    "all dependency inputs match fresh main",
+    "tool branch and following source remain byte-exact",
+    "Row/Agent/Summary/footer source remains byte-exact"
+  ],
+  "files": [
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "candidate_sha256": "7b98c1ab857e7c015bc04c0cab64b8206ef2741ab8dc87800a32f3576a00ac00",
+      "candidate_bytes": 20364,
+      "baseline_sha256": "533b97a4f656a6bb6e72953c1a7809a82871fbfa5dbc8578d204b96ddc85e06e",
+      "baseline_bytes": 19881
+    },
+    {
+      "path": "src/features/chat/copyCodeFeedback.test.ts",
+      "candidate_sha256": "e784cab0ab4b7fbb6b6f7fe78aaa497d66ee24ebeee4b661b0eed4a2a6c123d4",
+      "candidate_bytes": 8880,
+      "baseline_sha256": "7851a962f637106c096efda1e8756d12a593a7765a5a27d5ee9b8256474df6c3",
+      "baseline_bytes": 8769
+    },
+    {
+      "path": "src/features/chat/transcriptAgentSummary.test.ts",
+      "candidate_sha256": "6a34610ac3718ac1fcfd4fb11f9084c9f4edc38442e084c5fbc55471d0e728c5",
+      "candidate_bytes": 18691,
+      "baseline_sha256": "0a0c0812a2d4c997f74e75b38ab652c045e0e6e370f8a4573fd591965a26e1ed",
+      "baseline_bytes": 12045
+    },
+    {
+      "path": "src/features/chat/thinkingLinks.test.ts",
+      "candidate_sha256": "1f76dd08ebe1f56990f9e258f4739b2010734c0bbf41fb1c6e2f308a9f434abf",
+      "candidate_bytes": 11565,
+      "baseline_sha256": "ccb50adaa7a013e04c869f748b3ceef286ebbe141b6eb6c069e920fbeeb50b49",
+      "baseline_bytes": 11454
+    },
+    {
+      "path": "src/features/chat/thinkingToolLinks.test.ts",
+      "candidate_sha256": "3bc15fcc0ee537084cb1c88e00e3121789cccb62905055e036f52a8b9246f4cf",
+      "candidate_bytes": 12968,
+      "baseline_sha256": "684234f8182d2ff548077f7d0aada5d2a2cabeff85fd6803a14874a10211f6ea",
+      "baseline_bytes": 12857
+    },
+    {
+      "path": "src/features/chat/todoMixedRows.test.ts",
+      "candidate_sha256": "5791167e5fcac43d34a32d5ba5447ff2bd4669fe5b418191d1260097702e467c",
+      "candidate_bytes": 12345,
+      "baseline_sha256": "eba57080cc4bd83f631a8a95044af922462a7547362a2048245def569c1b8e7f",
+      "baseline_bytes": 12236
+    },
+    {
+      "path": "src/features/chat/userText.test.ts",
+      "candidate_sha256": "f03a03ca65b7e50929e5ccd229e42c228d29570cb8567d5814d60ffb2931d33d",
+      "candidate_bytes": 13410,
+      "baseline_sha256": "eeca2ab019cb1360eb3b6ac34d936387eb75972c43d8608ea1de39ff9a123e03",
+      "baseline_bytes": 13324
+    },
+    {
+      "path": "src/features/chat/assistantText.ts",
+      "candidate_sha256": "1cd6f66ab5f29c16d7090c315767078aae120b8a01612870622c9383e2f9d239",
+      "candidate_bytes": 426
+    },
+    {
+      "path": "src/features/chat/assistantText.test.ts",
+      "candidate_sha256": "b591e6fcb07a5ae37ed7e9ee8be4242401ea0663762cdfe2d93b06aa0f229eea",
+      "candidate_bytes": 1859
+    },
+    {
+      "path": "package.json",
+      "candidate_sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
+      "candidate_bytes": 1901,
+      "baseline_sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
+      "baseline_bytes": 1901
+    },
+    {
+      "path": "package-lock.json",
+      "candidate_sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1",
+      "candidate_bytes": 221776,
+      "baseline_sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1",
+      "baseline_bytes": 221776
+    },
+    {
+      "path": "tsconfig.json",
+      "candidate_sha256": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5",
+      "candidate_bytes": 526,
+      "baseline_sha256": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5",
+      "baseline_bytes": 526
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "candidate_sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db",
+      "candidate_bytes": 8612,
+      "baseline_sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db",
+      "baseline_bytes": 8612
+    },
+    {
+      "path": "src/features/chat/toolGroups.ts",
+      "candidate_sha256": "eadaab0dd0636ca31a0570074920905ba00edcff7963e4828e7b51299ac79252",
+      "candidate_bytes": 6936,
+      "baseline_sha256": "eadaab0dd0636ca31a0570074920905ba00edcff7963e4828e7b51299ac79252",
+      "baseline_bytes": 6936
+    },
+    {
+      "path": "src/features/chat/types.ts",
+      "candidate_sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+      "candidate_bytes": 3429,
+      "baseline_sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+      "baseline_bytes": 3429
+    },
+    {
+      "path": "src/features/chat/reducer.ts",
+      "candidate_sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "candidate_bytes": 5906,
+      "baseline_sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "baseline_bytes": 5906
+    },
+    {
+      "path": "src/features/chat/thinkingChip.ts",
+      "candidate_sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9",
+      "candidate_bytes": 453,
+      "baseline_sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9",
+      "baseline_bytes": 453
+    },
+    {
+      "path": "src/features/chat/markdown.ts",
+      "candidate_sha256": "06354820fa6722b771c0e626a3dffc2cee5f34f0917366ca25ec47cdddab17b4",
+      "candidate_bytes": 11568,
+      "baseline_sha256": "06354820fa6722b771c0e626a3dffc2cee5f34f0917366ca25ec47cdddab17b4",
+      "baseline_bytes": 11568
+    },
+    {
+      "path": "src/settings/prefs.ts",
+      "candidate_sha256": "c29549a90cd52e0b69d1381fead957aec44d83ee971751bd2aee5b8a7981d663",
+      "candidate_bytes": 4731,
+      "baseline_sha256": "c29549a90cd52e0b69d1381fead957aec44d83ee971751bd2aee5b8a7981d663",
+      "baseline_bytes": 4731
+    },
+    {
+      "path": "src/settings/useBoolPref.ts",
+      "candidate_sha256": "2ddcb5c12133e8cfe0547960595082bdfd288cb352a28ec8c6ba8ee2bfa6a31a",
+      "candidate_bytes": 1092,
+      "baseline_sha256": "2ddcb5c12133e8cfe0547960595082bdfd288cb352a28ec8c6ba8ee2bfa6a31a",
+      "baseline_bytes": 1092
+    },
+    {
+      "path": "src/features/chat/userMessageCopy.ts",
+      "candidate_sha256": "6cbe180e992dfe7acf753fe9aeee63c035e8be0b44501a75a698e12faac7c25f",
+      "candidate_bytes": 857,
+      "baseline_sha256": "6cbe180e992dfe7acf753fe9aeee63c035e8be0b44501a75a698e12faac7c25f",
+      "baseline_bytes": 857
+    }
+  ],
+  "unverified": [
+    "actual behavioral RED/GREEN",
+    "typecheck/build",
+    "live Settings event/persistence/IPC",
+    "native/visual/provider"
+  ],
+  "supersedes_for_execution": "qualification-v2.json; original V2 immutable",
+  "original_archive_sha256": "34f2ebc5057c82a971c7ee91a0172c3cc5b21ebaa11df1bd1c987a5eb90292a7",
+  "context_only_change": {
+    "path": "src/features/chat/userText.test.ts",
+    "old_sha256": "277a03adb6402a5bf0017a17802d77167b018f0db6ff6249e04b7c7d8a755ccc",
+    "new_sha256": "f03a03ca65b7e50929e5ccd229e42c228d29570cb8567d5814d60ffb2931d33d",
+    "exact_added_line": "case \"./userTextExternalIcon.css\": return {};",
+    "confirmation_message": "610171cb-7140-4e01-be43-91841daa79f9",
+    "not_exercised": "Baseline b6e7473d UserText has no CSS import; separate BE7 glyph change not part of this unit"
+  }
+}

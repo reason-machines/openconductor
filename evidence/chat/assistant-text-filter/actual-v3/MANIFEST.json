@@ -1,0 +1,72 @@
+{
+  "author": "Conductor Rebuild",
+  "unit": "SETTINGS49_ASSISTANT_DISPLAY_FILTER_V3",
+  "files": [
+    {
+      "path": "classify-red.py",
+      "bytes": 3368,
+      "sha256": "580d1901cae8a6370d5aee4f75746cdeac079d4d39a4b3254de1ab5cba94bede"
+    },
+    {
+      "path": "execution-request-v3.json",
+      "bytes": 2327,
+      "sha256": "ecbdfcae780fd37271a701eac496252b9ec108d97b1c5ec840ee0fd16d3cc73e"
+    },
+    {
+      "path": "green-receipt.json",
+      "bytes": 17617,
+      "sha256": "4f4b85b8d13b034c268188081ae5f5c57ab97623c7b08abe405595a814f61554"
+    },
+    {
+      "path": "green-source-inventory.json",
+      "bytes": 139050,
+      "sha256": "ab6b9d326ea080f7399f6393de52f1b3e551b4ea348c75c3d20c6c62562e9a79"
+    },
+    {
+      "path": "green.tap",
+      "bytes": 26308,
+      "sha256": "6898666e78829a354b9d53d62b8cfc30dc83d6877f8fe40711da10bc10694cd6"
+    },
+    {
+      "path": "qualification-v3.json",
+      "bytes": 7693,
+      "sha256": "7144036ac5e28104744a6dfdaa95736f8031f5d76176c5560f42c329169233a7"
+    },
+    {
+      "path": "red-qualified.json",
+      "bytes": 5245,
+      "sha256": "8da7a2d798f9993de2d61796944f24ad3a4e6d570e11feef75505e59130b3f33"
+    },
+    {
+      "path": "red-receipt.json",
+      "bytes": 17930,
+      "sha256": "6147be741e1858077b26532176618f0ca8f8802674bd9ce04132bba6636b964d"
+    },
+    {
+      "path": "red-source-inventory.json",
+      "bytes": 139050,
+      "sha256": "cd45a4e7b6fdc5c75fc3d43a9448f230ffb4191ee03b74a92d7c372fd1cc6b74"
+    },
+    {
+      "path": "red.tap",
+      "bytes": 48090,
+      "sha256": "95b1f628346a48a5bf107da93b5fa40d8c3cf31b3aae36bdbf492ebfa36dd8de"
+    },
+    {
+      "path": "release.json",
+      "bytes": 2060,
+      "sha256": "c0ce559a329d85aa07141e72364dd81d23e16758c163bffedf9bb6a5c3ce1bec"
+    },
+    {
+      "path": "run.py",
+      "bytes": 14963,
+      "sha256": "ffbe1ad8ce813238c11d1b9e07642e210bac15e6ae0dd51d755bdf71886a5472"
+    }
+  ],
+  "excludes": [
+    "full source snapshot",
+    "dependencies and caches",
+    "already-attached source archive"
+  ],
+  "result": "17 intended enabled assistant text/thinking display assertion failures; 92 other cases passed; no setup errors; GREEN109/109"
+}

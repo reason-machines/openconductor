@@ -1,0 +1,12 @@
+{
+  "reason": "source-only fixture setup correction before any execution",
+  "original_fixture": "3e54f280354c9a025ecbba5b6e3cb5d77afe75627c348beb98a18a7d29e8d619",
+  "corrected_fixture": "8d7374c47ac019fbd7cf001f4aaf7d7c1acea5279c6765b731a4df6241eee816",
+  "assertion_tail_sha256": "edf7785d1e3d47380bac762a3df64beb0e5cad5fa36c388581654ac772a26a97",
+  "assertions": "byte-identical",
+  "corrections": [
+    "useImperativeHandle stable [] dependencies prevent render loop",
+    "CodeViewItem<unknown> supplies required annotation generic"
+  ],
+  "runtime": "NOT RUN"
+}

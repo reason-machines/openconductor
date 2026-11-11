@@ -1,0 +1,1 @@
+async waitForWorkspacesToLoad(){this.hasLoadedWorkspaces||(this.initialWorkspacesLoad||(this.initialWorkspacesLoad=this.loadWorkspaceList()),await this.initialWorkspacesLoad,this.hasLoadedWorkspaces=!0)}

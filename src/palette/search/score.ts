@@ -1,48 +1,57 @@
-// Fuzzy command score in [0, 1]. Our own scorer: every query character must
-// appear in order in the candidate; contiguous runs, word starts and an early
-// first match score higher. The palette hides items at or below
-// FILTER_THRESHOLD (0.2 per evidence/search-palette/README.md).
-
+// Palette command scoring follows the retained custom filter in
+// evidence/palette/create-section/source/custom-filter-spans.json.
 export const FILTER_THRESHOLD = 0.2;
 
-const WORD_BREAK = /[\s\-_./:]/;
+const PUNCTUATION = /[\\/_+.#"@[({&]/;
+const PUNCTUATION_GLOBAL = /[\\/_+.#"@[({&]/g;
+const WORD_BREAK = /[\s-]/;
+const WORD_BREAK_GLOBAL = /[\s-]/g;
 
 function scoreOne(candidate: string, query: string): number {
-  const c = candidate.toLowerCase();
-  const q = query.toLowerCase();
-  if (q.length === 0) return 1;
-  if (c === q) return 1;
-  if (c.startsWith(q)) return 0.95;
-  let total = 0;
-  let ci = 0;
-  let prev = -2;
-  for (let qi = 0; qi < q.length; qi++) {
-    const ch = q[qi];
-    if (ch === " ") continue;
-    // Continue a contiguous run if possible, else jump to a word start,
-    // else take the next occurrence.
-    const first = c.indexOf(ch, ci);
-    if (first === -1) return 0;
-    let at = first;
-    if (first !== prev + 1) {
-      for (let i = first; i < c.length; i++) {
-        if (c[i] === ch && (i === 0 || WORD_BREAK.test(c[i - 1]))) {
-          at = i;
-          break;
+  if (query.length === 0) return 1;
+  const normalizedCandidate = candidate.toLowerCase().replace(WORD_BREAK_GLOBAL, " ");
+  const normalizedQuery = query.toLowerCase().replace(WORD_BREAK_GLOBAL, " ");
+  const memo = new Map<string, number>();
+
+  function match(candidateIndex: number, queryIndex: number): number {
+    if (queryIndex === query.length) return candidateIndex === candidate.length ? 1 : 0.99;
+    const key = `${candidateIndex},${queryIndex}`;
+    const cached = memo.get(key);
+    if (cached !== undefined) return cached;
+
+    const character = normalizedQuery.charAt(queryIndex);
+    let best = 0;
+    for (let at = normalizedCandidate.indexOf(character, candidateIndex); at >= 0; at = normalizedCandidate.indexOf(character, at + 1)) {
+      let score = match(at + 1, queryIndex + 1);
+      if (score > best) {
+        if (at !== candidateIndex) {
+          const previous = candidate.charAt(at - 1);
+          const skipped = candidate.slice(candidateIndex, at - 1);
+          if (PUNCTUATION.test(previous)) {
+            score *= 0.8;
+            if (candidateIndex > 0) score *= 0.999 ** (skipped.match(PUNCTUATION_GLOBAL)?.length ?? 0);
+          } else if (WORD_BREAK.test(previous)) {
+            score *= 0.9;
+            if (candidateIndex > 0) score *= 0.999 ** (skipped.match(WORD_BREAK_GLOBAL)?.length ?? 0);
+          } else {
+            score *= 0.17;
+            if (candidateIndex > 0) score *= 0.999 ** (at - candidateIndex);
+          }
         }
+        if (candidate.charAt(at) !== query.charAt(queryIndex)) score *= 0.9999;
       }
+      const previous = normalizedCandidate.charAt(at - 1);
+      const nextQuery = normalizedQuery.charAt(queryIndex + 1);
+      if ((score < 0.1 && previous === nextQuery) || (nextQuery === character && previous !== character)) {
+        score = Math.max(score, match(at + 1, queryIndex + 2) * 0.1);
+      }
+      best = Math.max(best, score);
     }
-    let s = 0.3;
-    if (at === prev + 1) s = 0.9;
-    else if (at === 0 || WORD_BREAK.test(c[at - 1])) s = 0.8;
-    total += s;
-    prev = at;
-    ci = at + 1;
+    memo.set(key, best);
+    return best;
   }
-  const significant = q.replace(/ /g, "").length;
-  const avg = total / significant;
-  // Penalise long candidates a little so tighter matches rank first.
-  return Math.min(0.94, avg * (0.9 + 0.1 * Math.min(1, significant / c.length)));
+
+  return match(0, 0);
 }
 
 /** Score the value and keywords as one ordered search candidate. */
