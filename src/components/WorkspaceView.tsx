@@ -83,7 +83,7 @@ interface AttachedSend {
   sendWith(text: string, attachments: TextAttachment[]): void;
 }
 /** `forkToTab`: the shown chat's "Fork to new tab", with its composer draft (the tab menu's item). */
-type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend & { forkToTab?: () => void };
+type ShownChatBridge = ChatBridge & ComposerAttach & AttachedSend & { focusAtEnd(): void; forkToTab?: () => void };
 import { renameAfterFirstMessage } from "../workspace/firstMessage";
 import { closeTab, getTabs, onCenterTabOpened, openBigTab, subscribeTabs } from "../features/terminal/session";
 import { TerminalHost } from "../features/terminal/TerminalPanel";
@@ -497,6 +497,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     send: (text) => submit({ text }, "queue"),
     sendWith: (text, attached) => submit({ text }, "queue", attached),
     attach: (a) => setAttachments((list) => addAttachment(list, a)),
+    focusAtEnd: () => inputRef.current?.focus("end"),
     forkToTab: () => {
       if (!forking) void forkToTab();
     },
@@ -1105,6 +1106,15 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
   }, [repo.id, workspace.id, diff]);
   // Inserts go to the chat shown; sends (e.g. Create PR) go to the workspace's own chat, switching to it.
   const shownChat = useRef<string>(workspace.id);
+  const addTerminalSelection = useCallback((sessionId: string, text: string): boolean => {
+    if (displayedWorkspace.current !== workspace.id || shownChat.current !== sessionId || !chatBridge.current) return false;
+    chatBridge.current.attach({ name: `terminal-selection-${new Date().toISOString().replace(/[:.]/g, "-").slice(0, -5)}.txt`, text });
+    setMainTab(tabOfChat(primaryId, sessionId));
+    requestAnimationFrame(() => {
+      if (displayedWorkspace.current === workspace.id && shownChat.current === sessionId) chatBridge.current?.focusAtEnd();
+    });
+    return true;
+  }, [workspace.id, primaryId]);
   // Review comments attach to the workspace's own chat, even while a review chat is shown.
   const attach = useWorkspaceChatAttach(primaryId, shownChat, chatBridge, useCallback(() => setMainTab("chat"), []));
   const chat = useMemo<ChatBridge & ComposerAttach>(
@@ -1479,7 +1489,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           {showBrowser && <BrowserPreviewAnchor workspaceId={workspace.id} url={browserPage.url} />}
           {centerTerminal && (
             <section className="center-terminal terminal-panel" aria-label="Center terminal">
-              <TerminalHost key={centerTerminal.id} id={centerTerminal.id} status={centerTerminal.status} />
+              <TerminalHost key={centerTerminal.id} id={centerTerminal.id} status={centerTerminal.status} sessionId={selectedChat} onAddToChat={(text) => addTerminalSelection(selectedChat, text)} />
             </section>
           )}
         </div>
@@ -1502,7 +1512,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
               notify={notify}
               emptyAction={<PullLatestButton pullLatest={pullLatest} agentWorking={agentWorking} />}
             />
-            <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={workspace.path ?? repo.path} onAskSetupAgent={workspace.status === "archived" ? undefined : askSetupAgent} onOpenPreview={workspace.status === "archived" ? undefined : openPreview} />
+            <PanelStrip repo={repo} workspace={workspace} open={stripOpen} setOpen={setStripOpen} view={stripView} setView={setStripView} cwd={workspace.path ?? repo.path} onAskSetupAgent={workspace.status === "archived" ? undefined : askSetupAgent} onOpenPreview={workspace.status === "archived" ? undefined : openPreview} chatSessionId={selectedChat} onAddTerminalSelection={(text) => addTerminalSelection(selectedChat, text)} />
           </div>
         )}
       </div>
