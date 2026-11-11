@@ -1,0 +1,23 @@
+{
+  "command": [
+    "nice",
+    "-n",
+    "19",
+    "timeout",
+    "--kill-after=5s",
+    "90s",
+    "node",
+    "--test",
+    "--test-concurrency=1",
+    "src/components/allWorkspacesSelection.test.ts"
+  ],
+  "environment": {
+    "NODE_OPTIONS": "--max-old-space-size=384"
+  },
+  "exit": 0,
+  "elapsed_seconds": 1.158,
+  "fixture_sha256": "2d4ff9b2fd881e438d6d553d89e1bb024b0666298994afb8f2bad15595435e39",
+  "candidate_sha256": "f9be6bc8124033ac7e7062b8d4b1a423286a7b86b58465d0258b049f5ca6f81f",
+  "raw_output_sha256": "2060687d14c15cd9d96888f548b77ae40afb682735fc6cb79ebce0aa26159c8c",
+  "log_trailing_whitespace_normalized": true
+}
