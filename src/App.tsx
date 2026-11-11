@@ -100,11 +100,11 @@ export default function App() {
   const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
   const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
     if (mode.mode === "edit") {
-      dispatch({ type: "editSection", sectionId: mode.sectionId, ...value });
+      dispatch({ type: "editSection", sectionId: mode.sectionId, ...value, onError: () => show("error", "Couldn't edit section") });
       return;
     }
     const section = { id: newId(), ...value, workspaceIds: mode.workspaceIdToMove === undefined ? [] : [mode.workspaceIdToMove] };
-    dispatch({ type: "createSection", section, beforeSectionId: mode.beforeSectionId });
+    dispatch({ type: "createSection", section, beforeSectionId: mode.beforeSectionId, onError: () => show("error", "Couldn't create section") });
   };
   const prefs = useAppPrefs();
   const cloudUI = useBoolPrefState("experimental_cloud_ui");

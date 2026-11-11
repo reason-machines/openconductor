@@ -1,0 +1,1 @@
+write(e){this.snapshot.connectionState!=="running"||!this.snapshot.isInputEnabled||(e.length>0&&(this.coldRestoreBuffer.flush(),this.hasPersistableActivity=!0,this.snapshot.hasReceivedUserInput!==!0&&(this.snapshot.hasReceivedUserInput=!0,this.emitChange())),this.diagnostics.logInput(e),this.backendSession?.write(e))}

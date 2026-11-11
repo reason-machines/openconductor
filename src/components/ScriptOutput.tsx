@@ -12,7 +12,7 @@ import { PRIORITY } from "../keybindings/dispatcher";
 import "../theme/scriptTerminal.css";
 import "./scriptOutput.css";
 
-export function ScriptOutput({ output }: { output: string }) {
+export function ScriptOutput({ output, onInput }: { output: string; onInput?: (data: string) => Promise<void> }) {
   const container = useRef<HTMLDivElement>(null);
   const host = useRef<HTMLDivElement>(null);
   const terminal = useRef<Terminal | null>(null);
@@ -94,6 +94,21 @@ export function ScriptOutput({ output }: { output: string }) {
       term.dispose();
     };
   }, []);
+
+  useEffect(() => {
+    const term = terminal.current;
+    if (!term) return;
+    term.options.disableStdin = !onInput;
+    if (!onInput) return;
+    let active = true;
+    let pending = Promise.resolve();
+    const input = term.onData((data) => {
+      pending = pending.then(async () => {
+        if (active) await onInput(data);
+      });
+    });
+    return () => { active = false; input.dispose(); };
+  }, [onInput]);
 
   useEffect(() => {
     const term = terminal.current;

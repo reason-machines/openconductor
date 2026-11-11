@@ -2,12 +2,15 @@
    `nPo`, `x9s`, `RIo`, `uKn`, `EIo`); colours are Conductor's tokens as in
    composer.css, sizes its Tailwind classes at --spacing .25rem. */
 
-.oc-chat-empty {
+.oc-chat-empty,
+.oc-transcript-overflow-popup {
   --oc-c-fg: var(--text);
   --oc-c-muted: var(--surface-muted);
   --oc-c-muted-fg: var(--muted);
   --oc-c-border: var(--border);
   --oc-c-accent: var(--popover-hover);
+}
+.oc-chat-empty {
   /* max-w-4xl mx-auto px-7; the transcript's top padding (CHe 16 + JDo 8) */
   box-sizing: border-box;
   width: 100%;
@@ -132,4 +135,43 @@
 /* "+N more": Button variant ghost size xs */
 .oc-transcript-more {
   border-color: transparent;
+}
+.oc-transcript-more:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ring);
+}
+.oc-transcript-overflow-positioner {
+  z-index: 50;
+}
+.oc-transcript-overflow-popup {
+  box-sizing: border-box;
+  width: 256px;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--popover);
+  color: var(--popover-text);
+  box-shadow: 0 0 0 1px var(--popover-ring), 0 4px 6px -1px var(--shadow-10), 0 2px 4px -2px var(--shadow-10);
+  outline: none;
+  transform-origin: var(--transform-origin);
+  transition: opacity 100ms, scale 100ms;
+}
+.oc-transcript-overflow-popup[data-starting-style],
+.oc-transcript-overflow-popup[data-ending-style] {
+  opacity: 0;
+  scale: 0.95;
+}
+.oc-transcript-overflow-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 288px;
+  overflow-y: auto;
+}
+.oc-transcript-overflow-list > .oc-transcript-chip {
+  flex-shrink: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .oc-transcript-overflow-popup {
+    transition: none;
+  }
 }

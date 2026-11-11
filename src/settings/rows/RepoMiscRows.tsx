@@ -66,7 +66,7 @@ export function RepoMiscRows({ repo, actions }: { repo: Repo; actions: RepoMiscA
         {repo.path ? <PathLine path={repo.path} notify={actions.notify} /> : <span className="muted small">No local checkout</span>}
       </Row>
       <Row label={COPY.workspacesPath.title} help={<Warn text={COPY.workspacesPath.description} />} stacked>
-        {workspaces && <PathLine path={workspaces} notify={actions.notify} />}
+        {workspaces && <PathLine path={workspaces} notify={actions.notify} showShortcutHint={false} />}
       </Row>
       {repo.path && <PreviewUrlsRow repoPath={repo.path} />}
       <FilesToCopyRow repoPath={repo.path || null} />
@@ -85,7 +85,7 @@ function Warn({ text }: { text: string }) {
 }
 
 /** `bj` + `P9` (icon size): the muted directory, the last segment, and the Open in menu. */
-function PathLine({ path, notify }: { path: string; notify: Notify }) {
+function PathLine({ path, notify, showShortcutHint }: { path: string; notify: Notify; showShortcutHint?: boolean }) {
   const { directory, fileName } = splitPath(path);
   return (
     <div className="settings-misc-path" title={path}>
@@ -93,7 +93,7 @@ function PathLine({ path, notify }: { path: string; notify: Notify }) {
         <span className="settings-misc-path-dir">{directory}</span>
         <span className="settings-misc-path-name">{fileName}</span>
       </span>
-      <OpenInButton path={path} notify={notify} variant="icon" />
+      <OpenInButton path={path} notify={notify} variant="icon" showShortcutHint={showShortcutHint} />
     </div>
   );
 }

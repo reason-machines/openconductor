@@ -90,8 +90,8 @@ export type Action =
   /** The user sent a message at `at`: last activity moves forward (chat_messages_save writes the same to conductor.db). */
   | { type: "touchWorkspace"; repoId: string; workspaceId: string; at: number }
   /* sidebar: user sections (navigationSections.ts) */
-  | { type: "createSection"; section: NavSection; beforeSectionId?: string }
-  | { type: "editSection"; sectionId: string; name: string; emoji?: string }
+  | { type: "createSection"; section: NavSection; beforeSectionId?: string; onError?: () => void }
+  | { type: "editSection"; sectionId: string; name: string; emoji?: string; onError?: () => void }
   | { type: "deleteSection"; sectionId: string }
   /** Drag a section header to `toIndex` (Conductor's `bY`). */
   | { type: "reorderSection"; sectionId: string; toIndex: number }
@@ -386,6 +386,7 @@ export function useAppStore() {
   const desktop = inTauri() && !demo;
   const [startup, setStartup] = useState<StoreStartup>(desktop ? "loading" : "ready");
   const sectionsWrittenAt = useRef<number | undefined>(undefined);
+  const pendingSectionErrors = useRef<(() => void)[]>([]);
   useEffect(() => {
     if (!desktop) return;
     let current = true;
@@ -424,6 +425,7 @@ export function useAppStore() {
     const at = state.sectionsUpdatedAt;
     if (!desktop || at === undefined || at === sectionsWrittenAt.current) return;
     sectionsWrittenAt.current = at;
+    const onErrors = pendingSectionErrors.current.splice(0);
     invoke<boolean>("db_write_navigation_sections", { sections: state.sections ?? [], updatedAt: at }).then(
       (written) => {
         // A newer layout is stored (another window wrote it): show that one.
@@ -432,6 +434,7 @@ export function useAppStore() {
       (err) => {
         console.error("conductor.db: could not save sidebar sections", err);
         reloadSections();
+        for (const onError of onErrors) onError();
       },
     );
   }, [desktop, state.sections, state.sectionsUpdatedAt, reloadSections]);
@@ -515,6 +518,9 @@ export function useAppStore() {
           emit: emitArchiveEvent,
         });
         return;
+      }
+      if (desktop && (action.type === "createSection" || action.type === "editSection") && action.onError) {
+        pendingSectionErrors.current.push(action.onError);
       }
       rawDispatch(action);
       // Optimistic, as in Conductor: on a failed write, reload the rows the database has.

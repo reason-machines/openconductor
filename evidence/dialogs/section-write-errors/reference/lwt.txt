@@ -1,0 +1,1 @@
+function lwt({store:t,actionKey:e,amount:n}){t.setState(i=>{const o=(i.pendingCountByActionKey[e]??0)+n;if(o<0)throw new Error(`Action ${e} settled without starting`);return{pendingCountByActionKey:{...i.pendingCountByActionKey,[e]:o}}})}
