@@ -20,6 +20,8 @@ mod tests;
 mod alacritty_workspace_tests;
 #[cfg(test)]
 mod alacritty_status_tests;
+#[cfg(all(test, target_os = "macos"))]
+mod kaleidoscope_tests;
 
 use std::ffi::{OsStr, OsString};
 use std::path::{Path, PathBuf};
