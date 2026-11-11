@@ -1,6 +1,6 @@
 # Selected onboarding slide progress
 
-Conductor Rebuild owns this focused correction. The regression runs the unchanged `FirstRunOnboarding.tsx` through real React 18.3.1 and `react-test-renderer`. Its assertions are frozen before the product change.
+Conductor Rebuild owns this focused correction. The regression runs the actual `FirstRunOnboarding.tsx` through real React 18.3.1 and `react-test-renderer`. Its assertions were frozen before the product change and remain unchanged.
 
 ## Retained reference
 
@@ -33,9 +33,26 @@ CI appends only this filename to the existing onboarding test command. It adds n
 
 ## Test-first checkpoint
 
-The test-only commit leaves the product source unchanged. Hosted RED is pending. The predicted failure is an immediate rewind from 25% to 0% when clicking the selected slide. This prediction is not yet a reproduced defect.
+The test-only head `c72ba6d85bcacd5270409b799bcd8c29f96a311c` left the product source unchanged. [Hosted RED](https://github.com/reason-machines/openconductor/actions/runs/43054097403/job/130638800510) reproduced the immediate rewind on all three slides on 2026-11-11 at 16:03:06Z. The frozen component tests reported three failures and two passing controls. The combined onboarding command reported 47 passes and three failures.
 
-The minimal candidate removes the redundant progress reset in `select`. The existing `[current]` effect remains the single owner of progress reset and timer origin when the selected ID changes. No agent, sign-in, media, or persistence changes are proposed.
+Each failure occurred at the selected-slide click assertion, not fixture setup:
+
+```text
+clicking the selected slide must not rewind its visible progress
++ actual - expected
+  {
++   value: 0,
++   width: '0%'
+-   value: 25,
+-   width: '25%'
+  }
+```
+
+The changed-slide reset/duration case and next-slide wrap/agent/busy case passed. All other 21 reported checks passed at that test-only head.
+
+The callback unconditionally reset progress even when the selected ID stayed the same. React therefore did not restart the ID-dependent timer effect. The correction removes that redundant reset from `select`. The existing `[current]` effect remains the single owner of progress reset and timer origin when the selected ID changes. No agent, sign-in, media, or persistence behavior changes.
+
+Before the correction, fetched main `796f4568f243149529d9f55161850769dfa32dc2` still contained the exact unchanged counterpart. The product diff removes one statement. The regression SHA256 remains `d97a25df52563f4925e0ec31fb15c5094d5100d27d897094788a1e48e1370647`. Hosted GREEN for the corrected source is pending.
 
 ## Verification limits
 
