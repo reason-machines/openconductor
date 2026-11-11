@@ -1,0 +1,1 @@
+function MSt({activeRenderer:t,enqueueInputAfterRenderedOutput:e,flushOrderedInput:s,isInputEnabled:n,renderOptimisticInput:r,renderer:i,write:o}){t.inputDisposable=i.onInput(a=>{if(n()&&i.optimisticInput&&r(a)){o(a);return}if(sbt(i,a)){s(),o(a);return}e(a)})}

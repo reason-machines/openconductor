@@ -119,6 +119,87 @@ file operations. They prove result classification, controls, identity refusal,
 and replay policy, not two-principal or macOS OS enforcement. The workflow runs
 only those portable tests; it never invokes the live CLI roles.
 
+## Manually selected hosted controller
+
+`HostedObservation` in `tools/hosted_inert_storage_probe.py` correlates the
+existing `ProbePlan`, actual role identities, per-command outputs and independently
+observed pre/post object identities. It does not change the role probe or any
+admission gate. The controller collects one bounded observation instead of
+introducing a provider or permission receipt.
+
+The separate `Hosted inert two-principal observations` workflow is **dispatch
+only**. Pull requests and main pushes run portable controller fixtures, never
+live role commands. E1 remains the sole execution owner. Publishing or merging
+this source does not authorize a dispatch or any operation on Sven's Mac.
+
+The exact invocation, after a separately authorized dispatch on a fresh hosted
+worker, is:
+
+```bash
+python3 -W error::ResourceWarning -m tools.hosted_inert_storage_probe \
+  --execute-hosted-prerequisite --expected-head <exact-dispatched-commit-sha>
+```
+
+The workflow selects `macos-15` and Python 3.12. The controller requires Darwin,
+GitHub-hosted context, an exact 40-character dispatched/checked-out commit and
+clean tracked inputs. Context environment fields are selection checks, not
+independent host attestation. Observations retain the actual macOS/kernel and
+architecture, run/attempt, source hash, actual UID/EUID/GID/groups, plan digest,
+namespace device/inode and each resource's UID/device/inode/mode/size/link count.
+No SDK, signed-service or macOS 26.4 result is inferred from this worker label.
+
+The original non-root job UID remains the caller. The consumer must be the
+**already existing** `daemon` directory-service record with positive UID/GID 1
+and a non-login shell. There is no fallback to `nobody`, whose UID representation
+can differ, or another account. The trusted workflow controller invokes only
+that existing consumer with `/usr/bin/sudo -n -u '#1' -g '#1' --`, an absolute
+Python interpreter and fixed isolated source. The roles themselves must have
+matching non-root real/effective UIDs. No account/service registration, sudoers
+edit, permission revocation, login/session setup, root role execution, provider,
+app or VZ launch is provided. Missing noninteractive sudo, an inaccessible
+interpreter or wrong actual consumer identity fails without a retry path.
+
+The controller copies only the fixed probe source into a fresh public-readable
+synthetic code directory under resolved `/tmp`; roles never execute from a
+private checkout. It checks the bytes before and after every invocation, closes
+ambient descriptors, disconnects stdin and strips the inherited environment.
+It refuses any preexisting principal journal and never deletes or repairs state.
+Each of the five inert labels requires both positive consumer read/write checks,
+all twelve calibrated caller operations, final consumer verification and matching
+pre/post snapshots. Even a failed caller transport still attempts final consumer
+verification. Failed commands retain their actual stdout, stderr and exit status;
+no missing operation, principal or file becomes success.
+
+The output is one JSON **observation**, not an authenticated receipt or launch
+permit. Exit 0 and `BOUNDED_SYSCALL_OBSERVATIONS` mean only that these correlated
+direct syscalls met the contract. Exit 2/`UNAVAILABLE` means no role invocation
+started; exit 1/`FAILED` includes an unavailable or failed role invocation.
+`runtime_admission` and `native_admission` are always literal false.
+`lifecycle_cases_exercised` stays empty and `lifecycle_case_status` is `NOT_RUN`.
+The workflow retains only this output for seven days, including failed runs.
+
+**The caller may retain administrative sudo authority.** This test deliberately
+neither uses nor revokes that authority for caller operations. Consequently,
+observed denials cannot establish protection from administrative escalation,
+service APIs, inherited capabilities or a hostile workflow controller. Public
+source hashes and snapshots do not exclude transient replacements. Worker
+retirement is an external deployment requirement, not permanent kernel UID or
+namespace reservation. No real VM lifecycle or any of the 60 native cases is
+completed, even if all five inert labels succeed. The existing unconditional
+filesystem-admission refusal remains unchanged.
+
+Portable source checks for the controller and the original role probe are:
+
+```bash
+python3 -W error::ResourceWarning -m unittest \
+  tools.test_inert_storage_probe tools.test_hosted_inert_storage_probe -v
+```
+
+These controller tests use identity, transport and errno doubles. They are not
+hosted macOS execution or kernel-enforcement evidence. Native execution remains
+**NOT_RUN** until the separately authorized workflow actually produces and
+independently verifies its correlated output.
+
 This prerequisite does not test concurrent consumer use, mmap or leaked
 handles, task/Mach rights, service API abuse, ancestor/ACL/authority changes,
 root/admin or service compromise, App Sandbox/container/bootstrap access,
