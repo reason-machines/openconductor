@@ -56,6 +56,12 @@ nice -n19 timeout --kill-after=5s 120s /usr/local/bin/node \
 
 The raw RED TAP contains whitespace-only diagnostic lines. Those bytes remain unchanged to preserve the original digest. `git diff --cached --check -- . ':(exclude)evidence/chat/assistant-text-filter/actual-v3/*.tap'` passes for the other staged files; the unfiltered whitespace check reports those raw TAP lines.
 
+## Hosted CI integration correction
+
+At PR #1034 head `96d58688`, hosted CI ran 2,764 frontend cases: 2,747 passed and 17 failed. All failures came from `typedSubagentLinks.test.ts`: its extracted Transcript VM omitted the newly used `useBoolPref` binding. Each case raised `ReferenceError: useBoolPref is not defined` before reaching its behavior assertions. These setup failures are not the 17 intended filter assertions in the immutable V3 RED receipt. Hosted typecheck and color checks passed; the build was skipped after the failing frontend suite. [The failing-head record](hosted-ci-loader-failure.json) retains test names, errors and job steps.
+
+The correction adds the same two loader bindings used by the neighboring fixtures: the false-default hook and real `assistantDisplayText` helper. All typed Task/Agent test and assertion bodies remain byte-identical (SHA-256 `daa7c93a7dfa5fcec8e3370762db16bd64902f1c02ba1a49a7a4a8dbf4d5bdb8`). No product source or frozen V3 input/receipt changes. Static delivery verification and `git diff --check` pass. The correction is sent through the existing PR's full hosted checks, with no local test replay or new executor.
+
 ## Verification boundary
 
 The executed tests cover fixture-controlled assistant display and mounted off/on/off updates. Whole-app typecheck/build and hosted CI are not part of the serialized receipt and are tracked separately on the delivery PR.
