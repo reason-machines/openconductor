@@ -20,10 +20,12 @@ export interface Binding extends When {
   shortcut: Shortcut;
   priority: number;
   telemetryContext?: string;
+  isFocusedScope?: boolean;
 }
 
 export interface BindContext {
   overrides?: Overrides;
+  isFocusedScope?: boolean;
   /** The dialog the binding component renders inside, if any. */
   dialogId?: string;
 }
@@ -39,6 +41,7 @@ export function bindingsFor(commandId: string, options: BindOptions = {}, ctx: B
   return effectiveShortcuts(commandId, ctx.overrides).map((shortcut) => ({
     commandId,
     shortcut,
+    isFocusedScope: ctx.isFocusedScope,
     priority: w.priority ?? PRIORITY.NORMAL,
     enableOnInputFocus: w.enableOnInputFocus ?? true,
     enableOnDialogIds: w.enableOnDialogIds,

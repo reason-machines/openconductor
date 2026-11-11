@@ -273,6 +273,234 @@ mod tests {
             .collect()
     }
 
+    mod big_terminal_mode {
+        use super::*;
+        use std::fs;
+        use std::path::PathBuf;
+        use std::sync::atomic::{AtomicU32, Ordering};
+        use std::sync::Arc;
+
+        use openconductor_db::{app_settings, SqlitePool};
+
+        use crate::agent::MemorySecretStore;
+        use crate::settings::service::SettingsService;
+
+        const KEY: &str = "experimental_big_terminal_mode";
+
+        struct Fixture {
+            dir: PathBuf,
+            pool: SqlitePool,
+            service: SettingsService,
+        }
+
+        impl Fixture {
+            fn new() -> Self {
+                static NEXT: AtomicU32 = AtomicU32::new(0);
+                let dir = std::env::temp_dir().join(format!(
+                    "oc-big-terminal-mode-{}-{}",
+                    std::process::id(),
+                    NEXT.fetch_add(1, Ordering::Relaxed)
+                ));
+                fs::create_dir(&dir).unwrap();
+                let pool =
+                    tauri::async_runtime::block_on(openconductor_db::open_in_memory()).unwrap();
+                let service = SettingsService::new(
+                    dir.join("settings.toml"),
+                    Arc::new(MemorySecretStore::new()),
+                )
+                .with_db(pool.clone());
+                Self { dir, pool, service }
+            }
+
+            fn table(&self) -> HashMap<String, String> {
+                tauri::async_runtime::block_on(app_settings::active(&self.pool))
+                    .unwrap()
+                    .into_iter()
+                    .collect()
+            }
+
+            fn legacy(&self, value: bool) {
+                fs::write(
+                    self.service.path(),
+                    format!("[experimental]\n{KEY} = {value}\n[git]\narchive_on_merge = true\n"),
+                )
+                .unwrap();
+            }
+        }
+
+        impl Drop for Fixture {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.dir);
+            }
+        }
+
+        #[test]
+        fn true_rows_overlay_the_typed_field() {
+            let mut settings = Settings::default();
+            overlay(&mut settings, &rows(&[(KEY, "true")]));
+            assert!(settings.experimental.experimental_big_terminal_mode);
+            assert!(!settings.experimental.extra.contains_key(KEY));
+        }
+
+        #[test]
+        fn false_rows_overlay_the_typed_field() {
+            let mut settings = Settings::default();
+            settings.experimental.experimental_big_terminal_mode = true;
+            overlay(&mut settings, &rows(&[(KEY, "false")]));
+            assert!(!settings.experimental.experimental_big_terminal_mode);
+            assert!(!settings.experimental.extra.contains_key(KEY));
+        }
+
+        #[test]
+        fn changes_encode_typed_values_without_rewriting_equal_rows() {
+            let mut settings = Settings::default();
+            settings.experimental.experimental_big_terminal_mode = true;
+            assert_eq!(
+                changes(&settings, &rows(&[])).unwrap(),
+                vec![(KEY, "true".into())]
+            );
+            assert!(changes(&settings, &rows(&[(KEY, "true")]))
+                .unwrap()
+                .is_empty());
+            settings.experimental.experimental_big_terminal_mode = false;
+            assert_eq!(
+                changes(&settings, &rows(&[(KEY, "true")])).unwrap(),
+                vec![(KEY, "false".into())]
+            );
+            assert!(changes(&settings, &rows(&[(KEY, "false")]))
+                .unwrap()
+                .is_empty());
+        }
+
+        #[test]
+        fn file_routes_both_boolean_values_and_preserves_unrelated_keys() {
+            for value in [true, false] {
+                let mut file: Table = toml::from_str(&format!(
+                    "[experimental]\n{KEY} = {value}\nkeep = 7\n[git]\narchive_on_merge = true\n"
+                ))
+                .unwrap();
+                assert!(file_has_any(&file));
+                assert_eq!(in_file(&file), vec![(KEY, value.to_string())]);
+                strip(&mut file);
+                assert!(!file_has_any(&file));
+                assert!(!file["experimental"].as_table().unwrap().contains_key(KEY));
+                assert_eq!(file["experimental"]["keep"], Value::Integer(7));
+                assert_eq!(file["git"]["archive_on_merge"], Value::Boolean(true));
+            }
+        }
+
+        #[test]
+        fn service_round_trips_true_and_false_through_the_table() {
+            let fixture = Fixture::new();
+            for value in [true, false] {
+                let mut settings = fixture.service.get().unwrap();
+                settings.experimental.experimental_big_terminal_mode = value;
+                settings.git.archive_on_merge = true;
+                fixture.service.update(settings).unwrap();
+                assert_eq!(fixture.table().get(KEY), Some(&value.to_string()));
+                let file = fs::read_to_string(fixture.service.path()).unwrap();
+                assert!(!file.contains(KEY), "{file}");
+                assert!(file.contains("archive_on_merge = true"), "{file}");
+                let fresh = SettingsService::new(
+                    fixture.service.path().to_path_buf(),
+                    Arc::new(MemorySecretStore::new()),
+                )
+                .with_db(fixture.pool.clone());
+                let reloaded = fresh.get().unwrap();
+                assert_eq!(reloaded.experimental.experimental_big_terminal_mode, value);
+                assert!(reloaded.git.archive_on_merge);
+            }
+        }
+
+        #[test]
+        fn legacy_true_and_false_migrate_once_and_leave_unrelated_values() {
+            for value in [true, false] {
+                let fixture = Fixture::new();
+                fixture.legacy(value);
+                assert_eq!(fixture.service.move_appearance_to_db().unwrap(), vec![KEY]);
+                assert_eq!(fixture.table().get(KEY), Some(&value.to_string()));
+                let file = fs::read_to_string(fixture.service.path()).unwrap();
+                assert!(!file.contains(KEY), "{file}");
+                assert!(file.contains("archive_on_merge = true"), "{file}");
+                assert_eq!(
+                    fixture.service.get().unwrap().experimental.experimental_big_terminal_mode,
+                    value
+                );
+                assert!(fixture.service.move_appearance_to_db().unwrap().is_empty());
+            }
+        }
+
+        #[test]
+        fn active_rows_override_opposite_legacy_values() {
+            for active in [true, false] {
+                let fixture = Fixture::new();
+                fixture.legacy(!active);
+                tauri::async_runtime::block_on(app_settings::set(
+                    &fixture.pool,
+                    KEY,
+                    &active.to_string(),
+                ))
+                .unwrap();
+                assert_eq!(
+                    fixture.service.get().unwrap().experimental.experimental_big_terminal_mode,
+                    active
+                );
+                assert!(fixture.service.move_appearance_to_db().unwrap().is_empty());
+                assert_eq!(fixture.table().get(KEY), Some(&active.to_string()));
+                let file = fs::read_to_string(fixture.service.path()).unwrap();
+                assert!(!file.contains(KEY), "{file}");
+                assert!(file.contains("archive_on_merge = true"), "{file}");
+            }
+        }
+
+        #[test]
+        fn unset_default_is_not_materialized_by_an_unrelated_save() {
+            let fixture = Fixture::new();
+            let mut settings = fixture.service.get().unwrap();
+            assert!(!settings.experimental.experimental_big_terminal_mode);
+            assert!(!fixture.table().contains_key(KEY));
+            settings.git.archive_on_merge = true;
+            fixture.service.update(settings).unwrap();
+            assert!(!fixture.table().contains_key(KEY));
+            let file = fs::read_to_string(fixture.service.path()).unwrap();
+            assert!(!file.contains(KEY), "{file}");
+            assert!(file.contains("archive_on_merge = true"), "{file}");
+        }
+
+        #[test]
+        fn invalid_rows_do_not_change_the_typed_value() {
+            for initial in [true, false] {
+                for invalid in ["TRUE", "1", "yes", ""] {
+                    let mut settings = Settings::default();
+                    settings.experimental.experimental_big_terminal_mode = initial;
+                    overlay(&mut settings, &rows(&[(KEY, invalid)]));
+                    assert_eq!(settings.experimental.experimental_big_terminal_mode, initial);
+                    assert!(!settings.experimental.extra.contains_key(KEY));
+                }
+            }
+        }
+
+        #[test]
+        fn service_without_a_database_keeps_the_file_fallback() {
+            let fixture = Fixture::new();
+            let service = SettingsService::new(
+                fixture.service.path().to_path_buf(),
+                Arc::new(MemorySecretStore::new()),
+            );
+            for value in [true, false] {
+                let mut settings = service.get().unwrap();
+                settings.experimental.experimental_big_terminal_mode = value;
+                service.update(settings).unwrap();
+                let file = fs::read_to_string(service.path()).unwrap();
+                assert!(file.contains(&format!("{KEY} = {value}")), "{file}");
+                assert_eq!(
+                    service.get().unwrap().experimental.experimental_big_terminal_mode,
+                    value
+                );
+            }
+        }
+    }
+
     #[test]
     fn keys_are_unique() {
         let mut keys: Vec<_> = PREFS.iter().map(|p| p.key).collect();
