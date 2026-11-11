@@ -19,7 +19,7 @@ for pin in record['current_source_pins']:
     assert len(baseline) == pin['bytes'] and sha(baseline) == pin['sha256'], pin['path']
     current = (root / pin['path']).read_bytes()
     if pin['path'] == 'src/components/AllWorkspaces.tsx' and args.phase == 'guarded':
-        guard = b'    if (e.defaultPrevented || e.nativeEvent.isComposing || e.keyCode === 229) return;\n'
+        guard = b'    if (e.defaultPrevented || e.nativeEvent?.isComposing || e.keyCode === 229) return;\n'
         assert current.count(guard) == 1
         current = current.replace(guard, b'', 1)
     assert current == baseline, pin['path']

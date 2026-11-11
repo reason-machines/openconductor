@@ -21,7 +21,10 @@ Existing endpoint7, emptyEnter4, sidebarHint6 and header8 fixture bodies are pin
 - Passed source qualification using static Python, with seven retained spans, sixteen contract checks and nine current source pins.
 - Passed `python3 evidence/home-ime/verify-source.py --phase baseline` before any product fix.
 - Passed `git diff --check`.
-- Hosted regression-first execution is pending on the test-only commit. The product guard must not be added until the intended cancellation/selection failures are observed and the positive controls pass.
-- Local Node, setup, browser, native execution and installed-package behavior were not run. There is no screenshot because this increment is source qualification plus an unexecuted mounted fixture, not a visible app run.
+- Passed hosted failing-before verification at `5905b3873b2be2153b7b1c6297bed51b603acdb6`: exactly five IME cases failed with one cancellation where zero was expected; the two ordinary-key controls passed. The full unit suite reported 2,938 passed and 5 failed. See [the hosted RED receipt](hosted-red.json) and [exact log excerpt](hosted-red.log.txt).
+- Requalified all nine source pins against fresh main `9524569976a69a3151be1f2a3cac17bfac935312`. Every byte matched the original qualification; no frozen pin was rewritten. See [the comparison](requalification.json).
+- Passed `python3 evidence/home-ime/verify-source.py --phase guarded` and `sha256sum -c evidence/home-ime/fixture.sha256` after adding one early return to `onSearchKey`. The regression and all four neighboring fixtures remain byte-identical. Optional access to `nativeEvent` also preserves existing direct KeyboardEvent fixtures; real React events supply that property.
+- Passing-after hosted verification is pending on the guarded commit. Separate Reason pairing-code/sign-out timeouts are under their existing owner, not claimed fixed here.
+- Local Node, setup, browser, native execution and installed-package behavior were not run. No screenshot exists because this change has not been run in a browser or native app.
 
 The original Conductor input-method runtime, native/WebKit timing, composition-end ordering, side-by-side visuals and consuming-package behavior remain unverified. Static evidence is not native parity. Existing REA semantic heap-exhaustion limits are unchanged; this pass uses retained original bytes without a new engine call or acquisition.
