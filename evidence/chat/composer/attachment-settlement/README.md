@@ -2,7 +2,7 @@
 
 Conductor Rebuild prepared this test-only harness against main `838ab2a1c76d11f8048a89c9d4c01ba822db2204` and rebound it to current main `1a0a2bef734686d3dbfc9c11155562595d9df9e6`. No cancellation defect is established, and no product behavior changes in this increment.
 
-The seven-case fixture is byte-identical to preparation commit `3825d7e22407bd3f7af251a085ba22a861245c58`. [The original source pins](source.json) remain unchanged. [The current-main binding](requalification.json) records all six production hashes. Five files are unchanged since preparation. The only WorkspaceView change adds a stable transcript attachment name outside the callbacks under test.
+The original seven-case fixture is retained byte-for-byte at published commit `d160e6525ccca2bfd23708fb88270e9b44cca470` with SHA-256 `75e243c4dfc9900a8385c76c205dbe4ad532a473b9ef497cc54f9af889f3b7d2`. Version 2 changes only the loader. Every scenario body and assertion remains unchanged. [The original source pins](source.json) remain unchanged. [The current-main binding](requalification.json) records all six production hashes. All six files are unchanged at checked default head `5d287a11fcec2b8e831615a8b807d89f74ab9c6c`.
 
 ## Executed code and boundaries
 
@@ -31,11 +31,13 @@ Retained REA source identifies ordinary local reservation-before-upload and narr
 
 ## Verification
 
-- `python3 evidence/chat/composer/attachment-settlement/verify_source.py` verifies the frozen fixture, six exact baseline source files, and additive-only diff scope. This is a static check, not behavioral proof.
+- `python3 evidence/chat/composer/attachment-settlement/verify_source.py` verifies the original fixture SHA, the exact loader-only replacement, six baseline source hashes, and additive-only diff scope. It rejects any scenario or assertion change. This is a static check, not behavioral proof.
 - `git diff --check` checks whitespace.
-- The harness is included by the existing CI command `node --test "src/**/*.test.ts"`. No workflow or test-loader edit is needed.
+- The harness is included by the existing CI command `node --test "src/**/*.test.ts"`. No workflow or shared test-loader edit is needed.
 - `node --test src/features/chat/composerAttachmentSettlement.test.ts` is the focused reproduction command. It was **not run locally** because runtime admission remains serialized with the existing executor.
-- Hosted execution is **pending**. No behavioral RED or GREEN result is claimed. This is coverage of existing ownership invariants, not a qualified defect reproduction, so an initial GREEN result does not need a product repair.
-- Typecheck, native execution, provider execution, and visual verification are **not run** for this increment. There is no screenshot because no UI change or native execution occurred.
+- Hosted baseline execution at `d160e65` **failed** in all seven cases before their assertions. [CI job 130846539083](https://github.com/reason-machines/openconductor/actions/runs/43116732422/job/130846539083) reports `SyntaxError` from the fixture's `evaluate` helper. The extracted `onCommand` expression retains `.catch((error: unknown) => ...)`, but version 1 transpiles only declarations before appending that expression to `new Function`. This is a loader failure, not behavioral RED or an established product defect.
+- Version 2 transpiles declarations and the result expression together. Its hosted execution is **pending**. The static verifier requires the whole fixture to equal the retained original plus exactly that loader replacement.
+- Hosted `npm run typecheck` **passed** in [job 130846538811, step 6](https://github.com/reason-machines/openconductor/actions/runs/43116732422/job/130846538811). The later unit-test step failed. Build and subsequent steps did not run.
+- Native execution, provider execution, and visual verification are **not run** for this increment. There is no screenshot because no UI change or native execution occurred.
 
 The friendly-model-label repair [PR #1093](https://github.com/reason-machines/openconductor/pull/1093) is merged and remains separate from this harness. Its consuming-main artifact qualification stays with the existing owner. This harness adds no workflow, manual dispatch, or runtime watch. Every exact-head check and workflow must pass before merge.

@@ -3,7 +3,11 @@
   "baseline_main": "1a0a2bef734686d3dbfc9c11155562595d9df9e6",
   "preparation_commit": "3825d7e22407bd3f7af251a085ba22a861245c58",
   "original_source_pins": "source.json",
-  "fixture_sha256": "75e243c4dfc9900a8385c76c205dbe4ad532a473b9ef497cc54f9af889f3b7d2",
+  "original_fixture_commit": "d160e6525ccca2bfd23708fb88270e9b44cca470",
+  "fixture_sha256": "f1af6f9a3edeba5c6473d0c2506fee9b0943c8350654ab62346430f0955dc7d5",
+  "fixture_version": 2,
+  "fixture_delta": "transpile result expression with declarations; all scenario bodies and assertions unchanged",
+  "checked_default_head": "5d287a11fcec2b8e831615a8b807d89f74ab9c6c",
   "fixture_cases": 7,
   "production_sha256": {
     "src/features/chat/Composer.tsx": "9b0be2bd905db1360da1eb4e2dc45748d3ea978132c6f0296366d0e0f3ce64a8",

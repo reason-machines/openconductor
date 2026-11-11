@@ -45,10 +45,10 @@ function declaration(tree: ts.SourceFile, name: string) {
 }
 
 function evaluate<T>(source: string, result: string, ports: Record<string, unknown>): T {
-  const javascript = ts.transpileModule(source, {
+  const javascript = ts.transpileModule(`${source}\nconst evaluated = (${result});`, {
     compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
   }).outputText;
-  return new Function(...Object.keys(ports), `${javascript}\nreturn (${result});`)(...Object.values(ports));
+  return new Function(...Object.keys(ports), `${javascript}\nreturn evaluated;`)(...Object.values(ports));
 }
 
 const workspaceTree = sourceTree("../../components/WorkspaceView.tsx");

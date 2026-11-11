@@ -20,8 +20,19 @@ def git(*args):
 
 
 fixture = original["fixture"]
-assert current["fixture_sha256"] == original["fixture_sha256"]
-assert digest((ROOT / fixture).read_bytes()) == original["fixture_sha256"], fixture
+original_fixture = git("show", f"{current['original_fixture_commit']}:{fixture}")
+assert digest(original_fixture) == original["fixture_sha256"], "original fixture"
+loader_before = b'''const javascript = ts.transpileModule(source, {
+    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
+  }).outputText;
+  return new Function(...Object.keys(ports), `${javascript}\\nreturn (${result});`)(...Object.values(ports));'''
+loader_after = b'''const javascript = ts.transpileModule(`${source}\\nconst evaluated = (${result});`, {
+    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
+  }).outputText;
+  return new Function(...Object.keys(ports), `${javascript}\\nreturn evaluated;`)(...Object.values(ports));'''
+assert original_fixture.count(loader_before) == 1, "original loader"
+assert (ROOT / fixture).read_bytes() == original_fixture.replace(loader_before, loader_after), "non-loader fixture change"
+assert digest((ROOT / fixture).read_bytes()) == current["fixture_sha256"], fixture
 assert set(current["production_sha256"]) == set(original["production_sha256"])
 for path, expected in current["production_sha256"].items():
     baseline = git("show", f"{current['baseline_main']}:{path}")
@@ -39,6 +50,8 @@ print(json.dumps({
     "result": "PASS",
     "baseline_main": current["baseline_main"],
     "fixture_sha256": current["fixture_sha256"],
+    "original_fixture_sha256": original["fixture_sha256"],
+    "fixture_delta": "loader only; all scenario bodies and assertions unchanged",
     "frozen_cases": current["fixture_cases"],
     "production_files": len(current["production_sha256"]),
     "diff_scope": "additive test and proof only",
