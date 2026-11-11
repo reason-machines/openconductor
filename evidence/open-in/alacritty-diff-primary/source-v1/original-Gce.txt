@@ -1,0 +1,1 @@
+function Gce({appId:t,workspaceHost:e,localMirrorPath:n,pathToOpen:i,boundaryPath:r}){return e===void 0||e===gn||xBt(t)?!0:t==="finder"&&n!==void 0&&r!==void 0&&Q7t({remotePath:i,remoteBoundaryPath:r,localMirrorPath:n})!==void 0}

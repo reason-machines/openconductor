@@ -197,9 +197,9 @@ pub struct BigTerminalCustomCommand {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Theme {
-    #[default]
     System,
     Light,
+    #[default]
     Dark,
 }
 
@@ -224,7 +224,7 @@ pub struct General {
 impl Default for General {
     fn default() -> Self {
         General {
-            theme: Theme::System,
+            theme: Theme::Dark,
             send_native_notification: true,
             sound_type: SoundType::Default,
             extra: toml::Table::new(),

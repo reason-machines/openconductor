@@ -5,6 +5,7 @@ import { homedir, tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { installFakeApps } from "./fake-apps.mjs";
 import { waitForSetup } from "./startup.mjs";
+import { traceReasonLogin } from "./reason-login-diagnostics.mjs";
 
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, stdio: "pipe" });
 
@@ -926,8 +927,11 @@ export const flows = [
       await wd.waitFor("Not signed in", async () => (await status()).includes("Not signed in"), 20000);
 
       // Reason account: the app runs `reason login`, shows its code and polls until signed in.
-      await clickByText(wd, `${section} button`, "Sign in with Reason");
-      const code = await wd.waitFor("the pairing code", async () => (await textsOf(wd, '[data-testid="reason-login-code"]'))[0], 20000);
+      const code = await traceReasonLogin(
+        wd,
+        () => clickByText(wd, `${section} button`, "Sign in with Reason"),
+        () => wd.waitFor("the pairing code", async () => (await textsOf(wd, '[data-testid="reason-login-code"]'))[0], 20000),
+      );
       if (code !== "E2E1-CODE") throw new Error(`pairing code ${JSON.stringify(code)}`);
       await wd.waitFor("waiting for browser approval", async () => (await textsOf(wd, '[data-testid="reason-login-waiting"]'))[0]?.includes("Finish signing in in the browser window."));
       const pending = await wd.execute("return window.__TAURI_INTERNALS__.invoke('reason_login_status');", []);

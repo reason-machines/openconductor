@@ -1,0 +1,225 @@
+{
+  "unit": "DIFF-MULTI-ANCHOR-NEW-DRAFTS-DE6",
+  "status": "TEST_ONLY_BASELINE_AWAITING_HOSTED_REPRODUCTION",
+  "main": "15e87440daa703030f4c402e7a41b9221a149768",
+  "product": {
+    "path": "src/features/diff/ReviewComments.tsx",
+    "baseline": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3",
+    "candidate": null
+  },
+  "original_identity": {
+    "version": "0.87.6",
+    "binary_sha256": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+    "binary_bytes": 70194640,
+    "rea_artifact_evidence_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "mac_identity_observation": "Read-only devices_exec in this Session on 2026-11-11 around 17:56Z rehashed installed binary and existing extracted renderer; this Python check does not itself contact the Mac"
+  },
+  "assets": {
+    "renderer": {
+      "file": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    "index": {
+      "file": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  },
+  "reference_spans": {
+    "OMi-create-and-annotations": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9403263,
+        9404772
+      ],
+      "bytes": 1509,
+      "sha256": "5816311e1b28c39a5e288be10ae0a77e3f5de4b5c74a47aec3d693e9af32c2f6"
+    },
+    "annotation-metadata": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9404772,
+        9404869
+      ],
+      "bytes": 97,
+      "sha256": "411276404fe6aec51daa906ccf8d736da52ce8c1efe0b9a42887fbf281ef87be"
+    },
+    "wet-draft-consumer": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9411602,
+        9413099
+      ],
+      "bytes": 1497,
+      "sha256": "cfe8f5dde3fc55ba71e0e07df39fdb3ba403285d7234074159b85b371a3aadb5"
+    },
+    "SVo-complete-editor": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9413099,
+        9416741
+      ],
+      "bytes": 3642,
+      "sha256": "1e6bca0b0cdf23c9b84cdb0c057e3b0929ad26176e714615132c938dd13f7e83"
+    },
+    "Pae-store-and-bridge": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9404882,
+        9405467
+      ],
+      "bytes": 585,
+      "sha256": "f60fe4bbf103700c85a6dc8c2bd4340b8477b3629df27641892e451444039ace"
+    },
+    "comment-get-and-workspace-load": {
+      "asset": "index",
+      "utf8_half_open": [
+        2288276,
+        2288676
+      ],
+      "bytes": 400,
+      "sha256": "58320b4c9354bff4854e479ba29af60bb7e47c310e93c1adf2edee2b2c0b6a33"
+    },
+    "comment-create-and-persist": {
+      "asset": "index",
+      "utf8_half_open": [
+        2291998,
+        2293276
+      ],
+      "bytes": 1278,
+      "sha256": "405f617c99b55e05422bc167098317c3968fa007ad61f56476a537a76e18df7c"
+    },
+    "persist-draft-body": {
+      "asset": "index",
+      "utf8_half_open": [
+        2294518,
+        2294674
+      ],
+      "bytes": 156,
+      "sha256": "11419f6b0e760359eeba0b6934af70f4c40378a7e8c6b7bdb559ab242b217cbb"
+    },
+    "ready-and-delete-resets": {
+      "asset": "index",
+      "utf8_half_open": [
+        2295234,
+        2295957
+      ],
+      "bytes": 723,
+      "sha256": "4faf251678488ba5e3e3229b8f331821c25c731f3ba5bea7e35d68bb1c58a2e7"
+    },
+    "patch-view-annotation-caller": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9431499,
+        9436022
+      ],
+      "sha256": "d908c703a9de4c3a3e2436109edebd53418afd8dca0543b6f3fbd4bd7bfe2e44"
+    },
+    "editable-view-annotation-caller": {
+      "asset": "renderer",
+      "utf8_half_open": [
+        9628186,
+        9633977
+      ],
+      "sha256": "b83b970b85f2e050656d5cdc5b27e3510df8d1907a3e8673924a901f7975e7e6"
+    }
+  },
+  "checks": {
+    "renderer_identity": true,
+    "index_identity": true,
+    "span_OMi-create-and-annotations": true,
+    "span_annotation-metadata": true,
+    "span_wet-draft-consumer": true,
+    "span_SVo-complete-editor": true,
+    "span_Pae-store-and-bridge": true,
+    "span_comment-get-and-workspace-load": true,
+    "span_comment-create-and-persist": true,
+    "span_persist-draft-body": true,
+    "span_ready-and-delete-resets": true,
+    "span_patch-view-annotation-caller": true,
+    "span_editable-view-annotation-caller": true,
+    "creator_only_dedupes_identical_anchor": true,
+    "creator_builds_independent_empty_draft": true,
+    "creator_maps_all_eligible_annotations": true,
+    "store_creation_appends_without_replacing_existing": true,
+    "workspace_read_loads_all_drafts": true,
+    "annotation_keeps_individual_comment_metadata": true,
+    "editor_drafts_are_id_indexed": true,
+    "body_edits_write_only_current_id": true,
+    "patch_caller_passes_full_annotations": true,
+    "patch_start_does_not_delete_old_draft": true,
+    "editable_start_does_not_delete_old_draft": true,
+    "main_product_identity": true,
+    "current_has_single_new_draft": true,
+    "current_new_anchor_replaces_existing_draft": true,
+    "current_body_only_lives_in_single_draft": true
+  },
+  "counterexample": [
+    "Open a new inline draft at workspace W/file F/new-side line 2 and type body A.",
+    "Start another draft at W/F/new-side line 8 and type body B.",
+    "Original shipped source appends a second comment ID, retaining A and both annotations. Current source replaces the sole Composing object, discarding A and its annotation."
+  ],
+  "proposed_scope": [
+    "ReviewComments new-draft collection keyed by workspace/path/side/start/end and generation identity",
+    "onLineClick, new-draft input/discard/success handlers, annotation anchors and body rendering",
+    "New isolated mounted regression and evidence only; no saved-edit maps, reply editor, backend or WorkspaceView edits"
+  ],
+  "protected_fixture_collision": "Same ending-line annotation retains all range bodies but displays only the latest selected range; frozen fixture bodies and assertions remain unchanged. This is not full original simultaneous same-ending-line native parity.",
+  "runtime": "NOT RUN: local Node, hosted fixture, native, DOM/browser, SQLite, app restart or reference JavaScript.",
+  "limits": "Source evidence is not original native behavior. No simultaneous same-ending-line range display, whole-app persistence or global workspace retention claim.",
+  "tracked_product_or_fixture_edits": false,
+  "fixture": {
+    "path": "src/features/diff/multiAnchorDrafts.test.ts",
+    "sha256": "366bacf14235f38d8aab739794c8f2d5debceffd512d989b8f2e6ff4c6a7279b",
+    "cases": 13,
+    "intended_baseline_failures": 9,
+    "controls": 4
+  },
+  "baseline": "15e87440daa703030f4c402e7a41b9221a149768",
+  "dependencies": {
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "src/features/diff/comments.ts": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800",
+    "src/features/diff/nav.ts": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c"
+  },
+  "frozen_fixtures": {
+    "src/features/diff/EditInViewer.test.ts": "3ae2a25429f443b093bd0370b21b6daddde19e78282f1d660e8c6225678d31e8",
+    "src/features/diff/WrapLines.test.ts": "5192f75759814d307cce1caee8bc543fed5a93ed818bd04eb810def137496714",
+    "src/features/diff/changesFilter.test.ts": "48f6245e3c15a1d269dac5df111dd92085625c5bb5bf39e10839f9b1578d5c76",
+    "src/features/diff/changesPresentation.test.ts": "e211d8c8b5c57edcfe420c7fc46f1350ff26ab50e68a0260d857fdd4f4e015d5",
+    "src/features/diff/changesSummary.test.ts": "7b113cdffe488c89ac99b8054bd1aa19e6b81d3a158d939174613c968a0a1eff",
+    "src/features/diff/changesTree.test.ts": "1c4949eb6163c8b9220ddd73addf7642324813b1204aa3f0ea908a42070f72e7",
+    "src/features/diff/chatAttachment.test.ts": "f56956a2a3ceb686ef568292aa8daa45cc5f8665352d54aa0e3744e8d569eb9b",
+    "src/features/diff/codeThemes.test.ts": "4809431768912736063e9afbd10a1c671e906ec7389b52bdd575b0a9b1b658d2",
+    "src/features/diff/commentCancel.test.ts": "7081738042a7cc472aabc01acdc6f8da4aa63b479b5bb744babbccdef8ea8c8a",
+    "src/features/diff/commentDelete.test.ts": "570f0a74809a14fd2ac00d4d1d4755fbf25816d51962b658ca4b070e321f0cee",
+    "src/features/diff/commentEditDrafts.test.ts": "487a0b6d0bb87c7325c865c864e0664f060c16d6e51d48981c250b511ec5ddf7",
+    "src/features/diff/commentImeSubmit.test.ts": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
+    "src/features/diff/commentMarkdown.test.ts": "80c112fc83c7e54bd353d6c501d7b3b4c684b23c38971652e07c63958f1875d8",
+    "src/features/diff/commentStore.test.ts": "f085967452542239076fa1fc88bb4cf0b42ca0b17b61849d2d8ab19da2d725e2",
+    "src/features/diff/comments.test.ts": "1bb0fad4bb38a6a9a8beb5838eb931524d27a238166bcbd73b459d9f712b56b8",
+    "src/features/diff/conductorCodeTheme.test.ts": "b0d4a8b7e630fa72d94a116a29292f021aaeab4b98cdf0dc37a013fbbd8809d9",
+    "src/features/diff/copyFile.test.ts": "bd8175bbbd6a18385faf41ebf0296e14ea55af6250e59d1b064a6c79f6a51dd3",
+    "src/features/diff/editorContents.test.ts": "5276f740c1242f408eb8ae9f45a191d397dd5e5dbcf5283524153a815bd7bca3",
+    "src/features/diff/emptyLoadStates.test.ts": "a76b8b68460a1d2f6b1b9b2c6a253cb603844307377f3c828a46b57658305180",
+    "src/features/diff/fileCopyPaths.test.ts": "aa5baf10b2abb738ba0f80f590a2eff3c171f23386dc586923182fb95124e24f",
+    "src/features/diff/filePathChipAlacritty.test.ts": "97c62299ab7cae93bfe17379e56254c01a977cf5d66b06f93e9e38bd761783e2",
+    "src/features/diff/githubComments.test.ts": "3346c166045646b1b8411ef1df86edf06ac6b2f04db8d2219614ab1aa6d2363f",
+    "src/features/diff/hiddenWhitespaceEditing.test.ts": "6e0b9c57c9d1f2ab99f517104e6b262ea643b517d9d3aeef81be6f4fa4c52ca1",
+    "src/features/diff/movedCommentAnchors.test.ts": "48428ff7dd42cb1c1a01874ad8cea53eda20b286093aea45ca66fe07a962b88c",
+    "src/features/diff/nav.test.ts": "64d6e28eee1a22747ccf0a5fbbf8fafeb61ae2dba8d8fb88502e755868e6f685",
+    "src/features/diff/newInlineDraftRemount.test.ts": "03fe7b4aece5b6c5db55772df27ab04ec80c85356d38d34d576fe0397b41b907",
+    "src/features/diff/pierre.test.ts": "956aae2f699c71451464d95e9eb8bad7584093ffbc27fb2d4325e2bc7f6432fb",
+    "src/features/diff/pointerCancel.test.ts": "e866f3651fa2a2f8271ec313d3fd2ae03f943a8589efa6ef99cc6f31f6df6ada",
+    "src/features/diff/refreshStatus.test.ts": "50c6ae79343b2bdca3cca08ea58ac9dba5953f3851c4e23e929138f552dc84d8",
+    "src/features/diff/renameDisplayPath.test.ts": "5689ba409fa0c055406dce76cdde11c7a155c80d4c5cef538e0a48a559da001f",
+    "src/features/diff/review.test.ts": "1ea9928710389200c45fe72f31a5c756381f526737860698e437fa1928682110",
+    "src/features/diff/selectedReveal.test.ts": "f37729569d4d2a82d47123113dde98f23762fa0f1afe3664463aec299a9db3c5",
+    "src/features/diff/selectedRowScroll.test.ts": "7043501cfea2ce48d956ea4728abfd531a93058327b243e2291a014297cd3a9f",
+    "src/features/diff/target.test.ts": "28e0cdf99ebeb1a624e0a65615a4d0f9fb6f3ac766a7dcd1689dde1dd1c9e740",
+    "src/features/diff/turnChangesCache.test.ts": "167584ed99a4d8c1eb0a714ddcd361f43e5cc7021c0f47ee1ea011b1968ff129",
+    "src/features/diff/viewed.test.ts": "577f59aa41388e84b6c4bcd47163c9a865829a04317526c48d0c2f0e6950b321",
+    "src/features/diff/wholeFileRefresh.test.ts": "2cd8c97d2b881249e31e2a2d5ac35b9093d257a071d05233a069f20506cd1f9c"
+  }
+}

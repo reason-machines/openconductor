@@ -1,0 +1,29 @@
+{
+  "owner": "Conductor Rebuild / SAME15",
+  "gap_key": "SAME15-ALACRITTY-DIFF-PRIMARY-INVOCATION-V1",
+  "pr": "https://github.com/reason-machines/openconductor/pull/1073",
+  "head_sha": "bb7d4b61c70e86b5cd5ba39a4d71f17038cecbbd",
+  "workflow_run_id": 43072995038,
+  "job_id": 130705496294,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43072995038/job/130705496294",
+  "job_name": "Diff frontend unit tests",
+  "finished_at": "2026-11-11T17:57:09Z",
+  "command": "node --test (type-stripped), repository Diff frontend workflow",
+  "result": "EXPECTED_BEHAVIORAL_RED",
+  "suite": { "tests": 428, "pass": 425, "fail": 3, "skipped": 0 },
+  "regression_sha256": "97c62299ab7cae93bfe17379e56254c01a977cf5d66b06f93e9e38bd761783e2",
+  "failures": [
+    { "workspace": "/tmp/open-in-workspace", "file": "src/example.ts" },
+    { "workspace": "/tmp/open in workspace", "file": "src/nested/example file.ts" },
+    { "workspace": "/tmp/open-in-workspace", "file": "example.ts" }
+  ],
+  "assertion": "Expected open_in_app(appId=alacritty,path=workspace), received path=workspace/file",
+  "controls_passed": [
+    "Finder preserves exact file payload",
+    "VS Code preserves exact file payload",
+    "Missing worktree makes no invocation",
+    "Alacritty failure notification is preserved"
+  ],
+  "setup": "npm ci passed; actual FileDiffView, FilePathChip and openInApp modules loaded; all seven regressions executed",
+  "native": "NOT_RUN. Tauri boundary recorder observes IPC, not a real Alacritty process or window."
+}

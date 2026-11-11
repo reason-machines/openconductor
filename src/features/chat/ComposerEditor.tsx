@@ -12,7 +12,7 @@ import { FileAtom, composerContent, inlineContent, linearDocument, partsFrom } f
 
 export interface ComposerSelection { text: string; start: number; end: number }
 export interface ComposerEditorHandle {
-  focus(): void;
+  focus(position?: "end"): void;
   blur(): void;
   visible(): boolean;
   focused(): boolean;
@@ -145,7 +145,10 @@ export function ComposerEditor(props: Props) {
       return true;
     }
     const handle: ComposerEditorHandle = {
-      focus: () => { editor.view.focus(); },
+      focus: (position) => {
+        if (position === "end") editor.view.dispatch(editor.state.tr.setSelection(TextSelection.atEnd(editor.state.doc)));
+        editor.view.focus();
+      },
       blur: () => { editor.view.dom.blur(); },
       visible: () => editor.view.dom.offsetParent !== null,
       focused: () => editor.isFocused,
