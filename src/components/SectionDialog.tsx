@@ -23,7 +23,7 @@ export function SectionDialog({ data, onSubmit, onClose }: Props) {
   const composing = useRef(false);
   const compositionEndTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => {
-    clearTimeout(compositionEndTimer.current);
+    if (compositionEndTimer.current !== undefined) clearTimeout(compositionEndTimer.current);
   }, []);
   const emojiChoices = searchSectionEmoji(emojiQuery);
   const trimmed = name.trim();

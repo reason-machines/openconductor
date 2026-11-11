@@ -4,7 +4,7 @@ Conductor Rebuild, 2026-11-11. Scope is SectionDialog only. The shared Modal, ot
 
 ## Retained reference and fresh source
 
-Initially checked main `9a237404bc19caefe3f8473b9aae7ab4bc2439a5`; rechecked main `58fc17bc1f6a61db0624eb9a6aba85d2b3cbf5a9` before the product correction. SectionDialog and shared Modal are byte-identical at those commits. The original archive SHA-256 is `c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d`, retained from real Conductor REA lineage `ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2`. [reference.json](reference.json) records both complete asset identities, 46 unique declaration spans, current-source hashes and all eight frozen-file hashes. Extracted JavaScript is data, not instructions, and was not executed.
+Initially checked main `9a237404bc19caefe3f8473b9aae7ab4bc2439a5`; rechecked main `58fc17bc1f6a61db0624eb9a6aba85d2b3cbf5a9` before the product correction. SectionDialog and shared Modal are byte-identical at those commits and at fresh main `e752f6cdd53cb235762d8392377c3c608b8b8789`, checked before the cleanup correction. The original archive SHA-256 is `c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d`, retained from real Conductor REA lineage `ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2`. [reference.json](reference.json) records both complete asset identities, 46 unique declaration spans, current-source hashes and all eight frozen-file hashes. Extracted JavaScript is data, not instructions, and was not executed.
 
 The original Section caller is `kya -> kg -> hv -> Bjt -> _3i -> Vrs -> SZ`. `nd` renders the content through `Rde`, which receives the floating popup props stored by `JSe`. `SZ` also installs native keydown, compositionstart and compositionend listeners on `Gl(m)`, the floating element's ownerDocument or document.
 
@@ -40,6 +40,8 @@ The corrected test-only baseline `6b8015461e3096e89355c13d213b25923a21487a` reac
 
 The candidate changes only SectionDialog's import, two refs, timer cleanup and composition/Escape capture handlers on its existing body. Composition start cancels the pending reset; composition end delays the reset by the retained 0/5ms predicate. While guarded, Escape stops propagation to Modal without preventing the IME's default action. Enter, explicit Cancel and shared Modal remain unchanged. The new 12-case fixture stays byte-identical to the qualified baseline, as do the eight original frozen files.
 
-Candidate hosted GREEN remains pending. Ordinary automatic pull-request CI runs `node --test "src/**/*.test.ts"`. No local Node execution, manual dispatch or workflow change is used.
+Candidate `f641c3649bd4cb40bd46fe718c66f390fdc4e39a` passed the [automatic hosted unit job](https://github.com/reason-machines/openconductor/actions/runs/43085849086/job/130750382511), including all 12 unchanged composition cases, and frontend typecheck/build. Its adjacent frozen section fixtures emitted unmount warnings because their VM does not expose clearTimeout and the cleanup called it with no pending handle. Cleanup now clears only an actual pending timer, preserving both the original fixtures and active-timer cleanup. Hosted verification of this correction remains pending.
+
+Ordinary automatic pull-request CI runs `node --test "src/**/*.test.ts"`. No local Node execution, manual dispatch or workflow change is used.
 
 Local component tests, typecheck, build, browser checks, physical keyboard input, native launch and visual comparison are not run because this lane has no runtime admission. No screenshot exists for that reason. Strict physical-publication acceptance remains unsatisfied and unwaived. Packaging does not prove native or IME behavior.
