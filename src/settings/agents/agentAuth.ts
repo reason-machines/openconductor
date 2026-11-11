@@ -90,4 +90,6 @@ export function apiKeyName(agent: "claude" | "codex", config: ProviderConfig | n
   return "openai_api_key";
 }
 
-export const providerOf = (settings: Settings, agent: "claude" | "codex") => settings.providers[agent] ?? null;
+export const providerOf = (settings: Settings, agent: "claude" | "codex"): ProviderConfig | null =>
+  settings.providers[agent] ??
+  (agent === "claude" && settings.claude_provider?.trim() === "custom" ? { kind: "anthropic_api", auth: "api_key" } : null);
