@@ -37,6 +37,10 @@ if operation == "update":
     if scenario == "metadata-retry-budget" and options.get("Acquire::Retries") != "0":
         print("update timed out during internal retries")
         sys.exit(124)
+    if scenario in ("ubuntu-dns-failure", "fallback-unavailable"):
+        if scenario == "fallback-unavailable" or record["mirror"] != "https://mirrors.kernel.org/ubuntu/ priority:1":
+            print("Temporary failure resolving Ubuntu archive mirror")
+            sys.exit(100)
     if scenario == "mirror-fallback" and sum(r["operation"] == "update" for r in previous) < 2:
         sys.exit(100)
 else:
@@ -49,7 +53,7 @@ sys.exit(0)
 
 
 class AptInstallTest(unittest.TestCase):
-    def run_installer(self, scenario):
+    def run_installer(self, scenario, mirror_text=None):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             commands = root / "bin"
@@ -59,7 +63,7 @@ class AptInstallTest(unittest.TestCase):
                 executable.write_text(COMMAND)
                 executable.chmod(0o755)
             mirrors = root / "mirrors"
-            mirrors.write_text("https://one.invalid/ priority:1\n"
+            mirrors.write_text(mirror_text or "https://one.invalid/ priority:1\n"
                                "https://two.invalid/ priority:2\n"
                                "https://three.invalid/ priority:3\n")
             log = root / "commands.jsonl"
@@ -113,6 +117,39 @@ class AptInstallTest(unittest.TestCase):
             "https://two.invalid/ priority:1",
             "https://three.invalid/ priority:1",
         ])
+
+    ubuntu_mirrors = ("http://azure.archive.ubuntu.com/ubuntu/ priority:1\n"
+                      "https://archive.ubuntu.com/ubuntu/ priority:2\n"
+                      "https://security.ubuntu.com/ubuntu/ priority:3\n")
+
+    def test_ubuntu_dns_failure_uses_independent_final_mirror(self):
+        result, records = self.run_installer("ubuntu-dns-failure", self.ubuntu_mirrors)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual([r["operation"] for r in records], ["update"] * 3 + ["install"])
+        self.assertEqual([r["mirror"] for r in records[:3]], [
+            "http://azure.archive.ubuntu.com/ubuntu/ priority:1",
+            "https://archive.ubuntu.com/ubuntu/ priority:1",
+            "https://mirrors.kernel.org/ubuntu/ priority:1",
+        ])
+
+    def test_unavailable_independent_mirror_does_not_install(self):
+        result, records = self.run_installer("fallback-unavailable", self.ubuntu_mirrors)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertEqual([r["operation"] for r in records], ["update"] * 3)
+
+    def test_healthy_ubuntu_update_keeps_original_mirror(self):
+        result, records = self.run_installer("healthy", self.ubuntu_mirrors)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual([r["operation"] for r in records], ["update", "install"])
+        self.assertEqual({r["mirror"] for r in records}, {
+            "http://azure.archive.ubuntu.com/ubuntu/ priority:1",
+        })
+
+    def test_install_failure_does_not_enable_metadata_fallback(self):
+        result, records = self.run_installer("install-failure", self.ubuntu_mirrors)
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertEqual([r["operation"] for r in records], ["update"] + ["install"] * 3)
+        self.assertEqual(records[-1]["mirror"], "https://security.ubuntu.com/ubuntu/ priority:1")
 
     def test_exhausted_install_attempts_still_fail(self):
         result, records = self.run_installer("install-failure")

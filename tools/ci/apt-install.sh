@@ -26,7 +26,16 @@ fi
 next_mirror() {
   [ -f "$mirrors" ] && [ "$(grep -c . "$mirrors")" -gt 1 ] || return 0
   # Lines may carry priority:N tags, which apt sorts by, so renumber them in the new order.
-  { tail -n +2 "$mirrors"; head -n 1 "$mirrors"; } | awk '{ sub(/priority:[0-9]+/, "priority:" NR) } 1' > "${TMPDIR:-/tmp}/apt-mirrors.$$"
+  {
+    if [ "${1:-}" = metadata-fallback ] &&
+      grep -Eq '^https?://(azure\.archive|archive|security)\.ubuntu\.com/ubuntu/?([[:space:]]|$)' "$mirrors"; then
+      printf '%s\n' 'https://mirrors.kernel.org/ubuntu/ priority:1'
+      grep -v '^https://mirrors\.kernel\.org/ubuntu/' "$mirrors"
+    else
+      tail -n +2 "$mirrors"
+      head -n 1 "$mirrors"
+    fi
+  } | awk '{ sub(/priority:[0-9]+/, "priority:" NR) } 1' > "${TMPDIR:-/tmp}/apt-mirrors.$$"
   sudo cp "${TMPDIR:-/tmp}/apt-mirrors.$$" "$mirrors"
   echo "apt mirror list now starts with: $(head -n 1 "$mirrors")"
 }
@@ -41,7 +50,13 @@ own_archives() {
 status=1
 updated=0
 for i in $(seq 1 "$attempts"); do
-  [ "$i" -gt 1 ] && next_mirror
+  if [ "$i" -gt 1 ]; then
+    if [ "$i" = "$attempts" ] && [ "$updated" = 0 ]; then
+      next_mirror metadata-fallback
+    else
+      next_mirror
+    fi
+  fi
   if [ "$updated" = 0 ]; then
     # The outer loop owns metadata retries. Internal retries can consume the whole
     # deadline without reporting an error; apt otherwise accepts failed indexes.
