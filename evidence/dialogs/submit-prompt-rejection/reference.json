@@ -1,0 +1,77 @@
+{
+  "archive_sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+  "asset": {
+    "key": "renderer",
+    "path": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "spans": [
+    {
+      "name": "W5a",
+      "utf8_half_open": [
+        11132912,
+        11134847
+      ],
+      "bytes": 1935,
+      "sha256": "5e4dffbfcd735c9743ea9899c0f8000746507f3aab3445f2f2ce7ae115c5d302",
+      "literal": "function W5a(){const[t,e]=$.useState(\"\"),[n,i]=$.useState(\"\"),[r,o]=$.useState(!1),{data:a}=g9(),c=async d=>{if(d?.preventDefault(),!t.trim()){kt.error(\"Please enter a prompt\");return}o(!0);const h=`[PROMPT SUBMISSION]\n\nName: ${n.trim()||\"(anonymous)\"}\nPrompt:\n${t.trim()}`;try{await V5a({email:a?.email??\"\",message:h}),kt.success(\"Prompt submitted!\",{description:\"Thanks for your suggestion.\"}),e(\"\"),i(\"\"),nr.closeDialog(aJ)}catch(m){Bt.error(\"Failed to submit prompt:\",m),kt.error(\"Failed to submit prompt\",{description:\"Please try again later.\"})}finally{o(!1)}},u=d=>{Qh(\"dialog.primaryAction\",d.nativeEvent)&&(d.preventDefault(),c().fireAndForget())};return p.jsx(kg,{id:aJ,children:p.jsxs(nd,{className:\"sm:max-w-lg p-5\",children:[p.jsxs(Hd,{children:[p.jsx(Bu,{children:\"Submit a prompt\"}),p.jsx(wg,{children:\"Prompt a coding agent to build what you want to see in Conductor. If we like your prompt, we'll run it and merge the result.\"})]}),p.jsxs(\"form\",{onSubmit:c,onKeyDown:u,className:\"space-y-4\",children:[p.jsxs(\"div\",{className:\"space-y-4\",children:[p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[p.jsx(Zu,{htmlFor:\"submit-prompt-message\",children:\"Prompt\"}),p.jsx(wS,{id:\"submit-prompt-message\",placeholder:\"Describe what you'd like to see built...\",value:t,onChange:d=>e(d.target.value),disabled:r,rows:5,required:!0,autoFocus:!0,className:\"w-full\"})]}),p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[p.jsx(Zu,{htmlFor:\"submit-prompt-name\",children:\"Your name (if we use your prompt, we'll credit you in the changelog)\"}),p.jsx(Qo,{id:\"submit-prompt-name\",type:\"text\",placeholder:\"Jane Doe\",value:n,onChange:d=>i(d.target.value),disabled:r})]})]}),p.jsx(km,{children:p.jsx(tt,{type:\"submit\",disabled:r||!t.trim(),children:r?\"Submitting...\":p.jsxs(p.Fragment,{children:[\"Submit prompt\",p.jsxs(\"span\",{className:\"ml-2 inline-flex items-center opacity-60\",children:[\"⌘\",p.jsx(gf,{})]})]})})})]})]})})}"
+    },
+    {
+      "name": "V5a",
+      "utf8_half_open": [
+        11132569,
+        11132912
+      ],
+      "bytes": 343,
+      "sha256": "b95634f1a9e7ebfc3457961f6bfe294474c683a21fb512054b9cd87d36710a9b",
+      "literal": "async function V5a(t){const e=await yYe(),n=`${t.message}\n\n----\nApp Version: ${e}\nOS: macos ${OSe()}`,i=await gv(`${cy.conductorProxyUrl}/api/feedback`,{method:\"POST\",headers:{\"Content-Type\":\"application/json\"},body:JSON.stringify({email:t.email,message:n})});if(!i.ok){const r=await i.text();throw new Error(`Failed to submit prompt: ${r}`)}}"
+    },
+    {
+      "name": "W5a-mount",
+      "utf8_half_open": [
+        11141121,
+        11141134
+      ],
+      "bytes": 13,
+      "sha256": "2996936d61ac023a751fbf5bf88ac376d1cacea177ecfe636f6304dc88d13700",
+      "literal": "p.jsx(W5a,{})"
+    }
+  ],
+  "producer": "Conductor Rebuild / 6013adf2",
+  "source_only": true,
+  "authoritative_main": "2fd9759216603cb040cfcffb4a258833948d4120",
+  "offset_convention": "Zero-based UTF-8 half-open byte ranges",
+  "status": "REA_RETAINED_LOCAL_SUBMISSION_CONTROL_FLOW_CLOSED",
+  "joins": [
+    "W5a lexical V5a call awaits feedback submission; V5a throws if response.ok is false.",
+    "W5a clears prompt and credit name and closes only after awaited success. Catch preserves both values; finally clears pending state.",
+    "The pending flag is forwarded to prompt/name controls and submit button.",
+    "W5a is directly mounted as p.jsx(W5a,{}).",
+    "Own backend openUrl is an async native invoke boundary. The own issue-draft adapter remains intentional and unchanged."
+  ],
+  "regression": {
+    "test": "src/components/submitPromptRejection.test.ts",
+    "sha256": "85cad10aa72044af3ed20b9b78cce9a9098fcf10826a5e117ac5e00d3da2d3de",
+    "red_local_commit": "a79007579",
+    "red": {
+      "passed": 3,
+      "failed": 4
+    },
+    "green_focused": {
+      "passed": 37,
+      "failed": 0
+    },
+    "reference_executed": false,
+    "backend": "synthetic deferred opener"
+  },
+  "limits": [
+    "Static shipped source only; original REA semantic renderer analysis exhausted heap.",
+    "No external feedback/OS/GitHub outcomes or native callback delivery observed.",
+    "OpenConductor retains its own GitHub issue-draft adaptation; resolving openUrl is not an issue submission.",
+    "Mounted regression uses actual own component and URL builder with backend, motion and keyboard registration boundaries stubbed.",
+    "No browser/native/physical-input/visual/provider acceptance; no screenshot because this lane has no execution admission.",
+    "Full local typecheck/build not run; hosted checks must validate exact PR head."
+  ]
+}

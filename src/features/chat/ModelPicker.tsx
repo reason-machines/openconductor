@@ -242,6 +242,8 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
               {items.map((f, index) => {
                 const selected = same(f, value);
                 const e = modelChoiceChip(f).effort;
+                const agent = searching ? itemAgent?.(f) ?? f.agent ?? agentForModel(f.model) : undefined;
+                const detail = searching ? (agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : undefined) : e;
                 return (
                   <button
                     key={`${f.agent ?? ""}:${f.model}:${f.effort ?? ""}:${!!f.fast}`}
@@ -261,7 +263,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
                   >
                     <ModelGlyph model={f.model} agent={itemAgent?.(f)} />
                     <span className="oc-model-item-name">{selected && label ? label : nameOf(f)}</span>
-                    {e ? <span className="oc-model-item-effort">{e}</span> : null}
+                    {detail ? <span className="oc-model-item-effort">{detail}</span> : null}
                     {selected ? <CheckIcon className="oc-model-item-check" /> : null}
                   </button>
                 );
