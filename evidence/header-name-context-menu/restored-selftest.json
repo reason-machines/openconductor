@@ -1,0 +1,32 @@
+{
+  "producer": "Conductor Rebuild",
+  "main": "2b079f13e07b580d26191f7f1f50b4d21e62174e",
+  "scope": "Python source/staging integrity, NOT behavior",
+  "checks": [
+    {
+      "id": "exact-source-staging",
+      "status": "passed",
+      "source_files": 968
+    },
+    {
+      "id": "refuse-output-overwrite",
+      "status": "passed"
+    },
+    {
+      "id": "refuse-fixture-drift-before-write",
+      "status": "passed"
+    },
+    {
+      "id": "refuse-older-source-before-write",
+      "status": "passed"
+    },
+    {
+      "id": "tracked-tree-and-prefix9-unchanged",
+      "status": "passed",
+      "prefix9_fixture_sha256": "894e0f32379cf3bade2d18f7b04b373ff62eab3a002dbeec8f05be1dff8bc3ce"
+    }
+  ],
+  "product_runtime_browser_native": "NOT RUN",
+  "product_patch": "NOT APPLIED",
+  "runtime_dependencies_and_capacity": "NOT QUALIFIED; existing E1 only"
+}

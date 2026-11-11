@@ -175,6 +175,40 @@ pub async fn diff_comment_edit(
         .map_err(err)
 }
 
+#[derive(Debug, Deserialize)]
+pub struct CommentAnchorInput {
+    id: String,
+    line_number: i64,
+    end_line_number: Option<i64>,
+}
+
+#[tauri::command]
+pub async fn diff_comments_update_anchors(
+    db: Managed<'_, Db>,
+    workspace_id: String,
+    updates: Vec<CommentAnchorInput>,
+) -> Result<(), String> {
+    if updates
+        .iter()
+        .any(|u| u.line_number < 1 || u.end_line_number.is_some_and(|end| end < u.line_number))
+    {
+        return Err("invalid comment anchor".into());
+    }
+    for update in updates {
+        store::update_anchor(
+            &db.0,
+            &workspace_id,
+            &update.id,
+            update.line_number,
+            update.end_line_number,
+            now_ms(),
+        )
+        .await
+        .map_err(err)?;
+    }
+    Ok(())
+}
+
 /// Deleting a thread's root deletes its replies too.
 #[tauri::command]
 pub async fn diff_comment_delete(db: Managed<'_, Db>, id: String) -> Result<u64, String> {

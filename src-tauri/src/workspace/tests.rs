@@ -106,6 +106,27 @@ fn create_places_worktree_under_data_dir_on_new_branch() {
 }
 
 #[test]
+fn create_preserves_custom_branch_prefix_delimiters() {
+    for (prefix, expected) in [
+        ("myname-", "myname-tokyo"),
+        ("team_", "team_tokyo"),
+        ("team/ui-", "team/ui-tokyo"),
+        ("Team.UI-", "Team.UI-tokyo"),
+        ("feature/", "feature/tokyo"),
+        ("myname-/", "myname-/tokyo"),
+        ("team", "team/tokyo"),
+    ] {
+        let f = fixture();
+        let created = f
+            .mgr
+            .create(&f.repo, &CreateOptions { branch_prefix: Some(prefix.into()), ..named("tokyo") })
+            .unwrap();
+        assert_eq!(created.workspace.branch, expected, "{prefix}");
+        assert_eq!(sh(&created.workspace.path, &["symbolic-ref", "--short", "HEAD"]), expected);
+    }
+}
+
+#[test]
 fn names_are_uniquified_against_dirs_and_branches() {
     let f = fixture();
     let a = f.mgr.create(&f.repo, &named("feature")).unwrap().workspace;
