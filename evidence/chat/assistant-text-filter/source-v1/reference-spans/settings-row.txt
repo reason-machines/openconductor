@@ -1,0 +1,1 @@
+ir({tab:"general",settingKey:"not_absolutely_right",scopes:["user"],title:"I'm not absolutely right, thank you very much",description:`Strip "You're absolutely right!" from AI messages`,enableViaDeepLink:!0,render:function(e){const{data:n}=us("not_absolutely_right");return p.jsx(Zb,{...e,id:"not-absolutely-right",checked:n,onCheckedChange:i=>X9r(i).fireAndForget()})}})

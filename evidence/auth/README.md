@@ -6,13 +6,17 @@ records the turn. These runs complement the CI tests with stand-in binaries
 (`tools/e2e/claude-chat.e2e.mjs`, #650; `tools/e2e/codex-chat.e2e.mjs`, #633),
 which prove the wiring. These runs prove that a real turn works.
 
-Runs of 2026-11-06 on main 95ec07d plus this PR's fix (Codex API key
-login), Claude Code 2.1.319 and Codex 0.166.0.
+Runs of 2026-11-11 (09:32 to 09:37Z) on an app built from main 3da28905,
+Claude Code 2.1.322 and Codex 0.166.0. The first Claude run on 2026-11-11
+stopped at "timed out waiting for the workspace view": the composer is now a
+contenteditable editor, not a textarea, so the driver now types into it with
+a normal insertText edit. The 2026-11-06 runs (main 95ec07d plus #668) gave
+the same Codex and Claude API key results.
 
 | Agent | Mode | Set in the app as | Result |
 |---|---|---|---|
-| Claude Code | Import (existing Claude login, nothing set) | nothing | **Blocked by provider**: the tab shows CLI, Connected and no `claude /login`; the turn reaches Anthropic, which answers "You've hit your weekly limit · resets Nov 11 at 1am (America/Los_Angeles)". A limit on the Mac's Claude login, not an app bug; rerun after the reset. |
-| Claude Code | Claude subscription login | CLI card (already the default with no setting, so nothing new is stored) | **Blocked by provider**: same weekly-limit answer |
+| Claude Code | Import (existing Claude login, nothing set) | nothing | **Blocked by provider**: the tab shows CLI, Connected and no `claude /login`; the turn reaches Anthropic, which answers "Claude Code can't use your Claude subscription, usually because a payment is past due · Pay or renew at https://claude.ai/settings/billing". The bare `claude -p` on the Mac's own login gets the same answer, so it is the account's billing state, not an app bug. (2026-11-06: "You've hit your weekly limit", which has since reset.) |
+| Claude Code | Claude subscription login | CLI card (already the default with no setting, so nothing new is stored) | **Blocked by provider**: same billing answer |
 | Claude Code | Anthropic API key | API key card, key typed and saved | **Pass**: reply `oc-apikey-ok`; key fingerprint `de95d2c8e13ef623` (1Password, Sven vault) |
 | Codex | Import (existing ChatGPT login, nothing set) | nothing | **Pass**: reply `oc-import-ok` |
 | Codex | ChatGPT subscription | ChatGPT card | **Pass**: reply `oc-chatgpt-ok` |
@@ -20,7 +24,8 @@ login), Claude Code 2.1.319 and Codex 0.166.0.
 | Codex | OpenAI API key, key-only control (no ChatGPT login in HOME) | API key card | **Pass** with this PR; **fail** before it (401 "Missing bearer or basic authentication") |
 
 `blocked-by-provider` (tools/auth/summarize.py): the turn failed with the
-provider's own usage or rate limit while the tab showed Connected and no
+provider's own usage or rate limit, or the provider's refusal of the
+account's subscription for billing, while the tab showed Connected and no
 sign-in prompt. A mode that fails any other way is `fail`. An agent's
 `result` is `partial` when nothing failed but a mode was blocked or not run.
 
@@ -95,5 +100,7 @@ stalls after "workspace created"; run it under `caffeinate -dimsu`.
 
 ## Not covered here
 - VM / cloud-computer hand-off: built and tested in its own PR.
-- A real Claude subscription turn: blocked until the weekly limit resets
-  (Nov 11, 1am PT). A recheck is scheduled for Nov 11 at 09:30Z.
+- A real Claude subscription turn: the weekly limit reset on Nov 11, but
+  Anthropic now refuses the Mac's Claude Max login with "payment is past
+  due". It needs the account's billing fixed; then rerun the Claude command
+  above.

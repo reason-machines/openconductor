@@ -200,8 +200,15 @@ jobs:
           node-version: "22"
           cache: npm
       - run: npm ci
+      - name: Chat top-level find frozen component regression
+        run: node --test --test-reporter=tap tests/chat-search/transcriptFind.component.test.mjs
       - name: Pure TypeScript modules (Node strips types natively)
         run: node --test "src/**/*.test.ts"
+      - name: Script output copy unchanged-fixture baseline and candidate replay
+        timeout-minutes: 4
+        run: |
+          python3 -m unittest discover -s evidence/scripts/output-copy -p test_replay.py -v
+          python3 evidence/scripts/output-copy/replay.py --out-dir "$RUNNER_TEMP/output-copy-replay"
       - name: Onboarding persistence and nonblocking startup regressions
         timeout-minutes: 3
         shell: bash

@@ -1,0 +1,56 @@
+{
+  "author": "Conductor Rebuild",
+  "unit": "SETTINGS49_ASSISTANT_DISPLAY_FILTER_V3",
+  "actual_runtime_terminal": "2026-11-11T11:34:37.924601+00:00",
+  "released": true,
+  "receipt_packaged_at": "2026-11-11T11:36:02.150495+00:00",
+  "active_node_processes_with_target_cwd": [],
+  "baseline_main": "b6e7473d17462ce09948437b4239fb0a31e8d37f",
+  "archive": {
+    "attachment_id": "716df071-89d9-458b-a2d3-a17dba9cd061",
+    "bytes": 1691972,
+    "sha256": "b4838c320bd72c0f8e7662b8bbe7c1fb87bc3de38c3e82ddbaba6aa4c18d5c03"
+  },
+  "red_summary": {
+    "tests": 109,
+    "pass": 92,
+    "fail": 17,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "green_summary": {
+    "tests": 109,
+    "pass": 109,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "red_qualification": "17 intended enabled assistant text/thinking display assertion failures; 92 other cases passed; no setup errors",
+  "between_phase_delta": [
+    "src/features/chat/Transcript.tsx"
+  ],
+  "all_eight_red_overlay_files_byte_identical": true,
+  "original_typed_fixtures_receipts_preserved": {
+    "typed-subagent-baseline-c68b79e1": {
+      "fixture_sha256": "ba06c1eae463ab7b498aded4098603a9e78899c79592bca41c3fcb96c3169ff6",
+      "receipt_sha256": "b8983eef8b412b6b67501b17665f65d12aa50956d940e510e8ec8271f1c5650f"
+    },
+    "typed-subagent-green-44ad916b": {
+      "fixture_sha256": "ba06c1eae463ab7b498aded4098603a9e78899c79592bca41c3fcb96c3169ff6",
+      "receipt_sha256": "57c64962b8b3c6b70ebe969785771d0762f021a43068e7af6423f1324d130b78"
+    }
+  },
+  "composer_fixture_unchanged": true,
+  "production_checkout_untouched": true,
+  "limits_met": true,
+  "retries": 0,
+  "no_new_lease": "Composer36 and #1025 offline audit remain queued only; no additional unit started",
+  "delivery_owner": "49e3976d-9553-42d8-8101-2504177fbb97 retains source publication, CI, merge and consumer verification",
+  "gaps": [
+    "No typecheck/build",
+    "No live Settings persistence/IPC acceptance",
+    "No native/visual/real-IME/provider behavior verification"
+  ]
+}

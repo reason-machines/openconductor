@@ -1,0 +1,45 @@
+{
+  "sessionId": "find-fixture",
+  "activeTurn": null,
+  "turns": {
+    "turn-1": { "status": "completed" }
+  },
+  "messages": [
+    {
+      "id": "user-1",
+      "sessionId": "find-fixture",
+      "turnId": "turn-1",
+      "role": "user",
+      "createdAt": "2026-11-11T12:00:00Z",
+      "blocks": [{ "type": "text", "text": "Needle needle" }]
+    },
+    {
+      "id": "assistant-1",
+      "sessionId": "find-fixture",
+      "turnId": "turn-1",
+      "role": "assistant",
+      "createdAt": "2026-11-11T12:00:01Z",
+      "blocks": [
+        { "type": "text", "text": "NEEDLE" },
+        { "type": "thinking", "text": "needle is not a top-level text match" },
+        { "type": "tool_use", "id": "tool-1", "name": "Read", "input": { "file_path": "needle.txt" } }
+      ]
+    },
+    {
+      "id": "tool-answer",
+      "sessionId": "find-fixture",
+      "turnId": "turn-1",
+      "role": "user",
+      "createdAt": "2026-11-11T12:00:02Z",
+      "blocks": [{ "type": "tool_result", "toolUseId": "tool-1", "content": "needle in tool output must not count" }]
+    },
+    {
+      "id": "system-1",
+      "sessionId": "find-fixture",
+      "turnId": "turn-1",
+      "role": "system",
+      "createdAt": "2026-11-11T12:00:03Z",
+      "blocks": [{ "type": "text", "text": "needle in a system message must not count" }]
+    }
+  ]
+}

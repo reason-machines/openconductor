@@ -1,0 +1,19 @@
+.modal:has(> .config-sync-body) { width: 576px; max-width: calc(100vw - 32px); }
+.config-sync-body { max-height: 60vh; overflow-y: auto; padding: 0 24px 12px; }
+.config-sync-description { display: block; margin: 4px 0; color: var(--muted); font-size: 13px; line-height: 20px; font-weight: 400; }
+.config-sync-note { color: var(--muted); font-size: 12px; line-height: 18px; margin: 8px 0 16px; }
+.config-sync-category { margin: 4px -8px; }
+.config-sync-category-header { display: flex; align-items: flex-start; gap: 10px; padding: 8px; border-radius: 6px; }
+.config-sync-category-header > input { margin-top: 4px; flex-shrink: 0; }
+.config-sync-expand { display: flex; align-items: flex-start; gap: 16px; text-align: left; flex: 1; min-width: 0; padding: 0; border: 0; background: transparent; color: inherit; }
+.config-sync-expand > span:first-child { flex: 1; min-width: 0; }
+.config-sync-expand strong { font-size: 14px; font-weight: 500; }
+.config-sync-count { flex-shrink: 0; color: var(--muted); font-size: 12px; line-height: 20px; }
+.config-sync-items { padding: 0 8px 8px 36px; }
+.config-sync-item { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: 4px; font-size: 13px; cursor: pointer; }
+.config-sync-item:hover, .config-sync-category-header:hover { background: var(--hover); }
+.config-sync-from { color: var(--muted); font-size: 12px; flex-shrink: 0; }
+.config-sync-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.config-sync-error { color: var(--destructive); font-size: 12px; line-height: 18px; overflow-wrap: anywhere; }
+.config-sync-result { border-top: 1px solid var(--border); margin-top: 12px; padding-top: 8px; font-size: 13px; }
+.config-sync-expand:focus-visible, .config-sync-item:focus-within { outline: 1px solid var(--ring); outline-offset: 2px; }

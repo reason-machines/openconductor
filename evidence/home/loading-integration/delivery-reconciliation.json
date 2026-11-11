@@ -1,0 +1,14 @@
+{
+  "producer": "Conductor Rebuild",
+  "delivery_base": "b6e7473d17462ce09948437b4239fb0a31e8d37f",
+  "executed_baseline": "12a805ed90f5aeb0d472e53a64ad6d85bf2d3479",
+  "18_delivery_base_inputs_identical_to_executed_baseline": true,
+  "3_delivered_product_files_identical_to_executed_candidate": true,
+  "fixture_sha256": "7fc4ee787d23650efa77d716e79ee3701b178b01506b497c20a3b6a569a132d6",
+  "reference_spans_verified": 33,
+  "source_reconciliation": "passed",
+  "serialized_regression": "expected baseline failure (3 pass, 1 fail), candidate passed (4 pass)",
+  "local_runtime_repeated": false,
+  "full_app_typecheck_and_build": "not run locally; exact-head hosted CI required",
+  "reference_mounted_native_visual": "not run"
+}

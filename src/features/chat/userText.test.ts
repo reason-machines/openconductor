@@ -51,6 +51,7 @@ async function fixture(text: string, rich?: SentUserContentV1) {
           case "./userContent.ts": return userContent;
           case "./UserText.tsx": return load("UserText.tsx");
           case "./LinkMenu.tsx": return load("LinkMenu.tsx");
+          case "./userTextExternalIcon.css": return {};
           case "../../backend.ts": return { openUrl: async (href: string) => { opened.push(href); } };
           case "../openIn/apps.ts": return { copyText: async (href: string) => { linkCopies.push(href); } };
           case "../../components/menu/ContextMenu": return {
@@ -76,6 +77,7 @@ async function fixture(text: string, rich?: SentUserContentV1) {
     exports: production,
     require(name: string) { assert.equal(name, "react/jsx-runtime"); return dependencies(name); },
     React, Fragment: React.Fragment, useMemo: React.useMemo, useState: React.useState, useSyncExternalStore: React.useSyncExternalStore,
+    useBoolPref: () => false,
     ...view, ...groups, ...time, ...bindings, userMessageCopyText,
     SentUserContent: load("SentUserContent.tsx").SentUserContent,
     UserText: existsSync(new URL("./UserText.tsx", import.meta.url)) ? load("UserText.tsx").UserText : undefined,
