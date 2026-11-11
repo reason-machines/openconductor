@@ -31,6 +31,9 @@ with log.open("a") as output:
     output.write(json.dumps(record) + "\n")
 scenario = os.environ["APT_TEST_SCENARIO"]
 if operation == "update":
+    if scenario == "third-party-rate-limit" and options.get("Dir::Etc::sourceparts") != "-":
+        print("E: packages.microsoft.com: 429 Too Many Requests")
+        sys.exit(100)
     if scenario == "missing-metadata":
         print("W: Failed to fetch metadata; old index files used instead")
         sys.exit(100 if options.get("APT::Update::Error-Mode") == "any" else 0)
@@ -66,14 +69,19 @@ class AptInstallTest(unittest.TestCase):
             mirrors.write_text(mirror_text or "https://one.invalid/ priority:1\n"
                                "https://two.invalid/ priority:2\n"
                                "https://three.invalid/ priority:3\n")
+            sources = root / "sources.list"
+            if scenario != "missing-source-list":
+                sources.write_text("" if scenario == "empty-source-list" else
+                                   "deb http://127.0.0.1:9/ubuntu jammy main\n")
             log = root / "commands.jsonl"
             env = {**os.environ, "PATH": f"{commands}:{os.environ['PATH']}",
                    "APT_TEST_LOG": str(log), "APT_TEST_SCENARIO": scenario,
-                   "APT_MIRRORS_FILE": str(mirrors), "TMPDIR": str(root),
+                   "APT_MIRRORS_FILE": str(mirrors), "APT_SOURCES_LIST": str(sources),
+                   "TMPDIR": str(root),
                    "APT_ARCHIVES": str(root / "archives")}
             result = subprocess.run(["bash", str(SCRIPT), "fixture-package"], env=env,
                                     capture_output=True, text=True, timeout=15)
-            records = [json.loads(line) for line in log.read_text().splitlines()]
+            records = [json.loads(line) for line in log.read_text().splitlines()] if log.exists() else []
             return result, records
 
     @unittest.skipUnless(shutil.which("apt-get"), "APT is not installed on this platform")
@@ -124,6 +132,52 @@ class AptInstallTest(unittest.TestCase):
             self.assertEqual(result.returncode, 100, output)
             self.assertIn("Err:2 http://127.0.0.1:9/ubuntu jammy InRelease", output)
             self.assertNotIn("priority:1", output)
+
+    def test_third_party_rate_limit_does_not_block_distro_packages(self):
+        result, records = self.run_installer("third-party-rate-limit")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual([r["operation"] for r in records], ["update", "install"])
+        for record in records:
+            self.assertEqual(record["options"]["Dir::Etc::sourceparts"], "-")
+            self.assertTrue(record["options"]["Dir::Etc::sourcelist"].endswith("/sources.list"))
+
+    def test_missing_or_empty_distro_sources_fail_before_apt(self):
+        for scenario in ("missing-source-list", "empty-source-list"):
+            with self.subTest(scenario=scenario):
+                result, records = self.run_installer(scenario)
+                self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn("distro source list is missing or empty", result.stdout)
+                self.assertEqual(records, [])
+
+    @unittest.skipUnless(shutil.which("apt-get"), "APT is not installed on this platform")
+    def test_real_apt_source_scope_excludes_unrelated_feeds(self):
+        _, records = self.run_installer("healthy")
+        scoped = records[0]["options"]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for path in ("conf.d", "sources.list.d", "state/lists/partial", "cache", "log"):
+                (root / path).mkdir(parents=True)
+            (root / "unused.conf").write_text("")
+            (root / "sources.list").write_text("deb http://127.0.0.1:9/ubuntu jammy main\n")
+            (root / "sources.list.d/microsoft.list").write_text(
+                "deb http://127.0.0.1:10/microsoft jammy main\n")
+            config = root / "apt.conf"
+            config.write_text(f'Dir::Etc "{root}"; Dir::Etc::parts "conf.d"; '
+                              f'Dir::Etc::main "unused.conf"; '
+                              f'Dir::State "{root}/state"; Dir::Cache "{root}/cache"; '
+                              f'Dir::Log "{root}/log";')
+            command = ["apt-get", "-o", "Debug::NoLocking=true", "--print-uris"]
+            options = ["-o", f"Dir::Etc::sourcelist={root / 'sources.list'}",
+                       "-o", f"Dir::Etc::sourceparts={scoped.get('Dir::Etc::sourceparts', 'sources.list.d')}"]
+            for extra, includes_third_party in (([], True), (options, False)):
+                result = subprocess.run(command + extra + ["update"],
+                                        env={**os.environ, "APT_CONFIG": str(config)},
+                                        capture_output=True, text=True, timeout=8)
+                output = result.stdout + result.stderr
+                self.assertEqual(result.returncode, 0, output)
+                self.assertIn("http://127.0.0.1:9/ubuntu/dists/jammy/InRelease", output)
+                self.assertEqual("http://127.0.0.1:10/microsoft" in output,
+                                 includes_third_party, output)
 
     def test_failed_metadata_never_reaches_install(self):
         result, records = self.run_installer("missing-metadata")

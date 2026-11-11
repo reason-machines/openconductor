@@ -16,7 +16,14 @@ attempts=3
 update_timeout=${APT_UPDATE_TIMEOUT:-120}
 install_timeout=${APT_INSTALL_TIMEOUT:-300}
 mirrors=${APT_MIRRORS_FILE:-/etc/apt/apt-mirrors.txt}
-opts=(-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30)
+sources=${APT_SOURCES_LIST:-/etc/apt/sources.list}
+if [ ! -s "$sources" ]; then
+  echo "::error::distro source list is missing or empty: $sources"
+  exit 1
+fi
+# These CI dependencies come from the distro, not the runner's third-party feeds.
+opts=(-o "Dir::Etc::sourcelist=$sources" -o Dir::Etc::sourceparts=-
+      -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30)
 if [ -n "${APT_ARCHIVES:-}" ]; then
   mkdir -p "$APT_ARCHIVES/partial"
   opts+=(-o "Dir::Cache::Archives=$APT_ARCHIVES" -o APT::Keep-Downloaded-Packages=true)
