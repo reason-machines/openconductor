@@ -20,6 +20,7 @@ function fixture(data: SectionDialogMode, webkit = false) {
     "./Dialogs": "./Dialogs.tsx",
     "./sectionEmoji": "./sectionEmoji.ts",
     "./Icons": "./Icons.tsx",
+    "./AppMark": "./AppMark.tsx",
     "./ConductorIcon": "./ConductorIcon.tsx",
     "./conductorIcons.generated": "./conductorIcons.generated.ts",
   };

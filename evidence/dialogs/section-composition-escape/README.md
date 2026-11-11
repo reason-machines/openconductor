@@ -22,7 +22,7 @@ The bounded introducing commit `66a892af` and SectionDialog/Modal change history
 
 The 12 cases cover create and edit modes with active-composition Escape, immediate post-composition Escape under both timer predicates, restarted composition, composing and ordinary Enter, idle Escape, explicit Cancel and timer cleanup. They assert name retention and close/submit effects, not the presence of a particular guard. Test Behavior, Not Implementation keeps both positive and negative controls.
 
-[fixture.sha256](fixture.sha256) freezes the new fixture before hosted execution. The original sectionNameInput.test.ts and all seven files under section-name-input remain byte-identical. No test is skipped, deleted or weakened.
+[fixture.sha256](fixture.sha256) freezes the corrected fixture before the next hosted baseline. The initial fixture and checksum are preserved as [fixture-v1.ts.txt](fixture-v1.ts.txt) and [fixture-v1.sha256](fixture-v1.sha256). The sole correction adds the real AppMark module to the loader, without changing any assertion. The original sectionNameInput.test.ts and all seven files under section-name-input remain byte-identical. No test is skipped, deleted or weakened.
 
 ## Verification
 
@@ -34,6 +34,8 @@ sha256sum -c evidence/dialogs/section-composition-escape/fixture.sha256
 git diff --check
 ```
 
-Hosted failure proof is not run yet at this test-only milestone. Ordinary automatic pull-request CI runs `node --test "src/**/*.test.ts"`. The candidate product correction waits for intended hosted regression failure. No manual dispatch or workflow change is used.
+The initial hosted baseline `aeb181ae33a1ff2b3a912ebc2e63d168c242cfff` failed all 12 new cases on `Unexpected section composition dependency: ./AppMark`. This is invalid behavior RED, not evidence of the product defect. Both the [unit job](https://github.com/reason-machines/openconductor/actions/runs/43081336156/job/130734374192) and [frontend job](https://github.com/reason-machines/openconductor/actions/runs/43081336156/job/130734374119) ran the suite and reported 3,015 passed, 12 failed. The frontend job passed typecheck and color lint before that failure; its build step did not run. [The retained failure receipt](invalid-baseline-aeb181ae.json) records the loader error.
+
+The corrected test-only baseline adds the missing real AppMark dependency. Intended hosted failure proof is still pending. Ordinary automatic pull-request CI runs `node --test "src/**/*.test.ts"`. The candidate product correction waits for intended hosted regression failure. No manual dispatch or workflow change is used.
 
 Local component tests, typecheck, build, browser checks, physical keyboard input, native launch and visual comparison are not run because this lane has no runtime admission. No screenshot exists for that reason. Strict physical-publication acceptance remains unsatisfied and unwaived. Packaging does not prove native or IME behavior.
