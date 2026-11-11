@@ -1,6 +1,6 @@
 # Login terminal command completion
 
-Conductor Rebuild checked main `524c598b34157483e669167ed1f9032cc02fff18`.
+Conductor Rebuild first checked main `524c598b34157483e669167ed1f9032cc02fff18`, then re-read main `58fc17bc1f6a61db0624eb9a6aba85d2b3cbf5a9` before the repair. All seven retained caller/terminal source pins were byte-identical.
 
 ## Source gap
 
@@ -18,7 +18,15 @@ The ten cases cover shell-preserving bootstrap, completion before PTY exit, usab
 
 The fixture is frozen at SHA-256 `b01b2a8d502fb7a1eba2b02e5ecfaf9ea2e7bbea28df81700e7b660772a305e7`. The current product snapshot is frozen in `baseline-parts.tsx.txt`, SHA-256 `21e4f365407020b2d7e6da3c75b4605948cf04e89315ee2220cd9771a4218348`.
 
-Hosted execution is pending. The expected baseline failures are the missing shell-preserving bootstrap, completion without exit, premature-exit header, listener-before-spawn ordering, and preservation of fast completion. No behavioral result is claimed until the hosted job reaches those assertions.
+[Automatic hosted baseline job](https://github.com/reason-machines/openconductor/actions/runs/43082827122/job/130739522725) at test-only head `a03427ac60561dd261d09f86cc7a35937b065df7` reached exactly the five intended assertion failures: shell-preserving bootstrap, completion without exit, premature-exit header, listener-before-spawn ordering, and preservation of fast completion. All five controls passed. The aggregate had 3,025 tests, 3,020 passes, five failures and no skips/cancellations/TODOs. The frontend typecheck/build job failed at its unit-test step on the same five regressions, not at TypeScript compilation. The selected hosted log (trailing spaces on two blank lines trimmed) and qualified case identities are retained in `hosted-baseline.log` and `hosted-baseline.json`.
+
+## Focused repair
+
+Only `LoginTerminal`, its state type and `terminalHeader` change. The bootstrap emits the retained OSC 633 completion marker without `exit`. A terminal ID is reserved before spawn, observation is registered first, and command completion remains independent of PTY exit and spawn resolution. Done and Close preserve their separate refresh/cleanup behavior. A premature exit remains an error; late ready events cannot overwrite a terminal outcome. Output drains through the xterm write callback before exit is classified, because the backend drains PTY output before emitting exit but the renderer parses it asynchronously.
+
+`loginTerminalProof.test.ts` replays the byte-identical ten-case fixture against the frozen baseline and candidate, requiring exactly the expected five RED failures followed by ten GREEN passes with strict TAP counts and assertion signatures. `loginTerminalBoundary.test.ts` adds five safety cases using the retained fixture factory without changing its assertions: stable pre-resolution terminal identity, delayed-start dismissal, the real non-rendering xterm parser ignoring echoed bootstrap text and accepting a split OSC, and both completion/premature-exit output-drain outcomes. Terminal/PTY/provider boundaries remain substituted; the real xterm parser case is not native UI or real IPC proof.
+
+Candidate hosted GREEN and all exact-head checks are pending. No product execution was performed locally.
 
 ## Verification
 
@@ -31,4 +39,4 @@ git diff --check
 
 The source check verified the original archive, both asset hashes, seven exact reference spans, eight literal declarations, and seven current-main source pins. `verify_source.py` provides the committed, read-only equivalent for the retained reference files and frozen fixture.
 
-Automatic CI runs the existing frontend test glob. No workflow trigger, timeout, retry, or general terminal implementation is changed. Local Node, browser, native, provider, and credential execution are not admitted. Native rendering, real shell and login behavior, real IPC, and side-by-side visual acceptance remain unverified. No screenshot was captured.
+Automatic CI runs the existing frontend test glob. No workflow file, trigger, timeout, retry, or general terminal implementation is changed. Local Node, browser, native, provider, and credential execution are not admitted. Native rendering, real shell and login behavior, real IPC, and side-by-side visual acceptance remain unverified. No screenshot was captured.
