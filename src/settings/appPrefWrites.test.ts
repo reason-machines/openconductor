@@ -35,7 +35,7 @@ async function fixture({ startup = false, native = true } = {}) {
       console: { warn: (...args: unknown[]) => warnings.push(args) },
       require(name: string) {
         if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
-        assert.ok(Object.hasOwn(mocks, name), `unexpected preference dependency ${name}`);
+        assert.ok(Object.prototype.hasOwnProperty.call(mocks, name), `unexpected preference dependency ${name}`);
         return mocks[name];
       },
     });

@@ -100,11 +100,35 @@ After the correction, the same command and test file passed:
 # skipped 0
 ```
 
-The regression file is byte-identical between RED and GREEN, SHA-256
+The original regression file was byte-identical between RED and GREEN, SHA-256
 `4f28912ad06b15822ca041a4e7b81af9bf38c9c107e7d336215af71250665057`.
-The tests choose among available external replies, not private queue internals.
-They assert mounted switch state, shared store reads and isolated persisted
-fixture values. Tests remain unchanged and no gate was disabled.
+Hosted frontend and Keybindings builds then both failed because its mock-dependency
+guard used `Object.hasOwn`, which is outside this repository's ES2021 library.
+The guard now uses the equivalent `Object.prototype.hasOwnProperty.call`; no
+assertion, compiler target or workflow gate was weakened.
+
+An isolated TypeScript semantic probe of the actual dependency-guard expression
+under ES2021 reproduced TS2550 before the change and passed after it. This probe
+is not a full repository typecheck. The corrected harness was rerun against
+saved, unchanged `appPrefs.ts` and `AppPrefRows.tsx` bytes from the main commit
+above, then current corrected production source:
+
+```bash
+APP_PREF_WRITES_DEPS="$PWD/.oc-tmp/app-pref-writes-deps" \
+  APP_PREF_WRITES_SOURCE_ROOT="$PWD/.oc-tmp/app-pref-writes-red-source" \
+  node --test src/settings/appPrefWrites.test.ts
+# tests 10; pass 4; fail 6; skipped 0
+
+APP_PREF_WRITES_DEPS="$PWD/.oc-tmp/app-pref-writes-deps" \
+  node --test src/settings/appPrefWrites.test.ts
+# tests 10; pass 10; fail 0; skipped 0
+```
+
+This second RED/GREEN pair also used a byte-identical harness, SHA-256
+`a099d7ebcea6f18e490204facd694a771a31c6cfa332766054182e9572680e46`.
+The same six cases fail on unchanged production source. The tests choose among
+available external replies, not private queue internals. They assert mounted
+switch state, shared store reads and isolated persisted fixture values.
 
 Eight existing preference and terminal-policy neighbor cases also passed:
 
