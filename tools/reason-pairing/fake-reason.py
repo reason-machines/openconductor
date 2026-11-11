@@ -5,6 +5,7 @@ import os
 import sys
 import time
 import subprocess
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -35,7 +36,19 @@ if args[:1] == ["__fixture_finish"] and len(args) == 2:
     while time.monotonic() < deadline:
         try:
             state = request("/pairings/" + args[1] + "/poll", {})["state"]
-        except Exception:
+        except Exception as error:
+            if isinstance(error, urllib.error.HTTPError) and 100 <= error.code <= 599:
+                category = "http status=" + str(error.code)
+            elif isinstance(error, (urllib.error.URLError, OSError)):
+                category = "transport"
+            elif isinstance(error, json.JSONDecodeError):
+                category = "decode"
+            else:
+                category = "unexpected"
+            try:
+                print("fixture-finisher " + category, file=sys.stderr, flush=True)
+            except OSError:
+                pass
             break
         if state != "pending":
             break
@@ -53,7 +66,18 @@ elif args == ["login"]:
     elif pairing["state"] in ("cancelled", "expired"):
         sys.exit("Fixture pairing " + pairing["state"])
     else:
-        subprocess.Popen([sys.executable, os.path.abspath(__file__), "__fixture_finish", pairing["id"]], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        diagnostic = subprocess.DEVNULL
+        home = os.environ.get("HOME")
+        if home:
+            try:
+                diagnostic = os.open(os.path.join(home, "pairing-finisher.stderr"), os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
+            except OSError:
+                pass
+        try:
+            subprocess.Popen([sys.executable, os.path.abspath(__file__), "__fixture_finish", pairing["id"]], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=diagnostic, start_new_session=True)
+        finally:
+            if diagnostic != subprocess.DEVNULL:
+                os.close(diagnostic)
         print("Open this link to sign in to Reason: " + pairing["url"], flush=True)
         print("The page shows the code " + pairing["code"] + ".", flush=True)
         print("It finishes on its own once you have; run `reason login` again any time to see where it stands.", flush=True)
