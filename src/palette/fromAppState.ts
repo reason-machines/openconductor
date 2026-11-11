@@ -14,6 +14,7 @@ import { VIEW_ARCHIVED_LABEL, type ArchivedWorkspace } from "../workspace/archiv
 export const VIEW_ARCHIVED_ACTION = "view-archived-workspaces";
 import { sidebarEntries } from "../state/sidebarOrder.ts";
 import { nextUnreadChat } from "../state/nextUnread.ts";
+import { GIT_PANEL_ACTIONS, gitPanelWorkspace } from "./gitPanelActions.ts";
 
 export interface WorkspaceRef {
   repoId: string;
@@ -44,8 +45,8 @@ export function stepWorkspace(state: AppState, delta: 1 | -1): WorkspaceRef | un
  * Conductor's command palette items (`m_a`, renderApp @10,909,900-10,918,150), in its order,
  * for a local user. Left out: Create section (sidebar sections), Team and Routines (cloud
  * organisations), Passport and Check for updates (no OpenConductor counterpart yet), and the
- * workspace actions OpenConductor cannot run from here (Search in files, Show changes / checks /
- * notes, Link issue, Move to section and the PR actions).
+ * workspace actions OpenConductor cannot run from here (Search in files, Show notes,
+ * Link issue, Move to section and the PR actions).
  */
 export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   // Workspace actions: only while a workspace is open.
@@ -146,7 +147,7 @@ export function paletteDataFromState(
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
     actions: [...PALETTE_ACTIONS.filter((a) => {
-      if (a.id === "quick-open") return selectedWorkspace !== undefined && selectedWorkspace.status !== "archived" && selectedWorkspace.state !== "archived" && selectedWorkspace.state !== "unstarted";
+      if (a.id === "quick-open") return gitPanelWorkspace(state) !== undefined;
       if (a.id === "archive-workspace") return selectedWorkspace?.status !== "archived" && state.archivedOpen?.workspace.id !== activeWorkspaceId;
       if (a.id === "go-to-next-unread") return nextUnreadChat(state, { skipSelected: false }) !== undefined;
       // Conductor gates both rows on the resolved workspace (`Xt &&`).
@@ -164,6 +165,17 @@ export function paletteDataFromState(
     // but stay stored, so they still count toward the cap of 5 (recordViewedWorkspace never prunes).
     recentWorkspaceIds: recentIds.filter((id) => workspaces.some((w) => w.id === id)),
     activeWorkspaceId,
+  };
+}
+
+/** Add context-only panel commands at the host boundary without changing the base list contract. */
+export function workspacePaletteData(...args: Parameters<typeof paletteDataFromState>): PaletteData {
+  const data = paletteDataFromState(...args);
+  if (!gitPanelWorkspace(args[0])) return data;
+  const panelActions = GIT_PANEL_ACTIONS.map(({ entry }) => entry);
+  return {
+    ...data,
+    actions: data.actions.flatMap((entry) => entry.id === "copy-url" ? [...panelActions, entry] : [entry]),
   };
 }
 
