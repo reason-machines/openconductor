@@ -1,0 +1,1 @@
+function XQe(t){if(!t)return"Invalid workspace name";if(!YQe.test(t))return"Name can only contain letters, numbers, hyphens, and underscores"}
