@@ -1,6 +1,6 @@
 # Assistant display filter
 
-Conductor Rebuild source preparation at main `b6e7473d17462ce09948437b4239fb0a31e8d37f`.
+Conductor Rebuild prepared the source at main `b6e7473d17462ce09948437b4239fb0a31e8d37f` and reconciled delivery with main `9522a783`. The candidate source pins are unchanged.
 
 ## Reference contract
 
@@ -32,8 +32,32 @@ Use the existing executor only. No install, provider launch, native acquisition 
 
 The original commands and bounds are in `execution-request-v2.json`. The active request is `execution-request-v3.json`, with source identities in `qualification-v3.json`. Retain full output and source identities for both runs.
 
+## Actual serialized verification
+
+The existing executor ran the frozen V3 request on Cloud computer 300 and released it at `2026-11-11T11:34:37.924601Z`. [The complete immutable handoff](actual-v3/MANIFEST.json) includes both full TAP outputs, source inventories, receipts, classification and release. Original archive: 131,266 bytes, SHA-256 `ab534d7ab36ad9eb81eda060b654616f353735a7c16260367c61684359cf9fd5`.
+
+- **RED failed as intended:** 109 cases, 17 enabled assistant text/thinking display assertions failed with `ERR_ASSERTION`; all 92 other cases passed. There were no setup/import failures. [Classification](actual-v3/red-qualified.json), [full TAP](actual-v3/red.tap) and [receipt](actual-v3/red-receipt.json).
+- **GREEN passed:** changing only Transcript from SHA-256 `533b97a4…` to `7b98c1ab…` made the same 109 cases pass, with zero failures, skips, cancellations or todos. All eight other overlay files, 17 dependency pins, root manifests and Node binary remained unchanged. [Full TAP](actual-v3/green.tap) and [receipt](actual-v3/green-receipt.json).
+- Both phases used `NODE_OPTIONS=--max-old-space-size=384` and the exact command below. No tests were replayed during publication.
+
+```bash
+nice -n19 timeout --kill-after=5s 120s /usr/local/bin/node \
+  --experimental-strip-types --test --test-concurrency=1 \
+  src/features/chat/assistantText.test.ts \
+  src/features/chat/transcriptAgentSummary.test.ts \
+  src/features/chat/copyCodeFeedback.test.ts \
+  src/features/chat/thinkingLinks.test.ts \
+  src/features/chat/thinkingToolLinks.test.ts \
+  src/features/chat/todoMixedRows.test.ts \
+  src/features/chat/userText.test.ts
+```
+
+`python3 evidence/chat/assistant-text-filter/verify-delivery.py` passed after integrating current main. It checks every handoff digest, TAP totals, the sole phase delta, all 21 current candidate source pins, pinned baseline blobs and seven retained reference spans. [Delivery verification](delivery-verification.json) records that static check; it does not claim a new runtime run. Historical request/qualification statuses remain immutable.
+
+The raw RED TAP contains whitespace-only diagnostic lines. Those bytes remain unchanged to preserve the original digest. `git diff --cached --check -- . ':(exclude)evidence/chat/assistant-text-filter/actual-v3/*.tap'` passes for the other staged files; the unfiltered whitespace check reports those raw TAP lines.
+
 ## Verification boundary
 
-Static reference identity, source pins and fixture-preservation checks passed. Product tests, typecheck and build have not run in this checkout. Runtime RED/GREEN is requested, not claimed.
+The executed tests cover fixture-controlled assistant display and mounted off/on/off updates. Whole-app typecheck/build and hosted CI are not part of the serialized receipt and are tracked separately on the delivery PR.
 
-No screenshot is supplied because browser/native execution has not been admitted for this source-only unit. Live Settings save events, native IPC, persistence, installed-app behavior and side-by-side visual parity remain unverified. Auto-permission is parked separately; this patch changes no permission policy.
+No screenshot is supplied because this unit has no browser/native execution admission. Live Settings save events, native IPC, persistence, installed-app behavior and side-by-side visual parity remain unverified. Auto-permission is parked separately; this patch changes no permission policy.
