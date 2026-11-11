@@ -30,7 +30,21 @@ The 18 cases cover flat and tree views for cross-directory moves with unchanged 
 node --experimental-strip-types --test src/features/diff/renameDisplayPath.test.ts
 ```
 
-At regression publication, production source is unchanged. The expected behavioral RED is three tree-view label failures, while all flat, same-parent and absent/non-rename controls pass. Automatic hosted execution must establish that result before the production correction. A missing dependency or fixture failure is not that reproduction.
+The regression-only hosted head `f2f2693f39001ad5f5a3c101eb36c6a587bc3021` reproduced exactly those three tree-label failures in [Diff run 42935068051, job 130242983640](https://github.com/reason-machines/openconductor/actions/runs/42935068051/job/130242983640). All 15 other new cases and the 267 existing Diff tests passed: 282 passed, 3 failed, 0 skipped and 0 cancelled. The decisive assertions were:
+
+```text
+not ok 174 - actual ChangesList tree label preserves move with the same basename
+  actual: 'auth.ts→auth.ts'
+  expected: 'old/auth.ts→auth.ts'
+not ok 176 - actual ChangesList tree label preserves move and rename
+  actual: 'legacy.ts→current.ts'
+  expected: 'old/legacy.ts→current.ts'
+not ok 178 - actual ChangesList tree label preserves move from nested directory to root
+  actual: 'auth.ts→auth.ts'
+  expected: 'old/auth.ts→auth.ts'
+```
+
+After that behavioral RED, `renameDisplayPath` centralizes only this label decision. Flat view retains the input old path. Tree view compares parents from the original old/new file paths and abbreviates only a matching parent. It follows the retained helpers' nonempty-component handling. `ChangesList` calls it inside the unchanged renamed-file/old-path guard; it does not compare the shortened tree row name or change stored file paths. The regression file remains byte-identical with SHA-256 `8a5393536c81477e8662d41b00dcaa32d161806342a3c985ce9acca53f1b899f`.
 
 ## Verification status
 
@@ -38,6 +52,7 @@ At regression publication, production source is unchanged. The expected behavior
 - `git diff --check`: passed.
 - The held renderer's whole hash and five helper/producer/consumer span widths, digests and bytes: passed source-only validation.
 - Local dependency-backed tests, typecheck, builds and application/browser execution: not run. Dependencies are absent and this lane is restricted to source/lightweight work and automatic hosted checks.
-- Hosted behavioral RED, correction and unchanged-test GREEN: pending at regression publication.
+- Hosted behavioral RED: passed reproduction, with exactly the three intended assertion failures listed above. No dependency or fixture failure was counted as a reproduction.
+- Passing-after actual-component tests, typecheck and all triggered exact-head checks: pending at correction publication.
 
 No screenshot was taken because browser/native runtime admission remains closed. React-renderer labels are not visible Chromium, WebKit, an installed app or real-editor acceptance. Packaging, if later successful, is not installation, deployment, notarization or native parity.
