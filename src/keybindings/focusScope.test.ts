@@ -8,7 +8,7 @@ import { runInNewContext } from "node:vm";
 const require = createRequire(import.meta.url);
 const React = require("react");
 const { act, create } = require("react-test-renderer");
-const ts = require("typescript");
+const ts: typeof import("typescript") = require("typescript");
 
 class ListenerTarget {
   listeners = new Map<string, Set<(event: unknown) => void>>();
