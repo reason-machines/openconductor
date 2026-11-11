@@ -365,8 +365,8 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const store = useMemo(() => commentStoreFor(workspaceId, workspacePath), [workspaceId, workspacePath]);
   const [stored, setStored] = useState<DiffComment[]>([]);
   const [files, setFiles] = useState<FileDiff[]>([]);
-  const [newDraft, setComposing] = useState<Composing | null>(null);
-  const composing = newDraft?.workspaceId === workspaceId ? newDraft : null;
+  const [newDrafts, setComposing] = useState<Composing[]>([]);
+  const composing = newDrafts.filter((draft) => draft.workspaceId === workspaceId);
   const [focused, setFocused] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [github, setGithub] = useState<{ report?: GithubSyncReport; error?: string }>({});
@@ -374,7 +374,7 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const reload = useCallback(() => store.list().then(setStored, (e: unknown) => setError(String(e))), [store]);
   useEffect(() => {
     setStored([]);
-    setComposing(null);
+    setComposing([]);
     setFocused(null);
     void reload();
   }, [reload]);
@@ -496,11 +496,18 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
 
   const onLineClick = (file: FileDiff, range: LineRange) => {
     const next = { path: file.path, ...range, workspaceId, id: crypto.randomUUID(), body: "" };
-    setComposing((current) => current?.workspaceId === workspaceId && current.path === file.path && current.side === range.side && current.start === range.start && current.line === range.line ? current : next);
+    setComposing((current) => {
+      const existing = current.find((draft) => draft.workspaceId === workspaceId && draft.path === file.path && draft.side === range.side && draft.start === range.start && draft.line === range.line);
+      const retained = current.filter((draft) => draft.workspaceId === workspaceId && draft.body !== "" && draft.id !== existing?.id);
+      return [...retained, existing ?? next];
+    });
   };
-  const discardNewDraft = (draft: Composing) => setComposing((current) => current?.id === draft.id && current.body === draft.body ? null : current);
+  const discardNewDraft = (draft: Composing) => setComposing((current) => current.filter((value) => value.id !== draft.id || value.body !== draft.body));
   // The composer's lines stay highlighted in the file until it is saved or cancelled.
-  const commentRange = (file: FileDiff): LineRange | null => (composing?.path === file.path ? { side: composing.side, start: composing.start, line: composing.line } : null);
+  const commentRange = (file: FileDiff): LineRange | null => {
+    const draft = composing.slice().reverse().find((value) => value.path === file.path);
+    return draft ? { side: draft.side, start: draft.start, line: draft.line } : null;
+  };
 
   // Lines with something rendered under them: each thread's last line, and the open composer.
   const anchors = (file: FileDiff): LineAnchor[] => {
@@ -512,9 +519,10 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
       const existing = out.get(key);
       out.set(key, { ...a, commentIds: [...(existing?.commentIds ?? []), t.root.id, ...t.replies.map((c) => c.id)] });
     }
-    if (composing?.path === file.path) {
-      const key = `${composing.side}:${composing.line}`;
-      if (!out.has(key)) out.set(key, { side: composing.side, line: composing.line });
+    for (const draft of composing) {
+      if (draft.path !== file.path) continue;
+      const key = `${draft.side}:${draft.line}`;
+      if (!out.has(key)) out.set(key, { side: draft.side, line: draft.line });
     }
     return [...out.values()];
   };
@@ -526,7 +534,7 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
 
   const annotations = (file: FileDiff, anchor: LineAnchor): ReactNode => {
     const here = threadsAt(threads, file.path, anchor.side, anchor.line);
-    const draft = composing?.path === file.path && composing.side === anchor.side && composing.line === anchor.line ? composing : null;
+    const draft = composing.slice().reverse().find((value) => value.path === file.path && value.side === anchor.side && value.line === anchor.line);
     if (here.length === 0 && !draft) return null;
     return (
       <div className="oc-threads">
@@ -536,7 +544,7 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
         {draft && (
           <Composer
             key={draft.id}
-            edit={{ text: draft.body, onChange: (body) => setComposing((current) => current?.id === draft.id ? { ...current, body } : current) }}
+            edit={{ text: draft.body, onChange: (body) => setComposing((current) => current.map((value) => value.id === draft.id ? { ...value, body } : value)) }}
             placeholder="Leave a comment for the agent…"
             submitLabel="Comment"
             onCancel={() => discardNewDraft(draft)}
