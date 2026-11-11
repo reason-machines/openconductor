@@ -283,9 +283,10 @@ test("Go to next unread is listed under Navigation only while a chat of a non-ar
 
 test("the All tab lists Conductor's Actions and Navigation commands in its order, with their shortcuts", () => {
   const titles = (g: string) => PALETTE_ACTIONS.filter((a) => a.group === g).map((a) => a.title);
-  // renderApp @10,913,500-10,918,150 for a local user, less Create section, Passport, Check for updates, Team and Routines.
+  // renderApp @10,913,500-10,918,150 for a local user, less Passport, Check for updates, Team and Routines.
   assert.deepEqual(titles("actions"), [
     "Create workspace",
+    "Create section",
     "Add project",
     "Toggle theme",
     "Toggle left sidebar",
