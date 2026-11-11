@@ -1,0 +1,27 @@
+--- a/src/features/terminal/session.ts
++++ b/src/features/terminal/session.ts
+@@ -187,6 +187,7 @@
+   // Ready and exit both forget tracked commands, as in the reference.
+   l.shell = emptyShellState();
+   l.term.options.disableStdin = e.kind !== "ready";
++  l.term.options.theme = { ...l.term.options.theme, cursor: e.kind === "ready" ? cssVar("--text") : "transparent", cursorAccent: cssVar("--panel") };
+   if (e.kind === "exit") {
+     l.ack.flush();
+     l.endedAt = new Date().toISOString();
+@@ -278,6 +279,8 @@
+     theme: {
+       background: cssVar("--panel"),
+       foreground: cssVar("--text"),
++      cursor: "transparent",
++      cursorAccent: cssVar("--panel"),
+       // xterm's default selection is pale white, invisible on the light theme.
+       // The inactive colour matters for Find: the match is selected while the
+       // find input, not the terminal, has focus.
+@@ -338,6 +341,7 @@
+   } catch (error) {
+     if (live.get(id) === terminal) {
+       terminal.term.options.disableStdin = true;
++      terminal.term.options.theme = { ...terminal.term.options.theme, cursor: "transparent", cursorAccent: cssVar("--panel") };
+       dispatch(terminal.workspaceId, { type: "failed", id, error: error instanceof Error ? error.message : String(error) });
+     }
+     throw error;

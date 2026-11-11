@@ -1,0 +1,1 @@
+function G5e(t){const e=ne.c(5),{terminalId:n}=t;let i;e[0]!==n?(i=()=>U4e(n),e[0]=n,e[1]=i):i=e[1];const[r,o]=$.useState(i);let a,c;return e[2]!==n?(a=()=>{o(U4e(n));const u=qc.onSessionChange(d=>{d.id!==n&&d.id!==`${n}:handoff`||o(U4e(n))});return()=>{u.dispose()}},c=[n],e[2]=n,e[3]=a,e[4]=c):(a=e[3],c=e[4]),$.useEffect(a,c),r}

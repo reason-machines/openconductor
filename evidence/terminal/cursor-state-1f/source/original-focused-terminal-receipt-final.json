@@ -1,0 +1,177 @@
+{
+  "schema": "cursor-focused-unit/v1",
+  "author": "Conductor Rebuild",
+  "started_at": "2026-11-11T09:49:15.255332+00:00",
+  "status": "PASS_TERMINAL_RELEASE",
+  "tap_summary": {
+    "tests": 124,
+    "pass": 124,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0,
+    "duration_ms": 8137.788499
+  },
+  "superseding_disposition": "Message 4d73bfc4 received after actual unit completion. No restart or modification: this result applies ONLY to original fixture 1cabc78d and product e7785e03, not the subsequently corrected fixture 3a0. Does not satisfy corrected fixture color lint or revised nine-case replay; e1/1f retain those.",
+  "node_started": true,
+  "checks": {
+    "resolver": {
+      "pins": {
+        "package.json": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
+        "package-lock.json": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1",
+        "node_modules/.package-lock.json": "c145efb8ca308549dcbca0385ce259372a35f8392a9d73ec22f0781c6fc64ce2"
+      },
+      "physical_versions_verified": 393,
+      "platform": "Linux x86_64"
+    },
+    "react_dom_server": {
+      "declared_node_entry": "./server.node.js",
+      "exists": true,
+      "qualification": "metadata/physical entry before test; actual module loading exercised by suite"
+    },
+    "six_main_source_pins": [
+      {
+        "path": "src/features/terminal/session.ts",
+        "retained_file": "main/src/features/terminal/session.ts",
+        "git_blob": "1709df16f4969e758fda83dc208621d961122cb4",
+        "bytes": 19656,
+        "sha256": "e94da195a0f3d315ab2862f4f3333e4014df15f69b4ace90b53449258e60ad87"
+      },
+      {
+        "path": "src/features/terminal/TerminalPanel.tsx",
+        "retained_file": "main/src/features/terminal/TerminalPanel.tsx",
+        "git_blob": "aedef7c3285379ecd0bd3c5dcb88e1902c3213a6",
+        "bytes": 1469,
+        "sha256": "b2623583505c976f1738785ebf5e05f7c3690b9cdffe05139050b7a795ee1b40"
+      },
+      {
+        "path": "src/features/terminal/spawnFailure.css",
+        "retained_file": "main/src/features/terminal/spawnFailure.css",
+        "git_blob": "0d0b6c84a28b411c58b0eadf3b0180846e31aeb1",
+        "bytes": 430,
+        "sha256": "ef7958d3fd83ea3cdc696a964265e6495a3e6eb9ab0a2a225f2f07485dd383dd"
+      },
+      {
+        "path": "src/styles.css",
+        "retained_file": "main/src/styles.css",
+        "git_blob": "c194c2e330613fe191d39d342fdc40b8c29317d9",
+        "bytes": 82310,
+        "sha256": "39e0d91146ab47ef9cc1962dc4e27afb351466b715992391fd1a5da881e193eb"
+      },
+      {
+        "path": "package.json",
+        "retained_file": "main/package.json",
+        "git_blob": "5fe4780b22a7417ae510a4f09f40d088683aece2",
+        "bytes": 1901,
+        "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b"
+      },
+      {
+        "path": "package-lock.json",
+        "retained_file": "main/package-lock.json",
+        "git_blob": "9fe1d2f78593100fba2a2ce07788c56bdb450647",
+        "bytes": 221776,
+        "sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1"
+      }
+    ],
+    "archive": {
+      "bytes": 6778880,
+      "sha256": "bb1676aeb13877e39a6a88228a769e44f8e2e07362442eb18a8cc1fe654a4b71",
+      "regular_members": 971,
+      "inventory_hashes_verified": 970,
+      "payload_bytes": 6019675
+    },
+    "candidate": {
+      "session_sha256": "e7785e03355148c1937a02b3aca8cafebb1821fbb6cd304946b08c476fc11409",
+      "fixture_sha256": "1cabc78d3cc6446eea19780fc5fd71a28578b1995ba7134be9194df1a72d3681",
+      "patch_sha256": "accd9f9e871a7489773836570b57abf1abcb963f0dab6626aa1d99091868aa65",
+      "additional_unchanged_files": {
+        "tests/e2e/terminal-restore.e2e.mjs": [
+          18554,
+          "1e5fbeef84b30750a59c93d8329b3859152999215faad5eb09dfa22233bb69e8"
+        ],
+        "evidence/resource-terminal-labels/regression.cjs": [
+          10220,
+          "4f2b7dac82684ed22967ecf7144f830b6b14f742ca0d81f7d232acdadf49198a"
+        ]
+      },
+      "test_files": [
+        "src/features/terminal/bigTerminal.test.ts",
+        "src/features/terminal/capture.test.ts",
+        "src/features/terminal/clearRedraw.test.ts",
+        "src/features/terminal/cursorState.test.ts",
+        "src/features/terminal/find.test.ts",
+        "src/features/terminal/font.test.ts",
+        "src/features/terminal/nonrunningInput.test.ts",
+        "src/features/terminal/restore.test.ts",
+        "src/features/terminal/scrollback.test.ts",
+        "src/features/terminal/shellIntegration.test.ts",
+        "src/features/terminal/shortcuts.test.ts",
+        "src/features/terminal/spawnFailure.test.ts",
+        "src/features/terminal/startingBody.test.ts",
+        "src/features/terminal/tabList.test.ts",
+        "src/features/terminal/terminal.test.ts",
+        "src/features/terminal/writeQueue.test.ts",
+        "src/components/resourceUsageLabels.test.ts"
+      ],
+      "test_file_count": 17
+    }
+  },
+  "limits": {
+    "node_heap_mib": 768,
+    "node_timeout_seconds": 90,
+    "kill_after_seconds": 5,
+    "outer_seconds": 100,
+    "private_growth_bytes": 100663296,
+    "archive_member_bytes": 16777216
+  },
+  "gaps": [
+    "No native, visual, IME, PTY, provider, browser, live E2E, process sampler, build, install or typecheck.",
+    "No duplicated standalone cursor RED/GREEN. Existing coordinator-reported nine-case RED/GREEN are not rerun here."
+  ],
+  "before_status": "?? .source-prep-13576/\n?? evidence/chat/composer/ime-send/\n",
+  "branch": "reason/openconductor-composer-atoms-13576d11",
+  "head": "7cdc3513fe38b2d321bcb033e764b5370faaed94",
+  "current_default_ref_checked": "3da2890517fb81365916ef1e4f7f80cc7a93d421",
+  "command": [
+    "nice",
+    "-n",
+    "19",
+    "timeout",
+    "--kill-after=5s",
+    "90s",
+    "node",
+    "--experimental-strip-types",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/terminal/bigTerminal.test.ts",
+    "src/features/terminal/capture.test.ts",
+    "src/features/terminal/clearRedraw.test.ts",
+    "src/features/terminal/cursorState.test.ts",
+    "src/features/terminal/find.test.ts",
+    "src/features/terminal/font.test.ts",
+    "src/features/terminal/nonrunningInput.test.ts",
+    "src/features/terminal/restore.test.ts",
+    "src/features/terminal/scrollback.test.ts",
+    "src/features/terminal/shellIntegration.test.ts",
+    "src/features/terminal/shortcuts.test.ts",
+    "src/features/terminal/spawnFailure.test.ts",
+    "src/features/terminal/startingBody.test.ts",
+    "src/features/terminal/tabList.test.ts",
+    "src/features/terminal/terminal.test.ts",
+    "src/features/terminal/writeQueue.test.ts",
+    "src/components/resourceUsageLabels.test.ts"
+  ],
+  "cwd": ".source-prep-13576/cursor-focused-015c6c72/green",
+  "test_started_at": "2026-11-11T09:49:15.595052+00:00",
+  "sampler_variables_absent": true,
+  "test_ended_at": "2026-11-11T09:49:23.862240+00:00",
+  "exit_code": 0,
+  "tap_sha256": "c66f92afab131e40caaf6e1893d7c82d2eefec4543ebe8dc5472d6998fdd8154",
+  "tap_bytes": 28823,
+  "private_growth_bytes": 11473026,
+  "after_status": "?? .source-prep-13576/\n?? evidence/chat/composer/ime-send/\n",
+  "ended_at": "2026-11-11T09:49:23.901427+00:00",
+  "elapsed_seconds": 8.646,
+  "peak_rss_kib_self": 28248,
+  "peak_rss_kib_children": 221440
+}
