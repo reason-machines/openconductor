@@ -1,0 +1,77 @@
+{
+  "reference": "Conductor 0.87.6 retained shipped renderer from Sven's authorized Mac",
+  "asset": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "source_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "spans": [
+    {
+      "name": "embedded-view",
+      "start": 11142536,
+      "end": 11148368,
+      "bytes": 5832,
+      "sha256": "b2f27c8748e8ff65bd2a4852f26d05f2d68008df623af92143246a6eaa92b1b0"
+    },
+    {
+      "name": "view-url-helpers",
+      "start": 11141895,
+      "end": 11142536,
+      "bytes": 641,
+      "sha256": "c1336d14ccfcfa91ecfc031986cb4a50d69424d56ebb6806d56ff3db1dc6aac8"
+    },
+    {
+      "name": "view-callback-helpers",
+      "start": 11148368,
+      "end": 11148574,
+      "bytes": 206,
+      "sha256": "b11baca122dc0413fcf7bbfdfe09c6faa1b1f2d8921306f5d8a5a30013624959"
+    },
+    {
+      "name": "surface-registry",
+      "start": 7518286,
+      "end": 7521016,
+      "bytes": 2730,
+      "sha256": "8b6abee1fc2e172870e742c246c480b58aa0387ee3b8f836082a550b35e0475e"
+    },
+    {
+      "name": "surface-anchor",
+      "start": 7521016,
+      "end": 7522640,
+      "bytes": 1624,
+      "sha256": "93abc8ba3a5ebf329a48ac81e8f17a2b24ce09a2fcdf0d17c8d2176f4f6b4565"
+    },
+    {
+      "name": "persistent-host",
+      "start": 11149754,
+      "end": 11150920,
+      "bytes": 1166,
+      "sha256": "507b46e19d68b1c075e82d43e133b223f7b267c95edf6f22795c8ad70feee6ab"
+    },
+    {
+      "name": "browser-tab",
+      "start": 7427223,
+      "end": 7427439,
+      "bytes": 216,
+      "sha256": "aa0ef57a3da25ce612384781f203fb8ff71e30879fab84e6215328f4609cf016"
+    }
+  ],
+  "observed_static": [
+    "kwa renders an iframe with allow-scripts allow-same-origin allow-popups allow-forms allow-modals",
+    "Reload changes iframe key; workspace reload requests also change that key",
+    "Toolbar locks scheme and host while exposing editable port/path and Open in browser",
+    "Huo surface identity includes workspace and URL",
+    "ule parks surfaces on anchor unregister and destroys them when their browser tab is removed",
+    "Lwa/Mwa are persistent app-root surface host forwarding placement, URL and workspace into kwa",
+    "Ps retains one browser URL per workspace; opening another replaces it",
+    "Xlo labels the tab with URL.host, a browser icon, and Close browser view"
+  ],
+  "implementation_choices": [
+    "Use one validated HTTP(S) URL per workspace and a persistent root host plus workspace anchor",
+    "No annotation proxy, annotation message intake, local-port discovery or native webview",
+    "Reject credentialed or unsupported embedded URLs; explicit external fallback remains available",
+    "Iframe errors offer reload or manual external fallback; cross-origin load cannot prove response contents"
+  ],
+  "reference_execution": false
+}

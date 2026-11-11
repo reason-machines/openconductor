@@ -6,6 +6,8 @@
 //! (`m6t`, `Xzt`, `F6t`, `L6t`, `D6t`, `Jzt`) call `updateSetting`, which
 //! runs `INSERT OR REPLACE INTO settings (key, value)` for non-file-backed
 //! keys (evidence/settings/NOTES.md "Appearance keys in the settings table").
+//! Terminal font, size and color vision use the same table route; their
+//! source joins are in evidence/settings/terminal-appearance-persistence.md.
 //!
 //! The UI keeps reading and writing them as `Settings.appearance.*`; the
 //! settings service overlays the table's values on read, writes them to the
@@ -15,7 +17,7 @@ use std::collections::HashMap;
 
 use toml::{Table, Value};
 
-use super::{Appearance, CodeTheme, ZOOM_MAX, ZOOM_MIN};
+use super::{Appearance, TERMINAL_FONT_SIZE_MAX, TERMINAL_FONT_SIZE_MIN, ZOOM_MAX, ZOOM_MIN};
 
 pub const ZOOM_LEVEL_V2: &str = "zoom_level_v2";
 pub const MONO_FONT: &str = "mono_font";
@@ -23,15 +25,21 @@ pub const LOW_CONTRAST_DARK_MODE: &str = "low_contrast_dark_mode";
 pub const CODE_THEME: &str = "code_theme";
 pub const COLORED_SIDEBAR_DIFFS: &str = "colored_sidebar_diffs";
 pub const FILE_LIGATURES_ENABLED: &str = "file_ligatures_enabled";
+pub const TERMINAL_FONT_FAMILY: &str = "terminal_font_family";
+pub const TERMINAL_FONT_SIZE: &str = "terminal_font_size";
+pub const COLOR_VISION: &str = "color_vision";
 
 /// `[appearance]` keys stored in the table instead of the file.
-pub const KEYS: [&str; 6] = [
+pub const KEYS: [&str; 9] = [
     ZOOM_LEVEL_V2,
     MONO_FONT,
     LOW_CONTRAST_DARK_MODE,
     CODE_THEME,
     COLORED_SIDEBAR_DIFFS,
     FILE_LIGATURES_ENABLED,
+    TERMINAL_FONT_FAMILY,
+    TERMINAL_FONT_SIZE,
+    COLOR_VISION,
 ];
 
 fn flag(v: Option<&String>) -> Option<bool> {
@@ -47,7 +55,7 @@ fn number_text(n: f64) -> String {
     format!("{n}")
 }
 
-fn code_theme_text(t: CodeTheme) -> String {
+fn enum_text(t: impl serde::Serialize) -> String {
     match serde_json::to_value(t) {
         Ok(serde_json::Value::String(s)) => s,
         _ => "default".to_string(),
@@ -83,6 +91,20 @@ pub fn overlay(a: &mut Appearance, rows: &HashMap<String, String>) {
     if let Some(b) = flag(rows.get(FILE_LIGATURES_ENABLED)) {
         a.file_ligatures_enabled = b;
     }
+    if let Some(font) = rows.get(TERMINAL_FONT_FAMILY) {
+        a.terminal_font_family = Some(font.clone());
+    }
+    if let Some(size) = rows
+        .get(TERMINAL_FONT_SIZE)
+        .and_then(|v| v.trim().parse::<u32>().ok())
+        .filter(|size| (TERMINAL_FONT_SIZE_MIN..=TERMINAL_FONT_SIZE_MAX).contains(size))
+    {
+        a.terminal_font_size = size;
+    }
+    if let Some(vision) = rows.get(COLOR_VISION) {
+        a.color_vision =
+            serde_json::from_value(serde_json::Value::String(vision.clone())).unwrap_or_default();
+    }
 }
 
 /// The rows `a` stores: `Some(text)` to write, `None` to delete (no font,
@@ -95,7 +117,7 @@ pub fn rows(a: &Appearance) -> Vec<(&'static str, Option<String>)> {
             LOW_CONTRAST_DARK_MODE,
             Some(a.low_contrast_dark_mode.to_string()),
         ),
-        (CODE_THEME, Some(code_theme_text(a.code_theme))),
+        (CODE_THEME, Some(enum_text(a.code_theme))),
         (
             COLORED_SIDEBAR_DIFFS,
             a.extra
@@ -107,6 +129,9 @@ pub fn rows(a: &Appearance) -> Vec<(&'static str, Option<String>)> {
             FILE_LIGATURES_ENABLED,
             Some(a.file_ligatures_enabled.to_string()),
         ),
+        (TERMINAL_FONT_FAMILY, a.terminal_font_family.clone()),
+        (TERMINAL_FONT_SIZE, Some(a.terminal_font_size.to_string())),
+        (COLOR_VISION, Some(enum_text(a.color_vision))),
     ]
 }
 

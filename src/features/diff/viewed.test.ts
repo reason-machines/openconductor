@@ -1109,7 +1109,7 @@ async function emptyDiffCloseFixture(initialLoad: WorkspaceDiff["load"] = { stat
       const files = load.state === "ready" ? load.files : [];
       const diff = {
         load, files, selected: files[0] ?? null, noMatchingFiles, redirectRevision: 0,
-        turn: null, worktree: "fixture-owner", opts: options, update() {},
+        turn: null, worktree: "fixture-owner", target: { branch: "main", remote: "origin" }, opts: options, update() {},
         isViewed: () => false, loadFull: async (file) => file, loadText: async () => "",
         unread: -1, current: 0, canDiscard: false, reloadQuietly() {}
       };

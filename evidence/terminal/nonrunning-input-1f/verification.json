@@ -1,0 +1,59 @@
+{
+  "baseline_main": "e8fad6caae23b20ddd81196c54c293e0001accd6",
+  "baseline_session_blob": "7e559767db1d45a8d35c4a9adc6a1839e369f5bf",
+  "execution_computer": "Reason Cloud computer 300",
+  "dependencies": "Existing node_modules reused; no installation",
+  "regression_sha256": "905655877316bca8c68b81865517131b525a13e73bb9ee0031a2b0faf85f0c54",
+  "regression_command": "node --experimental-strip-types --test src/features/terminal/nonrunningInput.test.ts",
+  "red": {
+    "source": "Unchanged fresh main e8fad6caae23b20ddd81196c54c293e0001accd6 before product edit",
+    "utc_start": "2026-11-11T07:01:02Z",
+    "utc_end": "2026-11-11T07:01:08Z",
+    "passed": 3,
+    "failed": 10,
+    "exit_code": 1,
+    "failure_kind": "Intended assertion failures in input admission, history metadata and stdin option",
+    "log": "before.tap"
+  },
+  "green": {
+    "test": "Same final test file byte-for-byte",
+    "utc_start": "2026-11-11T07:01:41Z",
+    "utc_end": "2026-11-11T07:01:44Z",
+    "passed": 13,
+    "failed": 0,
+    "exit_code": 0,
+    "log": "after.tap"
+  },
+  "focused": {
+    "command": "node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/*.test.ts src/components/resourceUsageLabels.test.ts",
+    "utc_start": "2026-11-11T07:01:56Z",
+    "utc_end": "2026-11-11T07:02:17Z",
+    "passed": 107,
+    "failed": 0,
+    "exit_code": 0,
+    "log": "focused.tap"
+  },
+  "typecheck": {
+    "command": "npm run typecheck",
+    "utc_start": "2026-11-11T07:02:38Z",
+    "utc_end": "2026-11-11T07:03:43Z",
+    "result": "PASS",
+    "log": "typecheck.log"
+  },
+  "reference": {
+    "command": "python3 evidence/terminal/nonrunning-input-1f/verify.py --originals .oc-tmp/vio-received-72733982/originals --baseline e8fad6caae23b20ddd81196c54c293e0001accd6",
+    "result": "PASS",
+    "spans": 37,
+    "complete_original_assets_rehashed": 2,
+    "baseline_session_matches_retained_finding": true,
+    "reference_javascript_evaluated": false
+  },
+  "diff_check": "PASS",
+  "log_normalization": "before.tap has trailing spaces/tabs removed; typecheck.log has the final blank line removed. Raw outputs are retained in ignored scratch. Test file and assertions are unchanged.",
+  "frozen_existing_tests": "Unchanged",
+  "full_local_frontend_suite_and_build": "NOT RUN; exact published-head hosted workflows are required",
+  "mocked_boundaries": ["PTY IPC", "DOM/xterm", "storage", "preferences/font/scrollback"],
+  "app_browser_native_provider_shell_E2E_visual_acceptance": "NOT RUN; no new runtime admission used",
+  "native_pty_reuse": "UNVERIFIED; separate parked evidence deficit",
+  "persistent_processes_or_runtime_lease": "NONE"
+}

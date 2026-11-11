@@ -54,6 +54,8 @@ async function fixture(options: { tool?: tools.ConductorTool; plain?: boolean; o
         case "./toolIconData.ts": return icons;
         case "./thinkingChip.ts": return { thinkingChipText };
         case "./markdown.ts": return { Markdown: () => { throw new Error("Unrelated Markdown leaf"); } };
+        case "./LinkMenu.tsx": return { LinkWithMenu: () => { throw new Error("Unrelated link menu rendered"); } };
+        case "../../backend.ts": return { openUrl: () => { throw new Error("Unrelated external opener invoked"); } };
         default: throw new Error(`Unexpected ToolRows dependency: ${name}`);
       }
     },
@@ -187,21 +189,24 @@ test("plain FileBadge keeps path tooltip, children and navigation without a hove
   } finally { await view.close(); }
 });
 
-test("Read and Edit badges do not acquire the opt-in aggregate hover", async () => {
+test("Read has no diff hover while Edit previews only its own selected sides", async () => {
   for (const tool of [
     { name: "Read", input: { file_path: path } },
-    { name: "Edit", input: { file_path: path, old_string: "old", new_string: "new" } },
+    { name: "Edit", input: { file_path: path, old_string: "- selected old", new_string: "+ selected new" } },
   ]) {
     const view = await fixture({ tool });
     try {
       assert.equal(view.badge().props.title, path);
-      await view.hover(); await view.tick(1000); assert.equal(view.preview().length, 0);
+      await view.hover(); await view.tick(1000);
+      assert.equal(view.preview().length, tool.name === "Edit" ? 1 : 0);
+      if (tool.name === "Edit") assert.equal(text(view.preview()[0]!), "-selected old+selected new");
+      assert.equal(view.all((node) => hasClass(node, "oc-multi-edit-list")).length, 0);
       await view.event(view.badge(), "onClick", { stopPropagation() {} }); assert.deepEqual(view.opened, [path]);
     } finally { await view.close(); }
   }
 });
 
-test("native Codex file_change projection remains Edit/Write/Bash with a selected Write preview only", async () => {
+test("Codex file_change projection preserves Edit/Write/Bash and each selected diff preview", async () => {
   const projected = tools.conductorTools("file_change", { changes: [
     { path, kind: "update", diff: "@@ -1 +1 @@\n-old\n+new" },
     { path, kind: "add", diff: "@@ -0,0 +1 @@\n+created" },
@@ -214,7 +219,8 @@ test("native Codex file_change projection remains Edit/Write/Bash with a selecte
       for (const badge of view.all((node) => hasClass(node, "oc-file-badge"))) {
         await view.event(badge, "onPointerEnter", { pointerType: "mouse" }); await view.tick(1000);
       }
-      assert.equal(view.preview().length, tool.name === "Write" ? 1 : 0);
+      assert.equal(view.preview().length, tool.name === "Bash" ? 0 : 1);
+      if (tool.name === "Edit") assert.equal(text(view.preview()[0]!), "-old+new");
       if (tool.name === "Write") assert.equal(text(view.preview()[0]!), `+${String(tool.input.content).substring(0, 2000)}`);
       assert.equal(view.all((node) => hasClass(node, "oc-multi-edit-list")).length, 0);
       assert.equal(view.all((node) => hasClass(node, "oc-tool-content")).length, 1);

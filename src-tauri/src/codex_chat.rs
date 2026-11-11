@@ -95,6 +95,28 @@ fn event_json(chat_id: &str, payload: &Payload) -> Value {
     v
 }
 
+enum OpenPolicyDecision {
+    ExistingRunner,
+    NewRunner(CodexPolicy),
+}
+
+fn open_policy_event(
+    chat_id: &str,
+    incoming_policy: Option<CodexPolicy>,
+    decision: OpenPolicyDecision,
+) -> Value {
+    let (existing_runner, selected_policy) = match decision {
+        OpenPolicyDecision::ExistingRunner => (true, None),
+        OpenPolicyDecision::NewRunner(policy) => (false, Some(policy)),
+    };
+    serde_json::json!({
+        "chatId": chat_id,
+        "incomingPolicy": incoming_policy,
+        "existingRunner": existing_runner,
+        "selectedPolicy": selected_policy,
+    })
+}
+
 /// Absolute path of the `codex` the chat would run now, or null.
 #[tauri::command]
 pub async fn codex_cli_path<R: Runtime>(app: AppHandle<R>) -> Result<Option<String>, String> {
@@ -113,6 +135,12 @@ pub async fn codex_open_chat<R: Runtime>(
     policy: Option<CodexPolicy>,
 ) -> Result<(), String> {
     if state.chats.lock().unwrap().contains_key(&chat_id) {
+        if crate::e2e::enabled() {
+            crate::e2e::log_event(
+                "codex-open",
+                &open_policy_event(&chat_id, policy, OpenPolicyDecision::ExistingRunner),
+            );
+        }
         return Ok(());
     }
     let cwd = PathBuf::from(cwd);
@@ -145,6 +173,12 @@ pub async fn codex_open_chat<R: Runtime>(
         client_version: env!("CARGO_PKG_VERSION").into(),
         timeouts: Timeouts::default(),
     };
+    if crate::e2e::enabled() {
+        crate::e2e::log_event(
+            "codex-open",
+            &open_policy_event(&chat_id, policy, OpenPolicyDecision::NewRunner(config.thread.policy)),
+        );
+    }
     let chat = chat_id.clone();
     let sink: Sink = Arc::new(move |payload: Payload| {
         let event = event_json(&chat, &payload);
@@ -260,6 +294,57 @@ mod tests {
             v,
             serde_json::json!({"type": "turnEnded", "outcome": "completed", "chatId": "ws-1"})
         );
+    }
+
+    #[test]
+    fn new_runner_policy_event_preserves_the_supplied_policy() {
+        let policy = CodexPolicy::new(ApprovalPolicy::OnRequest, SandboxMode::WorkspaceWrite);
+        assert_eq!(
+            open_policy_event("ws-1", Some(policy), OpenPolicyDecision::NewRunner(policy)),
+            serde_json::json!({
+                "chatId": "ws-1",
+                "incomingPolicy": {"approvalPolicy": "on-request", "sandbox": "workspace-write"},
+                "existingRunner": false,
+                "selectedPolicy": {"approvalPolicy": "on-request", "sandbox": "workspace-write"},
+            })
+        );
+    }
+
+    #[test]
+    fn new_runner_policy_event_distinguishes_missing_and_inherited_policy() {
+        assert_eq!(
+            open_policy_event("ws-1", None, OpenPolicyDecision::NewRunner(default_policy())),
+            serde_json::json!({
+                "chatId": "ws-1",
+                "incomingPolicy": null,
+                "existingRunner": false,
+                "selectedPolicy": {"approvalPolicy": "never", "sandbox": "danger-full-access"},
+            })
+        );
+        assert_eq!(
+            open_policy_event("ws-1", Some(CodexPolicy::inherit()), OpenPolicyDecision::NewRunner(CodexPolicy::inherit())),
+            serde_json::json!({
+                "chatId": "ws-1",
+                "incomingPolicy": {},
+                "existingRunner": false,
+                "selectedPolicy": {},
+            })
+        );
+    }
+
+    #[test]
+    fn existing_runner_policy_event_does_not_claim_its_retained_policy() {
+        for incoming in [None, Some(CodexPolicy::new(ApprovalPolicy::OnRequest, SandboxMode::ReadOnly))] {
+            assert_eq!(
+                open_policy_event("ws-1", incoming, OpenPolicyDecision::ExistingRunner),
+                serde_json::json!({
+                    "chatId": "ws-1",
+                    "incomingPolicy": incoming,
+                    "existingRunner": true,
+                    "selectedPolicy": null,
+                })
+            );
+        }
     }
 
     #[test]
