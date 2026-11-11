@@ -6,7 +6,7 @@ Conductor Rebuild. Packet `ACQ-COMPOSER-ATOM-01`, captured 2026-11-11.
 
 The retained Conductor renderer replaces the slash suggestion range inside the editor. OpenConductor main `26ba01a1857a425780252abe3d28aa4eb9ba9572` instead turns the entire linear selection snapshot back into plain text. That snapshot represents each file atom as U+FFFC, not its original node and attributes. A slash completion can therefore lose file identity or drop an adjacent suffix atom.
 
-This is a static source finding. The mounted regression, browser behavior, native WebKit, visual parity, real IME, and provider delivery have not been verified in this increment.
+The source finding was rechecked on main `6be97d85b854b2a1bf7930db49e2227a26af2e6a`. Its slash caller and editor adapter still contain the whole-document plain-text replacement above. Hosted mounted-fixture execution is partial, as recorded below. Browser behavior, native WebKit, visual parity, real IME, and provider delivery have not been verified.
 
 The change is limited to `Composer.tsx`'s slash-choice caller and the range-insertion handle in `ComposerEditor.tsx`. Existing paste, input attributes, selection restoration, mention actions, ModelPicker, and their locked fixtures are unchanged. Immediate built-in command effects and sibling skill hypotheses are outside this increment.
 
@@ -40,7 +40,7 @@ Editor ranges use ProseMirror document positions. Text uses UTF-16 code units an
 
 OpenConductor's `linearDocument` supplies the mapping from linear offsets to editor positions. The fix uses that mapping to replace only `{ start: 0, end: current.start }`, after validating the live slash query and empty selection. It keeps the existing composition guard. No suffix atom is converted to U+FFFC text or reconstructed from a label.
 
-## Source checks and pending execution
+## Source checks and execution
 
 Passed: [the static packet verifier](verifier.py), 23 assertions, against the retained renderer and exact main above. This reads source and hashes only. It does not execute the target.
 
@@ -53,9 +53,17 @@ python3 evidence/chat/composer/slash-atom-preservation/verifier.py \
 
 [The new regression](../../../../src/features/chat/composerSlashAtoms.test.ts) is written before the product fix. It mounts the actual Composer with a test editor boundary, then invokes the production adapter handle against a headless Tiptap editor. DOM focus is replaced with a no-op. It covers adjacent and spaced suffix atoms, multiple files, multiline Unicode text, Enter and Tab, agent-specific insert text, and stale or nonempty selections. It is not a mounted browser editor or native proof.
 
-Not run: baseline RED, unchanged GREEN, nearby regressions, and typecheck. The requested single-worker Cloud Node slot is queued. Its current receipt reports 5.7 GiB free at 96% disk use, load 14.79 on four vCPUs, and no idle CPU. Dependencies were not installed. No server, browser, native app, or provider was started.
+Before publication, baseline RED, patched GREEN, nearby regressions, and local typecheck were not run. The single-worker Cloud Node slot was queued. Its publication-time receipt reported 5.7 GiB free at 96% disk use, load 14.79 on four vCPUs, and no idle CPU. Dependencies were not installed. No server, browser, native app, or provider was started.
 
-The intended unchanged baseline and patched checks are:
+### Hosted failure and test-oracle repair
+
+[Hosted CI at head `4f6559e71e4a4bf109befb11521f67a7e815ece0`](https://github.com/reason-machines/openconductor/actions/runs/42969027487) ran all eight new mounted cases. Five passed. The three full-document comparisons failed because the expected JSON had plain-object attributes and separate adjacent text nodes. ProseMirror uses null-prototype attributes and joins adjacent text. The failure diffs retained the expected file attributes, whitespace, and suffix text. Both frontend jobs failed on these same three assertions. The typecheck step passed, and the frontend build was skipped.
+
+The oracle now constructs its expected document through the editor schema, which joins adjacent text nodes and supplies canonical attributes. It still compares the complete document JSON, including every text character, hard break, file path, label, directory flag, and node order. Additional strict equality assertions require every suffix file node instance to survive the transaction. Existing caret and empty-selection assertions remain unchanged. No product code or locked fixtures changed in this repair.
+
+Local dependencies remain absent. The fresh request for one bounded install, focused baseline RED, patched GREEN, and typecheck is queued with the existing serialized executor. No passing result is claimed for the repaired oracle yet.
+
+The intended baseline and patched checks run the same repaired test:
 
 ```bash
 COMPOSER_SLASH_SOURCE_REF=26ba01a1857a425780252abe3d28aa4eb9ba9572 \

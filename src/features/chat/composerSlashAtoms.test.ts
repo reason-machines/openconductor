@@ -10,6 +10,7 @@ import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
 import HardBreak from "@tiptap/extension-hard-break";
 import { closeHistory } from "@tiptap/pm/history";
+import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import * as queue from "./queue.ts";
 import * as queueKeys from "./queueKeys.ts";
 import * as commands from "./slashCommands.ts";
@@ -120,9 +121,17 @@ for (const suffix of [[file, { kind: "text", text: " keep suffix" }], [{ kind: "
   test(`mounted slash choice preserves ${JSON.stringify(suffix)} through the actual adapter command`, () => {
     const view = fixture([{ kind: "text", text: "/re" }, ...suffix]);
     try {
+      const atoms: ProseMirrorNode[] = [];
+      view.editor.state.doc.descendants((node) => { if (node.type.name === "fileMention") atoms.push(node); });
       view.pick();
-      const expected = schema.composerContent(document.writeComposerDraft([{ kind: "text", text: "/review " }, ...suffix]));
-      assert.deepEqual(view.editor.getJSON(), expected);
+      const expected = view.editor.schema.node("doc", null, [view.editor.schema.node("paragraph", null,
+        schema.inlineContent([{ kind: "text", text: "/review " }, ...suffix]).map((node) => view.editor.schema.nodeFromJSON(node)),
+      )]);
+      assert.deepEqual(view.editor.getJSON(), expected.toJSON());
+      const remaining: ProseMirrorNode[] = [];
+      view.editor.state.doc.descendants((node) => { if (node.type.name === "fileMention") remaining.push(node); });
+      assert.equal(remaining.length, atoms.length);
+      atoms.forEach((node, index) => assert.equal(remaining[index], node, "suffix file node instance survives replacement"));
       assert.equal(schema.linearDocument(view.editor.state.doc).text.includes("\ufffc"), true);
       assert.equal(view.editor.state.selection.empty, true);
       assert.equal(view.editor.state.selection.from, 9, "caret follows insertion, not the file suffix");
