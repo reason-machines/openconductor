@@ -46,7 +46,6 @@ function fixture(agent: Agent = "claude", options: { secondary?: boolean; loadin
   const draftRead = deferred<string>();
   const handoffWrite = deferred<void>();
   const draftStore = { load: () => options.loadingDraft ? draftRead.promise : Promise.resolve(""), save: async () => {}, clear: async () => {} };
-  let shellChat: { send: (text: string) => void; attach: (file: { name: string; text: string }) => void };
   const permissions = agent === "codex" ? [] : [{ kind: "plan", requestId, plan: "Keep the schema. Update the query." }];
   const snapshot = { transcript: { messages: [], turns: {}, activeTurn: null }, queue: { status: "needs_plan_response", items: [], editingId: null, paused: false }, permissions };
   const agents = Object.fromEntries(["claude", "codex", "reason"].map((id) => [id, {
@@ -102,7 +101,7 @@ function fixture(agent: Agent = "claude", options: { secondary?: boolean; loadin
     "src/features/terminal/session": { subscribeTabs: unsubscribe, getTabs: () => emptyTerminalTabs, onCenterTabOpened: unsubscribe },
     "src/features/browser/store": { subscribeBrowser: unsubscribe, browserSnapshot: () => ({ pages: emptyMap }) },
     "src/features/diff/useWorkspaceDiff": { useWorkspaceDiff: () => ({ openPath: noop, openTurnFile: noop, update: noop, files: [], scope: "all", loading: false, load: { state: "ready" } }) },
-    "src/features/diff/ReviewComments": { useReviewComments: (_id: string, bridge: typeof shellChat) => { shellChat = bridge; return { hasPending: false }; } },
+    "src/features/diff/ReviewComments": { useReviewComments: () => ({ hasPending: false }) },
     "src/workspace/useSetupWatch": { useCreateSetupRunning: () => false },
     "src/workspace/archive": {},
     "src/workspace/api": {},
@@ -181,7 +180,9 @@ function fixture(agent: Agent = "claude", options: { secondary?: boolean; loadin
     },
     async finishAttachment() { await act(async () => fileRead.resolve(new TextEncoder().encode("Note").buffer)); },
     async finishDraft() { await act(async () => draftRead.resolve("")); },
-    async attachReady() { await act(async () => shellChat.attach({ name: "keep.txt", text: "Keep this attachment" })); },
+    async attachReady() {
+      await act(async () => renderer.root.findByProps({ type: "file" }).props.onChange({ target: { files: [{ name: "keep.txt", size: 4, arrayBuffer: async () => new TextEncoder().encode("Keep").buffer }], value: "keep.txt" } }));
+    },
     async handoff() { await act(async () => button("Send plan to a new chat for implementation").props.onClick()); },
     approveDisabled: () => button("Execute plan in current chat").props.disabled,
     async dispose() { await act(async () => { renderer.unmount(); handoffWrite.resolve(); }); },
