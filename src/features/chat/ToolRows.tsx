@@ -38,7 +38,7 @@ import {
   type ConductorTool,
   type TaskItem,
 } from "./conductorTools.ts";
-import { Markdown } from "./markdown.ts";
+import { highlight, Markdown } from "./markdown.ts";
 import { LinkWithMenu } from "./LinkMenu.tsx";
 import { openUrl } from "../../backend.ts";
 import { thinkingChipText } from "./thinkingChip.ts";
@@ -344,6 +344,7 @@ export interface ToolRowProps {
   isError: boolean;
   open: boolean;
   onToggle: () => void;
+  todoRows?: Record<"completed" | "started", Pick<ShellProps, "open" | "onToggle">>;
   workspacePath?: string;
   onOpenFile?: (path: string) => void;
 }
@@ -387,7 +388,7 @@ export function ConductorToolRow(props: ToolRowProps) {
   );
 }
 
-function Row({ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
+function Row({ tool, status, result, isError, open, onToggle, todoRows, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const icon = <ToolIcon name={name} />;
   const shell = { icon, open, onToggle, status };
@@ -410,6 +411,12 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
     case "read": {
       const path = s(input.file_path);
       const text = output === undefined ? undefined : readContent(output);
+      const languages: Record<string, string> = {
+        js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript",
+        py: "python", rs: "rust", json: "json", yml: "yaml", yaml: "yaml",
+        css: "css", html: "html", htm: "html", xml: "xml", sh: "bash", bash: "bash",
+      };
+      const language = languages[path.split(".").pop()?.toLowerCase() ?? ""];
       return (
         <RowShell
           {...shell}
@@ -418,7 +425,7 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
           keepRight
           align="center"
           bareContent
-          content={text ? <NumberedCode text={text} start={typeof input.offset === "number" ? input.offset : 1} /> : undefined}
+          content={text ? <NumberedCode text={text} start={typeof input.offset === "number" ? input.offset : 1} language={language} /> : undefined}
         />
       );
     }
@@ -460,7 +467,7 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
           left={<span>Edit</span>}
           right={
             <div className="oc-tool-right-row">
-              {path ? <FileBadge path={path} onOpen={onOpenFile} /> : null}
+              {path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={counts ? <DiffBlock oldText={stripMarkers(s(input.old_string))} newText={stripMarkers(s(input.new_string))} /> : undefined} /> : null}
               {counts ? <LineCounts {...counts} /> : null}
             </div>
           }
@@ -477,25 +484,49 @@ function Row({ tool, status, result, isError, open, onToggle, workspacePath, onO
       return <WriteRow {...shell} input={input} onOpenFile={onOpenFile} />;
     case "web": {
       const target = s(input.url) || s(input.query);
+      const prompt = s(input.prompt);
       return (
         <RowShell
           {...shell}
           left={<span>{name === "WebSearch" ? "Web Search" : "Web Browse"}</span>}
           right={target ? <CodeChip text={target} /> : undefined}
           align="center"
-          content={output ? output : undefined}
+          content={output ? (prompt ? <><ul><li>Prompt: <code>{prompt}</code></li></ul>{output}</> : output) : undefined}
         />
       );
     }
     case "todo": {
       const todos = Array.isArray(input.todos) ? (input.todos as Record<string, unknown>[]) : [];
       const done = todos.filter((t) => t.status === "completed").length;
+      const activeIndex = todos.findIndex((t) => t.status === "in_progress");
+      const active = todos[activeIndex];
+      const content = todos.length > 0 ? todos.map((t) => `${t.status === "completed" ? "✓" : "○"} ${s(t.content)}`).join("\n") : undefined;
+      if (name === "TodoWrite" && active && done > 0 && done < todos.length) {
+        return (
+          <>
+            <RowShell
+              {...shell}
+              {...todoRows?.completed}
+              left={<span>Todo completed</span>}
+              right={<span className="oc-tool-count">{`${done}/${todos.length} completed`}</span>}
+              content={content}
+            />
+            <RowShell
+              {...shell}
+              {...todoRows?.started}
+              left={<span>Todo started</span>}
+              right={<span className="oc-tool-count">{`${activeIndex + 1}. ${s(active.content) || "todo"}`}</span>}
+              content={content}
+            />
+          </>
+        );
+      }
       return (
         <RowShell
           {...shell}
           left={<span>{done > 0 && done < todos.length ? "Todo completed" : "Update todos"}</span>}
           right={todos.length > 0 ? <span className="oc-tool-count">{`${done}/${todos.length} completed`}</span> : undefined}
-          content={todos.length > 0 ? todos.map((t) => `${t.status === "completed" ? "✓" : "○"} ${s(t.content)}`).join("\n") : undefined}
+          content={content}
         />
       );
     }
@@ -614,14 +645,14 @@ function BashRow({ input, output, ...shell }: ShellBase & { input: Record<string
   );
 }
 
-function NumberedCode({ text, start }: { text: string; start: number }) {
+function NumberedCode({ text, start, language }: { text: string; start: number; language?: string }) {
   const lines = text.split("\n");
   return (
     <pre className="oc-tool-code numbered">
       {lines.map((l, i) => (
         <div key={i} className="oc-code-line">
           <span className="oc-code-ln">{start + i}</span>
-          <span>{l}</span>
+          <span>{highlight(language, l) ?? l}</span>
         </div>
       ))}
     </pre>
@@ -1175,7 +1206,7 @@ function SubagentRow({ input, result, ...shell }: ShellBase & { input: Record<st
               </div>
               <CopyIcon text={text} />
             </div>
-            <div className="oc-subagent-body">{raw ? <div className="oc-subagent-raw">{text}</div> : <Markdown text={text} className="oc-prose" />}</div>
+            <div className="oc-subagent-body">{raw ? <div className="oc-subagent-raw">{text}</div> : <Markdown text={text} className="oc-prose" onOpenLink={(href) => void openUrl(href)} Link={LinkWithMenu} />}</div>
           </div>
         ) : undefined
       }

@@ -51,6 +51,7 @@ export type Action =
   | { type: "archiveWorkspace"; repoId: string; workspaceId: string; mode?: ArchiveMode; stopRunningAgents?: boolean }
   /** "Rename chat" on the workspace's main chat tab. */
   | { type: "setChatTitle"; repoId: string; workspaceId: string; title: string }
+  | { type: "replaceLocalChat"; repoId: string; workspaceId: string; sourceId: string; chatId: string; primaryChatId: string; title: string }
   /** The workspace's pull request title or body changed on GitHub (`workspaces.pr_title`, `pr_description`). `prDescription` and `pr` left out keep what the row has. */
   | { type: "setWorkspacePr"; repoId: string; workspaceId: string; prTitle: string | null; prDescription?: string | null; pr?: RowPr | null }
   /** Open an archived workspace from the archived list: read-only, with Unarchive. */
@@ -174,6 +175,8 @@ export function reducer(state: AppState, action: Action): AppState {
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(rename) } : r));
       return { ...state, repos };
     }
+    case "replaceLocalChat":
+      return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, primaryChatId: action.primaryChatId, activeSessionId: action.chatId, chatTitle: action.title, unreadChats: w.unreadChats?.filter((c) => c.id !== action.sourceId) }));
     case "setChatTitle": {
       const set = (w: Workspace): Workspace => (w.id === action.workspaceId ? { ...w, chatTitle: action.title } : w);
       const repos = state.repos.map((r) => (r.id === action.repoId ? { ...r, workspaces: r.workspaces.map(set) } : r));

@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { apiKeyName, authModeOf, claudeAuthState, codexAuthState, configForMode } from "./agentAuth.ts";
+import { apiKeyName, authModeOf, claudeAuthState, codexAuthState, configForMode, providerOf } from "./agentAuth.ts";
 import { displayedLoadout, equip, isEquipped, move, parseFavorites, remove, toRows, withDefault, withReview, builtIn, type Favorite } from "./loadout.ts";
-import { DEFAULT_SETTINGS } from "../types.ts";
+import { DEFAULT_SETTINGS, type ProviderConfig } from "../types.ts";
 
 test("the API key card stands for the key-based providers, the CLI card for the rest", () => {
   assert.equal(authModeOf("claude", null), "cli");
@@ -14,6 +14,48 @@ test("the API key card stands for the key-based providers, the CLI card for the 
   assert.deepEqual(configForMode("codex", "cli", { kind: "openai_api" }), { kind: "codex_login" });
   assert.equal(apiKeyName("claude", { kind: "anthropic_api", auth: "auth_token" }), "anthropic_auth_token");
   assert.equal(apiKeyName("codex", { kind: "openai_api" }), "openai_api_key");
+});
+
+test("loaded global Claude auth selects the API key card without a provider table", () => {
+  const settings = { ...DEFAULT_SETTINGS, claude_provider: "custom", providers: {} };
+  const config = providerOf(settings, "claude");
+  assert.equal(authModeOf("claude", config), "apikey");
+  assert.deepEqual(config, { kind: "anthropic_api", auth: "api_key" });
+  assert.equal(apiKeyName("claude", config), "anthropic_api_key");
+  assert.equal(claudeAuthState(authModeOf("claude", config), null, false).notConnectedMessage, "No Anthropic API key configured");
+  assert.deepEqual(settings.providers, {});
+});
+
+test("explicit Claude provider configs outrank the global key and retain their identity", () => {
+  const login = configForMode("claude", "cli", null);
+  const settings = { ...DEFAULT_SETTINGS, claude_provider: "custom", providers: { claude: login } };
+  assert.equal(providerOf(settings, "claude"), login);
+  assert.equal(authModeOf("claude", providerOf(settings, "claude")), "cli");
+
+  const api = { kind: "anthropic_api", auth: "auth_token", base_url: "https://example.invalid" } satisfies ProviderConfig;
+  const apiSettings = { ...settings, claude_provider: "default", providers: { claude: api } };
+  assert.equal(providerOf(apiSettings, "claude"), api);
+  assert.equal(authModeOf("claude", providerOf(apiSettings, "claude")), "apikey");
+  assert.equal(apiKeyName("claude", providerOf(apiSettings, "claude")), "anthropic_auth_token");
+});
+
+test("Claude defaults and empty values retain CLI auth while the backend trims custom", () => {
+  for (const value of [undefined, null, "", "   ", "default"]) {
+    const settings = { ...DEFAULT_SETTINGS, claude_provider: value, providers: {} };
+    assert.equal(providerOf(settings, "claude"), null);
+    assert.equal(authModeOf("claude", providerOf(settings, "claude")), "cli");
+  }
+  const settings = { ...DEFAULT_SETTINGS, claude_provider: " custom ", providers: {} };
+  assert.equal(authModeOf("claude", providerOf(settings, "claude")), "apikey");
+});
+
+test("the Claude fallback does not alter Codex auth resolution", () => {
+  const settings = { ...DEFAULT_SETTINGS, claude_provider: "custom", codex_provider: "custom", providers: {} };
+  assert.equal(providerOf(settings, "codex"), null);
+  assert.equal(authModeOf("codex", providerOf(settings, "codex")), "cli");
+  const config = configForMode("codex", "apikey", null);
+  assert.equal(providerOf({ ...settings, providers: { codex: config } }, "codex"), config);
+  assert.equal(authModeOf("codex", config), "apikey");
 });
 
 test("status line copy and info rows follow Conductor's jpa/Fpa and Yki/Qki", () => {

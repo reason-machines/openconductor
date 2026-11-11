@@ -1,0 +1,65 @@
+[
+  {
+    "symbol": "uqn key producer and $5o empty/top check",
+    "utf8_bytes_half_open": [
+      8418120,
+      8418434
+    ],
+    "sha256_utf8": "814d68fcaf4a0ecf151d70532213ebfc4f05ad4c39612ea7bd2ff8380610e19f",
+    "compiled_javascript": "const uqn=xd(t=>{switch(t.key){case\"ArrowDown\":case\"ArrowUp\":case\"Enter\":case\"Escape\":case\"Tab\":return t.key;default:return}}),B5o=_v(t=>t.key===\"Enter\"&&t.shiftKey);function $5o(t){if(t.isEmpty)return!0;const{selection:e,doc:n}=t.state;return!e.empty||n.firstChild!==e.$from.parent?!1:t.view.endOfTextblock(\"up\")}"
+  },
+  {
+    "symbol": "lHt visible key handler and composition guard",
+    "utf8_bytes_half_open": [
+      8424444,
+      8425776
+    ],
+    "sha256_utf8": "54a71fc155a2f2a55f4af2f1f7f61577d9e3d14a1c9a6582c4ac9bd457ed5425",
+    "compiled_javascript": "const ve=$.useCallback(ye=>{if(aqn(ye)){ye.preventDefault(),ye.stopPropagation();return}if(Q.isImeCompositionActive||oRt(ye))return;if(Q.suggestionHandledKey){Q.suggestionHandledKey=!1,ye.preventDefault(),ye.stopPropagation();return}const xe=be?.entry.state,ke=uqn(ye);if(he===\"external\"&&xe){if(ke===\"ArrowUp\"&&xe.setSelectedIndex((xe.selectedIndex+xe.items.length-1)%xe.items.length),ke===\"ArrowDown\"&&xe.setSelectedIndex((xe.selectedIndex+1)%xe.items.length),ke===\"Enter\"||ke===\"Tab\"){const Se=xe.items[xe.selectedIndex];Se&&xe.command&&xe.command(Se)}if(ke===\"Escape\"&&xe.dismiss(),ke!==void 0){ye.preventDefault(),ye.stopPropagation();return}}if(he===\"internal\"){ke!==void 0&&(ye.preventDefault(),ye.stopPropagation());return}if(ke===\"ArrowUp\"&&!ye.shiftKey&&!ye.metaKey&&!ye.ctrlKey&&!ye.altKey&&m.keyboardShortcuts&&X!==void 0&&ue!==null&&$5o(ue)&&X()){ye.preventDefault(),ye.stopPropagation();return}if(U!==void 0){const{shouldSend:Se,sendModeOverride:De}=H?lqn({event:ye.nativeEvent,messageSendKey:L,matchesCommand:m.matchesSendCommand}):cqn({event:ye.nativeEvent,messageSendKey:L,messageSendMode:F,matchesCommand:m.matchesSendCommand});if(Se){ye.preventDefault(),!G?.(ye)&&z&&Promise.resolve(U({sendModeOverride:De})).fireAndForget();return}}n?.(ye)},[z,ue,L,F,H,X,n,U,G,be,he,Q,m.keyboardShortcuts,m.matchesSendCommand]);"
+  },
+  {
+    "symbol": "ITo visible editor callback",
+    "utf8_bytes_half_open": [
+      8687374,
+      8688266
+    ],
+    "sha256_utf8": "ac953696dc178ec2bd4e5936867be6c3feb3f4e4d0d698c51b99bf5511cc0273",
+    "compiled_javascript": "p.jsx(lHt,{...UIi,resolveMentionViewModel:$c,loadAttachmentPreview:Bl,value:g,onChange:X,onFocus:()=>{U(!0),lb(),UX.setFocusedInputId(B6)},onBlur:()=>{U(!1),UX.setFocusedInputId(null)},placeholder:S5(),disabled:c===\"all\",autoFocus:O&&!vf,queueEditMode:w,triggers:h_,onEditorReady:E5,onMentionClick:wv,visibleAttachments:x,cloudAttachmentClipboardSourceSessionId:Su(a)?e:void 0,resolveAttachmentImageLocation:Sv,containerEl:te,externalSuggestions:xe?[Ra]:[],messageSendKey:he,messageSendMode:ve,onSubmit:x2,canSubmit:cr,shouldSkipSubmitShortcut:ln=>!!(y2&&Qh(\"chat.planResponse.submit\",ln.nativeEvent)),onKeyDown:ln=>{w&&R!==void 0&&Qh(\"chat.queueEdit.cancel\",ln.nativeEvent)&&(ln.preventDefault(),ln.stopPropagation(),R())},suggestionContextKey:id,onArrowUpAtTop:()=>w?!1:Z8i.focusLast({localWorkspaceId:r,sessionId:e}),onAttachmentMentionRemoved:Tc,onPastedCloudAttachmentMentionRemoved:uh})"
+  },
+  {
+    "symbol": "pwt session guard and Z8i focus registry",
+    "utf8_bytes_half_open": [
+      7576509,
+      7577223
+    ],
+    "sha256_utf8": "5954750c738f7b7e5c73926cfe0369719e356d558af6f18410c5485d73991d22",
+    "compiled_javascript": "function pwt({action:t,localWorkspaceId:e,sessionId:n}){const i=rHe.get(e);if(i!==void 0){if(i.sessionId!==n){Bt.warn(`queueFocusRegistry.${t} called with a session guard that does not match the registered queue.`,{workspaceId:e,requestedSessionId:n,registeredSessionId:i.sessionId});return}return i}}const Z8i={register(t){return rHe.set(t.localWorkspaceId,t),()=>{rHe.get(t.localWorkspaceId)===t&&rHe.delete(t.localWorkspaceId)}},focusFirst(t){const e=pwt({...t,action:\"focusFirst\"});return e===void 0?!1:(e.focusFirst(),!0)},focusLast(t){const e=pwt({...t,action:\"focusLast\"});return e===void 0?!1:(e.focusLast(),!0)},focusRow(t){const e=pwt({...t,action:\"focusRow\"});return e===void 0?!1:e.focusRow(t.rowId)}};"
+  },
+  {
+    "symbol": "GTo queue component input parameters",
+    "utf8_bytes_half_open": [
+      8700675,
+      8701105
+    ],
+    "sha256_utf8": "2b72a06a265320d50b2379fa5a58b106dce5a8c582b5c75733c1a7d42771e551",
+    "compiled_javascript": "function GTo(t){const e=ne.c(114),{canCollapse:n,canSaveQueuedEdit:i,canSteer:r,editingMessageId:o,isCollapsed:a,isQueuePaused:c,onCollapsedChange:u,onDeleteQueuedMessage:d,onResumeQueue:h,onRetryQueuedMessage:m,onSaveAndSteer:g,onSaveEdit:_,onRowDragFinished:v,onRowDragStarted:x,onStartEdit:w,onSteerQueuedMessage:E,onRowsReordered:k,queueStatusLabel:I,renderRow:R,rows:O,sessionId:D,steerDisabledReason:P,localWorkspaceId:L}=t,"
+  },
+  {
+    "symbol": "GTo last-row callback and visible nonempty registration",
+    "utf8_bytes_half_open": [
+      8702970,
+      8703646
+    ],
+    "sha256_utf8": "4db53d5adfe410506b01c2c0ba039c2cf0c4257cd819030f693af8cc8fcee32e",
+    "compiled_javascript": "let Ne;e[26]!==Se||e[27]!==O?(Ne=()=>{if(O.length===0){Se();return}z(Zt=>Zt??O[O.length-1].messageId),F.current?.focus()},e[26]=Se,e[27]=O,e[28]=Ne):Ne=e[28];const Le=Ne;let ze;e[29]!==O?(ze=Zt=>O.some(zt=>zt.messageId===Zt)?(z(Zt),F.current?.focus(),!0):!1,e[29]=O,e[30]=ze):ze=e[30];const Ke=ze;let Ze,Ye;e[31]!==je||e[32]!==Le||e[33]!==Ke||e[34]!==te||e[35]!==L||e[36]!==O.length||e[37]!==D?(Ze=()=>{if(!(!te||O.length===0))return Z8i.register({localWorkspaceId:L,sessionId:D,focusFirst:je,focusLast:Le,focusRow:Ke})},Ye=[je,Le,Ke,te,O.length,D,L],e[31]=je,e[32]=Le,e[33]=Ke,e[34]=te,e[35]=L,e[36]=O.length,e[37]=D,e[38]=Ze,e[39]=Ye):(Ze=e[38],Ye=e[39]),$.useEffect(Ze,Ye);"
+  },
+  {
+    "symbol": "visible queue wrapper GTo binding",
+    "utf8_bytes_half_open": [
+      8729565,
+      8729980
+    ],
+    "sha256_utf8": "0ad9445cd2ade0e6e3b3c32cb14a5c5f91d40448498b48d57217aa849253f6ad",
+    "compiled_javascript": "p.jsx(GTo,{canCollapse:it,canSaveQueuedEdit:n,canSteer:P,editingMessageId:i,isCollapsed:w,isQueuePaused:K,queueStatusLabel:He,renderRow:ze,rows:ae,sessionId:u,steerDisabledReason:D,localWorkspaceId:d,onCollapsedChange:E,onDeleteQueuedMessage:be,onResumeQueue:ye,onRetryQueuedMessage:ge,onRowDragFinished:Ne,onRowDragStarted:De,onSaveAndSteer:o,onSaveEdit:a,onRowsReordered:ke,onStartEdit:c,onSteerQueuedMessage:ue})"
+  }
+]

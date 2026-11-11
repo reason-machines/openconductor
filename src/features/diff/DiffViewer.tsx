@@ -9,7 +9,7 @@ import type { ConductorIconName } from "../../components/conductorIcons.generate
 import "./diff.css";
 import { DiscardDialog } from "./DiscardDialog";
 import { ViewOptionsMenu } from "./Whitespace";
-import { FileDiffView, type LineAnchor, type LineRange } from "./FileDiffView";
+import { FileDiffView, type FileRefreshStatus, type LineAnchor, type LineRange } from "./FileDiffView";
 import { editableContents, useFileEdit } from "./EditInViewer.ts";
 import type { DiffLayout, FileDiff } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
@@ -65,6 +65,20 @@ export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, ann
       paths: current.revision !== redirectRevision ? [path] : [...current.paths.filter((item) => item !== path), path].slice(-5),
     }));
   }, [path, redirectRevision]);
+  if (load.state === "loading") {
+    return (
+      <div className="oc-diff oc-diff-tab">
+        <div className="placeholder small" role="status" aria-label="Loading file changes"><span className="clone-spinner" aria-hidden /></div>
+      </div>
+    );
+  }
+  if (load.state === "error") {
+    return (
+      <div className="oc-diff oc-diff-tab">
+        <div className="placeholder small"><p className="error">Couldn't load file changes</p><p className="muted">{load.message}</p></div>
+      </div>
+    );
+  }
   if (!selected) {
     return (
       <div className="oc-diff oc-diff-tab">
@@ -90,34 +104,47 @@ export function DiffTab({ diff, onClose, onLineClick, commentRange, anchors, ann
 /**
  * The open file with whole-file context, so Pierre draws it as a full diff like
  * Conductor's tab (pierre.ts `fullDiffMeta`). The entire-file layout already has
- * it; binary files have no lines. Null until it loads or when it fails (the
- * patch is drawn meanwhile).
+ * it; binary files have no lines. Keep the last successful same-key load during
+ * a refresh or a transient failure, but only current contents may seed editing.
  */
-function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayout): FileDiff | null {
-  const [full, setFull] = useState<{ of: FileDiff; file: FileDiff } | null>(null);
+function useWholeFile(diff: WorkspaceDiff, selected: FileDiff, layout: DiffLayout): { file: FileDiff | null; current: boolean; refreshStatus: FileRefreshStatus | undefined } {
+  const key = JSON.stringify([
+    diff.worktree, diff.target.branch, diff.target.remote,
+    diff.turn ? ["turn", diff.turn.sessionId, diff.turn.turnId] : diff.opts.scope,
+    selected.path, selected.old_path, selected.status, selected.binary, diff.opts.ignoreWhitespace,
+  ]);
+  const [full, setFull] = useState<{ key: string; of: FileDiff; file: FileDiff } | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const [failure, setFailure] = useState<{ key: string; of: FileDiff; attempt: number } | null>(null);
   const wanted = layout !== "file" && !selected.binary && selected.hunks.length > 0;
   const loadFull = diff.loadFull;
   useEffect(() => {
     if (!wanted) return;
     let live = true;
     loadFull(selected).then(
-      (file) => live && setFull({ of: selected, file }),
-      () => live && setFull(null),
+      (file) => live && setFull({ key, of: selected, file }),
+      () => live && setFailure({ key, of: selected, attempt }),
     );
     return () => {
       live = false;
     };
     // loadFull is rebuilt every render; the file object changes whenever the diff reloads.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected, wanted]);
-  return wanted && full?.of === selected ? full.file : null;
+  }, [selected, wanted, key, attempt]);
+  const file = wanted && full?.key === key ? full.file : null;
+  const current = file !== null && full?.of === selected;
+  const refreshStatus: FileRefreshStatus | undefined = file === null || current ? undefined
+    : failure?.key === key && failure.of === selected && failure.attempt === attempt
+      ? { type: "failed", onRetry: () => setAttempt((n) => n + 1) }
+      : { type: "updating" };
+  return { file, current, refreshStatus };
 }
 
 /** The open file, editable after its complete current contents are available. */
 function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anchors, annotations, notes, notify }: DiffTabProps & { f: FileDiff; selected: FileDiff; isVisible: boolean }) {
   const { opts, update } = diff;
-  const full = useWholeFile(diff, selected, opts.layout);
-  const edit = useFileEdit(diff.worktree, selected.path, typeof opts.scope === "object" || diff.turn !== null ? null : editableContents(selected, opts.layout, opts.ignoreWhitespace, full), diff.reloadQuietly);
+  const { file: full, current, refreshStatus } = useWholeFile(diff, selected, opts.layout);
+  const edit = useFileEdit(diff.worktree, selected.path, typeof opts.scope === "object" || diff.turn !== null ? null : editableContents(selected, opts.layout, opts.ignoreWhitespace, current ? full : null), diff.reloadQuietly);
   return (
     <div className="oc-files" hidden={!isVisible} style={!isVisible ? { display: "none" } : undefined}>
       {notes?.(f)}
@@ -136,6 +163,7 @@ function OpenFile({ diff, f, selected, isVisible, onLineClick, commentRange, anc
         annotations={annotations && ((a) => annotations(f, a))}
         loadFull={() => diff.loadFull(f)}
         full={full}
+        refreshStatus={refreshStatus}
         loadText={() => diff.loadText(f)}
         notify={notify}
         onDiscard={diff.canDiscard ? () => diff.askDiscard(f) : undefined}

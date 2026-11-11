@@ -1,6 +1,6 @@
 {
   "agent": "codex",
-  "app_commit": "main 95ec07d plus this PR's Codex API key login (built from the working tree)",
+  "app_commit": "main 3da28905 (app unchanged; this PR's driver types into the contenteditable composer)",
   "host": {
     "os": "macOS-26.4-arm64-arm-64bit",
     "machine": "arm64"
@@ -8,8 +8,8 @@
   "cli_version": "codex-cli 0.166.0",
   "key_only_control": false,
   "cli_auth_in_throwaway_home": "Logged in using ChatGPT",
-  "started": "2026-11-06T14:16:33.080Z",
-  "ended": "2026-11-06T14:16:43.845Z",
+  "started": "2026-11-11T09:36:11.025Z",
+  "ended": "2026-11-11T09:36:23.901Z",
   "error": null,
   "modes": [
     {
@@ -28,7 +28,7 @@
         "error": null,
         "signInNotice": null,
         "reply": "oc-import-ok",
-        "seconds": 3
+        "seconds": 4
       },
       "result": "pass"
     },
@@ -70,12 +70,11 @@
         "error": null,
         "signInNotice": null,
         "reply": "oc-apikey-ok",
-        "seconds": 2
+        "seconds": 3
       },
       "result": "pass"
     }
   ],
   "driver_result": "pass",
-  "result": "pass",
-  "key_source": "1Password op://Production/github-native-engineer-evals/OPENAI_API_KEY (evals project), read inside the runner only"
+  "result": "pass"
 }

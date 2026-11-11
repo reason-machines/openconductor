@@ -1,0 +1,46 @@
+{
+  "recordedAt": "2026-11-11",
+  "pr": "https://github.com/reason-machines/openconductor/pull/1018",
+  "sourceHead": "62bca964b457324abff7683c65bcc0c747115204",
+  "testedMerge": "54b0d4787f2820beaf68aea45c5b334f34fa3698",
+  "lockedBackend": "76db1e1e2ba22f03fc87ab11df4a009e75d978ca",
+  "sourceBinding": {
+    "method": "Read git object bytes at lockedBackend, sourceHead, testedMerge and integrated local HEAD; compare byte-for-byte and SHA-256. All five module files match.",
+    "filesSha256": {
+      "src-tauri/src/config_sync/mod.rs": "777a225fd5ea377521589ba9d6e0d1058f0089209a19a592ebf7f65894c35abf",
+      "src-tauri/src/config_sync/tests.rs": "c64d4f687332a4f8f5d49c121af897e4177f448d06bc6a8a5adb227daec1dfb9",
+      "src-tauri/src/config_sync/files.rs": "b4d3990d655b0082a9f7a533d72a767497a2a4c64e918c93e5423715d8631b78",
+      "src-tauri/src/config_sync/mcp.rs": "be8c889b2553e3f9bb46593fe5f715f5622acbaea771270f35e318bd7c4606ae",
+      "src-tauri/src/config_sync/commands.rs": "5ddc6db5ad5d1e53d0cc9748154746df375feb1fa0a7eca229ca43666a5d654b"
+    }
+  },
+  "backend": {
+    "job": "https://github.com/reason-machines/openconductor/actions/runs/42987959170/job/130413578683",
+    "commands": ["cargo check --locked --all-targets", "cargo test --locked", "cargo clippy --locked --all-targets -- -D warnings"],
+    "conclusion": "success",
+    "checkoutLogLine": 124,
+    "configSyncTestLogLines": [3379, 3403],
+    "configSyncPassed": 25,
+    "quotedMapKeyRegression": "quoted_mcp_map_keys_round_trip_without_becoming_paths",
+    "dataBoundary": "Production module tests with explicit disposable synthetic homes and inert MCP env/header values. No user config or credential reads."
+  },
+  "otherHostedPasses": {
+    "frontendTypecheckBuildJob": 130413578322,
+    "macOSTauriCheckTestClippyJob": 130413578657,
+    "standaloneCodexJob": 130413578885
+  },
+  "mergeBlocker": {
+    "job": "https://github.com/reason-machines/openconductor/actions/runs/42987959159/job/130413578549",
+    "step": "Codex chat e2e (fake codex app-server)",
+    "conclusion": "failure",
+    "observation": "After changing to Ask first, one connected visible enabled selector and persisted policy both read full. Failure occurs before the first chat request. Product cause remains unproven.",
+    "passingSettingsFlowIsNotDisproof": true
+  },
+  "notVerified": [
+    "Corrected pre-fix MCP regression in the separately queued offline harness",
+    "Config-sync Tauri command IPC invocation",
+    "Native permissions and actual-app copy/reopen behavior",
+    "macOS visual parity",
+    "Real-provider behavior"
+  ]
+}

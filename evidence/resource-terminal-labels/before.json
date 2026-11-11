@@ -1,0 +1,75 @@
+{
+  "sourceCommit": "9e4df51294ab5cd6abdd73aa1212ae501c551b13",
+  "ids": [
+    "term-1",
+    "term-2",
+    "term-3",
+    "term-4"
+  ],
+  "spawnIds": [
+    "term-1",
+    "term-2",
+    "term-3",
+    "term-4"
+  ],
+  "tabStates": [
+    {
+      "id": "ws-A",
+      "state": {
+        "tabs": [
+          {
+            "id": "term-2",
+            "title": "Terminal 1",
+            "status": "starting",
+            "placement": "center"
+          },
+          {
+            "id": "term-3",
+            "title": "Terminal 2",
+            "status": "starting"
+          }
+        ],
+        "activeId": "term-3",
+        "next": 3
+      }
+    },
+    {
+      "id": "ws-B",
+      "state": {
+        "tabs": [
+          {
+            "id": "term-1",
+            "title": "Terminal 1",
+            "status": "starting"
+          },
+          {
+            "id": "term-4",
+            "title": "Terminal 2",
+            "status": "starting",
+            "placement": "center"
+          }
+        ],
+        "activeId": "term-1",
+        "next": 3
+      }
+    }
+  ],
+  "poll": {
+    "terminalLabels": {}
+  },
+  "expected": {
+    "term-1": "Terminal 1",
+    "term-3": "Terminal 2",
+    "term-2": "Terminal tab 1",
+    "term-4": "Terminal tab 2"
+  },
+  "visible": [
+    "OpenConductor",
+    "zsh",
+    "zsh",
+    "zsh",
+    "zsh"
+  ],
+  "matched": false,
+  "boundaries": "Actual current session, reducer, poll, ResourcesPanel and pure Rust build. PTY/DOM/IPC mocked. No collect, process sampling, browser, native app or reference execution."
+}

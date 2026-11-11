@@ -255,7 +255,7 @@ fn table_prefs_in_an_older_file_move_to_the_table() {
     let path = temp_file();
     fs::write(
         &path,
-        "automerge_enabled = true\ntreat_optional_checks_as_blocking = true\n\n[experimental]\nexperimental_big_terminal_mode = true\nvoice_mode = true\n",
+        "automerge_enabled = true\ntreat_optional_checks_as_blocking = true\n\n[experimental]\nvoice_mode = true\n[git]\narchive_on_merge = true\n",
     )
     .unwrap();
     let (svc, pool) = with_db(path.clone());
@@ -275,7 +275,7 @@ fn table_prefs_in_an_older_file_move_to_the_table() {
     );
     let text = fs::read_to_string(&path).unwrap();
     assert!(
-        text.contains("experimental_big_terminal_mode = true"),
+        text.contains("archive_on_merge = true"),
         "{text}"
     );
     assert!(

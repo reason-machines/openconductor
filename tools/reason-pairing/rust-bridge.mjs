@@ -2,6 +2,7 @@ import { execFile, spawn } from "node:child_process";
 import { promisify } from "node:util";
 import { createInterface } from "node:readline";
 import { mkdir, writeFile } from "node:fs/promises";
+import { closeSync, fstatSync, openSync, readSync } from "node:fs";
 import { join } from "node:path";
 import { once } from "node:events";
 
@@ -86,6 +87,21 @@ export function startRustBridge(binary, { home, origin, client, executable, logi
   child.on("error", fail);
   child.on("exit", (code, signal) => fail(new Error(`Rust bridge exited ${code ?? signal}: ${stderr}`)));
   return {
+    diagnostics() {
+      let finisher = { available: false };
+      try {
+        const file = openSync(join(home, "pairing-finisher.stderr"), "r");
+        try {
+          const size = fstatSync(file).size;
+          const tail = Buffer.alloc(Math.min(size, 8192));
+          const count = readSync(file, tail, 0, tail.length, Math.max(0, size - tail.length));
+          const lines = tail.subarray(0, count).toString("utf8").split("\n").filter(Boolean);
+          const safe = lines.filter((line) => /^fixture-finisher (?:http status=[1-5]\d\d|transport|decode|unexpected)$/.test(line));
+          finisher = { available: true, bytes: size, truncated: size > tail.length, lines: safe.slice(-20), redactedLines: lines.length - safe.length };
+        } finally { closeSync(file); }
+      } catch {}
+      return { bridge: { exitCode: child.exitCode, signal: child.signalCode, retainedBytes: Buffer.byteLength(stderr), panic: stderr.includes("panicked at"), redacted: Boolean(stderr) }, finisher };
+    },
     invoke(command, args = {}) {
       const id = ++nextId;
       return new Promise((resolve, reject) => {
