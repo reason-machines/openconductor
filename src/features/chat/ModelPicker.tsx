@@ -235,7 +235,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
           <div className="oc-model-menu-inner" ref={menuInner} style={searching ? { height: searchHeight } : undefined}>
             <div className="oc-model-search">
               <SearchSmallIcon />
-              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" spellCheck={false} autoFocus value={query} onChange={(e) => changeQuery(e.target.value)} />
+              <input ref={search} aria-label="Search models" placeholder="Search models" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} autoFocus value={query} onChange={(e) => changeQuery(e.target.value)} />
             </div>
             <div className="oc-model-list">
               {items.length === 0 ? <div className="oc-model-empty">No models found</div> : null}

@@ -14,7 +14,7 @@ import { LinkMenuNotify, LinkWithMenu } from "./LinkMenu.tsx";
 import type { ChatTranscript } from "./reducer.ts";
 import { buildRows, isToolExpanded, type PartView, type ReportOrigin } from "./view.ts";
 import { canCollapse, foldAgentRows, isSummaryOpen, summaryLabel, type AgentBlock, type DisplayRow, type ToolSummary } from "./toolGroups.ts";
-import { Markdown } from "./markdown.ts";
+import { Markdown, type MarkdownOptions } from "./markdown.ts";
 import { ConductorToolRow, Lucide, opensByDefault, ToolIcon } from "./ToolRows.tsx";
 import { turnDayClock, turnTime } from "./turnTime.ts";
 import { TurnDetails } from "./TurnDetails.tsx";
@@ -60,7 +60,7 @@ export interface TranscriptProps {
   /** Clock for the footer's time of day (tests pin it). */
   now?: () => number;
   /** Toasts, e.g. a markdown link's "Copy link address" (LinkMenu.tsx). */
-  notify?: (kind: "info" | "error", message: string) => void;
+  notify?: MarkdownOptions["notify"];
 }
 
 export function Transcript({
@@ -108,6 +108,7 @@ export function Transcript({
     forkDisabled,
     turnAgent,
     chatAgent,
+    notify,
   };
 
   return (
@@ -169,6 +170,7 @@ interface RowContext {
   workspacePath?: string;
   onOpenFile?: (path: string) => void;
   now: () => number;
+  notify?: TranscriptProps["notify"];
   onForkToNewTab?: (turnId: string) => void;
   onForkToNewWorkspace?: (turnId: string) => void;
   forkDisabled: boolean;
@@ -336,6 +338,7 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
             <div className="oc-text-wrap">
               <Markdown
                 text={part.text}
+                notify={ctx.notify}
                 className={`oc-prose chat-text${preview ? "" : " muted"}${part.streaming ? " is-streaming" : ""}`}
                 onOpenLink={(href) => void openUrl(href)}
                 workspacePath={ctx.workspacePath}
