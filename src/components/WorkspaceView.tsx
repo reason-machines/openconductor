@@ -560,7 +560,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
               // Conductor: "Transcript of <title>.md", or "No messages in this chat".
               const text = forkTranscript(agentSnapshot(c.agent, c.chatId).transcript);
               if (text === null) return setAttachError("No messages in this chat");
-              setAttachments((list) => addAttachment(list, { name: forkAttachmentName(c.title), text }));
+              const attachment: ComposerAttachment = { name: `session-transcript-${c.chatId}.md`, label: forkAttachmentName(c.title), text };
+              setAttachments((list) => addAttachment(list, attachment));
             }}
           />
         ) : null}

@@ -8,7 +8,7 @@ The byte-identical [retained source packet](source-packet.tar.gz) is attachment 
 
 Original `RIo` separates `session-transcript-${sourceId}.md` from `Transcript of <title>.md`. Its `FO` alias joins `Bf` and `gpe` to the `k1t` text attachment factory, which reserves storage using `fileName` and keeps the human `displayName` separately. The packet retains the full chain, not just a search excerpt. Static evidence does not prove native behavior.
 
-Re-read default-branch head `58fc17bc1f6a61db0624eb9a6aba85d2b3cbf5a9`. The six relevant source files are byte-identical to the packet's snapshots at `524c598b34157483e669167ed1f9032cc02fff18`. Current `WorkspaceView` instead sends `forkAttachmentName(c.title)` as the attachment identity. Existing `addAttachment` replaces non-comment attachments by name. Existing `ComposerAttachment.label` and restore logic already support separating identity from its label, so no shared primitive change is needed.
+Re-read default-branch head `e752f6cdd53cb235762d8392377c3c608b8b8789` before the fix. The six relevant source files remain byte-identical to the packet's snapshots at `524c598b34157483e669167ed1f9032cc02fff18`. Baseline `WorkspaceView` sends `forkAttachmentName(c.title)` as the attachment identity. Existing `addAttachment` replaces non-comment attachments by name. Existing `ComposerAttachment.label` and restore logic already support separating identity from its label, so no shared primitive change is needed.
 
 ## Frozen regression
 
@@ -20,7 +20,9 @@ The three cases cover:
 - Distinct-title sources retaining both bodies and readable rendered labels.
 - Another empty target remaining isolated, independent attachment there, and the original target retaining both attachments across a round trip.
 
-Frozen fixture SHA-256 is `3192bf5f922283695507ee459b3699c84a79c24355675611bb9cbaf2c635dc29`. Automatic hosted `node --test "src/**/*.test.ts"` supplies executable RED and GREEN. At this initial test-only checkpoint, hosted execution is pending and no behavioral failure or pass is claimed.
+Frozen fixture SHA-256 is `3192bf5f922283695507ee459b3699c84a79c24355675611bb9cbaf2c635dc29`. Automatic hosted `node --test "src/**/*.test.ts"` supplies executable RED and GREEN. On published test-only head `80f89542d848ff9039467cfa09c496d83e1084f3`, [unit job 130752700024](https://github.com/reason-machines/openconductor/actions/runs/43086658246/job/130752700024) reached the intended same-title retention assertion: actual one attachment, expected two. Both distinct-title and target-isolation controls passed. The full suite had 3,040 passes and this one failure. The typecheck/build job reached the same intended test failure. [The retained RED receipt](hosted-red.json) records the exact run and assertion.
+
+The candidate changes only the recent-chip producer: `name` uses `session-transcript-${c.chatId}.md`, while the existing optional `label` retains `forkAttachmentName(c.title)`. The regression is unchanged. Static provenance and scope checks pass; automatic hosted candidate GREEN and protected merge remain pending.
 
 `python3 evidence/chat/recent-transcript-identity/verify.py` checks packet files, retained spans, source joins, the frozen fixture, and the exact permitted producer-only delta. It does not execute JavaScript.
 
