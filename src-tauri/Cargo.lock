@@ -3386,6 +3386,7 @@ dependencies = [
  "openconductor-db",
  "plist",
  "portable-pty",
+ "regex",
  "security-framework",
  "serde",
  "serde_json",
