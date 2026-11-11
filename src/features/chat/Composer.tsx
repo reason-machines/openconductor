@@ -22,7 +22,7 @@ import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
 import { canSteerNow, headStatusLabel, resolveSendMode, turnRunning, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
 import type { QueueAction } from "./queue.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
-import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
+import { composerSlashRange, matchCommands, type SlashCommand } from "./slashCommands.ts";
 import { SlashMenu } from "./SlashMenu.tsx";
 import { fuzzyFilterFiles } from "../../backend";
 import type { FileMatch } from "../../spotlight/quickOpen";
@@ -133,8 +133,10 @@ export function Composer({
     if (minimized && inputRef.current?.focused()) inputRef.current.blur();
   }, [minimized, inputRef]);
 
-  const query = focused ? slashQuery(selection.text, selection.start) : null;
-  const slashMatches = useMemo(() => (query === null || query === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashDismissed, slashCommands]);
+  const slash = focused ? composerSlashRange(selection.text, selection.start, selection.end) : null;
+  const query = slash?.query ?? null;
+  const slashKey = slash ? `${slash.start}:${slash.end}:${slash.query}` : null;
+  const slashMatches = useMemo(() => (query === null || slashKey === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashKey, slashDismissed, slashCommands]);
   const slashOpen = slashMatches.length > 0;
   const slashFocus = Math.min(slashIndex, Math.max(0, slashMatches.length - 1));
   const mention = focused && workspacePath ? fileMentionQuery(selection.text, selection.start, selection.end) : null;
@@ -180,9 +182,12 @@ export function Composer({
   }
 
   function pickCommand(command: SlashCommand) {
-    if (inputRef.current?.composing()) return;
-    const next = completeInsert(selection.text, command.insert ?? `/${command.name}`);
-    inputRef.current?.replaceText(next);
+    const box = inputRef.current;
+    if (!box || box.composing() || !slash) return;
+    const current = box.selection();
+    const range = composerSlashRange(current.text, current.start, current.end);
+    if (!range || range.start !== slash.start || range.end !== slash.end || range.query !== slash.query) return;
+    if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
     setSlashIndex(0);
   }
 
@@ -269,12 +274,12 @@ export function Composer({
     if (slashOpen && e.key === "Escape") {
       e.preventDefault();
       e.stopPropagation();
-      setSlashDismissed(query);
+      setSlashDismissed(slashKey);
       return;
     }
     // ↑ with the caret at the very start goes to the last queued message.
     const current = inputRef.current?.selection();
-    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {
+    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.ctrlKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {
       e.preventDefault();
       focus({ row: queue.items[queue.items.length - 1].id });
     } else if (hit("chat.cancel") && working) {

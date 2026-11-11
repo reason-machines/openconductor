@@ -46,6 +46,7 @@ function fixture() {
     "src/features/terminal/tabs": { canOpenTerminal, emptyTabs, terminalTabs, tabsReducer },
     "src/components/ScriptsPanel": { ScriptsPanel: () => null },
     "src/settings/appPrefs": { useAppPrefs: () => ({ experimental_tab_freak_mode: false }) },
+    "src/settings/useBoolPref": { useBoolPref: (key: string) => { assert.equal(key, "experimental_in_app_browser_preview"); return false; } },
     "src/features/chat/ChatModelPicker": { openRepoSettingsPage: unexpected },
   };
   const ssrReact = {

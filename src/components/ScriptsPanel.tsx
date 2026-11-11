@@ -56,6 +56,7 @@ interface Props {
   onAskAgent?: () => void;
   /** Opens the strip on its Run tab (⌘R does before it starts or stops). */
   onShowRun: () => void;
+  onOpenPreview?: (workspaceId: string, url: string) => boolean;
 }
 
 /** Conductor's Run tab text with no run script (copy catalog). */
@@ -92,7 +93,7 @@ const spotSettings = keyedCache<SpotlightTesting>(64);
  * With the repository's spotlight_testing setting on, the Run task picker also
  * offers Spotlight, which syncs this workspace into the repository root.
  */
-export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetupState, onAddRunScript, onAskAgent, onShowRun }: Props) {
+export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetupState, onAddRunScript, onAskAgent, onShowRun, onOpenPreview }: Props) {
   const ref = useMemo(() => workspaceRef(repo, workspace), [repo, workspace]);
   const wsId = workspace.id;
   const displayedWorkspaceId = useRef(wsId);
@@ -158,6 +159,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   }, [wsId]);
 
   useEffect(() => {
+    let disposed = false;
     setPicked(null);
     setError(null);
     setConfigError(null);
@@ -168,11 +170,13 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
           setConfigState({ key: configKey, config: c });
         },
         (e) => {
+          if (disposed) return;
           setError(errorText(e));
           setConfigError(errorText(e));
         },
       );
     refresh().catch(() => {});
+    return () => { disposed = true; };
   }, [ref, configKey, refresh]);
 
   const refreshSpotlight = useCallback(async () => {
@@ -300,9 +304,8 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   }, [runBusy, detectedUrl, runOut, outputKey]);
   // The Open button (`id`): while the run task runs, with a preview URL or one found in its output.
   const previews = runBusy ? previewOptions(repoSettings?.previewUrls?.value, detectedUrl, previewEnv) : [];
-  // In-app browser preview is an experimental setting in Conductor, off by default; with it off
-  // (`lr`, `vs`) the URL opens in the default browser.
   const openPreview = (option: PreviewOption) => {
+    if (onOpenPreview?.(wsId, option.resolvedUrl)) return;
     openUrl(option.resolvedUrl).catch((e) => console.error("Failed to open URL:", e));
   };
 

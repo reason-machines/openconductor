@@ -1,0 +1,62 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: starting clear preserves screen/history clearing and guards the redraw request
+ok 1 - starting clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 461.865284
+  type: 'test'
+  ...
+# Subtest: running clear preserves screen/history clearing and guards the redraw request
+ok 2 - running clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 15.276254
+  type: 'test'
+  ...
+# Subtest: exited clear preserves screen/history clearing and guards the redraw request
+ok 3 - exited clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 10.065723
+  type: 'test'
+  ...
+# Subtest: spawn_error clear preserves screen/history clearing and guards the redraw request
+ok 4 - spawn_error clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 6.787188
+  type: 'test'
+  ...
+# Subtest: disabled clear preserves screen/history clearing and guards the redraw request
+ok 5 - disabled clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 6.41559
+  type: 'test'
+  ...
+# Subtest: clear shortcut targets only its terminal and preserves user-input metadata (false)
+ok 6 - clear shortcut targets only its terminal and preserves user-input metadata (false)
+  ---
+  duration_ms: 7.829035
+  type: 'test'
+  ...
+# Subtest: clear shortcut targets only its terminal and preserves user-input metadata (true)
+ok 7 - clear shortcut targets only its terminal and preserves user-input metadata (true)
+  ---
+  duration_ms: 7.196183
+  type: 'test'
+  ...
+# Subtest: clearing a closed terminal cannot write to a surviving terminal
+ok 8 - clearing a closed terminal cannot write to a surviving terminal
+  ---
+  duration_ms: 6.889477
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 863.150348

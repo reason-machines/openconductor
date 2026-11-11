@@ -43,6 +43,19 @@ after(async () => {
 });
 
 async function fixture({ entry = "settings", strict = true, workspace, timeoutMs, loginDelayMs, existing = false, pending = false, failOpen = false, stateTimeoutMs = 10_000 } = {}) {
+  const started = performance.now();
+  const trace = [];
+  const ipc = [];
+  const phase = (name, detail = {}) => {
+    const history = name.startsWith("ipc.") ? ipc : trace;
+    history.push({ ms: Math.round(performance.now() - started), phase: name, ...detail });
+    if (history.length > 40) history.shift();
+  };
+  const summarize = (value) => ({
+    state: ["checking", "idle", "starting", "waiting", "connected", "cancelled", "timedOut", "failed"].includes(value?.state) ? value.state : "unknown",
+    attemptId: typeof value?.attemptId === "string" && /^\d{1,20}$/.test(value.attemptId) ? value.attemptId : undefined,
+  });
+  phase("fixture.begin");
   const client = randomUUID();
   const home = join(temporary, client);
   await mkdir(home);
@@ -52,7 +65,12 @@ async function fixture({ entry = "settings", strict = true, workspace, timeoutMs
     await post(`/pairings/${pending.id}/approve`, { account: "sam", workspace: "ws-beta" });
     await post(`/pairings/${pending.id}/poll`);
   }
+  phase("bridge.start");
   const bridge = startRustBridge(binary, { home, origin: pairing.origin, client, executable: resolve("tools/reason-pairing/fake-reason.py"), timeoutMs, loginDelayMs });
+  const login = (id) => { if (id === client) phase("server.login"); };
+  const completed = (id) => { if (id === client) phase("server.completed"); };
+  pairing.notifications.on("login", login);
+  pairing.notifications.on("completed", completed);
   const context = await browser.newContext({ viewport: { width: 1280, height: 820 }, reducedMotion: "reduce" });
   const opened = [];
   const external = [];
@@ -66,29 +84,54 @@ async function fixture({ entry = "settings", strict = true, workspace, timeoutMs
   });
   await context.exposeBinding("__pairingInvoke", async (_, command, args) => {
     if (command === "plugin:opener|open_url") {
+      phase("browser.open");
       assert.equal(new URL(args.url).origin, pairing.origin, "only the emitted local fake pairing URL can open");
-      if (rejectOpen) { rejectOpen = false; throw new Error("Fixture browser opener refused"); }
+      if (rejectOpen) { phase("browser.refused"); rejectOpen = false; throw new Error("Fixture browser opener refused"); }
       const approval = await context.newPage();
       await approval.goto(args.url);
       await approval.getByRole("status").filter({ hasText: "Waiting for your approval" }).waitFor();
       opened.push(approval);
+      phase("browser.ready");
       return;
     }
-    return bridge.invoke(command, args);
+    const label = ["reason_login_start", "reason_login_status", "reason_login_cancel", "reason_account_status"].includes(command) ? command : "other";
+    phase("ipc.request", { command: label });
+    try {
+      const value = await bridge.invoke(command, args);
+      phase("ipc.reply", { command: label, ...summarize(value) });
+      return value;
+    } catch (error) {
+      phase("ipc.rejected", { command: label });
+      throw error;
+    }
   });
   const page = await context.newPage();
   page.on("pageerror", (error) => errors.push(error.message));
   const params = new URLSearchParams({ entry, strict: strict ? "1" : "0" });
   if (workspace) params.set("workspace", workspace);
   await page.goto(`${base}/tools/reason-pairing/index.html?${params}`);
+  phase("fixture.ready");
   return {
-    page, client, bridge, opened, errors,
+    page, client, bridge, opened, errors, phase,
     async state() { return JSON.parse(await page.getByTestId("login-state").textContent()); },
     async waitState(state) {
-      await page.waitForFunction((wanted) => JSON.parse(document.querySelector('[data-testid="login-state"]').textContent).state === wanted, state, { timeout: stateTimeoutMs });
-      return this.state();
+      phase("state.wait", { wanted: state });
+      try {
+        await page.waitForFunction((wanted) => JSON.parse(document.querySelector('[data-testid="login-state"]').textContent).state === wanted, state, { timeout: stateTimeoutMs });
+        phase("state.reached", { wanted: state });
+        return this.state();
+      } catch (error) {
+        phase("state.failed", { wanted: state });
+        try {
+          const final = await page.getByTestId("login-state").textContent({ timeout: 500 }).then((text) => summarize(JSON.parse(text))).catch(() => ({ state: "unavailable" }));
+          const events = pairing.events.filter((event) => event.client === client || pairing.pairings.get(event.pairing)?.client === client).slice(-40).map((event) => ({ type: event.type, state: event.state }));
+          console.error("Reason pairing diagnostics", JSON.stringify({ final, trace, ipc, events, stderr: bridge.diagnostics() }));
+        } catch {}
+        throw error;
+      }
     },
     async start() {
+      phase("sign-in.click");
       await page.getByRole("button", { name: entry === "onboarding" ? "Sign up" : entry === "chat" ? "Sign in to Reason" : "Sign in with Reason", exact: true }).click();
       await this.waitState("waiting");
       await page.waitForFunction(() => Boolean(document.querySelector('[data-testid="reason-login-code"]')), null, { timeout: 5000 });
@@ -97,11 +140,13 @@ async function fixture({ entry = "settings", strict = true, workspace, timeoutMs
       return this.state();
     },
     async approve(account = "sam", workspace = "ws-beta") {
+      phase("approval.begin");
       const approval = opened.at(-1);
       await approval.getByRole("combobox", { name: "Fixture account" }).selectOption(account);
       await approval.getByRole("combobox", { name: "Fixture workspace" }).selectOption(workspace);
       await approval.getByRole("button", { name: "Approve fixture sign-in", exact: true }).click();
       await approval.getByRole("status").filter({ hasText: "Fixture approved" }).waitFor();
+      phase("approval.complete");
     },
     async capture(name) {
       if (!evidence) return;
@@ -111,7 +156,11 @@ async function fixture({ entry = "settings", strict = true, workspace, timeoutMs
     },
     async close() {
       try { assert.deepEqual(external, [], "no request reached a production origin"); assert.deepEqual(errors, [], "no browser runtime errors"); }
-      finally { await context.close(); await bridge.close(); }
+      finally {
+        pairing.notifications.off("login", login);
+        pairing.notifications.off("completed", completed);
+        await context.close(); await bridge.close();
+      }
     },
   };
 }
@@ -150,11 +199,15 @@ test("all entry points share one attempt across switches and control remounts", 
   try {
     const initial = await f.start();
     for (const entry of ["chat", "onboarding", "settings"]) {
+      f.phase("entry.switch", { entry });
       await f.page.getByRole("button", { name: entry, exact: true }).click();
       assert.equal((await f.state()).attemptId, initial.attemptId);
+      f.phase("controls.unmount", { entry });
       await f.page.getByRole("button", { name: "Unmount controls", exact: true }).click();
+      f.phase("controls.mount", { entry });
       await f.page.getByRole("button", { name: "Mount controls", exact: true }).click();
       await f.page.getByTestId("reason-login-code").waitFor();
+      f.phase("controls.ready", { entry });
     }
     assert.equal(f.opened.length, 1);
     assert.equal(pairing.events.filter((e) => e.client === f.client && e.type === "created").length, 1);

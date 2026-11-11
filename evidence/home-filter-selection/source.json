@@ -1,0 +1,431 @@
+{
+  "id": "HOME-FILTER-SELECTION-01",
+  "status": "MOUNTED_OPENCONDUCTOR_RED_THEN_GREEN_REFERENCE_NATIVE_UNVERIFIED",
+  "fresh_main_scoped_comparison": {
+    "sha": "e8fad6caae23b20ddd81196c54c293e0001accd6",
+    "unchanged_since_recorded_main": ["src/components/AllWorkspaces.tsx", "src/home/allWorkspaces.ts"]
+  },
+  "main_sha": "6be97d85b854b2a1bf7930db49e2227a26af2e6a",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "asset": "dist/assets/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "identity_basis": "Previously verified full retained renderer; this pass reuses its recorded full digest and verifies each new exact span. No reacquisition or repeated whole-asset hash.",
+    "parent_rea_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "retained_service_receipt_attributed": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "original_attachment_id": "e81cbda9-871b-4334-a706-3241320dc976"
+  },
+  "offset_convention": "Zero-based half-open UTF-8 bytes and UTF-16 code units; payload is exact concatenation without separators.",
+  "source_packet": {
+    "id": "ACQ-HOME-FILTER-01",
+    "payload_bytes": 36939,
+    "payload_sha256": "46d69ad1d5d40bea172d7a16047b453f2cacf41f450f581e4cf3c585555399a8",
+    "inherited_spans": 24,
+    "inherited_static_check_groups": 59,
+    "note": "Already completed source verification, not rerun or counted as mounted verification."
+  },
+  "spans": [
+    {
+      "name": "Home-UJo",
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "utf16_half_open": [
+        9817995,
+        9829017
+      ],
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030"
+    },
+    {
+      "name": "Home-filter-state-MJo",
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9860278,
+        9862126
+      ],
+      "utf16_half_open": [
+        9814724,
+        9816572
+      ],
+      "bytes": 1848,
+      "sha256": "7e75df8888bf9d63c869ce04c489d322f385442a92eeef71253a9cee4f51bfe9"
+    },
+    {
+      "name": "Home-filter-preferences-mFi",
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9859767,
+        9860278
+      ],
+      "utf16_half_open": [
+        9814213,
+        9814724
+      ],
+      "bytes": 511,
+      "sha256": "9635e1f76a54222c2cb94d1a86eeacdf6e1d2099c72eb043ccfa1ffd4a886a99"
+    },
+    {
+      "name": "Home-filter-controls-nFi",
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9820611,
+        9824705
+      ],
+      "utf16_half_open": [
+        9775057,
+        9779151
+      ],
+      "bytes": 4094,
+      "sha256": "e8064ef68babed91e936ed903442e09407fa15cef1ff3031f15d0aecfee61263"
+    },
+    {
+      "name": "Home-project-toggle-GXn",
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9819644,
+        9819711
+      ],
+      "utf16_half_open": [
+        9774090,
+        9774157
+      ],
+      "bytes": 67,
+      "sha256": "884e625a857ed9b7c18316261ba59318693367beba5c1730694a075843f385e4"
+    },
+    {
+      "name": "Home-row-_Jo",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; includes its terminating semicolon",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9845318,
+        9849951
+      ],
+      "utf16_half_open": [
+        9799764,
+        9804397
+      ],
+      "bytes": 4633,
+      "sha256": "e9d9cff5d2c849eeee2425d64cfb94bb6283ba19b2e3e836e07ab762510344ea"
+    },
+    {
+      "name": "Home-date-group-iJn",
+      "kind": "complete const declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9853380,
+        9854813
+      ],
+      "utf16_half_open": [
+        9807826,
+        9809259
+      ],
+      "bytes": 1433,
+      "sha256": "61151c52d3cdb19b23cde95477b57653c1ced39142e1735151b43b03bda14e2a"
+    },
+    {
+      "name": "command-root-Xyi",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2903072,
+        2908580
+      ],
+      "utf16_half_open": [
+        2902626,
+        2908134
+      ],
+      "bytes": 5508,
+      "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92"
+    },
+    {
+      "name": "command-item-M5s",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2908581,
+        2909564
+      ],
+      "utf16_half_open": [
+        2908135,
+        2909118
+      ],
+      "bytes": 983,
+      "sha256": "84e0d537998fe7e8a40a285ca3b33d0aa3309933ceab0c4e0dca0dd6ad66acda"
+    },
+    {
+      "name": "command-group-j5s",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2909565,
+        2910190
+      ],
+      "utf16_half_open": [
+        2909119,
+        2909744
+      ],
+      "bytes": 625,
+      "sha256": "d0160813e758af7d2dbe95f24ef9531cdb156ffb7284575a3da8d745e21dea1f"
+    },
+    {
+      "name": "command-input-B5s",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2910380,
+        2910953
+      ],
+      "utf16_half_open": [
+        2909934,
+        2910507
+      ],
+      "bytes": 573,
+      "sha256": "70fa9c07b0d8b605e648601e01cd266db15dadad0ac59b8cb5569cee58c02758"
+    },
+    {
+      "name": "command-list-$5s",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2910954,
+        2911606
+      ],
+      "utf16_half_open": [
+        2910508,
+        2911160
+      ],
+      "bytes": 652,
+      "sha256": "d506ed15e29788f64ffedf3b213af32771040b3d6bcc30f964b584688def97e2"
+    },
+    {
+      "name": "command-component-P6",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; closes parent var statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2912384,
+        2912493
+      ],
+      "utf16_half_open": [
+        2911938,
+        2912047
+      ],
+      "bytes": 109,
+      "sha256": "9b57d93a69e00511c26ce27dfc26117a75a0a2f70492d5f3436f58f4351df3bc"
+    },
+    {
+      "name": "command-value-registration-Zyi",
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2913001,
+        2913356
+      ],
+      "utf16_half_open": [
+        2912555,
+        2912910
+      ],
+      "bytes": 355,
+      "sha256": "4b0a2f5d6eb1f9b91d99f987e0f85aeaa4abcdd1849f44ff769532113d74d44b"
+    },
+    {
+      "name": "command-layout-queue-G5s",
+      "kind": "complete var declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2913356,
+        2913510
+      ],
+      "utf16_half_open": [
+        2912910,
+        2913064
+      ],
+      "bytes": 154,
+      "sha256": "190e7246dcee23264d59c5e85b5eb97d12b70cb0baa043146b17a8f573f12bf0"
+    },
+    {
+      "name": "command-layout-effect-and-subscription",
+      "kind": "complete var declaration plus two complete functions",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2912772,
+        2913001
+      ],
+      "utf16_half_open": [
+        2912326,
+        2912555
+      ],
+      "bytes": 229,
+      "sha256": "14fc2ffd76f7256df808bf455e47ee784f272e16a18053b059c4c1f6c817fc08"
+    },
+    {
+      "name": "Home-command-root-KV",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2913899,
+        2914275
+      ],
+      "utf16_half_open": [
+        2913453,
+        2913829
+      ],
+      "bytes": 376,
+      "sha256": "61beeb6e4e35c064cdc7c60a0c70f912a36770c820c9adf22ba9f34272cd9926"
+    },
+    {
+      "name": "Home-command-input-kI",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2916816,
+        2917726
+      ],
+      "utf16_half_open": [
+        2916370,
+        2917280
+      ],
+      "bytes": 910,
+      "sha256": "970dc084f87ebeb0e3f1220debf849ee4115e11f0be19c8442dab05ba688decf"
+    },
+    {
+      "name": "Home-command-list-L6",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2917726,
+        2918148
+      ],
+      "utf16_half_open": [
+        2917280,
+        2917702
+      ],
+      "bytes": 422,
+      "sha256": "533d2ff43e5a5709d0db2303174a8980d1c21a0dadd464065a6ca46857bede2f"
+    },
+    {
+      "name": "Home-command-group-ff",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2918531,
+        2919065
+      ],
+      "utf16_half_open": [
+        2918085,
+        2918619
+      ],
+      "bytes": 534,
+      "sha256": "196ce2d54f6f8e7c9af7e99c28da871be22c69cbe105efb02be84218e0cee310"
+    },
+    {
+      "name": "Home-command-item-$o",
+      "kind": "complete const declaration plus displayName assignment",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2919429,
+        2920086
+      ],
+      "utf16_half_open": [
+        2918983,
+        2919640
+      ],
+      "bytes": 657,
+      "sha256": "3405dc440bf8cc798c7d6cb3d69b23936d31ac03dabafe29535995e9316f92c2"
+    },
+    {
+      "name": "Home-route-Y7a",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        11520155,
+        11520242
+      ],
+      "utf16_half_open": [
+        11474205,
+        11474292
+      ],
+      "bytes": 87,
+      "sha256": "07b1a1eb2c702bca0ecbfedd091c57049538c81130c371907621df6320fce952"
+    },
+    {
+      "name": "router-component-mount-tIn",
+      "kind": "complete binding initializer in a surrounding multi-binding statement, not a whole statement; includes var keyword",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        147294,
+        148030
+      ],
+      "utf16_half_open": [
+        147290,
+        148026
+      ],
+      "bytes": 736,
+      "sha256": "fde99b8899aa56ea5296420eb905b5960f71a1be4928ea33458bf3f3c993f1a7"
+    },
+    {
+      "name": "router-tree-and-options",
+      "kind": "complete router tree/options bindings terminating their surrounding const statement",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        11521634,
+        11522055
+      ],
+      "utf16_half_open": [
+        11475684,
+        11476105
+      ],
+      "bytes": 421,
+      "sha256": "1bacbf1801562202d140cb2599168350a8c8fecf0f1e4a06c999ce840b1db4f9"
+    }
+  ],
+  "source_inference": "With unchanged search and date buckets, if the selected workspace survives a repository-filter change without moving to another date group, the reference source retains its selected localId. Current main resets to the first filtered row. This is a closed static divergence, not a mounted, native or visual counterexample.",
+  "current_files": [
+    {
+      "path": "src/components/AllWorkspaces.tsx",
+      "commit": "6be97d85b854b2a1bf7930db49e2227a26af2e6a",
+      "git_blob": "69f72006f78a161dbceb3d5ff4196d060ec6d620",
+      "bytes": 16560,
+      "sha256": "09a33ea155ddd2a6dfd3a547ff3a4c69b95e203de5e67bd3adb60dfa63d10c38"
+    },
+    {
+      "path": "src/home/allWorkspaces.ts",
+      "commit": "6be97d85b854b2a1bf7930db49e2227a26af2e6a",
+      "git_blob": "e8f03edc99d2c27ec3aaf118521ad61099187234",
+      "bytes": 13170,
+      "sha256": "45e77dda94f361cdf16be238f5ef55ae8b5329166da88197e14d84651c6d35bd"
+    },
+    {
+      "path": "src/home/allWorkspaces.test.ts",
+      "commit": "6be97d85b854b2a1bf7930db49e2227a26af2e6a",
+      "git_blob": "2a3eb5df8f29ef7c9e65ef74918f2fb8ed1c9ca9",
+      "bytes": 10517,
+      "sha256": "be012d620146bf83143b87dc54ed7f6798784db4e8fa60c4eb9d665ff4dfff1f"
+    }
+  ],
+  "regression": {
+    "path": "src/components/allWorkspacesSelection.test.ts",
+    "sha256": "2d4ff9b2fd881e438d6d553d89e1bb024b0666298994afb8f2bad15595435e39",
+    "surface": "Actual AllWorkspaces mounted with react-test-renderer; real homeRows/groupByDate, mocked unrelated I/O/status/icon boundaries. Retained reference JavaScript is not executed.",
+    "status": "RED_3_FAILED_4_PASSED_THEN_SAME_FIXTURE_GREEN_7_PASSED",
+    "baseline_receipt": "red.json",
+    "candidate_receipt": "green.json",
+    "install_receipt": "install.json",
+    "baseline_inputs": "baseline.json",
+    "computer": "2f55d343-d8e8-5df2-a012-bba9ca8cf476",
+    "candidate_component_sha256": "f9be6bc8124033ac7e7062b8d4b1a423286a7b86b58465d0258b049f5ca6f81f"
+  },
+  "execution_limits": [
+    "One isolated lock-derived nine-package script-disabled installation and two unchanged single-worker mounted-component runs completed under the bounded grant.",
+    "No local related suite, typecheck, build, browser, server, native launch, provider use or reference-code execution.",
+    "Local slot released after install and test processes terminated. Native, reference-mounted, installed-app and visual acceptance remain unverified."
+  ]
+}
