@@ -1,0 +1,38 @@
+{
+  "baseline_main": "26ba01a1857a425780252abe3d28aa4eb9ba9572",
+  "latest_main_checked": "6be97d85b854b2a1bf7930db49e2227a26af2e6a",
+  "latest_main_scoped_source_equality": "PASS",
+  "regression_sha256": "ad35cf02f51a7af9cbce05841f13c64812a85c9cf8e3d4c06d5cc88d3a13aa50",
+  "red": {
+    "source": "isolated baseline main snapshot",
+    "test": "same final regression file, byte-for-byte",
+    "passed": 0,
+    "failed": 7,
+    "exit_code": 1,
+    "log": "before.tap"
+  },
+  "green": {
+    "command": "node --experimental-strip-types --test src/features/terminal/*.test.ts src/components/resourceUsageLabels.test.ts",
+    "passed": 94,
+    "failed": 0,
+    "exit_code": 0,
+    "log": "after.tap"
+  },
+  "typecheck": {
+    "command": "npm run typecheck",
+    "result": "PASS"
+  },
+  "colors": {
+    "command": "node scripts/check-colors.mjs",
+    "result": "PASS"
+  },
+  "reference": {
+    "command": "python3 evidence/terminal/spawn-failure/verify.py --originals .oc-tmp/vio-received-72733982/originals",
+    "result": "PASS",
+    "spans": 44,
+    "complete_original_assets_rehashed": 2
+  },
+  "diff_check": "PASS",
+  "visual_native_installed_shell_provider_acceptance": "NOT RUN; no runtime admission",
+  "full_local_frontend_suite": "NOT RUN; focused checks only, hosted CI required"
+}
