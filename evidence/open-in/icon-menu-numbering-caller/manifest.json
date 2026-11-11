@@ -1,0 +1,136 @@
+{
+  "unit": "ICON-OPEN-IN-NUMBERS-15",
+  "baseline_main": "524c598b34157483e669167ed1f9032cc02fff18",
+  "status": "TEST_FIRST_PRODUCT_UNCHANGED_HOSTED_RED_PENDING",
+  "reference_asset": {
+    "path": ".oc-tmp/gce-retained-source/renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "retained_rea_evidence": [
+    {
+      "id": "ev_338577609e67c31212d529d59606e90597850528ea9a2f9559d23a4876c960d1",
+      "role": "Open in bounded slices including KH through P9, X7t/cJe, retained analyze result"
+    },
+    {
+      "id": "ev_25d404893f269c4ba311ecebd20fd52643532b2e0cc74b890d3dc5b734e5be5b",
+      "role": "P9 callers returned zero relations, partial coverage"
+    },
+    {
+      "id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+      "role": "Full renderer inventory retained; renderer parse skipped after heap exhaustion"
+    }
+  ],
+  "reference_spans": [
+    {
+      "symbol": "P9",
+      "utf8_byte_start": 2689481,
+      "utf8_byte_end": 2697526,
+      "sha256": "bf2bd3507c56618ed2d218f4c6efe656926ed3d4a523f8fd16ce5cffd153aede"
+    },
+    {
+      "symbol": "cFn",
+      "utf8_byte_start": 2686373,
+      "utf8_byte_end": 2687659,
+      "sha256": "e97a00b92f89f1593a47e40029d9dcad399c48304f42c2b34eedc1c3f986c248"
+    },
+    {
+      "symbol": "bvs",
+      "utf8_byte_start": 2687659,
+      "utf8_byte_end": 2689481,
+      "sha256": "f74355b8776054d361f6d3c8a322df9baf613aa06f1bd4333bb34421f77976d6"
+    },
+    {
+      "symbol": "cJe",
+      "utf8_byte_start": 2681862,
+      "utf8_byte_end": 2684439,
+      "sha256": "3317b42b8f117941782dc184817a37c529e8130514e56f4d7b0cda52762ec518"
+    },
+    {
+      "symbol": "h2",
+      "utf8_byte_start": 2224899,
+      "utf8_byte_end": 2225988,
+      "sha256": "d773d88702731953e9a0a9e60bcb35afa3b4fa1d71e2df3ee745becd5ef3e179"
+    },
+    {
+      "symbol": "g4i",
+      "utf8_byte_start": 2685573,
+      "utf8_byte_end": 2685979,
+      "sha256": "c4415116a60678c021ff52c71e6025ea0fbb3ece2729f1a605b99b9fee8cab54"
+    },
+    {
+      "symbol": "pvs",
+      "utf8_byte_start": 2685979,
+      "utf8_byte_end": 2686053,
+      "sha256": "f3f9673ae5fb266c8bf7c4aaa05bf0218c0926b8fa8112a4486e412481be0bfc"
+    },
+    {
+      "symbol": "Yc",
+      "utf8_byte_start": 2231400,
+      "utf8_byte_end": 2232272,
+      "sha256": "34efee668aa3b543ee3a0840323d9b3c3bfa0b6a7b2bb39f55491d89bb396246"
+    },
+    {
+      "symbol": "original-root-path-caller",
+      "utf8_byte_start": 10855215,
+      "utf8_byte_end": 10855837,
+      "sha256": "08e99eaf097523abcf3ea4583c43998124753162fa63cd12f728f746224a3073"
+    },
+    {
+      "symbol": "original-workspaces-path-caller",
+      "utf8_byte_start": 10855687,
+      "utf8_byte_end": 10856565,
+      "sha256": "74a698deeca829c5747e741ced643b2f91d75b64064525c548be255c314c3d3e"
+    },
+    {
+      "symbol": "X7t",
+      "utf8_byte_start": 2680428,
+      "utf8_byte_end": 2681578,
+      "sha256": "6596e701d5def630b30fd6fd0c2504191e54acaf089dbfcfe917a4abf5747e7b"
+    },
+    {
+      "symbol": "Pu",
+      "utf8_byte_start": 700703,
+      "utf8_byte_end": 701216,
+      "sha256": "e6153e0780bcd6d512055d5af34ba5daa8e7eab9d69417825087e414f5489215"
+    },
+    {
+      "symbol": "Bde",
+      "utf8_byte_start": 2217366,
+      "utf8_byte_end": 2217821,
+      "sha256": "d367a812c3c1cb606e31c324876f3bc3abd221655c054da4db4fa0cab086fa66"
+    }
+  ],
+  "baseline_files": {
+    "src/features/openIn/OpenInButton.tsx": "9aa5cf9904a860dcccd1fa42450b96044eb84c334080267c33f88d8f20dde727",
+    "src/settings/rows/RepoMiscRows.tsx": "f6a1b5607c2c9ae3ffb6c283411516c03ee07f64343554013a876ee6af073a67",
+    "src/keybindings/KeybindingsProvider.tsx": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+    "src/features/openIn/apps.ts": "ffb9bdf5e6b21894768d4f36ca3132b00061ea77c9e538b44c40dfbec065a924",
+    "src/features/diff/FilePathChip.tsx": "c91a799ae58adc61a2d144050c51b71dbdd23e0a4f7f74b20e52a8fbc595fea5",
+    "src/features/diff/filePathChipAlacritty.test.ts": "97c62299ab7cae93bfe17379e56254c01a977cf5d66b06f93e9e38bd761783e2"
+  },
+  "replacements": [
+    [
+      "const row = open ? rows[i] : undefined;",
+      "const row = split && open ? rows[i] : undefined;"
+    ],
+    [
+      "{numbers.apps[i] !== undefined &&",
+      "{split && numbers.apps[i] !== undefined &&"
+    ],
+    [
+      "{numbers.copyPath !== undefined && (",
+      "{split && numbers.copyPath !== undefined && ("
+    ]
+  ],
+  "candidate_source_sha256": "1602d068126b038a20746bd8f321059d894a5e007d7bbf07df0daac6ed0ea49c",
+  "regression_file": "src/features/openIn/iconMenuNumbering.test.ts",
+  "regression_sha256": "44eb051c160108ab818bf1c5045838df306a623c87cbb9350abed02feac4ffa3",
+  "regression_cases": 11,
+  "predicted_behavior_failures": 4,
+  "predicted_passing_controls": 7,
+  "frozen_legacy_executable_sha256": "12e77bd3377a3ac6b112c69cdf946633bf0ffd60bb5104b6501cc84d235fed2b",
+  "native_gui": "NOT_RUN",
+  "local_node_or_rust": "NOT_RUN",
+  "original_js_evaluated": false
+}
