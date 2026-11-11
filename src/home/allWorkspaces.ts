@@ -259,6 +259,7 @@ export function homeRows(
     if (filters.projects.length > 0 && !filters.projects.includes(repo.id)) continue;
     const title = workspaceLabel({
       name: workspace.name,
+      workspaceName: workspace.workspaceName,
       branch: workspace.branch,
       prTitle: workspace.prTitle,
       userSetWorkspaceName: workspace.userSetWorkspaceName,
