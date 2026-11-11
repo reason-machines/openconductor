@@ -1,0 +1,62 @@
+# Subtest: editing a configured Anthropic API key retains Get key
+not ok 2418 - editing a configured Anthropic API key retains Get key
+  ---
+  duration_ms: 176.75435
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/settings/agents/secretEditorKeyLink.test.ts:75:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Replacing a configured key must retain its provider key link
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/secretEditorKeyLink.test.ts:81:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: editing a configured OpenAI API key retains Get key
+not ok 2419 - editing a configured OpenAI API key retains Get key
+  ---
+  duration_ms: 50.986627
+  type: 'test'
+  location: '/home/runner/work/openconductor/openconductor/src/settings/agents/secretEditorKeyLink.test.ts:75:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Replacing a configured key must retain its provider key link
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/secretEditorKeyLink.test.ts:81:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: an unconfigured key keeps its provider link without Cancel
+ok 2420 - an unconfigured key keeps its provider link without Cancel
+  ---
+  duration_ms: 59.18175
+  type: 'test'
+  ...
+# Subtest: editing a key without a provider URL does not invent a link
+ok 2421 - editing a key without a provider URL does not invent a link
+  ---
+  duration_ms: 49.905202
+  type: 'test'
+  ...

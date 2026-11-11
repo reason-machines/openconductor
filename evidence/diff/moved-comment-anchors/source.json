@@ -4,7 +4,7 @@
   "product": {
     "src/features/diff/ReviewComments.tsx": {
       "baseline": "a6ba5b669d94cb402d4836cd913ed8b3138d24cb948568a94eea2958de273521",
-      "candidate": "d40c6bb567f136f9bd6efa7f12d517d7430a0a736bc7d995721055bd5b5a881f"
+      "candidate": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508"
     },
     "src/features/diff/FileDiffView.tsx": {
       "baseline": "9cd017dd3eff31391e722a5928ec2cdf6554b103db92e69bd6019858fc4d5e07",
