@@ -231,6 +231,15 @@ async function fixture(files: FileDiff[], initiallyViewed: FileDiff[] = [], init
     previewUnmounts: () => previewUnmounts,
     previewValue: () => renderer.root.findByType("textarea").props.value,
     writePreview(text: string) { act(() => renderer.root.findByType("textarea").props.onChange({ target: { value: text } })); },
+    previewPaths: () => renderer.root.findAllByType("textarea").map((node: { props: Record<string, unknown> }) => node.props["data-file-preview"]).sort(),
+    filePreviewValue: (path: string) => renderer.root.findByProps({ "data-file-preview": path }).props.value,
+    writeFilePreview(path: string, text: string) {
+      act(() => renderer.root.findByProps({ "data-file-preview": path }).props.onChange({ target: { value: text } }));
+    },
+    async turn(ref: { sessionId: string; turnId: string }, path: string, next: FileDiff[]) {
+      loadedFiles = next;
+      await act(async () => { state().openTurnFile(ref, path); });
+    },
     present(change: Partial<ChangesPresentation>) {
       presentation = { ...presentation, ...change };
       act(() => { renderer.update(React.createElement(Probe)); });
@@ -726,6 +735,285 @@ for (const scope of subsetScopes) {
     }
   }
 }
+
+test("actual DiffTab keeps independent mounted preview state when selecting A, B, then A", async () => {
+  const files = [navigationFile("a.ts"), navigationFile("b.ts")];
+  const view = await fixture(files, [], {}, true);
+  try {
+    assert.equal(view.previews(), 0, "unvisited files must not mount");
+    view.open(0);
+    view.writeFilePreview("a.ts", "local A state");
+    view.open(1);
+    assert.equal(view.previews(), 2, "visiting B must retain A's mounted view");
+    assert.equal(view.visiblePreviews(), 1);
+    view.writeFilePreview("b.ts", "local B state");
+    view.open(0);
+    assert.equal(view.filePreviewValue("a.ts"), "local A state");
+    assert.equal(view.filePreviewValue("b.ts"), "local B state");
+    assert.equal(view.previewMounts(), 2);
+    assert.equal(view.previewUnmounts(), 0);
+    assert.equal(view.state().current, 0);
+    assert.equal(view.state().files, files);
+    assert.equal(view.openCalls(), 3);
+  } finally { view.close(); }
+});
+
+test("actual DiffTab retains five recent unique views and evicts the least recently visited", async () => {
+  const files = ["a", "b", "c", "d", "e", "f"].map((name) => navigationFile(`${name}.ts`));
+  const view = await fixture(files, [], {}, true);
+  try {
+    for (let i = 0; i < 5; i++) {
+      view.open(i);
+      view.writeFilePreview(files[i].path, `state ${i}`);
+    }
+    assert.equal(view.previews(), 5, "all five recent files stay mounted");
+    view.open(0);
+    view.open(5);
+    assert.deepEqual(view.previewPaths(), ["a.ts", "c.ts", "d.ts", "e.ts", "f.ts"]);
+    assert.equal(view.filePreviewValue("a.ts"), "state 0", "revisiting A refreshes its recency");
+    assert.equal(view.visiblePreviews(), 1);
+    assert.equal(view.previewUnmounts(), 1, "the sixth unique file evicts only B");
+    view.open(1);
+    assert.equal(view.filePreviewValue("b.ts"), "", "an evicted view starts fresh");
+    assert.equal(view.previews(), 5);
+    assert.equal(view.visiblePreviews(), 1);
+    assert.equal(view.previewUnmounts(), 2);
+  } finally { view.close(); }
+});
+
+test("actual DiffTab hides all retained previews for no matches without losing either visited view", async () => {
+  const files = [navigationFile("a.ts"), navigationFile("b.ts")];
+  const view = await fixture(files, [], {}, true);
+  try {
+    view.open(0);
+    view.writeFilePreview("a.ts", "A before filter");
+    view.open(1);
+    view.writeFilePreview("b.ts", "B before filter");
+    view.present({ filePathFilter: "zzzz-no-match" });
+    assert.equal(view.noMatchMessages(), 1);
+    assert.equal(view.previews(), 2, "no-match filtering retains every visited view");
+    assert.equal(view.visiblePreviews(), 0);
+    view.present({ filePathFilter: "" });
+    view.open(0);
+    assert.equal(view.filePreviewValue("a.ts"), "A before filter");
+    assert.equal(view.filePreviewValue("b.ts"), "B before filter");
+    assert.equal(view.previewMounts(), 2);
+    assert.equal(view.previewUnmounts(), 0);
+  } finally { view.close(); }
+});
+
+test("actual DiffTab clears retained views when the existing selection redirects to a filtered destination", async () => {
+  const files = [navigationFile("a.drop"), navigationFile("b.drop"), navigationFile("c.keep")];
+  const view = await fixture(files, [], {}, true);
+  try {
+    view.open(0);
+    view.writeFilePreview("a.drop", "A before redirect");
+    view.open(1);
+    assert.equal(view.previews(), 2, "ordinary navigation retains A before the redirect");
+    const opens = view.openCalls();
+    view.present({ filePathFilter: "keep" });
+    assert.equal(view.state().selected, files[2]);
+    assert.deepEqual(view.previewPaths(), ["c.keep"], "an automatic redirect resets the retained-view set");
+    assert.equal(view.visiblePreviews(), 1);
+    assert.equal(view.openCalls(), opens);
+    view.present({ filePathFilter: "" });
+    view.open(0);
+    assert.equal(view.filePreviewValue("a.drop"), "", "redirected-away state must not be resurrected");
+  } finally { view.close(); }
+});
+
+for (const scope of ["uncommitted", { type: "commit", commitHash: "first" }] satisfies DiffScope[]) {
+  test(`actual DiffTab isolates a retained path between all and ${typeof scope === "string" ? scope : "commit"} scope`, async () => {
+    const files = [navigationFile("a.ts")];
+    const view = await fixture(files, [], {}, true);
+    try {
+      view.open(0);
+      view.writeFilePreview("a.ts", "all-scope state");
+      await view.scope(scope, files);
+      assert.equal(view.filePreviewValue("a.ts"), "", "the same path in a different scope must remount");
+      view.writeFilePreview("a.ts", "subset state");
+      await view.scope("all", files);
+      assert.equal(view.filePreviewValue("a.ts"), "", "scope-local view state must not leak back");
+      assert.equal(view.previews(), 1);
+      assert.equal(view.visiblePreviews(), 1);
+    } finally { view.close(); }
+  });
+}
+
+test("actual DiffTab isolates the same file between distinct commit identities", async () => {
+  const files = [navigationFile("a.ts")];
+  const view = await fixture(files, [], {}, true);
+  try {
+    await view.scope({ type: "commit", commitHash: "first" }, files);
+    view.open(0);
+    view.writeFilePreview("a.ts", "first-commit state");
+    await view.scope({ type: "commit", commitHash: "second" }, files);
+    assert.equal(view.filePreviewValue("a.ts"), "", "commit hash is part of mounted view identity");
+    assert.equal(view.previews(), 1);
+  } finally { view.close(); }
+});
+
+for (const ref of [{ sessionId: "s", turnId: "second" }, { sessionId: "other", turnId: "first" }]) {
+  test(`actual DiffTab isolates the same path for turn ${ref.sessionId}/${ref.turnId}`, async () => {
+    const files = [navigationFile("a.ts")];
+    const view = await fixture(files, [], {}, true);
+    try {
+      await view.turn({ sessionId: "s", turnId: "first" }, "a.ts", files);
+      view.writeFilePreview("a.ts", "first-turn state");
+      await view.turn(ref, "a.ts", files);
+      assert.equal(view.filePreviewValue("a.ts"), "", "both session and turn are part of mounted view identity");
+      assert.equal(view.previews(), 1);
+      assert.equal(view.visiblePreviews(), 1);
+    } finally { view.close(); }
+  });
+}
+
+function fileVisibilityFixture() {
+  const listeners = new Set<(command: string) => unknown>();
+  const navigations: string[] = [];
+  const reveals: string[] = [];
+  const inert = () => null;
+  const keybindings = {
+    useKeybindingOverrides: () => ({ overrides: {} }),
+    useKeybindings(handlers: Record<string, () => unknown>) {
+      const latest = React.useRef(handlers);
+      latest.current = handlers;
+      React.useEffect(() => {
+        const dispatch = (command: string) => latest.current[command]?.();
+        listeners.add(dispatch);
+        return () => { listeners.delete(dispatch); };
+      }, []);
+    },
+  };
+  function loadComponent(path: string, boundaries: Record<string, object>, globals: object = {}) {
+    const source = readFileSync(resolve(path), "utf8");
+    const javascript = ts.transpileModule(source, {
+      fileName: path,
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
+    }).outputText;
+    const module = { exports: {} };
+    const evaluate = runInNewContext(`(function(require, module, exports) { ${javascript}\n})`, globals);
+    evaluate((name: string) => {
+      if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      assert.ok(Object.prototype.hasOwnProperty.call(boundaries, name), `Unexpected visibility dependency: ${name}`);
+      return boundaries[name];
+    }, module, module.exports);
+    return module.exports;
+  }
+  const commentModule = loadComponent("src/features/diff/CommentNav.tsx", {
+    "../../keybindings/KeybindingsProvider.tsx": keybindings,
+    "../../keybindings/dispatcher.ts": { PRIORITY: { HIGH: 100 } },
+    "../../keybindings/overrides.ts": { effectiveShortcuts: () => [] },
+    "../../keybindings/shortcut.ts": { glyphs: inert },
+    "./nav.ts": navigation,
+    "./pierre.ts": { toPierreSide: inert },
+    "./CommentNav.css": {},
+  });
+  assert.ok("CommentNav" in commentModule && typeof commentModule.CommentNav === "function");
+  const CodeView = React.forwardRef((props: { items: { id: string }[] }, ref: unknown) => {
+    const path = props.items[0].id;
+    React.useImperativeHandle(ref, () => ({ scrollTo: () => { reveals.push(path); } }), [path]);
+    return React.createElement("fixture-visible-code", { ...props, "data-path": path });
+  });
+  const fileModule = loadComponent("src/features/diff/FileDiffView.tsx", {
+    "../../components/ui/Tooltip.tsx": { Tooltip: inert },
+    "../../components/Icons.tsx": { CheckIcon: inert, CopyIcon: inert },
+    "@tauri-apps/api/core": { invoke() { throw new Error("Unexpected native IPC"); } },
+    "../../backend": { inTauri: () => false },
+    "./copyFile.ts": { copySource: () => null },
+    "@pierre/diffs": { processFile: () => ({ isPartial: false }) },
+    "@pierre/diffs/react": { CodeView, EditProvider: ({ children }: { children: unknown }) => children },
+    "./Whitespace": { WhitespaceOnly: inert },
+    "../../keybindings/KeybindingsProvider.tsx": keybindings,
+    "../../keybindings/overrides.ts": { effectiveShortcuts: () => [] },
+    "../../keybindings/shortcut.ts": { matchesEvent: () => false },
+    "./EditInViewer.ts": { createEditor: inert },
+    "./CommentNav": {
+      CommentNav: commentModule.CommentNav,
+      useCommentNavigation: (_handle: unknown, path: string) => ({
+        previousCount: 1, nextCount: 1, refresh: inert,
+        navigate: (direction: string) => { navigations.push(`${path}:${direction}`); return true; },
+      }),
+    },
+    "./DiscardDialog": { RevertIcon: inert },
+    "./FilePathChip": { FilePathChip: inert },
+    "./useDiffTheme.ts": { useDiffTheme: () => ({ dark: "fixture", light: "fixture" }) },
+    "./pierre.ts": {
+      toPatch: () => "fixture patch", fullDiffMeta: () => ({ isPartial: false }),
+      codeViewItem: (file: FileDiff) => ({ id: file.path, type: "diff", fileDiff: { isPartial: false } }),
+      editableCodeViewItem: (item: object) => item,
+      selectionOf: inert, lineTarget: inert,
+      CODE_VIEW_LAYOUT: {}, EXPANSION_LINE_COUNT: 20,
+    },
+  }, {
+    document: { documentElement: { dataset: { theme: "dark" } } },
+    MutationObserver: class { observe() {} disconnect() {} },
+  });
+  assert.ok("FileDiffView" in fileModule && typeof fileModule.FileDiffView === "function");
+  assert.ok("revealLine" in fileModule && typeof fileModule.revealLine === "function");
+  const FileDiffView = fileModule.FileDiffView;
+  const revealLine = fileModule.revealLine;
+  let visible: string | null = "a.ts";
+  let useDefault = false;
+  function Probe() {
+    return React.createElement(React.Fragment, null, ...["a.ts", "b.ts"].map((path) => React.createElement(FileDiffView, {
+      key: path, file: file(path, "x"), layout: "unified", ignoreWhitespace: false,
+      wrapLines: true, viewed: false, onToggleViewed: inert,
+      ...useDefault ? {} : { isVisible: path === visible },
+    })));
+  }
+  let renderer: ReturnType<typeof create>;
+  act(() => { renderer = create(React.createElement(Probe)); });
+  return {
+    navigations, reveals,
+    listeners: () => listeners.size,
+    key(command: string) {
+      for (const dispatch of [...listeners].reverse()) if (dispatch(command) !== false) break;
+    },
+    reveal: (path: string) => revealLine(path, { side: "new", line: 1 }),
+    show(path: string | null) { visible = path; act(() => { renderer.update(React.createElement(Probe)); }); },
+    defaults() { useDefault = true; act(() => { renderer.update(React.createElement(Probe)); }); },
+    select(path: string) {
+      act(() => renderer.root.findByProps({ "data-path": path }).props.onSelectedLinesChange({ id: path, range: { start: 1, end: 1 } }));
+    },
+    selection: (path: string) => renderer.root.findByProps({ "data-path": path }).props.selectedLines,
+    codeViews: () => renderer.root.findAllByType("fixture-visible-code").length,
+    close() { act(() => renderer.unmount()); },
+  };
+}
+
+test("actual FileDiffView keeps hidden Code state but only active CommentNav shortcuts and revealers", () => {
+  const view = fileVisibilityFixture();
+  try {
+    assert.equal(view.codeViews(), 2);
+    assert.equal(view.listeners(), 1, "hidden retained files must not register global comment shortcuts");
+    view.select("a.ts");
+    view.key("diff.nextComment");
+    assert.deepEqual(view.navigations, ["a.ts:next"]);
+    assert.equal(view.reveal("b.ts"), false, "a hidden retained file must not accept reveal navigation");
+    assert.deepEqual(view.reveals, []);
+    assert.equal(view.reveal("a.ts"), true);
+    assert.deepEqual(view.reveals, ["a.ts"]);
+    view.show("b.ts");
+    assert.equal(view.codeViews(), 2, "visibility changes must not unmount the Code views");
+    assert.equal(view.listeners(), 1);
+    view.key("diff.previousComment");
+    assert.deepEqual(view.navigations, ["a.ts:next", "b.ts:previous"]);
+    assert.equal(view.reveal("a.ts"), false);
+    view.show(null);
+    assert.equal(view.listeners(), 0, "a no-match state must leave no retained comment shortcuts active");
+    assert.equal(view.reveal("b.ts"), false);
+    view.key("diff.nextComment");
+    assert.equal(view.navigations.length, 2);
+    view.show("a.ts");
+    assert.equal(view.selection("a.ts").id, "a.ts", "the real Code component keeps its local selection");
+    view.key("diff.nextComment");
+    assert.deepEqual(view.navigations, ["a.ts:next", "b.ts:previous", "a.ts:next"]);
+    view.defaults();
+    assert.equal(view.listeners(), 2, "existing callers that omit visibility remain active by default");
+    assert.equal(view.reveal("b.ts"), true);
+  } finally { view.close(); }
+});
 
 test("actual viewed callbacks leave empty, unselected and missing files alone", async () => {
   for (const files of [[], [navigationFile("a.ts")]]) {

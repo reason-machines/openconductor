@@ -50,13 +50,33 @@ pub fn login_flags(shell: &str) -> Option<&'static [&'static str]> {
 /// `cwd` (so directory-based tools like direnv apply). `None` when both the
 /// shell and the zsh fallback fail.
 pub fn capture(shell: &str, cwd: Option<&Path>) -> Option<BTreeMap<String, String>> {
+    capture_with(
+        shell,
+        FALLBACK_SHELL,
+        cwd,
+        PRIMARY_TIMEOUT,
+        FALLBACK_TIMEOUT,
+    )
+}
+
+const FALLBACK_SHELL: &str = "/bin/zsh";
+
+/// [`capture`] with the fallback shell and both timeouts as parameters, so
+/// tests do not depend on how fast the host's own startup files are.
+fn capture_with(
+    shell: &str,
+    fallback: &str,
+    cwd: Option<&Path>,
+    primary_timeout: Duration,
+    fallback_timeout: Duration,
+) -> Option<BTreeMap<String, String>> {
     let script = probe_script(cwd.is_some());
     if let Some(flags) = login_flags(shell) {
-        if let Some(env) = run_probe(shell, flags, &script, cwd, PRIMARY_TIMEOUT) {
+        if let Some(env) = run_probe(shell, flags, &script, cwd, primary_timeout) {
             return Some(env);
         }
     }
-    run_probe("/bin/zsh", &["-lc"], &script, cwd, FALLBACK_TIMEOUT)
+    run_probe(fallback, &["-lc"], &script, cwd, fallback_timeout)
 }
 
 fn probe_script(cd: bool) -> String {
@@ -193,6 +213,110 @@ mod tests {
         assert_eq!(login_flags("/bin/tcsh"), None);
     }
 
+    /// A stand-in shell named `name` in `dir`: it insists on `flag`, runs
+    /// `startup` (its "startup files"), then the probe script with `/bin/sh`.
+    fn fake_shell(dir: &Path, name: &str, flag: &str, startup: &str) -> String {
+        use std::os::unix::fs::PermissionsExt;
+        let path = dir.join(name);
+        let body = format!(
+            "#!/bin/sh\n[ \"$1\" = {flag} ] || exit 9\n{startup}\nexec /bin/sh -c \"$2\"\n"
+        );
+        std::fs::write(&path, body).unwrap();
+        std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o755)).unwrap();
+        // A test thread that forked while the file was open for writing makes
+        // exec fail with ETXTBSY until its child execs; wait that out.
+        for _ in 0..200 {
+            match Command::new(&path).stdout(Stdio::null()).status() {
+                Err(e) if e.raw_os_error() == Some(libc::ETXTBSY) => {
+                    thread::sleep(Duration::from_millis(10))
+                }
+                _ => break,
+            }
+        }
+        path.to_str().unwrap().to_string()
+    }
+
+    fn canonical(p: &str) -> std::path::PathBuf {
+        std::fs::canonicalize(p).unwrap()
+    }
+
+    #[test]
+    fn captures_what_the_login_shell_startup_sets_from_the_cwd() {
+        let tmp = tempfile::tempdir().unwrap();
+        let cwd = tempfile::tempdir().unwrap();
+        let bash = fake_shell(
+            tmp.path(),
+            "bash",
+            "-ilc",
+            "printf 'motd \\033[1mhi\\033[0m\\n'; export FROM_PROFILE=yes OPENAI_API_KEY=synthetic-test-key",
+        );
+        let env = capture_with(
+            &bash,
+            "/nonexistent/zsh",
+            Some(cwd.path()),
+            Duration::from_secs(30),
+            Duration::from_secs(30),
+        )
+        .expect("probe env");
+        assert_eq!(env.get("FROM_PROFILE").map(String::as_str), Some("yes"));
+        assert!(env.contains_key("PATH"), "{env:?}");
+        assert!(!env.contains_key("OPENAI_API_KEY"));
+        assert!(!env.contains_key("OPENCONDUCTOR_CWD"));
+        assert_eq!(
+            env.get("PWD").map(|p| canonical(p)),
+            Some(std::fs::canonicalize(cwd.path()).unwrap())
+        );
+    }
+
+    #[test]
+    fn a_shell_slower_than_its_timeout_falls_back() {
+        // CI run 42924968664: the runner's bash startup outlived the 5 s
+        // timeout and Linux has no /bin/zsh, so capture returned None.
+        let tmp = tempfile::tempdir().unwrap();
+        let slow = fake_shell(tmp.path(), "bash", "-ilc", "exec sleep 30");
+        let zsh = fake_shell(tmp.path(), "zsh", "-lc", "export FALLBACK=1");
+        let started = Instant::now();
+        let env = capture_with(
+            &slow,
+            &zsh,
+            None,
+            Duration::from_millis(300),
+            Duration::from_secs(30),
+        )
+        .expect("fallback env");
+        assert_eq!(env.get("FALLBACK").map(String::as_str), Some("1"));
+        assert!(
+            started.elapsed() < Duration::from_secs(20),
+            "the slow shell was not cut off"
+        );
+        assert_eq!(
+            capture_with(
+                &slow,
+                "/nonexistent/zsh",
+                None,
+                Duration::from_millis(300),
+                Duration::from_secs(1)
+            ),
+            None
+        );
+    }
+
+    #[test]
+    fn a_failing_or_unknown_shell_uses_the_fallback() {
+        let tmp = tempfile::tempdir().unwrap();
+        let broken = fake_shell(tmp.path(), "bash", "-ilc", "exit 1");
+        let zsh = fake_shell(tmp.path(), "zsh", "-lc", "export FALLBACK=1");
+        let long = Duration::from_secs(30);
+        for shell in [broken.as_str(), "/bin/tcsh"] {
+            let env = capture_with(shell, &zsh, None, long, long).expect(shell);
+            assert_eq!(
+                env.get("FALLBACK").map(String::as_str),
+                Some("1"),
+                "{shell}"
+            );
+        }
+    }
+
     #[test]
     fn captures_a_real_login_shell() {
         let tmp = tempfile::tempdir().unwrap();
@@ -201,7 +325,11 @@ mod tests {
         } else {
             "bash"
         };
-        let env = capture(bash, Some(tmp.path())).expect("bash login shell env");
+        // The host's own startup files run here, so allow far more than the
+        // product's 5 s: a slow CI runner must not fail this test.
+        let timeout = Duration::from_secs(60);
+        let env = capture_with(bash, "/bin/zsh", Some(tmp.path()), timeout, timeout)
+            .expect("bash login shell env");
         assert!(env.contains_key("PATH"), "{env:?}");
         let pwd = std::fs::canonicalize(tmp.path()).unwrap();
         assert_eq!(

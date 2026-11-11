@@ -60,7 +60,11 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   const [opts, setOpts] = useState<DiffViewOptions>(initialOptions);
   const [viewed, setViewedMap] = useState<ViewedMap>(() => loadViewed(localStorage, workspaceId));
   const { presentation } = useChangesPresentation(workspaceId);
-  const [selectedPath, setSelectedPath] = useState<string | null>(null);
+  const [selection, setSelection] = useState<{ path: string | null; redirectRevision: number }>({ path: null, redirectRevision: 0 });
+  const selectedPath = selection.path;
+  const setSelectedPath = useCallback((path: string | null) => {
+    setSelection((current) => current.path === path ? current : { ...current, path });
+  }, []);
   // The file waiting for the discard confirmation and the scope it will be restored from.
   const [pending, setPending] = useState<{ file: FileDiff; scope: DiffScope } | null>(null);
   // The selected chat turn; not saved, unlike `opts`.
@@ -130,7 +134,9 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
   useEffect(() => {
     const first = navigationFiles[0];
     if (first === undefined) return;
-    setSelectedPath((path) => path !== null && !navigationFiles.some((file) => file.path === path) ? first.path : path);
+    setSelection((current) => current.path !== null && !navigationFiles.some((file) => file.path === current.path)
+      ? { path: first.path, redirectRevision: current.redirectRevision + 1 }
+      : current);
   }, [navigationFiles, selectedPath]);
   const [uncommitted, setUncommitted] = useState<{ worktree: string | null; paths: Set<string> }>({ worktree: null, paths: new Set() });
   useEffect(() => {
@@ -250,6 +256,7 @@ export function useWorkspaceDiff({ workspaceId, worktree, target: { branch, remo
     current,
     /** The selected file. */
     selected,
+    redirectRevision: selection.redirectRevision,
     noMatchingFiles: files.length > 0 && navigationFiles.length === 0,
     open,
     openPath,
