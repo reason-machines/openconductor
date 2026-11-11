@@ -126,14 +126,14 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
   latest.current = { onLineClick, loadFull };
   const clickable = onLineClick !== undefined;
   const canLoad = loadFull !== undefined;
-  const shown = useCodeViewItem(file, meta, layout, anchors);
+  const shown = useCodeViewItem(full ?? file, meta, layout, anchors);
   // Pierre requires complete diff metadata before attaching its editor.
   const editing = edit !== undefined && (shown.type === "file" || !shown.fileDiff.isPartial);
   const latestEdit = useRef(edit);
   latestEdit.current = edit;
   const item = useMemo<CodeViewItem<LineAnchor>>(
-    () => (editing ? editableCodeViewItem(shown, latestEdit.current!.current()) : shown),
-    [shown, editing],
+    () => (editing ? editableCodeViewItem(shown, latestEdit.current!.current(), ignoreWhitespace) : shown),
+    [shown, editing, ignoreWhitespace],
   );
   const onEditChange = useCallback((e: { file: { contents: string } }) => latestEdit.current?.onChange(e.file.contents), []);
   const { overrides } = useKeybindingOverrides();

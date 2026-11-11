@@ -1,0 +1,1 @@
+function lSa(t){const e=oSa({isVisible:t.isVisible,rect:t.rect,stackOrder:t.config.stackOrder});return p.jsx("div",{style:e,children:t.config.kind==="interactive"?p.jsx(eSa,{config:t.config,isVisible:t.isVisible,shouldFocus:t.shouldFocus}):p.jsx(rSa,{config:t.config,isVisible:t.isVisible,shouldFocus:t.shouldFocus})},t.config.surfaceId)}

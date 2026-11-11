@@ -1,0 +1,37 @@
+name: Hidden-whitespace editing proof
+
+on:
+  pull_request:
+    paths:
+      - "src/features/diff/**"
+      - "evidence/diff/hidden-whitespace-editing/**"
+      - ".github/workflows/diff-hidden-whitespace.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  paired:
+    name: Hidden-whitespace paired frontend RED/GREEN
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Verify the paired runner rejects invalid evidence
+        run: python3 evidence/diff/hidden-whitespace-editing/run-paired.py --self-test
+      - name: Same frozen fixture against baseline and candidate
+        run: python3 evidence/diff/hidden-whitespace-editing/run-paired.py --out "${{ runner.temp }}/hidden-whitespace-proof"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hidden-whitespace-paired-frontend-proof
+          path: ${{ runner.temp }}/hidden-whitespace-proof
+          if-no-files-found: error
