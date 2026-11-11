@@ -60,6 +60,8 @@ runInNewContext(compiled.outputText, {
       case "./toolIconData.ts": return icons;
       case "./thinkingChip.ts": return { thinkingChipText };
       case "./markdown.ts": return { Markdown: () => { throw new Error("Unexpected Markdown leaf"); } };
+      case "./LinkMenu.tsx": return { LinkWithMenu: () => { throw new Error("Unrelated link menu rendered"); } };
+      case "../../backend.ts": return { openUrl: () => { throw new Error("Unrelated external opener invoked"); } };
       default: throw new Error(`Unexpected ToolRows dependency: ${name}`);
     }
   },
