@@ -1,0 +1,135 @@
+{
+  "kind": "SOURCE_ONLY_LOGIN_TERMINAL_GAP",
+  "author": "Conductor Rebuild",
+  "main_sha": "524c598b34157483e669167ed1f9032cc02fff18",
+  "archive_sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084",
+  "asset_sha256": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "retained_REA_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "REA_limit": "Historical semantic renderer analysis exhausted heap; retained real-app shipped bytes inspected statically. No reference JavaScript evaluated.",
+  "reference_spans": [
+    {
+      "name": "jpa",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10619879,
+        10624045
+      ],
+      "sha256": "f339bdf9702ca236ab96391682eeccb54f05f999690c91e2717e43f25d01535f",
+      "path": "jpa.literal.txt"
+    },
+    {
+      "name": "Met",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10254426,
+        10255772
+      ],
+      "sha256": "e8ff33ba929c09102a235ff68ef6db78a6e0d9c66db5c85df6496c13b2e3ffde",
+      "path": "Met.literal.txt"
+    },
+    {
+      "name": "Fpa",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        10624045,
+        10629892
+      ],
+      "sha256": "91cfc778aef5e775a9fc3b2a1a60a2670a830f4de0bd4399e512e94a92c528ac",
+      "path": "Fpa.literal.txt"
+    },
+    {
+      "name": "Z7o",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8640577,
+        8640701
+      ],
+      "sha256": "1b9a259eb840a32b7c63f89a130da0af3e6c37dc95eb830e448ce9f9d21173b6",
+      "path": "Z7o.literal.txt"
+    },
+    {
+      "name": "rTo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8641105,
+        8641405
+      ],
+      "sha256": "0263870953f80c7ea2b45ad98eb3006482aa21fd6a10509d60b3d6644f428b84",
+      "path": "rTo.literal.txt"
+    },
+    {
+      "name": "ONi",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8641405,
+        8644209
+      ],
+      "sha256": "e71e371aa7c0cba81c4fc9b737b606ae79ed2a17e80c196ad12f558d5a0074e7",
+      "path": "ONi.literal.txt"
+    },
+    {
+      "name": "nZe",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        6922812,
+        6923921
+      ],
+      "sha256": "2a41065f57534a755e056ee604d13e86310605c60594b143ad8aca1cb8a9aab5",
+      "path": "nZe.literal.txt"
+    }
+  ],
+  "literal_checks": {
+    "bootstrap_prints_command_done": true,
+    "bootstrap_never_forces_exit": true,
+    "completed_header_distinct_from_exited": true,
+    "completion_marker_or_observed_program": true,
+    "interactive_bootstrap": true,
+    "done_allowed_on_completed_or_shell_exit": true,
+    "done_and_dismiss_remain_distinct": true,
+    "session_observer_reads_runtime": true
+  },
+  "source_pins": [
+    {
+      "path": "src/settings/agents/ClaudeTab.tsx",
+      "sha256": "1227bb223bcb2c9f0b5af5d063440f28a37a7380f102ba20c5c37b3d8898452e",
+      "git_blob": "f58ce1c904526ec1893e838ad134fc6dedf73f4f"
+    },
+    {
+      "path": "src/settings/agents/CodexTab.tsx",
+      "sha256": "8f814442b65aa82f4a3e295bfe9079c0f52f80db1160d650198daab3d263a54d",
+      "git_blob": "c12638919569f1b267838f241f9c84f4929284b9"
+    },
+    {
+      "path": "src/settings/agents/parts.tsx",
+      "sha256": "21e4f365407020b2d7e6da3c75b4605948cf04e89315ee2220cd9771a4218348",
+      "git_blob": "0e7f0238310b0c89cab7ef4372f89e8df58268ee"
+    },
+    {
+      "path": "src/features/terminal/pty.ts",
+      "sha256": "6ae39f143a2ac74f846c08f02cefdbf7c0cba35c8336480e9e53dc47b9f61ec7",
+      "git_blob": "4ff0694a37b25cf23dbbb96489c29ab5ea987713"
+    },
+    {
+      "path": "src/features/terminal/events.ts",
+      "sha256": "31401ad8918a9ed628ea2d4cdd934341ffb0bd0cd618b633f7a4b919e1504e68",
+      "git_blob": "72adbee2ace40e8b94c36fc1e144fc9c3841a48d"
+    },
+    {
+      "path": "src-tauri/src/terminal/wire.rs",
+      "sha256": "9a722df5a8b73875c83acc20a36c04ababb05a208e194f40aa9c1fbea7c08246",
+      "git_blob": "6d48a21d8c125cdfda70a84bb79be00cd669d1a9"
+    },
+    {
+      "path": "src-tauri/src/terminal/manager.rs",
+      "sha256": "9889795e54c7bf248d84a5336c2614272d906039a069366e92aa87d4c483a771",
+      "git_blob": "a6a1ac0d112148f54f51a3683ac495f106f60941"
+    }
+  ],
+  "product_execution": false,
+  "native_provider_credentials": false,
+  "candidate": "LoginTerminal forces shell exit and treats all PTY exits as completed commands. Reference keeps shell interactive and observes command completion separately.",
+  "limits": "Source declarations only. Actual shell, authentication, native error transport, provider behavior and visual parity not exercised."
+}

@@ -1,0 +1,20 @@
+{
+  "author": "Conductor Rebuild",
+  "head": "00bcc7a91d2b6516d46e69e8a823f6eff82c14d3",
+  "run": 43072746848,
+  "unit_job": 130704635122,
+  "typecheck_job": 130704634801,
+  "regression_cases": 20,
+  "regression_passed": 3,
+  "regression_failed": 17,
+  "callback_source_absence_assertions": 4,
+  "ordinary_suite": {
+    "passed": 2971,
+    "failed": 17,
+    "total": 2988
+  },
+  "typecheck": "PASS: tsc step completed; subsequent ordinary-suite assertions failed",
+  "behavioral_red": "PASS for qualified missing action/end-focus assertions; four callback-region existence failures are not executed callback behavior",
+  "candidate_execution": "PENDING_AUTOMATIC_HOSTED_CI",
+  "local_node_browser_native": "NOT_RUN"
+}
