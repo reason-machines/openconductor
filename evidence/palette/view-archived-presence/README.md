@@ -40,7 +40,9 @@ The new assertions check the adapter's action entries and the All tab's actual N
 
 ## Verification state
 
-This tests-first increment leaves production source unchanged. Hosted behavioral RED is pending. The test snapshot SHA-256 is `7bab44562d29bc043ed56983caf137c5c2d4496d24e466dbe65e0bfbe2bfc22b`; it must remain unchanged through the correction and passing-after run.
+The tests-first head `f24bfca380fe6f5cc23163f20f513e7adb28c747` reproduced exactly six intended failures in automatic [CI run 42938464157, frontend unit job 130254250740](https://github.com/reason-machines/openconductor/actions/runs/42938464157/job/130254250740). Cases 1538–1542 and 1544 failed because the action was present when the expected value was false. The suite reported 2,180 passed, six failed, and zero cancelled or skipped tests out of 2,186. The four new positive/no-selection control cases 1543 and 1545–1547 passed, as did every pre-existing test.
+
+After confirming that RED result, the production change replaces only `VIEW_ARCHIVED_ACTION`\'s raw ID check with App-equivalent resolution of the selected repository row or complete matching archived workspace object. Fresh main remained `166139398538f0e58eabd3870facbb1702ea665b` before this edit. The test snapshot remains SHA-256 `7bab44562d29bc043ed56983caf137c5c2d4496d24e466dbe65e0bfbe2bfc22b`, byte-identical to RED. Hosted passing-after verification is pending.
 
 Passed on Reason Cloud: all five retained span length and hash checks, retained slice hash and JavaScript syntax, the pre-existing test-prefix comparison, `node --experimental-strip-types --check src/palette/fromAppState.test.ts`, and `git diff --check`.
 
