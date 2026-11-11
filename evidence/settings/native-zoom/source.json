@@ -58,9 +58,10 @@
     "reference/current-webview.txt": "775a6964134b1aa02156eeaf4ae356a02eeaf4b6f6a8ef20cc164afc90cc0fa0",
     "reference/effective-webview-consumer.txt": "bb18c7741fdd24bb16a272bab1f05160fe9fbb88f0174487a91279a58bab1880",
     "reference/traffic-light-gate.txt": "4b555358ff49a754a6244e173feeee25ff49b125736a0a570c7ba847507ec3a7",
-    "reference/webview-zoom-sdk.txt": "1bb17e97ac8de93e7b8a8eb4efe1ebb183c4c9c6941f4e4119b31a7ce7aaf9f5"
+    "reference/webview-zoom-sdk.txt": "1bb17e97ac8de93e7b8a8eb4efe1ebb183c4c9c6941f4e4119b31a7ce7aaf9f5",
+    "fixture-v1.test.ts.txt": "498ca5c66af73e3b361dc4843060df9337b53d9c8dcfcd78c37cde7ec8536ac3"
   },
-  "fixture_sha256": "498ca5c66af73e3b361dc4843060df9337b53d9c8dcfcd78c37cde7ec8536ac3",
+  "fixture_sha256": "d843d82f2ee50808634d8421a51dcac5a782bc01a9a89ca65f6cf7f09d36fb20",
   "expected_baseline_failures": [
     "appearance applies 0.5 through the real current-Webview SDK without CSS multiplication",
     "appearance applies 1 through the real current-Webview SDK without CSS multiplication",
@@ -74,5 +75,7 @@
   "gaps": [
     "Native permission acceptance, WKWebView scale, pointer/menu geometry, OS first-launch and restart behavior NOT_RUN.",
     "macOS26+ scaled traffic lights/update_traffic_light_position/resize unimplemented; only retained renderer call contract is known."
-  ]
+  ],
+  "fixture_v1_sha256": "498ca5c66af73e3b361dc4843060df9337b53d9c8dcfcd78c37cde7ec8536ac3",
+  "fixture_correction": "Only ES2021 own-property loader guard changed before any qualified hosted RED/GREEN; original v1 retained. All assertions unchanged."
 }

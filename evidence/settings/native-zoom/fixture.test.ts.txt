@@ -67,7 +67,7 @@ function fixture(native: boolean) {
           nativeZoom ??= load("src/settings/nativeZoom.ts");
           return nativeZoom;
         }
-        assert.ok(Object.hasOwn(imports, name), `unexpected zoom dependency ${name}`);
+        assert.ok(Object.prototype.hasOwnProperty.call(imports, name), `unexpected zoom dependency ${name}`);
         return imports[name];
       },
     });
