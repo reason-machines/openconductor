@@ -1,0 +1,107 @@
+{
+  "author": "Conductor Rebuild",
+  "fresh_publication_base": "86fd4ee9d727deface07fec849b6af7702c3d762",
+  "qualified_pair_candidate": "c3b81f1b56bf548e2816e323c55dde853ad34e9d",
+  "source_packet": {
+    "attachment_id": "4b09f6ea-3109-461e-8ced-90bf5491eeac",
+    "bytes": 32809,
+    "sha256": "554a6f460615b0e0fc913f9dbde8e0f20be9af233974f56327cc2b98ba762324"
+  },
+  "result_packet": {
+    "attachment_id": "6266984f-7ea7-46e3-ab8b-44bd74498b5f",
+    "bytes": 155413,
+    "sha256": "59e8b6445363c052669dcdf3fd325b8d374c62ce7c009d1c200de512177d11c3",
+    "manifest_entries_verified": 27
+  },
+  "fixture_sha256": "1eaa36d4a960910a76dcaac91dde73c753cf27bbe3f18c9445d0c5d8795ae251",
+  "frozen_fixture_sha256": "d27729fbf1c3df418708a3fcbb4ac2977cf71ea2e5c1dcea02250e46f4aa6140",
+  "frozen_harness_sha256": "815f2e5cf14044e64dbda174cd44a9f68028251434ef2aa38d84296f620d3c1d",
+  "candidate_source_pins": [
+    {
+      "path": "src/settings/GeneralPage.tsx",
+      "sha256": "28c970954afb645658f5be693189e3a49f2e52efc8510c309f419a0a3dad21e8"
+    },
+    {
+      "path": "src/settings/controls.tsx",
+      "sha256": "ac772d2f0c77f685d5d0c92f2a12b9f2239a8b196a9cf8a20cffda74fc7a13b7"
+    },
+    {
+      "path": "src/settings/model.ts",
+      "sha256": "9c718b4561c5f9925b5101ca941a6b1f3b017950ddf7a5231f1488659b40254f"
+    },
+    {
+      "path": "src/settings/types.ts",
+      "sha256": "6bccb1442bf4fc9fa31c019d0f22f3937327a72fb17fbace2a84b3ca9ee89936"
+    },
+    {
+      "path": "src/settings/prefs.ts",
+      "sha256": "c29549a90cd52e0b69d1381fead957aec44d83ee971751bd2aee5b8a7981d663"
+    },
+    {
+      "path": "src/workspace/naming.ts",
+      "sha256": "5a1558036b9f13ab3ccbc188be1d5d621b3639c6be270808558b2b91826a0535"
+    },
+    {
+      "path": "src/settings/notificationPermission.ts",
+      "sha256": "7756bc9b75adc9de0dcb474945dc154392b8405654e4d395ba839ed4a73afd44"
+    }
+  ],
+  "mutant_general_page_sha256": "d569cb4ba77fe387f1dcba956971f9cafda3669025b7d311f4ef23beecbc5cb2",
+  "mutant_transform": "Only GeneralPage Agent-notifications callback: withField(latestSettings.current, ...) becomes withField(settings, ...).",
+  "candidate": {
+    "tests": 1,
+    "passed": 1,
+    "failed": 0,
+    "exit": 0
+  },
+  "mutant": {
+    "tests": 1,
+    "passed": 0,
+    "failed": 1,
+    "exit": 1,
+    "code": "ERR_ASSERTION",
+    "operator": "deepStrictEqual",
+    "line": 137
+  },
+  "commands": {
+    "candidate": "NOTIFICATION_DEPS=<retained React18/renderer18/TS5.9.3 root> NOTIFICATION_SOURCE_ROOT=<candidate-root> node --test --test-reporter=tap concurrentSettings.test.cjs",
+    "mutant": "NOTIFICATION_DEPS=<same retained root> NOTIFICATION_SOURCE_ROOT=<stale-snapshot-mutant-root> node --test --test-reporter=tap concurrentSettings.test.cjs"
+  },
+  "historical_pair_only": true,
+  "fresh_source_graph_changed_since_pair": [
+    "src/workspace/naming.ts"
+  ],
+  "local_wrapper_execution": "not run; normal automatic CI exercises the new wrapper and current-main graph",
+  "logs": [
+    {
+      "path": "candidate.tap",
+      "original_sha256": "37855c30b31a1390cc0568bce6cd179a622702e345e0a440dff242196e5d45ef",
+      "committed_sha256": "37855c30b31a1390cc0568bce6cd179a622702e345e0a440dff242196e5d45ef",
+      "normalization": "Trailing horizontal whitespace removed; no lines omitted."
+    },
+    {
+      "path": "stale-snapshot-mutant.tap",
+      "original_sha256": "93e1e72af9810a4c2d821011e4d3563b10c4a59884ee7babcca6164368baac68",
+      "committed_sha256": "de86eb6ef3b84c58780cdfb16dcd27d46c725ba0925e32a489338d6dbb9f98ca",
+      "normalization": "Trailing horizontal whitespace removed; no lines omitted."
+    }
+  ],
+  "native_permission_storage_delivery_visual": "not run; permission and persistence substituted",
+  "executor": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+  "release_at": "2026-11-11T16:09:31.861926+00:00",
+  "process_groups_released": true,
+  "source_dependency_and_tracked_pins_unchanged": true,
+  "physical_pin_count": 2313,
+  "limits": {
+    "heap_mib": 384,
+    "nice": 19,
+    "cpu_seconds_per_node_process": 10,
+    "wall_seconds": 45,
+    "kill_grace_seconds": 5,
+    "outer_seconds": 55,
+    "pair_outer_seconds": 120,
+    "invocations": 2,
+    "retries": 0
+  },
+  "sampling_is_not_a_continuous_hard_bound": true
+}
