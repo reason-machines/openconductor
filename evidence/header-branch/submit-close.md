@@ -4,7 +4,7 @@ Conductor Rebuild owns HEADER-SUBMIT-CLOSE-271-01. This change is limited to the
 
 ## Source-backed discrepancy
 
-Fresh main `ca6f5fafb6a568678722577afe734d8d04d6ca41` contains the same header controller, component, test, and retained trace as the initial `675b2347537ac8e1ba4aac669207701bc29f0a16` audit.
+Fresh main `4e0e9929de24b3a088f4851c05231fdcf0e882bf` contains the same header controller, component, test, and retained trace as the initial `675b2347537ac8e1ba4aac669207701bc29f0a16` audit.
 
 The [retained shipped trace](reference-static.json) records Conductor 0.87.6 renderer `renderApp-D_fmY7hW.js`, SHA-256 `5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde`, and index `index-BGEQ8YjU.js`, SHA-256 `b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3`. The trace is 8,311 bytes with SHA-256 `4901177a0829b07b8414a5d4b9c8adf091f9549f8dc9dafac5ebbcb79a01588e`.
 
@@ -20,7 +20,7 @@ The complete `bro` excerpt has SHA-256 `ef7bdf8d88ab7587123cab8ccf81848f4bed5468
 
 The `[392,508)` submit span has SHA-256 `8581d7c1c61527f7aaf555da67ba4fb8d790f8cc05e28160a407ac2f16a8066d`. Its retained declared absolute UTF-8 range is `[7206617,7206733)`. Absolute asset offsets were not independently remapped in this pass because the full renderer was not read. The exact within-excerpt ranges and hashes were checked.
 
-OpenConductor's current controller instead sets `pending=true`, awaits the rename, dispatches the result, awaits the user-set marker, and only then clears `editing` in `finally`. The actual component reads `controller.state`, renders its input whenever `editing` is true, and disables that input while `pending`. A changed submission therefore leaves the disabled editor selected by the source until asynchronous work finishes.
+At the audited main and regression-only checkpoint, OpenConductor's controller instead sets `pending=true`, awaits the rename, dispatches the result, awaits the user-set marker, and only then clears `editing` in `finally`. The actual component reads `controller.state`, renders its input whenever `editing` is true, and disables that input while `pending`. A changed submission therefore leaves the disabled editor selected by the source until asynchronous work finishes.
 
 The initial source pins are:
 
@@ -49,7 +49,10 @@ The existing automatic workflow discovers the file with `node --test "src/**/*.t
 ## Verification state
 
 - Passed: local Python static audit, exact retained trace digest, same-build REA graph membership, six excerpt spans, renderer import hashes, index export edges, three current-source pins, and tracked/staged whitespace checks.
-- Not run yet: automatic hosted behavioral RED and GREEN. No test result is claimed by this preparation checkpoint.
+- Confirmed hosted RED on PR #963 head `bb13fe9203ac23e39469114fcdc31bd7b8b2a398`: [automatic CI run 42930222473, unit-test job 130226792311](https://github.com/reason-machines/openconductor/actions/runs/42930222473/job/130226792311). The command `node --test "src/**/*.test.ts"` reported 2,118 tests, 2,115 passing and exactly three failures. Enter and blur failed with `submitted editor closes while the rename promise is unresolved`; rejection failed with `submitted editor closes before a rejected rename settles`. All three observed one input where zero was expected. The empty/unchanged/Escape case passed. These are behavioral assertion failures, not fixture or load errors.
+- Passed hosted `npm run typecheck` in [job 130226792323](https://github.com/reason-machines/openconductor/actions/runs/42930222473/job/130226792323). That job subsequently stopped at the same unit-test regression; the build step was skipped, not passed.
+- Correction: one assignment clears `state.editing` synchronously alongside `state.pending=true`, before the first asynchronous rename boundary. The pending lock, dispatch order, marker write, error paths and final cleanup stay unchanged.
+- The complete regression file remains byte-identical to the RED checkpoint: SHA-256 `d3e6f30a47d24838e624865d0f226bc12c77a72fd74f6098ddbd4f6a0b1e009d`, 17,414 bytes. Automatic exact-head GREEN for the correction is pending.
 - Not run: browser, native app, real Git rename, real persistence, clipboard, caret or focus behavior, and side-by-side visual acceptance. No screenshot is available because product browser/native execution is excluded.
 
 ## REA and acceptance limits
