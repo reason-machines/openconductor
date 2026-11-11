@@ -199,6 +199,8 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
       if (effortOpen) setEffortOpen(false);
       else if (e.target === search.current && query !== "") changeQuery("");
       else setOpen(false);
+    } else if (e.target === search.current && e.key !== "ArrowUp" && e.key !== "ArrowDown" && e.key !== "Tab") {
+      e.stopPropagation();
     }
   };
 
