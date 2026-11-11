@@ -1,0 +1,1 @@
+async function Aue(){return window.Notification.permission!=="default"?await Promise.resolve(window.Notification.permission==="granted"):await it("plugin:notification|is_permission_granted")}

@@ -1,6 +1,7 @@
 import { useState, type Dispatch, type SyntheticEvent } from "react";
 import { createRoot } from "react-dom/client";
 import { AllWorkspaces } from "../../src/components/AllWorkspaces";
+import { KeybindingsProvider } from "../../src/keybindings/KeybindingsProvider";
 import type { Action } from "../../src/state/store";
 import type { Repo, Workspace } from "../../src/state/types";
 import { emitArchiveEvent, rememberBrowserArchived } from "../../src/workspace/archive";
@@ -57,4 +58,4 @@ function Fixture() {
 }
 
 const root = document.getElementById("root");
-if (root) createRoot(root).render(<Fixture />);
+if (root) createRoot(root).render(<KeybindingsProvider><Fixture /></KeybindingsProvider>);

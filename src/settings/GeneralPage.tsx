@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { ConfigSyncDialog } from "./ConfigSyncDialog";
 import { openUrl } from "../backend";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
@@ -11,6 +11,7 @@ import { SETTINGS_CHANGED } from "./appearance";
 import { setAppPref } from "./appPrefs";
 import { chooseSendKey } from "./composerSettings";
 import { withField } from "./model";
+import { notificationPermissionGranted } from "./notificationPermission";
 import { enumPref, withEnumPref } from "./prefs";
 import { GeneralAppPrefRows } from "./rows/AppPrefRows";
 import { playCompletionSound, SOUND_OPTIONS } from "./sound";
@@ -35,6 +36,8 @@ const shortcutGlyphs = (commandId: string, overrides: Overrides) => effectiveSho
  * user, so it is not listed.
  */
 export function GeneralPage({ settings, save }: Props) {
+  const latestSettings = useRef(settings);
+  latestSettings.current = settings;
   const g = settings.general;
   const [syncOpen, setSyncOpen] = useState(false);
   const { overrides } = useKeybindingOverrides();
@@ -70,7 +73,10 @@ export function GeneralPage({ settings, save }: Props) {
         <Toggle
           label="Agent notifications"
           checked={g.send_native_notification}
-          onChange={(on) => save(withField(settings, "general", "send_native_notification", on))}
+          onChange={async (on) => {
+            if (on && !await notificationPermissionGranted()) return;
+            await save(withField(latestSettings.current, "general", "send_native_notification", on));
+          }}
         />
       </Row>
       <PrefSwitchRow settings={settings} save={save} pref="mention_notifications_enabled" label="@ notifications" help="Get notified when a teammate mentions you." />
