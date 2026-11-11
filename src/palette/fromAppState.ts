@@ -51,7 +51,6 @@ export function stepWorkspace(state: AppState, delta: 1 | -1): WorkspaceRef | un
 export const PALETTE_ACTIONS: readonly ActionEntry[] = [
   // Workspace actions: only while a workspace is open.
   { id: "quick-open", title: "File picker", group: "workspace-actions", bindingId: "nav.quickOpen", icon: "file", keywords: ["quick", "open", "file", "search", "find", "picker"] },
-  ...GIT_PANEL_ACTIONS.map(({ entry }) => entry),
   { id: "copy-url", title: "Copy URL", group: "workspace-actions", bindingId: "workspace.copyLink", icon: "link", keywords: ["copy", "url", "link", "share", "workspace"] },
   { id: "archive-workspace", title: "Archive workspace", group: "workspace-actions", bindingId: "workspace.archive", icon: "archive", keywords: ["archive", "current", "workspace"] },
   // Actions.
@@ -148,7 +147,7 @@ export function paletteDataFromState(
     workspaces,
     projects: state.repos.map((r) => ({ id: r.id, name: r.name })),
     actions: [...PALETTE_ACTIONS.filter((a) => {
-      if (a.id === "quick-open" || GIT_PANEL_ACTIONS.some(({ entry }) => entry.id === a.id)) return gitPanelWorkspace(state) !== undefined;
+      if (a.id === "quick-open") return gitPanelWorkspace(state) !== undefined;
       if (a.id === "archive-workspace") return selectedWorkspace?.status !== "archived" && state.archivedOpen?.workspace.id !== activeWorkspaceId;
       if (a.id === "go-to-next-unread") return nextUnreadChat(state, { skipSelected: false }) !== undefined;
       // Conductor gates both rows on the resolved workspace (`Xt &&`).
@@ -166,6 +165,17 @@ export function paletteDataFromState(
     // but stay stored, so they still count toward the cap of 5 (recordViewedWorkspace never prunes).
     recentWorkspaceIds: recentIds.filter((id) => workspaces.some((w) => w.id === id)),
     activeWorkspaceId,
+  };
+}
+
+/** Add context-only panel commands at the host boundary without changing the base list contract. */
+export function workspacePaletteData(...args: Parameters<typeof paletteDataFromState>): PaletteData {
+  const data = paletteDataFromState(...args);
+  if (!gitPanelWorkspace(args[0])) return data;
+  const panelActions = GIT_PANEL_ACTIONS.map(({ entry }) => entry);
+  return {
+    ...data,
+    actions: data.actions.flatMap((entry) => entry.id === "copy-url" ? [...panelActions, entry] : [entry]),
   };
 }
 

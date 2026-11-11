@@ -5,7 +5,7 @@ import type { DialogKind } from "../components/Dialogs";
 import { CommandPalette } from "./CommandPalette.tsx";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
-import { paletteDataFromState, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
+import { workspacePaletteData, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import { buildSearchIndex } from "../settings/searchIndex";
 import { settingsGroups } from "../settings/pages";
 import { AGENT_SEARCH_TABS, scrollToRow, searchIcon } from "../settings/SettingsView";
@@ -98,7 +98,7 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
   const apps = useInstalledApps();
   const prefs = useAppPrefs();
   const { toasts, show, dismiss } = useToasts();
-  const data = useMemo(() => paletteDataFromState(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in), [state, recents, archived, settingEntries, apps, prefs.default_open_in]);
+  const data = useMemo(() => workspacePaletteData(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in), [state, recents, archived, settingEntries, apps, prefs.default_open_in]);
   const archivedById = (id: string) => archived.find((a) => a.id === id);
   const showWorkspaceNumbers = useBoolPref("experimental_show_workspace_numbers");
 

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { stripTypeScriptTypes } from "node:module";
 import type { AppState, Workspace } from "../state/types.ts";
-import { paletteDataFromState } from "./fromAppState.ts";
+import * as paletteAdapters from "./fromAppState.ts";
 import { GIT_PANEL_ACTIONS, gitPanelWorkspace, onGitPanelRequest, requestGitPanelAction, takeGitPanelRequest, type GitPanelTarget } from "./gitPanelActions.ts";
 
 const targets = [
@@ -14,6 +14,16 @@ const targets = [
 ] satisfies [string, GitPanelTarget][];
 const workspace = (state = "ready"): Workspace => ({ id: "w2", name: "w2", branch: "main", status: "idle", state, createdAt: 1, diff: { added: 0, removed: 0 } });
 const active = (row = workspace()): AppState => ({ selection: { kind: "workspace", repoId: "r2", workspaceId: "w2" }, repos: [{ id: "r2", name: "r2", path: "/r2", defaultBranch: "main", workspaces: [row] }] });
+
+function paletteDataFromState(state: AppState, recents: readonly string[]): ReturnType<typeof paletteAdapters.paletteDataFromState> {
+  const source = readFileSync(new URL("./PaletteHost.tsx", import.meta.url), "utf8");
+  const prefix = "  const data = useMemo(";
+  const start = source.indexOf(prefix);
+  const end = source.indexOf(", [state,", start);
+  assert.ok(start >= 0 && end > start, "the actual host data factory is present");
+  const factory = source.slice(start + prefix.length, end);
+  return new Function(...Object.keys(paletteAdapters), "state", "recents", "archived", "settingEntries", "apps", "prefs", `return (${factory})();`)(...Object.values(paletteAdapters), state, recents, [], [], [], { default_open_in: null });
+}
 
 function paletteCallback(state: AppState) {
   const source = readFileSync(new URL("./PaletteHost.tsx", import.meta.url), "utf8");
@@ -141,6 +151,16 @@ test("the existing quick-open and Copy URL callbacks are unchanged", () => {
   callback.select("copy-url");
   assert.deepEqual(callback.existing, ["quickOpen", "copyUrl"]);
 });
+
+// Execute the frozen fixture/equality blocks without importing their unrelated fuzzy-search dependency.
+const legacySource = readFileSync(new URL("./fromAppState.test.ts", import.meta.url), "utf8");
+const fixturesStart = legacySource.indexOf("const w =");
+const fixturesEnd = legacySource.indexOf("\ntest(", fixturesStart);
+const legacyStart = legacySource.indexOf("for (const loaded of [false, true])");
+const legacyEnd = legacySource.indexOf('    for (const tab of ["all", "actions"]', legacyStart);
+assert.ok(fixturesStart >= 0 && fixturesEnd > fixturesStart && legacyStart >= 0 && legacyEnd > legacyStart);
+const legacyCode = stripTypeScriptTypes(legacySource.slice(fixturesStart, fixturesEnd) + "\n" + legacySource.slice(legacyStart, legacyEnd) + "\n  });\n}\n");
+new Function("test", "assert", "paletteDataFromState", legacyCode)(test, assert, paletteAdapters.paletteDataFromState);
 
 test("unknown actions do not notify listeners or create a request", () => {
   const calls: string[] = [];
