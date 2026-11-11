@@ -1,0 +1,27 @@
+{
+  "owner": "Conductor Rebuild",
+  "baseline_main": "1a0a2bef734686d3dbfc9c11155562595d9df9e6",
+  "preparation_commit": "3825d7e22407bd3f7af251a085ba22a861245c58",
+  "original_source_pins": "source.json",
+  "fixture_sha256": "75e243c4dfc9900a8385c76c205dbe4ad532a473b9ef497cc54f9af889f3b7d2",
+  "fixture_cases": 7,
+  "production_sha256": {
+    "src/features/chat/Composer.tsx": "9b0be2bd905db1360da1eb4e2dc45748d3ea978132c6f0296366d0e0f3ce64a8",
+    "src/components/WorkspaceView.tsx": "3a520439bd8b09531e82e8dcb74e780c311cb5c079504b9c8796aeea12988fe2",
+    "src/features/chat/composerSession.ts": "7d2091a307e8b31b57ec95c0672fc4433b3588b8c470b12db0fb4b5ac38eac09",
+    "src/features/chat/localClear.ts": "36773e89380caca36d3c25c42c3e5d7c2c7ac6f29510e53f1930f24520d42890",
+    "src/features/draft-attachments/staging.ts": "59778d93e351cc374d2dfe0f04f2bfa4bd685cd9df513cff9fa1b0f79dd86f54",
+    "src/lib/local-storage/composerDrafts.ts": "fdf9614728397728c4fb87985c1b8bfe54c62199957891e989ba3d74d08e12c5"
+  },
+  "reviewed_source_delta": {
+    "path": "src/components/WorkspaceView.tsx",
+    "scope": "transcript attachment name and label outside extracted callbacks",
+    "callback_behavior_change": false
+  },
+  "product_edits": [],
+  "existing_test_edits": [],
+  "hosted_behavior": "PENDING",
+  "hosted_typecheck": "PENDING",
+  "local_node_rust_browser_native_provider": "NOT_RUN",
+  "original_native_reacquisition": "NOT_RUN"
+}
