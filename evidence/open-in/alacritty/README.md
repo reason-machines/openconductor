@@ -18,11 +18,15 @@ These are retained compiled-source observations, not native execution. Original 
 
 The legacy injected `Result<(), String>` runner cannot distinguish a completed nonzero command from a transport exception. These three cases cover the command/result strategy only. The implementation must preserve structured command status at the production boundary rather than infer transport parity from these tests.
 
-At the test-first publication, behavioral checks are pending. The intended baseline result is three assertion failures. A compilation failure, missing dependency, timeout, or setup error is not RED. Automatic hosted CI runs `cargo test --locked` in `src-tauri` on macOS and Linux. No local Rust, Node, browser, app, native execution, installation, workflow dispatch, or additional executor is part of this lane.
+The test-first head `9abe0532d7af1ddc3f2eebd90ef3d2f99cb4cb50` produced the intended three assertion failures in [hosted macOS job 130552685330](https://github.com/reason-machines/openconductor/actions/runs/43029523010/job/130552685330): 995 passed, 3 failed, 1 ignored. L01 observed generic `open -a`; L02 never attempted fallback; L03 returned the initial error instead of the fallback error. Compilation and setup succeeded. [The baseline receipt](hosted-baseline.json) records the exact head and failures.
+
+The candidate preserves L01-L03 byte-for-byte. Its dedicated Alacritty completion enum separates a completed nonzero exit from transport failure. Initial transport failure propagates without fallback. Successful IPC activates the app; a completed nonzero activation is ignored, while transport failure propagates. Completed nonzero IPC starts a new instance and returns its failure if any. Production uses this typed runner directly, rather than the legacy test-compatible `Result<(), String>` adapter. Alacritty PATH augmentation is limited to the IPC executable.
+
+New additive tests cover the typed status branches, error-field precedence, a file-open control, and pure PATH ordering. They were not present in the baseline and are not represented as failing-before proof. Candidate GREEN remains pending. Automatic hosted CI runs `cargo test --locked` in `src-tauri` on macOS and Linux. No local Rust, Node, browser, app, native execution, installation, workflow dispatch, or additional executor is part of this lane.
 
 ## Static verification
 
-Run `python3 evidence/open-in/alacritty/verify_source.py`. It verifies the frozen manifest, all 13 source spans, four historical baseline files, and the exact fixture. It does not verify behavior. `git diff --check` checks whitespace. Hosted results and exact heads will be recorded here after observation.
+Run `python3 evidence/open-in/alacritty/verify_source.py`. It verifies the frozen manifest, all 13 source spans, four historical baseline files, and the exact fixture. It does not verify behavior. `git diff --check` checks whitespace. Candidate checks run on the automatic hosted PR workflows; successful completion and consuming-package verification remain pending.
 
 Model the Domain keeps completed exit status distinct from transport failure. Test Behavior, Not Implementation keeps the fixture assertions on commands observed by the external application. Prove It Works requires hosted failing-before and passing-after results rather than treating the source comparison as execution.
 
