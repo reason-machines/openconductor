@@ -1,6 +1,6 @@
 # Section write failure feedback
 
-Conductor Rebuild. This is the test-only baseline for a focused failure-feedback change. Hosted execution is pending. No behavioral RED or candidate success is claimed yet.
+Conductor Rebuild. The corrected hosted baseline reproduces four missing-toast failures with eight passing controls and a successful build. The minimal candidate retains each write's callbacks after the dialog closes. Candidate hosted verification is pending.
 
 ## Source qualification
 
@@ -32,4 +32,12 @@ At published head `631e1f9b7ded78d60a3fd6afffb477853611a593`, the [hosted unit j
 
 The corrected baseline uses an arrow declaration for the same Harness, after the existing export checks. All assertions and event sequences remain byte-identical. The corrected fixture is resealed in `fixture.sha256`; automatic hosted execution is pending before any product patch. No type assertion or suppression was added.
 
-Rechecked fresh main `812af41eb4df443dab474283c886f20dc2146461`: all five scoped product files still match the pinned source hashes. Product code remains unchanged.
+Rechecked fresh main `812af41eb4df443dab474283c886f20dc2146461`: all five scoped product files still matched the pinned source hashes before the baseline correction.
+
+## Qualified baseline and candidate
+
+At corrected baseline `27fc9769ac98e22d395bd847ced484ebf707b542`, the [hosted unit job](https://github.com/reason-machines/openconductor/actions/runs/43113588611/job/130835709919) reports 3,137 passing tests and four failures. All four failures are empty toast lists instead of the original create or edit error message. The eight success, superseded-layout, Cancel and stale-callback controls pass. The [keybindings job](https://github.com/reason-machines/openconductor/actions/runs/43113588727/job/130835710559) separately completes `npm run build` successfully. The baseline is recorded in `hosted-baseline.json`.
+
+Immediately before the product patch, fresh main `1a0a2bef734686d3dbfc9c11155562595d9df9e6` still has the same five scoped source hashes. The candidate adds optional create/edit error callbacks to the existing Action union. The store captures the pending callbacks for each persistence invocation and delivers only that invocation's callbacks on rejection. Coalesced actions retain both callbacks, while separate writes retain separate arrays. App uses the existing error toast channel and original mode-specific copy.
+
+Model the Domain shaped this callback array around one persisted write rather than one mutable last callback. Test Behavior, Not Implementation keeps the sealed fixture focused on rendered messages after unmount. The reducer, immediate close, reload, shared Modal, all eight frozen files and the sealed regression are unchanged. Candidate GREEN and native acceptance are not yet claimed.
