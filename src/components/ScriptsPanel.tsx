@@ -253,7 +253,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     try {
       await f();
     } catch (e) {
-      setError(errorText(e));
+      if (displayedWorkspaceId.current === wsId) setError(errorText(e));
     }
     await refresh().catch(() => {});
   }
