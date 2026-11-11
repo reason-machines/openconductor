@@ -484,13 +484,14 @@ function Row({ tool, status, result, isError, open, onToggle, todoRows, workspac
       return <WriteRow {...shell} input={input} onOpenFile={onOpenFile} />;
     case "web": {
       const target = s(input.url) || s(input.query);
+      const prompt = s(input.prompt);
       return (
         <RowShell
           {...shell}
           left={<span>{name === "WebSearch" ? "Web Search" : "Web Browse"}</span>}
           right={target ? <CodeChip text={target} /> : undefined}
           align="center"
-          content={output ? output : undefined}
+          content={output ? (prompt ? <><ul><li>Prompt: <code>{prompt}</code></li></ul>{output}</> : output) : undefined}
         />
       );
     }
