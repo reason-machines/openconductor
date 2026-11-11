@@ -43,6 +43,19 @@ function key(key: string) {
 const mountedDependencies = createRequire(import.meta.url);
 const { act, create } = mountedDependencies("react-test-renderer");
 
+function inputChange(value: string, selectionStart: number | null = value.length) {
+  const selectionWrites: Array<[number, number]> = [];
+  const input = {
+    value, selectionStart, selectionEnd: selectionStart,
+    setSelectionRange(start: number, end: number) {
+      selectionWrites.push([start, end]);
+      this.selectionStart = start;
+      this.selectionEnd = end;
+    },
+  };
+  return { currentTarget: input, target: input, selectionWrites };
+}
+
 function mountedHeaderFixture() {
   const rename = deferred();
   const marker = deferred();
@@ -63,6 +76,7 @@ function mountedHeaderFixture() {
   };
   runInNewContext(outputText, {
     exports,
+    queueMicrotask,
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return mountedDependencies(name);
       if (name.endsWith(".css")) return {};
@@ -99,7 +113,7 @@ for (const submitWith of ["Enter", "blur"] as const) {
       act(() => { view.button().props.onClick(); });
       const input = view.inputs()[0];
       assert.ok(input);
-      act(() => { input.props.onChange({ currentTarget: { value: "next/branch" } }); });
+      act(() => { input.props.onChange(inputChange("next/branch")); });
       const { onBlur, onKeyDown } = input.props;
       act(() => {
         if (submitWith === "Enter") onKeyDown(key("Enter"));
@@ -132,7 +146,7 @@ test("mounted submitted branch editor stays closed on rename rejection and permi
     act(() => { view.button().props.onClick(); });
     const input = view.inputs()[0];
     assert.ok(input);
-    act(() => { input.props.onChange({ currentTarget: { value: "taken" } }); input.props.onBlur(); });
+    act(() => { input.props.onChange(inputChange("taken")); input.props.onBlur(); });
     assert.equal(view.inputs().length, 0, "submitted editor closes before a rejected rename settles");
     await act(async () => { view.rename.reject(new Error("branch exists")); });
     assert.deepEqual(view.calls, [["rename", "ws1", "taken"]]);
@@ -147,15 +161,15 @@ test("mounted branch editor preserves empty, unchanged and Escape controls witho
   const view = mountedHeaderFixture();
   try {
     act(() => { view.button().props.onClick(); });
-    act(() => { view.inputs()[0].props.onChange({ currentTarget: { value: "" } }); });
+    act(() => { view.inputs()[0].props.onChange(inputChange("")); });
     act(() => { view.inputs()[0].props.onBlur(); });
     assert.equal(view.inputs().length, 1);
     assert.deepEqual(view.calls, []);
-    act(() => { view.inputs()[0].props.onChange({ currentTarget: { value: "old/branch" } }); });
+    act(() => { view.inputs()[0].props.onChange(inputChange("old/branch")); });
     act(() => { view.inputs()[0].props.onKeyDown(key("Enter")); });
     assert.equal(view.inputs().length, 0);
     act(() => { view.button().props.onClick(); });
-    act(() => { view.inputs()[0].props.onChange({ currentTarget: { value: "discard" } }); });
+    act(() => { view.inputs()[0].props.onChange(inputChange("discard")); });
     const input = view.inputs()[0];
     const escape = key("Escape");
     act(() => { input.props.onKeyDown(escape); input.props.onBlur(); });
@@ -164,6 +178,32 @@ test("mounted branch editor preserves empty, unchanged and Escape controls witho
     assert.deepEqual(view.calls, []);
   } finally { await view.close(); }
 });
+
+for (const { raw, caret, expected } of [
+  { raw: "feature/ab", caret: 8, expected: "feature/ab" },
+  { raw: "feature/a!!b", caret: 9, expected: "feature/a-b" },
+  { raw: "feature/ab", caret: null, expected: "feature/ab" },
+]) {
+  test(`mounted branch editor restores caret ${caret ?? 0} after queued change of ${raw}`, async () => {
+    const view = mountedHeaderFixture();
+    try {
+      act(() => { view.button().props.onClick(); });
+      const change = inputChange(raw, caret);
+      act(() => { view.inputs()[0].props.onChange(change); });
+      assert.equal(view.inputs()[0].props.value, expected);
+      assert.equal(view.inputs().length, 1);
+      assert.deepEqual(change.selectionWrites, [], "selection is not restored before the controlled update finishes");
+      change.currentTarget.selectionStart = 0;
+      change.currentTarget.selectionEnd = 0;
+      await act(async () => {});
+      assert.deepEqual(change.selectionWrites, [[caret ?? 0, caret ?? 0]], "the queued callback restores the captured caret");
+      assert.equal(change.currentTarget.selectionStart, caret ?? 0);
+      assert.equal(change.currentTarget.selectionEnd, caret ?? 0);
+      assert.deepEqual(view.calls, []);
+      assert.deepEqual(view.errors, []);
+    } finally { await view.close(); }
+  });
+}
 
 test("archived header renders only a static branch label; active headers retain Rename", () => {
   // Transform just this TSX module for Node's renderer; native I/O stays stubbed.
