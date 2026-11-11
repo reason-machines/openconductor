@@ -32,7 +32,15 @@ Automatic hosted command:
 node --test src/scripts/runningInput.test.ts
 ```
 
-Status at this test-first increment: PREPARED, NOT RUN. No local Node, Rust, app, native, or provider runtime was started. The hosted baseline must run before the product repair is published; the same fixture bytes must then pass on the repaired candidate.
+Hosted baseline RED was observed at `a6f37310223722dfbd7ae208c9a9e958a1e0af93` in CI run `43110308365`, frontend-unit job `130824242774`. The normal full-suite command `node --test "src/**/*.test.ts"` executed 3,116 tests: 3,113 passed and exactly three failed. All three failures were the frozen live-input assertions (exact bytes, run transition and displayed workspace); actual IPC writes were empty. All four frozen read-only/cleanup controls passed. The typecheck step passed; the named frontend build job failed at the same unit-test step, before build.
+
+`baseline-red.json` records the exact head and counts; `baseline-red.log` retains the decisive log excerpt. The seven-case fixture remains byte-identical for candidate GREEN. No local Node, Rust, app, native, or provider runtime was started.
+
+## Candidate and additional coverage
+
+The candidate passes xterm input through the production panel/API and a script-specific Tauri command to a retained live PTY writer. Admission requires the current workspace, script and run ID; it captures that Process before writing, never looks up a replacement after validation, and releases the retained writer on exit. The frontend serializes input and drops queued bytes when its input subscription is replaced or disposed. Setup and Spotlight stay read-only.
+
+`src/scripts/inputOrdering.test.ts` adds four queue/baseline controls. `crates/scripts/tests/running_input.rs` adds four Unix integration cases for exact real-PTY consumption, previous-generation rejection, setup/stopped rejection and separate-workspace routing. Both additions are published for automatic hosted execution; no passing result is claimed at this increment. In-flight backend stop/backpressure races and native acceptance remain separate gaps.
 
 ## Repair contract and acceptance gaps
 
