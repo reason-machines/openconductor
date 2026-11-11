@@ -1,0 +1,626 @@
+{
+  "id": "ACQ-HOME-LOADING-271-03",
+  "producer": "Conductor Rebuild / 27102e36",
+  "main_sha": "11a5f73df99faa0d33bcc0c19b78606bc2c0b992",
+  "reference_assets": {
+    "renderApp-D_fmY7hW.js": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index-BGEQ8YjU.js": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "parent_rea_evidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+  "retained_service_receipt_attributed": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "aliases": {
+    "Xh": {
+      "import_binding": "cb as Xh",
+      "export_binding": "Afe as cb",
+      "implementation": "Afe"
+    },
+    "nF": {
+      "import_binding": "nB as nF",
+      "export_binding": "q2t as nB",
+      "implementation": "q2t"
+    },
+    "so": {
+      "import_binding": "cu as so",
+      "export_binding": "rl as cu",
+      "implementation": "rl"
+    }
+  },
+  "reference_spans": [
+    {
+      "name": "Afe",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/Afe.js.txt",
+      "utf8_half_open": [
+        3284737,
+        3285851
+      ],
+      "utf16_half_open": [
+        3284237,
+        3285351
+      ],
+      "bytes": 1114,
+      "sha256": "95635092bcbc111c89f8a06b001ab0e2305938606157af400da28bdf0d8c9251"
+    },
+    {
+      "name": "rl",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/rl.js.txt",
+      "utf8_half_open": [
+        3086916,
+        3087410
+      ],
+      "utf16_half_open": [
+        3086422,
+        3086916
+      ],
+      "bytes": 494,
+      "sha256": "ccaee39aed58a59118e5754e8126d6cd0ab919c87c135e39400f2fc1773bc21a"
+    },
+    {
+      "name": "OMt",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/OMt.js.txt",
+      "utf8_half_open": [
+        3087410,
+        3087468
+      ],
+      "utf16_half_open": [
+        3086916,
+        3086974
+      ],
+      "bytes": 58,
+      "sha256": "431d99c0ab13fb6229f7627f5370a2f3f6f0075158dc1056af68eec3dc57b3bc"
+    },
+    {
+      "name": "AMt",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/AMt.js.txt",
+      "utf8_half_open": [
+        3082467,
+        3082779
+      ],
+      "utf16_half_open": [
+        3081973,
+        3082285
+      ],
+      "bytes": 312,
+      "sha256": "47cc1c1abc91f38e9b9d93de1a9f6920cecf246d9184eb6fa9dafe98529df282"
+    },
+    {
+      "name": "kpe",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/kpe.js.txt",
+      "utf8_half_open": [
+        3082779,
+        3083139
+      ],
+      "utf16_half_open": [
+        3082285,
+        3082645
+      ],
+      "bytes": 360,
+      "sha256": "dd48926c5ee65a9117136f2e93df694c01174b8cec6e2be88ddec7d739d9ce07"
+    },
+    {
+      "name": "IMt",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/IMt.js.txt",
+      "utf8_half_open": [
+        3083139,
+        3083287
+      ],
+      "utf16_half_open": [
+        3082645,
+        3082793
+      ],
+      "bytes": 148,
+      "sha256": "fbc4fbd97d31a32eda5a15cc1cb8ef8b2c4e67c28d1d95bf64a29d4d81447b69"
+    },
+    {
+      "name": "RVe",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/RVe.js.txt",
+      "utf8_half_open": [
+        944010,
+        944324
+      ],
+      "utf16_half_open": [
+        943996,
+        944310
+      ],
+      "bytes": 314,
+      "sha256": "c9a4ef6cdf3c52b75e60009bd98762fa93ca520a7d5001147ef2aeeb9470d049"
+    },
+    {
+      "name": "ko",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/ko.js.txt",
+      "utf8_half_open": [
+        944324,
+        945545
+      ],
+      "utf16_half_open": [
+        944310,
+        945531
+      ],
+      "bytes": 1221,
+      "sha256": "e7641330d98aaf13a03c053afb6e193add5bfa56dd54c959968bdfd51587c592"
+    },
+    {
+      "name": "dt",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/dt.js.txt",
+      "utf8_half_open": [
+        383845,
+        383901
+      ],
+      "utf16_half_open": [
+        383833,
+        383889
+      ],
+      "bytes": 56,
+      "sha256": "a4abc4fa6fe3d3806fd5d14e07fbb9662bb272647adc49a088dacfc143c20f13"
+    },
+    {
+      "name": "Mr",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/Mr.js.txt",
+      "utf8_half_open": [
+        383901,
+        383957
+      ],
+      "utf16_half_open": [
+        383889,
+        383945
+      ],
+      "bytes": 56,
+      "sha256": "cc98f2de08f71d98676734c310107ab73ca0eb0d7024a19140a3528b0b188a05"
+    },
+    {
+      "name": "tr",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/tr.js.txt",
+      "utf8_half_open": [
+        383957,
+        384017
+      ],
+      "utf16_half_open": [
+        383945,
+        384005
+      ],
+      "bytes": 60,
+      "sha256": "cfaaa92ef82baa409b0d3977ece5b59c7e916283c689545336d7044f84f45247"
+    },
+    {
+      "name": "Gv",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/Gv.js.txt",
+      "utf8_half_open": [
+        384017,
+        384249
+      ],
+      "utf16_half_open": [
+        384005,
+        384237
+      ],
+      "bytes": 232,
+      "sha256": "2e9443525a513677934351ac9f7ed57486933249ab30f52a43d3ec67a73032c8"
+    },
+    {
+      "name": "QBt",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/QBt.js.txt",
+      "utf8_half_open": [
+        3284192,
+        3284737
+      ],
+      "utf16_half_open": [
+        3283692,
+        3284237
+      ],
+      "bytes": 545,
+      "sha256": "72aaad60f9f51051a9768a0554a3bf1485fbad3d846d621c998a077d07226a6b"
+    },
+    {
+      "name": "YBt",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/YBt.js.txt",
+      "utf8_half_open": [
+        3283791,
+        3284185
+      ],
+      "utf16_half_open": [
+        3283291,
+        3283685
+      ],
+      "bytes": 394,
+      "sha256": "bc5bb2e198c4630a82efd22091ca57553c97ce672d472683ef292543edcea481"
+    },
+    {
+      "name": "pg",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/pg.js.txt",
+      "utf8_half_open": [
+        923598,
+        923785
+      ],
+      "utf16_half_open": [
+        923584,
+        923771
+      ],
+      "bytes": 187,
+      "sha256": "2d3dceb7fc14a1ad3c4b90d173aa7721318a4bb1c611229420da3765b84fd2c0"
+    },
+    {
+      "name": "J$",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/J$.js.txt",
+      "utf8_half_open": [
+        923985,
+        924293
+      ],
+      "utf16_half_open": [
+        923971,
+        924279
+      ],
+      "bytes": 308,
+      "sha256": "02c78a7d49542118bb1141f3722b3a6897e724546c7c0b76048713217816499c"
+    },
+    {
+      "name": "FI",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/FI.js.txt",
+      "utf8_half_open": [
+        3082030,
+        3082068
+      ],
+      "utf16_half_open": [
+        3081536,
+        3081574
+      ],
+      "bytes": 38,
+      "sha256": "45bb66d55540ed4509ba2e124fcae15923b0805e70b500123c36e4f82ff7e2b0"
+    },
+    {
+      "name": "SMt",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/SMt.js.txt",
+      "utf8_half_open": [
+        3082068,
+        3082119
+      ],
+      "utf16_half_open": [
+        3081574,
+        3081625
+      ],
+      "bytes": 51,
+      "sha256": "52dcb8c7750bf94b1928f5f1828cd56ce353ea5f602476e3ff6fe44189d49a39"
+    },
+    {
+      "name": "nF-factory-and-selectors",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration group",
+      "path": "evidence/home/loading-integration/reference/nF-factory-and-selectors.js.txt",
+      "utf8_half_open": [
+        3343634,
+        3344090
+      ],
+      "utf16_half_open": [
+        3343132,
+        3343588
+      ],
+      "bytes": 456,
+      "sha256": "e81ba24cae0ec680f2d4b272c8c8e86ece87ffefa69cb904ffcc5373dbe4c0d2"
+    },
+    {
+      "name": "nF-instantiation",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration group",
+      "path": "evidence/home/loading-integration/reference/nF-instantiation.js.txt",
+      "utf8_half_open": [
+        3349266,
+        3350238
+      ],
+      "utf16_half_open": [
+        3348764,
+        3349736
+      ],
+      "bytes": 972,
+      "sha256": "a80b1fa3b0ef9c38dfd0e425ef7dd2b9784193b4beb1036bb2bce3a3627f57d4"
+    },
+    {
+      "name": "repo-initial-state",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration group",
+      "path": "evidence/home/loading-integration/reference/repo-initial-state.js.txt",
+      "utf8_half_open": [
+        3328147,
+        3328214
+      ],
+      "utf16_half_open": [
+        3327645,
+        3327712
+      ],
+      "bytes": 67,
+      "sha256": "5a548721e969b1c987330dc44e740a1616f106f52716401a26d514d5bdc9a641"
+    },
+    {
+      "name": "repo-service-start",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete method",
+      "path": "evidence/home/loading-integration/reference/repo-service-start.js.txt",
+      "utf8_half_open": [
+        3338313,
+        3338572
+      ],
+      "utf16_half_open": [
+        3337811,
+        3338070
+      ],
+      "bytes": 259,
+      "sha256": "934a0af88e82728e310b732b0009ca8e04604273da1a736e988c0e98bc71732e"
+    },
+    {
+      "name": "repo-getRepos",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete method",
+      "path": "evidence/home/loading-integration/reference/repo-getRepos.js.txt",
+      "utf8_half_open": [
+        3339041,
+        3339232
+      ],
+      "utf16_half_open": [
+        3338539,
+        3338730
+      ],
+      "bytes": 191,
+      "sha256": "1075d3a102f103f87a8f5b5041d5c81de8aa1ed2b1024eccdfe7cb278641d6af"
+    },
+    {
+      "name": "repo-reloadRepos",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete method",
+      "path": "evidence/home/loading-integration/reference/repo-reloadRepos.js.txt",
+      "utf8_half_open": [
+        3343232,
+        3343477
+      ],
+      "utf16_half_open": [
+        3342730,
+        3342975
+      ],
+      "bytes": 245,
+      "sha256": "e3c610297758f997a6c39490ee2c3d1a13dfcd917086f7f4c39adf222608bda1"
+    },
+    {
+      "name": "workspace-initial-state",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration group",
+      "path": "evidence/home/loading-integration/reference/workspace-initial-state.js.txt",
+      "utf8_half_open": [
+        824586,
+        825235
+      ],
+      "utf16_half_open": [
+        824572,
+        825221
+      ],
+      "bytes": 649,
+      "sha256": "04c34853a126a8bf172b02d4b019bc1a1afad739e73f7b2efa485f6c86a854cd"
+    },
+    {
+      "name": "workspace-getWorkspaces",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete method",
+      "path": "evidence/home/loading-integration/reference/workspace-getWorkspaces.js.txt",
+      "utf8_half_open": [
+        1059105,
+        1059279
+      ],
+      "utf16_half_open": [
+        1059087,
+        1059261
+      ],
+      "bytes": 174,
+      "sha256": "de29c31548beba0c4c9b114eb4fd48caeac8bb5c68ec837d902d54ebff2f6986"
+    },
+    {
+      "name": "workspace-waitForWorkspacesToLoad",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete method",
+      "path": "evidence/home/loading-integration/reference/workspace-waitForWorkspacesToLoad.js.txt",
+      "utf8_half_open": [
+        1059279,
+        1059482
+      ],
+      "utf16_half_open": [
+        1059261,
+        1059464
+      ],
+      "bytes": 203,
+      "sha256": "db4d7e2e1ac8f2ab329c0a8db84615431b6de3f2f60085006307b2c89c011d4f"
+    },
+    {
+      "name": "workspace-readAndStoreWorkspaces",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete method",
+      "path": "evidence/home/loading-integration/reference/workspace-readAndStoreWorkspaces.js.txt",
+      "utf8_half_open": [
+        1068391,
+        1069184
+      ],
+      "utf16_half_open": [
+        1068373,
+        1069166
+      ],
+      "bytes": 793,
+      "sha256": "54933efa6a366bd5f18eaa224b76c3b61dbdc672319bb2899fccc03a70c01121"
+    },
+    {
+      "name": "workspace-loadWorkspaceList",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete method",
+      "path": "evidence/home/loading-integration/reference/workspace-loadWorkspaceList.js.txt",
+      "utf8_half_open": [
+        1069184,
+        1069345
+      ],
+      "utf16_half_open": [
+        1069166,
+        1069327
+      ],
+      "bytes": 161,
+      "sha256": "955b91f747ddafcce69431d55f0994ff897d72b7a9ee5b50e85bfe150ff623ff"
+    },
+    {
+      "name": "organization-pointer-hydrate",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete method",
+      "path": "evidence/home/loading-integration/reference/organization-pointer-hydrate.js.txt",
+      "utf8_half_open": [
+        925388,
+        926644
+      ],
+      "utf16_half_open": [
+        925374,
+        926630
+      ],
+      "bytes": 1256,
+      "sha256": "d2f4ea762f2844af158cca8d98adf8f205cdd50ad3f74e64c2cf6fe82738d7e0"
+    },
+    {
+      "name": "organization-list-refresh",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/organization-list-refresh.js.txt",
+      "utf8_half_open": [
+        920530,
+        921248
+      ],
+      "utf16_half_open": [
+        920516,
+        921234
+      ],
+      "bytes": 718,
+      "sha256": "5443f7f39ed5d6f2645081df12a6af72ff2367ff8d44a4acce7949455490b3e3"
+    },
+    {
+      "name": "organization-no-context",
+      "asset": "index-BGEQ8YjU.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/organization-no-context.js.txt",
+      "utf8_half_open": [
+        920166,
+        920303
+      ],
+      "utf16_half_open": [
+        920152,
+        920289
+      ],
+      "bytes": 137,
+      "sha256": "f2cb86ea2c327f28614b61d19afb63155dac67dc824b3a2f1cb734532a0912ac"
+    },
+    {
+      "name": "UJo",
+      "asset": "renderApp-D_fmY7hW.js",
+      "kind": "complete declaration",
+      "path": "evidence/home/loading-integration/reference/UJo.js.txt",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "utf16_half_open": [
+        9817995,
+        9829017
+      ],
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030"
+    }
+  ],
+  "current_sources": {
+    "src/App.tsx": {
+      "bytes": 37509,
+      "sha256": "46b6cd2f15e27befa2f7089e327d31fbc6268c0dea39699c216af2338f116968"
+    },
+    "src/components/AllWorkspaces.tsx": {
+      "bytes": 16929,
+      "sha256": "f9be6bc8124033ac7e7062b8d4b1a423286a7b86b58465d0258b049f5ca6f81f"
+    },
+    "src/state/store.ts": {
+      "bytes": 31095,
+      "sha256": "98dd8c80116d825cc19f1863b1506ebfae8a7ca1809b066dd701f48a080bac56"
+    },
+    "src/state/selectors.ts": {
+      "bytes": 2843,
+      "sha256": "37f68b0305f898b2cdf575e05bd0a0ebf89983eb527b96526cf4f9406da2302d"
+    },
+    "src/state/persisted.ts": {
+      "bytes": 8945,
+      "sha256": "2efc1eb708c9d8635740cd3045821c864e84a4a11ea9eef9562aecccdc4587da"
+    },
+    "src/main.tsx": {
+      "bytes": 2279,
+      "sha256": "b1ad5f34cbb74420d946183105a216b809233ac09dab49beeea3c9366db5da80"
+    },
+    "src/onboarding/FirstRunGate.tsx": {
+      "bytes": 4307,
+      "sha256": "44db3bcd0fbf75c916a1f523a435f9f8e3c305a742c12dfc246029ccb4a4bfc9"
+    },
+    "src/onboarding/firstRun.ts": {
+      "bytes": 3781,
+      "sha256": "0afb791f922572fc71c81bd3adb9e04849480a5aafcdf7039b7a45b9a637f3ba"
+    },
+    "src/onboarding/api.ts": {
+      "bytes": 1704,
+      "sha256": "d26b7d75b8b37159545f42aabdab0a1d46868baaf52cf4837a8c3ff21ee693dd"
+    }
+  },
+  "classification": "SOURCE_QUALIFIED_PENDING_LOCAL_DATA_MOUNT_DIFFERENCE_NOT_RUNTIME_ACCEPTED",
+  "conditions": [
+    "Desktop non-demo",
+    "First-run gate permits App",
+    "Route /all-workspaces",
+    "Repository/workspace IPC pending"
+  ],
+  "source_result": "Reference UJo renders loading status while Xh/nF/so are loading. Current App mounts AllWorkspaces during pending repository/workspace hydration without transmitting startup; Home renders its settled empty state from placeholder rows.",
+  "verification": {
+    "asset_identity": "PASS",
+    "exact_spans_and_aliases": "PASS",
+    "current_source_assertions": "PASS",
+    "target_javascript_executed": false,
+    "tests_run": false,
+    "installs": false,
+    "product_edits": false
+  },
+  "limits": [
+    "Static control/data flow is not a mounted regression or native timing observation.",
+    "No claim about error presentation or cloud UI.",
+    "No settled empty-action or selection re-audit.",
+    "Current startup also includes sidebar-section hydration; it is not an exact timing equivalent of each reference hook.",
+    "g5, tt, saved-owner defaults, visual geometry, and provider execution remain outside scope."
+  ]
+}

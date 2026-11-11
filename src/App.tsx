@@ -572,7 +572,7 @@ export default function App() {
             onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
         ) : sel.kind === "home" ? (
-          <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+          <AllWorkspaces repos={state.repos} loading={startup === "loading"} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : sel.kind === "routines" && cloudUI === true ? (
           sel.page ? (
             <RoutineEditor
