@@ -26,7 +26,6 @@ export function FirstRunOnboarding({ onContinue, busy, onFailed }: { onContinue:
   const [progress, setProgress] = useState(0);
   const select = useCallback((id: Slide["id"]) => {
     setCurrent(id);
-    setProgress(0);
   }, []);
   const next = useCallback(() => select(nextSlideId(current)), [current, select]);
 

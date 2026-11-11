@@ -1,0 +1,68 @@
+{
+  "unit": "HOME-EMPTY-ENTER-271-04",
+  "producer": "Conductor Rebuild",
+  "state": "INTENDED_HOSTED_RED",
+  "pull_request": "https://github.com/reason-machines/openconductor/pull/1056",
+  "branch": "reason/home-empty-list-enter-ca-3ae72a5a",
+  "published_head": "dbe165b42081dc19f620e2d084150abbd15d03ba",
+  "base": "6ea86f222815a43ab12355eee2afbdcd981b2164",
+  "workflow_run": 43050567375,
+  "job_id": 130626219598,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43050567375/job/130626219598",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "automatic_pull_request_run": true,
+  "setup_import_graph_failure": false,
+  "frozen_test_sha256": "7e95c58cc197dffdf4ebe80629149d1a64209b08568050c44283ae3380ca972e",
+  "cases": [
+    {
+      "name": "empty source Enter",
+      "result": "FAIL",
+      "assertion": "empty-source Enter must be prevented",
+      "expected": true,
+      "actual": false,
+      "no_activation": "PASS"
+    },
+    {
+      "name": "filtered-to-zero Enter",
+      "result": "FAIL",
+      "assertion": "zero-result Enter must be prevented",
+      "expected": true,
+      "actual": false,
+      "no_activation": "PASS"
+    },
+    {
+      "name": "nonempty Enter",
+      "result": "PASS",
+      "behavior": "prevented; selected workspace activated exactly once"
+    },
+    {
+      "name": "unrelated empty-list character",
+      "result": "PASS",
+      "behavior": "unprevented; no activation"
+    }
+  ],
+  "suite": {
+    "tests": 2807,
+    "pass": 2805,
+    "fail": 2,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "frontend_build_job": {
+    "job_id": 130626219712,
+    "result": "FAIL",
+    "failed_step": "Frontend unit tests",
+    "same_two_assertions": true
+  },
+  "log": "hosted-red.log",
+  "log_transform": "Four-case excerpt; trailing whitespace removed from blank log messages only.",
+  "product_edited": false,
+  "green": "NOT_OBSERVED",
+  "dependency": "PR #1052 onSearchKey lease remains held. Product edit waits for explicit owner release, fresh main containing #1052, and handler/source mismatch recheck.",
+  "limits": [
+    "No local Node/app/browser/native/build/install/dispatch/rerun/E1 execution",
+    "No shared fixture/workflow/dependency/APT/queue/priority changes",
+    "No native/visual parity or original-app execution acceptance",
+    "No consuming-main packaged behavior verification"
+  ]
+}

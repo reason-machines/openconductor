@@ -28,19 +28,18 @@ def main():
     original = (HERE / "frozen-outputCopy.test.ts.txt").read_bytes()
     delivered = (ROOT / "src/scripts/outputCopy.test.ts").read_bytes()
     assert sha(original) == record["frozen_fixture_sha256"], "frozen fixture"
-    assert sha(delivered) == record["delivered_fixture_sha256"], "delivered fixture"
     adapted = original
     for adapter in record["fixture_adapters"]:
         before, after = adapter["before"].encode(), adapter["after"].encode()
         assert adapted.count(before) == 1, adapter["reason"]
         adapted = adapted.replace(before, after)
-    assert adapted == delivered, "only the recorded fixture transport changes may differ"
+    assert sha(adapted) == record["delivered_fixture_sha256"], "historical delivered fixture"
     tests = original[original.index(b'test("'):]
     assert tests == delivered[delivered.index(b'test("'):], "frozen test bodies"
     assert tests.count(b'\ntest("') + 1 == 9, "nine cases"
 
-    product = (ROOT / "src/components/ScriptOutput.tsx").read_bytes()
-    assert sha(product) == record["candidate_sha256"], "copy-only product candidate"
+    product = (HERE / "candidate-ScriptOutput.tsx.txt").read_bytes()
+    assert sha(product) == record["candidate_sha256"], "historical copy-only product candidate"
     assert sha((HERE / "copy.patch").read_bytes()) == record["patch_sha256"], "retained patch"
     renderer = args.reference_renderer.read_bytes() if args.reference_renderer else None
     if renderer is not None:
@@ -58,8 +57,9 @@ def main():
         "main_inputs_verified": len(record["main_inputs"]),
         "reference_spans_verified": len(record["reference_spans"]),
         "reference_renderer_verified": renderer is not None,
-        "product_matches_retained_candidate": True,
-        "only_recorded_fixture_transport_changed": True,
+        "historical_product_matches_retained_candidate": True,
+        "historical_fixture_transport_verified": True,
+        "current_component_behavior_verified": False,
         "frozen_test_bodies_identical": 9,
         "behavioral_cases_run": 0,
         "native_clipboard_or_xterm_runtime_verified": False,

@@ -1,0 +1,10 @@
+{
+  "kind": "source-only-verification",
+  "main_checked": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "original_assets_verified": 2,
+  "retained_spans_verified": 21,
+  "historical_pair_hashes_verified": true,
+  "current_test_bodies_identical": 9,
+  "behavioral_cases_run": 0,
+  "native_or_visual_behavior_verified": false
+}
