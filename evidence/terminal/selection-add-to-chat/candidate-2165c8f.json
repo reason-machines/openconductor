@@ -1,0 +1,54 @@
+{
+  "pr": 1072,
+  "head": "2165c8f2357178881f0664c931dfeecdcfa2a125",
+  "main_checked": "c25670504400771e2fb31e01560db249ea4bd06c",
+  "workflow_run": 43075592283,
+  "unit_job": 130714436588,
+  "typecheck_job": 130714436742,
+  "regressions": {
+    "passed": 20,
+    "failed": 0,
+    "log_lines": [
+      "2026-11-11T18:14:01.3306993Z ok 1894 - actual terminal host exposes selection action only for nonblank text and a target chat",
+      "2026-11-11T18:14:01.3310345Z ok 1895 - selection request sanitizes ANSI/control bytes and trims without truncation",
+      "2026-11-11T18:14:01.3313822Z ok 1896 - accepted selection clears React action state without clearing xterm selection",
+      "2026-11-11T18:14:01.3316751Z ok 1897 - a rejected selection request retains the action for retry",
+      "2026-11-11T18:14:01.3319724Z ok 1898 - selection action uses the current target chat instead of a stale callback",
+      "2026-11-11T18:14:01.3322766Z ok 1899 - terminal switch and unmount release selection subscriptions",
+      "2026-11-11T18:14:01.3345243Z ok 1900 - retained exited terminal output still offers the selection action",
+      "2026-11-11T18:14:01.3348525Z ok 1901 - control-only normalized selection is not emitted",
+      "2026-11-11T18:14:02.0647248Z ok 1902 - actual src/components/WorkspaceView.tsx TerminalHost forwards target-chat selection requests",
+      "2026-11-11T18:14:02.0661325Z ok 1903 - actual src/components/WorkspaceView.tsx PanelStrip forwards target-chat selection requests",
+      "2026-11-11T18:14:02.0665392Z ok 1904 - actual src/components/PanelStrip.tsx TerminalHost forwards target-chat selection requests",
+      "2026-11-11T18:14:02.0669632Z ok 1905 - actual selection caller accepts attachment into the target chat and focuses after revealing it",
+      "2026-11-11T18:14:02.0673274Z ok 1906 - actual selection caller retains a review-chat target instead of switching to primary",
+      "2026-11-11T18:14:02.0675988Z ok 1907 - stale session, stale workspace and missing composer cannot accept selection",
+      "2026-11-11T18:14:02.0678394Z ok 1908 - an accepted request cannot focus a later session or workspace",
+      "2026-11-11T18:14:02.2302713Z ok 1909 - ordinary actual-editor focus keeps the existing selection and draft unchanged",
+      "2026-11-11T18:14:02.2393938Z ok 1910 - explicit actual-editor end focus collapses at the end without replacing rich content",
+      "2026-11-11T18:14:02.2396588Z ok 1911 - explicit end focus handles an empty actual-editor document",
+      "2026-11-11T18:14:02.2400037Z ok 1912 - actual ChatPanel focus-at-end bridge uses the mounted editor without draft or attachment mutation",
+      "2026-11-11T18:14:02.2402501Z ok 1913 - actual focus-at-end bridge is safe after editor unmount"
+    ]
+  },
+  "ordinary_suite": {
+    "passed": 3007,
+    "failed": 1,
+    "total": 3008
+  },
+  "typecheck": "PASS",
+  "build": "NOT_RUN (blocked by ordinary suite)",
+  "failure": {
+    "test": "actual TerminalHost shows the retained error and its Retry button",
+    "path": "src/features/terminal/spawnFailure.test.ts",
+    "error": "terminal?.onSelectionChange is not a function",
+    "cause": "The existing fake xterm Screen lacks the selection event and empty-selection API used by the host.",
+    "correction": "Add onSelectionChange returning a disposable and getSelection returning empty text to the fake Screen. Preserve all test bodies, assertions and frozen selection fixtures."
+  },
+  "local_node_browser_native": "NOT_RUN",
+  "limits": [
+    "Real DOM focus/layout unverified",
+    "Installed-app native selection and visual parity unverified",
+    "Asynchronous attachment transfer and provider delivery unverified"
+  ]
+}
