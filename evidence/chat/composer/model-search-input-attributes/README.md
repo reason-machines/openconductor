@@ -22,6 +22,9 @@ Fresh main inspected before the regression:
 `7af2b95aa74dff985fb6b745f7cc080287d35ea6`.
 Its actual `ModelPicker.tsx` input has autocomplete off and spellcheck false,
 but omits `autoCorrect` and `autoCapitalize`.
+Fresh main was rechecked immediately before the fix at
+`1b75772349ee3e97b4f4ac9dec594d67b3048e15`; `ModelPicker.tsx` was unchanged
+from the regression baseline and still omitted both attributes.
 The correction adds only `autoCorrect="off"` and `autoCapitalize="off"`.
 
 All existing fixtures remain byte-identical:
@@ -66,8 +69,17 @@ revision while keeping all assertions unchanged.
 
 - Passed: held renderer and complete producer hashes, fresh-main source
   comparison, all five existing fixture hashes, and static diff inspection.
-- Pending: hosted regression-only RED, then the same regression unchanged
-  against the two-property fix.
+- Confirmed hosted RED at regression-only head
+  `744202a76ce923f55e42bb50c2004f9272cfdd57`: automatic CI run
+  [42944672947](https://github.com/reason-machines/openconductor/actions/runs/42944672947).
+  Both frontend jobs ran `node --test "src/**/*.test.ts"` and reported
+  2,273 tests: 2,271 passed, exactly two failed. The failures independently
+  required `autoCorrect` and `autoCapitalize`, each reporting
+  `undefined !== 'off'`. Both existing-attribute/query preservation controls
+  passed. The build job stopped at this test gate; this was not a type error.
+- Pending: automatic hosted GREEN against the two-property fix, keeping the
+  regression byte-identical (SHA-256
+  `68147843e513b102966664fae28f570b2c67a5527ef3d127e97d69b6c8abbb7a`).
 - Not run: local dependency installation, local React tests, builds, browser,
   native macOS, or real-provider execution. No screenshot is available under
   the retained-source and hosted-test scope. These tests cannot establish
