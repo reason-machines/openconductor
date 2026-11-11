@@ -1,6 +1,6 @@
 # Garry Mode shortcut hint
 
-Conductor Rebuild owns SETTINGS49-GARRY-HINT-01. This is the frozen regression-only baseline. No product fix has been applied and behavioral reproduction is NOT_RUN until the automatic hosted job reports.
+Conductor Rebuild owns SETTINGS49-GARRY-HINT-01. The automatic hosted baseline reproduced the intended three stale-hint failures and passed the three controls. The candidate now passes the existing override map to the row and resolves the hint during render. The frozen regression is unchanged. Candidate GREEN and complete exact-head workflows are pending.
 
 ## Reference source and current main
 
@@ -13,7 +13,7 @@ Reference assets are retained REA-extracted original application assets, not exe
 
 `python3 .rea-work/garry-shortcut-hint/qualify_source.py` passed both asset hashes, twelve exact spans, four import/export aliases, and eight source assertions against current main `167492e56dbbb90850efbadf1db2848dae7622f2`. These are static checks only.
 
-Current main still computes `GARRY_HINT` once outside `GeneralAppPrefRows`, without overrides. `GeneralPage` already subscribes to the live override map. The smallest proposed fix is to pass that map into the row and resolve its hint during render. Product edits wait for the intended behavioral RED.
+The checked main computes `GARRY_HINT` once outside `GeneralAppPrefRows`, without overrides. `GeneralPage` already subscribes to the live override map. After verifying the intended behavioral RED, the candidate passes that map into the row and resolves its hint during render. It adds no subscription or preference-write change.
 
 The current-main files checked are:
 
@@ -31,7 +31,9 @@ The earlier offline candidate had SHA-256 `8d20554d4c5348fe0fab2fb5ead785fd2f914
 
 The test mounts the actual `GeneralAppPrefRows` and actual `KeybindingsProvider`. It uses the real override parser, shortcut resolver, and glyph formatter. The row layout and preference/native I/O are controlled dependencies. A thin mounted wrapper supplies the provider's live overrides to the row.
 
-Six cases cover default shortcuts, saved overrides loaded after mount, a live remap, multiple shortcuts, reset to defaults, and the unchanged preference-write payload. Predicted baseline is three behavioral failures for loaded, live, and multiple overrides, with three controls passing. A syntax, loader, dependency, or typecheck failure does not qualify as behavioral RED.
+Six cases cover default shortcuts, saved overrides loaded after mount, a live remap, multiple shortcuts, reset to defaults, and the unchanged preference-write payload. The hosted baseline at `05d8d28f8d11588e2e72ed2aaac3b10bc977f32f` failed exactly the loaded, live, and multiple-override cases with `AssertionError`. Each still showed `⌃O` instead of `⌘K` or `⌘K or ⌃⇧G`. Default, reset, and preference-write controls passed. Both full test invocations passed 3177 tests and failed only those three.
+
+The baseline receipts are [frontend unit job 130861673612](https://github.com/reason-machines/openconductor/actions/runs/43121162358/job/130861673612) and [frontend typecheck/build job 130861673541](https://github.com/reason-machines/openconductor/actions/runs/43121162358/job/130861673541). The first job records all six outcomes at log lines 16736–16825. In the second job, `npm run typecheck` passed before the same behavioral failures stopped the frontend-unit-test step. The build did not run. These are behavioral failures, not syntax, loader, dependency, or typecheck errors.
 
 The ordinary automatic CI workflow runs `npm run typecheck` before `node --test "src/**/*.test.ts"`. The focused equivalent is:
 
@@ -148,7 +150,7 @@ toggleGarryMode:{id:"toggleGarryMode",key:he({key:"o",modifiers:so}),title:"Togg
 
 The inherited REA semantic-renderer heap-exhaustion gap remains recorded. No fresh REA invocation or new REA error occurred in this bounded rebind. Static source proof does not establish original-app execution.
 
-Mounted RED and GREEN, typecheck, complete exact-head workflows, package consumption, browser screenshot, and native acceptance are NOT_RUN at this baseline. The mounted wrapper is not the complete Settings page. No native geometry, provider, authentication, or IME acceptance is claimed. A screenshot is unavailable because browser/native execution is not admitted for this source-only lane.
+Mounted baseline RED and baseline typecheck are verified as above. Candidate GREEN, candidate typecheck, complete exact-head workflows, package consumption, browser screenshot, and native acceptance are pending or NOT_RUN. The mounted wrapper is not the complete Settings page. The actual caller is checked statically for the override prop. No native geometry, provider, authentication, or IME acceptance is claimed. A screenshot is unavailable because browser/native execution is not admitted for this lane.
 
 Ligatures remain unresolved with no established defect and are excluded. No app preference write logic, registry, numeric menu, native admission, or protected Mac resource changes are included.
 
