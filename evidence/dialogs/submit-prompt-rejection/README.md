@@ -65,15 +65,17 @@ not ok 5 - form and shortcut cannot start duplicate pending openers in the same 
 The first three failures observed `onClose` once rather than zero times. The
 fourth observed two pending opener calls rather than one. Empty-input, Escape
 and outside-press controls passed. The regression-only local commit
-`a79007579` precedes the fix. The test is unchanged between RED and GREEN:
+`a79007579` precedes the fix. The final collision reservation renames the file
+from `submitPromptRejection.test.ts` to `submitPromptSubmission.test.ts` without
+changing its bytes. The test is unchanged between RED and both GREEN runs:
 `85cad10aa72044af3ed20b9b78cce9a9098fcf10826a5e117ac5e00d3da2d3de`.
 
-After the fix:
+After the fix and final filename alignment:
 
 ```bash
 NODE_PATH="$PWD/.ara-state/github-dismissal-deps/node_modules" \
   node --experimental-strip-types --test \
-  src/components/submitPromptRejection.test.ts src/components/submitPrompt.test.ts \
+  src/components/submitPromptSubmission.test.ts src/components/submitPrompt.test.ts \
   src/components/feedback.test.ts src/components/feedbackEntry.test.ts \
   src/components/githubRepoDismissal.test.ts src/components/clonePendingInputs.test.ts
 ```

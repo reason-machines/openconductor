@@ -52,7 +52,9 @@
     "Own backend openUrl is an async native invoke boundary. The own issue-draft adapter remains intentional and unchanged."
   ],
   "regression": {
-    "test": "src/components/submitPromptRejection.test.ts",
+    "test": "src/components/submitPromptSubmission.test.ts",
+    "red_test_path": "src/components/submitPromptRejection.test.ts",
+    "path_alignment": "Collision reservation renamed the file after the first green run; its bytes and SHA remained unchanged, and all 37 tests passed again.",
     "sha256": "85cad10aa72044af3ed20b9b78cce9a9098fcf10826a5e117ac5e00d3da2d3de",
     "red_local_commit": "a79007579",
     "red": {
