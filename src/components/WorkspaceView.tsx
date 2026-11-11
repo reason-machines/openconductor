@@ -63,6 +63,7 @@ import { ChangesList, DiffDiscardHost, DiffTab } from "../features/diff/DiffView
 import { ChangesToolbar } from "../features/diff/ChangesToolbar.tsx";
 import { useChangesPresentation } from "../features/diff/useChangesPresentation.ts";
 import { filterActive, filterToggleShown, toggleFilter } from "../features/diff/changesFilter";
+import { ancestors } from "../features/files/tree.ts";
 import { SearchIcon } from "../features/files/panelIcons";
 import { Tooltip } from "./ui/Tooltip.tsx";
 import { useWorkspaceDiff, type WorkspaceDiff } from "../features/diff/useWorkspaceDiff";
@@ -721,9 +722,10 @@ interface RightPanelProps {
   /** Under the empty Changes list: "Pull latest from <target>" (shared with the `git.pull` shortcut). */
   emptyAction?: ReactNode;
   targetControl?: ReactNode;
+  activeFilePath?: string;
 }
 
-function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl, onOpenFile }: RightPanelProps & { onOpenFile: (path: string) => boolean }) {
+function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl, activeFilePath, onOpenFile }: RightPanelProps & { onOpenFile: (path: string) => boolean }) {
   // parity:diff.changes-list:ui Cmd+Alt+U: the Changes tab in Uncommitted scope, or back to All changes.
   useKeybindings({
     "workspace.showUncommittedChanges": () => {
@@ -738,6 +740,20 @@ function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, rev
   const { presentation, update: updatePresentation } = useChangesPresentation(workspaceId);
   const [filterOpen, setFilterOpen] = useState(false);
   useEffect(() => setFilterOpen(false), [workspaceId]);
+  const revealedFile = useRef<{ workspaceId: string; path: string } | null>(null);
+  useEffect(() => {
+    if (tab !== "changes" || presentation.diffFileListMode !== "tree") {
+      revealedFile.current = null;
+      return;
+    }
+    if (!activeFilePath || (revealedFile.current?.workspaceId === workspaceId && revealedFile.current.path === activeFilePath)) return;
+    revealedFile.current = { workspaceId, path: activeFilePath };
+    const parents = new Set(ancestors(activeFilePath));
+    if (!presentation.collapsedDirectoryPaths.some((path) => parents.has(path))) return;
+    updatePresentation((previous) => ({
+      collapsedDirectoryPaths: previous.collapsedDirectoryPaths.filter((path) => !parents.has(path)),
+    }));
+  }, [workspaceId, tab, activeFilePath, presentation.diffFileListMode, presentation.collapsedDirectoryPaths, updatePresentation]);
   const filterOn = filterActive(filterOpen, presentation.filePathFilter);
   const filter = {
     open: filterOpen,
@@ -1410,6 +1426,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
             <RightPanel
               onOpenFile={openMarkdown}
               workspaceId={workspace.id}
+              activeFilePath={showDiff ? diff.selected?.path : showFile ? fileTarget.path : undefined}
               tab={gitPanelTab}
               setTab={setGitPanelTab}
               diff={diff}
