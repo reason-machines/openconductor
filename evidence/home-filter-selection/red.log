@@ -1,0 +1,122 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Home retains a surviving selected workspace and Enter target when a project filter removes earlier rows
+not ok 1 - Home retains a surviving selected workspace and Enter target when a project filter removes earlier rows
+  ---
+  duration_ms: 184.023485
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/allWorkspacesSelection.test.ts:99:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      [
+    +   'Shared B'
+    -   'Shared C'
+      ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Shared C'
+  actual:
+    0: 'Shared B'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/allWorkspacesSelection.test.ts:107:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Home retains selection when clearing the project filter inserts earlier rows
+not ok 2 - Home retains selection when clearing the project filter inserts earlier rows
+  ---
+  duration_ms: 103.504712
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/allWorkspacesSelection.test.ts:115:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      [
+    +   'Shared A'
+    -   'Shared C'
+      ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Shared C'
+  actual:
+    0: 'Shared A'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/allWorkspacesSelection.test.ts:121:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Home resets to the first remaining row when the selected workspace is filtered out
+ok 3 - Home resets to the first remaining row when the selected workspace is filtered out
+  ---
+  duration_ms: 67.747469
+  type: 'test'
+  ...
+# Subtest: Home selects the first row after an empty filtered list becomes nonempty
+ok 4 - Home selects the first row after an empty filtered list becomes nonempty
+  ---
+  duration_ms: 69.958603
+  type: 'test'
+  ...
+# Subtest: Home search changes reset selection even when the selected workspace still matches
+ok 5 - Home search changes reset selection even when the selected workspace still matches
+  ---
+  duration_ms: 49.099954
+  type: 'test'
+  ...
+# Subtest: Home row clicks activate that workspace rather than the previous keyboard target
+ok 6 - Home row clicks activate that workspace rather than the previous keyboard target
+  ---
+  duration_ms: 26.634244
+  type: 'test'
+  ...
+# Subtest: Home retains selection across same-group row reordering but resets after the selected row changes date group
+not ok 7 - Home retains selection across same-group row reordering but resets after the selected row changes date group
+  ---
+  duration_ms: 30.676913
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/allWorkspacesSelection.test.ts:177:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+      [
+    +   'Shared B'
+    -   'Shared C'
+      ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'Shared C'
+  actual:
+    0: 'Shared B'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/27102e36-8b7f-4f1b-9ada-1e0503d3fede/repo/src/components/allWorkspacesSelection.test.ts:186:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 4
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1094.321918
