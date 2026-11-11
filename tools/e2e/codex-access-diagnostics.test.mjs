@@ -6,27 +6,42 @@ import { installCodexAccessDiagnostics, assertCodexAccessSnapshot, codexBoundary
 
 function fixture(handled = false) {
   const saved = new Map();
+  const listeners = new Map();
+  let resetOnChange = false;
   const select = {
     value: "full", isConnected: true, disabled: false,
     getBoundingClientRect: () => ({ width: 100, height: 20 }),
     closest: () => null,
-    dispatchEvent() { if (handled) saved.set("openconductor.codex.policy.proj/e2e", this.value); },
+    matches: (selector) => selector === ".codex-access",
+    dispatchEvent(event) {
+      if (resetOnChange) this.value = "full";
+      event.target = this;
+      event.eventPhase = 1;
+      listeners.get("change:true")?.(event);
+      if (handled) saved.set("openconductor.codex.policy.proj/e2e", this.value);
+      event.eventPhase = 3;
+      listeners.get("change:false")?.(event);
+      return true;
+    },
   };
   const invoke = () => { throw new Error("observation must not invoke IPC"); };
   const ipc = {};
   Object.defineProperty(ipc, "invoke", { value: invoke });
   const context = {
     window: { __TAURI_INTERNALS__: ipc },
-    document: { querySelector: () => select, querySelectorAll: () => [select] },
+    document: {
+      querySelector: () => select, querySelectorAll: () => [select],
+      addEventListener: (name, listener, capture = false) => listeners.set(`${name}:${capture}`, listener),
+    },
     getComputedStyle: () => ({ display: "inline-block", visibility: "visible" }),
     localStorage: { getItem: (key) => saved.get(key) ?? null },
     HTMLSelectElement: { prototype: Object.defineProperty({}, "value", { set(value) { this.value = value; } }) },
-    Event: class Event {},
+    Event: class Event { isTrusted = false; },
   };
   runInNewContext(`(${installCodexAccessDiagnostics.toString()})("proj/e2e")`, context);
   const capture = (phase) => context.window.__ocCodexAccessDiagnostics.capture(phase);
   const run = (script) => Promise.resolve(runInNewContext(script, context));
-  return { select, saved, context, capture, run, invoke };
+  return { select, saved, context, capture, run, invoke, resetOnChange: () => { resetOnChange = true; } };
 }
 
 async function actualChangeBlock(f) {
@@ -48,6 +63,47 @@ test("actual driver rejects an ignored change instead of reporting successful se
 
 test("actual driver accepts a synchronously handled user change", async () => {
   await actualChangeBlock(fixture(true));
+});
+
+test("actual driver retains setter and change propagation observations without changing the policy", async () => {
+  const f = fixture(true);
+  await actualChangeBlock(f);
+  const entries = f.context.window.__ocCodexAccessDiagnostics.read().entries;
+  assert.deepEqual(Array.from(entries, (entry) => entry.phase), ["installed", "before-setter", "after-setter", "change-capture", "change-bubble", "after-dispatch", "after-change"]);
+  assert.deepEqual(Array.from(entries, (entry) => [entry.value, entry.persistedPolicy]), [
+    ["full", null], ["full", null], ["ask", null], ["ask", null], ["ask", "ask"], ["ask", "ask"], ["ask", "ask"],
+  ]);
+  assert.equal(entries.find((entry) => entry.phase === "after-setter")?.setterReturn, "undefined");
+  assert.equal(entries.find((entry) => entry.phase === "after-dispatch")?.dispatchReturn, true);
+  for (const entry of entries.filter((entry) => entry.phase.startsWith("change-"))) {
+    assert.equal(entry.eventTargetIsSelector, true);
+    assert.equal(entry.eventValue, "ask");
+    assert.equal(entry.eventTrusted, false);
+  }
+});
+
+test("actual driver keeps a setter success distinct from a change-time reset and still rejects it", async () => {
+  const f = fixture(true);
+  f.resetOnChange();
+  await assert.rejects(actualChangeBlock(f), /Ask first remains selected/);
+  const entries = f.context.window.__ocCodexAccessDiagnostics.read().entries;
+  assert.equal(entries.find((entry) => entry.phase === "after-setter")?.value, "ask");
+  assert.equal(entries.find((entry) => entry.phase === "change-capture")?.value, "full");
+  assert.equal(entries.find((entry) => entry.phase === "change-bubble")?.persistedPolicy, "full");
+  assert.equal(f.saved.get("openconductor.codex.policy.proj/e2e"), "full");
+});
+
+test("change observer ignores unrelated targets and allowlists event values", () => {
+  const f = fixture();
+  const probe = f.context.window.__ocCodexAccessDiagnostics;
+  probe.capture("unrelated", { target: { value: "private-value" }, isTrusted: false });
+  assert.equal(probe.read().entries.at(-1).eventTargetIsSelector, false);
+  assert.equal(probe.read().entries.at(-1).eventValue, null);
+  probe.capture("after-setter", null, "private-return");
+  assert.equal(probe.read().entries.at(-1).setterReturn, "unexpected");
+  probe.capture("after-dispatch", null, false);
+  assert.equal(probe.read().entries.at(-1).dispatchReturn, false);
+  assert.ok(!JSON.stringify(probe.read()).includes("private-"));
 });
 
 test("capture works with Tauri's readonly invoke without replacing it or writing storage", () => {

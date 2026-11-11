@@ -7,7 +7,7 @@ export function installCodexAccessDiagnostics(expectedChatId) {
   const nodes = new WeakMap();
   let nextNode = 0;
   let dropped = 0;
-  const capture = (phase) => {
+  const capture = (phase, event, operationReturn) => {
     const selectors = document.querySelectorAll(".codex-access");
     const select = selectors[0];
     if (select && !nodes.has(select)) nodes.set(select, ++nextNode);
@@ -24,14 +24,26 @@ export function installCodexAccessDiagnostics(expectedChatId) {
       visible: !!select && rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden" && style.visibility !== "collapse" && !select.closest("[hidden]"),
       value: ["full", "ask", "read-only"].includes(select?.value) ? select.value : null,
       persistedPolicy: saved === null || ["full", "ask", "read-only"].includes(saved) ? saved : "unrecognized",
+      eventTargetIsSelector: event ? event.target === select : null,
+      eventValue: event?.target === select && ["full", "ask", "read-only"].includes(select?.value) ? select.value : null,
+      eventTrusted: typeof event?.isTrusted === "boolean" ? event.isTrusted : null,
+      eventPhase: [1, 2, 3].includes(event?.eventPhase) ? event.eventPhase : null,
+      setterReturn: phase === "after-setter" ? operationReturn === undefined ? "undefined" : "unexpected" : null,
+      dispatchReturn: phase === "after-dispatch" && typeof operationReturn === "boolean" ? operationReturn : null,
     };
     if (entries.length < 64) entries.push(snapshot);
     else dropped++;
     return snapshot;
   };
+  document.addEventListener("change", (event) => {
+    if (event.target?.matches?.(".codex-access")) capture("change-capture", event);
+  }, true);
+  document.addEventListener("change", (event) => {
+    if (event.target?.matches?.(".codex-access")) capture("change-bubble", event);
+  });
   window[name] = {
     capture,
-    read: () => ({ schemaVersion: 2, expectedChatId, dropped, entries }),
+    read: () => ({ schemaVersion: 3, expectedChatId, dropped, entries }),
   };
   return capture("installed");
 }
