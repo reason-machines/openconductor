@@ -36,7 +36,8 @@ node --test src/features/chat/authRetryMultiple.test.ts
 - Passed on Reason Cloud: source comparison of all 17 baseline inputs against current main, five retained literal-span identities and unchanged fixture bytes. See `publication-source.json`.
 - Passed: `git diff --check`.
 - Not run locally: Node, product tests, typecheck, build, browser, authentication, provider or native execution. The existing serialized E1 runtime queue is unchanged.
-- Hosted behavioral RED and matched GREEN are pending. The baseline predicts one single-message pass and one failure at `second failed message is not lost when the first retry was working`. Import/setup failures, timeouts and different assertions are not that intended RED.
+- The first hosted frontend check on `6a7e1186c1169d796bdafdf01482990a4e109098` failed at the wrapper, not the product. Its child inherited Node's `NODE_TEST_CONTEXT`, so Node refused the nested test runner and returned no TAP. The complete-result gate rejected that empty result. The wrapper now removes that runner-local environment key before starting the isolated child. Fixture bytes and product source are unchanged.
+- Hosted behavioral RED and matched GREEN remain pending. The baseline predicts one single-message pass and one failure at `second failed message is not lost when the first retry was working`. Import/setup failures, timeouts and different assertions are not that intended RED.
 - No screenshot is supplied because app or native execution has not run. This is not visual acceptance.
 
 This first publication adds the immutable regression and source evidence before the product candidate. It is not a completed fix and must not merge while the regression fails. The candidate and its hosted results will follow on the same pull request.
