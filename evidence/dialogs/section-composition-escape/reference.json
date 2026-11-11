@@ -1,7 +1,12 @@
 {
   "author": "Conductor Rebuild",
   "gap_key": "section-name-composition-escape-source-frontier",
-  "status": "SOURCE_QUALIFIED_SECTION_ONLY_LEASE_GRANTED_HOSTED_RED_NOT_RUN",
+  "status": "HOSTED_BASELINE_RED_QUALIFIED_CANDIDATE_GREEN_PENDING",
+  "candidate_checked_main": "58fc17bc1f6a61db0624eb9a6aba85d2b3cbf5a9",
+  "qualified_baseline_head": "6b8015461e3096e89355c13d213b25923a21487a",
+  "qualified_baseline_run": 43082239649,
+  "qualified_baseline_job": 130737614706,
+  "qualified_baseline_cases": { "passed_controls": 4, "failed_composition_escape": 8 },
   "checked_main": "9a237404bc19caefe3f8473b9aae7ab4bc2439a5",
   "archive_sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
   "rea_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
