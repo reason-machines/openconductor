@@ -22,7 +22,7 @@ function paletteDataFromState(state: AppState, recents: readonly string[]): Retu
   const end = source.indexOf(", [state,", start);
   assert.ok(start >= 0 && end > start, "the actual host data factory is present");
   const factory = source.slice(start + prefix.length, end);
-  return new Function(...Object.keys(paletteAdapters), "state", "recents", "archived", "settingEntries", "apps", "prefs", `return (${factory})();`)(...Object.values(paletteAdapters), state, recents, [], [], [], { default_open_in: null });
+  return new Function(...Object.keys(paletteAdapters), "state", "recents", "archived", "settingEntries", "apps", "prefs", "commands", `return (${factory})();`)(...Object.values(paletteAdapters), state, recents, [], [], [], { default_open_in: null }, {});
 }
 
 function paletteCallback(state: AppState) {
