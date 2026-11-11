@@ -10,6 +10,7 @@ import { splitPath } from "./FilePathChip";
 import { SearchIcon, XIcon } from "../files/panelIcons";
 import { filterActive, filterChangedFiles } from "./changesFilter";
 import { changeRows, type ChangesView } from "./changesTree.ts";
+import { renameDisplayPath } from "./renameDisplayPath.ts";
 import type { FileDiff, FileStatus } from "./types.ts";
 import type { WorkspaceDiff } from "./useWorkspaceDiff.ts";
 
@@ -81,7 +82,7 @@ export function ChangesList({ diff, actions, worktree, emptyAction, filter, noti
             return <div key={f.path} className="oc-change-row" style={view === "tree" ? { marginLeft: 8 + row.depth * 12 } : undefined} onContextMenu={(e) => { e.preventDefault(); setMenu({ path: f.path, x: e.clientX, y: e.clientY }); }}>
               {view === "tree" && <TreeGuides depth={row.depth} nextDepth={nextDepth} offset={8 + row.depth * 12} />}
               <button className={`oc-change${diff.isViewed(f) ? " viewed" : ""}`} aria-current={files[current]?.path === f.path} onClick={() => diff.openPath(f.path)} title={`Open ${f.path}`}>
-                <span className="name">{f.status === "renamed" && f.old_path && <><PathParts path={view === "tree" ? splitPath(f.old_path).fileName : f.old_path} /><span className="oc-change-rename-arrow">→</span></>}<PathParts path={row.name} /></span>
+                <span className="name">{f.status === "renamed" && f.old_path && <><PathParts path={renameDisplayPath({ oldPath: f.old_path, path: f.path, view })} /><span className="oc-change-rename-arrow">→</span></>}<PathParts path={row.name} /></span>
                 <span className="oc-change-meta">{typeof opts.scope !== "object" && diff.uncommittedPaths.has(f.path) && <span className="oc-change-uncommitted">U</span>}<ChangeCounts additions={f.additions} deletions={f.deletions} /><ChangeStatus status={f.status} /></span>
               </button>
               <span className="oc-change-actions">
