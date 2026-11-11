@@ -1,8 +1,8 @@
 //! Workspace and branch naming.
 //!
 //! Workspace names are short lowercase slugs that double as the worktree
-//! directory name. Branches are `<prefix>/<name>` when a prefix is set,
-//! otherwise just `<name>`. The word list is our own.
+//! directory name. Branches preserve a custom prefix delimiter, defaulting
+//! to `/` when none is set. The word list is our own.
 
 use std::collections::HashSet;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -39,7 +39,9 @@ pub fn slugify(input: &str) -> String {
 
 /// Join an optional branch prefix and a workspace name.
 pub fn branch_for(prefix: Option<&str>, name: &str) -> String {
-    match prefix.map(|p| p.trim_matches('/')).filter(|p| !p.is_empty()) {
+    match prefix.map(|p| p.trim_start_matches('/')).filter(|p| !p.is_empty()) {
+        Some(p) if p.ends_with('/') => format!("{}/{name}", p.trim_end_matches('/')),
+        Some(p) if p.ends_with(['_', '.', '-']) => format!("{p}{name}"),
         Some(p) => format!("{p}/{name}"),
         None => name.to_string(),
     }

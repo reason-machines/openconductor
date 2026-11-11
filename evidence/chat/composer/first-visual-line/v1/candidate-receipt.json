@@ -1,0 +1,104 @@
+{
+  "author": "Conductor Rebuild",
+  "unit": "FIRST_VISUAL_LINE_C59EBFE_GREEN20_ONLY",
+  "computer": "b3bf539c-baa9-5c0a-bd50-9c4212affce9",
+  "executor": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+  "candidate_commit": "c59ebfe2273ee7d0132ada0628842f9b4fe3652f",
+  "original_baseline": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "candidate_modules": {
+    "src/features/chat/Composer.tsx": "4e7f1f3318d25540668909d3f795403f38c3db99bb0c70fc81d3810dd34e293b",
+    "src/features/chat/ComposerEditor.tsx": "f875a66fb8219d768bc69c1c4aa001c3e7b2624359d7a295f775eae1d5186c74"
+  },
+  "routing_sha256": "27ebf520c2ee51d68d280b804d4d991c115a59f2e244d2bdc0436af7c0330ef4",
+  "preflight_sha256": "a11580fbec178f561180621517416b1bcbf5e61d41b79bff8f04401a02f06b73",
+  "command": [
+    "env",
+    "-u",
+    "COMPOSER_FIRST_VISUAL_LINE_SOURCE_REF",
+    "nice",
+    "-n19",
+    "timeout",
+    "--kill-after=5s",
+    "90s",
+    "/usr/local/bin/node",
+    "--max-old-space-size=384",
+    "--experimental-strip-types",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/chat/composerFirstVisualLine.test.ts"
+  ],
+  "cwd": "/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/first-visual-line-green-c59ebfe/snapshot",
+  "source_ref_environment_absent": true,
+  "source_resolution": {
+    "source_ref_env_absent_in_child": true,
+    "cwd": "/home/runner/.reason/workspace/sessions/13576d11-76fb-4842-aa9b-c398f9ca26f3/repo/.source-prep-13576/first-visual-line-green-c59ebfe/snapshot",
+    "loader": "unchanged fixture javascript(name) reads candidate files from cwd with source-ref unset",
+    "modules": {
+      "src/features/chat/Composer.tsx": "4e7f1f3318d25540668909d3f795403f38c3db99bb0c70fc81d3810dd34e293b",
+      "src/features/chat/ComposerEditor.tsx": "f875a66fb8219d768bc69c1c4aa001c3e7b2624359d7a295f775eae1d5186c74"
+    }
+  },
+  "fixture_sha256": "0d4a88966e5568a4e985f433f8ec60c11abf893e77d1af26887fe61b2a8f43ea",
+  "manifest_sha256": "bce11f0c60312ba59aba118049cfaefb40188c69cc8b924e693549b9ec93fe08",
+  "physical_pin_count": 2313,
+  "installed_packages": 393,
+  "limits": {
+    "heap_mib": 384,
+    "nice": 19,
+    "timeout_seconds": 90,
+    "kill_grace_seconds": 5,
+    "outer_supervisor_seconds": 100,
+    "source_bytes": 16777216,
+    "logs_bytes": 8388608,
+    "private_tree_bytes": 100663296,
+    "job_growth_bytes": 16777216,
+    "workers": 1,
+    "invocations": 1
+  },
+  "private_bytes_before": 6374896,
+  "peak_private_bytes_observed": 6383549,
+  "growth_sample_interval_seconds": 0.25,
+  "sampling_is_not_a_continuous_hard_bound": true,
+  "node_started": true,
+  "retries": 0,
+  "started_at": "2026-11-11T15:51:56.682166+00:00",
+  "disposition": "STOP_NO_RETRY",
+  "gaps": [
+    "No browser layout measurement",
+    "No native parity",
+    "Additional regression files and typecheck not run by this unit",
+    "Runtime package source-lock and installed-lock identities are distinct; retained393 exact physical pins verified"
+  ],
+  "supervisor_pid": 78,
+  "process_group": 78,
+  "terminal_at": "2026-11-11T15:52:12.248089+00:00",
+  "duration_seconds": 15.565717630990548,
+  "exit_code": 1,
+  "peak_rss_kib": 219968,
+  "user_cpu_seconds": 2.925576,
+  "system_cpu_seconds": 0.166049,
+  "tap_sha256": "d5aca4633797a3ecacce3518657a67ddc1bee21bb747f50a23f6c9056932dee8",
+  "tap_bytes": 5508,
+  "private_bytes_after": 6383549,
+  "peak_added_bytes_observed": 8653,
+  "source_dependency_tracked_and_baseline_receipt_pins_unchanged": true,
+  "summary": {
+    "tests": 20,
+    "pass": 19,
+    "fail": 1,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "failed_tests": [
+    "mention suggestion navigation takes precedence over queue focus"
+  ],
+  "failure": {
+    "type": "AssertionError",
+    "message": "GREEN20 contract failed"
+  },
+  "process_group_released": true,
+  "release_at": "2026-11-11T15:52:12.879360+00:00",
+  "lane_released": true,
+  "private_bytes_final": 6383549
+}

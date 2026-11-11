@@ -187,6 +187,7 @@ function route(e: PtyEvent) {
   // Ready and exit both forget tracked commands, as in the reference.
   l.shell = emptyShellState();
   l.term.options.disableStdin = e.kind !== "ready";
+  l.term.options.theme = { ...l.term.options.theme, cursor: e.kind === "ready" ? cssVar("--text") : "transparent", cursorAccent: cssVar("--panel") };
   if (e.kind === "exit") {
     l.ack.flush();
     l.endedAt = new Date().toISOString();
@@ -278,6 +279,8 @@ async function startTab(
     theme: {
       background: cssVar("--panel"),
       foreground: cssVar("--text"),
+      cursor: "transparent",
+      cursorAccent: cssVar("--panel"),
       // xterm's default selection is pale white, invisible on the light theme.
       // The inactive colour matters for Find: the match is selected while the
       // find input, not the terminal, has focus.
@@ -332,12 +335,21 @@ async function startTab(
 
 async function spawnTerminal(id: string, terminal: Live): Promise<void> {
   try {
-    await spawnIn(terminal.launch.cwds, (cwd) =>
-      ptySpawn({ id, cwd, cols: terminal.term.cols, rows: terminal.term.rows, initialCommand: terminal.launch.initialCommand }),
-    );
+    await spawnIn(terminal.launch.cwds, async (cwd) => {
+      const { cols, rows } = terminal.term;
+      await ptySpawn({ id, cwd, cols, rows, initialCommand: terminal.launch.initialCommand });
+      if (
+        live.get(id) === terminal &&
+        getTabs(terminal.workspaceId).tabs.some((tab) => tab.id === id && tab.status !== "exited") &&
+        (terminal.term.cols !== cols || terminal.term.rows !== rows)
+      ) {
+        void ptyResize(id, terminal.term.cols, terminal.term.rows).catch(() => {});
+      }
+    });
   } catch (error) {
     if (live.get(id) === terminal) {
       terminal.term.options.disableStdin = true;
+      terminal.term.options.theme = { ...terminal.term.options.theme, cursor: "transparent", cursorAccent: cssVar("--panel") };
       dispatch(terminal.workspaceId, { type: "failed", id, error: error instanceof Error ? error.message : String(error) });
     }
     throw error;

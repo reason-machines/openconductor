@@ -17,6 +17,7 @@ export interface ComposerEditorHandle {
   visible(): boolean;
   focused(): boolean;
   composing(): boolean;
+  atTop?(): boolean;
   selection(): ComposerSelection;
   replaceRange(range: { start: number; end: number }, text: string): boolean;
   insertFile(range: { start: number; end: number }, file: { path: string; label: string; directory: boolean }): void;
@@ -149,6 +150,10 @@ export function ComposerEditor(props: Props) {
       visible: () => editor.view.dom.offsetParent !== null,
       focused: () => editor.isFocused,
       composing: () => editor.view.composing,
+      atTop: () => {
+        const { selection, doc } = editor.state;
+        return editor.isEmpty || (selection.empty && doc.firstChild === selection.$from.parent && editor.view.endOfTextblock("up"));
+      },
       selection: () => snapshot(editor),
       replaceRange: (range, text) => {
         if (editor.view.composing) return false;

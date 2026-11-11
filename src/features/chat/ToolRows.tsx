@@ -1206,7 +1206,7 @@ function SubagentRow({ input, result, ...shell }: ShellBase & { input: Record<st
               </div>
               <CopyIcon text={text} />
             </div>
-            <div className="oc-subagent-body">{raw ? <div className="oc-subagent-raw">{text}</div> : <Markdown text={text} className="oc-prose" />}</div>
+            <div className="oc-subagent-body">{raw ? <div className="oc-subagent-raw">{text}</div> : <Markdown text={text} className="oc-prose" onOpenLink={(href) => void openUrl(href)} Link={LinkWithMenu} />}</div>
           </div>
         ) : undefined
       }

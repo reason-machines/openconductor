@@ -31,6 +31,7 @@ function mount(options = {}) {
     "./appearance": { SETTINGS_CHANGED: "settings-changed" },
     "./appPrefs": { setAppPref: blocked("setAppPref") },
     "./composerSettings": { chooseSendKey: blocked("chooseSendKey") },
+    "./notificationPermission": { notificationPermissionGranted: blocked("notificationPermissionGranted") },
     "./model": { withField: blocked("withField") },
     "./prefs": { enumPref: () => "steering", withEnumPref: blocked("withEnumPref"), boolPref: () => false },
     "./rows/AppPrefRows": { GeneralAppPrefRows: inert },

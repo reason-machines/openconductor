@@ -1,0 +1,299 @@
+{
+  "author": "Conductor Rebuild",
+  "pr": 1034,
+  "head": "96d58688b48b977dc89d678b1f44a25cf7c95580",
+  "run_id": 43014068983,
+  "unit_job_id": 130500770369,
+  "frontend_job_id": 130500770275,
+  "source_fixture_sha256": "ba06c1eae463ab7b498aded4098603a9e78899c79592bca41c3fcb96c3169ff6",
+  "unit_total": 2764,
+  "passed": 2747,
+  "failed": 17,
+  "failure_kind": "test-loader ReferenceError before behavioral assertions; NOT the frozen filter regression RED",
+  "error_matches": {
+    "available": true,
+    "text": null,
+    "original_chars": 1125730,
+    "reason": null,
+    "total_lines": 17163,
+    "match_count": 17,
+    "matches": [
+      {
+        "line": 6593,
+        "text": "2026-11-11T11:42:54.1088374Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6615,
+        "text": "2026-11-11T11:42:54.1112804Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6637,
+        "text": "2026-11-11T11:42:54.1137019Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6659,
+        "text": "2026-11-11T11:42:54.1160892Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6681,
+        "text": "2026-11-11T11:42:54.1184328Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6703,
+        "text": "2026-11-11T11:42:54.1206930Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6725,
+        "text": "2026-11-11T11:42:54.1229970Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6747,
+        "text": "2026-11-11T11:42:54.1252667Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6769,
+        "text": "2026-11-11T11:42:54.1275802Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6791,
+        "text": "2026-11-11T11:42:54.1299097Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6813,
+        "text": "2026-11-11T11:42:54.1321133Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6835,
+        "text": "2026-11-11T11:42:54.1351003Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6857,
+        "text": "2026-11-11T11:42:54.1372886Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6879,
+        "text": "2026-11-11T11:42:54.1395710Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6901,
+        "text": "2026-11-11T11:42:54.1417648Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6923,
+        "text": "2026-11-11T11:42:54.1439051Z   error: 'useBoolPref is not defined'"
+      },
+      {
+        "line": 6945,
+        "text": "2026-11-11T11:42:54.1461488Z   error: 'useBoolPref is not defined'"
+      }
+    ],
+    "truncated": false
+  },
+  "failed_test_names": [
+    {
+      "line": 6587,
+      "text": "2026-11-11T11:42:54.1084314Z not ok 1055 - formatted typed Task opens the exact external link http://example.com/a?q=one&b=two\\#part"
+    },
+    {
+      "line": 6609,
+      "text": "2026-11-11T11:42:54.1108820Z not ok 1056 - formatted typed Task copies the exact external link http://example.com/a?q=one&b=two\\#part"
+    },
+    {
+      "line": 6631,
+      "text": "2026-11-11T11:42:54.1132875Z not ok 1057 - formatted typed Task opens the exact external link https://example.net/b?q=two\\#end"
+    },
+    {
+      "line": 6653,
+      "text": "2026-11-11T11:42:54.1157132Z not ok 1058 - formatted typed Task copies the exact external link https://example.net/b?q=two\\#end"
+    },
+    {
+      "line": 6675,
+      "text": "2026-11-11T11:42:54.1180386Z not ok 1059 - formatted typed Agent opens the exact external link http://example.com/a?q=one&b=two\\#part"
+    },
+    {
+      "line": 6697,
+      "text": "2026-11-11T11:42:54.1203078Z not ok 1060 - formatted typed Agent copies the exact external link http://example.com/a?q=one&b=two\\#part"
+    },
+    {
+      "line": 6719,
+      "text": "2026-11-11T11:42:54.1226204Z not ok 1061 - formatted typed Agent opens the exact external link https://example.net/b?q=two\\#end"
+    },
+    {
+      "line": 6741,
+      "text": "2026-11-11T11:42:54.1248761Z not ok 1062 - formatted typed Agent copies the exact external link https://example.net/b?q=two\\#end"
+    },
+    {
+      "line": 6763,
+      "text": "2026-11-11T11:42:54.1271950Z not ok 1063 - typed results preserve Raw text, updates, reopen state and isolation between Task and Agent"
+    },
+    {
+      "line": 6785,
+      "text": "2026-11-11T11:42:54.1295455Z not ok 1064 - typed Task pending and empty results do not invent expandable content"
+    },
+    {
+      "line": 6807,
+      "text": "2026-11-11T11:42:54.1317666Z not ok 1065 - Task with missing type retains its generic result"
+    },
+    {
+      "line": 6829,
+      "text": "2026-11-11T11:42:54.1347465Z not ok 1066 - Task with \"\" type retains its generic result"
+    },
+    {
+      "line": 6851,
+      "text": "2026-11-11T11:42:54.1369330Z not ok 1067 - Task with \"general-purpose\" type retains its generic result"
+    },
+    {
+      "line": 6873,
+      "text": "2026-11-11T11:42:54.1391960Z not ok 1068 - typed Agent pending and empty results do not invent expandable content"
+    },
+    {
+      "line": 6895,
+      "text": "2026-11-11T11:42:54.1413861Z not ok 1069 - Agent with missing type retains its generic result"
+    },
+    {
+      "line": 6917,
+      "text": "2026-11-11T11:42:54.1435584Z not ok 1070 - Agent with \"\" type retains its generic result"
+    },
+    {
+      "line": 6939,
+      "text": "2026-11-11T11:42:54.1457926Z not ok 1071 - Agent with \"general-purpose\" type retains its generic result"
+    }
+  ],
+  "frontend_steps": [
+    {
+      "name": "Set up job",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 1,
+      "started_at": "2026-11-11T11:42:12Z",
+      "completed_at": "2026-11-11T11:42:13Z"
+    },
+    {
+      "name": "Run actions/checkout@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 2,
+      "started_at": "2026-11-11T11:42:13Z",
+      "completed_at": "2026-11-11T11:42:17Z"
+    },
+    {
+      "name": "Run actions/setup-node@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 3,
+      "started_at": "2026-11-11T11:42:17Z",
+      "completed_at": "2026-11-11T11:42:18Z"
+    },
+    {
+      "name": "Run npm ci",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 4,
+      "started_at": "2026-11-11T11:42:18Z",
+      "completed_at": "2026-11-11T11:42:23Z"
+    },
+    {
+      "name": "Run npm run typecheck",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 5,
+      "started_at": "2026-11-11T11:42:23Z",
+      "completed_at": "2026-11-11T11:42:37Z"
+    },
+    {
+      "name": "No colour literals outside src/theme/",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 6,
+      "started_at": "2026-11-11T11:42:37Z",
+      "completed_at": "2026-11-11T11:42:38Z"
+    },
+    {
+      "name": "Frontend unit tests",
+      "status": "completed",
+      "conclusion": "failure",
+      "number": 7,
+      "started_at": "2026-11-11T11:42:38Z",
+      "completed_at": "2026-11-11T11:43:33Z"
+    },
+    {
+      "name": "Window fill across interface zoom and resize",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 8,
+      "started_at": "2026-11-11T11:43:33Z",
+      "completed_at": "2026-11-11T11:43:33Z"
+    },
+    {
+      "name": "Native QA isolation verifier tests (no GUI)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 9,
+      "started_at": "2026-11-11T11:43:33Z",
+      "completed_at": "2026-11-11T11:43:33Z"
+    },
+    {
+      "name": "Synthetic storage payload fixture tests (no WebKit)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 10,
+      "started_at": "2026-11-11T11:43:33Z",
+      "completed_at": "2026-11-11T11:43:33Z"
+    },
+    {
+      "name": "Run npm run build",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 11,
+      "started_at": "2026-11-11T11:43:33Z",
+      "completed_at": "2026-11-11T11:43:33Z"
+    },
+    {
+      "name": "Fixed chrome and contained pane scrolling",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 12,
+      "started_at": "2026-11-11T11:43:33Z",
+      "completed_at": "2026-11-11T11:43:33Z"
+    },
+    {
+      "name": "Post Run actions/setup-node@v4",
+      "status": "completed",
+      "conclusion": "skipped",
+      "number": 23,
+      "started_at": "2026-11-11T11:43:33Z",
+      "completed_at": "2026-11-11T11:43:33Z"
+    },
+    {
+      "name": "Post Run actions/checkout@v4",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 24,
+      "started_at": "2026-11-11T11:43:33Z",
+      "completed_at": "2026-11-11T11:43:33Z"
+    },
+    {
+      "name": "Complete job",
+      "status": "completed",
+      "conclusion": "success",
+      "number": 25,
+      "started_at": "2026-11-11T11:43:33Z",
+      "completed_at": "2026-11-11T11:43:33Z"
+    }
+  ],
+  "correction": {
+    "file": "src/features/chat/typedSubagentLinks.test.ts",
+    "changes": [
+      "Import real assistantDisplayText",
+      "Supply false-default useBoolPref and real assistantDisplayText in extracted Transcript VM context"
+    ],
+    "assertion_bodies_changed": false,
+    "product_changed": false,
+    "v3_artifacts_changed": false
+  },
+  "validation": "Post-correction hosted checks not run yet; this file records the failing head only.",
+  "gaps": [
+    "Build skipped after failing unit step",
+    "Native Settings and visual/package behavior not tested"
+  ]
+}

@@ -1,0 +1,82 @@
+(node:54) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:61) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Upload configures high-quality sampling before drawing 512x256, then picks the PNG and closes
+not ok 1 - Upload configures high-quality sampling before drawing 512x256, then picks the PNG and closes
+  ---
+  duration_ms: 108.581857
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/4ec37fcd-1e1d-4895-a3bd-3aa5462859bc/repo/src/components/repoIconUpload.test.ts:121:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    canvas must receive high-quality sampling before drawImage
+
+    'low' !== 'high'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'high'
+  actual: 'low'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/4ec37fcd-1e1d-4895-a3bd-3aa5462859bc/repo/src/components/repoIconUpload.test.ts:126:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Upload configures high-quality sampling before drawing 64x64, then picks the PNG and closes
+not ok 2 - Upload configures high-quality sampling before drawing 64x64, then picks the PNG and closes
+  ---
+  duration_ms: 48.352468
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/4ec37fcd-1e1d-4895-a3bd-3aa5462859bc/repo/src/components/repoIconUpload.test.ts:121:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    canvas must receive high-quality sampling before drawImage
+
+    'low' !== 'high'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'high'
+  actual: 'low'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/4ec37fcd-1e1d-4895-a3bd-3aa5462859bc/repo/src/components/repoIconUpload.test.ts:126:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Upload releases its object URL and stays open after decode failure
+ok 3 - Upload releases its object URL and stays open after decode failure
+  ---
+  duration_ms: 65.514549
+  type: 'test'
+  ...
+# Subtest: Upload releases its object URL and stays open after context failure
+ok 4 - Upload releases its object URL and stays open after context failure
+  ---
+  duration_ms: 48.965218
+  type: 'test'
+  ...
+# Subtest: Upload releases its object URL and stays open after encode failure
+ok 5 - Upload releases its object URL and stays open after encode failure
+  ---
+  duration_ms: 21.946847
+  type: 'test'
+  ...
+# Subtest: Upload rejects excessive image dimensions without drawing and still releases its object URL
+ok 6 - Upload rejects excessive image dimensions without drawing and still releases its object URL
+  ---
+  duration_ms: 33.420712
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 694.184749

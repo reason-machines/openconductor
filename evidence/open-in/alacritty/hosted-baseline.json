@@ -1,0 +1,44 @@
+{
+  "kind": "hosted command-strategy regression; not native acceptance",
+  "head": "9abe0532d7af1ddc3f2eebd90ef3d2f99cb4cb50",
+  "main_checked": "d8f6bdfd26370491295f38ffecd7090c71a2a6db",
+  "run_id": 43029523010,
+  "job_id": 130552685330,
+  "url": "https://github.com/reason-machines/openconductor/actions/runs/43029523010/job/130552685330",
+  "platform": "macos-latest",
+  "command": "cd src-tauri && cargo test --locked",
+  "result": {
+    "passed": 995,
+    "failed": 3,
+    "ignored": 1,
+    "classification": "intended assertion RED; setup and compilation succeeded"
+  },
+  "fixture_sha256": "00179e5da85d9dee38ad3db0d5ab66b7e7d2f257a63f69b972ff38e06e881343",
+  "cases": [
+    {
+      "id": "L01",
+      "line": 13,
+      "actual": "[(open, [-a, Alacritty, /Users/me/workspaces/app with spaces])]",
+      "expected": "alacritty msg create-window --working-directory <dir>, then open -a Alacritty"
+    },
+    {
+      "id": "L02",
+      "line": 30,
+      "actual": "Err(spawn failed)",
+      "expected": "Ok(()) after fallback"
+    },
+    {
+      "id": "L03",
+      "line": 54,
+      "actual": "Err(spawn failed)",
+      "expected": "Err(start failed) from fallback"
+    }
+  ],
+  "not_proven": [
+    "actual Alacritty process/window/cwd",
+    "production command adapter execution",
+    "bundle-only PATH runtime",
+    "native visual parity",
+    "new typed-status cases (added after baseline)"
+  ]
+}

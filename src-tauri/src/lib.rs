@@ -79,6 +79,7 @@ mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
 pub mod draft_attachments;
+mod full_disk_access;
 pub mod github_repo;
 pub mod local_account;
 pub mod menu;
@@ -411,6 +412,7 @@ pub fn run() {
             root_path_commands::repo_workspaces_path,
             root_path_commands::change_conductor_root,
             app_info,
+            full_disk_access::check_full_disk_access,
             open_devtools,
             inspect_project_folder,
             branch_prefix_settings,
@@ -476,6 +478,7 @@ pub fn run() {
             diff::comment_commands::diff_comments_list,
             diff::comment_commands::diff_comment_add,
             diff::comment_commands::diff_comment_edit,
+            diff::comment_commands::diff_comments_update_anchors,
             diff::comment_commands::diff_comment_delete,
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,

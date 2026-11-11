@@ -1,0 +1,26 @@
+{
+  "reason": "Frozen mock input colors match the repository hex-colour lint rule. Replace only fake CSS variable values with distinctive non-colour sentinel labels; do not weaken or exclude lint.",
+  "original_fixture_sha256": "1cabc78d3cc6446eea19780fc5fd71a28578b1995ba7134be9194df1a72d3681",
+  "corrected_fixture_sha256": "3a0d8e881ae09f03737a915fdc1f1ff20a5b1e6577c9daff012617940ca5a50d",
+  "changed_lines": [
+    16
+  ],
+  "assertion_lines_byte_identical": true,
+  "product_candidate_sha256": "e7785e03355148c1937a02b3aca8cafebb1821fbb6cd304946b08c476fc11409",
+  "corrected_fixture_executed": false,
+  "baseline_and_candidate_recheck_owner": "e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46",
+  "commands": [
+    {
+      "stage": "corrected-baseline",
+      "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 60s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/cursorState.test.ts"
+    },
+    {
+      "stage": "corrected-candidate",
+      "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 60s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/cursorState.test.ts"
+    },
+    {
+      "stage": "fixture-colour-lint",
+      "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 20s node scripts/check-colors.mjs src/features/terminal/cursorState.test.ts"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "kind": "static integrity only",
+  "checked_main": "d8f6bdfd26370491295f38ffecd7090c71a2a6db",
+  "manifest_files": 22,
+  "reference_spans": 13,
+  "baseline_files": 4,
+  "fixture_sha256": "00179e5da85d9dee38ad3db0d5ab66b7e7d2f257a63f69b972ff38e06e881343",
+  "product_execution": "not run by this verifier"
+}

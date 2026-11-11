@@ -566,13 +566,15 @@ export default function App() {
           <WorkspaceView
             repo={repo}
             workspace={workspace}
+            sections={state.sections ?? []}
+            onNewSection={(ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id })}
             dispatch={dispatch}
             notify={show}
             hasNextUnread={(selectedChatId) => nextUnreadChat(state, { skipSelected: true, selectedChatId }) !== undefined}
             onNextUnread={() => void openNextUnread(state, dispatch, { skipSelected: true })}
           />
         ) : sel.kind === "home" ? (
-          <AllWorkspaces repos={state.repos} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
+          <AllWorkspaces repos={state.repos} loading={startup === "loading"} sidebarVisible={isSidebarVisible(state)} dispatch={dispatch} onCreateWorkspace={() => openDialog("create")} />
         ) : sel.kind === "routines" && cloudUI === true ? (
           sel.page ? (
             <RoutineEditor
