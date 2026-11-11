@@ -1,5 +1,5 @@
 import { cloneElement, useEffect, useMemo, useRef, useSyncExternalStore, type ReactElement, type Ref } from "react";
-import { CloseIcon, SearchIcon } from "../../components/Icons.tsx";
+import { ChevronDownIcon, ChevronUpIcon, CloseIcon, SearchIcon } from "../../components/Icons.tsx";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { PRIORITY } from "../../keybindings/dispatcher.ts";
 import type { ChatTranscript } from "./reducer.ts";
@@ -83,8 +83,8 @@ export function TranscriptSearch({ transcript, children }: {
           autoComplete="new-password" autoCorrect="off" autoCapitalize="off" spellCheck={false} />
         <span className="term-find-count" aria-live="polite">{matches.length > 0 ? index + 1 : 0} of {matches.length}</span>
         <div className="term-find-buttons" onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); }}>
-          <button type="button" title="Previous match" aria-label="Previous match" disabled={matches.length === 0} onClick={() => navigate(-1)}>↑</button>
-          <button type="button" title="Next match" aria-label="Next match" disabled={matches.length === 0} onClick={() => navigate(1)}>↓</button>
+          <button type="button" title="Previous match" aria-label="Previous match" disabled={matches.length === 0} onClick={() => navigate(-1)}><ChevronUpIcon size={16} /></button>
+          <button type="button" title="Next match" aria-label="Next match" disabled={matches.length === 0} onClick={() => navigate(1)}><ChevronDownIcon size={16} /></button>
           <button type="button" title="Close search" aria-label="Close search" onClick={close}><CloseIcon size={16} /></button>
         </div>
       </div>
