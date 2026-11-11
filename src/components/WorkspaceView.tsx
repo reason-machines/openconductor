@@ -9,6 +9,7 @@ import { clearManuallyUnread, markManuallyUnread, readOnView, setSelectedChat, s
 import { isChatUnread } from "../state/chatUnread";
 import { chatTabStatus, chatTabUnreadDot } from "../state/chatTabUnread";
 import { onChatRequest, takeChatRequest } from "../state/openChat";
+import { onGitPanelRequest, takeGitPanelRequest, type GitPanelTarget } from "../palette/gitPanelActions.ts";
 import { useWindowFocused } from "../state/useAutoUnread";
 import { Transcript } from "../features/chat/Transcript.tsx";
 import { configureReason, configureReasonDefault, reasonAvailable, reasonChatConfig, retryReasonAuth } from "../features/chat/reasonChat.ts";
@@ -706,6 +707,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
 
 interface RightPanelProps {
   workspaceId: string;
+  tab: GitPanelTarget["tab"];
+  setTab: (tab: GitPanelTarget["tab"]) => void;
   diff: WorkspaceDiff;
   actions: () => ReactNode;
   pr: PullRequest;
@@ -720,12 +723,7 @@ interface RightPanelProps {
   targetControl?: ReactNode;
 }
 
-function RightPanel({ workspaceId, diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl, onOpenFile }: RightPanelProps & { onOpenFile: (path: string) => boolean }) {
-  const [tab, setTab] = useState<"changes" | "files" | "checks">("changes");
-  // Picking a turn's file in the chat shows that turn's changes list.
-  useEffect(() => {
-    if (diff.turn) setTab("changes");
-  }, [diff.turn]);
+function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl, onOpenFile }: RightPanelProps & { onOpenFile: (path: string) => boolean }) {
   // parity:diff.changes-list:ui Cmd+Alt+U: the Changes tab in Uncommitted scope, or back to All changes.
   useKeybindings({
     "workspace.showUncommittedChanges": () => {
@@ -1026,6 +1024,24 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
   useEffect(() => setPrBase(null), [workspace.id]);
   const diffTarget = { branch: targetBranch({ prBase: prBase?.base ?? null, prMerged: prBase?.merged ?? false, intended: workspace.targetBranch, fallback: repo.defaultBranch }), remote: TARGET_REMOTE };
   const diff = useWorkspaceDiff({ workspaceId: workspace.id, worktree: workspace.path ?? null, target: diffTarget, onLoaded, onOpen: openDiffTab });
+  const [gitPanelTab, setGitPanelTab] = useState<GitPanelTarget["tab"]>("changes");
+  // Keep the tab while RightPanel is hidden; picking a turn still opens its changes list.
+  useEffect(() => {
+    if (diff.turn) setGitPanelTab("changes");
+  }, [diff.turn]);
+  useEffect(() => {
+    const applyGitPanelRequest = () => {
+      const request = takeGitPanelRequest(repo.id, workspace.id);
+      if (!request) return;
+      setGitPanelTab(request.tab);
+      if ("scope" in request) diff.update({ scope: request.scope });
+    };
+    const unsubscribe = onGitPanelRequest((repoId, workspaceId) => {
+      if (repoId === repo.id && workspaceId === workspace.id) applyGitPanelRequest();
+    });
+    applyGitPanelRequest();
+    return unsubscribe;
+  }, [repo.id, workspace.id, diff]);
   // Inserts go to the chat shown; sends (e.g. Create PR) go to the workspace's own chat, switching to it.
   const shownChat = useRef<string>(workspace.id);
   // Review comments attach to the workspace's own chat, even while a review chat is shown.
@@ -1394,6 +1410,8 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
             <RightPanel
               onOpenFile={openMarkdown}
               workspaceId={workspace.id}
+              tab={gitPanelTab}
+              setTab={setGitPanelTab}
               diff={diff}
               actions={review.actions}
               targetControl={<TargetChip target={target} open={pickingChangesTarget} setOpen={setPickingChangesTarget} repo={repo} variant="menu" />}
