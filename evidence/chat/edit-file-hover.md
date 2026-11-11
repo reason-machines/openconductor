@@ -24,14 +24,18 @@ The supplied complete static chain closes ordinary assistant tool-use `ROo` → 
 
 The tests cover 149/150 ms opening, normalized insertion/deletion/identical/marker-prefixed sides, equal hover/expanded content, retained counts, both-empty and pathless controls, navigation/stopPropagation, independent error disclosure, pointer leave/Escape, touch/focus, independent rows, cleanup, and non-Edit exclusion. Existing Write/MultiEdit tests remain unchanged.
 
-Before the production fix, hosted CI runs the test-only commit to capture a genuine assertion failure. The fixture will be frozen after that RED result, then run unchanged against the single Edit-call prop change. Full hosted CI typecheck/build and adjacent tests are separate checks. Local dependencies are absent, so no dependency install or heavy local build is performed.
+Before the production fix, hosted CI ran the test-only head `ef735acd4bc8d652376423f26f7ff9917198f432` in run [42957839682](https://github.com/reason-machines/openconductor/actions/runs/42957839682). All eight missing-preview assertions failed and four controls passed. The ordinary Edit assertion reached the actual mounted file badge at 150 ms and failed with `ordinary Edit file badge opens its diff preview`, `0 !== 1` (expected 1, actual 0). The full suite had 2,376 passes and eight failures; no fixture/import failures occurred. `npm run typecheck` and color lint passed; build was skipped after the expected test failures, not passed.
+
+The test is frozen at SHA-256 `2f6aab47c4a4bb8c13fd5a457a0c68246be64d1f8fd6451717019c99a3a9442e`. After RED, current main was refreshed to `aad6fcc3421adc3ac30d3a90936ffb94c8c5ecfb`; ToolRows.tsx is byte-equivalent to the pre-test source there. The fix adds only the Edit-arm FileBadge `hoverContent` prop, conditional on the existing counts/content presence, using exactly the existing expanded-body DiffBlock sides. The fixture remains unchanged. Full hosted CI typecheck/build and adjacent tests are separate checks. Local dependencies are absent, so no dependency install or heavy local build is performed.
 
 ## Validation record
 
 - `python3 .rea-work/edit-hover-handoff/verify-packet.py`: PASS, two originals, 15 reference spans, seven main sources, 11 main spans.
 - `node --check src/features/chat/editFileHover.test.ts`: PASS for syntax only, not execution.
 - `git diff --check`: PASS before test-only publication.
-- Hosted RED/GREEN and frozen test SHA: awaiting the test-only CI result.
+- Hosted RED: `node --test "src/**/*.test.ts"` — FAIL as intended, exactly eight missing-preview assertions; four focused controls PASS. Hosted typecheck/color lint PASS; build NOT RUN after RED.
+- Frozen fixture SHA-256: `2f6aab47c4a4bb8c13fd5a457a0c68246be64d1f8fd6451717019c99a3a9442e`.
+- Same-fixture hosted GREEN and full typecheck/build: pending fixed-head CI, not yet a pass.
 - Containing-main CI and exact macOS package/contract/artifact identity: pending merge and consuming build.
 
 ## Limits
