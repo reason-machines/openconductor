@@ -4,7 +4,7 @@ import { baseUrlError, blankToNull, branchPrefixError, branchPreview, normalizeC
 import { DEFAULT_SETTINGS, type Settings } from "./types.ts";
 
 test("withField changes one field and keeps everything else, unknown keys included", () => {
-  const s: Settings = { ...DEFAULT_SETTINGS, future: { a: 1 } };
+  const s: Settings = { ...DEFAULT_SETTINGS, general: { ...DEFAULT_SETTINGS.general, theme: "system" }, future: { a: 1 } };
   const next = withField(s, "general", "theme", "dark");
   assert.equal(next.general.theme, "dark");
   assert.equal(next.general.send_native_notification, true);

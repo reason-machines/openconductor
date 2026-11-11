@@ -1,0 +1,1 @@
+Vbt=class{activate(e){e.unicode.register(new Kbt)}dispose(){}}

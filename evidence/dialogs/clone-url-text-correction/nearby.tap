@@ -1,0 +1,144 @@
+(node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:98) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone inputs accept edits before submission
+ok 1 - clone inputs accept edits before submission
+  ---
+  duration_ms: 209.698369
+  type: 'test'
+  ...
+# Subtest: clone url remains editable while its captured request is unresolved
+ok 2 - clone url remains editable while its captured request is unresolved
+  ---
+  duration_ms: 106.851435
+  type: 'test'
+  ...
+# Subtest: clone location remains editable while its captured request is unresolved
+ok 3 - clone location remains editable while its captured request is unresolved
+  ---
+  duration_ms: 61.08057
+  type: 'test'
+  ...
+# Subtest: clone Browse remains enabled while its captured request is unresolved
+ok 4 - clone Browse remains enabled while its captured request is unresolved
+  ---
+  duration_ms: 61.839226
+  type: 'test'
+  ...
+# Subtest: pending clone keeps its submit guard, progress and recent controls
+ok 5 - pending clone keeps its submit guard, progress and recent controls
+  ---
+  duration_ms: 43.442671
+  type: 'test'
+  ...
+# Subtest: clone rejection allows a retry with the latest form values
+ok 6 - clone rejection allows a retry with the latest form values
+  ---
+  duration_ms: 45.689437
+  type: 'test'
+  ...
+# (node:106) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clone URL disables autoCorrect before cloning
+ok 7 - clone URL disables autoCorrect before cloning
+  ---
+  duration_ms: 139.205365
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCapitalize before cloning
+ok 8 - clone URL disables autoCapitalize before cloning
+  ---
+  duration_ms: 43.172166
+  type: 'test'
+  ...
+# Subtest: clone URL keeps its existing input controls before cloning
+ok 9 - clone URL keeps its existing input controls before cloning
+  ---
+  duration_ms: 54.409473
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCorrect while cloning
+ok 10 - clone URL disables autoCorrect while cloning
+  ---
+  duration_ms: 57.075681
+  type: 'test'
+  ...
+# Subtest: clone URL disables autoCapitalize while cloning
+ok 11 - clone URL disables autoCapitalize while cloning
+  ---
+  duration_ms: 37.576588
+  type: 'test'
+  ...
+# Subtest: clone URL keeps its existing input controls while cloning
+ok 12 - clone URL keeps its existing input controls while cloning
+  ---
+  duration_ms: 28.331987
+  type: 'test'
+  ...
+# Subtest: clone URL preserves mixed-case edits and the captured pending request
+ok 13 - clone URL preserves mixed-case edits and the captured pending request
+  ---
+  duration_ms: 41.991438
+  type: 'test'
+  ...
+# (node:114) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: placeholder follows gh's git_protocol
+ok 14 - placeholder follows gh's git_protocol
+  ---
+  duration_ms: 1.040806
+  type: 'test'
+  ...
+# Subtest: validation reports the URL first, then the location
+ok 15 - validation reports the URL first, then the location
+  ---
+  duration_ms: 0.173895
+  type: 'test'
+  ...
+# Subtest: recent repo picks the URL for the protocol and highlights either form
+ok 16 - recent repo picks the URL for the protocol and highlights either form
+  ---
+  duration_ms: 0.113488
+  type: 'test'
+  ...
+# Subtest: progress log keeps the newest lines and shows the newest first
+ok 17 - progress log keeps the newest lines and shows the newest first
+  ---
+  duration_ms: 0.216825
+  type: 'test'
+  ...
+# Subtest: location: saved folder if it still exists, else the default
+ok 18 - location: saved folder if it still exists, else the default
+  ---
+  duration_ms: 0.100794
+  type: 'test'
+  ...
+# Subtest: URL conversion between HTTPS and SSH
+ok 19 - URL conversion between HTTPS and SSH
+  ---
+  duration_ms: 0.368291
+  type: 'test'
+  ...
+# Subtest: clone errors map to repo-not-found, HTTPS auth, SSH key, or the raw message
+ok 20 - clone errors map to repo-not-found, HTTPS auth, SSH key, or the raw message
+  ---
+  duration_ms: 0.333648
+  type: 'test'
+  ...
+# Subtest: cloneTargetName takes the last path segment without .git
+ok 21 - cloneTargetName takes the last path segment without .git
+  ---
+  duration_ms: 0.210985
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1829.080513

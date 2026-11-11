@@ -124,6 +124,8 @@ import { useFollowUpMode } from "../settings/useFollowUpMode";
 import { OpenInButton } from "../features/openIn/OpenInButton";
 import { RepoHeaderMenu } from "./RepoHeaderMenu";
 import { WorkspaceBranchHeader } from "./WorkspaceBranchHeader";
+import { WorkspaceNameHeader } from "./WorkspaceNameHeader";
+import type { NavSection } from "../state/navigationSections";
 import { SETUP_SCRIPT_PROMPT } from "../scripts/setupPrompt";
 
 interface Props {
@@ -135,6 +137,11 @@ interface Props {
   onNextUnread?: () => void;
   /** Whether a chat other than `selectedChatId` is unread: the button shows only then. */
   hasNextUnread?: (selectedChatId: string) => boolean;
+}
+
+interface WorkspaceViewProps extends Props {
+  sections: readonly NavSection[];
+  onNewSection: (workspace: Workspace) => void;
 }
 
 // In the desktop app the workspace's own chat runs the agent picked in the
@@ -327,6 +334,21 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
     agent.submit(runId, cwd, input, mode, attached, repo.path || undefined, workspace.id);
     dispatch({ type: "touchWorkspace", repoId: repo.id, workspaceId: workspace.id, at: Date.now() });
     if (first) void renameAfterFirstMessage(repo, workspace, text, dispatch);
+  }
+
+  async function answerClaudePlan(requestId: string, text = session.snapshot().draft) {
+    const pending = agent.snapshot(runId).permissions[0];
+    if (pending?.kind !== "plan" || pending.requestId !== requestId || !agent.answerPermission) return;
+    const feedback = text.trim();
+    if (feedback && !session.readyToSend()) return;
+    const submittedDraft = session.snapshot().draft;
+    setAttachError(null);
+    try {
+      await agent.answerPermission(runId, requestId, feedback ? { kind: "plan", approved: false, feedback } : { kind: "plan", approved: true });
+      if (feedback && session.snapshot().draft === submittedDraft) setDraft("");
+    } catch (error) {
+      setAttachError(error instanceof Error ? error.message : String(error));
+    }
   }
 
   async function handoffPlanToTab(requestId: string, plan: string) {
@@ -540,9 +562,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
               setAttachments((list) => addAttachment(list, { name: forkAttachmentName(c.title), text }));
             }}
           />
-        ) : (
+        ) : null}
           <Transcript
             transcript={transcript}
+            searchEnabled={content === null}
             notify={notify}
             expandToolsByDefault={garryMode}
             dontCollapseToolCalls={garryMode}
@@ -566,7 +589,6 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             turnAgent={agent.label}
             chatAgent={agentId}
           />
-        )}
         <div ref={endRef} />
       </div>
       {resetTurn !== null ? (
@@ -576,7 +598,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           onClose={() => setResetTurn(null)}
         />
       ) : null}
-      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => void agent.answerPermission?.(runId, requestId, answer)} onStop={() => agent.stop(runId)} onHandoffPlan={handoffPlanToTab} />
+      <PermissionRequests permissions={permissions} onAnswer={(requestId, answer) => {
+        if (agentId === "claude" && answer.kind === "plan" && answer.approved) void answerClaudePlan(requestId);
+        else void agent.answerPermission?.(runId, requestId, answer);
+      }} onStop={() => agent.stop(runId)} onHandoffPlan={handoffPlanToTab} />
       {codex && approvals.length > 0 ? (
         <div className="codex-approvals">
           {approvals.map((a) => (
@@ -637,7 +662,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         queue={queue}
         canSteer={agent.canSteer}
         followUpMode={followUpMode}
-        onSubmit={planWaiting ? (input) => void agent.answerPermission?.(runId, planWaiting.requestId, { kind: "plan", approved: false, feedback: input.text }) : onSubmit}
+        onSubmit={planWaiting ? (input) => {
+          if (agentId === "claude") return answerClaudePlan(planWaiting.requestId, input.text);
+          else void agent.answerPermission?.(runId, planWaiting.requestId, { kind: "plan", approved: false, feedback: input.text });
+        } : onSubmit}
         onStop={() => agent.stop(runId)}
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
@@ -976,7 +1004,7 @@ function TargetChip({ target, open, setOpen, repo, variant = "header" }: { targe
   );
 }
 
-export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread, hasNextUnread }: Props) {
+export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onNewSection, onNextUnread, hasNextUnread }: WorkspaceViewProps) {
   const primaryId = workspace.primaryChatId ?? workspace.id;
   // The right panel's Setup / Run / Terminal strip: open on Run, like Conductor.
   // ⌘J hides or shows the right panel; Big terminals live in the center.
@@ -1351,7 +1379,16 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
         <div className="ws-title">
           <RepoHeaderMenu repo={repo} onError={(message) => notify?.("error", message)} />
           <span className="crumb-sep">/</span>
-          <strong>{workspace.name}</strong>
+          <WorkspaceNameHeader
+            key={workspace.id}
+            repoId={repo.id}
+            workspace={workspace}
+            sections={sections}
+            dispatch={dispatch}
+            onNewSection={onNewSection}
+            onCopyLink={(ws) => void copyWorkspaceLink(ws.id).then(({ kind, message }) => notify?.(kind, message))}
+            onError={(message) => notify?.("error", message)}
+          />
           <WorkspaceBranchHeader repoId={repo.id} workspace={workspace} dispatch={dispatch} onError={(message) => notify?.("error", message)} />
           <TargetChip target={target} open={pickingTarget} setOpen={setPickingTarget} repo={repo} />
           {prNumber !== null && (
@@ -1420,7 +1457,7 @@ export function WorkspaceView({ repo, workspace, dispatch, notify, onNextUnread,
             showFile && fileTarget && workspace.path ? (
               <MarkdownFileView key={`${workspace.id}:${fileTarget.path}`} worktree={workspace.path} path={fileTarget.path} />
             ) : showDiff ? (
-              <DiffTab diff={diff} onClose={autoCloseDiffTab} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} notes={review.notes} notify={notify} />
+              <DiffTab diff={diff} onClose={autoCloseDiffTab} onLineClick={review.onLineClick} commentRange={review.commentRange} anchors={review.anchors} annotations={review.annotations} onPersistAnchors={review.persistAnchors} notes={review.notes} notify={notify} />
             ) : showPr ? (
               <PrTab
                 worktree={workspace.path ?? null}

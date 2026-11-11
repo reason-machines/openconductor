@@ -29,10 +29,12 @@ import type { UserPrompt } from "./userContent.ts";
 import { userMessageCopyText } from "./userMessageCopy.ts";
 import { useBoolPref } from "../../settings/useBoolPref.ts";
 import { assistantDisplayText } from "./assistantText.ts";
+import { TranscriptSearch } from "./TranscriptSearch.tsx";
 import "./chat.css";
 
 export interface TranscriptProps {
   transcript: ChatTranscript;
+  searchEnabled?: boolean;
   /** "Keep tool calls expanded" setting. */
   expandToolsByDefault?: boolean;
   /** "Don't collapse tool calls" setting: summary rows stay open. */
@@ -67,6 +69,7 @@ export interface TranscriptProps {
 
 export function Transcript({
   transcript,
+  searchEnabled = false,
   expandToolsByDefault = false,
   dontCollapseToolCalls = false,
   onRetry,
@@ -115,8 +118,7 @@ export function Transcript({
     notify,
   };
 
-  return (
-    <LinkMenuNotify.Provider value={notify}>
+  const content = (
       <div className="transcript">
         {turns.map((turn) => {
           const footer = turn.rows.find((r): r is TurnEndRow => r.kind === "turn_end");
@@ -132,8 +134,10 @@ export function Transcript({
           );
         })}
       </div>
-    </LinkMenuNotify.Provider>
   );
+  return <LinkMenuNotify.Provider value={notify}>
+    {searchEnabled ? <TranscriptSearch transcript={transcript}>{content}</TranscriptSearch> : content}
+  </LinkMenuNotify.Provider>;
 }
 
 type TurnEndRow = Extract<DisplayRow, { kind: "turn_end" }>;

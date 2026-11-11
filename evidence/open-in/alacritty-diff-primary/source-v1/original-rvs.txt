@@ -1,0 +1,1 @@
+function rvs(t,e){return h4i(t,e)?t:e}

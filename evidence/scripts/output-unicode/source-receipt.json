@@ -1,0 +1,289 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "source-only-unicode11-width-investigation",
+  "main_checked": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "rea_acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "artifacts": [
+    {
+      "name": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    },
+    {
+      "name": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    }
+  ],
+  "spans": [
+    {
+      "name": "index-export-g8",
+      "bytes": 9,
+      "sha256": "d0fb357f6626c1b389e1456a37e9e4d21c1379129adccbc4c9482e852fc09df7",
+      "utf8_half_open": [
+        3483908,
+        3483917
+      ],
+      "path": "reference/index-export-g8.txt"
+    },
+    {
+      "name": "index-Vbt",
+      "bytes": 62,
+      "sha256": "dc7020ae74d94a3eab207efadac27f2feba0bb05656c24b868925597161a9a1b",
+      "utf8_half_open": [
+        2607279,
+        2607341
+      ],
+      "path": "reference/index-Vbt.txt"
+    },
+    {
+      "name": "index-Kbt",
+      "bytes": 473,
+      "sha256": "0d8a6e151163c307c8e391ff6ef2ab18b0b1d3433f121725c1af0184143ecafc",
+      "utf8_half_open": [
+        2606805,
+        2607278
+      ],
+      "path": "reference/index-Kbt.txt"
+    },
+    {
+      "name": "index-Ik",
+      "bytes": 442,
+      "sha256": "32118068a94c2d0ba847e07705c92c77460aafb0725e029a11d18125b9a0be5b",
+      "utf8_half_open": [
+        2599406,
+        2599848
+      ],
+      "path": "reference/index-Ik.txt"
+    },
+    {
+      "name": "renderer-lno",
+      "bytes": 1125,
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "path": "reference/renderer-lno.txt"
+    },
+    {
+      "name": "renderer-gno",
+      "bytes": 2382,
+      "sha256": "647b58ff6d4712742e8946fdf3d8ef2bb31e578b3047a7d0f0a9384395ea7db3",
+      "utf8_half_open": [
+        6926664,
+        6929046
+      ],
+      "path": "reference/renderer-gno.txt"
+    },
+    {
+      "name": "renderer-OJs",
+      "bytes": 850,
+      "sha256": "5690f01ab02ec3aa205005c2775965062bbdcef532d855a294e14a719095dd41",
+      "utf8_half_open": [
+        6571868,
+        6572718
+      ],
+      "path": "reference/renderer-OJs.txt"
+    },
+    {
+      "name": "renderer-xEi",
+      "bytes": 2806,
+      "sha256": "c9eafaa506a034b54ffb3e6f82f0635e7509d7a7e9672fc4aaca171b09303bc3",
+      "utf8_half_open": [
+        6568897,
+        6571703
+      ],
+      "path": "reference/renderer-xEi.txt"
+    },
+    {
+      "name": "renderer-AJs",
+      "bytes": 45,
+      "sha256": "2a35b68dafaa319ea940d805be477f8002d9bc3aa0c439cfe9d84752af590f5e",
+      "utf8_half_open": [
+        6571703,
+        6571748
+      ],
+      "path": "reference/renderer-AJs.txt"
+    },
+    {
+      "name": "renderer-aSa",
+      "bytes": 657,
+      "sha256": "68f370d7469b65a71859999fe41df5b274073483a74d21f2874fa84daa62ecce",
+      "utf8_half_open": [
+        11170916,
+        11171573
+      ],
+      "path": "reference/renderer-aSa.txt"
+    },
+    {
+      "name": "renderer-lSa",
+      "bytes": 338,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "path": "reference/renderer-lSa.txt"
+    },
+    {
+      "name": "renderer-uSa",
+      "bytes": 162,
+      "sha256": "09da707923a705cc9c8f93572eb11724514f8a7d2e75bc45d89020a36fedd4e9",
+      "utf8_half_open": [
+        11171943,
+        11172105
+      ],
+      "path": "reference/renderer-uSa.txt"
+    },
+    {
+      "name": "renderer-rSa",
+      "bytes": 3115,
+      "sha256": "55b02cfb58c1416fce68bf0cc9178e9b37bed4e03ccb0de73661b7787d99fc95",
+      "utf8_half_open": [
+        11167486,
+        11170601
+      ],
+      "path": "reference/renderer-rSa.txt"
+    },
+    {
+      "name": "renderer-w9e",
+      "bytes": 3429,
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "path": "reference/renderer-w9e.txt"
+    },
+    {
+      "name": "renderer-dno",
+      "bytes": 1719,
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "path": "reference/renderer-dno.txt"
+    },
+    {
+      "name": "renderer-cno",
+      "bytes": 385,
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "path": "reference/renderer-cno.txt"
+    },
+    {
+      "name": "index-O1",
+      "bytes": 2658,
+      "sha256": "184e37da4a53d572b3418e7fd2226251bebb31b3aa489302887279f6a635edd4",
+      "utf8_half_open": [
+        2600628,
+        2603286
+      ],
+      "path": "reference/index-O1.txt"
+    },
+    {
+      "name": "index-F1",
+      "bytes": 810,
+      "sha256": "3a22975494bf6c1caa71af891d17c0678517f9fc835faccdfe32c09f099fb0fd",
+      "utf8_half_open": [
+        2604981,
+        2605791
+      ],
+      "path": "reference/index-F1.txt"
+    },
+    {
+      "name": "index-Gbt",
+      "bytes": 1693,
+      "sha256": "a7ca5a63498743d0582b3345287e9f89d937ab511fb686024b183d3e09f7e72b",
+      "utf8_half_open": [
+        2603287,
+        2604980
+      ],
+      "path": "reference/index-Gbt.txt"
+    },
+    {
+      "name": "index-jbt",
+      "bytes": 850,
+      "sha256": "64c248bacfc50063537aee7ccf4677b1def5dc2a5f76bbef519f8e81f3a56d7e",
+      "utf8_half_open": [
+        2605792,
+        2606642
+      ],
+      "path": "reference/index-jbt.txt"
+    },
+    {
+      "name": "renderer-import-Wyr",
+      "path": "reference/renderer-import-Wyr.txt",
+      "bytes": 9,
+      "sha256": "839d8fef1c196f4dcfe216b232fddb99e323d32496e0843e68fb7a630ffc31fa",
+      "utf8_half_open": [
+        57265,
+        57274
+      ]
+    }
+  ],
+  "samples": [
+    {
+      "text": "A",
+      "codepoint": "U+0041",
+      "reference_width_from_static_tables": 1
+    },
+    {
+      "text": "\ud83d\ude80",
+      "codepoint": "U+1F680",
+      "reference_width_from_static_tables": 2
+    },
+    {
+      "text": "\ud83e\uddea",
+      "codepoint": "U+1F9EA",
+      "reference_width_from_static_tables": 2
+    },
+    {
+      "text": "\ud83d\udce6",
+      "codepoint": "U+1F4E6",
+      "reference_width_from_static_tables": 2
+    },
+    {
+      "text": "\u754c",
+      "codepoint": "U+754C",
+      "reference_width_from_static_tables": 2
+    },
+    {
+      "text": "\u0301",
+      "codepoint": "U+0301",
+      "reference_width_from_static_tables": 0
+    }
+  ],
+  "upstream_addon_ranges": {
+    "BMP_COMBINING": {
+      "matches_original_numeric_ranges": true,
+      "ranges": 214
+    },
+    "BMP_WIDE": {
+      "matches_original_numeric_ranges": true,
+      "ranges": 61
+    },
+    "HIGH_COMBINING": {
+      "matches_original_numeric_ranges": true,
+      "ranges": 117
+    },
+    "HIGH_WIDE": {
+      "matches_original_numeric_ranges": true,
+      "ranges": 53
+    }
+  },
+  "xterm_version": "6.0.0",
+  "default_width_source_observation": "UnicodeService constructs UnicodeV6; its wcwidth returns1 for each selected emoji because they are outside combining and U+20000..3FFFD wide ranges.",
+  "main_product_sha256": "477cf9fc89646eb0075cf841430facca792d30116dc779aab31d22e94e7e0ffd",
+  "main_has_unicode_selection": false,
+  "main_declares_unicode_addon": false,
+  "limitations": [
+    "Retained compiled source and numeric-table equivalence do not establish behavioral RED or native parity.",
+    "No browser, renderer, clipboard or native execution occurred in this lane."
+  ]
+}

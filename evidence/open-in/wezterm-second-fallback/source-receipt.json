@@ -1,0 +1,111 @@
+{
+  "id": "SAME15-WEZTERM-SECOND-FALLBACK-V2",
+  "owner": "15faf4d8-d257-49ef-874d-8008c5c78aaf",
+  "checked_main": "86fd4ee9d727deface07fec849b6af7702c3d762",
+  "retained_renderer_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "retained_rea_lineage": "ev_338577609e67c31212d529d59606e90597850528ea9a2f9559d23a4876c960d1",
+  "source_spans": [
+    {
+      "role": "uD",
+      "byte_range": [
+        2674155,
+        2678698
+      ],
+      "sha256": "272d373e491a760dacfb797c5abe1cc969360b93bfb37b26976f01b7317cea0f",
+      "bytes": 4543
+    },
+    {
+      "role": "I8",
+      "byte_range": [
+        2672569,
+        2672728
+      ],
+      "sha256": "8625ac2e383db210166d30d1499410ceb0047cced53cecc2c31fd7f742273a91",
+      "bytes": 159
+    },
+    {
+      "role": "o4e",
+      "byte_range": [
+        2673055,
+        2673178
+      ],
+      "sha256": "d19d25adf90c32c81a43f0292ba9cc05d7d838c8a855a00befe9a993cac5f418",
+      "bytes": 123
+    },
+    {
+      "role": "OGe",
+      "byte_range": [
+        2672421,
+        2672569
+      ],
+      "sha256": "db9b2dcb6aa84255fa1cac05cf8ab38e03f6d7ccc69e3b1e66627d96216424ad",
+      "bytes": 148
+    },
+    {
+      "role": "wBt",
+      "byte_range": [
+        2672894,
+        2673055
+      ],
+      "sha256": "4af88172b9e62b8a4f08b311676618d1d26aef4a7d653b660a5f0735bce82f79",
+      "bytes": 161
+    }
+  ],
+  "branch_sha256": "64813e83582fa5fa29b519008ab9bc8ccdc280a6fbc95057a85a16f3cbe7866d",
+  "checked_main_sources": [
+    {
+      "path": "src-tauri/src/open_in/commands.rs",
+      "sha256": "ceb96a16e08fdc563212a01019b13284c03133753b815fc9f3e1a8c8d81d2661"
+    },
+    {
+      "path": "src-tauri/src/open_in/mod.rs",
+      "sha256": "de76a5b27f3d4fe0ee393f0a50ed0b8b8383d9a05568505952ec6082ddde865c"
+    },
+    {
+      "path": "src-tauri/src/open_in/tests.rs",
+      "sha256": "df8ffa7db1c8d80fdeb9d12fb92f234a9e34619bdf7c77f8383a821b7e8f3715"
+    }
+  ],
+  "result": "PASS retained byte joins and bounded source assertions",
+  "source_difference": "For folder targets, a completed nonzero start command reaches I8's folder-open fallback in retained Conductor. The checked current-main WezTerm legacy route returns start failure without that second fallback.",
+  "lease": "Ledger ddfc6518 confirmed exclusive SAME15 SECOND-FALLBACK preparation; no competing exact folder writer found in partial index.",
+  "publication": "Separate ready-main PR after verified #1050 merge and main integration with zero tracked diff before the WezTerm fixture.",
+  "fixture_state": "SOURCE PREPARATION ONLY; behavioral RED/GREEN not run",
+  "native_behavior": "NOT RUN",
+  "runtime_admission": false,
+  "unknown": [
+    "hosted baseline compilation and behavioral RED",
+    "hosted candidate GREEN",
+    "native launcher acceptance",
+    "shell environment equivalence",
+    "actual GUI effect"
+  ],
+  "prepared_fixture_sha256": "9a32644acd074bdf8f4e638c9709cb9064d57df0769fec39bd228876f761682f",
+  "prepared_fixture_tests": 9,
+  "prepared_candidate_sha256": "b9b16155d79a112977c4a894215f36df046a6036322a8a0b8a05d3145e2abf6f",
+  "candidate_state": "Preserved candidate remains scratch only; baseline publication adds unchanged fixture, module registration and source evidence only.",
+  "selected_design": "Concrete folder-only command runner using Result<Output,String>; standard Output preserves completed/nonzero versus transport distinctions; legacy APIs untouched",
+  "preservation": {
+    "kaleidoscope_fixture_sha256": "4f3db0f8e7a8ce17854325bde5552fe3b02d25f10ad591ab21307af147ff0dcd",
+    "legacy_tests_snapshot_sha256": "df8ffa7db1c8d80fdeb9d12fb92f234a9e34619bdf7c77f8383a821b7e8f3715"
+  },
+  "verification_command": "python3 .oc-tmp/wezterm-qualification-v2/qualify_source.py",
+  "preserved_files": [
+    {
+      "path": "src-tauri/src/open_in/tests.rs",
+      "sha256": "df8ffa7db1c8d80fdeb9d12fb92f234a9e34619bdf7c77f8383a821b7e8f3715"
+    },
+    {
+      "path": "src-tauri/src/open_in/alacritty_status_tests.rs",
+      "sha256": "75df06c3a07372a3b483dee5730bd6ee7548174f0dc34fc410cadc41d186e2b1"
+    },
+    {
+      "path": "src-tauri/src/open_in/alacritty_workspace_tests.rs",
+      "sha256": "00179e5da85d9dee38ad3db0d5ab66b7e7d2f257a63f69b972ff38e06e881343"
+    },
+    {
+      "path": "src-tauri/src/open_in/kaleidoscope_tests.rs",
+      "sha256": "4f3db0f8e7a8ce17854325bde5552fe3b02d25f10ad591ab21307af147ff0dcd"
+    }
+  ]
+}

@@ -90,7 +90,7 @@ export function CodexTab({ settings, save, reload }: AgentTabProps) {
         detail={actionError ?? error}
       />
       {mode === "chatgpt" && <ChatGptSignIn account={auth.authenticated ? account : null} onAccount={setAccount} onError={setActionError} />}
-      {mode === "cli" && !auth.authenticated && <LoginButton command="codex login" label="codex login" onDone={refresh} />}
+      {mode === "cli" && <LoginButton command="codex login" label="codex login" onDone={refresh} />}
       {mode === "apikey" && (
         <SecretRow
           label="OpenAI API key"

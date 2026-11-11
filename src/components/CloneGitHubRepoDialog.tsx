@@ -89,7 +89,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
         <label className="field">
           <span>Repository URL</span>
           <input
-            id="git-url" autoFocus autoComplete="off" spellCheck={false} value={url}
+            id="git-url" autoFocus autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} value={url}
             placeholder={urlPlaceholder(protocol)} onChange={(e) => setUrl(e.target.value)}
           />
         </label>
@@ -106,7 +106,7 @@ export function CloneGitHubRepoDialog({ onClose, onCloned }: Props) {
                 {recent.map((r) => (
                   <li key={r.id}>
                     <button
-                      type="button" disabled={pending} aria-pressed={isSelectedRepo(r, url)}
+                      type="button" aria-pressed={isSelectedRepo(r, url)}
                       className={isSelectedRepo(r, url) ? "selected" : ""} onClick={() => setUrl(recentRepoUrl(r, protocol))}
                     >
                       {r.owner.avatar_url ? <img src={r.owner.avatar_url} alt="" /> : <span className="clone-avatar" />}
