@@ -1,0 +1,56 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted General Settings: disable-with-denied-permission
+ok 1 - mounted General Settings: disable-with-denied-permission
+  ---
+  duration_ms: 167.659877
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-already-granted
+ok 2 - mounted General Settings: enable-already-granted
+  ---
+  duration_ms: 71.232566
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-default-native-granted
+ok 3 - mounted General Settings: enable-default-native-granted
+  ---
+  duration_ms: 54.200537
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-default-request-granted
+ok 4 - mounted General Settings: enable-default-request-granted
+  ---
+  duration_ms: 50.536999
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-default-request-denied
+ok 5 - mounted General Settings: enable-default-request-denied
+  ---
+  duration_ms: 40.233407
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-denied-request-denied
+ok 6 - mounted General Settings: enable-denied-request-denied
+  ---
+  duration_ms: 42.203692
+  type: 'test'
+  ...
+# Subtest: mounted General Settings: enable-awaits-request-settlement
+ok 7 - mounted General Settings: enable-awaits-request-settlement
+  ---
+  duration_ms: 42.346644
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 753.52892
