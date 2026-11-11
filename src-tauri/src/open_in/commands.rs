@@ -99,6 +99,56 @@ fn run_alacritty(program: &str, args: &[String]) -> Result<super::AlacrittyExit,
         .map_err(|error| format!("{program}: {error}"))
 }
 
+fn run_kaleidoscope_folder(dir: &Path) -> Result<(), String> {
+    let probe = Command::new("git")
+        .arg("-C")
+        .arg(dir)
+        .args(["diff", "--quiet", "HEAD"])
+        .output()
+        .map_err(|error| format!("git: {error}"))?;
+    let mut path = std::env::var_os("PATH").unwrap_or_default();
+    path.push(":/Applications/Kaleidoscope.app/Contents/MacOS:");
+    path.push(std::env::var_os("HOME").unwrap_or_default());
+    path.push("/Applications/Kaleidoscope.app/Contents/MacOS");
+    if probe.status.code() == Some(1) {
+        let difftool = Command::new("git")
+            .arg("-C")
+            .arg(dir)
+            .args([
+                "-c",
+                "difftool.ksdiff.cmd=ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"",
+                "difftool",
+                "--tool=ksdiff",
+                "--no-prompt",
+                "HEAD",
+            ])
+            .env("PATH", &path)
+            .output()
+            .map_err(|error| format!("git: {error}"))?;
+        if difftool.status.success() {
+            return Ok(());
+        }
+    }
+    let out = Command::new("open")
+        .args(["-a", "Kaleidoscope"])
+        .arg(dir)
+        .env("PATH", &path)
+        .output()
+        .map_err(|error| format!("open: {error}"))?;
+    if out.status.success() {
+        return Ok(());
+    }
+    let stderr = String::from_utf8_lossy(&out.stderr).into_owned();
+    let stdout = String::from_utf8_lossy(&out.stdout).into_owned();
+    Err(if !stderr.is_empty() {
+        stderr
+    } else if !stdout.is_empty() {
+        stdout
+    } else {
+        format!("exit code {}", out.status.code().unwrap_or(-1))
+    })
+}
+
 /// JS: `invoke("open_in_app", { appId, path })`: opens the workspace folder
 /// `path` in the app, or one file in it (the All files tree).
 #[tauri::command]
@@ -114,6 +164,8 @@ pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
         if cfg!(target_os = "macos") {
             if app.id == "alacritty" && !is_file {
                 super::run_alacritty_folder(&dir, run_alacritty)
+            } else if app.id == "kaleidoscope" && !is_file {
+                run_kaleidoscope_folder(&dir)
             } else {
                 super::run_macos_open(app, &dir, is_file, run)
             }

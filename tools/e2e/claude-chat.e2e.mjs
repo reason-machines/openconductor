@@ -16,8 +16,8 @@
 //   1. import    a Claude Code chat runs a turn on that login with no sign-in
 //                step; its launch has no key and no base URL (the shell's are
 //                cleared, as Conductor 0.87.6 deletes them); Settings › Agents ›
-//                Claude Code shows CLI, Connected, the account's email, and no
-//                "claude /login" button
+//                Claude Code shows CLI, Connected, the account's email, and an
+//                idle "Run claude /login" button
 //   2. API key   the API key card, a key typed and saved: stored as
 //                [providers.claude] kind = "anthropic_api", the key not in
 //                settings.toml; a new chat's launch has ANTHROPIC_API_KEY =
@@ -251,6 +251,12 @@ try {
       throw new Error(`${e.message}; status: ${JSON.stringify(await authStatus())}`);
     });
   const tabText = () => run(`return document.querySelector('${tab}')?.innerText ?? '';`);
+  const loginControl = () => run(`return {
+    buttons: [...document.querySelectorAll('${tab} button')]
+      .filter((b) => b.textContent.trim() === 'Run claude /login')
+      .map((b) => ({ disabled: b.disabled })),
+    terminals: document.querySelectorAll('${tab} [data-terminal]').length,
+  };`);
   const clickIn = (css, text) =>
     run("const b = [...document.querySelectorAll(arguments[0])].find((b) => b.textContent === arguments[1]); if (!b) return false; b.click(); return true;", css, text);
 
@@ -260,9 +266,9 @@ try {
   const shown = await tabText();
   assert.ok(shown.includes(EMAIL), `the account's email on the tab: ${shown}`);
   assert.ok(shown.includes("2.1.319"), `the CLI version on the tab: ${shown}`);
-  assert.ok(!shown.includes("claude /login"), "no login prompt");
+  assert.deepEqual(await loginControl(), { buttons: [{ disabled: false }], terminals: 0 }, "connected CLI keeps its enabled login action without starting a terminal");
   await screenshot("claude-2-import-settings");
-  pass(`import: Settings › Agents › Claude Code shows CLI, Connected, ${EMAIL}, version 2.1.319, and no "claude /login" button`);
+  pass(`import: Settings › Agents › Claude Code shows CLI, Connected, ${EMAIL}, version 2.1.319, and an idle "Run claude /login" button`);
 
   // 2 and 3: each auth mode, set on the tab as a user does, then a turn in a new chat (its own claude process).
   const API_KEY = "sk-ant-e2e-0123456789-mode";
@@ -277,6 +283,7 @@ try {
         assert.ok(await clickIn(`${tab} button`, "Save"));
         await waitFor("the masked key", () => run(`return document.querySelector('${tab} [data-testid="secret-value"]')?.textContent.endsWith('mode') || null;`));
         await settled("Connected");
+        assert.deepEqual(await loginControl(), { buttons: [], terminals: 0 }, "API-key mode does not offer CLI login or start a terminal");
         assert.ok(!settingsFile().includes(API_KEY), "the key stays out of settings.toml");
       },
       auth: "apikey",
@@ -288,7 +295,7 @@ try {
       stored: (s) => s.stored?.kind === "claude_login",
       async connect() {
         await settled("Connected");
-        assert.ok(!(await tabText()).includes("claude /login"), "no login prompt");
+        assert.deepEqual(await loginControl(), { buttons: [{ disabled: false }], terminals: 0 }, "connected CLI keeps its enabled login action without starting a terminal");
       },
       auth: "login",
       keys: NO_KEYS,

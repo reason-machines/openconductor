@@ -1,0 +1,28 @@
+{
+  "unit": "HOME-EMPTY-ENTER-271-04",
+  "producer": "Conductor Rebuild",
+  "state": "FROZEN_BEFORE_FIRST_HOSTED_RED",
+  "freeze_main": "6ea86f222815a43ab12355eee2afbdcd981b2164",
+  "test": "src/components/homeEmptyEnter.test.ts",
+  "sha256": "7e95c58cc197dffdf4ebe80629149d1a64209b08568050c44283ae3380ca972e",
+  "cases": [
+    "Home prevents Enter on an empty source list without activating a workspace",
+    "Home prevents Enter after filtering a populated list to zero without activating a workspace",
+    "Home prevents nonempty Enter and activates the selected workspace exactly once",
+    "Home leaves an unrelated empty-list character key unprevented without activation"
+  ],
+  "assertions": "All four cases, event prevention, no-action expectations, visible and selected rows, and exact-once selected activation frozen before publication. Do not change assertions after RED.",
+  "execution": "Real complete AllWorkspaces and real KeybindingsProvider mounted with react-test-renderer. Actual keyboard provider dependencies, home filtering/grouping and shortcut modules. Invoke the rendered search input callback with a cancelable Event; no extracted handler, keyboard behavior mock, page wrapper or shared fixture edit.",
+  "permitted_stubs": [
+    "visual leaf components",
+    "preference booleans",
+    "workspace status and unread data",
+    "archive IPC boundary"
+  ],
+  "hosted_command": "node --test \"src/**/*.test.ts\"",
+  "hosted_workflow": ".github/workflows/ci.yml",
+  "hosted_red": "NOT_RUN",
+  "local_runtime": "NOT_RUN_BY_SCOPE",
+  "native_visual": "NOT_RUN",
+  "dependency": "PR #1052 same-handler lease held. No product changes until explicit lease release, fresh main contains #1052, and reread confirms Enter mismatch. PR #1049 provider owner untouched."
+}

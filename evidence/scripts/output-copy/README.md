@@ -37,7 +37,9 @@ The existing sole executor retains behavioral coordination and its older disposa
 
 ### Hosted differential replay
 
-The existing frontend-unit CI job runs [replay.py](replay.py) after its ordinary tests. The replay copies only the fixture, its three production source inputs, and package metadata into a temporary directory, with the installed dependencies linked in. It reverses only the retained product patch and verifies that the resulting component hash equals the recorded main baseline. It runs the unchanged nine-case fixture, requires exactly the first four clipboard-payload assertion failures and five passing controls, restores the candidate, then requires all nine cases to pass. Loader, setup, missing-case, unexpected assertion, and runner failures fail the verification step rather than count as RED. The original checkout is never modified.
+The existing frontend-unit CI job runs [replay.py](replay.py) after its ordinary tests. The replay reconstructs the exact historical delivered fixture from the frozen fixture and its recorded transport adapters. It uses the [retained copy-only component](candidate-ScriptOutput.tsx.txt), whose hash remains the recorded candidate hash. It reverses only the retained product patch and verifies that the resulting component hash equals the recorded main baseline. It requires exactly four clipboard-payload assertion failures and five passing controls, restores the historical candidate, then requires nine passes. Installed dependencies are shared between phases. Loader, setup, missing-case, unexpected assertion, and runner failures fail verification rather than count as RED. The original checkout is never modified.
+
+This replay proves the historical pair, not arbitrary later component code. Ordinary frontend unit tests separately mount the current component with the same nine assertion bodies. The current copy fixture has two additional Unicode dependency-boundary lines because the current component now activates Unicode 11. The historical fixture and product do not change. The source verifier checks historical hashes and equality of current test bodies without requiring later components to retain the historical full-file hash.
 
 Both complete TAP outputs appear in the CI log. The printed receipt records the workflow checkout commit, both component hashes, the identical fixture hash in both phases, and both TAP hashes. This command is for the admitted hosted job, not a second local executor:
 
@@ -45,7 +47,7 @@ Both complete TAP outputs appear in the CI log. The printed receipt records the 
 python3 evidence/scripts/output-copy/replay.py --out-dir "$RUNNER_TEMP/output-copy-replay"
 ```
 
-Local preparation, Python compilation, and [synthetic TAP classification tests](test_replay.py) passed without running Node. The hosted differential replay has not run yet; its expected RED and GREEN counts remain unobserved until the job completes.
+Local preparation, Python compilation, and [synthetic TAP classification tests](test_replay.py) pass without running Node. Each hosted run prints its actual before and after results. The historical replay and ordinary current-component unit tests are separate checks; neither is native clipboard proof.
 
 No screenshot is supplied because browser and native execution are outside this lane's admission. Native clipboard delivery, xterm rendering, and side-by-side installed-app behavior remain unverified. The original REA renderer analysis exhausted its worker heap, so the retained byte-span evidence is not a complete semantic call graph.
 
