@@ -61,7 +61,7 @@ The log excerpt removes trailing whitespace from blank log messages only. The fr
 
 The unit job at receipt-publication head `eb7311ae230b68da801a5358029b8c2c66609825` also reports the two intended cancellation failures. Automatic run [43052357886, job 130632619486](https://github.com/reason-machines/openconductor/actions/runs/43052357886/job/130632619486) names them at log lines 838 and 860.
 
-The handoff leaves #1052's merge SHA, containing-main SHA, and post-release source receipt unset. No explicit handler lease release has arrived. After that release, this PR requires an actual updated main containing #1052, a read of its complete handler and provider-aware input callback, and a new source-mismatch receipt before product code changes.
+The handoff records #1052's explicit handler lease release, merge SHA, actual fetched containing-main SHA, and independently verified pre-fix source receipt. Its GREEN, merge, package identity, and packaged-behavior fields remain unset until observed.
 
 The correction boundary is the empty-list early return only. Empty-list Enter must be prevented before return without activation. Other empty-list keys and every nonempty branch remain unchanged. Preserve #1052's endpoint7 inputs and #1049's live shortcut-provider wrapper. Do not expand IME, alternate navigation, or Home/End behavior.
 
@@ -69,8 +69,10 @@ The package-owner handoff remains prepared, not admitted for execution. After un
 
 ## Ownership and verification limits
 
-This increment contains tests and evidence only. Product changes are not present.
+The test-only publication and actual intended RED preceded every product edit. The later correction changes only the empty-list early-return branch in `AllWorkspaces.onSearchKey`.
 
-PR #1052 exclusively owns the shared `AllWorkspaces.onSearchKey` handler until its owner explicitly releases the lease after merge. An Enter-only fix requires fresh main containing #1052 and a new handler/source-mismatch check. PR #1049's provider changes and fixtures remain with their owner. Frozen header8, Prefix9, Home-list6, and Home-End7 inputs are untouched. The root retains #1041.
+PR #1052's owner explicitly released the handler lease after merge `0d44915a5aefd9b8d4d128d401aea60b47fd9a1f`. Freshly fetched main `e74f6498347eb378f8df2f77427ec6b722c60eb1` contains that merge and #1049's provider change. This Session read its current handler and provider-aware Home component before editing. [The post-release source receipt](reference-post-release.json), SHA-256 `a3e14618d58d10b598b9d7c0601fb20b64df105789b7744a7feb81786ebadfce`, independently reconfirmed the Enter gap against all three retained source spans. The checked main component hash is `e0439c1c0438333c962cf49e5a8ff351536719fa8fc9139d3518d46dadf7f19c`.
 
-Source verification and static test-contract checks passed. Intended automatic hosted RED was observed as recorded above; GREEN has not been observed. No local Node, app, browser, native, build, install, hosted dispatch, rerun, or E1 execution was run. Native and visual parity, original-app acceptance, and consuming-main packaged behavior remain unverified. Unit checks alone cannot complete the rebuild.
+The correction prevents Enter before the empty-list return without activation. It leaves every nonempty branch, #1052's endpoint behavior, and #1049's live provider integration byte-identical. [The source-scope receipt](source-scope-check.json) checks the exact complete-file replacement and all pinned artifact hashes. Frozen header8, Prefix9, Home-list6, and Home-End7 inputs are untouched. The root retains #1041.
+
+Source verification and static test-contract checks passed. Intended automatic hosted RED was observed as recorded above; unchanged-assertion hosted GREEN has not yet been observed. No local Node, app, browser, native, build, install, hosted dispatch, rerun, or E1 execution was run. Native and visual parity, original-app acceptance, and consuming-main packaged behavior remain unverified. Unit checks alone cannot complete the rebuild.

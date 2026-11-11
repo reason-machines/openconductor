@@ -1,7 +1,7 @@
 {
   "unit": "HOME-EMPTY-ENTER-271-04",
   "producer": "Conductor Rebuild",
-  "state": "SOURCE_ONLY_HANDOFF_PREPARED_LEASE_HELD",
+  "state": "ENTER_ONLY_CORRECTION_PREPARED_AWAITING_HOSTED_GREEN",
   "pull_request": "https://github.com/reason-machines/openconductor/pull/1056",
   "branch": "reason/home-empty-list-enter-ca-3ae72a5a",
   "frozen_artifacts": [
@@ -45,11 +45,15 @@
     "pull_request": 1052,
     "owner_session": "289bd0df-9724-4cde-8e41-1773fcb7adec",
     "handler": "src/components/AllWorkspaces.tsx:onSearchKey",
-    "lease": "HELD_NO_EXPLICIT_RELEASE_RECEIVED",
-    "merge_sha": null,
-    "containing_main_sha": null,
-    "post_release_source_receipt": null,
-    "post_release_mismatch": "NOT_CHECKED_LEASE_HELD",
+    "lease": "EXPLICITLY_RELEASED_AFTER_VERIFIED_MERGE",
+    "lease_release_message_id": "db9382ce-1129-4d6b-96bf-d6a79a5d42f8",
+    "merge_sha": "0d44915a5aefd9b8d4d128d401aea60b47fd9a1f",
+    "containing_main_sha": "e74f6498347eb378f8df2f77427ec6b722c60eb1",
+    "containing_main_component_sha256": "e0439c1c0438333c962cf49e5a8ff351536719fa8fc9139d3518d46dadf7f19c",
+    "post_release_source_receipt": "evidence/home-empty-enter/reference-post-release.json",
+    "post_release_source_receipt_sha256": "a3e14618d58d10b598b9d7c0601fb20b64df105789b7744a7feb81786ebadfce",
+    "post_release_mismatch": "CONFIRMED_BEFORE_PRODUCT_EDIT_BY_SOURCE_ONLY_VERIFIER",
+    "source_scope_check": "evidence/home-empty-enter/source-scope-check.json",
     "required_order": [
       "Receive explicit same-handler lease release and verified #1052 merge identity from its owner.",
       "Update through the supported main/base-update path in this assigned checkout. Record the actual fetched main SHA and verify it contains the #1052 merge commit.",
@@ -67,6 +71,20 @@
     "excluded": ["IME expansion", "alternate navigation", "Home/End changes", "page wrappers", "keyboard behavior mocks", "shared fixtures"]
   },
   "protected_inputs": ["header8", "Prefix9", "Home-list6", "Home-End7"],
+  "preserved_containing_main_artifacts": [
+    {
+      "path": "src/components/allWorkspacesKeyboardEndpoints.test.ts",
+      "sha256": "3ae3852a44bdb5528117e32e73e966f074a6c0034e5f7c0d538433639f4cf922"
+    },
+    {
+      "path": "evidence/home-keyboard-endpoints/retained-reference.json",
+      "sha256": "a844bf663720caf0b3f8b2a209335bcddb64f305930fb67a1c7c4ae790489224"
+    },
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6"
+    }
+  ],
   "observed_receipts": {
     "red": {
       "state": "OBSERVED_BEFORE_ANY_PRODUCT_FIX",
