@@ -76,6 +76,8 @@ pub const PR_OPEN_TARGETS: &[&str] = &["github", "linear", "graphite"];
 /// Conductor's `gN` (`markdown_style`, default `default`).
 pub const MARKDOWN_STYLES: &[&str] = &["default", "tufte"];
 
+const BIG_TERMINAL_MODE: &str = "experimental_big_terminal_mode";
+
 /// Every table-backed key, in Conductor's tab order.
 pub const PREFS: &[Pref] = &[
     // General
@@ -113,6 +115,7 @@ pub const PREFS: &[Pref] = &[
     b(Section::Advanced, "always_allow_local_execution"),
     b(Section::Advanced, "auto_sync_files_in_new_cloud_workspaces"),
     // Experimental
+    b(Section::Experimental, BIG_TERMINAL_MODE),
     b(Section::Experimental, "experimental_auto_permission_mode"),
     b(
         Section::Experimental,
@@ -187,7 +190,14 @@ fn encode(pref: &Pref, v: &Value) -> Result<String, String> {
 pub fn overlay(s: &mut Settings, rows: &HashMap<String, String>) {
     for pref in PREFS {
         if let Some(v) = rows.get(pref.key).and_then(|t| decode(pref.kind, t)) {
-            extra_mut(s, pref.section).insert(pref.key.to_string(), v);
+            match (pref.key, v) {
+                (BIG_TERMINAL_MODE, Value::Boolean(value)) => {
+                    s.experimental.experimental_big_terminal_mode = value;
+                }
+                (_, value) => {
+                    extra_mut(s, pref.section).insert(pref.key.to_string(), value);
+                }
+            }
         }
     }
 }
@@ -198,6 +208,12 @@ pub fn values(s: &Settings) -> Result<Vec<(&'static str, String)>, String> {
     PREFS
         .iter()
         .filter_map(|p| {
+            if p.key == BIG_TERMINAL_MODE {
+                return Some(Ok((
+                    p.key,
+                    s.experimental.experimental_big_terminal_mode.to_string(),
+                )));
+            }
             extra(s, p.section)
                 .get(p.key)
                 .map(|v| encode(p, v).map(|t| (p.key, t)))
@@ -213,6 +229,7 @@ pub fn changes(
     Ok(values(s)?
         .into_iter()
         .filter(|(k, v)| current.get(*k) != Some(v))
+        .filter(|(k, v)| *k != BIG_TERMINAL_MODE || v != "false" || current.contains_key(*k))
         .collect())
 }
 
