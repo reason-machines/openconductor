@@ -33,7 +33,19 @@ The [source check receipt](source-check.json) verifies five baseline file hashes
 
 Not run locally: `node --test src/scripts/outputCopy.test.ts`, typecheck, build, broader tests, browser, or native tests. The expected baseline result is four clipboard-payload assertion failures and five passing controls. That is an unobserved expectation, not a RED result. The same nine cases must run on the candidate for GREEN. Setup, resolver, or loader failures do not establish the intended failure.
 
-The existing sole executor retains behavioral coordination and its older disposal, cancellation, and OSC8 queue order. This source increment does not admit another local runtime. Hosted PR head `309f77d095e28eca3863e9f059a831c158735329` passed all nine after-fix cases in [Frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/43027715083/job/130546531496), TAP 2140 through 2148. The [retained hosted receipt](hosted-first-head.json) includes those exact log lines. Typecheck on that head failed at two callback uses of unknown xterm exports. The fixture transport correction captures their validated types in stable aliases. Its hosted typecheck still needs to pass on the corrected head. After-fix success does not establish baseline RED or change executor admission.
+The existing sole executor retains behavioral coordination and its older disposal, cancellation, and OSC8 queue order. This source increment does not admit another local runtime. Hosted PR head `309f77d095e28eca3863e9f059a831c158735329` passed all nine after-fix cases in [Frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/43027715083/job/130546531496), TAP 2140 through 2148. The [retained hosted receipt](hosted-first-head.json) includes those exact log lines. Typecheck on that head failed at two callback uses of unknown xterm exports. The fixture transport correction captures their validated types in stable aliases. Corrected head `36964419fd32301aad55fdf79cad35dcb0c7a06e` passed hosted [frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/43028701035/job/130549851978) and [typecheck/build](https://github.com/reason-machines/openconductor/actions/runs/43028701035/job/130549851696). Neither after-fix result establishes baseline RED.
+
+### Hosted differential replay
+
+The existing frontend-unit CI job runs [replay.py](replay.py) after its ordinary tests. The replay copies only the fixture, its three production source inputs, and package metadata into a temporary directory, with the installed dependencies linked in. It reverses only the retained product patch and verifies that the resulting component hash equals the recorded main baseline. It runs the unchanged nine-case fixture, requires exactly the first four clipboard-payload assertion failures and five passing controls, restores the candidate, then requires all nine cases to pass. Loader, setup, missing-case, unexpected assertion, and runner failures fail the verification step rather than count as RED. The original checkout is never modified.
+
+Both complete TAP outputs appear in the CI log. The printed receipt records the workflow checkout commit, both component hashes, the identical fixture hash in both phases, and both TAP hashes. This command is for the admitted hosted job, not a second local executor:
+
+```bash
+python3 evidence/scripts/output-copy/replay.py --out-dir "$RUNNER_TEMP/output-copy-replay"
+```
+
+Local preparation, Python compilation, and [synthetic TAP classification tests](test_replay.py) passed without running Node. The hosted differential replay has not run yet; its expected RED and GREEN counts remain unobserved until the job completes.
 
 No screenshot is supplied because browser and native execution are outside this lane's admission. Native clipboard delivery, xterm rendering, and side-by-side installed-app behavior remain unverified. The original REA renderer analysis exhausted its worker heap, so the retained byte-span evidence is not a complete semantic call graph.
 
