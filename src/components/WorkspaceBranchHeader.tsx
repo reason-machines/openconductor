@@ -63,7 +63,12 @@ function EditableBranchHeader({ repoId, workspace, dispatch, onError }: Props) {
             spellCheck={false}
             style={{ width: `${Math.max(1, value.length)}ch` }}
             onFocus={(event) => event.currentTarget.select()}
-            onChange={(event) => controller.change(event.currentTarget.value)}
+            onChange={(event) => {
+              const input = event.currentTarget;
+              const caret = input.selectionStart ?? 0;
+              controller.change(input.value);
+              queueMicrotask(() => input.setSelectionRange(caret, caret));
+            }}
             onBlur={() => void controller.blur()}
             onKeyDown={(event) => void controller.inputKey(event)}
           />

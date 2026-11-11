@@ -4,7 +4,7 @@ Conductor Rebuild owns `HEADER-CARET-271-02`. This packet covers only the alread
 
 ## Retained reference
 
-The source comparison was repeated against main `96bad885076f23b81f8009a23deaa261dc866f71` on 11 November 2026. The retained reference describes Conductor 0.87.6. No new acquisition or reference runtime was used.
+The source comparison was first made against main `96bad885076f23b81f8009a23deaa261dc866f71` and revalidated against fresh main `8f1f7b05d98c2469f1646864def08a9f7b774d1f` before the fix on 11 November 2026. All three source blobs below were unchanged. The retained reference describes Conductor 0.87.6. No new acquisition or reference runtime was used.
 
 - [Retained callback trace](reference-static.json), 8,311 bytes, SHA-256 `4901177a0829b07b8414a5d4b9c8adf091f9549f8dc9dafac5ebbcb79a01588e`, git blob `f553fa75066ac57d1b958ec193ce36760e1eae94`.
 - [Retained REA graph](../frontend/rea-analyze-javascript-application.json.gz), 44,783,232 bytes, SHA-256 `b0ffc795bf955a3dd54fd9bfb15d7eadf23ef6768c330c2e2223cc8581c8578f`, git blob `90b801cb23bc10e4780c9a1e48c8f358bc859686`.
@@ -55,6 +55,9 @@ This is a mounted component callback check with a host-input stand-in, not a bro
 - Retained trace, REA graph membership, callback hash, binding spans, and fresh-main source-pin checks passed.
 - `git diff --check` passed for the regression-only increment.
 - Regression test file SHA-256 before any production change is `997ad07bd895f8d9e038fe63d37bbd8e5e8d304749a65c2bc9ec787f2f9ed643`.
-- Actual regression execution is pending CI. Dependencies were previously cleaned from this checkout; no local install was performed.
+- **Intended behavioral RED confirmed:** regression-only PR head `ff20c6a19ba53784ec1a9a7d2edb41b6baf8086c`, CI run [42936538818](https://github.com/reason-machines/openconductor/actions/runs/42936538818). The [frontend unit job](https://github.com/reason-machines/openconductor/actions/runs/42936538818/job/130247891393) and [frontend build job](https://github.com/reason-machines/openconductor/actions/runs/42936538818/job/130247891109) each reported 2,158 passed and exactly three failed cases, all new caret cases at the assertion `the queued callback restores the captured caret`: actual `[]`, expected `[[8, 8]]`, `[[9, 9]]`, and `[[0, 0]]`. Module loading and preceding controlled-value assertions passed; these were not loader/setup failures. `npm run typecheck` passed in the latter job, and its subsequent build step was skipped after the intended test failures.
+- **Minimal fix:** capture the actual input and `selectionStart ?? 0` before `controller.change(input.value)`, then queue exactly one collapsed `setSelectionRange(caret, caret)`. No controller, sanitizer, initial-focus, or other handler changes.
+- **Assertion preservation passed locally on Cloud 298:** the complete test file is byte-identical to the RED digest above; all 76 baseline assertion lines remain unchanged and in order. Corrected-head hosted GREEN/typecheck/build are pending; not claimed yet.
+- Dependencies were previously cleaned from this checkout; no local install or local Node test/build was performed.
 - Native, browser, visual, and real-provider acceptance were not run. No screenshot is supplied because those surfaces were excluded from this source-backed task.
 - The basename source transport hold remains unchanged. No held bytes, basename behavior, or associated test cases were used or edited.
