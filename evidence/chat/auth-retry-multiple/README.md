@@ -6,9 +6,9 @@ Conductor Rebuild owns this change. Source comparison used main `d8f6bdfd2637049
 
 Two sequential signed-out submissions can fail in `backend.open`. An empty failed queue does not pause the next submission. Each failed user message gets a sign-in card. On a connected notification, each card consumes its once-only callback before calling `retryUnsent`. The current busy guard refuses the second continuation while the first is running. That card has no later automatic retry trigger.
 
-This is a source-qualified failure hypothesis. No behavioral failure or native sign-in was observed during source preparation.
+The unchanged regression reproduced this failure in hosted CI on `ddd9d5202d0ab72e0f9a17ff2e3d52b8bb5729bf`. Its single-message control passed; the two-message case failed at the intended second-message-delivery assertion with actual 1, expected 2. This is mock-boundary behavioral RED, not native sign-in proof.
 
-The candidate will carry the original failed turn ID through the existing message queue. It must keep the existing ordering, pause, failure, edit and stop controls, rather than maintaining a separate hidden retry queue. The original user turn must reopen, not be copied into a new transcript turn. Authentication, sign-in controls and their callers are unchanged.
+The fix carries the original failed turn ID through the existing message queue. Existing ordering, pause, failure and stop controls govern its delivery, without a separate hidden retry queue. Automatic retries reopen the original user turn instead of duplicating it. Saving a manual queue edit removes the retry marker, so the edited prompt starts a normal new turn rather than being sent beneath unchanged original transcript text. A retry whose original turn was removed by Reset chat is skipped and its queue slot cancelled, not left working. Authentication, sign-in controls and their callers are unchanged.
 
 ## Retained real-app evidence
 
@@ -37,10 +37,12 @@ node --test src/features/chat/authRetryMultiple.test.ts
 - Passed: `git diff --check`.
 - Not run locally: Node, product tests, typecheck, build, browser, authentication, provider or native execution. The existing serialized E1 runtime queue is unchanged.
 - The first hosted frontend check on `6a7e1186c1169d796bdafdf01482990a4e109098` failed at the wrapper, not the product. Its child inherited Node's `NODE_TEST_CONTEXT`, so Node refused the nested test runner and returned no TAP. The complete-result gate rejected that empty result. The wrapper now removes that runner-local environment key before starting the isolated child. Fixture bytes and product source are unchanged.
-- Hosted behavioral RED and matched GREEN remain pending. The baseline predicts one single-message pass and one failure at `second failed message is not lost when the first retry was working`. Import/setup failures, timeouts and different assertions are not that intended RED.
+- Passed: intended hosted RED qualification using `python3 evidence/chat/auth-retry-multiple/verify_tap.py baseline-red evidence/chat/auth-retry-multiple/baseline-red.tap --exit-code 1`. The complete inner TAP has 2 tests, 1 pass, 1 intended assertion failure, no skipped, cancelled or todo cases. See `baseline-red.json` and the [hosted unit job](https://github.com/reason-machines/openconductor/actions/runs/43028021417/job/130547725000).
+- Passed on the baseline head: hosted `npm run typecheck`. The aggregate frontend build job failed at its later unit-test step, not at typecheck; its build step was skipped.
+- Matched GREEN is pending for the product candidate and six new independent queue-safety tests. The frozen two-case fixture and all existing tests are unchanged.
 - No screenshot is supplied because app or native execution has not run. This is not visual acceptance.
 
-This first publication adds the immutable regression and source evidence before the product candidate. It is not a completed fix and must not merge while the regression fails. The candidate and its hosted results will follow on the same pull request.
+The product candidate was applied only after the intended hosted RED was qualified. The pull request must not merge until all exact-head checks pass. No local Node, build, provider or native execution was added.
 
 ## Scope and integration
 
