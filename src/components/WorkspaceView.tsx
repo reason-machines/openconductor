@@ -645,7 +645,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
       <Composer
         key={chatId}
         draft={draft}
-        clearOnSubmit={planWaiting !== undefined && agentId !== "claude"}
+        clearOnSubmit={planWaiting !== undefined}
         setDraft={setDraft}
         inputRef={inputRef}
         workspacePath={cwd}
@@ -656,7 +656,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         canSteer={agent.canSteer}
         followUpMode={followUpMode}
         onSubmit={planWaiting ? (input) => {
-          if (agentId === "claude") void answerClaudePlan(planWaiting.requestId, input.text);
+          if (agentId === "claude") return answerClaudePlan(planWaiting.requestId, input.text);
           else void agent.answerPermission?.(runId, planWaiting.requestId, { kind: "plan", approved: false, feedback: input.text });
         } : onSubmit}
         onStop={() => agent.stop(runId)}
