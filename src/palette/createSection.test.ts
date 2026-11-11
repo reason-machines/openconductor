@@ -23,7 +23,7 @@ const empty = { repos: [], selection: { kind: "root" }, sections: [], sidebarVis
 const workspaceState = {
   ...empty,
   selection: { kind: "workspace", repoId: "repo-a", workspaceId: "workspace-a" },
-  repos: [{ id: "repo-a", name: "Local project", path: "/synthetic/local", workspaces: [{ id: "workspace-a", name: "Local workspace", branch: "feature", status: "idle", diff: { added: 0, removed: 0 }, createdAt: 1, pinnedAt: 10 }] }],
+  repos: [{ id: "repo-a", name: "Local project", path: "/synthetic/local", defaultBranch: "main", workspaces: [{ id: "workspace-a", name: "Local workspace", branch: "feature", status: "idle", diff: { added: 0, removed: 0 }, createdAt: 1, pinnedAt: 10 }] }],
 } satisfies AppState;
 
 function evaluate(file: string, imports: Readonly<Record<string, unknown>>, exports: object, globals: Record<string, unknown> = {}) {
