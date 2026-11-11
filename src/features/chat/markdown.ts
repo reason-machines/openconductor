@@ -19,6 +19,7 @@
 
 import { createElement as h, Fragment, useEffect, useState, type ComponentType, type ReactNode } from "react";
 import { MermaidBlock } from "./mermaid.ts";
+import type { ToastItem } from "../../components/toastTiming.ts";
 import { splitFrontmatter } from "./markdownFrontmatter.ts";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkBreaks from "remark-breaks";
@@ -96,7 +97,7 @@ export function highlight(language: string | undefined, value: string): ReactNod
   return tree.children.map((c, i) => hastToReact(c as ElementContent, i));
 }
 
-function CopyCode({ text }: { text: string }) {
+function CopyCode({ text, notify }: { text: string; notify?: MarkdownOptions["notify"] }) {
   const [copied, setCopied] = useState(false);
   useEffect(() => {
     if (!copied) return;
@@ -110,20 +111,20 @@ function CopyCode({ text }: { text: string }) {
       className: "md-code-copy",
       "aria-label": copied ? "Copied" : "Copy code",
       title: copied ? "Copied" : "Copy",
-      onClick: () => void navigator.clipboard.writeText(text).then(() => setCopied(true), () => undefined),
+      onClick: () => void navigator.clipboard.writeText(text).then(() => setCopied(true), () => notify?.("error", "Failed to copy", { description: "Please try again." })),
     },
     copied ? "Copied" : "Copy",
   );
 }
 
-export function CodeBlock({ language, content }: { language: string | undefined; content: string }) {
+export function CodeBlock({ language, content, notify }: { language: string | undefined; content: string; notify?: MarkdownOptions["notify"] }) {
   const value = content.replace(/\n$/, "");
   const spans = highlight(language, value);
   return h(
     "div",
     { className: "md-code-block", "data-code-surface": true },
     h("pre", { className: "md-code-scroll" }, h("code", { className: spans ? `hljs${language ? ` language-${language}` : ""}` : undefined }, spans ?? value)),
-    h(CopyCode, { text: content.trim() }),
+    h(CopyCode, { text: content.trim(), notify }),
   );
 }
 
@@ -134,6 +135,7 @@ function childText(children: ReactNode): string {
 }
 
 export interface MarkdownOptions {
+  notify?: (kind: ToastItem["kind"], message: string, options?: Omit<ToastItem, "id" | "kind" | "message">) => void;
   /** Opens a link; the desktop app passes `openUrl` from backend.ts. */
   onOpenLink?: (href: string) => void;
   /** The workspace folder: inline-code paths inside it become file links. */
@@ -171,7 +173,7 @@ export function resolveWorkspacePath(value: string, workspacePath: string | unde
   return target !== root && target.startsWith(root === "/" ? "/" : `${root}/`) ? target : undefined;
 }
 
-export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link }: MarkdownOptions = {}): Components {
+export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link, notify }: MarkdownOptions = {}): Components {
   return {
     // The code component draws its own <pre> for blocks.
     pre: ({ children }) => h("div", { className: "md-pre" }, children),
@@ -179,7 +181,7 @@ export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link
       const text = childText(children);
       const language = languageOf(className);
       if (text.includes("\n")) {
-        const code = h(CodeBlock, { language, content: text });
+        const code = h(CodeBlock, { language, content: text, notify });
         return language === "mermaid" ? h(MermaidBlock, { content: text, children: code }) : code;
       }
       const spans = highlight(language, text);
@@ -219,7 +221,7 @@ export function markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link
   };
 }
 
-export function Markdown({ text, className, onOpenLink, workspacePath, onOpenFile, Link }: { text: string; className?: string } & MarkdownOptions) {
+export function Markdown({ text, className, onOpenLink, workspacePath, onOpenFile, Link, notify }: { text: string; className?: string } & MarkdownOptions) {
   const frontmatter = splitFrontmatter(text);
   return h(
     "div",
@@ -230,6 +232,6 @@ export function Markdown({ text, className, onOpenLink, workspacePath, onOpenFil
       h("div", { className: "md-frontmatter-header" }, h("span", { className: "md-frontmatter-label" }, "Frontmatter")),
       h("pre", { className: "md-frontmatter-body" }, frontmatter.value),
     ),
-    h(ReactMarkdown, { remarkPlugins, components: markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link }) }, frontmatter?.remainder ?? text),
+    h(ReactMarkdown, { remarkPlugins, components: markdownComponents({ onOpenLink, workspacePath, onOpenFile, Link, notify }) }, frontmatter?.remainder ?? text),
   );
 }
