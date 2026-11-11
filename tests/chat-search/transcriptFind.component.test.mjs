@@ -40,7 +40,7 @@ function sourceModule(path) {
       if (name.endsWith(".css")) return {};
       if (!name.startsWith(".")) return require(name);
       let target = resolve(dirname(path), name);
-      if (!extname(target)) target = [".ts", ".tsx", ".js"].map((suffix) => target + suffix).find(existsSync);
+      if (!existsSync(target)) target = [".ts", ".tsx", ".js"].map((suffix) => target + suffix).find(existsSync);
       assert.ok(target, `resolved production dependency ${name}`);
       return sourceModule(target);
     },

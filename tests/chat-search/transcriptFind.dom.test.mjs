@@ -58,7 +58,7 @@ function load(path) {
       for (const [suffix, value] of Object.entries(leaves)) if (name.endsWith("/" + suffix)) return value;
       if (!name.startsWith(".")) return require(name);
       let target = resolve(dirname(path), name);
-      if (!extname(target)) target = [".ts", ".tsx", ".js"].map((suffix) => target + suffix).find(existsSync);
+      if (!existsSync(target)) target = [".ts", ".tsx", ".js"].map((suffix) => target + suffix).find(existsSync);
       assert.ok(target, `production import ${name} resolves`);
       return load(target);
     },
