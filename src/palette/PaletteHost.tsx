@@ -13,6 +13,7 @@ import { openAgentSettings, openRepoSettingsPage, openSettingsPage } from "../fe
 import type { ResultItem } from "./search/model.ts";
 import { useBoolPref } from "../settings/useBoolPref.ts";
 import { loadRecentWorkspaceIds, recordViewedWorkspace, saveRecentWorkspaceIds } from "./recentWorkspaces.ts";
+import { loadLastWorkspaceRoute, saveLastWorkspaceRoute, selectedWorkspaceRoute, settingsRepositoryId } from "./settingsRepository.ts";
 import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { openNextUnread } from "../state/nextUnread.ts";
 import { preferredProjectWorkspace } from "./projectWorkspace.ts";
@@ -55,12 +56,19 @@ export interface PaletteCommands {
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
 export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, onOpenProject, open, onOpenChange, commands }: Props) {
   const [recents, setRecents] = useState<readonly string[]>(loadRecentWorkspaceIds);
+  const [lastWorkspaceRoute, setLastWorkspaceRoute] = useState(loadLastWorkspaceRoute);
   const sel = state.selection;
   const selectedId = sel.kind === "workspace" ? sel.workspaceId : null;
+  const selectedRepoId = sel.kind === "workspace" ? sel.repoId : null;
 
   useEffect(() => {
+    const route = selectedWorkspaceRoute(state);
+    if (route) {
+      setLastWorkspaceRoute((previous) => previous?.href === route.href ? previous : route);
+      saveLastWorkspaceRoute(route);
+    }
     if (selectedId) setRecents((r) => recordViewedWorkspace(r, selectedId));
-  }, [selectedId]);
+  }, [selectedId, selectedRepoId, state.repos, state.archivedOpen]);
   useEffect(() => saveRecentWorkspaceIds(recents), [recents]);
 
   // parity:sidebar.archived-view: archived workspaces are not in the sidebar
@@ -159,12 +167,11 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
     }
   }
 
-  // Settings' own search does the same (`wGt`): a repository section opens in the open workspace's repository, else the first.
   function openSetting(id: string) {
     const t = settingsIndex.find((i) => i.id === id)?.target;
     if (!t) return;
     if (t.scope === "repo") {
-      const repoId = sel.kind === "workspace" ? sel.repoId : state.repos[0]?.id;
+      const repoId = settingsRepositoryId(state, lastWorkspaceRoute);
       if (repoId) openRepoSettingsPage(repoId, t.section);
     } else if (t.providerTab) openAgentSettings(t.providerTab);
     else openSettingsPage(t.page);

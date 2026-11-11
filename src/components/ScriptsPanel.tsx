@@ -158,6 +158,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
   }, [wsId]);
 
   useEffect(() => {
+    let disposed = false;
     setPicked(null);
     setError(null);
     setConfigError(null);
@@ -168,11 +169,13 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
           setConfigState({ key: configKey, config: c });
         },
         (e) => {
+          if (disposed) return;
           setError(errorText(e));
           setConfigError(errorText(e));
         },
       );
     refresh().catch(() => {});
+    return () => { disposed = true; };
   }, [ref, configKey, refresh]);
 
   const refreshSpotlight = useCallback(async () => {
@@ -253,7 +256,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     try {
       await f();
     } catch (e) {
-      setError(errorText(e));
+      if (displayedWorkspaceId.current === wsId) setError(errorText(e));
     }
     await refresh().catch(() => {});
   }
