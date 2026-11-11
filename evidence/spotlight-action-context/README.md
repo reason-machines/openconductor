@@ -1,6 +1,6 @@
 # Spotlight command context
 
-Conductor Rebuild owns `RUN-SPOTLIGHT-CONTEXT-1f-01`. The ledger cleared only the Spotlight request/error hunk in ScriptsPanel, the new runSpotlightContext regression, and this note. No backend, API, process policy, run-history, Setup or completion changes are part of this correction.
+Conductor Rebuild owns `RUN-SPOTLIGHT-CONTEXT-1f-01`. The ledger cleared only the Spotlight request/error hunk in ScriptsPanel, the new spotlightActionContext regression, and this note. No backend, API, process policy, run-history, Setup or completion changes are part of this correction.
 
 ## Fresh source and retained reference
 
@@ -22,7 +22,7 @@ Those are static reference observations. They support workspace ownership of dis
 
 ## Regression
 
-`src/scripts/runSpotlightContext.test.ts` mounts the production ScriptsPanel and RunSplitButton through the existing locked React test renderer. It loads the real Spotlight/script APIs, selection model and run presentation helpers. Only Tauri IPC/events, portal placement, icons and unrelated settings/keybinding boundaries are substituted. Deferred start and stop responses enter through the actual `invoke` boundary, not a copied handler.
+`src/scripts/spotlightActionContext.test.ts` mounts the production ScriptsPanel and RunSplitButton through the existing locked React test renderer. It loads the real Spotlight/script APIs, selection model and run presentation helpers. Only Tauri IPC/events, portal placement, icons and unrelated settings/keybinding boundaries are substituted. Deferred start and stop responses enter through the actual `invoke` boundary, not a copied handler.
 
 For each of start and stop, it checks:
 
