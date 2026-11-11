@@ -11,7 +11,7 @@
 // suggested changes, Resolve (on GitHub) and Delete (here only, as Conductor
 // does); they cannot be edited or replied to. Comments on the PR itself are
 // listed from the Changes toolbar, so no file has to be open.
-import { useCallback, useEffect, useId, useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { openUrl } from "../../backend";
 import { DialogFrame } from "../../components/DialogFrame";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
@@ -76,6 +76,7 @@ function Composer({ initial = "", edit, placeholder, submitLabel, onSubmit, onCa
   const text = edit?.text ?? localText;
   const setText = edit?.onChange ?? setLocalText;
   const [discardOpen, setDiscardOpen] = useState(false);
+  const composing = useRef(false);
   const dialogId = useId();
   const cancel = () => {
     const dirty = initial === "" ? text.trim() !== "" : text !== initial;
@@ -96,7 +97,11 @@ function Composer({ initial = "", edit, placeholder, submitLabel, onSubmit, onCa
         value={text}
         placeholder={placeholder}
         onChange={(e) => setText(e.target.value)}
+        onCompositionStart={() => { composing.current = true; }}
+        onCompositionEnd={() => { composing.current = false; }}
+        onBlur={() => { composing.current = false; }}
         onKeyDown={(e) => {
+          if (composing.current || e.nativeEvent?.isComposing || e.keyCode === 229 || e.which === 229) return;
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();
             submit();

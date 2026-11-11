@@ -1,0 +1,55 @@
+{
+  "status": "HOSTED_RED_BEFORE_PRODUCT_PATCH_VERIFIED",
+  "run": {
+    "id": 43064458154,
+    "workflow_id": 414937915,
+    "repository_id": 1446810994,
+    "head_repository_id": 1446810994,
+    "workflow_name": "Inline comment IME proof",
+    "workflow_path": ".github/workflows/diff-comment-ime.yml",
+    "display_title": "test(diff): reproduce inline comment IME shortcut interception",
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "failure",
+    "head_branch": "reason/openconductor-sol-diff-a-de6c02f4",
+    "head_sha": "37c720e484f1aac9aef1e17c5c1f7a3ca2aaf10c",
+    "run_number": 1,
+    "run_attempt": 1,
+    "actor": "reason-machines[bot]",
+    "triggering_actor": "reason-machines[bot]",
+    "created_at": "2026-11-11T17:03:56Z",
+    "updated_at": "2026-11-11T17:04:17Z",
+    "run_started_at": "2026-11-11T17:03:56Z",
+    "html_url": "https://github.com/reason-machines/openconductor/actions/runs/43064458154",
+    "pull_requests": [
+      1069
+    ]
+  },
+  "artifact": {
+    "id": 13875815851,
+    "digest": "sha256:8da6b4fd31497d0ffd719957027d879ebfd38235d60a17ce566eba4f62fe0b9e",
+    "archive_sha256": "8da6b4fd31497d0ffd719957027d879ebfd38235d60a17ce566eba4f62fe0b9e",
+    "workflow_run": {
+      "id": 43064458154,
+      "repository_id": 1446810994,
+      "head_repository_id": 1446810994,
+      "head_branch": "reason/openconductor-sol-diff-a-de6c02f4",
+      "head_sha": "37c720e484f1aac9aef1e17c5c1f7a3ca2aaf10c"
+    }
+  },
+  "baseline": "435c3356902c3e7cdf246f3089029154b3f908f6",
+  "fixture_sha256": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
+  "result": {
+    "named_behavioral_failures": 11,
+    "passing_controls": 5,
+    "setup_failures": 0
+  },
+  "candidate_result": "UNFIXED_REGRESSION_FIRST_HEAD_ALSO_11_FAILURES_5_CONTROLS",
+  "verification": "Downloaded artifact bytes match GitHub digest and computed SHA; strict TAP validator checked actual baseline and unfixed candidate. Guard applied only after validation.",
+  "not_exercised": [
+    "Actual platform IME event delivery",
+    "Browser DOM",
+    "Native/E1",
+    "Visual acceptance"
+  ]
+}

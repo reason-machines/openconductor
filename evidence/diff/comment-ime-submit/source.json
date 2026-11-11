@@ -1,6 +1,6 @@
 {
   "unit": "DIFF-COMMENT-IME-SUBMIT-01",
-  "status": "REGRESSION_FIRST_BASELINE_AND_CANDIDATE_UNFIXED",
+  "status": "HOSTED_BASELINE_RED_VERIFIED_MINIMAL_GUARD_CANDIDATE",
   "main": "435c3356902c3e7cdf246f3089029154b3f908f6",
   "asset": {
     "name": "renderApp-D_fmY7hW.js",
@@ -103,7 +103,7 @@
   "fixture_sha256": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
   "product": {
     "baseline": "16837e0203358d1a954fd50e8ce29e4aafd724d61a72f6e0e043439fa5f72aa2",
-    "candidate": "16837e0203358d1a954fd50e8ce29e4aafd724d61a72f6e0e043439fa5f72aa2"
+    "candidate": "68801566a9fc93b691db5e1d0d96a754788d235e8eeb244c7d7dd2af5407f508"
   },
   "dependencies": {
     "src/features/diff/comments.ts": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800",
