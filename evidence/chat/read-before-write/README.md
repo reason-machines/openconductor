@@ -25,7 +25,9 @@ The reference styles are 12px/16px muted wrapping text, 20px left padding, 8px t
 
 There are 16 tests. For each of Edit and Write they cover exact and embedded matches, ordinary errors, case and punctuation near misses, successful matching results, empty failed results, and the same mounted row changing trigger to generic to trigger and back while retaining disclosure state. The six matching/transition tests are expected to fail at missing-note assertions on the baseline; ten controls should pass. Setup, compilation or import failures do not qualify as behavioral RED.
 
-The baseline test is published first through normal automatic CI discovery (`node --test "src/**/*.test.ts"`), with no workflow edits or manual dispatch. The fixture must remain byte-identical through the correction. Hosted RED, unchanged GREEN, full checks, protected merge and consuming package results are pending at this milestone.
+The baseline test was published first through normal automatic CI discovery (`node --test "src/**/*.test.ts"`), with no workflow edits or manual dispatch. [Hosted baseline job 130686900568](https://github.com/reason-machines/openconductor/actions/runs/43067684694/job/130686900568) at published head `c6e79a5a61ffdfc431a5c21da9c4c13bd9d0b2ff` completed all 16 fixture tests: six intended missing-note assertion failures (actual zero, expected one) and ten passing controls. Dependency setup and production module compilation/mount succeeded. [Qualified RED receipt and exact excerpt](hosted-red.json). Source review independently confirmed no material fixture/contract finding.
+
+Current main `6b37c4dbb2aa9b6ff1186b988f16bbbb6eaab3ca` was re-read before the correction; ToolRows is still byte-identical to the frozen baseline. The product patch inserts only the exact case-sensitive note branch after the existing state hook. The fixture remains byte-identical. `python3 evidence/chat/read-before-write/verify.py` checks the frozen bytes, reference excerpts, qualified RED and exact insertion without running the app. Hosted unchanged GREEN, remaining full checks, protected merge and consuming package results are pending.
 
 ## Verification boundaries
 
