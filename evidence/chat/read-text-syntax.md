@@ -1,6 +1,6 @@
 # Ordinary Read text syntax
 
-Conductor Rebuild, READ-TEXT-SYNTAX-BE7-07; sole builder 6c9f, source owner be7. Exact scope: ToolRows Read arm, Read-only NumberedCode and the existing guarded highlight import; new readSyntaxHighlight.test.ts; this evidence note. No image, Markdown, shared RowShell/FileBadge, CSS, provider, Edit/Write/MultiEdit or frozen #847 changes.
+Conductor Rebuild, READ-TEXT-SYNTAX-BE7-07; sole builder 6c9f, source owner be7. Core scope: ToolRows Read arm, Read-only NumberedCode and the existing guarded highlight import; new readSyntaxHighlight.test.ts; this evidence note. The conditional fourth-path repair in writeRows.test.ts exposes the real existing highlighter to its VM seam only. No image, Markdown implementation, shared RowShell/FileBadge, CSS, provider, Edit/Write/MultiEdit production or frozen #847 changes.
 
 ## Source and fresh-main check
 
@@ -28,6 +28,14 @@ Hosted test-only commit `c53cbb9afddf21bba8ceb6ef37ce10beeceafdc8` reproduced th
 
 The minimal patch selects the retained extension aliases in the Read arm, passes the language only to Read's NumberedCode, and reuses `highlight(language, line) ?? line` independently per line. Shared primitives and Markdown stay unchanged. Fresh main `56e4c7a980dd5df18b66e9dc61daccc3f39937ae` still has the same raw-span Read implementation and was merged before publication. The regression fixture remains unchanged for hosted GREEN.
 
+## Confirmed Write-fixture seam repair
+
+The first production-fix head `fc29433d2115b34ce74f1cde6e3a8aee0a7b2c50` made the frozen Read regression pass, but hosted full-suite execution confirmed one existing fixture-load failure. In [run 42965112061](https://github.com/reason-machines/openconductor/actions/runs/42965112061/job/130340408749), `Read, Edit and MultiEdit keep their own body contracts without Write disclosure controls` failed at writeRows.test.ts:218 with `(0 , markdown_ts_1.highlight) is not a function`. The frontend build job stopped at the same unit-test failure before typecheck/build. Its VM supplied only Markdown, while the actual production Read now legitimately imports highlight.
+
+The authorized fourth path changes exactly two lines: import the real `highlight` from unchanged markdown.ts, and export it from that fixture's existing `./markdown.ts` VM seam. No production guard or optional call was added. Every test case, fixture call, assertion, expected value, skip setting and timeout remains byte-identical. The Read regression and both #994 fixtures remain frozen.
+
+The Write fixture's SHA-256 deliberately changes from `e12f212147c419c9eed38eae60c72c2535b46181edd7d97e72c332bc7fce27ff` to `452afa96a84edeedfed50d9eabf36968d564634bfde717de02bd20f0f5f20e5a`; it is not claimed byte-frozen. An exact two-substitution comparison against the pre-repair file and byte comparison of the complete test-case suffix passed. `node --check src/features/chat/writeRows.test.ts` and `git diff --check` passed on Reason cloud. Hosted full-suite GREEN after this seam repair remains pending; no local dependency installation or dependency-backed execution was performed.
+
 ## Validation record
 
 - `python3 .rea-work/read-syntax-handoff/verify-packet.py`: PASS, retained identities/spans and 30 joins only.
@@ -35,7 +43,7 @@ The minimal patch selects the retained extension aliases in the Read arm, passes
 - `git diff --check`: PASS. ToolRows, markdown.ts and both #994 fixtures remain byte-identical to fresh main before RED.
 - New regression fixture frozen at SHA-256 `acd015bba3bd0db2b53c1842a278278a837ebc26813486e4c721cf40758120ef` before test-only publication.
 - Hosted mounted RED: PASS as a reproduction; 21 intended syntax failures, seven new controls passing, 2,439 other tests passing (2,467 total). Command: `node --test "src/**/*.test.ts"`.
-- Production fix added only after that RED. Unchanged GREEN/full suite/typecheck/build: pending hosted CI. No local dependency installation or heavy build.
+- Production fix added only after that RED. Frozen Read GREEN passed at fc29433d; full-suite execution then failed on the confirmed Write VM seam above. After its two-line seam repair, full suite/typecheck/build remain pending hosted CI. No local dependency installation or heavy build.
 - Containing-main CI and macOS package verification: pending delivery.
 
 ## Limits
