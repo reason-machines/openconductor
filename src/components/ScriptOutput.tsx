@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
+import { Unicode11Addon } from "@xterm/addon-unicode11";
 import "@xterm/xterm/css/xterm.css";
 import { currentTerminalFont, onTerminalFont, TERMINAL_LINE_HEIGHT } from "../features/terminal/font";
 import { currentScrollbackRows, onScrollbackRows } from "../features/terminal/scrollback";
@@ -30,6 +31,7 @@ export function ScriptOutput({ output }: { output: string }) {
     if (!element) return;
     const font = currentTerminalFont();
     const term = new Terminal({
+      allowProposedApi: true,
       disableStdin: true,
       cursorBlink: false,
       convertEol: true,
@@ -38,6 +40,8 @@ export function ScriptOutput({ output }: { output: string }) {
       lineHeight: TERMINAL_LINE_HEIGHT,
       scrollback: currentScrollbackRows(),
     });
+    term.loadAddon(new Unicode11Addon());
+    term.unicode.activeVersion = "11";
     const fit = new FitAddon();
     term.loadAddon(fit);
     term.open(element);

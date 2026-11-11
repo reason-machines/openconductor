@@ -51,7 +51,8 @@ export interface ComposerProps {
   queue: ChatQueue;
   canSteer: boolean;
   followUpMode?: FollowUpMode;
-  onSubmit: (input: UserPrompt, mode: SendMode) => void;
+  /** Async callbacks own draft clearing after acceptance and handle delivery errors. */
+  onSubmit: (input: UserPrompt, mode: SendMode) => void | Promise<void>;
   /** False when the owner clears only after asynchronous delivery succeeds. */
   clearOnSubmit?: boolean;
   onStop: () => void;
@@ -199,7 +200,8 @@ export function Composer({
       setDraft("");
       return;
     }
-    onSubmit(input, working ? mode(opposite) : "queue");
+    const pending = onSubmit(input, working ? mode(opposite) : "queue");
+    if (pending) return;
     if (clearOnSubmit) setDraft("");
   }
 
