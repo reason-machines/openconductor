@@ -172,4 +172,25 @@ mod tests {
         assert!(!valid_directory_name(".."));
         assert!(!valid_directory_name("a b"));
     }
+
+    #[test]
+    fn directory_name_accepts_nfc_stable_nonspacing_mark() {
+        assert!(valid_directory_name("q\u{0301}"));
+    }
+
+    #[test]
+    fn directory_name_accepts_nfc_stable_enclosing_mark() {
+        assert!(valid_directory_name("q\u{20dd}"));
+    }
+
+    #[test]
+    fn directory_name_accepts_nfc_stable_spacing_mark() {
+        assert!(valid_directory_name("q\u{093e}"));
+    }
+
+    #[test]
+    fn directory_name_rejects_non_mark_unicode_controls() {
+        assert!(!valid_directory_name("q\u{200d}"));
+        assert!(!valid_directory_name("q😀"));
+    }
 }
