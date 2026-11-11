@@ -1,6 +1,6 @@
-import { useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ConfigSyncDialog } from "./ConfigSyncDialog";
-import { openUrl } from "../backend";
+import { checkFullDiskAccess, openUrl } from "../backend";
 import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { currentSendKeyMode, effectiveShortcuts, type Overrides } from "../keybindings/overrides";
 import type { SendKeyMode } from "../keybindings/registry";
@@ -21,6 +21,7 @@ import { useSettingsOverrideStore } from "./useSettingsOverrideStore";
 interface Props {
   settings: Settings;
   save: (next: Settings) => void | Promise<boolean>;
+  notify?: (kind: "error", message: string) => void;
 }
 
 /** Conductor's `aga`: System Settings › Privacy & Security › Full Disk Access. */
@@ -35,11 +36,12 @@ const shortcutGlyphs = (commandId: string, overrides: Overrides) => effectiveSho
  * organizations (`hideInPersonalOrganizations`), which is every OpenConductor
  * user, so it is not listed.
  */
-export function GeneralPage({ settings, save }: Props) {
+export function GeneralPage({ settings, save, notify }: Props) {
   const latestSettings = useRef(settings);
   latestSettings.current = settings;
   const g = settings.general;
   const [syncOpen, setSyncOpen] = useState(false);
+  const fullDiskAccess = useFullDiskAccessStatus();
   const { overrides } = useKeybindingOverrides();
   const followUp = enumPref(settings, "default_message_send_mode");
   return (
@@ -95,12 +97,14 @@ export function GeneralPage({ settings, save }: Props) {
           </button>
         </span>
       </Row>
-      <ButtonRow
-        label="Full disk access permissions"
-        help="To let agents work without repeated folder permission prompts."
-        button="Open System Settings"
-        onClick={() => void openUrl(FULL_DISK_ACCESS_URL).catch(() => undefined)}
-      />
+      <Row label="Full disk access permissions" help="To let agents work without repeated folder permission prompts.">
+        <span className="settings-inline" style={{ gap: 12 }}>
+          {fullDiskAccess === true && <span style={{ color: "var(--s-muted)", fontSize: 14 }}>Granted</span>}
+          <button type="button" className="btn settings-outline" onClick={() => void openUrl(FULL_DISK_ACCESS_URL).catch(() => notify?.("error", "Couldn't open System Settings. Go to Privacy & Security > Full Disk Access to grant it manually."))}>
+            Open System Settings
+          </button>
+        </span>
+      </Row>
       <PrefSwitchRow settings={settings} save={save} pref="auto_convert_long_text" label="Auto-convert long text" help="Convert pasted text over 5000 characters into text attachments" />
       <PrefSwitchRow
         settings={settings}
@@ -148,6 +152,40 @@ export function GeneralPage({ settings, save }: Props) {
       {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} />}
     </div>
   );
+}
+
+/** Renderer status only: the native check and its error fallback are fail-open. */
+function useFullDiskAccessStatus(): boolean | undefined {
+  const [granted, setGranted] = useState<boolean>();
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.addEventListener !== "function") return;
+    let active = true;
+    let revision = 0;
+    let timer: number | undefined;
+    const refresh = async () => {
+      const current = ++revision;
+      window.clearTimeout(timer);
+      let next: boolean;
+      try {
+        next = await checkFullDiskAccess();
+      } catch (error) {
+        console.error("check_full_disk_access failed:", error);
+        next = true;
+      }
+      if (!active || current !== revision) return;
+      setGranted(next);
+      if (next === false) timer = window.setTimeout(() => void refresh(), 5000);
+    };
+    const onFocus = () => void refresh();
+    window.addEventListener("focus", onFocus);
+    void refresh();
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, []);
+  return granted;
 }
 
 /**

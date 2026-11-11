@@ -99,6 +99,67 @@ fn run_alacritty(program: &str, args: &[String]) -> Result<super::AlacrittyExit,
         .map_err(|error| format!("{program}: {error}"))
 }
 
+fn wezterm_output(
+    program: &str,
+    args: &[String],
+    cli_path: Option<&std::ffi::OsStr>,
+) -> Result<std::process::Output, String> {
+    let mut command = Command::new(program);
+    command.args(args);
+    if let Some(path) = cli_path {
+        command.env("PATH", path);
+    }
+    command.output().map_err(|error| format!("{program}: {error}"))
+}
+
+fn open_wezterm_folder(dir: &Path) -> Result<(), String> {
+    let inherited_path = std::env::var_os("PATH");
+    let home = std::env::var_os("HOME");
+    let path = super::wezterm_search_path(inherited_path.as_deref(), home.as_deref())?;
+    let dir = dir.to_string_lossy().into_owned();
+    let spawn = wezterm_output(
+        "wezterm",
+        &["cli".into(), "spawn".into(), "--cwd".into(), dir.clone()],
+        Some(&path),
+    )?;
+    if spawn.status.success() {
+        wezterm_output("open", &["-a".into(), "WezTerm".into()], None)?;
+        return Ok(());
+    }
+    let start = wezterm_output(
+        "open",
+        &[
+            "-a".into(),
+            "WezTerm".into(),
+            "--args".into(),
+            "start".into(),
+            "--cwd".into(),
+            dir.clone(),
+        ],
+        Some(&path),
+    )?;
+    if start.status.success() {
+        return Ok(());
+    }
+    let folder = wezterm_output(
+        "open",
+        &["-a".into(), "WezTerm".into(), dir],
+        Some(&path),
+    )?;
+    if folder.status.success() {
+        return Ok(());
+    }
+    let stderr = String::from_utf8_lossy(&folder.stderr).into_owned();
+    let stdout = String::from_utf8_lossy(&folder.stdout).into_owned();
+    Err(if !stderr.is_empty() {
+        stderr
+    } else if !stdout.is_empty() {
+        stdout
+    } else {
+        format!("exit code {}", folder.status.code().unwrap_or(-1))
+    })
+}
+
 fn run_kaleidoscope_folder(dir: &Path) -> Result<(), String> {
     let probe = Command::new("git")
         .arg("-C")
@@ -166,6 +227,8 @@ pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
                 super::run_alacritty_folder(&dir, run_alacritty)
             } else if app.id == "kaleidoscope" && !is_file {
                 run_kaleidoscope_folder(&dir)
+            } else if app.id == "wezterm" && !is_file {
+                open_wezterm_folder(&dir)
             } else {
                 super::run_macos_open(app, &dir, is_file, run)
             }

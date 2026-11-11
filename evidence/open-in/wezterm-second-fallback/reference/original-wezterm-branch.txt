@@ -1,0 +1,1 @@
+else if(r==="wezterm"){const D=v({preferDirectoryFallbackPath:!0}),P=nl(D);(await Kc({command:`${OGe(o)}wezterm cli spawn --cwd ${P}`,host:gn})).code===0?await Kc({command:"open -a WezTerm",host:gn}):await I8(`open -a WezTerm --args start --cwd ${P}`,D,o)}

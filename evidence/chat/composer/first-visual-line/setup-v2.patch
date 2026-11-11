@@ -1,0 +1,38 @@
+diff --git a/src/features/chat/composerFirstVisualLine.test.ts b/src/features/chat/composerFirstVisualLine.test.ts
+index 57ef940..f97c146 100644
+--- a/src/features/chat/composerFirstVisualLine.test.ts
++++ b/src/features/chat/composerFirstVisualLine.test.ts
+@@ -44,0 +45,2 @@ const reset: commands.SlashCommand = { ...review, name: "reset" };
++const mentionWorkspacePath = "/fixture/first-visual-line-mention";
++type FileSearch = Parameters<typeof import("../../backend").fuzzyFilterFiles>;
+@@ -54,0 +57 @@ interface Options {
++  workspacePath?: typeof mentionWorkspacePath;
+@@ -57 +60 @@ interface Options {
+-function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true, queued = true, editing = false, rowPresent = true, composing = false, content }: Options = {}) {
++function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true, queued = true, editing = false, rowPresent = true, composing = false, content, workspacePath }: Options = {}) {
+@@ -60,0 +64 @@ function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true,
++  const searches: FileSearch[] = [];
+@@ -117 +121,8 @@ function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true,
+-      if (name === "../../backend") return { fuzzyFilterFiles: () => assert.fail("queue navigation must not search files") };
++      if (name === "../../backend") return { fuzzyFilterFiles: (...args: FileSearch) => {
++        assert.equal(workspacePath, mentionWorkspacePath, "queue navigation must not search files");
++        assert.equal(draft, "@", "only the mention control may search files");
++        assert.deepEqual(args, [mentionWorkspacePath, "", false], "only the expected mention mount search is allowed");
++        assert.equal(searches.length, 0, "the mention mount search must occur only once");
++        searches.push(args);
++        return Promise.resolve([]);
++      } };
+@@ -129 +140 @@ function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true,
+-      draft, inputRef, setDraft: () => assert.fail("navigation must not emit or replace the draft"),
++      draft, inputRef, workspacePath, setDraft: () => assert.fail("navigation must not emit or replace the draft"),
+@@ -156 +167 @@ function fixture({ draft = "keep this draft", caret = 4, end = caret, up = true,
+-    focused, geometry, queries,
++    focused, geometry, queries, searches,
+@@ -232 +243 @@ for (const [kind, draft] of [["slash", "/re"], ["mention", "@"]] as const) {
+-    const view = fixture({ draft, caret: draft.length });
++    const view = fixture({ draft, caret: draft.length, ...(kind === "mention" ? { workspacePath: mentionWorkspacePath } : {}) });
+@@ -233,0 +245,2 @@ for (const [kind, draft] of [["slash", "/re"], ["mention", "@"]] as const) {
++      const expectedSearches = kind === "mention" ? [[mentionWorkspacePath, "", false]] : [];
++      assert.deepEqual(view.searches, expectedSearches, "only mention setup may issue its expected mount search");
+@@ -237,0 +251 @@ for (const [kind, draft] of [["slash", "/re"], ["mention", "@"]] as const) {
++      assert.deepEqual(view.searches, expectedSearches, "Up must not issue another file search");
