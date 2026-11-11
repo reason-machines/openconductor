@@ -88,10 +88,18 @@ test("Changes: sorted flat rows, compressed hierarchy, collapsing counts, filter
   await page.getByRole("button", { name: "Filter files", exact: true }).click();
   const filter = page.getByRole("textbox", { name: "Filter changed files" });
   await filter.fill("test");
+  assert.equal(await folder.getAttribute("aria-expanded"), "false");
+  assert.equal(await changed.locator(".oc-change").count(), 0);
+  assert.equal(await page.locator(".oc-changes-filter-count").textContent(), "1 of 2");
+  await folder.click();
+  assert.equal(await folder.getAttribute("aria-expanded"), "true");
   assert.equal(await changed.locator(".oc-change").count(), 1);
   await changed.locator(".oc-change").click();
   await page.locator(".oc-path-chip").filter({ hasText: "auth.test.ts" }).waitFor();
   assert.equal(await changed.locator(".oc-change").getAttribute("aria-current"), "true");
+  await folder.click();
+  assert.equal(await folder.getAttribute("aria-expanded"), "false");
+  assert.equal(await changed.locator(".oc-change").count(), 0);
   await filter.press("Escape");
   assert.equal(await filter.count(), 0);
   assert.equal(await changed.locator(".oc-change").count(), 0);
