@@ -1,0 +1,1 @@
+{name:"clear",description:"Close this tab and start a fresh chat",argumentHint:"",effect:"clear_session",supportedAgents:["claude","codex"]}
