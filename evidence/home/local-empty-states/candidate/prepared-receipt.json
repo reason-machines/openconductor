@@ -1,0 +1,96 @@
+{
+  "unit": "ACQ-HOME-LOCAL-EMPTY-271-02-candidate",
+  "producer": "Conductor Rebuild / 27102e36",
+  "status": "AUTHORED_NOT_APPLIED_OR_EXECUTED",
+  "main_sha": "385ccb5229f56ff33903f034352eaa9827c40f0e",
+  "reference_source_receipt_sha256": "3b05fd2b44ba4b594417622519d8db81bc6ff3ce6ffe4f5571f17c9b1629c118",
+  "reference_declarations": {
+    "Home-UJo": {
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9863549,
+        9874571
+      ],
+      "utf16_half_open": [
+        9817995,
+        9829017
+      ],
+      "bytes": 11022,
+      "sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030"
+    },
+    "Home-filter-state-MJo": {
+      "kind": "complete function declaration",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        9860278,
+        9862126
+      ],
+      "utf16_half_open": [
+        9814724,
+        9816572
+      ],
+      "bytes": 1848,
+      "sha256": "7e75df8888bf9d63c869ce04c489d322f385442a92eeef71253a9cee4f51bfe9"
+    }
+  },
+  "reference_assumptions": [
+    "Settled local input",
+    "Reference U explicitly undefined",
+    "Known repositories only"
+  ],
+  "source_inputs": {
+    "src/components/AllWorkspaces.tsx": {
+      "sha256": "09a33ea155ddd2a6dfd3a547ff3a4c69b95e203de5e67bd3adb60dfa63d10c38",
+      "bytes": 16560
+    },
+    "src/home/allWorkspaces.ts": {
+      "sha256": "45e77dda94f361cdf16be238f5ef55ae8b5329166da88197e14d84651c6d35bd",
+      "bytes": 13170
+    },
+    "src/home/allWorkspaces.test.ts": {
+      "sha256": "be012d620146bf83143b87dc54ed7f6798784db4e8fa60c4eb9d665ff4dfff1f",
+      "bytes": 10517
+    }
+  },
+  "fixture": {
+    "scratch_path": "evidence/home/local-empty-states/candidate/homeEmptyAction.test.ts",
+    "intended_path": "src/components/homeEmptyAction.test.ts",
+    "sha256": "0368e970513156b1446366774d85ec3461c3358ca12328a5d6d40fec32daae49",
+    "bytes": 10194,
+    "cases": 9
+  },
+  "unapplied_patch": {
+    "sha256": "b3e4f02e13cf4880c21e94e5323f0c1c07214a9222845e9b4594ec0182066c8f",
+    "bytes": 1616,
+    "candidate_files": {
+      "src/home/allWorkspaces.ts": {
+        "sha256": "d0f085b570f531b0b2d0679473b30d70b133a3280f164ad871fdb6aff8eec20b",
+        "bytes": 13171
+      },
+      "src/home/allWorkspaces.test.ts": {
+        "sha256": "3698c923b8bc11eaeccfd582f8b9fa2ed1eb410bf11c2a2e61db02680c21de4d",
+        "bytes": 10516
+      }
+    }
+  },
+  "expected_not_observed": {
+    "unchanged_fixture_red": {
+      "failed": 1,
+      "passed": 8
+    },
+    "same_fixture_green": {
+      "failed": 0,
+      "passed": 9
+    }
+  },
+  "tests_run": false,
+  "product_files_edited": false,
+  "publication": "none; PR #1011 immutable",
+  "limits": [
+    "Only a proposed synthetic production-component fixture.",
+    "No actual app/provider/native/reference runtime or visual evidence.",
+    "No assertion about loading integration, owner defaults, generic reference button, or real Create callback.",
+    "Archived records are explicitly supplied in Repo props; production state/DB reachability is not established."
+  ]
+}

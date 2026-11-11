@@ -1,0 +1,112 @@
+{
+  "owner": "e09b0500-c793-4cce-bfd8-f466192cad81",
+  "unit": "local-idle-clear",
+  "assigned_branch": "reason/openconductor-local-clea-e09b0500",
+  "frozen_fixture_head": "f442590fc0d50fb94d1f734172f4c7979f366f5e",
+  "current_default_head_read": "b34ba2de9ad45365715d21a0bfe24d9c36b335fb",
+  "stage": "SOURCE_ONLY_UNEXECUTED_CANDIDATE",
+  "tracked_product_edits": false,
+  "reference_source_handoff_sha256": "5e20a816145dd8f6e63cb6e8c41b0e42b359c9aee4a8280a5eaee73e2427816c",
+  "reference_supplement_sha256": "6c41ef128819fbc2baa671ee3e84589f075d5d9d54478062665e8ada19f24695",
+  "patch_sha256": "8e90b390e51f13561941c456407452040c97ea3e74cd91e013b750d11f7a973d",
+  "patch_size": 63611,
+  "files": [
+    {
+      "path": "crates/openconductor-db/src/sessions.rs",
+      "baseline_sha256": "bdc083c7cf19b23c6e53b9b6f818f629273ceb41184e47392770fb53fa01da37",
+      "candidate_sha256": "2cf64d2e3f975181af3ec888729b62fc55e67ed91cafb8994087c21ab13de3ac",
+      "size": 33998
+    },
+    {
+      "path": "crates/openconductor-db/tests/local_clear.rs",
+      "baseline_sha256": null,
+      "candidate_sha256": "e14303de0b0a8ba87423379cf453caa697dd0142f59061fbac0cc9005299a043",
+      "size": 6770
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "baseline_sha256": "41a3fb802ef166f335a9d329889fd92a4509c7c061d4f583d5557d1d26034fba",
+      "candidate_sha256": "13e4ad8a689e4ce873b4c612cbfc81cf99ec38452ece7957d8c3c482e7272bbb",
+      "size": 80426
+    },
+    {
+      "path": "src/features/chat/localClear.ts",
+      "baseline_sha256": null,
+      "candidate_sha256": "36773e89380caca36d3c25c42c3e5d7c2c7ac6f29510e53f1930f24520d42890",
+      "size": 1739
+    },
+    {
+      "path": "src/features/chat/workspaceLocalClear.test.ts",
+      "baseline_sha256": "6b1b9245ce1e996359db4f87286278c907cb280fa85eeccbd5867660cdce58fc",
+      "candidate_sha256": "af8719be135313c35a21d71d4d6bb2190b8af77b59e6d366b6f9dc1a340e058f",
+      "size": 22264
+    },
+    {
+      "path": "src/features/diff/ReviewButton.tsx",
+      "baseline_sha256": "c2575d83c30d8e3e161437ca34a2cd38a264b08e26acdbefc3dc823b69dea7c4",
+      "candidate_sha256": "fa910a5751fd53ddd2d32a74177af4c378ae4bcb91fc43e3bf7569e236642a8c",
+      "size": 11920
+    },
+    {
+      "path": "src/state/openChat.ts",
+      "baseline_sha256": "30a2ffefec8dde392deb4a9434c2ec754b56533a7fc848936a80eba067852321",
+      "candidate_sha256": "40a9ea9f4719fa4c8602e4bc2611c47051c54a317131f458a324cddfc072a152",
+      "size": 5268
+    },
+    {
+      "path": "src/state/persisted.ts",
+      "baseline_sha256": "2efc1eb708c9d8635740cd3045821c864e84a4a11ea9eef9562aecccdc4587da",
+      "candidate_sha256": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209",
+      "size": 9197
+    },
+    {
+      "path": "src/state/store.ts",
+      "baseline_sha256": "98dd8c80116d825cc19f1863b1506ebfae8a7ca1809b066dd701f48a080bac56",
+      "candidate_sha256": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96",
+      "size": 31520
+    },
+    {
+      "path": "src/state/types.ts",
+      "baseline_sha256": "ac1eb6bdeaa73da92cb9265253f8c340d2f91b3edba96b1eeed23fc6830792dd",
+      "candidate_sha256": "fd8bf53604cc4aa6881cc4a1dae0763dae6ac5ff4ff0fc83ac1b2d18f762ea55",
+      "size": 6390
+    },
+    {
+      "path": "src-tauri/src/lib.rs",
+      "baseline_sha256": "d288cdb08db78fdc8939cee2780abaa109eaa2a2cdd8cb4b6da7bf28aaf9deb1",
+      "candidate_sha256": "37ce9e4ea858859898ab8d4002334f7f7f148e2cf45413132e9645ed73a97950",
+      "size": 29673
+    },
+    {
+      "path": "src-tauri/src/persistence/mod.rs",
+      "baseline_sha256": "6ae4adcc249921c8dde701d9f986900bcf77577489a56efa0e249761cd127963",
+      "candidate_sha256": "f82a17bbac3c7f055d4dc7433a83c1828e754728bed87e4a0597c2c476f17266",
+      "size": 14518
+    },
+    {
+      "path": "src-tauri/src/sidebar_workspace_commands.rs",
+      "baseline_sha256": "80d3598f61cdfca6f56dc72f9c32aa90b5abda6f178656416d18e3256a5df227",
+      "candidate_sha256": "91e1d8bb5f411d07bc4d94a998637d75617cae29ba25975896117e50c0083b24",
+      "size": 25517
+    }
+  ],
+  "policy": "Await exact e1 queue admission. Actual baseline RED must precede tracked product edits. No cloud local-provider execution or credentials. No #847 or de6 RightPanel edits.",
+  "proposed_checks": [
+    "node --experimental-strip-types --test --test-concurrency=1 src/features/chat/workspaceLocalClear.test.ts",
+    "node --experimental-strip-types --test --test-concurrency=1 src/state/openChat.test.ts src/state/persisted.test.ts src/state/store.test.ts src/state/chatUnread.test.ts src/features/chat/chatTabs.test.ts src/features/chat/chatModelChoice.test.ts",
+    "cargo test --manifest-path crates/openconductor-db/Cargo.toml --test local_clear",
+    "cargo test --manifest-path crates/openconductor-db/Cargo.toml",
+    "cargo test --manifest-path src-tauri/Cargo.toml sidebar_workspace_commands::tests::local_clear",
+    "typecheck with existing admitted dependency footprint only; no install",
+    "format and protected CI after exact publication admission"
+  ],
+  "unverified": [
+    "Actual baseline RED pending e1",
+    "All candidate mounted checks",
+    "All native DB and DTO checks",
+    "Typecheck/build/CI",
+    "macOS consuming package",
+    "Native local-provider and visual acceptance"
+  ],
+  "failure_policy": "Atomic DB replacement is OpenConductor design, not a reference rollback parity claim."
+}

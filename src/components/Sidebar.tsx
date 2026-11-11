@@ -19,8 +19,7 @@ import { useBuiltinSectionCollapse } from "../state/useCustomSectionCollapse";
 import { MAIN_COLLAPSE_KEY, PINNED_COLLAPSE_KEY } from "../state/customSectionCollapse";
 import { SidebarStatusGroups } from "./SidebarStatusGroups";
 import { isRepoCollapsed, pinnedEntries, repoGroupWorkspaces, sectionEntries, type SidebarSection } from "../state/sidebarOrder";
-import { newId } from "../state/names";
-import { SectionDialog, type SectionDialogMode } from "./SectionDialog";
+import type { SectionDialogMode } from "./SectionDialog";
 import { useSidebarDrag, type WorkspaceRef } from "./useSidebarDrag";
 import { DROP_ATTR, reorderIndicator, reorderToIndex, workspaceDropAction, type DropTarget } from "../state/navigationSections";
 import { ProjectFilterSubmenu, SidebarRadioSubmenu } from "./home/ProjectFilterSubmenu";
@@ -66,6 +65,7 @@ interface Props {
   onToggleSection: (id: string) => void;
   dispatch: Dispatch<Action>;
   onOpenDialog: (d: DialogKind, repoId?: string, sectionId?: string) => void;
+  onOpenSectionDialog: (data: SectionDialogMode) => void;
   onOpenProject: () => void;
   /** A Recents row of the add-repository menu: add that folder as Open project would. */
   onAddProjectAt?: (path: string) => void;
@@ -256,13 +256,12 @@ function NavSectionGroup({ group, collapsed, onToggle, menuItems, renderRow, isD
   );
 }
 
-export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSendFeedback, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
+export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, onOpenDialog, onOpenSectionDialog, onOpenProject, onAddProjectAt, onOpenSettings, onOpenShortcuts, onSendFeedback, onSubmitPrompt, onOpenDiagnostics, onSearch, nav, info, onRenameWorkspace, onArchiveWorkspace, onCopyWorkspaceLink, onError, onCreateFrom, onOpenRepoSettings, onRemoveRepository }: Props) {
   const { overrides } = useKeybindingOverrides();
   // Row menu > Rename opens the Rename workspace dialog unless the host handles it.
   const [renaming, setRenaming] = useState<{ repoId: string; workspaceId: string } | null>(null);
   const openRename = useCallback<NonNullable<RowCallbacks["onRename"]>>((repoId, ws) => setRenaming({ repoId, workspaceId: ws.id }), []);
   const renamingWs = renaming && state.repos.find((r) => r.id === renaming.repoId)?.workspaces.find((w) => w.id === renaming.workspaceId);
-  const [sectionDialog, setSectionDialog] = useState<SectionDialogMode | null>(null);
   // Drag rows onto a section, Pinned or My workspaces, and section headers to reorder (Conductor's `esa`).
   const scrollRoot = useRef<HTMLElement>(null);
   const onDropWorkspace = (ws: WorkspaceRef, target: DropTarget) => {
@@ -281,29 +280,20 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
     onRename: onRenameWorkspace ?? openRename,
     onArchive: onArchiveWorkspace,
     onCopyLink: onCopyWorkspaceLink,
-    onNewSection: (ws) => setSectionDialog({ mode: "create", workspaceIdToMove: ws.id }),
+    onNewSection: (ws) => onOpenSectionDialog({ mode: "create", workspaceIdToMove: ws.id }),
     collapsedSections,
     onRowPointerDown: (e, repoId, ws) => drag.workspacePointerDown(e, { repoId, id: ws.id, pinned: typeof ws.pinnedAt === "number" }),
   });
   const { sections, sectioned } = sectionEntries(state);
   const pinned = pinnedEntries(state, sectioned);
-  const submitSection = (mode: SectionDialogMode, value: { name: string; emoji?: string }) => {
-    if (mode.mode === "edit") {
-      dispatch({ type: "editSection", sectionId: mode.sectionId, ...value });
-      return;
-    }
-    const section = { id: newId(), ...value, workspaceIds: mode.workspaceIdToMove === undefined ? [] : [mode.workspaceIdToMove] };
-    // Conductor's create (`_Y`) takes the workspace out of any other section; it does not unpin it.
-    dispatch({ type: "createSection", section, beforeSectionId: mode.beforeSectionId });
-  };
   const sectionMenu = (sectionId: string): MenuEntry[] => {
     const s = state.sections?.find((x) => x.id === sectionId);
     // Conductor's section menu (`oBi` @10004433, right-click via `Qia`): Create workspace (plus),
     // Edit section (pencil), New section… (plus), separator, Delete section (trash-2, destructive).
     return [
       { label: "Create workspace", icon: <MenuPlusIcon />, onSelect: () => onOpenDialog("create", undefined, sectionId) },
-      { label: "Edit section", icon: <PencilIcon />, onSelect: () => s && setSectionDialog({ mode: "edit", sectionId, name: s.name, emoji: s.emoji }) },
-      { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => setSectionDialog({ mode: "create", beforeSectionId: sectionId }) },
+      { label: "Edit section", icon: <PencilIcon />, onSelect: () => s && onOpenSectionDialog({ mode: "edit", sectionId, name: s.name, emoji: s.emoji }) },
+      { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => onOpenSectionDialog({ mode: "create", beforeSectionId: sectionId }) },
       "-",
       { label: "Delete section", icon: <Trash2Icon />, destructive: true, onSelect: () => dispatch({ type: "deleteSection", sectionId }) },
     ];
@@ -458,7 +448,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           </button>
           {myContext && (
             <ContextMenu at={myContext} onClose={closeMyContext} label="My workspaces actions">
-              <CtxItem icon={<MenuPlusIcon />} onSelect={() => setSectionDialog({ mode: "create" })}>New section…</CtxItem>
+              <CtxItem icon={<MenuPlusIcon />} onSelect={() => onOpenSectionDialog({ mode: "create" })}>New section…</CtxItem>
             </ContextMenu>
           )}
           <HeaderMenu label="My workspaces" className="sb-section-menu" contextOpen={!!myContext} items={[
@@ -469,7 +459,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
             { key: "filter-by-project", render: (close) => <ProjectFilterSubmenu repos={state.repos} filter={repoFilter} onChange={setRepoFilter} onClose={close} /> },
             { key: "sort-by", render: (close) => <SidebarRadioSubmenu label="Sort by" options={SIDEBAR_SORT_OPTIONS} selected={state.sidebarSort ?? "updated"} onChange={(value) => { void setAppPref({ key: "sidebar_sort_by", value }).catch((err) => console.error("Could not save sidebar sort", err)); }} onClose={close} /> },
             "-",
-            { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => setSectionDialog({ mode: "create" }) },
+            { label: "New section…", icon: <MenuPlusIcon />, onSelect: () => onOpenSectionDialog({ mode: "create" }) },
             { label: "Add project…", icon: <FolderPlusIcon />, onSelect: () => requestAnimationFrame(() => setAddMenuOpen(true)) },
           ]} />
           <span ref={addMenuAnchor} className="sb-add-menu-anchor" aria-hidden />
@@ -569,14 +559,6 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
       </nav>
       {drag.overlay}
       {rows.menu}
-      {sectionDialog && (
-        <SectionDialog
-          key={sectionDialog.mode === "edit" ? sectionDialog.sectionId : `create-${sectionDialog.workspaceIdToMove ?? "empty"}`}
-          data={sectionDialog}
-          onSubmit={(value) => submitSection(sectionDialog, value)}
-          onClose={() => setSectionDialog(null)}
-        />
-      )}
 
       {/* Footer, after Conductor's `Nna`: px-4 py-3, top border, help and settings icons (h-4 w-4, stroke 1.5) gap-5 at the right. */}
       <div className="sb-footer">

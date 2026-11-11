@@ -1,0 +1,81 @@
+{
+  "snapshot_main": "385ccb5229f56ff33903f034352eaa9827c40f0e",
+  "rechecked_current_main": "b34ba2de9ad45365715d21a0bfe24d9c36b335fb",
+  "rechecked_at": "2026-11-11T08:02:22.816150+00:00",
+  "unchanged_execution_source_inputs": {
+    "package.json": {
+      "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
+      "bytes": 1901
+    },
+    "src/components/AllWorkspaces.tsx": {
+      "sha256": "09a33ea155ddd2a6dfd3a547ff3a4c69b95e203de5e67bd3adb60dfa63d10c38",
+      "bytes": 16560
+    },
+    "src/components/sidebarLabel.ts": {
+      "sha256": "3fddba42c85e28f14f38f48382d89c31c5de4d8fcc31dcee286033d61bbc33ac",
+      "bytes": 2426
+    },
+    "src/home/allWorkspaces.ts": {
+      "sha256": "45e77dda94f361cdf16be238f5ef55ae8b5329166da88197e14d84651c6d35bd",
+      "bytes": 13170
+    },
+    "src/home/allWorkspaces.test.ts": {
+      "sha256": "be012d620146bf83143b87dc54ed7f6798784db4e8fa60c4eb9d665ff4dfff1f",
+      "bytes": 10517
+    },
+    "src/state/rowStatus.ts": {
+      "sha256": "e22c083e131c35774234f0f91fb1f5e5b117c6d40161ac3f346395bc46f2df34",
+      "bytes": 7245
+    },
+    "src/state/workspaceNumber.ts": {
+      "sha256": "16e32a34381b71319e0735ebfd3843ef2f7a026d541e27ad781009437b971aae",
+      "bytes": 568
+    },
+    "src/state/persisted.ts": {
+      "sha256": "2efc1eb708c9d8635740cd3045821c864e84a4a11ea9eef9562aecccdc4587da",
+      "bytes": 8945
+    },
+    "src/workspace/archivedList.ts": {
+      "sha256": "5d5c2d74f3f2bcd2a0b1109cc22c3465a276bdd04edc71031689f1fc0a7942eb",
+      "bytes": 2977
+    },
+    "src/state/workspaceStatus.ts": {
+      "sha256": "8b26245bf7cec0e806485e5fc9608220df08cbd7250953e946122b0044eef714",
+      "bytes": 1281
+    },
+    "src/home/sidebarGroupBy.ts": {
+      "sha256": "9559b98fa5853a4e227376285c4723f2b8ede795cacc0238f9a94aad9ee16449",
+      "bytes": 1027
+    },
+    "src/state/openChat.ts": {
+      "sha256": "30a2ffefec8dde392deb4a9434c2ec754b56533a7fc848936a80eba067852321",
+      "bytes": 4879
+    },
+    "src/state/workspaceSessions.ts": {
+      "sha256": "180c76b22899e63cc3d1f5b92cdcedfa9c7a0bdebe82c6c7d3de54c037da291b",
+      "bytes": 1933
+    }
+  },
+  "fixture": {
+    "sha256": "0368e970513156b1446366774d85ec3461c3358ca12328a5d6d40fec32daae49",
+    "bytes": 10194
+  },
+  "patch": {
+    "sha256": "b3e4f02e13cf4880c21e94e5323f0c1c07214a9222845e9b4594ec0182066c8f",
+    "bytes": 1616
+  },
+  "dependencies": {
+    "typescript": "5.9.3",
+    "react-test-renderer": "18.3.1",
+    "js-tokens": "4.0.0",
+    "loose-envify": "1.4.0",
+    "react-shallow-renderer": "16.15.0",
+    "react": "18.3.1",
+    "object-assign": "4.1.1",
+    "react-is": "18.3.1",
+    "scheduler": "0.23.2"
+  },
+  "admission": "cd5e6058 clarified by35426251",
+  "ledger_scope": "633b1c5c",
+  "reference_movement": "installer diagnostics #1015; all 13 execution inputs byte-identical"
+}
