@@ -86,6 +86,7 @@ pub mod menu;
 mod model_catalog;
 pub mod pr;
 mod local_storage_commands;
+mod local_plan_mode;
 mod onboarding_commands;
 mod native_qa;
 mod native_qa_cache;
@@ -378,6 +379,7 @@ pub fn run() {
             app.manage(codex_chat::CodexChats::with_binaries(binaries));
             app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
+            app.manage(local_plan_mode::LocalPlanModes::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
             // Appearance keys Conductor keeps in conductor.db live in its settings table.
@@ -525,6 +527,8 @@ pub fn run() {
             agent_settings_commands::favorite_models_replace,
             config_sync_commands::config_sync_diff,
             config_sync_commands::config_sync_apply,
+            local_plan_mode::local_plan_mode_get,
+            local_plan_mode::local_plan_mode_set,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,

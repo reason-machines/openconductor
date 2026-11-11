@@ -20,6 +20,49 @@ fn missing_file_yields_defaults() {
     assert_eq!(s, Settings::default());
     assert_eq!(s.models.default, DEFAULT_MODEL);
     assert_eq!(s.git.branch_prefix_type, BranchPrefixType::GithubUsername);
+    assert_eq!(s.general.theme, Theme::Dark);
+}
+
+#[test]
+fn missing_theme_uses_dark_without_changing_other_preferences() {
+    assert_eq!(Theme::default(), Theme::Dark);
+    let path = temp_dir().join(FILE_NAME);
+    for body in ["", "[general]\n", "[general]\nsound_type = \"none\"\n"] {
+        fs::write(&path, body).unwrap();
+        let settings = load(&path).unwrap();
+        assert_eq!(settings.general.theme, Theme::Dark, "{body}");
+        if body.contains("sound_type") {
+            assert_eq!(settings.general.sound_type, SoundType::None);
+        }
+        save(&path, &settings).unwrap();
+        assert_eq!(load(&path).unwrap(), settings);
+    }
+}
+
+#[test]
+fn explicit_themes_keep_their_value_across_load_save_and_reload() {
+    let path = temp_dir().join(FILE_NAME);
+    for (name, expected) in [
+        ("light", Theme::Light),
+        ("dark", Theme::Dark),
+        ("system", Theme::System),
+    ] {
+        fs::write(
+            &path,
+            format!("[general]\ntheme = \"{name}\"\nfuture_theme_key = 42\n"),
+        )
+        .unwrap();
+        let settings = load(&path).unwrap();
+        assert_eq!(settings.general.theme, expected);
+        save(&path, &settings).unwrap();
+        let saved = fs::read_to_string(&path).unwrap();
+        assert!(saved.contains(&format!("theme = \"{name}\"")), "{saved}");
+        assert_eq!(load(&path).unwrap(), settings);
+        assert_eq!(
+            settings.general.extra.get("future_theme_key"),
+            Some(&toml::Value::Integer(42))
+        );
+    }
 }
 
 #[test]

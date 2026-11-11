@@ -1,0 +1,123 @@
+2026-11-11T19:00:20.0781727Z # Subtest: login bootstrap keeps the shell alive and marks command completion
+2026-11-11T19:00:20.0782760Z not ok 2492 - login bootstrap keeps the shell alive and marks command completion
+2026-11-11T19:00:20.0783499Z   ---
+2026-11-11T19:00:20.0783782Z   duration_ms: 159.911693
+2026-11-11T19:00:20.0784118Z   type: 'test'
+2026-11-11T19:00:20.0784898Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminal.test.ts:120:1'
+2026-11-11T19:00:20.0785832Z   failureType: 'testCodeFailure'
+2026-11-11T19:00:20.0786385Z   error: 'Login must not force the interactive shell to exit'
+2026-11-11T19:00:20.0786891Z   code: 'ERR_ASSERTION'
+2026-11-11T19:00:20.0787231Z   name: 'AssertionError'
+2026-11-11T19:00:20.0787570Z   expected: true
+2026-11-11T19:00:20.0787857Z   actual: false
+2026-11-11T19:00:20.0788157Z   operator: '=='
+2026-11-11T19:00:20.0788446Z   stack: |-
+2026-11-11T19:00:20.0789224Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminal.test.ts:126:12)
+2026-11-11T19:00:20.0790056Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T19:00:20.0790718Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T19:00:20.0791262Z   ...
+2026-11-11T19:00:20.0791795Z # Subtest: command completion enables Done while shell input remains usable
+2026-11-11T19:00:20.0792593Z not ok 2493 - command completion enables Done while shell input remains usable
+2026-11-11T19:00:20.0793090Z   ---
+2026-11-11T19:00:20.0793375Z   duration_ms: 56.280257
+2026-11-11T19:00:20.0793700Z   type: 'test'
+2026-11-11T19:00:20.0794385Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminal.test.ts:133:1'
+2026-11-11T19:00:20.0795143Z   failureType: 'testCodeFailure'
+2026-11-11T19:00:20.0795666Z   error: 'Command completion must enable Done without a PTY exit'
+2026-11-11T19:00:20.0796264Z   code: 'ERR_ASSERTION'
+2026-11-11T19:00:20.0796608Z   name: 'AssertionError'
+2026-11-11T19:00:20.0796946Z   expected: true
+2026-11-11T19:00:20.0797241Z   operator: '=='
+2026-11-11T19:00:20.0797543Z   stack: |-
+2026-11-11T19:00:20.0798351Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminal.test.ts:138:12)
+2026-11-11T19:00:20.0799251Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T19:00:20.0800124Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T19:00:20.0800662Z   ...
+2026-11-11T19:00:20.0801121Z # Subtest: shell exit before completion reports the premature exit
+2026-11-11T19:00:20.0801903Z not ok 2494 - shell exit before completion reports the premature exit
+2026-11-11T19:00:20.0802408Z   ---
+2026-11-11T19:00:20.0802686Z   duration_ms: 61.608028
+2026-11-11T19:00:20.0803012Z   type: 'test'
+2026-11-11T19:00:20.0803756Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminal.test.ts:152:1'
+2026-11-11T19:00:20.0804567Z   failureType: 'testCodeFailure'
+2026-11-11T19:00:20.0805103Z   error: 'PTY exit alone must not claim the command completed'
+2026-11-11T19:00:20.0805606Z   code: 'ERR_ASSERTION'
+2026-11-11T19:00:20.0806079Z   name: 'AssertionError'
+2026-11-11T19:00:20.0806415Z   expected:
+2026-11-11T19:00:20.0806949Z   actual: 'Finished fixture-cli login. You can keep using this shell or click done.Done'
+2026-11-11T19:00:20.0807511Z   operator: 'match'
+2026-11-11T19:00:20.0807806Z   stack: |-
+2026-11-11T19:00:20.0808546Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminal.test.ts:157:12)
+2026-11-11T19:00:20.0809474Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T19:00:20.0810152Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T19:00:20.0810705Z   ...
+2026-11-11T19:00:20.0811173Z # Subtest: other completion markers cannot complete this login
+2026-11-11T19:00:20.0811846Z ok 2495 - other completion markers cannot complete this login
+2026-11-11T19:00:20.0812457Z   ---
+2026-11-11T19:00:20.0812737Z   duration_ms: 78.993292
+2026-11-11T19:00:20.0813058Z   type: 'test'
+2026-11-11T19:00:20.0813334Z   ...
+2026-11-11T19:00:20.0813881Z # Subtest: late ready and shell exit cannot erase observed command completion
+2026-11-11T19:00:20.0814672Z ok 2496 - late ready and shell exit cannot erase observed command completion
+2026-11-11T19:00:20.0815187Z   ---
+2026-11-11T19:00:20.0815482Z   duration_ms: 60.964787
+2026-11-11T19:00:20.0815991Z   type: 'test'
+2026-11-11T19:00:20.0816290Z   ...
+2026-11-11T19:00:20.0816824Z # Subtest: Close dismisses the terminal without refreshing authentication
+2026-11-11T19:00:20.0817581Z ok 2497 - Close dismisses the terminal without refreshing authentication
+2026-11-11T19:00:20.0818084Z   ---
+2026-11-11T19:00:20.0818370Z   duration_ms: 34.574185
+2026-11-11T19:00:20.0818690Z   type: 'test'
+2026-11-11T19:00:20.0818971Z   ...
+2026-11-11T19:00:20.0819431Z # Subtest: spawn failure stays distinct from command completion
+2026-11-11T19:00:20.0820112Z ok 2498 - spawn failure stays distinct from command completion
+2026-11-11T19:00:20.0820572Z   ---
+2026-11-11T19:00:20.0820851Z   duration_ms: 30.311155
+2026-11-11T19:00:20.0821175Z   type: 'test'
+2026-11-11T19:00:20.0821436Z   ...
+2026-11-11T19:00:20.0821899Z # Subtest: login waits for terminal observation before spawning
+2026-11-11T19:00:20.0822690Z not ok 2499 - login waits for terminal observation before spawning
+2026-11-11T19:00:20.0823173Z   ---
+2026-11-11T19:00:20.0823448Z   duration_ms: 41.742944
+2026-11-11T19:00:20.0823765Z   type: 'test'
+2026-11-11T19:00:20.0824475Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminal.test.ts:208:1'
+2026-11-11T19:00:20.0825205Z   failureType: 'testCodeFailure'
+2026-11-11T19:00:20.0825566Z   error: |-
+2026-11-11T19:00:20.0826084Z     Login must register the PTY listener before spawning
+2026-11-11T19:00:20.0826516Z
+2026-11-11T19:00:20.0826774Z     1 !== 0
+2026-11-11T19:00:20.0827043Z
+2026-11-11T19:00:20.0827323Z   code: 'ERR_ASSERTION'
+2026-11-11T19:00:20.0827660Z   name: 'AssertionError'
+2026-11-11T19:00:20.0827978Z   expected: 0
+2026-11-11T19:00:20.0828264Z   actual: 1
+2026-11-11T19:00:20.0828559Z   operator: 'strictEqual'
+2026-11-11T19:00:20.0828886Z   stack: |-
+2026-11-11T19:00:20.0829709Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminal.test.ts:212:12)
+2026-11-11T19:00:20.0830790Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T19:00:20.0831469Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T19:00:20.0832007Z   ...
+2026-11-11T19:00:20.0832488Z # Subtest: spawn resolution cannot erase a fast command completion
+2026-11-11T19:00:20.0833188Z not ok 2500 - spawn resolution cannot erase a fast command completion
+2026-11-11T19:00:20.0833682Z   ---
+2026-11-11T19:00:20.0833968Z   duration_ms: 67.5838
+2026-11-11T19:00:20.0834277Z   type: 'test'
+2026-11-11T19:00:20.0834952Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminal.test.ts:218:1'
+2026-11-11T19:00:20.0835800Z   failureType: 'testCodeFailure'
+2026-11-11T19:00:20.0836393Z   error: 'Spawn resolution must preserve an observed command completion'
+2026-11-11T19:00:20.0836933Z   code: 'ERR_ASSERTION'
+2026-11-11T19:00:20.0837269Z   name: 'AssertionError'
+2026-11-11T19:00:20.0837584Z   expected:
+2026-11-11T19:00:20.0837930Z   actual: 'Running fixture-cli login.'
+2026-11-11T19:00:20.0838322Z   operator: 'match'
+2026-11-11T19:00:20.0838616Z   stack: |-
+2026-11-11T19:00:20.0839417Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminal.test.ts:222:12)
+2026-11-11T19:00:20.0840355Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T19:00:20.0841009Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T19:00:20.0841505Z   ...
+2026-11-11T19:00:20.0842159Z # Subtest: unmount during spawn kills the late PTY without refreshing authentication
+2026-11-11T19:00:20.0843184Z ok 2501 - unmount during spawn kills the late PTY without refreshing authentication
+2026-11-11T19:00:20.0843728Z   ---
+2026-11-11T19:00:20.0844006Z   duration_ms: 50.290952
+2026-11-11T19:00:20.0844322Z   type: 'test'
+2026-11-11T19:00:20.0844589Z   ...

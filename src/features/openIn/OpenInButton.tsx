@@ -107,7 +107,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
   useKeybindings(
     Object.fromEntries(
       Array.from({ length: NUMBERED_ROWS }, (_, i) => {
-        const row = open ? rows[i] : undefined;
+        const row = split && open ? rows[i] : undefined;
         return [`menu.selectItem${i + 1}`, row && (() => (close(), row()))];
       }),
     ),
@@ -188,7 +188,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
                 </span>
                 <span className="oi-row-end">
                   {a.id === defaultId && openKeyText && <span className="oi-row-kbd">{openKeyText}</span>}
-                  {numbers.apps[i] !== undefined && <span className="oi-row-num">{numbers.apps[i]}</span>}
+                  {split && numbers.apps[i] !== undefined && <span className="oi-row-num">{numbers.apps[i]}</span>}
                 </span>
               </button>
             ))
@@ -200,7 +200,7 @@ export function OpenInButton({ path, notify, variant = "split" }: Props) {
               </span>
               <span className="oi-row-label">Copy path</span>
             </span>
-            {numbers.copyPath !== undefined && (
+            {split && numbers.copyPath !== undefined && (
               <span className="oi-row-end">
                 <span className="oi-row-num">{numbers.copyPath}</span>
               </span>

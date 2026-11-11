@@ -298,6 +298,7 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
       : dispatch({ type: "select", selection: { kind: "workspace", repoId: row.repo.id, workspaceId: row.workspace.id } });
 
   const onSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.defaultPrevented || e.nativeEvent?.isComposing || e.keyCode === 229) return;
     if (e.key === "Home" || e.key === "End") {
       e.preventDefault();
       const entry = flat[e.key === "Home" ? 0 : flat.length - 1];

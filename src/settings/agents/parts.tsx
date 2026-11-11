@@ -292,12 +292,13 @@ export function LoginButton({ command, label, onDone }: { command: string; label
   );
 }
 
-type TermState = "starting" | "running" | "exited" | "spawn_error";
+type TermState = "starting" | "running" | "completed" | "exited" | "spawn_error";
 
 /** Conductor's `rTo` header text. */
 export function terminalHeader(label: string, state: TermState, error?: string): string {
   if (state === "spawn_error") return error ?? "Failed to start terminal.";
-  if (state === "exited") return `Finished ${label}. You can keep using this shell or click done.`;
+  if (state === "completed") return `Finished ${label}. You can keep using this shell or click done.`;
+  if (state === "exited") return "Shell exited before the command completed.";
   if (state === "running") return `Running ${label}.`;
   return `Starting ${label}...`;
 }
@@ -315,27 +316,61 @@ function LoginTerminal({ command, label, onDismiss, onDone }: { command: string;
     term.loadAddon(fit);
     term.open(el);
     fit.fit();
+    const terminalId = crypto.randomUUID();
+    const completion = `Conductor;CommandDone;${terminalId}`;
     let id: string | undefined;
     let gone = false;
+    let spawning = false;
+    let lifecycle: TermState = "starting";
+    const transition = (next: TermState) => {
+      lifecycle = next;
+      setState(next);
+    };
+    const running = () => {
+      if (lifecycle === "starting") transition("running");
+    };
+    const completionHandler = term.parser.registerOscHandler(633, (data) => {
+      if (data !== completion) return false;
+      if (!gone && spawning && lifecycle !== "exited" && lifecycle !== "spawn_error") transition("completed");
+      return true;
+    });
+    let pendingOutput = 0;
+    let exited = false;
+    const observeExit = () => {
+      if (!gone && exited && pendingOutput === 0 && lifecycle !== "completed") transition("exited");
+    };
     const unlisten = onPtyEvent((e) => {
-      if (e.id !== id) return;
-      if (e.kind === "data") term.write(e.data);
-      else if (e.kind === "ready") setState("running");
-      else if (e.kind === "exit") setState("exited");
+      if (gone || !spawning || e.id !== terminalId) return;
+      if (e.kind === "data") {
+        pendingOutput++;
+        term.write(e.data, () => {
+          pendingOutput--;
+          observeExit();
+        });
+      } else if (e.kind === "ready") running();
+      else if (e.kind === "exit") {
+        exited = true;
+        observeExit();
+      }
     });
     const input = term.onData((d) => id && void ptyWrite(id, d));
     const resize = term.onResize(({ cols, rows }) => id && void ptyResize(id, cols, rows));
     (async () => {
       try {
+        await unlisten;
+        if (gone) return;
         const cwd = await homeDir();
-        // The shell runs the command, then exits, so "exit" means the command finished.
-        const spawned = await ptySpawn({ cwd, cols: term.cols, rows: term.rows, initialCommand: `${command}; exit` });
+        if (gone) return;
+        spawning = true;
+        const initialCommand = `${command}; printf '\\033]633;${completion}\\a'`;
+        const spawned = await ptySpawn({ id: terminalId, cwd, cols: term.cols, rows: term.rows, initialCommand });
         if (gone) return void ptyKill(spawned).catch(() => {});
         id = spawned;
-        setState("running");
+        running();
       } catch (e) {
+        if (gone) return;
         setError(e instanceof Error ? e.message : String(e));
-        setState("spawn_error");
+        transition("spawn_error");
       }
     })();
     const ro = new ResizeObserver(() => fit.fit());
@@ -345,13 +380,14 @@ function LoginTerminal({ command, label, onDismiss, onDone }: { command: string;
       ro.disconnect();
       input.dispose();
       resize.dispose();
-      void unlisten.then((u) => u());
+      completionHandler.dispose();
+      void unlisten.then((u) => u(), () => {});
       if (id) void ptyKill(id).catch(() => {});
       term.dispose();
     };
   }, [command]);
 
-  const done = state === "exited";
+  const done = state === "completed" || state === "exited";
   return (
     <div className="ag-term">
       <div className="ag-term-head">
