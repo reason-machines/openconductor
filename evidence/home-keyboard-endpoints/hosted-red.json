@@ -1,0 +1,69 @@
+{
+  "unit": "HOME-KEYBOARD-271-03",
+  "owner": "Conductor Rebuild",
+  "state": "RED",
+  "classification": "Intended endpoint assertions, not setup/import/dependency failure",
+  "head_sha": "4ce0a629c0d04665ff1fa2b6a59527f43786edcd",
+  "baseline_main": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "test_sha256": "3ae3852a44bdb5528117e32e73e966f074a6c0034e5f7c0d538433639f4cf922",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "workflow_run_id": 43047870046,
+  "check": {
+    "id": 130616593145,
+    "name": "Frontend unit tests (node --test)",
+    "status": "completed",
+    "conclusion": "failure",
+    "url": "https://github.com/reason-machines/openconductor/actions/runs/43047870046/job/130616593145",
+    "details_url": "https://github.com/reason-machines/openconductor/actions/runs/43047870046/job/130616593145",
+    "started_at": "2026-11-11T15:23:28Z",
+    "completed_at": "2026-11-11T15:25:08Z",
+    "app_slug": "github-actions",
+    "output": {
+      "title": null,
+      "summary": null,
+      "text": null,
+      "annotations_count": 3
+    }
+  },
+  "failures": [
+    {
+      "line": 285,
+      "text": "2026-11-11T15:23:45.4268905Z not ok 20 - Home key selects the first grouped workspace without activating it, and Enter opens that row"
+    },
+    {
+      "line": 313,
+      "text": "2026-11-11T15:23:45.5109380Z not ok 21 - End key selects the last grouped workspace without activating it, and Enter opens that row"
+    },
+    {
+      "line": 341,
+      "text": "2026-11-11T15:23:45.6273556Z not ok 22 - Home and End remain at their endpoints when repeated"
+    },
+    {
+      "line": 369,
+      "text": "2026-11-11T15:23:45.7558987Z not ok 23 - Home and End select a single row without opening it before Enter"
+    },
+    {
+      "line": 391,
+      "text": "2026-11-11T15:23:45.8309139Z not ok 24 - Home and End prevent default on an empty workspace list without activating anything"
+    },
+    {
+      "line": 413,
+      "text": "2026-11-11T15:23:45.9489192Z not ok 25 - Home and End prevent default with no search matches and leave Enter inactive"
+    }
+  ],
+  "suite": {
+    "tests": 2810,
+    "pass": 2804,
+    "fail": 6,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "control": "PASS: ArrowUp and ArrowDown retain clamped row navigation and Enter activation (test 26)",
+  "log_excerpt": "2026-11-11T15:23:45.1349163Z   duration_ms: 2.822958\n2026-11-11T15:23:45.1349834Z   type: 'test'\n2026-11-11T15:23:45.1350441Z   ...\n2026-11-11T15:23:45.1351615Z # Subtest: the popover hangs below its anchor with its right edge on it, shifted into the window\n2026-11-11T15:23:45.1353230Z ok 19 - the popover hangs below its anchor with its right edge on it, shifted into the window\n2026-11-11T15:23:45.1354229Z   ---\n2026-11-11T15:23:45.1354795Z   duration_ms: 0.38629\n2026-11-11T15:23:45.1355400Z   type: 'test'\n2026-11-11T15:23:45.1355949Z   ...\n2026-11-11T15:23:45.4249451Z # Subtest: Home key selects the first grouped workspace without activating it, and Enter opens that row\n2026-11-11T15:23:45.4268905Z not ok 20 - Home key selects the first grouped workspace without activating it, and Enter opens that row\n2026-11-11T15:23:45.4269427Z   ---\n2026-11-11T15:23:45.4269644Z   duration_ms: 342.915668\n2026-11-11T15:23:45.4269895Z   type: 'test'\n2026-11-11T15:23:45.4270881Z   location: '/home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:125:1'\n2026-11-11T15:23:45.4271523Z   failureType: 'testCodeFailure'\n2026-11-11T15:23:45.4272015Z   error: |-\n2026-11-11T15:23:45.4272463Z     Expected values to be strictly deep-equal:\n2026-11-11T15:23:45.4272996Z     + actual - expected\n2026-11-11T15:23:45.4273376Z     \n2026-11-11T15:23:45.4273705Z       [\n2026-11-11T15:23:45.4274027Z     +   'Workspace B'\n2026-11-11T15:23:45.4274691Z     -   'Workspace A'\n2026-11-11T15:23:45.4275061Z       ]\n2026-11-11T15:23:45.4275357Z     \n2026-11-11T15:23:45.4275673Z   code: 'ERR_ASSERTION'\n2026-11-11T15:23:45.4276074Z   name: 'AssertionError'\n2026-11-11T15:23:45.4276461Z   expected:\n2026-11-11T15:23:45.4276799Z     0: 'Workspace A'\n2026-11-11T15:23:45.4277170Z   actual:\n2026-11-11T15:23:45.4277508Z     0: 'Workspace B'\n2026-11-11T15:23:45.4278119Z   operator: 'deepStrictEqual'\n2026-11-11T15:23:45.4278549Z   stack: |-\n2026-11-11T15:23:45.4279825Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:132:12)\n2026-11-11T15:23:45.4281195Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-11T15:23:45.4281727Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n2026-11-11T15:23:45.4282135Z   ...\n2026-11-11T15:23:45.5092346Z # Subtest: End key selects the last grouped workspace without activating it, and Enter opens that row\n2026-11-11T15:23:45.5109380Z not ok 21 - End key selects the last grouped workspace without activating it, and Enter opens that row\n2026-11-11T15:23:45.5138239Z   ---\n2026-11-11T15:23:45.5148422Z   duration_ms: 113.504405\n2026-11-11T15:23:45.5183924Z   type: 'test'\n2026-11-11T15:23:45.5208954Z   location: '/home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:140:1'\n2026-11-11T15:23:45.5268469Z   failureType: 'testCodeFailure'\n2026-11-11T15:23:45.5308259Z   error: |-\n2026-11-11T15:23:45.5368453Z     Expected values to be strictly deep-equal:\n2026-11-11T15:23:45.5398497Z     + actual - expected\n2026-11-11T15:23:45.5458495Z     \n2026-11-11T15:23:45.5503247Z       [\n2026-11-11T15:23:45.5504097Z     +   'Workspace A'\n2026-11-11T15:23:45.5504665Z     -   'Workspace C'\n2026-11-11T15:23:45.5505150Z       ]\n2026-11-11T15:23:45.5505608Z     \n2026-11-11T15:23:45.5506093Z   code: 'ERR_ASSERTION'\n2026-11-11T15:23:45.5506619Z   name: 'AssertionError'\n2026-11-11T15:23:45.5507154Z   expected:\n2026-11-11T15:23:45.5507593Z     0: 'Workspace C'\n2026-11-11T15:23:45.5508281Z   actual:\n2026-11-11T15:23:45.5508708Z     0: 'Workspace A'\n2026-11-11T15:23:45.5509214Z   operator: 'deepStrictEqual'\n2026-11-11T15:23:45.5509731Z   stack: |-\n2026-11-11T15:23:45.5511038Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:145:12)\n2026-11-11T15:23:45.5512481Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-11T15:23:45.5513504Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-11T15:23:45.5514306Z   ...\n2026-11-11T15:23:45.6239018Z # Subtest: Home and End remain at their endpoints when repeated\n2026-11-11T15:23:45.6273556Z not ok 22 - Home and End remain at their endpoints when repeated\n2026-11-11T15:23:45.6274510Z   ---\n2026-11-11T15:23:45.6274988Z   duration_ms: 85.30311\n2026-11-11T15:23:45.6288818Z   type: 'test'\n2026-11-11T15:23:45.6293626Z   location: '/home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:153:1'\n2026-11-11T15:23:45.6318243Z   failureType: 'testCodeFailure'\n2026-11-11T15:23:45.6348335Z   error: |-\n2026-11-11T15:23:45.6378327Z     Expected values to be strictly deep-equal:\n2026-11-11T15:23:45.6379110Z     + actual - expected\n2026-11-11T15:23:45.6468383Z     \n2026-11-11T15:23:45.6528340Z       [\n2026-11-11T15:23:45.6595223Z     +   'Workspace A'\n2026-11-11T15:23:45.6668385Z     -   'Workspace C'\n2026-11-11T15:23:45.6758478Z       ]\n2026-11-11T15:23:45.6785523Z     \n2026-11-11T15:23:45.6822444Z   code: 'ERR_ASSERTION'\n2026-11-11T15:23:45.6848183Z   name: 'AssertionError'\n2026-11-11T15:23:45.6883961Z   expected:\n2026-11-11T15:23:45.6884519Z     0: 'Workspace C'\n2026-11-11T15:23:45.6911020Z   actual:\n2026-11-11T15:23:45.6934375Z     0: 'Workspace A'\n2026-11-11T15:23:45.6934990Z   operator: 'deepStrictEqual'\n2026-11-11T15:23:45.6935562Z   stack: |-\n2026-11-11T15:23:45.6936875Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:158:14)\n2026-11-11T15:23:45.6938996Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-11T15:23:45.6939989Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-11T15:23:45.6940786Z   ...\n2026-11-11T15:23:45.7479764Z # Subtest: Home and End select a single row without opening it before Enter\n2026-11-11T15:23:45.7558987Z not ok 23 - Home and End select a single row without opening it before Enter\n2026-11-11T15:23:45.7578894Z   ---\n2026-11-11T15:23:45.7642469Z   duration_ms: 117.210341\n2026-11-11T15:23:45.7657116Z   type: 'test'\n2026-11-11T15:23:45.7658615Z   location: '/home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:165:1'\n2026-11-11T15:23:45.7659940Z   failureType: 'testCodeFailure'\n2026-11-11T15:23:45.7660570Z   error: |-\n2026-11-11T15:23:45.7661201Z     Expected values to be strictly equal:\n2026-11-11T15:23:45.7661871Z     \n2026-11-11T15:23:45.7662413Z     false !== true\n2026-11-11T15:23:45.7663036Z     \n2026-11-11T15:23:45.7663530Z   code: 'ERR_ASSERTION'\n2026-11-11T15:23:45.7664117Z   name: 'AssertionError'\n2026-11-11T15:23:45.7664707Z   expected: true\n2026-11-11T15:23:45.7665255Z   actual: false\n2026-11-11T15:23:45.7665815Z   operator: 'strictEqual'\n2026-11-11T15:23:45.7666384Z   stack: |-\n2026-11-11T15:23:45.7667962Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:171:14)\n2026-11-11T15:23:45.7669574Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-11T15:23:45.7670663Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-11T15:23:45.7671520Z   ...\n2026-11-11T15:23:45.8226997Z # Subtest: Home and End prevent default on an empty workspace list without activating anything\n2026-11-11T15:23:45.8309139Z not ok 24 - Home and End prevent default on an empty workspace list without activating anything\n2026-11-11T15:23:45.8330401Z   ---\n2026-11-11T15:23:45.8331035Z   duration_ms: 118.420614\n2026-11-11T15:23:45.8331644Z   type: 'test'\n2026-11-11T15:23:45.8332970Z   location: '/home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:179:1'\n2026-11-11T15:23:45.8334343Z   failureType: 'testCodeFailure'\n2026-11-11T15:23:45.8335014Z   error: |-\n2026-11-11T15:23:45.8335658Z     Expected values to be strictly equal:\n2026-11-11T15:23:45.8336324Z     \n2026-11-11T15:23:45.8336841Z     false !== true\n2026-11-11T15:23:45.8337387Z     \n2026-11-11T15:23:45.8338146Z   code: 'ERR_ASSERTION'\n2026-11-11T15:23:45.8338773Z   name: 'AssertionError'\n2026-11-11T15:23:45.8339404Z   expected: true\n2026-11-11T15:23:45.8339955Z   actual: false\n2026-11-11T15:23:45.8340519Z   operator: 'strictEqual'\n2026-11-11T15:23:45.8341113Z   stack: |-\n2026-11-11T15:23:45.8342531Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:184:14)\n2026-11-11T15:23:45.8344172Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-11T15:23:45.8345271Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-11T15:23:45.8346213Z   ...\n2026-11-11T15:23:45.9448743Z # Subtest: Home and End prevent default with no search matches and leave Enter inactive\n2026-11-11T15:23:45.9489192Z not ok 25 - Home and End prevent default with no search matches and leave Enter inactive\n2026-11-11T15:23:45.9518369Z   ---\n2026-11-11T15:23:45.9548540Z   duration_ms: 92.579268\n2026-11-11T15:23:45.9549706Z   type: 'test'\n2026-11-11T15:23:45.9585067Z   location: '/home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:194:1'\n2026-11-11T15:23:45.9608358Z   failureType: 'testCodeFailure'\n2026-11-11T15:23:45.9638243Z   error: |-\n2026-11-11T15:23:45.9638933Z     Expected values to be strictly equal:\n2026-11-11T15:23:45.9641407Z     \n2026-11-11T15:23:45.9641950Z     false !== true\n2026-11-11T15:23:45.9642855Z     \n2026-11-11T15:23:45.9643378Z   code: 'ERR_ASSERTION'\n2026-11-11T15:23:45.9643972Z   name: 'AssertionError'\n2026-11-11T15:23:45.9644531Z   expected: true\n2026-11-11T15:23:45.9645044Z   actual: false\n2026-11-11T15:23:45.9645571Z   operator: 'strictEqual'\n2026-11-11T15:23:45.9646164Z   stack: |-\n2026-11-11T15:23:45.9647555Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/allWorkspacesKeyboardEndpoints.test.ts:201:14)\n2026-11-11T15:23:45.9660293Z     async Test.run (node:internal/test_runner/test:1054:7)\n2026-11-11T15:23:45.9661475Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n2026-11-11T15:23:45.9662417Z   ...\n2026-11-11T15:23:45.9663520Z # Subtest: ArrowUp and ArrowDown retain clamped row navigation and Enter activation\n2026-11-11T15:23:45.9664952Z ok 26 - ArrowUp and ArrowDown retain clamped row navigation and Enter activation\n2026-11-11T15:23:45.9665908Z   ---\n2026-11-11T15:23:45.9666532Z   duration_ms: 118.83947\n2026-11-11T15:23:45.9667205Z   type: 'test'\n2026-11-11T15:23:45.9668003Z   ...\n2026-11-11T15:23:45.9939575Z ",
+  "limits": [
+    "Hosted mounted production-component callbacks only; no DOM or native dispatch.",
+    "Local Node/test/build/install/app/browser/native and real Conductor execution NOT_RUN.",
+    "Frontend typecheck + build also failed in its duplicate unit-test phase with the same six endpoint failures."
+  ]
+}

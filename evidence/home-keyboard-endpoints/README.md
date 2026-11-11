@@ -39,9 +39,11 @@ The reference also prevents empty Enter events. The pre-existing OpenConductor e
 - PASS: received receipt hash and all seven supplied span hashes and range lengths, checked with Python source-data operations only.
 - PASS: `git diff --check` before initial publication.
 - NOT_RUN: local Node, install, test, build, app, browser, and native execution, explicitly prohibited for this deliverable.
-- PENDING: intended hosted RED from the normal PR `Frontend unit tests` step, `node --test "src/**/*.test.ts"`.
-- PENDING: unchanged-input hosted GREEN after the endpoint correction, full exact-head checks, merge, and consuming-main package coordination.
+- RED observed: automatic hosted [Frontend unit tests](https://github.com/reason-machines/openconductor/actions/runs/43047870046/job/130616593145) at test-only head `4ce0a629c0d04665ff1fa2b6a59527f43786edcd`. All six endpoint cases reached intended selection or `defaultPrevented` assertion failures. The ArrowUp and ArrowDown control passed. Full suite: 2,810 tests, 2,804 passed, six failed, none skipped or cancelled. [Preserved RED receipt and failure excerpts](./hosted-red.json).
+- The Frontend typecheck + build check also failed in its unit-test phase with the same six endpoint failures. This is not a TypeScript compiler or import failure.
+- Correction: handle Home and End before the empty-list guard, prevent default, and select the first or final grouped row only if it exists. Existing ArrowUp, ArrowDown, and Enter branches remain unchanged.
+- PENDING: unchanged-input hosted GREEN after this endpoint correction, full exact-head checks, merge, and consuming-main package coordination.
 
-Dependency, import, or setup failures are INVALID as a behavioral RED. Product code remains unchanged for the initial ready PR. The correction waits for actual intended endpoint assertion failures. No CI dispatch or rerun is requested.
+Dependency, import, or setup failures are INVALID as a behavioral RED. No harness or assertion changes were needed. The frozen test and retained source receipt hashes are unchanged. No CI dispatch or rerun is requested.
 
 No screenshot is supplied because browser, native, and real Conductor execution are NOT_RUN. A passing component callback test must not be reported as screenshot, browser, or native parity evidence.
