@@ -19,17 +19,19 @@ The shared mouse helper sends `detail: 1` on mousedown, mouseup, and click. The 
 ## Verification at publication
 
 - Passed on Reason Cloud. Both retained original asset hashes and all nine source spans rebound byte-for-byte.
-- Passed. The three baseline source snapshots match main `47463ddaf959a7ee394d3d64a5b22e3eccbda74c`.
+- Passed. The three baseline source snapshots match both original main `47463ddaf959a7ee394d3d64a5b22e3eccbda74c` and requalified main `37a76b8327914a85c0127645858b68fbf821787e`, which contains the shared zoom correction from #1092.
 - Passed. The fixture hash and eight-case count match the reviewed packet.
 - Passed. `git diff --check` and the product-source comparison against that main commit.
-- Not run yet. Hosted primitive control and product DOM regressions. The initial ready PR contains tests and proof only, plus the existing CI step's single-line chat-search glob change.
+- Passed. The [hosted baseline](https://github.com/reason-machines/openconductor/actions/runs/43109491798/job/130821432006) at exact head `2923f5f8635232c3c10143c55a22a3d5cca9ae81` qualified the real primitive control, initial four-chip/trigger control, and fitting-five control.
+- Failed as intended. Five product cases reached missing-trigger or missing-popup assertions. The first decisive error was `+2 more stays available while its popup is open`. All three existing transcript cases passed. The retained excerpt is in `baseline-red.txt`; `runtime.json` records the exact head, run, job, fixture identity, and limits.
+- Pending. Replay of the unchanged fixture after the scoped product fix. The candidate replaces inline expansion with a controlled real Popover and source-matched popup styling. It does not add a selection-close handler.
 
 Run the static proof with retained original assets available:
 
 ```bash
 python3 evidence/chat/recent-chip-overflow/verify_source.py \
   --original-dir .rea-work/retained-reference \
-  --baseline-ref 47463ddaf959a7ee394d3d64a5b22e3eccbda74c
+  --baseline-ref 37a76b8327914a85c0127645858b68fbf821787e
 ```
 
 The ordinary automatic CI step supplies `ONBOARDING_DOM_DEPS` and runs:
@@ -40,6 +42,6 @@ node --test --test-reporter=tap tests/chat-search/*.dom.test.mjs
 
 ## Limits
 
-No local Node, React, browser, native app, provider, CLI execution, or installation ran. There is no screenshot because visible execution is outside this lease. Static source proof does not establish runtime behavior or native geometry. A hosted failure counts as product RED only if the real primitive control passes and the failure reaches the intended product assertion. No product fix may precede that result.
+No local Node, React, browser, native app, provider, CLI execution, or installation ran. There is no screenshot because visible execution is outside this lease. Static source proof does not establish runtime behavior or native geometry. The hosted baseline qualifies product RED because the real primitive control passed and the five failures reached the intended assertions. Candidate behavior still requires hosted replay of the identical frozen fixture.
 
 Workspace transcript production, recent-chat eligibility policy, shared Popover code, attachments, backend behavior, and frozen #847 are outside this change. A separate owner handles the shared zoom failure through #1092. Every exact-head check must positively pass before a merge request, including optional checks.

@@ -108,13 +108,13 @@
     }
   ],
   "counterexample": "With six eligible source chats, click +2 more. Current source removes the trigger and appends two chips inline; original source retains the trigger and opens a separate dismissible popup. This is a static counterexample, not an observed UI run.",
-  "qualified_main": "47463ddaf959a7ee394d3d64a5b22e3eccbda74c",
+  "qualified_main": "37a76b8327914a85c0127645858b68fbf821787e",
   "source_packet_sha256": "b9e0fa33d9b193e90acf1ee4dae80b7d65483444100d2f682f38cfdfbeb48bb8",
   "fixture": {
     "path": "tests/chat-search/recentChatOverflow.dom.test.mjs",
     "sha256": "6f77ff55ecbeb1519e77d6599368492a901f17156184903ddcfe42bb83c6472d",
     "cases": 8,
-    "state": "PREPARED_NOT_RUN",
+    "state": "HOSTED_BASELINE_RED_CANDIDATE_PENDING",
     "revision": "pre-freeze source-review corrections"
   },
   "baseline_sources": [
@@ -140,12 +140,14 @@
   "runtime": "No local Node/browser/native/provider execution; automatic hosted checks only.",
   "native_acceptance": "NOT_RUN",
   "requalification": {
-    "baseline_ref": "47463ddaf959a7ee394d3d64a5b22e3eccbda74c",
+    "baseline_ref": "37a76b8327914a85c0127645858b68fbf821787e",
+    "earlier_qualified_main": "47463ddaf959a7ee394d3d64a5b22e3eccbda74c",
     "archive_sha256": "906710bbea39698957e0801e43dd8ac5f20ee2e8170a58f24e7453b2e0e5cf86",
     "fixture_unchanged": true,
     "full_asset_rebind": "PASS",
     "source_policy_and_workspace_producer": "UNCHANGED",
-    "hosted_dom": "NOT_RUN",
+    "hosted_dom": "BASELINE_RED_5_INTENDED_FAILURES_3_CONTROLS_PASS",
+    "runtime_receipt": "runtime.json",
     "native": "NOT_RUN"
   }
 }
