@@ -75,6 +75,7 @@ import { clearLocalChat, type LocalChatReplacement } from "../features/chat/loca
 import { addAttachment, revertedNote, useWorkspaceChatAttach, type ComposerAttach, type TextAttachment } from "../features/diff/chatAttachment";
 import { attachmentPath, randomDir, type ComposerAttachment } from "../features/chat/composerAttachments.ts";
 import { composerSessionFor } from "../features/chat/composerSession.ts";
+import { useLocalPlanMode } from "../features/chat/useLocalPlanMode.ts";
 import { terminalOutputFiles, terminalOutputRequest } from "../features/chat/composerTerminal.ts";
 import { draftAttachmentsApi } from "../features/draft-attachments/api.ts";
 
@@ -252,10 +253,6 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   // The "/" menu: Conductor's built-ins for the agent, then the commands and
   // skills the agent reports for this folder (agent_commands backend).
   const reported = useAgentCommands(agentId, cwd);
-  const slashCommands = useMemo(
-    () => commandSet({ agent: COMPOSER_AGENT[agentId], agentCommands: reported?.slashCommands, skills: reported?.skills }),
-    [agentId, reported],
-  );
   /** The chat id on the agent's side. */
   const runId = agent.chatId(chatId);
   // Codex's snapshots carry its pending approvals and consent requests; the others' carry permission requests.
@@ -281,6 +278,12 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<ComposerEditorHandle>(null);
   const running = transcript.activeTurn !== null;
+  const planMode = useLocalPlanMode(chatId, workspace.id, agentId === "claude", workspace.status === "archived" || running || queue.status !== "idle" || queue.items.length > 0 || permissions.length > 0, setAttachError);
+  const slashCommands = useMemo(
+    () => commandSet({ agent: COMPOSER_AGENT[agentId], planMode, agentCommands: reported?.slashCommands, skills: reported?.skills }),
+    [agentId, reported, planMode?.isPlanMode],
+  );
+  useKeybindings({ "chat.togglePlanMode": planMode ? () => planMode.onToggle() : undefined });
   // Only the workspace's own chat counts as the agent working; a review chat does not.
   useEffect(() => {
     if (main) onRunningChange?.(running);
@@ -699,15 +702,21 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             <span className="oc-review-model">{review.modelLabel}</span>
           ) : (
             // A review chat keeps its model. The agent changes only while no turn runs and no message waits, so queued messages never move to another agent.
-            <ChatModelPicker chatId={chatId} agent={agentId} onAgentChange={reason && queue.status === "idle" && queue.items.length === 0 ? pickAgent : undefined} />
+            <ChatModelPicker chatId={chatId} agent={agentId} onAgentChange={reason && queue.status === "idle" && queue.items.length === 0 && (agentId !== "claude" || (planMode && !planMode.isPlanMode && !planMode.disabled)) ? pickAgent : undefined} />
           )
         }
+        planMode={planMode}
         slashCommands={slashCommands}
         onCommand={(text) => {
           // Agent commands and skills shadow the built-ins.
           const cmd = parseSlashCommand(text, isKnownCommand);
           if (!cmd || slashCommands.some((c) => c.name === cmd.name && (c.effect === "agent" || c.effect === "skill"))) return false;
           if (slashCommands.some((c) => c.name === cmd.name && c.effect === "pick_linked_directory")) { void openLinks(); return true; }
+          if (cmd.name === "plan" && planMode) {
+            if (planMode.disabled) setAttachError("Wait for the current Claude Code turn to end before changing Plan mode.");
+            else planMode.onToggle();
+            return true;
+          }
           if (cmd.name === "clear" && (agentId === "claude" || agentId === "codex")) {
             if (clearing.current) return true;
             if (workspace.status === "archived" || running || queue.status !== "idle" || queue.items.length > 0 || permissions.length > 0 || approvals.length > 0 || consents.length > 0) {

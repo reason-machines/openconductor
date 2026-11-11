@@ -150,6 +150,7 @@ fn per_chat_options_reach_launch_and_changes_resume_only_that_chat() {
     let mut options = ChatOptions {
         model: Some("picked-model".into()),
         effort: Some("high".into()),
+        ..ChatOptions::default()
     };
     assert_eq!(h.runner.prompt_with_options("picked", "first", &[], &options), TurnEnd::Completed);
     assert_eq!(h.runner.prompt_with_options("picked", "same", &[], &options), TurnEnd::Completed);
@@ -182,6 +183,42 @@ fn per_chat_options_reach_launch_and_changes_resume_only_that_chat() {
     assert!(args[3].contains("--model next-model") && args[3].contains("--effort low"), "{args:?}");
     assert!(args[4].contains("--model next-model") && !args[4].contains("--effort"), "{args:?}");
     assert!(!args[5].contains("--model") && !args[5].contains("--effort"), "{args:?}");
+}
+
+#[test]
+fn plan_mode_restarts_idle_sessions_with_stdio_approvals_and_preserves_resume_identity() {
+    use crate::agent::PermissionMode;
+    for normal in [PermissionMode::Default, PermissionMode::BypassPermissions] {
+        let h = harness();
+        h.runner.open_chat("plan", &cwd(), Some("saved-plan-session".into()));
+        let mut options = ChatOptions { permission_mode: Some(PermissionMode::Plan), ..ChatOptions::default() };
+        assert_eq!(h.runner.prompt_with_options("plan", "first", &[], &options), TurnEnd::Completed);
+        assert_eq!(h.runner.prompt_with_options("plan", "same mode", &[], &options), TurnEnd::Completed);
+        let args = h.args();
+        assert_eq!(args.len(), 1);
+        assert!(args[0].contains("--permission-mode plan"), "{args:?}");
+        assert!(args[0].contains("--permission-prompt-tool stdio"), "{args:?}");
+        assert!(args[0].contains("--resume saved-plan-session"), "{args:?}");
+        options.permission_mode = Some(normal);
+        assert_eq!(h.runner.prompt_with_options("plan", "execute", &[], &options), TurnEnd::Completed);
+        let args = h.args();
+        assert_eq!(args.len(), 2);
+        assert!(args[1].contains("--resume fake-1"), "{args:?}");
+        assert!(args[1].contains(&format!("--permission-mode {}", normal.as_str())), "{args:?}");
+        assert_eq!(args[1].contains("--permission-prompt-tool stdio"), normal == PermissionMode::Default);
+    }
+}
+
+#[test]
+fn an_announced_or_running_turn_is_busy_for_plan_mutations() {
+    let h = harness();
+    h.runner.open_chat("plan", &cwd(), None);
+    assert!(!h.runner.busy("plan"));
+    h.runner.expect_prompt("plan");
+    assert!(h.runner.busy("plan"));
+    assert_eq!(h.runner.prompt("plan", "hello"), TurnEnd::Completed);
+    assert!(!h.runner.busy("plan"));
+    assert!(!h.runner.approves_plan("plan", "missing", &super::interact::Answer::Plan { approved: true, feedback: None }));
 }
 
 #[test]
