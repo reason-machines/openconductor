@@ -1,7 +1,7 @@
 {
   "unit": "ICON-OPEN-IN-NUMBERS-15",
   "baseline_main": "524c598b34157483e669167ed1f9032cc02fff18",
-  "status": "TEST_FIRST_PRODUCT_UNCHANGED_HOSTED_RED_PENDING",
+  "status": "ACTUAL_RED_OBSERVED_THREE_GUARD_REPAIR_GREEN_PENDING",
   "reference_asset": {
     "path": ".oc-tmp/gce-retained-source/renderApp-D_fmY7hW.js",
     "bytes": 11600457,

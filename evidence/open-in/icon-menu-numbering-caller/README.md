@@ -1,6 +1,6 @@
 # Icon-only Open in menus omit numbered selection
 
-Conductor Rebuild owns ICON-OPEN-IN-NUMBERS-15. This increment adds a frozen component regression before the three-expression product repair. It is not behavioral RED or delivered parity yet.
+Conductor Rebuild owns ICON-OPEN-IN-NUMBERS-15. Hosted CI reproduced four intended component failures with seven passing controls before the three-expression product repair. The repair is applied; unchanged-fixture GREEN and delivery remain pending.
 
 ## Retained original source
 
@@ -18,13 +18,13 @@ REA limitations remain explicit. The retained caller query returned zero relatio
 
 `src/features/openIn/iconMenuNumbering.test.ts` mounts the actual `OpenInButton` and loads the actual `apps.ts`. It captures outgoing keybinding registrations and IPC at their boundaries. Animation, surrounding icons, tooltip wrappers, and preference persistence are test doubles.
 
-The eleven fixed cases cover both Settings paths. Four assertions are predicted to fail before the repair: icon app/copy number badges and active numbered registrations at each path. Seven controls preserve pointer launch/copy payloads, split-menu badges, numbered app/copy selection, default-app shortcut hints for both variants, and the nine-row cap. These predictions are not observed failures.
+The eleven fixed cases cover both Settings paths. [Hosted baseline 64c034c8](https://github.com/reason-machines/openconductor/actions/runs/43084203604/job/130744224553) failed exactly four intended assertions: icon app/copy number badges and active numbered registrations at each path. All seven controls passed, preserving pointer launch/copy payloads, split-menu badges, numbered app/copy selection, default-app shortcut hints for both variants, and the nine-row cap. TypeScript passed in job 130744224519. [The exact RED receipt](baseline-red.json) records the cases and boundary.
 
 The normal hosted frontend unit command discovers the new file without workflow edits:
 
 `node --test "src/**/*.test.ts"`
 
-The focused command is `node --test src/features/openIn/iconMenuNumbering.test.ts`. No local Node, browser, native, provider, workflow dispatch, or rerun is admitted for this unit. Hosted execution, not source inspection, must establish actual RED before the product change. The eleven-case file stays byte-identical for GREEN.
+The focused command is `node --test src/features/openIn/iconMenuNumbering.test.ts`. No local Node, browser, native, provider, workflow dispatch, or rerun is admitted for this unit. Hosted execution established actual RED before the product change. The eleven-case file stays byte-identical for GREEN. The product diff adds only three split guards for numbered registration, app badges, and Copy path badges.
 
 ## Static verification
 
