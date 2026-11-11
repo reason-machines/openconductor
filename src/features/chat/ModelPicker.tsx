@@ -6,7 +6,7 @@
 // Cycle effort shortcut. ⌘/ opens it, ⌘⇧/ cycles the effort, ⌘⇧E toggles Fast.
 
 import { ShortcutHint, Tooltip } from "../../components/ui/Tooltip.tsx";
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { usePresence } from "../../components/motion/usePresence.ts";
 import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
@@ -86,6 +86,11 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
       return words.every((word) => fields.some((field) => field.includes(word)));
     }) : list;
   }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
+
+  useLayoutEffect(() => {
+    const rows = root.current?.querySelector(".oc-model-list");
+    if (rows) rows.scrollTop = 0;
+  }, [query]);
 
   const changeQuery = (next: string) => {
     if (!next.trim()) setSearchHeight(undefined);
