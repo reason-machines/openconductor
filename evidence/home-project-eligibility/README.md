@@ -2,11 +2,11 @@
 
 Conductor Rebuild. Source qualification at main `15e87440daa703030f4c402e7a41b9221a149768`.
 
-## Source candidate
+## Reproduced component mismatch
 
-The retained Conductor 0.87.6 Home caller derives project choices from the repository IDs of all scoped workspaces before applying the archive filter. OpenConductor derives them from sidebar workspace arrays, which deliberately exclude archived records. With two linked repositories containing only archived workspaces, the source predicts visible archived Home rows but no Projects control in OpenConductor.
+The retained Conductor 0.87.6 Home caller derives project choices from the repository IDs of all scoped workspaces before applying the archive filter. OpenConductor derived them from sidebar workspace arrays, which deliberately exclude archived records. The hosted regression reproduced the missing Projects control for two archived-only linked repositories, a mixed pair, and archived rows hidden by the active filter.
 
-This is a source candidate until the ordinary hosted component regression executes. No product code changes are included in the first publication.
+The regression-only publication preceded every product edit. This is mounted component proof against retained shipped source, not observed Conductor or native parity.
 
 ## Retained reference and current consumer
 
@@ -28,11 +28,21 @@ The seven cases cover two archived-only linked repositories, mixed live and arch
 
 The fixture is frozen in `fixture-v1.ts.txt` and `fixture.sha256`. A valid failing-before result must reach the missing-control assertions while the single, live, and closed-repository controls pass. Setup failures are not behavior proof. The same fixture must pass after any correction.
 
+## Correction
+
+`reposWithWorkspaces` and `showProjectFilter` accept the existing typed archived-workspace rows. Both choices and visibility include represented linked repositories while preserving repository order and excluding empty or closed repositories. Home reads that archive data independently of row visibility. The existing row filter still decides whether archived rows appear.
+
+The correction touches only the two eligibility helpers, the Home archive-read condition, and their two caller arguments. The seven-case regression, source packet, backend, menu behavior, keyboard handling, and other frozen fixtures remain unchanged. Laziness Protocol kept the existing archive reader and shared helper instead of adding another database query or state model.
+
+## Hosted failing-before proof
+
+Automatic CI [43097731266, unit job 130783587876](https://github.com/reason-machines/openconductor/actions/runs/43097731266/job/130783587876) ran `node --test "src/**/*.test.ts"` at regression-only head `7e58a8a1fba2f44f1004d54a16f3b5fad469c70d`. Three cases reached the intended missing-control assertion, `0 !== 1`. Four controls passed. The complete suite reported 3,107 passed and exactly three failed, with no skipped or cancelled tests. Checkout, Node setup, and `npm ci` passed. [The receipt](hosted-red.json) and [seven-case log excerpt](hosted-red.log.txt) retain that result.
+
 ## Checks and limits
 
-- Passed static qualification on Reason Cloud. Both full original asset digests, seven complete declarations, nine baseline file pins, and 25 source anchors matched.
-- Passed `git diff --check`.
-- Hosted regression is pending. The ordinary frontend workflow already includes `src/**/*.test.ts`; no workflow or dependency changes are needed.
+- Passed static qualification on Reason Cloud. Both full original asset digests, seven complete declarations, nine baseline file pins, and 25 source anchors matched before the correction. Fresh main `838ab2a1c76d11f8048a89c9d4c01ba822db2204` retained all nine pinned source files unchanged.
+- Passed `git diff --check` and `sha256sum -c evidence/home-project-eligibility/fixture.sha256` after the correction.
+- Hosted failing-before proof passed as described above. Passing-after execution and every exact-head workflow are pending. The ordinary frontend workflow already includes `src/**/*.test.ts`; no workflow or dependency changes were made.
 - Local Node, Rust, application, browser, provider, native, and installed-package execution were not run. No dispatch or rerun was started.
 - There is no screenshot because this lane has no UI execution admission. A mounted component result will not prove physical clicks, popup layout, native event delivery, filesystem or database mutation, or side-by-side parity.
 - The existing REA semantic-renderer heap-exhaustion limitation remains. This pass reuses retained real-app assets and their REA provenance; it does not claim a new REA engine run.
