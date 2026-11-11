@@ -1,0 +1,182 @@
+{
+  "producer": "Conductor Rebuild",
+  "baseline_commit": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "evidence_type": "Retained shipped Conductor 0.87.6 source only, REA extraction from sven m5 max; no extracted-code execution",
+  "rea_limitation": "Conductor 0.87.6 shipped assets retained from REA extraction on sven m5 max. ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2 records renderer semantic-analysis heap exhaustion; static extraction only.",
+  "assets": [
+    {
+      "name": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    {
+      "name": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  ],
+  "reference_spans": [
+    {
+      "name": "Joi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        173776,
+        173984
+      ],
+      "sha256": "9400ed2135c1563a622cc2167b36240572eafbce087a49df8ff9207971746874",
+      "bytes": 208,
+      "path": "spans/Joi.txt",
+      "file": "Joi.txt"
+    },
+    {
+      "name": "nIn",
+      "asset": "renderer",
+      "utf8_half_open": [
+        173984,
+        174048
+      ],
+      "sha256": "95e982ba1d991a1404db4dde4f1e6c1ced0d66007e3b295f9378a96cc3915361",
+      "bytes": 64,
+      "path": "spans/nIn.txt",
+      "file": "nIn.txt"
+    },
+    {
+      "name": "Pga",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10733921,
+        10733992
+      ],
+      "sha256": "577ecb1265b4c3745a64a8eed5ba67237e0e91648f660d9b17fa9f8c14590a31",
+      "bytes": 71,
+      "path": "spans/Pga.txt",
+      "file": "Pga.txt"
+    },
+    {
+      "name": "E6t",
+      "asset": "index",
+      "utf8_half_open": [
+        414482,
+        414551
+      ],
+      "sha256": "c25e06bbd9b563c5d32d65740bf1b88b5e0aef56271bca2df08a3593cd7d5822",
+      "bytes": 69,
+      "path": "spans/E6t.txt",
+      "file": "E6t.txt"
+    },
+    {
+      "name": "A6t",
+      "asset": "index",
+      "utf8_half_open": [
+        414551,
+        414622
+      ],
+      "sha256": "f9f8714be2b00001704dabbfd84ffad2ef46fac2576b662f49488c44373dd1bd",
+      "bytes": 71,
+      "path": "spans/A6t.txt",
+      "file": "A6t.txt"
+    },
+    {
+      "name": "C2",
+      "asset": "index",
+      "utf8_half_open": [
+        3078819,
+        3079114
+      ],
+      "sha256": "82a863084d02ea5f64a1cb6da7faf25e77351f218431f3ecc6d9c053a5a429cc",
+      "bytes": 295,
+      "path": "spans/C2.txt",
+      "file": "C2.txt"
+    },
+    {
+      "name": "$Wt",
+      "asset": "index",
+      "utf8_half_open": [
+        3314068,
+        3314889
+      ],
+      "sha256": "5f2a3040900ebda989278d778b0907b6c3a341e64452c10f9718b566261701d3",
+      "bytes": 821,
+      "path": "spans/$Wt.txt",
+      "file": "$Wt.txt"
+    },
+    {
+      "name": "row-branch_prefix_type",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10728348,
+        10729848
+      ],
+      "sha256": "ade75753f7efe5c4854fbe526777b973f8d400b136c7015ab438b96c151650a3",
+      "bytes": 1500,
+      "path": "spans/row-branch_prefix_type.txt",
+      "file": "row-branch_prefix_type.txt"
+    },
+    {
+      "name": "prefix-custom-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        64142,
+        64151
+      ],
+      "sha256": "3338282a1434e181b3581b52d1007a48286fcc38ef1d256743f2f430106c386f",
+      "bytes": 9,
+      "path": "spans/prefix-custom-import.txt",
+      "file": "prefix-custom-import.txt"
+    },
+    {
+      "name": "prefix-type-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        64152,
+        64161
+      ],
+      "sha256": "4eac9c11facdc2d409f3e750f5ac69765f8482295ed3838bbe26bbe76ce4de58",
+      "bytes": 9,
+      "path": "spans/prefix-type-import.txt",
+      "file": "prefix-type-import.txt"
+    },
+    {
+      "name": "prefix-custom-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3490159,
+        3490168
+      ],
+      "sha256": "baa0a56e0b6d6c70c65e5d520d6951b8fac62421ad0005e0d49a4af7a49b1e7b",
+      "bytes": 9,
+      "path": "spans/prefix-custom-export.txt",
+      "file": "prefix-custom-export.txt"
+    },
+    {
+      "name": "prefix-type-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3490809,
+        3490818
+      ],
+      "sha256": "f89725ae758131ccff91fc0564c56ee30d46fb7206c3735c393759cf6a7b5ec7",
+      "bytes": 9,
+      "path": "spans/prefix-type-export.txt",
+      "file": "prefix-type-export.txt"
+    }
+  ],
+  "node_fixture_sha256": "8b04f0fbe90ddd1d241ff2e0495263193868f27f2e4fc2c5df7e389c503b3d30",
+  "rust_fixture_sha256": "64eb03864e32c7d4108f133cc45366c9886f0edf47dd672f3d6cd9980a5ada0c",
+  "baseline_sources": {
+    "src/settings/model.ts": "9c718b4561c5f9925b5101ca941a6b1f3b017950ddf7a5231f1488659b40254f",
+    "src/settings/types.ts": "6bccb1442bf4fc9fa31c019d0f22f3937327a72fb17fbace2a84b3ca9ee89936",
+    "src/workspace/naming.ts": "5a1558036b9f13ab3ccbc188be1d5d621b3639c6be270808558b2b91826a0535",
+    "src-tauri/src/workspace/naming.rs": "1ebbdd0603eed34a393c8c42eaf5334c65b5ae6714228757747d65b8ea128145",
+    "src/settings/GitPage.tsx": "60aeff4b79509b944d544ec2a4d8e72ae3f69b3662ccfb3dddfdad6fedd902fa",
+    "src/settings/controls.tsx": "ac772d2f0c77f685d5d0c92f2a12b9f2239a8b196a9cf8a20cffda74fc7a13b7",
+    "src/settings/prefs.ts": "c29549a90cd52e0b69d1381fead957aec44d83ee971751bd2aee5b8a7981d663",
+    "src/workspace/createFlow.ts": "c8c44d5552fdbf1d91ec4f65496ba820ee30cb7895c34944f228e76ce95e4a1c"
+  },
+  "limits": [
+    "Settings native input/blur and visual parity unrun",
+    "C2/$Wt is branch-conversion source, not an observed native create execution",
+    "No new runtime, provider, persistence, or frozen queue changes"
+  ],
+  "input_fixture_sha256": "7e378f757d7838440955733c9d1d9b907a64fd6a80b03b26768f5e7201f45e26"
+}

@@ -1,0 +1,1204 @@
+{
+  "status": "FRONTEND_RED_GREEN_AND_PRESERVATION_PASSED",
+  "original_pair": {
+    "status": "GENUINE_BEHAVIORAL_RED_TWO_PROVIDERS",
+    "baseline_main": "385ccb5229f56ff33903f034352eaa9827c40f0e",
+    "checked_default_head": "11a5f73df99faa0d33bcc0c19b78606bc2c0b992",
+    "run": {
+      "started_utc": "2026-11-11T08:42:21.100168+00:00",
+      "finished_utc": "2026-11-11T08:42:22.971782+00:00",
+      "command": [
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        ".rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts"
+      ],
+      "wall_seconds": 1.872,
+      "process_exit": 1,
+      "limit_reason": null,
+      "wall_limit_seconds": 95.0,
+      "max_added_bytes": 67108864,
+      "initial_bytes": 36186679,
+      "final_bytes": 36189229,
+      "peak_observed_bytes": 36189229,
+      "added_bytes": 2550,
+      "peak_added_bytes": 2550,
+      "process_terminal": true
+    },
+    "fixture": {
+      "fixture_head": "f442590fc0d50fb94d1f734172f4c7979f366f5e",
+      "fixture_bytes": 16012,
+      "fixture_sha256": "6b1b9245ce1e996359db4f87286278c907cb280fa85eeccbd5867660cdce58fc",
+      "prior_immutable_sha256": "aad82aad2f9d7e6afc37c24d415af423a51d5c18fecf151df8cae4f28a378319",
+      "scenario_assertion_tail_bytes": 1174,
+      "scenario_assertion_tail_sha256": "c801e7207ecb18f7e1b916780e25705c55903cc0b98bbd74097371e8680c1c0b",
+      "scenario_assertion_tail_identical": true,
+      "full_replacement_patch_sha256": "4ab54f7e8c33c50e151456451389784751acfb5ecf70ecf5c17ab54223e7caf7",
+      "candidate_applied": false,
+      "runtime_started": false
+    },
+    "static_import_audit": {
+      "method": "conservative static literal import/export graph matching frozen override and TSX boundaries; type-only or erased unused imports may be over-approximated, not a runtime trace",
+      "fixture_sha256": "6b1b9245ce1e996359db4f87286278c907cb280fa85eeccbd5867660cdce58fc",
+      "source_files": [
+        {
+          "path": "src/components/WorkspaceView.tsx",
+          "sha256": "41a3fb802ef166f335a9d329889fd92a4509c7c061d4f583d5557d1d26034fba"
+        },
+        {
+          "path": "src/features/chat/Composer.tsx",
+          "sha256": "7f00ce6d2c0acb1df02428ec9874f91c160e9f5f480fab202486c24fe370ccbd"
+        },
+        {
+          "path": "src/features/chat/agentBinaries.ts",
+          "sha256": "6f68dfbab5c27ebf08edd77c653b82b8ef24c5d16805646607821ebadf05c246"
+        },
+        {
+          "path": "src/features/chat/agentChoice.ts",
+          "sha256": "380e2758b5a548f56227eed9b107b97b89b6a64d0b0d9c807abe6612219572af"
+        },
+        {
+          "path": "src/features/chat/agentSignIn.ts",
+          "sha256": "0ac95bb2d28e00a0108b274374e3b35b7e1c547508cf027cd524eb2cc546a3f7"
+        },
+        {
+          "path": "src/features/chat/chatAgentChoice.ts",
+          "sha256": "205d78402404009c68f5485e2833dd2a6d294302072ffef3216854518c0e6712"
+        },
+        {
+          "path": "src/features/chat/chatEmptyState.ts",
+          "sha256": "4010ad862ee542c7a474e9588f09398326720a73e5175e2cb9a23779deb1ee23"
+        },
+        {
+          "path": "src/features/chat/chatModel.ts",
+          "sha256": "7dd5dea6b90dfe571bf9c73e7701a321803d8fb9a5a5f2850395eb00fda34cf7"
+        },
+        {
+          "path": "src/features/chat/chatModelChoice.ts",
+          "sha256": "9e5c4b753ca59c4b853f6473ddec1aefbc8e0cb2f995495ce97d4cd99f397728"
+        },
+        {
+          "path": "src/features/chat/chatTabs.ts",
+          "sha256": "b3bc83a053ebceb734728bdf138401466ded9c1ed168a30d9238ea8f6550d0fc"
+        },
+        {
+          "path": "src/features/chat/checkpoints.ts",
+          "sha256": "b462a6367fc162f53c214b1e8bef6d8aac7c3fb253f2f4393c8169c4bfc6d432"
+        },
+        {
+          "path": "src/features/chat/closedTabs.ts",
+          "sha256": "d38f0eecfa6506717735f4866ae33250ee7eba5482d40b4adf4803482a92371c"
+        },
+        {
+          "path": "src/features/chat/codex.ts",
+          "sha256": "7bfd9bafe0bb820d8be8fb44d42e25be3f7e8c4d39245838c25d0f3d376c5eb7"
+        },
+        {
+          "path": "src/features/chat/composerAttachments.ts",
+          "sha256": "38a2657a61d3d8a43116e412813f128ce409907eefd80f1d5b6ad1612fd06beb"
+        },
+        {
+          "path": "src/features/chat/composerDocument.ts",
+          "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676"
+        },
+        {
+          "path": "src/features/chat/composerLongPaste.ts",
+          "sha256": "452f5aa86c622fabbf0ce888bebc5518f919886a83b57cd97bf094d3c18f1099"
+        },
+        {
+          "path": "src/features/chat/composerMinimize.ts",
+          "sha256": "615fccdf4842111e8870be73ffe55f5405b376b9eb11909a2a84e040dd47888b"
+        },
+        {
+          "path": "src/features/chat/composerSession.ts",
+          "sha256": "69c9d5f66850694ad0864aea0f588d2356d90713e9aa2dbe0364ce7ebe0dcb09"
+        },
+        {
+          "path": "src/features/chat/composerSlashRange.ts",
+          "sha256": "7976d311ae93a640775995eaa184da9a754164ef483ddff9dee6e8e46cfb2902"
+        },
+        {
+          "path": "src/features/chat/composerTerminal.ts",
+          "sha256": "d14742fe2abdbccb74110e6dc5f5c6fd2864a20ad830b8fba45c8ea33015e115"
+        },
+        {
+          "path": "src/features/chat/fileMentions.ts",
+          "sha256": "82bcee9b4116b894fb5eb6ae2841c5b60f1f703db2907cb7347ae31bd5e79ca5"
+        },
+        {
+          "path": "src/features/chat/fork.ts",
+          "sha256": "ff0422c91b934abddd9ee33656efa5bcc8ef7df2b61797693f0e3e8226c53c21"
+        },
+        {
+          "path": "src/features/chat/loadoutChoices.ts",
+          "sha256": "6f598e35d99d142e63711db22e0e189096cb0162410f1daf73a35833311c354c"
+        },
+        {
+          "path": "src/features/chat/planHandoff.ts",
+          "sha256": "f224ec12511585ddd71e03481e4fb7f4c179b7dea1f6c5f76908c0dd58677720"
+        },
+        {
+          "path": "src/features/chat/queue.ts",
+          "sha256": "884de4b3cce37d27ce77df3af49bcb1bf2a3b5d79fd8e06bf1ddbd158842bab3"
+        },
+        {
+          "path": "src/features/chat/queueKeys.ts",
+          "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193"
+        },
+        {
+          "path": "src/features/chat/slashCommands.ts",
+          "sha256": "4f6c2586872a1275a8b983cd29b08ea4b54562e9432e90c40000350341887a50"
+        },
+        {
+          "path": "src/features/chat/types.ts",
+          "sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31"
+        },
+        {
+          "path": "src/features/chat/userContent.ts",
+          "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c"
+        },
+        {
+          "path": "src/features/chat/workspaceLinks.ts",
+          "sha256": "9b10c14206951d0391944ff72ce74232fedebea9ef6c055cbe72896afc398c27"
+        },
+        {
+          "path": "src/features/diff/ReviewButton.tsx",
+          "sha256": "c2575d83c30d8e3e161437ca34a2cd38a264b08e26acdbefc3dc823b69dea7c4"
+        },
+        {
+          "path": "src/features/diff/changesFilter.ts",
+          "sha256": "d64fa6ad922c03292f7984e0e9e65ab637ca2e36d86401fcd7717f85f58a5d0a"
+        },
+        {
+          "path": "src/features/diff/changesPresentation.ts",
+          "sha256": "42401fc7ff3ee932dce5800c8c020c73350e826a55b90ab6f9824664fde9360a"
+        },
+        {
+          "path": "src/features/diff/chatAttachment.ts",
+          "sha256": "2883bc3aa9ba22822a0e7609d36352796e10ab563f639823b602267d8612eebd"
+        },
+        {
+          "path": "src/features/diff/review.ts",
+          "sha256": "2db720f4d7553c27e48c01fc70e60a2406443bca3690daa188cc48a80e181364"
+        },
+        {
+          "path": "src/features/diff/target.ts",
+          "sha256": "46b8257d3ba50401dd428a6c86fda7e5fc1584eef902a2d3a1251f3d57ab29e5"
+        },
+        {
+          "path": "src/features/diff/useChangesPresentation.ts",
+          "sha256": "2f5c3175e0886926b462bcb5c3a4c5a7f2a8d7aa23407bf15cc57f3706c3a98d"
+        },
+        {
+          "path": "src/features/draft-attachments/api.ts",
+          "sha256": "b657117979173acbd63bc7671d21bd611d3ccfc86fe91fc6bebc40831aad0c7c"
+        },
+        {
+          "path": "src/features/draft-attachments/staging.ts",
+          "sha256": "59778d93e351cc374d2dfe0f04f2bfa4bd685cd9df513cff9fa1b0f79dd86f54"
+        },
+        {
+          "path": "src/features/files/fileView.ts",
+          "sha256": "217de944b0a0a5fd2054fac95842e0049eee884f0112a8d4114bf1ea3a0fe73c"
+        },
+        {
+          "path": "src/features/openIn/apps.ts",
+          "sha256": "ffb9bdf5e6b21894768d4f36ca3132b00061ea77c9e538b44c40dfbec065a924"
+        },
+        {
+          "path": "src/features/pr/checks/checks.ts",
+          "sha256": "19d076f48ba99d6c009523fae230a5e3f1d72bc8fe4560009609169bb5849a4d"
+        },
+        {
+          "path": "src/features/pr/checks/fixErrors.ts",
+          "sha256": "03bd414f8e8231aa116c52bf35343bf8482c99bb786e02369aaa6af1f89bf193"
+        },
+        {
+          "path": "src/features/pr/prSettings.ts",
+          "sha256": "c8a99c7da90718ff056f6e991424007b3888aef416cb089abb83d4b50ff6ea81"
+        },
+        {
+          "path": "src/features/pr/rowPr.ts",
+          "sha256": "13471c22d7fcf31eeb748973bb122ebd73c62c4f231573462185d35d28a9c5f7"
+        },
+        {
+          "path": "src/features/pr/shortcuts.ts",
+          "sha256": "6530476ca88d0d0674e8434a2c1e15d0250e25b397fdfbee279a7710aae2bb36"
+        },
+        {
+          "path": "src/features/terminal/bigTerminal.ts",
+          "sha256": "7b86aa2fc0af9120117e29bc1f04bae569bb7c2fbb8af4e666bdd5b2cd643b8f"
+        },
+        {
+          "path": "src/features/terminal/shellIntegration.ts",
+          "sha256": "64a8d4249f53591366cd9c0e529a14cf3ec0d024a5b6dde5a12ed143aeae5cda"
+        },
+        {
+          "path": "src/features/terminal/tabs.ts",
+          "sha256": "352d9f23dca03e4eb52fb790dd18638f713c42e15106b366fb70ca4cb08e559e"
+        },
+        {
+          "path": "src/home/sidebarGroupBy.ts",
+          "sha256": "9559b98fa5853a4e227376285c4723f2b8ede795cacc0238f9a94aad9ee16449"
+        },
+        {
+          "path": "src/home/sidebarSort.ts",
+          "sha256": "1ddc8c961cbcdde4cc2b96feaa2f9e2b5f522970ee0a3abfd5f84fb5aff4731f"
+        },
+        {
+          "path": "src/keybindings/dispatcher.ts",
+          "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197"
+        },
+        {
+          "path": "src/keybindings/fuzzy.ts",
+          "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c"
+        },
+        {
+          "path": "src/lib/local-storage/client.ts",
+          "sha256": "302eed0ff86e30b725930e219d7ee131a6ace331f2a4839bee817ab357e2f40d"
+        },
+        {
+          "path": "src/lib/local-storage/composerDrafts.ts",
+          "sha256": "fdf9614728397728c4fb87985c1b8bfe54c62199957891e989ba3d74d08e12c5"
+        },
+        {
+          "path": "src/lib/local-storage/index.ts",
+          "sha256": "0372f5269e2650825daf1bcea84c4d7babbc305f41b23b2bd2ac2f35b79a8ad7"
+        },
+        {
+          "path": "src/lib/local-storage/memory.ts",
+          "sha256": "334a72fff1ed890d196ccddf37398e74383c4a073e4b5f8511940b141d516b0c"
+        },
+        {
+          "path": "src/lib/local-storage/subsystems.ts",
+          "sha256": "4851ad02730dbe9197a185e006c8803a6b82126d0ab508b0bc84f93f8748a963"
+        },
+        {
+          "path": "src/palette/gitPanelActions.ts",
+          "sha256": "b6e929629af5b258818521259b904be3b3879ab9ffa3d00173924cbb8bd094b5"
+        },
+        {
+          "path": "src/scripts/model.ts",
+          "sha256": "1dcea5ff26ac561859cf039fd9f20c365367ae186d80c668bbc28f954e19a9c8"
+        },
+        {
+          "path": "src/scripts/setupPrompt.ts",
+          "sha256": "e72627ec1d713413eac349ce1ecef4e592d4802e5f9f8e9d04b3aa782ecec973"
+        },
+        {
+          "path": "src/settings/agents/loadout.ts",
+          "sha256": "689db32d91fcf7a84deb1c31293a8c877797c63bf0223ae1fd954011ff5ef3e7"
+        },
+        {
+          "path": "src/settings/models.ts",
+          "sha256": "bfe92c614ec2076b61055a35ef402cfe06e9b407ac424ca55c8a70c8a89f4939"
+        },
+        {
+          "path": "src/settings/reasonPalette.ts",
+          "sha256": "60dd33b440d1bb21bb07ed3e522a678057a784d1b7a5c8b33aba188a1ee4c835"
+        },
+        {
+          "path": "src/settings/types.ts",
+          "sha256": "6bccb1442bf4fc9fa31c019d0f22f3937327a72fb17fbace2a84b3ca9ee89936"
+        },
+        {
+          "path": "src/state/addRepo.ts",
+          "sha256": "82b6993579407aa5a77862dea0f70430b0bbde2f93b7484a2a6a527bc9a262c9"
+        },
+        {
+          "path": "src/state/autoUnread.ts",
+          "sha256": "47579721c665502fdc8f7f8d7bbfa7bed1c8a647fa19a534068331966ed72831"
+        },
+        {
+          "path": "src/state/chatTabUnread.ts",
+          "sha256": "c929b7ef093e2252b8546b412c173a86261b3279fdc038a1648be3a2e2abca37"
+        },
+        {
+          "path": "src/state/chatUnread.ts",
+          "sha256": "5367c692afa7818f0044b2f7bbbfc736acd3f7bb4dda5a10cc3b9276cb212b79"
+        },
+        {
+          "path": "src/state/names.ts",
+          "sha256": "93be02bcee0da733831b0356b406c5854c2206ea86f65783c59e03312b56346f"
+        },
+        {
+          "path": "src/state/navigationSections.ts",
+          "sha256": "876c4b8bb79dbf558f91f90186f60604b16ab627fbedb37bb45d6b6a4b4a0b49"
+        },
+        {
+          "path": "src/state/nextUnread.ts",
+          "sha256": "a58e8284376c113ec5a8f0db4967c6c973cae89b5668fde7d4ae02477e30a826"
+        },
+        {
+          "path": "src/state/openChat.ts",
+          "sha256": "30a2ffefec8dde392deb4a9434c2ec754b56533a7fc848936a80eba067852321"
+        },
+        {
+          "path": "src/state/persisted.ts",
+          "sha256": "2efc1eb708c9d8635740cd3045821c864e84a4a11ea9eef9562aecccdc4587da"
+        },
+        {
+          "path": "src/state/repoOrder.ts",
+          "sha256": "f86d871434560f6bce266cc47b90dd078138cc6910e9ca1eefda40660af6b20a"
+        },
+        {
+          "path": "src/state/rowStatus.ts",
+          "sha256": "e22c083e131c35774234f0f91fb1f5e5b117c6d40161ac3f346395bc46f2df34"
+        },
+        {
+          "path": "src/state/selectors.ts",
+          "sha256": "37f68b0305f898b2cdf575e05bd0a0ebf89983eb527b96526cf4f9406da2302d"
+        },
+        {
+          "path": "src/state/sidebarOrder.ts",
+          "sha256": "08bffd6a3044fb97854796f1d7b316dfb8ff4f06882a98aee4dbd98ad25ae532"
+        },
+        {
+          "path": "src/state/sidebarPersist.ts",
+          "sha256": "1c93a5df95591139580becb82e518c6aabb3d7fb6315dd82312c7a00a0121d07"
+        },
+        {
+          "path": "src/state/store.ts",
+          "sha256": "98dd8c80116d825cc19f1863b1506ebfae8a7ca1809b066dd701f48a080bac56"
+        },
+        {
+          "path": "src/state/workspaceSessions.ts",
+          "sha256": "180c76b22899e63cc3d1f5b92cdcedfa9c7a0bdebe82c6c7d3de54c037da291b"
+        },
+        {
+          "path": "src/state/workspaceStatus.ts",
+          "sha256": "8b26245bf7cec0e806485e5fc9608220df08cbd7250953e946122b0044eef714"
+        },
+        {
+          "path": "src/workspace/createFlow.ts",
+          "sha256": "c8c44d5552fdbf1d91ec4f65496ba820ee30cb7895c34944f228e76ce95e4a1c"
+        },
+        {
+          "path": "src/workspace/naming.ts",
+          "sha256": "5a1558036b9f13ab3ccbc188be1d5d621b3639c6be270808558b2b91826a0535"
+        },
+        {
+          "path": "src/workspace/setupWatch.ts",
+          "sha256": "629b3adb5e34e0041c0e41886628a53098cfa822220d2b699604475146c6efa2"
+        }
+      ],
+      "external_imports": {
+        "node:assert/strict": [
+          "src/features/chat/workspaceLocalClear.test.ts"
+        ],
+        "node:fs": [
+          "src/features/chat/workspaceLocalClear.test.ts"
+        ],
+        "node:module": [
+          "src/features/chat/workspaceLocalClear.test.ts"
+        ],
+        "node:path": [
+          "src/features/chat/workspaceLocalClear.test.ts"
+        ],
+        "node:url": [
+          "src/features/chat/workspaceLocalClear.test.ts"
+        ],
+        "node:test": [
+          "src/features/chat/workspaceLocalClear.test.ts"
+        ],
+        "node:vm": [
+          "src/features/chat/workspaceLocalClear.test.ts"
+        ],
+        "@tauri-apps/api/core": [
+          "src/state/store.ts",
+          "src/components/WorkspaceView.tsx",
+          "src/features/openIn/apps.ts",
+          "src/features/draft-attachments/api.ts",
+          "src/lib/local-storage/index.ts",
+          "src/features/diff/ReviewButton.tsx"
+        ],
+        "react": [
+          "src/state/store.ts",
+          "src/features/chat/Composer.tsx",
+          "src/features/diff/chatAttachment.ts",
+          "src/features/diff/useChangesPresentation.ts",
+          "src/features/diff/ReviewButton.tsx",
+          "src/components/WorkspaceView.tsx"
+        ],
+        "fuzzysort": [
+          "src/features/chat/slashCommands.ts",
+          "src/keybindings/fuzzy.ts"
+        ]
+      },
+      "missing_public_packages": {},
+      "unresolved_local_imports": [],
+      "checked_default_head": "11a5f73df99faa0d33bcc0c19b78606bc2c0b992",
+      "changed_graph_inputs": []
+    },
+    "stdout": "TAP version 13\n# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: mounted claude /clear replaces the idle primary, preserving history and reload identity\nnot ok 1 - mounted claude /clear replaces the idle primary, preserving history and reload identity\n  ---\n  duration_ms: 935.782043\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts:195:3'\n  failureType: 'testCodeFailure'\n  error: |-\n    mounted /clear must reach the replacement operation, not the unavailable alert\n    \n    0 !== 1\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 1\n  actual: 0\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts:202:14)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n# Subtest: mounted codex /clear replaces the idle primary, preserving history and reload identity\nnot ok 2 - mounted codex /clear replaces the idle primary, preserving history and reload identity\n  ---\n  duration_ms: 493.166246\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts:195:3'\n  failureType: 'testCodeFailure'\n  error: |-\n    mounted /clear must reach the replacement operation, not the unavailable alert\n    \n    0 !== 1\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 1\n  actual: 0\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts:202:14)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 0\n# fail 2\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 1771.483407\n",
+    "stderr": "(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n",
+    "provider_or_native_executed": false,
+    "candidate_applied": false
+  },
+  "same_fixture_green": {
+    "receipt": {
+      "started_utc": "2026-11-11T08:45:42.212101+00:00",
+      "finished_utc": "2026-11-11T08:45:45.234959+00:00",
+      "command": [
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        ".rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts"
+      ],
+      "wall_seconds": 3.023,
+      "process_exit": 0,
+      "limit_reason": null,
+      "wall_limit_seconds": 95.0,
+      "max_added_bytes": 67108864,
+      "initial_bytes": 36601065,
+      "final_bytes": 36602034,
+      "peak_observed_bytes": 36602034,
+      "added_bytes": 969,
+      "peak_added_bytes": 969,
+      "process_terminal": true
+    },
+    "stdout": "TAP version 13\n# (node:169) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: mounted claude /clear replaces the idle primary, preserving history and reload identity\nok 1 - mounted claude /clear replaces the idle primary, preserving history and reload identity\n  ---\n  duration_ms: 1629.380289\n  type: 'test'\n  ...\n# Subtest: mounted codex /clear replaces the idle primary, preserving history and reload identity\nok 2 - mounted codex /clear replaces the idle primary, preserving history and reload identity\n  ---\n  duration_ms: 956.363893\n  type: 'test'\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 2\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 2920.602456\n"
+  },
+  "old_expanded_failure": {
+    "receipt_attachment_id": "4a1cf80b-9181-412d-9b3d-dfe34794d260",
+    "receipt_sha256": "0deb1533a846288d49f1fd3fcdb985cd5faa0f86e77b91777fc8b8cd56eed2ea",
+    "pass": 8,
+    "fail": 4,
+    "resolved_by": "helper-only correction: raw bridge send not attachment consumer; real staged chip + actual mounted form, no product changes"
+  },
+  "corrected_expanded": {
+    "receipt": {
+      "started_utc": "2026-11-11T09:06:02.868070+00:00",
+      "finished_utc": "2026-11-11T09:06:17.803436+00:00",
+      "command": [
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        ".rea-work/ui-runtime/frozen-clear/src/features/chat/workspaceLocalClear.test.ts"
+      ],
+      "wall_seconds": 14.935,
+      "process_exit": 0,
+      "limit_reason": null,
+      "wall_limit_seconds": 95.0,
+      "max_added_bytes": 67108864,
+      "initial_bytes": 36726138,
+      "final_bytes": 36729359,
+      "peak_observed_bytes": 36729359,
+      "added_bytes": 3221,
+      "peak_added_bytes": 3221,
+      "process_terminal": true
+    },
+    "stdout": "TAP version 13\n# (node:199) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: mounted claude /clear replaces the idle primary, preserving history and reload identity\nok 1 - mounted claude /clear replaces the idle primary, preserving history and reload identity\n  ---\n  duration_ms: 2032.788039\n  type: 'test'\n  ...\n# Subtest: mounted claude /clear at cap preserves sibling order and selected identity (secondary=false)\nok 2 - mounted claude /clear at cap preserves sibling order and selected identity (secondary=false)\n  ---\n  duration_ms: 1384.378354\n  type: 'test'\n  ...\n# Subtest: mounted claude /clear at cap preserves sibling order and selected identity (secondary=true)\nok 3 - mounted claude /clear at cap preserves sibling order and selected identity (secondary=true)\n  ---\n  duration_ms: 1346.516911\n  type: 'test'\n  ...\n# Subtest: mounted claude /clear uses creation Fast defaults instead of copying the source\nok 4 - mounted claude /clear uses creation Fast defaults instead of copying the source\n  ---\n  duration_ms: 730.112022\n  type: 'test'\n  ...\n# Subtest: mounted claude /clear rejection retains the selected transcript\nok 5 - mounted claude /clear rejection retains the selected transcript\n  ---\n  duration_ms: 1002.21141\n  type: 'test'\n  ...\n# Subtest: mounted claude same-name command shadows built-in /clear\nok 6 - mounted claude same-name command shadows built-in /clear\n  ---\n  duration_ms: 825.96665\n  type: 'test'\n  ...\n# Subtest: mounted codex /clear replaces the idle primary, preserving history and reload identity\nok 7 - mounted codex /clear replaces the idle primary, preserving history and reload identity\n  ---\n  duration_ms: 2819.449438\n  type: 'test'\n  ...\n# Subtest: mounted codex /clear at cap preserves sibling order and selected identity (secondary=false)\nok 8 - mounted codex /clear at cap preserves sibling order and selected identity (secondary=false)\n  ---\n  duration_ms: 1455.064363\n  type: 'test'\n  ...\n# Subtest: mounted codex /clear at cap preserves sibling order and selected identity (secondary=true)\nok 9 - mounted codex /clear at cap preserves sibling order and selected identity (secondary=true)\n  ---\n  duration_ms: 1464.1126\n  type: 'test'\n  ...\n# Subtest: mounted codex /clear uses creation Fast defaults instead of copying the source\nok 10 - mounted codex /clear uses creation Fast defaults instead of copying the source\n  ---\n  duration_ms: 501.015803\n  type: 'test'\n  ...\n# Subtest: mounted codex /clear rejection retains the selected transcript\nok 11 - mounted codex /clear rejection retains the selected transcript\n  ---\n  duration_ms: 432.823082\n  type: 'test'\n  ...\n# Subtest: mounted codex same-name command shadows built-in /clear\nok 12 - mounted codex same-name command shadows built-in /clear\n  ---\n  duration_ms: 478.619161\n  type: 'test'\n  ...\n1..12\n# tests 12\n# suites 0\n# pass 12\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 14822.48122\n",
+    "stderr": "(node:192) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  },
+  "preservation_controls": {
+    "receipt": {
+      "started_utc": "2026-11-11T09:07:03.973746+00:00",
+      "finished_utc": "2026-11-11T09:07:04.855933+00:00",
+      "command": [
+        "timeout",
+        "--kill-after=5s",
+        "90s",
+        "node",
+        "--experimental-strip-types",
+        "--test",
+        "--test-concurrency=1",
+        ".rea-work/ui-runtime/frozen-clear/src/state/openChat.test.ts",
+        ".rea-work/ui-runtime/frozen-clear/src/state/persisted.test.ts",
+        ".rea-work/ui-runtime/frozen-clear/src/state/chatUnread.test.ts",
+        ".rea-work/ui-runtime/frozen-clear/src/features/chat/chatTabs.test.ts",
+        ".rea-work/ui-runtime/frozen-clear/src/features/chat/chatModelChoice.test.ts"
+      ],
+      "wall_seconds": 0.882,
+      "process_exit": 0,
+      "limit_reason": null,
+      "wall_limit_seconds": 95.0,
+      "max_added_bytes": 67108864,
+      "initial_bytes": 36730882,
+      "final_bytes": 36739009,
+      "peak_observed_bytes": 36739009,
+      "added_bytes": 8127,
+      "peak_added_bytes": 8127,
+      "process_terminal": true
+    },
+    "stdout": "TAP version 13\n# (node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: Reason model ids map back to Conductor's\nok 1 - Reason model ids map back to Conductor's\n  ---\n  duration_ms: 0.841771\n  type: 'test'\n  ...\n# Subtest: a chat started from the New workspace dialog shows that model and effort\nok 2 - a chat started from the New workspace dialog shows that model and effort\n  ---\n  duration_ms: 1.278629\n  type: 'test'\n  ...\n# Subtest: a picked choice wins and round-trips\nok 3 - a picked choice wins and round-trips\n  ---\n  duration_ms: 0.194884\n  type: 'test'\n  ...\n# Subtest: new chats seed only physical slot1 and preserve model/agent/effort across reload\nok 4 - new chats seed only physical slot1 and preserve model/agent/effort across reload\n  ---\n  duration_ms: 0.394006\n  type: 'test'\n  ...\n# Subtest: agent-only picker choices preserve the named chip and leave runtime model selection unset\nok 5 - agent-only picker choices preserve the named chip and leave runtime model selection unset\n  ---\n  duration_ms: 0.53585\n  type: 'test'\n  ...\n# Subtest: an explicit dynamic local model without effort does not acquire an inferred level\nok 6 - an explicit dynamic local model without effort does not acquire an inferred level\n  ---\n  duration_ms: 0.124997\n  type: 'test'\n  ...\n# Subtest: forking replaces the destination loadout default with source options and agent\nok 7 - forking replaces the destination loadout default with source options and agent\n  ---\n  duration_ms: 0.148915\n  type: 'test'\n  ...\n# Subtest: with nothing saved the chat shows Settings \u203a Default models\nok 8 - with nothing saved the chat shows Settings \u203a Default models\n  ---\n  duration_ms: 0.179867\n  type: 'test'\n  ...\n# (node:100) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: the + tooltip is Conductor's 'New chat, same files' with the shortcut\nok 9 - the + tooltip is Conductor's 'New chat, same files' with the shortcut\n  ---\n  duration_ms: 0.637538\n  type: 'test'\n  ...\n# Subtest: five tabs is the limit: the button names it and \u2318T warns\nok 10 - five tabs is the limit: the button names it and \u2318T warns\n  ---\n  duration_ms: 0.136404\n  type: 'test'\n  ...\n# Subtest: a new chat is Untitled and belongs to its workspace\nok 11 - a new chat is Untitled and belongs to its workspace\n  ---\n  duration_ms: 0.317047\n  type: 'test'\n  ...\n# (node:108) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: a workspace is unread while any of its chats is (Conductor's zJo)\nok 12 - a workspace is unread while any of its chats is (Conductor's zJo)\n  ---\n  duration_ms: 1.703547\n  type: 'test'\n  ...\n# Subtest: marking a read chat read changes nothing; marking an unread chat again moves its time\nok 13 - marking a read chat read changes nothing; marking an unread chat again moves its time\n  ---\n  duration_ms: 0.142462\n  type: 'test'\n  ...\n# Subtest: Mark as read clears every chat of the workspace (markWorkspaceAsRead)\nok 14 - Mark as read clears every chat of the workspace (markWorkspaceAsRead)\n  ---\n  duration_ms: 0.136071\n  type: 'test'\n  ...\n# Subtest: the selected row's click opens the first chat, in tab order, that is unread or waits on the user (fea)\nok 15 - the selected row's click opens the first chat, in tab order, that is unread or waits on the user (fea)\n  ---\n  duration_ms: 0.228833\n  type: 'test'\n  ...\n# (node:116) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: a workspace's chats are its main chat and its open review tabs, in tab order\nok 16 - a workspace's chats are its main chat and its open review tabs, in tab order\n  ---\n  duration_ms: 1.681545\n  type: 'test'\n  ...\n# Subtest: a request to show a chat reaches its workspace once\nok 17 - a request to show a chat reaches its workspace once\n  ---\n  duration_ms: 0.221818\n  type: 'test'\n  ...\n# Subtest: tabs open when the app last ran come back until this window changes the strip\nok 18 - tabs open when the app last ran come back until this window changes the strip\n  ---\n  duration_ms: 0.28078\n  type: 'test'\n  ...\n# Subtest: a strip change writes the tabs that opened and closed\nok 19 - a strip change writes the tabs that opened and closed\n  ---\n  duration_ms: 0.363799\n  type: 'test'\n  ...\n# Subtest: Rename chat on an open tab writes its new title\nok 20 - Rename chat on an open tab writes its new title\n  ---\n  duration_ms: 0.143715\n  type: 'test'\n  ...\n# (node:124) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: persisted workspace links hydrate separately from prompt attachments\nok 21 - persisted workspace links hydrate separately from prompt attachments\n  ---\n  duration_ms: 1.972025\n  type: 'test'\n  ...\n# Subtest: maps rows in database order, marks hidden repos and drops archived workspaces\nok 22 - maps rows in database order, marks hidden repos and drops archived workspaces\n  ---\n  duration_ms: 0.486237\n  type: 'test'\n  ...\n# Subtest: carries the workspace's target branch from conductor.db\nok 23 - carries the workspace's target branch from conductor.db\n  ---\n  duration_ms: 0.220197\n  type: 'test'\n  ...\n# Subtest: carries the workspace number from conductor.db\nok 24 - carries the workspace number from conductor.db\n  ---\n  duration_ms: 0.259284\n  type: 'test'\n  ...\n# Subtest: carries the workspace's intended target branch for the diff\nok 25 - carries the workspace's intended target branch for the diff\n  ---\n  duration_ms: 0.217226\n  type: 'test'\n  ...\n# Subtest: selection falls back to home when its workspace is gone\nok 26 - selection falls back to home when its workspace is gone\n  ---\n  duration_ms: 0.190537\n  type: 'test'\n  ...\n# Subtest: prefs round-trip and survive garbage\nok 27 - prefs round-trip and survive garbage\n  ---\n  duration_ms: 0.42963\n  type: 'test'\n  ...\n# Subtest: sidebar: pin, unread and status columns reach the workspace\nok 28 - sidebar: pin, unread and status columns reach the workspace\n  ---\n  duration_ms: 0.20199\n  type: 'test'\n  ...\n# Subtest: sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; closed reviews count as hidden\nok 29 - sidebar: unread chats come from sessions; a legacy workspaces.unread marks the main chat; closed reviews count as hidden\n  ---\n  duration_ms: 0.516033\n  type: 'test'\n  ...\n# Subtest: sidebar: a review tab open at quit comes back after a restart, still unread\nok 30 - sidebar: a review tab open at quit comes back after a restart, still unread\n  ---\n  duration_ms: 0.710383\n  type: 'test'\n  ...\n# Subtest: sidebar: a user-set workspace name is shown as is\nok 31 - sidebar: a user-set workspace name is shown as is\n  ---\n  duration_ms: 1.506126\n  type: 'test'\n  ...\n# Subtest: re-reading conductor.db keeps the PR the app last read\nok 32 - re-reading conductor.db keeps the PR the app last read\n  ---\n  duration_ms: 0.215702\n  type: 'test'\n  ...\n# Subtest: saved browser state drops live session statuses, including the old status: working\nok 33 - saved browser state drops live session statuses, including the old status: working\n  ---\n  duration_ms: 0.230072\n  type: 'test'\n  ...\n# Subtest: loads updated_at, so Go to next unread picks the most recently active row\nok 34 - loads updated_at, so Go to next unread picks the most recently active row\n  ---\n  duration_ms: 0.207501\n  type: 'test'\n  ...\n1..34\n# tests 34\n# suites 0\n# pass 34\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 779.774749\n",
+    "stderr": "(node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  },
+  "preflight": {
+    "stage": "SOURCE_ONLY_UNEXECUTED_HELPER_CORRECTION",
+    "base_candidate_archive_sha256": "c707741a16bca94f3d67cd066cd3e789d1bc50b7fae421c42c7755319fc5c97a",
+    "old_fixture_sha256": "af8719be135313c35a21d71d4d6bb2190b8af77b59e6d366b6f9dc1a340e058f",
+    "new_fixture_sha256": "b026606ec58fc9ee41d96bfb519c558f0435239705ae5643423d94cf4f8e1e94",
+    "new_fixture_bytes": 22804,
+    "scenario_assertion_tail_sha256": "73cbd6ce347f409c66ac122b764ef0db000dd7c23ab6b340d768bc6b4074b71d",
+    "scenario_assertion_tail_bytes": 5450,
+    "scenario_assertion_tail_algorithm": "Raw UTF-8 from the first exact for-agent loop header through EOF, including that header. Original v3 hash excluded its 51-byte header and is retained as historical metadata only.",
+    "all_scenarios_and_assertions_identical": true,
+    "all_12_product_files_byte_identical_to_v2": true,
+    "checked_default_head": "c2041a9273c17e0bbafa4326633002e75e311901",
+    "source_contract": "WorkspaceView raw bridge.send invokes submit with default attached=[]; only normal Composer onSubmit/session.send consumes staged Composer attachments. Both paths pre-exist unchanged on main11a.",
+    "helper_change": "Still invoke raw shell send and assert primary target; verify staged attachment chip; then real mounted editor/form submit consumes the staged attachment. Final original attachment assertion remains unchanged.",
+    "independent_source_confirmation": "be7a40e4 messages 12cb4acd and 1f6d9c52; main11a raw send, ComposerSession and hook-local queued state audited read-only.",
+    "policy": "Sole e1 extended12 admission once; no runtime here; no product changes; stop unexpected failure.",
+    "reconciliation": {
+      "old_default_head": "11a5f73df99faa0d33bcc0c19b78606bc2c0b992",
+      "new_default_head": "c2041a9273c17e0bbafa4326633002e75e311901",
+      "path": "src/features/chat/Composer.tsx",
+      "sha256": "ba13bc0523ef60d657b5cd864030b7a958dbdc9f60c3d866067cf493dc0e01f0",
+      "size": 28735,
+      "disposition": "Use current-default Composer as a reconciled execution-baseline dependency, not a clear product patch. Its only change since 11a is !e.ctrlKey in the existing ArrowUp queue-edit guard. Keep all 12 clear product bytes and b026 fixture unchanged.",
+      "runtime": "No Node, test, compiler, install or provider execution in this authoring checkout."
+    },
+    "all12_product_hashes_verified": true,
+    "all12_default_baselines_match": true,
+    "original_two_red_green_default_head": "11a5f73df99faa0d33bcc0c19b78606bc2c0b992",
+    "all12_scenario_assertion_bodies_verified_identical": true
+  },
+  "product_overlay": {
+    "checked_default_head": "11a5f73df99faa0d33bcc0c19b78606bc2c0b992",
+    "product_files": [
+      {
+        "path": "crates/openconductor-db/src/sessions.rs",
+        "baseline_sha256": "bdc083c7cf19b23c6e53b9b6f818f629273ceb41184e47392770fb53fa01da37",
+        "candidate_sha256": "2cf64d2e3f975181af3ec888729b62fc55e67ed91cafb8994087c21ab13de3ac",
+        "size": 33998,
+        "was_in_frozen_snapshot": false
+      },
+      {
+        "path": "crates/openconductor-db/tests/local_clear.rs",
+        "baseline_sha256": null,
+        "candidate_sha256": "e14303de0b0a8ba87423379cf453caa697dd0142f59061fbac0cc9005299a043",
+        "size": 6770,
+        "was_in_frozen_snapshot": false
+      },
+      {
+        "path": "src/components/WorkspaceView.tsx",
+        "baseline_sha256": "41a3fb802ef166f335a9d329889fd92a4509c7c061d4f583d5557d1d26034fba",
+        "candidate_sha256": "13e4ad8a689e4ce873b4c612cbfc81cf99ec38452ece7957d8c3c482e7272bbb",
+        "size": 80426,
+        "was_in_frozen_snapshot": true
+      },
+      {
+        "path": "src/features/chat/localClear.ts",
+        "baseline_sha256": null,
+        "candidate_sha256": "36773e89380caca36d3c25c42c3e5d7c2c7ac6f29510e53f1930f24520d42890",
+        "size": 1739,
+        "was_in_frozen_snapshot": false
+      },
+      {
+        "path": "src/features/diff/ReviewButton.tsx",
+        "baseline_sha256": "c2575d83c30d8e3e161437ca34a2cd38a264b08e26acdbefc3dc823b69dea7c4",
+        "candidate_sha256": "fa910a5751fd53ddd2d32a74177af4c378ae4bcb91fc43e3bf7569e236642a8c",
+        "size": 11920,
+        "was_in_frozen_snapshot": true
+      },
+      {
+        "path": "src/state/openChat.ts",
+        "baseline_sha256": "30a2ffefec8dde392deb4a9434c2ec754b56533a7fc848936a80eba067852321",
+        "candidate_sha256": "40a9ea9f4719fa4c8602e4bc2611c47051c54a317131f458a324cddfc072a152",
+        "size": 5268,
+        "was_in_frozen_snapshot": true
+      },
+      {
+        "path": "src/state/persisted.ts",
+        "baseline_sha256": "2efc1eb708c9d8635740cd3045821c864e84a4a11ea9eef9562aecccdc4587da",
+        "candidate_sha256": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209",
+        "size": 9197,
+        "was_in_frozen_snapshot": true
+      },
+      {
+        "path": "src/state/store.ts",
+        "baseline_sha256": "98dd8c80116d825cc19f1863b1506ebfae8a7ca1809b066dd701f48a080bac56",
+        "candidate_sha256": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96",
+        "size": 31520,
+        "was_in_frozen_snapshot": true
+      },
+      {
+        "path": "src/state/types.ts",
+        "baseline_sha256": "ac1eb6bdeaa73da92cb9265253f8c340d2f91b3edba96b1eeed23fc6830792dd",
+        "candidate_sha256": "fd8bf53604cc4aa6881cc4a1dae0763dae6ac5ff4ff0fc83ac1b2d18f762ea55",
+        "size": 6390,
+        "was_in_frozen_snapshot": true
+      },
+      {
+        "path": "src-tauri/src/lib.rs",
+        "baseline_sha256": "d288cdb08db78fdc8939cee2780abaa109eaa2a2cdd8cb4b6da7bf28aaf9deb1",
+        "candidate_sha256": "37ce9e4ea858859898ab8d4002334f7f7f148e2cf45413132e9645ed73a97950",
+        "size": 29673,
+        "was_in_frozen_snapshot": false
+      },
+      {
+        "path": "src-tauri/src/persistence/mod.rs",
+        "baseline_sha256": "6ae4adcc249921c8dde701d9f986900bcf77577489a56efa0e249761cd127963",
+        "candidate_sha256": "f82a17bbac3c7f055d4dc7433a83c1828e754728bed87e4a0597c2c476f17266",
+        "size": 14518,
+        "was_in_frozen_snapshot": false
+      },
+      {
+        "path": "src-tauri/src/sidebar_workspace_commands.rs",
+        "baseline_sha256": "80d3598f61cdfca6f56dc72f9c32aa90b5abda6f178656416d18e3256a5df227",
+        "candidate_sha256": "91e1d8bb5f411d07bc4d94a998637d75617cae29ba25975896117e50c0083b24",
+        "size": 25517,
+        "was_in_frozen_snapshot": false
+      }
+    ],
+    "product_file_count": 12,
+    "all_current_default_baselines_match": true,
+    "v1_product_comparison": "all12_bytehashes_verified",
+    "same_baseline_fixture_preserved": "6b1b9245ce1e996359db4f87286278c907cb280fa85eeccbd5867660cdce58fc",
+    "extended_fixture_staged_only": true,
+    "tracked_checkout_untouched": true
+  },
+  "current_candidate_import_audit": {
+    "method": "conservative static literal import/export graph matching frozen override and TSX boundaries; type-only or erased unused imports may be over-approximated, not a runtime trace",
+    "fixture_sha256": "b026606ec58fc9ee41d96bfb519c558f0435239705ae5643423d94cf4f8e1e94",
+    "source_files": [
+      {
+        "path": "src/components/WorkspaceView.tsx",
+        "sha256": "13e4ad8a689e4ce873b4c612cbfc81cf99ec38452ece7957d8c3c482e7272bbb",
+        "source": "frozen_candidate"
+      },
+      {
+        "path": "src/features/chat/Composer.tsx",
+        "sha256": "ba13bc0523ef60d657b5cd864030b7a958dbdc9f60c3d866067cf493dc0e01f0",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/agentBinaries.ts",
+        "sha256": "6f68dfbab5c27ebf08edd77c653b82b8ef24c5d16805646607821ebadf05c246",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/agentChoice.ts",
+        "sha256": "380e2758b5a548f56227eed9b107b97b89b6a64d0b0d9c807abe6612219572af",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/agentSignIn.ts",
+        "sha256": "0ac95bb2d28e00a0108b274374e3b35b7e1c547508cf027cd524eb2cc546a3f7",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/chatAgentChoice.ts",
+        "sha256": "205d78402404009c68f5485e2833dd2a6d294302072ffef3216854518c0e6712",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/chatEmptyState.ts",
+        "sha256": "4010ad862ee542c7a474e9588f09398326720a73e5175e2cb9a23779deb1ee23",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/chatModel.ts",
+        "sha256": "7dd5dea6b90dfe571bf9c73e7701a321803d8fb9a5a5f2850395eb00fda34cf7",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/chatModelChoice.ts",
+        "sha256": "9e5c4b753ca59c4b853f6473ddec1aefbc8e0cb2f995495ce97d4cd99f397728",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/chatTabs.ts",
+        "sha256": "b3bc83a053ebceb734728bdf138401466ded9c1ed168a30d9238ea8f6550d0fc",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/checkpoints.ts",
+        "sha256": "b462a6367fc162f53c214b1e8bef6d8aac7c3fb253f2f4393c8169c4bfc6d432",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/closedTabs.ts",
+        "sha256": "d38f0eecfa6506717735f4866ae33250ee7eba5482d40b4adf4803482a92371c",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/codex.ts",
+        "sha256": "7bfd9bafe0bb820d8be8fb44d42e25be3f7e8c4d39245838c25d0f3d376c5eb7",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/composerAttachments.ts",
+        "sha256": "38a2657a61d3d8a43116e412813f128ce409907eefd80f1d5b6ad1612fd06beb",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/composerDocument.ts",
+        "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/composerLongPaste.ts",
+        "sha256": "452f5aa86c622fabbf0ce888bebc5518f919886a83b57cd97bf094d3c18f1099",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/composerMinimize.ts",
+        "sha256": "615fccdf4842111e8870be73ffe55f5405b376b9eb11909a2a84e040dd47888b",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/composerModels.ts",
+        "sha256": "e9b1e5cb5d1bc04fed9b909300c5b7e29d3e159afec3fd31a27ac0ed21699cab",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/composerSession.ts",
+        "sha256": "69c9d5f66850694ad0864aea0f588d2356d90713e9aa2dbe0364ce7ebe0dcb09",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/composerSlashRange.ts",
+        "sha256": "7976d311ae93a640775995eaa184da9a754164ef483ddff9dee6e8e46cfb2902",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/composerTerminal.ts",
+        "sha256": "d14742fe2abdbccb74110e6dc5f5c6fd2864a20ad830b8fba45c8ea33015e115",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/fileMentions.ts",
+        "sha256": "82bcee9b4116b894fb5eb6ae2841c5b60f1f703db2907cb7347ae31bd5e79ca5",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/fork.ts",
+        "sha256": "ff0422c91b934abddd9ee33656efa5bcc8ef7df2b61797693f0e3e8226c53c21",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/loadoutChoices.ts",
+        "sha256": "6f598e35d99d142e63711db22e0e189096cb0162410f1daf73a35833311c354c",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/localClear.ts",
+        "sha256": "36773e89380caca36d3c25c42c3e5d7c2c7ac6f29510e53f1930f24520d42890",
+        "source": "frozen_candidate"
+      },
+      {
+        "path": "src/features/chat/planHandoff.ts",
+        "sha256": "f224ec12511585ddd71e03481e4fb7f4c179b7dea1f6c5f76908c0dd58677720",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/queue.ts",
+        "sha256": "884de4b3cce37d27ce77df3af49bcb1bf2a3b5d79fd8e06bf1ddbd158842bab3",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/queueKeys.ts",
+        "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/slashCommands.ts",
+        "sha256": "4f6c2586872a1275a8b983cd29b08ea4b54562e9432e90c40000350341887a50",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/types.ts",
+        "sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/userContent.ts",
+        "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/chat/workspaceLinks.ts",
+        "sha256": "9b10c14206951d0391944ff72ce74232fedebea9ef6c055cbe72896afc398c27",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/diff/ReviewButton.tsx",
+        "sha256": "fa910a5751fd53ddd2d32a74177af4c378ae4bcb91fc43e3bf7569e236642a8c",
+        "source": "frozen_candidate"
+      },
+      {
+        "path": "src/features/diff/changesFilter.ts",
+        "sha256": "d64fa6ad922c03292f7984e0e9e65ab637ca2e36d86401fcd7717f85f58a5d0a",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/diff/changesPresentation.ts",
+        "sha256": "42401fc7ff3ee932dce5800c8c020c73350e826a55b90ab6f9824664fde9360a",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/diff/chatAttachment.ts",
+        "sha256": "2883bc3aa9ba22822a0e7609d36352796e10ab563f639823b602267d8612eebd",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/diff/review.ts",
+        "sha256": "2db720f4d7553c27e48c01fc70e60a2406443bca3690daa188cc48a80e181364",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/diff/target.ts",
+        "sha256": "46b8257d3ba50401dd428a6c86fda7e5fc1584eef902a2d3a1251f3d57ab29e5",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/diff/useChangesPresentation.ts",
+        "sha256": "2f5c3175e0886926b462bcb5c3a4c5a7f2a8d7aa23407bf15cc57f3706c3a98d",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/draft-attachments/api.ts",
+        "sha256": "b657117979173acbd63bc7671d21bd611d3ccfc86fe91fc6bebc40831aad0c7c",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/draft-attachments/staging.ts",
+        "sha256": "59778d93e351cc374d2dfe0f04f2bfa4bd685cd9df513cff9fa1b0f79dd86f54",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/files/fileView.ts",
+        "sha256": "217de944b0a0a5fd2054fac95842e0049eee884f0112a8d4114bf1ea3a0fe73c",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/openIn/apps.ts",
+        "sha256": "ffb9bdf5e6b21894768d4f36ca3132b00061ea77c9e538b44c40dfbec065a924",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/pr/checks/checks.ts",
+        "sha256": "19d076f48ba99d6c009523fae230a5e3f1d72bc8fe4560009609169bb5849a4d",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/pr/checks/fixErrors.ts",
+        "sha256": "03bd414f8e8231aa116c52bf35343bf8482c99bb786e02369aaa6af1f89bf193",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/pr/prSettings.ts",
+        "sha256": "c8a99c7da90718ff056f6e991424007b3888aef416cb089abb83d4b50ff6ea81",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/pr/rowPr.ts",
+        "sha256": "13471c22d7fcf31eeb748973bb122ebd73c62c4f231573462185d35d28a9c5f7",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/pr/shortcuts.ts",
+        "sha256": "6530476ca88d0d0674e8434a2c1e15d0250e25b397fdfbee279a7710aae2bb36",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/terminal/bigTerminal.ts",
+        "sha256": "7b86aa2fc0af9120117e29bc1f04bae569bb7c2fbb8af4e666bdd5b2cd643b8f",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/terminal/shellIntegration.ts",
+        "sha256": "64a8d4249f53591366cd9c0e529a14cf3ec0d024a5b6dde5a12ed143aeae5cda",
+        "source": "current_default"
+      },
+      {
+        "path": "src/features/terminal/tabs.ts",
+        "sha256": "352d9f23dca03e4eb52fb790dd18638f713c42e15106b366fb70ca4cb08e559e",
+        "source": "current_default"
+      },
+      {
+        "path": "src/home/sidebarGroupBy.ts",
+        "sha256": "9559b98fa5853a4e227376285c4723f2b8ede795cacc0238f9a94aad9ee16449",
+        "source": "current_default"
+      },
+      {
+        "path": "src/home/sidebarSort.ts",
+        "sha256": "1ddc8c961cbcdde4cc2b96feaa2f9e2b5f522970ee0a3abfd5f84fb5aff4731f",
+        "source": "current_default"
+      },
+      {
+        "path": "src/keybindings/dispatcher.ts",
+        "sha256": "2b29d1d2ab963645eb1c77286797a4681cf344a85973de3361c067ff0fefb197",
+        "source": "current_default"
+      },
+      {
+        "path": "src/keybindings/fuzzy.ts",
+        "sha256": "1bcbf1f4058508f23d5d079235d5b96ed6ed800582aae6de50db6a182d5c2c1c",
+        "source": "current_default"
+      },
+      {
+        "path": "src/lib/local-storage/client.ts",
+        "sha256": "302eed0ff86e30b725930e219d7ee131a6ace331f2a4839bee817ab357e2f40d",
+        "source": "current_default"
+      },
+      {
+        "path": "src/lib/local-storage/composerDrafts.ts",
+        "sha256": "fdf9614728397728c4fb87985c1b8bfe54c62199957891e989ba3d74d08e12c5",
+        "source": "current_default"
+      },
+      {
+        "path": "src/lib/local-storage/index.ts",
+        "sha256": "0372f5269e2650825daf1bcea84c4d7babbc305f41b23b2bd2ac2f35b79a8ad7",
+        "source": "current_default"
+      },
+      {
+        "path": "src/lib/local-storage/memory.ts",
+        "sha256": "334a72fff1ed890d196ccddf37398e74383c4a073e4b5f8511940b141d516b0c",
+        "source": "current_default"
+      },
+      {
+        "path": "src/lib/local-storage/subsystems.ts",
+        "sha256": "4851ad02730dbe9197a185e006c8803a6b82126d0ab508b0bc84f93f8748a963",
+        "source": "current_default"
+      },
+      {
+        "path": "src/palette/gitPanelActions.ts",
+        "sha256": "b6e929629af5b258818521259b904be3b3879ab9ffa3d00173924cbb8bd094b5",
+        "source": "current_default"
+      },
+      {
+        "path": "src/scripts/model.ts",
+        "sha256": "1dcea5ff26ac561859cf039fd9f20c365367ae186d80c668bbc28f954e19a9c8",
+        "source": "current_default"
+      },
+      {
+        "path": "src/scripts/setupPrompt.ts",
+        "sha256": "e72627ec1d713413eac349ce1ecef4e592d4802e5f9f8e9d04b3aa782ecec973",
+        "source": "current_default"
+      },
+      {
+        "path": "src/settings/agents/loadout.ts",
+        "sha256": "689db32d91fcf7a84deb1c31293a8c877797c63bf0223ae1fd954011ff5ef3e7",
+        "source": "current_default"
+      },
+      {
+        "path": "src/settings/models.ts",
+        "sha256": "bfe92c614ec2076b61055a35ef402cfe06e9b407ac424ca55c8a70c8a89f4939",
+        "source": "current_default"
+      },
+      {
+        "path": "src/settings/reasonPalette.ts",
+        "sha256": "60dd33b440d1bb21bb07ed3e522a678057a784d1b7a5c8b33aba188a1ee4c835",
+        "source": "current_default"
+      },
+      {
+        "path": "src/settings/types.ts",
+        "sha256": "6bccb1442bf4fc9fa31c019d0f22f3937327a72fb17fbace2a84b3ca9ee89936",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/addRepo.ts",
+        "sha256": "82b6993579407aa5a77862dea0f70430b0bbde2f93b7484a2a6a527bc9a262c9",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/autoUnread.ts",
+        "sha256": "47579721c665502fdc8f7f8d7bbfa7bed1c8a647fa19a534068331966ed72831",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/chatTabUnread.ts",
+        "sha256": "c929b7ef093e2252b8546b412c173a86261b3279fdc038a1648be3a2e2abca37",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/chatUnread.ts",
+        "sha256": "5367c692afa7818f0044b2f7bbbfc736acd3f7bb4dda5a10cc3b9276cb212b79",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/names.ts",
+        "sha256": "93be02bcee0da733831b0356b406c5854c2206ea86f65783c59e03312b56346f",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/navigationSections.ts",
+        "sha256": "876c4b8bb79dbf558f91f90186f60604b16ab627fbedb37bb45d6b6a4b4a0b49",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/nextUnread.ts",
+        "sha256": "a58e8284376c113ec5a8f0db4967c6c973cae89b5668fde7d4ae02477e30a826",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/openChat.ts",
+        "sha256": "40a9ea9f4719fa4c8602e4bc2611c47051c54a317131f458a324cddfc072a152",
+        "source": "frozen_candidate"
+      },
+      {
+        "path": "src/state/persisted.ts",
+        "sha256": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209",
+        "source": "frozen_candidate"
+      },
+      {
+        "path": "src/state/repoOrder.ts",
+        "sha256": "f86d871434560f6bce266cc47b90dd078138cc6910e9ca1eefda40660af6b20a",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/rowStatus.ts",
+        "sha256": "e22c083e131c35774234f0f91fb1f5e5b117c6d40161ac3f346395bc46f2df34",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/selectors.ts",
+        "sha256": "37f68b0305f898b2cdf575e05bd0a0ebf89983eb527b96526cf4f9406da2302d",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/sidebarOrder.ts",
+        "sha256": "08bffd6a3044fb97854796f1d7b316dfb8ff4f06882a98aee4dbd98ad25ae532",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/sidebarPersist.ts",
+        "sha256": "1c93a5df95591139580becb82e518c6aabb3d7fb6315dd82312c7a00a0121d07",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/store.ts",
+        "sha256": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96",
+        "source": "frozen_candidate"
+      },
+      {
+        "path": "src/state/workspaceSessions.ts",
+        "sha256": "180c76b22899e63cc3d1f5b92cdcedfa9c7a0bdebe82c6c7d3de54c037da291b",
+        "source": "current_default"
+      },
+      {
+        "path": "src/state/workspaceStatus.ts",
+        "sha256": "8b26245bf7cec0e806485e5fc9608220df08cbd7250953e946122b0044eef714",
+        "source": "current_default"
+      },
+      {
+        "path": "src/workspace/createFlow.ts",
+        "sha256": "c8c44d5552fdbf1d91ec4f65496ba820ee30cb7895c34944f228e76ce95e4a1c",
+        "source": "current_default"
+      },
+      {
+        "path": "src/workspace/naming.ts",
+        "sha256": "5a1558036b9f13ab3ccbc188be1d5d621b3639c6be270808558b2b91826a0535",
+        "source": "current_default"
+      },
+      {
+        "path": "src/workspace/setupWatch.ts",
+        "sha256": "629b3adb5e34e0041c0e41886628a53098cfa822220d2b699604475146c6efa2",
+        "source": "current_default"
+      }
+    ],
+    "expected_candidate_pins": {
+      "crates/openconductor-db/src/sessions.rs": "2cf64d2e3f975181af3ec888729b62fc55e67ed91cafb8994087c21ab13de3ac",
+      "crates/openconductor-db/tests/local_clear.rs": "e14303de0b0a8ba87423379cf453caa697dd0142f59061fbac0cc9005299a043",
+      "src/components/WorkspaceView.tsx": "13e4ad8a689e4ce873b4c612cbfc81cf99ec38452ece7957d8c3c482e7272bbb",
+      "src/features/chat/localClear.ts": "36773e89380caca36d3c25c42c3e5d7c2c7ac6f29510e53f1930f24520d42890",
+      "src/features/diff/ReviewButton.tsx": "fa910a5751fd53ddd2d32a74177af4c378ae4bcb91fc43e3bf7569e236642a8c",
+      "src/state/openChat.ts": "40a9ea9f4719fa4c8602e4bc2611c47051c54a317131f458a324cddfc072a152",
+      "src/state/persisted.ts": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209",
+      "src/state/store.ts": "6071be71368fa5a141ded7e6de42398ba86900638fe719fd2e44c296545cde96",
+      "src/state/types.ts": "fd8bf53604cc4aa6881cc4a1dae0763dae6ac5ff4ff0fc83ac1b2d18f762ea55",
+      "src-tauri/src/lib.rs": "37ce9e4ea858859898ab8d4002334f7f7f148e2cf45413132e9645ed73a97950",
+      "src-tauri/src/persistence/mod.rs": "f82a17bbac3c7f055d4dc7433a83c1828e754728bed87e4a0597c2c476f17266",
+      "src-tauri/src/sidebar_workspace_commands.rs": "91e1d8bb5f411d07bc4d94a998637d75617cae29ba25975896117e50c0083b24"
+    },
+    "external_imports": {
+      "node:assert/strict": [
+        "src/features/chat/workspaceLocalClear.test.ts"
+      ],
+      "node:fs": [
+        "src/features/chat/workspaceLocalClear.test.ts"
+      ],
+      "node:module": [
+        "src/features/chat/workspaceLocalClear.test.ts"
+      ],
+      "node:path": [
+        "src/features/chat/workspaceLocalClear.test.ts"
+      ],
+      "node:url": [
+        "src/features/chat/workspaceLocalClear.test.ts"
+      ],
+      "node:test": [
+        "src/features/chat/workspaceLocalClear.test.ts"
+      ],
+      "node:vm": [
+        "src/features/chat/workspaceLocalClear.test.ts"
+      ],
+      "react": [
+        "src/state/store.ts",
+        "src/features/diff/chatAttachment.ts",
+        "src/features/diff/useChangesPresentation.ts",
+        "src/features/diff/ReviewButton.tsx",
+        "src/components/WorkspaceView.tsx",
+        "src/features/chat/Composer.tsx"
+      ],
+      "@tauri-apps/api/core": [
+        "src/state/store.ts",
+        "src/features/draft-attachments/api.ts",
+        "src/features/chat/localClear.ts",
+        "src/lib/local-storage/index.ts",
+        "src/features/openIn/apps.ts",
+        "src/features/diff/ReviewButton.tsx",
+        "src/components/WorkspaceView.tsx"
+      ],
+      "fuzzysort": [
+        "src/features/chat/slashCommands.ts",
+        "src/keybindings/fuzzy.ts"
+      ]
+    },
+    "missing_public_packages": {},
+    "unresolved_local_imports": [],
+    "checked_default_head": "c2041a9273c17e0bbafa4326633002e75e311901",
+    "changed_graph_inputs": []
+  },
+  "control_inputs": {
+    "checked_default_head": "c2041a9273c17e0bbafa4326633002e75e311901",
+    "frozen_controls": [
+      {
+        "path": "src/state/openChat.test.ts",
+        "sha256": "a859c2a325992a9bd63935a885f5ad9987ca1f389dbdde967ea715bf97494d24"
+      },
+      {
+        "path": "src/state/persisted.test.ts",
+        "sha256": "5e6d5384a01ccbdfb6833b63a06fbe492866f3025c16f5ab62b6303ededf6dd0"
+      },
+      {
+        "path": "src/state/chatUnread.test.ts",
+        "sha256": "9ced7c64f41f90e6ac785cb01539994a46353b4506e4eec0e80a64ea4f246760"
+      },
+      {
+        "path": "src/features/chat/chatTabs.test.ts",
+        "sha256": "923ed646c18d1ded881f1202dff086ac0dba45ef27e1707d56114f3c76c36605"
+      },
+      {
+        "path": "src/features/chat/chatModelChoice.test.ts",
+        "sha256": "64ff9dbc832c72b4aab32a07b2d042881ab93fb8ca02cbde9472253ecad5d5f3"
+      }
+    ],
+    "nonexistent_store_test_omitted": true
+  },
+  "not_run": [
+    "Rust DB tests",
+    "native command DTO tests",
+    "full TypeScript compiler",
+    "local Rust format (component historically unavailable)",
+    "native visible UI/provider/visual acceptance"
+  ],
+  "screenshot_gap": "No native/browser UI run authorized in this serialized cloud unit; mounted renderer evidence is not visual/native acceptance.",
+  "tracked_checkout_untouched": true,
+  "no_install_or_provider_execution": true,
+  "last_actual_terminal": "2026-11-11T09:07:04.855933+00:00"
+}

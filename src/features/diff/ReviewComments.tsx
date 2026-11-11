@@ -11,13 +11,15 @@
 // suggested changes, Resolve (on GitHub) and Delete (here only, as Conductor
 // does); they cannot be edited or replied to. Comments on the PR itself are
 // listed from the Changes toolbar, so no file has to be open.
-import { useCallback, useEffect, useId, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { openUrl } from "../../backend";
 import { DialogFrame } from "../../components/DialogFrame";
 import { useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
 import { commentStoreFor } from "./commentsApi.ts";
 import {
   bodyParts,
+  commentAnchorUpdates,
+  type CommentAnchorPositions,
   canDeleteComment,
   commentAttachment,
   commentSource,
@@ -69,9 +71,12 @@ const GITHUB_SYNC_MS = 120_000;
 
 const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? "" : "s"}`;
 
-function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }: { initial?: string; placeholder?: string; submitLabel: string; onSubmit: (body: string) => void; onCancel: () => void }) {
-  const [text, setText] = useState(initial);
+function Composer({ initial = "", edit, placeholder, submitLabel, onSubmit, onCancel }: { initial?: string; edit?: { text: string; onChange: (body: string) => void }; placeholder?: string; submitLabel: string; onSubmit: (body: string) => void; onCancel: () => void }) {
+  const [localText, setLocalText] = useState(initial);
+  const text = edit?.text ?? localText;
+  const setText = edit?.onChange ?? setLocalText;
   const [discardOpen, setDiscardOpen] = useState(false);
+  const composing = useRef(false);
   const dialogId = useId();
   const cancel = () => {
     const dirty = initial === "" ? text.trim() !== "" : text !== initial;
@@ -92,7 +97,11 @@ function Composer({ initial = "", placeholder, submitLabel, onSubmit, onCancel }
         value={text}
         placeholder={placeholder}
         onChange={(e) => setText(e.target.value)}
+        onCompositionStart={() => { composing.current = true; }}
+        onCompositionEnd={() => { composing.current = false; }}
+        onBlur={() => { composing.current = false; }}
         onKeyDown={(e) => {
+          if (composing.current || e.nativeEvent?.isComposing || e.keyCode === 229 || e.which === 229) return;
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
             e.preventDefault();
             submit();
@@ -165,10 +174,41 @@ function GithubCommentAuthor({ c }: { c: DiffComment }) {
   );
 }
 
+type CommentIdentity = Pick<DiffComment, "workspace_id" | "id">;
+const commentEditDrafts = new Map<string, string>();
+const commentEditListeners = new Set<() => void>();
+const commentEditKey = (comment: CommentIdentity) => JSON.stringify([comment.workspace_id, comment.id]);
+const notifyCommentEdit = () => commentEditListeners.forEach((listener) => listener());
+const subscribeCommentEdit = (listener: () => void) => {
+  commentEditListeners.add(listener);
+  return () => { commentEditListeners.delete(listener); };
+};
+
+function useCommentEditDraft(comment: CommentIdentity): string | undefined {
+  const key = commentEditKey(comment);
+  return useSyncExternalStore(subscribeCommentEdit, () => commentEditDrafts.get(key), () => undefined);
+}
+
+function startCommentEdit(comment: CommentIdentity & Pick<DiffComment, "body">): void {
+  const key = commentEditKey(comment);
+  if (commentEditDrafts.has(key)) return;
+  commentEditDrafts.set(key, comment.body);
+  notifyCommentEdit();
+}
+
+function updateCommentEdit(comment: CommentIdentity, body: string): void {
+  commentEditDrafts.set(commentEditKey(comment), body);
+  notifyCommentEdit();
+}
+
+function discardCommentEdit(comment: CommentIdentity): void {
+  if (commentEditDrafts.delete(commentEditKey(comment))) notifyCommentEdit();
+}
+
 function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
-  const [editing, setEditing] = useState(false);
+  const draft = useCommentEditDraft(c);
   const source = commentSource(c);
-  if (editing) return <Composer initial={c.body} submitLabel="Save" onCancel={() => setEditing(false)} onSubmit={(b) => void ops.edit(c, b).then((ok) => ok && setEditing(false))} />;
+  if (draft !== undefined) return <Composer initial={c.body} edit={{ text: draft, onChange: (body) => updateCommentEdit(c, body) }} submitLabel="Save" onCancel={() => discardCommentEdit(c)} onSubmit={(b) => void ops.edit(c, b).then((ok) => ok && discardCommentEdit(c))} />;
   return (
     <div className="oc-comment">
       <div className="oc-comment-meta">
@@ -191,7 +231,7 @@ function CommentItem({ c, ops }: { c: DiffComment; ops: Ops }) {
           </a>
         )}
         {source === "user-local" && (
-          <button className="oc-link" onClick={() => setEditing(true)}>
+          <button className="oc-link" onClick={() => startCommentEdit(c)}>
             Edit
           </button>
         )}
@@ -281,7 +321,7 @@ function ThreadView({ thread, ops, focused }: { thread: Thread; ops: Ops; focuse
   );
 }
 
-type Composing = LineRange & { path: string };
+type Composing = LineRange & { path: string; workspaceId: string; id: string; body: string };
 
 /** Conductor's toasts for review comments. */
 export type Notify = (kind: "info" | "error", message: string) => void;
@@ -325,7 +365,8 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const store = useMemo(() => commentStoreFor(workspaceId, workspacePath), [workspaceId, workspacePath]);
   const [stored, setStored] = useState<DiffComment[]>([]);
   const [files, setFiles] = useState<FileDiff[]>([]);
-  const [composing, setComposing] = useState<Composing | null>(null);
+  const [newDraft, setComposing] = useState<Composing | null>(null);
+  const composing = newDraft?.workspaceId === workspaceId ? newDraft : null;
   const [focused, setFocused] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [github, setGithub] = useState<{ report?: GithubSyncReport; error?: string }>({});
@@ -453,7 +494,11 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     "diff.previousComment": () => goToComment(-1),
   });
 
-  const onLineClick = (file: FileDiff, range: LineRange) => setComposing({ path: file.path, ...range });
+  const onLineClick = (file: FileDiff, range: LineRange) => {
+    const next = { path: file.path, ...range, workspaceId, id: crypto.randomUUID(), body: "" };
+    setComposing((current) => current?.workspaceId === workspaceId && current.path === file.path && current.side === range.side && current.start === range.start && current.line === range.line ? current : next);
+  };
+  const discardNewDraft = (draft: Composing) => setComposing((current) => current?.id === draft.id && current.body === draft.body ? null : current);
   // The composer's lines stay highlighted in the file until it is saved or cancelled.
   const commentRange = (file: FileDiff): LineRange | null => (composing?.path === file.path ? { side: composing.side, start: composing.start, line: composing.line } : null);
 
@@ -463,10 +508,20 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     for (const t of threads) {
       if (t.root.file_path !== file.path || t.root.file_level) continue;
       const a = { side: sideOf(t.root), line: t.root.end_line_number ?? t.root.line_number };
-      out.set(`${a.side}:${a.line}`, a);
+      const key = `${a.side}:${a.line}`;
+      const existing = out.get(key);
+      out.set(key, { ...a, commentIds: [...(existing?.commentIds ?? []), t.root.id, ...t.replies.map((c) => c.id)] });
     }
-    if (composing?.path === file.path) out.set(`${composing.side}:${composing.line}`, { side: composing.side, line: composing.line });
+    if (composing?.path === file.path) {
+      const key = `${composing.side}:${composing.line}`;
+      if (!out.has(key)) out.set(key, { side: composing.side, line: composing.line });
+    }
     return [...out.values()];
+  };
+
+  const persistAnchors = (file: FileDiff, positions: CommentAnchorPositions) => {
+    const updates = commentAnchorUpdates(stored, file.path, positions);
+    if (updates.length > 0) void run(store.updateAnchors(updates));
   };
 
   const annotations = (file: FileDiff, anchor: LineAnchor): ReactNode => {
@@ -480,12 +535,14 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
         ))}
         {draft && (
           <Composer
+            key={draft.id}
+            edit={{ text: draft.body, onChange: (body) => setComposing((current) => current?.id === draft.id ? { ...current, body } : current) }}
             placeholder="Leave a comment for the agent…"
             submitLabel="Comment"
-            onCancel={() => setComposing(null)}
+            onCancel={() => discardNewDraft(draft)}
             onSubmit={(body) =>
               void run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() }))).then(
-                (ok) => ok && setComposing(null),
+                (ok) => ok && discardNewDraft(draft),
               )
             }
           />
@@ -560,5 +617,5 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const hasPending = hasPendingComments(comments);
   const addAllToChat = () => void toChat(ready);
 
-  return { onLineClick, commentRange, anchors, annotations, notes, actions, onLoaded, hasPending, addAllToChat };
+  return { onLineClick, commentRange, anchors, annotations, persistAnchors, notes, actions, onLoaded, hasPending, addAllToChat };
 }

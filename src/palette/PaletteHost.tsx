@@ -5,7 +5,7 @@ import type { DialogKind } from "../components/Dialogs";
 import { CommandPalette } from "./CommandPalette.tsx";
 import { useKeybindings } from "../keybindings/KeybindingsProvider.tsx";
 import type { CommandHandlers } from "../keybindings/bind.ts";
-import { paletteDataFromState, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
+import { workspacePaletteData, paletteSettings, shortcutOrder, sidebarOrder, stepWorkspace, type WorkspaceRef } from "./fromAppState.ts";
 import { buildSearchIndex } from "../settings/searchIndex";
 import { settingsGroups } from "../settings/pages";
 import { AGENT_SEARCH_TABS, scrollToRow, searchIcon } from "../settings/SettingsView";
@@ -13,6 +13,7 @@ import { openAgentSettings, openRepoSettingsPage, openSettingsPage } from "../fe
 import type { ResultItem } from "./search/model.ts";
 import { useBoolPref } from "../settings/useBoolPref.ts";
 import { loadRecentWorkspaceIds, recordViewedWorkspace, saveRecentWorkspaceIds } from "./recentWorkspaces.ts";
+import { loadLastWorkspaceRoute, saveLastWorkspaceRoute, selectedWorkspaceRoute, settingsRepositoryId } from "./settingsRepository.ts";
 import { listArchivedWorkspaces, type ArchivedWorkspace } from "../workspace/archive";
 import { openNextUnread } from "../state/nextUnread.ts";
 import { preferredProjectWorkspace } from "./projectWorkspace.ts";
@@ -20,6 +21,8 @@ import { AppIcon, useInstalledApps } from "../features/openIn/OpenInButton.tsx";
 import { openInApp } from "../features/openIn/apps.ts";
 import { recordOpenIn, useAppPrefs } from "../settings/appPrefs.ts";
 import { Toaster, useToasts } from "../components/Toast";
+import { ConductorIcon } from "../components/ConductorIcon";
+import { GIT_PANEL_ACTIONS, requestGitPanelAction } from "./gitPanelActions.ts";
 
 interface Props {
   state: AppState;
@@ -35,8 +38,9 @@ interface Props {
   commands: PaletteCommands;
 }
 
-/** What the palette's items do that the app shell owns (each mirrors its keyboard shortcut's handler). */
+/** App-shell commands available to the palette's actions. */
 export interface PaletteCommands {
+  createSection?: () => void;
   addProject: () => void;
   toggleTheme: () => void;
   toggleLeftSidebar: () => void;
@@ -55,12 +59,19 @@ export interface PaletteCommands {
 /** Owns the palette's open state, recent workspaces and the app's global shortcuts. */
 export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, onOpenProject, open, onOpenChange, commands }: Props) {
   const [recents, setRecents] = useState<readonly string[]>(loadRecentWorkspaceIds);
+  const [lastWorkspaceRoute, setLastWorkspaceRoute] = useState(loadLastWorkspaceRoute);
   const sel = state.selection;
   const selectedId = sel.kind === "workspace" ? sel.workspaceId : null;
+  const selectedRepoId = sel.kind === "workspace" ? sel.repoId : null;
 
   useEffect(() => {
+    const route = selectedWorkspaceRoute(state);
+    if (route) {
+      setLastWorkspaceRoute((previous) => previous?.href === route.href ? previous : route);
+      saveLastWorkspaceRoute(route);
+    }
     if (selectedId) setRecents((r) => recordViewedWorkspace(r, selectedId));
-  }, [selectedId]);
+  }, [selectedId, selectedRepoId, state.repos, state.archivedOpen]);
   useEffect(() => saveRecentWorkspaceIds(recents), [recents]);
 
   // parity:sidebar.archived-view: archived workspaces are not in the sidebar
@@ -88,7 +99,10 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
   const apps = useInstalledApps();
   const prefs = useAppPrefs();
   const { toasts, show, dismiss } = useToasts();
-  const data = useMemo(() => paletteDataFromState(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in), [state, recents, archived, settingEntries, apps, prefs.default_open_in]);
+  const data = useMemo(() => {
+    const entries = workspacePaletteData(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in);
+    return commands.createSection ? entries : { ...entries, actions: entries.actions.filter((entry) => entry.id !== "create-section") };
+  }, [state, recents, archived, settingEntries, apps, prefs.default_open_in, commands.createSection]);
   const archivedById = (id: string) => archived.find((a) => a.id === id);
   const showWorkspaceNumbers = useBoolPref("experimental_show_workspace_numbers");
 
@@ -100,6 +114,7 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
   const actions: Record<string, () => void> = {
     "archive-workspace": () => sel.kind === "workspace" && dispatch({ type: "archiveWorkspace", repoId: sel.repoId, workspaceId: sel.workspaceId }),
     "new-workspace": () => (activeRepoId ? onOpenDialog("create") : onOpenProject()),
+    "create-section": () => commands.createSection?.(),
     // Conductor opens the sidebar's add-project popover on the next frame (`b_a`, after the dialog closes).
     "add-project": () => requestAnimationFrame(commands.addProject),
     "toggle-theme": commands.toggleTheme,
@@ -113,6 +128,7 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
     settings: commands.openSettings,
     "open-docs": commands.openDocs,
     "quick-open": commands.quickOpen,
+    ...Object.fromEntries(GIT_PANEL_ACTIONS.map(({ entry }) => [entry.id, () => requestGitPanelAction(entry.id, state)])),
     "copy-url": commands.copyUrl,
     "go-home": () => dispatch({ type: "select", selection: { kind: "home" } }),
     "next-workspace": () => go(stepWorkspace(state, 1)),
@@ -159,12 +175,11 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
     }
   }
 
-  // Settings' own search does the same (`wGt`): a repository section opens in the open workspace's repository, else the first.
   function openSetting(id: string) {
     const t = settingsIndex.find((i) => i.id === id)?.target;
     if (!t) return;
     if (t.scope === "repo") {
-      const repoId = sel.kind === "workspace" ? sel.repoId : state.repos[0]?.id;
+      const repoId = settingsRepositoryId(state, lastWorkspaceRoute);
       if (repoId) openRepoSettingsPage(repoId, t.section);
     } else if (t.providerTab) openAgentSettings(t.providerTab);
     else openSettingsPage(t.page);
@@ -186,6 +201,9 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
       onSelect={onSelect}
       settingIcon={settingIcon}
       actionIcon={(id) => {
+        if (id === "show-all-files") return <ConductorIcon name="list-tree" size={16} />;
+        if (id === "show-changes" || id === "show-uncommitted-changes") return <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2Z" /><path d="M14 2v5a1 1 0 0 0 1 1h5M9 13h6M12 10v6M9 19h6" /></svg>;
+        if (id === "show-checks") return <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden><circle cx={12} cy={12} r={10} /><path d="m9 12 2 2 4-4" /></svg>;
         const app = apps?.find((a) => id === `open-in-${a.id}`);
         return app ? <AppIcon app={{ ...app, icon: null }} size={14} /> : null;
       }}

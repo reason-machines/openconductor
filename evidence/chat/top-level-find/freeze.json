@@ -1,0 +1,21 @@
+{
+  "checked_main": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "archive_sha256": "6b66e4b237bf8ff354c0b6fa68f680adaf1186ac97191cfef7e33b27ddb7c218",
+  "frozen_tests": {
+    "tests/chat-search/transcriptFind.component.test.mjs": "ea7db7ab1677be54fed0b2cd9439d79d988a027b341cc57f0933a61e1dde709b",
+    "tests/chat-search/transcriptFind.fixture.json": "7521ca838c7cc4e91cab00581e82a3bf00ce63a29e19256fb47316823137876f",
+    "tests/chat-search/transcriptFind.dom.test.mjs": "c9103ce31295556262a3284447b7be560f878690212ac75d532b0eb22aa7540f"
+  },
+  "setup_only_corrections": [
+    "Select rowTurn variable declaration in production AST, not only function declarations.",
+    "Opt into actual Transcript searchEnabled prop; unrelated existing AST consumers stay disabled."
+  ],
+  "original_behavioral_body_unchanged": true,
+  "main_files": {
+    "src/components/WorkspaceView.tsx": "9156b2303c8cfd3dc3f01f71d8e821e6fff3a6740fc4118dc8c0ed19b5d8d896",
+    "src/features/chat/Transcript.tsx": "7b98c1ab857e7c015bc04c0cab64b8206ef2741ab8dc87800a32f3576a00ac00",
+    "src/keybindings/registry.ts": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9",
+    "src/keybindings/KeybindingsProvider.tsx": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6"
+  },
+  "runtime": "NOT RUN"
+}

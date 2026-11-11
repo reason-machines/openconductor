@@ -1,0 +1,1 @@
+async function E6t(t){await ee.updateSetting("branch_prefix_type",t)}

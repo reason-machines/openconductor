@@ -1,0 +1,244 @@
+{
+  "producer": "Conductor Rebuild / 6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+  "scope": "Clone URL/location/Browse pending-disabled props only. No recent control, shared modal, log/error/preference changes.",
+  "archive": {
+    "attachment_id": "9bba4171-4ff7-4ded-83e7-5a62a9f75350",
+    "bytes": 15206400,
+    "sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+    "safe_members": 13
+  },
+  "assets": [
+    {
+      "key": "index",
+      "path": ".rea-work/retained-reference/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    },
+    {
+      "key": "renderer",
+      "path": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    }
+  ],
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "rea_limit": "The original semantic renderer analysis exhausted heap. This supplement reads identity-verified retained shipped bytes only, with no reference JavaScript execution.",
+  "offset_convention": "Zero-based UTF-8 half-open byte offsets.",
+  "main_counterexample": {
+    "commit": "c91751164fffa84f524d5e6f30144f869efb76ad",
+    "files": {
+      "src/components/CloneGitHubRepoDialog.tsx": {
+        "bytes": 6459,
+        "sha256": "c86d4aa7f06da4ef9f38e00a1b978ec08cc2e3e5e02e5ad162d9e559edd3a129"
+      },
+      "src/components/DialogFrame.tsx": {
+        "bytes": 2481,
+        "sha256": "f8b2d16d69e39dfdc0e33303f47bae20934e0cf94fc39e2f0cf327521c9acb7f"
+      }
+    }
+  },
+  "spans": [
+    {
+      "name": "los-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1963117,
+        1968331
+      ],
+      "bytes": 5214,
+      "sha256": "f45ab83ee49f7c246b1ceefcba2d9e452cd43a978729d048d73baa37df8e1e32",
+      "literal": "function los(t){const e=ne.c(64),{onSuccess:n}=t,[i,r]=$.useState(\"\"),[o,a]=$.useState(\"\");let c;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(c=[],e[0]=c):c=e[0];const[u,d]=$.useState(c),[h,m]=$.useState(void 0),{data:g,isLoading:_}=hIr(),{data:v}=$Se(),x=v?.gitProtocol===\"ssh\";let w;e[1]===Symbol.for(\"react.memo_cache_sentinel\")?(w=Se=>{d(De=>[...De.slice(-50),Se+`\n`])},e[1]=w):w=e[1];const E=vYe(w),{data:k}=iSe(),I=k>=rI.DONE,R=cos,{data:O}=Ani();let D,P;e[2]!==O?(D=()=>{(async()=>{const De=await Rni(O);a(De)})().fireAndForget()},P=[O],e[2]=O,e[3]=D,e[4]=P):(D=e[3],P=e[4]),$.useEffect(D,P);let L;e[5]!==o?(L=async()=>{const Se=await fI({directory:!0,multiple:!1,title:\"Choose where to clone the repository\",defaultPath:o});Se&&a(Se)},e[5]=o,e[6]=L):L=e[6];const B=L;let F;e[7]!==o||e[8]!==E||e[9]!==I||e[10]!==i||e[11]!==n||e[12]!==x?(F=async()=>{if(m(void 0),!i){m(\"Enter a repository URL\");return}if(!o){m(\"Select a directory\");return}try{const Se=await E.mutateAsync({remoteUrl:i,clonePath:o});try{await Ini(o)}catch(De){const je=De;Bt.error(\"Failed to save clone directory preference:\",je)}r(\"\"),d([]),nr.closeDialog(eSe),I||R(rI.FIRST_MESSAGE),n(Se.id)}catch(Se){const De=Se,je=De instanceof Error?De.message:String(De);m(uos({errorMessage:je,remoteUrl:i,prefersSshUrls:x})),d([])}},e[7]=o,e[8]=E,e[9]=I,e[10]=i,e[11]=n,e[12]=x,e[13]=F):F=e[13];const H=F;let U;e[14]!==x?(U=Se=>{r(x?Se.ssh_url:Se.clone_url)},e[14]=x,e[15]=U):U=e[15];const z=U;let G;e[16]===Symbol.for(\"react.memo_cache_sentinel\")?(G=p.jsxs(Hd,{children:[p.jsx(Bu,{children:\"Clone GitHub repo\"}),p.jsx(wg,{className:\"sr-only\",children:\"Choose a recent repo or paste a clone URL.\"})]}),e[16]=G):G=e[16];let K;e[17]===Symbol.for(\"react.memo_cache_sentinel\")?(K=p.jsx(Zu,{htmlFor:\"git-url\",children:\"Repository URL\"}),e[17]=K):K=e[17];let X;e[18]===Symbol.for(\"react.memo_cache_sentinel\")?(X=Se=>r(Se.target.value),e[18]=X):X=e[18];const Q=x?\"git@github.com:user/repo.git\":\"https://github.com/user/repo.git\";let J;e[19]!==o||e[20]!==E.isPending||e[21]!==H||e[22]!==i?(J=Se=>{Qh(\"dialog.primaryAction\",Se.nativeEvent)&&!E.isPending&&i&&o&&(Se.preventDefault(),Se.stopPropagation(),H().fireAndForget())},e[19]=o,e[20]=E.isPending,e[21]=H,e[22]=i,e[23]=J):J=e[23];let te;e[24]!==i||e[25]!==Q||e[26]!==J?(te=p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[K,p.jsx(Qo,{id:\"git-url\",value:i,onChange:X,placeholder:Q,autoComplete:\"new-password\",autoCorrect:\"off\",autoCapitalize:\"off\",spellCheck:!1,autoFocus:!0,onKeyDown:J})]}),e[24]=i,e[25]=Q,e[26]=J,e[27]=te):te=e[27];let Z;e[28]!==g?(Z=g??[],e[28]=g,e[29]=Z):Z=e[29];let se;e[30]!==_||e[31]!==z||e[32]!==i||e[33]!==Z?(se=p.jsx(dos,{repositories:Z,isLoading:_,selectedCloneUrl:i,onSelectRepository:z}),e[30]=_,e[31]=z,e[32]=i,e[33]=Z,e[34]=se):se=e[34];let ce;e[35]!==te||e[36]!==se?(ce=p.jsxs(\"div\",{className:\"space-y-4\",children:[te,se]}),e[35]=te,e[36]=se,e[37]=ce):ce=e[37];let ae;e[38]===Symbol.for(\"react.memo_cache_sentinel\")?(ae=p.jsx(Zu,{children:\"Location\"}),e[38]=ae):ae=e[38];let de;e[39]===Symbol.for(\"react.memo_cache_sentinel\")?(de=Se=>a(Se.target.value),e[39]=de):de=e[39];let ue;e[40]!==o?(ue=p.jsx(Qo,{type:\"text\",value:o,onChange:de,className:\"flex-1\",placeholder:\"Enter path or click to select\"}),e[40]=o,e[41]=ue):ue=e[41];let pe;e[42]!==B?(pe=p.jsx(tt,{variant:\"outline\",onClick:B,children:\"Browse\"}),e[42]=B,e[43]=pe):pe=e[43];let be;e[44]!==ue||e[45]!==pe?(be=p.jsxs(\"div\",{className:\"flex flex-col gap-2\",children:[ae,p.jsxs(\"div\",{className:\"grid grid-cols-[minmax(0,1fr)_auto] gap-2\",children:[ue,pe]})]}),e[44]=ue,e[45]=pe,e[46]=be):be=e[46];let he;e[47]!==E.isPending||e[48]!==u?(he=E.isPending&&u.length>0&&p.jsxs(\"div\",{className:\"space-y-2\",children:[p.jsxs(\"div\",{className:\"flex items-center gap-2\",children:[p.jsx(ri,{type:\"working\",className:\"size-4\"}),p.jsx(\"p\",{className:\"text-sm text-muted-foreground\",children:\"Cloning...\"})]}),p.jsx(f3,{className:\"h-32 rounded border bg-muted/50 p-2\",children:p.jsx(\"pre\",{className:\"text-xs font-mono text-muted-foreground whitespace-pre-wrap break-all overflow-hidden\",children:[...u].reverse().join(\"\")})})]}),e[47]=E.isPending,e[48]=u,e[49]=he):he=e[49];let ge;e[50]!==h?(ge=h&&p.jsx(\"div\",{className:\"min-w-0 rounded border border-destructive/50 bg-destructive/10 p-3\",children:p.jsx(\"p\",{className:\"cursor-text select-text whitespace-pre-wrap [overflow-wrap:anywhere] text-sm text-destructive\",children:h})}),e[50]=h,e[51]=ge):ge=e[51];const ve=E.isPending||!i||!o;let ye;e[52]!==E.isPending?(ye=E.isPending?\"Cloning...\":p.jsxs(p.Fragment,{children:[\"Clone repo\",p.jsxs(\"span\",{\"aria-hidden\":\"true\",className:\"ml-1.5 inline-flex items-center text-xs opacity-60\",children:[\"\u2318\",p.jsx(gf,{})]})]}),e[52]=E.isPending,e[53]=ye):ye=e[53];let xe;e[54]!==H||e[55]!==ve||e[56]!==ye?(xe=p.jsx(\"div\",{className:\"flex justify-end gap-2\",children:p.jsx(tt,{onClick:H,disabled:ve,\"data-primary-action\":!0,children:ye})}),e[54]=H,e[55]=ve,e[56]=ye,e[57]=xe):xe=e[57];let ke;return e[58]!==ce||e[59]!==be||e[60]!==he||e[61]!==ge||e[62]!==xe?(ke=p.jsxs(p.Fragment,{children:[G,p.jsxs(\"div\",{className:\"space-y-6\",children:[ce,be,he,ge,xe]})]}),e[58]=ce,e[59]=be,e[60]=he,e[61]=ge,e[62]=xe,e[63]=ke):ke=e[63],ke}"
+    },
+    {
+      "name": "Qo-input-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1934438,
+        1935171
+      ],
+      "bytes": 733,
+      "sha256": "6b9504583ed079f42f6117dda4d14156546bb96342af523c33f517b711803814",
+      "literal": "const Qo=$.forwardRef((t,e)=>{const n=ne.c(11);let i,r,o;n[0]!==t?({className:i,type:o,...r}=t,n[0]=t,n[1]=i,n[2]=r,n[3]=o):(i=n[1],r=n[2],o=n[3]);let a;n[4]!==i?(a=Xe(\"flex h-8 rounded-md w-full text-sm bg-background px-3 py-2 outline-none !border !border-input focus:!border-1 focus:!border-special focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 placeholder:text-muted-foreground [color-scheme:light] dark:[color-scheme:dark]\",i),n[4]=i,n[5]=a):a=n[5];let c;return n[6]!==r||n[7]!==e||n[8]!==a||n[9]!==o?(c=p.jsx(\"input\",{type:o,spellCheck:!1,autoComplete:\"new-password\",autoCorrect:\"off\",autoCapitalize:\"off\",writingsuggestions:\"false\",className:a,ref:e,...r}),n[6]=r,n[7]=e,n[8]=a,n[9]=o,n[10]=c):c=n[10],c});"
+    },
+    {
+      "name": "url-input-call",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1965460,
+        1965623
+      ],
+      "bytes": 163,
+      "sha256": "321fc280d22ddc943705361ab02c1d6b048ea8488242b2e4e9252805e0834339",
+      "literal": "p.jsx(Qo,{id:\"git-url\",value:i,onChange:X,placeholder:Q,autoComplete:\"new-password\",autoCorrect:\"off\",autoCapitalize:\"off\",spellCheck:!1,autoFocus:!0,onKeyDown:J})"
+    },
+    {
+      "name": "location-input-call",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1966263,
+        1966369
+      ],
+      "bytes": 106,
+      "sha256": "99984b4b9049b9f644bbdaadc71c01b2914d00614738a2769f7bfd44fb131504",
+      "literal": "p.jsx(Qo,{type:\"text\",value:o,onChange:de,className:\"flex-1\",placeholder:\"Enter path or click to select\"})"
+    },
+    {
+      "name": "url-change-callback",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1964988,
+        1965012
+      ],
+      "bytes": 24,
+      "sha256": "0a534d519c1ca4e2adab141fb54f336d24177e2c98128f74dc3a9b2ed7079319",
+      "literal": "X=Se=>r(Se.target.value)"
+    },
+    {
+      "name": "location-change-callback",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1966197,
+        1966222
+      ],
+      "bytes": 25,
+      "sha256": "b2dd611ed1164e566edbf23dea657bc50e087d73d399524d3d7557854d27086c",
+      "literal": "de=Se=>a(Se.target.value)"
+    },
+    {
+      "name": "clone-controller",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1962791,
+        1963071
+      ],
+      "bytes": 280,
+      "sha256": "a3fc872dce5bd359d1687b7936817ebfcbc6a12f53cc416cf8d9b85fe600ff60",
+      "literal": "function $3i(t){const e=ne.c(5),{onSuccess:n}=t,i=x1(aos);let r;e[0]!==i||e[1]!==n?(r=i?p.jsx(los,{onSuccess:n}):null,e[0]=i,e[1]=n,e[2]=r):r=e[2];let o;return e[3]!==r?(o=p.jsx(kg,{id:eSe,children:p.jsx(nd,{className:\"sm:max-w-[525px] p-4\",children:r})}),e[3]=r,e[4]=o):o=e[4],o}"
+    },
+    {
+      "name": "kg-root",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1920416,
+        1920974
+      ],
+      "bytes": 558,
+      "sha256": "a5357ebcb8e6361cdcad2a38fb6d037f493276a73fd38e23e76968856b8bd1ce",
+      "literal": "const kg=t=>{const e=ne.c(16);let n,i,r;e[0]!==t?({id:n,onOpenChange:i,...r}=t,e[0]=t,e[1]=n,e[2]=i,e[3]=r):(n=e[1],i=e[2],r=e[3]);let o;e[4]!==n?(o=m=>m.activeDialogId===n,e[4]=n,e[5]=o):o=e[5];const a=x1(o);let c;e[6]!==n||e[7]!==i?(c=m=>{m?nr.openDialog(n):nr.closeDialog(n),i?.(m)},e[6]=n,e[7]=i,e[8]=c):c=e[8];const u=c;let d;e[9]!==u||e[10]!==a||e[11]!==r?(d=p.jsx(hv,{...r,open:a,onOpenChange:u}),e[9]=u,e[10]=a,e[11]=r,e[12]=d):d=e[12];let h;return e[13]!==n||e[14]!==d?(h=p.jsx(v3i.Provider,{value:n,children:d}),e[13]=n,e[14]=d,e[15]=h):h=e[15],h};"
+    },
+    {
+      "name": "nd-content",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1914936,
+        1918578
+      ],
+      "bytes": 3642,
+      "sha256": "1597ff6b039d905738debd5d0b9ecff32d152e754a7a6816ef74a0c9cff653a2",
+      "literal": "const nd=$.forwardRef((t,e)=>{const n=ne.c(67);let i,r,o,a,c,u,d,h,m,g,_,v,x,w;n[0]!==t?({className:r,children:i,overlayClassName:v,onKeyDown:g,onOpenAutoFocus:_,onCloseAutoFocus:d,onEscapeKeyDown:h,onInteractOutside:m,initialFocus:u,finalFocus:a,forceMount:c,topEdgeAnchored:w,\"data-tauri-drag-region\":o,...x}=t,n[0]=t,n[1]=i,n[2]=r,n[3]=o,n[4]=a,n[5]=c,n[6]=u,n[7]=d,n[8]=h,n[9]=m,n[10]=g,n[11]=_,n[12]=v,n[13]=x,n[14]=w):(i=n[1],r=n[2],o=n[3],a=n[4],c=n[5],u=n[6],d=n[7],h=n[8],m=n[9],g=n[10],_=n[11],v=n[12],x=n[13],w=n[14]);const E=w===void 0?!0:w,k=$.useContext(x3i),I=$.useContext(y3i),R=$.useContext(w3i),O=$.useId(),[D,P]=$.useState(void 0);let L,B;n[15]!==h||n[16]!==m||n[17]!==O||n[18]!==R?(L=()=>{if(R!==null)return R({overlayOwnerId:O,onEscapeKeyDown:h,onInteractOutside:m})},B=[O,R,h,m],n[15]=h,n[16]=m,n[17]=O,n[18]=R,n[19]=L,n[20]=B):(L=n[19],B=n[20]),$.useLayoutEffect(L,B);let F;n[21]!==e?(F=ge=>{P(ge??void 0),typeof e==\"function\"?e(ge):e&&(e.current=ge)},n[21]=e,n[22]=F):F=n[22];const H=F;let U;n[23]!==u||n[24]!==_?(U=u??(_?()=>{const ge=new Event(\"openAutoFocus\",{cancelable:!0});return _(ge),!ge.defaultPrevented}:void 0),n[23]=u,n[24]=_,n[25]=U):U=n[25];const z=U;let G;n[26]!==a||n[27]!==d?(G=a??(()=>{const ge=new Event(\"closeAutoFocus\",{cancelable:!0});return d?.(ge),tSe(ge),!ge.defaultPrevented}),n[26]=a,n[27]=d,n[28]=G):G=n[28];const K=G;let X;n[29]!==v?(X=Xe(\"fixed inset-0 z-50 bg-overlay backdrop-blur-xs transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0\",v),n[29]=v,n[30]=X):X=n[30];const Q=X;let J;n[31]!==o||n[32]!==c||n[33]!==k||n[34]!==I||n[35]!==v||n[36]!==Q?(J=k?p.jsx(Hjt,{forceMount:c,className:v,\"data-tauri-drag-region\":o}):p.jsx(\"div\",{className:Q,\"data-starting-style\":I?void 0:\"\",\"data-ending-style\":I?void 0:\"\",\"data-tauri-drag-region\":o}),n[31]=o,n[32]=c,n[33]=k,n[34]=I,n[35]=v,n[36]=Q,n[37]=J):J=n[37];const te=E?\"pointer-events-none fixed inset-x-0 top-[max(2rem,calc(50%-250px))] bottom-0 z-50 flex items-start justify-center pb-8\":\"pointer-events-none fixed inset-0 z-50 flex items-center justify-center py-8\",Z=c&&!I&&\"hidden\";let se;n[38]!==Z||n[39]!==te?(se=Xe(te,Z),n[38]=Z,n[39]=te,n[40]=se):se=n[40];let ce;n[41]!==r?(ce=Xe(\"pointer-events-auto relative max-h-full overflow-y-auto rounded-md grid w-full max-w-lg gap-4 border border-border bg-background p-6 shadow-lg outline-none [&>[data-base-ui-portal]]:absolute transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0 focus:outline-none focus-visible:outline-none\",r),n[41]=r,n[42]=ce):ce=n[42];let ae;n[43]!==g?(ae=ge=>{if(Qh(\"dialog.primaryAction\",ge.nativeEvent)){ge.preventDefault();const ve=ge.currentTarget.querySelector(\"[data-primary-action]\");ve&&!ve.hasAttribute(\"disabled\")&&ve.click()}g?.(ge)},n[43]=g,n[44]=ae):ae=n[44];let de;n[45]!==i||n[46]!==O?(de=p.jsx(zjt.Provider,{value:O,children:i}),n[45]=i,n[46]=O,n[47]=de):de=n[47];let ue;n[48]!==D||n[49]!==de?(ue=p.jsx($Xe.Provider,{value:D,children:de}),n[48]=D,n[49]=de,n[50]=ue):ue=n[50];let pe;n[51]!==H||n[52]!==o||n[53]!==x||n[54]!==K||n[55]!==z||n[56]!==ce||n[57]!==ae||n[58]!==ue?(pe=p.jsx(Rde,{...x,\"data-dialog-portal-container\":!0,\"data-tauri-drag-region\":o,ref:H,initialFocus:z,finalFocus:K,className:ce,onKeyDown:ae,children:ue}),n[51]=H,n[52]=o,n[53]=x,n[54]=K,n[55]=z,n[56]=ce,n[57]=ae,n[58]=ue,n[59]=pe):pe=n[59];let be;n[60]!==se||n[61]!==pe?(be=p.jsx(\"div\",{className:se,children:pe}),n[60]=se,n[61]=pe,n[62]=be):be=n[62];let he;return n[63]!==c||n[64]!==be||n[65]!==J?(he=p.jsxs(Ujt,{forceMount:c,children:[J,be]}),n[63]=c,n[64]=be,n[65]=J,n[66]=he):he=n[66],he});"
+    },
+    {
+      "name": "tt-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1923125,
+        1923688
+      ],
+      "bytes": 563,
+      "sha256": "927f4db30521c31acc69e3030404188c6f52275c67c691ea7ff9af615f935d80",
+      "literal": "tt=$.forwardRef((t,e)=>{const n=ne.c(12);let i,r,o,a;if(n[0]!==t){const{className:d,variant:h,size:m,asChild:g,children:_,...v}=t;i=(g===void 0?!1:g)&&$.isValidElement(_)?_:void 0,a=S3i,r=\"button\",o=r_({className:lo(REe({variant:h,size:m,className:d}))},{...v,children:i?void 0:_}),n[0]=t,n[1]=i,n[2]=r,n[3]=o,n[4]=a}else i=n[1],r=n[2],o=n[3],a=n[4];let c;n[5]!==i?(c=i??p.jsx(\"button\",{}),n[5]=i,n[6]=c):c=n[6];let u;return n[7]!==e||n[8]!==r||n[9]!==o||n[10]!==c?(u={defaultTagName:r,props:o,ref:e,render:c},n[7]=e,n[8]=r,n[9]=o,n[10]=c,n[11]=u):u=n[11],a(u)});"
+    },
+    {
+      "name": "S3i-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1920998,
+        1921053
+      ],
+      "bytes": 55,
+      "sha256": "ddd119d405884d670467e1c1690f8ae012c20705de121e26c34bc1f688939bf6",
+      "literal": "function S3i(t){return Es(t.defaultTagName??\"div\",t,t)}"
+    },
+    {
+      "name": "prop-composition-and-render",
+      "asset": "renderer",
+      "utf8_half_open": [
+        463925,
+        466387
+      ],
+      "bytes": 2462,
+      "sha256": "1426a29915ffabf4688d49ce1af890134f66f860e544b08ef8c78f6c4edca580",
+      "literal": "function r_(t,e,n,i,r){if(!n&&!i&&!r&&!t)return FVe(e);let o=FVe(t);return e&&(o=B6e(o,e)),n&&(o=B6e(o,n)),i&&(o=B6e(o,i)),r&&(o=B6e(o,r)),o}function dDr(t){if(t.length===0)return cLt;if(t.length===1)return FVe(t[0]);let e=FVe(t[0]);for(let n=1;n<t.length;n+=1)e=B6e(e,t[n]);return e}function FVe(t){return uLt(t)?{...sli(t,cLt)}:fDr(t)}function B6e(t,e){return uLt(e)?sli(e,t):hDr(t,e)}function fDr(t){const e={...t};for(const n in e){const i=e[n];rli(n,i)&&(e[n]=oli(i))}return e}function hDr(t,e){if(!e)return t;for(const n in e){const i=e[n];switch(n){case\"style\":{t[n]=p8t(t.style,i);break}case\"className\":{t[n]=ali(t.className,i);break}default:rli(n,i)?t[n]=pDr(t[n],i):t[n]=i}}return t}function rli(t,e){const n=t.charCodeAt(0),i=t.charCodeAt(1),r=t.charCodeAt(2);return n===111&&i===110&&r>=65&&r<=90&&(typeof e==\"function\"||typeof e>\"u\")}function uLt(t){return typeof t==\"function\"}function sli(t,e){return uLt(t)?t(e):t??cLt}function pDr(t,e){return e?t?(...n)=>{const i=n[0];if(lli(i)){const o=i;BVe(o);const a=e(...n);return o.baseUIHandlerPrevented||t?.(...n),a}const r=e(...n);return t?.(...n),r}:oli(e):t}function oli(t){return t&&((...e)=>{const n=e[0];return lli(n)&&BVe(n),t(...e)})}function BVe(t){return t.preventBaseUIHandler=()=>{t.baseUIHandlerPrevented=!0},t}function ali(t,e){return e?t?e+\" \"+t:e:t}function lli(t){return t!=null&&typeof t==\"object\"&&\"nativeEvent\"in t}function Es(t,e,n={}){const i=e.render,r=mDr(e,n);if(n.enabled===!1)return null;const o=n.state??pf;return _Dr(t,i,r,o)}function mDr(t,e={}){const{className:n,style:i,render:r}=t,{state:o=pf,ref:a,props:c,stateAttributesMapping:u,enabled:d=!0}=e,h=d?uDr(n,o):void 0,m=d?ili(i,o):void 0,g=d?cDr(o,u):pf,_=d&&c?gDr(c):void 0,v=d?p8t(g,_)??{}:pf;return typeof document<\"u\"&&(d?Array.isArray(a)?v.ref=DOr([v.ref,WIn(r),...a]):v.ref=e5(v.ref,WIn(r),a):e5(null,null)),d?(h!==void 0&&(v.className=ali(v.className,h)),m!==void 0&&(v.style=p8t(v.style,m)),v):pf}function gDr(t){return Array.isArray(t)?dDr(t):r_(void 0,t)}const bDr=Symbol.for(\"react.lazy\");function _Dr(t,e,n,i){if(e){if(typeof e==\"function\")return e(n,i);const r=r_(n,e.props);r.ref=n.ref;let o=e;return o?.$$typeof===bDr&&(o=$.Children.toArray(e)[0]),$.cloneElement(o,r)}if(t&&typeof t==\"string\")return vDr(t,n);throw new Error(jl(8))}function vDr(t,e){return t===\"button\"?$.createElement(\"button\",{type:\"button\",...e,key:e.key}):t===\"img\"?$.createElement(\"img\",{alt:\"\",...e,key:e.key}):$.createElement(t,e)}"
+    },
+    {
+      "name": "empty-default-state",
+      "asset": "renderer",
+      "utf8_half_open": [
+        441659,
+        441679
+      ],
+      "bytes": 20,
+      "sha256": "69fddf944c77de1bb1bdd9e062590a64ecc936dcb2ec2f6c7026dc35c531e864",
+      "literal": "pf=Object.freeze({})"
+    },
+    {
+      "name": "merge-and-state-attributes",
+      "asset": "renderer",
+      "utf8_half_open": [
+        463493,
+        463806
+      ],
+      "bytes": 313,
+      "sha256": "b8959317910c6e416cbcbc45ea1793f674e943e575044bf0661faaebca0b43ba",
+      "literal": "function p8t(t,e){if(t&&!e)return t;if(!t&&e)return e;if(t||e)return{...t,...e}}function cDr(t,e){const n={};for(const i in t){const r=t[i];if(e?.hasOwnProperty(i)){const o=e[i](r);o!=null&&Object.assign(n,o);continue}r===!0?n[`data-${i.toLowerCase()}`]=\"\":r&&(n[`data-${i.toLowerCase()}`]=r.toString())}return n}"
+    },
+    {
+      "name": "Browse-button-call",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1966418,
+        1966475
+      ],
+      "bytes": 57,
+      "sha256": "bde3cd8bf7d83482775bb91f4daf3c54efc349aea0d51e73a488774707720836",
+      "literal": "p.jsx(tt,{variant:\"outline\",onClick:B,children:\"Browse\"})"
+    },
+    {
+      "name": "Browse-handler",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1963735,
+        1963862
+      ],
+      "bytes": 127,
+      "sha256": "cbae682a7aebfe03a5e2cdb9f5b367dc0d8e9c08a65767772ead9982870438d0",
+      "literal": "L=async()=>{const Se=await fI({directory:!0,multiple:!1,title:\"Choose where to clone the repository\",defaultPath:o});Se&&a(Se)}"
+    },
+    {
+      "name": "submit-disabled-control",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1967571,
+        1967599
+      ],
+      "bytes": 28,
+      "sha256": "4ac5feb6b920e03bf15244331d3c1de0a3cb5e318eae1b26232df71864dd716b",
+      "literal": "const ve=E.isPending||!i||!o"
+    }
+  ],
+  "checks": {
+    "archive_safety_and_identity": "PASS",
+    "original_asset_integrity": "PASS 2/2",
+    "exact_spans": "PASS 17/17",
+    "local_ancestor_pending_guards": "No pending/inert guard in los or direct mount/root/content; no blanket native claim.",
+    "before_fix": "RED 3 passed, 3 failed; only pending URL/location/Browse disabled assertions failed. Production component byte-identical to main c91751164.",
+    "after_fix": "GREEN 34 passed, 0 failed across five focused suites.",
+    "regression_unchanged_sha256": "28c6f0549a2afdfe3d52fa8b16ac8e734b50b5dfe5e7cdcbba54344de7bd8e88"
+  },
+  "limits": [
+    "Static shipped-source props and synthetic handlers are not native acceptance.",
+    "Base UI primitives, motion, shortcuts and backend boundaries are stubbed in the component test; actual CloneGitHubRepoDialog and DialogFrame source run.",
+    "Physical input, focus, shortcut delivery, global overlay interference, visual parity, real cloning and native folder-picker outcome and installed-app behavior remain unverified.",
+    "No reference JavaScript execution, Mac contact, browser/native launch or acquisition."
+  ]
+}

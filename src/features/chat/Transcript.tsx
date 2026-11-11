@@ -27,10 +27,14 @@ import { SentUserContent } from "./SentUserContent.tsx";
 import { UserText } from "./UserText.tsx";
 import type { UserPrompt } from "./userContent.ts";
 import { userMessageCopyText } from "./userMessageCopy.ts";
+import { useBoolPref } from "../../settings/useBoolPref.ts";
+import { assistantDisplayText } from "./assistantText.ts";
+import { TranscriptSearch } from "./TranscriptSearch.tsx";
 import "./chat.css";
 
 export interface TranscriptProps {
   transcript: ChatTranscript;
+  searchEnabled?: boolean;
   /** "Keep tool calls expanded" setting. */
   expandToolsByDefault?: boolean;
   /** "Don't collapse tool calls" setting: summary rows stay open. */
@@ -65,6 +69,7 @@ export interface TranscriptProps {
 
 export function Transcript({
   transcript,
+  searchEnabled = false,
   expandToolsByDefault = false,
   dontCollapseToolCalls = false,
   onRetry,
@@ -81,6 +86,7 @@ export function Transcript({
   chatAgent,
   notify,
 }: TranscriptProps) {
+  const stripAbsolutelyRight = useBoolPref("not_absolutely_right");
   const clock = useMemo(() => turnDayClock(now), [now]);
   const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
@@ -89,6 +95,7 @@ export function Transcript({
   const toggleTool = (id: string, defaultOpen = false) => setToggled((prev) => new Map(prev).set(id, !isToolExpanded(id, prev, expandToolsByDefault || defaultOpen)));
   const [summaries, setSummaries] = useState<ReadonlyMap<string, "expanded" | "collapsed">>(new Map());
   const ctx: RowContext = {
+    stripAbsolutelyRight,
     isOpen: (id, defaultOpen = false) => isToolExpanded(id, toggled, expandToolsByDefault || defaultOpen),
     onToggle: toggleTool,
     summaries: {
@@ -111,8 +118,7 @@ export function Transcript({
     notify,
   };
 
-  return (
-    <LinkMenuNotify.Provider value={notify}>
+  const content = (
       <div className="transcript">
         {turns.map((turn) => {
           const footer = turn.rows.find((r): r is TurnEndRow => r.kind === "turn_end");
@@ -128,8 +134,10 @@ export function Transcript({
           );
         })}
       </div>
-    </LinkMenuNotify.Provider>
   );
+  return <LinkMenuNotify.Provider value={notify}>
+    {searchEnabled ? <TranscriptSearch transcript={transcript}>{content}</TranscriptSearch> : content}
+  </LinkMenuNotify.Provider>;
 }
 
 type TurnEndRow = Extract<DisplayRow, { kind: "turn_end" }>;
@@ -155,6 +163,7 @@ function groupTurns(rows: DisplayRow[]): Turn[] {
 }
 
 interface RowContext {
+  stripAbsolutelyRight: boolean;
   /** `defaultOpen`: Conductor's `defaultCollapsed: false` rows (a proposed plan). */
   isOpen: (toolId: string, defaultOpen?: boolean) => boolean;
   onToggle: (toolId: string, defaultOpen?: boolean) => void;
@@ -331,13 +340,15 @@ function SummaryRow({ summary, open, onToggle }: { summary: ToolSummary; open: b
 /** `preview`: the turn's final text; Conductor mutes every other text (`ROo` `muted: !isPreviewMessage`). */
 function Part({ partKey, part, preview = false, group, ctx }: { partKey: string; part: PartView; preview?: boolean; group?: string; ctx: RowContext }) {
   switch (part.kind) {
-    case "text":
+    case "text": {
+      const text = assistantDisplayText(part.text, ctx.stripAbsolutelyRight);
+      if (!text.trim()) return null;
       return (
         <div className="chat-msg chat-assistant oc-msg-assistant" data-message-role="assistant" data-tool-group={group}>
           <div className="oc-assistant-col">
             <div className="oc-text-wrap">
               <Markdown
-                text={part.text}
+                text={text}
                 notify={ctx.notify}
                 className={`oc-prose chat-text${preview ? "" : " muted"}${part.streaming ? " is-streaming" : ""}`}
                 onOpenLink={(href) => void openUrl(href)}
@@ -349,8 +360,12 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
           </div>
         </div>
       );
-    case "thinking":
-      return <ThinkingRow id={`thinking:${partKey}`} text={part.text} streaming={part.streaming} group={group} ctx={ctx} />;
+    }
+    case "thinking": {
+      const text = assistantDisplayText(part.text, ctx.stripAbsolutelyRight);
+      if (!text.trim()) return null;
+      return <ThinkingRow id={`thinking:${partKey}`} text={text} streaming={part.streaming} group={group} ctx={ctx} />;
+    }
     case "tool": {
       const { call } = part;
       return (
@@ -363,6 +378,10 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
             isError={call.status === "error"}
             open={ctx.isOpen(call.id, opensByDefault(call.tool))}
             onToggle={() => ctx.onToggle(call.id, opensByDefault(call.tool))}
+            todoRows={call.tool.name === "TodoWrite" ? {
+              completed: { open: ctx.isOpen(`${call.id}-completed`), onToggle: () => ctx.onToggle(`${call.id}-completed`) },
+              started: { open: ctx.isOpen(`${call.id}-started`), onToggle: () => ctx.onToggle(`${call.id}-started`) },
+            } : undefined}
             workspacePath={ctx.workspacePath}
             onOpenFile={ctx.onOpenFile}
           />

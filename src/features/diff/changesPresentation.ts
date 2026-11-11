@@ -71,6 +71,8 @@ export class ChangesPresentationStore {
     return () => { this.listeners.delete(listener); };
   };
 
+  readonly isReady = () => this.phase === "ready";
+
   get(workspaceId: string): ChangesPresentation {
     let snapshot = this.snapshots.get(workspaceId);
     if (!snapshot) {

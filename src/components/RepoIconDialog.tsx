@@ -23,30 +23,36 @@ interface Props {
  * "Change icon for <repo>" (Conductor's change-repo-icon dialog, `Lya` / `dUi` in the decoded
  * renderApp-D_fmY7hW.js @11015415 / @10807619): four tabs that each set `repos.icon` and close.
  */
-export function RepoIconDialog({ repo, onChange, onClose, onError }: Props) {
+export function RepoIconDialog(props: Props) {
+  return (
+    <Modal title={`Change icon for ${props.repo.name}`} onClose={props.onClose}>
+      <RepoIconPicker {...props} />
+    </Modal>
+  );
+}
+
+export function RepoIconPicker({ repo, onChange, onClose, onError }: Props) {
   const [tab, setTab] = useState<Tab>("icons");
   const pick = (icon: string | null) => {
     onChange(icon);
     onClose();
   };
   return (
-    <Modal title={`Change icon for ${repo.name}`} onClose={onClose}>
-      <div className="repo-icon-dialog">
-        <div className="repo-icon-tabs" role="tablist">
-          {TABS.map(([id, label]) => (
-            <button key={id} type="button" role="tab" aria-selected={tab === id} className="repo-icon-tab" data-active={tab === id || undefined} onClick={() => setTab(id)}>
-              {label}
-            </button>
-          ))}
-        </div>
-        <div className="repo-icon-panel">
-          {tab === "icons" && <IconsTab repo={repo} pick={pick} />}
-          {tab === "emoji" && <EmojiTab repo={repo} pick={pick} />}
-          {tab === "favicon" && <FaviconTab repo={repo} pick={pick} />}
-          {tab === "upload" && <UploadTab repo={repo} pick={pick} onError={onError} />}
-        </div>
+    <div className="repo-icon-dialog">
+      <div className="repo-icon-tabs" role="tablist">
+        {TABS.map(([id, label]) => (
+          <button key={id} type="button" role="tab" aria-selected={tab === id} className="repo-icon-tab" data-active={tab === id || undefined} onClick={() => setTab(id)}>
+            {label}
+          </button>
+        ))}
       </div>
-    </Modal>
+      <div className="repo-icon-panel">
+        {tab === "icons" && <IconsTab repo={repo} pick={pick} />}
+        {tab === "emoji" && <EmojiTab repo={repo} pick={pick} />}
+        {tab === "favicon" && <FaviconTab repo={repo} pick={pick} />}
+        {tab === "upload" && <UploadTab repo={repo} pick={pick} onError={onError} />}
+      </div>
+    </div>
   );
 }
 
@@ -151,6 +157,7 @@ async function resizeToDataUrl(file: File, mime: string): Promise<string> {
     canvas.height = fit.canvas;
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas 2D context unavailable");
+    ctx.imageSmoothingQuality = "high";
     ctx.drawImage(img, fit.x, fit.y, fit.width, fit.height);
     return canvas.toDataURL("image/png");
   } finally {

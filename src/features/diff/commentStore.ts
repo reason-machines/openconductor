@@ -4,6 +4,7 @@
 // browser they are kept in localStorage with the same semantics, so the UI can
 // be developed and checked without Tauri.
 import { deleteComment, editComment, markSent, migrateLocations, setThreadResolved, type DiffComment } from "./comments.ts";
+import type { CommentAnchorUpdate } from "./comments.ts";
 
 export interface CommentStore {
   list(): Promise<DiffComment[]>;
@@ -14,6 +15,7 @@ export interface CommentStore {
   /** Resolve or reopen the thread with this key (see `threadKey`). */
   resolve(threadId: string, resolved: boolean): Promise<void>;
   markSent(ids: string[]): Promise<void>;
+  updateAnchors(updates: CommentAnchorUpdate[]): Promise<void>;
   /** Pull the workspace PR's comments from GitHub into the store (app only). */
   syncGithub?(): Promise<GithubSyncReport>;
   /** Resolve a GitHub review thread on GitHub, then here (app only). */
@@ -58,5 +60,10 @@ export function localCommentStore(storage: KV, workspaceId: string, now: () => n
     remove: (id) => write((cs) => deleteComment(cs, id)),
     resolve: (threadId, resolved) => write((cs) => setThreadResolved(cs, threadId, resolved, now())),
     markSent: (ids) => write((cs) => markSent(cs, new Set(ids), now())),
+    updateAnchors: (updates) => write((cs) => cs.map((c) => {
+      const update = updates.find((u) => u.id === c.id);
+      return update && c.remote_url === null && !c.file_level
+        ? { ...c, line_number: update.line_number, end_line_number: update.end_line_number, updated_at: now() } : c;
+    })),
   };
 }

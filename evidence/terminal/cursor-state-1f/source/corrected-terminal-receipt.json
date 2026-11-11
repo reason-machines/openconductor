@@ -1,0 +1,173 @@
+{
+  "unit": "terminal-cursor-fixture-input-correction",
+  "author": "Conductor Rebuild",
+  "status": "PASS_TERMINAL_RELEASE",
+  "released_utc": "2026-11-11T09:54:30.646192+00:00",
+  "preflight": {
+    "current_default": "1ebd7e0488773fba6a4b75e57c41236fc2d0874b",
+    "all_six_pins_unchanged": [
+      {
+        "path": "src/features/terminal/session.ts",
+        "sha256": "e94da195a0f3d315ab2862f4f3333e4014df15f69b4ace90b53449258e60ad87"
+      },
+      {
+        "path": "src/features/terminal/TerminalPanel.tsx",
+        "sha256": "b2623583505c976f1738785ebf5e05f7c3690b9cdffe05139050b7a795ee1b40"
+      },
+      {
+        "path": "src/features/terminal/spawnFailure.css",
+        "sha256": "ef7958d3fd83ea3cdc696a964265e6495a3e6eb9ab0a2a225f2f07485dd383dd"
+      },
+      {
+        "path": "src/styles.css",
+        "sha256": "39e0d91146ab47ef9cc1962dc4e27afb351466b715992391fd1a5da881e193eb"
+      },
+      {
+        "path": "package.json",
+        "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1"
+      }
+    ],
+    "correction": {
+      "reason": "Frozen mock input colors match the repository hex-colour lint rule. Replace only fake CSS variable values with distinctive non-colour sentinel labels; do not weaken or exclude lint.",
+      "original_fixture_sha256": "1cabc78d3cc6446eea19780fc5fd71a28578b1995ba7134be9194df1a72d3681",
+      "corrected_fixture_sha256": "3a0d8e881ae09f03737a915fdc1f1ff20a5b1e6577c9daff012617940ca5a50d",
+      "changed_lines": [
+        16
+      ],
+      "assertion_lines_byte_identical": true,
+      "product_candidate_sha256": "e7785e03355148c1937a02b3aca8cafebb1821fbb6cd304946b08c476fc11409",
+      "corrected_fixture_executed": false,
+      "baseline_and_candidate_recheck_owner": "e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46",
+      "commands": [
+        {
+          "stage": "corrected-baseline",
+          "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 60s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/cursorState.test.ts"
+        },
+        {
+          "stage": "corrected-candidate",
+          "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 60s node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/cursorState.test.ts"
+        },
+        {
+          "stage": "fixture-colour-lint",
+          "command": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 20s node scripts/check-colors.mjs src/features/terminal/cursorState.test.ts"
+        }
+      ]
+    },
+    "original_assertions_unchanged": true,
+    "only_line_16_mock_inputs_changed": true,
+    "original_focus_terminal": "09:49:23.901427Z;124/124PASS;final_receipt6178c8a190e96ec35e9495155c31927af9c79500a7e98486f23e56888265a336",
+    "root": ".rea-work/ui-runtime/cursor-corrected",
+    "red": ".rea-work/ui-runtime/cursor-corrected/red",
+    "green": ".rea-work/ui-runtime/cursor-corrected/green",
+    "no_install": true
+  },
+  "original_receipt_attachment": {
+    "id": "c5b5ee20-0d8e-45ac-8be0-5583a7298a70",
+    "sha256": "5a300d93afe225d0a531376cbee7b965f0ede1e5e506010a27584720567fb864"
+  },
+  "original_focused_receipt_attachment": {
+    "id": "2e1b58a0-3ef6-4401-b8a6-e8e8b7545a4b",
+    "sha256": "6178c8a190e96ec35e9495155c31927af9c79500a7e98486f23e56888265a336",
+    "tests": 124,
+    "pass": 124,
+    "terminal_utc": "2026-11-11T09:49:23.901427Z"
+  },
+  "original_focused_tap_attachment": {
+    "id": "29ac5b82-8183-433b-a944-14e741f70feb",
+    "sha256": "c66f92afab131e40caaf6e1893d7c82d2eefec4543ebe8dc5472d6998fdd8154",
+    "actual_bytes_sha_verified_at_e1": true
+  },
+  "phases": {
+    "cursor-corrected-red": {
+      "receipt": {
+        "started_utc": "2026-11-11T09:53:55.456226+00:00",
+        "finished_utc": "2026-11-11T09:53:56.348828+00:00",
+        "command": [
+          "timeout",
+          "--kill-after=5s",
+          "60s",
+          "bash",
+          "-c",
+          "cd .rea-work/ui-runtime/cursor-corrected/red && exec node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/cursorState.test.ts"
+        ],
+        "wall_seconds": 0.893,
+        "process_exit": 1,
+        "limit_reason": null,
+        "wall_limit_seconds": 65.0,
+        "max_added_bytes": 33554432,
+        "initial_bytes": 59459415,
+        "final_bytes": 59469446,
+        "peak_observed_bytes": 59469446,
+        "added_bytes": 10031,
+        "peak_added_bytes": 10031,
+        "process_terminal": true
+      },
+      "stdout": "TAP version 13\n# (node:99) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: a starting terminal requests a transparent cursor with the terminal background accent\nnot ok 1 - a starting terminal requests a transparent cursor with the terminal background accent\n  ---\n  duration_ms: 370.96111\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:110:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + undefined\n    - 'transparent'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'transparent'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:115:10)\n    process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n# Subtest: ready projects the foreground cursor without changing other terminal colors\nnot ok 2 - ready projects the foreground cursor without changing other terminal colors\n  ---\n  duration_ms: 6.87044\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:121:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + undefined\n    - 'fixture-text'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'fixture-text'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:126:10)\n    process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: exit projects a transparent cursor without changing other terminal colors\nnot ok 3 - exit projects a transparent cursor without changing other terminal colors\n  ---\n  duration_ms: 7.088588\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:133:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + undefined\n    - 'transparent'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'transparent'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:140:10)\n    process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: failed spawn requests a transparent cursor\nnot ok 4 - failed spawn requests a transparent cursor\n  ---\n  duration_ms: 7.039169\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:147:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + undefined\n    - 'transparent'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'transparent'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:152:10)\n    process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: failed-spawn retry keeps the cursor transparent until ready\nnot ok 5 - failed-spawn retry keeps the cursor transparent until ready\n  ---\n  duration_ms: 7.142078\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:157:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + undefined\n    - 'transparent'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'transparent'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:164:10)\n    process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: a terminal's cursor lifecycle does not change its sibling's theme\nnot ok 6 - a terminal's cursor lifecycle does not change its sibling's theme\n  ---\n  duration_ms: 6.900321\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:171:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + undefined\n    - 'transparent'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'transparent'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:179:10)\n    process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: cursor lifecycle preserves saved user-input metadata (false)\nnot ok 7 - cursor lifecycle preserves saved user-input metadata (false)\n  ---\n  duration_ms: 14.131293\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:188:3'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + undefined\n    - 'transparent'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'transparent'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:198:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: cursor lifecycle preserves saved user-input metadata (true)\nnot ok 8 - cursor lifecycle preserves saved user-input metadata (true)\n  ---\n  duration_ms: 8.950943\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:188:3'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + undefined\n    - 'transparent'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'transparent'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:198:12)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n# Subtest: late events for a closed terminal cannot alter a surviving cursor theme\nnot ok 9 - late events for a closed terminal cannot alter a surviving cursor theme\n  ---\n  duration_ms: 18.062056\n  type: 'test'\n  location: '/home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:203:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    Expected values to be strictly equal:\n    + actual - expected\n    \n    + undefined\n    - 'fixture-text'\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 'fixture-text'\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/e1e2b6b9-97cc-4ddc-ba9e-533d89eeeb46/repo/.rea-work/ui-runtime/cursor-corrected/red/src/features/terminal/cursorState.test.ts:210:10)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n1..9\n# tests 9\n# suites 0\n# pass 0\n# fail 9\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 752.54895\n",
+      "stderr": "(node:92) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    "cursor-corrected-green": {
+      "receipt": {
+        "started_utc": "2026-11-11T09:54:19.784906+00:00",
+        "finished_utc": "2026-11-11T09:54:20.638544+00:00",
+        "command": [
+          "timeout",
+          "--kill-after=5s",
+          "60s",
+          "bash",
+          "-c",
+          "cd .rea-work/ui-runtime/cursor-corrected/green && exec node --experimental-strip-types --test --test-concurrency=1 src/features/terminal/cursorState.test.ts"
+        ],
+        "wall_seconds": 0.854,
+        "process_exit": 0,
+        "limit_reason": null,
+        "wall_limit_seconds": 65.0,
+        "max_added_bytes": 33554432,
+        "initial_bytes": 59470111,
+        "final_bytes": 59472403,
+        "peak_observed_bytes": 59472403,
+        "added_bytes": 2292,
+        "peak_added_bytes": 2292,
+        "process_terminal": true
+      },
+      "stdout": "TAP version 13\n# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n# (Use `node --trace-warnings ...` to show where the warning was created)\n# Subtest: a starting terminal requests a transparent cursor with the terminal background accent\nok 1 - a starting terminal requests a transparent cursor with the terminal background accent\n  ---\n  duration_ms: 332.563938\n  type: 'test'\n  ...\n# Subtest: ready projects the foreground cursor without changing other terminal colors\nok 2 - ready projects the foreground cursor without changing other terminal colors\n  ---\n  duration_ms: 7.945317\n  type: 'test'\n  ...\n# Subtest: exit projects a transparent cursor without changing other terminal colors\nok 3 - exit projects a transparent cursor without changing other terminal colors\n  ---\n  duration_ms: 6.747721\n  type: 'test'\n  ...\n# Subtest: failed spawn requests a transparent cursor\nok 4 - failed spawn requests a transparent cursor\n  ---\n  duration_ms: 7.414405\n  type: 'test'\n  ...\n# Subtest: failed-spawn retry keeps the cursor transparent until ready\nok 5 - failed-spawn retry keeps the cursor transparent until ready\n  ---\n  duration_ms: 6.940677\n  type: 'test'\n  ...\n# Subtest: a terminal's cursor lifecycle does not change its sibling's theme\nok 6 - a terminal's cursor lifecycle does not change its sibling's theme\n  ---\n  duration_ms: 6.851872\n  type: 'test'\n  ...\n# Subtest: cursor lifecycle preserves saved user-input metadata (false)\nok 7 - cursor lifecycle preserves saved user-input metadata (false)\n  ---\n  duration_ms: 13.18998\n  type: 'test'\n  ...\n# Subtest: cursor lifecycle preserves saved user-input metadata (true)\nok 8 - cursor lifecycle preserves saved user-input metadata (true)\n  ---\n  duration_ms: 8.626919\n  type: 'test'\n  ...\n# Subtest: late events for a closed terminal cannot alter a surviving cursor theme\nok 9 - late events for a closed terminal cannot alter a surviving cursor theme\n  ---\n  duration_ms: 8.361101\n  type: 'test'\n  ...\n1..9\n# tests 9\n# suites 0\n# pass 9\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 713.038256\n",
+      "stderr": "(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    },
+    "cursor-corrected-lint": {
+      "receipt": {
+        "started_utc": "2026-11-11T09:54:30.506548+00:00",
+        "finished_utc": "2026-11-11T09:54:30.646192+00:00",
+        "command": [
+          "timeout",
+          "--kill-after=5s",
+          "20s",
+          "bash",
+          "-c",
+          "cd .rea-work/ui-runtime/cursor-corrected/green && exec node scripts/check-colors.mjs src/features/terminal/cursorState.test.ts"
+        ],
+        "wall_seconds": 0.14,
+        "process_exit": 0,
+        "limit_reason": null,
+        "wall_limit_seconds": 25.0,
+        "max_added_bytes": 8388608,
+        "initial_bytes": 59473068,
+        "final_bytes": 59473331,
+        "peak_observed_bytes": 59473331,
+        "added_bytes": 263,
+        "peak_added_bytes": 263,
+        "process_terminal": true
+      },
+      "stdout": "check-colors: no colour literals outside src/theme/ and no hue under Neutral (1 files).\n",
+      "stderr": "(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+    }
+  },
+  "gaps": [
+    "Full local TSC NOT RUN: scoped9 prefix incomplete for full repository imports/types",
+    "Real xterm validation/rendering and native/reference mounted/visual parity NOT RUN",
+    "No livePTY/processsampler/provider/browser/build/install"
+  ],
+  "queue": "correctedcursor terminal; Home271 existing4case phase next;1019offlineauditqueuedafterHome"
+}

@@ -1,0 +1,1 @@
+function kKn(t,e){return e?t.replace(/^You['']re absolutely right!\s*/i,"").replace(/^You['']re absolutely right\.\s*/i,"").replace(/^You['']re absolutely right -\s*/i,"").replace(/^You['']re absolutely right –\s*/i,"").replace(/^You['']re absolutely right\s*/i,""):t}

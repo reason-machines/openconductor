@@ -1,0 +1,10 @@
+{
+  "result": "PASS: static source identity and sole Settings-cap deletion",
+  "baseline": "2b079f13e07b580d26191f7f1f50b4d21e62174e",
+  "source_pins": 9,
+  "reference_spans": 11,
+  "real_rows": 62,
+  "test_sha256": "ac6d63126ba8577af1875d6eb26719c767105a4e0cb6267253119ea210265f1e",
+  "candidate_model_sha256": "29ba1f0ca29859f66b533d21d4bc667442e8fdbc33434c86421b3ade3eb6e188",
+  "runtime": "NOT RUN; the original serialized before/after unit remains queued with E1"
+}

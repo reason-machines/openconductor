@@ -72,16 +72,21 @@ mod repo_misc_commands;
 mod sidebar_section_commands;
 pub mod sidebar_transparency;
 mod agent_settings_commands;
+mod config_sync;
+#[path = "config_sync/commands.rs"]
+mod config_sync_commands;
 mod sidebar_workspace_commands;
 mod sidebar_rename_commands;
 pub mod diff;
 pub mod draft_attachments;
+mod full_disk_access;
 pub mod github_repo;
 pub mod local_account;
 pub mod menu;
 mod model_catalog;
 pub mod pr;
 mod local_storage_commands;
+mod local_plan_mode;
 mod onboarding_commands;
 mod native_qa;
 mod native_qa_cache;
@@ -374,6 +379,7 @@ pub fn run() {
             app.manage(codex_chat::CodexChats::with_binaries(binaries));
             app.manage(codex_account::CodexLogins::default());
             app.manage(claude_chat::commands::ClaudeChats::default());
+            app.manage(local_plan_mode::LocalPlanModes::default());
             app.manage(Terminals::new(app.handle().clone()));
             app.manage(ShellCommands::default());
             // Appearance keys Conductor keeps in conductor.db live in its settings table.
@@ -408,6 +414,7 @@ pub fn run() {
             root_path_commands::repo_workspaces_path,
             root_path_commands::change_conductor_root,
             app_info,
+            full_disk_access::check_full_disk_access,
             open_devtools,
             inspect_project_folder,
             branch_prefix_settings,
@@ -450,6 +457,8 @@ pub fn run() {
             sidebar_workspace_commands::db_mark_workspace_read,
             sidebar_workspace_commands::db_open_chat_tab,
             sidebar_workspace_commands::db_close_chat_tab,
+            sidebar_workspace_commands::db_clear_local_chat,
+            sidebar_workspace_commands::db_select_chat,
             sidebar_workspace_commands::db_touch_workspace,
             sidebar_workspace_commands::db_set_workspace_manual_status,
             sidebar_repo_commands::db_set_repo_icon,
@@ -471,6 +480,7 @@ pub fn run() {
             diff::comment_commands::diff_comments_list,
             diff::comment_commands::diff_comment_add,
             diff::comment_commands::diff_comment_edit,
+            diff::comment_commands::diff_comments_update_anchors,
             diff::comment_commands::diff_comment_delete,
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
@@ -515,6 +525,10 @@ pub fn run() {
             agent_settings_commands::cli_login_status,
             agent_settings_commands::favorite_models_list,
             agent_settings_commands::favorite_models_replace,
+            config_sync_commands::config_sync_diff,
+            config_sync_commands::config_sync_apply,
+            local_plan_mode::local_plan_mode_get,
+            local_plan_mode::local_plan_mode_set,
             claude_chat::commands::claude_open_chat,
             claude_chat::commands::claude_prompt,
             claude_chat::commands::claude_cancel,

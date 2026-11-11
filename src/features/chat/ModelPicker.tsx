@@ -72,6 +72,8 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
   const nameOf = (f: ModelChoice) => itemLabel?.(f) ?? modelName?.(f.model) ?? modelDisplayName(f.model);
   const chip = modelChoiceChip(value, modelName?.(value.model));
   const efforts = modelEfforts(value.model);
+  const modelAgent = agentForModel(value.model);
+  const showUnsupportedEffort = !efforts && modelAgent !== null && (itemAgent?.(value) ?? value.agent ?? modelAgent) === modelAgent;
   const current = value.agent ? value.effort : effectiveEffort(value.model, value.effort);
   const showFast = fastSupported && fastModeAvailable(value.model);
   const items = useMemo(() => {
@@ -82,7 +84,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
     return q ? list.filter((f) => {
       const agent = itemAgent?.(f) ?? f.agent ?? agentForModel(f.model);
       const agentLabel = agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : "";
-      const fields = [name(f), f.model, agentLabel].map((field) => field.toLowerCase());
+      const fields = [name(f), f.model, agentLabel, agent ? `${agent}:${f.model}` : ""].map((field) => field.toLowerCase());
       return words.every((word) => fields.some((field) => field.includes(word)));
     }) : list;
   }, [favorites, value, query, itemLabel, models, modelName, itemAgent]);
@@ -242,6 +244,8 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
               {items.map((f, index) => {
                 const selected = same(f, value);
                 const e = modelChoiceChip(f).effort;
+                const agent = searching ? itemAgent?.(f) ?? f.agent ?? agentForModel(f.model) : undefined;
+                const detail = searching ? (agent === "reason" ? "Reason" : agent ? AGENT_LABEL[agent] : undefined) : e;
                 return (
                   <button
                     key={`${f.agent ?? ""}:${f.model}:${f.effort ?? ""}:${!!f.fast}`}
@@ -250,6 +254,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
                     className="oc-model-item"
                     data-selected={selected || undefined}
                     data-model-result={index}
+                    disabled={disabled}
                     data-highlighted={query.trim() !== "" && index === searchIndex || undefined}
                     onFocus={() => setSearchIndex(index)}
                     title={[nameOf(f), modelDescription?.(f.model)].filter(Boolean).join(" · ")}
@@ -261,7 +266,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
                   >
                     <ModelGlyph model={f.model} agent={itemAgent?.(f)} />
                     <span className="oc-model-item-name">{selected && label ? label : nameOf(f)}</span>
-                    {e ? <span className="oc-model-item-effort">{e}</span> : null}
+                    {detail ? <span className="oc-model-item-effort">{detail}</span> : null}
                     {selected ? <CheckIcon className="oc-model-item-check" /> : null}
                   </button>
                 );
@@ -315,6 +320,19 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
                   </div>
                 ) : null}
               </div>
+            ) : !searching && showUnsupportedEffort ? (
+              <>
+                {!showFast ? <div className="oc-model-sep" /> : null}
+                <Tooltip content="Not supported for this model" side="right">
+                  <div className="oc-model-sub">
+                    <button type="button" role="menuitem" className="oc-model-row" disabled>
+                      <span>Effort</span>
+                      <span className="oc-model-row-value">Not supported</span>
+                      <ChevronRightIcon className="oc-model-row-chevron" />
+                    </button>
+                  </div>
+                </Tooltip>
+              </>
             ) : null}
             {!searching && showFast ? (
               <button type="button" role="menuitemcheckbox" aria-checked={!!value.fast} className="oc-model-row" onClick={() => onChange({ ...value, fast: !value.fast })}>

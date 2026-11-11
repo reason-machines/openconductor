@@ -67,6 +67,149 @@ fn run(program: &str, args: &[String]) -> Result<(), String> {
     })
 }
 
+fn alacritty_completion(out: std::process::Output) -> super::AlacrittyExit {
+    if out.status.success() {
+        return super::AlacrittyExit::Success;
+    }
+    let stderr = String::from_utf8_lossy(&out.stderr).into_owned();
+    let stdout = String::from_utf8_lossy(&out.stdout).into_owned();
+    super::AlacrittyExit::Nonzero(if !stderr.is_empty() {
+        stderr
+    } else if !stdout.is_empty() {
+        stdout
+    } else {
+        format!("exit code {}", out.status.code().unwrap_or(-1))
+    })
+}
+
+fn run_alacritty(program: &str, args: &[String]) -> Result<super::AlacrittyExit, String> {
+    let mut command = Command::new(program);
+    command.args(args);
+    if program == "alacritty" {
+        let path = std::env::var_os("PATH");
+        let home = std::env::var_os("HOME");
+        command.env(
+            "PATH",
+            super::alacritty_search_path(path.as_deref(), home.as_deref())?,
+        );
+    }
+    command
+        .output()
+        .map(alacritty_completion)
+        .map_err(|error| format!("{program}: {error}"))
+}
+
+fn wezterm_output(
+    program: &str,
+    args: &[String],
+    cli_path: Option<&std::ffi::OsStr>,
+) -> Result<std::process::Output, String> {
+    let mut command = Command::new(program);
+    command.args(args);
+    if let Some(path) = cli_path {
+        command.env("PATH", path);
+    }
+    command.output().map_err(|error| format!("{program}: {error}"))
+}
+
+fn open_wezterm_folder(dir: &Path) -> Result<(), String> {
+    let inherited_path = std::env::var_os("PATH");
+    let home = std::env::var_os("HOME");
+    let path = super::wezterm_search_path(inherited_path.as_deref(), home.as_deref())?;
+    let dir = dir.to_string_lossy().into_owned();
+    let spawn = wezterm_output(
+        "wezterm",
+        &["cli".into(), "spawn".into(), "--cwd".into(), dir.clone()],
+        Some(&path),
+    )?;
+    if spawn.status.success() {
+        wezterm_output("open", &["-a".into(), "WezTerm".into()], None)?;
+        return Ok(());
+    }
+    let start = wezterm_output(
+        "open",
+        &[
+            "-a".into(),
+            "WezTerm".into(),
+            "--args".into(),
+            "start".into(),
+            "--cwd".into(),
+            dir.clone(),
+        ],
+        Some(&path),
+    )?;
+    if start.status.success() {
+        return Ok(());
+    }
+    let folder = wezterm_output(
+        "open",
+        &["-a".into(), "WezTerm".into(), dir],
+        Some(&path),
+    )?;
+    if folder.status.success() {
+        return Ok(());
+    }
+    let stderr = String::from_utf8_lossy(&folder.stderr).into_owned();
+    let stdout = String::from_utf8_lossy(&folder.stdout).into_owned();
+    Err(if !stderr.is_empty() {
+        stderr
+    } else if !stdout.is_empty() {
+        stdout
+    } else {
+        format!("exit code {}", folder.status.code().unwrap_or(-1))
+    })
+}
+
+fn run_kaleidoscope_folder(dir: &Path) -> Result<(), String> {
+    let probe = Command::new("git")
+        .arg("-C")
+        .arg(dir)
+        .args(["diff", "--quiet", "HEAD"])
+        .output()
+        .map_err(|error| format!("git: {error}"))?;
+    let mut path = std::env::var_os("PATH").unwrap_or_default();
+    path.push(":/Applications/Kaleidoscope.app/Contents/MacOS:");
+    path.push(std::env::var_os("HOME").unwrap_or_default());
+    path.push("/Applications/Kaleidoscope.app/Contents/MacOS");
+    if probe.status.code() == Some(1) {
+        let difftool = Command::new("git")
+            .arg("-C")
+            .arg(dir)
+            .args([
+                "-c",
+                "difftool.ksdiff.cmd=ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"",
+                "difftool",
+                "--tool=ksdiff",
+                "--no-prompt",
+                "HEAD",
+            ])
+            .env("PATH", &path)
+            .output()
+            .map_err(|error| format!("git: {error}"))?;
+        if difftool.status.success() {
+            return Ok(());
+        }
+    }
+    let out = Command::new("open")
+        .args(["-a", "Kaleidoscope"])
+        .arg(dir)
+        .env("PATH", &path)
+        .output()
+        .map_err(|error| format!("open: {error}"))?;
+    if out.status.success() {
+        return Ok(());
+    }
+    let stderr = String::from_utf8_lossy(&out.stderr).into_owned();
+    let stdout = String::from_utf8_lossy(&out.stdout).into_owned();
+    Err(if !stderr.is_empty() {
+        stderr
+    } else if !stdout.is_empty() {
+        stdout
+    } else {
+        format!("exit code {}", out.status.code().unwrap_or(-1))
+    })
+}
+
 /// JS: `invoke("open_in_app", { appId, path })`: opens the workspace folder
 /// `path` in the app, or one file in it (the All files tree).
 #[tauri::command]
@@ -80,7 +223,15 @@ pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
     let dir = target.to_path_buf();
     tauri::async_runtime::spawn_blocking(move || {
         if cfg!(target_os = "macos") {
-            super::run_macos_open(app, &dir, is_file, run)
+            if app.id == "alacritty" && !is_file {
+                super::run_alacritty_folder(&dir, run_alacritty)
+            } else if app.id == "kaleidoscope" && !is_file {
+                run_kaleidoscope_folder(&dir)
+            } else if app.id == "wezterm" && !is_file {
+                open_wezterm_folder(&dir)
+            } else {
+                super::run_macos_open(app, &dir, is_file, run)
+            }
         } else if app.id == "finder" {
             // Conductor's Linux branch hands the folder to the desktop's file manager.
             let folder = match dir.parent() {
@@ -97,4 +248,43 @@ pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
     })
     .await
     .map_err(|e| e.to_string())?
+}
+
+#[cfg(all(test, unix))]
+mod alacritty_completion_tests {
+    use super::alacritty_completion;
+    use crate::open_in::AlacrittyExit;
+    use std::os::unix::process::ExitStatusExt;
+    use std::process::{ExitStatus, Output};
+
+    #[test]
+    fn completed_nonzero_preserves_stderr_then_stdout_then_exit_code() {
+        for (stderr, stdout, expected) in [
+            ("failure\n", "output", "failure\n"),
+            ("", "output\n", "output\n"),
+            ("", "", "exit code 7"),
+        ] {
+            let output = Output {
+                status: ExitStatus::from_raw(7 << 8),
+                stderr: stderr.as_bytes().to_vec(),
+                stdout: stdout.as_bytes().to_vec(),
+            };
+            assert_eq!(
+                alacritty_completion(output),
+                AlacrittyExit::Nonzero(expected.to_string()),
+            );
+        }
+    }
+
+    #[test]
+    fn successful_completion_ignores_diagnostic_output() {
+        assert_eq!(
+            alacritty_completion(Output {
+                status: ExitStatus::from_raw(0),
+                stderr: b"warning".to_vec(),
+                stdout: b"output".to_vec(),
+            }),
+            AlacrittyExit::Success,
+        );
+    }
 }

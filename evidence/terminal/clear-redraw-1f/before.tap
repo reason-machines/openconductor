@@ -1,0 +1,140 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: starting clear preserves screen/history clearing and guards the redraw request
+ok 1 - starting clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 440.647163
+  type: 'test'
+  ...
+# Subtest: running clear preserves screen/history clearing and guards the redraw request
+not ok 2 - running clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 11.609813
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/.oc-tmp/clear-redraw-1f/red/src/features/terminal/clearRedraw.test.ts:104:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+    + []
+    - [
+    -   {
+    -     data: '\f',
+    -     id: 'term-clear-fixture-1'
+    -   }
+    - ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      id: 'term-clear-fixture-1'
+      data: '\f'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/.oc-tmp/clear-redraw-1f/red/src/features/terminal/clearRedraw.test.ts:120:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: exited clear preserves screen/history clearing and guards the redraw request
+ok 3 - exited clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 6.610712
+  type: 'test'
+  ...
+# Subtest: spawn_error clear preserves screen/history clearing and guards the redraw request
+ok 4 - spawn_error clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 7.131525
+  type: 'test'
+  ...
+# Subtest: disabled clear preserves screen/history clearing and guards the redraw request
+ok 5 - disabled clear preserves screen/history clearing and guards the redraw request
+  ---
+  duration_ms: 6.753714
+  type: 'test'
+  ...
+# Subtest: clear shortcut targets only its terminal and preserves user-input metadata (false)
+not ok 6 - clear shortcut targets only its terminal and preserves user-input metadata (false)
+  ---
+  duration_ms: 8.975382
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/.oc-tmp/clear-redraw-1f/red/src/features/terminal/clearRedraw.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+    + []
+    - [
+    -   {
+    -     data: '\f',
+    -     id: 'term-clear-fixture-2'
+    -   }
+    - ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      id: 'term-clear-fixture-2'
+      data: '\f'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/.oc-tmp/clear-redraw-1f/red/src/features/terminal/clearRedraw.test.ts:143:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clear shortcut targets only its terminal and preserves user-input metadata (true)
+not ok 7 - clear shortcut targets only its terminal and preserves user-input metadata (true)
+  ---
+  duration_ms: 7.850658
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/.oc-tmp/clear-redraw-1f/red/src/features/terminal/clearRedraw.test.ts:126:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+
+    + []
+    - [
+    -   {
+    -     data: '\f',
+    -     id: 'term-clear-fixture-2'
+    -   }
+    - ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      id: 'term-clear-fixture-2'
+      data: '\f'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/.oc-tmp/clear-redraw-1f/red/src/features/terminal/clearRedraw.test.ts:143:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: clearing a closed terminal cannot write to a surviving terminal
+ok 8 - clearing a closed terminal cannot write to a surviving terminal
+  ---
+  duration_ms: 7.81582
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 5
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 845.018969

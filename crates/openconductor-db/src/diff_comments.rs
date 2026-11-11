@@ -202,6 +202,32 @@ pub async fn update_body(pool: &SqlitePool, id: &str, body: &str, now: i64) -> R
     .await
 }
 
+/// Replace a local inline anchor with absolute lines so repeated saves are idempotent.
+pub async fn update_anchor(
+    pool: &SqlitePool,
+    workspace_id: &str,
+    id: &str,
+    line: i64,
+    end: Option<i64>,
+    now: i64,
+) -> Result<u64> {
+    exec(
+        sqlx::query(
+            "UPDATE diff_comments SET line_number = ?1, end_line_number = ?2, updated_at = ?3 \
+             WHERE id = ?4 AND workspace_id = ?5 AND remote_url IS NULL \
+             AND line_number IS NOT NULL AND COALESCE(location, 'modified') != 'file' \
+             AND ?1 > 0 AND (?2 IS NULL OR ?2 >= ?1)",
+        )
+        .bind(line)
+        .bind(end)
+        .bind(now)
+        .bind(id)
+        .bind(workspace_id),
+        pool,
+    )
+    .await
+}
+
 /// Resolve or reopen every comment in a thread. Returns rows changed.
 pub async fn set_thread_resolved(
     pool: &SqlitePool,

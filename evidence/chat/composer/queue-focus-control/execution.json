@@ -1,0 +1,55 @@
+{
+  "id": "ACQ-COMPOSER-QUEUE-CTRL-135-04",
+  "author": "Conductor Rebuild",
+  "computer": "Reason cloud b3bf539c-baa9-5c0a-bd50-9c4212affce9",
+  "tested_candidate": "d7bc73619f56f358b28947192fd958e87fe628f5",
+  "baseline": "b34ba2de9ad45365715d21a0bfe24d9c36b335fb",
+  "fresh_main_before_execution": "11a5f73df99faa0d33bcc0c19b78606bc2c0b992",
+  "execution": "One sequential admitted local unit. No install, retry, build, browser, native, or provider execution.",
+  "steps": [
+    {
+      "name": "baseline",
+      "command": "nice -n 19 timeout --kill-after=5s 60s env NODE_OPTIONS=--max-old-space-size=1536 COMPOSER_QUEUE_FOCUS_SOURCE_REF=b34ba2de9ad45365715d21a0bfe24d9c36b335fb node --test --test-concurrency=1 --test-name-pattern='Ctrl[+]ArrowUp' src/features/chat/composerQueueFocus.test.ts",
+      "start": "2026-11-11T08:33:50.980612284Z",
+      "end": "2026-11-11T08:33:51.662628196Z",
+      "exit": 1,
+      "result": "Intended assertion RED. Modified ArrowUp must not be consumed for queue navigation. Expected false, actual true.",
+      "log_sha256": "9c4c9719b9cd65f2b5c91b5c0f999edc5e18012a5b4b99a9aae97d2b472fa12d"
+    },
+    {
+      "name": "patched",
+      "command": "nice -n 19 timeout --kill-after=5s 120s env -u COMPOSER_QUEUE_FOCUS_SOURCE_REF NODE_OPTIONS=--max-old-space-size=1536 node --test --test-concurrency=1 src/features/chat/composerQueueFocus.test.ts src/features/chat/composerSlashPrefix.test.ts src/features/chat/composerSlashAtoms.test.ts src/features/chat/slashCommands.test.ts",
+      "start": "2026-11-11T08:34:07.137780304Z",
+      "end": "2026-11-11T08:34:09.925080537Z",
+      "exit": 0,
+      "result": "31 tests, 31 pass, 0 fail, 0 skipped.",
+      "log_sha256": "e0a98d358f610c9518c9c863eff257362d97a63c43106c8707e91c0703d1f19d"
+    },
+    {
+      "name": "typecheck",
+      "command": "nice -n 19 timeout --kill-after=5s 120s env -u COMPOSER_QUEUE_FOCUS_SOURCE_REF NODE_OPTIONS=--max-old-space-size=1536 npm run typecheck",
+      "start": "2026-11-11T08:34:22.774131513Z",
+      "end": "2026-11-11T08:34:41.412624190Z",
+      "exit": 0,
+      "result": "tsc --noEmit passed.",
+      "log_sha256": "d5085e3e8e565109d158c9b2533aa52ddf5936811f85b35986ae3f533bd2bcbb"
+    }
+  ],
+  "fixture_sha256": "cce2db54f4ccca445d66791fca2c9eec68b62f44e55e487af23607aea318bd37",
+  "candidate_composer_sha256": "ba13bc0523ef60d657b5cd864030b7a958dbdc9f60c3d866067cf493dc0e01f0",
+  "preserved_baseline_and_fresh_main": {
+    "src/features/chat/Composer.tsx": "7f00ce6d2c0acb1df02428ec9874f91c160e9f5f480fab202486c24fe370ccbd",
+    "src/features/chat/ComposerEditor.tsx": "321a0d4fb96df850e0f4f3e6349917ac06e3474bbf01953857862395c3df3ebe",
+    "src/features/chat/composerSlashPrefix.test.ts": "69f266c51364c12fe775885f86e52ef527e7c6435c227a313a8849d73bde8148",
+    "src/features/chat/composerSlashAtoms.test.ts": "ebe2883b9f4b38d9acf8486a5b02122a483dc33bcbd7651444235b2cc112f92d",
+    "src/features/chat/slashCommands.test.ts": "3fd2ebe884d1b85b6a9c8cd1107c3335d8a83812c96a90a4884cc272b80485a5",
+    "package.json": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
+    "package-lock.json": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1"
+  },
+  "release": "2026-11-11T08:34:41.412624190Z",
+  "limitations": [
+    "Mounted Composer callback with editor and DOM endpoint doubles, not native input acceptance.",
+    "Local typecheck predates publication rebase. Hosted checks must validate the combined tree.",
+    "No screenshot, visual, native, IME, real-provider, or installed-package validation."
+  ]
+}

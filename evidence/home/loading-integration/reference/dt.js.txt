@@ -1,0 +1,1 @@
+function dt(t){return{data:t,error:void 0,isLoading:!1}}

@@ -22,7 +22,7 @@ import { glyphs, matchesEvent } from "../../keybindings/shortcut.ts";
 import { canSteerNow, headStatusLabel, resolveSendMode, turnRunning, type ChatQueue, type FollowUpMode, type SendMode } from "./queue.ts";
 import type { QueueAction } from "./queue.ts";
 import { dropOrder, queueRowKey, type QueueCommand, type QueueFocus } from "./queueKeys.ts";
-import { completeInsert, matchCommands, slashQuery, type SlashCommand } from "./slashCommands.ts";
+import { composerSlashRange, matchCommands, type SlashCommand } from "./slashCommands.ts";
 import { SlashMenu } from "./SlashMenu.tsx";
 import { fuzzyFilterFiles } from "../../backend";
 import type { FileMatch } from "../../spotlight/quickOpen";
@@ -35,6 +35,7 @@ import { queuedUserDraft, submittedUserPrompt, type SentUserContentV1, type User
 import { FileMentionMenu } from "./FileMentionMenu.tsx";
 import { ArrowUpIcon, CornerDownLeftIcon, PaperclipIcon, PlusIcon, StopCircleIcon } from "./composerIcons.tsx";
 import type { ComposerMinimize } from "./useComposerMinimize.ts";
+import type { PlanModeControl } from "./useLocalPlanMode.ts";
 import "./queue.css";
 import "./composer.css";
 
@@ -51,7 +52,8 @@ export interface ComposerProps {
   queue: ChatQueue;
   canSteer: boolean;
   followUpMode?: FollowUpMode;
-  onSubmit: (input: UserPrompt, mode: SendMode) => void;
+  /** Async callbacks own draft clearing after acceptance and handle delivery errors. */
+  onSubmit: (input: UserPrompt, mode: SendMode) => void | Promise<void>;
   /** False when the owner clears only after asynchronous delivery succeeds. */
   clearOnSubmit?: boolean;
   onStop: () => void;
@@ -64,6 +66,7 @@ export interface ComposerProps {
   onAttachFiles?: (files: File[]) => void;
   onLinkWorkspaces?: () => void;
   onAttachTerminalOutput?: () => void;
+  planMode?: PlanModeControl;
   /** The model picker (or another agent's picker), at the box's bottom left. */
   picker?: ReactNode;
   /** More pickers after it (an agent's access mode), in the same row. */
@@ -97,6 +100,7 @@ export function Composer({
   onAttachFiles,
   onLinkWorkspaces,
   onAttachTerminalOutput,
+  planMode,
   picker,
   controls,
   slashCommands = [],
@@ -133,8 +137,10 @@ export function Composer({
     if (minimized && inputRef.current?.focused()) inputRef.current.blur();
   }, [minimized, inputRef]);
 
-  const query = focused ? slashQuery(selection.text, selection.start) : null;
-  const slashMatches = useMemo(() => (query === null || query === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashDismissed, slashCommands]);
+  const slash = focused ? composerSlashRange(selection.text, selection.start, selection.end) : null;
+  const query = slash?.query ?? null;
+  const slashKey = slash ? `${slash.start}:${slash.end}:${slash.query}` : null;
+  const slashMatches = useMemo(() => (query === null || slashKey === slashDismissed ? [] : matchCommands(slashCommands, query)), [query, slashKey, slashDismissed, slashCommands]);
   const slashOpen = slashMatches.length > 0;
   const slashFocus = Math.min(slashIndex, Math.max(0, slashMatches.length - 1));
   const mention = focused && workspacePath ? fileMentionQuery(selection.text, selection.start, selection.end) : null;
@@ -180,9 +186,12 @@ export function Composer({
   }
 
   function pickCommand(command: SlashCommand) {
-    if (inputRef.current?.composing()) return;
-    const next = completeInsert(selection.text, command.insert ?? `/${command.name}`);
-    inputRef.current?.replaceText(next);
+    const box = inputRef.current;
+    if (!box || box.composing() || !slash) return;
+    const current = box.selection();
+    const range = composerSlashRange(current.text, current.start, current.end);
+    if (!range || range.start !== slash.start || range.end !== slash.end || range.query !== slash.query) return;
+    if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
     setSlashIndex(0);
   }
 
@@ -194,7 +203,8 @@ export function Composer({
       setDraft("");
       return;
     }
-    onSubmit(input, working ? mode(opposite) : "queue");
+    const pending = onSubmit(input, working ? mode(opposite) : "queue");
+    if (pending) return;
     if (clearOnSubmit) setDraft("");
   }
 
@@ -228,7 +238,10 @@ export function Composer({
   /** Moves focus to a queued row or back to the message box. */
   function focus(target: QueueFocus) {
     if (target === "composer") return inputRef.current?.focus();
-    queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`)?.focus();
+    const row = queueRef.current?.querySelector<HTMLElement>(`li[data-id="${CSS.escape(target.row)}"]`);
+    if (!row) return false;
+    row.focus();
+    return true;
   }
 
   function onKeyDown(e: globalThis.KeyboardEvent) {
@@ -269,14 +282,16 @@ export function Composer({
     if (slashOpen && e.key === "Escape") {
       e.preventDefault();
       e.stopPropagation();
-      setSlashDismissed(query);
+      setSlashDismissed(slashKey);
       return;
     }
-    // ↑ with the caret at the very start goes to the last queued message.
-    const current = inputRef.current?.selection();
-    if (e.key === "ArrowUp" && !e.shiftKey && !e.metaKey && !e.altKey && current?.start === 0 && current.end === 0 && queue.items.length > 0 && queue.editingId === null) {
-      e.preventDefault();
-      focus({ row: queue.items[queue.items.length - 1].id });
+    const box = inputRef.current;
+    const current = box?.selection();
+    if (e.key === "ArrowUp" && plain && queue.items.length > 0 && queue.editingId === null && (box?.atTop?.() ?? (current?.start === 0 && current.end === 0))) {
+      if (focus({ row: queue.items[queue.items.length - 1].id })) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     } else if (hit("chat.cancel") && working) {
       e.preventDefault();
       onStop();
@@ -367,7 +382,7 @@ export function Composer({
           </div>
           <div className="oc-composer-right" onClick={(e) => e.stopPropagation()}>
             <span className="oc-composer-fade">
-              <AddMenu hint={hint("chat.addAttachment")} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
+              <AddMenu hint={hint("chat.addAttachment")} planHint={hint("chat.togglePlanMode")} planMode={planMode} onAddAttachment={onAttachFiles ? () => fileInput.current?.click() : undefined} onLinkWorkspaces={onLinkWorkspaces} />
             </span>
             {showFocusPill && minimized ? focusPill(true) : null}
             {onAttachFiles ? (
@@ -412,11 +427,11 @@ export function Composer({
   );
 }
 
-function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
+function AddMenu({ hint, planHint, planMode, onAddAttachment, onLinkWorkspaces }: { hint: string; planHint: string; planMode?: PlanModeControl; onAddAttachment?: () => void; onLinkWorkspaces?: () => void }) {
   const [open, setOpen] = useState(false);
   const popup = usePresence(open);
   const ref = useRef<HTMLSpanElement>(null);
-  if (!onAddAttachment && !onLinkWorkspaces) return null;
+  if (!onAddAttachment && !onLinkWorkspaces && !planMode) return null;
   return (
     <span
       className="oc-add-menu"
@@ -453,6 +468,11 @@ function AddMenu({ hint, onAddAttachment, onLinkWorkspaces }: { hint: string; on
           </button> : null}
           {onLinkWorkspaces ? <button type="button" role="menuitem" className="oc-menu-item" onClick={() => { setOpen(false); onLinkWorkspaces(); }}>
             <PlusIcon size={16} /><span className="oc-menu-item-label">Link workspaces</span>
+          </button> : null}
+          {planMode ? <button type="button" role="menuitem" className="oc-menu-item" disabled={planMode.disabled} title={planMode.disabled ? "Wait for the current Claude Code turn to end" : undefined} onClick={() => { setOpen(false); planMode.onToggle(); }}>
+            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M9 12l3 3L22 5" /></svg>
+            <span className="oc-menu-item-label">{planMode.isPlanMode ? "Exit plan mode" : "Plan mode"}</span>
+            <span className="oc-kbd-hint">{planHint}</span>
           </button> : null}
         </div>
       ) : null}

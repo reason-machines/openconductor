@@ -1,0 +1,323 @@
+{
+  "owner": "Conductor Rebuild / be7a40e4",
+  "unit": "CHAT-TOPLEVEL-FIND-SOURCE-BE7-01",
+  "recorded_at_utc": "2026-11-11T14:42:05.436978+00:00",
+  "main": "248b6c359c830c6ac5e050721bae18e44e168068",
+  "branch": "reason/openconductor-sol-worksp-be7a40e4",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "index_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "rea_provenance": {
+    "historical_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "limitation": "Retained shipped-asset bytes; old whole-renderer semantic analysis hit a heap limit. No fresh REA semantic or runtime result."
+  },
+  "assets": {
+    "renderer": {
+      "name": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    "index": {
+      "name": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  },
+  "spans": [
+    {
+      "name": "search-store",
+      "asset": "renderer",
+      "start": 8778754,
+      "end": 8779287,
+      "bytes": 533,
+      "sha256": "1adb23bd94ff1bd5cac3d1c705d40c6916c8f645dc151f9e604ccb29aefe4d2a",
+      "file": "search-store.literal.txt"
+    },
+    {
+      "name": "message-text",
+      "asset": "renderer",
+      "start": 8773671,
+      "end": 8773972,
+      "bytes": 301,
+      "sha256": "ac2c0f3cb4f26c7b21651271fb56000386e2e07e4b76249b3f289d45becdb106",
+      "file": "message-text.literal.txt"
+    },
+    {
+      "name": "message-matches",
+      "asset": "renderer",
+      "start": 8779287,
+      "end": 8780110,
+      "bytes": 823,
+      "sha256": "e2fe7375323b62930cb3b4e8416c2281584f8b795effb2ea5cab079ee943b840",
+      "file": "message-matches.literal.txt"
+    },
+    {
+      "name": "highlight-helpers",
+      "asset": "renderer",
+      "start": 8780110,
+      "end": 8782018,
+      "bytes": 1908,
+      "sha256": "88ad01f8d7ff007ffeaf7f872e2f0c82b606ba30660a56e4bb6493d8e33d9c5d",
+      "file": "highlight-helpers.literal.txt"
+    },
+    {
+      "name": "chat-find-bar",
+      "asset": "renderer",
+      "start": 8782018,
+      "end": 8782569,
+      "bytes": 551,
+      "sha256": "77916e15968df6529b9f26704f61a4804d06404b8ae90d7321763927f9498c5e",
+      "file": "chat-find-bar.literal.txt"
+    },
+    {
+      "name": "search-open-binding",
+      "asset": "renderer",
+      "start": 8782681,
+      "end": 8783115,
+      "bytes": 434,
+      "sha256": "f5dfa73e6d63ef2c8f1375a5e7d8af4317eaac12ae80e18d6b548e9933ea4986",
+      "file": "search-open-binding.literal.txt"
+    },
+    {
+      "name": "match-navigation",
+      "asset": "renderer",
+      "start": 8783115,
+      "end": 8785213,
+      "bytes": 2098,
+      "sha256": "6df0a370e3ebf0cf076c8dd61291eccd95e4ca105c93f7c4f22b8b7439fcaf0c",
+      "file": "match-navigation.literal.txt"
+    },
+    {
+      "name": "shared-find-bar",
+      "asset": "renderer",
+      "start": 6572763,
+      "end": 6576673,
+      "bytes": 3910,
+      "sha256": "44a9fd0c7407d1fc96fca356b6c278010e3bee85ebb67fe96f1203f4d53ed6d7",
+      "file": "shared-find-bar.literal.txt"
+    },
+    {
+      "name": "chat-host",
+      "asset": "renderer",
+      "start": 8942690,
+      "end": 8946330,
+      "bytes": 3640,
+      "sha256": "f308d436ec334b074267b61c2b324264ccf828e5d4eed14bbf5f56eb72374751",
+      "file": "chat-host.literal.txt"
+    },
+    {
+      "name": "assistant-row",
+      "asset": "renderer",
+      "start": 8867370,
+      "end": 8872955,
+      "bytes": 5585,
+      "sha256": "a1df24563a916eb5abe8c9d56965c14ed0f42de2d32ef430904fd3e6f8e3aa70",
+      "file": "assistant-row.literal.txt"
+    },
+    {
+      "name": "user-row",
+      "asset": "renderer",
+      "start": 8888311,
+      "end": 8896973,
+      "bytes": 8662,
+      "sha256": "f0b0186021e357b61134c1a0ec438a7dbfaeae120c1f8fcfa252d03057e1b943",
+      "file": "user-row.literal.txt"
+    },
+    {
+      "name": "keybinding-hook",
+      "asset": "renderer",
+      "start": 2289518,
+      "end": 2290390,
+      "bytes": 872,
+      "sha256": "4f9061565952281483bd06089ca774686642220eb3c9ad2c1c0c321b35afbeae",
+      "file": "keybinding-hook.literal.txt"
+    },
+    {
+      "name": "session-message-query",
+      "asset": "index",
+      "start": 1538468,
+      "end": 1538672,
+      "bytes": 204,
+      "sha256": "3bd6ed01d688d63cd1451794bbef376265dbe6b0dcb983c3f4b387a006a1faba",
+      "file": "session-message-query.literal.txt"
+    },
+    {
+      "name": "session-message-alias",
+      "asset": "index",
+      "start": 3162575,
+      "end": 3162596,
+      "bytes": 21,
+      "sha256": "84f14da742a50e7591c61eed7082d1bc2f1c03cb6953bee3e1ec704f0a9308fb",
+      "file": "session-message-alias.literal.txt"
+    },
+    {
+      "name": "query-import",
+      "asset": "renderer",
+      "start": 59021,
+      "end": 59029,
+      "bytes": 8,
+      "sha256": "9b51330057845e35d414b5fd4b05985293054fb851b2af9906de896ac0170ddd",
+      "file": "query-import.literal.txt"
+    },
+    {
+      "name": "query-export",
+      "asset": "index",
+      "start": 3485435,
+      "end": 3485443,
+      "bytes": 8,
+      "sha256": "bd9b3fd243f132547ccd2ffd57b023b7fb742afe6abfa661cca85fd498db95ac",
+      "file": "query-export.literal.txt"
+    }
+  ],
+  "current_main_files": [
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "file": "main-WorkspaceView.tsx.txt",
+      "bytes": 81577,
+      "sha256": "9156b2303c8cfd3dc3f01f71d8e821e6fff3a6740fc4118dc8c0ed19b5d8d896",
+      "blob": "445fa380d797e61e8fab1fd7e4288175453c5001"
+    },
+    {
+      "path": "src/features/chat/Transcript.tsx",
+      "file": "main-Transcript.tsx.txt",
+      "bytes": 20364,
+      "sha256": "7b98c1ab857e7c015bc04c0cab64b8206ef2741ab8dc87800a32f3576a00ac00",
+      "blob": "f421643b2082ac3107963f1b4ef616998cb8de0b"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "file": "main-registry.ts.txt",
+      "bytes": 28780,
+      "sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9",
+      "blob": "88d52070749de6572b43fb79575894625c104a76"
+    },
+    {
+      "path": "src/features/chat/reducer.ts",
+      "file": "main-reducer.ts.txt",
+      "bytes": 5906,
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "blob": "aa9847dcc0b5030b82f1e72496f408834db9d064"
+    },
+    {
+      "path": "src/features/chat/types.ts",
+      "file": "main-types.ts.txt",
+      "bytes": 3429,
+      "sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+      "blob": "30b5aa083c150875b248e87599f00683a54a03f4"
+    },
+    {
+      "path": "src/features/chat/view.ts",
+      "file": "main-view.ts.txt",
+      "bytes": 8612,
+      "sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db",
+      "blob": "7cbdc5e96ce4c312e5cab71a1a47ee81be24ada1"
+    },
+    {
+      "path": "src/keybindings/KeybindingsProvider.tsx",
+      "file": "main-KeybindingsProvider.tsx.txt",
+      "bytes": 5566,
+      "sha256": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+      "blob": "7ca5327d1debdee398cdfa6590366fdc8327b253"
+    }
+  ],
+  "checks": [
+    {
+      "label": "renderer original-byte SHA-256",
+      "passed": true
+    },
+    {
+      "label": "index original-byte SHA-256",
+      "passed": true
+    },
+    {
+      "label": "loaded chat host mounts real search consumer",
+      "passed": true
+    },
+    {
+      "label": "search binding excludes terminal focus",
+      "passed": true
+    },
+    {
+      "label": "same-session message query",
+      "passed": true
+    },
+    {
+      "label": "top-level user and assistant text only",
+      "passed": true
+    },
+    {
+      "label": "no tool/thinking extractor arm",
+      "passed": true
+    },
+    {
+      "label": "case-insensitive nonoverlapping matches",
+      "passed": true
+    },
+    {
+      "label": "blank query produces no matches",
+      "passed": true
+    },
+    {
+      "label": "count and wraparound navigation",
+      "passed": true
+    },
+    {
+      "label": "current selection scrolls its turn",
+      "passed": true
+    },
+    {
+      "label": "three match commands bound",
+      "passed": true
+    },
+    {
+      "label": "find bar actual label",
+      "passed": true
+    },
+    {
+      "label": "Escape closes and Enter navigates",
+      "passed": true
+    },
+    {
+      "label": "no-match previous/next disabled",
+      "passed": true
+    },
+    {
+      "label": "open refocuses, close resets",
+      "passed": true
+    },
+    {
+      "label": "DOM highlighting limited to searchable nodes",
+      "passed": true
+    },
+    {
+      "label": "main declares all four chat find commands",
+      "passed": true
+    },
+    {
+      "label": "main WorkspaceView has actual Transcript host",
+      "passed": true
+    },
+    {
+      "label": "bounded main host comparison has no chat find binding",
+      "passed": true
+    },
+    {
+      "label": "bounded main host comparison has no reference find label",
+      "passed": true
+    },
+    {
+      "label": "bounded main Transcript has no search mark consumer",
+      "passed": true
+    }
+  ],
+  "conclusion": "SOURCE_CONSUMER_MISMATCH; NOT_COMPONENT_RED_GREEN_OR_NATIVE_ACCEPTANCE",
+  "ownership": "Exact chat.search dedupe requested from ledger. Root authorizes source/test handoff outside tracked tree; frozen #847 unchanged.",
+  "execution": {
+    "Python_integrity_source_checks": "PASS",
+    "target_JS": "NOT RUN",
+    "product_component_tests": "NOT RUN",
+    "browser": "NOT RUN",
+    "native": "NOT RUN",
+    "provider_CLI": "NOT RUN",
+    "CI": "NOT RUN"
+  }
+}
