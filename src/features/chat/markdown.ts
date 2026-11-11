@@ -27,13 +27,15 @@ import remarkGfm from "remark-gfm";
 import remarkSmartypants from "remark-smartypants";
 import { SKIP, visit } from "unist-util-visit";
 import { common, createLowlight } from "lowlight";
+import nix from "highlight.js/lib/languages/nix";
+import dart from "highlight.js/lib/languages/dart";
 import type { PhrasingContent, Root as MdRoot } from "mdast";
 import type { Element, ElementContent, Root as HastRoot } from "hast";
 
 /** Conductor does not highlight code longer than this. */
 export const MAX_HIGHLIGHT_CHARS = 100_000;
 
-const lowlight = createLowlight(common);
+const lowlight = createLowlight({ ...common, nix, dart });
 const HTTP_URL = /^https?:\/\/\S+$/;
 
 /** `language-ts other` -> `ts` (the first `language-` class). */

@@ -149,8 +149,8 @@ export function paletteDataFromState(
       if (a.id === "quick-open") return selectedWorkspace !== undefined && selectedWorkspace.status !== "archived" && selectedWorkspace.state !== "archived" && selectedWorkspace.state !== "unstarted";
       if (a.id === "archive-workspace") return selectedWorkspace?.status !== "archived" && state.archivedOpen?.workspace.id !== activeWorkspaceId;
       if (a.id === "go-to-next-unread") return nextUnreadChat(state, { skipSelected: false }) !== undefined;
-      // Conductor lists it under Navigation only while a workspace is open (`Xt &&`).
-      if (a.id === VIEW_ARCHIVED_ACTION) {
+      // Conductor gates both rows on the resolved workspace (`Xt &&`).
+      if (a.id === VIEW_ARCHIVED_ACTION || a.id === "copy-url") {
         const sel = state.selection;
         if (sel.kind !== "workspace") return false;
         const workspace = state.repos.find((r) => r.id === sel.repoId)?.workspaces.find((w) => w.id === sel.workspaceId)
