@@ -32,4 +32,4 @@ for path, expected in packet['current_main_pins'].items():
 for name in ['fixture', 'existing_tooltip_fixture']:
     fixture = packet[name]
     assert digest(Path(fixture['path']).read_bytes()) == fixture['sha256'], fixture['path']
-print(f"PASS: two complete retained REA assets, {len(packet['spans'])} exact spans, five fresh-main inputs and both frozen fixtures. SOURCE ONLY; hosted behavior and native acceptance NOT_RUN.")
+print(f"PASS: two complete retained REA assets, {len(packet['spans'])} exact spans, five fresh-main inputs and both frozen fixtures. SOURCE ONLY; this verifier does not execute behavioral or native checks.")

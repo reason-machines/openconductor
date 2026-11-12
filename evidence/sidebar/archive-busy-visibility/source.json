@@ -200,7 +200,7 @@
     "current_main": "Sidebar has both row call sites passing useWorkspaceRows.rowProps. rowProps always supplies onArchive; SidebarWorkspaceRow renders the archive button solely when onArchive exists and has no script-state import/subscription/gate. Existing activeRun recognizes the same four busy states but is not consumed by the row."
   },
   "bounded_gap": "Local workspace hover Archive affordance is statically missing busy-run-script suppression. The permission join confines this finding to local write access; no read-permission/cloud feature is proposed.",
-  "contract_status": "Frozen test-only candidate. Seven cases each cover selected and unselected rows. Expected five presence-assertion failures and two passing controls are predictions until hosted execution.",
+  "contract_status": "Frozen seven-case fixture unchanged. Both hosted frontend jobs on f24c4a3 observed five intended selected-row presence-assertion failures and two passing controls. Unselected busy iterations and live restoration await candidate execution. Minimal row correction applied after qualified RED; all exact-head workflows must pass before merge.",
   "excluded": [
     "Archive command/action/keyboard dispatch",
     "Stop confirmation",
@@ -214,7 +214,7 @@
     "Existing retained real-app REA-decoded assets, no fresh installed-app or semantic graph run. Existing heap/graph-budget gaps remain documented in evidence/help/shortcut-overrides/reference-provenance.md.",
     "No local Node/Rust/native/browser, manual dispatch, rerun or extra watcher"
   ],
-  "behavioral": "NOT_RUN",
+  "behavioral": "BASELINE_QUALIFIED_INTENDED_RED; CANDIDATE_PENDING",
   "native_ui": "NOT_RUN",
   "previous_census_main": "f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32",
   "fixture": {
