@@ -364,7 +364,11 @@ function PrComments({ threads, prNumber, ops }: { threads: Thread[]; prNumber: n
  */
 export function useReviewComments(workspaceId: string, chat: ChatBridge & ComposerAttach, reveal?: (path: string) => void, workspacePath: string | null = null, notify?: Notify) {
   const store = useMemo(() => commentStoreFor(workspaceId, workspacePath), [workspaceId, workspacePath]);
-  const [stored, setStored] = useState<DiffComment[]>([]);
+  const [storedByWorkspace, setStoredByWorkspace] = useState<Partial<Record<string, DiffComment[]>>>({});
+  const stored = storedByWorkspace[workspaceId] ?? [];
+  const setStored = useCallback((comments: DiffComment[]) => {
+    setStoredByWorkspace((current) => ({ ...current, [workspaceId]: comments }));
+  }, [workspaceId]);
   const [files, setFiles] = useState<FileDiff[]>([]);
   const [newDrafts, setComposing] = useState<Composing[]>([]);
   const submittingDrafts = useRef(new Set<string>());
@@ -373,7 +377,7 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const [error, setError] = useState<string | null>(null);
   const [github, setGithub] = useState<{ report?: GithubSyncReport; error?: string }>({});
 
-  const reload = useCallback(() => store.list().then(setStored, (e: unknown) => setError(String(e))), [store]);
+  const reload = useCallback(() => store.list().then(setStored, (e: unknown) => setError(String(e))), [store, setStored]);
   useEffect(() => {
     setStored([]);
     setComposing([]);
