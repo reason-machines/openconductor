@@ -1,0 +1,194 @@
+2026-11-12T01:01:32.7769704Z # Subtest: running Run output supplies foreground cursor colors to xterm
+2026-11-12T01:01:32.7818165Z not ok 2483 - running Run output supplies foreground cursor colors to xterm
+2026-11-12T01:01:32.7818990Z   ---
+2026-11-12T01:01:32.7831671Z   duration_ms: 511.29847
+2026-11-12T01:01:32.7832182Z   type: 'test'
+2026-11-12T01:01:32.7833109Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:173:1'
+2026-11-12T01:01:32.7833925Z   failureType: 'testCodeFailure'
+2026-11-12T01:01:32.7834393Z   error: |-
+2026-11-12T01:01:32.7834896Z     Expected values to be strictly deep-equal:
+2026-11-12T01:01:32.7835484Z     + actual - expected
+2026-11-12T01:01:32.7835916Z     
+2026-11-12T01:01:32.7836304Z       {
+2026-11-12T01:01:32.7836754Z     +   cursor: 'fixture-transparent',
+2026-11-12T01:01:32.7837318Z     +   cursorAccent: undefined
+2026-11-12T01:01:32.7837886Z     -   cursor: 'fixture-foreground-light',
+2026-11-12T01:01:32.7838515Z     -   cursorAccent: 'fixture-background-light'
+2026-11-12T01:01:32.7839069Z       }
+2026-11-12T01:01:32.7839474Z     
+2026-11-12T01:01:32.7839869Z   code: 'ERR_ASSERTION'
+2026-11-12T01:01:32.7840333Z   name: 'AssertionError'
+2026-11-12T01:01:32.7840775Z   expected:
+2026-11-12T01:01:32.7841213Z     cursor: 'fixture-foreground-light'
+2026-11-12T01:01:32.7841767Z     cursorAccent: 'fixture-background-light'
+2026-11-12T01:01:32.7842274Z   actual:
+2026-11-12T01:01:32.7842873Z     cursor: 'fixture-transparent'
+2026-11-12T01:01:32.7843351Z   operator: 'deepStrictEqual'
+2026-11-12T01:01:32.7843804Z   stack: |-
+2026-11-12T01:01:32.7845098Z     foreground (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:170:10)
+2026-11-12T01:01:32.7846366Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:177:3)
+2026-11-12T01:01:32.7847369Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T01:01:32.7848166Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-12T01:01:32.7848830Z   ...
+2026-11-12T01:01:32.7849526Z # Subtest: Run output requests cursor blinking at the terminal constructor boundary
+2026-11-12T01:01:32.7850517Z not ok 2484 - Run output requests cursor blinking at the terminal constructor boundary
+2026-11-12T01:01:32.7851199Z   ---
+2026-11-12T01:01:32.7851599Z   duration_ms: 302.008066
+2026-11-12T01:01:32.7852048Z   type: 'test'
+2026-11-12T01:01:32.7852982Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:180:1'
+2026-11-12T01:01:32.7853835Z   failureType: 'testCodeFailure'
+2026-11-12T01:01:32.7854317Z   error: |-
+2026-11-12T01:01:32.7854785Z     Expected values to be strictly equal:
+2026-11-12T01:01:32.7855283Z     
+2026-11-12T01:01:32.7855662Z     false !== true
+2026-11-12T01:01:32.7856071Z     
+2026-11-12T01:01:32.7856464Z   code: 'ERR_ASSERTION'
+2026-11-12T01:01:32.7856915Z   name: 'AssertionError'
+2026-11-12T01:01:32.7857385Z   expected: true
+2026-11-12T01:01:32.7857799Z   actual: false
+2026-11-12T01:01:32.7858226Z   operator: 'strictEqual'
+2026-11-12T01:01:32.7858681Z   stack: |-
+2026-11-12T01:01:32.7859564Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:183:10)
+2026-11-12T01:01:32.7860569Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T01:01:32.7861363Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T01:01:32.7864851Z   ...
+2026-11-12T01:01:32.7865558Z # Subtest: a stopped Run retains its cursor colors without enabling stdin
+2026-11-12T01:01:32.7866472Z not ok 2485 - a stopped Run retains its cursor colors without enabling stdin
+2026-11-12T01:01:32.7867114Z   ---
+2026-11-12T01:01:32.7867517Z   duration_ms: 193.743339
+2026-11-12T01:01:32.7867969Z   type: 'test'
+2026-11-12T01:01:32.7869014Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:186:1'
+2026-11-12T01:01:32.7869928Z   failureType: 'testCodeFailure'
+2026-11-12T01:01:32.7870417Z   error: |-
+2026-11-12T01:01:32.7870902Z     Expected values to be strictly deep-equal:
+2026-11-12T01:01:32.7871461Z     + actual - expected
+2026-11-12T01:01:32.7871906Z     
+2026-11-12T01:01:32.7872292Z       {
+2026-11-12T01:01:32.7873092Z     +   cursor: 'fixture-transparent',
+2026-11-12T01:01:32.7873705Z     +   cursorAccent: undefined
+2026-11-12T01:01:32.7874272Z     -   cursor: 'fixture-foreground-light',
+2026-11-12T01:01:32.7874911Z     -   cursorAccent: 'fixture-background-light'
+2026-11-12T01:01:32.7875453Z       }
+2026-11-12T01:01:32.7875851Z     
+2026-11-12T01:01:32.7876262Z   code: 'ERR_ASSERTION'
+2026-11-12T01:01:32.7876712Z   name: 'AssertionError'
+2026-11-12T01:01:32.7877169Z   expected:
+2026-11-12T01:01:32.7877644Z     cursor: 'fixture-foreground-light'
+2026-11-12T01:01:32.7881296Z     cursorAccent: 'fixture-background-light'
+2026-11-12T01:01:32.7881883Z   actual:
+2026-11-12T01:01:32.7882361Z     cursor: 'fixture-transparent'
+2026-11-12T01:01:32.7883044Z   operator: 'deepStrictEqual'
+2026-11-12T01:01:32.7883515Z   stack: |-
+2026-11-12T01:01:32.7884362Z     foreground (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:170:10)
+2026-11-12T01:01:32.7885677Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:190:3)
+2026-11-12T01:01:32.7886703Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T01:01:32.7887512Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T01:01:32.7888192Z   ...
+2026-11-12T01:01:32.7889075Z # Subtest: Run cursor policy survives input disable on the same terminal
+2026-11-12T01:01:32.7889969Z not ok 2486 - Run cursor policy survives input disable on the same terminal
+2026-11-12T01:01:32.7890598Z   ---
+2026-11-12T01:01:32.7891024Z   duration_ms: 193.755306
+2026-11-12T01:01:32.7891475Z   type: 'test'
+2026-11-12T01:01:32.7892261Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:193:1'
+2026-11-12T01:01:32.7893281Z   failureType: 'testCodeFailure'
+2026-11-12T01:01:32.7893765Z   error: |-
+2026-11-12T01:01:32.7894231Z     Expected values to be strictly deep-equal:
+2026-11-12T01:01:32.7894790Z     + actual - expected
+2026-11-12T01:01:32.7895214Z     
+2026-11-12T01:01:32.7895596Z       {
+2026-11-12T01:01:32.7896063Z     +   cursor: 'fixture-transparent',
+2026-11-12T01:01:32.7896606Z     +   cursorAccent: undefined
+2026-11-12T01:01:32.7897179Z     -   cursor: 'fixture-foreground-light',
+2026-11-12T01:01:32.7897804Z     -   cursorAccent: 'fixture-background-light'
+2026-11-12T01:01:32.7898379Z       }
+2026-11-12T01:01:32.7898755Z     
+2026-11-12T01:01:32.7899164Z   code: 'ERR_ASSERTION'
+2026-11-12T01:01:32.7899613Z   name: 'AssertionError'
+2026-11-12T01:01:32.7900057Z   expected:
+2026-11-12T01:01:32.7900540Z     cursor: 'fixture-foreground-light'
+2026-11-12T01:01:32.7901141Z     cursorAccent: 'fixture-background-light'
+2026-11-12T01:01:32.7901669Z   actual:
+2026-11-12T01:01:32.7902141Z     cursor: 'fixture-transparent'
+2026-11-12T01:01:32.7902796Z   operator: 'deepStrictEqual'
+2026-11-12T01:01:32.7903282Z   stack: |-
+2026-11-12T01:01:32.7904172Z     foreground (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:170:10)
+2026-11-12T01:01:32.7905547Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:202:3)
+2026-11-12T01:01:32.7906568Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T01:01:32.7907378Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T01:01:32.7908046Z   ...
+2026-11-12T01:01:32.7908695Z # Subtest: the output click delegates focus without replacing Run cursor policy
+2026-11-12T01:01:32.7909594Z not ok 2487 - the output click delegates focus without replacing Run cursor policy
+2026-11-12T01:01:32.7910231Z   ---
+2026-11-12T01:01:32.7910846Z   duration_ms: 161.128247
+2026-11-12T01:01:32.7911308Z   type: 'test'
+2026-11-12T01:01:32.7912091Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:205:1'
+2026-11-12T01:01:32.7913088Z   failureType: 'testCodeFailure'
+2026-11-12T01:01:32.7913571Z   error: |-
+2026-11-12T01:01:32.7914075Z     Expected values to be strictly deep-equal:
+2026-11-12T01:01:32.7914621Z     + actual - expected
+2026-11-12T01:01:32.7915060Z     
+2026-11-12T01:01:32.7915456Z       {
+2026-11-12T01:01:32.7915922Z     +   cursor: 'fixture-transparent',
+2026-11-12T01:01:32.7916602Z     +   cursorAccent: undefined
+2026-11-12T01:01:32.7917215Z     -   cursor: 'fixture-foreground-light',
+2026-11-12T01:01:32.7917870Z     -   cursorAccent: 'fixture-background-light'
+2026-11-12T01:01:32.7918405Z       }
+2026-11-12T01:01:32.7918802Z     
+2026-11-12T01:01:32.7919187Z   code: 'ERR_ASSERTION'
+2026-11-12T01:01:32.7919629Z   name: 'AssertionError'
+2026-11-12T01:01:32.7920070Z   expected:
+2026-11-12T01:01:32.7920523Z     cursor: 'fixture-foreground-light'
+2026-11-12T01:01:32.7921095Z     cursorAccent: 'fixture-background-light'
+2026-11-12T01:01:32.7921638Z   actual:
+2026-11-12T01:01:32.7922095Z     cursor: 'fixture-transparent'
+2026-11-12T01:01:32.7922768Z   operator: 'deepStrictEqual'
+2026-11-12T01:01:32.7923251Z   stack: |-
+2026-11-12T01:01:32.7924028Z     foreground (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:170:10)
+2026-11-12T01:01:32.7925249Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:210:3)
+2026-11-12T01:01:32.7926224Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T01:01:32.7927695Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T01:01:32.7928375Z   ...
+2026-11-12T01:01:32.8954466Z # Subtest: palette changes refresh Run cursor and accent from current theme tokens
+2026-11-12T01:01:32.9003109Z not ok 2488 - palette changes refresh Run cursor and accent from current theme tokens
+2026-11-12T01:01:32.9003783Z   ---
+2026-11-12T01:01:32.9004071Z   duration_ms: 115.310518
+2026-11-12T01:01:32.9004450Z   type: 'test'
+2026-11-12T01:01:32.9005142Z   location: '/home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:213:1'
+2026-11-12T01:01:32.9005857Z   failureType: 'testCodeFailure'
+2026-11-12T01:01:32.9006189Z   error: |-
+2026-11-12T01:01:32.9006522Z     Expected values to be strictly deep-equal:
+2026-11-12T01:01:32.9006926Z     + actual - expected
+2026-11-12T01:01:32.9007216Z     
+2026-11-12T01:01:32.9007442Z       {
+2026-11-12T01:01:32.9007751Z     +   cursor: 'fixture-transparent',
+2026-11-12T01:01:32.9008172Z     +   cursorAccent: undefined
+2026-11-12T01:01:32.9008571Z     -   cursor: 'fixture-foreground-dark',
+2026-11-12T01:01:32.9009033Z     -   cursorAccent: 'fixture-background-dark'
+2026-11-12T01:01:32.9009421Z       }
+2026-11-12T01:01:32.9009657Z     
+2026-11-12T01:01:32.9009906Z   code: 'ERR_ASSERTION'
+2026-11-12T01:01:32.9010230Z   name: 'AssertionError'
+2026-11-12T01:01:32.9010538Z   expected:
+2026-11-12T01:01:32.9010855Z     cursor: 'fixture-foreground-dark'
+2026-11-12T01:01:32.9011287Z     cursorAccent: 'fixture-background-dark'
+2026-11-12T01:01:32.9011664Z   actual:
+2026-11-12T01:01:32.9011961Z     cursor: 'fixture-transparent'
+2026-11-12T01:01:32.9012319Z   operator: 'deepStrictEqual'
+2026-11-12T01:01:32.9012776Z   stack: |-
+2026-11-12T01:01:32.9013470Z     foreground (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:170:10)
+2026-11-12T01:01:32.9014632Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/scripts/outputCursor.test.ts:217:3)
+2026-11-12T01:01:32.9015511Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T01:01:32.9016164Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T01:01:32.9016669Z   ...
+2026-11-12T01:01:33.0654582Z # Subtest: Setup output remains read-only with a transparent cursor after a palette change
+2026-11-12T01:01:33.0673965Z ok 2489 - Setup output remains read-only with a transparent cursor after a palette change
+2026-11-12T01:01:33.0678083Z   ---
+2026-11-12T01:01:33.0733159Z   duration_ms: 115.032056
+2026-11-12T01:01:33.0733810Z   type: 'test'
+2026-11-12T01:01:33.0763000Z   ...
+2026-11-12T01:01:33.0783794Z # Subtest: default standalone output with input preserves transparent cursor configuration
+2026-11-12T01:01:33.0797928Z ok 2490 - default standalone output with input preserves transparent cursor configuration
+2026-11-12T01:01:33.0813187Z   ---
+2026-11-12T01:01:33.0842976Z   duration_ms: 179.002298
+2026-11-12T01:01:33.0873335Z   type: 'test'
+2026-11-12T01:01:33.0903284Z   ...

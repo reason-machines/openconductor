@@ -1,0 +1,42 @@
+{
+  "unit": "DIFF-LARGE-FILE-PLACEHOLDER-DE6",
+  "consumed_main": "382da31580a5698feb223e1a3607fc79119fb77a",
+  "repair_pr": "https://github.com/reason-machines/openconductor/pull/1109",
+  "repair_head": "3e6dde7b8e3f178c47a5658e2c9609f79a793a13",
+  "owner_callback_message": "0c92c444-aa6a-41bf-b62e-a403fe681018",
+  "method": "Normal merge of actual origin/main into the existing #1106 branch; no cherry-pick, shared-harness edit, repin, dispatch, rerun or new watcher.",
+  "previous_pr_head": "98b76a1750c84438f9f2bb9374a0f1f9344291df",
+  "preservation": {
+    "product": "All four #1106 product paths are byte-identical to the previous published head, including the body-only FileDiffView branch and unchanged header/callers.",
+    "regression_and_evidence": "Every existing #1106 diff workflow, fixture, runner, assertion, source manifest and candidate scalar is unchanged from the previous published head.",
+    "main_repair": "All five #1109 changed files are identical to consumed main; no local edits.",
+    "disclosure_original_pins": 132,
+    "disclosure_frozen_helpers": 5,
+    "disclosure_archive_files": 214,
+    "disclosure_resolver_leaves": 82,
+    "disclosure_archive_sha256": "1a18371ad906ba32de960e832646939e4d6d7005d3ad18f84248cd8a99bed4dd"
+  },
+  "checks": [
+    {
+      "command": "python3 evidence/diff/large-file-placeholder/verify_source.py",
+      "result": "PASS: seven reference extracts, three frozen fixtures, eight source checks and eight cases. No behavioral execution."
+    },
+    {
+      "command": "python3 evidence/diff/large-file-placeholder/verify_candidate.py",
+      "result": "PASS: candidate product hashes, baseline source identities, existing hidden-whitespace preflight and three historical scalar-only transitions. No behavioral execution."
+    },
+    {
+      "command": "python3 evidence/chat/tool-disclosure-remount/verify_baseline_root.py",
+      "result": "PASS: 132 original historical pins, five frozen helpers, eight entrypoints, 214 archive files and isolated root. No JavaScript execution."
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "hosted_behavior_after_main_merge": "PENDING ordinary automatic exact-head CI; prior head outcomes are not new-head evidence.",
+  "local_rust_node_native_visual_sqlite_restart": "NOT_RUN",
+  "screenshot": "NOT_RUN; no browser or native execution admission.",
+  "merge_gate": "All workflows on the exact published head must positively pass before merge, including all eight actual backend DTO cases, all eight mounted renderer cases, and every paired historical RED/current GREEN proof.",
+  "independent_source_prep": "Historical-size follow-up remains an inert, unattached source/test design outside this PR; no additional product scope is included."
+}

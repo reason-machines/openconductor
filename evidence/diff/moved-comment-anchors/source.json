@@ -8,7 +8,7 @@
     },
     "src/features/diff/FileDiffView.tsx": {
       "baseline": "9cd017dd3eff31391e722a5928ec2cdf6554b103db92e69bd6019858fc4d5e07",
-      "candidate": "8e3dc981b01b2e5f8b19f51e1fd0e7c05691f2174d2d37b1fe7faf9455ecc6da"
+      "candidate": "518b579630903c24ef7f2431c91d014fdd46fad8732c1b1a6895375fd3ee2f26"
     },
     "src/features/diff/DiffViewer.tsx": {
       "baseline": "597dbc39d297635b94bcde0fc86e4b15ef24064177f9327de8e512be5e865362",

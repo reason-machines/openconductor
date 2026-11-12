@@ -1,6 +1,8 @@
 """Portable controller/oracle fixtures. No principal switching or native execution."""
+from contextlib import contextmanager
 import copy
 import errno
+import hashlib
 import io
 import json
 from pathlib import Path
@@ -16,7 +18,8 @@ from tools import inert_storage_probe as probe
 HEAD = "a" * 40
 CALLER = dict(uid=501, euid=501, gid=20, groups=[20, 80], platform="darwin", name="runner")
 CONSUMER = dict(uid=1, euid=1, gid=1, groups=[1], platform="darwin", name="daemon")
-PLAN = probe.ProbePlan("5aa28ef6-88dc-4c3c-bcd3-a4b99ff3707a", 1, 501, (1, 2), {
+PLAN = probe.ProbePlan("5aa28ef6-88dc-4c3c-bcd3-a4b99ff3707a", 1, 501, (1, 2),
+                       probe.StorageDirectory(1, 3, 1, 0o700), {
     resource: probe.Identity(1, 10 + i, 1, 0o600, 4096)
     for i, resource in enumerate(probe.RESOURCES)})
 
@@ -40,14 +43,36 @@ def role_result(role, phase="initial"):
     else:
         verify = role == "consumer-verify"
         result["status"] = "INTACT" if verify else "AUTHORIZED_CONTROL_OK"
+        result.update(namespace=list(PLAN.namespace), storage=hosted.asdict(PLAN.storage))
         result["observations"] = [{"resource": resource, "read": True, "write": not verify,
-            "identity": hosted.asdict(PLAN.resources[resource])} for resource in probe.RESOURCES]
+            "identity": hosted.asdict(PLAN.resources[resource]), "links": 1} for resource in probe.RESOURCES]
     return result
 
 
 class HostedControllerFixtures(unittest.TestCase):
     def validate(self, result, role):
         hosted.validate_role(result, PLAN, "initial", CALLER if role == "caller" else CONSUMER, role)
+
+    def test_original_hosted_alias_breach_is_retained_without_repair(self):
+        data = Path("evidence/qa/inert-storage-alias-failure/observations.json").read_bytes()
+        self.assertEqual(hashlib.sha256(data).hexdigest(),
+                         "f22215f4bd631259dfd608e39ad750571145c4b57fe7856e95d692ba05676727")
+        result = json.loads(data)
+        self.assertEqual(result["status"], "FAILED")
+        self.assertEqual(len(result["invocations"]), 5)
+        self.assertEqual(len(result["snapshots"]), 1)
+        caller = result["invocations"][3]
+        value = json.loads(caller["stdout"])
+        links = [o for o in value["observations"] if o["operation"] == "link"]
+        self.assertEqual(len(links), 2)
+        self.assertTrue(all(o["status"] == "BREACH" and o["negative"]["returned"] is True
+                            and o["negative"]["completed"] == ["link"] for o in links))
+        with self.assertRaises(probe.Unavailable):
+            hosted.decode(caller)
+        self.assertEqual(result["invocations"][-1]["returncode"], 2)
+        self.assertIs(result["runtime_admission"], False)
+        self.assertIs(result["native_admission"], False)
+        self.assertEqual(result["lifecycle_cases_exercised"], [])
 
     def test_complete_role_contracts_are_only_bounded_observations(self):
         for role in ("consumer", "caller", "consumer-verify"):
@@ -103,11 +128,48 @@ class HostedControllerFixtures(unittest.TestCase):
         for role in ("consumer", "consumer-verify"):
             for index in range(2):
                 for field, value in (("read", False), ("write", role == "consumer-verify"),
-                                     ("identity", {"inode": 999})):
+                                     ("identity", {"inode": 999}), ("links", 2), ("links", True),
+                                     ("links", None)):
                     result = role_result(role)
                     result["observations"][index][field] = value
                     with self.subTest(role=role, index=index, field=field), self.assertRaises(probe.Unavailable):
                         self.validate(result, role)
+
+    def test_consumer_private_boundary_and_single_link_metadata_are_mandatory(self):
+        for role in ("consumer", "consumer-verify"):
+            for field, value in (("namespace", None), ("namespace", [1, True]),
+                                 ("storage", None), ("storage", {}),
+                                 ("storage", {**hosted.asdict(PLAN.storage), "mode": 0o711}),
+                                 ("storage", {**hosted.asdict(PLAN.storage), "uid": True}),
+                                 ("storage", {**hosted.asdict(PLAN.storage), "inode": 999})):
+                result = role_result(role)
+                result[field] = value
+                with self.subTest(role=role, field=field, value=value), self.assertRaises(probe.Unavailable):
+                    self.validate(result, role)
+
+    def test_snapshot_uses_validated_consumer_report_not_caller_file_stat(self):
+        @contextmanager
+        def selected(*args):
+            yield PLAN, 77
+
+        with tempfile.TemporaryDirectory() as temp:
+            controller = self.controller(temp)
+            controller.evidence.selection = dict(probe_id=PLAN.probe_id, plan_sha256="c" * 64)
+            controller.evidence.principals["consumer"] = CONSUMER
+            with patch.object(probe, "load_plan", side_effect=selected), \
+                    patch.object(probe, "check_storage", return_value=PLAN.storage), \
+                    patch.object(probe, "check_identity", side_effect=AssertionError("caller resource stat")), \
+                    patch.object(probe.os, "stat", side_effect=AssertionError("caller resource stat")):
+                plan, snapshot = controller.snapshot("initial", "before_caller", role_result("consumer"))
+                self.assertEqual(plan, PLAN)
+                self.assertEqual(snapshot["storage"], hosted.asdict(PLAN.storage))
+                self.assertEqual(snapshot["resource_measurement"], "consumer_role_report")
+                self.assertTrue(all(resource["links"] == 1 for resource in snapshot["resources"].values()))
+                wrong = role_result("consumer")
+                wrong["observations"][0]["links"] = 2
+                with self.assertRaises(probe.Unavailable):
+                    controller.snapshot("initial", "before_caller", wrong)
+            self.assertEqual(len(controller.evidence.snapshots), 1)
 
     def test_exact_actual_principal_and_selection_required(self):
         for field, value in (("uid", True), ("uid", 0), ("euid", 1), ("gid", 1),
@@ -213,7 +275,7 @@ class HostedControllerFixtures(unittest.TestCase):
                             "consumer-verify": "consumer-verify"}[args[0]]
                     value = role_result(role, args[-1])
                 return dict(returncode=0, stdout=json.dumps(value))
-            def snapshot(phase, point):
+            def snapshot(phase, point, value):
                 result = dict(phase=phase, point=point, namespace=list(PLAN.namespace))
                 controller.evidence.snapshots.append(result)
                 return PLAN, result
