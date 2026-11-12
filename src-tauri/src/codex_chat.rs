@@ -210,6 +210,7 @@ pub async fn codex_prompt(
     model: Option<String>,
     effort: Option<String>,
     fast_mode: Option<bool>,
+    on_handoff: Option<tauri::ipc::Channel<()>>,
 ) -> Result<TurnEnd, String> {
     let runner = state.get(&chat_id)?;
     let effort = prompt_effort(model.as_deref(), effort, || {
@@ -220,7 +221,19 @@ pub async fn codex_prompt(
             .map(str::to_owned)
     });
     let fast_mode = fast_mode.or_else(|| settings.get().ok().map(|s| s.models.default_fast_mode));
-    let end = runner.prompt(text, TurnOptions { model, effort, fast_mode });
+    let end = runner.prompt_with_handoff(
+        text,
+        TurnOptions {
+            model,
+            effort,
+            fast_mode,
+        },
+        on_handoff.map(|channel| {
+            Box::new(move || {
+                let _ = channel.send(());
+            }) as Box<dyn FnOnce() + Send>
+        }),
+    );
     tauri::async_runtime::spawn_blocking(move || {
         end.recv()
             .unwrap_or_else(|_| TurnEnd::failed("The Codex chat closed."))

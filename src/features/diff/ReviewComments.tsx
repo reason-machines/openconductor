@@ -25,6 +25,7 @@ import {
   commentSource,
   commentTags,
   fileThreads,
+  fileCommentCounts,
   isRemoteThread,
   newLocalComment,
   hasPendingComments,
@@ -41,7 +42,7 @@ import {
 } from "./comments.ts";
 import type { ComposerAttach } from "./chatAttachment.ts";
 import { CommentMarkdown } from "./commentMarkdown.ts";
-import type { GithubSyncReport } from "./commentStore.ts";
+import { subscribeReviewComments, type GithubSyncReport } from "./commentStore.ts";
 import "../chat/chat.css";
 import "./comments-github.css";
 import { revealLine, type LineAnchor, type LineRange } from "./FileDiffView";
@@ -380,6 +381,8 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     void reload();
   }, [reload]);
 
+  useEffect(() => subscribeReviewComments(workspaceId, () => { void reload(); }), [workspaceId, reload]);
+
   // Pull the PR's GitHub comments when the workspace opens and every couple of minutes after.
   useEffect(() => {
     const sync = store.syncGithub;
@@ -418,16 +421,14 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
 
   const comments = useMemo(() => refreshOutdated(stored, files), [stored, files]);
   const threads = useMemo(() => threadsOf(comments), [comments]);
-  const ready = pendingForAgent(comments);
+  const ready = pendingForAgent(comments).filter((comment) => !chat.commentIds?.has(comment.id));
+  const commentCounts = useMemo(() => fileCommentCounts(stored), [stored]);
 
   // One attachment per comment, as Conductor's addReviewCommentToComposer does.
   const toChat = (cs: DiffComment[]) => {
     if (cs.length === 0) return Promise.resolve(false);
-    for (const c of cs) chat.attach(commentAttachment(c));
-    return run(store.markSent(cs.map((c) => c.id))).then((ok) => {
-      if (!ok) notify?.("error", cs.length === 1 ? "Failed to add comment to chat" : "Failed to add comments to chat");
-      return ok;
-    });
+    for (const c of cs) if (!chat.commentIds?.has(c.id)) chat.attach(commentAttachment(c));
+    return Promise.resolve(true);
   };
 
   const resolveOnGithub = store.resolveOnGithub;
@@ -634,5 +635,5 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const hasPending = hasPendingComments(comments);
   const addAllToChat = () => void toChat(ready);
 
-  return { onLineClick, commentRange, anchors, annotations, persistAnchors, notes, actions, onLoaded, hasPending, addAllToChat };
+  return { onLineClick, commentRange, anchors, annotations, persistAnchors, notes, actions, onLoaded, hasPending, addAllToChat, commentCounts };
 }

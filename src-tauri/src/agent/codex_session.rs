@@ -167,7 +167,19 @@ impl CodexSession {
 
     /// Sends `request` and waits up to `timeout` for its result.
     pub fn call(&mut self, request: &ClientRequest, timeout: Duration) -> Result<Value, CallError> {
+        self.call_with_handoff(request, timeout, None)
+    }
+
+    fn call_with_handoff(
+        &mut self,
+        request: &ClientRequest,
+        timeout: Duration,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
+    ) -> Result<Value, CallError> {
         let id = self.send_request(request)?;
+        if let Some(on_handoff) = on_handoff {
+            on_handoff();
+        }
         let method = request.method();
         let deadline = Instant::now() + timeout;
         loop {
@@ -247,16 +259,27 @@ impl CodexSession {
         options: TurnOptions,
         timeout: Duration,
     ) -> Result<String, CallError> {
+        self.start_turn_with_handoff(text, options, timeout, None)
+    }
+
+    pub fn start_turn_with_handoff(
+        &mut self,
+        text: impl Into<String>,
+        options: TurnOptions,
+        timeout: Duration,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
+    ) -> Result<String, CallError> {
         let thread_id = self.thread.clone().ok_or(CallError::BadResult {
             method: "turn/start",
         })?;
-        let result = self.call(
+        let result = self.call_with_handoff(
             &ClientRequest::TurnStart {
                 thread_id,
                 text: text.into(),
                 options,
             },
             timeout,
+            on_handoff,
         )?;
         let turn = result
             .get("turn")
@@ -743,5 +766,55 @@ done
             }
         }
         panic!("no turn/completed within 120s");
+    }
+
+    #[test]
+    fn prompt_handoff_precedes_a_later_codex_rpc_error() {
+        let exe = script(
+            r#"#!/bin/sh
+while IFS= read -r line; do
+  echo '{"id":1,"error":{"code":-32000,"message":"after handoff"}}'
+done
+"#,
+        );
+        let mut session = CodexSession::spawn(&launch(exe)).unwrap();
+        session.thread = Some("t1".into());
+        let (accepted, handoff) = mpsc::channel();
+        let result = session.start_turn_with_handoff(
+            "review this",
+            TurnOptions::default(),
+            WAIT,
+            Some(Box::new(move || {
+                accepted.send(()).unwrap();
+            })),
+        );
+        assert!(matches!(result, Err(CallError::Rpc { .. })));
+        handoff.recv_timeout(WAIT).unwrap();
+        assert!(handoff.try_recv().is_err());
+    }
+
+    #[test]
+    fn prompt_handoff_is_not_emitted_when_codex_cannot_write_or_has_no_thread() {
+        for has_thread in [false, true] {
+            let mut session = CodexSession::spawn(&launch(script(FAKE_APP_SERVER))).unwrap();
+            if has_thread {
+                session.thread = Some("t1".into());
+            }
+            session.stdin.take();
+            let (accepted, handoff) = mpsc::channel();
+            let result = session.start_turn_with_handoff(
+                "review this",
+                TurnOptions::default(),
+                WAIT,
+                Some(Box::new(move || {
+                    accepted.send(()).unwrap();
+                })),
+            );
+            assert!(matches!(
+                result,
+                Err(CallError::Io(_) | CallError::BadResult { .. })
+            ));
+            assert!(handoff.try_recv().is_err());
+        }
     }
 }

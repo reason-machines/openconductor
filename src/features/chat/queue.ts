@@ -47,6 +47,7 @@ export type FollowUpMode = "queued" | "steering";
 export interface MessageAttachment {
   name: string;
   text: string;
+  commentId?: string;
 }
 
 export interface QueuedMessage {
