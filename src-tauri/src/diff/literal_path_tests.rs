@@ -54,7 +54,12 @@ fn selected_only(repo: &Path, scope: Scope, path: &str, status: FileStatus) {
 #[test]
 fn uncommitted_question_mark_is_literal() {
     let fixture = changed("q?.txt", "q0.txt");
-    selected_only(&fixture.0, Scope::Uncommitted, "q?.txt", FileStatus::Modified);
+    selected_only(
+        &fixture.0,
+        Scope::Uncommitted,
+        "q?.txt",
+        FileStatus::Modified,
+    );
 }
 
 #[test]

@@ -14,7 +14,7 @@ At inspected main `26f8345401efb021bef2f12b17815eba6c57170c`, four selected-path
 
 On Reason Cloud, the actual standalone Rust backend and disposable Git repositories reproduce six exact path-membership failures and two passing controls. [The raw output](baseline-local.log) records six cases returning a sibling before any product fix. The fixtures cover substantive text modifications, untracked filenames, selected-commit endpoints, turn checkpoints, question marks, brackets, ordinary names, and no path filter. Successful cases iterate whitespace on and off and default and whole-file context. A failing case stops at its first membership assertion, so its later iterations are not yet verified.
 
-The frozen fixture identity is in [fixture.sha256](fixture.sha256). The existing automatic Diff and Tauri workflows run these registered tests without a new workflow, manual dispatch, or rerun.
+The current fixture identity is in [fixture.sha256](fixture.sha256). Initial hosted Diff jobs stopped at one call-layout formatting difference before behavior. The initial tested fixture and digest remain in [fixture-initial.rs.txt](fixture-initial.rs.txt) and [fixture-initial.sha256](fixture-initial.sha256). The [formatting record](formatting-maintenance.json) proves the sole substitution expands one function call and adds a trailing comma. Every argument and assertion is unchanged. The existing automatic Diff and Tauri workflows run these registered tests without a new workflow, manual dispatch, or rerun.
 
 Commands run:
 
