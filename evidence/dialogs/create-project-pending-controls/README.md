@@ -1,6 +1,6 @@
 # Create project pending control editability
 
-Conductor Rebuild. Test-only baseline. No behavioral failure, candidate fix or native result is claimed yet.
+Conductor Rebuild. Hosted baseline qualified four intended behavioral failures with all four controls passing. The candidate removes only the four pending-disabled properties. Candidate hosted checks are pending. No native result is claimed.
 
 ## Source qualification
 
@@ -30,9 +30,17 @@ Four independent controls:
 
 The whole fixture is sealed by `fixture.sha256`. Require the ordinary automatic hosted `node --test "src/**/*.test.ts"` run to show exactly these four intended failures and four passing controls, plus a successful build, before changing product code. Import/setup/typecheck failures are harness failures, not behavioral RED. Keep the same fixture for candidate GREEN.
 
-## Possible correction and delivery limits
+## Observed hosted baseline and candidate
 
-Only four pending-disabled properties in CreateProjectDialog are in scope after qualified RED. Preserve primary pending/shortcut/duplicate guards, captured invocation semantics, pipeline, validation, persistence, logging/error copy, close behavior, shared DialogFrame and the current Empty/Next.js template roster.
+Baseline head `e31b5e770b8e3d35c45ac51c60860cf027186d56`, automatic [CI run 43125214106](https://github.com/reason-machines/openconductor/actions/runs/43125214106), failed exactly four assertions about the pending name, parent, Browse and template controls. All four independent controls passed. The full suite reported 3,204 passed and four failed, with no skips or cancellations. [Retained assertion log](hosted-red.tap) and [job/build receipt](hosted-red.json) bind those observations to the baseline head.
+
+The frontend job passed typecheck, then stopped at those same four unit failures before its build step. The separate [Keybindings build on the same head](https://github.com/reason-machines/openconductor/actions/runs/43125214125/job/130875446022) passed `npm run build`. These are intended behavioral failures, not import, setup or typecheck failures.
+
+Fresh main `5852f41eb4df5c6da9b976d7b8ef830a892aed8d` still matches all five qualified source files. [Candidate source receipt](candidate-source.json) records that comparison. The product diff is exactly four removals of `disabled={pending}` from CreateProjectDialog. Primary pending, shortcut and duplicate-submit guards, captured invocation semantics, pipeline, validation, persistence, logging/error copy, close behavior, shared DialogFrame and the current Empty/Next.js template roster remain unchanged.
+
+The sealed eight-case fixture remains byte-identical to the hosted baseline. Candidate GREEN and every exact-head workflow/check remain required before merge.
+
+## Delivery limits
 
 Static command: `python3 evidence/dialogs/create-project-pending-controls/verify_source.py`. It verifies identities only. No local Node, component/browser/native execution, installation, workflow dispatch or new watcher was run. No screenshot is available because this lane has no browser/native admission. Hosted mounted React proof will not establish native input, physical event delivery, picker behavior or visual parity. The strict physical acceptance gate remains unsatisfied and unwaived.
 
