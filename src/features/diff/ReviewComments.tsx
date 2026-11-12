@@ -366,6 +366,7 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const [stored, setStored] = useState<DiffComment[]>([]);
   const [files, setFiles] = useState<FileDiff[]>([]);
   const [newDrafts, setComposing] = useState<Composing[]>([]);
+  const submittingDrafts = useRef(new Set<string>());
   const composing = newDrafts.filter((draft) => draft.workspaceId === workspaceId);
   const [focused, setFocused] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -449,7 +450,10 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
           }),
         ),
       ),
-    edit: (c, body) => run(store.edit(c.id, body)),
+    edit: (c, body) => run(store.edit(c.id, body).catch((e: unknown) => {
+      notify?.("error", `Failed to save comment: ${e instanceof Error ? e.message : String(e)}`);
+      throw e;
+    })),
     remove: (c) => run(store.remove(c.id)),
     resolve: (t, resolved) => run(store.resolve(threadKey(t.root), resolved)),
     // Conductor: "Comment resolved on GitHub", or "Failed to resolve comment: <reason>".
@@ -548,11 +552,16 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
             placeholder="Leave a comment for the agent…"
             submitLabel="Comment"
             onCancel={() => discardNewDraft(draft)}
-            onSubmit={(body) =>
-              void run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() }))).then(
-                (ok) => ok && discardNewDraft(draft),
-              )
-            }
+            onSubmit={async (body) => {
+              if (submittingDrafts.current.has(draft.id)) return;
+              submittingDrafts.current.add(draft.id);
+              try {
+                const ok = await run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() })));
+                if (ok) discardNewDraft(draft);
+              } finally {
+                submittingDrafts.current.delete(draft.id);
+              }
+            }}
           />
         )}
       </div>

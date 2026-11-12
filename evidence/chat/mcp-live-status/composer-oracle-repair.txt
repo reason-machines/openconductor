@@ -1,0 +1,317 @@
+(node:51) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:58) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: built-in /add-dir Enter opens the existing directory picker without sending
+ok 1 - built-in /add-dir Enter opens the existing directory picker without sending
+  ---
+  duration_ms: 2039.733006
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir Tab opens the existing directory picker without sending
+ok 2 - built-in /add-dir Tab opens the existing directory picker without sending
+  ---
+  duration_ms: 579.987615
+  type: 'test'
+  ...
+# Subtest: built-in /add-dir menu choice opens the existing directory picker without sending
+ok 3 - built-in /add-dir menu choice opens the existing directory picker without sending
+  ---
+  duration_ms: 344.178795
+  type: 'test'
+  ...
+# Subtest: directory selection preserves suffix text and attachments
+ok 4 - directory selection preserves suffix text and attachments
+  ---
+  duration_ms: 272.423968
+  type: 'test'
+  ...
+# Subtest: directory selection retains adjacent file node identity and complete attributes
+ok 5 - directory selection retains adjacent file node identity and complete attributes
+  ---
+  duration_ms: 492.826406
+  type: 'test'
+  ...
+# Subtest: agent keeps ordinary bounded insertion rather than opening directories
+ok 6 - agent keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 694.030985
+  type: 'test'
+  ...
+# Subtest: skill keeps ordinary bounded insertion rather than opening directories
+ok 7 - skill keeps ordinary bounded insertion rather than opening directories
+  ---
+  duration_ms: 383.97829
+  type: 'test'
+  ...
+# Subtest: Plan and Fast selection remain bounded text insertion, not immediate actions
+ok 8 - Plan and Fast selection remain bounded text insertion, not immediate actions
+  ---
+  duration_ms: 966.876724
+  type: 'test'
+  ...
+# Subtest: stale, nonempty and composing live selections cannot edit or open directories
+ok 9 - stale, nonempty and composing live selections cannot edit or open directories
+  ---
+  duration_ms: 296.3376
+  type: 'test'
+  ...
+# Subtest: built-in /mcp-status Enter opens status without sending
+not ok 10 - built-in /mcp-status Enter opens status without sending
+  ---
+  duration_ms: 235.559885
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/53346d38-8a16-4a5f-ac4e-4fd35160d90f/repo/src/features/chat/composerSlashDirectory.test.ts:221:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          directory: false,
+          kind: 'file',
+          label: 'example.ts',
+    ...
+          kind: 'text',
+    +     text: ' suffix'
+    -     text: ' suffix\n你好'
+        },
+    +   {
+    +     kind: 'text',
+    +     text: '\n'
+    +   },
+    +   {
+    +     kind: 'text',
+    +     text: '你好'
+    +   }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'file'
+      path: 'src/example.ts'
+      label: 'example.ts'
+      directory: false
+    1:
+      kind: 'text'
+      text: |-
+         suffix
+        你好
+  actual:
+    0:
+      kind: 'file'
+      path: 'src/example.ts'
+      label: 'example.ts'
+      directory: false
+    1:
+      kind: 'text'
+      text: ' suffix'
+    2:
+      kind: 'text'
+      text: |-
+        
+        
+    3:
+      kind: 'text'
+      text: '你好'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/53346d38-8a16-4a5f-ac4e-4fd35160d90f/repo/src/features/chat/composerSlashDirectory.test.ts:229:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: built-in /mcp-status Tab opens status without sending
+not ok 11 - built-in /mcp-status Tab opens status without sending
+  ---
+  duration_ms: 334.682305
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/53346d38-8a16-4a5f-ac4e-4fd35160d90f/repo/src/features/chat/composerSlashDirectory.test.ts:221:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          directory: false,
+          kind: 'file',
+          label: 'example.ts',
+    ...
+          kind: 'text',
+    +     text: ' suffix'
+    -     text: ' suffix\n你好'
+        },
+    +   {
+    +     kind: 'text',
+    +     text: '\n'
+    +   },
+    +   {
+    +     kind: 'text',
+    +     text: '你好'
+    +   }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'file'
+      path: 'src/example.ts'
+      label: 'example.ts'
+      directory: false
+    1:
+      kind: 'text'
+      text: |-
+         suffix
+        你好
+  actual:
+    0:
+      kind: 'file'
+      path: 'src/example.ts'
+      label: 'example.ts'
+      directory: false
+    1:
+      kind: 'text'
+      text: ' suffix'
+    2:
+      kind: 'text'
+      text: |-
+        
+        
+    3:
+      kind: 'text'
+      text: '你好'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/53346d38-8a16-4a5f-ac4e-4fd35160d90f/repo/src/features/chat/composerSlashDirectory.test.ts:229:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: built-in /mcp-status menu choice opens status without sending
+not ok 12 - built-in /mcp-status menu choice opens status without sending
+  ---
+  duration_ms: 398.374954
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/53346d38-8a16-4a5f-ac4e-4fd35160d90f/repo/src/features/chat/composerSlashDirectory.test.ts:221:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    ... Skipped lines
+    
+      [
+        {
+          directory: false,
+          kind: 'file',
+          label: 'example.ts',
+    ...
+          kind: 'text',
+    +     text: ' suffix'
+    -     text: ' suffix\n你好'
+        },
+    +   {
+    +     kind: 'text',
+    +     text: '\n'
+    +   },
+    +   {
+    +     kind: 'text',
+    +     text: '你好'
+    +   }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'file'
+      path: 'src/example.ts'
+      label: 'example.ts'
+      directory: false
+    1:
+      kind: 'text'
+      text: |-
+         suffix
+        你好
+  actual:
+    0:
+      kind: 'file'
+      path: 'src/example.ts'
+      label: 'example.ts'
+      directory: false
+    1:
+      kind: 'text'
+      text: ' suffix'
+    2:
+      kind: 'text'
+      text: |-
+        
+        
+    3:
+      kind: 'text'
+      text: '你好'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/53346d38-8a16-4a5f-ac4e-4fd35160d90f/repo/src/features/chat/composerSlashDirectory.test.ts:229:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: MCP status rejects stale, nonempty and composing selections
+ok 13 - MCP status rejects stale, nonempty and composing selections
+  ---
+  duration_ms: 1075.328124
+  type: 'test'
+  ...
+# Subtest: MCP show_mcp_status without immediate capability preserves bounded insertion
+ok 14 - MCP show_mcp_status without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 453.034087
+  type: 'test'
+  ...
+# Subtest: MCP agent without immediate capability preserves bounded insertion
+ok 15 - MCP agent without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 375.515102
+  type: 'test'
+  ...
+# Subtest: MCP skill without immediate capability preserves bounded insertion
+ok 16 - MCP skill without immediate capability preserves bounded insertion
+  ---
+  duration_ms: 371.178277
+  type: 'test'
+  ...
+# Subtest: missing directory capability preserves ordinary text completion
+ok 17 - missing directory capability preserves ordinary text completion
+  ---
+  duration_ms: 333.418057
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 14
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13469.346224

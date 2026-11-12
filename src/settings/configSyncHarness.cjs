@@ -12,7 +12,7 @@ const sourceRoot = resolve(process.env.CONFIG_SYNC_SOURCE_ROOT ?? repository);
 const inert = () => null;
 
 function mount(options = {}) {
-  const calls = { reads: 0, writes: [], boundaries: [] };
+  const calls = { reads: 0, writes: [], boundaries: [], notifications: [] };
   const modules = new Map();
   const empty = () => ({ ccToCodex: [], codexToCc: [], error: null });
   const diff = {
@@ -78,6 +78,7 @@ function mount(options = {}) {
   let renderer;
   act(() => { renderer = create(React.createElement(GeneralPage, {
     settings: { general: { sound_type: "none", send_native_notification: false } }, save: blocked("save"),
+    notify: (kind, message) => calls.notifications.push({ kind, message }),
   })); });
   return {
     calls, diff,

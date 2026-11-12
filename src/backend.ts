@@ -2,6 +2,12 @@
 // browser (vite dev / preview) so the shell can be developed without Tauri.
 import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import type { FileMatch } from "./spotlight/quickOpen";
+import type { LocalMcpServer } from "./features/chat/localMcpStatus.ts";
+
+export async function codexMcpStatus(chatId: string): Promise<LocalMcpServer[]> {
+  if (!inTauri()) throw new Error("Live Codex MCP status requires the desktop app.");
+  return invoke<LocalMcpServer[]>("codex_mcp_status", { chatId });
+}
 import type { GitHubOwners } from "./state/githubRepoDialog";
 import type { GitProtocol, RecentRepo } from "./state/cloneDialog";
 import { STEP, targetPath, type RepoScripts, type TemplateId } from "./state/createProject";

@@ -230,6 +230,19 @@ pub async fn codex_prompt(
 }
 
 #[tauri::command]
+pub async fn codex_mcp_status(
+    state: State<'_, CodexChats>,
+    chat_id: String,
+) -> Result<Vec<crate::agent::mcp_status::McpServer>, String> {
+    let runner = state.get(&chat_id)?;
+    let reply = runner.mcp_status(crate::agent::mcp_status::TIMEOUT);
+    drop(runner);
+    tauri::async_runtime::spawn_blocking(move || reply.receive())
+        .await
+        .map_err(|e| e.to_string())?
+}
+
+#[tauri::command]
 pub fn codex_cancel(state: State<'_, CodexChats>, chat_id: String) -> Result<(), String> {
     state.get(&chat_id)?.cancel();
     Ok(())

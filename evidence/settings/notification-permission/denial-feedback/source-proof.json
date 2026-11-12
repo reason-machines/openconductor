@@ -1,0 +1,78 @@
+{
+  "gap": "NOTIFICATION-DENIAL-FEEDBACK-49-01",
+  "checked_main": "49d56ee1719afcd3b895e85fddea65f86c108688",
+  "publisher_session": "c18e1b05-4951-4a98-a90b-a9f7405ecc2d",
+  "source_author_session": "49e3976d-9553-42d8-8101-2504177fbb97",
+  "packet_sha256": "1c22b4b7d16c7ebaa1d9d02b4f629a3aa8d29e273859aeb81bd7f1d4bdfbd7c2",
+  "packet_manifest_entries_passed": 26,
+  "unchanged_source_blobs_before_fix": {
+    "src/settings/GeneralPage.tsx": "ac1e75fc60fd77c5e516b5bfdb91b463f86d58db",
+    "src/settings/SettingsView.tsx": "109e9d467c30db0b23ecad65e55e4379fd9a2a26",
+    "src/settings/notificationPermission.ts": "a757b29ecc77a0f0955a2141a88347a11c3230a0",
+    "src/settings/notificationPermission.test.ts": "9b3a85717e98966c74847190c0801612c5f7e2c0",
+    "src/settings/notificationConcurrentSettings.test.ts": "cb6c5616e1c05caa1e9e779f21662a3edaa0f39a"
+  },
+  "reference_spans": [
+    {
+      "path": "evidence/settings/notification-permission/reference/mei.txt",
+      "sha256": "5104c0c6c9868e5d8da6ddb26b27651e98435b9902dc3d0d273dbbf466cd8389",
+      "bytes": 720,
+      "verified": true
+    },
+    {
+      "path": "evidence/settings/notification-permission/reference/Aue.txt",
+      "sha256": "2037d2021997cb793acd2f0e0e5daf171ca08592ef58fbf38818573d33984b64",
+      "bytes": 191,
+      "verified": true
+    },
+    {
+      "path": "evidence/settings/notification-permission/reference/Iue.txt",
+      "sha256": "ce05ab5befc00c528bee19cce2b921523f91e553c46977dfd2b9aee3cb93fe5c",
+      "bytes": 74,
+      "verified": true
+    },
+    {
+      "path": "evidence/settings/notification-permission/reference/zzt.txt",
+      "sha256": "3bb6444572e19413ce557687caf9a59062d49858951c4a129a03e62d6d1fd577",
+      "bytes": 84,
+      "verified": true
+    },
+    {
+      "path": "evidence/settings/notification-permission/reference/row-notifications_enabled.txt",
+      "sha256": "4965cde19a68de4c3be483c704f7d69f4d29cc2593a976b10c359183f7680af0",
+      "bytes": 302,
+      "verified": true
+    },
+    {
+      "path": "evidence/settings/notification-permission/reference/index-aliases.txt",
+      "sha256": "93290979f356cd2bfb879b962062fdaade7538c550c3a10c14499bc129be1cd7",
+      "bytes": 29,
+      "verified": true
+    },
+    {
+      "path": "evidence/settings/notification-permission/reference/renderer-aliases.txt",
+      "sha256": "c66a54103cbbbfaeb857622d38cfd4320d77f3d8b463df83658d0ec3c3b05d90",
+      "bytes": 29,
+      "verified": true
+    }
+  ],
+  "reference_join_review": [
+    "notifications_enabled row -> mei",
+    "mei -> U9r/H9r before denial branch",
+    "renderer U9r/H9r -> index qB/qC",
+    "index qB/qC -> Aue/Iue",
+    "mei denial -> Bt.error and kt.error exact copy before writer",
+    "renderer yAn -> index qA -> zzt writer",
+    "Aue -> default-only native query",
+    "Iue -> browser permission request"
+  ],
+  "current_caller_review": [
+    "SettingsView miscActions.notify -> UserPage notify -> GeneralPage notify",
+    "GeneralPage silent denied return before latestSettings.current write",
+    "notificationPermissionGranted returns boolean; helper unchanged"
+  ],
+  "whole_original_assets_verified": false,
+  "native_acceptance": "NOT_OBSERVED",
+  "visual_toast_acceptance": "NOT_OBSERVED",
+  "rea_gap": "Historical renderer semantic-analysis heap exhaustion retained; committed excerpts only; no new original-app extraction or execution."
+}

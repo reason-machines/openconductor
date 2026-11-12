@@ -171,3 +171,67 @@ test("busy Claude cannot change Plan mode", async () => {
   try { const item = await f.menu("Plan mode"); assert.ok(item); assert.equal(item.props.disabled, true); const toggle = f.keys.get("chat.togglePlanMode"); if (toggle) await f.click(toggle); assert.equal(f.writes.length, 0); }
   finally { await f.dispose(); }
 });
+
+async function assertPlanMenuPresentation(f: ReturnType<typeof fixture>, label: string, active: boolean) {
+  const item = await f.menu(label);
+  assert.ok(item, `Expected ${label} in the local Claude Add menu`);
+  const icon = item.findByType("svg");
+  const text = item.findAllByType("span").find((span: { children: unknown[] }) => span.children.includes(label));
+  assert.ok(text, "Plan row must retain its label");
+  const hasActiveColor = (className: string | undefined) => (className ?? "").split(/\s+/).includes("oc-plan-active");
+  assert.equal(hasActiveColor(icon.props.className), active, "Plan icon follows the confirmed mode");
+  assert.equal(hasActiveColor(text.props.className), active, "Plan label follows the confirmed mode");
+  const shortcut = item.findByProps({ className: "oc-kbd-hint" });
+  assert.equal(hasActiveColor(shortcut.props.className), false, "Plan shortcut keeps its muted styling");
+  if (active) {
+    const css = readFileSync(resolve(root, "src/features/chat/composer.css"), "utf8");
+    assert.match(css, /\.oc-add-popup\s+\.oc-menu-item\s*>\s*\.oc-plan-active\s*\{\s*color:\s*var\(--emphasis\);\s*\}/, "Only active Plan icon and label use the existing link token; this is not a computed-style check");
+  }
+  return item;
+}
+
+test("persisted active Plan accents its icon and label, not its shortcut", async () => {
+  const f = fixture("claude", "plan"); await f.mount();
+  try { await assertPlanMenuPresentation(f, "Exit plan mode", true); assert.equal(f.writes.length, 0); }
+  finally { await f.dispose(); }
+});
+
+test("inactive Plan retains ordinary icon and label presentation", async () => {
+  const f = fixture(); await f.mount();
+  try { await assertPlanMenuPresentation(f, "Plan mode", false); assert.equal(f.writes.length, 0); }
+  finally { await f.dispose(); }
+});
+
+test("entering Plan accents the icon and label after the existing save confirms", async () => {
+  const f = fixture(); await f.mount();
+  try {
+    const item = await f.menu("Plan mode"); assert.ok(item); await f.click(item.props.onClick);
+    assert.equal(f.saved.get(f.chatId), "plan"); assert.equal(f.writes.length, 1);
+    await assertPlanMenuPresentation(f, "Exit plan mode", true);
+  } finally { await f.dispose(); }
+});
+
+test("exiting Plan removes the icon and label accent after the existing save confirms", async () => {
+  const f = fixture("claude", "plan"); await f.mount();
+  try {
+    const item = await f.menu("Exit plan mode"); assert.ok(item); await f.click(item.props.onClick);
+    assert.equal(f.saved.get(f.chatId), "default"); assert.equal(f.writes.length, 1);
+    await assertPlanMenuPresentation(f, "Plan mode", false);
+  } finally { await f.dispose(); }
+});
+
+test("busy active Plan keeps its confirmed presentation and disabled guard", async () => {
+  const f = fixture("claude", "plan", false, true); await f.mount();
+  try {
+    const item = await assertPlanMenuPresentation(f, "Exit plan mode", true);
+    assert.equal(item.props.disabled, true); assert.equal(f.writes.length, 0);
+  } finally { await f.dispose(); }
+});
+
+test("Plan presentation changes add no capability to Codex or Reason", async () => {
+  for (const agent of ["codex", "reason"]) {
+    const f = fixture(agent); await f.mount();
+    try { assert.equal(await f.menu("Plan mode"), undefined); assert.equal(f.writes.length, 0); }
+    finally { await f.dispose(); }
+  }
+});

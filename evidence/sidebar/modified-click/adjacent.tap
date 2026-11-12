@@ -1,0 +1,214 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Sidebar Archive busy visibility: idle selected and unselected rows retain the archive action
+ok 1 - Sidebar Archive busy visibility: idle selected and unselected rows retain the archive action
+  ---
+  duration_ms: 285.86156
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: starting hides Archive after an older stopped script
+ok 2 - Sidebar Archive busy visibility: starting hides Archive after an older stopped script
+  ---
+  duration_ms: 92.373358
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: waiting_for_setup hides Archive after an older stopped script
+ok 3 - Sidebar Archive busy visibility: waiting_for_setup hides Archive after an older stopped script
+  ---
+  duration_ms: 92.159594
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: running hides Archive after an older stopped script
+ok 4 - Sidebar Archive busy visibility: running hides Archive after an older stopped script
+  ---
+  duration_ms: 69.956532
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: stopping hides Archive after an older stopped script
+ok 5 - Sidebar Archive busy visibility: stopping hides Archive after an older stopped script
+  ---
+  duration_ms: 74.663783
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: another workspace's busy snapshot and events leave Archive available
+ok 6 - Sidebar Archive busy visibility: another workspace's busy snapshot and events leave Archive available
+  ---
+  duration_ms: 53.455379
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive busy visibility: run start and finish hide then restore Archive on the same row
+ok 7 - Sidebar Archive busy visibility: run start and finish hide then restore Archive on the same row
+  ---
+  duration_ms: 55.580956
+  type: 'test'
+  ...
+# (node:67) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Sidebar Archive tooltip: selected row shows the default shortcut
+ok 8 - Sidebar Archive tooltip: selected row shows the default shortcut
+  ---
+  duration_ms: 233.920667
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: saved remap arriving after mount replaces the default
+ok 9 - Sidebar Archive tooltip: saved remap arriving after mount replaces the default
+  ---
+  duration_ms: 69.978661
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: open selected tooltip updates on a live remap
+ok 10 - Sidebar Archive tooltip: open selected tooltip updates on a live remap
+  ---
+  duration_ms: 53.625223
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: only the primary saved shortcut is shown
+ok 11 - Sidebar Archive tooltip: only the primary saved shortcut is shown
+  ---
+  duration_ms: 76.735928
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: reset restores the default on the same row
+ok 12 - Sidebar Archive tooltip: reset restores the default on the same row
+  ---
+  duration_ms: 55.409742
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: unselected row omits shortcuts before and after remap
+ok 13 - Sidebar Archive tooltip: unselected row omits shortcuts before and after remap
+  ---
+  duration_ms: 48.258814
+  type: 'test'
+  ...
+# Subtest: Sidebar Archive tooltip: archive click keeps its callback and stops propagation
+ok 14 - Sidebar Archive tooltip: archive click keeps its callback and stops propagation
+  ---
+  duration_ms: 35.237804
+  type: 'test'
+  ...
+# (node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Sidebar number hints: default modifier waits 500ms and hides on release
+ok 15 - Sidebar number hints: default modifier waits 500ms and hides on release
+  ---
+  duration_ms: 213.912746
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: saved primary Control modifier reveals hints
+ok 16 - Sidebar number hints: saved primary Control modifier reveals hints
+  ---
+  duration_ms: 52.653123
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: a saved replacement no longer accepts default Command
+ok 17 - Sidebar number hints: a saved replacement no longer accepts default Command
+  ---
+  duration_ms: 40.002681
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: an additional physical shortcut can reveal hints
+ok 18 - Sidebar number hints: an additional physical shortcut can reveal hints
+  ---
+  duration_ms: 28.135787
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: extra held modifiers do not hide an eligible chord
+ok 19 - Sidebar number hints: extra held modifiers do not hide an eligible chord
+  ---
+  duration_ms: 49.438549
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: shortcuts with no modifiers never reveal hints
+ok 20 - Sidebar number hints: shortcuts with no modifiers never reveal hints
+  ---
+  duration_ms: 38.796824
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: provider updates and reset affect the next event without remounting
+ok 21 - Sidebar number hints: provider updates and reset affect the next event without remounting
+  ---
+  duration_ms: 33.277201
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: pointer release cancels a pending default hint
+ok 22 - Sidebar number hints: pointer release cancels a pending default hint
+  ---
+  duration_ms: 27.384836
+  type: 'test'
+  ...
+# Subtest: Sidebar number hints: focus loss hides a visible default hint
+ok 23 - Sidebar number hints: focus loss hides a visible default hint
+  ---
+  duration_ms: 29.078099
+  type: 'test'
+  ...
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a workspace is unread while any of its chats is (Conductor's zJo)
+ok 24 - a workspace is unread while any of its chats is (Conductor's zJo)
+  ---
+  duration_ms: 1.703362
+  type: 'test'
+  ...
+# Subtest: marking a read chat read changes nothing; marking an unread chat again moves its time
+ok 25 - marking a read chat read changes nothing; marking an unread chat again moves its time
+  ---
+  duration_ms: 0.144615
+  type: 'test'
+  ...
+# Subtest: Mark as read clears every chat of the workspace (markWorkspaceAsRead)
+ok 26 - Mark as read clears every chat of the workspace (markWorkspaceAsRead)
+  ---
+  duration_ms: 0.114528
+  type: 'test'
+  ...
+# Subtest: the selected row's click opens the first chat, in tab order, that is unread or waits on the user (fea)
+ok 27 - the selected row's click opens the first chat, in tab order, that is unread or waits on the user (fea)
+  ---
+  duration_ms: 0.223306
+  type: 'test'
+  ...
+# (node:91) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a workspace's chats are its main chat and its open review tabs, in tab order
+ok 28 - a workspace's chats are its main chat and its open review tabs, in tab order
+  ---
+  duration_ms: 1.661847
+  type: 'test'
+  ...
+# Subtest: a request to show a chat reaches its workspace once
+ok 29 - a request to show a chat reaches its workspace once
+  ---
+  duration_ms: 0.187978
+  type: 'test'
+  ...
+# Subtest: tabs open when the app last ran come back until this window changes the strip
+ok 30 - tabs open when the app last ran come back until this window changes the strip
+  ---
+  duration_ms: 0.261814
+  type: 'test'
+  ...
+# Subtest: a strip change writes the tabs that opened and closed
+ok 31 - a strip change writes the tabs that opened and closed
+  ---
+  duration_ms: 0.318314
+  type: 'test'
+  ...
+# Subtest: Rename chat on an open tab writes its new title
+ok 32 - Rename chat on an open tab writes its new title
+  ---
+  duration_ms: 0.128082
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4016.812397
