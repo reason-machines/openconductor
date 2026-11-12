@@ -101,9 +101,16 @@ export function cloneErrorMessage({ errorMessage, remoteUrl, prefersSshUrls }: C
   return `Couldn't clone repo: ${errorMessage}`;
 }
 
-/** The folder name a clone gets: the URL's last path segment without `.git`. */
+/** The clone folder basename; remote names follow Conductor's sanitizer. */
 export function cloneTargetName(url: string): string {
-  const last = url.trim().replace(/[/\\]+$/, "").split(/[/:]/).pop() ?? "";
-  const name = last.replace(/\.git$/i, "");
+  const input = url.trim();
+  const remote = input.includes("://")
+    ? !input.startsWith("file://")
+    : /^[^/\\:]+:/.test(input) && !/^[a-z]:[/\\]/i.test(input);
+  const last = input.replace(/[/\\]+$/, "").split(/[/:]/).pop() ?? "";
+  const basename = last.replace(/\.git$/i, "");
+  const name = remote
+    ? basename.toLowerCase().replace(/[^a-z0-9-_.]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "")
+    : basename;
   return name && name !== "." && name !== ".." ? name : "repo";
 }
