@@ -22,6 +22,10 @@ function sourceRoots(checkout: string) {
   for (const path of Object.keys(resolver.resolver_files)) assert.equal(path in policy.sources, false);
   const files = { ...policy.sources, ...resolver.resolver_files };
   assert.deepEqual(Object.keys(snapshot.sources).sort(), Object.keys(files).sort());
+  const host = readFileSync(join(fixture, "wv-host.mjs"), "utf8");
+  const entrypoints = [...host.matchAll(/\bload\(resolve\(root,\s*["'](src\/[^"']+)["']\)\)/g)].map((match) => match[1]);
+  assert.ok(entrypoints.length > 0, "Frozen host must declare source entry points");
+  for (const path of entrypoints) assert.ok(path in snapshot.sources, `Historical archive omits frozen host bootstrap entry: ${path}`);
   const baseline = mkdtempSync(join(checkout, ".disclosure-baseline-"));
   try {
     for (const [path, expected] of Object.entries(files)) {

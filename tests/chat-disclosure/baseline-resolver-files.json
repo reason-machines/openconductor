@@ -62,6 +62,7 @@
     "src/features/pr/checks/ChecksTab.tsx": "db1de51d200e63bddb22a8654503a6038b10ded8eace5b51eb8e9cd015376fe9",
     "src/features/pr/checks/useFixErrors.ts": "d44e9bfb69d6183566e3aa9541297b606db4bb672b3742c6cac8e9e1762d01cd",
     "src/features/pr/edit/BranchPicker.tsx": "dde6867fe961d7b82a3365a1fdfdec5b265ade8f2ac6a0df904b11b40baf08fe",
+    "src/features/pr/prSettings.ts": "c8a99c7da90718ff056f6e991424007b3888aef416cb089abb83d4b50ff6ea81",
     "src/features/pr/useArchiveOnMerge.ts": "05d7e11ce931048ede34fc64531b5e24add93ff6bc04d116d26bf64ffef5884e",
     "src/features/pr/usePrActions.ts": "b581dbcb89ea2d860fe1e596b97c41b0c1ecb56f1bab9549d3cda943b7530b0f",
     "src/features/pr/usePullLatest.tsx": "a43b39e1620c54f8a2dbd9092149db258a0c461dc6500818aa066abe3fbf7bcf",

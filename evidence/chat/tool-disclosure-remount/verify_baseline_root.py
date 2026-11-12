@@ -22,12 +22,17 @@ def historical(path):
 entries = set(subprocess.check_output(
     ['git', 'ls-tree', '-r', '--name-only', policy['main'], '--', 'src'], cwd=REPO, text=True,
 ).splitlines())
+host_entrypoints = re.findall(
+    r'''\bload\(resolve\(root,\s*["'](src/[^"']+)["']\)\)''',
+    (FIXTURE / 'wv-host.mjs').read_text(),
+)
+assert host_entrypoints, 'Frozen host must declare source entry points'
 import_paths = []
-for path in policy['sources']:
+for path in dict.fromkeys([*policy['sources'], *host_entrypoints]):
     for name in re.findall(r'''(?:from\s*|import\s*)["'](\.[^"']+)["']''', historical(path).decode('utf8')):
         import_paths.append(posixpath.normpath(posixpath.join(posixpath.dirname(path), name)))
 resolver_files = {}
-for key in [*policy['decorative_tsx'], *policy['overrides'], *import_paths]:
+for key in [*policy['decorative_tsx'], *policy['overrides'], *host_entrypoints, *import_paths]:
     path = next(path for path in [key, key + '.ts', key + '.tsx', key + '/index.ts'] if path in entries)
     if path not in policy['sources']:
         resolver_files[path] = sha(historical(path))
@@ -45,6 +50,7 @@ if '--write-snapshot' in sys.argv:
 archive = (FIXTURE / 'baseline-sources.json.gz').read_bytes()
 assert gzip.decompress(archive) == payload
 assert json.loads((FIXTURE / 'baseline-resolver-files.json').read_text()) == resolver
+assert set(host_entrypoints) <= sources.keys(), 'Historical archive omits frozen host bootstrap entries'
 freeze = json.loads((FIXTURE / 'fixture-freeze.json').read_text())
 assert freeze['baseline_main'] == policy['main']
 for path, pin in freeze['files'].items():
@@ -68,6 +74,7 @@ print(json.dumps({
     'result': 'PASS', 'checked_main': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=REPO, text=True).strip(),
     'historical_main': policy['main'], 'original_pins': len(policy['sources']),
     'resolver_leaves': len(resolver_files), 'archived_files': len(sources),
+    'frozen_host_entrypoints': len(set(host_entrypoints)),
     'archive_sha256': sha(archive), 'frozen_fixture_files': len(freeze['files']),
     'old_mixed_root_preflight_drift': old_preflight_drift,
     'isolated_baseline_source_preflight': 'PASS',
