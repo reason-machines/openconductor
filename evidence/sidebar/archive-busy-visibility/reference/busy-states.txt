@@ -1,0 +1,1 @@
+function Pv(t){return t==="starting"||t==="waiting_for_setup"||t==="running"||t==="stopping"}

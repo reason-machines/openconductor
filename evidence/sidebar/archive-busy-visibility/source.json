@@ -1,0 +1,234 @@
+{
+  "owner": "Conductor Rebuild",
+  "candidate": "SIDEBAR-ARCHIVE-BUSY-VISIBILITY",
+  "checked_main": "649f47b9d80eb1d7510c2b405b25e026ffddf78b",
+  "verdict": "STATICGAP",
+  "verification": "PASS_SOURCE_ONLY",
+  "reference_assets": {
+    "renderer": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "symbol": "DZo",
+      "start": 9902312,
+      "end": 9904865,
+      "sha256": "0c843ba16c3fca3fad506773632523fccbe7de547d77872b3ec15619fe7f254e",
+      "retained": "reference/DZo.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "SFi",
+      "start": 9927847,
+      "end": 9932703,
+      "sha256": "1ae8f546195edb7cf0a87bb045477a6bb50fcbd55d5f5a036eb8e153b64384fa",
+      "retained": "reference/SFi.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "wFi",
+      "start": 9921016,
+      "end": 9925417,
+      "sha256": "b0f5cca323d01cba61e285c0d34ac98444aacf82dd11da0a308ed8fee1ae2f7e",
+      "retained": "reference/wFi.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "eea",
+      "start": 9913495,
+      "end": 9915646,
+      "sha256": "d6ad7c4a28ce30b57494832b3e80a5941ff4e71c2e4103d1cdce1075103b315d",
+      "retained": "reference/eea.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "busy-states",
+      "start": 2920844,
+      "end": 2920937,
+      "sha256": "4cfc9ee19bb3e2d9548d6a3c9df759f33e2a4a873bcfdab1ee02cdb2bdc16005",
+      "retained": "reference/busy-states.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "workspace-process-any",
+      "start": 2920937,
+      "end": 2921059,
+      "sha256": "f142bd77c7f72f3eed1d7d3cae33d4c9082eefbe7c5234e2168fa24c75dbc6cd",
+      "retained": "reference/workspace-process-any.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "process-hook-object",
+      "start": 2933486,
+      "end": 2934883,
+      "sha256": "7507edca34b91297ac92ece6e3747a524661a71a484139a0eee804c08a2a85c1",
+      "retained": "reference/process-hook-object.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "permission-hook",
+      "start": 3286981,
+      "end": 3287141,
+      "sha256": "356092638f7a92d283f9d60ed6de2e0f6f50788fd74c454218a68dab39d381dc",
+      "retained": "reference/permission-hook.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "process-import-alias",
+      "start": 57739,
+      "end": 57747,
+      "sha256": "ea39fd570a2d4497e9acf83c28dc20bb9f39498beaa9a7e8765b597155e01030",
+      "retained": "reference/process-import-alias.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "process-export-alias",
+      "start": 3484123,
+      "end": 3484132,
+      "sha256": "782454771bf148f2f79b4740691ac68d42fbcc0ccc906b816321de7e18865977",
+      "retained": "reference/process-export-alias.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "permission-import-alias",
+      "start": 55486,
+      "end": 55494,
+      "sha256": "2bae4f8faa863e119923495dbfde1ea4c64fd65aa41b763f87886641de540432",
+      "retained": "reference/permission-import-alias.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "permission-export-alias",
+      "start": 3482387,
+      "end": 3482396,
+      "sha256": "c62b6a011774e208ebe649b67c1ae7fcece9b2d344e3c8a62b402a72b8df1633",
+      "retained": "reference/permission-export-alias.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "iea",
+      "start": 9917057,
+      "end": 9918190,
+      "sha256": "682a19e8f5832790f47a114372eb21a11fcaacbd7c09e55150125eaecb859d53",
+      "retained": "reference/iea.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "process-key-and-workspace-match",
+      "start": 2917394,
+      "end": 2917478,
+      "sha256": "b9aa341e8680401b50fddb3b2e015a5d1d05ac22dee455f66c1626a1dc9d1751",
+      "retained": "reference/process-key-and-workspace-match.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "complete-process-store-and-hooks",
+      "start": 2921172,
+      "end": 2934884,
+      "sha256": "bb19d0c74a5b71e4ebe689826dd0e454313e9c88fec1f5fd51a0505e2ee106a7",
+      "retained": "reference/complete-process-store-and-hooks.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "permission-discriminant-schema",
+      "start": 160546,
+      "end": 160574,
+      "sha256": "86bbb2c4df5a8fccfbf52233d087623cc35647aa3237e8938702a86c500e8d46",
+      "retained": "reference/permission-discriminant-schema.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "permission-workspace-read-producer",
+      "start": 862175,
+      "end": 865564,
+      "sha256": "f6017bf3d547ced5405f3f8036932215b8d415cbfb386ca13823c977016041f2",
+      "retained": "reference/permission-workspace-read-producer.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "permission-local-normalizer",
+      "start": 867548,
+      "end": 867644,
+      "sha256": "6f48ab68940787164cddb8c7f8113d4a02582c51085dc2b044c26d3282f3c619",
+      "retained": "reference/permission-local-normalizer.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "permission-query-selector-and-factory",
+      "start": 1074166,
+      "end": 1075070,
+      "sha256": "5794ab9f53468f70e83dc558b53be25de384f3086d816824dd017b52085ff3e5",
+      "retained": "reference/permission-query-selector-and-factory.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "permission-query-live-store-adapter",
+      "start": 944324,
+      "end": 945545,
+      "sha256": "e7641330d98aaf13a03c053afb6e193add5bfa56dd54c959968bdfd51587c592",
+      "retained": "reference/permission-query-live-store-adapter.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "permission-service-hook-binding",
+      "start": 3277919,
+      "end": 3277968,
+      "sha256": "b948acbbae73ea8ea2265ee5a199aaf2d3e07a7fc1db295a508f188cf3b58202",
+      "retained": "reference/permission-service-hook-binding.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "permission-store-updaters",
+      "start": 1043934,
+      "end": 1045345,
+      "sha256": "13a847114e4378b0a5eee14b9be7f2473b9bb921866ab939872f45b4bab084ed",
+      "retained": "reference/permission-store-updaters.txt"
+    }
+  ],
+  "current_main_pins": {
+    "src/components/SidebarWorkspaceRow.tsx": "72c4b1d1037f426ad02af9ed415342157a1725537ab0cde3e0d3c4217957e04f",
+    "src/scripts/model.ts": "70e705fa88d72375098560374edb6e9c7da62ecf39cb4a950bf4f37f7f26ba1a",
+    "src/scripts/api.ts": "5ca2d39a35a3feed9f077a1ebfe531d0dd84d2df4213977b0bc55a425c6771f7",
+    "src/components/ScriptsPanel.tsx": "0a213bea4f9849c5cc879bc1e4e5ba4f964be934bc3cbf1ccd07648739e756d1",
+    "src/components/Sidebar.tsx": "55beddec18a75938f2f31839b84493a8a12f4d928541cb8b67ecc2080a0199b4"
+  },
+  "complete_source_joins": {
+    "busy_selector": "Renderer q_ import -> index ARt export. DZo calls useIsProcessBusy(localWorkspaceId) without taskId. ARt subscribes to js; XD matches every process key with Np(workspaceId + colon) then applies Pv. Bn constructs workspaceId:taskId; other workspaces do not match. Pv accepts starting/waiting_for_setup/running/stopping, not stopped. Retained complete js/ARt store includes the writers of all five states.",
+    "permission_producer": "Renderer Ld import -> index kYt export. kYt calls il with ZBt; ZBt returns workspace.permissionLevel. il=MXe(()=>we); MXe uses xXe over workspacesByLocalId with getWorkspace side effect. ko subscribes through tt(h.store,...). Workspace reader w_ normalizes stored permission with t9e; t9e returns write for local workspace regardless of persisted permission, otherwise write only for stored write and read otherwise. Schema lh declares read|write. pXe/Ere persist and publish permission updates; fXe resets local to write and remote to read. This is workspace access, not filesystem readonly, selection, or chat mode.",
+    "visibility_and_selection": "DZo supplies archive iff !busy and permission != read. It uses isSelected only for shortcutLabel. SFi passes isSelected into DZo and spreads its model into wFi. wFi passes archive/run/isSelected to eea. eea renders iea only with archive and no run model. iea renders the button regardless of selection and gates only the tooltip shortcut on isSelected. Therefore an unselected local row is not exempt from busy-process suppression.",
+    "current_main": "Sidebar has both row call sites passing useWorkspaceRows.rowProps. rowProps always supplies onArchive; SidebarWorkspaceRow renders the archive button solely when onArchive exists and has no script-state import/subscription/gate. Existing activeRun recognizes the same four busy states but is not consumed by the row."
+  },
+  "bounded_gap": "Local workspace hover Archive affordance is statically missing busy-run-script suppression. The permission join confines this finding to local write access; no read-permission/cloud feature is proposed.",
+  "contract_status": "Frozen seven-case fixture unchanged. Both hosted frontend jobs on f24c4a3 observed five intended selected-row presence-assertion failures and two passing controls. Unselected busy iterations and live restoration await candidate execution. Minimal row correction applied after qualified RED; all exact-head workflows must pass before merge.",
+  "excluded": [
+    "Archive command/action/keyboard dispatch",
+    "Stop confirmation",
+    "Move/selection policy",
+    "Read-permission/cloud UI",
+    "Run icon/date buckets",
+    "Shared harness"
+  ],
+  "limits": [
+    "Retained real-app REA source only; installed-app freshness not checked",
+    "Existing retained real-app REA-decoded assets, no fresh installed-app or semantic graph run. Existing heap/graph-budget gaps remain documented in evidence/help/shortcut-overrides/reference-provenance.md.",
+    "No local Node/Rust/native/browser, manual dispatch, rerun or extra watcher"
+  ],
+  "behavioral": "BASELINE_QUALIFIED_INTENDED_RED; CANDIDATE_PENDING",
+  "native_ui": "NOT_RUN",
+  "previous_census_main": "f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32",
+  "fixture": {
+    "path": "src/components/sidebarArchiveBusyVisibility.test.ts",
+    "sha256": "6be914881b28ce6f221da2e2cf0d4cd555a2808d17eb7ad294e347b56f2a3eea",
+    "case_count": 7,
+    "prediction_only": {
+      "intended_assertion_failures": 5,
+      "passing_controls": 2
+    },
+    "selected_and_unselected": true
+  },
+  "existing_tooltip_fixture": {
+    "path": "src/components/sidebarArchiveShortcut.test.ts",
+    "sha256": "8ad78950e3a408f4adbeb432541064156e8ea6c016eeb6d5f5d034fb1ae17187"
+  }
+}

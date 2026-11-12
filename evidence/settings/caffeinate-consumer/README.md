@@ -15,9 +15,11 @@ OpenConductor currently returns from `reportChatStatus` before `persistStatus` w
 - Hidden publication never restores sidebar/Home presentation rows or requests attention.
 - Closing a visible chat does not suppress its later settlement publication.
 
-The two hidden-publication assertions are expected to fail on the unchanged production runtime. That expectation is **not an executed failure**. Automatic hosted CI must demonstrate those intended failures before the production fix is applied. Local test execution was not run under the current resource constraint.
+Hosted baseline head `2db8326f73d9a19b5440446267d5a0c36ab71b48` reproduced both intended hidden-publication failures. The visible-publication and hidden-presentation/attention controls passed. The full unit job reported 3,289 passes and exactly those two failures, with no skips. [The receipt](hosted-feed-baseline.json) identifies both failing jobs and [the assertion excerpt](hosted-feed-baseline.log). This is canonical status-boundary proof, not power-management proof.
 
-The proposed production scope is limited to persisting canonical statuses before the existing hidden presentation guard, plus an opt-in hidden-inclusive mode on the already registered initial status query. The default query and presentation filtering remain unchanged. Native power management is not part of this prerequisite.
+The candidate persists canonical statuses before the existing hidden presentation guard. It also drains owned write echoes before applying the hidden visibility return, so hidden acknowledgements cannot suppress later external status updates after reopening. An explicit `includeHidden: true` on the already registered initial-status command selects the new hidden-inclusive query. Omitted and false values use the existing visible-only SQL unchanged. Actual SQLite tests cover all three options, hidden rows, idle exclusion and rows without an existing workspace. These candidate tests have not yet run.
+
+No native registration, schema, sidebar/Home filtering, attention policy or deletion policy changes. Native power management is not part of this prerequisite. Local behavioral test execution was not run under the current resource constraint. Static JavaScript syntax and diff checks passed. Rustfmt was unavailable; installing that toolchain component failed on the managed read-only filesystem, so no local Rust formatting pass is claimed.
 
 ## Other evidence and limits
 
