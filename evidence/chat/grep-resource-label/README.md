@@ -24,4 +24,10 @@ This first ready publication is regression-only. Production is unchanged. Automa
 
 No local JavaScript, tests, dependencies, typecheck, build, browser, native app, provider, workflow dispatch or rerun was used. No screenshot exists because browser/native execution is excluded. Mounted synthetic assertions do not prove real provider/IPC, native or visual acceptance. No new REA acquisition was attempted; the packet records historical source verification only. #847, image fixtures, scheduling, clock, RowShell, Transcript and shared helpers remain untouched.
 
-Hosted baseline and candidate results are pending.
+## Hosted baseline and correction
+
+Automatic run [43148630096](https://github.com/reason-machines/openconductor/actions/runs/43148630096) at `ced81c40e7f6fcb33ab135aaac20b20ed4c6ffff` produced qualified component-label RED. All three intended original labels failed at the mounted text assertion, along with six frozen edge cases. The short-relative, pathless and Read controls passed, as did root, leading-slash and backslash controls. The full suite reported 3,293 passes and exactly nine failures. Typecheck passed; build was skipped after unit failure. `hosted-red.json` records the cases and `hosted-red.log` retains the bounded log excerpt. Some assertion-message identifiers are redacted by the log reader; expected/actual text and assertion locations remain visible.
+
+Before correction, fresh default main `26f8345401efb021bef2f12b17815eba6c57170c` was fetched. ToolRows, conductorTools, Reason normalization, reducer and view matched the baseline byte for byte. The only production edits now replace the Grep label call with existing lastTwoSegments and remove its dedicated unused shortPath import binding. The shared helper and all frozen tests, inputs and preserved fixtures are unchanged.
+
+Same-input hosted GREEN and all exact-head workflows remain pending. Native, visual and real-provider acceptance remain not run.
