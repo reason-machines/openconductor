@@ -1,0 +1,176 @@
+{
+  "author": "Conductor Rebuild",
+  "version": "NEW13 compatibility V3",
+  "status": "SOURCE_ONLY_UNRUN",
+  "source_main": "84a3153cbca1c25e210c3835ea9314f54e9f6c36",
+  "frontend_fixed_commit": "4235d533bafe93fc82ebce194ce3b677ecca5b8a",
+  "source_clearance": "0fac79f5-c995-4e31-b951-5a563f7ba963",
+  "reason": "Observed TS2550: Object.hasOwn is not available in the existing ES2021 TypeScript lib. Preserve the receiver and key in an equivalent own-property check. No tsconfig/lib/dependency change.",
+  "old_to_new": {
+    "original_active_path": "src/settings/customPrefixDotDelimiterV2.test.ts",
+    "preserved_original_path": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/customPrefixDotDelimiterV2.test.ts.txt",
+    "active_path": "src/settings/customPrefixDotDelimiterV3.test.ts",
+    "only_literal_change": {
+      "old": "Object.hasOwn(imports, name)",
+      "new": "Object.prototype.hasOwnProperty.call(imports, name)"
+    },
+    "assertion_test_control_changes": 0,
+    "same_receiver": "imports",
+    "same_key": "name",
+    "all_other_bytes_identical": true
+  },
+  "static_inventory": {
+    "total": 13,
+    "delimiter_positive": 2,
+    "raw_validator_and_normalize_guards": 7,
+    "stable_mounted_invalid_controls": 3,
+    "github_and_none_control": 1,
+    "raw_inputs": [
+      "",
+      ".team",
+      "team..",
+      "team space",
+      "team.lock",
+      "team./",
+      "team@{branch"
+    ],
+    "mounted_invalid_inputs": [
+      "",
+      "team.lock",
+      "team./"
+    ]
+  },
+  "expected_outcomes_NOT_OBSERVED": {
+    "baseline_RED": {
+      "fail": 2,
+      "pass": 11
+    },
+    "fixed_GREEN": {
+      "pass": 13,
+      "fail": 0
+    },
+    "adjacent": {
+      "pass": 21,
+      "fail": 0
+    },
+    "typecheck": "exit 0 predicted"
+  },
+  "v2_manifest_mapped_checks": [
+    {
+      "original_path": "src/settings/customPrefixDotDelimiterV2.test.ts",
+      "current_path": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/customPrefixDotDelimiterV2.test.ts.txt",
+      "sha256": "8c6bbd962eb12b2fd45f5d525003d61b17c87d9683db5f2258ad7600b02c046e",
+      "matches": true
+    },
+    {
+      "original_path": "evidence/settings/custom-prefix/dot-delimiter/README.md",
+      "current_path": "evidence/settings/custom-prefix/dot-delimiter/README.md",
+      "sha256": "c8477abfadec9dca1bf363d8791f4314d20f5384248e69c4c00a65b11bb62584",
+      "matches": true
+    },
+    {
+      "original_path": "evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+      "current_path": "evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+      "sha256": "e5ba2cba5878e85564af9f5c0ff97281528356747f26dacceed8ddc31d5c2253",
+      "matches": true
+    },
+    {
+      "original_path": "evidence/settings/custom-prefix/dot-delimiter/backend/harness.rs",
+      "current_path": "evidence/settings/custom-prefix/dot-delimiter/backend/harness.rs",
+      "sha256": "92bcfae25ee96df34a6687b450e84b4690800b3b0eaa4104c645f9e1386579ef",
+      "matches": true
+    },
+    {
+      "original_path": "evidence/settings/custom-prefix/dot-delimiter/source-preparation.json",
+      "current_path": "evidence/settings/custom-prefix/dot-delimiter/source-preparation.json",
+      "sha256": "8c9cc7485a5a125cd0ab25f1fde6fa4fe54d87b851432af28b88dcced5f9d87f",
+      "matches": true
+    },
+    {
+      "original_path": "evidence/settings/custom-prefix/dot-delimiter/reconciliation-v2.json",
+      "current_path": "evidence/settings/custom-prefix/dot-delimiter/reconciliation-v2.json",
+      "sha256": "6f6a3884a1e8e63ec87164016fcf9506b5bf95cc89cc59c40b0d0ad104ab2550",
+      "matches": true
+    },
+    {
+      "original_path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/customPrefixDotDelimiter.test.ts.txt",
+      "current_path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/customPrefixDotDelimiter.test.ts.txt",
+      "sha256": "8323215cfdfb705889d4f1e419c166652dfebe97e94421bab4340b535da2e5e9",
+      "matches": true
+    },
+    {
+      "original_path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/README.md",
+      "current_path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/README.md",
+      "sha256": "98b12c40b85ad4d89c389d25accb9ee655045eae3c6254c0b180300554a935bf",
+      "matches": true
+    },
+    {
+      "original_path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/SHA256SUMS",
+      "current_path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/SHA256SUMS",
+      "sha256": "e7cf591420b8f367b41bd05c5e2a4286b434af4f5854d3d17f7396f69e56f63a",
+      "matches": true
+    }
+  ],
+  "pins": [
+    {
+      "path": "evidence/settings/custom-prefix/dot-delimiter/compatibility-v3/customPrefixDotDelimiterV2.test.ts.txt",
+      "bytes": 7119,
+      "sha256": "8c6bbd962eb12b2fd45f5d525003d61b17c87d9683db5f2258ad7600b02c046e"
+    },
+    {
+      "path": "src/settings/customPrefixDotDelimiterV3.test.ts",
+      "bytes": 7142,
+      "sha256": "d6c81e973d4054aead4ffb63a63b3288aebabb0c933f569e34473a823e3e98cb"
+    },
+    {
+      "path": "src/settings/model.ts",
+      "bytes": 2092,
+      "sha256": "a1f5436fc5ccd1c426ed5d8b21ea91efff327a9aafd4c7e692864c24f9de5da7"
+    },
+    {
+      "path": "src/settings/model.test.ts",
+      "bytes": 3141,
+      "sha256": "c580502edb0cdbc7d25712a71d57393b0a2274097b06d70fa98678a291f7f896"
+    },
+    {
+      "path": "src/settings/GitPage.tsx",
+      "bytes": 7641,
+      "sha256": "60aeff4b79509b944d544ec2a4d8e72ae3f69b3662ccfb3dddfdad6fedd902fa"
+    },
+    {
+      "path": "src-tauri/src/settings/validate.rs",
+      "bytes": 5934,
+      "sha256": "e24c044bcd53405df27e2f784235afadce5f5a138f19bc97c1aa122b8946e8bb"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 222137,
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 526,
+      "sha256": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5"
+    }
+  ],
+  "requests_NOT_ADMITTED": [
+    {
+      "setup": "No reinstall; dependencies exist with root lock0714 unchanged. Non-destructively save current leased two frontend blobs, restore those exact two baseline blobs from containing main for RED, then restore identical fixed blobs from commit4235d533 for GREEN. No other product edit.",
+      "commands": [
+        "timeout 120s node --test --test-concurrency=1 --test-reporter=tap src/settings/customPrefixDotDelimiterV3.test.ts",
+        "timeout 120s node --test --test-concurrency=1 --test-reporter=tap src/settings/customPrefixDotDelimiterV3.test.ts",
+        "timeout 120s node --test --test-concurrency=1 src/settings/customPrefix.test.ts src/settings/customPrefixInput.test.ts src/settings/model.test.ts",
+        "timeout 120s npm run typecheck"
+      ],
+      "stop": "Unexpected failure/timeout/resource warning; no retry. Current-main/source/dependency qualification required at actual admission."
+    }
+  ],
+  "limits": [
+    "No V3 executable or Node evaluation ran",
+    "Original V2 and NEW10 archives unchanged; V2 manifest remains historical with only active test path remapped",
+    "All logs and failed typecheck retained",
+    "GitPage/sanitizer/Rust untouched",
+    "No Rust restore/lock/fetch/compile/test grant",
+    "No new publisher, worker, queue, native/package or 992 scope"
+  ]
+}

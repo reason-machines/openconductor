@@ -1,19 +1,7 @@
 name: Package (macOS)
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    paths:
-      - "src-tauri/**"
-      - "package.json"
-      - "package-lock.json"
-      - "scripts/package-macos.sh"
-      - "scripts/fetch-bundled-tools.sh"
-      - "tools/check_macos_bundle.py"
-      - "tools/test_check_macos_bundle.py"
-      - "evidence/packaging/**"
-      - ".github/workflows/package-macos.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read

@@ -31,6 +31,7 @@ import { generateWorkspaceNames } from "../workspace/naming";
 import { startSetupScript } from "../home/createFirstWorkspace";
 import type { ConfigChoice } from "../features/diff/review.ts";
 import { Composer } from "../features/chat/Composer.tsx";
+import { McpStatusDialog } from "../features/chat/McpStatusDialog.tsx";
 import type { ComposerEditorHandle } from "../features/chat/ComposerEditor.tsx";
 import { appendComposerText } from "../features/chat/composerDocument.ts";
 import { withSentAttachmentDisplay, type UserPrompt } from "../features/chat/userContent.ts";
@@ -288,6 +289,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const [forking, setForking] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<ComposerEditorHandle>(null);
+  const [mcpStatusChat, setMcpStatusChat] = useState<string | null>(null);
+  useEffect(() => setMcpStatusChat(null), [chatId, agentId]);
   const running = transcript.activeTurn !== null;
   const planMode = useLocalPlanMode(chatId, workspace.id, agentId === "claude", workspace.status === "archived" || running || queue.status !== "idle" || queue.items.length > 0 || permissions.length > 0, setAttachError);
   const slashCommands = useMemo(
@@ -653,6 +656,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         onRemoveDirectory={(path) => mutateLink({ workspaceId: workspace.id, kind: "directory", value: path, linked: false })}
         onClose={() => { linkRequest.current++; setLinkRepos(null); }}
       /> : null}
+      {agentId === "codex" && mcpStatusChat === chatId ? <McpStatusDialog key={chatId} chatId={chatId} onClose={() => setMcpStatusChat(null)} /> : null}
       <AgentBinaryBanner agent={binaryAgentFor(agentId)} />
       {toolApproval ? (
         <div className="composer-wrap">
@@ -686,6 +690,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
         onLinkWorkspaces={() => void openLinks()}
+        onMcpStatus={agentId === "codex" ? () => setMcpStatusChat(chatId) : undefined}
         onAttachTerminalOutput={() => void attachTerminalOutput()}
         controls={
           // Codex's access mode; the agent itself is picked in the model picker.
@@ -724,6 +729,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           const cmd = parseSlashCommand(text, isKnownCommand);
           if (!cmd || slashCommands.some((c) => c.name === cmd.name && (c.effect === "agent" || c.effect === "skill"))) return false;
           if (slashCommands.some((c) => c.name === cmd.name && c.effect === "pick_linked_directory")) { void openLinks(); return true; }
+          if (agentId === "codex" && slashCommands.some((c) => c.name === cmd.name && c.effect === "show_mcp_status")) { setMcpStatusChat(chatId); return true; }
           if (cmd.name === "plan" && planMode) {
             if (planMode.disabled) setAttachError("Wait for the current Claude Code turn to end before changing Plan mode.");
             else planMode.onToggle();
@@ -1417,6 +1423,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           <WorkspaceNameHeader
             key={workspace.id}
             repoId={repo.id}
+            repo={repo}
             workspace={workspace}
             sections={sections}
             dispatch={dispatch}

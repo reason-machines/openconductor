@@ -1,0 +1,169 @@
+(node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:93) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: stored-key mount shows only its hint without retrieving or copying the value
+ok 1 - stored-key mount shows only its hint without retrieving or copying the value
+  ---
+  duration_ms: 617.532168
+  type: 'test'
+  ...
+# Subtest: masked value activation lazily copies the whole fake value and remains masked
+not ok 2 - masked value activation lazily copies the whole fake value and remains masked
+  ---
+  duration_ms: 347.954188
+  type: 'test'
+  location: '<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:161:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Explicit masked-row activation must request the complete stored value
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:165:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: revealed value activation copies the complete fake value without another retrieval
+not ok 3 - revealed value activation copies the complete fake value without another retrieval
+  ---
+  duration_ms: 376.306669
+  type: 'test'
+  location: '<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:182:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The revealed row must copy its complete value
+    + actual - expected
+
+    + []
+    - [
+    -   'fixture-only-not-a-key-1234'
+    - ]
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'fixture-only-not-a-key-1234'
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:191:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unconfigured key has no value-copy gesture and never retrieves or writes a value
+ok 4 - unconfigured key has no value-copy gesture and never retrieves or writes a value
+  ---
+  duration_ms: 278.023832
+  type: 'test'
+  ...
+# Subtest: rejected copy retrieval never writes the hint or reveals the row
+not ok 5 - rejected copy retrieval never writes the hint or reveals the row
+  ---
+  duration_ms: 276.085813
+  type: 'test'
+  location: '<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:210:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:214:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: empty copy retrieval never writes the hint or reveals the row
+not ok 6 - empty copy retrieval never writes the hint or reveals the row
+  ---
+  duration_ms: 250.420703
+  type: 'test'
+  location: '<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:210:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:214:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: denied clipboard reports failure without success or revealing the key
+not ok 7 - denied clipboard reports failure without success or revealing the key
+  ---
+  duration_ms: 211.512734
+  type: 'test'
+  location: '<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:228:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:232:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: missing clipboard reports failure without success or revealing the key
+not ok 8 - missing clipboard reports failure without success or revealing the key
+  ---
+  duration_ms: 113.226257
+  type: 'test'
+  location: '<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:228:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    0 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file://<checkout>/tests/chat-search/secretValueCopy.dom.test.mjs:232:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Show then Hide never copies and drops the revealed fake value
+ok 9 - Show then Hide never copies and drops the revealed fake value
+  ---
+  duration_ms: 126.474259
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 3
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3867.702235

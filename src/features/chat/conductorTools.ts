@@ -303,6 +303,10 @@ export function genericSummary(name: string, input: Record<string, unknown>): st
 
 /** `Kzt`: an MCP tool's label, "mcp__linear__get_issue" -> "Get issue". */
 export function mcpLabel(name: string): string {
+  if (name === "ToolSearch") return "Search tools";
+  if (name === "Monitor") return "Start monitor";
+  if (name === "mcp__conductor__GetComputerConfiguration") return "Read computer configuration";
+  if (name === "mcp__conductor__GetComputerBuildStatus") return "Read computer build status";
   const parts = name.split("__").filter(Boolean);
   const tool = parts[parts.length - 1] ?? name;
   const server = parts.length >= 3 ? parts[1]! : undefined;
@@ -462,14 +466,17 @@ export function askUserState(questionCount: number, result: string | undefined, 
 }
 
 /** `Dpo`: GetTerminalOutput's text (the text blocks of a JSON result) and its "Source: x · N lines" note. */
-export function terminalOutput(input: Record<string, unknown>, result: string | undefined): { text: string; note: string } {
+export function terminalOutput(input: Record<string, unknown>, result: string | undefined, rawResult?: unknown): { text: string; note: string } {
+  const content = rawResult === undefined ? result : rawResult;
   let text = "";
-  if (result) {
+  if (Array.isArray(content)) {
+    text = content.filter(isRecord).filter((b) => b.type === "text").map((b) => b.text).join("\n");
+  } else if (typeof content === "string" && content) {
     try {
-      const v: unknown = JSON.parse(result);
-      if (Array.isArray(v)) text = v.filter((b) => isRecord(b) && b.type === "text").map((b) => (b as { text: string }).text).join("\n");
+      const v: unknown = JSON.parse(content);
+      if (Array.isArray(v)) text = v.filter(isRecord).filter((b) => b.type === "text").map((b) => b.text).join("\n");
     } catch {
-      text = result;
+      text = content;
     }
   }
   const note: string[] = [];

@@ -1,0 +1,762 @@
+{
+  "author": "Conductor Rebuild",
+  "receipt_id": "theme-v2-preflight-b9d3668c",
+  "request_message": "b9d3668c-049d-483b-9405-d79918711fe6",
+  "queue_row": "a9d4335e",
+  "computer_id": "00637189-5c55-416e-b457-ed7419fb739a",
+  "computer_identity": "Confirmed this_session by computers_list in this preflight",
+  "at_utc": "2026-11-12T13:39:55.686197+00:00",
+  "branch": "reason/openconductor-sol-termin-1f14fa82",
+  "head": "61a7eabc6c12e992f7fd8eddc7f29859704423bc",
+  "current_main": "869d6efad0cdeb6a889538978f3e6416f0e3a2c2",
+  "containing_main": true,
+  "tracked_tree_equals_main": true,
+  "tracked_worktree_clean": true,
+  "original_fixture_sha256": "f1a6c42fed2eec9552c93f007c79ae9478a425efbcaf216d99634888fe3f6ac1",
+  "fixture_v2_sha256": "874b585ecde9789842c862a7e7188826b29599151ab4cf8ac534d2f7202e68c5",
+  "original_reversal_exact": true,
+  "sources": {
+    "src/features/terminal/session.ts": {
+      "bytes": 21492,
+      "sha256": "8f14cb4d0bc1fd9fa9f70fe7383b47d18f28dd65720f6ad15686c24540c8cac0",
+      "equals_current_main": true
+    },
+    "src/settings/appearance.ts": {
+      "bytes": 5058,
+      "sha256": "e258f1f50eee95de3e2cd737ece50ac2edbded97c87c2ae948c2be7fdea235f2",
+      "equals_current_main": true
+    },
+    "src/components/ScriptOutput.tsx": {
+      "bytes": 7588,
+      "sha256": "5cad08e06c913556195df9063354fb2e50a90ee33e39a586ff72cfb747fe544f",
+      "equals_current_main": true
+    },
+    "src/theme/terminalAnsiThemeFixture.ts": {
+      "bytes": 1183,
+      "sha256": "aeca2daed1bbcc44cea8cb9484c503ce8b4a1e196a7aa9462cba214921874edf",
+      "equals_current_main": true
+    },
+    "package.json": {
+      "bytes": 1940,
+      "sha256": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+      "equals_current_main": true
+    },
+    "package-lock.json": {
+      "bytes": 222137,
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+      "equals_current_main": true
+    }
+  },
+  "adjacent_hashes": {
+    "src/features/terminal/alternateClear.test.ts": "f063cd986571574b96c4e72f7d46e9838ce2e843c45c42d4f7b1675d87d73978",
+    "src/features/terminal/alternateLineEdit.test.ts": "5d072955ef343487e67d7f369dd5da1bcde9651516a21828a46745cbdf0b3a29",
+    "src/features/terminal/bigTerminal.test.ts": "88d769d91a99df4a6858f016983e5130f0539e2fbb1749e2a6db155a981b9601",
+    "src/features/terminal/capture.test.ts": "83f520f0412f52400f9e57b095718de48c3c8278e68bc5d7f7b332d2c00966c1",
+    "src/features/terminal/clearRedraw.test.ts": "6ee13ecbb58e646692fd7c0bfd65488415f3a98395e40a4cdb86dd41307b22ec",
+    "src/features/terminal/cursorState.test.ts": "f77c0e9f356cb379b65688d5d456766bbddb249e7e009dcc404d4d0cbdbc1ca9",
+    "src/features/terminal/find.test.ts": "11db27144fcad4bb2890a831433aaf388b7e9ae6f84b66424313ac3fbcd74a28",
+    "src/features/terminal/font.test.ts": "dfba52433a83c0f024c8a052eeaa160154c17eeedffb5b8be6ffebac23b87796",
+    "src/features/terminal/nonrunningInput.test.ts": "3a06d7fce5864296537c7ea86bb9a1115f50c6d9f4ba5ec72a82847921db0a53",
+    "src/features/terminal/resizeState.test.ts": "c28f5b946d81e3a4d6327fd40b8c4fa408e3c85adca7bc131ff224859c0f35bc",
+    "src/features/terminal/restore.test.ts": "a80a01999e31a0f1cac2dbefaf588f5f62de99ff77e0e31b0833cfe0eb3322a3",
+    "src/features/terminal/scrollback.test.ts": "ebe4e192a0c6f07ee35ea44aaa9252f2680006b9a7c9600a8b11c18d4c3d7b62",
+    "src/features/terminal/selectionAddToChat.test.ts": "8107224a40867e6af24ad52d0085e6a66259a1760469bf683bc044c7b9a8a7cc",
+    "src/features/terminal/selectionChatCaller.test.ts": "7fb4d437798219ccf81bf4e4bb77f418ac4f03fda95e2c227df8b8caa315d975",
+    "src/features/terminal/selectionChatFocus.test.ts": "95eba5a4c9c2afa05af6d749b9e34e1dc1967989435b51c08d0e2c46d76fc908",
+    "src/features/terminal/sessionLineFeed.test.ts": "add72e265d5a913690d1f0ed126b786cadf3f8f2652681492c396874a7b594ab",
+    "src/features/terminal/sessionUnicode.test.ts": "af1932238a19c36c76adeb8d0968bb8dc66f98e7ba26707e7a6406c09591b99e",
+    "src/features/terminal/shellIntegration.test.ts": "8f5b3648a5d84b6983a243e488a74f5910524148722a6362c420f0ced569ebe2",
+    "src/features/terminal/shortcuts.test.ts": "00d9638a5c214979715c1f6b61591c8f1e6f8ce0d738fbf4f20d0890c3765636",
+    "src/features/terminal/spawnFailure.test.ts": "c0160f217f40f0bd436eb68de8f3df9820e1d2c55e9cb2d43473c0d9e43fafc4",
+    "src/features/terminal/startingBody.test.ts": "f4c8bc7d365b2080639b2dbcc99048e1aa3f30ce6672bc1832656c474eeeb81a",
+    "src/features/terminal/tabList.test.ts": "0b4f7f003d76570478a80f1aa19975b5226a697fa5f26f4ff89363bcd18f9bc6",
+    "src/features/terminal/terminal.test.ts": "af93142fe806e7f51a5e9c1530eda7ac2a41246ceb35de2022552d2e4b853b5d",
+    "src/features/terminal/writeQueue.test.ts": "256bed44714c6acffe62154a80b2988d38610dc88a2f8712863eeeb4cf99ad70",
+    "src/features/terminal/terminalAnsiTheme.test.ts": "7e94259f5156f6b6144cca74ffd026ca9215737389b274add46cff11c5d8dd45"
+  },
+  "dependencies": {
+    "@base-ui/react": {
+      "version": "1.9.0",
+      "requirement": "1.9.0",
+      "manifest_sha256": "29c2b0a1b941bdc5335ed31e31f40231dc0ad3b96343c92715029d18a32e42c3",
+      "lock_identity_match": true
+    },
+    "@hello-pangea/dnd": {
+      "version": "18.0.1",
+      "requirement": "^18.0.1",
+      "manifest_sha256": "66710a61094ffd07ba82c8acc5bf027f5bab113b0840741697630a148bb805db",
+      "lock_identity_match": true
+    },
+    "@pierre/diffs": {
+      "version": "1.6.4",
+      "requirement": "^1.6.4",
+      "manifest_sha256": "7109ad078c2892f40c3567a6b181a11fbbf312ad8fa6d826631c61d3fbd3bf6c",
+      "lock_identity_match": true
+    },
+    "@tauri-apps/api": {
+      "version": "2.12.4",
+      "requirement": "^2.0.0",
+      "manifest_sha256": "3e8dd9fbaa647151ea6179115c9e83918f46e951fcbb7fb9e998346337a05b48",
+      "lock_identity_match": true
+    },
+    "@tauri-apps/plugin-deep-link": {
+      "version": "2.6.3",
+      "requirement": "^2.6.3",
+      "manifest_sha256": "6ab68b9a279dcd086d3a92c7021fcb8bf9d872314794bfa534f8997f432375a0",
+      "lock_identity_match": true
+    },
+    "@tauri-apps/plugin-dialog": {
+      "version": "2.8.4",
+      "requirement": "^2.0.0",
+      "manifest_sha256": "af8a8f5263c57545433dc83e79b88fad6f18c200657f7c6cc7ed6328eb7e8997",
+      "lock_identity_match": true
+    },
+    "@tiptap/core": {
+      "version": "3.33.0",
+      "requirement": "3.33.0",
+      "manifest_sha256": "695717b11564d5c6da03eee19428db85c0de45ee84b2e098ce88768dcd153175",
+      "lock_identity_match": true
+    },
+    "@tiptap/extension-document": {
+      "version": "3.33.0",
+      "requirement": "3.33.0",
+      "manifest_sha256": "8289defe0ff325e1d19fb154990aa4993f9a7c7b151366f2ab1ab3c528ff676a",
+      "lock_identity_match": true
+    },
+    "@tiptap/extension-hard-break": {
+      "version": "3.33.0",
+      "requirement": "3.33.0",
+      "manifest_sha256": "e16b0fb70a73d57432a5ee106383061a2d9369f975626bd34e9f069c028f7d70",
+      "lock_identity_match": true
+    },
+    "@tiptap/extension-paragraph": {
+      "version": "3.33.0",
+      "requirement": "3.33.0",
+      "manifest_sha256": "05c2f581052420fe7463c8f9e554e43abee9b106a9db1c0ee15abe7bd7494d18",
+      "lock_identity_match": true
+    },
+    "@tiptap/extension-text": {
+      "version": "3.33.0",
+      "requirement": "3.33.0",
+      "manifest_sha256": "9e236bbd6a68cb7c13a5815664ddc8d7802590d6c64d60b3a05b6543008854a6",
+      "lock_identity_match": true
+    },
+    "@tiptap/extensions": {
+      "version": "3.33.0",
+      "requirement": "3.33.0",
+      "manifest_sha256": "4e36c78eae5ef999f004607e42ff5f6d25ab9bf10bcccac69e7bbb93a546acf5",
+      "lock_identity_match": true
+    },
+    "@tiptap/pm": {
+      "version": "3.33.0",
+      "requirement": "3.33.0",
+      "manifest_sha256": "4873e94dab537df45499f92427080b8a73600d9dc9ca9056c839fd93b33733da",
+      "lock_identity_match": true
+    },
+    "@xterm/addon-fit": {
+      "version": "0.11.0",
+      "requirement": "^0.11.0",
+      "manifest_sha256": "2f1016c5683f76ac1250c466afc29164bc82da7c2ef224c7d5ab83397edf1637",
+      "lock_identity_match": true
+    },
+    "@xterm/addon-unicode11": {
+      "version": "0.9.0",
+      "requirement": "0.9.0",
+      "manifest_sha256": "5efc7bd738527737369d355f5a584d40b0cf05d1e254ad1dde4d0d2495ddf275",
+      "lock_identity_match": true
+    },
+    "@xterm/xterm": {
+      "version": "6.0.0",
+      "requirement": "^6.0.0",
+      "manifest_sha256": "f5a0dde40a146d6c7a86b22daf6e5740517e5d708ec1d162197e0445431d8f4f",
+      "lock_identity_match": true
+    },
+    "dompurify": {
+      "version": "3.4.17",
+      "requirement": "3.4.17",
+      "manifest_sha256": "e6235e2a233d3f5550e2be3bf826a39f4ff5180a710779c1e16dcdf4b9eb20b9",
+      "lock_identity_match": true
+    },
+    "fuzzysort": {
+      "version": "3.1.0",
+      "requirement": "3.1.0",
+      "manifest_sha256": "bf40b7bf4b6e59ca1b113ccaf87f3724527e7fc1ab683c6b713ca0e189eaf633",
+      "lock_identity_match": true
+    },
+    "lowlight": {
+      "version": "3.3.0",
+      "requirement": "^3.3.0",
+      "manifest_sha256": "7d376c50be6087225dd11041b7a3fc9b0551fef37d45f7d2a5a88cad3c55f391",
+      "lock_identity_match": true
+    },
+    "mermaid": {
+      "version": "12.3.0",
+      "requirement": "12.3.0",
+      "manifest_sha256": "55180c3723ad01a8c44163fc9a1ddd9327ff5ac8e60eeaf1b7e83849a449aea2",
+      "lock_identity_match": true
+    },
+    "motion": {
+      "version": "12.43.0",
+      "requirement": "^12.43.0",
+      "manifest_sha256": "5bec2e9c7daeb7ade89cb515068be5b2e9e451392566031c650a1fef60548261",
+      "lock_identity_match": true
+    },
+    "react": {
+      "version": "18.3.1",
+      "requirement": "^18.3.1",
+      "manifest_sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c",
+      "lock_identity_match": true
+    },
+    "react-dom": {
+      "version": "18.3.1",
+      "requirement": "^18.3.1",
+      "manifest_sha256": "d2f29e31bd48b833e48cd7bbf41f192e8ee4ff8da249fdbe10d4ac4114b8b12e",
+      "lock_identity_match": true
+    },
+    "react-markdown": {
+      "version": "9.1.0",
+      "requirement": "^9.1.0",
+      "manifest_sha256": "a0679e19e3563d144bae1c9e7fbdbd66501792b5ba27cf10e6396ba78f01fe36",
+      "lock_identity_match": true
+    },
+    "rehype-raw": {
+      "version": "7.0.0",
+      "requirement": "^7.0.0",
+      "manifest_sha256": "b3313f6329e5b99fd26107f15d4a06bbd2644d1ee93f10fea5ee898be3248c05",
+      "lock_identity_match": true
+    },
+    "rehype-sanitize": {
+      "version": "6.0.0",
+      "requirement": "^6.0.0",
+      "manifest_sha256": "b8c794050d76ff903a42c31e8f7a18e85e966cf231b67d9363a81c0dd5157465",
+      "lock_identity_match": true
+    },
+    "remark-breaks": {
+      "version": "4.0.0",
+      "requirement": "^4.0.0",
+      "manifest_sha256": "df633e5c230d648c90bbfdfe5e75d28a2492af508a38b8751d9faf28af0443c6",
+      "lock_identity_match": true
+    },
+    "remark-gfm": {
+      "version": "4.0.1",
+      "requirement": "^4.0.1",
+      "manifest_sha256": "c199482a69355b610bd1ff225b097776d4a990445b11e5f4c618930dacc8c79d",
+      "lock_identity_match": true
+    },
+    "remark-smartypants": {
+      "version": "3.0.3",
+      "requirement": "^3.0.3",
+      "manifest_sha256": "b4b8eae0c5872dd65083a33323f0a64991e44f427509618cc67d1b3c15eb1423",
+      "lock_identity_match": true
+    },
+    "unist-util-visit": {
+      "version": "5.2.0",
+      "requirement": "^5.2.0",
+      "manifest_sha256": "6f544a847f95a9fcb7d8c1475e97998153fb933b72ee7a9dd60cb5f2abc845dd",
+      "lock_identity_match": true
+    },
+    "vscode-material-icons": {
+      "version": "0.1.1",
+      "requirement": "0.1.1",
+      "manifest_sha256": "aa914ae705e66e2e0e7f4a11c5dc1cbfd8618b2f11bc2edef74c68a026bb875e",
+      "lock_identity_match": true
+    },
+    "@tauri-apps/cli": {
+      "version": "2.12.4",
+      "requirement": "^2.0.0",
+      "manifest_sha256": "59cd2a8f64f2ff245b8479706462ad25c66c4f3eb31013bb2046019577af9b66",
+      "lock_identity_match": true
+    },
+    "@types/node": {
+      "version": "22.20.5",
+      "requirement": "^22.20.5",
+      "manifest_sha256": "234e64edc31580d6052f8abc89b96f156de29d3b4c7121214b960dec09bd2a25",
+      "lock_identity_match": true
+    },
+    "@types/react": {
+      "version": "18.3.31",
+      "requirement": "^18.3.3",
+      "manifest_sha256": "7b5d39d90592ab340d44fecbf8d03afc0a0a197f3217259c3bb9ac881ff67a06",
+      "lock_identity_match": true
+    },
+    "@types/react-dom": {
+      "version": "18.3.7",
+      "requirement": "^18.3.0",
+      "manifest_sha256": "7e3ee716354deebd531059c294716eed6ab402bdf37721b5b011ea093f978f70",
+      "lock_identity_match": true
+    },
+    "@vitejs/plugin-react": {
+      "version": "4.7.0",
+      "requirement": "^4.3.1",
+      "manifest_sha256": "d608755568d9d654c34e9e2da06659df9122fa89d2604ee09cdeda457a20c035",
+      "lock_identity_match": true
+    },
+    "playwright-core": {
+      "version": "1.64.1",
+      "requirement": "1.64.1",
+      "manifest_sha256": "8aa1c9863fa8dea324e674254158cdc79440f4124ef2d84d38053013541cb7d6",
+      "lock_identity_match": true
+    },
+    "react-test-renderer": {
+      "version": "18.3.1",
+      "requirement": "18.3.1",
+      "manifest_sha256": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811",
+      "lock_identity_match": true
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "requirement": "^5.5.4",
+      "manifest_sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6",
+      "lock_identity_match": true
+    },
+    "vite": {
+      "version": "5.4.21",
+      "requirement": "^5.4.0",
+      "manifest_sha256": "e9802045cdc313b6da55ec2e2dd79312074645816089d64f6021f567c10c0a03",
+      "lock_identity_match": true
+    }
+  },
+  "retained_rea": "Prior sealed 12-span/14-static-closure receipt2fda73ad retained; not repeated or credited as fresh app evidence",
+  "resource_sample": {
+    "scope": "Actual exposed /proc host metrics plus exposed cgroup files; not global allocator admission",
+    "cgroup_membership": "0::/reason-payload/vm-hands/b-5588a34a-cc77-416f-8c77-1fed09d260ce",
+    "cgroup_path": "/sys/fs/cgroup/reason-payload/vm-hands/b-5588a34a-cc77-416f-8c77-1fed09d260ce",
+    "snapshots": [
+      {
+        "at_utc": "2026-11-12T13:39:45.682827+00:00",
+        "monotonic": 126319.264104218,
+        "cpu_ticks": [
+          3746175,
+          102515,
+          2110172,
+          43455176,
+          82871,
+          0,
+          69816,
+          10873
+        ],
+        "memory": {
+          "MemTotal_KiB": 33391248,
+          "MemFree_KiB": 2419252,
+          "MemAvailable_KiB": 28643436,
+          "SwapTotal_KiB": 0,
+          "SwapFree_KiB": 0
+        },
+        "disk_home_bytes": {
+          "total": 134682742784,
+          "used": 103702347776,
+          "free": 30963617792
+        },
+        "memory_psi": {
+          "some": {
+            "avg10": 0.39,
+            "avg60": 0.66,
+            "avg300": 3.02,
+            "total": 876029423
+          },
+          "full": {
+            "avg10": 0.27,
+            "avg60": 0.51,
+            "avg300": 2.04,
+            "total": 460827990
+          }
+        },
+        "cgroup_memory_psi": {
+          "some": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 9436
+          },
+          "full": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 8745
+          }
+        },
+        "cgroup": {
+          "memory.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.high": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.current": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.swap.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.swap.current": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.events": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.events.local": {
+            "unavailable": "FileNotFoundError"
+          },
+          "cpu.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "cpu.stat": "usage_usec 85298251\nuser_usec 35512167\nsystem_usec 49786084",
+          "cpuset.cpus.effective": {
+            "unavailable": "FileNotFoundError"
+          },
+          "pids.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "pids.current": {
+            "unavailable": "FileNotFoundError"
+          },
+          "io.max": {
+            "unavailable": "FileNotFoundError"
+          }
+        },
+        "own_jobs_by_cwd": [
+          {
+            "pid": 1,
+            "name": "bwrap",
+            "cwd_within_this_checkout": true
+          },
+          {
+            "pid": 3,
+            "name": "socat",
+            "cwd_within_this_checkout": true
+          },
+          {
+            "pid": 4,
+            "name": "socat",
+            "cwd_within_this_checkout": true
+          }
+        ]
+      },
+      {
+        "at_utc": "2026-11-12T13:39:50.684602+00:00",
+        "monotonic": 126324.265856165,
+        "cpu_ticks": [
+          3746433,
+          102516,
+          2110342,
+          43456722,
+          82886,
+          0,
+          69824,
+          10873
+        ],
+        "memory": {
+          "MemTotal_KiB": 33391248,
+          "MemFree_KiB": 2229712,
+          "MemAvailable_KiB": 28599124,
+          "SwapTotal_KiB": 0,
+          "SwapFree_KiB": 0
+        },
+        "disk_home_bytes": {
+          "total": 134682742784,
+          "used": 103702106112,
+          "free": 30963859456
+        },
+        "memory_psi": {
+          "some": {
+            "avg10": 0.44,
+            "avg60": 0.65,
+            "avg300": 2.99,
+            "total": 876112233
+          },
+          "full": {
+            "avg10": 0.36,
+            "avg60": 0.51,
+            "avg300": 2.02,
+            "total": 460910407
+          }
+        },
+        "cgroup_memory_psi": {
+          "some": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 9436
+          },
+          "full": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 8745
+          }
+        },
+        "cgroup": {
+          "memory.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.high": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.current": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.swap.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.swap.current": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.events": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.events.local": {
+            "unavailable": "FileNotFoundError"
+          },
+          "cpu.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "cpu.stat": "usage_usec 85303461\nuser_usec 35517376\nsystem_usec 49786084",
+          "cpuset.cpus.effective": {
+            "unavailable": "FileNotFoundError"
+          },
+          "pids.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "pids.current": {
+            "unavailable": "FileNotFoundError"
+          },
+          "io.max": {
+            "unavailable": "FileNotFoundError"
+          }
+        },
+        "own_jobs_by_cwd": [
+          {
+            "pid": 1,
+            "name": "bwrap",
+            "cwd_within_this_checkout": true
+          },
+          {
+            "pid": 3,
+            "name": "socat",
+            "cwd_within_this_checkout": true
+          },
+          {
+            "pid": 4,
+            "name": "socat",
+            "cwd_within_this_checkout": true
+          }
+        ]
+      },
+      {
+        "at_utc": "2026-11-12T13:39:55.685543+00:00",
+        "monotonic": 126329.266796858,
+        "cpu_ticks": [
+          3747120,
+          102516,
+          2110636,
+          43457713,
+          82889,
+          0,
+          69826,
+          10873
+        ],
+        "memory": {
+          "MemTotal_KiB": 33391248,
+          "MemFree_KiB": 2083500,
+          "MemAvailable_KiB": 28461656,
+          "SwapTotal_KiB": 0,
+          "SwapFree_KiB": 0
+        },
+        "disk_home_bytes": {
+          "total": 134682742784,
+          "used": 103708053504,
+          "free": 30957912064
+        },
+        "memory_psi": {
+          "some": {
+            "avg10": 0.48,
+            "avg60": 0.65,
+            "avg300": 2.94,
+            "total": 876117146
+          },
+          "full": {
+            "avg10": 0.44,
+            "avg60": 0.52,
+            "avg300": 1.99,
+            "total": 460913488
+          }
+        },
+        "cgroup_memory_psi": {
+          "some": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 9436
+          },
+          "full": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 8745
+          }
+        },
+        "cgroup": {
+          "memory.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.high": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.current": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.swap.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.swap.current": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.events": {
+            "unavailable": "FileNotFoundError"
+          },
+          "memory.events.local": {
+            "unavailable": "FileNotFoundError"
+          },
+          "cpu.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "cpu.stat": "usage_usec 85343541\nuser_usec 35549649\nsystem_usec 49793891",
+          "cpuset.cpus.effective": {
+            "unavailable": "FileNotFoundError"
+          },
+          "pids.max": {
+            "unavailable": "FileNotFoundError"
+          },
+          "pids.current": {
+            "unavailable": "FileNotFoundError"
+          },
+          "io.max": {
+            "unavailable": "FileNotFoundError"
+          }
+        },
+        "own_jobs_by_cwd": [
+          {
+            "pid": 1,
+            "name": "bwrap",
+            "cwd_within_this_checkout": true
+          },
+          {
+            "pid": 3,
+            "name": "socat",
+            "cwd_within_this_checkout": true
+          },
+          {
+            "pid": 4,
+            "name": "socat",
+            "cwd_within_this_checkout": true
+          }
+        ]
+      }
+    ],
+    "intervals": [
+      {
+        "seconds": 5.001751946998411,
+        "cpu_idle_pct": 77.37737737737737,
+        "cpu_iowait_pct": 0.7507507507507507,
+        "psi_current_stall": {
+          "memory_psi": {
+            "some": {
+              "total_delta_us": 82810,
+              "interval_stall_pct": 1.6556198883412223
+            },
+            "full": {
+              "total_delta_us": 82417,
+              "interval_stall_pct": 1.647762641437248
+            }
+          },
+          "cgroup_memory_psi": {
+            "some": {
+              "total_delta_us": 0,
+              "interval_stall_pct": 0.0
+            },
+            "full": {
+              "total_delta_us": 0,
+              "interval_stall_pct": 0.0
+            }
+          }
+        }
+      },
+      {
+        "seconds": 5.00094069300394,
+        "cpu_idle_pct": 50.126454223571066,
+        "cpu_iowait_pct": 0.15174506828528073,
+        "psi_current_stall": {
+          "memory_psi": {
+            "some": {
+              "total_delta_us": 4913,
+              "interval_stall_pct": 0.09824151697845637
+            },
+            "full": {
+              "total_delta_us": 3081,
+              "interval_stall_pct": 0.06160840908011889
+            }
+          },
+          "cgroup_memory_psi": {
+            "some": {
+              "total_delta_us": 0,
+              "interval_stall_pct": 0.0
+            },
+            "full": {
+              "total_delta_us": 0,
+              "interval_stall_pct": 0.0
+            }
+          }
+        }
+      }
+    ],
+    "historical_vs_current": "avg10/60/300 are historical rolling averages; total deltas above are current stall only during these two intervals"
+  },
+  "sealed_commands": {
+    "baseline_and_identical_green": "nice -n 19 timeout --kill-after=5s 120s node --max-old-space-size=768 --test --test-concurrency=1 src/features/terminal/ordinaryThemeRefresh.test.ts",
+    "baseline_required": {
+      "palette_fail": 16,
+      "controls_pass": 4,
+      "unexpected_fail": 0
+    },
+    "green_required": {
+      "pass": 20,
+      "fail": 0
+    },
+    "adjacent": "nice -n 19 timeout --kill-after=5s 120s node --max-old-space-size=768 --test --test-concurrency=1 src/features/terminal/alternateClear.test.ts src/features/terminal/alternateLineEdit.test.ts src/features/terminal/bigTerminal.test.ts src/features/terminal/capture.test.ts src/features/terminal/clearRedraw.test.ts src/features/terminal/cursorState.test.ts src/features/terminal/find.test.ts src/features/terminal/font.test.ts src/features/terminal/nonrunningInput.test.ts src/features/terminal/resizeState.test.ts src/features/terminal/restore.test.ts src/features/terminal/scrollback.test.ts src/features/terminal/selectionAddToChat.test.ts src/features/terminal/selectionChatCaller.test.ts src/features/terminal/selectionChatFocus.test.ts src/features/terminal/sessionLineFeed.test.ts src/features/terminal/sessionUnicode.test.ts src/features/terminal/shellIntegration.test.ts src/features/terminal/shortcuts.test.ts src/features/terminal/spawnFailure.test.ts src/features/terminal/startingBody.test.ts src/features/terminal/tabList.test.ts src/features/terminal/terminal.test.ts src/features/terminal/writeQueue.test.ts src/features/terminal/terminalAnsiTheme.test.ts",
+    "adjacent_paths": [
+      "src/features/terminal/alternateClear.test.ts",
+      "src/features/terminal/alternateLineEdit.test.ts",
+      "src/features/terminal/bigTerminal.test.ts",
+      "src/features/terminal/capture.test.ts",
+      "src/features/terminal/clearRedraw.test.ts",
+      "src/features/terminal/cursorState.test.ts",
+      "src/features/terminal/find.test.ts",
+      "src/features/terminal/font.test.ts",
+      "src/features/terminal/nonrunningInput.test.ts",
+      "src/features/terminal/resizeState.test.ts",
+      "src/features/terminal/restore.test.ts",
+      "src/features/terminal/scrollback.test.ts",
+      "src/features/terminal/selectionAddToChat.test.ts",
+      "src/features/terminal/selectionChatCaller.test.ts",
+      "src/features/terminal/selectionChatFocus.test.ts",
+      "src/features/terminal/sessionLineFeed.test.ts",
+      "src/features/terminal/sessionUnicode.test.ts",
+      "src/features/terminal/shellIntegration.test.ts",
+      "src/features/terminal/shortcuts.test.ts",
+      "src/features/terminal/spawnFailure.test.ts",
+      "src/features/terminal/startingBody.test.ts",
+      "src/features/terminal/tabList.test.ts",
+      "src/features/terminal/terminal.test.ts",
+      "src/features/terminal/writeQueue.test.ts",
+      "src/features/terminal/terminalAnsiTheme.test.ts"
+    ],
+    "adjacent_count": "228 historical prediction only; report actual count",
+    "typecheck": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 120s npm run typecheck",
+    "lint_colors": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 120s npm run lint:colors"
+  },
+  "runtime": "NOT_RUN; no Node/parser/test/install/lint/typecheck/build/browser/server/native/provider/package",
+  "three_leaves_separate": "This preflight admits neither OSC8ten nor Spotlight13; both remain source-only UNRUN",
+  "source_checks": "PASS branch/current-main/hunk/fixture reversal/input/lock/package/25 neighbors/direct installed manifest identities",
+  "runtime_admission": "NONE; direct bounded ACC decision required after this receipt",
+  "jobs_started": []
+}

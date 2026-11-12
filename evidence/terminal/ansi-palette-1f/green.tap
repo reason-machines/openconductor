@@ -1,0 +1,134 @@
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:85) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ordinary terminal uses computed black and retains it through ready and exit
+ok 1 - ordinary terminal uses computed black and retains it through ready and exit
+  ---
+  duration_ms: 610.449258
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed red and retains it through ready and exit
+ok 2 - ordinary terminal uses computed red and retains it through ready and exit
+  ---
+  duration_ms: 10.244775
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed green and retains it through ready and exit
+ok 3 - ordinary terminal uses computed green and retains it through ready and exit
+  ---
+  duration_ms: 273.87507
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed yellow and retains it through ready and exit
+ok 4 - ordinary terminal uses computed yellow and retains it through ready and exit
+  ---
+  duration_ms: 9.126618
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed blue and retains it through ready and exit
+ok 5 - ordinary terminal uses computed blue and retains it through ready and exit
+  ---
+  duration_ms: 9.009021
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed magenta and retains it through ready and exit
+ok 6 - ordinary terminal uses computed magenta and retains it through ready and exit
+  ---
+  duration_ms: 9.531523
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed cyan and retains it through ready and exit
+ok 7 - ordinary terminal uses computed cyan and retains it through ready and exit
+  ---
+  duration_ms: 12.74133
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed white and retains it through ready and exit
+ok 8 - ordinary terminal uses computed white and retains it through ready and exit
+  ---
+  duration_ms: 9.982267
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightBlack and retains it through ready and exit
+ok 9 - ordinary terminal uses computed brightBlack and retains it through ready and exit
+  ---
+  duration_ms: 8.550228
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightRed and retains it through ready and exit
+ok 10 - ordinary terminal uses computed brightRed and retains it through ready and exit
+  ---
+  duration_ms: 8.064965
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightGreen and retains it through ready and exit
+ok 11 - ordinary terminal uses computed brightGreen and retains it through ready and exit
+  ---
+  duration_ms: 14.84559
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightYellow and retains it through ready and exit
+ok 12 - ordinary terminal uses computed brightYellow and retains it through ready and exit
+  ---
+  duration_ms: 15.52968
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightBlue and retains it through ready and exit
+ok 13 - ordinary terminal uses computed brightBlue and retains it through ready and exit
+  ---
+  duration_ms: 10.459667
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightMagenta and retains it through ready and exit
+ok 14 - ordinary terminal uses computed brightMagenta and retains it through ready and exit
+  ---
+  duration_ms: 7.128906
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightCyan and retains it through ready and exit
+ok 15 - ordinary terminal uses computed brightCyan and retains it through ready and exit
+  ---
+  duration_ms: 9.065843
+  type: 'test'
+  ...
+# Subtest: ordinary terminal uses computed brightWhite and retains it through ready and exit
+ok 16 - ordinary terminal uses computed brightWhite and retains it through ready and exit
+  ---
+  duration_ms: 7.566895
+  type: 'test'
+  ...
+# Subtest: unset ANSI CSS tokens retain xterm's default palette
+ok 17 - unset ANSI CSS tokens retain xterm's default palette
+  ---
+  duration_ms: 7.372297
+  type: 'test'
+  ...
+# Subtest: the palette does not change the existing cursor and input lifecycle
+ok 18 - the palette does not change the existing cursor and input lifecycle
+  ---
+  duration_ms: 10.205311
+  type: 'test'
+  ...
+# Subtest: ordinary terminal keeps line-feed conversion and Unicode 11
+ok 19 - ordinary terminal keeps line-feed conversion and Unicode 11
+  ---
+  duration_ms: 7.508856
+  type: 'test'
+  ...
+# Subtest: palette initialization does not change another terminal's options
+ok 20 - palette initialization does not change another terminal's options
+  ---
+  duration_ms: 10.461941
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1534.624237

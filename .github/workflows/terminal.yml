@@ -1,33 +1,7 @@
 name: Terminal
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "src-tauri/src/terminal/**"
-      - "src-tauri/src/terminal_history.rs"
-      - "crates/openconductor-db/**"
-      - "tools/terminal/**"
-      - "src/components/ScriptOutput.tsx"
-      - "src/components/ScriptsPanel.tsx"
-      - "src/components/scriptOutput.css"
-      - "src/scripts/**"
-      - "src/theme/scriptTerminal.css"
-      - "tests/e2e/script-output*"
-      - ".github/workflows/terminal.yml"
-  pull_request:
-    paths:
-      - "src-tauri/src/terminal/**"
-      - "src-tauri/src/terminal_history.rs"
-      - "crates/openconductor-db/**"
-      - "tools/terminal/**"
-      - "src/components/ScriptOutput.tsx"
-      - "src/components/ScriptsPanel.tsx"
-      - "src/components/scriptOutput.css"
-      - "src/scripts/**"
-      - "src/theme/scriptTerminal.css"
-      - "tests/e2e/script-output*"
-      - ".github/workflows/terminal.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read

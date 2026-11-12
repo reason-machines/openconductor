@@ -1,0 +1,19 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> openconductor@0.1.0 build
+> npm run check:branding && tsc --noEmit && node --max-old-space-size=4096 node_modules/vite/bin/vite.js build
+
+(node:90) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> openconductor@0.1.0 check:branding
+> node scripts/check-app-brand.mjs
+
+(node:103) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Official app branding passed: 4 source hashes, 8 generated hashes, PNG sizes, favicon/bundle/onboarding wiring, Home wordmark.
+(node:119) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+vite v5.4.21 building for production...
+transforming...
