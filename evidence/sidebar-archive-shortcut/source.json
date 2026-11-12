@@ -172,7 +172,8 @@
     "No new semantic graph run. Existing renderer heap and index graph-budget gaps are documented in retained provenance; bounded exact source spans provide this caller closure."
   ],
   "execution": {
-    "mounted_baseline": "NOT_RUN",
+    "mounted_baseline": "HOSTED_ASSERTION_RED: 084472476b, four intended failures and three controls in both frontend jobs of 43133892679; see hosted-red.json",
+    "mounted_candidate": "PENDING",
     "native": "NOT_RUN",
     "visual": "NOT_RUN"
   },

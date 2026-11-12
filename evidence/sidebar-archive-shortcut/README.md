@@ -1,6 +1,6 @@
 # Sidebar Archive tooltip follows the saved primary shortcut
 
-Conductor Rebuild owns SIDEBAR-ARCHIVE-TOOLTIP-REMAP-271. Ledger deduplication confirmed no competing writer and cleared ordinary automatic hosted CI for the regression-only publication. This is not an executed regression or product correction. No local or native runtime is admitted.
+Conductor Rebuild owns SIDEBAR-ARCHIVE-TOOLTIP-REMAP-271. Ledger deduplication confirmed no competing writer and cleared ordinary automatic hosted CI for the regression-only publication. The corrected hosted regression reproduced all four intended remap assertion failures with three passing controls. The caller-only correction is now applied; unchanged-fixture hosted GREEN is pending. No local or native runtime is admitted.
 
 ## Source finding
 
@@ -16,7 +16,7 @@ The frozen regression is `src/components/sidebarArchiveShortcut.test.ts`. SHA-25
 
 The fixture mounts actual `SidebarWorkspaceRow`, `KeybindingsProvider` and `Tooltip` using the real override parser, resolver, registry and glyph formatter. It focuses the archive trigger through the real tooltip handler and reads rendered tooltip text. ReactDOM's portal destination and native/DOM/hook boundaries are substituted; positioning and actual native focus are not exercised.
 
-Seven cases cover the default selected tooltip, a saved override arriving after mount, a live remap while the tooltip is open, primary-only display when additional shortcuts exist, reset on the same row, unselected omission before and after a remap, and archive-click callback plus propagation behavior. The source predicts four intended remap assertion failures and three passing controls. All cases are NOT_RUN.
+Seven cases cover the default selected tooltip, a saved override arriving after mount, a live remap while the tooltip is open, primary-only display when additional shortcuts exist, reset on the same row, unselected omission before and after a remap, and archive-click callback plus propagation behavior. The corrected regression-only head `084472476b3787b5b12bc716384b7ac2d4003ec9` reproduced all four intended remap assertion failures in both frontend jobs of automatic CI run `43133892679`; default selected, unselected and archive-click controls passed. Each failure was actual `Archive workspace ⌘⇧A` versus expected `Archive workspace ⌘⌥K`, not a mount/setup failure. Typecheck passed. See [the hosted RED receipt](hosted-red.json).
 
 ## Fixture typing repair
 
@@ -24,8 +24,12 @@ Initial head `207f932e` failed hosted typecheck because React.createElement requ
 
 ## Checks and limits
 
-Python source verification passed on Reason Cloud for both full original asset identities, all eighteen retained spans, six current baseline pins and the frozen fixture hash. `git diff --check` passed. Product source remains unchanged.
+Before the correction, Python source verification passed on Reason Cloud for both full original asset identities, all eighteen retained spans, six fresh-main baseline pins and the frozen fixture hash. Fresh main remains `021aeaa4027770258b4daae127bc829d1575d0ab` and matches those six product inputs. `git diff --check` passed.
 
-No local Node, Rust, install, browser, native app, workflow dispatch, rerun or extra watcher was run. Mounted execution, physical keyboard/focus behavior, installation, visual parity and native acceptance remain NOT_RUN.
+The correction removes the module-level default-only archive constant, reads the existing live `useKeybindingOverrides` snapshot in the row, and formats only the effective primary `workspace.archive` key. The active-row gate, archive callback, registry default, switch-modifier hint and shared Tooltip are unchanged. All seven regression cases remain byte-identical to the qualified RED fixture.
 
-The first ready main-based publication contains only the frozen regression and source evidence, using ordinary automatic CI. Require intended assertion failures before changing product code. Then use the existing live overrides and primary-key resolver at the tooltip caller, preserve the same fixture, and require every exact-head workflow to pass before protected merge. Switch modifier hints, shortcut navigation, archive action semantics, other rows, footer actions and the shared tooltip primitive are excluded.
+The full baseline unit suite reported 3,230 tests, 3,225 passes and five failures. Four failures are this lane's qualified remap RED; the fifth is an unrelated disclosure-remount baseline source-pin drift (`src/scripts/api.ts`) reported to root for the existing owner. It remains a merge gate; this PR does not change that harness.
+
+No local Node, Rust, install, browser, native app, workflow dispatch, rerun or extra watcher was run. Hosted candidate execution is PENDING. Physical keyboard/focus behavior, installation, visual parity and native acceptance remain NOT_RUN; no screenshot is available because browser/native execution is not admitted in this lane.
+
+The first ready main-based publication contained only the frozen regression and source evidence, using ordinary automatic CI. The four intended assertion failures were observed before the caller correction. Preserve the same fixture and require every exact-head workflow to pass before protected merge and consuming-main verification. Switch modifier hints, shortcut navigation, archive action semantics, other rows, footer actions and the shared tooltip primitive are excluded.
