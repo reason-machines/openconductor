@@ -324,7 +324,10 @@ async function startTab(
   term.attachCustomKeyEventHandler((e) => {
     const command = e.type === "keydown" ? terminalCommandFor(e) : undefined;
     if (command === undefined) return true;
-    if (command === "terminal.clearScrollback" && term.buffer.active !== term.buffer.normal) return true;
+    if (
+      term.buffer.active !== term.buffer.normal &&
+      (command === "terminal.clearScrollback" || (command !== "terminal.insertNewline" && LINE_EDIT_BYTES[command] !== undefined))
+    ) return true;
     // Cancelling keydown also drops its keypress; stopping it keeps window shortcuts out.
     e.preventDefault();
     e.stopPropagation();
