@@ -42,6 +42,14 @@ The actual dialog component is rendered headlessly with only its DialogFrame bou
 
 `npm run typecheck` did not finish within the foreground 180-second budget on the saturated shared machine. See `typecheck.txt`. No local build was run afterward. Automatic PR CI is responsible for the frontend typecheck/build verdict. `rustfmt` and Clippy were unavailable; no formatter/linter pass is claimed. `git diff --check` passed before publication.
 
+## Automatic CI compatibility correction
+
+On published head `c48afe24dea34ace8048149ffa90570047fa5900`, automatic CI run `43188174460` passed typecheck and color checks. Its frontend unit step had 3,526 passes and one top-level failure; build was skipped. The actual failure was the disclosure remount harness rejecting the newly imported `McpStatusDialog` before candidate behavior executed. This is not a typecheck failure.
+
+The same focused `node --experimental-strip-types --test src/features/chat/disclosureRemount.test.ts` reproduced the failure. See `disclosure-ci-repro-red.txt`. The correction adds one explicit dialog boundary in `wv-host.mjs`, bound to the existing `forbidden` function so unexpected dialog mounting/provider work remains a failure. No product code, cases, assertions, source policy or generic dependency guard changes.
+
+The harness is hash-frozen. Its paired manifest entry was rebound from `274df8317c705dfc49631f138ba42ae8738e36cd62d0ea47a9a4a140fa0086ae` to `79fe0b7bf9efd793e3ef647f7177339e1f5172fc13b4ca730861a12663d966c0`; all other manifest content stays identical. The original manifest is retained as `disclosure-original-freeze.json` (SHA-256 `7e0bf6e308b27f246bf0c8c09e839c2784903142ff001b915b41b54bfca95d9b`). The intermediate hash-guard failure is retained as `disclosure-manifest-rebind-needed.txt`. The correction has no source-audit-relevant product changes. The identical focused check then passed 2/2 top-level tests, qualifying the same five-case historical baseline RED and current candidate GREEN with the same corrected harness and manifest. See `disclosure-ci-repro-green.txt`.
+
 ## Original source qualification and limits
 
 The retained installed Conductor 0.87.6 helper identity and extraction metadata are in `runtime-artifact.json` and `extraction.json`. Original helper SHA-256 is `5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d`. Extracted inert source is 13,025,924 bytes with SHA-256 `f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab`.
