@@ -1014,7 +1014,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       );
     }
     case "task-get": {
-      const task = parseTask(output);
+      const task = parseTask(result);
       const id = s(input.taskId);
       return (
         <RowShell
