@@ -1,0 +1,36 @@
+2026-11-12T01:10:05.6742347Z # TAP version 13
+2026-11-12T01:10:05.6743319Z # \# Subtest: actual session blocks read-pending B without clearing ready A or prose
+2026-11-12T01:10:05.6744482Z # ok 1 - actual session blocks read-pending B without clearing ready A or prose
+2026-11-12T01:10:05.6745230Z #   ---
+2026-11-12T01:10:05.6745665Z #   duration_ms: 5.469969
+2026-11-12T01:10:05.6746126Z #   type: 'test'
+2026-11-12T01:10:05.6746531Z #   ...
+2026-11-12T01:10:05.6747322Z # \# Subtest: actual session blocks write-pending B without clearing ready A or prose
+2026-11-12T01:10:05.6748470Z # ok 2 - actual session blocks write-pending B without clearing ready A or prose
+2026-11-12T01:10:05.6749206Z #   ---
+2026-11-12T01:10:05.6749635Z #   duration_ms: 1.046951
+2026-11-12T01:10:05.6750099Z #   type: 'test'
+2026-11-12T01:10:05.6750499Z #   ...
+2026-11-12T01:10:05.6751246Z # \# Subtest: failed B preserves ready A and explicit attachment-only delivery
+2026-11-12T01:10:05.6752306Z # ok 3 - failed B preserves ready A and explicit attachment-only delivery
+2026-11-12T01:10:05.6753136Z #   ---
+2026-11-12T01:10:05.6753817Z #   duration_ms: 1.080924
+2026-11-12T01:10:05.6754280Z #   type: 'test'
+2026-11-12T01:10:05.6754687Z #   ...
+2026-11-12T01:10:05.6755494Z # \# Subtest: workspace copy failure preserves draft and attachment for explicit retry
+2026-11-12T01:10:05.6756853Z # ok 4 - workspace copy failure preserves draft and attachment for explicit retry
+2026-11-12T01:10:05.6757600Z #   ---
+2026-11-12T01:10:05.6758030Z #   duration_ms: 0.835816
+2026-11-12T01:10:05.6758486Z #   type: 'test'
+2026-11-12T01:10:05.6758890Z #   ...
+2026-11-12T01:10:05.6759275Z # 1..4
+2026-11-12T01:10:05.6759661Z # \# tests 4
+2026-11-12T01:10:05.6760065Z # \# suites 0
+2026-11-12T01:10:05.6760464Z # \# pass 4
+2026-11-12T01:10:05.6760856Z # \# fail 0
+2026-11-12T01:10:05.6761244Z # \# cancelled 0
+2026-11-12T01:10:05.6761664Z # \# skipped 0
+2026-11-12T01:10:05.6762074Z # \# todo 0
+2026-11-12T01:10:05.6762507Z # \# duration_ms 171.279384
+2026-11-12T01:10:05.6763581Z # Subtest: four frozen Send-readiness controls execute against the actual ComposerSession
+2026-11-12T01:10:05.6764867Z ok 1080 - four frozen Send-readiness controls execute against the actual ComposerSession

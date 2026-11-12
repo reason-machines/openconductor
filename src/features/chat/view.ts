@@ -26,6 +26,7 @@ export interface ToolCallView {
   status: ToolStatus;
   /** Result text once the tool has answered. */
   result?: string;
+  resultCreatedAt?: string;
 }
 
 export type PartView =
@@ -63,13 +64,14 @@ export type RowView =
 interface ToolResult {
   content: string;
   isError: boolean;
+  resultCreatedAt?: string;
 }
 
 function collectToolResults(messages: ChatMessage[]): Map<string, ToolResult> {
   const out = new Map<string, ToolResult>();
   for (const m of messages) {
     for (const b of m.blocks) {
-      if (b.type === "tool_result") out.set(b.toolUseId, { content: b.content, isError: b.isError === true });
+      if (b.type === "tool_result") out.set(b.toolUseId, { content: b.content, isError: b.isError === true, ...(b.resultCreatedAt !== undefined ? { resultCreatedAt: b.resultCreatedAt } : {}) });
     }
   }
   return out;
@@ -96,7 +98,7 @@ function assistantRow(message: ChatMessage, results: Map<string, ToolResult>, st
         const tools = conductorTools(b.name, b.input);
         tools.forEach((tool, j) => {
           const id = j === 0 ? b.id : `${b.id}#${j}`;
-          parts.push({ kind: "tool", call: { id, name: tool.name, input: b.input, tool, status, ...(r ? { result: r.content } : {}) } });
+          parts.push({ kind: "tool", call: { id, name: tool.name, input: b.input, tool, status, ...(r ? { result: r.content, ...(r.resultCreatedAt !== undefined ? { resultCreatedAt: r.resultCreatedAt } : {}) } : {}) } });
         });
         break;
       }

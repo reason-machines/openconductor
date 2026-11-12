@@ -86,6 +86,23 @@ main `382da31580a5698feb223e1a3607fc79119fb77a` supplies PR #1109
 through an ordinary main merge, without cherry-picking, repinning or changing
 its frozen proof. The clone helper diff is unchanged by this integration.
 
+## Shared-repair integration
+
+The next candidate consumes actual merged main
+`78fb7b664e1d88f31c28d050fad2ecba5cd1c1dc`, including #1116's complete
+historical prefix source isolation and #1118's Python fake-login fixture
+budgets. No cherry-pick, repin or duplicate repair is used. Both product helpers,
+sealed clone fixtures and retained reference evidence are byte-identical to
+candidate `f55bad6cc06dbd7bcf84e82a204cd9fb7195cf37`. The prefix replay and
+login-test files are identical to this merged main.
+
+On Reason Cloud, `python3 -m unittest discover -s evidence/settings/custom-prefix
+-p test_replay.py -v` now passes all four assembly tests against the live clone
+helper; the earlier three naming-hash failures no longer occur. Both sealed
+clone fixture checksums and `git diff --check` pass. These Python/static checks
+are not the hosted Node/Rust semantic replay or native acceptance. The new
+exact-head automatic workflows must all pass before merge.
+
 ## Verification and limits
 
 `python3 evidence/dialogs/clone-basename-normalization/verify_source.py <archive>`

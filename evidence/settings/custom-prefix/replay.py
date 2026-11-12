@@ -25,15 +25,13 @@ def run(command, cwd, output, env=None):
 
 
 def prepare_sources(tree, phase, manifest):
-    for path in manifest["baseline_sources"]:
+    for path, expected in manifest["baseline_sources"].items():
+        source = HERE / "baseline" / Path(path).name if phase == "baseline" else ROOT / path
         destination = tree / path
         destination.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(ROOT / path, destination)
-    if phase == "baseline":
-        subprocess.run(["git", "apply", "--unidiff-zero", "--reverse", str(HERE / "fix.patch")], cwd=tree, check=True)
-        shutil.copyfile(HERE / "baseline/types.ts", tree / "src/settings/types.ts")
-        for path, expected in manifest["baseline_sources"].items():
-            assert digest(tree / path) == expected, f"Baseline source changed: {path}"
+        shutil.copyfile(source, destination)
+        if phase == "baseline":
+            assert digest(destination) == expected, f"Baseline source changed: {path}"
 
 
 def main():

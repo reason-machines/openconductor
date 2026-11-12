@@ -142,18 +142,20 @@ class HostedController:
         self.evidence.plan_json = data.decode("utf-8")
         require(probe.digest(data) == selected["plan_sha256"], "retained plan bytes changed")
 
-    def snapshot(self, phase, point):
+    def snapshot(self, phase, point, value):
         selection = self.evidence.selection
         with probe.load_plan(selection["probe_id"], selection["plan_sha256"]) as (plan, fd):
             require(plan.consumer_uid == 1
                     and plan.caller_uid == self.evidence.principals["caller"]["uid"],
                     "plan principal identity mismatch")
-            resources = {}
-            for resource in probe.RESOURCES:
-                probe.check_identity(fd, plan, resource)
-                info = os.stat(resource + ".marker", dir_fd=fd, follow_symlinks=False)
-                resources[resource] = {**asdict(probe.Identity.of(info)), "links": info.st_nlink}
+            role = "consumer" if point == "before_caller" else "consumer-verify"
+            validate_role(value, plan, phase, self.evidence.principals["consumer"], role)
+            storage = asdict(probe.check_storage(fd, plan))
+            require(value["storage"] == storage, "reported private directory differs from actual metadata")
+            resources = {o["resource"]: {**o["identity"], "links": o["links"]}
+                         for o in value["observations"]}
             snapshot = {"phase": phase, "point": point, "namespace": list(plan.namespace),
+                        "storage": storage, "resource_measurement": "consumer_role_report",
                         "plan_sha256": selection["plan_sha256"], "resources": resources}
             self.evidence.snapshots.append(snapshot)
             return plan, snapshot
@@ -181,16 +183,15 @@ class HostedController:
             args = ["--probe-id", selected["probe_id"], "--plan-sha256", selected["plan_sha256"],
                     "--phase", phase]
             positive = decode(self.invoke("consumer", ["consumer-check", *args]))
-            plan, before = self.snapshot(phase, "before_caller")
-            validate_role(positive, plan, phase, consumer, "consumer")
+            plan, before = self.snapshot(phase, "before_caller", positive)
             try:
                 negative = self.invoke("caller", ["caller-check", *args])
             finally:
                 verified = self.invoke("consumer", ["consumer-verify", *args])
-            _, after = self.snapshot(phase, "after_caller")
+            verified = decode(verified)
+            _, after = self.snapshot(phase, "after_caller", verified)
             require({k: v for k, v in before.items() if k != "point"}
                     == {k: v for k, v in after.items() if k != "point"}, "pre/post objects changed")
-            validate_role(decode(verified), plan, phase, consumer, "consumer-verify")
             validate_role(decode(negative), plan, phase, caller, "caller")
         self.evidence.status = "BOUNDED_SYSCALL_OBSERVATIONS"
 
@@ -223,11 +224,17 @@ def validate_role(value, plan, phase, identity, role):
         require(value.get("status") == ("INTACT" if verify else "AUTHORIZED_CONTROL_OK")
                 and len(observations) == 2, "missing positive or final consumer result")
         require({o.get("resource") for o in observations} == set(probe.RESOURCES), "missing consumer resource")
+        require(value.get("namespace") == list(plan.namespace)
+                and all(type(v) is int for v in value["namespace"])
+                and value.get("storage") == asdict(plan.storage)
+                and all(type(v) is int for v in value["storage"].values()),
+                "consumer namespace or private directory identity mismatch")
         for observation in observations:
             expected = asdict(plan.resources[observation["resource"]])
             require(observation.get("read") is True and observation.get("write") is (not verify)
                     and observation.get("identity") == expected
-                    and all(type(v) is int for v in observation["identity"].values()),
+                    and all(type(v) is int for v in observation["identity"].values())
+                    and type(observation.get("links")) is int and observation["links"] == 1,
                     "consumer read/write or object identity mismatch")
         return
     require(value.get("status") == "DENIALS_OBSERVED", "caller aggregate did not observe all denials")

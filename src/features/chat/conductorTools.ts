@@ -500,17 +500,19 @@ export function sendMessageLabel(input: Record<string, unknown>): { label: strin
   return { label, summary: right };
 }
 
+export function scheduleWakeupAt(input: Record<string, unknown>, result: string | undefined, resultAt: number | undefined): number | undefined {
+  if (input.stop === true || resultAt === undefined || !Number.isFinite(resultAt)) return undefined;
+  const fromResult = result ? /\(in (\d+)s\)/.exec(result)?.[1] : undefined;
+  const delay = typeof input.delaySeconds === "number" ? Math.min(Math.max(input.delaySeconds, 60), 3600) : undefined;
+  const secs = fromResult !== undefined ? Number(fromResult) : delay;
+  return secs === undefined ? undefined : resultAt + secs * 1000;
+}
+
 /** `Spo` + `ypo`: ScheduleWakeup's label. `now` decides waiting vs waited. */
 export function scheduleWakeupLabel(input: Record<string, unknown>, result: string | undefined, resultAt: number | undefined, now: number, timeOfDay: (ms: number) => string): string {
   const hasResult = result !== undefined;
   if (input.stop === true) return hasResult ? "Stopped scheduled wake-ups" : "Stopping scheduled wake-ups";
-  let wakeAt: number | undefined;
-  if (resultAt !== undefined) {
-    const fromResult = result ? /\(in (\d+)s\)/.exec(result)?.[1] : undefined;
-    const delay = typeof input.delaySeconds === "number" ? Math.min(Math.max(input.delaySeconds, 60), 3600) : undefined;
-    const secs = fromResult !== undefined ? Number(fromResult) : delay;
-    if (secs !== undefined) wakeAt = resultAt + secs * 1000;
-  }
+  const wakeAt = scheduleWakeupAt(input, result, resultAt);
   if (wakeAt === undefined) return hasResult ? "Wake-up scheduled" : "Scheduling wake-up";
   return wakeAt - now > 0 ? `Waiting until ${timeOfDay(wakeAt)}` : `Waited until ${timeOfDay(wakeAt)}`;
 }
