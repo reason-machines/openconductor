@@ -7,6 +7,8 @@ import hashlib
 from http.client import HTTPException
 import io
 import json
+import os
+from pathlib import Path
 import re
 import stat
 from urllib.error import HTTPError
@@ -15,6 +17,7 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 import zipfile
 
 from tools import native_qa_vm_receipt as policy
+from tools import native_qa_vm_signing as signing
 
 API = "https://api.github.com"
 MAX_METADATA = 2 * 1024 * 1024
@@ -52,6 +55,58 @@ class ConsumedGitHubBundle:
     bundle_artifact_id: int
     service_archive_sha256: str
     bundle_archive: bytes = field(repr=False)
+
+
+@dataclass(frozen=True)
+class LocalBundleIdentityReadback:
+    """Observed static identity, not a launch token or a guarantee through later use."""
+    selected: ApprovedGitHubBuild
+    identity: signing.BuildIdentity
+    retained_archive_sha256: str
+    service_archive_sha256: str
+    receipt_artifact_sha256: str
+
+
+def _candidate_snapshot(bundle: Path, receipt: Path, members: dict[str, bytes],
+                        receipt_bytes: bytes) -> dict[str, tuple]:
+    bundle, receipt = policy._no_links(bundle), policy._no_links(receipt)
+    policy._require(bundle.suffix == ".app" and receipt != bundle and bundle not in receipt.parents,
+                    "standalone candidate and external receipt required")
+    prefix = policy.BUNDLE_ROOT + "/"
+    files = {name.removeprefix(prefix): (data, *policy.BUNDLE_MEMBERS[name])
+             for name, data in members.items() if name.startswith(prefix)}
+    directories = {""}
+    for name in files:
+        directories.update(str(p) for p in Path(name).parents if str(p) != ".")
+    snapshot = {}
+
+    def visit(relative):
+        path = bundle / relative
+        before = path.lstat()
+        policy._require(stat.S_ISDIR(before.st_mode) and not before.st_mode & 0o7022,
+                        "standalone non-writable-by-others candidate directory required")
+        snapshot[relative] = policy._file_identity(before)
+        with os.scandir(path) as entries:
+            for entry in entries:
+                name = f"{relative}/{entry.name}" if relative else entry.name
+                if name in directories:
+                    visit(name)
+                else:
+                    policy._require(name in files, "unexpected candidate content")
+                    expected, limit, mode = files[name]
+                    data, identity = policy._read_regular(bundle / name, limit)
+                    policy._require(data == expected and stat.S_IMODE(identity[2]) == mode,
+                                    "candidate bytes or permissions differ from retained build")
+                    snapshot[name] = identity
+        policy._require(snapshot[relative] == policy._file_identity(path.lstat()),
+                        "candidate directory changed while reading")
+
+    visit("")
+    policy._require(snapshot.keys() == directories | files.keys(), "missing candidate content")
+    data, identity = policy._read_regular(receipt, policy.MAX_JSON)
+    policy._require(data == receipt_bytes, "local receipt differs from authenticated receipt bytes")
+    snapshot["external receipt"] = identity
+    return snapshot
 
 
 def _equal(actual, expected):
@@ -267,6 +322,31 @@ class GitHubReader(policy.AuthenticatedGitHubReader):
                         hashlib.sha256(data).hexdigest() == value.digest[7:],
                         "artifact bytes differ from service digest")
         return data
+
+    def verify_local_candidate(self, bundle: Path, *, build_receipt: Path) -> LocalBundleIdentityReadback:
+        """Authenticate retained bytes, then statically inspect existing local paths.
+
+        No extraction or writes. Outer snapshots span signature and provenance
+        rechecks. They detect observed changes, not every transient pathname swap
+        or writes after return. The reused path-based codesign verifier does not
+        identify a running consumer or establish integrity through actual use.
+        """
+        consumed = self.consume_bundle()
+        selected = self.approved.receipt
+        with zipfile.ZipFile(io.BytesIO(consumed.bundle_archive)) as archive:
+            members = {name: archive.read(name) for name in policy.BUNDLE_MEMBERS}
+        metadata = self.read_artifact(selected.repository_id, consumed.bundle_artifact_id)
+        _equal(metadata.digest, "sha256:" + consumed.service_archive_sha256)
+        before = _candidate_snapshot(bundle, build_receipt, members, consumed.receipt.receipt_bytes)
+        identity = signing.verify_build_identity(bundle, build_receipt=build_receipt,
+                                                 expected_source=selected.source_commit)
+        _equal(identity, signing.BuildIdentity(selected.source_commit, consumed.bundle.build_id,
+                                               consumed.bundle.executable_sha256))
+        policy._record(self.read_artifact(selected.repository_id, consumed.bundle_artifact_id), metadata)
+        _equal(policy.consume_ci_receipt(selected, self), consumed.receipt)
+        _equal(_candidate_snapshot(bundle, build_receipt, members, consumed.receipt.receipt_bytes), before)
+        return LocalBundleIdentityReadback(self.approved, identity, consumed.bundle.archive_sha256,
+            consumed.service_archive_sha256, consumed.receipt.artifact_sha256)
 
     def consume_bundle(self) -> ConsumedGitHubBundle:
         """Return exact retained bytes and provenance, without extraction or launch."""

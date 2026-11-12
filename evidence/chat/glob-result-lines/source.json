@@ -1,0 +1,105 @@
+{
+  "packet_sha256": "991f15ebf130ccb8e705fc74f612dbb46095bd6d73b420fbced1ffbcd94165bc",
+  "owner_session": "be7a40e4-7a95-4b4b-a75d-41eaf9426f8b",
+  "packet_attachment_id": "e78b8633-85a2-4561-a67c-ff7181b1d9fc",
+  "checked_main": "1d9c4027909205d1dba9006031d922a5f2f2287a",
+  "original": {
+    "app": "/Applications/Conductor.app",
+    "version": "0.87.6",
+    "binary_sha256_historical_provenance": "0ba55751aea5ecf592d2c78379760af641fb912a34b2c3573d41df031ffb831d",
+    "binary_identity_limit": "Historical retained program provenance, not a fresh binary/device observation in this pass.",
+    "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "assets_rehashed_this_pass": {
+      "renderApp-D_fmY7hW.js": {
+        "bytes": 11600457,
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+      },
+      "index-BGEQ8YjU.js": {
+        "bytes": 3493297,
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+      }
+    }
+  },
+  "reference_spans": {
+    "dpo": {
+      "utf8_half_open": [
+        7844170,
+        7844996
+      ],
+      "sha256": "5473088bdec7f98a0bf9b6dcb8ada2e49712ade7e7ae664a4e585c49193a3684",
+      "next_boundary": "function fpo(t){const e=ne.c(11),{t"
+    },
+    "fpo": {
+      "utf8_half_open": [
+        7844996,
+        7845824
+      ],
+      "sha256": "e674243aa1f7c1761828fac5f6dcfc6e035eac24edb762403fbc15fc19571873",
+      "next_boundary": "function hpo(t){const e=ne.c(33),{t"
+    },
+    "Dki": {
+      "utf8_half_open": [
+        7804520,
+        7805311
+      ],
+      "sha256": "59edd92e0caea2126ca8ed4740cbe72c28caa1afadd0c1a0d0333f8e1c2d7a25",
+      "next_boundary": "function E0o(t,e){const n=t.trim();"
+    },
+    "C0o": {
+      "utf8_half_open": [
+        7805429,
+        7805461
+      ],
+      "sha256": "cd47367faa456a1940d2d947a37b4aa04cf0a9f1e33f4635c2238087e3e4a82c",
+      "next_boundary": "function Pki(t){const e=ne.c(6),{se"
+    },
+    "E0o": {
+      "utf8_half_open": [
+        7805311,
+        7805429
+      ],
+      "sha256": "94afeb049c184fff26e2e53f37ca371b7caceea92c8b905a6f78728c3001d28a",
+      "next_boundary": "function C0o(t){return t.trim()}fun"
+    },
+    "hIt": {
+      "utf8_half_open": [
+        7877770,
+        7878325
+      ],
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+      "next_boundary": "function Xpo(t){switch(t){case\"Bash"
+    },
+    "O1o": {
+      "utf8_half_open": [
+        7587305,
+        7588525
+      ],
+      "sha256": "9f3ff5dc1b79f4690ad7b89b8911acbd083c2b97a4b3268f14f18cd964972184",
+      "next_boundary": "function L1o(t){const e=D1o[t];if(e"
+    },
+    "L1o": {
+      "utf8_half_open": [
+        7588525,
+        7588936
+      ],
+      "sha256": "38f9343e156728f1decb69430d406c3c1ff29482da74e69e24b6d5c538834f25",
+      "next_boundary": "function ski(t){const e=WYe(t);let "
+    },
+    "Qpo": {
+      "utf8_half_open": [
+        7877182,
+        7877770
+      ],
+      "sha256": "94305b7588c4a5551656594289bc17ddb6934ed298cb76fc48181a2731105310"
+    }
+  },
+  "limits": [
+    "Static retained real-app frontend source only. No JavaScript, product test, provider, native app or browser execution.",
+    "Historical whole-renderer REA semantic graph exhausted its heap; the byte-identical retained frontend assets are included for independent readback.",
+    "Line ranges use exact UTF-8 half-open byte offsets because minified source has very long lines.",
+    "Dki also contains a workspace-aware file-open action. That action, its uD/backend dependencies, LS, shared RowShell and UI layout are outside this narrow rendered-line reservation.",
+    "No new REA invocation or acquisition happened. No runtime claim or native parity is inferred.",
+    "No product edits, tests, commits or PR mutation here. #847 remains unchanged."
+  ],
+  "readback": "Both complete retained assets and all nine function slices matched SHA256 and byte offsets. Current-main adapter/view/reducer/Transcript/CSS snapshots matched; only the renderer is intentionally changed."
+}

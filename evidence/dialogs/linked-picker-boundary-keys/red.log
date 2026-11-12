@@ -1,0 +1,203 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: End then Enter toggles the final workspace, not the previously selected workspace
+not ok 1 - End then Enter toggles the final workspace, not the previously selected workspace
+  ---
+  duration_ms: 1.488301
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/linkedDirectoryPickerKeyboard.test.ts:30:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/linkedDirectoryPickerKeyboard.test.ts:32:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: Home then Enter selects Browse without prematurely opening it
+not ok 2 - Home then Enter selects Browse without prematurely opening it
+  ---
+  duration_ms: 0.279613
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/linkedDirectoryPickerKeyboard.test.ts:38:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/linkedDirectoryPickerKeyboard.test.ts:40:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: End accounts for existing directory rows before workspace rows
+not ok 3 - End accounts for existing directory rows before workspace rows
+  ---
+  duration_ms: 33.084488
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/linkedDirectoryPickerKeyboard.test.ts:46:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+    +     kind: 'directory',
+    +     path: '/fixture/linked'
+    -     id: 'workspace-b',
+    -     kind: 'workspace'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'workspace'
+      id: 'workspace-b'
+  actual:
+    0:
+      kind: 'directory'
+      path: '/fixture/linked'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/linkedDirectoryPickerKeyboard.test.ts:50:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: End selects the final directory when no workspace matches the search
+not ok 4 - End selects the final directory when no workspace matches the search
+  ---
+  duration_ms: 0.606501
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/linkedDirectoryPickerKeyboard.test.ts:53:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        {
+    +     kind: 'browse'
+    -     kind: 'directory',
+    -     path: '/fixture/b'
+        }
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0:
+      kind: 'directory'
+      path: '/fixture/b'
+  actual:
+    0:
+      kind: 'browse'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/linkedDirectoryPickerKeyboard.test.ts:57:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Home and End safely select Browse when it is the only result
+not ok 5 - Home and End safely select Browse when it is the only result
+  ---
+  duration_ms: 0.198179
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/linkedDirectoryPickerKeyboard.test.ts:60:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    false !== true
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/6013adf2-e94a-4a6d-9be7-bbd07622cf3c/repo/src/features/chat/linkedDirectoryPickerKeyboard.test.ts:63:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: isComposing keeps navigation and activation inert
+ok 6 - isComposing keeps navigation and activation inert
+  ---
+  duration_ms: 0.197836
+  type: 'test'
+  ...
+# Subtest: defaultPrevented keeps navigation and activation inert
+ok 7 - defaultPrevented keeps navigation and activation inert
+  ---
+  duration_ms: 0.17258
+  type: 'test'
+  ...
+# Subtest: ordinary arrow navigation still wraps both ends
+ok 8 - ordinary arrow navigation still wraps both ends
+  ---
+  duration_ms: 0.241938
+  type: 'test'
+  ...
+# Subtest: ordinary Enter still activates the selected workspace
+ok 9 - ordinary Enter still activates the selected workspace
+  ---
+  duration_ms: 0.259945
+  type: 'test'
+  ...
+# Subtest: unrelated editing keys neither navigate nor activate
+ok 10 - unrelated editing keys neither navigate nor activate
+  ---
+  duration_ms: 42.867061
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 5
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2293.956618

@@ -25,6 +25,7 @@ function fixture(failSpawn = false) {
   const screens: Screen[] = [];
   const noop = () => {};
   class Screen {
+    unicode = { activeVersion: "6" };
     cols = 80;
     rows = 24;
     clears = 0;
@@ -43,6 +44,7 @@ function fixture(failSpawn = false) {
   const boundary: Record<string, unknown> = {
     "@xterm/xterm": { Terminal: Screen },
     "@xterm/addon-fit": { FitAddon: class { fit() {} dispose() {} } },
+    "@xterm/addon-unicode11": { Unicode11Addon: class {} },
     "src/features/terminal/pty": {
       onPtyEvent: async (callback: (event: PtyEvent) => void) => { event = callback; return noop; },
       ptySpawn: async ({ id }: { id: string }) => { if (failSpawn) throw new Error("spawn failed"); return id; },

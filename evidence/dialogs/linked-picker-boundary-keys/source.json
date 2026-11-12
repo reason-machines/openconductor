@@ -1,0 +1,73 @@
+{
+  "producer": "Conductor Rebuild",
+  "default_head": "bce99cb5023d22bdc2fa6eac203b74cb915b6208",
+  "app": "Conductor 0.87.6",
+  "asset": "renderApp-D_fmY7hW.js",
+  "bytes": 11600457,
+  "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+  "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "rea_limit": "Retained shipped bytes only; original semantic renderer analysis exhausted heap. No target JavaScript executed.",
+  "original_attachment": {
+    "id": "9bba4171-4ff7-4ded-83e7-5a62a9f75350",
+    "sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d"
+  },
+  "offsets": "UTF-8 half-open",
+  "spans": [
+    {
+      "name": "Auo",
+      "start": 7504877,
+      "end": 7509540,
+      "sha256": "3c84728178961b1bb6f2bdf89288e00e37ed76b7c90dc841362ba2f342bf74b8",
+      "file": "reference/Auo.txt"
+    },
+    {
+      "name": "Euo",
+      "start": 7502685,
+      "end": 7503788,
+      "sha256": "1f467dc5b205b6b2be58a83f504b9d174cbae252ced1e09072892869e8153124",
+      "file": "reference/Euo.txt"
+    },
+    {
+      "name": "qZ",
+      "start": 2914275,
+      "end": 2914884,
+      "sha256": "75a269c7c20e940bc04bbeb355e5eb9e0b798fa9250024d69a2eab67b6fbe9b1",
+      "file": "reference/qZ.txt"
+    },
+    {
+      "name": "Y5s",
+      "start": 2914884,
+      "end": 2916816,
+      "sha256": "1f343b0f6340b44087d7914fc114f67311554dd62c7b60c549241f3645c4ea29",
+      "file": "reference/Y5s.txt"
+    },
+    {
+      "name": "KV",
+      "start": 2913899,
+      "end": 2914275,
+      "sha256": "61beeb6e4e35c064cdc7c60a0c70f912a36770c820c9adf22ba9f34272cd9926",
+      "file": "reference/KV.txt"
+    },
+    {
+      "name": "Xyi",
+      "start": 2903072,
+      "end": 2908580,
+      "sha256": "2701c99fba31d3c09d171e08b3c5bc5a157fea048c5aab293a4c271728933d92",
+      "file": "reference/Xyi.txt"
+    },
+    {
+      "name": "M5s",
+      "start": 2908581,
+      "end": 2909564,
+      "sha256": "84e0d537998fe7e8a40a285ca3b33d0aa3309933ceab0c4e0dca0dd6ad66acda",
+      "file": "reference/M5s.txt"
+    },
+    {
+      "name": "dollar-o",
+      "start": 2919429,
+      "end": 2920051,
+      "sha256": "bf860668f436d5795e07cb6c8235e546a58c9681ae58a0afda32a384be7b95bb",
+      "file": "reference/dollar-o.txt"
+    }
+  ]
+}

@@ -1,20 +1,26 @@
 """Synthetic HTTP/service contracts, not live GitHub authentication or confinement."""
 import base64
+from contextlib import contextmanager
 from dataclasses import replace
 import hashlib
 from http.client import IncompleteRead
 import importlib
 import io
 import json
+import os
 from pathlib import Path
+import shutil
 from urllib.error import HTTPError
 import plistlib
 import stat
+import subprocess
+import tempfile
 import unittest
 from unittest.mock import patch
 import zipfile
 
 from tools import native_qa_vm_receipt as policy
+from tools import native_qa_vm_signing as signing
 from tools.test_native_qa_vm_receipt import SOURCE, BUILD_ID, archive, canonical, documents
 
 try:
@@ -133,6 +139,221 @@ class GitHubReaderTests(unittest.TestCase):
 
     def consume(self):
         return self.reader.consume_bundle()
+
+    @contextmanager
+    def candidate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            bundle = root / "Existing.app"
+            prefix = policy.BUNDLE_ROOT + "/"
+            with zipfile.ZipFile(io.BytesIO(self.inner)) as archive:
+                for name in policy.BUNDLE_MEMBERS:
+                    if name.startswith(prefix):
+                        path = bundle / name.removeprefix(prefix)
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        path.write_bytes(archive.read(name))
+                        path.chmod(policy.BUNDLE_MEMBERS[name][1])
+            receipt = root / "external.json"
+            receipt.write_bytes(documents()[0])
+            receipt.chmod(0o600)
+            yield bundle, receipt, root
+
+    def signed_metadata(self):
+        return subprocess.CompletedProcess([], 0, plistlib.dumps(signing.ENTITLEMENTS))
+
+    def test_authenticated_local_candidate_readback_never_writes_or_launches(self):
+        with self.candidate() as (bundle, receipt, root):
+            before = {str(p.relative_to(root)): (p.stat().st_mode,
+                p.read_bytes() if p.is_file() else None) for p in root.rglob("*")}
+            with patch.object(signing.subprocess, "run", return_value=self.signed_metadata()) as run:
+                result = self.reader.verify_local_candidate(bundle, build_receipt=receipt)
+            self.assertEqual(result.selected, self.approval)
+            self.assertEqual(result.identity, signing.BuildIdentity(SOURCE, BUILD_ID,
+                hashlib.sha256(b"signed fixture").hexdigest()))
+            self.assertEqual(result.retained_archive_sha256, hashlib.sha256(self.inner).hexdigest())
+            self.assertEqual(result.service_archive_sha256,
+                hashlib.sha256(self.archives[502]).hexdigest())
+            self.assertEqual(result.receipt_artifact_sha256,
+                hashlib.sha256(self.archives[501]).hexdigest())
+            self.assertFalse(hasattr(result, "launch"))
+            self.assertFalse(hasattr(result, "admission"))
+            self.assertEqual(run.call_count, 2)
+            self.assertTrue(all(c.args[0][0] == "/usr/bin/codesign" for c in run.call_args_list))
+            self.assertEqual(before, {str(p.relative_to(root)): (p.stat().st_mode,
+                p.read_bytes() if p.is_file() else None) for p in root.rglob("*")})
+
+    def test_local_candidate_and_receipt_substitutions_refuse_before_codesign(self):
+        for target in ("executable", "plist", "signature", "receipt", "receipt-whitespace",
+                       "product", "missing", "helper"):
+            with self.subTest(target=target), self.candidate() as (bundle, receipt, _):
+                path = bundle / policy.EXECUTABLE
+                if target == "plist":
+                    path = bundle / "Contents/Info.plist"
+                    value = plistlib.loads(path.read_bytes())
+                    path.write_bytes(plistlib.dumps({**value, "CFBundleVersion": "other"}))
+                elif target == "product":
+                    path = bundle / "Contents/Info.plist"
+                    value = plistlib.loads(path.read_bytes())
+                    path.write_bytes(plistlib.dumps({**value,
+                        "CFBundleIdentifier": "com.reasonmachines.openconductor"}))
+                elif target == "signature":
+                    (bundle / "Contents/_CodeSignature/CodeResources").write_bytes(b"other")
+                elif target == "receipt":
+                    receipt.write_bytes(canonical({**json.loads(receipt.read_bytes()), "source_commit": "b" * 40}))
+                elif target == "receipt-whitespace":
+                    receipt.write_bytes(receipt.read_bytes() + b" ")
+                elif target == "missing":
+                    path.unlink()
+                elif target == "helper":
+                    (bundle / "Contents/MacOS/helper").write_bytes(b"unexpected")
+                else:
+                    path.write_bytes(b"other")
+                with patch.object(signing.subprocess, "run") as run, self.assertRaises((ValueError, OSError)):
+                    self.reader.verify_local_candidate(bundle, build_receipt=receipt)
+                run.assert_not_called()
+
+    def test_matching_retained_bytes_do_not_bypass_signature_failure(self):
+        for failure in (subprocess.CalledProcessError(1, "/usr/bin/codesign"),
+                        subprocess.CompletedProcess([], 0, plistlib.dumps({}))):
+            with self.subTest(failure=failure), self.candidate() as (bundle, receipt, _):
+                options = {"side_effect": failure} if isinstance(failure, Exception) else {"return_value": failure}
+                with patch.object(signing.subprocess, "run", **options), self.assertRaises(
+                        (ValueError, subprocess.CalledProcessError)):
+                    self.reader.verify_local_candidate(bundle, build_receipt=receipt)
+
+    def test_authentication_failure_never_reaches_local_signature_readback(self):
+        self.run["head_sha"] = "b" * 40
+        with self.candidate() as (bundle, receipt, _), patch.object(signing.subprocess, "run") as run:
+            with self.assertRaises(ValueError):
+                self.reader.verify_local_candidate(bundle, build_receipt=receipt)
+            run.assert_not_called()
+
+    def test_candidate_links_modes_special_files_and_bounds_refuse(self):
+        for target in ("bundle-link", "parent-link", "executable-link", "receipt-link", "hardlink",
+                       "missing-directory", "extra-directory", "executable-mode", "signature-mode",
+                       "setuid", "directory-mode", "root-mode", "fifo", "oversize"):
+            with self.subTest(target=target), self.candidate() as (bundle, receipt, root):
+                executable = bundle / policy.EXECUTABLE
+                if target == "bundle-link":
+                    alias = root / "Alias.app"
+                    alias.symlink_to(bundle, target_is_directory=True)
+                    bundle = alias
+                elif target == "parent-link":
+                    alias = root / "alias"
+                    alias.symlink_to(root, target_is_directory=True)
+                    bundle = alias / bundle.name
+                elif target in ("executable-link", "receipt-link"):
+                    path = receipt if target == "receipt-link" else executable
+                    original = root / "original"
+                    path.rename(original)
+                    path.symlink_to(original)
+                elif target == "hardlink":
+                    os.link(executable, root / "linked")
+                elif target == "missing-directory":
+                    shutil.rmtree(bundle / "Contents/_CodeSignature")
+                elif target == "extra-directory":
+                    (bundle / "Contents/extra").mkdir()
+                elif target == "executable-mode":
+                    executable.chmod(0o644)
+                elif target == "signature-mode":
+                    (bundle / "Contents/_CodeSignature/CodeResources").chmod(0o666)
+                elif target == "setuid":
+                    executable.chmod(0o4755)
+                elif target == "directory-mode":
+                    (bundle / "Contents/MacOS").chmod(0o777)
+                elif target == "root-mode":
+                    bundle.chmod(0o777)
+                elif target == "fifo":
+                    executable.unlink()
+                    os.mkfifo(executable, 0o755)
+                else:
+                    with executable.open("r+b") as stream:
+                        stream.truncate(policy.BUNDLE_MEMBERS[
+                            f"{policy.BUNDLE_ROOT}/{policy.EXECUTABLE}"][0] + 1)
+                with patch.object(signing.subprocess, "run") as run, self.assertRaises((ValueError, OSError)):
+                    self.reader.verify_local_candidate(bundle, build_receipt=receipt)
+                run.assert_not_called()
+
+    def test_observed_local_changes_during_signature_readback_refuse(self):
+        for target in ("executable", "plist", "signature", "receipt", "replace-same-bytes",
+                       "restore-same-bytes", "whole-bundle", "mode"):
+            with self.subTest(target=target), self.candidate() as (bundle, receipt, root):
+                changed = False
+
+                def mutate(*args, **kwargs):
+                    nonlocal changed
+                    if not changed:
+                        changed = True
+                        executable = bundle / policy.EXECUTABLE
+                        if target == "replace-same-bytes":
+                            replacement = root / "replacement"
+                            replacement.write_bytes(executable.read_bytes())
+                            replacement.chmod(0o755)
+                            replacement.replace(executable)
+                        elif target == "restore-same-bytes":
+                            data = executable.read_bytes()
+                            executable.write_bytes(b"changed")
+                            executable.write_bytes(data)
+                        elif target == "whole-bundle":
+                            old = root / "Original.app"
+                            bundle.rename(old)
+                            shutil.copytree(old, bundle)
+                        elif target == "mode":
+                            executable.chmod(0o644)
+                        else:
+                            path = {"executable": executable, "plist": bundle / "Contents/Info.plist",
+                                "signature": bundle / "Contents/_CodeSignature/CodeResources",
+                                "receipt": receipt}[target]
+                            path.write_bytes(path.read_bytes() + b" ")
+                    return self.signed_metadata()
+
+                with patch.object(signing.subprocess, "run", side_effect=mutate), self.assertRaises(ValueError):
+                    self.reader.verify_local_candidate(bundle, build_receipt=receipt)
+
+    def test_service_changes_during_local_signature_readback_refuse(self):
+        for target in ("attempt", "bundle-digest", "receipt-digest"):
+            with self.subTest(target=target), self.candidate() as (bundle, receipt, _):
+                record = self.run if target == "attempt" else self.artifacts[
+                    502 if target == "bundle-digest" else 501]
+                key = "run_attempt" if target == "attempt" else "digest"
+                old = record[key]
+
+                def mutate(*args, **kwargs):
+                    record[key] = 3 if target == "attempt" else "sha256:" + "0" * 64
+                    return self.signed_metadata()
+
+                try:
+                    with patch.object(signing.subprocess, "run", side_effect=mutate), self.assertRaises(ValueError):
+                        self.reader.verify_local_candidate(bundle, build_receipt=receipt)
+                finally:
+                    record[key] = old
+
+    def test_outer_snapshot_spans_final_service_recheck(self):
+        for target in ("executable", "receipt"):
+            with self.subTest(target=target), self.candidate() as (bundle, receipt, root):
+                signed = False
+                changed = False
+
+                def signature(*args, **kwargs):
+                    nonlocal signed
+                    signed = True
+                    return self.signed_metadata()
+
+                def service(request):
+                    nonlocal changed
+                    if signed and not changed:
+                        changed = True
+                        path = receipt if target == "receipt" else bundle / policy.EXECUTABLE
+                        replacement = root / "replacement"
+                        replacement.write_bytes(path.read_bytes())
+                        replacement.chmod(path.stat().st_mode & 0o777)
+                        replacement.replace(path)
+                    return self.open(request)
+
+                with patch.object(self.reader, "_open", side_effect=service), \
+                        patch.object(signing.subprocess, "run", side_effect=signature), self.assertRaises(ValueError):
+                    self.reader.verify_local_candidate(bundle, build_receipt=receipt)
+                self.assertTrue(changed)
 
     def test_selected_service_bytes_return_bound_bundle_without_authority(self):
         result = self.consume()

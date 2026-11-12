@@ -467,7 +467,13 @@ function Row({ tool, status, result, resultCreatedAt, now, isError, open, onTogg
     case "ls": {
       const label = toolKind(name) === "glob" ? "Glob" : "List files";
       const chip = toolKind(name) === "glob" ? s(input.pattern) : s(input.path) || ".";
-      return <RowShell {...shell} left={<span>{label}</span>} right={<CodeChip text={chip} />} align="center" content={output ? output : undefined} />;
+      const content = toolKind(name) === "glob" && output ? (
+        <code>{output.split("\n").filter((line) => line.trim()).map((line, index) => {
+          const trimmed = line.trim();
+          return <div key={index}>{trimmed.includes(" ") ? line : trimmed}</div>;
+        })}</code>
+      ) : output;
+      return <RowShell {...shell} left={<span>{label}</span>} right={<CodeChip text={chip} />} align="center" content={content || undefined} />;
     }
     case "edit": {
       const path = s(input.file_path);
