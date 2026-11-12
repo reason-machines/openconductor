@@ -4,7 +4,7 @@ Conductor Rebuild checked default-main `bbdca3e984f5b80183703daa9f9bb27bbaf0f47c
 
 The original Caffeinate predicate accepts every store-resident session whose status is `working` or `waiting`. It does not filter hidden sessions. Successful full hydration reads `SELECT * FROM sessions ORDER BY updated_at DESC` and unconditionally upserts each row, including rows without an existing workspace. Hiding changes visibility without settling an agent. Exact startup hydration timing was not established.
 
-OpenConductor currently returns from `reportChatStatus` before `persistStatus` when a chat is hidden. Subsequent hidden queue transitions never reach the existing `session_set_status` native boundary. Its initial `session_statuses` query is also visible-only.
+Before this change, OpenConductor returned from `reportChatStatus` before `persistStatus` when a chat was hidden. Subsequent hidden queue transitions never reached the existing `session_set_status` native boundary. Its default initial `session_statuses` query remains visible-only.
 
 ## Regression-first publication
 
@@ -17,9 +17,15 @@ OpenConductor currently returns from `reportChatStatus` before `persistStatus` w
 
 Hosted baseline head `2db8326f73d9a19b5440446267d5a0c36ab71b48` reproduced both intended hidden-publication failures. The visible-publication and hidden-presentation/attention controls passed. The full unit job reported 3,289 passes and exactly those two failures, with no skips. [The receipt](hosted-feed-baseline.json) identifies both failing jobs and [the assertion excerpt](hosted-feed-baseline.log). This is canonical status-boundary proof, not power-management proof.
 
-The candidate persists canonical statuses before the existing hidden presentation guard. It also drains owned write echoes before applying the hidden visibility return, so hidden acknowledgements cannot suppress later external status updates after reopening. An explicit `includeHidden: true` on the already registered initial-status command selects the new hidden-inclusive query. Omitted and false values use the existing visible-only SQL unchanged. Actual SQLite tests cover all three options, hidden rows, idle exclusion and rows without an existing workspace. These candidate tests have not yet run.
+The candidate persists canonical statuses before the existing hidden presentation guard. It also drains owned write echoes before applying the hidden visibility return, so hidden acknowledgements cannot suppress later external status updates after reopening. An explicit `includeHidden: true` on the already registered initial-status command selects the new hidden-inclusive query. Omitted and false values use the existing visible-only SQL unchanged. Actual SQLite tests cover all three options, hidden rows, idle exclusion and rows without an existing workspace. [Hosted candidate results](hosted-feed-candidate.json) at `d0f8cced` pass the unchanged four frontend cases and the actual persistence and option-boundary tests on both Linux and macOS. [The frontend excerpt](hosted-feed-candidate.log) retains all four results. Full frontend typecheck, build, Rust checks and packaging also passed on that head. These results do not substitute for final-head checks after integrating the companion fixture.
 
-No native registration, schema, sidebar/Home filtering, attention policy or deletion policy changes. Native power management is not part of this prerequisite. Local behavioral test execution was not run under the current resource constraint. Static JavaScript syntax and diff checks passed. Rustfmt was unavailable; installing that toolchain component failed on the managed read-only filesystem, so no local Rust formatting pass is claimed.
+No native registration, schema, sidebar/Home filtering, attention policy or deletion policy changes. Native power management is not part of this prerequisite. The unchanged four frontend cases also passed in an inert Node process on Reason Cloud. Static syntax and diff checks passed. Local Rustfmt was unavailable; hosted Rust formatting and persistence tests passed after applying its exact formatter correction.
+
+## Echo guard regression
+
+The separate `caffeinateStatusEcho.test.ts` companion adds six cases without changing the original four. The combined ten pass in an inert Node process on Reason Cloud, with no skips. Cases cover hidden acknowledgements followed by reopening and external updates, pending writes during close, visible write ordering, invalid statuses, hidden presentation and attention.
+
+[The echo receipt](echo-regression.json) records both fixture hashes. Its original-byte compressed TAP comes from the companion owner's isolated guard-order reversion on `d0f8cced`. Exactly the two intended external-update assertions fail, and eight controls pass. No import or loader failures count as regression proof.
 
 ## Other evidence and limits
 
