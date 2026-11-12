@@ -1,0 +1,313 @@
+{
+  "candidate": "CHAT.TASKUPDATE-ERROR-RESULT-DETAILS",
+  "source_main": "7b99088f24c54ffca941fe6d5528260633328d0e",
+  "scope": "String result only. Expected values are derived from retained cpo/jki/tpo/oUt; mounted behavior has NOT RUN.",
+  "cases": [
+    {
+      "id": "error-json-bare",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback"
+      },
+      "result": "{\"id\":\"17\",\"status\":\"completed\",\"subject\":\"Returned subject\",\"description\":\"Returned description\",\"activeForm\":\"Returned activity\",\"owner\":\"Sven\"}",
+      "isError": true,
+      "expected": {
+        "label": "Task started",
+        "header": "Returned activity",
+        "subjects": [
+          "Returned subject"
+        ],
+        "notes": [
+          "Returned description",
+          "Owner: Sven"
+        ],
+        "statuses": [
+          "completed"
+        ],
+        "fallback": [],
+        "error_row": true
+      }
+    },
+    {
+      "id": "error-json-wrapper",
+      "input": {
+        "taskId": "17",
+        "status": "completed",
+        "subject": "Input fallback"
+      },
+      "result": "{\"task\":{\"id\":\"17\",\"status\":\"completed\",\"subject\":\"Returned subject\",\"description\":\"Returned description\",\"activeForm\":\"Returned activity\",\"owner\":\"Sven\"}}",
+      "isError": true,
+      "expected": {
+        "label": "Task completed",
+        "header": "Returned activity",
+        "subjects": [
+          "Returned subject"
+        ],
+        "notes": [
+          "Returned description",
+          "Owner: Sven"
+        ],
+        "statuses": [
+          "completed"
+        ],
+        "fallback": [],
+        "error_row": true
+      }
+    },
+    {
+      "id": "error-task-text",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback"
+      },
+      "result": "Task #17 [completed]: Returned subject\nDescription: Returned description\nActive form: Returned activity\nOwner: Sven",
+      "isError": true,
+      "expected": {
+        "label": "Task started",
+        "header": "Returned activity",
+        "subjects": [
+          "Returned subject"
+        ],
+        "notes": [
+          "Returned description",
+          "Owner: Sven"
+        ],
+        "statuses": [
+          "completed"
+        ],
+        "fallback": [],
+        "error_row": true
+      }
+    },
+    {
+      "id": "error-blocked-by",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback",
+        "addBlockedBy": [
+          "2",
+          "3"
+        ]
+      },
+      "result": "{\"id\":\"17\",\"status\":\"completed\",\"subject\":\"Returned subject\",\"description\":\"Returned description\",\"activeForm\":\"Returned activity\",\"owner\":\"Sven\"}",
+      "isError": true,
+      "expected": {
+        "label": "Task dependency added",
+        "header": "Blocked by tasks #2, #3",
+        "subjects": [
+          "Returned subject"
+        ],
+        "notes": [
+          "Returned description",
+          "Owner: Sven"
+        ],
+        "statuses": [
+          "completed"
+        ],
+        "fallback": [],
+        "error_row": true
+      }
+    },
+    {
+      "id": "error-blocks",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback",
+        "addBlocks": [
+          "8"
+        ]
+      },
+      "result": "{\"task\":{\"id\":\"17\",\"status\":\"completed\",\"subject\":\"Returned subject\",\"description\":\"Returned description\",\"activeForm\":\"Returned activity\",\"owner\":\"Sven\"}}",
+      "isError": true,
+      "expected": {
+        "label": "Task dependency added",
+        "header": "Now blocks task #8",
+        "subjects": [
+          "Returned subject"
+        ],
+        "notes": [
+          "Returned description",
+          "Owner: Sven"
+        ],
+        "statuses": [
+          "completed"
+        ],
+        "fallback": [],
+        "error_row": true
+      }
+    },
+    {
+      "id": "success-json-bare",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback"
+      },
+      "result": "{\"id\":\"17\",\"status\":\"completed\",\"subject\":\"Returned subject\",\"description\":\"Returned description\",\"activeForm\":\"Returned activity\",\"owner\":\"Sven\"}",
+      "isError": false,
+      "expected": {
+        "label": "Task started",
+        "header": "Returned activity",
+        "subjects": [
+          "Returned subject"
+        ],
+        "notes": [
+          "Returned description",
+          "Owner: Sven"
+        ],
+        "statuses": [
+          "completed"
+        ],
+        "fallback": [],
+        "error_row": false
+      }
+    },
+    {
+      "id": "success-json-wrapper",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback"
+      },
+      "result": "{\"task\":{\"id\":\"17\",\"status\":\"completed\",\"subject\":\"Returned subject\",\"description\":\"Returned description\",\"activeForm\":\"Returned activity\",\"owner\":\"Sven\"}}",
+      "isError": false,
+      "expected": {
+        "label": "Task started",
+        "header": "Returned activity",
+        "subjects": [
+          "Returned subject"
+        ],
+        "notes": [
+          "Returned description",
+          "Owner: Sven"
+        ],
+        "statuses": [
+          "completed"
+        ],
+        "fallback": [],
+        "error_row": false
+      }
+    },
+    {
+      "id": "success-task-text",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback"
+      },
+      "result": "Task #17 [completed]: Returned subject\nDescription: Returned description\nActive form: Returned activity\nOwner: Sven",
+      "isError": false,
+      "expected": {
+        "label": "Task started",
+        "header": "Returned activity",
+        "subjects": [
+          "Returned subject"
+        ],
+        "notes": [
+          "Returned description",
+          "Owner: Sven"
+        ],
+        "statuses": [
+          "completed"
+        ],
+        "fallback": [],
+        "error_row": false
+      }
+    },
+    {
+      "id": "invalid-error",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback"
+      },
+      "result": "No such task #17",
+      "isError": true,
+      "expected": {
+        "label": "Task started",
+        "header": "Input fallback",
+        "subjects": [],
+        "notes": [],
+        "statuses": [],
+        "fallback": [
+          "Status:in_progress",
+          "Subject:Input fallback",
+          "Task ID: 17"
+        ],
+        "error_row": true
+      }
+    },
+    {
+      "id": "pending",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback"
+      },
+      "isError": false,
+      "expected": {
+        "label": "Task started",
+        "header": "Input fallback",
+        "subjects": [],
+        "notes": [],
+        "statuses": [],
+        "fallback": [
+          "Status:in_progress",
+          "Subject:Input fallback",
+          "Task ID: 17"
+        ],
+        "error_row": false
+      }
+    },
+    {
+      "id": "empty-error",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback"
+      },
+      "result": "",
+      "isError": true,
+      "expected": {
+        "label": "Task started",
+        "header": "Input fallback",
+        "subjects": [],
+        "notes": [],
+        "statuses": [],
+        "fallback": [
+          "Status:in_progress",
+          "Subject:Input fallback",
+          "Task ID: 17"
+        ],
+        "error_row": false
+      }
+    },
+    {
+      "id": "empty-success",
+      "input": {
+        "taskId": "17",
+        "status": "in_progress",
+        "subject": "Input fallback"
+      },
+      "result": "",
+      "isError": false,
+      "expected": {
+        "label": "Task started",
+        "header": "Input fallback",
+        "subjects": [],
+        "notes": [],
+        "statuses": [],
+        "fallback": [
+          "Status:in_progress",
+          "Subject:Input fallback",
+          "Task ID: 17"
+        ],
+        "error_row": false
+      }
+    }
+  ]
+}

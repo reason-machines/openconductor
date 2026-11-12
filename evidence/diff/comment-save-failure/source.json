@@ -1,0 +1,192 @@
+{
+  "unit": "EDIT-SAVE-FAILURE-FEEDBACK-DE6-01",
+  "qualified_main": "e89bede5597767d131b1c4c9199fb38403d31209",
+  "source_packet_sha256": "55b579831591ad29f16325346e240bc1037f61584c521d9f9fb3e7ff7b1b03ab",
+  "original_assets_archive_sha256": "4155aec8b703dd2b0336508fb5c1c1648a9d129b5f21115c59e1c3fb9e13d3a1",
+  "assets": {
+    "renderApp-D_fmY7hW.js": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index-BGEQ8YjU.js": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "reference_spans": [
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/Pae-store.txt",
+      "start": 9404882,
+      "end": 9405467,
+      "sha256": "f60fe4bbf103700c85a6dc8c2bd4340b8477b3629df27641892e451444039ace"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/wet-consumer.txt",
+      "start": 9411602,
+      "end": 9413099,
+      "sha256": "cfe8f5dde3fc55ba71e0e07df39fdb3ba403285d7234074159b85b371a3aadb5"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/SVo-editor.txt",
+      "start": 9413099,
+      "end": 9416741,
+      "sha256": "1e6bca0b0cdf23c9b84cdb0c057e3b0929ad26176e714615132c938dd13f7e83"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/kVo-edit-action.txt",
+      "start": 9416841,
+      "end": 9419019,
+      "sha256": "751ec5564b7060c6ad6edadaf7cf4929b6386ed56337ceb6398614fb4db80221"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/TVo-edit-action.txt",
+      "start": 9419019,
+      "end": 9420917,
+      "sha256": "fe3c7ce2238d53ec182230040217aeaaa578f7433ed013460060856522f1eb7d"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/dv-error-helper.txt",
+      "start": 1794905,
+      "end": 1795128,
+      "sha256": "828c17461d0944267b8da740c3b88afd3a16ab3903978f8ccbd518f2b96a411b"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/ySr-import.txt",
+      "start": 61585,
+      "end": 61594,
+      "sha256": "dd30ac7a00ff44b95ed4b05bed66ac74db20510f49c274fb981b9e3330e95286"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/ySr-export.txt",
+      "start": 3487964,
+      "end": 3487974,
+      "sha256": "6f4b2e5c889c0d3d6c063980ec32c5ad7f51e2a72fc0a4401999b7320d402449"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/ySr-index-definition.txt",
+      "start": 3060684,
+      "end": 3060731,
+      "sha256": "81b4f6c1c239bd97b28655d98486eefe6587eccd62685dc408763cbd6115e859"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/xSr-import.txt",
+      "start": 61595,
+      "end": 61604,
+      "sha256": "68af3c16557bd663c57612e9750c549e076e7bc61b92b4aa887fdb2cf0b0b042"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/xSr-export.txt",
+      "start": 3487602,
+      "end": 3487612,
+      "sha256": "65e2ec59d9eae87abc8d31b186a663aebc5476c7c66f85e7817ecb516e65deac"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/xSr-index-definition.txt",
+      "start": 3060858,
+      "end": 3060913,
+      "sha256": "83f4e8ce4b3aaee177c4f3d7ece5f53f902fb712cc0cd68bd2a5faf371d74fc4"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "path": "reference/rc-import.txt",
+      "start": 56129,
+      "end": 56137,
+      "sha256": "85c95fb0100bcadc8e13384744b528290546006bf67e74961f031f14b0a2a6cb"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/rc-export.txt",
+      "start": 3483037,
+      "end": 3483046,
+      "sha256": "2cc71332015c2a0bd947a3960991eaf827ac42c11c083e5e4cdc1a7a9c9e4670"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/rc-index-definition.txt",
+      "start": 550006,
+      "end": 550067,
+      "sha256": "79df8b3febb65a4d44a2e8cc65f4b53aa7176f0dee79c2bce4a366dd97eb9087"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "path": "reference/updateCommentText-method.txt",
+      "start": 2293869,
+      "end": 2294181,
+      "sha256": "9df45b43504a5be67af2615aef42e94cd675918f8eda59f7a482fdd93267451d"
+    }
+  ],
+  "retained_main_inputs": [
+    {
+      "repo_path": "src/features/diff/ReviewComments.tsx",
+      "path": "source/src/features/diff/ReviewComments.tsx",
+      "bytes": 26161,
+      "sha256": "5d61d8a59f1a500d31c399907b0f54c9a51089ed7b7a7442d6c9b890b6d3d564"
+    },
+    {
+      "repo_path": "src/components/WorkspaceView.tsx",
+      "path": "source/src/components/WorkspaceView.tsx",
+      "bytes": 86701,
+      "sha256": "1f3029701b12d364024271fab334e799a79fd334848596b892ea9e8ee7d7f28a"
+    },
+    {
+      "repo_path": "src/features/diff/commentsApi.ts",
+      "path": "source/src/features/diff/commentsApi.ts",
+      "bytes": 2080,
+      "sha256": "69de64da7711ed0b9f852244b4b1f5dcf09cff7b5a4c1cb19e81f49fd48ead43"
+    },
+    {
+      "repo_path": "src/features/diff/commentStore.ts",
+      "path": "source/src/features/diff/commentStore.ts",
+      "bytes": 3227,
+      "sha256": "89b6dc1e8c4acd63482bdca83147d1eed286b06ef1bc40c25cbc25440c44af3c"
+    },
+    {
+      "repo_path": "src/features/diff/commentEditDrafts.test.ts",
+      "path": "source/src/features/diff/commentEditDrafts.test.ts",
+      "bytes": 9660,
+      "sha256": "487a0b6d0bb87c7325c865c864e0664f060c16d6e51d48981c250b511ec5ddf7"
+    },
+    {
+      "repo_path": "src/features/diff/commentImeSubmit.test.ts",
+      "path": "source/src/features/diff/commentImeSubmit.test.ts",
+      "bytes": 6854,
+      "sha256": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be"
+    },
+    {
+      "repo_path": "src/features/diff/commentCancel.test.ts",
+      "path": "source/src/features/diff/commentCancel.test.ts",
+      "bytes": 9397,
+      "sha256": "7081738042a7cc472aabc01acdc6f8da4aa63b479b5bb744babbccdef8ea8c8a"
+    },
+    {
+      "repo_path": "evidence/diff/comment-edit-drafts/source.json",
+      "path": "source/evidence/diff/comment-edit-drafts/source.json",
+      "bytes": 4096,
+      "sha256": "980faf75ad9a59060086716c56a3b76e1e394483af16193661e2b7659388bbd9"
+    },
+    {
+      "repo_path": "evidence/diff/comment-ime-submit/source.json",
+      "path": "source/evidence/diff/comment-ime-submit/source.json",
+      "bytes": 5161,
+      "sha256": "20ab6a4ae47f9c5bc3ce0b7b49ff0057acd8c0b81a22dd8b5dc06a45151c74c7"
+    }
+  ],
+  "verification": "Sealed verify_source.py completed29 static checks against full original assets and fresh main before product changes. Original JavaScript never executed.",
+  "limits": [
+    "Historical REA semantic-analysis heap/result-budget gap retained.",
+    "No fresh Mac observation.",
+    "Static source matching is not mounted or visual verification."
+  ]
+}

@@ -1,0 +1,12 @@
+Observed initial metadata-only capture failure, before the single actual RED run:
+
+  File "<stdin>", line 16
+    pathlib.Path('evidence/settings/secret-editor-traversal/dependencies.json').write_text(json.dumps(report,indent=2)+'
+                                                                                                                       ^
+SyntaxError: unterminated string literal (detected at line 16)
+
+The shell continued to the frozen RED command. It ran exactly once and produced the two intended assertion failures with four independent controls passing (red.json, raw_output). The product was still unchanged.
+
+The corrected read-only metadata capture ran after RED and before any product edit, exiting 0. Its complete result is dependencies.json: all seven installed versions and generated lock entries match the exact pins; root package.json/package-lock.json and the frozen fixture are unchanged; product git diff is empty.
+
+ACC accepted this sequencing in message ca880f7c-9d9f-49f6-b1c9-200deb7758be and continued the original grant 604d9d6a-e2ea-4a57-acfb-b9f9f442dab1 without a RED rerun or reinstall.

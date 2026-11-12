@@ -1,0 +1,79 @@
+{
+  "main_sha": "1c8e9593099bce8ebfbc19d83052cbfd47df5ad0",
+  "files": {
+    "src-tauri/src/diff/git.rs": "e478a1ce98043cf6991d1a490650900e3d195fba5dc1045dd036a1ec288be6dd",
+    "src-tauri/src/diff/model.rs": "e56c0c051f5b5ad59c79930eb8f5a5336d9c979325a3e82ab4b95d770f7c3c9b",
+    "src-tauri/src/diff/parse.rs": "92ab857a43e002c47765f3211c650b23570440089768009c6a1d57bedd34c71f",
+    "src/features/chat/turnFilePreview.ts": "a0060e994ecf0e1c559295825cb0cce29d5a38b4ba61d8aeaf88bb1d719c7f11",
+    "src/features/diff/FileDiffView.tsx": "c1cab11aa6141f1c12f923aaf7e60353e4b13067cf91dc93a7245d3d21872a6c"
+  },
+  "original": {
+    "Fje": {
+      "asset_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "utf8_half_open": [
+        743037,
+        745066
+      ],
+      "sha256": "d438301fe44fa78e1552413b7168c4c51c6dca5fef38ed471fc36bc7a0a92d1e"
+    },
+    "bLt-and-helpers": {
+      "asset_sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "utf8_half_open": [
+        3179015,
+        3185298
+      ],
+      "sha256": "2a8742e768caa34cd958df61cd05a342657d8f3810249b73cfc789d70faff7f3"
+    },
+    "Mqo": {
+      "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "utf8_half_open": [
+        9637614,
+        9641484
+      ],
+      "sha256": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c"
+    },
+    "bDo": {
+      "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "utf8_half_open": [
+        8912726,
+        8914498
+      ],
+      "sha256": "c3b6c6edfeb89702256f1116e290a908b095925a640ffd44bb41d21769fa4161"
+    },
+    "bji": {
+      "asset_sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "utf8_half_open": [
+        9643145,
+        9646819
+      ],
+      "sha256": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688"
+    }
+  },
+  "classification": "SOURCE_QUALIFIED_COPY_GAP_WITH_MOUNTED_RED_GREEN",
+  "checks": {
+    "binary_loader_returns_empty_contents": true,
+    "original_full_binary_message": true,
+    "original_full_empty_message": true,
+    "original_hidereason_empty_message": true,
+    "original_message_export": true,
+    "original_renderer_message_import": true,
+    "current_binary_mismatch": true,
+    "current_empty_mismatch": true,
+    "mounted_baseline": "6 intended assertion failures; 3 controls passed; 0 skipped/cancelled",
+    "mounted_candidate": "9 passed; 0 failed/skipped/cancelled"
+  },
+  "missing_error_classification": "INSUFFICIENT: actual natural non128 Git read failure for the same legitimate original input has not been established; no read-error product change.",
+  "runtime": "Provider-free React test-renderer only; no browser/native/app/provider runtime",
+  "product_edits": [],
+  "test_sha256": "d29953cb43d2f7cf9dafce1e1db13a4a67a12e1ba509cbb857815612bbe8c75b",
+  "changed_paths": [
+    "src/features/diff/FileDiffView.tsx (two fallback strings only)",
+    "src/features/diff/fallbackMessages.test.ts (new mounted regression)",
+    "tests/diff/largeFilePlaceholder.mounted.test.mjs (affected binary expected string only)"
+  ],
+  "not_run": [
+    "Full typecheck: command timed out after180seconds; not a passing check",
+    "Existing Rust-producer/large-file mounted suite: manual-only; not rerun",
+    "Browser screenshot, installed/native UI and visual acceptance: no execution admission"
+  ]
+}
