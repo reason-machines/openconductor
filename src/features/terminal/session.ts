@@ -38,6 +38,7 @@ interface Live {
   host: HTMLDivElement;
   ack: AckBatcher;
   opened: boolean;
+  appearance?: MutationObserver;
   /**
    * Opened by the app, not the user (a workspace's first terminal, restored
    * tabs). Its first attach leaves the keyboard where the user is typing.
@@ -337,6 +338,39 @@ async function startTab(
     shell: emptyShellState(),
   };
   live.set(id, terminal);
+  if (typeof MutationObserver !== "undefined") {
+    terminal.appearance = new MutationObserver(() => {
+      if (live.get(id) !== terminal) return;
+      term.options.theme = {
+        background: cssVar("--panel"),
+        foreground: cssVar("--text"),
+        cursor: term.options.disableStdin ? "transparent" : cssVar("--text"),
+        cursorAccent: cssVar("--panel"),
+        selectionBackground: withAlpha(cssVar("--accent"), "66"),
+        selectionInactiveBackground: withAlpha(cssVar("--accent"), "4d"),
+        black: cssVar("--terminal-black"),
+        red: cssVar("--terminal-red"),
+        green: cssVar("--terminal-green"),
+        yellow: cssVar("--terminal-yellow"),
+        blue: cssVar("--terminal-blue"),
+        magenta: cssVar("--terminal-magenta"),
+        cyan: cssVar("--terminal-cyan"),
+        white: cssVar("--terminal-white"),
+        brightBlack: cssVar("--terminal-bright-black"),
+        brightRed: cssVar("--terminal-bright-red"),
+        brightGreen: cssVar("--terminal-bright-green"),
+        brightYellow: cssVar("--terminal-bright-yellow"),
+        brightBlue: cssVar("--terminal-bright-blue"),
+        brightMagenta: cssVar("--terminal-bright-magenta"),
+        brightCyan: cssVar("--terminal-bright-cyan"),
+        brightWhite: cssVar("--terminal-bright-white"),
+      };
+    });
+    terminal.appearance.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "data-theme", "data-color-palette", "data-low-contrast"],
+    });
+  }
   term.attachCustomKeyEventHandler((e) => {
     const command = e.type === "keydown" ? terminalCommandFor(e) : undefined;
     if (command === undefined) return true;
@@ -515,6 +549,7 @@ export async function destroyWorkspaceTerminals(workspaceId: string): Promise<vo
 }
 
 function dispose(id: string) {
+  live.get(id)?.appearance?.disconnect();
   live.get(id)?.term.dispose();
   live.delete(id);
   findRequests.delete(id);

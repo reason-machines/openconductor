@@ -1,0 +1,487 @@
+{
+  "author": "Conductor Rebuild",
+  "unit": "DOT-PREFIX-DELIMITER-49-02",
+  "version": "NEW13-source-candidate-v2",
+  "status": "SOURCE_ONLY_NOT_RUN",
+  "reason": "NEW10 coupled raw-validator rejection with onChange preservation. The separately owned sanitizer intentionally changes four raw inputs; after the DOT fix team.. becomes the valid team. delimiter. NEW13 keeps every raw validator assertion and mounts sanitizer-stable invalid inputs independently.",
+  "source_qualification": {
+    "checked_main": "6281fd5b157d5926ce4dab42dff3e21e4c9c2979",
+    "checkout_head": "b183ded4e2ccef6a5b13bac8de63d6c834b40b95",
+    "source_pins": [
+      {
+        "path": "src/components/CreateWorkspaceComposer.tsx",
+        "sha256": "f5556c21dd0bea700fbce5f87d5338ab247a1c3873fdccc75c6e4a0dc2c068e8",
+        "bytes": 18882,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/components/useBranchPrefix.ts",
+        "sha256": "b2c8c2b543f50d81d580a93eb1b0456812b3f29dfc7c94601b3bd52de2a0c28a",
+        "bytes": 1064,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/home/createFirstWorkspace.ts",
+        "sha256": "215f50301d3042de3dcd5b98a29b8f4eba2a113f054aad4822a739c5474c5ecf",
+        "bytes": 2141,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/home/firstWorkspace.ts",
+        "sha256": "6c26fb5f748ec2c66503a1798f890e24c11e2f21dce879987ce14af3115a6b95",
+        "bytes": 2694,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/ConfigSyncDialog.tsx",
+        "sha256": "090b22ec9a11250bbbc680c5603c8e452fe03c84bf75055bc88aec0985f439e8",
+        "bytes": 7484,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/GeneralPage.tsx",
+        "sha256": "9ea8990dbf1037d8f55ca2fe2a9fff33eee070dfd7a93b0c0c4fdccaa909d70b",
+        "bytes": 11258,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/GitPage.tsx",
+        "sha256": "60aeff4b79509b944d544ec2a4d8e72ae3f69b3662ccfb3dddfdad6fedd902fa",
+        "bytes": 7641,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/SettingsView.tsx",
+        "sha256": "09a70e9c559eaebe074d1fe83c4c3c8af699763765933a8f91be2a93d469301f",
+        "bytes": 18843,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/configSync.ts",
+        "sha256": "69dbee933f81f50e71cb031a7a11392dff31e82bbd39725f5c22d305491d0aac",
+        "bytes": 3738,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/configSyncApi.ts",
+        "sha256": "7e566a5738d01c9fbcef988c2f03526c87e492850768d2149988b3bc97e6a1ef",
+        "bytes": 606,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/configSyncHarness.cjs",
+        "sha256": "0b91715b67adbb76345f2ce2aa5ec0c131c8cd8c5542eca55f071096999565e3",
+        "bytes": 4686,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/customPrefix.test.ts",
+        "sha256": "8b04f0fbe90ddd1d241ff2e0495263193868f27f2e4fc2c5df7e389c503b3d30",
+        "bytes": 1699,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/customPrefixInput.test.ts",
+        "sha256": "7e378f757d7838440955733c9d1d9b907a64fd6a80b03b26768f5e7201f45e26",
+        "bytes": 4610,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/model.ts",
+        "sha256": "9c718b4561c5f9925b5101ca941a6b1f3b017950ddf7a5231f1488659b40254f",
+        "bytes": 2300,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/prefs.ts",
+        "sha256": "c29549a90cd52e0b69d1381fead957aec44d83ee971751bd2aee5b8a7981d663",
+        "bytes": 4731,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/rows/RepoGitRows.tsx",
+        "sha256": "39d30b59f842848c452fa2d1e035e701d11891492b06f5269f4bc18398ba10ca",
+        "bytes": 4744,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/types.ts",
+        "sha256": "66214090aad60a4403f7cfd5aaf0e620cf5717f5c8cd525bc86dff7dea814b6c",
+        "bytes": 8151,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/settings/useSettings.ts",
+        "sha256": "c1b933e09a3f8bb42dd39136e58b6ce32f14c669f180a1ad09a63cc37cc47211",
+        "bytes": 4404,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/workspace/api.ts",
+        "sha256": "7ffebf424d3a6cd7e6be0086d8e9dd3e14b6c41b23365f6553bbb03f9e521899",
+        "bytes": 9892,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/workspace/createFlow.ts",
+        "sha256": "c8c44d5552fdbf1d91ec4f65496ba820ee30cb7895c34944f228e76ce95e4a1c",
+        "bytes": 9693,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src/workspace/naming.ts",
+        "sha256": "0f51121ec08c5b14b5f5e638e0244dd002b473cafde15ee0f19a52a19597bf5e",
+        "bytes": 12743,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src-tauri/src/lib.rs",
+        "sha256": "a5543af825b4dd278f8fd7b53f22190c90ebfc8d436414d0b14f4a385c9d5f72",
+        "bytes": 30398,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src-tauri/src/settings/validate.rs",
+        "sha256": "e24c044bcd53405df27e2f784235afadce5f5a138f19bc97c1aa122b8946e8bb",
+        "bytes": 5934,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src-tauri/src/workspace/mod.rs",
+        "sha256": "4f9d6bea7998b10a6adbdbbb87dbda76f9574de913b007f0d13ae937e80c1bc3",
+        "bytes": 34250,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      },
+      {
+        "path": "src-tauri/src/workspace/naming.rs",
+        "sha256": "23ed6b387df42984a0e51d15dd9df2d3a8edff432b2ef28b0535ff2cd84110db",
+        "bytes": 4351,
+        "matches_fdcb_preparation": true,
+        "matches_checkout": true
+      }
+    ],
+    "retained_reference_spans": [
+      {
+        "path": "evidence/settings/custom-prefix/reference/Joi.txt",
+        "sha256": "9400ed2135c1563a622cc2167b36240572eafbce087a49df8ff9207971746874",
+        "bytes": 208,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/nIn.txt",
+        "sha256": "95e982ba1d991a1404db4dde4f1e6c1ced0d66007e3b295f9378a96cc3915361",
+        "bytes": 64,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/Pga.txt",
+        "sha256": "577ecb1265b4c3745a64a8eed5ba67237e0e91648f660d9b17fa9f8c14590a31",
+        "bytes": 71,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/E6t.txt",
+        "sha256": "c25e06bbd9b563c5d32d65740bf1b88b5e0aef56271bca2df08a3593cd7d5822",
+        "bytes": 69,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/A6t.txt",
+        "sha256": "f9f8714be2b00001704dabbfd84ffad2ef46fac2576b662f49488c44373dd1bd",
+        "bytes": 71,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/C2.txt",
+        "sha256": "82a863084d02ea5f64a1cb6da7faf25e77351f218431f3ecc6d9c053a5a429cc",
+        "bytes": 295,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/$Wt.txt",
+        "sha256": "5f2a3040900ebda989278d778b0907b6c3a341e64452c10f9718b566261701d3",
+        "bytes": 821,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/row-branch_prefix_type.txt",
+        "sha256": "ade75753f7efe5c4854fbe526777b973f8d400b136c7015ab438b96c151650a3",
+        "bytes": 1500,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/prefix-custom-import.txt",
+        "sha256": "3338282a1434e181b3581b52d1007a48286fcc38ef1d256743f2f430106c386f",
+        "bytes": 9,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/prefix-type-import.txt",
+        "sha256": "4eac9c11facdc2d409f3e750f5ac69765f8482295ed3838bbe26bbe76ce4de58",
+        "bytes": 9,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/prefix-custom-export.txt",
+        "sha256": "baa0a56e0b6d6c70c65e5d520d6951b8fac62421ad0005e0d49a4af7a49b1e7b",
+        "bytes": 9,
+        "matches_sealed": true
+      },
+      {
+        "path": "evidence/settings/custom-prefix/reference/prefix-type-export.txt",
+        "sha256": "f89725ae758131ccff91fc0564c56ee30d46fb7206c3735c393759cf6a7b5ec7",
+        "bytes": 9,
+        "matches_sealed": true
+      }
+    ],
+    "frozen_fixtures": [
+      {
+        "path": "src/settings/customPrefix.test.ts",
+        "sha256": "8b04f0fbe90ddd1d241ff2e0495263193868f27f2e4fc2c5df7e389c503b3d30",
+        "bytes": 1699
+      },
+      {
+        "path": "src/settings/customPrefixInput.test.ts",
+        "sha256": "7e378f757d7838440955733c9d1d9b907a64fd6a80b03b26768f5e7201f45e26",
+        "bytes": 4610
+      },
+      {
+        "path": "evidence/settings/custom-prefix/fixture/prefix.rs",
+        "sha256": "64eb03864e32c7d4108f133cc45366c9886f0edf47dd672f3d6cd9980a5ada0c",
+        "bytes": 355
+      }
+    ],
+    "candidate_pins": [
+      {
+        "path": "src/settings/customPrefixDotDelimiterV2.test.ts",
+        "sha256": "8c6bbd962eb12b2fd45f5d525003d61b17c87d9683db5f2258ad7600b02c046e",
+        "bytes": 7119
+      },
+      {
+        "path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/customPrefixDotDelimiter.test.ts.txt",
+        "sha256": "8323215cfdfb705889d4f1e419c166652dfebe97e94421bab4340b535da2e5e9",
+        "bytes": 6883
+      },
+      {
+        "path": "evidence/settings/custom-prefix/dot-delimiter/backend/harness.rs",
+        "sha256": "92bcfae25ee96df34a6687b450e84b4690800b3b0eaa4104c645f9e1386579ef",
+        "bytes": 2858
+      },
+      {
+        "path": "evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+        "sha256": "e5ba2cba5878e85564af9f5c0ff97281528356747f26dacceed8ddc31d5c2253",
+        "bytes": 453
+      }
+    ],
+    "extra_pins": [
+      {
+        "path": "src/settings/model.test.ts",
+        "sha256": "3de6ef64039190449ab2c527893a71854a9bf3f9b706dcdaa36910251261b0d2",
+        "bytes": 2984,
+        "matches_remote_main": true
+      },
+      {
+        "path": "package.json",
+        "sha256": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+        "bytes": 1940,
+        "matches_remote_main": true
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+        "bytes": 222137,
+        "matches_remote_main": true
+      }
+    ],
+    "node_modules_present": false,
+    "backend_lock_present": false
+  },
+  "qualification_limits": [
+    "Remote main was fetched/read, not merged into the assigned checkout this turn. All 25 recorded source files and extra model.test/package pins match actual checked remote main; unrelated commits are not runtime-qualified.",
+    "Actual GitPage onChange on checked main remains setCustom(e.target.value); sanitizer is planned, not merged. Re-read containing main and all touched boundaries again at direct ACC eligibility.",
+    "Only file reads, git/source comparisons, hashes and evidence packaging occurred. No install, app/test runtime, Cargo, typecheck, CPU preflight, native UI, provider or package operation."
+  ],
+  "original_new10": {
+    "attachment_id": "8b7decc6-c8f8-4eb0-af7a-2ec8948419ed",
+    "sha256": "7d26f874da43b677f434acde0b8c87ccf86111142e51f0cad7bd5b60d7ab9f00",
+    "original_path": "src/settings/customPrefixDotDelimiter.test.ts",
+    "preserved_path": "evidence/settings/custom-prefix/dot-delimiter/original-new10/customPrefixDotDelimiter.test.ts.txt",
+    "fixture_sha256": "8323215cfdfb705889d4f1e419c166652dfebe97e94421bab4340b535da2e5e9",
+    "original_readme_and_manifest_preserved": true
+  },
+  "assertion_mapping": [
+    {
+      "old": "single terminal dot is a custom delimiter in validation and preview",
+      "new": "same test and assertions unchanged"
+    },
+    {
+      "old": "mounted Git Settings commits team. once and creates team.tokyo",
+      "new": "same test and assertions unchanged; real component/model/naming/createFlow, only username/save boundaries fake"
+    },
+    {
+      "input": "",
+      "old": "raw branchPrefixError(input) != null; branchPrefixError(normalizeCustomPrefix(input)) != null; mounted raw input invalid/no write",
+      "new_pure": "both raw/error assertions preserved exactly in independent pure test",
+      "new_mounted": "all mounted assertions retained in independent stable-input test; exact field value assertion added",
+      "planned_sanitized_value": ""
+    },
+    {
+      "input": ".team",
+      "old": "raw branchPrefixError(input) != null; branchPrefixError(normalizeCustomPrefix(input)) != null; mounted raw input invalid/no write",
+      "new_pure": "both raw/error assertions preserved exactly in independent pure test",
+      "new_mounted": "raw onChange preservation assertion removed because independent sanitizer intentionally transforms it; pure invalid-input guards remain",
+      "planned_sanitized_value": "team"
+    },
+    {
+      "input": "team..",
+      "old": "raw branchPrefixError(input) != null; branchPrefixError(normalizeCustomPrefix(input)) != null; mounted raw input invalid/no write",
+      "new_pure": "both raw/error assertions preserved exactly in independent pure test",
+      "new_mounted": "raw onChange preservation assertion removed because independent sanitizer intentionally transforms it; pure invalid-input guards remain",
+      "planned_sanitized_value": "team."
+    },
+    {
+      "input": "team space",
+      "old": "raw branchPrefixError(input) != null; branchPrefixError(normalizeCustomPrefix(input)) != null; mounted raw input invalid/no write",
+      "new_pure": "both raw/error assertions preserved exactly in independent pure test",
+      "new_mounted": "raw onChange preservation assertion removed because independent sanitizer intentionally transforms it; pure invalid-input guards remain",
+      "planned_sanitized_value": "teamspace"
+    },
+    {
+      "input": "team.lock",
+      "old": "raw branchPrefixError(input) != null; branchPrefixError(normalizeCustomPrefix(input)) != null; mounted raw input invalid/no write",
+      "new_pure": "both raw/error assertions preserved exactly in independent pure test",
+      "new_mounted": "all mounted assertions retained in independent stable-input test; exact field value assertion added",
+      "planned_sanitized_value": "team.lock"
+    },
+    {
+      "input": "team./",
+      "old": "raw branchPrefixError(input) != null; branchPrefixError(normalizeCustomPrefix(input)) != null; mounted raw input invalid/no write",
+      "new_pure": "both raw/error assertions preserved exactly in independent pure test",
+      "new_mounted": "all mounted assertions retained in independent stable-input test; exact field value assertion added",
+      "planned_sanitized_value": "team./"
+    },
+    {
+      "input": "team@{branch",
+      "old": "raw branchPrefixError(input) != null; branchPrefixError(normalizeCustomPrefix(input)) != null; mounted raw input invalid/no write",
+      "new_pure": "both raw/error assertions preserved exactly in independent pure test",
+      "new_mounted": "raw onChange preservation assertion removed because independent sanitizer intentionally transforms it; pure invalid-input guards remain",
+      "planned_sanitized_value": "teambranch"
+    },
+    {
+      "old": "GitHub and None still select their own prefixes without changing the custom value",
+      "new": "same test and assertions unchanged"
+    }
+  ],
+  "literal_source_joins": {
+    "Joi": "function Joi(t){return t.replace(/[\\p{Cc} ~^:?*[\\\\\\s]/gu,\"\").replace(/@\\{/g,\"\").replace(/\\.{2,}/g,\".\").replace(/^[.-]+/,\"\").replace(/\\/\\.+/g,\"/\").replace(/\\/{2,}/g,\"/\").replace(/^\\/+/,\"\")}const OIr=/[/_.-]$/;",
+    "GitPage_onChange": "onChange={(e) => setCustom(e.target.value)}",
+    "GitPage_customError": "const customError = type === \"custom\" ? branchPrefixError(normalizeCustomPrefix(custom)) : null;",
+    "GitPage_commitCustom": "  const commitCustom = () => {\n    const value = normalizeCustomPrefix(custom);\n    if (branchPrefixError(value) !== null) return;\n    if (git.branch_prefix_type === \"custom\" && value === (git.branch_prefix ?? \"\")) return;\n    save(withCustom(value));\n  };\n\n",
+    "frontend_validator": "export function branchPrefixError(prefix: string): string | null {\n  const p = prefix.trim();\n  if (p === \"\") return \"Enter a prefix.\";\n  const bad =\n    /^[./-]/.test(p) ||\n    /[./]$/.test(p) ||\n    p.endsWith(\".lock\") ||\n    p.includes(\"..\") ||\n    p.includes(\"//\") ||\n    p.includes(\"@{\") ||\n    /[\\u0000-\\u001f\\u007f-\\u009f ~^:?*[\\\\]/.test(p);\n  return bad ? \"Use letters, numbers, - and /; no spaces, \\\"..\\\", or a trailing . or .lock.\" : null;\n}\n\n",
+    "frontend_normalize": "export const normalizeCustomPrefix = (v: string): string => v.trim().replace(/\\/+$/, \"\");",
+    "rust_validator": "fn valid_branch_prefix(p: &str) -> bool {\n    let p = p.strip_suffix('/').unwrap_or(p);\n    !p.is_empty()\n        && !p.starts_with(['.', '/', '-'])\n        && !p.ends_with(['.', '/'])\n        && !p.ends_with(\".lock\")\n        && !p.contains(\"..\")\n        && !p.contains(\"//\")\n        && !p.contains(\"@{\")\n        && !p.chars().any(|c| c.is_control() || \" ~^:?*[\\\\\".contains(c))\n}\n\n",
+    "frontend_naming": "return prefix && !/[/_.-]$/.test(prefix) ? `${prefix}/` : prefix;",
+    "rust_naming": "Some(p) if p.ends_with(['_', '.', '-']) => format!(\"{p}{name}\"),"
+  },
+  "owners": {
+    "DOT": "SAMEc18 model.ts branchPrefixError/normalizeCustomPrefix + Rust valid_branch_prefix + obsolete model.test a. expectation only; GitPage unchanged",
+    "sanitizer": "SAMEa975 exported pure sanitizeCustomPrefixInput after imports/before Props and onChange only; no model/commit/blur/Enter/Rust",
+    "ledger_hunk_receipt": "4d46d46c-e9c5-4381-891f-4c0b58fc066a; latest NEW13 source mapping receipt requested with frozen bytes",
+    "root_source_reconciliation": "86871aa6-9206-4089-95d4-6ec738512113",
+    "sanitizer_source_receipt": "ced460cd-d39d-4b23-b459-e6bf1031947c"
+  },
+  "predictions_not_results": {
+    "frontend_RED": {
+      "intended_fail": 2,
+      "passing_controls": 11,
+      "total": 13
+    },
+    "frontend_GREEN": {
+      "pass": 13,
+      "fail": 0
+    },
+    "rust_RED": {
+      "intended_fail": 1,
+      "passing_controls": 2,
+      "total": 3
+    },
+    "rust_GREEN": {
+      "pass": 3,
+      "fail": 0
+    }
+  },
+  "execution_request": {
+    "computer": "Cloud352 00637189-5c55-416e-b457-ed7419fb739a",
+    "queue": "Existing c18 ordinary tail after M11; no row/priority/grant change",
+    "commands": [
+      {
+        "command": "npm ci --ignore-scripts --no-audit --no-fund",
+        "timeout_seconds": 120
+      },
+      {
+        "command": "node --test --test-reporter=tap src/settings/customPrefixDotDelimiterV2.test.ts",
+        "phases": [
+          "RED",
+          "identical GREEN"
+        ],
+        "timeout_seconds_each": 120
+      },
+      {
+        "command": "node --test src/settings/customPrefix.test.ts src/settings/customPrefixInput.test.ts src/settings/model.test.ts",
+        "timeout_seconds": 120
+      },
+      {
+        "command": "npm run typecheck",
+        "timeout_seconds": 120
+      }
+    ],
+    "rust_separate": [
+      {
+        "command": "cargo generate-lockfile --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+        "timeout_seconds": 60
+      },
+      {
+        "command": "cargo fetch --locked --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+        "timeout_seconds": 120
+      },
+      {
+        "command": "CARGO_BUILD_JOBS=1 CARGO_TARGET_DIR=e2e-artifacts/dot-prefix-c18/rust-target cargo test --locked --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml dot_prefix_ -- --nocapture",
+        "phases": [
+          "RED",
+          "identical GREEN"
+        ],
+        "timeout_seconds_each": 120
+      }
+    ],
+    "admission": "NONE; no commands in this execution_request ran; no resource sampling. Stop on unexpected failure/timeout/resource warning/target change; no retry."
+  },
+  "remaining_limits": [
+    "No original whole assets available; retained REA spans only. No extracted app JavaScript executed.",
+    "Original REA renderer semantic-analysis heap-exhaustion gap persists. Native setting/storage acceptance, real Git creation and side-by-side UI NOT_RUN.",
+    "No package/release-cut expansion; frozen39c unchanged; outside current992 cut."
+  ]
+}

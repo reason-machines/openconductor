@@ -480,8 +480,8 @@ function AddMenu({ hint, planHint, planMode, onAddAttachment, onLinkWorkspaces }
             <PlusIcon size={16} /><span className="oc-menu-item-label">Link workspaces</span>
           </button> : null}
           {planMode ? <button type="button" role="menuitem" className="oc-menu-item" disabled={planMode.disabled} title={planMode.disabled ? "Wait for the current Claude Code turn to end" : undefined} onClick={() => { setOpen(false); planMode.onToggle(); }}>
-            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M9 12l3 3L22 5" /></svg>
-            <span className="oc-menu-item-label">{planMode.isPlanMode ? "Exit plan mode" : "Plan mode"}</span>
+            <svg className={planMode.isPlanMode ? "oc-plan-active" : undefined} width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M9 12l3 3L22 5" /></svg>
+            <span className={`oc-menu-item-label${planMode.isPlanMode ? " oc-plan-active" : ""}`}>{planMode.isPlanMode ? "Exit plan mode" : "Plan mode"}</span>
             <span className="oc-kbd-hint">{planHint}</span>
           </button> : null}
         </div>

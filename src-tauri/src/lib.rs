@@ -486,6 +486,7 @@ pub fn run() {
             diff::comment_commands::diff_comment_delete,
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
+            diff::comment_commands::diff_comments_mark_reviewed,
             turn_checkpoint_commands::checkpoint_turn_changes,
             diff::comment_commands::diff_comments_sync_github,
             diff::comment_commands::diff_comment_resolve_github,

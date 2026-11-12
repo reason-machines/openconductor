@@ -14,7 +14,7 @@
 // checkpoints never mix with the workspace's Reason chat, while its status
 // still counts toward the workspace's (state/workspaceSessions.ts).
 
-import { invoke, isTauri } from "@tauri-apps/api/core";
+import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyReasonPayload, permissionPrompt, type ReasonPayload } from "./reason.ts";
 import { createChatRuntime, type ChatBackend } from "./chatRuntime.ts";
@@ -60,10 +60,12 @@ export const claudeBackend: ChatBackend<null> = {
   // After Reset chat deleted turns, the runtime opens a new Claude session
   // and the first attachment is the kept conversation ("Earlier
   // conversation.md"), so it reaches Claude the same way.
-  async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath, workspaceId }) {
+  async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath, workspaceId, onHandoff }) {
     const withPrefs = firstMessage && repoPath ? await withGeneral(text, repoPath, cwd) : text;
     const options = localModelOptions(chatId.replace(/:claude$/, ""), "claude");
-    return invoke("claude_prompt", { chatId, text: withAttachments(withPrefs, attachments), turn, workspaceId, options });
+    const handoff = new Channel<null>();
+    handoff.onmessage = () => onHandoff?.();
+    return invoke("claude_prompt", { chatId, text: withAttachments(withPrefs, attachments), turn, workspaceId, options, onHandoff: handoff });
   },
   // The backend tells a first Stop from a second (interrupt, then kill).
   cancel(chatId) {

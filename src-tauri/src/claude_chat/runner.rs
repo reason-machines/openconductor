@@ -180,6 +180,17 @@ impl ClaudeRunner {
         directories: &[PathBuf],
         options: &ChatOptions,
     ) -> TurnEnd {
+        self.prompt_with_handoff(chat_id, text, directories, options, None)
+    }
+
+    pub fn prompt_with_handoff(
+        &self,
+        chat_id: &str,
+        text: &str,
+        directories: &[PathBuf],
+        options: &ChatOptions,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
+    ) -> TurnEnd {
         let rx = {
             let mut chats = self.chats.lock().unwrap();
             let Some(chat) = chats.get_mut(chat_id) else {
@@ -210,6 +221,9 @@ impl ClaudeRunner {
                     chat_id,
                     format!("Could not send the message to Claude Code: {e}"),
                 );
+            }
+            if let Some(on_handoff) = on_handoff {
+                on_handoff();
             }
             rx
         };

@@ -574,7 +574,7 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
       );
     }
     default:
-      return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
+      return <MoreRows {...{ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
   }
 }
 
@@ -869,11 +869,10 @@ function ScheduleWakeupRow({ tool, status, result, resultCreatedAt, now = Date.n
   );
 }
 
-function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
+function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const kind = toolKind(name);
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
-  const output = isError ? undefined : result;
   const framed = (text: string | undefined) => (text ? text : undefined);
   switch (kind) {
     case "bash-output": {
@@ -1153,7 +1152,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       return <RowShell {...shell} left={<span>Workspace diff</span>} right={<span className="oc-tool-count">{target}</span>} content={framed(result)} />;
     }
     case "get-terminal-output": {
-      const { text, note: where } = terminalOutput(input, result);
+      const { text, note: where } = terminalOutput(input, result, rawResult);
       return <RowShell {...shell} left={<span>Get terminal output</span>} right={where ? <span className="oc-tool-count">{where}</span> : undefined} content={framed(text)} />;
     }
     case "schedule-wakeup":
@@ -1200,7 +1199,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
     case "codex-collab":
       return <CollabRow name={name} input={input} result={result} isError={isError} />;
     case "sub-agent":
-      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={output} />;
+      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} />;
       if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
       return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
     default:
