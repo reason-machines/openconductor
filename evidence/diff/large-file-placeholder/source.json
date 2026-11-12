@@ -181,7 +181,7 @@
   },
   "fixtures": {
     "evidence/diff/large-file-placeholder/cases.json": "4746c6cc86d8961e52eaa65aafa171ff5958e0f97549ade86833d23d633b8b0f",
-    "src-tauri/src/diff/large_file_tests.rs": "c8899ca3cf9cd6c4d305d5e3d9a896d9bd1625e9ebb91214ae5f3dfd27760573",
+    "src-tauri/src/diff/large_file_tests.rs": "8eeb9b8527632a2ed4391ec37ed9e3b716d53f3dd24f8a3fd785b86ab363d454",
     "tests/diff/largeFilePlaceholder.mounted.test.mjs": "3fc448a1f7302ba75bb3e49b334037b11d6be1099b62965cb639e281dd75c4b9"
   },
   "source_contract": {

@@ -86,7 +86,10 @@ fn check(name: &str) {
         case.changed_lines
     );
     if case.hidden {
-        assert!(file.hunks.is_empty(), "Hidden content must not reach CodeView");
+        assert!(
+            file.hunks.is_empty(),
+            "Hidden content must not reach CodeView"
+        );
     } else if !case.binary {
         assert!(!file.hunks.is_empty(), "Allowed text must keep its hunks");
     }

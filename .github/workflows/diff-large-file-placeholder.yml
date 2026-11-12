@@ -24,9 +24,6 @@ jobs:
   producer-renderer:
     name: Large-file backend DTO + mounted renderer
     runs-on: ubuntu-latest
-    env:
-      DIFF_HARNESS_DIR: ${{ runner.temp }}/large-file-harness
-      DIFF_PLACEHOLDER_DTOS: ${{ runner.temp }}/large-file-proof/dtos
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -42,12 +39,17 @@ jobs:
       - name: Real tracked-file backend cases
         id: backend
         continue-on-error: true
+        env:
+          DIFF_HARNESS_DIR: ${{ runner.temp }}/large-file-harness
+          DIFF_PLACEHOLDER_DTOS: ${{ runner.temp }}/large-file-proof/dtos
         run: |
           mkdir -p "$RUNNER_TEMP/large-file-proof"
           bash tools/diff/run-rust-tests.sh large_file_placeholder -- --nocapture 2>&1 | tee "$RUNNER_TEMP/large-file-proof/backend.log"
       - name: Mount actual backend DTOs
         id: renderer
         continue-on-error: true
+        env:
+          DIFF_PLACEHOLDER_DTOS: ${{ runner.temp }}/large-file-proof/dtos
         run: |
           node --experimental-strip-types --test tests/diff/largeFilePlaceholder.mounted.test.mjs 2>&1 | tee "$RUNNER_TEMP/large-file-proof/renderer.log"
       - name: Preserve producer and renderer proof
