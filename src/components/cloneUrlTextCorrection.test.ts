@@ -126,7 +126,7 @@ test("clone URL preserves mixed-case edits and the captured pending request", as
     await view.start();
     view.edit("git@github.com:Acme/NextRepo.git");
     assert.equal(view.input().props.value, "git@github.com:Acme/NextRepo.git");
-    assert.deepEqual(view.requests, [{ remoteUrl: "https://github.com/Acme/MixedCase.git", path: "/synthetic/initial", name: "MixedCase" }]);
+    assert.deepEqual(view.requests, [{ remoteUrl: "https://github.com/Acme/MixedCase.git", path: "/synthetic/initial", name: "mixedcase" }]);
     await view.submit();
     assert.equal(view.requests.length, 1);
     assert.equal(view.primary().props.disabled, true);

@@ -1,0 +1,28 @@
+{
+  "status": "QUALIFIED_INTENDED_RED",
+  "head": "dc06e502bbddb9e4036926a78bc076e2c56943ea",
+  "workflow": 43142862706,
+  "job": 130933738756,
+  "artifact": 13911105068,
+  "artifact_digest": "sha256:f8b434b2ccfe65533cfca1e46474765580973b9f651231be05001db0fc69d840",
+  "command": "bash tools/diff/run-rust-tests.sh large_file_placeholder -- --nocapture",
+  "historical_failed": [
+    "five_mib_plus_one_sparse",
+    "one_mib_plus_one_dense",
+    "six_mib_new_missing_worktree",
+    "six_mib_old_small_new"
+  ],
+  "historical_controls_passed": [
+    "one_mib_dense",
+    "five_mib_sparse",
+    "six_mib_binary",
+    "small_text"
+  ],
+  "existing_worktree_passed": 8,
+  "failure": "Four hide_reason assertions observed None rather than Some(\"file_too_large\"). All prior path/count/status/binary checks were reached and passed.",
+  "log_sha256": "c89841549ed7b1f0d4e69b1117c7516884c9389d680991c6ba99ae429090f8e3",
+  "fixture_initial_sha256": "b1bd74f5ab172285d054e4bd22377cad442a9e14901b15191542404d30f293d8",
+  "formatting_only_after_red": "Initial tested fixture retained as fixture-initial.rs.txt; two hosted rustfmt layout corrections preserve assertions and values.",
+  "green": "PENDING",
+  "native": "NOT_RUN"
+}

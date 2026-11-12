@@ -8,6 +8,8 @@ on:
       - 'tools/test_native_qa_vm_signing.py'
       - 'tools/native_qa_vm_receipt.py'
       - 'tools/test_native_qa_vm_receipt.py'
+      - 'tools/native_qa_vm_github.py'
+      - 'tools/test_native_qa_vm_github.py'
       - 'scripts/package-native-qa-vm-runner.sh'
       - '.github/workflows/native-qa-vm-runner.yml'
   push:
@@ -18,6 +20,8 @@ on:
       - 'tools/test_native_qa_vm_signing.py'
       - 'tools/native_qa_vm_receipt.py'
       - 'tools/test_native_qa_vm_receipt.py'
+      - 'tools/native_qa_vm_github.py'
+      - 'tools/test_native_qa_vm_github.py'
       - 'scripts/package-native-qa-vm-runner.sh'
       - '.github/workflows/native-qa-vm-runner.yml'
 
@@ -45,7 +49,7 @@ jobs:
             native-qa-vm-runner/Profile.c native-qa-vm-runner/ProfileTests.c \
             -o "${RUNNER_TEMP}/vm-profile-tests"
           "${RUNNER_TEMP}/vm-profile-tests"
-          python3 -W error::ResourceWarning -m unittest tools.test_native_qa_vm_signing tools.test_native_qa_vm_receipt -v
+          python3 -W error::ResourceWarning -m unittest tools.test_native_qa_vm_signing tools.test_native_qa_vm_receipt tools.test_native_qa_vm_github -v
   compile-sign:
     needs: portable
     name: VM runner compile and signature readback (no execution)
