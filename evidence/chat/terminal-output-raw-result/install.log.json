@@ -1,0 +1,5 @@
+{
+  "encoding": "UTF-8",
+  "sha256": "61810af9f5909edd867c015dc260dae7e55f4cd2c3bde561fe51a85dfad8ec5a",
+  "output": "(node:80) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --trace-warnings ...` to show where the warning was created)\n\nadded 394 packages in 10s\n"
+}

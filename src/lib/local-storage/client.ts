@@ -5,6 +5,8 @@
 // Values cross as JSON text, so sizes are the byte length of
 // JSON.stringify, as in the reference.
 
+import { WriteBarrier } from "../persistence/owner.ts";
+import { registerPersistenceOwner } from "../persistence/restartPersistence.ts";
 import type { Subsystem } from "./subsystems.ts";
 
 export type SetEntryFailure = "entryTooLarge" | "subsystemFull" | "entryStorageMismatch" | "notJsonSerializable";
@@ -26,10 +28,14 @@ type RawListed = EntryMeta & { content: string };
 
 export class LocalStorageClient {
   private readonly call: Invoke;
+  private readonly writes = new WriteBarrier();
 
   constructor(call: Invoke) {
     this.call = call;
+    registerPersistenceOwner(this.writes);
   }
+
+  drain(): Promise<void> { return this.writes.drain(); }
 
   /** The entry's value, or undefined when the subsystem does not list it. */
   async getEntry<T = unknown>({ subsystem, id }: { subsystem: string; id: string }): Promise<T | undefined> {
@@ -38,14 +44,17 @@ export class LocalStorageClient {
   }
 
   async setEntry({ content, ...rest }: SetEntryArgs): Promise<SetEntryResult> {
+    const acknowledgment = this.writes.begin(`${rest.subsystem}:${rest.id}`);
     let text: string | undefined;
+    try { text = JSON.stringify(content); } catch { /* Report the ordinary serialization result below. */ }
     try {
-      text = JSON.stringify(content);
-    } catch {
-      return { success: false, reason: "notJsonSerializable" };
-    }
-    if (typeof text !== "string") return { success: false, reason: "notJsonSerializable" };
-    return this.call<SetEntryResult>("local_storage_set_entry", { args: { ...rest, content: text } });
+      const result: SetEntryResult = typeof text === "string"
+        ? await this.call<SetEntryResult>("local_storage_set_entry", { args: { ...rest, content: text } })
+        : { success: false, reason: "notJsonSerializable" };
+      if (result.success) acknowledgment.succeed();
+      else acknowledgment.fail(new Error(`Local storage write refused: ${result.reason}`));
+      return result;
+    } catch (error) { acknowledgment.fail(error); throw error; }
   }
 
   async listEntries<T = unknown>(subsystem: string): Promise<ListedEntry<T>[]> {
@@ -54,11 +63,11 @@ export class LocalStorageClient {
   }
 
   async removeEntry({ subsystem, id }: { subsystem: string; id: string }): Promise<void> {
-    await this.call("local_storage_remove_entry", { args: { subsystem, id } });
+    await this.writes.run(() => this.call("local_storage_remove_entry", { args: { subsystem, id } }), undefined, `${subsystem}:${id}`);
   }
 
   async removeSubsystem(subsystem: string): Promise<void> {
-    await this.call("local_storage_remove_subsystem", { args: { subsystem } });
+    await this.writes.run(() => this.call("local_storage_remove_subsystem", { args: { subsystem } }), undefined, `${subsystem}:*`);
   }
 }
 

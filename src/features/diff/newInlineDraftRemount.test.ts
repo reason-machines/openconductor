@@ -7,6 +7,7 @@ import { resolve } from "node:path";
 import { test } from "node:test";
 import { runInNewContext } from "node:vm";
 import * as comments from "./comments.ts";
+import { subscribeReviewComments } from "./commentStore.ts";
 import * as navigation from "./nav.ts";
 import type { useReviewComments } from "./ReviewComments.tsx";
 import type { LineRange } from "./FileDiffView.tsx";
@@ -60,6 +61,7 @@ async function fixture() {
       },
     },
     "./comments.ts": comments,
+    "./commentStore.ts": { subscribeReviewComments },
     "./commentMarkdown.ts": { CommentMarkdown: unexpected },
     "../chat/chat.css": {}, "./comments-github.css": {},
     "./FileDiffView": { revealLine: unexpected },

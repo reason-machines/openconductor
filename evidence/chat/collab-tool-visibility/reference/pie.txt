@@ -1,0 +1,1 @@
+function pie(t){const e=na(t),s=new Set,n=new Set;let r=0;for(const i of e)Fa(i)&&(r++,s.add(i.name),n.add(i.id));return{toolCallsCount:r,toolNames:s,toolUseIds:n}}

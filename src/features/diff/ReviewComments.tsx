@@ -25,6 +25,7 @@ import {
   commentSource,
   commentTags,
   fileThreads,
+  fileCommentCounts,
   isRemoteThread,
   newLocalComment,
   hasPendingComments,
@@ -41,7 +42,7 @@ import {
 } from "./comments.ts";
 import type { ComposerAttach } from "./chatAttachment.ts";
 import { CommentMarkdown } from "./commentMarkdown.ts";
-import type { GithubSyncReport } from "./commentStore.ts";
+import { subscribeReviewComments, type GithubSyncReport } from "./commentStore.ts";
 import "../chat/chat.css";
 import "./comments-github.css";
 import { revealLine, type LineAnchor, type LineRange } from "./FileDiffView";
@@ -366,6 +367,7 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const [stored, setStored] = useState<DiffComment[]>([]);
   const [files, setFiles] = useState<FileDiff[]>([]);
   const [newDrafts, setComposing] = useState<Composing[]>([]);
+  const submittingDrafts = useRef(new Set<string>());
   const composing = newDrafts.filter((draft) => draft.workspaceId === workspaceId);
   const [focused, setFocused] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -378,6 +380,8 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
     setFocused(null);
     void reload();
   }, [reload]);
+
+  useEffect(() => subscribeReviewComments(workspaceId, () => { void reload(); }), [workspaceId, reload]);
 
   // Pull the PR's GitHub comments when the workspace opens and every couple of minutes after.
   useEffect(() => {
@@ -417,16 +421,14 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
 
   const comments = useMemo(() => refreshOutdated(stored, files), [stored, files]);
   const threads = useMemo(() => threadsOf(comments), [comments]);
-  const ready = pendingForAgent(comments);
+  const ready = pendingForAgent(comments).filter((comment) => !chat.commentIds?.has(comment.id));
+  const commentCounts = useMemo(() => fileCommentCounts(stored), [stored]);
 
   // One attachment per comment, as Conductor's addReviewCommentToComposer does.
   const toChat = (cs: DiffComment[]) => {
     if (cs.length === 0) return Promise.resolve(false);
-    for (const c of cs) chat.attach(commentAttachment(c));
-    return run(store.markSent(cs.map((c) => c.id))).then((ok) => {
-      if (!ok) notify?.("error", cs.length === 1 ? "Failed to add comment to chat" : "Failed to add comments to chat");
-      return ok;
-    });
+    for (const c of cs) if (!chat.commentIds?.has(c.id)) chat.attach(commentAttachment(c));
+    return Promise.resolve(true);
   };
 
   const resolveOnGithub = store.resolveOnGithub;
@@ -449,7 +451,10 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
           }),
         ),
       ),
-    edit: (c, body) => run(store.edit(c.id, body)),
+    edit: (c, body) => run(store.edit(c.id, body).catch((e: unknown) => {
+      notify?.("error", `Failed to save comment: ${e instanceof Error ? e.message : String(e)}`);
+      throw e;
+    })),
     remove: (c) => run(store.remove(c.id)),
     resolve: (t, resolved) => run(store.resolve(threadKey(t.root), resolved)),
     // Conductor: "Comment resolved on GitHub", or "Failed to resolve comment: <reason>".
@@ -548,11 +553,16 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
             placeholder="Leave a comment for the agent…"
             submitLabel="Comment"
             onCancel={() => discardNewDraft(draft)}
-            onSubmit={(body) =>
-              void run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() }))).then(
-                (ok) => ok && discardNewDraft(draft),
-              )
-            }
+            onSubmit={async (body) => {
+              if (submittingDrafts.current.has(draft.id)) return;
+              submittingDrafts.current.add(draft.id);
+              try {
+                const ok = await run(store.add(newLocalComment({ id: crypto.randomUUID(), workspaceId, filePath: file.path, side: anchor.side, start: draft.start, end: anchor.line, body, now: Date.now() })));
+                if (ok) discardNewDraft(draft);
+              } finally {
+                submittingDrafts.current.delete(draft.id);
+              }
+            }}
           />
         )}
       </div>
@@ -625,5 +635,5 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
   const hasPending = hasPendingComments(comments);
   const addAllToChat = () => void toChat(ready);
 
-  return { onLineClick, commentRange, anchors, annotations, persistAnchors, notes, actions, onLoaded, hasPending, addAllToChat };
+  return { onLineClick, commentRange, anchors, annotations, persistAnchors, notes, actions, onLoaded, hasPending, addAllToChat, commentCounts };
 }

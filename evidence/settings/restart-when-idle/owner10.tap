@@ -1,0 +1,46 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# node:internal/modules/run_main:123
+#     triggerUncaughtException(
+#     ^
+# file:///home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/src/lib/persistence/owner.ts:18
+#   constructor(private prepare: () => void = () => {}) {}
+#                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# SyntaxError [ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX]: TypeScript parameter property is not supported in strip-only mode
+#     at parseTypeScript (node:internal/modules/typescript:63:40)
+#     at processTypeScriptCode (node:internal/modules/typescript:133:42)
+#     at stripTypeScriptModuleTypes (node:internal/modules/typescript:163:10)
+#     at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:660:29)
+#     at \#translate (node:internal/modules/esm/loader:559:20)
+#     at afterLoad (node:internal/modules/esm/loader:612:29)
+#     at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:617:12)
+#     at \#createModuleJob (node:internal/modules/esm/loader:640:36)
+#     at \#getJobFromResolveResult (node:internal/modules/esm/loader:353:34)
+#     at ModuleLoader.getModuleJobForImport (node:internal/modules/esm/loader:321:41) {
+#   code: 'ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX'
+# }
+# Node.js v22.23.4
+# Subtest: e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/ownerDrain.test.ts
+not ok 1 - e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/ownerDrain.test.ts
+  ---
+  duration_ms: 209.239869
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/49e3976d-9553-42d8-8101-2504177fbb97/repo/e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/ownerDrain.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 219.209928

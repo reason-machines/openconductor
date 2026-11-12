@@ -1,0 +1,223 @@
+{
+  "head": "8549d4790f69d0b3b9a76990836e96f30a6d87a3",
+  "check_run_id": 131285731506,
+  "check_url": "https://github.com/reason-machines/openconductor/actions/runs/43247984831/job/131285731506",
+  "typecheck": "PASS",
+  "test_summary": {
+    "tests": 3814,
+    "passed": 3764,
+    "failed": 50
+  },
+  "classification": "Fixture bootstrap failures, not business-assertion RED. The strict VM loaders do not bind ReviewComments new commentStore.ts value import.",
+  "log": {
+    "available": true,
+    "text": null,
+    "original_chars": 1710932,
+    "reason": null,
+    "total_lines": 24570,
+    "match_count": 50,
+    "matches": [
+      {
+        "line": 11236,
+        "text": "2026-11-12T15:29:00.8667756Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11259,
+        "text": "2026-11-12T15:29:00.8717701Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11284,
+        "text": "2026-11-12T15:29:00.8727827Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11309,
+        "text": "2026-11-12T15:29:00.8748689Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11334,
+        "text": "2026-11-12T15:29:00.8758829Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11359,
+        "text": "2026-11-12T15:29:00.8792853Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11384,
+        "text": "2026-11-12T15:29:00.8799931Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11409,
+        "text": "2026-11-12T15:29:00.8804703Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11434,
+        "text": "2026-11-12T15:29:00.8809190Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11459,
+        "text": "2026-11-12T15:29:00.8814246Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11484,
+        "text": "2026-11-12T15:29:00.8818954Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11509,
+        "text": "2026-11-12T15:29:00.8823982Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11534,
+        "text": "2026-11-12T15:29:00.8828676Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11559,
+        "text": "2026-11-12T15:29:00.8833597Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11584,
+        "text": "2026-11-12T15:29:00.8838067Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11609,
+        "text": "2026-11-12T15:29:00.8842716Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11634,
+        "text": "2026-11-12T15:29:00.8847363Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11659,
+        "text": "2026-11-12T15:29:00.8851828Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11684,
+        "text": "2026-11-12T15:29:00.8856377Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11709,
+        "text": "2026-11-12T15:29:00.8860632Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11734,
+        "text": "2026-11-12T15:29:00.8865130Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11759,
+        "text": "2026-11-12T15:29:00.8869526Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11784,
+        "text": "2026-11-12T15:29:00.8874030Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11809,
+        "text": "2026-11-12T15:29:00.8878746Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11834,
+        "text": "2026-11-12T15:29:00.8883549Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11859,
+        "text": "2026-11-12T15:29:00.8888302Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11884,
+        "text": "2026-11-12T15:29:00.8893073Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11909,
+        "text": "2026-11-12T15:29:00.8897721Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11934,
+        "text": "2026-11-12T15:29:00.8902447Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11957,
+        "text": "2026-11-12T15:29:00.8906549Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 11982,
+        "text": "2026-11-12T15:29:00.8911348Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12007,
+        "text": "2026-11-12T15:29:00.8915904Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12032,
+        "text": "2026-11-12T15:29:00.8920595Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12057,
+        "text": "2026-11-12T15:29:00.8925639Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12118,
+        "text": "2026-11-12T15:29:01.3443099Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12141,
+        "text": "2026-11-12T15:29:01.3490120Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12166,
+        "text": "2026-11-12T15:29:01.3503351Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12191,
+        "text": "2026-11-12T15:29:01.3516203Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12216,
+        "text": "2026-11-12T15:29:01.3529498Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12241,
+        "text": "2026-11-12T15:29:01.3551961Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12266,
+        "text": "2026-11-12T15:29:01.3565113Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12291,
+        "text": "2026-11-12T15:29:01.3577660Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12316,
+        "text": "2026-11-12T15:29:01.3590409Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12341,
+        "text": "2026-11-12T15:29:01.3602818Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12366,
+        "text": "2026-11-12T15:29:01.3643144Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12391,
+        "text": "2026-11-12T15:29:01.3652840Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12416,
+        "text": "2026-11-12T15:29:01.3662385Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12441,
+        "text": "2026-11-12T15:29:01.3672121Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12466,
+        "text": "2026-11-12T15:29:01.3688121Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      },
+      {
+        "line": 12491,
+        "text": "2026-11-12T15:29:01.3700692Z   error: 'Unexpected dependency: ./commentStore.ts'"
+      }
+    ],
+    "truncated": false
+  }
+}

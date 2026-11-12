@@ -1,0 +1,878 @@
+(node:54) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:61) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: line start passes through alternate buffer 47 without injected readline bytes
+not ok 1 - line start passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 292.042055
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x01',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x01'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: line end passes through alternate buffer 47 without injected readline bytes
+not ok 2 - line end passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 10.894544
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x05',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x05'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: delete line passes through alternate buffer 47 without injected readline bytes
+not ok 3 - delete line passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 10.912945
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x15',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x15'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: word left passes through alternate buffer 47 without injected readline bytes
+not ok 4 - word left passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 12.017281
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x1Bb',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x1Bb'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: word right passes through alternate buffer 47 without injected readline bytes
+not ok 5 - word right passes through alternate buffer 47 without injected readline bytes
+  ---
+  duration_ms: 16.225885
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x1Bf',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x1Bf'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: insert-newline still precedes the alternate-buffer 47 guard
+ok 6 - insert-newline still precedes the alternate-buffer 47 guard
+  ---
+  duration_ms: 10.055357
+  type: 'test'
+  ...
+# Subtest: line start passes through alternate buffer 1047 without injected readline bytes
+not ok 7 - line start passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 12.167525
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x01',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x01'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: line end passes through alternate buffer 1047 without injected readline bytes
+not ok 8 - line end passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 11.601667
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x05',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x05'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: delete line passes through alternate buffer 1047 without injected readline bytes
+not ok 9 - delete line passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 10.530811
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x15',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x15'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: word left passes through alternate buffer 1047 without injected readline bytes
+not ok 10 - word left passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 9.433971
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x1Bb',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x1Bb'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: word right passes through alternate buffer 1047 without injected readline bytes
+not ok 11 - word right passes through alternate buffer 1047 without injected readline bytes
+  ---
+  duration_ms: 8.682284
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x1Bf',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x1Bf'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: insert-newline still precedes the alternate-buffer 1047 guard
+ok 12 - insert-newline still precedes the alternate-buffer 1047 guard
+  ---
+  duration_ms: 9.460357
+  type: 'test'
+  ...
+# Subtest: line start passes through alternate buffer 1049 without injected readline bytes
+not ok 13 - line start passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 8.256091
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x01',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x01'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: line end passes through alternate buffer 1049 without injected readline bytes
+not ok 14 - line end passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 9.447751
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x05',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x05'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: delete line passes through alternate buffer 1049 without injected readline bytes
+not ok 15 - delete line passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 12.741669
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x15',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x15'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: word left passes through alternate buffer 1049 without injected readline bytes
+not ok 16 - word left passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 9.335554
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x1Bb',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x1Bb'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: word right passes through alternate buffer 1049 without injected readline bytes
+not ok 17 - word right passes through alternate buffer 1049 without injected readline bytes
+  ---
+  duration_ms: 7.952354
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:136:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+        outcome: {
+    +     allowed: false,
+    +     prevented: true,
+    +     stopped: true
+    -     allowed: true,
+    -     prevented: false,
+    -     stopped: false
+        },
+    +   writes: [
+    +     {
+    +       data: '\x1Bf',
+    +       id: 'term-alternate-line-edit-1'
+    +     }
+    +   ]
+    -   writes: []
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    outcome:
+      allowed: true
+      prevented: false
+      stopped: false
+    writes:
+  actual:
+    outcome:
+      allowed: false
+      prevented: true
+      stopped: true
+    writes:
+      0:
+        id: 'term-alternate-line-edit-1'
+        data: '\x1Bf'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/1f14fa82-4ec3-41fc-b085-32ec441b4228/repo/src/features/terminal/alternateLineEdit.test.ts:143:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: insert-newline still precedes the alternate-buffer 1049 guard
+ok 18 - insert-newline still precedes the alternate-buffer 1049 guard
+  ---
+  duration_ms: 8.739016
+  type: 'test'
+  ...
+# Subtest: line start still sends its exact readline bytes in the normal buffer
+ok 19 - line start still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 7.602891
+  type: 'test'
+  ...
+# Subtest: line end still sends its exact readline bytes in the normal buffer
+ok 20 - line end still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 7.340226
+  type: 'test'
+  ...
+# Subtest: delete line still sends its exact readline bytes in the normal buffer
+ok 21 - delete line still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 7.638925
+  type: 'test'
+  ...
+# Subtest: word left still sends its exact readline bytes in the normal buffer
+ok 22 - word left still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 7.522934
+  type: 'test'
+  ...
+# Subtest: word right still sends its exact readline bytes in the normal buffer
+ok 23 - word right still sends its exact readline bytes in the normal buffer
+  ---
+  duration_ms: 7.48529
+  type: 'test'
+  ...
+# Subtest: leaving the alternate buffer restores all normal line-edit commands
+ok 24 - leaving the alternate buffer restores all normal line-edit commands
+  ---
+  duration_ms: 9.439823
+  type: 'test'
+  ...
+# Subtest: alternate-buffer keyup never injects readline bytes
+ok 25 - alternate-buffer keyup never injects readline bytes
+  ---
+  duration_ms: 7.501271
+  type: 'test'
+  ...
+# Subtest: ordinary alternate-buffer input still passes through
+ok 26 - ordinary alternate-buffer input still passes through
+  ---
+  duration_ms: 12.167738
+  type: 'test'
+  ...
+# Subtest: Find remains available in the alternate buffer
+ok 27 - Find remains available in the alternate buffer
+  ---
+  duration_ms: 7.833945
+  type: 'test'
+  ...
+# Subtest: new-tab remains available in the alternate buffer
+ok 28 - new-tab remains available in the alternate buffer
+  ---
+  duration_ms: 9.053886
+  type: 'test'
+  ...
+# Subtest: an alternate sibling does not suppress normal-buffer line editing
+ok 29 - an alternate sibling does not suppress normal-buffer line editing
+  ---
+  duration_ms: 9.616388
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 14
+# fail 15
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 952.924069

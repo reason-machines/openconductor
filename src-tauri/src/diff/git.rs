@@ -526,6 +526,7 @@ fn diff_files(
     ws: Option<&str>,
 ) -> Result<Vec<FileDiff>, DiffError> {
     let context = req.context_lines.map(|n| format!("-U{n}"));
+    let pathspec = req.path.as_ref().map(|path| format!(":(literal){path}"));
 
     let mut args: Vec<&str> = vec!["diff"];
     args.extend(DIFF_FLAGS);
@@ -533,11 +534,11 @@ fn diff_files(
     args.extend(context.as_deref());
     args.push(base);
     args.push("--");
-    args.extend(req.path.as_deref());
+    args.extend(pathspec.as_deref());
     let mut files = parse_unified(&git(repo, &args, &[0])?).map_err(DiffError::Parse)?;
 
     let mut ls = vec!["ls-files", "--others", "--exclude-standard", "-z", "--"];
-    ls.extend(req.path.as_deref());
+    ls.extend(pathspec.as_deref());
     for path in git(repo, &ls, &[0])?.split('\0').filter(|p| !p.is_empty()) {
         let mut args: Vec<&str> = vec!["diff", "--no-index"];
         args.extend(DIFF_FLAGS);
@@ -567,6 +568,7 @@ fn turn_diff(
 ) -> Result<WorkspaceDiff, DiffError> {
     let (start, end) = turn_refs(repo, session_id, turn_id)?;
     let context = req.context_lines.map(|n| format!("-U{n}"));
+    let pathspec = req.path.as_ref().map(|path| format!(":(literal){path}"));
     let mut args: Vec<&str> = vec!["diff"];
     args.extend(DIFF_FLAGS);
     if req.ignore_whitespace {
@@ -574,8 +576,11 @@ fn turn_diff(
     }
     args.extend(context.as_deref());
     args.extend([start.as_str(), end.as_str(), "--"]);
-    args.extend(req.path.as_deref());
+    args.extend(pathspec.as_deref());
     let mut files = parse_unified(&git(repo, &args, &[0])?).map_err(DiffError::Parse)?;
+    for file in &mut files {
+        apply_revision_size_policy(repo, &start, &end, file);
+    }
     files.sort_by(|a, b| a.path.cmp(&b.path));
     Ok(WorkspaceDiff {
         base_commit: start,
@@ -655,6 +660,7 @@ fn revision_diff(
     whitespace: bool,
 ) -> Result<Vec<FileDiff>, DiffError> {
     let context = req.context_lines.map(|n| format!("-U{n}"));
+    let pathspec = req.path.as_ref().map(|path| format!(":(literal){path}"));
     let mut args = vec!["diff"];
     args.extend(DIFF_FLAGS);
     if whitespace {
@@ -662,7 +668,7 @@ fn revision_diff(
     }
     args.extend(context.as_deref());
     args.extend([base, commit, "--"]);
-    args.extend(req.path.as_deref());
+    args.extend(pathspec.as_deref());
     let mut files = parse_unified(&git(repo, &args, &[0])?).map_err(DiffError::Parse)?;
     files.sort_by(|a, b| a.path.cmp(&b.path));
     Ok(files)

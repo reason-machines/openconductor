@@ -7,6 +7,7 @@ import { runInNewContext } from "node:vm";
 import * as loadout from "./agents/loadout.ts";
 import { DEFAULT_SETTINGS } from "./types.ts";
 import type { FavoriteRow } from "./agents/api.ts";
+import * as persistence from "../lib/persistence/producer.ts";
 
 const dependencies = createRequire(import.meta.url);
 const React = dependencies("react");
@@ -41,6 +42,7 @@ async function fixture(initial: FavoriteRow[] = [], options: { deferredRead?: bo
     document, window: { innerWidth: 1200, innerHeight: 800 }, crypto: { randomUUID }, navigator: { clipboard: { writeText: async () => {} } },
   })((name: string) => {
     if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+    if (name === "../lib/persistence/producer.ts") return persistence;
     if (name === "./agents/loadout") return loadout;
     if (name === "./agents/api") return {
       listFavorites: async () => { await readReady; if (options.failedRead) throw new Error("read offline"); return rows; },

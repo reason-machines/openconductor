@@ -1,0 +1,120 @@
+{
+  "classification": "COPY_TITLE_PARITY_SOURCE_QUALIFICATION_ONLY",
+  "cases": [
+    {
+      "id": "tool-search",
+      "name": "ToolSearch",
+      "input": {
+        "query": "  find browser tools  "
+      },
+      "output": "tool result",
+      "expected_label": "Search tools",
+      "baseline_source_label": "Tool search",
+      "source_arm": "special"
+    },
+    {
+      "id": "monitor",
+      "name": "Monitor",
+      "input": {
+        "description": "  Build logs  "
+      },
+      "output": "tool result",
+      "expected_label": "Start monitor",
+      "baseline_source_label": "Monitor",
+      "source_arm": "special"
+    },
+    {
+      "id": "conductor-read-config",
+      "name": "mcp__conductor__GetComputerConfiguration",
+      "input": {
+        "id": "local"
+      },
+      "output": "tool result",
+      "expected_label": "Read computer configuration",
+      "baseline_source_label": "Get computer configuration",
+      "source_arm": "override"
+    },
+    {
+      "id": "conductor-read-build",
+      "name": "mcp__conductor__GetComputerBuildStatus",
+      "input": {
+        "id": "local"
+      },
+      "output": "tool result",
+      "expected_label": "Read computer build status",
+      "baseline_source_label": "Get computer build status",
+      "source_arm": "override"
+    },
+    {
+      "id": "conductor-workspace-control",
+      "name": "mcp__conductor__WorkspaceSummary",
+      "input": {
+        "id": "local"
+      },
+      "output": "tool result",
+      "expected_label": "Workspace summary",
+      "baseline_source_label": "Workspace summary",
+      "source_arm": "override"
+    },
+    {
+      "id": "conductor-list-control",
+      "name": "mcp__conductor__ListComputers",
+      "input": {},
+      "output": "tool result",
+      "expected_label": "List computers",
+      "baseline_source_label": "List computers",
+      "source_arm": "override"
+    },
+    {
+      "id": "conductor-create-control",
+      "name": "mcp__conductor__CreateComputerConfiguration",
+      "input": {},
+      "output": "tool result",
+      "expected_label": "Create computer configuration",
+      "baseline_source_label": "Create computer configuration",
+      "source_arm": "override"
+    },
+    {
+      "id": "conductor-update-control",
+      "name": "mcp__conductor__UpdateRepositorySetupScript",
+      "input": {},
+      "output": "tool result",
+      "expected_label": "Update repository setup script",
+      "baseline_source_label": "Update repository setup script",
+      "source_arm": "override"
+    },
+    {
+      "id": "ordinary-mcp-words-control",
+      "name": "mcp__linear__search_docs",
+      "input": {
+        "query": "api"
+      },
+      "output": "tool result",
+      "expected_label": "Search docs",
+      "baseline_source_label": "Search docs",
+      "source_arm": "mcp"
+    },
+    {
+      "id": "ordinary-mcp-prefix-control",
+      "name": "mcp__docs__docs-find_topic",
+      "input": {
+        "query": "api"
+      },
+      "output": "tool result",
+      "expected_label": "Find topic",
+      "baseline_source_label": "Find topic",
+      "source_arm": "mcp"
+    },
+    {
+      "id": "ordinary-mcp-camel-control",
+      "name": "mcp__docs__getTopic",
+      "input": {
+        "id": "topic"
+      },
+      "output": "tool result",
+      "expected_label": "Get topic",
+      "baseline_source_label": "Get topic",
+      "source_arm": "mcp"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+command=timeout 120s npm ci --ignore-scripts --no-audit --no-fund
+start=2026-11-12T11:10:42.071467561Z
+end=2026-11-12T11:10:47.374455158Z
+exit=0

@@ -474,7 +474,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
             onAddProjectAt={(path) => onAddProjectAt?.(path)}
           />
         </div>
-        {!groupCollapsed && state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
+        {state.repos.length === 0 && <p className="sidebar-empty">Add a project to get started.</p>}
         {!groupCollapsed && state.sidebarGroupBy === "status" && <SidebarStatusGroups state={state} dispatch={dispatch} renderRow={(entry, index) => row(entry, index, !repoFilter)} />}
         {!groupCollapsed && state.sidebarGroupBy !== "status" && (
           <DragDropContext onDragEnd={onRepoDragEnd}>
@@ -483,6 +483,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
           <div className="sb-repo-groups" ref={drop.innerRef} {...drop.droppableProps} data-dragging-over={dropState.isDraggingOver || undefined}>
             {listed.map((repo, repoIndex) => {
               const folded = isRepoCollapsed(repo, sel, sectioned);
+              const displayedWorkspaces = repoGroupWorkspaces(repo.workspaces, sectioned, state.sidebarSort);
               return (
           <Draggable key={repo.id} draggableId={repo.id} index={repoIndex} isDragDisabled={!canDrag}>
             {(drag, dragState) => (
@@ -513,7 +514,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
                     <span className="sb-repo-chevron" aria-hidden>{folded ? <ChevronIcon size={12} /> : <ChevronDownIcon size={12} />}</span>
                   </span>
                   <span className="sb-repo-name" data-hidden={repo.hidden || undefined}>{repo.name}</span>
-                  {folded && repo.workspaces.length > 0 && <span className="sb-repo-count">{repo.workspaces.length}</span>}
+                  {folded && displayedWorkspaces.length > 0 && <span className="sb-repo-count">{displayedWorkspaces.length}</span>}
                 </div>
                 <span className="sb-repo-spacer" aria-hidden />
                 <button
@@ -532,7 +533,7 @@ export function Sidebar({ state, collapsedSections, onToggleSection, dispatch, o
             {/* An unfolded group with no rows is empty, with no placeholder line (Conductor's `Dra`). */}
             <RepoWorkspaceList repoId={repo.id} collapsed={folded} isEmpty={repo.workspaces.length === 0} empty={null}>
               <SidebarPresence>
-                {repoGroupWorkspaces(repo.workspaces, sectioned, state.sidebarSort).map((ws, i) => (
+                {displayedWorkspaces.map((ws, i) => (
                   <SidebarRowMotion key={ws.id} listIndex={i}>
                     <SidebarWorkspaceRow workspace={ws} targetBranch={repo.defaultBranch} hasRemote={Boolean(repo.remote)} {...rows.rowProps(repo.id, ws)} />
                   </SidebarRowMotion>

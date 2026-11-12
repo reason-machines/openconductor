@@ -90,6 +90,7 @@ mod local_plan_mode;
 mod onboarding_commands;
 mod native_qa;
 mod native_qa_cache;
+pub mod visual_qa_profile;
 pub mod open_in;
 pub mod project;
 pub mod quick_open;
@@ -287,7 +288,8 @@ fn updater_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R, tauri_pl
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     native_qa::reject_release_request();
-    let context = native_qa::before_startup(tauri::generate_context!());
+    let context = visual_qa_profile::before_startup(tauri::generate_context!());
+    let context = native_qa::before_startup(context);
     let builder = native_qa::guard_builder(tauri::Builder::default());
     // Conductor is macOS-only; elsewhere keep Tauri's no-menu default.
     #[cfg(target_os = "macos")]
@@ -484,6 +486,7 @@ pub fn run() {
             diff::comment_commands::diff_comment_delete,
             diff::comment_commands::diff_comment_resolve,
             diff::comment_commands::diff_comments_mark_sent,
+            diff::comment_commands::diff_comments_mark_reviewed,
             turn_checkpoint_commands::checkpoint_turn_changes,
             diff::comment_commands::diff_comments_sync_github,
             diff::comment_commands::diff_comment_resolve_github,
@@ -517,6 +520,7 @@ pub fn run() {
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
+            codex_chat::codex_mcp_status,
             codex_chat::codex_cancel,
             codex_chat::codex_answer,
             codex_chat::codex_respond,

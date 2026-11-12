@@ -74,6 +74,8 @@
 .oc-diff-list .oc-count .d { margin-left: 0; }
 .oc-diff-list .oc-status { width: 12px; height: 12px; flex: none; }
 .oc-diff-list .oc-status.untracked { color: var(--muted); }
+.oc-change-comment-count { display: inline-flex; align-items: center; gap: 3px; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.oc-change-comment-count svg { flex: none; }
 .oc-change-meta { display: inline-flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 0 6px; min-width: 40px; flex: none; }
 .oc-change-uncommitted { font-size: 12px; font-weight: 500; color: var(--text); }
 .oc-change-actions { position: absolute; right: 0; top: 0; height: 100%; display: inline-flex; align-items: center; visibility: hidden; }

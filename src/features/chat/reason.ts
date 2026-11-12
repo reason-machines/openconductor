@@ -33,6 +33,7 @@ export interface ReasonTool {
   kind: string;
   status: "pending" | "running" | "completed" | "failed";
   output: string | null;
+  rawResult?: unknown;
   diffs: { path: ReasonPath; oldText: string | null; newText: string }[];
   locations: ReasonPath[];
   /** The provider's own tool name (Claude Code's "Grep", ...), when it reports one. */
@@ -117,6 +118,7 @@ function message(state: ReasonChatState, turnId: string, id: string, role: ChatM
 export interface PromptAttachment {
   name: string;
   text: string;
+  commentId?: string;
 }
 
 /** Line the transcript shows for an attachment; the agent gets the file itself. */
@@ -238,7 +240,7 @@ function withContent(blocks: Block[], p: ReasonPayload, now: Date): Block[] {
       const done = p.status === "completed" || p.status === "failed";
       const previous = blocks.find((b) => b.type === "tool_result" && b.toolUseId === p.id);
       const resultCreatedAt = previous?.type === "tool_result" ? previous.resultCreatedAt : now.toISOString();
-      const result: Block = { type: "tool_result", toolUseId: p.id, content: p.output ?? "", isError: p.status === "failed", ...(resultCreatedAt !== undefined ? { resultCreatedAt } : {}) };
+      const result: Block = { type: "tool_result", toolUseId: p.id, content: p.output ?? "", ...(p.rawResult !== undefined ? { rawResult: p.rawResult } : {}), isError: p.status === "failed", ...(resultCreatedAt !== undefined ? { resultCreatedAt } : {}) };
       const out = blocks.filter((b) => !(b.type === "tool_result" && b.toolUseId === p.id)).map((b) => (b.type === "tool_use" && b.id === p.id ? use : b));
       if (!out.includes(use)) out.push(use);
       if (done) out.splice(out.indexOf(use) + 1, 0, result);

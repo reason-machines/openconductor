@@ -119,6 +119,7 @@ fn message_serializes_camel_case_and_omits_absent_optionals() {
             Block::ToolResult {
                 tool_use_id: "tu1".into(),
                 content: "fn main() {}".into(),
+                raw_result: None,
                 is_error: false,
                 result_created_at: None,
             },
@@ -164,10 +165,24 @@ fn tool_result_is_error_defaults_to_false() {
         Block::ToolResult {
             tool_use_id: "a".into(),
             content: String::new(),
+            raw_result: None,
             is_error: false,
             result_created_at: None
         }
     );
+}
+
+#[test]
+fn tool_result_keeps_object_and_json_text_distinct_across_serde() {
+    let object = json!({"diffString": "-before\n+after"});
+    for content in [object.clone(), Value::String(object.to_string())] {
+        let value = json!({
+            "type": "tool_result", "toolUseId": "edit", "content": object.to_string(),
+            "rawResult": content, "isError": false
+        });
+        let block: Block = serde_json::from_value(value.clone()).unwrap();
+        assert_eq!(serde_json::to_value(block).unwrap(), value);
+    }
 }
 
 #[test]

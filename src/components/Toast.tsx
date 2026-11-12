@@ -9,9 +9,17 @@ let nextId = 1;
 
 export function useToasts() {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
-  const dismiss = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
-  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean; action?: ToastAction; secondaryAction?: ToastAction; description?: string; extraActions?: ToastAction[]; durationMs?: number }) => {
-    setToasts((t) => [...t, { id: nextId++, kind, message, sticky: opts?.sticky, action: opts?.action, secondaryAction: opts?.secondaryAction, description: opts?.description, extraActions: opts?.extraActions, durationMs: opts?.durationMs }]);
+  const dismissals = useRef(new Map<number, () => void>());
+  const dismiss = useCallback((id: number) => {
+    const onDismiss = dismissals.current.get(id);
+    dismissals.current.delete(id);
+    setToasts((t) => t.filter((x) => x.id !== id));
+    onDismiss?.();
+  }, []);
+  const show = useCallback((kind: ToastItem["kind"], message: string, opts?: { sticky?: boolean; action?: ToastAction; secondaryAction?: ToastAction; description?: string; extraActions?: ToastAction[]; durationMs?: number; onDismiss?: () => void }) => {
+    const id = nextId++;
+    if (opts?.onDismiss) dismissals.current.set(id, opts.onDismiss);
+    setToasts((t) => [...t, { id, kind, message, sticky: opts?.sticky, action: opts?.action, secondaryAction: opts?.secondaryAction, description: opts?.description, extraActions: opts?.extraActions, durationMs: opts?.durationMs }]);
   }, []);
   return { toasts, show, dismiss };
 }

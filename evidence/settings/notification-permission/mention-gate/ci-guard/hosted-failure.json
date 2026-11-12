@@ -1,0 +1,53 @@
+{
+  "producer": "Conductor Rebuild",
+  "pr": 1189,
+  "head": "438d2fea9b5cd77a59e0a91b4e61f20cf4858277",
+  "check": {
+    "id": 131311670521,
+    "name": "Frontend typecheck + build",
+    "status": "completed",
+    "conclusion": "failure",
+    "url": "https://github.com/reason-machines/openconductor/actions/runs/43255272354/job/131311670521",
+    "details_url": "https://github.com/reason-machines/openconductor/actions/runs/43255272354/job/131311670521",
+    "started_at": "2026-11-12T16:07:52Z",
+    "completed_at": "2026-11-12T16:11:40Z",
+    "app_slug": "github-actions",
+    "output": {
+      "title": null,
+      "summary": null,
+      "text": null,
+      "annotations_count": 3
+    }
+  },
+  "workflow": {
+    "run_id": 43255272354,
+    "job_id": 131311670521
+  },
+  "failed_steps": [
+    {
+      "name": "Frontend unit tests",
+      "status": "completed",
+      "conclusion": "failure",
+      "number": 8,
+      "started_at": "2026-11-12T16:08:34Z",
+      "completed_at": "2026-11-12T16:11:38Z"
+    }
+  ],
+  "failures": [
+    {
+      "line": 20601,
+      "text": "2026-11-12T16:11:29.0619686Z not ok 3366 - Full Disk Access verifier protects the notification boundary after denial feedback"
+    },
+    {
+      "line": 20711,
+      "text": "2026-11-12T16:11:29.0751859Z not ok 3367 - Full Disk Access: frozen seven-case fresh-main baseline and candidate"
+    }
+  ],
+  "cause": {
+    "verifier": "FDA notification boundary ends at the generic mention PrefSwitchRow removed by the permission-gated row.",
+    "mutation_suite": "Four shared permission/denial tokens now occur twice page-wide; mutations must be scoped to each row."
+  },
+  "local_reproduction": "NOT_RUN",
+  "native": "NOT_RUN",
+  "package": "NOT_RUN"
+}

@@ -1,0 +1,28 @@
+{
+  "command": "nice -n 19 timeout --kill-after=5s 120s cargo test --locked --offline --manifest-path evidence/settings/custom-prefix/dot-delimiter/backend-std-v2/Cargo.toml dot_prefix_ -- --nocapture",
+  "environment": {
+    "RUSTUP_TOOLCHAIN": "stable",
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_PROFILE_DEV_DEBUG": "0",
+    "CARGO_PROFILE_TEST_DEBUG": "0",
+    "CARGO_TARGET_DIR": "e2e-artifacts/dot-prefix-c18/rust-target"
+  },
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 0.550205,
+  "pre": {
+    "utc": "2026-11-12T13:18:14.235350+00:00",
+    "target_bytes": 137097482,
+    "disk_free_bytes": 40377352192,
+    "own_runtime_jobs": []
+  },
+  "post": {
+    "utc": "2026-11-12T13:18:14.787746+00:00",
+    "target_bytes": 151420462,
+    "disk_free_bytes": 40366329856,
+    "own_runtime_jobs": []
+  },
+  "new_lock_sha256": "453112cddc4865307bcbfc8bbc52f01884b76d533e9b5526c12cc61d6499d186",
+  "validator_sha256": "eb29acf9f9bbf18b58b3cdd792a966fa785fa7509784cea8c6e7e787424d2e2b",
+  "guarded_source_drift_except_sole_validator": []
+}
