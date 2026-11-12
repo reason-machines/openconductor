@@ -36,7 +36,11 @@ Rechecked main `a2ef261711b439e7ab00a25b3cb3275a5b55c823`; the four scoped produ
 
 `backend-candidate.json` pins the fresh-main identity, candidate sources and additional retained REA media-extension spans. The three frozen fixtures and their source manifest are unchanged. Source verification passed; candidate behavior awaits ordinary automatic hosted CI. Local behavioral/native execution has not run.
 
-`FileDiffView.tsx` is unchanged while its separate #1100 caller owner retains the file. This backend-only increment is not expected to make the mounted placeholder assertions pass, and must not be merged in that state. The subsequent placeholder-only body edit requires the actual #1100 merge and handoff.
+At backend-only head `affae5a66890336f2e385d49ef1b7045a897ef8e`, automatic hosted run `43128851507` passed all eight actual producer cases; the mounted renderer retained exactly four intended placeholder failures and four passing controls. Its final aggregate gate correctly failed (`BACKEND=success`, `RENDERER=failure`). Artifact `13903169778` retains both stages and real DTOs.
+
+The separate #1100 caller owner then explicitly released the body-only edit lease in message `89e30d31-f253-4286-aef9-7310b16b7b45`; #1100 remains unmerged. The renderer candidate adds only the pre-Code `file_too_large` note branch, with no header/FilePathChip/open-in edits. Future integration must preserve #1100's deleted caller independently; this branch does not stack on or copy that change.
+
+The optional DTO addition stopped the hidden-whitespace paired runner on its sealed `types.ts` dependency before behavior. Pin maintenance changes only three exact candidate scalars across that manifest and the moved-anchor manifest; it preserves full prior and intermediate manifests under `pin-maintenance-v1` and `pin-maintenance-v2`. Baselines, runners, assertions and expected RED/GREEN outcomes are unchanged. `verify_candidate.py` verifies the scalar-only transitions, existing source preflight and retained candidate/protected hashes. `candidate-integration.json` records final source identities and handoff provenance. Static verification is not behavioral GREEN; the same frozen hosted cases and every exact-head workflow must pass before merge.
 
 ## Limits
 
