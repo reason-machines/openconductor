@@ -16,7 +16,14 @@ def digest(body):
 def identity(body, expected):
     assert digest(body) == expected, "Source identity differs"
 
-identity((REPO / manifest["fixture"]).read_bytes(), manifest["fixture_sha256"])
+fixture = (REPO / manifest["fixture"]).read_bytes()
+identity(fixture, manifest["fixture_sha256"])
+lineage = json.loads((ROOT / "fixture-type-boundary-repair.json").read_text())
+old_fixture = (ROOT / "fixture-v1.typecheck-rejected.ts.txt").read_bytes()
+identity(old_fixture, lineage["previous_fixture_sha256"])
+identity(fixture, lineage["current_fixture_sha256"])
+execution_start = b'const ts: typeof import("typescript")'
+assert old_fixture.split(execution_start)[1] == fixture.split(execution_start)[1]
 baseline = (ROOT / "baseline-parts.tsx.txt").read_bytes()
 identity(baseline, manifest["baseline_parts_sha256"])
 main = manifest["baseline_main_commit"]

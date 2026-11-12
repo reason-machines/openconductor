@@ -18,7 +18,9 @@ Two target cases resize after a settled matching exit, both with and without ear
 
 Automatic hosted CI runs the new file through its existing `node --test "src/**/*.test.ts"` step. Baseline qualification requires exactly the two named transport assertion failures and all three controls passing. A bootstrap, typecheck, or unrelated failure does not qualify. Production code stays unchanged until those failures are observed.
 
-The fixture digest and historical source remain frozen for the later minimal guard. No scripts, registry, generic PTY manager, Garry, or caffeinate changes are included.
+Initial head `ca5fc79c` hit a fixture-only TypeScript declaration failure before the build's behavioral step. The repository has no `react-test-renderer` declaration package. The correction supplies the minimal external renderer boundary signatures, without adding a dependency. The [lineage receipt](fixture-type-boundary-repair.json) and [rejected original fixture](fixture-v1.typecheck-rejected.ts.txt) preserve the old digest. The verifier requires every executable byte from the TypeScript loader onward, including all cases and assertions, to remain identical across this typing-only correction. This compiler failure is not behavioral RED.
+
+The corrected fixture digest and historical source remain frozen for the later minimal guard. No scripts, registry, generic PTY manager, Garry, or caffeinate changes are included.
 
 ## Verification
 

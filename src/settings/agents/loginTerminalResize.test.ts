@@ -7,7 +7,18 @@ import type { PtyEvent } from "../../features/terminal/events.ts";
 
 const dependencies = createRequire(import.meta.url);
 const React: typeof import("react") = dependencies("react");
-const { act, create }: typeof import("react-test-renderer") = dependencies("react-test-renderer");
+type RendererNode = { children: unknown[]; props: { onClick: () => void } };
+type Renderer = {
+  root: { findByType: (type: string) => RendererNode; findAllByType: (type: string) => RendererNode[] };
+  unmount: () => void;
+};
+const { act, create }: {
+  act: {
+    (callback: () => Promise<void>): Promise<void>;
+    (callback: () => void): void;
+  };
+  create: (element: ReturnType<typeof React.createElement>, options: { createNodeMock: () => object }) => Renderer;
+} = dependencies("react-test-renderer");
 const ts: typeof import("typescript") = dependencies("typescript");
 const source = readFileSync(process.env.LOGIN_TERMINAL_RESIZE_SOURCE_FILE ?? new URL("./parts.tsx", import.meta.url), "utf8");
 const terminalId = "login-resize-pty";
