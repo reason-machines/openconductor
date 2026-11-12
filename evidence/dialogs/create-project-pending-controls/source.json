@@ -1,0 +1,191 @@
+{
+  "author": "Conductor Rebuild",
+  "phase": "Test-only ordinary hosted baseline; no behavioral RED observed yet.",
+  "main_sha": "19f42b21bc2b5f31a0656ffaef9cc042d714e7ff",
+  "prior_qualified_main": "167492e56dbbb90850efbadf1db2848dae7622f2",
+  "requalification": "All five scoped product source hashes remain identical on the latest fetched main.",
+  "rea_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "retained_archive_sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+  "renderer": {
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "gbi-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        2104111,
+        2112006
+      ],
+      "bytes": 7895,
+      "sha256": "012d26a6358b25b1c1922f3e23666b400b88dea3aa27b8e3061b7547dede71b4",
+      "file": "reference/gbi-complete.txt"
+    },
+    {
+      "name": "Qo-input-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1934438,
+        1935171
+      ],
+      "bytes": 733,
+      "sha256": "6b9504583ed079f42f6117dda4d14156546bb96342af523c33f517b711803814",
+      "file": "reference/Qo-input-complete.txt"
+    },
+    {
+      "name": "kg-root",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1920416,
+        1920974
+      ],
+      "bytes": 558,
+      "sha256": "a5357ebcb8e6361cdcad2a38fb6d037f493276a73fd38e23e76968856b8bd1ce",
+      "file": "reference/kg-root.txt"
+    },
+    {
+      "name": "nd-content",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1914936,
+        1918578
+      ],
+      "bytes": 3642,
+      "sha256": "1597ff6b039d905738debd5d0b9ecff32d152e754a7a6816ef74a0c9cff653a2",
+      "file": "reference/nd-content.txt"
+    },
+    {
+      "name": "tt-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1923125,
+        1923688
+      ],
+      "bytes": 563,
+      "sha256": "927f4db30521c31acc69e3030404188c6f52275c67c691ea7ff9af615f935d80",
+      "file": "reference/tt-complete.txt"
+    },
+    {
+      "name": "S3i-complete",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1920998,
+        1921053
+      ],
+      "bytes": 55,
+      "sha256": "ddd119d405884d670467e1c1690f8ae012c20705de121e26c34bc1f688939bf6",
+      "file": "reference/S3i-complete.txt"
+    },
+    {
+      "name": "prop-composition-and-render",
+      "asset": "renderer",
+      "utf8_half_open": [
+        463925,
+        466387
+      ],
+      "bytes": 2462,
+      "sha256": "1426a29915ffabf4688d49ce1af890134f66f860e544b08ef8c78f6c4edca580",
+      "file": "reference/prop-composition-and-render.txt"
+    },
+    {
+      "name": "empty-default-state",
+      "asset": "renderer",
+      "utf8_half_open": [
+        441659,
+        441679
+      ],
+      "bytes": 20,
+      "sha256": "69fddf944c77de1bb1bdd9e062590a64ecc936dcb2ec2f6c7026dc35c531e864",
+      "file": "reference/empty-default-state.txt"
+    },
+    {
+      "name": "merge-and-state-attributes",
+      "asset": "renderer",
+      "utf8_half_open": [
+        463493,
+        463806
+      ],
+      "bytes": 313,
+      "sha256": "b8959317910c6e416cbcbc45ea1793f674e943e575044bf0661faaebca0b43ba",
+      "file": "reference/merge-and-state-attributes.txt"
+    }
+  ],
+  "current_sources": [
+    {
+      "path": "src/components/CreateProjectDialog.tsx",
+      "bytes": 7489,
+      "sha256": "b479aa472080abff49e3e58203d86bd762d9897e034092132988b3a5f7e25ec0",
+      "blob": "95da7f06ce2c44ac044d1cdce8176f5274bfa16c"
+    },
+    {
+      "path": "src/components/DialogFrame.tsx",
+      "bytes": 2481,
+      "sha256": "f8b2d16d69e39dfdc0e33303f47bae20934e0cf94fc39e2f0cf327521c9acb7f",
+      "blob": "ed3ade90d5423fdd9352a413a4eb7dc2693519b9"
+    },
+    {
+      "path": "src/state/createProject.ts",
+      "bytes": 3679,
+      "sha256": "08be32e2b1697032c51759a4798db4abdf0bb0e1d2ee82ad548d0e47bb0cc283",
+      "blob": "43086acd4239c71b108848be729000e3d59de7f3"
+    },
+    {
+      "path": "src/backend.ts",
+      "bytes": 12743,
+      "sha256": "4b13170fcaffce5d828de400369164e2dfdcc3d3aaa818a3860e0a6e826ce237",
+      "blob": "c2be0fb3b9103d5e67ed1ce7718a746fcfb264aa"
+    },
+    {
+      "path": "src/home/createFirstWorkspace.ts",
+      "bytes": 2141,
+      "sha256": "215f50301d3042de3dcd5b98a29b8f4eba2a113f054aad4822a739c5474c5ecf",
+      "blob": "a4c938407a36bd74ba94bc3460f6804194e10785"
+    }
+  ],
+  "frozen_files": [
+    {
+      "path": "src/components/sectionNameInput.test.ts",
+      "sha256": "006cabec6907c845ca308f3a258e64085fa196b84bc5a8b892e079d5f05701c3"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/README.md",
+      "sha256": "258b35096e09e59d66d13b48ca4e5f452649fd30c8edcf61a170944840b07424"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/green.tap",
+      "sha256": "78e28f03c8c4bf22bb2989b6c332fea9e0c0ca053f51ecd11b859669bb8e7feb"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/historical-red.exit",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/historical-red.tap",
+      "sha256": "0d7b7ba4826bb47dd3872140be605e657eddb3564941db9aa00106722c8e3b9c"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/neighbors.tap",
+      "sha256": "4a8fe0e6223b3253d3286bddc36a9dc254f50980e1f70b076c24e947fe76e685"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/reference.json",
+      "sha256": "d9d7b8e31f4893781b224b3848f96f18a6d3d2841fa4b593d0ae17eea718a89d"
+    },
+    {
+      "path": "evidence/dialogs/section-name-input/verify_source.py",
+      "sha256": "c176f1b019efa7a5e8c1b298385418b2995d50aa3ab145f5b4af7827cf3c0197"
+    }
+  ],
+  "fixture": {
+    "path": "src/components/createProjectPendingControls.test.ts",
+    "sha256": "50dea0977358233e7299d2a481bbd57469a3e362d21696d5486a9660435d1d94",
+    "intended_red": 4,
+    "controls": 4
+  },
+  "product_edits": false,
+  "runtime_tests_run_locally": false,
+  "native_or_visual_verified": false,
+  "rea_limits": "Previously REA-extracted shipped bytes, read as inert data. No new acquisition or JavaScript execution of Conductor. Historical renderer semantic-analysis heap failure remains a limit.",
+  "strict_physical_acceptance": "UNSATISFIED and unwaived"
+}
