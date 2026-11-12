@@ -47,7 +47,9 @@ export function FilePathChip({ path, oldPath, worktree, deleted = false, notify 
     if (!full || !appId) return;
     const pending = deleted && appId === "finder" && worktree
       ? openInApp(appId, full, { workspacePath: worktree })
-      : openInApp(appId, appId === "alacritty" && worktree ? worktree : full);
+      : !deleted && appId === "vscode" && worktree
+        ? openInApp(appId, full, { workspacePath: worktree })
+        : openInApp(appId, appId === "alacritty" && worktree ? worktree : full);
     pending.catch((err) => notify?.("error", `Failed to open in ${app?.name ?? appId}: ${err instanceof Error ? err.message : String(err)}`));
   };
   const chip = (

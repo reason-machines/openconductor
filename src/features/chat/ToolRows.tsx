@@ -26,7 +26,6 @@ import {
   scheduleWakeupAt,
   scheduleWakeupLabel,
   sendMessageLabel,
-  shortPath,
   skillLabel,
   slashCommandLabel,
   stripMarkers,
@@ -298,6 +297,7 @@ interface ShellProps {
   align?: "center" | "baseline";
   /** Row content when opened; no content means the row does not open. */
   content?: ReactNode;
+  isCollapsible?: boolean;
   /** `isCodeBlock`: the content brings its own frame. */
   bareContent?: boolean;
   /** `contentClassName: ""`: the content sits unframed under the label (markdown). */
@@ -310,9 +310,10 @@ interface ShellProps {
   status?: ToolStatus;
 }
 
-function RowShell({ icon, left, right, keepRight = false, align = "baseline", content, bareContent = false, plainContent = false, leftClass, open, onToggle, tone, status }: ShellProps) {
-  const opens = content !== undefined && content !== null && content !== false;
-  const collapsed = !opens || !open;
+function RowShell({ icon, left, right, keepRight = false, align = "baseline", content, isCollapsible = true, bareContent = false, plainContent = false, leftClass, open, onToggle, tone, status }: ShellProps) {
+  const hasContent = content !== undefined && content !== null && content !== false;
+  const opens = hasContent && isCollapsible;
+  const collapsed = !hasContent || !open;
   return (
     <div className="oc-tool" data-tone={tone} data-status={status}>
       <div className={`oc-tool-head${opens ? " opens" : ""}`} onClick={opens ? onToggle : undefined} role={opens ? "button" : undefined} aria-expanded={opens ? open : undefined}>
@@ -331,7 +332,7 @@ function RowShell({ icon, left, right, keepRight = false, align = "baseline", co
           {right ? <div className={`oc-tool-right${!keepRight && !collapsed ? " hidden" : ""}`}>{right}</div> : null}
         </div>
       </div>
-      {opens && open ? <div className={bareContent ? "oc-tool-content bare" : plainContent ? "oc-tool-content plain" : "oc-tool-content"}>{content}</div> : null}
+      {hasContent && open ? <div className={bareContent ? "oc-tool-content bare" : plainContent ? "oc-tool-content plain" : "oc-tool-content"}>{content}</div> : null}
     </div>
   );
 }
@@ -451,7 +452,7 @@ function Row({ tool, status, result, resultCreatedAt, now, isError, open, onTogg
               {path ? (
                 <>
                   {" in "}
-                  <code className="oc-tool-inline-code">{shortPath(path, workspacePath)}</code>
+                  <code className="oc-tool-inline-code">{lastTwoSegments(path)}</code>
                 </>
               ) : null}
               {include ? ` (include: ${include})` : null}
@@ -1128,10 +1129,14 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
     case "image-generation": {
       // `Vpo`: the generated image's path (the image itself is not drawn yet).
       const path = result === undefined ? "" : resultText(result).trim();
+      const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };
+      const extension = path.split(".").pop()?.toLowerCase();
+      const isCollapsible = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);
       return (
         <RowShell
           {...shell}
           left={<span>{result === undefined ? "Generating image" : "Generated image"}</span>}
+          isCollapsible={isCollapsible}
           keepRight
           content={path ? <span className="oc-task-note mono">{path}</span> : undefined}
         />

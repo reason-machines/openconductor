@@ -32,7 +32,7 @@ export interface ModelPickerProps {
   onChange: (next: ModelChoice) => void;
   /** "Add models" and "Edit": open Settings › Default models. */
   onOpenSettings?: () => void;
-  /** Fast mode can be switched for this chat. */
+  /** This local chat exposes Fast, disabled for an unsupported model. */
   fastSupported?: boolean;
   disabled?: boolean;
   /** Extra entries under the favourites (e.g. the agent picker). */
@@ -105,7 +105,10 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
     const focused = document.activeElement;
     const composer = root.current?.closest(".composer, .create-card");
     if (disabled || (!open && !composer?.contains(focused))) return false;
-    selectLoadoutSlot(loadout, index, onChange);
+    selectLoadoutSlot(loadout, index, (choice) => {
+      onChange(choice);
+      setOpen(false);
+    });
     return true;
   };
   useKeybindings({
@@ -207,6 +210,15 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
     }
   };
 
+  const fastRow = (
+    <button type="button" role="menuitemcheckbox" aria-checked={showFast && !!value.fast} disabled={disabled || !showFast} className="oc-model-row" onClick={() => { if (!disabled && showFast) onChange({ ...value, fast: !value.fast }); }}>
+      <span className="oc-model-row-grow">Fast</span>
+      {showFast ? <span className="oc-kbd-hint">{hint("chat.toggleFastMode")}</span> : null}
+      <span className="oc-switch" data-state={showFast && value.fast ? "checked" : "unchecked"} aria-hidden>
+        <span />
+      </span>
+    </button>
+  );
   return (
     <span className="oc-model-picker" ref={root} onKeyDown={onMenuKey}>
       <Tooltip content={<p>Change agent <ShortcutHint commandId="chat.openModelPicker" /></p>}>
@@ -290,7 +302,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
                 </button>
               ) : null}
             </div>
-            {!searching && (efforts || showFast) ? <div className="oc-model-sep" /> : null}
+            {!searching && (efforts || fastSupported) ? <div className="oc-model-sep" /> : null}
             {!searching && efforts ? (
               <div className="oc-model-sub" onMouseEnter={() => setEffortOpen(true)} onMouseLeave={() => setEffortOpen(false)}>
                 <button ref={effortTrigger} type="button" role="menuitem" className="oc-model-row" aria-haspopup="menu" aria-expanded={effortOpen} data-highlighted={effortOpen || undefined} onKeyDown={onEffortTriggerKey} onClick={() => setEffortOpen(true)}>
@@ -322,7 +334,7 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
               </div>
             ) : !searching && showUnsupportedEffort ? (
               <>
-                {!showFast ? <div className="oc-model-sep" /> : null}
+                {!fastSupported ? <div className="oc-model-sep" /> : null}
                 <Tooltip content="Not supported for this model" side="right">
                   <div className="oc-model-sub">
                     <button type="button" role="menuitem" className="oc-model-row" disabled>
@@ -334,14 +346,12 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
                 </Tooltip>
               </>
             ) : null}
-            {!searching && showFast ? (
-              <button type="button" role="menuitemcheckbox" aria-checked={!!value.fast} className="oc-model-row" onClick={() => onChange({ ...value, fast: !value.fast })}>
-                <span className="oc-model-row-grow">Fast</span>
-                <span className="oc-kbd-hint">{hint("chat.toggleFastMode")}</span>
-                <span className="oc-switch" data-state={value.fast ? "checked" : "unchecked"} aria-hidden>
-                  <span />
-                </span>
-              </button>
+            {!searching && fastSupported ? (
+              showFast ? fastRow : (
+                <Tooltip content="Not supported for this model" side="right">
+                  <div>{fastRow}</div>
+                </Tooltip>
+              )
             ) : null}
           </div>
           <div className="oc-model-footer">
