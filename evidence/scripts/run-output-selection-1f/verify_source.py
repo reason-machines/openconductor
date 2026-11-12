@@ -44,7 +44,14 @@ def main():
     for edit in change['changes']:
         assert expected.count(edit['before']) == 1
         expected = expected.replace(edit['before'], edit['after'])
-    assert expected.encode() == data, 'Unexpected fixture change outside type-only correction'
+    boundary = json.loads((HERE / 'boundary-correction-v2/change.json').read_text())
+    previous = (HERE / 'boundary-correction-v2/runOutputSelection.before.ts.txt').read_bytes()
+    assert expected.encode() == previous
+    assert digest(previous) == boundary['before_fixture_sha256'] == change['current_fixture_sha256']
+    for edit in boundary['changes']:
+        assert expected.count(edit['before']) == 1
+        expected = expected.replace(edit['before'], edit['after'])
+    assert expected.encode() == data and digest(data) == boundary['after_fixture_sha256']
     old_tail = original[original.index(b'\ntest('):]
     tail = data[data.index(b'\ntest('):]
     assert tail == old_tail and digest(tail) == frozen['scenario_tail_sha256']

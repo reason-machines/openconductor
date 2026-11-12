@@ -1,6 +1,6 @@
 {
   "path": "src/scripts/runOutputSelection.test.ts",
-  "sha256": "ae6afb0674d394071a1e8079916a87c76d75ad849d88f3d2b2e61535f1089855",
+  "sha256": "4fa88980ea767ebfbf9e46fe208b9129295303f52754cf9183464c91f78c044f",
   "cases": [
     "actual Run output offers the action only for nonblank selection and a target chat",
     "Run selection reaches the existing strip callback normalized and without truncation",

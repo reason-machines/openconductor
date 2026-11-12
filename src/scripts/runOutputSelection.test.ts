@@ -43,6 +43,7 @@ async function fixture({ initial = "running", tab = "run", standalone = false, s
   const screens: Screen[] = [];
   const observers: Observer[] = [];
   const listeners = new Set<WireListener>();
+  const spotlightListeners = new Set<WireListener>();
   const documentElement = {};
   const colors: Record<string, string> = { "--text": "fixture-foreground-light", "--bg": "fixture-background-light", "--terminal-transparent": "fixture-transparent" };
   const modules = new Map<string, { exports: SourceExports }>();
@@ -105,7 +106,7 @@ async function fixture({ initial = "running", tab = "run", standalone = false, s
     "src/keybindings/KeybindingsProvider": { useKeybindings: inert },
     "src/keybindings/dispatcher": { PRIORITY: { TERMINAL: 1 } },
     "src/settings/useRepoSettings": { useRepoSettings: () => null },
-    "src/components/ui/Tooltip": { ShortcutHint: inert },
+    "src/components/ui/Tooltip": { ShortcutHint: inert, Tooltip: ({ children }: { children: ReactNode }) => children },
     "src/settings/rows/runIcons": { RunIcon: inert },
     "src/components/Icons": { ChevronDownIcon: inert, SettingsIcon: inert, GlobeIcon: inert, TerminalIcon: inert },
     "src/features/files/panelIcons": { ChevronDownIcon: inert, ChevronRightIcon: inert, PlusIcon: inert, XIcon: inert },
@@ -149,7 +150,8 @@ async function fixture({ initial = "running", tab = "run", standalone = false, s
       if (name === "@tauri-apps/api/event") return {
         listen: async (event: string, listener: WireListener) => {
           if (event === "scripts://event") listeners.add(listener);
-          return () => listeners.delete(listener);
+          if (event === "spotlight://event") spotlightListeners.add(listener);
+          return () => { listeners.delete(listener); spotlightListeners.delete(listener); };
         },
       };
       if (name.endsWith(".css")) return {};
@@ -182,6 +184,9 @@ async function fixture({ initial = "running", tab = "run", standalone = false, s
   }
   let renderer: Renderer;
   await act(async () => { renderer = create(element(), { createNodeMock: () => host }); });
+  if (spotlight) await act(async () => {
+    for (const listener of spotlightListeners) listener({ payload: { type: "started", repoRoot: repo.path, workspaceId: activeWorkspace.id, leftoverRestoreError: null } });
+  });
   function screen() {
     const current = screens.at(-1);
     assert.ok(current);
