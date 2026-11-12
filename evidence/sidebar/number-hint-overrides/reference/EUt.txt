@@ -1,0 +1,1 @@
+function EUt({storage:t}){HY?.(),gu=t;const e=ud;ud=t.getSnapshot(),HY=t.subscribe(()=>{const s=t.getSnapshot();s!==ud&&(ud=s,qY())}),ud!==e&&qY()}

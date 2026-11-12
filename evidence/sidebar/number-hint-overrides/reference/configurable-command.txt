@@ -1,0 +1,1 @@
+"workspace.switchTo1":{id:"workspace.switchTo1",key:he({key:"1",modifiers:Qe}),title:"Switch to workspace 1",configurable:!0,category:"Workspace"}
