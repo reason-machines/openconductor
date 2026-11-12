@@ -24,6 +24,8 @@ import { chatStatuses } from "../features/chat/chatRuntime";
 import { Tooltip } from "./Tooltip";
 import { ArchiveIcon } from "./Icons";
 import { glyphs } from "../keybindings/shortcut";
+import { effectiveShortcuts } from "../keybindings/overrides";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 
 interface Props {
   workspace: Workspace;
@@ -53,14 +55,41 @@ interface Props {
   onArchive?: () => void;
 }
 
-const ARCHIVE_COMMAND = COMMANDS.find((c) => c.id === "workspace.archive");
-const ARCHIVE_SHORTCUT = ARCHIVE_COMMAND ? glyphs(ARCHIVE_COMMAND.key) : undefined;
-
 /**
  * One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat,
  * and the Archive button that replaces the diff stat while the row is hovered.
  */
 export function SidebarWorkspaceRow({ workspace: ws, repoBadge, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix, onPointerDown, onArchive }: Props) {
+  const { overrides } = useKeybindingOverrides();
+  const archiveShortcut = glyphs(effectiveShortcuts("workspace.archive", overrides)[0]);
+  const [scriptSnapshot, setScriptSnapshot] = useState<{ workspaceId: string; busy: boolean } | null>(null);
+  const scriptBusy = scriptSnapshot?.workspaceId === ws.id && scriptSnapshot.busy;
+  useEffect(() => {
+    let disposed = false;
+    let off: (() => void) | undefined;
+    let sequence = 0;
+    Promise.all([import("../scripts/api"), import("../scripts/model")]).then(async ([api, { activeRun }]) => {
+      if (disposed) return;
+      const refresh = async () => {
+        const current = ++sequence;
+        const status = await api.runStatus(ws.id);
+        if (!disposed && current === sequence) {
+          setScriptSnapshot({ workspaceId: ws.id, busy: activeRun(status.runs) !== null });
+        }
+      };
+      const unlisten = await api.onScriptEvent((event) => {
+        if (disposed || event.workspaceId !== ws.id) return;
+        if (event.type === "runStarted" || event.type === "runFinished") refresh().catch(() => {});
+      });
+      if (disposed) return unlisten();
+      off = unlisten;
+      await refresh();
+    }).catch(() => {});
+    return () => {
+      disposed = true;
+      off?.();
+    };
+  }, [ws.id]);
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({
     name: ws.name,
@@ -128,10 +157,10 @@ export function SidebarWorkspaceRow({ workspace: ws, repoBadge, targetBranch, ha
           </span>
         )}
       </button>
-      {onArchive && (
+      {onArchive && !scriptBusy && (
         <div className="sb-ws-archive">
           {/* Conductor shows the shortcut in the tooltip only on the selected row, since ⌘⇧A archives the open workspace. */}
-          <Tooltip content="Archive workspace" shortcut={active ? ARCHIVE_SHORTCUT : undefined}>
+          <Tooltip content="Archive workspace" shortcut={active ? archiveShortcut : undefined}>
             <button
               type="button"
               aria-label="Archive workspace"

@@ -1,0 +1,3 @@
+ba3bea847f0696e5e72f6a9a07cc6e42d08af47a07776c63d9eed227527d131b  src/features/chat/localFastMode.test.ts
+d72613a2d5459ca695ada3b725c80ac5fb1f4a7f26c71e77e37143e1d16de1e2  tests/chat-search/composerLocalFast.dom.test.mjs
+bf797fe696e43adfb3e5e41d878671a2abd48661c51db583fd9cd8b1abb2e0dd  tests/chat-search/support/localFastHost.mjs

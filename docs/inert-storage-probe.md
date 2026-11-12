@@ -9,19 +9,30 @@ process, or calls Virtualization.framework.
 ## Data and roles
 
 `ProbePlan` binds one generated UUID to two distinct registered non-root UIDs,
-the namespace device/inode, and both files' device/inode/UID/mode/size. Each
-4096-byte file contains an exact per-resource marker derived from that UUID.
+the public namespace device/inode, a private storage directory's
+device/inode/UID/mode, and both files' device/inode/UID/mode/size. Plan version 2
+requires the private directory. Version 1 is rejected, not upgraded in place.
+Each 4096-byte file contains an exact per-resource marker derived from that UUID.
 An independently retained SHA-256 pins the plan bytes. This digest is an input
 selection, not authentication or permission to launch anything.
 
-The consumer creates a fresh namespace under the resolved system `/tmp`, with
-mode 0755, and files with mode 0600. Names and plan metadata are public so the
-caller can open a directory descriptor and inspect identity. The caller cannot
-normally change these files or directory through POSIX permissions. Actual
-ACLs and the selected OS may behave differently; the role probe records that
-behavior rather than assuming a denial. Both roles operate relative to pinned
-non-symlink directory descriptors. The consumer checks the exact bytes and
-object identities before and after its read/write control.
+The consumer creates a fresh, consumer-owned namespace under resolved system
+`/tmp` with mode 0755. The plan and role reports stay public in that directory.
+Both marker files have mode 0600 and live in its consumer-owned `resources`
+subdirectory, which must have mode 0700. The caller can inspect the private
+directory's identity from the public parent but cannot normally traverse it.
+File mode 0600 alone does not prevent hard-link creation on macOS. The private
+search boundary addresses that observed failure without removing the link test.
+Actual ACLs and the selected OS may behave differently; the probe records
+behavior rather than assuming a denial.
+
+The caller opens only the pinned public parent and issues each actual operation
+against its fixed `resources/<resource>.marker` relative path. It never treats a
+failed marker stat or private-directory open as that operation's denial. Before
+each attempt it checks the private directory's non-following metadata against
+the plan. Only the consumer opens the private directory and checks both marker
+identities, exact bytes, and single-link counts before and after its control.
+Missing, replaced, symlinked, searchable, or wrongly owned storage is unavailable.
 
 Each caller operation first runs on its own fresh writable twin on the same
 filesystem. The attempted operations are read-open, one-byte positional write,
@@ -36,8 +47,10 @@ identity, and missing principals fail or are unavailable. No result says PASS.
 ## Execution prerequisites
 
 Only the existing native executor may separately authorize live role runs.
-Nothing in this document grants that authority. This source increment has
-**not** run either role on a Mac or with two actual kernel principals.
+Nothing in this document grants that authority. The version 1 hosted run
+[failed on hard-link creation](../evidence/qa/inert-storage-alias-failure/README.md).
+The version 2 correction has **not** run on macOS or with two actual kernel
+principals. Portable tests do not establish the corrected kernel boundary.
 
 A future inert run needs two already-created disposable non-root principals,
 a shared host/filesystem with Python 3.10 or later, and independent launch
@@ -122,10 +135,12 @@ only those portable tests; it never invokes the live CLI roles.
 ## Manually selected hosted controller
 
 `HostedObservation` in `tools/hosted_inert_storage_probe.py` correlates the
-existing `ProbePlan`, actual role identities, per-command outputs and independently
-observed pre/post object identities. It does not change the role probe or any
-admission gate. The controller collects one bounded observation instead of
-introducing a provider or permission receipt.
+version 2 `ProbePlan`, actual role identities, per-command outputs, and consumer
+pre/post resource measurements. The controller independently checks public
+namespace and private-directory metadata, not the inaccessible marker contents.
+The private resource identity, bytes, and link checks run in the actual consumer
+launcher. No admission gate changes. The controller collects one bounded
+observation instead of introducing a provider or permission receipt.
 
 The separate `Hosted inert two-principal observations` workflow is **dispatch
 only**. Pull requests and main pushes run portable controller fixtures, never
@@ -145,9 +160,10 @@ GitHub-hosted context, an exact 40-character dispatched/checked-out commit and
 clean tracked inputs. Context environment fields are selection checks, not
 independent host attestation. Observations retain the actual macOS/kernel and
 architecture, run/attempt, selected and observed checkout SHA, source hash,
-actual UID/EUID/GID/groups, raw plan bytes and digest, namespace device/inode
-and each resource's UID/device/inode/mode/size/link count. Every invocation
-retains its exact argv, stdout, stderr and exit status or transport error.
+actual UID/EUID/GID/groups, raw version 2 plan bytes and digest, public namespace
+device/inode, private-directory device/inode/UID/mode, and each resource's
+UID/device/inode/mode/size/link count. Every invocation retains its exact argv,
+stdout, stderr and exit status or transport error.
 No SDK, signed-service or macOS 26.4 result is inferred from this worker label.
 
 The original non-root job UID remains the caller. The consumer must be the
@@ -168,8 +184,12 @@ ambient descriptors, disconnects stdin and strips the inherited environment.
 It refuses any preexisting principal journal and never deletes or repairs state.
 Each of the five inert labels requires both positive consumer read/write checks,
 all twelve calibrated caller operations, final consumer verification and matching
-pre/post snapshots. Even a failed caller transport still attempts final consumer
-verification. Failed commands retain their actual stdout, stderr and exit status;
+pre/post snapshots. Each consumer report includes its actual public namespace,
+private-directory metadata, and actual per-resource identities and link counts.
+The controller validates those reports against the plan before recording
+snapshots labelled `resource_measurement: consumer_role_report`. Those snapshots
+remain trusted consumer measurements, not independent caller access to resources.
+Even a failed caller transport still attempts final consumer verification. Failed commands retain their actual stdout, stderr and exit status;
 no missing operation, principal or file becomes success.
 
 The output is one JSON **observation**, not an authenticated receipt or launch

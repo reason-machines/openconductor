@@ -1,9 +1,9 @@
 //! IPC for the Open button: which apps to offer, and opening a folder in one.
 
-use std::path::Path;
+use std::path::{Component, Path, PathBuf};
 use std::process::Command;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::{available_apps, find, icon, IconType, Roots};
 
@@ -210,17 +210,63 @@ fn run_kaleidoscope_folder(dir: &Path) -> Result<(), String> {
     })
 }
 
-/// JS: `invoke("open_in_app", { appId, path })`: opens the workspace folder
-/// `path` in the app, or one file in it (the All files tree).
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FileContext {
+    workspace_path: PathBuf,
+}
+
+fn deleted_finder_parent(target: &Path, context: &FileContext) -> Option<PathBuf> {
+    let root = &context.workspace_path;
+    if !root.is_absolute()
+        || !root.is_dir()
+        || root.components().any(|part| matches!(part, Component::ParentDir))
+        || !matches!(target.symlink_metadata(), Err(error) if error.kind() == std::io::ErrorKind::NotFound)
+    {
+        return None;
+    }
+    let relative = target.strip_prefix(root).ok()?;
+    if !relative.components().all(|part| matches!(part, Component::Normal(_))) {
+        return None;
+    }
+    let mut current = root.to_path_buf();
+    for part in relative.components() {
+        current.push(part.as_os_str());
+        match current.symlink_metadata() {
+            Ok(metadata) if metadata.file_type().is_symlink() => return None,
+            Ok(_) => {}
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => break,
+            Err(_) => return None,
+        }
+    }
+    target.parent().map(Path::to_path_buf)
+}
+
+/// Opens an existing folder or file. A missing Finder file may open its
+/// immediate parent when explicit file context bounds it to a workspace.
 #[tauri::command]
-pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
+pub async fn open_in_app(
+    app_id: String,
+    path: String,
+    file_context: Option<FileContext>,
+) -> Result<(), String> {
     let app = find(&app_id).ok_or_else(|| format!("Unknown app: {app_id}"))?;
     let target = Path::new(&path);
-    if !target.is_absolute() || !(target.is_dir() || target.is_file()) {
-        return Err(format!("Not a folder or file: {path}"));
+    let invalid = || format!("Not a folder or file: {path}");
+    if !target.is_absolute() {
+        return Err(invalid());
     }
     let is_file = target.is_file();
-    let dir = target.to_path_buf();
+    let dir = if is_file || target.is_dir() {
+        target.to_path_buf()
+    } else if app.id == "finder" {
+        file_context
+            .as_ref()
+            .and_then(|context| deleted_finder_parent(target, context))
+            .ok_or_else(invalid)?
+    } else {
+        return Err(invalid());
+    };
     tauri::async_runtime::spawn_blocking(move || {
         if cfg!(target_os = "macos") {
             if app.id == "alacritty" && !is_file {
@@ -248,6 +294,61 @@ pub async fn open_in_app(app_id: String, path: String) -> Result<(), String> {
     })
     .await
     .map_err(|e| e.to_string())?
+}
+
+#[cfg(all(test, unix))]
+mod finder_context_tests {
+    use super::{deleted_finder_parent, FileContext};
+    use std::fs;
+    use std::os::unix::fs::symlink;
+    use std::path::{Path, PathBuf};
+
+    struct Fixture(PathBuf);
+
+    impl Drop for Fixture {
+        fn drop(&mut self) {
+            let _ = fs::remove_dir_all(&self.0);
+        }
+    }
+
+    fn workspace() -> (Fixture, FileContext) {
+        let root = std::env::temp_dir().join(format!("oc-finder-context-{}", uuid::Uuid::new_v4()));
+        let workspace_path = root.join("workspace");
+        fs::create_dir_all(workspace_path.join("src")).unwrap();
+        (Fixture(root), FileContext { workspace_path })
+    }
+
+    #[test]
+    fn fallback_stays_inside_an_existing_absolute_workspace() {
+        let (fixture, context) = workspace();
+        for path in [
+            fixture.0.join("other/gone.ts"),
+            fixture.0.join("workspace-sibling/gone.ts"),
+            context.workspace_path.join("../other/gone.ts"),
+        ] {
+            assert_eq!(deleted_finder_parent(&path, &context), None);
+        }
+        assert_eq!(
+            deleted_finder_parent(Path::new("src/gone.ts"), &context),
+            None,
+        );
+        let absent = FileContext { workspace_path: fixture.0.join("absent") };
+        assert_eq!(deleted_finder_parent(&absent.workspace_path.join("gone.ts"), &absent), None);
+        let relative = FileContext { workspace_path: PathBuf::from("workspace") };
+        assert_eq!(deleted_finder_parent(Path::new("workspace/gone.ts"), &relative), None);
+    }
+
+    #[test]
+    fn fallback_refuses_symlinked_parents_and_broken_leaf_links() {
+        let (fixture, context) = workspace();
+        let outside = fixture.0.join("outside");
+        fs::create_dir(&outside).unwrap();
+        symlink(&outside, context.workspace_path.join("link")).unwrap();
+        symlink(outside.join("absent.ts"), context.workspace_path.join("broken.ts")).unwrap();
+        for path in ["link/gone.ts", "broken.ts"] {
+            assert_eq!(deleted_finder_parent(&context.workspace_path.join(path), &context), None);
+        }
+    }
 }
 
 #[cfg(all(test, unix))]
