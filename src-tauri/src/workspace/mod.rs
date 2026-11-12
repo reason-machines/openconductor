@@ -37,6 +37,8 @@ pub mod commands;
 
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod clone_name_normalization_tests;
 
 use std::collections::HashSet;
 use std::fmt;
