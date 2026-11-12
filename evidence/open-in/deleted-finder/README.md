@@ -47,6 +47,8 @@ No workflow, manual dispatch, local Rust, local Node, browser, or native allocat
 
 `python3 evidence/open-in/deleted-finder/verify_source.py` checks original source integrity, loader registration, and fixture immutability. Its `--baseline` mode is for the historical test-only checkout, not the repaired candidate. `python3 evidence/open-in/deleted-finder/verify_candidate.py` checks baseline receipts, preservation, mechanical caller migration, and candidate source wiring. Neither Python command compiles Rust or TypeScript or proves parity.
 
+The single `FileDiffView` caller prop changes its whole-file checksum. The first candidate head therefore stopped the moved-anchor paired job at its candidate-identity preflight, before any paired behavior ran. Only that manifest’s candidate hash was refreshed. `previous-pins/moved-comment-anchors.json` preserves the complete previous manifest. `python3 evidence/open-in/deleted-finder/verify_pin_maintenance.py` proves the exact one-field replacement, the single caller-prop change, all baseline and candidate identities, and unchanged fixture, runner, and workflows. This preflight is not a paired behavioral pass.
+
 The repair was grounded again at main `bb717dad2e1c4cbcbdba3d29d607a76a069f7f85`. Candidate compilation, unchanged-fixture behavioral GREEN, every exact-head workflow, merge, and consuming-main package verification remain pending. No merge is requested until every exact-head check and workflow positively passes.
 
 Native Finder activation, side-by-side screenshots, GUI behavior, and a released app remain NOT_RUN. No screenshot is supplied because this lane has no native or browser admission.
