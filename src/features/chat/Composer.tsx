@@ -65,6 +65,7 @@ export interface ComposerProps {
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
   onLinkWorkspaces?: () => void;
+  onMcpStatus?: () => void;
   onAttachTerminalOutput?: () => void;
   planMode?: PlanModeControl;
   /** The model picker (or another agent's picker), at the box's bottom left. */
@@ -99,6 +100,7 @@ export function Composer({
   workspacePath,
   onAttachFiles,
   onLinkWorkspaces,
+  onMcpStatus,
   onAttachTerminalOutput,
   planMode,
   picker,
@@ -195,6 +197,10 @@ export function Composer({
       if (!box.deleteRange(range)) return;
       setSlashDismissed(slashKey);
       onLinkWorkspaces();
+    } else if (command.effect === "show_mcp_status" && onMcpStatus) {
+      if (!box.deleteRange(range)) return;
+      setSlashDismissed(slashKey);
+      onMcpStatus();
     } else if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
     setSlashIndex(0);
   }
