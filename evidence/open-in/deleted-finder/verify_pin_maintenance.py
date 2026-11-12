@@ -1,5 +1,6 @@
 import hashlib
 import json
+import runpy
 import subprocess
 from pathlib import Path
 
@@ -38,6 +39,21 @@ for path in [
     '.github/workflows/diff-moved-comment-anchors.yml',
 ]:
     checks[f'unchanged:{path}'] = (ROOT / path).read_bytes() == subprocess.check_output(['git', 'show', f'bb717dad2e1c4cbcbdba3d29d607a76a069f7f85:{path}'], cwd=ROOT)
+hidden_path = "evidence/diff/hidden-whitespace-editing/execution-source-manifest.json"
+hidden_before = (HERE / "previous-pins/hidden-whitespace-execution-source-manifest.json").read_bytes()
+hidden_after = (ROOT / hidden_path).read_bytes()
+checks["previous-complete-hidden-manifest"] = sha(hidden_before) == "adad3a1a8d5cf13586ecf3dd2f70683f86099f71b4618cbddeb7678838d72a9e"
+checks["only-hidden-candidate-scalar-changed"] = hidden_before.count(old_hash.encode()) == 1 and hidden_after == hidden_before.replace(old_hash.encode(), new_hash.encode())
+checks["hidden-candidate-field-is-current-product"] = json.loads(hidden_after)["files"]["candidate/" + product_path] == sha(product)
+hidden_runner = runpy.run_path(str(ROOT / "evidence/diff/hidden-whitespace-editing/run-paired.py"))
+hidden_runner["source_inputs"]()
+checks["original-hidden-source-preflight-passes"] = True
+for path in [
+    "evidence/diff/hidden-whitespace-editing/run-paired.py",
+    "src/features/diff/hiddenWhitespaceEditing.test.ts",
+    ".github/workflows/diff-hidden-whitespace.yml",
+]:
+    checks[f"unchanged:{path}"] = (ROOT / path).read_bytes() == subprocess.check_output(["git", "show", f"bb717dad2e1c4cbcbdba3d29d607a76a069f7f85:{path}"], cwd=ROOT)
 failed = [name for name, passed in checks.items() if not passed]
 print(json.dumps({'checks': len(checks), 'passed': sum(checks.values()), 'failed': failed, 'paired_behavior': 'NOT_RUN', 'claim': 'Candidate identity preflight only; baseline, fixture, runner and workflow preserved.'}))
 if failed:
