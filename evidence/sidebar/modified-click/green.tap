@@ -1,0 +1,74 @@
+(node:54) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:61) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Sidebar row activation: already-prevented leaves selection and attention chats alone
+ok 1 - Sidebar row activation: already-prevented leaves selection and attention chats alone
+  ---
+  duration_ms: 204.943936
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: middle-button leaves selection and attention chats alone
+ok 2 - Sidebar row activation: middle-button leaves selection and attention chats alone
+  ---
+  duration_ms: 89.258179
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: secondary-button leaves selection and attention chats alone
+ok 3 - Sidebar row activation: secondary-button leaves selection and attention chats alone
+  ---
+  duration_ms: 80.677761
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: meta-primary leaves selection and attention chats alone
+ok 4 - Sidebar row activation: meta-primary leaves selection and attention chats alone
+  ---
+  duration_ms: 52.174827
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: alt-primary leaves selection and attention chats alone
+ok 5 - Sidebar row activation: alt-primary leaves selection and attention chats alone
+  ---
+  duration_ms: 47.983109
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: ctrl-primary leaves selection and attention chats alone
+ok 6 - Sidebar row activation: ctrl-primary leaves selection and attention chats alone
+  ---
+  duration_ms: 43.048496
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: shift-primary leaves selection and attention chats alone
+ok 7 - Sidebar row activation: shift-primary leaves selection and attention chats alone
+  ---
+  duration_ms: 47.245172
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: ordinary-primary-different-workspace
+ok 8 - Sidebar row activation: ordinary-primary-different-workspace
+  ---
+  duration_ms: 24.920822
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: ordinary-primary-current-unread-chat
+ok 9 - Sidebar row activation: ordinary-primary-current-unread-chat
+  ---
+  duration_ms: 28.801342
+  type: 'test'
+  ...
+# Subtest: Sidebar row activation: ordinary-primary-current-waiting-chat
+ok 10 - Sidebar row activation: ordinary-primary-current-waiting-chat
+  ---
+  duration_ms: 19.743541
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1362.568537
