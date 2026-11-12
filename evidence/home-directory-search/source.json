@@ -1,0 +1,78 @@
+{
+  "schema": "openconductor.home-directory-search.source-v1",
+  "owner": "SAME271",
+  "prepared_at": "2026-11-12T14:59:14.614537+00:00",
+  "main": "85194324762be7c00ba8d092c4e00bdb564f1ac4",
+  "status": "STATIC_SOURCE_GAP; FROZEN_REGRESSION_PREPARED_NOT_RUN",
+  "target": "src/home/allWorkspaces.ts:291",
+  "delta": "directory: row.workspace.directoryName ?? row.workspace.name",
+  "fixture": {
+    "intended_destination": "src/home/allWorkspacesDirectorySearch.test.ts",
+    "sha256": "eeabf181e31d90c4be5fd1f78bea489439e96841731807de0422ff5ab138ed69",
+    "cases": 8,
+    "expected_red": {
+      "fail": 4,
+      "pass": 4
+    },
+    "executed": false
+  },
+  "current_source_pins": [
+    {
+      "path": "src/home/allWorkspaces.ts",
+      "main": "85194324762be7c00ba8d092c4e00bdb564f1ac4",
+      "sha256": "1e61745c734863bc7930b7dc5f230729170f5b62590b1a0fc356ee86b3e2b350"
+    },
+    {
+      "path": "src/state/persisted.ts",
+      "main": "85194324762be7c00ba8d092c4e00bdb564f1ac4",
+      "sha256": "7a83f188ae1d5f7a375352feca0831d017a86472ae8048df40a93e38f6dc9209"
+    },
+    {
+      "path": "src/state/types.ts",
+      "main": "85194324762be7c00ba8d092c4e00bdb564f1ac4",
+      "sha256": "fd8bf53604cc4aa6881cc4a1dae0763dae6ac5ff4ff0fc83ac1b2d18f762ea55"
+    },
+    {
+      "path": "src/workspace/archivedList.ts",
+      "main": "85194324762be7c00ba8d092c4e00bdb564f1ac4",
+      "sha256": "5d5c2d74f3f2bcd2a0b1109cc22c3465a276bdd04edc71031689f1fc0a7942eb"
+    },
+    {
+      "path": "src/components/AllWorkspaces.tsx",
+      "main": "85194324762be7c00ba8d092c4e00bdb564f1ac4",
+      "sha256": "f2d8fc6cdb03a4eba70990f649cc74efb1132dc2139544b1c1f4c697274ae1d0"
+    }
+  ],
+  "reference": {
+    "mode": "Retained decoded shipped JavaScript only; no target execution",
+    "app": "Conductor 0.87.6",
+    "asset": "renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "parentReaEvidence": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "excerpts": [
+      {
+        "symbol": "AJo",
+        "utf16Offset": 9811102,
+        "excerpt": "function AJo({query:t,fields:e}){const n=[...sJn.map(o=>e[o]),e.prNumber===void 0?\"\":`#${e.prNumber}`].join(\" \").toLowerCase();if(!hFi(t).every(o=>n.includes(o)))return;const r={};for(const o of sJn){const a=TJo({query:t,text:e[o]});a&&(r[o]=a)}return r}"
+      },
+      {
+        "symbol": "pFi",
+        "utf16Offset": 9811356,
+        "excerpt": "function pFi({query:t,fields:e}){const n=t.trim().toLowerCase(),i=e.number===void 0?void 0:kJo({normalizedQuery:n,number:e.number}),r=AJo({query:t,fields:e});return i===void 0?r:{...r,number:i}}"
+      },
+      {
+        "symbol": "UJo searchFields",
+        "utf16Offset": 9822370,
+        "excerpt": "Fo={name:Eu,branch:Ra??hi.branch??\"\",directory:hi.directoryName,repo:fo,number:hi.number,prNumber:v.workspacePrNumber[hi.localId]}"
+      }
+    ]
+  },
+  "rea_full_UJo_sha256": "58824b140436a668433f7e08fe26d2083c0e100d363cda5edb14150526a53030",
+  "limits": [
+    "No product edits",
+    "No Node/runtime/typecheck/browser/native/package",
+    "No new queue row/runner/publisher",
+    "Original Prefix9 and Title4 unchanged",
+    "1178 remains isolated existing CI subscription"
+  ]
+}

@@ -288,7 +288,7 @@ export function homeRows(
     const matches = matchWorkspace(query, {
       name: row.title,
       branch: row.workspace.branch,
-      directory: row.workspace.name,
+      directory: row.workspace.directoryName ?? row.workspace.name,
       repo: row.repo.name,
       number,
       prNumber: row.workspace.pr?.number,

@@ -12,7 +12,7 @@ import { setAppPref } from "./appPrefs";
 import { chooseSendKey } from "./composerSettings";
 import { withField } from "./model";
 import { notificationPermissionGranted } from "./notificationPermission";
-import { enumPref, withEnumPref } from "./prefs";
+import { boolPref, enumPref, withBoolPref, withEnumPref } from "./prefs";
 import { GeneralAppPrefRows } from "./rows/AppPrefRows";
 import { playCompletionSound, SOUND_OPTIONS } from "./sound";
 import type { Settings, SoundType } from "./types";
@@ -21,7 +21,7 @@ import { useSettingsOverrideStore } from "./useSettingsOverrideStore";
 interface Props {
   settings: Settings;
   save: (next: Settings) => void | Promise<boolean>;
-  notify?: (kind: "error", message: string) => void;
+  notify?: (kind: "error" | "info", message: string) => void;
 }
 
 /** Conductor's `aga`: System Settings › Privacy & Security › Full Disk Access. */
@@ -84,7 +84,19 @@ export function GeneralPage({ settings, save, notify }: Props) {
           }}
         />
       </Row>
-      <PrefSwitchRow settings={settings} save={save} pref="mention_notifications_enabled" label="@ notifications" help="Get notified when a teammate mentions you." />
+      <Row label="@ notifications" help="Get notified when a teammate mentions you.">
+        <Toggle
+          label="@ notifications"
+          checked={boolPref(settings, "mention_notifications_enabled")}
+          onChange={async (on) => {
+            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }
+            await save(withBoolPref(latestSettings.current, "mention_notifications_enabled", on));
+          }}
+        />
+      </Row>
       <Row label="Completion sound" help="Choose what plays when AI finishes working in a chat.">
         <span className="settings-inline">
           <Select<SoundType>
@@ -152,7 +164,7 @@ export function GeneralPage({ settings, save, notify }: Props) {
         icon={<SyncIcon />}
         onClick={() => setSyncOpen(true)}
       />
-      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} />}
+      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} notify={notify} />}
     </div>
   );
 }
