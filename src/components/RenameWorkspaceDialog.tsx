@@ -117,7 +117,7 @@ export function RenameWorkspaceDialog({ repoId, workspace: ws, dispatch, onClose
           spellCheck={false}
         />
         <label className="rename-ws-branch">
-          <input type="checkbox" checked={alsoRenameBranch} disabled={!branchRenamable || pending} onChange={(e) => toggleBranch(e.target.checked)} />
+          <input type="checkbox" checked={alsoRenameBranch} disabled={!branchRenamable} onChange={(e) => toggleBranch(e.target.checked)} />
           Also rename branch
         </label>
         <div className="modal-actions">
