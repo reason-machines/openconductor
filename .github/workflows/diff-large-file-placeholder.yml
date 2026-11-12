@@ -1,21 +1,7 @@
 name: Diff large-file placeholder
 
 on:
-  pull_request:
-    paths:
-      - "src-tauri/src/diff/**"
-      - "src/features/diff/**"
-      - "tests/diff/largeFilePlaceholder.mounted.test.mjs"
-      - "evidence/diff/large-file-placeholder/**"
-      - ".github/workflows/diff-large-file-placeholder.yml"
-  push:
-    branches: [main]
-    paths:
-      - "src-tauri/src/diff/**"
-      - "src/features/diff/**"
-      - "tests/diff/largeFilePlaceholder.mounted.test.mjs"
-      - "evidence/diff/large-file-placeholder/**"
-      - ".github/workflows/diff-large-file-placeholder.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read

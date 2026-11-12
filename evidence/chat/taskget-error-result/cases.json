@@ -1,0 +1,101 @@
+{
+  "candidate": "CHAT.TASKGET-ERROR-RESULT-DETAILS",
+  "classification": "Frozen proposed inputs and source-derived expectations, NOT executable or executed behavioral tests.",
+  "cases": [
+    {
+      "id": "failed-json-task",
+      "name": "TaskGet",
+      "input": {
+        "taskId": "17"
+      },
+      "result": "{\"task\":{\"id\":\"17\",\"status\":\"in_progress\",\"subject\":\"Recover checkout\",\"description\":\"Retain diagnostics\",\"owner\":\"worker\"}}",
+      "isError": true,
+      "expected": {
+        "subject": "Recover checkout",
+        "description": "Retain diagnostics",
+        "owner": "worker",
+        "loading": false,
+        "error_row": true
+      },
+      "role": "intended difference"
+    },
+    {
+      "id": "failed-text-task",
+      "name": "TaskGet",
+      "input": {
+        "taskId": "17"
+      },
+      "result": "Task #17 [in_progress]: Recover checkout\nDescription: Retain diagnostics\nOwner: worker",
+      "isError": true,
+      "expected": {
+        "subject": "Recover checkout",
+        "description": "Retain diagnostics",
+        "owner": "worker",
+        "loading": false,
+        "error_row": true
+      },
+      "role": "intended difference"
+    },
+    {
+      "id": "successful-json-task",
+      "name": "TaskGet",
+      "input": {
+        "taskId": "17"
+      },
+      "result": "{\"task\":{\"id\":\"17\",\"status\":\"in_progress\",\"subject\":\"Recover checkout\",\"description\":\"Retain diagnostics\",\"owner\":\"worker\"}}",
+      "isError": false,
+      "expected": {
+        "subject": "Recover checkout",
+        "description": "Retain diagnostics",
+        "owner": "worker",
+        "loading": false,
+        "error_row": false
+      },
+      "role": "control"
+    },
+    {
+      "id": "plain-failed-result",
+      "name": "TaskGet",
+      "input": {
+        "taskId": "17"
+      },
+      "result": "Permission denied",
+      "isError": true,
+      "expected": {
+        "subject": null,
+        "loading": true,
+        "error_row": true
+      },
+      "role": "control"
+    },
+    {
+      "id": "pending-task",
+      "name": "TaskGet",
+      "input": {
+        "taskId": "17"
+      },
+      "isError": false,
+      "expected": {
+        "subject": null,
+        "loading": true,
+        "error_row": false
+      },
+      "role": "control"
+    },
+    {
+      "id": "empty-failed-result",
+      "name": "TaskGet",
+      "input": {
+        "taskId": "17"
+      },
+      "result": "",
+      "isError": true,
+      "expected": {
+        "subject": null,
+        "loading": true,
+        "error_row": false
+      },
+      "role": "control"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+695131f5087365387eb12eb0edf374b5eaf1caaeee05615f5c105589f850932a  src/features/chat/editResultPipeline.test.ts
+7d600865d2019d247938172fef1d2c751087b9e17c1f3d525782f85e69f2e662  evidence/chat/edit-result-diff/fixtures.json
+31a6a1bc86448686113d0939cbacae1904ab3e736aa28cf259a80963a91f06a0  evidence/chat/edit-result-diff/producer.rs
+dbf0142723db228d2fa545132704a1784bb26438899958ad61dc81da41122356  evidence/chat/edit-result-diff/run-producer.sh
