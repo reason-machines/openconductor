@@ -1,0 +1,6 @@
+COMMAND: timeout 180s npm ci --ignore-scripts --no-audit --no-fund
+(node:78) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+added 394 packages in 5s
+EXIT: 0
