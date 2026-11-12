@@ -1,0 +1,1 @@
+function p8t(t,e){if(t&&!e)return t;if(!t&&e)return e;if(t||e)return{...t,...e}}function cDr(t,e){const n={};for(const i in t){const r=t[i];if(e?.hasOwnProperty(i)){const o=e[i](r);o!=null&&Object.assign(n,o);continue}r===!0?n[`data-${i.toLowerCase()}`]="":r&&(n[`data-${i.toLowerCase()}`]=r.toString())}return n}
