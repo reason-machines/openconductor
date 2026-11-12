@@ -255,8 +255,11 @@ export function reducer(state: AppState, action: Action): AppState {
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => ({ ...w, manualStatus: action.status }));
     case "touchWorkspace":
       return updateWorkspace(state, action.repoId, action.workspaceId, (w) => withActivity(w, action.at));
-    case "createSection":
-      return withSections(state, createSection(state.sections ?? [], action.section, action.beforeSectionId));
+    case "createSection": {
+      const next = withSections(state, createSection(state.sections ?? [], action.section, action.beforeSectionId));
+      const members = new Set(next.sections?.find((section) => section.id === action.section.id)?.workspaceIds ?? []);
+      return { ...next, repos: next.repos.map((r) => ({ ...r, workspaces: r.workspaces.map((w) => (members.has(w.id) && w.pinnedAt !== undefined ? { ...w, pinnedAt: undefined } : w)) })) };
+    }
     case "editSection":
       return withSections(state, editSection(state.sections ?? [], { id: action.sectionId, name: action.name, emoji: action.emoji }));
     case "deleteSection":
@@ -387,6 +390,7 @@ export function useAppStore() {
   const [startup, setStartup] = useState<StoreStartup>(desktop ? "loading" : "ready");
   const sectionsWrittenAt = useRef<number | undefined>(undefined);
   const pendingSectionErrors = useRef<(() => void)[]>([]);
+  const pendingSectionUnpins = useRef(new Map<string, readonly string[]>());
   useEffect(() => {
     if (!desktop) return;
     let current = true;
@@ -426,14 +430,28 @@ export function useAppStore() {
     if (!desktop || at === undefined || at === sectionsWrittenAt.current) return;
     sectionsWrittenAt.current = at;
     const onErrors = pendingSectionErrors.current.splice(0);
+    const unpinIds = [...new Set([...pendingSectionUnpins.current].flatMap(([sectionId, members]) => state.sections?.some((section) => section.id === sectionId) ? members : []))];
+    pendingSectionUnpins.current.clear();
+    const reloadCreationPins = () => {
+      if (unpinIds.length > 0) loadReposFromDb().then((repos) => rawDispatch({ type: "hydrate", repos }), (err) => console.error("conductor.db: could not reload workspace pins", err));
+    };
     invoke<boolean>("db_write_navigation_sections", { sections: state.sections ?? [], updatedAt: at }).then(
       (written) => {
         // A newer layout is stored (another window wrote it): show that one.
-        if (!written) reloadSections();
+        if (!written) {
+          reloadSections();
+          reloadCreationPins();
+          return;
+        }
+        for (const workspaceId of unpinIds) invoke("db_set_workspace_pinned", { workspaceId, pinned: false }).catch((err) => {
+          console.error("conductor.db: could not unpin workspace after section creation", err);
+          reloadCreationPins();
+        });
       },
       (err) => {
         console.error("conductor.db: could not save sidebar sections", err);
         reloadSections();
+        reloadCreationPins();
         for (const onError of onErrors) onError();
       },
     );
@@ -521,6 +539,9 @@ export function useAppStore() {
       }
       if (desktop && (action.type === "createSection" || action.type === "editSection") && action.onError) {
         pendingSectionErrors.current.push(action.onError);
+      }
+      if (desktop && action.type === "createSection") {
+        pendingSectionUnpins.current.set(action.section.id, action.section.workspaceIds);
       }
       rawDispatch(action);
       // Optimistic, as in Conductor: on a failed write, reload the rows the database has.

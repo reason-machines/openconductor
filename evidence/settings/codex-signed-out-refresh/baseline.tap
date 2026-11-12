@@ -1,0 +1,68 @@
+(node:123) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:130) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Codex initial pending status displays Checking before any provider record arrives
+ok 1 - Codex initial pending status displays Checking before any provider record arrives
+  ---
+  duration_ms: 3054.723088
+  type: 'test'
+  ...
+# Subtest: Codex settled signed-out status retains login action and enabled Refresh
+ok 2 - Codex settled signed-out status retains login action and enabled Refresh
+  ---
+  duration_ms: 1181.761176
+  type: 'test'
+  ...
+# Subtest: Codex signed-out Refresh displays Checking while both status responses remain pending
+not ok 3 - Codex signed-out Refresh displays Checking while both status responses remain pending
+  ---
+  duration_ms: 1225.154136
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/tests/chat-search/codexSignedOutRefresh.dom.test.mjs:164:3'
+  failureType: 'testCodeFailure'
+  error: 'A retained provider record must not hide the signed-out checking state'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'AuthenticationChatGPTRecommendedCLIAPI keyCLI not authenticatedRefreshRun codex login'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/tests/chat-search/codexSignedOutRefresh.dom.test.mjs:173:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Codex signed-out Refresh displays Checking while CLI status alone remains pending
+not ok 4 - Codex signed-out Refresh displays Checking while CLI status alone remains pending
+  ---
+  duration_ms: 651.182688
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/tests/chat-search/codexSignedOutRefresh.dom.test.mjs:164:3'
+  failureType: 'testCodeFailure'
+  error: 'A retained provider record must not hide the signed-out checking state'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'AuthenticationChatGPTRecommendedCLIAPI keyCLI not authenticatedRefreshRun codex login'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/64baa6b6-4caf-47f1-aa8d-e14a966cc243/repo/tests/chat-search/codexSignedOutRefresh.dom.test.mjs:173:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Codex authenticated Refresh preserves Connected and settles without launching login
+ok 5 - Codex authenticated Refresh preserves Connected and settles without launching login
+  ---
+  duration_ms: 653.833515
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 3
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13367.723877
