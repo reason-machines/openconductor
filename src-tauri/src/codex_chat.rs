@@ -29,7 +29,7 @@ use tauri::{AppHandle, Emitter, Runtime, State};
 
 use crate::agent::codex_cli::{ApprovalPolicy, CodexPolicy, SandboxMode};
 use crate::agent::codex_consent::ConsentAnswer;
-use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
+use crate::agent::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions, TurnOptions};
 use crate::agent::codex_runner::{CodexRunner, RunnerConfig, Sink, Timeouts};
 use crate::agent::codex_wire::{Payload, TurnEnd};
 use crate::agent_binaries::{Agent, BinaryManager};
@@ -149,8 +149,8 @@ pub async fn codex_open_chat<R: Runtime>(
     // the bundled copy (waits for its download), else the CLI on the login
     // shell's PATH (agent_launch.rs).
     let mut launch = settings.codex_launch(&cwd)?;
-    // Effort is selected per turn, including an explicit model with no effort.
-    launch.config.retain(|(key, _)| key != "model_reasoning_effort");
+    // Per-turn requests carry effort and Fast; process overrides would mask explicit off.
+    launch.config.retain(|(key, _)| key != "model_reasoning_effort" && key != "service_tier");
     let launch_app = app.clone();
     launch.executable = tauri::async_runtime::spawn_blocking(move || {
         crate::agent_launch::launch(&launch_app, Agent::Codex)
@@ -167,6 +167,7 @@ pub async fn codex_open_chat<R: Runtime>(
             model: None,
             policy: policy.unwrap_or_else(default_policy),
             developer_instructions: None,
+            fast_mode: Some(settings.get().map_err(|e| e.to_string())?.models.default_fast_mode),
         },
         resume: thread_id,
         client_name: "openconductor".into(),
@@ -208,6 +209,7 @@ pub async fn codex_prompt(
     text: String,
     model: Option<String>,
     effort: Option<String>,
+    fast_mode: Option<bool>,
 ) -> Result<TurnEnd, String> {
     let runner = state.get(&chat_id)?;
     let effort = prompt_effort(model.as_deref(), effort, || {
@@ -217,7 +219,8 @@ pub async fn codex_prompt(
             .as_str()
             .map(str::to_owned)
     });
-    let end = runner.prompt(text, model, effort);
+    let fast_mode = fast_mode.or_else(|| settings.get().ok().map(|s| s.models.default_fast_mode));
+    let end = runner.prompt(text, TurnOptions { model, effort, fast_mode });
     tauri::async_runtime::spawn_blocking(move || {
         end.recv()
             .unwrap_or_else(|_| TurnEnd::failed("The Codex chat closed."))

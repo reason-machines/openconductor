@@ -1,0 +1,1 @@
+function zUt(t,e){switch(t){case"meta":return e.metaKey;case"ctrl":return e.ctrlKey;case"alt":return e.altKey;case"shift":return e.shiftKey}}

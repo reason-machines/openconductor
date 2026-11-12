@@ -1,0 +1,143 @@
+2026-11-12T04:28:01.3440853Z   ...
+2026-11-12T04:28:01.3572471Z # Subtest: mounted working-steer/cmd-enter/opposite: workspace-copy failure retains draft for explicit retry
+2026-11-12T04:28:01.3573526Z ok 84 - mounted working-steer/cmd-enter/opposite: workspace-copy failure retains draft for explicit retry
+2026-11-12T04:28:01.3574124Z   ---
+2026-11-12T04:28:01.3574386Z   duration_ms: 277.62459
+2026-11-12T04:28:01.3574661Z   type: 'test'
+2026-11-12T04:28:01.5228523Z   ...
+2026-11-12T04:28:01.5228906Z # Subtest: running login body padding click restores real input focus
+2026-11-12T04:28:01.5230453Z not ok 85 - running login body padding click restores real input focus
+2026-11-12T04:28:01.5230839Z   ---
+2026-11-12T04:28:01.5231029Z   duration_ms: 616.152813
+2026-11-12T04:28:01.5231265Z   type: 'test'
+2026-11-12T04:28:01.5231757Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-search/loginTerminalFocus.dom.test.mjs:144:3'
+2026-11-12T04:28:01.5232176Z   failureType: 'testCodeFailure'
+2026-11-12T04:28:01.5232418Z   error: |-
+2026-11-12T04:28:01.5232732Z     Clicking the padded wrapper must focus its own xterm textarea
+2026-11-12T04:28:01.5233076Z     + actual - expected
+2026-11-12T04:28:01.5233294Z
+2026-11-12T04:28:01.5233492Z     + HTMLButtonElement {}
+2026-11-12T04:28:01.5233734Z     - HTMLTextAreaElement {
+2026-11-12T04:28:01.5234050Z     -   [Symbol(SameObject caches)]: [Object: null prototype] {
+2026-11-12T04:28:01.5234406Z     -     classList: DOMTokenList {}
+2026-11-12T04:28:01.5234648Z     -   }
+2026-11-12T04:28:01.5234807Z     - }
+2026-11-12T04:28:01.5234928Z
+2026-11-12T04:28:01.5235053Z   code: 'ERR_ASSERTION'
+2026-11-12T04:28:01.5235717Z   name: 'AssertionError'
+2026-11-12T04:28:01.5235945Z   expected:
+2026-11-12T04:28:01.5236145Z   actual:
+2026-11-12T04:28:01.5236369Z   operator: 'strictEqual'
+2026-11-12T04:28:01.5236630Z   stack: |-
+2026-11-12T04:28:01.5237281Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-search/loginTerminalFocus.dom.test.mjs:149:14)
+2026-11-12T04:28:01.5238000Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:28:01.5238505Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-12T04:28:01.5238875Z   ...
+2026-11-12T04:28:01.5239279Z # Subtest: completed but live login body padding click restores real input focus
+2026-11-12T04:28:01.5239909Z not ok 86 - completed but live login body padding click restores real input focus
+2026-11-12T04:28:01.5240273Z   ---
+2026-11-12T04:28:01.5240466Z   duration_ms: 351.414224
+2026-11-12T04:28:01.5240697Z   type: 'test'
+2026-11-12T04:28:01.5241185Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-search/loginTerminalFocus.dom.test.mjs:144:3'
+2026-11-12T04:28:01.5241763Z   failureType: 'testCodeFailure'
+2026-11-12T04:28:01.5242018Z   error: |-
+2026-11-12T04:28:01.5242320Z     Clicking the padded wrapper must focus its own xterm textarea
+2026-11-12T04:28:01.5242667Z     + actual - expected
+2026-11-12T04:28:01.5242876Z
+2026-11-12T04:28:01.5243069Z     + HTMLButtonElement {}
+2026-11-12T04:28:01.5243312Z     - HTMLTextAreaElement {
+2026-11-12T04:28:01.5243654Z     -   [Symbol(SameObject caches)]: [Object: null prototype] {
+2026-11-12T04:28:01.5244000Z     -     classList: DOMTokenList {}
+2026-11-12T04:28:01.5244238Z     -   }
+2026-11-12T04:28:01.5244426Z     - }
+2026-11-12T04:28:01.5244595Z
+2026-11-12T04:28:01.5244785Z   code: 'ERR_ASSERTION'
+2026-11-12T04:28:01.5245015Z   name: 'AssertionError'
+2026-11-12T04:28:01.5245248Z   expected:
+2026-11-12T04:28:01.5245441Z   actual:
+2026-11-12T04:28:01.5245644Z   operator: 'strictEqual'
+2026-11-12T04:28:01.5245903Z   stack: |-
+2026-11-12T04:28:01.5246529Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-search/loginTerminalFocus.dom.test.mjs:149:14)
+2026-11-12T04:28:01.5247223Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T04:28:01.5248025Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T04:28:01.5248395Z   ...
+2026-11-12T04:28:01.5248772Z # Subtest: real xterm child clicks already focus and type into their live login PTY
+2026-11-12T04:28:01.5249333Z ok 87 - real xterm child clicks already focus and type into their live login PTY
+2026-11-12T04:28:01.5249669Z   ---
+2026-11-12T04:28:01.5249854Z   duration_ms: 251.525632
+2026-11-12T04:28:01.5250076Z   type: 'test'
+2026-11-12T04:28:01.5250278Z   ...
+2026-11-12T04:28:01.5250654Z # Subtest: dismissing login does not focus its terminal or refresh authentication
+2026-11-12T04:28:01.5251206Z ok 88 - dismissing login does not focus its terminal or refresh authentication
+2026-11-12T04:28:01.5251583Z   ---
+2026-11-12T04:28:01.5251772Z   duration_ms: 178.137681
+2026-11-12T04:28:01.5252000Z   type: 'test'
+2026-11-12T04:28:01.5252188Z   ...
+2026-11-12T04:28:01.5252522Z # Subtest: Done refreshes authentication without focusing the terminal
+2026-11-12T04:28:01.5253010Z ok 89 - Done refreshes authentication without focusing the terminal
+2026-11-12T04:28:01.5253326Z   ---
+2026-11-12T04:28:01.5253479Z   duration_ms: 231.732494
+2026-11-12T04:28:01.5253623Z   type: 'test'
+2026-11-12T04:28:01.5253747Z   ...
+2026-11-12T04:28:01.5254274Z # Warning: `ReactDOMTestUtils.act` is deprecated in favor of `React.act`. Import `act` from `react` instead of `react-dom/test-utils`. See https://react.dev/warnings/react-dom-test-utils for more info.
+2026-11-12T04:28:01.5254853Z # Subtest: the installed Popover supports this DOM harness's dismissal and keyboard focus checks
+2026-11-12T04:28:01.5255247Z ok 90 - the installed Popover supports this DOM harness's dismissal and keyboard focus checks
+2026-11-12T04:28:01.5255633Z   ---
+2026-11-12T04:28:01.5255799Z   duration_ms: 494.644965
+2026-11-12T04:28:01.5255953Z   type: 'test'
+2026-11-12T04:28:01.5256100Z   ...
+2026-11-12T04:28:01.5256376Z # Subtest: six recent chats initially show four chips and one +2 overflow trigger
+2026-11-12T04:28:01.5256757Z ok 91 - six recent chats initially show four chips and one +2 overflow trigger
+2026-11-12T04:28:01.5257012Z   ---
+2026-11-12T04:28:01.5257162Z   duration_ms: 56.272088
+2026-11-12T04:28:01.5257328Z   type: 'test'
+2026-11-12T04:28:01.5257467Z   ...
+2026-11-12T04:28:01.5257942Z # Subtest: opening recent-chat overflow retains its trigger and portals only overflow chips
+2026-11-12T04:28:01.5258338Z ok 92 - opening recent-chat overflow retains its trigger and portals only overflow chips
+2026-11-12T04:28:01.5258599Z   ---
+2026-11-12T04:28:01.5258733Z   duration_ms: 134.207667
+2026-11-12T04:28:01.5258872Z   type: 'test'
+2026-11-12T04:28:01.5259011Z   ...
+2026-11-12T04:28:01.5259292Z # Subtest: Escape dismisses recent-chat overflow and returns keyboard focus to its retained trigger
+2026-11-12T04:28:01.5259722Z ok 93 - Escape dismisses recent-chat overflow and returns keyboard focus to its retained trigger
+2026-11-12T04:28:01.5259984Z   ---
+2026-11-12T04:28:01.5260125Z   duration_ms: 179.315937
+2026-11-12T04:28:01.5260290Z   type: 'test'
+2026-11-12T04:28:01.5260437Z   ...
+2026-11-12T04:28:01.5260702Z # Subtest: an outside press dismisses the actual recent-chat popup without selecting a transcript
+2026-11-12T04:28:01.5261125Z ok 94 - an outside press dismisses the actual recent-chat popup without selecting a transcript
+2026-11-12T04:28:01.5261420Z   ---
+2026-11-12T04:28:01.5261572Z   duration_ms: 194.741714
+2026-11-12T04:28:01.5261751Z   type: 'test'
+2026-11-12T04:28:01.5261889Z   ...
+2026-11-12T04:28:01.5262189Z # Subtest: an overflow source chip reports its own identity without replacing the inline group
+2026-11-12T04:28:01.5262615Z ok 95 - an overflow source chip reports its own identity without replacing the inline group
+2026-11-12T04:28:01.5262916Z   ---
+2026-11-12T04:28:01.5263062Z   duration_ms: 180.163435
+2026-11-12T04:28:01.5263225Z   type: 'test'
+2026-11-12T04:28:01.5263374Z   ...
+2026-11-12T04:28:01.5263641Z # Subtest: recent-chat overflow can reopen and dismiss again without duplicating chips
+2026-11-12T04:28:01.5264117Z ok 96 - recent-chat overflow can reopen and dismiss again without duplicating chips
+2026-11-12T04:28:01.5264388Z   ---
+2026-11-12T04:28:01.5264543Z   duration_ms: 357.919812
+2026-11-12T04:28:01.5264703Z   type: 'test'
+2026-11-12T04:28:01.5264858Z   ...
+2026-11-12T04:28:01.5265084Z # Subtest: five fitting recent chats need no overflow trigger or popup
+2026-11-12T04:28:01.5265399Z ok 97 - five fitting recent chats need no overflow trigger or popup
+2026-11-12T04:28:01.5265598Z   ---
+2026-11-12T04:28:01.5265729Z   duration_ms: 44.241596
+2026-11-12T04:28:01.5265878Z   type: 'test'
+2026-11-12T04:28:01.5265996Z   ...
+2026-11-12T04:28:01.5266504Z # Warning: `ReactDOMTestUtils.act` is deprecated in favor of `React.act`. Import `act` from `react` instead of `react-dom/test-utils`. See https://react.dev/warnings/react-dom-test-utils for more info.
+2026-11-12T04:28:01.5267162Z # Subtest: actual Transcript DOM highlights only top-level text, centers selection, and cleans up on updates/close
+2026-11-12T04:28:01.5267994Z ok 98 - actual Transcript DOM highlights only top-level text, centers selection, and cleans up on updates/close
+2026-11-12T04:28:01.5268549Z   ---
+2026-11-12T04:28:01.5268740Z   duration_ms: 162.538453
+2026-11-12T04:28:01.5268958Z   type: 'test'
+2026-11-12T04:28:01.5269150Z   ...
+2026-11-12T04:28:01.5269662Z # Subtest: actual keybinding provider honors overrides, terminal exclusion, inactive scopes, and reopening focus
+2026-11-12T04:28:01.5270232Z ok 99 - actual keybinding provider honors overrides, terminal exclusion, inactive scopes, and reopening focus
+2026-11-12T04:28:01.5270499Z   ---
+2026-11-12T04:28:01.5270616Z   duration_ms: 30.5742
+2026-11-12T04:28:01.5270759Z   type: 'test'
+2026-11-12T04:28:01.5270981Z   ...

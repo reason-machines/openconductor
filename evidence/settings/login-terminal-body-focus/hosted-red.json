@@ -1,0 +1,36 @@
+{
+  "author": "Conductor Rebuild",
+  "result": "QUALIFIED_INTENDED_FOCUS_RED",
+  "repository": "reason-machines/openconductor",
+  "pr": 1130,
+  "head_sha": "9775be71cbd5d441b9ea5a0be24f0790832f4281",
+  "run_id": 43154707640,
+  "job_id": 130971825134,
+  "fixture_sha256": "ccf31e78a273547d153bbcfdd98ba76a5413b4da030df3fcfa7037aac0a16253",
+  "log_lines": [
+    22399,
+    22482
+  ],
+  "failures": [
+    "running login body padding click restores real input focus",
+    "completed but live login body padding click restores real input focus"
+  ],
+  "assertion": "Clicking the padded wrapper must focus its own xterm textarea",
+  "actual": "HTMLButtonElement",
+  "expected": "HTMLTextAreaElement",
+  "passing_controls": [
+    "real xterm child clicks already focus and type into their live login PTY",
+    "dismissing login does not focus its terminal or refresh authentication",
+    "Done refreshes authentication without focusing the terminal"
+  ],
+  "dom_step_totals": {
+    "tests": 100,
+    "pass": 98,
+    "fail": 2,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "typecheck_build": "PASS",
+  "candidate": "PENDING",
+  "native_provider": "NOT_RUN"
+}
