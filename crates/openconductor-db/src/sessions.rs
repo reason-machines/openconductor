@@ -991,14 +991,16 @@ mod caffeinate_status_tests {
             ("unowned", None, "working", true),
             ("idle", None, "idle", true),
         ] {
-            sqlx::query("INSERT INTO sessions (id, workspace_id, status, is_hidden) VALUES (?, ?, ?, ?)")
-                .bind(id)
-                .bind(workspace)
-                .bind(status)
-                .bind(hidden)
-                .execute(&pool)
-                .await
-                .unwrap();
+            sqlx::query(
+                "INSERT INTO sessions (id, workspace_id, status, is_hidden) VALUES (?, ?, ?, ?)",
+            )
+            .bind(id)
+            .bind(workspace)
+            .bind(status)
+            .bind(hidden)
+            .execute(&pool)
+            .await
+            .unwrap();
         }
 
         let visible = active_statuses(&pool).await.unwrap();
