@@ -90,7 +90,7 @@ async function fixture(input: InputCase) {
     },
   }, { filename: "ToolRows.tsx" });
   assert.equal(typeof production.ConductorToolRow, "function");
-  assert.equal(typeof production.opensByDefault, "function");
+  assert.ok(typeof production.opensByDefault === "function");
   const call = normalizedCall(input);
   const defaultOpen = production.opensByDefault(call.tool);
   assert.equal(defaultOpen, input.name === "ImageGeneration");

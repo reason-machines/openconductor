@@ -45,6 +45,14 @@ Both fallback assertions also require the body to remain visible after clicking 
 
 The Test Behavior, Not Implementation principle shapes this check: source text is not the RED assertion. The callback count and mounted body are the observed behavior. A loader, import, typecheck, or build error does not qualify as product RED.
 
+## Pre-RED typecheck repair
+
+The first published head `b690ca1aa7b6a9d51e708affff23cb9a96861a89` failed [the Keybindings build](https://github.com/reason-machines/openconductor/actions/runs/43137099541/job/130914947665) with TS18046 at the new test's line 95. `assert.equal(typeof production.opensByDefault, "function")` checks the export at runtime but does not narrow its `unknown` type for TypeScript. This checkpoint is not qualified product RED.
+
+A one-line test-only repair uses `assert.ok(typeof production.opensByDefault === "function")`. Its runtime condition is unchanged, and TypeScript can now narrow the export. All five inputs, normalization, module loading, parent state, behavioral assertions, controls, reference bytes, and production bytes remain unchanged. No local typecheck or test is run. [The repair record](typecheck-repair.json) preserves the original test hash and seals the repaired test hash before its automatic push. The original freeze record stays intact as history.
+
+A fresh automatic hosted baseline must demonstrate both exact fallback failures and all three passing controls on the repaired test before any product change. The repaired test bytes then remain unchanged through GREEN. The initial compiler failure must not be counted as behavioral RED.
+
 ## Execution and delivery limits
 
 No local Node, npm, React, typecheck, build, dependency installation, provider, native, or app runtime is admitted. Preparation uses only source reads, Python byte checks, and Git. Existing automatic hosted CI runs the test through `node --test "src/**/*.test.ts"`. No workflow is edited, manually dispatched, or rerun.
