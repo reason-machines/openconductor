@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import type { Repo } from "../../state/types";
 import * as repoIcon from "../../state/repoIcon.ts";
 import { searchEmoji } from "../../components/repoEmoji.ts";
+import * as persistence from "../../lib/persistence/producer.ts";
 
 const dependencies = createRequire(import.meta.url);
 const React = dependencies("react");
@@ -31,6 +32,7 @@ function load(path: string, imports: Record<string, unknown>, suffix = "") {
     exports,
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name === "../../lib/persistence/producer.ts") return persistence;
       if (name in imports) return imports[name];
       throw new Error(`Unexpected repository icon popup dependency: ${name}`);
     },

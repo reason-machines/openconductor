@@ -1,0 +1,36 @@
+{
+  "main": "94a5aad810e9f0969e45fb6c7644d901023f917c",
+  "head": "fb9f99896f69f32ce663995a7f0ac05e1391d118",
+  "fixture_sha256": "fc1d8bb2a8df5c7dc665a212a722a7732924d232a905efa0a577415ec2b6c006",
+  "patch_sha256": "14caa0633616bd11d4a2d6bcbbf1cb93bceb63d68d70cf2fb40f03df49051e5d",
+  "grant": "f7d1f92c-f88a-4eae-b98c-bfbb7970f8d8",
+  "start": "2026-11-12T17:12:32.586444+00:00",
+  "producer": "Conductor Rebuild",
+  "command": "env NODE_OPTIONS=--max-old-space-size=768 nice -n19 timeout --kill-after=5s 90s node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/workspaceBranchTitle.test.ts",
+  "baseline": {
+    "exit": 1,
+    "tests": 4,
+    "pass": 0,
+    "fail": 4,
+    "intended_assertions": "title was undefined at line68; all four preceding displayed-text assertions passed. No separate all-control test passed."
+  },
+  "candidate": {
+    "exit": 0,
+    "tests": 4,
+    "pass": 4
+  },
+  "ownjobs": [],
+  "releasedAt": "2026-11-12T17:13:54.858142+00:00",
+  "limits": [
+    "No adjacents admitted or run.",
+    "No build/typecheck/browser/native hover/provider/package execution.",
+    "Four cases configure no branch prefix; matching-prefix title behavior remains unexercised here.",
+    "OptionArrow13/durable11/live-refresh unexecuted and unchanged."
+  ],
+  "red.tap": "44288cbed5f6428dedd9bae25d39c3e8e0cb5d1a0f5e8ac7b25ca75c31659d78",
+  "green.tap": "2c4131924585df51d56c6e4a97b1e84e08043c8ac5050390142fa4f355362864",
+  "red.tap.gz": {
+    "sha256": "637c0a5a7d2a56c99976154fc6c109a0a3edc7384e5655dfb7dc142c394872a2",
+    "uncompressed_sha256": "44288cbed5f6428dedd9bae25d39c3e8e0cb5d1a0f5e8ac7b25ca75c31659d78"
+  }
+}

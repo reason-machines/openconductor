@@ -1,0 +1,227 @@
+{
+  "candidate": "CHAT.GENERIC-NONMCP-STRUCTURED-RESULT",
+  "author": "Conductor Rebuild",
+  "qualified_main": "869d6efad0cdeb6a889538978f3e6416f0e3a2c2",
+  "requalified_main": "85194324762be7c00ba8d092c4e00bdb564f1ac4",
+  "patch_preparation": {
+    "source_snapshots_equal": 17,
+    "frozen_files_equal": 2,
+    "patch_hunks_applicable": 2,
+    "product_patch_applied": true,
+    "behavior": "GREEN_16",
+    "execution_main": "4b6bc34e93c4fa9ab3eaa042e855b77bd712a926",
+    "execution_receipt": "execution/run.json"
+  },
+  "packet_sha256": "221557598e75277ac575920ba94f4b4245d702ac08277c5ac516770244c5d8ee",
+  "recorded_reference_version": "Conductor 0.87.6",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "rea_limits": "Original semantic renderer analysis exhausted heap and skipped it. Retained shipped bytes/caller joins only, not new semantic analysis or fresh installed/native identity.",
+  "assets": {
+    "renderApp-D_fmY7hW.js": {
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index-BGEQ8YjU.js": {
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "spans": {
+    "hIt": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7877770,
+        7878325
+      ],
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340"
+    },
+    "O1o": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7587305,
+        7588525
+      ],
+      "sha256": "9f3ff5dc1b79f4690ad7b89b8911acbd083c2b97a4b3268f14f18cd964972184"
+    },
+    "D1o": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7587411,
+        7588936
+      ],
+      "sha256": "de6319d523c0850abc741eacb622f2ec23500d3b4ee0cf9a03d5bb2a550a4013"
+    },
+    "L1o": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7588525,
+        7588936
+      ],
+      "sha256": "38f9343e156728f1decb69430d406c3c1ff29482da74e69e24b6d5c538834f25"
+    },
+    "Qpo": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7877188,
+        7877770
+      ],
+      "sha256": "200844523cd3dbdb0e9e1fde14816c920725a8cd8a6dca635a72d82483b989cc"
+    },
+    "aUt": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7874789,
+        7876722
+      ],
+      "sha256": "38fb3863839bfe721fc7a49ca63a1fcf9227d9f7494148f00e8698433b119cb2"
+    },
+    "V9e": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7864461,
+        7865823
+      ],
+      "sha256": "56f69b95cf3b1cffddb55a94b930bc5a21f94d0e6d209b570c0f49dff595576c"
+    },
+    "iUt": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7800630,
+        7801811
+      ],
+      "sha256": "91c4d89086192573e0336b45b952926daa9995014000a2c1b51e22b29c1d2189"
+    },
+    "Kzt": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7589311,
+        7589598
+      ],
+      "sha256": "0463f0835043fdda51535d2f76dac792509b24fa6018ef256e0def7242cb1595"
+    },
+    "B1o": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7590393,
+        7590769
+      ],
+      "sha256": "21a6a575b28f4a5e0ac160ee6a2c0a39d95949d51f6f8449406ef3962460413b"
+    },
+    "ROo": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8870021,
+        8872955
+      ],
+      "sha256": "4b020f575c8024708d1576ab02d0154a6690a710abe1fbe5e603fd7731e69afe"
+    },
+    "Mu": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7795403,
+        7798463
+      ],
+      "sha256": "2a88a2516341f7a98563d2f4b2a602ac9c0acc584282cd01cf54a011e3e4231d"
+    },
+    "H9e": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7795301,
+        7795403
+      ],
+      "sha256": "c1c05fe467eb42d9348b556faa81810d7e7e4c7f4d7fe03ec1d662d4ba0e32cb"
+    },
+    "U9e": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        7795242,
+        7795300
+      ],
+      "sha256": "a9c4a88c573571730b87e9028614a84a03fccc5a21ddbdd15a6dd1e2f2bd9ddd"
+    },
+    "lTr": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        76433,
+        76538
+      ],
+      "sha256": "ad793f6d731d3c98c9eee95b63d80e174dc9d21b5f98034389fbc187f2342a71"
+    },
+    "cTr": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        76538,
+        76601
+      ],
+      "sha256": "b7e90c5047c22ae93d2fb72e4096106d5ff049309cf51206635dda9928f87627"
+    },
+    "ioi": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        76601,
+        76663
+      ],
+      "sha256": "26490e6b30b8a0ecc587ac088ec573156805fe584e9ddc7d0f8185a997de62d2"
+    },
+    "TOo": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8865983,
+        8866426
+      ],
+      "sha256": "4e920d1f6814b732618ad039f643c613e29652f89fd4b22d4d21ae38f7bd8b76"
+    },
+    "uie": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        1148415,
+        1148596
+      ],
+      "sha256": "bba1207f3241d3cd24b8e70dceafa842f7d2b327961299151c9692888053b34e"
+    },
+    "visibility-import": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        61086,
+        61095
+      ],
+      "sha256": "6167d2cc1e08f46f339106a793891946bed1335e1728872a702172b44d6ddfcf"
+    },
+    "visibility-export": {
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_half_open": [
+        3487993,
+        3488002
+      ],
+      "sha256": "6aabc9a2e5b004703b7033382a6a7607fe45fabd83a135c67b8b59fe2ad68b8f"
+    }
+  },
+  "current_main_snapshots": {
+    "ToolRows.tsx": "abc89ded0263e2aa8304d2b3b6a48fae350994157bdf4388b25300365b477008",
+    "Transcript.tsx": "0c6bcb94994afe0eb5f9fd8e5a10849f29e79dbb6fbcc6dbded2975324d1e4dc",
+    "conductorTools.ts": "05c3a85bed997b1114e1696d083855d4e39c5d614fe57ddeb0bade8bde7cc64a",
+    "view.ts": "d318201a7a5078a576ee9f4c1da2481768c8d1894f4d066b009492216cada331",
+    "reason.ts": "e5588994a8fbe290512a45579efd96c86663a1455eb9dd3413fc8452416483ee",
+    "types.ts": "a20668440de9c41b8952a1ef1c7864624e2624b60108cd2d9afafba89ca7a5e0",
+    "reducer.ts": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+    "claude_map.rs": "e0d079396976a7e491e11ff1b9f5d3d3e5721c21c1f3ab2f006d6b337ad0a023",
+    "wire.rs": "5479cf81b638f2ede410d3fb10861f0194477f6bc251435d6a103dbc3c1510d0",
+    "updates.rs": "a38f31d40f38a450cb9cdff0202977d8c4208ca6364907c16e0b497e27670db5",
+    "claudeChat.ts": "2c451756b4865d540df0077d051977751ab74e68a2a9e6401a17e020dcea0668",
+    "claude_commands.rs": "26e68197cfb6609cb4b681879ad6641426fcdba3ec0abf039d7227a1f5da4056",
+    "genericToolLabels.test.ts": "f7a5610ec93ee528a4e08dc8d8f7f6d691b1efd5dc35a8cf0166678c70f203a4",
+    "terminalOutputRawResult.test.ts": "cf4cd97bd5b3d3928dc47128a501f354d4f04dbf0fe8d5347ae325fbbd64a55a",
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "tsconfig.json": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5"
+  },
+  "frozen_inputs_sha256": "d6af06d2d52d236942bac11425f043a7ec40727129c5eeb8899ba24e263987da",
+  "frozen_test_sha256": "ff5d97c3480bc149c2e0d270bcfe04108add26b2521c9582a46775e2668d655a",
+  "proposed_patch_sha256": "25d9f2b287f0ba9e6fece534c158af16fca9dd9d12d94f5b9c5dd547851577e8",
+  "verification": {
+    "manifest_files": 48,
+    "exact_retained_spans": 21,
+    "current_main_snapshots": 17,
+    "method": "SHA-256 of complete packet files, exact retained span byte equality against hashed whole assets, and live source snapshot hashes. No vendor JavaScript execution."
+  }
+}

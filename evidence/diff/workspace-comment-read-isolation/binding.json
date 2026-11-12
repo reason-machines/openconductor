@@ -1,0 +1,80 @@
+{
+  "source_main": "2ffcb278ff76c92716e98c5f9de6f90b49027b39",
+  "files": [
+    {
+      "path": "src/App.tsx",
+      "sha256": "5376811866211058d8ce2b1430ea38b7dbbaa6286631b742aeefae83a7017709"
+    },
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "sha256": "64f2a28f47845acb134358c62115f6ac813b7fbbbed319d5962c47a59d6e12a9"
+    },
+    {
+      "path": "src/features/diff/ReviewComments.tsx",
+      "sha256": "98fe4f940144d60f1c15375068772647dfa2f36f71743fb0f0e197af39396ec9"
+    },
+    {
+      "path": "src/features/diff/commentsApi.ts",
+      "sha256": "69de64da7711ed0b9f852244b4b1f5dcf09cff7b5a4c1cb19e81f49fd48ead43"
+    },
+    {
+      "path": "src/features/diff/commentStore.ts",
+      "sha256": "89b6dc1e8c4acd63482bdca83147d1eed286b06ef1bc40c25cbc25440c44af3c"
+    }
+  ],
+  "runtime": "NOT_RUN",
+  "qualification": "INQUIRY_ONLY",
+  "product_edits": false,
+  "original_asset": {
+    "name": "index-BGEQ8YjU.js",
+    "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "original_spans": [
+    {
+      "name": "workspace-query",
+      "utf8_half_open": [
+        2288425,
+        2288676
+      ],
+      "sha256": "8c853ec794ef2897c43ad6b4a043d1ed7ba93885165921650efcae90016ed3d8",
+      "path": "workspace-query.txt"
+    },
+    {
+      "name": "workspace-result-commit",
+      "utf8_half_open": [
+        2298344,
+        2298617
+      ],
+      "sha256": "0be3639d475df5c43d0985fd38618dce26fd68c40e5cabaf44cee4b49328bf40",
+      "path": "workspace-result-commit.txt"
+    },
+    {
+      "name": "workspace-selector",
+      "utf8_half_open": [
+        3059786,
+        3059956
+      ],
+      "sha256": "21856d8d746a7eb4dbede1c8c4abe2e4e812ff703d2c97cef829ad636421ee10",
+      "path": "workspace-selector.txt"
+    }
+  ],
+  "candidate_hypothesis": "A late list success/error from prior workspace applies to shared React state after switching because reload does not retain an active workspace identity; native invoke is asynchronous and App reuses the component.",
+  "proposed_witness": {
+    "inputs": "Two active local workspacesA/B each with example.txt and distinct saved commentid/body; actual same WorkspaceView remains mounted.",
+    "ordered_events": [
+      "A native list request remains pending",
+      "App switches toB",
+      "B list succeeds and Bcomment appears",
+      "A list succeeds afterward"
+    ],
+    "source_expected": "Original selector forB still reads B bucket, not Aresult.",
+    "source_candidate": "A result calls shared setStored after B result; current hook then projects Arows under B workspace.",
+    "runtime": "NOT_RUN"
+  },
+  "scope_exclusions": [
+    "No frozen1181case/transport/handoff edit.",
+    "No DE6-03 inline predicate/annotation edit.",
+    "No135/49 scope."
+  ],
+  "review": "Existing165d source/domain review running; not a ready qualified newleaf."
+}

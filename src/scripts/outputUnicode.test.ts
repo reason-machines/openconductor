@@ -44,6 +44,7 @@ async function fixture(output: string, cols = 12) {
   const inert = () => {};
   class Observer { observe() {} disconnect() {} }
   const boundaries: Record<string, unknown> = {
+    "src/backend": { openUrl: () => { throw new Error("No browser in Unicode regression"); } },
     "src/features/terminal/font": {
       currentTerminalFont: () => ({ family: "monospace", size: 12 }),
       onTerminalFont: () => () => { fontOff++; }, TERMINAL_LINE_HEIGHT: 1.2,
@@ -74,6 +75,7 @@ async function fixture(output: string, cols = 12) {
     const require = (name: string): unknown => {
       if (name === "react" || name === "react/jsx-runtime" || name === "@xterm/addon-unicode11") return deps(name);
       if (name === "@xterm/xterm") return { Terminal: Screen };
+      if (name === "@tauri-apps/plugin-dialog") return { confirm: () => { throw new Error("No link warning in outputUnicode regression"); } };
       if (name === "@xterm/addon-fit") return { FitAddon: class { activate() {} dispose() {} fit() {} } };
       if (name.endsWith(".css")) return {};
       assert.ok(name.startsWith("."), `Unexpected package: ${name}`);

@@ -1,0 +1,5 @@
+20dbd991c91538f767cbf8fe020b2c7dd97ad1767c6d453982e204509fa14bb0  e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/updateApp.test.ts
+ec2ae94c9d45a991b2941616f902a2229655d6afad5032484e85057990751eb6  e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/updateAppHarness.cjs
+318917582d80b1e3989af0d5b0ab1b57024dae1e3631138e011ec60088e8101e  e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/ownerDrain.test.ts
+ce8740744706acc9d70e1fb4f1bc6702561cc45f30b8537f611e75f871031bbb  e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/safetyIntegration.test.cjs
+22b7456a48ef63c5bdef53456054f3b81a2a1cf086eb984f521f9c72815a7949  e2e-artifacts/settings-restart-idle-source-49-06/candidate/restartWhenIdle.test.ts

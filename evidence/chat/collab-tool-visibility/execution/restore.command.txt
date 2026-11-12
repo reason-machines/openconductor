@@ -1,0 +1,1 @@
+nice -n 19 timeout --kill-after=5s 600s npm ci --ignore-scripts --no-audit --no-fund

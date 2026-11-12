@@ -109,9 +109,12 @@ function fixture(parts: document.ComposerPart[], caret = 3) {
     snapshot: () => schema.partsFrom(editor.state.doc),
     pick(command = review) { act(() => renderer.root.findByType(MenuBoundary).props.onPick(command)); },
     key(key: string) {
-      let prevented = false;
-      act(() => editorProps.onKeyDown({ key, shiftKey: false, metaKey: false, ctrlKey: false, altKey: false, isComposing: false, preventDefault() { prevented = true; } }));
-      assert.ok(prevented);
+      const event = new Event("keydown", { bubbles: true, cancelable: true });
+      const fields = { key, shiftKey: false, metaKey: false, ctrlKey: false, altKey: false, isComposing: false };
+      Object.defineProperties(event, Object.fromEntries(Object.entries(fields).map(([name, value]) => [name, { value }])));
+      act(() => editorProps.onKeyDown(event));
+      assert.ok(event.defaultPrevented);
+      assert.ok(event.cancelBubble, "menu selection does not reach ancestor shortcuts");
     },
     close() { act(() => renderer.unmount()); editor.destroy(); },
   };
