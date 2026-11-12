@@ -1,0 +1,93 @@
+2026-11-12T00:43:14.9503873Z   duration_ms: 0.562818
+2026-11-12T00:43:14.9504370Z   type: 'test'
+2026-11-12T00:43:14.9504816Z   ...
+2026-11-12T00:43:14.9505518Z # Subtest: the last message a reset keeps is the turn's last
+2026-11-12T00:43:14.9506461Z ok 1071 - the last message a reset keeps is the turn's last
+2026-11-12T00:43:14.9507140Z   ---
+2026-11-12T00:43:14.9507606Z   duration_ms: 0.249404
+2026-11-12T00:43:14.9508347Z   type: 'test'
+2026-11-12T00:43:14.9508805Z   ...
+2026-11-12T00:43:17.4462889Z # Subtest: actual-adapter-first-result-time
+2026-11-12T00:43:17.4478986Z not ok 1072 - actual-adapter-first-result-time
+2026-11-12T00:43:17.4498839Z   ---
+2026-11-12T00:43:17.4499468Z   duration_ms: 1017.063297
+2026-11-12T00:43:17.4500207Z   type: 'test'
+2026-11-12T00:43:17.4501628Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/scheduleWakeup.test.ts:223:1'
+2026-11-12T00:43:17.4503546Z   failureType: 'testCodeFailure'
+2026-11-12T00:43:17.4504271Z   error: |-
+2026-11-12T00:43:17.4504944Z     WAKE_RESULT_TIME_NOT_PROJECTED
+2026-11-12T00:43:17.4505702Z     + actual - expected
+2026-11-12T00:43:17.4506362Z
+2026-11-12T00:43:17.4506931Z     + [
+2026-11-12T00:43:17.4507654Z     +   'first result row: ["Wake-up scheduled"]',
+2026-11-12T00:43:17.4508795Z     +   'duplicate row: ["Wake-up scheduled"]',
+2026-11-12T00:43:17.4509913Z     +   'actual row at original deadline after duplicate: ["Wake-up scheduled"]'
+2026-11-12T00:43:17.4516223Z     + ]
+2026-11-12T00:43:17.4516870Z     - []
+2026-11-12T00:43:17.4517451Z
+2026-11-12T00:43:17.4518247Z   code: 'ERR_ASSERTION'
+2026-11-12T00:43:17.4518951Z   name: 'AssertionError'
+2026-11-12T00:43:17.4519614Z   expected:
+2026-11-12T00:43:17.4520197Z   actual:
+2026-11-12T00:43:17.4520949Z     0: 'first result row: ["Wake-up scheduled"]'
+2026-11-12T00:43:17.4578638Z     1: 'duplicate row: ["Wake-up scheduled"]'
+2026-11-12T00:43:17.4638947Z     2: 'actual row at original deadline after duplicate: ["Wake-up scheduled"]'
+2026-11-12T00:43:17.4644688Z   operator: 'deepStrictEqual'
+2026-11-12T00:43:17.4656892Z   stack: |-
+2026-11-12T00:43:17.4658457Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/scheduleWakeup.test.ts:236:12)
+2026-11-12T00:43:17.4659960Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-12T00:43:17.4660929Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-12T00:43:17.4661867Z     Test.start (node:internal/test_runner/test:944:17)
+2026-11-12T00:43:17.4662956Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+2026-11-12T00:43:17.4663865Z   ...
+2026-11-12T00:43:17.4664592Z # Subtest: actual-mounted-deadline-and-dispose
+2026-11-12T00:43:17.4665550Z not ok 1073 - actual-mounted-deadline-and-dispose
+2026-11-12T00:43:17.4666313Z   ---
+2026-11-12T00:43:17.4666886Z   duration_ms: 895.999156
+2026-11-12T00:43:17.4667507Z   type: 'test'
+2026-11-12T00:43:17.4668853Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/scheduleWakeup.test.ts:240:1'
+2026-11-12T00:43:17.4670343Z   failureType: 'testCodeFailure'
+2026-11-12T00:43:17.4671020Z   error: |-
+2026-11-12T00:43:17.4671649Z     WAKE_DEADLINE_TRANSITION_MISSING
+2026-11-12T00:43:17.4672365Z     + actual - expected
+2026-11-12T00:43:17.4673998Z
+2026-11-12T00:43:17.4674548Z     + [
+2026-11-12T00:43:17.4675717Z     +   'deadline-only row: ["Wake-up scheduled"]',
+2026-11-12T00:43:17.4676985Z     +   'completion schedules a wake deadline callback separate from midnight'
+2026-11-12T00:43:17.4678116Z     + ]
+2026-11-12T00:43:17.4678704Z     - []
+2026-11-12T00:43:17.4679253Z
+2026-11-12T00:43:17.4679817Z   code: 'ERR_ASSERTION'
+2026-11-12T00:43:17.4680468Z   name: 'AssertionError'
+2026-11-12T00:43:17.4681193Z   expected:
+2026-11-12T00:43:17.4681738Z   actual:
+2026-11-12T00:43:17.4682446Z     0: 'deadline-only row: ["Wake-up scheduled"]'
+2026-11-12T00:43:17.4683592Z     1: 'completion schedules a wake deadline callback separate from midnight'
+2026-11-12T00:43:17.4684548Z   operator: 'deepStrictEqual'
+2026-11-12T00:43:17.4685188Z   stack: |-
+2026-11-12T00:43:17.4686504Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/scheduleWakeup.test.ts:260:10)
+2026-11-12T00:43:17.4688195Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-12T00:43:17.4689249Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-12T00:43:17.4690290Z     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+2026-11-12T00:43:17.4691391Z     Test.postRun (node:internal/test_runner/test:1173:19)
+2026-11-12T00:43:17.4692269Z     Test.run (node:internal/test_runner/test:1101:12)
+2026-11-12T00:43:17.4693304Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-12T00:43:17.4694936Z   ...
+2026-11-12T00:43:17.4695600Z # Subtest: pending-control
+2026-11-12T00:43:17.4696264Z ok 1074 - pending-control
+2026-11-12T00:43:17.4697149Z   ---
+2026-11-12T00:43:17.4697682Z   duration_ms: 475.82056
+2026-11-12T00:43:17.4698758Z   type: 'test'
+2026-11-12T00:43:17.4699385Z   ...
+2026-11-12T00:43:17.4699971Z # Subtest: stop-control
+2026-11-12T00:43:17.4700636Z ok 1075 - stop-control
+2026-11-12T00:43:17.4701238Z   ---
+2026-11-12T00:43:17.4701798Z   duration_ms: 402.466312
+2026-11-12T00:43:17.4702434Z   type: 'test'
+2026-11-12T00:43:17.4702997Z   ...
+2026-11-12T00:43:17.4703586Z # Subtest: error-control
+2026-11-12T00:43:17.4704243Z ok 1076 - error-control
+2026-11-12T00:43:17.4704855Z   ---
+2026-11-12T00:43:17.4705411Z   duration_ms: 463.613481
+2026-11-12T00:43:17.4706024Z   type: 'test'
+2026-11-12T00:43:17.4706574Z   ...

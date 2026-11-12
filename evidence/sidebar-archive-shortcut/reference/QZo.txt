@@ -1,0 +1,1 @@
+function QZo(t){const e=ne.c(2),{label:n}=t;let i;return e[0]!==n?(i=p.jsx("span",{className:"inline-flex items-center ml-auto pl-1",children:p.jsx("span",{className:"text-xs text-muted-foreground",children:n})}),e[0]=n,e[1]=i):i=e[1],i}const XZo=6e4;

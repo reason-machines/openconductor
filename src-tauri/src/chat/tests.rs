@@ -120,6 +120,7 @@ fn message_serializes_camel_case_and_omits_absent_optionals() {
                 tool_use_id: "tu1".into(),
                 content: "fn main() {}".into(),
                 is_error: false,
+                result_created_at: None,
             },
         ],
     );
@@ -163,7 +164,8 @@ fn tool_result_is_error_defaults_to_false() {
         Block::ToolResult {
             tool_use_id: "a".into(),
             content: String::new(),
-            is_error: false
+            is_error: false,
+            result_created_at: None
         }
     );
 }

@@ -31,6 +31,7 @@ class StorageProbeTests(unittest.TestCase):
         self.probe_id = self.selection["probe_id"]
         self.sha = self.selection["plan_sha256"]
         self.root = probe.root_path(self.probe_id)
+        self.resources = self.root / "resources"
 
     def fixture_principal(self, expected=None):
         if expected is not None and expected != self.role:
@@ -52,14 +53,39 @@ class StorageProbeTests(unittest.TestCase):
         self.role = self.caller
         return probe.caller_check(self.probe_id, self.sha, phase)
 
+    def test_markers_are_behind_a_pinned_private_search_boundary(self):
+        private = self.root / "resources"
+        info = private.lstat()
+        self.assertEqual(info.st_uid, self.consumer)
+        self.assertEqual(info.st_mode & 0o7777, 0o700)
+        with probe.load_plan(self.probe_id, self.sha) as (plan, fd):
+            self.assertEqual((plan.storage.device, plan.storage.inode), (info.st_dev, info.st_ino))
+        for resource in probe.RESOURCES:
+            self.assertFalse((self.root / (resource + ".marker")).exists())
+            self.assertTrue((private / (resource + ".marker")).is_file())
+
+    def test_file_mode_alone_does_not_prevent_retained_hard_link(self):
+        legacy = self.base / "legacy-searchable"
+        legacy.mkdir(mode=0o755)
+        marker = legacy / "disk.marker"
+        marker.write_bytes(b"synthetic-only")
+        marker.chmod(0o600)
+        alias = self.base / "retained-legacy-alias"
+        os.link(marker, alias)
+        self.assertEqual(marker.stat().st_ino, alias.stat().st_ino)
+        self.assertEqual(marker.stat().st_nlink, 2)
+        with self.assertRaisesRegex(probe.Unavailable, "single-link"):
+            probe.Identity.of(marker.stat())
+
     def test_fresh_plan_has_two_exact_markers_and_no_admission(self):
         self.assertFalse(self.selection["runtime_admission"])
         with probe.load_plan(self.probe_id, self.sha) as (plan, fd):
             self.assertEqual(set(plan.resources), {"disk", "auxiliary"})
-            for resource in probe.RESOURCES:
-                self.assertEqual(probe.read_file(fd, resource + ".marker"), plan.marker(resource))
-        self.assertNotEqual((self.root / "disk.marker").read_bytes(),
-                            (self.root / "auxiliary.marker").read_bytes())
+            with probe.resource_directory(fd, plan) as storage_fd:
+                for resource in probe.RESOURCES:
+                    self.assertEqual(probe.read_file(storage_fd, resource + ".marker"), plan.marker(resource))
+        self.assertNotEqual((self.resources / "disk.marker").read_bytes(),
+                            (self.resources / "auxiliary.marker").read_bytes())
 
     def test_consumer_writes_reads_and_reopens_both_resources_across_inert_phases(self):
         for phase in probe.PHASES:
@@ -109,14 +135,14 @@ class StorageProbeTests(unittest.TestCase):
             with self.subTest(probe_id=probe_id, sha=sha), self.assertRaises(probe.Unavailable):
                 with probe.load_plan(probe_id, sha):
                     self.fail("invalid selection reached operations")
-        (self.root / "auxiliary.marker").unlink()
+        (self.resources / "auxiliary.marker").unlink()
         with self.assertRaises(FileNotFoundError):
             self.consumer_check()
 
     def test_symlink_hardlink_and_content_change_do_not_touch_outside_file(self):
         outside = self.base / "outside-synthetic"
         outside.write_bytes(b"untouched")
-        target = self.root / "auxiliary.marker"
+        target = self.resources / "auxiliary.marker"
         original = target.read_bytes()
         target.unlink()
         target.symlink_to(outside)
@@ -127,11 +153,12 @@ class StorageProbeTests(unittest.TestCase):
         target.write_bytes(original)
         os.link(target, self.base / "alias")
         with probe.load_plan(self.probe_id, self.sha) as (plan, fd):
-            with self.assertRaises(probe.Unavailable):
-                probe.check_identity(fd, plan, "auxiliary")
+            with probe.resource_directory(fd, plan) as storage_fd:
+                with self.assertRaises(probe.Unavailable):
+                    probe.check_identity(storage_fd, plan, "auxiliary")
 
     def test_exact_marker_modification_is_detected(self):
-        path = self.root / "disk.marker"
+        path = self.resources / "disk.marker"
         data = path.read_bytes()
         path.write_bytes(b"!" + data[1:])
         with self.assertRaisesRegex(probe.Unavailable, "marker was modified"):
@@ -173,6 +200,96 @@ class StorageProbeTests(unittest.TestCase):
         with self.assertRaises(FileExistsError):
             self.caller_check()
         self.consumer_check(verify=True)
+
+    def test_private_markers_are_attempted_by_real_syscall_paths_not_stat_failures(self):
+        self.consumer_check()
+        calls = []
+        original_open, original_link, original_replace = probe.os.open, probe.os.link, probe.os.replace
+
+        def deny(name, target, fd):
+            self.assertEqual(os.fstat(fd).st_ino, self.root.stat().st_ino)
+            self.assertIn(target, {"resources/" + resource + ".marker" for resource in probe.RESOURCES})
+            calls.append((name, target))
+            raise PermissionError(errno.EACCES, "fixture kernel boundary")
+
+        def opened(path, flags, *args, **kwargs):
+            if isinstance(path, str) and path.startswith("resources/"):
+                deny("open", path, kwargs["dir_fd"])
+            return original_open(path, flags, *args, **kwargs)
+
+        def linked(src, dst, **kwargs):
+            if src.startswith("resources/"):
+                deny("link", src, kwargs["src_dir_fd"])
+            return original_link(src, dst, **kwargs)
+
+        def replaced(src, dst, **kwargs):
+            if dst.startswith("resources/"):
+                deny("replace", dst, kwargs["dst_dir_fd"])
+            return original_replace(src, dst, **kwargs)
+
+        with patch.object(probe.os, "open", side_effect=opened), \
+                patch.object(probe.os, "link", side_effect=linked), \
+                patch.object(probe.os, "replace", side_effect=replaced), \
+                patch.object(probe, "check_identity", side_effect=AssertionError("caller stat preflight")):
+            result = self.caller_check()
+        self.assertEqual(result["status"], "DENIALS_OBSERVED")
+        self.assertEqual(len(calls), 12)
+        self.assertEqual(sum(name == "link" for name, _ in calls), 2)
+        self.assertTrue(all(o["calibration"]["returned"] for o in result["observations"]))
+        self.consumer_check(verify=True)
+
+    def test_private_storage_missing_symlink_replaced_or_searchable_is_unavailable(self):
+        original = self.base / "retained-original-resources"
+        self.resources.rename(original)
+        with self.assertRaises(FileNotFoundError):
+            self.consumer_check()
+        self.resources.symlink_to(original, target_is_directory=True)
+        with self.assertRaisesRegex(probe.Unavailable, "private"):
+            self.consumer_check()
+        self.resources.unlink()
+        self.resources.mkdir(mode=0o700)
+        with self.assertRaisesRegex(probe.Unavailable, "storage identity"):
+            self.consumer_check()
+        self.resources.rmdir()
+        original.rename(self.resources)
+        for mode in (0o711, 0o755, 0o770, 0o1700):
+            self.resources.chmod(mode)
+            with self.subTest(mode=mode), self.assertRaises(probe.Unavailable):
+                self.consumer_check()
+        self.resources.chmod(0o700)
+        self.consumer_check()
+
+    def test_old_plan_version_and_wrong_private_directory_fields_are_refused(self):
+        original = (self.root / "plan.json").read_bytes()
+        raw = json.loads(original)
+        for field, value in (("version", 1), ("storage", None),
+                             ("storage", {**raw["storage"], "uid": self.caller}),
+                             ("storage", {**raw["storage"], "inode": True})):
+            data = probe.encoded({**raw, field: value})
+            (self.root / "plan.json").chmod(0o600)
+            (self.root / "plan.json").write_bytes(data)
+            with self.subTest(field=field, value=value), self.assertRaises((probe.Unavailable, TypeError)):
+                with probe.load_plan(self.probe_id, probe.digest(data)):
+                    self.fail("accepted wrong plan boundary")
+        (self.root / "plan.json").write_bytes(original)
+
+    def test_successful_link_is_still_a_breach_and_single_link_is_still_required(self):
+        self.consumer_check()
+        original = probe.attempt
+
+        def attempted(name, fd, target, scratch):
+            if target == "twin" or name == "link":
+                return original(name, fd, target, scratch)
+            return {"returned": False, "errno": errno.EACCES, "errno_name": "EACCES", "completed": []}
+
+        with patch.object(probe, "attempt", side_effect=attempted):
+            result = self.caller_check()
+        links = [o for o in result["observations"] if o["operation"] == "link"]
+        self.assertEqual(result["status"], "FAILED")
+        self.assertEqual(len(links), 2)
+        self.assertTrue(all(o["status"] == "BREACH" and o["negative"]["completed"] == ["link"] for o in links))
+        with self.assertRaisesRegex(probe.Unavailable, "single-link"):
+            self.consumer_check(verify=True)
 
     def test_missing_operation_calibration_never_reports_denial(self):
         self.consumer_check()
@@ -216,7 +333,7 @@ class StorageProbeTests(unittest.TestCase):
             self.consumer_check(verify=True)
 
     def test_partial_reopen_preserves_first_success_and_later_errno(self):
-        with probe.directory(self.root) as fd:
+        with probe.directory(self.resources) as fd:
             original = probe.os.open
             opens = []
 

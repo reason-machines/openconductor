@@ -23,6 +23,7 @@ import {
   readContent,
   readLabel,
   resultText,
+  scheduleWakeupAt,
   scheduleWakeupLabel,
   sendMessageLabel,
   shortPath,
@@ -343,6 +344,8 @@ export interface ToolRowProps {
   tool: ConductorTool;
   status: ToolStatus;
   result?: string;
+  resultCreatedAt?: string;
+  now?: () => number;
   isError: boolean;
   open: boolean;
   onToggle: () => void;
@@ -397,7 +400,7 @@ export function ConductorToolRow(props: ToolRowProps) {
   );
 }
 
-function Row({ tool, status, result, isError, open, onToggle, todoRows, workspacePath, onOpenFile }: ToolRowProps) {
+function Row({ tool, status, result, resultCreatedAt, now, isError, open, onToggle, todoRows, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const icon = <ToolIcon name={name} />;
   const shell = { icon, open, onToggle, status };
@@ -540,7 +543,7 @@ function Row({ tool, status, result, isError, open, onToggle, todoRows, workspac
       );
     }
     default:
-      return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
+      return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
   }
 }
 
@@ -808,7 +811,34 @@ function modelName(model: string): string {
   return alias[model] ?? model;
 }
 
-function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
+function ScheduleWakeupRow({ tool, status, result, resultCreatedAt, now = Date.now, isError, open, onToggle }: ToolRowProps) {
+  const resultAt = resultCreatedAt === undefined ? undefined : Date.parse(resultCreatedAt);
+  const wakeAt = scheduleWakeupAt(tool.input, result, resultAt);
+  const [, redraw] = useState(0);
+  useEffect(() => {
+    if (isError || wakeAt === undefined) return;
+    const delay = wakeAt - now();
+    if (delay <= 0) return;
+    const timer = setTimeout(() => redraw((version) => version + 1), delay + 250);
+    return () => clearTimeout(timer);
+  }, [wakeAt, isError, now]);
+  if (isError) return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+  const label = scheduleWakeupLabel(tool.input, result, resultAt, now(), (ms) => new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
+  return (
+    <RowShell
+      icon={<ToolIcon name={tool.name} />}
+      open={open}
+      onToggle={onToggle}
+      status={status}
+      left={<span>{label}</span>}
+      right={s(tool.input.reason) ? <CodeChip text={s(tool.input.reason)} /> : undefined}
+      align="center"
+      content={<InputOutput input={tool.input} result={result} isError={isError} />}
+    />
+  );
+}
+
+function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const kind = toolKind(name);
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
@@ -1095,20 +1125,8 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
       const { text, note: where } = terminalOutput(input, result);
       return <RowShell {...shell} left={<span>Get terminal output</span>} right={where ? <span className="oc-tool-count">{where}</span> : undefined} content={framed(text)} />;
     }
-    case "schedule-wakeup": {
-      // `Epo`: a failed call draws as the generic row.
-      if (isError) return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
-      const label = scheduleWakeupLabel(input, result, undefined, Date.now(), (ms) => new Date(ms).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
-      return (
-        <RowShell
-          {...shell}
-          left={<span>{label}</span>}
-          right={s(input.reason) ? <CodeChip text={s(input.reason)} /> : undefined}
-          align="center"
-          content={<InputOutput input={input} result={result} isError={isError} />}
-        />
-      );
-    }
+    case "schedule-wakeup":
+      return <ScheduleWakeupRow {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle }} />;
     case "image-generation": {
       // `Vpo`: the generated image's path (the image itself is not drawn yet).
       const path = result === undefined ? "" : resultText(result).trim();
@@ -1152,7 +1170,7 @@ function MoreRows({ tool, status, result, isError, open, onToggle, workspacePath
       return <CollabRow name={name} input={input} result={result} isError={isError} />;
     case "sub-agent":
       if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={output} />;
-      if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, isError, open, onToggle, workspacePath, onOpenFile }} />;
+      if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
       return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
     default:
       return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;

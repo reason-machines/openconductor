@@ -65,6 +65,12 @@ Only the image-generation call supplies the capability. Its private extension ma
 
 The repaired test remains Git blob `4e76ae2a0c18815fc05bc84d9c25360a517d42d1`, SHA-256 `5e4784b0a627a43010eb3200022f19e6eec257f0d43995e20fdd99a0e127cdbd`. All five inputs and retained reference files remain frozen. `python3 evidence/chat/image-generation-fallback/verify_candidate.py` checks those bytes, the exact shell/image-only source transformation, unchanged excluded production, and the RED receipt. This source-only check does not execute the product. Same-input hosted GREEN, all exact-head workflows, merge and consuming-main/package proof remain pending.
 
+## Consuming merged ScheduleWakeup source
+
+After the first candidate publication at `fab7907ad7b39303a9d8524cca3adf179bc9d0ac`, #1108 merged as actual main `649f47b9d80eb1d7510c2b405b25e026ffddf78b`. An ordinary merge consumed that main without conflicts. The image test and all five input bytes remain unchanged. ScheduleWakeup, its imported helper, result timestamps, clock plumbing and Transcript changes are preserved exactly as merged. The only product delta from that main remains the released optional shell capability and image-row membership check.
+
+[The integration receipt](consumed-main-1108.json) records this source-only transition. The verifier now compares excluded production against that actual merged main, while separately validating the original historical pins. No historical pin, test helper, assertion or freeze record was rewritten. Automatic same-input GREEN on the integrated candidate remains pending. #1108 consuming-main/package observation stays with its existing owner.
+
 ## Execution and delivery limits
 
 No local Node, npm, React, typecheck, build, dependency installation, provider, native, or app runtime is admitted. Preparation uses only source reads, Python byte checks, and Git. Existing automatic hosted CI runs the test through `node --test "src/**/*.test.ts"`. No workflow is edited, manually dispatched, or rerun.

@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[3]
 EVIDENCE = ROOT / "evidence/chat/image-generation-fallback"
 TEST = "src/features/chat/imageGenerationFallbackDisclosure.test.ts"
 TOOL_ROWS = "src/features/chat/ToolRows.tsx"
-BASE = "f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32"
+BASE = "649f47b9d80eb1d7510c2b405b25e026ffddf78b"
 
 
 def digest(data):
@@ -26,11 +26,14 @@ for path, identity in freeze["files"].items():
     assert digest((ROOT / path).read_bytes()) == expected, f"Frozen bytes changed: {path}"
 assert git("hash-object", TEST).decode().strip() == repair["repaired_test_blob"]
 for path, identity in freeze["production_unchanged"].items():
+    historical = git("show", f"{freeze['main']}:{path}")
+    assert digest(historical) == identity["sha256"], f"Original source pin changed: {path}"
     if path != TOOL_ROWS:
-        assert digest((ROOT / path).read_bytes()) == identity["sha256"], f"Excluded production changed: {path}"
+        current_main = git("show", f"{BASE}:{path}")
+        assert (ROOT / path).read_bytes() == current_main, f"Excluded production differs from merged main: {path}"
 
 baseline = git("show", f"{BASE}:{TOOL_ROWS}")
-assert digest(baseline) == freeze["production_unchanged"][TOOL_ROWS]["sha256"]
+assert git("rev-parse", f"{BASE}:{TOOL_ROWS}").decode().strip().startswith("f4cdf841")
 expected = baseline.decode()
 changes = [
     ('  content?: ReactNode;\n', '  content?: ReactNode;\n  isCollapsible?: boolean;\n'),
