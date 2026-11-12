@@ -1,0 +1,262 @@
+{
+  "candidate": "CHAT.TYPED-SUBAGENT-FAILED-RESULT-DISCLOSURE",
+  "basis": "Literal retained bpo/yZe/Mu source expectations for accepted strings, not captured product output or native observation.",
+  "cases": [
+    {
+      "id": "failed-task",
+      "tool": "Task",
+      "input": {
+        "subagent_type": "Explore",
+        "description": "Inspect configuration",
+        "model": "sonnet",
+        "prompt": "Inspect configuration files"
+      },
+      "isError": true,
+      "result": "Partial findings returned by Task.",
+      "expected": {
+        "typed": true,
+        "expandable": true,
+        "text": "Partial findings returned by Task."
+      }
+    },
+    {
+      "id": "success-task",
+      "tool": "Task",
+      "input": {
+        "subagent_type": "Explore",
+        "description": "Inspect configuration",
+        "model": "sonnet",
+        "prompt": "Inspect configuration files"
+      },
+      "isError": false,
+      "result": "Partial findings returned by Task.",
+      "expected": {
+        "typed": true,
+        "expandable": true,
+        "text": "Partial findings returned by Task."
+      }
+    },
+    {
+      "id": "pending-task",
+      "tool": "Task",
+      "input": {
+        "subagent_type": "Explore",
+        "description": "Inspect configuration",
+        "model": "sonnet",
+        "prompt": "Inspect configuration files"
+      },
+      "isError": false,
+      "expected": {
+        "typed": true,
+        "expandable": false,
+        "text": ""
+      }
+    },
+    {
+      "id": "empty-error-task",
+      "tool": "Task",
+      "input": {
+        "subagent_type": "Explore",
+        "description": "Inspect configuration",
+        "model": "sonnet",
+        "prompt": "Inspect configuration files"
+      },
+      "isError": true,
+      "result": "",
+      "expected": {
+        "typed": true,
+        "expandable": false,
+        "text": ""
+      }
+    },
+    {
+      "id": "empty-success-task",
+      "tool": "Task",
+      "input": {
+        "subagent_type": "Explore",
+        "description": "Inspect configuration",
+        "model": "sonnet",
+        "prompt": "Inspect configuration files"
+      },
+      "isError": false,
+      "result": "",
+      "expected": {
+        "typed": true,
+        "expandable": false,
+        "text": ""
+      }
+    },
+    {
+      "id": "untyped-missing-task",
+      "tool": "Task",
+      "input": {
+        "description": "Inspect configuration"
+      },
+      "isError": true,
+      "result": "Partial findings returned by Task.",
+      "expected": {
+        "typed": false,
+        "expandable": true,
+        "text": "Partial findings returned by Task."
+      }
+    },
+    {
+      "id": "untyped-empty-task",
+      "tool": "Task",
+      "input": {
+        "description": "Inspect configuration",
+        "subagent_type": ""
+      },
+      "isError": true,
+      "result": "Partial findings returned by Task.",
+      "expected": {
+        "typed": false,
+        "expandable": true,
+        "text": "Partial findings returned by Task."
+      }
+    },
+    {
+      "id": "untyped-general-purpose-task",
+      "tool": "Task",
+      "input": {
+        "description": "Inspect configuration",
+        "subagent_type": "general-purpose"
+      },
+      "isError": true,
+      "result": "Partial findings returned by Task.",
+      "expected": {
+        "typed": false,
+        "expandable": true,
+        "text": "Partial findings returned by Task."
+      }
+    },
+    {
+      "id": "failed-agent",
+      "tool": "Agent",
+      "input": {
+        "subagent_type": "Explore",
+        "description": "Inspect configuration",
+        "model": "sonnet",
+        "prompt": "Inspect configuration files"
+      },
+      "isError": true,
+      "result": "Partial findings returned by Agent.",
+      "expected": {
+        "typed": true,
+        "expandable": true,
+        "text": "Partial findings returned by Agent."
+      }
+    },
+    {
+      "id": "success-agent",
+      "tool": "Agent",
+      "input": {
+        "subagent_type": "Explore",
+        "description": "Inspect configuration",
+        "model": "sonnet",
+        "prompt": "Inspect configuration files"
+      },
+      "isError": false,
+      "result": "Partial findings returned by Agent.",
+      "expected": {
+        "typed": true,
+        "expandable": true,
+        "text": "Partial findings returned by Agent."
+      }
+    },
+    {
+      "id": "pending-agent",
+      "tool": "Agent",
+      "input": {
+        "subagent_type": "Explore",
+        "description": "Inspect configuration",
+        "model": "sonnet",
+        "prompt": "Inspect configuration files"
+      },
+      "isError": false,
+      "expected": {
+        "typed": true,
+        "expandable": false,
+        "text": ""
+      }
+    },
+    {
+      "id": "empty-error-agent",
+      "tool": "Agent",
+      "input": {
+        "subagent_type": "Explore",
+        "description": "Inspect configuration",
+        "model": "sonnet",
+        "prompt": "Inspect configuration files"
+      },
+      "isError": true,
+      "result": "",
+      "expected": {
+        "typed": true,
+        "expandable": false,
+        "text": ""
+      }
+    },
+    {
+      "id": "empty-success-agent",
+      "tool": "Agent",
+      "input": {
+        "subagent_type": "Explore",
+        "description": "Inspect configuration",
+        "model": "sonnet",
+        "prompt": "Inspect configuration files"
+      },
+      "isError": false,
+      "result": "",
+      "expected": {
+        "typed": true,
+        "expandable": false,
+        "text": ""
+      }
+    },
+    {
+      "id": "untyped-missing-agent",
+      "tool": "Agent",
+      "input": {
+        "description": "Inspect configuration"
+      },
+      "isError": true,
+      "result": "Partial findings returned by Agent.",
+      "expected": {
+        "typed": false,
+        "expandable": true,
+        "text": "Partial findings returned by Agent."
+      }
+    },
+    {
+      "id": "untyped-empty-agent",
+      "tool": "Agent",
+      "input": {
+        "description": "Inspect configuration",
+        "subagent_type": ""
+      },
+      "isError": true,
+      "result": "Partial findings returned by Agent.",
+      "expected": {
+        "typed": false,
+        "expandable": true,
+        "text": "Partial findings returned by Agent."
+      }
+    },
+    {
+      "id": "untyped-general-purpose-agent",
+      "tool": "Agent",
+      "input": {
+        "description": "Inspect configuration",
+        "subagent_type": "general-purpose"
+      },
+      "isError": true,
+      "result": "Partial findings returned by Agent.",
+      "expected": {
+        "typed": false,
+        "expandable": true,
+        "text": "Partial findings returned by Agent."
+      }
+    }
+  ]
+}
