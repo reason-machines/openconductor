@@ -1,0 +1,6 @@
+src/features/chat/promptHandoffAdapters.test.ts: OK
+src/features/chat/reviewCommentHandoff.test.ts: OK
+src/features/chat/claudeChat.test.ts: OK
+src/features/chat/codexChat.test.ts: OK
+package-lock.json: OK
+src-tauri/Cargo.lock: OK

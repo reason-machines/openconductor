@@ -341,7 +341,7 @@ pub async fn reason_prompt(
     text: String,
     attachments: Option<Vec<AttachmentArg>>,
     turn: Option<TurnArg>,
-    on_handoff: Option<tauri::ipc::Channel<()>>,
+    on_handoff: tauri::ipc::Channel<()>,
 ) -> Result<Value, String> {
     let provider = state.provider(&app)?;
     let attachments: Vec<Attachment> = attachments
@@ -371,11 +371,9 @@ pub async fn reason_prompt(
                 &text,
                 &attachments,
                 ticket,
-                on_handoff.map(|channel| {
-                    Box::new(move || {
-                        let _ = channel.send(());
-                    }) as Box<dyn FnOnce() + Send>
-                }),
+                Some(Box::new(move || {
+                    let _ = on_handoff.send(());
+                })),
             )
         })
     })
