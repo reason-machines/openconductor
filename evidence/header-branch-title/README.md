@@ -20,7 +20,9 @@ The baseline exited 1. All four cases failed at the intended title assertion wit
 
 After the two-attribute correction, the identical fixture exited 0 and passed all four cases. The cases cover ordinary and long branches in idle and archived workspaces. Each passing case also checks unchanged branch data and no dispatch or error callback. Raw [compressed baseline TAP](red.tap.gz), [candidate TAP](green.tap) and [execution receipt](receipt.json) are retained here. The failing fixture was committed before the production correction.
 
-`git diff --check` passed. No adjacent test command was admitted or run. The runtime slot was explicitly released after the candidate with no remaining own application or test jobs.
+`git diff --check` passed. No local adjacent test command was admitted or run. The runtime slot was explicitly released after the candidate with no remaining own application or test jobs.
+
+The first hosted run at head `90e4a984` passed typecheck and 3,979 of 3,980 frontend tests. Its sole failure was the existing archived-header exact-markup assertion, which still expected a span without the new `title`. The actual markup included the intended title. The follow-up changes only that expected string to require the title, retaining the static-label, no-button/input/menu/Rename, active Rename and no-native-call checks. It does not change the frozen four-case fixture or production correction. [Failed hosted check](https://github.com/reason-machines/openconductor/actions/runs/43267815565/job/131356013910). Corrected exact-head hosted verification follows publication; no local retry was run.
 
 ## Verification limits
 
