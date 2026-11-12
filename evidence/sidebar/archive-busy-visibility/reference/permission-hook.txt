@@ -1,0 +1,1 @@
+function kYt(t){const e=z.c(2);let s;return e[0]!==t?(s={localWorkspaceId:t},e[0]=t,e[1]=s):s=e[1],il(s,yn(ZBt)).data}function ZBt(t){return t?.permissionLevel}

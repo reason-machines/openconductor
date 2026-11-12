@@ -1,0 +1,355 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "26f8345401efb021bef2f12b17815eba6c57170c",
+  "rea_acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "artifacts": [
+    {
+      "name": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    },
+    {
+      "name": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    }
+  ],
+  "spans": [
+    {
+      "name": "index-export-g8",
+      "bytes": 9,
+      "sha256": "d0fb357f6626c1b389e1456a37e9e4d21c1379129adccbc4c9482e852fc09df7",
+      "utf8_half_open": [
+        3483908,
+        3483917
+      ],
+      "path": "evidence/scripts/output-unicode/reference/index-export-g8.txt"
+    },
+    {
+      "name": "index-Vbt",
+      "bytes": 62,
+      "sha256": "dc7020ae74d94a3eab207efadac27f2feba0bb05656c24b868925597161a9a1b",
+      "utf8_half_open": [
+        2607279,
+        2607341
+      ],
+      "path": "evidence/scripts/output-unicode/reference/index-Vbt.txt"
+    },
+    {
+      "name": "index-Kbt",
+      "bytes": 473,
+      "sha256": "0d8a6e151163c307c8e391ff6ef2ab18b0b1d3433f121725c1af0184143ecafc",
+      "utf8_half_open": [
+        2606805,
+        2607278
+      ],
+      "path": "evidence/scripts/output-unicode/reference/index-Kbt.txt"
+    },
+    {
+      "name": "index-Ik",
+      "bytes": 442,
+      "sha256": "32118068a94c2d0ba847e07705c92c77460aafb0725e029a11d18125b9a0be5b",
+      "utf8_half_open": [
+        2599406,
+        2599848
+      ],
+      "path": "evidence/scripts/output-unicode/reference/index-Ik.txt"
+    },
+    {
+      "name": "renderer-lno",
+      "bytes": 1125,
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-lno.txt"
+    },
+    {
+      "name": "renderer-gno",
+      "bytes": 2382,
+      "sha256": "647b58ff6d4712742e8946fdf3d8ef2bb31e578b3047a7d0f0a9384395ea7db3",
+      "utf8_half_open": [
+        6926664,
+        6929046
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-gno.txt"
+    },
+    {
+      "name": "renderer-OJs",
+      "bytes": 850,
+      "sha256": "5690f01ab02ec3aa205005c2775965062bbdcef532d855a294e14a719095dd41",
+      "utf8_half_open": [
+        6571868,
+        6572718
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-OJs.txt"
+    },
+    {
+      "name": "renderer-xEi",
+      "bytes": 2806,
+      "sha256": "c9eafaa506a034b54ffb3e6f82f0635e7509d7a7e9672fc4aaca171b09303bc3",
+      "utf8_half_open": [
+        6568897,
+        6571703
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-xEi.txt"
+    },
+    {
+      "name": "renderer-AJs",
+      "bytes": 45,
+      "sha256": "2a35b68dafaa319ea940d805be477f8002d9bc3aa0c439cfe9d84752af590f5e",
+      "utf8_half_open": [
+        6571703,
+        6571748
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-AJs.txt"
+    },
+    {
+      "name": "renderer-aSa",
+      "bytes": 657,
+      "sha256": "68f370d7469b65a71859999fe41df5b274073483a74d21f2874fa84daa62ecce",
+      "utf8_half_open": [
+        11170916,
+        11171573
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-aSa.txt"
+    },
+    {
+      "name": "renderer-lSa",
+      "bytes": 338,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-lSa.txt"
+    },
+    {
+      "name": "renderer-uSa",
+      "bytes": 162,
+      "sha256": "09da707923a705cc9c8f93572eb11724514f8a7d2e75bc45d89020a36fedd4e9",
+      "utf8_half_open": [
+        11171943,
+        11172105
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-uSa.txt"
+    },
+    {
+      "name": "renderer-rSa",
+      "bytes": 3115,
+      "sha256": "55b02cfb58c1416fce68bf0cc9178e9b37bed4e03ccb0de73661b7787d99fc95",
+      "utf8_half_open": [
+        11167486,
+        11170601
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-rSa.txt"
+    },
+    {
+      "name": "renderer-w9e",
+      "bytes": 3429,
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-w9e.txt"
+    },
+    {
+      "name": "renderer-dno",
+      "bytes": 1719,
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-dno.txt"
+    },
+    {
+      "name": "renderer-cno",
+      "bytes": 385,
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-cno.txt"
+    },
+    {
+      "name": "index-O1",
+      "bytes": 2658,
+      "sha256": "184e37da4a53d572b3418e7fd2226251bebb31b3aa489302887279f6a635edd4",
+      "utf8_half_open": [
+        2600628,
+        2603286
+      ],
+      "path": "evidence/scripts/output-unicode/reference/index-O1.txt"
+    },
+    {
+      "name": "index-F1",
+      "bytes": 810,
+      "sha256": "3a22975494bf6c1caa71af891d17c0678517f9fc835faccdfe32c09f099fb0fd",
+      "utf8_half_open": [
+        2604981,
+        2605791
+      ],
+      "path": "evidence/scripts/output-unicode/reference/index-F1.txt"
+    },
+    {
+      "name": "index-Gbt",
+      "bytes": 1693,
+      "sha256": "a7ca5a63498743d0582b3345287e9f89d937ab511fb686024b183d3e09f7e72b",
+      "utf8_half_open": [
+        2603287,
+        2604980
+      ],
+      "path": "evidence/scripts/output-unicode/reference/index-Gbt.txt"
+    },
+    {
+      "name": "index-jbt",
+      "bytes": 850,
+      "sha256": "64c248bacfc50063537aee7ccf4677b1def5dc2a5f76bbef519f8e81f3a56d7e",
+      "utf8_half_open": [
+        2605792,
+        2606642
+      ],
+      "path": "evidence/scripts/output-unicode/reference/index-jbt.txt"
+    },
+    {
+      "name": "renderer-import-Wyr",
+      "path": "evidence/scripts/output-unicode/reference/renderer-import-Wyr.txt",
+      "bytes": 9,
+      "sha256": "839d8fef1c196f4dcfe216b232fddb99e323d32496e0843e68fb7a630ffc31fa",
+      "utf8_half_open": [
+        57265,
+        57274
+      ]
+    },
+    {
+      "name": "renderer-eSa",
+      "path": "evidence/terminal/cursor-state-1f/source/spans/renderer-eSa.txt",
+      "bytes": 4517,
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ]
+    },
+    {
+      "name": "renderer-uno",
+      "path": "evidence/terminal/cursor-state-1f/source/spans/renderer-uno.txt",
+      "bytes": 421,
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ]
+    }
+  ],
+  "chain_checks": {
+    "ordinary_surface_to_attachment": {
+      "span": "renderer-eSa",
+      "token": "=w9e(P)"
+    },
+    "hook_to_attachment": {
+      "span": "renderer-w9e",
+      "token": "dno({container:ve"
+    },
+    "attachment_to_instance": {
+      "span": "renderer-dno",
+      "token": "await uno({"
+    },
+    "instance_to_factory_wait": {
+      "span": "renderer-uno",
+      "token": "d=cno({"
+    },
+    "wait_to_terminal_factory": {
+      "span": "renderer-cno",
+      "token": "const c=lno({"
+    },
+    "factory_provider_load": {
+      "span": "renderer-lno",
+      "token": "a.loadAddon(new Wyr),a.unicode.activeVersion=\"11\""
+    },
+    "renderer_provider_import": {
+      "span": "renderer-import-Wyr",
+      "token": "g8 as Wyr"
+    },
+    "index_provider_export": {
+      "span": "index-export-g8",
+      "token": "Vbt as g8"
+    },
+    "addon_registers_provider": {
+      "span": "index-Vbt",
+      "token": "register(new Kbt)"
+    },
+    "provider_declares_version": {
+      "span": "index-Kbt",
+      "token": "version=\"11\""
+    }
+  },
+  "baseline_product_sha256": "8560deacd82ccec6a8442494b38c887a0e81fe44d271839c9e79888029a0a235",
+  "fixture_sha256": "af1932238a19c36c76adeb8d0968bb8dc66f98e7ba26707e7a6406c09591b99e",
+  "cases": [
+    "ordinary panel output reserves two cells for a Unicode 11 emoji",
+    "center terminal emoji preserve the following output column",
+    "ordinary terminal wide output wraps the next character onto the next row",
+    "ordinary terminal Unicode 11 combining marks do not advance the cursor",
+    "ordinary terminal ASCII output keeps its original width",
+    "ordinary terminal CJK output keeps its existing wide cells",
+    "ordinary terminal existing combining accents keep their zero-cell width",
+    "split UTF-8 PTY data retains the Unicode 11 output width",
+    "restored terminal history uses Unicode 11 before its first snapshot write",
+    "closing one terminal disposes it without changing a sibling's ASCII output"
+  ],
+  "lockfile_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "scope": "ordinary terminal production session module; real xterm parser and Unicode provider; mocked PTY/DOM/preferences/storage/fit boundaries",
+  "expected_baseline": {
+    "intended_failures": [
+      1,
+      2,
+      3,
+      4,
+      8,
+      9
+    ],
+    "passing_controls": [
+      5,
+      6,
+      7,
+      10
+    ]
+  },
+  "behavioral_cases_run": 0,
+  "native_acceptance_run": false,
+  "rea_gaps": [
+    "Retained renderer analysis exhausted its worker heap; exact byte-span and alias joins are not a complete semantic graph. No new REA execution was attempted."
+  ],
+  "compatibility_fixtures": [
+    {
+      "path": "src/features/terminal/clearRedraw.test.ts",
+      "sha256": "0476e29f8f2dd5e7d37ea527023f28290d606fb0f055348c6a209f8c63091948",
+      "test_bodies_sha256": "9b8a510750033fc1b3b0fd7117789e9ca41b3d7cb9a8f1630965a30016826161"
+    },
+    {
+      "path": "src/features/terminal/cursorState.test.ts",
+      "sha256": "3a0d8e881ae09f03737a915fdc1f1ff20a5b1e6577c9daff012617940ca5a50d",
+      "test_bodies_sha256": "ab583651d13d3f29a6532a989625f8018b351e81ee83f3ef8f426a4ab1537ee3"
+    },
+    {
+      "path": "src/features/terminal/nonrunningInput.test.ts",
+      "sha256": "905655877316bca8c68b81865517131b525a13e73bb9ee0031a2b0faf85f0c54",
+      "test_bodies_sha256": "ffd0255b8d7286c757a0f90567eedf927b0606c81378eb4da77477d475d8c6f0"
+    },
+    {
+      "path": "src/features/terminal/resizeState.test.ts",
+      "sha256": "9983095ab54b82579683b0122698238e300fc4e16e7938e7d884f0041668c543",
+      "test_bodies_sha256": "736f22561701871dcd142c70952043969c7d49a585ec04aaf03af24ff2972911"
+    },
+    {
+      "path": "src/features/terminal/spawnFailure.test.ts",
+      "sha256": "43c464a16251731a8d732f1992b5185dab879e9481428ce15f023297bc0aa9ea",
+      "test_bodies_sha256": "bf81602c68bcfec6654fc56dde92c1964aa3e3adca83127fc3dfba115c607262"
+    }
+  ]
+}

@@ -126,6 +126,7 @@ export function Transcript({
     workspacePath,
     onOpenFile,
     now: () => day,
+    toolNow: now,
     onForkToNewTab,
     onForkToNewWorkspace,
     forkDisabled,
@@ -195,6 +196,7 @@ interface RowContext {
   workspacePath?: string;
   onOpenFile?: (path: string) => void;
   now: () => number;
+  toolNow: () => number;
   notify?: TranscriptProps["notify"];
   onForkToNewTab?: (turnId: string) => void;
   onForkToNewWorkspace?: (turnId: string) => void;
@@ -391,6 +393,8 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
             tool={call.tool}
             status={call.status}
             result={call.result}
+            resultCreatedAt={call.resultCreatedAt}
+            now={ctx.toolNow}
             isError={call.status === "error"}
             open={ctx.isOpen(call.id, opensByDefault(call.tool))}
             onToggle={() => ctx.onToggle(call.id, opensByDefault(call.tool))}

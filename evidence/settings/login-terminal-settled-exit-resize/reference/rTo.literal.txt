@@ -1,0 +1,1 @@
+function rTo({commandLabel:t,isCommandDone:e,sessionError:n,state:i}){return n||i==="spawn_error"?n??"Failed to start terminal.":e?`Finished ${t}. You can keep using this shell or click done.`:i==="exited"?"Shell exited before the command completed.":i==="running"?`Running ${t}.`:`Starting ${t}...`}

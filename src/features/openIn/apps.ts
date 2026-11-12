@@ -55,9 +55,9 @@ export function loadOpenInApps(now = Date.now()): Promise<OpenInApp[]> {
   return apps;
 }
 
-export async function openInApp(appId: string, path: string): Promise<void> {
+export async function openInApp(appId: string, path: string, fileContext?: { workspacePath: string }): Promise<void> {
   if (!isTauri()) throw new Error("Opening apps needs the desktop app");
-  await invoke("open_in_app", { appId, path });
+  await invoke("open_in_app", { appId, path, ...(fileContext ? { fileContext } : {}) });
 }
 
 export async function copyText(text: string): Promise<void> {

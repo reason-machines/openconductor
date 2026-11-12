@@ -1,0 +1,384 @@
+{
+  "author": "Conductor Rebuild",
+  "main": "021aeaa4027770258b4daae127bc829d1575d0ab",
+  "rea_evidence": {
+    "evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "kind": "retained real Conductor 0.87.6 assets; no fresh native acquisition",
+    "known_gap": "Original semantic renderer worker exhausted heap; inert exact-byte spans, not generated semantic analysis or runtime observation.",
+    "new_gap": null
+  },
+  "retained_assets_verified": [
+    {
+      "name": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    },
+    {
+      "name": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    }
+  ],
+  "preserved_spans_verified": [
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "ITo complete declaration",
+      "utf8_bytes_half_open": [
+        8655325,
+        8691330
+      ],
+      "bytes": 36005,
+      "sha256": "402ecc13bb1fd4751d0ec047f818423c9e678deb9ba38b471961ad447100519f",
+      "path": "reference-preserved/01.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "lHt complete declaration",
+      "utf8_bytes_half_open": [
+        8418728,
+        8426168
+      ],
+      "bytes": 7440,
+      "sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215",
+      "path": "reference-preserved/02.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "JNi complete visible Composer parent",
+      "utf8_bytes_half_open": [
+        8750085,
+        8760369
+      ],
+      "bytes": 10284,
+      "sha256": "775251f3c9074a8f60944335cd7c44d053c1472bb63987adc4b149d0d32828d1",
+      "path": "reference-preserved/03.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "symbol": "CFt complete submission service boundary",
+      "utf8_bytes_half_open": [
+        3138269,
+        3138603
+      ],
+      "bytes": 334,
+      "sha256": "0eb4aafd7047ee13a3f1c3e60f65556a104e122787a48d729a61e1869a7ef3c0",
+      "path": "reference-preserved/04.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "submission service import lv as Lri",
+      "utf8_bytes_half_open": [
+        60637,
+        60646
+      ],
+      "bytes": 9,
+      "sha256": "8b6046ff942e3a9a1fc9f2d9259085d355955c8a24492cd9fc34afce94f16c29",
+      "path": "reference-preserved/05.txt"
+    },
+    {
+      "asset": "index-BGEQ8YjU.js",
+      "symbol": "submission service export CFt as lv",
+      "utf8_bytes_half_open": [
+        3487546,
+        3487555
+      ],
+      "bytes": 9,
+      "sha256": "f6703e85a6bce2770a1171359132952c245b62abe52922bced637b02e8482ffd",
+      "path": "reference-preserved/06.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "pTo complete send availability predicate",
+      "utf8_bytes_half_open": [
+        8651089,
+        8651387
+      ],
+      "bytes": 298,
+      "sha256": "43857a5137dcb06e3dd1a907ddae2ed7dfa36e1b060db6c9c166f2da02d7bf56",
+      "path": "reference-preserved/07.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "nqn/Wxo complete mention serialization",
+      "utf8_bytes_half_open": [
+        8380724,
+        8381402
+      ],
+      "bytes": 678,
+      "sha256": "aca11f36ccb17347b4b9eec314b1ebc3bd38755ef44a6176e2d7cd4d3f50e95b",
+      "path": "reference-preserved/08.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "NIr retained producer chunk",
+      "utf8_bytes_half_open": [
+        172426,
+        173776
+      ],
+      "bytes": 1350,
+      "sha256": "50d48e6fadb0a836dd5acbc36b119aeb4445056e84e81ace8b6c8220b01b90b2",
+      "path": "reference-preserved/09.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "IIr retained producer chunk",
+      "utf8_bytes_half_open": [
+        170951,
+        172426
+      ],
+      "bytes": 1475,
+      "sha256": "7b6d14d9e4e89b9687250475abab022d4685e3eed13a3a4f71bd95ffda111034",
+      "path": "reference-preserved/10.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "SIr retained producer chunk",
+      "utf8_bytes_half_open": [
+        168486,
+        170384
+      ],
+      "bytes": 1898,
+      "sha256": "35f8f253a3acf87c7e29701a248fa3561521079bbff324411063c53739c9dbba",
+      "path": "reference-preserved/11.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "Koi retained producer chunk",
+      "utf8_bytes_half_open": [
+        167029,
+        168393
+      ],
+      "bytes": 1364,
+      "sha256": "f01515181fda22f46f281c2391199e22750ed173d9f2028bde449bea2f3762e0",
+      "path": "reference-preserved/12.txt"
+    },
+    {
+      "asset": "renderApp-D_fmY7hW.js",
+      "symbol": "lwo retained producer chunk",
+      "utf8_bytes_half_open": [
+        8431276,
+        8433908
+      ],
+      "bytes": 2632,
+      "sha256": "1bc0b306102fa8935834c85ac815433c46f4ce6ae373dea34dc7bb9733dc9565",
+      "path": "reference-preserved/13.txt"
+    },
+    {
+      "symbol": "Tracker/key/bindings",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        2270734,
+        2272784
+      ],
+      "bytes": 2050,
+      "sha256": "55af32357d562421e3ff4b45c2d1343120db894f40646d78cc196ba8c953c5d0",
+      "path": "reference-extension/01.txt"
+    },
+    {
+      "symbol": "Attachment-record loading adapter t9t",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        3140783,
+        3141301
+      ],
+      "bytes": 518,
+      "sha256": "8d044046a9713f57f0fe9b44537cf6adade4123af8b8b44975814fdb901c4ab9",
+      "path": "reference-extension/02.txt"
+    },
+    {
+      "symbol": "Materializer uvt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        2283135,
+        2285612
+      ],
+      "bytes": 2477,
+      "sha256": "2385ce92cb25381b5b29303abb1d9ea31a98c0962765fbbcf43b9d8ddc2ba217",
+      "path": "reference-extension/03.txt"
+    },
+    {
+      "symbol": "Materializer alias pvt/Y6r",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        2287021,
+        2287087
+      ],
+      "bytes": 66,
+      "sha256": "bcee09a902356068052a3d900d5e3aa54242bbc8098d7a3e0b503cb5f80a61f3",
+      "path": "reference-extension/04.txt"
+    },
+    {
+      "symbol": "Routing Pyt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        2352508,
+        2353002
+      ],
+      "bytes": 494,
+      "sha256": "6b847c2f1f835a7b2eb61038e61d73f1245db384e73e3ce9a00b754f814c20dd",
+      "path": "reference-extension/05.txt"
+    },
+    {
+      "symbol": "Local enqueue",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        2407756,
+        2409526
+      ],
+      "bytes": 1770,
+      "sha256": "e86cf84998fd6349f6e2619252e6afd0efe6b1a580b25f46cc7021e733d0e8b7",
+      "path": "reference-extension/06.txt"
+    },
+    {
+      "symbol": "Explicit-ID prepareForDelivery conditional",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        2382951,
+        2383593
+      ],
+      "bytes": 642,
+      "sha256": "c9a09a67038398d12f4c07eb5f2a2be0bdb907e20211d0ec35fe33593dd7e9ed",
+      "path": "reference-extension/07.txt"
+    },
+    {
+      "symbol": "Ry.sendToAgent",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        3040285,
+        3042540
+      ],
+      "bytes": 2255,
+      "sha256": "1880a8e3ce5ef5a920be3c16f86e762fc8fb119c6f19169015c80ceee6b73705",
+      "path": "reference-extension/08.txt"
+    },
+    {
+      "symbol": "Sidecar execution",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        3019402,
+        3020168
+      ],
+      "bytes": 766,
+      "sha256": "1f65fe005e5baf5fefee7133adf2eefe8ad1e8b636691df3d9c48ced6862c5ac",
+      "path": "reference-extension/09.txt"
+    },
+    {
+      "symbol": "Query notification",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        2949266,
+        2949342
+      ],
+      "bytes": 76,
+      "sha256": "7a668f73dfec9eaeacd1c7a32a9ad7daacc26faae847884fbe3a78dc104d8e79",
+      "path": "reference-extension/10.txt"
+    },
+    {
+      "symbol": "Native RPC transport",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        2534753,
+        2535057
+      ],
+      "bytes": 304,
+      "sha256": "b005d89cf2efc3ffec10660e1f4f9f34fdc80e226cfa48d056a51dfff280cfcd",
+      "path": "reference-extension/11.txt"
+    }
+  ],
+  "enrichment_spans_verified": [
+    {
+      "symbol": "Complete local enrichment nPt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        3012987,
+        3013696
+      ],
+      "bytes": 709,
+      "sha256": "6d6f307cc1468dfb36dec72408f33b2f7ffa92015557ca8c0b5c5a28c129e906",
+      "path": "reference-new/01.txt"
+    },
+    {
+      "symbol": "Complete review-path expansion Kxt",
+      "asset": "index-BGEQ8YjU.js",
+      "utf8_bytes_half_open": [
+        3008612,
+        3008843
+      ],
+      "bytes": 231,
+      "sha256": "96b065435655609f9830f61dfb63432a05b090304abf7c23adb72cf00832118d",
+      "path": "reference-new/02.txt"
+    }
+  ],
+  "current_source": [
+    {
+      "path": "src/components/WorkspaceView.tsx",
+      "blob": "24c003ffb6a8706357fa3aafacb50c632f0115b3",
+      "sha256": "3a520439bd8b09531e82e8dcb74e780c311cb5c079504b9c8796aeea12988fe2",
+      "bytes": 85126,
+      "unchanged_from_5852": true,
+      "unchanged_from_prior": true
+    },
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "blob": "64f8c8f604364e74d957e3dc031150ceb788f5f9",
+      "sha256": "9b0be2bd905db1360da1eb4e2dc45748d3ea978132c6f0296366d0e0f3ce64a8",
+      "bytes": 29870,
+      "unchanged_from_5852": true,
+      "unchanged_from_prior": true
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "blob": "e9445d7274dd1c336b981ce09daf49eba6bdf01d",
+      "sha256": "721329425ae44ff6d75f1a1c755c492b4c67954ef1cca298815d97794780cc3c",
+      "bytes": 10088,
+      "unchanged_from_5852": true,
+      "unchanged_from_prior": true
+    },
+    {
+      "path": "src/features/chat/composerSession.ts",
+      "blob": "2c07845371d63eafe82f3969657406585266fe56",
+      "sha256": "7d2091a307e8b31b57ec95c0672fc4433b3588b8c470b12db0fb4b5ac38eac09",
+      "bytes": 6721,
+      "unchanged_from_5852": true,
+      "unchanged_from_prior": true
+    },
+    {
+      "path": "src/features/chat/composerAttachments.ts",
+      "blob": "acf9afdea752a2981ae94a3c9958c24614bd1892",
+      "sha256": "38a2657a61d3d8a43116e412813f128ce409907eefd80f1d5b6ad1612fd06beb",
+      "bytes": 4233,
+      "unchanged_from_5852": true,
+      "unchanged_from_prior": true
+    },
+    {
+      "path": "src/features/chat/userContent.ts",
+      "blob": "409f8836c57145098270139a1e960b8fdf7f365d",
+      "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c",
+      "bytes": 5105,
+      "unchanged_from_5852": true,
+      "unchanged_from_prior": true
+    },
+    {
+      "path": "src/features/draft-attachments/staging.ts",
+      "blob": "f912665178fdffca91820cc78a4be899556528af",
+      "sha256": "59778d93e351cc374d2dfe0f04f2bfa4bd685cd9df513cff9fa1b0f79dd86f54",
+      "bytes": 2727,
+      "unchanged_from_5852": true,
+      "unchanged_from_prior": true
+    },
+    {
+      "path": "src/features/chat/composerSession.test.ts",
+      "blob": "1374af5d71052a1f3a8ac383ce7034110d83ef2a",
+      "sha256": "e0cd494c65f4fa11d378012a3acd89591902580a99f97e4aa6af11f27f720adb",
+      "bytes": 10964,
+      "unchanged_from_5852": true,
+      "unchanged_from_prior": true
+    }
+  ],
+  "verdict": "NO_PRODUCT_DEFECT_ESTABLISHED",
+  "limits": [
+    "Retained REA static evidence only; original phase equivalence unresolved",
+    "Actual ChatPanel exported by loader; outer WorkspaceView layout is not mounted",
+    "Node/jsdom is not native or provider acceptance"
+  ]
+}

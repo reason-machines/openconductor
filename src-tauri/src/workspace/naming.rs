@@ -47,14 +47,30 @@ pub fn branch_for(prefix: Option<&str>, name: &str) -> String {
     }
 }
 
-/// Folder name `git clone` would pick for `url`: its last path segment
-/// without a trailing `.git`. Handles https, `git@host:owner/name` and local
-/// paths; `None` when nothing usable is left.
+/// Clone folder basename. Remote names follow Conductor's sanitizer; local
+/// paths retain their basename. `None` when nothing usable is left.
 pub fn repo_name_from_url(url: &str) -> Option<String> {
-    let trimmed = url.trim().trim_end_matches(['/', '\\']);
+    let input = url.trim();
+    let remote = if let Some((scheme, _)) = input.split_once("://") {
+        scheme != "file"
+    } else {
+        input.split_once(':').is_some_and(|(host, path)| {
+            !host.is_empty() && !host.contains(['/', '\\'])
+                && !(host.len() == 1 && host.as_bytes()[0].is_ascii_alphabetic() && path.starts_with(['/', '\\']))
+        })
+    };
+    let trimmed = input.trim_end_matches(['/', '\\']);
     let trimmed = trimmed.strip_suffix(".git").unwrap_or(trimmed).trim_end_matches(['/', '\\']);
     let name = trimmed.rsplit(['/', '\\', ':']).next()?;
-    (!name.is_empty() && name != "." && name != "..").then(|| name.to_string())
+    let name = if remote {
+        let sanitized: String = name.to_lowercase().chars().map(|ch| {
+            if ch.is_ascii_lowercase() || ch.is_ascii_digit() || matches!(ch, '-' | '_' | '.') { ch } else { '-' }
+        }).collect();
+        sanitized.split('-').filter(|part| !part.is_empty()).collect::<Vec<_>>().join("-")
+    } else {
+        name.to_string()
+    };
+    (!name.is_empty() && name != "." && name != "..").then_some(name)
 }
 
 /// Next candidate after a taken name, as in the reference app: `x` becomes
