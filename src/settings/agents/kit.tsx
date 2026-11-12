@@ -272,14 +272,14 @@ function SecretInput({ label, pending, onSubmit, onCancel }: { label: string; pe
           spellCheck={false}
         />
       </div>
+      <button type="submit" className="ag-btn ag-primary" disabled={pending || value.trim() === ""}>
+        {pending ? "Saving…" : "Save"}
+      </button>
       {onCancel && (
         <button type="button" className="ag-btn ag-ghost" disabled={pending} onClick={onCancel}>
           Cancel
         </button>
       )}
-      <button type="submit" className="ag-btn ag-primary" disabled={pending || value.trim() === ""}>
-        {pending ? "Saving…" : "Save"}
-      </button>
     </form>
   );
 }
