@@ -34,7 +34,7 @@ function compile(source: string, filename: string) {
 }
 
 const transcriptSource = ts.createSourceFile("Transcript.tsx", readFileSync(new URL("./Transcript.tsx", import.meta.url), "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-const transcriptCode = compile(["Transcript", "rowTurn", "groupTurns", "Row", "Agent", "Part"].map((name) => {
+const transcriptCode = compile(["toolDisclosure", "Transcript", "rowTurn", "groupTurns", "Row", "Agent", "Part"].map((name) => {
   const node = transcriptSource.statements.find((node) => ts.isFunctionDeclaration(node) && node.name?.text === name
     || ts.isVariableStatement(node) && node.declarationList.declarations.some((d) => ts.isIdentifier(d.name) && d.name.text === name));
   assert.ok(node, `Production ${name} exists`);

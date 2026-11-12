@@ -12,11 +12,14 @@ import { PRIORITY } from "../keybindings/dispatcher";
 import "../theme/scriptTerminal.css";
 import "./scriptOutput.css";
 
-export function ScriptOutput({ output }: { output: string }) {
+export function ScriptOutput({ output, onInput, onResize }: { output: string; onInput?: (data: string) => Promise<void>; onResize?: (cols: number, rows: number) => Promise<void> }) {
   const container = useRef<HTMLDivElement>(null);
   const host = useRef<HTMLDivElement>(null);
   const terminal = useRef<Terminal | null>(null);
   const written = useRef("");
+  const resizeCallback = useRef(onResize);
+  resizeCallback.current = onResize;
+  const fitTerminal = useRef<(() => void) | null>(null);
   const getTerminal = useCallback(() => terminal.current, []);
   const find = useBufferFind(getTerminal);
   useKeybindings({
@@ -69,9 +72,18 @@ export function ScriptOutput({ output }: { output: string }) {
         brightCyan: color("--terminal-bright-cyan"), brightWhite: color("--terminal-bright-white"),
       };
     };
+    let reported: { callback: NonNullable<typeof onResize>; cols: number; rows: number } | undefined;
     const resize = () => {
-      if (element.clientWidth > 0 && element.clientHeight > 0) fit.fit();
+      if (element.clientWidth <= 0 || element.clientHeight <= 0) return;
+      fit.fit();
+      const callback = resizeCallback.current;
+      if (!callback) { reported = undefined; return; }
+      if (!Number.isInteger(term.cols) || term.cols <= 0 || term.cols > 65535 || !Number.isInteger(term.rows) || term.rows <= 0 || term.rows > 65535) return;
+      if (reported?.callback === callback && reported.cols === term.cols && reported.rows === term.rows) return;
+      reported = { callback, cols: term.cols, rows: term.rows };
+      void callback(term.cols, term.rows);
     };
+    fitTerminal.current = resize;
     refreshTheme();
     resize();
     const observer = new ResizeObserver(resize);
@@ -90,10 +102,28 @@ export function ScriptOutput({ output }: { output: string }) {
       offFont();
       offScrollback();
       terminal.current = null;
+      fitTerminal.current = null;
       terminalElement?.removeEventListener("copy", copy);
       term.dispose();
     };
   }, []);
+
+  useEffect(() => { fitTerminal.current?.(); }, [onResize]);
+
+  useEffect(() => {
+    const term = terminal.current;
+    if (!term) return;
+    term.options.disableStdin = !onInput;
+    if (!onInput) return;
+    let active = true;
+    let pending = Promise.resolve();
+    const input = term.onData((data) => {
+      pending = pending.then(async () => {
+        if (active) await onInput(data);
+      });
+    });
+    return () => { active = false; input.dispose(); };
+  }, [onInput]);
 
   useEffect(() => {
     const term = terminal.current;

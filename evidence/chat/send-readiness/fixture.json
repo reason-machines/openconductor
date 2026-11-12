@@ -1,0 +1,13 @@
+{
+  "four_control_original_sha256": "eb5cd51e6e8451870c2bdd255c32b49a66a70086e1e5a719b775f83ef4bf6a09",
+  "published_files": {
+    "src/features/chat/sendReadiness.test.ts": "eb3c447d3e9b487539696f57bc6d7f46ea9388dd0df0be94eb4f299d295c3a7b",
+    "tests/chat-search/composerSendReadiness.dom.test.mjs": "88da209d3826f054620a503bf7d8077876647457db073096be2e0b5e982d5c01",
+    "tests/chat-search/support/composerSendReadinessHost.mjs": "a7ddb6ad0e4f1764c0c20a39a6105a24970580c0106a76c750290bdb12ed1ae2",
+    "evidence/chat/send-readiness/service-controls-v1.mjs": "eb5cd51e6e8451870c2bdd255c32b49a66a70086e1e5a719b775f83ef4bf6a09"
+  },
+  "service_cases": 4,
+  "mounted_cases": 72,
+  "local_prepublication_mounted": 79,
+  "published_hosted_status": "NOT_RUN_PENDING_AUTOMATIC_CI"
+}

@@ -1,0 +1,153 @@
+{
+  "candidate": "CHAT.RECENT-CHIP-OVERFLOW-POPOVER",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "original": "Conductor 0.87.6 retained extracted frontend assets, not a new native acquisition",
+  "asset_sha256": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "spans": [
+    {
+      "path": "reference-nPo.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8940379,
+        8941693
+      ],
+      "bytes": 1314,
+      "sha256": "7fde5b9442fb1ee86f7bea98d5ea52ec815263fed8e311dd34a527899bc3bf9b",
+      "boundary": "Complete prior sealed declaration, rebound byte-for-byte to full retained asset"
+    },
+    {
+      "path": "reference-RIo.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8768553,
+        8770589
+      ],
+      "bytes": 2036,
+      "sha256": "a6c6ab107d56f48e2af9fd63eccf0d2dd15c9a740c62727fefb06e65338944ef",
+      "boundary": "Complete prior sealed declaration, rebound byte-for-byte to full retained asset"
+    },
+    {
+      "path": "reference-EIo.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8763261,
+        8764280
+      ],
+      "bytes": 1019,
+      "sha256": "97727a2d144c4e4f33343393e5bff24802c5864faf44db890766b8952083cd18",
+      "boundary": "Complete prior sealed declaration, rebound byte-for-byte to full retained asset"
+    },
+    {
+      "path": "reference-uKn.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        8764945,
+        8766915
+      ],
+      "bytes": 1970,
+      "sha256": "f19a5b0fae277aaea315df1bdb629e3b652fee283c9eb59db7c2f8c4480a78cc",
+      "boundary": "Complete prior sealed declaration, rebound byte-for-byte to full retained asset"
+    },
+    {
+      "path": "reference-Popover-module.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2127519,
+        2136402
+      ],
+      "bytes": 8883,
+      "sha256": "d5c3b4221c044d43917d22ff6353434534e3d1f8bb3fe1bac90e823d1bc49908",
+      "next_boundary": "function Fk("
+    },
+    {
+      "path": "reference-Popover-dismiss-SZ.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        480188,
+        485653
+      ],
+      "bytes": 5465,
+      "sha256": "ad109d330e72b3e4e33789f4482e7c5c61e88fcc77859c3a8329ff6be12b4ecd",
+      "next_boundary": "function XIn("
+    },
+    {
+      "path": "reference-Popover-focus-qSe.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        470653,
+        476886
+      ],
+      "bytes": 6233,
+      "sha256": "c527a9b6a92fd67ec4fca7c4950833e49d2e3864235c83f8fba1edef53724a8b",
+      "next_boundary": "function cde("
+    },
+    {
+      "path": "reference-hc-container.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        1911047,
+        1911222
+      ],
+      "bytes": 175,
+      "sha256": "d6646317f18a5fc26b366510e93384050bd61bd884c4b8a79d7406901df0c7c8",
+      "next_boundary": "const zjt="
+    },
+    {
+      "path": "reference-zf-nested-layer.txt",
+      "asset": "renderApp-D_fmY7hW.js",
+      "utf8_half_open": [
+        2156483,
+        2156787
+      ],
+      "bytes": 304,
+      "sha256": "6292bbf38b120586229f94c2f882098ca5fec4951fee3aec753eca912b9285e5",
+      "next_boundary": "function fFt("
+    }
+  ],
+  "counterexample": "With six eligible source chats, click +2 more. Current source removes the trigger and appends two chips inline; original source retains the trigger and opens a separate dismissible popup. This is a static counterexample, not an observed UI run.",
+  "qualified_main": "37a76b8327914a85c0127645858b68fbf821787e",
+  "source_packet_sha256": "b9e0fa33d9b193e90acf1ee4dae80b7d65483444100d2f682f38cfdfbeb48bb8",
+  "fixture": {
+    "path": "tests/chat-search/recentChatOverflow.dom.test.mjs",
+    "sha256": "6f77ff55ecbeb1519e77d6599368492a901f17156184903ddcfe42bb83c6472d",
+    "cases": 8,
+    "state": "HOSTED_BASELINE_RED_CANDIDATE_PENDING",
+    "revision": "pre-freeze source-review corrections"
+  },
+  "baseline_sources": [
+    {
+      "source": "src/features/chat/ChatEmptyState.tsx",
+      "path": "main-src__features__chat__ChatEmptyState.tsx",
+      "bytes": 3686,
+      "sha256": "f13ab7ee9a5790b11764ea87ff044ebd902a6d6e9fb4b167c0a9ddc0b2383927"
+    },
+    {
+      "source": "src/features/chat/chatEmptyState.ts",
+      "path": "main-src__features__chat__chatEmptyState.ts",
+      "bytes": 2747,
+      "sha256": "4010ad862ee542c7a474e9588f09398326720a73e5175e2cb9a23779deb1ee23"
+    },
+    {
+      "source": "src/features/chat/chatEmptyState.css",
+      "path": "main-src__features__chat__chatEmptyState.css",
+      "bytes": 2948,
+      "sha256": "972a3a53b83e2aad289dd221efc4cbc43f24fad2c79400d543b8db4afea87f65"
+    }
+  ],
+  "runtime": "No local Node/browser/native/provider execution; automatic hosted checks only.",
+  "native_acceptance": "NOT_RUN",
+  "requalification": {
+    "baseline_ref": "37a76b8327914a85c0127645858b68fbf821787e",
+    "earlier_qualified_main": "47463ddaf959a7ee394d3d64a5b22e3eccbda74c",
+    "archive_sha256": "906710bbea39698957e0801e43dd8ac5f20ee2e8170a58f24e7453b2e0e5cf86",
+    "fixture_unchanged": true,
+    "full_asset_rebind": "PASS",
+    "source_policy_and_workspace_producer": "UNCHANGED",
+    "hosted_dom": "BASELINE_RED_5_INTENDED_FAILURES_3_CONTROLS_PASS",
+    "runtime_receipt": "runtime.json",
+    "native": "NOT_RUN"
+  }
+}
