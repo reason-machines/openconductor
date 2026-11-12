@@ -29,7 +29,8 @@ provider operation, shared popup change, or backend edit is needed.
 The builtin-only Node witness executes the production `keyDown` body and checks
 that `Dialog.Popup` is wired to it. Only state updates and the `choose` callback
 are substituted. It verifies selection targets, not real filesystem mutations.
-The fixture was frozen before the three-line production correction.
+The fixture was frozen before the three-line production correction. Captured
+logs have only trailing whitespace removed.
 
 - [RED](red.log): five missing Home/End assertions fail and five controls pass.
 - [GREEN](green.log): the same ten cases pass; fixture SHA-256 is unchanged.
@@ -48,8 +49,10 @@ python3 evidence/dialogs/linked-picker-boundary-keys/verify_source.py --assets a
 git diff --check
 ```
 
-Build/typecheck and exact-head hosted checks are pending. The first local build
-was interrupted after branding validation; it is not counted as a pass. Browser,
-native, installed-build, visual, and real link/unlink acceptance are NOT_RUN.
-No screenshot exists yet: serialized browser admission was requested, and no
-preview or native runtime has been started for this unit.
+The first local build was interrupted after branding validation. A fresh
+`npm run build` passed branding and TypeScript, then timed out after 300 seconds
+while Vite was transforming modules ([partial log](local-build-partial.log)).
+Full build and exact-head hosted checks are pending. Browser, native,
+installed-build, visual, and real link/unlink acceptance are NOT_RUN. No screenshot
+exists yet: serialized browser admission was requested, and no preview or native
+runtime has been started for this unit.

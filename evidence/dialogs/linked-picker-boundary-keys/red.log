@@ -12,9 +12,9 @@ not ok 1 - End then Enter toggles the final workspace, not the previously select
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
-    
+
     false !== true
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: true
@@ -37,9 +37,9 @@ not ok 2 - Home then Enter selects Browse without prematurely opening it
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
-    
+
     false !== true
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: true
@@ -65,7 +65,7 @@ not ok 3 - End accounts for existing directory rows before workspace rows
   error: |-
     Expected values to be strictly deep-equal:
     + actual - expected
-    
+
       [
         {
     +     kind: 'directory',
@@ -74,7 +74,7 @@ not ok 3 - End accounts for existing directory rows before workspace rows
     -     kind: 'workspace'
         }
       ]
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected:
@@ -106,7 +106,7 @@ not ok 4 - End selects the final directory when no workspace matches the search
   error: |-
     Expected values to be strictly deep-equal:
     + actual - expected
-    
+
       [
         {
     +     kind: 'browse'
@@ -114,7 +114,7 @@ not ok 4 - End selects the final directory when no workspace matches the search
     -     path: '/fixture/b'
         }
       ]
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected:
@@ -144,9 +144,9 @@ not ok 5 - Home and End safely select Browse when it is the only result
   failureType: 'testCodeFailure'
   error: |-
     Expected values to be strictly equal:
-    
+
     false !== true
-    
+
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   expected: true
