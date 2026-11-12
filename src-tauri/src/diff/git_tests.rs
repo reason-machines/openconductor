@@ -11,6 +11,9 @@ mod large_file_placeholder;
 #[path = "historical_large_file_tests.rs"]
 mod historical_large_file_placeholder;
 
+#[path = "literal_path_tests.rs"]
+mod literal_selected_paths;
+
 static N: AtomicUsize = AtomicUsize::new(0);
 
 fn sh(repo: &Path, args: &[&str]) {

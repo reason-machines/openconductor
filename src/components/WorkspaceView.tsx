@@ -47,7 +47,9 @@ import { lastUserMessageAt, type OtherChat } from "../features/chat/chatEmptySta
 import { AGENT_NAMES, commandSet, isKnownCommand, parseSlashCommand, type ComposerAgent } from "../features/chat/slashCommands.ts";
 import { useAgentCommands } from "../features/chat/slashCompletions.ts";
 import { defaultChatConfig } from "../features/chat/chatModel.ts";
-import { copyModelChoice } from "../features/chat/chatModelChoice.ts";
+import { copyModelChoice, loadModelChoice, saveModelChoice } from "../features/chat/chatModelChoice.ts";
+import { fastModeAvailable, type ModelChoice } from "../features/chat/composerModels.ts";
+import { agentForModel } from "../settings/models.ts";
 import { getSettings } from "../settings/api";
 import type { SendMode } from "../features/chat/queue.ts";
 import { ResetChatDialog } from "../features/chat/ResetChatDialog.tsx";
@@ -248,6 +250,15 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const clearing = useRef(false);
   const [picked, setPicked] = useState<Record<string, ChatAgentId>>({});
   const agentId: ChatAgentId = reason ? (picked[chatId] ?? savedAgent(chatId)) : "reason";
+  const [modelChoices, setModelChoices] = useState<Record<string, ModelChoice>>({});
+  const modelChoice = modelChoices[chatId] ?? loadModelChoice(chatId);
+  function pickModel(next: ModelChoice) {
+    saveModelChoice(chatId, next);
+    setModelChoices((choices) => ({ ...choices, [chatId]: next }));
+  }
+  const fastMode = agentId !== "reason" && modelChoice?.agent === agentId && agentForModel(modelChoice.model) === agentId && fastModeAvailable(modelChoice.model)
+    ? { isFastMode: !!modelChoice.fast }
+    : undefined;
   const agent = CHAT_AGENTS[agentId];
   const codex = agentId === "codex";
   // The "/" menu: Conductor's built-ins for the agent, then the commands and
@@ -280,8 +291,8 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
   const running = transcript.activeTurn !== null;
   const planMode = useLocalPlanMode(chatId, workspace.id, agentId === "claude", workspace.status === "archived" || running || queue.status !== "idle" || queue.items.length > 0 || permissions.length > 0, setAttachError);
   const slashCommands = useMemo(
-    () => commandSet({ agent: COMPOSER_AGENT[agentId], planMode, agentCommands: reported?.slashCommands, skills: reported?.skills }),
-    [agentId, reported, planMode?.isPlanMode],
+    () => commandSet({ agent: COMPOSER_AGENT[agentId], planMode, fastMode, agentCommands: reported?.slashCommands, skills: reported?.skills }),
+    [agentId, reported, planMode?.isPlanMode, fastMode?.isFastMode],
   );
   useKeybindings({ "chat.togglePlanMode": planMode ? () => planMode.onToggle() : undefined });
   // Only the workspace's own chat counts as the agent working; a review chat does not.
@@ -703,7 +714,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             <span className="oc-review-model">{review.modelLabel}</span>
           ) : (
             // A review chat keeps its model. The agent changes only while no turn runs and no message waits, so queued messages never move to another agent.
-            <ChatModelPicker chatId={chatId} agent={agentId} onAgentChange={reason && queue.status === "idle" && queue.items.length === 0 && (agentId !== "claude" || (planMode && !planMode.isPlanMode && !planMode.disabled)) ? pickAgent : undefined} />
+            <ChatModelPicker chatId={chatId} agent={agentId} selection={{ value: modelChoice, onChange: pickModel }} onAgentChange={reason && queue.status === "idle" && queue.items.length === 0 && (agentId !== "claude" || (planMode && !planMode.isPlanMode && !planMode.disabled)) ? pickAgent : undefined} />
           )
         }
         planMode={planMode}
@@ -716,6 +727,10 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
           if (cmd.name === "plan" && planMode) {
             if (planMode.disabled) setAttachError("Wait for the current Claude Code turn to end before changing Plan mode.");
             else planMode.onToggle();
+            return true;
+          }
+          if (cmd.name === "fast" && fastMode && modelChoice) {
+            pickModel({ ...modelChoice, fast: !fastMode.isFastMode });
             return true;
           }
           if (cmd.name === "clear" && (agentId === "claude" || agentId === "codex")) {
