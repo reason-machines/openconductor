@@ -289,6 +289,22 @@ async function startTab(
       // find input, not the terminal, has focus.
       selectionBackground: withAlpha(cssVar("--accent"), "66"),
       selectionInactiveBackground: withAlpha(cssVar("--accent"), "4d"),
+      black: cssVar("--terminal-black"),
+      red: cssVar("--terminal-red"),
+      green: cssVar("--terminal-green"),
+      yellow: cssVar("--terminal-yellow"),
+      blue: cssVar("--terminal-blue"),
+      magenta: cssVar("--terminal-magenta"),
+      cyan: cssVar("--terminal-cyan"),
+      white: cssVar("--terminal-white"),
+      brightBlack: cssVar("--terminal-bright-black"),
+      brightRed: cssVar("--terminal-bright-red"),
+      brightGreen: cssVar("--terminal-bright-green"),
+      brightYellow: cssVar("--terminal-bright-yellow"),
+      brightBlue: cssVar("--terminal-bright-blue"),
+      brightMagenta: cssVar("--terminal-bright-magenta"),
+      brightCyan: cssVar("--terminal-bright-cyan"),
+      brightWhite: cssVar("--terminal-bright-white"),
     },
   });
   term.loadAddon(new Unicode11Addon());

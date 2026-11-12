@@ -1,0 +1,70 @@
+{
+  "unit": "EDIT-SAVE-FAILURE-FEEDBACK-DE6-01",
+  "computer": {
+    "name": "Cloud computer 352",
+    "id": "00637189-5c55-416e-b457-ed7419fb739a"
+  },
+  "containing_main": "27663930d063a4c0d73ee7c79774facb7302d69e",
+  "baseline_product_sha256": "5d61d8a59f1a500d31c399907b0f54c9a51089ed7b7a7442d6c9b890b6d3d564",
+  "candidate_product_sha256": "9d9c3c2c27e6a875455c9e7937410858e7e26415bd3e8880837b42a3d236cb75",
+  "fixture_sha256_before_and_after": "74fd947c45301a43a5c4a07b769cd7782fec2438b7938f7cbc9ccfc79ef7bbbe",
+  "lock_sha256_before_and_after": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "failing_fixture_commit": "743edefe56da57e4e46843c63b8382d0dffb2ca9",
+  "dependencies": {
+    "react": "18.3.1",
+    "react-test-renderer": "18.3.1",
+    "typescript": "5.9.3"
+  },
+  "install": {
+    "exit": 0,
+    "raw": "install.txt",
+    "lifecycle_scripts": false
+  },
+  "red": {
+    "exit": 1,
+    "tests": 7,
+    "passed": 2,
+    "failed": 5,
+    "skipped": 0,
+    "raw": "red.tap",
+    "cause": "Missing operation-specific notification only"
+  },
+  "green": {
+    "exit": 0,
+    "tests": 7,
+    "passed": 7,
+    "failed": 0,
+    "skipped": 0,
+    "raw": "green.tap"
+  },
+  "adjacent": {
+    "exit": 0,
+    "tests": 62,
+    "passed": 62,
+    "failed": 0,
+    "skipped": 0,
+    "raw": "adjacent.tap"
+  },
+  "typecheck": {
+    "exit": 0,
+    "raw": "typecheck.txt"
+  },
+  "static_integrity": {
+    "checks": 31,
+    "result": "PASS",
+    "raw": "integrity.json"
+  },
+  "ordinary_slot": "Released directly to ACC after all admitted foreground commands completed",
+  "not_run": [
+    "local build",
+    "browser",
+    "native app",
+    "Tauri/SQLite",
+    "real provider",
+    "E2E",
+    "package",
+    "manual workflows"
+  ],
+  "visual_evidence": "No screenshot: browser/native not admitted",
+  "adapter": "One flat Notify error message, Failed to save comment: <Error.message or String(reason)>; original title and description are separate"
+}

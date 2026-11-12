@@ -1,0 +1,1 @@
+function Jla(t){return t.length<12?CZn:`${CZn}${t.slice(-4)}`}

@@ -1,0 +1,68 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: stored-key mount shows only its hint without retrieving or copying the value
+ok 1 - stored-key mount shows only its hint without retrieving or copying the value
+  ---
+  duration_ms: 820.540041
+  type: 'test'
+  ...
+# Subtest: masked value activation lazily copies the whole fake value and remains masked
+ok 2 - masked value activation lazily copies the whole fake value and remains masked
+  ---
+  duration_ms: 411.019986
+  type: 'test'
+  ...
+# Subtest: revealed value activation copies the complete fake value without another retrieval
+ok 3 - revealed value activation copies the complete fake value without another retrieval
+  ---
+  duration_ms: 612.166522
+  type: 'test'
+  ...
+# Subtest: unconfigured key has no value-copy gesture and never retrieves or writes a value
+ok 4 - unconfigured key has no value-copy gesture and never retrieves or writes a value
+  ---
+  duration_ms: 315.563534
+  type: 'test'
+  ...
+# Subtest: rejected copy retrieval never writes the hint or reveals the row
+ok 5 - rejected copy retrieval never writes the hint or reveals the row
+  ---
+  duration_ms: 450.910107
+  type: 'test'
+  ...
+# Subtest: empty copy retrieval never writes the hint or reveals the row
+ok 6 - empty copy retrieval never writes the hint or reveals the row
+  ---
+  duration_ms: 436.243942
+  type: 'test'
+  ...
+# Subtest: denied clipboard reports failure without success or revealing the key
+ok 7 - denied clipboard reports failure without success or revealing the key
+  ---
+  duration_ms: 361.481704
+  type: 'test'
+  ...
+# Subtest: missing clipboard reports failure without success or revealing the key
+ok 8 - missing clipboard reports failure without success or revealing the key
+  ---
+  duration_ms: 327.674827
+  type: 'test'
+  ...
+# Subtest: Show then Hide never copies and drops the revealed fake value
+ok 9 - Show then Hide never copies and drops the revealed fake value
+  ---
+  duration_ms: 397.047864
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5415.897768
