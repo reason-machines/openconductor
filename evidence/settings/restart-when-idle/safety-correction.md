@@ -2,6 +2,10 @@
 
 Conductor Rebuild retains PR #1188 and the existing SAME49/49-06App4 continuation `27994a6c-ba09-46a0-8c8c-034cea1760f7`. This is source preparation, not runtime admission or passing behavior evidence.
 
+## Latest execution result
+
+The existing ACC continuation ran at local `0467c69c` / published `d1e6606b` on 2026-11-12. Corrected Owner10 passed all 10 cases. The unchanged safety baseline reproduced 13 intended predicate failures and passed 13 controls, but case 23 had an independent incomplete-selector-mock TypeError. The runtime was stopped and released without applying the patch or retrying. [Actual commands, raw TAP, exact source delta and proposed one-line loader correction](README.md#bounded-continuation-owner10-passed-safety-baseline-mixed) supersede the earlier NOT_RUN status below; the original source trace and failure evidence remain historical. The derived selector-loader fixture is NOT_RUN and awaits the same existing continuation, not a new row.
+
 ## Focused candidate
 
 `fail-closed-candidate.patch` changes only `isIdle` in the existing coordinator. It admits the known quiescent session states `idle` and `error` instead of excluding just three busy values. All three `needs_*` statuses, `waiting`, active work and unknown values therefore block each existing checkpoint. Workspace readiness similarly admits only known inactive states. `unknown` readiness and running setup remain blocked. No refresh, install, drain, restart, persistence-owner or UI sequencing changes are proposed.
@@ -28,7 +32,7 @@ Retained REA qualification `ev_410f83a50764142c952de5f040cde338700477289c1687932
 
 The small two-expression patch follows the Laziness Protocol. Known-state admission at the external readiness boundary follows Type System Discipline without widening the coordinator or duplicating runtime state.
 
-## Retained execution sequence
+## Historical command preparation before admission
 
 The original corrected command pair is unchanged. Both commands remain NOT_RUN and require the existing ACC admission. Do not rerun the passing App4 or coordinator32 checks merely to recreate their historical evidence.
 
@@ -41,6 +45,6 @@ Preserve the original Owner10 strip-only setup failure. Stop and release on an a
 
 Safety fixture SHA-256 is `ce8740744706acc9d70e1fb4f1bc6702561cc45f30b8537f611e75f871031bbb`. Owner fixture SHA-256 is `318917582d80b1e3989af0d5b0ab1b57024dae1e3631138e011ec60088e8101e`.
 
-## Verification limits
+## Historical checkpoint verification limits
 
-Only source review, patch applicability, frozen-byte identity and whitespace checks were performed for this checkpoint on Cloud352. No test, typecheck, install, build, browser, native, package or agent-provider work ran. Repository fetches and PR metadata reads ran to establish the exact source identities. App4 and coordinator32 passing results in README are historical and do not validate this unapplied patch. Corrected Owner10 and safety integration remain NOT_RUN. Native/release acceptance remains NOT_RUN. PR #1188 must not merge with the known defect, even if hosted CI passes.
+Before the bounded continuation above, only source review, patch applicability, frozen-byte identity and whitespace checks were performed for this checkpoint on Cloud352. No test, typecheck, install, build, browser, native, package or agent-provider work ran. Repository fetches and PR metadata reads ran to establish the exact source identities. App4 and coordinator32 passing results in README are historical and do not validate this unapplied patch. Corrected Owner10 and safety integration remain NOT_RUN. Native/release acceptance remains NOT_RUN. PR #1188 must not merge with the known defect, even if hosted CI passes.

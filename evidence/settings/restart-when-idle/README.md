@@ -30,7 +30,7 @@ NODE_OPTIONS=--max-old-space-size=768 nice -n19 timeout --kill-after=5s 120s nod
 
 ## Command-only continuation
 
-ACC disposition `651d17c9-4a76-4eee-8ed7-33dec6f131f5` requests a supported transform loader, not modified production inputs or weakened fixtures. Prepared commands below have NOT RUN. They were sent in handoff `27994a6c-ba09-46a0-8c8c-034cea1760f7`. They require admission on the same existing entry.
+ACC disposition `651d17c9-4a76-4eee-8ed7-33dec6f131f5` requests a supported transform loader, not modified production inputs or weakened fixtures. The following commands were subsequently run once in the bounded continuation described below. They were originally sent in handoff `27994a6c-ba09-46a0-8c8c-034cea1760f7`. They require admission on the same existing entry.
 
 ```bash
 NODE_OPTIONS=--max-old-space-size=768 nice -n19 timeout --kill-after=5s 120s node --experimental-transform-types --test --test-concurrency=1 --test-reporter=tap e2e-artifacts/settings-restart-idle-source-49-06/runtime-candidate/ownerDrain.test.ts
@@ -41,9 +41,25 @@ Owner10 fixture SHA-256 `318917582d80b1e3989af0d5b0ab1b57024dae1e3631138e011ec60
 
 ## Remaining requirements
 
-Source review confirms that the PR candidate admits the active `needs_plan_response`, `needs_user_permission`, and `needs_user_input` statuses as idle. This is a candidate defect established by the current production input path and predicate, not by an executed safety test. Main does not contain this updater coordinator. Unknown readiness already fails closed; unknown lifecycle strings remain defensive cases rather than an observed external-input bypass. The accepted safety fixture must execute against the unchanged candidate before the focused correction. The [source correction checkpoint](safety-correction.md) records the exact checked main and candidate commits, reachable control path, unapplied two-expression patch, and retained command-only continuation. No acceptance is claimed for unrun cases, and the correction is not merge-ready.
+Source review confirms that the PR candidate admits the active `needs_plan_response`, `needs_user_permission`, and `needs_user_input` statuses as idle. This is a candidate defect established by the current production input path and predicate, not by an executed safety test. Main does not contain this updater coordinator. Unknown readiness already fails closed; unknown lifecycle strings remain defensive cases rather than an observed external-input bypass. The accepted frozen safety fixture has now executed against the unchanged idle predicate: 13 intended predicate assertions failed, 13 controls passed, and one separate selector-loader case failed during setup. No correction or candidate execution followed that mixed result. The [source correction checkpoint](safety-correction.md) records the exact checked main and candidate commits, reachable control path, unapplied two-expression patch, and retained command-only continuation. No acceptance is claimed for unrun cases, and the correction is not merge-ready.
 
 The App test isolates unrelated effects and mocks update transport, readiness and persistence boundaries. The coordinator tests do not prove actual owner acknowledgments. The bounded frontend registry is not a universal persistence drain. Local typecheck, adjacent suites, browser/native rendering, actual updater check/download/install/restart, release inclusion and side-by-side Conductor parity are unverified. No screenshot exists because browser/server/native work is excluded from this admission.
+
+## Bounded continuation: Owner10 passed, safety baseline mixed
+
+ACC grant `d000bf0a-4d22-4327-8801-0d8607cfb40b` admitted the existing `27994a6c` entry. Execution began at 16:38:52Z on 2026-11-12, at local commit `0467c69c6c17e343beb9cc2842760dbcb7a266ee` / published head `d1e6606b3d0876c4ec5e2b668fdd6187ee46ac35`. [Before](continuation-source-before.txt) and [after](continuation-source-after.txt) snapshots record source/lock hashes and all five frozen identities. The ordinary-field changes to `owner.ts` and `producer.ts` are an explicit product-source compatibility delta from the earlier App4/32 checkpoint; these executions are not represented as byte-identical to that earlier product source.
+
+- **Owner10 passed:** the exact transform-types command above exited 0, 10/10 cases. [Raw TAP](owner10-transform.tap). The original strip-only setup failure remains unchanged in `owner10.tap`.
+- **Safety baseline failed, mixed:** the exact frozen command above exited 1, 27 cases: 13 passed, 13 intended idle-predicate assertions failed, and case 23 independently failed with `(0 , selectors_1.isSidebarVisible) is not a function`. [Raw TAP](safety-baseline-mixed.tap). Nine intended failures cover the three active `needs_*` statuses at pre-install, post-install, and post-drain; four cover defensive unknown status/state contracts. This now reproduces the predicate defect, but it is not a clean full-suite behavioral RED.
+- **Stopped/released:** no safety patch or candidate run followed the unrelated fixture error; no automatic retry, App4/32 replay, install, typecheck, build, browser or native work ran. [Release receipt](continuation-release.json) confirms all own jobs terminal and the runtime slot released.
+
+The prepared [selector-loader derivative](safetyIntegration.selector-loader.test.cjs) removes only the incomplete `state/selectors.ts` mock so the existing recursive loader evaluates that real pure production module. Every input and assertion is preserved, and frozen original `safetyIntegration.test.cjs` remains byte-identical. Derivative SHA-256: `b81486849e6da03bfd7cf4441d1f3177ca5fa49ea581cd9763fce0e9048f961d`. This derivative has NOT_RUN; it is inert supporting source, not a second executor. Its bounded baseline, minimal correction and identical candidate command remain on the same ACC continuation, awaiting direct admission:
+
+```bash
+RESTART_IDLE_SOURCE_ROOT=. NODE_OPTIONS=--max-old-space-size=768 nice -n19 timeout --kill-after=5s 120s node --test --test-concurrency=1 --test-reporter=tap evidence/settings/restart-when-idle/safetyIntegration.selector-loader.test.cjs
+```
+
+The fail-closed patch remains unapplied and the known defect still blocks merge. Owner10 success does not establish safety-suite or native/package acceptance.
 
 ## Hosted CI compatibility repair
 
