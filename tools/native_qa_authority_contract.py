@@ -5,22 +5,51 @@ import itertools
 import json
 import re
 
-VERSION = "OC_INERT_PAIR_CONTRACT_V1"
+VERSION = "OC_INERT_PAIR_CONTRACT_V2"
 MAX_BYTES = 256 * 1024
 SEED = b"OpenConductor inert pair contract only\n".ljust(4096, b".")
 ROLES = ("supervisor", "consumer", "caller", "peer")
 FILES = ("disk", "aux")
-# Stage name and successful return; None means a nonnegative descriptor/address.
+
+
+@dataclass(frozen=True)
+class Stage:
+    """Closed argument schema and successful result; None denotes an FD/address."""
+    name: str
+    result: int | None
+    arguments: tuple[tuple[str, str], ...]
+    denial: bool = False
+
+
+OPEN = (("entry", "target"), ("flags", "open_flags"))
+WRITE = (("fd", "fd"), ("offset", "zero"), ("length", "write_length"),
+         ("sha256", "payload"))
+READ = (("fd", "fd"), ("offset", "zero"), ("length", "file_length"))
 OPERATIONS = {
-    "write": (("open", None), ("pwrite", 32)),
-    "truncate": (("truncate", 0),),
-    "mmap": (("open", None), ("mmap", None), ("store", 0), ("msync", 0)),
-    "chmod": (("chmod", 0),),
-    "replace": (("same_volume_source", 0), ("rename", 0)),
-    "replace_parent": (("absent_sibling", 0), ("rename_parent", 0)),
-    "alias_write": (("symlink", 0), ("open_alias", None), ("pwrite", 32)),
+    "write": (Stage("open", None, OPEN, True), Stage("pwrite", 32, WRITE)),
+    "truncate": (Stage("truncate", 0, (("entry", "target"), ("length", "zero")), True),),
+    "mmap": (Stage("open", None, OPEN, True),
+             Stage("mmap", None, (("fd", "fd"), ("offset", "zero"),
+                   ("length", "file_length"), ("protection", "protection"),
+                   ("flags", "map_flags"))),
+             Stage("store", 0, (("mapping", "mapping"), ("offset", "zero"),
+                   ("length", "write_length"), ("sha256", "payload"))),
+             Stage("msync", 0, (("mapping", "mapping"), ("length", "file_length"),
+                   ("flags", "sync_flags")))),
+    "chmod": (Stage("chmod", 0, (("entry", "target"), ("mode", "mode")), True),),
+    "replace": (Stage("same_volume_source", 0, (("entry", "source"),)),
+                Stage("rename", 0, (("source", "source"), ("destination", "target")), True)),
+    "replace_parent": (Stage("absent_sibling", 0, (("source", "directory"),
+                              ("destination", "absent"))),
+                       Stage("rename_parent", 0, (("source", "directory"),
+                              ("destination", "absent")), True)),
+    "alias_write": (Stage("symlink", 0, (("entry", "source"), ("target", "target"))),
+                    Stage("open_alias", None, (("entry", "source"),
+                          ("target", "target"), ("flags", "alias_flags")), True),
+                    Stage("pwrite", 32, WRITE)),
 }
-CONTROL = (("pread", 4096), ("pwrite", 32), ("fsync", 0), ("pread", 4096))
+CONTROL = (Stage("pread", 4096, READ), Stage("pwrite", 32, WRITE),
+           Stage("fsync", 0, (("fd", "fd"),)), Stage("pread", 4096, READ))
 
 
 class ContractRefusal(ValueError):
@@ -55,6 +84,21 @@ class FilePin:
 
 
 @dataclass(frozen=True)
+class RowSelection:
+    """Independently selected row identity and correlation pins, not credentials."""
+    sequence: int
+    kind: str
+    role: str
+    file: str
+    operation: str
+    phase: str
+    actor: Actor
+    lifetime: str
+    operand_sha256: str
+    witness_sha256: str
+
+
+@dataclass(frozen=True)
 class ExternalContext:
     """Selected outside the report by a future authenticated native adapter.
 
@@ -77,6 +121,7 @@ class ExternalContext:
     postdrop_witness: str
     capability_inventory: str
     authenticated_report_sha256: str
+    rows: tuple[RowSelection, ...]
 
 
 @dataclass(frozen=True)
@@ -161,10 +206,12 @@ def _snapshot(value, supervisor):
 
 def _steps(value, plan, denied=False):
     _require(type(value) is list and len(value) == len(plan), "missing syscall stages")
-    denied_index = 1 if plan[0][0] in ("same_volume_source", "absent_sibling", "symlink") else 0
-    for index, (step, (name, expected)) in enumerate(zip(value, plan)):
-        _keys(step, ("stage", "return", "errno"))
-        _require(step["stage"] == name, "wrong syscall stage")
+    denied_index = next((i for i, spec in enumerate(plan) if spec.denial), -1)
+    _require(not denied or denied_index >= 0, "operation has no denial stage")
+    for index, (step, spec) in enumerate(zip(value, plan)):
+        _keys(step, ("stage", "return", "errno", "actor_lifetime"))
+        _require(step["stage"] == spec.name, "wrong syscall stage")
+        expected = spec.result
         result, error = step["return"], step["errno"]
         if denied and index > denied_index:
             _require(result is None and error is None, "unreached stage relabelled")
@@ -225,9 +272,48 @@ def _calibration(record, actor, target, supervisor, seen):
                  "unexpected calibration content change")
 
 
-def _operands(record, pin):
+def canonical_digest(value, domain):
+    """Correlation hash only; canonicalizing or hashing never authenticates data."""
+    _require(domain in ("operand", "witness"), "unknown digest domain")
+    try:
+        raw = json.dumps(value, sort_keys=True, separators=(",", ":"),
+                         ensure_ascii=True, allow_nan=False).encode("ascii")
+    except (TypeError, ValueError, RecursionError) as error:
+        raise ContractRefusal("invalid canonical value") from error
+    return hashlib.sha256(f"{VERSION}:{domain}\0".encode() + raw).hexdigest()
+
+
+def _directory(value):
+    _keys(value, ("volume", "inode", "ancestry"))
+    _text(value["volume"])
+    _integer(value["inode"], 1)
+    _digest(value["ancestry"])
+    return value
+
+
+def _name(value):
+    _text(value)
+    _require(value not in (".", "..") and "/" not in value and "\0" not in value,
+             "invalid entry name")
+    return value
+
+
+def _entry(value, kind):
+    _keys(value, ("volume", "inode", "kind", "ancestry", "parent", "name"))
+    _text(value["volume"])
+    _integer(value["inode"], 1)
+    _require(value["kind"] == kind, "wrong operand entry kind")
+    _digest(value["ancestry"])
+    _directory(value["parent"])
+    _name(value["name"])
+    _require(value["volume"] == value["parent"]["volume"], "cross-volume entry")
+    _require(value["inode"] != value["parent"]["inode"], "entry aliases its parent")
+    return value
+
+
+def _operands(record, pin, plan, selection, context):
     operand = _keys(record["operand"], ("volume", "target_inode", "source_volume",
-                                       "source_inode", "alias_target_inode"))
+                   "source_inode", "alias_target_inode", "target_entry", "source_entry", "plan"))
     _require(operand["volume"] == pin.volume
              and _integer(operand["target_inode"], 1) == pin.inode, "wrong syscall target")
     operation = record["operation"]
@@ -243,6 +329,92 @@ def _operands(record, pin):
                  "alias did not bind exact target")
     else:
         _require(operand["alias_target_inode"] is None, "unexpected alias target")
+    target = _entry(operand["target_entry"], "REGULAR")
+    _require((target["volume"], target["inode"], target["ancestry"])
+             == (pin.volume, pin.inode, pin.ancestry), "target entry pin mismatch")
+    source = operand["source_entry"]
+    if operation in ("replace", "alias_write"):
+        _entry(source, "SYMLINK" if operation == "alias_write" else "REGULAR")
+        _require((source["volume"], source["inode"])
+                 == (operand["source_volume"], operand["source_inode"]), "source entry pin mismatch")
+    else:
+        _require(source is None, "unexpected source entry")
+    arguments = operand["plan"]
+    _require(type(arguments) is list and len(arguments) == len(plan), "incomplete operand plan")
+    marker_position = operation if record["kind"] == "control" else f"row:{record['sequence']}"
+    marker = hashlib.sha256(f"{context.nonce}:{record['file']}:{marker_position}".encode()).digest()
+    fixed = {"zero": 0, "write_length": 32, "file_length": len(SEED), "mode": 0o666,
+             "payload": hashlib.sha256(marker).hexdigest(),
+             "open_flags": ["O_RDWR", "O_NOFOLLOW"], "alias_flags": ["O_RDWR"],
+             "protection": ["PROT_READ", "PROT_WRITE"], "map_flags": ["MAP_SHARED"],
+             "sync_flags": ["MS_SYNC"]}
+    for args, spec, step in zip(arguments, plan, record["steps"]):
+        _keys(args, (name for name, _ in spec.arguments))
+        reached = step["return"] is not None
+        _require(step["actor_lifetime"] == (selection.lifetime if reached else None),
+                 "stage actor lifetime mismatch")
+        for name, kind in spec.arguments:
+            value = args[name]
+            if kind in fixed:
+                expected = fixed[kind]
+                if type(expected) is int:
+                    _integer(value)
+                _require(type(value) is type(expected) and value == expected, "wrong fixed operand")
+            elif kind in ("target", "source"):
+                _entry(value, "REGULAR" if kind == "target" or operation == "replace" else "SYMLINK")
+                _require(value == (target if kind == "target" else source), "stage entry mismatch")
+            elif kind in ("fd", "mapping"):
+                if not reached:
+                    _require(value is None, "unreached stage has acquired capability")
+                    continue
+                _keys(value, ("value", "origin", "sequence", "actor_lifetime", "volume", "inode"))
+                _integer(value["value"])
+                _integer(value["sequence"])
+                _integer(value["inode"], 1)
+                if record["kind"] == "control":
+                    origin, sequence, acquired = "postdrop_transfer", 0, value["value"]
+                else:
+                    origin = "mmap" if kind == "mapping" else ("open_alias" if operation == "alias_write" else "open")
+                    acquired = next(s["return"] for s in record["steps"] if s["stage"] == origin)
+                    sequence = record["sequence"]
+                _require(value == {"value": acquired, "origin": origin, "sequence": sequence,
+                         "actor_lifetime": selection.lifetime, "volume": pin.volume, "inode": pin.inode},
+                         "descriptor/mapping provenance mismatch")
+            elif kind == "directory":
+                _entry(value, "DIRECTORY")
+                _require({k: value[k] for k in ("volume", "inode", "ancestry")} == target["parent"],
+                         "rename source is not target parent")
+                _require(value == arguments[0]["source"], "rename source changed after preflight")
+            elif kind == "absent":
+                _keys(value, ("parent", "name", "entry"))
+                _directory(value["parent"])
+                _name(value["name"])
+                directory = arguments[0]["source"]
+                _require(value["entry"] == "ABSENT" and value["parent"] == directory["parent"]
+                         and value["name"] != directory["name"] and value == arguments[0]["destination"],
+                         "rename destination is not selected absent sibling")
+            else:
+                raise ContractRefusal("unknown operand schema")
+    if record["kind"] == "control":
+        _require(all(args["fd"] == arguments[0]["fd"] for args in arguments),
+                 "consumer descriptor changed within control")
+    _require(canonical_digest(operand, "operand") == _digest(selection.operand_sha256),
+             "externally selected operand plan mismatch")
+    _require(canonical_digest(record, "witness") == _digest(selection.witness_sha256),
+             "externally selected row witness mismatch")
+
+
+def _selection(value, sequence, key, actors):
+    _require(type(value) is RowSelection, "missing external row selection")
+    _require(_integer(value.sequence, 1) == sequence
+             and (value.kind, value.role, value.file, value.operation) == key
+             and value.phase == "ACTIVE_QUIESCENT", "external row selection mismatch")
+    _require(type(value.actor) is Actor and type(value.actor.groups) is tuple,
+             "invalid external row actor")
+    _actor({**asdict(value.actor), "groups": list(value.actor.groups)})
+    _require(value.actor == actors[key[1]], "external row actor mismatch")
+    _digest(value.lifetime)
+    return value
 
 
 def _pairs(items):
@@ -303,6 +475,10 @@ def validate_receipt(raw, context):
              "consumer authority is not separated")
     files = _keys(report["files"], FILES)
     pins = {role: _pin(files[role]) for role in FILES}
+    for role in FILES:
+        selected = getattr(context, role)
+        _require(type(selected) is FilePin, "invalid selected file pin")
+        _pin(asdict(selected))
     _require(pins == {role: getattr(context, role) for role in FILES}, "file/ancestor pin mismatch")
     _require(len({(p.volume, p.inode) for p in pins.values()}) == 2,
              "pair aliases one object")
@@ -323,17 +499,29 @@ def validate_receipt(raw, context):
         expected.extend([(kind, actor, target, operation) for kind in ("calibration", "denial")])
     expected.extend(("control", "consumer", target, "after") for target in FILES)
     _require(type(records) is list and len(records) == len(expected), "incomplete exact matrix")
+    _require(type(context.rows) is tuple and len(context.rows) == len(expected),
+             "incomplete external row selections")
+    lifetimes = {}
+    consumer_fds = {}
     current = {role: hashlib.sha256(SEED).hexdigest() for role in FILES}
     seen = {(p.volume, p.inode) for p in pins.values()}
     for sequence, (record, key) in enumerate(zip(records, expected), 1):
-        _keys(record, ("sequence", "kind", "actor", "file", "operation", "operand", "steps", "before", "after"))
+        _keys(record, ("sequence", "kind", "actor", "file", "operation", "phase",
+                       "actor_lifetime", "operand", "steps", "before", "after"))
         _require(_integer(record["sequence"], 1) == sequence, "invalid phase sequence")
         _require(tuple(record[name] for name in ("kind", "actor", "file", "operation")) == key,
                  "missing/duplicate/substituted matrix cell")
         kind, actor, target, operation = key
-        _operands(record, _snapshot(record["before"], supervisor))
+        selection = _selection(context.rows[sequence - 1], sequence, key, actors)
+        _require(record["phase"] == selection.phase and record["actor_lifetime"] == selection.lifetime,
+                 "row phase/actor lifetime mismatch")
+        _require(lifetimes.setdefault(actor, selection.lifetime) == selection.lifetime
+                 and all(role == actor or token != selection.lifetime for role, token in lifetimes.items()),
+                 "ambiguous actor lifetime token")
+        plan = CONTROL if kind == "control" else OPERATIONS[operation]
+        _steps(record["steps"], plan, denied=kind == "denial")
+        _operands(record, _snapshot(record["before"], supervisor), plan, selection, context)
         if kind == "calibration":
-            _steps(record["steps"], OPERATIONS[operation])
             _calibration(record, actors[actor], pins[target], supervisor, seen)
             continue
         for snapshot in (record["before"], record["after"]):
@@ -342,10 +530,11 @@ def validate_receipt(raw, context):
                      "protected object or ancestry changed")
         _require(record["before"]["sha256"] == current[target], "wrong quiescent baseline")
         if kind == "control":
-            _steps(record["steps"], CONTROL)
+            fd = record["operand"]["plan"][0]["fd"]["value"]
+            _require(consumer_fds.setdefault(target, fd) == fd
+                     and all(role == target or other != fd for role, other in consumer_fds.items()),
+                     "consumer transfer descriptor binding changed")
             current[target] = control_digest(context.nonce, target, operation)
-        else:
-            _steps(record["steps"], OPERATIONS[operation], denied=True)
         _require(record["after"]["sha256"] == current[target], "unexpected observed contents")
     terminal = _keys(report["terminal"], ("sequence", "state", "consumer", "observer"))
     _require(_integer(terminal["sequence"], 1) == len(expected) + 1
