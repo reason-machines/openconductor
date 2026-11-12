@@ -1032,7 +1032,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       );
     }
     case "task-update": {
-      const task = parseTask(output);
+      const task = parseTask(result);
       const id = s(input.taskId) || taskIdIn(result);
       const { label, note: dep } = taskUpdateLabel(input);
       const subject = task?.subject || s(input.subject);
