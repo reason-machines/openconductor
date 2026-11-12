@@ -177,8 +177,11 @@
     "src/features/chat/reducer.ts",
     "src/features/chat/rewind.ts",
     "src/features/chat/types.ts",
-    "src/features/chat/userContent.ts"
+    "src/features/chat/userContent.ts",
+    "src/lib/persistence/restartPersistence.ts",
+    "src/lib/persistence/owner.ts"
   ],
+  "execution_graph_extension": "PR #1188 adds the real restart persistence registry and write barrier imported by chatRuntime/persist. Historical source_pins and the frozen fixture retain their original identities; this is loader qualification, not new behavioral evidence.",
   "mocked_boundaries": {
     "src/onboarding/reasonSignIn": "Synthetic React external-store idle/connected notification only. No real account, parser, pairing, persistence, browser, token or native behavior.",
     "src/onboarding/ReasonSignInControls": "Null display component. Initiation, account selection and authentication UI are outside this regression.",

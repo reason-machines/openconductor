@@ -45,6 +45,14 @@ Source review confirms that the PR candidate admits the active `needs_plan_respo
 
 The App test isolates unrelated effects and mocks update transport, readiness and persistence boundaries. The coordinator tests do not prove actual owner acknowledgments. The bounded frontend registry is not a universal persistence drain. Local typecheck, adjacent suites, browser/native rendering, actual updater check/download/install/restart, release inclusion and side-by-side Conductor parity are unverified. No screenshot exists because browser/server/native work is excluded from this admission.
 
+## Hosted CI compatibility repair
+
+The [frontend job at head `204c9a3c`](https://github.com/reason-machines/openconductor/actions/runs/43257494478/job/131319575943) passed `npm run typecheck`, then failed `node --test "src/**/*.test.ts"`: 3,640 passed and 93 failed, exit 1. Build and subsequent steps were skipped. [Extracted diagnostics](ci-204c9a3-diagnostics.json) retain the observed loader errors. This is actual hosted failure evidence, separate from the earlier bounded App4/32 passes and Owner10 setup failure.
+
+The compatibility correction replaces constructor parameter properties in the new persistence modules with ordinary typed fields and assignments, preserving behavior while supporting the existing Node strip-only runner. Strict VM fixtures now admit the real persistence modules instead of failing on their new imports. Home/section fixtures continue to isolate the unrelated update effect; the frozen update-App fixture is unchanged. The sign-in continuation receipt extends its execution graph to the real registry/barrier, preserving the frozen fixture and historical source pins. No assertion was removed or weakened, and no workflow trigger, test command, timeout or gate changed.
+
+Static `git diff --check` and all five `frozen.sha256` identities passed on Cloud352. The frozen sign-in continuation remains SHA-256 `9b3d03de095956357d3e81e0290e2f4b214b849b5620dedc60f42d3bf245efcc`. No local tests, typecheck, install or build ran for this repair; exact-head hosted CI must verify it. The existing ACC `27994a6c` continuation still owns corrected Owner10 and safety baseline/candidate execution. The known active-wait defect is not corrected by this compatibility change and remains a merge blocker. Native/package/release acceptance is still NOT_RUN.
+
 ## Retained reference source
 
 REA receipt `ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2` and the retained consumer qualification establish the shipped-source update arm, install/idle effect, persistence flush, all-state workspace guards and dismissal cancellation. No extracted vendor JavaScript was executed. Readiness rechecks and persistence-receipt invalidation are explicit safety choices, not observed native behavior. Containing-artifact ownership remains the existing release owner; native acceptance remains E1.

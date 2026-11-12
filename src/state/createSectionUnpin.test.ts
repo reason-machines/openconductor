@@ -10,6 +10,7 @@ import type { AppState } from "./types";
 import type { DbRepoRow, DbWorkspaceRow } from "./persisted";
 import * as navigationSections from "./navigationSections.ts";
 import * as sidebarPersistence from "./sidebarPersist.ts";
+import * as persistence from "../lib/persistence/producer.ts";
 
 const dependencies = createRequire(import.meta.url);
 const { act, create } = dependencies("react-test-renderer");
@@ -36,6 +37,7 @@ function evaluate(file: string, imports: Readonly<Record<string, unknown>>, glob
     ...globals, exports, console, URLSearchParams,
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name === "../lib/persistence/producer.ts") return persistence;
       assert.ok(name in imports, `Unexpected ${file} dependency: ${name}`);
       return imports[name];
     },

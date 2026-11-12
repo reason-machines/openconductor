@@ -12,7 +12,13 @@ export class PendingEdit<T> {
   private latest: { value: T; acknowledgment: WriteAcknowledgment } | undefined;
   readonly writes = new WriteBarrier(() => { this.flush(); });
 
-  constructor(private save: (value: T) => Promise<unknown>, private cancelTimer: () => void) {}
+  private save: (value: T) => Promise<unknown>;
+  private cancelTimer: () => void;
+
+  constructor(save: (value: T) => Promise<unknown>, cancelTimer: () => void) {
+    this.save = save;
+    this.cancelTimer = cancelTimer;
+  }
 
   change(value: T): void {
     this.latest = { value, acknowledgment: this.latest?.acknowledgment ?? this.writes.begin() };

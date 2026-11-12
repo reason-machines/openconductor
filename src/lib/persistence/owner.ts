@@ -15,7 +15,9 @@ export class WriteBarrier implements PersistenceOwner {
   private failures = new Map<string, { revision: number; cause: unknown }>();
   private acknowledged = new Map<string, number>();
 
-  constructor(private prepare: () => void = () => {}) {}
+  private prepare: () => void;
+
+  constructor(prepare: () => void = () => {}) { this.prepare = prepare; }
 
   begin(key = "value"): WriteAcknowledgment {
     const revision = ++this.revision;
