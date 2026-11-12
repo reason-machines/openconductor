@@ -1,0 +1,100 @@
+2026-11-12T03:16:33.8235534Z ok 420 - explicitly steering a queued retry preserves its original turn identity
+2026-11-12T03:16:33.8235853Z   ---
+2026-11-12T03:16:33.8236122Z   duration_ms: 1.650598
+2026-11-12T03:16:33.8236397Z   type: 'test'
+2026-11-12T03:16:33.8236643Z   ...
+2026-11-12T03:16:33.8237261Z # Subtest: visible status publication keeps ordering, duplicate suppression and presentation
+2026-11-12T03:16:33.8238343Z ok 421 - visible status publication keeps ordering, duplicate suppression and presentation
+2026-11-12T03:16:33.8238884Z   ---
+2026-11-12T03:16:33.8239133Z   duration_ms: 5.728496
+2026-11-12T03:16:33.8239416Z   type: 'test'
+2026-11-12T03:16:33.8239660Z   ...
+2026-11-12T03:16:33.8240222Z # Subtest: hidden status transitions still publish their canonical ordered native feed
+2026-11-12T03:16:33.8241097Z not ok 422 - hidden status transitions still publish their canonical ordered native feed
+2026-11-12T03:16:33.8241614Z   ---
+2026-11-12T03:16:33.8241870Z   duration_ms: 2.210259
+2026-11-12T03:16:33.8242154Z   type: 'test'
+2026-11-12T03:16:33.8242849Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/caffeinateStatusFeed.test.ts:34:1'
+2026-11-12T03:16:33.8243596Z   failureType: 'testCodeFailure'
+2026-11-12T03:16:33.8243944Z   error: |-
+2026-11-12T03:16:33.8244457Z     Hidden working, waiting and settlement must reach the existing native status boundary
+2026-11-12T03:16:33.8245025Z     + actual - expected
+2026-11-12T03:16:33.8245358Z
+2026-11-12T03:16:33.8245626Z     + []
+2026-11-12T03:16:33.8245873Z     - [
+2026-11-12T03:16:33.8246111Z     -   {
+2026-11-12T03:16:33.8246459Z     -     chatId: 'caffeinate-feed-hidden:review:2',
+2026-11-12T03:16:33.8246862Z     -     status: 'working',
+2026-11-12T03:16:33.8247251Z     -     workspaceId: 'caffeinate-feed-hidden'
+2026-11-12T03:16:33.8248104Z     -   },
+2026-11-12T03:16:33.8248356Z     -   {
+2026-11-12T03:16:33.8248700Z     -     chatId: 'caffeinate-feed-hidden:review:2',
+2026-11-12T03:16:33.8249091Z     -     status: 'waiting',
+2026-11-12T03:16:33.8249474Z     -     workspaceId: 'caffeinate-feed-hidden'
+2026-11-12T03:16:33.8249834Z     -   },
+2026-11-12T03:16:33.8250068Z     -   {
+2026-11-12T03:16:33.8250395Z     -     chatId: 'caffeinate-feed-hidden:review:2',
+2026-11-12T03:16:33.8250791Z     -     status: 'idle',
+2026-11-12T03:16:33.8251165Z     -     workspaceId: 'caffeinate-feed-hidden'
+2026-11-12T03:16:33.8251575Z     -   }
+2026-11-12T03:16:33.8251817Z     - ]
+2026-11-12T03:16:33.8252044Z
+2026-11-12T03:16:33.8252285Z   code: 'ERR_ASSERTION'
+2026-11-12T03:16:33.8252597Z   name: 'AssertionError'
+2026-11-12T03:16:33.8252888Z   expected:
+2026-11-12T03:16:33.8253120Z     0:
+2026-11-12T03:16:33.8253443Z       chatId: 'caffeinate-feed-hidden:review:2'
+2026-11-12T03:16:33.8253892Z       workspaceId: 'caffeinate-feed-hidden'
+2026-11-12T03:16:33.8254256Z       status: 'working'
+2026-11-12T03:16:33.8254520Z     1:
+2026-11-12T03:16:33.8254840Z       chatId: 'caffeinate-feed-hidden:review:2'
+2026-11-12T03:16:33.8255267Z       workspaceId: 'caffeinate-feed-hidden'
+2026-11-12T03:16:33.8255627Z       status: 'waiting'
+2026-11-12T03:16:33.8255903Z     2:
+2026-11-12T03:16:33.8256214Z       chatId: 'caffeinate-feed-hidden:review:2'
+2026-11-12T03:16:33.8256647Z       workspaceId: 'caffeinate-feed-hidden'
+2026-11-12T03:16:33.8257037Z       status: 'idle'
+2026-11-12T03:16:33.8257307Z   actual:
+2026-11-12T03:16:33.8257889Z   operator: 'deepStrictEqual'
+2026-11-12T03:16:33.8258218Z   stack: |-
+2026-11-12T03:16:33.8259049Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/caffeinateStatusFeed.test.ts:42:10)
+2026-11-12T03:16:33.8259963Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:16:33.8260602Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T03:16:33.8261123Z   ...
+2026-11-12T03:16:33.8261721Z # Subtest: hidden status publication does not restore presentation rows or request attention
+2026-11-12T03:16:33.8262646Z ok 423 - hidden status publication does not restore presentation rows or request attention
+2026-11-12T03:16:33.8263206Z   ---
+2026-11-12T03:16:33.8263459Z   duration_ms: 1.354429
+2026-11-12T03:16:33.8263743Z   type: 'test'
+2026-11-12T03:16:33.8264001Z   ...
+2026-11-12T03:16:33.8264557Z # Subtest: closing a visible chat does not prevent later canonical settlement publication
+2026-11-12T03:16:33.8265438Z not ok 424 - closing a visible chat does not prevent later canonical settlement publication
+2026-11-12T03:16:33.8265963Z   ---
+2026-11-12T03:16:33.8266215Z   duration_ms: 1.05169
+2026-11-12T03:16:33.8266496Z   type: 'test'
+2026-11-12T03:16:33.8267194Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/caffeinateStatusFeed.test.ts:70:1'
+2026-11-12T03:16:33.8268172Z   failureType: 'testCodeFailure'
+2026-11-12T03:16:33.8268503Z   error: |-
+2026-11-12T03:16:33.8268960Z     Closing is visibility, not loss of the agent's later state transitions
+2026-11-12T03:16:33.8269445Z     + actual - expected
+2026-11-12T03:16:33.8269718Z
+2026-11-12T03:16:33.8269941Z       [
+2026-11-12T03:16:33.8270192Z         'working',
+2026-11-12T03:16:33.8270459Z     -   'waiting',
+2026-11-12T03:16:33.8270718Z     -   'idle'
+2026-11-12T03:16:33.8270982Z       ]
+2026-11-12T03:16:33.8271207Z
+2026-11-12T03:16:33.8271451Z   code: 'ERR_ASSERTION'
+2026-11-12T03:16:33.8271744Z   name: 'AssertionError'
+2026-11-12T03:16:33.8272054Z   expected:
+2026-11-12T03:16:33.8272300Z     0: 'working'
+2026-11-12T03:16:33.8272556Z     1: 'waiting'
+2026-11-12T03:16:33.8272810Z     2: 'idle'
+2026-11-12T03:16:33.8273052Z   actual:
+2026-11-12T03:16:33.8273290Z     0: 'working'
+2026-11-12T03:16:33.8273568Z   operator: 'deepStrictEqual'
+2026-11-12T03:16:33.8273904Z   stack: |-
+2026-11-12T03:16:33.8274944Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/caffeinateStatusFeed.test.ts:79:10)
+2026-11-12T03:16:33.8275851Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T03:16:33.8276495Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T03:16:33.8276989Z   ...

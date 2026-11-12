@@ -1,0 +1,1 @@
+function Bn(t,e=Iy){return`${t}:${e}`}function Np(t,e){return t.startsWith(`${e}:`)}

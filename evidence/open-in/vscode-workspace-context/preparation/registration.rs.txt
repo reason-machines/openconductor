@@ -1,0 +1,2 @@
+#[cfg(all(test, target_os = "macos"))]
+mod vscode_workspace_context_ipc;
