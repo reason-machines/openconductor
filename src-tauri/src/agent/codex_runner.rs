@@ -20,18 +20,19 @@
 //! with no answers, anything else with an error, so a turn never waits on
 //! them.
 
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::sync::mpsc::{self, Receiver, Sender, TryRecvError};
 use std::sync::Arc;
 use std::thread::{self, JoinHandle};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use serde_json::{json, Value};
 
 use super::codex_cli::CodexLaunch;
 use super::codex_consent::{self, consent, ConsentAnswer, ConsentKind};
 use super::codex_events::{Notification, ServerMessage, ServerRequest};
-use super::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions, TurnOptions};
+use super::codex_rpc::{ApprovalDecision, ClientRequest, RequestId, ThreadOptions, TurnOptions};
+use super::mcp_status::{self, McpServer, StatusQuery, StatusReply};
 use super::codex_session::{CallError, CodexEvent, CodexSession};
 use super::codex_wire::{payloads, Payload, TurnEnd};
 
@@ -98,6 +99,7 @@ enum Cmd {
     Cancel,
     Answer(RequestId, ApprovalDecision),
     Respond(RequestId, ConsentAnswer),
+    McpStatus(StatusQuery),
 }
 
 /// Handle to one chat's runner thread. Dropping it stops the thread and
@@ -119,6 +121,7 @@ impl CodexRunner {
             running: None,
             stderr: VecDeque::new(),
             consents: HashMap::new(),
+            mcp_status: None,
         };
         let thread = thread::Builder::new()
             .name("codex-chat".into())
@@ -145,6 +148,13 @@ impl CodexRunner {
             done,
         }));
         end
+    }
+
+    pub fn mcp_status(&self, timeout: Duration) -> StatusReply {
+        let deadline = Instant::now() + timeout;
+        let (done, result) = mpsc::channel();
+        self.send(Cmd::McpStatus(StatusQuery { deadline, done }));
+        StatusReply { deadline, result }
     }
 
     /// Stops the running prompt and cancels the queued ones.
@@ -176,6 +186,13 @@ struct Running {
     turn_id: String,
 }
 
+struct PendingMcpStatus {
+    request_id: RequestId,
+    rows: Vec<McpServer>,
+    cursors: HashSet<String>,
+    query: StatusQuery,
+}
+
 struct Worker {
     config: RunnerConfig,
     sink: Sink,
@@ -187,6 +204,7 @@ struct Worker {
     stderr: VecDeque<String>,
     /// Elicitations and permission requests waiting on the user.
     consents: HashMap<RequestId, ConsentKind>,
+    mcp_status: Option<PendingMcpStatus>,
 }
 
 const POLL: Duration = Duration::from_millis(25);
@@ -194,6 +212,7 @@ const POLL: Duration = Duration::from_millis(25);
 impl Worker {
     fn run(mut self, rx: Receiver<Cmd>) {
         loop {
+            self.expire_mcp_status();
             loop {
                 match rx.try_recv() {
                     Ok(cmd) => self.handle(cmd),
@@ -231,6 +250,7 @@ impl Worker {
     }
 
     fn shut_down(mut self) {
+        self.fail_mcp_status("The Codex chat closed.");
         for prompt in std::mem::take(&mut self.queue) {
             self.finish(prompt, TurnEnd::cancelled());
         }
@@ -244,6 +264,7 @@ impl Worker {
     fn handle(&mut self, cmd: Cmd) {
         match cmd {
             Cmd::Prompt(p) => self.queue.push_back(p),
+            Cmd::McpStatus(query) => self.start_mcp_status(query),
             Cmd::Cancel => {
                 self.close_consents();
                 for prompt in std::mem::take(&mut self.queue) {
@@ -260,15 +281,21 @@ impl Worker {
                 // ends the prompt.
                 match session.interrupt(timeout) {
                     Ok(()) | Err(CallError::NoActiveTurn) => {}
-                    Err(e) => self.emit(Payload::Notice {
-                        message: format!("Could not stop Codex: {e}"),
-                        will_retry: false,
-                    }),
+                    Err(e) => {
+                        if matches!(e, CallError::Closed { .. } | CallError::Io(_)) {
+                            self.fail_mcp_status("The Codex transport closed while stopping.");
+                        }
+                        self.emit(Payload::Notice {
+                            message: format!("Could not stop Codex: {e}"),
+                            will_retry: false,
+                        });
+                    }
                 }
             }
             Cmd::Answer(id, decision) => {
                 if let Some(session) = self.session.as_mut() {
                     if let Err(e) = session.answer(&id, decision) {
+                        self.fail_mcp_status("Could not write to the Codex transport.");
                         self.emit(Payload::Notice {
                             message: format!("Could not answer Codex: {e}"),
                             will_retry: false,
@@ -295,10 +322,91 @@ impl Worker {
         }
     }
 
+    fn fail_mcp_status(&mut self, message: &str) {
+        if let Some(pending) = self.mcp_status.take() {
+            let _ = pending.query.done.send(Err(message.into()));
+        }
+    }
+
+    fn expire_mcp_status(&mut self) {
+        if self.mcp_status.as_ref().is_some_and(|p| Instant::now() >= p.query.deadline) {
+            self.fail_mcp_status(mcp_status::TIMED_OUT);
+        }
+    }
+
+    fn start_mcp_status(&mut self, query: StatusQuery) {
+        self.expire_mcp_status();
+        let error = if Instant::now() >= query.deadline {
+            Some(mcp_status::TIMED_OUT)
+        } else if self.mcp_status.is_some() {
+            Some("An MCP status query is already pending.")
+        } else if self.session.is_none() {
+            Some("MCP status is unavailable: the Codex session is not running.")
+        } else {
+            None
+        };
+        if let Some(error) = error {
+            let _ = query.done.send(Err(error.into()));
+            return;
+        }
+        let session = self.session.as_mut().expect("live session checked");
+        match session.send_request(&ClientRequest::McpServerStatusList { cursor: None }) {
+            Ok(request_id) => self.mcp_status = Some(PendingMcpStatus {
+                request_id, rows: vec![], cursors: HashSet::new(), query,
+            }),
+            Err(e) => { let _ = query.done.send(Err(format!("Could not query Codex MCP status: {e}"))); }
+        }
+    }
+
+    fn resolve_mcp_status(&mut self, event: &CodexEvent) -> bool {
+        self.expire_mcp_status();
+        let Some(pending) = &self.mcp_status else { return false; };
+        let result = match event {
+            CodexEvent::Message(ServerMessage::Response { id, result }) if id == &pending.request_id => {
+                mcp_status::decode_page(result.clone())
+            }
+            CodexEvent::Message(ServerMessage::ErrorResponse { id: Some(id), code, message }) if id == &pending.request_id => {
+                Err(format!("Codex MCP status error {code}: {message}"))
+            }
+            CodexEvent::BadLine { line, .. } => {
+                let id = serde_json::from_str::<Value>(line).ok()
+                    .and_then(|v| serde_json::from_value::<RequestId>(v.get("id")?.clone()).ok());
+                if id.as_ref() != Some(&pending.request_id) { return false; }
+                Err("Invalid Codex MCP status response.".into())
+            }
+            _ => return false,
+        };
+        let mut pending = self.mcp_status.take().expect("pending query matched");
+        match result {
+            Err(e) => { let _ = pending.query.done.send(Err(e)); }
+            Ok((rows, cursor)) => {
+                pending.rows.extend(rows);
+                if Instant::now() >= pending.query.deadline {
+                    let _ = pending.query.done.send(Err(mcp_status::TIMED_OUT.into()));
+                } else if let Some(cursor) = cursor {
+                    if !pending.cursors.insert(cursor.clone()) {
+                        let _ = pending.query.done.send(Err("Codex repeated an MCP status cursor.".into()));
+                    } else if let Some(session) = self.session.as_mut() {
+                        match session.send_request(&ClientRequest::McpServerStatusList { cursor: Some(cursor) }) {
+                            Ok(id) => { pending.request_id = id; self.mcp_status = Some(pending); }
+                            Err(e) => { let _ = pending.query.done.send(Err(format!("Could not query Codex MCP status: {e}"))); }
+                        }
+                    } else {
+                        let _ = pending.query.done.send(Err("The Codex transport closed.".into()));
+                    }
+                } else {
+                    let _ = pending.query.done.send(Ok(pending.rows));
+                }
+            }
+        }
+        true
+    }
+
     /// Sends a consent's result and tells the window it is answered.
     fn send_consent(&mut self, id: RequestId, result: Value) {
         if let Some(session) = self.session.as_mut() {
             if let Err(e) = session.respond(&id, result) {
+                self.fail_mcp_status("Could not write to the Codex transport.");
                 self.emit(Payload::Notice {
                     message: format!("Could not answer Codex: {e}"),
                     will_retry: false,
@@ -369,6 +477,7 @@ impl Worker {
     fn begin(&mut self, mut prompt: Prompt) {
         prompt.options.fast_mode = prompt.options.fast_mode.or(self.config.thread.fast_mode);
         if let Err(message) = self.ensure_session(&prompt.options) {
+            self.fail_mcp_status("The Codex session was replaced.");
             self.session = None;
             return self.finish(prompt, TurnEnd::failed(message));
         }
@@ -378,6 +487,7 @@ impl Worker {
             Ok(turn_id) => self.running = Some(Running { prompt, turn_id }),
             Err(e) => {
                 if matches!(e, CallError::Closed { .. } | CallError::Io(_)) {
+                    self.fail_mcp_status("The Codex transport closed starting the turn.");
                     self.session = None;
                 }
                 self.finish(
@@ -389,6 +499,7 @@ impl Worker {
     }
 
     fn on_event(&mut self, event: CodexEvent) {
+        if self.resolve_mcp_status(&event) { return; }
         match event {
             CodexEvent::Message(message) => {
                 for p in payloads(&message) {
@@ -412,7 +523,7 @@ impl Worker {
                         }
                         let answer = default_answer(&method);
                         if let Some(s) = self.session.as_mut() {
-                            let _ = match &answer {
+                            let result = match &answer {
                                 Some(result) => s.respond(&id, result.clone()),
                                 None => s.reject(
                                     &id,
@@ -420,6 +531,9 @@ impl Worker {
                                     &format!("OpenConductor does not support {method} yet"),
                                 ),
                             };
+                            if result.is_err() {
+                                self.fail_mcp_status("Could not write to the Codex transport.");
+                            }
                         }
                         self.emit(Payload::Notice {
                             message: format!(
@@ -441,6 +555,7 @@ impl Worker {
             }
             CodexEvent::BadLine { line, error } => eprintln!("codex: {error}: {line}"),
             CodexEvent::Closed => {
+                self.fail_mcp_status("The Codex transport closed.");
                 // Nobody is left to answer: just close the cards.
                 for (id, _) in std::mem::take(&mut self.consents) {
                     self.emit(Payload::ApprovalResolved { request_id: id });
@@ -466,6 +581,10 @@ impl Worker {
         }
     }
 }
+
+#[cfg(all(test, unix))]
+#[path = "codex_mcp_status_tests.rs"]
+mod mcp_status_tests;
 
 #[cfg(all(test, unix))]
 mod tests {

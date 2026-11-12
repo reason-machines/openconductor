@@ -1,0 +1,17 @@
+{
+  "binary_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+  "macho_evidence_id": "ev_4a9365928ff6308aecde7c83155c01e51227412f51e4ae0d718e4867ded4a339",
+  "bun_segment_fileoff": 62734336,
+  "bun_segment_bytes": 13041664,
+  "source_relative_range": [
+    39,
+    13025963
+  ],
+  "source_file_range": [
+    62734375,
+    75760299
+  ],
+  "source_bytes": 13025924,
+  "source_sha256": "f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab",
+  "end_before_nul_utf8": "ice(2), { version: \"0.87.6\" });\n    process.exit(B);\n  }\n  default:\n    throw Error(`Unexpected entrypoint: ${Xt0}`);\n}\n"
+}

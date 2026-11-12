@@ -1,0 +1,18 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "e89bede5597767d131b1c4c9199fb38403d31209",
+  "original_fixture": "fixture-original.test.ts.txt",
+  "original_sha256": "7bfa12faf155a0dbcc496f21016ba9863e1fa377046c6d6cfb38248e8fc0531c",
+  "original_result": {
+    "tests": 20,
+    "pass": 3,
+    "fail": 17,
+    "log": "red-original.tap",
+    "unintended_control_failure": "cross-context theme object compared directly to host-realm object"
+  },
+  "fixture": "src/features/terminal/terminalAnsiTheme.test.ts",
+  "sha256": "da98de47b2473d9cf68518d57eb70a239aa8ae37d1372fd7473e5161aaab3699",
+  "fixture_repair": "Normalize the actual theme to a host plain object in the independent-terminal control. No field, input, expected value, or case-count change.",
+  "cases": 20,
+  "command": "node --test src/features/terminal/terminalAnsiTheme.test.ts"
+}

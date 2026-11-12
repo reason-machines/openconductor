@@ -1,0 +1,32 @@
+{
+  "red-original.tap": {
+    "raw_file": "red-original.tap.raw.gz",
+    "raw_sha256": "5fd7a4a3c3e843f1a84da9b945519eda983ea87e1d1b2bfd678d28d47f1b5049",
+    "display_sha256": "e5dbaee4362e782f343a734f018653de8ff8d677aab376c5abdb5a33e4c9f702",
+    "display_transformation": "Strip trailing whitespace and excess terminal blank lines only; raw gzip retains exact bytes."
+  },
+  "red.tap": {
+    "raw_file": "red.tap.raw.gz",
+    "raw_sha256": "c3bd88c00a0ac5369fa72b2781662e200a214ec889364a5f809b0de52038c0c4",
+    "display_sha256": "a6e5f304d7b87ac695573249d9edd2585e3062e7533857d38b467b0d5e64c361",
+    "display_transformation": "Strip trailing whitespace and excess terminal blank lines only; raw gzip retains exact bytes."
+  },
+  "green.tap": {
+    "raw_file": "green.tap.raw.gz",
+    "raw_sha256": "f9db9a45c255b528a0f0d34f8179649dac4cedefca3a58c249c037dbe9f19605",
+    "display_sha256": "f9db9a45c255b528a0f0d34f8179649dac4cedefca3a58c249c037dbe9f19605",
+    "display_transformation": "Strip trailing whitespace and excess terminal blank lines only; raw gzip retains exact bytes."
+  },
+  "adjacent.tap": {
+    "raw_file": "adjacent.tap.raw.gz",
+    "raw_sha256": "de881351f4401e07fdd373943d0e1cda7ab9971d79aafe1a80e89ee7ead3324c",
+    "display_sha256": "de881351f4401e07fdd373943d0e1cda7ab9971d79aafe1a80e89ee7ead3324c",
+    "display_transformation": "Strip trailing whitespace and excess terminal blank lines only; raw gzip retains exact bytes."
+  },
+  "typecheck.txt": {
+    "raw_file": "typecheck.txt.raw.gz",
+    "raw_sha256": "5c109d549ce95c2f4c60534654310b37a44e7726c38652753af6549e0410e3f5",
+    "display_sha256": "d6842fbf744028f7c048bb710879d3d82f0a9035cd441fa66b4d566eaeabbc43",
+    "display_transformation": "Strip trailing whitespace and excess terminal blank lines only; raw gzip retains exact bytes."
+  }
+}
