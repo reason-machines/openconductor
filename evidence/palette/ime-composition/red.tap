@@ -1,0 +1,510 @@
+(node:98) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: palette ignores Enter during native composition
+not ok 1 - palette ignores Enter during native composition
+  ---
+  duration_ms: 1205.166522
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not activate a result
+    + actual - expected
+    
+    + [
+    +   'action:beta'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'action:beta'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:147:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: palette ignores ArrowDown during native composition
+not ok 2 - palette ignores ArrowDown during native composition
+  ---
+  duration_ms: 549.480244
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Gamma' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Gamma'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores ArrowUp during native composition
+not ok 3 - palette ignores ArrowUp during native composition
+  ---
+  duration_ms: 354.739109
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Alpha' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Alpha'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Home during native composition
+not ok 4 - palette ignores Home during native composition
+  ---
+  duration_ms: 282.184867
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Alpha' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Alpha'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores End during native composition
+not ok 5 - palette ignores End during native composition
+  ---
+  duration_ms: 254.331307
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Gamma' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Gamma'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Meta+ArrowUp during native composition
+not ok 6 - palette ignores Meta+ArrowUp during native composition
+  ---
+  duration_ms: 271.831503
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Alpha' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Alpha'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Meta+ArrowDown during native composition
+not ok 7 - palette ignores Meta+ArrowDown during native composition
+  ---
+  duration_ms: 348.384725
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Gamma' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Gamma'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Control+n during native composition
+not ok 8 - palette ignores Control+n during native composition
+  ---
+  duration_ms: 305.994346
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Gamma' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Gamma'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Control+p during native composition
+not ok 9 - palette ignores Control+p during native composition
+  ---
+  duration_ms: 343.885047
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Alpha' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Alpha'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Enter during legacy keyCode 229
+not ok 10 - palette ignores Enter during legacy keyCode 229
+  ---
+  duration_ms: 335.524328
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not activate a result
+    + actual - expected
+    
+    + [
+    +   'action:beta'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'action:beta'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:147:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores ArrowDown during legacy keyCode 229
+not ok 11 - palette ignores ArrowDown during legacy keyCode 229
+  ---
+  duration_ms: 299.294888
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Gamma' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Gamma'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores ArrowUp during legacy keyCode 229
+not ok 12 - palette ignores ArrowUp during legacy keyCode 229
+  ---
+  duration_ms: 222.217382
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Alpha' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Alpha'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Home during legacy keyCode 229
+not ok 13 - palette ignores Home during legacy keyCode 229
+  ---
+  duration_ms: 208.938209
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Alpha' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Alpha'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores End during legacy keyCode 229
+not ok 14 - palette ignores End during legacy keyCode 229
+  ---
+  duration_ms: 228.95524
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Gamma' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Gamma'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Meta+ArrowUp during legacy keyCode 229
+not ok 15 - palette ignores Meta+ArrowUp during legacy keyCode 229
+  ---
+  duration_ms: 107.447851
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Alpha' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Alpha'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Meta+ArrowDown during legacy keyCode 229
+not ok 16 - palette ignores Meta+ArrowDown during legacy keyCode 229
+  ---
+  duration_ms: 305.618774
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Gamma' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Gamma'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Control+n during legacy keyCode 229
+not ok 17 - palette ignores Control+n during legacy keyCode 229
+  ---
+  duration_ms: 173.340199
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Gamma' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Gamma'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette ignores Control+p during legacy keyCode 229
+not ok 18 - palette ignores Control+p during legacy keyCode 229
+  ---
+  duration_ms: 160.125707
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:143:5'
+  failureType: 'testCodeFailure'
+  error: |-
+    composition must not move the active result
+    
+    'Alpha' !== 'Beta'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Beta'
+  actual: 'Alpha'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/paletteComposition.test.ts:149:16)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: palette preserves ordinary Enter
+ok 19 - palette preserves ordinary Enter
+  ---
+  duration_ms: 148.191351
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary ArrowDown
+ok 20 - palette preserves ordinary ArrowDown
+  ---
+  duration_ms: 178.832967
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary ArrowUp
+ok 21 - palette preserves ordinary ArrowUp
+  ---
+  duration_ms: 271.088938
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Home
+ok 22 - palette preserves ordinary Home
+  ---
+  duration_ms: 176.879012
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary End
+ok 23 - palette preserves ordinary End
+  ---
+  duration_ms: 196.678439
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Meta+ArrowUp
+ok 24 - palette preserves ordinary Meta+ArrowUp
+  ---
+  duration_ms: 201.397434
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Meta+ArrowDown
+ok 25 - palette preserves ordinary Meta+ArrowDown
+  ---
+  duration_ms: 215.814801
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Control+n
+ok 26 - palette preserves ordinary Control+n
+  ---
+  duration_ms: 187.483064
+  type: 'test'
+  ...
+# Subtest: palette preserves ordinary Control+p
+ok 27 - palette preserves ordinary Control+p
+  ---
+  duration_ms: 195.522524
+  type: 'test'
+  ...
+# Subtest: palette preserves Escape close during native composition
+ok 28 - palette preserves Escape close during native composition
+  ---
+  duration_ms: 294.159696
+  type: 'test'
+  ...
+# Subtest: palette preserves a custom tab shortcut during native composition
+ok 29 - palette preserves a custom tab shortcut during native composition
+  ---
+  duration_ms: 136.012244
+  type: 'test'
+  ...
+# Subtest: palette leaves unrelated text keys untouched during native composition
+ok 30 - palette leaves unrelated text keys untouched during native composition
+  ---
+  duration_ms: 134.261093
+  type: 'test'
+  ...
+# Subtest: palette preserves Escape close during legacy keyCode 229
+ok 31 - palette preserves Escape close during legacy keyCode 229
+  ---
+  duration_ms: 141.973801
+  type: 'test'
+  ...
+# Subtest: palette preserves a custom tab shortcut during legacy keyCode 229
+ok 32 - palette preserves a custom tab shortcut during legacy keyCode 229
+  ---
+  duration_ms: 22.28425
+  type: 'test'
+  ...
+# Subtest: palette leaves unrelated text keys untouched during legacy keyCode 229
+ok 33 - palette leaves unrelated text keys untouched during legacy keyCode 229
+  ---
+  duration_ms: 41.433887
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 15
+# fail 18
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12366.052017

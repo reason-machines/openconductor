@@ -21,6 +21,7 @@ assert '.on_menu_event(' not in visual
 for forbidden in ('default_store(', 'BinaryManager', 'request_download(', 'Terminals', 'e2e::install', 'install_at_startup', 'persistence_commands::startup', 'spawn_push_upstream_backfill', 'Command::', 'sidecar_stores::outbox::'):
     assert forbidden not in visual, forbidden
 assert visual.index('resolved_paths(app.handle()') < visual.index('crate::db::open(')
+assert visual.index('let data = app.path().app_data_dir()?') < visual.index('app.manage(crate::local_storage_commands::state(&data))') < visual.index('tauri::WebviewWindowBuilder::from_config')
 assert 'Arc::new(crate::agent::MemorySecretStore::new())' in visual
 assert visual.index('private_webkit()') < visual.index('.with_webview_configuration(webkit)') < visual.index('.build()?')
 assert 'window.with_webview(' in visual
@@ -35,6 +36,8 @@ expected = [
     'crate::onboarding_commands::db_finish_first_run_onboarding',
     'crate::persistence_commands::db_list_repos',
     'crate::persistence_commands::db_list_workspaces',
+    'crate::sidebar_section_commands::db_read_navigation_sections',
+    'crate::local_storage_commands::local_storage_get_entry',
     'crate::settings::commands::get_settings',
     'crate::settings::commands::update_settings',
     'crate::settings::commands::initialize_default_runtime',
