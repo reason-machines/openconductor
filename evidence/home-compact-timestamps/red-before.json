@@ -1,0 +1,70 @@
+{
+  "producer": "Conductor Rebuild",
+  "pr": 1104,
+  "head": "4ea062e0e1b0f5fe203fafa50b8042466560b96d",
+  "run_id": 43123074161,
+  "fixture_sha256": "13bda10e86ef6ca2170bd79b6e7634c5cd94f553feb3b2fce2617120d8ea761e",
+  "qualification": "INTENDED_BEHAVIORAL_RED",
+  "jobs": [
+    {
+      "job_id": 130868182887,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43123074161/job/130868182887",
+      "assertion_failures": 4,
+      "passing_controls": 2,
+      "full_suite": {
+        "tests": 3180,
+        "passed": 3176,
+        "failed": 4
+      }
+    },
+    {
+      "job_id": 130868183005,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43123074161/job/130868183005",
+      "assertion_failures": 4,
+      "passing_controls": 2,
+      "full_suite": {
+        "tests": 3180,
+        "passed": 3176,
+        "failed": 4
+      }
+    }
+  ],
+  "cases": [
+    {
+      "name": "spring local-clock boundary",
+      "actual": "2h",
+      "expected": "3h",
+      "result": "FAIL"
+    },
+    {
+      "name": "fall local-clock boundary",
+      "actual": "3h",
+      "expected": "2h",
+      "result": "FAIL"
+    },
+    {
+      "name": "leap-day full year at February end",
+      "actual": "12mo",
+      "expected": "1y",
+      "result": "FAIL"
+    },
+    {
+      "name": "year boundary before full month clock time",
+      "actual": "1y",
+      "expected": "12mo",
+      "result": "FAIL"
+    },
+    {
+      "name": "ordinary same-offset hours control",
+      "result": "PASS"
+    },
+    {
+      "name": "complete ordinary year control",
+      "result": "PASS"
+    }
+  ],
+  "local_javascript": "NOT_RUN",
+  "native_ui": "NOT_RUN",
+  "reference_runtime": "NOT_RUN",
+  "passing_after": "PENDING_AUTOMATIC_CI"
+}
