@@ -28,6 +28,12 @@ The existing CI frontend-unit job runs the service wrapper. Its existing DOM ste
 
 The same run also failed the existing disclosure-remount baseline because its pinned `src/scripts/api.ts` hash differs. That separate baseline repair belongs to #1109, not this change. Neither failure is skipped, weakened, or called passing. No additional local tests were run for the environment correction; automatic exact-head CI must verify it and reach the mounted step.
 
+## Corrected automatic hosted attempt
+
+At head `adf2e616a53d48524a1ac5751a346a0343741ab4`, [CI run 43132430659, frontend-unit job 130899686329](https://github.com/reason-machines/openconductor/actions/runs/43132430659/job/130899686329) emitted all four original case names, `1..4`, `tests 4`, `pass 4`, `fail 0`, and `skipped 0`. The [unaltered hosted excerpt](hosted-service-controls-adf2e616.tap.txt) includes the passing outer wrapper. This proves service execution, not the 72 mounted cases.
+
+Both frontend jobs still failed the independent disclosure-remount baseline hash check owned by #1109. The DOM step was skipped after that failure; the published 72-case matrix has no hosted execution credit yet. No additional local tests were run. The wrapper now also asserts each exact case name, the four-case plan, total test count, zero failures, and zero skips without relaxing its existing count or pass predicate. Automatic CI must verify these added assertions on the next exact head.
+
 ## Reference and limits
 
 Retained Conductor 0.87.6 REA evidence is `ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367`. The source record distinguishes the upload registry, attachment-record loading, and mutation completion. Their phases are not interchangeable. Passing OpenConductor controls do not close the original native path-mention read/write barrier gap.

@@ -21,8 +21,19 @@ test("four frozen Send-readiness controls execute against the actual ComposerSes
     assert.equal(result.error, undefined, String(result.error));
     assert.equal(result.signal, null, result.stderr);
     assert.equal(result.status, 0, result.stdout + result.stderr);
-    assert.equal((result.stdout.match(/^ok \d+ - /gm) ?? []).length, 4, result.stdout);
+    const rows = result.stdout.match(/^ok \d+ - .+$/gm) ?? [];
+    assert.equal(rows.length, 4, result.stdout);
+    assert.deepEqual(rows.map(row => row.replace(/^ok \d+ - /, "").trimEnd()), [
+      "actual session blocks read-pending B without clearing ready A or prose",
+      "actual session blocks write-pending B without clearing ready A or prose",
+      "failed B preserves ready A and explicit attachment-only delivery",
+      "workspace copy failure preserves draft and attachment for explicit retry",
+    ], result.stdout);
+    assert.match(result.stdout, /^1\.\.4\r?$/m);
+    assert.match(result.stdout, /# tests 4\r?\n/);
     assert.match(result.stdout, /# pass 4\r?\n/);
+    assert.match(result.stdout, /# fail 0\r?\n/);
+    assert.match(result.stdout, /# skipped 0\r?\n/);
     console.log(result.stdout.trim());
   } finally {
     rmSync(folder, { recursive: true, force: true });

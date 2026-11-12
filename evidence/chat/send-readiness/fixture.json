@@ -1,7 +1,7 @@
 {
   "four_control_original_sha256": "eb5cd51e6e8451870c2bdd255c32b49a66a70086e1e5a719b775f83ef4bf6a09",
   "published_files": {
-    "src/features/chat/sendReadiness.test.ts": "55c425a67a1132c6d08bcb034819012c6b398f59bc58299472f1e7886ba0e296",
+    "src/features/chat/sendReadiness.test.ts": "c165ea8c3cc9fa78781725778cd24835e86217d7a3471a19287d9dc08dbc2100",
     "tests/chat-search/composerSendReadiness.dom.test.mjs": "88da209d3826f054620a503bf7d8077876647457db073096be2e0b5e982d5c01",
     "tests/chat-search/support/composerSendReadinessHost.mjs": "a7ddb6ad0e4f1764c0c20a39a6105a24970580c0106a76c750290bdb12ed1ae2",
     "evidence/chat/send-readiness/service-controls-v1.mjs": "eb5cd51e6e8451870c2bdd255c32b49a66a70086e1e5a719b775f83ef4bf6a09"
@@ -9,5 +9,5 @@
   "service_cases": 4,
   "mounted_cases": 72,
   "local_prepublication_mounted": 79,
-  "published_hosted_status": "INITIAL_WRAPPER_FAILED_BEFORE_FOUR_CASES_CORRECTED_LOADER_PENDING_AUTOMATIC_CI"
+  "published_hosted_status": "ADF2E616_FOUR_NAMED_SERVICE_CONTROLS_PASSED_MOUNTED_STEP_BLOCKED_BY_DISCLOSURE_BASELINE_EXACT_NAME_GUARDS_PENDING_CI"
 }
