@@ -22,6 +22,12 @@ The existing CI frontend-unit job runs the service wrapper. Its existing DOM ste
 - One supplementary exploratory write-failure probe passed its empty-input case but failed a representation assumption in its ready-A case. It expected `userContent.parts` to be `[]`; the actual serializer retains `{kind: "text", text: ""}`. This is not a delivery defect or a qualified product RED. Its failed log is retained unchanged, and the probe is not shipped.
 - Exact published-path execution, typecheck, build, and merge eligibility are left to the automatic hosted workflows. The local pre-publication result is not described as GitHub Actions evidence.
 
+## First automatic hosted attempt
+
+[CI run 43131764457](https://github.com/reason-machines/openconductor/actions/runs/43131764457) at published head `2bfd010937d27b315ca97f2c4ced7de67a7c1ce9` failed the service wrapper in both frontend jobs: the child exited zero but emitted zero TAP case rows (`0 !== 4`). The [unchanged failure excerpt](hosted-loader-failure.tap.txt) is a runner/loader failure, not product RED and not execution credit for the four controls. The inherited `NODE_TEST_CONTEXT` is removed only from the child environment, following the existing nested-runner wrappers in this repository. Actual four-case TAP is now printed after all original wrapper checks pass. The frozen service fixture, mounted matrix, and mounted host hashes are unchanged.
+
+The same run also failed the existing disclosure-remount baseline because its pinned `src/scripts/api.ts` hash differs. That separate baseline repair belongs to #1109, not this change. Neither failure is skipped, weakened, or called passing. No additional local tests were run for the environment correction; automatic exact-head CI must verify it and reach the mounted step.
+
 ## Reference and limits
 
 Retained Conductor 0.87.6 REA evidence is `ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367`. The source record distinguishes the upload registry, attachment-record loading, and mutation completion. Their phases are not interchangeable. Passing OpenConductor controls do not close the original native path-mention read/write barrier gap.

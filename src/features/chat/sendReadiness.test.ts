@@ -15,12 +15,15 @@ test("four frozen Send-readiness controls execute against the actual ComposerSes
   try {
     const path = join(folder, "controls.test.mjs");
     writeFileSync(path, source.replace(oldImport, JSON.stringify(new URL("./composerSession.ts", import.meta.url).href)));
-    const result = spawnSync(process.execPath, ["--experimental-strip-types", "--test", "--test-reporter=tap", path], { encoding: "utf8", timeout: 30000 });
+    const env = { ...process.env };
+    delete env.NODE_TEST_CONTEXT;
+    const result = spawnSync(process.execPath, ["--experimental-strip-types", "--test", "--test-reporter=tap", path], { env, encoding: "utf8", timeout: 30000 });
     assert.equal(result.error, undefined, String(result.error));
     assert.equal(result.signal, null, result.stderr);
     assert.equal(result.status, 0, result.stdout + result.stderr);
     assert.equal((result.stdout.match(/^ok \d+ - /gm) ?? []).length, 4, result.stdout);
     assert.match(result.stdout, /# pass 4\r?\n/);
+    console.log(result.stdout.trim());
   } finally {
     rmSync(folder, { recursive: true, force: true });
   }

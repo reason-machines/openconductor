@@ -1,0 +1,25 @@
+2026-11-12T01:04:04.4177070Z # Subtest: four frozen Send-readiness controls execute against the actual ComposerSession
+2026-11-12T01:04:04.4178129Z not ok 1080 - four frozen Send-readiness controls execute against the actual ComposerSession
+2026-11-12T01:04:04.4178820Z   ---
+2026-11-12T01:04:04.4179200Z   duration_ms: 62.650036
+2026-11-12T01:04:04.4179637Z   type: 'test'
+2026-11-12T01:04:04.4180421Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/sendReadiness.test.ts:9:1'
+2026-11-12T01:04:04.4181271Z   failureType: 'testCodeFailure'
+2026-11-12T01:04:04.4181732Z   error: |-
+2026-11-12T01:04:04.4182371Z     Expected values to be strictly equal:
+2026-11-12T01:04:04.4182885Z     
+2026-11-12T01:04:04.4183256Z     0 !== 4
+2026-11-12T01:04:04.4183635Z     
+2026-11-12T01:04:04.4184025Z   code: 'ERR_ASSERTION'
+2026-11-12T01:04:04.4184463Z   name: 'AssertionError'
+2026-11-12T01:04:04.4184901Z   expected: 4
+2026-11-12T01:04:04.4185292Z   actual: 0
+2026-11-12T01:04:04.4185691Z   operator: 'strictEqual'
+2026-11-12T01:04:04.4186188Z   stack: |-
+2026-11-12T01:04:04.4187111Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/sendReadiness.test.ts:22:12)
+2026-11-12T01:04:04.4188155Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-12T01:04:04.4188865Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-12T01:04:04.4189669Z     Test.start (node:internal/test_runner/test:944:17)
+2026-11-12T01:04:04.4190427Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+2026-11-12T01:04:04.4191083Z   ...
+2026-11-12T01:04:04.4191799Z 
