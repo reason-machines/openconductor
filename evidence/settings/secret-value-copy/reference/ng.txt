@@ -1,0 +1,1 @@
+async function ng(t,{scope:e,context:s,workspaceContext:n}){const r=n_(t);if(n===void 0){const a=await oO(r,{scope:e,context:s});return{...await xz(r,{context:s,storedEntries:a,workspaceContext:n}),...r.getManagedEnvVars(s)}}const i=await oO(r,{scope:e,context:s});return{...await xz(r,{context:s,storedEntries:i,workspaceContext:n}),...r.getManagedEnvVars(s)}}
