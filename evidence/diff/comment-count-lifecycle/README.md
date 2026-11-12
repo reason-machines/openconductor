@@ -40,6 +40,14 @@ Each loader now imports and binds the actual `subscribeReviewComments`, as the a
 
 Local reproduction of the pair and the corrected-input replay have not run while the existing serialized replay waits. Hosted exact-head CI is the immediate validation. No local runtime slot is held for CI.
 
+## Remaining Delete loader failure and correction
+
+At published head `2ba180f1553bbd0ac29be89bd219f73ac954a68a`, hosted TypeScript checking passed. The frontend tests reported 3,822 passes and six failures. All six stopped at the same strict dependency guard in `commentDelete.test.ts`, before its comment-card assertions ran. The failure was `Unexpected dependency: ./commentStore.ts`, not a behavioral RED result. The complete tool-redacted job log and all six failure identities are retained in `results/hosted-delete-loader-failure.full-job.log.gz` and `delete-loader-compatibility.json`.
+
+The Delete loader now imports and binds the real `subscribeReviewComments`. Only those two lines changed. A byte comparison passed for every other line, including all assertions, cases and strict dependency guards. Product source, original frozen acceptance, and corrected lifecycle inputs are unchanged. The current main file was checked at `2dfe64b7564f48281d79da5e203ab30c6e12a51b`. A source census found the review-store dependency in every `ReviewComments.tsx` VM fixture after this correction. This is source evidence, not a passing runtime result.
+
+Local replay has not run because no runtime grant was issued. The existing serialized replay row includes the six Delete cases with the previous failing pair and corrected lifecycle cases. Exact-head hosted CI remains the immediate validation. Browser, native, provider and local build gaps remain unchanged.
+
 ## Actual adjacent checks
 
 The existing strict test loaders now receive the real review-change subscription dependency. Their guards and assertions are unchanged.
