@@ -82,6 +82,14 @@ if len(sys.argv) > 1:
             len(renderer[:start].decode().encode("utf-16-le")) // 2,
             len(renderer[:end].decode().encode("utf-16-le")) // 2,
         ]
+baseline = (ROOT / "baseline/parts.tsx.txt").read_text()
+body = '<div className="ag-term-body" data-terminal ref={mount} />'
+focused_body = '<div className="ag-term-body" data-terminal ref={mount} onClick={() => mount.current?.querySelector("textarea")?.focus()} />'
+assert baseline.count(body) == 1
+assert (REPO / "src/settings/agents/parts.tsx").read_text() == baseline.replace(body, focused_body), "Unexpected production delta"
+for pin in SOURCE["source_pins"]:
+    current = subprocess.check_output(["git", "show", SOURCE["fresh_default_main_commit"] + ":" + pin["path"]], cwd=REPO)
+    identity(current, pin["sha256"])
 try:
     identity((REPO / fixture["path"]).read_bytes() + b"changed", fixture["sha256"])
 except AssertionError:

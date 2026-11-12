@@ -109,7 +109,9 @@
     "intended_focus_assertion_failures": 2,
     "passing_controls": 3
   },
-  "behavioral_result": "NOT_RUN; automatic hosted baseline pending",
+  "behavioral_result": "HOSTED_BASELINE_QUALIFIED: two intended focus failures and three passing controls; candidate pending",
+  "fresh_default_main_commit": "873e24f94a3b07a1ebcd351ac3b095f2cff561d0",
+  "fresh_default_source_pins": "All six byte-identical to frozen baseline",
   "limits": [
     "Static shipped source is not native observation. The hosted fixture mounts production LoginButton and real xterm 6.0.0 in jsdom, with inert PTY adapters and painting-only canvas substitutes.",
     "No app, provider, credential, native PTY, or local/cloud behavioral runtime was started in this preparation.",
