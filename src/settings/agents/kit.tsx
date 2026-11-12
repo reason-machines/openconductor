@@ -127,9 +127,9 @@ export function StatusTable({ rows }: { rows: InfoRow[] }) {
 }
 
 /**
- * A stored secret: masked with show, edit and delete, or a key field when
- * none is stored. The value only enters the page when the eye is pressed
- * (`reveal`), and is dropped again when it is hidden or the row unmounts.
+ * A stored secret: masked with copy, show, edit and delete, or a key field
+ * when none is stored. Copy retrieves the value only on activation without
+ * revealing it; Show retains it until hidden or the row unmounts.
  */
 export function SecretRow(props: {
   label: string;
@@ -146,6 +146,7 @@ export function SecretRow(props: {
   const [shown, setShown] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copyFeedback, setCopyFeedback] = useState<"copied" | "failed" | null>(null);
   useEffect(() => {
     if (!configured) setShown(null);
   }, [configured]);
@@ -156,6 +157,23 @@ export function SecretRow(props: {
     f()
       .catch((e) => setError(`Failed to ${what} ${label}: ${e instanceof Error ? e.message : String(e)}`))
       .finally(() => setBusy(false));
+  };
+
+  const copyValue = async () => {
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    setCopyFeedback(null);
+    try {
+      const value = shown ?? await reveal?.();
+      if (!value || !navigator.clipboard) throw new Error("No value or clipboard");
+      await navigator.clipboard.writeText(value);
+      setCopyFeedback("copied");
+    } catch {
+      setCopyFeedback("failed");
+    } finally {
+      setBusy(false);
+    }
   };
 
   if (!configured || editing) {
@@ -186,9 +204,18 @@ export function SecretRow(props: {
   return (
     <div className="ag-stack-2">
       <div className="ag-key-row">
-        <span className={`ag-key-mask${shown ? " agk-shown" : ""}`} data-testid="secret-value" aria-label={shown ? label : `${label} stored`}>
+        <button
+          type="button"
+          className={`ag-key-mask${shown ? " agk-shown" : ""}`}
+          style={{ textAlign: "left" }}
+          data-testid="secret-value"
+          aria-label={`Copy ${label}`}
+          title={shown ?? undefined}
+          disabled={busy || (!shown && !reveal)}
+          onClick={() => void copyValue()}
+        >
           {shown ?? maskedSecret(hint)}
-        </span>
+        </button>
         <div className="ag-key-actions">
           {reveal && (
             <button
@@ -211,6 +238,12 @@ export function SecretRow(props: {
         </div>
       </div>
       {error && <p className="ag-error">{error}</p>}
+      {copyFeedback && (
+        <Toaster
+          toasts={[{ id: 1, kind: copyFeedback === "copied" ? "info" : "error", message: `${copyFeedback === "copied" ? "Copied" : "Failed to copy"} ${label}.` }]}
+          dismiss={() => setCopyFeedback(null)}
+        />
+      )}
     </div>
   );
 }
@@ -239,14 +272,14 @@ function SecretInput({ label, pending, onSubmit, onCancel }: { label: string; pe
           spellCheck={false}
         />
       </div>
+      <button type="submit" className="ag-btn ag-primary" disabled={pending || value.trim() === ""}>
+        {pending ? "Saving…" : "Save"}
+      </button>
       {onCancel && (
         <button type="button" className="ag-btn ag-ghost" disabled={pending} onClick={onCancel}>
           Cancel
         </button>
       )}
-      <button type="submit" className="ag-btn ag-primary" disabled={pending || value.trim() === ""}>
-        {pending ? "Saving…" : "Save"}
-      </button>
     </form>
   );
 }

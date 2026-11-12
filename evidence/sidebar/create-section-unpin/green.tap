@@ -1,0 +1,61 @@
+(node:97) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:104) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: section creation unpins its captured workspace without changing unrelated pins or old section membership
+ok 1 - section creation unpins its captured workspace without changing unrelated pins or old section membership
+  ---
+  duration_ms: 221.306284
+  type: 'test'
+  ...
+# Subtest: removing a workspace after section creation does not resurrect its previous pin
+ok 2 - removing a workspace after section creation does not resurrect its previous pin
+  ---
+  duration_ms: 95.346362
+  type: 'test'
+  ...
+# Subtest: plain section creation preserves every existing pin
+ok 3 - plain section creation preserves every existing pin
+  ---
+  duration_ms: 68.078908
+  type: 'test'
+  ...
+# Subtest: actual desktop store persists creation's unpin and keeps it after remove and hydration
+ok 4 - actual desktop store persists creation's unpin and keeps it after remove and hydration
+  ---
+  duration_ms: 78.643806
+  type: 'test'
+  ...
+# Subtest: actual desktop plain creation writes no unpin
+ok 5 - actual desktop plain creation writes no unpin
+  ---
+  duration_ms: 53.198322
+  type: 'test'
+  ...
+# conductor.db: could not save sidebar sections Error: Synthetic rejected layout write
+#     at invoke (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/state/createSectionUnpin.test.ts:102:49)
+#     at evalmachine.<anonymous>:362:27
+#     at commitHookEffectListMount (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:13038:26)
+#     at commitPassiveMountOnFiber (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14461:11)
+#     at commitPassiveMountEffects_complete (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14421:9)
+#     at commitPassiveMountEffects_begin (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14408:7)
+#     at commitPassiveMountEffects (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:14396:3)
+#     at flushPassiveEffectsImpl (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16287:3)
+#     at flushPassiveEffects (/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16236:14)
+#     at /home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/node_modules/react-test-renderer/cjs/react-test-renderer.development.js:16051:9
+# Subtest: rejected section creation does not persist an unpin and preserves its existing error callback
+ok 6 - rejected section creation does not persist an unpin and preserves its existing error callback
+  ---
+  duration_ms: 53.693965
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1111.678476

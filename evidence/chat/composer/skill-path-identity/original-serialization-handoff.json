@@ -1,0 +1,130 @@
+{
+  "id": "ACQ-COMPOSER-SKILLPATH-HANDOFF-135",
+  "author": "Conductor Rebuild",
+  "source_packet": "evidence/chat/composer/slash-atom-preservation/packet.json",
+  "source_packet_sha256": "ccfd20d9e24774f2fa3c1e307a44420ad5fc6215d4974efea53d1c9cb8dce599",
+  "source_packet_history_commit": "7ede41a2fdd582644b8a553308b5fb7ea83b8514",
+  "artifact": {
+    "name": "Conductor 0.87.6 decoded assets/renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "bytes": 11600457
+  },
+  "rea_provenance": {
+    "retained_rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "manifest": "evidence/frontend/tauri-assets-manifest.json",
+    "parse_status": "skipped",
+    "known_gap": "Owned JavaScript worker exhausted its heap. Compiled bundle spans were inspected as inert text, not an REA-generated call graph. No new REA call or target execution."
+  },
+  "spans": [
+    {
+      "symbol": "jI",
+      "utf8_bytes": [
+        8679149,
+        8679619
+      ],
+      "sha256_utf8": "2eec2dac88f1798c285b94a7d073c47cd6b5ef7d999499cea188bc868aaa4de0",
+      "compiled_javascript": "jI=$.useMemo(()=>{const ln=new Set,$r=c1.map(hr=>({id:hr.name,label:hr.name,display:hr.name,command:hr,isSkill:!1})).filter(hr=>ln.has(hr.id)?!1:(ln.add(hr.id),!0));for(const hr of $s){const Ns=`skill:${hr.name}|${nde(hr.path)}`;ln.has(Ns)||(ln.add(Ns),$r.push({id:Ns,label:hr.displayName??hr.name,display:hr.displayName??hr.name,command:{name:hr.displayName??hr.name,description:hr.description,argumentHint:\"\",supportedAgents:[bt]},isSkill:!0}))}return $r},[c1,$s,bt]),"
+    },
+    {
+      "symbol": "slash_selection",
+      "utf8_bytes": [
+        8680979,
+        8681313
+      ],
+      "sha256_utf8": "aac64f4d076065f5002685797787ef788bdc47ef576b4cc90877f3befd43090f",
+      "compiled_javascript": "{char:\"/\",query:z6,renderItem:(ln,$r,hr)=>uRt(ln)?FNi({item:ln,focused:hr}):null,onSelect:(ln,$r,hr)=>{const Ns=String(hr.id);if(MNi(Ns)){BNi(ln,$r,hr);return}const Oa=Yl(Ns);if(Oa&&hmo.has(Oa.effect)){ln.chain().focus().deleteRange($r).run(),ua(Oa);return}const Vf=hr.label??Ns;ln.chain().focus().insertContentAt($r,`/${Vf} `).run()}"
+    },
+    {
+      "symbol": "composer_onChange",
+      "utf8_bytes": [
+        8655862,
+        8655903
+      ],
+      "sha256_utf8": "a1aedc7bfed0a5468d1b05b3fd17ed8858c1715eefa51d80ac58f554722e7ebc",
+      "compiled_javascript": "X=$.useCallback(ln=>{v?.(),_(ln)},[v,_]),"
+    },
+    {
+      "symbol": "visible_editor",
+      "utf8_bytes": [
+        8687365,
+        8688266
+      ],
+      "sha256_utf8": "bfc70cfbdb24a8cc1c4a89e25ce2a98a63f15c04c1eb7f3188ac86aead02607e",
+      "compiled_javascript": "children:p.jsx(lHt,{...UIi,resolveMentionViewModel:$c,loadAttachmentPreview:Bl,value:g,onChange:X,onFocus:()=>{U(!0),lb(),UX.setFocusedInputId(B6)},onBlur:()=>{U(!1),UX.setFocusedInputId(null)},placeholder:S5(),disabled:c===\"all\",autoFocus:O&&!vf,queueEditMode:w,triggers:h_,onEditorReady:E5,onMentionClick:wv,visibleAttachments:x,cloudAttachmentClipboardSourceSessionId:Su(a)?e:void 0,resolveAttachmentImageLocation:Sv,containerEl:te,externalSuggestions:xe?[Ra]:[],messageSendKey:he,messageSendMode:ve,onSubmit:x2,canSubmit:cr,shouldSkipSubmitShortcut:ln=>!!(y2&&Qh(\"chat.planResponse.submit\",ln.nativeEvent)),onKeyDown:ln=>{w&&R!==void 0&&Qh(\"chat.queueEdit.cancel\",ln.nativeEvent)&&(ln.preventDefault(),ln.stopPropagation(),R())},suggestionContextKey:id,onArrowUpAtTop:()=>w?!1:Z8i.focusLast({localWorkspaceId:r,sessionId:e}),onAttachmentMentionRemoved:Tc,onPastedCloudAttachmentMentionRemoved:uh})"
+    },
+    {
+      "symbol": "editor_serialize",
+      "utf8_bytes": [
+        8422938,
+        8423057
+      ],
+      "sha256_utf8": "5c2f9a7d15601066e2c6cac8ad81a287a6b4840a1c24b1260a06df99f064ad20",
+      "compiled_javascript": "onUpdate:({editor:ye,transaction:xe})=>{if(Q.isExternalUpdate||!xe.docChanged)return;const ke=nqn(ye.getJSON());e(ke)},"
+    },
+    {
+      "symbol": "BNi",
+      "utf8_bytes": [
+        8651020,
+        8651089
+      ],
+      "sha256_utf8": "5b44c4d29f93d2c7a52c5f06447fadd0437f5c45b93913da403a1b860eb1b12b",
+      "compiled_javascript": "function BNi(t,e,n){nce(t,e,{id:n.id,label:n.label??n.id,char:\"§\"})}"
+    },
+    {
+      "symbol": "eki+nce",
+      "utf8_bytes": [
+        7577223,
+        7577469
+      ],
+      "sha256_utf8": "3198a3457355d763883142817edc17bfe1a02795cafb1d41fce0a38da5a1f866",
+      "compiled_javascript": "function eki({id:t,label:e,char:n,isDirectory:i}){return[{type:\"mention\",attrs:{id:t,label:e,mentionSuggestionChar:n,...i===void 0?{}:{isDirectory:i}}},{type:\"text\",text:\" \"}]}function nce(t,e,n){t.chain().focus().insertContentAt(e,eki(n)).run()}"
+    },
+    {
+      "symbol": "nqn",
+      "utf8_bytes": [
+        8380724,
+        8381004
+      ],
+      "sha256_utf8": "2c1b725335f2a5628a5fe4579d234f60dc7709456c1532b1ac1e4cf0b84a9d02",
+      "compiled_javascript": "function nqn(t){return t.content?t.content.map(e=>e.content?e.content.reduceRight((n,i)=>{const r=i.type===UZe?n.match(/^\\S+/)?.[0]:void 0,o=r!==void 0&&r.replace(IIi,\"\").length>0,a=r?.match(Hxo)?.[0]??\"\";return`${Wxo(i)}${a}${o?\" \":\"\"}${n.slice(a.length)}`},\"\"):\"\").join(`\n`):\"\"}"
+    },
+    {
+      "symbol": "Wxo",
+      "utf8_bytes": [
+        8381004,
+        8381402
+      ],
+      "sha256_utf8": "7ef8654e89204ded400a30e3de2c2e5869ac52ee0e129b9298688ad95a306186",
+      "compiled_javascript": "function Wxo(t){if(t.type===\"text\")return t.text??\"\";if(t.type===\"mention\"){const e=t.attrs??{},n=String(e.id??\"\"),i=String(e.label??\"\"),r=String(e.mentionSuggestionChar??\"@\");if(r===\"@\")return`@⟦${i}⟧(${n})`;if(r===\"/\")return`/[${i}](${n})`;if(r===\"§\")return`§⟦${i}⟧(${n})`;if(r===\"#\")return`#⟦${i}⟧(${n})`}return t.type===UZe?typeof t.attrs?.url==\"string\"?t.attrs.url:\"\":t.text??\"\"}",
+      "provenance": {
+        "author": "Conductor Rebuild",
+        "status": "historical retained tool observation; inert source only",
+        "source_session": "625c66e3-b037-4160-a672-1579a796975d",
+        "source_id": "be5ef2a3-71de-4b3f-b928-6e8bf742ce2a",
+        "revision": 22377948,
+        "captured_at": "2026-11-06T03:53:21.579Z",
+        "compiled_javascript": "function Wxo(t){if(t.type===\"text\")return t.text??\"\";if(t.type===\"mention\"){const e=t.attrs??{},n=String(e.id??\"\"),i=String(e.label??\"\"),r=String(e.mentionSuggestionChar??\"@\");if(r===\"@\")return`@⟦${i}⟧(${n})`;if(r===\"/\")return`/[${i}](${n})`;if(r===\"§\")return`§⟦${i}⟧(${n})`;if(r===\"#\")return`#⟦${i}⟧(${n})`}return t.type===UZe?typeof t.attrs?.url==\"string\"?t.attrs.url:\"\":t.text??\"\"}",
+        "limits": [
+          "Not freshly re-extracted or rehashed against original whole renderer this turn.",
+          "Conductor serializes skill atoms as §⟦label⟧(skill:name|encodedpath), not directly [$name](path). The latter is OpenConductor's existing transport representation.",
+          "No target execution, visual, native, real-provider, or whitespace grammar proof."
+        ]
+      },
+      "offset_origin": "Ledger-reported existing source census; 398-byte helper length matches. Full renderer unavailable here, so absolute offset not independently rebound this turn."
+    }
+  ],
+  "source_checks": {
+    "original_packet_selected_complete_span_hashes": "PASS",
+    "Wxo_historical_complete_function_boundary": "PASS",
+    "Wxo_UTF8_398_bytes_matches_reported_offset_width": "PASS",
+    "whole_renderer_rehash": "NOT RUN; retained original renderer not present",
+    "current_OpenConductor_main_code": "NOT RECHECKED here; builder has checked bc2a476d70d0b731be243f0422d99013a96d39f3"
+  },
+  "interpretation": "jI retains skill:name|encodedpath; selection passes chosen id to BNi→nce; lHt onUpdate calls nqn→Wxo, which emits §⟦label⟧(id). Path identity survives serialization. This qualifies path preservation, not a claim that Conductor directly inserts Markdown [$name](path).",
+  "transport_design": "Use existing supported OpenConductor [$name](path/SKILL.md) grammar to preserve selected identity; no new pill/whitespace/provider semantics inferred.",
+  "limits": [
+    "Not freshly re-extracted or rehashed against original whole renderer this turn.",
+    "Conductor serializes skill atoms as §⟦label⟧(skill:name|encodedpath), not directly [$name](path). The latter is OpenConductor's existing transport representation.",
+    "No target execution, visual, native, real-provider, or whitespace grammar proof."
+  ]
+}
