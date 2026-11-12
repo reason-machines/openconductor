@@ -24,11 +24,11 @@ Initial head `207f932e` failed hosted typecheck because React.createElement requ
 
 ## Checks and limits
 
-Before the correction, Python source verification passed on Reason Cloud for both full original asset identities, all eighteen retained spans, six fresh-main baseline pins and the frozen fixture hash. Fresh main remains `021aeaa4027770258b4daae127bc829d1575d0ab` and matches those six product inputs. `git diff --check` passed.
+Before the correction, Python source verification passed on Reason Cloud for both full original asset identities, all eighteen retained spans, six fresh-main baseline pins and the frozen fixture hash. Those checks used fresh main `021aeaa4027770258b4daae127bc829d1575d0ab`. The subsequent merge of actual main `382da31580a5698feb223e1a3607fc79119fb77a` consumes #1109's isolated historical-baseline repair without any additional tooltip/product changes. `git diff --check` passed.
 
 The correction removes the module-level default-only archive constant, reads the existing live `useKeybindingOverrides` snapshot in the row, and formats only the effective primary `workspace.archive` key. The active-row gate, archive callback, registry default, switch-modifier hint and shared Tooltip are unchanged. All seven regression cases remain byte-identical to the qualified RED fixture.
 
-The full baseline unit suite reported 3,230 tests, 3,225 passes and five failures. Four failures are this lane's qualified remap RED; the fifth is an unrelated disclosure-remount baseline source-pin drift (`src/scripts/api.ts`) reported to root for the existing owner. It remains a merge gate; this PR does not change that harness.
+The full baseline unit suite reported 3,230 tests, 3,225 passes and five failures. Four failures are this lane's qualified remap RED; the fifth is an unrelated disclosure-remount baseline source-pin drift (`src/scripts/api.ts`) reported to root for the existing owner. The existing owner fixed that separate failure in merged #1109. This branch integrates the actual merged main `382da31580a5698feb223e1a3607fc79119fb77a`; no cherry-pick, repin, fixture change or harness workaround was made here. Every exact-head check remains a merge gate.
 
 No local Node, Rust, install, browser, native app, workflow dispatch, rerun or extra watcher was run. Hosted candidate execution is PENDING. Physical keyboard/focus behavior, installation, visual parity and native acceptance remain NOT_RUN; no screenshot is available because browser/native execution is not admitted in this lane.
 
