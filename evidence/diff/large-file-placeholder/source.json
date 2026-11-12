@@ -194,8 +194,8 @@
   "scope": "Existing tracked nonmedia nonbinary text in uncommitted scope; real temporary Git files -> workspace_diff -> serialized DTO -> mounted FileDiffView. Same file and changes-list row retained.",
   "verification": {
     "source_integrity": "PASS",
-    "hosted_backend": "NOT_RUN",
-    "hosted_mounted_renderer": "NOT_RUN",
+    "hosted_backend": "RED: four intended hide_reason failures and four controls passed at f98dd96, run43126179063",
+    "hosted_mounted_renderer": "RED: four intended placeholder failures and four controls passed at f98dd96, run43126179063",
     "native": "NOT_RUN",
     "screenshot": "NOT_RUN"
   },

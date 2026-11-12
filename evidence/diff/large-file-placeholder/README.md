@@ -24,7 +24,9 @@ node --experimental-strip-types --test tests/diff/largeFilePlaceholder.mounted.t
 
 Set `DIFF_PLACEHOLDER_DTOS` to the same temporary directory for the two behavioral commands. The workflow preserves both logs and DTOs as `large-file-placeholder-proof`. Both behavioral outcomes must succeed. A compiler, dependency, startup or missing-artifact error is not the intended behavioral failure.
 
-This initial publication is regression-only. Product code stays unchanged until the hosted baseline establishes the four intended failures and four passing controls. The same fixture hashes must then pass after the repair.
+At head `f98dd96`, hosted run `43126179063` produced four intended backend failures and four passing controls, plus the same four failures and four passing controls in the mounted renderer. The missing size hide reason and placeholder assertions failed, not setup or compilation. `hosted-red.json` and the redacted artifact logs preserve that result. The job incorrectly reported success because `tee` masked the command exit codes. A harness-only correction adds explicit `pipefail` to both commands before any product repair.
+
+Product code remains unchanged in this baseline. The same fixture hashes must pass after the repair. A successful workflow conclusion without successful behavioral logs is not evidence of a pass.
 
 ## Limits
 

@@ -43,6 +43,7 @@ jobs:
           DIFF_HARNESS_DIR: ${{ runner.temp }}/large-file-harness
           DIFF_PLACEHOLDER_DTOS: ${{ runner.temp }}/large-file-proof/dtos
         run: |
+          set -o pipefail
           mkdir -p "$RUNNER_TEMP/large-file-proof"
           bash tools/diff/run-rust-tests.sh large_file_placeholder -- --nocapture 2>&1 | tee "$RUNNER_TEMP/large-file-proof/backend.log"
       - name: Mount actual backend DTOs
@@ -51,6 +52,7 @@ jobs:
         env:
           DIFF_PLACEHOLDER_DTOS: ${{ runner.temp }}/large-file-proof/dtos
         run: |
+          set -o pipefail
           node --experimental-strip-types --test tests/diff/largeFilePlaceholder.mounted.test.mjs 2>&1 | tee "$RUNNER_TEMP/large-file-proof/renderer.log"
       - name: Preserve producer and renderer proof
         if: always()
