@@ -67,7 +67,7 @@ async function fixture(text: string, rich?: SentUserContentV1) {
   }
   const bindings = load("LinkMenu.tsx");
   const production = {};
-  const compiled = ts.transpileModule(statements(["Transcript", "rowTurn", "groupTurns", "Row", "MessageActions", "CopyButton"]), {
+  const compiled = ts.transpileModule(statements(["toolDisclosure", "Transcript", "rowTurn", "groupTurns", "Row", "MessageActions", "CopyButton"]), {
     fileName: "Transcript.tsx",
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022 },
     reportDiagnostics: true,

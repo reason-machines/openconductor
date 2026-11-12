@@ -3,7 +3,7 @@
 //! left its base (committed and uncommitted), or only uncommitted work.
 //! Untracked files are included as additions.
 
-use super::model::{FileChange, FileDiff, FileStatus};
+use super::model::{FileChange, FileDiff, FileHideReason, FileStatus};
 use super::parse::{parse_unified, ParseError};
 use serde::{Deserialize, Serialize};
 use std::fmt;
@@ -335,11 +335,81 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
     }
     for file in &mut files {
         file.last_modified_time = worktree_modified_time(repo, file);
+        if matches!(req.scope, Scope::Uncommitted) {
+            apply_worktree_size_policy(repo, &base, file);
+        }
     }
     Ok(WorkspaceDiff {
         base_commit: base,
         files,
     })
+}
+
+fn apply_worktree_size_policy(repo: &Path, base: &str, file: &mut FileDiff) {
+    if file.binary || matches!(file.status, FileStatus::Deleted | FileStatus::Untracked) {
+        return;
+    }
+    let extension = Path::new(&file.path)
+        .extension()
+        .and_then(|extension| extension.to_str())
+        .unwrap_or("")
+        .to_ascii_lowercase();
+    if matches!(
+        extension.as_str(),
+        "png"
+            | "jpg"
+            | "jpeg"
+            | "gif"
+            | "webp"
+            | "tif"
+            | "tiff"
+            | "avif"
+            | "bmp"
+            | "mp4"
+            | "m4v"
+            | "mov"
+            | "webm"
+            | "ogv"
+    ) {
+        return;
+    }
+    let Ok(metadata) = std::fs::symlink_metadata(repo.join(&file.path)) else {
+        return;
+    };
+    if !metadata.is_file() || metadata.len() <= 1024 * 1024 {
+        return;
+    }
+    let sparse = metadata.len() <= 5 * 1024 * 1024
+        && plain_changed_line_count(repo, base, file).is_some_and(|count| count <= 500);
+    if !sparse {
+        file.hide_reason = Some(FileHideReason::FileTooLarge);
+        file.hunks.clear();
+    }
+}
+
+fn plain_changed_line_count(repo: &Path, base: &str, file: &FileDiff) -> Option<u64> {
+    let paths: Vec<_> = file
+        .old_path
+        .iter()
+        .chain(std::iter::once(&file.path))
+        .map(|path| format!(":(literal){path}"))
+        .collect();
+    let mut args = vec!["diff", "--no-ext-diff", "--numstat", base, "--"];
+    args.extend(paths.iter().map(String::as_str));
+    let output = git(repo, &args, &[0]).ok()?;
+    let mut count = None;
+    for line in output.lines().filter(|line| !line.is_empty()) {
+        let mut fields = line.splitn(3, '\t');
+        let additions = fields.next()?.parse::<u64>().ok()?;
+        let deletions = fields.next()?.parse::<u64>().ok()?;
+        count = Some(
+            count
+                .unwrap_or(0_u64)
+                .checked_add(additions)?
+                .checked_add(deletions)?,
+        );
+    }
+    count
 }
 
 pub(super) fn worktree_modified_time(repo: &Path, file: &FileDiff) -> Option<i64> {

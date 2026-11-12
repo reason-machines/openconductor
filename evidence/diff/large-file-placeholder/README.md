@@ -28,7 +28,15 @@ At head `f98dd96`, hosted run `43126179063` produced four intended backend failu
 
 At corrected head `0163d3a08a6b8aa22d9f3cfe9bcae3cda48df384`, automatic hosted run `43126679905` repeated the four intended failures and four passing controls in both stages. The backend exited 101. The mounted renderer still ran against its serialized DTOs and exited 1. Both logs and all eight DTOs were uploaded as artifact `13903546736`. The final gate read both step outcomes as `failure` and exited 1, so the job now correctly fails. `corrected-hosted-red.json` pins the archive and retained raw logs. `continue-on-error` keeps the second stage reachable; the final `&&` gate requires both outcomes to be successful.
 
-Product code remains unchanged in this baseline, including after the fresh-main recheck at `383bf4078aaaa43dc195196784630b7fa5642a6a`. The same fixture hashes must pass after the repair. A successful workflow conclusion without successful behavioral logs is not evidence of a pass.
+Product code remained unchanged through the qualified baseline, including the fresh-main recheck at `383bf4078aaaa43dc195196784630b7fa5642a6a`. The same fixture hashes must pass after the repair. A successful workflow conclusion without successful behavioral logs is not evidence of a pass.
+
+## Backend candidate
+
+Rechecked main `a2ef261711b439e7ab00a25b3cb3275a5b55c823`; the four scoped product files were still byte-identical to the baseline. The backend candidate applies the policy only to regular tracked nonbinary nonmedia files in uncommitted scope. It uses current worktree size and actual plain `git diff --numstat` counts, with literal old and current pathspecs. Unknown counts do not qualify for the sparse exception. It clears hidden hunks, not counts, paths, status or changes-list membership. The DTO adds an optional typed `hide_reason`; ordinary/default DTOs omit it and summaries remain unchanged.
+
+`backend-candidate.json` pins the fresh-main identity, candidate sources and additional retained REA media-extension spans. The three frozen fixtures and their source manifest are unchanged. Source verification passed; candidate behavior awaits ordinary automatic hosted CI. Local behavioral/native execution has not run.
+
+`FileDiffView.tsx` is unchanged while its separate #1100 caller owner retains the file. This backend-only increment is not expected to make the mounted placeholder assertions pass, and must not be merged in that state. The subsequent placeholder-only body edit requires the actual #1100 merge and handoff.
 
 ## Limits
 

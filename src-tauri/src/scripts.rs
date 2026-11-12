@@ -146,6 +146,24 @@ pub async fn run_script_write(
 }
 
 #[tauri::command]
+pub async fn run_script_resize(
+    scripts: State<'_, ScriptService>,
+    workspace_id: String,
+    script_id: String,
+    run_id: String,
+    cols: u16,
+    rows: u16,
+) -> Result<bool, String> {
+    let runs = scripts.runs.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        runs.resize(&workspace_id, &script_id, &run_id, cols, rows)
+    })
+    .await
+    .map_err(|e| e.to_string())?
+    .map_err(|e| e.to_string())
+}
+
+#[tauri::command]
 pub fn run_script_status(scripts: State<'_, ScriptService>, workspace_id: String) -> RunStatusDto {
     RunStatusDto {
         runs: scripts.runs.statuses(&workspace_id),

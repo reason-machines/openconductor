@@ -278,6 +278,40 @@ impl RunManager {
         Ok(true)
     }
 
+    pub fn resize(
+        &self,
+        workspace_id: &str,
+        script_id: &str,
+        run_id: &str,
+        cols: u16,
+        rows: u16,
+    ) -> io::Result<bool> {
+        if cols == 0 || rows == 0 {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "Terminal columns and rows must be positive.",
+            ));
+        }
+        let key = (workspace_id.to_string(), script_id.to_string());
+        let process = {
+            let inner = self.lock();
+            if inner.states.get(&key) != Some(&RunState::Running)
+                || inner
+                    .run_ids
+                    .get(&key)
+                    .is_none_or(|current| current != run_id)
+            {
+                return Ok(false);
+            }
+            inner.processes.get(&key).cloned()
+        };
+        let Some(process) = process else {
+            return Ok(false);
+        };
+        let mut process = process.lock().unwrap_or_else(|e| e.into_inner());
+        process.resize(cols, rows)
+    }
+
     /// Stop every run of the repository's workspaces, waiting ones included.
     /// Returns the workspaces that had something to stop, sorted. Spotlight
     /// starts with this, as the reference starts it without run-script
