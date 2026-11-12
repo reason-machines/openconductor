@@ -1,0 +1,18 @@
+{
+  "phase": "adjacent",
+  "command": "timeout 120s node --test --test-concurrency=1 src/settings/customPrefix.test.ts src/settings/customPrefixInput.test.ts src/settings/model.test.ts",
+  "start": "2026-11-12T11:28:52.203825+00:00",
+  "end": "2026-11-12T11:28:53.324659+00:00",
+  "exit": 0,
+  "elapsed_seconds": 1.121,
+  "timeout": false,
+  "log": "adjacent.tap",
+  "log_sha256": "c3a55661ad3d0bca1d047d8bc3d7b8f994b4ac9344b0be91f4c59e6d9932f30b",
+  "counts": {
+    "tests": 21,
+    "pass": 21,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  }
+}

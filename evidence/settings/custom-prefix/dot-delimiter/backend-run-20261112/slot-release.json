@@ -1,0 +1,52 @@
+{
+  "author": "Conductor Rebuild",
+  "released_at_utc": "2026-11-12T11:50:18.445929+00:00",
+  "slot": "ordinary c18 backend",
+  "state": "EXPLICIT SLOT RELEASE",
+  "reason": "RED setup failure: oc-scripts E0277 compilation, tests not reached; no retry or product edit",
+  "phases": {
+    "lock": "PASS exit 0",
+    "fetch": "PASS exit 0",
+    "red": "SETUP_FAILED exit 101; 0 regression tests executed",
+    "green": "NOT_RUN"
+  },
+  "own_runtime_jobs": [],
+  "source_pins": [
+    {
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/Cargo.toml",
+      "sha256": "e5ba2cba5878e85564af9f5c0ff97281528356747f26dacceed8ddc31d5c2253",
+      "unchanged": true
+    },
+    {
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/harness.rs",
+      "sha256": "92bcfae25ee96df34a6687b450e84b4690800b3b0eaa4104c645f9e1386579ef",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/settings/validate.rs",
+      "sha256": "e24c044bcd53405df27e2f784235afadce5f5a138f19bc97c1aa122b8946e8bb",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/settings/model.rs",
+      "sha256": "9ce17cafd1aa17e6ff71591ee4a24cc41a904ac43fea39bba101d9b8a8041315",
+      "unchanged": true
+    },
+    {
+      "path": "src-tauri/src/workspace/naming.rs",
+      "sha256": "23ed6b387df42984a0e51d15dd9df2d3a8edff432b2ef28b0535ff2cd84110db",
+      "unchanged": true
+    },
+    {
+      "path": "crates/scripts/Cargo.toml",
+      "sha256": "84c91a9383b674e6e2a79eff1e57ea66378ebb7e91d1d5ed91bdb5e6f6e2fcc7",
+      "unchanged": true
+    }
+  ],
+  "lock_sha256": "ae1cc2d76efd6ed9867bce919be1ff06d20efff0ac88ac2ba7869df9153ed71b",
+  "lock_bytes": 6696,
+  "target_bytes": 97617627,
+  "target_maximum_bytes": 2147483648,
+  "home_free_bytes": 32737071104,
+  "production_unchanged": true
+}

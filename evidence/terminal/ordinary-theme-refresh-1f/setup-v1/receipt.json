@@ -1,0 +1,45 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate_key": "ordinary-terminal-theme-refresh-1f",
+  "grant_message_id": "776c64a7-7645-4773-b52c-09df52d1c2b7",
+  "preflight_receipt_id": "2fda73ad-2a71-4858-a398-c3af59b6eba6",
+  "computer_id": "00637189-5c55-416e-b457-ed7419fb739a",
+  "branch": "reason/openconductor-sol-termin-1f14fa82",
+  "head": "4384a6d0aa7e6cd0579e39f603698e07868cfca3",
+  "containing_main": "1286465cb69763efaa1367c49fdebc88ab4da86d",
+  "command": "nice -n 19 timeout --kill-after=5s 120s node --max-old-space-size=768 --test --test-concurrency=1 src/features/terminal/ordinaryThemeRefresh.test.ts",
+  "started_at": "2026-11-12T12:01:49Z",
+  "ended_at": "2026-11-12T12:01:50Z",
+  "exit": 1,
+  "state": "STOPPED_SETUP_FAILURE",
+  "observed": {
+    "node_version": "v22.23.4",
+    "test_file_failures": 1,
+    "intended_cases_executed": 0,
+    "intended_palette_red": 0,
+    "controls_pass": 0
+  },
+  "failure": "TypeScript parameter property in AppearanceObserver constructor is unsupported by Node strip-only mode; module could not load",
+  "product_changed": false,
+  "runtime_retry": false,
+  "hashes": {
+    "src/features/terminal/ordinaryThemeRefresh.test.ts": "f1a6c42fed2eec9552c93f007c79ae9478a425efbcaf216d99634888fe3f6ac1",
+    "src/features/terminal/session.ts": "8f14cb4d0bc1fd9fa9f70fe7383b47d18f28dd65720f6ad15686c24540c8cac0",
+    "src/theme/terminalAnsiThemeFixture.ts": "aeca2daed1bbcc44cea8cb9484c503ce8b4a1e196a7aa9462cba214921874edf",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+  },
+  "frozen_fixture_and_input_and_lock_unchanged": true,
+  "not_run": [
+    "GREEN",
+    "25-file adjacent suite",
+    "typecheck",
+    "lint:colors",
+    "UI/native/rendered/reattach/PTY/provider/build/package"
+  ],
+  "own_jobs": [],
+  "job_observation": "Foreground test returned; process-list inspection found no surviving test/timeout/npm jobs, only the inspection process itself.",
+  "slot": "EXPLICITLY_RELEASED",
+  "released_at": "2026-11-12T12:02:50.389259+00:00",
+  "package_992": "EXCLUDED/UNCHANGED; existing992 release ownership retained",
+  "raw_output": ".oc-tmp/ordinary-theme-refresh-proof/red.tap"
+}
