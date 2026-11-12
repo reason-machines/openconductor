@@ -1,0 +1,69 @@
+--- a/src/scripts/inputOrdering.test.ts
++++ b/src/scripts/inputOrdering.test.ts
+@@ -44,6 +44,8 @@
+     "react": React, "react/jsx-runtime": deps("react/jsx-runtime"),
+     "@xterm/xterm": { Terminal: Screen }, "@xterm/addon-fit": { FitAddon: class { fit() {} } },
+     "@xterm/addon-unicode11": { Unicode11Addon: class {} },
++    "@tauri-apps/plugin-dialog": { confirm: () => { throw new Error("No link warning in input ordering regression"); } },
++    "../backend": { openUrl: () => { throw new Error("No browser in input ordering regression"); } },
+     "../features/terminal/font": font,
+     "../features/terminal/scrollback": { currentScrollbackRows: () => 1000, onScrollbackRows: () => () => {} },
+     "../features/terminal/FindBar": { FindBar: inert, useBufferFind: () => ({ open: inert }) },
+--- a/src/scripts/outputCursor.test.ts
++++ b/src/scripts/outputCursor.test.ts
+@@ -110,6 +110,7 @@
+       if (name === "react" || name === "react/jsx-runtime") return deps(name);
+       if (name === "react-dom") return { createPortal: (children: ReactNode) => children };
+       if (name === "@xterm/xterm") return { Terminal: Screen };
++      if (name === "@tauri-apps/plugin-dialog") return { confirm: () => { throw new Error("No link warning in outputCursor regression"); } };
+       if (name === "@xterm/addon-fit") return { FitAddon: class { fit() {} } };
+       if (name === "@xterm/addon-unicode11") return { Unicode11Addon: class {} };
+       if (name === "@tauri-apps/api/core") return { invoke };
+--- a/src/scripts/outputUnicode.test.ts
++++ b/src/scripts/outputUnicode.test.ts
+@@ -44,6 +44,7 @@
+   const inert = () => {};
+   class Observer { observe() {} disconnect() {} }
+   const boundaries: Record<string, unknown> = {
++    "src/backend": { openUrl: () => { throw new Error("No browser in Unicode regression"); } },
+     "src/features/terminal/font": {
+       currentTerminalFont: () => ({ family: "monospace", size: 12 }),
+       onTerminalFont: () => () => { fontOff++; }, TERMINAL_LINE_HEIGHT: 1.2,
+@@ -74,6 +75,7 @@
+     const require = (name: string): unknown => {
+       if (name === "react" || name === "react/jsx-runtime" || name === "@xterm/addon-unicode11") return deps(name);
+       if (name === "@xterm/xterm") return { Terminal: Screen };
++      if (name === "@tauri-apps/plugin-dialog") return { confirm: () => { throw new Error("No link warning in outputUnicode regression"); } };
+       if (name === "@xterm/addon-fit") return { FitAddon: class { activate() {} dispose() {} fit() {} } };
+       if (name.endsWith(".css")) return {};
+       assert.ok(name.startsWith("."), `Unexpected package: ${name}`);
+--- a/src/scripts/runOutputSelection.test.ts
++++ b/src/scripts/runOutputSelection.test.ts
+@@ -144,6 +144,7 @@
+       if (name === "react" || name === "react/jsx-runtime") return deps(name);
+       if (name === "react-dom") return { createPortal: (children: ReactNode) => children };
+       if (name === "@xterm/xterm") return { Terminal: Screen };
++      if (name === "@tauri-apps/plugin-dialog") return { confirm: () => { throw new Error("No link warning in runOutputSelection regression"); } };
+       if (name === "@xterm/addon-fit") return { FitAddon: class { fit() {} } };
+       if (name === "@xterm/addon-unicode11") return { Unicode11Addon: class {} };
+       if (name === "@tauri-apps/api/core") return { invoke };
+--- a/src/scripts/runningInput.test.ts
++++ b/src/scripts/runningInput.test.ts
+@@ -111,6 +111,7 @@
+       if (name === "react" || name === "react/jsx-runtime") return deps(name);
+       if (name === "react-dom") return { createPortal: (children: ReactNode) => children };
+       if (name === "@xterm/xterm") return { Terminal: Screen };
++      if (name === "@tauri-apps/plugin-dialog") return { confirm: () => { throw new Error("No link warning in runningInput regression"); } };
+       if (name === "@xterm/addon-fit") return { FitAddon: class { fit() {} } };
+       if (name === "@xterm/addon-unicode11") return { Unicode11Addon: class {} };
+       if (name === "@tauri-apps/api/core") return { invoke };
+--- a/src/scripts/runningResize.test.ts
++++ b/src/scripts/runningResize.test.ts
+@@ -142,6 +142,7 @@
+       if (name === "react" || name === "react/jsx-runtime") return deps(name);
+       if (name === "react-dom") return { createPortal: (children: ReactNode) => children };
+       if (name === "@xterm/xterm") return { Terminal: Screen };
++      if (name === "@tauri-apps/plugin-dialog") return { confirm: () => { throw new Error("No link warning in runningResize regression"); } };
+       if (name === "@xterm/addon-fit") return { FitAddon: Fit };
+       if (name === "@xterm/addon-unicode11") return { Unicode11Addon: class {} };
+       if (name === "@tauri-apps/api/core") return { invoke };
