@@ -1423,6 +1423,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
           <WorkspaceNameHeader
             key={workspace.id}
             repoId={repo.id}
+            repo={repo}
             workspace={workspace}
             sections={sections}
             dispatch={dispatch}

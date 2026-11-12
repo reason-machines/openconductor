@@ -1,0 +1,92 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate_key": "ordinary-terminal-theme-refresh-1f",
+  "version": "syntax-repair-v2",
+  "created_at": "2026-11-12T12:05:39.254482+00:00",
+  "computer_id": "00637189-5c55-416e-b457-ed7419fb739a",
+  "branch": "reason/openconductor-sol-termin-1f14fa82",
+  "head": "4384a6d0aa7e6cd0579e39f603698e07868cfca3",
+  "historical_containing_main": "1286465cb69763efaa1367c49fdebc88ab4da86d",
+  "main_requalification": "DEFERRED_TO_ADMISSION; no fetch or source claim refreshed in this syntax-only preparation",
+  "original_fixture_sha256": "f1a6c42fed2eec9552c93f007c79ae9478a425efbcaf216d99634888fe3f6ac1",
+  "candidate_fixture_sha256": "874b585ecde9789842c862a7e7188826b29599151ab4cf8ac534d2f7202e68c5",
+  "pins": {
+    "src/features/terminal/session.ts": "8f14cb4d0bc1fd9fa9f70fe7383b47d18f28dd65720f6ad15686c24540c8cac0",
+    "src/theme/terminalAnsiThemeFixture.ts": "aeca2daed1bbcc44cea8cb9484c503ce8b4a1e196a7aa9462cba214921874edf",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a"
+  },
+  "original_fixture": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/ordinaryThemeRefresh.original-f1a6c42f.test.ts.txt",
+  "candidate_snapshot": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/ordinaryThemeRefresh.v2.test.ts.txt",
+  "exact_diff": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/syntax-only.diff",
+  "exact_diff_sha256": "09e74d8faab8d38c3cbd7c2146c714c88d86069543c1902cec9da2402600ed0a",
+  "mechanical_verification": {
+    "exact_single_span_replace": true,
+    "round_trip_original_equal": true,
+    "all_other_bytes_equal": true,
+    "assertion_call_count_unchanged": 37,
+    "test_definitions_unchanged": 5,
+    "intended_case_contract_unchanged": "16 data-driven palette cases + 4 controls = 20"
+  },
+  "original_setup_failure_receipt": ".oc-tmp/ordinary-theme-refresh-proof/ordinary-theme-refresh-1f-grant.json",
+  "original_setup_failure": "Node22 strip-only rejected parameter property; zero intended cases ran; no RED/control credit",
+  "runtime_state": "NOT_RUN; no parser/test/Node/npm/typecheck/lint/install/build or resource sample performed",
+  "product_changed": false,
+  "input_and_lock_unchanged": true,
+  "requested_commands": {
+    "baseline_and_identical_green": "nice -n 19 timeout --kill-after=5s 120s node --max-old-space-size=768 --test --test-concurrency=1 src/features/terminal/ordinaryThemeRefresh.test.ts",
+    "baseline_required": {
+      "palette_fail": 16,
+      "controls_pass": 4,
+      "unexpected_fail": 0
+    },
+    "green_required": {
+      "pass": 20,
+      "fail": 0
+    },
+    "adjacent": "nice -n 19 timeout --kill-after=5s 120s node --max-old-space-size=768 --test --test-concurrency=1 src/features/terminal/alternateClear.test.ts src/features/terminal/alternateLineEdit.test.ts src/features/terminal/bigTerminal.test.ts src/features/terminal/capture.test.ts src/features/terminal/clearRedraw.test.ts src/features/terminal/cursorState.test.ts src/features/terminal/find.test.ts src/features/terminal/font.test.ts src/features/terminal/nonrunningInput.test.ts src/features/terminal/resizeState.test.ts src/features/terminal/restore.test.ts src/features/terminal/scrollback.test.ts src/features/terminal/selectionAddToChat.test.ts src/features/terminal/selectionChatCaller.test.ts src/features/terminal/selectionChatFocus.test.ts src/features/terminal/sessionLineFeed.test.ts src/features/terminal/sessionUnicode.test.ts src/features/terminal/shellIntegration.test.ts src/features/terminal/shortcuts.test.ts src/features/terminal/spawnFailure.test.ts src/features/terminal/startingBody.test.ts src/features/terminal/tabList.test.ts src/features/terminal/terminal.test.ts src/features/terminal/writeQueue.test.ts src/features/terminal/terminalAnsiTheme.test.ts",
+    "adjacent_paths": [
+      "src/features/terminal/alternateClear.test.ts",
+      "src/features/terminal/alternateLineEdit.test.ts",
+      "src/features/terminal/bigTerminal.test.ts",
+      "src/features/terminal/capture.test.ts",
+      "src/features/terminal/clearRedraw.test.ts",
+      "src/features/terminal/cursorState.test.ts",
+      "src/features/terminal/find.test.ts",
+      "src/features/terminal/font.test.ts",
+      "src/features/terminal/nonrunningInput.test.ts",
+      "src/features/terminal/resizeState.test.ts",
+      "src/features/terminal/restore.test.ts",
+      "src/features/terminal/scrollback.test.ts",
+      "src/features/terminal/selectionAddToChat.test.ts",
+      "src/features/terminal/selectionChatCaller.test.ts",
+      "src/features/terminal/selectionChatFocus.test.ts",
+      "src/features/terminal/sessionLineFeed.test.ts",
+      "src/features/terminal/sessionUnicode.test.ts",
+      "src/features/terminal/shellIntegration.test.ts",
+      "src/features/terminal/shortcuts.test.ts",
+      "src/features/terminal/spawnFailure.test.ts",
+      "src/features/terminal/startingBody.test.ts",
+      "src/features/terminal/tabList.test.ts",
+      "src/features/terminal/terminal.test.ts",
+      "src/features/terminal/writeQueue.test.ts",
+      "src/features/terminal/terminalAnsiTheme.test.ts"
+    ],
+    "adjacent_count": "228 historical prediction only; report actual count",
+    "typecheck": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 120s npm run typecheck",
+    "lint_colors": "NODE_OPTIONS=--max-old-space-size=768 nice -n 19 timeout --kill-after=5s 120s npm run lint:colors"
+  },
+  "stop_conditions": [
+    "setup/unexpected failure",
+    "timeout/resource warning",
+    "changed execution target"
+  ],
+  "execution_admission": "NONE; normal existing ACC queue only, no reservation requested",
+  "jobs_started": [],
+  "package_992": "EXCLUDED/UNCHANGED; release ownership remains with existing992",
+  "verification_limits": [
+    "Node22 load compatibility not yet exercised",
+    "20-case baseline/GREEN not run",
+    "adjacent/typecheck/lint not run",
+    "mounted/native/rendered/reattach/PTY/provider acceptance not run"
+  ]
+}

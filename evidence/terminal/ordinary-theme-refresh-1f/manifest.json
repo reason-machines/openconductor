@@ -1,0 +1,130 @@
+{
+  "source/source.json": {
+    "bytes": 7581,
+    "sha256": "462c9e39401fcf13267e6cca4018931ab2792d0e4ed56d839dc082d306fbeb1f",
+    "source": ".oc-tmp/post1163-source-census/source.json"
+  },
+  "source/preflight-2fda73ad-2a71-4858-a398-c3af59b6eba6.json": {
+    "bytes": 11452,
+    "sha256": "5041a1f77e527fd963f22e72a3a3d376012041a36af4d61422595f27765dddfa",
+    "source": ".oc-tmp/post1163-source-census/preflight-2fda73ad-2a71-4858-a398-c3af59b6eba6.json"
+  },
+  "reference/w9e.txt": {
+    "bytes": 3429,
+    "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+    "source": ".oc-tmp/post1163-source-census/reference/w9e.txt"
+  },
+  "reference/lno.txt": {
+    "bytes": 1125,
+    "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+    "source": ".oc-tmp/post1163-source-census/reference/lno.txt"
+  },
+  "reference/uVn.txt": {
+    "bytes": 230,
+    "sha256": "ac48251fcbe99909fea8abc6d01ba6234dcb51496f742ee012debc4aa57c5e53",
+    "source": ".oc-tmp/post1163-source-census/reference/uVn.txt"
+  },
+  "reference/dno.txt": {
+    "bytes": 1719,
+    "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+    "source": ".oc-tmp/post1163-source-census/reference/dno.txt"
+  },
+  "reference/cno.txt": {
+    "bytes": 385,
+    "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+    "source": ".oc-tmp/post1163-source-census/reference/cno.txt"
+  },
+  "reference/$At.txt": {
+    "bytes": 1719,
+    "sha256": "5d73083eabd52c3345aad238d153d0fc71dd52040b8084b7d93d8f120180cd14",
+    "source": ".oc-tmp/post1163-source-census/reference/$At.txt"
+  },
+  "reference/uno.txt": {
+    "bytes": 421,
+    "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+    "source": ".oc-tmp/post1163-source-census/reference/uno.txt"
+  },
+  "reference/W5e.txt": {
+    "bytes": 389,
+    "sha256": "7829aaf4a1fdf9ed7789f958496e3f7f7274f69cfbd31997aeb7ae99de28a881",
+    "source": ".oc-tmp/post1163-source-census/reference/W5e.txt"
+  },
+  "reference/eSa.txt": {
+    "bytes": 4517,
+    "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+    "source": ".oc-tmp/post1163-source-census/reference/eSa.txt"
+  },
+  "reference/IJe.txt": {
+    "bytes": 802,
+    "sha256": "ea65e840d4491339eaeeed4beda371d58fc6a87b78fc14e50c6a32ac9915d081",
+    "source": ".oc-tmp/post1163-source-census/reference/IJe.txt"
+  },
+  "reference/F3.txt": {
+    "bytes": 297,
+    "sha256": "106c7a6024877413de767c03c118b06ab6724d55003afa4fc9b09961d9a2a0d0",
+    "source": ".oc-tmp/post1163-source-census/reference/F3.txt"
+  },
+  "reference/n9s.txt": {
+    "bytes": 225,
+    "sha256": "68d11a7db29bee26c56e8a05bade37cf7f66a8ba0a924f1bc5492f49c23a93e5",
+    "source": ".oc-tmp/post1163-source-census/reference/n9s.txt"
+  },
+  "candidate.json": {
+    "bytes": 6000,
+    "sha256": "688a5471d41add86b2a3c3c08edbb16b801c710f50e0a7c399579535c4c67a07",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/candidate.json"
+  },
+  "syntax-only.diff": {
+    "bytes": 598,
+    "sha256": "09e74d8faab8d38c3cbd7c2146c714c88d86069543c1902cec9da2402600ed0a",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/syntax-only.diff"
+  },
+  "preflight-b9d3668c.json": {
+    "bytes": 28031,
+    "sha256": "7a1dd7b9003a15f34f807d50466f658fb3b9058ff7ca991944951c706930c1e0",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/preflight-b9d3668c.json"
+  },
+  "ordinary-theme-refresh-1f-v2-grant.json": {
+    "bytes": 49412,
+    "sha256": "96b9988c2bb251797aad1ea5111eea428051d5472031eb1fc71b4a89894831d0",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/ordinary-theme-refresh-1f-v2-grant.json"
+  },
+  "execute-251b288e.py": {
+    "bytes": 8439,
+    "sha256": "6fe2e259ef8c7ecf34e28b7d9724b6a291cb3005e13faa822edf8744d21d889e",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/execute-251b288e.py"
+  },
+  "original-f1a6c42f.test.ts.txt": {
+    "bytes": 10698,
+    "sha256": "f1a6c42fed2eec9552c93f007c79ae9478a425efbcaf216d99634888fe3f6ac1",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/ordinaryThemeRefresh.original-f1a6c42f.test.ts.txt"
+  },
+  "setup-v1/receipt.json": {
+    "bytes": 2183,
+    "sha256": "8433aef56f0d931d97512f36c9121d7046748c843199683b9ecc811b5105b169",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/ordinary-theme-refresh-1f-grant.json"
+  },
+  "setup-v1/red.tap": {
+    "bytes": 2313,
+    "sha256": "d97c665144f5f5be523158acde12e7e8daef71493c4152e50e0004dfb2d2cbac",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/red.tap"
+  },
+  "red.tap.gz": {
+    "original_bytes": 17894,
+    "original_sha256": "fe62b878806ca46c617fddc10776444266c2a85543921064ac73da58f14c276f",
+    "gzip_sha256": "0711fa27dd6f03e8199413049af8da17c326c343a81d30b1663438979d5afb54",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/red-251b288e.tap"
+  },
+  "green.tap.gz": {
+    "original_bytes": 4579,
+    "original_sha256": "f5888c76a966b5de0955555fbb005ddc26c7a2c4fee100dd02efe249ca7bb0eb",
+    "gzip_sha256": "ae742517d61a7fc9bf92f8bdeda960fbc2a5fc795791f59e054d50e4dfba5e8e",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/green-251b288e.tap"
+  },
+  "adjacent.tap.gz": {
+    "original_bytes": 52362,
+    "original_sha256": "46a66943eecec6e76e0802eb7b235910e3b398093941900c56dc249171cc7f39",
+    "gzip_sha256": "fd1b272df47f2facc924d3d756b2194219e90e7835805b74b6db5fb014659282",
+    "source": ".oc-tmp/ordinary-theme-refresh-proof/syntax-repair-v2/adjacent-251b288e.tap"
+  }
+}

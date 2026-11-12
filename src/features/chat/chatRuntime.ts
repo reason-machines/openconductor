@@ -38,6 +38,7 @@ import { applyChatEvents, emptyTranscript, truncateAfterTurn, type ChatTranscrip
 import { restoreCheckpoint, turnCheckpointRef, type Invoke } from "./checkpoints.ts";
 import { cancelUnsent, failTurn, openTurns, reasonChat, restartUnsentTurn, startTurn, type PromptAttachment, type ReasonChatState, type Step } from "./reason.ts";
 import * as Q from "./queue.ts";
+import { registerPersistenceOwner } from "../../lib/persistence/restartPersistence.ts";
 import { ChatSaver, restoreEvents } from "./persist.ts";
 import { chatWantsAttention, enteredWait, turnSettled } from "./attention.ts";
 import { earlierConversation, lastMessageOfTurn } from "./rewind.ts";
@@ -300,6 +301,8 @@ interface Chat<Config> {
 let statuses: ReadonlyMap<string, Q.SessionStatus> = new Map();
 const hiddenChats = new Set<string>();
 const statusListeners = new Set<() => void>();
+let statusesHydrated = false;
+export const chatStatusesReady = (): boolean => statusesHydrated;
 
 function setStatus(chatId: string, status: Q.SessionStatus | undefined) {
   if (statuses.get(chatId) === status) return;
@@ -416,8 +419,14 @@ function syncStatuses() {
     .then((rows) => {
       // A chat that changed in this run already shows its own status.
       for (const r of rows ?? []) if (!writes.has(r.chatId) && !statuses.has(r.chatId)) receivedStatus(r);
+      statusesHydrated = Array.isArray(rows) && rows.every((row) => typeof row.chatId === "string" && SESSION_STATUSES.has(row.status));
+      for (const fn of statusListeners) fn();
     })
-    .catch((e) => console.warn("chat: stored session statuses not loaded", e));
+    .catch((e) => {
+      statusesHydrated = false;
+      for (const fn of statusListeners) fn();
+      console.warn("chat: stored session statuses not loaded", e);
+    });
 }
 
 export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: ChatHost): ChatRuntime<Config> {
@@ -425,6 +434,20 @@ export function createChatRuntime<Config>(backend: ChatBackend<Config>, host: Ch
   const savers = new Map<string, ChatSaver>();
   /** Settles once a chat's stored transcript and session id are in (or failed to load). */
   const loads = new Map<string, Promise<void>>();
+  const drainedLoads = new Set<Promise<void>>();
+  registerPersistenceOwner({
+    get revision() { return chats.size + loads.size + [...savers.values()].reduce((sum, saver) => sum + saver.revision, 0); },
+    ready: () => [...loads.values()].every((load) => drainedLoads.has(load)) && [...savers.values()].every((saver) => saver.ready()),
+    async drain() {
+      for (;;) {
+        const pending = [...loads.values()];
+        await Promise.all(pending);
+        for (const load of pending) drainedLoads.add(load);
+        await Promise.all([...savers.values()].map((saver) => saver.drain()));
+        if ([...loads.values()].every((load) => drainedLoads.has(load))) return;
+      }
+    },
+  });
   let listening: Promise<unknown> | null = null;
   const sessionKey = backend.sessionKey;
 
