@@ -26,7 +26,6 @@ import {
   scheduleWakeupAt,
   scheduleWakeupLabel,
   sendMessageLabel,
-  shortPath,
   skillLabel,
   slashCommandLabel,
   stripMarkers,
@@ -453,7 +452,7 @@ function Row({ tool, status, result, resultCreatedAt, now, isError, open, onTogg
               {path ? (
                 <>
                   {" in "}
-                  <code className="oc-tool-inline-code">{shortPath(path, workspacePath)}</code>
+                  <code className="oc-tool-inline-code">{lastTwoSegments(path)}</code>
                 </>
               ) : null}
               {include ? ` (include: ${include})` : null}
