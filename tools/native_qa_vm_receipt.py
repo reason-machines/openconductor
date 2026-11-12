@@ -133,8 +133,8 @@ class AuthenticatedGitHubReader(ABC):
     resolve numeric repository linkage, the workflow at the pinned source,
     exact producer job/attempt and the service archive digest without guessing.
     Missing authoritative fields must raise or return an invalid record.
-    No production broker is implemented here. Subclassing cannot authenticate
-    a service: only caller-controlled policy tests should use fake readers.
+    The fixed-origin implementation is tools.native_qa_vm_github.GitHubReader.
+    Subclassing alone cannot authenticate a service; fake readers are policy tests.
     """
     @abstractmethod
     def read_repository(self, repository_id):
