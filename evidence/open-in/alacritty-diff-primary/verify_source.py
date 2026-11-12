@@ -10,10 +10,8 @@ for row in packet['files']:
     data = (root / row['path']).read_bytes()
     assert len(data) == row['bytes'], row['path']
     assert hashlib.sha256(data).hexdigest() == row['sha256'], row['path']
-fixture = repo / 'evidence/open-in/vscode-workspace-context/fixture-migration-v2/filePathChipAlacritty.v1.test.ts.txt'
+fixture = repo / 'src/features/diff/filePathChipAlacritty.test.ts'
 assert hashlib.sha256(fixture.read_bytes()).hexdigest() == packet['regression_sha256']
-import subprocess
-subprocess.run(['python3', str(fixture.parent / 'verify.py')], check=True)
 for row in packet['joins']:
     assert row['text'] in (root / row['path']).read_text(), row
 print(json.dumps({

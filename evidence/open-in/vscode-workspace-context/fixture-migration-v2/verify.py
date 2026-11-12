@@ -32,6 +32,9 @@ for path in [
     "evidence/open-in/alacritty-diff-primary/source-v1/source-pins.json",
     "evidence/open-in/icon-menu-numbering-caller/manifest.json",
     "evidence/open-in/deleted-finder/source.json",
+    "evidence/open-in/alacritty-diff-primary/verify_source.py",
+    "evidence/open-in/deleted-finder/verify_candidate.py",
+    "evidence/open-in/icon-menu-numbering-caller/verify_source.py",
     "evidence/diff/moved-comment-anchors/source.json",
     "evidence/diff/hidden-whitespace-editing/execution-source-manifest.json",
 ]:

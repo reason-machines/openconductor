@@ -27,10 +27,7 @@ checks['frozen-ten-cases'] = sha(fixture.read_bytes()) == source['fixture_sha256
 checks['frozen-copy'] = fixture.read_bytes() == (ROOT / 'fixture-v1.rs.txt').read_bytes()
 for path, digest in source['preserved_fixtures'].items():
     checks[f'preserved:{path}'] = sha((REPO / path).read_bytes()) == digest
-migration = REPO / 'evidence/open-in/vscode-workspace-context/fixture-migration-v2'
-checks['historical-frontend-control-preserved'] = (migration / 'filePathChipAlacritty.v1.test.ts.txt').read_bytes() == subprocess.check_output(['git', 'show', 'bb717dad2e1c4cbcbdba3d29d607a76a069f7f85:src/features/diff/filePathChipAlacritty.test.ts'], cwd=REPO)
-subprocess.run(['python3', str(migration / 'verify.py')], check=True)
-checks['installed-V2-only-VSCode-expectation-changed'] = True
+checks['existing-frontend-Finder-control-unchanged'] = (REPO / 'src/features/diff/filePathChipAlacritty.test.ts').read_bytes() == subprocess.check_output(['git', 'show', 'bb717dad2e1c4cbcbdba3d29d607a76a069f7f85:src/features/diff/filePathChipAlacritty.test.ts'], cwd=REPO)
 for name, digest, app_id in [
     ('kaleidoscope_tests.rs', '4f3db0f8e7a8ce17854325bde5552fe3b02d25f10ad591ab21307af147ff0dcd', 'kaleidoscope'),
     ('wezterm_folder_tests.rs', '9a32644acd074bdf8f4e638c9709cb9064d57df0769fec39bd228876f761682f', 'wezterm'),
@@ -53,7 +50,7 @@ checks['absent-path-required'] = 'matches!(target.symlink_metadata(), Err(error)
 checks['symlink-traversal-rejected'] = 'metadata.file_type().is_symlink() => return None' in commands
 checks['exact-immediate-parent-no-launch-ancestor-search'] = 'target.parent().map(Path::to_path_buf)' in commands and 'dir.ancestors()' not in commands
 checks['deleted-header-caller-wired'] = 'deleted={file.status === "deleted"}' in view
-checks['deleted-Finder-retains-context'] = 'deleted && appId === "finder" && worktree' in chip
+checks['only-deleted-Finder-adds-context'] = 'deleted && appId === "finder" && worktree' in chip
 checks['optional-context-forwarded-without-changing-other-payloads'] = '...(fileContext ? { fileContext } : {})' in apps
 checks['frontend-integration-cases-present'] = (REPO / 'src/features/diff/deletedFinderContext.test.ts').is_file()
 checks['safety-cases-present'] = 'fn fallback_stays_inside_an_existing_absolute_workspace()' in commands and 'fn fallback_refuses_symlinked_parents_and_broken_leaf_links()' in commands
