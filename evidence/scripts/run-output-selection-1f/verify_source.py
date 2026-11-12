@@ -1,0 +1,50 @@
+"""Read-only checks for retained REA, baseline identities and sealed cases."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
+
+
+def digest(data):
+    return hashlib.sha256(data).hexdigest()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--original-dir', type=Path)
+    args = parser.parse_args()
+    receipt = json.loads((HERE / 'source.json').read_text())
+    originals = {}
+    if args.original_dir:
+        for record in receipt['reference_assets']:
+            data = (args.original_dir / record['name']).read_bytes()
+            assert len(data) == record['bytes'] and digest(data) == record['sha256'], record['name']
+            originals['renderer' if record['name'].startswith('renderApp-') else 'index'] = data
+    for record in receipt['reference_spans']:
+        name = record['symbol'].replace('$', '_') + '.txt'
+        data = (HERE / 'reference' / name).read_bytes()
+        assert len(data) == record['bytes'] and digest(data) == record['sha256'], name
+        if originals:
+            original = originals[record['asset']]
+            start, end = record['utf8_half_open']
+            assert original[start:end] == data and original.count(data) == 1, name
+    for record in receipt['current_sources'][:3]:
+        data = (HERE / 'baseline' / (Path(record['path']).name + '.txt')).read_bytes()
+        assert len(data) == record['bytes'] and digest(data) == record['sha256'], record['path']
+    frozen = json.loads((HERE / 'cases.json').read_text())
+    data = (ROOT / frozen['path']).read_bytes()
+    assert digest(data) == frozen['sha256'], 'Frozen Run selection cases changed'
+    assert data.decode().count('\ntest(') == len(frozen['cases']) == 10
+    for name in frozen['cases']:
+        assert f'test({json.dumps(name)}' in data.decode(), name
+    print(json.dumps({'reference_spans': len(receipt['reference_spans']),
+                      'complete_originals_checked': len(originals), 'baseline_files': 3,
+                      'frozen_cases': len(frozen['cases']), 'result': 'PASS',
+                      'runtime_or_native_acceptance': 'NOT_RUN'}))
+
+
+if __name__ == '__main__':
+    main()
