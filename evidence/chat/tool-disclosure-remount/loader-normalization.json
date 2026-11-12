@@ -1,0 +1,7 @@
+{
+  "stage": "PRE_BASELINE_NOT_EXECUTED",
+  "change": "Remove one empty line at EOF from wv-host.mjs so git diff --check passes. No semantic or scenario change.",
+  "before_sha256": "1e034bbb1074a4e0170c00b7313cd83eea19920277286ceb394b7c1e613cc092",
+  "after_sha256": "555f8f2e743a7dc7e08b98b4320a7b78d75d5ef6e8b04d7f32a0708f5c4d3ada",
+  "scenario_sha256": "affb87195267009c80fcd727441b25a1e4290c29af91d45c7a9f71b8fd4e7d53"
+}
