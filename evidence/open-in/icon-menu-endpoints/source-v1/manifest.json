@@ -1,0 +1,211 @@
+{
+  "owner": "Conductor Rebuild SAME15",
+  "gap": "ICON-OPENIN-HOME-END-15",
+  "status": "SOURCE_ONLY_PREPARATION_NOT_APPLIED_NOT_ADMITTED",
+  "main_checked": "09b1c998acb093f4d905d5ef844c80136ea987f6",
+  "asset": {
+    "original_app": "Conductor 0.87.6 on sven m5 max",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "bytes": 11600457,
+    "retained_rea_evidence_id": "ev_338577609e67c31212d529d59606e90597850528ea9a2f9559d23a4876c960d1"
+  },
+  "spans": [
+    {
+      "symbol": "P9",
+      "path": "reference/P9.txt",
+      "start_utf8_byte": 2689481,
+      "end_utf8_byte": 2697526,
+      "sha256": "bf2bd3507c56618ed2d218f4c6efe656926ed3d4a523f8fd16ce5cffd153aede"
+    },
+    {
+      "symbol": "split-arrows",
+      "path": "reference/split-arrows.txt",
+      "start_utf8_byte": 2697526,
+      "end_utf8_byte": 2697935,
+      "sha256": "dce548d78ca81b96e31a13107d48b3b4a484ab5dce0232e9f7634f37f4d66069"
+    },
+    {
+      "symbol": "h2-Sg",
+      "path": "reference/h2-Sg.txt",
+      "start_utf8_byte": 2224899,
+      "end_utf8_byte": 2225951,
+      "sha256": "ba4b23b02a933218f3ec551422d7e2afac0ac8080b9fc054029dd231a59dd988"
+    },
+    {
+      "symbol": "Tm",
+      "path": "reference/Tm.txt",
+      "start_utf8_byte": 2227697,
+      "end_utf8_byte": 2230675,
+      "sha256": "96862b9cc8037a369b7c2906a0a27f7328c28b28b337bf0ca8ea0929ce15fbc5"
+    },
+    {
+      "symbol": "m2",
+      "path": "reference/m2.txt",
+      "start_utf8_byte": 703915,
+      "end_utf8_byte": 705553,
+      "sha256": "33148f13f8585ac860359220268f5a2c7e5ea0573f33efc5e924c6491beb185b"
+    },
+    {
+      "symbol": "oF",
+      "path": "reference/oF.txt",
+      "start_utf8_byte": 721779,
+      "end_utf8_byte": 726747,
+      "sha256": "584d6e5f9dd7c2293a3c3a92edcf3f924b8f84599bf0fc5491b4937c156ad946"
+    },
+    {
+      "symbol": "Ede",
+      "path": "reference/Ede.txt",
+      "start_utf8_byte": 729185,
+      "end_utf8_byte": 731999,
+      "sha256": "4c4b2fdffd1645e1b4cf072c00d4402759a3ee23ce87b5eb7fdc7a8b8c79c156"
+    },
+    {
+      "symbol": "SLt",
+      "path": "reference/SLt.txt",
+      "start_utf8_byte": 531356,
+      "end_utf8_byte": 536840,
+      "sha256": "639dff80215201bdcf7b13dc95b69b4fb63010d8e480c03fadd009b46400570e"
+    },
+    {
+      "symbol": "JSe",
+      "path": "reference/JSe.txt",
+      "start_utf8_byte": 516478,
+      "end_utf8_byte": 516607,
+      "sha256": "1c9226fd01bd5481ec7489e267f5f3b59dabbbc9c5a6f9bc1ad78fa74324ac48"
+    },
+    {
+      "symbol": "menu-context",
+      "path": "reference/menu-context.txt",
+      "start_utf8_byte": 695208,
+      "end_utf8_byte": 695300,
+      "sha256": "10f3bd231d4307f634868c27e538d002dceb05ff3d39de1f78060b1038b75af5"
+    },
+    {
+      "symbol": "cFn",
+      "path": "reference/cFn.txt",
+      "start_utf8_byte": 2686373,
+      "end_utf8_byte": 2687659,
+      "sha256": "e97a00b92f89f1593a47e40029d9dcad399c48304f42c2b34eedc1c3f986c248"
+    },
+    {
+      "symbol": "Yc",
+      "path": "reference/Yc.txt",
+      "start_utf8_byte": 2231400,
+      "end_utf8_byte": 2232272,
+      "sha256": "34efee668aa3b543ee3a0840323d9b3c3bfa0b6a7b2bb39f55491d89bb396246"
+    },
+    {
+      "symbol": "Pu",
+      "path": "reference/Pu.txt",
+      "start_utf8_byte": 700703,
+      "end_utf8_byte": 701216,
+      "sha256": "e6153e0780bcd6d512055d5af34ba5daa8e7eab9d69417825087e414f5489215"
+    },
+    {
+      "symbol": "register-item",
+      "path": "reference/register-item.txt",
+      "start_utf8_byte": 698015,
+      "end_utf8_byte": 698570,
+      "sha256": "a9f6d9eaac70ae3b8c9a4235e1807254a43dd79bedf7ff73182637ab8f9261ef"
+    },
+    {
+      "symbol": "collect-items",
+      "path": "reference/collect-items.txt",
+      "start_utf8_byte": 705854,
+      "end_utf8_byte": 707350,
+      "sha256": "bcde61d268f35c26f4b5e28ea0eda54c276724af58e022fb8bc509841f6a68b8"
+    },
+    {
+      "symbol": "item-order",
+      "path": "reference/item-order.txt",
+      "start_utf8_byte": 707410,
+      "end_utf8_byte": 708089,
+      "sha256": "1bb79f30f38fe6aa103b1bce36a26eaf1f46ee6a3a6fe2d83ebc1ce56e7c3e4f"
+    },
+    {
+      "symbol": "combobox-guard",
+      "path": "reference/combobox-guard.txt",
+      "start_utf8_byte": 447322,
+      "end_utf8_byte": 447394,
+      "sha256": "147c66cdea57e8cb5cf42587017dd4ab5b780009c1ae5467f7cb9e92dd97c550"
+    },
+    {
+      "symbol": "consume-event",
+      "path": "reference/consume-event.txt",
+      "start_utf8_byte": 443179,
+      "end_utf8_byte": 443233,
+      "sha256": "8157d51b71802f3db0fba1b5c1210fa900918a10fdd0906cbadbe6c0dabef455"
+    },
+    {
+      "symbol": "first-last-item",
+      "path": "reference/first-last-item.txt",
+      "start_utf8_byte": 455044,
+      "end_utf8_byte": 455358,
+      "sha256": "2adc657a5be3552136a86103056b683a94b5fcf55747b629273eb36ffae68d98"
+    },
+    {
+      "symbol": "focus-item",
+      "path": "reference/focus-item.txt",
+      "start_utf8_byte": 461160,
+      "end_utf8_byte": 461421,
+      "sha256": "005eef0adac96874d230de3b4031f3caa91e82f826e5830991b8d02346424ae1"
+    },
+    {
+      "symbol": "merge-handlers",
+      "path": "reference/merge-handlers.txt",
+      "start_utf8_byte": 463925,
+      "end_utf8_byte": 465319,
+      "sha256": "5cf6e4a5da9d8413f9d2419d993015f42636d077ad8f9cb8654e393d17cd7f06"
+    },
+    {
+      "symbol": "disabled-item",
+      "path": "reference/disabled-item.txt",
+      "start_utf8_byte": 457546,
+      "end_utf8_byte": 457758,
+      "sha256": "18f2a17b6aeccecb30698025d02f97fbb878ef208815438b8f03256cee41478b"
+    }
+  ],
+  "baseline": {
+    "path": "src/features/openIn/OpenInButton.tsx",
+    "sha256": "3deb652e66718fb321266676595607cf158b8dd9e024db3983a1405b64d71499"
+  },
+  "candidate": {
+    "path": "candidate.diff.gz",
+    "sha256": "69dde74b529d53d216e39bbcc6c3583436ce2bd4bedb9d1414b1e2966006feb2",
+    "compressed_sha256": "7c27058864424a79b96b913fe5b76a96dda7f701c8f6953ab2cc226a7148a6a5",
+    "result_sha256": "985d3eb1eb714a964c8e04514689d19d1a60a1b8453d08d303a1d85da3f4fe60"
+  },
+  "dedup": {
+    "ledger_session": "ddfc6518-d50f-46a6-b83c-c3a18aa07e43",
+    "message": "fc806ddd-9a01-4271-a16e-517ec9845747",
+    "disposition": "No separate exact Home/End/typeahead owner recorded; narrow existing15 source interest only. Existing64 Escape and a538 pointer ownership preserved."
+  },
+  "unmodified": [
+    "Escape branch",
+    "split Home/End behavior",
+    "split/icon arrows",
+    "AppSwitcher",
+    "keybindings",
+    "app catalog and backend",
+    "accepted active-file original12 and lifecycle3",
+    "M11 and all other frozen fixtures"
+  ],
+  "limits": [
+    "Retained static REA-derived source, not newly observed native behavior or automatic call graph.",
+    "Candidate covers Home/End originating from a focused enabled menu row; focus on the menu container is not claimed.",
+    "Typeahead is outside this candidate.",
+    "Renderer fixtures mock DOM focus nodes; eventual passes cannot prove browser or WKWebView focus.",
+    "No dependency restore, fixture staging, baseline/candidate/control tests, typecheck, build, browser, native, original app execution, or product patch application ran.",
+    "No queue row, runtime contract, runner, grant, or watcher is created. Accepted active-file15 remains after composer135."
+  ],
+  "fixture": {
+    "path": "iconMenuEndpoints.test.ts.txt",
+    "sha256": "4009081be40ee58220527628b5f0d8e468c843123b99da80ae9ec1df21487385",
+    "intended_path_if_later_admitted": "src/features/openIn/iconMenuEndpoints.test.ts",
+    "test_groups": 14,
+    "predicted_baseline_assertion_failures": 4,
+    "predicted_baseline_passing_controls": 10,
+    "actual_baseline_result": "NOT_RUN",
+    "actual_candidate_result": "NOT_RUN"
+  }
+}
