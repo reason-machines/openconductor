@@ -1,0 +1,94 @@
+   Compiling diff-harness v0.0.0 (/home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/.rea-work/literal-selected-path/harness)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 15.96s
+     Running unittests /home/runner/.reason/workspace/sessions/de6c02f4-4880-4a0d-bf8f-9e3954522753/repo/src-tauri/src/diff/mod.rs (target/debug/deps/diff_harness-c8be22a1e9df4512)
+
+running 79 tests
+test git_tests::all_scope_without_remote_reads_the_old_request_shape ... ok
+test git_tests::all_changes_fall_back_to_the_local_branch_without_a_remote_ref ... ok
+test git_tests::all_changes_cover_commits_staged_unstaged_and_untracked ... ok
+test git_tests::all_changes_use_the_remote_target_ref_when_it_exists ... ok
+test git_tests::clean_merge_commit_uses_git_show_changed_file_membership ... ok
+test git_tests::context_lines_widens_hunks_to_the_whole_file ... ok
+test git_tests::deleted_untracked_and_renamed_paths_have_worktree_metadata ... ok
+test git_tests::commit_diff_preserves_whitespace_counts_and_rename_and_handles_root ... ok
+test git_tests::commit_history_excludes_target_and_respects_remote_target ... ok
+test git_tests::discard::a_rename_restores_the_old_path_and_drops_the_new_one ... ok
+test git_tests::discard::unborn_branch_deletes_the_file ... ok
+test git_tests::discard::all_changes_restores_the_merge_base_version ... ok
+test git_tests::discard::paths_outside_the_worktree_are_refused ... ok
+test git_tests::discard::files_missing_from_the_base_are_deleted_and_unstaged ... ok
+test git_tests::discard::uncommitted_restores_head_and_keeps_committed_work ... ok
+test git_tests::historical_commit_and_turn_results_do_not_stat_the_present_worktree ... ok
+test git_tests::historical_large_file_placeholder::one_mib_dense ... ok
+test git_tests::historical_large_file_placeholder::five_mib_sparse ... ok
+test git_tests::historical_large_file_placeholder::five_mib_plus_one_sparse ... ok
+test git_tests::historical_large_file_placeholder::one_mib_plus_one_dense ... ok
+test git_tests::historical_large_file_placeholder::six_mib_binary ... ok
+test git_tests::historical_large_file_placeholder::six_mib_old_small_new ... ok
+test git_tests::historical_large_file_placeholder::six_mib_new_missing_worktree ... ok
+test git_tests::historical_large_file_placeholder::small_text ... ok
+test git_tests::ignore_whitespace_drops_whitespace_only_hunks ... ok
+test git_tests::ignore_whitespace_keeps_real_changes_and_lists_every_file ... ok
+test git_tests::large_file_placeholder::five_mib_dense ... ok
+test git_tests::large_file_placeholder::one_mib_dense ... ok
+test git_tests::large_file_placeholder::five_mib_plus_one_sparse ... ok
+test git_tests::large_file_placeholder::five_mib_sparse ... ok
+test git_tests::large_file_placeholder::one_mib_plus_one_dense ... ok
+test git_tests::large_file_placeholder::six_mib_binary ... ok
+test git_tests::large_file_placeholder::six_mib_sparse ... ok
+test git_tests::large_file_placeholder::two_mib_sparse ... ok
+test git_tests::literal_selected_paths::all_changes_question_mark_is_literal ... ok
+test git_tests::literal_selected_paths::bracket_character_is_literal ... ok
+test git_tests::literal_selected_paths::ordinary_filename_control_still_loads_the_selected_file ... ok
+test git_tests::literal_selected_paths::selected_commit_question_mark_is_literal ... ok
+test git_tests::literal_selected_paths::unfiltered_control_keeps_both_changed_files ... ok
+test git_tests::literal_selected_paths::turn_question_mark_is_literal ... ok
+test git_tests::missing_worktree_stat_leaves_full_and_summary_metadata_absent ... ok
+test git_tests::literal_selected_paths::uncommitted_question_mark_is_literal ... ok
+test git_tests::merge_in_progress_is_reported ... ok
+test git_tests::literal_selected_paths::untracked_question_mark_is_literal_but_no_index_operand_is_a_filename ... ok
+test git_tests::single_path_and_unborn_branch ... ok
+test git_tests::unknown_base_is_a_git_error ... ok
+test git_tests::selected_commit_is_parent_to_commit_not_head_or_worktree ... ok
+test git_tests::worktree_stat_rounds_negative_epoch_times_like_math_round ... ok
+test model::tests::modification_time_is_optional_and_survives_full_and_summary_roundtrip ... ok
+test model::tests::recount_and_summary ... ok
+test model::tests::serializes_snake_case_and_omits_false_eof_flag ... ok
+test parse_tests::added_deleted_and_missing_counts ... ok
+test parse_tests::bad_marker_is_an_error ... ok
+test parse_tests::empty_patch_has_no_files ... ok
+test parse_tests::git_binary_patch_body_is_skipped ... ok
+test parse_tests::hunk_content_that_looks_like_headers_stays_content ... ok
+test parse_tests::parses_modified_file_with_line_numbers ... ok
+test parse_tests::quoted_paths_are_unquoted ... ok
+test parse_tests::renames_binaries_and_mode_changes ... ok
+test parse_tests::trailing_tab_after_a_name_with_spaces_is_not_part_of_the_path ... ok
+test parse_tests::truncated_hunk_is_an_error ... ok
+test paths::tests::splits_headers_with_spaces_and_renames ... ok
+test paths::tests::strip_side_only_strips_its_prefix ... ok
+test paths::tests::unquotes_escapes_and_octal_utf8 ... ok
+test git_tests::whitespace_and_context_options_do_not_change_worktree_modification_time ... ok
+test turn_tests::checkpoint_ids_follow_the_reference_scheme ... ok
+test turn_tests::a_turn_without_both_checkpoints_is_not_ready ... ok
+test turn_tests::ids_that_cannot_be_a_ref_component_are_refused ... ok
+test turn_tests::turn_scope_deserializes_from_the_frontend_shape ... ok
+test git_tests::worktree_modification_time_survives_full_and_summary_serialization_and_same_content_rewrite ... ok
+test git_tests::resolved_merge_contents_compare_with_first_parent ... ok
+test turn_tests::turn_scope_honours_whitespace_and_context_options ... ok
+test write_file::tests::keeps_the_original_permissions ... ok
+test write_file::tests::refuses_paths_outside_the_worktree ... ok
+test write_file::tests::refuses_to_write_through_a_symlink ... ok
+test write_file::tests::replaces_the_file_and_leaves_no_temp_file ... ok
+test turn_tests::discard_is_refused_in_the_turn_scope ... ok
+test turn_tests::turn_scope_lists_only_what_changed_during_the_turn ... ok
+test turn_tests::turn_scope_hunks_are_end_versus_start_and_base_is_the_start_checkpoint ... ok
+
+test result: ok. 79 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 23.58s
+
+   Doc-tests diff_harness
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+note: clippy not installed; lint skipped

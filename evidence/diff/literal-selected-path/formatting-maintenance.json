@@ -1,0 +1,7 @@
+{
+  "initial_fixture_sha256": "72dd65318f45838d03ed0e14c29aa9922212926874d43198896956c22287425b",
+  "formatted_fixture_sha256": "15e50dfdfbcb2bf5cbe09774a7cc5a578ce7aa58aa1587cf21524cb7f095924e",
+  "exact_replacement": "one selected_only call expanded, with trailing comma; arguments and assertions unchanged",
+  "reason": "automatic rustfmt failure before Diff behavior",
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43154931896/job/130972546392"
+}
