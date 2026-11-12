@@ -1,0 +1,1 @@
+function dxe(t,e){const n=ne.c(3),i=N9(t);let r;n[0]!==t||n[1]!==e?(r={key:t,for:e},n[0]=t,n[1]=e,n[2]=r):r=n[2];const o=us(r);return e!==void 0?o.data?.effective.value:i.data}
