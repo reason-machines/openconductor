@@ -392,11 +392,15 @@ export function opensByDefault(tool: ConductorTool): boolean {
 
 export function ConductorToolRow(props: ToolRowProps) {
   const row = <Row {...props} />;
-  if (!props.isError || !props.result || !ERROR_ROW_KINDS.has(toolKind(props.tool.name))) return row;
+  const kind = toolKind(props.tool.name);
+  const errorResult = kind === "bash-output" && props.rawResult !== undefined
+    ? typeof props.rawResult === "string" ? props.rawResult : undefined
+    : props.result;
+  if (!props.isError || !errorResult || !ERROR_ROW_KINDS.has(kind)) return row;
   return (
     <>
       {row}
-      <ErrorRow text={props.result} />
+      <ErrorRow text={errorResult} />
     </>
   );
 }
@@ -877,7 +881,8 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
   switch (kind) {
     case "bash-output": {
       // `N0o`
-      const st = backgroundStatus(result);
+      const content = rawResult === undefined ? result : typeof rawResult === "string" ? rawResult : undefined;
+      const st = backgroundStatus(content);
       return (
         <RowShell
           {...shell}
@@ -891,7 +896,7 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
               ) : null}
             </span>
           }
-          content={framed(result)}
+          content={framed(content)}
         />
       );
     }
