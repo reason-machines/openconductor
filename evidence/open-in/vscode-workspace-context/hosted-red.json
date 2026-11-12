@@ -1,0 +1,41 @@
+{
+  "owner": "Conductor Rebuild",
+  "pr": 1122,
+  "head": "404551b93d9ab44bf3abcdb939009db6c5057a11",
+  "run": 43143092453,
+  "mode": "ordinary automatic hosted checks",
+  "rust": {
+    "job": 130934516176,
+    "intended_assertion_failures": [
+      "workspace_file",
+      "literal_path",
+      "completed_nonzero_fallback",
+      "fallback_error"
+    ],
+    "passing_controls": [
+      "no_context",
+      "unrelated_app",
+      "directory",
+      "missing_target",
+      "relative_target",
+      "unknown_app"
+    ],
+    "assertion": "literal child argv at fixture line81; real Tauri IPC returned before comparison"
+  },
+  "frontend": {
+    "job": 130934516027,
+    "intended_assertion_failures": [
+      "workspace_file",
+      "literal_path"
+    ],
+    "passing_controls": [
+      "unrelated_app"
+    ],
+    "assertion": "mounted FileDiffView -> FilePathChip -> adapter payload lacks fileContext"
+  },
+  "raw": "hosted-red.log",
+  "product_changed_at_baseline": false,
+  "local_runtime": "NOT_RUN",
+  "native": "NOT_RUN",
+  "frozen_files": "unchanged"
+}

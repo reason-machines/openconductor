@@ -1,0 +1,1 @@
+function n7i({favorites:t,onSelect:e}){const n=[];return t.forEach((i,r)=>{n[(i.slotNumber??r+1)-1]=()=>e(i)}),n}
