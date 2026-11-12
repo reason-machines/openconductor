@@ -1,0 +1,49 @@
+{
+  "phase": "ADJACENT",
+  "command": [
+    "nice",
+    "-n",
+    "19",
+    "timeout",
+    "--kill-after=5s",
+    "120s",
+    "node",
+    "--max-old-space-size=768",
+    "--test",
+    "--test-concurrency=1",
+    "src/scripts/output.test.ts",
+    "src/scripts/outputCopy.test.ts",
+    "src/scripts/inputOrdering.test.ts",
+    "src/scripts/outputCursor.test.ts",
+    "src/scripts/outputUnicode.test.ts",
+    "src/scripts/runOutputSelection.test.ts",
+    "src/scripts/runningInput.test.ts",
+    "src/scripts/runningResize.test.ts"
+  ],
+  "start_utc": "2026-11-12T15:43:16.200577+00:00",
+  "end_utc": "2026-11-12T15:43:25.704827+00:00",
+  "wall_seconds": 9.504263014008757,
+  "exit": 0,
+  "counts": {
+    "tests": 57,
+    "suites": 0,
+    "pass": 57,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "fixture_sha256": "2c5b3e9f3074d743531169870ea0131e210e90a6478590ee5d294787126127f0",
+  "component_sha256": "1488c5c247527b2608310a201f478801a50f9d0f500edef2b71b55ce378c1a70",
+  "tap_sha256": "917a0b2a619f833e82eb50d653195ec559c1f36c7215cc4f3df3ee4631de97e5",
+  "test_files": {
+    "src/scripts/output.test.ts": "60873fcea11e0674c62ddcfdc10db3f34bc848751b2c244e49208842d66306c3",
+    "src/scripts/outputCopy.test.ts": "77b7a37fd799c41683a4d2a0c71f91448d6b67182da1b7aa69be74df9dc239e5",
+    "src/scripts/inputOrdering.test.ts": "aecdca884f10a1baa693777a7257a28941b0f81429c25950650a16de8f78ea62",
+    "src/scripts/outputCursor.test.ts": "d5793478156a9a946cd079086a5abc778cf991508b008940d99bb6b3230b11ba",
+    "src/scripts/outputUnicode.test.ts": "748cf8fb38b370d7eddc4e293340d25374dae70c18c7273a7a8aa8cdcd062090",
+    "src/scripts/runOutputSelection.test.ts": "47849252403eec43954c6ec50ce74763b109f8ab5aa882dfb41694501a3dc407",
+    "src/scripts/runningInput.test.ts": "574f1995ce29109fc61ad0d523e64672aa6fa9ee5d96242dbb054b06afed57e2",
+    "src/scripts/runningResize.test.ts": "1141ccc7be4b4aa39edaf7c6433aaffe9689c3955d3bbb553dab5ef0b399a49f"
+  }
+}

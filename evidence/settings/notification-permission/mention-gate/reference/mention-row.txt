@@ -1,0 +1,1 @@
+ir({tab:"general",settingKey:"mention_notifications_enabled",scopes:["user"],title:"@ notifications",description:"Get notified when a teammate mentions you.",render:function({title:e,description:n}){return p.jsx(mei,{settingKey:"mention_notifications_enabled",id:"mention-notifications",title:e,description:n})}}),

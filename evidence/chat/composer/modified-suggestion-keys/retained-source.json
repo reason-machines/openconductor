@@ -1,0 +1,274 @@
+{
+  "id": "COMPOSER-SUGGESTION-MODIFIED-KEYS-135-01",
+  "author": "Conductor Rebuild",
+  "checked_main": "2ad07c052a3e31daf1839f6dc3c3737836cf5539",
+  "status": "SOURCE_ONLY_NO_PRODUCT_PATCH_NO_RUNTIME",
+  "reference": {
+    "app": "Conductor 0.87.6",
+    "asset": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "manifest": "evidence/frontend/tauri-assets-manifest.json",
+    "retained_rea_evidence_id": "ev_b733d96728b664ae9af5923651b87c1bf86770b03ed36b85d35c81d72254a367",
+    "rea_gap": "Previously retained JavaScript semantic-worker heap exhaustion. These verified original-byte spans are inert compiled source, not a generated call graph or observed native execution.",
+    "spans": [
+      {
+        "name": "identity wrappers including xd",
+        "utf8_bytes_half_open": [
+          674926,
+          674995
+        ],
+        "sha256": "4283e46687b05b8b24d9071e15301030bd57ac48bb3f7b129375606bfeaaca70",
+        "compiled_javascript": "function hEe(t){return t}const dBr=hEe,pEe=hEe,_v=hEe,fBr=hEe,xd=hEe;"
+      },
+      {
+        "name": "complete suggestion renderer o5o",
+        "utf8_bytes_half_open": [
+          8388129,
+          8390402
+        ],
+        "sha256": "b8f74afbbe8163233b44a3240c2790287305b37c6d773bcdce90fd6927311f55",
+        "compiled_javascript": "function o5o(t,e,n,i,r){return()=>{let o=r6e([]),a=null,c=null,u,d,h=!1,m=!1,g,_;const v=()=>{t({items:Rae(o),command:R,clientRect:x,selectedIndex:dHe(o),setSelectedIndex:w,hide:k,dismiss:I})};let x=null;const w=P=>{o.levels.length===1&&(h=!0),o=iRt({index:P,state:o}),v()},E=({items:P,resetSelection:L})=>{const B=Rae(o),F=dHe(o),H=B[F],U=H?P.findIndex(G=>G.id===H.id):-1,z=L||!h?0:U>=0?U:Math.min(F,Math.max(P.length-1,0));o=r6e(P),o=iRt({index:z,state:o})},k=()=>{o=r6e([]),x=null,t(e)},I=()=>{m=!0,o=r6e([]),c=null,a=null,x=null,t(e)},R=P=>{n&&c&&a&&Promise.resolve(n(c,a,P)).catch(L=>{console.error(\"Failed to handle suggestion selection:\",L)})};r?.({begin:P=>{g=P},update:(P,L)=>{_={requestId:P,items:L};const B=m||g!==P||x===null||o.levels.length>1;console.debug(\"[mention-suggestions] renderer update received\",{activeRequestId:g,dismissed:m,hasClientRect:x!==null,itemCount:L.length,menuLevel:o.levels.length,requestId:P,shouldIgnore:B}),!B&&(E({items:L,resetSelection:u!==d||!h}),d=u,v())}});const D=P=>{const L=_;return L&&L.requestId===g?L.items:P.items};return{onStart:P=>{m=!1,u=P.query,d=P.query,h=!1,E({items:D(P),resetSelection:!0}),c=P.editor,a=P.range,x=P.clientRect??null,console.debug(\"[mention-suggestions] renderer started\",{activeRequestId:g,hasClientRect:x!==null,itemCount:Rae(o).length}),v()},onUpdate:P=>{if(m)return;c=P.editor,a=P.range,x=P.clientRect??null,u=P.query;const L=u!==d;L&&(h=!1),!(o.levels.length>1)&&(E({items:D(P),resetSelection:L||!h}),d=u,console.debug(\"[mention-suggestions] renderer updated\",{activeRequestId:g,itemCount:Rae(o).length}),v())},onKeyDown:({event:P})=>{const L=Rae(o);if(!L.length)return!1;if(P.key===\"ArrowUp\")return o.levels.length===1&&(h=!0),o=rqn({delta:-1,state:o}),v(),!0;if(P.key===\"ArrowDown\")return o.levels.length===1&&(h=!0),o=rqn({delta:1,state:o}),v(),!0;if(P.key===\"ArrowRight\"&&i){const B=r5o({getSubmenuItems:i,state:o});if(B!==o)return o=B,v(),!0}if(P.key===\"ArrowLeft\"){const B=s5o(o);if(B!==o){o=B;const F=_;return o.levels.length===1&&F&&F.requestId===g&&(E({items:F.items,resetSelection:u!==d||!h}),d=u),v(),!0}return!1}if(P.key===\"Enter\"||P.key===\"Tab\"){const B=L[dHe(o)];return B&&R(B),!0}return!1},onExit:()=>{m=!1,o=r6e([]),c=null,a=null,x=null,u=void 0,d=void 0,h=!1,g=void 0,t(e)}}}}"
+      },
+      {
+        "name": "raw suggestion-key selector uqn and B5o",
+        "utf8_bytes_half_open": [
+          8418120,
+          8418286
+        ],
+        "sha256": "c6e1214c3cbeb9df5b5981e564d6a72fba5b945dd620dabdf6ea9fd99983e3a5",
+        "compiled_javascript": "const uqn=xd(t=>{switch(t.key){case\"ArrowDown\":case\"ArrowUp\":case\"Enter\":case\"Escape\":case\"Tab\":return t.key;default:return}}),B5o=_v(t=>t.key===\"Enter\"&&t.shiftKey);"
+      },
+      {
+        "name": "composition predicate and reserved Ctrl+Space",
+        "utf8_bytes_half_open": [
+          8415731,
+          8416002
+        ],
+        "sha256": "d06f8ac4db35bbdd019c98b28f608a88a7a8eff2bca848631a169206de66e32b",
+        "compiled_javascript": "$$e=229;function oRt(t){const e=t.nativeEvent;return t.isComposing===!0||e?.isComposing===!0||t.keyCode===$$e||t.which===$$e||e?.keyCode===$$e||e?.which===$$e}const P5o=dBr(t=>(t.key===\" \"||t.code===\"Space\")&&t.ctrlKey===!0&&t.metaKey!==!0);function aqn(t){return P5o(t)}"
+      },
+      {
+        "name": "complete shared editor lHt including low-level and outer keyboard boundaries",
+        "utf8_bytes_half_open": [
+          8418728,
+          8426168
+        ],
+        "sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215",
+        "compiled_javascript": "function lHt({value:t,onChange:e,onKeyDown:n,onFocus:i,onBlur:r,placeholder:o,disabled:a,autoFocus:c,spellCheck:u=!1,triggers:d,resolveMentionViewModel:h,interactionCapabilities:m,onEditorReady:g,onMentionClick:_,visibleAttachments:v,cloudAttachmentClipboardSourceSessionId:x,resolveAttachmentImageLocation:w,loadAttachmentPreview:E,loadPathImage:k,reportPreviewError:I,workspaceLinks:R,containerEl:O,onAttachmentMentionRemoved:D,onPastedCloudAttachmentMentionRemoved:P,messageSendKey:L=\"enter\",externalSuggestions:B=[],messageSendMode:F=\"steering\",queueEditMode:H=!1,onSubmit:U,canSubmit:z=!1,shouldSkipSubmitShortcut:G,suggestionContextKey:K,onArrowUpAtTop:X}){const[Q]=$.useState(()=>z5o(m.matchesSendCommand)),[J,te]=$.useState(()=>d.map(()=>iqn)),Z=$.useRef(F5o()).current,se=$.useRef(d.map(ye=>ye.refreshKey));Q.latestTriggers=d,Q.latestMessageSendKey=L,Q.latestMatchesSendCommand=m.matchesSendCommand,Q.latestMessageSendMode=F,Q.latestQueueEditMode=H,Q.latestCanSubmit=z,Q.latestPlaceholder=o,Q.latestOnSubmit=U,Q.latestShouldSkipSubmitShortcut=G,Q.latestOnAttachmentMentionRemoved=D,Q.latestOnPastedCloudAttachmentMentionRemoved=P,$.useEffect(()=>(Q.isImeCompositionActive=!1,()=>{Q.isImeCompositionActive=!1}),[Q]);const ce=$.useMemo(()=>new Map((v??[]).map(ye=>[ye.id,ye])),[v]);Q.latestAttachmentsById=ce,Q.latestCloudAttachmentClipboardSourceSessionId=x;const ae=$.useMemo(()=>({onMentionClick:_,onAttachmentMentionRemoved:D,attachmentsById:ce,resolveAttachmentImageLocation:w,resolveMentionViewModel:h,hoverPreviews:m.hoverPreviews,loadAttachmentPreview:E,loadPathImage:k,reportPreviewError:I,workspaceLinks:R}),[_,D,ce,w,h,m.hoverPreviews,E,k,I,R]),de=$.useMemo(()=>c5o(D5o),[]),ue=n4o({extensions:[Lxo.configure({heading:!1,blockquote:!1,codeBlock:!1,horizontalRule:!1,bulletList:!1,orderedList:!1,listItem:!1,bold:!1,italic:!1,strike:!1,code:!1,link:!1,hardBreak:!1}),Qxo,$xo,Mxo.configure({placeholder:()=>Q.latestPlaceholder}),de.configure({HTMLAttributes:{class:\"mention-pill\"},renderHTML({options:ye,node:xe}){const ke=h(xe.attrs),Se=String(xe.attrs.id??\"\"),De=ke.isPill?\"inline-flex h-5 items-center gap-1 border border-input bg-background rounded-sm px-1.5 text-xs font-medium leading-none align-text-bottom\":\"text-primary\",je=[ye.HTMLAttributes.class,De].filter(Boolean).join(\" \");return[\"span\",{...ye.HTMLAttributes,class:je,...Kxo({attachmentsById:Q.latestAttachmentsById,mentionId:Se,sourceSessionId:Q.latestCloudAttachmentClipboardSourceSessionId})},ke.displayText]},renderText({node:ye}){return h(ye.attrs).displayText},suggestions:d.map((ye,xe)=>({char:ye.char,pluginKey:new Pm(`suggestion-${ye.char}`),allowSpaces:ye.allowSpaces??!1,allowedPrefixes:[\" \"],items:Z.items(()=>Q.latestTriggers[xe].query,xe),command:()=>{},render:o5o((ke=>Se=>{te(De=>{const je=[...De];return je[ke]=typeof Se==\"function\"?Se(De[ke]):Se,je})})(xe),iqn,(ke,Se,De)=>Q.latestTriggers[xe].onSelect(ke,Se,De),ke=>Q.latestTriggers[xe].getSubmenuItems?.(ke),Z.register(xe))}))})],content:tqn(t,R?.parse),editable:!a,autofocus:c?\"end\":!1,coreExtensionOptions:{clipboardTextSerializer:{blockSeparator:`\n`}},editorProps:{attributes:{class:\"composer-tiptap-editor\",spellcheck:u?\"true\":\"false\",autocomplete:\"new-password\",autocorrect:\"off\",autocapitalize:\"off\",writingsuggestions:\"false\"},handleKeyDown:(ye,xe)=>{if(aqn(xe)||Q.isImeCompositionActive||oRt(xe))return!0;if(Q.latestVisibleSuggestionSource===\"external\")return uqn(xe)!==void 0;for(const De of ye.state.plugins){const je=De.getState(ye.state);if(je&&typeof je==\"object\"&&je.active){const Ne=De.props.handleKeyDown;if(Ne&&Ne.call(De,ye,xe))return Q.suggestionHandledKey=!0,!0}}const{shouldSend:ke,shouldInsertNewline:Se}=Q.latestQueueEditMode?lqn({event:xe,messageSendKey:Q.latestMessageSendKey,matchesCommand:Q.latestMatchesSendCommand}):cqn({event:xe,messageSendKey:Q.latestMessageSendKey,messageSendMode:Q.latestMessageSendMode,matchesCommand:Q.latestMatchesSendCommand});return ke?!0:Se||Q.latestQueueEditMode&&B5o(xe)?EIt(ye.state,ye.dispatch):!1},handleClick:(ye,xe,ke)=>(ke.target instanceof HTMLElement,!1),handlePaste:Gxo(R?.parse),handleDrop:()=>!m.dragAndDrop,handleDOMEvents:{contextmenu:(ye,xe)=>m.contextMenu?!1:(xe.preventDefault(),!0)}},onUpdate:({editor:ye,transaction:xe})=>{if(Q.isExternalUpdate||!xe.docChanged)return;const ke=nqn(ye.getJSON());e(ke)},onTransaction:({transaction:ye})=>{if(Q.isExternalUpdate||ye.getMeta(\"preventUpdate\")===!0||!ye.docChanged||!Q.latestOnAttachmentMentionRemoved&&!Q.latestOnPastedCloudAttachmentMentionRemoved)return;const xe=rRt(ye.before),ke=rRt(ye.doc);l5o({after:ye.doc,before:ye.before,onRemoved:Q.latestOnPastedCloudAttachmentMentionRemoved});for(const[Se,De]of xe)(ke.get(Se)??0)>=De||I5o(Se)||Q.latestOnAttachmentMentionRemoved?.(Se)},onFocus:()=>i(),onBlur:({event:ye})=>{Q.isImeCompositionActive=!1,n5o(ye)||Q.latestDismissAllSuggestions?.(),r()}});$.useEffect(()=>{ue&&g(ue)},[ue,g]),$.useEffect(()=>{const ye=d.map(xe=>xe.refreshKey);ye.forEach((xe,ke)=>{xe!==se.current[ke]&&Z.refresh(ke)}),se.current=ye},[d,Z]),$.useEffect(()=>{if(!ue)return;nqn(ue.getJSON())!==t&&queueMicrotask(()=>{if(!ue.isDestroyed){Q.isExternalUpdate=!0;try{ue.commands.setContent(tqn(t,R?.parse))}finally{Q.isExternalUpdate=!1}}})},[ue,t,Q,R]),$.useEffect(()=>{ue&&ue.setEditable(!a)},[ue,a]),$.useEffect(()=>{ue&&ue.view.dispatch(ue.state.tr)},[ue,o]);const pe=d.map((ye,xe)=>({state:J[xe],renderItem:ye.renderItem})),be=i5o({externalSuggestions:B,internalSuggestions:pe}),he=be?.source;Q.latestVisibleSuggestionSource=he,Q.latestDismissAllSuggestions=()=>{for(const ye of J)ye.hide();for(const ye of B)ye.state.hide()};const ge=$.useEffectEvent(()=>{Q.latestDismissAllSuggestions?.()});$.useEffect(()=>{ge()},[K]);const ve=$.useCallback(ye=>{if(aqn(ye)){ye.preventDefault(),ye.stopPropagation();return}if(Q.isImeCompositionActive||oRt(ye))return;if(Q.suggestionHandledKey){Q.suggestionHandledKey=!1,ye.preventDefault(),ye.stopPropagation();return}const xe=be?.entry.state,ke=uqn(ye);if(he===\"external\"&&xe){if(ke===\"ArrowUp\"&&xe.setSelectedIndex((xe.selectedIndex+xe.items.length-1)%xe.items.length),ke===\"ArrowDown\"&&xe.setSelectedIndex((xe.selectedIndex+1)%xe.items.length),ke===\"Enter\"||ke===\"Tab\"){const Se=xe.items[xe.selectedIndex];Se&&xe.command&&xe.command(Se)}if(ke===\"Escape\"&&xe.dismiss(),ke!==void 0){ye.preventDefault(),ye.stopPropagation();return}}if(he===\"internal\"){ke!==void 0&&(ye.preventDefault(),ye.stopPropagation());return}if(ke===\"ArrowUp\"&&!ye.shiftKey&&!ye.metaKey&&!ye.ctrlKey&&!ye.altKey&&m.keyboardShortcuts&&X!==void 0&&ue!==null&&$5o(ue)&&X()){ye.preventDefault(),ye.stopPropagation();return}if(U!==void 0){const{shouldSend:Se,sendModeOverride:De}=H?lqn({event:ye.nativeEvent,messageSendKey:L,matchesCommand:m.matchesSendCommand}):cqn({event:ye.nativeEvent,messageSendKey:L,messageSendMode:F,matchesCommand:m.matchesSendCommand});if(Se){ye.preventDefault(),!G?.(ye)&&z&&Promise.resolve(U({sendModeOverride:De})).fireAndForget();return}}n?.(ye)},[z,ue,L,F,H,X,n,U,G,be,he,Q,m.keyboardShortcuts,m.matchesSendCommand]);return p.jsxs(\"div\",{className:\"composer-tiptap\",\"data-testid\":\"composer-input\",onCompositionEnd:()=>{Q.isImeCompositionActive=!1},onCompositionStart:()=>{Q.isImeCompositionActive=!0},onKeyDown:ve,children:[p.jsx(kIi.Provider,{value:ae,children:p.jsx(PAi,{editor:ue})}),be&&p.jsx(t5o,{state:be.entry.state,renderItem:be.entry.renderItem,containerEl:O??null,hoverPreviews:m.hoverPreviews})]})}"
+      },
+      {
+        "name": "normal composer capabilities and send command adapter",
+        "utf8_bytes_half_open": [
+          8426745,
+          8428012
+        ],
+        "sha256": "abdfd680fecffe3004dc602aeda8692287f0f61b8c491ee9c0c48fdf5f5fe16d",
+        "compiled_javascript": "const V5o={parse:H5o,Component:U5o},W5o={newLine:\"chat.newLine\",submitMessage:\"chat.submitMessage\",submitOppositeFollowUp:\"chat.submitOppositeFollowUp\",queueEditSave:\"chat.queueEdit.save\",queueEditSaveAndSteer:\"chat.queueEdit.saveAndSteer\"},$Ii=({command:t,event:e})=>Qh(W5o[t],e),cHt={hoverPreviews:!0,contextMenu:!0,keyboardShortcuts:!0,dragAndDrop:!0,matchesSendCommand:$Ii},G5o=_v(({command:t,event:e})=>{switch(t){case\"submitMessage\":return Qh(\"workspace.startUnstartedWorkspace\",e);case\"newLine\":return e.key===\"Enter\"&&!e.metaKey&&!e.ctrlKey&&!e.altKey;default:return!1}}),q5o={...cHt,matchesSendCommand:G5o},K5o=new Map,Y5o=new Map;function zIi(t){const e=ne.c(6),{orgMembers:n,reviewLabelsById:i,skillDescriptions:r}=t,o=i??K5o,a=r??Y5o;let c;e[0]!==n?(c=new Map((n??[]).flatMap(Q5o)),e[0]=n,e[1]=c):c=e[1];const u=c;let d;return e[2]!==o||e[3]!==a||e[4]!==u?(d=HIi({reviewLabelsById:o,skillDescriptions:a,userAvatarsById:u}),e[2]=o,e[3]=a,e[4]=u,e[5]=d):d=e[5],d}function Q5o(t){return t.avatarUrl===void 0?[]:[[t.id,{alt:t.name??t.email,url:t.avatarUrl}]]}function X5o(t){return So.fetchQuery(BSi(t))}const UIi={workspaceLinks:V5o,interactionCapabilities:cHt,loadPathImage:X5o,reportPreviewError:t=>{Bt.error(\"Failed to load composer mention preview\",t)}};"
+      },
+      {
+        "name": "normal composer internal triggers h_",
+        "utf8_bytes_half_open": [
+          8679780,
+          8681319
+        ],
+        "sha256": "834b57460faa287e6b124ad177eb0ccfbdda41d8d4f368316558918d1ea66ef3",
+        "compiled_javascript": "h_=[{char:\"@\",query:MI,renderItem:cb,onSelect:(ln,$r,hr)=>{if(Xwt(hr)){const Ns={absolutePath:hr.absolutePath,host:hr.host,relativePath:hr.relativePath,title:hr.title,slug:hr.id.replace(/^plan:/,\"\")},Oa=dRt(Ns);L5o(ln,Oa)?ln.chain().focus().deleteRange($r).run():nce(ln,$r,{id:OIi({path:Oa}),label:XIi(Ns.title),char:\"@\"}),de();return}if(Rwo(hr)){ln.chain().focus().deleteRange($r).run(),LI(hr).catch(Ns=>{Bt.error(\"Failed to attach terminal output:\",Ns),er.error(\"Failed to attach terminal output\",r)});return}if(JU(hr)&&hr.type===\"terminal\"){ln.chain().focus().deleteRange($r).run(),G9().catch(Ns=>{Bt.error(\"Failed to attach terminal output:\",Ns),er.error(\"Failed to attach terminal output\",r)});return}if(JU(hr)&&hr.type===\"add-directory\"){ln.chain().focus().deleteRange($r).run(),nr.openDialog(ICt);return}nce(ln,$r,{id:hr.id,label:hr.label??hr.id,char:\"@\",isDirectory:JU(hr)&&hr.type===\"file\"?hr.isDirectory:void 0})},getSubmenuItems:ln=>cRt(ln)?ln.submenuItems:void 0},{char:\"#\",query:DS,renderItem:$6,onSelect:(ln,$r,hr)=>{mqn(hr)&&(K9(hr).catch(Ns=>{Bt.error(\"Failed to write PR context file\",Ns),er.error(\"Failed to save PR context\",r)}),nce(ln,$r,{id:hr.id,label:hr.display,char:\"#\"}))}},{char:\"/\",query:z6,renderItem:(ln,$r,hr)=>uRt(ln)?FNi({item:ln,focused:hr}):null,onSelect:(ln,$r,hr)=>{const Ns=String(hr.id);if(MNi(Ns)){BNi(ln,$r,hr);return}const Oa=Yl(Ns);if(Oa&&hmo.has(Oa.effect)){ln.chain().focus().deleteRange($r).run(),ua(Oa);return}const Vf=hr.label??Ns;ln.chain().focus().insertContentAt($r,`/${Vf} `).run()}}],PS="
+      },
+      {
+        "name": "normal composer lHt call",
+        "utf8_bytes_half_open": [
+          8687374,
+          8688266
+        ],
+        "sha256": "ac953696dc178ec2bd4e5936867be6c3feb3f4e4d0d698c51b99bf5511cc0273",
+        "compiled_javascript": "p.jsx(lHt,{...UIi,resolveMentionViewModel:$c,loadAttachmentPreview:Bl,value:g,onChange:X,onFocus:()=>{U(!0),lb(),UX.setFocusedInputId(B6)},onBlur:()=>{U(!1),UX.setFocusedInputId(null)},placeholder:S5(),disabled:c===\"all\",autoFocus:O&&!vf,queueEditMode:w,triggers:h_,onEditorReady:E5,onMentionClick:wv,visibleAttachments:x,cloudAttachmentClipboardSourceSessionId:Su(a)?e:void 0,resolveAttachmentImageLocation:Sv,containerEl:te,externalSuggestions:xe?[Ra]:[],messageSendKey:he,messageSendMode:ve,onSubmit:x2,canSubmit:cr,shouldSkipSubmitShortcut:ln=>!!(y2&&Qh(\"chat.planResponse.submit\",ln.nativeEvent)),onKeyDown:ln=>{w&&R!==void 0&&Qh(\"chat.queueEdit.cancel\",ln.nativeEvent)&&(ln.preventDefault(),ln.stopPropagation(),R())},suggestionContextKey:id,onArrowUpAtTop:()=>w?!1:Z8i.focusLast({localWorkspaceId:r,sessionId:e}),onAttachmentMentionRemoved:Tc,onPastedCloudAttachmentMentionRemoved:uh})"
+      }
+    ]
+  },
+  "source_contract": [
+    "xd is an identity wrapper. uqn selects ArrowUp, ArrowDown, Enter, Tab and Escape solely by raw key without modifier filtering.",
+    "Complete o5o onKeyDown selects and moves internal suggestions solely by event.key. Its nonempty item check precedes the keyboard branches.",
+    "lHt installs internal trigger plugins and calls their handlers before send/newline matching. A handled plugin sets suggestionHandledKey.",
+    "The outer lHt handler checks reserved Ctrl+Space and composition first, then prevents default and propagation for suggestionHandledKey. Its internal-source fallback consumes recognized suggestion keys before send matching.",
+    "The normal ITo call passes @ and / internal triggers, capabilities from UIi/cHt, and the raw shared editor callback. No key normalization or native event production is inferred.",
+    "Current ComposerEditor forwards nonreserved, noncomposing raw events to current.current.onKeyDown. Current Composer active-menu branches require plain modifiers before navigation and acceptance, so modified Enter can instead match newline or submit."
+  ],
+  "baseline_source_pins": [
+    {
+      "path": "src/features/chat/Composer.tsx",
+      "bytes": 28735,
+      "sha256": "ba13bc0523ef60d657b5cd864030b7a958dbdc9f60c3d866067cf493dc0e01f0",
+      "git_blob": "3db2c114e023fbd23f21afe63cddf7850900da54"
+    },
+    {
+      "path": "src/features/chat/ComposerEditor.tsx",
+      "bytes": 9694,
+      "sha256": "6b1a0b88d90a006eb82d1c098f83097873001aea462d5a521d96e0f90b6ec36c",
+      "git_blob": "16f86b43aeef26c5d1b0ecbb5fe686b25b17eaf9"
+    },
+    {
+      "path": "src/features/chat/composerDocument.ts",
+      "bytes": 2502,
+      "sha256": "9228c3b05e08c41faffef50363e928d80636eda949003dbac34d197971d1a676",
+      "git_blob": "e5a796c3f6f5d9439ff3270ac0d5953e8f9e740e"
+    },
+    {
+      "path": "src/features/chat/composerSchema.ts",
+      "bytes": 2825,
+      "sha256": "f64206351ac2253c2333cb67eaa19e11aee7775c64f885c1c72e374dd5f6b338",
+      "git_blob": "b6e28e2c68f068073339cd1233dddefc2d6cf215"
+    },
+    {
+      "path": "src/features/chat/composerSlashRange.ts",
+      "bytes": 629,
+      "sha256": "7976d311ae93a640775995eaa184da9a754164ef483ddff9dee6e8e46cfb2902",
+      "git_blob": "fd2af370088a6e56a46e4058f7f98c3ff6499d55"
+    },
+    {
+      "path": "src/features/chat/slashCommands.ts",
+      "bytes": 11089,
+      "sha256": "4f6c2586872a1275a8b983cd29b08ea4b54562e9432e90c40000350341887a50",
+      "git_blob": "0df47ae454909460dcb96b121f2a82a6355d31f8"
+    },
+    {
+      "path": "src/features/chat/fileMentions.ts",
+      "bytes": 2543,
+      "sha256": "82bcee9b4116b894fb5eb6ae2841c5b60f1f703db2907cb7347ae31bd5e79ca5",
+      "git_blob": "8a30283673dcb2eaf0b2fac96c403f77e1f2cd5a"
+    },
+    {
+      "path": "src/features/chat/queue.ts",
+      "bytes": 12086,
+      "sha256": "884de4b3cce37d27ce77df3af49bcb1bf2a3b5d79fd8e06bf1ddbd158842bab3",
+      "git_blob": "6da92450dda41fe0402d4626568b8930795f97e2"
+    },
+    {
+      "path": "src/features/chat/queueKeys.ts",
+      "bytes": 2947,
+      "sha256": "5e0ddfb22b9538056868dce47113fce9445d781b5fa23fe49b96cc2b1492c193",
+      "git_blob": "f84789555b6e611c11e7fc7fda65122f76b76e41"
+    },
+    {
+      "path": "src/features/chat/userContent.ts",
+      "bytes": 5105,
+      "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c",
+      "git_blob": "409f8836c57145098270139a1e960b8fdf7f365d"
+    },
+    {
+      "path": "src/features/chat/types.ts",
+      "bytes": 3429,
+      "sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+      "git_blob": "30b5aa083c150875b248e87599f00683a54a03f4"
+    },
+    {
+      "path": "src/features/chat/composerLongPaste.ts",
+      "bytes": 2313,
+      "sha256": "452f5aa86c622fabbf0ce888bebc5518f919886a83b57cd97bf094d3c18f1099",
+      "git_blob": "7f1b2d2facbe90f73b29e3eca0c83530e518d997"
+    },
+    {
+      "path": "src/keybindings/shortcut.ts",
+      "bytes": 5791,
+      "sha256": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
+      "git_blob": "d148f7a3f6cdd9ff466579e4216e842770e30bc8"
+    },
+    {
+      "path": "src/keybindings/overrides.ts",
+      "bytes": 8207,
+      "sha256": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+      "git_blob": "17e02485ccede8959bae3b0456023ab114d9b909"
+    },
+    {
+      "path": "src/keybindings/registry.ts",
+      "bytes": 28780,
+      "sha256": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9",
+      "git_blob": "88d52070749de6572b43fb79575894625c104a76"
+    },
+    {
+      "path": "src/keybindings/types.ts",
+      "bytes": 1758,
+      "sha256": "cdfcd723ed324b7f32698d36496fbc6bf6514c78f61e4d562c81b302207c4ecb",
+      "git_blob": "3f0bd6fa3654d56386fcffa77f8508b2b3f8a6a1"
+    },
+    {
+      "path": "src/settings/useBoolPref.ts",
+      "bytes": 1092,
+      "sha256": "2ddcb5c12133e8cfe0547960595082bdfd288cb352a28ec8c6ba8ee2bfa6a31a",
+      "git_blob": "ee785d57db1ecc77e10c72bd06e92229e0505400"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1901,
+      "sha256": "01715084ad9d731d45a551a1f2c8092bde74b44ecc555a48fca9e53c2285625b",
+      "git_blob": "5fe4780b22a7417ae510a4f09f40d088683aece2"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 221776,
+      "sha256": "8fcbe02ec5febe97b0900d4a612a8bccf148d3ca40b868c77361e38e06e9dbf1",
+      "git_blob": "9fe1d2f78593100fba2a2ce07788c56bdb450647"
+    }
+  ],
+  "fixture": {
+    "path": "src/features/chat/composerSuggestionKeys.test.ts",
+    "bytes": 12978,
+    "sha256": "ac3f9b763e760005341e2b278763d62bf777b599f517e99ce58772cdfb6ddfa2",
+    "cases": 36,
+    "predicted_baseline_assertion_failures": 24,
+    "predicted_baseline_positive_controls": 12,
+    "predictions_not_results": true,
+    "boundary": "Complete production Composer mounted through React test-renderer, actual command matching, slash range, mention selector and prompt/queue modules. Editor view and menu rendering are explicit boundaries; fixture observes rendered suggestion props and editor mutations. Synthetic Node Event key/code/modifier fields drive the installed production callback.",
+    "mocks": [
+      "editor handle and view",
+      "suggestion rendering probes",
+      "fuzzy file backend returning two fixture files",
+      "preferences false",
+      "keybinding registration and empty overrides",
+      "tooltip/presence/icons/long-paste surfaces"
+    ],
+    "coverage": [
+      "all four individual modifiers with ArrowDown/Up for both menus",
+      "all four individual modifiers with Enter and Tab for both menus",
+      "positive unmodified navigation and acceptance",
+      "modified Escape",
+      "unrelated F2",
+      "synthetic composing flag",
+      "menu-closed newline and submit"
+    ],
+    "limits": [
+      "No production ComposerEditor/Tiptap dispatcher or ancestor listener is executed.",
+      "No actual DOM, browser/native app, visual parity, OS modifier mapping, real IME, provider, clipboard, file system picker or command effect executes.",
+      "Composition controls exercise only the current explicit flag guard, not which-only 229 or an IME correction."
+    ],
+    "baseline_command": "node --test --test-concurrency=1 src/features/chat/composerSuggestionKeys.test.ts"
+  },
+  "verification": {
+    "passed": [
+      "whole retained renderer and exact span byte hashes",
+      "nineteen source input pins against current default-branch head",
+      "git diff --check"
+    ],
+    "not_run": [
+      "baseline test",
+      "candidate test",
+      "typecheck",
+      "build",
+      "browser/native/visual/IME/provider"
+    ],
+    "product_patch": "Forbidden until qualified baseline RED; no product edit authored or applied."
+  },
+  "ownership": {
+    "hunk": "Composer.tsx active mention/slash ArrowUp/Down Enter/Tab capture and propagation only",
+    "excluded": [
+      "Settings49 context indicator and telemetry",
+      "Editor Ctrl+Space",
+      "#1019 assertions",
+      "queue focus",
+      "global keybinding presets",
+      "provider credentials/#847",
+      "typed rows/029",
+      "terminal/1f"
+    ]
+  }
+}

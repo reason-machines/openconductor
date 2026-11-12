@@ -506,3 +506,52 @@ fn a_stop_before_the_prompt_is_sent_cancels_it() {
     h.runner.expect_prompt("c1");
     assert_eq!(h.runner.prompt("c1", "hello"), TurnEnd::Completed);
 }
+
+#[test]
+fn prompt_handoff_precedes_a_later_cancelled_claude_turn() {
+    let h = harness();
+    h.runner.open_chat("handoff", &cwd(), None);
+    let runner = h.runner.clone();
+    let (accepted, handoff) = std::sync::mpsc::channel();
+    let turn = thread::spawn(move || {
+        runner.prompt_with_handoff(
+            "handoff",
+            "please sleep",
+            &[],
+            &ChatOptions::default(),
+            Some(Box::new(move || {
+                accepted.send(()).unwrap();
+            })),
+        )
+    });
+    handoff.recv_timeout(Duration::from_secs(5)).unwrap();
+    assert!(
+        !turn.is_finished(),
+        "the handoff does not wait for completion"
+    );
+    h.runner.cancel("handoff");
+    assert_eq!(turn.join().unwrap(), TurnEnd::Cancelled);
+    assert!(handoff.try_recv().is_err());
+}
+
+#[test]
+fn prompt_handoff_is_not_emitted_for_a_stopped_or_unopened_claude_chat() {
+    let h = harness();
+    h.runner.open_chat("stopped", &cwd(), None);
+    h.runner.expect_prompt("stopped");
+    h.runner.cancel("stopped");
+    for chat in ["stopped", "unopened"] {
+        let (accepted, handoff) = std::sync::mpsc::channel();
+        let end = h.runner.prompt_with_handoff(
+            chat,
+            "not sent",
+            &[],
+            &ChatOptions::default(),
+            Some(Box::new(move || {
+                accepted.send(()).unwrap();
+            })),
+        );
+        assert!(matches!(end, TurnEnd::Cancelled | TurnEnd::Failed(_)));
+        assert!(handoff.try_recv().is_err());
+    }
+}

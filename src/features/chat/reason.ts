@@ -118,6 +118,7 @@ function message(state: ReasonChatState, turnId: string, id: string, role: ChatM
 export interface PromptAttachment {
   name: string;
   text: string;
+  commentId?: string;
 }
 
 /** Line the transcript shows for an attachment; the agent gets the file itself. */

@@ -110,6 +110,7 @@ async function fixture(initial: RunState = "running", tab: Props["tab"] = "run",
       if (name === "react" || name === "react/jsx-runtime") return deps(name);
       if (name === "react-dom") return { createPortal: (children: ReactNode) => children };
       if (name === "@xterm/xterm") return { Terminal: Screen };
+      if (name === "@tauri-apps/plugin-dialog") return { confirm: () => { throw new Error("No link warning in outputCursor regression"); } };
       if (name === "@xterm/addon-fit") return { FitAddon: class { fit() {} } };
       if (name === "@xterm/addon-unicode11") return { Unicode11Addon: class {} };
       if (name === "@tauri-apps/api/core") return { invoke };

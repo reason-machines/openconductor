@@ -1,5 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useUpdates } from "./features/updates/useUpdates";
 import { useAppStore } from "./state/store";
 import { useCustomSectionCollapse } from "./state/useCustomSectionCollapse";
 import { ATTACH_FAILED, destroyWorkspaceTerminals, onAttachFailure } from "./features/terminal/session";
@@ -162,6 +163,7 @@ export default function App() {
   const [submitPromptOpen, setSubmitPromptOpen] = useState(false);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const { toasts, show, dismiss } = useToasts();
+  useUpdates({ repos: state.repos, startup, notify: show });
   // A setup script the create flow started reports its failure here, after the dialog closed.
   useSetupWatch(useCallback((message: string) => show("error", message), [show]));
   // A terminal screen that could not attach (Conductor's "Failed to attach terminal" toast).

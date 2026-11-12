@@ -1,0 +1,47 @@
+{
+  "status": "SOURCE_FIX_PENDING_EXACT_HEAD_CI_AND_EXISTING_SERIALIZED_REPLAY",
+  "owner": "Conductor Rebuild",
+  "ci_head": "2ba180f1553bbd0ac29be89bd219f73ac954a68a",
+  "workflow_run_id": 43251484249,
+  "job_id": 131298149761,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43251484249/job/131298149761",
+  "current_main_checked": "2dfe64b7564f48281d79da5e203ab30c6e12a51b",
+  "typecheck": "PASS_HOSTED",
+  "frontend_test_counts": {
+    "tests": 3828,
+    "pass": 3822,
+    "fail": 6
+  },
+  "failure_classification": "Six strict VM dependency bootstrap failures before behavioral assertions, not business RED",
+  "error": "Unexpected dependency: ./commentStore.ts",
+  "failed_cases": [
+    "2026-11-12T15:49:15.5940703Z not ok 1842 - the actual local root Delete acts without confirmation",
+    "2026-11-12T15:49:15.6007032Z not ok 1843 - the actual local reply Delete acts without confirmation",
+    "2026-11-12T15:49:15.6043008Z not ok 1844 - the actual remote pending card preserves Delete eligibility and dispatch",
+    "2026-11-12T15:49:15.6063693Z not ok 1845 - the actual remote sent card preserves Delete eligibility and dispatch",
+    "2026-11-12T15:49:15.6083937Z not ok 1846 - the actual agent-local pending card preserves Delete eligibility and dispatch",
+    "2026-11-12T15:49:15.6104280Z not ok 1847 - the actual agent-local sent card preserves Delete eligibility and dispatch"
+  ],
+  "source_path": "src/features/diff/commentDelete.test.ts",
+  "original_sha256": "570f0a74809a14fd2ac00d4d1d4755fbf25816d51962b658ca4b070e321f0cee",
+  "corrected_sha256": "aeb9611a7fa940b277b52ad3fe31915114ba875fa04ef2c5316da32a8f70a927",
+  "changes": [
+    "Import actual subscribeReviewComments",
+    "Bind actual subscribeReviewComments at strict VM boundary"
+  ],
+  "all_other_bytes_unchanged": true,
+  "assertions_changed": false,
+  "product_source_changed": false,
+  "guards_removed": false,
+  "original26_and_corrected26_inputs_changed": false,
+  "local_replay": "NOT_RUN_NO_RUNTIME_GRANT",
+  "log": {
+    "provenance": "Complete redacted text paginated through pr_checks, not original GitHub byte stream",
+    "pages": 17,
+    "lines_including_terminal_empty_line": 23823,
+    "reconstructed_page_separator": "\n",
+    "decoded_bytes": 1619677,
+    "decoded_sha256": "96efb63b32abed7925d7fe3983ad7ae8088dc30ba0c0911f4d231a7b216116f0",
+    "path": "results/hosted-delete-loader-failure.full-job.log.gz"
+  }
+}

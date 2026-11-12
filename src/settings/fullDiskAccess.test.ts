@@ -45,7 +45,7 @@ test("Full Disk Access verifier protects the notification boundary after denial 
   });
   assert.ifError(result.error);
   assert.equal(result.status, 0, result.stdout + result.stderr);
-  assert.match(result.stderr, /Ran 6 tests\b/);
+  assert.match(result.stderr, /Ran 9 tests\b/);
   assert.match(result.stderr, /\bOK\b/);
 });
 
