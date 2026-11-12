@@ -23,7 +23,9 @@ Fresh main `fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1` has no Meta predicate in `
 
 The new nine-case fixture mounts the actual Home component inside the actual KeybindingsProvider. It reads selected rendered options, cancellation, and dispatched selection actions. Its six gap cases cover both endpoints, Meta precedence, filtered results, an empty list, and no search matches. Three controls cover composition and consumed events, ordinary and non-Meta arrows, and a single row.
 
-No product handler is changed in the regression-only baseline. Expected baseline output is six intended assertion failures and three passing controls. That result has not yet been observed. Existing IME, endpoint, number-hint, two seven-case Archive fixtures, and the paired Header case file are frozen alongside the new fixture.
+The regression-only published head `26970d79d8bdf1727f294fb2d6e14ab23d5a9b87` changed no product handler. Automatic CI observed six intended assertion failures and three passing controls in both frontend jobs. All six failures are `ERR_ASSERTION`: four select the adjacent row rather than the endpoint, and two fail to cancel native endpoint movement on an empty result. See [baseline.json](baseline.json), [original unit output](baseline-unit.log.gz), and [original build output](baseline-build.log.gz).
+
+The focused correction adds Meta+ArrowUp and Meta+ArrowDown to the existing endpoint branch. It preserves the composition guard, adjacent arrows, row production, and separate Enter activation. The identical six inputs were checked again against fresh main `bce99cb5023d22bdc2fa6eac203b74cb915b6208` before the patch. Existing IME, endpoint, number-hint, two seven-case Archive fixtures, and the paired Header case file are frozen alongside the new fixture.
 
 Only the local Meta endpoint predicate is in scope. Global dispatch, shortcut resolution, row production, filters, Alt group navigation, and activation are excluded. The canonical ledger confirmed sole ownership and lifted the earlier sequencing pause after #1133 merged.
 
@@ -37,6 +39,6 @@ sha256sum -c evidence/home-meta-arrow/fixture.sha256
 git diff --check
 ```
 
-The verifier checked the full retained renderer, all seven exact REA fragments, six fresh-main inputs, and seven frozen fixture files. These are source and integrity checks only.
+The verifier checked the full retained renderer, all seven exact REA fragments, six fresh-main inputs, and seven frozen fixture files. The candidate check also passed with `--phase candidate`; it accepts only the two endpoint-line edits relative to the original baseline. These are source and integrity checks only.
 
-Automatic frontend jobs run the new fixture with `node --test "src/**/*.test.ts"`. Their baseline result is pending. No local Node, Rust, browser, native app, manual workflow dispatch, or rerun was started. No screenshot is available because no visible runtime was admitted. Installed-package acceptance remains with the sole native executor and is unverified.
+Automatic frontend jobs run the new fixture with `node --test "src/**/*.test.ts"`. Baseline [unit job](https://github.com/reason-machines/openconductor/actions/runs/43166437567/job/131009296562) and [typecheck/build job](https://github.com/reason-machines/openconductor/actions/runs/43166437567/job/131009296208) both reproduced the intended six failures and three controls. Typecheck itself passed. Candidate behavioral verification remains pending. No local Node, Rust, browser, native app, manual workflow dispatch, or rerun was started. No screenshot is available because no visible runtime was admitted. Installed-package acceptance remains with the sole native executor and is unverified.
