@@ -57,6 +57,8 @@ interface Props {
   /** Opens the strip on its Run tab (⌘R does before it starts or stops). */
   onShowRun: () => void;
   onOpenPreview?: (workspaceId: string, url: string) => boolean;
+  sessionId?: string;
+  onAddToChat?: (text: string) => boolean;
 }
 
 /** Conductor's Run tab text with no run script (copy catalog). */
@@ -93,7 +95,7 @@ const spotSettings = keyedCache<SpotlightTesting>(64);
  * With the repository's spotlight_testing setting on, the Run task picker also
  * offers Spotlight, which syncs this workspace into the repository root.
  */
-export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetupState, onAddRunScript, onAskAgent, onShowRun, onOpenPreview }: Props) {
+export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetupState, onAddRunScript, onAskAgent, onShowRun, onOpenPreview, sessionId, onAddToChat }: Props) {
   const ref = useMemo(() => workspaceRef(repo, workspace), [repo, workspace]);
   const wsId = workspace.id;
   const displayedWorkspaceId = useRef(wsId);
@@ -495,7 +497,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     return showSpotlight ? (
       <ScriptOutput key={`spotlight:${wsId}`} output={spotLogMine && spotView.log.length > 0 ? spotView.log.join("\n") : spotButton.hint ?? SPOTLIGHT_EMPTY_TEXT} />
     ) : (
-      <ScriptOutput key={`run:${wsId}:${shown}`} output={runOut} onInput={inputRunId ? writeInput : undefined} onResize={inputRunId ? resizeRun : undefined} />
+      <ScriptOutput key={`run:${wsId}:${shown}`} output={runOut} showCursor sessionId={sessionId} onAddToChat={onAddToChat} onInput={inputRunId ? writeInput : undefined} onResize={inputRunId ? resizeRun : undefined} />
     );
   }
 

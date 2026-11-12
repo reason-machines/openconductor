@@ -255,7 +255,8 @@ export function FileDiffView(props: Props) {
   const { file, ignoreWhitespace, viewed, onToggleViewed, refreshStatus, onDiscard, tools, options, worktree, onShowWhitespace, edit, loadText, notify } = props;
   const copy = copySource(file, { draft: edit?.current, loadText });
   let body: ReactNode;
-  if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
+  if (file.hide_reason === "file_too_large") body = <div className="oc-file-note">File too large to display</div>;
+  else if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
   else if (file.hunks.length === 0)
     body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No content changes in this file.</div>;
   else
@@ -271,7 +272,7 @@ export function FileDiffView(props: Props) {
           then revert, copy, the layout group, Viewed and the View options menu (its Pierre order). */}
       <header className="oc-file-header">
         <div className="oc-file-lead">
-          <FilePathChip path={file.path} oldPath={file.old_path} worktree={worktree} notify={notify} />
+          <FilePathChip path={file.path} oldPath={file.old_path} worktree={worktree} deleted={file.status === "deleted"} notify={notify} />
           {edit?.dirty && (
             <Tooltip content="Unsaved changes">
               <span className="oc-unsaved" role="img" aria-label="Unsaved changes" />

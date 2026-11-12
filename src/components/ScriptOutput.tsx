@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { Unicode11Addon } from "@xterm/addon-unicode11";
@@ -12,11 +12,12 @@ import { PRIORITY } from "../keybindings/dispatcher";
 import "../theme/scriptTerminal.css";
 import "./scriptOutput.css";
 
-export function ScriptOutput({ output, onInput, onResize }: { output: string; onInput?: (data: string) => Promise<void>; onResize?: (cols: number, rows: number) => Promise<void> }) {
+export function ScriptOutput({ output, onInput, onResize, showCursor = false, sessionId, onAddToChat }: { output: string; onInput?: (data: string) => Promise<void>; onResize?: (cols: number, rows: number) => Promise<void>; showCursor?: boolean; sessionId?: string; onAddToChat?: (text: string) => boolean }) {
   const container = useRef<HTMLDivElement>(null);
   const host = useRef<HTMLDivElement>(null);
   const terminal = useRef<Terminal | null>(null);
   const written = useRef("");
+  const [selectedText, setSelectedText] = useState("");
   const resizeCallback = useRef(onResize);
   resizeCallback.current = onResize;
   const fitTerminal = useRef<(() => void) | null>(null);
@@ -36,7 +37,7 @@ export function ScriptOutput({ output, onInput, onResize }: { output: string; on
     const term = new Terminal({
       allowProposedApi: true,
       disableStdin: true,
-      cursorBlink: false,
+      cursorBlink: showCursor,
       convertEol: true,
       fontFamily: font.family,
       fontSize: font.size,
@@ -62,7 +63,7 @@ export function ScriptOutput({ output, onInput, onResize }: { output: string; on
       const css = getComputedStyle(element);
       const color = (name: string) => css.getPropertyValue(name).trim();
       term.options.theme = {
-        background: color("--bg"), foreground: color("--text"), cursor: color("--terminal-transparent"),
+        background: color("--bg"), foreground: color("--text"), cursor: color(showCursor ? "--text" : "--terminal-transparent"), cursorAccent: color("--bg"),
         selectionBackground: color("--accent"), selectionForeground: color("--accent-text"),
         black: color("--terminal-black"), red: color("--terminal-red"), green: color("--terminal-green"),
         yellow: color("--terminal-yellow"), blue: color("--terminal-blue"), magenta: color("--terminal-magenta"),
@@ -112,6 +113,13 @@ export function ScriptOutput({ output, onInput, onResize }: { output: string; on
 
   useEffect(() => {
     const term = terminal.current;
+    if (!term || !onAddToChat) return;
+    const selection = term.onSelectionChange(() => setSelectedText(term.getSelection()));
+    return () => selection.dispose();
+  }, [onAddToChat]);
+
+  useEffect(() => {
+    const term = terminal.current;
     if (!term) return;
     term.options.disableStdin = !onInput;
     if (!onInput) return;
@@ -133,9 +141,22 @@ export function ScriptOutput({ output, onInput, onResize }: { output: string; on
     if (update.reset || update.data) term.write(`${update.reset ? "\x1bc" : ""}${update.data}`);
   }, [output]);
 
+  const selection = selectedText
+    .replace(/(?:\u001b\[|\u009b)[0-?]*[ -/]*[@-~]|\u001b\][^\u0007\u001b]*(?:\u0007|\u001b\\)/gu, "")
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/gu, "").trim();
+
   return (
     <div className="script-output" role="region" aria-label="Script output" data-terminal ref={container} onClick={() => terminal.current?.focus()}>
       <FindBar find={find} />
+      {selection && sessionId && onAddToChat && (
+        <div style={{ position: "absolute", inset: "0 0 auto", zIndex: 10, display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", background: "var(--panel)", fontSize: 12 }}>
+          <span title={selection} style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{selection.replace(/\s+/g, " ")}</span>
+          <button type="button" className="btn btn-small" onClick={(event) => {
+            event.stopPropagation();
+            if (onAddToChat(selection)) setSelectedText("");
+          }}>Add to chat</button>
+        </div>
+      )}
       <div className="script-output-mount" ref={host} />
     </div>
   );
