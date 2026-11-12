@@ -1,18 +1,18 @@
 # Fail-closed correction checkpoint
 
-Conductor Rebuild retains PR #1188 and the existing SAME49/49-06App4 continuation `27994a6c-ba09-46a0-8c8c-034cea1760f7`. This is source preparation, not runtime admission or passing behavior evidence.
+Conductor Rebuild retains PR #1188 and the existing SAME49/49-06App4 continuation `27994a6c-ba09-46a0-8c8c-034cea1760f7`. The admitted selector-qualified baseline reproduced all 13 intended predicate failures with 14 passing controls and no unrelated error. Applying only the sealed two-expression correction made the identical 27-case suite pass. [Exact command, raw TAP, hashes and release](README.md#latest-safety-continuation-passed-on-cloud352). Every enabled exact-head workflow must still pass before merge. Native and package acceptance remain unverified.
 
-## Latest execution result
+## Historical mixed baseline before selector qualification
 
-The existing ACC continuation ran at local `0467c69c` / published `d1e6606b` on 2026-11-12. Corrected Owner10 passed all 10 cases. The unchanged safety baseline reproduced 13 intended predicate failures and passed 13 controls, but case 23 had an independent incomplete-selector-mock TypeError. The runtime was stopped and released without applying the patch or retrying. [Actual commands, raw TAP, exact source delta and proposed one-line loader correction](README.md#bounded-continuation-owner10-passed-safety-baseline-mixed) supersede the earlier NOT_RUN status below; the original source trace and failure evidence remain historical. The derived selector-loader fixture is NOT_RUN and awaits the same existing continuation, not a new row.
+The existing ACC continuation ran at local `0467c69c` / published `d1e6606b` on 2026-11-12. Corrected Owner10 passed all 10 cases. The unchanged safety baseline reproduced 13 intended predicate failures and passed 13 controls, but case 23 had an independent incomplete-selector-mock TypeError. The runtime was stopped and released without applying the patch or retrying. [Actual commands, raw TAP, exact source delta and proposed one-line loader correction](README.md#bounded-continuation-owner10-passed-safety-baseline-mixed) supersede the earlier NOT_RUN status below; the original source trace and failure evidence remain historical. That derived fixture subsequently ran under grant `37fa2b01`, with the clean baseline and passing candidate recorded above. No additional queue row or executor was created.
 
 ## Focused candidate
 
 `fail-closed-candidate.patch` changes only `isIdle` in the existing coordinator. It admits the known quiescent session states `idle` and `error` instead of excluding just three busy values. All three `needs_*` statuses, `waiting`, active work and unknown values therefore block each existing checkpoint. Workspace readiness similarly admits only known inactive states. `unknown` readiness and running setup remain blocked. No refresh, install, drain, restart, persistence-owner or UI sequencing changes are proposed.
 
-The patch remains unapplied until the frozen safety regression observes the fault. The production coordinator and all frozen fixtures remain unchanged. A negative result is only behavioral RED when setup succeeds and assertions exercise the production predicate.
+The patch was applied only after the selector-qualified baseline observed the fault with no loader error. The production delta matches the two expressions in retained patch `09b3e7cb`; every frozen assertion and input remains unchanged. The identical candidate passed all 27 cases.
 
-## Current source and reference evidence
+## Historical source and reference qualification
 
 Source review on 2026-11-12 checked default-branch commit `2ea1c47f776a5cfa50478992609304a1dbcf8bfe`, published candidate `659e06a809cd6a1b11e47d4302fd4d8852a7872f`, and local checkpoint `adfcbc4f3b5b3a05dccb9b7ee7a42110fca9472f`. Fetching the candidate and comparing its `src` tree with the local checkpoint found no differences. This review did not execute product code or tests.
 

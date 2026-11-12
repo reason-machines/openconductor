@@ -1,8 +1,23 @@
 # Restart-when-idle execution checkpoint
 
-Conductor Rebuild owns SAME49/49-06App4 on the assigned branch. This is an incomplete implementation checkpoint, not a ready release or native acceptance claim.
+Conductor Rebuild owns SAME49/49-06App4 on the assigned branch. The active-wait predicate correction passed the admitted safety suite. This is not a release or native acceptance claim.
 
-## Executed on Cloud352
+## Latest safety continuation passed on Cloud352
+
+ACC grant `37fa2b01-86ed-4425-992e-911f77edd298` admitted the existing `27994a6c` continuation. At local head `7838d77520468cabac3ded127e62e34ed797f966`, the selector-qualified baseline ran once, followed by only the sealed two-expression predicate correction and the identical candidate command once. Execution ran from 16:50:48Z to 16:51:24Z on 2026-11-12.
+
+```bash
+RESTART_IDLE_SOURCE_ROOT=. NODE_OPTIONS=--max-old-space-size=768 nice -n19 timeout --kill-after=5s 120s node --test --test-concurrency=1 --test-reporter=tap evidence/settings/restart-when-idle/safetyIntegration.selector-loader.test.cjs
+```
+
+- **Baseline failed as intended**, exit 1. All 27 cases executed, with 13 predicate assertion failures and 14 passing controls. There were no unrelated errors. [Raw baseline TAP](safety-qualified/baseline.tap).
+- **Identical candidate passed**, exit 0. All 27 cases passed, including active permission, plan, and question waits at each checkpoint, unknown-value controls, real persistence owners, and selector-backed store dispatch. [Raw candidate TAP](safety-qualified/candidate.tap).
+- **Frozen inputs preserved.** The derivative SHA-256 remains `b81486849e6da03bfd7cf4441d1f3177ca5fa49ea581cd9763fce0e9048f961d`; the original remains `ce8740744706acc9d70e1fb4f1bc6702561cc45f30b8537f611e75f871031bbb`. The applied patch matches retained `09b3e7cbf0f711ba09982e92f30df37bc13a3929d7b3345a1a1661b232aaa632`. [Before](safety-qualified/source-before.txt) and [after](safety-qualified/source-after.txt) snapshots retain the source and lock hashes.
+- **Stopped and released.** All own jobs are terminal and the runtime slot was explicitly released. [Release receipt](safety-qualified/release.json). No App4, coordinator32, or Owner10 replay, installation, typecheck, build, browser, native, provider, or package work ran.
+
+The correction now admits only known quiescent session and workspace states. It fixes the reproduced pending-response restart defect. Exact-head hosted CI must pass before merge. Native updater behavior and package inclusion remain unverified with their existing owners.
+
+## Initial execution on Cloud352
 
 ACC grant `157064c8-83c7-4c5e-9593-76978bc515c4` admitted one sequential foreground runner. Every phase used a 768 MiB Node heap, test concurrency 1 and a 120-second timeout. No dependencies were installed.
 
@@ -41,7 +56,7 @@ Owner10 fixture SHA-256 `318917582d80b1e3989af0d5b0ab1b57024dae1e3631138e011ec60
 
 ## Remaining requirements
 
-Source review confirms that the PR candidate admits the active `needs_plan_response`, `needs_user_permission`, and `needs_user_input` statuses as idle. This is a candidate defect established by the current production input path and predicate, not by an executed safety test. Main does not contain this updater coordinator. Unknown readiness already fails closed; unknown lifecycle strings remain defensive cases rather than an observed external-input bypass. The accepted frozen safety fixture has now executed against the unchanged idle predicate: 13 intended predicate assertions failed, 13 controls passed, and one separate selector-loader case failed during setup. No correction or candidate execution followed that mixed result. The [source correction checkpoint](safety-correction.md) records the exact checked main and candidate commits, reachable control path, unapplied two-expression patch, and retained command-only continuation. No acceptance is claimed for unrun cases, and the correction is not merge-ready.
+The active `needs_plan_response`, `needs_user_permission`, and `needs_user_input` predicate defect is corrected and passed the latest admitted 27-case suite above. The [source correction record](safety-correction.md) preserves the original reachable control path and historical mixed baseline. Unknown lifecycle strings are defensive contract controls, not an observed external-input bypass. Merge still requires every enabled exact-head workflow to pass.
 
 The App test isolates unrelated effects and mocks update transport, readiness and persistence boundaries. The coordinator tests do not prove actual owner acknowledgments. The bounded frontend registry is not a universal persistence drain. Local typecheck, adjacent suites, browser/native rendering, actual updater check/download/install/restart, release inclusion and side-by-side Conductor parity are unverified. No screenshot exists because browser/server/native work is excluded from this admission.
 
@@ -53,13 +68,13 @@ ACC grant `d000bf0a-4d22-4327-8801-0d8607cfb40b` admitted the existing `27994a6c
 - **Safety baseline failed, mixed:** the exact frozen command above exited 1, 27 cases: 13 passed, 13 intended idle-predicate assertions failed, and case 23 independently failed with `(0 , selectors_1.isSidebarVisible) is not a function`. [Raw TAP](safety-baseline-mixed.tap). Nine intended failures cover the three active `needs_*` statuses at pre-install, post-install, and post-drain; four cover defensive unknown status/state contracts. This now reproduces the predicate defect, but it is not a clean full-suite behavioral RED.
 - **Stopped/released:** no safety patch or candidate run followed the unrelated fixture error; no automatic retry, App4/32 replay, install, typecheck, build, browser or native work ran. [Release receipt](continuation-release.json) confirms all own jobs terminal and the runtime slot released.
 
-The prepared [selector-loader derivative](safetyIntegration.selector-loader.test.cjs) removes only the incomplete `state/selectors.ts` mock so the existing recursive loader evaluates that real pure production module. Every input and assertion is preserved, and frozen original `safetyIntegration.test.cjs` remains byte-identical. Derivative SHA-256: `b81486849e6da03bfd7cf4441d1f3177ca5fa49ea581cd9763fce0e9048f961d`. This derivative has NOT_RUN; it is inert supporting source, not a second executor. Its bounded baseline, minimal correction and identical candidate command remain on the same ACC continuation, awaiting direct admission:
+The [selector-loader derivative](safetyIntegration.selector-loader.test.cjs) removes only the incomplete `state/selectors.ts` mock so the existing recursive loader evaluates that real pure production module. Every input and assertion is preserved, and frozen original `safetyIntegration.test.cjs` remains byte-identical. Derivative SHA-256: `b81486849e6da03bfd7cf4441d1f3177ca5fa49ea581cd9763fce0e9048f961d`. It subsequently ran in the admitted baseline and candidate phases recorded above, using this identical command:
 
 ```bash
 RESTART_IDLE_SOURCE_ROOT=. NODE_OPTIONS=--max-old-space-size=768 nice -n19 timeout --kill-after=5s 120s node --test --test-concurrency=1 --test-reporter=tap evidence/settings/restart-when-idle/safetyIntegration.selector-loader.test.cjs
 ```
 
-The fail-closed patch remains unapplied and the known defect still blocks merge. Owner10 success does not establish safety-suite or native/package acceptance.
+At this historical mixed baseline, the fail-closed patch remained unapplied. The later admitted continuation above applied it and passed the complete qualified safety suite. Owner10 success alone does not establish native or package acceptance.
 
 ## Hosted CI compatibility repair
 
@@ -67,7 +82,7 @@ The [frontend job at head `204c9a3c`](https://github.com/reason-machines/opencon
 
 The compatibility correction replaces constructor parameter properties in the new persistence modules with ordinary typed fields and assignments, preserving behavior while supporting the existing Node strip-only runner. Strict VM fixtures now admit the real persistence modules instead of failing on their new imports. Home/section fixtures continue to isolate the unrelated update effect; the frozen update-App fixture is unchanged. The sign-in continuation receipt extends its execution graph to the real registry/barrier, preserving the frozen fixture and historical source pins. No assertion was removed or weakened, and no workflow trigger, test command, timeout or gate changed.
 
-Static `git diff --check` and all five `frozen.sha256` identities passed on Cloud352. The frozen sign-in continuation remains SHA-256 `9b3d03de095956357d3e81e0290e2f4b214b849b5620dedc60f42d3bf245efcc`. No local tests, typecheck, install or build ran for this repair; exact-head hosted CI must verify it. The existing ACC `27994a6c` continuation still owns corrected Owner10 and safety baseline/candidate execution. The known active-wait defect is not corrected by this compatibility change and remains a merge blocker. Native/package/release acceptance is still NOT_RUN.
+Static `git diff --check` and all five `frozen.sha256` identities passed on Cloud352. The frozen sign-in continuation remains SHA-256 `9b3d03de095956357d3e81e0290e2f4b214b849b5620dedc60f42d3bf245efcc`. No local tests, typecheck, install or build ran for this repair; exact-head hosted CI must verify it. The later ACC `27994a6c` continuation results above supersede the pending Owner10 and safety statuses. This compatibility change alone did not correct the active-wait defect; the later two-expression correction did. Native/package/release acceptance is still NOT_RUN.
 
 ## Retained reference source
 

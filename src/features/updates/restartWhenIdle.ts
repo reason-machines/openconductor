@@ -14,8 +14,8 @@ export interface RestartBoundary {
 
 export function isIdle(state: IdleReadiness): boolean {
   return state.kind === "ready" && !state.setupRunning
-    && !state.workspaceStates.some((value) => ["initializing", "setting_up", "archiving", "deleting", "unarchiving"].includes(value))
-    && !state.sessionStatuses.some((value) => ["working", "cancelling", "waiting"].includes(value));
+    && state.workspaceStates.every((value) => ["unstarted", "ready", "archived", "failed", "deleted"].includes(value))
+    && state.sessionStatuses.every((value) => value === "idle" || value === "error");
 }
 
 type Phase = "offered" | "armed" | "installing" | "installed" | "draining" | "restarting" | "finished" | "failed";
