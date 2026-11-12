@@ -51,9 +51,10 @@ function fixture(tauri: boolean) {
   const host = load(resolve(root, "src/features/chat/desktopHost.ts")).desktopHost;
   assert.ok(host && typeof host === "object");
   assert.ok("onPromptHandoff" in host && typeof host.onPromptHandoff === "function", "Actual desktop host must consume successful prompt handoff");
+  const handoff = host.onPromptHandoff;
   return {
     storage, invoked,
-    handoff: (workspace: string, attachments: readonly { name: string; text: string; commentId?: string }[]) => host.onPromptHandoff(workspace, attachments),
+    handoff: (workspace: string, attachments: readonly { name: string; text: string; commentId?: string }[]) => handoff.call(host, workspace, attachments),
     rows: (workspace: string): { id: string; state: string }[] => JSON.parse(storage.getItem(`openconductor.diff.comments.${workspace}`) ?? "[]"),
   };
 }

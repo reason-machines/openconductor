@@ -58,7 +58,7 @@ async function fixture(rows: DiffComment[], initial: { mode?: "flat" | "tree"; q
   for (const workspace of ["one", "two"]) storage.set(`openconductor.diff.comments.${workspace}`, JSON.stringify(rows.filter((row) => row.workspace_id === workspace)));
   const stores = new Map<string, CommentStore>();
   const composer = new ComposerSession("one", {
-    load: async () => "", save: async () => undefined, clear: async () => undefined,
+    load: async () => "", save: async () => true, clear: async () => undefined,
   });
   await composer.connect();
   const opened: string[] = [];
@@ -269,7 +269,7 @@ test("removing an unsent chip retains its count and makes the comment attachable
 test("restoring an unsent composer preserves its review identity", async (t) => {
   const composer = new ComposerSession("restored", {
     load: async () => ({ message: "review this", attachments: [{ name: "example.ts", text: "review comment", commentId: "whole" }] }),
-    save: async () => undefined, clear: async () => undefined,
+    save: async () => true, clear: async () => undefined,
   });
   t.after(() => composer.disconnect());
   await composer.connect();

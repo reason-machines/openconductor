@@ -8,7 +8,7 @@ The retained real-Conductor 0.87.6 REA closure is copied under `reference/`. Its
 
 Current default-branch source checked before implementation was `9c276e2e86c0bd7ed97c8ccd0467f30c7a8ebcab`. The genuine unchanged baseline ran on assigned head `cfe8c12d86fab877158bfd465f348813752e24e0`. The candidate ran after a normal merge of main at `0d5f6dfbc7043f9d889945ded377e4bdae4eb789`; the intervening main change was the disjoint, coordinated local header details change. The assigned branch was retained.
 
-The frozen v3 archive is `a85dcbbf9570d2801cb02c6a3822ac289f4a5356a545ea8d33f9eefd5b540d1e`. The original v4 source capsule and original acceptance files remain unchanged. The original historical V1/V2 tests are retained as inert text under `historical/`. Their attachment-clears-count expectation is not current parity acceptance. No historical assertion was silently weakened or substituted for the frozen lifecycle cases.
+The frozen v3 archive is `a85dcbbf9570d2801cb02c6a3822ac289f4a5356a545ea8d33f9eefd5b540d1e`. The original v4 source capsule and all three original acceptance files remain unchanged as inert evidence under `historical/`. The original historical V1/V2 tests are also retained there. Their attachment-clears-count expectation is not current parity acceptance. No historical assertion was silently weakened or substituted for the frozen lifecycle cases.
 
 ## Actual baseline and identical passing check
 
@@ -23,6 +23,14 @@ nice -n 19 timeout --kill-after=5s 90s node --max-old-space-size=768 --test --te
 - `results/actual-baseline-cases.json` preserves every baseline case name and classification. The original stdout and stderr bytes, exact commands, source commit, timestamps and SHA256 values are preserved alongside the passing output. Baseline stdout is stored losslessly as `actual-baseline.stdout.tap.gz` because Node's assertion diffs contain trailing whitespace; decompress it to verify the original receipt's hash.
 
 The host tests execute the actual frontend persistence adapter against explicit browser storage or a captured IPC invocation. They do not prove the Rust command ran or a provider received a prompt.
+
+## Fixture compatibility after the first hosted check
+
+The first published head `82d49d1e0599649577d0446f7a83828ac4eb584d` failed hosted TypeScript checking at three fixture locations. Two save ports returned undefined instead of the existing `Promise<boolean>` contract. A narrowed unknown host callback lost its narrowing inside a returned closure. No product type error was reported in that result.
+
+The corrective commit changes only those test ports. Saves return true, and the callback is captured after the unchanged capability assertion while preserving its receiver. Every assertion line and test declaration is unchanged. There is no product type weakening, type suppression, test exclusion or changed expectation.
+
+The original RED and identical GREEN above remain historical results on the original frozen bytes. Corrected delivered inputs have distinct identities in `fixture-compatibility.json` and `manifest.json`. They must not be described as byte-identical to the original frozen command. Corrected-input local replay and local typecheck have not run; the existing serialized row retains the replay request, and exact-head hosted CI is the immediate check. The original three files and hashes are preserved in `historical/*.original-v3.test.ts.txt`.
 
 ## Actual adjacent checks
 
