@@ -51,4 +51,14 @@ The single `FileDiffView` caller prop changes its whole-file checksum. The first
 
 The repair now consumes merged main `382da31580a5698feb223e1a3607fc79119fb77a`, including #1109's isolated historical disclosure source root. The prior frontend failure was a mixed-root fixture preflight failure, not a Finder regression. Integration preserves the original pins, disclosure helpers, frozen Finder cases, all scoped product files, and both paired candidate manifests. `main-repair-integration.json` records the static checks. Refreshed-head hosted checks, merge, and consuming-main package verification remain pending. No merge is requested until every exact-head check and workflow positively passes.
 
+## Composition with the merged large-file placeholder
+
+Main `f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32` includes #1106's body-only large-file placeholder and its independent `types.ts` candidate identity. The ordinary merge preserves that main tree and adds only the deleted-file caller prop to `FileDiffView`. The composed file has Git blob `773fed9708298dec2f9620deeab1f77da2abf920` and SHA256 `c1cab11aa6141f1c12f923aaf7e60353e4b13067cf91dc93a7245d3d21872a6c`.
+
+Only the two current `FileDiffView` candidate scalars change relative to that main. `composed-main` retains complete manifests from both the earlier #1100 head `d9d2187` and consumed main. No baseline, frozen fixture, runner, assertion, workflow, or counterpart scalar changes. The earlier `verify_pin_maintenance.py` and #1106's candidate integration receipt describe their original separate snapshots, not this composed file.
+
+`python3 evidence/open-in/deleted-finder/composed-main/verify.py` directly checks the shared checksum premise: both parent manifests match their actual parent Git blobs, and the composed file is exactly the main file plus the caller prop, or exactly the branch file plus the placeholder. It also calls the unchanged hidden-whitespace source preflight, which separately validates its corrected fixture rather than treating its historical manifest entry as the executable fixture identity. All 73 source/preservation checks pass. Finder source and candidate checks pass, as do the large-file frozen source checks and disclosure-root preflight. These checks do not execute product behavior. Refreshed automatic hosted CI must pass before merge.
+
+`git diff --check origin/main` checks this change against its actual base. A check against the previous branch also reports trailing whitespace in the unchanged raw #1110 log imported from main; those original log bytes are preserved.
+
 Native Finder activation, side-by-side screenshots, GUI behavior, and a released app remain NOT_RUN. No screenshot is supplied because this lane has no native or browser admission.
