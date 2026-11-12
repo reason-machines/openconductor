@@ -1,0 +1,1 @@
+function t9e({storedPermissionLevel:t,isLocalWorkspace:e}){return e||t==="write"?"write":"read"}

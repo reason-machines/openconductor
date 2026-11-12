@@ -105,7 +105,10 @@ export function ModelPicker({ value, favorites = [], loadout = [], keybindingDia
     const focused = document.activeElement;
     const composer = root.current?.closest(".composer, .create-card");
     if (disabled || (!open && !composer?.contains(focused))) return false;
-    selectLoadoutSlot(loadout, index, onChange);
+    selectLoadoutSlot(loadout, index, (choice) => {
+      onChange(choice);
+      setOpen(false);
+    });
     return true;
   };
   useKeybindings({

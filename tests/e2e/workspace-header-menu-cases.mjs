@@ -126,7 +126,7 @@ export async function runWorkspaceHeaderMenuCases(page, { baseURL, onCase = () =
       await page.keyboard.press("p");
       await menu(page).waitFor({ state: "detached" });
       await page.locator(`${ROW}[aria-current="page"][data-pinned="true"]`).waitFor();
-      assert.equal(await row(page, "Copper wren").getAttribute("data-pinned"), "true");
+      assert.equal(await row(page, "Copper wren").and(page.locator('[data-pinned="true"]')).getAttribute("data-pinned"), "true");
       assert.equal(await row(page, "Quiet harbor").getAttribute("data-pinned"), null);
     },
   ];

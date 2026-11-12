@@ -1,6 +1,6 @@
 # Close the model menu after a loadout shortcut
 
-Conductor Rebuild checked default main `140d8bb2ec417d381433074b104a50a5c20cba81` on Reason Cloud. The numeric loadout handler applies an occupied slot but does not close its open model menu.
+Conductor Rebuild found the missing menu transition at default main `140d8bb2ec417d381433074b104a50a5c20cba81` and re-read it unchanged at `26f8345401efb021bef2f12b17815eba6c57170c` on Reason Cloud. The correction closes the menu after applying an occupied slot's complete configuration.
 
 ## Reference
 
@@ -11,7 +11,7 @@ Conductor Rebuild checked default main `140d8bb2ec417d381433074b104a50a5c20cba81
 - `gt` forwards the favorite's complete configuration to the existing selection callback. The shortcut is not a prompt submission.
 - `cJe` separately registers the open menu's numeric item actions using the same callbacks. This increment does not add or change those separate bindings.
 
-Current `ModelPicker.selectSlot` already checks disabled state and closed-menu focus containment. It calls `selectLoadoutSlot(loadout, index, onChange)` and returns without a menu transition. The existing helper applies only occupied entries and does not compact holes.
+Baseline `ModelPicker.selectSlot` checks disabled state and closed-menu focus containment, then calls `selectLoadoutSlot(loadout, index, onChange)` without a menu transition. The correction wraps that helper's callback to apply the choice and call `setOpen(false)`. The helper still invokes its callback only for occupied entries and does not compact holes. Empty-slot consumption, disabled state, focus containment and #856 effort handlers are unchanged.
 
 These are decoded source facts, not fresh installed-app observations. REA's retained directory analysis skipped renderer parsing and partially parsed the index. The declaration windows are direct byte reads. No new REA invocation failed. Existing limitations remain in [the REA gap record](../../rea-gaps.md).
 
@@ -29,7 +29,13 @@ Automatic hosted command:
 node --test src/features/chat/modelPickerLoadoutClose.test.ts
 ```
 
-Static checks on Reason Cloud passed for source hashes, the complete declaration joins and `git diff --check`. Product tests, typecheck and build have not run for this regression yet. Ordinary automatic CI must establish actual failures and passing controls before a product correction is applied. No manual dispatch or rerun is needed.
+## Hosted reproduction and correction
+
+[The ordinary automatic baseline run](https://github.com/reason-machines/openconductor/actions/runs/43150684988) executed regression-only head `20e1a71ca52355e8f7cbd1b618187f431551bc97`. Both frontend jobs failed only the four intended cases. In each case, dispatch ran and the exact occupied configuration assertion passed before the menu assertion failed with expected `0`, actual `1`. All five independent controls passed. The full suite reported 3,303 tests, 3,299 passed and four failed. Typecheck itself passed; the later build step was skipped after the regression failure. [The retained receipt](hosted-red.json) links both jobs and records their decisive results.
+
+Only after this qualified failure, the correction adds menu dismissal inside the occupied-slot callback. The nine-case fixture remains byte-identical to the regression-only head. Static source integrity, `git diff --check` and `npm run typecheck` passed on Reason Cloud. Corrected hosted tests and build are pending. No local behavioral execution, manual dispatch or rerun was used.
+
+Laziness Protocol kept the product diff inside the existing callback. Fix Root Causes put the missing transition after successful selection, rather than adding unrelated dismissal events.
 
 ## Limits
 
