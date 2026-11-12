@@ -219,7 +219,11 @@ export function Composer({
   }
 
   useKeybindings({
-    "chat.cancel": () => (working ? onStop() : false),
+    "chat.cancel": () => {
+      if (!working) return false;
+      onStop();
+      inputRef.current?.focus();
+    },
     "chat.addAttachment": () => (onAttachFiles ? fileInput.current?.click() : false),
     "chat.focus": () => {
       const box = inputRef.current;
