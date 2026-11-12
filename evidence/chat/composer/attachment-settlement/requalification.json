@@ -1,0 +1,33 @@
+{
+  "owner": "Conductor Rebuild",
+  "baseline_main": "1a0a2bef734686d3dbfc9c11155562595d9df9e6",
+  "preparation_commit": "3825d7e22407bd3f7af251a085ba22a861245c58",
+  "original_source_pins": "source.json",
+  "original_fixture_commit": "d160e6525ccca2bfd23708fb88270e9b44cca470",
+  "version_two_commit": "eadf249b34607715aeaadde410a769719afc1fa5",
+  "version_two_sha256": "f1af6f9a3edeba5c6473d0c2506fee9b0943c8350654ab62346430f0955dc7d5",
+  "fixture_sha256": "d949e1b3fbe27504173a346aaa173e2aefa1607710424fd4135ca99d9163e89d",
+  "fixture_version": 3,
+  "fixture_delta": "transpile result expression, bind chatId and fence queued persistence before independent reload; all scenario bodies and assertions unchanged",
+  "checked_default_head": "167492e56dbbb90850efbadf1db2848dae7622f2",
+  "fixture_cases": 7,
+  "production_sha256": {
+    "src/features/chat/Composer.tsx": "9b0be2bd905db1360da1eb4e2dc45748d3ea978132c6f0296366d0e0f3ce64a8",
+    "src/components/WorkspaceView.tsx": "3a520439bd8b09531e82e8dcb74e780c311cb5c079504b9c8796aeea12988fe2",
+    "src/features/chat/composerSession.ts": "7d2091a307e8b31b57ec95c0672fc4433b3588b8c470b12db0fb4b5ac38eac09",
+    "src/features/chat/localClear.ts": "36773e89380caca36d3c25c42c3e5d7c2c7ac6f29510e53f1930f24520d42890",
+    "src/features/draft-attachments/staging.ts": "59778d93e351cc374d2dfe0f04f2bfa4bd685cd9df513cff9fa1b0f79dd86f54",
+    "src/lib/local-storage/composerDrafts.ts": "fdf9614728397728c4fb87985c1b8bfe54c62199957891e989ba3d74d08e12c5"
+  },
+  "reviewed_source_delta": {
+    "path": "src/components/WorkspaceView.tsx",
+    "scope": "transcript attachment name and label outside extracted callbacks",
+    "callback_behavior_change": false
+  },
+  "product_edits": [],
+  "existing_test_edits": [],
+  "hosted_behavior": "V2: three cases passed; two missing-binding failures and two unfenced persistence assertions. V3: PENDING",
+  "hosted_typecheck": "V2 PASS, job 130853690906 step 6. V3 PENDING",
+  "local_node_rust_browser_native_provider": "NOT_RUN",
+  "original_native_reacquisition": "NOT_RUN"
+}

@@ -12,7 +12,7 @@ The retained Conductor 0.87.6 renderer has a module-lifetime `dIt` expansion sto
 
 ## Frozen behavioral check
 
-`src/features/chat/disclosureRemount.test.ts` enters the existing automatic frontend test glob. It now runs the frozen five-case fixture twice through its proof loader: first with only the complete baseline `Transcript` module substituted, then with the actual candidate module. Baseline source pins, fixture hashes, two exact assertion failures and three passing controls are required before a candidate receipt can qualify. The wrapper removes inherited `NODE_TEST_CONTEXT` before spawning a real child test runner; the frozen host, loader, source policy and five scenario bodies are unchanged.
+`src/features/chat/disclosureRemount.test.ts` enters the existing automatic frontend test glob. It runs the frozen five-case fixture twice through its proof loader. Baseline resolves the complete historical source closure from an isolated snapshot root; candidate resolves the actual current checkout. Baseline source pins, fixture hashes, two exact assertion failures and three passing controls are required before a candidate receipt can qualify. The wrapper removes inherited `NODE_TEST_CONTEXT` before spawning a real child test runner; the frozen host, loader, source policy and five scenario bodies are unchanged.
 
 The fixture loads full production `WorkspaceView`, `ChatPanel`, `Transcript`, and `ToolRows` modules. It uses the production initializer, reducer, tab click handler, provider-snapshot subscription, row click handler, `aria-expanded`, and rendered content. It does not copy or replace those state or toggle handlers. Native transport and provider boundaries are synthetic. Markdown decoration and unrelated UI leaves are substituted.
 
@@ -64,4 +64,22 @@ The fix changes only `Transcript` product source: an immutable tool-id-to-boolea
 
 No local Node, React, browser, Rust, native, provider, credential, database, or package execution has run. No screenshot is provided because local/browser/native execution is outside this lane's admission; hosted React test-renderer evidence is not visible native-app verification. All exact-head workflows must pass before merge; consuming-main package verification follows the merge separately.
 
-Only `Transcript` tool-map lifetime and dedicated regression/evidence files belong to this change. Workspace producers, closed-chat catalogs, APIs, backends, models, labels, summary expansion, and Settings display wiring are outside scope. The merged login fixtures remain unchanged.
+## Baseline root isolation after #1102
+
+Main `a2ef261711b439e7ab00a25b3cb3275a5b55c823` changes `src/scripts/api.ts` legitimately. The original wrapper mixed a historical Transcript override with live dependencies, so its historical source preflight now fails before any scenario executes. The same fault blocks #1100 at `src/features/openIn/apps.ts`; [frontend job 130882947136](https://github.com/reason-machines/openconductor/actions/runs/43127398595/job/130882947136) records that failure. Neither failure is behavioral RED.
+
+The wrapper now materializes `tests/chat-disclosure/baseline-sources.json.gz` beneath the checkout. It contains 213 exact historical files from `167492e56dbbb90850efbadf1db2848dae7622f2`: all 132 immutable source-policy files and 81 additional files needed to resolve the existing decorative, overridden, and stylesheet module boundaries. The additional paths and hashes are recorded separately in `baseline-resolver-files.json`; none replace the original pins. The wrapper checks every archived file, rejects escaping paths, and supplies no live-source symlinks or fallback. Its cheap source-root regression changes and removes a synthetic live dependency while the historical bytes remain unchanged, and executes the changing live text through the candidate root.
+
+Baseline alone receives the historical root. Candidate receives the real checkout, rejects a Transcript override, verifies every tracked current `src` file against its current Git blob, rejects untracked source files, and logs that manifest. The unchanged paired cases then exercise the actual live Transcript. Both stages still use the installed external npm packages through the enclosing checkout. The archive is source evidence, not an isolated historical dependency installation or native build.
+
+The frozen loader's raw `source_head` is the enclosing runner commit, not the historical source commit. Separate wrapper provenance identifies the historical revision, compressed archive hash, frozen source-policy hash, resolver-manifest hash, and source-file count. Cleanup removes only the wrapper's unique temporary directories.
+
+Run the source-only preservation check without JavaScript execution:
+
+```bash
+python3 evidence/chat/tool-disclosure-remount/verify_baseline_root.py
+```
+
+To regenerate the deterministic snapshot from a checkout containing the historical commit, append `--write-snapshot`. Automatic frontend CI runs the new source-root regression and unchanged paired behavioral cases. Their runtime result remains pending until that exact-head run completes. No local JavaScript, native execution, manual dispatch or UI acceptance is part of this repair.
+
+Only `Transcript` tool-map lifetime and dedicated regression/evidence files belong to the original disclosure change. This follow-on root repair changes no product source. Workspace producers, closed-chat catalogs, APIs, backends, models, labels, summary expansion, and Settings display wiring are outside scope. The merged login fixtures remain unchanged.
