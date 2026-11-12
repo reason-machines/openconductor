@@ -16,13 +16,17 @@ The test host controls UTC Date and timer boundaries. Unrelated menu, markdown p
 
 The first result is accepted 30 seconds after tool start. Its output specifies 90 seconds, overriding the input's 120 seconds, so the row must wait until 12:02 PM. A repeated result at 12:01 must not reset that deadline. The actual mounted row is inspected at 12:02:00.250 after the duplicate, because minute-only labels cannot distinguish a 30-second reset. A second case advances only the external clock, then independently verifies wake-deadline cancellation on unmount. Midnight timers are not counted as wake timers. Pending, stop and failure paths are controls.
 
-Qualification requires exactly `WAKE_RESULT_TIME_NOT_PROJECTED` and `WAKE_DEADLINE_TRANSITION_MISSING` assertion failures and all three controls passing. Loader, import, clock, mount and boundary errors are invalid baseline evidence. Product code stays unchanged until that result is observed.
+Qualification requires exactly `WAKE_RESULT_TIME_NOT_PROJECTED` and `WAKE_DEADLINE_TRANSITION_MISSING` assertion failures and all three controls passing. Loader, import, clock, mount and boundary errors are invalid baseline evidence. Hosted baseline head `4ca29ee69e23c8b61b0296fe80f9191b59667be2` produced exactly those two assertion failures and three passing controls in run `43129205127`, unit job `130888858041`. See `hosted-baseline.log`. Its only other full-suite failure is the independently owned disclosure historical/live dependency drift, repaired separately in #1109. The typecheck job passed compilation, then encountered the same two wake assertions and shared harness failure; build was skipped.
+
+The candidate retains an optional `resultCreatedAt` on each result block at first terminal ingestion, preserves it on repeated terminal updates, mirrors it in Rust serialization, and projects it to the actual tool row. Missing legacy times remain unknown. The wake row uses the same live clock supplied to Transcript, with a separate cancelable deadline callback at wake time plus 250 ms. The existing module-lifetime disclosure store and midnight clock are unchanged. The five-case regression and both contract files remain byte-identical.
 
 ## Verification state
 
 - Static archive, manifest, retained-span and historical snapshot checks passed.
 - `git diff --check` passed.
-- Hosted five-case baseline, typecheck and build have not run yet. Automatic hosted CI is the only admitted execution route for this unit.
+- Hosted five-case baseline qualified with two intended assertion failures and three passing controls. Baseline `npm run typecheck` passed; build was skipped after test failures.
+- Candidate `git diff --check`, frozen-byte comparisons, current-main target-path comparison and released-disclosure-store preservation checks passed. Candidate behavioral tests, typecheck and build are pending the automatic hosted workflows.
+- Automatic hosted CI is the only admitted behavioral execution route for this unit.
 - No local allocator, native app, provider, database, installed-app or visual verification was run. There are no screenshots because local/native execution is not admitted.
 
 After qualified RED, the same fixture must pass with the smallest coherent per-result first-ingestion model and reactive consumer fix. Every exact-head workflow must pass before merging, followed by consuming-main and package checks.
