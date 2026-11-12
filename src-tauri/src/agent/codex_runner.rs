@@ -20,18 +20,19 @@
 //! with no answers, anything else with an error, so a turn never waits on
 //! them.
 
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::sync::mpsc::{self, Receiver, Sender, TryRecvError};
 use std::sync::Arc;
 use std::thread::{self, JoinHandle};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use serde_json::{json, Value};
 
 use super::codex_cli::CodexLaunch;
 use super::codex_consent::{self, consent, ConsentAnswer, ConsentKind};
 use super::codex_events::{Notification, ServerMessage, ServerRequest};
-use super::codex_rpc::{ApprovalDecision, RequestId, ThreadOptions};
+use super::codex_rpc::{ApprovalDecision, ClientRequest, RequestId, ThreadOptions, TurnOptions};
+use super::mcp_status::{self, McpServer, StatusQuery, StatusReply};
 use super::codex_session::{CallError, CodexEvent, CodexSession};
 use super::codex_wire::{payloads, Payload, TurnEnd};
 
@@ -89,8 +90,7 @@ const STDERR_KEPT: usize = 8;
 
 struct Prompt {
     text: String,
-    model: Option<String>,
-    effort: Option<String>,
+    options: TurnOptions,
     done: Sender<TurnEnd>,
 }
 
@@ -99,6 +99,7 @@ enum Cmd {
     Cancel,
     Answer(RequestId, ApprovalDecision),
     Respond(RequestId, ConsentAnswer),
+    McpStatus(StatusQuery),
 }
 
 /// Handle to one chat's runner thread. Dropping it stops the thread and
@@ -120,6 +121,7 @@ impl CodexRunner {
             running: None,
             stderr: VecDeque::new(),
             consents: HashMap::new(),
+            mcp_status: None,
         };
         let thread = thread::Builder::new()
             .name("codex-chat".into())
@@ -138,20 +140,21 @@ impl CodexRunner {
     }
 
     /// Queues a prompt; the receiver gets its end (also sent to the sink).
-    pub fn prompt(
-        &self,
-        text: impl Into<String>,
-        model: Option<String>,
-        effort: Option<String>,
-    ) -> Receiver<TurnEnd> {
+    pub fn prompt(&self, text: impl Into<String>, options: TurnOptions) -> Receiver<TurnEnd> {
         let (done, end) = mpsc::channel();
         self.send(Cmd::Prompt(Prompt {
             text: text.into(),
-            model,
-            effort,
+            options,
             done,
         }));
         end
+    }
+
+    pub fn mcp_status(&self, timeout: Duration) -> StatusReply {
+        let deadline = Instant::now() + timeout;
+        let (done, result) = mpsc::channel();
+        self.send(Cmd::McpStatus(StatusQuery { deadline, done }));
+        StatusReply { deadline, result }
     }
 
     /// Stops the running prompt and cancels the queued ones.
@@ -183,6 +186,13 @@ struct Running {
     turn_id: String,
 }
 
+struct PendingMcpStatus {
+    request_id: RequestId,
+    rows: Vec<McpServer>,
+    cursors: HashSet<String>,
+    query: StatusQuery,
+}
+
 struct Worker {
     config: RunnerConfig,
     sink: Sink,
@@ -194,6 +204,7 @@ struct Worker {
     stderr: VecDeque<String>,
     /// Elicitations and permission requests waiting on the user.
     consents: HashMap<RequestId, ConsentKind>,
+    mcp_status: Option<PendingMcpStatus>,
 }
 
 const POLL: Duration = Duration::from_millis(25);
@@ -201,6 +212,7 @@ const POLL: Duration = Duration::from_millis(25);
 impl Worker {
     fn run(mut self, rx: Receiver<Cmd>) {
         loop {
+            self.expire_mcp_status();
             loop {
                 match rx.try_recv() {
                     Ok(cmd) => self.handle(cmd),
@@ -238,6 +250,7 @@ impl Worker {
     }
 
     fn shut_down(mut self) {
+        self.fail_mcp_status("The Codex chat closed.");
         for prompt in std::mem::take(&mut self.queue) {
             self.finish(prompt, TurnEnd::cancelled());
         }
@@ -251,6 +264,7 @@ impl Worker {
     fn handle(&mut self, cmd: Cmd) {
         match cmd {
             Cmd::Prompt(p) => self.queue.push_back(p),
+            Cmd::McpStatus(query) => self.start_mcp_status(query),
             Cmd::Cancel => {
                 self.close_consents();
                 for prompt in std::mem::take(&mut self.queue) {
@@ -267,15 +281,21 @@ impl Worker {
                 // ends the prompt.
                 match session.interrupt(timeout) {
                     Ok(()) | Err(CallError::NoActiveTurn) => {}
-                    Err(e) => self.emit(Payload::Notice {
-                        message: format!("Could not stop Codex: {e}"),
-                        will_retry: false,
-                    }),
+                    Err(e) => {
+                        if matches!(e, CallError::Closed { .. } | CallError::Io(_)) {
+                            self.fail_mcp_status("The Codex transport closed while stopping.");
+                        }
+                        self.emit(Payload::Notice {
+                            message: format!("Could not stop Codex: {e}"),
+                            will_retry: false,
+                        });
+                    }
                 }
             }
             Cmd::Answer(id, decision) => {
                 if let Some(session) = self.session.as_mut() {
                     if let Err(e) = session.answer(&id, decision) {
+                        self.fail_mcp_status("Could not write to the Codex transport.");
                         self.emit(Payload::Notice {
                             message: format!("Could not answer Codex: {e}"),
                             will_retry: false,
@@ -302,10 +322,91 @@ impl Worker {
         }
     }
 
+    fn fail_mcp_status(&mut self, message: &str) {
+        if let Some(pending) = self.mcp_status.take() {
+            let _ = pending.query.done.send(Err(message.into()));
+        }
+    }
+
+    fn expire_mcp_status(&mut self) {
+        if self.mcp_status.as_ref().is_some_and(|p| Instant::now() >= p.query.deadline) {
+            self.fail_mcp_status(mcp_status::TIMED_OUT);
+        }
+    }
+
+    fn start_mcp_status(&mut self, query: StatusQuery) {
+        self.expire_mcp_status();
+        let error = if Instant::now() >= query.deadline {
+            Some(mcp_status::TIMED_OUT)
+        } else if self.mcp_status.is_some() {
+            Some("An MCP status query is already pending.")
+        } else if self.session.is_none() {
+            Some("MCP status is unavailable: the Codex session is not running.")
+        } else {
+            None
+        };
+        if let Some(error) = error {
+            let _ = query.done.send(Err(error.into()));
+            return;
+        }
+        let session = self.session.as_mut().expect("live session checked");
+        match session.send_request(&ClientRequest::McpServerStatusList { cursor: None }) {
+            Ok(request_id) => self.mcp_status = Some(PendingMcpStatus {
+                request_id, rows: vec![], cursors: HashSet::new(), query,
+            }),
+            Err(e) => { let _ = query.done.send(Err(format!("Could not query Codex MCP status: {e}"))); }
+        }
+    }
+
+    fn resolve_mcp_status(&mut self, event: &CodexEvent) -> bool {
+        self.expire_mcp_status();
+        let Some(pending) = &self.mcp_status else { return false; };
+        let result = match event {
+            CodexEvent::Message(ServerMessage::Response { id, result }) if id == &pending.request_id => {
+                mcp_status::decode_page(result.clone())
+            }
+            CodexEvent::Message(ServerMessage::ErrorResponse { id: Some(id), code, message }) if id == &pending.request_id => {
+                Err(format!("Codex MCP status error {code}: {message}"))
+            }
+            CodexEvent::BadLine { line, .. } => {
+                let id = serde_json::from_str::<Value>(line).ok()
+                    .and_then(|v| serde_json::from_value::<RequestId>(v.get("id")?.clone()).ok());
+                if id.as_ref() != Some(&pending.request_id) { return false; }
+                Err("Invalid Codex MCP status response.".into())
+            }
+            _ => return false,
+        };
+        let mut pending = self.mcp_status.take().expect("pending query matched");
+        match result {
+            Err(e) => { let _ = pending.query.done.send(Err(e)); }
+            Ok((rows, cursor)) => {
+                pending.rows.extend(rows);
+                if Instant::now() >= pending.query.deadline {
+                    let _ = pending.query.done.send(Err(mcp_status::TIMED_OUT.into()));
+                } else if let Some(cursor) = cursor {
+                    if !pending.cursors.insert(cursor.clone()) {
+                        let _ = pending.query.done.send(Err("Codex repeated an MCP status cursor.".into()));
+                    } else if let Some(session) = self.session.as_mut() {
+                        match session.send_request(&ClientRequest::McpServerStatusList { cursor: Some(cursor) }) {
+                            Ok(id) => { pending.request_id = id; self.mcp_status = Some(pending); }
+                            Err(e) => { let _ = pending.query.done.send(Err(format!("Could not query Codex MCP status: {e}"))); }
+                        }
+                    } else {
+                        let _ = pending.query.done.send(Err("The Codex transport closed.".into()));
+                    }
+                } else {
+                    let _ = pending.query.done.send(Ok(pending.rows));
+                }
+            }
+        }
+        true
+    }
+
     /// Sends a consent's result and tells the window it is answered.
     fn send_consent(&mut self, id: RequestId, result: Value) {
         if let Some(session) = self.session.as_mut() {
             if let Err(e) = session.respond(&id, result) {
+                self.fail_mcp_status("Could not write to the Codex transport.");
                 self.emit(Payload::Notice {
                     message: format!("Could not answer Codex: {e}"),
                     will_retry: false,
@@ -326,11 +427,13 @@ impl Worker {
     }
 
     /// Starts the app-server and opens the chat's thread, if not running.
-    fn ensure_session(&mut self) -> Result<(), String> {
+    fn ensure_session(&mut self, options: &TurnOptions) -> Result<(), String> {
         if self.session.is_some() {
             return Ok(());
         }
         let c = &self.config;
+        let mut thread_options = c.thread.clone();
+        thread_options.fast_mode = options.fast_mode.or(thread_options.fast_mode);
         let mut session =
             CodexSession::spawn(&c.launch).map_err(|e| format!("Codex could not start: {e}"))?;
         session
@@ -339,7 +442,11 @@ impl Worker {
         let resume = self.thread_id.clone().or_else(|| c.resume.clone());
         let opened = match resume {
             Some(id) => {
-                match session.open_thread(Some(id.clone()), c.thread.clone(), c.timeouts.thread) {
+                match session.open_thread(
+                    Some(id.clone()),
+                    thread_options.clone(),
+                    c.timeouts.thread,
+                ) {
                     Ok(t) => Ok((t, true)),
                     Err(e @ CallError::Rpc { .. }) => {
                         self.emit(Payload::Notice {
@@ -349,14 +456,14 @@ impl Worker {
                             will_retry: false,
                         });
                         session
-                            .open_thread(None, c.thread.clone(), c.timeouts.thread)
+                            .open_thread(None, thread_options.clone(), c.timeouts.thread)
                             .map(|t| (t, false))
                     }
                     Err(e) => Err(e),
                 }
             }
             None => session
-                .open_thread(None, c.thread.clone(), c.timeouts.thread)
+                .open_thread(None, thread_options, c.timeouts.thread)
                 .map(|t| (t, false)),
         };
         let (thread_id, resumed) =
@@ -367,22 +474,20 @@ impl Worker {
         Ok(())
     }
 
-    fn begin(&mut self, prompt: Prompt) {
-        if let Err(message) = self.ensure_session() {
+    fn begin(&mut self, mut prompt: Prompt) {
+        prompt.options.fast_mode = prompt.options.fast_mode.or(self.config.thread.fast_mode);
+        if let Err(message) = self.ensure_session(&prompt.options) {
+            self.fail_mcp_status("The Codex session was replaced.");
             self.session = None;
             return self.finish(prompt, TurnEnd::failed(message));
         }
         let timeout = self.config.timeouts.turn_start;
         let session = self.session.as_mut().expect("session started");
-        match session.start_turn(
-            prompt.text.clone(),
-            prompt.model.clone(),
-            prompt.effort.clone(),
-            timeout,
-        ) {
+        match session.start_turn(prompt.text.clone(), prompt.options.clone(), timeout) {
             Ok(turn_id) => self.running = Some(Running { prompt, turn_id }),
             Err(e) => {
                 if matches!(e, CallError::Closed { .. } | CallError::Io(_)) {
+                    self.fail_mcp_status("The Codex transport closed starting the turn.");
                     self.session = None;
                 }
                 self.finish(
@@ -394,6 +499,7 @@ impl Worker {
     }
 
     fn on_event(&mut self, event: CodexEvent) {
+        if self.resolve_mcp_status(&event) { return; }
         match event {
             CodexEvent::Message(message) => {
                 for p in payloads(&message) {
@@ -417,7 +523,7 @@ impl Worker {
                         }
                         let answer = default_answer(&method);
                         if let Some(s) = self.session.as_mut() {
-                            let _ = match &answer {
+                            let result = match &answer {
                                 Some(result) => s.respond(&id, result.clone()),
                                 None => s.reject(
                                     &id,
@@ -425,6 +531,9 @@ impl Worker {
                                     &format!("OpenConductor does not support {method} yet"),
                                 ),
                             };
+                            if result.is_err() {
+                                self.fail_mcp_status("Could not write to the Codex transport.");
+                            }
                         }
                         self.emit(Payload::Notice {
                             message: format!(
@@ -446,6 +555,7 @@ impl Worker {
             }
             CodexEvent::BadLine { line, error } => eprintln!("codex: {error}: {line}"),
             CodexEvent::Closed => {
+                self.fail_mcp_status("The Codex transport closed.");
                 // Nobody is left to answer: just close the cards.
                 for (id, _) in std::mem::take(&mut self.consents) {
                     self.emit(Payload::ApprovalResolved { request_id: id });
@@ -471,6 +581,10 @@ impl Worker {
         }
     }
 }
+
+#[cfg(all(test, unix))]
+#[path = "codex_mcp_status_tests.rs"]
+mod mcp_status_tests;
 
 #[cfg(all(test, unix))]
 mod tests {
@@ -613,7 +727,13 @@ done
             !exe.with_extension("stdin").exists(),
             "no process before a prompt"
         );
-        let end = r.prompt("make hello.txt", None, Some("high".into()));
+        let end = r.prompt(
+            "make hello.txt",
+            TurnOptions {
+                effort: Some("high".into()),
+                ..TurnOptions::default()
+            },
+        );
         let approval = wait_for(&seen, "approval", 0);
         assert_eq!(approval["decisions"], json!(["accept", "cancel"]));
         assert_eq!(approval["requestId"], json!(0));
@@ -642,7 +762,7 @@ done
         assert_eq!(s[4], json!({"id": 0, "result": {"decision": "accept"}}));
 
         // A follow-up reuses the process and thread.
-        let end = r.prompt("again", None, None);
+        let end = r.prompt("again", TurnOptions::default());
         wait_for(&seen, "approval", 1);
         r.answer(RequestId::Int(0), ApprovalDecision::Accept);
         assert_eq!(end.recv_timeout(WAIT).unwrap().outcome, Outcome::Completed);
@@ -652,11 +772,137 @@ done
     }
 
     #[test]
+    fn fast_snapshots_reach_initial_and_queued_turns_without_restarting() {
+        let exe = script();
+        let mut setup = config(&exe, None);
+        setup.thread.fast_mode = Some(true);
+        let (r, seen) = runner(setup);
+        let first = r.prompt(
+            "first off",
+            TurnOptions {
+                model: Some("gpt-5.4".into()),
+                effort: Some("high".into()),
+                fast_mode: Some(false),
+            },
+        );
+        wait_for(&seen, "approval", 0);
+        let queued = r.prompt(
+            "queued on",
+            TurnOptions {
+                model: Some("gpt-5.4".into()),
+                effort: Some("low".into()),
+                fast_mode: Some(true),
+            },
+        );
+        r.answer(RequestId::Int(0), ApprovalDecision::Accept);
+        assert_eq!(first.recv_timeout(WAIT).unwrap(), TurnEnd::completed());
+        wait_for(&seen, "approval", 1);
+        r.answer(RequestId::Int(0), ApprovalDecision::Accept);
+        assert_eq!(queued.recv_timeout(WAIT).unwrap(), TurnEnd::completed());
+        let inherited = r.prompt("default on", TurnOptions::default());
+        wait_for(&seen, "approval", 2);
+        r.answer(RequestId::Int(0), ApprovalDecision::Accept);
+        assert_eq!(inherited.recv_timeout(WAIT).unwrap(), TurnEnd::completed());
+        let sent = sent(&exe);
+        assert_eq!(
+            sent.iter().filter(|v| v["method"] == "initialize").count(),
+            1
+        );
+        assert_eq!(
+            sent.iter()
+                .filter(|v| v["method"] == "thread/start")
+                .count(),
+            1
+        );
+        let initial = sent.iter().find(|v| v["method"] == "thread/start").unwrap();
+        assert_eq!(initial["params"].get("serviceTier"), Some(&Value::Null));
+        let turns: Vec<_> = sent
+            .iter()
+            .filter(|v| v["method"] == "turn/start")
+            .collect();
+        assert_eq!(turns[0]["params"].get("serviceTier"), Some(&Value::Null));
+        assert_eq!(turns[1]["params"]["serviceTier"], "fast");
+        assert_eq!(turns[2]["params"]["serviceTier"], "fast");
+        assert_eq!(turns[0]["params"]["effort"], "high");
+        assert_eq!(turns[1]["params"]["effort"], "low");
+        assert_eq!(turns[1]["params"]["model"], "gpt-5.4");
+    }
+
+    #[test]
+    fn fast_off_reaches_saved_resume_and_failed_resume_fallback() {
+        for resume in ["t-old", "t-gone"] {
+            let exe = script();
+            let mut setup = config(&exe, Some(resume));
+            setup.thread.fast_mode = Some(true);
+            let (r, seen) = runner(setup);
+            r.prompt(
+                "slow",
+                TurnOptions {
+                    fast_mode: Some(false),
+                    ..TurnOptions::default()
+                },
+            );
+            wait_for(&seen, "threadStarted", 0);
+            let sent = sent(&exe);
+            let opens: Vec<_> = sent
+                .iter()
+                .filter(|v| v["method"] == "thread/start" || v["method"] == "thread/resume")
+                .collect();
+            assert_eq!(opens.len(), if resume == "t-gone" { 2 } else { 1 });
+            for request in opens {
+                assert_eq!(
+                    request["params"].get("serviceTier"),
+                    Some(&Value::Null),
+                    "{request}"
+                );
+            }
+            drop(r);
+        }
+    }
+
+    #[test]
+    fn fast_off_reaches_reopening_after_a_process_exit() {
+        let exe = script();
+        let (r, seen) = runner(config(&exe, None));
+        let failed = r.prompt(
+            "die",
+            TurnOptions {
+                fast_mode: Some(true),
+                ..TurnOptions::default()
+            },
+        );
+        assert_eq!(failed.recv_timeout(WAIT).unwrap().outcome, Outcome::Failed);
+        let end = r.prompt(
+            "after",
+            TurnOptions {
+                fast_mode: Some(false),
+                ..TurnOptions::default()
+            },
+        );
+        wait_for(&seen, "approval", 0);
+        r.answer(RequestId::Int(0), ApprovalDecision::Accept);
+        assert_eq!(end.recv_timeout(WAIT).unwrap(), TurnEnd::completed());
+        let sent = sent(&exe);
+        let resumed = sent
+            .iter()
+            .find(|v| v["method"] == "thread/resume")
+            .unwrap();
+        assert_eq!(resumed["params"]["threadId"], "t-new");
+        assert_eq!(resumed["params"].get("serviceTier"), Some(&Value::Null));
+        let turns: Vec<_> = sent
+            .iter()
+            .filter(|v| v["method"] == "turn/start")
+            .collect();
+        assert_eq!(turns[0]["params"]["serviceTier"], "fast");
+        assert_eq!(turns[1]["params"].get("serviceTier"), Some(&Value::Null));
+    }
+
+    #[test]
     fn cancel_interrupts_the_turn_and_drops_queued_prompts() {
         let exe = script();
         let (r, seen) = runner(config(&exe, None));
-        let first = r.prompt("slow", None, None);
-        let queued = r.prompt("next", None, None);
+        let first = r.prompt("slow", TurnOptions::default());
+        let queued = r.prompt("next", TurnOptions::default());
         wait_for(&seen, "turnStarted", 0);
         r.cancel();
         assert_eq!(queued.recv_timeout(WAIT).unwrap(), TurnEnd::cancelled());
@@ -680,7 +926,7 @@ done
     fn resumes_a_saved_thread_or_starts_fresh() {
         let exe = script();
         let (r, seen) = runner(config(&exe, Some("t-old")));
-        r.prompt("slow", None, None);
+        r.prompt("slow", TurnOptions::default());
         assert_eq!(
             wait_for(&seen, "threadStarted", 0),
             json!({"type": "threadStarted", "threadId": "t-old", "resumed": true})
@@ -689,7 +935,7 @@ done
 
         let exe = script();
         let (r, seen) = runner(config(&exe, Some("t-gone")));
-        r.prompt("slow", None, None);
+        r.prompt("slow", TurnOptions::default());
         assert_eq!(
             wait_for(&seen, "threadStarted", 0),
             json!({"type": "threadStarted", "threadId": "t-new", "resumed": false})
@@ -705,7 +951,7 @@ done
     fn unsupported_requests_are_declined_and_exits_fail_the_turn() {
         let exe = script();
         let (r, seen) = runner(config(&exe, None));
-        let end = r.prompt("ask me", None, None);
+        let end = r.prompt("ask me", TurnOptions::default());
         assert_eq!(
             end.recv_timeout(WAIT).unwrap(),
             TurnEnd::failed("needed input")
@@ -717,13 +963,13 @@ done
             .unwrap()
             .contains("item/tool/requestUserInput"));
 
-        let end = r.prompt("die", None, None);
+        let end = r.prompt("die", TurnOptions::default());
         let end = end.recv_timeout(WAIT).unwrap();
         assert_eq!(end.outcome, Outcome::Failed);
         assert!(end.message.as_deref().unwrap().contains("boom"), "{end:?}");
 
         // The next prompt starts a new process on the same thread.
-        let end = r.prompt("after", None, None);
+        let end = r.prompt("after", TurnOptions::default());
         wait_for(&seen, "approval", 0);
         r.answer(RequestId::Int(0), ApprovalDecision::Accept);
         assert_eq!(end.recv_timeout(WAIT).unwrap(), TurnEnd::completed());
@@ -738,7 +984,7 @@ done
     fn a_permission_request_waits_for_the_users_grant() {
         let exe = script();
         let (r, seen) = runner(config(&exe, None));
-        let end = r.prompt("perm", None, None);
+        let end = r.prompt("perm", TurnOptions::default());
         let card = wait_for(&seen, "consent", 0);
         assert_eq!(card["kind"], "permissions");
         assert_eq!(card["serverName"], "codex");
@@ -774,7 +1020,7 @@ done
     fn stop_cancels_an_open_elicitation_before_interrupting() {
         let exe = script();
         let (r, seen) = runner(config(&exe, None));
-        let end = r.prompt("elicit", None, None);
+        let end = r.prompt("elicit", TurnOptions::default());
         let card = wait_for(&seen, "consent", 0);
         assert_eq!(card["kind"], "elicitation");
         assert_eq!(card["serverName"], "linear");
@@ -801,7 +1047,10 @@ done
         let mut c = config(&script(), None);
         c.launch.executable = PathBuf::from("/nonexistent/codex");
         let (r, seen) = runner(c);
-        let end = r.prompt("hi", None, None).recv_timeout(WAIT).unwrap();
+        let end = r
+            .prompt("hi", TurnOptions::default())
+            .recv_timeout(WAIT)
+            .unwrap();
         assert_eq!(end.outcome, Outcome::Failed);
         assert!(end.message.unwrap().contains("/nonexistent/codex"));
         assert_eq!(wait_for(&seen, "turnEnded", 0)["outcome"], "failed");
@@ -832,7 +1081,7 @@ done
         };
         let (r, seen) = runner(config);
         let end = r
-            .prompt("Reply with exactly the word: pong", None, None)
+            .prompt("Reply with exactly the word: pong", TurnOptions::default())
             .recv_timeout(Duration::from_secs(180))
             .unwrap();
         eprintln!("live end: {end:?}");

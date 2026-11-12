@@ -1,0 +1,284 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1",
+  "rea_acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "artifacts": [
+    {
+      "name": "index-BGEQ8YjU.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+      "bytes": 3493297
+    },
+    {
+      "name": "renderApp-D_fmY7hW.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+      "bytes": 11600457
+    }
+  ],
+  "spans": [
+    {
+      "name": "renderer-lno",
+      "bytes": 1125,
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-lno.txt",
+      "asset": "renderApp-D_fmY7hW.js"
+    },
+    {
+      "name": "renderer-w9e",
+      "bytes": 3429,
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-w9e.txt",
+      "asset": "renderApp-D_fmY7hW.js"
+    },
+    {
+      "name": "renderer-dno",
+      "bytes": 1719,
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-dno.txt",
+      "asset": "renderApp-D_fmY7hW.js"
+    },
+    {
+      "name": "renderer-cno",
+      "bytes": 385,
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "path": "evidence/scripts/output-unicode/reference/renderer-cno.txt",
+      "asset": "renderApp-D_fmY7hW.js"
+    },
+    {
+      "name": "renderer-eSa",
+      "path": "evidence/terminal/cursor-state-1f/source/spans/renderer-eSa.txt",
+      "bytes": 4517,
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ],
+      "asset": "renderApp-D_fmY7hW.js"
+    },
+    {
+      "name": "renderer-uno",
+      "path": "evidence/terminal/cursor-state-1f/source/spans/renderer-uno.txt",
+      "bytes": 421,
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "asset": "renderApp-D_fmY7hW.js"
+    },
+    {
+      "name": "renderer-terminal-constructor",
+      "asset": "renderApp-D_fmY7hW.js",
+      "bytes": 285,
+      "sha256": "3cd6aecc58ab4f9c014fc884483d471a33df89456972e17656c3ff7c388f6607",
+      "utf8_half_open": [
+        6907860,
+        6908145
+      ],
+      "path": "evidence/terminal/session-linefeed/reference/renderer-terminal-constructor.txt"
+    },
+    {
+      "name": "renderer-browser-core-constructor",
+      "asset": "renderApp-D_fmY7hW.js",
+      "bytes": 80,
+      "sha256": "e2e273fada23e248ac07f186d31c97755aa1789e254a994c3f887338a5790282",
+      "utf8_half_open": [
+        6882740,
+        6882820
+      ],
+      "path": "evidence/terminal/session-linefeed/reference/renderer-browser-core-constructor.txt"
+    },
+    {
+      "name": "renderer-default-conversion",
+      "asset": "renderApp-D_fmY7hW.js",
+      "bytes": 13,
+      "sha256": "ba48ba0ed054b99e56a31597093ffcee7b9286393937d7071f3d577e91a95449",
+      "utf8_half_open": [
+        6775172,
+        6775185
+      ],
+      "path": "evidence/terminal/session-linefeed/reference/renderer-default-conversion.txt"
+    },
+    {
+      "name": "renderer-lf-parser",
+      "asset": "renderApp-D_fmY7hW.js",
+      "bytes": 660,
+      "sha256": "1ab7b5f35947ba89383f8f4daf1328331f0a7b655135c631d95b3ab91358b1cd",
+      "utf8_half_open": [
+        6820799,
+        6821459
+      ],
+      "path": "evidence/terminal/session-linefeed/reference/renderer-lf-parser.txt"
+    },
+    {
+      "name": "renderer-options-update",
+      "asset": "renderApp-D_fmY7hW.js",
+      "bytes": 1719,
+      "sha256": "5d73083eabd52c3345aad238d153d0fc71dd52040b8084b7d93d8f120180cd14",
+      "utf8_half_open": [
+        6916898,
+        6918617
+      ],
+      "path": "evidence/terminal/session-linefeed/reference/renderer-options-update.txt"
+    }
+  ],
+  "chain_checks": [
+    {
+      "name": "ordinary_surface_to_attachment",
+      "span": "renderer-eSa",
+      "token": "=w9e(P)"
+    },
+    {
+      "name": "hook_to_attachment",
+      "span": "renderer-w9e",
+      "token": "dno({container:ve"
+    },
+    {
+      "name": "attachment_to_instance",
+      "span": "renderer-dno",
+      "token": "await uno({"
+    },
+    {
+      "name": "instance_to_factory_wait",
+      "span": "renderer-uno",
+      "token": "d=cno({"
+    },
+    {
+      "name": "wait_to_terminal_factory",
+      "span": "renderer-cno",
+      "token": "const c=lno({"
+    },
+    {
+      "name": "factory_enables_conversion",
+      "span": "renderer-lno",
+      "token": "convertEol:!0"
+    },
+    {
+      "name": "factory_creates_renderer_terminal",
+      "span": "renderer-lno",
+      "token": "new eno({"
+    },
+    {
+      "name": "renderer_terminal_forwards_options",
+      "span": "renderer-terminal-constructor",
+      "token": "new Gto(t)"
+    },
+    {
+      "name": "browser_core_forwards_options",
+      "span": "renderer-browser-core-constructor",
+      "token": "super(e)"
+    },
+    {
+      "name": "default_conversion_is_false",
+      "span": "renderer-default-conversion",
+      "token": "convertEol:!1"
+    },
+    {
+      "name": "linefeed_resets_column",
+      "span": "renderer-lf-parser",
+      "token": "this._optionsService.rawOptions.convertEol&&(this._activeBuffer.x=0)"
+    }
+  ],
+  "baseline_product_sha256": "af5985993295fd67951a425467d1ce875579288919153a33d97243ef3fac6cc6",
+  "fixture_sha256": "add72e265d5a913690d1f0ed126b786cadf3f8f2652681492c396874a7b594ab",
+  "cases": [
+    "ordinary panel LF starts the next line at column zero",
+    "center terminal LF resets the column after wide output",
+    "LF received in a separate PTY event resets the output column",
+    "consecutive LF keep the following output aligned to column zero",
+    "LF near the right margin starts the following row at column zero",
+    "SGR around LF does not leave indentation on the next output line",
+    "ordinary terminal CRLF retains its existing output alignment",
+    "ordinary terminal CR still overwrites the current row",
+    "ordinary terminal plain output keeps its original width",
+    "disposing one ordinary terminal preserves sibling output"
+  ],
+  "expected_baseline": {
+    "hypothesis_only": true,
+    "fail_cases": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "passing_controls": [
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  "protected_files": [
+    {
+      "path": "evidence/resource-terminal-labels/regression.cjs",
+      "sha256": "a1bd44547ea40a93560b257e630ed169c810b7a8b115099859c73062595b4832"
+    },
+    {
+      "path": "src/features/terminal/clearRedraw.test.ts",
+      "sha256": "18a9beac0bd383f50c78b9231de2ea884d4cda8a76ebad31653415285081f15a"
+    },
+    {
+      "path": "src/features/terminal/cursorState.test.ts",
+      "sha256": "f77c0e9f356cb379b65688d5d456766bbddb249e7e009dcc404d4d0cbdbc1ca9"
+    },
+    {
+      "path": "src/features/terminal/nonrunningInput.test.ts",
+      "sha256": "9f22f3c513bb31e114abaeab1270c6a4ae64a20ffdb9c2700904f3beb7b5ea6f"
+    },
+    {
+      "path": "src/features/terminal/resizeState.test.ts",
+      "sha256": "c28f5b946d81e3a4d6327fd40b8c4fa408e3c85adca7bc131ff224859c0f35bc"
+    },
+    {
+      "path": "src/features/terminal/spawnFailure.test.ts",
+      "sha256": "c0160f217f40f0bd436eb68de8f3df9820e1d2c55e9cb2d43473c0d9e43fafc4"
+    },
+    {
+      "path": "src/features/terminal/sessionUnicode.test.ts",
+      "sha256": "af1932238a19c36c76adeb8d0968bb8dc66f98e7ba26707e7a6406c09591b99e"
+    },
+    {
+      "path": "src/components/ScriptOutput.tsx",
+      "sha256": "5cad08e06c913556195df9063354fb2e50a90ee33e39a586ff72cfb747fe544f"
+    },
+    {
+      "path": "src/settings/appPrefs.ts",
+      "sha256": "9bc2ea552b8080fa22af690aa8befa2adf31df82994a12a2663c286571fa0934"
+    }
+  ],
+  "proposed_scope": [
+    "src/features/terminal/session.ts initializer convertEol only",
+    "src/features/terminal/sessionLineFeed.test.ts",
+    "evidence/terminal/session-linefeed"
+  ],
+  "behavioral_cases_run": 0,
+  "native_acceptance_run": false,
+  "publication_dependency": "Satisfied. #1127 merged at c3b79b39bfafbdde2e7b2c4546b14385bf379b5f; fetched main merged normally on the assigned branch and tracked tree confirmed equal to fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1. Sole initializer convertEol lease confirmed by ledger ddfc6518; no competing writer.",
+  "rea_gaps": [
+    "Retained renderer analysis exhausted its worker heap; exact byte-span and alias joins are not a complete semantic graph. No new REA execution was attempted."
+  ],
+  "limits": [
+    "Retained compiled source, not reference runtime observation.",
+    "Parser buffer behavior is not native glyph, font, visual or PTY delivery proof.",
+    "No local JavaScript, native, browser, provider, dispatch or rerun was executed."
+  ],
+  "preparation_main": "36af943788dce623b409f1587810a21faa4a1bf5",
+  "allowed_product_change": "Add convertEol: true immediately after allowProposedApi: true in src/features/terminal/session.ts; no other production change."
+}

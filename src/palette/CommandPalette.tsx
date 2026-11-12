@@ -172,6 +172,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
   function onKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     const cmd = paletteCommandFor(e.nativeEvent, overrides);
     if (cmd === null) return;
+    if ((e.nativeEvent.isComposing || e.keyCode === 229) && cmd !== "close" && cmd !== "next-tab" && cmd !== "prev-tab") return;
     e.preventDefault();
     e.stopPropagation();
     if (cmd === "close") onClose();

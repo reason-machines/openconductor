@@ -393,6 +393,7 @@ function Part({ partKey, part, preview = false, group, ctx }: { partKey: string;
             tool={call.tool}
             status={call.status}
             result={call.result}
+            rawResult={call.rawResult}
             resultCreatedAt={call.resultCreatedAt}
             now={ctx.toolNow}
             isError={call.status === "error"}

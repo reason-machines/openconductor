@@ -4,6 +4,7 @@
 // workspace's tabs even while its panel is not mounted.
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
+import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { AckBatcher, type PtyEvent } from "./events";
 import {
   onPtyEvent,
@@ -270,6 +271,8 @@ async function startTab(
   const id = restore?.id ?? `term-${crypto.randomUUID()}`;
   const font = currentTerminalFont();
   const term = new Terminal({
+    allowProposedApi: true,
+    convertEol: true,
     disableStdin: true,
     cursorBlink: true,
     fontFamily: font.family,
@@ -286,8 +289,26 @@ async function startTab(
       // find input, not the terminal, has focus.
       selectionBackground: withAlpha(cssVar("--accent"), "66"),
       selectionInactiveBackground: withAlpha(cssVar("--accent"), "4d"),
+      black: cssVar("--terminal-black"),
+      red: cssVar("--terminal-red"),
+      green: cssVar("--terminal-green"),
+      yellow: cssVar("--terminal-yellow"),
+      blue: cssVar("--terminal-blue"),
+      magenta: cssVar("--terminal-magenta"),
+      cyan: cssVar("--terminal-cyan"),
+      white: cssVar("--terminal-white"),
+      brightBlack: cssVar("--terminal-bright-black"),
+      brightRed: cssVar("--terminal-bright-red"),
+      brightGreen: cssVar("--terminal-bright-green"),
+      brightYellow: cssVar("--terminal-bright-yellow"),
+      brightBlue: cssVar("--terminal-bright-blue"),
+      brightMagenta: cssVar("--terminal-bright-magenta"),
+      brightCyan: cssVar("--terminal-bright-cyan"),
+      brightWhite: cssVar("--terminal-bright-white"),
     },
   });
+  term.loadAddon(new Unicode11Addon());
+  term.unicode.activeVersion = "11";
   const fit = new FitAddon();
   term.loadAddon(fit);
   const host = document.createElement("div");
@@ -319,6 +340,10 @@ async function startTab(
   term.attachCustomKeyEventHandler((e) => {
     const command = e.type === "keydown" ? terminalCommandFor(e) : undefined;
     if (command === undefined) return true;
+    if (
+      term.buffer.active !== term.buffer.normal &&
+      (command === "terminal.clearScrollback" || (command !== "terminal.insertNewline" && LINE_EDIT_BYTES[command] !== undefined))
+    ) return true;
     // Cancelling keydown also drops its keypress; stopping it keeps window shortcuts out.
     e.preventDefault();
     e.stopPropagation();

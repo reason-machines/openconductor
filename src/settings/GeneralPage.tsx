@@ -21,7 +21,7 @@ import { useSettingsOverrideStore } from "./useSettingsOverrideStore";
 interface Props {
   settings: Settings;
   save: (next: Settings) => void | Promise<boolean>;
-  notify?: (kind: "error", message: string) => void;
+  notify?: (kind: "error" | "info", message: string) => void;
 }
 
 /** Conductor's `aga`: System Settings › Privacy & Security › Full Disk Access. */
@@ -76,7 +76,10 @@ export function GeneralPage({ settings, save, notify }: Props) {
           label="Agent notifications"
           checked={g.send_native_notification}
           onChange={async (on) => {
-            if (on && !await notificationPermissionGranted()) return;
+            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }
             await save(withField(latestSettings.current, "general", "send_native_notification", on));
           }}
         />
@@ -149,7 +152,7 @@ export function GeneralPage({ settings, save, notify }: Props) {
         icon={<SyncIcon />}
         onClick={() => setSyncOpen(true)}
       />
-      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} />}
+      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} notify={notify} />}
     </div>
   );
 }

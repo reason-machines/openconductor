@@ -12,7 +12,7 @@ type State =
 
 const message = (error: unknown) => error instanceof Error ? error.message : "Couldn't sync your local agent configs.";
 
-export function ConfigSyncDialog({ onClose }: { onClose: () => void }) {
+export function ConfigSyncDialog({ onClose, notify }: { onClose: () => void; notify?: (kind: "info", message: string) => void }) {
   const [state, setState] = useState<State>({ kind: "loading" });
   const [deselected, setDeselected] = useState<Set<string>>(() => new Set());
   const [expanded, setExpanded] = useState<Set<ConfigSyncCategory>>(() => new Set());
@@ -53,6 +53,7 @@ export function ConfigSyncDialog({ onClose }: { onClose: () => void }) {
     try {
       const result = await configSyncApi.sync(selected);
       if (!mounted.current) return;
+      if (result.successes > 0) notify?.("info", result.successes === 1 ? "Synced 1 item" : `Synced ${result.successes} items`);
       if (result.failures.length === 0 && result.unsupportedMcp.length === 0) {
         pending.current = false;
         onClose();

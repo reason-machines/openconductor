@@ -1,0 +1,32 @@
+{
+  "owner": "Conductor Rebuild",
+  "base_main": "c5c1dcefffa5186d24e11491a446616236d3d612",
+  "pr1100_merge": "f0c1828b0e23cecb1ee71cd8864669dd38a4c57b",
+  "state": "TEST_ONLY_BASELINE_NOT_EXECUTED",
+  "files": {
+    "src/features/diff/FilePathChip.tsx": {
+      "sha256": "f684dc198b7b067c0204717f2a93ea33b792368e9982926048af762f55ddd5bf",
+      "git_blob": "b5c78cef7495c9cc9cbb967ca7609fea460d34bd"
+    },
+    "src/features/diff/FileDiffView.tsx": {
+      "sha256": "c1cab11aa6141f1c12f923aaf7e60353e4b13067cf91dc93a7245d3d21872a6c",
+      "git_blob": "773fed9708298dec2f9620deeab1f77da2abf920"
+    },
+    "src/features/openIn/apps.ts": {
+      "sha256": "b37b0fec869cb0308437cf23df36ecd9f4cb356deb495564fb64c3b0d44a26a6",
+      "git_blob": "9d21fdc3f78da23ae036146922e5d5a946d3276d"
+    },
+    "src-tauri/src/open_in/commands.rs": {
+      "sha256": "c5610529e746f99e43cdb99215628ac00c707499e972a53ba726f0cdba87bc29",
+      "git_blob": "406d2a1cd327bbdb0506add9ceaabb9bd4e4d4f6"
+    },
+    "src-tauri/src/open_in/mod.rs": {
+      "sha256": "7ac798311ea709cd047ea3a8d7b73084463cfc54db7b445f4760cebfc5eeddb3",
+      "git_blob": "0a3e509015b51b625000e9611ab4361ee09f334d"
+    }
+  },
+  "frozen_contract_sha256": "b98ce9c4d02b7e3e79f0788b65421baa9b04aa65a1ea242434a43b39dffa99e4",
+  "local_runtime": "NOT_RUN",
+  "hosted_intended_assertion_red": "NOT_RUN",
+  "native": "NOT_RUN"
+}

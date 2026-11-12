@@ -242,6 +242,7 @@
 .oc-menu-item:hover,
 .oc-menu-item:focus-visible { background: var(--oc-c-popover-accent); outline: none; }
 .oc-menu-item-label { flex: 1; }
+.oc-add-popup .oc-menu-item > .oc-plan-active { color: var(--emphasis); }
 .oc-kbd-hint { margin-left: auto; padding-left: 4px; font-size: 12px; line-height: 16px; color: var(--oc-c-muted-fg); letter-spacing: 0.01em; }
 
 /* Model chip: h-7 text-xs gap-1.5 rounded-md px-2 font-450 text-foreground/90 hover:bg-sidebar-accent. */

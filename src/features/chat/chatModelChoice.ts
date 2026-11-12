@@ -10,7 +10,7 @@
 import { MODEL_CATALOG, agentForModel } from "../../settings/models.ts";
 import type { Settings } from "../../settings/types.ts";
 import { defaultEffortSetting, reasonDefault } from "./chatModel.ts";
-import type { ModelChoice } from "./composerModels.ts";
+import { fastModeAvailable, type ModelChoice } from "./composerModels.ts";
 import type { ReasonConfig } from "./reasonChat.ts";
 import type { LoadoutSlot } from "../../settings/agents/loadout.ts";
 import { loadoutChoices } from "./loadoutChoices.ts";
@@ -82,10 +82,10 @@ export function copyModelChoice(sourceId: string, targetId: string, agent: ChatA
   saveAgent(targetId, agent, store);
 }
 
-export function localModelOptions(chatId: string, agent: "claude" | "codex", store: Store = localStorage): { model?: string; effort?: string } {
+export function localModelOptions(chatId: string, agent: "claude" | "codex", store: Store = localStorage): { model?: string; effort?: string; fastMode?: boolean } {
   const choice = loadModelChoice(chatId, store);
   if (choice?.agent !== agent) return {};
-  return { model: choice.model, ...(choice.effort ? { effort: choice.effort } : {}) };
+  return { model: choice.model, ...(choice.effort ? { effort: choice.effort } : {}), ...(fastModeAvailable(choice.model) ? { fastMode: choice.fast === true } : {}) };
 }
 
 /** Settings › Agents › Reason's default model, else Settings › Default models: the default model and its agent's default effort. */

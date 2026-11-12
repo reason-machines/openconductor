@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type Dispatch, type MouseEvent, type PointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type Dispatch, type MouseEvent, type PointerEvent } from "react";
 import type { AppState, Repo, Workspace } from "../state/types";
 import { RepoIcon } from "./RepoIcon";
 import type { Action } from "../state/store";
@@ -9,8 +9,7 @@ import { useStatusMatrix } from "../settings/useStatusMatrix";
 import { labelTargetBranch, workspaceLabel } from "./sidebarLabel";
 import { useBranchPrefix } from "./useBranchPrefix";
 import { WorkspaceContextMenu } from "./WorkspaceContextMenu";
-import { COMMANDS } from "../keybindings/registry";
-import { HINT_DELAY_MS, hintLabel, hintNumbers, holdsExactly } from "../state/shortcutHint";
+import { HINT_DELAY_MS, hintLabel, hintNumbers } from "../state/shortcutHint";
 import { sidebarEntries } from "../state/sidebarOrder";
 import { compactCount } from "../state/sidebarDiffStat";
 import { useRowDiffStat } from "./useRowDiffStat";
@@ -35,7 +34,7 @@ interface Props {
   /** The repo has a remote: a workspace without a PR shows "Ready" (branch) rather than "Local workspace". */
   hasRemote?: boolean;
   active: boolean;
-  onSelect: () => void;
+  onSelect: (event: MouseEvent<HTMLButtonElement>) => void;
   /** Right-click: opens the workspace actions menu. */
   onContextMenu?: (e: MouseEvent) => void;
   menuOpen?: boolean;
@@ -194,12 +193,20 @@ export interface RowCallbacks {
   onCopyLink?: (ws: Workspace) => void;
 }
 
-const SWITCH_MODIFIERS = COMMANDS.find((c) => c.id === "workspace.switchTo1")?.key.modifiers ?? ["meta"];
-
-/** True while the Cmd+1..9 modifier has been held alone for HINT_DELAY_MS. */
+/** True after an effective workspace-switch modifier chord is held for HINT_DELAY_MS. */
 export function useShortcutHints(): boolean {
+  const { overrides } = useKeybindingOverrides();
+  const overridesRef = useRef(overrides);
+  overridesRef.current = overrides;
   const [visible, setVisible] = useState(false);
   useEffect(() => {
+    const holdsModifiers = (e: KeyboardEvent | globalThis.MouseEvent) =>
+      effectiveShortcuts("workspace.switchTo1", overridesRef.current).some((shortcut) =>
+        shortcut.modifiers !== undefined && shortcut.modifiers.length > 0 &&
+        shortcut.modifiers.every((modifier) =>
+          modifier === "meta" ? e.metaKey : modifier === "ctrl" ? e.ctrlKey : modifier === "alt" ? e.altKey : e.shiftKey,
+        ),
+      );
     let held = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
     const hide = () => {
@@ -208,14 +215,14 @@ export function useShortcutHints(): boolean {
       setVisible(false);
     };
     const onKey = (e: KeyboardEvent) => {
-      const now = holdsExactly(SWITCH_MODIFIERS, e);
+      const now = holdsModifiers(e);
       if (now === held) return;
       held = now;
       if (now) timer = setTimeout(() => setVisible(true), HINT_DELAY_MS);
       else hide();
     };
     const onPointer = (e: globalThis.MouseEvent) => {
-      if (!holdsExactly(SWITCH_MODIFIERS, e) && held) hide();
+      if (!holdsModifiers(e) && held) hide();
     };
     window.addEventListener("keydown", onKey);
     window.addEventListener("keyup", onKey);
@@ -268,7 +275,8 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
     menuOpen: menu?.workspaceId === ws.id,
     shortcutNumber: numbers.get(ws.id),
     showShortcutHint: hintsVisible,
-    onSelect: () => {
+    onSelect: (event: MouseEvent<HTMLButtonElement>) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
       if (!(sel.kind === "workspace" && sel.workspaceId === ws.id)) {
         dispatch({ type: "select", selection: { kind: "workspace", repoId, workspaceId: ws.id } });
         return;

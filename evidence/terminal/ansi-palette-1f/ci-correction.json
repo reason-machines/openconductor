@@ -1,0 +1,34 @@
+{
+  "pr": 1163,
+  "head": "3b46d68a121f7d739ef25cc437c13648ce40e3cb",
+  "check_run_id": 131108362655,
+  "run_id": 43196390004,
+  "check": "Frontend typecheck + build",
+  "result": "failure",
+  "passed_step": "npm run typecheck",
+  "failed_step": "No colour literals outside src/theme/",
+  "violations": 27,
+  "affected_file": "src/features/terminal/terminalAnsiTheme.test.ts",
+  "downstream_unit_step": "skipped",
+  "downstream_build_step": "skipped",
+  "correction": "Move identical literal test data to src/theme/terminalAnsiThemeFixture.ts and import it. Do not change the checker, inputs, assertions, product code, or case count.",
+  "fixture_before": "da98de47b2473d9cf68518d57eb70a239aa8ae37d1372fd7473e5161aaab3699",
+  "fixture_after": "7e94259f5156f6b6144cca74ffd026ca9215737389b274add46cff11c5d8dd45",
+  "data_sha256": "aeca2daed1bbcc44cea8cb9484c503ce8b4a1e196a7aa9462cba214921874edf",
+  "local_correction_checks": {
+    "lint_colors": "PASS: 6 checker tests plus full 1074-file scan",
+    "extracted_baseline": {
+      "exit": 1,
+      "fail": 16,
+      "pass": 4
+    },
+    "extracted_candidate": {
+      "exit": 0,
+      "pass": 20,
+      "fail": 0
+    },
+    "published_product_restored": true,
+    "slot_released_at_utc": "2026-11-12T10:08:06Z"
+  },
+  "product_sha256": "8f14cb4d0bc1fd9fa9f70fe7383b47d18f28dd65720f6ad15686c24540c8cac0"
+}

@@ -1,0 +1,33 @@
+{
+  "author": "Conductor Rebuild",
+  "main_checked": "7dc8bbd014ccfeb2202fdd153c33aa3e9060dcb3",
+  "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_manifest": "evidence/terminal/clear-redraw-1f/source/reference.json",
+  "caller_chain": [
+    "lSa/eSa",
+    "Zwa/$wa",
+    "terminalRef plus ready/writeInput"
+  ],
+  "reference_rule": "insertNewline precedes active/normal buffer guard; deleteLine and four move commands follow it",
+  "product_path": "src/features/terminal/session.ts startTab installed key callback",
+  "lease": "Sole 1f terminal LINE_EDIT_BYTES alternate-buffer guard; ledger ddfc6518 clearance 2026-11-12",
+  "new_fixture": "src/features/terminal/alternateLineEdit.test.ts",
+  "baseline": {
+    "tests": 29,
+    "pass": 14,
+    "fail": 15,
+    "reason": "five readline motions across alternate modes 47, 1047 and 1049 are canceled and inject shell bytes"
+  },
+  "corrected": {
+    "tests": 29,
+    "pass": 29,
+    "fail": 0
+  },
+  "limits": [
+    "Retained real-app source, not fresh extraction or Conductor runtime observation",
+    "Real headless xterm parser and installed callback; DOM, fit, transport and persistence mocked",
+    "No browser, app, PTY, provider, native, glyph, visual, E2E or local build run",
+    "Existing package owner retains containing-build inclusion; native acceptance remains unadmitted",
+    "Existing REA tracing limitations remain in the reference manifest; no new REA operation attempted"
+  ]
+}

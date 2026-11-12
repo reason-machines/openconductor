@@ -1,0 +1,6 @@
+{
+  "original_sha256": "3fc448a1f7302ba75bb3e49b334037b11d6be1099b62965cb639e281dd75c4b9",
+  "new_sha256": "dbf82ec3affb9f94de52c42b2cd2fd3649e02931c3222115a6c576d7a3329499",
+  "only_change": "existing binary expected string now matches the REA-backed message; no case/control/assertion structure changes",
+  "frozen_new_test_sha256": "d29953cb43d2f7cf9dafce1e1db13a4a67a12e1ba509cbb857815612bbe8c75b"
+}

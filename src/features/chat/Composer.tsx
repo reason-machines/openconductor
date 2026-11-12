@@ -65,6 +65,7 @@ export interface ComposerProps {
   /** Takes files the user attaches; without it the "+" menu has no Add attachment. */
   onAttachFiles?: (files: File[]) => void;
   onLinkWorkspaces?: () => void;
+  onMcpStatus?: () => void;
   onAttachTerminalOutput?: () => void;
   planMode?: PlanModeControl;
   /** The model picker (or another agent's picker), at the box's bottom left. */
@@ -99,6 +100,7 @@ export function Composer({
   workspacePath,
   onAttachFiles,
   onLinkWorkspaces,
+  onMcpStatus,
   onAttachTerminalOutput,
   planMode,
   picker,
@@ -191,7 +193,15 @@ export function Composer({
     const current = box.selection();
     const range = composerSlashRange(current.text, current.start, current.end);
     if (!range || range.start !== slash.start || range.end !== slash.end || range.query !== slash.query) return;
-    if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
+    if (command.effect === "pick_linked_directory" && onLinkWorkspaces) {
+      if (!box.deleteRange(range)) return;
+      setSlashDismissed(slashKey);
+      onLinkWorkspaces();
+    } else if (command.effect === "show_mcp_status" && onMcpStatus) {
+      if (!box.deleteRange(range)) return;
+      setSlashDismissed(slashKey);
+      onMcpStatus();
+    } else if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
     setSlashIndex(0);
   }
 
@@ -470,8 +480,8 @@ function AddMenu({ hint, planHint, planMode, onAddAttachment, onLinkWorkspaces }
             <PlusIcon size={16} /><span className="oc-menu-item-label">Link workspaces</span>
           </button> : null}
           {planMode ? <button type="button" role="menuitem" className="oc-menu-item" disabled={planMode.disabled} title={planMode.disabled ? "Wait for the current Claude Code turn to end" : undefined} onClick={() => { setOpen(false); planMode.onToggle(); }}>
-            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M9 12l3 3L22 5" /></svg>
-            <span className="oc-menu-item-label">{planMode.isPlanMode ? "Exit plan mode" : "Plan mode"}</span>
+            <svg className={planMode.isPlanMode ? "oc-plan-active" : undefined} width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3M9 12l3 3L22 5" /></svg>
+            <span className={`oc-menu-item-label${planMode.isPlanMode ? " oc-plan-active" : ""}`}>{planMode.isPlanMode ? "Exit plan mode" : "Plan mode"}</span>
             <span className="oc-kbd-hint">{planHint}</span>
           </button> : null}
         </div>
