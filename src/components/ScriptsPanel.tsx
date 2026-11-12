@@ -495,7 +495,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     return showSpotlight ? (
       <ScriptOutput key={`spotlight:${wsId}`} output={spotLogMine && spotView.log.length > 0 ? spotView.log.join("\n") : spotButton.hint ?? SPOTLIGHT_EMPTY_TEXT} />
     ) : (
-      <ScriptOutput key={`run:${wsId}:${shown}`} output={runOut} onInput={inputRunId ? writeInput : undefined} onResize={inputRunId ? resizeRun : undefined} />
+      <ScriptOutput key={`run:${wsId}:${shown}`} output={runOut} showCursor onInput={inputRunId ? writeInput : undefined} onResize={inputRunId ? resizeRun : undefined} />
     );
   }
 

@@ -12,7 +12,7 @@ import { PRIORITY } from "../keybindings/dispatcher";
 import "../theme/scriptTerminal.css";
 import "./scriptOutput.css";
 
-export function ScriptOutput({ output, onInput, onResize }: { output: string; onInput?: (data: string) => Promise<void>; onResize?: (cols: number, rows: number) => Promise<void> }) {
+export function ScriptOutput({ output, onInput, onResize, showCursor = false }: { output: string; onInput?: (data: string) => Promise<void>; onResize?: (cols: number, rows: number) => Promise<void>; showCursor?: boolean }) {
   const container = useRef<HTMLDivElement>(null);
   const host = useRef<HTMLDivElement>(null);
   const terminal = useRef<Terminal | null>(null);
@@ -36,7 +36,7 @@ export function ScriptOutput({ output, onInput, onResize }: { output: string; on
     const term = new Terminal({
       allowProposedApi: true,
       disableStdin: true,
-      cursorBlink: false,
+      cursorBlink: showCursor,
       convertEol: true,
       fontFamily: font.family,
       fontSize: font.size,
@@ -62,7 +62,7 @@ export function ScriptOutput({ output, onInput, onResize }: { output: string; on
       const css = getComputedStyle(element);
       const color = (name: string) => css.getPropertyValue(name).trim();
       term.options.theme = {
-        background: color("--bg"), foreground: color("--text"), cursor: color("--terminal-transparent"),
+        background: color("--bg"), foreground: color("--text"), cursor: color(showCursor ? "--text" : "--terminal-transparent"), cursorAccent: color("--bg"),
         selectionBackground: color("--accent"), selectionForeground: color("--accent-text"),
         black: color("--terminal-black"), red: color("--terminal-red"), green: color("--terminal-green"),
         yellow: color("--terminal-yellow"), blue: color("--terminal-blue"), magenta: color("--terminal-magenta"),
