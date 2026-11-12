@@ -39,8 +39,8 @@ require unchanged local-path clone names. No real remote, picker or filesystem
 operation is introduced.
 
 [fixture.sha256](fixture.sha256) freezes both fixtures before behavioral RED.
-No existing fixture or assertion is changed. Test Behavior, Not Implementation
-keeps assertions on returned names rather than private calls or source strings.
+Both new normalization fixtures stay byte-identical across RED and GREEN.
+Assertions check returned names rather than private calls or source strings.
 
 Ordinary automatic hosted CI runs the fixtures with:
 
@@ -66,6 +66,25 @@ equivalence is claimed. Raw URL transport, parent paths, uniqueness and safety
 checks are unchanged; neither frozen fixture nor reference identity is edited.
 Every exact-head check and workflow must pass before merging the fix, including
 the shared baseline repair after it lands on main.
+
+## Candidate integration
+
+Hosted candidate `b8c0fd22b6e40bf923ac80156097738fe70315a3` passed all eight
+sealed TypeScript normalization cases and both platform workspace lifecycle
+jobs. Its frontend job exposed five existing component failures: the pending
+recent-selection and URL text-correction fixtures still expected unsanitized
+`First`, `RecentRepo` and `MixedCase` derived names. Only those three expected
+`name` literals are migrated to `first`, `recentrepo` and `mixedcase`. Their
+mixed-case raw URLs, request capture, retry, form-editability and duplicate-submit
+assertions remain unchanged. This is an intentional contract migration, not a
+change to either sealed regression fixture.
+
+[Hosted candidate receipt](hosted-candidate-before-integration.json) records
+the eight passing cases and the five obsolete name assertions before migration.
+The sixth frontend failure is the already-owned disclosure preflight. Merged
+main `382da31580a5698feb223e1a3607fc79119fb77a` supplies PR #1109
+through an ordinary main merge, without cherry-picking, repinning or changing
+its frozen proof. The clone helper diff is unchanged by this integration.
 
 ## Verification and limits
 
