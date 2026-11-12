@@ -1,0 +1,17 @@
+{
+  "status": "QUALIFIED_BEHAVIORAL_RED",
+  "head": "c4ae617a54ebb517b91e38fe5b7d397d4b3a7075",
+  "workflow_run": 43120461260,
+  "unit_job": 130859299750,
+  "build_job": 130859299832,
+  "fixture_sha256": "cf089b503b287d3e221eeda2360d45779f04c5696294696ab53d2f0d8a4bf2c9",
+  "cases": 8,
+  "failed": 4,
+  "passed": 4,
+  "intended_failure": "Actual resize IPC payloads were empty rather than workspace/script/runId plus measured96x32",
+  "typecheck": "PASS",
+  "build": "SKIPPED_AFTER_SAME_UNIT_FAILURES",
+  "source_rebound_main": "167492e56dbbb90850efbadf1db2848dae7622f2",
+  "local_runtime": "NOT_RUN",
+  "native": "NOT_RUN"
+}

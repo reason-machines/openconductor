@@ -52,7 +52,7 @@ function productionTranscript() {
   const path = resolve(checkout, "src/features/chat/Transcript.tsx");
   const source = readFileSync(path, "utf8");
   const ast = ts.createSourceFile(path, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-  const selected = ["Transcript", "rowTurn", "groupTurns"].map((name) => {
+  const selected = ["toolDisclosure", "Transcript", "rowTurn", "groupTurns"].map((name) => {
     const node = ast.statements.find((statement) =>
       (ts.isFunctionDeclaration(statement) && statement.name?.text === name) ||
       (ts.isVariableStatement(statement) && statement.declarationList.declarations.some((declaration) => declaration.name.getText(ast) === name)));

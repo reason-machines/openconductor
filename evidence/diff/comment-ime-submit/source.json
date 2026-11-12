@@ -103,7 +103,7 @@
   "fixture_sha256": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
   "product": {
     "baseline": "16837e0203358d1a954fd50e8ce29e4aafd724d61a72f6e0e043439fa5f72aa2",
-    "candidate": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3"
+    "candidate": "5d61d8a59f1a500d31c399907b0f54c9a51089ed7b7a7442d6c9b890b6d3d564"
   },
   "dependencies": {
     "src/features/diff/comments.ts": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800",
