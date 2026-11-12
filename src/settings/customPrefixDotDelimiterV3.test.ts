@@ -1,0 +1,140 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import { resolve } from "node:path";
+import { test } from "node:test";
+import { runInNewContext } from "node:vm";
+import type { ReactNode } from "react";
+import { branchPrefixError, branchPreview, normalizeCustomPrefix } from "./model.ts";
+import { DEFAULT_SETTINGS, type Settings } from "./types.ts";
+
+const dependencies = createRequire(import.meta.url);
+const React = dependencies("react");
+const { act, create } = dependencies("react-test-renderer");
+const ts = dependencies("typescript");
+
+function load<T>(path: string, imports: Record<string, unknown>): T {
+  const javascript = ts.transpileModule(readFileSync(resolve(path), "utf8"), {
+    fileName: path,
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2021, jsx: ts.JsxEmit.ReactJSX },
+  }).outputText;
+  return runInNewContext(`${javascript}\nexports;`, {
+    exports: {},
+    require(name: string) {
+      if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      assert.ok(Object.prototype.hasOwnProperty.call(imports, name), `Unexpected prefix dependency: ${name}`);
+      return imports[name];
+    },
+  });
+}
+
+async function mounted(run: (fixture: Awaited<ReturnType<typeof mount>>) => Promise<void>) {
+  const fixture = await mount();
+  try {
+    await run(fixture);
+  } finally {
+    await act(async () => fixture.renderer.unmount());
+  }
+}
+
+async function mount() {
+  const naming = load<typeof import("../workspace/naming.ts")>("src/workspace/naming.ts", {});
+  const model = load<typeof import("./model.ts")>("src/settings/model.ts", { "../workspace/naming.ts": naming });
+  const prefs = load<typeof import("./prefs.ts")>("src/settings/prefs.ts", {});
+  const Row = ({ children, control }: { children?: ReactNode; control?: ReactNode }) => React.createElement("section", null, control, children);
+  const controls = load<typeof import("./controls")>("src/settings/controls.tsx", { "./GeneralPage": { Row }, "./prefs": prefs });
+  const { GitPage } = load<typeof import("./GitPage")>("src/settings/GitPage.tsx", {
+    "../workspace/api": { loadBranchPrefix: async () => ({ branchPrefixType: "custom", branchPrefix: "old-", githubUsername: "OtherUser" }) },
+    "./controls": controls,
+    "./GeneralPage": { Row },
+    "./prefs": prefs,
+    "./model": model,
+  });
+  const flow = load<typeof import("../workspace/createFlow.ts")>("src/workspace/createFlow.ts", { "./naming.ts": naming });
+  const initial: Settings = {
+    ...DEFAULT_SETTINGS,
+    general: { ...DEFAULT_SETTINGS.general, send_native_notification: false },
+    git: { ...DEFAULT_SETTINGS.git, branch_prefix_type: "custom", branch_prefix: "old-", delete_branch_on_archive: true },
+    future: { retained: "dot-delimiter-control" },
+  };
+  let persisted = initial;
+  let writes = 0;
+  let renderer: ReturnType<typeof create>;
+  const props = () => ({ settings: persisted, save(next: Settings) {
+    writes += 1;
+    persisted = JSON.parse(JSON.stringify(next));
+    renderer.update(React.createElement(GitPage, props()));
+  } });
+  await act(async () => { renderer = create(React.createElement(GitPage, props())); });
+  return {
+    renderer: renderer!, naming, flow, initial,
+    field: () => renderer.root.findByProps({ "aria-label": "Custom branch prefix" }),
+    persisted: () => persisted,
+    writes: () => writes,
+    preview: () => renderer.root.findAllByType("p").map((node: { children: unknown[] }) => node.children.join("")).find((text: string) => text.startsWith("Preview: ")),
+  };
+}
+
+test("single terminal dot is a custom delimiter in validation and preview", () => {
+  assert.equal(branchPrefixError("team."), null);
+  assert.equal(normalizeCustomPrefix("team."), "team.");
+  assert.equal(branchPreview({ ...DEFAULT_SETTINGS, git: { ...DEFAULT_SETTINGS.git, branch_prefix_type: "custom", branch_prefix: "team." } }, "OtherUser"), "team.tokyo");
+});
+
+test("mounted Git Settings commits team. once and creates team.tokyo", async () => {
+  await mounted(async (f) => {
+    await act(async () => f.field().props.onChange({ target: { value: "team." } }));
+    assert.equal(f.writes(), 0, "typing does not change persistence timing");
+    assert.equal(f.field().props.value, "team.");
+    assert.equal(f.field().props["aria-invalid"], false);
+    assert.equal(f.preview(), "Preview: team.tokyo");
+    await act(async () => f.field().props.onBlur());
+    assert.equal(f.writes(), 1);
+    assert.equal(f.persisted().git.branch_prefix, "team.");
+    assert.deepEqual(f.persisted(), { ...f.initial, git: { ...f.initial.git, branch_prefix: "team." } });
+    await act(async () => f.field().props.onKeyDown({ key: "Enter" }));
+    assert.equal(f.writes(), 1, "unchanged Enter does not duplicate the write");
+    const prefix = f.naming.resolveBranchPrefix(f.persisted().git, "OtherUser");
+    const result = f.flow.buildCreateRequest({ repoId: "fixture-repo", name: "tokyo", nameEdited: true, baseBranch: "main", from: null, firstMessage: "", agent: "reason", model: "", effort: "" }, prefix);
+    assert.ok(result.ok);
+    assert.equal(result.request.naming.branch, "team.tokyo");
+  });
+});
+
+for (const input of ["", ".team", "team..", "team space", "team.lock", "team./", "team@{branch"]) {
+  test(`invalid raw custom prefix ${JSON.stringify(input)} stays rejected at both model boundaries`, () => {
+    assert.notEqual(branchPrefixError(input), null);
+    assert.notEqual(branchPrefixError(normalizeCustomPrefix(input)), null);
+  });
+}
+
+for (const input of ["", "team.lock", "team./"]) {
+  test(`sanitizer-stable invalid custom prefix ${JSON.stringify(input)} never replaces the saved value`, async () => {
+    await mounted(async (f) => {
+      await act(async () => f.field().props.onChange({ target: { value: input } }));
+      assert.equal(f.field().props.value, input);
+      assert.equal(f.field().props["aria-invalid"], true);
+      assert.equal(f.preview(), undefined);
+      assert.equal(f.writes(), 0);
+      await act(async () => f.field().props.onBlur());
+      await act(async () => f.field().props.onKeyDown({ key: "Enter" }));
+      assert.equal(f.writes(), 0);
+      assert.deepEqual(f.persisted(), f.initial);
+    });
+  });
+}
+
+test("GitHub and None still select their own prefixes without changing the custom value", async () => {
+  await mounted(async (f) => {
+    await act(async () => f.renderer.root.findByProps({ type: "radio", value: "github_username" }).props.onChange());
+    assert.equal(f.writes(), 1);
+    assert.equal(f.persisted().git.branch_prefix_type, "github_username");
+    assert.equal(f.persisted().git.branch_prefix, "old-");
+    assert.equal(f.naming.resolveBranchPrefix(f.persisted().git, "OtherUser"), "otheruser/");
+    await act(async () => f.renderer.root.findByProps({ type: "radio", value: "none" }).props.onChange());
+    assert.equal(f.writes(), 2);
+    assert.equal(f.persisted().git.branch_prefix_type, "none");
+    assert.equal(f.persisted().git.branch_prefix, "old-");
+    assert.equal(f.naming.resolveBranchPrefix(f.persisted().git, "OtherUser"), "");
+  });
+});

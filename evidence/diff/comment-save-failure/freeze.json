@@ -1,0 +1,19 @@
+{
+  "unit": "EDIT-SAVE-FAILURE-FEEDBACK-DE6-01",
+  "baseline": "e89bede5597767d131b1c4c9199fb38403d31209",
+  "fixture": "src/features/diff/commentSaveFailure.test.ts",
+  "fixture_sha256": "74fd947c45301a43a5c4a07b769cd7782fec2438b7938f7cbc9ccfc79ef7bbbe",
+  "package_lock_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "unchanged_inputs": {
+    "src/features/diff/ReviewComments.tsx": "5d61d8a59f1a500d31c399907b0f54c9a51089ed7b7a7442d6c9b890b6d3d564",
+    "src/components/WorkspaceView.tsx": "1f3029701b12d364024271fab334e799a79fd334848596b892ea9e8ee7d7f28a",
+    "src/features/diff/commentsApi.ts": "69de64da7711ed0b9f852244b4b1f5dcf09cff7b5a4c1cb19e81f49fd48ead43",
+    "src/features/diff/commentStore.ts": "89b6dc1e8c4acd63482bdca83147d1eed286b06ef1bc40c25cbc25440c44af3c",
+    "src/features/diff/commentEditDrafts.test.ts": "487a0b6d0bb87c7325c865c864e0664f060c16d6e51d48981c250b511ec5ddf7",
+    "src/features/diff/commentImeSubmit.test.ts": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
+    "src/features/diff/commentCancel.test.ts": "7081738042a7cc472aabc01acdc6f8da4aa63b479b5bb744babbccdef8ea8c8a",
+    "evidence/diff/comment-edit-drafts/source.json": "980faf75ad9a59060086716c56a3b76e1e394483af16193661e2b7659388bbd9",
+    "evidence/diff/comment-ime-submit/source.json": "20ab6a4ae47f9c5bc3ce0b7b49ff0057acd8c0b81a22dd8b5dc06a45151c74c7"
+  },
+  "frozen_before_product_change": true
+}

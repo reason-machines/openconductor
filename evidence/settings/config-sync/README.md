@@ -61,3 +61,30 @@ On 2026-11-11, [Ubuntu Tauri check, test and clippy](https://github.com/reason-m
 The PR's [nested Codex chat E2E](https://github.com/reason-machines/openconductor/actions/runs/42987959159/job/130413578549) failed: immediately after changing the access selector to Ask first, both the selected and persisted policy remained `full`. The standalone Codex job and the Settings app-flow check passed. The failure blocks merging; its cause is not established by those passes. Current default main `11a5f73df99faa0d33bcc0c19b78606bc2c0b992` has unchanged Codex selector, policy-store, driver and diagnostics source relative to the checked feature base.
 
 Config-sync Tauri IPC, native permissions, actual-app copy/reopen behavior and visual parity remain unverified. Hosted synthetic file-copy success must not be reported as those outcomes.
+
+## Success confirmation regression, 2026-11-12
+
+The retained renderer `dialog` span at bytes 10948507–10953485 requests `Synced 1 item` or `Synced N items` when the reported success count is positive, before closing an all-success dialog. Its SHA-256 is `25a11259c1ad67003f27a7ad58aec15540531fb329f03dea6b9a4befa8d5f87b`. The recovered span matches the retained manifest; the whole renderer/index assets were unavailable for a fresh hash check.
+
+Default main `582028e6607cf943441bde6f6a2ce709fe8a60cd` closed an all-success dialog without requesting that confirmation. The four-case `configSyncSuccessFeedback.test.ts` regression mounts the production GeneralPage and dialog, captures the app notifier, and blocks unrelated native/provider boundaries. Its unchanged SHA-256 is `9c54d196fab103c146a81fef497ff2fab86b875e0e59cf1ac9d0c6afef725b43`.
+
+On Cloud352, the admitted baseline run at 12:44:58–12:45:00Z failed exactly the two positive-success notification assertions; both zero-success controls passed. The fix passes GeneralPage's existing notifier into the dialog and requests confirmation after a positive result, before the existing close-or-refresh decision. Selection, pending guards, failure details, refresh and zero-success behavior are unchanged.
+
+The identical regression command passed all four cases at 12:46:13Z. The adjacent command passed all nine cases at 12:46:13–12:46:16Z. Both ran serially with `NODE_OPTIONS=--max-old-space-size=768`:
+
+```bash
+nice -n 19 timeout --kill-after=5s 120s node --experimental-strip-types --test --test-concurrency=1 --test-reporter=tap src/settings/configSyncSuccessFeedback.test.ts
+nice -n 19 timeout --kill-after=5s 120s node --experimental-strip-types --test --test-concurrency=1 --test-reporter=tap src/settings/configSync.test.ts src/settings/configSyncDialog.test.ts src/settings/configSyncModel.test.ts
+```
+
+The single admitted typecheck at 12:46:25–12:46:50Z aborted at Node's imposed 768 MiB heap limit before reporting TypeScript diagnostics. It was not retried or counted as passing. This is not evidence of a code error or a machine-wide memory shortage.
+
+These mounted checks prove notification requests and dialog state under synthetic IPC results, not a displayed toast, real config copying, native execution or visual parity. No screenshot was taken because browser/native execution was outside this unit's admission.
+
+### Full Disk Access evidence integration
+
+At PR #1175 head `7c88386ee588af18817d96ee35064dc8864d22d5`, [hosted typecheck passed](https://github.com/reason-machines/openconductor/actions/runs/43221833557/job/131195000881). The frontend suite passed 3,688 of 3,689 tests. Its sole failure was the Full Disk Access verifier's historical `configSyncHarness.cjs` identity pin, not a behavior assertion. Build and later steps did not run after that failure.
+
+The correction leaves the original FDA provenance, JSON fixture, replay and existing assertions unchanged. For the Sync harness alone, the verifier requires exactly one notification collector and exactly one capture callback, reverses only those two literal additions, and hashes the complete reconstructed original against its unchanged historical pin. Every other frozen path still requires its exact original hash. No native/provider boundary or unrelated harness byte is exempted.
+
+An added automatic wrapper invokes six mutation checks: accept the exact extension; reject a missing collector, missing callback, changed capture, duplicate callback, or unrelated persistence-boundary change. These corrective verifier, mutation and FDA replay runs are **NOT_RUN locally**. They use the existing automatic hosted frontend suite, without a new workflow, dispatch, local runtime admission or capped-typecheck retry. The original four-case Config Sync regression, current capture harness and root lock remain unchanged.
