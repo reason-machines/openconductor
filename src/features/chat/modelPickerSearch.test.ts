@@ -28,9 +28,13 @@ test("source-only: model search mode treats blank and whitespace queries as the 
 test("source-only: search excludes injected entries, Add models, effort, Fast and their separator", () => {
   assert.match(listAndControls, /\{!searching \? children : null\}/, "injected menu entries are default-menu only");
   assert.match(listAndControls, /\{!searching && onOpenSettings \? \([\s\S]*?Add models/, "Add models is default-menu only");
-  assert.match(listAndControls, /\{!searching && \(efforts \|\| showFast\) \? <div className="oc-model-sep" \/> : null\}/, "the controls separator is default-menu only");
+  assert.match(listAndControls, /\{!searching && \(efforts \|\| fastSupported\) \? <div className="oc-model-sep" \/> : null\}/, "the controls separator is default-menu only");
   assert.match(listAndControls, /\{!searching && efforts \? \([\s\S]*?className="oc-model-sub"/, "the effort trigger and submenu are default-menu only");
-  assert.match(listAndControls, /\{!searching && showFast \? \([\s\S]*?role="menuitemcheckbox"/, "Fast is default-menu only");
+  assert.match(listAndControls, /\{!searching && fastSupported \? \(\s*showFast \? fastRow : \(\s*<Tooltip content="Not supported for this model" side="right">\s*<div>\{fastRow\}<\/div>\s*<\/Tooltip>\s*\)\s*\) : null\}/, "both supported and disabled Fast rows are default-menu only");
+  const fastRow = section("  const fastRow = (", "  return (");
+  assert.match(fastRow, /role="menuitemcheckbox"/);
+  assert.match(fastRow, /disabled=\{disabled \|\| !showFast\}/, "the shared Fast row cannot enable an unsupported or disabled picker");
+  assert.match(source, /const showFast = fastSupported && fastModeAvailable\(value\.model\);/, "Fast activation still requires model capability");
 });
 
 test("source-only: model results, no-match text, search input and footer are not search-hidden", () => {

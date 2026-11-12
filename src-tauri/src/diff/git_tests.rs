@@ -8,6 +8,9 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 #[path = "large_file_tests.rs"]
 mod large_file_placeholder;
 
+#[path = "historical_large_file_tests.rs"]
+mod historical_large_file_placeholder;
+
 static N: AtomicUsize = AtomicUsize::new(0);
 
 fn sh(repo: &Path, args: &[&str]) {

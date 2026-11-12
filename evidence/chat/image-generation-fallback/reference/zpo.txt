@@ -1,0 +1,1 @@
+function zpo({imagePath:t,workspacePath:e}){return t.length===0||t.startsWith("/")||e===void 0?t:`${zki(e)}/${t}`}
