@@ -18,5 +18,18 @@
   "paired_wrapper_sha256": "e5fec7bdc67da80921f59f913cbc05ca0e2703f0dc586cddb081a9e6fbda3b32",
   "candidate_transcript_sha256": "9eaed365c64969578273f4ab1f9af24ecb83f62eb32ed726a71ca35e4021d153",
   "behavior": "CANDIDATE_NOT_RUN; automatic hosted CI only",
-  "native_provider_ipc": "NOT_RUN"
+  "native_provider_ipc": "NOT_RUN",
+  "additional_existing_loader": "tests/chat-search/transcriptFind.component.test.mjs",
+  "additional_existing_loader_scenarios": "BYTE_IDENTICAL",
+  "first_candidate_integration_failure": {
+    "head": "b7ce300be981d5f3487fc994ab503346ac1d2dff",
+    "job": 130873452281,
+    "run": 43124623077,
+    "error": "toolDisclosure is not defined",
+    "stage": "Chat top-level find frozen component regression",
+    "tests": 5,
+    "passed": 0,
+    "failed": 5,
+    "correction": "Include exact production toolDisclosure declaration in the eighth AST loader; no product/scenario/assertion changes"
+  }
 }
