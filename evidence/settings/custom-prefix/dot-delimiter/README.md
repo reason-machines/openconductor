@@ -1,6 +1,12 @@
 # Custom terminal-dot delimiter
 
-Conductor Rebuild owns DOT-PREFIX-DELIMITER-49-02. This directory currently records **source preparation only**. No new regression, dependency restore, Cargo operation, typecheck, native UI or provider operation has run.
+Conductor Rebuild owns DOT-PREFIX-DELIMITER-49-02. The historical source-preparation record below is retained. Current execution receipts are separate:
+
+- [Frontend V3](frontend-v3-run-20261112/README.md) reproduced two intended failures, then passed all 13 regression tests, 21 adjacent tests, and typecheck.
+- [Backend](backend-run-20261112/README.md) generated and fetched its pinned lock, but compilation failed in `oc-scripts` before any regression test ran. The Rust validator remains unchanged and blocks merge.
+- [A versioned test-only dependency correction](backend-std-v2/recovery-request.json) is source-only and unrun. Original manifests, fixtures, failure logs, and archives remain preserved.
+
+No native UI, provider, package, or release-inclusion verification is claimed.
 
 ## Source qualification
 
