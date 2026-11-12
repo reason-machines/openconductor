@@ -70,6 +70,7 @@ function mountedHeaderFixture() {
     "../workspace/api": { renameWorkspaceBranch: async (...args: string[]) => { calls.push(["rename", ...args]); await rename.promise; } },
     "../features/openIn/apps": { copyText: async (text: string) => { calls.push(["copy", text]); } },
     "./branchHeaderController": { createBranchHeaderController },
+    "./useBranchPrefix": { useBranchPrefix: () => undefined },
     "./Icons": { BranchIcon: () => null },
     "./menu/menuIcons": { CopyIcon: () => null, PencilIcon: () => null },
     "./menu/ContextMenu": { ContextMenu: () => null, MenuItem: () => null },
@@ -228,6 +229,7 @@ test("archived header renders only a static branch label; active headers retain 
   runInNewContext(outputText, { exports, require: (name: string) => {
     if (name === "react" || name === "react/jsx-runtime") return require(name);
     if (name === "./branchHeaderController") return { createBranchHeaderController };
+    if (name === "./useBranchPrefix") return { useBranchPrefix: () => undefined };
     if (name === "../backend") return { markUserSetBranchName: nativeCall };
     if (name === "../workspace/api") return { renameWorkspaceBranch: nativeCall };
     if (name === "../features/openIn/apps") return { copyText: nativeCall };

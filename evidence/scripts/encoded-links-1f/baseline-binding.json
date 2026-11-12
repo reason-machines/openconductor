@@ -1,0 +1,192 @@
+{
+  "at_utc": "2026-11-12T15:42:05.673404+00:00",
+  "head": "75c2f7bc7cc65d1039a16a8e1fb868296f10b501",
+  "main": "4b6bc34e93c4fa9ab3eaa042e855b77bd712a926",
+  "fixture_sha256": "2c5b3e9f3074d743531169870ea0131e210e90a6478590ee5d294787126127f0",
+  "component_sha256": "5cad08e06c913556195df9063354fb2e50a90ee33e39a586ff72cfb747fe544f",
+  "lock_sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+  "dependency_manifests": {
+    "@base-ui/react": {
+      "version": "1.9.0",
+      "manifest_sha256": "29c2b0a1b941bdc5335ed31e31f40231dc0ad3b96343c92715029d18a32e42c3"
+    },
+    "@hello-pangea/dnd": {
+      "version": "18.0.1",
+      "manifest_sha256": "66710a61094ffd07ba82c8acc5bf027f5bab113b0840741697630a148bb805db"
+    },
+    "@pierre/diffs": {
+      "version": "1.6.4",
+      "manifest_sha256": "7109ad078c2892f40c3567a6b181a11fbbf312ad8fa6d826631c61d3fbd3bf6c"
+    },
+    "@tauri-apps/api": {
+      "version": "2.12.4",
+      "manifest_sha256": "3e8dd9fbaa647151ea6179115c9e83918f46e951fcbb7fb9e998346337a05b48"
+    },
+    "@tauri-apps/plugin-deep-link": {
+      "version": "2.6.3",
+      "manifest_sha256": "6ab68b9a279dcd086d3a92c7021fcb8bf9d872314794bfa534f8997f432375a0"
+    },
+    "@tauri-apps/plugin-dialog": {
+      "version": "2.8.4",
+      "manifest_sha256": "af8a8f5263c57545433dc83e79b88fad6f18c200657f7c6cc7ed6328eb7e8997"
+    },
+    "@tiptap/core": {
+      "version": "3.33.0",
+      "manifest_sha256": "695717b11564d5c6da03eee19428db85c0de45ee84b2e098ce88768dcd153175"
+    },
+    "@tiptap/extension-document": {
+      "version": "3.33.0",
+      "manifest_sha256": "8289defe0ff325e1d19fb154990aa4993f9a7c7b151366f2ab1ab3c528ff676a"
+    },
+    "@tiptap/extension-hard-break": {
+      "version": "3.33.0",
+      "manifest_sha256": "e16b0fb70a73d57432a5ee106383061a2d9369f975626bd34e9f069c028f7d70"
+    },
+    "@tiptap/extension-paragraph": {
+      "version": "3.33.0",
+      "manifest_sha256": "05c2f581052420fe7463c8f9e554e43abee9b106a9db1c0ee15abe7bd7494d18"
+    },
+    "@tiptap/extension-text": {
+      "version": "3.33.0",
+      "manifest_sha256": "9e236bbd6a68cb7c13a5815664ddc8d7802590d6c64d60b3a05b6543008854a6"
+    },
+    "@tiptap/extensions": {
+      "version": "3.33.0",
+      "manifest_sha256": "4e36c78eae5ef999f004607e42ff5f6d25ab9bf10bcccac69e7bbb93a546acf5"
+    },
+    "@tiptap/pm": {
+      "version": "3.33.0",
+      "manifest_sha256": "4873e94dab537df45499f92427080b8a73600d9dc9ca9056c839fd93b33733da"
+    },
+    "@xterm/addon-fit": {
+      "version": "0.11.0",
+      "manifest_sha256": "2f1016c5683f76ac1250c466afc29164bc82da7c2ef224c7d5ab83397edf1637"
+    },
+    "@xterm/addon-unicode11": {
+      "version": "0.9.0",
+      "manifest_sha256": "5efc7bd738527737369d355f5a584d40b0cf05d1e254ad1dde4d0d2495ddf275"
+    },
+    "@xterm/xterm": {
+      "version": "6.0.0",
+      "manifest_sha256": "f5a0dde40a146d6c7a86b22daf6e5740517e5d708ec1d162197e0445431d8f4f"
+    },
+    "dompurify": {
+      "version": "3.4.17",
+      "manifest_sha256": "e6235e2a233d3f5550e2be3bf826a39f4ff5180a710779c1e16dcdf4b9eb20b9"
+    },
+    "fuzzysort": {
+      "version": "3.1.0",
+      "manifest_sha256": "bf40b7bf4b6e59ca1b113ccaf87f3724527e7fc1ab683c6b713ca0e189eaf633"
+    },
+    "lowlight": {
+      "version": "3.3.0",
+      "manifest_sha256": "7d376c50be6087225dd11041b7a3fc9b0551fef37d45f7d2a5a88cad3c55f391"
+    },
+    "mermaid": {
+      "version": "12.3.0",
+      "manifest_sha256": "55180c3723ad01a8c44163fc9a1ddd9327ff5ac8e60eeaf1b7e83849a449aea2"
+    },
+    "motion": {
+      "version": "12.43.0",
+      "manifest_sha256": "5bec2e9c7daeb7ade89cb515068be5b2e9e451392566031c650a1fef60548261"
+    },
+    "react": {
+      "version": "18.3.1",
+      "manifest_sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+    },
+    "react-dom": {
+      "version": "18.3.1",
+      "manifest_sha256": "d2f29e31bd48b833e48cd7bbf41f192e8ee4ff8da249fdbe10d4ac4114b8b12e"
+    },
+    "react-markdown": {
+      "version": "9.1.0",
+      "manifest_sha256": "a0679e19e3563d144bae1c9e7fbdbd66501792b5ba27cf10e6396ba78f01fe36"
+    },
+    "rehype-raw": {
+      "version": "7.0.0",
+      "manifest_sha256": "b3313f6329e5b99fd26107f15d4a06bbd2644d1ee93f10fea5ee898be3248c05"
+    },
+    "rehype-sanitize": {
+      "version": "6.0.0",
+      "manifest_sha256": "b8c794050d76ff903a42c31e8f7a18e85e966cf231b67d9363a81c0dd5157465"
+    },
+    "remark-breaks": {
+      "version": "4.0.0",
+      "manifest_sha256": "df633e5c230d648c90bbfdfe5e75d28a2492af508a38b8751d9faf28af0443c6"
+    },
+    "remark-gfm": {
+      "version": "4.0.1",
+      "manifest_sha256": "c199482a69355b610bd1ff225b097776d4a990445b11e5f4c618930dacc8c79d"
+    },
+    "remark-smartypants": {
+      "version": "3.0.3",
+      "manifest_sha256": "b4b8eae0c5872dd65083a33323f0a64991e44f427509618cc67d1b3c15eb1423"
+    },
+    "unist-util-visit": {
+      "version": "5.2.0",
+      "manifest_sha256": "6f544a847f95a9fcb7d8c1475e97998153fb933b72ee7a9dd60cb5f2abc845dd"
+    },
+    "vscode-material-icons": {
+      "version": "0.1.1",
+      "manifest_sha256": "aa914ae705e66e2e0e7f4a11c5dc1cbfd8618b2f11bc2edef74c68a026bb875e"
+    },
+    "@tauri-apps/cli": {
+      "version": "2.12.4",
+      "manifest_sha256": "59cd2a8f64f2ff245b8479706462ad25c66c4f3eb31013bb2046019577af9b66"
+    },
+    "@types/node": {
+      "version": "22.20.5",
+      "manifest_sha256": "234e64edc31580d6052f8abc89b96f156de29d3b4c7121214b960dec09bd2a25"
+    },
+    "@types/react": {
+      "version": "18.3.31",
+      "manifest_sha256": "7b5d39d90592ab340d44fecbf8d03afc0a0a197f3217259c3bb9ac881ff67a06"
+    },
+    "@types/react-dom": {
+      "version": "18.3.7",
+      "manifest_sha256": "7e3ee716354deebd531059c294716eed6ab402bdf37721b5b011ea093f978f70"
+    },
+    "@vitejs/plugin-react": {
+      "version": "4.7.0",
+      "manifest_sha256": "d608755568d9d654c34e9e2da06659df9122fa89d2604ee09cdeda457a20c035"
+    },
+    "playwright-core": {
+      "version": "1.64.1",
+      "manifest_sha256": "8aa1c9863fa8dea324e674254158cdc79440f4124ef2d84d38053013541cb7d6"
+    },
+    "react-test-renderer": {
+      "version": "18.3.1",
+      "manifest_sha256": "e3b09e5a62e134d5241b520715de45b63ff3568ccbbeeeb70601607c3136c811"
+    },
+    "typescript": {
+      "version": "5.9.3",
+      "manifest_sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    "vite": {
+      "version": "5.4.21",
+      "manifest_sha256": "e9802045cdc313b6da55ec2e2dd79312074645816089d64f6021f567c10c0a03"
+    }
+  },
+  "resources": {
+    "/proc/pressure/cpu": "some avg10=7.60 avg60=6.92 avg300=5.92 total=6844852973\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "/proc/pressure/memory": "some avg10=0.00 avg60=0.00 avg300=0.03 total=937832878\nfull avg10=0.00 avg60=0.00 avg300=0.01 total=513713413\n",
+    "/proc/pressure/io": "some avg10=0.09 avg60=0.13 avg300=0.27 total=732464407\nfull avg10=0.02 avg60=0.05 avg300=0.14 total=292163698\n",
+    "/proc/meminfo": "MemTotal:       33391248 kB\nMemFree:         1968344 kB\nMemAvailable:   28667848 kB\nBuffers:         1307788 kB\nCached:         23521016 kB\nSwapCached:            0 kB\nActive:         16163320 kB\nInactive:        9916584 kB\nActive(anon):     296180 kB\nInactive(anon):  2070412 kB\nActive(file):   15867140 kB\nInactive(file):  7846172 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:                 0 kB\nWriteback:             0 kB\nAnonPages:       1251180 kB\nMapped:           297032 kB\nShmem:           1115272 kB\nKReclaimable:    4242656 kB\nSlab:            4804976 kB\nSReclaimable:    4242656 kB\nSUnreclaim:       562320 kB\nKernelStack:        8432 kB\nPageTables:        26016 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    16695624 kB\nCommitted_AS:    9789880 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:       13348 kB\nVmallocChunk:          0 kB\nPercpu:             6656 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1548288 kB\nDirectMap2M:    32006144 kB\nDirectMap1G:     2097152 kB\n",
+    "/proc/self/cgroup": "0::/reason-payload/vm-hands/b-40f6f912-4ca0-489d-96da-2f9e71f1eb7c\n",
+    "/sys/fs/cgroup/memory.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/memory.max'"
+    },
+    "/sys/fs/cgroup/memory.current": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/memory.current'"
+    },
+    "/sys/fs/cgroup/memory.pressure": "some avg10=0.00 avg60=0.00 avg300=0.03 total=937832878\nfull avg10=0.00 avg60=0.00 avg300=0.01 total=513713413\n",
+    "/sys/fs/cgroup/cpu.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/cpu.max'"
+    },
+    "/sys/fs/cgroup/pids.max": {
+      "unavailable": "[Errno 2] No such file or directory: '/sys/fs/cgroup/pids.max'"
+    }
+  },
+  "grant_message_id": "b047e9d7-2df6-4874-b43a-80b088653e1a",
+  "node_version": "v22.23.4"
+}
