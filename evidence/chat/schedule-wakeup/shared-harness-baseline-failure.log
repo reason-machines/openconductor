@@ -1,0 +1,80 @@
+2026-11-12T00:43:03.2599113Z   type: 'test'
+2026-11-12T00:43:03.2633902Z   ...
+2026-11-12T00:43:03.3190185Z # Subtest: rejected code copy without an installed notifier remains handled and never claims success
+2026-11-12T00:43:03.3192277Z ok 649 - rejected code copy without an installed notifier remains handled and never claims success
+2026-11-12T00:43:03.3218525Z   ---
+2026-11-12T00:43:03.3248723Z   duration_ms: 72.476173
+2026-11-12T00:43:03.3278561Z   type: 'test'
+2026-11-12T00:43:03.3308533Z   ...
+2026-11-12T00:43:03.3338762Z # Subtest: plain assistant text and inline code request no copy feedback
+2026-11-12T00:43:03.3353383Z ok 650 - plain assistant text and inline code request no copy feedback
+2026-11-12T00:43:03.3354219Z   ---
+2026-11-12T00:43:03.3354612Z   duration_ms: 63.361856
+2026-11-12T00:43:03.3355046Z   type: 'test'
+2026-11-12T00:43:03.3355426Z   ...
+2026-11-12T00:43:03.3510611Z # Subtest: tool disclosure remount: unchanged five-case baseline RED and candidate GREEN
+2026-11-12T00:43:03.3513415Z not ok 651 - tool disclosure remount: unchanged five-case baseline RED and candidate GREEN
+2026-11-12T00:43:03.3514402Z   ---
+2026-11-12T00:43:03.3514943Z   duration_ms: 69.325631
+2026-11-12T00:43:03.3515541Z   type: 'test'
+2026-11-12T00:43:03.3516692Z   location: '/home/runner/work/openconductor/openconductor/src/features/chat/disclosureRemount.test.ts:9:1'
+2026-11-12T00:43:03.3522034Z   failureType: 'testCodeFailure'
+2026-11-12T00:43:03.3523567Z   error: |-
+2026-11-12T00:43:03.3525787Z     baseline replay was not qualified:
+2026-11-12T00:43:03.3526479Z
+2026-11-12T00:43:03.3527054Z     node:internal/modules/run_main:123
+2026-11-12T00:43:03.3527969Z         triggerUncaughtException(
+2026-11-12T00:43:03.3528623Z         ^
+2026-11-12T00:43:03.3529392Z
+2026-11-12T00:43:03.3530534Z     AssertionError [ERR_ASSERTION]: Baseline source drifted: src/scripts/api.ts; rebind before freezing, not after RED
+2026-11-12T00:43:03.3531731Z     + actual - expected
+2026-11-12T00:43:03.3532270Z
+2026-11-12T00:43:03.3533013Z     + '[redacted-token]'
+2026-11-12T00:43:03.3534110Z     - '[redacted-token]'
+2026-11-12T00:43:03.3534919Z
+2026-11-12T00:43:03.3535957Z         at file:///home/runner/work/openconductor/openconductor/tests/chat-disclosure/proof-loader.mjs:30:12
+2026-11-12T00:43:03.3537270Z         at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+2026-11-12T00:43:03.3538683Z         at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+2026-11-12T00:43:03.3540028Z         at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+2026-11-12T00:43:03.3541055Z       generatedMessage: false,
+2026-11-12T00:43:03.3541678Z       code: 'ERR_ASSERTION',
+2026-11-12T00:43:03.3542604Z       actual: '[redacted-token]',
+2026-11-12T00:43:03.3543830Z       expected: '[redacted-token]',
+2026-11-12T00:43:03.3544793Z       operator: 'strictEqual',
+2026-11-12T00:43:03.3545413Z       diff: 'simple'
+2026-11-12T00:43:03.3545984Z     }
+2026-11-12T00:43:03.3546496Z
+2026-11-12T00:43:03.3547018Z     Node.js v22.23.4
+2026-11-12T00:43:03.3547583Z
+2026-11-12T00:43:03.3548769Z
+2026-11-12T00:43:03.3549308Z     1 !== 0
+2026-11-12T00:43:03.3549821Z
+2026-11-12T00:43:03.3550328Z   code: 'ERR_ASSERTION'
+2026-11-12T00:43:03.3550766Z   name: 'AssertionError'
+2026-11-12T00:43:03.3551167Z   expected: 0
+2026-11-12T00:43:03.3551508Z   actual: 1
+2026-11-12T00:43:03.3551872Z   operator: 'strictEqual'
+2026-11-12T00:43:03.3552277Z   stack: |-
+2026-11-12T00:43:03.3553153Z     file:///home/runner/work/openconductor/openconductor/tests/chat-disclosure/proof-loader.mjs:30:12
+2026-11-12T00:43:03.3554179Z     ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+2026-11-12T00:43:03.3554751Z     async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+2026-11-12T00:43:03.3555383Z     async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+2026-11-12T00:43:03.3556230Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/features/chat/disclosureRemount.test.ts:27:14)
+2026-11-12T00:43:03.3556936Z     Test.runInAsyncScope (node:async_hooks:214:14)
+2026-11-12T00:43:03.3557319Z     Test.run (node:internal/test_runner/test:1047:25)
+2026-11-12T00:43:03.3557709Z     Test.start (node:internal/test_runner/test:944:17)
+2026-11-12T00:43:03.3558638Z     startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+2026-11-12T00:43:03.3559033Z   ...
+2026-11-12T00:43:03.3559530Z # Subtest: ordinary Claude Edit opens its own diff hover at 150ms without expanding the row
+2026-11-12T00:43:03.3560245Z ok 652 - ordinary Claude Edit opens its own diff hover at 150ms without expanding the row
+2026-11-12T00:43:03.3560673Z   ---
+2026-11-12T00:43:03.3560881Z   duration_ms: 480.379753
+2026-11-12T00:43:03.3561119Z   type: 'test'
+2026-11-12T00:43:03.3561325Z   ...
+2026-11-12T00:43:03.3561753Z # Subtest: Edit selected sides ["removed",""] agree in hover and expanded body
+2026-11-12T00:43:03.3562345Z ok 653 - Edit selected sides ["removed",""] agree in hover and expanded body
+2026-11-12T00:43:03.3562717Z   ---
+2026-11-12T00:43:03.3562928Z   duration_ms: 363.507196
+2026-11-12T00:43:03.3563156Z   type: 'test'
+2026-11-12T00:43:03.3563355Z   ...
+2026-11-12T00:43:03.3563752Z # Subtest: Edit selected sides ["","added"] agree in hover and expanded body

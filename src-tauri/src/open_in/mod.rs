@@ -14,6 +14,8 @@
 
 pub mod commands;
 pub mod icon;
+#[cfg(all(test, unix))]
+mod deleted_finder_ipc;
 #[cfg(test)]
 mod tests;
 #[cfg(test)]

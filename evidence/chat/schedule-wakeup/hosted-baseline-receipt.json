@@ -1,0 +1,34 @@
+{
+  "candidate": "CHAT.SCHEDULE-WAKEUP-RESULT-TIME",
+  "baseline_head": "4ca29ee69e23c8b61b0296fe80f9191b59667be2",
+  "baseline_workflow_run": 43129205127,
+  "baseline_unit_job": 130888858041,
+  "baseline_typecheck_job": 130888858120,
+  "baseline_result": {
+    "qualification": "2_INTENDED_ASSERTION_FAILURES_3_CONTROLS_PASS",
+    "failures": [
+      "WAKE_RESULT_TIME_NOT_PROJECTED",
+      "WAKE_DEADLINE_TRANSITION_MISSING"
+    ],
+    "controls": [
+      "pending-control",
+      "stop-control",
+      "error-control"
+    ],
+    "other_suite_failure": "disclosure historical/live dependency drift; sole owner64 repair PR1109",
+    "typecheck": "PASS",
+    "build": "SKIPPED_AFTER_UNIT_FAILURE"
+  },
+  "frozen_sha256": {
+    "src/features/chat/scheduleWakeup.test.ts": "0865856acc24dbc2e171ce28a925ecf6553b76464f6b83fb869fb7900422cd7f",
+    "evidence/chat/schedule-wakeup/adapter-regression-proposal.json": "ebbb8ebe56da58aa8ce975df12104556bee968c1aa74e226c16177f7561571d4",
+    "evidence/chat/schedule-wakeup/regression-contract.json": "92093766ebdbce7795d2c06b26fdfd5ad9ca1fa2b0256ff0f23cd042375c4ea1"
+  },
+  "fresh_default_branch_checked": "021aeaa4027770258b4daae127bc829d1575d0ab",
+  "target_files_unchanged_since_source_pin": true,
+  "released_disclosure_store_byte_preserved": true,
+  "candidate_execution": "NOT_RUN_PENDING_AUTOMATIC_HOSTED_CI",
+  "local_native_provider_visual": "NOT_RUN",
+  "baseline_log_sha256": "08caac6482349437bbc16f2a22b2d875e2bb5d0f7a1bfb57b168daa85b6f5a81",
+  "baseline_log_format": "Redacted GitHub log excerpt; trailing line whitespace trimmed for git diff --check. Assertions and displayed labels are unchanged."
+}

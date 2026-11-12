@@ -1,0 +1,86 @@
+2026-11-12T02:10:11.4834054Z # Subtest: exited login shells keep local fitting without dispatching resize
+2026-11-12T02:10:11.4856463Z not ok 2698 - exited login shells keep local fitting without dispatching resize
+2026-11-12T02:10:11.4866321Z   ---
+2026-11-12T02:10:11.4866905Z   duration_ms: 361.948536
+2026-11-12T02:10:11.4867551Z   type: 'test'
+2026-11-12T02:10:11.4868614Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalResize.test.ts:147:3'
+2026-11-12T02:10:11.4869723Z   failureType: 'testCodeFailure'
+2026-11-12T02:10:11.4870304Z   error: |-
+2026-11-12T02:10:11.4870941Z     A settled matching exit must suppress PTY resize transport
+2026-11-12T02:10:11.4871664Z     + actual - expected
+2026-11-12T02:10:11.4872173Z     
+2026-11-12T02:10:11.4872609Z     + [
+2026-11-12T02:10:11.4873053Z     +   {
+2026-11-12T02:10:11.4873640Z     +     cols: 112,
+2026-11-12T02:10:11.4874197Z     +     id: 'login-resize-pty',
+2026-11-12T02:10:11.4877825Z     +     rows: 36
+2026-11-12T02:10:11.4878183Z     +   }
+2026-11-12T02:10:11.4878474Z     + ]
+2026-11-12T02:10:11.4878777Z     - []
+2026-11-12T02:10:11.4879075Z     
+2026-11-12T02:10:11.4879381Z   code: 'ERR_ASSERTION'
+2026-11-12T02:10:11.4879758Z   name: 'AssertionError'
+2026-11-12T02:10:11.4880100Z   expected:
+2026-11-12T02:10:11.4880394Z   actual:
+2026-11-12T02:10:11.4880655Z     0:
+2026-11-12T02:10:11.4880955Z       id: 'login-resize-pty'
+2026-11-12T02:10:11.4881321Z       cols: 112
+2026-11-12T02:10:11.4881619Z       rows: 36
+2026-11-12T02:10:11.4881945Z   operator: 'deepStrictEqual'
+2026-11-12T02:10:11.4882671Z   stack: |-
+2026-11-12T02:10:11.4883751Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalResize.test.ts:155:14)
+2026-11-12T02:10:11.4884912Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T02:10:11.4885963Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-12T02:10:11.4886587Z   ...
+2026-11-12T02:10:11.4887330Z # Subtest: completed then exited login shells keep local fitting without dispatching resize
+2026-11-12T02:10:11.4888523Z not ok 2699 - completed then exited login shells keep local fitting without dispatching resize
+2026-11-12T02:10:11.4889238Z   ---
+2026-11-12T02:10:11.4889556Z   duration_ms: 164.562746
+2026-11-12T02:10:11.4889924Z   type: 'test'
+2026-11-12T02:10:11.4890858Z   location: '/home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalResize.test.ts:147:3'
+2026-11-12T02:10:11.4891829Z   failureType: 'testCodeFailure'
+2026-11-12T02:10:11.4892238Z   error: |-
+2026-11-12T02:10:11.4892745Z     A settled matching exit must suppress PTY resize transport
+2026-11-12T02:10:11.4893298Z     + actual - expected
+2026-11-12T02:10:11.4893629Z     
+2026-11-12T02:10:11.4893914Z     + [
+2026-11-12T02:10:11.4894199Z     +   {
+2026-11-12T02:10:11.4894492Z     +     cols: 112,
+2026-11-12T02:10:11.4894877Z     +     id: 'login-resize-pty',
+2026-11-12T02:10:11.4895298Z     +     rows: 36
+2026-11-12T02:10:11.4895801Z     +   }
+2026-11-12T02:10:11.4896086Z     + ]
+2026-11-12T02:10:11.4896377Z     - []
+2026-11-12T02:10:11.4896656Z     
+2026-11-12T02:10:11.4896947Z   code: 'ERR_ASSERTION'
+2026-11-12T02:10:11.4897316Z   name: 'AssertionError'
+2026-11-12T02:10:11.4897692Z   expected:
+2026-11-12T02:10:11.4897984Z   actual:
+2026-11-12T02:10:11.4898263Z     0:
+2026-11-12T02:10:11.4898588Z       id: 'login-resize-pty'
+2026-11-12T02:10:11.4898969Z       cols: 112
+2026-11-12T02:10:11.4899278Z       rows: 36
+2026-11-12T02:10:11.4899620Z   operator: 'deepStrictEqual'
+2026-11-12T02:10:11.4900018Z   stack: |-
+2026-11-12T02:10:11.4901088Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/settings/agents/loginTerminalResize.test.ts:155:14)
+2026-11-12T02:10:11.4902284Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-12T02:10:11.4903096Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-12T02:10:11.4903984Z   ...
+2026-11-12T02:10:11.4904647Z # Subtest: running login shells still fit and dispatch resize to their own PTY
+2026-11-12T02:10:11.4905926Z ok 2700 - running login shells still fit and dispatch resize to their own PTY
+2026-11-12T02:10:11.4906555Z   ---
+2026-11-12T02:10:11.4906868Z   duration_ms: 128.610089
+2026-11-12T02:10:11.4907253Z   type: 'test'
+2026-11-12T02:10:11.4907557Z   ...
+2026-11-12T02:10:11.4908309Z # Subtest: completed but live login shells still fit and dispatch resize to their own PTY
+2026-11-12T02:10:11.4909435Z ok 2701 - completed but live login shells still fit and dispatch resize to their own PTY
+2026-11-12T02:10:11.4910120Z   ---
+2026-11-12T02:10:11.4910423Z   duration_ms: 117.511818
+2026-11-12T02:10:11.4910786Z   type: 'test'
+2026-11-12T02:10:11.4911096Z   ...
+2026-11-12T02:10:11.4911774Z # Subtest: foreign exit login shells still fit and dispatch resize to their own PTY
+2026-11-12T02:10:11.4912798Z ok 2702 - foreign exit login shells still fit and dispatch resize to their own PTY
+2026-11-12T02:10:11.4913456Z   ---
+2026-11-12T02:10:11.4913767Z   duration_ms: 48.696869
+2026-11-12T02:10:11.4914173Z   type: 'test'
+2026-11-12T02:10:11.4914490Z   ...
