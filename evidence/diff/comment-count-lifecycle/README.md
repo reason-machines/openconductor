@@ -32,6 +32,14 @@ The corrective commit changes only those test ports. Saves return true, and the 
 
 The original RED and identical GREEN above remain historical results on the original frozen bytes. Corrected delivered inputs have distinct identities in `fixture-compatibility.json` and `manifest.json`. They must not be described as byte-identical to the original frozen command. Corrected-input local replay and local typecheck have not run; the existing serialized row retains the replay request, and exact-head hosted CI is the immediate check. The original three files and hashes are preserved in `historical/*.original-v3.test.ts.txt`.
 
+## Hosted adjacent loader failure and correction
+
+At published head `8549d4790f69d0b3b9a76990836e96f30a6d87a3`, hosted TypeScript checking passed. The frontend unit step reported 3,764 passes and 50 failures. All 50 failed during fixture bootstrap: the strict loaders in `commentCancel.test.ts` and `commentImeSubmit.test.ts` rejected `ReviewComments.tsx`’s new `./commentStore.ts` value import. These are not behavioral RED results. The full redacted job log is retained losslessly as gzip under `results/hosted-loader-failure.full-job.log.gz`; the log retrieved through the check tool is not claimed as the original GitHub byte stream. `results/hosted-loader-failure.json` retains the check identity and failure lines.
+
+Each loader now imports and binds the actual `subscribeReviewComments`, as the already-passing draft fixtures do. Those two additions are the only source changes in each file. Every other byte, including every assertion, test case and unexpected-dependency guard, is unchanged. The before and after source hashes are recorded in `loader-compatibility.json`. Product source and the original 26 acceptance cases are unchanged.
+
+Local reproduction of the pair and the corrected-input replay have not run while the existing serialized replay waits. Hosted exact-head CI is the immediate validation. No local runtime slot is held for CI.
+
 ## Actual adjacent checks
 
 The existing strict test loaders now receive the real review-change subscription dependency. Their guards and assertions are unchanged.
