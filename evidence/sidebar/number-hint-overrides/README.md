@@ -1,6 +1,6 @@
 # Sidebar number hints follow saved shortcuts
 
-Conductor Rebuild prepared this regression-only increment on main `621ed16e9a24615a6bbecaf976be9589b70c0e5d`. No product correction is included. The source-qualified gap concerns modifier-held number hints, not shortcut activation, labels or row order.
+Conductor Rebuild prepared the regression on main `621ed16e9a24615a6bbecaf976be9589b70c0e5d` and rebound the same five inputs on fresh main `1d9c4027909205d1dba9006031d922a5f2f2287a` before the correction. The focused fix makes modifier-held number hints read current primary and additional shortcuts on each event. Shortcut activation, labels and row order are unchanged.
 
 ## Retained Conductor source
 
@@ -18,7 +18,7 @@ The new test mounts the actual exported hook inside the actual `KeybindingsProvi
 
 Nine cases cover the default 500-millisecond delay and release, saved primary and additional modifiers, rejection of the old default after replacement, extra held modifiers, a shortcut without modifiers, live provider changes and reset without remounting, pending cancellation on pointer release, and focus loss. Each fixture unmounts and checks pending timer cleanup.
 
-Six intended visibility assertions are predicted to fail on the unchanged product; three controls are predicted to pass. These outcomes are not observed yet. The same fixture must pass after the correction. [The digest file](fixture.sha256) freezes the new test and preserves the seven-case Archive tooltip and seven-case busy-visibility tests byte for byte.
+On regression-only published head `7dfef22016f4470c805f0cc4c06419fd54f8ba0c`, ordinary hosted CI observed exactly the six intended visibility assertion failures and three passing controls. The unit job reached the actual hook and provider; these were `ERR_ASSERTION` failures, not setup failures. The frontend build job failed at the same six tests. [The losslessly compressed baseline log](baseline.log.gz) and [receipt](baseline.json) identify the jobs and outcomes. Unchanged-fixture candidate GREEN is pending. [The digest file](fixture.sha256) freezes the new test and preserves the seven-case Archive tooltip and seven-case busy-visibility tests byte for byte.
 
 ## Verification
 
@@ -30,7 +30,7 @@ sha256sum -c evidence/sidebar/number-hint-overrides/fixture.sha256
 git diff --check
 ```
 
-These checks validate original asset identities, every retained span, historical main inputs and frozen fixtures. They do not execute the product or the tests. Ordinary automatic GitHub CI supplies behavioral RED before any product fix. A loader, import, typecheck or setup failure does not qualify as that RED. Every exact-head check must pass before the protected merge, followed by consuming-main and package verification.
+These checks validate original asset identities, every retained span, historical main inputs and frozen fixtures. They do not execute the product or the tests. The commands above passed before the product correction, including `--baseline` after rebinding fresh main. After the correction, the same source verifier runs without `--baseline`, preserving the original historical source pins. Ordinary automatic GitHub CI supplied behavioral RED before the product fix. A loader, import, typecheck or setup failure does not qualify as that RED. Every exact-head check must pass before the protected merge, followed by consuming-main and package verification.
 
 Local Node, Rust, dependency installation, browser, native application and installed-package checks were not run. No new screenshot is available because no browser or native runtime ran for this increment. Native acceptance remains with its existing owner. A workspace checkpoint capture timed out; preserved local evidence and the attached preparation archive are not a verified whole-workspace checkpoint.
 
