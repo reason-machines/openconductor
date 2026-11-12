@@ -1,0 +1,52 @@
+{
+  "producer": "Conductor Rebuild",
+  "head": "26970d79d8bdf1727f294fb2d6e14ab23d5a9b87",
+  "run_id": 43166437567,
+  "command": "node --test \"src/**/*.test.ts\"",
+  "result": "QUALIFIED_BEHAVIORAL_RED",
+  "cases": 9,
+  "intended_failures": 6,
+  "passing_controls": 3,
+  "jobs": [
+    {
+      "name": "unit",
+      "job_id": 131009296562,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43166437567/job/131009296562",
+      "failures": [
+        "2026-11-12T06:12:18.7039791Z not ok 165 - Home Meta+ArrowDown selects and clamps to the last row without opening it until Enter",
+        "2026-11-12T06:12:18.7151306Z not ok 166 - Home Meta+ArrowUp selects and clamps to the first row without opening it until Enter",
+        "2026-11-12T06:12:18.7173737Z not ok 167 - Home Meta endpoint navigation takes precedence over other held modifiers",
+        "2026-11-12T06:12:18.7189772Z not ok 168 - Home Meta arrows select endpoints within the current search results",
+        "2026-11-12T06:12:18.7200479Z not ok 169 - Home Meta arrows cancel native endpoint movement when there are no workspaces",
+        "2026-11-12T06:12:18.7216789Z not ok 170 - Home Meta arrows cancel native endpoint movement when search matches nothing"
+      ],
+      "controls": [
+        "2026-11-12T06:12:18.7227074Z ok 171 - Home Meta arrows leave composing, legacy-229 and already-consumed events untouched",
+        "2026-11-12T06:12:18.7229692Z ok 172 - Home plain arrows and non-Meta modifiers retain adjacent row navigation",
+        "2026-11-12T06:12:18.7232313Z ok 173 - Home Meta arrows leave a single workspace selected and inactive before Enter"
+      ],
+      "assertion_failures": 6
+    },
+    {
+      "name": "build",
+      "job_id": 131009296208,
+      "url": "https://github.com/reason-machines/openconductor/actions/runs/43166437567/job/131009296208",
+      "failures": [
+        "2026-11-12T06:12:51.2510219Z not ok 165 - Home Meta+ArrowDown selects and clamps to the last row without opening it until Enter",
+        "2026-11-12T06:12:51.3345717Z not ok 166 - Home Meta+ArrowUp selects and clamps to the first row without opening it until Enter",
+        "2026-11-12T06:12:51.3544935Z not ok 167 - Home Meta endpoint navigation takes precedence over other held modifiers",
+        "2026-11-12T06:12:51.3568625Z not ok 168 - Home Meta arrows select endpoints within the current search results",
+        "2026-11-12T06:12:51.3605522Z not ok 169 - Home Meta arrows cancel native endpoint movement when there are no workspaces",
+        "2026-11-12T06:12:51.3623879Z not ok 170 - Home Meta arrows cancel native endpoint movement when search matches nothing"
+      ],
+      "controls": [
+        "2026-11-12T06:12:51.3642815Z ok 171 - Home Meta arrows leave composing, legacy-229 and already-consumed events untouched",
+        "2026-11-12T06:12:51.3648183Z ok 172 - Home plain arrows and non-Meta modifiers retain adjacent row navigation",
+        "2026-11-12T06:12:51.3653418Z ok 173 - Home Meta arrows leave a single workspace selected and inactive before Enter"
+      ],
+      "assertion_failures": 6
+    }
+  ],
+  "local_runtime": "NOT_RUN",
+  "native": "NOT_RUN"
+}

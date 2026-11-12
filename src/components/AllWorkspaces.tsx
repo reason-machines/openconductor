@@ -295,9 +295,9 @@ export function AllWorkspaces({ repos, loading = false, sidebarVisible, dispatch
 
   const onSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.defaultPrevented || e.nativeEvent?.isComposing || e.keyCode === 229) return;
-    if (e.key === "Home" || e.key === "End") {
+    if (e.key === "Home" || e.key === "End" || (e.metaKey && (e.key === "ArrowUp" || e.key === "ArrowDown"))) {
       e.preventDefault();
-      const entry = flat[e.key === "Home" ? 0 : flat.length - 1];
+      const entry = flat[e.key === "Home" || e.key === "ArrowUp" ? 0 : flat.length - 1];
       if (entry) setActiveKey(entry.key);
       return;
     }
