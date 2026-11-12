@@ -1,6 +1,6 @@
 {
   "path": "src/scripts/runOutputSelection.test.ts",
-  "sha256": "862521b30632d25b615c656a8e7e9523d7410255a847a4faeb7750cf9796c3ee",
+  "sha256": "ae6afb0674d394071a1e8079916a87c76d75ad849d88f3d2b2e61535f1089855",
   "cases": [
     "actual Run output offers the action only for nonblank selection and a target chat",
     "Run selection reaches the existing strip callback normalized and without truncation",
@@ -16,5 +16,7 @@
   "baseline_main": "f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32",
   "status_at_freeze": "PREPARED_NOT_RUN",
   "expected_assertion_failures": 7,
-  "expected_role_controls": 3
+  "expected_role_controls": 3,
+  "original_publication_sha256": "862521b30632d25b615c656a8e7e9523d7410255a847a4faeb7750cf9796c3ee",
+  "scenario_tail_sha256": "af47dfd47939fd7783ff444275910df06111f0bcc21c6b4f6fb0708366d00139"
 }

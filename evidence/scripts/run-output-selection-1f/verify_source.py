@@ -36,7 +36,18 @@ def main():
         assert len(data) == record['bytes'] and digest(data) == record['sha256'], record['path']
     frozen = json.loads((HERE / 'cases.json').read_text())
     data = (ROOT / frozen['path']).read_bytes()
-    assert digest(data) == frozen['sha256'], 'Frozen Run selection cases changed'
+    assert digest(data) == frozen['sha256'], 'Frozen Run selection fixture changed'
+    change = json.loads((HERE / 'type-correction-v1/change.json').read_text())
+    original = (HERE / 'type-correction-v1/runOutputSelection.test.ts.txt').read_bytes()
+    assert digest(original) == change['original_fixture_sha256'] == frozen['original_publication_sha256']
+    expected = original.decode()
+    for edit in change['changes']:
+        assert expected.count(edit['before']) == 1
+        expected = expected.replace(edit['before'], edit['after'])
+    assert expected.encode() == data, 'Unexpected fixture change outside type-only correction'
+    old_tail = original[original.index(b'\ntest('):]
+    tail = data[data.index(b'\ntest('):]
+    assert tail == old_tail and digest(tail) == frozen['scenario_tail_sha256']
     assert data.decode().count('\ntest(') == len(frozen['cases']) == 10
     for name in frozen['cases']:
         assert f'test({json.dumps(name)}' in data.decode(), name

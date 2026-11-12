@@ -167,15 +167,17 @@ async function fixture({ initial = "running", tab = "run", standalone = false, s
   const { ScriptOutput: Output } = load("src/components/ScriptOutput");
   assert.ok(Strip);
   assert.ok(Output);
+  const ReadyStrip = Strip;
+  const ReadyOutput = Output;
   const host = Object.assign(new EventTarget(), { clientWidth: 800, clientHeight: 400, contains: () => false });
   function element() {
     const renderedTarget = target;
     return standalone
-      ? React.createElement(Output, { output: "default output", onInput: async () => {} })
-      : React.createElement(Strip, {
+      ? React.createElement(ReadyOutput, { output: "default output", onInput: async () => {} })
+      : React.createElement(ReadyStrip, {
           repo, workspace: activeWorkspace, open: true, setOpen: inert, view: tab, setView: inert,
           cwd: activeWorkspace.path ?? repo.path, chatSessionId: renderedTarget,
-          onAddTerminalSelection: callbackEnabled ? (text) => { requests.push({ sessionId: renderedTarget, text }); return accepted; } : undefined,
+          onAddTerminalSelection: callbackEnabled ? (text: string) => { requests.push({ sessionId: renderedTarget, text }); return accepted; } : undefined,
         });
   }
   let renderer: Renderer;
