@@ -83,7 +83,7 @@ export function CodexTab({ settings, save, reload }: AgentTabProps) {
       <StatusLine
         connected={auth.authenticated}
         rows={auth.rows}
-        checking={mode === "chatgpt" ? reading && !account : loading && !provider}
+        checking={mode === "chatgpt" ? reading && !account : loading && (mode === "cli" || !provider)}
         refreshing={loading || reading}
         onRefresh={() => (mode === "chatgpt" ? readAccount() : refresh())}
         notConnectedMessage={auth.notConnectedMessage}

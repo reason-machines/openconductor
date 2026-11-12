@@ -272,6 +272,7 @@ async function startTab(
   const font = currentTerminalFont();
   const term = new Terminal({
     allowProposedApi: true,
+    convertEol: true,
     disableStdin: true,
     cursorBlink: true,
     fontFamily: font.family,
