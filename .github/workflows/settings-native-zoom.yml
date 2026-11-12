@@ -1,23 +1,7 @@
 name: Settings native zoom boundary
 
 on:
-  pull_request:
-    paths:
-      - 'src/settings/appearance.ts'
-      - 'src/settings/nativeZoom.ts'
-      - 'src/settings/nativeZoom.test.ts'
-      - 'src-tauri/capabilities/default.json'
-      - 'evidence/settings/native-zoom/**'
-      - '.github/workflows/settings-native-zoom.yml'
-  push:
-    branches: [main]
-    paths:
-      - 'src/settings/appearance.ts'
-      - 'src/settings/nativeZoom.ts'
-      - 'src/settings/nativeZoom.test.ts'
-      - 'src-tauri/capabilities/default.json'
-      - 'evidence/settings/native-zoom/**'
-      - '.github/workflows/settings-native-zoom.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
