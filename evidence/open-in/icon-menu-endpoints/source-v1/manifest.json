@@ -195,7 +195,7 @@
     "Candidate covers Home/End originating from a focused enabled menu row; focus on the menu container is not claimed.",
     "Typeahead is outside this candidate.",
     "Renderer fixtures mock DOM focus nodes; eventual passes cannot prove browser or WKWebView focus.",
-    "No dependency restore, fixture staging, baseline/candidate/control tests, typecheck, build, browser, native, original app execution, or PR ran.",
+    "No dependency restore, fixture staging, baseline/candidate/control tests, typecheck, build, browser, native, original app execution, or product patch application ran.",
     "No queue row, runtime contract, runner, grant, or watcher is created. Accepted active-file15 remains after composer135."
   ],
   "fixture": {
