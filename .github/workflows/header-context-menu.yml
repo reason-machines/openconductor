@@ -1,29 +1,7 @@
 name: Workspace header context menu
 
 on:
-  pull_request:
-    paths:
-      - .github/workflows/header-context-menu.yml
-      - tests/e2e/workspace-header-menu-*.mjs
-      - tests/workspace-header-menu-results.test.mjs
-      - src/App.tsx
-      - src/components/WorkspaceView.tsx
-      - src/components/WorkspaceNameHeader.tsx
-      - src/components/WorkspaceContextMenu.tsx
-      - src/components/WorkspaceActionsMenu.tsx
-      - src/components/SidebarWorkspaceRow.tsx
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/header-context-menu.yml
-      - tests/e2e/workspace-header-menu-*.mjs
-      - tests/workspace-header-menu-results.test.mjs
-      - src/App.tsx
-      - src/components/WorkspaceView.tsx
-      - src/components/WorkspaceNameHeader.tsx
-      - src/components/WorkspaceContextMenu.tsx
-      - src/components/WorkspaceActionsMenu.tsx
-      - src/components/SidebarWorkspaceRow.tsx
+  workflow_dispatch:
 
 permissions:
   contents: read

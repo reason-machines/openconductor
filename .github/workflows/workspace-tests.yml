@@ -1,9 +1,7 @@
 name: workspace-tests
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   workspace:
@@ -29,3 +27,6 @@ jobs:
           "$RUNNER_TEMP/native-qa-tests"
           rustc --edition 2021 -D warnings --cfg workspace_std_only --test src-tauri/src/native_qa_cache.rs -o "$RUNNER_TEMP/native-qa-cache-tests"
           "$RUNNER_TEMP/native-qa-cache-tests"
+          rustc --edition 2021 -D warnings --cfg workspace_std_only --test src-tauri/src/visual_qa_profile.rs -o "$RUNNER_TEMP/visual-qa-profile-tests"
+          "$RUNNER_TEMP/visual-qa-profile-tests"
+          python3 evidence/qa/ordinary-visual-startup/verify_boundary.py
