@@ -574,7 +574,7 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
       );
     }
     default:
-      return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
+      return <MoreRows {...{ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
   }
 }
 
@@ -869,7 +869,7 @@ function ScheduleWakeupRow({ tool, status, result, resultCreatedAt, now = Date.n
   );
 }
 
-function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
+function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const kind = toolKind(name);
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
@@ -1152,7 +1152,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       return <RowShell {...shell} left={<span>Workspace diff</span>} right={<span className="oc-tool-count">{target}</span>} content={framed(result)} />;
     }
     case "get-terminal-output": {
-      const { text, note: where } = terminalOutput(input, result);
+      const { text, note: where } = terminalOutput(input, result, rawResult);
       return <RowShell {...shell} left={<span>Get terminal output</span>} right={where ? <span className="oc-tool-count">{where}</span> : undefined} content={framed(text)} />;
     }
     case "schedule-wakeup":

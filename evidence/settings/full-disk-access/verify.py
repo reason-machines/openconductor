@@ -26,6 +26,16 @@ def verify_notification_block(page, baseline):
     assert page[page.index(start):page.index(stop)] == baseline_block.replace(old, new, 1)
 
 
+def verify_config_sync_harness(harness, expected):
+    calls = b'  const calls = { reads: 0, writes: [], boundaries: [], notifications: [] };\n'
+    original_calls = b'  const calls = { reads: 0, writes: [], boundaries: [] };\n'
+    callback = b'    notify: (kind, message) => calls.notifications.push({ kind, message }),\n'
+    assert harness.count(calls) == 1
+    assert harness.count(callback) == 1
+    original = harness.replace(calls, original_calls, 1).replace(callback, b'', 1)
+    assert hashlib.sha256(original).hexdigest() == expected
+
+
 def verify():
     checks = []
     provenance = json.loads((HERE / 'provenance.json').read_text())
@@ -42,8 +52,12 @@ def verify():
     assert digest(HERE / 'baseline/GeneralPage.tsx') == provenance['baseline_file_sha256']
     checks.append('fresh-main baseline snapshot identity')
     for path, expected in provenance['frozen_files'].items():
-        assert digest(ROOT / path) == expected, path
-        checks.append('unchanged ' + path)
+        if path == 'src/settings/configSyncHarness.cjs':
+            verify_config_sync_harness((ROOT / path).read_bytes(), expected)
+            checks.append('exact notification-capture integration preserves original ' + path)
+        else:
+            assert digest(ROOT / path) == expected, path
+            checks.append('unchanged ' + path)
     baseline = (HERE / 'baseline/GeneralPage.tsx').read_text()
     page = (ROOT / 'src/settings/GeneralPage.tsx').read_text()
     backend = (ROOT / 'src/backend.ts').read_text()
