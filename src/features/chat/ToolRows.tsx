@@ -159,7 +159,9 @@ const GLYPH_BY_EXT: Record<string, [Glyph, string]> = {
 
 export function FileGlyph({ path }: { path: string }) {
   const ext = path.split(".").pop()?.toLowerCase() ?? "";
-  const [glyph, tint] = GLYPH_BY_EXT[ext] ?? (["file", "muted"] as [Glyph, string]);
+  const [glyph, tint] = (Object.prototype.hasOwnProperty.call(GLYPH_BY_EXT, ext)
+    ? GLYPH_BY_EXT[ext]
+    : undefined) ?? (["file", "muted"] as [Glyph, string]);
   const g = FILE_GLYPHS[glyph];
   return (
     <svg className="oc-file-glyph" data-tint={tint} viewBox={g.viewBox} fill="currentColor" role="img" aria-hidden>
