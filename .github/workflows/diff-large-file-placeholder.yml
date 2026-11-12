@@ -1,0 +1,65 @@
+name: Diff large-file placeholder
+
+on:
+  pull_request:
+    paths:
+      - "src-tauri/src/diff/**"
+      - "src/features/diff/**"
+      - "tests/diff/largeFilePlaceholder.mounted.test.mjs"
+      - "evidence/diff/large-file-placeholder/**"
+      - ".github/workflows/diff-large-file-placeholder.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src-tauri/src/diff/**"
+      - "src/features/diff/**"
+      - "tests/diff/largeFilePlaceholder.mounted.test.mjs"
+      - "evidence/diff/large-file-placeholder/**"
+      - ".github/workflows/diff-large-file-placeholder.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  producer-renderer:
+    name: Large-file backend DTO + mounted renderer
+    runs-on: ubuntu-latest
+    env:
+      DIFF_HARNESS_DIR: ${{ runner.temp }}/large-file-harness
+      DIFF_PLACEHOLDER_DTOS: ${{ runner.temp }}/large-file-proof/dtos
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Verify frozen source and fixture pins
+        run: python3 evidence/diff/large-file-placeholder/verify_source.py
+      - name: Real tracked-file backend cases
+        id: backend
+        continue-on-error: true
+        run: |
+          mkdir -p "$RUNNER_TEMP/large-file-proof"
+          bash tools/diff/run-rust-tests.sh large_file_placeholder -- --nocapture 2>&1 | tee "$RUNNER_TEMP/large-file-proof/backend.log"
+      - name: Mount actual backend DTOs
+        id: renderer
+        continue-on-error: true
+        run: |
+          node --experimental-strip-types --test tests/diff/largeFilePlaceholder.mounted.test.mjs 2>&1 | tee "$RUNNER_TEMP/large-file-proof/renderer.log"
+      - name: Preserve producer and renderer proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: large-file-placeholder-proof
+          path: ${{ runner.temp }}/large-file-proof
+          if-no-files-found: error
+      - name: Require both behavioral checks
+        if: always()
+        env:
+          BACKEND: ${{ steps.backend.outcome }}
+          RENDERER: ${{ steps.renderer.outcome }}
+        run: test "$BACKEND" = success && test "$RENDERER" = success
