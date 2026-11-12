@@ -80,3 +80,11 @@ nice -n 19 timeout --kill-after=5s 120s node --experimental-strip-types --test -
 The single admitted typecheck at 12:46:25–12:46:50Z aborted at Node's imposed 768 MiB heap limit before reporting TypeScript diagnostics. It was not retried or counted as passing. This is not evidence of a code error or a machine-wide memory shortage.
 
 These mounted checks prove notification requests and dialog state under synthetic IPC results, not a displayed toast, real config copying, native execution or visual parity. No screenshot was taken because browser/native execution was outside this unit's admission.
+
+### Full Disk Access evidence integration
+
+At PR #1175 head `7c88386ee588af18817d96ee35064dc8864d22d5`, [hosted typecheck passed](https://github.com/reason-machines/openconductor/actions/runs/43221833557/job/131195000881). The frontend suite passed 3,688 of 3,689 tests. Its sole failure was the Full Disk Access verifier's historical `configSyncHarness.cjs` identity pin, not a behavior assertion. Build and later steps did not run after that failure.
+
+The correction leaves the original FDA provenance, JSON fixture, replay and existing assertions unchanged. For the Sync harness alone, the verifier requires exactly one notification collector and exactly one capture callback, reverses only those two literal additions, and hashes the complete reconstructed original against its unchanged historical pin. Every other frozen path still requires its exact original hash. No native/provider boundary or unrelated harness byte is exempted.
+
+An added automatic wrapper invokes six mutation checks: accept the exact extension; reject a missing collector, missing callback, changed capture, duplicate callback, or unrelated persistence-boundary change. These corrective verifier, mutation and FDA replay runs are **NOT_RUN locally**. They use the existing automatic hosted frontend suite, without a new workflow, dispatch, local runtime admission or capped-typecheck retry. The original four-case Config Sync regression, current capture harness and root lock remain unchanged.
