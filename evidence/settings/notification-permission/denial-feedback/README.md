@@ -41,6 +41,21 @@ All checks ran sequentially on Reason Cloud computer 301 under the existing seri
 
 The test-first local commit `5c6afea` retains the failing regression before the product fix. Hosted exact-head checks and merge identity are reported on the standalone pull request, separately from these local receipts.
 
+## Hosted CI verifier repair
+
+The first hosted frontend run on head `ad948d7cff33aa58ddaa330024e86005acaac7a1` passed 3,584 tests and failed one. The Full Disk Access verifier compared the entire notification block with its historical baseline, so it rejected this unit's intended denial feedback. The notification regression itself passed.
+
+The bounded repair reproduced that sole assertion failure in [verifier-red.txt](verifier-red.txt). The verifier now requires its hash-pinned historical block plus exactly the approved denial-feedback replacement. Every other byte in the notification block remains protected, and all Full Disk Access assertions remain in place. The new [mutation checks](../../full-disk-access/notification_guard_test.py) accept the intended code and reject removal of the callback, early return, permission await, disable bypass, or latest-settings write.
+
+Sequential checks under the ACC slot passed:
+
+- `python3 evidence/settings/full-disk-access/verify.py` passed all 37 static checks after the repair. See [verifier-green.json](verifier-green.json).
+- `node --test src/settings/fullDiskAccess.test.ts src/settings/notificationDenialFeedback.test.ts` passed four top-level tests with zero failures or skips. This includes six mutation checks, the unchanged FDA seven-case baseline and candidate, the eight-case opener control, and the frozen eight-case notification regression. See [raw verifier replay output](verifier-smoke.tap.gz).
+- The FDA fixture, replay, and baseline hashes, the new notification fixture and replay hashes, and the old seven-case notification fixture and replay hashes remained unchanged. Product code did not change during this repair.
+- `git diff --check` passed. No dependency restore, typecheck, build, UI, native, package, dispatch, or watch ran during the repair. All foreground jobs were terminal with no lingering jobs when the slot was explicitly released at `2026-11-12T10:04:08Z`.
+
+Hosted checks on the repaired exact head must pass before merge. Skipped jobs are not passes.
+
 ## Acceptance limits
 
 These are source and mounted-component checks, not native acceptance. Whole original assets are unavailable in this Cloud checkout. The historical REA renderer semantic-analysis heap-exhaustion gap remains open. No original JavaScript is evaluated, and no fresh extraction is claimed.
