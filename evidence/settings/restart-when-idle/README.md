@@ -41,7 +41,7 @@ Owner10 fixture SHA-256 `318917582d80b1e3989af0d5b0ab1b57024dae1e3631138e011ec60
 
 ## Remaining requirements
 
-The prepared idle predicate still has a source-identified gap for `needs_plan_response`, `needs_user_permission`, `needs_user_input` and unrecognized lifecycle values. The accepted safety fixture must observe those failures before the focused fail-closed correction. No acceptance is claimed for unrun cases.
+The prepared idle predicate still has a source-identified gap for `needs_plan_response`, `needs_user_permission`, `needs_user_input` and unrecognized lifecycle values. The accepted safety fixture must observe those failures before the focused fail-closed correction. No acceptance is claimed for unrun cases. The [source correction checkpoint](safety-correction.md) retains the unapplied two-expression candidate and the existing command-only continuation. It is not passing behavior evidence or a merge-ready correction.
 
 The App test isolates unrelated effects and mocks update transport, readiness and persistence boundaries. The coordinator tests do not prove actual owner acknowledgments. The bounded frontend registry is not a universal persistence drain. Local typecheck, adjacent suites, browser/native rendering, actual updater check/download/install/restart, release inclusion and side-by-side Conductor parity are unverified. No screenshot exists because browser/server/native work is excluded from this admission.
 
