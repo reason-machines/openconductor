@@ -60,9 +60,20 @@ class BaselineAssemblyTests(unittest.TestCase):
                         for path, expected in manifest["baseline_sources"].items():
                             self.assertEqual(replay.digest(baseline / path), expected, path)
 
-    def test_frozen_types_remain_hash_pinned(self):
+    def test_baseline_does_not_need_live_sources_or_subprocesses(self):
         manifest = json.loads((HERE / "source.json").read_text())
-        self.assertEqual(replay.digest(HERE / "baseline/types.ts"), manifest["baseline_sources"]["src/settings/types.ts"])
+        with tempfile.TemporaryDirectory(prefix="prefix-assembly-") as temp:
+            tree = Path(temp) / "baseline"
+            with patch.object(replay, "ROOT", Path(temp) / "absent-live-tree"), patch.object(replay.subprocess, "run", side_effect=AssertionError("Source assembly must not run subprocesses")):
+                replay.prepare_sources(tree, "baseline", manifest)
+            for path, expected in manifest["baseline_sources"].items():
+                self.assertEqual(replay.digest(tree / path), expected, path)
+
+    def test_all_frozen_sources_remain_hash_pinned(self):
+        manifest = json.loads((HERE / "source.json").read_text())
+        for path, expected in manifest["baseline_sources"].items():
+            with self.subTest(source=path):
+                self.assertEqual(replay.digest(HERE / "baseline" / Path(path).name), expected, path)
 
 
 if __name__ == "__main__":
