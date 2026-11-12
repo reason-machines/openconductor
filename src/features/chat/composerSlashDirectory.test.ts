@@ -45,7 +45,7 @@ const directory = commands.BUILTIN_COMMANDS.find((command) => command.name === c
 assert.ok(directory);
 const file: document.ComposerPart = { kind: "file", path: "src/example.ts", label: "example.ts", directory: false };
 
-function fixture(parts: document.ComposerPart[], options: { command?: commands.SlashCommand; capability?: boolean } = {}) {
+function fixture(parts: document.ComposerPart[], options: { command?: commands.SlashCommand; capability?: boolean; mcpCapability?: boolean } = {}) {
   const command = options.command ?? directory;
   const draft = document.writeComposerDraft(parts);
   const editor = new Editor({
@@ -97,6 +97,7 @@ function fixture(parts: document.ComposerPart[], options: { command?: commands.S
   assert.ok(exports.Composer);
   const attachment = React.createElement("span", { "data-testid": "retained-attachment" }, "keep.txt");
   let linkCalls = 0;
+  let mcpCalls = 0;
   let renderer: ReturnType<typeof create>;
   act(() => {
     renderer = create(React.createElement(exports.Composer, {
@@ -106,6 +107,7 @@ function fixture(parts: document.ComposerPart[], options: { command?: commands.S
       slashCommands: [command], onSubmit: () => assert.fail("selection must not send a prompt or attachments"),
       onCommand: () => assert.fail("selection must not use the submit command path"),
       onLinkWorkspaces: options.capability === false ? undefined : () => { linkCalls++; },
+      onMcpStatus: options.mcpCapability ? () => { mcpCalls++; } : undefined,
       onStop() {}, onQueue() {},
     }));
   });
@@ -116,6 +118,7 @@ function fixture(parts: document.ComposerPart[], options: { command?: commands.S
     editor, handle,
     snapshot: () => schema.partsFrom(editor.state.doc),
     linkCalls: () => linkCalls,
+    mcpCalls: () => mcpCalls,
     attachmentPreserved: () => assert.equal(renderer.root.findByProps({ "data-testid": "retained-attachment" }), attachedNode),
     pick() { act(() => renderer.root.findByType(MenuBoundary).props.onPick(command)); },
     key(key: string) {
@@ -211,6 +214,54 @@ test("stale, nonempty and composing live selections cannot edit or open director
     } finally { view.close(); }
   }
 });
+
+const mcp = commands.BUILTIN_COMMANDS.find((command) => command.effect === "show_mcp_status");
+assert.ok(mcp);
+for (const action of ["Enter", "Tab", "menu choice"]) {
+  test(`built-in /mcp-status ${action} opens status without sending`, () => {
+    const view = fixture([{ kind: "text", text: "/mcp" }, file, { kind: "text", text: " suffix\n你好" }], { command: mcp, mcpCapability: true });
+    try {
+      const nodes: ProseMirrorNode[] = [];
+      view.editor.state.doc.descendants((node) => { if (node.type.name === "fileMention") nodes.push(node); });
+      if (action === "menu choice") view.pick(); else view.key(action);
+      assert.equal(view.mcpCalls(), 1);
+      assert.equal(view.linkCalls(), 0);
+      const expected = view.editor.schema.nodeFromJSON(schema.composerContent(document.writeComposerDraft([file, { kind: "text", text: " suffix\n你好" }])));
+      assert.deepEqual(view.editor.getJSON(), expected.toJSON());
+      assert.equal(schema.linearDocument(view.editor.state.doc).text, "\uFFFC suffix\n你好");
+      const remaining: ProseMirrorNode[] = [];
+      view.editor.state.doc.descendants((node) => { if (node.type.name === "fileMention") remaining.push(node); });
+      assert.equal(remaining[0], nodes[0]);
+      view.attachmentPreserved();
+    } finally { view.close(); }
+  });
+}
+
+test("MCP status rejects stale, nonempty and composing selections", () => {
+  for (const selection of [{ from: 1, to: 5 }, { from: 1, to: 1 }, null]) {
+    const view = fixture([{ kind: "text", text: "/mcp" }, file], { command: mcp, mcpCapability: true });
+    try {
+      const before = view.editor.getJSON();
+      if (selection) view.editor.commands.setTextSelection(selection);
+      else view.handle.composing = () => true;
+      view.pick();
+      assert.equal(view.mcpCalls(), 0);
+      assert.deepEqual(view.editor.getJSON(), before);
+    } finally { view.close(); }
+  }
+});
+
+for (const command of [mcp, { ...mcp, effect: "agent" }, { ...mcp, effect: "skill", insert: "$mcp-status" }] satisfies commands.SlashCommand[]) {
+  test(`MCP ${command.effect} without immediate capability preserves bounded insertion`, () => {
+    const view = fixture([{ kind: "text", text: "/mcp" }, file], { command, mcpCapability: command.effect !== "show_mcp_status" });
+    try {
+      view.pick();
+      assert.equal(view.mcpCalls(), 0);
+      assert.deepEqual(view.snapshot(), [{ kind: "text", text: `${command.insert ?? `/${command.name}`} ` }, file]);
+      view.attachmentPreserved();
+    } finally { view.close(); }
+  });
+}
 
 test("missing directory capability preserves ordinary text completion", () => {
   const view = fixture([{ kind: "text", text: "/add" }, file], { capability: false });

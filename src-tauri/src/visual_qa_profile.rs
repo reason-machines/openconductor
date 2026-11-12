@@ -272,6 +272,7 @@ mod app {
                     Arc::new(crate::agent::MemorySecretStore::new()),
                 ).with_db(db.0.clone());
                 app.manage(crate::db::open_cache(&data));
+                app.manage(crate::local_storage_commands::state(&data));
                 app.manage(settings);
                 app.manage(db);
                 let config = app.config().app.windows[0].clone();
@@ -322,6 +323,8 @@ mod app {
                 crate::onboarding_commands::db_finish_first_run_onboarding,
                 crate::persistence_commands::db_list_repos,
                 crate::persistence_commands::db_list_workspaces,
+                crate::sidebar_section_commands::db_read_navigation_sections,
+                crate::local_storage_commands::local_storage_get_entry,
                 crate::settings::commands::get_settings,
                 crate::settings::commands::update_settings,
                 crate::settings::commands::initialize_default_runtime,

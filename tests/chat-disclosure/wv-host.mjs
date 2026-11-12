@@ -132,6 +132,7 @@ export function fixture({ kind = "Read", garry = false } = {}) {
     "src/features/chat/slashCompletions": { useAgentCommands: () => undefined },
     "src/features/chat/PermissionRequests": { PermissionRequests: () => null, ToolApproval: forbidden, pendingToolApproval: () => undefined },
     "src/features/chat/ComposerEditor": { ComposerEditor: editor },
+    "src/features/chat/McpStatusDialog": { McpStatusDialog: forbidden },
     "src/lib/local-storage": { composerDrafts: () => draftStore },
     "src/settings/api": { getSettings: async () => settings },
     "src/settings/useBoolPref": { useBoolPref: () => false },

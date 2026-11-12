@@ -87,7 +87,7 @@ for (const scenario of cases) {
       if (scenario.hidden) {
         assert.ok(notes.includes("File too large to display"), `${scenario.name} must show the size placeholder in ${layout}`);
       } else if (scenario.binary) {
-        assert.ok(notes.includes("Binary file not shown."), "Ordinary binary behavior must stay unchanged");
+        assert.ok(notes.includes("Binary file changed"), "Ordinary binary behavior must stay unchanged");
       }
       assert.equal(renderer.root.findAllByProps({ "data-code-view": "mounted" }).length,
         scenario.hidden || scenario.binary ? 0 : 1, "Only allowed text may mount CodeView");

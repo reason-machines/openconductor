@@ -26,7 +26,9 @@ are not treated as proof of resolved paths.
 The restricted builder has no third-party plugins, product menu handler, agent
 installer, bundled-tool installation, attachment sweep, workspace registry import,
 legacy repository migration, environment import or upstream Git backfill. Only
-13 explicitly listed private DB/settings/layout commands are registered. Its
+15 explicitly listed private DB/settings/layout commands are registered.
+The [empty Home startup correction](private-reads/README.md) adds the existing
+navigation-section and subsystem-storage getters with private managed state. Its
 SettingsService receives a new MemorySecretStore directly. No production default
 store, CLI status/credential lookup, terminal, shell, provider, clone or process
 handler is constructed or registered. Unknown commands remain errors, not
