@@ -26,7 +26,9 @@ At test-only head `35fcc0bef38d97b4c87931bf2650084cceec580b`, [unit job 13096610
 
 The candidate changes only the import, `allowProposedApi`, addon loading, and active Unicode version in `session.ts`. Fresh main `621ed16e9a24615a6bbecaf976be9589b70c0e5d` was fetched, merged through the ordinary integration path, and its ordinary initializer was confirmed byte-identical to the frozen baseline before editing. Five existing fixture boundaries gain a Unicode addon stub and a `unicode` property. Their assertion bodies and the entire new ten-case fixture remain unchanged. These stub fixtures do not establish glyph parity.
 
-Candidate hosted verification remains pending until the next automatic jobs run. No workflow or dispatch was changed.
+At candidate `2bc7e048`, [unit job 130980199839](https://github.com/reason-machines/openconductor/actions/runs/43157302395/job/130980199839) passed all ten frozen Unicode cases. The full suite passed 3336 of 3341 tests. All five failures came from `evidence/resource-terminal-labels/regression.cjs`: its strict loader rejected the new `@xterm/addon-unicode11` import before reaching the resource-label assertions. The build stopped at the same test gate, before typecheck.
+
+The compatibility correction adds the missing addon stub and the terminal stub's `unicode` property. All five resource-label test bodies remain byte-identical to candidate `2bc7e048`, and their digest is now part of the static verifier. Fix Root Causes keeps this correction at the fixture dependency boundary rather than altering production or weakening assertions. Hosted full-suite and typecheck confirmation remain pending. No workflow or dispatch was changed.
 
 ## Checks and limits
 
@@ -40,6 +42,6 @@ git diff --check
 
 Both complete assets, 23 spans, ten caller and provider joins, ten frozen cases, the baseline snapshot, and the preserved existing assertion bodies passed static checks. These static checks are separate from the qualified hosted baseline failure.
 
-Candidate behavioral cases, frontend typecheck and build, macOS packaging, and consuming-main checks remain pending. The baseline build did not reach typecheck after its failing test gate. No local Node, browser, native app, provider, or shell PTY runtime was started. No screenshot is supplied because this lane has no browser or native execution admission. Glyph rendering, fonts, native output delivery, installed-app identity, and side-by-side visual parity remain unverified even after isolated parser checks pass.
+The ten candidate behavioral cases passed in hosted CI. Full-suite compatibility confirmation, frontend typecheck and build, macOS packaging, and consuming-main checks remain pending. The baseline build did not reach typecheck after its failing test gate. No local Node, browser, native app, provider, or shell PTY runtime was started. No screenshot is supplied because this lane has no browser or native execution admission. Glyph rendering, fonts, native output delivery, installed-app identity, and side-by-side visual parity remain unverified even after isolated parser checks pass.
 
 Fix Root Causes places the correction before the first output write instead of altering emitted text or cursor positions. The Laziness Protocol keeps the production change to activating the already-installed provider in the existing initializer. Test Behavior, Not Implementation keeps the assertions on output columns and cell widths rather than addon construction. ScriptOutput, Setup, OSC8, input policy, focus, lifecycle, and backend behavior are outside the product diff.
