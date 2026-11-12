@@ -1,0 +1,192 @@
+{
+  "producer": "Conductor Rebuild",
+  "candidate": "SIDEBAR-NUMBER-HINT-OVERRIDES-271",
+  "checked_main": "621ed16e9a24615a6bbecaf976be9589b70c0e5d",
+  "verdict": "STATIC_SOURCE_GAP",
+  "reference_assets": {
+    "renderer": {
+      "path": ".ara-state/retained-conductor-renderer.js",
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    "index": {
+      "path": ".ara-state/sidebar-rename-qualification/shared-index-retained.js",
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  },
+  "spans": [
+    {
+      "asset": "renderer",
+      "symbol": "_ea",
+      "start": 9933149,
+      "end": 9935988,
+      "sha256": "7ca65b3baf4dbb3747bfa2b8279eef4ddcc6d500c03fe936c979b5ea8369955b",
+      "retained": "reference/_ea.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "bea",
+      "start": 9932910,
+      "end": 9933149,
+      "sha256": "9e9db8f438a9a77b00e7a71810683eeaa82a6efe03f26f4c1bb288fe70989203",
+      "retained": "reference/bea.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "v6e",
+      "start": 9925417,
+      "end": 9926268,
+      "sha256": "fe15869a72f4edb02d023c7a26061f628e7b0d5f4e6586b59c454d21cd88fca5",
+      "retained": "reference/v6e.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "uea",
+      "start": 9926268,
+      "end": 9926956,
+      "sha256": "90bb2f4280477b9c32bce3873ce533bb6971f60e118351512c47d597e803bb2b",
+      "retained": "reference/uea.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "timing-and-context",
+      "start": 9932790,
+      "end": 9932910,
+      "sha256": "d31c8d7cf41840db9ce699c6d6b672053639ed24525628d68e8823b24ec96a9b",
+      "retained": "reference/timing-and-context.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "resolver-import",
+      "start": 62031,
+      "end": 62040,
+      "sha256": "d9b223e031ac6784150924a4e7a25fd0b14f2f00377037e5ce7007d38db32594",
+      "retained": "reference/resolver-import.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "resolver-export",
+      "start": 3488414,
+      "end": 3488423,
+      "sha256": "d1820bb5c984831ad266e953cfe1455f3a5fca5eacfd58cee84a319336f8d912",
+      "retained": "reference/resolver-export.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "configurable-command",
+      "start": 3370878,
+      "end": 3371024,
+      "sha256": "c81f51dacc0be37c485d2e40e5dd2d7da1e418e4bfd7f376398da4249e0ef1a5",
+      "retained": "reference/configurable-command.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "PQt",
+      "start": 3395250,
+      "end": 3395365,
+      "sha256": "b4407e5c117065d8454c59dc0f389bddb33269bc94e1a5a3b6975d61d4187377",
+      "retained": "reference/PQt.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "zUt",
+      "start": 3395109,
+      "end": 3395250,
+      "sha256": "664ae67cbc0270254ccb804807594b1dea28dd501c2013dd7ef1ee470365b0a2",
+      "retained": "reference/zUt.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "nh",
+      "start": 3393483,
+      "end": 3393608,
+      "sha256": "278fa92a1196832de0fd6002ab85c9e1fcbdcf6455591306c5d094efa4f2fd4b",
+      "retained": "reference/nh.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "WUt",
+      "start": 3393417,
+      "end": 3393447,
+      "sha256": "a5fc0ce86bfc959fcf1b62b28561e1222c59322d9fc05866d4c7156bd03ca69f",
+      "retained": "reference/WUt.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "EUt",
+      "start": 3388902,
+      "end": 3389049,
+      "sha256": "e2f5dcbc7fa023726e19ce7fc81ea52ef8890f162906c78dcbd56ea67f333b94",
+      "retained": "reference/EUt.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "jUt",
+      "start": 3395628,
+      "end": 3396107,
+      "sha256": "7467088be3d4349a1fa27f52ff2c8e7d6a8a65d2123f81378fd71ed38d7bf5a1",
+      "retained": "reference/jUt.txt"
+    },
+    {
+      "asset": "index",
+      "symbol": "zfe",
+      "start": 3391333,
+      "end": 3392168,
+      "sha256": "65c80a74bc9d0b93cee05d5ae2df4e0d514970672676854a27ae7e072070a590",
+      "retained": "reference/zfe.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "local-sidebar-producer",
+      "start": 10104068,
+      "end": 10104368,
+      "sha256": "ab6c357967f3752842332c624fa6068c8538e5900cadee2f52ba10a0d2d9de75",
+      "retained": "reference/local-sidebar-producer.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "local-sidebar-provider",
+      "start": 10106622,
+      "end": 10106822,
+      "sha256": "fed18dc67090297c5c4e7ddf30ed8da3584a8d9691ef04d181b3da1cb975b7af",
+      "retained": "reference/local-sidebar-provider.txt"
+    },
+    {
+      "asset": "renderer",
+      "symbol": "row-context-to-SFi",
+      "start": 9942937,
+      "end": 9943867,
+      "sha256": "21abee4e0411339660b1a02e8ff926a6476272453f222670f380d445c720f4c8",
+      "retained": "reference/row-context-to-SFi.txt"
+    }
+  ],
+  "current_main_pins": {
+    "src/components/SidebarWorkspaceRow.tsx": "1d99178d43ff7d50b3e5473fce1ee435b43a322cfff645bbbfc603a19967b0ca",
+    "src/state/shortcutHint.ts": "9185606b83d867145ffe36370a46ee7a341f9227fb625621e39c43cbb78d0974",
+    "src/keybindings/KeybindingsProvider.tsx": "991bcea35e8ed7873c7b4915972e699ca889b9c1eb43a098b8ed919ff70484d6",
+    "src/keybindings/overrides.ts": "a0ba64d4994c485590972fdbd6dc47fe938c36203c8e084049e3c2e890820193",
+    "src/keybindings/registry.ts": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9"
+  },
+  "source_fact": "Local sidebar _ea passes key/pointer events to dAn -> imported nH -> exported PQt. PQt reads nh, whose WUt reads/parses the current settings snapshot; any nonempty primary/additional shortcut modifier set may match, including an event with extra modifiers. bea supplies the resulting visibility and first-nine number to SFi and v6e/uea.",
+  "counterexample": "Save workspace.switchTo1 with Ctrl+1. The retained reference predicate accepts a Control event without Meta, while current useShortcutHints checks fixed registry Meta using holdsExactly. Holding Ctrl therefore cannot reveal the current-main number hints.",
+  "proposed_boundary": [
+    "useShortcutHints subscription and local modifier predicate in SidebarWorkspaceRow.tsx",
+    "new mounted hint-hook regression",
+    "bounded evidence"
+  ],
+  "excluded": [
+    "shortcut dispatch",
+    "global registry/resolver",
+    "number ordering",
+    "labels",
+    "archive tooltip and busy fixtures",
+    "navigation",
+    "permissions",
+    "cloud UI",
+    "native runtime"
+  ],
+  "limits": [
+    "Retained REA-decoded Conductor 0.87.6 assets only; no new extraction, semantic-graph run, installed-app freshness or native behavior proof.",
+    "No behavioral regression, local runtime, browser, dispatch or manual rerun executed for this packet.",
+    "Prior REA renderer heap and index graph-budget limitations remain in evidence/help/shortcut-overrides/reference-provenance.md."
+  ]
+}
