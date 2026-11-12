@@ -30,6 +30,10 @@ for name, expected in manifest["baseline_files"].items():
     assert sha(baseline) == expected, name
     if name == button_path:
         original = baseline.decode()
+    elif name == "src/features/diff/filePathChipAlacritty.test.ts":
+        migration = ROOT / "evidence/open-in/vscode-workspace-context/fixture-migration-v2"
+        assert sha((migration / "filePathChipAlacritty.v1.test.ts.txt").read_bytes()) == expected
+        subprocess.run(["python3", str(migration / "verify.py")], check=True)
     else:
         assert sha((ROOT / name).read_bytes()) == expected, "Unleased neighbor changed: " + name
 candidate = original

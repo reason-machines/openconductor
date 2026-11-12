@@ -1,0 +1,58 @@
+{
+  "status": "QUALIFIED_INTENDED_RED; PRODUCT_CORRECTION_ADMITTED; GREEN_PENDING",
+  "published_head": "615d7bf4eccbf343a196cd1b4ad28c15848b0693",
+  "run_id": 43137755510,
+  "job_id": 130917075379,
+  "job_url": "https://github.com/reason-machines/openconductor/actions/runs/43137755510/job/130917075379",
+  "command": "node --test \"src/**/*.test.ts\"",
+  "log_normalization": "Exact five-case excerpt; trailing whitespace removed only",
+  "failed": [
+    {
+      "case": "plain-explanation",
+      "assertion": "IMAGE_FALLBACK_TEXT_MUST_NOT_TOGGLE",
+      "actual_toggle_callbacks": 1,
+      "expected_toggle_callbacks": 0
+    },
+    {
+      "case": "unsupported-svg",
+      "assertion": "IMAGE_FALLBACK_SVG_MUST_NOT_TOGGLE",
+      "actual_toggle_callbacks": 1,
+      "expected_toggle_callbacks": 0
+    }
+  ],
+  "controls_passed": [
+    "recognized-png",
+    "pending-no-result",
+    "read-still-collapsible"
+  ],
+  "suite": {
+    "tests": 3237,
+    "passed": 3235,
+    "failed": 2,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "typecheck": {
+    "job_id": 130917075580,
+    "step": "Run npm run typecheck",
+    "conclusion": "success",
+    "later_unit_tests": "failure",
+    "build": "skipped; not a build pass"
+  },
+  "test_sha256": "5e4784b0a627a43010eb3200022f19e6eec257f0d43995e20fdd99a0e127cdbd",
+  "test_blob": "4e76ae2a0c18815fc05bc84d9c25360a517d42d1",
+  "contract_sha256": "c55f8c098fe30fe859da3f65cbfd99d2db0ca6cf8efa0ad829564d018d197720",
+  "fresh_main": "f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32",
+  "integration_local": "cb521850c5483b64bb7f7948050471537ebad937",
+  "production_assessment": "ToolRows/reason/reducer/view unchanged between original assessment main382da315 and fresh mainf55d0330; regression-only repaired head had byte-identical production",
+  "candidate_scope": "Only optional RowShell isCollapsible(default true), independent body presence, and image-generation exact private extension membership. Existing path presentation unchanged.",
+  "limits": [
+    "No local JavaScript/React/tests/typecheck/build/dependency install",
+    "No new reference acquisition/native/provider/browser runtime",
+    "No dispatch/rerun/new watch",
+    "No ScheduleWakeup/resultCreatedAt/clock/import/Transcript/global detector/format/path/fetch/preview/open/copy/backend changes",
+    "No native/visual acceptance or screenshot; no image preview parity claim",
+    "No #847 action"
+  ]
+}
