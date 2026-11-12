@@ -1,0 +1,165 @@
+{
+  "author": "Conductor Rebuild",
+  "status": "PARTIAL_TYPECHECK_FAILED_STOPPED",
+  "computer": "00637189-5c55-416e-b457-ed7419fb739a",
+  "assigned_branch": "reason/openconductor-notificati-c18e1b05",
+  "containing_main": "84a3153cbca1c25e210c3835ea9314f54e9f6c36",
+  "baseline_head": "187826393019a736477ed86fd280d6cc8cfe5949",
+  "grant_message": "21e74bfb-41ed-4bd8-925b-d63a57262fdc",
+  "slot_released_at": "2026-11-12T11:13:03.837265468Z",
+  "own_runtime_jobs_at_release": [],
+  "records": [
+    {
+      "command": "timeout 120s npm ci --ignore-scripts --no-audit --no-fund",
+      "start": "2026-11-12T11:10:42.071467561Z",
+      "end": "2026-11-12T11:10:47.374455158Z",
+      "exit": 0,
+      "phase": "install",
+      "elapsed_seconds": 5.301,
+      "log": "install.txt",
+      "log_sha256": "57a14d5bbdbb4a0530a459299435645d3a3f1936b70439b2a606e838bd18180b"
+    },
+    {
+      "command": "timeout 120s node --test --test-concurrency=1 --test-reporter=tap src/settings/customPrefixDotDelimiterV2.test.ts",
+      "start": "2026-11-12T11:10:55.246202762Z",
+      "end": "2026-11-12T11:10:56.065044789Z",
+      "exit": 1,
+      "phase": "red",
+      "elapsed_seconds": 0.817,
+      "log": "red.tap.gz",
+      "log_sha256": "cd83b6ed4f3f7d2c7949a09a2082b485c0e904ff64f7b7db065ac3820e7baf9c",
+      "raw_log_sha256": "96c0754a5f0ef03ab826118a75fd10060617fc75ca584d59213d75c6175d0d0a",
+      "counts": {
+        "tests": 13,
+        "pass": 11,
+        "fail": 2,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "command": "timeout 120s node --test --test-concurrency=1 --test-reporter=tap src/settings/customPrefixDotDelimiterV2.test.ts",
+      "start": "2026-11-12T11:12:02.189173818Z",
+      "end": "2026-11-12T11:12:03.037759333Z",
+      "exit": 0,
+      "phase": "green",
+      "elapsed_seconds": 0.847,
+      "log": "green.tap",
+      "log_sha256": "3dbfed36fa45a793d203564116b92ae7b9a59bfed96c809697844ea9ea6a5d2c",
+      "counts": {
+        "tests": 13,
+        "pass": 13,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "command": "timeout 120s node --test --test-concurrency=1 src/settings/customPrefix.test.ts src/settings/customPrefixInput.test.ts src/settings/model.test.ts",
+      "start": "2026-11-12T11:12:11.995980476Z",
+      "end": "2026-11-12T11:12:13.208147807Z",
+      "exit": 0,
+      "phase": "adjacent",
+      "elapsed_seconds": 1.211,
+      "log": "adjacent.tap",
+      "log_sha256": "d393460c457436d3c723f876681184f56199a142b64e6a517e162971a938e6dc",
+      "counts": {
+        "tests": 21,
+        "pass": 21,
+        "fail": 0,
+        "skipped": 0,
+        "cancelled": 0
+      }
+    },
+    {
+      "command": "timeout 120s npm run typecheck",
+      "start": "2026-11-12T11:12:18.841817211Z",
+      "end": "2026-11-12T11:12:37.028534728Z",
+      "exit": 2,
+      "phase": "typecheck",
+      "elapsed_seconds": 18.184,
+      "log": "typecheck.txt",
+      "log_sha256": "2d4e298c26fba77dbfd01cfa93c95315868313fbc8d0b43564476b8e4e049832"
+    }
+  ],
+  "pins": [
+    {
+      "path": "src/settings/model.ts",
+      "sha256": "a1f5436fc5ccd1c426ed5d8b21ea91efff327a9aafd4c7e692864c24f9de5da7",
+      "bytes": 2092
+    },
+    {
+      "path": "src/settings/model.test.ts",
+      "sha256": "c580502edb0cdbc7d25712a71d57393b0a2274097b06d70fa98678a291f7f896",
+      "bytes": 3141
+    },
+    {
+      "path": "src/settings/GitPage.tsx",
+      "sha256": "60aeff4b79509b944d544ec2a4d8e72ae3f69b3662ccfb3dddfdad6fedd902fa",
+      "bytes": 7641
+    },
+    {
+      "path": "src/settings/customPrefixDotDelimiterV2.test.ts",
+      "sha256": "8c6bbd962eb12b2fd45f5d525003d61b17c87d9683db5f2258ad7600b02c046e",
+      "bytes": 7119
+    },
+    {
+      "path": "src/settings/customPrefix.test.ts",
+      "sha256": "8b04f0fbe90ddd1d241ff2e0495263193868f27f2e4fc2c5df7e389c503b3d30",
+      "bytes": 1699
+    },
+    {
+      "path": "src/settings/customPrefixInput.test.ts",
+      "sha256": "7e378f757d7838440955733c9d1d9b907a64fd6a80b03b26768f5e7201f45e26",
+      "bytes": 4610
+    },
+    {
+      "path": "evidence/settings/custom-prefix/fixture/prefix.rs",
+      "sha256": "64eb03864e32c7d4108f133cc45366c9886f0edf47dd672f3d6cd9980a5ada0c",
+      "bytes": 355
+    },
+    {
+      "path": "evidence/settings/custom-prefix/dot-delimiter/backend/harness.rs",
+      "sha256": "92bcfae25ee96df34a6687b450e84b4690800b3b0eaa4104c645f9e1386579ef",
+      "bytes": 2858
+    },
+    {
+      "path": "src-tauri/src/settings/validate.rs",
+      "sha256": "e24c044bcd53405df27e2f784235afadce5f5a138f19bc97c1aa122b8946e8bb",
+      "bytes": 5934
+    },
+    {
+      "path": "package.json",
+      "sha256": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+      "bytes": 1940
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+      "bytes": 222137
+    },
+    {
+      "path": "e2e-artifacts/dot-prefix-c18/dot-prefix-c18-preparation.tar.gz",
+      "sha256": "7d26f874da43b677f434acde0b8c87ccf86111142e51f0cad7bd5b60d7ab9f00",
+      "bytes": 9902
+    },
+    {
+      "path": "e2e-artifacts/dot-prefix-c18/dot-prefix-new13-source-v2.tar.gz",
+      "sha256": "9e8246909f99c8754e31f1e885ab7496dde4bb8f0aa7655164191bbd98bd4bec",
+      "bytes": 16513
+    }
+  ],
+  "node_modules_present": true,
+  "backend_lock_present": false,
+  "not_run": [
+    "Rust lock generation, fetch, compile or tests",
+    "Rust product edit",
+    "browser/server/native/provider/build/package/dispatch",
+    "original native persistence or actual Git creation"
+  ],
+  "mergeable": false,
+  "blockers": [
+    "Frozen NEW13 uses Object.hasOwn, unavailable to existing ES2021 TypeScript lib; no retry or fixture change authorized in the bounded sequence",
+    "Backend delimiter support remains separately unadmitted"
+  ]
+}
