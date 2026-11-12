@@ -23,7 +23,7 @@ export function WorkspaceBranchHeader(props: Props) {
   const branch = props.workspace.branch;
   const label = prefix && branch.startsWith(prefix) ? branch.slice(prefix.length) : branch;
   if (props.workspace.status === "archived") {
-    return <span className="chip"><BranchIcon size={12} /> {label}</span>;
+    return <span className="chip" title={label}><BranchIcon size={12} /> {label}</span>;
   }
   return <EditableBranchHeader {...props} label={label} />;
 }
@@ -82,6 +82,7 @@ function EditableBranchHeader({ repoId, workspace, dispatch, onError, label }: P
           type="button"
           className="chip"
           aria-label="Rename branch"
+          title={label}
           aria-disabled={!controller.canRename || pending}
           onClick={rename}
           onContextMenu={(event) => {
