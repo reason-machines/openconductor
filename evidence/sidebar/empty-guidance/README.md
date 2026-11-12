@@ -45,4 +45,10 @@ The source-only `source.json`, `freeze.json`, and expected-case wording above re
 
 Raw TAP is preserved losslessly in `red.tap.gz`, `green.tap.gz`, and `adjacent.tap.gz`. `execution.json` seals both uncompressed and compressed hashes, terminal timestamps, exact commands, outcomes, and unchanged inputs. Gzip avoids committing whitespace-only TAP diagnostic lines; no fixture or test bytes were transformed. Every enabled automatic check on the exact published PR head must pass before requesting a protected merge; skipped jobs are not passes.
 
+## Hosted typecheck correction
+
+The first published head `d0f50fb37de8a3a5bedeb96ac2bf54741447fc0c` failed hosted typecheck with TS2345 at the frozen case handoff. TypeScript widened the validated `groupBy` property to `string`. The corrected map callback explicitly returns the existing `SidebarGroupBy` domain type. A type-only import and return annotation are the only test changes.
+
+`type-correction.json` records the original and corrected test hashes separately. Removing those added types reconstructs the original test byte-for-byte. All runtime expressions, eleven assertions and frozen eight-case JSON bytes remain unchanged. The original freeze and execution records still describe the original test hash. No local tests or typecheck ran after this correction; hosted CI verifies the corrected head.
+
 There is no screenshot because browser/native execution is outside this admission. No static or mounted check is a claim of side-by-side native parity. This unit stays outside the fixed 992 package cut; the existing release/native owner is unchanged.

@@ -7,6 +7,7 @@ import { runInNewContext } from "node:vm";
 import * as React from "react";
 import ts from "typescript";
 import type { AppState, Repo, Workspace } from "../state/types.ts";
+import type { SidebarGroupBy } from "../home/sidebarGroupBy.ts";
 import * as order from "../state/sidebarOrder.ts";
 import * as navigation from "../state/navigationSections.ts";
 import * as repoOrder from "../state/repoOrder.ts";
@@ -23,7 +24,14 @@ const contractBytes = readFileSync(new URL("../../evidence/sidebar/empty-guidanc
 assert.equal(createHash("sha256").update(contractBytes).digest("hex"), "a1942f64fa21dff44be7e9f0ac4814a442a80423c9f977cb9970544918356115");
 const contract: unknown = JSON.parse(contractBytes.toString("utf8"));
 assert.ok(contract && typeof contract === "object" && "cases" in contract && Array.isArray(contract.cases));
-const cases = contract.cases.map((entry: unknown) => {
+const cases = contract.cases.map((entry: unknown): {
+  id: string;
+  groupBy: SidebarGroupBy;
+  collapsed: boolean;
+  message: boolean;
+  repos: Repo[];
+  filter: string | undefined;
+} => {
   assert.ok(entry && typeof entry === "object" && "id" in entry && typeof entry.id === "string");
   assert.ok("groupBy" in entry && (entry.groupBy === "repo" || entry.groupBy === "status"));
   assert.ok("mainCollapsed" in entry && typeof entry.mainCollapsed === "boolean");
