@@ -303,6 +303,10 @@ export function genericSummary(name: string, input: Record<string, unknown>): st
 
 /** `Kzt`: an MCP tool's label, "mcp__linear__get_issue" -> "Get issue". */
 export function mcpLabel(name: string): string {
+  if (name === "ToolSearch") return "Search tools";
+  if (name === "Monitor") return "Start monitor";
+  if (name === "mcp__conductor__GetComputerConfiguration") return "Read computer configuration";
+  if (name === "mcp__conductor__GetComputerBuildStatus") return "Read computer build status";
   const parts = name.split("__").filter(Boolean);
   const tool = parts[parts.length - 1] ?? name;
   const server = parts.length >= 3 ? parts[1]! : undefined;

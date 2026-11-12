@@ -578,6 +578,9 @@ fn turn_diff(
     args.extend([start.as_str(), end.as_str(), "--"]);
     args.extend(pathspec.as_deref());
     let mut files = parse_unified(&git(repo, &args, &[0])?).map_err(DiffError::Parse)?;
+    for file in &mut files {
+        apply_revision_size_policy(repo, &start, &end, file);
+    }
     files.sort_by(|a, b| a.path.cmp(&b.path));
     Ok(WorkspaceDiff {
         base_commit: start,

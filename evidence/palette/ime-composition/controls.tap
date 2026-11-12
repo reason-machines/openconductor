@@ -1,0 +1,124 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: split Open in ignores already-prevented ArrowDown
+ok 1 - split Open in ignores already-prevented ArrowDown
+  ---
+  duration_ms: 312.454006
+  type: 'test'
+  ...
+# Subtest: split Open in ignores already-prevented ArrowUp
+ok 2 - split Open in ignores already-prevented ArrowUp
+  ---
+  duration_ms: 206.940032
+  type: 'test'
+  ...
+# Subtest: split Open in wraps ArrowDown and consumes its bubbling event
+ok 3 - split Open in wraps ArrowDown and consumes its bubbling event
+  ---
+  duration_ms: 284.67899
+  type: 'test'
+  ...
+# Subtest: split Open in wraps ArrowUp and consumes its bubbling event
+ok 4 - split Open in wraps ArrowUp and consumes its bubbling event
+  ---
+  duration_ms: 353.948363
+  type: 'test'
+  ...
+# Subtest: split Open in leaves ArrowDown untouched when focus is outside its rows
+ok 5 - split Open in leaves ArrowDown untouched when focus is outside its rows
+  ---
+  duration_ms: 261.649046
+  type: 'test'
+  ...
+# Subtest: split Open in leaves ArrowUp untouched when focus is outside its rows
+ok 6 - split Open in leaves ArrowUp untouched when focus is outside its rows
+  ---
+  duration_ms: 44.700262
+  type: 'test'
+  ...
+# Subtest: split Open in leaves unrelated keys untouched
+ok 7 - split Open in leaves unrelated keys untouched
+  ---
+  duration_ms: 100.838374
+  type: 'test'
+  ...
+# Subtest: split Open in preserves Escape close and trigger focus with defaultPrevented=false
+ok 8 - split Open in preserves Escape close and trigger focus with defaultPrevented=false
+  ---
+  duration_ms: 39.087029
+  type: 'test'
+  ...
+# Subtest: split Open in preserves Escape close and trigger focus with defaultPrevented=true
+ok 9 - split Open in preserves Escape close and trigger focus with defaultPrevented=true
+  ---
+  duration_ms: 178.795152
+  type: 'test'
+  ...
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: arrows, Enter and Escape drive the list
+ok 10 - arrows, Enter and Escape drive the list
+  ---
+  duration_ms: 51.417486
+  type: 'test'
+  ...
+# Subtest: Ctrl+J moves forward through results and wraps like Ctrl+N
+ok 11 - Ctrl+J moves forward through results and wraps like Ctrl+N
+  ---
+  duration_ms: 0.720452
+  type: 'test'
+  ...
+# Subtest: Ctrl+K moves backward through results and wraps like Ctrl+P
+ok 12 - Ctrl+K moves backward through results and wraps like Ctrl+P
+  ---
+  duration_ms: 0.375128
+  type: 'test'
+  ...
+# Subtest: Home selects the first result instead of moving only the text cursor
+ok 13 - Home selects the first result instead of moving only the text cursor
+  ---
+  duration_ms: 0.138201
+  type: 'test'
+  ...
+# Subtest: End selects the last result instead of moving only the text cursor
+ok 14 - End selects the last result instead of moving only the text cursor
+  ---
+  duration_ms: 0.113135
+  type: 'test'
+  ...
+# Subtest: modified Home and End keep their text-field behavior
+ok 15 - modified Home and End keep their text-field behavior
+  ---
+  duration_ms: 0.232817
+  type: 'test'
+  ...
+# Subtest: Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+ok 16 - Tab and Shift+Tab switch tabs; Cmd+K closes; letters type
+  ---
+  duration_ms: 0.208701
+  type: 'test'
+  ...
+# Subtest: rebinding the palette toggle changes what closes it
+ok 17 - rebinding the palette toggle changes what closes it
+  ---
+  duration_ms: 0.137679
+  type: 'test'
+  ...
+# Subtest: active row wraps and clamps
+ok 18 - active row wraps and clamps
+  ---
+  duration_ms: 54.668328
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6262.023697
