@@ -404,7 +404,7 @@ function LoginTerminal({ command, label, onDismiss, onDone }: { command: string;
           <CloseIcon size={12} />
         </button>
       </div>
-      <div className="ag-term-body" data-terminal ref={mount} />
+      <div className="ag-term-body" data-terminal ref={mount} onClick={() => mount.current?.querySelector("textarea")?.focus()} />
     </div>
   );
 }

@@ -74,6 +74,7 @@ function fixture(width: number, height: number, failure?: Failure) {
     console: { error: (...args: unknown[]) => { logged.push(args); } },
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name === "../backend") return { openUrl: () => assert.fail("Unexpected URL launch in upload test") };
       if (name === "../state/repoIcon") return repoIcon;
       if (name === "./repoEmoji") return { searchEmoji() { throw new Error("Unexpected emoji tab"); } };
       if (name === "./Dialogs") return { Modal: ({ children }: { children: ReactNode }) => children };
