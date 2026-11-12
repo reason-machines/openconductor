@@ -406,7 +406,12 @@ fn apply_revision_size_policy(repo: &Path, base: &str, commit: &str, file: &mut 
     }
 }
 
-fn revision_changed_line_count(repo: &Path, base: &str, commit: &str, file: &FileDiff) -> Option<u64> {
+fn revision_changed_line_count(
+    repo: &Path,
+    base: &str,
+    commit: &str,
+    file: &FileDiff,
+) -> Option<u64> {
     let paths: Vec<_> = file
         .old_path
         .iter()
