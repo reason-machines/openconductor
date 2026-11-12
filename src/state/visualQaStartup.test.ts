@@ -57,9 +57,10 @@ async function fixture(rejected?: string) {
   const { useAppStore } = load(new URL("./store.ts", import.meta.url));
   assert.equal(typeof useAppStore, "function");
   if (typeof useAppStore !== "function") throw new Error("Missing actual store hook");
+  const useCheckedAppStore = useAppStore;
   let snapshot: { state: AppState; startup: StoreStartup } | undefined;
   function Harness() {
-    const [state, , startup]: readonly [AppState, unknown, StoreStartup] = useAppStore();
+    const [state, , startup]: readonly [AppState, unknown, StoreStartup] = useCheckedAppStore();
     snapshot = { state, startup };
     return null;
   }

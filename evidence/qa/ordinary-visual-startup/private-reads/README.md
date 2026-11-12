@@ -20,4 +20,12 @@ The regression loads the actual React store and storage client, supplies synthet
 - Controls preserve surfaced read failures and reject provider/process/clone/storage-write commands.
 - Static composition checker passes with exactly 15 handlers and private managed-state ordering.
 
+## Compiler-only follow-up
+
+Hosted check `131078520794` at published head `19e66cb0126bc266844ea4a4217ed12a1a9821e2` failed with TS18046: `useAppStore` remained `unknown` inside the nested harness. Keep the actual export check and capture its narrowed value in `useCheckedAppStore`; no cast, assertion removal or product change is added.
+
+The revised fixture SHA-256 is `2f6e2fabec04e7e848d27c6ef98b00b1ca9b01e94061c39b8a221c7542f2bded` (`fixture-v2.sha256`). With only the three product additions temporarily removed, the same revised fixture fails the same three intended cases and passes four controls (`red-v2.tap`). Restoring those additions passes all seven (`green-v2.tap`), with that hash unchanged.
+
+`npm run typecheck` now passes locally (`typecheck.txt`). The portable Rust command from the parent README passes all nine tests (`portable-rust.tap`); it does not compile the macOS-gated Tauri adapter. Static composition and `git diff --check` pass. The three underlying getter/store files are byte-identical to the checked main; their hashes and source locations are retained in `read-routes.json`.
+
 No browser or native launch was performed. This correction does not establish a cause for the earlier unexposed native window, prove protected-directory preservation, or qualify a compiled package. Native/installed UI, onboarding Continue to Home, signature, and compiled executable identity remain unverified here. E1 owns native execution; 992 owns the consuming-main package.
