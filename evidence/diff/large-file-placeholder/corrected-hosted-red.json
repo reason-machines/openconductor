@@ -1,0 +1,50 @@
+{
+  "head": "0163d3a08a6b8aa22d9f3cfe9bcae3cda48df384",
+  "workflow_run": 43126679905,
+  "job": 130880418011,
+  "artifact": 13903546736,
+  "archive_sha256": "ca84e5b86d8871080df1e7210fae3fbfbcff8f6a4c2152837ddc2f632eaac39d",
+  "backend": {
+    "command_exit_code": 101,
+    "outcome": "failure",
+    "passed": 4,
+    "failed": 4,
+    "expected_failures": [
+      "one_mib_plus_one_dense",
+      "five_mib_dense",
+      "five_mib_plus_one_sparse",
+      "six_mib_sparse"
+    ],
+    "failure": "actual workspace_diff DTO lacks file_too_large hide_reason",
+    "log": "corrected-hosted-red/backend.log",
+    "log_sha256": "e2130a7f56231374e64b74d0ea93cf46dc39c4d36a9cbe88bd320ffb86af71fe"
+  },
+  "renderer": {
+    "ran_after_backend_failure": true,
+    "command_exit_code": 1,
+    "outcome": "failure",
+    "passed": 4,
+    "failed": 4,
+    "failure": "actual backend DTO does not render the size placeholder",
+    "log": "corrected-hosted-red/renderer.log",
+    "log_sha256": "fd9124246bc0e19f59c736fd2b03063bd7ab57eccf54ff683883cf21ee6519e1"
+  },
+  "artifact_upload": "success",
+  "final_gate": {
+    "backend_outcome": "failure",
+    "renderer_outcome": "failure",
+    "exit_code": 1,
+    "conclusion": "failure",
+    "expression": "test \"$BACKEND\" = success && test \"$RENDERER\" = success"
+  },
+  "job_conclusion": "failure",
+  "qualification": "Behavioral RED with passing controls; explicit pipefail propagates both command failures, continue-on-error preserves the second stage, and the final gate fails. Step conclusions alone are not behavioral GREEN.",
+  "product": "UNCHANGED",
+  "frozen_fixtures": "cases, registered Rust assertions and mounted assertions unchanged",
+  "fresh_main_recheck": {
+    "commit": "383bf4078aaaa43dc195196784630b7fa5642a6a",
+    "product_files": "git.rs, model.rs, types.ts and FileDiffView.tsx remain byte-identical to the baseline"
+  },
+  "native": "NOT_RUN",
+  "screenshot": "NOT_RUN"
+}

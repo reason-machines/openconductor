@@ -1,0 +1,24 @@
+{
+  "author": "Conductor Rebuild",
+  "dedupe_key": "settings-login-settled-exit-resize-dispatch",
+  "baseline_main_commit": "f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32",
+  "historical_packet_sha256": "905673096c7ce456bc291b8087312ae0874549bfdc6c757fcec803ff9aa4e38e",
+  "reference_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "fixture": "src/settings/agents/loginTerminalResize.test.ts",
+  "fixture_sha256": "880c953e16d0f0a035bc749757d7801b60c541dfd7cdc1bb57ba8386ab2bf17a",
+  "baseline_parts_sha256": "ed7b41ca2d480d83b015ba3498af2ea65a90dbddbefdc080e9e56632cf3c6f36",
+  "scope": "LoginTerminal onResize transport only; local terminal fitting remains active",
+  "expected_baseline": "Two settled matching-exit assertion failures and three live/foreign-exit controls passing",
+  "behavioral_red_green": "NOT_RUN; automatic hosted baseline pending",
+  "native_provider_real_ipc": "NOT_RUN",
+  "source_rebind": {
+    "reference_spans": 13,
+    "default_branch_pins": 19,
+    "static_checks": 24,
+    "one_byte_identity_negative_control": "PASS"
+  },
+  "limits": [
+    "Historical semantic renderer analysis exhausted heap. This pass reads authenticated retained shipped bytes statically, not fresh native observations.",
+    "Matching shipped native PTY resize handler and macOS return/error behavior are not established by the retained frontend assets."
+  ]
+}
