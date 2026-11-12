@@ -1,6 +1,6 @@
 # Per-chat local Fast carrier
 
-Conductor Rebuild owns `composer-local-fast-per-chat-adapter-omission`. This increment starts with a frozen adapter regression against checked main `621ed16e9a24615a6bbecaf976be9589b70c0e5d`. Production carrier changes are not in the regression-only baseline.
+Conductor Rebuild owns `composer-local-fast-per-chat-adapter-omission`. This increment starts with a frozen adapter regression against checked main `621ed16e9a24615a6bbecaf976be9589b70c0e5d`. The regression-only baseline was published before the production correction.
 
 ## Original contract
 
@@ -16,13 +16,29 @@ A saved Claude off selection can use the pinned helper's supported `settings.fas
 
 `src/features/chat/localFastWire.test.ts` has nine cases. Four require recognized local Claude and Codex selections to forward saved on and off together with their exact model and effort. Five controls preserve other-agent isolation, Reason isolation, untouched-chat behavior and unsupported-Claude behavior.
 
-The fixture's SHA-256 is recorded in [fixture.sha256](fixture.sha256). Existing 22 Fast control cases remain unchanged. The expected baseline result is four missing-carrier failures and five passing controls; no actual execution result is claimed until ordinary hosted CI reports it.
+The fixture's SHA-256 is recorded in [fixture.sha256](fixture.sha256). Existing 22 Fast control cases remain unchanged. Automatic hosted run [43157189376](https://github.com/reason-machines/openconductor/actions/runs/43157189376) on exact baseline `2f47f5301cca61cd6a4cd0a3cb6d02d50a35835f` produced the four intended missing-carrier assertion failures and five passing controls in both frontend jobs. Model, effort and saved on/off assertions passed before each complete-options comparison exposed the missing `fastMode` key. [The original unit-job excerpt](hosted-red.json) retains the actual failure details. Typecheck passed; build was skipped after the test failure.
 
 ```bash
 node --test src/features/chat/localFastWire.test.ts
 ```
 
-Before publication, `npm run typecheck`, the two helper-pin hash comparisons, the 27-check offline source verifier, and `git diff --check` passed. No local behavioral test, manual dispatch, rerun, provider process or native UI execution was used.
+## Correction
+
+The matching local adapter now forwards an explicit Fast boolean only for supported models. Reason, other-agent and unsupported-model choices retain their existing boundaries. Claude's nested options use a field-level `fastMode` serde rename. Its runner merges the selected boolean into owned launch settings, preserving unrelated keys and inherited settings when the option is unset. Existing option equality drives idle restart and resume intent. Busy changes still reject without a new user write; original in-flight deferral is not implemented or claimed.
+
+Codex owns model, effort and Fast together in each queued `TurnOptions` snapshot. The command resolves an unset choice from the app default when it accepts the prompt. Chat launches no longer carry the process-wide `service_tier` override; that default is carried as a request option instead, so explicit off is not masked by the launch. The current prompt's choice reaches initial open, resume, failed-resume fallback, reopened processes and ordinary live turns. Fast changes do not restart a live Codex process. Other settings and review launches are unchanged.
+
+Foundational Thinking selected the owned per-prompt snapshot instead of a shared mutable Fast flag. Type System Discipline kept absent, true and false distinct through the request serializer and limited camelCase decoding to the new Claude field.
+
+## Correction checks
+
+- Passed `npm run typecheck`, `git diff --check`, and the unchanged nine-case fixture hash check.
+- Passed formatter checks and isolated agent compilation plus Clippy with warnings denied. `bash tools/agent/run-rust-tests.sh --no-run` compiled test binaries without running them. A session-local tool cache supplied formatter and lint components because the shared tool installation is read-only.
+- Full local `cargo check --manifest-path src-tauri/Cargo.toml --lib --tests` failed in the native dependency build because GLib development metadata is missing. It did not reach application code. Ordinary hosted Tauri compilation and tests remain required.
+- Nine added backend tests cover serde shape, owned Claude settings merge, initial/resumed launch, unchanged reuse, idle on-to-off restart, busy rejection, explicit-null serialization, queued Codex choices and exit/reopen behavior. These behavioral tests have not been run locally and await hosted execution.
+- Before the correction, both helper-pin hash comparisons and 27 offline source/hash assertions passed. Those source checks are not application acceptance.
+
+No local behavioral test, manual dispatch, rerun, provider process or native UI execution was used.
 
 ## Limits
 

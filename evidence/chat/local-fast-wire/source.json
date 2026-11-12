@@ -3,6 +3,9 @@
   "task_key": "composer-local-fast-per-chat-adapter-omission",
   "owner_session": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
   "checked_main": "621ed16e9a24615a6bbecaf976be9589b70c0e5d",
+  "implementation_recheck_main": "1d9c4027909205d1dba9006031d922a5f2f2287a",
+  "manifest_path": "src-tauri/src/agent-binary-manifest.json",
+  "manifest_git_blob": "3c8eb0d9177739764e7d91a85522b3d0f48db01a",
   "app": "Conductor0.87.6",
   "runtime_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
   "rea_artifact_evidence": "ev_cd529df0569984898e88854faf1c585e7a804a0e79ed0a2b78b2eea9b1bbf109",
@@ -48,26 +51,32 @@
     {
       "agent": "claude",
       "pinned_version": "2.1.284",
+      "architecture": "aarch64-apple-darwin",
+      "manifest_entry": "/claude/perArch/aarch64-apple-darwin",
+      "pinned_and_installed_size_bytes": 226563088,
       "pinned_and_installed_sha256": "50a14c2f50f56668380fdda490167f1d3630d5cc18fb8aed3073c2c7ea7314fe",
       "matches": true
     },
     {
       "agent": "codex",
       "pinned_version": "0.156.1",
+      "architecture": "aarch64-apple-darwin",
+      "manifest_entry": "/codex/perArch/aarch64-apple-darwin",
+      "pinned_and_installed_size_bytes": 238138912,
       "pinned_and_installed_sha256": "0196e89fe5a7598f816ee54232c3d7c26d75e502ab5cfe2c9240e81d90f7255a",
       "matches": true
     }
   ],
   "packet": {
-    "name": "local-fast-installed-contract-5723ead4.tar.gz",
-    "attachment_id": "7c3394d6-a820-43d5-be0c-3188d95960ee",
-    "sha256": "548e7f806b45dc9395b1907cc0254eb52442202808d177daccc31a5658fb4b17"
+    "name": "local-fast-installed-contract-5723ead4-v2.tar.gz",
+    "attachment_id": "d18b1fa3-e555-4c67-91a8-1e64a2bac448",
+    "sha256": "aa3e8ad2d54da9d4fab8e4a8d498b6f98190516afe7819c3a5eda04a29b4dee5"
   },
   "page": "https://reasonmachines.com/agents/acc3b5c5-8a01-407e-b474-42e914e3cf90?page=5f784799-da5e-4501-b0ee-41e83a635167",
-  "page_revision": 79,
+  "page_revision": 80,
   "literal_contract": {
-    "claude": "settings.fastMode true-only in original; recreate/defer; preserve resume identity",
-    "codex": "serviceTier fast/null in thread/start, thread/resume and turn/start"
+    "claude": "settings.fastMode true-only in original; recreate/defer; restart resume intent may lack a token or transcript",
+    "codex": "ordinary createSession/runTurn serviceTier fast/null in thread/start, thread/resume and turn/start; separate rollback off uses undefined"
   },
   "supported_design_choice": "Explicit saved Claude off may be sent as settings.fastMode=false, a helper-schema-supported override. Original qB5 omits false. Do not claim identical wire bytes or global-merge runtime parity. Codex off retains original explicit null per request, not process-global service_tier substitution.",
   "limits": [

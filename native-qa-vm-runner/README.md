@@ -105,16 +105,40 @@ self-reported authentication, wrong/stale identities, links, executable payloads
 duplicate members/keys, manifest disagreement and observed mutations refuse.
 There is no latest-successful or candidate-derived fallback.
 
-**No production authenticated broker is implemented.** A Python reader subclass is
-an integration boundary, not proof of authentication. A real integration must
-establish the selected producer-job and attempt linkage without inventing fields
-absent from REST artifact and job responses. Missing authoritative linkage must
-refuse. Synthetic readers prove policy only. The result
-contains exact receipt bytes and selected evidence IDs, never a launch permit.
-The caller must retain the same-build signed candidate through a separately
-authorized channel and compare the returned build ID when using #931's checker.
-No authenticated artifact download, candidate consumption or native verification
-is wired here.
+`tools/native_qa_vm_github.py` implements the read-only `GitHubReader`. Its
+`ApprovedGitHubBuild` adds an independently selected numeric producer job ID,
+bundle artifact ID and SHA-256 of the reviewed workflow bytes to `ApprovedBuild`.
+The caller must review that workflow to establish the `compile-sign` key and its
+unique fixed job name. The reader fetches the pinned workflow content and checks
+both its Git blob identity and the approved SHA-256. It never selects a latest
+build or derives approval from downloaded receipts.
+
+Every API request is a GET to an exact selected path at `api.github.com`. The
+caller supplies a credential directly; no environment lookup or CLI is provided.
+Only the selected artifact ZIP endpoint may redirect once to GitHub
+`productionresultssa<N>.blob.core.windows.net` storage. That request receives no
+GitHub credential, and no further redirect is followed. Other storage origins
+refuse until reviewed. Responses are bounded while reading, and transport errors
+do not expose credentials, response bodies or signed URLs.
+
+GitHub artifact REST metadata has no `run_attempt` or producer job ID. The reader
+checks service repository/run/head linkage and immutable artifact IDs, then
+requires artifact creation and update timestamps inside the independently
+selected numeric producer job's successful exact-attempt lifetime. The approved
+workflow digest establishes that job's producer behavior. Names or receipt
+claims alone never establish attempt linkage. Missing job attempt, source,
+timestamps, service size or digest refuses. This relies on GitHub's service
+metadata and the reviewed producer, not a separate artifact attestation.
+
+`consume_bundle()` checks the original receipt artifact, the service digest of
+the separate bundle artifact, its sole bounded `bundle.zip`, and all five inner
+members. It compares the retained receipt bytes with the independently consumed
+receipt artifact and returns the exact inner archive without extraction. It
+rereads run, job and artifact identity before returning. Synthetic HTTP fixtures
+exercise this reader without real authentication or signing. Live authenticated
+reader consumption remains unverified until exercised through an authorized
+integration. The result is byte/provenance evidence, never a launch permit.
+Retained-signature verification and native execution are not wired here.
 Snapshots detect observed changes, not all transient swaps. Atomic verify-to-launch
 integrity, effective confinement and native admission remain unproved.
 
