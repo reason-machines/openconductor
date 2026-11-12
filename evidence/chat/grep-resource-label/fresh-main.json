@@ -1,0 +1,65 @@
+{
+  "main": "3e4f22d2e525187b1fbb4a940d34afbe227786e5",
+  "integration": "8c183bb7201ac814cb850af412c52633dc313447",
+  "integrated_tree_equals_main": true,
+  "packet_sha256": "1868c0d33dd9e8123362ca6fe4efa9012aed974dd6cb1b0b44f0f7713a18d04a",
+  "archive_checks_passed": 49,
+  "snapshots": {
+    "src/features/chat/ToolRows.tsx": {
+      "blob": "2128fb69e186c32522b8ec05aed7a8c53fe758b8",
+      "sha256": "8ce85541e61222485a998db825f2cc0ac89654c4a94ed4a960aa4e6748df8fa4",
+      "same_as_historical_snapshot": true
+    },
+    "src/features/chat/conductorTools.ts": {
+      "blob": "0864081cbf711c3e515724a9eefd2174fdc93f9d",
+      "sha256": "cf705c1246cb8390ab65b2fb67274331659784271f8287fd5f77b694acf25dfe",
+      "same_as_historical_snapshot": true
+    },
+    "src/features/chat/reason.ts": {
+      "blob": "4c6933c4cb8a8135bf6d39844e17186ec8a3bceb",
+      "sha256": "3e8d6eb90387bb8aef436e90b7ec5f0f08d7bfb01d82daed9fb7f3017d42e2e4",
+      "same_as_historical_snapshot": true
+    },
+    "src/features/chat/reducer.ts": {
+      "blob": "aa9847dcc0b5030b82f1e72496f408834db9d064",
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "same_as_historical_snapshot": true
+    },
+    "src/features/chat/view.ts": {
+      "blob": "b74dab8ea6e88c8203ff20f026bf94709af283be",
+      "sha256": "61451bd3ee05ddbeff47c368e9af7e65f6cca7af6b2ed3a55ec2185f60c46b09",
+      "same_as_historical_snapshot": true
+    },
+    "src/features/chat/Transcript.tsx": {
+      "blob": "63141b351532043b2d880b5f5209683ca7e79e38",
+      "sha256": "8206515e6393845424a06adcfcd91a1d26593e6808aa21947c460eb000e059f4",
+      "same_as_historical_snapshot": true
+    },
+    "src/features/chat/conductorTools.test.ts": {
+      "blob": "2daeb9b895312a3238406fffb9781a5be21c81bc",
+      "sha256": "fb109e78c31f11c30ce1da6efd6ee736bc685e6c9059bcf2fe5ad719068acf40",
+      "same_as_historical_snapshot": true
+    },
+    "src/features/chat/readSyntaxHighlight.test.ts": {
+      "blob": "64acd16b10832fb3266f41f05eb7b246efc5980c",
+      "sha256": "acd015bba3bd0db2b53c1842a278278a837ebc26813486e4c721cf40758120ef",
+      "same_as_historical_snapshot": true
+    },
+    "evidence/chat/read-text-syntax.md": {
+      "blob": "6f1e272dd5eeba02b85f8546fbe5e57628ccf8a2",
+      "sha256": "7e4c4137917fa3d32c004d50b5cf831ad0a0e37d5e5c84b56e604ae8126f3b0c",
+      "same_as_historical_snapshot": true
+    },
+    "evidence/chat/tool-disclosure-remount/README.md": {
+      "blob": "c4f471487a0482c2fa8cbdc43327005f5034fa5e",
+      "sha256": "cad3d72938b5806546c01fbd5822a67e645270ff2230393df5efb66c2047cd4e",
+      "same_as_historical_snapshot": true
+    },
+    "tsconfig.json": {
+      "blob": "d35c1c1f5a95006999b638b365cf1b6f6454272f",
+      "sha256": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5",
+      "same_as_historical_snapshot": true
+    }
+  },
+  "historical_receipt_preserved": true
+}
