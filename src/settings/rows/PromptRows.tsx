@@ -8,6 +8,7 @@
 //    with Conductor's placeholder, saved 2 s after typing and on blur, trimmed
 //    (`fGt`; a blank value removes the key).
 // Saving writes the repository's `.conductor/settings.local.toml`.
+import { usePendingEdit } from "../../lib/persistence/producer.ts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./rows.css";
 import { layerLabel, repoSettingsSetLocal, type EffectiveSettings } from "../repoSettings.ts";
@@ -41,19 +42,22 @@ function PromptRow({ spec, repoPath, effective }: { spec: PromptRowSpec; repoPat
     saved.current = current?.value;
     if (!focused.current) setDraft(current?.value ?? "");
   }, [current?.value]);
-  useEffect(() => () => window.clearTimeout(timer.current), []);
-
-  const commit = useCallback(
-    (text: string) => {
+  const persist = useCallback(
+    async (text: string) => {
       window.clearTimeout(timer.current);
       const write = promptWrite(spec.kind, saved.current, text);
       if (!write) return;
       saved.current = write.value ?? undefined;
       setError(null);
-      repoSettingsSetLocal(repoPath, write.key, write.value).then(notifyRepoSettingsChanged, () => setError("Failed to save custom prompt"));
+      await repoSettingsSetLocal(repoPath, write.key, write.value).then(notifyRepoSettingsChanged, (error) => {
+        setError("Failed to save custom prompt");
+        throw error;
+      });
     },
     [repoPath, spec.kind],
   );
+  const pending = usePendingEdit(`${repoPath}:${spec.kind}`, persist, () => window.clearTimeout(timer.current));
+  const commit = useCallback((text: string) => { pending.change(text); pending.flush(); }, [pending]);
 
   const id = `prompt-${spec.kind}`;
   return (
@@ -85,6 +89,7 @@ function PromptRow({ spec, repoPath, effective }: { spec: PromptRowSpec; repoPat
             onChange={(e) => {
               const text = e.target.value;
               setDraft(text);
+              pending.change(text);
               window.clearTimeout(timer.current);
               timer.current = window.setTimeout(() => commit(text), SAVE_DEBOUNCE_MS);
             }}

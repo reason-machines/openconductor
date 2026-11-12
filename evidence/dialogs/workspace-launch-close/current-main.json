@@ -1,0 +1,47 @@
+{
+  "main": "4b6bc34e93c4fa9ab3eaa042e855b77bd712a926",
+  "sources": [
+    {
+      "path": "src/components/CreateWorkspaceDialog.tsx",
+      "sha256": "9d6b207196a64cd5d3973bc9369a8121c93941be7df6126c689c4bb80d9a61db",
+      "matches_qualified_bytes": true
+    },
+    {
+      "path": "src/components/CreateWorkspaceComposer.tsx",
+      "sha256": "f5556c21dd0bea700fbce5f87d5338ab247a1c3873fdccc75c6e4a0dc2c068e8",
+      "matches_qualified_bytes": true
+    },
+    {
+      "path": "src/components/CreateWorkspacePage.tsx",
+      "sha256": "1d573e745deb194d2bceffe640d3d925d2856cf6518190199419d3d0b91b3370",
+      "matches_qualified_bytes": true
+    },
+    {
+      "path": "src/App.tsx",
+      "sha256": "5376811866211058d8ce2b1430ea38b7dbbaa6286631b742aeefae83a7017709",
+      "matches_qualified_bytes": true
+    },
+    {
+      "path": "src/workspace/createFlow.ts",
+      "sha256": "c8c44d5552fdbf1d91ec4f65496ba820ee30cb7895c34944f228e76ce95e4a1c",
+      "matches_qualified_bytes": true
+    },
+    {
+      "path": "src/workspace/pendingLaunches.ts",
+      "sha256": "22371385923e5dd9ad15a7f3958d42beb587802ab6cffd308af543bf590f108e",
+      "matches_qualified_bytes": true
+    },
+    {
+      "path": "src/workspace/setupWatch.ts",
+      "sha256": "629b3adb5e34e0041c0e41886628a53098cfa822220d2b699604475146c6efa2",
+      "matches_qualified_bytes": true
+    },
+    {
+      "path": "src/workspace/api.ts",
+      "sha256": "7ffebf424d3a6cd7e6be0086d8e9dd3e14b6c41b23365f6553bbb03f9e521899",
+      "matches_qualified_bytes": true
+    }
+  ],
+  "frozen_inputs_passed": 5,
+  "runtime_exercised": false
+}

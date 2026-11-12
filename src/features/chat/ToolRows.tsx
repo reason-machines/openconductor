@@ -159,7 +159,9 @@ const GLYPH_BY_EXT: Record<string, [Glyph, string]> = {
 
 export function FileGlyph({ path }: { path: string }) {
   const ext = path.split(".").pop()?.toLowerCase() ?? "";
-  const [glyph, tint] = GLYPH_BY_EXT[ext] ?? (["file", "muted"] as [Glyph, string]);
+  const [glyph, tint] = (Object.prototype.hasOwnProperty.call(GLYPH_BY_EXT, ext)
+    ? GLYPH_BY_EXT[ext]
+    : undefined) ?? (["file", "muted"] as [Glyph, string]);
   const g = FILE_GLYPHS[glyph];
   return (
     <svg className="oc-file-glyph" data-tint={tint} viewBox={g.viewBox} fill="currentColor" role="img" aria-hidden>
@@ -1208,15 +1210,17 @@ function MoreRows({ tool, status, result, rawResult, resultCreatedAt, now, isErr
       if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
       return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
     default:
-      return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
+      return <GenericRow {...{ tool, status, result, rawResult, isError, open, onToggle }} />;
   }
 }
 
 /** `aUt`: any other tool. MCP tools get `iUt`'s shell; Monitor shows its description as plain text. */
-function GenericRow({ tool, status, result, isError, open, onToggle }: Pick<ToolRowProps, "tool" | "status" | "result" | "isError" | "open" | "onToggle">) {
+function GenericRow({ tool, status, result, rawResult, isError, open, onToggle }: Pick<ToolRowProps, "tool" | "status" | "result" | "rawResult" | "isError" | "open" | "onToggle">) {
   const { name, input } = tool;
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
   const mcp = name.startsWith("mcp__");
+  let output = result;
+  if (!mcp && rawResult !== undefined) output = typeof rawResult === "string" ? rawResult : rawResult ? JSON.stringify(rawResult, null, 2) : "";
   const monitor = name === "Monitor";
   const summary = genericSummary(name, input);
   const left = mcp || monitor || name === "ToolSearch" ? <span>{mcpLabel(name)}</span> : <span className="oc-lowercase">{name}</span>;
@@ -1229,7 +1233,7 @@ function GenericRow({ tool, status, result, isError, open, onToggle }: Pick<Tool
       leftClass={monitor ? "shrink" : undefined}
       right={right}
       align={monitor ? "baseline" : "center"}
-      content={Object.keys(input).length > 0 || result ? <InputOutput input={input} result={result} isError={isError} /> : undefined}
+      content={Object.keys(input).length > 0 || output ? <InputOutput input={input} result={output} isError={isError} /> : undefined}
     />
   );
 }
