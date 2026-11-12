@@ -64,10 +64,22 @@ git diff --check
 
 These are source-integrity and syntax checks only. Local dependencies are
 absent, and no local install or component execution ran. Automatic hosted CI
-must establish the intended six missing-button assertion failures and three
-passing controls before the focused production correction.
+run [43153265924](https://github.com/reason-machines/openconductor/actions/runs/43153265924)
+on published regression head `7331ceb14b966b37fe3f646d0aa82c7a70803775`
+reproduced exactly six missing-action assertion failures (unit job
+130967216714, lines 1476–1642), with all three preview/selection controls
+passing. The complete suite passed 3,297 tests and failed only those six.
+The build job also stopped at the same unit-test step, not a TypeScript error.
 
-Component GREEN, typecheck, build, and packaging are pending. Browser, native,
+The production correction adds only the existing URL opener import and the
+footer button with the existing external-link styling. The frozen new
+regression remains unchanged. Two older emoji/upload test loaders recognize
+the newly imported boundary and fail if those unrelated tabs ever launch a URL;
+their assertions are unchanged. Current main `a7b774752b20af56d371ff7db4e6882aae6bcfdf`
+still contains byte-identical picker, backend, icon-helper and favicon source.
+Both complete original assets and all ten retained spans were reverified.
+
+Candidate component GREEN, typecheck, build, and packaging are pending. Browser, native,
 installed-build, actual external launch, and visual acceptance are NOT_RUN.
 No screenshot exists because this work starts no browser or native runtime.
 The sole native acceptance owner's assignment remains unchanged.
