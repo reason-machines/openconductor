@@ -1,0 +1,205 @@
+Job 130868182887
+https://github.com/reason-machines/openconductor/actions/runs/43123074161/job/130868182887
+2026-11-11T23:52:41.4026029Z # Subtest: Home compact time: spring local-clock boundary
+2026-11-11T23:52:41.4110776Z not ok 127 - Home compact time: spring local-clock boundary
+2026-11-11T23:52:41.4139268Z   ---
+2026-11-11T23:52:41.4185852Z   duration_ms: 352.461139
+2026-11-11T23:52:41.4285532Z   type: 'test'
+2026-11-11T23:52:41.4425977Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:95:3'
+2026-11-11T23:52:41.4485775Z   failureType: 'testCodeFailure'
+2026-11-11T23:52:41.4525632Z   error: |-
+2026-11-11T23:52:41.4550844Z     Expected values to be strictly equal:
+2026-11-11T23:52:41.4575595Z
+2026-11-11T23:52:41.4614176Z     '2h' !== '3h'
+2026-11-11T23:52:41.4645266Z
+2026-11-11T23:52:41.4645786Z   code: 'ERR_ASSERTION'
+2026-11-11T23:52:41.4675927Z   name: 'AssertionError'
+2026-11-11T23:52:41.4735586Z   expected: '3h'
+2026-11-11T23:52:41.4795430Z   actual: '2h'
+2026-11-11T23:52:41.4825344Z   operator: 'strictEqual'
+2026-11-11T23:52:41.4855255Z   stack: |-
+2026-11-11T23:52:41.4946371Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:100:20)
+2026-11-11T23:52:41.5005643Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:52:41.5095971Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T23:52:41.5125450Z   ...
+2026-11-11T23:52:41.5168407Z # Subtest: Home compact time: fall local-clock boundary
+2026-11-11T23:52:41.5235827Z not ok 128 - Home compact time: fall local-clock boundary
+2026-11-11T23:52:41.5275473Z   ---
+2026-11-11T23:52:41.5334206Z   duration_ms: 188.272782
+2026-11-11T23:52:41.5405569Z   type: 'test'
+2026-11-11T23:52:41.5466024Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:95:3'
+2026-11-11T23:52:41.5491043Z   failureType: 'testCodeFailure'
+2026-11-11T23:52:41.5525434Z   error: |-
+2026-11-11T23:52:41.5599492Z     Expected values to be strictly equal:
+2026-11-11T23:52:41.5626111Z
+2026-11-11T23:52:41.5665461Z     '3h' !== '2h'
+2026-11-11T23:52:41.5692328Z
+2026-11-11T23:52:41.5693159Z   code: 'ERR_ASSERTION'
+2026-11-11T23:52:41.5694095Z   name: 'AssertionError'
+2026-11-11T23:52:41.5695170Z   expected: '2h'
+2026-11-11T23:52:41.5695835Z   actual: '3h'
+2026-11-11T23:52:41.5696491Z   operator: 'strictEqual'
+2026-11-11T23:52:41.5697183Z   stack: |-
+2026-11-11T23:52:41.5698576Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:100:20)
+2026-11-11T23:52:41.5700165Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:52:41.5701423Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:52:41.5702446Z   ...
+2026-11-11T23:52:41.6226452Z # Subtest: Home compact time: leap-day full year at February end
+2026-11-11T23:52:41.6245759Z not ok 129 - Home compact time: leap-day full year at February end
+2026-11-11T23:52:41.6335506Z   ---
+2026-11-11T23:52:41.6445726Z   duration_ms: 117.784059
+2026-11-11T23:52:41.6489546Z   type: 'test'
+2026-11-11T23:52:41.6516013Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:95:3'
+2026-11-11T23:52:41.6575621Z   failureType: 'testCodeFailure'
+2026-11-11T23:52:41.6665661Z   error: |-
+2026-11-11T23:52:41.6679476Z     Expected values to be strictly equal:
+2026-11-11T23:52:41.6705518Z
+2026-11-11T23:52:41.6725426Z     '12mo' !== '1y'
+2026-11-11T23:52:41.6726170Z
+2026-11-11T23:52:41.6726945Z   code: 'ERR_ASSERTION'
+2026-11-11T23:52:41.6727674Z   name: 'AssertionError'
+2026-11-11T23:52:41.6728326Z   expected: '1y'
+2026-11-11T23:52:41.6729443Z   actual: '12mo'
+2026-11-11T23:52:41.6730155Z   operator: 'strictEqual'
+2026-11-11T23:52:41.6730813Z   stack: |-
+2026-11-11T23:52:41.6755973Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:100:20)
+2026-11-11T23:52:41.6775785Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:52:41.6777059Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:52:41.6778084Z   ...
+2026-11-11T23:52:41.7465102Z # Subtest: Home compact time: year boundary before full month clock time
+2026-11-11T23:52:41.7485841Z not ok 130 - Home compact time: year boundary before full month clock time
+2026-11-11T23:52:41.7497657Z   ---
+2026-11-11T23:52:41.7498311Z   duration_ms: 103.99407
+2026-11-11T23:52:41.7498899Z   type: 'test'
+2026-11-11T23:52:41.7499936Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:95:3'
+2026-11-11T23:52:41.7501053Z   failureType: 'testCodeFailure'
+2026-11-11T23:52:41.7501640Z   error: |-
+2026-11-11T23:52:41.7502217Z     Expected values to be strictly equal:
+2026-11-11T23:52:41.7502831Z
+2026-11-11T23:52:41.7503389Z     '1y' !== '12mo'
+2026-11-11T23:52:41.7503869Z
+2026-11-11T23:52:41.7504311Z   code: 'ERR_ASSERTION'
+2026-11-11T23:52:41.7505072Z   name: 'AssertionError'
+2026-11-11T23:52:41.7505612Z   expected: '12mo'
+2026-11-11T23:52:41.7506113Z   actual: '1y'
+2026-11-11T23:52:41.7506606Z   operator: 'strictEqual'
+2026-11-11T23:52:41.7507128Z   stack: |-
+2026-11-11T23:52:41.7508331Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:100:20)
+2026-11-11T23:52:41.7510181Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:52:41.7511148Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:52:41.7521143Z   ...
+2026-11-11T23:52:41.8416125Z # Subtest: Home compact time: ordinary same-offset hours control
+2026-11-11T23:52:41.8566264Z ok 131 - Home compact time: ordinary same-offset hours control
+2026-11-11T23:52:41.8615811Z   ---
+2026-11-11T23:52:41.8631246Z   duration_ms: 126.707522
+2026-11-11T23:52:41.8631990Z   type: 'test'
+2026-11-11T23:52:41.8632603Z   ...
+2026-11-11T23:52:41.8633579Z # Subtest: Home compact time: complete ordinary year control
+2026-11-11T23:52:41.8634905Z ok 132 - Home compact time: complete ordinary year control
+2026-11-11T23:52:41.8635658Z   ---
+2026-11-11T23:52:41.8636164Z   duration_ms: 92.15381
+2026-11-11T23:52:41.8636749Z   type: 'test'
+2026-11-11T23:52:41.8637303Z   ...
+
+Job 130868183005
+https://github.com/reason-machines/openconductor/actions/runs/43123074161/job/130868183005
+2026-11-11T23:52:48.4373053Z # Subtest: Home compact time: spring local-clock boundary
+2026-11-11T23:52:48.4458816Z not ok 127 - Home compact time: spring local-clock boundary
+2026-11-11T23:52:48.4477877Z   ---
+2026-11-11T23:52:48.4506262Z   duration_ms: 167.2902
+2026-11-11T23:52:48.4528466Z   type: 'test'
+2026-11-11T23:52:48.4548582Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:95:3'
+2026-11-11T23:52:48.4596531Z   failureType: 'testCodeFailure'
+2026-11-11T23:52:48.4608503Z   error: |-
+2026-11-11T23:52:48.4609000Z     Expected values to be strictly equal:
+2026-11-11T23:52:48.4609444Z
+2026-11-11T23:52:48.4609800Z     '2h' !== '3h'
+2026-11-11T23:52:48.4610127Z
+2026-11-11T23:52:48.4610447Z   code: 'ERR_ASSERTION'
+2026-11-11T23:52:48.4610807Z   name: 'AssertionError'
+2026-11-11T23:52:48.4611163Z   expected: '3h'
+2026-11-11T23:52:48.4611496Z   actual: '2h'
+2026-11-11T23:52:48.4611832Z   operator: 'strictEqual'
+2026-11-11T23:52:48.4612185Z   stack: |-
+2026-11-11T23:52:48.4612910Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:100:20)
+2026-11-11T23:52:48.4643225Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:52:48.4668370Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T23:52:48.4698256Z   ...
+2026-11-11T23:52:48.5102479Z # Subtest: Home compact time: fall local-clock boundary
+2026-11-11T23:52:48.5128913Z not ok 128 - Home compact time: fall local-clock boundary
+2026-11-11T23:52:48.5158459Z   ---
+2026-11-11T23:52:48.5188431Z   duration_ms: 79.733323
+2026-11-11T23:52:48.5188879Z   type: 'test'
+2026-11-11T23:52:48.5218750Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:95:3'
+2026-11-11T23:52:48.5250411Z   failureType: 'testCodeFailure'
+2026-11-11T23:52:48.5278323Z   error: |-
+2026-11-11T23:52:48.5308348Z     Expected values to be strictly equal:
+2026-11-11T23:52:48.5308851Z
+2026-11-11T23:52:48.5350118Z     '3h' !== '2h'
+2026-11-11T23:52:48.5385446Z
+2026-11-11T23:52:48.5408245Z   code: 'ERR_ASSERTION'
+2026-11-11T23:52:48.5413930Z   name: 'AssertionError'
+2026-11-11T23:52:48.5414331Z   expected: '2h'
+2026-11-11T23:52:48.5414664Z   actual: '3h'
+2026-11-11T23:52:48.5414986Z   operator: 'strictEqual'
+2026-11-11T23:52:48.5415336Z   stack: |-
+2026-11-11T23:52:48.5416041Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:100:20)
+2026-11-11T23:52:48.5416817Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:52:48.5417427Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:52:48.5418123Z   ...
+2026-11-11T23:52:48.5699069Z # Subtest: Home compact time: leap-day full year at February end
+2026-11-11T23:52:48.5728715Z not ok 129 - Home compact time: leap-day full year at February end
+2026-11-11T23:52:48.5742723Z   ---
+2026-11-11T23:52:48.5758340Z   duration_ms: 72.153069
+2026-11-11T23:52:48.5765825Z   type: 'test'
+2026-11-11T23:52:48.5788670Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:95:3'
+2026-11-11T23:52:48.5818268Z   failureType: 'testCodeFailure'
+2026-11-11T23:52:48.5848192Z   error: |-
+2026-11-11T23:52:48.5908340Z     Expected values to be strictly equal:
+2026-11-11T23:52:48.5908806Z
+2026-11-11T23:52:48.5956548Z     '12mo' !== '1y'
+2026-11-11T23:52:48.5978245Z
+2026-11-11T23:52:48.6002151Z   code: 'ERR_ASSERTION'
+2026-11-11T23:52:48.6016672Z   name: 'AssertionError'
+2026-11-11T23:52:48.6017126Z   expected: '1y'
+2026-11-11T23:52:48.6017447Z   actual: '12mo'
+2026-11-11T23:52:48.6018423Z   operator: 'strictEqual'
+2026-11-11T23:52:48.6018785Z   stack: |-
+2026-11-11T23:52:48.6019499Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:100:20)
+2026-11-11T23:52:48.6038606Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:52:48.6039221Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:52:48.6039666Z   ...
+2026-11-11T23:52:48.6205260Z # Subtest: Home compact time: year boundary before full month clock time
+2026-11-11T23:52:48.6206229Z not ok 130 - Home compact time: year boundary before full month clock time
+2026-11-11T23:52:48.6206701Z   ---
+2026-11-11T23:52:48.6207018Z   duration_ms: 59.020251
+2026-11-11T23:52:48.6207347Z   type: 'test'
+2026-11-11T23:52:48.6208037Z   location: '/home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:95:3'
+2026-11-11T23:52:48.6260722Z   failureType: 'testCodeFailure'
+2026-11-11T23:52:48.6288380Z   error: |-
+2026-11-11T23:52:48.6289399Z     Expected values to be strictly equal:
+2026-11-11T23:52:48.6362799Z
+2026-11-11T23:52:48.6418316Z     '1y' !== '12mo'
+2026-11-11T23:52:48.6451176Z
+2026-11-11T23:52:48.6508305Z   code: 'ERR_ASSERTION'
+2026-11-11T23:52:48.6538320Z   name: 'AssertionError'
+2026-11-11T23:52:48.6578230Z   expected: '12mo'
+2026-11-11T23:52:48.6618210Z   actual: '1y'
+2026-11-11T23:52:48.6673221Z   operator: 'strictEqual'
+2026-11-11T23:52:48.6748522Z   stack: |-
+2026-11-11T23:52:48.6819057Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/src/components/homeCompactTime.test.ts:100:20)
+2026-11-11T23:52:48.6876559Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:52:48.6929424Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:52:48.6960755Z   ...
+2026-11-11T23:52:48.6994101Z # Subtest: Home compact time: ordinary same-offset hours control
+2026-11-11T23:52:48.6994965Z ok 131 - Home compact time: ordinary same-offset hours control
+2026-11-11T23:52:48.6995429Z   ---
+2026-11-11T23:52:48.6995777Z   duration_ms: 64.056276
+2026-11-11T23:52:48.6996150Z   type: 'test'
+2026-11-11T23:52:48.6996459Z   ...
+2026-11-11T23:52:48.6996935Z # Subtest: Home compact time: complete ordinary year control
+2026-11-11T23:52:48.6998129Z ok 132 - Home compact time: complete ordinary year control
+2026-11-11T23:52:48.6998592Z   ---
+2026-11-11T23:52:48.6998911Z   duration_ms: 42.293542
+2026-11-11T23:52:48.6999275Z   type: 'test'
+2026-11-11T23:52:48.6999595Z   ...

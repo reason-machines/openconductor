@@ -1,6 +1,6 @@
 # Deleted-file Finder regression
 
-Conductor Rebuild owns `DELETED-FINDER-CONSUMER-JOIN-15` and PR #1100. The hosted baseline reproduced four intended assertion failures and six passing controls on macOS and Ubuntu. The candidate repair preserves that frozen fixture. Candidate behavioral GREEN is pending.
+Conductor Rebuild owns `DELETED-FINDER-CONSUMER-JOIN-15` and PR #1100. The hosted baseline reproduced four intended assertion failures and six passing controls on macOS and Ubuntu. The candidate repair preserves that frozen fixture. All ten unchanged cases passed on macOS and Ubuntu at head `99ba5295dfb1588979b120a83279502fa930c6d6`. The refreshed head consuming the shared disclosure repair must pass its own full CI before merge.
 
 ## Source contract
 
@@ -33,7 +33,7 @@ The diff header forwards context only for deleted Finder entries. Existing Finde
 
 The frozen ten cases cover existing file and directory, deleted file, deleted extensionless file, deleted workspace-root file, missing immediate parent, rejected missing editor target, rejected relative path, unknown app, and rejected outside-workspace target. The child entry is an eleventh test function, not a behavior case. The fixture SHA256 remains `873df7d98a6dbf9d4b685c2e35ceffd7aae09060637ed1c7960d947d99b24070`.
 
-The candidate adds separate boundary tests for invalid roots, sibling paths, parent traversal, symlinked parents, and broken leaf links. A new frontend integration file drives the real `FileDiffView`, `FilePathChip`, and IPC adapter with mocked external dependencies. It checks the deleted-Finder context and three unchanged-payload controls. These additional candidate checks are not part of the frozen baseline or observed GREEN yet.
+The candidate adds separate boundary tests for invalid roots, sibling paths, parent traversal, symlinked parents, and broken leaf links. A new frontend integration file drives the real `FileDiffView`, `FilePathChip`, and IPC adapter with mocked external dependencies. It checks the deleted-Finder context and three unchanged-payload controls. These additional candidate checks are not part of the frozen baseline. The full macOS and Ubuntu Tauri jobs passed at `99ba5295dfb1588979b120a83279502fa930c6d6`; the refreshed head still needs its own hosted checks.
 
 The ordinary existing jobs run `cargo test --locked` and the frontend test suite. A focused Rust equivalent is:
 
@@ -49,6 +49,6 @@ No workflow, manual dispatch, local Rust, local Node, browser, or native allocat
 
 The single `FileDiffView` caller prop changes its whole-file checksum. The first candidate head therefore stopped the moved-anchor paired job at its candidate-identity preflight, before any paired behavior ran. The hidden-whitespace paired job then stopped at the same candidate seal in its separate execution manifest. Only the two candidate scalar hashes were refreshed. `previous-pins` preserves both complete previous manifests. `python3 evidence/open-in/deleted-finder/verify_pin_maintenance.py` proves the exact one-field replacements, the single caller-prop change, all baseline and candidate identities, and unchanged fixtures, runners, and workflows. It also calls the hidden-whitespace runner’s original source-only preflight without executing either paired behavior phase. This preflight is not a paired behavioral pass.
 
-The repair was grounded again at main `bb717dad2e1c4cbcbdba3d29d607a76a069f7f85`. Candidate compilation, unchanged-fixture behavioral GREEN, every exact-head workflow, merge, and consuming-main package verification remain pending. No merge is requested until every exact-head check and workflow positively passes.
+The repair now consumes merged main `382da31580a5698feb223e1a3607fc79119fb77a`, including #1109's isolated historical disclosure source root. The prior frontend failure was a mixed-root fixture preflight failure, not a Finder regression. Integration preserves the original pins, disclosure helpers, frozen Finder cases, all scoped product files, and both paired candidate manifests. `main-repair-integration.json` records the static checks. Refreshed-head hosted checks, merge, and consuming-main package verification remain pending. No merge is requested until every exact-head check and workflow positively passes.
 
 Native Finder activation, side-by-side screenshots, GUI behavior, and a released app remain NOT_RUN. No screenshot is supplied because this lane has no native or browser admission.

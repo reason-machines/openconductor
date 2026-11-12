@@ -1,0 +1,62 @@
+2026-11-11T23:53:59.4017332Z # Subtest: read-open-return: manually opened Read survives the actual A to B to A tab switch
+2026-11-11T23:53:59.4019223Z not ok 638 - read-open-return: manually opened Read survives the actual A to B to A tab switch
+2026-11-11T23:53:59.4020160Z   ---
+2026-11-11T23:53:59.4020667Z   duration_ms: 2754.22925
+2026-11-11T23:53:59.4021253Z   type: 'test'
+2026-11-11T23:53:59.4022428Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-disclosure/disclosureRemount.component.test.mjs:25:1'
+2026-11-11T23:53:59.4023591Z   failureType: 'testCodeFailure'
+2026-11-11T23:53:59.4024153Z   error: |-
+2026-11-11T23:53:59.4024644Z     READ_OPEN_RETURN_LOST_MANUAL_EXPANSION
+2026-11-11T23:53:59.4025193Z
+2026-11-11T23:53:59.4025622Z     false !== true
+2026-11-11T23:53:59.4026032Z
+2026-11-11T23:53:59.4026417Z   code: 'ERR_ASSERTION'
+2026-11-11T23:53:59.4026939Z   name: 'AssertionError'
+2026-11-11T23:53:59.4027464Z   expected: true
+2026-11-11T23:53:59.4027943Z   actual: false
+2026-11-11T23:53:59.4031913Z   operator: 'strictEqual'
+2026-11-11T23:53:59.4032691Z   stack: |-
+2026-11-11T23:53:59.4034329Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-disclosure/disclosureRemount.component.test.mjs:35:12)
+2026-11-11T23:53:59.4035883Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:53:59.4036990Z     async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+2026-11-11T23:53:59.4037897Z   ...
+2026-11-11T23:54:00.7110111Z # Subtest: plan-closed-return: manually closed default-open plan survives A to B to A
+2026-11-11T23:54:00.7139946Z not ok 639 - plan-closed-return: manually closed default-open plan survives A to B to A
+2026-11-11T23:54:00.7181804Z   ---
+2026-11-11T23:54:00.7209085Z   duration_ms: 1360.763987
+2026-11-11T23:54:00.7239070Z   type: 'test'
+2026-11-11T23:54:00.7240629Z   location: '/home/runner/work/openconductor/openconductor/tests/chat-disclosure/disclosureRemount.component.test.mjs:40:1'
+2026-11-11T23:54:00.7268931Z   failureType: 'testCodeFailure'
+2026-11-11T23:54:00.7298910Z   error: |-
+2026-11-11T23:54:00.7318928Z     PLAN_CLOSED_RETURN_LOST_MANUAL_COLLAPSE
+2026-11-11T23:54:00.7328885Z
+2026-11-11T23:54:00.7338043Z     true !== false
+2026-11-11T23:54:00.7338919Z
+2026-11-11T23:54:00.7339523Z   code: 'ERR_ASSERTION'
+2026-11-11T23:54:00.7340260Z   name: 'AssertionError'
+2026-11-11T23:54:00.7340887Z   expected: false
+2026-11-11T23:54:00.7341448Z   actual: true
+2026-11-11T23:54:00.7342017Z   operator: 'strictEqual'
+2026-11-11T23:54:00.7342627Z   stack: |-
+2026-11-11T23:54:00.7344122Z     TestContext.<anonymous> (file:///home/runner/work/openconductor/openconductor/tests/chat-disclosure/disclosureRemount.component.test.mjs:50:12)
+2026-11-11T23:54:00.7345774Z     async Test.run (node:internal/test_runner/test:1054:7)
+2026-11-11T23:54:00.7346893Z     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+2026-11-11T23:54:00.7347820Z   ...
+2026-11-11T23:54:01.9340182Z # Subtest: different-tool-id-isolation: untouched B does not inherit opened A's state
+2026-11-11T23:54:01.9347037Z ok 640 - different-tool-id-isolation: untouched B does not inherit opened A's state
+2026-11-11T23:54:01.9376184Z   ---
+2026-11-11T23:54:01.9407422Z   duration_ms: 1302.510331
+2026-11-11T23:54:01.9459082Z   type: 'test'
+2026-11-11T23:54:01.9474548Z   ...
+2026-11-11T23:54:03.4451126Z # Subtest: same-mounted-chat-rerender: ordinary rerender retains the opened Read
+2026-11-11T23:54:03.4453117Z ok 641 - same-mounted-chat-rerender: ordinary rerender retains the opened Read
+2026-11-11T23:54:03.4454052Z   ---
+2026-11-11T23:54:03.4454585Z   duration_ms: 1227.341933
+2026-11-11T23:54:03.4455168Z   type: 'test'
+2026-11-11T23:54:03.4455713Z   ...
+2026-11-11T23:54:03.5224081Z # Subtest: expanded-setting-manual-override: real garry_mode update preserves explicit false
+2026-11-11T23:54:03.5249832Z ok 642 - expanded-setting-manual-override: real garry_mode update preserves explicit false
+2026-11-11T23:54:03.5279077Z   ---
+2026-11-11T23:54:03.5308897Z   duration_ms: 1559.91605
+2026-11-11T23:54:03.5309664Z   type: 'test'
+2026-11-11T23:54:03.5339014Z   ...
