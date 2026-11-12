@@ -53,7 +53,7 @@ jobs:
         run: echo "HEADER_OUT=$RUNNER_TEMP/workspace-header-menu" >> "$GITHUB_ENV"
       - name: Frozen fixture and fail-closed result contract
         run: |
-          echo "b4f4cae76a414e5c3312ddd411e3b17ab39f90bc55b8662cdc058d55b2599605  tests/e2e/workspace-header-menu-cases.mjs" | sha256sum --check
+          echo "47c78b76c63e87635418c4fd5d4b747ba1f5ed4c4c971f28aaa15463ccdae24d  tests/e2e/workspace-header-menu-cases.mjs" | sha256sum --check
           node --check tests/e2e/workspace-header-menu-runner.mjs
           node --test tests/workspace-header-menu-results.test.mjs
           mkdir "$HEADER_OUT"
