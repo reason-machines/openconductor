@@ -255,6 +255,27 @@ impl Process {
         self.writer.as_ref().map(File::try_clone).transpose()
     }
 
+    pub(crate) fn resize(&mut self, cols: u16, rows: u16) -> io::Result<bool> {
+        if self.try_wait()?.is_some() {
+            return Ok(false);
+        }
+        let Some(master) = &self.writer else {
+            return Ok(false);
+        };
+        let size = libc::winsize {
+            ws_row: rows,
+            ws_col: cols,
+            ws_xpixel: 0,
+            ws_ypixel: 0,
+        };
+        // SAFETY: master owns a live PTY descriptor and size is a valid winsize.
+        let result = unsafe { libc::ioctl(master.as_raw_fd(), libc::TIOCSWINSZ, &size) };
+        if result == -1 {
+            return Err(io::Error::last_os_error());
+        }
+        Ok(true)
+    }
+
     /// The exit, if the process has ended.
     pub fn try_wait(&mut self) -> io::Result<Option<Exit>> {
         match self.child.try_wait()? {

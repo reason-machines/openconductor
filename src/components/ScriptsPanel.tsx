@@ -303,6 +303,12 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
       if (currentInputKey.current === inputKey) setError(errorText(e));
     });
   }, [wsId, shown, inputRunId, inputKey]);
+  const resizeRun = useCallback(async (cols: number, rows: number) => {
+    if (!shown || !inputRunId || currentInputKey.current !== inputKey) return;
+    await api.resizeRun(wsId, shown, inputRunId, cols, rows).catch((e) => {
+      if (currentInputKey.current === inputKey) setError(errorText(e));
+    });
+  }, [wsId, shown, inputRunId, inputKey]);
 
   // Conductor's run-tab URL (`ea`): found in the run output while the task runs, kept until it stops.
   const runBusy = !showSpotlight && busy;
@@ -489,7 +495,7 @@ export function ScriptsPanel({ repo, workspace, tab, active, actionsSlot, onSetu
     return showSpotlight ? (
       <ScriptOutput key={`spotlight:${wsId}`} output={spotLogMine && spotView.log.length > 0 ? spotView.log.join("\n") : spotButton.hint ?? SPOTLIGHT_EMPTY_TEXT} />
     ) : (
-      <ScriptOutput key={`run:${wsId}:${shown}`} output={runOut} onInput={inputRunId ? writeInput : undefined} />
+      <ScriptOutput key={`run:${wsId}:${shown}`} output={runOut} onInput={inputRunId ? writeInput : undefined} onResize={inputRunId ? resizeRun : undefined} />
     );
   }
 
