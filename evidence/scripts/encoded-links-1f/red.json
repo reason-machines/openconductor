@@ -1,0 +1,22 @@
+{
+  "phase": "RED",
+  "command": [
+    "nice",
+    "-n",
+    "19",
+    "timeout",
+    "--kill-after=5s",
+    "120s",
+    "node",
+    "--max-old-space-size=768",
+    "--test",
+    "--test-concurrency=1",
+    "src/scripts/outputLinks.test.ts"
+  ],
+  "start_utc": "2026-11-12T15:42:05.680413+00:00",
+  "end_utc": "2026-11-12T15:42:06.459428+00:00",
+  "wall_seconds": 0.7790322520013433,
+  "exit": 1,
+  "fixture_sha256": "2c5b3e9f3074d743531169870ea0131e210e90a6478590ee5d294787126127f0",
+  "tap_sha256": "f6e4ef7d001ffd1a87cc1e718acfeea4433c3295a38515d18856b6884d153552"
+}

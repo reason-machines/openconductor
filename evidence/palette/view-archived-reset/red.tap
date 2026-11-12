@@ -1,0 +1,122 @@
+(node:77) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:84) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: View archived workspaces reveals archived rows from every project without saving over Home filters
+not ok 1 - View archived workspaces reveals archived rows from every project without saving over Home filters
+  ---
+  duration_ms: 142.817376
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/viewArchivedReset.test.ts:125:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'project-a-active',
+        'project-a-archived',
+    -   'project-b-active',
+    -   'project-b-archived'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'project-a-active'
+    1: 'project-a-archived'
+    2: 'project-b-active'
+    3: 'project-b-archived'
+  actual:
+    0: 'project-a-active'
+    1: 'project-a-archived'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/viewArchivedReset.test.ts:130:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: Enter on View archived workspaces clears its search and a saved Only archived project restriction
+not ok 2 - Enter on View archived workspaces clears its search and a saved Only archived project restriction
+  ---
+  duration_ms: 50.298855
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/viewArchivedReset.test.ts:140:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'project-a-active',
+        'project-a-archived',
+    -   'project-b-active',
+    -   'project-b-archived'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'project-a-active'
+    1: 'project-a-archived'
+    2: 'project-b-active'
+    3: 'project-b-archived'
+  actual:
+    0: 'project-a-active'
+    1: 'project-a-archived'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/viewArchivedReset.test.ts:145:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: View archived workspaces replaces a project restriction changed earlier in the same palette
+not ok 3 - View archived workspaces replaces a project restriction changed earlier in the same palette
+  ---
+  duration_ms: 65.358698
+  type: 'test'
+  location: '/home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/viewArchivedReset.test.ts:154:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+    -   'project-a-active',
+    -   'project-a-archived',
+        'project-b-active',
+        'project-b-archived'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'project-a-active'
+    1: 'project-a-archived'
+    2: 'project-b-active'
+    3: 'project-b-archived'
+  actual:
+    0: 'project-b-active'
+    1: 'project-b-archived'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///home/runner/.reason/workspace/sessions/15faf4d8-d257-49ef-874d-8008c5c78aaf/repo/src/palette/viewArchivedReset.test.ts:163:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ordinary Workspaces tab navigation preserves filters and an ordinary action still selects and closes
+ok 4 - ordinary Workspaces tab navigation preserves filters and an ordinary action still selects and closes
+  ---
+  duration_ms: 36.485073
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 1
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 855.37584

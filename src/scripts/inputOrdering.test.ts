@@ -44,6 +44,8 @@ async function fixture(baseline = false) {
     "react": React, "react/jsx-runtime": deps("react/jsx-runtime"),
     "@xterm/xterm": { Terminal: Screen }, "@xterm/addon-fit": { FitAddon: class { fit() {} } },
     "@xterm/addon-unicode11": { Unicode11Addon: class {} },
+    "@tauri-apps/plugin-dialog": { confirm: () => { throw new Error("No link warning in input ordering regression"); } },
+    "../backend": { openUrl: () => { throw new Error("No browser in input ordering regression"); } },
     "../features/terminal/font": font,
     "../features/terminal/scrollback": { currentScrollbackRows: () => 1000, onScrollbackRows: () => () => {} },
     "../features/terminal/FindBar": { FindBar: inert, useBufferFind: () => ({ open: inert }) },

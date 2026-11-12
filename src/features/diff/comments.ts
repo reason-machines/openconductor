@@ -7,7 +7,8 @@
 // location was "file" (file-level) or "modified" (new side). The old side is
 // "original", the value Conductor's GitHub sync writes for a LEFT-side thread
 // and its agent note reads (evidence/diff/comments-to-chat.md); rows we stored
-// before as "base" are read as "original". The "sent" state is our own.
+// before as "base" are read as "original". Additional lifecycle states follow
+// the retained REA source closure. "sent" is a legacy OpenConductor state.
 import type { TextAttachment } from "./chatAttachment.ts";
 import type { FileDiff } from "./types.ts";
 
@@ -15,8 +16,8 @@ import type { FileDiff } from "./types.ts";
 export type CommentSide = "old" | "new";
 /** Stored anchor: "modified" (new side), "original" (old side), "file" (whole file). */
 export type CommentLocation = "modified" | "original" | "file";
-/** `pending`: saved, not yet sent to the agent. `sent`: added to the chat (ours). */
-export type CommentState = "pending" | "sent";
+/** Reference lifecycle states, plus our legacy attachment-time `sent` rows. */
+export type CommentState = "draft" | "pending" | "ready_for_review" | "reviewed" | "hidden" | "superseded" | "sent";
 
 export function locationOf(side: CommentSide): CommentLocation {
   return side === "old" ? "original" : "modified";
@@ -171,8 +172,25 @@ export function refreshOutdated(comments: DiffComment[], files: FileDiff[]): Dif
 
 /** A comment "Add all comments to chat" sends: saved, not yet in the chat, neither resolved nor outdated,
  *  with text. GitHub and PR-level comments count, as in Conductor's addAllGithubCommentsToChat. */
+export function isActiveComment(c: DiffComment): boolean {
+  return (c.state === "pending" || c.state === "ready_for_review") && !c.is_resolved && !c.is_outdated;
+}
+
+export function fileCommentCounts(comments: readonly DiffComment[]): ReadonlyMap<string, number> {
+  const counts = new Map<string, number>();
+  for (const comment of comments) {
+    if (comment.file_path && isActiveComment(comment)) counts.set(comment.file_path, (counts.get(comment.file_path) ?? 0) + 1);
+  }
+  return counts;
+}
+
+export function markReviewed(comments: DiffComment[], ids: ReadonlySet<string>, now: number): DiffComment[] {
+  return comments.map((comment) => ids.has(comment.id) && comment.state !== "superseded" && comment.state !== "reviewed"
+    ? { ...comment, state: "reviewed", updated_at: now } : comment);
+}
+
 function isPendingForAgent(c: DiffComment): boolean {
-  return c.state === "pending" && !c.is_resolved && !c.is_outdated && c.body.length > 0;
+  return isActiveComment(c) && c.body.length > 0;
 }
 
 /** The header flag for "Add all comments to chat" (the reference's renderApp `Wus`: pending, not outdated,
@@ -290,10 +308,10 @@ export function commentSource(c: Pick<DiffComment, "remote_url" | "author">): Co
 /** Whether a comment card offers Delete. Conductor picks the card by state (renderApp 0.87.6 near byte
  *  9412604): a comment that is pending or ready_for_review, or sits in a composer, gets the card whose Delete
  *  is for the user's own comments only (`kVo`); any other state gets the card whose Delete is on every
- *  comment, GitHub included (`TVo`). Ours has one non-pending state, `sent`. Delete removes the local row
+ *  comment, GitHub included (`TVo`). Delete removes the local row
  *  only; GitHub sync puts a remote comment back while it is still on the PR. */
 export function canDeleteComment(c: Pick<DiffComment, "remote_url" | "author" | "state">): boolean {
-  return commentSource(c) === "user-local" || c.state !== "pending";
+  return commentSource(c) === "user-local" || (c.state !== "pending" && c.state !== "ready_for_review");
 }
 
 /** A thread synced from a GitHub review thread (resolvable on GitHub). */

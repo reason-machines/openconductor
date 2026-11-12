@@ -92,6 +92,7 @@ struct Prompt {
     text: String,
     options: TurnOptions,
     done: Sender<TurnEnd>,
+    on_handoff: Option<Box<dyn FnOnce() + Send>>,
 }
 
 enum Cmd {
@@ -141,11 +142,21 @@ impl CodexRunner {
 
     /// Queues a prompt; the receiver gets its end (also sent to the sink).
     pub fn prompt(&self, text: impl Into<String>, options: TurnOptions) -> Receiver<TurnEnd> {
+        self.prompt_with_handoff(text, options, None)
+    }
+
+    pub fn prompt_with_handoff(
+        &self,
+        text: impl Into<String>,
+        options: TurnOptions,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
+    ) -> Receiver<TurnEnd> {
         let (done, end) = mpsc::channel();
         self.send(Cmd::Prompt(Prompt {
             text: text.into(),
             options,
             done,
+            on_handoff,
         }));
         end
     }
@@ -483,7 +494,12 @@ impl Worker {
         }
         let timeout = self.config.timeouts.turn_start;
         let session = self.session.as_mut().expect("session started");
-        match session.start_turn(prompt.text.clone(), prompt.options.clone(), timeout) {
+        match session.start_turn_with_handoff(
+            prompt.text.clone(),
+            prompt.options.clone(),
+            timeout,
+            prompt.on_handoff.take(),
+        ) {
             Ok(turn_id) => self.running = Some(Running { prompt, turn_id }),
             Err(e) => {
                 if matches!(e, CallError::Closed { .. } | CallError::Io(_)) {

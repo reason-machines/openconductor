@@ -1,0 +1,24 @@
+{
+  "cases": [
+    { "id": "array-status-success", "rawResult": [{ "type": "text", "text": "<status>completed</status>array output" }], "output": "<status>completed</status>array output", "isError": false, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "red" },
+    { "id": "array-status-failure", "rawResult": [{ "type": "text", "text": "<status>completed</status>array failure" }], "output": "<status>completed</status>array failure", "isError": true, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "red" },
+    { "id": "array-text-success", "rawResult": [{ "type": "text", "text": "array output" }], "output": "array output", "isError": false, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "red" },
+    { "id": "array-text-failure", "rawResult": [{ "type": "text", "text": "array failure" }], "output": "array failure", "isError": true, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "red" },
+    { "id": "object-status-success", "rawResult": { "text": "<status>running</status>object output" }, "output": "<status>running</status>object output", "isError": false, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "red" },
+    { "id": "null-failure", "rawResult": null, "output": "null output", "isError": true, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "red" },
+    { "id": "number-success", "rawResult": 123, "output": "123", "isError": false, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "red" },
+    { "id": "boolean-failure", "rawResult": false, "output": "false", "isError": true, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "red" },
+    { "id": "empty-raw-overrides-failure", "rawResult": "", "output": "<status>running</status>flattened fallback", "isError": true, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "red" },
+    { "id": "raw-string-overrides-success", "rawResult": "<status> running </status>raw output", "output": "<status>completed</status>flattened output", "isError": false, "expected": { "status": "running", "expandable": true, "text": "<status> running </status>raw output", "errors": [] }, "baseline": "red" },
+    { "id": "raw-string-overrides-failure", "rawResult": "<status>failed</status>raw failure", "output": "flattened failure", "isError": true, "expected": { "status": "failed", "expandable": true, "text": "<status>failed</status>raw failure", "errors": ["<status>failed</status>raw failure"] }, "baseline": "red" },
+    { "id": "raw-whitespace-failure", "rawResult": "  \n ", "output": "flattened nonempty", "isError": true, "expected": { "status": "", "expandable": true, "text": "  \n ", "errors": ["  \n "] }, "baseline": "red" },
+    { "id": "raw-plain-success-control", "rawResult": "plain output", "output": "plain output", "isError": false, "expected": { "status": "", "expandable": true, "text": "plain output", "errors": [] }, "baseline": "control" },
+    { "id": "raw-running-control", "rawResult": "<status>running</status>still working", "output": "<status>running</status>still working", "isError": false, "expected": { "status": "running", "expandable": true, "text": "<status>running</status>still working", "errors": [] }, "baseline": "control" },
+    { "id": "raw-failure-control", "rawResult": "<status>completed</status>failed output", "output": "<status>completed</status>failed output", "isError": true, "expected": { "status": "completed", "expandable": true, "text": "<status>completed</status>failed output", "errors": ["<status>completed</status>failed output"] }, "baseline": "control" },
+    { "id": "empty-string-control", "rawResult": "", "output": "", "isError": true, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "control" },
+    { "id": "legacy-status-control", "output": "<status> completed </status>legacy output", "isError": false, "expected": { "status": "completed", "expandable": true, "text": "<status> completed </status>legacy output", "errors": [] }, "baseline": "control" },
+    { "id": "legacy-failure-control", "output": "legacy failure", "isError": true, "expected": { "status": "", "expandable": true, "text": "legacy failure", "errors": ["legacy failure"] }, "baseline": "control" },
+    { "id": "pending-control", "isError": false, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "control" },
+    { "id": "empty-array-control", "rawResult": [], "output": "", "isError": false, "expected": { "status": "", "expandable": false, "text": "", "errors": [] }, "baseline": "control" }
+  ]
+}

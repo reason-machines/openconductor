@@ -1,0 +1,29 @@
+{
+  "ended_at": "2026-11-12T15:12:47.699169+00:00",
+  "ownjobs": [],
+  "baseline": {
+    "tests": 26,
+    "pass": 6,
+    "fail": 20
+  },
+  "candidate": {
+    "tests": 26,
+    "pass": 26,
+    "fail": 0
+  },
+  "loader_adjacent": {
+    "tests": 29,
+    "pass": 29,
+    "fail": 0
+  },
+  "new_preview_and_adapters": {
+    "tests": 4,
+    "pass": 4,
+    "fail": 0
+  },
+  "runtime_adjacent": {
+    "tests": 70,
+    "pass": 70,
+    "fail": 0
+  }
+}

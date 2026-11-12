@@ -1,0 +1,1 @@
+NODE_OPTIONS=--max-old-space-size=1024 nice -n19 timeout --kill-after=5s 180s python3 evidence/settings/full-disk-access/notification_guard_test.py

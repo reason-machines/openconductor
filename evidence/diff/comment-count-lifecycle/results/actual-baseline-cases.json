@@ -1,0 +1,209 @@
+{
+  "status": "ACTUAL_BASELINE_RED_NOT_GREEN",
+  "source_sha": "cfe8c12d86fab877158bfd465f348813752e24e0",
+  "exit_code": 1,
+  "elapsed_seconds": 3.7960223980189767,
+  "tests": 26,
+  "passed": 6,
+  "failed": 20,
+  "cases": [
+    {
+      "number": 1,
+      "name": "actual browser host commits only captured review identities and preserves superseded rows",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "missing-host-capability-precondition"
+    },
+    {
+      "number": 2,
+      "name": "actual desktop host sends the review transition to the native store, not to ordinary attachments",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "missing-host-capability-precondition"
+    },
+    {
+      "number": 3,
+      "name": "ordinary attachments have no review-store side effect at handoff",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "missing-host-capability-precondition"
+    },
+    {
+      "number": 4,
+      "name": "optimistic submission and a completed command do not commit review comments without handoff",
+      "result": "pass"
+    },
+    {
+      "number": 5,
+      "name": "a successful transport handoff commits once and a later failed turn does not restore eligibility",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 6,
+      "name": "a successful transport handoff commits once and a later cancelled turn does not restore eligibility",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 7,
+      "name": "pre-handoff rejection keeps eligibility and retry carries the exact review payload",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 8,
+      "name": "stopping before the prompt transport is reached receives no handoff credit",
+      "result": "pass"
+    },
+    {
+      "number": 9,
+      "name": "handoff commits the captured workspace and comment, independent of another visible chat",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 10,
+      "name": "queue insertion keeps eligibility until that queued prompt actually hands off",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 11,
+      "name": "a successful handoff does not revive a superseded review comment",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 12,
+      "name": "flat rows count active local and remote comments, not sent, resolved, outdated or PR-level rows",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 13,
+      "name": "flat zero-comment rows keep their ordinary diff counts and no comment badge",
+      "result": "pass"
+    },
+    {
+      "number": 14,
+      "name": "tree rows count active local and remote comments, not sent, resolved, outdated or PR-level rows",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 15,
+      "name": "tree zero-comment rows keep their ordinary diff counts and no comment badge",
+      "result": "pass"
+    },
+    {
+      "number": 16,
+      "name": "ready-for-review comments remain counted while hidden, reviewed and superseded comments do not",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 17,
+      "name": "counts stay keyed by exact path when basenames match and replies add another comment",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 18,
+      "name": "the count predicate does not invent a nonempty-body or visible-diff-line requirement",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 19,
+      "name": "saving through the actual new-draft composer updates the row count and normal payload",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 20,
+      "name": "adding a comment to the actual composer retains its count and eligibility until delivery",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 21,
+      "name": "removing an unsent chip retains its count and makes the comment attachable again",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 22,
+      "name": "restoring an unsent composer preserves its review identity",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 23,
+      "name": "switching workspaces replaces the counts for identical relative paths",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 24,
+      "name": "filtering and changing list modes preserve each visible file's count",
+      "result": "fail",
+      "error_class": "AssertionError",
+      "error_code": "ERR_ASSERTION",
+      "scope": "observable-business-assertion"
+    },
+    {
+      "number": 25,
+      "name": "ordinary file selection still reaches the existing navigation action",
+      "result": "pass"
+    },
+    {
+      "number": 26,
+      "name": "the existing multi-file summary remains independent of comment counts",
+      "result": "pass"
+    }
+  ],
+  "unverified": [
+    "native compiler",
+    "Tauri IPC integration",
+    "actual provider",
+    "browser UI",
+    "candidate GREEN"
+  ],
+  "slot_release_message_id": "5c39e622-7acd-4195-87d4-5f7fac6a10e4"
+}

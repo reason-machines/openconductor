@@ -499,7 +499,18 @@ impl ReasonProvider {
         attachments: &[Attachment],
         ticket: Option<u64>,
     ) -> TurnEnd {
-        let end = self.run_prompt(chat, text, attachments, ticket);
+        self.prompt_expected_with_handoff(chat, text, attachments, ticket, None)
+    }
+
+    pub fn prompt_expected_with_handoff(
+        &self,
+        chat: &str,
+        text: &str,
+        attachments: &[Attachment],
+        ticket: Option<u64>,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
+    ) -> TurnEnd {
+        let end = self.run_prompt(chat, text, attachments, ticket, on_handoff);
         let idle = {
             let mut s = self.shared.lock().unwrap();
             if let Some(c) = s.chats.get_mut(chat) {
@@ -551,6 +562,7 @@ impl ReasonProvider {
         text: &str,
         attachments: &[Attachment],
         ticket: Option<u64>,
+        on_handoff: Option<Box<dyn FnOnce() + Send>>,
     ) -> TurnEnd {
         self.restart_if_stale();
         let (conn, session_id) = match self.ensure_session(chat) {
@@ -583,7 +595,7 @@ impl ReasonProvider {
         };
         let params = json!({ "sessionId": session_id,
             "prompt": prompt_blocks(text, attachments, &cwd) });
-        let result = conn.call("session/prompt", params, None);
+        let result = conn.call_with_handoff("session/prompt", params, None, on_handoff);
 
         let mut s = self.shared.lock().unwrap();
         let c = s.chats.get_mut(chat).expect("chat");

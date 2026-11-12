@@ -25,7 +25,7 @@
 // In the desktop app every chat's status is kept in `conductor.db`
 // (`connectStatusStore`).
 
-import { invoke, isTauri } from "@tauri-apps/api/core";
+import { Channel, invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { applyReasonPayload, permissionPrompt, type PromptAttachment, type ReasonPayload } from "./reason.ts";
 import { connectStatusStore, createChatRuntime, type ChatBackend, type Deliver, type PermissionAnswer, type PermissionEvents, type PermissionPrompt } from "./chatRuntime.ts";
@@ -80,9 +80,11 @@ const reasonBackend: ChatBackend<ReasonConfig[]> = {
   reconfigure(chatId, config) {
     void invoke("reason_set_config", { chatId, config }).catch((e) => console.warn("reason chat: options not updated", e));
   },
-  async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath }) {
+  async prompt({ chatId, cwd, text, attachments, turn, firstMessage, repoPath, onHandoff }) {
     const agentText = firstMessage && repoPath ? await withGeneral(text, repoPath, cwd) : text;
-    return invoke("reason_prompt", { chatId, text: agentText, attachments, turn });
+    const handoff = new Channel<null>();
+    handoff.onmessage = () => onHandoff?.();
+    return invoke("reason_prompt", { chatId, text: agentText, attachments, turn, onHandoff: handoff });
   },
   // Reason has one cancel; a repeated Stop asks it again.
   cancel(chatId) {

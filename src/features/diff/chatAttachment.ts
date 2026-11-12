@@ -23,6 +23,7 @@ export interface TextAttachment {
 
 /** What the composer accepts from the diff viewer, beside ChatBridge's insert/send. */
 export interface ComposerAttach {
+  readonly commentIds?: ReadonlySet<string>;
   attach(attachment: TextAttachment): void;
 }
 
@@ -54,7 +55,7 @@ export function addAttachment(list: readonly TextAttachment[], a: TextAttachment
  * straight into its composer when it is the chat on screen, otherwise queued,
  * the workspace chat shown, and attached once its composer is up.
  */
-export function useWorkspaceChatAttach(workspaceId: string, shownChat: MutableRefObject<string>, composer: MutableRefObject<ComposerAttach | null>, showWorkspaceChat: () => void): (a: TextAttachment) => void {
+export function useWorkspaceChatAttach(workspaceId: string, shownChat: MutableRefObject<string>, composer: MutableRefObject<ComposerAttach | null>, showWorkspaceChat: () => void): { attach: (a: TextAttachment) => void; queued: readonly TextAttachment[] } {
   const [queued, setQueued] = useState<TextAttachment[]>([]);
   useEffect(() => setQueued([]), [workspaceId]);
   useEffect(() => {
@@ -62,7 +63,7 @@ export function useWorkspaceChatAttach(workspaceId: string, shownChat: MutableRe
     for (const a of queued) composer.current.attach(a);
     setQueued([]);
   });
-  return useCallback(
+  const attach = useCallback(
     (a: TextAttachment) => {
       if (shownChat.current === workspaceId && composer.current) return composer.current.attach(a);
       setQueued((q) => addAttachment(q, a));
@@ -70,6 +71,7 @@ export function useWorkspaceChatAttach(workspaceId: string, shownChat: MutableRe
     },
     [workspaceId, shownChat, composer, showWorkspaceChat],
   );
+  return { attach, queued };
 }
 
 /**

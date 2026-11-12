@@ -8,6 +8,7 @@ import { BranchIcon } from "./Icons";
 import { ContextMenu, MenuItem } from "./menu/ContextMenu";
 import { CopyIcon, PencilIcon } from "./menu/menuIcons";
 import { createBranchHeaderController } from "./branchHeaderController";
+import { useBranchPrefix } from "./useBranchPrefix";
 import "./workspaceBranchHeader.css";
 
 interface Props {
@@ -18,13 +19,16 @@ interface Props {
 }
 
 export function WorkspaceBranchHeader(props: Props) {
+  const prefix = useBranchPrefix();
+  const branch = props.workspace.branch;
+  const label = prefix && branch.startsWith(prefix) ? branch.slice(prefix.length) : branch;
   if (props.workspace.status === "archived") {
-    return <span className="chip"><BranchIcon size={12} /> {props.workspace.branch}</span>;
+    return <span className="chip"><BranchIcon size={12} /> {label}</span>;
   }
-  return <EditableBranchHeader {...props} />;
+  return <EditableBranchHeader {...props} label={label} />;
 }
 
-function EditableBranchHeader({ repoId, workspace, dispatch, onError }: Props) {
+function EditableBranchHeader({ repoId, workspace, dispatch, onError, label }: Props & { label: string }) {
   const [, refresh] = useReducer((revision: number) => revision + 1, 0);
   const callbacks = useRef({ dispatch, onError });
   callbacks.current = { dispatch, onError };
@@ -85,7 +89,7 @@ function EditableBranchHeader({ repoId, workspace, dispatch, onError }: Props) {
             setMenu({ x: event.clientX, y: event.clientY });
           }}
         >
-          <BranchIcon size={12} /> {branch}
+          <BranchIcon size={12} /> {label}
         </button>
       )}
       {menu && (
