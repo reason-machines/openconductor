@@ -11,8 +11,12 @@
     "unintended_control_failure": "cross-context theme object compared directly to host-realm object"
   },
   "fixture": "src/features/terminal/terminalAnsiTheme.test.ts",
-  "sha256": "da98de47b2473d9cf68518d57eb70a239aa8ae37d1372fd7473e5161aaab3699",
+  "sha256": "7e94259f5156f6b6144cca74ffd026ca9215737389b274add46cff11c5d8dd45",
   "fixture_repair": "Normalize the actual theme to a host plain object in the independent-terminal control. No field, input, expected value, or case-count change.",
   "cases": 20,
-  "command": "node --test src/features/terminal/terminalAnsiTheme.test.ts"
+  "command": "node --test src/features/terminal/terminalAnsiTheme.test.ts",
+  "repaired_fixture": "fixture-repaired.test.ts.txt",
+  "repaired_sha256": "da98de47b2473d9cf68518d57eb70a239aa8ae37d1372fd7473e5161aaab3699",
+  "data_fixture": "src/theme/terminalAnsiThemeFixture.ts",
+  "data_sha256": "aeca2daed1bbcc44cea8cb9484c503ce8b4a1e196a7aa9462cba214921874edf"
 }

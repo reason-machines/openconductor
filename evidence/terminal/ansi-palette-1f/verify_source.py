@@ -73,10 +73,25 @@ for path in ['src/components/ScriptOutput.tsx', 'src/theme/scriptTerminal.css']:
     assert (ROOT / path).read_bytes() == at_main(path), path
 
 original = (OUT / frozen['original_fixture']).read_bytes()
+repaired = (OUT / frozen['repaired_fixture']).read_bytes()
 fixture = (ROOT / frozen['fixture']).read_bytes()
+data = (ROOT / frozen['data_fixture']).read_bytes()
 assert sha(original) == frozen['original_sha256']
-assert sha(fixture) == frozen['sha256']
-assert fixture == original.replace(b'assert.deepEqual(first.screen.options.theme, before);', b'assert.deepEqual({ ...first.screen.options.theme }, before);'), 'fixture repair exceeds cross-context normalization'
+assert sha(repaired) == frozen['repaired_sha256']
+assert sha(fixture) == frozen['sha256'] and sha(data) == frozen['data_sha256']
+assert repaired == original.replace(b'assert.deepEqual(first.screen.options.theme, before);', b'assert.deepEqual({ ...first.screen.options.theme }, before);'), 'fixture repair exceeds cross-context normalization'
+extraction = json.loads((OUT / 'data-extraction.json').read_text())
+old = repaired.decode()
+start = old.index('const palette = [')
+end = old.index('function fixture(', start)
+block = old[start:end]
+expected_data = 'import type { ITheme } from "@xterm/xterm";\n\n' + block.replace('const palette = [', 'export const palette = [', 1) + 'export const fixtureColors = ' + json.dumps(extraction['colors'], indent=2) + ' as const;\n'
+expected_fixture = (old[:start] + old[end:]).replace('ITerminalOptions, ITheme', 'ITerminalOptions')
+expected_fixture = expected_fixture.replace('const deps = createRequire', 'import { palette, fixtureColors } from "../../theme/terminalAnsiThemeFixture.ts";\n\nconst deps = createRequire', 1)
+for key, value in extraction['colors'].items():
+    assert json.dumps(value) in old, key
+    expected_fixture = expected_fixture.replace(json.dumps(value), f'fixtureColors.{key}')
+assert data == expected_data.encode() and fixture == expected_fixture.encode(), 'fixture extraction changed data, inputs, or assertions'
 
 for filename, record in json.loads((OUT / 'logs.json').read_text()).items():
     raw = gzip.decompress((OUT / record['raw_file']).read_bytes())
@@ -85,11 +100,15 @@ for filename, record in json.loads((OUT / 'logs.json').read_text()).items():
     normalized = ('\n'.join(line.rstrip() for line in raw.decode().splitlines()).rstrip() + '\n').encode()
     assert display == normalized, filename
 
-for filename, passed, failed in [('red-original.tap', 3, 17), ('red.tap', 4, 16), ('green.tap', 20, 0), ('adjacent.tap', 208, 0)]:
+for filename, passed, failed in [('red-original.tap', 3, 17), ('red.tap', 4, 16), ('green.tap', 20, 0), ('adjacent.tap', 208, 0), ('red-extracted.tap', 4, 16), ('green-extracted.tap', 20, 0)]:
     log = (OUT / filename).read_text()
     for label, value in [('tests', passed + failed), ('pass', passed), ('fail', failed), ('cancelled', 0), ('skipped', 0)]:
         assert re.search(rf'^# {label} {value}$', log, re.M), (filename, label)
-red = (OUT / 'red.tap').read_text()
-assert re.findall(r'^not ok (\d+) - ordinary terminal uses computed ', red, re.M) == [str(i) for i in range(1, 17)]
+for filename in ['red.tap', 'red-extracted.tap']:
+    red = (OUT / filename).read_text()
+    assert re.findall(r'^not ok (\d+) - ordinary terminal uses computed ', red, re.M) == [str(i) for i in range(1, 17)]
+assert 'check-colors: no colour literals outside src/theme/ and no hue under Neutral' in (OUT / 'colors.txt').read_text()
+for path in ['scripts/check-colors.mjs', 'scripts/check-colors.test.mjs']:
+    assert (ROOT / path).read_bytes() == at_main(path), path
 assert 'tsc --noEmit' in (OUT / 'typecheck.txt').read_text()
 print(json.dumps({'main_checked': source['main_checked'], 'original_assets': len(assets), 'full_source_spans': len(texts), 'ansi_fields': len(source['color_mapping']), 'fixture_sha256': sha(fixture), 'exact_product_diff': '16 constructor mappings only', 'existing_terminal_files_unchanged': len(existing) - 1, 'red': {'fail': 16, 'pass': 4}, 'green': {'pass': 20}, 'adjacent': {'pass': 208}, 'runtime_native_visual': 'NOT_RUN'}))

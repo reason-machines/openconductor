@@ -4,9 +4,11 @@ import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
-import type { ITerminalAddon, ITerminalOptions, ITheme } from "@xterm/xterm";
+import type { ITerminalAddon, ITerminalOptions } from "@xterm/xterm";
 import type * as Session from "./session";
 import type { PtyEvent } from "./events";
+
+import { palette, fixtureColors } from "../../theme/terminalAnsiThemeFixture.ts";
 
 const deps = createRequire(resolve("package.json"));
 const ts: typeof import("typescript") = deps("typescript");
@@ -14,28 +16,9 @@ const { Terminal: RealTerminal }: typeof import("@xterm/xterm") = deps("@xterm/x
 const compiled = new Map<string, string>();
 type Exports = Record<string, unknown> & Partial<typeof Session>;
 
-const palette = [
-  ["black", "--terminal-black", "#201e1c"],
-  ["red", "--terminal-red", "#da2424"],
-  ["green", "--terminal-green", "#119745"],
-  ["yellow", "--terminal-yellow", "#f3d127"],
-  ["blue", "--terminal-blue", "#1b5fe0"],
-  ["magenta", "--terminal-magenta", "#be09dd"],
-  ["cyan", "--terminal-cyan", "#0b879f"],
-  ["white", "--terminal-white", "#dedcda"],
-  ["brightBlack", "--terminal-bright-black", "#746b66"],
-  ["brightRed", "--terminal-bright-red", "#ee3b3b"],
-  ["brightGreen", "--terminal-bright-green", "#1bbe56"],
-  ["brightYellow", "--terminal-bright-yellow", "#f9e05a"],
-  ["brightBlue", "--terminal-bright-blue", "#5487ed"],
-  ["brightMagenta", "--terminal-bright-magenta", "#d94df2"],
-  ["brightCyan", "--terminal-bright-cyan", "#31bcd7"],
-  ["brightWhite", "--terminal-bright-white", "#f6f4f2"],
-] as const satisfies ReadonlyArray<readonly [keyof ITheme, string, string]>;
-
 function fixture(withPalette = true) {
   const colors = new Map<string, string>([
-    ["--panel", "#121314"], ["--text", "#efefef"], ["--accent", "#3582dc"],
+    ["--panel", fixtureColors.background], ["--text", fixtureColors.foreground], ["--accent", fixtureColors.accent],
     ...(withPalette ? palette.map(([, token, value]): [string, string] => [token, value]) : []),
   ]);
   let event: ((event: PtyEvent) => void) | undefined;
@@ -146,17 +129,17 @@ test("the palette does not change the existing cursor and input lifecycle", asyn
   const { id, screen } = await f.open();
   assert.equal(screen.options.disableStdin, true);
   assert.equal(screen.options.theme?.cursor, "transparent");
-  assert.equal(screen.options.theme?.background, "#121314");
-  assert.equal(screen.options.theme?.foreground, "#efefef");
-  assert.equal(screen.options.theme?.selectionBackground, "#3582dc66");
-  assert.equal(screen.options.theme?.selectionInactiveBackground, "#3582dc4d");
+  assert.equal(screen.options.theme?.background, fixtureColors.background);
+  assert.equal(screen.options.theme?.foreground, fixtureColors.foreground);
+  assert.equal(screen.options.theme?.selectionBackground, fixtureColors.selectionBackground);
+  assert.equal(screen.options.theme?.selectionInactiveBackground, fixtureColors.selectionInactiveBackground);
   f.emit({ kind: "ready", id, pid: 12 });
   assert.equal(screen.options.disableStdin, false);
-  assert.equal(screen.options.theme?.cursor, "#efefef");
+  assert.equal(screen.options.theme?.cursor, fixtureColors.foreground);
   f.emit({ kind: "exit", id, exitCode: 0, signal: null });
   assert.equal(screen.options.disableStdin, true);
   assert.equal(screen.options.theme?.cursor, "transparent");
-  assert.equal(screen.options.theme?.cursorAccent, "#121314");
+  assert.equal(screen.options.theme?.cursorAccent, fixtureColors.background);
   assert.deepEqual(f.writes, []);
 });
 
@@ -172,10 +155,10 @@ test("palette initialization does not change another terminal's options", async 
   const f = fixture(); t.after(f.close);
   const first = await f.open();
   const before = { ...first.screen.options.theme };
-  for (const [, token] of palette) f.colors.set(token, "#aabbcc");
+  for (const [, token] of palette) f.colors.set(token, fixtureColors.replacement);
   const second = await f.open();
   assert.notEqual(first.id, second.id);
   assert.deepEqual({ ...first.screen.options.theme }, before);
-  assert.equal(second.screen.options.theme?.background, "#121314");
+  assert.equal(second.screen.options.theme?.background, fixtureColors.background);
   assert.deepEqual(f.writes, []);
 });

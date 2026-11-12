@@ -26,6 +26,16 @@ Only that comparison changed to `assert.deepEqual({ ...first.screen.options.them
 
 Controls cover unset CSS tokens, cursor and input lifecycle, background and selection colors, line-feed conversion, Unicode 11, and independent terminal options. The 16 field cases check values at construction, ready, and exit. No transport writes occur.
 
+## CI color-policy correction
+
+The first published head, `3b46d68a121f7d739ef25cc437c13648ce40e3cb`, passed hosted typecheck but failed the repository color rule on 27 literal occurrences in the regression fixture. The downstream unit and build steps did not run. The checker and product code are unchanged.
+
+Literal test data now lives in `src/theme/terminalAnsiThemeFixture.ts`, inside the rule's allowed directory. The regression imports the same 16 palette tuples and six base or control values. [The repaired inline fixture](fixture-repaired.test.ts.txt) is retained. The source verifier reconstructs the extraction byte-for-byte to prove that no input, expectation, or case changed.
+
+The extracted fixture is frozen as `7e94259f5156f6b6144cca74ffd026ca9215737389b274add46cff11c5d8dd45`. The data module is frozen as `aeca2daed1bbcc44cea8cb9484c503ce8b4a1e196a7aa9462cba214921874edf`. [Extraction metadata](data-extraction.json) and [CI failure details](ci-correction.json) record the change separately from the earlier successful regression runs.
+
+After the move, `npm run lint:colors` passed all six checker tests and the complete 1,074-file scan. The unchanged extracted fixture and data were then replayed against the original constructor and the exact published fix: **16 intended failures and 4 passing controls before, 20 passes after**. [Color check](colors.txt), [extracted baseline](red-extracted.tap), and [extracted candidate](green-extracted.tap) retain the results. The product snapshot was restored byte-for-byte. No adjacent or typecheck rerun was needed for this data-only correction. This second ordinary slot was explicitly released at 10:08Z on 2026-11-12.
+
 ## Executed checks
 
 All checks ran sequentially on Reason Cloud computer 352 using the existing lock-matched dependencies. No install was needed. The ordinary test slot was explicitly released at 09:55Z on 2026-11-12, with no lingering job.
