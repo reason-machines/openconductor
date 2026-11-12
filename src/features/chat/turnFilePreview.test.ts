@@ -216,6 +216,19 @@ for (const state of ["empty", "binary", "error"] as const) {
   });
 }
 
+test("turn-file preview names a saved snapshot that is too large without losing navigation", async () => {
+  const view = await fixture();
+  try {
+    await view.hover();
+    assert.equal(view.requests.length, 1);
+    await view.finish(0, [diff({ hide_reason: "file_too_large", hunks: [] })]);
+    assert.match(view.text(), /File too large to preview/);
+    assert.doesNotMatch(view.text(), /No diff available|Binary file changed|old value|Loading/);
+    await view.event(view.chip(), "onClick", { stopPropagation() {} });
+    assert.deepEqual(view.opened, ["src/first.ts"]);
+  } finally { await view.close(); }
+});
+
 test("turn-file preview renders only the requested file from a response", async () => {
   const view = await fixture();
   try {
