@@ -1,5 +1,17 @@
 # Workspace-name context menu candidate
 
+## Pinned-row fixture maintenance in #1119
+
+On head `41509c7`, [hosted job 130937098519](https://github.com/reason-machines/openconductor/actions/runs/43143897936/job/130937098519) passed seven cases and failed `header.workspace-target-isolation`. Its retained result lists two Copper wren rows after pinning: the Pinned entry has `data-pinned="true"`, while the ordinary repository entry has no pinned attribute. The fixture's name-only `getAttribute` therefore fails Playwright strictness. All eight setup records are READY, with no renderer errors. This is an ambiguous test target, not evidence of an incorrect pin action.
+
+Fresh main `dfe5c630d0fa0a8f7ba62b23aa3bc3f2f217c94b` contains the same fixture, runner and workflow. The correction intersects only that assertion's Copper wren locator with `[data-pinned="true"]`. The eight case IDs, assertion count, expected values, actions, timeouts, Quiet harbor isolation assertion and fail-closed result contract stay unchanged. No `first()` fallback or product change is used. Fix Root Causes keeps this correction at the ambiguous test locator rather than hiding the valid duplicate row in the app.
+
+The maintained hosted fixture is now SHA-256 `47c78b76c63e87635418c4fd5d4b747ba1f5ed4c4c971f28aaa15463ccdae24d`; both existing digest guards remain mandatory. The original frozen packet and historical receipts below keep their original `b4f4cae7` identity. Historical source/staging verifiers still describe that original packet, not this maintenance revision. Both Archive regression files remain byte-identical.
+
+Source-only checks pass for the one-locator diff, preserved IDs and assertion count, both digest guards, both Archive fixture hashes and `git diff --check`. Corrected hosted execution is pending. Local Node, browser, Rust and native checks were not run. No manual dispatch, retry, duplicate runner or watcher was started. This maintenance makes no new native or Conductor parity claim.
+
+## Historical feature evidence
+
 Conductor Rebuild prepared this candidate against main `2b079f13e07b580d26191f7f1f50b4d21e62174e` and reconciled it with main `248b6c359c830c6ac5e050721bae18e44e168068`. It is not yet fully behaviorally verified. The first hosted run observed the intended baseline RED and seven candidate passes; the eighth case exposed a repository-expansion setup defect. The ledger authorized ready main-target publication to obtain the paired hosted proof below.
 
 The retained REA spans in [reference.json](reference.json) trace the real Conductor 0.87.6 local header through `s8i → Llo → o8i → SI/wI → D9e`. `SI` handles the context-menu event and `D9e` supplies the existing workspace actions. The original asset digests, byte offsets and evidence IDs remain recorded. This continuation recovered the frozen packet and verified its embedded span digests; it did not rerun REA or the reference app.
