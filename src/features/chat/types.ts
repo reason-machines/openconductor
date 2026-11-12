@@ -28,6 +28,7 @@ export interface ToolResultBlock {
   toolUseId: string;
   content: string;
   isError?: boolean;
+  resultCreatedAt?: string;
 }
 
 export type Block = TextBlock | ThinkingBlock | ToolUseBlock | ToolResultBlock;

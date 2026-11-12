@@ -1,0 +1,18 @@
+2026-11-12T01:43:08.8709610Z failures:
+2026-11-12T01:43:08.8710250Z
+2026-11-12T01:43:08.8711780Z ---- reason_acp::login_tests::built_app_fake_waits_for_explicit_approval_before_connecting stdout ----
+2026-11-12T01:43:08.8713540Z [reason_acp::login] stage=run.wait error=TimedOut budget_ms=300
+2026-11-12T01:43:08.8716750Z [reason_acp::login] stage=account.run error=TimedOut budget_ms=300
+2026-11-12T01:43:08.8805730Z
+2026-11-12T01:43:08.8807200Z thread 'reason_acp::login_tests::built_app_fake_waits_for_explicit_approval_before_connecting' (36076) panicked at src/reason_acp/login_tests.rs:44:9:
+2026-11-12T01:43:08.8808750Z unexpected login state: Failed { message: "Couldn't read your Reason account. Check your connection and try again." }
+2026-11-12T01:43:08.8809790Z note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+2026-11-12T01:43:08.8810170Z
+2026-11-12T01:43:08.8810270Z
+2026-11-12T01:43:08.8810490Z failures:
+2026-11-12T01:43:08.8811570Z     reason_acp::login_tests::built_app_fake_waits_for_explicit_approval_before_connecting
+2026-11-12T01:43:08.8812850Z
+2026-11-12T01:43:08.8813360Z test result: FAILED. 1051 passed; 1 failed; 1 ignored; 0 measured; 0 filtered out; finished in 58.90s
+2026-11-12T01:43:08.8815430Z
+2026-11-12T01:43:08.8835140Z error: test failed, to rerun pass `--lib`
+2026-11-12T01:43:08.8936000Z ##[error]Process completed with exit code 101.

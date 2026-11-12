@@ -1,0 +1,189 @@
+{
+  "workspace": "/tmp/oc vscode workspace",
+  "context_design": "fileContext is an OpenConductor design, never trusted authorization.",
+  "cases": [
+    {
+      "id": "workspace_file",
+      "appId": "vscode",
+      "relative": "src/present.ts",
+      "exists": "file",
+      "context": true,
+      "header": true,
+      "codeExit": 0,
+      "openExit": 0,
+      "ok": true,
+      "calls": [
+        [
+          "code",
+          "/tmp/oc vscode workspace",
+          "--goto",
+          "/tmp/oc vscode workspace/src/present.ts"
+        ]
+      ]
+    },
+    {
+      "id": "literal_path",
+      "appId": "vscode",
+      "relative": "src/space ' $() ; file.ts",
+      "exists": "file",
+      "context": true,
+      "header": true,
+      "codeExit": 0,
+      "openExit": 0,
+      "ok": true,
+      "calls": [
+        [
+          "code",
+          "/tmp/oc vscode workspace",
+          "--goto",
+          "/tmp/oc vscode workspace/src/space ' $() ; file.ts"
+        ]
+      ]
+    },
+    {
+      "id": "completed_nonzero_fallback",
+      "appId": "vscode",
+      "relative": "src/fallback.ts",
+      "exists": "file",
+      "context": true,
+      "header": false,
+      "codeExit": 7,
+      "openExit": 0,
+      "ok": true,
+      "calls": [
+        [
+          "code",
+          "/tmp/oc vscode workspace",
+          "--goto",
+          "/tmp/oc vscode workspace/src/fallback.ts"
+        ],
+        [
+          "open",
+          "-a",
+          "Visual Studio Code",
+          "/tmp/oc vscode workspace/src/fallback.ts"
+        ]
+      ]
+    },
+    {
+      "id": "fallback_error",
+      "appId": "vscode",
+      "relative": "src/failure.ts",
+      "exists": "file",
+      "context": true,
+      "header": false,
+      "codeExit": 7,
+      "openExit": 9,
+      "ok": false,
+      "error": "open fixture failure",
+      "calls": [
+        [
+          "code",
+          "/tmp/oc vscode workspace",
+          "--goto",
+          "/tmp/oc vscode workspace/src/failure.ts"
+        ],
+        [
+          "open",
+          "-a",
+          "Visual Studio Code",
+          "/tmp/oc vscode workspace/src/failure.ts"
+        ]
+      ]
+    },
+    {
+      "id": "no_context",
+      "appId": "vscode",
+      "relative": "src/plain.ts",
+      "exists": "file",
+      "context": false,
+      "header": false,
+      "codeExit": 0,
+      "openExit": 0,
+      "ok": true,
+      "calls": [
+        [
+          "open",
+          "-a",
+          "Visual Studio Code",
+          "/tmp/oc vscode workspace/src/plain.ts"
+        ]
+      ]
+    },
+    {
+      "id": "unrelated_app",
+      "appId": "vscode-short",
+      "relative": "src/short.ts",
+      "exists": "file",
+      "context": false,
+      "header": true,
+      "codeExit": 0,
+      "openExit": 0,
+      "ok": true,
+      "calls": [
+        [
+          "open",
+          "-a",
+          "VS Code",
+          "/tmp/oc vscode workspace/src/short.ts"
+        ]
+      ]
+    },
+    {
+      "id": "directory",
+      "appId": "vscode",
+      "relative": "src",
+      "exists": "directory",
+      "context": true,
+      "header": false,
+      "codeExit": 0,
+      "openExit": 0,
+      "ok": true,
+      "calls": [
+        [
+          "open",
+          "-a",
+          "Visual Studio Code",
+          "/tmp/oc vscode workspace/src"
+        ]
+      ]
+    },
+    {
+      "id": "missing_target",
+      "appId": "vscode",
+      "relative": "src/missing.ts",
+      "exists": "missing",
+      "context": true,
+      "header": false,
+      "codeExit": 0,
+      "openExit": 0,
+      "ok": false,
+      "calls": []
+    },
+    {
+      "id": "relative_target",
+      "appId": "vscode",
+      "relative": "src/present.ts",
+      "relativeInput": true,
+      "exists": "file",
+      "context": true,
+      "header": false,
+      "codeExit": 0,
+      "openExit": 0,
+      "ok": false,
+      "calls": []
+    },
+    {
+      "id": "unknown_app",
+      "appId": "unknown",
+      "relative": "src/present.ts",
+      "exists": "file",
+      "context": true,
+      "header": false,
+      "codeExit": 0,
+      "openExit": 0,
+      "ok": false,
+      "calls": []
+    }
+  ]
+}

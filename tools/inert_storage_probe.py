@@ -18,6 +18,7 @@ import uuid
 
 
 BASE = Path("/tmp").resolve()
+STORAGE = "resources"
 RESOURCES = ("disk", "auxiliary")
 PHASES = ("initial", "repeat", "reopened", "finished", "retained")
 OPERATIONS = ("open", "write", "truncate", "replace", "link", "reopen")
@@ -55,15 +56,30 @@ class Identity:
 
 
 @dataclass(frozen=True)
+class StorageDirectory:
+    device: int
+    inode: int
+    uid: int
+    mode: int
+
+    @classmethod
+    def of(cls, info):
+        if not stat.S_ISDIR(info.st_mode) or stat.S_IMODE(info.st_mode) != 0o700:
+            raise Unavailable("resources require a private, non-symlink directory")
+        return cls(info.st_dev, info.st_ino, info.st_uid, stat.S_IMODE(info.st_mode))
+
+
+@dataclass(frozen=True)
 class ProbePlan:
     probe_id: str
     consumer_uid: int
     caller_uid: int
     namespace: tuple[int, int]
+    storage: StorageDirectory
     resources: dict[str, Identity]
 
     def payload(self):
-        return {"kind": SCOPE, "version": 1, **asdict(self)}
+        return {"kind": SCOPE, "version": 2, **asdict(self)}
 
     def marker(self, resource):
         return (f"OPENCONDUCTOR-INERT-ONLY:{self.probe_id}:{resource}\n".encode()).ljust(4096, b".")
@@ -94,8 +110,8 @@ def write_new(directory, name, data, mode=0o600):
 
 
 @contextmanager
-def directory(path):
-    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+def directory(path, *, dir_fd=None):
+    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=dir_fd)
     try:
         yield fd
     finally:
@@ -168,15 +184,19 @@ def initialize(caller_uid):
         root.mkdir(mode=0o700)
         with directory(root) as fd:
             os.fchmod(fd, 0o755)
-            resources = {}
-            provisional = ProbePlan(probe_id, consumer_uid, caller_uid, (0, 0), {})
-            for resource in RESOURCES:
-                name = resource + ".marker"
-                write_new(fd, name, provisional.marker(resource))
-                resources[resource] = Identity.of(os.stat(name, dir_fd=fd, follow_symlinks=False))
+            os.mkdir(STORAGE, mode=0o700, dir_fd=fd)
+            with directory(STORAGE, dir_fd=fd) as storage_fd:
+                os.fchmod(storage_fd, 0o700)
+                storage = StorageDirectory.of(os.fstat(storage_fd))
+                resources = {}
+                provisional = ProbePlan(probe_id, consumer_uid, caller_uid, (0, 0), storage, {})
+                for resource in RESOURCES:
+                    name = resource + ".marker"
+                    write_new(storage_fd, name, provisional.marker(resource))
+                    resources[resource] = Identity.of(os.stat(name, dir_fd=storage_fd, follow_symlinks=False))
             info = os.fstat(fd)
             plan = ProbePlan(probe_id, consumer_uid, caller_uid,
-                             (info.st_dev, info.st_ino), resources)
+                             (info.st_dev, info.st_ino), storage, resources)
             data = encoded(plan.payload())
             write_new(fd, "plan.json", data, mode=0o444)
     return {"probe_id": probe_id, "plan_sha256": digest(data),
@@ -192,26 +212,52 @@ def load_plan(probe_id, plan_sha256):
         if digest(data) != plan_sha256:
             raise Unavailable("plan digest mismatch")
         raw = json.loads(data)
-        if set(raw) != {"kind", "version", "probe_id", "consumer_uid", "caller_uid", "namespace", "resources"}:
+        if set(raw) != {"kind", "version", "probe_id", "consumer_uid", "caller_uid", "namespace", "storage", "resources"}:
             raise Unavailable("unexpected plan fields")
-        if raw["kind"] != SCOPE or raw["version"] != 1 or raw["probe_id"] != probe_id:
+        if raw["kind"] != SCOPE or type(raw["version"]) is not int or raw["version"] != 2 or raw["probe_id"] != probe_id:
             raise Unavailable("wrong synthetic plan")
         if any(type(raw[key]) is not int or raw[key] <= 0 for key in ("consumer_uid", "caller_uid")):
             raise Unavailable("invalid principal IDs")
         if raw["consumer_uid"] == raw["caller_uid"] or set(raw["resources"]) != set(RESOURCES):
             raise Unavailable("requires two distinct principals and both resources")
+        if (type(raw["namespace"]) is not list or len(raw["namespace"]) != 2
+                or any(type(value) is not int or value < 0 for value in raw["namespace"])):
+            raise Unavailable("invalid namespace identity")
+        storage = StorageDirectory(**raw["storage"])
+        resources = {name: Identity(**value) for name, value in raw["resources"].items()}
+        if any(type(value) is not int for identity in (storage, *resources.values())
+               for value in asdict(identity).values()):
+            raise Unavailable("invalid object identity fields")
+        if storage.uid != raw["consumer_uid"] or storage.mode != 0o700 or storage.device != raw["namespace"][0]:
+            raise Unavailable("invalid private storage identity")
         plan = ProbePlan(probe_id, raw["consumer_uid"], raw["caller_uid"],
-                         tuple(raw["namespace"]),
-                         {name: Identity(**value) for name, value in raw["resources"].items()})
+                         tuple(raw["namespace"]), storage, resources)
         info = os.fstat(fd)
         if (info.st_dev, info.st_ino) != plan.namespace or info.st_uid != plan.consumer_uid:
             raise Unavailable("namespace identity mismatch")
         if stat.S_IMODE(info.st_mode) != 0o755:
             raise Unavailable("inert namespace must allow caller directory access but not mutation")
+        check_storage(fd, plan)
         for identity in plan.resources.values():
             if identity.uid != plan.consumer_uid or identity.mode != 0o600 or identity.size != 4096:
                 raise Unavailable("invalid synthetic resource identity")
         yield plan, fd
+
+
+def check_storage(fd, plan):
+    actual = StorageDirectory.of(os.stat(STORAGE, dir_fd=fd, follow_symlinks=False))
+    if actual != plan.storage:
+        raise Unavailable("private storage identity mismatch")
+    return actual
+
+
+@contextmanager
+def resource_directory(fd, plan):
+    check_storage(fd, plan)
+    with directory(STORAGE, dir_fd=fd) as storage_fd:
+        if StorageDirectory.of(os.fstat(storage_fd)) != plan.storage:
+            raise Unavailable("opened a different private storage directory")
+        yield storage_fd
 
 
 def check_identity(fd, plan, resource):
@@ -234,27 +280,37 @@ def consumer_check(probe_id, plan_sha256, phase, *, verify=False):
             reserve_uid(journal, probe_id, "consumer")
             write_new(journal, name + ".claimed", encoded({"probe_id": probe_id}))
         observations = []
-        for resource in RESOURCES:
-            check_identity(fd, plan, resource)
-            handle = os.open(resource + ".marker", os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK, dir_fd=fd)
-            try:
-                if Identity.of(os.fstat(handle)) != plan.resources[resource]:
-                    raise Unavailable("opened a different resource")
-                marker = plan.marker(resource)
-                if os.pread(handle, 4097, 0) != marker:
-                    raise Unavailable("synthetic marker was modified")
-                if not verify:
-                    if os.pwrite(handle, marker, 0) != len(marker):
-                        raise Unavailable("short authorized write")
-                    os.fsync(handle)
+        with resource_directory(fd, plan) as storage_fd:
+            for resource in RESOURCES:
+                check_identity(storage_fd, plan, resource)
+                handle = os.open(resource + ".marker", os.O_RDWR | os.O_NOFOLLOW | os.O_NONBLOCK,
+                                 dir_fd=storage_fd)
+                try:
+                    if Identity.of(os.fstat(handle)) != plan.resources[resource]:
+                        raise Unavailable("opened a different resource")
+                    marker = plan.marker(resource)
                     if os.pread(handle, 4097, 0) != marker:
-                        raise Unavailable("authorized write readback mismatch")
-                check_identity(fd, plan, resource)
-            finally:
-                os.close(handle)
-            observations.append({"resource": resource, "read": True, "write": not verify,
-                                 "identity": asdict(plan.resources[resource])})
+                        raise Unavailable("synthetic marker was modified")
+                    if not verify:
+                        if os.pwrite(handle, marker, 0) != len(marker):
+                            raise Unavailable("short authorized write")
+                        os.fsync(handle)
+                        if os.pread(handle, 4097, 0) != marker:
+                            raise Unavailable("authorized write readback mismatch")
+                    check_identity(storage_fd, plan, resource)
+                    actual = os.fstat(handle)
+                    if Identity.of(actual) != plan.resources[resource]:
+                        raise Unavailable("opened resource identity changed")
+                finally:
+                    os.close(handle)
+                observations.append({"resource": resource, "read": True, "write": not verify,
+                                     "identity": asdict(Identity.of(actual)), "links": actual.st_nlink})
+            storage = StorageDirectory.of(os.fstat(storage_fd))
+            if storage != check_storage(fd, plan):
+                raise Unavailable("private storage changed during consumer operation")
         result = report(plan, phase, "consumer-verify" if verify else "consumer", observations)
+        info = os.fstat(fd)
+        result.update(namespace=[info.st_dev, info.st_ino], storage=asdict(storage))
         result["status"] = "INTACT" if verify else "AUTHORIZED_CONTROL_OK"
         write_new(fd, name + ".json", encoded(result), mode=0o444)
         return result
@@ -329,8 +385,8 @@ def caller_check(probe_id, plan_sha256, phase):
                             outcome = {"status": "UNAVAILABLE", "negative": None}
                         else:
                             try:
-                                check_identity(fd, plan, resource)
-                                negative = attempt(name, fd, resource + ".marker", staged)
+                                check_storage(fd, plan)
+                                negative = attempt(name, fd, STORAGE + "/" + resource + ".marker", staged)
                                 outcome = {"status": "BREACH" if negative["returned"] or negative["completed"] else
                                            ("DENIED" if negative["errno"] in DENIALS else "UNAVAILABLE"),
                                            "negative": negative}

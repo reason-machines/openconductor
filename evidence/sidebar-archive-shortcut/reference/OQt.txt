@@ -1,0 +1,1 @@
+function OQt(t,e){return GUt(t,{overrides:e})}const FQt=["General","View","Navigation","Workspace","Chat","Code review","Terminal"];

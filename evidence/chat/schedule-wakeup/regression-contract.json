@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "candidate": "CHAT.SCHEDULE-WAKEUP-RESULT-TIME",
+  "status": "FROZEN_SOURCE_CONTRACT_NOT_EXECUTABLE_NOT_RUN",
+  "baseline_source_commit": "5852f41eb4df5c6da9b976d7b8ef830a892aed8d",
+  "source_packet": {
+    "name": "schedule-wakeup-source-be7-v2.tar.gz",
+    "sha256": "0cfe580c0a71f7ee48a0a7529f92f964e9d87031a85dcf0d9a700099177fc2c1",
+    "attachment_id": "e175fc25-0018-4428-9b9a-523fa9c4db52"
+  },
+  "immutable_input_file": "adapter-regression-proposal.json",
+  "actual_graph": [
+    "reasonChat",
+    "startTurn",
+    "applyReasonPayload",
+    "applyChatEvents",
+    "buildRows/foldAgentRows",
+    "whole production Transcript module",
+    "whole production ToolRows module and RowShell"
+  ],
+  "producer_contract": {
+    "clock_meaning": "Creation of a newly accepted result at the application's ingestion boundary, analogous to original separate persisted result-message creation; never CLI completion or containing assistant start",
+    "input": "Use the exact running/completed/failed ReasonTool payloads in immutable_input_file. At each frame, advance only the external clock and call the actual adapter with that frame time, then apply its actual events through the reducer.",
+    "no_synthetic_messages": "Do not construct or inject separate user-role result messages or patched timestamp metadata to make the renderer pass.",
+    "first_observation": "The completion frame arrives 30 seconds after the first assistant/tool frame. Its output declares 90 seconds, overriding the input's 120-second delay. The deadline must be 12:02:00 UTC, not the assistant-start-derived 12:01:30 or duplicate-delivery-derived 12:02:30.",
+    "dedupe": "Feed the exact repeated terminal frame at 12:01:00 UTC. The already accepted result's creation time and displayed deadline must not reset. Observe the actual row, not just a field added by a future fix."
+  },
+  "clock_host_contract": {
+    "timezone": "UTC",
+    "locale": "en-US",
+    "injection": "Control Date, setTimeout and clearTimeout only through the external admitted test host. Both production adapter and renderer use the same clock. Do not replace the formatter or wake-up helper.",
+    "label_comparison": "Only normalize Unicode whitespace in human-readable time labels. Do not erase, reformat or normalize away the actual hour/minute, Waiting/Waited state or absolute deadline.",
+    "timer_observation": "Observe the wake deadline callback separately from other application timers. Production Transcript's turnDayClock legitimately schedules a midnight callback; no control may assert that the application has zero total timers.",
+    "isolation": "Each independent test gets a fresh module context and real module stores. Keep repeated render/update/unmount transitions within its own test context. Do not reset a production store between phases of one case."
+  },
+  "cases": [
+    {
+      "id": "actual-adapter-first-result-time",
+      "role": "INTENDED_RED",
+      "failure_marker": "WAKE_RESULT_TIME_NOT_PROJECTED",
+      "input_reference": "cases[0]",
+      "observable": "Actual ScheduleWakeup row displays Waiting until 12:02 PM after the completion frame. The exact repeated terminal delivery leaves that deadline unchanged.",
+      "forbidden_proof": "Helper-only success, metadata equality, copied rendering, or timestamp injected directly into a fixture message does not qualify."
+    },
+    {
+      "id": "actual-mounted-deadline-and-dispose",
+      "role": "INTENDED_RED",
+      "failure_marker": "WAKE_DEADLINE_TRANSITION_MISSING",
+      "input_reference": "cases[1]",
+      "phases": [
+        "A: Render actual adapter-produced completion and advance the external clock to 12:02:00.250 UTC without a new payload or unrelated transcript update. The real row must display Waited until 12:02 PM.",
+        "B: In an independent fresh module context, replay the same exact frame sequence and unmount before the deadline. Require cancellation of its pending wake deadline callback; advancing beyond it must not invoke that callback or cause post-unmount work."
+      ],
+      "timer_boundary": "Track deadline-specific scheduling/cancellation. Do not confuse the separate turnDayClock midnight subscription with this timer."
+    },
+    {
+      "id": "pending-control",
+      "role": "CONTROL",
+      "input_reference": "cases[2]",
+      "observable": "Actual row remains Scheduling wake-up with no completion-derived wake deadline. Other legitimate application timers are allowed."
+    },
+    {
+      "id": "stop-control",
+      "role": "CONTROL",
+      "input_reference": "cases[3]",
+      "observable": "Actual row transitions from Stopping scheduled wake-ups to Stopped scheduled wake-ups. Neither frame starts a wake deadline."
+    },
+    {
+      "id": "error-control",
+      "role": "CONTROL",
+      "input_reference": "cases[4]",
+      "observable": "Actual generic/error branch retains the failure output. Neither Waiting until nor Waited until is rendered, and no wake deadline is created."
+    }
+  ],
+  "qualification_gate": {
+    "before_product_fix": "The actual baseline must finish all five named cases with exactly the two specified product assertion failures and all three controls passing. Mount, import, clock, boundary, VM or loader errors invalidate the baseline; a nonzero suite exit alone is not RED.",
+    "unchanged_input_green": "After the smallest coherent product fix, require all five identical input cases and all their assertions to pass. The two intended failure markers, event frames and controls remain frozen.",
+    "publication": "Use one reconciled existing hosted publisher and a ready PR directly against main. Preserve the assigned frozen PR 847 branch. Do not open a second publisher, dispatch, watch or runtime lane.",
+    "merge": "Every workflow/check on the exact final PR head must pass before merge; source preparation or empty/pending checks are not passing.",
+    "delivery_tail": "Retain successor ownership through merged-main source rebinding and consuming-package checks without claiming installed-app/native behavior from a package."
+  },
+  "execution_admission": {
+    "state": "NOT_GRANTED",
+    "owner": "BE7 source/contract owner",
+    "publisher": "Existing publisher identity must be authoritatively reconciled by ledger; do not infer it from past reuse",
+    "prerequisites": [
+      "Actual exact merged-main release of same64 PR 1102's Transcript hunk, reported by its sole owner",
+      "Current consuming-main rebind of the frozen inputs and required production imports",
+      "Ledger reconciliation of the one existing hosted publisher and its execution turn; no assumed local capacity"
+    ],
+    "native_provider_admission": "NONE"
+  },
+  "uncovered_requirements": [
+    "Grouped tool results from a shared original native frame",
+    "Failed persistence and retry clocks",
+    "Restart/reload and legacy results whose creation time was never retained",
+    "Actual SQLite round-trip execution",
+    "Native/visual/provider or real original/current clock scheduling comparison"
+  ],
+  "limitations": "This file freezes a concrete source-level test contract and original event data. It is not executable JavaScript, an observed regression, an admitted runtime, a production fix or a native parity result."
+}

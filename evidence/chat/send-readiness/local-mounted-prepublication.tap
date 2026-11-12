@@ -1,0 +1,488 @@
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:59) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mounted idle/enter/button: read-pending B retains ready A/prose until explicit retry
+ok 1 - mounted idle/enter/button: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 1083.474513
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/button: write-pending B retains ready A/prose until explicit retry
+ok 2 - mounted idle/enter/button: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 698.208762
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/button: failed B retains attachment-only ready A
+ok 3 - mounted idle/enter/button: failed B retains attachment-only ready A
+  ---
+  duration_ms: 637.80721
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/button: workspace-copy failure retains draft for explicit retry
+ok 4 - mounted idle/enter/button: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 584.175788
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/normal: read-pending B retains ready A/prose until explicit retry
+ok 5 - mounted idle/enter/normal: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 435.197985
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/normal: write-pending B retains ready A/prose until explicit retry
+ok 6 - mounted idle/enter/normal: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 421.098244
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/normal: failed B retains attachment-only ready A
+ok 7 - mounted idle/enter/normal: failed B retains attachment-only ready A
+  ---
+  duration_ms: 599.485314
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/normal: workspace-copy failure retains draft for explicit retry
+ok 8 - mounted idle/enter/normal: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 736.065599
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/opposite: read-pending B retains ready A/prose until explicit retry
+ok 9 - mounted idle/enter/opposite: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 734.047919
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/opposite: write-pending B retains ready A/prose until explicit retry
+ok 10 - mounted idle/enter/opposite: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 596.168793
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/opposite: failed B retains attachment-only ready A
+ok 11 - mounted idle/enter/opposite: failed B retains attachment-only ready A
+  ---
+  duration_ms: 511.321492
+  type: 'test'
+  ...
+# Subtest: mounted idle/enter/opposite: workspace-copy failure retains draft for explicit retry
+ok 12 - mounted idle/enter/opposite: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 524.111756
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/button: read-pending B retains ready A/prose until explicit retry
+ok 13 - mounted idle/cmd-enter/button: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 506.89372
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/button: write-pending B retains ready A/prose until explicit retry
+ok 14 - mounted idle/cmd-enter/button: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 497.524556
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/button: failed B retains attachment-only ready A
+ok 15 - mounted idle/cmd-enter/button: failed B retains attachment-only ready A
+  ---
+  duration_ms: 415.527776
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/button: workspace-copy failure retains draft for explicit retry
+ok 16 - mounted idle/cmd-enter/button: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 398.657461
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/normal: read-pending B retains ready A/prose until explicit retry
+ok 17 - mounted idle/cmd-enter/normal: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 396.05271
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/normal: write-pending B retains ready A/prose until explicit retry
+ok 18 - mounted idle/cmd-enter/normal: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 374.00657
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/normal: failed B retains attachment-only ready A
+ok 19 - mounted idle/cmd-enter/normal: failed B retains attachment-only ready A
+  ---
+  duration_ms: 400.355688
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/normal: workspace-copy failure retains draft for explicit retry
+ok 20 - mounted idle/cmd-enter/normal: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 381.959303
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/opposite: read-pending B retains ready A/prose until explicit retry
+ok 21 - mounted idle/cmd-enter/opposite: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 377.538633
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/opposite: write-pending B retains ready A/prose until explicit retry
+ok 22 - mounted idle/cmd-enter/opposite: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 380.693841
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/opposite: failed B retains attachment-only ready A
+ok 23 - mounted idle/cmd-enter/opposite: failed B retains attachment-only ready A
+  ---
+  duration_ms: 375.845866
+  type: 'test'
+  ...
+# Subtest: mounted idle/cmd-enter/opposite: workspace-copy failure retains draft for explicit retry
+ok 24 - mounted idle/cmd-enter/opposite: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 373.019879
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/button: read-pending B retains ready A/prose until explicit retry
+ok 25 - mounted working-queue/enter/button: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 572.8529
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/button: write-pending B retains ready A/prose until explicit retry
+ok 26 - mounted working-queue/enter/button: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 593.567856
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/button: failed B retains attachment-only ready A
+ok 27 - mounted working-queue/enter/button: failed B retains attachment-only ready A
+  ---
+  duration_ms: 432.487148
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/button: workspace-copy failure retains draft for explicit retry
+ok 28 - mounted working-queue/enter/button: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 384.779019
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/normal: read-pending B retains ready A/prose until explicit retry
+ok 29 - mounted working-queue/enter/normal: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 383.966811
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/normal: write-pending B retains ready A/prose until explicit retry
+ok 30 - mounted working-queue/enter/normal: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 394.461457
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/normal: failed B retains attachment-only ready A
+ok 31 - mounted working-queue/enter/normal: failed B retains attachment-only ready A
+  ---
+  duration_ms: 379.144938
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/normal: workspace-copy failure retains draft for explicit retry
+ok 32 - mounted working-queue/enter/normal: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 457.242135
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/opposite: read-pending B retains ready A/prose until explicit retry
+ok 33 - mounted working-queue/enter/opposite: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 594.41928
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/opposite: write-pending B retains ready A/prose until explicit retry
+ok 34 - mounted working-queue/enter/opposite: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 681.972143
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/opposite: failed B retains attachment-only ready A
+ok 35 - mounted working-queue/enter/opposite: failed B retains attachment-only ready A
+  ---
+  duration_ms: 572.34915
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/enter/opposite: workspace-copy failure retains draft for explicit retry
+ok 36 - mounted working-queue/enter/opposite: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 644.485961
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/button: read-pending B retains ready A/prose until explicit retry
+ok 37 - mounted working-queue/cmd-enter/button: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 583.360473
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/button: write-pending B retains ready A/prose until explicit retry
+ok 38 - mounted working-queue/cmd-enter/button: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 460.692403
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/button: failed B retains attachment-only ready A
+ok 39 - mounted working-queue/cmd-enter/button: failed B retains attachment-only ready A
+  ---
+  duration_ms: 382.495116
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/button: workspace-copy failure retains draft for explicit retry
+ok 40 - mounted working-queue/cmd-enter/button: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 389.727607
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/normal: read-pending B retains ready A/prose until explicit retry
+ok 41 - mounted working-queue/cmd-enter/normal: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 387.613534
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/normal: write-pending B retains ready A/prose until explicit retry
+ok 42 - mounted working-queue/cmd-enter/normal: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 387.137552
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/normal: failed B retains attachment-only ready A
+ok 43 - mounted working-queue/cmd-enter/normal: failed B retains attachment-only ready A
+  ---
+  duration_ms: 370.21529
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/normal: workspace-copy failure retains draft for explicit retry
+ok 44 - mounted working-queue/cmd-enter/normal: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 371.674116
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/opposite: read-pending B retains ready A/prose until explicit retry
+ok 45 - mounted working-queue/cmd-enter/opposite: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 375.111893
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/opposite: write-pending B retains ready A/prose until explicit retry
+ok 46 - mounted working-queue/cmd-enter/opposite: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 397.230584
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/opposite: failed B retains attachment-only ready A
+ok 47 - mounted working-queue/cmd-enter/opposite: failed B retains attachment-only ready A
+  ---
+  duration_ms: 398.176324
+  type: 'test'
+  ...
+# Subtest: mounted working-queue/cmd-enter/opposite: workspace-copy failure retains draft for explicit retry
+ok 48 - mounted working-queue/cmd-enter/opposite: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 394.106067
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/button: read-pending B retains ready A/prose until explicit retry
+ok 49 - mounted working-steer/enter/button: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 362.642304
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/button: write-pending B retains ready A/prose until explicit retry
+ok 50 - mounted working-steer/enter/button: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 362.023001
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/button: failed B retains attachment-only ready A
+ok 51 - mounted working-steer/enter/button: failed B retains attachment-only ready A
+  ---
+  duration_ms: 370.996002
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/button: workspace-copy failure retains draft for explicit retry
+ok 52 - mounted working-steer/enter/button: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 391.144922
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/normal: read-pending B retains ready A/prose until explicit retry
+ok 53 - mounted working-steer/enter/normal: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 360.96346
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/normal: write-pending B retains ready A/prose until explicit retry
+ok 54 - mounted working-steer/enter/normal: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 436.974281
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/normal: failed B retains attachment-only ready A
+ok 55 - mounted working-steer/enter/normal: failed B retains attachment-only ready A
+  ---
+  duration_ms: 382.486402
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/normal: workspace-copy failure retains draft for explicit retry
+ok 56 - mounted working-steer/enter/normal: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 392.726229
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/opposite: read-pending B retains ready A/prose until explicit retry
+ok 57 - mounted working-steer/enter/opposite: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 456.893096
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/opposite: write-pending B retains ready A/prose until explicit retry
+ok 58 - mounted working-steer/enter/opposite: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 369.276947
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/opposite: failed B retains attachment-only ready A
+ok 59 - mounted working-steer/enter/opposite: failed B retains attachment-only ready A
+  ---
+  duration_ms: 364.286296
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/enter/opposite: workspace-copy failure retains draft for explicit retry
+ok 60 - mounted working-steer/enter/opposite: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 360.830876
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/button: read-pending B retains ready A/prose until explicit retry
+ok 61 - mounted working-steer/cmd-enter/button: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 378.782304
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/button: write-pending B retains ready A/prose until explicit retry
+ok 62 - mounted working-steer/cmd-enter/button: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 368.344728
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/button: failed B retains attachment-only ready A
+ok 63 - mounted working-steer/cmd-enter/button: failed B retains attachment-only ready A
+  ---
+  duration_ms: 361.661337
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/button: workspace-copy failure retains draft for explicit retry
+ok 64 - mounted working-steer/cmd-enter/button: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 363.10863
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/normal: read-pending B retains ready A/prose until explicit retry
+ok 65 - mounted working-steer/cmd-enter/normal: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 389.239267
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/normal: write-pending B retains ready A/prose until explicit retry
+ok 66 - mounted working-steer/cmd-enter/normal: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 527.728736
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/normal: failed B retains attachment-only ready A
+ok 67 - mounted working-steer/cmd-enter/normal: failed B retains attachment-only ready A
+  ---
+  duration_ms: 368.923023
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/normal: workspace-copy failure retains draft for explicit retry
+ok 68 - mounted working-steer/cmd-enter/normal: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 366.27401
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/opposite: read-pending B retains ready A/prose until explicit retry
+ok 69 - mounted working-steer/cmd-enter/opposite: read-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 363.085908
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/opposite: write-pending B retains ready A/prose until explicit retry
+ok 70 - mounted working-steer/cmd-enter/opposite: write-pending B retains ready A/prose until explicit retry
+  ---
+  duration_ms: 364.754147
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/opposite: failed B retains attachment-only ready A
+ok 71 - mounted working-steer/cmd-enter/opposite: failed B retains attachment-only ready A
+  ---
+  duration_ms: 408.5189
+  type: 'test'
+  ...
+# Subtest: mounted working-steer/cmd-enter/opposite: workspace-copy failure retains draft for explicit retry
+ok 72 - mounted working-steer/cmd-enter/opposite: workspace-copy failure retains draft for explicit retry
+  ---
+  duration_ms: 364.094185
+  type: 'test'
+  ...
+# Subtest: mounted idle/form: empty with read-pending B preserves actual empty-input guard
+ok 73 - mounted idle/form: empty with read-pending B preserves actual empty-input guard
+  ---
+  duration_ms: 359.814279
+  type: 'test'
+  ...
+# Subtest: mounted idle/form: ready-only with read-pending B preserves actual empty-input guard
+ok 74 - mounted idle/form: ready-only with read-pending B preserves actual empty-input guard
+  ---
+  duration_ms: 367.947887
+  type: 'test'
+  ...
+# Subtest: mounted idle/form: prose-only with read-pending B preserves actual empty-input guard
+ok 75 - mounted idle/form: prose-only with read-pending B preserves actual empty-input guard
+  ---
+  duration_ms: 386.404101
+  type: 'test'
+  ...
+# Subtest: mounted idle/form: empty with write-pending B preserves actual empty-input guard
+ok 76 - mounted idle/form: empty with write-pending B preserves actual empty-input guard
+  ---
+  duration_ms: 363.903085
+  type: 'test'
+  ...
+# Subtest: mounted idle/form: ready-only with write-pending B preserves actual empty-input guard
+ok 77 - mounted idle/form: ready-only with write-pending B preserves actual empty-input guard
+  ---
+  duration_ms: 360.868602
+  type: 'test'
+  ...
+# Subtest: mounted idle/form: prose-only with write-pending B preserves actual empty-input guard
+ok 78 - mounted idle/form: prose-only with write-pending B preserves actual empty-input guard
+  ---
+  duration_ms: 447.750672
+  type: 'test'
+  ...
+# Subtest: mounted failed-only input cannot deliver an empty message by form or keyboard
+ok 79 - mounted failed-only input cannot deliver an empty message by form or keyboard
+  ---
+  duration_ms: 400.858266
+  type: 'test'
+  ...
+1..79
+# tests 79
+# suites 0
+# pass 79
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 36071.867621
