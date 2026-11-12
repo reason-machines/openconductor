@@ -17,6 +17,7 @@ import {
   grepMatches,
   isTypedSubagent,
   lastTwoSegments,
+  lineCounts,
   mcpLabel,
   parseTask,
   parseTaskList,
@@ -343,6 +344,7 @@ export interface ToolRowProps {
   tool: ConductorTool;
   status: ToolStatus;
   result?: string;
+  rawResult?: unknown;
   resultCreatedAt?: string;
   now?: () => number;
   isError: boolean;
@@ -399,7 +401,7 @@ export function ConductorToolRow(props: ToolRowProps) {
   );
 }
 
-function Row({ tool, status, result, resultCreatedAt, now, isError, open, onToggle, todoRows, workspacePath, onOpenFile }: ToolRowProps) {
+function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, open, onToggle, todoRows, workspacePath, onOpenFile }: ToolRowProps) {
   const { name, input } = tool;
   const icon = <ToolIcon name={name} />;
   const shell = { icon, open, onToggle, status };
@@ -467,25 +469,49 @@ function Row({ tool, status, result, resultCreatedAt, now, isError, open, onTogg
     case "ls": {
       const label = toolKind(name) === "glob" ? "Glob" : "List files";
       const chip = toolKind(name) === "glob" ? s(input.pattern) : s(input.path) || ".";
-      return <RowShell {...shell} left={<span>{label}</span>} right={<CodeChip text={chip} />} align="center" content={output ? output : undefined} />;
+      const content = toolKind(name) === "glob" && output ? (
+        <code>{output.split("\n").filter((line) => line.trim()).map((line, index) => {
+          const trimmed = line.trim();
+          return <div key={index}>{trimmed.includes(" ") ? line : trimmed}</div>;
+        })}</code>
+      ) : output;
+      return <RowShell {...shell} left={<span>{label}</span>} right={<CodeChip text={chip} />} align="center" content={content || undefined} />;
     }
     case "edit": {
       const path = s(input.file_path);
-      const counts = editCounts(input);
+      const { oldText, newText } = (() => {
+        if (rawResult && typeof rawResult === "object" && !Array.isArray(rawResult) && "diffString" in rawResult && typeof rawResult.diffString === "string" && rawResult.diffString) {
+          const oldLines: string[] = [];
+          const newLines: string[] = [];
+          for (const line of rawResult.diffString.split("\n")) {
+            if (line.startsWith("--- ") || line.startsWith("+++ ") || line.startsWith("@@")) continue;
+            if (line.startsWith("-")) oldLines.push(line.slice(1));
+            else if (line.startsWith("+")) newLines.push(line.slice(1));
+            else {
+              const context = line.startsWith(" ") ? line.slice(1) : line;
+              oldLines.push(context);
+              newLines.push(context);
+            }
+          }
+          return { oldText: oldLines.join("\n"), newText: newLines.join("\n") };
+        }
+        return { oldText: stripMarkers(s(input.old_string)), newText: stripMarkers(s(input.new_string)) };
+      })();
+      const counts = oldText || newText ? lineCounts(oldText, newText) : undefined;
       return (
         <RowShell
           {...shell}
           left={<span>Edit</span>}
           right={
             <div className="oc-tool-right-row">
-              {path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={counts ? <DiffBlock oldText={stripMarkers(s(input.old_string))} newText={stripMarkers(s(input.new_string))} /> : undefined} /> : null}
+              {path ? <FileBadge path={path} onOpen={onOpenFile} hoverContent={counts ? <DiffBlock oldText={oldText} newText={newText} /> : undefined} /> : null}
               {counts ? <LineCounts {...counts} /> : null}
             </div>
           }
           keepRight
           align="center"
           bareContent
-          content={counts ? <DiffBlock oldText={stripMarkers(s(input.old_string))} newText={stripMarkers(s(input.new_string))} /> : undefined}
+          content={counts ? <DiffBlock oldText={oldText} newText={newText} /> : undefined}
         />
       );
     }

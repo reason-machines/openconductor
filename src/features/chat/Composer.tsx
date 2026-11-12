@@ -191,7 +191,11 @@ export function Composer({
     const current = box.selection();
     const range = composerSlashRange(current.text, current.start, current.end);
     if (!range || range.start !== slash.start || range.end !== slash.end || range.query !== slash.query) return;
-    if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
+    if (command.effect === "pick_linked_directory" && onLinkWorkspaces) {
+      if (!box.deleteRange(range)) return;
+      setSlashDismissed(slashKey);
+      onLinkWorkspaces();
+    } else if (!box.replaceRange(range, `${command.insert ?? `/${command.name}`} `)) return;
     setSlashIndex(0);
   }
 
