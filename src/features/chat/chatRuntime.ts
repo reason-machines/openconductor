@@ -315,10 +315,10 @@ function setStatus(chatId: string, status: Q.SessionStatus | undefined) {
  * and, once the store is connected, `conductor.db` keeps it.
  */
 export function reportChatStatus(chatId: string, status: Q.SessionStatus): void {
+  persistStatus(chatId, status);
   if (hiddenChats.has(chatId)) return setStatus(chatId, undefined);
   const prev = statuses.get(chatId);
   setStatus(chatId, status);
-  persistStatus(chatId, status);
   // Conductor calls `_p` right after setting plan review or user input (attention.ts).
   if (enteredWait(prev, status)) chatWantsAttention(chatId);
 }
@@ -394,12 +394,13 @@ interface StoredStatus {
 }
 
 function receivedStatus({ chatId, status }: StoredStatus) {
-  if (!SESSION_STATUSES.has(status) || hiddenChats.has(chatId)) return;
+  if (!SESSION_STATUSES.has(status)) return;
   const w = writes.get(chatId);
   if (w && w.inFlight > 0) {
     w.inFlight--;
     return;
   }
+  if (hiddenChats.has(chatId)) return;
   setStatus(chatId, status as Q.SessionStatus);
 }
 

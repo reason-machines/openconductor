@@ -68,6 +68,7 @@ function fixture(globalDialog = false, icon: string | null = null) {
     useRepoFavicon() { throw new Error("Unexpected favicon I/O in settings popup regression"); },
   };
   const picker = load("src/components/RepoIconDialog.tsx", {
+    "../backend": { openUrl() { throw new Error("Unexpected URL launch in settings popup regression"); } },
     "../state/repoIcon": repoIcon,
     "./Dialogs": modal,
     "./Icons": icons,
