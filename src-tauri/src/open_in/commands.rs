@@ -242,6 +242,65 @@ fn deleted_finder_parent(target: &Path, context: &FileContext) -> Option<PathBuf
     target.parent().map(Path::to_path_buf)
 }
 
+fn vscode_search_path(
+    path: Option<&std::ffi::OsStr>,
+    home: Option<&std::ffi::OsStr>,
+) -> Result<std::ffi::OsString, String> {
+    let mut dirs: Vec<PathBuf> = path.into_iter().flat_map(std::env::split_paths).collect();
+    dirs.push(PathBuf::from("/Applications/Visual Studio Code.app/Contents/Resources/app/bin"));
+    if let Some(home) = home {
+        dirs.push(Path::new(home).join("Applications/Visual Studio Code.app/Contents/Resources/app/bin"));
+    }
+    std::env::join_paths(dirs).map_err(|error| error.to_string())
+}
+
+fn run_vscode_file(
+    workspace: &Path,
+    target: &Path,
+    cli_path: &std::ffi::OsStr,
+    fallback: impl FnOnce() -> Result<(), String>,
+) -> Result<(), String> {
+    let output = Command::new("code")
+        .arg(workspace)
+        .arg("--goto")
+        .arg(target)
+        .env("PATH", cli_path)
+        .output()
+        .map_err(|error| format!("code: {error}"))?;
+    if output.status.success() {
+        Ok(())
+    } else {
+        fallback()
+    }
+}
+
+fn vscode_workspace(target: &Path, context: &FileContext) -> Option<PathBuf> {
+    let root = &context.workspace_path;
+    if !root.is_absolute()
+        || !root.symlink_metadata().ok()?.is_dir()
+        || root.components().any(|part| matches!(part, Component::ParentDir))
+    {
+        return None;
+    }
+    let relative = target.strip_prefix(root).ok()?;
+    if relative.as_os_str().is_empty()
+        || !relative.components().all(|part| matches!(part, Component::Normal(_)))
+    {
+        return None;
+    }
+    let mut current = root.to_path_buf();
+    for part in relative.components() {
+        current.push(part.as_os_str());
+        if current.symlink_metadata().ok()?.file_type().is_symlink() {
+            return None;
+        }
+    }
+    if !target.canonicalize().ok()?.starts_with(root.canonicalize().ok()?) {
+        return None;
+    }
+    Some(root.clone())
+}
+
 /// Opens an existing folder or file. A missing Finder file may open its
 /// immediate parent when explicit file context bounds it to a workspace.
 #[tauri::command]
@@ -267,9 +326,27 @@ pub async fn open_in_app(
     } else {
         return Err(invalid());
     };
+    let workspace = if app.id == "vscode" && is_file {
+        file_context
+            .as_ref()
+            .map(|context| {
+                vscode_workspace(target, context)
+                    .ok_or_else(|| format!("Invalid VS Code workspace context for: {path}"))
+            })
+            .transpose()?
+    } else {
+        None
+    };
     tauri::async_runtime::spawn_blocking(move || {
         if cfg!(target_os = "macos") {
-            if app.id == "alacritty" && !is_file {
+            if let Some(workspace) = workspace {
+                let inherited_path = std::env::var_os("PATH");
+                let home = std::env::var_os("HOME");
+                let cli_path = vscode_search_path(inherited_path.as_deref(), home.as_deref())?;
+                run_vscode_file(&workspace, &dir, &cli_path, || {
+                    super::run_macos_open(app, &dir, is_file, run)
+                })
+            } else if app.id == "alacritty" && !is_file {
                 super::run_alacritty_folder(&dir, run_alacritty)
             } else if app.id == "kaleidoscope" && !is_file {
                 run_kaleidoscope_folder(&dir)
@@ -295,6 +372,10 @@ pub async fn open_in_app(
     .await
     .map_err(|e| e.to_string())?
 }
+
+#[cfg(all(test, target_os = "macos"))]
+#[path = "vscode_workspace_context_safety.rs"]
+mod vscode_workspace_context_safety;
 
 #[cfg(all(test, unix))]
 mod finder_context_tests {
