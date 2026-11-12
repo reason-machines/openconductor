@@ -172,7 +172,7 @@ export function PanelStrip({ repo, workspace, open, setOpen, view, setView, cwd,
       {open && error && <div className="term-error">{error}</div>}
       {/* Kept mounted while hidden, so run output and the setup state keep coming in. */}
       <div className="ws-strip-body" hidden={!open || view === "terminal"}>
-        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} active={view === "run"} actionsSlot={actionsEl} onSetupState={onSetupState} onAddRunScript={addRunScript} onAskAgent={onAskSetupAgent} onShowRun={showRun} onOpenPreview={inAppBrowser ? onOpenPreview : undefined} />
+        <ScriptsPanel repo={repo} workspace={workspace} tab={view === "setup" ? "setup" : "run"} active={view === "run"} actionsSlot={actionsEl} onSetupState={onSetupState} onAddRunScript={addRunScript} onAskAgent={onAskSetupAgent} onShowRun={showRun} onOpenPreview={inAppBrowser ? onOpenPreview : undefined} sessionId={chatSessionId} onAddToChat={onAddTerminalSelection} />
       </div>
       {showTerminal && (
         <section className="terminal-panel" aria-label="Terminal">

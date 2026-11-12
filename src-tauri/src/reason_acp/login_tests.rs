@@ -89,7 +89,11 @@ fn built_app_fake_waits_for_explicit_approval_before_connecting() {
     let (dir, launch) = fixture(&format!("exec python3 \"{}\" \"$@\"", fake.display()));
     std::fs::write(dir.join("fake-reason-signed-out"), "").unwrap();
     std::fs::write(dir.join("fake-reason-require-approval"), "").unwrap();
-    let service = service(Duration::from_secs(5));
+    let service = LoginService::with_options(LoginOptions {
+        timeout: Duration::from_secs(5),
+        poll_interval: Duration::from_millis(20),
+        ..LoginOptions::default()
+    });
     service.start(launch, dir.clone());
     let state = wait(&service, |state| {
         matches!(state, LoginState::Waiting { .. })
