@@ -162,7 +162,7 @@
     "src/keybindings/shortcut.ts": "c58a7f8947544f90d0d327766b74007909ecabd5e391308e7a2a1556701cf5b8",
     "src/keybindings/registry.ts": "3a873cc27d99b73fafa340dc1585d9f4cd850966e91408c4f4dbad445bf4dcb9"
   },
-  "fixture_sha256": "0545e3d99ceed893c1d005aa46e8465d436c7788e0588f80e56580a671be741a",
+  "fixture_sha256": "8ad78950e3a408f4adbeb432541064156e8ea6c016eeb6d5f5d034fb1ae17187",
   "scope": "Only SidebarWorkspaceRow archive tooltip override subscription and primary label. Archive action, switch modifier hints, other rows and tooltip primitive unchanged.",
   "source_prediction": {
     "four_remap_assertions": "default shortcut remains where saved primary expected",

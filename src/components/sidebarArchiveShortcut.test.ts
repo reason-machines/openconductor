@@ -101,7 +101,7 @@ async function fixture({ active = true, loadOverrides }: { active?: boolean; loa
     });
   }
   let renderer: ReturnType<typeof create>;
-  await act(async () => { renderer = create(React.createElement(provider.KeybindingsProvider, { loadOverrides }, React.createElement(Rows))); });
+  await act(async () => { renderer = create(React.createElement(provider.KeybindingsProvider, { loadOverrides, children: React.createElement(Rows) })); });
   return {
     async openTooltip() {
       await act(async () => {

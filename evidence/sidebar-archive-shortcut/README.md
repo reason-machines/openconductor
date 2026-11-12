@@ -12,11 +12,15 @@ The retained Conductor 0.87.6 REA-decoded renderer instead computes `nFt("worksp
 
 ## Frozen mounted regression
 
-The frozen regression is `src/components/sidebarArchiveShortcut.test.ts`. SHA-256 is `0545e3d99ceed893c1d005aa46e8465d436c7788e0588f80e56580a671be741a`.
+The frozen regression is `src/components/sidebarArchiveShortcut.test.ts`. SHA-256 is `8ad78950e3a408f4adbeb432541064156e8ea6c016eeb6d5f5d034fb1ae17187`.
 
 The fixture mounts actual `SidebarWorkspaceRow`, `KeybindingsProvider` and `Tooltip` using the real override parser, resolver, registry and glyph formatter. It focuses the archive trigger through the real tooltip handler and reads rendered tooltip text. ReactDOM's portal destination and native/DOM/hook boundaries are substituted; positioning and actual native focus are not exercised.
 
 Seven cases cover the default selected tooltip, a saved override arriving after mount, a live remap while the tooltip is open, primary-only display when additional shortcuts exist, reset on the same row, unselected omission before and after a remap, and archive-click callback plus propagation behavior. The source predicts four intended remap assertion failures and three passing controls. All cases are NOT_RUN.
+
+## Fixture typing repair
+
+Initial head `207f932e` failed hosted typecheck because React.createElement requires KeybindingsProvider children in its props type. This is not qualified behavioral RED. The only test change moves the same Rows child into the children prop. Static comparison confirms that all seven scenario bodies, assertions and event sequences are unchanged. The new fixture hash is frozen for the corrected regression-only baseline; product code remains unchanged. See `setup-repair.json`.
 
 ## Checks and limits
 
