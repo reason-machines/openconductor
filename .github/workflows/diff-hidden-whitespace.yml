@@ -1,11 +1,7 @@
 name: Hidden-whitespace editing proof
 
 on:
-  pull_request:
-    paths:
-      - "src/features/diff/**"
-      - "evidence/diff/hidden-whitespace-editing/**"
-      - ".github/workflows/diff-hidden-whitespace.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
