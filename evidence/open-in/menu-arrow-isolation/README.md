@@ -19,7 +19,9 @@ The fixture hash is sealed before any product fix. Existing tests and workflows 
 ## Checks and limits
 
 - `python3 evidence/open-in/menu-arrow-isolation/verify.py --baseline` checks source identity and fixture integrity while requiring unchanged product bytes. It does not execute behavior.
-- Hosted behavior is NOT_RUN at preparation time.
+- Baseline hosted behavior is qualified at `ff447d80e2bb20d88e9a6b9795b19c0664cfb785` in ordinary CI run `43161877056`, unit job `130994755203`. All four intended handler assertions failed, and all five controls passed. [Original failure excerpt and qualification](hosted-red.json) preserve focus mismatches and missing propagation-stop calls. This is not a loader or compilation failure.
+- Before the repair, fresh main `0a05d2958dd97435b1fc9aab00be50463a229d0b` retained the exact baseline product hash from `source.json`. The two-line repair changes only the arrow guard and adds `stopPropagation()` after consumption. Escape remains before the guard. The fixture, historical source identity and baseline snapshot are unchanged.
+- Passing-after behavior and exact-head workflows remain pending at correction publication. No local JavaScript, Rust, browser, native, dispatch or manual rerun was started. The existing automatic workflows execute the frozen mounted regression.
 - Test Behavior, Not Implementation determines the fixture boundary. Assertions observe focus, event consumption and external calls through the mounted public handler, rather than copied navigation logic.
 - A fake event records propagation-stop calls. It does not prove propagation in an actual browser.
 - Propagation stopping only affects later bubbling handlers. The document capture-phase keybinding listener is outside this claim.
