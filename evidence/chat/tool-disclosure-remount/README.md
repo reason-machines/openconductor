@@ -6,13 +6,13 @@ Conductor Rebuild checked main `167492e56dbbb90850efbadf1db2848dae7622f2` before
 
 The retained Conductor 0.87.6 renderer has a module-lifetime `dIt` expansion store. Uncontrolled `Mu` rows read that store through their caller's persistence key and write it only after a manual toggle. `O0o` supplies the Read tool-call id. `gpo` supplies the plan tool-call id and starts expanded. An explicit stored false is distinct from an untouched default.
 
-Current `WorkspaceView` keys `ChatPanel` by the selected chat. That destroys and remounts `Transcript` when switching between chats. `Transcript` currently holds manual tool choices in a mount-local map. This source difference is not yet a reproduced behavioral defect.
+`WorkspaceView` keys `ChatPanel` by the selected chat. That destroys and remounts `Transcript` when switching between chats. Baseline `Transcript` holds manual tool choices in a mount-local map. Corrected hosted baseline `51a2972e9fb0bcbd1e200601f2a2ec961ebbe922` reproduced both lost choices through the real tab and row handlers, with all three controls passing.
 
 `source-lineage.json` retains the original REA evidence id, exact ranges, hashes, and limitations. `requalification.json` binds the comparison and frozen baseline `Transcript` to the current main above. `repository-fixture.json` and the fixture's own freeze record the final integrated files; the supporting rebind receipt also retains the earlier loader hashes before its whole-module replay override. The original renderer was inspected statically, not executed. Earlier REA semantic renderer analysis exhausted heap; the exact retained shipped bytes remain the source evidence.
 
 ## Frozen behavioral check
 
-`src/features/chat/disclosureRemount.test.ts` enters the existing automatic frontend test glob. It loads the dedicated five-case fixture in `tests/chat-disclosure`.
+`src/features/chat/disclosureRemount.test.ts` enters the existing automatic frontend test glob. It now runs the frozen five-case fixture twice through its proof loader: first with only the complete baseline `Transcript` module substituted, then with the actual candidate module. Baseline source pins, fixture hashes, two exact assertion failures and three passing controls are required before a candidate receipt can qualify. The wrapper removes inherited `NODE_TEST_CONTEXT` before spawning a real child test runner; the frozen host, loader, source policy and five scenario bodies are unchanged.
 
 The fixture loads full production `WorkspaceView`, `ChatPanel`, `Transcript`, and `ToolRows` modules. It uses the production initializer, reducer, tab click handler, provider-snapshot subscription, row click handler, `aria-expanded`, and rendered content. It does not copy or replace those state or toggle handlers. Native transport and provider boundaries are synthetic. Markdown decoration and unrelated UI leaves are substituted.
 
@@ -44,6 +44,24 @@ node --test "src/**/*.test.ts"
 
 The first automatic hosted baseline, head `6c379ef1e08ae987ac20d53eadaecedd84c5bf4f`, failed all five cases during fixture mounting. The decorative `AllFilesTree` proxy supplied a component for the unrelated `useFilesToolbar()` hook; its no-argument call threw before any intended disclosure assertion. This run is rejected, not behavioral RED. [The diagnostic receipt](unqualified-hosted-baseline.json) retains the exact job and failure lines. The corrected host calls the actual `appPrefs.loadAppPrefs()` initializer through the existing synthetic native boundary before mounting, asserts the persisted panel and Garry values, and completes two missing unrelated boundary exports. No panel hook value or production component is fabricated to avoid the error. [The source-only host receipt](host-bootstrap-repair.json) records the four replacements. Only the host digest is re-frozen before a qualified behavioral baseline; product code and all five scenario bodies remain unchanged.
 
-No local Node, React, browser, Rust, native, provider, credential, database, or package execution has run. No screenshot is provided because no browser or native UI has been run. Qualified baseline behavioral RED and subsequent candidate GREEN are pending. All exact-head workflows must pass before merge.
+## Qualified baseline and minimal correction
+
+[The complete five-case hosted log](qualified-hosted-baseline.log.txt) and [receipt](qualified-hosted-baseline.json) retain frontend job `130868554090` in run `43123185796`, head `51a2972e9fb0bcbd1e200601f2a2ec961ebbe922`. Both failures are `ERR_ASSERTION` at the intended post-return row assertions, not loader failures:
+
+```text
+not ok 638 - read-open-return: manually opened Read survives the actual A to B to A tab switch
+  READ_OPEN_RETURN_LOST_MANUAL_EXPANSION: false !== true
+not ok 639 - plan-closed-return: manually closed default-open plan survives A to B to A
+  PLAN_CLOSED_RETURN_LOST_MANUAL_COLLAPSE: true !== false
+ok 640 - different-tool-id-isolation: untouched B does not inherit opened A's state
+ok 641 - same-mounted-chat-rerender: ordinary rerender retains the opened Read
+ok 642 - expanded-setting-manual-override: real garry_mode update preserves explicit false
+```
+
+The fix changes only `Transcript` product source: an immutable tool-id-to-boolean snapshot now lives for the module lifetime and publishes to `useSyncExternalStore` subscribers. Only explicit toggles write entries; the existing helper still distinguishes stored false from an untouched default. Summary expansion remains component-local. Seven existing AST-extraction test hosts include the exact new production store declaration rather than a fake store; independent Todo test fixtures receive independent VM applications so reused synthetic IDs cannot leak across tests. Their scenario inputs and assertions are unchanged.
+
+[Fresh main `bb717dad2e1c4cbcbdba3d29d607a76a069f7f85`](fresh-main-before-fix.json) has all eight comparison source pins unchanged from the qualified baseline. Source/hash verification passed again, including all five frozen helper files. Candidate behavioral GREEN and exact-head aggregate workflows await the next automatic hosted run.
+
+No local Node, React, browser, Rust, native, provider, credential, database, or package execution has run. No screenshot is provided because local/browser/native execution is outside this lane's admission; hosted React test-renderer evidence is not visible native-app verification. All exact-head workflows must pass before merge; consuming-main package verification follows the merge separately.
 
 Only `Transcript` tool-map lifetime and dedicated regression/evidence files belong to this change. Workspace producers, closed-chat catalogs, APIs, backends, models, labels, summary expansion, and Settings display wiring are outside scope. The merged login fixtures remain unchanged.

@@ -1,0 +1,22 @@
+{
+  "author": "Conductor Rebuild",
+  "result": "STATIC_PASS_NOT_EXECUTED",
+  "product_graph_changes": [
+    "src/features/chat/Transcript.tsx"
+  ],
+  "frozen_files_unchanged": 5,
+  "existing_test_scenarios_unchanged": [
+    "copyCodeFeedback",
+    "userText",
+    "typedSubagentLinks",
+    "transcriptAgentSummary",
+    "thinkingLinks",
+    "thinkingToolLinks",
+    "todoMixedRows"
+  ],
+  "paired_wrapper": "src/features/chat/disclosureRemount.test.ts",
+  "paired_wrapper_sha256": "e5fec7bdc67da80921f59f913cbc05ca0e2703f0dc586cddb081a9e6fbda3b32",
+  "candidate_transcript_sha256": "9eaed365c64969578273f4ab1f9af24ecb83f62eb32ed726a71ca35e4021d153",
+  "behavior": "CANDIDATE_NOT_RUN; automatic hosted CI only",
+  "native_provider_ipc": "NOT_RUN"
+}
