@@ -219,7 +219,11 @@ export function Composer({
   }
 
   useKeybindings({
-    "chat.cancel": () => (working ? onStop() : false),
+    "chat.cancel": () => {
+      if (!working) return false;
+      onStop();
+      inputRef.current?.focus();
+    },
     "chat.addAttachment": () => (onAttachFiles ? fileInput.current?.click() : false),
     "chat.focus": () => {
       const box = inputRef.current;
@@ -259,15 +263,17 @@ export function Composer({
     const hit = (id: string) => keys(id).some((s) => matchesEvent(s, ev));
     if (ev.isComposing) return;
     const plain = !e.shiftKey && !e.metaKey && !e.altKey && !e.ctrlKey;
-    if (mentionOpen && plain && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+    if (mentionOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
+      e.stopPropagation();
       setMentionIndex((mentionFocus + (e.key === "ArrowDown" ? 1 : mentionMatches.length - 1)) % mentionMatches.length);
       return;
     }
-    if (mentionOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
+    if (mentionOpen && (e.key === "Enter" || e.key === "Tab")) {
       const selected = mentionMatches[mentionFocus];
       if (selected) {
         e.preventDefault();
+        e.stopPropagation();
         pickMention(selected);
       }
       return;
@@ -278,14 +284,16 @@ export function Composer({
       setMentionDismissed(mentionKey);
       return;
     }
-    if (slashOpen && plain && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+    if (slashOpen && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
       e.preventDefault();
+      e.stopPropagation();
       const n = slashMatches.length;
       setSlashIndex((slashFocus + (e.key === "ArrowDown" ? 1 : n - 1)) % n);
       return;
     }
-    if (slashOpen && plain && (e.key === "Enter" || e.key === "Tab")) {
+    if (slashOpen && (e.key === "Enter" || e.key === "Tab")) {
       e.preventDefault();
+      e.stopPropagation();
       pickCommand(slashMatches[slashFocus]!.command);
       return;
     }

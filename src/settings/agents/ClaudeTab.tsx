@@ -51,7 +51,7 @@ export function ClaudeTab({ settings, save, reload }: AgentTabProps) {
 
   const keyName = apiKeyName("claude", configForMode("claude", "apikey", stored));
   const key = storedSecret(mode === storedMode ? provider : null, keyName);
-  const auth = claudeAuthState(mode, login, key.present);
+  const auth = claudeAuthState(mode, settings.claude_code_executable_path && login ? { ...login, version: undefined } : login, key.present);
   useConnectedDefault("claude", auth.authenticated);
 
   const connect = async (next: ProviderConfig, secrets: { key: string; value: string }[] = []) => {
