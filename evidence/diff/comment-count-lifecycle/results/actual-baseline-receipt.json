@@ -1,0 +1,45 @@
+{
+  "admission": "e3d6a4be-d1e0-45e8-beea-d9e5ff9725fa",
+  "source_sha": "cfe8c12d86fab877158bfd465f348813752e24e0",
+  "started_at": "2026-11-12T15:08:48.883510+00:00",
+  "sample": {
+    "at": "2026-11-12T15:08:48.883510+00:00",
+    "memory_available_bytes": 29495259136,
+    "disk_available_bytes": 34772197376,
+    "own_jobs": []
+  },
+  "fixture_sha256": {
+    "src/features/diff/fileCommentCountLifecycle.test.ts": "379312909e2a80ca96973643f1c7189144f53210e636dadb059a136a7eb9bbd4",
+    "src/features/chat/reviewCommentHandoff.test.ts": "870f5cca38eccd7af04542906839b77686dacfaaf0512d416c701b68eaf5e548",
+    "src/features/chat/desktopReviewHandoff.test.ts": "ff91dc4d00360a20a75dc4133aff56da79e28e65dbfdcc5da064fdf18e4fdd1d"
+  },
+  "tracked_changes": [],
+  "command": [
+    "nice",
+    "-n",
+    "19",
+    "timeout",
+    "--kill-after=5s",
+    "90s",
+    "node",
+    "--max-old-space-size=768",
+    "--test",
+    "--test-concurrency=1",
+    "src/features/diff/fileCommentCountLifecycle.test.ts",
+    "src/features/chat/reviewCommentHandoff.test.ts",
+    "src/features/chat/desktopReviewHandoff.test.ts"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 3.7960223980189767,
+  "ended_at": "2026-11-12T15:08:52.692095+00:00",
+  "status": "EXECUTED",
+  "own_jobs_after": [],
+  "actual-baseline.stdout.tap": {
+    "bytes": 23326,
+    "sha256": "080af93287f3fe902e1e89a65bccd196980271186c3203e7a21d94eb93171a22"
+  },
+  "actual-baseline.stderr.txt": {
+    "bytes": 175,
+    "sha256": "70046333f3e6ef046bb95b0ee9d050001a2592311d25d37a47fa3b40efb9b252"
+  }
+}

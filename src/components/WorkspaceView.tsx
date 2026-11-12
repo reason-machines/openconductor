@@ -546,7 +546,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         await draftAttachmentsApi.uploadToWorkspace({ localWorkspaceId: workspace.id, relativePath, workspacePath: cwd });
         copiedPaths.add(relativePath);
       },
-      (sending) => submit(withSentAttachmentDisplay(input, sending, copiedPaths), mode, sending.map(({ name, text }) => ({ name, text }))),
+      (sending) => submit(withSentAttachmentDisplay(input, sending, copiedPaths), mode, sending.map(({ name, text, commentId }) => ({ name, text, ...(commentId ? { commentId } : {}) }))),
     );
   }
 
@@ -590,7 +590,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
             dontCollapseToolCalls={garryMode}
             onRetry={(prompt, turnId) => {
               if (agentId === "reason" && isSignInFailure("reason", transcript.turns[turnId]?.error)) retryReasonAuth(runId, cwd, prompt, turnId);
-              else submit(prompt, "queue");
+              else if (!agent.retryUnsent?.(runId, cwd, prompt, turnId)) submit(prompt, "queue");
             }}
             // Conductor: workspace with a path, not archived; disabled while the agent works or a plan waits.
             // Reset chat and turn changes come from turn checkpoints (Reason, Claude Code); Codex turns have none yet.
@@ -791,6 +791,7 @@ interface RightPanelProps {
   pr: PullRequest;
   worktree: string | null;
   review: ReactNode;
+  commentCounts?: ReadonlyMap<string, number>;
   /** Fix errors (shared with the `git.fixErrors` shortcut). */
   fixErrors: FixErrors;
   readOnly: boolean;
@@ -801,7 +802,7 @@ interface RightPanelProps {
   activeFilePath?: string;
 }
 
-function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, review, fixErrors, readOnly, notify, emptyAction, targetControl, activeFilePath, onOpenFile }: RightPanelProps & { onOpenFile: (path: string) => boolean }) {
+function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, review, commentCounts, fixErrors, readOnly, notify, emptyAction, targetControl, activeFilePath, onOpenFile }: RightPanelProps & { onOpenFile: (path: string) => boolean }) {
   // parity:diff.changes-list:ui Cmd+Alt+U: the Changes tab in Uncommitted scope, or back to All changes.
   useKeybindings({
     "workspace.showUncommittedChanges": () => {
@@ -875,7 +876,7 @@ function RightPanel({ workspaceId, tab, setTab, diff, actions, pr, worktree, rev
         </span>
       </div>
       {tab === "changes" ? (
-        <ChangesList diff={diff} actions={actions} worktree={worktree} activeFilePath={presentationReady ? activeFilePath : undefined} emptyAction={emptyAction} filter={filter} notify={notify} view={presentation.diffFileListMode} collapsed={new Set(presentation.collapsedDirectoryPaths)} toggleDirectory={toggleDirectory} />
+        <ChangesList diff={diff} actions={actions} commentCounts={commentCounts} worktree={worktree} activeFilePath={presentationReady ? activeFilePath : undefined} emptyAction={emptyAction} filter={filter} notify={notify} view={presentation.diffFileListMode} collapsed={new Set(presentation.collapsedDirectoryPaths)} toggleDirectory={toggleDirectory} />
       ) : tab === "checks" ? (
         <ChecksTab
           worktree={worktree}
@@ -1147,10 +1148,26 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
     return true;
   }, [workspace.id, primaryId]);
   // Review comments attach to the workspace's own chat, even while a review chat is shown.
-  const attach = useWorkspaceChatAttach(primaryId, shownChat, chatBridge, useCallback(() => setMainTab("chat"), []));
+  const { attach, queued: routedAttachments } = useWorkspaceChatAttach(primaryId, shownChat, chatBridge, useCallback(() => setMainTab("chat"), []));
+  const primaryComposer = useMemo(() => composerSessionFor(primaryId, composerDrafts()), [primaryId]);
+  const primaryDraft = useSyncExternalStore(primaryComposer.subscribe, primaryComposer.snapshot);
+  const [inChatCommentIds, setInChatCommentIds] = useState<ReadonlySet<string>>(new Set());
+  useEffect(() => {
+    const update = () => setInChatCommentIds(new Set(Object.values(CHAT_AGENTS).flatMap((agent) => {
+      const snapshot = agent.snapshot(agent.chatId(primaryId));
+      return [...snapshot.queue.items.flatMap((item) => item.attachments), ...(snapshot.inFlightAttachments ?? [])]
+        .flatMap((attachment) => attachment.commentId ? [attachment.commentId] : []);
+    })));
+    const unsubscribe = Object.values(CHAT_AGENTS).map((agent) => agent.subscribe(agent.chatId(primaryId), update));
+    update();
+    return () => { for (const stop of unsubscribe) stop(); };
+  }, [primaryId]);
+  const composerCommentIds = useMemo(() => new Set([...inChatCommentIds, ...[...primaryDraft.attachments, ...routedAttachments]
+    .flatMap((attachment) => attachment.commentId ? [attachment.commentId] : [])]), [inChatCommentIds, primaryDraft.attachments, routedAttachments]);
   const chat = useMemo<ChatBridge & ComposerAttach>(
     () => ({
       attach,
+      commentIds: composerCommentIds,
       insert: (t) => chatBridge.current?.insert(t),
       send: (t) => {
         if (shownChat.current === primaryId) return chatBridge.current?.send(t);
@@ -1158,7 +1175,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
         setMainTab("chat");
       },
     }),
-    [primaryId, attach],
+    [primaryId, attach, composerCommentIds],
   );
   // Fix errors goes to the workspace's own chat with its log files attached, and shows that chat.
   const sendToChat = useCallback(
@@ -1535,6 +1552,7 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
               setTab={setGitPanelTab}
               diff={diff}
               actions={review.actions}
+              commentCounts={review.commentCounts}
               targetControl={<TargetChip target={target} open={pickingChangesTarget} setOpen={setPickingChangesTarget} repo={repo} variant="menu" />}
               pr={pullRequest}
               worktree={workspace.path ?? null}
