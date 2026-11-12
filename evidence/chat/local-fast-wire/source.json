@@ -1,0 +1,79 @@
+{
+  "author": "Conductor Rebuild",
+  "task_key": "composer-local-fast-per-chat-adapter-omission",
+  "owner_session": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+  "checked_main": "621ed16e9a24615a6bbecaf976be9589b70c0e5d",
+  "app": "Conductor0.87.6",
+  "runtime_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+  "rea_artifact_evidence": "ev_cd529df0569984898e88854faf1c585e7a804a0e79ed0a2b78b2eea9b1bbf109",
+  "rea_source_evidence": "ev_f87343eaee9efbae549b68dec94774df99af62f5f30f2af73d95c06302bb46c4",
+  "exact_source_declarations": [
+    {
+      "file": "claude-config.js",
+      "start": 66238674,
+      "end": 66243060,
+      "sha256": "f97dbef531fd36225b6b559b2dbc363818b10cb3f31ceb5ad82fbf7eda54d0b4",
+      "bytes": 4386
+    },
+    {
+      "file": "En4.js",
+      "start": 66257106,
+      "end": 66300551,
+      "sha256": "2e64c1e8f176d7545ac6b7d637b5554bc5838558c105c40b868bdcf20cbe103b",
+      "bytes": 43445
+    },
+    {
+      "file": "ks.js",
+      "start": 66309852,
+      "end": 66320994,
+      "sha256": "99e8a1192417637f5d43cc9ff8f1e333c4efbdbc6a67e06a1a4d21d8a680a7d0",
+      "bytes": 11142
+    },
+    {
+      "file": "Oy.js",
+      "start": 66336098,
+      "end": 66347034,
+      "sha256": "7e608e32042cd82605ff3616af8d52a9f435aa759afea7587ceea07f9509e0c7",
+      "bytes": 10936
+    },
+    {
+      "file": "an4.js",
+      "start": 66409557,
+      "end": 66470383,
+      "sha256": "11db6a2a22d494961d2a53096430367423080793df58ef5323774a8ea8fb5089",
+      "bytes": 60826
+    }
+  ],
+  "bundled_helper_pins_match_installed_original": [
+    {
+      "agent": "claude",
+      "pinned_version": "2.1.284",
+      "pinned_and_installed_sha256": "50a14c2f50f56668380fdda490167f1d3630d5cc18fb8aed3073c2c7ea7314fe",
+      "matches": true
+    },
+    {
+      "agent": "codex",
+      "pinned_version": "0.156.1",
+      "pinned_and_installed_sha256": "0196e89fe5a7598f816ee54232c3d7c26d75e502ab5cfe2c9240e81d90f7255a",
+      "matches": true
+    }
+  ],
+  "packet": {
+    "name": "local-fast-installed-contract-5723ead4.tar.gz",
+    "attachment_id": "7c3394d6-a820-43d5-be0c-3188d95960ee",
+    "sha256": "548e7f806b45dc9395b1907cc0254eb52442202808d177daccc31a5658fb4b17"
+  },
+  "page": "https://reasonmachines.com/agents/acc3b5c5-8a01-407e-b474-42e914e3cf90?page=5f784799-da5e-4501-b0ee-41e83a635167",
+  "page_revision": 79,
+  "literal_contract": {
+    "claude": "settings.fastMode true-only in original; recreate/defer; preserve resume identity",
+    "codex": "serviceTier fast/null in thread/start, thread/resume and turn/start"
+  },
+  "supported_design_choice": "Explicit saved Claude off may be sent as settings.fastMode=false, a helper-schema-supported override. Original qB5 omits false. Do not claim identical wire bytes or global-merge runtime parity. Codex off retains original explicit null per request, not process-global service_tier substitution.",
+  "limits": [
+    "Source only, not provider execution.",
+    "Five parsed files, zero parse failures or skips, partial graph with4894 semantic unknowns.",
+    "Pins match installed original helper hashes, not the actual helper consumed by an installed OpenConductor build.",
+    "Six acceptance rows stay UNLINKED/NOT_RUN; native/provider/first/resume/pixel acceptance remains E1."
+  ]
+}
