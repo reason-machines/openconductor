@@ -4,6 +4,7 @@
 // workspace's tabs even while its panel is not mounted.
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
+import { Unicode11Addon } from "@xterm/addon-unicode11";
 import { AckBatcher, type PtyEvent } from "./events";
 import {
   onPtyEvent,
@@ -270,6 +271,7 @@ async function startTab(
   const id = restore?.id ?? `term-${crypto.randomUUID()}`;
   const font = currentTerminalFont();
   const term = new Terminal({
+    allowProposedApi: true,
     disableStdin: true,
     cursorBlink: true,
     fontFamily: font.family,
@@ -288,6 +290,8 @@ async function startTab(
       selectionInactiveBackground: withAlpha(cssVar("--accent"), "4d"),
     },
   });
+  term.loadAddon(new Unicode11Addon());
+  term.unicode.activeVersion = "11";
   const fit = new FitAddon();
   term.loadAddon(fit);
   const host = document.createElement("div");

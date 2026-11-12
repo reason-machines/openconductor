@@ -16,12 +16,20 @@ At the inspected main, `turn_diff` parses and returns the checkpoint diff withou
 
 The additive mounted preview case expects the original large-file message and preserves chip navigation. Existing preview timing, position, identity, failure, binary, and navigation assertions remain unchanged.
 
-`fixture.sha256` pins both test files. Initial copies are retained beside this note. Production is unchanged in this baseline publication. Actual hosted RED evidence is pending. Expected failures are not reported as observed failures.
+`fixture.sha256` pins both test files. Initial copies are retained beside this note. The unchanged-production baseline is hosted head `985fb33fbf85b9845fb11bd14cb00f1f42f71a20`.
+
+The automatic large-file job `131016859776` reached all eight turn cases. Four oversized cases failed with absent `hide_reason` instead of `file_too_large`. All four turn controls and sixteen existing size cases passed, with zero ignored and 63 filtered tests. The retained backend log is a tail window. The frontend job `131016861030` reached the additive preview assertion and rendered "No diff available" instead of "File too large to preview". Its exact failure window is retained. `hosted-red.json` binds both jobs to the baseline SHA.
+
+The separate Diff job failed rustfmt before running behavior. `hosted-formatting.log` retains its complete output. Three layout corrections follow that output. Initial fixture bytes remain archived, and `formatting-equivalence.json` records unchanged Rust tokens after ignoring whitespace and optional trailing commas. No assertion or case value changes.
+
+The fix calls the existing revision-size policy from the finished-turn producer and adds a typed large-file preview state. It keeps saved endpoint contents authoritative. The full-view renderer, counts, file membership, Git operands, and hover behavior are unchanged.
 
 ## Verification and limits
 
 Passed: fresh-main source reads, complete original-asset hashes, all five source-span hashes, the twelve static call-chain and policy checks, fixture hashes, and `git diff --check`.
 
-Not run: the new behavioral regressions, installed app, native macOS, browser screenshot, checkpoint runtime, provider execution, or visual parity. Local rustfmt is unavailable and its component install failed because the supplied toolchain cache is read-only. Hosted formatting remains required.
+Failed before the fix: four backend size assertions and the mounted preview message assertion, for the intended reasons above. Passing after the fix and full exact-head CI remain pending.
+
+Not run: installed app, native macOS, browser screenshot, checkpoint runtime, provider execution, or visual parity. No new app or browser execution was admitted for this source-backed change, so there is no screenshot. Local rustfmt is unavailable and its component install failed because the supplied toolchain cache is read-only. Hosted formatting remains required.
 
 No unavailable-content error handling, whitespace membership, unfinished turn, media, cloud UI, `--no-index` filename, `revision:path` operand, or selected-commit behavior is changed or newly claimed. A size placeholder is not a claim of bounded Git patch acquisition or performance protection.

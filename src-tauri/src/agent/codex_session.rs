@@ -22,7 +22,7 @@ use super::codex_cli::CodexLaunch;
 use super::codex_events::{thread_id, Notification, ServerMessage, Turn};
 use super::codex_rpc::{
     approval_line, error_line, initialized_line, result_line, ApprovalDecision, ClientRequest,
-    RequestId, ThreadOptions,
+    RequestId, ThreadOptions, TurnOptions,
 };
 
 /// Something the process printed, in the order each stream produced it.
@@ -238,8 +238,7 @@ impl CodexSession {
     pub fn start_turn(
         &mut self,
         text: impl Into<String>,
-        model: Option<String>,
-        effort: Option<String>,
+        options: TurnOptions,
         timeout: Duration,
     ) -> Result<String, CallError> {
         let thread_id = self.thread.clone().ok_or(CallError::BadResult {
@@ -249,8 +248,7 @@ impl CodexSession {
             &ClientRequest::TurnStart {
                 thread_id,
                 text: text.into(),
-                model,
-                effort,
+                options,
             },
             timeout,
         )?;
@@ -551,7 +549,10 @@ done
             ..ThreadOptions::default()
         };
         assert_eq!(s.open_thread(None, options, WAIT).unwrap(), "t1");
-        assert_eq!(s.start_turn("hi", None, None, WAIT).unwrap(), "u1");
+        assert_eq!(
+            s.start_turn("hi", TurnOptions::default(), WAIT).unwrap(),
+            "u1"
+        );
         assert_eq!(s.active_turn(), Some("u1"));
         // Interrupt before the server has announced the turn: waits for
         // turn/started instead of being rejected.
@@ -707,13 +708,17 @@ done
             ..ThreadOptions::default()
         };
         s.open_thread(None, options, WAIT).unwrap();
-        let first = s.start_turn("say hi", None, None, WAIT).unwrap();
+        let first = s
+            .start_turn("say hi", TurnOptions::default(), WAIT)
+            .unwrap();
         let turn = completed(&mut s);
         assert_eq!(turn.id, first);
         assert_ne!(turn.status, TurnStatus::InProgress);
         eprintln!("live turn ended {:?}: {:?}", turn.status, turn.error);
         // A second turn, stopped right away.
-        let second = s.start_turn("say hi again", None, None, WAIT).unwrap();
+        let second = s
+            .start_turn("say hi again", TurnOptions::default(), WAIT)
+            .unwrap();
         s.interrupt(WAIT).unwrap();
         let turn = completed(&mut s);
         assert_eq!((turn.id, turn.status), (second, TurnStatus::Interrupted));

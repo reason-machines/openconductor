@@ -43,7 +43,12 @@ fn contents(bytes: usize, changed_lines: u32, newer: bool, binary: bool) -> Stri
 fn snapshot(repo: &Path, point: TurnPoint) -> String {
     sh(repo, &["add", "-A"]);
     let tree = git(repo, &["write-tree"], &[0]).unwrap();
-    let oid = git(repo, &["commit-tree", tree.trim(), "-m", "checkpoint"], &[0]).unwrap();
+    let oid = git(
+        repo,
+        &["commit-tree", tree.trim(), "-m", "checkpoint"],
+        &[0],
+    )
+    .unwrap();
     let oid = oid.trim().to_string();
     let reference = format!(
         "refs/conductor-checkpoints/{}",
@@ -115,7 +120,9 @@ fn check(case: Case) {
         assert!(!file.hunks.is_empty());
         let text: Vec<_> = file.hunks.iter().flat_map(|hunk| &hunk.lines).collect();
         assert!(text.iter().any(|line| line.kind == LineKind::Addition));
-        assert!(!text.iter().any(|line| line.text.contains("unrelated small current worktree")));
+        assert!(!text
+            .iter()
+            .any(|line| line.text.contains("unrelated small current worktree")));
     }
 }
 
@@ -135,10 +142,42 @@ macro_rules! turn_case {
     };
 }
 
-turn_case!(six_mib_old_small_new, 6 * MIB, 16_384, 2, true, false, false);
-turn_case!(six_mib_new_missing_worktree, 16_384, 6 * MIB, 2, true, false, true);
-turn_case!(five_mib_plus_one_sparse, 5 * MIB + 1, 5 * MIB + 1, 2, true, false, false);
-turn_case!(one_mib_plus_one_dense, MIB + 1, MIB + 1, 502, true, false, false);
+turn_case!(
+    six_mib_old_small_new,
+    6 * MIB,
+    16_384,
+    2,
+    true,
+    false,
+    false
+);
+turn_case!(
+    six_mib_new_missing_worktree,
+    16_384,
+    6 * MIB,
+    2,
+    true,
+    false,
+    true
+);
+turn_case!(
+    five_mib_plus_one_sparse,
+    5 * MIB + 1,
+    5 * MIB + 1,
+    2,
+    true,
+    false,
+    false
+);
+turn_case!(
+    one_mib_plus_one_dense,
+    MIB + 1,
+    MIB + 1,
+    502,
+    true,
+    false,
+    false
+);
 turn_case!(one_mib_dense, MIB, MIB, 502, false, false, false);
 turn_case!(five_mib_sparse, 5 * MIB, 5 * MIB, 2, false, false, false);
 turn_case!(six_mib_binary, 6 * MIB, 6 * MIB, 0, false, true, false);
