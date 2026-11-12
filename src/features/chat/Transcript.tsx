@@ -67,6 +67,22 @@ export interface TranscriptProps {
   notify?: MarkdownOptions["notify"];
 }
 
+const toolDisclosure = (() => {
+  let expanded: ReadonlyMap<string, boolean> = new Map();
+  const listeners = new Set<() => void>();
+  return {
+    getSnapshot: () => expanded,
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => { listeners.delete(listener); };
+    },
+    toggle(id: string, defaultOpen: boolean) {
+      expanded = new Map(expanded).set(id, !isToolExpanded(id, expanded, defaultOpen));
+      for (const listener of listeners) listener();
+    },
+  };
+})();
+
 export function Transcript({
   transcript,
   searchEnabled = false,
@@ -91,8 +107,8 @@ export function Transcript({
   const day = useSyncExternalStore(clock.subscribe, clock.getSnapshot, clock.getSnapshot);
   const rows = useMemo(() => foldAgentRows(buildRows(transcript), transcript.activeTurn), [transcript]);
   const turns = useMemo(() => groupTurns(rows), [rows]);
-  const [toggled, setToggled] = useState<ReadonlyMap<string, boolean>>(new Map());
-  const toggleTool = (id: string, defaultOpen = false) => setToggled((prev) => new Map(prev).set(id, !isToolExpanded(id, prev, expandToolsByDefault || defaultOpen)));
+  const toggled = useSyncExternalStore(toolDisclosure.subscribe, toolDisclosure.getSnapshot, toolDisclosure.getSnapshot);
+  const toggleTool = (id: string, defaultOpen = false) => toolDisclosure.toggle(id, expandToolsByDefault || defaultOpen);
   const [summaries, setSummaries] = useState<ReadonlyMap<string, "expanded" | "collapsed">>(new Map());
   const ctx: RowContext = {
     stripAbsolutelyRight,

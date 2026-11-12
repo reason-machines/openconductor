@@ -1,0 +1,127 @@
+{
+  "unit": "DIFF-COMMENT-IME-SUBMIT-01",
+  "status": "HOSTED_BASELINE_RED_VERIFIED_MINIMAL_GUARD_CANDIDATE",
+  "main": "435c3356902c3e7cdf246f3089029154b3f908f6",
+  "asset": {
+    "name": "renderApp-D_fmY7hW.js",
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "bytes": 11600457
+  },
+  "reference_spans": {
+    "oRt-event-guard": {
+      "utf8_half_open": [
+        8415739,
+        8415890
+      ],
+      "sha256": "0cf63f73563cef134d6089a084469a5d52f916f9d502afade3b4752e2c20bb4b",
+      "bytes": 151,
+      "snapshot": "oRt-event-guard.txt"
+    },
+    "editor-state": {
+      "utf8_half_open": [
+        8418434,
+        8418728
+      ],
+      "sha256": "bf7875b3c816063f541089b7dc6e454e8db3bb0bfe86a0ecddd862392812ff0a",
+      "bytes": 294,
+      "snapshot": "editor-state.txt"
+    },
+    "lHt-complete-editor": {
+      "utf8_half_open": [
+        8418728,
+        8426168
+      ],
+      "sha256": "2b86481687009f77ff169d0e5f52e349ee541b80a71c205e07d691862e938215",
+      "bytes": 7440,
+      "snapshot": "lHt-complete-editor.txt"
+    },
+    "bVo-comment-input": {
+      "utf8_half_open": [
+        9406060,
+        9407593
+      ],
+      "sha256": "a3788d3977ef8b0408f3f6dcb3724350308c910bcd35c0cf1ba0879d904e145b",
+      "bytes": 1533,
+      "snapshot": "bVo-comment-input.txt"
+    },
+    "comment-capabilities": {
+      "utf8_half_open": [
+        9405789,
+        9406060
+      ],
+      "sha256": "249f9f974d0fce27de36d77a8066e1090151574516ad3c4311e5ac2d3af92cb6",
+      "bytes": 271,
+      "snapshot": "comment-capabilities.txt"
+    },
+    "SVo-comment-editor": {
+      "utf8_half_open": [
+        9413099,
+        9416741
+      ],
+      "sha256": "1e6bca0b0cdf23c9b84cdb0c057e3b0929ad26176e714615132c938dd13f7e83",
+      "bytes": 3642,
+      "snapshot": "SVo-comment-editor.txt"
+    }
+  },
+  "current": {
+    "path": "src/features/diff/ReviewComments.tsx",
+    "sha256": "16837e0203358d1a954fd50e8ce29e4aafd724d61a72f6e0e043439fa5f72aa2"
+  },
+  "source_chain": "SVo -> bVo -> lHt; hVo.matchesSendCommand=$Ii; complete lHt editorProps and bubble handlers both test isImeCompositionActive/oRt before submit/cancel; start/end/blur own the flag.",
+  "same_input_mismatch": [
+    {
+      "input": "nonblank edited comment, Enter, metaKey=true, nativeEvent.isComposing=true",
+      "reference_static": "oRt true -> returns before onSubmit or onCancel",
+      "main_static": "modifier Enter -> preventDefault -> onSubmit(text)"
+    },
+    {
+      "input": "compositionstart then Enter with ctrlKey=true and no event composition flag",
+      "reference_static": "Q.isImeCompositionActive true -> returns before onSubmit",
+      "main_static": "no compositionstart tracking; modifier Enter -> onSubmit(text)"
+    },
+    {
+      "input": "Enter, metaKey=true, nativeEvent.keyCode or which=229",
+      "reference_static": "oRt true -> no callback",
+      "main_static": "no legacy composition check; onSubmit(text)"
+    },
+    {
+      "input": "composition active, Escape, unchanged saved comment",
+      "reference_static": "returns before bVo cancellation handler",
+      "main_static": "cancel -> onCancel immediately"
+    }
+  ],
+  "proposed_scope": "Composer ref tracks composition start/end/blur, event guard before keyboard submit and cancel; keep current shortcuts, maps and all frozen fixtures unchanged. New focused mounted component fixture + evidence only.",
+  "runtime": "NOT_RUN",
+  "not_proven": [
+    "actual baseline/candidate behavior",
+    "browser DOM or IME platform event ordering",
+    "real Conductor interaction",
+    "native/visual acceptance"
+  ],
+  "rea_gap": "Retained shipped JS evidence reused; no new REA/native invocation. Historical renderer semantic analyzer exhausted heap (ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2).",
+  "baseline": "435c3356902c3e7cdf246f3089029154b3f908f6",
+  "fixture_sha256": "f4df74049b561f325678c650ab3fa2737c683980b80d42369d8d62a8d5b591be",
+  "product": {
+    "baseline": "16837e0203358d1a954fd50e8ce29e4aafd724d61a72f6e0e043439fa5f72aa2",
+    "candidate": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3"
+  },
+  "dependencies": {
+    "src/features/diff/comments.ts": "d8df4efefba44a94a7ddfd781075a08bba56fef93eea4aa377f6b872d4210800",
+    "src/features/diff/nav.ts": "f986ec599ffeaab0f6892382d1fa618522eca69f74b0f8827a6fa64c4a30b79c",
+    "package.json": "ae9c95902b3d7bab8a600f35e693637286b58235868b2203370c7667add3e9ac",
+    "package-lock.json": "0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a",
+    "tsconfig.json": "45f7effe4ef8b0ed988a88e3b1b0bcaf7e64ca4f0dedd584e31847591f2551d5"
+  },
+  "expected_baseline": {
+    "failures": 11,
+    "controls": 5
+  },
+  "expected_candidate": {
+    "passed": 16
+  },
+  "frozen_fixtures": {
+    "src/features/diff/commentEditDrafts.test.ts": "487a0b6d0bb87c7325c865c864e0664f060c16d6e51d48981c250b511ec5ddf7",
+    "src/features/diff/movedCommentAnchors.test.ts": "48428ff7dd42cb1c1a01874ad8cea53eda20b286093aea45ca66fe07a962b88c",
+    "src/features/diff/hiddenWhitespaceEditing.test.ts": "6e0b9c57c9d1f2ab99f517104e6b262ea643b517d9d3aeef81be6f4fa4c52ca1"
+  }
+}

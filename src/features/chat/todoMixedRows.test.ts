@@ -65,32 +65,34 @@ assert.ok(toolExports.opensByDefault);
 
 const transcriptSource = readFileSync(new URL("./Transcript.tsx", import.meta.url), "utf8");
 const ast = ts.createSourceFile("Transcript.tsx", transcriptSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-const selected = ["Transcript", "rowTurn", "groupTurns", "Row", "Agent", "SummaryRow", "Part"].map((name) => {
+const selected = ["toolDisclosure", "Transcript", "rowTurn", "groupTurns", "Row", "Agent", "SummaryRow", "Part"].map((name) => {
   const node = ast.statements.find((node) =>
     ts.isFunctionDeclaration(node) && node.name?.text === name
     || ts.isVariableStatement(node) && node.declarationList.declarations.some((d) => ts.isIdentifier(d.name) && d.name.text === name));
   assert.ok(node, `${name} exists in production source`);
   return node.getText(ast);
 }).join("\n");
-const transcriptExports: { Transcript?: React.ComponentType<TranscriptProps> } = {};
-runInNewContext(compile(selected, "Transcript.tsx"), {
-  exports: transcriptExports,
-  require(name: string) { assert.equal(name, "react/jsx-runtime"); return localRequire(name); },
-  React, Fragment: React.Fragment,
-  useMemo: React.useMemo, useState: React.useState, useSyncExternalStore: React.useSyncExternalStore,
-  useBoolPref: () => false, assistantDisplayText,
-  ...view, ...groups, ...time, ...toolExports, userMessageCopyText,
-  LinkMenuNotify: React.createContext(undefined),
-  TurnFooter: () => null,
-  MessageActions: () => null,
-  UserText: ({ text }: { text: string }) => React.createElement("span", null, text),
-  Markdown: ({ text }: { text: string }) => React.createElement("span", null, text),
-  Lucide: () => null, ToolIcon: () => null,
-  ThinkingRow: unexpected("ThinkingRow"), SentUserContent: unexpected("SentUserContent"), LinkWithMenu: unexpected("LinkWithMenu"),
-  setTimeout, clearTimeout,
-}, { filename: "Transcript.tsx" });
-assert.ok(transcriptExports.Transcript);
-const ProductionTranscript = transcriptExports.Transcript;
+function productionTranscript() {
+  const transcriptExports: { Transcript?: React.ComponentType<TranscriptProps> } = {};
+  runInNewContext(compile(selected, "Transcript.tsx"), {
+    exports: transcriptExports,
+    require(name: string) { assert.equal(name, "react/jsx-runtime"); return localRequire(name); },
+    React, Fragment: React.Fragment,
+    useMemo: React.useMemo, useState: React.useState, useSyncExternalStore: React.useSyncExternalStore,
+    useBoolPref: () => false, assistantDisplayText,
+    ...view, ...groups, ...time, ...toolExports, userMessageCopyText,
+    LinkMenuNotify: React.createContext(undefined),
+    TurnFooter: () => null,
+    MessageActions: () => null,
+    UserText: ({ text }: { text: string }) => React.createElement("span", null, text),
+    Markdown: ({ text }: { text: string }) => React.createElement("span", null, text),
+    Lucide: () => null, ToolIcon: () => null,
+    ThinkingRow: unexpected("ThinkingRow"), SentUserContent: unexpected("SentUserContent"), LinkWithMenu: unexpected("LinkWithMenu"),
+    setTimeout, clearTimeout,
+  }, { filename: "Transcript.tsx" });
+  assert.ok(transcriptExports.Transcript);
+  return transcriptExports.Transcript;
+}
 
 interface Todo { content: string; status: string }
 const mixed = [
@@ -132,6 +134,7 @@ function fixture(todos: Todo[] = mixed, ids = ["todo-a"], toolName = "TodoWrite"
 }
 function mount(t: { after: (callback: () => void) => void }, transcript = fixture(), props: Partial<TranscriptProps> = {}): Mounted {
   let mounted: Mounted | undefined;
+  const ProductionTranscript = productionTranscript();
   act(() => { mounted = renderer.create(React.createElement(ProductionTranscript, { transcript, now: () => now.getTime(), ...props })); });
   assert.ok(mounted);
   const result = mounted;

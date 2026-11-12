@@ -622,6 +622,7 @@ pub fn run() {
             scripts::run_script_status,
             scripts::run_script_output,
             scripts::run_script_write,
+            scripts::run_script_resize,
             scripts::run_script_preview_env,
             scripts::archive_script_run,
             scripts::auto_run_after_setup_get,
