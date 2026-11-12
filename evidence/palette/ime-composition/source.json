@@ -2,7 +2,8 @@
   "owner": "Conductor Rebuild / SAME15",
   "unit": "PALETTE-IME-COMPOSITION-15",
   "main_checked": "d745c5259712b49f90ab47ecb2bad674a66c3c89",
-  "verdict": "SOURCE_QUALIFIED_RUNTIME_REPRO_NOT_RUN",
+  "verdict": "SOURCE_QUALIFIED_MOUNTED_RED",
+  "rechecked_main": "1c8e9593099bce8ebfbc19d83052cbfd47df5ad0",
   "reference": {
     "app": "Conductor 0.87.6",
     "asset": "renderApp-D_fmY7hW.js",
@@ -116,11 +117,11 @@
   ],
   "limits": [
     "Retained REA source trace only; original Conductor code was not executed.",
-    "Mounted behavioral baseline pending; fixture-loader/type errors do not count as RED.",
-    "No local Node/browser/native/provider execution or workflow dispatch/rerun.",
+    "Mounted baseline reproduced 18 intended failures with 15 passing controls after correcting the custom shortcut input type; assertions unchanged.",
+    "Provider-free foreground Node execution only; no browser/native/provider execution or workflow dispatch/rerun.",
     "Native, browser propagation, physical IME and released-install acceptance NOT_RUN."
   ],
-  "stage": "BASELINE_ONLY_BEHAVIOR_PENDING",
+  "stage": "BASELINE_BEHAVIOR_REPRODUCED",
   "binding": {
     "previous_pr": 1134,
     "previous_pr_merged_main": "5d9d47ac046a8650576e059ef18f3f8847e6e963",
@@ -133,6 +134,9 @@
       "noncomposing": 9,
       "other_controls": 6
     },
-    "status": "NOT_RUN"
+    "status": "RED_18_EXPECTED_FAILURES_15_CONTROLS_PASS",
+    "initial_fixture_sha256": "13189752cfb234540187dc1d5b85d44b8208de885d48855a87b453f90adc2366",
+    "qualified_fixture_sha256": "b2eb43bb787c35dd92b653c6d10fd9ace8734ce4d02dd0fecadb71852645a551",
+    "correction": "Custom next-tab shortcut string corrected to the existing logical-key type before behavioral qualification; assertions unchanged."
   }
 }

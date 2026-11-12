@@ -181,7 +181,7 @@ for (const signal of compositionSignals) {
     } finally { await view.dispose(); }
   });
   test(`palette preserves a custom tab shortcut during ${signal.label}`, async () => {
-    const view = await fixture({ "commandPalette.nextTab": [{ key: "l", modifiers: ["alt"] }] });
+    const view = await fixture({ "commandPalette.nextTab": [{ key: { kind: "logical", value: "l" }, modifiers: ["alt"] }] });
     try {
       assert.deepEqual(await view.press("l", { altKey: true, ...signal.values }), { prevented: 1, stopped: 1 });
       assert.equal(view.activeTab(), "Settings");

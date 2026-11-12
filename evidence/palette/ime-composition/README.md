@@ -16,14 +16,14 @@ The new [33-case fixture](../../../src/palette/paletteComposition.test.ts) mount
 - Nine noncomposing controls retain selection and navigation.
 - Six controls retain Escape, a custom next-tab shortcut, and unrelated text input during either composition signal.
 
-The fixture SHA-256 is sealed in [fixture.sha256](fixture.sha256). Assertions do not change to accommodate the product fix. A loader or type error is not behavioral RED. Ordinary automatic PR frontend CI supplies baseline execution; no workflow is dispatched or rerun.
+The fixture SHA-256 is sealed in [fixture.sha256](fixture.sha256). Assertions do not change to accommodate the product fix. A loader or type error is not behavioral RED. The initial hosted baseline failed typecheck because the custom shortcut used a string instead of a logical-key object. That one fixture input was corrected before behavioral qualification, with every assertion unchanged, and the fixture was sealed again. Foreground provider-free execution is now cleared; no workflow is dispatched or rerun.
 
 Test Behavior, Not Implementation keeps the check at the mounted input handler rather than copied navigation logic. The intended product change is a composition check after command resolution, limited to select and item-navigation commands. Escape, custom tabs, state.ts, the separately owned defaultPrevented handler, and every older frozen fixture are excluded.
 
 ## Verification and limits
 
 - Static source and fixture integrity: `python3 evidence/palette/ime-composition/verify.py --baseline`.
-- Mounted behavioral RED and GREEN: pending at baseline publication.
-- No local JavaScript or Rust execution, browser propagation check, physical IME input, native GUI, provider, or released-install acceptance was run. No screenshot exists because browser and native runtime were not admitted for this lane.
+- Mounted behavioral RED passed qualification on Reason Cloud. `node --experimental-strip-types --test src/palette/paletteComposition.test.ts` exited 1 with exactly 18 expected failures and 15 passing controls. [Raw baseline output](red.tap) records unexpected result activation and active-row movement. Product bytes still match both baseline snapshots after merging main `1c8e9593099bce8ebfbc19d83052cbfd47df5ad0`. GREEN is pending.
+- No Rust execution, browser propagation check, physical IME input, native GUI, provider, or released-install acceptance was run. No screenshot exists because browser and native runtime were not admitted for this lane.
 - Fake events prove callback behavior only, not real DOM propagation or physical input behavior.
 - #1134 is merged separately at `5d9d47ac046a8650576e059ef18f3f8847e6e963`; its consuming-main CI, CodeQL, and all nine frozen cases passed. Packaging remains with its existing owner and is not acceptance credit here.

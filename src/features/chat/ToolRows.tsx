@@ -522,13 +522,19 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
     case "web": {
       const target = s(input.url) || s(input.query);
       const prompt = s(input.prompt);
+      const webOutput = output && output.length > 100000 ? (
+        <>
+          {output.substring(0, 100000)}
+          <div>Content truncated ({output.length.toLocaleString()} chars total)</div>
+        </>
+      ) : output;
       return (
         <RowShell
           {...shell}
           left={<span>{name === "WebSearch" ? "Web Search" : "Web Browse"}</span>}
           right={target ? <CodeChip text={target} /> : undefined}
           align="center"
-          content={output ? (prompt ? <><ul><li>Prompt: <code>{prompt}</code></li></ul>{output}</> : output) : undefined}
+          content={output ? (prompt ? <><ul><li>Prompt: <code>{prompt}</code></li></ul>{webOutput}</> : webOutput) : undefined}
         />
       );
     }
@@ -1014,7 +1020,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       );
     }
     case "task-get": {
-      const task = parseTask(output);
+      const task = parseTask(result);
       const id = s(input.taskId);
       return (
         <RowShell
