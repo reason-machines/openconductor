@@ -157,12 +157,18 @@ impl CodexSession {
         stdin.flush()
     }
 
-    /// Sends `request` and waits up to `timeout` for its result.
-    pub fn call(&mut self, request: &ClientRequest, timeout: Duration) -> Result<Value, CallError> {
+    /// Sends without waiting; its correlated reply arrives through `next_event`.
+    pub fn send_request(&mut self, request: &ClientRequest) -> io::Result<RequestId> {
         self.next_id += 1;
         let id = self.next_id;
-        let method = request.method();
         self.write(&request.to_line(id))?;
+        Ok(RequestId::Int(id))
+    }
+
+    /// Sends `request` and waits up to `timeout` for its result.
+    pub fn call(&mut self, request: &ClientRequest, timeout: Duration) -> Result<Value, CallError> {
+        let id = self.send_request(request)?;
+        let method = request.method();
         let deadline = Instant::now() + timeout;
         loop {
             let left = deadline.saturating_duration_since(Instant::now());
@@ -173,7 +179,7 @@ impl CodexSession {
             };
             match line {
                 Line::Message(ServerMessage::Response { id: got, result })
-                    if got == RequestId::Int(id) =>
+                    if got == id =>
                 {
                     return Ok(result)
                 }
@@ -181,7 +187,7 @@ impl CodexSession {
                     id: Some(got),
                     code,
                     message,
-                }) if got == RequestId::Int(id) => return Err(CallError::Rpc { code, message }),
+                }) if got == id => return Err(CallError::Rpc { code, message }),
                 Line::Closed => {
                     self.pending.push_back(CodexEvent::Closed);
                     return Err(CallError::Closed { method });

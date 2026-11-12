@@ -19,8 +19,8 @@ test("blank text inputs become null", () => {
 });
 
 test("branch prefix rules match the backend's", () => {
-  for (const ok of ["sven", "team/sven", "feat-1", " sven "]) assert.equal(branchPrefixError(ok), null, ok);
-  for (const bad of ["", "a..b", "-x", ".x", "/x", "a b", "x.lock", "a/", "a.", "a//b", "a@{b", "a:b", "a~b", "a^b", "a?b", "a*b", "a[b", "a\\b", "a\tb"])
+  for (const ok of ["sven", "team/sven", "feat-1", " sven ", "a.", "team."]) assert.equal(branchPrefixError(ok), null, ok);
+  for (const bad of ["", "a..b", "-x", ".x", "/x", "a b", "x.lock", "a/", "team./", "a//b", "a@{b", "a:b", "a~b", "a^b", "a?b", "a*b", "a[b", "a\\b", "a\tb"])
     assert.notEqual(branchPrefixError(bad), null, JSON.stringify(bad));
 });
 
@@ -39,6 +39,8 @@ test("custom prefixes drop the trailing slash the backend refuses", () => {
   assert.equal(branchPrefixError(normalizeCustomPrefix("feature/")), null);
   assert.equal(normalizeCustomPrefix("/"), "");
   assert.notEqual(branchPrefixError(normalizeCustomPrefix("/")), null);
+  assert.equal(normalizeCustomPrefix(" team./ "), "team./");
+  assert.notEqual(branchPrefixError(normalizeCustomPrefix("team./")), null);
 });
 
 test("base URLs must be http(s) when set", () => {
