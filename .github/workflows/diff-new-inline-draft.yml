@@ -1,11 +1,7 @@
 name: New inline comment draft remount proof
 
 on:
-  pull_request:
-    paths:
-      - "src/features/diff/**"
-      - "evidence/diff/new-inline-draft-remount/**"
-      - ".github/workflows/diff-new-inline-draft.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read

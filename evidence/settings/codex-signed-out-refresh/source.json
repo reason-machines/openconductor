@@ -1,0 +1,364 @@
+{
+  "format": "codex-signed-out-refresh-source-v1",
+  "producer": "Conductor Rebuild",
+  "default_branch_head": "6cce43869f29e65eaeebb59f7d70ecacde304930",
+  "baseline_checkout": "a923c0809daa7f26560f0baa91e27084a98b9672",
+  "source_attachment": {
+    "attachment_id": "078ccf87-1bdc-43a9-b085-ea94babc5839",
+    "bytes": 21493760,
+    "sha256": "f3ef2620ab60b431a02b3b92c78b7d349fb311af77d532d6012c8d9ed3986084"
+  },
+  "rea": {
+    "rea_receipt": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "rea_limit": "Original semantic renderer analysis exhausted heap. Read-only extraction from retained shipped original bytes. No reference JavaScript executed.",
+    "parent_archive": {
+      "path": ".rea-work/dart-eligibility/dart-source-closure.tar.gz",
+      "bytes": 6226760,
+      "sha256": "29557fbf62c37076841230dbaf9d9e2de7a77aa02b974ce3a1f8bb552d241fd6",
+      "originals_verified_equal": true
+    }
+  },
+  "assets": [
+    {
+      "key": "renderer",
+      "archive_member": ".rea-work/retained-reference/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "key": "index",
+      "archive_member": ".rea-work/retained-reference/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "spans": [
+    {
+      "name": "Fpa",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10624045,
+        10629892
+      ],
+      "bytes": 5847,
+      "sha256": "91cfc778aef5e775a9fc3b2a1a60a2670a830f4de0bd4399e512e94a92c528ac",
+      "literal": "function Fpa(t){const e=ne.c(102),{repoContext:n}=t;let i;e[0]!==n?(i=Ozi(n),e[0]=n,e[1]=i):i=e[1];const r=i,{data:o}=Dzi(n),a=o===void 0?{}:o,c=dxe(\"codex_provider\",n),u=dxe(\"default_codex_personality\",n);let d;e[2]!==u?(d=g9r(u),e[2]=u,e[3]=d):d=e[3];const h=d,m=_0(),g=u$i(a),_=g.trim()!==\"\",v=c===\"custom\";let x;e[4]!==c?(x=hni(c),e[4]=c,e[5]=x):x=e[5];const w=x===bxe,{data:E}=vsi(),k=E===void 0?!1:E,I=w||k;let R;e[6]!==I?(R={enabled:I},e[6]=I,e[7]=R):R=e[7];const O=dRi(R),D=w?\"chatgpt\":v?\"apikey\":\"cli\",P=Aca(),L=Ica(),B=m9r().codex,F=P.refetch,H=L.mutateAsync;let U;e[8]!==m?(U=()=>{OPt(m).fireAndForget()},e[8]=m,e[9]=U):U=e[9];const z=U;let G;e[10]!==H||e[11]!==F||e[12]!==z?(G=async()=>{await Promise.all([F(),H()]),z()},e[10]=H,e[11]=F,e[12]=z,e[13]=G):G=e[13];const K=G;let X;e[14]!==m||e[15]!==n?(X=()=>{m.invalidateQueries({queryKey:bGt.sharedLocal(n)}).fireAndForget(),m.invalidateQueries({queryKey:[\"envVars\",\"shared\",\"local\"]}).fireAndForget()},e[14]=m,e[15]=n,e[16]=X):X=e[16];const Q=X;let J;e[17]!==Q||e[18]!==r?(J=async Dn=>{if(Dn===\"chatgpt\"){if(!await iS.updateSetting(\"codex_provider\",bxe,r))throw new Error(\"Failed to update the Codex provider\")}else if(Dn===\"apikey\"){const _n=await d$i();if(_n?.trim()){if(!await _Z(zo,{key:\"CODEX_API_KEY\",scope:\"shared\",context:\"local\",value:_n.trim(),target:r}))return;const Zt=await iS.updateSetting(\"codex_provider\",\"custom\",r);if(Q(),!Zt)return;kt.success(\"API key imported from env\")}else await iS.updateSetting(\"codex_provider\",\"custom\",r)}else await iS.updateSetting(\"codex_provider\",\"default\",r)},e[17]=Q,e[18]=r,e[19]=J):J=e[19];const te=J;let Z;e[20]!==K?(Z=()=>{K().fireAndForget()},e[20]=K,e[21]=Z):Z=e[21];let se;e[22]!==Q||e[23]!==r||e[24]!==Z?(se={envKey:\"CODEX_API_KEY\",providerSettingKey:\"codex_provider\",settingsTarget:r,invalidateSharedEnv:Q,onRemoved:Z},e[22]=Q,e[23]=r,e[24]=Z,e[25]=se):se=e[25];const{handleSaveApiKey:ce,handleRemoveApiKey:ae}=Lzi(se),[de,ue]=$.useState(null),pe=de??D;let be,he;e[26]!==D||e[27]!==de?(be=()=>{de===D&&ue(null)},he=[de,D],e[26]=D,e[27]=de,e[28]=be,e[29]=he):(be=e[28],he=e[29]),$.useEffect(be,he);let ge;e[30]!==_||e[31]!==K||e[32]!==v||e[33]!==w?(ge=()=>{w||(!v||_)&&K().fireAndForget()},e[30]=_,e[31]=K,e[32]=v,e[33]=w,e[34]=ge):ge=e[34];let ve;e[35]!==g||e[36]!==c||e[37]!==_||e[38]!==K||e[39]!==v||e[40]!==w?(ve=[g,c,_,K,v,w],e[35]=g,e[36]=c,e[37]=_,e[38]=K,e[39]=v,e[40]=w,e[41]=ve):ve=e[41],$.useEffect(ge,ve);let ye;e[42]!==z?(ye=()=>{z()},e[42]=z,e[43]=ye):ye=e[43];let xe;e[44]!==g||e[45]!==c||e[46]!==z?(xe=[g,c,z],e[44]=g,e[45]=c,e[46]=z,e[47]=xe):xe=e[47],$.useEffect(ye,xe);const ke=w?O.configured:v?P.data?.isAuthenticated===!0&&B?.accountType===\"apiKey\":B?.accountType!==void 0;let Se;e[48]!==B?(Se=B??b9r(),e[48]=B,e[49]=Se):Se=e[49];const De=Se;let je;e[50]!==O.email?(je=O.email===void 0?[]:[{label:\"ChatGPT account\",value:O.email}],e[50]=O.email,e[51]=je):je=e[51];const Ne=je,Le=w?\"Not signed in with ChatGPT\":v?_?\"Could not verify the configured API key\":\"No OpenAI API key configured\":\"CLI not authenticated\",ze=L.error?.message??L.data?.error,Ke=w?O.isError?\"Couldn't check the ChatGPT connection.\":void 0:ze!==void 0&&ke?`Couldn't verify the connection \u2014 showing the last known account. ${ze}`:ze;let Ze;e[52]!==K||e[53]!==w?(Ze=()=>{if(w){b1e().fireAndForget();return}K().fireAndForget()},e[52]=K,e[53]=w,e[54]=Ze):Ze=e[54];const Ye=Ze,Qe=k||pe===\"chatgpt\"?Dpa:Pzi;let Ue;e[55]!==te?(Ue=Dn=>{ue(Dn),te(Dn).catch(()=>ue(null)).fireAndForget()},e[55]=te,e[56]=Ue):Ue=e[56];let We;e[57]!==pe||e[58]!==Qe||e[59]!==Ue?(We=p.jsx(wzi,{value:pe,modes:Qe,onChange:Ue}),e[57]=pe,e[58]=Qe,e[59]=Ue,e[60]=We):We=e[60];let Ve;e[61]!==n||e[62]!==We?(Ve=p.jsx(Al,{settingKey:\"codex_provider\",repoScope:n,title:void 0,className:\"border-t-0 pt-0\",children:We}),e[61]=n,e[62]=We,e[63]=Ve):Ve=e[63];const He=w?O.configured?O:void 0:B;let it;e[64]!==De||e[65]!==Ne||e[66]!==w?(it=w?Ne:De?Qki(De):[],e[64]=De,e[65]=Ne,e[66]=w,e[67]=it):it=e[67];const ft=w?O.isLoading:P.isLoading||L.isPending,gt=w?O.isLoading:L.isPending;let Tt;e[68]!==ke||e[69]!==Le||e[70]!==Ye||e[71]!==Ke||e[72]!==He||e[73]!==it||e[74]!==ft||e[75]!==gt?(Tt=p.jsx(t$i,{isAuthenticated:ke,accountInfo:He,infoRows:it,isLoading:ft,onRefresh:Ye,isRefreshing:gt,notConnectedMessage:Le,detail:Ke}),e[68]=ke,e[69]=Le,e[70]=Ye,e[71]=Ke,e[72]=He,e[73]=it,e[74]=ft,e[75]=gt,e[76]=Tt):Tt=e[76];let Ct;e[77]!==O.configured||e[78]!==O.email||e[79]!==g||e[80]!==pe||e[81]!==ae||e[82]!==ce||e[83]!==Ye?(Ct=p.jsx(\"div\",{className:\"min-h-10\",children:pe===\"chatgpt\"?p.jsx(v$i,{configured:O.configured,email:O.email}):pe===\"apikey\"?p.jsx(YWt,{label:\"OpenAI API key\",configuredKey:g,getKeyUrl:\"https://platform.openai.com/api-keys\",onSave:ce,onRemove:ae}):p.jsx(Met,{onRefresh:Ye,loginCommand:\"login\",loginCommandLabel:\"codex login\",cliName:\"codex\",runFromBundledBin:!0})}),e[77]=O.configured,e[78]=O.email,e[79]=g,e[80]=pe,e[81]=ae,e[82]=ce,e[83]=Ye,e[84]=Ct):Ct=e[84];let _t;e[85]!==r?(_t=Dn=>{iS.updateSetting(\"default_codex_personality\",Dn,r).fireAndForget()},e[85]=r,e[86]=_t):_t=e[86];let Vt;e[87]===Symbol.for(\"react.memo_cache_sentinel\")?(Vt=ODt.map(Bpa),e[87]=Vt):Vt=e[87];let bt;e[88]!==h||e[89]!==n||e[90]!==_t?(bt=p.jsx(Z5e,{settingKey:\"default_codex_personality\",repoScope:n,title:\"Codex personality for new chats\",description:\"Style to use when a new chat starts with a Codex model\",value:h,onValueChange:_t,triggerClassName:\"w-[180px]\",options:Vt}),e[88]=h,e[89]=n,e[90]=_t,e[91]=bt):bt=e[91];let wt,Nt;e[92]!==n?(wt=p.jsx(kzi,{repoContext:n}),Nt=n===void 0&&p.jsx(Ipa,{}),e[92]=n,e[93]=wt,e[94]=Nt):(wt=e[93],Nt=e[94]);let Wt;return e[95]!==Ve||e[96]!==Tt||e[97]!==Ct||e[98]!==bt||e[99]!==wt||e[100]!==Nt?(Wt=p.jsxs(\"div\",{className:\"space-y-6\",children:[Ve,Tt,Ct,bt,wt,Nt]}),e[95]=Ve,e[96]=Tt,e[97]=Ct,e[98]=bt,e[99]=wt,e[100]=Nt,e[101]=Wt):Wt=e[101],Wt}"
+    },
+    {
+      "name": "t$i",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10247644,
+        10248914
+      ],
+      "bytes": 1270,
+      "sha256": "b412b9c78f327ab3cb1c28bcaf3c41da921c78dabc0b93756573b0f923e07868",
+      "literal": "function t$i(t){const e=ne.c(22),{isAuthenticated:n,accountInfo:i,infoRows:r,isLoading:o,onRefresh:a,isRefreshing:c,notConnectedMessage:u,detail:d}=t,h=i!=null;if(o&&!h){let E;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(E=p.jsx(\"p\",{className:\"text-sm text-muted-foreground\",children:\"Checking login status...\"}),e[0]=E):E=e[0];let k;return e[1]!==c||e[2]!==a?(k=p.jsx(\"div\",{className:\"space-y-3\",children:p.jsxs(\"div\",{className:\"flex items-center justify-between gap-3\",children:[E,p.jsx(EZn,{onRefresh:a,isRefreshing:c})]})}),e[1]=c,e[2]=a,e[3]=k):k=e[3],k}let m;e[4]!==n||e[5]!==u?(m=n?p.jsx(e$i,{}):p.jsx(Qla,{message:u}),e[4]=n,e[5]=u,e[6]=m):m=e[6];let g;e[7]!==c||e[8]!==a?(g=p.jsx(EZn,{onRefresh:a,isRefreshing:c}),e[7]=c,e[8]=a,e[9]=g):g=e[9];let _;e[10]!==m||e[11]!==g?(_=p.jsxs(\"div\",{className:\"flex items-center justify-between gap-3\",children:[m,g]}),e[10]=m,e[11]=g,e[12]=_):_=e[12];let v;e[13]!==d?(v=d!==void 0&&p.jsx(\"p\",{className:\"break-words text-xs text-muted-foreground\",children:d}),e[13]=d,e[14]=v):v=e[14];let x;e[15]!==r||e[16]!==n?(x=n&&p.jsx(Kla,{rows:r}),e[15]=r,e[16]=n,e[17]=x):x=e[17];let w;return e[18]!==_||e[19]!==v||e[20]!==x?(w=p.jsxs(\"div\",{className:\"space-y-3\",children:[_,v,x]}),e[18]=_,e[19]=v,e[20]=x,e[21]=w):w=e[21],w}"
+    },
+    {
+      "name": "Aca",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10276398,
+        10277906
+      ],
+      "bytes": 1508,
+      "sha256": "e1ea36a01983dccffabeae5f9db14a41aaf7922408eab00b1ca9ee49d94b0144",
+      "literal": "function Aca(t){const e=ne.c(19);let n;e[0]!==t?(n={},e[0]=t,e[1]=n):n=e[1];const{enabled:i}=n,r=i===void 0?!0:i,o=OEr(),{data:a,isLoading:c}=DEr(),u=a===bxe,d=r&&!c&&!u,h=Cca(d),{data:m,isLoading:g}=kca(d),_=r&&u;let v;e[2]!==_?(v={enabled:_},e[2]=_,e[3]=v):v=e[3];const x=dRi(v),w=x.configured,E=u&&x.isLoading,k=u$i(m);let I;e:{if(!r){let H;e[4]===Symbol.for(\"react.memo_cache_sentinel\")?(H={isAuthenticated:!1,authMethod:\"not_configured\"},e[4]=H):H=e[4],I=H;break e}if(u){let H;e[5]!==w?(H=w?{isAuthenticated:!0,authMethod:\"chatgpt_sign_in\"}:{isAuthenticated:!1,authMethod:\"not_configured\"},e[5]=w,e[6]=H):H=e[6],I=H;break e}if(h.data?.isAuthenticated){let H;e[7]!==h.data.authMethod?(H={isAuthenticated:!0,authMethod:h.data.authMethod},e[7]=h.data.authMethod,e[8]=H):H=e[8],I=H;break e}if(o?.accountType!==void 0){const H=o.accountType===\"apiKey\"?\"api_key\":\"cli\";let U;e[9]!==H?(U={isAuthenticated:!0,authMethod:H},e[9]=H,e[10]=U):U=e[10],I=U;break e}if(a===\"custom\"&&k.trim()!==\"\"){let H;e[11]===Symbol.for(\"react.memo_cache_sentinel\")?(H={isAuthenticated:!0,authMethod:\"api_key\"},e[11]=H):H=e[11],I=H;break e}let F;e[12]===Symbol.for(\"react.memo_cache_sentinel\")?(F={isAuthenticated:!1,authMethod:\"not_configured\"},e[12]=F):F=e[12],I=F}const R=I,O=r&&(c||(u?E:h.isLoading||g)),D=h.refetch;let P;e[13]!==D?(P=async()=>{await Promise.all([D()])},e[13]=D,e[14]=P):P=e[14];const L=P;let B;return e[15]!==R||e[16]!==O||e[17]!==L?(B={data:R,isLoading:O,refetch:L},e[15]=R,e[16]=O,e[17]=L,e[18]=B):B=e[18],B}"
+    },
+    {
+      "name": "Ica",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10278034,
+        10278276
+      ],
+      "bytes": 242,
+      "sha256": "e60327320d4b43eb286aae77c58f97efe2519133e46e7f51ca396ef4226be21c",
+      "literal": "function Ica(){const t=ne.c(2);let e;t[0]===Symbol.for(\"react.memo_cache_sentinel\")?(e=[\"refreshCodexAuthInfo\"],t[0]=e):e=t[0];let n;return t[1]===Symbol.for(\"react.memo_cache_sentinel\")?(n={mutationKey:e,mutationFn:Sca},t[1]=n):n=t[1],Ao(n)}"
+    },
+    {
+      "name": "Sca",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10275615,
+        10275732
+      ],
+      "bytes": 117,
+      "sha256": "96b30ef36b70c449ae700ac71285ef0b2afb0ab8f8dec882c92e963ac02166b6",
+      "literal": "async function Sca(){const t=await Kb.getCodexAuthInfo();return t.error===void 0&&PEr(t.accountInfo),{error:t.error}}"
+    },
+    {
+      "name": "Eca",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10275732,
+        10275883
+      ],
+      "bytes": 151,
+      "sha256": "9ee202ae182332cfcbedd5e794ff955ddb7746183c6c2afc5e831a663c01e61e",
+      "literal": "async function Eca(){const t=await tl(\"check_codex_auth\");return t.is_authenticated?{isAuthenticated:!0,authMethod:t.auth_method}:{isAuthenticated:!1}}"
+    },
+    {
+      "name": "Cca",
+      "asset": "renderer",
+      "utf8_half_open": [
+        10275883,
+        10276127
+      ],
+      "bytes": 244,
+      "sha256": "b33ece62abd31b1955df17ae2bf66c7befa3f54ce055e48a9ffab587f9e1b7db",
+      "literal": "function Cca(t){const e=ne.c(3);let n;e[0]===Symbol.for(\"react.memo_cache_sentinel\")?(n=c$i.builtInAuth(),e[0]=n):n=e[0];const i=t?Eca:Vo;let r;return e[1]!==i?(r={queryKey:n,queryFn:i,refetchOnWindowFocus:\"always\"},e[1]=i,e[2]=r):r=e[2],qi(r)}"
+    },
+    {
+      "name": "Codex-store",
+      "asset": "index",
+      "utf8_half_open": [
+        3028775,
+        3029223
+      ],
+      "bytes": 448,
+      "sha256": "f418e2e810dfc6051a3c8f3a32813017662dbec817959553217aa304eaf2e8ce",
+      "literal": "let MI;const ZD=new Set;function k2(){for(const t of ZD)t()}function SPt(t){t&&(MI=t,k2())}function R7t(t){t!==void 0&&(MI=t,k2())}function T7t(t){MI=t,k2()}function KV(){return MI}function bPt(t){return ZD.add(t),()=>{ZD.delete(t)}}function kPt(){return $e.useSyncExternalStore(bPt,KV,KV)}function x7t(){const t=z.c(3),{data:e}=wPt(),s=kPt(),n=e?.status??void 0;let r;return t[0]!==s||t[1]!==n?(r={claude:n,codex:s},t[0]=s,t[1]=n,t[2]=r):r=t[2],r}"
+    },
+    {
+      "name": "getCodexAuthInfo",
+      "asset": "index",
+      "utf8_half_open": [
+        3024468,
+        3024929
+      ],
+      "bytes": 461,
+      "sha256": "c8258b02df4fd0dda1f57ad43f0364bc10c2d1c7486617a7ccccddb33d667b76",
+      "literal": "async getCodexAuthInfo(){const e=await Vl();try{Y.info(\"Attempting codexAuth via JSON-RPC tunnel\");const s=await this.getInitOptions({workingDir:e,host:M}),n=await vs.codexAuth({id:dPt,agentType:\"codex\",options:s,model:\"gpt-5.5\"});return Y.info(\"Received codexAuth response via JSON-RPC:\",n),{accountInfo:n.accountInfo,error:n.error}}catch(s){return Y.error(\"Failed to get Codex auth info:\",s),{accountInfo:void 0,error:s instanceof Error?s.message:String(s)}}}"
+    },
+    {
+      "name": "Codex-response-schema",
+      "asset": "index",
+      "utf8_half_open": [
+        1085665,
+        1085776
+      ],
+      "bytes": 111,
+      "sha256": "c4f391170f618af27488bebd055d18ac09e66a9b0886e300fca4faed1d2d329c",
+      "literal": "dJe=b({type:w(\"codex_auth_output\"),id:f(),agentType:w(\"codex\"),accountInfo:hB.optional(),error:f().optional()})"
+    },
+    {
+      "name": "account-schema",
+      "asset": "index",
+      "utf8_half_open": [
+        1084726,
+        1084904
+      ],
+      "bytes": 178,
+      "sha256": "ce38514277a6e9605e727080c826884e6b8d171fdbcd605c2dd6f07986f05f02",
+      "literal": "hB=b({accountType:q([w(\"apiKey\"),w(\"chatgpt\"),w(\"amazonBedrock\")]).optional(),email:f().optional(),planType:f().optional(),authMode:f().optional(),modelProvider:f().optional()}),"
+    },
+    {
+      "name": "K5t",
+      "asset": "index",
+      "utf8_half_open": [
+        401480,
+        401675
+      ],
+      "bytes": 195,
+      "sha256": "93de7dc0e2741ec300da8229fde30afaccc7fd3c7cd6d5c29fd8f56a3b687852",
+      "literal": "function K5t(){const t=z.c(5),e=Le(\"codex_provider\");let s;t[0]!==e.data?(s=TBe(e.data),t[0]=e.data,t[1]=s):s=t[1];let n;return t[2]!==e||t[3]!==s?(n={...e,data:s},t[2]=e,t[3]=s,t[4]=n):n=t[4],n}"
+    },
+    {
+      "name": "import-Kb",
+      "asset": "renderer",
+      "utf8_half_open": [
+        58803,
+        58811
+      ],
+      "bytes": 8,
+      "sha256": "acf45aaccb9134690d6a0e9696934da9b976622c5ca8480089af5875c8dfe9f7",
+      "literal": "iC as Kb"
+    },
+    {
+      "name": "export-Kb",
+      "asset": "index",
+      "utf8_half_open": [
+        3485218,
+        3485227
+      ],
+      "bytes": 9,
+      "sha256": "39ae6d5a6366fc37d7e7f5a6fe520298b5f116a0f6a12b8873c886bacf4ceeb7",
+      "literal": "Xhe as iC"
+    },
+    {
+      "name": "import-PEr",
+      "asset": "renderer",
+      "utf8_half_open": [
+        62898,
+        62907
+      ],
+      "bytes": 9,
+      "sha256": "ec285d5aade84bb5289fa93d3bf19f43fbeb856617a5bfa5c3809df619ca5131",
+      "literal": "p2 as PEr"
+    },
+    {
+      "name": "export-PEr",
+      "asset": "index",
+      "utf8_half_open": [
+        3489547,
+        3489556
+      ],
+      "bytes": 9,
+      "sha256": "2ed28ae8e7e8cabef1b60a7f30a6bae740751634fc4a95fb04831254d0f35f51",
+      "literal": "T7t as p2"
+    },
+    {
+      "name": "import-m9r",
+      "asset": "renderer",
+      "utf8_half_open": [
+        63524,
+        63533
+      ],
+      "bytes": 9,
+      "sha256": "596863f4fa94eb2d240c63a03e5914273179a4d812817a1c9192cfdeeb2ad63e",
+      "literal": "q1 as m9r"
+    },
+    {
+      "name": "export-m9r",
+      "asset": "index",
+      "utf8_half_open": [
+        3490179,
+        3490188
+      ],
+      "bytes": 9,
+      "sha256": "4ed84a7769b5ff4f4f7fd48390c8a757d063ce54bea3fbb4cc734a00cdd3a781",
+      "literal": "x7t as q1"
+    },
+    {
+      "name": "import-OEr",
+      "asset": "renderer",
+      "utf8_half_open": [
+        62878,
+        62887
+      ],
+      "bytes": 9,
+      "sha256": "f66761f24d6b85ad948ac356bc7e556a8ca41535d3c77c45e71770fef3977df8",
+      "literal": "p0 as OEr"
+    },
+    {
+      "name": "export-OEr",
+      "asset": "index",
+      "utf8_half_open": [
+        3489527,
+        3489536
+      ],
+      "bytes": 9,
+      "sha256": "41e1cebbabc1fde8676a245e4ee88f1440b54c304e48e599df4dc6561ab9e2cb",
+      "literal": "kPt as p0"
+    },
+    {
+      "name": "import-DEr",
+      "asset": "renderer",
+      "utf8_half_open": [
+        62888,
+        62897
+      ],
+      "bytes": 9,
+      "sha256": "d0fcf7d6af707992b62c35eb930c2b79036428d5c251fad6b4b97ac45fcf8bda",
+      "literal": "p1 as DEr"
+    },
+    {
+      "name": "export-DEr",
+      "asset": "index",
+      "utf8_half_open": [
+        3489537,
+        3489546
+      ],
+      "bytes": 9,
+      "sha256": "9f4fff4442c27593b1a68bfab0985adcddac13e395af7a7f157634170febb9d7",
+      "literal": "K5t as p1"
+    },
+    {
+      "name": "import-qi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        53360,
+        53367
+      ],
+      "bytes": 7,
+      "sha256": "3ad41ed0dcfbf8d94974ab512b9468ac5177a763ccf8cbeb85450dbceaef0b41",
+      "literal": "O as qi"
+    },
+    {
+      "name": "export-qi",
+      "asset": "index",
+      "utf8_half_open": [
+        3479977,
+        3479984
+      ],
+      "bytes": 7,
+      "sha256": "c92798d1d800b5a5dbc8502845c4ccac4333c03c33d531a0a655831fb5213b6f",
+      "literal": "$t as O"
+    },
+    {
+      "name": "import-Ao",
+      "asset": "renderer",
+      "utf8_half_open": [
+        53727,
+        53735
+      ],
+      "bytes": 8,
+      "sha256": "18d117b43a38e22740de45aef547a4891aeed42932f3db17b599307c723b4f6b",
+      "literal": "as as Ao"
+    },
+    {
+      "name": "export-Ao",
+      "asset": "index",
+      "utf8_half_open": [
+        3480621,
+        3480629
+      ],
+      "bytes": 8,
+      "sha256": "2b705a45d2344a414b89c04910e83e7a82a28013ec2ad8d611de24d152b0d41d",
+      "literal": "Be as as"
+    }
+  ],
+  "source_chain": [
+    "Fpa CLI Refresh awaits Promise.all([Aca.refetch(), Ica.mutateAsync()]); isLoading is Aca.isLoading || Ica.isPending.",
+    "Aca uses Cca -> Eca -> check_codex_auth, and reads the shared account through OEr.",
+    "Ica uses Sca -> Kb.getCodexAuthInfo; Sca publishes accountInfo through PEr only when error is undefined.",
+    "PEr -> T7t assigns the account value including undefined; kPt/x7t expose the store to OEr/m9r.",
+    "The response schema permits omitted accountInfo and error; getCodexAuthInfo forwards them as undefined.",
+    "Fpa passes absent accountInfo into t$i. Pending refresh then renders Checking login status... despite a previous successful signed-out response."
+  ],
+  "negative_cases": [
+    "Nonnull accountInfo suppresses t$i checking branch; an empty object differs from absent accountInfo.",
+    "An error string stops Sca from clearing the last account.",
+    "Current initial loading already shows checking. The candidate requires a successful first load in the same mount.",
+    "ChatGPT and API-key modes are outside this source contract and remain unchanged."
+  ],
+  "current_main_chain": [
+    "AgentsPage mounts CodexTab without a refresh-dependent key.",
+    "CodexTab -> useAgentStatus -> agentStatusLoader retains nonnull ProviderStatus after first successful signed-out status load.",
+    "Refresh sets loading true until both inert responses settle; loading && !provider suppresses checking on the second load.",
+    "StatusLine -> AuthStatus already preserves Connected when authenticated is true."
+  ],
+  "current_main_files": {
+    "src/settings/AgentsPage.tsx": "2d9167dd3176f6220f6036aff0c4e8bf5125e1e6e575984c401e67cd83f7f0ee",
+    "src/settings/agents/CodexTab.tsx": "8f814442b65aa82f4a3e295bfe9079c0f52f80db1160d650198daab3d263a54d",
+    "src/settings/agents/useAgentStatus.ts": "ac7f6dad2335abe4bb9d151b64ee836119a723f79b7744c0710d9462a842453e",
+    "src/settings/agents/agentStatusLoader.ts": "b0ac1b1e282f6fc3b64e2853cf814efd9be4738ee7910a402ee491cf37fe9a45",
+    "src/settings/agents/kit.tsx": "a0926a79d9a60384e04cc4ff26482336e411c5bf07c93da1755284baecaf37cb",
+    "src/settings/agents/parts.tsx": "69bd22e77de8cd3861ed4ba01a66d45ebca502da4a5f6ee0cc7c63c6f1e8b679",
+    "src/settings/agents/agentAuth.ts": "957697af99b2595e78fe802b7c185bcdfe3fb4be719851609e35b4a3d81fbe5f",
+    "src/settings/agents/codexModes.ts": "b436969e07876cdbc92776d162af26a595b12fb9adc5c903ec6bd04e999e7525"
+  },
+  "scope": [
+    "src/settings/agents/CodexTab.tsx checking CLI branch only",
+    "tests/chat-search/codexSignedOutRefresh.dom.test.mjs",
+    "evidence/settings/codex-signed-out-refresh/"
+  ],
+  "boundaries": {
+    "reference_javascript_executed": false,
+    "native_installed_app_provider_login": "NOT RUN",
+    "credentials": "Not accessed",
+    "local_test": "Only provider-free Node+JSDOM, authorized by root. No app, browser, native or provider launch."
+  }
+}

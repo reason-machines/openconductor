@@ -1,0 +1,559 @@
+2026-11-12T06:32:06.1518799Z Current runner version: '2.338.2'
+2026-11-12T06:32:06.1544789Z ##[group]Runner Image Provisioner
+2026-11-12T06:32:06.1545743Z Hosted Compute Agent
+2026-11-12T06:32:06.1546342Z Version: 20261028.624
+2026-11-12T06:32:06.1547046Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+2026-11-12T06:32:06.1547795Z Build Date: 2026-10-28T21:51:42Z
+2026-11-12T06:32:06.1548491Z Worker ID: {87c9f915-bc8b-478d-8e25-f6f16fe2ab01}
+2026-11-12T06:32:06.1549293Z Region: westus2
+2026-11-12T06:32:06.1549851Z Cloud: Azure
+2026-11-12T06:32:06.1550396Z ##[endgroup]
+2026-11-12T06:32:06.1552667Z ##[group]Operating System
+2026-11-12T06:32:06.1553330Z Ubuntu
+2026-11-12T06:32:06.1553926Z 26.04.1
+2026-11-12T06:32:06.1554445Z LTS
+2026-11-12T06:32:06.1554984Z ##[endgroup]
+2026-11-12T06:32:06.1555609Z ##[group]Runner Image
+2026-11-12T06:32:06.1556201Z Image: ubuntu-26.04
+2026-11-12T06:32:06.1556791Z Version: 20261101.186.1
+2026-11-12T06:32:06.1558092Z Included Software: https://github.com/actions/runner-images/blob/ubuntu26/20261101.186/images/ubuntu/Ubuntu2604-Readme.md
+2026-11-12T06:32:06.1559698Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu26%2F20261101.186
+2026-11-12T06:32:06.1560657Z ##[endgroup]
+2026-11-12T06:32:06.1562272Z ##[group]GITHUB_TOKEN [redacted]
+2026-11-12T06:32:06.1564202Z Contents: read
+2026-11-12T06:32:06.1564870Z Metadata: read
+2026-11-12T06:32:06.1565493Z ##[endgroup]
+2026-11-12T06:32:06.1567499Z Secret [redacted] Actions
+2026-11-12T06:32:06.1568512Z Cache mode: write
+2026-11-12T06:32:06.1569256Z Prepare workflow directory
+2026-11-12T06:32:06.1927029Z Prepare all required actions
+2026-11-12T06:32:06.1977077Z Getting action download info
+2026-11-12T06:32:06.5064439Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-12T06:32:06.6415058Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+2026-11-12T06:32:06.9291685Z Complete job name: Diff Rust test + clippy (ubuntu-latest)
+2026-11-12T06:32:07.0198914Z ##[group]Run actions/checkout@v4
+2026-11-12T06:32:07.0199797Z with:
+2026-11-12T06:32:07.0200282Z   repository: reason-machines/openconductor
+2026-11-12T06:32:07.0204435Z   token: ***
+2026-11-12T06:32:07.0204876Z   ssh-strict: true
+2026-11-12T06:32:07.0205320Z   ssh-user: git
+2026-11-12T06:32:07.0205773Z   persist-credentials: true
+2026-11-12T06:32:07.0206263Z   clean: true
+2026-11-12T06:32:07.0206708Z   sparse-checkout-cone-mode: true
+2026-11-12T06:32:07.0207231Z   fetch-depth: 1
+2026-11-12T06:32:07.0207664Z   fetch-tags: false
+2026-11-12T06:32:07.0208120Z   show-progress: true
+2026-11-12T06:32:07.0208565Z   lfs: false
+2026-11-12T06:32:07.0208981Z   submodules: false
+2026-11-12T06:32:07.0209441Z   set-safe-directory: true
+2026-11-12T06:32:07.0209999Z   allow-unsafe-pr-checkout: false
+2026-11-12T06:32:07.0210905Z ##[endgroup]
+2026-11-12T06:32:07.2804032Z Syncing repository: reason-machines/openconductor
+2026-11-12T06:32:07.2806191Z ##[group]Getting Git version info
+2026-11-12T06:32:07.2807687Z Working directory is '/home/runner/work/openconductor/openconductor'
+2026-11-12T06:32:07.2809701Z [command]/usr/bin/git version
+2026-11-12T06:32:07.2821072Z git version 2.56.0
+2026-11-12T06:32:07.2842676Z ##[endgroup]
+2026-11-12T06:32:07.2855861Z Temporarily overriding HOME='/home/runner/work/_temp/8d10f195-4d4a-4fa7-b837-ab05a3e2d43e' before making global git config changes
+2026-11-12T06:32:07.2857414Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-12T06:32:07.2861315Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/openconductor/openconductor
+2026-11-12T06:32:07.2938609Z Deleting the contents of '/home/runner/work/openconductor/openconductor'
+2026-11-12T06:32:07.2942320Z ##[group]Initializing the repository
+2026-11-12T06:32:07.2946627Z [command]/usr/bin/git init /home/runner/work/openconductor/openconductor
+2026-11-12T06:32:07.3047706Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-12T06:32:07.3049720Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-12T06:32:07.3051457Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-12T06:32:07.3052546Z hint: call:
+2026-11-12T06:32:07.3053158Z hint:
+2026-11-12T06:32:07.3053905Z hint: 	git config --global init.defaultBranch <name>
+2026-11-12T06:32:07.3054804Z hint:
+2026-11-12T06:32:07.3055757Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-12T06:32:07.3057101Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-12T06:32:07.3058255Z hint:
+2026-11-12T06:32:07.3058867Z hint: 	git branch -m <name>
+2026-11-12T06:32:07.3059562Z hint:
+2026-11-12T06:32:07.3060563Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-12T06:32:07.3064558Z Initialized empty Git repository in /home/runner/work/openconductor/openconductor/.git/
+2026-11-12T06:32:07.3074575Z [command]/usr/bin/git remote add origin https://github.com/reason-machines/openconductor
+2026-11-12T06:32:07.3119942Z ##[endgroup]
+2026-11-12T06:32:07.3121097Z ##[group]Disabling automatic garbage collection
+2026-11-12T06:32:07.3124512Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-12T06:32:07.3156499Z ##[endgroup]
+2026-11-12T06:32:07.3157241Z ##[group]Setting up auth
+2026-11-12T06:32:07.3163119Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-12T06:32:07.3196031Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-12T06:32:07.3688006Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-12T06:32:07.3725361Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-12T06:32:07.4002463Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-12T06:32:07.4038267Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-12T06:32:07.4312332Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-12T06:32:07.4351091Z ##[endgroup]
+2026-11-12T06:32:07.4351928Z ##[group]Fetching the repository
+2026-11-12T06:32:07.4363428Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +[redacted-token]:refs/remotes/pull/1143/merge
+2026-11-12T06:32:12.1027187Z From https://github.com/reason-machines/openconductor
+2026-11-12T06:32:12.1029002Z  * [new ref]         [redacted-token] -> pull/1143/merge
+2026-11-12T06:32:12.1033539Z ##[endgroup]
+2026-11-12T06:32:12.1034794Z ##[group]Determining the checkout info
+2026-11-12T06:32:12.1036561Z ##[endgroup]
+2026-11-12T06:32:12.1041045Z [command]/usr/bin/git sparse-checkout disable
+2026-11-12T06:32:12.1090153Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-12T06:32:12.1121869Z ##[group]Checking out the ref
+2026-11-12T06:32:12.1124771Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/1143/merge
+2026-11-12T06:32:12.8712606Z Note: switching to 'refs/remotes/pull/1143/merge'.
+2026-11-12T06:32:12.8713981Z 
+2026-11-12T06:32:12.8714907Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-12T06:32:12.8716256Z changes and commit them, and you can discard any commits you make in this
+2026-11-12T06:32:12.8717036Z state without impacting any branches by switching back to a branch.
+2026-11-12T06:32:12.8717508Z 
+2026-11-12T06:32:12.8717854Z If you want to create a new branch to retain commits you create, you may
+2026-11-12T06:32:12.8718631Z do so (now or later) by using -c with the switch command. Example:
+2026-11-12T06:32:12.8719325Z 
+2026-11-12T06:32:12.8719523Z   git switch -c <new-branch-name>
+2026-11-12T06:32:12.8719837Z 
+2026-11-12T06:32:12.8720041Z Or undo this operation with:
+2026-11-12T06:32:12.8720317Z 
+2026-11-12T06:32:12.8720476Z   git switch -
+2026-11-12T06:32:12.8720933Z 
+2026-11-12T06:32:12.8721359Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-12T06:32:12.8721854Z 
+2026-11-12T06:32:12.8722414Z HEAD is now at 338993f Merge [redacted-token] into [redacted-token]
+2026-11-12T06:32:12.8757140Z ##[endgroup]
+2026-11-12T06:32:12.8802885Z [command]/usr/bin/git log -1 --format=%H
+2026-11-12T06:32:12.8828198Z 338993f8ed21345933bb0b8798b4f3f581013a7c
+2026-11-12T06:32:12.9307506Z ##[group]Run dtolnay/rust-toolchain@stable
+2026-11-12T06:32:12.9307915Z with:
+2026-11-12T06:32:12.9308188Z   components: clippy, rustfmt
+2026-11-12T06:32:12.9308499Z   toolchain: stable
+2026-11-12T06:32:12.9308764Z ##[endgroup]
+2026-11-12T06:32:12.9378354Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+2026-11-12T06:32:12.9442750Z ##[group]Run if [[ -z $toolchain ]]; then
+2026-11-12T06:32:12.9443261Z if [[ -z $toolchain ]]; then
+2026-11-12T06:32:12.9443896Z   # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070
+2026-11-12T06:32:12.9444531Z   echo "'toolchain' is a required input" >&2
+2026-11-12T06:32:12.9444896Z   exit 1
+2026-11-12T06:32:12.9445296Z elif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then
+2026-11-12T06:32:12.9445777Z   if [[ Linux == macOS ]]; then
+2026-11-12T06:32:12.9446447Z     echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT
+2026-11-12T06:32:12.9447040Z   else
+2026-11-12T06:32:12.9447509Z     echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT
+2026-11-12T06:32:12.9448036Z   fi
+2026-11-12T06:32:12.9448403Z elif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then
+2026-11-12T06:32:12.9449019Z   echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT
+2026-11-12T06:32:12.9449550Z elif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then
+2026-11-12T06:32:12.9450139Z   echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT
+2026-11-12T06:32:12.9450837Z else
+2026-11-12T06:32:12.9451104Z   delimiter=EOF
+2026-11-12T06:32:12.9451480Z   while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done
+2026-11-12T06:32:12.9452054Z   printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT
+2026-11-12T06:32:12.9452533Z fi
+2026-11-12T06:32:12.9504807Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:12.9505252Z env:
+2026-11-12T06:32:12.9505516Z   toolchain: stable
+2026-11-12T06:32:12.9505791Z ##[endgroup]
+2026-11-12T06:32:12.9624811Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=24]
+2026-11-12T06:32:12.9629686Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+2026-11-12T06:32:12.9724137Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+2026-11-12T06:32:12.9724704Z echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+2026-11-12T06:32:12.9768009Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:12.9768449Z ##[endgroup]
+2026-11-12T06:32:12.9841646Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=21]
+2026-11-12T06:32:12.9844286Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+2026-11-12T06:32:12.9879179Z ##[group]Run if ! command -v rustup &>/dev/null; then
+2026-11-12T06:32:12.9879774Z if ! command -v rustup &>/dev/null; then
+2026-11-12T06:32:12.9880581Z   curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y
+2026-11-12T06:32:12.9881689Z   echo "$CARGO_HOME/bin" >> $GITHUB_PATH
+2026-11-12T06:32:12.9882025Z fi
+2026-11-12T06:32:12.9925644Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:12.9926048Z env:
+2026-11-12T06:32:12.9926305Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:12.9926609Z ##[endgroup]
+2026-11-12T06:32:12.9997140Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=15]
+2026-11-12T06:32:12.9999719Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+2026-11-12T06:32:13.0007358Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-12T06:32:13.0022670Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+2026-11-12T06:32:13.0049832Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+2026-11-12T06:32:13.0050571Z set -f  # split targets and components on commas and whitespace, without glob expansion
+2026-11-12T06:32:13.0051260Z flags=()
+2026-11-12T06:32:13.0051600Z for t in ${targets//,/ }; do flags+=(--target "$t"); done
+2026-11-12T06:32:13.0052078Z for c in ${components//,/ }; do flags+=(--component "$c"); done
+2026-11-12T06:32:13.0052654Z if [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi
+2026-11-12T06:32:13.0053130Z log=$(mktemp)
+2026-11-12T06:32:13.0053424Z trap 'rm -f "$log"' EXIT
+2026-11-12T06:32:13.0053732Z for attempt in 1 2 3 4 5; do
+2026-11-12T06:32:13.0054357Z   if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then
+2026-11-12T06:32:13.0054996Z     break
+2026-11-12T06:32:13.0055254Z   else
+2026-11-12T06:32:13.0055506Z     status=$?
+2026-11-12T06:32:13.0055773Z   fi
+2026-11-12T06:32:13.0056211Z   if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \
+2026-11-12T06:32:13.0056826Z       || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then
+2026-11-12T06:32:13.0057346Z     exit "$status"
+2026-11-12T06:32:13.0057627Z   fi
+2026-11-12T06:32:13.0058085Z   echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2
+2026-11-12T06:32:13.0058559Z   sleep 30
+2026-11-12T06:32:13.0058816Z done
+2026-11-12T06:32:13.0103713Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:13.0104129Z env:
+2026-11-12T06:32:13.0104392Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:13.0104709Z   toolchain: stable
+2026-11-12T06:32:13.0104964Z   targets: 
+2026-11-12T06:32:13.0105220Z   components: clippy, rustfmt
+2026-11-12T06:32:13.0105540Z   RUSTUP_PERMIT_COPY_RENAME: 1
+2026-11-12T06:32:13.0105845Z ##[endgroup]
+2026-11-12T06:32:13.2297339Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+2026-11-12T06:32:13.3893290Z info: latest update on 2026-10-15 for version 1.99.1 (58cf8f9c3 2026-10-13)
+2026-11-12T06:32:13.4144908Z info: component clippy is up to date
+2026-11-12T06:32:13.4145606Z info: component rustfmt is up to date
+2026-11-12T06:32:13.4155108Z 
+2026-11-12T06:32:13.4241553Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+2026-11-12T06:32:13.4242288Z 
+2026-11-12T06:32:13.4302554Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=427]
+2026-11-12T06:32:13.4309015Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+2026-11-12T06:32:13.4336981Z ##[group]Run rustup default "$toolchain" --force-non-host
+2026-11-12T06:32:13.4337448Z rustup default "$toolchain" --force-non-host
+2026-11-12T06:32:13.4386433Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:13.4386858Z env:
+2026-11-12T06:32:13.4387121Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:13.4387454Z   toolchain: stable
+2026-11-12T06:32:13.4387722Z ##[endgroup]
+2026-11-12T06:32:13.4495770Z info: using existing install for stable-x86_64-unknown-linux-gnu
+2026-11-12T06:32:13.4505028Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+2026-11-12T06:32:13.4505465Z 
+2026-11-12T06:32:13.4585528Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+2026-11-12T06:32:13.4586106Z 
+2026-11-12T06:32:13.4603853Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=29]
+2026-11-12T06:32:13.4608368Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+2026-11-12T06:32:13.4636257Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+2026-11-12T06:32:13.4637226Z DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+2026-11-12T06:32:13.4637975Z HASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')
+2026-11-12T06:32:13.4638543Z echo "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT
+2026-11-12T06:32:13.4685337Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:13.4685756Z env:
+2026-11-12T06:32:13.4686010Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:13.4686316Z   toolchain: stable
+2026-11-12T06:32:13.4686565Z ##[endgroup]
+2026-11-12T06:32:13.5085878Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=47]
+2026-11-12T06:32:13.5089372Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+2026-11-12T06:32:13.5117828Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+2026-11-12T06:32:13.5118277Z if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+2026-11-12T06:32:13.5118661Z   echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV
+2026-11-12T06:32:13.5141929Z fi
+2026-11-12T06:32:13.5189778Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:13.5190217Z env:
+2026-11-12T06:32:13.5190487Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:13.5191072Z ##[endgroup]
+2026-11-12T06:32:13.5267712Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=17]
+2026-11-12T06:32:13.5270259Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+2026-11-12T06:32:13.5296822Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+2026-11-12T06:32:13.5297268Z if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+2026-11-12T06:32:13.5297666Z   echo CARGO_TERM_COLOR=always >> $GITHUB_ENV
+2026-11-12T06:32:13.5298009Z fi
+2026-11-12T06:32:13.5343356Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:13.5343759Z env:
+2026-11-12T06:32:13.5344013Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:13.5344322Z   CARGO_INCREMENTAL: 0
+2026-11-12T06:32:13.5344586Z ##[endgroup]
+2026-11-12T06:32:13.5417449Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=14]
+2026-11-12T06:32:13.5421724Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+2026-11-12T06:32:13.5449319Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+2026-11-12T06:32:13.5449884Z # implemented in 1.66, stabilized in 1.68, made default in 1.70
+2026-11-12T06:32:13.5450647Z if [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then
+2026-11-12T06:32:13.5451938Z   if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then
+2026-11-12T06:32:13.5452598Z     touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true
+2026-11-12T06:32:13.5453219Z     echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV
+2026-11-12T06:32:13.5453793Z   elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then
+2026-11-12T06:32:13.5454442Z     touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true
+2026-11-12T06:32:13.5455144Z     echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV
+2026-11-12T06:32:13.5455551Z   fi
+2026-11-12T06:32:13.5455790Z fi
+2026-11-12T06:32:13.5499593Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:13.5499990Z env:
+2026-11-12T06:32:13.5500254Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:13.5500568Z   CARGO_INCREMENTAL: 0
+2026-11-12T06:32:13.5501054Z   CARGO_TERM_COLOR: always
+2026-11-12T06:32:13.5501338Z   toolchain: stable
+2026-11-12T06:32:13.5501589Z ##[endgroup]
+2026-11-12T06:32:13.5833236Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=41]
+2026-11-12T06:32:13.5837868Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+2026-11-12T06:32:13.5865129Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+2026-11-12T06:32:13.5865953Z # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+2026-11-12T06:32:13.5866674Z if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then
+2026-11-12T06:32:13.5867215Z   echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV
+2026-11-12T06:32:13.5867587Z fi
+2026-11-12T06:32:13.5914848Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:13.5915295Z env:
+2026-11-12T06:32:13.5915563Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:13.5915890Z   CARGO_INCREMENTAL: 0
+2026-11-12T06:32:13.5916169Z   CARGO_TERM_COLOR: always
+2026-11-12T06:32:13.5916458Z   toolchain: stable
+2026-11-12T06:32:13.5916724Z ##[endgroup]
+2026-11-12T06:32:13.6123313Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=28]
+2026-11-12T06:32:13.6128795Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+2026-11-12T06:32:13.6155608Z ##[group]Run rustc +"$toolchain" --version --verbose
+2026-11-12T06:32:13.6156060Z rustc +"$toolchain" --version --verbose
+2026-11-12T06:32:13.6202933Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-12T06:32:13.6203329Z env:
+2026-11-12T06:32:13.6203598Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:13.6203931Z   CARGO_INCREMENTAL: 0
+2026-11-12T06:32:13.6204200Z   CARGO_TERM_COLOR: always
+2026-11-12T06:32:13.6204472Z   toolchain: stable
+2026-11-12T06:32:13.6204729Z ##[endgroup]
+2026-11-12T06:32:13.6383545Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+2026-11-12T06:32:13.6384275Z binary: rustc
+2026-11-12T06:32:13.6384908Z commit-hash: [redacted-token]
+2026-11-12T06:32:13.6385635Z commit-date: 2026-10-13
+2026-11-12T06:32:13.6386026Z host: x86_64-unknown-linux-gnu
+2026-11-12T06:32:13.6386401Z release: 1.99.1
+2026-11-12T06:32:13.6386980Z LLVM version: 23.1.1
+2026-11-12T06:32:13.6407669Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=27]
+2026-11-12T06:32:13.6477876Z ##[group]Run git config --global user.name "CI"
+2026-11-12T06:32:13.6478332Z git config --global user.name "CI"
+2026-11-12T06:32:13.6478751Z git config --global user.email "ci@example.invalid"
+2026-11-12T06:32:13.6526157Z shell: /usr/bin/bash -e {0}
+2026-11-12T06:32:13.6526636Z env:
+2026-11-12T06:32:13.6526896Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:13.6527207Z   CARGO_INCREMENTAL: 0
+2026-11-12T06:32:13.6527476Z   CARGO_TERM_COLOR: always
+2026-11-12T06:32:13.6527749Z ##[endgroup]
+2026-11-12T06:32:13.6666064Z ##[group]Run rustfmt --edition 2021 --check src-tauri/src/diff/*.rs
+2026-11-12T06:32:13.6666661Z rustfmt --edition 2021 --check src-tauri/src/diff/*.rs
+2026-11-12T06:32:13.6711304Z shell: /usr/bin/bash -e {0}
+2026-11-12T06:32:13.6711627Z env:
+2026-11-12T06:32:13.6711881Z   CARGO_HOME: /home/runner/.cargo
+2026-11-12T06:32:13.6712196Z   CARGO_INCREMENTAL: 0
+2026-11-12T06:32:13.6712468Z   CARGO_TERM_COLOR: always
+2026-11-12T06:32:13.6712749Z ##[endgroup]
+2026-11-12T06:32:14.6241489Z Diff in /home/runner/work/openconductor/openconductor/src-tauri/src/diff/turn_large_file_tests.rs:43:
+2026-11-12T06:32:14.6242856Z  fn snapshot(repo: &Path, point: TurnPoint) -> String {
+2026-11-12T06:32:14.6243658Z      sh(repo, &["add", "-A"]);
+2026-11-12T06:32:14.6244408Z      let tree = git(repo, &["write-tree"], &[0]).unwrap();
+2026-11-12T06:32:14.6245527Z -    let oid = git(repo, &["commit-tree", tree.trim(), "-m", "checkpoint"], &[0]).unwrap();
+2026-11-12T06:32:14.6246612Z +    let oid = git(
+2026-11-12T06:32:14.6247156Z +        repo,
+2026-11-12T06:32:14.6247725Z +        &["commit-tree", tree.trim(), "-m", "checkpoint"],
+2026-11-12T06:32:14.6248327Z +        &[0],
+2026-11-12T06:32:14.6248698Z +    )
+2026-11-12T06:32:14.6249069Z +    .unwrap();
+2026-11-12T06:32:14.6249416Z      let oid = oid.trim().to_string();
+2026-11-12T06:32:14.6249797Z      let reference = format!(
+2026-11-12T06:32:14.6250149Z          "refs/conductor-checkpoints/{}",
+2026-11-12T06:32:14.6251077Z Diff in /home/runner/work/openconductor/openconductor/src-tauri/src/diff/turn_large_file_tests.rs:115:
+2026-11-12T06:32:14.6251797Z          assert!(!file.hunks.is_empty());
+2026-11-12T06:32:14.6252319Z          let text: Vec<_> = file.hunks.iter().flat_map(|hunk| &hunk.lines).collect();
+2026-11-12T06:32:14.6257083Z          assert!(text.iter().any(|line| line.kind == LineKind::Addition));
+2026-11-12T06:32:14.6257824Z -        assert!(!text.iter().any(|line| line.text.contains("unrelated small current worktree")));
+2026-11-12T06:32:14.6258380Z +        assert!(!text
+2026-11-12T06:32:14.6258620Z +            .iter()
+2026-11-12T06:32:14.6258956Z +            .any(|line| line.text.contains("unrelated small current worktree")));
+2026-11-12T06:32:14.6259341Z      }
+2026-11-12T06:32:14.6259518Z  }
+2026-11-12T06:32:14.6259697Z  
+2026-11-12T06:32:14.6260117Z Diff in /home/runner/work/openconductor/openconductor/src-tauri/src/diff/turn_large_file_tests.rs:135:
+2026-11-12T06:32:14.6260599Z      };
+2026-11-12T06:32:14.6261021Z  }
+2026-11-12T06:32:14.6261197Z  
+2026-11-12T06:32:14.6261547Z -turn_case!(six_mib_old_small_new, 6 * MIB, 16_384, 2, true, false, false);
+2026-11-12T06:32:14.6262111Z -turn_case!(six_mib_new_missing_worktree, 16_384, 6 * MIB, 2, true, false, true);
+2026-11-12T06:32:14.6262644Z -turn_case!(five_mib_plus_one_sparse, 5 * MIB + 1, 5 * MIB + 1, 2, true, false, false);
+2026-11-12T06:32:14.6263179Z -turn_case!(one_mib_plus_one_dense, MIB + 1, MIB + 1, 502, true, false, false);
+2026-11-12T06:32:14.6263573Z +turn_case!(
+2026-11-12T06:32:14.6263786Z +    six_mib_old_small_new,
+2026-11-12T06:32:14.6264016Z +    6 * MIB,
+2026-11-12T06:32:14.6264198Z +    16_384,
+2026-11-12T06:32:14.6264376Z +    2,
+2026-11-12T06:32:14.6264550Z +    true,
+2026-11-12T06:32:14.6264731Z +    false,
+2026-11-12T06:32:14.6264914Z +    false
+2026-11-12T06:32:14.6265087Z +);
+2026-11-12T06:32:14.6265265Z +turn_case!(
+2026-11-12T06:32:14.6265465Z +    six_mib_new_missing_worktree,
+2026-11-12T06:32:14.6265709Z +    16_384,
+2026-11-12T06:32:14.6265889Z +    6 * MIB,
+2026-11-12T06:32:14.6266064Z +    2,
+2026-11-12T06:32:14.6266234Z +    true,
+2026-11-12T06:32:14.6266403Z +    false,
+2026-11-12T06:32:14.6266578Z +    true
+2026-11-12T06:32:14.6266745Z +);
+2026-11-12T06:32:14.6266917Z +turn_case!(
+2026-11-12T06:32:14.6267114Z +    five_mib_plus_one_sparse,
+2026-11-12T06:32:14.6267739Z +    5 * MIB + 1,
+2026-11-12T06:32:14.6267927Z +    5 * MIB + 1,
+2026-11-12T06:32:14.6268108Z +    2,
+2026-11-12T06:32:14.6268281Z +    true,
+2026-11-12T06:32:14.6268455Z +    false,
+2026-11-12T06:32:14.6268869Z +    false
+2026-11-12T06:32:14.6269050Z +);
+2026-11-12T06:32:14.6269220Z +turn_case!(
+2026-11-12T06:32:14.6269417Z +    one_mib_plus_one_dense,
+2026-11-12T06:32:14.6269648Z +    MIB + 1,
+2026-11-12T06:32:14.6269834Z +    MIB + 1,
+2026-11-12T06:32:14.6270013Z +    502,
+2026-11-12T06:32:14.6270190Z +    true,
+2026-11-12T06:32:14.6270364Z +    false,
+2026-11-12T06:32:14.6270537Z +    false
+2026-11-12T06:32:14.6270901Z +);
+2026-11-12T06:32:14.6271178Z  turn_case!(one_mib_dense, MIB, MIB, 502, false, false, false);
+2026-11-12T06:32:14.6271625Z  turn_case!(five_mib_sparse, 5 * MIB, 5 * MIB, 2, false, false, false);
+2026-11-12T06:32:14.6272062Z  turn_case!(six_mib_binary, 6 * MIB, 6 * MIB, 0, false, true, false);
+2026-11-12T06:32:14.6897163Z Diff in /home/runner/work/openconductor/openconductor/src-tauri/src/diff/turn_large_file_tests.rs:43:
+2026-11-12T06:32:14.6898496Z  fn snapshot(repo: &Path, point: TurnPoint) -> String {
+2026-11-12T06:32:14.6899244Z      sh(repo, &["add", "-A"]);
+2026-11-12T06:32:14.6899900Z      let tree = git(repo, &["write-tree"], &[0]).unwrap();
+2026-11-12T06:32:14.6901073Z -    let oid = git(repo, &["commit-tree", tree.trim(), "-m", "checkpoint"], &[0]).unwrap();
+2026-11-12T06:32:14.6901754Z +    let oid = git(
+2026-11-12T06:32:14.6902049Z +        repo,
+2026-11-12T06:32:14.6902399Z +        &["commit-tree", tree.trim(), "-m", "checkpoint"],
+2026-11-12T06:32:14.6902830Z +        &[0],
+2026-11-12T06:32:14.6903097Z +    )
+2026-11-12T06:32:14.6903352Z +    .unwrap();
+2026-11-12T06:32:14.6903652Z      let oid = oid.trim().to_string();
+2026-11-12T06:32:14.6904093Z      let reference = format!(
+2026-11-12T06:32:14.6904461Z          "refs/conductor-checkpoints/{}",
+2026-11-12T06:32:14.6905179Z Diff in /home/runner/work/openconductor/openconductor/src-tauri/src/diff/turn_large_file_tests.rs:115:
+2026-11-12T06:32:14.6905923Z          assert!(!file.hunks.is_empty());
+2026-11-12T06:32:14.6906472Z          let text: Vec<_> = file.hunks.iter().flat_map(|hunk| &hunk.lines).collect();
+2026-11-12T06:32:14.6907172Z          assert!(text.iter().any(|line| line.kind == LineKind::Addition));
+2026-11-12T06:32:14.6907907Z -        assert!(!text.iter().any(|line| line.text.contains("unrelated small current worktree")));
+2026-11-12T06:32:14.6908531Z +        assert!(!text
+2026-11-12T06:32:14.6908832Z +            .iter()
+2026-11-12T06:32:14.6909274Z +            .any(|line| line.text.contains("unrelated small current worktree")));
+2026-11-12T06:32:14.6909743Z      }
+2026-11-12T06:32:14.6909926Z  }
+2026-11-12T06:32:14.6910110Z  
+2026-11-12T06:32:14.6910529Z Diff in /home/runner/work/openconductor/openconductor/src-tauri/src/diff/turn_large_file_tests.rs:135:
+2026-11-12T06:32:14.6911254Z      };
+2026-11-12T06:32:14.6911439Z  }
+2026-11-12T06:32:14.6911616Z  
+2026-11-12T06:32:14.6911949Z -turn_case!(six_mib_old_small_new, 6 * MIB, 16_384, 2, true, false, false);
+2026-11-12T06:32:14.6912469Z -turn_case!(six_mib_new_missing_worktree, 16_384, 6 * MIB, 2, true, false, true);
+2026-11-12T06:32:14.6913140Z -turn_case!(five_mib_plus_one_sparse, 5 * MIB + 1, 5 * MIB + 1, 2, true, false, false);
+2026-11-12T06:32:14.6913897Z -turn_case!(one_mib_plus_one_dense, MIB + 1, MIB + 1, 502, true, false, false);
+2026-11-12T06:32:14.6914391Z +turn_case!(
+2026-11-12T06:32:14.6914683Z +    six_mib_old_small_new,
+2026-11-12T06:32:14.6915151Z +    6 * MIB,
+2026-11-12T06:32:14.6915431Z +    16_384,
+2026-11-12T06:32:14.6915752Z +    2,
+2026-11-12T06:32:14.6916025Z +    true,
+2026-11-12T06:32:14.6916292Z +    false,
+2026-11-12T06:32:14.6972354Z +    false
+2026-11-12T06:32:14.6972584Z +);
+2026-11-12T06:32:14.6972770Z +turn_case!(
+2026-11-12T06:32:14.6972989Z +    six_mib_new_missing_worktree,
+2026-11-12T06:32:14.6973250Z +    16_384,
+2026-11-12T06:32:14.6973437Z +    6 * MIB,
+2026-11-12T06:32:14.6973928Z +    2,
+2026-11-12T06:32:14.6974105Z +    true,
+2026-11-12T06:32:14.6974281Z +    false,
+2026-11-12T06:32:14.6974455Z +    true
+2026-11-12T06:32:14.6974631Z +);
+2026-11-12T06:32:14.6974810Z +turn_case!(
+2026-11-12T06:32:14.6975195Z +    five_mib_plus_one_sparse,
+2026-11-12T06:32:14.6975443Z +    5 * MIB + 1,
+2026-11-12T06:32:14.6975634Z +    5 * MIB + 1,
+2026-11-12T06:32:14.6975818Z +    2,
+2026-11-12T06:32:14.6975990Z +    true,
+2026-11-12T06:32:14.6976160Z +    false,
+2026-11-12T06:32:14.6976332Z +    false
+2026-11-12T06:32:14.6976504Z +);
+2026-11-12T06:32:14.6976672Z +turn_case!(
+2026-11-12T06:32:14.6976875Z +    one_mib_plus_one_dense,
+2026-11-12T06:32:14.6977110Z +    MIB + 1,
+2026-11-12T06:32:14.6977291Z +    MIB + 1,
+2026-11-12T06:32:14.6977470Z +    502,
+2026-11-12T06:32:14.6977643Z +    true,
+2026-11-12T06:32:14.6977814Z +    false,
+2026-11-12T06:32:14.6977985Z +    false
+2026-11-12T06:32:14.6978155Z +);
+2026-11-12T06:32:14.6978413Z  turn_case!(one_mib_dense, MIB, MIB, 502, false, false, false);
+2026-11-12T06:32:14.6978876Z  turn_case!(five_mib_sparse, 5 * MIB, 5 * MIB, 2, false, false, false);
+2026-11-12T06:32:14.6979318Z  turn_case!(six_mib_binary, 6 * MIB, 6 * MIB, 0, false, true, false);
+2026-11-12T06:32:14.6997112Z Diff in /home/runner/work/openconductor/openconductor/src-tauri/src/diff/turn_large_file_tests.rs:43:
+2026-11-12T06:32:14.6998086Z  fn snapshot(repo: &Path, point: TurnPoint) -> String {
+2026-11-12T06:32:14.6998635Z      sh(repo, &["add", "-A"]);
+2026-11-12T06:32:14.6999115Z      let tree = git(repo, &["write-tree"], &[0]).unwrap();
+2026-11-12T06:32:14.6999859Z -    let oid = git(repo, &["commit-tree", tree.trim(), "-m", "checkpoint"], &[0]).unwrap();
+2026-11-12T06:32:14.7000539Z +    let oid = git(
+2026-11-12T06:32:14.7001049Z +        repo,
+2026-11-12T06:32:14.7001455Z +        &["commit-tree", tree.trim(), "-m", "checkpoint"],
+2026-11-12T06:32:14.7001957Z +        &[0],
+2026-11-12T06:32:14.7002327Z +    )
+2026-11-12T06:32:14.7002632Z +    .unwrap();
+2026-11-12T06:32:14.7002973Z      let oid = oid.trim().to_string();
+2026-11-12T06:32:14.7003253Z      let reference = format!(
+2026-11-12T06:32:14.7003527Z          "refs/conductor-checkpoints/{}",
+2026-11-12T06:32:14.7004068Z Diff in /home/runner/work/openconductor/openconductor/src-tauri/src/diff/turn_large_file_tests.rs:115:
+2026-11-12T06:32:14.7004620Z          assert!(!file.hunks.is_empty());
+2026-11-12T06:32:14.7005015Z          let text: Vec<_> = file.hunks.iter().flat_map(|hunk| &hunk.lines).collect();
+2026-11-12T06:32:14.7005538Z          assert!(text.iter().any(|line| line.kind == LineKind::Addition));
+2026-11-12T06:32:14.7006071Z -        assert!(!text.iter().any(|line| line.text.contains("unrelated small current worktree")));
+2026-11-12T06:32:14.7006516Z +        assert!(!text
+2026-11-12T06:32:14.7006736Z +            .iter()
+2026-11-12T06:32:14.7007062Z +            .any(|line| line.text.contains("unrelated small current worktree")));
+2026-11-12T06:32:14.7007442Z      }
+2026-11-12T06:32:14.7007630Z  }
+2026-11-12T06:32:14.7007821Z  
+2026-11-12T06:32:14.7008247Z Diff in /home/runner/work/openconductor/openconductor/src-tauri/src/diff/turn_large_file_tests.rs:135:
+2026-11-12T06:32:14.7008763Z      };
+2026-11-12T06:32:14.7008946Z  }
+2026-11-12T06:32:14.7009132Z  
+2026-11-12T06:32:14.7009431Z -turn_case!(six_mib_old_small_new, 6 * MIB, 16_384, 2, true, false, false);
+2026-11-12T06:32:14.7009939Z -turn_case!(six_mib_new_missing_worktree, 16_384, 6 * MIB, 2, true, false, true);
+2026-11-12T06:32:14.7010457Z -turn_case!(five_mib_plus_one_sparse, 5 * MIB + 1, 5 * MIB + 1, 2, true, false, false);
+2026-11-12T06:32:14.7011271Z -turn_case!(one_mib_plus_one_dense, MIB + 1, MIB + 1, 502, true, false, false);
+2026-11-12T06:32:14.7011660Z +turn_case!(
+2026-11-12T06:32:14.7011878Z +    six_mib_old_small_new,
+2026-11-12T06:32:14.7012106Z +    6 * MIB,
+2026-11-12T06:32:14.7012286Z +    16_384,
+2026-11-12T06:32:14.7012468Z +    2,
+2026-11-12T06:32:14.7012644Z +    true,
+2026-11-12T06:32:14.7012820Z +    false,
+2026-11-12T06:32:14.7012999Z +    false
+2026-11-12T06:32:14.7013362Z +);
+2026-11-12T06:32:14.7013536Z +turn_case!(
+2026-11-12T06:32:14.7013738Z +    six_mib_new_missing_worktree,
+2026-11-12T06:32:14.7013984Z +    16_384,
+2026-11-12T06:32:14.7014162Z +    6 * MIB,
+2026-11-12T06:32:14.7014463Z +    2,
+2026-11-12T06:32:14.7014645Z +    true,
+2026-11-12T06:32:14.7014825Z +    false,
+2026-11-12T06:32:14.7015004Z +    true
+2026-11-12T06:32:14.7015184Z +);
+2026-11-12T06:32:14.7015358Z +turn_case!(
+2026-11-12T06:32:14.7015557Z +    five_mib_plus_one_sparse,
+2026-11-12T06:32:14.7015796Z +    5 * MIB + 1,
+2026-11-12T06:32:14.7015993Z +    5 * MIB + 1,
+2026-11-12T06:32:14.7016177Z +    2,
+2026-11-12T06:32:14.7016349Z +    true,
+2026-11-12T06:32:14.7016563Z +    false,
+2026-11-12T06:32:14.7016799Z +    false
+2026-11-12T06:32:14.7016975Z +);
+2026-11-12T06:32:14.7017145Z +turn_case!(
+2026-11-12T06:32:14.7017344Z +    one_mib_plus_one_dense,
+2026-11-12T06:32:14.7017575Z +    MIB + 1,
+2026-11-12T06:32:14.7017761Z +    MIB + 1,
+2026-11-12T06:32:14.7017938Z +    502,
+2026-11-12T06:32:14.7018126Z +    true,
+2026-11-12T06:32:14.7018300Z +    false,
+2026-11-12T06:32:14.7018471Z +    false
+2026-11-12T06:32:14.7018645Z +);
+2026-11-12T06:32:14.7018906Z  turn_case!(one_mib_dense, MIB, MIB, 502, false, false, false);
+2026-11-12T06:32:14.7019334Z  turn_case!(five_mib_sparse, 5 * MIB, 5 * MIB, 2, false, false, false);
+2026-11-12T06:32:14.7019773Z  turn_case!(six_mib_binary, 6 * MIB, 6 * MIB, 0, false, true, false);
+2026-11-12T06:32:14.7121391Z ##[error]Process completed with exit code 1.
+2026-11-12T06:32:14.7296376Z Post job cleanup.
+2026-11-12T06:32:14.8166722Z [command]/usr/bin/git version
+2026-11-12T06:32:14.8205756Z git version 2.56.0
+2026-11-12T06:32:14.8237687Z Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/ae9cccda-7409-4c55-ac00-11ff66a64676/.gitconfig'
+2026-11-12T06:32:14.8247373Z Temporarily overriding HOME='/home/runner/work/_temp/ae9cccda-7409-4c55-ac00-11ff66a64676' before making global git config changes
+2026-11-12T06:32:14.8249150Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-12T06:32:14.8253080Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/openconductor/openconductor
+2026-11-12T06:32:14.8291736Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-12T06:32:14.8326807Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-12T06:32:14.8638743Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-12T06:32:14.8666848Z http.https://github.com/.extraheader
+2026-11-12T06:32:14.8679084Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-12T06:32:14.8715741Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-12T06:32:14.9015517Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-12T06:32:14.9051182Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-12T06:32:14.9493998Z Cleaning up orphan processes
+2026-11-12T06:32:14.9902713Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/[redacted-token]/
