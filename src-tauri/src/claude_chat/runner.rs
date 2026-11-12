@@ -42,7 +42,20 @@ const STDERR_TAIL: usize = 20;
 pub struct ChatOptions {
     pub model: Option<String>,
     pub effort: Option<String>,
+    #[serde(rename = "fastMode")]
+    pub fast_mode: Option<bool>,
     pub permission_mode: Option<PermissionMode>,
+}
+
+impl ChatOptions {
+    fn apply_fast_mode(&self, settings: &mut Option<Value>) -> Result<(), String> {
+        let Some(fast) = self.fast_mode else { return Ok(()); };
+        let object = settings.get_or_insert_with(|| serde_json::json!({}))
+            .as_object_mut()
+            .ok_or("Claude Code launch settings must be an object to apply Fast mode.")?;
+        object.insert("fastMode".into(), Value::Bool(fast));
+        Ok(())
+    }
 }
 
 struct Live {
@@ -321,7 +334,7 @@ impl ClaudeRunner {
                     return Ok(());
                 }
                 if !st.waiting.is_empty() {
-                    return Err("Wait for the current Claude Code turn to end before changing model, effort or Plan mode.".into());
+                    return Err("Wait for the current Claude Code turn to end before changing model, effort, Fast or Plan mode.".into());
                 }
             }
             if let Some(id) = st.mapper.session_id() {
@@ -337,6 +350,7 @@ impl ClaudeRunner {
         launch.add_dirs = directories.to_vec();
         launch.model = options.model.clone();
         launch.effort = options.effort.clone();
+        options.apply_fast_mode(&mut launch.settings)?;
         if let Some(mode) = options.permission_mode { launch.permission_mode = mode; }
         let mut session = ClaudeSession::spawn(&launch)
             .map_err(|e| format!("Could not start Claude Code: {e}"))?;

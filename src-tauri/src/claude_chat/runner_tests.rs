@@ -78,6 +78,10 @@ struct Harness {
 }
 
 fn harness() -> Harness {
+    harness_with_settings(None)
+}
+
+fn harness_with_settings(settings: Option<Value>) -> Harness {
     let exe = fake();
     let events = Arc::new(Mutex::new(Vec::new()));
     let seen = events.clone();
@@ -89,6 +93,7 @@ fn harness() -> Harness {
         let mut l = ClaudeLaunch::new(cwd, LaunchEnv::new());
         l.executable = path.clone();
         l.resume = resume;
+        l.settings = settings.clone();
         Ok(l)
     });
     Harness {
@@ -183,6 +188,87 @@ fn per_chat_options_reach_launch_and_changes_resume_only_that_chat() {
     assert!(args[3].contains("--model next-model") && args[3].contains("--effort low"), "{args:?}");
     assert!(args[4].contains("--model next-model") && !args[4].contains("--effort"), "{args:?}");
     assert!(!args[5].contains("--model") && !args[5].contains("--effort"), "{args:?}");
+}
+
+#[test]
+fn fast_options_decode_camel_case_and_preserve_missing_or_false() {
+    for (input, expected) in [(serde_json::json!({}), None), (serde_json::json!({"fastMode": null}), None), (serde_json::json!({"fastMode": false}), Some(false)), (serde_json::json!({"fastMode": true}), Some(true))] {
+        let options: ChatOptions = serde_json::from_value(input).unwrap();
+        assert_eq!(options.fast_mode, expected);
+    }
+    assert!(serde_json::from_value::<ChatOptions>(serde_json::json!({"fastMode": "true"})).is_err());
+}
+
+#[test]
+fn fast_launch_reuses_unchanged_options_and_idle_off_restarts_with_resume() {
+    for saved in [None, Some("saved-fast-session".to_owned())] {
+        let h = harness();
+        h.runner.open_chat("fast", &cwd(), saved.clone());
+        let mut options = ChatOptions { model: Some("opus-5-1m".into()), effort: Some("high".into()), fast_mode: Some(true), ..ChatOptions::default() };
+        assert_eq!(h.runner.prompt_with_options("fast", "first", &[], &options), TurnEnd::Completed);
+        assert_eq!(h.runner.prompt_with_options("fast", "unchanged", &[], &options), TurnEnd::Completed);
+        let args = h.args();
+        assert_eq!(args.len(), 1);
+        assert!(args[0].contains("--settings {\"fastMode\":true}"), "{args:?}");
+        assert_eq!(args[0].contains("--resume saved-fast-session"), saved.is_some());
+        options.fast_mode = Some(false);
+        assert_eq!(h.runner.prompt_with_options("fast", "off", &[], &options), TurnEnd::Completed);
+        let args = h.args();
+        assert_eq!(args.len(), 2);
+        assert!(args[1].contains("--settings {\"fastMode\":false}"), "{args:?}");
+        assert!(args[1].contains("--resume fake-1"), "{args:?}");
+        assert!(args[1].contains("--model opus-5-1m") && args[1].contains("--effort high"), "{args:?}");
+        h.runner.open_chat("independent", &cwd(), None);
+        assert_eq!(h.runner.prompt("independent", "other"), TurnEnd::Completed);
+        assert!(!h.args()[2].contains("--settings"));
+    }
+}
+
+#[test]
+fn explicit_fast_off_merges_owned_launch_settings_and_unset_preserves_them() {
+    let seed = serde_json::json!({"fastMode": true, "outputStyle": "Concise", "nested": {"keep": true}});
+    let h = harness_with_settings(Some(seed.clone()));
+    h.runner.open_chat("off", &cwd(), None);
+    let options = ChatOptions { fast_mode: Some(false), ..ChatOptions::default() };
+    assert_eq!(h.runner.prompt_with_options("off", "override", &[], &options), TurnEnd::Completed);
+    let expected = serde_json::json!({"fastMode": false, "outputStyle": "Concise", "nested": {"keep": true}}).to_string();
+    assert!(h.args()[0].contains(&expected));
+    h.runner.open_chat("unset", &cwd(), None);
+    assert_eq!(h.runner.prompt("unset", "inherit"), TurnEnd::Completed);
+    assert!(h.args()[1].contains(&seed.to_string()));
+    assert_eq!(seed["fastMode"], true);
+}
+
+#[test]
+fn fast_does_not_replace_non_object_launch_settings() {
+    let h = harness_with_settings(Some(serde_json::json!("invalid-settings-shape")));
+    h.runner.open_chat("invalid", &cwd(), None);
+    let options = ChatOptions { fast_mode: Some(true), ..ChatOptions::default() };
+    assert!(matches!(h.runner.prompt_with_options("invalid", "no spawn", &[], &options), TurnEnd::Failed(message) if message.contains("must be an object")));
+    assert!(h.args().is_empty());
+}
+
+#[test]
+fn busy_fast_change_rejects_without_restarting_or_sending_then_applies_after_stop() {
+    let h = harness();
+    h.runner.open_chat("busy-fast", &cwd(), None);
+    let on = ChatOptions { fast_mode: Some(true), ..ChatOptions::default() };
+    let r = h.runner.clone();
+    let turn = thread::spawn(move || r.prompt_with_options("busy-fast", "please sleep", &[], &on));
+    for _ in 0..100 {
+        if h.types().iter().any(|kind| kind == "sessionStarted") { break; }
+        thread::sleep(Duration::from_millis(10));
+    }
+    assert!(h.types().iter().any(|kind| kind == "sessionStarted"));
+    let off = ChatOptions { fast_mode: Some(false), ..ChatOptions::default() };
+    assert!(matches!(h.runner.prompt_with_options("busy-fast", "not sent", &[], &off), TurnEnd::Failed(message) if message.contains("current Claude Code turn")));
+    assert_eq!(h.args().len(), 1);
+    assert_eq!(h.stdin().len(), 1);
+    h.runner.cancel("busy-fast");
+    assert_eq!(turn.join().unwrap(), TurnEnd::Cancelled);
+    assert_eq!(h.runner.prompt_with_options("busy-fast", "idle off", &[], &off), TurnEnd::Completed);
+    assert_eq!(h.args().len(), 2);
+    assert!(h.args()[1].contains("--settings {\"fastMode\":false}"));
 }
 
 #[test]

@@ -34,6 +34,14 @@ pub struct ThreadOptions {
     pub policy: CodexPolicy,
     /// Extra instructions for the thread (`developerInstructions`).
     pub developer_instructions: Option<String>,
+    pub fast_mode: Option<bool>,
+}
+
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct TurnOptions {
+    pub model: Option<String>,
+    pub effort: Option<String>,
+    pub fast_mode: Option<bool>,
 }
 
 /// A request from the app to the server.
@@ -52,9 +60,7 @@ pub enum ClientRequest {
     TurnStart {
         thread_id: String,
         text: String,
-        model: Option<String>,
-        /// Reasoning effort the model advertises (e.g. `low`, `high`).
-        effort: Option<String>,
+        options: TurnOptions,
     },
     TurnInterrupt {
         thread_id: String,
@@ -99,6 +105,10 @@ fn put(params: &mut Map<String, Value>, key: &str, value: Option<Value>) {
     }
 }
 
+fn service_tier(fast_mode: Option<bool>) -> Option<Value> {
+    fast_mode.map(|fast| if fast { json!("fast") } else { Value::Null })
+}
+
 impl ThreadOptions {
     fn params(&self) -> Map<String, Value> {
         let mut p = Map::new();
@@ -108,6 +118,7 @@ impl ThreadOptions {
             self.cwd.as_ref().map(|c| json!(c.display().to_string())),
         );
         put(&mut p, "model", self.model.as_ref().map(|m| json!(m)));
+        put(&mut p, "serviceTier", service_tier(self.fast_mode));
         put(
             &mut p,
             "approvalPolicy",
@@ -160,8 +171,7 @@ impl ClientRequest {
             ClientRequest::TurnStart {
                 thread_id,
                 text,
-                model,
-                effort,
+                options,
             } => {
                 let mut p = Map::new();
                 p.insert("threadId".into(), json!(thread_id));
@@ -173,8 +183,9 @@ impl ClientRequest {
                         .map(|(name, path)| json!({ "type": "skill", "name": name, "path": path })),
                 );
                 p.insert("input".into(), Value::Array(input));
-                put(&mut p, "model", model.as_ref().map(|m| json!(m)));
-                put(&mut p, "effort", effort.as_ref().map(|e| json!(e)));
+                put(&mut p, "model", options.model.as_ref().map(|m| json!(m)));
+                put(&mut p, "effort", options.effort.as_ref().map(|e| json!(e)));
+                put(&mut p, "serviceTier", service_tier(options.fast_mode));
                 Value::Object(p)
             }
             ClientRequest::TurnInterrupt { thread_id, turn_id } => {
@@ -300,6 +311,44 @@ mod tests {
     }
 
     #[test]
+    fn fast_service_tier_preserves_absent_fast_and_explicit_null_for_each_ordinary_request() {
+        for (fast_mode, expected) in [
+            (None, None),
+            (Some(true), Some(json!("fast"))),
+            (Some(false), Some(Value::Null)),
+        ] {
+            let thread = ThreadOptions {
+                fast_mode,
+                ..ThreadOptions::default()
+            };
+            let requests = [
+                ClientRequest::ThreadStart(thread.clone()),
+                ClientRequest::ThreadResume {
+                    thread_id: "saved".into(),
+                    options: thread,
+                },
+                ClientRequest::TurnStart {
+                    thread_id: "saved".into(),
+                    text: "hello".into(),
+                    options: TurnOptions {
+                        fast_mode,
+                        ..TurnOptions::default()
+                    },
+                },
+            ];
+            for request in requests {
+                let params = request.params();
+                assert_eq!(
+                    params.get("serviceTier"),
+                    expected.as_ref(),
+                    "{} with {fast_mode:?}",
+                    request.method()
+                );
+            }
+        }
+    }
+
+    #[test]
     fn thread_and_turn_requests_carry_only_what_is_set() {
         let options = ThreadOptions {
             cwd: Some("/work/ws".into()),
@@ -320,8 +369,10 @@ mod tests {
         let turn = ClientRequest::TurnStart {
             thread_id: "t1".into(),
             text: "say hi".into(),
-            model: None,
-            effort: Some("high".into()),
+            options: TurnOptions {
+                effort: Some("high".into()),
+                ..TurnOptions::default()
+            },
         };
         assert_eq!(
             turn.params(),
@@ -332,8 +383,7 @@ mod tests {
             thread_id: "t1".into(),
             text: "[$deploy](/u/.codex/skills/deploy/SKILL.md) to staging [$x](not-a-skill) [$"
                 .into(),
-            model: None,
-            effort: None,
+            options: TurnOptions::default(),
         };
         assert_eq!(
             skill.params()["input"],

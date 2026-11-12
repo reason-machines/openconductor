@@ -1,8 +1,9 @@
 import { useRef, useState } from "react";
 import type { Repo } from "../state/types";
+import { openUrl } from "../backend";
 import { emojiIcon, fitIcon, githubAvatarUrl, parseRepoIcon, UPLOAD_MAX_BYTES, UPLOAD_MAX_DIMENSION, uploadMimeType } from "../state/repoIcon";
 import { Modal } from "./Dialogs";
-import { CloseIcon, SearchIcon } from "./Icons";
+import { CloseIcon, ExternalIcon, SearchIcon } from "./Icons";
 import { REPO_ICONS } from "./repoIcons.generated";
 import { searchEmoji } from "./repoEmoji";
 import { isRepoIconName, RepoIconGlyph, useRepoFavicon } from "./RepoIcon";
@@ -133,7 +134,11 @@ function FaviconTab({ repo, pick }: { repo: Repo; pick: (icon: string | null) =>
         )}
       </div>
       <p className="repo-icon-note">
-        OpenConductor checks common locations in the repository, such as <code>public/favicon.svg</code> and <code>apple-touch-icon.png</code>.
+        OpenConductor checks common locations in the repository, such as <code>public/favicon.svg</code> and <code>apple-touch-icon.png</code>.{" "}
+        <button type="button" className="settings-misc-learn" onClick={() => openUrl("https://github.com/reason-machines/openconductor/blob/main/docs/repository-icons.md").catch(() => undefined)}>
+          Learn more
+          <ExternalIcon size={12} />
+        </button>
       </p>
     </div>
   );
