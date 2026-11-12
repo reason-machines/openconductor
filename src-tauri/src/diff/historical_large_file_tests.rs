@@ -97,7 +97,10 @@ fn contents(bytes: usize, changed_lines: u32, newer: bool, binary: bool) -> Stri
     let mut tail = String::new();
     for line in 0..600 {
         let changed = newer && line >= 600 - changed_lines / 2;
-        tail.push_str(&format!("line-{line:04}-{}\n", if changed { 'b' } else { 'a' }));
+        tail.push_str(&format!(
+            "line-{line:04}-{}\n",
+            if changed { 'b' } else { 'a' }
+        ));
     }
     format!("{}\n{tail}", "x".repeat(bytes - tail.len() - 1))
 }
@@ -121,7 +124,9 @@ fn check(name: &str) {
     } else {
         write(&r, &path, "unrelated current worktree\n");
     }
-    let request = req(Scope::Commit { hash: selected.clone() });
+    let request = req(Scope::Commit {
+        hash: selected.clone(),
+    });
     let result = workspace_diff(&r, &request).unwrap();
     let summary = list_changes(&r, &request).unwrap();
     let raw_counts = super::super::git::git(

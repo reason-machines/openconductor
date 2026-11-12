@@ -100,16 +100,24 @@
     "expected_red": 4,
     "controls": 4,
     "inert_sha256": "e1ec4661c681a0750621dffbbfbb79a45270232158442b0728553d668f7ade6e",
-    "pre_freeze_change": "Layout and formatting trailing commas only. All other non-whitespace fixture bytes equal the inert preparation."
+    "pre_freeze_change": "Layout and formatting trailing commas only. All other non-whitespace fixture bytes equal the inert preparation.",
+    "formatting_setup": {
+      "initial_pr_head": "dc06e502bbddb9e4036926a78bc076e2c56943ea",
+      "initial_fixture_sha256": "b1bd74f5ab172285d054e4bd22377cad442a9e14901b15191542404d30f293d8",
+      "retained_initial_snapshot": "fixture-initial.rs.txt",
+      "failure_job": 130933739212,
+      "result": "rustfmt failed before behavior; NOT qualified RED",
+      "correction": "Only two rustfmt layout corrections and a formatting trailing comma; assertions/case values unchanged"
+    }
   },
   "frozen_files": {
     "evidence/diff/large-file-placeholder/cases.json": "4746c6cc86d8961e52eaa65aafa171ff5958e0f97549ade86833d23d633b8b0f",
     "src-tauri/src/diff/large_file_tests.rs": "8eeb9b8527632a2ed4391ec37ed9e3b716d53f3dd24f8a3fd785b86ab363d454",
     "tests/diff/largeFilePlaceholder.mounted.test.mjs": "3fc448a1f7302ba75bb3e49b334037b11d6be1099b62965cb639e281dd75c4b9",
-    "src-tauri/src/diff/historical_large_file_tests.rs": "b1bd74f5ab172285d054e4bd22377cad442a9e14901b15191542404d30f293d8"
+    "src-tauri/src/diff/historical_large_file_tests.rs": "4a3c8c0c58c663f05a052f83f43eded130471bac952827dd1e2b4136b9acd0f1"
   },
   "measurement": "Maximum UTF-8 length of decoded parent oldPath-or-path and selected path contents, never current worktree stat or raw Git blob size",
-  "runtime": "NOT_RUN",
+  "runtime": "QUALIFIED_INTENDED_RED at dc06e502; fix GREEN pending",
   "rea_limits": [
     "Static extracted JavaScript is not observed Conductor execution.",
     "No REA tool call or new REA gap was required; existing evidence retained without repin."

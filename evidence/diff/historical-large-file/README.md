@@ -1,6 +1,6 @@
 # Selected-commit large-file policy
 
-Conductor Rebuild adds the eight previously prepared selected-commit regression cases without changing their assertions or case values. Layout and formatting trailing commas are normalized before the first hosted run, then the fixture hash is frozen in `source.json`. This first publication contains tests and source evidence only. The product fix waits for an actual hosted failure at the intended assertions.
+Conductor Rebuild adds the eight previously prepared selected-commit regression cases without changing their assertions or case values. Layout and formatting trailing commas are normalized before the first hosted run, then the fixture hash is frozen in `source.json`. The first publication contained tests and source evidence only. Hosted job 130933738756 then reached all eight cases: four intended hide-reason failures, four passing historical controls, and eight passing pre-existing worktree controls. The selected-commit helper fix follows that qualified RED without changing any fixture assertion or case value.
 
 ## Source contract
 
@@ -14,10 +14,10 @@ At inspected main `649f47b9d80eb1d7510c2b405b25e026ffddf78b`, the selected-commi
 
 Run `python3 evidence/diff/historical-large-file/verify_source.py` for source and fixture integrity. Run `cargo test --locked historical_large_file_placeholder -- --nocapture` in `src-tauri` for the behavioral regression. The existing automatic CI Tauri jobs execute the full test suite on macOS and Linux. No workflow or shared evidence runner is changed.
 
-Initial publication: source and fixture integrity PASS, `git diff --check` PASS. Local rustfmt is NOT_RUN because the supplied toolchain lacks that component and its read-only installation refused the component download. Hosted formatting is pending. Behavioral RED, GREEN, installed app, and native UI are NOT_RUN. Ordinary hosted CI is the next verification. No local or native runtime is admitted by this change.
+Source and fixture integrity PASS, `git diff --check` PASS. Initial Diff CI failed formatting before running behavior, but the separate automatic large-file job ran the tests and proved the intended RED. The four failures were all `hide_reason: None` instead of `Some("file_too_large")`. The [raw hosted log](hosted-red.log) and [receipt](hosted-red.json) retain that result. Two formatting-only corrections follow the run; the initial tested fixture is preserved as `fixture-initial.rs.txt`. GREEN and current-head hosted formatting are pending. Local rustfmt is NOT_RUN because the toolchain component is unavailable. Installed-app and native UI verification are NOT_RUN. No local or native runtime is admitted by this change.
 
 ## Scope
 
-The fix is limited to the selected-commit backend producer. DTOs, the renderer, current worktree classification, changed-file membership, counts, whitespace handling, rename paths, and the existing frontend allow-large policy stay unchanged. Root and merge commits, symlinks, media, remote patches, turn comparisons, unavailable content, and same-end legacy comparisons have no new parity claim. There is no performance or bounded-acquisition claim.
+The fix is limited to the selected-commit backend producer. It reads decoded Git contents at both endpoints, measures the maximum UTF-8 byte length, and uses plain endpoint numstat with literal old and current paths. Expected absent sides of added or deleted files have zero length. A failed Git read leaves classification unchanged rather than treating the failure as empty content. DTOs, the renderer, current worktree classification, changed-file membership, counts, whitespace handling, rename paths, and the existing frontend allow-large policy stay unchanged. Root and merge commits, symlinks, media, remote patches, turn comparisons, unavailable content, and same-end legacy comparisons have no new parity claim. There is no performance or bounded-acquisition claim.
 
 Model the Domain shaped the fixture as one eight-case data table rather than eight separate setups. Test-first delivery preserves that table before any product edit.

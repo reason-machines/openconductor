@@ -313,6 +313,9 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
                 file.hunks = hunks.remove(&file.path).unwrap_or_default();
             }
         }
+        for file in &mut files {
+            apply_revision_size_policy(repo, &base, &commit, file);
+        }
         return Ok(WorkspaceDiff {
             base_commit: base,
             files,
@@ -343,6 +346,89 @@ pub fn workspace_diff(repo: &Path, req: &DiffRequest) -> Result<WorkspaceDiff, D
         base_commit: base,
         files,
     })
+}
+
+fn apply_revision_size_policy(repo: &Path, base: &str, commit: &str, file: &mut FileDiff) {
+    if file.binary {
+        return;
+    }
+    let extension = Path::new(&file.path)
+        .extension()
+        .and_then(|extension| extension.to_str())
+        .unwrap_or("")
+        .to_ascii_lowercase();
+    if matches!(
+        extension.as_str(),
+        "png"
+            | "jpg"
+            | "jpeg"
+            | "gif"
+            | "webp"
+            | "tif"
+            | "tiff"
+            | "avif"
+            | "bmp"
+            | "mp4"
+            | "m4v"
+            | "mov"
+            | "webm"
+            | "ogv"
+    ) {
+        return;
+    }
+    let text_size = |revision: &str, path: &str| {
+        git(repo, &["show", &format!("{revision}:{path}")], &[0])
+            .ok()
+            .map(|content| content.len())
+    };
+    let old_size = if file.status == FileStatus::Added {
+        Some(0)
+    } else {
+        text_size(base, file.old_path.as_deref().unwrap_or(&file.path))
+    };
+    let new_size = if file.status == FileStatus::Deleted {
+        Some(0)
+    } else {
+        text_size(commit, &file.path)
+    };
+    let (Some(old_size), Some(new_size)) = (old_size, new_size) else {
+        return;
+    };
+    let size = old_size.max(new_size);
+    if size <= 1024 * 1024 {
+        return;
+    }
+    let sparse = size <= 5 * 1024 * 1024
+        && revision_changed_line_count(repo, base, commit, file).is_some_and(|count| count <= 500);
+    if !sparse {
+        file.hide_reason = Some(FileHideReason::FileTooLarge);
+        file.hunks.clear();
+    }
+}
+
+fn revision_changed_line_count(repo: &Path, base: &str, commit: &str, file: &FileDiff) -> Option<u64> {
+    let paths: Vec<_> = file
+        .old_path
+        .iter()
+        .chain(std::iter::once(&file.path))
+        .map(|path| format!(":(literal){path}"))
+        .collect();
+    let mut args = vec!["diff", "--no-ext-diff", "--numstat", base, commit, "--"];
+    args.extend(paths.iter().map(String::as_str));
+    let output = git(repo, &args, &[0]).ok()?;
+    let mut count = None;
+    for line in output.lines().filter(|line| !line.is_empty()) {
+        let mut fields = line.splitn(3, '\t');
+        let additions = fields.next()?.parse::<u64>().ok()?;
+        let deletions = fields.next()?.parse::<u64>().ok()?;
+        count = Some(
+            count
+                .unwrap_or(0_u64)
+                .checked_add(additions)?
+                .checked_add(deletions)?,
+        );
+    }
+    count
 }
 
 fn apply_worktree_size_policy(repo: &Path, base: &str, file: &mut FileDiff) {
