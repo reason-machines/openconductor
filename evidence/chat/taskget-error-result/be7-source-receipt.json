@@ -1,0 +1,325 @@
+{
+  "author": "Conductor Rebuild",
+  "candidate": "CHAT.TASKGET-ERROR-RESULT-DETAILS",
+  "status": "SOURCE_MISMATCH_ONLY; no reservation/behavioral RED/fix/GREEN/native credit",
+  "checked_main": "fc5215e8b6e7fd5e12767155fdbb9d0bcc1e82f1",
+  "original": {
+    "app": "/Applications/Conductor.app",
+    "version": "0.87.6",
+    "binary_identity": "Historical, not reacquired in this pass",
+    "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "assets": {
+      "renderApp-D_fmY7hW.js": {
+        "bytes": 11600457,
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+      },
+      "index-BGEQ8YjU.js": {
+        "bytes": 3493297,
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+      }
+    },
+    "spans": {
+      "lpo": {
+        "utf8_half_open": [
+          7838037,
+          7839127
+        ],
+        "sha256": "32a555c09b173e2d800cf49c25c5d82c4ed1cb31c65edeb7c6c9da36c2ff975b",
+        "bytes": 1090
+      },
+      "jki": {
+        "utf8_half_open": [
+          7834692,
+          7834899
+        ],
+        "sha256": "ae46e49c9465dccb95563ba3afbf1bdd33c7e2b9799c2091b2e65941e4280439",
+        "bytes": 207
+      },
+      "tpo": {
+        "utf8_half_open": [
+          7834007,
+          7834692
+        ],
+        "sha256": "593db79c67f66136ad09e1264012c5c39b35bea472fda9bfd348f1616121fe5b",
+        "bytes": 685
+      },
+      "oUt": {
+        "utf8_half_open": [
+          7831687,
+          7832999
+        ],
+        "sha256": "0133a39f46d4ace2f46aee76f05020f202d927e66be9856979fd1a6a3ca14f71",
+        "bytes": 1312
+      },
+      "Q0o": {
+        "utf8_half_open": [
+          7831357,
+          7831687
+        ],
+        "sha256": "dcefd77cdd53966bbb131753a091b474d8e25c533e1a8458e9de525536eb8fe1",
+        "bytes": 330
+      },
+      "hIt": {
+        "utf8_half_open": [
+          7877770,
+          7878325
+        ],
+        "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340",
+        "bytes": 555
+      },
+      "L1o": {
+        "utf8_half_open": [
+          7588525,
+          7588936
+        ],
+        "sha256": "38f9343e156728f1decb69430d406c3c1ff29482da74e69e24b6d5c538834f25",
+        "bytes": 411
+      },
+      "O1o": {
+        "utf8_half_open": [
+          7587305,
+          7588525
+        ],
+        "sha256": "9f3ff5dc1b79f4690ad7b89b8911acbd083c2b97a4b3268f14f18cd964972184",
+        "bytes": 1220
+      },
+      "AI": {
+        "utf8_half_open": [
+          7798976,
+          7800630
+        ],
+        "sha256": "55b4c9c66f291c95692ec57b2d7226646d9e2e11bdc209bcb4a9fd5e8fe85ba6",
+        "bytes": 1654
+      }
+    }
+  },
+  "source": {
+    "src/features/chat/ToolRows.tsx": {
+      "blob": "e3d8df862ddcb71ab675ba76ef9167266c3a428c",
+      "sha256": "fa569ba2b6c9e0779cad804d8f2452cfb8d336f29be22b09e29c61df605bdeac",
+      "bytes": 52726
+    },
+    "src/features/chat/conductorTools.ts": {
+      "blob": "0864081cbf711c3e515724a9eefd2174fdc93f9d",
+      "sha256": "cf705c1246cb8390ab65b2fb67274331659784271f8287fd5f77b694acf25dfe",
+      "bytes": 29961
+    },
+    "src/features/chat/reason.ts": {
+      "blob": "4c6933c4cb8a8135bf6d39844e17186ec8a3bceb",
+      "sha256": "3e8d6eb90387bb8aef436e90b7ec5f0f08d7bfb01d82daed9fb7f3017d42e2e4",
+      "bytes": 13712
+    },
+    "src/features/chat/reducer.ts": {
+      "blob": "aa9847dcc0b5030b82f1e72496f408834db9d064",
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "bytes": 5906
+    },
+    "src/features/chat/view.ts": {
+      "blob": "b74dab8ea6e88c8203ff20f026bf94709af283be",
+      "sha256": "61451bd3ee05ddbeff47c368e9af7e65f6cca7af6b2ed3a55ec2185f60c46b09",
+      "bytes": 8836
+    },
+    "src/features/chat/Transcript.tsx": {
+      "blob": "63141b351532043b2d880b5f5209683ca7e79e38",
+      "sha256": "8206515e6393845424a06adcfcd91a1d26593e6808aa21947c460eb000e059f4",
+      "bytes": 21220
+    },
+    "src-tauri/src/claude_chat/map.rs": {
+      "blob": "2cc8789dc5d3a5f34df4304368e6e76f7a534a38",
+      "sha256": "2b86c13410e39be0b6003079109908cd317e563c466956896929fd760a6cee0f",
+      "bytes": 11082
+    },
+    "src/features/chat/toolErrorRetry.test.ts": {
+      "blob": "56d64787c4d06ed4457d5ab2c4cfa8955cda5709",
+      "sha256": "1efade652717faa26df812405ef938e64541b4ffb71522a33336e101a27a3d40",
+      "bytes": 7627
+    },
+    "src/features/chat/conductorTools.test.ts": {
+      "blob": "2daeb9b895312a3238406fffb9781a5be21c81bc",
+      "sha256": "fb109e78c31f11c30ce1da6efd6ee736bc685e6c9059bcf2fe5ad719068acf40",
+      "bytes": 10686
+    }
+  },
+  "fixture_sha256": "b8a1e09a13afdbbcf2eb1d2012ed2519cd57754ca3989e60e16fa634f0072b02",
+  "checks": [
+    {
+      "name": "renderApp-D_fmY7hW.js complete retained identity",
+      "passed": true
+    },
+    {
+      "name": "index-BGEQ8YjU.js complete retained identity",
+      "passed": true
+    },
+    {
+      "name": "lpo exact retained span readback",
+      "passed": true
+    },
+    {
+      "name": "jki exact retained span readback",
+      "passed": true
+    },
+    {
+      "name": "tpo exact retained span readback",
+      "passed": true
+    },
+    {
+      "name": "oUt exact retained span readback",
+      "passed": true
+    },
+    {
+      "name": "Q0o exact retained span readback",
+      "passed": true
+    },
+    {
+      "name": "hIt exact retained span readback",
+      "passed": true
+    },
+    {
+      "name": "L1o exact retained span readback",
+      "passed": true
+    },
+    {
+      "name": "O1o exact retained span readback",
+      "passed": true
+    },
+    {
+      "name": "AI exact retained span readback",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/ToolRows.tsx exact checked-main blob",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/conductorTools.ts exact checked-main blob",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/reason.ts exact checked-main blob",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/reducer.ts exact checked-main blob",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/view.ts exact checked-main blob",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/Transcript.tsx exact checked-main blob",
+      "passed": true
+    },
+    {
+      "name": "src-tauri/src/claude_chat/map.rs exact checked-main blob",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/toolErrorRetry.test.ts exact checked-main blob",
+      "passed": true
+    },
+    {
+      "name": "src/features/chat/conductorTools.test.ts exact checked-main blob",
+      "passed": true
+    },
+    {
+      "name": "TaskGet registry routes original lpo",
+      "passed": true
+    },
+    {
+      "name": "original task selector consumes content independently of error",
+      "passed": true
+    },
+    {
+      "name": "original task detail rendered for parsed result",
+      "passed": true
+    },
+    {
+      "name": "original error rendered independently",
+      "passed": true
+    },
+    {
+      "name": "original JSON wrapper supported",
+      "passed": true
+    },
+    {
+      "name": "original text task parser supported",
+      "passed": true
+    },
+    {
+      "name": "original task details include subject description owner",
+      "passed": true
+    },
+    {
+      "name": "current error suppresses success output variable",
+      "passed": true
+    },
+    {
+      "name": "current TaskGet uses suppressed output",
+      "passed": true
+    },
+    {
+      "name": "current TaskGet has no independent result selector",
+      "passed": true
+    },
+    {
+      "name": "current TaskGet fallback is loading task",
+      "passed": true
+    },
+    {
+      "name": "current error row includes TaskGet independently",
+      "passed": true
+    },
+    {
+      "name": "current parser accepts task JSON wrapper",
+      "passed": true
+    },
+    {
+      "name": "current parser accepts text task subject",
+      "passed": true
+    },
+    {
+      "name": "native accepted failure provenance",
+      "passed": true
+    },
+    {
+      "name": "native accepted string output preserved",
+      "passed": true
+    },
+    {
+      "name": "reason carries failed output without erasure",
+      "passed": true
+    },
+    {
+      "name": "view carries error row content",
+      "passed": true
+    },
+    {
+      "name": "actual row receives result and error status",
+      "passed": true
+    },
+    {
+      "name": "existing retry regression has Edit Write-only fixture",
+      "passed": true
+    },
+    {
+      "name": "frozen assigned branch retained",
+      "passed": true
+    },
+    {
+      "name": "no tracked changes",
+      "passed": true
+    },
+    {
+      "name": "frozen source fixture unchanged",
+      "passed": true
+    }
+  ],
+  "limitations": [
+    "Retained real-app static frontend source only. Whole-renderer REA semantic analysis historically exhausted heap; no repair or new acquisition.",
+    "No local JavaScript/product tests/provider/native/browser/build execution.",
+    "No code edits, commits, PR mutation, workflow dispatch or watcher. #847 and #1098 frozen/paused; Edit and Glob ownership unchanged.",
+    "A failed TaskGet containing valid task details is a statically accepted input, not an observed live-provider incident.",
+    "Product-level mounted regression RED and same-input GREEN remain NOT RUN. Independent native/visual acceptance remains NOT RUN."
+  ]
+}

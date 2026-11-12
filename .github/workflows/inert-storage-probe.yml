@@ -1,27 +1,7 @@
 name: Inert storage probe fixtures
 
 on:
-  pull_request:
-    paths:
-      - 'evidence/qa/inert-storage-alias-failure/**'
-      - 'tools/inert_storage_probe.py'
-      - 'tools/test_inert_storage_probe.py'
-      - 'tools/hosted_inert_storage_probe.py'
-      - 'tools/test_hosted_inert_storage_probe.py'
-      - 'docs/inert-storage-probe.md'
-      - '.github/workflows/inert-storage-probe.yml'
-      - '.github/workflows/hosted-inert-storage-probe.yml'
-  push:
-    branches: [main]
-    paths:
-      - 'evidence/qa/inert-storage-alias-failure/**'
-      - 'tools/inert_storage_probe.py'
-      - 'tools/test_inert_storage_probe.py'
-      - 'tools/hosted_inert_storage_probe.py'
-      - 'tools/test_hosted_inert_storage_probe.py'
-      - 'docs/inert-storage-probe.md'
-      - '.github/workflows/inert-storage-probe.yml'
-      - '.github/workflows/hosted-inert-storage-probe.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read

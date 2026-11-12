@@ -133,11 +133,12 @@ export function OpenInButton({ path, notify, variant = "split", showShortcutHint
       wrap.current?.querySelector<HTMLElement>(".oi-chevron")?.focus();
       return;
     }
-    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    if (e.defaultPrevented || (e.key !== "ArrowDown" && e.key !== "ArrowUp")) return;
     const items = Array.from(menu.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not([disabled])') ?? []);
     const at = items.indexOf(document.activeElement as HTMLElement);
     if (at < 0) return;
     e.preventDefault();
+    e.stopPropagation();
     items[(at + (e.key === "ArrowDown" ? 1 : items.length - 1)) % items.length]?.focus();
   };
 

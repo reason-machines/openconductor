@@ -24,6 +24,8 @@ function fixture(failSpawn = false) {
   const screens: Screen[] = [];
   const noop = () => {};
   class Screen {
+    readonly normalBuffer = {};
+    readonly buffer = { active: this.normalBuffer, normal: this.normalBuffer };
     unicode = { activeVersion: "6" };
     cols = 80;
     rows = 24;
