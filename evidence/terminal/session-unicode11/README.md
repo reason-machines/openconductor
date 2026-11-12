@@ -1,6 +1,6 @@
 # Unicode 11 widths in ordinary terminals
 
-Conductor Rebuild adds ten test-first cases for ordinary terminal output. At this milestone, production code is unchanged. The ordinary hosted frontend jobs must demonstrate a real width assertion failure before the minimal provider activation is applied.
+Conductor Rebuild first published ten frozen cases with production unchanged. Hosted CI then reproduced all six intended width failures and passed all four controls. The candidate activates the already-installed Unicode 11 provider in the ordinary terminal initializer before any live or restored output.
 
 ## Source contract
 
@@ -20,6 +20,14 @@ The ten frozen cases cover panel emoji width, center-terminal adjacent emoji, a 
 
 [The frozen fixture](frozen-sessionUnicode.test.ts.txt) and [unchanged baseline session](baseline-session.ts.txt) retain the inputs for before-and-after comparison. The manifest records their identities and every existing compatibility fixture's assertion-body hash. Later dependency-boundary adaptations must not change those assertions.
 
+## Hosted baseline and candidate
+
+At test-only head `35fcc0bef38d97b4c87931bf2650084cceec580b`, [unit job 130966107936](https://github.com/reason-machines/openconductor/actions/runs/43152920803/job/130966107936) reproduced six intended assertion failures at cases 2096 through 2099, 2103, and 2104. Cases 2100 through 2102 and 2105 passed. The whole suite reported 3298 passes and six failures across 3304 tests. The build job also stopped at this test gate. This is a qualified behavioral failure, not a dependency or fixture setup failure. [The hosted receipt](hosted-red.json) and [log excerpt](hosted-red.log) retain the evidence.
+
+The candidate changes only the import, `allowProposedApi`, addon loading, and active Unicode version in `session.ts`. Fresh main `621ed16e9a24615a6bbecaf976be9589b70c0e5d` was fetched, merged through the ordinary integration path, and its ordinary initializer was confirmed byte-identical to the frozen baseline before editing. Five existing fixture boundaries gain a Unicode addon stub and a `unicode` property. Their assertion bodies and the entire new ten-case fixture remain unchanged. These stub fixtures do not establish glyph parity.
+
+Candidate hosted verification remains pending until the next automatic jobs run. No workflow or dispatch was changed.
+
 ## Checks and limits
 
 Passed on Reason Cloud without running JavaScript:
@@ -30,8 +38,8 @@ python3 evidence/terminal/session-unicode11/verify_source.py \
 git diff --check
 ```
 
-Both complete assets, 23 spans, ten caller and provider joins, ten frozen cases, the baseline snapshot, and the preserved existing assertion bodies passed static checks. These are not behavioral RED or GREEN results.
+Both complete assets, 23 spans, ten caller and provider joins, ten frozen cases, the baseline snapshot, and the preserved existing assertion bodies passed static checks. These static checks are separate from the qualified hosted baseline failure.
 
-Not yet run at this milestone: the ten behavioral cases, frontend typecheck and build, macOS packaging, or consuming-main checks. No local Node, browser, native app, provider, or shell PTY runtime was started. No screenshot is supplied because this lane has no browser or native execution admission. Glyph rendering, fonts, native output delivery, installed-app identity, and side-by-side visual parity remain unverified even after isolated parser checks pass.
+Candidate behavioral cases, frontend typecheck and build, macOS packaging, and consuming-main checks remain pending. The baseline build did not reach typecheck after its failing test gate. No local Node, browser, native app, provider, or shell PTY runtime was started. No screenshot is supplied because this lane has no browser or native execution admission. Glyph rendering, fonts, native output delivery, installed-app identity, and side-by-side visual parity remain unverified even after isolated parser checks pass.
 
-The Laziness Protocol keeps the planned production change to activating the already-installed provider in the existing initializer. Test Behavior, Not Implementation keeps the assertions on output columns and cell widths rather than addon construction. ScriptOutput, Setup, OSC8, input policy, focus, lifecycle, and backend behavior are outside the product diff.
+Fix Root Causes places the correction before the first output write instead of altering emitted text or cursor positions. The Laziness Protocol keeps the production change to activating the already-installed provider in the existing initializer. Test Behavior, Not Implementation keeps the assertions on output columns and cell widths rather than addon construction. ScriptOutput, Setup, OSC8, input policy, focus, lifecycle, and backend behavior are outside the product diff.
