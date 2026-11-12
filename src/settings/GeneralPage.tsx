@@ -141,7 +141,7 @@ export function GeneralPage({ settings, save, notify }: Props) {
         label="Show MCP status in chat"
         help="Show a per-session MCP server status indicator in the composer."
       />
-      <GeneralAppPrefRows />
+      <GeneralAppPrefRows overrides={overrides} />
       <ButtonRow
         label="Sync agent configs"
         help="Copy skills, slash commands, and MCP servers between Claude Code and Codex."

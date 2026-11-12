@@ -1,0 +1,1 @@
+function R$t({actions:t}){return async e=>{const s=SY({organizationId:e.organizationId,section:C$t(e)});await t.run(s,async({backend:n,getCurrentCanonical:r})=>{const i=await n.source.edit(e),o=SY({organizationId:e.organizationId,section:i}).apply(r());return n.cache.write(o).fireAndForget(),{result:void 0,canonical:o}})}}

@@ -29,7 +29,7 @@ function statements(path: string, names: string[]): string {
   }).join("\n");
 }
 
-const selected = statements("./Transcript.tsx", ["Transcript", "rowTurn", "groupTurns", "Row", "reportLabel", "Agent", "SummaryRow", "Part", "ThinkingRow"]);
+const selected = statements("./Transcript.tsx", ["toolDisclosure", "Transcript", "rowTurn", "groupTurns", "Row", "reportLabel", "Agent", "SummaryRow", "Part", "ThinkingRow"]);
 const toolDefault = statements("./ToolRows.tsx", ["opensByDefault"]);
 const transition = `
 function SummaryTransition({ summaryToggles, ...props }) {
