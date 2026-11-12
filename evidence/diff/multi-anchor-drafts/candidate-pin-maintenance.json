@@ -1,0 +1,35 @@
+{
+  "kind": "CANDIDATE_IDENTITY_MAINTENANCE_ONLY",
+  "previous_head": "624df197a1829f1afabfc87d0943fb7ea4157855",
+  "previous_product_sha256": "80297beaa275f8925c7c9cf8290cfc67a804918d19ff02bb952d760342e262d3",
+  "current_product_sha256": "5d61d8a59f1a500d31c399907b0f54c9a51089ed7b7a7442d6c9b890b6d3d564",
+  "manifests": [
+    {
+      "manifest": "evidence/diff/moved-comment-anchors/source.json",
+      "before_sha256": "4baf2ff9b8d33c0dd407c6c42949a80bf6842f8e67d3307372aa6e1c2cd46ef3",
+      "after_sha256": "ab2c033d03f71b39bb8916528ee5ea2a110156544b1aa89b8b375a2c8d0b2431",
+      "runner_unchanged": true
+    },
+    {
+      "manifest": "evidence/diff/comment-ime-submit/source.json",
+      "before_sha256": "eeda9d9cdf61adf844331b4f108932e9159573cda1dc4ad5c11e7da54adf279a",
+      "after_sha256": "20ab6a4ae47f9c5bc3ce0b7b49ff0057acd8c0b81a22dd8b5dc06a45151c74c7",
+      "runner_unchanged": true
+    },
+    {
+      "manifest": "evidence/diff/comment-edit-drafts/source.json",
+      "before_sha256": "aa18c447da7de15692b01c6ed200dc937ea64b6c1e7d2b2dfdb64df1c58596e2",
+      "after_sha256": "980faf75ad9a59060086716c56a3b76e1e394483af16193661e2b7659388bbd9",
+      "runner_unchanged": true
+    },
+    {
+      "manifest": "evidence/diff/new-inline-draft-remount/source.json",
+      "before_sha256": "8d0a9a27244d16d93592b33632e3d4bf73d06bf89b9f416975f9b2cb6b739a24",
+      "after_sha256": "c6f98f26e956d11baf906b944631783bb9c36fb99cfd6501187dbef514d6c88c",
+      "runner_unchanged": true
+    }
+  ],
+  "unchanged_fixture_files": 38,
+  "unchanged": "Every original manifest byte except its one candidate field. All baseline refs/hashes, fixture hashes, expected cases/assertions, runner predicates and workflow bytes preserved. Prior full manifests archived byte-for-byte.",
+  "hosted_paired_rerun": "PENDING automaticCI; no localNode/newdispatch"
+}

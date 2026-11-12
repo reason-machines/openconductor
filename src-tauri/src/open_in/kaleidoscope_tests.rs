@@ -137,7 +137,7 @@ fn launch_child() {
         &["-C", &dir_string, "-c", DIFFTOOL_CONFIG, "difftool", "--tool=ksdiff", "--no-prompt", "HEAD"]);
     let folder = expected_call("open", &bundle_path, &["-a", "Kaleidoscope", &dir_string]);
     let result = tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap()
-        .block_on(open_in_app("kaleidoscope".to_string(), dir_string));
+        .block_on(open_in_app("kaleidoscope".to_string(), dir_string, None));
     let calls: Vec<Vec<String>> = fs::read_to_string(root.join("calls")).unwrap_or_default()
         .split("--END--\n").filter(|call| !call.is_empty())
         .map(|call| call.lines().map(str::to_string).collect()).collect();

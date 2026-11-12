@@ -1,0 +1,1 @@
+sections:e=>Xkr(qIr({user:e.user,workspace:e.workspace,localDatabase:e.db,cacheDatabase:e.cacheDb,subscription:{client:Tni,getEndpoint:kni}}))
