@@ -12,6 +12,20 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def verify_notification_block(page, baseline):
+    assert hashlib.sha256(baseline.encode()).hexdigest() == '28c970954afb645658f5be693189e3a49f2e52efc8510c309f419a0a3dad21e8'
+    start = '      <Row label="Agent notifications"'
+    stop = '      <PrefSwitchRow settings={settings} save={save} pref="mention_notifications_enabled"'
+    baseline_block = baseline[baseline.index(start):baseline.index(stop)]
+    old = '            if (on && !await notificationPermissionGranted()) return;'
+    new = '''            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }'''
+    assert baseline_block.count(old) == 1
+    assert page[page.index(start):page.index(stop)] == baseline_block.replace(old, new, 1)
+
+
 def verify():
     checks = []
     provenance = json.loads((HERE / 'provenance.json').read_text())
@@ -50,11 +64,8 @@ def verify():
     checks.append('false-only poll and focus/cleanup source')
     assert 'console.error("check_full_disk_access failed:", error);\n        next = true;' in page
     checks.append('source-backed logged true fallback')
-    start, stop = '      <Row label="Agent notifications"', '      <PrefSwitchRow settings={settings} save={save} pref="mention_notifications_enabled"'
-    def notification_block(text):
-        return text[text.index(start):text.index(stop)]
-    assert notification_block(page) == notification_block(baseline)
-    checks.append('notification product block unchanged')
+    verify_notification_block(page, baseline)
+    checks.append('notification block preserves the permission gate and latest-settings write with exact denial feedback')
     message = "Couldn't open System Settings. Go to Privacy & Security > Full Disk Access to grant it manually."
     assert message in page
     view = (ROOT / 'src/settings/SettingsView.tsx').read_text()

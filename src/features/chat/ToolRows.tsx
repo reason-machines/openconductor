@@ -873,7 +873,6 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
   const { name, input } = tool;
   const kind = toolKind(name);
   const shell: ShellBase = { icon: <ToolIcon name={name} />, open, onToggle, status };
-  const output = isError ? undefined : result;
   const framed = (text: string | undefined) => (text ? text : undefined);
   switch (kind) {
     case "bash-output": {
@@ -991,7 +990,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       );
     }
     case "task-list": {
-      const tasks = parseTaskList(output);
+      const tasks = parseTaskList(result);
       const active = tasks.find((t) => t.status === "in_progress");
       const done = tasks.filter((t) => t.status === "completed").length;
       const doing = tasks.filter((t) => t.status === "in_progress").length;
@@ -1032,7 +1031,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       );
     }
     case "task-update": {
-      const task = parseTask(output);
+      const task = parseTask(result);
       const id = s(input.taskId) || taskIdIn(result);
       const { label, note: dep } = taskUpdateLabel(input);
       const subject = task?.subject || s(input.subject);
@@ -1200,7 +1199,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
     case "codex-collab":
       return <CollabRow name={name} input={input} result={result} isError={isError} />;
     case "sub-agent":
-      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={output} />;
+      if (isTypedSubagent(input)) return <SubagentRow {...shell} input={input} result={result} />;
       if (name.startsWith("mcp__linear__") || name.startsWith("mcp__context7__")) return <MoreRows {...{ tool, status, result, resultCreatedAt, now, isError, open, onToggle, workspacePath, onOpenFile }} />;
       return <GenericRow {...{ tool, status, result, isError, open, onToggle }} />;
     default:

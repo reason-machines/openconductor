@@ -1,0 +1,74 @@
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: clear shortcut leaves the real xterm alternate buffer 47 and transport untouched
+ok 1 - clear shortcut leaves the real xterm alternate buffer 47 and transport untouched
+  ---
+  duration_ms: 3774.159612
+  type: 'test'
+  ...
+# Subtest: clear shortcut leaves the real xterm alternate buffer 1047 and transport untouched
+ok 2 - clear shortcut leaves the real xterm alternate buffer 1047 and transport untouched
+  ---
+  duration_ms: 150.233738
+  type: 'test'
+  ...
+# Subtest: clear shortcut leaves the real xterm alternate buffer 1049 and transport untouched
+ok 3 - clear shortcut leaves the real xterm alternate buffer 1049 and transport untouched
+  ---
+  duration_ms: 103.172403
+  type: 'test'
+  ...
+# Subtest: normal-buffer clear shortcut still clears and requests one shell redraw
+ok 4 - normal-buffer clear shortcut still clears and requests one shell redraw
+  ---
+  duration_ms: 137.792813
+  type: 'test'
+  ...
+# Subtest: returning from alternate mode restores normal-buffer clear handling
+ok 5 - returning from alternate mode restores normal-buffer clear handling
+  ---
+  duration_ms: 139.291864
+  type: 'test'
+  ...
+# Subtest: alternate-buffer keyup does not clear or consume the event
+ok 6 - alternate-buffer keyup does not clear or consume the event
+  ---
+  duration_ms: 109.952155
+  type: 'test'
+  ...
+# Subtest: unbound alternate-buffer shortcut still passes through
+ok 7 - unbound alternate-buffer shortcut still passes through
+  ---
+  duration_ms: 149.376461
+  type: 'test'
+  ...
+# Subtest: direct clearTab remains independent of the keyboard buffer guard
+ok 8 - direct clearTab remains independent of the keyboard buffer guard
+  ---
+  duration_ms: 125.524421
+  type: 'test'
+  ...
+# Subtest: find shortcut remains available in the alternate buffer
+ok 9 - find shortcut remains available in the alternate buffer
+  ---
+  duration_ms: 113.505215
+  type: 'test'
+  ...
+# Subtest: clearing a normal sibling does not clear an alternate-buffer terminal
+ok 10 - clearing a normal sibling does not clear an alternate-buffer terminal
+  ---
+  duration_ms: 149.541475
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8723.553934

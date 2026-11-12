@@ -1,0 +1,12 @@
+{
+  "name": "openconductor-inert-secret-copy-test-deps",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-test-renderer": "18.3.1",
+    "typescript": "5.9.3",
+    "jsdom": "26.1.0"
+  }
+}

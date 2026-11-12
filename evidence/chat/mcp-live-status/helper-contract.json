@@ -1,0 +1,392 @@
+{
+  "key": "composer-local-mcp-status",
+  "owner": "13576d11-76fb-4842-aa9b-c398f9ca26f3",
+  "stage": "ORIGINAL_HELPER_STATIC_CONTRACT_JOINED_CURRENT_CARRIER_MISSING",
+  "extraction": {
+    "binary_sha256": "5723ead40316bb29e3d0b446cdc82bede489cc75443d6ce08a4e6421ae6eac0d",
+    "macho_evidence_id": "ev_4a9365928ff6308aecde7c83155c01e51227412f51e4ae0d718e4867ded4a339",
+    "bun_segment_fileoff": 62734336,
+    "bun_segment_bytes": 13041664,
+    "source_relative_range": [
+      39,
+      13025963
+    ],
+    "source_file_range": [
+      62734375,
+      75760299
+    ],
+    "source_bytes": 13025924,
+    "source_sha256": "f72df80a11d76bacb7ed7e2a322b420e6250b4a2c7781272877b8c5cf985e6ab",
+    "end_before_nul_utf8": "ice(2), { version: \"0.87.6\" });\n    process.exit(B);\n  }\n  default:\n    throw Error(`Unexpected entrypoint: ${Xt0}`);\n}\n"
+  },
+  "spans": [
+    {
+      "name": "rpc-handler",
+      "path": "spans/rpc-handler.js",
+      "source_range": [
+        12545578,
+        12546294
+      ],
+      "binary_range": [
+        75279953,
+        75280669
+      ],
+      "bytes": 716,
+      "sha256": "4008cf295c95973cd81826633716509e26e949e5cf340e7bcef53e12c642d779"
+    },
+    {
+      "name": "rpc-registration",
+      "path": "spans/rpc-registration.js",
+      "source_range": [
+        12613634,
+        12613802
+      ],
+      "binary_range": [
+        75348009,
+        75348177
+      ],
+      "bytes": 168,
+      "sha256": "e23d002f5ed0513bc7926548ef4cb9fa8f5570202016bbec0ccb2216ae1f9255"
+    },
+    {
+      "name": "local-host",
+      "path": "spans/local-host.js",
+      "source_range": [
+        12497609,
+        12497892
+      ],
+      "binary_range": [
+        75231984,
+        75232267
+      ],
+      "bytes": 283,
+      "sha256": "21cd8d06178cc3507284e26a54249651a40d435e6f39cf0c044331cf9e7a5899"
+    },
+    {
+      "name": "runner-selection",
+      "path": "spans/runner-selection.js",
+      "source_range": [
+        12420721,
+        12421064
+      ],
+      "binary_range": [
+        75155096,
+        75155439
+      ],
+      "bytes": 343,
+      "sha256": "4ef41e0bf554999c0bc0b858eef8b0328816475a7a6943cbc49c81fcbab2eee5"
+    },
+    {
+      "name": "claude-status",
+      "path": "spans/claude-status.js",
+      "source_range": [
+        3543546,
+        3544082
+      ],
+      "binary_range": [
+        66277921,
+        66278457
+      ],
+      "bytes": 536,
+      "sha256": "f7e7334882012ba3f89f120abf605209c33729709087334df30a25abbcdcd655"
+    },
+    {
+      "name": "claude-metadata",
+      "path": "spans/claude-metadata.js",
+      "source_range": [
+        3544455,
+        3548995
+      ],
+      "binary_range": [
+        66278830,
+        66283370
+      ],
+      "bytes": 4540,
+      "sha256": "de499581f062c79fb86fe817eb0365b7d48f27bf35ce9ff6220e4199b24eabb3"
+    },
+    {
+      "name": "claude-sdk-control",
+      "path": "spans/claude-sdk-control.js",
+      "source_range": [
+        3481614,
+        3481731
+      ],
+      "binary_range": [
+        66215989,
+        66216106
+      ],
+      "bytes": 117,
+      "sha256": "3554e0e4c0fd447eaae604e4891ee615e12a32a41108d1e7cfacb66a7654ac60"
+    },
+    {
+      "name": "codex-status",
+      "path": "spans/codex-status.js",
+      "source_range": [
+        3693492,
+        3694293
+      ],
+      "binary_range": [
+        66427867,
+        66428668
+      ],
+      "bytes": 801,
+      "sha256": "edf3b2783f616564a31004a61bb2dd02cf6834f3586986ec2f12f3f58ff78ca2"
+    },
+    {
+      "name": "codex-pagination",
+      "path": "spans/codex-pagination.js",
+      "source_range": [
+        3659968,
+        3660161
+      ],
+      "binary_range": [
+        66394343,
+        66394536
+      ],
+      "bytes": 193,
+      "sha256": "31e91c1b07945f0b6fc8778a1c09855bb95eac0f5e68e771a1ac22358646b284"
+    },
+    {
+      "name": "codex-normalizer",
+      "path": "spans/codex-normalizer.js",
+      "source_range": [
+        3660416,
+        3660779
+      ],
+      "binary_range": [
+        66394791,
+        66395154
+      ],
+      "bytes": 363,
+      "sha256": "c02981e6f3586ad4fe7e06fdb7c664621acf47dd725bc38e2a8a095f7e3fe0a9"
+    },
+    {
+      "name": "status-schema",
+      "path": "spans/status-schema.js",
+      "source_range": [
+        1731249,
+        1731587
+      ],
+      "binary_range": [
+        64465624,
+        64465962
+      ],
+      "bytes": 338,
+      "sha256": "dbafc069cb5a31708c335fffe7f0bea547e42d4bcdb587776d486da7af4afafe"
+    },
+    {
+      "name": "codex-response-schema",
+      "path": "spans/codex-response-schema.js",
+      "source_range": [
+        3659572,
+        3659963
+      ],
+      "binary_range": [
+        66393947,
+        66394338
+      ],
+      "bytes": 391,
+      "sha256": "feea555a7c1d9d23619d16608930b0d59d523f91904bc652e9b730d5f095a56a"
+    },
+    {
+      "name": "request-schema",
+      "path": "spans/request-schema.js",
+      "source_range": [
+        479818,
+        479991
+      ],
+      "binary_range": [
+        63214193,
+        63214366
+      ],
+      "bytes": 173,
+      "sha256": "00118dc3245c46260c3da284879ec18ccb828c11eff714db54f08c406a382587"
+    }
+  ],
+  "checks": [
+    {
+      "name": "complete extracted bundle hash",
+      "passed": true
+    },
+    {
+      "name": "complete extracted bundle size",
+      "passed": true
+    },
+    {
+      "name": "source starts with Bun marker",
+      "passed": true
+    },
+    {
+      "name": "source decodes strict UTF8",
+      "passed": true
+    },
+    {
+      "name": "rpc-handler: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "rpc-registration: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "local-host: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "runner-selection: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "claude-status: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "claude-metadata: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "claude-sdk-control: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "codex-status: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "codex-pagination: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "codex-normalizer: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "status-schema: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "codex-response-schema: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "request-schema: unique exact start",
+      "passed": true
+    },
+    {
+      "name": "RPC registration parses request with dZ",
+      "passed": true
+    },
+    {
+      "name": "RPC registration invokes exact handler",
+      "passed": true
+    },
+    {
+      "name": "request schema accepts optional forceRefresh and sessionId",
+      "passed": true
+    },
+    {
+      "name": "handler reuses workspace host",
+      "passed": true
+    },
+    {
+      "name": "handler forwards sessionId and selected agentType",
+      "passed": true
+    },
+    {
+      "name": "handler does not consume forceRefresh",
+      "passed": true
+    },
+    {
+      "name": "handler propagates rows and warning",
+      "passed": true
+    },
+    {
+      "name": "handler serializes failure without fabricated rows",
+      "passed": true
+    },
+    {
+      "name": "host preserves optional sessionId",
+      "passed": true
+    },
+    {
+      "name": "host forwards rows and warning",
+      "passed": true
+    },
+    {
+      "name": "runner chooses stored session provider before request provider",
+      "passed": true
+    },
+    {
+      "name": "runner routes exact session to selected provider",
+      "passed": true
+    },
+    {
+      "name": "runner wraps arrays without changing statuses",
+      "passed": true
+    },
+    {
+      "name": "Claude requires requested live session",
+      "passed": true
+    },
+    {
+      "name": "Claude live path queries SDK and validates statuses",
+      "passed": true
+    },
+    {
+      "name": "Claude no-session path uses metadata query and always cleans up",
+      "passed": true
+    },
+    {
+      "name": "Claude metadata reuse rejects settings revision mismatch",
+      "passed": true
+    },
+    {
+      "name": "Claude metadata reuse rejects auth generation mismatch",
+      "passed": true
+    },
+    {
+      "name": "Claude metadata cleanup refcounts then stops generator",
+      "passed": true
+    },
+    {
+      "name": "Claude SDK uses mcp_status control request",
+      "passed": true
+    },
+    {
+      "name": "Codex requested session must exist and remain open",
+      "passed": true
+    },
+    {
+      "name": "Codex live path requests status list, not configuration",
+      "passed": true
+    },
+    {
+      "name": "Codex metadata client is closed finally",
+      "passed": true
+    },
+    {
+      "name": "Codex pagination parses every page and carries cursor",
+      "passed": true
+    },
+    {
+      "name": "Codex schema requires nullable server info and authStatus",
+      "passed": true
+    },
+    {
+      "name": "Codex connected status derives from server info or actual tools",
+      "passed": true
+    },
+    {
+      "name": "Codex otherwise distinguishes auth requirement and failure",
+      "passed": true
+    },
+    {
+      "name": "common status schema has all five states",
+      "passed": true
+    }
+  ],
+  "claim_boundary": "Inert compiled-source declaration/caller joins only. No original application, Claude, Codex, provider or status query was executed. No observed provider response or native acceptance.",
+  "current_main_checked": "85ec32f94664d4bb46b0b70d45ff5355595517c9",
+  "current_gap": "No existing end-to-end local status query/response/event/snapshot/carrier. A selection-only Composer change would reach the existing unavailable path, not a real status capability.",
+  "scope": "Source qualification only. No product edits or backend/provider lease expansion."
+}

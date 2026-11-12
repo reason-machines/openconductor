@@ -256,9 +256,9 @@ export function FileDiffView(props: Props) {
   const copy = copySource(file, { draft: edit?.current, loadText });
   let body: ReactNode;
   if (file.hide_reason === "file_too_large") body = <div className="oc-file-note">File too large to display</div>;
-  else if (file.binary) body = <div className="oc-file-note">Binary file not shown.</div>;
+  else if (file.binary) body = <div className="oc-file-note">Binary file changed</div>;
   else if (file.hunks.length === 0)
-    body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No content changes in this file.</div>;
+    body = ignoreWhitespace ? <WhitespaceOnly onShow={onShowWhitespace} /> : <div className="oc-file-note">No changes in this file</div>;
   else
     body = (
       <div className="oc-code-scroll">
