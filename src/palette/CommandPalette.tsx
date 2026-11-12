@@ -161,7 +161,7 @@ export function CommandPalette({ data, overrides = {}, showProjects = true, init
     // Conductor: switch to the Workspaces tab showing archived ones too, and stay open.
     if (item.kind === "action" && item.action.id === VIEW_ARCHIVED_ACTION) {
       changeTab("workspaces");
-      setFiltersState({ ...filters, archiveFilter: "all" });
+      setFiltersState(CLEARED_FILTERS);
       setQuery("");
       return;
     }
