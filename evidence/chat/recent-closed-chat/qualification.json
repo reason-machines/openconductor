@@ -574,9 +574,10 @@
     "src/components/WorkspaceView.tsx",
     "src/state/types.ts",
     "src/state/persisted.ts",
+    "src/state/store.ts",
     "src-tauri/src/persistence/mod.rs"
   ],
-  "runtime_status": "INITIAL_HOSTED_BASELINE_UNQUALIFIED_WORKSPACE_REJECTION; REVISED_BASELINE_PENDING",
+  "runtime_status": "QUALIFIED_HOSTED_BASELINE_RED_94ee4cca; CANDIDATE_PENDING",
   "fixture_revision": {
     "prior_sha256": "6dd638919b9ed67bddde9a9cada32cab6e28b1ea5cfea8fd3e04f6ef6b225a93",
     "reason": "Model the exact production db_select_chat domain rejection before mutation; retain all five behavioral cases and exact stale-selection assertions. Use readable failure markers in redacted hosted logs.",

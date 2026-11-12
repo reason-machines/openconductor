@@ -2,7 +2,7 @@
 
 Conductor Rebuild binds this baseline to main `53eaf50ba4811a96fce1f8c2026e2abb442b5ba6`, after merged overflow PR #1094.
 
-The retained REA source joins visible and hidden sessions for transcript suggestions. The current OpenConductor initializer restores only visible chat tabs, so closing a source removes it from the empty-chat picker. The proposed independent `transcriptChats` response field is described in [the contract](hidden-session-contract.json). It is not implemented in this baseline.
+The retained REA source joins visible and hidden sessions for transcript suggestions. The current OpenConductor initializer restores only visible chat tabs, so closing a source removes it from the empty-chat picker. The independent `transcriptChats` response field is described in [the original proposed contract](hidden-session-contract.json). The product candidate now projects retained UI session identities into that field without changing visible tabs, unread chats, or active selection. The initializer carries it into the workspace. WorkspaceView merges it with live titles by ID and retains live sources before close or local clear.
 
 ## Checks
 
@@ -35,7 +35,9 @@ The candidate must use the same fixture. Product changes wait for an actual qual
 
 At current main `167492e56dbbb90850efbadf1db2848dae7622f2`, `select_chat` rejects a chat not visible in the requested workspace before writing `active_session_id`. WorkspaceView and useReviewChats reset local tab state in effects. During a workspace switch, a transient old target can therefore be submitted with the new workspace and rejected. The revised boundary models that exact error separately from assertion or loader errors. It requires exactly the `(closed-fixture-w2, closed-fixture-w1:chat:target)` rejection with the foreign primary still selected; no other rejection is allowed. The test still requires all three missing-source failures and two passing controls before a product repair.
 
-Readable assertion messages replace token-like markers so the retained hosted log can qualify the precise assertions without redaction ambiguity. The revised fixture has not yet run.
+Readable assertion messages replace token-like markers so the retained hosted log can qualify the precise assertions without redaction ambiguity. [Corrected hosted run](https://github.com/reason-machines/openconductor/actions/runs/43121851438/job/130864015789) produced exactly the three intended failures and two passing controls. [The retained TAP](baseline.tap) qualifies as `EXPECTED_BEHAVIORAL_RED` in [the receipt](baseline-receipt.json). Linux and macOS separately failed only the real SQLite missing-catalog assertion (17 persistence tests passed).
+
+The product candidate leaves the mounted fixture byte-identical and adds a separate row-decoder test. The three-line reducer addition preserves same-runtime chats before they disappear from visible tabs. Candidate static source verification passes 298 checks against the retained REA bytes and baseline pins. Candidate mounted, DB, typecheck, and package results await automatic PR CI. Current default-branch source was checked at `167492e56dbbb90850efbadf1db2848dae7622f2`; all five edited production files matched the tested baseline before this repair.
 
 ## Limits
 
