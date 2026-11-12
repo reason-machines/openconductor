@@ -21,7 +21,7 @@ import { useSettingsOverrideStore } from "./useSettingsOverrideStore";
 interface Props {
   settings: Settings;
   save: (next: Settings) => void | Promise<boolean>;
-  notify?: (kind: "error", message: string) => void;
+  notify?: (kind: "error" | "info", message: string) => void;
 }
 
 /** Conductor's `aga`: System Settings › Privacy & Security › Full Disk Access. */
@@ -152,7 +152,7 @@ export function GeneralPage({ settings, save, notify }: Props) {
         icon={<SyncIcon />}
         onClick={() => setSyncOpen(true)}
       />
-      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} />}
+      {syncOpen && <ConfigSyncDialog onClose={() => setSyncOpen(false)} notify={notify} />}
     </div>
   );
 }
