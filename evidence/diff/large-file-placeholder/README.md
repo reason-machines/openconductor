@@ -26,7 +26,9 @@ Set `DIFF_PLACEHOLDER_DTOS` to the same temporary directory for the two behavior
 
 At head `f98dd96`, hosted run `43126179063` produced four intended backend failures and four passing controls, plus the same four failures and four passing controls in the mounted renderer. The missing size hide reason and placeholder assertions failed, not setup or compilation. `hosted-red.json` and the redacted artifact logs preserve that result. The job incorrectly reported success because `tee` masked the command exit codes. A harness-only correction adds explicit `pipefail` to both commands before any product repair.
 
-Product code remains unchanged in this baseline. The same fixture hashes must pass after the repair. A successful workflow conclusion without successful behavioral logs is not evidence of a pass.
+At corrected head `0163d3a08a6b8aa22d9f3cfe9bcae3cda48df384`, automatic hosted run `43126679905` repeated the four intended failures and four passing controls in both stages. The backend exited 101. The mounted renderer still ran against its serialized DTOs and exited 1. Both logs and all eight DTOs were uploaded as artifact `13903546736`. The final gate read both step outcomes as `failure` and exited 1, so the job now correctly fails. `corrected-hosted-red.json` pins the archive and retained raw logs. `continue-on-error` keeps the second stage reachable; the final `&&` gate requires both outcomes to be successful.
+
+Product code remains unchanged in this baseline, including after the fresh-main recheck at `383bf4078aaaa43dc195196784630b7fa5642a6a`. The same fixture hashes must pass after the repair. A successful workflow conclusion without successful behavioral logs is not evidence of a pass.
 
 ## Limits
 
