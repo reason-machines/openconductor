@@ -991,7 +991,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       );
     }
     case "task-list": {
-      const tasks = parseTaskList(output);
+      const tasks = parseTaskList(result);
       const active = tasks.find((t) => t.status === "in_progress");
       const done = tasks.filter((t) => t.status === "completed").length;
       const doing = tasks.filter((t) => t.status === "in_progress").length;
@@ -1032,7 +1032,7 @@ function MoreRows({ tool, status, result, resultCreatedAt, now, isError, open, o
       );
     }
     case "task-update": {
-      const task = parseTask(output);
+      const task = parseTask(result);
       const id = s(input.taskId) || taskIdIn(result);
       const { label, note: dep } = taskUpdateLabel(input);
       const subject = task?.subject || s(input.subject);

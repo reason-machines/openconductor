@@ -519,6 +519,7 @@ pub fn run() {
             codex_chat::codex_cli_path,
             codex_chat::codex_open_chat,
             codex_chat::codex_prompt,
+            codex_chat::codex_mcp_status,
             codex_chat::codex_cancel,
             codex_chat::codex_answer,
             codex_chat::codex_respond,

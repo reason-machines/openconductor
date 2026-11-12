@@ -1,0 +1,1 @@
+async function l1(t){if(!lXe()){await navigator.clipboard.writeText(t);return}await xni(t)}

@@ -78,7 +78,11 @@ Spotlight mirrors a workspace into the repository's root checkout, so tools that
 
 ## Checkpoints
 
-A checkpoint is a parentless commit of the full working tree (tracked and untracked, honoring `.gitignore`) under `refs/conductor-checkpoints/<id>`. Checkpoints are compatible with Conductor's. Only Spotlight creates them; agent turns do not.
+A checkpoint is a parentless commit of the full working tree (tracked and untracked, honoring `.gitignore`) under `refs/conductor-checkpoints/<id>`. Checkpoints are compatible with Conductor's.
+
+Reason and Claude Code prompts that reach `around_turn` with both a remembered chat folder and turn metadata attempt saves before and after the turn. The ids are `session-<sessionId>-turn-<turnId>-start` and `...-end`, overwritten on reuse. Saves require valid session and turn ids and a valid repository root. Busy Git operations and unresolved conflicts skip a save; other save failures are logged. Neither prevents the prompt from running. Without both folder and turn metadata, no turn checkpoint is attempted. The current Codex prompt path does not use this wrapper.
+
+Spotlight also creates checkpoints. Archive preparation saves `conductor-archive-<id>` before removing a workspace. These source paths do not guarantee that every turn has a saved checkpoint.
 
 The app installs `checkpointer.sh` in `~/Library/Application Support/com.reasonmachines.openconductor/bin/`. It is not on `PATH`. Run it from the workspace root:
 

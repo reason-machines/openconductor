@@ -1,0 +1,1 @@
+function S3i(t){return Es(t.defaultTagName??"div",t,t)}

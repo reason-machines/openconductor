@@ -76,7 +76,10 @@ export function GeneralPage({ settings, save, notify }: Props) {
           label="Agent notifications"
           checked={g.send_native_notification}
           onChange={async (on) => {
-            if (on && !await notificationPermissionGranted()) return;
+            if (on && !await notificationPermissionGranted()) {
+              notify?.("error", "Notification permission not granted");
+              return;
+            }
             await save(withField(latestSettings.current, "general", "send_native_notification", on));
           }}
         />

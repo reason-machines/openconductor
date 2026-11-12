@@ -34,7 +34,7 @@ interface Props {
   /** The repo has a remote: a workspace without a PR shows "Ready" (branch) rather than "Local workspace". */
   hasRemote?: boolean;
   active: boolean;
-  onSelect: () => void;
+  onSelect: (event: MouseEvent<HTMLButtonElement>) => void;
   /** Right-click: opens the workspace actions menu. */
   onContextMenu?: (e: MouseEvent) => void;
   menuOpen?: boolean;
@@ -275,7 +275,8 @@ export function useWorkspaceRows(state: AppState, dispatch: Dispatch<Action>, { 
     menuOpen: menu?.workspaceId === ws.id,
     shortcutNumber: numbers.get(ws.id),
     showShortcutHint: hintsVisible,
-    onSelect: () => {
+    onSelect: (event: MouseEvent<HTMLButtonElement>) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
       if (!(sel.kind === "workspace" && sel.workspaceId === ws.id)) {
         dispatch({ type: "select", selection: { kind: "workspace", repoId, workspaceId: ws.id } });
         return;
