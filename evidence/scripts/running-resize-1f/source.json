@@ -1,7 +1,7 @@
 {
   "owner": "Conductor Rebuild",
   "scope": "RUNNING-SCRIPT-PTY-RESIZE",
-  "status": "REGRESSION_ONLY_AWAITING_HOSTED_BEHAVIORAL_RED",
+  "status": "BEHAVIORAL_RED_QUALIFIED_CANDIDATE_AWAITING_HOSTED_GREEN",
   "main_checked": "516a58c931f31097007c97e844a1bb56d118c528",
   "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
   "original_assets": {

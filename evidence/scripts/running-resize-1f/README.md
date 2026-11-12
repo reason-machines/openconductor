@@ -14,7 +14,11 @@ At the pinned main, ScriptOutput fits local xterm geometry but has no resize cal
 
 `src/scripts/runningResize.test.ts` mounts the real ScriptsPanel, ScriptOutput and scripts API. Only external xterm/FitAddon measurements, observers and native IPC are substituted. The eight cases use the same 96-column/32-row geometry for running, nonrunning, missing generation, stop/rerun, workspace replacement, hidden host, Setup and disposal controls. The real output screen's measured dimensions and exact generation-qualified IPC payload are asserted; no replacement resize implementation is supplied by the fixture.
 
-The fixture is frozen in `fixture-v1.ts.txt` and `fixture.sha256`. This first checkpoint contains no product change. Hosted behavioral tests are **NOT RUN** at publication. A loader, syntax or type error is not behavioral RED. Product correction waits for the intended missing-endpoint assertion failures, then must pass the unchanged fixture. All exact-head workflows must positively pass before requesting any merge.
+The fixture is frozen in `fixture-v1.ts.txt` and `fixture.sha256`. Automatic hosted baseline head `c4ae617a54ebb517b91e38fe5b7d397d4b3a7075` reached behavioral RED in [unit job 130859299750](https://github.com/reason-machines/openconductor/actions/runs/43120461260/job/130859299750): four intended empty-IPC assertions failed and all four controls passed. Typecheck passed; the build job failed at the same unit assertions, before building. `baseline-red.json` and `baseline-red.log` retain the decisive eight-case result. A loader, syntax or type error is not accepted as behavioral RED.
+
+The product candidate now routes measured positive u16 geometry through ScriptOutput, ScriptsPanel, the scripts API and registered `run_script_resize` command. RunManager validates workspace/script/current runId, captures that Process once, and resizes its retained PTY master without resolving a replacement. Stopped or exited processes reject geometry. Hidden hosts send nothing; callback replacement forwards unchanged current dimensions without remounting output. Setup and Spotlight stay local-only reflow. Five new Unix PTY cases cover size/SIGWINCH, stale same-script generations, waiting/stopped/exit rejection, workspace isolation and zero-geometry rejection.
+
+Candidate hosted behavioral and Rust tests are **NOT RUN** at publication. The frozen eight cases are byte-identical. All exact-head workflows must positively pass before requesting any merge.
 
 ```bash
 python3 evidence/scripts/running-resize-1f/verify.py --original-dir .oc-tmp/scripts-audit-1222/originals
@@ -36,4 +40,4 @@ Test Behavior, Not Implementation selects exact measured geometry and IPC effect
 
 ## Limits
 
-Backend real PTY size/SIGWINCH, in-flight stop/exit/replacement, invalid IPC geometry, Spotlight isolation and native input/selection/clipboard/font/visual/full-app acceptance are **NOT RUN**. No screenshot is available: this lane has no app/native execution admission. No local Node/Rust/app/provider runtime, installs, manual dispatch/rerun or duplicate watcher. Native acceptance stays with the existing E1 owner.
+The five new backend real PTY tests are prepared but **NOT RUN**. In-flight stop/exit/replacement races, negative/fractional/overflow IPC geometry, Spotlight runtime isolation and native input/selection/clipboard/font/visual/full-app acceptance are **NOT RUN**. No screenshot is available: this lane has no app/native execution admission. No local Node/Rust/app/provider runtime, installs, manual dispatch/rerun or duplicate watcher. Native acceptance stays with the existing E1 owner.
