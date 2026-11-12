@@ -53,6 +53,18 @@ A one-line test-only repair uses `assert.ok(typeof production.opensByDefault ===
 
 A fresh automatic hosted baseline must demonstrate both exact fallback failures and all three passing controls on the repaired test before any product change. The repaired test bytes then remain unchanged through GREEN. The initial compiler failure must not be counted as behavioral RED.
 
+## Qualified hosted RED and scoped correction
+
+On repaired published head `615d7bf4eccbf343a196cd1b4ad28c15848b0693`, [the automatic unit job](https://github.com/reason-machines/openconductor/actions/runs/43137755510/job/130917075379) observed exactly the two required failures. Each fallback header invoked one toggle callback instead of zero. PNG, absent pending result, and ordinary Read passed. The full suite reported 3,237 tests, 3,235 passed and two failed, with no skips or cancellations. [The receipt](hosted-red.json) and [five-case log excerpt](hosted-red.log), with trailing whitespace removed, retain the result. Frontend typecheck passed in job `130917075580`; its later build step was skipped after the same unit failures, not passed.
+
+The assigned branch then integrated actual main `f55d0330ff32e790c08a26d2e7aa83dbf2b8ea32` through an ordinary merge. This includes #1109. The image-row module and normalization/reducer/view dependencies still match their original assessment bytes. Other owners' changes are included only through that main integration.
+
+The correction adds optional `isCollapsible`, defaulting to true, to `RowShell`. Header click capability and disclosure affordances require both content and that capability. Body rendering still requires content and the controlled open state, independently of capability. An explicit false state therefore remains closed, and every other row keeps its existing default.
+
+Only the image-generation call supplies the capability. Its private extension map retains the exact `ole` keys and `split(".").pop()?.toLowerCase()` plus own-membership semantics. SVG, ICO and HEIC are not added. The predicate changes only disclosure; existing result text and path presentation are untouched. ScheduleWakeup, timestamps, clock, imports, Transcript, normalization and the disclosure store are unchanged.
+
+The repaired test remains Git blob `4e76ae2a0c18815fc05bc84d9c25360a517d42d1`, SHA-256 `5e4784b0a627a43010eb3200022f19e6eec257f0d43995e20fdd99a0e127cdbd`. All five inputs and retained reference files remain frozen. `python3 evidence/chat/image-generation-fallback/verify_candidate.py` checks those bytes, the exact shell/image-only source transformation, unchanged excluded production, and the RED receipt. This source-only check does not execute the product. Same-input hosted GREEN, all exact-head workflows, merge and consuming-main/package proof remain pending.
+
 ## Execution and delivery limits
 
 No local Node, npm, React, typecheck, build, dependency installation, provider, native, or app runtime is admitted. Preparation uses only source reads, Python byte checks, and Git. Existing automatic hosted CI runs the test through `node --test "src/**/*.test.ts"`. No workflow is edited, manually dispatched, or rerun.

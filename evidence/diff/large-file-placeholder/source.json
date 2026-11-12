@@ -1,0 +1,211 @@
+{
+  "unit": "DIFF-LARGE-FILE-PLACEHOLDER-DE6",
+  "baseline_main": "19f42b21bc2b5f31a0656ffaef9cc042d714e7ff",
+  "original": {
+    "version": "0.87.6",
+    "retained_rea_evidence_id": "ev_a4ce503a76a3198b2d2bec127c09bb6940b806849318ccc51523f40701751ab5",
+    "assets": {
+      "renderer": {
+        "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+        "bytes": 11600457
+      },
+      "index": {
+        "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3",
+        "bytes": 3493297
+      }
+    }
+  },
+  "spans": {
+    "renderer:bDo": {
+      "utf8_half_open": [
+        8912726,
+        8914498
+      ],
+      "sha256": "c3b6c6edfeb89702256f1116e290a908b095925a640ffd44bb41d21769fa4161"
+    },
+    "renderer:Mqo": {
+      "utf8_half_open": [
+        9637614,
+        9641484
+      ],
+      "sha256": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c"
+    },
+    "renderer:bji": {
+      "utf8_half_open": [
+        9643145,
+        9646819
+      ],
+      "sha256": "2d2b8aac64bada5ead6bc143ac6bb272544791374a9b71b38e57eab55c8f5688"
+    },
+    "renderer:Jqo": {
+      "utf8_half_open": [
+        9652565,
+        9658452
+      ],
+      "sha256": "0e24efc52f0ab809283b07a30fbb5e615db81ab56a03f12dad7e298d15a81a87"
+    },
+    "index:uLt": {
+      "utf8_half_open": [
+        3168647,
+        3169191
+      ],
+      "sha256": "6543d0e86dce0f12f739112bc01368ac09407d53e7248f724d8ec289cd6e249c"
+    },
+    "index:Y9t": {
+      "utf8_half_open": [
+        3199214,
+        3200829
+      ],
+      "sha256": "d275afb03c1b74e04d37c8a6f46e9edfcf82d43d4b889bbf6cf013c1eb73f740"
+    },
+    "index:oY": {
+      "utf8_half_open": [
+        3168271,
+        3168334
+      ],
+      "sha256": "4822b3d891e0368483fd160c352ab86c0e9fef03f08b7ff180488240346add0d"
+    },
+    "index:F9t": {
+      "utf8_half_open": [
+        3185082,
+        3185298
+      ],
+      "sha256": "7071498f2b9bf4d6bfbd31e616891315ea85149b98fbc419151d711fa8faeaa2"
+    },
+    "index:id": {
+      "utf8_half_open": [
+        3184787,
+        3184871
+      ],
+      "sha256": "905afa46fe1c5a3581cb8a0b04d2f705f09099eb026f23a593fe3c69ff1a7ed9"
+    },
+    "index:Ti": {
+      "utf8_half_open": [
+        3184981,
+        3185082
+      ],
+      "sha256": "40d8b1bf5965764121c0ec76733396c22464cf88861160a90158a891f4080f9f"
+    },
+    "index:wA": {
+      "utf8_half_open": [
+        690080,
+        690300
+      ],
+      "sha256": "4c752c447eca087df4e425f3a89d68c67d336e4dfa3a4011d7f7c9a09e66d6c5"
+    },
+    "index:UGe": {
+      "utf8_half_open": [
+        689408,
+        689450
+      ],
+      "sha256": "07522b8b199f517688776e2e06f8c8028e4f0df50830e58b5e33a824c8d3438b"
+    },
+    "index:v_": {
+      "utf8_half_open": [
+        689450,
+        689830
+      ],
+      "sha256": "a0650fb795a68293b2c30511c9fef69e20f46f96e33f9514286895024645d34d"
+    },
+    "index:_A": {
+      "utf8_half_open": [
+        688646,
+        688999
+      ],
+      "sha256": "09add840f723fee052eb6df669ceb935a0ccc0b5b3734335e2cf416e8d38a849"
+    },
+    "index:_f": {
+      "utf8_half_open": [
+        695782,
+        696371
+      ],
+      "sha256": "cb9072750585921240c843c263a48475d7386d43054b6bedfd15a32ed95bee5d"
+    },
+    "index:VS": {
+      "utf8_half_open": [
+        2259985,
+        2260209
+      ],
+      "sha256": "e158dc929369cb976fe984f1546ae703fc1de273698e11daa68b28006951cc75"
+    },
+    "index:ALt": {
+      "utf8_half_open": [
+        3185298,
+        3185332
+      ],
+      "sha256": "c0b0047126236bbe7df4a049b7b10f0e7acae12cf2f10a73dd7e8d86f7681b93"
+    },
+    "index:workspaceFile-producer": {
+      "utf8_half_open": [
+        2258392,
+        2259985
+      ],
+      "sha256": "7574c97d526ac3496207c1d5e7803ead9e395686dd0bb1062648de8f48286fea"
+    },
+    "index:gitHistory-producer": {
+      "utf8_half_open": [
+        743037,
+        745066
+      ],
+      "sha256": "d438301fe44fa78e1552413b7168c4c51c6dca5fef38ed471fc36bc7a0a92d1e"
+    },
+    "index:diffService-binding": {
+      "utf8_half_open": [
+        3232467,
+        3232929
+      ],
+      "sha256": "cfadd2e6b8ba6c1822ce0782d8b950639e2a98d8eef5449c84fd474674d92bfc"
+    },
+    "index:loader-constants-class-and-result-helpers": {
+      "utf8_half_open": [
+        3179015,
+        3185298
+      ],
+      "sha256": "2a8742e768caa34cd958df61cd05a342657d8f3810249b73cfc789d70faff7f3"
+    }
+  },
+  "reference_files": {
+    "reference/reference-index-producer.txt": "2a8742e768caa34cd958df61cd05a342657d8f3810249b73cfc789d70faff7f3",
+    "reference/reference-Mqo.txt": "ba9e64973b294335d69d20e19ffd1ef4eaf63f3c209dd380beacf5ecc509393c",
+    "reference/reference-Jqo.txt": "0e24efc52f0ab809283b07a30fbb5e615db81ab56a03f12dad7e298d15a81a87",
+    "reference/reference-index-uLt.txt": "6543d0e86dce0f12f739112bc01368ac09407d53e7248f724d8ec289cd6e249c",
+    "reference/reference-index-Y9t.txt": "d275afb03c1b74e04d37c8a6f46e9edfcf82d43d4b889bbf6cf013c1eb73f740",
+    "reference/reference-index-workspaceFile-producer.txt": "7574c97d526ac3496207c1d5e7803ead9e395686dd0bb1062648de8f48286fea",
+    "reference/reference-index-gitHistory-producer.txt": "d438301fe44fa78e1552413b7168c4c51c6dca5fef38ed471fc36bc7a0a92d1e"
+  },
+  "baseline_product": {
+    "src-tauri/src/diff/git.rs": "841fe26a5eb54d4c71d2d04748ec790bfa9080d50008681bd74a9f830d49e955",
+    "src-tauri/src/diff/model.rs": "3c794269be0b8c0e1c7cc0eef1f5632d676f439d165f94679ca2a5b8b28a49ce",
+    "src/features/diff/types.ts": "37f4ee973e762d4818b517a53c0b0eb4a548aa87ac8cafbf738feba58bc0794b",
+    "src/features/diff/FileDiffView.tsx": "8e3dc981b01b2e5f8b19f51e1fd0e7c05691f2174d2d37b1fe7faf9455ecc6da"
+  },
+  "fixtures": {
+    "evidence/diff/large-file-placeholder/cases.json": "4746c6cc86d8961e52eaa65aafa171ff5958e0f97549ade86833d23d633b8b0f",
+    "src-tauri/src/diff/large_file_tests.rs": "8eeb9b8527632a2ed4391ec37ed9e3b716d53f3dd24f8a3fd785b86ab363d454",
+    "tests/diff/largeFilePlaceholder.mounted.test.mjs": "3fc448a1f7302ba75bb3e49b334037b11d6be1099b62965cb639e281dd75c4b9"
+  },
+  "source_contract": {
+    "size_threshold_bytes": 1048576,
+    "sparse_ceiling_bytes": 5242880,
+    "sparse_changed_lines_maximum": 500,
+    "large_file_reason": "file_too_large",
+    "large_file_text": "File too large to display"
+  },
+  "scope": "Existing tracked nonmedia nonbinary text in uncommitted scope; real temporary Git files -> workspace_diff -> serialized DTO -> mounted FileDiffView. Same file and changes-list row retained.",
+  "verification": {
+    "source_integrity": "PASS",
+    "hosted_backend": "RED: four intended hide_reason failures and four controls passed at 0163d3a0, run43126679905; command exit 101",
+    "hosted_mounted_renderer": "RED: four intended placeholder failures and four controls passed at 0163d3a0, run43126679905 after backend failure; command exit 1",
+    "hosted_aggregate_gate": "FAILURE: both step outcomes failure; final gate exit 1; artifact13903546736 uploaded successfully",
+    "native": "NOT_RUN",
+    "screenshot": "NOT_RUN"
+  },
+  "residuals": [
+    "Historical/turn scopes and large old revision with a small or missing current file are not covered by this bounded worktree repair.",
+    "Image/video preview sizing, tree view and unavailable-content errors remain outside this unit.",
+    "No claim of early bounded git patch acquisition or native performance protection.",
+    "Original native stat/read implementation has not been dynamically observed.",
+    "SQLite, native UI, installed package and restart acceptance are not exercised.",
+    "The separate same-end/empty-editor comment residuals are unchanged."
+  ]
+}
