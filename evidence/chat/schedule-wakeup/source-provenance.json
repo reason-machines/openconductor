@@ -1,0 +1,1003 @@
+{
+  "candidate": "CHAT.SCHEDULE-WAKEUP-RESULT-TIME",
+  "checked_main": "a2ef261711b439e7ab00a25b3cb3275a5b55c823",
+  "released_merge": "383bf4078aaaa43dc195196784630b7fa5642a6a",
+  "historical_baseline": "5852f41eb4df5c6da9b976d7b8ef830a892aed8d",
+  "frozen_archives": {
+    "schedule-wakeup-source-be7-v2.tar.gz": "0cfe580c0a71f7ee48a0a7529f92f964e9d87031a85dcf0d9a700099177fc2c1",
+    "schedule-wakeup-contract-be7-v1.tar.gz": "280d1b2e5f2eba9b6b682cfa6533318ccdfeb6c53263260a9494394296952812"
+  },
+  "contract_files": {
+    "regression-contract.json": "92093766ebdbce7795d2c06b26fdfd5ad9ca1fa2b0256ff0f23cd042375c4ea1",
+    "adapter-regression-proposal.json": "ebbb8ebe56da58aa8ce975df12104556bee968c1aa74e226c16177f7561571d4",
+    "turnTime-source-5852f41eb.ts": "1a743009382eb2cd09743e42a9bfab9be051483a0879f5a8123d4a578eff367a",
+    "verify_contract.py": "3741a2e96fc9e1aeb4e883ba1a218057150d39b2a49e15e097fb9194b38eb51b"
+  },
+  "original_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "original_assets": {
+    "renderApp-D_fmY7hW.js": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "index-BGEQ8YjU.js": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+  },
+  "snapshots": {
+    "src/features/chat/ToolRows.tsx": {
+      "sha256": "6aa1f21d4070ebcaf3f4cdbbbce1b9c61e3efe89351314297824eaa3251db4b3",
+      "git_blob": "0772338ea078b080afbd552508a86bca8d1b3db2",
+      "historical_sha256": "6aa1f21d4070ebcaf3f4cdbbbce1b9c61e3efe89351314297824eaa3251db4b3",
+      "same_as_historical": true,
+      "file": "main/src/features/chat/ToolRows.tsx"
+    },
+    "src/features/chat/Transcript.tsx": {
+      "sha256": "9eaed365c64969578273f4ab1f9af24ecb83f62eb32ed726a71ca35e4021d153",
+      "git_blob": "7db68a2b1786c20d0f6eb9d10860f2901cd3272c",
+      "historical_sha256": "a79b1dd9a6fbc9e0455a7ddff918962cf13b32f2bdd0997d00c0790ccc0b85bc",
+      "same_as_historical": false,
+      "file": "main/src/features/chat/Transcript.tsx"
+    },
+    "src/features/chat/view.ts": {
+      "sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db",
+      "git_blob": "7cbdc5e96ce4c312e5cab71a1a47ee81be24ada1",
+      "historical_sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db",
+      "same_as_historical": true,
+      "file": "main/src/features/chat/view.ts"
+    },
+    "src/features/chat/conductorTools.ts": {
+      "sha256": "df5a568960c64e53f4b1a40b9c634024b3fa78d34121cdced974a162742387b0",
+      "git_blob": "1b899339620f130ecbb2f39a1131de8a4c04ea68",
+      "historical_sha256": "df5a568960c64e53f4b1a40b9c634024b3fa78d34121cdced974a162742387b0",
+      "same_as_historical": true,
+      "file": "main/src/features/chat/conductorTools.ts"
+    },
+    "src/features/chat/types.ts": {
+      "sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+      "git_blob": "30b5aa083c150875b248e87599f00683a54a03f4",
+      "historical_sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+      "same_as_historical": true,
+      "file": "main/src/features/chat/types.ts"
+    },
+    "src/features/chat/reason.ts": {
+      "sha256": "403e62172114f30d3cc8d10801a74f99036f0f1dfa1adde24a7081fb92ffca77",
+      "git_blob": "e151fc11c5488e29fdc4af684b45e168a25249fe",
+      "historical_sha256": "403e62172114f30d3cc8d10801a74f99036f0f1dfa1adde24a7081fb92ffca77",
+      "same_as_historical": true,
+      "file": "main/src/features/chat/reason.ts"
+    },
+    "src/features/chat/claudeChat.ts": {
+      "sha256": "2c451756b4865d540df0077d051977751ab74e68a2a9e6401a17e020dcea0668",
+      "git_blob": "ef145b36d25cf557fc34453d475874d40c6b7eef",
+      "historical_sha256": "2c451756b4865d540df0077d051977751ab74e68a2a9e6401a17e020dcea0668",
+      "same_as_historical": true,
+      "file": "main/src/features/chat/claudeChat.ts"
+    },
+    "src/features/chat/persist.ts": {
+      "sha256": "39f4a68ebf7a299ff8ab7531a6931fb499d2a072d70f6ac4961d6eabe793f49a",
+      "git_blob": "654aa94dc82872220ad9ec3048ffb9b6901b98be",
+      "historical_sha256": "39f4a68ebf7a299ff8ab7531a6931fb499d2a072d70f6ac4961d6eabe793f49a",
+      "same_as_historical": true,
+      "file": "main/src/features/chat/persist.ts"
+    },
+    "src/features/chat/toolGroups.ts": {
+      "sha256": "eadaab0dd0636ca31a0570074920905ba00edcff7963e4828e7b51299ac79252",
+      "git_blob": "c3df65b9a53aaef7cd2b8af6c117bd2c474c3880",
+      "historical_sha256": "eadaab0dd0636ca31a0570074920905ba00edcff7963e4828e7b51299ac79252",
+      "same_as_historical": true,
+      "file": "main/src/features/chat/toolGroups.ts"
+    },
+    "src/features/chat/conductorTools.test.ts": {
+      "sha256": "fb109e78c31f11c30ce1da6efd6ee736bc685e6c9059bcf2fe5ad719068acf40",
+      "git_blob": "2daeb9b895312a3238406fffb9781a5be21c81bc",
+      "historical_sha256": "fb109e78c31f11c30ce1da6efd6ee736bc685e6c9059bcf2fe5ad719068acf40",
+      "same_as_historical": true,
+      "file": "main/src/features/chat/conductorTools.test.ts"
+    },
+    "src/features/chat/chatRuntime.ts": {
+      "sha256": "3be9dec9988fa9d07ea06145995ef648ab66f23307557ffd7cc4abf7b8293ba0",
+      "git_blob": "120a1a0437f36882169bd7c43cd970f1c77e85b4",
+      "historical_sha256": "3be9dec9988fa9d07ea06145995ef648ab66f23307557ffd7cc4abf7b8293ba0",
+      "same_as_historical": true,
+      "file": "main/src/features/chat/chatRuntime.ts"
+    },
+    "src-tauri/src/agent/claude_stream.rs": {
+      "sha256": "bcf1bf9d841c0aa778cddd6e0d6a97a283e38fbe94888c8c6b056d07a57192ed",
+      "git_blob": "a7d828f786faa5f84c9c31ca084407f62108b875",
+      "historical_sha256": "bcf1bf9d841c0aa778cddd6e0d6a97a283e38fbe94888c8c6b056d07a57192ed",
+      "same_as_historical": true,
+      "file": "main/src-tauri/src/agent/claude_stream.rs"
+    },
+    "src-tauri/src/claude_chat/map.rs": {
+      "sha256": "2b86c13410e39be0b6003079109908cd317e563c466956896929fd760a6cee0f",
+      "git_blob": "2cc8789dc5d3a5f34df4304368e6e76f7a534a38",
+      "historical_sha256": "2b86c13410e39be0b6003079109908cd317e563c466956896929fd760a6cee0f",
+      "same_as_historical": true,
+      "file": "main/src-tauri/src/claude_chat/map.rs"
+    },
+    "src-tauri/src/claude_chat/commands.rs": {
+      "sha256": "26e68197cfb6609cb4b681879ad6641426fcdba3ec0abf039d7227a1f5da4056",
+      "git_blob": "561308beec438bbab05d3e3d87fa1f7a8aeb2731",
+      "historical_sha256": "26e68197cfb6609cb4b681879ad6641426fcdba3ec0abf039d7227a1f5da4056",
+      "same_as_historical": true,
+      "file": "main/src-tauri/src/claude_chat/commands.rs"
+    },
+    "src-tauri/src/reason_acp/updates.rs": {
+      "sha256": "27dc0a67a6c278cb24ed5478dce5cf0342899fb10c3f391e9b66ba5c5693915d",
+      "git_blob": "95257e5774403dc315850920ca4b397037082387",
+      "historical_sha256": "27dc0a67a6c278cb24ed5478dce5cf0342899fb10c3f391e9b66ba5c5693915d",
+      "same_as_historical": true,
+      "file": "main/src-tauri/src/reason_acp/updates.rs"
+    },
+    "src-tauri/src/reason_acp/wire.rs": {
+      "sha256": "8f41fc5186827decd35937b47fbba71d28d6cf64ff4609f13b1f53c91fd223d9",
+      "git_blob": "60f7f46457c17e5a4b67963c287cfc3e3e3b42b9",
+      "historical_sha256": "8f41fc5186827decd35937b47fbba71d28d6cf64ff4609f13b1f53c91fd223d9",
+      "same_as_historical": true,
+      "file": "main/src-tauri/src/reason_acp/wire.rs"
+    },
+    "src-tauri/src/chat/model.rs": {
+      "sha256": "f586a6acf67819174b98d1eca580daa9a2c8b1971219dd39c828217e6a0d72ae",
+      "git_blob": "e9099bc41702219ab7234846c72e2e85f442982f",
+      "historical_sha256": "f586a6acf67819174b98d1eca580daa9a2c8b1971219dd39c828217e6a0d72ae",
+      "same_as_historical": true,
+      "file": "main/src-tauri/src/chat/model.rs"
+    },
+    "src-tauri/src/chat_store_commands.rs": {
+      "sha256": "7343cf1c5b238416fa06c1f40fe5d59d9c605709fd7c9defeabc21262b27dbf4",
+      "git_blob": "06e52695ef3625053b1a567b47e17a47e263c36e",
+      "historical_sha256": "7343cf1c5b238416fa06c1f40fe5d59d9c605709fd7c9defeabc21262b27dbf4",
+      "same_as_historical": true,
+      "file": "main/src-tauri/src/chat_store_commands.rs"
+    },
+    "crates/openconductor-db/src/chat_messages.rs": {
+      "sha256": "1fbac43cf3e1083934478fa9874fae1af4debb99a0dd886c243631c98266c429",
+      "git_blob": "8dc4ec0598992a9d7e2768176ab04728d04cf654",
+      "historical_sha256": "1fbac43cf3e1083934478fa9874fae1af4debb99a0dd886c243631c98266c429",
+      "same_as_historical": true,
+      "file": "main/crates/openconductor-db/src/chat_messages.rs"
+    }
+  },
+  "additional_graph_pins": {
+    "src/features/chat/reason.ts": {
+      "sha256": "403e62172114f30d3cc8d10801a74f99036f0f1dfa1adde24a7081fb92ffca77",
+      "git_blob": "e151fc11c5488e29fdc4af684b45e168a25249fe",
+      "file": "main/src/features/chat/reason.ts"
+    },
+    "src/features/chat/types.ts": {
+      "sha256": "1052389b3a6dac575a5b0d02c8da17bc7cb9f0c9e7c3564ce1f1e5d817611b31",
+      "git_blob": "30b5aa083c150875b248e87599f00683a54a03f4",
+      "file": "main/src/features/chat/types.ts"
+    },
+    "src/features/chat/userContent.ts": {
+      "sha256": "5bc4da24e8d193d68b85fd02f25c890ed6a2a44a3096ae51e008139900c3488c",
+      "git_blob": "409f8836c57145098270139a1e960b8fdf7f365d",
+      "file": "main/src/features/chat/userContent.ts"
+    },
+    "src/features/chat/chatRuntime.ts": {
+      "sha256": "3be9dec9988fa9d07ea06145995ef648ab66f23307557ffd7cc4abf7b8293ba0",
+      "git_blob": "120a1a0437f36882169bd7c43cd970f1c77e85b4",
+      "file": "main/src/features/chat/chatRuntime.ts"
+    },
+    "src/features/chat/reducer.ts": {
+      "sha256": "478b39ceaaff3ac88a93f6e59f8ce69081003cb177486138aad50801d1f1a99a",
+      "git_blob": "aa9847dcc0b5030b82f1e72496f408834db9d064",
+      "file": "main/src/features/chat/reducer.ts"
+    },
+    "src/features/chat/view.ts": {
+      "sha256": "ad06d3dd52bd0b1a76bf9a02878ac6feb7079e88e9906350beb00b751da7d4db",
+      "git_blob": "7cbdc5e96ce4c312e5cab71a1a47ee81be24ada1",
+      "file": "main/src/features/chat/view.ts"
+    },
+    "src/features/chat/conductorTools.ts": {
+      "sha256": "df5a568960c64e53f4b1a40b9c634024b3fa78d34121cdced974a162742387b0",
+      "git_blob": "1b899339620f130ecbb2f39a1131de8a4c04ea68",
+      "file": "main/src/features/chat/conductorTools.ts"
+    },
+    "src/features/chat/toolGroups.ts": {
+      "sha256": "eadaab0dd0636ca31a0570074920905ba00edcff7963e4828e7b51299ac79252",
+      "git_blob": "c3df65b9a53aaef7cd2b8af6c117bd2c474c3880",
+      "file": "main/src/features/chat/toolGroups.ts"
+    },
+    "src/features/chat/Transcript.tsx": {
+      "sha256": "9eaed365c64969578273f4ab1f9af24ecb83f62eb32ed726a71ca35e4021d153",
+      "git_blob": "7db68a2b1786c20d0f6eb9d10860f2901cd3272c",
+      "file": "main/src/features/chat/Transcript.tsx"
+    },
+    "src/components/ui/Tooltip.tsx": {
+      "sha256": "7e8c9c1c0eec8944bda5886d04e7ec2d4b9b9c7c5c4084825a9a0a5026c52fe5",
+      "git_blob": "a7e880360ed5d649dcc9067a32b240510fbb8c86",
+      "file": "main/src/components/ui/Tooltip.tsx"
+    },
+    "src/features/chat/ChatSignInCard.tsx": {
+      "sha256": "62d5b5fd5ada792582cb03aa1a4118a7e9842ad13497d542c4752eb969b22114",
+      "git_blob": "f7ead1415c9f9deb4441a466a555a7008fdd23b1",
+      "file": "main/src/features/chat/ChatSignInCard.tsx"
+    },
+    "src/components/menu/ContextMenu.tsx": {
+      "sha256": "0861e550beedf0adaf687536d4f310866a60fca695bd17391b965ae4bfe383e8",
+      "git_blob": "d56fef631acdd89d6a07357774ef1138b6eb8aac",
+      "file": "main/src/components/menu/ContextMenu.tsx"
+    },
+    "src/components/menu/menuIcons.tsx": {
+      "sha256": "9548086058a54598e232842e3e73c1dbeb899b6c22303f558bde8d4ba9fc453f",
+      "git_blob": "c3c08fc3fe33aae7355a81ad7d118ab714117ca1",
+      "file": "main/src/components/menu/menuIcons.tsx"
+    },
+    "src/features/chat/turnMenu.ts": {
+      "sha256": "d870e489bd4b329b7d721e886d7fb7e64222bcaab5ece28a0bf4d88b3a484e5b",
+      "git_blob": "70aabe52988305233338f35e482d9101d3cf8ff1",
+      "file": "main/src/features/chat/turnMenu.ts"
+    },
+    "src/features/chat/LinkMenu.tsx": {
+      "sha256": "3967d74ecc5e5dd2d9f7fc9c5cba36ce0b614a2d4b535391701b7f246fec5cc9",
+      "git_blob": "dc4ae7d4b246c385fa642232310b3e038d16cce6",
+      "file": "main/src/features/chat/LinkMenu.tsx"
+    },
+    "src/features/chat/markdown.ts": {
+      "sha256": "06354820fa6722b771c0e626a3dffc2cee5f34f0917366ca25ec47cdddab17b4",
+      "git_blob": "d423915f4aaa98d990a3ebc27c2c99b0cfe1ea4b",
+      "file": "main/src/features/chat/markdown.ts"
+    },
+    "src/features/chat/ToolRows.tsx": {
+      "sha256": "6aa1f21d4070ebcaf3f4cdbbbce1b9c61e3efe89351314297824eaa3251db4b3",
+      "git_blob": "0772338ea078b080afbd552508a86bca8d1b3db2",
+      "file": "main/src/features/chat/ToolRows.tsx"
+    },
+    "src/features/chat/turnTime.ts": {
+      "sha256": "1a743009382eb2cd09743e42a9bfab9be051483a0879f5a8123d4a578eff367a",
+      "git_blob": "846c286d1e47be7d13e4d59eaa152982da6b7bcb",
+      "file": "main/src/features/chat/turnTime.ts"
+    },
+    "src/features/chat/TurnDetails.tsx": {
+      "sha256": "50c0825836a34efb921c4f965e649347b4042902b1263ce2e316412896c0e1a9",
+      "git_blob": "ba3422ece0cd60a566fc0196f8ac113453d77601",
+      "file": "main/src/features/chat/TurnDetails.tsx"
+    },
+    "src/features/chat/fork.ts": {
+      "sha256": "ff0422c91b934abddd9ee33656efa5bcc8ef7df2b61797693f0e3e8226c53c21",
+      "git_blob": "41b4c9e054e74e549e505850ead06007f86f335b",
+      "file": "main/src/features/chat/fork.ts"
+    },
+    "src/backend.ts": {
+      "sha256": "4b13170fcaffce5d828de400369164e2dfdcc3d3aaa818a3860e0a6e826ce237",
+      "git_blob": "c2be0fb3b9103d5e67ed1ce7718a746fcfb264aa",
+      "file": "main/src/backend.ts"
+    },
+    "src/features/chat/agentChoice.ts": {
+      "sha256": "380e2758b5a548f56227eed9b107b97b89b6a64d0b0d9c807abe6612219572af",
+      "git_blob": "5fcb239c3b58c840ac41776f67ab76360eab0d8e",
+      "file": "main/src/features/chat/agentChoice.ts"
+    },
+    "src/features/chat/agentSignIn.ts": {
+      "sha256": "0ac95bb2d28e00a0108b274374e3b35b7e1c547508cf027cd524eb2cc546a3f7",
+      "git_blob": "3d2ec407aec6083ec9dd89ecd42f1f2a4096699d",
+      "file": "main/src/features/chat/agentSignIn.ts"
+    },
+    "src/features/chat/thinkingChip.ts": {
+      "sha256": "44912a9f5b4111793135129223e7cacfd660265ed35e015c5a62932ee0d4e9f9",
+      "git_blob": "d5c20ab6cc0b81d6e1aa0482bc91d21f19dc1afb",
+      "file": "main/src/features/chat/thinkingChip.ts"
+    },
+    "src/features/chat/SentUserContent.tsx": {
+      "sha256": "26760a312677117c355bc3dff9920a20563d8fc4c4aa21852b9be4100d6144ba",
+      "git_blob": "813fda46d3f317c17cc0afd729b5cbc4862747a4",
+      "file": "main/src/features/chat/SentUserContent.tsx"
+    },
+    "src/features/chat/UserText.tsx": {
+      "sha256": "099d593a1d2f4c3a1a7c800ee7116153d7b6c437af2b8eb896a794cc4413d6bb",
+      "git_blob": "ad8f10971275aeb1a8d805af48553d00edcf7204",
+      "file": "main/src/features/chat/UserText.tsx"
+    },
+    "src/features/chat/userMessageCopy.ts": {
+      "sha256": "6cbe180e992dfe7acf753fe9aeee63c035e8be0b44501a75a698e12faac7c25f",
+      "git_blob": "9662b1a575da6858493037e0e2eb5c15448fe99d",
+      "file": "main/src/features/chat/userMessageCopy.ts"
+    },
+    "src/settings/useBoolPref.ts": {
+      "sha256": "2ddcb5c12133e8cfe0547960595082bdfd288cb352a28ec8c6ba8ee2bfa6a31a",
+      "git_blob": "ee785d57db1ecc77e10c72bd06e92229e0505400",
+      "file": "main/src/settings/useBoolPref.ts"
+    },
+    "src/features/chat/assistantText.ts": {
+      "sha256": "1cd6f66ab5f29c16d7090c315767078aae120b8a01612870622c9383e2f9d239",
+      "git_blob": "3cd91ef22f8804499c2adcb75d0b8dd3961b0b44",
+      "file": "main/src/features/chat/assistantText.ts"
+    },
+    "src/features/chat/TranscriptSearch.tsx": {
+      "sha256": "c7b46fc9db8758c53c8484b7c3f94ce4fe2848dca15ffa41b7c370b64aa28095",
+      "git_blob": "22ed143bbca81158471c4e724f738ca5e16603e7",
+      "file": "main/src/features/chat/TranscriptSearch.tsx"
+    },
+    "src/features/chat/chat.css": {
+      "sha256": "d392d298dc9e08a6874f64ffadf389682b6b693af743cb13943d70f0c0ac837a",
+      "git_blob": "34038ce56561a7373fd3c62c65fd97060b9bb4c2",
+      "file": "main/src/features/chat/chat.css"
+    },
+    "src/features/chat/toolIconData.ts": {
+      "sha256": "ffe817145ad34b2934ebd204f17456b040d76f999f7758e8de1feba1388429f9",
+      "git_blob": "49ea630c09583bdfe1e7277f8d819b1004e83d4b",
+      "file": "main/src/features/chat/toolIconData.ts"
+    }
+  },
+  "import_scope": "Seven graph roots and their direct static imports only, including type-only statements. This is not a complete transitive runtime graph or a claim that any module was executed.",
+  "known_gaps": [
+    "Grouped tool results from a shared original native frame",
+    "Failed persistence and retry clocks",
+    "Restart/reload and legacy results whose creation time was never retained",
+    "Actual SQLite round-trip execution",
+    "Native/visual/provider or real original/current clock scheduling comparison"
+  ],
+  "rea_gaps": [
+    "Historical REA renderer semantic analysis skipped after heap exhaustion despite successful outer status; this qualification uses exact decoded shipped bytes, not semantic function nodes",
+    "Historical JS tracing/literal indexing limitations remain; all source spans have exact byte bounds and hashes",
+    "No new REA failure or acquisition in this pass"
+  ],
+  "original_consumer_spans": {
+    "TOo": {
+      "file": "reference/TOo.txt",
+      "codepoints_half_open": [
+        8820350,
+        8820793
+      ],
+      "utf8_half_open": [
+        8865983,
+        8866426
+      ],
+      "utf16_half_open": [
+        8820490,
+        8820933
+      ],
+      "sha256": "4e920d1f6814b732618ad039f643c613e29652f89fd4b22d4d21ae38f7bd8b76"
+    },
+    "hIt": {
+      "file": "reference/hIt.txt",
+      "codepoints_half_open": [
+        7833017,
+        7833572
+      ],
+      "utf8_half_open": [
+        7877770,
+        7878325
+      ],
+      "utf16_half_open": [
+        7833157,
+        7833712
+      ],
+      "sha256": "8c45bb6e5892cce46330f820a54460ee896d1c14c19ad134dab20b9f20b75340"
+    },
+    "Epo": {
+      "file": "reference/Epo.txt",
+      "codepoints_half_open": [
+        7809112,
+        7810564
+      ],
+      "utf8_half_open": [
+        7853862,
+        7855314
+      ],
+      "utf16_half_open": [
+        7809252,
+        7810704
+      ],
+      "sha256": "f163edd7e384ea58fe09213a1acebb70ed27235c7a353b3ebbba45d6c9cd7ac7"
+    },
+    "ypo": {
+      "file": "reference/ypo.txt",
+      "codepoints_half_open": [
+        7808391,
+        7808695
+      ],
+      "utf8_half_open": [
+        7853141,
+        7853445
+      ],
+      "utf16_half_open": [
+        7808531,
+        7808835
+      ],
+      "sha256": "3187abd0107b9c6921f8d699823a83053edcac3e2f7da83736918d84842eb060"
+    },
+    "xpo": {
+      "file": "reference/xpo.txt",
+      "codepoints_half_open": [
+        7808695,
+        7808858
+      ],
+      "utf8_half_open": [
+        7853445,
+        7853608
+      ],
+      "utf16_half_open": [
+        7808835,
+        7808998
+      ],
+      "sha256": "b2394304d6021f1002c276f7db3fdaf332e12bf12329b217158420f5ecc160f3"
+    },
+    "Spo": {
+      "file": "reference/Spo.txt",
+      "codepoints_half_open": [
+        7808885,
+        7809112
+      ],
+      "utf8_half_open": [
+        7853635,
+        7853862
+      ],
+      "utf16_half_open": [
+        7809025,
+        7809252
+      ],
+      "sha256": "c1c2c9c7c8b3b1f490a60fcd3454028ee9867473487e44cd70e3f89d6b1d9d6e"
+    },
+    "Mki": {
+      "file": "reference/Mki.txt",
+      "codepoints_half_open": [
+        7769028,
+        7769223
+      ],
+      "utf8_half_open": [
+        7813774,
+        7813969
+      ],
+      "utf16_half_open": [
+        7769168,
+        7769363
+      ],
+      "sha256": "82bd1050a1fdac805a06d32efc4c88fa0f8813d0bcbd93951965e70a49c535fa"
+    },
+    "Vjt": {
+      "file": "reference/Vjt.txt",
+      "codepoints_half_open": [
+        1937888,
+        1938113
+      ],
+      "utf8_half_open": [
+        1938269,
+        1938494
+      ],
+      "utf16_half_open": [
+        1937890,
+        1938115
+      ],
+      "sha256": "390305195f44e63d3c29189015daed394361e2c5df5410fc312052a3ff7205df"
+    },
+    "ROo": {
+      "file": "reference/ROo.txt",
+      "codepoints_half_open": [
+        8824388,
+        8827322
+      ],
+      "utf8_half_open": [
+        8870021,
+        8872955
+      ],
+      "utf16_half_open": [
+        8824528,
+        8827462
+      ],
+      "sha256": "4b020f575c8024708d1576ab02d0154a6690a710abe1fbe5e603fd7731e69afe"
+    },
+    "Qpo": {
+      "file": "reference/Qpo.txt",
+      "codepoints_half_open": [
+        7832429,
+        7833017
+      ],
+      "utf8_half_open": [
+        7877182,
+        7877770
+      ],
+      "utf16_half_open": [
+        7832569,
+        7833157
+      ],
+      "sha256": "94305b7588c4a5551656594289bc17ddb6934ed298cb76fc48181a2731105310"
+    },
+    "D1o": {
+      "file": "reference/D1o.txt",
+      "codepoints_half_open": [
+        7544183,
+        7545303
+      ],
+      "utf8_half_open": [
+        7587405,
+        7588525
+      ],
+      "utf16_half_open": [
+        7544323,
+        7545443
+      ],
+      "sha256": "d1f17c02715c0c81a2dc954a72d1c71222f1dd257e88582e37b7c56ab79d420d"
+    },
+    "wpo": {
+      "file": "reference/wpo.txt",
+      "codepoints_half_open": [
+        7808858,
+        7808885
+      ],
+      "utf8_half_open": [
+        7853608,
+        7853635
+      ],
+      "utf16_half_open": [
+        7808998,
+        7809025
+      ],
+      "sha256": "54d2d5d93c299b34681862262296e3da08f752241f1b51186b09e6663a309250"
+    },
+    "ioi": {
+      "file": "reference/ioi.txt",
+      "codepoints_half_open": [
+        76601,
+        76663
+      ],
+      "utf8_half_open": [
+        76601,
+        76663
+      ],
+      "utf16_half_open": [
+        76601,
+        76663
+      ],
+      "sha256": "26490e6b30b8a0ecc587ac088ec573156805fe584e9ddc7d0f8185a997de62d2"
+    }
+  },
+  "original_ingress_spans": {
+    "Hie": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Hie.txt",
+      "utf8_half_open": [
+        1295791,
+        1296935
+      ],
+      "utf16_half_open": [
+        1295577,
+        1296721
+      ],
+      "sha256": "0822204ad19f3346eeb9983778aca8afecf95122cbbf26d27a34a2431846e3a0"
+    },
+    "LA": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/LA.txt",
+      "utf8_half_open": [
+        1174995,
+        1179549
+      ],
+      "utf16_half_open": [
+        1174977,
+        1179531
+      ],
+      "sha256": "f0aaef0dac136a53b7b7dead30e704005113c2c500ea10be949b5e15d4deaf09"
+    },
+    "Mb": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Mb.txt",
+      "utf8_half_open": [
+        1165837,
+        1166277
+      ],
+      "utf16_half_open": [
+        1165819,
+        1166259
+      ],
+      "sha256": "495df368a2907f0924a9dbe5aef81704188544b47ce1989f0027b8a81f3689f7"
+    },
+    "AB": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/AB.txt",
+      "utf8_half_open": [
+        1163571,
+        1164998
+      ],
+      "utf16_half_open": [
+        1163553,
+        1164980
+      ],
+      "sha256": "96e522b9ac51e6a51a00cdc378531a5b21ac4951bc80c0c8267216065b29d8ac"
+    },
+    "Ys": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Ys.txt",
+      "utf8_half_open": [
+        179856,
+        179895
+      ],
+      "utf16_half_open": [
+        179856,
+        179895
+      ],
+      "sha256": "0fe5d0581a699d8309a115759be24088a1a0b6fd49778882c839c773a0cc1d5d"
+    },
+    "HMe": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/HMe.txt",
+      "utf8_half_open": [
+        179723,
+        179856
+      ],
+      "utf16_half_open": [
+        179723,
+        179856
+      ],
+      "sha256": "3a2341ce99c3227e365496038a19c6cd871bb7b1efc30acd6801958852990828"
+    },
+    "vie": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/vie.txt",
+      "utf8_half_open": [
+        1160198,
+        1161183
+      ],
+      "utf16_half_open": [
+        1160180,
+        1161165
+      ],
+      "sha256": "1f4a8c42d788b8cbacb3f778cc285f2e3e9d256ccfe69b1840a14f60e53ec198"
+    },
+    "TB": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/TB.txt",
+      "utf8_half_open": [
+        1292265,
+        1292489
+      ],
+      "utf16_half_open": [
+        1292051,
+        1292275
+      ],
+      "sha256": "0e3ad08eef03ad162202e8d9ffcbb45bf0b44cdb3ae1b4bd3deec683a74ac6df"
+    },
+    "Die": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Die.txt",
+      "utf8_half_open": [
+        1291916,
+        1292265
+      ],
+      "utf16_half_open": [
+        1291702,
+        1292051
+      ],
+      "sha256": "b5910f369223258092e959f153e775a85847e5a8004d42f8ad6efe2784299645"
+    },
+    "MB": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/MB.txt",
+      "utf8_half_open": [
+        1295753,
+        1295791
+      ],
+      "utf16_half_open": [
+        1295539,
+        1295577
+      ],
+      "sha256": "703557091ccb061e595cc803560e49b8c3684bc2fcd994c14e711f2ec9d8ff81"
+    },
+    "Lnt": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Lnt.txt",
+      "utf8_half_open": [
+        1294731,
+        1294900
+      ],
+      "utf16_half_open": [
+        1294517,
+        1294686
+      ],
+      "sha256": "7d21ae27269c3f7a7b4b07710cf4f8aa0259dce5d006de2870f954945d40e1a3"
+    },
+    "Nnt": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Nnt.txt",
+      "utf8_half_open": [
+        1294900,
+        1295207
+      ],
+      "utf16_half_open": [
+        1294686,
+        1294993
+      ],
+      "sha256": "76278341794d5b467598c6566e58c7386c67bdd594684989174bee9b7f60b022"
+    },
+    "Tnt": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Tnt.txt",
+      "utf8_half_open": [
+        1291588,
+        1291742
+      ],
+      "utf16_half_open": [
+        1291376,
+        1291528
+      ],
+      "sha256": "59c233bd4886b530e50661840f1b8e71373e1e86a90834ac16d1f0cd73113695"
+    },
+    "Bnt": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Bnt.txt",
+      "utf8_half_open": [
+        1296935,
+        1300309
+      ],
+      "utf16_half_open": [
+        1296721,
+        1300095
+      ],
+      "sha256": "5d5ae45793b1308eb066017c388ddfba18564669c82d0863a186f378f4335b2e"
+    },
+    "_8": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/_8.txt",
+      "utf8_half_open": [
+        1295357,
+        1295559
+      ],
+      "utf16_half_open": [
+        1295143,
+        1295345
+      ],
+      "sha256": "c8f17f440f0c6722cbfe30608eb30b8223df61d691535ed98ce0bc95d64fb0f8"
+    },
+    "bct": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/bct.txt",
+      "utf8_half_open": [
+        1477890,
+        1480733
+      ],
+      "utf16_half_open": [
+        1477619,
+        1480462
+      ],
+      "sha256": "97b56192862af1b72b17c0b1d2a566fecf780962b17bf38f5b7a152fd79a0334"
+    },
+    "Ooe": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Ooe.txt",
+      "utf8_half_open": [
+        1450027,
+        1450775
+      ],
+      "utf16_half_open": [
+        1449756,
+        1450504
+      ],
+      "sha256": "34600d362820067eefb910565bf4f6c81567031230d319dad42ac4ced6f06a1c"
+    },
+    "ect": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/ect.txt",
+      "utf8_half_open": [
+        1435953,
+        1436817
+      ],
+      "utf16_half_open": [
+        1435682,
+        1436546
+      ],
+      "sha256": "e2b46dbdd40ddb588c508f154739aea3c6be35a346cc5c1469c06ea533cbed67"
+    },
+    "L8": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/L8.txt",
+      "utf8_half_open": [
+        1449894,
+        1450027
+      ],
+      "utf16_half_open": [
+        1449623,
+        1449756
+      ],
+      "sha256": "a4e1482ede463e4a816b934a3a970257c81f4a61d515b34c952d52a959033844"
+    },
+    "Woe": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Woe.txt",
+      "utf8_half_open": [
+        1461447,
+        1468338
+      ],
+      "utf16_half_open": [
+        1461176,
+        1468067
+      ],
+      "sha256": "04a77111e91c887c89a71f8070687e38cfeb898b9abbc0a7847c0e1b37ee977f"
+    },
+    "sct": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/sct.txt",
+      "utf8_half_open": [
+        1444544,
+        1449130
+      ],
+      "utf16_half_open": [
+        1444273,
+        1448859
+      ],
+      "sha256": "8732482f0b68ce281900a1fce0db98996a7dc458834fd31914b6b1889bcf3941"
+    },
+    "Moe": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Moe.txt",
+      "utf8_half_open": [
+        1449130,
+        1449894
+      ],
+      "utf16_half_open": [
+        1448859,
+        1449623
+      ],
+      "sha256": "d4953e4228286d03d48c9ce25754d592fbb74410ee601deabc22fa91ce9e46a7"
+    },
+    "lct": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/lct.txt",
+      "utf8_half_open": [
+        1468607,
+        1470238
+      ],
+      "utf16_half_open": [
+        1468336,
+        1469967
+      ],
+      "sha256": "4e01aded94035cd6739b52937d985f2072a08da7dde7532ab1155a334ebe3588"
+    },
+    "Boe": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/Boe.txt",
+      "utf8_half_open": [
+        1461272,
+        1461394
+      ],
+      "utf16_half_open": [
+        1461001,
+        1461123
+      ],
+      "sha256": "699ab0488ba5a83b080f1aaef2ffb3b41aa3b91837091d2decbff233705ef368"
+    },
+    "oIa": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "file": "ingress-reference/oIa.txt",
+      "utf8_half_open": [
+        11568602,
+        11570242
+      ],
+      "utf16_half_open": [
+        11522636,
+        11524276
+      ],
+      "sha256": "4aa25f03129693cb6e5d3d2a29fb24c9e5ab031d61b599664bc9864edd581576"
+    },
+    "zAa": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "file": "ingress-reference/zAa.txt",
+      "utf8_half_open": [
+        11558233,
+        11558925
+      ],
+      "utf16_half_open": [
+        11512267,
+        11512959
+      ],
+      "sha256": "02503ed4d699538f32813997276c1964136b8e393069939e683973c33e66f43d"
+    },
+    "renderer-service-import": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "file": "ingress-reference/renderer-service-import.txt",
+      "utf8_half_open": [
+        52991,
+        66495
+      ],
+      "utf16_half_open": [
+        52991,
+        66495
+      ],
+      "sha256": "711b96377098ad3838934209f1710cb85acfc256abecae07605139daf0670ed5"
+    },
+    "index-service-export": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/index-service-export.txt",
+      "utf8_half_open": [
+        3483055,
+        3483064
+      ],
+      "utf16_half_open": [
+        3482519,
+        3482528
+      ],
+      "sha256": "844a96f074bc295d557f5dfae8b306ffb2f5c6d9cffcbb8767f100901b58f887"
+    },
+    "service-bootstrap": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/service-bootstrap.txt",
+      "utf8_half_open": [
+        3159139,
+        3161742
+      ],
+      "utf16_half_open": [
+        3158639,
+        3161242
+      ],
+      "sha256": "79cf1dccdfb2a717bacf7b045cac441050a9d971416c64401b527257fd327324"
+    },
+    "service-factory": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/service-factory.txt",
+      "utf8_half_open": [
+        1535503,
+        1535533
+      ],
+      "utf16_half_open": [
+        1535232,
+        1535262
+      ],
+      "sha256": "a7c7053beeb39e18c82348e25dbfd5cca176159d17a565f5beda6fd201f5f2a1"
+    },
+    "service-class-binding": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/service-class-binding.txt",
+      "utf8_half_open": [
+        1498631,
+        1503279
+      ],
+      "utf16_half_open": [
+        1498360,
+        1503008
+      ],
+      "sha256": "8cec17329b17100ebaec39677a93bbf60e938d7dcd2e99f3c871483fb30ef120"
+    },
+    "service-add-assistant-method": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/service-add-assistant-method.txt",
+      "utf8_half_open": [
+        1531419,
+        1531472
+      ],
+      "utf16_half_open": [
+        1531148,
+        1531201
+      ],
+      "sha256": "a8bd6521a5b8a21dee61e523bcfd91d3714041765f6abea61fe3b945a62e0818"
+    },
+    "service-persist-agent-method": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/service-persist-agent-method.txt",
+      "utf8_half_open": [
+        1533421,
+        1533475
+      ],
+      "utf16_half_open": [
+        1533150,
+        1533204
+      ],
+      "sha256": "ad5c995198e2d7480ce6b19b6e804ae341bfa589d525b57b70eaeccad76e1298"
+    },
+    "service-local-feed-method": {
+      "asset": "index-BGEQ8YjU.js",
+      "file": "ingress-reference/service-local-feed-method.txt",
+      "utf8_half_open": [
+        1532294,
+        1532403
+      ],
+      "utf16_half_open": [
+        1532023,
+        1532132
+      ],
+      "sha256": "254f46aa8c28d92787985bcdb7c911401413b0010a2d64982d522e1fd2250396"
+    },
+    "renderer-configured-scalar-ingress": {
+      "asset": "renderApp-D_fmY7hW.js",
+      "file": "ingress-reference/renderer-configured-scalar-ingress.txt",
+      "utf8_half_open": [
+        11595984,
+        11596435
+      ],
+      "utf16_half_open": [
+        11550018,
+        11550469
+      ],
+      "sha256": "ce48b6c9ea915f75da1a9c7888f574fa9145da79550790edfcf2af10c0762265"
+    }
+  },
+  "clock_semantics": "Both configured local scalar and batch routes create per-persisted-result-message time at ingestion, not actual CLI completion and not containing assistant start. Scalar LA uses explicit createdAt or fresh Date after dedupe; configured local scalar caller omits explicit time. Local batch bct uses fresh Date before normalized message preparation, and replays reuse stored message creation time.",
+  "source_rebind_archive_sha256": "ff4b6a50ee073a2dd8441a8b821d0f5a721f7365417564392957dd098984acef",
+  "delivery_state": "REGRESSION_ONLY_BASELINE_NOT_EXECUTED",
+  "execution": "Ordinary automatic hosted CI only. No local/native/provider/DB admission.",
+  "independent_static_checks": "Source manifest74, contract manifest4, original span hashes/byte lengths48 and historical snapshot19 comparisons passed in publisher preparation. BE7 reports full19 current rebind and additional source checks; no runtime claim."
+}

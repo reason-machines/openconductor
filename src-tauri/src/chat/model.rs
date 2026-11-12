@@ -47,6 +47,8 @@ pub enum Block {
         content: String,
         #[serde(default)]
         is_error: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        result_created_at: Option<String>,
     },
 }
 

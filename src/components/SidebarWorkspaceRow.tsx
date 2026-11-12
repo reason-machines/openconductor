@@ -24,6 +24,8 @@ import { chatStatuses } from "../features/chat/chatRuntime";
 import { Tooltip } from "./Tooltip";
 import { ArchiveIcon } from "./Icons";
 import { glyphs } from "../keybindings/shortcut";
+import { effectiveShortcuts } from "../keybindings/overrides";
+import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 
 interface Props {
   workspace: Workspace;
@@ -53,14 +55,13 @@ interface Props {
   onArchive?: () => void;
 }
 
-const ARCHIVE_COMMAND = COMMANDS.find((c) => c.id === "workspace.archive");
-const ARCHIVE_SHORTCUT = ARCHIVE_COMMAND ? glyphs(ARCHIVE_COMMAND.key) : undefined;
-
 /**
  * One workspace row in the sidebar (Conductor's `lJn`): status icon, title, diff stat,
  * and the Archive button that replaces the diff stat while the row is hovered.
  */
 export function SidebarWorkspaceRow({ workspace: ws, repoBadge, targetBranch, hasRemote, active, onSelect, onContextMenu, menuOpen, shortcutNumber, showShortcutHint, repoPath, onPrLookup, branchPrefix, onPointerDown, onArchive }: Props) {
+  const { overrides } = useKeybindingOverrides();
+  const archiveShortcut = glyphs(effectiveShortcuts("workspace.archive", overrides)[0]);
   const hint = showShortcutHint === true && shortcutNumber !== undefined;
   const label = workspaceLabel({
     name: ws.name,
@@ -131,7 +132,7 @@ export function SidebarWorkspaceRow({ workspace: ws, repoBadge, targetBranch, ha
       {onArchive && (
         <div className="sb-ws-archive">
           {/* Conductor shows the shortcut in the tooltip only on the selected row, since ⌘⇧A archives the open workspace. */}
-          <Tooltip content="Archive workspace" shortcut={active ? ARCHIVE_SHORTCUT : undefined}>
+          <Tooltip content="Archive workspace" shortcut={active ? archiveShortcut : undefined}>
             <button
               type="button"
               aria-label="Archive workspace"
