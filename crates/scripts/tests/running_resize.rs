@@ -9,10 +9,8 @@ use oc_scripts::launch::{script_path, LaunchSpec};
 use oc_scripts::runner::{RunManager, RunRequest, RunState};
 use oc_scripts::setup::SetupState;
 
-const QUERY: &str =
-    r#"stty -echo; printf 'ready\n'; while IFS= read -r -t 10 line; do printf 'query:%s:' "$line"; stty size; done"#;
-const SIGNAL: &str =
-    r#"stty -echo; trap 'printf "winch:"; stty size' WINCH; printf 'ready\n'; while :; do sleep 0.05; done"#;
+const QUERY: &str = r#"stty -echo; printf 'ready\n'; while IFS= read -r -t 10 line; do printf 'query:%s:' "$line"; stty size; done"#;
+const SIGNAL: &str = r#"stty -echo; trap 'printf "winch:"; stty size' WINCH; printf 'ready\n'; while :; do sleep 0.05; done"#;
 
 fn request(dir: &Path, workspace: &str, script: &str, command: &str) -> RunRequest {
     RunRequest {
@@ -86,7 +84,10 @@ impl Drop for Fixture {
 fn wait_for(mut check: impl FnMut() -> bool) {
     let deadline = Instant::now() + Duration::from_secs(10);
     while !check() {
-        assert!(Instant::now() < deadline, "timed out waiting for script geometry");
+        assert!(
+            Instant::now() < deadline,
+            "timed out waiting for script geometry"
+        );
         thread::sleep(Duration::from_millis(10));
     }
 }
@@ -109,10 +110,19 @@ fn a_stale_run_id_cannot_resize_a_same_script_replacement() {
     let current_id = fixture.start("a", QUERY);
     assert_ne!(old_id, current_id);
     assert!(!fixture.manager.resize("a", "dev", &old_id, 96, 32).unwrap());
-    assert!(!fixture.manager.resize("a", "other", &current_id, 96, 32).unwrap());
-    assert!(!fixture.manager.resize("b", "dev", &current_id, 96, 32).unwrap());
+    assert!(!fixture
+        .manager
+        .resize("a", "other", &current_id, 96, 32)
+        .unwrap());
+    assert!(!fixture
+        .manager
+        .resize("b", "dev", &current_id, 96, 32)
+        .unwrap());
     fixture.measure("a", &current_id, "replacement", 80, 24);
-    assert!(fixture.manager.resize("a", "dev", &current_id, 96, 32).unwrap());
+    assert!(fixture
+        .manager
+        .resize("a", "dev", &current_id, 96, 32)
+        .unwrap());
     fixture.measure("a", &current_id, "current", 96, 32);
 }
 
@@ -127,7 +137,10 @@ fn waiting_stopped_and_exited_runs_cannot_receive_geometry() {
         )
         .unwrap();
     assert_eq!(fixture.manager.state("a", "dev"), RunState::WaitingForSetup);
-    assert!(!fixture.manager.resize("a", "dev", "unstarted", 96, 32).unwrap());
+    assert!(!fixture
+        .manager
+        .resize("a", "dev", "unstarted", 96, 32)
+        .unwrap());
     assert!(fixture.manager.setup_finished("a").unwrap());
     wait_for(|| fixture.output("a").contains("ready\r\n"));
     let run_id = fixture.manager.statuses("a")[0].run_id.clone().unwrap();
@@ -142,7 +155,10 @@ fn waiting_stopped_and_exited_runs_cannot_receive_geometry() {
         .unwrap();
     wait_for(|| fixture.manager.state("a", "dev") == RunState::Stopped);
     let exit_id = fixture.manager.statuses("a")[0].run_id.clone().unwrap();
-    assert!(!fixture.manager.resize("a", "dev", &exit_id, 96, 32).unwrap());
+    assert!(!fixture
+        .manager
+        .resize("a", "dev", &exit_id, 96, 32)
+        .unwrap());
 }
 
 #[test]
@@ -164,7 +180,10 @@ fn zero_geometry_is_rejected_without_changing_the_live_pty() {
     let fixture = Fixture::new();
     let run_id = fixture.start("a", QUERY);
     for (cols, rows) in [(0, 32), (96, 0), (0, 0)] {
-        let error = fixture.manager.resize("a", "dev", &run_id, cols, rows).unwrap_err();
+        let error = fixture
+            .manager
+            .resize("a", "dev", &run_id, cols, rows)
+            .unwrap_err();
         assert_eq!(error.kind(), std::io::ErrorKind::InvalidInput);
     }
     fixture.measure("a", &run_id, "unchanged", 80, 24);
