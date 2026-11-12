@@ -1,0 +1,49 @@
+{
+  "producer": "Conductor Rebuild",
+  "candidate": "NOTIFY-MENTION-PERMISSION-C18-03",
+  "baseline_commit": "869d6efad0cdeb6a889538978f3e6416f0e3a2c2",
+  "source_type": "Retained Conductor 0.87.6 real-app REA extraction, re-read on sven m5 max 2026-11-12; no extracted code execution",
+  "asset": {
+    "name": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+  },
+  "spans": [
+    {
+      "name": "mention-row",
+      "path": "reference/mention-row.txt",
+      "utf8_half_open": [
+        10711931,
+        10712245
+      ],
+      "bytes": 314,
+      "sha256": "f3df52e9d9dc324dc96f7a68f79097a424b1550a8dc5a52d52d70e657fa7e440"
+    },
+    {
+      "name": "mei",
+      "path": "reference/mei.txt",
+      "utf8_half_open": [
+        10707680,
+        10708400
+      ],
+      "bytes": 720,
+      "sha256": "5104c0c6c9868e5d8da6ddb26b27651e98435b9902dc3d0d273dbbf466cd8389"
+    }
+  ],
+  "joins": [
+    "Registry mention_notifications_enabled renders mei with same settingKey",
+    "mei skips permission when disabling; enabling awaits U9r/H9r, reports exact denial and returns before writer on denial",
+    "U9r/H9r→Aue/Iue retained verified aliases and index helpers are unchanged in ../reference and ../provenance.json",
+    "Current-main GeneralPage mention row instead renders generic PrefSwitchRow",
+    "Generic PrefSwitchRow saves withBoolPref synchronously, without permission helper or denial feedback"
+  ],
+  "rea_limitation": "Existing REA semantic-analysis heap exhaustion ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2 remains; no new semantic analysis or native observation",
+  "excluded": [
+    "notification delivery",
+    "team/cloud UI",
+    "provider",
+    "native/runtime",
+    "fixed package #992",
+    "all existing frozen fixtures"
+  ]
+}

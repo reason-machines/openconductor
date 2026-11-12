@@ -210,7 +210,7 @@ pub async fn codex_prompt(
     model: Option<String>,
     effort: Option<String>,
     fast_mode: Option<bool>,
-    on_handoff: Option<tauri::ipc::Channel<()>>,
+    on_handoff: tauri::ipc::Channel<()>,
 ) -> Result<TurnEnd, String> {
     let runner = state.get(&chat_id)?;
     let effort = prompt_effort(model.as_deref(), effort, || {
@@ -228,11 +228,9 @@ pub async fn codex_prompt(
             effort,
             fast_mode,
         },
-        on_handoff.map(|channel| {
-            Box::new(move || {
-                let _ = channel.send(());
-            }) as Box<dyn FnOnce() + Send>
-        }),
+        Some(Box::new(move || {
+            let _ = on_handoff.send(());
+        })),
     );
     tauri::async_runtime::spawn_blocking(move || {
         end.recv()

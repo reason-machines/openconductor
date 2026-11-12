@@ -1,0 +1,38 @@
+{
+  "producer": "Conductor Rebuild",
+  "main": "2ffcb278ff76c92716e98c5f9de6f90b49027b39",
+  "grant": "e8260a3b-d50a-4592-ab49-1bbef9c53289",
+  "baseline": {
+    "exit": 1,
+    "tests": 9,
+    "pass": 4,
+    "fail": 5,
+    "command": "env NODE_OPTIONS=--max-old-space-size=768 nice -n19 timeout --kill-after=5s 90s node --test --test-concurrency=1 --test-reporter=tap src/components/workspaceBranchPrefix.test.ts"
+  },
+  "candidate": {
+    "exit": 0,
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "identicalCommand": true
+  },
+  "adjacent": {
+    "exit": 0,
+    "tests": 45,
+    "pass": 45,
+    "fail": 0,
+    "command": "nice -n19 timeout 90s node --max-old-space-size=768 --experimental-strip-types --test --test-concurrency=1 src/components/workspaceBranchHeader.test.ts src/components/sidebarLabel.test.ts src/workspace/naming.test.ts"
+  },
+  "original9_sha256": "894e0f32379cf3bade2d18f7b04b373ff62eab3a002dbeec8f05be1dff8bc3ce",
+  "ownjobs": [],
+  "releasedAt": "2026-11-12T16:55:54.001336+00:00",
+  "limits": [
+    "No browser/native/package/provider/build/typecheck run",
+    "No original Conductor runtime parity claim; retained REA source plus mounted React regressions only",
+    "Original9 does not exhaust every prefix setting domain",
+    "No Title4/OptionArrow13/recency execution grant consumed"
+  ],
+  "red.tap": "afba18defc1bc4b38e63717fc40ea93e3b6a16187892d8aa653946d74fbae508",
+  "green.tap": "772cd14193acadfa7dc5536b6fa55c34ef5e4e87e8dc0d060e8d403e0db42a29",
+  "adjacent.tap": "77d8e16d3dd2ce5319e8d65af5c56b249880fac5bacecfb11f8939dfbde3aad0"
+}

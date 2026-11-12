@@ -1,0 +1,27 @@
+{
+  "candidate": "NOTIFY-MENTION-PERMISSION-C18-03",
+  "owner": "c18e1b05-4951-4a98-a90b-a9f7405ecc2d",
+  "ledger_owner": "ddfc6518-d50f-46a6-b83c-c3a18aa07e43",
+  "ledger_receipt": "a7f4d3b4-fca8-4175-8f02-6e68730d4ea1",
+  "source_lease": "CLEARED_SOLE_OWNER",
+  "allowed_product_hunks": [
+    "src/settings/GeneralPage.tsx existing prefs import",
+    "src/settings/GeneralPage.tsx mention notification row"
+  ],
+  "new_verification_paths": [
+    "src/settings/mentionNotificationPermission.test.ts",
+    "evidence/settings/notification-permission/mention-gate/"
+  ],
+  "preserve": [
+    "Existing notificationPermission/model/prefs modules",
+    "Agent notification handler and other settings rows",
+    "latestSettings save semantics",
+    "All 32 prior notification proof files and frozen controls",
+    "Existing acknowledgment-drain owner and package/native owners"
+  ],
+  "execution_owner": "acc3b5c5-8a01-407e-b474-42e914e3cf90",
+  "existing_execution_request": "6238a3c9",
+  "execution_admitted": false,
+  "runtime_run": false,
+  "native_run": false
+}

@@ -1,0 +1,438 @@
+{
+  "author": "Conductor Rebuild",
+  "prepared_at_utc": "2026-11-12T15:27:14.886149+00:00",
+  "main_checked": "9c276e2e86c0bd7ed97c8ccd0467f30c7a8ebcab",
+  "head_checked": "f182f28cfbf076cd3794933b04bacc8cfc1da59f",
+  "branch": "reason/openconductor-sol-termin-1f14fa82",
+  "rea_acquisition": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+  "reference_status": "Historical retained real-app REA source evidence, revalidated byte-for-byte; not a new native observation",
+  "reference_assets": [
+    {
+      "asset": "renderer",
+      "name": "renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "asset": "index",
+      "name": "index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "reference_spans": [
+    {
+      "asset": "renderer",
+      "name": "gno",
+      "path": "reference/gno.txt",
+      "utf8_half_open": [
+        6926664,
+        6929046
+      ],
+      "bytes": 2382,
+      "sha256": "647b58ff6d4712742e8946fdf3d8ef2bb31e578b3047a7d0f0a9384395ea7db3"
+    },
+    {
+      "asset": "renderer",
+      "name": "OJs",
+      "path": "reference/OJs.txt",
+      "utf8_half_open": [
+        6571868,
+        6572718
+      ],
+      "bytes": 850,
+      "sha256": "5690f01ab02ec3aa205005c2775965062bbdcef532d855a294e14a719095dd41"
+    },
+    {
+      "asset": "renderer",
+      "name": "xEi",
+      "path": "reference/xEi.txt",
+      "utf8_half_open": [
+        6568897,
+        6571703
+      ],
+      "bytes": 2806,
+      "sha256": "c9eafaa506a034b54ffb3e6f82f0635e7509d7a7e9672fc4aaca171b09303bc3"
+    },
+    {
+      "asset": "renderer",
+      "name": "AJs",
+      "path": "reference/AJs.txt",
+      "utf8_half_open": [
+        6571703,
+        6571748
+      ],
+      "bytes": 45,
+      "sha256": "2a35b68dafaa319ea940d805be477f8002d9bc3aa0c439cfe9d84752af590f5e"
+    },
+    {
+      "asset": "renderer",
+      "name": "aSa",
+      "path": "reference/aSa.txt",
+      "utf8_half_open": [
+        11170916,
+        11171573
+      ],
+      "bytes": 657,
+      "sha256": "68f370d7469b65a71859999fe41df5b274073483a74d21f2874fa84daa62ecce"
+    },
+    {
+      "asset": "renderer",
+      "name": "lSa",
+      "path": "reference/lSa.txt",
+      "utf8_half_open": [
+        11171573,
+        11171911
+      ],
+      "bytes": 338,
+      "sha256": "cfab3b95d6f1316ab61b7016395f89925f66289ebe072451938c3f481c52ec2a"
+    },
+    {
+      "asset": "renderer",
+      "name": "uSa",
+      "path": "reference/uSa.txt",
+      "utf8_half_open": [
+        11171943,
+        11172105
+      ],
+      "bytes": 162,
+      "sha256": "09da707923a705cc9c8f93572eb11724514f8a7d2e75bc45d89020a36fedd4e9"
+    },
+    {
+      "asset": "renderer",
+      "name": "rSa",
+      "path": "reference/rSa.txt",
+      "utf8_half_open": [
+        11167486,
+        11170601
+      ],
+      "bytes": 3115,
+      "sha256": "55b02cfb58c1416fce68bf0cc9178e9b37bed4e03ccb0de73661b7787d99fc95"
+    },
+    {
+      "asset": "renderer",
+      "name": "w9e",
+      "path": "reference/w9e.txt",
+      "utf8_half_open": [
+        6919236,
+        6922665
+      ],
+      "bytes": 3429,
+      "sha256": "9766378d69a97254c9bc0d0732d4b70b4e820e943b5c22e88c6cd714ffd02d32"
+    },
+    {
+      "asset": "renderer",
+      "name": "dno",
+      "path": "reference/dno.txt",
+      "utf8_half_open": [
+        6915051,
+        6916770
+      ],
+      "bytes": 1719,
+      "sha256": "c1caf84211af0d4cdc09cc07d3b7ecfc9b0dde7cbfa84704e5f2ce24109fd318"
+    },
+    {
+      "asset": "renderer",
+      "name": "uno",
+      "path": "reference/uno.txt",
+      "utf8_half_open": [
+        6914630,
+        6915051
+      ],
+      "bytes": 421,
+      "sha256": "85acecc59c4b24eb7a08bf143dcdc68903fffba9180d78c83559bfea2f1eb35b"
+    },
+    {
+      "asset": "renderer",
+      "name": "cno",
+      "path": "reference/cno.txt",
+      "utf8_half_open": [
+        6914245,
+        6914630
+      ],
+      "bytes": 385,
+      "sha256": "d256449d670e3c7e000f82530a8d2cfb494986c8559831ac1b2f74a92ed35cd5"
+    },
+    {
+      "asset": "renderer",
+      "name": "lno",
+      "path": "reference/lno.txt",
+      "utf8_half_open": [
+        6913120,
+        6914245
+      ],
+      "bytes": 1125,
+      "sha256": "f0ce60ce9b64bb20c9526c841aec24bf2620c9c8bf1973dd083e218e8f4fd4a5"
+    },
+    {
+      "asset": "renderer",
+      "name": "ano",
+      "path": "reference/ano.txt",
+      "utf8_half_open": [
+        6912936,
+        6913087
+      ],
+      "bytes": 151,
+      "sha256": "16ea1cc81c8c4388e1e4596f3e91e1bce74ea61fd025e910f829b305fa01ff79"
+    },
+    {
+      "asset": "index",
+      "name": "terminal-registry",
+      "path": "reference/terminal-registry.txt",
+      "utf8_half_open": [
+        3235824,
+        3238055
+      ],
+      "bytes": 2231,
+      "sha256": "06ca95b44c6f281770cfcfbe91db8e39ed25dffbe9eedd267c531d1f3cbf9fd3"
+    },
+    {
+      "asset": "index",
+      "name": "confirm-wrapper",
+      "path": "reference/confirm-wrapper.txt",
+      "utf8_half_open": [
+        3473419,
+        3473668
+      ],
+      "bytes": 249,
+      "sha256": "7b7a97fc0c2ba75c05d977376df6e5fe19cfd02c3336a85a438c044c6f8a8f18"
+    },
+    {
+      "asset": "index",
+      "name": "open-wrapper",
+      "path": "reference/open-wrapper.txt",
+      "utf8_half_open": [
+        2543420,
+        2543494
+      ],
+      "bytes": 74,
+      "sha256": "0602e4646c67f7bc952c618aa736007efcca5dcac75450beb393e34a69811f54"
+    },
+    {
+      "asset": "renderer",
+      "name": "confirm-import-join",
+      "path": "reference/confirm-import-join.txt",
+      "utf8_half_open": [
+        57275,
+        57284
+      ],
+      "bytes": 9,
+      "sha256": "7d60c8a339a18b8cba7d46d2e8b5c0f6aea0f074dec70c471ce5d697625f8958"
+    },
+    {
+      "asset": "renderer",
+      "name": "open-import-join",
+      "path": "reference/open-import-join.txt",
+      "utf8_half_open": [
+        55716,
+        55724
+      ],
+      "bytes": 8,
+      "sha256": "851537e93cafa6a0ced2ec392c649c79aac23edf10649c10f53c45232cd44c5a"
+    },
+    {
+      "asset": "renderer",
+      "name": "terminal-registry-import-join",
+      "path": "reference/terminal-registry-import-join.txt",
+      "utf8_half_open": [
+        57236,
+        57244
+      ],
+      "bytes": 8,
+      "sha256": "1e92eb0abc75e1519656ec4bf873c2b213163f66a6deff71f2182e6fede28d44"
+    },
+    {
+      "asset": "index",
+      "name": "confirm-export-join",
+      "path": "reference/confirm-export-join.txt",
+      "utf8_half_open": [
+        3483918,
+        3483927
+      ],
+      "bytes": 9,
+      "sha256": "1f772463750d2544abe8af610dd83d9d0f6d25619e67cd4b8bde613481b52fd1"
+    },
+    {
+      "asset": "index",
+      "name": "open-export-join",
+      "path": "reference/open-export-join.txt",
+      "utf8_half_open": [
+        3482114,
+        3482123
+      ],
+      "bytes": 9,
+      "sha256": "9141a9550be7a24c042f7b7341e12c056ce2fd289d45b12a04f6c597728d5839"
+    },
+    {
+      "asset": "index",
+      "name": "terminal-registry-export-join",
+      "path": "reference/terminal-registry-export-join.txt",
+      "utf8_half_open": [
+        3483880,
+        3483888
+      ],
+      "bytes": 8,
+      "sha256": "960391331c3c835441e1261717616a0003a67ae9e1c0abdb4fe48480313ac71f"
+    },
+    {
+      "asset": "renderer",
+      "name": "setup-output-call",
+      "path": "reference/setup-output-call.txt",
+      "utf8_half_open": [
+        7193069,
+        7193176
+      ],
+      "bytes": 107,
+      "sha256": "f171c3aa850421ac704acc245a6f59291d13d222acc975b5177a051c81486368"
+    },
+    {
+      "asset": "renderer",
+      "name": "run-output-call",
+      "path": "reference/run-output-call.txt",
+      "utf8_half_open": [
+        7197564,
+        7197670
+      ],
+      "bytes": 106,
+      "sha256": "79b678d8f2dc8a0784344b21810124a0ef65049f8a17fbf14d798f418d5d769b"
+    },
+    {
+      "asset": "renderer",
+      "path": "reference/nro.txt",
+      "utf8_half_open": [
+        7170202,
+        7199568
+      ],
+      "bytes": 29366,
+      "sha256": "23793ebe9e29a0e8aa80e10447211af5db04b058bebb4b713724d8571867c6c5"
+    },
+    {
+      "asset": "renderer",
+      "path": "reference/d1e.txt",
+      "utf8_half_open": [
+        6929046,
+        6930321
+      ],
+      "bytes": 1275,
+      "sha256": "a6969b63c3f6b5f087cc6f89c6c885447cf936f0e8c72bb2d8ba6518b12c5826"
+    },
+    {
+      "asset": "renderer",
+      "path": "reference/eSa.txt",
+      "utf8_half_open": [
+        11160762,
+        11165279
+      ],
+      "bytes": 4517,
+      "sha256": "7046b53ab7a925101dea1b4ed8aabaf67fe39d6842a9742efb4bf76d502548a4"
+    }
+  ],
+  "fixture_v1_sha256": "c887d64ea9bf60847c76cb1e1eb53e267a70504b3be259f5a7179f819a2b8f85",
+  "fixture_v2_sha256": "2c5b3e9f3074d743531169870ea0131e210e90a6478590ee5d294787126127f0",
+  "unchanged_ten_case_tail_sha256": "223bdeee7cf71cf2ca24f3078f1a97d397dfc860f0583ffae6b7a1a07110a471",
+  "candidate_sha256": "1488c5c247527b2608310a201f478801a50f9d0f500edef2b71b55ce378c1a70",
+  "candidate_patch_sha256": "2c096a9b3f0f4dbdd55eae7227b861911566119eb430e3638dd48b5275b319eb",
+  "six_loader_boundaries_patch_sha256": "98e7fb10edac5eabed2ee09a6efd4c21e0ee3c48c2f95e58021684f0e57a3492",
+  "existing_consumer_loaders": [
+    {
+      "path": "src/scripts/configContext.test.ts",
+      "sha256": "04f6c171d6b49ef746aafd15ac25e6764060eddeae47117170693977fcebf4c5",
+      "mode": "Caller-level test; component replaced at existing explicit boundary"
+    },
+    {
+      "path": "src/scripts/inAppPreview.test.ts",
+      "sha256": "0f9fa307f49ba4788bf3a531764808344d9abad8bb798634951657316cc01cb5",
+      "mode": "Caller-level test; component replaced at existing explicit boundary"
+    },
+    {
+      "path": "src/scripts/inputOrdering.test.ts",
+      "sha256": "b0ba63e169580c98f739dea06bc9f30146b3503f5030d5dae6d08ce43ceb7a53",
+      "mode": "Real component; sealed fail-fast import-boundary additions only"
+    },
+    {
+      "path": "src/scripts/outputCopy.test.ts",
+      "sha256": "77b7a37fd799c41683a4d2a0c71f91448d6b67182da1b7aa69be74df9dc239e5",
+      "mode": "Real component; existing actual dialog/backend loader and fail-fast native IPC"
+    },
+    {
+      "path": "src/scripts/outputCursor.test.ts",
+      "sha256": "389728b652cfc0956a2af7d18ab85bd8dd4e6487f9a3b02f9c60c952364f758d",
+      "mode": "Real component; sealed fail-fast import-boundary additions only"
+    },
+    {
+      "path": "src/scripts/outputUnicode.test.ts",
+      "sha256": "9a0af6dd749042fe89e9f36e85ce0263e01764f2665dd7f400691d31b271729f",
+      "mode": "Real component; sealed fail-fast import-boundary additions only"
+    },
+    {
+      "path": "src/scripts/previewEnvContext.test.ts",
+      "sha256": "07fd6fab03f73033b31dd32432c5ebeb5e4eadcd244fe850db1719241115fa2e",
+      "mode": "Caller-level test; component replaced at existing explicit boundary"
+    },
+    {
+      "path": "src/scripts/runActionErrorContext.test.ts",
+      "sha256": "1d6fd68c6743517fc21a60023339a440f5b65aae53d87b472e96f30b4fed2ee6",
+      "mode": "Caller-level test; component replaced at existing explicit boundary"
+    },
+    {
+      "path": "src/scripts/runCompletion.test.ts",
+      "sha256": "3fb1b9bad41e2e2ece03b844a6c6b5410d1a939c12cd3fbedb00c7f8bb0b3234",
+      "mode": "Caller-level test; component replaced at existing explicit boundary"
+    },
+    {
+      "path": "src/scripts/runOutputSelection.test.ts",
+      "sha256": "4fa88980ea767ebfbf9e46fe208b9129295303f52754cf9183464c91f78c044f",
+      "mode": "Real component; sealed fail-fast import-boundary additions only"
+    },
+    {
+      "path": "src/scripts/runSelectionHistory.test.ts",
+      "sha256": "d4709430a75fb06cbbed53de292aecd0632a32421c007d8023f64bbd8eef101e",
+      "mode": "Caller-level test; component replaced at existing explicit boundary"
+    },
+    {
+      "path": "src/scripts/runTaskMenu.test.ts",
+      "sha256": "0e22db36d28e32759a4d50ae81a3f2c2ce62758db3eb8b3eca03a2a1c3d22336",
+      "mode": "Caller-level test; component replaced at existing explicit boundary"
+    },
+    {
+      "path": "src/scripts/runningInput.test.ts",
+      "sha256": "5f02c1af0f5753a219e7749543beb6c2b6f6671d64c68a1bd9de1c43db8bdda1",
+      "mode": "Real component; sealed fail-fast import-boundary additions only"
+    },
+    {
+      "path": "src/scripts/runningResize.test.ts",
+      "sha256": "cf089b503b287d3e221eeda2360d45779f04c5696294696ab53d2f0d8a4bf2c9",
+      "mode": "Real component; sealed fail-fast import-boundary additions only"
+    },
+    {
+      "path": "src/scripts/setupContext.test.ts",
+      "sha256": "49f9e52bd5fbcbd3888e26ecbeb259fe1c6d4c5914547648c0b716e650b1a74d",
+      "mode": "Caller-level test; component replaced at existing explicit boundary"
+    },
+    {
+      "path": "src/scripts/spotlightActionContext.test.ts",
+      "sha256": "bc28e68ae0f7f9dc504e6dd22b4f0aae336948f4ab7c2562c2daec044e635f6f",
+      "mode": "Caller-level test; component replaced at existing explicit boundary"
+    }
+  ],
+  "contract": [
+    "Encoded terminal links require Command-click.",
+    "Only valid HTTP and HTTPS URLs are eligible.",
+    "Native warning resolution precedes native opening.",
+    "Cancellation and invalid targets never open.",
+    "Dialog/open failures are handled; existing transcript/disposal behavior is retained."
+  ],
+  "product_scope": [
+    "src/components/ScriptOutput.tsx imports and Terminal linkHandler only"
+  ],
+  "preserved": [
+    "backend.openUrl",
+    "Run and Setup ordering",
+    "Spotlight stopped-log projection",
+    "appearance and cleanup",
+    "fixed992 cut"
+  ],
+  "runtime": "NOT_RUN; no runtime grant is implied by this preparation",
+  "native_package": "NOT_RUN; actual OSC8 parsing, native warning presentation, external opening and rendering unverified",
+  "source_check": "PASS retained spans, all 16 current consumer loaders, six reversible support hunks and unchanged ten-case tail"
+}

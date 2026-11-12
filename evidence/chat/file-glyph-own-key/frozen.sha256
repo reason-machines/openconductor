@@ -1,0 +1,7 @@
+83aa6558c36f764c37f7a51d97960d7dc956bb4b2da2dae2ddb4e76c00ffe035  .ara-state/runtime/fileglyph-own-key/correction.patch
+546ecd20268cfc502bf2c82f3a51909f21c72520b3fc2d4e89f1931e6f38d1b4  src/features/chat/fileGlyph.test.ts
+a0b3c72df9c23c050285553f4b05b9a8b5e44e6836d2cb10d42ecfd0f0d97753  .ara-state/nextgap/read-image-gate/readImageDisclosure.test.ts
+adada617c0395960660e37e2c6dc48b7f9340d08811360665644dfdfd900bce9  .ara-state/nextgap/read-image-gate/readImageDisclosure.inputs.json
+67ba5b1de96c7f6068036408ec5d1f8fd7602f2d85a256822e5c2a2f25a96140  .ara-state/nextgap/read-image-gate/read-image-proposed.patch
+373b99da55eb4810567924a4d17fcce5b39aa3d39750abc082344004c8236532  .ara-state/nextgap/read-image-gate/freeze.json
+0714cb6ccdd0e8332f4ff08dc6b9ec0eb786e8f7b6b386663d31b9323579796a  package-lock.json

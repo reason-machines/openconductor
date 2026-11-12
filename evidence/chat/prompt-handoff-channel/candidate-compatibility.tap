@@ -1,0 +1,126 @@
+(node:175) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Claude sends base-chat local loadout picks on every prompt without changing another chat
+ok 1 - Claude sends base-chat local loadout picks on every prompt without changing another chat
+  ---
+  duration_ms: 2.609397
+  type: 'test'
+  ...
+# Subtest: Claude ignores a saved selection belonging to another agent
+ok 2 - Claude ignores a saved selection belonging to another agent
+  ---
+  duration_ms: 0.192999
+  type: 'test'
+  ...
+# Subtest: Claude handoff uses the real native channel after command completion
+ok 3 - Claude handoff uses the real native channel after command completion
+  ---
+  duration_ms: 0.431535
+  type: 'test'
+  ...
+# (node:191) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:191) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Codex adapter keeps V1 separate from exact inline attachment text through queued drain
+ok 4 - Codex adapter keeps V1 separate from exact inline attachment text through queued drain
+  ---
+  duration_ms: 48.958059
+  type: 'test'
+  ...
+# Subtest: Codex sends each picked local loadout on dispatch, including queued changes and absent effort
+ok 5 - Codex sends each picked local loadout on dispatch, including queued changes and absent effort
+  ---
+  duration_ms: 30.833446
+  type: 'test'
+  ...
+# Subtest: an MCP elicitation asks for attention once; a second one while it waits asks again; a re-send does not
+ok 6 - an MCP elicitation asks for attention once; a second one while it waits asks again; a re-send does not
+  ---
+  duration_ms: 80.613456
+  type: 'test'
+  ...
+# Subtest: a consent while a tool approval waits asks for attention, as does the approval
+ok 7 - a consent while a tool approval waits asks for attention, as does the approval
+  ---
+  duration_ms: 128.717343
+  type: 'test'
+  ...
+# (node:200) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: reason_prompt uses the request-scoped channel, not invocation completion
+ok 8 - reason_prompt uses the request-scoped channel, not invocation completion
+  ---
+  duration_ms: 3503.372925
+  type: 'test'
+  ...
+# Subtest: claude_prompt uses the request-scoped channel, not invocation completion
+ok 9 - claude_prompt uses the request-scoped channel, not invocation completion
+  ---
+  duration_ms: 19.699925
+  type: 'test'
+  ...
+# (node:208) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: optimistic submission and a completed command do not commit review comments without handoff
+ok 10 - optimistic submission and a completed command do not commit review comments without handoff
+  ---
+  duration_ms: 329.096553
+  type: 'test'
+  ...
+# Subtest: a successful transport handoff commits once and a later failed turn does not restore eligibility
+ok 11 - a successful transport handoff commits once and a later failed turn does not restore eligibility
+  ---
+  duration_ms: 1.390372
+  type: 'test'
+  ...
+# Subtest: a successful transport handoff commits once and a later cancelled turn does not restore eligibility
+ok 12 - a successful transport handoff commits once and a later cancelled turn does not restore eligibility
+  ---
+  duration_ms: 2.473488
+  type: 'test'
+  ...
+# Subtest: pre-handoff rejection keeps eligibility and retry carries the exact review payload
+ok 13 - pre-handoff rejection keeps eligibility and retry carries the exact review payload
+  ---
+  duration_ms: 1.498994
+  type: 'test'
+  ...
+# Subtest: stopping before the prompt transport is reached receives no handoff credit
+ok 14 - stopping before the prompt transport is reached receives no handoff credit
+  ---
+  duration_ms: 8.108841
+  type: 'test'
+  ...
+# Subtest: handoff commits the captured workspace and comment, independent of another visible chat
+ok 15 - handoff commits the captured workspace and comment, independent of another visible chat
+  ---
+  duration_ms: 1.133395
+  type: 'test'
+  ...
+# Subtest: queue insertion keeps eligibility until that queued prompt actually hands off
+ok 16 - queue insertion keeps eligibility until that queued prompt actually hands off
+  ---
+  duration_ms: 1.297893
+  type: 'test'
+  ...
+# Subtest: a successful handoff does not revive a superseded review comment
+ok 17 - a successful handoff does not revive a superseded review comment
+  ---
+  duration_ms: 0.89898
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 50263.91865

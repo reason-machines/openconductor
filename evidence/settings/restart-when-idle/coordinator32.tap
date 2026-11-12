@@ -1,0 +1,206 @@
+(node:79) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# (node:86) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: disabled preference only reports the downloaded update
+ok 1 - disabled preference only reports the downloaded update
+  ---
+  duration_ms: 2.052627
+  type: 'test'
+  ...
+# Subtest: enabled preference requires known readiness and serial install, acknowledged persistence, restart
+ok 2 - enabled preference requires known readiness and serial install, acknowledged persistence, restart
+  ---
+  duration_ms: 0.383301
+  type: 'test'
+  ...
+# Subtest: readiness guard 0 prevents starting an automatic install
+ok 3 - readiness guard 0 prevents starting an automatic install
+  ---
+  duration_ms: 0.197658
+  type: 'test'
+  ...
+# Subtest: readiness guard 0 becoming blocked during install defers restart without reinstalling
+ok 4 - readiness guard 0 becoming blocked during install defers restart without reinstalling
+  ---
+  duration_ms: 0.337556
+  type: 'test'
+  ...
+# Subtest: readiness guard 0 becoming blocked during drain defers restart and requires a fresh drain
+ok 5 - readiness guard 0 becoming blocked during drain defers restart and requires a fresh drain
+  ---
+  duration_ms: 0.259773
+  type: 'test'
+  ...
+# Subtest: readiness guard 1 prevents starting an automatic install
+ok 6 - readiness guard 1 prevents starting an automatic install
+  ---
+  duration_ms: 0.213227
+  type: 'test'
+  ...
+# Subtest: readiness guard 1 becoming blocked during install defers restart without reinstalling
+ok 7 - readiness guard 1 becoming blocked during install defers restart without reinstalling
+  ---
+  duration_ms: 0.147522
+  type: 'test'
+  ...
+# Subtest: readiness guard 1 becoming blocked during drain defers restart and requires a fresh drain
+ok 8 - readiness guard 1 becoming blocked during drain defers restart and requires a fresh drain
+  ---
+  duration_ms: 0.146778
+  type: 'test'
+  ...
+# Subtest: readiness guard 2 prevents starting an automatic install
+ok 9 - readiness guard 2 prevents starting an automatic install
+  ---
+  duration_ms: 0.339017
+  type: 'test'
+  ...
+# Subtest: readiness guard 2 becoming blocked during install defers restart without reinstalling
+ok 10 - readiness guard 2 becoming blocked during install defers restart without reinstalling
+  ---
+  duration_ms: 0.37032
+  type: 'test'
+  ...
+# Subtest: readiness guard 2 becoming blocked during drain defers restart and requires a fresh drain
+ok 11 - readiness guard 2 becoming blocked during drain defers restart and requires a fresh drain
+  ---
+  duration_ms: 0.203098
+  type: 'test'
+  ...
+# Subtest: readiness guard 3 prevents starting an automatic install
+ok 12 - readiness guard 3 prevents starting an automatic install
+  ---
+  duration_ms: 0.162955
+  type: 'test'
+  ...
+# Subtest: readiness guard 3 becoming blocked during install defers restart without reinstalling
+ok 13 - readiness guard 3 becoming blocked during install defers restart without reinstalling
+  ---
+  duration_ms: 0.117837
+  type: 'test'
+  ...
+# Subtest: readiness guard 3 becoming blocked during drain defers restart and requires a fresh drain
+ok 14 - readiness guard 3 becoming blocked during drain defers restart and requires a fresh drain
+  ---
+  duration_ms: 0.125473
+  type: 'test'
+  ...
+# Subtest: readiness guard 4 prevents starting an automatic install
+ok 15 - readiness guard 4 prevents starting an automatic install
+  ---
+  duration_ms: 0.107797
+  type: 'test'
+  ...
+# Subtest: readiness guard 4 becoming blocked during install defers restart without reinstalling
+ok 16 - readiness guard 4 becoming blocked during install defers restart without reinstalling
+  ---
+  duration_ms: 0.222097
+  type: 'test'
+  ...
+# Subtest: readiness guard 4 becoming blocked during drain defers restart and requires a fresh drain
+ok 17 - readiness guard 4 becoming blocked during drain defers restart and requires a fresh drain
+  ---
+  duration_ms: 0.15149
+  type: 'test'
+  ...
+# Subtest: readiness guard 5 prevents starting an automatic install
+ok 18 - readiness guard 5 prevents starting an automatic install
+  ---
+  duration_ms: 0.167979
+  type: 'test'
+  ...
+# Subtest: readiness guard 5 becoming blocked during install defers restart without reinstalling
+ok 19 - readiness guard 5 becoming blocked during install defers restart without reinstalling
+  ---
+  duration_ms: 0.115513
+  type: 'test'
+  ...
+# Subtest: readiness guard 5 becoming blocked during drain defers restart and requires a fresh drain
+ok 20 - readiness guard 5 becoming blocked during drain defers restart and requires a fresh drain
+  ---
+  duration_ms: 0.120118
+  type: 'test'
+  ...
+# Subtest: readiness guard 6 prevents starting an automatic install
+ok 21 - readiness guard 6 prevents starting an automatic install
+  ---
+  duration_ms: 0.104621
+  type: 'test'
+  ...
+# Subtest: readiness guard 6 becoming blocked during install defers restart without reinstalling
+ok 22 - readiness guard 6 becoming blocked during install defers restart without reinstalling
+  ---
+  duration_ms: 0.13458
+  type: 'test'
+  ...
+# Subtest: readiness guard 6 becoming blocked during drain defers restart and requires a fresh drain
+ok 23 - readiness guard 6 becoming blocked during drain defers restart and requires a fresh drain
+  ---
+  duration_ms: 1.007835
+  type: 'test'
+  ...
+# Subtest: duplicate download and idle observations do not duplicate notification or restart
+ok 24 - duplicate download and idle observations do not duplicate notification or restart
+  ---
+  duration_ms: 0.206141
+  type: 'test'
+  ...
+# Subtest: the arm is consumed before awaiting installation
+ok 25 - the arm is consumed before awaiting installation
+  ---
+  duration_ms: 0.170389
+  type: 'test'
+  ...
+# Subtest: restart does not run until the persistence acknowledgment settles
+ok 26 - restart does not run until the persistence acknowledgment settles
+  ---
+  duration_ms: 0.148185
+  type: 'test'
+  ...
+# Subtest: install rejection blocks later stages and does not silently rearm
+ok 27 - install rejection blocks later stages and does not silently rearm
+  ---
+  duration_ms: 0.184279
+  type: 'test'
+  ...
+# Subtest: flush rejection blocks later stages and does not silently rearm
+ok 28 - flush rejection blocks later stages and does not silently rearm
+  ---
+  duration_ms: 0.104494
+  type: 'test'
+  ...
+# Subtest: restart rejection blocks later stages and does not silently rearm
+ok 29 - restart rejection blocks later stages and does not silently rearm
+  ---
+  duration_ms: 0.104084
+  type: 'test'
+  ...
+# Subtest: dispose before idle prevents any attempt
+ok 30 - dispose before idle prevents any attempt
+  ---
+  duration_ms: 0.079964
+  type: 'test'
+  ...
+# Subtest: dispose during install permits no later side effect
+ok 31 - dispose during install permits no later side effect
+  ---
+  duration_ms: 0.123103
+  type: 'test'
+  ...
+# Subtest: dispose during flush permits no later side effect
+ok 32 - dispose during flush permits no later side effect
+  ---
+  duration_ms: 0.090509
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 183.510038

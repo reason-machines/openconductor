@@ -1,0 +1,1 @@
+function btt(t,e){return e.some(s=>na(s).some(n=>n.type==="tool_result"&&n.tool_use_id===t&&n.is_error===!0))}

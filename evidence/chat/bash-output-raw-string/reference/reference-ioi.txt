@@ -1,0 +1,1 @@
+function ioi(t){return{content:t.content,is_error:t.is_error}}

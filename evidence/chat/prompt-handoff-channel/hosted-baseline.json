@@ -1,0 +1,46 @@
+{
+  "run": {
+    "id": 43265843263,
+    "workflow_id": 407995028,
+    "repository_id": 1446810994,
+    "head_repository_id": 1446810994,
+    "workflow_name": "Package (macOS)",
+    "workflow_path": ".github/workflows/package-macos.yml",
+    "display_title": "Package (macOS)",
+    "event": "workflow_dispatch",
+    "status": "completed",
+    "conclusion": "failure",
+    "head_branch": "main",
+    "head_sha": "392b0924406ba31bc011a084a4235d93f9bc2ba9",
+    "run_number": 1770,
+    "run_attempt": 1,
+    "actor": "reason-machines[bot]",
+    "triggering_actor": "reason-machines[bot]",
+    "created_at": "2026-11-12T17:06:14Z",
+    "updated_at": "2026-11-12T17:09:16Z",
+    "run_started_at": "2026-11-12T17:06:14Z",
+    "html_url": "https://github.com/reason-machines/openconductor/actions/runs/43265843263",
+    "pull_requests": []
+  },
+  "job_id": 131349068770,
+  "build_command": "scripts/package-macos.sh --identity -",
+  "exit": 1,
+  "errors": [
+    {
+      "line": 2284,
+      "text": "2026-11-12T17:09:03.1929990Z error[E0277]: the trait bound `Channel<()>: serde::Deserialize<'de>` is not satisfied"
+    },
+    {
+      "line": 2320,
+      "text": "2026-11-12T17:09:03.2382810Z error[E0277]: the trait bound `Channel<()>: serde::Deserialize<'de>` is not satisfied"
+    },
+    {
+      "line": 2356,
+      "text": "2026-11-12T17:09:03.2926530Z error[E0277]: the trait bound `Channel<()>: serde::Deserialize<'de>` is not satisfied"
+    }
+  ],
+  "source_introducer": "3c722bf1e (#1181)",
+  "current_main": "94a5aad810e9f0969e45fb6c7644d901023f917c",
+  "artifacts": [],
+  "note": "Observed hosted baseline failure, not a new local reproduction. All three CommandArg macro errors share the Option<Channel<()>> Deserialize requirement. See original run for full logs."
+}

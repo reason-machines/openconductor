@@ -12,6 +12,7 @@ import * as navigationSections from "../state/navigationSections.ts";
 import * as adapter from "./fromAppState.ts";
 import * as search from "./search/model.ts";
 import { GIT_PANEL_ACTIONS } from "./gitPanelActions.ts";
+import * as persistence from "../lib/persistence/producer.ts";
 
 const dependencies = createRequire(import.meta.url);
 const { act, create } = dependencies("react-test-renderer");
@@ -36,6 +37,7 @@ function evaluate(file: string, imports: Readonly<Record<string, unknown>>, expo
     ...globals, exports, URLSearchParams, Date, console,
     require(name: string) {
       if (name === "react" || name === "react/jsx-runtime") return dependencies(name);
+      if (name === "../lib/persistence/producer.ts") return persistence;
       assert.ok(name in imports, `Unexpected ${file} dependency: ${name}`);
       return imports[name];
     },
@@ -207,6 +209,7 @@ async function shellFixture(seed: AppState = empty, startup: StoreStartup = "rea
     "./components/Toast": { Toaster: inert, useToasts: () => ({ toasts: [], show: noop, dismiss: noop }) },
     "./features/pr/useArchiveOnMerge": { useArchiveOnMergeWatcher: noop },
     "./workspace/useSetupWatch": { useSetupWatch: noop },
+    "./features/updates/useUpdates": { useUpdates: noop },
     "./workspace/archive": { onArchiveEvent: () => noop },
     "./workspace/useInitIssues": { useInitIssues: noop },
     "./components/helpMenuItems": { CHANGELOG_URL: "unused", DOCS_URL: "unused" },

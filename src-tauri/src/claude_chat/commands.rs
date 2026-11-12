@@ -113,7 +113,7 @@ pub async fn claude_prompt(
     turn: Option<TurnArg>,
     workspace_id: Option<String>,
     options: Option<ChatOptions>,
-    on_handoff: Option<tauri::ipc::Channel<()>>,
+    on_handoff: tauri::ipc::Channel<()>,
 ) -> Result<Value, String> {
     let mut options = options.unwrap_or_default();
     let logical_id = crate::local_plan_mode::logical_chat_id(&chat_id).to_owned();
@@ -162,11 +162,9 @@ pub async fn claude_prompt(
                 &text,
                 &directories,
                 &options,
-                on_handoff.map(|channel| {
-                    Box::new(move || {
-                        let _ = channel.send(());
-                    }) as Box<dyn FnOnce() + Send>
-                }),
+                Some(Box::new(move || {
+                    let _ = on_handoff.send(());
+                })),
             )
         })
     })
