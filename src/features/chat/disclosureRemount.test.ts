@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { test } from "node:test";
@@ -109,6 +109,12 @@ test("tool disclosure remount: unchanged five-case baseline RED and candidate GR
       const result = spawnSync(process.execPath, [loader, stage, roots[stage], out], {
         cwd: root, env: stageEnv, encoding: "utf8", timeout: 150000, maxBuffer: 16 * 1024 * 1024,
       });
+      if (result.status !== 0) {
+        for (const suffix of ["tap", "stderr.txt"]) {
+          const diagnostic = join(out, `${stage}.${suffix}`);
+          if (existsSync(diagnostic)) console.log(`${stage} disclosure ${suffix}:\n${readFileSync(diagnostic, "utf8")}`);
+        }
+      }
       assert.equal(result.error, undefined, `${stage}: ${String(result.error)}`);
       assert.equal(result.signal, null, `${stage} replay must finish`);
       assert.equal(result.status, 0, `${stage} replay was not qualified:\n${result.stdout}\n${result.stderr}`);
