@@ -47,7 +47,7 @@ export function summaryLabel(s: Pick<ToolSummary, "toolCallsCount" | "otherMessa
 }
 
 function visible(part: PartView): boolean {
-  return part.kind === "tool" || part.text.trim().length > 0;
+  return part.kind === "tool" ? !part.hidden : part.text.trim().length > 0;
 }
 
 /** Index of the turn's final text part, or -1. */
@@ -79,7 +79,8 @@ function summarize(id: string, batch: KeyedPart[]): ToolSummary | undefined {
  * makes summary ids stable per turn.
  */
 export function groupParts(parts: KeyedPart[], keyPrefix: string, hasFinalText = true): GroupedPart[] {
-  const items = parts.filter((p) => visible(p.part));
+  const visibleMessages = new Set(parts.filter((p) => visible(p.part)).map((p) => p.messageKey));
+  const items = parts.filter((p) => visible(p.part) || (p.part.kind === "tool" && p.part.hidden && visibleMessages.has(p.messageKey)));
   const preview = hasFinalText ? previewIndex(items) : -1;
   const out: GroupedPart[] = [];
   let batch: KeyedPart[] = [];
@@ -88,8 +89,9 @@ export function groupParts(parts: KeyedPart[], keyPrefix: string, hasFinalText =
     if (batch.length === 0) return;
     const messageCount = new Set(batch.map((p) => p.messageKey)).size;
     const summary = messageCount >= MIN_COLLAPSED_ITEMS ? summarize(`${keyPrefix}:collapse-${batchStart}`, batch) : undefined;
-    if (summary) out.push({ kind: "summary", summary, parts: batch });
-    else for (const p of batch) out.push({ kind: "part", ...p });
+    const displayed = batch.filter((p) => visible(p.part));
+    if (summary) out.push({ kind: "summary", summary, parts: displayed });
+    else for (const p of displayed) out.push({ kind: "part", ...p });
     batch = [];
   };
   items.forEach((part, i) => {
