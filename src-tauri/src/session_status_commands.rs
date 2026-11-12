@@ -30,10 +30,13 @@ pub struct SessionStatusDto {
     pub status: &'static str,
 }
 
-/// JS: `invoke("session_statuses")`: visible sessions that are not idle.
+/// JS: `invoke("session_statuses", { includeHidden? })`; visible-only by default.
 #[tauri::command]
-pub async fn session_statuses(db: State<'_, Db>) -> Result<Vec<SessionStatusDto>, String> {
-    let rows = sessions::active_statuses(&db.0)
+pub async fn session_statuses(
+    db: State<'_, Db>,
+    include_hidden: Option<bool>,
+) -> Result<Vec<SessionStatusDto>, String> {
+    let rows = status_rows(&db.0, include_hidden)
         .await
         .map_err(|e| e.to_string())?;
     Ok(rows
@@ -44,6 +47,17 @@ pub async fn session_statuses(db: State<'_, Db>) -> Result<Vec<SessionStatusDto>
             status: r.status.as_str(),
         })
         .collect())
+}
+
+async fn status_rows(
+    pool: &openconductor_db::SqlitePool,
+    include_hidden: Option<bool>,
+) -> openconductor_db::Result<Vec<sessions::ActiveStatus>> {
+    if include_hidden.unwrap_or(false) {
+        sessions::all_active_statuses(pool).await
+    } else {
+        sessions::active_statuses(pool).await
+    }
 }
 
 /// JS: `invoke("session_set_status", { chatId, workspaceId, status })`.
@@ -67,4 +81,36 @@ pub async fn session_set_status(
         status: parsed.as_str(),
     };
     app.emit(EVENT, dto).map_err(|e| e.to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::status_rows;
+
+    #[tokio::test]
+    async fn omitted_and_false_visibility_options_preserve_the_default_query() {
+        let pool = openconductor_db::open_in_memory().await.unwrap();
+        for (id, hidden) in [("visible", false), ("hidden", true)] {
+            sqlx::query("INSERT INTO sessions (id, status, is_hidden) VALUES (?, 'working', ?)")
+                .bind(id)
+                .bind(hidden)
+                .execute(&pool)
+                .await
+                .unwrap();
+        }
+        let legacy = openconductor_db::sessions::active_statuses(&pool)
+            .await
+            .unwrap();
+        assert_eq!(legacy.len(), 1);
+        assert_eq!(status_rows(&pool, None).await.unwrap(), legacy);
+        assert_eq!(status_rows(&pool, Some(false)).await.unwrap(), legacy);
+        let all: Vec<_> = status_rows(&pool, Some(true))
+            .await
+            .unwrap()
+            .into_iter()
+            .map(|row| row.id)
+            .collect();
+        assert_eq!(all, ["hidden", "visible"]);
+        assert_eq!(status_rows(&pool, None).await.unwrap(), legacy);
+    }
 }
