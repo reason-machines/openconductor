@@ -2,8 +2,9 @@
 
 Conductor Rebuild compares the retained Conductor 0.87.6 frontend with main
 `021aeaa4027770258b4daae127bc829d1575d0ab`.
-This is a test-only baseline. Product code is unchanged and behavioral RED has
-not run yet.
+The frozen test-only baseline was published at `f16feeda5ccd7735be95aa615d7e70d18f7a7048`.
+Hosted TypeScript and Rust each reproduced four intended assertion failures
+and passed all four controls before the minimal helper correction.
 
 ## Source
 
@@ -47,9 +48,24 @@ Ordinary automatic hosted CI runs the fixtures with:
 - `rustc --edition 2021 -D warnings --cfg workspace_std_only --test mod.rs`
   followed by the resulting workspace test binary.
 
-Product changes must wait for the intended four failures and four passing
-controls in each boundary. A compilation or infrastructure failure is not RED.
-Every exact-head check and workflow must pass before merging the eventual fix.
+[TypeScript RED](hosted-red-typescript.json) records job `130901900767` in
+run `43133135117`; lines 18261–18403 show all four intended name assertions
+failing and all four controls passing. [Rust RED](hosted-red-rust.json) records
+job `130901900750` in run `43133135292` with the same four failures/four controls.
+The typecheck passed, but the build step was skipped after the test failures.
+The [separate shared baseline failure](hosted-shared-baseline-failure.json) is
+`disclosureRemount.test.ts` rejecting drift in `src/scripts/api.ts`. Its repair
+belongs to PR #1109 and is not part of this clone correction.
+
+The candidate changes only `cloneTargetName` and `repo_name_from_url`. Both
+lowercase the derived remote basename, replace non-`[a-z0-9-_.]` characters
+with hyphens, collapse hyphens and trim edge hyphens in that order. Local
+path basenames remain unchanged. Rust uses Unicode lowercasing rather than
+assuming ASCII lowercasing is equivalent. No exhaustive cross-runtime Unicode
+equivalence is claimed. Raw URL transport, parent paths, uniqueness and safety
+checks are unchanged; neither frozen fixture nor reference identity is edited.
+Every exact-head check and workflow must pass before merging the fix, including
+the shared baseline repair after it lands on main.
 
 ## Verification and limits
 
@@ -62,5 +78,6 @@ The historical REA renderer semantic analysis exhausted heap. This pass reads
 identity-verified retained bytes as data and does not execute Conductor code.
 No fresh binary identity, local Node or Cargo test, native launch, physical
 input, picker, provider, real cloning or visual acceptance was exercised.
-No screenshot exists because this baseline changes no product UI and native
-acceptance is owned separately. Package verification follows a green merge.
+No screenshot exists because this lane has no local runtime/native admission;
+native acceptance is owned separately. Candidate GREEN and consuming-main
+package verification remain pending under the existing PR subscription.
