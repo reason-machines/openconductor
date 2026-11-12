@@ -78,6 +78,8 @@ pub struct ToolRow {
     pub status: ToolStatus,
     /// Output text (Reason wraps it in a code fence).
     pub output: Option<String>,
+    /// Original typed result content, independent of the display text.
+    pub raw_result: Option<Value>,
     pub diffs: Vec<Diff>,
     pub locations: Vec<MappedPath>,
     /// The provider's own tool name (`Grep`, `Read`, ...), when it says.
@@ -264,6 +266,7 @@ fn tool_row(u: &Value, ctx: UpdateContext) -> Option<ToolRow> {
         kind: u["kind"].as_str().unwrap_or("other").into(),
         status,
         output: None,
+        raw_result: None,
         diffs: Vec::new(),
         locations: Vec::new(),
         tool_name: [

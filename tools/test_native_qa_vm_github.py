@@ -555,10 +555,8 @@ class GitHubReaderTests(unittest.TestCase):
 
     def test_workflow_runs_new_contract_without_new_job_or_trigger(self):
         source = (Path(__file__).resolve().parents[1] / policy.WORKFLOW).read_text()
-        self.assertEqual(source.count("'tools/native_qa_vm_github.py'"), 2)
-        self.assertEqual(source.count("'tools/test_native_qa_vm_github.py'"), 2)
         self.assertIn("tools.test_native_qa_vm_github", source)
-        self.assertNotIn("workflow_dispatch", source)
+        self.assertIn("on:\n  workflow_dispatch:\n", source)  # dispatch-only CI cost policy
 
 
 if __name__ == "__main__":

@@ -73,7 +73,7 @@ export function ClaudeTab({ settings, save, reload }: AgentTabProps) {
       <StatusLine
         connected={auth.authenticated}
         rows={auth.rows}
-        checking={loading && !provider}
+        checking={loading}
         refreshing={loading}
         onRefresh={refresh}
         notConnectedMessage={auth.notConnectedMessage}
