@@ -449,7 +449,10 @@ export function useReviewComments(workspaceId: string, chat: ChatBridge & Compos
           }),
         ),
       ),
-    edit: (c, body) => run(store.edit(c.id, body)),
+    edit: (c, body) => run(store.edit(c.id, body).catch((e: unknown) => {
+      notify?.("error", `Failed to save comment: ${e instanceof Error ? e.message : String(e)}`);
+      throw e;
+    })),
     remove: (c) => run(store.remove(c.id)),
     resolve: (t, resolved) => run(store.resolve(threadKey(t.root), resolved)),
     // Conductor: "Comment resolved on GitHub", or "Failed to resolve comment: <reason>".
