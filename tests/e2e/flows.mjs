@@ -699,8 +699,9 @@ export const flows = [
       const secret = () => wd.execute("return document.querySelector('[data-testid=\"secret-value\"]')?.textContent ?? null;", []);
       await wd.waitFor("the masked key", async () => (await secret()) === "••••••••bAAA");
       await wd.waitFor("Connected", async () => (await textsOf(wd, '[data-testid="agent-auth-status"]'))[0]?.includes("Connected"));
-      if ((await wd.execute("return document.body.textContent.includes(arguments[0]);", [key]))) throw new Error("the key is on the page before Show");
-      await wd.click((await wd.findAll('button[aria-label="Show Anthropic API key"]'))[0]);
+      if ((await wd.execute("return document.body.textContent.includes(arguments[0]);", [key]))) throw new Error("the key is on the page before Reveal");
+      await wd.waitFor("the Reveal Anthropic API key button", async () => (await wd.findAll('button[aria-label="Reveal Anthropic API key"]')).length === 1);
+      await wd.click((await wd.findAll('button[aria-label="Reveal Anthropic API key"]'))[0]);
       await wd.waitFor("the revealed key", async () => (await secret()) === key);
       await wd.click((await wd.findAll('button[aria-label="Hide Anthropic API key"]'))[0]);
       await wd.waitFor("the key masked again", async () => (await secret()) === "••••••••bAAA");
