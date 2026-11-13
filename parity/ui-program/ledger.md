@@ -780,3 +780,51 @@ Merged 2026-11-13T09:04Z at `ed5fb635`. Native acceptance: **NOT_RUN** (ACC/E1 s
 ### Discrepancy note
 
 Coordinator message references "28 unavailable" of Q-01–Q-31. This lane's retained evidence gives: 10 verbatim (Q-22–Q-31) and 21 evidence-derived (Q-01–Q-21) = 31 total. If the coordinator counted only the verbatim-retained items as "available" and the evidence-derived ones as requiring further text delivery, that is 21 unavailable — not 28. The 7-item discrepancy is unresolved from source alone; coordinator `dcaa6e78` holds the authoritative count.
+
+## Diff/files evidence sweep + stale artifact cleanup, main `8416fc30d`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `de6c02f4`). No Mac launch, native capture, install, build, dispatch or runner. Static source-sweep and working-tree check only. REA artifacts SHA-256 unchanged from prior entries.
+
+### Evidence directory sweep (all 20 directories)
+
+All evidence directories in `evidence/diff/` and `evidence/files/` cross-checked against current main `8416fc30d`. Every directory maps to an already-merged or already-implemented feature:
+
+| Evidence dir | Merged/implemented via |
+|---|---|
+| `comment-cancel-dirty` | #926 — 28/28 node tests pass |
+| `comment-delete-confirmation` | `window.confirm` absent in current `ReviewComments.tsx`; 6/6 tests pass |
+| `comment-discard-dialog` | `DialogFrame` alert present lines 125–138 of `ReviewComments.tsx`; 28/28 lifecycle tests pass |
+| `pointer-cancel-selection` | #881 — `onPointerCancelCapture` at `FileDiffView.tsx:234` |
+| `selection-end-clear` | #887 — `else setSelection(null)` at `FileDiffView.tsx:197` |
+| `multi-anchor-drafts` | #1088 — `useState<Composing[]>([])` retains N drafts; 13/13 hosted green |
+| `file-copy-paths` | #858 — `fileCopyPaths.ts`, 5/5 after.tap pass |
+| `historical-chip` | chip colours via `renderApp` CSS tokens; hosted green |
+| `historical-large-file` | #1121 — 8/8 behavioral tests pass |
+| `turn-large-file` | #1143 — `fix(diff): apply the large-file policy to finished turns` |
+| `commit-history` | historical scope merged; 48 Rust + 113 Node tests pass |
+| `discard-alert` | #738 — `fix(diff): match the reference confirmation alert` |
+| `selected-reveal` | #1022 — `fix(diff): reveal active file ancestors in Changes tree` |
+| `empty-consumer` | #1013 — `fix(diff): distinguish initial loading and error states` |
+| `changes-menu-boundary` | `PopoverMenu.tsx:53` uses `el.offsetWidth/offsetHeight`; E2E asserts `< 1px delta` |
+| `wrap-lines-and-range-comments` | `wrapLines` localStorage vs Conductor settings DB — acknowledged gap, settings lane |
+| `grep-workspace` | #1257 — Rust command + frontend binding; 10 native cases with E1 |
+| `workspace-text` | #1208 — confined `WorkspaceFileView`; 94/94 node tests |
+| `markdown-preview` | Markdown rendered inline in `WorkspaceFileView` |
+
+### Stale artifact cleaned
+
+`src/features/diff/fileCommentCounts.test.ts` was an **untracked** working-tree file (never committed). It contained 11 duplicated lifecycle-test cases plus 1 stale assertion (`state === "sent"` after `addAll`) from the pre-#1181 design. The authoritative contract from #1181 is that adding to the composer does **not** mark state `"sent"` until actual prompt handoff. The stale file was deleted from the working tree; hosted CI was never affected.
+
+### Verification
+
+- `node --experimental-strip-types --test src/features/diff/*.test.ts`: **517/517 pass** (after stale file removed)
+- `npm run typecheck`: **pass**
+- `git status`: clean (only `.oc-tmp/` ephemeral dir)
+
+### Remaining wrap_lines gap
+
+`wrapLines` persists in `localStorage` (`OPTIONS_KEY`) in OpenConductor; Conductor uses `updateSetting("wrap_lines", value)` to its native settings table. All other diff view options also use localStorage. This is a known, documented gap in `evidence/diff/wrap-lines-and-range-comments.md`. It belongs to the settings lane; source-only resolution is not possible without the native settings schema.
+
+### Unowned implementable diff/files source gap
+
+**None** at `8416fc30d`. The 32 native behavioral items (Q-01–Q-32) remain with the sole native executor (E1). The `wrap_lines` settings-DB gap is settings-lane owned.
