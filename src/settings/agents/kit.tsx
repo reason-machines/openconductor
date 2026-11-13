@@ -251,7 +251,7 @@ export function SecretRow(props: {
             <button
               type="button"
               className="ag-btn ag-ghost ag-icon"
-              aria-label={shown ? `Hide ${label}` : `Show ${label}`}
+              aria-label={shown ? `Hide ${label}` : `Reveal ${label}`}
               aria-pressed={shown !== null}
               disabled={busy}
               onClick={() => (shown ? setShown(null) : run("show", async () => setShown(await reveal())))}
