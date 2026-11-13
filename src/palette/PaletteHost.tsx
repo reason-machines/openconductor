@@ -122,7 +122,7 @@ export function PaletteHost({ state, collapsedSections, dispatch, onOpenDialog, 
   const data = useMemo(() => {
     const entries = workspacePaletteData(state, recents, archived, settingEntries, apps ?? [], prefs.default_open_in);
     // Hide actions whose backing command is not yet wired (keeps palette clean until features land).
-    const ungated = new Set<string>([
+    const ungated = new Set([
       ...(commands.createSection ? [] : ["create-section", "move-to-section"]),
       ...(commands.searchInFiles ? [] : ["search-in-files"]),
       ...(commands.linkIssue ? [] : ["link-issue"]),
