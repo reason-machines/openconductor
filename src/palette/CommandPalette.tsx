@@ -86,6 +86,10 @@ const ICONS: Record<PaletteIcon, ConductorIconName> = {
   archive: "archive",
   file: "file-text",
   link: "link",
+  search: "search",
+  "git-pull-request": "git-pull-request",
+  "external-link": "external-link",
+  "circle-alert": "circle-alert",
 };
 
 /** Every chord bound to an action, as Conductor's `Ss` lists a key and its alternatives ("⌘B or ["). */

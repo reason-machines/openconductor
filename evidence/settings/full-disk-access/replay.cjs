@@ -58,6 +58,7 @@ function mount(c, { rejectOpen = false } = {}) {
     './notificationPermission': { notificationPermissionGranted: forbidden('notificationPermissionGranted') },
     './rows/AppPrefRows': { GeneralAppPrefRows: inert },
     './sound': { SOUND_OPTIONS: [{ value: 'none', label: 'None' }], playCompletionSound: forbidden('playCompletionSound') },
+    './SoundSelect': { SoundSelect: inert },
     './useSettingsOverrideStore': { useSettingsOverrideStore: () => ({ updateMany: forbidden('updateMany') }) },
   };
   const allowed = ['src/settings/GeneralPage.tsx', 'src/settings/controls.tsx', 'src/settings/model.ts',

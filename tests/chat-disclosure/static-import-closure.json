@@ -161,6 +161,7 @@
     "src/features/chat/CodexConsentCard",
     "src/features/chat/ComposerAttachmentChip",
     "src/features/chat/FileMentionMenu",
+    "src/features/chat/LinkIssueDialog",
     "src/features/chat/LinkedDirectoryPicker",
     "src/features/chat/NewChatButton",
     "src/features/chat/ResetChatDialog",

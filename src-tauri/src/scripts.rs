@@ -8,7 +8,7 @@ use oc_scripts::runner::RunStatus;
 use oc_scripts::service::{ScriptEvent, ScriptService, WorkspaceRef};
 use oc_scripts::setup::{SetupOutcome, SetupState};
 use serde::Serialize;
-use tauri::{AppHandle, Emitter, State};
+use tauri::{AppHandle, Emitter, Manager, State};
 // openconductor_db is a direct dependency of this crate (Cargo.toml) so we can
 // reference workspaces::update_setup_log and SqlitePool without going through tauri state.
 
