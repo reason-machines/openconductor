@@ -1,0 +1,1 @@
+function kms(t){return(t.state==="pending"||t.state==="ready_for_review")&&Tj(t)}

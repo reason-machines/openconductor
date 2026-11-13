@@ -1,0 +1,1 @@
+env NODE_OPTIONS=--max-old-space-size=1024 nice -n 19 timeout --kill-after=5s 180s npm run typecheck

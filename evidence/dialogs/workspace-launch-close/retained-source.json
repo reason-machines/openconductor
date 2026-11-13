@@ -1,0 +1,381 @@
+{
+  "producer": "Conductor Rebuild / 6013adf2-e94a-4a6d-9be7-bbd07622cf3c",
+  "checked_main": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+  "status": "QUALIFIED_RETAINED_DECLARATION_DIFFERENCE_NOT_RUNTIME_RED",
+  "qualified_input": {
+    "repository": "valid selected local repository",
+    "machine": "undefined",
+    "hostingTarget.kind": "local",
+    "custom_onStart": "undefined",
+    "readiness": "Ws true, no in-flight launch, no invalid section"
+  },
+  "timing_statement": "For an accepted local launch, close is requested after client pending registration and before invoking that launch creation mutation. This is not before any backend activity or observed native dismissal timing.",
+  "ownership_receipt": "publisher-state.json",
+  "assets": [
+    {
+      "asset": "renderer",
+      "parent": "artifacts/dialogs-icons-source-6013/renderApp-D_fmY7hW.js",
+      "bytes": 11600457,
+      "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde"
+    },
+    {
+      "asset": "index",
+      "parent": "artifacts/dialogs-icons-source-6013/index-BGEQ8YjU.js",
+      "bytes": 3493297,
+      "sha256": "b5b01f33fbbef68adcdda0de828a7735aebbf7f05f66f37e25333f3e1ed7dbf3"
+    }
+  ],
+  "spans": [
+    {
+      "path": "reference/pya.txt",
+      "bytes": 1157,
+      "sha256": "27d0a88943cd8de48af79a7b8abedb669c287aec6606fd498636ee890f1c87fd",
+      "name": "pya",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11048998,
+        11050155
+      ]
+    },
+    {
+      "path": "reference/WUi.txt",
+      "bytes": 415,
+      "sha256": "9985da403d9cc0790a90e3c581e52769ef76d4f721381f440c799bd2b06859e3",
+      "name": "WUi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11035007,
+        11035422
+      ]
+    },
+    {
+      "path": "reference/oya.txt",
+      "bytes": 13313,
+      "sha256": "5d1d20ebff606a7a1cedb8dd6989333df4f698cc74edfd6b5925dd3b0f2980f4",
+      "name": "oya",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11035422,
+        11048735
+      ]
+    },
+    {
+      "path": "reference/oya-launch-start.txt",
+      "bytes": 317,
+      "sha256": "46b47ca4e4b3c6adf11c6f8aeb86440ce996f9e007ef296882b3346d42a357aa",
+      "name": "oya-launch-start",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11040365,
+        11040682
+      ]
+    },
+    {
+      "path": "reference/dya.txt",
+      "bytes": 37,
+      "sha256": "4ae517907649208e0640e55514c793294926e287b54ee840429f97a6ad386c17",
+      "name": "dya",
+      "asset": "renderer",
+      "utf8_half_open": [
+        11048878,
+        11048915
+      ]
+    },
+    {
+      "path": "reference/Hji.txt",
+      "bytes": 9087,
+      "sha256": "3c5589cd46083bc08b635d4e752bfe1f93bc8456ae81e68c401dc6814948f567",
+      "name": "Hji",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9770840,
+        9779927
+      ]
+    },
+    {
+      "path": "reference/Hji-launch-callback.txt",
+      "bytes": 1170,
+      "sha256": "1305aa8613457cbb6875bd7078d803400e3964c5167ece42bea92d0074ba40a0",
+      "name": "Hji-launch-callback",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9774862,
+        9776032
+      ]
+    },
+    {
+      "path": "reference/sQo.txt",
+      "bytes": 1589,
+      "sha256": "33a7c02507fffa12e4d8a3f41d124c580010f0e9e4389c298f3bc373a201524c",
+      "name": "sQo",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9757994,
+        9759583
+      ]
+    },
+    {
+      "path": "reference/x1-import.txt",
+      "bytes": 8,
+      "sha256": "34a92caf94e7895c0d215df385eda7dfbc5052e2b56c83a30520697911966f0e",
+      "name": "x1-import",
+      "asset": "renderer",
+      "utf8_half_open": [
+        54661,
+        54669
+      ]
+    },
+    {
+      "path": "reference/HI-export.txt",
+      "bytes": 8,
+      "sha256": "2b2ef260bc3d4c4b091e121a03c245141398e35676d09fb5568da32f84497a3c",
+      "name": "HI-export",
+      "asset": "index",
+      "utf8_half_open": [
+        3481036,
+        3481044
+      ]
+    },
+    {
+      "path": "reference/HI.txt",
+      "bytes": 417,
+      "sha256": "5a904266c753baf688d438b953414141716ed65a82e0589b8557e8d7cabaee33",
+      "name": "HI",
+      "asset": "index",
+      "utf8_half_open": [
+        3260595,
+        3261012
+      ]
+    },
+    {
+      "path": "reference/dialog-id.txt",
+      "bytes": 24,
+      "sha256": "b7b15f08fe93cb80932454086b7b2c3b8eb92edb877c55b40dd14b8d8a33797e",
+      "name": "dialog-id",
+      "asset": "index",
+      "utf8_half_open": [
+        3261782,
+        3261806
+      ]
+    },
+    {
+      "path": "reference/kg.txt",
+      "bytes": 551,
+      "sha256": "b8f3f58001761178c81d975175f9d76bbf2a099dde2f97ebbeed7754fd4a4d00",
+      "name": "kg",
+      "asset": "renderer",
+      "utf8_half_open": [
+        1920422,
+        1920973
+      ]
+    },
+    {
+      "path": "reference/Hji-accept-guard-and-client-registration.txt",
+      "bytes": 491,
+      "sha256": "50a244edc33c395f69d508ac9ab8a1ac23ce23f1e5aefa010b0affd99b50f903",
+      "name": "Hji-accept-guard-and-client-registration",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9774862,
+        9775353
+      ]
+    },
+    {
+      "path": "reference/Hji-readiness-predicate.txt",
+      "bytes": 56,
+      "sha256": "38a96533e862cd8d8c0ecc8ce9eb0c1338412358b845ebd6db8da414478d4038",
+      "name": "Hji-readiness-predicate",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9774111,
+        9774167
+      ]
+    },
+    {
+      "path": "reference/Hji-primary-route.txt",
+      "bytes": 51,
+      "sha256": "15548729475cc5087d4ffbf67212c3fe6479c761a3de80875853a47b15d14ed0",
+      "name": "Hji-primary-route",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9776486,
+        9776537
+      ]
+    },
+    {
+      "path": "reference/Hji-creation-await.txt",
+      "bytes": 608,
+      "sha256": "6939fa3618705aad091e659dfce64e0cb6425cd4fe698ce783ae1d40f576cc32",
+      "name": "Hji-creation-await",
+      "asset": "renderer",
+      "utf8_half_open": [
+        9775353,
+        9775961
+      ]
+    },
+    {
+      "path": "reference/qCi.txt",
+      "bytes": 509,
+      "sha256": "00378c761eef9a664a211e4209a0866ce8bcabf0092512e1a383566c1d6ba68e",
+      "name": "qCi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7339267,
+        7339776
+      ]
+    },
+    {
+      "path": "reference/GCi.txt",
+      "bytes": 1742,
+      "sha256": "90a1292c67f965623a8a6714ec510e802c14af82ab228d036ac795ee777928a0",
+      "name": "GCi",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7336804,
+        7338546
+      ]
+    },
+    {
+      "path": "reference/GCi-creation-mutation.txt",
+      "bytes": 297,
+      "sha256": "f4598b7fcb90f8a84356a97d4b5b8ebe52efd11ffce061c3564dedea693ad0d5",
+      "name": "GCi-creation-mutation",
+      "asset": "renderer",
+      "utf8_half_open": [
+        7338143,
+        7338440
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "path": "current-main/src/components/CreateWorkspaceDialog.tsx",
+      "bytes": 2112,
+      "sha256": "9d6b207196a64cd5d3973bc9369a8121c93941be7df6126c689c4bb80d9a61db",
+      "source": "src/components/CreateWorkspaceDialog.tsx",
+      "commit": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "blob": "99d21397b11ef3d71d9991a2fe221e0d3a20f53e"
+    },
+    {
+      "path": "current-main/src/components/CreateWorkspaceComposer.tsx",
+      "bytes": 18882,
+      "sha256": "f5556c21dd0bea700fbce5f87d5338ab247a1c3873fdccc75c6e4a0dc2c068e8",
+      "source": "src/components/CreateWorkspaceComposer.tsx",
+      "commit": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "blob": "9c3d6acc062d41a238cfd8ad5549100cf098f928"
+    },
+    {
+      "path": "current-main/src/components/CreateWorkspacePage.tsx",
+      "bytes": 1745,
+      "sha256": "1d573e745deb194d2bceffe640d3d925d2856cf6518190199419d3d0b91b3370",
+      "source": "src/components/CreateWorkspacePage.tsx",
+      "commit": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "blob": "c0e303b589bc339389d0b65fc08fb87e6d54a577"
+    },
+    {
+      "path": "current-main/src/App.tsx",
+      "bytes": 38937,
+      "sha256": "5376811866211058d8ce2b1430ea38b7dbbaa6286631b742aeefae83a7017709",
+      "source": "src/App.tsx",
+      "commit": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "blob": "c498e6dc439ae6f30a54caeca78f8442a3d8b3fe"
+    },
+    {
+      "path": "current-main/src/workspace/createFlow.ts",
+      "bytes": 9693,
+      "sha256": "c8c44d5552fdbf1d91ec4f65496ba820ee30cb7895c34944f228e76ce95e4a1c",
+      "source": "src/workspace/createFlow.ts",
+      "commit": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "blob": "3a4f10c601f1eaecb035824b3bb1f6bb2182e742"
+    },
+    {
+      "path": "current-main/src/workspace/pendingLaunches.ts",
+      "bytes": 2188,
+      "sha256": "22371385923e5dd9ad15a7f3958d42beb587802ab6cffd308af543bf590f108e",
+      "source": "src/workspace/pendingLaunches.ts",
+      "commit": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "blob": "94bf515e771374b54b3021bb986b07cee9e466ff"
+    },
+    {
+      "path": "current-main/src/workspace/setupWatch.ts",
+      "bytes": 2164,
+      "sha256": "629b3adb5e34e0041c0e41886628a53098cfa822220d2b699604475146c6efa2",
+      "source": "src/workspace/setupWatch.ts",
+      "commit": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "blob": "19715a51be8a628621d63e23746386156b57d14f"
+    },
+    {
+      "path": "current-main/src/workspace/api.ts",
+      "bytes": 9892,
+      "sha256": "7ffebf424d3a6cd7e6be0086d8e9dd3e14b6c41b23365f6553bbb03f9e521899",
+      "source": "src/workspace/api.ts",
+      "commit": "f62f81ab601edb5be27a99e0a92882f13306e2aa",
+      "blob": "60f7d437196b0acc0ecee4539798c914bf0244c8"
+    }
+  ],
+  "frozen": [
+    {
+      "source": "evidence/dialogs/distinct-scout-6013/source/fixture.tsx",
+      "bytes": 1562,
+      "sha256": "51ca4ff835997d54f709b088e8bf74673e46ef71a6cf44382d33d4f12dc45973",
+      "matches_prior_pin": true
+    },
+    {
+      "source": "evidence/dialogs/distinct-scout-6013/source/regression.mjs",
+      "bytes": 2361,
+      "sha256": "03342e948e8591689df93e04395be993bf43cb485eb172a8dac720ac68287252",
+      "matches_prior_pin": true
+    },
+    {
+      "source": "evidence/dialogs/distinct-scout-6013/source/index.html",
+      "bytes": 302,
+      "sha256": "7860c3e9b0d6e6bb5198744f2d9fe4bf030100e3ba43373af5eb30271d46b5d9",
+      "matches_prior_pin": true
+    },
+    {
+      "source": "artifacts/dialog-execution-contract-6013/run-verifier.mjs",
+      "bytes": 2821,
+      "sha256": "1d5837ebc939cdfdc78250c5cec6c6187f72bc4c70a24c708e540ac802458ce8",
+      "matches_prior_pin": true
+    },
+    {
+      "source": "src/components/githubRepoPendingName.test.ts",
+      "bytes": 7949,
+      "sha256": "a8bb98baadc597aefd53f0f7ac7b23db02e52221c8edb5c0946c2a2835204f3a",
+      "matches_prior_pin": true
+    }
+  ],
+  "declaration_checks": {
+    "reference dialog supplies closeDialogId": true,
+    "reference composer supplies onLaunchStart": true,
+    "reference launch-start invokes close selector": true,
+    "reference selector returns closeDialog": true,
+    "reference callback precedes awaited creation": true,
+    "current close follows creation": true,
+    "current close follows setup detection": true,
+    "current submit has one close call": true,
+    "current busy wrapper rejects close": true,
+    "reference readiness predicate preserved": true,
+    "reference client pending registration precedes close callback": true,
+    "reference pending registration uses client store": true,
+    "reference no-custom-start route selects ordinary launch": true,
+    "reference creation mutation is inside GCi": true
+  },
+  "provenance": {
+    "rea_lineage": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2",
+    "archive_attachment_id": "9bba4171-4ff7-4ded-83e7-5a62a9f75350",
+    "archive_sha256": "c007a6ac77d57b56cdfe8158817ffbcffee6a8f5e7f4a63e2eaef65cbf21b30d",
+    "limit": "Original semantic renderer pass exhausted heap. Retained identity-verified shipped JavaScript is read as data only. Current installed-renderer equality is unverified."
+  },
+  "not_run": [
+    "application or target JavaScript execution",
+    "Node or fixture execution",
+    "browser",
+    "native or physical input",
+    "provider or filesystem mutation",
+    "test/typecheck/build",
+    "new REA acquisition"
+  ],
+  "product_edits": [],
+  "runtime_queue_entries_created": 0
+}

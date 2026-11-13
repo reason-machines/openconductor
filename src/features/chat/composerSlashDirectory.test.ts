@@ -122,9 +122,12 @@ function fixture(parts: document.ComposerPart[], options: { command?: commands.S
     attachmentPreserved: () => assert.equal(renderer.root.findByProps({ "data-testid": "retained-attachment" }), attachedNode),
     pick() { act(() => renderer.root.findByType(MenuBoundary).props.onPick(command)); },
     key(key: string) {
-      let prevented = false;
-      act(() => editorProps.onKeyDown({ key, shiftKey: false, metaKey: false, ctrlKey: false, altKey: false, isComposing: false, preventDefault() { prevented = true; } }));
-      assert.ok(prevented, "menu owns the selection key");
+      const event = new Event("keydown", { bubbles: true, cancelable: true });
+      const fields = { key, shiftKey: false, metaKey: false, ctrlKey: false, altKey: false, isComposing: false };
+      Object.defineProperties(event, Object.fromEntries(Object.entries(fields).map(([name, value]) => [name, { value }])));
+      act(() => editorProps.onKeyDown(event));
+      assert.ok(event.defaultPrevented, "menu owns the selection key");
+      assert.ok(event.cancelBubble, "menu selection does not reach ancestor shortcuts");
     },
     close() { act(() => renderer.unmount()); editor.destroy(); },
   };

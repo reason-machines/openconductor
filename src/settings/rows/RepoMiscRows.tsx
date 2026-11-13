@@ -2,6 +2,7 @@
 // registry (renderApp-D_fmY7hW.js): Icon, Root path, Workspaces path, Preview
 // URLs, Files to copy, Remove repository. Each row is Conductor's `Al` with
 // its content stacked under the title and description.
+import { usePendingEdit } from "../../lib/persistence/producer.ts";
 import { useEffect, useRef, useState } from "react";
 import { Popover } from "@base-ui/react/popover";
 import type { Repo } from "../../state/types";
@@ -124,22 +125,16 @@ function IconRow({ repo, actions }: { repo: Repo; actions: RepoMiscActions }) {
 }
 
 /** Run `fn` `ms` after the last call; `flush` runs a pending call now. */
-function useDebounced<T>(fn: (value: T) => void, ms: number) {
+function useDebounced<T>(fn: (value: T) => Promise<unknown>, ms: number, scope: string) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pending = useRef<{ value: T } | null>(null);
-  const latest = useRef(fn);
-  latest.current = fn;
-  const flush = () => {
+  const pending = usePendingEdit(scope, fn, () => {
     if (timer.current) clearTimeout(timer.current);
     timer.current = null;
-    const p = pending.current;
-    pending.current = null;
-    if (p) latest.current(p.value);
-  };
-  useEffect(() => flush, []);
+  }, true);
+  const flush = () => pending.flush();
   return {
     call: (value: T) => {
-      pending.current = { value };
+      pending.change(value);
       if (timer.current) clearTimeout(timer.current);
       timer.current = setTimeout(flush, ms);
     },
@@ -161,11 +156,14 @@ function PreviewUrlsRow({ repoPath }: { repoPath: string }) {
       setRows(previewRows(saved));
     }
   }, [saved]);
-  const save = useDebounced((next: PreviewRow[]) => {
+  const save = useDebounced(async (next: PreviewRow[]) => {
     const value = previewValue(next);
     lastSaved.current = JSON.stringify(value);
-    repoSettingsSetLocal(repoPath, "preview_urls", value).then(notifyRepoSettingsChanged, () => setError("Failed to save preview URLs"));
-  }, 500);
+    await repoSettingsSetLocal(repoPath, "preview_urls", value).then(notifyRepoSettingsChanged, (error) => {
+      setError("Failed to save preview URLs");
+      throw error;
+    });
+  }, 500, `${repoPath}:preview`);
   const update = (next: PreviewRow[]) => {
     const list = next.length > 0 ? next : [emptyPreviewRow()];
     setError(null);
@@ -259,10 +257,13 @@ function FilesToCopyRow({ repoPath }: { repoPath: string | null }) {
       clearTimeout(t);
     };
   }, [repoPath, previewGlobs, refresh]);
-  const save = useDebounced((text: string) => {
-    if (!repoPath) return;
-    repoSettingsSetLocal(repoPath, "file_include_globs", text.trim() ? text : "").then(notifyRepoSettingsChanged, () => setError(COPY.filesToCopy.saveError));
-  }, 1000);
+  const save = useDebounced(async (text: string) => {
+    if (!repoPath) return false;
+    await repoSettingsSetLocal(repoPath, "file_include_globs", text.trim() ? text : "").then(notifyRepoSettingsChanged, (error) => {
+      setError(COPY.filesToCopy.saveError);
+      throw error;
+    });
+  }, 1000, `${repoPath}:files`);
   const help = (
     <>
       {COPY.filesToCopy.description}{" "}

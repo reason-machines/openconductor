@@ -1,3 +1,5 @@
+import { WriteBarrier, type WriteAcknowledgment } from "../../lib/persistence/owner.ts";
+import { registerPersistenceOwner } from "../../lib/persistence/restartPersistence.ts";
 import type { ComposerDrafts } from "../../lib/local-storage/composerDrafts.ts";
 import { attachmentPath, promptText, randomDir, rejectReason, restoreComposerAttachments, type ComposerAttachment } from "./composerAttachments.ts";
 
@@ -23,6 +25,8 @@ export class ComposerSession {
   private generation = 0;
   private pendingFiles = 0;
   private timer: ReturnType<typeof setTimeout> | undefined;
+  private readonly writes = new WriteBarrier(() => this.flush());
+  private dirtyAcknowledgments: WriteAcknowledgment[] = [];
   sending = false;
 
   private readonly chatId: string;
@@ -31,6 +35,16 @@ export class ComposerSession {
   constructor(chatId: string, store: DraftStore) {
     this.chatId = chatId;
     this.store = store;
+    registerPersistenceOwner(this);
+  }
+
+  get revision(): number { return this.writes.revision; }
+  ready(): boolean { return this.writes.ready() && !this.dirty && this.pendingFiles === 0 && !this.sending; }
+  async drain(): Promise<void> {
+    if (this.loading) await this.loading;
+    if ((!this.loaded && this.dirty) || this.pendingFiles > 0 || this.sending) throw new Error("Composer work is still in progress");
+    await this.writes.drain();
+    if (!this.ready()) throw new Error("Composer changed during persistence drain");
   }
 
   snapshot = () => this.state;
@@ -45,6 +59,7 @@ export class ComposerSession {
   }
 
   private changed() {
+    this.dirtyAcknowledgments.push(this.writes.begin());
     this.dirty = true;
     clearTimeout(this.timer);
     if (this.active) this.timer = setTimeout(() => this.flush(), 300);
@@ -56,7 +71,15 @@ export class ComposerSession {
     if (!this.loaded || !this.dirty) return;
     this.dirty = false;
     const { draft, attachments } = this.state;
-    void (draft === "" && attachments.length === 0 ? this.store.clear(this.chatId) : this.store.save(this.chatId, draft, attachments));
+    const acknowledgments = this.dirtyAcknowledgments.splice(0);
+    const fail = (error: unknown) => { for (const acknowledgment of acknowledgments) acknowledgment.fail(error); };
+    try {
+      const saving = draft === "" && attachments.length === 0 ? this.store.clear(this.chatId) : this.store.save(this.chatId, draft, attachments);
+      void saving.then((result) => {
+        if (result === false) fail(new Error("Composer draft write was refused"));
+        else for (const acknowledgment of acknowledgments) acknowledgment.succeed();
+      }, fail);
+    } catch (error) { fail(error); }
   };
 
   connect() {

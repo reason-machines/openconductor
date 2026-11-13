@@ -1,0 +1,1 @@
+O=m.mutateAsync({...R,replaceNewTabId:w});d!==void 0&&gS.assignPendingWorkspace({...d,localWorkspaceId:u,workspaceCreation:O.then(()=>{})}).catch(P=>{Bt.error("Couldn't add new workspace to section",P),kt.error("Workspace created, but couldn't add it to the section. Move it from the sidebar.")});
