@@ -1344,16 +1344,20 @@ export function WorkspaceView({ repo, workspace, sections, dispatch, notify, onN
   // ⌘W closes the tab on screen and ⌘⇧T reopens the last closed one, as Conductor's workspace
   // view does. The workspace's own chat has no close button here, so ⌘W leaves it. Inside a
   // terminal ⌘W is terminal.closeTab, which the terminal handles itself (session.ts).
+  useKeybindings({
+    "nav.closeTab": () => {
+      const focused = document.activeElement;
+      if (focused instanceof HTMLElement && focused.closest("[data-terminal]") && !focused.closest(".script-output")) return false;
+      if (activeTab === "browser") closeBrowser();
+      else if (activeTab === "file") closeFile();
+      else if (activeTab === "diff") closeDiffTab();
+      else if (activeTab === "pr") closePrTab();
+      else if (centerTerminal) closeTab(workspace.id, centerTerminal.id);
+      else if (activeTab !== "chat") closeReview(activeTab);
+    },
+  });
   useKeybindings(
     {
-      "nav.closeTab": () => {
-        if (activeTab === "browser") closeBrowser();
-        else if (activeTab === "file") closeFile();
-        else if (activeTab === "diff") closeDiffTab();
-        else if (activeTab === "pr") closePrTab();
-        else if (centerTerminal) closeTab(workspace.id, centerTerminal.id);
-        else if (activeTab !== "chat") closeReview(activeTab);
-      },
       "nav.reopenTab": () => {
         const tab = popClosedTab(workspace.id);
         if (tab?.kind === "chat") reviews.reopen(tab.tab);
