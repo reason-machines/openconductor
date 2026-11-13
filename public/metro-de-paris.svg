@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="white">
+  <!-- Paris Métro: circled M -->
+  <path fill-rule="evenodd" d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 3c6.075 0 11 4.925 11 11s-4.925 11-11 11S5 22.075 5 16 9.925 5 16 5z"/>
+  <path d="M7 23V11l5 6 4-6 4 6 5-6v12h-3V17l-3 4h-2l-3-4v6h-3V17l-2 3h-2V17z" transform="translate(1 0)"/>
+</svg>

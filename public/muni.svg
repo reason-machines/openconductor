@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 32" fill="white">
+  <!-- SF Muni stylised M lettermark -->
+  <path d="M4 28V8l12 12 12-12v20h-5V17l-7 7-7-7v11H4z"/>
+  <rect x="36" y="8" width="4" height="20"/>
+  <path d="M44 8h4l5 9 5-9h4v20h-4V17l-5 8-5-8v11h-4V8z"/>
+</svg>
