@@ -1136,3 +1136,51 @@ No new source work invented. Terminal lane SOURCE_EXHAUSTED.
 - **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
 - **Native acceptance:** ALL frozen (E1 BLOCKED, sole executor, no retry)
 - **Program bottleneck:** E1 quota reset + CONFIG-SYNC ACC admission in parallel
+
+---
+
+## Program reconciliation r1143 at main `8e847380`, 13 November 2026
+
+Owner: Conductor Rebuild (Session `ddfc6518`).
+
+### Events recorded
+
+**#1282 merged** — squash `8f62e6e3d05ac9a506ca1c5a3a1889aa17b8e8f0` (fix(palette): add "No matching sections" empty state + CSS for section picker header, `15faf4d8`). Gap: PALETTE-SECTION-EMPTY-STATE. Browser/native acceptance: **NOT_RUN** (ACC hold).
+
+**#1280 merge queued** — head `ff877d144`, both required checks green (`Frontend typecheck + build` success, `Evidence tools compile` success), squash merge scheduled. Delivers reconciliation r1137–r1143.
+
+**CONFIG-SYNC (#1283):** `6013adf2` confirmed RED→GREEN logic fix, CI_PENDING. Delivers PENDING-SELECTION disable-during-sync fix.
+
+**Native executor:** E1 (`e1e2b6b9`) sole executor. Latest attempt returned provider-limit no_output; routing managed automatically, no retry authorized here, no second native executor, no weekly-quota inference.
+
+**Carried native gaps (NOT_RUN, E1 required):**
+- PTY/IPC startup cancellation (#1232 source: `20d157d0`)
+- Late-spawn orphan disposal (#1239 source: `e586c968`)
+- `setup_log_path` Rust write path (Rust CI skipped)
+- Scripts rendering + shared env pipeline native exercise
+- Settings.toml IPC, native file pickers, full disk access
+
+### Lane / owner table
+
+| Lane | Session | Status |
+|---|---|---|
+| Menus / palette | `15faf4d8` | #1282 merged — PALETTE-SECTION-EMPTY-STATE closed |
+| Terminal | `1f14fa82` | CLOSED — #1281 merged `8e847380` |
+| Packaging | `992a715e` | CLOSED — artifact confirmed |
+| CONFIG-SYNC gap | `6013adf2` | #1283 CI_PENDING |
+| Native (all) | E1 `e1e2b6b9` | PROVIDER_LIMIT_BLOCKED — sole executor, no retry |
+| All other lanes | — | SOURCE_EXHAUSTED |
+
+### Serialized cloud runtime queue
+
+- **Slot 1:** #1280 merge queued (`ddfc6518`) — lands after this push
+- **Slot 2:** #1283 CONFIG-SYNC CI await → merge (`6013adf2`)
+- **Slot 3:** PICK-ISSUES-DIALOG (`15faf4d8`, next palette gap)
+
+### State
+
+- **Unowned cloud gap: NONE** — no REA-proven unowned source work remains
+- **Cloud-unassignable gap: 1** — WORKSPACE-GREP (Ghidra/native REA only)
+- **ACC E2E:** PASS at `2c7563a7` (stand-ins/fixtures). Native 39 NOT_RUN.
+- **Native acceptance:** ALL frozen (E1 BLOCKED, sole executor, no retry)
+- **Program bottleneck:** E1 quota reset (native acceptance) + #1283 CI (CONFIG-SYNC)
