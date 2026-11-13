@@ -126,8 +126,20 @@ function turnEnd(t: ChatTranscript, turnId: string, turnMessages: ChatMessage[],
   let finalText: string | undefined;
   for (let i = turnMessages.length - 1; i >= 0 && finalText === undefined; i--) {
     const m = turnMessages[i]!;
-    const text = m.role === "assistant" ? plainText(m) : "";
-    if (text.length > 0) finalText = text;
+    if (m.role !== "assistant") continue;
+    for (let j = m.blocks.length - 1; j >= 0; j--) {
+      const block = m.blocks[j]!;
+      if (block.type === "text" && block.text.trim()) {
+        finalText = block.text;
+        break;
+      }
+    }
+    if (finalText !== undefined) {
+      const hasExitPlan = m.blocks.some((b) => b.type === "tool_use"
+        && conductorTools(b.name, b.input).some((tool) => tool.name === "ExitPlanMode"));
+      if (hasExitPlan) finalText = undefined;
+      break;
+    }
   }
   const prompt = turnMessages.find((m) => messageOrigin(m).kind === "user" && plainText(m).length > 0);
   const model = turnMessages.find((m) => m.role === "assistant" && m.model)?.model

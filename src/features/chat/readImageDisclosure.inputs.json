@@ -1,0 +1,467 @@
+{
+  "candidate": "CHAT.READ-IMAGE-DISCLOSURE-GATE",
+  "cases": [
+    {
+      "id": "image-png",
+      "path": "/fixture/photo.png",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-jpg",
+      "path": "/fixture/photo.jpg",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-jpeg",
+      "path": "/fixture/photo.jpeg",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-gif",
+      "path": "/fixture/photo.gif",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-webp",
+      "path": "/fixture/photo.webp",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-tif",
+      "path": "/fixture/photo.tif",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-tiff",
+      "path": "/fixture/photo.tiff",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-avif",
+      "path": "/fixture/photo.avif",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-bmp",
+      "path": "/fixture/photo.bmp",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-uppercase",
+      "path": "/fixture/photo.PNG",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-mixedcase",
+      "path": "/fixture/photo.JpEg",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "bare-registry-key",
+      "path": "png",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "RED",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "not-registry-svg",
+      "path": "/fixture/photo.svg",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "not-registry-ico",
+      "path": "/fixture/photo.ico",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "not-registry-heic",
+      "path": "/fixture/photo.heic",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "not-registry-pdf",
+      "path": "/fixture/photo.pdf",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "no-extension",
+      "path": "/fixture/README",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "empty-path",
+      "path": "",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "last-extension-only",
+      "path": "/fixture/photo.png.txt",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "image-directory",
+      "path": "/fixture/photos.png/readme.txt",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "no-query-stripping",
+      "path": "/fixture/photo.png?variant=1",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "no-inherited-constructor",
+      "path": "/fixture/photo.constructor",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "no-inherited-toString",
+      "path": "/fixture/photo.toString",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "first payload line"
+          },
+          {
+            "number": "8",
+            "text": "second payload line"
+          }
+        ],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "    7\u2192first payload line\n    8\u2192second payload line"
+    },
+    {
+      "id": "pending-image",
+      "path": "/fixture/photo.png",
+      "state": "running",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL"
+    },
+    {
+      "id": "empty-image",
+      "path": "/fixture/photo.png",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": ""
+    },
+    {
+      "id": "failed-image",
+      "path": "/fixture/photo.png",
+      "state": "error",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "Cannot read image"
+    },
+    {
+      "id": "failed-text",
+      "path": "/fixture/readme.txt",
+      "state": "error",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "Cannot read text"
+    },
+    {
+      "id": "whitespace-image",
+      "path": "/fixture/photo.png",
+      "state": "done",
+      "offset": 7,
+      "expected": {
+        "expandable": false,
+        "lines": [],
+        "errorRows": 0
+      },
+      "baseline_prediction": "CONTROL",
+      "output": "  \n  "
+    }
+  ]
+}

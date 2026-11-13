@@ -436,9 +436,13 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
         css: "css", html: "html", htm: "html", xml: "xml", sh: "bash", bash: "bash",
       };
       const language = languages[path.split(".").pop()?.toLowerCase() ?? ""];
+      const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };
+      const extension = path.split(".").pop()?.toLowerCase();
+      const isImage = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);
       return (
         <RowShell
           {...shell}
+          isCollapsible={!isImage}
           left={<span>{readLabel(path, output)}</span>}
           right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
           keepRight
