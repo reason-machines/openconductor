@@ -77,13 +77,13 @@ export function ownersErrorMessage(detail: string): string {
   if (d.includes("gh auth login") || d.includes("not logged") || d.includes("401") || d.includes("bad credentials")) {
     return "You're not signed in to GitHub. Run gh auth login, then try again.";
   }
-  return "Couldn't load your GitHub accounts.";
+  return `Couldn't load GitHub owners: ${detail}`;
 }
 
 /** Muted note when the user loaded but their organizations did not. */
 export function orgsErrorMessage(detail: string): string {
   if (detail.toLowerCase().includes("read:org")) return "Couldn't load organizations: your token needs the read:org scope. You can still use your personal account.";
-  return "Couldn't load your GitHub organizations. You can still use your personal account.";
+  return "Couldn't load your organizations. You can still use your personal account.";
 }
 
 export function createFailedMessage(err: unknown): string {
