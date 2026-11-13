@@ -1,0 +1,109 @@
+{
+  "author": "Conductor Rebuild",
+  "main": "a66b72e9fc3790a0c93ac614a901da727929c5d9",
+  "kind": "SOURCE_ONLY_UNAPPLIED_CANDIDATE_NOT_RUNTIME_INTAKE",
+  "ownership_message": "bb5da51d-27cc-4bc8-9f2f-08be43c8071f",
+  "reference": {
+    "asset": "renderApp-D_fmY7hW.js",
+    "bytes": 11600457,
+    "sha256": "5199d392ef2dec92886393f181bc98531efc6251f75b9effecd9f60dc9515dde",
+    "rea_evidence_id": "ev_410f83a50764142c952de5f040cde338700477289c1687932071bdc5427c84b2"
+  },
+  "spans": [
+    {
+      "name": "dDo",
+      "utf8_half_open": [
+        8909638,
+        8912447
+      ],
+      "sha256": "a630468ca26d3946ce00e7a5c75b5c4dc103c03e9e4d16c329f277c2a524e311",
+      "path": "reference/dDo.txt"
+    },
+    {
+      "name": "ri",
+      "utf8_half_open": [
+        1946250,
+        1946886
+      ],
+      "sha256": "096119830cd7b23994d99b625ee93b8d755d563d31a6a7d269365ec6abe51130",
+      "path": "reference/ri.txt"
+    },
+    {
+      "name": "Kss",
+      "utf8_half_open": [
+        1946886,
+        1947094
+      ],
+      "sha256": "b26153de791b7d8025ee795a9dce0a4d583dc9443a2f1ac8ae31cd70684fff9a",
+      "path": "reference/Kss.txt"
+    },
+    {
+      "name": "SEe",
+      "utf8_half_open": [
+        1779466,
+        1779679
+      ],
+      "sha256": "44da8c1796e9064019c1adf851979dca6e85bfe3fae83f5a96ae63b3441c857a",
+      "path": "reference/SEe.txt"
+    },
+    {
+      "name": "GJr",
+      "utf8_half_open": [
+        1779090,
+        1779466
+      ],
+      "sha256": "2678424aeb695114dad8136c201012d5e03165d49eda8c69ac592d8d5190e5c9",
+      "path": "reference/GJr.txt"
+    },
+    {
+      "name": "KJr",
+      "utf8_half_open": [
+        1779679,
+        1781979
+      ],
+      "sha256": "09723442b70b3582aaabaf76e0a5da703332a64b19fc164eb10ebe355a4fe929",
+      "path": "reference/KJr.txt"
+    },
+    {
+      "name": "static-flag-and-sprite-registry",
+      "utf8_half_open": [
+        1771732,
+        1772999
+      ],
+      "sha256": "4268034b165487e12e544d56ade36bde021b9c8d3a4388035d6c3493ac9027c1",
+      "path": "reference/static-flag-and-sprite-registry.txt"
+    }
+  ],
+  "baseline": {
+    "path": "src/features/chat/ResetChatDialog.tsx",
+    "sha256": "c469a06fa9ba28320ce3a6d48b7c613fb7e42bcd0bedbc35dcac6304fe9e8514"
+  },
+  "candidate": {
+    "path": "candidate.patch",
+    "sha256": "756bd212bc775500672e9939f73699ba297c96faef3cac02f1faa16be66c66cb",
+    "result_sha256": "b8604094ea0d412fda7d36d9faa33774fe5e7c9e128e95d9bcf3aad4dcb0cdf5"
+  },
+  "regression": {
+    "path": "resetChatPendingIndicator.test.ts",
+    "sha256": "548232da973839ca8a29d734d8150a8c50e294c82ecef8752649a09f1734e396",
+    "cases": 2,
+    "execution": "NOT_RUN",
+    "automatically_discovered": false
+  },
+  "protected": {
+    "src/features/chat/resetChatFocus.test.ts": "ccc158b8e6241953e8018138921d97530ecdc772dd299bf5ad15924fff1e91bb",
+    "src/features/chat/resetChatDismissal.test.ts": "eb0285baeed9a5ec52ac40cb703cf2d2099ee3cbce81a173d1518fc645e38ee6",
+    "src/features/chat/chat.css": "d392d298dc9e08a6874f64ffadf389682b6b693af743cb13943d70f0c0ac837a",
+    "src/components/RunSplitButton.tsx": "80662abb67e8018cfdf06eaedb61dddf1f9dd0e7ae52988063ac5aae2a972588",
+    "src/components/pendingWorkspaceRow.css": "3ff46e80e33840f1576133d7c2f96bf353090c210c3536d2494d78648b1f8026",
+    "src/styles.css": "39e0d91146ab47ef9cc1962dc4e27afb351466b715992391fd1a5da881e193eb"
+  },
+  "limits": [
+    "Retained literal source is data, not executed vendor code.",
+    "Historical renderer semantic analysis exhausted heap.",
+    "SVG follows an existing OpenConductor precedent, not a proven pixel/animation match to the reference working-loader sprite.",
+    "Inline size/border overrides isolate the global sb-ws-loader dimensions and ring; mounted tests do not load CSS.",
+    "No application tests, typecheck, build, browser, package, workflow or native execution.",
+    "No new runtime intake, registration, ordinal, provisioning, branch retarget or admission."
+  ]
+}

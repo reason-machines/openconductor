@@ -443,8 +443,13 @@
       "state": "error",
       "offset": 7,
       "expected": {
-        "expandable": false,
-        "lines": [],
+        "expandable": true,
+        "lines": [
+          {
+            "number": "7",
+            "text": "Cannot read text"
+          }
+        ],
         "errorRows": 0
       },
       "baseline_prediction": "CONTROL",

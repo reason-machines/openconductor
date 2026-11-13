@@ -1,0 +1,117 @@
+--- a/src/state/githubRepoDialog.ts
++++ b/src/state/githubRepoDialog.ts
+@@ -79,3 +79,3 @@
+   }
+-  return `Couldn't load GitHub owners: ${detail}`;
++  return "Couldn't load your GitHub accounts.";
+ }
+@@ -85,3 +85,3 @@
+   if (detail.toLowerCase().includes("read:org")) return "Couldn't load organizations: your token needs the read:org scope. You can still use your personal account.";
+-  return "Couldn't load your organizations. You can still use your personal account.";
++  return "Couldn't load your GitHub organizations. You can still use your personal account.";
+ }
+--- a/src/state/githubRepoDialog.test.ts
++++ b/src/state/githubRepoDialog.test.ts
+@@ -46,3 +46,3 @@
+   assert.match(ownersErrorMessage("To get started with GitHub CLI, please run:  gh auth login"), /not signed in/);
+-  assert.equal(ownersErrorMessage("timeout"), "Couldn't load GitHub owners: timeout");
++  assert.equal(ownersErrorMessage("timeout"), "Couldn't load your GitHub accounts.");
+ });
+--- /dev/null
++++ b/src/state/githubOwnerErrorFallback.test.ts
+@@ -0,0 +1,62 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { ownersErrorMessage } from "./githubRepoDialog.ts";
++
++type Case = { id: string; detail: string; expected: string; basis: string };
++
++const cases = [
++  {
++    "id": "generic-timeout",
++    "detail": "timeout",
++    "expected": "Couldn't load your GitHub accounts.",
++    "basis": "Reference generic fallback; neither classifier recognizes this literal."
++  },
++  {
++    "id": "generic-empty",
++    "detail": "",
++    "expected": "Couldn't load your GitHub accounts.",
++    "basis": "Reference generic fallback; neither classifier recognizes this literal."
++  },
++  {
++    "id": "generic-arbitrary",
++    "detail": "Unexpected owner response",
++    "expected": "Couldn't load your GitHub accounts.",
++    "basis": "Reference generic fallback; neither classifier recognizes this literal."
++  },
++  {
++    "id": "generic-server-error",
++    "detail": "HTTP 502",
++    "expected": "Couldn't load your GitHub accounts.",
++    "basis": "Reference generic fallback; neither classifier recognizes this literal."
++  },
++  {
++    "id": "preserve-saml",
++    "detail": "Resource protected by organization SAML enforcement",
++    "expected": "Your organization requires SAML single sign-on for this token. Authorize it on GitHub, then try again.",
++    "basis": "Current neighboring SAML message is frozen unchanged, not claimed to match reference wording."
++  },
++  {
++    "id": "preserve-scope",
++    "detail": "missing required scope 'read:user'",
++    "expected": "Your GitHub token is missing a required scope. Run gh auth refresh -s repo,read:org, then try again.",
++    "basis": "Current neighboring scope classification and message are frozen unchanged, not reference-parity claims."
++  },
++  {
++    "id": "preserve-credentials",
++    "detail": "bad credentials",
++    "expected": "You're not signed in to GitHub. Run gh auth login, then try again.",
++    "basis": "Current neighboring auth message is frozen unchanged, not a reference-parity claim."
++  },
++  {
++    "id": "preserve-cli-signin",
++    "detail": "please run gh auth login",
++    "expected": "You're not signed in to GitHub. Run gh auth login, then try again.",
++    "basis": "Current neighboring auth classification and message are frozen unchanged, not reference-parity claims."
++  }
++] satisfies ReadonlyArray<Case>;
++
++for (const { id, detail, expected } of cases) {
++  test(`GitHub owner-load fallback: ${id}`, () => {
++    assert.equal(ownersErrorMessage(detail), expected);
++  });
++}
+--- /dev/null
++++ b/src/state/githubOrgsErrorFallback.test.ts
+@@ -0,0 +1,30 @@
++import { test } from "node:test";
++import assert from "node:assert/strict";
++import { orgsErrorMessage } from "./githubRepoDialog.ts";
++
++const cases = [
++  {
++    "id": "generic-timeout",
++    "detail": "timeout",
++    "expected": "Couldn't load your GitHub organizations. You can still use your personal account.",
++    "basis": "Retained vas generic message is rendered after personal-owner success and organization-load failure. Neither classifier matches this detail."
++  },
++  {
++    "id": "generic-server-error",
++    "detail": "HTTP 502",
++    "expected": "Couldn't load your GitHub organizations. You can still use your personal account.",
++    "basis": "Retained vas generic message; neither retained r2t nor current read:org classifier matches this detail."
++  },
++  {
++    "id": "preserve-read-org",
++    "detail": "missing read:org scope",
++    "expected": "Couldn't load organizations: your token needs the read:org scope. You can still use your personal account.",
++    "basis": "Current specialized read:org classifier and message remain unchanged. This control is not a specialized-copy reference-parity claim."
++  }
++] satisfies ReadonlyArray<{ id: string; detail: string; expected: string; basis: string }>;
++
++for (const { id, detail, expected } of cases) {
++  test(`GitHub organization-load note: ${id}`, () => {
++    assert.equal(orgsErrorMessage(detail), expected);
++  });
++}

@@ -9,6 +9,7 @@ import { useKeybindingOverrides } from "../keybindings/KeybindingsProvider";
 import { effectiveShortcuts } from "../keybindings/overrides";
 import { glyphs } from "../keybindings/shortcut";
 import { PassportButton } from "../home/PassportDialog";
+import { Tooltip } from "./Tooltip";
 
 // Layout follows evidence/screens/home.md (Conductor's `Gls`): wordmark, three entry
 // cards, the "cities visited" line, and a sidebar toggle only while the sidebar is
@@ -38,15 +39,16 @@ export function HomeScreen({ repos, sidebarVisible, dispatch, onOpenDialog, onOp
   return (
     <div className="home" data-tauri-drag-region>
       {!sidebarVisible && (
-        <button
-          type="button"
-          className="home-sidebar-toggle"
-          title={`Toggle left sidebar (${sidebarHint})`}
-          aria-label="Toggle left sidebar"
-          onClick={() => dispatch({ type: "toggleSidebar" })}
-        >
-          <SidebarIcon size={16} />
-        </button>
+        <Tooltip content="Toggle left sidebar" shortcut={sidebarHint}>
+          <button
+            type="button"
+            className="home-sidebar-toggle"
+            aria-label="Toggle left sidebar"
+            onClick={() => dispatch({ type: "toggleSidebar" })}
+          >
+            <SidebarIcon size={16} />
+          </button>
+        </Tooltip>
       )}
       <div className="home-wordmark">
         <Wordmark />

@@ -1,0 +1,22 @@
+{
+  "author": "Conductor Rebuild",
+  "unit": "Generic owner-load fallback only",
+  "source_main": "6ab46a36752de4f57cb3c3441f4336d334ad1340",
+  "state": "FROZEN_SOURCE_SPEC_NOT_EXECUTED",
+  "subject": "Actual exported ownersErrorMessage from src/state/githubRepoDialog.ts",
+  "reference": "reference.json, complete _as and r2t declarations and native paragraph consumer",
+  "cases": [
+    {"id": "generic-timeout", "detail": "timeout", "expected": "Couldn't load your GitHub accounts.", "basis": "Reference generic fallback; neither classifier recognizes this literal."},
+    {"id": "generic-empty", "detail": "", "expected": "Couldn't load your GitHub accounts.", "basis": "Reference generic fallback; neither classifier recognizes this literal."},
+    {"id": "generic-arbitrary", "detail": "Unexpected owner response", "expected": "Couldn't load your GitHub accounts.", "basis": "Reference generic fallback; neither classifier recognizes this literal."},
+    {"id": "generic-server-error", "detail": "HTTP 502", "expected": "Couldn't load your GitHub accounts.", "basis": "Reference generic fallback; neither classifier recognizes this literal."},
+    {"id": "preserve-saml", "detail": "Resource protected by organization SAML enforcement", "expected": "Your organization requires SAML single sign-on for this token. Authorize it on GitHub, then try again.", "basis": "Current neighboring SAML message is frozen unchanged, not claimed to match reference wording."},
+    {"id": "preserve-scope", "detail": "missing required scope 'read:user'", "expected": "Your GitHub token is missing a required scope. Run gh auth refresh -s repo,read:org, then try again.", "basis": "Current neighboring scope classification and message are frozen unchanged, not reference-parity claims."},
+    {"id": "preserve-credentials", "detail": "bad credentials", "expected": "You're not signed in to GitHub. Run gh auth login, then try again.", "basis": "Current neighboring auth message is frozen unchanged, not a reference-parity claim."},
+    {"id": "preserve-cli-signin", "detail": "please run gh auth login", "expected": "You're not signed in to GitHub. Run gh auth login, then try again.", "basis": "Current neighboring auth classification and message are frozen unchanged, not reference-parity claims."}
+  ],
+  "predicted_baseline": "Four generic cases fail by output mismatch. Four preservation controls pass. This prediction is not observed RED.",
+  "candidate": "Only the helper final return and the existing contrary timeout assertion would change after ownership and serialized validation.",
+  "excluded": ["NAME7c", "owner retry selection", "pending-name", "create submission", "authentication classification", "organization warning", "provider transport", "shared Modal", "native executor", "Icons6", "V3twenty", "QuickStart13", "protected9"],
+  "execution": "NOT_RUN. This file is not an admission request or a new queue row. No package, browser, native, provider, filesystem mutation, or network operation is part of the proposed pure-helper check."
+}

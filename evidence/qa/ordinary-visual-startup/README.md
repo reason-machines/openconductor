@@ -1,5 +1,48 @@
 # Ordinary visual-startup profile
 
+## Current admission status
+
+Conductor Rebuild checked main `000948134a9685308703438f82250b1ae03f60c8`.
+An explicit `OC_VISUAL_QA_ROOT`, including an empty value, now fails closed.
+The request is captured once and refused before the startup callback can reserve
+a root, change environment variables, construct an app, create WebKit or start
+helpers. An unset variable preserves the original context and normal startup.
+The existing tool-dispatch guard remains in place. No environment flag, supplied
+receipt or synthetic observation can enable this path.
+
+The restricted implementation below is retained but dormant. Its private roots,
+nonpersistent WebKit store and restricted command list do not establish trusted
+process-family filesystem prevention. The Python native-cache refusal is not
+called by this independent visual startup path and was never its admission gate.
+
+Missing capability: an independently controlled prevention boundary covering the
+actual app and helper lifetimes, with trusted namespace custody and through-use
+consumer integration. Caller/peer capability and actual syscall witnesses remain
+separate native dependencies. The two-inert-file experiment and the frozen
+authority contract do not supply whole-app containment. No native execution or
+normal product feature is enabled or removed by this correction.
+
+The portable regression first ran with a baseline-equivalent pass-through
+startup wrapper. It failed with `an uncontained visual request reached startup`.
+After the refusal was added, the same test passed without entering its callback
+or reserving its temporary profile. All 11 profile tests passed with warnings
+denied, followed by the static production-wiring check. The original nine
+filesystem tests remain unchanged. This is source/admission evidence, not an
+observation of native WebKit, OS prevention or visual behavior.
+
+```bash
+rustc --edition 2021 -D warnings --cfg workspace_std_only --test src-tauri/src/visual_qa_profile.rs -o /tmp/oc-visual-profile-tests
+/tmp/oc-visual-profile-tests
+python3 evidence/qa/ordinary-visual-startup/verify_boundary.py
+git diff --check
+```
+
+[Failing pass-through regression](admission/red.log.gz),
+[passing profile suite](admission/green.log.gz) and
+[static wiring result](admission/boundary.log) retain the observed output.
+
+## Historical implementation evidence
+
 Conductor Rebuild initially read default head `1d9c4027909205d1dba9006031d922a5f2f2287a`
 and refreshed against `0a05d2958` before standalone publication. The normal
 startup body remains unchanged apart from selecting this opt-in profile first.
@@ -8,10 +51,11 @@ opens/migrates databases and imports workspace data before creating the window.
 The existing native QA gate opens a hidden JavaScript-disabled about:blank view
 and exits. It cannot provide ordinary frontend acceptance.
 
-## Restricted composition
+## Dormant restricted composition
 
-An unset `OC_VISUAL_QA_ROOT` preserves normal startup. An explicit request requires
-a packaged macOS debug build and a fresh, canonical, owner-private directory.
+An unset `OC_VISUAL_QA_ROOT` preserves normal startup. Behind the closed admission
+boundary, the retained implementation requires a packaged macOS debug build and
+a fresh, canonical, owner-private directory.
 The profile reserves it once and rejects symlinks, traversal, reuse and competing
 requests. A malformed request exits, never falls back to normal startup.
 
@@ -80,9 +124,9 @@ as inert source and all nine SHA-256 values matched the lockfile.
 The adapter uses no private WebKit SPI and makes no OS-sandbox claim. Nonpersistent
 website data is not equivalent to comprehensive filesystem containment.
 
-## Receipt contract
+## Dormant receipt contract
 
-A successful launch writes `visual-startup-receipt.json` under that run's reserved
+If independently qualified and admitted in a future change, a launch would write `visual-startup-receipt.json` under that run's reserved
 root. The receipt includes its schema version, compile-time GITHUB_SHA when set,
 actual executable path and SHA-256, profile root and actual resolved destinations,
 prebuild nonpersistent selection and same-webview isPersistent readback. It labels
@@ -91,9 +135,9 @@ skipped installers/imports, missing full-backend parity and missing OS filesyste
 observation. Package identity still needs the external package/executable receipt.
 No native receipt has been produced by this source-only work.
 
-## Verification
+## Historical verification
 
-Passed on Reason Cloud:
+Before the admission correction, the profile preparation checks passed on Reason Cloud:
 
 ```bash
 rustc --edition=2021 -D warnings --test --cfg workspace_std_only src-tauri/src/visual_qa_profile.rs -o /tmp/oc-visual-profile-tests

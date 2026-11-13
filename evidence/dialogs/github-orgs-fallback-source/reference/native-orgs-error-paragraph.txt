@@ -1,0 +1,1 @@
+p.jsx("p",{className:"text-xs text-muted-foreground",children:vas(g.orgsError)})

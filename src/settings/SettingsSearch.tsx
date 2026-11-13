@@ -6,8 +6,8 @@
 // clear button replaces the key hint while there is a query. ⌘F focuses it.
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { CloseIcon, SearchIcon } from "../components/Icons";
-import { useKeybindings } from "../keybindings/KeybindingsProvider";
-import { COMMANDS } from "../keybindings/registry";
+import { useKeybindingOverrides, useKeybindings } from "../keybindings/KeybindingsProvider";
+import { effectiveShortcuts } from "../keybindings/overrides";
 import { partGlyph, shortcutParts } from "../keybindings/shortcut";
 import { searchSettings, type SearchItem } from "./searchIndex";
 
@@ -17,9 +17,8 @@ interface Props {
   onPick: (item: SearchItem) => void;
 }
 
-const SEARCH_COMMAND = COMMANDS.find((c) => c.id === "settings.search");
-
 export function SettingsSearch({ items, iconFor, onPick }: Props) {
+  const { overrides } = useKeybindingOverrides();
   const [query, setQuery] = useState("");
   const [highlight, setHighlight] = useState(0);
   const input = useRef<HTMLInputElement>(null);
@@ -65,7 +64,8 @@ export function SettingsSearch({ items, iconFor, onPick }: Props) {
     list.current?.querySelector(`[data-result-index="${next}"]`)?.scrollIntoView({ block: "nearest" });
   };
 
-  const parts = SEARCH_COMMAND ? shortcutParts(SEARCH_COMMAND.key).map(partGlyph) : [];
+  const primaryShortcut = effectiveShortcuts("settings.search", overrides)[0];
+  const parts = primaryShortcut ? shortcutParts(primaryShortcut).map(partGlyph) : [];
   return (
     <div className="settings-search" ref={anchor}>
       <SearchIcon size={14} />

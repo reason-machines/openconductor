@@ -429,7 +429,8 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
     }
     case "read": {
       const path = s(input.file_path);
-      const text = output === undefined ? undefined : readContent(output);
+      const readResult = name === "Read" ? result : output;
+      const text = readResult === undefined ? undefined : readContent(readResult);
       const languages: Record<string, string> = {
         js: "javascript", jsx: "javascript", ts: "typescript", tsx: "typescript",
         py: "python", rs: "rust", json: "json", yml: "yaml", yaml: "yaml",
@@ -443,7 +444,7 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
         <RowShell
           {...shell}
           isCollapsible={!isImage}
-          left={<span>{readLabel(path, output)}</span>}
+          left={<span>{readLabel(path, readResult)}</span>}
           right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
           keepRight
           align="center"
@@ -549,7 +550,19 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
       );
     }
     case "todo": {
-      const todos = Array.isArray(input.todos) ? (input.todos as Record<string, unknown>[]) : [];
+      let todoSource: unknown = input.todos;
+      if (name === "TodoRead") {
+        todoSource = rawResult === undefined ? result : rawResult;
+        if (typeof todoSource === "string") {
+          const match = todoSource.match(/\[[\s\S]*\]/);
+          try {
+            todoSource = match ? JSON.parse(match[0]) : [];
+          } catch {
+            todoSource = [];
+          }
+        }
+      }
+      const todos = Array.isArray(todoSource) ? (todoSource as Record<string, unknown>[]) : [];
       const done = todos.filter((t) => t.status === "completed").length;
       const activeIndex = todos.findIndex((t) => t.status === "in_progress");
       const active = todos[activeIndex];
