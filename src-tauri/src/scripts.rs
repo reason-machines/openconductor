@@ -19,10 +19,31 @@ pub fn service(app: &AppHandle) -> ScriptService {
         .map(std::path::PathBuf::from)
         .unwrap_or_default();
     let emitter = app.clone();
+    // Persist setup_log_path (evidence/run-scripts/NOTES.md "Execution":
+    // `workspaces.setup_log_path` holds the transcript path after setup ends).
+    let pool = app.state::<crate::db::Db>().0.clone();
     let service = ScriptService::new(
         home.join(".conductor"),
         std::env::temp_dir(),
         std::sync::Arc::new(move |event: ScriptEvent| {
+            if let ScriptEvent::SetupFinished(ref outcome) = event {
+                let pool = pool.clone();
+                let workspace_id = outcome.workspace_id.clone();
+                let log_path = outcome.log_path.to_string_lossy().into_owned();
+                tauri::async_runtime::spawn(async move {
+                    if let Err(e) = openconductor_db::workspaces::set_setup_log_path(
+                        &pool,
+                        &workspace_id,
+                        &log_path,
+                    )
+                    .await
+                    {
+                        eprintln!(
+                            "scripts: could not persist setup_log_path for {workspace_id}: {e}"
+                        );
+                    }
+                });
+            }
             let _ = emitter.emit(EVENT, event);
         }),
     );

@@ -44,7 +44,7 @@ export function ArchivedWorkspaceView({ repo, workspace, dispatch }: Props) {
       <header className="ws-header" data-tauri-drag-region="deep">
         <div className="ws-title">
           <span className="crumb">{repo.name}</span>
-          <span className="crumb-sep">/</span>
+          <span className="crumb-sep">›</span>
           <strong>{workspace.name}</strong>
           <span className="chip">
             <BranchIcon size={12} /> {workspace.branch}
