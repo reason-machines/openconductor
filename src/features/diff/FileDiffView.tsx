@@ -18,7 +18,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { processFile, type CodeViewItem, type CodeViewLineSelection, type SelectedLineRange, type ThemeTypes } from "@pierre/diffs";
 import { CodeView, EditProvider, type CodeViewHandle, type CodeViewReactOptions } from "@pierre/diffs/react";
 import { WhitespaceOnly } from "./Whitespace";
-import { useKeybindingOverrides, useKeybindings } from "../../keybindings/KeybindingsProvider.tsx";
+import { useKeybindingOverrides } from "../../keybindings/KeybindingsProvider.tsx";
 import { effectiveShortcuts } from "../../keybindings/overrides.ts";
 import { matchesEvent } from "../../keybindings/shortcut.ts";
 import { createEditor, type FileEdit } from "./EditInViewer.ts";
@@ -156,10 +156,10 @@ function Code({ file, full, layout, ignoreWhitespace, wrapLines, onLineClick, se
     return "accept" as const;
   }, [observeAnchors]);
   const { overrides } = useKeybindingOverrides();
-  // editor.openSearch (⌘F, Conductor's fileEditor.search): Pierre's CodeView handles ⌘F
-  // natively via its own keymap (openSearchPanel). Returning false here passes the event
-  // through — our dispatcher leaves it unhandled so Pierre's listener opens its search panel.
-  useKeybindings({ "editor.openSearch": () => false });
+  // editor.openSearch (⌘F, registry.ts) passes through without a useKeybindings handler:
+  // the dispatcher only prevents default when a handler returns a truthy value; with no live
+  // handler registered for this command, dispatch() returns {kind:'pass'} and Pierre's own
+  // "cmdOrCtrl+f": "openSearchPanel" keymap entry opens the search panel natively.
   const onKeyDown = (e: React.KeyboardEvent) => {
     // Only the save shortcut: other keys belong to the editor, CommentNav and the comment box.
     if (!editing || !effectiveShortcuts("editor.saveFile", overrides).some((s) => matchesEvent(s, e.nativeEvent))) return;
