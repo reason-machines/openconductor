@@ -709,6 +709,7 @@ function ChatPanel({ repo, workspace, dispatch, notify, chatId, review, bridge, 
         onStop={() => agent.stop(runId)}
         onQueue={(action) => agent.queueAction(runId, action)}
         onAttachFiles={(files) => void attachFiles(files)}
+        onLinkIssue={() => setLinkIssueOpen(true)}
         onLinkWorkspaces={() => void openLinks()}
         onMcpStatus={agentId === "codex" ? () => setMcpStatusChat(chatId) : undefined}
         onAttachTerminalOutput={() => void attachTerminalOutput()}
