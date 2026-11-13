@@ -158,6 +158,7 @@
     "src/features/chat/ChatModelPicker",
     "src/features/chat/ChatSignInCard",
     "src/features/chat/CodexConsentCard",
+    "src/features/chat/ComposerAttachmentChip",
     "src/features/chat/FileMentionMenu",
     "src/features/chat/LinkedDirectoryPicker",
     "src/features/chat/NewChatButton",

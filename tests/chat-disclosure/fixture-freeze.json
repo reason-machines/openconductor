@@ -31,7 +31,7 @@
     "wv-host.mjs": "79fe0b7bf9efd793e3ef647f7177339e1f5172fc13b4ca730861a12663d966c0",
     "disclosureRemount.component.test.mjs": "affb87195267009c80fcd727441b25a1e4290c29af91d45c7a9f71b8fd4e7d53",
     "proof-loader.mjs": "6b0800e7cac8ac656b82cbf4fb1580ffe8c373a13493c17ecb56e02e932e618a",
-    "static-import-closure.json": "ba98f329d5557187456087d1ca48d9bc91c367b2dd0aec62967b373150cd3c0b",
+    "static-import-closure.json": "85ded4b72addea93fd18900b664d09a1a877acc5dd3895d72bf20c1f50ac123a",
     "mounted-design.json": "5400fe5b22dc72892c8f20bae6833f0612d2bfe077d6147bb042abf2bec367cb"
   }
 }
