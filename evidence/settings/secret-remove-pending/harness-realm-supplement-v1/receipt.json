@@ -1,0 +1,47 @@
+{
+  "author": "Conductor Rebuild",
+  "kind": "INACTIVE_HARNESS_ONLY_REALM_SUPPLEMENT_NOT_RUNTIME",
+  "prepared_at": "2026-11-13T03:55:16.300847+00:00",
+  "checked_main": "1aa3b6814e8a45116cf2f8d562b05d747993655b",
+  "checkout_head": "cf1c22b683ac97f0e46b37c913284dce0fd75a24",
+  "original_archive_sha256": "6404f233c57a493c17f36cd2509f60dae8e76d1a9e4bf274628a707e037dd667",
+  "original_fixture_sha256": "d2b4030ff178c115fcd5bfbad3e8a1c4090e6c7337b9fb956661fdd6dae4e0aa",
+  "corrected_fixture_sha256": "1b86085cd4acce31968b4eaa74cfca4e47403b960360da35de7486fee4ff7bc7",
+  "fixture_patch_sha256": "3250393cc909865d0aba106169c56aa14b6caecbe63a9bee471a54de897a2461",
+  "original_candidate_patch_sha256": "16786423fa3d1f61434b562d230047c504ee5116a9f92d174d651c72a78a84dc",
+  "change": "VM context {} -> { Error }; same host/VM constructor, repository precedent",
+  "single_substitution_inverse_matches_original": true,
+  "all_assertions_and_case_loop_byte_identical": true,
+  "product_error_policy_changed": false,
+  "original_frozen_files_changed": false,
+  "analogous_main_sources": [
+    {
+      "path": "src/features/diff/commentSaveFailure.test.ts",
+      "sha256": "74fd947c45301a43a5c4a07b769cd7782fec2438b7938f7cbc9ccfc79ef7bbbe",
+      "main": "1aa3b6814e8a45116cf2f8d562b05d747993655b"
+    },
+    {
+      "path": "src/features/terminal/spawnFailure.test.ts",
+      "sha256": "c0160f217f40f0bd436eb68de8f3df9820e1d2c55e9cb2d43473c0d9e43fafc4",
+      "main": "1aa3b6814e8a45116cf2f8d562b05d747993655b"
+    },
+    {
+      "path": "src/features/openIn/settingsShortcutHint.test.ts",
+      "sha256": "7ddcc44b3776949216f07e27ea31a781060562798ef356422c22c5bfb6e78d68",
+      "main": "1aa3b6814e8a45116cf2f8d562b05d747993655b"
+    }
+  ],
+  "failed_receipt_sha256": "d75040a2402fd874da9f56899253871e778c9b22ef55902ed19ee34b1d437a1c",
+  "failed_logs": {
+    "red.stderr.txt": "4dda6d280055087efda245496cb56191f4c2cfdec6825f0fabb322c874db6d69",
+    "green.stdout.txt": "b6c058623a657a84068a7468b9cdfc1a101a2b3f079a7acd5c247d8a3d04aee6",
+    "receipt.json": "d75040a2402fd874da9f56899253871e778c9b22ef55902ed19ee34b1d437a1c",
+    "SOURCE-RECONCILIATION.md": "05dc9b749b9ed5589c9dee37ed8f953feabc18aade8093b573ffb1c982744556",
+    "inspect-red.json": "45b7211eddb0dbedeb812d981cc8173b62dcc8c602e88be196bc5874f6e4f4ac",
+    "red.stdout.txt": "75b7d1f4f981995dea4a8c27923966a01303f073a96a6c717d935191b2bd9733",
+    "green.stderr.txt": "a2b616a7bfc38842ec11af3bc9cb1ef091e8677904e4c8ff58019696d03de692"
+  },
+  "tests": "NOT_RUN",
+  "active_test": false,
+  "admission": "REQUIRES_EXPLICIT_ACC_CONTINUATION_EXISTING_INTEREST_NO_NEW_ROW"
+}
