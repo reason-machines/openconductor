@@ -1,0 +1,55 @@
+{
+  "author": "Conductor Rebuild",
+  "revision": "K1-publication-integration-source-v2",
+  "checked_main": "8b4d9039359f857122e7dac8e8f133d145e96a0f",
+  "status": "SOURCE_IMPLEMENTED_NOT_APPLIED_AWAITING_ACC_K1_ADMISSION",
+  "files": {
+    ".github/workflows/ci.yml": {
+      "sha256": "8513b4ab3a9879a2a386738eaf2ba47c70dd3c49eed6b4e79ba52c48d3df0250",
+      "bytes": 11220
+    },
+    "src/settings/agents/agentTabKeyboard.test.ts": {
+      "sha256": "32bf0a1afbdba8e47069f1829e908afc755efc683628bae27f9640556ae265a4",
+      "bytes": 3623
+    },
+    "evidence/settings/agent-tab-keyboard/agentTabsKeyboard.dom.test.mjs": {
+      "sha256": "833644d93d3c45c4846800c2d923540ff53c57b22d2aa1f53aaf99dbc1789d51",
+      "bytes": 11097
+    },
+    "publication.patch": {
+      "sha256": "325e991868d0068c7159b3910b9e1c427cb4659e6d3f76fa1771d50ee13baf01",
+      "bytes": 17849
+    }
+  },
+  "scope": "Two existing ci.yml job step sequences + original wrapper + byte-identical frozen22; no production fix applied yet",
+  "preserved": [
+    "all workflow triggers and permissions",
+    "all job names, runners and conditions",
+    "automatic frontend/tools only",
+    "all other workflow files",
+    "package.json and package-lock.json",
+    "K1 frozen fixture/assertions and focused product patch",
+    "original11 a9e54829 frozen/LAST"
+  ],
+  "provisioning": "Automatic frontend installs only isolated jsdom@26.1.0 before discovery; manual frontend-unit moves its existing isolated provisioning ahead of discovery and removes later duplicate",
+  "authority_source": "Root 84f2a0c3 allows resolving coordinator-only restriction. Retained Sven cost quote in fa6abb48 opening brief limits fat CI/release automation, not all step changes; brief is quoted coordinator provenance, not original direct Sven message",
+  "checks_passed": [
+    "stdlib exact transformation matches only the three scoped workflow step edits",
+    "both generated provisioning shell bodies pass bash -n",
+    "wrapper and frozen22 byte-identical to v1 source",
+    "18 K1 production modules unchanged on current main",
+    "tracked product/index unchanged"
+  ],
+  "checks_not_run": [
+    "YAML parser unavailable (PyYAML absent); no installation attempted",
+    "Node syntax",
+    "TypeScript",
+    "dependency installation",
+    "RED",
+    "GREEN",
+    "wrapper execution",
+    "hosted CI",
+    "browser/native/provider/package"
+  ],
+  "admission": "Source proposal sent to ACC before shared execution; K1 v2 360s baseline/GREEN/no-install local contract unchanged. Publication provisioning is hosted only, not a local install grant. Frozen fixture direct checkout RED/GREEN before product publication; wrapper validation then on hosted exact-head CI. No new lane/row/runner."
+}

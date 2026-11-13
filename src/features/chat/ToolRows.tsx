@@ -159,7 +159,9 @@ const GLYPH_BY_EXT: Record<string, [Glyph, string]> = {
 
 export function FileGlyph({ path }: { path: string }) {
   const ext = path.split(".").pop()?.toLowerCase() ?? "";
-  const [glyph, tint] = GLYPH_BY_EXT[ext] ?? (["file", "muted"] as [Glyph, string]);
+  const [glyph, tint] = (Object.prototype.hasOwnProperty.call(GLYPH_BY_EXT, ext)
+    ? GLYPH_BY_EXT[ext]
+    : undefined) ?? (["file", "muted"] as [Glyph, string]);
   const g = FILE_GLYPHS[glyph];
   return (
     <svg className="oc-file-glyph" data-tint={tint} viewBox={g.viewBox} fill="currentColor" role="img" aria-hidden>
@@ -434,9 +436,13 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
         css: "css", html: "html", htm: "html", xml: "xml", sh: "bash", bash: "bash",
       };
       const language = languages[path.split(".").pop()?.toLowerCase() ?? ""];
+      const imageExtensions = { png: true, jpg: true, jpeg: true, gif: true, webp: true, tif: true, tiff: true, avif: true, bmp: true };
+      const extension = path.split(".").pop()?.toLowerCase();
+      const isImage = extension !== undefined && Object.prototype.hasOwnProperty.call(imageExtensions, extension);
       return (
         <RowShell
           {...shell}
+          isCollapsible={!isImage}
           left={<span>{readLabel(path, output)}</span>}
           right={path ? <FileBadge path={path} onOpen={onOpenFile} /> : undefined}
           keepRight
@@ -543,7 +549,19 @@ function Row({ tool, status, result, rawResult, resultCreatedAt, now, isError, o
       );
     }
     case "todo": {
-      const todos = Array.isArray(input.todos) ? (input.todos as Record<string, unknown>[]) : [];
+      let todoSource: unknown = input.todos;
+      if (name === "TodoRead") {
+        todoSource = rawResult === undefined ? result : rawResult;
+        if (typeof todoSource === "string") {
+          const match = todoSource.match(/\[[\s\S]*\]/);
+          try {
+            todoSource = match ? JSON.parse(match[0]) : [];
+          } catch {
+            todoSource = [];
+          }
+        }
+      }
+      const todos = Array.isArray(todoSource) ? (todoSource as Record<string, unknown>[]) : [];
       const done = todos.filter((t) => t.status === "completed").length;
       const activeIndex = todos.findIndex((t) => t.status === "in_progress");
       const active = todos[activeIndex];

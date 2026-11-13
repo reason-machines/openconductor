@@ -9,6 +9,13 @@ use std::path::{Component, Path, PathBuf};
 
 pub(crate) const ROOT_ENV: &str = "OC_VISUAL_QA_ROOT";
 
+fn with_startup_admission<T>(requested: bool, startup: impl FnOnce() -> T) -> Result<T, &'static str> {
+    if requested {
+        return Err("trusted process-family filesystem prevention is unavailable; visual QA admission denied");
+    }
+    Ok(startup())
+}
+
 #[cfg(any(test, all(debug_assertions, target_os = "macos")))]
 #[derive(Debug)]
 pub(crate) struct VisualQaProfile {
@@ -140,8 +147,16 @@ mod app {
         }
     }
 
-    pub(crate) fn before_startup(mut context: tauri::Context<tauri::Wry>) -> tauri::Context<tauri::Wry> {
-        let Some(root) = std::env::var_os(ROOT_ENV) else { return context };
+    pub(crate) fn before_startup(context: tauri::Context<tauri::Wry>) -> tauri::Context<tauri::Wry> {
+        let root = std::env::var_os(ROOT_ENV);
+        match with_startup_admission(root.is_some(), || configure_profile(context, root)) {
+            Ok(context) => context,
+            Err(error) => refuse(error),
+        }
+    }
+
+    fn configure_profile(mut context: tauri::Context<tauri::Wry>, root: Option<std::ffi::OsString>) -> tauri::Context<tauri::Wry> {
+        let Some(root) = root else { return context };
         #[cfg(not(all(debug_assertions, target_os = "macos")))]
         {
             let _ = (&mut context, root);
@@ -369,6 +384,25 @@ mod tests {
     }
     impl Drop for Root {
         fn drop(&mut self) { let _ = fs::remove_dir_all(&self.0); }
+    }
+
+    #[test]
+    fn uncontained_request_never_enters_startup_or_reserves_profile() {
+        let root = Root::new();
+        let entered = std::cell::Cell::new(false);
+        let result = with_startup_admission(true, || {
+            entered.set(true);
+            root.prepare()
+        });
+        assert!(result.is_err(), "an uncontained visual request reached startup");
+        assert!(!entered.get());
+        assert_eq!(fs::read_dir(&root.0).unwrap().count(), 0);
+    }
+
+    #[test]
+    fn absent_request_preserves_startup_result() {
+        let context = String::from("ordinary startup context");
+        assert_eq!(with_startup_admission(false, || context).unwrap(), "ordinary startup context");
     }
 
     #[test]
