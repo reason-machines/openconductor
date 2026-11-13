@@ -470,11 +470,10 @@ async fn prompt_handoff_reviewed_is_workspace_scoped_idempotent_and_preserves_su
             ("other-workspace".into(), "pending".into())
         ]
     );
-    let updated: i64 =
-        sqlx::query_scalar("SELECT updated_at FROM diff_comments WHERE id = 'one'")
-            .fetch_one(&pool)
-            .await
-            .unwrap();
+    let updated: i64 = sqlx::query_scalar("SELECT updated_at FROM diff_comments WHERE id = 'one'")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
     assert_eq!(updated, 200);
 }
 
